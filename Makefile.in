@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.6 1997/03/27 18:23:25 jimg Exp $
+# $Id: Makefile.in,v 1.7 1998/01/09 23:34:42 jimg Exp $
 
 @SET_MAKE@
 
@@ -96,6 +96,7 @@ install: all
 	$(INSTALL_PROGRAM) -s ./hdf_dds $(etcdir)
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
 	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
+	$(INSTALL_PROGRAM) ./DODS_Cache.pm $(etcdir)
 
 .SUFFIXES:      .o .cc .c
 
