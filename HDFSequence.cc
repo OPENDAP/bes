@@ -11,6 +11,12 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.5  1998/02/19 19:56:07  jimg
+// Fixed an error where attempting to read past the last row of a vdata caused
+// an error. It now returns false with error set to false (indicating no error).
+// Note that when the read() member function returns false and error is false
+// that indicates that the end of the input has been found.
+//
 // Revision 1.4  1997/10/09 22:19:39  jimg
 // Resolved conflicts in merge of 2.14c to trunk.
 //
@@ -64,9 +70,19 @@ bool HDFSequence::read(const String& dataset, int& err) {
 	}
     }
 
-    // is this an empty Vdata or have we read past last row?
-    if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0  || 
-	row >= vd.fields[0].vals[0].size()) {
+    // Return false when no more data are left to be read. Note that error is
+    // also false (i.e., no error occurred). 02/06/98 jhrg
+    if (row >= vd.fields[0].vals[0].size()) {
+	set_read_p(true); 
+	err = 0;		// everything is OK
+	return false;		// Indicate EOF
+    }
+
+    // is this an empty Vdata.
+    // I'm not sure that it should be an error to read from an empty vdata.
+    // It maybe that valid files have empty vdatas when they are first
+    // created. 02/06/98 jhrg
+    if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0) {
 	err = 1;
 	return false;
     }
