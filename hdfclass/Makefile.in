@@ -1,0 +1,35 @@
+
+vpath %.h ../src
+vpath %.cc ../src
+
+# GNU G++ options
+CXX = g++
+DODS_ROOT = ../../../..
+
+CFLAGS = @INCS@ \
+	 -I../src \
+	 @EXCEPTIONS_SWITCH@ -gstabs+ -Wall \
+	 -DDEBUG 
+
+# Set the instalation directories; prefix can be set on the command line
+# during Makefile construction with `./configure --prefix /my/choice'
+
+SHELL = /bin/sh
+
+.SUFFIXES:	.o .cc .c
+
+.cc.o:		hdfclass.h hcstream.h
+		$(CXX) -c $(CFLAGS) $<
+
+OBJS =		hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o
+
+libhdfclass.a:	$(OBJS)
+		ar ru libhdfclass.a $(OBJS)
+		ranlib libhdfclass.a
+
+clean:		
+		rm -fr libhdfclass.a
+
+ultraclean:	
+		rm -fr libhdfclass.a $(OBJS)
+
