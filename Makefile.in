@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.29 2001/09/28 22:36:09 jimg Exp $
+# $Id: Makefile.in,v 1.30 2001/10/14 01:42:09 jimg Exp $
 
 @SET_MAKE@
 
@@ -175,6 +175,7 @@ binary-tar:
 	cd $(DODS_ROOT).. && \
 	$(TAR) --gzip --create \
 	    --file DODS-hdf-server-$(version)-$(host).tar.gz \
+            DODS/readme/README DODS/readme/README-hdf-server \
 	    DODS/etc/hdf_das \
 	    DODS/etc/hdf_dds \
 	    DODS/etc/hdf_dods
@@ -331,16 +332,3 @@ hdfdesc.o: src/hdfdesc.cc config_hdf.h ../../include/DDS.h \
  ../../include/Structure.h src/hdf-dods.h src/hdf-maps.h \
  ../../include/parser.h ../../include/GSEClause.h
 hdfutil.o: src/hdfutil.cc config_hdf.h src/hdfutil.h src/dhdferr.h
-srvtest.o: src/srvtest.cc config_hdf.h ../../include/Connect.h \
- ../../include/DAS.h ../../include/AttrTable.h ../../include/Error.h \
- ../../include/DDS.h ../../include/BaseType.h \
- ../../include/InternalErr.h ../../include/Clause.h \
- ../../include/expr.h ../../include/RValue.h ../../include/util.h \
- ../../include/Byte.h ../../include/dods-datatypes.h \
- ../../include/Int16.h ../../include/UInt16.h ../../include/Int32.h \
- ../../include/UInt32.h ../../include/Float32.h \
- ../../include/Float64.h ../../include/Str.h \
- ../../include/dods-limits.h ../../include/Url.h ../../include/Array.h \
- ../../include/Vector.h ../../include/List.h ../../include/Structure.h \
- ../../include/Constructor.h ../../include/Sequence.h \
- ../../include/Grid.h

@@ -21,7 +21,7 @@
 # 4. Macros for locating various systems (Matlab, etc.)
 # 5. Macros used to test things about the computer/OS/hardware
 #
-# $Id: configure,v 1.32 2001/08/27 17:21:34 jimg Exp $
+# $Id: configure,v 1.33 2001/10/14 01:42:09 jimg Exp $
 
 # 1. Unidata's macros
 #-------------------------------------------------------------------------
@@ -911,7 +911,7 @@ echo "configure:907: checking for gcc/g++ 2.8 or greater" >&5
     case $GCC_VER in
         *egcs*) echo "$ac_t""Found egcs version ${GCC_VER}." 1>&6 ;;
 	[3-9].* | 2.[7-9]*) echo "$ac_t""Found gcc/g++ version ${GCC_VER}" 1>&6 ;;
-        *) { echo "configure: error: must be at least version 2.7.x" 1>&2; exit 1; } ;;
+        *) { echo "configure: error: *** must be at least version 2.7.x" 1>&2; exit 1; } ;;
     esac
 echo "GCC_VER: $GCC_VER"
 case $GCC_VER in
@@ -1612,7 +1612,7 @@ fi
 	    then
 		echo "$ac_t""Found perl version ${perl_ver}." 1>&6
 	    else
-		{ echo "configure: error: perl version: found ${perl_ver} should be at least 5.000." 1>&2; exit 1; }
+		{ echo "configure: error: *** perl version: found ${perl_ver} should be at least 5.000." 1>&2; exit 1; }
 	    fi
 	    ;;
 	*)
@@ -2465,7 +2465,7 @@ EOF
 	XDR_INT32=xdr_int
 	XDR_UINT32=xdr_u_int
     else
-	{ echo "configure: error: How do I get a 32 bit integer on this machine?" 1>&2; exit 1; }
+	{ echo "configure: error: *** How do I get a 32 bit integer on this machine?" 1>&2; exit 1; }
     fi
     # I'm using the three arg form of AC_DEFINE_UNQUOTED because autoheader
     # needs the third argument (although I don't quite get the specifics... 
@@ -2513,7 +2513,7 @@ EOF
     then
 	DODS_BYTE="unsigned char"
     else
-	{ echo "configure: error: How do I get an 8 bit unsigned integer on this machine?" 1>&2; exit 1; }
+	{ echo "configure: error: *** How do I get an 8 bit unsigned integer on this machine?" 1>&2; exit 1; }
     fi
     cat >> confdefs.h <<EOF
 #define DBYTE $DODS_BYTE
@@ -2527,7 +2527,7 @@ EOF
 	XDR_FLOAT64=xdr_double
 	XDR_FLOAT32=xdr_float
     else
-	{ echo "configure: error: How do I get floating point types on this machine?" 1>&2; exit 1; }
+	{ echo "configure: error: *** How do I get floating point types on this machine?" 1>&2; exit 1; }
     fi
     cat >> confdefs.h <<EOF
 #define DFLOAT64 $DODS_FLOAT64
@@ -2960,14 +2960,14 @@ nohdf=1
 fi
 
 
-    echo $ac_n "checking "for the packages directory"""... $ac_c" 1>&6
-echo "configure:2965: checking "for the packages directory"" >&5
+    echo $ac_n "checking for the packages directory""... $ac_c" 1>&6
+echo "configure:2965: checking for the packages directory" >&5
     # Where does DODS live?
     
     DODS_PACKAGES_DIR=`ls -1d ${dods_relative}src/packages* 2> /dev/null`
     if test -z "$DODS_PACKAGES_DIR"
     then
-	{ echo "configure: error: "Could not find the third-party packages!"" 1>&2; exit 1; }
+	{ echo "configure: error: *** Could not find the third-party packages!" 1>&2; exit 1; }
     fi
     echo "$ac_t""$DODS_PACKAGES_DIR" 1>&6
     LDFLAGS="$LDFLAGS -L${dods_relative}lib"
@@ -3160,7 +3160,7 @@ EOF
 
       ;;
     *)
-      { echo "configure: error: Bad debug value" 1>&2; exit 1; }
+      { echo "configure: error: *** Bad debug value" 1>&2; exit 1; }
       ;;
     esac
 

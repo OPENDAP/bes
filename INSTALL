@@ -1,99 +1,168 @@
+	
+	$ID$
 
-$Id: INSTALL,v 1.7 2000/09/29 15:29:13 tom Exp $
+Installing the HDF 4 server for DODS.
 
-INSTALLING THE HDF-DODS SERVER
+---------------------------------------------------------------------------
 
-  Follow these steps to build and install the HDF DODS server.  Please refer
-  to the documentation (see http://unidata.ucar.edu/packages/dods) for a
-  list of required software.  The configuration procedure will check whether
-  your software can be used to build the system.
+BUILDING THE SOFTWARE
+REQUIREMENTS
+NOTES
 
-  (Before trying to build the system, you should check and see whether there
-  already exists a binary distribution for your computer.  Check the dods
-  home page for a list of these distributions.  If there is one there,
-  download it and unpack it, and skip to step 3.  You will need a copy of
-  perl with a version number greater than or equal to 5.001.  Type `perl -v'
-  to see the version.)
+---------------------------------------------------------------------------
 
-    1. Type `./configure' at the system prompt. On some systems you may have
-       to type `sh configure'.
+BUILDING THE SOFTWARE
 
-    2. Type `make' to build the server software, and `make check' to build
-       the test software.  You must have DejaGNU, the GNU automated testing
-       software, to run the makefile's `check' target.  Type `make install'
-       to install it on the DODS tree.  Note that this is *not* the same as
-       installing the software in a place where the httpd server can find
-       it, so there are a couple more steps.
- 
-    3. To install the data server, you can use the installServers script in
-       the $DODS_ROOT/etc directory.  Before you run this script, determine
-       the location of your WWW server's CGI directory.  The DODS server
-       software is to be copied into that directory.
+1) Type `./configure' at the system prompt. On some systems you may have to
+   type `sh configure.' If the configure script cannot find you HDF4 library
+   and include files, use the --with-hdf=<hdf dir> option. Use the --help
+   option for more information.
 
-    4. The HDF server caches some of its responses to requests. In the past
-       this cache was stored in the same directory as the data files being
-       served.  However, that caused problems with read-only datasets.  In
-       the current version of the HDF server the cache directory is /usr/tmp
-       and can be configured by changing the value of the variable
-       $cache_dir in the file nph-hdf.
+2a) Type `make' to build the three server programs
 
-  For information about installing secure DODS servers, see the file
-  SECURITY in DODS_ROOT.
+3a) Install the server components in DODS_ROOT/etc by running `make
+    install.' 
 
-  Note that the DODS server scripts use specialized versions of
-  several Perl modules, shipped with DODS.  These libraries must be
-  in the same directory as the DODS server scripts.  However, if they
-  are in the same directory as other scripts that use the standard
-  versions of these modules, conflicts will develop.  In this case, it
-  may be best to establish a CGI directory just for DODS.
+3b) To install the data server, use the new installServer shell script in the
+    DODS_ROOT/etc.
 
-MAKING YOUR DATA AVAILABLE
+3c) Optionally, run the tests using `make check.' You'll also need DejaGNU
+    installed on your system. To set up the tests, first copy the test
+    datasets to a place in your web server's document root so that they can
+    be accessed by the newly installed DODS HDF4 server. Then run configure
+    so that the testsuite can find various datasets it uses. Use the
+    --with-test-url=url option where `url' is the DODS URL to the directory
+    that holds the test datasets.
 
-  Data to be served by the DODS server must either be within the http
-  server's document root directory or they must be accessible by links in
-  the document root directory tree. To find out which directory is the http
-  server's document root, look in the httpd configuration data.
+3d) Set the dods.ini file so that the server will know how to handle
+    different types of files you are serving.
 
-  To access a dataset from your server, you must know how to invoke your CGI
-  programs, and know where in the document root tree your data lies.  Though
-  there are a couple of different ways to configure a httpd server to handle
-  CGI requests, DODS requires your server to use a `CGI directory', where
-  all CGI programs are stored in a particular directory.  On most of our
-  machines, this directory is called `cgi-bin', and a CGI program is invoked
-  like this:
+    The nph-dods dispatch script receives a request and dispatches it to the
+    appropriate service program. The way it figures out what is the
+    appropriate service program is to match the filename part of the URL it
+    received with a set of patterns listed in a configuration file. Each line
+    of the configuration file contains a pattern and the name of a "handler"
+    to use for files that match that pattern.
 
-    http://dods.gso.uri.edu/cgi-bin/cgi-program
+    Here is the default configuration file:
 
-  With a configuration like this, to make the file `east.coast.hdf'
-  available to users it must be either placed within the document root
-  directory.  On our example machine, the document root directory is
-  /usr/local/spool/http so the file must be moved or copied to that
-  directory or one of its subdirectories.  If the server is configured to
-  handle links, you might also create a symbolic link in that directory or
-  one of its subdirectories to the file.  On our example machine, you would
-  put the data in place by typing:
+    .*\.(HDF|hdf)(.Z|.gz)*$ hdf
+    .*\.(NC|nc|cdf|CDF)$ nc
+    .*\.(mat|Mat|MAT)$ mat
+    .*\.(dat|bin)$ ff
+    .*\.(pvu)(.Z|.gz)*$ dsp
+    .*\/test$ jg
+    .*\/[^\.]+$ jg
 
-    cp east.coast.hdf /usr/local/spool/http
+    Each line consists of a regular expression pattern followed by an
+    abbreviation like "jg" or "mat". Consider a URL like this:
 
-  Then you can access the data from a remote machine with this URL:
+    http://dods.org/cgi-bin/nph-dods/data/ctd.mat?temp  
 
-    http://dods.gso.uri.edu/cgi-bin/nph-hdf/east.coast.hdf
+    When the nph-dods script is executed, the "file name" part of the URL is
+    /data/ctd.mat. Testing this against the default initialization file
+    matches the third line, which indicates that the mat (Matlab) service
+    programs are the ones to use to process this request. The request is then
+    dispatched to the mat-dods (or mat-dds or mat-das) programs for
+    processing.
 
-  After the machine name (dods.gso.uri.edu) the URL contains the path
-  to the DODS data server CGI and that the path to the data (relative to the
-  document root directory) *follows* the CGI name.
+    NOTE: The default configuration file is set up so that files without
+    extensions are handled by the JGOFS service programs. If this is not
+    right for your installation, delete the last line shown above.
 
-  If you want to create subdirectories to organize your data, they are just
-  added to the URL.  For example, if the `east.coast.hdf' file is in a
-  directory called /usr/local/spool/http/data/large-scale, the URL would
-  look like this:
+    "Regular expressions", advanced pattern-matching languages, are a
+    powerful feature of Perl and many other computer programs. Powerful
+    enough, in fact, to warrant at least one book about them (Mastering
+    Regular Expressions by Jeffrey Friedl, O'Reilly, 1997). You can find a
+    brief tutorial to regular expressions in the DODS bookshelf at
+    http://www.unidata.ucar.edu/packages/dods/user/regex-html/. (For a
+    complete reference online--not a particularly good place to learn about
+    them for the first time--see
+    http://www.perldoc.com/perl5.6/pod/perlre.html.
 
-    http://dods.gso.uri.edu/cgi-bin/nph-hdf/data/large-scale/east.coast.hdf 
+    Briefly, however, the above patterns test whether a filename is of the
+    form file.ext.comp, where comp (if present) is Z or gz, and ext is one of
+    several possible filename extensions that might indicate a specific
+    storage API. If a file has no extension, it is assumed to be a JGOFS
+    file.
 
-  If you have installed the ascii data service (a CGI program called
-  `asciival'), you can check your work with a simple web browser, such as
-  netscape, by entering a URL with `.asc' appended:
+    If these default rules will not work for your installation, you can
+    rewrite them. For example, if all your files are HDF files, you could
+    replace the default configuration file with one that looks like this:
 
-    http://dods.gso.uri.edu/cgi-bin/nph-hdf/data/large-scale/east.coast.hdf.asc 
+    .* hdf
 
-  Be careful, this can result in a lot of data.  
+    The .* pattern matches all possible names, and indicates that whatever
+    the name of the file sought, the HDF service programs are the ones to
+    use.
+
+    If you have a situation where all the files in a particular directory
+    (whatever its extension) are to be handled by the DSP service programs,
+    and all other files served are JGOFS files, try this:
+
+    \/dsp_data\/.* dsp
+    .* jg
+
+    The rules are applied in order, and the first rule with a successful
+    match returns the handler that will be applied. The above set of rules
+    implies that everything in the dsp_data directory will be handled with
+    the DSP service programs, and everything else will be handled with the
+    JGOFS programs.
+
+REQUIREMENTS
+
+  o You need to have the DAP library and at least libwww, libz and librx from
+    the third-party packages installed before building this software.
+
+  o You must have a copy of HDF4.1r4. Earlier versions of HDF4 work with the
+    server but some valid files work be served correctly.
+
+NOTES
+
+  o If the build fails because make reports that it does not know how to make
+    a particular file, try runing `make depend' to rebuild the Makefile's
+    dependencies.
+
+  o For information about installing secure DODS servers, see the file
+    SECURITY in DODS_ROOT.
+
+  o The README file has some information about writing the format files used
+    to describe data so that it can be served by the software. More complete
+    documentation is available in the documentation section of the DODS home
+    page at http://unidata.ucar.edu/packages/dods/.
+
+  o If the build fails because make reports that it does not know how to make
+    a particular file, try runing `make depend' to rebuild the Makefile's
+    dependencies.
+
+  o DEBUGGING AIDS
+
+    - The DODS API includes the following debugging aids that may be of help
+      to you in developing new DODS applications.
+
+    - DBG: simple program instrumentation -- see the file debug.h in
+      $DODS_ROOT/include for more information
+
+    - DBG2: more elaborate program instrumentation -- by convention this is
+      used for output that is half a page or more, while DEBUG is used for
+      single line output.
+
+    - dbnew: include -ldbnew and -lefence when linking. libdbnew.a contains
+      overloaded versions of new, new[] delete and delete[]. It also contains
+      code to `walk the malloc chain' and simple checks for out-of-bounds
+      errors.
+
+    - efence: a freely available bounds checker for dynamically allocated
+      memory. When used with dbnew, efence must be set to 8-byte alignment.
+      efence will find all over- or under-writes of dynamically allocated
+      memory, but only works on some machines.
+
+    - To build with program instrumentation use `--enable-debug=<level>'
+      where <level> is 1 or 2.
+
+    - By default, both debug and dbnew are *not* enabled. Thus, if you want
+      to build a straight version of the libraries and test code, use
+      `./configure'. If you want the extra features, use:
+
+      ./configure --enable-dbnew --enable-debug=2
+
