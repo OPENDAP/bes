@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.22 1999/11/06 00:32:37 jimg Exp $
+# $Id: Makefile.in,v 1.23 2000/03/09 00:46:17 jimg Exp $
 
 @SET_MAKE@
 
@@ -17,7 +17,8 @@ CXXFLAGS = @CXXFLAGS@ -Wall
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
 LFLAGS = -8
 YFLAGS = -d -v
-LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
+TK_LIBS = @TK_LIBS@
+LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@ $(TK_LIBS)
 
 # Set the installation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
@@ -162,8 +163,20 @@ tar:
 	-rm -r config.cache config.log config.status
 	cd $(DODS_ROOT)/.. && \
 	$(TAR) --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
-	    --gzip --create --dereference --file DODS-$(dir).tar.gz \
-	    DODS/src/$(dir)
+	    --exclude '*/.flc' --gzip --create --dereference \
+	    --file DODS-$(dir).tar.gz DODS/src/$(dir)
+
+# Creates tar files for binary distributions.
+#
+.PHONY: binary-tar
+binary-tar:
+	cd $(DODS_ROOT)/.. && \
+	$(TAR) --gzip --create \
+	    --file DODS-hdf-server-$(version)-$(host).tar.gz \
+	    DODS/etc/nph-hdf \
+	    DODS/etc/hdf_das \
+	    DODS/etc/hdf_dds \
+	    DODS/etc/hdf_dods
 
 .PHONY: update-version
 update-version: check-version

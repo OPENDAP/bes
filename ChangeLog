@@ -1,7 +1,27 @@
+2000-03-08  James Gallagher  <jimg@dcz.dods.org>
+
+	* Merge: cvs update -j release-3-1-2 -j release-3-1, the next
+	merge should use -j release-3-1-3 -j release-3-1
+
+	* Fixed a bug where bad index variables were used with the
+	string::find() functions. Using int, uint32, ..., variables to
+	hold the indices breaks on some 64bit machines. The fixed code
+	runs OK on Sol 7 (64bit) but the problem did not show up there.
+	The problems shows up on alphas. I'm committing these changes and
+	they'll be tested on the alpha.
+
+	* configure now uses the new DODS_PROG_PERL test and nph-hdf.in
+	uses that value for Perl. This eliminates the old exec perl hack
+	which broke on Linux.
+
+	* Fixes for the binary-tar target.
+
 1999-11-05  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merge: cvs update -j release-3-1, the next merge should use -j
 	release-3-1-2 -j release-3-1
+	
+1999-11-05  James Gallagher  <jimg@dcz.dods.org>
 
 	* Fixes to simplify building.
 
@@ -41,4 +61,8 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.9 1999/11/06 00:32:37 jimg Exp $
+<<<<<<< ChangeLog
+$Id: ChangeLog,v 1.10 2000/03/09 00:44:35 jimg Exp $
+=======
+$Id: ChangeLog,v 1.10 2000/03/09 00:44:35 jimg Exp $
+>>>>>>> 1.8.4.2

@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.18 1999/11/06 00:32:38 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.19 2000/03/09 00:46:39 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -18,6 +18,9 @@ dnl `depend' is the command to use to generate dependencies for Makefiles.
 
 depend=${dods_root}/etc/depend.sh
 AC_SUBST(depend)
+
+AC_CANONICAL_HOST
+AC_SUBST(host)
 
 CFLAGS="-gstabs -O2 $CFLAGS"
 dnl LDFLAGS="-gstabs $LDFLAGS"
@@ -82,14 +85,16 @@ AC_CHECK_FUNCS(strerror strtol)
 
 DODS_CHECK_SIZES
 
-DODS_LIBS
 DODS_HDF_LIBRARY
 
-DODS_COMPRESSION_LIB
 DODS_RX_LIB
+
+. ${DODS_PACKAGES_DIR}/lib/tkConfig.sh
+AC_SUBST(TK_LIBS)
 DODS_WWW_LIB
-dnl DODS_TCL_LIB
-dnl DODS_TK_LIB
+DODS_COMPRESSION_LIB
+DODS_TCL_LIB
+DODS_TK_LIB
 
 DODS_EFENCE
 DODS_DBNEW

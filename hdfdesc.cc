@@ -12,6 +12,12 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.15  2000/03/09 00:47:49  jimg
+// *** empty log message ***
+//
+// Revision 1.13.8.2  2000/03/09 00:24:59  jimg
+// Replaced int and uint32 with string::size_type
+//
 // Revision 1.14  1999/11/06 00:32:40  jimg
 // Result of merge with the 3-1-2 sources
 //
@@ -133,7 +139,7 @@ string cache_name(const string& cachedir, const string& filename) {
 
   string newname = filename; // create a writable copy
   // skip over common path component (usually something like "/usr/local/www")
-  uint32 start = 0, dirstart = 0;
+  string::size_type start = 0, dirstart = 0;
   while(newname[start] == cachedir[dirstart]) {
     start++;
     dirstart++;
@@ -143,7 +149,7 @@ string cache_name(const string& cachedir, const string& filename) {
     start--;
 
   // turn the remaining path separators into "."
-  uint32 slash = start;
+  string::size_type slash = start;
   while((slash = newname.find_first_of('/', slash)) != newname.npos) {
     newname[slash] = '.';
   }
@@ -478,7 +484,7 @@ void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
 		|| container_name.find("ArchiveMetadata") == 0
 		|| container_name.find("coremetadata") == 0
 		|| container_name.find("productmetadata") == 0) {
-	      uint32 dotzero = container_name.find('.');
+	      string::size_type dotzero = container_name.find('.');
 	      if(dotzero != container_name.npos)
 		container_name.erase(dotzero); // erase .0
 	      AttrTable *at = das.get_table(container_name);
