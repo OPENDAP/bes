@@ -1,0 +1,21 @@
+
+# $Log: test.1.exp,v $
+# Revision 1.1  2001/07/18 14:35:40  jimg
+# Added
+#
+# Revision 1.2  1997/09/22 23:14:45  jimg
+# *** empty log message ***
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+
+source "../../../../etc/common_tests.exp"
+
+set test_name "test.1"
+
+# The `1' in compare_stdout means call xfail if the test fails.
+
+h5_das_start testsuite/test1.h5
+compare_stdout "testsuite/test.1.data" "${test_name}"

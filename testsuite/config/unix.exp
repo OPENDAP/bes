@@ -1,0 +1,39 @@
+
+# Tcl/Expect code for the geturl test. This really is designed to test the
+# various servers (hdf, dsp, netcdf, matlab, ...) on serveral different
+# platforms. 
+# 
+# $Id: unix.exp,v 1.1 2001/07/18 14:35:40 jimg Exp $
+
+global H5DAS
+if ![info exists H5DAS] then {
+    set H5DAS [transform h5_das]
+}
+
+# The four `required' procs are _start, _load, _exit and _version.
+
+proc h5_das_start {file} {
+    global verbose
+    global H5DAS
+    global comp_output
+    global spawn_id
+
+    if {$verbose >= 1} {
+	send_user "Testing geturl $switches $urls >& $file ...\n"
+	exp_internal 1
+    }
+
+    catch "exec ./$H5DAS $file" comp_output
+}
+
+proc h5_das_load {} {
+}
+
+proc h5_das_exit {} {
+    send -raw ""
+}
+
+proc h5_das_version {} {
+    send_user "geturl test suite 1.0\n"
+}
+
