@@ -1,24 +1,14 @@
-dnl Process this file with autoconf to produce a configure script
-dnl for the hdfbrowse installation.
-dnl
-dnl $Id: configure.in,v 1.7 1997/04/18 22:51:57 jimg Exp $
 
-#--------------------------------------------------------------------
-#   Configure.in  10/18/96
-#
-#--------------------------------------------------------------------
+dnl Process this file with autoconf to produce a configure script.
 
+AC_REVISION($Id: configure.in,v 1.8 1997/10/09 22:19:39 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
-AC_CANONICAL_SYSTEM
-
-dnl output variable defaults
-
-CXX=${CXX-g++}
-AC_MSG_RESULT(Setting CXX to $CXX)
-AC_SUBST(CXX)
 AC_PREFIX_DEFAULT("\$(DODS_ROOT)")
+
+dnl DODS_ROOT is the fully qualified pathname to the root of the DODS
+dnl subtree. 
 
 fulldir=`pwd`
 dir=`basename ${fulldir}`
@@ -26,18 +16,33 @@ AC_SUBST(dir)
 dods_root=`echo $fulldir | sed 's@\(.*\)/.*/.*@\1@'`
 AC_DEFINE_UNQUOTED(DODS_ROOT, "$dods_root")
 
+dnl `depend' is the command to use to generate dependencies for Makefiles.
+
 depend=${dods_root}/etc/depend.sh
 AC_SUBST(depend)
 
-DODS_FIND_GPP_INC
+CFLAGS="-g -O2"
+dnl Turn off all optimizations for g++ 2.7.x since this code uses the STL.
+CXXFLAGS="-g -O0"
+dnl GNU ld doesn't need this, but others do.
+LDFLAGS="-g"
 
-#--------------------------------------------------------------------
-#       Program Check
-#--------------------------------------------------------------------
+dnl Checks for programs.
 
+AC_PROG_AWK
+AC_PROG_CC
+AC_ISC_POSIX
+AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
-AC_PROG_LN_S
+AC_PROG_CPP
+AC_PROG_INSTALL
+DODS_MATLAB
+DODS_GCC
+DODS_PROG_LEX
+DODS_PROG_BISON
+DODS_CHECK_GCC_DEBUG
+DODS_FIND_GPP_INC
 
 dnl Never use exceptions with this code until 2.8.x is out!
 
@@ -60,56 +65,49 @@ dnl     *) true
 dnl 	;;
 dnl esac
 
+DODS_OS
+DODS_MACHINE
+if test "$OS" = ultrix && test "$MACHINE" = vax; then
+    case "$CC" in
+        /bin/cc*|cc*)
+echo "changing C compiler to \`vcc' because \`cc' floating-point is broken"
+            CC=vcc
+            ;;
+    esac
+fi
 
-AC_PROG_INSTALL
+CXX=${CXX-g++}
+AC_MSG_RESULT(Setting CXX to $CXX)
+AC_SUBST(CXX)
 
 if echo $INSTALL | egrep 'install-sh'
 then
-        INSTALL="$(DODS_ROOT)/etc/install-sh -c"
-        AC_SUBST(INSTALL)
+	INSTALL="$(DODS_ROOT)/etc/install-sh -c"
+	AC_SUBST(INSTALL)
 fi
 
-#--------------------------------------------------------------------
-#       Library Check
-#--------------------------------------------------------------------
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(fcntl.h limits.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_OFF_T
+AC_TYPE_SIZE_T
+
+dnl Checks for library functions.
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(strerror strtol)
 
 DODS_LIBS
 DODS_HDF_LIBRARY
 DODS_WWW_ROOT
 DODS_FIND_EXPECT
-
-#--------------------------------------------------------------------
-#       Warning Messages
-#--------------------------------------------------------------------
-
-if test "$noxdr" = 1; then
-AC_MSG_WARN("XDR library is missing")
-fi
-if test "$nohdf" = 1; then
-AC_MSG_WARN("HDF library is missing")
-fi
-if test "$nodap" = 1; then
-AC_MSG_WARN("DAP++ library is missing")
-fi
-if test "$nostdcpp" = 1; then
-AC_MSG_WARN("stdc++ library is missing")
-fi
-
-#--------------------------------------------------------------------
-#       Output to Makefiles
-#--------------------------------------------------------------------
-
-dnl AC_MSG_CHECKING(for $host_vendor directory)
-dnl if test -d $host_vendor;
-dnl then
-dnl    AC_MSG_RESULT(found)
-dnl else
-dnl    AC_MSG_RESULT(creating)
-dnl   `mkdir $host_vendor`
-dnl fi
+DODS_EFENCE
+DODS_DBNEW
+DODS_DEBUG_OPTION
+DODS_CHECK_SIZES
 
 AC_OUTPUT(Makefile hdfclass/Makefile)
-
-
 
 

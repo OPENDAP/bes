@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.4  1997/10/09 22:19:40  jimg
+// Resolved conflicts in merge of 2.14c to trunk.
+//
 // Revision 1.3  1997/03/10 22:45:55  jimg
 // Update for 2.12
 //
@@ -108,7 +111,7 @@ void read_dds(DDS& dds, const String& filename) {
 
     update_descriptions(filename);
 
-    String ddsfile = filename + ".dds";
+    String ddsfile = filename + ".cdds";
     dds.parse(ddsfile);
     return;
 }
@@ -118,7 +121,7 @@ void read_das(DAS& das, const String& filename) {
 
     update_descriptions(filename);
 
-    String dasfile = filename + ".das";
+    String dasfile = filename + ".cdas";
     das.parse(dasfile);
     return;
 }
@@ -131,8 +134,8 @@ static void update_descriptions(const String& filename) {
     // then regenerate DDS, DAS (cached DDS, DAS are assumed to be in the 
     // same directory as the data file)
     Stat datafile(filename);
-    Stat ddsfile((filename + ".dds"));
-    Stat dasfile((filename + ".das"));
+    Stat ddsfile((filename + ".cdds"));
+    Stat dasfile((filename + ".cdas"));
 
     // flag error if could find filename
     if (!datafile)

@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.4  1997/10/09 22:19:39  jimg
+// Resolved conflicts in merge of 2.14c to trunk.
+//
 // Revision 1.3  1997/03/10 22:45:34  jimg
 // Update for 2.12
 //
@@ -56,7 +59,7 @@ bool HDFSequence::read(const String& dataset, int& err) {
 	vin >> vd;
 	vin.close();
 	if (!vd) {		// something is wrong
-	    err = 0;		// indicate error 
+	    err = 1;		// indicate error 
 	    return false;
 	}
     }
@@ -64,14 +67,14 @@ bool HDFSequence::read(const String& dataset, int& err) {
     // is this an empty Vdata or have we read past last row?
     if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0  || 
 	row >= vd.fields[0].vals[0].size()) {
-	err = 0;
+	err = 1;
 	return false;
     }
 
     LoadSequenceFromVdata(this, vd, row++);
 
     set_read_p(true); 
-    err = -1;			// everything is OK
+    err = 0;			// everything is OK
     return true;
 
 }
