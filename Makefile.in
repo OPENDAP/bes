@@ -1,5 +1,5 @@
 
-# $Id: Makefile.in,v 1.5 2004/02/05 00:32:53 jimg Exp $
+# $Id: Makefile.in,v 1.6 2004/02/05 00:55:43 jimg Exp $
 
 @SET_MAKE@
 
@@ -195,26 +195,27 @@ tags:
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
 # DO NOT DELETE; depend depends on this line.
-h5_handler.o: h5_handler.cc config_hdf5.h h5_das.h \
+h5_handler.o: h5_handler.cc config_hdf5.h \
   /usr/local/hdf5/include/H5Gpublic.h /usr/local/hdf5/include/H5public.h \
   /usr/local/hdf5/include/H5pubconf.h \
   /usr/local/hdf5/include/H5api_adpt.h \
   /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5Dpublic.h \
   /usr/local/hdf5/include/H5Fpublic.h /usr/local/hdf5/include/H5Tpublic.h \
   /usr/local/hdf5/include/H5Spublic.h /usr/local/hdf5/include/H5Apublic.h \
-  ../../include/cgi_util.h ../../include/DDS.h ../../include/Pix.h \
-  ../../include/IteratorAdapter.h ../../include/BaseType.h \
-  ../../include/AttrTable.h ../../include/Error.h \
-  ../../include/InternalErr.h ../../include/dods-datatypes.h \
-  ../../include/DAS.h ../../include/Clause.h ../../include/expr.h \
-  ../../include/RValue.h ../../include/ObjectType.h \
-  ../../include/EncodingType.h ../../include/DODSFilter.h common.h \
-  HDF5Int32.h ../../include/Int32.h HDF5UInt32.h ../../include/UInt32.h \
-  HDF5UInt16.h ../../include/UInt16.h HDF5Int16.h ../../include/Int16.h \
-  HDF5Byte.h ../../include/Byte.h HDF5Array.h ../../include/Array.h \
-  ../../include/dods-limits.h ../../include/Vector.h HDF5Str.h \
-  ../../include/Str.h HDF5Float32.h ../../include/Float32.h HDF5Float64.h \
-  ../../include/Float64.h ../../include/debug.h
+  ../../include/debug.h ../../include/cgi_util.h ../../include/DDS.h \
+  ../../include/Pix.h ../../include/IteratorAdapter.h \
+  ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  ../../include/ObjectType.h ../../include/EncodingType.h \
+  ../../include/DODSFilter.h HDF5Int32.h ../../include/Int32.h \
+  HDF5UInt32.h ../../include/UInt32.h HDF5UInt16.h ../../include/UInt16.h \
+  HDF5Int16.h ../../include/Int16.h HDF5Byte.h ../../include/Byte.h \
+  HDF5Array.h ../../include/Array.h ../../include/dods-limits.h \
+  ../../include/Vector.h HDF5Str.h ../../include/Str.h HDF5Float32.h \
+  ../../include/Float32.h HDF5Float64.h ../../include/Float64.h \
+  HDF5Grid.h ../../include/Grid.h ../../include/Constructor.h common.h
 h5dds.o: h5dds.cc config_hdf5.h h5dds.h \
   /usr/local/hdf5/include/H5Gpublic.h /usr/local/hdf5/include/H5public.h \
   /usr/local/hdf5/include/H5pubconf.h \
@@ -234,8 +235,7 @@ h5dds.o: h5dds.cc config_hdf5.h h5dds.h \
   HDF5Array.h ../../include/Array.h ../../include/dods-limits.h \
   ../../include/Vector.h HDF5Str.h ../../include/Str.h HDF5Float32.h \
   ../../include/Float32.h HDF5Float64.h ../../include/Float64.h \
-  HDF5Grid.h ../../include/Grid.h ../../include/Constructor.h h5util.h \
-  ../../include/Regex.h
+  HDF5Grid.h ../../include/Grid.h ../../include/Constructor.h
 H5Git.o: H5Git.c /usr/local/hdf5/include/hdf5.h \
   /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
   /usr/local/hdf5/include/H5api_adpt.h \

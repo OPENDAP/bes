@@ -9,12 +9,54 @@
    HDF5 attribute of an hdf5 data file. */
 
 #include "config_hdf5.h"
-#include "h5_das.h"
-#include "h5dds.h"
-//#include "H5Git.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include <assert.h>
+
+#include <iostream>
+#include <string>
+
+#include <H5Gpublic.h>
+#include <H5Dpublic.h>
+#include <H5Fpublic.h>
+#include <H5Ipublic.h>
+#include <H5Tpublic.h>
+#include <H5Spublic.h>
+#include <H5Apublic.h>
+#include <H5public.h>
 
 #include "debug.h"
+#include "cgi_util.h" 
+#include "DAS.h"
+#include "DDS.h"
+#include "DODSFilter.h"
 #include "InternalErr.h"
+
+#include "HDF5Int32.h"
+#include "HDF5UInt32.h"
+#include "HDF5UInt16.h"
+#include "HDF5Int16.h"
+#include "HDF5Byte.h"
+#include "HDF5Array.h"
+#include "HDF5Str.h"
+#include "HDF5Float32.h"
+#include "HDF5Float64.h"
+#include "HDF5Grid.h"
+
+#include "common.h"
+
+// These two functions are defined in h5dds.cc     
+bool depth_first(hid_t, char *, DDS &, const char *); 
+void read_objects(DDS &dds, const string &varname, const string& filename);
+
+bool depth_first( hid_t , char *,DAS &,const char *); 
+string return_type(hid_t type);
+bool get_softlink(DAS &,hid_t,const string &,int);
+void read_objects(DAS &das, const string &varname,hid_t dset,int num_attr);
+bool find_gloattr(hid_t file, DAS &das);
 
 /* the following "C" functions will be used in this routine. */
 
@@ -30,9 +72,20 @@ extern "C" {
     hid_t get_memtype(hid_t);
 } 
 
-static char Msgt[255];
-static int slinkindex;
+static char Msgt[255];		// used as scratch in various places
+static int slinkindex;		// used by depth_first()
+
 const static string cgi_version = DODS_SERVER_VERSION;
+static const char STRING[]="String";
+static const char BYTE[]="Byte";
+static const char INT32[]="Int32";
+static const char INT16[]="Int16";
+static const char FLOAT64[]="Float64";
+static const char FLOAT32[]="Float32";
+static const char UINT16[]="UInt16";
+static const char UINT32[]="UInt32";
+static const char INT_ELSE[]="Int_else";
+static const char FLOAT_ELSE[]="Float_else";
 
 int 
 main(int argc, char *argv[])

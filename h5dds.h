@@ -24,7 +24,9 @@
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Grid.h"
+#if 0
 #include "h5util.h"
+#endif
 
 bool depth_first(hid_t, char *, DDS &, const char *); 
 void read_objects(DDS &dds, const string &varname, const string& filename);
