@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!@PERL@
 #
 # -*- Perl -*-
 #
@@ -25,9 +25,12 @@
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.3 1999/05/05 02:03:12 jimg Exp $
+# $Id: nph-hdf.in,v 1.4 1999/05/18 21:17:50 jimg Exp $
 #
 # $Log: nph-hdf.in,v $
+# Revision 1.4  1999/05/18 21:17:50  jimg
+# Added simple test for perl. This won't do much for binaries...
+#
 # Revision 1.3  1999/05/05 02:03:12  jimg
 # Added Version stuff.
 #

@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.15 1999/05/06 03:23:32 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.16 1999/05/18 21:17:50 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -46,6 +46,11 @@ DODS_PROG_LEX
 DODS_PROG_BISON
 DODS_CHECK_GCC_DEBUG
 DODS_FIND_GPP_INC
+
+dnl Find where perl lives on the user's system
+
+PERL=`which perl`
+AC_SUBST(PERL)
 
 dnl Never use exceptions with this code until 2.8.x is out!
 
