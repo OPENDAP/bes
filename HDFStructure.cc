@@ -26,7 +26,7 @@ void HDFStructure::set_read_p(bool state) {
 }
 
 bool HDFStructure::read(const string& dataset) {
-  int err;
+  int err = 0;
   int status = read_tagref(dataset, -1, -1, err);
   if (err)
     throw Error(unknown_error, "Could not read from dataset.");
