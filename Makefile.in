@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.20 1999/05/06 03:23:32 jimg Exp $
+# $Id: Makefile.in,v 1.21 1999/05/27 18:33:08 jimg Exp $
 
 @SET_MAKE@
 
@@ -41,7 +41,6 @@ version = @VERSION@
 dir = hdf-dods-@VERSION@
 
 COMPONENT_NAME = DODS HDF Server
-AWK = @AWK@
 
 # testsuite specifics
 RUNTEST = runtest
@@ -52,6 +51,7 @@ TESTDIR = @testurl@
 
 LN_S = @LN_S@
 CP = cp
+AWK = @AWK@
 CXX = @CXX@
 YACC = @YACC@
 LEX = @LEX@
@@ -164,9 +164,9 @@ update-version: check-version
 	  $(AWK) ' \
 	    BEGIN { found = 0 } \
 	    { if ( $$0 ~ /^$(COMPONENT_NAME):/) \
-	        { print "$(COMPONENT_NAME):", $(version); found = 1 } \
+	        { print "$(COMPONENT_NAME): $(version)"; found = 1 } \
 	      else { print $$0 } } \
-	    END { if ( ! found) { print "$(COMPONENT_NAME):", $(version) } \
+	    END { if ( ! found) { print "$(COMPONENT_NAME): $(version)" } \
 	        }' > $(DODS_ROOT)/VERSION
 
 # Compare the version encoded in this Makefile (set by configure) with the
