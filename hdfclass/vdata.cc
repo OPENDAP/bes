@@ -9,6 +9,9 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.5  1998/09/17 21:11:08  jehamby
+// Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
+//
 // Revision 1.4  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
 //
@@ -41,6 +44,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <mfhdf.h>
+#include <vg.h>  // Include _HDF_VDATA definition
 #ifdef __GNUG__
 #include <String.h>
 #else
