@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.11 1998/09/10 20:33:48 jehamby Exp $
+# $Id: Makefile.in,v 1.12 1998/09/17 17:53:36 jimg Exp $
 
 @SET_MAKE@
 
@@ -154,7 +154,9 @@ tar:
 .PHONY: update-version
 update-version: check-version
 	@echo "Version is: `cat version.h`"
-	mv ../hdf-dods* ../hdf-dods-$(version)
+	if [ ! -d ../$(dir) ]; then \
+	    mv ../hdf-dods* ../$(dir);\
+	fi
 
 # Compare the version encoded in this Makefile (set by configure) with the
 # version in version.h. The version make variable is set up near the top of
