@@ -1408,13 +1408,6 @@ host_cpu=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\1/'`
 host_vendor=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\2/'`
 host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 
-
-
-
-<<<<<<< configure
-CFLAGS=${CFLAGS-"-gstabs -O2"}
-CXXFLAGS=${CXXFLAGS-"-gstabs -O2"}
-=======
 # Until further notice OS X port doesn't get -gstabs because of an
 # apparent bug in their gcc 3.3 clone (a beta).  If you see this after
 # 1/1/2005, you can probably remove it.
@@ -1440,8 +1433,6 @@ case "${host_cpu}:${host_vendor}:${host_os}" in
        CXXFLAGS=${CXXFLAGS-"-gstabs -O2 $CXXFLAGS"}
        break;;
 esac
->>>>>>> 1.36.2.5
-
 
 for ac_prog in gawk mawk nawk awk
 do
