@@ -13,8 +13,10 @@
 #include "config_hdf.h"
 
 #include <hdf.h>
-#include <iostream.h>
+#include <iostream>
 #include <hcerr.h>
+
+using namespace std;
 
 //#ifdef NO_EXCEPTIONS
 void fakethrow(const hcerr& e) {
@@ -41,6 +43,9 @@ ostream& operator<<(ostream& out, const hcerr& x) {
 }
 
 // $Log: hcerr.cc,v $
+// Revision 1.3  2004/02/06 00:36:28  jimg
+// Switched from strstream to stringstream.
+//
 // Revision 1.2  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

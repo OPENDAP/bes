@@ -18,18 +18,13 @@
 // STL includes
 #include <string>
 #include <fstream>
-#include <iostream.h>
-#include <strstream.h>
+#include <iostream>
+#include <sstream>
 #include <algorithm>
 #include <numeric>
 #include <functional>
 
-using std::ofstream ;
-using std::cerr ;
-using std::endl ;
-using std::ends ;
-using std::binary_function ;
-using std::unary_function ;
+using namespace std;
 
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
@@ -73,11 +68,10 @@ template class vector<hdf_palette>;
 
 template<class T>
 string num2string(T n) {
-    static char buf[hdfdods::MAXSTR];
+    ostringstream buf;
+    buf << n;
 
-    ostrstream(buf,hdfdods::MAXSTR) << n << ends;
-
-    return (string)buf;
+    return buf.str();
 }
 
 struct yy_buffer_state;
@@ -652,6 +646,9 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
 }
 
 // $Log: hdfdesc.cc,v $
+// Revision 1.20  2004/02/06 00:35:50  jimg
+// Switched from strstream to stringstream.
+//
 // Revision 1.19  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.
 //

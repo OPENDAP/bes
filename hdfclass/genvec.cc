@@ -14,16 +14,19 @@
 
 #include <mfhdf.h>
 
-#include <strstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include <hcerr.h>
 #include <hdfclass.h>
 
+using namespace std;
+#if 0
 using std::istrstream;
 using std::ostrstream;
 using std::ends;
+#endif
 
 // Convert an array of U with length nelts into an array of T by casting each
 // element of array to a T.
@@ -210,7 +213,10 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	float32 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+#if 0
+	    istringstream(strbuf,hdfclass::MAXSTR) >> val;
+#endif
+	    istringstream iss(strbuf); iss >> val;
 	    *((float32 *)obuf+i) = val;
 	}
 	break;
@@ -219,7 +225,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	float64 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((float64 *)obuf+i) = val;
 	}
 	break;
@@ -228,8 +234,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	int8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
-	    iss >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((int8 *)obuf+i) = val;
 	}
 	break;
@@ -237,7 +242,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
     case DFNT_INT16: {
 	int16 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((int16 *)obuf+i) = val;
 	}
 	break;
@@ -246,7 +251,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	int32 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((int32 *)obuf+i) = val;
 	}
 	break;
@@ -255,8 +260,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uint8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
-	    iss >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((uint8 *)obuf+i) = val;
 	}
 	break;
@@ -265,7 +269,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uint16 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((uint16 *)obuf+i) = val;
 	}
 	break;
@@ -274,7 +278,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uint32 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((uint32 *)obuf+i) = val;
 	}
 	break;
@@ -283,8 +287,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uchar8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
-	    iss >> val;
+	    istringstream iss(strbuf); iss >> val;
 	    *((uchar8 *)obuf+i) = val;
 	}
 	break;
@@ -293,7 +296,7 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	char8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
+	    istringstream iss(strbuf) ;
 	    iss >> val;
 	    *((char8 *)obuf+i) = val;
 	}
@@ -843,72 +846,74 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 	sv.push_back(sub);
     }
     else {
+#if 0
 	char buf[hdfclass::MAXSTR];
+#endif
 	int i;
 	switch(_nt) {
 #if 0
 	case DFNT_UCHAR8:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    (int)*((uchar8 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << (int)*((uchar8 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 #endif
 	case DFNT_UINT8:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    (unsigned int)*((uint8 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << (unsigned int)*((uint8 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_INT8:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    (int)*((int8 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << (int)*((int8 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_UINT16:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((uint16 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((uint16 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_INT16:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((int16 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((int16 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_UINT32:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((uint32 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((uint32 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_INT32:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((int32 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((int32 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_FLOAT32:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((float32 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((float32 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	case DFNT_FLOAT64:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << 
-		    *((float64 *)_data+i) << ends;
-		sv.push_back(string(buf));
+		ostringstream buf;
+		buf << *((float64 *)_data+i) ;
+		sv.push_back(buf.str());
 	    }
 	    break;
 	}
@@ -917,6 +922,9 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 }
 
 // $Log: genvec.cc,v $
+// Revision 1.8  2004/02/06 00:36:28  jimg
+// Switched from strstream to stringstream.
+//
 // Revision 1.7  2003/01/31 02:08:37  jimg
 // Merged with release-3-2-7.
 //
