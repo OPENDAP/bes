@@ -11,6 +11,9 @@
 // $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: dodsutil.h,v $
+// Revision 1.3  1998/09/26 04:11:04  jimg
+// Moved basename to hdfdesc.cc.
+//
 // Revision 1.2  1998/09/10 21:32:28  jehamby
 // Properly escape high-ASCII strings with octstring() and hexstring()
 //
@@ -105,14 +108,19 @@ protected:
     bool _badstat;		// indicates whether stat() was successful
 };
 
+#if 0
+// Moved to hdfdesc.cc. 9/25/98 jhrg
 // return the last component of a full pathname
 inline String basename(String path) {
 #ifdef __GNUG__
-    return path.after(path.index('/',-1));
+    String tmp = path.after(path.index('/',-1));
+    return tmp.after(path.index('#',-1));
 #else
-    return path.substr(path.find_last_of("/")+1);
+    String tmp =  path.substr(path.find_last_of("/")+1);
+    return tmp.substr(path.find_last_of("#")+1);
 #endif
 }
+#endif
 
 // globally substitute in for out in string s
 inline String& gsub(String& s, const String& in, const String& out) {
