@@ -1,7 +1,7 @@
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.12 1998/09/24 21:59:46 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.13 1998/09/26 22:32:23 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -109,5 +109,14 @@ AC_ARG_WITH(cache_path,
 
 AC_MSG_RESULT(Setting the HDF server cache directory to $HDF_CACHE)
 AC_SUBST(HDF_CACHE)
+
+dnl setup the url for the testsuite.
+
+AC_ARG_WITH(testurl,
+    [  --with-test-url=url     Test file base URL (default: http://localhost/cgi-bin/nph-hdf/)],
+    testurl=${withval}, testurl=http://localhost/cgi-bin/nph-hdf/)
+
+AC_MSG_RESULT(Setting the Test file base URL to $testurl)
+AC_SUBST(testurl)
 
 AC_OUTPUT(Makefile nph-hdf hdfclass/Makefile)
