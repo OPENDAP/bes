@@ -1,5 +1,13 @@
 
- $Id: TODO,v 1.1 1997/05/01 23:04:54 jimg Exp $
+ $Id: TODO,v 1.2 1997/06/10 00:22:40 jimg Exp $
+
+ * When given "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/nscat/L30/
+   S3097034.HDF?Avg_Wind_Vel_U[0:4:299][0:4:719]" writeval exits saying
+   `Virtual memory exceeded in `new'', while replacing the 4 with a 1 in the
+   stride works. This appears to be due to an error in the hdf server; with a
+   stride of 4 it returns a very large size 5 million+.
+   [open 4/7/97 george]
+   [closed 5/6/97 todd]
 
 Bad dataset names, once received by the dds filter (and others?), cause the
 filters to create an `empty file' (it has a size of 2503 bytes) in addition
@@ -21,10 +29,4 @@ web server has been configured as - and cannot write to those cache files (so
 this problem is in part a function of the cache files apparently being
 written to on every access).
 
-When given "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/nscat/L30/
-S3097034.HDF?Avg_Wind_Vel_U[0:4:299][0:4:719]" writeval exits saying `Virtual
-memory exceeded in `new'', while replacing the 4 with a 1 in the stride
-works. This appears to be due to an error in the hdf server; with a stride of
-4 it returns a very large size 5 million+.
-[open 4/7/97 george]
 
