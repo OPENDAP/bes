@@ -60,6 +60,7 @@ bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int 
     return true;
   }
   else {
+    err = 1;
     return false;
   }
 }

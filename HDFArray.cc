@@ -11,6 +11,10 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
+// Revision 1.7  1998/09/10 20:30:15  jehamby
+// Fixed misuse of read member function in serialize.  Set `error' parameter
+// on error, instead of using return value of the read(...) member function.
+//
 // Revision 1.6  1998/07/13 20:26:36  jimg
 // Fixes from the final test of the new build process
 //
@@ -132,11 +136,11 @@ bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err
 	LoadArrayFromGR(this, gr);
 
     if (foundgr || foundsds) {
-	err = -1;		// no error
+	err = 0;		// no error
 	return true;
     }
     else {
-	err = 0;
+	err = 1;
 	return false;
     }
 }

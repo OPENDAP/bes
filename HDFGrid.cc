@@ -11,6 +11,10 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
+// Revision 1.6  1998/09/10 20:30:15  jehamby
+// Fixed misuse of read member function in serialize.  Set `error' parameter
+// on error, instead of using return value of the read(...) member function.
+//
 // Revision 1.5  1998/04/06 16:08:18  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
 //
@@ -50,7 +54,7 @@ bool HDFGrid::read(const String& dataset, int& err) {
 }
 
 bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err) {
-    err = -1;			// OK initially
+    err = 0;			// OK initially
 
     String hdf_file = dods2id(dataset);
     String hdf_name = dods2id(this->name());
@@ -78,7 +82,7 @@ bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err)
 	sdsin >> sds;
 	sdsin.close();
 	if (!sds) {
-	    err = 0;
+	    err = 1;
 	    return false;
 	}
 	
@@ -87,7 +91,7 @@ bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err)
 #ifndef NO_EXCEPTIONS
     }
     catch (...) {
-	err = 0;
+	err = 1;
 	return false;
     }
 #endif
