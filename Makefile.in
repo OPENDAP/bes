@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.5 1997/03/14 18:01:28 jimg Exp $
+# $Id: Makefile.in,v 1.6 1997/03/27 18:23:25 jimg Exp $
 
 @SET_MAKE@
 
@@ -108,8 +108,9 @@ install: all
 .PHONY: depend
 depend: 
 	> dependencies
-	@depend@ -m dependencies -- $(CPPFLAGS) @GPP_INC@ -- \
-	$(HDFOBJS) $(DASOBJS) $(DDSOBJS) $(SRVOBJS)
+	@depend@ -m dependencies -- $(CPPFLAGS) -I@GPP_INC@ -- \
+	src/*.cc
+	cd hdfclass && $(MAKE) $(MFLAGS) depend && cd ..
 
 include dependencies
 

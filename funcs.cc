@@ -1,3 +1,4 @@
+
 // libg++
 #include <vector.h>
 #include <String.h>
@@ -8,27 +9,26 @@
 #include <DDS.h>
 
 // Cal/Val catalog and dataset sw
+#if 0
 #include <catalog/errhandler.h>
 #include <catalog/mcatalog.h>
 #include <catalog/dataset.h>
+#endif
 
 #include "dodsutil.h"
 
 #define MASTER_CONF "./master.conf" // yuck, yes I know
 
 BaseType *test_func(int argc, BaseType *argv[], DDS &);
-//BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &);
 
 void register_funcs(DDS& dds) {
-  //    dds.add_function("subset_geo", subset_geo_func);
     dds.add_function("test", test_func);
 }
 
-//
 // implements a No-op function to test adding functions to the HDF server
-BaseType *test_func(int argc, BaseType *argv[], DDS &) {
 
-// Check Usage
+BaseType *test_func(int argc, BaseType *argv[], DDS &) {
+    // Check Usage
     if (argc != 1) {
 	cerr << "Usage: test(var)" << endl;
 	return 0;
@@ -37,7 +37,7 @@ BaseType *test_func(int argc, BaseType *argv[], DDS &) {
     return argv[0];
 }
 
-#ifdef 0
+#if 0
 //
 // implements subset_geo(time1,time2,lat1,lon1,lat2,lon2,var) for SwathArray
 BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
