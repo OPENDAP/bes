@@ -8,6 +8,7 @@
 // This file contains functions which uses depth-first search to walk through
 // a hdf5 file and build the in-memeory DDS.
 
+#include "config_hdf5.h"
 #include "h5dds.h"
 
 #include "InternalErr.h"

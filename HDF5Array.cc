@@ -13,14 +13,16 @@
 
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <ctype.h>
-#include <strstream.h>
 
 #include "Error.h"
 #include "InternalErr.h"
 
 #include "HDF5Array.h"
 #include "HDF5Str.h"
+
+using namespace std;
 
 Array *
 NewArray(const string & n, BaseType * v)
@@ -58,10 +60,10 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
 	// Check for empty constraint
 	if (stride <= 0 || start < 0 || stop < 0 || start > stop
 	    || start == 0 && stop == 0) {
-	    ostrstream oss;
+	    ostringstream oss;
 
 	    oss << "Array/Grid hyperslab indices are bad: [" << start <<
-		":" << stride << ":" << stop << "]" << ends;
+		":" << stride << ":" << stop << "]";
 	    throw Error(malformed_expr, oss.str());
 	}
 

@@ -1,5 +1,5 @@
 
-# $Id: Makefile.in,v 1.4 2002/02/21 13:27:16 edavis Exp $
+# $Id: Makefile.in,v 1.5 2004/02/05 00:32:53 jimg Exp $
 
 @SET_MAKE@
 
@@ -7,25 +7,24 @@
 # DEFS gets the `-D' defines that describe what a particular system has
 # or doesn't have.
 
-PROG = h5_das h5_dds h5_dods
-DODS_ROOT = ../..
+PROG = h5_handler
+DODS_ROOT = @dods_relative@
 H5_ROOT = @hdf5_path@
 # /afs/ncsa/packages/hdf5/5-1.4.0-linux/
-WWW_ROOT = @WWW_ROOT@
-INCS = -I$(DODS_ROOT)/include -I$(H5_ROOT)/include @INCS@
+
+INCS = -I$(H5_ROOT)/include @INCS@
 DEFS = @DEFS@
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS) 
-CFLAGS = @CFLAGS@ -Wall
-CXXFLAGS = @CXXFLAGS@ -Wall
+CFLAGS = @CFLAGS@
+CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+CXXFLAGS = @CXXFLAGS@
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 TAGS_FLAGS = -i ../dap/TAGS
 
 # Make sure that the core software libraries just built can be found without
 # first running make install, but that if `make install' and `make clean' has
 # been run those libraries will be found in the `lib' directory.
-LDFLAGS = -L. -L$(DODS_ROOT)/lib @LDFLAGS@
-LFLAGS=-8
-YFLAGS=-d
+LDFLAGS = -L. -L$(H5_ROOT)/lib @LDFLAGS@
 LIBS = -ldap++ -lhdf5 @LIBS@
 
 # Set the instalation directories; prefix can be set on the command line
@@ -47,14 +46,12 @@ INSTALLMAN = man
 SHELL = /bin/sh
 srcdir = @srcdir@
 version = @VERSION@
-basedir = nc3-dods
+basedir = hdf5-dods
 dir = $(basedir)-$(version)
 host = @host@
 
-COMPONENT_NAME = DODS netCDF Server
-AWK = @AWK@
+COMPONENT_NAME = DODS HDF5 Server
 TAR = @TAR@
-PERL = @PERL@
 
 # testsuite specifics
 RUNTEST= runtest
@@ -65,8 +62,6 @@ RUNTESTFLAGS= #--all --verbose
 LN_S = @LN_S@
 CC = @CC@
 CXX = @CXX@
-YACC = @YACC@
-LEX = @LEX@
 AR = ar
 RANLIB = @RANLIB@
 INSTALL = @INSTALL@
@@ -76,31 +71,24 @@ TAGS = etags
 STRIP = strip
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
-	HDF5Int32.cc HDF5List.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc \
+	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc \
 	HDF5Url.cc HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc
 
 HDF5OBJ = HDF5Array.o HDF5Byte.o HDF5Float64.o HDF5Grid.o HDF5Int32.o \
-	HDF5List.o HDF5Sequence.o HDF5Str.o HDF5Structure.o HDF5Url.o \
+	HDF5Sequence.o HDF5Str.o HDF5Structure.o HDF5Url.o \
 	HDF5UInt32.o HDF5UInt16.o HDF5Int16.o HDF5Float32.o
 
-SSRCS = h5_das.cc h5_dds.cc h5dds.cc h5_dods.cc h5util.cc H5Git.c
-DASOBJS = h5_das.o h5util.o H5Git.o
-DDSOBJS = h5_dds.o h5dds.o h5util.o H5Git.o
-SRVOBJS = h5_dods.o h5dds.o h5util.o H5Git.o
+SSRCS = h5_handler.cc h5dds.cc H5Git.c
+SRVOBJS = h5dds.o H5Git.o
+
 
 # Matlab client can be suppressed by a switch to configure.
 all: $(PROG)
 
-h5_das:	$(DASOBJS) $(HDF5OBJ)
-	$(CXX) $(LDFLAGS) -o h5_das $(DASOBJS) $(HDF5OBJ) $(LIBS)	
+h5_handler: $(SRVOBJS) $(HDF5OBJ) h5_handler.o
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)	
 
-h5_dds: $(DDSOBJS) $(HDF5OBJ)
-	$(CXX) $(LDFLAGS) -o h5_dds $(DDSOBJS) $(HDF5OBJ) $(LIBS)
-
-h5_dods: $(SRVOBJS) $(HDF5OBJ)
-	$(CXX) $(LDFLAGS) -o h5_dods $(SRVOBJS) $(HDF5OBJ) $(LIBS)
-
-configure: configure.in
+configure: configure.in $(DODS_ROOT)etc/aclocal.m4
 	autoconf --localdir=$(DODS_ROOT)/etc
 
 Makefile: Makefile.in
@@ -128,6 +116,7 @@ collect-coverage-data:
          done)
 
 install: $(PROG)
+	$(INSTALL_PROGRAM) -s $(PROG) $(etcdir)
 
 check: h5-das-check
 
@@ -146,14 +135,14 @@ distclean:
 
 .PHONY: depend
 depend: 
-	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SSRCS) $(CSRCS)
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SSRCS) $(HDF5SRC)
 
 .PHONY: tar
 tar:
 	-rm -f config.cache config.log config.status
 	cd $(DODS_ROOT)/.. && \
-	$(TAR) --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
-	    --exclude '*/.snprj*' --exclude '*/.flc*' \
+	$(TAR) --exclude 'old' --exclude '.#*' --exclude 'CVS' \
+	    --exclude '.snprj*' --exclude '.flc*' --exclude 'Makefile' \
 	    --gzip --create --dereference --file DODS-$(dir).tar.gz \
 	    DODS/src/$(dir)
 
@@ -161,10 +150,11 @@ tar:
 #
 .PHONY: binary-tar
 binary-tar:
-	cd $(DODS_ROOT)/.. && \
+	cd $(DODS_ROOT).. && \
         $(TAR) --gzip --create --dereference \
             --file DODS-h5-server-$(version)-$(host).tar.gz \
-            DODS/etc/nph-h5 \
+            DODS/NEWS DODS/etc/README-security \
+            DODS/docs/README \
             DODS/etc/h5_das \
             DODS/etc/h5_dds \
             DODS/etc/h5_dods
@@ -172,17 +162,11 @@ binary-tar:
 .PHONY: update-version
 update-version: check-version
 	@echo "Version is: `cat version.h`"
-	if [ ! -d ../$(dir) ]; then \
-	    mv ../$(basedir)* ../$(dir);\
-	fi
-	touch $(DODS_ROOT)/VERSION; cat $(DODS_ROOT)/VERSION | \
-	  $(AWK) ' \
-	    BEGIN { found = 0 } \
-	    { if ( $$0 ~ /^$(COMPONENT_NAME):/) \
-	        { print "$(COMPONENT_NAME): $(version)"; found = 1 } \
-	      else { print $$0 } } \
-	    END { if ( ! found) { print "$(COMPONENT_NAME): $(version)" } \
-	        }' >> $(DODS_ROOT)/VERSION
+	if test ! -d ../$(dir); then mv ../$(basedir)* ../$(dir); fi
+	if test ! -f $(DODS_ROOT)VERSION; then touch $(DODS_ROOT)VERSION; fi
+	$(etcdir)/update-manifest.pl "$(COMPONENT_NAME)" $(version) \
+		< $(DODS_ROOT)VERSION > tmp.dods.manifest
+	mv tmp.dods.manifest $(DODS_ROOT)VERSION
 
 # Compare the version encoded in this Makefile (set by configure) with the
 # version in version.h. The version make variable is set up near the top of
@@ -211,3 +195,169 @@ tags:
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
 # DO NOT DELETE; depend depends on this line.
+h5_handler.o: h5_handler.cc config_hdf5.h h5_das.h \
+  /usr/local/hdf5/include/H5Gpublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5Dpublic.h \
+  /usr/local/hdf5/include/H5Fpublic.h /usr/local/hdf5/include/H5Tpublic.h \
+  /usr/local/hdf5/include/H5Spublic.h /usr/local/hdf5/include/H5Apublic.h \
+  ../../include/cgi_util.h ../../include/DDS.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h \
+  ../../include/DAS.h ../../include/Clause.h ../../include/expr.h \
+  ../../include/RValue.h ../../include/ObjectType.h \
+  ../../include/EncodingType.h ../../include/DODSFilter.h common.h \
+  HDF5Int32.h ../../include/Int32.h HDF5UInt32.h ../../include/UInt32.h \
+  HDF5UInt16.h ../../include/UInt16.h HDF5Int16.h ../../include/Int16.h \
+  HDF5Byte.h ../../include/Byte.h HDF5Array.h ../../include/Array.h \
+  ../../include/dods-limits.h ../../include/Vector.h HDF5Str.h \
+  ../../include/Str.h HDF5Float32.h ../../include/Float32.h HDF5Float64.h \
+  ../../include/Float64.h ../../include/debug.h
+h5dds.o: h5dds.cc config_hdf5.h h5dds.h \
+  /usr/local/hdf5/include/H5Gpublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5Fpublic.h \
+  /usr/local/hdf5/include/H5Tpublic.h /usr/local/hdf5/include/H5Spublic.h \
+  /usr/local/hdf5/include/H5Apublic.h ../../include/cgi_util.h \
+  ../../include/DDS.h ../../include/Pix.h ../../include/IteratorAdapter.h \
+  ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  ../../include/ObjectType.h ../../include/EncodingType.h \
+  ../../include/DODSFilter.h common.h HDF5Int32.h ../../include/Int32.h \
+  HDF5UInt32.h ../../include/UInt32.h HDF5UInt16.h ../../include/UInt16.h \
+  HDF5Int16.h ../../include/Int16.h HDF5Byte.h ../../include/Byte.h \
+  HDF5Array.h ../../include/Array.h ../../include/dods-limits.h \
+  ../../include/Vector.h HDF5Str.h ../../include/Str.h HDF5Float32.h \
+  ../../include/Float32.h HDF5Float64.h ../../include/Float64.h \
+  HDF5Grid.h ../../include/Grid.h ../../include/Constructor.h h5util.h \
+  ../../include/Regex.h
+H5Git.o: H5Git.c /usr/local/hdf5/include/hdf5.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5Apublic.h \
+  /usr/local/hdf5/include/H5ACpublic.h \
+  /usr/local/hdf5/include/H5Bpublic.h /usr/local/hdf5/include/H5Dpublic.h \
+  /usr/local/hdf5/include/H5Epublic.h /usr/local/hdf5/include/H5Fpublic.h \
+  /usr/local/hdf5/include/H5FDpublic.h \
+  /usr/local/hdf5/include/H5Gpublic.h \
+  /usr/local/hdf5/include/H5HGpublic.h \
+  /usr/local/hdf5/include/H5HLpublic.h \
+  /usr/local/hdf5/include/H5MMpublic.h \
+  /usr/local/hdf5/include/H5Opublic.h /usr/local/hdf5/include/H5Ppublic.h \
+  /usr/local/hdf5/include/H5Zpublic.h /usr/local/hdf5/include/H5Rpublic.h \
+  /usr/local/hdf5/include/H5Spublic.h /usr/local/hdf5/include/H5Tpublic.h \
+  /usr/local/hdf5/include/H5FDcore.h /usr/local/hdf5/include/H5FDfamily.h \
+  /usr/local/hdf5/include/H5FDmpio.h /usr/local/hdf5/include/H5FDsec2.h \
+  /usr/local/hdf5/include/H5FDstdio.h /usr/local/hdf5/include/H5FDsrb.h \
+  /usr/local/hdf5/include/H5FDgass.h /usr/local/hdf5/include/H5FDdpss.h \
+  /usr/local/hdf5/include/H5FDstream.h \
+  /usr/local/hdf5/include/H5FDmulti.h /usr/local/hdf5/include/H5FDlog.h \
+  H5Git.h common.h
+HDF5Array.o: HDF5Array.cc config_hdf5.h ../../include/Error.h \
+  ../../include/InternalErr.h HDF5Array.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Array.h \
+  ../../include/dods-limits.h ../../include/Vector.h \
+  ../../include/BaseType.h ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/dods-datatypes.h \
+  ../../include/DDS.h ../../include/DAS.h ../../include/Clause.h \
+  ../../include/expr.h ../../include/RValue.h HDF5Str.h \
+  ../../include/Str.h
+HDF5Byte.o: HDF5Byte.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Byte.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Byte.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Float64.o: HDF5Float64.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Float64.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Float64.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Grid.o: HDF5Grid.cc config_hdf5.h HDF5Grid.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Grid.h \
+  ../../include/Pix.h ../../include/IteratorAdapter.h \
+  ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/Constructor.h
+HDF5UInt32.o: HDF5UInt32.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5UInt32.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/UInt32.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Int32.o: HDF5Int32.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Int32.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Int32.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Sequence.o: HDF5Sequence.cc config_hdf5.h HDF5Sequence.h \
+  ../../include/Sequence.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h \
+  ../../include/Constructor.h common.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h
+HDF5Str.o: HDF5Str.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Str.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Str.h \
+  ../../include/dods-limits.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/dods-datatypes.h
+HDF5Structure.o: HDF5Structure.cc config_hdf5.h HDF5Structure.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Structure.h \
+  ../../include/Pix.h ../../include/IteratorAdapter.h \
+  ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/Constructor.h \
+  ../../include/DDS.h ../../include/DAS.h ../../include/Clause.h \
+  ../../include/expr.h ../../include/RValue.h
+HDF5Url.o: HDF5Url.cc config_hdf5.h HDF5Url.h \
+  /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \
+  /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Url.h \
+  ../../include/dods-limits.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h \
+  ../../include/Str.h
+HDF5UInt16.o: HDF5UInt16.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5UInt16.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/UInt16.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Int16.o: HDF5Int16.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Int16.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Int16.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
+HDF5Float32.o: HDF5Float32.cc config_hdf5.h ../../include/InternalErr.h \
+  ../../include/Error.h HDF5Float32.h /usr/local/hdf5/include/H5Ipublic.h \
+  /usr/local/hdf5/include/H5public.h /usr/local/hdf5/include/H5pubconf.h \
+  /usr/local/hdf5/include/H5api_adpt.h ../../include/Float32.h \
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h

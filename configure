@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os dods_root dods_relative dir fullpath VERSION depend CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT AWK LN_S SET_MAKE RANLIB ac_ct_RANLIB CPP INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA PERL TAR GCC_ROOT OS MACHINE CXX EGREP INCS DODS_PACKAGES_DIR packages hdf5_path LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS dods_root dods_relative dir fullpath VERSION TAR depend build build_cpu build_vendor build_os host host_cpu host_vendor host_os CXX CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT LN_S CXXFLAGS ac_ct_CXX RANLIB ac_ct_RANLIB SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA GCC_ROOT CPP EGREP hdf5_path ALLOCA INCS DODS_PACKAGES_DIR packages LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -767,6 +767,14 @@ ac_env_CPPFLAGS_set=${CPPFLAGS+set}
 ac_env_CPPFLAGS_value=$CPPFLAGS
 ac_cv_env_CPPFLAGS_set=${CPPFLAGS+set}
 ac_cv_env_CPPFLAGS_value=$CPPFLAGS
+ac_env_CXX_set=${CXX+set}
+ac_env_CXX_value=$CXX
+ac_cv_env_CXX_set=${CXX+set}
+ac_cv_env_CXX_value=$CXX
+ac_env_CXXFLAGS_set=${CXXFLAGS+set}
+ac_env_CXXFLAGS_value=$CXXFLAGS
+ac_cv_env_CXXFLAGS_set=${CXXFLAGS+set}
+ac_cv_env_CXXFLAGS_value=$CXXFLAGS
 ac_env_CPP_set=${CPP+set}
 ac_env_CPP_value=$CPP
 ac_cv_env_CPP_set=${CPP+set}
@@ -861,6 +869,8 @@ Some influential environment variables:
               nonstandard directory <lib dir>
   CPPFLAGS    C/C++ preprocessor flags, e.g. -I<include dir> if you have
               headers in a nonstandard directory <include dir>
+  CXX         C++ compiler command
+  CXXFLAGS    C++ compiler flags
   CPP         C preprocessor
 
 Use these variables to override the choices made by `configure' or to help
@@ -1269,10 +1279,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-
-
           ac_config_headers="$ac_config_headers config_hdf5.h"
-
 
 ac_aux_dir=
 for ac_dir in ../../etc $srcdir/../../etc; do
@@ -1298,6 +1305,116 @@ fi
 ac_config_guess="$SHELL $ac_aux_dir/config.guess"
 ac_config_sub="$SHELL $ac_aux_dir/config.sub"
 ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
+
+
+
+
+
+    echo "$as_me:$LINENO: checking for the DODS root pathanme" >&5
+echo $ECHO_N "checking for the DODS root pathanme... $ECHO_C" >&6
+    fullpath=`pwd`
+    dir=`basename ${fullpath}`
+    dods_root=`echo $fullpath | sed 's@\(.*DODS[-.0-9a-z]*\).*@\1@'`
+    # three steps to get the `../../' style relative path to the dods root.
+    # 5/14/2001 jhrg
+    fullpath=$fullpath/
+    dods_relative=`echo $fullpath | sed 's@.*DODS[-.0-9a-z]*/\(.*\)@\1@'`
+    dods_relative=`echo $dods_relative | sed 's@\([^/]*\)/@../@g'`
+    echo "$as_me:$LINENO: result: $dods_root ($dods_relative)" >&5
+echo "${ECHO_T}$dods_root ($dods_relative)" >&6
+
+cat >>confdefs.h <<_ACEOF
+#define DODS_ROOT "$dods_root"
+_ACEOF
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define DODS_RELATIVE "$dods_relative"
+_ACEOF
+
+
+
+
+    echo "$as_me:$LINENO: checking version" >&5
+echo $ECHO_N "checking version... $ECHO_C" >&6
+    VERSION=`cat version.h`
+    echo "$as_me:$LINENO: result: $VERSION" >&5
+echo "${ECHO_T}$VERSION" >&6
+
+
+DODS_SERVER_VERSION=\"hdf-dods/$VERSION\"
+cat >>confdefs.h <<_ACEOF
+#define DODS_SERVER_VERSION $DODS_SERVER_VERSION
+_ACEOF
+
+
+
+    for ac_prog in gtar tar
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_TAR+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$TAR"; then
+  ac_cv_prog_TAR="$TAR" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_TAR="$ac_prog"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+TAR=$ac_cv_prog_TAR
+if test -n "$TAR"; then
+  echo "$as_me:$LINENO: result: $TAR" >&5
+echo "${ECHO_T}$TAR" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  test -n "$TAR" && break
+done
+test -n "$TAR" || TAR="tar"
+
+    case "$TAR" in
+	*tar)
+	    tar_ver=`$TAR --version 2>&1 | awk '/G[Nn][Uu] tar/ {print}'`
+	    tar_ver=`echo $tar_ver | sed 's/.*GNU tar[^0-9.]*\([0-9._]*\)/\1/'`
+	    if test -n "$tar_ver"
+	    then
+		echo "$as_me:$LINENO: result: Found Gnu tar version ${tar_ver}." >&5
+echo "${ECHO_T}Found Gnu tar version ${tar_ver}." >&6
+	    else
+		{ echo "$as_me:$LINENO: WARNING: GNU tar is required for some Makefile targets." >&5
+echo "$as_me: WARNING: GNU tar is required for some Makefile targets." >&2;}
+	    fi
+	    ;;
+	*)
+	    { echo "$as_me:$LINENO: WARNING: GNU tar is required for some Makefile targets." >&5
+echo "$as_me: WARNING: GNU tar is required for some Makefile targets." >&2;}
+	    ;;
+    esac
+
+
+
+
+depend=${dods_relative}/etc/depend.sh
+
 
 
 # Make sure we can run config.sub.
@@ -1356,46 +1473,24 @@ host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 
 
 
-
-    echo "$as_me:$LINENO: checking for the DODS root pathanme" >&5
-echo $ECHO_N "checking for the DODS root pathanme... $ECHO_C" >&6
-    fullpath=`pwd`
-    dir=`basename ${fullpath}`
-    dods_root=`echo $fullpath | sed 's@\(.*DODS[-.0-9a-z]*\).*@\1@'`
-    # three steps to get the `../../' style relative path to the dods root.
-    # 5/14/2001 jhrg
-    fullpath=$fullpath/
-    dods_relative=`echo $fullpath | sed 's@.*DODS[-.0-9a-z]*/\(.*\)@\1@'`
-    dods_relative=`echo $dods_relative | sed 's@\([^/]*\)/@../@g'`
-    echo "$as_me:$LINENO: result: $dods_root ($dods_relative)" >&5
-echo "${ECHO_T}$dods_root ($dods_relative)" >&6
-
-cat >>confdefs.h <<_ACEOF
-#define DODS_ROOT "$dods_root"
-_ACEOF
+# Until further notice OS X port doesn't get -gstabs because of an
+# apparent bug in their gcc 3.3 clone (a beta).  If you see this after
+# 1/1/2005, you can probably remove it.
+case "${host_cpu}:${host_vendor}:${host_os}" in
+     powerpc:apple:netbsd*)
+       CFLAGS=${CFLAGS-"-O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-O2 $CXXFLAGS"}
+       break;;
+    *:*:*)
+       CFLAGS=${CFLAGS-"-gstabs -O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-gstabs -O2 $CXXFLAGS"}
+       break;;
+esac
 
 
-
-cat >>confdefs.h <<_ACEOF
-#define DODS_RELATIVE "$dods_relative"
-_ACEOF
-
-
-
-
-    echo "$as_me:$LINENO: checking version" >&5
-echo $ECHO_N "checking version... $ECHO_C" >&6
-    VERSION=`cat version.h`
-    echo "$as_me:$LINENO: result: $VERSION" >&5
-echo "${ECHO_T}$VERSION" >&6
-
-
-
-depend=${dods_root}/etc/depend.sh
-
-
-CFLAGS=${CFLAGS-"-gstabs -O2 $CFLAGS"}
-CXXFLAGS=${CXXFLAGS-"-gstabs -O2 $CXXFLAGS"}
+CXX=${CXX-g++}
+echo "$as_me:$LINENO: result: Setting CXX to $CXX" >&5
+echo "${ECHO_T}Setting CXX to $CXX" >&6
 
 
 ac_ext=c
@@ -2373,45 +2468,16 @@ if test "$ac_cv_search_strerror" != no; then
 
 fi
 
-for ac_prog in gawk mawk nawk awk
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_AWK+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
+echo "$as_me:$LINENO: checking whether ln -s works" >&5
+echo $ECHO_N "checking whether ln -s works... $ECHO_C" >&6
+LN_S=$as_ln_s
+if test "$LN_S" = "ln -s"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
 else
-  if test -n "$AWK"; then
-  ac_cv_prog_AWK="$AWK" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_AWK="$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
+  echo "$as_me:$LINENO: result: no, using $LN_S" >&5
+echo "${ECHO_T}no, using $LN_S" >&6
 fi
-fi
-AWK=$ac_cv_prog_AWK
-if test -n "$AWK"; then
-  echo "$as_me:$LINENO: result: $AWK" >&5
-echo "${ECHO_T}$AWK" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-  test -n "$AWK" && break
-done
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3078,45 +3144,325 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-echo "$as_me:$LINENO: checking whether ln -s works" >&5
-echo $ECHO_N "checking whether ln -s works... $ECHO_C" >&6
-LN_S=$as_ln_s
-if test "$LN_S" = "ln -s"; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-else
-  echo "$as_me:$LINENO: result: no, using $LN_S" >&5
-echo "${ECHO_T}no, using $LN_S" >&6
-fi
-
-echo "$as_me:$LINENO: checking whether ${MAKE-make} sets \$(MAKE)" >&5
-echo $ECHO_N "checking whether ${MAKE-make} sets \$(MAKE)... $ECHO_C" >&6
-set dummy ${MAKE-make}; ac_make=`echo "$2" | sed 'y,./+-,__p_,'`
-if eval "test \"\${ac_cv_prog_make_${ac_make}_set+set}\" = set"; then
+ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+if test -n "$ac_tool_prefix"; then
+  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
+  do
+    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
+set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_CXX+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  cat >conftest.make <<\_ACEOF
-all:
-	@echo 'ac_maketemp="$(MAKE)"'
-_ACEOF
-# GNU make sometimes prints "make[1]: Entering...", which would confuse us.
-eval `${MAKE-make} -f conftest.make 2>/dev/null | grep temp=`
-if test -n "$ac_maketemp"; then
-  eval ac_cv_prog_make_${ac_make}_set=yes
+  if test -n "$CXX"; then
+  ac_cv_prog_CXX="$CXX" # Let the user override the test.
 else
-  eval ac_cv_prog_make_${ac_make}_set=no
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
 fi
-rm -f conftest.make
 fi
-if eval "test \"`echo '$ac_cv_prog_make_'${ac_make}_set`\" = yes"; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-  SET_MAKE=
+CXX=$ac_cv_prog_CXX
+if test -n "$CXX"; then
+  echo "$as_me:$LINENO: result: $CXX" >&5
+echo "${ECHO_T}$CXX" >&6
 else
   echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-  SET_MAKE="MAKE=${MAKE-make}"
 fi
+
+    test -n "$CXX" && break
+  done
+fi
+if test -z "$CXX"; then
+  ac_ct_CXX=$CXX
+  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_ac_ct_CXX+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$ac_ct_CXX"; then
+  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ac_ct_CXX="$ac_prog"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
+if test -n "$ac_ct_CXX"; then
+  echo "$as_me:$LINENO: result: $ac_ct_CXX" >&5
+echo "${ECHO_T}$ac_ct_CXX" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  test -n "$ac_ct_CXX" && break
+done
+test -n "$ac_ct_CXX" || ac_ct_CXX="g++"
+
+  CXX=$ac_ct_CXX
+fi
+
+
+# Provide some information about the compiler.
+echo "$as_me:$LINENO:" \
+     "checking for C++ compiler version" >&5
+ac_compiler=`set X $ac_compile; echo $2`
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
+  (eval $ac_compiler --version </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler -v </dev/null >&5\"") >&5
+  (eval $ac_compiler -v </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler -V </dev/null >&5\"") >&5
+  (eval $ac_compiler -V </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+
+echo "$as_me:$LINENO: checking whether we are using the GNU C++ compiler" >&5
+echo $ECHO_N "checking whether we are using the GNU C++ compiler... $ECHO_C" >&6
+if test "${ac_cv_cxx_compiler_gnu+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+int
+main ()
+{
+#ifndef __GNUC__
+       choke me
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_compiler_gnu=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_compiler_gnu=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_compiler_gnu" >&5
+echo "${ECHO_T}$ac_cv_cxx_compiler_gnu" >&6
+GXX=`test $ac_compiler_gnu = yes && echo yes`
+ac_test_CXXFLAGS=${CXXFLAGS+set}
+ac_save_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="-g"
+echo "$as_me:$LINENO: checking whether $CXX accepts -g" >&5
+echo $ECHO_N "checking whether $CXX accepts -g... $ECHO_C" >&6
+if test "${ac_cv_prog_cxx_g+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_prog_cxx_g=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_prog_cxx_g=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_prog_cxx_g" >&5
+echo "${ECHO_T}$ac_cv_prog_cxx_g" >&6
+if test "$ac_test_CXXFLAGS" = set; then
+  CXXFLAGS=$ac_save_CXXFLAGS
+elif test $ac_cv_prog_cxx_g = yes; then
+  if test "$GXX" = yes; then
+    CXXFLAGS="-g -O2"
+  else
+    CXXFLAGS="-g"
+  fi
+else
+  if test "$GXX" = yes; then
+    CXXFLAGS="-O2"
+  else
+    CXXFLAGS=
+  fi
+fi
+for ac_declaration in \
+   ''\
+   '#include <stdlib.h>' \
+   'extern "C" void std::exit (int) throw (); using std::exit;' \
+   'extern "C" void std::exit (int); using std::exit;' \
+   'extern "C" void exit (int) throw ();' \
+   'extern "C" void exit (int);' \
+   'void exit (int);'
+do
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <stdlib.h>
+$ac_declaration
+int
+main ()
+{
+exit (42);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  :
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+continue
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_declaration
+int
+main ()
+{
+exit (42);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  break
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest*
+if test -n "$ac_declaration"; then
+  echo '#ifdef __cplusplus' >>confdefs.h
+  echo $ac_declaration      >>confdefs.h
+  echo '#endif'             >>confdefs.h
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
@@ -3197,6 +3543,143 @@ fi
 else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
+
+echo "$as_me:$LINENO: checking whether ${MAKE-make} sets \$(MAKE)" >&5
+echo $ECHO_N "checking whether ${MAKE-make} sets \$(MAKE)... $ECHO_C" >&6
+set dummy ${MAKE-make}; ac_make=`echo "$2" | sed 'y,./+-,__p_,'`
+if eval "test \"\${ac_cv_prog_make_${ac_make}_set+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.make <<\_ACEOF
+all:
+	@echo 'ac_maketemp="$(MAKE)"'
+_ACEOF
+# GNU make sometimes prints "make[1]: Entering...", which would confuse us.
+eval `${MAKE-make} -f conftest.make 2>/dev/null | grep temp=`
+if test -n "$ac_maketemp"; then
+  eval ac_cv_prog_make_${ac_make}_set=yes
+else
+  eval ac_cv_prog_make_${ac_make}_set=no
+fi
+rm -f conftest.make
+fi
+if eval "test \"`echo '$ac_cv_prog_make_'${ac_make}_set`\" = yes"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+  SET_MAKE=
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+  SET_MAKE="MAKE=${MAKE-make}"
+fi
+
+# Find a good install program.  We prefer a C program (faster),
+# so one script is as good as another.  But avoid the broken or
+# incompatible versions:
+# SysV /etc/install, /usr/sbin/install
+# SunOS /usr/etc/install
+# IRIX /sbin/install
+# AIX /bin/install
+# AmigaOS /C/install, which installs bootblocks on floppy discs
+# AIX 4 /usr/bin/installbsd, which doesn't work without a -g flag
+# AFS /usr/afsws/bin/install, which mishandles nonexistent args
+# SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
+# ./install, which can be erroneously created by make from ./install.sh.
+echo "$as_me:$LINENO: checking for a BSD-compatible install" >&5
+echo $ECHO_N "checking for a BSD-compatible install... $ECHO_C" >&6
+if test -z "$INSTALL"; then
+if test "${ac_cv_path_install+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  # Account for people who put trailing slashes in PATH elements.
+case $as_dir/ in
+  ./ | .// | /cC/* | \
+  /etc/* | /usr/sbin/* | /usr/etc/* | /sbin/* | /usr/afsws/bin/* | \
+  /usr/ucb/* ) ;;
+  *)
+    # OSF1 and SCO ODT 3.0 have their own names for install.
+    # Don't use installbsd from OSF since it installs stuff as root
+    # by default.
+    for ac_prog in ginstall scoinst install; do
+      for ac_exec_ext in '' $ac_executable_extensions; do
+        if $as_executable_p "$as_dir/$ac_prog$ac_exec_ext"; then
+          if test $ac_prog = install &&
+            grep dspmsg "$as_dir/$ac_prog$ac_exec_ext" >/dev/null 2>&1; then
+            # AIX install.  It has an incompatible calling convention.
+            :
+          elif test $ac_prog = install &&
+            grep pwplus "$as_dir/$ac_prog$ac_exec_ext" >/dev/null 2>&1; then
+            # program-specific install script used by HP pwplus--don't use.
+            :
+          else
+            ac_cv_path_install="$as_dir/$ac_prog$ac_exec_ext -c"
+            break 3
+          fi
+        fi
+      done
+    done
+    ;;
+esac
+done
+
+
+fi
+  if test "${ac_cv_path_install+set}" = set; then
+    INSTALL=$ac_cv_path_install
+  else
+    # As a last resort, use the slow shell script.  We don't cache a
+    # path for INSTALL within a source directory, because that will
+    # break other packages using the cache if that directory is
+    # removed, or if the path is relative.
+    INSTALL=$ac_install_sh
+  fi
+fi
+echo "$as_me:$LINENO: result: $INSTALL" >&5
+echo "${ECHO_T}$INSTALL" >&6
+
+# Use test -z because SunOS4 sh mishandles braces in ${var-val}.
+# It thinks the first close brace ends the variable substitution.
+test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
+
+test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
+
+test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+
+
+    echo "$as_me:$LINENO: checking for gcc/g++ 2.8 or greater" >&5
+echo $ECHO_N "checking for gcc/g++ 2.8 or greater... $ECHO_C" >&6
+
+    GCC_VER=`gcc -v 2>&1 | awk '/version/ {print}'`
+
+
+        GCC_VER=`echo $GCC_VER | sed 's@.*gcc version \([0-9\.]*\).*@\1@'`
+
+    case $GCC_VER in
+        *egcs*) echo "$as_me:$LINENO: result: Found egcs version ${GCC_VER}." >&5
+echo "${ECHO_T}Found egcs version ${GCC_VER}." >&6 ;;
+	2.[7-9]*)   echo "$as_me:$LINENO: result: Found gcc/g++ version ${GCC_VER}" >&5
+echo "${ECHO_T}Found gcc/g++ version ${GCC_VER}" >&6 ;;
+	3.[0-9]*)   echo "$as_me:$LINENO: result: Found gcc/g++ version ${GCC_VER}" >&5
+echo "${ECHO_T}Found gcc/g++ version ${GCC_VER}" >&6 ;;
+        *)      { { echo "$as_me:$LINENO: error: must be at least version 2.7.x" >&5
+echo "$as_me: error: must be at least version 2.7.x" >&2;}
+   { (exit 1); exit 1; }; } ;;
+    esac
+
+    echo "$as_me:$LINENO: checking for gcc's libgcc.a" >&5
+echo $ECHO_N "checking for gcc's libgcc.a... $ECHO_C" >&6
+
+    GCC_ROOT=`gcc --version 2>&1 | awk '/specs/ {print}'`
+    GCC_ROOT=`echo $GCC_ROOT | sed 's@[^/]*\(/.*\)/specs@\1@'`
+
+
+    echo "$as_me:$LINENO: result: $GCC_ROOT" >&5
+echo "${ECHO_T}$GCC_ROOT" >&6
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3431,361 +3914,6 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-# Find a good install program.  We prefer a C program (faster),
-# so one script is as good as another.  But avoid the broken or
-# incompatible versions:
-# SysV /etc/install, /usr/sbin/install
-# SunOS /usr/etc/install
-# IRIX /sbin/install
-# AIX /bin/install
-# AmigaOS /C/install, which installs bootblocks on floppy discs
-# AIX 4 /usr/bin/installbsd, which doesn't work without a -g flag
-# AFS /usr/afsws/bin/install, which mishandles nonexistent args
-# SVR4 /usr/ucb/install, which tries to use the nonexistent group "staff"
-# ./install, which can be erroneously created by make from ./install.sh.
-echo "$as_me:$LINENO: checking for a BSD-compatible install" >&5
-echo $ECHO_N "checking for a BSD-compatible install... $ECHO_C" >&6
-if test -z "$INSTALL"; then
-if test "${ac_cv_path_install+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  # Account for people who put trailing slashes in PATH elements.
-case $as_dir/ in
-  ./ | .// | /cC/* | \
-  /etc/* | /usr/sbin/* | /usr/etc/* | /sbin/* | /usr/afsws/bin/* | \
-  /usr/ucb/* ) ;;
-  *)
-    # OSF1 and SCO ODT 3.0 have their own names for install.
-    # Don't use installbsd from OSF since it installs stuff as root
-    # by default.
-    for ac_prog in ginstall scoinst install; do
-      for ac_exec_ext in '' $ac_executable_extensions; do
-        if $as_executable_p "$as_dir/$ac_prog$ac_exec_ext"; then
-          if test $ac_prog = install &&
-            grep dspmsg "$as_dir/$ac_prog$ac_exec_ext" >/dev/null 2>&1; then
-            # AIX install.  It has an incompatible calling convention.
-            :
-          elif test $ac_prog = install &&
-            grep pwplus "$as_dir/$ac_prog$ac_exec_ext" >/dev/null 2>&1; then
-            # program-specific install script used by HP pwplus--don't use.
-            :
-          else
-            ac_cv_path_install="$as_dir/$ac_prog$ac_exec_ext -c"
-            break 3
-          fi
-        fi
-      done
-    done
-    ;;
-esac
-done
-
-
-fi
-  if test "${ac_cv_path_install+set}" = set; then
-    INSTALL=$ac_cv_path_install
-  else
-    # As a last resort, use the slow shell script.  We don't cache a
-    # path for INSTALL within a source directory, because that will
-    # break other packages using the cache if that directory is
-    # removed, or if the path is relative.
-    INSTALL=$ac_install_sh
-  fi
-fi
-echo "$as_me:$LINENO: result: $INSTALL" >&5
-echo "${ECHO_T}$INSTALL" >&6
-
-# Use test -z because SunOS4 sh mishandles braces in ${var-val}.
-# It thinks the first close brace ends the variable substitution.
-test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
-
-test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
-
-test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
-
-
-    # Extract the first word of "perl", so it can be a program name with args.
-set dummy perl; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_PERL+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$PERL"; then
-  ac_cv_prog_PERL="$PERL" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_PERL="`which perl`"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-fi
-fi
-PERL=$ac_cv_prog_PERL
-if test -n "$PERL"; then
-  echo "$as_me:$LINENO: result: $PERL" >&5
-echo "${ECHO_T}$PERL" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-    case "$PERL" in
-	*perl*)
-	    perl_ver=`$PERL -v 2>&1 | awk '/This is perl/ {print}'`
-	    perl_ver=`echo $perl_ver | sed 's/This is perl,[^0-9]*\([0-9._]*\).*/\1/'`
-            perl_ver_main=`echo $perl_ver | sed 's/\([0-9]*\).*/\1/'`
-	    if test -n "$perl_ver" && test $perl_ver_main -ge 5
-	    then
-		echo "$as_me:$LINENO: result: Found perl version ${perl_ver}." >&5
-echo "${ECHO_T}Found perl version ${perl_ver}." >&6
-	    else
-		{ { echo "$as_me:$LINENO: error: perl version: found ${perl_ver} should be at least 5.000." >&5
-echo "$as_me: error: perl version: found ${perl_ver} should be at least 5.000." >&2;}
-   { (exit 1); exit 1; }; }
-	    fi
-	    ;;
-	*)
-	    { echo "$as_me:$LINENO: WARNING: perl is required." >&5
-echo "$as_me: WARNING: perl is required." >&2;}
-	    ;;
-    esac
-
-
-    for ac_prog in gtar tar
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_TAR+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$TAR"; then
-  ac_cv_prog_TAR="$TAR" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_TAR="$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-fi
-fi
-TAR=$ac_cv_prog_TAR
-if test -n "$TAR"; then
-  echo "$as_me:$LINENO: result: $TAR" >&5
-echo "${ECHO_T}$TAR" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-  test -n "$TAR" && break
-done
-test -n "$TAR" || TAR="tar"
-
-    case "$TAR" in
-	*tar)
-	    tar_ver=`$TAR --version 2>&1 | awk '/G[Nn][Uu] tar/ {print}'`
-	    tar_ver=`echo $tar_ver | sed 's/.*GNU tar[^0-9.]*\([0-9._]*\)/\1/'`
-	    if test -n "$tar_ver"
-	    then
-		echo "$as_me:$LINENO: result: Found Gnu tar version ${tar_ver}." >&5
-echo "${ECHO_T}Found Gnu tar version ${tar_ver}." >&6
-	    else
-		{ echo "$as_me:$LINENO: WARNING: GNU tar is required for some Makefile targets." >&5
-echo "$as_me: WARNING: GNU tar is required for some Makefile targets." >&2;}
-	    fi
-	    ;;
-	*)
-	    { echo "$as_me:$LINENO: WARNING: GNU tar is required for some Makefile targets." >&5
-echo "$as_me: WARNING: GNU tar is required for some Makefile targets." >&2;}
-	    ;;
-    esac
-
-
-    echo "$as_me:$LINENO: checking for gcc/g++ 2.8 or greater" >&5
-echo $ECHO_N "checking for gcc/g++ 2.8 or greater... $ECHO_C" >&6
-
-    GCC_VER=`gcc -v 2>&1 | awk '/version/ {print}'`
-
-
-        GCC_VER=`echo $GCC_VER | sed 's@.*gcc version \([0-9\.]*\).*@\1@'`
-
-    case $GCC_VER in
-        *egcs*) echo "$as_me:$LINENO: result: Found egcs version ${GCC_VER}." >&5
-echo "${ECHO_T}Found egcs version ${GCC_VER}." >&6 ;;
-	2.[7-9]*)   echo "$as_me:$LINENO: result: Found gcc/g++ version ${GCC_VER}" >&5
-echo "${ECHO_T}Found gcc/g++ version ${GCC_VER}" >&6 ;;
-	3.[0-9]*)   echo "$as_me:$LINENO: result: Found gcc/g++ version ${GCC_VER}" >&5
-echo "${ECHO_T}Found gcc/g++ version ${GCC_VER}" >&6 ;;
-        *)      { { echo "$as_me:$LINENO: error: must be at least version 2.7.x" >&5
-echo "$as_me: error: must be at least version 2.7.x" >&2;}
-   { (exit 1); exit 1; }; } ;;
-    esac
-
-    echo "$as_me:$LINENO: checking for gcc's libgcc.a" >&5
-echo $ECHO_N "checking for gcc's libgcc.a... $ECHO_C" >&6
-
-    GCC_ROOT=`gcc --version 2>&1 | awk '/specs/ {print}'`
-    GCC_ROOT=`echo $GCC_ROOT | sed 's@[^/]*\(/.*\)/specs@\1@'`
-
-
-    echo "$as_me:$LINENO: result: $GCC_ROOT" >&5
-echo "${ECHO_T}$GCC_ROOT" >&6
-DODS_CHECK_GCC_DEBUG
-
-    echo "$as_me:$LINENO: checking type of operating system" >&5
-echo $ECHO_N "checking type of operating system... $ECHO_C" >&6
-    # I have removed the following test because some systems (e.g., SGI)
-    # define OS in a way that breaks this code but that is close enough
-    # to also be hard to detect. jhrg 3/23/97
-    #  if test -z "$OS"; then
-    #  fi
-    OS=`uname -s | tr '[A-Z]' '[a-z]' | sed 's;/;;g'`
-    if test -z "$OS"; then
-        { echo "$as_me:$LINENO: WARNING: OS unknown!" >&5
-echo "$as_me: WARNING: OS unknown!" >&2;}
-    fi
-    case $OS in
-        aix)
-            ;;
-        hp-ux)
-            OS=hpux`uname -r | sed 's/[A-Z.0]*\([0-9]*\).*/\1/'`
-            ;;
-        irix)
-            OS=${OS}`uname -r | sed 's/\..*//'`
-            ;;
-        # I added the following case because the `tr' command above *seems*
-	# to fail on Irix 5. I can get it to run just fine from the shell,
-	# but not in the configure script built using this macro. jhrg 8/27/97
-        IRIX)
-            OS=irix`uname -r | sed 's/\..*//'`
-	    ;;
-        osf*)
-            ;;
-        sn*)
-            OS=unicos
-            ;;
-        sunos)
-            OS_MAJOR=`uname -r | sed 's/\..*//'`
-            OS=$OS$OS_MAJOR
-            ;;
-        ultrix)
-            case `uname -m` in
-            VAX)
-                OS=vax-ultrix
-                ;;
-            esac
-            ;;
-        *)
-            # On at least one UNICOS system, 'uname -s' returned the
-            # hostname (sigh).
-            if uname -a | grep CRAY >/dev/null; then
-                OS=unicos
-            fi
-            ;;
-    esac
-
-    # Adjust OS for CRAY MPP environment.
-    #
-    case "$OS" in
-    unicos)
-
-        case "$CC$TARGET$CFLAGS" in
-        *cray-t3*)
-            OS=unicos-mpp
-            ;;
-        esac
-        ;;
-    esac
-
-
-
-    echo "$as_me:$LINENO: result: $OS" >&5
-echo "${ECHO_T}$OS" >&6
-    echo "$as_me:$LINENO: checking type of machine" >&5
-echo $ECHO_N "checking type of machine... $ECHO_C" >&6
-
-    if test -z "$MACHINE"; then
-    MACHINE=`uname -m | tr '[A-Z]' '[a-z]'`
-    case $OS in
-        aix*)
-            MACHINE=rs6000
-            ;;
-        hp*)
-            MACHINE=hp`echo $MACHINE | sed 's%/.*%%'`
-            ;;
-        sunos*)
-            case $MACHINE in
-                sun4*)
-                    MACHINE=sun4
-                    ;;
-            esac
-            ;;
-        irix*)
-            case $MACHINE in
-                ip2?)
-                    MACHINE=sgi
-                    ;;
-            esac
-            ;;
-	ultrix*)
-	    case $MACHINE in
-		vax*)
-		     case "$CC" in
-        		/bin/cc*|cc*)
-echo "changing C compiler to \`vcc' because \`cc' floating-point is broken"
-            		CC=vcc
-            		;;
-		     esac
-		     ;;
-	    esac
-	    ;;
-
-    esac
-    fi
-
-
-    echo "$as_me:$LINENO: result: $MACHINE" >&5
-echo "${ECHO_T}$MACHINE" >&6
-if test "$OS" = ultrix && test "$MACHINE" = vax; then
-    case "$CC" in
-        /bin/cc*|cc*)
-echo "changing C compiler to \`vcc' because \`cc' floating-point is broken"
-            CC=vcc
-            ;;
-    esac
-fi
-
-CXX=${CXX-g++}
-echo "$as_me:$LINENO: result: Setting CXX to $CXX" >&5
-echo "${ECHO_T}Setting CXX to $CXX" >&6
-
 
 
 echo "$as_me:$LINENO: checking for egrep" >&5
@@ -4269,11 +4397,13 @@ _ACEOF
 
 fi
 
-echo "$as_me:$LINENO: checking for off_t" >&5
-echo $ECHO_N "checking for off_t... $ECHO_C" >&6
-if test "${ac_cv_type_off_t+set}" = set; then
+echo "$as_me:$LINENO: checking for inline" >&5
+echo $ECHO_N "checking for inline... $ECHO_C" >&6
+if test "${ac_cv_c_inline+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
+  ac_cv_c_inline=no
+for ac_kw in inline __inline__ __inline; do
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -4281,17 +4411,12 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-if ((off_t *) 0)
-  return 0;
-if (sizeof (off_t))
-  return 0;
-  ;
-  return 0;
-}
+#ifndef __cplusplus
+typedef int foo_t;
+static $ac_kw foo_t static_foo () {return 0; }
+$ac_kw foo_t foo () {return 0; }
+#endif
+
 _ACEOF
 rm -f conftest.$ac_objext
 if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
@@ -4305,26 +4430,30 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_type_off_t=yes
+  ac_cv_c_inline=$ac_kw; break
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_type_off_t=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_off_t" >&5
-echo "${ECHO_T}$ac_cv_type_off_t" >&6
-if test $ac_cv_type_off_t = yes; then
-  :
-else
+done
 
-cat >>confdefs.h <<_ACEOF
-#define off_t long
+fi
+echo "$as_me:$LINENO: result: $ac_cv_c_inline" >&5
+echo "${ECHO_T}$ac_cv_c_inline" >&6
+case $ac_cv_c_inline in
+  inline | yes) ;;
+  no)
+cat >>confdefs.h <<\_ACEOF
+#define inline
 _ACEOF
-
-fi
+ ;;
+  *)  cat >>confdefs.h <<_ACEOF
+#define inline $ac_cv_c_inline
+_ACEOF
+ ;;
+esac
 
 echo "$as_me:$LINENO: checking for size_t" >&5
 echo $ECHO_N "checking for size_t... $ECHO_C" >&6
@@ -4383,237 +4512,24 @@ _ACEOF
 
 fi
 
-echo "$as_me:$LINENO: checking for ssize_t" >&5
-echo $ECHO_N "checking for ssize_t... $ECHO_C" >&6
-if test "${ac_cv_type_ssize_t+set}" = set; then
+
+
+# Check whether --with-hdf5_path or --without-hdf5_path was given.
+if test "${with_hdf5_path+set}" = set; then
+  withval="$with_hdf5_path"
+  hdf5_path=${withval}
+else
+  hdf5_path="/usr/local/hdf5"
+fi;
+
+LDFLAGS="$LDFLAGS -L${hdf5_path}/lib"
+echo "$as_me:$LINENO: checking for H5open in -lhdf5" >&5
+echo $ECHO_N "checking for H5open in -lhdf5... $ECHO_C" >&6
+if test "${ac_cv_lib_hdf5_H5open+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-if ((ssize_t *) 0)
-  return 0;
-if (sizeof (ssize_t))
-  return 0;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_ssize_t=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_type_ssize_t=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_ssize_t" >&5
-echo "${ECHO_T}$ac_cv_type_ssize_t" >&6
-if test $ac_cv_type_ssize_t = yes; then
-  :
-else
-
-cat >>confdefs.h <<_ACEOF
-#define ssize_t int
-_ACEOF
-
-fi
-
-echo "$as_me:$LINENO: checking for ptrdiff_t" >&5
-echo $ECHO_N "checking for ptrdiff_t... $ECHO_C" >&6
-if test "${ac_cv_type_ptrdiff_t+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-if ((ptrdiff_t *) 0)
-  return 0;
-if (sizeof (ptrdiff_t))
-  return 0;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_ptrdiff_t=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_type_ptrdiff_t=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_ptrdiff_t" >&5
-echo "${ECHO_T}$ac_cv_type_ptrdiff_t" >&6
-if test $ac_cv_type_ptrdiff_t = yes; then
-  :
-else
-
-cat >>confdefs.h <<_ACEOF
-#define ptrdiff_t int
-_ACEOF
-
-fi
-
-echo "$as_me:$LINENO: checking for uchar" >&5
-echo $ECHO_N "checking for uchar... $ECHO_C" >&6
-if test "${ac_cv_type_uchar+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-if ((uchar *) 0)
-  return 0;
-if (sizeof (uchar))
-  return 0;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_uchar=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_type_uchar=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_uchar" >&5
-echo "${ECHO_T}$ac_cv_type_uchar" >&6
-if test $ac_cv_type_uchar = yes; then
-  :
-else
-
-cat >>confdefs.h <<_ACEOF
-#define uchar unsigned char
-_ACEOF
-
-fi
-
-
-echo "$as_me:$LINENO: checking whether char is unsigned" >&5
-echo $ECHO_N "checking whether char is unsigned... $ECHO_C" >&6
-if test "${ac_cv_c_char_unsigned+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(((char) -1) < 0)];
-test_array [0] = 0
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_c_char_unsigned=no
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_c_char_unsigned=yes
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_c_char_unsigned" >&5
-echo "${ECHO_T}$ac_cv_c_char_unsigned" >&6
-if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
-  cat >>confdefs.h <<\_ACEOF
-#define __CHAR_UNSIGNED__ 1
-_ACEOF
-
-fi
-
-echo "$as_me:$LINENO: checking whether byte ordering is bigendian" >&5
-echo $ECHO_N "checking whether byte ordering is bigendian... $ECHO_C" >&6
-if test "${ac_cv_c_bigendian+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  # See if sys/param.h defines the BYTE_ORDER macro.
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lhdf5 -lz $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -4621,202 +4537,231 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <sys/types.h>
-#include <sys/param.h>
 
-int
-main ()
-{
-#if !BYTE_ORDER || !BIG_ENDIAN || !LITTLE_ENDIAN
- bogus endian macros
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
 #endif
-
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char H5open ();
+int
+main ()
+{
+H5open ();
   ;
   return 0;
 }
 _ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  # It does; now see whether it defined to BIG_ENDIAN or not.
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/types.h>
-#include <sys/param.h>
-
-int
-main ()
-{
-#if BYTE_ORDER != BIG_ENDIAN
- not big endian
-#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_c_bigendian=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_c_bigendian=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-# It does not; compile a test program.
-if test "$cross_compiling" = yes; then
-  # try to guess the endianness by grepping values into an object file
-  ac_cv_c_bigendian=unknown
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-short ascii_mm[] = { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
-short ascii_ii[] = { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
-void _ascii () { char *s = (char *) ascii_mm; s = (char *) ascii_ii; }
-short ebcdic_ii[] = { 0x89D3, 0xE3E3, 0x8593, 0x95C5, 0x89C4, 0x9581, 0 };
-short ebcdic_mm[] = { 0xC2C9, 0xC785, 0x95C4, 0x8981, 0x95E2, 0xA8E2, 0 };
-void _ebcdic () { char *s = (char *) ebcdic_mm; s = (char *) ebcdic_ii; }
-int
-main ()
-{
- _ascii (); _ebcdic ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  if grep BIGenDianSyS conftest.$ac_objext >/dev/null ; then
-  ac_cv_c_bigendian=yes
-fi
-if grep LiTTleEnDian conftest.$ac_objext >/dev/null ; then
-  if test "$ac_cv_c_bigendian" = unknown; then
-    ac_cv_c_bigendian=no
-  else
-    # finding both strings is unlikely to happen, but who knows?
-    ac_cv_c_bigendian=unknown
-  fi
-fi
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-else
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-int
-main ()
-{
-  /* Are we little or big endian?  From Harbison&Steele.  */
-  union
-  {
-    long l;
-    char c[sizeof (long)];
-  } u;
-  u.l = 1;
-  exit (u.c[sizeof (long) - 1] == 1);
-}
-_ACEOF
-rm -f conftest$ac_exeext
+rm -f conftest.$ac_objext conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_c_bigendian=no
+  ac_cv_lib_hdf5_H5open=yes
 else
-  echo "$as_me: program exited with status $ac_status" >&5
-echo "$as_me: failed program was:" >&5
+  echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-( exit $ac_status )
-ac_cv_c_bigendian=yes
+ac_cv_lib_hdf5_H5open=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
 fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_hdf5_H5open" >&5
+echo "${ECHO_T}$ac_cv_lib_hdf5_H5open" >&6
+if test $ac_cv_lib_hdf5_H5open = yes; then
+  hdf_found=1
+else
+  hdf_found=0
 fi
-rm -f conftest.$ac_objext conftest.$ac_ext
+
+if test $hdf_found -ne 1
+then
+    { { echo "$as_me:$LINENO: error: HDF5 library not found (looked in ${hdf5_path}/lib)!" >&5
+echo "$as_me: error: HDF5 library not found (looked in ${hdf5_path}/lib)!" >&2;}
+   { (exit 1); exit 1; }; }
 fi
-echo "$as_me:$LINENO: result: $ac_cv_c_bigendian" >&5
-echo "${ECHO_T}$ac_cv_c_bigendian" >&6
-case $ac_cv_c_bigendian in
-  yes)
+
+
+# The Ultrix 4.2 mips builtin alloca declared by alloca.h only works
+# for constant arguments.  Useless!
+echo "$as_me:$LINENO: checking for working alloca.h" >&5
+echo $ECHO_N "checking for working alloca.h... $ECHO_C" >&6
+if test "${ac_cv_working_alloca_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <alloca.h>
+int
+main ()
+{
+char *p = (char *) alloca (2 * sizeof (int));
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_working_alloca_h=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_working_alloca_h=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_working_alloca_h" >&5
+echo "${ECHO_T}$ac_cv_working_alloca_h" >&6
+if test $ac_cv_working_alloca_h = yes; then
 
 cat >>confdefs.h <<\_ACEOF
-#define WORDS_BIGENDIAN 1
+#define HAVE_ALLOCA_H 1
 _ACEOF
- ;;
-  no)
-     ;;
-  *)
-    { { echo "$as_me:$LINENO: error: unknown endianness
-presetting ac_cv_c_bigendian=no (or yes) will help" >&5
-echo "$as_me: error: unknown endianness
-presetting ac_cv_c_bigendian=no (or yes) will help" >&2;}
-   { (exit 1); exit 1; }; } ;;
-esac
+
+fi
+
+echo "$as_me:$LINENO: checking for alloca" >&5
+echo $ECHO_N "checking for alloca... $ECHO_C" >&6
+if test "${ac_cv_func_alloca_works+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __GNUC__
+# define alloca __builtin_alloca
+#else
+# ifdef _MSC_VER
+#  include <malloc.h>
+#  define alloca _alloca
+# else
+#  if HAVE_ALLOCA_H
+#   include <alloca.h>
+#  else
+#   ifdef _AIX
+ #pragma alloca
+#   else
+#    ifndef alloca /* predefined by HP cc +Olibcalls */
+char *alloca ();
+#    endif
+#   endif
+#  endif
+# endif
+#endif
+
+int
+main ()
+{
+char *p = (char *) alloca (1);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_func_alloca_works=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_func_alloca_works=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_func_alloca_works" >&5
+echo "${ECHO_T}$ac_cv_func_alloca_works" >&6
+
+if test $ac_cv_func_alloca_works = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_ALLOCA 1
+_ACEOF
+
+else
+  # The SVR3 libPW and SVR4 libucb both contain incompatible functions
+# that cause trouble.  Some versions do not even contain alloca or
+# contain a buggy version.  If you still want to use their alloca,
+# use ar to extract alloca.o from them instead of compiling alloca.c.
+
+ALLOCA=alloca.$ac_objext
+
+cat >>confdefs.h <<\_ACEOF
+#define C_ALLOCA 1
+_ACEOF
 
 
+echo "$as_me:$LINENO: checking whether \`alloca.c' needs Cray hooks" >&5
+echo $ECHO_N "checking whether \`alloca.c' needs Cray hooks... $ECHO_C" >&6
+if test "${ac_cv_os_cray+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#if defined(CRAY) && ! defined(CRAY2)
+webecray
+#else
+wenotbecray
+#endif
 
-for ac_func in vprintf
-do
-as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "webecray" >/dev/null 2>&1; then
+  ac_cv_os_cray=yes
+else
+  ac_cv_os_cray=no
+fi
+rm -f conftest*
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_os_cray" >&5
+echo "${ECHO_T}$ac_cv_os_cray" >&6
+if test $ac_cv_os_cray = yes; then
+  for ac_func in _getb67 GETB67 getb67; do
+    as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
 echo $ECHO_N "checking for $ac_func... $ECHO_C" >&6
 if eval "test \"\${$as_ac_var+set}\" = set"; then
@@ -4890,14 +4835,24 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_var'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_var'}'`" >&6
 if test `eval echo '${'$as_ac_var'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_func" | $as_tr_cpp` 1
+
+cat >>confdefs.h <<_ACEOF
+#define CRAY_STACKSEG_END $ac_func
 _ACEOF
 
-echo "$as_me:$LINENO: checking for _doprnt" >&5
-echo $ECHO_N "checking for _doprnt... $ECHO_C" >&6
-if test "${ac_cv_func__doprnt+set}" = set; then
+    break
+fi
+
+  done
+fi
+
+echo "$as_me:$LINENO: checking stack direction for C alloca" >&5
+echo $ECHO_N "checking stack direction for C alloca... $ECHO_C" >&6
+if test "${ac_cv_c_stack_direction+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test "$cross_compiling" = yes; then
+  ac_cv_c_stack_direction=0
 else
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -4906,81 +4861,64 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-/* System header to define __stub macros and hopefully few prototypes,
-    which can conflict with char _doprnt (); below.
-    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-    <limits.h> exists even on freestanding compilers.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
+int
+find_stack_direction ()
 {
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char _doprnt ();
-/* The GNU C library defines this for functions which it implements
-    to always fail with ENOSYS.  Some functions are actually named
-    something starting with __ and the normal name is an alias.  */
-#if defined (__stub__doprnt) || defined (__stub____doprnt)
-choke me
-#else
-char (*f) () = _doprnt;
-#endif
-#ifdef __cplusplus
+  static char *addr = 0;
+  auto char dummy;
+  if (addr == 0)
+    {
+      addr = &dummy;
+      return find_stack_direction ();
+    }
+  else
+    return (&dummy > addr) ? 1 : -1;
 }
-#endif
 
 int
 main ()
 {
-return f != _doprnt;
-  ;
-  return 0;
+  exit (find_stack_direction () < 0);
 }
 _ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
+rm -f conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_func__doprnt=yes
+  ac_cv_c_stack_direction=1
 else
-  echo "$as_me: failed program was:" >&5
+  echo "$as_me: program exited with status $ac_status" >&5
+echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_func__doprnt=no
+( exit $ac_status )
+ac_cv_c_stack_direction=-1
 fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-echo "$as_me:$LINENO: result: $ac_cv_func__doprnt" >&5
-echo "${ECHO_T}$ac_cv_func__doprnt" >&6
-if test $ac_cv_func__doprnt = yes; then
+fi
+echo "$as_me:$LINENO: result: $ac_cv_c_stack_direction" >&5
+echo "${ECHO_T}$ac_cv_c_stack_direction" >&6
 
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_DOPRNT 1
+cat >>confdefs.h <<_ACEOF
+#define STACK_DIRECTION $ac_cv_c_stack_direction
 _ACEOF
 
-fi
 
 fi
-done
 
 
 
 
-for ac_func in strerror strtol
+
+for ac_func in strdup strftime timegm mktime
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -7095,6 +7033,9 @@ echo $ECHO_N "checking for libcurl and its headers... $ECHO_C" >&6
 	# INCS="`$dods_root/bin/curl-config --cflags` $INCS"
 	# AC_SUBST(INCS)		# 09/20/02 jhrg
         LIBS="`$dods_root/bin/curl-config --libs` $LIBS"
+        # 2003/06/13 ERD - added result message
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
     else
 	{ { echo "$as_me:$LINENO: error: Could not find curl-config!" >&5
 echo "$as_me: error: Could not find curl-config!" >&2;}
@@ -7163,8 +7104,35 @@ fi
 
 
 
-DODS_GUILIBS
-DODS_XTRALIBS
+
+    echo "$as_me:$LINENO: checking for libxml2 and its headers" >&5
+echo $ECHO_N "checking for libxml2 and its headers... $ECHO_C" >&6
+    # 2003/06/13 ERD - chaged to handle libxml2 distrib w/ DODS
+    # libxml2 NOT part of DODS distribution
+    #if test -n "`which xml2-config`"
+    # libxml2 IS part of DODS distribution
+    if test -x $dods_root/bin/xml2-config
+    then
+        # libxml2 NOT part of DODS distribution
+        #INCS="`xml2-config --cflags` $INCS"
+        #LIBS="`xml2-config --libs` $LIBS"
+        # libxml2 IS part of DODS distribution
+        # INCS="`$dods_root/bin/xml2-config --cflags` $INCS"
+	#
+	# Don't use xml2-config to build INCS. It includes an absolute path
+	# which makes its way into the Makefile. This, in turn, puts an
+	# absolute path in the dependencies (why I don't really know, -MM
+	# should not make dependencies for <> includes). 07/25/03 jhrg
+        INCS="-I../../include/libxml2 $INCS"
+        LIBS="`$dods_root/bin/xml2-config --libs` $LIBS"
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+    else
+	{ { echo "$as_me:$LINENO: error: Could not find xml2-config!" >&5
+echo "$as_me: error: Could not find xml2-config!" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
 
     # Check whether --enable-efence or --disable-efence was given.
 if test "${enable_efence+set}" = set; then
@@ -7246,81 +7214,10 @@ echo "$as_me: error: Bad debug value" >&2;}
     esac
 
 
-# Check whether --with-hdf5_path or --without-hdf5_path was given.
-if test "${with_hdf5_path+set}" = set; then
-  withval="$with_hdf5_path"
-  hdf5_path=${withval}
-else
-  hdf5_path="/usr/local/hdf5"
-fi;
 
-LDFLAGS="$LDFLAGS -L${hdf5_path}/lib"
-echo "$as_me:$LINENO: checking for H5open in -lhdf5" >&5
-echo $ECHO_N "checking for H5open in -lhdf5... $ECHO_C" >&6
-if test "${ac_cv_lib_hdf5_H5open+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lhdf5 -lz $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
 
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char H5open ();
-int
-main ()
-{
-H5open ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_hdf5_H5open=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_hdf5_H5open=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_hdf5_H5open" >&5
-echo "${ECHO_T}$ac_cv_lib_hdf5_H5open" >&6
-if test $ac_cv_lib_hdf5_H5open = yes; then
-  hdf_found=1
-else
-  hdf_found=0
-fi
 
-if test $hdf_found -ne 1
-then
-    { { echo "$as_me:$LINENO: error: HDF5 library not found (looked in ${hdf5_path}/lib)!" >&5
-echo "$as_me: error: HDF5 library not found (looked in ${hdf5_path}/lib)!" >&2;}
-   { (exit 1); exit 1; }; }
-fi
 
 
           ac_config_files="$ac_config_files Makefile"
@@ -7934,6 +7831,13 @@ s,@ECHO_C@,$ECHO_C,;t t
 s,@ECHO_N@,$ECHO_N,;t t
 s,@ECHO_T@,$ECHO_T,;t t
 s,@LIBS@,$LIBS,;t t
+s,@dods_root@,$dods_root,;t t
+s,@dods_relative@,$dods_relative,;t t
+s,@dir@,$dir,;t t
+s,@fullpath@,$fullpath,;t t
+s,@VERSION@,$VERSION,;t t
+s,@TAR@,$TAR,;t t
+s,@depend@,$depend,;t t
 s,@build@,$build,;t t
 s,@build_cpu@,$build_cpu,;t t
 s,@build_vendor@,$build_vendor,;t t
@@ -7942,12 +7846,7 @@ s,@host@,$host,;t t
 s,@host_cpu@,$host_cpu,;t t
 s,@host_vendor@,$host_vendor,;t t
 s,@host_os@,$host_os,;t t
-s,@dods_root@,$dods_root,;t t
-s,@dods_relative@,$dods_relative,;t t
-s,@dir@,$dir,;t t
-s,@fullpath@,$fullpath,;t t
-s,@VERSION@,$VERSION,;t t
-s,@depend@,$depend,;t t
+s,@CXX@,$CXX,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
@@ -7955,26 +7854,23 @@ s,@CPPFLAGS@,$CPPFLAGS,;t t
 s,@ac_ct_CC@,$ac_ct_CC,;t t
 s,@EXEEXT@,$EXEEXT,;t t
 s,@OBJEXT@,$OBJEXT,;t t
-s,@AWK@,$AWK,;t t
 s,@LN_S@,$LN_S,;t t
-s,@SET_MAKE@,$SET_MAKE,;t t
+s,@CXXFLAGS@,$CXXFLAGS,;t t
+s,@ac_ct_CXX@,$ac_ct_CXX,;t t
 s,@RANLIB@,$RANLIB,;t t
 s,@ac_ct_RANLIB@,$ac_ct_RANLIB,;t t
-s,@CPP@,$CPP,;t t
+s,@SET_MAKE@,$SET_MAKE,;t t
 s,@INSTALL_PROGRAM@,$INSTALL_PROGRAM,;t t
 s,@INSTALL_SCRIPT@,$INSTALL_SCRIPT,;t t
 s,@INSTALL_DATA@,$INSTALL_DATA,;t t
-s,@PERL@,$PERL,;t t
-s,@TAR@,$TAR,;t t
 s,@GCC_ROOT@,$GCC_ROOT,;t t
-s,@OS@,$OS,;t t
-s,@MACHINE@,$MACHINE,;t t
-s,@CXX@,$CXX,;t t
+s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t
+s,@hdf5_path@,$hdf5_path,;t t
+s,@ALLOCA@,$ALLOCA,;t t
 s,@INCS@,$INCS,;t t
 s,@DODS_PACKAGES_DIR@,$DODS_PACKAGES_DIR,;t t
 s,@packages@,$packages,;t t
-s,@hdf5_path@,$hdf5_path,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
@@ -8433,6 +8329,4 @@ if test "$no_create" != yes; then
   # would make configure fail if this is the last instruction.
   $ac_cs_success || { (exit 1); exit 1; }
 fi
-
-
 
