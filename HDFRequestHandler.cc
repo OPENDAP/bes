@@ -7,19 +7,20 @@ using std::ifstream ;
 using std::cerr ;
 using std::endl ;
 
-#ihdflude "DAS.h"
-#ihdflude "DDS.h"
+#include "DAS.h"
+#include "DDS.h"
 
-#ihdflude "HDFRequestHandler.h"
-#ihdflude "DODSResponseHandler.h"
-#ihdflude "DODSResponseNames.h"
-#ihdflude "DODSConstraintFuncs.h"
-#ihdflude "DODSInfo.h"
-#ihdflude "TheDODSKeys.h"
-#ihdflude "DODSResponseException.h"
+#include "HDFRequestHandler.h"
+#include "DODSResponseHandler.h"
+#include "DODSResponseNames.h"
+#include "DODSConstraintFuncs.h"
+#include "DODSInfo.h"
+#include "TheDODSKeys.h"
+#include "DODSResponseException.h"
 
-extern void read_variables(DAS &das, const string &filename) throw (Error);
-extern void read_descriptors(DDS &dds, const string &filename)  throw (Error);
+extern void read_das(DAS& das, const string& cachedir, const string& filename);
+extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
+extern void register_funcs(DDS& dds);
 
 HDFRequestHandler::HDFRequestHandler( string name )
     : DODSRequestHandler( name )
@@ -59,6 +60,8 @@ HDFRequestHandler::hdf_build_dds( DODSDataHandlerInterface &dhi )
 bool
 HDFRequestHandler::hdf_build_data( DODSDataHandlerInterface &dhi )
 {
+    DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+
     dds->filename( dhi.container->get_real_name() );
     read_dds( *dds, "/tmp/", dhi.container->get_real_name() );
     dhi.post_constraint = dhi.container->get_constraint();
@@ -109,11 +112,11 @@ HDFRequestHandler::hdf_build_help( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDFRequestHandler::nc_build_version( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_version( DODSDataHandlerInterface &dhi )
 {
     DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
-    info->add_data( (string)"    0.9\n" ) ;
-    info->add_data( (string)"    libnc-dods 0.9\n" ) ;
+    info->add_data( (string)"    hdf4 0.9\n" ) ;
+    info->add_data( (string)"    libhdf-dods 0.9\n" ) ;
 #if 0
     info->add_data( (string)"    " + nc_version() + "\n" ) ;
     info->add_data( (string)"        libcdf2.7\n" ) ;

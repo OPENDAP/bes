@@ -18,7 +18,7 @@ HDFInit(int, char**)
         (*TheDODSLog) << "    adding hdf4 request handler" << endl ;
 
     TheRequestHandlerList->add_handler( "hdf4",
-                                       new NCRequestHandler( "hdf4" ) ) ;
+                                       new HDFRequestHandler( "hdf4" ) ) ;
 
     return true ;
 }
