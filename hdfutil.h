@@ -11,8 +11,8 @@
 // $RCSfile: hdfutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: hdfutil.h,v $
-// Revision 1.1  1996/10/31 18:44:12  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:02:00  jimg
+// Update from Todd.
 //
 // Revision 1.1  1996/09/24 22:38:16  todd
 // Initial revision

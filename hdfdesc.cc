@@ -12,10 +12,10 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
-// Revision 1.1  1996/10/31 18:44:10  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:57  jimg
+// Update from Todd.
 //
-// Revision 1.5  1996/10/07  17:26:23  ike
+// Revision 1.5  1996/10/07 17:26:23  ike
 // Added Dims2Attrs() to convert hdf_dim info into hdf_attr.
 // SDS_descriptions() adds sds dimension attributes to the das.
 //
@@ -132,6 +132,11 @@ static void update_descriptions(const String& filename) {
     Stat datafile(filename);
     Stat ddsfile((filename + ".dds"));
     Stat dasfile((filename + ".das"));
+
+    // flag error if could find filename
+    if (!datafile)
+	THROW(dhdferr_fexist);
+
 #ifdef NO_CACHING
     {
 #else

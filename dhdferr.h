@@ -11,8 +11,8 @@
 // $RCSfile: dhdferr.h,v $ - HDF server error class declarations
 //
 // $Log: dhdferr.h,v $
-// Revision 1.1  1996/10/31 18:44:03  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:50  jimg
+// Update from Todd.
 //
 // Revision 1.1  1996/09/27 18:21:32  todd
 // Initial revision
@@ -133,5 +133,12 @@ public:
          dhdferr(String("Problem converting HDF data to DODS"), 
 		 file, line) {}
 }; // something went wrong in a conversion to DAP
+
+class dhdferr_fexist: public dhdferr {
+public:
+    dhdferr_fexist(const String& file, int line): 
+         dhdferr(String("HDF file does not exist or is unreadable"), 
+		 file, line) {}
+}; // could not stat the input HDF file
 
 #endif // _DHDFERR_H

@@ -11,8 +11,11 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
-// Revision 1.1  1996/10/31 18:43:17  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:12  jimg
+// Update from Todd.
+//
+// Revision 1.5  1996/11/21 23:20:27  todd
+// Added error return value to read() mfunc.
 //
 // Revision 1.4  1996/09/24 20:23:08  todd
 // Added copyright and header.
@@ -98,8 +101,10 @@ bool HDFArray::read(const String &dataset, int &err)
     else if (foundgr)
 	LoadArrayFromGR(this, gr);
 
-    if (foundgr || foundsds)
+    if (foundgr || foundsds) {
+	err = -1;		// no error
 	return true;
+    }
     else {
 	err = 0;
 	return false;

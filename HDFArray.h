@@ -11,8 +11,8 @@
 // $RCSfile: HDFArray.h,v $ - HDFArray class declaration
 //
 // $Log: HDFArray.h,v $
-// Revision 1.1  1996/10/31 18:43:18  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:14  jimg
+// Update from Todd.
 //
 // Revision 1.4  1996/09/24 20:25:18  todd
 // Added copyright and header

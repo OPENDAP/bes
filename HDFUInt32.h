@@ -11,8 +11,8 @@
 // $RCSfile: HDFUInt32.h,v $ - HDFUInt32 class declaration
 //
 // $Log: HDFUInt32.h,v $
-// Revision 1.1  1996/10/31 18:43:56  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:40  jimg
+// Update from Todd.
 //
 // Revision 1.2  1996/09/24 20:57:34  todd
 // Added copyright and header.

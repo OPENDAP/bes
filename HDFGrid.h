@@ -11,8 +11,8 @@
 // $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
 //
 // $Log: HDFGrid.h,v $
-// Revision 1.1  1996/10/31 18:43:36  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:25  jimg
+// Update from Todd.
 //
 // Revision 1.3  1996/09/24 20:53:26  todd
 // Added copyright and header.

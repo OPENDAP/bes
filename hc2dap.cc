@@ -12,8 +12,11 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
-// Revision 1.1  1996/10/31 18:44:05  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:52  jimg
+// Update from Todd.
+//
+// Revision 1.5  1996/11/20  22:28:23  todd
+// Modified to support UInt32 type.
 //
 // Revision 1.4  1996/10/14 18:18:06  todd
 // Added compile option DONT_HAVE_UINT to allow compilation until DODS has
@@ -57,9 +60,7 @@ typedef string String;
 #include "hdfutil.h"
 #include "dhdferr.h"
 
-#ifndef DONT_HAVE_UINT
 #include "HDFUInt32.h"
-#endif
 
 BaseType *NewDAPVar(const String& varname, int32 hdf_type);
 HDFArray *CastBaseTypeToArray(BaseType *p);
@@ -250,13 +251,11 @@ BaseType *NewDAPVar(const String& varname, int32 hdf_type) {
     case DFNT_INT32:
 	bt = new HDFInt32(id2dods(varname));
 	break;
-#ifndef DONT_HAVE_UINT
     case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	bt = new HDFUInt32(id2dods(varname));
 	break;
-#endif
     case DFNT_UCHAR8:
 	bt = new HDFByte(id2dods(varname));
 	break;
@@ -282,13 +281,11 @@ String DAPTypeName(int32 hdf_type) {
     case DFNT_INT32:
 	rv = "Int32";
 	break;
-#ifndef DONT_HAVE_UINT
     case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	rv = "UInt32";
 	break;
-#endif
     case DFNT_UCHAR8:
 	rv = "Byte";
 	break;
@@ -313,10 +310,8 @@ int32 HDFTypeName(const String& dods_type) {
 	return DFNT_UCHAR8;
     else if (dods_type == "String")
 	return DFNT_CHAR8;
-#ifndef DONT_HAVE_UINT
     else if (dods_type == "UInt32")
 	return DFNT_UINT32;
-#endif
     else 
 	return -1;
 }
@@ -421,10 +416,10 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 	int i=0;
 	void *data=0;
 	for (Pix q=stru->first_var(); q!=0; stru->next_var(q),++i) {
-	    data = ExportDataForDODS(f.vals[i], row);
+	    data = ExportDataForDODS(f.vals[i], row); // allocating one item
 	    stru->var(q)->val2buf(data);
 	    stru->var(q)->set_read_p(true);
-	    delete []data;
+	    delete data;	// deleting one item
 	}
 
     }

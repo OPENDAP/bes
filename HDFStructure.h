@@ -11,8 +11,8 @@
 // $RCSfile: HDFStructure.h,v $ - HDFStructure class declarations
 //
 // $Log: HDFStructure.h,v $
-// Revision 1.1  1996/10/31 18:43:53  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:38  jimg
+// Update from Todd.
 //
 //
 /////////////////////////////////////////////////////////////////////////////

@@ -11,8 +11,11 @@
 // $RCSfile: HDFUrl.cc,v $ - HDFUrl class implementation
 //
 // $Log: HDFUrl.cc,v $
-// Revision 1.1  1996/10/31 18:43:57  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:42  jimg
+// Update from Todd.
+//
+// Revision 1.5  1996/11/21 23:20:27  todd
+// Added error return value to read() mfunc.
 //
 // Revision 1.4  1996/09/24 20:57:34  todd
 // Added copyright and header.
@@ -25,6 +28,8 @@
 HDFUrl::HDFUrl(const String &n = (char *)0) : Url(n) {}
 HDFUrl::~HDFUrl() {}
 BaseType *HDFUrl::ptr_duplicate() { return new HDFUrl(*this); }  
-bool HDFUrl::read(const String &, int &) { set_read_p(true); return true; }
+bool HDFUrl::read(const String &, int &err) { 
+  set_read_p(true); err = -1; return true; 
+}
 
 Url *NewUrl(const String &n) { return new HDFUrl(n); }

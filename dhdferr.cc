@@ -11,8 +11,8 @@
 // $RCSfile: dhdferr.cc,v $ - HDF server error class implementations
 //
 // $Log: dhdferr.cc,v $
-// Revision 1.1  1996/10/31 18:44:02  jimg
-// Added.
+// Revision 1.2  1997/02/10 02:01:49  jimg
+// Update from Todd.
 //
 // Revision 1.1  1996/09/27 18:19:48  todd
 // Initial revision
