@@ -12,8 +12,11 @@
 
 #include "config_hdf.h"
 
+#ifdef __POWERPC__
+#undef isascii
+#endif
+#include <iostream.h>
 #include <hdf.h>
-#include <iostream>
 #include <hcerr.h>
 
 using namespace std;
@@ -43,8 +46,15 @@ ostream& operator<<(ostream& out, const hcerr& x) {
 }
 
 // $Log: hcerr.cc,v $
+// Revision 1.4  2004/07/09 18:08:50  jimg
+// Merged with release-3-4-3FCS.
+//
 // Revision 1.3  2004/02/06 00:36:28  jimg
 // Switched from strstream to stringstream.
+// Revision 1.2.8.1.2.1  2004/02/23 02:08:03  rmorris
+// There is some incompatibility between the use of isascii() in the hdf library
+// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
+//
 //
 // Revision 1.2  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.

@@ -14,6 +14,9 @@
 
 #include <mfhdf.h>
 
+#ifdef __POWERPC__
+#undef isascii
+#endif
 #include <sstream>
 #include <string>
 #include <vector>
@@ -22,11 +25,6 @@
 #include <hdfclass.h>
 
 using namespace std;
-#if 0
-using std::istrstream;
-using std::ostrstream;
-using std::ends;
-#endif
 
 // Convert an array of U with length nelts into an array of T by casting each
 // element of array to a T.
@@ -922,8 +920,15 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 }
 
 // $Log: genvec.cc,v $
+// Revision 1.9  2004/07/09 18:08:50  jimg
+// Merged with release-3-4-3FCS.
+//
 // Revision 1.8  2004/02/06 00:36:28  jimg
 // Switched from strstream to stringstream.
+// Revision 1.7.4.1.2.1  2004/02/23 02:08:03  rmorris
+// There is some incompatibility between the use of isascii() in the hdf library
+// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
+//
 //
 // Revision 1.7  2003/01/31 02:08:37  jimg
 // Merged with release-3-2-7.

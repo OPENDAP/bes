@@ -14,6 +14,10 @@
 
 #include <mfhdf.h>
 
+#ifdef __POWERPC__
+#undef isascii
+#endif
+
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -21,6 +25,9 @@
 
 #include <hcstream.h>
 #include <hdfclass.h>
+
+using std::cerr;
+using std::endl;
 
 // minimum function
 inline int min(int t1, int t2) { return ( t1 < t2? t1 : t2 ); }
@@ -299,7 +306,7 @@ void hdfistream_sds::setslab(vector<int> start, vector<int> edge,
 }
 
 // This function, when compiled with gcc 2.8 and -O2, causes a virtual
-// memeory exceeded error. 2/25/98 jhrg
+// memory exceeded error. 2/25/98 jhrg
 // load currently open SDS into an hdf_sds object	
 hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 
@@ -508,34 +515,43 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 	// TBD!  Not supported at present
     
 	// load dimension scale if there is one
+
 	if (number_type != 0) { // found a dimension scale
+	  
+	    /*
+	     *  Currently, this server cannot support dimension scales 
+	     *  that are stored as character arrays. See bugs 748 and 756.
+	     */  
+	    if ( number_type != DFNT_CHAR ) { 
+		// allocate a temporary C array to hold data from
+		// SDgetdimscale() 
+		char *data = new char[count*DFKNTsize(number_type)];
 
-	    // allocate a temporary C array to hold data from SDgetdimscale()
-	    char *data = new char[count*DFKNTsize(number_type)];
-	    if (data == 0)
-		THROW(hcerr_nomemory);
+		if (data == 0)
+		    THROW(hcerr_nomemory);
 
-	    // read the scale data and store it in an hdf_genvec
-	    if (SDgetdimscale(dim_id, data) < 0) { 
-		delete []data; // problem: clean up and throw an exception
-		THROW(hcerr_sdsinfo);
+		// read the scale data and store it in an hdf_genvec
+		if (SDgetdimscale(dim_id, data) < 0) { 
+		    delete []data; // problem: clean up and throw an exception
+		    THROW(hcerr_sdsinfo);
+		}
+
+		if (_slab.set) {
+		    void *datastart = (char *)data + 
+			_slab.start[_dim_index] * DFKNTsize(number_type);
+		    hd.scale = hdf_genvec(number_type, datastart, 0, 
+					  _slab.edge[_dim_index]*_slab.stride[_dim_index]-1,
+					  _slab.stride[_dim_index]);
+		}
+		else
+		    hd.scale = hdf_genvec(number_type, data, count);
+
+		delete []data; // deallocate temporary C array
 	    }
-
-	    if (_slab.set) {
-		void *datastart = (char *)data + 
-		    _slab.start[_dim_index] * DFKNTsize(number_type);
-		hd.scale = hdf_genvec(number_type, datastart, 0, 
-				      _slab.edge[_dim_index]*_slab.stride[_dim_index]-1,
-				      _slab.stride[_dim_index]);
-	    }
-	    else
-		hd.scale = hdf_genvec(number_type, data, count);
-
-	    delete []data; // deallocate temporary C array
 	}
 
-	// assign dim size; if slabbing is set, assigned calculated size, otherwise
-	// assign size from SDdiminfo()
+	// assign dim size; if slabbing is set, assigned calculated size,
+	// otherwise assign size from SDdiminfo()
 	if (_slab.set)
 	    hd.count = _slab.edge[_dim_index];
 	else
@@ -690,6 +706,27 @@ bool hdf_sds::_ok(bool *has_scale) const {
 }
 
 // $Log: sds.cc,v $
+// Revision 1.14  2004/07/09 18:08:50  jimg
+// Merged with release-3-4-3FCS.
+//
+// Revision 1.13.4.1.2.3  2004/07/06 20:07:32  jimg
+// Added note about bug 748/756.
+//
+// Revision 1.13.4.1.2.2  2004/04/08 20:13:29  dan
+// Modified overloaded extraction operator for SDS dimensions in
+// hdfclass/sds.cc [hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd)]
+// to ignore the case when an SDS dimension scale contains
+// character datatypes.  First report of this problem was for
+// MODIS GeoLocation Products, SDS name 'Scan Type', which is of
+// size char8(nscans,10), with potential values of 'Day', 'Night', 'Other'.
+//
+// Revision 1.13.4.1.2.1  2004/02/23 02:08:03  rmorris
+// There is some incompatibility between the use of isascii() in the hdf library
+// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
+//
+// Revision 1.13.4.1  2003/05/21 16:26:58  edavis
+// Updated/corrected copyright statements.
+//
 // Revision 1.13  2003/01/31 02:08:37  jimg
 // Merged with release-3-2-7.
 //

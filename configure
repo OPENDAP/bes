@@ -1411,8 +1411,36 @@ host_os=`echo $ac_cv_host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 
 
 
+<<<<<<< configure
 CFLAGS=${CFLAGS-"-gstabs -O2"}
 CXXFLAGS=${CXXFLAGS-"-gstabs -O2"}
+=======
+# Until further notice OS X port doesn't get -gstabs because of an
+# apparent bug in their gcc 3.3 clone (a beta).  If you see this after
+# 1/1/2005, you can probably remove it.
+#
+# For the alpha/osf, the hdf server handler must be linked statically. This
+# is because the OSF linker (GNU ld is not supportted for this platform)
+# looks for .so libraries first and osf ships with a jpeg.so that will not
+# work with the HDF4 libraries. Using -static forces only .a archives in
+# the link which, in turn, causes ld to pick jpeg.a from /usr/local/hdf/lib.
+# jhrg 6/30/04
+case "${host_cpu}:${host_vendor}:${host_os}" in
+     powerpc:apple:netbsd*)
+       CFLAGS=${CFLAGS-"-O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-O2 $CXXFLAGS"}
+       break;;
+     alphaev56:dec:osf5.*)
+       CFLAGS=${CFLAGS-"-O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-O2 $CXXFLAGS"}
+       LDFLAGS="-static $LDFLAGS"
+       break;;
+    *:*:*)
+       CFLAGS=${CFLAGS-"-gstabs -O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-gstabs -O2 $CXXFLAGS"}
+       break;;
+esac
+>>>>>>> 1.36.2.5
 
 
 for ac_prog in gawk mawk nawk awk
@@ -6842,6 +6870,7 @@ else
 fi
 
 
+
     echo "$as_me:$LINENO: checking for the packages directory" >&5
 echo $ECHO_N "checking for the packages directory... $ECHO_C" >&6
     # Where does DODS live?
@@ -6867,68 +6896,6 @@ echo "${ECHO_T}$DODS_PACKAGES_DIR" >&6
 
     # Initialize $packages to null.
     packages=""
-
-
-    echo "$as_me:$LINENO: checking for rx_version_string in -lrx" >&5
-echo $ECHO_N "checking for rx_version_string in -lrx... $ECHO_C" >&6
-if test "${ac_cv_lib_rx_rx_version_string+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lrx  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char rx_version_string ();
-int
-main ()
-{
-rx_version_string ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_rx_rx_version_string=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_rx_rx_version_string=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_rx_rx_version_string" >&5
-echo "${ECHO_T}$ac_cv_lib_rx_rx_version_string" >&6
-if test $ac_cv_lib_rx_rx_version_string = yes; then
-  HAVE_RX=1; LIBS="$LIBS -lrx"
-else
-  packages="$packages librx"; HAVE_RX=1; LIBS="$LIBS -lrx"
-fi
-
 
 
 

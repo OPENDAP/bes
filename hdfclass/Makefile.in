@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.18 2003/05/14 21:29:39 jimg Exp $
+# $Id: Makefile.in,v 1.19 2004/07/09 18:08:50 jimg Exp $
 
 @SET_MAKE@
 
@@ -13,6 +13,7 @@ WWW_ROOT = @WWW_ROOT@
 INCS = -I. -I.. -I$(DODS_ROOT)/include @INCS@
 DEFS = @DEFS@
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
+CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 CXXFLAGS = @CXXFLAGS@ -Wall
 
 # Set the instalation directories; prefix can be set on the command line

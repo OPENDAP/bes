@@ -15,6 +15,10 @@
 #include <mfhdf.h>
 #include <mfgr.h>
 
+#ifdef __POWERPC__
+#undef isascii
+#endif
+
 #include <string>
 #include <vector>
 
@@ -469,6 +473,16 @@ bool hdf_gri::_ok() const {
 }
 
 // $Log: gri.cc,v $
+// Revision 1.10  2004/07/09 18:08:50  jimg
+// Merged with release-3-4-3FCS.
+//
+// Revision 1.9.4.1.2.1  2004/02/23 02:08:03  rmorris
+// There is some incompatibility between the use of isascii() in the hdf library
+// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
+//
+// Revision 1.9.4.1  2003/05/21 16:26:58  edavis
+// Updated/corrected copyright statements.
+//
 // Revision 1.9  2003/01/31 02:08:37  jimg
 // Merged with release-3-2-7.
 //
