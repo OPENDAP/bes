@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.15 1998/09/26 22:32:44 jimg Exp $
+# $Id: Makefile.in,v 1.16 1998/09/26 22:35:33 jimg Exp $
 
 @SET_MAKE@
 
@@ -112,7 +112,7 @@ clean:
 	-cd hdfclass && $(MAKE) $(MFLAGS) clean
 
 distclean: clean
-	-rm config.*
+	-rm config.* nph-hdf
 
 install: all
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
