@@ -1,7 +1,7 @@
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.11 1998/09/10 20:33:49 jehamby Exp $)
+AC_REVISION($Id: configure.in,v 1.12 1998/09/24 21:59:46 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -100,4 +100,14 @@ DODS_EFENCE
 DODS_DBNEW
 DODS_DEBUG_OPTION
 
-AC_OUTPUT(Makefile hdfclass/Makefile)
+dnl check for an explict server cache pathname. If so, use that. Otherwise
+dnl use /usr/tmp.
+
+AC_ARG_WITH(cache_path,
+    [  --with-cache=DIR        Server's cache (default: /usr/tmp)],
+    HDF_CACHE=${withval}, HDF_CACHE=/usr/tmp)
+
+AC_MSG_RESULT(Setting the HDF server cache directory to $HDF_CACHE)
+AC_SUBST(HDF_CACHE)
+
+AC_OUTPUT(Makefile nph-hdf hdfclass/Makefile)
