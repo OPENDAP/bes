@@ -1,37 +1,37 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.27 2001/04/02 18:59:56 rmorris Exp $
+# $Id: Makefile.in,v 1.28 2001/06/19 00:57:27 jimg Exp $
 
 @SET_MAKE@
 
 PROGS = hdf_dods libhdf-dods.a
 
-DODS_ROOT = ../..
-WWW_ROOT = @WWW_ROOT@
+DODS_ROOT = @dods_relative@
 
-INCS = -I. -I.. -I$(DODS_ROOT)/include -Isrc -Ihdfclass/src @INCS@ 
+INCS = -I. -I.. -Isrc -Ihdfclass/src @INCS@ 
 DEFS = @DEFS@
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
 CXXFLAGS = @CXXFLAGS@ -Wall
-LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
+LDFLAGS = @LDFLAGS@ -L. -Lhdfclass
 LFLAGS = -8
 YFLAGS = -d -v
 LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
+XTRALIBS = @XTRALIBS@
 
 # Set the installation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
 
 prefix = @prefix@
 exec_prefix = $(prefix)
-bindir = $(exec_prefix)/bin
-libdir = $(exec_prefix)/lib
-includedir = $(prefix)/include
+bindir = $(exec_prefix)bin
+libdir = $(exec_prefix)lib
+includedir = $(prefix)include
 manext = 1
-mandir = $(prefix)/man/man$(manext)
+mandir = $(prefix)man/man$(manext)
 
-src = $(DODS_ROOT)/src
-etcdir = $(DODS_ROOT)/etc
+src = $(DODS_ROOT)src
+etcdir = $(DODS_ROOT)etc
 
 INSTALLMAN = man
 
@@ -39,6 +39,7 @@ SHELL = /bin/sh
 srcdir = @srcdir@
 version = @VERSION@
 dir = hdf-dods-@VERSION@
+host = @host@
 
 COMPONENT_NAME = DODS HDF Server
 
@@ -102,19 +103,19 @@ lex.hdfeos.o: lex.hdfeos.c
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c lex.hdfeos.c -o lex.hdfeos.o
 
 eosdas-test: eosdas-test.o lex.hdfeos.o hdfeos.tab.o libhdf-dods.a HDFClass
-	$(CXX) -o eosdas-test eosdas-test.o $(LDFLAGS) $(LIBS)
+	$(CXX) -o eosdas-test eosdas-test.o $(LDFLAGS) $(LIBS) $(XTRALIBS)
 
 libhdf-dods.a:	$(HDFOBJS)
 	ar ru libhdf-dods.a $(HDFOBJS)
 
 hdf_dods: $(SRVOBJS) libhdf-dods.a
-	$(CXX) $(SRVOBJS) -o hdf_dods $(LDFLAGS) $(LIBS)
+	$(CXX) $(SRVOBJS) -o hdf_dods $(LDFLAGS) $(LIBS) $(XTRALIBS)
 
 srvtest: srvtest.o libhdf-dods.a
-	$(CXX) srvtest.o -o srvtest $(LDFLAGS) $(LIBS)
+	$(CXX) srvtest.o -o srvtest $(LDFLAGS) $(LIBS) $(XTRALIBS)
 
 escfilt: escfilt.o libhdf-dods.a
-	$(CXX) escfilt.o -o escfilt $(LDFLAGS) $(LIBS)
+	$(CXX) escfilt.o -o escfilt $(LDFLAGS) $(LIBS) $(XTRALIBS)
 
 clean:
 	-rm *.o $(PROGS) core hdf_das hdf_dds eosdas-test *~
@@ -127,10 +128,9 @@ install: all
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
 	$(LN_S) -f ./hdf_dods $(etcdir)/hdf_das
 	$(LN_S) -f ./hdf_dods $(etcdir)/hdf_dds
-#	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
 
 configure: configure.in
-	autoconf --localdir=$(DODS_ROOT)/etc
+	autoconf --localdir=$(DODS_ROOT)etc
 
 Makefile: Makefile.in
 	if [ -x ./config.status ]; \
@@ -164,15 +164,15 @@ depend:
 tar:
 	-rm -r config.cache config.log config.status
 	cd $(DODS_ROOT)/.. && \
-	$(TAR) --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
-	    --exclude '*/.flc' --gzip --create --dereference \
+	$(TAR) --exclude 'old' --exclude '.#*' --exclude 'CVS' \
+	    --exclude '.flc' --gzip --create --dereference \
 	    --file DODS-$(dir).tar.gz DODS/src/$(dir)
 
 # Creates tar files for binary distributions.
 #
 .PHONY: binary-tar
 binary-tar:
-	cd $(DODS_ROOT)/.. && \
+	cd $(DODS_ROOT).. && \
 	$(TAR) --gzip --create \
 	    --file DODS-hdf-server-$(version)-$(host).tar.gz \
 	    DODS/etc/hdf_das \
@@ -185,14 +185,14 @@ update-version: check-version
 	if [ ! -d ../$(dir) ]; then \
 	    mv ../hdf-dods* ../$(dir);\
 	fi
-	touch $(DODS_ROOT)/VERSION; cat $(DODS_ROOT)/VERSION | \
+	touch $(DODS_ROOT)VERSION; cat $(DODS_ROOT)VERSION | \
 	  $(AWK) ' \
 	    BEGIN { found = 0 } \
 	    { if ( $$0 ~ /^$(COMPONENT_NAME):/) \
 	        { print "$(COMPONENT_NAME): $(version)"; found = 1 } \
 	      else { print $$0 } } \
 	    END { if ( ! found) { print "$(COMPONENT_NAME): $(version)" } \
-	        }' > $(DODS_ROOT)/VERSION
+	        }' > $(DODS_ROOT)VERSION
 
 # Compare the version encoded in this Makefile (set by configure) with the
 # version in version.h. The version make variable is set up near the top of
@@ -302,10 +302,10 @@ hc2dap.o: src/hc2dap.cc config_hdf.h ../../include/escaping.h \
  src/dodsutil.h src/dhdferr.h src/hdf-maps.h src/HDFUInt32.h \
  ../../include/UInt32.h
 hdf_das.o: src/hdf_das.cc config_hdf.h ../../include/DAS.h \
- ../../include/AttrTable.h ../../include/cgi_util.h \
- ../../include/Connect.h ../../include/DDS.h ../../include/BaseType.h \
- ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
- ../../include/debug.h ../../include/Error.h ../../include/util.h \
+ ../../include/AttrTable.h ../../include/Error.h \
+ ../../include/cgi_util.h ../../include/Connect.h ../../include/DDS.h \
+ ../../include/BaseType.h ../../include/Clause.h ../../include/expr.h \
+ ../../include/RValue.h ../../include/debug.h ../../include/util.h \
  ../../include/Byte.h ../../include/dods-datatypes.h \
  ../../include/Int16.h ../../include/UInt16.h ../../include/Int32.h \
  ../../include/UInt32.h ../../include/Float32.h \
@@ -328,9 +328,9 @@ hdf_dds.o: src/hdf_dds.cc config_hdf.h ../../include/DDS.h \
  ../../include/DODSFilter.h hdfclass/src/hcerr.h src/dhdferr.h
 hdf_dods.o: src/hdf_dods.cc config_hdf.h ../../include/cgi_util.h \
  ../../include/Connect.h ../../include/DAS.h ../../include/AttrTable.h \
- ../../include/DDS.h ../../include/BaseType.h ../../include/Clause.h \
- ../../include/expr.h ../../include/RValue.h ../../include/debug.h \
- ../../include/Error.h ../../include/util.h ../../include/Byte.h \
+ ../../include/Error.h ../../include/DDS.h ../../include/BaseType.h \
+ ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+ ../../include/debug.h ../../include/util.h ../../include/Byte.h \
  ../../include/dods-datatypes.h ../../include/Int16.h \
  ../../include/UInt16.h ../../include/Int32.h ../../include/UInt32.h \
  ../../include/Float32.h ../../include/Float64.h ../../include/Str.h \
@@ -341,18 +341,19 @@ hdf_dods.o: src/hdf_dods.cc config_hdf.h ../../include/cgi_util.h \
 hdfdesc.o: src/hdfdesc.cc config_hdf.h ../../include/DDS.h \
  ../../include/BaseType.h ../../include/Clause.h ../../include/expr.h \
  ../../include/RValue.h ../../include/debug.h ../../include/DAS.h \
- ../../include/AttrTable.h ../../include/escaping.h src/dhdferr.h \
- src/HDFArray.h ../../include/Array.h ../../include/dods-limits.h \
+ ../../include/AttrTable.h ../../include/Error.h \
+ ../../include/escaping.h src/dhdferr.h src/HDFArray.h \
+ ../../include/Array.h ../../include/dods-limits.h \
  ../../include/Vector.h src/ReadTagRef.h src/HDFSequence.h \
  ../../include/Sequence.h src/HDFGrid.h ../../include/Grid.h \
  src/dodsutil.h src/HDFStructure.h ../../include/Structure.h \
  src/hdf-dods.h src/hdf-maps.h ../../include/parser.h \
- ../../include/Error.h ../../include/GSEClause.h
+ ../../include/GSEClause.h
 hdfutil.o: src/hdfutil.cc config_hdf.h src/hdfutil.h src/dhdferr.h
 srvtest.o: src/srvtest.cc config_hdf.h ../../include/Connect.h \
- ../../include/DAS.h ../../include/AttrTable.h ../../include/DDS.h \
- ../../include/BaseType.h ../../include/Clause.h ../../include/expr.h \
- ../../include/RValue.h ../../include/debug.h ../../include/Error.h \
+ ../../include/DAS.h ../../include/AttrTable.h ../../include/Error.h \
+ ../../include/DDS.h ../../include/BaseType.h ../../include/Clause.h \
+ ../../include/expr.h ../../include/RValue.h ../../include/debug.h \
  ../../include/util.h ../../include/Byte.h \
  ../../include/dods-datatypes.h ../../include/Int16.h \
  ../../include/UInt16.h ../../include/Int32.h ../../include/UInt32.h \

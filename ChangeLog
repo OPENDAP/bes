@@ -1,3 +1,35 @@
+2001-06-18  James Gallagher  <jimg@dcz.dods.org>
+
+	* Merged with release-3-2 head (tagged release-3-2-1). The next
+	merge should use -j release-3-2-1 -j release-3-2.
+
+	* Many bugs fixed; should build with hdf 4.1r4.
+
+	* HDFStructure.cc: Initial error flag variable to zero in read
+	method, int err=0; The read_tagref method for this datatype does
+	not modify the value of err for successful reads, on Linux systems
+	this variable was initially non-zero. (From Dan)
+
+	* Fixed a error in the --with-test-url switch. The identifier
+	test-url was misspelled as `testurl'. Changed the default test url
+	to point to `test' on the localhost.
+
+	* Moved the CVS Log entries to the end of each file.
+	Added code to catch Error objects thrown by the dap library.
+	Changed the read() method's definition to match the dap library.
+
+	* Changed to the new way DODSFilter handles version requests.
+
+	* Removed nph-hdf in favor of nph-dods.
+
+	* Removed TK_LIBS references, not used and references to that in
+	the makefile that (that were unresolved during configure) were
+	causing problems. I see no reason for references to TK_LIBS on the
+	server side.
+
+	* added note about perl modules, rewrote much text, reformatted.
+	(From Tom).
+
 2000-03-31  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merge: cvs update -j release-3-1-3 -j release-3-1, the next
@@ -93,10 +125,10 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 
 <<<<<<< ChangeLog
 <<<<<<< ChangeLog
-$Id: ChangeLog,v 1.11 2000/03/31 16:53:45 jimg Exp $
+$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
 =======
-$Id: ChangeLog,v 1.11 2000/03/31 16:53:45 jimg Exp $
+$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
 >>>>>>> 1.8.4.2
 =======
-$Id: ChangeLog,v 1.11 2000/03/31 16:53:45 jimg Exp $
+$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
 >>>>>>> 1.8.4.3
