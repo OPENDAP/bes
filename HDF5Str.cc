@@ -1,32 +1,27 @@
 
-
-
 #ifdef __GNUG__
 #pragma implementation
 #endif
 
-#include <assert.h>
+#include "config_hdf5.h"
 
 #include <string>
-#include <assert.h>
 #include <ctype.h>
 
-#define HAVE_CONFIG_H
-#include "config_dap.h"
 #include "InternalErr.h"
 #include "HDF5Str.h"
 
 
 Str *
-NewStr(const string &n)
+NewStr(const string & n)
 {
     return new HDF5Str(n);
 }
 
-HDF5Str::HDF5Str(const string &n) : Str(n)
+HDF5Str::HDF5Str(const string & n):Str(n)
 {
-  ty_id = -1;
-  dset_id = -1;
+    ty_id = -1;
+    dset_id = -1;
 }
 
 BaseType *
@@ -36,61 +31,71 @@ HDF5Str::ptr_duplicate()
 }
 
 bool
-HDF5Str::read(const string &dataset, int &error)
+HDF5Str::read(const string & dataset)
 {
+    if (read_p())
+	return false;
 
-    hid_t type,dset;
-    char *chr;
-    char * Msgi;
-    size_t size;
-    string cstring ="String";
-    Msgi = new char[255*sizeof(char)];
+    if (array_flag == 1)
+	return true;
 
-    fflush(stdout);
-    if (read_p()) {
-      delete Msgi;
-        return false;
-    }
+    if (return_type(ty_id) == "String") {
+	char Msgi[256];
+	size_t size = H5Tget_size(ty_id);
+	char *chr = new char[size + 1];
 
-    if(array_flag == 1) {
-      delete Msgi;
-      return true;
-    }
-    dset = get_did();
-    type = get_tid();
+	if (get_data(dset_id, (void *) chr, Msgi) < 0) {
+	    delete [] chr;
+	    throw InternalErr(__FILE__, __LINE__,
+	      string("hdf5_dods server failed when getting string data\n")
+			      + Msgi);
+	}
 
-    if (return_type(type) == cstring) {
-
-      size = H5Tget_size(type);
-      chr = new char[size +1];
-        if(get_data(dset,(void *)chr,Msgi)<0) {
-	 delete [] Msgi;
-	 throw InternalErr(
-	   string("hdf5_dods server failed when getting string data\n")
-	   +Msgi,__FILE__,__LINE__);
-       }
 	set_read_p(true);
 	string str = chr;
+
 	val2buf(&str);
-  	delete [] chr;
-	return true;
+	delete[]chr;
     }
 
-    delete Msgi;
-    error = 0;
     return false;
-
 }
 
-void 
-HDF5Str::set_did(hid_t dset) {dset_id = dset;}
-void 
-HDF5Str::set_tid(hid_t type) {ty_id = type;}
 void
-HDF5Str::set_arrayflag(int flag) {array_flag = flag;}
+HDF5Str::set_did(hid_t dset)
+{
+    dset_id = dset;
+}
+
+void
+HDF5Str::set_tid(hid_t type)
+{
+    ty_id = type;
+}
+
+void
+HDF5Str::set_arrayflag(int flag)
+{
+    array_flag = flag;
+}
+
 int
-HDF5Str::get_arrayflag() {return array_flag;}
-hid_t 
-HDF5Str::get_did() {return dset_id;}
+HDF5Str::get_arrayflag()
+{
+    return array_flag;
+}
+
 hid_t
-HDF5Str::get_tid(){return ty_id;}
+HDF5Str::get_did()
+{
+    return dset_id;
+}
+
+hid_t
+HDF5Str::get_tid()
+{
+    return ty_id;
+}
+
+
+

@@ -9,29 +9,21 @@
 #pragma implementation
 #endif
 
-#define MAX_HDF5_DIMS 20
+#include "config_hdf5.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <iostream.h>
-#include <strstream.h>
-#include <assert.h>
-#include <ctype.h>
+#include <iostream>
 #include <memory>
+#include <ctype.h>
+#include <strstream.h>
 
-#define HAVE_CONFIG_H
-#include "config_dap.h"
 #include "Error.h"
 #include "InternalErr.h"
 
 #include "HDF5Array.h"
-
-static char Msga[255];
+#include "HDF5Str.h"
 
 Array *
-NewArray(const string &n, BaseType *v)
+NewArray(const string & n, BaseType * v)
 {
     return new HDF5Array(n, v);
 }
@@ -42,7 +34,7 @@ HDF5Array::ptr_duplicate()
     return new HDF5Array(*this);
 }
 
-HDF5Array::HDF5Array(const string &n, BaseType *v) : Array(n, v)
+HDF5Array::HDF5Array(const string & n, BaseType * v) : Array(n, v)
 {
 }
 
@@ -57,149 +49,144 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
 {
     long nels = 1;
     int id = 0;
-  
-    for (Pix p = first_dim(); p ; next_dim(p), id++) {
-      int start = dimension_start(p, true); 
-      int stride = dimension_stride(p, true);
-      int stop = dimension_stop(p, true);
 
-      // Check for empty constraint
-      if (stride <= 0 || start < 0 || stop < 0 || start > stop 
-	  || start == 0 && stop == 0) {
-	ostrstream oss;
-	oss << "Array/Grid hyperslab indices are bad: [" << start << ":"
-	    << stride << ":" << stop << "]" << ends;
-	throw Error(malformed_expr, oss.str()); 
-      }
-      
-      offset[id] = start;
-      step[id] = stride;
-      count[id] = ((stop - start)/stride) + 1; // count of elements
-      nels *= count[id];      // total number of values for variable
+    for (Pix p = first_dim(); p; next_dim(p), id++) {
+	int start = dimension_start(p, true);
+	int stride = dimension_stride(p, true);
+	int stop = dimension_stop(p, true);
+
+	// Check for empty constraint
+	if (stride <= 0 || start < 0 || stop < 0 || start > stop
+	    || start == 0 && stop == 0) {
+	    ostrstream oss;
+
+	    oss << "Array/Grid hyperslab indices are bad: [" << start <<
+		":" << stride << ":" << stop << "]" << ends;
+	    throw Error(malformed_expr, oss.str());
+	}
+
+	offset[id] = start;
+	step[id] = stride;
+	count[id] = ((stop - start) / stride) + 1;	// count of elements
+	nels *= count[id];	// total number of values for variable
     }
 
     return nels;
 }
 
 bool
-HDF5Array::read(const string &dataset, int &error)
+HDF5Array::read(const string & dataset)
 {
-  size_t data_size;
+    char Msga[255];
+    size_t data_size;
 
-  int *offset = new int [num_dim];
-  int *count = new int [num_dim];
-  int *step   = new int [num_dim];
+    int *offset = new int[d_num_dim];
+    int *count = new int[d_num_dim];
+    int *step = new int[d_num_dim];
+    char *convbuf = 0;
 
-  // Throws Error.
-  int nelms = format_constraint(offset, step, count);
+    try {
+	int nelms = format_constraint(offset, step, count); // Throws Error.
+	if (nelms == d_num_elm) {
+	    data_size = d_memneed;
 
+	    convbuf = new char[data_size];
 
+	    if (get_data(d_dset_id, (void *) convbuf, Msga) < 0) {
+		throw InternalErr(__FILE__, __LINE__,
+			 string("hdf5_dods server failed on getting data.\n")
+				  + Msga);
+	    }
 
-  if (nelms == num_elm) {
-    data_size = memneed;	// memneed is a member; from the field.
+	    if (check_h5str(d_ty_id)) {
 
-    char *convbuf = new char[data_size];
-    if (get_data(dset_id,(void *)convbuf,Msga)<0) {
-      delete [] offset;
-      delete [] count;
-      delete [] step;
-      delete [] convbuf;
-      throw InternalErr(string("hdf5_dods server failed on getting data.\n")
-			+ Msga, __FILE__, __LINE__);
-    }
-    
-    if(check_h5str(ty_id)) {
+		set_read_p(true);
+		size_t elesize = H5Tget_size(d_ty_id);
 
-      set_read_p(true);
-      size_t elesize = H5Tget_size(ty_id);
+		for (int strindex = 0; strindex < d_num_elm; strindex++) {
+		    char *strbuf = new char[elesize + 1];
 
-      for (int strindex = 0;strindex < num_elm; strindex++){
-	char *strbuf = new char[elesize+1];
-	if(get_strdata(dset_id,strindex,convbuf,strbuf,Msga)<0) {
-	  delete [] offset;
-	  delete [] count;
-	  delete [] step;
-	  delete [] convbuf;
-	  throw InternalErr(string("hdf5_dods server failed on getting data.\n") 
-			    + Msga, __FILE__, __LINE__);
+		    if (get_strdata(d_dset_id, strindex, convbuf, strbuf, 
+				    Msga) < 0) {
+			throw InternalErr(__FILE__, __LINE__,
+			  string("hdf5_dods server failed on getting data.\n")
+					  + Msga);
+		    }
+
+		    HDF5Str *tempstr = new HDF5Str;
+
+		    //should set data type. 
+		    string str = strbuf;
+
+		    tempstr->set_arrayflag(STR_FLAG);
+		    tempstr->val2buf(&str);
+
+		    set_vec(strindex, tempstr);
+		    delete[]strbuf;
+		}
+		H5Dclose(d_dset_id);
+
+	    } else {
+		set_read_p(true);
+		val2buf((void *) convbuf);
+	    }
 	}
 
-	HDF5Str *tempstr = new HDF5Str;
-	//should set data type. 
-	string str = strbuf;
+	else {
+	    if ((data_size = nelms * H5Tget_size(d_ty_id)) < 0) {
+		throw InternalErr(__FILE__, __LINE__,
+		  string("hdf5_dods server failed on getting data size."));
+	    }
 
-	tempstr->set_arrayflag(STR_FLAG);
-	tempstr->val2buf(&str);
+	    char *convbuf = new char[data_size];
 
-	set_vec(strindex,tempstr);
-	delete[]strbuf;
-      }
-      H5Dclose(dset_id);
+	    if (!get_slabdata(d_dset_id, offset, step, count, d_num_dim, 
+			      data_size, (void *)convbuf, Msga)) {
+		throw InternalErr(__FILE__, __LINE__,
+	         string("hdf5_dods server failed on getting hyperslab data.\n")
+				  + Msga);
+	    }
 
+	    set_read_p(true);
+	    val2buf((void *) convbuf);
+	}
     }
-    else {
-      set_read_p(true);
-      val2buf((void*)convbuf);
-    }
-    delete[]convbuf;  
-  }
-
-  else {
-    if ((data_size = nelms *H5Tget_size(ty_id)) < 0) {
-      delete [] offset;
-      delete [] count;
-      delete [] step;
-      throw InternalErr(string("hdf5_dods server failed on getting data size."),
-			__FILE__, __LINE__);
+    catch (...) {
+	delete[]offset;
+	delete[]step;
+	delete[]count;
+	delete[]convbuf;
+	throw;
     }
 
-#if 0
-    for (i=0;i<num_dim;i++) {
-      cout <<i<< "offset"<<offset[i]<<endl;
-      cout <<i<<"count"<<count[i]<<endl;
-      cout <<i<<"step"<<step[i]<<endl;
-    }
-#endif
+    delete[]offset;
+    delete[]step;
+    delete[]count;
+    delete[]convbuf;
 
-    char *convbuf = new char[data_size];
-    if (!get_slabdata(dset_id, offset, step, count, num_dim, data_size,
-		      (void *)convbuf,Msga)) {
-      delete [] offset;
-      delete [] count;
-      delete [] step;
-      delete [] convbuf;
-      throw InternalErr(string("hdf5_dods server failed on getting hyperslab data.\n") 
-			+ Msga, __FILE__, __LINE__);
-    }
-
-    set_read_p(true);
-    val2buf((void*)convbuf); 
-    delete [] convbuf;
-  }
-
-  delete [] offset;
-  delete [] step;
-  delete [] count;
+    return false;
 }
 
 // public functions to set all parameters needed in read function.
 
 void 
-HDF5Array::set_did(hid_t dset) {dset_id = dset;}
+HDF5Array::set_did(hid_t dset) {d_dset_id = dset;}
+
 void 
-HDF5Array::set_tid(hid_t type) {ty_id = type;}
+HDF5Array::set_tid(hid_t type) {d_ty_id = type;}
+
 void
-HDF5Array::set_memneed(size_t need) {memneed = need;}
+HDF5Array::set_memneed(size_t need) {d_memneed = need;}
+
 void
-HDF5Array::set_numdim(int ndims) {num_dim = ndims;}
+HDF5Array::set_numdim(int ndims) {d_num_dim = ndims;}
+
 void
-HDF5Array::set_numelm(int nelms) {num_elm = nelms;}
+HDF5Array::set_numelm(int nelms) {d_num_elm = nelms;}
+
 hid_t 
-HDF5Array::get_did() {return dset_id;}
+HDF5Array::get_did() {return d_dset_id;}
+
 hid_t
-HDF5Array::get_tid(){return ty_id;}
-
-
-
-
-
+HDF5Array::get_tid() {return d_ty_id;}
+  

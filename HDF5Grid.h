@@ -11,10 +11,8 @@
 #include <string.h>
 #include <H5Ipublic.h>
 #include "Grid.h"
-//#include "common.h"
-#
 
-extern "C"{int get_data(hid_t dset,void *buf,char *);}
+extern "C" int get_data(hid_t dset,void *buf,char *);
 
 extern Grid * NewGrid(const string &n = "");
 
@@ -30,7 +28,7 @@ friend string print_type(hid_t datatype);
     
     virtual BaseType *ptr_duplicate();
 
-        virtual bool read(const string &dataset, int &error);
+        virtual bool read(const string &dataset);
 //    virtual bool read(String dataset, String var_name, String constraint);
 //    virtual bool read_val(void *stuff);
 

@@ -13,7 +13,8 @@
 #include <H5Ipublic.h>
 #include "Float64.h"
 
-extern "C"{int get_data(hid_t dset,void *buf,char *);}
+extern "C" int get_data(hid_t dset,void *buf,char *);
+
 extern Float64 * NewFloat64(const string &n = "");
 
 class HDF5Float64: public Float64 {
@@ -27,7 +28,7 @@ friend string return_type(hid_t datatype);
     HDF5Float64(const string &n = "");
     virtual ~HDF5Float64() {}
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &dataset, int &error);
+    virtual bool read(const string &dataset);
     void set_did(hid_t dset);
     void set_tid(hid_t type);
     hid_t get_did();

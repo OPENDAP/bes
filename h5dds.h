@@ -6,20 +6,14 @@
 // #include <H5Ppublic.h>
 #include <H5Tpublic.h>
 #include <H5Spublic.h>
-#include<H5Apublic.h>
+#include <H5Apublic.h>
 #include <H5public.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <assert.h>
-#include <iostream>
-#include <string>
-#define HAVE_CONFIG_H
+
 #include "cgi_util.h" 
 #include "DDS.h"
 #include "DODSFilter.h"
 #include "common.h"
+
 #include "HDF5Int32.h"
 #include "HDF5UInt32.h"
 #include "HDF5UInt16.h"
@@ -46,7 +40,7 @@ static const char UINT16[]="UInt16";
 static const char UINT32[]="UInt32";
 static const char INT_ELSE[]="Int_else";
 static const char FLOAT_ELSE[]="Float_else";
-static DS_t dt_inst;
+
 
 
 

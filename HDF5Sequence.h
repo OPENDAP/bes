@@ -8,8 +8,9 @@
 
 #include "Sequence.h"
 #include "common.h"
-#
-extern "C"{int get_data(hid_t dset,void *buf,char *);}
+
+extern "C" int get_data(hid_t dset,void *buf,char *);
+
 extern Sequence * NewSequence(const string &n = "");
 
 class HDF5Sequence: public Sequence {
@@ -24,7 +25,7 @@ friend string return_type(hid_t datatype);
 
     virtual BaseType *ptr_duplicate();
 
-    virtual bool read(const string &dataset, int &error);
+    virtual bool read(const string &dataset);
 
     void set_did(hid_t dset);
     void set_tid(hid_t type);

@@ -12,9 +12,8 @@
 #include <string.h>
 #include <H5Ipublic.h>
 #include "UInt32.h"
-#
 
-extern "C"{int get_data(hid_t dset,void *buf,char*);}
+extern "C" int get_data(hid_t dset,void *buf,char*);
 
 extern UInt32 * NewUInt32(const string &n = "");
 
@@ -31,7 +30,7 @@ public:
 
     virtual BaseType *ptr_duplicate();
     
-    virtual bool read(const string &dataset, int &error);
+    virtual bool read(const string &dataset);
 
     void set_did(hid_t dset);
     void set_tid(hid_t type);

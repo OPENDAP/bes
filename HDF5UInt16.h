@@ -12,8 +12,7 @@
 #include <H5Ipublic.h>
 #include "UInt16.h"
 
-#
-extern "C"{int get_data(hid_t dset,void *buf,char *);}
+extern "C" int get_data(hid_t dset,void *buf,char *);
 
 extern UInt16 * NewUInt16(const string &n = "");
 
@@ -27,7 +26,7 @@ friend string return_type(hid_t datatype);
     HDF5UInt16(const string &n = "");
     virtual ~HDF5UInt16() {}
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &dataset, int &error);
+    virtual bool read(const string &dataset);
 
   void set_did(hid_t dset);
   void set_tid(hid_t type);

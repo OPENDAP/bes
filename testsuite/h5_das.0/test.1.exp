@@ -5,9 +5,7 @@ global srcdir
 
 source "../../etc/common_tests.exp"
 
-set test_name "test.1"
-
 # The `1' in compare_stdout means call xfail if the test fails.
 
 h5_das_start testsuite/test1.h5
-compare_stdout "testsuite/test.1.data" "${test_name}"
+compare_stdout "testsuite/test.1.data" "test.1" 1 match

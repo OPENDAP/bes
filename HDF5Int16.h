@@ -15,8 +15,7 @@
 #include <H5Ipublic.h>
 #include "Int16.h"
 
-
-extern "C"{int get_data(hid_t dset,void *buf,char *);}
+extern "C" int get_data(hid_t dset,void *buf,char *);
 
 extern Int16 * NewInt16(const string &n = "");
 
@@ -32,7 +31,7 @@ friend string return_type(hid_t datatype);
 
     virtual BaseType *ptr_duplicate();
     
-    virtual bool read(const string &dataset, int &error);
+    virtual bool read(const string &dataset);
 
    void set_did(hid_t dset);
    void set_tid(hid_t type);

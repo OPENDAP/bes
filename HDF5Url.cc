@@ -3,22 +3,21 @@
 #pragma implementation
 #endif
 
-#include <assert.h>
+#include "config_hdf5.h"
+
 #include <string>
-#include <assert.h>
 #include <ctype.h>
 
-#define HAVE_CONFIG_H
-#include "config_dap.h"
 #include "HDF5Url.h"
+#include "InternalErr.h"
 
 Url *
-NewUrl(const string &n)
+NewUrl(const string & n)
 {
     return new HDF5Url(n);
 }
 
-HDF5Url::HDF5Url(const string &n) : Url(n)
+HDF5Url::HDF5Url(const string & n):Url(n)
 {
 }
 
@@ -29,10 +28,10 @@ HDF5Url::ptr_duplicate()
 }
 
 bool
-HDF5Url::read(const string &, int &error)
+HDF5Url::read(const string &)
 {
-    error = 1;
+    throw InternalErr(__FILE__, __LINE__, 
+		      "HDF5Url::read(): Unimplemented method.");
+
     return false;
 }
-
-
