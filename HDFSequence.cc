@@ -16,6 +16,11 @@
 
 #include <map>
 #include <string>
+// Include this on linux to suppres an annoying warning about multiple
+// definitions of MIN and MAX.
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -23,30 +28,32 @@
 #include "HDFStructure.h"
 #include "dhdferr.h"
 #include "escaping.h"
-#include "dodsutil.h"
 
 #include "Error.h"
 
 HDFSequence::HDFSequence(const string &n) : Sequence(n), row(0) {
-    set_level(0);
 }
+
 HDFSequence::~HDFSequence() {}
+
 BaseType *HDFSequence::ptr_duplicate() { return new HDFSequence(*this); }  
-HDFStructure *CastBaseTypeToStructure(BaseType *p);
 
 Sequence *NewSequence(const string &n) { return new HDFSequence(n); }
 
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 
-bool HDFSequence::read(const string& dataset) {
-  int err;
-  int status = read_tagref(dataset, -1, -1, err);
-  if (err)
-    throw Error(unknown_error, "Could not read from dataset.");
-  return status;
+bool
+HDFSequence::read(const string& dataset) {
+    int err = 0;
+    read_tagref(dataset, -1, -1, err);
+    if (err)
+	throw Error(unknown_error, "Could not read from dataset.");
+    return false;
 }
 
-bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& err) { 
+bool 
+HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, 
+			 int& err) { 
 
     string hdf_file = dataset;
     string hdf_name = this->name();
@@ -55,9 +62,9 @@ bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& 
     if (vd.name.length() == 0) {
 	hdfistream_vdata vin(hdf_file.c_str());
 	if(ref != -1)
-	  vin.seek_ref(ref);
+	    vin.seek_ref(ref);
 	else
-	  vin.seek(hdf_name.c_str());
+	    vin.seek(hdf_name.c_str());
 	vin >> vd;
 	vin.close();
 	if (!vd) {		// something is wrong
@@ -92,6 +99,28 @@ bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& 
 }
 
 // $Log: HDFSequence.cc,v $
+// Revision 1.13  2002/06/03 22:37:38  jimg
+// Removed call to Sequence::set_level(). This method was removed from the C++
+// DAP because it was never used in the serialization or deserization code.
+//
+// Revision 1.11.4.5  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
+// Revision 1.11.4.4  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
+// Revision 1.11.4.3  2002/04/10 18:38:10  jimg
+// I modified the server so that it knows about, and uses, all the DODS
+// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
+// cast most integer data to 32 bits. Now if an HDF file contains these
+// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
+// using those types (which DODS has supported for a while...).
+//
+// Revision 1.11.4.2  2002/03/14 19:15:07  jimg
+// Fixed use of int err in read() so that it's always initialized to zero.
+// This is a fix for bug 135.
+//
 // Revision 1.12  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //
