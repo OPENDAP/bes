@@ -3,7 +3,7 @@
 # various servers (hdf, dsp, netcdf, matlab, ...) on serveral different
 # platforms. 
 # 
-# $Id: unix.exp,v 1.1 2001/07/18 14:35:40 jimg Exp $
+# $Id: unix.exp,v 1.2 2001/07/25 00:20:19 jimg Exp $
 
 global H5DAS
 if ![info exists H5DAS] then {
@@ -16,10 +16,9 @@ proc h5_das_start {file} {
     global verbose
     global H5DAS
     global comp_output
-    global spawn_id
 
     if {$verbose >= 1} {
-	send_user "Testing geturl $switches $urls >& $file ...\n"
+	send_user "Testing ./$H5DAS $file ...\n"
 	exp_internal 1
     }
 
@@ -34,6 +33,6 @@ proc h5_das_exit {} {
 }
 
 proc h5_das_version {} {
-    send_user "geturl test suite 1.0\n"
+    send_user "hdf5 das test suite 1.0\n"
 }
 

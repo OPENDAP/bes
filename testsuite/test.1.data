@@ -1,5 +1,6 @@
 HTTP/1.0 200 OK
-XDODS-Server: dods/3.0
+XDODS-Server: dods/3.2
+Date: *
 Content-type: text/plain
 Content-Description: dods_das
 
