@@ -11,68 +11,9 @@
 //
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
-// $Log: hdfdesc.cc,v $
-// Revision 1.16  2000/03/31 16:51:37  jimg
-// Merged with release-3-1-4
-//
-// Revision 1.13.8.4  2000/03/31 00:51:02  jimg
-// Removed some old code.
-// Added check of hdf-eos parser status.
-//
-// Revision 1.13.8.3  2000/03/20 22:26:52  jimg
-// Switched to the id2dods, etc. escaping function in the dap.
-//
-// Revision 1.15  2000/03/09 00:47:49  jimg
-// *** empty log message ***
-//
-// Revision 1.13.8.2  2000/03/09 00:24:59  jimg
-// Replaced int and uint32 with string::size_type
-//
-// Revision 1.14  1999/11/06 00:32:40  jimg
-// Result of merge with the 3-1-2 sources
-//
-// Revision 1.13.8.1  1999/10/21 00:29:57  jimg
-// Removed duplicate definition of hdf_dim
-//
-// Revision 1.13  1999/05/06 03:23:36  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
-// Jakes String --> string changes
-//
-// Revision 1.7  1998/04/03 18:34:28  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.6  1998/02/05 20:14:32  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.5  1997/12/30 23:55:42  jimg
-// The Dataset name is no longer filtered by id2dods(). Now `.'s in the
-// filename look like dots not `%2e'.
-//
-// Revision 1.4  1997/10/09 22:19:40  jimg
-// Resolved conflicts in merge of 2.14c to trunk.
-//
-// Revision 1.3  1997/03/10 22:45:55  jimg
-// Update for 2.12
-//
-// Revision 1.5  1996/10/07 17:26:23  ike
-// Added Dims2Attrs() to convert hdf_dim info into hdf_attr.
-// SDS_descriptions() adds sds dimension attributes to the das.
-//
-// Revision 1.4  1996/09/24  22:35:40  todd
-// Added copyright statement.
-//
-// Revision 1.3  1996/09/24  19:44:49  todd
-// Many changes to support Vdatas, GR's.  Bug fixes.
-//
-// Revision 1.2  1996/05/06  17:52:59  todd
-// Updated BROKEN_PARSER code.
-//
-// Revision 1.1  1996/05/02  18:18:45  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 // STL includes
 #include <string>
@@ -602,3 +543,70 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
   }
   return dattrs;
 }
+
+// $Log: hdfdesc.cc,v $
+// Revision 1.17  2000/10/09 19:46:20  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.16  2000/03/31 16:51:37  jimg
+// Merged with release-3-1-4
+//
+// Revision 1.13.8.4  2000/03/31 00:51:02  jimg
+// Removed some old code.
+// Added check of hdf-eos parser status.
+//
+// Revision 1.13.8.3  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
+// Revision 1.15  2000/03/09 00:47:49  jimg
+// *** empty log message ***
+//
+// Revision 1.13.8.2  2000/03/09 00:24:59  jimg
+// Replaced int and uint32 with string::size_type
+//
+// Revision 1.14  1999/11/06 00:32:40  jimg
+// Result of merge with the 3-1-2 sources
+//
+// Revision 1.13.8.1  1999/10/21 00:29:57  jimg
+// Removed duplicate definition of hdf_dim
+//
+// Revision 1.13  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
+//
+// Revision 1.7  1998/04/03 18:34:28  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.6  1998/02/05 20:14:32  jimg
+// DODS now compiles with gcc 2.8.x
+//
+// Revision 1.5  1997/12/30 23:55:42  jimg
+// The Dataset name is no longer filtered by id2dods(). Now `.'s in the
+// filename look like dots not `%2e'.
+//
+// Revision 1.4  1997/10/09 22:19:40  jimg
+// Resolved conflicts in merge of 2.14c to trunk.
+//
+// Revision 1.3  1997/03/10 22:45:55  jimg
+// Update for 2.12
+//
+// Revision 1.5  1996/10/07 17:26:23  ike
+// Added Dims2Attrs() to convert hdf_dim info into hdf_attr.
+// SDS_descriptions() adds sds dimension attributes to the das.
+//
+// Revision 1.4  1996/09/24  22:35:40  todd
+// Added copyright statement.
+//
+// Revision 1.3  1996/09/24  19:44:49  todd
+// Many changes to support Vdatas, GR's.  Bug fixes.
+//
+// Revision 1.2  1996/05/06  17:52:59  todd
+// Updated BROKEN_PARSER code.
+//
+// Revision 1.1  1996/05/02  18:18:45  todd
+// Initial revision
+//

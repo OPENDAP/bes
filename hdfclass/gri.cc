@@ -8,73 +8,9 @@
 //
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
-// $Log: gri.cc,v $
-// Revision 1.7  2000/03/31 16:56:05  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.6.8.1  2000/03/20 23:26:07  jimg
-// Removed debugging output
-//
-// Revision 1.6  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/09/10 21:50:22  jehamby
-// Fix subsetting for multi-component GR (Note: due to an HDF library bug,
-// you can't actually subset a GR with >1 component, but at least retrieving
-// the entire image works).  Also, remove debugging output and work around
-// another HDF bug so palettes output as Byte instead of string.
-//
-// Revision 1.3  1998/07/13 20:26:35  jimg
-// Fixes from the final test of the new build process
-//
-// Revision 1.2.4.1  1998/05/22 19:50:51  jimg
-// Patch from Jake Hamby to support subsetting raster images
-//
-// Revision 1.2  1998/04/03 18:34:17  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:42:58  jimg
-// Added.
-//
-// Revision 1.10  1996/09/20  20:25:48  ike
-// Changed meta behavior for rasters. Palletes are now read when meta is true.
-//
-// Revision 1.9  1996/09/20  18:28:40  ike
-// Fixed GR reading to read images in there native interace by default.
-//
-// Revision 1.8  1996/09/20  17:49:55  ike
-// Added setinterlace() to set the interlace type for reading images.
-// Used GRreqlutil to for palletes to be read in pixel interlace.
-//
-// Revision 1.7  1996/08/22  20:56:36  todd
-// Corrected bug in destructor.  Cleaned up initializations.
-//
-// Revision 1.6  1996/07/22  17:15:09  todd
-// Const-corrected hdfistream_gri::seek() routine.
-//
-// Revision 1.5  1996/06/18  22:06:19  ike
-// Removed default argument values from argument lists.
-//
-// Revision 1.4  1996/06/18  01:13:20  ike
-// Fixed infinite loop caused by problem incrementing _nattrs, _nfattrs.
-// Added _ok(), !operator, and has_palette to hdf_gri.
-//
-// Revision 1.3  1996/06/18  00:57:13  todd
-// Added hcerr.h include at top of module.
-//
-// Revision 1.2  1996/06/14  21:58:45  ike
-// fixed operator>> to overwrite non vectors objects.
-//
-// Revision 1.1  1996/06/14  21:53:09  ike
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 #include <mfgr.h>
@@ -529,4 +465,74 @@ bool hdf_gri::_ok() const {
   return (ok);
 }
 
-
+// $Log: gri.cc,v $
+// Revision 1.8  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.7  2000/03/31 16:56:05  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.6.8.1  2000/03/20 23:26:07  jimg
+// Removed debugging output
+//
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.4  1998/09/10 21:50:22  jehamby
+// Fix subsetting for multi-component GR (Note: due to an HDF library bug,
+// you can't actually subset a GR with >1 component, but at least retrieving
+// the entire image works).  Also, remove debugging output and work around
+// another HDF bug so palettes output as Byte instead of string.
+//
+// Revision 1.3  1998/07/13 20:26:35  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.2.4.1  1998/05/22 19:50:51  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
+// Revision 1.2  1998/04/03 18:34:17  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.1  1996/10/31 18:42:58  jimg
+// Added.
+//
+// Revision 1.10  1996/09/20  20:25:48  ike
+// Changed meta behavior for rasters. Palletes are now read when meta is true.
+//
+// Revision 1.9  1996/09/20  18:28:40  ike
+// Fixed GR reading to read images in there native interace by default.
+//
+// Revision 1.8  1996/09/20  17:49:55  ike
+// Added setinterlace() to set the interlace type for reading images.
+// Used GRreqlutil to for palletes to be read in pixel interlace.
+//
+// Revision 1.7  1996/08/22  20:56:36  todd
+// Corrected bug in destructor.  Cleaned up initializations.
+//
+// Revision 1.6  1996/07/22  17:15:09  todd
+// Const-corrected hdfistream_gri::seek() routine.
+//
+// Revision 1.5  1996/06/18  22:06:19  ike
+// Removed default argument values from argument lists.
+//
+// Revision 1.4  1996/06/18  01:13:20  ike
+// Fixed infinite loop caused by problem incrementing _nattrs, _nfattrs.
+// Added _ok(), !operator, and has_palette to hdf_gri.
+//
+// Revision 1.3  1996/06/18  00:57:13  todd
+// Added hcerr.h include at top of module.
+//
+// Revision 1.2  1996/06/14  21:58:45  ike
+// fixed operator>> to overwrite non vectors objects.
+//
+// Revision 1.1  1996/06/14  21:53:09  ike
+// Initial revision
+//

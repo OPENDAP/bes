@@ -1,4 +1,6 @@
 
+#include "config_hdf.h"
+
 // libg++
 #include <vector>
 #include <string>

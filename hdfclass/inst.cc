@@ -8,12 +8,9 @@
 // $rcsfile$ - force g++ to instantiate templates.  Does nothing if g++
 //             is not being used.
 //                  
-// Changes:
-// $Log: inst.cc,v $
-// Revision 1.1  1996/10/31 18:43:05  jimg
-// Added.
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 #include <hdfclass.h>
@@ -34,3 +31,14 @@ template class vector<hdf_gri>;
 extern "C" {
   void _HAVE_HDFCLASS(void) {}
 }
+
+// Changes:
+// $Log: inst.cc,v $
+// Revision 1.2  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.1  1996/10/31 18:43:05  jimg
+// Added.
+//

@@ -11,22 +11,6 @@
 //
 // $RCSfile: hcerr.h,v $ - error handling for HDFclass library
 // 
-// $Log: hcerr.h,v $
-// Revision 1.3  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.2  1998/04/03 18:34:17  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:00  jimg
-// Added.
-//
-// Revision 1.2  1996/09/20  17:55:15  ike
-// Added exception for bad interlace type.
-//
-// Revision 1.1  1996/09/20  17:21:25  ike
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -289,6 +273,27 @@ public:
         hcerr("Unknown interlace type.", file, line) {} 
 }; // if bad interlace type is passed to setinterlace
 
+// $Log: hcerr.h,v $
+// Revision 1.4  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.3  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.2  1998/04/03 18:34:17  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.1  1996/10/31 18:43:00  jimg
+// Added.
+//
+// Revision 1.2  1996/09/20  17:55:15  ike
+// Added exception for bad interlace type.
+//
+// Revision 1.1  1996/09/20  17:21:25  ike
+// Initial revision
+//
 
 #endif // ifndef _HCERR_H
 

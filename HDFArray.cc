@@ -10,47 +10,22 @@
 //
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
-// $Log: HDFArray.cc,v $
-// Revision 1.9  2000/03/31 16:56:05  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.8.8.1  2000/03/20 22:26:52  jimg
-// Switched to the id2dods, etc. escaping function in the dap.
-//
-// Revision 1.8  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.7.6.1  1999/05/06 00:27:21  jimg
-// Jakes String --> string changes
-//
-// Revision 1.5  1998/04/03 18:34:21  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.4  1998/02/05 20:14:30  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.3  1997/03/10 22:45:14  jimg
-// Update for 2.12
-//
-// Revision 1.5  1996/11/21 23:20:27  todd
-// Added error return value to read() mfunc.
-//
-// Revision 1.4  1996/09/24 20:23:08  todd
-// Added copyright and header.
-//
-//
 /////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <vector>
 
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
-#include "config_dap.h"
+
 #include "escaping.h"
 #include "HDFArray.h"
 #include "dhdferr.h"
 #include "dodsutil.h"
+
+#include "Error.h"
 
 HDFArray::HDFArray(const string &n, BaseType *v) : Array(n, v)
 {}
@@ -62,9 +37,13 @@ void LoadArrayFromSDS(HDFArray *ar, const hdf_sds& sds);
 void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr);
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFArray::read(const string &dataset, int &error)
+bool HDFArray::read(const string &dataset)
 {
-    return read_tagref(dataset, -1, -1, error);
+  int err;
+  int status = read_tagref(dataset, -1, -1, err);
+  if (err)
+    throw Error(unknown_error, "Could not read from dataset.");
+  return status;
 }
 
 bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
@@ -183,3 +162,36 @@ bool HDFArray::GetSlabConstraint(vector<int>& start_array,
     }
     return true;
 }
+
+// $Log: HDFArray.cc,v $
+// Revision 1.10  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.9  2000/03/31 16:56:05  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.8.8.1  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
+// Revision 1.8  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.7.6.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
+//
+// Revision 1.5  1998/04/03 18:34:21  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.4  1998/02/05 20:14:30  jimg
+// DODS now compiles with gcc 2.8.x
+//
+// Revision 1.3  1997/03/10 22:45:14  jimg
+// Update for 2.12
+//
+// Revision 1.5  1996/11/21 23:20:27  todd
+// Added error return value to read() mfunc.
+//
+// Revision 1.4  1996/09/24 20:23:08  todd
+// Added copyright and header.

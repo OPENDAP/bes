@@ -11,61 +11,9 @@
 // $RCSfile: hc2dap.cc,v $ - routines to convert between HDFClass and DAP 
 //                           data structures
 // 
-// $Log: hc2dap.cc,v $
-// Revision 1.14  2000/03/31 16:56:06  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.13.8.2  2000/03/20 23:26:07  jimg
-// Removed debugging output
-//
-// Revision 1.13.8.1  2000/03/20 22:26:52  jimg
-// Switched to the id2dods, etc. escaping function in the dap.
-//
-// Revision 1.13  1999/05/06 03:23:36  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
-// Jakes String --> string changes
-//
-// Revision 1.8  1998/04/14 18:42:05  jimg
-// Temporary fix for LoadStructureFromVgroup. Added err. There is a more
-// comprehensive fix from Jake Hamby that will added later.
-//
-// Revision 1.7  1998/04/06 16:08:20  jimg
-// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
-//
-// Revision 1.6  1998/04/03 18:34:27  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.5  1998/02/05 20:14:31  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.4  1997/12/30 23:59:06  jimg
-// Changed the functions that map datatypes so that 8-bit numbers are sent as
-// Byte variables rather than Int32 or UInt32. This is a work-around for
-// problems that client-side software has in dealing with 8-bit numbers that
-// get transmitted in 32-bit fields.
-//
-// Revision 1.3  1997/03/10 22:45:50  jimg
-// Update for 2.12
-//
-// Revision 1.5  1996/11/20  22:28:23  todd
-// Modified to support UInt32 type.
-//
-// Revision 1.4  1996/10/14 18:18:06  todd
-// Added compile option DONT_HAVE_UINT to allow compilation until DODS has
-// unsigned integer types.
-//
-// Revision 1.3  1996/09/24 22:34:55  todd
-// Added copyright statement.
-//
-// Revision 1.2  1996/09/24  19:44:13  todd
-// Many changes to support Vdatas, GR's.  Bug fixes.
-//
-// Revision 1.1  1996/05/02  18:18:18  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <strstream.h>
 // STL includes
@@ -555,3 +503,63 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 #endif
   }
 }
+
+// $Log: hc2dap.cc,v $
+// Revision 1.15  2000/10/09 19:46:20  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.14  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.13.8.2  2000/03/20 23:26:07  jimg
+// Removed debugging output
+//
+// Revision 1.13.8.1  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
+// Revision 1.13  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
+//
+// Revision 1.8  1998/04/14 18:42:05  jimg
+// Temporary fix for LoadStructureFromVgroup. Added err. There is a more
+// comprehensive fix from Jake Hamby that will added later.
+//
+// Revision 1.7  1998/04/06 16:08:20  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
+// Revision 1.6  1998/04/03 18:34:27  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.5  1998/02/05 20:14:31  jimg
+// DODS now compiles with gcc 2.8.x
+//
+// Revision 1.4  1997/12/30 23:59:06  jimg
+// Changed the functions that map datatypes so that 8-bit numbers are sent as
+// Byte variables rather than Int32 or UInt32. This is a work-around for
+// problems that client-side software has in dealing with 8-bit numbers that
+// get transmitted in 32-bit fields.
+//
+// Revision 1.3  1997/03/10 22:45:50  jimg
+// Update for 2.12
+//
+// Revision 1.5  1996/11/20  22:28:23  todd
+// Modified to support UInt32 type.
+//
+// Revision 1.4  1996/10/14 18:18:06  todd
+// Added compile option DONT_HAVE_UINT to allow compilation until DODS has
+// unsigned integer types.
+//
+// Revision 1.3  1996/09/24 22:34:55  todd
+// Added copyright statement.
+//
+// Revision 1.2  1996/09/24  19:44:13  todd
+// Many changes to support Vdatas, GR's.  Bug fixes.
+//
+// Revision 1.1  1996/05/02  18:18:18  todd
+// Initial revision
+//

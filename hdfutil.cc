@@ -10,33 +10,9 @@
 //
 // $RCSfile: hdfutil.cc,v $ - Miscellaneous routines for DODS HDF server
 //
-// $Log: hdfutil.cc,v $
-// Revision 1.6  1999/05/06 03:23:36  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5.6.1  1999/05/06 00:27:25  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/02/05 20:14:32  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.3  1997/03/10 22:45:56  jimg
-// Update for 2.12
-//
-// Revision 1.4  1997/02/25 02:03:19  todd
-// Added misc comments.
-//
-// Revision 1.3  1996/11/20  22:28:43  todd
-// Modified to support UInt32 type.
-//
-// Revision 1.2  1996/10/07 21:15:17  todd
-// Changes escape character to % from _.
-//
-// Revision 1.1  1996/09/24 22:38:16  todd
-// Initial revision
-//
-//
 /////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <string>
 #include <mfhdf.h>
@@ -120,3 +96,33 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
     return rv;
 }
 
+// $Log: hdfutil.cc,v $
+// Revision 1.7  2000/10/09 19:46:20  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.6  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5.6.1  1999/05/06 00:27:25  jimg
+// Jakes String --> string changes
+//
+// Revision 1.4  1998/02/05 20:14:32  jimg
+// DODS now compiles with gcc 2.8.x
+//
+// Revision 1.3  1997/03/10 22:45:56  jimg
+// Update for 2.12
+//
+// Revision 1.4  1997/02/25 02:03:19  todd
+// Added misc comments.
+//
+// Revision 1.3  1996/11/20  22:28:43  todd
+// Modified to support UInt32 type.
+//
+// Revision 1.2  1996/10/07 21:15:17  todd
+// Changes escape character to % from _.
+//
+// Revision 1.1  1996/09/24 22:38:16  todd
+// Initial revision
+//

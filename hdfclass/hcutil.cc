@@ -8,27 +8,9 @@
 //
 // $RCSfile: hcutil.cc,v $ - misc utility routines for HDFClass
 //
-// $Log: hcutil.cc,v $
-// Revision 1.4  2000/03/09 01:44:33  jimg
-// merge with 3.1.3
-//
-// Revision 1.3.8.1  2000/03/09 00:24:59  jimg
-// Replaced int and uint32 with string::size_type
-//
-// Revision 1.3  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.2  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.1.20.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.1  1996/10/31 18:43:02  jimg
-// Added.
-//
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <string>
 #include <vector>
@@ -105,4 +87,28 @@ bool VdataExists(const char *filename, const char *vdname) {
     return (ref > 0);
 }
 
-
+// $Log: hcutil.cc,v $
+// Revision 1.5  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.4  2000/03/09 01:44:33  jimg
+// merge with 3.1.3
+//
+// Revision 1.3.8.1  2000/03/09 00:24:59  jimg
+// Replaced int and uint32 with string::size_type
+//
+// Revision 1.3  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.2  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.1.20.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.1  1996/10/31 18:43:02  jimg
+// Added.
+//
+//

@@ -11,86 +11,6 @@
 //
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
-// $Log: hdfclass.h,v $
-// Revision 1.6  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.3  1998/09/10 20:33:50  jehamby
-// Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
-// is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
-// symlinked to the other two locations to save disk space.
-//
-// Revision 1.2  1998/04/03 18:34:18  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:03  jimg
-// Added.
-//
-// Revision 1.16  1996/10/14 23:07:53  todd
-// Added a new import function to hdf_genvec to allow import from a vector
-// of string.
-//
-// Revision 1.15  1996/09/20 17:56:02  ike
-// Added interlace data member to GR class.
-//
-// Revision 1.14  1996/08/22  20:53:46  todd
-// Added export functions for char8 type.
-//
-// Revision 1.13  1996/08/14  17:57:28  todd
-// Added convenience functions to check for existence of GR's, SDS's, Vdata's.
-//
-// Revision 1.12  1996/08/13  18:45:51  todd
-// Added declarations of element access mfuncs for hdf_genvec.
-//
-// Revision 1.11  1996/07/22  17:14:32  todd
-// Changed export_*() mfuncs so they return a C++ array.  Added exportv_*() mfuncs
-// which return STL vectors.
-//
-// Revision 1.10  1996/06/18  01:24:30  ike
-// Fixed typo in hdf_gri.
-//
-// Revision 1.9  1996/06/18  01:11:28  ike
-// Added _ok(), !operator, and has_palette to hdf_gri.
-//
-// Revision 1.8  1996/06/18  00:52:38  todd
-// Fixed order of hdf_palette and hdf_gri.
-//
-// Revision 1.7  1996/06/17  15:45:39  ike
-// Fixed typo in hdf_palette.
-//
-// Revision 1.6  1996/06/14  23:14:57  ike
-// Added hdf_gri, hdf_palette container classes.
-//
-// Revision 1.5  1996/06/14  23:08:45  todd
-// Added copyright statement.
-// Modified hdf_genvec interface(revised constructor, added new import() mfuncs, added
-// print() mfunc).
-// Added operator! to hdf_sds.
-// Added hdf_vdata, hdf_field container classes.
-// Added split(), join() utility functions.
-//
-// Revision 1.4  1996/05/07  23:41:53  todd
-// Made hdf_genvec::print mfunc const.
-// Added has_scale mfunc to hdf_sds.
-//
-// Revision 1.3  1996/04/18  19:06:59  todd
-// Added new mfuncs data() and print() to hdf_genvec.
-//
-// Revision 1.2  1996/04/04  01:12:23  todd
-// Added import() public member function to hdf_genvec class declaration.
-//
-// Revision 1.1  1996/04/02  20:28:23  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -274,5 +194,91 @@ string join(const vector<string>& sv, const string& delim);
 bool SDSExists(const char *filename, const char *sdsname);
 bool GRExists(const char *filename, const char *grname);
 bool VdataExists(const char *filename, const char *vdname);
+
+// $Log: hdfclass.h,v $
+// Revision 1.7  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
+// Revision 1.3  1998/09/10 20:33:50  jehamby
+// Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
+// is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
+// symlinked to the other two locations to save disk space.
+//
+// Revision 1.2  1998/04/03 18:34:18  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.1  1996/10/31 18:43:03  jimg
+// Added.
+//
+// Revision 1.16  1996/10/14 23:07:53  todd
+// Added a new import function to hdf_genvec to allow import from a vector
+// of string.
+//
+// Revision 1.15  1996/09/20 17:56:02  ike
+// Added interlace data member to GR class.
+//
+// Revision 1.14  1996/08/22  20:53:46  todd
+// Added export functions for char8 type.
+//
+// Revision 1.13  1996/08/14  17:57:28  todd
+// Added convenience functions to check for existence of GR's, SDS's, Vdata's.
+//
+// Revision 1.12  1996/08/13  18:45:51  todd
+// Added declarations of element access mfuncs for hdf_genvec.
+//
+// Revision 1.11  1996/07/22  17:14:32  todd
+// Changed export_*() mfuncs so they return a C++ array.  Added exportv_*() mfuncs
+// which return STL vectors.
+//
+// Revision 1.10  1996/06/18  01:24:30  ike
+// Fixed typo in hdf_gri.
+//
+// Revision 1.9  1996/06/18  01:11:28  ike
+// Added _ok(), !operator, and has_palette to hdf_gri.
+//
+// Revision 1.8  1996/06/18  00:52:38  todd
+// Fixed order of hdf_palette and hdf_gri.
+//
+// Revision 1.7  1996/06/17  15:45:39  ike
+// Fixed typo in hdf_palette.
+//
+// Revision 1.6  1996/06/14  23:14:57  ike
+// Added hdf_gri, hdf_palette container classes.
+//
+// Revision 1.5  1996/06/14  23:08:45  todd
+// Added copyright statement.
+// Modified hdf_genvec interface(revised constructor, added new import() mfuncs, added
+// print() mfunc).
+// Added operator! to hdf_sds.
+// Added hdf_vdata, hdf_field container classes.
+// Added split(), join() utility functions.
+//
+// Revision 1.4  1996/05/07  23:41:53  todd
+// Made hdf_genvec::print mfunc const.
+// Added has_scale mfunc to hdf_sds.
+//
+// Revision 1.3  1996/04/18  19:06:59  todd
+// Added new mfuncs data() and print() to hdf_genvec.
+//
+// Revision 1.2  1996/04/04  01:12:23  todd
+// Added import() public member function to hdf_genvec class declaration.
+//
+// Revision 1.1  1996/04/02  20:28:23  todd
+// Initial revision
+//
 
 #endif // _HDFCLASS_H

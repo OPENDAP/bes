@@ -10,15 +10,9 @@
 //
 // $RCSfile: dhdferr.cc,v $ - HDF server error class implementations
 //
-// $Log: dhdferr.cc,v $
-// Revision 1.3  1997/03/10 22:45:46  jimg
-// Update for 2.12
-//
-// Revision 1.1  1996/09/27 18:19:48  todd
-// Initial revision
-//
-//
 /////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 #include <hcerr.h>
@@ -52,3 +46,16 @@ void fakethrow(const dhdferr& e) {
 }
 //#endif
     
+// $Log: dhdferr.cc,v $
+// Revision 1.4  2000/10/09 19:46:20  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.3  1997/03/10 22:45:46  jimg
+// Update for 2.12
+//
+// Revision 1.1  1996/09/27 18:19:48  todd
+// Initial revision
+//
+//

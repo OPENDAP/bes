@@ -10,7 +10,40 @@
 //
 // $RCSfile: HDFSequence.h,v $ - HDFSequence class declaration
 //
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _HDFSEQUENCE_H
+#define _HDFSEQUENCE_H
+
+// STL includes
+#include <string>
+
+// DODS includes
+#include "Sequence.h"
+#include "ReadTagRef.h"
+
+class HDFSequence: public Sequence, public ReadTagRef {
+public:
+    HDFSequence(const string &n = "");
+    virtual ~HDFSequence();
+    virtual BaseType *ptr_duplicate();
+    virtual bool read(const string &);
+    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
+protected:
+    int row;         // current row
+    hdf_vdata vd;    // holds Vdata
+};
+
+Sequence *NewSequence(const string &n);
+
+typedef HDFSequence * HDFSequencePtr;
+
 // $Log: HDFSequence.h,v $
+// Revision 1.7  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
 // Revision 1.6  1999/05/06 03:23:35  jimg
 // Merged changes from no-gnu branch
 //
@@ -30,35 +63,6 @@
 // Added copyright and header.
 //
 //
-/////////////////////////////////////////////////////////////////////////////
-
-#ifndef _HDFSEQUENCE_H
-#define _HDFSEQUENCE_H
-
-// STL includes
-#include <string>
-
-// DODS includes
-#include "Sequence.h"
-#include "ReadTagRef.h"
-
-class HDFSequence: public Sequence, public ReadTagRef {
-public:
-    HDFSequence(const string &n = "");
-    virtual ~HDFSequence();
-    virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &, int &);
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
-protected:
-    int row;         // current row
-    hdf_vdata vd;    // holds Vdata
-};
-
-Sequence *NewSequence(const string &n);
-
-typedef HDFSequence * HDFSequencePtr;
-
-
 
 #endif // _HDFSEQUENCE_H
 

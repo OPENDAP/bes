@@ -8,70 +8,9 @@
 //
 // $RCSfile: genvec.cc,v $ - implementation of HDF generic vector class
 //
-// $Log: genvec.cc,v $
-// Revision 1.5  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.4  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.3.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.3  1998/09/10 21:33:24  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
-//
-// Revision 1.2  1998/02/05 20:14:29  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.1  1996/10/31 18:42:56  jimg
-// Added.
-//
-// Revision 1.12  1996/10/14 23:07:53  todd
-// Added a new import function to hdf_genvec to allow import from a vector
-// of string.
-//
-// Revision 1.11  1996/08/22 20:54:14  todd
-// Rewrite of export function suite to correctly support casts.  Now all casts towards
-// integers of greater size are supported.  (E.g., char8 -> int8 ->int16 -> int32, but
-// disallow int16 -> uint32 or uint32 -> int32).
-//
-// Revision 1.10  1996/08/21  23:18:59  todd
-// Added mfuncs to return the i'th element of a genvec.
-//
-// Revision 1.9  1996/07/22  17:12:20  todd
-// Changed export_*() mfuncs so they return a C++ array.  Added exportv_*() mfuncs
-// to return STL vectors.
-//
-// Revision 1.8  1996/06/18  21:49:21  todd
-// Fixed pointer expressions so they would be in conformance with proper usage of void *
-//
-// Revision 1.7  1996/06/18  18:37:42  todd
-// Added support for initialization from a subsampled array to the _init() and
-// constructor mfuncs; also added support for print() to output a subsample of
-// the hdf_genvec.
-// Added copyright notice.
-//
-// Revision 1.6  1996/05/02  18:10:51  todd
-// Fixed a bug in print() and in export_string().
-//
-// Revision 1.5  1996/04/23  21:11:50  todd
-// Fixed declaration of print mfunc so it was const correct.
-//
-// Revision 1.4  1996/04/18  19:06:37  todd
-// Added print() mfunc
-//
-// Revision 1.3  1996/04/04  01:11:30  todd
-// Added support for empty vectors that have a number type.
-// Added import() public member function.
-//
-// Revision 1.2  1996/04/03  00:18:18  todd
-// Fixed a bug in _init(int32, void *, int)
-//
-// Revision 1.1  1996/04/02  20:36:43  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <strstream.h>
 #include <mfhdf.h>
@@ -930,3 +869,72 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
     }
     return;
 }
+
+// $Log: genvec.cc,v $
+// Revision 1.6  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.5  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.4  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.3.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.3  1998/09/10 21:33:24  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
+//
+// Revision 1.2  1998/02/05 20:14:29  jimg
+// DODS now compiles with gcc 2.8.x
+//
+// Revision 1.1  1996/10/31 18:42:56  jimg
+// Added.
+//
+// Revision 1.12  1996/10/14 23:07:53  todd
+// Added a new import function to hdf_genvec to allow import from a vector
+// of string.
+//
+// Revision 1.11  1996/08/22 20:54:14  todd
+// Rewrite of export function suite to correctly support casts.  Now all casts towards
+// integers of greater size are supported.  (E.g., char8 -> int8 ->int16 -> int32, but
+// disallow int16 -> uint32 or uint32 -> int32).
+//
+// Revision 1.10  1996/08/21  23:18:59  todd
+// Added mfuncs to return the i'th element of a genvec.
+//
+// Revision 1.9  1996/07/22  17:12:20  todd
+// Changed export_*() mfuncs so they return a C++ array.  Added exportv_*() mfuncs
+// to return STL vectors.
+//
+// Revision 1.8  1996/06/18  21:49:21  todd
+// Fixed pointer expressions so they would be in conformance with proper usage of void *
+//
+// Revision 1.7  1996/06/18  18:37:42  todd
+// Added support for initialization from a subsampled array to the _init() and
+// constructor mfuncs; also added support for print() to output a subsample of
+// the hdf_genvec.
+// Added copyright notice.
+//
+// Revision 1.6  1996/05/02  18:10:51  todd
+// Fixed a bug in print() and in export_string().
+//
+// Revision 1.5  1996/04/23  21:11:50  todd
+// Fixed declaration of print mfunc so it was const correct.
+//
+// Revision 1.4  1996/04/18  19:06:37  todd
+// Added print() mfunc
+//
+// Revision 1.3  1996/04/04  01:11:30  todd
+// Added support for empty vectors that have a number type.
+// Added import() public member function.
+//
+// Revision 1.2  1996/04/03  00:18:18  todd
+// Fixed a bug in _init(int32, void *, int)
+//
+// Revision 1.1  1996/04/02  20:36:43  todd
+// Initial revision
+//

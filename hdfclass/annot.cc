@@ -8,32 +8,9 @@
 //
 // $RCSfile: annot.cc,v $ - input stream class for HDF annotations
 // 
-// $Log: annot.cc,v $
-// Revision 1.4  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.3  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.2.6.1  1999/05/06 00:35:44  jimg
-// Jakes String --> string changes
-//
-// Revision 1.2  1998/09/10 21:57:10  jehamby
-// Fix incorrect checking of HDF return values and other incorrect HDF calls.
-//
-// Revision 1.1  1996/10/31 18:42:55  jimg
-// Added.
-//
-// Revision 1.3  1996/06/14  23:07:37  todd
-// Fixed minor bug in operator>>(string)
-//
-// Revision 1.2  1996/05/23  18:15:08  todd
-// Added copyright statement.
-//
-// Revision 1.1  1996/04/19  01:19:55  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 
@@ -219,3 +196,33 @@ hdfistream_annot& hdfistream_annot::operator>>(vector<string>& anv) {
 }
     
     
+// $Log: annot.cc,v $
+// Revision 1.5  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.4  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.2.6.1  1999/05/06 00:35:44  jimg
+// Jakes String --> string changes
+//
+// Revision 1.2  1998/09/10 21:57:10  jehamby
+// Fix incorrect checking of HDF return values and other incorrect HDF calls.
+//
+// Revision 1.1  1996/10/31 18:42:55  jimg
+// Added.
+//
+// Revision 1.3  1996/06/14  23:07:37  todd
+// Fixed minor bug in operator>>(string)
+//
+// Revision 1.2  1996/05/23  18:15:08  todd
+// Added copyright statement.
+//
+// Revision 1.1  1996/04/19  01:19:55  todd
+// Initial revision
+//

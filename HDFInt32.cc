@@ -10,7 +10,31 @@
 //
 // $RCSfile: HDFInt32.cc,v $ - HDFInt32 class implementation
 //
+/////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
+
+#include "InternalErr.h"
+#include "HDFInt32.h"
+
+HDFInt32::HDFInt32(const string &n) : Int32(n) {}
+HDFInt32::~HDFInt32() {}
+BaseType *HDFInt32::ptr_duplicate() { return new HDFInt32(*this); }
+bool HDFInt32::read(const string &) { 
+#if 0
+    set_read_p(true); err = 0; return true; 
+#endif
+  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+}
+
+Int32 *NewInt32(const string &n) { return new HDFInt32(n); }
+
 // $Log: HDFInt32.cc,v $
+// Revision 1.5  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
 // Revision 1.4  1999/05/06 03:23:34  jimg
 // Merged changes from no-gnu branch
 //
@@ -25,17 +49,3 @@
 //
 // Revision 1.4  1996/09/24 20:53:26  todd
 // Added copyright and header.
-//
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#include "HDFInt32.h"
-
-HDFInt32::HDFInt32(const string &n) : Int32(n) {}
-HDFInt32::~HDFInt32() {}
-BaseType *HDFInt32::ptr_duplicate() { return new HDFInt32(*this); }
-bool HDFInt32::read(const string &, int &err) { 
-    set_read_p(true); err = 0; return true; 
-}
-
-Int32 *NewInt32(const string &n) { return new HDFInt32(n); }

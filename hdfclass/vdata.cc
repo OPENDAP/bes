@@ -8,49 +8,9 @@
 //
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
-// $Log: vdata.cc,v $
-// Revision 1.7  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.6  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.5.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.5  1998/09/17 21:11:08  jehamby
-// Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
-//
-// Revision 1.4  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.3  1998/09/10 21:38:39  jehamby
-// Hide HDF chunking information from DDS.
-//
-// Revision 1.2  1998/04/03 18:34:19  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:07  jimg
-// Added.
-//
-// Revision 1.5  1996/08/22  20:56:03  todd
-// Corrected bug in LoadField call.
-//
-// Revision 1.4  1996/08/14  22:34:43  ike
-// Added hdfistream_vdata::setrecs().
-//
-// Revision 1.3  1996/07/22  17:28:43  todd
-// Changed implementation of IsInternalVdata() to use the STL set class.  This allows the
-// routine to work in both g++ and SGI C++.
-//
-// Revision 1.2  1996/07/11  20:36:26  todd
-// Added check to see if Vdata's are "internal" ones used by HDF library.  Modified
-// stream class to omit such vdatas from the stream.
-//
-// Revision 1.1  1996/06/17  23:28:11  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 
@@ -463,3 +423,50 @@ bool IsInternalVdata(int32 fid, int32 ref) {
     return false;
 }
  
+// $Log: vdata.cc,v $
+// Revision 1.8  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.7  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.6  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.5.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.5  1998/09/17 21:11:08  jehamby
+// Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
+//
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
+// Revision 1.3  1998/09/10 21:38:39  jehamby
+// Hide HDF chunking information from DDS.
+//
+// Revision 1.2  1998/04/03 18:34:19  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.1  1996/10/31 18:43:07  jimg
+// Added.
+//
+// Revision 1.5  1996/08/22  20:56:03  todd
+// Corrected bug in LoadField call.
+//
+// Revision 1.4  1996/08/14  22:34:43  ike
+// Added hdfistream_vdata::setrecs().
+//
+// Revision 1.3  1996/07/22  17:28:43  todd
+// Changed implementation of IsInternalVdata() to use the STL set class.  This allows the
+// routine to work in both g++ and SGI C++.
+//
+// Revision 1.2  1996/07/11  20:36:26  todd
+// Added check to see if Vdata's are "internal" ones used by HDF library.  Modified
+// stream class to omit such vdatas from the stream.
+//
+// Revision 1.1  1996/06/17  23:28:11  todd
+// Initial revision
+//

@@ -8,106 +8,9 @@
 //
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
-// $Log: sds.cc,v $
-// Revision 1.11  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.10  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.9.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.9  1998/09/10 23:11:25  jehamby
-// Fix for SDS not outputting global attributes if no SDS's are in the dataset
-//
-// Revision 1.8  1998/09/10 21:33:24  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
-//
-// Revision 1.7  1998/04/03 18:34:19  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.6  1998/03/26 00:29:34  jimg
-// Fixed bug in _ok() where has_scale was incorrectly dereferenced. The pointer
-// was supposed to be tested and then dereferenced, but instead was dereferenced
-// first. Pointed out by Jake Hamby.
-//
-// Revision 1.5  1998/03/17 18:01:02  jimg
-// Added comments about virtual memory error when compiling
-//
-// Revision 1.4  1997/12/16 01:46:46  jimg
-// Merged release 2.14d changes
-//
-// Revision 1.3  1997/10/04 00:33:10  jimg
-// Release 2.14c fixes
-//
-// Revision 1.2.6.1  1997/09/05 21:28:05  jimg
-// Fixed _ok() so that if `has_scale' is null (the default) it is not
-// dereferenced.
-//
-// Applied Todd's patch for the `stride bug' (See the TODO list).
-//
-// Revision 1.1  1996/10/31 18:43:06  jimg
-// Added.
-//
-// Revision 1.15  1996/10/14 19:06:14  todd
-// Minor fix to support compilation on Sun platform.
-//
-// Revision 1.14  1996/09/23 23:46:18  todd
-// Fixed hdfistream_sds::operator>>(hdf_dim&) to correctly read size of
-// unlimited dimensions.
-//
-// Revision 1.13  1996/09/23  22:50:51  todd
-// Fixed bug in checking of dimension scales.
-//
-// Revision 1.12  1996/09/17  23:21:56  todd
-// Added support for reading subsets of SDS's to hdfistream_sds.
-//
-// Revision 1.11  1996/07/19  23:21:59  todd
-// Fixed bug in dimension and attribute indexing.
-//
-// Revision 1.10  1996/06/14  23:12:02  todd
-// Fixed minor bug in operator>>().
-//
-// Revision 1.9  1996/05/23  18:17:55  todd
-// Added copyright statement.
-//
-// Revision 1.8  1996/05/08  15:48:38  todd
-// Moved hdf_sds::has_scale() into this module and modified it to use the new _ok mfunc.
-// Added new _ok protected mfunc which verifies that an hdf_sds is in an OK state.
-//
-// Revision 1.7  1996/05/06  17:32:34  todd
-// Fixed a bug in the patch applied to operator>>(hdf_attr&).
-//
-// Revision 1.6  1996/05/03  22:50:03  todd
-// Added a patch to the operator>>(hdf_attr&) mfunc to strip away any null characters
-// that are padded onto the end of an attribute.  For some strange reason,
-// AVHRR Pathfinder SST files seem to have a null character padded at the end of the
-// values of text attributes.  This caused problems when the text was loaded into
-// libg++ strings.
-//
-// Revision 1.5  1996/04/19  17:36:19  todd
-// Added public mfunc seek(const char *) and protected mfunc _seek_arr(const string&)
-// which is used in implementing t.
-//
-// Revision 1.4  1996/04/19  01:14:28  todd
-// Changed eof, bof to eos, bos (end of stream).  That is better terminology, since
-// a stream of SDS's does not correspond to the entire HDF file.
-//
-// Revision 1.3  1996/04/09  23:28:44  todd
-// Modified so open() is called by constructor and not by _init().  This makes the
-// semantics of _init() more logical and consistent with hdfistream_annot.
-//
-// Revision 1.2  1996/04/04  01:41:30  todd
-// Fixed operator>>(hdf_dim&) so it would tolerate a failure of SDgetdimstrs().
-// Fixed operator>>(hdf_sds&) to allow storage of type information in zero-length
-// hdf_genvec if _meta is set.
-//
-// Revision 1.1  1996/04/02  21:47:22  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
 
+#include "config_hdf.h"
 
 #include <mfhdf.h>
 
@@ -732,4 +635,106 @@ bool hdf_sds::_ok(bool *has_scale) const {
     return true;
 }
 
-
+// $Log: sds.cc,v $
+// Revision 1.12  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.11  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.10  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.9.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.9  1998/09/10 23:11:25  jehamby
+// Fix for SDS not outputting global attributes if no SDS's are in the dataset
+//
+// Revision 1.8  1998/09/10 21:33:24  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
+//
+// Revision 1.7  1998/04/03 18:34:19  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.6  1998/03/26 00:29:34  jimg
+// Fixed bug in _ok() where has_scale was incorrectly dereferenced. The pointer
+// was supposed to be tested and then dereferenced, but instead was dereferenced
+// first. Pointed out by Jake Hamby.
+//
+// Revision 1.5  1998/03/17 18:01:02  jimg
+// Added comments about virtual memory error when compiling
+//
+// Revision 1.4  1997/12/16 01:46:46  jimg
+// Merged release 2.14d changes
+//
+// Revision 1.3  1997/10/04 00:33:10  jimg
+// Release 2.14c fixes
+//
+// Revision 1.2.6.1  1997/09/05 21:28:05  jimg
+// Fixed _ok() so that if `has_scale' is null (the default) it is not
+// dereferenced.
+//
+// Applied Todd's patch for the `stride bug' (See the TODO list).
+//
+// Revision 1.1  1996/10/31 18:43:06  jimg
+// Added.
+//
+// Revision 1.15  1996/10/14 19:06:14  todd
+// Minor fix to support compilation on Sun platform.
+//
+// Revision 1.14  1996/09/23 23:46:18  todd
+// Fixed hdfistream_sds::operator>>(hdf_dim&) to correctly read size of
+// unlimited dimensions.
+//
+// Revision 1.13  1996/09/23  22:50:51  todd
+// Fixed bug in checking of dimension scales.
+//
+// Revision 1.12  1996/09/17  23:21:56  todd
+// Added support for reading subsets of SDS's to hdfistream_sds.
+//
+// Revision 1.11  1996/07/19  23:21:59  todd
+// Fixed bug in dimension and attribute indexing.
+//
+// Revision 1.10  1996/06/14  23:12:02  todd
+// Fixed minor bug in operator>>().
+//
+// Revision 1.9  1996/05/23  18:17:55  todd
+// Added copyright statement.
+//
+// Revision 1.8  1996/05/08  15:48:38  todd
+// Moved hdf_sds::has_scale() into this module and modified it to use the new _ok mfunc.
+// Added new _ok protected mfunc which verifies that an hdf_sds is in an OK state.
+//
+// Revision 1.7  1996/05/06  17:32:34  todd
+// Fixed a bug in the patch applied to operator>>(hdf_attr&).
+//
+// Revision 1.6  1996/05/03  22:50:03  todd
+// Added a patch to the operator>>(hdf_attr&) mfunc to strip away any null characters
+// that are padded onto the end of an attribute.  For some strange reason,
+// AVHRR Pathfinder SST files seem to have a null character padded at the end of the
+// values of text attributes.  This caused problems when the text was loaded into
+// libg++ strings.
+//
+// Revision 1.5  1996/04/19  17:36:19  todd
+// Added public mfunc seek(const char *) and protected mfunc _seek_arr(const string&)
+// which is used in implementing t.
+//
+// Revision 1.4  1996/04/19  01:14:28  todd
+// Changed eof, bof to eos, bos (end of stream).  That is better terminology, since
+// a stream of SDS's does not correspond to the entire HDF file.
+//
+// Revision 1.3  1996/04/09  23:28:44  todd
+// Modified so open() is called by constructor and not by _init().  This makes the
+// semantics of _init() more logical and consistent with hdfistream_annot.
+//
+// Revision 1.2  1996/04/04  01:41:30  todd
+// Fixed operator>>(hdf_dim&) so it would tolerate a failure of SDgetdimstrs().
+// Fixed operator>>(hdf_sds&) to allow storage of type information in zero-length
+// hdf_genvec if _meta is set.
+//
+// Revision 1.1  1996/04/02  21:47:22  todd
+// Initial revision
+//

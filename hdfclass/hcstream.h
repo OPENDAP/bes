@@ -11,64 +11,6 @@
 //
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
-// $Log: hcstream.h,v $
-// Revision 1.6  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.3  1998/07/13 20:26:35  jimg
-// Fixes from the final test of the new build process
-//
-// Revision 1.2.4.1  1998/05/22 19:50:52  jimg
-// Patch from Jake Hamby to support subsetting raster images
-//
-// Revision 1.2  1998/04/03 18:34:18  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:01  jimg
-// Added.
-//
-// Revision 1.10  1996/09/20  17:53:42  ike
-// Added setinterlace() and _interlace_mode to hdfistream_gri.
-//
-// Revision 1.9  1996/08/14  22:36:17  ike
-// Added hdfistream_vdata:setrecs().
-//
-// Revision 1.8  1996/08/14  17:56:37  todd
-// Added slab setting member function, slab protected data member to hdfistream_sds.
-//
-// Revision 1.7  1996/07/22  17:13:30  todd
-// Const-corrected hdfistream_gri::seek() declaration.
-//
-// Revision 1.6  1996/06/19  18:28:39  todd
-// Fixed a bug in _rewind which caused a core dump if there were no Vdata's in the stream.
-//
-// Revision 1.5  1996/06/18  21:53:55  todd
-// Removed one constructor to be consistent with the interfaces of the other stream
-// classes.
-//
-// Revision 1.4  1996/06/14  23:18:27  ike
-// Added hdfistream_gri stream class.
-//
-// Revision 1.3  1996/06/14  23:07:18  todd
-// Added copyright statement.
-// Added support for Vdata.
-//
-// Revision 1.2  1996/04/19  17:40:18  todd
-// Added seek(const char *) and _seek_arr(const string&) mfuncs.
-// Added a cast in the eos() mfunc to silence g++'s warning.
-//
-// Revision 1.1  1996/04/19  01:17:02  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
 
 #include <string>
@@ -349,4 +291,67 @@ protected:
     } _slab;
 }; /* Note: multiple palettes is not supported in the current HDF 4.0 GR API */
 
+// $Log: hcstream.h,v $
+// Revision 1.7  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
+//
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
+// Revision 1.3  1998/07/13 20:26:35  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.2.4.1  1998/05/22 19:50:52  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
+// Revision 1.2  1998/04/03 18:34:18  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
+// Revision 1.1  1996/10/31 18:43:01  jimg
+// Added.
+//
+// Revision 1.10  1996/09/20  17:53:42  ike
+// Added setinterlace() and _interlace_mode to hdfistream_gri.
+//
+// Revision 1.9  1996/08/14  22:36:17  ike
+// Added hdfistream_vdata:setrecs().
+//
+// Revision 1.8  1996/08/14  17:56:37  todd
+// Added slab setting member function, slab protected data member to hdfistream_sds.
+//
+// Revision 1.7  1996/07/22  17:13:30  todd
+// Const-corrected hdfistream_gri::seek() declaration.
+//
+// Revision 1.6  1996/06/19  18:28:39  todd
+// Fixed a bug in _rewind which caused a core dump if there were no Vdata's in the stream.
+//
+// Revision 1.5  1996/06/18  21:53:55  todd
+// Removed one constructor to be consistent with the interfaces of the other stream
+// classes.
+//
+// Revision 1.4  1996/06/14  23:18:27  ike
+// Added hdfistream_gri stream class.
+//
+// Revision 1.3  1996/06/14  23:07:18  todd
+// Added copyright statement.
+// Added support for Vdata.
+//
+// Revision 1.2  1996/04/19  17:40:18  todd
+// Added seek(const char *) and _seek_arr(const string&) mfuncs.
+// Added a cast in the eos() mfunc to silence g++'s warning.
+//
+// Revision 1.1  1996/04/19  01:17:02  todd
+// Initial revision
+//
 #endif // ifndef _HCSTREAM_H

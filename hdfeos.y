@@ -21,7 +21,7 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 
-// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.5 2000/03/31 16:56:06 jimg Exp $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.6 2000/10/09 19:46:20 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -247,8 +247,8 @@ ints:           INT
 		    /* type = "Int32"; */
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
-		    if (!(check_int32($1, hdfeos_line_num) 
-			  || check_uint32($1, hdfeos_line_num))) {
+		    if (!(check_int32($1) 
+			  || check_uint32($1))) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not an Int32 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -267,8 +267,8 @@ ints:           INT
 		{
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!(check_int32($3, hdfeos_line_num)
-			  || check_uint32($1, hdfeos_line_num))) {
+		    if (!(check_int32($3)
+			  || check_uint32($1))) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not an Int32 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -289,7 +289,7 @@ floats:		FLOAT
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
-		    if (!check_float64($1, hdfeos_line_num)) {
+		    if (!check_float64($1)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -308,7 +308,7 @@ floats:		FLOAT
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!check_float64($3, hdfeos_line_num)) {
+		    if (!check_float64($3)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -329,7 +329,7 @@ floatints:	float_or_int
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
-		    if (!check_float64($1, hdfeos_line_num)) {
+		    if (!check_float64($1)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -348,7 +348,7 @@ floatints:	float_or_int
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!check_float64($3, hdfeos_line_num)) {
+		    if (!check_float64($3)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());

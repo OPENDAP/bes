@@ -8,6 +8,11 @@
 // Test the HDF-EOS attribute parser. 3/30/2000 jhrg
 
 // $Log: eosdas-test.cc,v $
+// Revision 1.3  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
 // Revision 1.2  2000/03/31 16:56:05  jimg
 // Merged with release 3.1.4
 //
@@ -15,9 +20,9 @@
 // Added
 //
 
-#include "config_dap.h"
+#include "config_hdf.h"
 
-static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.2 2000/03/31 16:56:05 jimg Exp $"};
+static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.3 2000/10/09 19:46:19 jimg Exp $"};
 
 #include <iostream>
 #include <string>
@@ -47,7 +52,7 @@ int hdfeoslex();
 
 extern int hdfeosdebug;
 const char *prompt = "hdfeos-test: ";
-const char *version = "$Revision: 1.2 $";
+const char *version = "$Revision: 1.3 $";
 
 void
 usage(string name)

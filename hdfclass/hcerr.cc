@@ -8,23 +8,9 @@
 //
 // $RCSfile: hcerr.cc,v $ - implementation of hcerr class
 // 
-// $Log: hcerr.cc,v $
-// Revision 1.1  1996/10/31 18:42:59  jimg
-// Added.
-//
-// Revision 1.3  1996/05/23  18:15:58  todd
-// Added copyright statement.
-//
-// Revision 1.3  1996/05/23  18:15:58  todd
-// Added copyright statement.
-//
-// Revision 1.2  1996/04/22  17:42:42  todd
-// Corrected a minor bug in hcerr::_print(ostream &) const.
-//
-// Revision 1.1  1996/04/02  20:47:50  todd
-// Initial revision
-//
 //////////////////////////////////////////////////////////////////////////////
+
+#include "config_hdf.h"
 
 #include <hdf.h>
 #include <iostream.h>
@@ -53,3 +39,25 @@ ostream& operator<<(ostream& out, const hcerr& x) {
     x._print(out);
     return out;
 }
+
+// $Log: hcerr.cc,v $
+// Revision 1.2  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.1  1996/10/31 18:42:59  jimg
+// Added.
+//
+// Revision 1.3  1996/05/23  18:15:58  todd
+// Added copyright statement.
+//
+// Revision 1.3  1996/05/23  18:15:58  todd
+// Added copyright statement.
+//
+// Revision 1.2  1996/04/22  17:42:42  todd
+// Corrected a minor bug in hcerr::_print(ostream &) const.
+//
+// Revision 1.1  1996/04/02  20:47:50  todd
+// Initial revision
+//

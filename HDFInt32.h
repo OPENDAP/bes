@@ -10,20 +10,6 @@
 //
 // $RCSfile: HDFInt32.h,v $ - HDFInt32 class declaration
 //
-// $Log: HDFInt32.h,v $
-// Revision 1.4  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.3.20.1  1999/05/06 00:27:22  jimg
-// Jakes String --> string changes
-//
-// Revision 1.3  1997/03/10 22:45:29  jimg
-// Update for 2.12
-//
-// Revision 1.3  1996/09/24 20:53:26  todd
-// Added copyright and header.
-//
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _HDFINT32_H
@@ -40,12 +26,31 @@ public:
     HDFInt32(const string &n = "");
     virtual ~HDFInt32();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &, int &); 
+    virtual bool read(const string &); 
 };
 
 Int32 *NewInt32(const string &n);
 
 typedef HDFInt32 * HDFInt32Ptr;
+
+// $Log: HDFInt32.h,v $
+// Revision 1.5  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.4  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:22  jimg
+// Jakes String --> string changes
+//
+// Revision 1.3  1997/03/10 22:45:29  jimg
+// Update for 2.12
+//
+// Revision 1.3  1996/09/24 20:53:26  todd
+// Added copyright and header.
+//
 
 #endif // _HDFINT32_H
 

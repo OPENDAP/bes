@@ -1,9 +1,13 @@
+
+#include "config_hdf.h"
+
 #include <vector>
 
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
-#include "config_dap.h"
+
+#include "Error.h"
 #include "escaping.h"
 #include "HDFStructure.h"
 #include "Sequence.h"
@@ -21,8 +25,12 @@ void HDFStructure::set_read_p(bool state) {
   BaseType::set_read_p(state);
 }
 
-bool HDFStructure::read(const string& dataset, int &err) {
-  return read_tagref(dataset, -1, -1, err);
+bool HDFStructure::read(const string& dataset) {
+  int err;
+  int status = read_tagref(dataset, -1, -1, err);
+  if (err)
+    throw Error(unknown_error, "Could not read from dataset.");
+  return status;
 }
 
 bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int &err) { 

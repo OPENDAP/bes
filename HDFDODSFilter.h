@@ -7,20 +7,6 @@
 // Authors:
 //	jhrg,jimg	James Gallagher (jgallagher@gso.uri.edu)
 
-// $Log: HDFDODSFilter.h,v $
-// Revision 1.3  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.2.4.1  1999/05/06 00:27:21  jimg
-// Jakes String --> string changes
-//
-// Revision 1.2  1998/11/11 17:59:13  jimg
-// *** empty log message ***
-//
-// Revision 1.1  1998/09/25 23:02:15  jimg
-// Created.
-//
-
 #ifndef _HDFDODSFilter_h
 #define _HDFDODSFilter_h
 
@@ -63,5 +49,24 @@ public:
       @return A string object that contains the name of the dataset. */
     string cache_get_dataset_name();
 };
+
+// $Log: HDFDODSFilter.h,v $
+// Revision 1.4  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
+// Revision 1.3  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.2.4.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
+//
+// Revision 1.2  1998/11/11 17:59:13  jimg
+// *** empty log message ***
+//
+// Revision 1.1  1998/09/25 23:02:15  jimg
+// Created.
+//
 
 #endif // _DODSFilter_h

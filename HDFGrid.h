@@ -10,7 +10,35 @@
 //
 // $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
 //
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _HDFGRID_H
+#define _HDFGRID_H
+
+// STL includes
+#include <string>
+
+// DODS includes
+#include "Grid.h"
+#include "ReadTagRef.h"
+
+class HDFGrid: public Grid, public ReadTagRef {
+public:
+    HDFGrid(const string &n = "");
+    virtual ~HDFGrid();
+    virtual BaseType *ptr_duplicate();
+    virtual bool read(const string &dataset);
+    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
+};
+
+Grid *NewGrid(const string &n);
+
 // $Log: HDFGrid.h,v $
+// Revision 1.7  2000/10/09 19:46:19  jimg
+// Moved the CVS Log entries to the end of each file.
+// Added code to catch Error objects thrown by the dap library.
+// Changed the read() method's definition to match the dap library.
+//
 // Revision 1.6  1999/05/06 03:23:34  jimg
 // Merged changes from no-gnu branch
 //
@@ -29,29 +57,6 @@
 // Revision 1.3  1996/09/24 20:53:26  todd
 // Added copyright and header.
 //
-//
-/////////////////////////////////////////////////////////////////////////////
-
-#ifndef _HDFGRID_H
-#define _HDFGRID_H
-
-// STL includes
-#include <string>
-
-// DODS includes
-#include "Grid.h"
-#include "ReadTagRef.h"
-
-class HDFGrid: public Grid, public ReadTagRef {
-public:
-    HDFGrid(const string &n = "");
-    virtual ~HDFGrid();
-    virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &dataset, int &);
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
-};
-
-Grid *NewGrid(const string &n);
 
 #endif // _HDFGRID_H
 
