@@ -12,6 +12,10 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.12  1998/09/26 04:10:36  jimg
+// Changed the cache file `directory' separator from `.' to `#'.
+// Moved basename here.
+//
 // Revision 1.11  1998/09/14 20:48:57  jimg
 // Resolved conflicts
 //
@@ -150,7 +154,7 @@ string cache_name(const String& cd, const String& f) {
   // turn the remaining path separators into "."
   uint32 slash = start;
   while((slash = newname.find_first_of('/', slash)) != newname.npos) {
-    newname[slash] = '.';
+    newname[slash] = '#';
   }
   string retval = cachedir + "/" + newname.substr(start);
   return retval; // return the new string
@@ -176,6 +180,17 @@ void read_das(DAS& das, const String& cachedir, const String& filename) {
     return;
 }
 
+
+// return the last component of a full pathname
+static String basename(String path) {
+#ifdef __GNUG__
+    String tmp = path.after(path.index('/',-1));
+    return tmp.after(tmp.index('#',-1));
+#else
+    String tmp =  path.substr(path.find_last_of("/")+1);
+    return tmp.substr(tmp.find_last_of("#")+1);
+#endif
+}
 
 // check dates of datafile and cached DDS, DAS; update cached files if necessary
 static void update_descriptions(const String& cachedir, const String& filename) {
