@@ -4,3 +4,5 @@ Verify that `for f in testsuite/*h5 do h5_das $f done' work correctly.
 
 Verify that `for f in testsuite/*h5 do h5_dds $f done' work correctly.
 (The dataset with a loop in it does not work.)
+
+Add CVS Logs to all the files.
