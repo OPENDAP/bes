@@ -22,4 +22,7 @@ you don't know it by looking in the http server's srm.conf configuration file
 (which will be located in a directory called `conf' within the http server's
 home directory. 
 
+For information about installing secure DODS servers, see the file SECURITY
+in DODS_ROOT.
+
 ich 
