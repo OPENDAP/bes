@@ -1,5 +1,6 @@
 #!/bin/sh -- # -*- perl -*-
-eval "exec perl -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
+eval "exec perl -T -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
+
 # Replace the above two lines witn #!/path/to/your/perl to avoid the overhead
 # of first running the shell and then starting perl. 
 
@@ -25,9 +26,12 @@ eval "exec perl -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.5 1999/05/18 22:40:39 jimg Exp $
+# $Id: nph-hdf.in,v 1.6 1999/05/24 17:36:12 jimg Exp $
 #
 # $Log: nph-hdf.in,v $
+# Revision 1.6  1999/05/24 17:36:12  jimg
+# Security fixes; see nph-nc.in and DODS_Dispatch.pm
+#
 # Revision 1.5  1999/05/18 22:40:39  jimg
 # Perl is now started using /bin/sh.
 #
@@ -60,6 +64,9 @@ eval "exec perl -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
 # Rewrote to use the new Perl DODS_Dispatch class.
 #
 
+$ENV{'PATH'} = '/bin:/usr/bin:/sbin:/usr/sbin';
+
+use lib (".");			# Look for modules in the cwd.
 use Env;
 use DODS_Dispatch;
 use DODS_Cache;
@@ -104,10 +111,10 @@ if (($file_type eq "Z") || ($file_type eq "gz")) {
 
 $dispatch->cache_dir($cache_dir);
 
-$command = $dispatch->command();
+@command = $dispatch->command();
 
-if ($command ne "") {		# if no error...
-    exec($command);
+if ($command[0] ne "") {		# if no error...
+    exec(@command);
 } else {
     $dispatch->print_error_msg();
 }
