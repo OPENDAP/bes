@@ -21,7 +21,7 @@
 # 4. Macros for locating various systems (Matlab, etc.)
 # 5. Macros used to test things about the computer/OS/hardware
 #
-# $Id: configure,v 1.30 2000/10/30 17:28:11 jimg Exp $
+# $Id: configure,v 1.31 2001/04/02 18:51:21 rmorris Exp $
 
 # 1. Unidata's macros
 #-------------------------------------------------------------------------
@@ -2655,7 +2655,7 @@ fi
 echo "configure:2656: checking "for the packages directory"" >&5
     # Where does DODS live?
     
-    DODS_PACKAGES_DIR=`ls -1d $dods_root/packages* 2> /dev/null`
+    DODS_PACKAGES_DIR=`ls -1d $dods_root/src/packages* 2> /dev/null`
     if test -z "$DODS_PACKAGES_DIR"
     then
 	{ echo "configure: error: "Could not find the third-party packages!"" 1>&2; exit 1; }
