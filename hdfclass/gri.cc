@@ -9,6 +9,12 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.4  1998/09/10 21:50:22  jehamby
+// Fix subsetting for multi-component GR (Note: due to an HDF library bug,
+// you can't actually subset a GR with >1 component, but at least retrieving
+// the entire image works).  Also, remove debugging output and work around
+// another HDF bug so palettes output as Byte instead of String.
+//
 // Revision 1.3  1998/07/13 20:26:35  jimg
 // Fixes from the final test of the new build process
 //
@@ -260,6 +266,13 @@ void hdfistream_gri::setslab(vector<int> start, vector<int> edge,
 	start.size() == 0)
 	THROW(hcerr_invslab);
 
+    if(start.size() == 3) {
+      // erase # of components, if present:  only X and Y subsetting allowed
+      start.erase(start.begin());
+      edge.erase(edge.begin());
+      stride.erase(stride.begin());
+    }
+
     for (int i=0; i<2; ++i) {
 	if (start[i] < 0)
 	    THROW(hcerr_invslab);
@@ -273,10 +286,6 @@ void hdfistream_gri::setslab(vector<int> start, vector<int> edge,
 	_slab.edge[1-i] = edge[i];
 	_slab.stride[1-i] = stride[i];
     }
-    cerr << "start[0] = " << start[0] << " start[1] = " << start[1] << endl;
-    cerr << "edge[0] = " << edge[0] << " edge[1] = " << edge[1] << endl;
-    cerr << "stride[0] = " << stride[0] << " stride[1] = " << stride[1] << endl;
-
     _slab.set = true;
     _slab.reduce_rank = reduce_rank;
 }
@@ -343,8 +352,6 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
       GRreqimageil(_ri_id,_interlace_mode);
-      cerr << "dim_sizes[0] = " << dim_sizes[0] << " dim_sizes[1] = "
-	   << dim_sizes[1] << endl;
       if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
 	delete []image;   // problem: clean up and throw an exception
 	THROW(hcerr_griread);
@@ -450,6 +457,12 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp) {
     hp.ncomp = ncomp;
     hp.num_entries = num_entries;
   }
+  // Note: due to a bug in the HDF library, the palette number type is returned
+  // as DFNT_UCHAR8 instead of DFNT_UINT8.  We correct that here because
+  // the current mapping for DFNT_UCHAR8 is String instead of Byte
+  if(number_type==DFNT_UCHAR8)
+    number_type = DFNT_UINT8;
+
   int32 count = ncomp*num_entries;
   if (number_type != 0) {  // found a palette
     void *pal_data;
