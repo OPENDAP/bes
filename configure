@@ -21,7 +21,7 @@
 # 4. Macros for locating various systems (Matlab, etc.)
 # 5. Macros used to test things about the computer/OS/hardware
 #
-# $Id: configure,v 1.13 1998/04/03 18:34:15 jimg Exp $
+# $Id: configure,v 1.14 1998/04/03 19:07:40 jimg Exp $
 
 # 1. Unidata's macros
 #-------------------------------------------------------------------------
@@ -761,7 +761,7 @@ echo "configure:758: checking for gcc/g++ 2.8 or greater" >&5
 
             case $GCC_VER in
 	2.8*) 	echo "$ac_t""Found gcc/g++ version ${GCC_VER} adding -lg++." 1>&6
-		LIBS="$LIBS -lg++" ;;
+		LIBS="$LIBS -lg++ -lstdc++" ;;
         2.7*)   echo "$ac_t""Found gcc/g++ version ${GCC_VER}" 1>&6 ;;
 	*)      { echo "configure: error: must be at least version 2.7.x" 1>&2; exit 1; } ;;
     esac
