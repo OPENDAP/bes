@@ -9,6 +9,12 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.7  2000/03/31 16:56:05  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.6.8.1  2000/03/20 23:26:07  jimg
+// Removed debugging output
+//
 // Revision 1.6  1999/05/06 03:23:33  jimg
 // Merged changes from no-gnu branch
 //
@@ -339,10 +345,12 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
       GRreqimageil(_ri_id,_interlace_mode);
+#if 0
       cerr << "ncomp: " << ncomp << " imagesize: " << imagesize << endl;
       cerr << "_slab.start = " << _slab.start[0] << "," << _slab.start[1] <<
 	" _slab.edge = " << _slab.edge[0] << "," << _slab.edge[1] <<
 	" _slab.stride = " << _slab.stride[0] << "," << _slab.stride[1] << endl;
+#endif
       if (GRreadimage(_ri_id, _slab.start, _slab.stride, _slab.edge, image) < 0) {
 	delete []image;   // problem: clean up and throw an exception
 	THROW(hcerr_griread);
@@ -358,8 +366,10 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
       GRreqimageil(_ri_id,_interlace_mode);
+#if 0
       cerr << "dim_sizes[0] = " << dim_sizes[0] << " dim_sizes[1] = "
 	   << dim_sizes[1] << endl;
+#endif
       if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
 	delete []image;   // problem: clean up and throw an exception
 	THROW(hcerr_griread);

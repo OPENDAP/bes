@@ -12,6 +12,15 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.14  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.13.8.2  2000/03/20 23:26:07  jimg
+// Removed debugging output
+//
+// Revision 1.13.8.1  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
 // Revision 1.13  1999/05/06 03:23:36  jimg
 // Merged changes from no-gnu branch
 //
@@ -70,6 +79,7 @@
 #include <hcstream.h>
 
 // DODS/HDF includes
+#include "escaping.h"
 #include "HDFInt32.h"
 #include "HDFFloat64.h"
 #include "HDFByte.h"
@@ -495,7 +505,9 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 	// components of the field and load the DODS String with the value.
 	string str;
 	for (int i=0; i<(int)f.vals.size(); ++i) {
+#if 0
 	  cerr << i << ": " << (int)f.vals[i].elt_char8(row) << endl;
+#endif
 	    str += f.vals[i].elt_char8(row);
 	}
 	void *data = (void *)&str;

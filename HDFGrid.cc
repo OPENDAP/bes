@@ -11,6 +11,12 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
+// Revision 1.9  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.8.8.1  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
 // Revision 1.8  1999/05/06 03:23:34  jimg
 // Merged changes from no-gnu branch
 //
@@ -38,6 +44,7 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 #include "config_dap.h"
+#include "escaping.h"
 #include "HDFGrid.h"
 #include "HDFArray.h"
 #include "dhdferr.h"

@@ -11,6 +11,13 @@
 // $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: dodsutil.h,v $
+// Revision 1.5  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.4.8.1  2000/03/20 22:26:07  jimg
+// Removed prototypes for functions which were duplicates of stuff in the dap
+// source file escaping.cc.
+//
 // Revision 1.4  1999/05/06 03:23:35  jimg
 // Merged changes from no-gnu branch
 //
@@ -117,14 +124,6 @@ inline string& gsub(string& s, const string& in, const string& out) {
     return s;
 }
 
-string hexstring(unsigned char val);
-char unhexstring(string s);
-string id2dods(string s);
-string dods2id(string s);
-char unoctstring(string s);
-string octstring(unsigned char val);
-string escattr(string s);
-string unescattr(string s);
 HDFStructure *CastBaseTypeToStructure(BaseType *p);
 HDFArray *CastBaseTypeToArray(BaseType *p);
 int *CastBaseTypeToInt(BaseType *p);

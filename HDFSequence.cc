@@ -11,6 +11,12 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.10  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.9.8.1  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
 // Revision 1.9  1999/05/06 03:23:35  jimg
 // Merged changes from no-gnu branch
 //
@@ -49,6 +55,7 @@
 #include "HDFSequence.h"
 #include "HDFStructure.h"
 #include "dhdferr.h"
+#include "escaping.h"
 #include "dodsutil.h"
 
 HDFSequence::HDFSequence(const string &n) : Sequence(n), row(0) {

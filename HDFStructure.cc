@@ -4,6 +4,7 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 #include "config_dap.h"
+#include "escaping.h"
 #include "HDFStructure.h"
 #include "Sequence.h"
 #include "dhdferr.h"

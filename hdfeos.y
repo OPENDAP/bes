@@ -19,8 +19,9 @@
 %{
 
 #define YYSTYPE char *
+#define YYDEBUG 1
 
-// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.4 1999/05/06 03:23:36 jimg Exp $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.5 2000/03/31 16:56:06 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,8 +34,6 @@
 #else
 #include <sstream>
 #endif
-
-#define DODS_DEBUG 1
 
 #include "DAS.h"
 #include "Error.h"
@@ -146,7 +145,6 @@ void process_group(parser_arg *arg, const string &s);
 
 attributes:    	/* Create the AttrTable stack if necessary */
                 {
-		  // DBG(cerr << "Creating the AttrTable stack\n");
 		    if (!attr_tab_stack)
 			attr_tab_stack = new vector<AttrTable *>;
 		}
@@ -154,7 +152,7 @@ attributes:    	/* Create the AttrTable stack if necessary */
     	    	| attributes attribute
 
     	    	
-attribute:    	GROUP '=' STR 
+attribute:    	GROUP '=' STR
                 {
 		    process_group((parser_arg *)arg, $3);
 		}
@@ -165,6 +163,7 @@ attribute:    	GROUP '=' STR
 		  POP;
 		}
 		END_GROUP '=' STR
+
 		| OBJECT '=' STR
                 {
 		    process_group((parser_arg *)arg, $3);
@@ -176,14 +175,13 @@ attribute:    	GROUP '=' STR
 		  POP;
 		}
 		END_OBJECT '=' STR
-                | error
-                {
-		    parse_error((parser_arg *)arg, NO_DAS_MSG);
-		    YYABORT;
+
+                | STR 
+                { 
+		    name = $1; 
 		}
-                | STR { 
-                      name = $1; }
                 '=' data
+
 		| COMMENT {
 		    ostrstream name, comment;
 		    name << "comment" << commentnum++ << ends;
@@ -199,8 +197,27 @@ attribute:    	GROUP '=' STR
 		      msg << "`" << name.str() << "' previously defined." << ends;
 		      parse_error((parser_arg *)arg, msg.str());
 		      msg.rdbuf()->freeze(0); 
+		      name.rdbuf()->freeze(0);
+		      comment.rdbuf()->freeze(0);
 		      YYABORT;
 		    }
+		    name.rdbuf()->freeze(0);
+		    comment.rdbuf()->freeze(0);
+		}
+
+                | error
+                {
+		    AttrTable *a;
+		    if (STACK_EMPTY)
+			a = ATTR_OBJ(arg);
+		    else
+			a = TOP_OF_STACK;
+		    a->append_attr(name.c_str(), "String", 
+				   "\"Error processing EOS attributes\"");
+		    parse_error((parser_arg *)arg, NO_DAS_MSG);
+		    /* Don't abort; keep parsing to try and pick up more
+		       attribtues. 3/30/2000 jhrg */
+ 		    /* YYABORT; */
 		}
 ;
 
@@ -227,7 +244,7 @@ ints:           INT
 		    /* billion is way to large to fit in a 32 bit signed */
 		    /* integer. What's worse, long is 64  bits on Alpha and */
 		    /* SGI/IRIX 6.1... jhrg 10/27/96 */
-		    type = "Int32";
+		    /* type = "Int32"; */
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
 		    if (!(check_int32($1, hdfeos_line_num) 
@@ -238,7 +255,7 @@ ints:           INT
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
+		    else if (!TOP_OF_STACK->append_attr(name, "Int32", $1)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -367,7 +384,10 @@ strs:		STR
 		      string newname = $1+1;
 		      newname.erase(newname.end()-1);
 		      // and convert embedded spaces to _
+#if 0
 		      unsigned int space = 0;
+#endif
+		      string::size_type space = 0;
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
 		      }

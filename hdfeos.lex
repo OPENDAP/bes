@@ -44,7 +44,7 @@
 %{
 #include "config_dap.h"
 
-static char rcsid[] not_used ={"$Id: hdfeos.lex,v 1.2 1999/05/06 03:23:36 jimg Exp $"};
+static char rcsid[] not_used ={"$Id: hdfeos.lex,v 1.3 2000/03/31 16:56:06 jimg Exp $"};
 
 #include <string.h>
 #include <assert.h>
@@ -96,6 +96,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 "("                     return (int)*yytext;
 ")"                     return (int)*yytext;
 ","                     return (int)*yytext;
+";"                     /* Ignore */
 
 [ \t]+
 \n	    	    	++hdfeos_line_num;
