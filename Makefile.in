@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.13 1998/09/17 22:52:57 jimg Exp $
+# $Id: Makefile.in,v 1.14 1998/09/26 04:08:48 jimg Exp $
 
 @SET_MAKE@
 
@@ -116,8 +116,8 @@ distclean: clean
 
 install: all
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
-	$(LN_S) ./hdf_dods $(etcdir)/hdf_das
-	$(LN_S) ./hdf_dods $(etcdir)/hdf_dds
+	$(LN_S) -f ./hdf_dods $(etcdir)/hdf_das
+	$(LN_S) -f ./hdf_dods $(etcdir)/hdf_dds
 	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
 
 check:
