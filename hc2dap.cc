@@ -12,6 +12,12 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.4  1997/12/30 23:59:06  jimg
+// Changed the functions that map datatypes so that 8-bit numbers are sent as
+// Byte variables rather than Int32 or UInt32. This is a work-around for
+// problems that client-side software has in dealing with 8-bit numbers that get
+// transmitted in 32-bit fields.
+//
 // Revision 1.3  1997/03/10 22:45:50  jimg
 // Update for 2.12
 //
@@ -247,16 +253,18 @@ BaseType *NewDAPVar(const String& varname, int32 hdf_type) {
     case DFNT_FLOAT64:
 	bt = new HDFFloat64(id2dods(varname));
 	break;
-    case DFNT_INT8:
     case DFNT_INT16:
     case DFNT_INT32:
 	bt = new HDFInt32(id2dods(varname));
 	break;
-    case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	bt = new HDFUInt32(id2dods(varname));
 	break;
+	// INT8 and UINT8 *should* be grouped under Int32 and UInt32, but
+	// that breaks too many programs. jhrg 12/30/97
+    case DFNT_INT8:
+    case DFNT_UINT8:
     case DFNT_UCHAR8:
 	bt = new HDFByte(id2dods(varname));
 	break;
@@ -277,16 +285,17 @@ String DAPTypeName(int32 hdf_type) {
     case DFNT_FLOAT64:
 	rv = "Float64";
 	break;
-    case DFNT_INT8:
     case DFNT_INT16:
     case DFNT_INT32:
 	rv = "Int32";
 	break;
-    case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	rv = "UInt32";
 	break;
+	// See the note above about INT8 and UINT8. jhrg 12/30/97.
+    case DFNT_INT8:
+    case DFNT_UINT8:
     case DFNT_UCHAR8:
 	rv = "Byte";
 	break;
