@@ -12,6 +12,10 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.8  1998/04/14 18:42:05  jimg
+// Temporary fix for LoadStructureFromVgroup. Added err. There is a more
+// comprehensive fix from Jake Hamby that will added later.
+//
 // Revision 1.7  1998/04/06 16:08:20  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
 //
@@ -519,7 +523,8 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 			     const String& hdf_file) {
   int i=0;
-  for (Pix q=str->first_var(); q!=0; str->next_var(q), ++i) {
+  int err=0;
+  for (Pix q=str->first_var(); err==0 && q!=0; str->next_var(q), ++i) {
     BaseType *p = str->var(q);
     if(!p->send_p()) {  // skip data objects not going to be sent
       continue;
@@ -528,6 +533,5 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
     int32 ref = vg.refs[i];
 
     (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, tag, ref, err);
-    }
   }
 }
