@@ -9,6 +9,13 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.3  1997/10/04 00:33:10  jimg
+// Release 2.14c fixes
+//
+// Revision 1.2.6.1  1997/09/05 21:28:05  jimg
+// Fixed _ok() so that if `has_scale' is null (the default) it is not
+// dereferenced.
+//
 // Revision 1.2  1997/06/08 22:14:35  jimg
 // Applied Todd's patch for the `stride bug' (See the TODO list).
 //
@@ -645,18 +652,24 @@ bool hdf_sds::has_scale(void) const {
 	return has_scale;
 }
 
-// Verify that the hdf_sds is in an OK state (i.e., that it is initialized correctly)
-// if user has passed a ptr to a bool then set that to whether there is a dimension
-// scale for at least one of the dimensions
+// Verify that the hdf_sds is in an OK state (i.e., that it is initialized
+// correctly) if user has passed a ptr to a bool then set that to whether
+// there is a dimension scale for at least one of the dimensions
+//
+// Added `if (*has_scale)...' because `has_scale' defaults to null and
+// dereferencing it causes segmentation faults, etc.
+
 bool hdf_sds::_ok(bool *has_scale) const {
 
-    *has_scale = false;
+    if (*has_scale)
+	*has_scale = false;
 
-    // Check to see that for each SDS dimension scale, that the length of the scale
-    // matches the size of the dimension.
+    // Check to see that for each SDS dimension scale, that the length of the
+    // scale matches the size of the dimension.
     for (int i=0; i<(int)dims.size(); ++i)
 	if (dims[i].scale.size() != 0) {
-	    *has_scale = true;
+	    if (*has_scale)
+		*has_scale = true;
 	    if (dims[i].scale.size() != dims[i].count)
 		return false;
 	}
