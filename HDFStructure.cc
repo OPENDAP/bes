@@ -9,42 +9,42 @@
 #include "dhdferr.h"
 #include "dodsutil.h"
 
-HDFStructure::HDFStructure(const String &n = (char *)0) : Structure(n) {}
+HDFStructure::HDFStructure(const string &n) : Structure(n) {}
 HDFStructure::~HDFStructure() {}
 BaseType *HDFStructure::ptr_duplicate() { return new HDFStructure(*this); }
-int LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vgroup,
-			     const String& hdf_file);
+void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vgroup,
+			     const string& hdf_file);
 
 void HDFStructure::set_read_p(bool state) {
   // override Structure::set_read_p() to not set children as read yet
   BaseType::set_read_p(state);
 }
 
-bool HDFStructure::read(const String& dataset, int &err) {
+bool HDFStructure::read(const string& dataset, int &err) {
   return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int &err) { 
+bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int &err) { 
   if (read_p())
     return true;
 
   // get the HDF dataset name, Vgroup name
-  String hdf_file = dods2id(dataset);
-  String hdf_name = dods2id(this->name());
+  string hdf_file = dods2id(dataset);
+  string hdf_name = dods2id(this->name());
 
   bool foundvgroup = false;
   hdf_vgroup vgroup;
 
 #ifdef NO_EXCEPTIONS
-  if (VgroupExists(hdf_file.chars(), hdf_name.chars())) {
+  if (VgroupExists(hdf_file.c_str(), hdf_name.c_str())) {
 #else
   try {
 #endif
-    hdfistream_vgroup vgin(hdf_file.chars());
+    hdfistream_vgroup vgin(hdf_file.c_str());
     if(ref != -1)
       vgin.seek_ref(ref);
     else
-      vgin.seek(hdf_name.chars());
+      vgin.seek(hdf_name.c_str());
     vgin >> vgroup;
     vgin.close();
     foundvgroup = true;
@@ -56,8 +56,8 @@ bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int 
   set_read_p(true);
   
   if (foundvgroup) {
-    err = LoadStructureFromVgroup(this, vgroup, hdf_file);
-    return false;   // no more data
+    LoadStructureFromVgroup(this, vgroup, hdf_file);
+    return true;
   }
   else {
     err = 1;
@@ -65,4 +65,4 @@ bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int 
   }
 }
 
-Structure *NewStructure(const String &n) { return new HDFStructure(n); }
+Structure *NewStructure(const string &n) { return new HDFStructure(n); }

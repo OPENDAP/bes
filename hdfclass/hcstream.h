@@ -12,8 +12,14 @@
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
 // $Log: hcstream.h,v $
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.5  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.4  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
@@ -73,7 +79,7 @@
 
 class hdfistream_obj {		// base class for streams reading HDF objects
 public:
-    hdfistream_obj(const char *filename=0) { _init(filename); }
+    hdfistream_obj(const string filename="") { _init(filename); }
     hdfistream_obj(const hdfistream_obj&) { THROW(hcerr_copystream); }
     virtual ~hdfistream_obj(void) {}
     void operator=(const hdfistream_obj&) { THROW(hcerr_copystream); }
@@ -86,8 +92,8 @@ public:
     virtual bool eos(void) const = 0;	   // are we at end of stream?
     virtual int index(void) const { return _index; } // return current position
 protected:
-    void _init(const char *filename=0) {
-	if (filename != 0) _filename = filename;
+    void _init(const string filename="") {
+	if (filename.length()) _filename = filename;
 	_file_id = _index = 0;  
     }
     string _filename;
@@ -97,7 +103,7 @@ protected:
 
 class hdfistream_sds : public hdfistream_obj {
 public:
-    hdfistream_sds(const char *filename=0);
+    hdfistream_sds(const string filename="");
     hdfistream_sds(const hdfistream_sds&) { THROW(hcerr_copystream); }
     virtual ~hdfistream_sds(void) { _del(); }
     void operator=(const hdfistream_sds&) { THROW(hcerr_copystream); }
@@ -158,8 +164,8 @@ protected:
 // class for a stream reading annotations
 class hdfistream_annot : public hdfistream_obj {	
 public:
-    hdfistream_annot(const char *filename=0);
-    hdfistream_annot(const char *filename, int32 tag, int32 ref); 
+    hdfistream_annot(const string filename="");
+    hdfistream_annot(const string filename, int32 tag, int32 ref); 
     hdfistream_annot(const hdfistream_annot&) { THROW(hcerr_copystream); }
     virtual ~hdfistream_annot(void) { _del(); }
     void operator=(const hdfistream_annot&) { THROW(hcerr_copystream); }
@@ -178,8 +184,8 @@ public:
     hdfistream_annot& operator>>(string& an);    // read current annotation
     hdfistream_annot& operator>>(vector<string>& anv); // read all annots
 protected:
-    void _init(const char *filename=0);
-    void _init(const char *filename, int32 tag, int32 ref);
+    void _init(const string filename="");
+    void _init(const string filename, int32 tag, int32 ref);
     void _del(void) { close(); }
     void _rewind(void) { _index = 0; }
     void _get_anninfo(void);
@@ -195,7 +201,7 @@ protected:
 
 class hdfistream_vdata : public hdfistream_obj {
 public:
-    hdfistream_vdata(const char *filename=0);
+    hdfistream_vdata(const string filename="");
     hdfistream_vdata(const hdfistream_vdata&) { THROW(hcerr_copystream); }
     virtual ~hdfistream_vdata(void) { _del(); }
     void operator=(const hdfistream_vdata&) { THROW(hcerr_copystream); }
@@ -244,7 +250,7 @@ protected:
 
 class hdfistream_vgroup : public hdfistream_obj {
 public:
-    hdfistream_vgroup(const char *filename=0);
+    hdfistream_vgroup(const string filename="");
     hdfistream_vgroup(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
     virtual ~hdfistream_vgroup(void) { _del(); }
     void operator=(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
@@ -291,7 +297,7 @@ protected:
 // Raster input stream class
 class hdfistream_gri : public hdfistream_obj {
 public:
-    hdfistream_gri(const char *filename=0);
+    hdfistream_gri(const string filename="");
     hdfistream_gri(const hdfistream_gri &) { THROW(hcerr_copystream); }
     virtual ~hdfistream_gri(void) { _del(); }
     void operator=(const hdfistream_gri &) { THROW(hcerr_copystream); }

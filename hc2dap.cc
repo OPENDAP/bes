@@ -12,21 +12,11 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
-// Revision 1.12  1998/09/23 20:53:50  jehamby
-// Fixed LoadStructureFromVgroup() to return an error code, as
-// HDFStructure::read_tagref() expects.
+// Revision 1.13  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
 //
-// Revision 1.11  1998/09/10 23:03:06  jehamby
-// Output both DFNT_CHAR8 and DFNT_UCHAR8 Vdata fields as String, not Byte.
-//
-// Revision 1.10  1998/09/10 21:33:25  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
-//
-// Revision 1.9  1998/07/13 20:26:37  jimg
-// Fixes from the final test of the new build process
-//
-// Revision 1.8.4.1  1998/05/22 19:50:53  jimg
-// Patch from Jake Hamby to support subsetting raster images
+// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
 //
 // Revision 1.8  1998/04/14 18:42:05  jimg
 // Temporary fix for LoadStructureFromVgroup. Added err. There is a more
@@ -69,15 +59,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <strstream.h>
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
-#include <vector.h>
-#include <algo.h>
+// STL includes
+#include <string>
+#include <vector>
+#include <algorithm>
 
 // HDF and HDFClass includes
 #include <mfhdf.h>
@@ -104,7 +89,7 @@ typedef string String;
 // jhrg.
 #define SIGNED_BYTE_TO_INT32 1
 
-BaseType *NewDAPVar(const String& varname, int32 hdf_type);
+BaseType *NewDAPVar(const string& varname, int32 hdf_type);
 HDFArray *CastBaseTypeToArray(BaseType *p);
 HDFStructure *CastBaseTypeToStructure(BaseType *p);
 void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row);
@@ -112,12 +97,12 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row);
 // STL predicate comparing equality of hdf_field objects based on their names
 class fieldeq {
 public:
-    fieldeq(const String& s) { _val = s; }
+    fieldeq(const string& s) { _val = s; }
     bool operator() (const hdf_field& f) const {
 	return (f.name == _val);
     }
 private:
-    String _val;
+    string _val;
 };
 
 // Create a DAP HDFSequence from an hdf_vdata.
@@ -150,7 +135,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    vd.fields[i].vals[0].number_type() == DFNT_UCHAR8) {
 
 	    // collapse char subfields into one string
-	    String subname = vd.fields[i].name + "__0";
+	    string subname = vd.fields[i].name + "__0";
 	    BaseType *bt = new HDFStr(id2dods(subname));
 	    if (bt == 0) {
 		delete st;
@@ -160,12 +145,11 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    st->add_var(bt);	// *st now manages *bt
 	}
 	else {
-
 	    // create a DODS variable for each subfield
 	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
-		ostrstream(subname,hdfclass::MAXSTR) << 
-		    vd.fields[i].name << "__" << j << ends;
+		ostrstream strm(subname,hdfclass::MAXSTR);
+		strm << vd.fields[i].name << "__" << j << ends;
 		BaseType *bt = 
 		    NewDAPVar(id2dods(subname), 
 			      vd.fields[i].vals[j].number_type());
@@ -308,7 +292,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
     // create dimension scale HDFArrays (i.e., maps) and add them to the HDFGrid
     HDFArray *dmar=0;
     BaseType *dsbt = 0;
-    String mapname;
+    string mapname;
     for (int i=0; i<(int)sds.dims.size(); ++i) {
 	if (sds.dims[i].name.length() == 0) { // the dim must be named
 	    delete gr; 
@@ -335,7 +319,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
 
 // Return a ptr to DAP atomic data object corresponding to an HDF Type, or
 // return 0 if the HDF Type is invalid or not supported.
-BaseType *NewDAPVar(const String& varname, int32 hdf_type) {
+BaseType *NewDAPVar(const string& varname, int32 hdf_type) {
     BaseType *bt;
 
     switch(hdf_type) {
@@ -371,8 +355,8 @@ BaseType *NewDAPVar(const String& varname, int32 hdf_type) {
 }
 
 // Return the DAP type name that corresponds to an HDF data type
-String DAPTypeName(int32 hdf_type) {
-    String rv;
+string DAPTypeName(int32 hdf_type) {
+    string rv;
     switch(hdf_type) {
     case DFNT_FLOAT32:
     case DFNT_FLOAT64:
@@ -401,13 +385,13 @@ String DAPTypeName(int32 hdf_type) {
 	rv = "String";  // note: DFNT_CHAR8 is Byte in DDS but String in DAS
 	break;
     default:
-	rv = String();
+	rv = string();
     }
     return rv;
 }
 
 // return the HDF data type corresponding to a DODS type name
-int32 HDFTypeName(const String& dods_type) {
+int32 HDFTypeName(const string& dods_type) {
     if (dods_type == "Float64")
 	return DFNT_FLOAT64;
     else if (dods_type == "Float32")
@@ -474,7 +458,7 @@ void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
     for (Pix p=seq->first_var(); p!=0; seq->next_var(p)) {
 	
 	stru = CastBaseTypeToStructure(seq->var(p));
-        String fieldname = dods2id(stru->name());
+        string fieldname = dods2id(stru->name());
 
 	// find corresponding field in vd
 	vector<hdf_field>::iterator vf = 
@@ -509,9 +493,11 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 	// If the Structure contains a String, then that is all it will 
 	// contain.  In that case, concatenate the different char8 
 	// components of the field and load the DODS String with the value.
-	String str;
-	for (int i=0; i<(int)f.vals.size(); ++i)
+	string str;
+	for (int i=0; i<(int)f.vals.size(); ++i) {
+	  cerr << i << ": " << (int)f.vals[i].elt_char8(row) << endl;
 	    str += f.vals[i].elt_char8(row);
+	}
 	void *data = (void *)&str;
 	firstp->val2buf(data);
 	firstp->set_read_p(true);
@@ -535,8 +521,8 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 }
 
 // Load an HDFStructure with the contents of a vgroup.
-int LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
-			     const String& hdf_file) {
+void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
+			     const string& hdf_file) {
   int i=0;
   int err=0;
   for (Pix q=str->first_var(); err==0 && q!=0; str->next_var(q), ++i) {
@@ -547,7 +533,13 @@ int LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
     int32 tag = vg.tags[i];
     int32 ref = vg.refs[i];
 
+#ifdef __SUNPRO_CC
+    // As of v4.1, SunPro C++ is too braindamaged to support dynamic_cast<>,
+    // so we have to add read_tagref() to BaseType.h in the core instead of
+    // using a mixin class (multiple inheritance).
+    (ReadTagRef*)(p)->read_tagref(hdf_file, tag, ref, err);
+#else
     (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, tag, ref, err);
+#endif
   }
-  return err;
 }

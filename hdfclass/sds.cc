@@ -9,8 +9,14 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.11  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.10  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.9.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.9  1998/09/10 23:11:25  jehamby
 // Fix for SDS not outputting global attributes if no SDS's are in the dataset
@@ -104,13 +110,10 @@
 
 
 #include <mfhdf.h>
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
+
+#include <string>
+#include <vector>
+
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -230,7 +233,7 @@ void hdfistream_sds::_seek_arr_ref(int ref) {
 
 
 // constructor
-hdfistream_sds::hdfistream_sds(const char *filename) : hdfistream_obj(filename) {
+hdfistream_sds::hdfistream_sds(const string filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a file to open
 	open(_filename.c_str());
@@ -440,7 +443,6 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 	    data = (void *)new char[datasize];
 	    if (data == 0) 
 		THROW(hcerr_nomemory);
-	    
 	    if (SDreaddata(_sds_id, _slab.start, _slab.stride, _slab.edge, 
 			   data) < 0) {
 		delete []data;	// problem: clean up and throw an exception
@@ -522,11 +524,11 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 	hd.name = name;		// assign dim name
     char label[hdfclass::MAXSTR];
     char unit[hdfclass::MAXSTR];
-    char format[hdfclass::MAXSTR];
-    if (SDgetdimstrs(dim_id, label, unit, format, hdfclass::MAXSTR) == 0) {
+    char cformat[hdfclass::MAXSTR];
+    if (SDgetdimstrs(dim_id, label, unit, cformat, hdfclass::MAXSTR) == 0) {
 	hd.label = label;	// assign dim label
 	hd.unit = unit;		// assign dim unit
-	hd.format = format;	// assign dim format
+	hd.format = cformat;	// assign dim format
     }
 
     // if we are dealing with a dimension of size unlimited, then call
@@ -634,6 +636,15 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_attr& ha) {
 	delete []data; // problem: clean up and throw an exception
 	THROW(hcerr_sdsinfo);
     }
+
+    // eliminate trailing null characters from the data string; 
+    // they cause GNU's String class problems
+    // NOTE: removed because count=0 if initial char is '\0' and we're not
+    //   using GNU String anymore
+#if 0
+    if (number_type == DFNT_CHAR)
+	count = (int32)min((int)count,(int)strlen((char *)data));
+#endif
 
     // try { // try to allocate an hdf_genvec
     if (count > 0) {

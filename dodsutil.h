@@ -11,11 +11,11 @@
 // $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: dodsutil.h,v $
-// Revision 1.3  1998/09/26 04:11:04  jimg
-// Moved basename to hdfdesc.cc.
+// Revision 1.4  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
 //
-// Revision 1.2  1998/09/10 21:32:28  jehamby
-// Properly escape high-ASCII strings with octstring() and hexstring()
+// Revision 1.3.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
 //
 // Revision 1.1  1997/03/10 22:55:02  jimg
 // New files for the 2.12 compatible HDF server
@@ -27,7 +27,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include <String.h>
+#include <string>
 #include <ctype.h>
 
 // change this to the following when g++ supports const_cast
@@ -43,10 +43,10 @@
 
 class Stat {
 public:
-    Stat(const char *filename) { Stat(String(filename)); }
+    Stat(const char *filename) { Stat(string(filename)); }
     
-    Stat(const String& filename) : _filename(filename) {
-	_badstat = (stat(filename, &_sbuf) != 0);
+    Stat(const string& filename) : _filename(filename) {
+	_badstat = (stat(filename.c_str(), &_sbuf) != 0);
     }
     
     // File mode [see mknod(2)]
@@ -94,49 +94,37 @@ public:
     bool bad() const { return _badstat; }
 
     // convenience mfunction: return filename
-#ifdef __GNUG__
-    const char *filename() const { return _filename.chars(); }
-#else
-    const char *filename() const { return _filename.data(); }
-#endif
+    const char *filename() const { return _filename.c_str(); }
 
     // convenience operator: return badstat
     bool operator!() const { return bad(); }
 protected:
-    String _filename;		// name of file
+    string _filename;		// name of file
     struct stat _sbuf;		// buffer to hold stat() results
     bool _badstat;		// indicates whether stat() was successful
 };
 
-#if 0
-// Moved to hdfdesc.cc. 9/25/98 jhrg
 // return the last component of a full pathname
-inline String basename(String path) {
-#ifdef __GNUG__
-    String tmp = path.after(path.index('/',-1));
-    return tmp.after(path.index('#',-1));
-#else
-    String tmp =  path.substr(path.find_last_of("/")+1);
-    return tmp.substr(path.find_last_of("#")+1);
-#endif
+inline string basename(string path) {
+    return path.substr(path.find_last_of("/")+1);
 }
-#endif
 
 // globally substitute in for out in string s
-inline String& gsub(String& s, const String& in, const String& out) {
-    while (s.index(in) >= 0)
-	s.at(in) = out;
+inline string& gsub(string& s, const string& in, const string& out) {
+    unsigned int index = 0;
+    while ((index = s.find(in, index)) != s.npos)
+	s.replace(index, in.length(), out);
     return s;
 }
 
-String hexstring(unsigned char val);
-char unhexstring(String s);
-String id2dods(String s);
-String dods2id(String s);
-char unoctstring(String s);
-String octstring(unsigned char val);
-String escattr(String s);
-String unescattr(String s);
+string hexstring(unsigned char val);
+char unhexstring(string s);
+string id2dods(string s);
+string dods2id(string s);
+char unoctstring(string s);
+string octstring(unsigned char val);
+string escattr(string s);
+string unescattr(string s);
 HDFStructure *CastBaseTypeToStructure(BaseType *p);
 HDFArray *CastBaseTypeToArray(BaseType *p);
 int *CastBaseTypeToInt(BaseType *p);

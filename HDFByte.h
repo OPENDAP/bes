@@ -11,6 +11,12 @@
 // $RCSfile: HDFByte.h,v $ - HDFByte class declaration
 //
 // $Log: HDFByte.h,v $
+// Revision 1.4  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
+//
 // Revision 1.3  1997/03/10 22:45:18  jimg
 // Update for 2.12
 //
@@ -23,26 +29,21 @@
 #ifndef _HDFBYTE_H
 #define _HDFBYTE_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+// STL includes
+#include <string>
 
 // DODS includes
 #include "Byte.h"
 
 class HDFByte: public Byte {
 public:
-    HDFByte(const String &n = (char *)0);
+    HDFByte(const string &n = "");
     virtual ~HDFByte();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &, int &);
+    virtual bool read(const string &, int &);
 };
 
-Byte *NewByte(const String &n);
+Byte *NewByte(const string &n);
 
 typedef HDFByte * HDFBytePtr;
 

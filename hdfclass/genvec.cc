@@ -9,8 +9,14 @@
 // $RCSfile: genvec.cc,v $ - implementation of HDF generic vector class
 //
 // $Log: genvec.cc,v $
+// Revision 1.5  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.4  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.3.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.3  1998/09/10 21:33:24  jehamby
 // Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
@@ -69,13 +75,10 @@
 
 #include <strstream.h>
 #include <mfhdf.h>
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
+
+#include <string>
+#include <vector>
+
 #include <hcerr.h>
 #include <hdfclass.h>
 
@@ -90,8 +93,9 @@ void ConvertArrayByCast(U *array, int nelts, T **carray) {
     *carray = new T[nelts];
     if (*carray == 0)
 	THROW(hcerr_nomemory);
-    for (int i=0; i<nelts; ++i)
+    for (int i=0; i<nelts; ++i) {
 	*(*carray+i) = (T) *((U *)array+i);
+    }
 }
 
 //
@@ -133,7 +137,6 @@ void hdf_genvec::_init(int32 nt, void *data, int begin, int end, int stride) {
 	_nelts = nelts;			 // assign number of elements
     }
     _nt = nt;				 // assign HDF number type
-
     return;
 }    
 
@@ -313,7 +316,6 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
 	    *((char8 *)obuf+i) = val;
 	}
-	//	strncpy((char *)obuf,sv[0].c_str(),hdfclass::MAXSTR);
 	break;
     }
     default:
@@ -624,7 +626,7 @@ uint32 *hdf_genvec::export_uint32(void) const {
     uint32 *rv = 0;
     if (_nt == DFNT_UCHAR8)  // cast to uint32 array and export
 	ConvertArrayByCast((uchar8 *)_data, _nelts, &rv);
-    else if (_nt == DFNT_UINT8)   // cast to uint32 array and export
+    else if (_nt == DFNT_UINT8)    // cast to uint32 array and export
 	ConvertArrayByCast((uint8 *)_data, _nelts, &rv);
     else if (_nt == DFNT_UINT16)   // cast to uint32 array and export
 	ConvertArrayByCast((uint16 *)_data, _nelts, &rv);
@@ -844,7 +846,7 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
     if (begin < 0 || begin > _nelts || stride < 1  ||  end < 0  ||  end < begin  || 
 	stride <= 0  ||  end > _nelts-1)
 	THROW(hcerr_range);
-    if (_nt == DFNT_CHAR8 || _nt == DFNT_UCHAR8) {
+    if (_nt == DFNT_CHAR8 || _nt==DFNT_UCHAR8) {
 	string sub;
 	sub = string((char *)_data+begin,(end-begin+1));
 	if (stride > 1) {
@@ -859,13 +861,15 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 	char buf[hdfclass::MAXSTR];
 	int i;
 	switch(_nt) {
+#if 0
 	case DFNT_UCHAR8:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) <<
+		ostrstream(buf,hdfclass::MAXSTR) << 
 		    (int)*((uchar8 *)_data+i) << ends;
 		sv.push_back(string(buf));
 	    }
 	    break;
+#endif
 	case DFNT_UINT8:
 	    for (i=begin; i<=end; i+=stride) {
 		ostrstream(buf,hdfclass::MAXSTR) << 

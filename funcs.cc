@@ -1,7 +1,7 @@
 
 // libg++
-#include <vector.h>
-#include <String.h>
+#include <vector>
+#include <string>
 
 // DODS
 #include <BaseType.h>
@@ -94,7 +94,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
     // Now on with the show.  
 
     // Instantiate appropriate Dataset subclass from .hld file
-    String hldfilename = dsinfo.dsname + ".hld";
+    string hldfilename = dsinfo.dsname + ".hld";
     Dataset *ds = Dataset::factory(dsinfo.dspath, hldfilename);
     if (!*ds  ||  (bool)errors) {
 	cerr << "subset_geo has failed: could not initialize dataset" << endl;
@@ -120,7 +120,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
 	ErrorHandler("Could not parse spatial region arguments");
 	return 0;
     }
-    String filename = dsinfo.dspath + "/" + dods2id(dds.filename());
+    string filename = dsinfo.dspath + "/" + dods2id(dds.filename());
 
     // if a SwathArray,
     if (ds->type() == Dataset::swatharray) {

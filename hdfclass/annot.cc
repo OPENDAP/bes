@@ -9,8 +9,14 @@
 // $RCSfile: annot.cc,v $ - input stream class for HDF annotations
 // 
 // $Log: annot.cc,v $
+// Revision 1.4  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.3  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.2.6.1  1999/05/06 00:35:44  jimg
+// Jakes String --> string changes
 //
 // Revision 1.2  1998/09/10 21:57:10  jehamby
 // Fix incorrect checking of HDF return values and other incorrect HDF calls.
@@ -30,13 +36,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <mfhdf.h>
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
+
+#include <string>
+#include <vector>
+
 #include <hcerr.h>
 #include <hcstream.h>
 #include <hdfclass.h>
@@ -47,19 +50,16 @@ typedef string string;
 //
 
 // initialize hdfistream_annot members
-void hdfistream_annot::_init(const char *filename) {
+void hdfistream_annot::_init(const string filename) {
     _an_id = _index = _tag = _ref = 0;
     _lab = _desc = true;
     _an_ids = vector<int32>();
-    if (filename == 0)
-	_filename = string();
-    else
-	_filename = filename;
+    _filename = filename;
     return;
 }
 
 // initialize hdfistream_annot members, setting _tag, _ref to an object
-void hdfistream_annot::_init(const char *filename, int32 tag, int32 ref) {
+void hdfistream_annot::_init(const string filename, int32 tag, int32 ref) {
     _init(filename);
     _tag = tag;
     _ref = ref;
@@ -106,7 +106,6 @@ void hdfistream_annot::_get_file_anninfo(void) {
 	    THROW(hcerr_anninfo);
 	_an_ids.push_back(_ann_id);
     }
-
     return;
 }
 
@@ -119,7 +118,6 @@ void hdfistream_annot::_get_obj_anninfo(void) {
     if (_lab  &&
 	(nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) == FAIL)
 	THROW(hcerr_anninfo);
-
     if (nlab + ndesc > 0) {
 	int32 *annlist = new int32[nlab+ndesc];
 	if (annlist == 0)
@@ -153,7 +151,7 @@ void hdfistream_annot::_get_obj_anninfo(void) {
 // public member functions
 //
 
-hdfistream_annot::hdfistream_annot(const char *filename) : 
+hdfistream_annot::hdfistream_annot(const string filename) : 
   hdfistream_obj(filename) {
     _init(filename);
     if (_filename.length() != 0)
@@ -161,7 +159,7 @@ hdfistream_annot::hdfistream_annot(const char *filename) :
     return;
 }
 
-hdfistream_annot::hdfistream_annot(const char *filename, int32 tag, int32 ref) : 
+hdfistream_annot::hdfistream_annot(const string filename, int32 tag, int32 ref) : 
   hdfistream_obj(filename) {
     _init(filename);
     open(_filename.c_str(), tag, ref);

@@ -12,6 +12,12 @@
 // $RCSfile: hdf-maps.h,v $ - Definition of mapping types for vgroup ordering
 // 
 // $Log: hdf-maps.h,v $
+// Revision 1.2  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.1.10.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
+//
 // Revision 1.1  1998/04/06 16:11:43  jimg
 // Added by Jake Hamby (via patch)
 //
@@ -43,15 +49,15 @@ struct vg_info {
   bool toplevel;
 };
 
-typedef map<int32, sds_info> sds_map;
-typedef map<int32, vd_info> vd_map;
-typedef map<int32, gr_info> gr_map;
-typedef map<int32, vg_info> vg_map;
+typedef map<int32, sds_info, less<int32> > sds_map;
+typedef map<int32, vd_info, less<int32> > vd_map;
+typedef map<int32, gr_info, less<int32> > gr_map;
+typedef map<int32, vg_info, less<int32> > vg_map;
 
-typedef map<int32, sds_info>::const_iterator SDSI;
-typedef map<int32, vd_info>::const_iterator VDI;
-typedef map<int32, gr_info>::const_iterator GRI;
-typedef map<int32, vg_info>::const_iterator VGI;
+typedef map<int32, sds_info, less<int32> >::const_iterator SDSI;
+typedef map<int32, vd_info, less<int32> >::const_iterator VDI;
+typedef map<int32, gr_info, less<int32> >::const_iterator GRI;
+typedef map<int32, vg_info, less<int32> >::const_iterator VGI;
 
 /* Function prototypes */
 HDFGrid *NewGridFromSDS(const hdf_sds& sds);
@@ -61,4 +67,4 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd);
 HDFStructure *NewStructureFromVgroup(const hdf_vgroup& vg,
                    vg_map& vgmap, sds_map& map, vd_map& vdmap, gr_map& grmap);
 BaseType *NewDAPVar(int32 hdf_type);
-String DAPTypeName(int32 hdf_type);
+string DAPTypeName(int32 hdf_type);

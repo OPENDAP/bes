@@ -9,8 +9,14 @@
 // $RCSfile: hcutil.cc,v $ - misc utility routines for HDFClass
 //
 // $Log: hcutil.cc,v $
+// Revision 1.3  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.2  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.1.20.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.1  1996/10/31 18:43:02  jimg
 // Added.

@@ -9,8 +9,14 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.7  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.6  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.5.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.5  1998/09/17 21:11:08  jehamby
 // Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
@@ -47,16 +53,12 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <mfhdf.h>
-#include <vg.h>  // Include _HDF_VDATA definition
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
-#include <set.h>
-#include <algo.h>
+
+#include <string>
+#include <vector>
+#include <set>
+#include <algorithm>
+
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -69,7 +71,7 @@ static bool IsInternalVdata(int32 fid, int32 ref);
 
 // initialize hdfistream_vdata
 void hdfistream_vdata::_init(void) {
-    _vdata_id = _index = 0;
+    _vdata_id = _index = _attr_index = _nattrs = 0;
     _meta = false;
     _vdata_refs.clear();
     _recs.set = false;
@@ -84,7 +86,6 @@ void hdfistream_vdata::_get_fileinfo(void) {
 	if (!IsInternalVdata(_file_id, ref))
 	    _vdata_refs.push_back(ref);
     }
-
     return;
 }
 
@@ -126,7 +127,7 @@ void hdfistream_vdata::_seek(int32 ref) {
 // hdfistream_vdata -- public member functions
 //
 
-hdfistream_vdata::hdfistream_vdata(const char *filename) : hdfistream_obj(filename) {
+hdfistream_vdata::hdfistream_vdata(const string filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a null filename
 	open(_filename.c_str());
@@ -330,6 +331,8 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
     _seek_next();
     return *this;
 }
+
+
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f) {
 

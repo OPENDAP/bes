@@ -20,7 +20,7 @@
 
 #define YYSTYPE char *
 
-  // static char rcsid[] __unused__ = {"$Id: hdfeos.y,v 1.3 1999/03/27 00:20:16 jimg Exp $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.4 1999/05/06 03:23:36 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +33,8 @@
 #else
 #include <sstream>
 #endif
+
+#define DODS_DEBUG 1
 
 #include "DAS.h"
 #include "Error.h"
@@ -66,7 +68,7 @@ static string type;	/* holds type in attr_pair rule */
 static string last_grid_swath;  /* holds HDF-EOS name for aliasing */
 static int commentnum=0;   /* number of current comment */
 
-static vector<AttrTablePtr> *attr_tab_stack;
+static vector<AttrTable *> *attr_tab_stack;
 
 // I use a vector of AttrTable pointers for a stack
 
@@ -146,7 +148,7 @@ attributes:    	/* Create the AttrTable stack if necessary */
                 {
 		  // DBG(cerr << "Creating the AttrTable stack\n");
 		    if (!attr_tab_stack)
-			attr_tab_stack = new vector<AttrTablePtr>;
+			attr_tab_stack = new vector<AttrTable *>;
 		}
                 attribute
     	    	| attributes attribute
@@ -236,7 +238,7 @@ ints:           INT
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $1)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -256,7 +258,7 @@ ints:           INT
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $3)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -277,7 +279,7 @@ floats:		FLOAT
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $1)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -296,7 +298,7 @@ floats:		FLOAT
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $3)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -317,7 +319,7 @@ floatints:	float_or_int
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $1)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -336,7 +338,7 @@ floatints:	float_or_int
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $3)) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -353,7 +355,7 @@ strs:		STR
 		{
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
-		    if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $1)) {
+		    if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -369,14 +371,14 @@ strs:		STR
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
 		      }
-		      SECOND_IN_STACK->attr_alias(newname.c_str(), last_grid_swath.c_str());
+		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
 		    }
 		}
                 | strs ',' STR
 		{
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!TOP_OF_STACK->append_attr(name.c_str(), type.c_str(), $3)) {
+		    if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostrstream msg;
 			msg << "`" << name << "' previously defined." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -403,14 +405,14 @@ void process_group(parser_arg *arg, const string &id)
   /* If we are at the outer most level of attributes, make
      sure to use the AttrTable in the DAS. */
   if (STACK_EMPTY) {
-    at = ATTR_OBJ(arg)->get_attr_table(id.c_str());
+    at = ATTR_OBJ(arg)->get_attr_table(id);
     if (!at)
-      at = ATTR_OBJ(arg)->append_container(id.c_str());
+      at = ATTR_OBJ(arg)->append_container(id);
   }
   else {
-    at = TOP_OF_STACK->get_attr_table(id.c_str());
+    at = TOP_OF_STACK->get_attr_table(id);
     if (!at)
-      at = TOP_OF_STACK->append_container(id.c_str());
+      at = TOP_OF_STACK->append_container(id);
   }
   
   if(id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||

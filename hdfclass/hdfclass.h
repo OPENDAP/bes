@@ -12,8 +12,14 @@
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
 // $Log: hdfclass.h,v $
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.5  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.4  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
@@ -96,9 +102,8 @@ enum bool {false=0,true=1};
 #endif
 
 // Global values -- someday change "struct" to "namespace"
-// Note: The enum-inside-of-struct hack is more portable than the previous
-// const int-inside-of-struct hack, which EGCS complains about and Sun C++
-// won't accept.
+// The enum-inside-of-struct hack is more portable than the previous
+// const int-inside-of-struct hack, which didn't work with Sun C++
 struct hdfclass {
   enum hdfenum {
     MAXSTR = 32767,	// maximum length of a string

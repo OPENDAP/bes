@@ -11,6 +11,12 @@
 // $RCSfile: HDFFloat64.cc,v $ - HDFFloat64 class implementation
 //
 // $Log: HDFFloat64.cc,v $
+// Revision 1.4  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
+//
 // Revision 1.3  1997/03/10 22:45:21  jimg
 // Update for 2.12
 //
@@ -25,11 +31,11 @@
 
 #include "HDFFloat64.h"
 
-HDFFloat64::HDFFloat64(const String &n = (char *)0) : Float64(n) {}
+HDFFloat64::HDFFloat64(const string &n) : Float64(n) {}
 HDFFloat64::~HDFFloat64() {}
 BaseType *HDFFloat64::ptr_duplicate() { return new HDFFloat64(*this); }
-bool HDFFloat64::read(const String &, int &err) { 
+bool HDFFloat64::read(const string &, int &err) { 
   set_read_p(true); err = -1; return true; 
 }
 
-Float64 *NewFloat64(const String &n) { return new HDFFloat64(n); }
+Float64 *NewFloat64(const string &n) { return new HDFFloat64(n); }

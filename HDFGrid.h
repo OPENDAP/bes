@@ -11,6 +11,12 @@
 // $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
 //
 // $Log: HDFGrid.h,v $
+// Revision 1.6  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5.10.1  1999/05/06 00:27:22  jimg
+// Jakes String --> string changes
+//
 // Revision 1.5  1998/04/06 16:08:18  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
 //
@@ -29,13 +35,8 @@
 #ifndef _HDFGRID_H
 #define _HDFGRID_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+// STL includes
+#include <string>
 
 // DODS includes
 #include "Grid.h"
@@ -43,14 +44,14 @@ typedef string String;
 
 class HDFGrid: public Grid, public ReadTagRef {
 public:
-    HDFGrid(const String &n = (char *)0);
+    HDFGrid(const string &n = "");
     virtual ~HDFGrid();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &dataset, int &);
-    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
+    virtual bool read(const string &dataset, int &);
+    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
 };
 
-Grid *NewGrid(const String &n);
+Grid *NewGrid(const string &n);
 
 #endif // _HDFGRID_H
 

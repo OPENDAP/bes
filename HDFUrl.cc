@@ -11,6 +11,12 @@
 // $RCSfile: HDFUrl.cc,v $ - HDFUrl class implementation
 //
 // $Log: HDFUrl.cc,v $
+// Revision 1.4  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:23  jimg
+// Jakes String --> string changes
+//
 // Revision 1.3  1997/03/10 22:45:43  jimg
 // Update for 2.12
 //
@@ -25,11 +31,11 @@
 
 #include "HDFUrl.h"
 
-HDFUrl::HDFUrl(const String &n = (char *)0) : Url(n) {}
+HDFUrl::HDFUrl(const string &n) : Url(n) {}
 HDFUrl::~HDFUrl() {}
 BaseType *HDFUrl::ptr_duplicate() { return new HDFUrl(*this); }  
-bool HDFUrl::read(const String &, int &err) { 
+bool HDFUrl::read(const string &, int &err) { 
   set_read_p(true); err = -1; return true; 
 }
 
-Url *NewUrl(const String &n) { return new HDFUrl(n); }
+Url *NewUrl(const string &n) { return new HDFUrl(n); }

@@ -10,8 +10,14 @@
 // $RCSfile: vgroup.cc,v $ - classes for HDF VGROUP
 //
 // $Log: vgroup.cc,v $
+// Revision 1.4  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.3  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.2.6.1  1999/05/06 00:35:46  jimg
+// Jakes String --> string changes
 //
 // Revision 1.2  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
@@ -25,15 +31,12 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <mfhdf.h>
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
-#include <set.h>
-#include <algo.h>
+
+#include <string>
+#include <vector>
+#include <set>
+#include <algorithm>
+
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -102,7 +105,7 @@ void hdfistream_vgroup::_seek(int32 ref) {
 // hdfistream_vgroup -- public member functions
 //
 
-hdfistream_vgroup::hdfistream_vgroup(const char *filename) : hdfistream_obj(filename) {
+hdfistream_vgroup::hdfistream_vgroup(const string filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a null filename
 	open(_filename.c_str());
@@ -249,27 +252,27 @@ bool IsInternalVgroup(int32 fid, int32 ref) {
     reserved_classes.insert("Data0.0");
     reserved_classes.insert("RI0.0");
 
-    // get name, class of vdata
+    // get name, class of vgroup
     int vid;
     if ( (vid = Vattach(fid, ref, "r")) < 0) {
         vid = 0;
-        THROW(hcerr_vdataopen);
+        THROW(hcerr_vgroupopen);
     }
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     if (Vgetname(vid, name) < 0)
-        THROW(hcerr_vdatainfo);
+        THROW(hcerr_vgroupinfo);
     if (reserved_names.find(string(name)) != reserved_names.end())
         return true;
 
     if (Vgetclass(vid, vclass) < 0)
-        THROW(hcerr_vdatainfo);
+        THROW(hcerr_vgroupinfo);
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
         return true;
     return false;
 
 }
- 
+
 // check to see if stream is positioned past the last attribute in the
 // currently open Vgroup
 bool hdfistream_vgroup::eo_attr(void) const {

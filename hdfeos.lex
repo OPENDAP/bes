@@ -44,7 +44,7 @@
 %{
 #include "config_dap.h"
 
-static char rcsid[] __unused__ ={"$Id: hdfeos.lex,v 1.1 1998/09/10 20:33:51 jehamby Exp $"};
+static char rcsid[] not_used ={"$Id: hdfeos.lex,v 1.2 1999/05/06 03:23:36 jimg Exp $"};
 
 #include <string.h>
 #include <assert.h>

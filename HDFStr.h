@@ -11,6 +11,12 @@
 // $RCSfile: HDFStr.h,v $ - HDFStr class declaration
 //
 // $Log: HDFStr.h,v $
+// Revision 1.4  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:23  jimg
+// Jakes String --> string changes
+//
 // Revision 1.3  1997/03/10 22:45:38  jimg
 // Update for 2.12
 //
@@ -23,13 +29,8 @@
 #ifndef _HDFSTR_H
 #define _HDFSTR_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+// STL includes
+#include <string>
 
 // DODS includes
 #include "dods-limits.h"
@@ -37,13 +38,13 @@ typedef string String;
 
 class HDFStr: public Str {
 public:
-    HDFStr(const String &n = (char *)0);
+    HDFStr(const string &n = "");
     virtual ~HDFStr();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &, int &);
+    virtual bool read(const string &, int &);
 };
 
-Str *NewStr(const String &n);
+Str *NewStr(const string &n);
 
 typedef HDFStr * HDFStrPtr;
 

@@ -11,6 +11,12 @@
 // $RCSfile: HDFSequence.h,v $ - HDFSequence class declaration
 //
 // $Log: HDFSequence.h,v $
+// Revision 1.6  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5.10.1  1999/05/06 00:27:22  jimg
+// Jakes String --> string changes
+//
 // Revision 1.5  1998/04/06 16:08:19  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
 //
@@ -29,13 +35,8 @@
 #ifndef _HDFSEQUENCE_H
 #define _HDFSEQUENCE_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+// STL includes
+#include <string>
 
 // DODS includes
 #include "Sequence.h"
@@ -43,17 +44,17 @@ typedef string String;
 
 class HDFSequence: public Sequence, public ReadTagRef {
 public:
-    HDFSequence(const String &n = (char *)0);
+    HDFSequence(const string &n = "");
     virtual ~HDFSequence();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &, int &);
-    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
+    virtual bool read(const string &, int &);
+    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
 protected:
     int row;         // current row
     hdf_vdata vd;    // holds Vdata
 };
 
-Sequence *NewSequence(const String &n);
+Sequence *NewSequence(const string &n);
 
 typedef HDFSequence * HDFSequencePtr;
 

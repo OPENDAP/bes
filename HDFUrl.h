@@ -11,6 +11,12 @@
 // $RCSfile: HDFUrl.h,v $ - HDFUrl class declaration
 //
 // $Log: HDFUrl.h,v $
+// Revision 1.4  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.20.1  1999/05/06 00:27:23  jimg
+// Jakes String --> string changes
+//
 // Revision 1.3  1997/03/10 22:45:44  jimg
 // Update for 2.12
 //
@@ -23,26 +29,21 @@
 #ifndef _HDFURL_H
 #define _HDFURL_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+// STL includes
+#include <string>
 
 // DODS includes
 #include "Url.h"
 
 class HDFUrl: public Url {
 public:
-    HDFUrl(const String &n = (char *)0);
+    HDFUrl(const string &n = "");
     virtual ~HDFUrl();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &, int &);
+    virtual bool read(const string &, int &);
 };
 
-Url *NewUrl(const String &n);
+Url *NewUrl(const string &n);
 
 typedef HDFUrl * HDFUrlPtr;
 

@@ -11,8 +11,11 @@
 // $RCSfile: hdfutil.cc,v $ - Miscellaneous routines for DODS HDF server
 //
 // $Log: hdfutil.cc,v $
-// Revision 1.5  1998/09/10 21:33:25  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+// Revision 1.6  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.5.6.1  1999/05/06 00:27:25  jimg
+// Jakes String --> string changes
 //
 // Revision 1.4  1998/02/05 20:14:32  jimg
 // DODS now compiles with gcc 2.8.x
@@ -35,7 +38,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include <String.h>
+#include <string>
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include "hdfutil.h"
@@ -67,10 +70,10 @@ void *ExportDataForDODS(const hdf_genvec& v) {
     case DFNT_INT8:
 #endif
     case DFNT_UINT8:
-    case DFNT_UCHAR8:
+    case DFNT_UCHAR8: 
     case DFNT_CHAR8:
 	rv = v.export_uint8();
-//	rv = (void *)new String((char *)v.export_char8());
+//	rv = (void *)new string((char *)v.export_char8(), v.size());
 	break;
     default:
 	THROW(dhdferr_datatype);
@@ -107,9 +110,10 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
     case DFNT_UCHAR8:
     case DFNT_CHAR8:
 	rv = (void *)new uint8;
-	*((uint8 *)rv)= v.elt_uint8(i);
-//	rv = (void *)new String(v.elt_char8(i));
-	break;
+// old conversion to string
+//	rv = (void *)new string(1, v.elt_char8(i));
+	*((uchar8 *)rv)= v.elt_uint8(i);
+	break; 
     default:
 	THROW(dhdferr_datatype);
     }

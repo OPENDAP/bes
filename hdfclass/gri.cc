@@ -9,8 +9,14 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.6  1999/05/06 03:23:33  jimg
+// Merged changes from no-gnu branch
+//
 // Revision 1.5  1999/05/05 23:33:43  jimg
 // String --> string conversion
+//
+// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
+// Jakes String --> string changes
 //
 // Revision 1.4  1998/09/10 21:50:22  jehamby
 // Fix subsetting for multi-component GR (Note: due to an HDF library bug,
@@ -66,13 +72,10 @@
 
 #include <mfhdf.h>
 #include <mfgr.h>
-#ifdef __GNUG__
-#include <string.h>
-#else
-#include <bstring.h>
-typedef string string;
-#endif
-#include <vector.h>
+
+#include <string>
+#include <vector>
+
 #include <hcstream.h>
 #include <hdfclass.h>
 #include <hcerr.h>
@@ -119,7 +122,7 @@ void hdfistream_gri::_close_ri(void) {
 }
 
 // constructor
-hdfistream_gri::hdfistream_gri(const char *filename) : hdfistream_obj(filename) {
+hdfistream_gri::hdfistream_gri(const string filename) : hdfistream_obj(filename) {
   _init();
   if (_filename.length() != 0)
     open(_filename.c_str());
@@ -336,6 +339,10 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
       GRreqimageil(_ri_id,_interlace_mode);
+      cerr << "ncomp: " << ncomp << " imagesize: " << imagesize << endl;
+      cerr << "_slab.start = " << _slab.start[0] << "," << _slab.start[1] <<
+	" _slab.edge = " << _slab.edge[0] << "," << _slab.edge[1] <<
+	" _slab.stride = " << _slab.stride[0] << "," << _slab.stride[1] << endl;
       if (GRreadimage(_ri_id, _slab.start, _slab.stride, _slab.edge, image) < 0) {
 	delete []image;   // problem: clean up and throw an exception
 	THROW(hcerr_griread);
@@ -351,6 +358,8 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
       GRreqimageil(_ri_id,_interlace_mode);
+      cerr << "dim_sizes[0] = " << dim_sizes[0] << " dim_sizes[1] = "
+	   << dim_sizes[1] << endl;
       if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
 	delete []image;   // problem: clean up and throw an exception
 	THROW(hcerr_griread);

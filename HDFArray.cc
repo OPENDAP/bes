@@ -11,15 +11,11 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
-// Revision 1.7  1998/09/10 20:30:15  jehamby
-// Fixed misuse of read member function in serialize.  Set `error' parameter
-// on error, instead of using return value of the read(...) member function.
+// Revision 1.8  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
 //
-// Revision 1.6  1998/07/13 20:26:36  jimg
-// Fixes from the final test of the new build process
-//
-// Revision 1.5.4.1  1998/05/22 19:50:53  jimg
-// Patch from Jake Hamby to support subsetting raster images
+// Revision 1.7.6.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
 //
 // Revision 1.5  1998/04/03 18:34:21  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
@@ -49,7 +45,7 @@
 #include "dhdferr.h"
 #include "dodsutil.h"
 
-HDFArray::HDFArray(const String &n = (char *)0, BaseType *v = 0) : Array(n, v)
+HDFArray::HDFArray(const string &n, BaseType *v) : Array(n, v)
 {}
 
 HDFArray::~HDFArray() {}
@@ -59,19 +55,19 @@ void LoadArrayFromSDS(HDFArray *ar, const hdf_sds& sds);
 void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr);
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFArray::read(const String &dataset, int &error)
+bool HDFArray::read(const string &dataset, int &error)
 {
     return read_tagref(dataset, -1, -1, error);
 }
 
-bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err)
+bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
 {
     if (read_p())
 	return true;
 
     // get the HDF dataset name, SDS name
-    String hdf_file = dods2id(dataset);
-    String hdf_name = dods2id(this->name());
+    string hdf_file = dods2id(dataset);
+    string hdf_name = dods2id(this->name());
 
     bool foundsds = false;
     hdf_sds sds;
@@ -82,15 +78,15 @@ bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err
 
     if (tag==-1 || tag==DFTAG_NDG) {
 #ifdef NO_EXCEPTIONS
-      if (SDSExists(hdf_file.chars(), hdf_name.chars())) {
+      if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
 #else
       try {
 #endif
-	hdfistream_sds sdsin(hdf_file.chars());
+	hdfistream_sds sdsin(hdf_file.c_str());
 	if(ref != -1)
 	  sdsin.seek_ref(ref);
 	else
-	  sdsin.seek(hdf_name.chars());
+	  sdsin.seek(hdf_name.c_str());
 	if (isslab)
 	  sdsin.setslab(start, edge, stride, false);
 	sdsin >> sds;
@@ -108,15 +104,15 @@ bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err
     hdf_gri gr;
     if (!foundsds && (tag==-1 || tag==DFTAG_VG))  {
 #ifdef NO_EXCEPTIONS
-	if (GRExists(hdf_file.chars(), hdf_name.chars())) {
+	if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
 #else
         try {
 #endif
-	    hdfistream_gri grin(hdf_file.chars());
+	    hdfistream_gri grin(hdf_file.c_str());
 	    if(ref != -1)
 	      grin.seek_ref(ref);
 	    else
-	      grin.seek(hdf_name.chars());
+	      grin.seek(hdf_name.c_str());
 	    if (isslab)
 	      grin.setslab(start, edge, stride, false);
 	    grin >> gr;
@@ -145,7 +141,7 @@ bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err
     }
 }
 
-Array *NewArray(const String &n, BaseType *v)
+Array *NewArray(const string &n, BaseType *v)
 { 
     return new HDFArray(n, v); 
 } 

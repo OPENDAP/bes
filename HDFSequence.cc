@@ -11,8 +11,11 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
-// Revision 1.8  1998/09/17 17:57:49  jimg
-// Resolved conflicts from previous merge
+// Revision 1.9  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.8.6.1  1999/05/06 00:27:22  jimg
+// Jakes String --> string changes
 //
 // Revision 1.7  1998/04/06 16:08:19  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
@@ -38,8 +41,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include <map.h>
-#include <String.h>
+#include <map>
+#include <string>
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -48,33 +51,33 @@
 #include "dhdferr.h"
 #include "dodsutil.h"
 
-HDFSequence::HDFSequence(const String &n = (char *)0) : Sequence(n), row(0) {
+HDFSequence::HDFSequence(const string &n) : Sequence(n), row(0) {
     set_level(0);
 }
 HDFSequence::~HDFSequence() {}
 BaseType *HDFSequence::ptr_duplicate() { return new HDFSequence(*this); }  
 HDFStructure *CastBaseTypeToStructure(BaseType *p);
 
-Sequence *NewSequence(const String &n) { return new HDFSequence(n); }
+Sequence *NewSequence(const string &n) { return new HDFSequence(n); }
 
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 
-bool HDFSequence::read(const String& dataset, int& err) {
+bool HDFSequence::read(const string& dataset, int& err) {
   return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFSequence::read_tagref(const String& dataset, int32 tag, int32 ref, int& err) { 
+bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& err) { 
 
-    String hdf_file = dods2id(dataset);
-    String hdf_name = dods2id(this->name());
+    string hdf_file = dods2id(dataset);
+    string hdf_name = dods2id(this->name());
 
     // check to see if vd is empty; if so, read in Vdata
     if (vd.name.length() == 0) {
-	hdfistream_vdata vin(hdf_file.chars());
+	hdfistream_vdata vin(hdf_file.c_str());
 	if(ref != -1)
 	  vin.seek_ref(ref);
 	else
-	  vin.seek(hdf_name.chars());
+	  vin.seek(hdf_name.c_str());
 	vin >> vd;
 	vin.close();
 	if (!vd) {		// something is wrong
@@ -96,7 +99,7 @@ bool HDFSequence::read_tagref(const String& dataset, int32 tag, int32 ref, int& 
     // It maybe that valid files have empty vdatas when they are first
     // created. 02/06/98 jhrg
     if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0) {
-        err = 1;       // error
+	err = 1;
 	return false;
     }
 

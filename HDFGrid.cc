@@ -11,12 +11,11 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
-// Revision 1.7  1998/09/14 20:48:56  jimg
-// Resolved conflicts
+// Revision 1.8  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
 //
-// Revision 1.6  1998/09/10 20:30:15  jehamby
-// Fixed misuse of read member function in serialize.  Set `error' parameter
-// on error, instead of using return value of the read(...) member function.
+// Revision 1.7.6.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
 //
 // Revision 1.5  1998/04/06 16:08:18  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
@@ -34,7 +33,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <Pix.h>
-#include <vector.h>
+#include <vector>
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -44,7 +43,7 @@
 #include "dhdferr.h"
 #include "dodsutil.h"
 
-HDFGrid::HDFGrid(const String &n = (char *)0) : Grid(n) {}
+HDFGrid::HDFGrid(const string &n) : Grid(n) {}
 HDFGrid::~HDFGrid() {}
 BaseType *HDFGrid::ptr_duplicate() { return new HDFGrid(*this); }
 
@@ -52,15 +51,15 @@ HDFArray *CastBaseTypeToArray(BaseType *p);
 void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds);
 
 // Read in a Grid from an SDS in an HDF file.
-bool HDFGrid::read(const String& dataset, int& err) {
+bool HDFGrid::read(const string& dataset, int& err) {
   return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err) {
+bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref, int& err) {
     err = 0;			// OK initially
 
-    String hdf_file = dods2id(dataset);
-    String hdf_name = dods2id(this->name());
+    string hdf_file = dods2id(dataset);
+    string hdf_name = dods2id(this->name());
 
     if (read_p())
 	return true;
@@ -75,11 +74,11 @@ bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err)
 #ifndef NO_EXCEPTIONS
     try {
 #endif
-	hdfistream_sds sdsin(hdf_file.chars());
+	hdfistream_sds sdsin(hdf_file.c_str());
 	if(ref != -1)
 	  sdsin.seek_ref(ref);
 	else
-	  sdsin.seek(hdf_name.chars());
+	  sdsin.seek(hdf_name.c_str());
 	if (isslab)
 	    sdsin.setslab(start, edge, stride, false);
 	sdsin >> sds;
@@ -98,9 +97,9 @@ bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err)
 	return false;
     }
 #endif
-    err = 0;      // no error
-    return false; // no more data
+    
+    return true;
 }
 
-Grid *NewGrid(const String &n) { return new HDFGrid(n); }
+Grid *NewGrid(const string &n) { return new HDFGrid(n); }
 

@@ -12,23 +12,11 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
-// Revision 1.12  1998/09/26 04:10:36  jimg
-// Changed the cache file `directory' separator from `.' to `#'.
-// Moved basename here.
+// Revision 1.13  1999/05/06 03:23:36  jimg
+// Merged changes from no-gnu branch
 //
-// Revision 1.11  1998/09/14 20:48:57  jimg
-// Resolved conflicts
-//
-// Revision 1.10  1998/09/10 23:03:47  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.9  1998/09/10 21:33:25  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
-//
-// Revision 1.8  1998/09/10 20:33:51  jehamby
-// Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
-// is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
-// symlinked to the other two locations to save disk space.
+// Revision 1.12.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
 //
 // Revision 1.7  1998/04/03 18:34:28  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
@@ -64,12 +52,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-// STL and/or libg++ includes
-#include <String.h>
+// STL includes
 #include <string>
-#include <fstream.h>
+#include <fstream>
 #include <strstream.h>
-#include <string.h>
 
 // HDF and HDFClass includes
 #include <mfhdf.h>
@@ -94,7 +80,7 @@
 #ifdef __GNUG__			// force template instantiation due to g++ bug
 template class vector<hdf_attr>;
 template class vector<hdf_dim>;
-template class vector<String>;
+template class vector<string>;
 template class vector<hdf_sds>;
 template class vector<hdf_vdata>;
 template class vector<hdf_genvec>;
@@ -105,37 +91,34 @@ template class vector<hdf_palette>;
 #endif
 
 template<class T>
-String num2string(T n) {
+string num2string(T n) {
     static char buf[hdfdods::MAXSTR];
 
     ostrstream(buf,hdfdods::MAXSTR) << n << ends;
 
-    return (String)buf;
+    return (string)buf;
 }
 
 struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
 extern int hdfeosparse(void *arg); // defined in hdfeos.tab.c
 
-void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav);
-void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv);
+void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav);
+void AddHDFAttr(DAS& das, const string& varname, const vector<string>& anv);
 
-static void update_descriptions(const String& cachedir, const String& filename);
-static void build_descriptions(DDS& dds, DAS& das, const String& filename);
-static void SDS_descriptions(sds_map& map, DAS& das, const String& filename);
-static void Vdata_descriptions(vd_map& map, DAS& das, const String& filename);
-static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
+static void update_descriptions(const string& cachedir, const string& filename);
+static void build_descriptions(DDS& dds, DAS& das, const string& filename);
+static void SDS_descriptions(sds_map& map, DAS& das, const string& filename);
+static void Vdata_descriptions(vd_map& map, DAS& das, const string& filename);
+static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
 				sds_map& sdmap, vd_map& vdmap, gr_map& grmap);
-static void GR_descriptions(gr_map& map, DAS& das, const String& filename);
-static void FileAnnot_descriptions(DAS& das, const String& filename);
+static void GR_descriptions(gr_map& map, DAS& das, const string& filename);
+static void FileAnnot_descriptions(DAS& das, const string& filename);
 static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv);
 static vector<hdf_attr> Dims2Attrs(const hdf_dim dim);
 
 // Generate cache filename.
-string cache_name(const String& cd, const String& f) {
-  string cachedir(cd);
-  string filename(f);
-
+string cache_name(const string& cachedir, const string& filename) {
   // default behavior: if no cache dir, store cache file with HDF
   if(cachedir=="")
     return filename;
@@ -154,53 +137,42 @@ string cache_name(const String& cd, const String& f) {
   // turn the remaining path separators into "."
   uint32 slash = start;
   while((slash = newname.find_first_of('/', slash)) != newname.npos) {
-    newname[slash] = '#';
+    newname[slash] = '.';
   }
   string retval = cachedir + "/" + newname.substr(start);
   return retval; // return the new string
 }
 
 // Read DDS from cache
-void read_dds(DDS& dds, const String& cachedir, const String& filename) {
+void read_dds(DDS& dds, const string& cachedir, const string& filename) {
 
     update_descriptions(cachedir, filename);
 
     string ddsfile = cache_name(cachedir, filename) + ".cdds";
-    dds.parse(String(ddsfile.c_str()));
+    dds.parse(ddsfile);
     return;
 }
 
 // Read DAS from cache
-void read_das(DAS& das, const String& cachedir, const String& filename) {
+void read_das(DAS& das, const string& cachedir, const string& filename) {
 
     update_descriptions(cachedir, filename);
 
     string dasfile = cache_name(cachedir, filename) + ".cdas";
-    das.parse(String(dasfile.c_str()));
+    das.parse(dasfile);
     return;
 }
 
 
-// return the last component of a full pathname
-static String basename(String path) {
-#ifdef __GNUG__
-    String tmp = path.after(path.index('/',-1));
-    return tmp.after(tmp.index('#',-1));
-#else
-    String tmp =  path.substr(path.find_last_of("/")+1);
-    return tmp.substr(tmp.find_last_of("#")+1);
-#endif
-}
-
 // check dates of datafile and cached DDS, DAS; update cached files if necessary
-static void update_descriptions(const String& cachedir, const String& filename) {
+static void update_descriptions(const string& cachedir, const string& filename) {
 
     // if cached version of DDS or DAS is nonexistent or out of date, 
     // then regenerate DDS, DAS (cached DDS, DAS are assumed to be in the 
     // same directory as the data file)
     Stat datafile(filename);
-    Stat ddsfile((String(cache_name(cachedir, filename).c_str()) + ".cdds"));
-    Stat dasfile((String(cache_name(cachedir, filename).c_str()) + ".cdas"));
+    Stat ddsfile((cache_name(cachedir, filename) + ".cdds"));
+    Stat dasfile((cache_name(cachedir, filename) + ".cdas"));
 
     // flag error if could find filename
     if (!datafile)
@@ -213,7 +185,7 @@ static void update_descriptions(const String& cachedir, const String& filename) 
 	datafile.mtime() > dasfile.mtime()) {
 #endif
 	DDS dds;
-	dds.set_dataset_name(basename(CONST_CAST(String,filename)));
+	dds.set_dataset_name(basename(CONST_CAST(string,filename)));
 	DAS das;
 	
 	// generate DDS, DAS
@@ -239,7 +211,7 @@ static void update_descriptions(const String& cachedir, const String& filename) 
 }
 
 // Scan the HDF file and build the DDS and DAS
-static void build_descriptions(DDS& dds, DAS& das, const String& filename) {
+static void build_descriptions(DDS& dds, DAS& das, const string& filename) {
     sds_map sdsmap;
     vd_map vdatamap;
     gr_map grmap;
@@ -263,7 +235,7 @@ static void build_descriptions(DDS& dds, DAS& das, const String& filename) {
 }
 
 // Read SDS's out of filename, build descriptions and put them into dds, das.
-static void SDS_descriptions(sds_map& map, DAS& das, const String& filename) {
+static void SDS_descriptions(sds_map& map, DAS& das, const string& filename) {
 
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
@@ -284,7 +256,7 @@ static void SDS_descriptions(sds_map& map, DAS& das, const String& filename) {
     sdsin.close();
 
     // Build DAS
-    AddHDFAttr(das, String("HDF_GLOBAL"), fileattrs);// add SDS file attributes
+    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);// add SDS file attributes
     // add each SDS's attrs
     vector<hdf_attr> dattrs;
     for (SDSI s=map.begin(); s!=map.end(); ++s) {
@@ -300,7 +272,7 @@ static void SDS_descriptions(sds_map& map, DAS& das, const String& filename) {
 }
 
 // Read Vdata's out of filename, build descriptions and put them into dds.
-static void Vdata_descriptions(vd_map& map, DAS& das, const String& filename) {
+static void Vdata_descriptions(vd_map& map, DAS& das, const string& filename) {
 
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
@@ -325,7 +297,7 @@ static void Vdata_descriptions(vd_map& map, DAS& das, const String& filename) {
 }
 
 // Read Vgroup's out of filename, build descriptions and put them into dds.
-static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
+static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
 				sds_map& sdmap, vd_map& vdmap, gr_map& grmap) {
     hdfistream_vgroup vgin(filename);
 
@@ -339,9 +311,9 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
     }
     vgin.close();
     // for each Vgroup
-    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+{    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
       const hdf_vgroup *vg = &v->second.vgroup;
-
+      
       // Add Vgroup attributes
       AddHDFAttr(das, id2dods(vg->name), vg->attrs);
 
@@ -368,10 +340,10 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
 	}
       }
     }
-
+}
     // Build DDS for all toplevel vgroups
     BaseType *pbt = 0;
-    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+{    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
       if(!v->second.toplevel)
 	continue;   // skip over non-toplevel vgroups
       pbt = NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap, grmap);
@@ -379,7 +351,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
 	dds.add_var(pbt);
       }
     }
-
+}
     // add lone SDS's
     for(SDSI s=sdmap.begin(); s!=sdmap.end(); ++s) {
       if(s->second.in_vgroup)
@@ -411,7 +383,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
     }
 }
 
-static void GR_descriptions(gr_map& map, DAS& das, const String& filename) {
+static void GR_descriptions(gr_map& map, DAS& das, const string& filename) {
 
     hdfistream_gri grin(filename);
     grin.setmeta(true);
@@ -432,7 +404,7 @@ static void GR_descriptions(gr_map& map, DAS& das, const String& filename) {
     grin.close();
 
     // Build DAS
-    AddHDFAttr(das, String("HDF_GLOBAL"), fileattrs);// add GR file attributes
+    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);// add GR file attributes
 
     // add each GR's attrs
     vector<hdf_attr> pattrs;
@@ -451,20 +423,20 @@ static void GR_descriptions(gr_map& map, DAS& das, const String& filename) {
 }
 
 // Read file annotations out of filename, put in attribute structure
-static void FileAnnot_descriptions(DAS& das, const String& filename) {
+static void FileAnnot_descriptions(DAS& das, const string& filename) {
 
     hdfistream_annot annotin(filename);
-    vector<String> fileannots;
+    vector<string> fileannots;
     
     annotin >> fileannots;
-    AddHDFAttr(das, String("HDF_GLOBAL"), fileannots);
+    AddHDFAttr(das, string("HDF_GLOBAL"), fileannots);
 
     annotin.close();
     return;
 }
 
 // add a vector of hdf_attr to a DAS
-void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
+void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
     if (hav.size() == 0)	// nothing to add
 	return;
 
@@ -479,19 +451,19 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
     }
 
     // add the attributes to the DAS
-    vector<String>attv;	// vector of attribute strings
-    String attrtype;	// name of type of attribute
+    vector<string>attv;	// vector of attribute strings
+    string attrtype;	// name of type of attribute
     for (int i=0; i<(int)hav.size(); ++i) { // for each attribute
 
 	attrtype = DAPTypeName(hav[i].values.number_type());
 	// get a vector of strings representing the values of the attribute
-	attv = vector<String>(); // clear attv
+	attv = vector<string>(); // clear attv
 	hav[i].values.print(attv); 
 	
 	// add the attribute and its values to the DAS
 	for (int j=0; j<(int)attv.size(); ++j) {
 	    // handle HDF-EOS metadata with separate parser
-	    string container_name = string(hav[i].name);
+	    string container_name = hav[i].name;
 	    if (container_name.find("StructMetadata") == 0
 		|| container_name.find("CoreMetadata") == 0
 		|| container_name.find("ProductMetadata") == 0
@@ -501,18 +473,18 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
 	      uint32 dotzero = container_name.find('.');
 	      if(dotzero != container_name.npos)
 		container_name.erase(dotzero); // erase .0
-	      AttrTable *at = das.get_table(String(container_name.c_str()));
+	      AttrTable *at = das.get_table(container_name);
 	      if (!at)
-		at = das.add_table(String(container_name.c_str()), new AttrTable);
+		at = das.add_table(container_name, new AttrTable);
 
-	      hdfeos_scan_string(attv[j]);  // tell lexer to scan attribute string
+	      hdfeos_scan_string(attv[j].c_str());  // tell lexer to scan attribute string
 	      
 	      parser_arg arg(at);
 	      if (hdfeosparse((void *)&arg) != 0)
 		cerr << "HDF-EOS parse error!\n";
 	    } else {
 	      if (attrtype == "String") 
-		attv[j] = (String)'"' + escattr(attv[j]) + '"';
+		attv[j] = "\"" + escattr(attv[j]) + '"';
 	      if (atp->append_attr(id2dods(hav[i].name), attrtype, attv[j]) == 0)
 		THROW(dhdferr_addattr);
 	    }
@@ -523,8 +495,8 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
 }
 
 // add a vector of annotations to a DAS.  They are stored as attributes.  They
-// are encoded as String values of an attribute named "HDF_ANNOT".
-void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv) {
+// are encoded as string values of an attribute named "HDF_ANNOT".
+void AddHDFAttr(DAS& das, const string& varname, const vector<string>& anv) {
     if (anv.size() == 0)	// nothing to add
 	return;
 
@@ -539,11 +511,10 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv) {
     }
 
     // add the annotations to the DAS
-    String anntype = DAPTypeName(DFNT_CHAR);
-    String an;
+    string an;
     for (int i=0; i<(int)anv.size(); ++i) { // for each annotation
 	    an = "\"" + escattr(anv[i]) + "\""; // quote strings
-	if (atp->append_attr(String("HDF_ANNOT"), anntype, an) == 0)
+	if (atp->append_attr(string("HDF_ANNOT"), "String", an) == 0)
 	    THROW(dhdferr_addattr);
     }	
     
@@ -560,7 +531,7 @@ static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv) {
 	// for each palette create an attribute with the palette inside, and an
 	// attribute containing the number of components
 	hdf_attr pattr;
-	String palname;
+	string palname;
 	for (int i=0; i<(int)palv.size(); ++i) {
 	    palname = "hdf_palette_" + num2string(i);
 	    pattr.name = palname;
@@ -572,7 +543,7 @@ static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv) {
 	    if (palv[i].name.length() != 0) {
 		pattr.name = palname + "_name";
 		pattr.values = hdf_genvec(DFNT_CHAR, 
-			  (void *)palv[i].name.chars(), palv[i].name.length());
+			  (void *)palv[i].name.c_str(), palv[i].name.length());
 		pattrs.push_back(pattr);
 	    }
 	}
@@ -587,25 +558,25 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
   hdf_attr dattr;
   if (dim.name.length() != 0) {
     dattr.name = "name";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.name.chars(),
+    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.name.c_str(),
 			      dim.name.length());
     dattrs.push_back(dattr);
   }
   if (dim.label.length() != 0) {
     dattr.name = "long_name";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.label.chars(),
+    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.label.c_str(),
 			      dim.label.length());
     dattrs.push_back(dattr);
   }
   if (dim.unit.length() != 0) {
     dattr.name = "units";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.unit.chars(),
+    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.unit.c_str(),
 			      dim.unit.length());    
     dattrs.push_back(dattr);
   }
   if (dim.format.length() != 0) {
     dattr.name = "format";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.format.chars(),
+    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.format.c_str(),
 			      dim.format.length());    
     dattrs.push_back(dattr);
   }

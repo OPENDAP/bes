@@ -8,6 +8,12 @@
 //	jhrg,jimg	James Gallagher (jgallagher@gso.uri.edu)
 
 // $Log: HDFDODSFilter.h,v $
+// Revision 1.3  1999/05/06 03:23:34  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.2.4.1  1999/05/06 00:27:21  jimg
+// Jakes String --> string changes
+//
 // Revision 1.2  1998/11/11 17:59:13  jimg
 // *** empty log message ***
 //
@@ -24,7 +30,7 @@
 
 #include "DODSFilter.h"
 
-#include <String.h>
+#include <string>
 
 /**
    An overload of DODSFilter, this does special processing for the HDF
@@ -54,8 +60,8 @@ public:
 
       @memo Get the dataset name. 
       @see get_data_name 
-      @return A String object that contains the name of the dataset. */
-    String cache_get_dataset_name();
+      @return A string object that contains the name of the dataset. */
+    string cache_get_dataset_name();
 };
 
 #endif // _DODSFilter_h
