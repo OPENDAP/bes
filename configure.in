@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script
 dnl for the hdfbrowse installation.
 dnl
-dnl $Id: configure.in,v 1.4 1996/12/18 18:28:36 jimg Exp $
+dnl $Id: configure.in,v 1.5 1996/12/21 00:04:31 jimg Exp $
 
 #--------------------------------------------------------------------
 #   Configure.in  10/18/96
@@ -48,7 +48,8 @@ case "$host" in
     *alpha*|*sgi*) 
         echo "Exception support being suppressed on this platform!"
 	CXXFLAGS="-O0"
-	DEFS="$DEFS -DNO_EXCEPTIONS"
+	AC_DEFINE(NO_EXCEPTIONS)
+dnl DEFS="$DEFS -DNO_EXCEPTIONS"
 	;;
     *) true
 	;;
