@@ -11,8 +11,8 @@
 // $RCSfile: HDFArray.h,v $ - HDFArray class declaration
 //
 // $Log: HDFArray.h,v $
-// Revision 1.2  1997/02/10 02:01:14  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:16  jimg
+// Update for 2.12
 //
 // Revision 1.4  1996/09/24 20:25:18  todd
 // Added copyright and header
@@ -30,6 +30,7 @@
 #include <bstring.h>
 typedef string String;
 #endif
+#include <vector.h>
 
 // DODS includes
 #include "Array.h"

@@ -11,8 +11,8 @@
 // $RCSfile: hdfutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: hdfutil.h,v $
-// Revision 1.2  1997/02/10 02:02:00  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:58  jimg
+// Update for 2.12
 //
 // Revision 1.1  1996/09/24 22:38:16  todd
 // Initial revision
@@ -20,108 +20,5 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-
-#include <String.h>
-#include <ctype.h>
-
-// change this to the following when g++ supports const_cast
-// #define CONST_CAST(TYPE,EXPR) const_cast<TYPE>(EXPR)
-#define CONST_CAST(TYPE,EXPR) (TYPE)(EXPR)
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-
-class Stat {
-public:
-    Stat(const char *filename) { Stat(String(filename)); }
-    
-    Stat(const String& filename) : _filename(filename) {
-	_badstat = (stat(filename, &_sbuf) != 0);
-    }
-    
-    // File mode [see mknod(2)]
-    mode_t mode() const {return _sbuf.st_mode; }
-    
-    // Inode number 
-    ino_t ino() const { return _sbuf.st_ino; }   
-    
-    // ID of device containing a directory entry for this file 
-    dev_t dev() const { return _sbuf.st_dev; }   
-    
-    // ID of device -- this entry is defined only for char special or block 
-    // special files 
-    dev_t rdev() const { return _sbuf.st_rdev; }
-    
-    // Number of links 
-    nlink_t nlink() const { return _sbuf.st_nlink; }
-    
-    // User ID of the file's owner
-    uid_t uid() const { return _sbuf.st_uid; }
-    
-    // Group ID of the file's group 
-    gid_t gid() const { return _sbuf.st_gid; }	
-    
-    // File size in bytes 
-    off_t size() const { return _sbuf.st_size; } 
-
-    // Time of last access (Times measured in seconds since 
-    // 00:00:00 UTC, Jan. 1, 1970)
-    time_t atime() const { return _sbuf.st_atime; }  
-
-    // Time of last data modification
-    time_t mtime() const { return _sbuf.st_mtime; } 
-
-    // Time of last status change 
-    time_t ctime() const { return _sbuf.st_ctime; }
-                            
-    // Preferred I/O block size 
-    long blksize() const { return _sbuf.st_blksize; } 
-
-    // Number st_blksize blocks allocated 
-    long blocks() const { return _sbuf.st_blocks; }
-				
-    // flag indicating constructor was not successful
-    bool bad() const { return _badstat; }
-
-    // convenience mfunction: return filename
-#ifdef __GNUG__
-    const char *filename() const { return _filename.chars(); }
-#else
-    const char *filename() const { return _filename.data(); }
-#endif
-
-    // convenience operator: return badstat
-    bool operator!() const { return bad(); }
-protected:
-    String _filename;		// name of file
-    struct stat _sbuf;		// buffer to hold stat() results
-    bool _badstat;		// indicates whether stat() was successful
-};
-
-// return the last component of a full pathname
-inline String basename(String path) {
-#ifdef __GNUG__
-    return path.after(path.index('/',-1));
-#else
-    return path.substr(path.find_last_of("/")+1);
-#endif
-}
-
-// globally substitute in for out in string s
-inline String& gsub(String& s, const String& in, const String& out) {
-    while (s.index(in) >= 0)
-	s.at(in) = out;
-    return s;
-}
-
-String hexstring(int val);
-char unhexstring(String s);
-String id2dods(String s);
-String dods2id(String s);
 void *ExportDataForDODS(const hdf_genvec& v);
 void *ExportDataForDODS(const hdf_genvec& v, int i);
-char unoctstring(String s);
-String octstring(int val);
-String escattr(String s);
-String unescattr(String s);

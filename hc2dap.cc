@@ -12,8 +12,8 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
-// Revision 1.2  1997/02/10 02:01:52  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:50  jimg
+// Update for 2.12
 //
 // Revision 1.5  1996/11/20  22:28:23  todd
 // Modified to support UInt32 type.
@@ -58,6 +58,7 @@ typedef string String;
 #include "HDFSequence.h"
 #include "HDFStructure.h"
 #include "hdfutil.h"
+#include "dodsutil.h"
 #include "dhdferr.h"
 
 #include "HDFUInt32.h"

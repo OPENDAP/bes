@@ -12,8 +12,8 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
-// Revision 1.2  1997/02/10 02:01:57  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:55  jimg
+// Update for 2.12
 //
 // Revision 1.5  1996/10/07 17:26:23  ike
 // Added Dims2Attrs() to convert hdf_dim info into hdf_attr.
@@ -58,7 +58,8 @@ typedef string String;
 #include "HDFArray.h"
 #include "HDFSequence.h"
 #include "HDFGrid.h"
-#include "hdfutil.h"
+#include "dodsutil.h"
+#include "hdf-dods.h"
 
 #ifdef __GNUG__			// force template instantiation due to g++ bug
 template class vector<hdf_attr>;
@@ -75,9 +76,9 @@ template class vector<hdf_palette>;
 
 template<class T>
 String num2string(T n) {
-    static char buf[hdfclass::MAXSTR];
+    static char buf[hdfdods::MAXSTR];
 
-    ostrstream(buf,hdfclass::MAXSTR) << n << ends;
+    ostrstream(buf,hdfdods::MAXSTR) << n << ends;
 
     return (String)buf;
 }

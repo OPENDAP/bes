@@ -11,8 +11,8 @@
 // $RCSfile: HDFFloat64.h,v $ - HDFFloat64 class declaration
 //
 // $Log: HDFFloat64.h,v $
-// Revision 1.2  1997/02/10 02:01:20  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:22  jimg
+// Update for 2.12
 //
 // Revision 1.3  1996/09/24 20:53:26  todd
 // Added copyright and header.

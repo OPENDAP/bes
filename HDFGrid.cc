@@ -11,8 +11,8 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
-// Revision 1.2  1997/02/10 02:01:23  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:25  jimg
+// Update for 2.12
 //
 // Revision 1.4  1996/09/24 20:53:26  todd
 // Added copyright and header.
@@ -29,7 +29,7 @@
 #include "HDFGrid.h"
 #include "HDFArray.h"
 #include "dhdferr.h"
-#include "hdfutil.h"
+#include "dodsutil.h"
 
 HDFGrid::HDFGrid(const String &n = (char *)0) : Grid(n) {}
 HDFGrid::~HDFGrid() {}

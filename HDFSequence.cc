@@ -11,8 +11,8 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
-// Revision 1.2  1997/02/10 02:01:30  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:34  jimg
+// Update for 2.12
 //
 // Revision 1.4  1996/09/24 20:57:34  todd
 // Added copyright and header.
@@ -28,7 +28,7 @@
 #include "HDFSequence.h"
 #include "HDFStructure.h"
 #include "dhdferr.h"
-#include "hdfutil.h"
+#include "dodsutil.h"
 
 HDFSequence::HDFSequence(const String &n = (char *)0) : Sequence(n) {
     set_level(0);

@@ -11,8 +11,8 @@
 // $RCSfile: dhdferr.h,v $ - HDF server error class declarations
 //
 // $Log: dhdferr.h,v $
-// Revision 1.2  1997/02/10 02:01:50  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:48  jimg
+// Update for 2.12
 //
 // Revision 1.1  1996/09/27 18:21:32  todd
 // Initial revision

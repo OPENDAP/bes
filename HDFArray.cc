@@ -11,8 +11,8 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
-// Revision 1.2  1997/02/10 02:01:12  jimg
-// Update from Todd.
+// Revision 1.3  1997/03/10 22:45:14  jimg
+// Update for 2.12
 //
 // Revision 1.5  1996/11/21 23:20:27  todd
 // Added error return value to read() mfunc.
@@ -30,7 +30,7 @@
 #include "config_dap.h"
 #include "HDFArray.h"
 #include "dhdferr.h"
-#include "hdfutil.h"
+#include "dodsutil.h"
 
 HDFArray::HDFArray(const String &n = (char *)0, BaseType *v = 0) : Array(n, v)
 {}
