@@ -25,9 +25,12 @@
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.2 1998/09/26 04:09:34 jimg Exp $
+# $Id: nph-hdf.in,v 1.3 1999/05/05 02:03:12 jimg Exp $
 #
 # $Log: nph-hdf.in,v $
+# Revision 1.3  1999/05/05 02:03:12  jimg
+# Added Version stuff.
+#
 # Revision 1.2  1998/09/26 04:09:34  jimg
 # Changed the cache file `directory' separator from `.' to `#'.
 #
@@ -65,7 +68,7 @@ purge_cache($cache_dir, 50 * 1048576, ".*\\.hdf.*");
 
 # The DODS_Dispatch object reads information from the environment variables
 # and builds up a command based on the format of a DODS URL. 
-$dispatch = new DODS_Dispatch;
+$dispatch = new DODS_Dispatch("hdf/@VERSION@", "support\@unidata.ucar.edu");
 
 $file_name = $dispatch->filename();
 
@@ -100,8 +103,5 @@ $command = $dispatch->command();
 if ($command ne "") {		# if no error...
     exec($command);
 } else {
-    my $script_rev = '$Revision: 1.2 $ ';
-    $script_rev =~ s@\$([A-z]*): (.*) \$@$2@;
-
-    $dispatch->print_error_msg($script_rev);
+    $dispatch->print_error_msg();
 }
