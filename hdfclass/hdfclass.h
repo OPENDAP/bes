@@ -1,6 +1,8 @@
 #ifndef _HDFCLASS_H
 #define _HDFCLASS_H
 
+// -*- C++ -*-
+
 //////////////////////////////////////////////////////////////////////////////
 // 
 // Copyright (c) 1996, California Institute of Technology.
@@ -16,6 +18,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+using std::vector ;
+using std::string ;
 
 #ifdef NO_BOOL
 enum bool {false=0,true=1};
@@ -40,15 +45,25 @@ public:
     hdf_genvec(int32 nt, void *data, int begin, int end, int stride=1);
     hdf_genvec(int32 nt, void *data, int nelts);	 
     hdf_genvec(const hdf_genvec& gv);
+
     virtual ~hdf_genvec(void);
+
     hdf_genvec& operator=(const hdf_genvec& gv);
+
     int32 number_type(void) const { return _nt; }
     int size(void) const { return _nelts; }
-    const void *data(void) { return _data; }     // use with care!
+    const char *data(void) const { return _data; }     // use with care!
+
+    void append(int32 nt, const char *new_data, int32 nelts);
+
     void import(int32 nt, void *data, int nelts) { import(nt, data, 0, nelts-1, 1); }
     void import(int32 nt, void *data, int begin, int end, int stride=1);
     void import(int32 nt) { import(nt, 0, 0, 0, 0); }
     void import(int32 nt, const vector<string>& sv);
+
+    void print(vector<string>& strv) const;
+    void print(vector<string>& strv, int begin, int end, int stride) const;
+
     vector<uchar8> exportv_uchar8(void) const; 
     uchar8 *export_uchar8(void) const; 
     uchar8 elt_uchar8(int i) const; 
@@ -80,16 +95,16 @@ public:
     float64 *export_float64(void) const; 
     float64 elt_float64(int i) const; 
     string export_string(void) const; 
-    void print(vector<string>& strv) const;
-    void print(vector<string>& strv, int begin, int end, int stride) const;
+
 protected:
     void _init(int32 nt, void *data, int begin, int end, int stride=1);
     void _init(void);
     void _init(const hdf_genvec& gv);
     void _del(void);
+
     int32 _nt;			// HDF data type of vector
     int _nelts;			// number of elements in vector
-    void *_data;		// hold data
+    char *_data;		// hold data
 };
 
 // HDF attribute class
@@ -97,6 +112,17 @@ class hdf_attr {
 public:
     string name;		// name of attribute
     hdf_genvec values;		// value(s) of attribute
+};
+
+// Structure to hold array-type constraint information. Used within
+// hdfistream_sds (See hcstream.h)
+struct array_ce {
+    string name;
+    int start;
+    int edge;
+    int stride;
+    array_ce(const string &n, int s1, int e, int s3)
+	: name(n), start(s1), edge(e), stride(s3) {}
 };
 
 // HDF dimension class - holds dimension info and scale for an SDS
@@ -156,6 +182,7 @@ public:
   string vclass;                // class name of vgroup
   vector<int32> tags;           // vector of tags inside vgroup
   vector<int32> refs;           // vector of refs inside vgroup
+  vector<string> vnames;        // vector of variable name(refs) inside vgroup
   vector<hdf_attr> attrs;
 protected:
   bool _ok(void) const;         // is this hdf_vgroup correctly initialized?
@@ -196,6 +223,37 @@ bool GRExists(const char *filename, const char *grname);
 bool VdataExists(const char *filename, const char *vdname);
 
 // $Log: hdfclass.h,v $
+// Revision 1.8  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.7.4.5  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.7.4.4  2002/02/05 17:46:17  jimg
+// Added struct array_ce to hold a single array constaint.
+// Added _map_ce_vec, a vector<array_ce> object to hdfistream_sds so that
+// instances no longer use the constraint associated with a Grid's array
+// when sending map vectors. This is necessary because some clients ask
+// for just map vectors and the array constraint (which defaults to the
+// whole array) overrides the actual constraint(s) sent by the client.
+//
+// Revision 1.7.4.3  2002/01/29 20:02:32  dan
+// Added new elements to hdf_vgroup structure to maintain
+// member variable names (string-reps) to couple explicit
+// variable names to tag/ref fields in the structure.  Required
+// to support new Ancillary DDS usage.
+//
+// Revision 1.7.4.2  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
+// Revision 1.7.4.1  2001/10/24 22:48:31  jimg
+// Changes made to fix a problem parsing HDFEOS attributes that are larger
+// than 32,000 characters. The fixes don't yet work...
+//
 // Revision 1.7  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

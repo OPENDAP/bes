@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.16 2001/09/28 22:36:09 jimg Exp $
+# $Id: Makefile.in,v 1.17 2003/01/31 02:08:37 jimg Exp $
 
 @SET_MAKE@
 
@@ -10,7 +10,7 @@ DODS_ROOT = ../../..
 # a definition for that variable g++ is confused. jhrg 2/5/98.
 WWW_ROOT = @WWW_ROOT@
 
-INCS = -I. -I.. -I$(DODS_ROOT)/include -Isrc @INCS@
+INCS = -I. -I.. -I$(DODS_ROOT)/include @INCS@
 DEFS = @DEFS@
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
 CXXFLAGS = @CXXFLAGS@ -Wall
@@ -47,8 +47,8 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 STRIP = strip
 
-vpath %.h src
-vpath %.cc src
+#vpath %.h src
+#vpath %.cc src
 
 OBJS = hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o vgroup.o
 
@@ -78,19 +78,19 @@ distclean: clean
 
 .PHONY: depend
 depend: 
-	../@depend@ -m Makefile.in -- $(CPPFLAGS) -- src/*.cc
+	../@depend@ -m Makefile.in -- $(CPPFLAGS) -- *.cc
 
 .PHONY: tags
 tags:
-	$(TAGS) $(TAGS_FLAGS) src/*.cc src/*.h 
+	$(TAGS) $(TAGS_FLAGS) *.cc *.h 
 
 # DO NOT DELETE; depend depends on this line.
-annot.o: src/annot.cc ../config_hdf.h
-genvec.o: src/genvec.cc ../config_hdf.h
-gri.o: src/gri.cc ../config_hdf.h
-hcerr.o: src/hcerr.cc ../config_hdf.h
-hcutil.o: src/hcutil.cc ../config_hdf.h
-inst.o: src/inst.cc ../config_hdf.h
-sds.o: src/sds.cc ../config_hdf.h
-vdata.o: src/vdata.cc ../config_hdf.h
-vgroup.o: src/vgroup.cc ../config_hdf.h
+annot.o: annot.cc ../config_hdf.h
+genvec.o: genvec.cc ../config_hdf.h
+gri.o: gri.cc ../config_hdf.h
+hcerr.o: hcerr.cc ../config_hdf.h
+hcutil.o: hcutil.cc ../config_hdf.h
+inst.o: inst.cc ../config_hdf.h
+sds.o: sds.cc ../config_hdf.h
+vdata.o: vdata.cc ../config_hdf.h
+vgroup.o: vgroup.cc ../config_hdf.h

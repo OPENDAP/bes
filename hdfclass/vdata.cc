@@ -19,6 +19,9 @@
 #include <set>
 #include <algorithm>
 
+using std::set ;
+using std::less ;
+
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -217,8 +220,8 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_attr& ha) {
         THROW(hcerr_vdatainfo);
 
     // allocate a temporary C array to hold data from VSgetattr()
-    void *data;
-    data = (void *)new char[count*DFKNTsize(number_type)];
+    char *data;
+    data = new char[count*DFKNTsize(number_type)];
     if (data == 0)
 	THROW(hcerr_nomemory);
 
@@ -354,9 +357,9 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f
 
     // for each component, set type and optionally load data
     hdf_genvec gv;
-    void *data = 0;
+    char *data = 0;
     if (nrecs > 0) {		// if nrecs > 0 then load data for field
-	data = (void *)new char[fieldsize*nrecs];
+	data = new char[fieldsize*nrecs];
 	if (VSsetfields(vid, fieldname) < 0) // set field to read
 	    THROW(hcerr_vdataread);
 	if (VSread(vid, (uchar8 *)data, nrecs, FULL_INTERLACE) < 0) {
@@ -455,6 +458,19 @@ bool IsInternalVdata(int32 fid, int32 ref) {
 
  
 // $Log: vdata.cc,v $
+// Revision 1.10  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.8.4.3  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.8.4.2  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
 // Revision 1.9  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

@@ -18,18 +18,36 @@
 // STL includes
 #include <string>
 #include <fstream>
+#include <iostream.h>
 #include <strstream.h>
+#include <algorithm>
+#include <numeric>
+#include <functional>
 
+using std::ofstream ;
+using std::cerr ;
+using std::endl ;
+using std::ends ;
+using std::binary_function ;
+using std::unary_function ;
+
+// Include this on linux to suppres an annoying warning about multiple
+// definitions of MIN and MAX.
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 // HDF and HDFClass includes
 #include <mfhdf.h>
-#include <hcstream.h>
-#include <hdfclass.h>
-#include <hcerr.h>
+
+#include "hcstream.h"
+#include "hdfclass.h"
+#include "hcerr.h"
 
 // DODS includes
 #include "DDS.h"
 #include "DAS.h"
 #include "escaping.h"
+#include "debug.h"
 
 // DODS/HDF includes
 #include "dhdferr.h"
@@ -97,10 +115,10 @@ string cache_name(const string& cachedir, const string& filename) {
   while(newname[start-1] != '/')
     start--;
 
-  // turn the remaining path separators into "."
+  // turn the remaining path separators into "#"
   string::size_type slash = start;
   while((slash = newname.find_first_of('/', slash)) != newname.npos) {
-    newname[slash] = '.';
+    newname[slash] = '#';
   }
   string retval = cachedir + "/" + newname.substr(start);
   return retval; // return the new string
@@ -148,7 +166,7 @@ static void update_descriptions(const string& cachedir, const string& filename) 
 	datafile.mtime() > dasfile.mtime()) {
 #endif
 	DDS dds;
-	dds.set_dataset_name(basename(CONST_CAST(string,filename)));
+	dds.set_dataset_name(basename(filename));
 	DAS das;
 	
 	// generate DDS, DAS
@@ -195,13 +213,90 @@ static void build_descriptions(DDS& dds, DAS& das, const string& filename) {
     return;
 }
 
+// These two Functor classes are used to look for EOS attributes with certain
+// base names (is_named) and to accumulate values in in different hdf_attr
+// objects with the same base names (accum_attr). These are used by
+// merge_split_eos_attributes() to do just that. Some HDF EOS attributes are
+// longer than HDF 4's 32,000 character limit. Those attributes are split up
+// in the HDF 4 files and named `StructMetadata.0', `StructMetadata.1', et
+// cetera. This code merges those attributes so that they can be processed
+// correctly by the hdf eos attribute parser (see AddHDFAttr() further down
+// in this file). 10/29/2001 jhrg
+
+struct accum_attr
+    : public binary_function<hdf_genvec &, hdf_attr, hdf_genvec &> {
+
+    string d_named;
+
+    accum_attr(const string &named) : d_named(named) {}
+    
+    hdf_genvec &operator()(hdf_genvec &accum, const hdf_attr &attr) {
+	// Assume that all fields with the same base name should be combined,
+	// and assume that they are in order.
+	DBG(cerr << "attr.name: " << attr.name << endl);
+	if (attr.name.find(d_named) != string::npos) {
+	    accum.append(attr.values.number_type(), attr.values.data(),
+			 attr.values.size());
+	    return accum;
+	}
+	else {
+	    return accum;
+	}
+    }
+};
+	
+struct is_named: public unary_function<hdf_attr, bool> {
+    string d_named;
+
+    is_named(const string &named) : d_named(named) {}
+
+    bool operator()(const hdf_attr &attr) {
+	return (attr.name.find(d_named) != string::npos);
+    }
+};
+
+static void
+merge_split_eos_attributes(vector<hdf_attr> &attr_vec,
+			   const string &attr_name)
+{
+    // Only do this if there's more than one part.
+    if (count_if(attr_vec.begin(), attr_vec.end(), is_named(attr_name)) 
+	> 1) {
+	// Merge all split up parts named `attr_name.' Assume they are in
+	// order in `attr_vec.'
+	hdf_genvec attributes;
+	attributes = accumulate(attr_vec.begin(), attr_vec.end(), 
+				attributes, accum_attr(attr_name));
+
+	// When things go south, check out the hdf_genvec...
+	DBG2(vector<string> s_m;
+	     attributes.print(s_m);
+	     cerr << "Accum struct MD: (" << s_m.size() << ") " 
+	     << s_m[0] << endl);
+	
+	// Remove all the parts that have been merged
+	attr_vec.erase(remove_if(attr_vec.begin(), attr_vec.end(), 
+				 is_named(attr_name)), 
+		       attr_vec.end());
+
+	// Make a new hdf_attr and assign it the newly merged attributes...
+	hdf_attr merged_attr;
+	merged_attr.name = attr_name;
+	merged_attr.values = attributes;
+
+	// And add it to the vector of attributes.
+	attr_vec.push_back(merged_attr);
+    }
+}
+
 // Read SDS's out of filename, build descriptions and put them into dds, das.
 static void SDS_descriptions(sds_map& map, DAS& das, const string& filename) {
 
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
   
-    // Read SDS file attributes
+    // Read SDS file attributes	attr_iter i = ;
+
     vector<hdf_attr> fileattrs;
     sdsin >> fileattrs;
 
@@ -216,8 +311,17 @@ static void SDS_descriptions(sds_map& map, DAS& das, const string& filename) {
 
     sdsin.close();
 
-    // Build DAS
-    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);// add SDS file attributes
+    // This is the call to combine SDS attributes that have been split up
+    // into N 32,000 character strings. 10/24/2001 jhrg
+    merge_split_eos_attributes(fileattrs, "StructMetadata");
+    merge_split_eos_attributes(fileattrs, "CoreMetadata");
+    merge_split_eos_attributes(fileattrs, "ProductMetadata");
+    merge_split_eos_attributes(fileattrs, "ArchiveMetadata");
+    merge_split_eos_attributes(fileattrs, "coremetadata");
+    merge_split_eos_attributes(fileattrs, "productmetadata");
+
+    // Build DAS, add SDS file attributes
+    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);
     // add each SDS's attrs
     vector<hdf_attr> dattrs;
     for (SDSI s=map.begin(); s!=map.end(); ++s) {
@@ -437,16 +541,18 @@ void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
 	      if (!at)
 		at = das.add_table(container_name, new AttrTable);
 
-	      hdfeos_scan_string(attv[j].c_str());  // tell lexer to scan attribute string
+	      // tell lexer to scan attribute string
+	      hdfeos_scan_string(attv[j].c_str());
+
 	      parser_arg arg(at);
-	      if (hdfeosparse((void *)&arg) != 0 
+	      if (hdfeosparse(static_cast<void *>(&arg)) != 0 
 		  || arg.status() == false)
-		cerr << "HDF-EOS parse error!\n";
+		  cerr << "HDF-EOS parse error!\n";
 	    } else {
-	      if (attrtype == "String") 
-		attv[j] = "\"" + escattr(attv[j]) + '"';
-	      if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
-		THROW(dhdferr_addattr);
+		if (attrtype == "String") 
+		    attv[j] = "\"" + escattr(attv[j]) + '"';
+		if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
+		    THROW(dhdferr_addattr);
 	    }
 	}
     }	
@@ -498,12 +604,14 @@ static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv) {
 	    pattr.values = palv[i].table;
 	    pattrs.push_back(pattr);
 	    pattr.name = palname + "_ncomps";
-	    pattr.values = hdf_genvec(DFNT_INT32, (void *)&palv[i].ncomp, 1);
+	    pattr.values = hdf_genvec(DFNT_INT32, 
+				      const_cast<int32*>(&palv[i].ncomp), 1);
 	    pattrs.push_back(pattr);
 	    if (palv[i].name.length() != 0) {
 		pattr.name = palname + "_name";
 		pattr.values = hdf_genvec(DFNT_CHAR, 
-			  (void *)palv[i].name.c_str(), palv[i].name.length());
+				      const_cast<char*>(palv[i].name.c_str()),
+					  palv[i].name.length());
 		pattrs.push_back(pattr);
 	    }
 	}
@@ -518,25 +626,25 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
   hdf_attr dattr;
   if (dim.name.length() != 0) {
     dattr.name = "name";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.name.c_str(),
+    dattr.values = hdf_genvec(DFNT_CHAR, const_cast<char*>(dim.name.c_str()),
 			      dim.name.length());
     dattrs.push_back(dattr);
   }
   if (dim.label.length() != 0) {
     dattr.name = "long_name";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.label.c_str(),
+    dattr.values = hdf_genvec(DFNT_CHAR, const_cast<char *>(dim.label.c_str()),
 			      dim.label.length());
     dattrs.push_back(dattr);
   }
   if (dim.unit.length() != 0) {
     dattr.name = "units";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.unit.c_str(),
+    dattr.values = hdf_genvec(DFNT_CHAR, const_cast<char*>(dim.unit.c_str()),
 			      dim.unit.length());    
     dattrs.push_back(dattr);
   }
   if (dim.format.length() != 0) {
     dattr.name = "format";
-    dattr.values = hdf_genvec(DFNT_CHAR,(void *)dim.format.c_str(),
+    dattr.values = hdf_genvec(DFNT_CHAR, const_cast<char*>(dim.format.c_str()),
 			      dim.format.length());    
     dattrs.push_back(dattr);
   }
@@ -544,6 +652,49 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
 }
 
 // $Log: hdfdesc.cc,v $
+// Revision 1.19  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.17.4.8  2003/01/30 22:40:28  jimg
+// Fixed the --with-test-url argument to configure so that it works. This
+// after two days of trying to figure out why the tests failes, geturl failed
+// but running the filters (hdf_das, ...) worked... it was using the wrong
+// URL! Arrgh.
+//
+// Revision 1.17.4.7  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.17.4.6  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
+// Revision 1.17.4.5  2002/04/11 03:09:24  jimg
+// Added conditional include of sys/param.h. On linux systems this header
+// defines MIN and MAX which HDF also defines. Including this file first
+// suppresses annoying error messages about that.
+//
+// Revision 1.17.4.4  2001/10/31 16:28:06  jimg
+// The merge_split_eos_attributes() function was adding the wrong name when
+// building the new hdf_attr object. I grabbed an iterator that pointed to the
+// first part of the split info and then called erase(remove()) invalidating the
+// iterator. This really messed things up. It turns out that the name passed
+// into the function (the attr_name parameter) can be used eliminating the need
+// to call the STL's find_if algorithm.
+//
+// Revision 1.17.4.3  2001/10/30 06:40:59  jimg
+// Added merge_split_eos_attributes(...). This static function reads through
+// the collection of attributes looking for HDF EOS entries. If it finds any
+// which appear to have been split (because they share a common base name
+// such as `StructMetadata') they are joined. The function is fairly
+// primitive; it does not check for the .0, .1, ..., .n convention and
+// assumes that the attributes pieces will appear in order. These appear to
+// be OK assumptions for HDF 4 EOS files.
+//
+// Revision 1.17.4.2  2001/10/24 22:48:31  jimg
+// Changes made to fix a problem parsing HDFEOS attributes that are larger
+// than 32,000 characters. The fixes don't yet work...
+//
 // Revision 1.18  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

@@ -28,12 +28,19 @@ public:
     virtual ~HDFGrid();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &dataset);
+    virtual vector<array_ce> HDFGrid::get_map_constraints();
     virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
 };
 
 Grid *NewGrid(const string &n);
 
 // $Log: HDFGrid.h,v $
+// Revision 1.8  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.7.4.1  2002/02/05 17:46:56  jimg
+// Added the get_map_constraint() method.
+//
 // Revision 1.7  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

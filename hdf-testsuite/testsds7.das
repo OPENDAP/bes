@@ -1,6 +1,6 @@
 Attributes {
     SDS_None {
-        Int32 _FillValue 0;
+        Int16 _FillValue 0;
     }
     SDS_None_dim_0 {
         String name "fakeDim0";
@@ -9,7 +9,7 @@ Attributes {
         String name "fakeDim1";
     }
     SDS_RLE {
-        Int32 _FillValue 0;
+        Int16 _FillValue 0;
     }
     SDS_RLE_dim_0 {
         String name "fakeDim2";
@@ -18,7 +18,7 @@ Attributes {
         String name "fakeDim3";
     }
     SDS_N-bit {
-        Int32 _FillValue 0;
+        Int16 _FillValue 0;
     }
     SDS_N-bit_dim_0 {
         String name "fakeDim4";
@@ -27,7 +27,7 @@ Attributes {
         String name "fakeDim5";
     }
     SDS_Skip_Huffman {
-        Int32 _FillValue 0;
+        Int16 _FillValue 0;
     }
     SDS_Skip_Huffman_dim_0 {
         String name "fakeDim6";
@@ -36,7 +36,7 @@ Attributes {
         String name "fakeDim7";
     }
     SDS_Deflate {
-        Int32 _FillValue 0;
+        Int16 _FillValue 0;
     }
     SDS_Deflate_dim_0 {
         String name "fakeDim8";

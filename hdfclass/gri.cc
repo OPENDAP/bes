@@ -22,6 +22,9 @@
 #include <hdfclass.h>
 #include <hcerr.h>
 
+// minimum function
+inline int min(int t1, int t2) { return ( t1 < t2? t1 : t2 ); }
+
 // initialize a hdfistream_gri
 void hdfistream_gri::_init(void) {
   _ri_id = _attr_index = _pal_index = 0;
@@ -271,12 +274,12 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
     hr.image.import(data_type);
   else {
     int32 nelts;
-    void *image;
+    char *image;
     if (_slab.set) {
       nelts = _slab.edge[0] * _slab.edge[1] * ncomp;
       // allocate a temporary C array to hold the data from GRreadimage()
       int imagesize = nelts * DFKNTsize(data_type);
-      image = (void *)new char[imagesize];
+      image = new char[imagesize];
       if (image == 0)
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
@@ -297,7 +300,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
       nelts = dim_sizes[0] * dim_sizes[1] * ncomp;
       // allocate a temporary C array to hold the data from GRreadimage()
       int imagesize = nelts * DFKNTsize(data_type);
-      image = (void *)new char[imagesize];
+      image = new char[imagesize];
       if (image == 0)
 	THROW(hcerr_nomemory);
       // read the image and store it in a hdf_genvec
@@ -356,8 +359,8 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_attr& ha) {
   if (GRattrinfo(id, _attr_index, name, &number_type, &count) < 0)
     THROW(hcerr_griinfo);
   // allocate a temporary C array to hold data from GRgetattr()
-  void *data;
-  data = (void *)new char[count*DFKNTsize(number_type)];
+  char *data;
+  data = new char[count*DFKNTsize(number_type)];
   if (data == 0)
     THROW(hcerr_nomemory);
   // read attribute values and store them in an hdf_genvec
@@ -419,8 +422,8 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp) {
 
   int32 count = ncomp*num_entries;
   if (number_type != 0) {  // found a palette
-    void *pal_data;
-    pal_data = (void *) new char[count*DFKNTsize(number_type)];
+    char *pal_data;
+    pal_data = new char[count*DFKNTsize(number_type)];
     if (pal_data == 0)
       THROW(hcerr_nomemory);
     // read the palette data and store it in an hdf_genvec
@@ -466,6 +469,19 @@ bool hdf_gri::_ok() const {
 }
 
 // $Log: gri.cc,v $
+// Revision 1.9  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.8.4.2  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.8.4.1  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
 // Revision 1.8  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

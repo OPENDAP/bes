@@ -13,15 +13,15 @@ Dataset {
     } SDS_DFNT_UINT32;
     Grid {
      ARRAY:
-        Int32 SDS_DFNT_INT16[Axis_DFNT_INT16 = 5];
+        Int16 SDS_DFNT_INT16[Axis_DFNT_INT16 = 5];
      MAPS:
-        Int32 Axis_DFNT_INT16[5];
+        Int16 Axis_DFNT_INT16[5];
     } SDS_DFNT_INT16;
     Grid {
      ARRAY:
-        UInt32 SDS_DFNT_UINT16[Axis_DFNT_UINT16 = 3];
+        UInt16 SDS_DFNT_UINT16[Axis_DFNT_UINT16 = 3];
      MAPS:
-        Int32 Axis_DFNT_UINT16[3];
+        Int16 Axis_DFNT_UINT16[3];
     } SDS_DFNT_UINT16;
     Grid {
      ARRAY:
@@ -37,9 +37,9 @@ Dataset {
     } SDS_DFNT_UINT8;
     Grid {
      ARRAY:
-        Float64 SDS_DFNT_FLOAT32[Axis_DFNT_FLOAT32 = 7];
+        Float32 SDS_DFNT_FLOAT32[Axis_DFNT_FLOAT32 = 7];
      MAPS:
-        Float64 Axis_DFNT_FLOAT32[7];
+        Float32 Axis_DFNT_FLOAT32[7];
     } SDS_DFNT_FLOAT32;
     Grid {
      ARRAY:

@@ -1,5 +1,5 @@
 	
-	$ID$
+	$Id: INSTALL,v 1.9 2003/01/31 02:08:36 jimg Exp $
 
 Installing the HDF 4 server for DODS.
 
@@ -10,6 +10,15 @@ REQUIREMENTS
 NOTES
 
 ---------------------------------------------------------------------------
+
+*** Important note *** 
+The 3.2.6 HDF 4 server now uses the full range of datatypes available in
+DODS. Because the server caches certain responses, it's important to delete
+those cache files before using the server. Look in the cache directory (check
+your current nph-dods or nph-hdf script for the location of the cache
+directory. Delete all the files named *.cdas and *.cdds. If you've never
+installed the HDF 4 server, then you don't need to bother with any of this.
+*** Important note ***
 
 BUILDING THE SOFTWARE
 
@@ -26,7 +35,12 @@ BUILDING THE SOFTWARE
 3b) To install the data server, use the new installServer shell script in the
     DODS_ROOT/etc.
 
-3c) Optionally, run the tests using `make check.' You'll also need DejaGNU
+3c) By default the server will cache small files in /usr/tmp. You can change
+    this by changing the pathname in:
+
+    $dispatch->cache_dir("/usr/tmp");
+
+3d) Optionally, run the tests using `make check.' You'll also need DejaGNU
     installed on your system. To set up the tests, first copy the test
     datasets to a place in your web server's document root so that they can
     be accessed by the newly installed DODS HDF4 server. Then run configure
@@ -34,7 +48,7 @@ BUILDING THE SOFTWARE
     --with-test-url=url option where `url' is the DODS URL to the directory
     that holds the test datasets.
 
-3d) Set the dods.ini file so that the server will know how to handle
+3e) Set the dods.ini file so that the server will know how to handle
     different types of files you are serving.
 
     The nph-dods dispatch script receives a request and dispatches it to the

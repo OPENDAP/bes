@@ -99,6 +99,9 @@ HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref,
 }
 
 // $Log: HDFSequence.cc,v $
+// Revision 1.14  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
 // Revision 1.13  2002/06/03 22:37:38  jimg
 // Removed call to Sequence::set_level(). This method was removed from the C++
 // DAP because it was never used in the serialization or deserization code.
@@ -120,9 +123,6 @@ HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref,
 // Revision 1.11.4.2  2002/03/14 19:15:07  jimg
 // Fixed use of int err in read() so that it's always initialized to zero.
 // This is a fix for bug 135.
-//
-// Revision 1.12  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
 //
 // Revision 1.11.4.1  2001/07/28 00:25:15  jimg
 // I removed the code which escapes names. This function is now handled

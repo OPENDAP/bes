@@ -2,22 +2,17 @@
 #include "config_hdf.h"
 
 // libg++
+#include <iostream>
 #include <vector>
 #include <string>
+
+using std::cerr ;
+using std::endl ;
 
 // DODS
 #include <BaseType.h>
 #include <HDFArray.h>
 #include <DDS.h>
-
-// Cal/Val catalog and dataset sw
-#if 0
-#include <catalog/errhandler.h>
-#include <catalog/mcatalog.h>
-#include <catalog/dataset.h>
-#endif
-
-#include "dodsutil.h"
 
 #define MASTER_CONF "./master.conf" // yuck, yes I know
 
@@ -54,7 +49,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
 
     // Make sure variables are Arrays -- later we'll modify this routine to 
     // work with other DODS types
-    if (argv[7]->type_name() != "Array") {
+    if (argv[7]->type() != dods_array_c) {
 	cerr << "This subsetting routine works only on Arrays" << endl;
 	return 0;
     }
@@ -151,3 +146,11 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
     return argv[7];
 }
 #endif
+
+
+
+
+
+
+
+

@@ -8,45 +8,10 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
-//
-// $Log: dodsutil.h,v $
-// Revision 1.6  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
-//
-// Revision 1.5.4.1  2001/06/14 17:27:00  rich
-// Modified basename() so it would remove the garbage from the beginning of
-// the names of decompressed files
-//
-// Revision 1.5  2000/03/31 16:56:06  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.4.8.1  2000/03/20 22:26:07  jimg
-// Removed prototypes for functions which were duplicates of stuff in the dap
-// source file escaping.cc.
-//
-// Revision 1.4  1999/05/06 03:23:35  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.3.6.1  1999/05/06 00:27:24  jimg
-// Jakes String --> string changes
-//
-// Revision 1.1  1997/03/10 22:55:02  jimg
-// New files for the 2.12 compatible HDF server
-//
-// Revision 1.1  1996/09/24 22:38:16  todd
-// Initial revision
-//
-//
-/////////////////////////////////////////////////////////////////////////////
 
 
 #include <string>
 #include <ctype.h>
-
-// change this to the following when g++ supports const_cast
-// #define CONST_CAST(TYPE,EXPR) const_cast<TYPE>(EXPR)
-#define CONST_CAST(TYPE,EXPR) (TYPE)(EXPR)
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -119,7 +84,7 @@ protected:
 };
 
 // return the last component of a full pathname
-inline string basename(string path) {
+inline string basename(const string &path) {
    
     // If the filename has a # in it, it's probably been decompressed
     // to <cachedir>/the#path#of#the#file#<filename> and all we want is
@@ -131,16 +96,42 @@ inline string basename(string path) {
         return path.substr(path.find_last_of("/")+1);
 }
 
-// globally substitute in for out in string s
-inline string& gsub(string& s, const string& in, const string& out) {
-    unsigned int index = 0;
-    while ((index = s.find(in, index)) != s.npos)
-	s.replace(index, in.length(), out);
-    return s;
-}
+// $Log: dodsutil.h,v $
+// Revision 1.7  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.5.4.4  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
+// Revision 1.5.4.3  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
+// Revision 1.5.4.2  2002/04/11 20:48:49  jimg
+// Removed prototypes for functions defined in dodsutil.cc; those we're not
+// being used and that whole file was removed.
+//
+// Revision 1.5.4.1  2001/06/14 17:27:00  rich
+// Modified basename() so it would remove the garbage from the beginning of
+// the names of decompressed files
+//
+// Revision 1.5  2000/03/31 16:56:06  jimg
+// Merged with release 3.1.4
+//
+// Revision 1.4.8.1  2000/03/20 22:26:07  jimg
+// Removed prototypes for functions which were duplicates of stuff in the dap
+// source file escaping.cc.
+//
+// Revision 1.4  1999/05/06 03:23:35  jimg
+// Merged changes from no-gnu branch
+//
+// Revision 1.3.6.1  1999/05/06 00:27:24  jimg
+// Jakes String --> string changes
+//
+// Revision 1.1  1997/03/10 22:55:02  jimg
+// New files for the 2.12 compatible HDF server
+//
+// Revision 1.1  1996/09/24 22:38:16  todd
+// Initial revision
 
-HDFStructure *CastBaseTypeToStructure(BaseType *p);
-HDFArray *CastBaseTypeToArray(BaseType *p);
-int *CastBaseTypeToInt(BaseType *p);
-double *CastBaseTypeToDouble(BaseType *p);
 

@@ -12,14 +12,18 @@
 
 #include "config_hdf.h"
 
-#include <strstream.h>
 #include <mfhdf.h>
 
+#include <strstream>
 #include <string>
 #include <vector>
 
 #include <hcerr.h>
 #include <hdfclass.h>
+
+using std::istrstream;
+using std::ostrstream;
+using std::ends;
 
 // Convert an array of U with length nelts into an array of T by casting each
 // element of array to a T.
@@ -30,10 +34,10 @@ void ConvertArrayByCast(U *array, int nelts, T **carray) {
 	return;
     }
     *carray = new T[nelts];
-    if (*carray == 0)
+    if (*carray == 0)		// Harmless but should never be used.
 	THROW(hcerr_nomemory);
     for (int i=0; i<nelts; ++i) {
-	*(*carray+i) = (T) *((U *)array+i);
+	*(*carray+i) = static_cast<T>(*(array+i));
     }
 }
 
@@ -41,8 +45,9 @@ void ConvertArrayByCast(U *array, int nelts, T **carray) {
 // protected member functions
 //
 
-// Initialize an hdf_genvec from an input C array.  If data, begin, end, stride are
-// zero, a zero-length hdf_genvec of the specified type will be initialized.
+// Initialize an hdf_genvec from an input C array. If data, begin, end,
+// stride are zero, a zero-length hdf_genvec of the specified type will be
+// initialized.
 void hdf_genvec::_init(int32 nt, void *data, int begin, int end, int stride) {
 
     // input checking: nt must be a valid HDF number type;
@@ -63,25 +68,25 @@ void hdf_genvec::_init(int32 nt, void *data, int begin, int end, int stride) {
 
 	// allocate memory for _data and assign _nt, _nelts
 	int nelts = (int)((end-begin)/stride+1);
-	_data = (void *)new char[nelts*eltsize];	// allocate memory
+	_data = new char[nelts*eltsize]; // allocate memory
 	if (_data == 0)
 	    THROW(hcerr_nomemory);
 	if (stride == 1)	// copy data directly
 	    (void)memcpy(_data, (void *)((char *)data+begin), eltsize*nelts); 
 	else {
-	    for (int i=0,j=begin; i<nelts; ++i,j+=stride)	// subsample data
+	    for (int i=0,j=begin; i<nelts; ++i,j+=stride) // subsample data
 		memcpy((void *)((char *)_data+i*eltsize), 
 		       (void *)((char *)data+j*eltsize), eltsize);
 	}
-	_nelts = nelts;			 // assign number of elements
+	_nelts = nelts;		// assign number of elements
     }
-    _nt = nt;				 // assign HDF number type
+    _nt = nt;			// assign HDF number type
     return;
 }    
 
 // initialize an empty hdf_genvec
 void hdf_genvec::_init(void) {
-    _data = (void *)0;
+    _data = 0;
     _nelts = _nt = 0;
     return;
 }
@@ -101,7 +106,7 @@ void hdf_genvec::_init(const hdf_genvec& gv) {
 void hdf_genvec::_del(void) {
     delete []_data;
     _nelts = _nt = 0;
-    _data = (void *)0;
+    _data = 0;
     return;
 }
 
@@ -143,6 +148,39 @@ hdf_genvec& hdf_genvec::operator=(const hdf_genvec& gv) {
     _init(gv);
     return *this;
 }
+
+// An append method...
+void hdf_genvec::append(int32 nt, const char *new_data, int32 nelts) {
+    // input checking: nt must be a valid HDF number type;
+    // data, nelts can optionally both together be 0.
+    int32 eltsize;		// number of bytes per element
+    if ( (eltsize = DFKNTsize(nt)) <= 0)
+	THROW(hcerr_dftype);	// invalid number type
+
+    if (new_data == 0  &&  nelts == 0) { // if this is a zero-length vector
+	_nelts = 0;
+	_data = 0;
+    }
+    else {
+	if (nelts == 0)
+	    THROW(hcerr_range);	// invalid range given for subset of data
+	if (new_data == 0)		
+	    THROW(hcerr_invarr); // if specify a range, need a data array!
+
+	// allocate memory for _data and assign _nt, _nelts
+	char *d = new char[(_nelts + nelts) * eltsize];	// allocate memory
+	memcpy(d, _data, _nelts);
+	memcpy(d+_nelts, new_data, nelts);
+
+	delete[] _data;
+
+	_data = d;
+	_nelts += nelts; // assign number of elements
+    }
+
+    _nt = nt;				 // assign HDF number type
+    return;
+}    
 
 // import new data into hdf_genvec (old data is deleted)
 void hdf_genvec::import(int32 nt, void *data, int begin, int end, int stride) {
@@ -190,7 +228,8 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	int8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
+	    iss >> val;
 	    *((int8 *)obuf+i) = val;
 	}
 	break;
@@ -216,7 +255,8 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uint8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
+	    iss >> val;
 	    *((uint8 *)obuf+i) = val;
 	}
 	break;
@@ -243,7 +283,8 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	uchar8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
+	    iss >> val;
 	    *((uchar8 *)obuf+i) = val;
 	}
 	break;
@@ -252,7 +293,8 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 	char8 val;
 	for (int i=0; i<(int)sv.size(); ++i) {
 	    strncpy(strbuf,sv[i].c_str(),hdfclass::MAXSTR-1);
-	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    istrstream iss(strbuf,hdfclass::MAXSTR) ;
+	    iss >> val;
 	    *((char8 *)obuf+i) = val;
 	}
 	break;
@@ -269,6 +311,9 @@ void hdf_genvec::import(int32 nt, const vector<string>& sv) {
 // Added export of int8 to uchar8. A bad idea, but needed to fix some
 // clients. The same `fix' has been applied to some other mfuncs that follow.
 // 1/13/98 jhrg.
+//
+// It looks like this code treats all 8-bit datatypes as the same the user
+// has to know if they are signed or not. 4/8/2002 jhrg
 uchar8 *hdf_genvec::export_uchar8(void) const {
     uchar8 *rv = 0;
     if (_nt == DFNT_UINT8)
@@ -404,6 +449,7 @@ vector<uint8> hdf_genvec::exportv_uint8(void) const {
 	dtmp = (uint8 *)_data;
     else
 	THROW(hcerr_dataexport);
+
     rv = vector<uint8>(dtmp, dtmp+_nelts);
     if (dtmp != (uint8 *)_data)
 	delete []dtmp;
@@ -871,6 +917,23 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 }
 
 // $Log: genvec.cc,v $
+// Revision 1.7  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.6.4.3  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.6.4.2  2002/04/11 03:15:43  jimg
+// Minor change to the ConvertArrayByCast template function. Still, avoid using
+// this if possible.
+//
+// Revision 1.6.4.1  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
 // Revision 1.6  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

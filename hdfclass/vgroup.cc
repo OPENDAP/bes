@@ -20,6 +20,10 @@
 #include <set>
 #include <algorithm>
 
+using std::vector ;
+using std::set ;
+using std::less ;
+
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -81,6 +85,23 @@ void hdfistream_vgroup::_seek(int32 ref) {
     _attr_index = 0;
     _nattrs = Vnattrs(_vgroup_id);
     return;
+}
+
+string hdfistream_vgroup::_memberName(int32 ref) {
+
+    string _member_name = "";
+    char _mName[hdfclass::MAXSTR];
+
+    if ( (_member_id = Vattach(_file_id, ref, "r")) >= 0) 
+      {
+	if ( Vgetname(_member_id, _mName) < 0 ) {
+	  Vdetach(_member_id);
+	  THROW(hcerr_vgroupopen);
+	}
+	_member_name = string(_mName);
+	Vdetach(_member_id);
+      }
+    return _member_name;
 }
 
 
@@ -148,6 +169,11 @@ void hdfistream_vgroup::seek(const char *name) {
     return;
 }
 
+string hdfistream_vgroup::memberName(int32 ref) {
+    string mName = _memberName(ref);
+    return mName;
+}
+
 
 // read all Vgroup's in the stream
 hdfistream_vgroup& hdfistream_vgroup::operator>>(vector<hdf_vgroup>& hvv) {
@@ -164,6 +190,7 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     // delete any previous data in hv
     hv.tags.clear();
     hv.refs.clear();
+    hv.vnames.clear();
     hv.vclass = hv.name = string();
 
     if (_vgroup_id == 0)
@@ -192,6 +219,7 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     hdfistream_vdata vdin(_filename);
     for (int i=0; i<npairs; ++i) {
       int32 tag, ref;
+      string vname;
       if (Vgettagref(_vgroup_id, i, &tag, &ref) < 0)
 	THROW(hcerr_vgroupread);
 	switch(tag) {
@@ -200,11 +228,13 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
 	    {
 	      hv.tags.push_back(tag);
 	      hv.refs.push_back(ref);
+	      hv.vnames.push_back(memberName(ref));
 	    }
 	  break;
 	default:
 	  hv.tags.push_back(tag);
 	  hv.refs.push_back(ref);
+	  hv.vnames.push_back(memberName(ref));
 	}
     }
     vdin.close();
@@ -307,8 +337,8 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
         THROW(hcerr_vgroupinfo);
 
     // allocate a temporary C array to hold data from VSgetattr()
-    void *data;
-    data = (void *)new char[count*DFKNTsize(number_type)];
+    char *data;
+    data = new char[count*DFKNTsize(number_type)];
     if (data == 0)
 	THROW(hcerr_nomemory);
 
@@ -336,6 +366,25 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
 }
 
 // $Log: vgroup.cc,v $
+// Revision 1.7  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.5.4.4  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.5.4.3  2002/01/29 20:33:45  dan
+// Added new elements to hdf_vgroup structure to maintain
+// member variable names (string-reps) to couple explicit
+// variable names to tag/ref fields in the structure.  Required
+// to support new Ancillary DDS usage.
+//
+// Revision 1.5.4.2  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
 // Revision 1.6  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

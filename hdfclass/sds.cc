@@ -16,6 +16,8 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <functional>
 
 #include <hcstream.h>
 #include <hdfclass.h>
@@ -37,6 +39,7 @@ void hdfistream_sds::_init(void) {
     _sds_id = _attr_index = _dim_index = _nsds = _rank = _nattrs = _nfattrs = 0;
     _index = -1;		// set BOS
     _meta = _slab.set = false;
+    _map_ce_set = false;
     return;
 }
 
@@ -329,7 +332,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
     *this >> hs.attrs;	
     hs.name = name;		// assign SDS name
 
-    void *data = 0;
+    char *data = 0;
     int nelts = 1;
     if (_meta) 		// if _meta is set, just load type information
 	hs.data.import(number_type);
@@ -337,13 +340,10 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 	if (_slab.set) {	// load a slab of SDS array data
 	    for (int i=0; i<rank; ++i)
  		nelts *= _slab.edge[i];
-#if 0
-		nelts *= (int)( (_slab.edge[i] - 1) / _slab.stride[i] + 1);
-#endif
 	    
 	    // allocate a temporray C array to hold the data from SDreaddata()
 	    int datasize = nelts * DFKNTsize(number_type);
-	    data = (void *)new char[datasize];
+	    data = new char[datasize];
 	    if (data == 0) 
 		THROW(hcerr_nomemory);
 	    if (SDreaddata(_sds_id, _slab.start, _slab.stride, _slab.edge, 
@@ -363,7 +363,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 	    
 	    // allocate a temporray C array to hold the data from SDreaddata()
 	    int datasize = nelts * DFKNTsize(number_type);
-	    data = (void *)new char[datasize];
+	    data = new char[datasize];
 	    if (data == 0) 
 		THROW(hcerr_nomemory);
 	    
@@ -373,19 +373,25 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 		THROW(hcerr_sdsread);
 	    }
 	}    
-	// try {  // try to import into an hdf_genvec
+
 	hs.data.import(number_type, data, nelts);
-	// }
-	// catch(...)  // problem: clean up and rethrow
-	//     delete []data;
-	//     throw;
-	// }
 	delete []data; // deallocate temporary C array
     }
 
     seek_next();		// position to next SDS array
     return *this;
 }
+
+// Functor to help look for a particular map's ce in the vector of array_ce
+// objects. 
+class ce_name_match : public std::unary_function<array_ce, bool> {
+    string name;
+public:
+    ce_name_match(const string &n) : name(n) {}
+    bool operator()(const array_ce &a_ce) {
+	return name == a_ce.name;
+    }
+};
 
 // load dimension currently positioned at 
 hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
@@ -401,6 +407,13 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
     if (bos())		// if at BOS, advance to first SDS array
 	seek(0);
 
+    // This code looks like an optimization to avoid reading unneeded
+    // dimensions. If we're here because we're reading the whole Grid, it
+    // needs to be run, If we're here because the client has asked only for
+    // the Grid's maps, then it's harmless since the Grid's array's
+    // constraint is the default (the whole array) and so there'll be no
+    // reduction in rank. 2/5/2002 jhrg
+    //
     // if reduce_rank is true, hyperslab dimensions of length 1 will be 
     // eliminated from the dimension object, thus reducing the rank of the 
     // hyperslab
@@ -425,75 +438,116 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 	THROW(hcerr_sdsinfo);
     else
 	hd.name = name;		// assign dim name
-    char label[hdfclass::MAXSTR];
-    char unit[hdfclass::MAXSTR];
-    char cformat[hdfclass::MAXSTR];
-    if (SDgetdimstrs(dim_id, label, unit, cformat, hdfclass::MAXSTR) == 0) {
-	hd.label = label;	// assign dim label
-	hd.unit = unit;		// assign dim unit
-	hd.format = cformat;	// assign dim format
+
+    // Grab the current slab, save its value, and set _slab using map_ce. To
+    // choose the correct constraint scan the vector of array_ce objects
+    // looking for the one with the same name as this dimension. Doing this
+    // assures us that the constraint that's used when data is extracted from
+    // the hdf_genvec is done according to the constraint on this map. If we
+    // used _slab as it's set on entry to this method we would be using the
+    // constraint associated with the Grid's array. If the client asked only
+    // for maps, that constraint would default to the whole array and hence
+    // we'd be returning the whole map vector and ignoring the actual
+    // constraint sent by the client. 2/5/2002 jhrg
+    slab s = _slab;
+    if (is_map_ce_set()) {	// Only go here if the map_ce_vec has been
+				// set. The is_map_ce_set() predicate is
+				// false by default. 
+#if 0
+	cerr << "dim name: " << name << endl;
+	cerr << "slab set: " << _slab.set << endl;
+	cerr << "dim index: " << _dim_index << endl;
+	cerr << "slab start: " << _slab.start[_dim_index] << endl;
+	cerr << "slab edge: " << _slab.edge[_dim_index] << endl;
+#endif
+
+	vector<array_ce> ce = get_map_ce();
+	vector<array_ce>::iterator ce_iter = find_if(ce.begin(), ce.end(),
+					       ce_name_match(string(name)));
+#if 0
+	cerr << "ce name: " << ce_iter->name << endl;
+	cerr << "ce set: " << (ce_iter->start !=0 || ce_iter->edge != 0 
+			       || ce_iter->stride != 0) << endl;
+	cerr << "ce start: " << ce_iter->start << endl;
+	cerr << "ce edge: " << ce_iter->edge << endl << endl;
+#endif
+
+	_slab.set = ce_iter->start !=0 || ce_iter->edge != 0 
+	    || ce_iter->stride != 0;
+	_slab.reduce_rank = false; // hard to reduce the rank of a vector...
+	_slab.start[_dim_index] = ce_iter->start;
+	_slab.edge[_dim_index] = ce_iter->edge;
+	_slab.stride[_dim_index] = ce_iter->stride;
     }
 
-    // if we are dealing with a dimension of size unlimited, then call
-    // SDgetinfo to get the current size of the dimension
-    if (count == 0) {		// unlimited dimension
-	if (_dim_index != 0)
-	    THROW(hcerr_sdsinfo); // only first dim can be unlimited
-	char junk[hdfclass::MAXSTR];
-	int32 junk2, junk3, junk4;
-	int32 dim_sizes[hdfclass::MAXDIMS];
-	if (SDgetinfo(_sds_id, junk, &junk2, dim_sizes, &junk3, &junk4) < 0)
-	    THROW(hcerr_sdsinfo);
-	count = dim_sizes[0];
-    }
+    // Catch any throws and reset _slab.
+    try {
+	char label[hdfclass::MAXSTR];
+	char unit[hdfclass::MAXSTR];
+	char cformat[hdfclass::MAXSTR];
+	if (SDgetdimstrs(dim_id, label, unit, cformat, hdfclass::MAXSTR) == 0) {
+	    hd.label = label;	// assign dim label
+	    hd.unit = unit;		// assign dim unit
+	    hd.format = cformat;	// assign dim format
+	}
 
-    // load user-defined attributes for the dimension
-    // TBD!  Not supported at present
+	// if we are dealing with a dimension of size unlimited, then call
+	// SDgetinfo to get the current size of the dimension
+	if (count == 0) {		// unlimited dimension
+	    if (_dim_index != 0)
+		THROW(hcerr_sdsinfo); // only first dim can be unlimited
+	    char junk[hdfclass::MAXSTR];
+	    int32 junk2, junk3, junk4;
+	    int32 dim_sizes[hdfclass::MAXDIMS];
+	    if (SDgetinfo(_sds_id, junk, &junk2, dim_sizes, &junk3, &junk4) < 0)
+		THROW(hcerr_sdsinfo);
+	    count = dim_sizes[0];
+	}
+
+	// load user-defined attributes for the dimension
+	// TBD!  Not supported at present
     
-    // load dimension scale if there is one
-    if (number_type != 0) { // found a dimension scale
+	// load dimension scale if there is one
+	if (number_type != 0) { // found a dimension scale
 
-	// allocate a temporary C array to hold data from SDgetdimscale()
-	void *data = (void *) new char[count*DFKNTsize(number_type)];
-	if (data == 0)
-	    THROW(hcerr_nomemory);
+	    // allocate a temporary C array to hold data from SDgetdimscale()
+	    char *data = new char[count*DFKNTsize(number_type)];
+	    if (data == 0)
+		THROW(hcerr_nomemory);
 
-	// read the scale data and store it in an hdf_genvec
-	if (SDgetdimscale(dim_id, data) < 0) { 
-	    delete []data; // problem: clean up and throw an exception
-	    THROW(hcerr_sdsinfo);
+	    // read the scale data and store it in an hdf_genvec
+	    if (SDgetdimscale(dim_id, data) < 0) { 
+		delete []data; // problem: clean up and throw an exception
+		THROW(hcerr_sdsinfo);
+	    }
+
+	    if (_slab.set) {
+		void *datastart = (char *)data + 
+		    _slab.start[_dim_index] * DFKNTsize(number_type);
+		hd.scale = hdf_genvec(number_type, datastart, 0, 
+				      _slab.edge[_dim_index]*_slab.stride[_dim_index]-1,
+				      _slab.stride[_dim_index]);
+	    }
+	    else
+		hd.scale = hdf_genvec(number_type, data, count);
+
+	    delete []data; // deallocate temporary C array
 	}
-	// try { // try to allocate an hdf_genvec
-	if (_slab.set) {
-	    void *datastart = (char *)data + 
-		_slab.start[_dim_index] * DFKNTsize(number_type);
-	    hd.scale = hdf_genvec(number_type, datastart, 0, 
-				  _slab.edge[_dim_index]*_slab.stride[_dim_index]-1,
-#if 0
-				  _slab.edge[_dim_index]-1, 
-#endif
-				  _slab.stride[_dim_index]);
-	}
+
+	// assign dim size; if slabbing is set, assigned calculated size, otherwise
+	// assign size from SDdiminfo()
+	if (_slab.set)
+	    hd.count = _slab.edge[_dim_index];
 	else
-	    hd.scale = hdf_genvec(number_type, data, count);
-	// }
-	// catch (...) { // problem allocating hdf_genvec: clean up and rethrow
-	//    delete []data;
-	//    throw;
-	// }
-	delete []data; // deallocate temporary C array
+	    hd.count = count;
+	_dim_index++;
+    }
+    catch (...) {
+	_slab = s;
+	throw;
     }
 
-    // assign dim size; if slabbing is set, assigned calculated size, otherwise
-    // assign size from SDdiminfo()
-    if (_slab.set)
- 	hd.count = _slab.edge[_dim_index];
-#if 0
-	hd.count = ( _slab.edge[_dim_index] - 1) /_slab.stride[_dim_index] + 1;
-#endif
-    else
-	hd.count = count;
-    _dim_index++;
+    _slab = s;			// reset _slab
 
     return *this;
 }
@@ -529,8 +583,8 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_attr& ha) {
 	THROW(hcerr_sdsinfo);
     
     // allowcate a temporary C array to hold data from SDreadattr()
-    void *data;
-    data = (void *)new char[count*DFKNTsize(number_type)];
+    char *data;
+    data = new char[count*DFKNTsize(number_type)];
     if (data == 0)
 	THROW(hcerr_nomemory);
 
@@ -636,6 +690,28 @@ bool hdf_sds::_ok(bool *has_scale) const {
 }
 
 // $Log: sds.cc,v $
+// Revision 1.13  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.12.4.3  2002/02/12 20:09:13  jimg
+// Fix for the latest Grid Map Vector fix. When an SDS is built for an Array
+// (not a Grid) there are no map vectors to work with so the array_ce info
+// must be protected. By default an hdfistream initializes a flag as false that
+// the operator>> methods check before using the saved map vector CEs.
+//
+// Revision 1.12.4.2  2002/02/05 17:30:07  jimg
+// I changed hdfistream_sds so that it can hold a vector<array_ce> object. The
+// operator>>(hdf_dim&) method now uses this new object to correctly set the
+// hdfistream_sds::_slab member when maps are requested but the array is not.
+// Currently 17 tests (run make check after installing the server and the test
+// datasets) fail.
+//
+// Revision 1.12.4.1  2001/10/30 06:36:35  jimg
+// Added genvec::append(...) method.
+// Fixed up some comments in genvec.
+// Changed genvec's data member from void * to char * to quell warnings
+// about void * being passed to delete.
+//
 // Revision 1.12  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

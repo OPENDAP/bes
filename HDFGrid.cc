@@ -16,6 +16,11 @@
 
 #include <Pix.h>
 #include <vector>
+// Include this on linux to suppres an annoying warning about multiple
+// definitions of MIN and MAX.
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -23,8 +28,8 @@
 #include "escaping.h"
 #include "HDFGrid.h"
 #include "HDFArray.h"
+#include "hdfutil.h"
 #include "dhdferr.h"
-#include "dodsutil.h"
 
 #include "Error.h"
 
@@ -32,60 +37,120 @@ HDFGrid::HDFGrid(const string &n) : Grid(n) {}
 HDFGrid::~HDFGrid() {}
 BaseType *HDFGrid::ptr_duplicate() { return new HDFGrid(*this); }
 
-HDFArray *CastBaseTypeToArray(BaseType *p);
 void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds);
+
+// Build a vector of array_ce structs. This holds the constraint
+// information *for each map* of the Grid.
+vector<array_ce>
+HDFGrid::get_map_constraints()
+{
+    vector<array_ce> a_ce_vec;
+
+    // Load the array_ce vector with info about each map vector.
+    for (Pix p = first_map_var(); p; next_map_var(p)) {
+	Array *a = dynamic_cast<Array *>(map_var(p));
+	Pix q = a->first_dim(); // maps have only one dimension.
+	int start = a->dimension_start(q, true);
+	int stop = a->dimension_stop(q, true);
+	int stride = a->dimension_stride(q, true);
+	int edge = (int)((stop - start)/stride) + 1;
+	array_ce a_ce(a->name(), start, edge, stride);
+	a_ce_vec.push_back(a_ce);
+    }
+
+    return a_ce_vec;
+}
 
 // Read in a Grid from an SDS in an HDF file.
 bool HDFGrid::read(const string& dataset) {
-  int err;
-  int status = read_tagref(dataset, -1, -1, err);
-  if (err)
-    throw Error(unknown_error, "Could not read from dataset.");
-  return status;
+    int err = 0;
+    int status = read_tagref(dataset, -1, -1, err);
+    if (err)
+	throw Error(unknown_error, "Could not read from dataset.");
+    return status;
 }
 
-bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref, int& err) {
+bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref, 
+			  int& err) {
+    if (read_p())
+	return true;
+
     err = 0;			// OK initially
 
     string hdf_file = dataset;
     string hdf_name = this->name();
 
-    if (read_p())
-	return true;
     hdf_sds sds;
 
-    // get slab constraint from primary array
-    vector<int> start, edge, stride;
-    HDFArray *primary_array = CastBaseTypeToArray(this->array_var());
-    bool isslab = primary_array->GetSlabConstraint(start, edge, stride);
-
     // read in SDS
-#ifndef NO_EXCEPTIONS
+    hdfistream_sds sdsin(hdf_file.c_str());
     try {
-#endif
-	hdfistream_sds sdsin(hdf_file.c_str());
-	if(ref != -1)
-	  sdsin.seek_ref(ref);
-	else
-	  sdsin.seek(hdf_name.c_str());
+	vector<int> start, edge, stride;
+	HDFArray *primary_array = dynamic_cast<HDFArray *>(array_var());
+	bool isslab = primary_array->GetSlabConstraint(start, edge, stride);
+
+	// get slab constraint from primary array
 	if (isslab)
 	    sdsin.setslab(start, edge, stride, false);
-	sdsin >> sds;
-	sdsin.close();
-	if (!sds) {
-	    err = 1;
-	    return false;
+
+	// get the constraints on each map
+	sdsin.set_map_ce(get_map_constraints());
+
+	if(ref != -1)
+	    sdsin.seek_ref(ref);
+	else
+	    sdsin.seek(hdf_name.c_str());
+
+	// If we read the array, we also read the maps. 2/3/2002 jhrg
+	if ( array_var()->send_p() ) {
+	    sdsin >> sds;
+	    if (!sds) {
+		throw Error(string("Could not read ") + array_var()->name()
+			    + string(" from dataset ") + dataset
+			    + string("."));
+	    }
+
+	    LoadGridFromSDS(this, sds);	// load data into primary array
+	}
+
+	// load map data. There's little point in checking if the maps really
+	// need to be read. If the array was read, chances are good and the
+	// map vectors are much smaller. If the array was not read, then some
+	// map must be marked to be sent or we wouldn't be here. So just load
+	// the maps
+
+	// Read only if not above. sdsin >> hdf_sds also reads the maps so we
+	// should read here only if we didn't read above.
+	if (!array_var()->send_p()) {
+	    // This initialization is done by hdfistream_sds op>>(hdf_sds&)
+	    // but not hdfistream_sds op>>(hdf_dim&).
+	    sds.dims = vector<hdf_dim>();
+	    sds.data = hdf_genvec(); // needed?
+	    //	    sds.ref = SDidtoref(_sds_id);
+	    sdsin >> sds.dims;
+	}
+
+	for (Pix p = first_map_var(); p; next_map_var(p)) {
+	    if (map_var(p)->send_p()) {
+		for (unsigned int i = 0; i < sds.dims.size(); i++) {
+		    if (map_var(p)->name() == sds.dims[i].name) {
+			// Read the data from the sds dimension.
+			char *data = static_cast<char *>(ExportDataForDODS(sds.dims[i].scale));
+			map_var(p)->val2buf(data);
+			delete []data;
+			map_var(p)->set_read_p(true);
+		    }
+		}
+	    }
 	}
 	
-	// load data into primary array
-	LoadGridFromSDS(this, sds);
-#ifndef NO_EXCEPTIONS
+	sdsin.close();
     }
     catch (...) {
+	sdsin.close();
 	err = 1;
 	return false;
     }
-#endif
     
     return true;
 }
@@ -93,6 +158,43 @@ bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref, int& err)
 Grid *NewGrid(const string &n) { return new HDFGrid(n); }
 
 // $Log: HDFGrid.cc,v $
+// Revision 1.12  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.10.4.8  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
+// Revision 1.10.4.7  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
+// Revision 1.10.4.6  2002/04/10 18:38:10  jimg
+// I modified the server so that it knows about, and uses, all the DODS
+// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
+// cast most integer data to 32 bits. Now if an HDF file contains these
+// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
+// using those types (which DODS has supported for a while...).
+//
+// Revision 1.10.4.5  2002/03/14 19:15:07  jimg
+// Fixed use of int err in read() so that it's always initialized to zero.
+// This is a fix for bug 135.
+//
+// Revision 1.10.4.4  2002/02/05 17:29:32  jimg
+// Added a new method (get_map_constraints()) that extracts the constraints
+// placed on map vectors and loads them into a vector<array_ce> object which can
+// then be assigned to a hdfistream_sds object.
+// I change hdfistream_sds so that it can hold a vector<array_ce> object. The
+// operator>>(hdf_dim&) method now uses this new object to correctly set the
+// hdfistream_sds::_slab member when maps are requested but the array is not.
+// Currently 17 tests (run make check after installing the server and the test
+// datasets) fail.
+//
+// Revision 1.10.4.3  2002/02/02 00:11:37  dan
+// Updated read_p flag for map vectors.
+//
+// Revision 1.10.4.2  2002/02/01 23:53:17  dan
+// test code in read_tagref
+//
 // Revision 1.11  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

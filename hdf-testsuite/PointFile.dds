@@ -11,10 +11,10 @@ Dataset {
                     Float64 Time__0;
                 } Time;
                 Structure {
-                    Float64 Concentration__0;
-                    Float64 Concentration__1;
-                    Float64 Concentration__2;
-                    Float64 Concentration__3;
+                    Float32 Concentration__0;
+                    Float32 Concentration__1;
+                    Float32 Concentration__2;
+                    Float32 Concentration__3;
                 } Concentration;
                 Structure {
                     String Species__0;

@@ -8,6 +8,12 @@
 // Test the HDF-EOS attribute parser. 3/30/2000 jhrg
 
 // $Log: eosdas-test.cc,v $
+// Revision 1.4  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.3.4.1  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
 // Revision 1.3  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.
@@ -22,7 +28,7 @@
 
 #include "config_hdf.h"
 
-static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.3 2000/10/09 19:46:19 jimg Exp $"};
+static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.4 2003/01/31 02:08:36 jimg Exp $"};
 
 #include <iostream>
 #include <string>
@@ -39,10 +45,6 @@ static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.3 2000/10/09 19:46:19 j
 #include "trace_new.h"
 #endif
 
-#if 0
-struct yy_buffer_state;
-yy_buffer_state *hdfeos_scan_string(const char *str);
-#endif
 extern int hdfeosparse(void *arg); // defined in hdfeos.tab.c
 
 void parser_driver(DAS &das);
@@ -52,7 +54,7 @@ int hdfeoslex();
 
 extern int hdfeosdebug;
 const char *prompt = "hdfeos-test: ";
-const char *version = "$Revision: 1.3 $";
+const char *version = "$Revision: 1.4 $";
 
 void
 usage(string name)
@@ -171,12 +173,6 @@ parser_driver(DAS &das)
     AttrTable *at = das.get_table("test");
     if (!at)
 	at = das.add_table("test", new AttrTable);
-
-#if 0
-    hdfeos_scan_string(attv[j].c_str());  // tell lexer to scan attribute string
-    cerr << "String to scan:" << endl;
-    cerr << attv[j].c_str() << endl;
-#endif
 
     parser_arg arg(at);
     if (hdfeosparse((void *)&arg) != 0)

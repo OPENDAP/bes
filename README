@@ -52,19 +52,6 @@ Special characters in HDF identifiers:
     these are preceded internally by a _ character.
 
 Known problems:
-  - Objects of type int8, int16, and unsigned integers of all sizes
-    are not available.  This will be fixed in a future release of the
-    DODS core software.
-  - Error handling:
-    * Error handling on some platforms is not ideal.  The server
-      needs to be modified to utilize the new DODS error handling
-      mechanisms.  This has not been done because the task is
-      complicated by the fact that the server code is designed to
-      throw C++ exceptions, and these are not yet universally
-      available in the g++ compiler. At present, exceptions are faked
-      on platforms that do not support exceptions (e.g, SGI) with the
-      result that if an error occurs the server may terminate without
-      notifying DODS error handling.
 
 Handling of floating point attributes:
   - Because the DODS core software encodes attribute values as ASCII

@@ -21,15 +21,19 @@ HDFInt32::HDFInt32(const string &n) : Int32(n) {}
 HDFInt32::~HDFInt32() {}
 BaseType *HDFInt32::ptr_duplicate() { return new HDFInt32(*this); }
 bool HDFInt32::read(const string &) { 
-#if 0
-    set_read_p(true); err = 0; return true; 
-#endif
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
 Int32 *NewInt32(const string &n) { return new HDFInt32(n); }
 
 // $Log: HDFInt32.cc,v $
+// Revision 1.6  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.5.4.1  2002/03/14 19:15:07  jimg
+// Fixed use of int err in read() so that it's always initialized to zero.
+// This is a fix for bug 135.
+//
 // Revision 1.5  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

@@ -18,7 +18,7 @@
 
 class HDFUInt16: public UInt16 {
 public:
-    HDFUInt16(const string &n = (char *)0);
+    HDFUInt16(const string &n = "");
     virtual ~HDFUInt16();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &); 
@@ -29,6 +29,13 @@ UInt16 *NewUInt16(const string &n);
 typedef HDFUInt16 * HDFUInt16Ptr;
 
 // $Log: HDFUInt16.h,v $
+// Revision 1.4  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.3.4.1  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
 // Revision 1.3  2000/10/09 19:46:20  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

@@ -11,12 +11,12 @@ Dataset {
     } Vdata_DFNT_UINT32;
     Sequence {
         Structure {
-            Int32 Field_DFNT_INT16__0;
+            Int16 Field_DFNT_INT16__0;
         } Field_DFNT_INT16;
     } Vdata_DFNT_INT16;
     Sequence {
         Structure {
-            UInt32 Field_DFNT_UINT16__0;
+            UInt16 Field_DFNT_UINT16__0;
         } Field_DFNT_UINT16;
     } Vdata_DFNT_UINT16;
     Sequence {
@@ -31,7 +31,7 @@ Dataset {
     } Vdata_DFNT_UINT8;
     Sequence {
         Structure {
-            Float64 Field_DFNT_FLOAT32__0;
+            Float32 Field_DFNT_FLOAT32__0;
         } Field_DFNT_FLOAT32;
     } Vdata_DFNT_FLOAT32;
     Sequence {

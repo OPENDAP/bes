@@ -21,11 +21,12 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 
-// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.7 2000/10/12 23:50:16 jimg Exp $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.8 2003/01/31 02:08:36 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <iostream>
 #include <assert.h>
 
 #include <vector>
@@ -34,6 +35,11 @@
 #else
 #include <sstream>
 #endif
+
+using std::ostrstream ;
+using std::cerr ;
+using std::endl ;
+using std::ends ;
 
 #include "DAS.h"
 #include "Error.h"
@@ -146,7 +152,7 @@ attributes:    	/* Create the AttrTable stack if necessary */
 		}
                 attribute
     	    	| attributes attribute
-
+;
     	    	
 attribute:    	GROUP '=' STR
                 {
@@ -226,12 +232,14 @@ data:           ints
                 | floats
                 | strs
                 | '(' data2 ')'
+;
 
 /* To avoid parse errors on a mixture of ints and floats, only allow floats */
 /* and strings inside a list.  For this, we need a new rule to recognize */
 /* a mixture of floats and ints. */
 data2:          floatints
                 | strs
+;
 
 ints:           INT
 		{

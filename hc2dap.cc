@@ -20,8 +20,19 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+
+using std::ostrstream ;
+using std::cerr ;
+using std::ends ;
+using std::endl ;
 
 // HDF and HDFClass includes
+// Include this on linux to suppres an annoying warning about multiple
+// definitions of MIN and MAX.
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -29,7 +40,11 @@
 // DODS/HDF includes
 #include "escaping.h"
 #include "HDFInt32.h"
+#include "HDFInt16.h"
+#include "HDFUInt32.h"
+#include "HDFUInt16.h"
 #include "HDFFloat64.h"
+#include "HDFFloat32.h"
 #include "HDFByte.h"
 #include "HDFStr.h"
 #include "HDFArray.h"
@@ -37,20 +52,16 @@
 #include "HDFSequence.h"
 #include "HDFStructure.h"
 #include "hdfutil.h"
-#include "dodsutil.h"
 #include "dhdferr.h"
 #include "hdf-maps.h"
-
-#include "HDFUInt32.h"
+#include "debug.h"
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98
 // jhrg.
 #define SIGNED_BYTE_TO_INT32 1
 
 BaseType *NewDAPVar(const string& varname, int32 hdf_type);
-HDFArray *CastBaseTypeToArray(BaseType *p);
-HDFStructure *CastBaseTypeToStructure(BaseType *p);
-void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row);
+void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row);
 
 // STL predicate comparing equality of hdf_field objects based on their names
 class fieldeq {
@@ -277,134 +288,165 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
 
 // Return a ptr to DAP atomic data object corresponding to an HDF Type, or
 // return 0 if the HDF Type is invalid or not supported.
-BaseType *NewDAPVar(const string& varname, int32 hdf_type) {
-    BaseType *bt;
-
+BaseType *
+NewDAPVar(const string& varname, int32 hdf_type) 
+{
     switch(hdf_type) {
-    case DFNT_FLOAT32:
-    case DFNT_FLOAT64:
-	bt = new HDFFloat64(varname);
-	break;
+      case DFNT_FLOAT32:
+	return new HDFFloat32(varname);
+
+      case DFNT_FLOAT64:
+	return new HDFFloat64(varname);
+
+      case DFNT_INT16:
+	return new HDFInt16(varname);
+
 #ifdef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
+      case DFNT_INT8:
 #endif
-    case DFNT_INT16:
-    case DFNT_INT32:
-	bt = new HDFInt32(varname);
-	break;
-    case DFNT_UINT16:
-    case DFNT_UINT32:
-	bt = new HDFUInt32(varname);
-	break;
+      case DFNT_INT32:
+	return new HDFInt32(varname);
+
+      case DFNT_UINT16:
+	return new HDFUInt16(varname);
+
+      case DFNT_UINT32:
+	return new HDFUInt32(varname);
+
 	// INT8 and UINT8 *should* be grouped under Int32 and UInt32, but
 	// that breaks too many programs. jhrg 12/30/97
 #ifndef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
+      case DFNT_INT8:
 #endif
-    case DFNT_UINT8:
-    case DFNT_UCHAR8:
-    case DFNT_CHAR8:
-	bt = new HDFByte(varname);
-	break;
-    default:
-	bt = 0;			// unsupported or invalid type
+      case DFNT_UINT8:
+      case DFNT_UCHAR8:
+      case DFNT_CHAR8:
+	return new HDFByte(varname);
+
+      default:
+	return 0;
     }
-    return bt;
 }
 
 // Return the DAP type name that corresponds to an HDF data type
 string DAPTypeName(int32 hdf_type) {
-    string rv;
     switch(hdf_type) {
-    case DFNT_FLOAT32:
-    case DFNT_FLOAT64:
-	rv = "Float64";
-	break;
+      case DFNT_FLOAT32:
+	return string("Float32");
+
+      case DFNT_FLOAT64:
+	return string("Float64");
+
+      case DFNT_INT16:
+	return string("Int16");
+
 #ifdef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
+      case DFNT_INT8:
 #endif
-    case DFNT_INT16:
-    case DFNT_INT32:
-	rv = "Int32";
-	break;
-    case DFNT_UINT16:
-    case DFNT_UINT32:
-	rv = "UInt32";
-	break;
+      case DFNT_INT32:
+	return string("Int32");
+
+      case DFNT_UINT16:
+	return string("UInt16");
+
+      case DFNT_UINT32:
+	return string("UInt32");
+
 	// See the note above about INT8 and UINT8. jhrg 12/30/97.
 #ifndef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
+      case DFNT_INT8:
 #endif
-    case DFNT_UINT8:
-	rv = "Byte";
-	break;
-    case DFNT_CHAR8:
-    case DFNT_UCHAR8:
-	rv = "String";  // note: DFNT_CHAR8 is Byte in DDS but String in DAS
-	break;
-    default:
-	rv = string();
+      case DFNT_UINT8:
+	return string("Byte");
+
+      case DFNT_CHAR8:
+      case DFNT_UCHAR8:
+	// note: DFNT_CHAR8 is Byte in DDS but String in DAS
+	return string("String");  
+
+      default:
+	return string("");
     }
-    return rv;
-}
-
-// return the HDF data type corresponding to a DODS type name
-int32 HDFTypeName(const string& dods_type) {
-    if (dods_type == "Float64")
-	return DFNT_FLOAT64;
-    else if (dods_type == "Float32")
-	return DFNT_FLOAT32;
-    else if (dods_type == "Int32")
-	return DFNT_INT32;
-    else if (dods_type == "Byte")
-	return DFNT_UCHAR8;
-    else if (dods_type == "String")
-	return DFNT_CHAR8;
-    else if (dods_type == "UInt32")
-	return DFNT_UINT32;
-    else 
-	return -1;
-}
-
-// return the HDF data type corresponding to a DODS data type variable
-int32 HDFTypeName(BaseType *t) {
-    return HDFTypeName(t->type_name());
 }
 
 // load an HDFArray from an SDS
 void LoadArrayFromSDS(HDFArray *ar, const hdf_sds& sds) {
-    void *data = ExportDataForDODS(sds.data);
-    ar->val2buf(data);
-    delete []data;
+#ifdef SIGNED_BYTE_TO_INT32
+    switch (sds.data.number_type()) {
+      case DFNT_INT8: {
+	  char *data = static_cast<char *>(ExportDataForDODS(sds.data));
+	  ar->val2buf(data);
+	  delete []data;
+	  break;
+      }
+      default:
+	ar->val2buf(const_cast<char *>(sds.data.data()));
+    }
+#else
+    ar->val2buf(const_cast<char *>(sds.data.data()));
+#endif
     return;
 }
 
 // load an HDFArray from a GR image
 void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr) {
-    void *data = ExportDataForDODS(gr.image);
-    ar->val2buf(data);
-    delete []data;
+#ifdef SIGNED_BYTE_TO_INT32
+    switch (gr.image.number_type()) {
+      case DFNT_INT8: {
+	  char *data = static_cast<char *>(ExportDataForDODS(gr.image));
+	  ar->val2buf(data);
+	  delete []data;
+	  break;
+      }
+
+      default:
+	ar->val2buf(const_cast<char *>(gr.image.data()));
+    }
+#else
+    ar->val2buf(const_cast<char *>(gr.image.data()));
+#endif
     return;
 }
 
 // load an HDFGrid from an SDS
+// I modified Todd's code so that only the parts of a Grid that are marked as
+// to be sent will be read. 1/29/2002 jhrg
 void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds) {
 
     // load data into primary array
-    HDFArray *primary_array = CastBaseTypeToArray(gr->array_var());
-    LoadArrayFromSDS(primary_array, sds);
-    primary_array->set_read_p(true);
+    HDFArray &primary_array = dynamic_cast<HDFArray &>(*gr->array_var());// ***
+    if (primary_array.send_p()) {
+	LoadArrayFromSDS(&primary_array, sds);
+	primary_array.set_read_p(true);
+    }
 
     // load data into maps
-    if (primary_array->dimensions() != sds.dims.size())
+    if (primary_array.dimensions() != sds.dims.size())
 	THROW(dhdferr_consist);	// # of dims of SDS and HDFGrid should agree!
+
     Pix p = gr->first_map_var();
-    void *data = 0;
-    for (int i=0; i<(int)sds.dims.size() && p!=0; ++i,gr->next_map_var(p)) {
-	data = ExportDataForDODS(sds.dims[i].scale);
-	gr->map_var(p)->val2buf(data);
-	delete []data; data = 0;
-	gr->map_var(p)->set_read_p(true);
+    for (unsigned int i = 0; i < sds.dims.size() && p; 
+	 ++i, gr->next_map_var(p)) {
+	if (gr->map_var(p)->send_p()) {
+#ifdef SIGNED_BYTE_TO_INT32
+	    switch (sds.dims[i].scale.number_type()) {
+	      case DFNT_INT8: {
+		  char *data = static_cast<char *>
+		      (ExportDataForDODS(sds.dims[i].scale));
+		  gr->map_var(p)->val2buf(data);
+		  delete []data;
+		  break;
+	      }
+	      default:
+		gr->map_var(p)->val2buf(const_cast<char *>
+					(sds.dims[i].scale.data()));
+	    }
+#else
+	    gr->map_var(p)->val2buf(const_cast<char *>
+				    (sds.dims[i].scale.data()));
+#endif
+	    gr->map_var(p)->set_read_p(true);
+	}
     }
     return;
 }
@@ -412,68 +454,57 @@ void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds) {
 // load an HDFSequence from a row of an hdf_vdata
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
 
-    HDFStructure *stru = 0;
-    for (Pix p=seq->first_var(); p!=0; seq->next_var(p)) {
-	
-	stru = CastBaseTypeToStructure(seq->var(p));
-        string fieldname = stru->name();
+    for (Pix p = seq->first_var(); p; seq->next_var(p)) {
+	HDFStructure &stru = dynamic_cast<HDFStructure &>(*seq->var(p));
 
 	// find corresponding field in vd
 	vector<hdf_field>::iterator vf = 
-	    find_if(vd.fields.begin(), vd.fields.end(), fieldeq(fieldname));
+	    find_if(vd.fields.begin(), vd.fields.end(), fieldeq(stru.name()));
 	if (vf == vd.fields.end())
 	    THROW(dhdferr_consist);
 
 	// for each field component of field, extract the proper data element
 	// for the current row being requested and load into the Structure
 	// variable
-
-	// Check to make sure the number of field components of the Structure
-	// and the hdf_field object match
-	//if (stru->nvars() != vf->vals.size()
-	//    THROW(dhdferr_consist);
-
-	LoadStructureFromField(stru, *vf, row);
-	stru->set_read_p(true);
+	LoadStructureFromField(&stru, *vf, row);
+	stru.set_read_p(true);
     }
 }
 
 // Load an HDFStructure with the components of a row of an hdf_field.  If the
 // field is made of char8 components, collapse these into one String component
-void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
+void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) {
 
     if (row < 0 || f.vals.size() <= 0  ||  row > (int)f.vals[0].size())
 	THROW(dhdferr_conv);
 
     BaseType *firstp = stru->var(stru->first_var());
-    if (firstp->type_name() == "String") {
-
+    if (firstp->type() == dods_str_c) {
 	// If the Structure contains a String, then that is all it will 
 	// contain.  In that case, concatenate the different char8 
 	// components of the field and load the DODS String with the value.
-	string str;
-	for (int i=0; i<(int)f.vals.size(); ++i) {
-#if 0
-	  cerr << i << ": " << (int)f.vals[i].elt_char8(row) << endl;
-#endif
+	string str = "";
+	for (unsigned int i = 0; i < f.vals.size(); ++i) {
+	    DBG(cerr << i << ": " << f.vals[i].elt_char8(row) << endl);
 	    str += f.vals[i].elt_char8(row);
 	}
-	void *data = (void *)&str;
-	firstp->val2buf(data);
-	firstp->set_read_p(true);
 
+	firstp->val2buf(static_cast<void *>(&str)); // data);
+	firstp->set_read_p(true);
     }
     else {
-
 	// for each component of the field, load the corresponding component
 	// of the DODS Structure.
-	int i=0;
-	void *data=0;
-	for (Pix q=stru->first_var(); q!=0; stru->next_var(q),++i) {
-	    data = ExportDataForDODS(f.vals[i], row); // allocating one item
-	    stru->var(q)->val2buf(data);
+	int i = 0;
+	for (Pix q=stru->first_var(); q; stru->next_var(q), ++i) {
+	    // AccessDataForDODS does the same basic thing that
+	    // ExportDataForDODS(hdf_genvec &, int) does except that the
+	    // Access function does not allocate memeory; it provides access
+	    // using the data held in the hdf_genvec without copying it. See
+	    // hdfutil.cc. 4/10/2002 jhrg
+	    stru->var(q)->val2buf(static_cast<char *>
+				  (ExportDataForDODS(f.vals[i], row)));
 	    stru->var(q)->set_read_p(true);
-	    delete data;	// deleting one item
 	}
 
     }
@@ -483,28 +514,79 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 // Load an HDFStructure with the contents of a vgroup.
 void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 			     const string& hdf_file) {
-  int i=0;
-  int err=0;
-  for (Pix q=str->first_var(); err==0 && q!=0; str->next_var(q), ++i) {
-    BaseType *p = str->var(q);
-    if(!p->send_p()) {  // skip data objects not going to be sent
-      continue;
-    }
-    int32 tag = vg.tags[i];
-    int32 ref = vg.refs[i];
-
+    int i = 0;
+    int err = 0;
+    for (Pix q = str->first_var(); err == 0 && q; str->next_var(q), ++i) {
+	BaseType *p = str->var(q);
+	if (p->send_p() && p->name() == vg.vnames[i] ) {
 #ifdef __SUNPRO_CC
-    // As of v4.1, SunPro C++ is too braindamaged to support dynamic_cast<>,
-    // so we have to add read_tagref() to BaseType.h in the core instead of
-    // using a mixin class (multiple inheritance).
-    (ReadTagRef*)(p)->read_tagref(hdf_file, tag, ref, err);
+	    // As of v4.1, SunPro C++ is too braindamaged to support
+	    // dynamic_cast<>, so we have to add read_tagref() to BaseType.h
+	    // in the core instead of using a mixin class (multiple
+	    // inheritance).
+	    (ReadTagRef*)(p)->read_tagref(hdf_file, vg.tags[i], vg.refs[i], 
+					  err);
 #else
-    (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, tag, ref, err);
+	    (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, vg.tags[i],
+							vg.refs[i], err);
 #endif
-  }
+	}
+    }
 }
 
 // $Log: hc2dap.cc,v $
+// Revision 1.17  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.15.4.9  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
+// Revision 1.15.4.8  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
+// Revision 1.15.4.7  2002/04/11 23:55:50  jimg
+// Removed the call to AccessDataForDODS; it is broken.
+//
+// Revision 1.15.4.6  2002/04/11 18:31:33  jimg
+// Removed HDFTypeName functions. These were not used by the server.
+//
+// Revision 1.15.4.5  2002/04/11 03:14:11  jimg
+// Massive changes to the code that actually loads data into the DODS variables.
+// Previously the ExportDataForDODS functions (there's two) were used. These
+// functions used the hdf_genvec methods to access values stored in the
+// hdf_genvec instance and copy them to newly allocated memory. In general this
+// is a waste since the BaseType::val2buf() methods (which each of the children
+// of BaseType overload) also copy their values (this might change in the
+// future, but those classes will never delete memory allocated outside of the
+// DAP library). Eliminating this extra copy should improve performance with
+// large datasets.
+//
+// Revision 1.15.4.4  2002/04/10 18:38:10  jimg
+// I modified the server so that it knows about, and uses, all the DODS
+// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
+// cast most integer data to 32 bits. Now if an HDF file contains these
+// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
+// using those types (which DODS has supported for a while...).
+//
+// Revision 1.15.4.3  2002/01/29 20:19:02  jimg
+// I modified LoadGridFromSDS() so that it only reads/loads the parts of a
+// Grid that the client requested. The function now checks to see if send_p()
+// is set for the primary array and each map, only loading those for which
+// it is set.
+//
+// Revision 1.15.4.2  2002/01/28 23:38:18  dan
+// Modified LoadStructureFromVgroup to support modifications
+// to the ancillary DDS file, such that variables in the original
+// DDS can be removed from the ancillary DDS.  Previously, the
+// behavior of the server was to assume that the DDS mapped
+// exactly to the sequential layout of the tags/refs in the hdf
+// file itself.  When not the ancillary DDS is simply a cached version
+// of the original DDS then this is true, however any modification
+// to the DDS will break this assumption.  The new behavior does
+// not allow variables to be moved, only removed, this is an
+// important distinction.
+//
 // Revision 1.16  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

@@ -15,6 +15,9 @@
 #include <string>
 #include <vector>
 
+using std::vector ;
+using std::string ;
+
 #include <mfhdf.h>
 
 vector<string> split(const string& str, const string& delim) {
@@ -88,6 +91,13 @@ bool VdataExists(const char *filename, const char *vdname) {
 }
 
 // $Log: hcutil.cc,v $
+// Revision 1.6  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.5.4.1  2002/12/18 23:32:50  pwest
+// gcc3.2 compile corrections, mainly regarding the using statement. Also,
+// missing semicolon in .y file
+//
 // Revision 1.5  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

@@ -15,7 +15,7 @@
 #include "InternalErr.h"
 #include "HDFUInt16.h"
 
-HDFUInt16::HDFUInt16(const string &n = (char *)0) : UInt16(n) {}
+HDFUInt16::HDFUInt16(const string &n) : UInt16(n) {}
 HDFUInt16::~HDFUInt16() {}
 BaseType *HDFUInt16::ptr_duplicate() { return new HDFUInt16(*this); }
 bool HDFUInt16::read(const string &) { 
@@ -25,6 +25,13 @@ bool HDFUInt16::read(const string &) {
 UInt16 *NewUInt16(const string &n) { return new HDFUInt16(n); }
 
 // $Log: HDFUInt16.cc,v $
+// Revision 1.4  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.3.4.1  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
 // Revision 1.3  2000/10/09 19:46:20  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

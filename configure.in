@@ -2,8 +2,8 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.22 2001/08/27 17:21:34 jimg Exp $)
-AC_INIT(src)
+AC_REVISION($Id: configure.in,v 1.23 2003/01/31 02:08:36 jimg Exp $)
+AC_INIT(hdfclass)
 AC_CONFIG_AUX_DIR(../../etc)
 AC_CONFIG_HEADER(config_hdf.h)
 
@@ -26,20 +26,16 @@ AC_SUBST(depend)
 AC_CANONICAL_HOST
 AC_SUBST(host)
 
-CFLAGS="-gstabs -O2 $CFLAGS"
-
-dnl Turn off all optimizations
-DODS_GCC_VERSION
-echo "GCC_VER: $GCC_VER"
-case $GCC_VER in
-    2.95*) CXXFLAGS="-gstabs -O0 $CXXFLAGS";;
-    *) CXXFLAGS="-gstabs -O0 $CXXFLAGS";;
-esac
+dnl Turn off optimizations by default (Is this still necessary? 10/29/2001
+dnl jhrg). 
+CFLAGS=${CFLAGS-"-gstabs -O2"}
+CXXFLAGS=${CXXFLAGS-"-gstabs -O2"}
 
 dnl Checks for programs.
 
 AC_PROG_AWK
 AC_PROG_CC
+AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -72,20 +68,23 @@ AC_SUBST(CXX)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h limits.h unistd.h)
+AC_CHECK_HEADERS(fcntl.h limits.h unistd.h sys/param.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 
+dnl Checks for specific libraries
+AC_CHECK_LIB(pthread, pthread_testcancel, 
+	[LIBS="$LIBS -lpthread"
+	 AC_DEFINE(_REENTRANT)])
+
 dnl Checks for library functions.
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(strerror strtol)
 
 DODS_CHECK_SIZES
-
-DODS_XTRALIBS
 
 DODS_HDF_LIBRARY
 
@@ -110,10 +109,11 @@ AC_SUBST(HDF_CACHE)
 dnl setup the url for the testsuite.
 
 AC_ARG_WITH(test-url,
-    [  --with-test-url=url     Test file base URL (default: http://www.dods.org/dods-3.2/nph-dods/data/hdf/server-tests/)],
-    testurl=${withval}, testurl=http://localhost/test/nph-dods/data/hdf/server-tests/)
+    [  --with-test-url=url     Test file base URL (default: http://localhost/dods-test/nph-dods/data/hdf/server-tests/)],
+    testurl=${withval}, testurl=http://localhost/dods-test/nph-dods/data/hdf/server-tests/)
 
 AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)
 
-AC_OUTPUT(Makefile hdfclass/Makefile)
+AC_OUTPUT(Makefile hdfclass/Makefile hdf-testsuite/geturl.0/basic.exp
+	hdf-testsuite/geturl.0/hdfeos.exp)

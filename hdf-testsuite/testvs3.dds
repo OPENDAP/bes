@@ -7,10 +7,10 @@ Dataset {
             UInt32 dUINT32__0;
         } dUINT32;
         Structure {
-            Int32 dINT16__0;
+            Int16 dINT16__0;
         } dINT16;
         Structure {
-            UInt32 dUINT16__0;
+            UInt16 dUINT16__0;
         } dUINT16;
         Structure {
             Int32 dINT8__0;
@@ -19,7 +19,7 @@ Dataset {
             Byte dUINT8__0;
         } dUINT8;
         Structure {
-            Float64 dFLOAT32__0;
+            Float32 dFLOAT32__0;
         } dFLOAT32;
         Structure {
             Float64 dFLOAT64__0;

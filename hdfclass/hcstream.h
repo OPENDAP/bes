@@ -65,6 +65,16 @@ public:
 		 bool reduce_rank = false);
     void setslab(int *start, int *edge, int *stride, bool reduce_rank = false);
     void unsetslab(void) { _slab.set = _slab.reduce_rank = false; }
+    void hdfistream_sds::set_map_ce(const vector<array_ce> &a_ce) {
+	_map_ce_set = true;
+	_map_ce_vec = a_ce;
+    }
+    vector<array_ce> hdfistream_sds::get_map_ce() {
+	return _map_ce_vec;
+    }
+    bool is_map_ce_set() {
+	return _map_ce_set;
+    }
     hdfistream_sds& operator>>(hdf_attr& ha); // read an attribute
     hdfistream_sds& operator>>(vector<hdf_attr>& hav); // read all atributes
     hdfistream_sds& operator>>(hdf_sds& hs);	       // read an SDS
@@ -94,13 +104,26 @@ protected:
     int32 _nsds;	     // number of SDS's in stream
     int32 _nfattrs;	     // number of file attributes in this SDS's file
     bool _meta;
-    struct {
+    struct slab {
 	bool set;
 	bool reduce_rank;
 	int32 start[hdfclass::MAXDIMS];
 	int32 edge[hdfclass::MAXDIMS];
 	int32 stride[hdfclass::MAXDIMS];
     } _slab;
+    // Since an SDS can hold a Grid, there may be several different
+    // constraints (because a client might constrain each of the fields
+    // differently an want a Structure object back). I've added a vector of
+    // array_ce objects to hold all this CE information so that the
+    // operator>> method will be able to access it at the corrrect time. This
+    // new object holds only the information about constraints on the Grid's
+    // map vectors. The _slab member will hold the constraint on the Grid's
+    // array. Note that the in many cases the constraints on the maps can be
+    // derived frm the array's constraints, but sometimes a client will only
+    // ask for the maps and thus the array's constaint will be the entire
+    // array (the `default constraint').
+    vector<array_ce> _map_ce_vec;	// Added 2/5/2002 jhrg
+    bool _map_ce_set;
 };
 
 // class for a stream reading annotations
@@ -206,6 +229,7 @@ public:
     virtual void seek_next(void) { _seek_next(); } // seek the next Vgroup in file
     virtual void seek_ref(int ref);      // seek the Vgroup by ref
     virtual void rewind(void) { _rewind(); } // position in front of first Vgroup
+    string memberName(int32 ref); // find the name of ref'd Vgroup in the stream
     virtual bool bos(void) const    // positioned in front of the first Vgroup?
 	{ return (_index <= 0); }
     virtual bool eos(void) const      // positioned past the last Vgroup?
@@ -225,7 +249,9 @@ protected:
     void _seek(int32 ref); // find the index'th Vgroup in the stream
     void _rewind(void)  // position to beginning of the stream
 	{ _index = _attr_index = 0; if (_vgroup_refs.size() > 0) _seek(_vgroup_refs[0]); }
+    string _memberName(int32 ref); // find the name of ref'd Vgroup in the stream
     int32 _vgroup_id;	     // handle of open object in annotation interface
+    int32 _member_id;        // handle of child object in this Vgroup
     int32 _attr_index;       // index of current attribute
     int32 _nattrs;           // number of attributes for this Vgroup
     bool _meta;
@@ -293,6 +319,29 @@ protected:
 }; /* Note: multiple palettes is not supported in the current HDF 4.0 GR API */
 
 // $Log: hcstream.h,v $
+// Revision 1.9  2003/01/31 02:08:37  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.7.4.4  2002/02/12 20:09:13  jimg
+// Fix for the latest Grid Map Vector fix. When an SDS is built for an Array
+// (not a Grid) there are no map vectors to work with so the array_ce info
+// must be protected. By default an hdfistream initializes a flag as false that
+// the operator>> methods check before using the saved map vector CEs.
+//
+// Revision 1.7.4.3  2002/02/05 17:46:17  jimg
+// Added struct array_ce to hold a single array constaint.
+// Added _map_ce_vec, a vector<array_ce> object to hdfistream_sds so that
+// instances no longer use the constraint associated with a Grid's array
+// when sending map vectors. This is necessary because some clients ask
+// for just map vectors and the array constraint (which defaults to the
+// whole array) overrides the actual constraint(s) sent by the client.
+//
+// Revision 1.7.4.2  2002/01/29 20:33:02  dan
+// Added new elements to hdf_vgroup structure to maintain
+// member variable names (string-reps) to couple explicit
+// variable names to tag/ref fields in the structure.  Required
+// to support new Ancillary DDS usage.
+//
 // Revision 1.8  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

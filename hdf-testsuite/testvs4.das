@@ -6,10 +6,10 @@ Attributes {
         Uint32 Attr_DFNT_UINT32 0, 1, 4294967295;
     }
     Vdata_DFNT_INT16 {
-        Int32 Attr_DFNT_INT16 0, 1, -1, 32767, -32768;
+        Int16 Attr_DFNT_INT16 0, 1, -1, 32767, -32768;
     }
     Vdata_DFNT_UINT16 {
-        Uint32 Attr_DFNT_UINT16 0, 1, 65535;
+        Uint16 Attr_DFNT_UINT16 0, 1, 65535;
     }
     Vdata_DFNT_INT8 {
         Int32 Attr_DFNT_INT8 0, 1, -1, 127, -128;
@@ -18,7 +18,11 @@ Attributes {
         Byte Attr_DFNT_UINT8 0, 1, 255;
     }
     Vdata_DFNT_FLOAT32 {
-        Float64 Attr_DFNT_FLOAT32 0, 1, -1, 3.40282e+38, 1.17549e-38, -3.40282e+38, -1.17549e-38;
+        Float32 Attr_DFNT_FLOAT32 0, 1, -1, 3.40282e+38, -3.40282e+38;
+        Vdata_DFNT_FLOAT32_dods_errors {
+            Float32 Attr_DFNT_FLOAT32 1.17549e-38, -1.17549e-38;
+            String Attr_DFNT_FLOAT32_explanation "`1.17549e-38' is not a Float32 value.", "`-1.17549e-38' is not a Float32 value.";
+        }
     }
     Vdata_DFNT_FLOAT64 {
         Float64 Attr_DFNT_FLOAT64 0, 1, -1, 1.79769e+308, -1.79769e+308;
@@ -28,9 +32,9 @@ Attributes {
         }
     }
     Vdata_DFNT_CHAR8 {
-        String Attr_DFNT_CHAR8 "\000\001\377\177\200";
+        String Attr_DFNT_CHAR8 "\\000\\001\\377\\177\\200";
     }
     Vdata_DFNT_UCHAR8 {
-        String Attr_DFNT_UCHAR8 "\000\001\377";
+        String Attr_DFNT_UCHAR8 "\\000\\001\\377";
     }
 }

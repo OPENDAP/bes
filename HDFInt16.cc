@@ -13,7 +13,7 @@
 #include "InternalErr.h"
 #include "HDFInt16.h"
 
-HDFInt16::HDFInt16(const string &n = (char *)0) : Int16(n) {}
+HDFInt16::HDFInt16(const string &n) : Int16(n) {}
 HDFInt16::~HDFInt16() {}
 BaseType *HDFInt16::ptr_duplicate() { return new HDFInt16(*this); }
 bool HDFInt16::read(const string &) { 
@@ -23,6 +23,13 @@ bool HDFInt16::read(const string &) {
 Int16 *NewInt16(const string &n) { return new HDFInt16(n); }
 
 // $Log: HDFInt16.cc,v $
+// Revision 1.4  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.3.4.1  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
 // Revision 1.3  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

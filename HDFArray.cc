@@ -16,6 +16,11 @@
 
 #include <vector>
 
+// Include this on linux to suppres an annoying warning about multiple
+// definitions of MIN and MAX.
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>
@@ -23,7 +28,6 @@
 #include "escaping.h"
 #include "HDFArray.h"
 #include "dhdferr.h"
-#include "dodsutil.h"
 
 #include "Error.h"
 
@@ -39,14 +43,15 @@ void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr);
 // Read in an Array from either an SDS or a GR in an HDF file.
 bool HDFArray::read(const string &dataset)
 {
-  int err;
-  int status = read_tagref(dataset, -1, -1, err);
-  if (err)
-    throw Error(unknown_error, "Could not read from dataset.");
-  return status;
+    int err = 0;
+    int status = read_tagref(dataset, -1, -1, err);
+    if (err)
+	throw Error(unknown_error, "Could not read from dataset.");
+    return status;
 }
 
-bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
+bool 
+HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
 {
     if (read_p())
 	return true;
@@ -55,62 +60,43 @@ bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err
     string hdf_file = dataset;
     string hdf_name = this->name();
 
-    bool foundsds = false;
-    hdf_sds sds;
-
     // get slab constraint
     vector<int> start, edge, stride;
     bool isslab = GetSlabConstraint(start, edge, stride);
 
+    bool foundsds = false;
+    hdf_sds sds;
     if (tag==-1 || tag==DFTAG_NDG) {
-#ifdef NO_EXCEPTIONS
-      if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
-#else
-      try {
-#endif
-	hdfistream_sds sdsin(hdf_file.c_str());
-	if(ref != -1)
-	  sdsin.seek_ref(ref);
-	else
-	  sdsin.seek(hdf_name.c_str());
-	if (isslab)
-	  sdsin.setslab(start, edge, stride, false);
-	sdsin >> sds;
-	sdsin.close();
-	foundsds = true;
-      }
-#ifndef NO_EXCEPTIONS
-      catch(...) {}
-#else
-      }
-#endif
+	if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
+	    hdfistream_sds sdsin(hdf_file.c_str());
+	    if(ref != -1)
+		sdsin.seek_ref(ref);
+	    else
+		sdsin.seek(hdf_name.c_str());
+	    if (isslab)
+		sdsin.setslab(start, edge, stride, false);
+	    sdsin >> sds;
+	    sdsin.close();
+	    foundsds = true;
+	}
     }
 
     bool foundgr = false;
     hdf_gri gr;
     if (!foundsds && (tag==-1 || tag==DFTAG_VG))  {
-#ifdef NO_EXCEPTIONS
 	if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
-#else
-        try {
-#endif
 	    hdfistream_gri grin(hdf_file.c_str());
 	    if(ref != -1)
-	      grin.seek_ref(ref);
+		grin.seek_ref(ref);
 	    else
-	      grin.seek(hdf_name.c_str());
+		grin.seek(hdf_name.c_str());
 	    if (isslab)
-	      grin.setslab(start, edge, stride, false);
+		grin.setslab(start, edge, stride, false);
 	    grin >> gr;
 	    grin.close();
 	    foundgr = true;
 	}
-#ifndef NO_EXCEPTIONS
-	catch(...) { }
-#endif
     }
-
-    set_read_p(true);
 
     if (foundsds)
 	LoadArrayFromSDS(this, sds);
@@ -118,6 +104,7 @@ bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err
 	LoadArrayFromGR(this, gr);
 
     if (foundgr || foundsds) {
+	set_read_p(true);	// Moved here; see bug 136
 	err = 0;		// no error
 	return true;
     }
@@ -164,6 +151,34 @@ bool HDFArray::GetSlabConstraint(vector<int>& start_array,
 }
 
 // $Log: HDFArray.cc,v $
+// Revision 1.12  2003/01/31 02:08:36  jimg
+// Merged with release-3-2-7.
+//
+// Revision 1.10.4.6  2002/04/12 00:07:04  jimg
+// I removed old code that was wrapped in #if 0 ... #endif guards.
+//
+// Revision 1.10.4.5  2002/04/12 00:03:14  jimg
+// Fixed casts that appear throughout the code. I changed most/all of the
+// casts to the new-style syntax. I also removed casts that we're not needed.
+//
+// Revision 1.10.4.4  2002/04/10 18:38:10  jimg
+// I modified the server so that it knows about, and uses, all the DODS
+// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
+// cast most integer data to 32 bits. Now if an HDF file contains these
+// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
+// using those types (which DODS has supported for a while...).
+//
+// Revision 1.10.4.3  2002/03/26 20:46:06  jimg
+// Moved the call to set_read_p() so that the read_p flag is not set until after
+// the values are read. This (hopefully) fixes bug 136 where some arrays that
+// could not be read are marked as read (because set_read_p is called before the
+// functions that read the data fail). Bug 136 is hard to test since I can't
+// find a URL for it. This one may resurface later...
+//
+// Revision 1.10.4.2  2002/03/14 19:15:07  jimg
+// Fixed use of int err in read() so that it's always initialized to zero.
+// This is a fix for bug 135.
+//
 // Revision 1.11  2001/08/27 17:21:34  jimg
 // Merged with version 3.2.2
 //

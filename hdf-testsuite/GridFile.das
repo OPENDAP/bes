@@ -108,7 +108,7 @@ Attributes {
         }
     }
     Pollution {
-        Float64 _FillValue -7;
+        Float32 _FillValue -7;
     }
     Pollution_dim_0 {
         String name "Time:UTMGrid";

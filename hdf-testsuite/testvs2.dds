@@ -17,18 +17,18 @@ Dataset {
     } Vdata_DFNT_UINT32;
     Sequence {
         Structure {
-            Int32 Field_DFNT_INT16__0;
-            Int32 Field_DFNT_INT16__1;
-            Int32 Field_DFNT_INT16__2;
-            Int32 Field_DFNT_INT16__3;
-            Int32 Field_DFNT_INT16__4;
+            Int16 Field_DFNT_INT16__0;
+            Int16 Field_DFNT_INT16__1;
+            Int16 Field_DFNT_INT16__2;
+            Int16 Field_DFNT_INT16__3;
+            Int16 Field_DFNT_INT16__4;
         } Field_DFNT_INT16;
     } Vdata_DFNT_INT16;
     Sequence {
         Structure {
-            UInt32 Field_DFNT_UINT16__0;
-            UInt32 Field_DFNT_UINT16__1;
-            UInt32 Field_DFNT_UINT16__2;
+            UInt16 Field_DFNT_UINT16__0;
+            UInt16 Field_DFNT_UINT16__1;
+            UInt16 Field_DFNT_UINT16__2;
         } Field_DFNT_UINT16;
     } Vdata_DFNT_UINT16;
     Sequence {
@@ -49,13 +49,13 @@ Dataset {
     } Vdata_DFNT_UINT8;
     Sequence {
         Structure {
-            Float64 Field_DFNT_FLOAT32__0;
-            Float64 Field_DFNT_FLOAT32__1;
-            Float64 Field_DFNT_FLOAT32__2;
-            Float64 Field_DFNT_FLOAT32__3;
-            Float64 Field_DFNT_FLOAT32__4;
-            Float64 Field_DFNT_FLOAT32__5;
-            Float64 Field_DFNT_FLOAT32__6;
+            Float32 Field_DFNT_FLOAT32__0;
+            Float32 Field_DFNT_FLOAT32__1;
+            Float32 Field_DFNT_FLOAT32__2;
+            Float32 Field_DFNT_FLOAT32__3;
+            Float32 Field_DFNT_FLOAT32__4;
+            Float32 Field_DFNT_FLOAT32__5;
+            Float32 Field_DFNT_FLOAT32__6;
         } Field_DFNT_FLOAT32;
     } Vdata_DFNT_FLOAT32;
     Sequence {
