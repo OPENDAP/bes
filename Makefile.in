@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.8 1998/02/05 20:14:26 jimg Exp $
+# $Id: Makefile.in,v 1.9 1998/03/11 00:40:27 jimg Exp $
 
 @SET_MAKE@
 
@@ -13,7 +13,7 @@ WWW_ROOT = @WWW_ROOT@
 INCS = -I. -I$(DODS_ROOT)/include -Isrc -Ihdfclass/src @INCS@ 
 DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
-CXXFLAGS = @CXXFLAGS@ -Wall -fno-rtti
+CXXFLAGS = @CXXFLAGS@ -Wall
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
 LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
 
