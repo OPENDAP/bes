@@ -11,6 +11,8 @@
 
 #include "h5dds.h"
 
+#include "InternalErr.h"
+
 //for DODS grid only 
 extern "C" {char *get_dimname(hid_t,int);}
 extern "C" {char *correct_name(char*);}
@@ -51,97 +53,86 @@ static char Msgt[255];
  *
  *-------------------------------------------------------------------------
  */		
-bool depth_first(hid_t pid, char *gname,DDS &dds, const char *fname,string *error)
+bool
+depth_first(hid_t pid, char *gname, DDS &dds, const char *fname)
 {
-  int nelems = 0;
-  int type = -1;
-  char * oname = NULL;
-  char *tempname;
-  int i,j;
-  int num_attr=-1;
-  herr_t ret;
-  hid_t pgroup,dgroup,dset;
-  char *buf;
-	
   /* Iterate through the file to see members of the root group */
 
-  nelems = H5Gn_members( pid, gname);
+  int nelems = H5Gn_members(pid, gname);
 
   if (nelems < 0 ) {
-    sprintf(Msgt,"h5_dds server: counting hdf5 group elements error %s",gname);
-    *error = (string)"\"" + (string)Msgt + (string)"\"";
-    return false;
+    string msg = "h5_dds handler: counting hdf5 group elements error for ";
+    msg += gname;
+    throw InternalErr(msg, __FILE__, __LINE__);
   }
        
-  for ( i = 0; i < nelems; i++) {
-
-    ret = H5Gget_obj_info_idx(pid, gname,i, &oname, &type);
+  for (int i = 0; i < nelems; i++) {
+    char *oname = NULL;
+    int type = -1;
+    herr_t ret = H5Gget_obj_info_idx(pid, gname,i, &oname, &type);
 
     if (ret < 0)  {
-      sprintf(Msgt,"h5_dds server: getting hdf5 object information error %s",gname);
-      *error = (string)"\"" + (string)Msgt + (string)"\"";
-      return false;
+      string msg = "h5_dds handler: getting hdf5 object information error from ";
+      msg += gname;
+      throw InternalErr(msg, __FILE__, __LINE__);
     }
 
     switch (type) {
 
-    case H5G_GROUP: 
-		
-      tempname = new char[strlen(gname)+strlen(oname)+3];
-      pgroup = H5Gopen(pid,gname);
-      strcpy(tempname,gname);
-      strcat(tempname,oname);
-      strcat(tempname,"/");
-	
-      oname = NULL;
-      oname = new char [strlen(tempname)+1];
-      strcpy(oname,tempname);
-      delete [] tempname;
+    case H5G_GROUP: {
+      string full_path_name = string(gname) + string(oname) + "/";
+      hid_t pgroup = H5Gopen(pid,gname);
 
-      depth_first( pgroup,oname,dds,fname,error);
-      delete [] oname;
+      char *t_fpn = new char[full_path_name.length()+1];
+      strcpy(t_fpn, full_path_name.c_str());
+      try {
+	depth_first(pgroup, t_fpn, dds, fname);
+      }
+      catch (Error &e) {
+	delete [] t_fpn;
+	throw;
+      }
+      delete [] t_fpn;
       break;
+    }
 
-    case H5G_DATASET: 
-		
-      dgroup= H5Gopen(pid,gname);
-      tempname = new char[strlen(gname)+strlen(oname)+3];
-      strcpy(tempname,gname);
-      strcat(tempname,oname);
-      oname = NULL;
-      oname = new char[strlen(tempname)+1];
-      strcpy(oname,tempname);
-      delete [] tempname;
-			
+    case H5G_DATASET: {
+      string full_path_name = string(gname) + string(oname);
+      hid_t dgroup= H5Gopen(pid,gname);
+
+      char *t_fpn = new char[full_path_name.length()+1];
+      strcpy(t_fpn, full_path_name.c_str());
       /* obtain hdf5 dataset handle. */
-      if ((get_dataset(dgroup,oname,&dt_inst,Msgt))<0) {
-	sprintf(Msgt,"h5_dds server: getting hdf5 dataset wrong for %s",oname);
-	*error = (string)"\"" + (string)Msgt + (string)"\"";
-	delete [] oname;
-	return false;
+      if ((get_dataset(dgroup, t_fpn, &dt_inst, Msgt)) < 0) {
+	string msg = "h5_dds handler: getting hdf5 dataset wrong for ";
+	msg += t_fpn;
+	msg += string("\n") + string(Msgt);
+	delete [] t_fpn;
+	throw InternalErr(msg, __FILE__, __LINE__);
       }
                     
-      /* put hdf5 dataset structure into DODS dds. */
-      if (!read_objects(dds,oname,error,fname)) {
-	sprintf(Msgt,"h5_dds server: wrong in putting hdf5 dataset %s into DDS",oname);
-	*error = (string)"\"" + (string)Msgt + (string)"\"";
-
-	delete [] oname;
-	return false;
+      // Put hdf5 dataset structure into DODS dds.
+      // read_objects throws InternalErr.
+      try {
+	read_objects(dds,t_fpn,fname);
       }
-      delete [] oname;
-      break;
-		     
-    case H5G_TYPE: 
+      catch (Error &e) {
+	delete [] t_fpn;
+	throw;
+      }
 
-      delete [] oname;
+      delete [] t_fpn;
+      break;
+    }	     
+    case H5G_TYPE: 
       break;
 
     default:
-      delete [] oname;
       break;
     }
+
     type = -1;
+
   }
   return true;
 }
@@ -428,19 +419,26 @@ Get_bt(string varname, hid_t datatype)
  * Return:	false, failed. otherwise,success.
   *
  * In :	        DDS object: reference
-                object name: absolute name of either a dataset or a group
+                varname: absolute name of either a dataset or a group
                 error: a string of error message to the dods interface.
-                object id: dset
-		num_attr: number of attributes.
 		filename: dataset name.
  *	     
  *
  *------------------------------------------------------------
  */			
-bool
-read_objects(DDS &dds_table, const string &varname, string *error,const string &filename)
+
+/** This function will fill in information of a dataset (name,data
+    type,data space)into one DDS table.  It will use dynamic cast to
+    put necessary information into subclass of dods datatype.
+
+    @return: false, failed. otherwise,success.
+    @param dds_table Destination for the HDF5 objects. 
+    @param varname Absolute name of either a dataset or a group
+    @param error a string of error message to the dods interface.
+    @param filename Added to the DDS (dds_table). */
+void
+read_objects(DDS &dds_table, const string &varname, const string &filename)
 {
-    
   Array *ar;
   Grid *gr;
   Part pr;
@@ -464,23 +462,36 @@ read_objects(DDS &dds_table, const string &varname, string *error,const string &
   varname.copy(temp_varname,string::npos);
   temp_varname[varname.length()]=0;
   //The following code will change "/" into "_"
-  /*  while(strchr(temp_varname,ORI_SLASH)!=NULL){
+#if 0
+    while(strchr(temp_varname,ORI_SLASH)!=NULL){
       cptr = strchr(temp_varname,ORI_SLASH);
       *cptr = CHA_SLASH;
-      } */
+      }
+#endif
     
-  newname = strrchr(temp_varname,ORI_SLASH);
+  newname = strrchr(temp_varname, ORI_SLASH);
   newname++;
-   dds_table.set_dataset_name(name_path(filename));
-  //dds_table.set_dataset_name(name_path(id2dods(filename)));
-  // BaseType *bt = Get_bt(temp_varname,dt_inst.type);
- 
-    BaseType *bt = Get_bt(newname,dt_inst.type);
-   // BaseType *bt = Get_bt(id2dods(newname),dt_inst.type);
 
+#if 0
+  // make/test this mod sometime in the future.
+  string::size_type pos = varname.rfind(ORI_SLASH);
+  string newname = varname.substr(++pos, varname.end());
+#endif
+
+  dds_table.set_dataset_name(name_path(filename));
+ 
+  BaseType *bt = Get_bt(newname,dt_inst.type);
   if (!bt) {
+    delete [] temp_varname;
+    // NB: We're throwing InternalErr even though it's possible that
+    // someone might ask for a HDF5 varaible which this server cannot
+    // handle (for example, an HDF5 reference).
+    throw InternalErr("Unable to convert hdf5 datatype to dods basetype",
+		      __FILE__, __LINE__);
+#if 0
     *error = "unable to convert hdf5 datatype to dods  basetype";
     return false;
+#endif
   }
 
   // first dealing with scalar data. 
@@ -596,7 +607,6 @@ read_objects(DDS &dds_table, const string &varname, string *error,const string &
 #endif
   }
   delete [] temp_varname;   
-  return true;
 }   
 
 

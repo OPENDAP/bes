@@ -33,15 +33,8 @@
 #include "HDF5Grid.h"
 #include "h5util.h"
 
-bool depth_first(hid_t, char *, DDS &, const char *, string *); 
-   
-#if 0
-static char *
-print_attr(hid_t, int, void *);
-#endif
-
-bool
-read_objects(DDS &dds, const string &varname, string *error,const string& filename);
+bool depth_first(hid_t, char *, DDS &, const char *); 
+void read_objects(DDS &dds, const string &varname, const string& filename);
                                                             
 static const char STRING[]="String";
 static const char BYTE[]="Byte";
