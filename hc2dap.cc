@@ -12,6 +12,10 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.12  1998/09/23 20:53:50  jehamby
+// Fixed LoadStructureFromVgroup() to return an error code, as
+// HDFStructure::read_tagref() expects.
+//
 // Revision 1.11  1998/09/10 23:03:06  jehamby
 // Output both DFNT_CHAR8 and DFNT_UCHAR8 Vdata fields as String, not Byte.
 //
@@ -531,7 +535,7 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
 }
 
 // Load an HDFStructure with the contents of a vgroup.
-void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
+int LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 			     const String& hdf_file) {
   int i=0;
   int err=0;
@@ -545,4 +549,5 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 
     (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, tag, ref, err);
   }
+  return err;
 }
