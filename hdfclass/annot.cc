@@ -9,6 +9,9 @@
 // $RCSfile: annot.cc,v $ - input stream class for HDF annotations
 // 
 // $Log: annot.cc,v $
+// Revision 1.2  1998/09/10 21:57:10  jehamby
+// Fix incorrect checking of HDF return values and other incorrect HDF calls.
+//
 // Revision 1.1  1996/10/31 18:42:55  jimg
 // Added.
 //
@@ -84,19 +87,19 @@ void hdfistream_annot::_get_anninfo(void) {
 // retrieve information about the file annotations for current file
 void hdfistream_annot::_get_file_anninfo(void) {
     int32 nlab, ndesc, junk, junk2;
-    if (ANfileinfo(_file_id, &nlab, &ndesc, &junk, &junk2) < 0)
+    if (ANfileinfo(_an_id, &nlab, &ndesc, &junk, &junk2) == FAIL)
 	THROW(hcerr_anninfo);
 
     int32 _ann_id;
     _an_ids = vector<int32>();
     int i;
     for (i=0; _lab && i<nlab; ++i) {
-	if ( (_ann_id = ANselect(_file_id, i, AN_FILE_LABEL)) < 0)
+	if ( (_ann_id = ANselect(_an_id, i, AN_FILE_LABEL)) == FAIL)
 	    THROW(hcerr_anninfo);
 	_an_ids.push_back(_ann_id);
     }
     for (i=0; _desc && i<ndesc; ++i) {
-	if ( (_ann_id = ANselect(_file_id, i, AN_FILE_DESC)) < 0)
+	if ( (_ann_id = ANselect(_an_id, i, AN_FILE_DESC)) == FAIL)
 	    THROW(hcerr_anninfo);
 	_an_ids.push_back(_ann_id);
     }
@@ -108,10 +111,10 @@ void hdfistream_annot::_get_file_anninfo(void) {
 void hdfistream_annot::_get_obj_anninfo(void) {
     int nlab = 0, ndesc = 0;
     if (_desc  && 
-	(ndesc = ANnumann(_an_id, AN_DATA_DESC, _tag, _ref)) < 0)
+	(ndesc = ANnumann(_an_id, AN_DATA_DESC, _tag, _ref)) == FAIL)
 	THROW(hcerr_anninfo);
     if (_lab  &&
-	(nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) < 0)
+	(nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) == FAIL)
 	THROW(hcerr_anninfo);
 
     if (nlab + ndesc > 0) {
@@ -119,12 +122,12 @@ void hdfistream_annot::_get_obj_anninfo(void) {
 	if (annlist == 0)
 	    THROW(hcerr_annlist);
 	if (_desc  &&  
-	    ANannlist(_an_id, AN_DATA_DESC, _tag, _ref, annlist) < 0) {
+	    ANannlist(_an_id, AN_DATA_DESC, _tag, _ref, annlist) == FAIL) {
 	    delete []annlist; annlist = 0;
 	    THROW(hcerr_annlist);
 	}
 	if (_lab  &&
-	    ANannlist(_an_id, AN_DATA_LABEL, _tag, _ref, annlist+ndesc) < 0) {
+	    ANannlist(_an_id, AN_DATA_LABEL, _tag, _ref, annlist+ndesc) == FAIL) {
 	    delete []annlist; annlist = 0;
 	    THROW(hcerr_annlist);
     	}
@@ -187,7 +190,7 @@ void hdfistream_annot::open(const char *filename, int32 tag, int32 ref) {
     
 void hdfistream_annot::close(void) {
     if (_an_id > 0)
-	(void)ANendaccess(_an_id);
+	(void)ANend(_an_id);
     if (_file_id > 0)
 	(void)Hclose(_file_id);
     _init();
