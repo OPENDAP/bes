@@ -1,3 +1,13 @@
+2003-01-30    <jimg@dcz.dods.org>
+
+	* I merged with the code marked release-3-2-4, which was the last
+	tag I could find. Weird, given the entry here made on 2002-05-01.
+	The code fails eight tests, all have something to do with
+	Sequences. the code from the 3.2 branch exhibits the same behavior
+	when linked with the trunk DAP, but works fine with the 3.2 dap.
+	However, the changes between the 3.2 and trunk dap seem very
+	minor... 
+
 2002-06-03    <jimg@dcz.dods.org>
 
 	* HDFSequence.cc: Removed call to Sequence::set_level().
