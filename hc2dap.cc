@@ -15,14 +15,12 @@
 
 #include "config_hdf.h"
 
-#include <strstream.h>
 // STL includes
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <iostream>
 
-using std::ostrstream ;
 using std::cerr ;
 using std::ends ;
 using std::endl ;
@@ -117,8 +115,10 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    // create a DODS variable for each subfield
 	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
-		ostrstream strm(subname,hdfclass::MAXSTR);
-		strm << vd.fields[i].name << "__" << j << ends;
+#if 0
+		ostringstream strm(subname,hdfclass::MAXSTR);
+		strm << vd.fields[i].name << "__" << j
+#endif
 		BaseType *bt = 
 		    NewDAPVar(subname,
 			      vd.fields[i].vals[j].number_type());
@@ -424,38 +424,43 @@ void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds) {
     if (primary_array.dimensions() != sds.dims.size())
 	THROW(dhdferr_consist);	// # of dims of SDS and HDFGrid should agree!
 
+    Grid::Map_iter p = gr->map_begin();
+#if 0
     Pix p = gr->first_map_var();
-    for (unsigned int i = 0; i < sds.dims.size() && p; 
-	 ++i, gr->next_map_var(p)) {
-	if (gr->map_var(p)->send_p()) {
+#endif
+    for (unsigned int i = 0; i < sds.dims.size() && p != gr->map_end(); ++i, ++p) {
+	if ((*p)->send_p()) {
 #ifdef SIGNED_BYTE_TO_INT32
 	    switch (sds.dims[i].scale.number_type()) {
 	      case DFNT_INT8: {
 		  char *data = static_cast<char *>
 		      (ExportDataForDODS(sds.dims[i].scale));
-		  gr->map_var(p)->val2buf(data);
+		  (*p)->val2buf(data);
 		  delete []data;
 		  break;
 	      }
 	      default:
-		gr->map_var(p)->val2buf(const_cast<char *>
-					(sds.dims[i].scale.data()));
+		(*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
 	    }
 #else
-	    gr->map_var(p)->val2buf(const_cast<char *>
-				    (sds.dims[i].scale.data()));
+	    (*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
 #endif
-	    gr->map_var(p)->set_read_p(true);
+	    (*p)->set_read_p(true);
 	}
     }
     return;
 }
 
 // load an HDFSequence from a row of an hdf_vdata
-void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
+void 
+LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) 
+{
 
+    for (Sequence::Vars_iter p = seq->var_begin(); p != seq->var_end(); ++p) {
+#if 0
     for (Pix p = seq->first_var(); p; seq->next_var(p)) {
-	HDFStructure &stru = dynamic_cast<HDFStructure &>(*seq->var(p));
+#endif
+	HDFStructure &stru = dynamic_cast<HDFStructure &>(*(*p));
 
 	// find corresponding field in vd
 	vector<hdf_field>::iterator vf = 
@@ -473,12 +478,17 @@ void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
 
 // Load an HDFStructure with the components of a row of an hdf_field.  If the
 // field is made of char8 components, collapse these into one String component
-void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) {
+void 
+LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) 
+{
 
     if (row < 0 || f.vals.size() <= 0  ||  row > (int)f.vals[0].size())
 	THROW(dhdferr_conv);
 
+    BaseType *firstp = *(stru->var_begin());
+#if 0
     BaseType *firstp = stru->var(stru->first_var());
+#endif
     if (firstp->type() == dods_str_c) {
 	// If the Structure contains a String, then that is all it will 
 	// contain.  In that case, concatenate the different char8 
@@ -496,15 +506,18 @@ void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) {
 	// for each component of the field, load the corresponding component
 	// of the DODS Structure.
 	int i = 0;
+	for (Structure::Vars_iter q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
+#if 0
 	for (Pix q=stru->first_var(); q; stru->next_var(q), ++i) {
+#endif
 	    // AccessDataForDODS does the same basic thing that
 	    // ExportDataForDODS(hdf_genvec &, int) does except that the
 	    // Access function does not allocate memeory; it provides access
 	    // using the data held in the hdf_genvec without copying it. See
 	    // hdfutil.cc. 4/10/2002 jhrg
-	    stru->var(q)->val2buf(static_cast<char *>
+	    (*q)->val2buf(static_cast<char *>
 				  (ExportDataForDODS(f.vals[i], row)));
-	    stru->var(q)->set_read_p(true);
+	    (*q)->set_read_p(true);
 	}
 
     }
@@ -512,12 +525,17 @@ void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) {
 }
 
 // Load an HDFStructure with the contents of a vgroup.
-void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
-			     const string& hdf_file) {
+void 
+LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
+			const string& hdf_file) 
+{
     int i = 0;
     int err = 0;
+    for (Structure::Vars_iter q = str->var_begin(); q != str->var_end(); ++q, ++i) {
+#if 0
     for (Pix q = str->first_var(); err == 0 && q; str->next_var(q), ++i) {
-	BaseType *p = str->var(q);
+#endif
+	BaseType *p = (*q);
 	if (p->send_p() && p->name() == vg.vnames[i] ) {
 #ifdef __SUNPRO_CC
 	    // As of v4.1, SunPro C++ is too braindamaged to support
@@ -535,6 +553,9 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 }
 
 // $Log: hc2dap.cc,v $
+// Revision 1.18  2004/02/04 16:52:56  jimg
+// Removed Pix methods.
+//
 // Revision 1.17  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.
 //
