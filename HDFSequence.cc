@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.8  1998/09/17 17:57:49  jimg
+// Resolved conflicts from previous merge
+//
 // Revision 1.7  1998/04/06 16:08:19  jimg
 // Patch from Jake Hamby; change from switch to Mixin class for read_ref()
 //
@@ -93,7 +96,7 @@ bool HDFSequence::read_tagref(const String& dataset, int32 tag, int32 ref, int& 
     // It maybe that valid files have empty vdatas when they are first
     // created. 02/06/98 jhrg
     if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0) {
-	err = 1;
+        err = 1;       // error
 	return false;
     }
 
