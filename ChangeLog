@@ -1,3 +1,15 @@
+2004-02-18  James Gallagher  <jimg@comet.dods.org>
+
+	* Merged with release-3-4-2FCS
+
+2004-01-26  James Gallagher  <jimg@comet.dods.org>
+
+	* I moved the release-3-4 tag to a branch (because at least some
+	of the files had this as a regular tag) and then tagged everything
+	here as release-3-4FCS. This was to fix the problem with
+	release-3-4 not being a branch! I have no idea what affect this
+	will have on the merging process.
+
 2003-05-06  James Gallagher  <jimg@dcz.dods.org>
 
 	* Added tests.conf file which can be used by the configure script
