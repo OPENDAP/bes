@@ -1,11 +1,11 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.8 1998/09/17 03:58:37 jimg Exp $
+# $Id: Makefile.in,v 1.9 1998/09/17 17:56:11 jimg Exp $
 
 @SET_MAKE@
 
-DODS_ROOT = ../../../..
+DODS_ROOT = ../../..
 # Added because @INCS@ is expanded to include `-I$(WWW_ROOT)' and without 
 # a definition for that variable g++ is confused. jhrg 2/5/98.
 WWW_ROOT = @WWW_ROOT@
