@@ -1,0 +1,39 @@
+The data:
+Structure {
+    Sequence {
+        Structure {
+            Byte LevelWritten__0;
+        } LevelWritten;
+    } LevelWritten;
+    Structure {
+        Sequence {
+            Structure {
+                Float64 Time__0;
+            } Time;
+            Structure {
+                Float64 Concentration__0;
+                Float64 Concentration__1;
+                Float64 Concentration__2;
+                Float64 Concentration__3;
+            } Concentration;
+            Structure {
+                String Species__0;
+            } Species;
+        } Sensor;
+    } Data%20Vgroup;
+} Simple%20Point = { { { { 1 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { { { 4.63534e+07 }, { 2.98, 3.99, 2.63, 1.41 }, { "CO" } }, { { 4.65724e+07 }, { 3.99, 4.52, 2.35, 2.52 }, { "CO2" } }, { { 4.68531e+07 }, { 2.11, 3.1, 4.81, 1.83 }, { "CO" } }, { { 4.74855e+07 }, { 3.39, 3.02, 3.09, 3.9 }, { "CO2" } }, { { 4.80664e+07 }, { 2.06, 4.49, 1.67, 1.74 }, { "O3" } }, { { 4.84744e+07 }, { 1.06, 4.63, 4.44, 3.33 }, { "CO2" } }, { { 4.88663e+07 }, { 2.18, 2.02, 1.41, 1 }, { "O3" } }, { { 4.93882e+07 }, { 3.73, 2, 2.3, 1.46 }, { "O3" } }, { { 4.98581e+07 }, { 2.97, 3.75, 2.33, 5.02 }, { "NOx" } }, { { 5.03704e+07 }, { 4.38, 3.7, 1.96, 3.11 }, { "NOx" } }, { { 5.05154e+07 }, { 0.24, 1.91, 4.33, 1.49 }, { "CO" } }, { { 5.12575e+07 }, { 3.62, 1.4, 0.48, 2.32 }, { "CO2" } }, { { 5.17082e+07 }, { 3.53, 3.16, 2.01, 1.56 }, { "O3" } }, { { 5.18595e+07 }, { 0.62, 0.76, 2.06, 4.01 }, { "O3" } }, { { 5.24333e+07 }, { 1.68, 1.35, 1.71, 4.06 }, { "O3" } } } };
+Structure {
+    Sequence {
+        Structure {
+            Byte LevelWritten__0;
+        } LevelWritten;
+    } LevelWritten;
+} FixedBuoy%20Point = { { { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } } };
+Structure {
+    Sequence {
+        Structure {
+            Byte LevelWritten__0;
+        } LevelWritten;
+    } LevelWritten;
+} FloatBuoy%20Point = { { { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } }, { { 0 } } };
+
