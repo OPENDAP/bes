@@ -11,6 +11,9 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
+// Revision 1.4  1998/02/05 20:14:30  jimg
+// DODS now compiles with gcc 2.8.x
+//
 // Revision 1.3  1997/03/10 22:45:14  jimg
 // Update for 2.12
 //
@@ -23,7 +26,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include <vector.h>
+#include <vector>
+
 #include <mfhdf.h>
 #include <hdfclass.h>
 #include <hcstream.h>

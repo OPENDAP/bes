@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.7 1998/01/09 23:34:42 jimg Exp $
+# $Id: Makefile.in,v 1.8 1998/02/05 20:14:26 jimg Exp $
 
 @SET_MAKE@
 
@@ -11,11 +11,11 @@ DODS_ROOT = ../..
 WWW_ROOT = @WWW_ROOT@
 
 INCS = -I. -I$(DODS_ROOT)/include -Isrc -Ihdfclass/src @INCS@ 
-DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H -DDEBUG -DNO_CACHING -DNO_EXCEPTIONS 
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
-CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall -O0
+CXXFLAGS = @CXXFLAGS@ -Wall -fno-rtti
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
-LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass -lwww @LIBS@
+LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
 
 # Set the instalation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
@@ -114,13 +114,3 @@ depend:
 	cd hdfclass && $(MAKE) $(MFLAGS) depend && cd ..
 
 include dependencies
-
-
-
-
-
-
-
-
-
-

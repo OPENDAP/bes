@@ -11,6 +11,9 @@
 // $RCSfile: hdfutil.cc,v $ - Miscellaneous routines for DODS HDF server
 //
 // $Log: hdfutil.cc,v $
+// Revision 1.4  1998/02/05 20:14:32  jimg
+// DODS now compiles with gcc 2.8.x
+//
 // Revision 1.3  1997/03/10 22:45:56  jimg
 // Update for 2.12
 //
@@ -35,17 +38,20 @@
 #include "hdfutil.h"
 #include "dhdferr.h"
 
+#define SIGNED_BYTE_TO_INT32 1
+
 void *ExportDataForDODS(const hdf_genvec& v) {
     void *rv;			// reminder: rv is an array; must be deleted
 				// with delete[] not delete
 
     switch (v.number_type()) {
+#ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
+#endif
     case DFNT_INT16:
     case DFNT_INT32:
 	rv = v.export_int32();
 	break;
-    case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	rv = v.export_uint32();
@@ -54,6 +60,10 @@ void *ExportDataForDODS(const hdf_genvec& v) {
     case DFNT_FLOAT64: 
 	rv = v.export_float64();
 	break;
+#ifndef SIGNED_BYTE_TO_INT32
+    case DFNT_INT8:
+#endif
+    case DFNT_UINT8:
     case DFNT_UCHAR8:
 	rv = v.export_uchar8();
 	break;
@@ -71,13 +81,14 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
     void *rv;			// reminder: rv is single value, must be
 				// deleted with delete, not delete[]
     switch (v.number_type()) {
+#ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
+#endif
     case DFNT_INT16:
     case DFNT_INT32:
 	rv = (void *)new int32;
 	*((int32 *)rv)= v.elt_int32(i);
 	break;
-    case DFNT_UINT8:
     case DFNT_UINT16:
     case DFNT_UINT32:
 	rv = (void *)new uint32;
@@ -88,6 +99,10 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
 	rv = (void *)new float64;
 	*((float64 *)rv)= v.elt_float64(i);
 	break;
+#ifndef SIGNED_BYTE_TO_INT32
+    case DFNT_INT8:
+#endif
+    case DFNT_UINT8:
     case DFNT_UCHAR8:
 	rv = (void *)new uchar8;
 	*((uchar8 *)rv)= v.elt_uchar8(i);

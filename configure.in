@@ -1,7 +1,7 @@
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.8 1997/10/09 22:19:39 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.9 1998/02/05 20:14:27 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -10,11 +10,7 @@ AC_PREFIX_DEFAULT("\$(DODS_ROOT)")
 dnl DODS_ROOT is the fully qualified pathname to the root of the DODS
 dnl subtree. 
 
-fulldir=`pwd`
-dir=`basename ${fulldir}`
-AC_SUBST(dir)
-dods_root=`echo $fulldir | sed 's@\(.*\)/.*/.*@\1@'`
-AC_DEFINE_UNQUOTED(DODS_ROOT, "$dods_root")
+DODS_GET_DODS_ROOT
 
 dnl `depend' is the command to use to generate dependencies for Makefiles.
 
@@ -22,8 +18,15 @@ depend=${dods_root}/etc/depend.sh
 AC_SUBST(depend)
 
 CFLAGS="-g -O2"
+
 dnl Turn off all optimizations for g++ 2.7.x since this code uses the STL.
-CXXFLAGS="-g -O0"
+DODS_GCC_VERSION
+echo "GCC_VER: $GCC_VER"
+case $GCC_VER in
+    2.8*) CXXFLAGS="-g -O0";;
+    *) CXXFLAGS="-g -O0";;
+esac
+
 dnl GNU ld doesn't need this, but others do.
 LDFLAGS="-g"
 
@@ -47,23 +50,6 @@ DODS_FIND_GPP_INC
 dnl Never use exceptions with this code until 2.8.x is out!
 
 dnl DODS_CHECK_EXCEPTIONS
-
-dnl On both the SGI and the Alpha g++ thinks exceptions work, but they don't, 
-dnl at least not with our HDF code. So, suppress them by removing the
-dnl -fhandle-exceptions flag and defining NO_EXCEPTIONS. NB: $host will be
-dnl set during or before DODS_CHECK_EXCEPTIONS(). This hack will hopefully go
-dnl away after g++-2.8.x comes out. jhrg 11/14/96 
-
-dnl case "$host" in
-dnl     *alpha*|*sgi*) 
-dnl         echo "Exception support being suppressed on this platform!"
-dnl 	CXXFLAGS="-O0"
-dnl 	AC_DEFINE(NO_EXCEPTIONS)
-dnl dnl DEFS="$DEFS -DNO_EXCEPTIONS"
-dnl 	;;
-dnl     *) true
-dnl 	;;
-dnl esac
 
 DODS_OS
 DODS_MACHINE
@@ -101,8 +87,11 @@ AC_CHECK_FUNCS(strerror strtol)
 
 DODS_LIBS
 DODS_HDF_LIBRARY
-DODS_WWW_ROOT
-DODS_FIND_EXPECT
+
+DODS_COMPRESSION_LIB
+DODS_WWW_LIB
+DODS_EXPECT_LIB
+
 DODS_EFENCE
 DODS_DBNEW
 DODS_DEBUG_OPTION

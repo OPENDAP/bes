@@ -1,16 +1,19 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.5 1997/03/27 18:23:30 jimg Exp $
+# $Id: Makefile.in,v 1.6 1998/02/05 20:14:28 jimg Exp $
 
 @SET_MAKE@
 
 DODS_ROOT = ../../../..
+# Added because @INCS@ is expanded to include `-I$(WWW_ROOT)' and without 
+# a definition for that variable g++ is confused. jhrg 2/5/98.
+WWW_ROOT = @WWW_ROOT@
 
 INCS = -I. -I./src @INCS@
-DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DDEBUG -DNO_EXCEPTIONS
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
-CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall
+CXXFLAGS = @CXXFLAGS@ -Wall -fno-rtti
 
 # Set the instalation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
@@ -47,9 +50,6 @@ STRIP = strip
 vpath %.h src
 vpath %.cc src
 
-#vpath %.h ../src
-#vpath %.cc ../src
-
 OBJS = hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o
 
 libhdfclass.a:	$(OBJS)
@@ -75,6 +75,3 @@ depend:
 	src/*.cc
 
 include dependencies
-
-
-

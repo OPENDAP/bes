@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.6  1998/02/05 20:14:32  jimg
+// DODS now compiles with gcc 2.8.x
+//
 // Revision 1.5  1997/12/30 23:55:42  jimg
 // The Dataset name is no longer filtered by id2dods(). Now `.'s in the
 // filename look like dots not `%2e'.
@@ -345,7 +348,7 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
 	// add the attribute and its values to the DAS
 	for (int j=0; j<(int)attv.size(); ++j) {
 	    if (attrtype == "String") 
-		attv[j] = '"' + escattr(attv[j]) + '"';
+		attv[j] = (String)'"' + escattr(attv[j]) + '"';
 	    if (atp->append_attr(id2dods(hav[i].name), attrtype, attv[j]) == 0)
 		THROW(dhdferr_addattr);
 	}

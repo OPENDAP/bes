@@ -9,6 +9,9 @@
 // $RCSfile: genvec.cc,v $ - implementation of HDF generic vector class
 //
 // $Log: genvec.cc,v $
+// Revision 1.2  1998/02/05 20:14:29  jimg
+// DODS now compiles with gcc 2.8.x
+//
 // Revision 1.1  1996/10/31 18:42:56  jimg
 // Added.
 //
@@ -310,12 +313,20 @@ void hdf_genvec::import(int32 nt, const vector<String>& sv) {
 }
 
 // export an hdf_genvec holding uint8 or uchar8 data to a uchar8 array
+// Added export of int8 to uchar8. A bad idea, but needed to fix some
+// clients. The same `fix' has been applied to some other mfuncs that follow.
+// 1/13/98 jhrg.
 uchar8 *hdf_genvec::export_uchar8(void) const {
     uchar8 *rv = 0;
     if (_nt == DFNT_UINT8)
 	ConvertArrayByCast((uint8 *)_data, _nelts, &rv);
     else if (_nt == DFNT_UCHAR8)
 	ConvertArrayByCast((uchar8 *)_data, _nelts, &rv);
+    // Added the following case. jhrg 1/13/98.
+#if 0
+    else if (_nt == DFNT_INT8)
+	ConvertArrayByCast((int8 *)_data, _nelts, &rv);
+#endif
     else 
 	THROW(hcerr_dataexport);
     return rv;
@@ -330,6 +341,11 @@ uchar8 hdf_genvec::elt_uchar8(int i) const  {
 	rv = (uchar8)*((uint8 *)_data+i);
     else if (_nt == DFNT_UCHAR8)
 	rv = *((uchar8 *)_data+i);
+    // Added the following case. 1/13/98 jhrg.
+#if 0
+    else if (_nt == DFNT_INT8)
+	rv = *((int8 *)_data+i);
+#endif
     else
 	THROW(hcerr_dataexport);
     return rv;
@@ -343,6 +359,11 @@ vector<uchar8> hdf_genvec::exportv_uchar8(void) const {
 	ConvertArrayByCast((uint8 *)_data, _nelts, &dtmp);
     else if (_nt == DFNT_UCHAR8)
 	dtmp = (uchar8 *)_data;
+    // Added the following case. 1/13/98 jhrg.
+#if 0
+    else if (_nt == DFNT_INT8)
+	ConvertArrayByCast((int8 *)_data, _nelts, &dtmp);
+#endif
     else
 	THROW(hcerr_dataexport);
     rv = vector<uchar8>(dtmp, dtmp+_nelts);
