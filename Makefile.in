@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.26 2000/10/20 00:10:21 jimg Exp $
+# $Id: Makefile.in,v 1.27 2001/04/02 18:59:56 rmorris Exp $
 
 @SET_MAKE@
 
@@ -17,8 +17,7 @@ CXXFLAGS = @CXXFLAGS@ -Wall
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
 LFLAGS = -8
 YFLAGS = -d -v
-TK_LIBS = @TK_LIBS@
-LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@ $(TK_LIBS)
+LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
 
 # Set the installation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
