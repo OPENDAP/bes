@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.9  1998/09/10 23:11:25  jehamby
+// Fix for SDS not outputting global attributes if no SDS's are in the dataset
+//
 // Revision 1.8  1998/09/10 21:33:24  jehamby
 // Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
 //
@@ -258,7 +261,7 @@ bool hdfistream_sds::bos(void) const {
     if (_filename.length() == 0) // no file open
 	THROW(hcerr_invstream);
     if (_nsds == 0)
-	return false;
+        return true;     // if there are no SDS's we still want to read file attrs so both eos() and bos() are true
     if (_index == -1)
 	return true;
     else
@@ -270,7 +273,7 @@ bool hdfistream_sds::bos(void) const {
 bool hdfistream_sds::eo_attr(void) const {
     if (_filename.length() == 0) // no file open
 	THROW(hcerr_invstream);
-    if (eos())			// if eos(), then always eo_attr()
+    if (eos() && !bos())	// if eos(), then always eo_attr()
 	return true;
     else {
 	if (bos())  // are we at BOS and are positioned past last file attributes?
