@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.5  1998/03/17 18:01:02  jimg
+// Added comments about virtual memory error when compiling
+//
 // Revision 1.4  1997/12/16 01:46:46  jimg
 // Merged release 2.14d changes
 //
@@ -195,6 +198,7 @@ void hdfistream_sds::_seek_arr(const String& name) {
 // public member functions
 //
 
+
 // constructor
 hdfistream_sds::hdfistream_sds(const char *filename) : hdfistream_obj(filename) {
     _init();
@@ -287,6 +291,7 @@ void hdfistream_sds::close(void) { // close file
     return;
 }
 
+
 // position SDS array index to index'th SDS array (not necessarily index'th SDS)
 void hdfistream_sds::seek(int index) {
     if (_filename.length() == 0) // no file open
@@ -348,6 +353,8 @@ void hdfistream_sds::setslab(vector<int> start, vector<int> edge,
     _slab.reduce_rank = reduce_rank;
 }
 
+// This function, when compiled with gcc 2.8 and -O2, causes a virtual
+// memeory exceeded error. 2/25/98 jhrg
 // load currently open SDS into an hdf_sds object	
 hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 
@@ -612,6 +619,8 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_attr& ha) {
     return *this;
 }
 
+// This function, when compiled with gcc 2.8 and -O2, causes a virtual
+// memeory exceeded error. 2/25/98 jhrg
 // read in all the SDS arrays in a file
 hdfistream_sds& hdfistream_sds::operator>>(vector<hdf_sds>& hsv) {
 //    hsv = vector<hdf_sds>0;	// reset vector
@@ -678,3 +687,5 @@ bool hdf_sds::_ok(bool *has_scale) const {
 
     return true;
 }
+
+
