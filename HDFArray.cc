@@ -11,6 +11,9 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
+// Revision 1.5  1998/04/03 18:34:21  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.4  1998/02/05 20:14:30  jimg
 // DODS now compiles with gcc 2.8.x
 //
@@ -46,7 +49,12 @@ void LoadArrayFromSDS(HDFArray *ar, const hdf_sds& sds);
 void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr);
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFArray::read(const String &dataset, int &err)
+bool HDFArray::read(const String &dataset, int &error)
+{
+    return read_tagref(dataset, -1, -1, error);
+}
+
+bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err)
 {
     if (read_p())
 	return true;
@@ -62,33 +70,43 @@ bool HDFArray::read(const String &dataset, int &err)
     vector<int> start, edge, stride;
     bool isslab = GetSlabConstraint(start, edge, stride);
 
+    if (tag==-1 || tag==DFTAG_NDG) {
 #ifdef NO_EXCEPTIONS
-    if (SDSExists(hdf_file.chars(), hdf_name.chars())) {
+      if (SDSExists(hdf_file.chars(), hdf_name.chars())) {
 #else
-    try {
+      try {
 #endif
 	hdfistream_sds sdsin(hdf_file.chars());
-	sdsin.seek(hdf_name.chars());
+	if(ref != -1)
+	  sdsin.seek_ref(ref);
+	else
+	  sdsin.seek(hdf_name.chars());
 	if (isslab)
-	    sdsin.setslab(start, edge, stride, false);
+	  sdsin.setslab(start, edge, stride, false);
 	sdsin >> sds;
 	sdsin.close();
 	foundsds = true;
-    }
+      }
 #ifndef NO_EXCEPTIONS
-    catch(...) {}
+      catch(...) {}
+#else
+      }
 #endif
+    }
 
     bool foundgr = false;
     hdf_gri gr;
-    if (!foundsds)  {
+    if (!foundsds && (tag==-1 || tag==DFTAG_VG))  {
 #ifdef NO_EXCEPTIONS
 	if (GRExists(hdf_file.chars(), hdf_name.chars())) {
 #else
         try {
 #endif
 	    hdfistream_gri grin(hdf_file.chars());
-	    grin.seek(hdf_name.chars());
+	    if(ref != -1)
+	      grin.seek_ref(ref);
+	    else
+	      grin.seek(hdf_name.chars());
 	    grin >> gr;
 	    grin.close();
 	    foundgr = true;

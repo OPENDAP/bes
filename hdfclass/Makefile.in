@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.6 1998/02/05 20:14:28 jimg Exp $
+# $Id: Makefile.in,v 1.7 1998/04/03 18:34:16 jimg Exp $
 
 @SET_MAKE@
 
@@ -13,7 +13,7 @@ WWW_ROOT = @WWW_ROOT@
 INCS = -I. -I./src @INCS@
 DEFS = @DEFS@ -DUSE_LIBGXX_INLINES
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
-CXXFLAGS = @CXXFLAGS@ -Wall -fno-rtti
+CXXFLAGS = @CXXFLAGS@ -Wall
 
 # Set the instalation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
@@ -50,7 +50,7 @@ STRIP = strip
 vpath %.h src
 vpath %.cc src
 
-OBJS = hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o
+OBJS = hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o vgroup.o
 
 libhdfclass.a:	$(OBJS)
 	$(AR) ru libhdfclass.a $(OBJS)

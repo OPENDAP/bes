@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.7  1998/04/03 18:34:19  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.6  1998/03/26 00:29:34  jimg
 // Fixed bug in _ok() where has_scale was incorrectly dereferenced. The pointer
 // was supposed to be tested and then dereferenced, but instead was dereferenced
@@ -197,7 +200,24 @@ void hdfistream_sds::_seek_arr(const String& name) {
     _index = index;
     return;
 }
-	
+
+// find the SDS array with specified ref
+void hdfistream_sds::_seek_arr_ref(int ref) {
+    int index;
+
+    if ( (index = SDreftoindex(_file_id, ref)) < 0)
+	THROW(hcerr_sdsfind);
+    if ( (_sds_id = SDselect(_file_id, index)) < 0)
+	THROW(hcerr_sdsopen);
+    bool iscoord = SDiscoordvar(_sds_id);
+    if (iscoord) {
+	SDendaccess(_sds_id);
+	_sds_id = 0;
+	THROW(hcerr_sdsfind);
+    }
+    _index = index;
+    return;
+}
     
 //
 // public member functions
@@ -334,6 +354,16 @@ void hdfistream_sds::seek_next(void) {
 	_get_sdsinfo();
 }
 
+// position to SDS array by ref
+void hdfistream_sds::seek_ref(int ref) {
+    if (_filename.length() == 0) // no file open
+	THROW(hcerr_invstream);
+    _close_sds();		// close any currently open SDS
+    _seek_arr_ref(ref);		// seek to SDS array by reference
+    if (!eos() && !bos())	// if not BOS or EOS, get SDS information
+	_get_sdsinfo();
+}
+
 // set slab parameters
 void hdfistream_sds::setslab(vector<int> start, vector<int> edge, 
 			     vector<int> stride, bool reduce_rank) {
@@ -385,6 +415,8 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
     if (SDgetinfo(_sds_id, name, &rank, dim_sizes, &number_type, &nattrs) < 0)
 	THROW(hcerr_sdsinfo);
     
+    // assign SDS index
+    hs.ref = SDidtoref(_sds_id);
     // load dimensions and attributes into the appropriate objects
     *this >> hs.dims;	
     *this >> hs.attrs;	

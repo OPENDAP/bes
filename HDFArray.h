@@ -11,6 +11,9 @@
 // $RCSfile: HDFArray.h,v $ - HDFArray class declaration
 //
 // $Log: HDFArray.h,v $
+// Revision 1.4  1998/04/03 18:34:21  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.3  1997/03/10 22:45:16  jimg
 // Update for 2.12
 //
@@ -34,6 +37,7 @@ typedef string String;
 
 // DODS includes
 #include "Array.h"
+#include <hdf.h>
 
 class HDFArray: public Array {
 public:
@@ -43,6 +47,7 @@ public:
     virtual bool read(const String &dataset, int &error);
     bool GetSlabConstraint(vector<int>& start_array, vector<int>& edge_array, 
 			   vector<int>& stride_array);
+    bool read_tagref(const String &datset, int32 tag, int32 ref, int &error);
 };
 
 Array *NewArray(const String &n, BaseType *v);

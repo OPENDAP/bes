@@ -12,6 +12,9 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.6  1998/04/03 18:34:27  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.5  1998/02/05 20:14:31  jimg
 // DODS now compiles with gcc 2.8.x
 //
@@ -56,6 +59,7 @@ typedef string String;
 // HDF and HDFClass includes
 #include <mfhdf.h>
 #include <hdfclass.h>
+#include <hcstream.h>
 
 // DODS/HDF includes
 #include "HDFInt32.h"
@@ -69,6 +73,7 @@ typedef string String;
 #include "hdfutil.h"
 #include "dodsutil.h"
 #include "dhdferr.h"
+#include "hdf-maps.h"
 
 #include "HDFUInt32.h"
 
@@ -154,6 +159,61 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
     return seq;
 }
 
+
+// Create a DAP HDFStructure from an hdf_vgroup.
+HDFStructure *NewStructureFromVgroup(const hdf_vgroup& vg, vg_map& vgmap,
+			     sds_map& sdmap, vd_map& vdmap, gr_map& grmap) {
+    // check to make sure hdf_vgroup object is set up properly
+    if (vg.name.length() == 0)		// Vgroup must have a name
+	return 0;
+    if (!vg )	                        // Vgroup must have some tagrefs
+	return 0;
+    
+    // construct HDFStructure
+    HDFStructure *str = new HDFStructure(id2dods(vg.name));
+    if (str == 0)
+	return 0;
+    bool nonempty = false;
+    // step through each tagref and copy its contents to DAP
+    for (int i=0; i<(int)vg.tags.size(); ++i) {
+        int32 tag = vg.tags[i];
+	int32 ref = vg.refs[i];
+	BaseType *bt = 0;
+	switch(tag) {
+	case DFTAG_VH:
+	  bt = NewSequenceFromVdata(vdmap[ref].vdata);
+	  break;
+	case DFTAG_NDG:
+	  if(sdmap[ref].sds.has_scale()) {
+	    bt = NewGridFromSDS(sdmap[ref].sds);
+	  } else {
+	    bt = NewArrayFromSDS(sdmap[ref].sds);
+	  }
+	  break;
+	case DFTAG_VG:
+	  // GR's are also stored as Vgroups
+	  if(grmap.find(ref) != grmap.end())
+	    bt = NewArrayFromGR(grmap[ref].gri);
+	  else
+	    bt = NewStructureFromVgroup(vgmap[ref].vgroup, vgmap, sdmap, vdmap,
+					grmap);
+	  break;
+	default:
+	  cerr << "Error: Unknown vgroup child: " << tag << endl;
+	  break;
+	}
+	if(bt) {
+	  str->add_var(bt);	// *st now manages *bt
+	  nonempty = true;
+	}
+    }
+    if(nonempty) {
+      return str;
+    } else {
+      delete str;
+      return 0;
+    }
+}
 
 // Create a DAP HDFArray out of the primary array in an hdf_sds
 HDFArray *NewArrayFromSDS(const hdf_sds& sds) {
@@ -246,7 +306,6 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
 	gr->add_var(dmar, maps); // add dimension map to grid; 
 				 // gr now manages dmar
     }
-
     return gr;
 }
 
@@ -407,8 +466,8 @@ void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
 
 	// Check to make sure the number of field components of the Structure
 	// and the hdf_field object match
-//	if (stru->nvars() != vf->vals.size()
-//	    THROW(dhdferr_consist);
+	//if (stru->nvars() != vf->vals.size()
+	//    THROW(dhdferr_consist);
 
 	LoadStructureFromField(stru, *vf, row);
 	stru->set_read_p(true);
@@ -453,3 +512,39 @@ void LoadStructureFromField(HDFStructure *stru, const hdf_field& f, int row) {
     return;
 }
 
+// Load an HDFStructure with the contents of a vgroup.
+void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
+			     const String& hdf_file) {
+  int i=0;
+  for (Pix q=str->first_var(); q!=0; str->next_var(q), ++i) {
+    BaseType *p = str->var(q);
+    if(!p->send_p()) {  // skip data objects not going to be sent
+      continue;
+    }
+    int32 tag = vg.tags[i];
+    int32 ref = vg.refs[i];
+
+    int err;
+    bool status;
+    switch(tag) {
+    case DFTAG_VH:
+      status = (dynamic_cast<HDFSequence*>(p))->read_ref(hdf_file, ref, err);
+      break;
+    case DFTAG_NDG:
+      if(p->type_name() == "Grid")
+	status = (dynamic_cast<HDFGrid*>(p))->read_ref(hdf_file, ref, err);
+      else
+	status = (dynamic_cast<HDFArray*>(p))->read_tagref(hdf_file, tag, ref, err);
+      break;
+    case DFTAG_VG:
+      if(p->type_name() == "Structure")
+	status = (dynamic_cast<HDFStructure*>(p))->read_ref(hdf_file, ref, err);
+      else
+	status = (dynamic_cast<HDFArray*>(p))->read_tagref(hdf_file, tag, ref, err);
+      break;
+    default:
+      cerr << "Error: Unknown vgroup child: " << tag << endl;
+      break;
+    }
+  }
+}

@@ -11,6 +11,9 @@
 // $RCSfile: HDFStructure.h,v $ - HDFStructure class declarations
 //
 // $Log: HDFStructure.h,v $
+// Revision 1.4  1998/04/03 18:34:24  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.3  1997/03/10 22:45:39  jimg
 // Update for 2.12
 //
@@ -30,6 +33,7 @@ typedef string String;
 
 // DODS includes
 #include "Structure.h"
+#include <hdf.h>
 
 class HDFStructure: public Structure {
 public:
@@ -37,6 +41,8 @@ public:
     virtual ~HDFStructure();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &, int &);
+    virtual bool read_ref(const String &dataset, int32 ref, int &error);
+    virtual void set_read_p(bool state);
 //    virtual int nvars(void) { return _vars.length(); }
 };
 

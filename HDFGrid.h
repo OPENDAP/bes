@@ -11,6 +11,9 @@
 // $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
 //
 // $Log: HDFGrid.h,v $
+// Revision 1.4  1998/04/03 18:34:23  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.3  1997/03/10 22:45:27  jimg
 // Update for 2.12
 //
@@ -33,6 +36,7 @@ typedef string String;
 
 // DODS includes
 #include "Grid.h"
+#include <hdf.h>
 
 class HDFGrid: public Grid {
 public:
@@ -40,6 +44,7 @@ public:
     virtual ~HDFGrid();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &dataset, int &);
+    virtual bool read_ref(const String &dataset, int32 ref, int &error);
 };
 
 Grid *NewGrid(const String &n);

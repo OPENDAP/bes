@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.h,v $ - HDFSequence class declaration
 //
 // $Log: HDFSequence.h,v $
+// Revision 1.4  1998/04/03 18:34:24  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.3  1997/03/10 22:45:36  jimg
 // Update for 2.12
 //
@@ -33,6 +36,7 @@ typedef string String;
 
 // DODS includes
 #include "Sequence.h"
+#include <hdf.h>
 
 class HDFSequence: public Sequence {
 public:
@@ -40,6 +44,10 @@ public:
     virtual ~HDFSequence();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &, int &);
+    virtual bool read_ref(const String &dataset, int32 ref, int &error);
+protected:
+    int row;         // current row
+    hdf_vdata vd;    // holds Vdata
 };
 
 Sequence *NewSequence(const String &n);

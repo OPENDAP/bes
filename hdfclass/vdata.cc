@@ -9,6 +9,9 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.2  1998/04/03 18:34:19  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.1  1996/10/31 18:43:07  jimg
 // Added.
 //
@@ -55,7 +58,7 @@ static bool IsInternalVdata(int32 fid, int32 ref);
 void hdfistream_vdata::_init(void) {
     _vdata_id = _index = 0;
     _meta = false;
-    _vdata_refs = vector<int32>();
+    _vdata_refs.clear();
     _recs.set = false;
     return;
 }
@@ -149,7 +152,7 @@ void hdfistream_vdata::close(void) {
 	Hclose(_file_id);
     }
     _vdata_id = _file_id = _index = 0;
-    _vdata_refs = vector<int32>(); // clear refs
+    _vdata_refs.clear(); // clear refs
     _recs.set = false;
     return;
 }
@@ -159,6 +162,11 @@ void hdfistream_vdata::seek(int index) {
 	THROW(hcerr_range);
     _seek(_vdata_refs[index]);
     _index = index;
+    return;
+}
+
+void hdfistream_vdata::seek_ref(int ref) {
+    _seek(ref);  // _seek() sets _index
     return;
 }
 
@@ -210,7 +218,7 @@ hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_vdata>& hvv) {
 hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
 
     // delete any previous data in hv
-    hv.fields = vector<hdf_field>();
+    hv.fields.clear();
     hv.vclass = hv.name = String();
 
     if (_vdata_id == 0)
@@ -218,6 +226,8 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
     if (eos())
 	return *this;
 
+    // assign Vdata ref
+    hv.ref = _vdata_refs[_index];
     // retrieve Vdata name, class, number of records
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];

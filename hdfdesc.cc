@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.7  1998/04/03 18:34:28  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.6  1998/02/05 20:14:32  jimg
 // DODS now compiles with gcc 2.8.x
 //
@@ -70,6 +73,7 @@ typedef string String;
 #include "HDFGrid.h"
 #include "dodsutil.h"
 #include "hdf-dods.h"
+#include "hdf-maps.h"
 
 #ifdef __GNUG__			// force template instantiation due to g++ bug
 template class vector<hdf_attr>;
@@ -93,22 +97,16 @@ String num2string(T n) {
     return (String)buf;
 }
 
-
-extern HDFGrid *NewGridFromSDS(const hdf_sds& sds);
-extern HDFArray *NewArrayFromSDS(const hdf_sds& sds);
-extern HDFArray *NewArrayFromGR(const hdf_gri& gr);
-extern HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd);
-extern BaseType *NewDAPVar(int32 hdf_type);
-extern String DAPTypeName(int32 hdf_type);
-
 void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav);
 void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv);
 
 static void update_descriptions(const String& filename);
 static void build_descriptions(DDS& dds, DAS& das, const String& filename);
-static void SDS_descriptions(DDS& dds, DAS& das, const String& filename);
-static void Vdata_descriptions(DDS& dds, const String& filename);
-static void GR_descriptions(DDS& dds, DAS& das, const String& filename);
+static void SDS_descriptions(sds_map& map, DAS& das, const String& filename);
+static void Vdata_descriptions(vd_map& map, const String& filename);
+static void Vgroup_descriptions(DDS& dds, const String& filename,
+				sds_map& sdmap, vd_map& vdmap, gr_map& grmap);
+static void GR_descriptions(gr_map& map, DAS& das, const String& filename);
 static void FileAnnot_descriptions(DAS& das, const String& filename);
 static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv);
 static vector<hdf_attr> Dims2Attrs(const hdf_dim dim);
@@ -182,24 +180,30 @@ static void update_descriptions(const String& filename) {
 
 // Scan the HDF file and build the DDS and DAS
 static void build_descriptions(DDS& dds, DAS& das, const String& filename) {
+    sds_map sdsmap;
+    vd_map vdatamap;
+    gr_map grmap;
 
     // Build descriptions of SDS items
-    SDS_descriptions(dds, das, filename);
+    SDS_descriptions(sdsmap, das, filename);
 
     // Build descriptions of file annotations
     FileAnnot_descriptions(das, filename);
 
     // Build descriptions of Vdatas
-    Vdata_descriptions(dds, filename);
+    Vdata_descriptions(vdatamap, filename);
 
     // Build descriptions of General Rasters
-    GR_descriptions(dds, das, filename);
+    GR_descriptions(grmap, das, filename);
+
+    // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
+    Vgroup_descriptions(dds, filename, sdsmap, vdatamap, grmap);
 
     return;
 }
 
 // Read SDS's out of filename, build descriptions and put them into dds, das.
-static void SDS_descriptions(DDS& dds, DAS& das, const String& filename) {
+static void SDS_descriptions(sds_map& map, DAS& das, const String& filename) {
 
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
@@ -210,31 +214,25 @@ static void SDS_descriptions(DDS& dds, DAS& das, const String& filename) {
 
     // Read SDS's 
     sdsin.rewind();
-    vector<hdf_sds>sdslist;
-    sdsin >> sdslist;
+    while (!sdsin.eos()) {
+      sds_info sdi;  // add the next sds_info to map
+      sdsin >> sdi.sds;
+      sdi.in_vgroup = false; // assume we're not part of a vgroup
+      map[sdi.sds.ref] = sdi; // assign to map by ref
+    }
 
     sdsin.close();
-
-    // Build DDS
-    BaseType *pbt = 0;
-    for (int i=0; i<(int)sdslist.size(); ++i) {
-	if (sdslist[i].has_scale()) // make a grid
-	    pbt = NewGridFromSDS(sdslist[i]);
-	else
-	    pbt = NewArrayFromSDS(sdslist[i]);
-	if (pbt != 0)
-	    dds.add_var(pbt);
-    }
 
     // Build DAS
     AddHDFAttr(das, String("HDF_GLOBAL"), fileattrs);// add SDS file attributes
     // add each SDS's attrs
     vector<hdf_attr> dattrs;
-    for (int j=0; j<(int)sdslist.size(); ++j) {
-      AddHDFAttr(das, id2dods(sdslist[j].name), sdslist[j].attrs);
-      for (int k=0; k<(int)sdslist[j].dims.size(); ++k) {
-	dattrs = Dims2Attrs(sdslist[j].dims[k]);
-	AddHDFAttr(das,id2dods(sdslist[j].name)+"_dim_"+num2string(k),dattrs);
+    for (SDSI s=map.begin(); s!=map.end(); ++s) {
+      const hdf_sds *sds = &s->second.sds;
+      AddHDFAttr(das, id2dods(sds->name), sds->attrs);
+      for (int k=0; k<(int)sds->dims.size(); ++k) {
+	dattrs = Dims2Attrs(sds->dims[k]);
+	AddHDFAttr(das,id2dods(sds->name)+"_dim_"+num2string(k),dattrs);
       }
 //    ADDHDFAttr(das, id2dods(sdslist[j].name), sdslist[j].annots);
     }
@@ -242,29 +240,106 @@ static void SDS_descriptions(DDS& dds, DAS& das, const String& filename) {
 }
 
 // Read Vdata's out of filename, build descriptions and put them into dds.
-static void Vdata_descriptions(DDS& dds, const String& filename) {
+static void Vdata_descriptions(vd_map& map, const String& filename) {
 
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
 
     // Read Vdata's 
-    vector<hdf_vdata>vdlist;
-    vdin >> vdlist;
-
-    vdin.close();
-
-    // Build DDS
-    BaseType *pbt = 0;
-    for (int i=0; i<(int)vdlist.size(); ++i) {
-	pbt = NewSequenceFromVdata(vdlist[i]);
-	if (pbt != 0)
-	    dds.add_var(pbt);
+    while (!vdin.eos()) {
+      vd_info vdi;  // add the next vd_info to map
+      vdin >> vdi.vdata;
+      vdi.in_vgroup = false; // assume we're not part of a vgroup
+      map[vdi.vdata.ref] = vdi; // assign to map by ref
     }
+    vdin.close();
 
     return;
 }
 
-static void GR_descriptions(DDS& dds, DAS& das, const String& filename) {
+// Read Vgroup's out of filename, build descriptions and put them into dds.
+static void Vgroup_descriptions(DDS& dds, const String& filename,
+				sds_map& sdmap, vd_map& vdmap, gr_map& grmap) {
+    hdfistream_vgroup vgin(filename);
+
+    // Read Vgroup's 
+    vg_map vgmap;
+    while (!vgin.eos()) {
+      vg_info vgi;    // add the next vg_info to map
+      vgin >> vgi.vgroup; // read vgroup itself
+      vgi.toplevel = true;  // assume toplevel until we prove otherwise
+      vgmap[vgi.vgroup.ref] = vgi; // assign to map by vgroup ref
+    }
+    vgin.close();
+    // for each vgroup, assign children
+    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+      const hdf_vgroup *vg = &v->second.vgroup;
+      for(uint32 i=0; i<vg->tags.size(); i++) {
+	int32 tag = vg->tags[i];
+	int32 ref = vg->refs[i];
+	switch(tag) {
+	case DFTAG_VG:
+	  // Could be a GRI or a Vgroup
+	  if(grmap.find(ref) != grmap.end())
+	    grmap[ref].in_vgroup = true;
+	  else
+	    vgmap[ref].toplevel = false;
+	  break;
+	case DFTAG_VH:
+	  vdmap[ref].in_vgroup = true;
+	  break;
+	case DFTAG_NDG:
+	  sdmap[ref].in_vgroup = true;
+	  break;
+	default:
+	  cerr << "unknown tag: " << tag << " ref: " << ref << endl;
+	}
+      }
+    }
+
+    // Build DDS for all toplevel vgroups
+    BaseType *pbt = 0;
+    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+      if(!v->second.toplevel)
+	continue;   // skip over non-toplevel vgroups
+      pbt = NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap, grmap);
+      if (pbt != 0) {
+	dds.add_var(pbt);
+      }
+    }
+
+    // add lone SDS's
+    for(SDSI s=sdmap.begin(); s!=sdmap.end(); ++s) {
+      if(s->second.in_vgroup)
+	continue;  // skip over SDS's in vgroups
+      if (s->second.sds.has_scale()) // make a grid
+	pbt = NewGridFromSDS(s->second.sds);
+      else
+	pbt = NewArrayFromSDS(s->second.sds);
+      if (pbt != 0)
+	dds.add_var(pbt);
+    }
+
+    // add lone Vdata's
+    for(VDI v=vdmap.begin(); v!=vdmap.end(); ++v) {
+      if(v->second.in_vgroup)
+	continue;  // skip over Vdata in vgroups
+      pbt = NewSequenceFromVdata(v->second.vdata);
+      if (pbt != 0)
+	dds.add_var(pbt);
+    }
+
+    // add lone GR's
+    for(GRI g=grmap.begin(); g!=grmap.end(); ++g) {
+      if(g->second.in_vgroup)
+	continue;  // skip over GRs in vgroups
+      pbt = NewArrayFromGR(g->second.gri);
+      if (pbt != 0)
+	dds.add_var(pbt);
+    }
+}
+
+static void GR_descriptions(gr_map& map, DAS& das, const String& filename) {
 
     hdfistream_gri grin(filename);
     grin.setmeta(true);
@@ -275,32 +350,28 @@ static void GR_descriptions(DDS& dds, DAS& das, const String& filename) {
 
     // Read general rasters
     grin.rewind();
-    vector<hdf_gri>grlist;
-    grin >> grlist;
+    while (!grin.eos()) {
+      gr_info gri;  // add the next gr_info to map
+      grin >> gri.gri;
+      gri.in_vgroup = false; // assume we're not part of a vgroup
+      map[gri.gri.ref] = gri; // assign to map by ref
+    }
 
     grin.close();
-
-    // Build DDS
-    BaseType *pbt = 0;
-    for (int i=0; i<(int)grlist.size(); ++i) {
-	pbt = NewArrayFromGR(grlist[i]);
-	if (pbt != 0)
-	    dds.add_var(pbt);
-    }
 
     // Build DAS
     AddHDFAttr(das, String("HDF_GLOBAL"), fileattrs);// add GR file attributes
 
     // add each GR's attrs
     vector<hdf_attr> pattrs;
-    for (int j=0; j<(int)grlist.size(); ++j) {
-
+    for (GRI g=map.begin(); g!=map.end(); ++g) {
+        const hdf_gri *gri = &g->second.gri;
 	// add GR attributes 
-	AddHDFAttr(das, id2dods(grlist[j].name), grlist[j].attrs);
+	AddHDFAttr(das, id2dods(gri->name), gri->attrs);
 
 	// add palettes as attributes
-	pattrs = Pals2Attrs(grlist[j].palettes);
-	AddHDFAttr(das, id2dods(grlist[j].name), pattrs);
+	pattrs = Pals2Attrs(gri->palettes);
+	AddHDFAttr(das, id2dods(gri->name), pattrs);
 
     }
 

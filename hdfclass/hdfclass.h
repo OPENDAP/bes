@@ -12,6 +12,9 @@
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
 // $Log: hdfclass.h,v $
+// Revision 1.2  1998/04/03 18:34:18  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.1  1996/10/31 18:43:03  jimg
 // Added.
 //
@@ -180,6 +183,7 @@ class hdf_sds {
 public:
     bool operator!(void) const { return !_ok(); }
     bool has_scale(void) const;	// does this SDS have a dim scale?
+    int32 ref;                // ref number of SDS
     String name;
     vector<hdf_dim> dims;	// dimensions and dimension scales
     hdf_genvec data;		// data stored in SDS
@@ -201,11 +205,25 @@ protected:
 class hdf_vdata {
 public:
     bool operator!(void) const { return !_ok(); }
+    int32 ref;                  // ref number
     String name;		// name of vdata
     String vclass;		// class name of vdata
     vector<hdf_field> fields;
 protected:
     bool _ok(void) const;	// is this hdf_vdata correctly initialized?
+};
+
+// Vgroup class
+class hdf_vgroup {
+public:
+  bool operator!(void) const { return !_ok(); }
+  int32 ref;                    // ref number of vgroup
+  String name;                  // name of vgroup
+  String vclass;                // class name of vgroup
+  vector<int32> tags;           // vector of tags inside vgroup
+  vector<int32> refs;           // vector of refs inside vgroup
+protected:
+  bool _ok(void) const;         // is this hdf_vgroup correctly initialized?
 };
 
 // Palette container class 
@@ -220,6 +238,7 @@ public:
 // Raster container class based on the gernal raster image (GR API)
 class hdf_gri {
 public:
+    int32 ref;                    // ref number of raster
     String name;
     vector<hdf_palette> palettes; // vector of associated palettes
     vector<hdf_attr> attrs;       // vector of attributes

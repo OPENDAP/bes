@@ -29,11 +29,12 @@ Support for HDF data types:
                   values of type "String" attached to the fake DAP
                   variable named "HDF_ANNOT".  HDF annotations on
                   objects are currently not read by the server. 
-    Vgroups:      Vgroups are not supported yet.  All objects in a
-                  Vgroup are treated as if they were lone objects.
-                  When Vgroup support is added, it is likely that
-                  Vgroups will be encoded as DAP attributes on
-                  objects. 
+    Vgroups:      Vgroups are straight-forwardly mapped to DODS
+                  Structures.  This is a new feature of DODS-2.15 and
+                  may still contain bugs, although it has been tested
+                  thoroughly.  Note that Vgroups are *not* implemented
+                  as DAP attributes, as the previous version of this
+                  README predicted.
 
 Special characters in HDF identifiers:
   - A number of non-alphanumeric characters (e.g., space, #, +, -)
@@ -86,10 +87,11 @@ Handling of global attributes:
 
 Tested platforms:
   - This software has been tested under SGI IRIX 5.3 and Sun Solaris
-    2.5.  It should in principle work under other flavors of Unix.
+    2.6.  It should in principle work under other flavors of Unix.
 
 
 Todd Karakashian (Todd.K.Karakashian@jpl.nasa.gov)
 Isaac Henry (ike@seanet.jpl.nasa.gov)
+Jake Hamby (Jake.Hamby@jpl.nasa.gov)
 
-NASA/JPL October 1996
+NASA/JPL April 1998

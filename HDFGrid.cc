@@ -11,6 +11,9 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
+// Revision 1.4  1998/04/03 18:34:22  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.3  1997/03/10 22:45:25  jimg
 // Update for 2.12
 //
@@ -40,6 +43,10 @@ void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds);
 
 // Read in a Grid from an SDS in an HDF file.
 bool HDFGrid::read(const String& dataset, int& err) {
+  return read_ref(dataset, -1, err);
+}
+
+bool HDFGrid::read_ref(const String& dataset, int32 ref, int& err) {
     err = -1;			// OK initially
 
     String hdf_file = dods2id(dataset);
@@ -59,7 +66,10 @@ bool HDFGrid::read(const String& dataset, int& err) {
     try {
 #endif
 	hdfistream_sds sdsin(hdf_file.chars());
-	sdsin.seek(hdf_name.chars());
+	if(ref != -1)
+	  sdsin.seek_ref(ref);
+	else
+	  sdsin.seek(hdf_name.chars());
 	if (isslab)
 	    sdsin.setslab(start, edge, stride, false);
 	sdsin >> sds;

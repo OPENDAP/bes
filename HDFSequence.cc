@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.6  1998/04/03 18:34:23  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.5  1998/02/19 19:56:07  jimg
 // Fixed an error where attempting to read past the last row of a vdata caused
 // an error. It now returns false with error set to false (indicating no error).
@@ -39,7 +42,7 @@
 #include "dhdferr.h"
 #include "dodsutil.h"
 
-HDFSequence::HDFSequence(const String &n = (char *)0) : Sequence(n) {
+HDFSequence::HDFSequence(const String &n = (char *)0) : Sequence(n), row(0) {
     set_level(0);
 }
 HDFSequence::~HDFSequence() {}
@@ -50,10 +53,11 @@ Sequence *NewSequence(const String &n) { return new HDFSequence(n); }
 
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 
-bool HDFSequence::read(const String& dataset, int& err) { 
+bool HDFSequence::read(const String& dataset, int& err) {
+  return read_ref(dataset, -1, err);
+}
 
-    static int row = 0;		// current row
-    static hdf_vdata vd;	// holds Vdata
+bool HDFSequence::read_ref(const String& dataset, int32 ref, int& err) { 
 
     String hdf_file = dods2id(dataset);
     String hdf_name = dods2id(this->name());
@@ -61,7 +65,10 @@ bool HDFSequence::read(const String& dataset, int& err) {
     // check to see if vd is empty; if so, read in Vdata
     if (vd.name.length() == 0) {
 	hdfistream_vdata vin(hdf_file.chars());
-	vin.seek(hdf_name.chars());
+	if(ref != -1)
+	  vin.seek_ref(ref);
+	else
+	  vin.seek(hdf_name.chars());
 	vin >> vd;
 	vin.close();
 	if (!vd) {		// something is wrong

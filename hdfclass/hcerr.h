@@ -12,6 +12,9 @@
 // $RCSfile: hcerr.h,v $ - error handling for HDFclass library
 // 
 // $Log: hcerr.h,v $
+// Revision 1.2  1998/04/03 18:34:17  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.1  1996/10/31 18:43:00  jimg
 // Added.
 //
@@ -239,6 +242,30 @@ public:
     hcerr_vdataseek(const char *file, int line): 
 	hcerr("Could not seek to first Vdata record.", file, line) {}
 }; // if VSseek() fails
+
+class hcerr_vgroupopen: public hcerr {
+public:
+    hcerr_vgroupopen(const char *file, int line): 
+	hcerr("Could not open a Vgroup.", file, line) {}
+}; // if Vattach() fails
+
+class hcerr_vgroupinfo: public hcerr {
+public:
+    hcerr_vgroupinfo(const char *file, int line): 
+	hcerr("Could not obtain information about a Vgroup.", file, line) {}
+}; // if Vinquire() fails
+
+class hcerr_vgroupfind: public hcerr {
+public:
+    hcerr_vgroupfind(const char *file, int line): 
+	hcerr("Could not locate Vgroup in the HDF file.", file, line) {}
+}; // if Vfind() fails
+
+class hcerr_vgroupread: public hcerr {
+public:
+    hcerr_vgroupread(const char *file, int line): 
+	hcerr("Could not read Vgroup records.", file, line) {}
+}; // if Vgettagref() fails
 
 class hcerr_griinfo: public hcerr {
 public:

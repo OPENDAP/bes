@@ -12,6 +12,9 @@
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
 // $Log: hcstream.h,v $
+// Revision 1.2  1998/04/03 18:34:18  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.1  1996/10/31 18:43:01  jimg
 // Added.
 //
@@ -95,6 +98,7 @@ public:
     virtual void seek(int index=0);    // seek the index'th SDS array
     virtual void seek(const char *name); // seek the SDS array by name
     virtual void seek_next(void);	 // seek the next SDS array
+    virtual void seek_ref(int ref);      // seek the SDS array by ref
     virtual void rewind(void);      // position in front of first SDS
     virtual bool bos(void) const;      // positioned in front of the first SDS?
     virtual bool eos(void) const;      // positioned past the last SDS?
@@ -120,6 +124,7 @@ protected:
     void _seek_next_arr(void);	// find the next SDS array in the stream
     void _seek_arr(int index);	// find the index'th SDS array in the stream
     void _seek_arr(const String& name);	// find the SDS array w/ specified name
+    void _seek_arr_ref(int ref); // find the SDS array in the stream by ref
     void _rewind(void) { _index = -1; _attr_index = _dim_index = 0; }
 				// position to the beginning of the stream
     static const String long_name; // label
@@ -193,6 +198,7 @@ public:
     virtual void seek(const char *name); // seek the Vdata by name
     virtual void seek(const String& name); // seek the Vdata by name
     virtual void seek_next(void) { _seek_next(); } // seek the next Vdata in file
+    virtual void seek_ref(int ref);        // seek the Vdata by ref
     virtual void rewind(void) { _rewind(); } // position in front of first Vdata
     virtual bool bos(void) const    // positioned in front of the first Vdata?
 	{ return (_index <= 0); }
@@ -223,6 +229,47 @@ protected:
     } _recs;
 };
 
+class hdfistream_vgroup : public hdfistream_obj {
+public:
+    hdfistream_vgroup(const char *filename=0);
+    hdfistream_vgroup(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
+    virtual ~hdfistream_vgroup(void) { _del(); }
+    void operator=(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
+    virtual void open(const char *filename); // open stream, seek to BOS
+    virtual void open(const String& filename); // open stream, seek to BOS
+    virtual void close(void);	       // close stream
+    virtual void seek(int index=0);    // seek the index'th Vgroup
+    virtual void seek(const char *name); // seek the Vgroup by name
+    virtual void seek(const String& name); // seek the Vgroup by name
+    virtual void seek_next(void) { _seek_next(); } // seek the next Vgroup in file
+    virtual void seek_ref(int ref);      // seek the Vgroup by ref
+    virtual void rewind(void) { _rewind(); } // position in front of first Vgroup
+    virtual bool bos(void) const    // positioned in front of the first Vgroup?
+	{ return (_index <= 0); }
+    virtual bool eos(void) const      // positioned past the last Vgroup?
+	{ return (_index >= (int)_vgroup_refs.size()); }
+    void setmeta(bool val) { _meta = val; }  // set metadata loading
+    hdfistream_vgroup& operator>>(hdf_vgroup& hs);	       // read a Vgroup
+    hdfistream_vgroup& operator>>(vector<hdf_vgroup>& hsv);  // read all Vgroup's
+protected:
+    void _init(void);
+    void _del(void) { close(); }
+    void _get_fileinfo(void);	// get Vgroup info for the current file
+    void _seek_next(void); // find the next Vgroup in the stream
+    void _seek(const char *name); // find the Vgroup w/ specified name
+    void _seek(int32 ref); // find the index'th Vgroup in the stream
+    void _rewind(void)  // position to beginning of the stream
+	{ _index = 0; if (_vgroup_refs.size() > 0) _seek(_vgroup_refs[0]); }
+    int32 _vgroup_id;	     // handle of open object in annotation interface
+    bool _meta;
+    vector<int32> _vgroup_refs;	// list of refs for Vgroup's in the file
+    struct {
+      bool set;
+      int32 begin;
+      int32 end;
+    } _recs;
+};
+
 // Raster input stream class
 class hdfistream_gri : public hdfistream_obj {
 public:
@@ -235,6 +282,7 @@ public:
     virtual void seek(int index=0);            // seek the index'th image
     virtual void seek(const char *name);       // seek image by name
     virtual void seek_next(void) { seek(_index+1); } // seek the next RI
+    virtual void seek_ref(int ref);            // seek the RI by ref
     virtual void rewind(void);                 // position in front of first RI
     virtual bool bos(void) const;              // position in front of first RI?
     virtual bool eos(void) const;              // position past last RI?

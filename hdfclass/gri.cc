@@ -9,6 +9,9 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.2  1998/04/03 18:34:17  jimg
+// Fixes for vgroups and Sequences from Jake Hamby
+//
 // Revision 1.1  1996/10/31 18:42:58  jimg
 // Added.
 //
@@ -151,11 +154,19 @@ void hdfistream_gri::seek(int index) {
     _get_iminfo();
 }
 
-// position GRU stream to RI with name "name"
+// position GRI stream to RI with name "name"
 void hdfistream_gri::seek(const char *name) {
   if (_filename.length() == 0)  // no open file
     THROW(hcerr_invstream);
   int32 index = GRnametoindex(_gr_id, (char *)name);
+  seek(index);
+}
+
+// position GRI stream to RI with reference "ref"
+void hdfistream_gri::seek_ref(int ref) {
+  if (_filename.length() == 0)  // no open file
+    THROW(hcerr_invstream);
+  int32 index = GRreftoindex(_gr_id, ref);
   seek(index);
 }
 
@@ -258,6 +269,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
   int32 nattrs;
   if (GRgetiminfo(_ri_id, name, &ncomp, &data_type, &il, dim_sizes, &nattrs) < 0)
     THROW(hcerr_griinfo);
+  hr.ref = GRidtoref(_ri_id);
   hr.name = name;
   hr.dims[0] = dim_sizes[0]; hr.dims[1] = dim_sizes[1];
   hr.num_comp = ncomp;
