@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.7 1998/04/03 18:34:16 jimg Exp $
+# $Id: Makefile.in,v 1.8 1998/09/17 03:58:37 jimg Exp $
 
 @SET_MAKE@
 
@@ -10,7 +10,7 @@ DODS_ROOT = ../../../..
 # a definition for that variable g++ is confused. jhrg 2/5/98.
 WWW_ROOT = @WWW_ROOT@
 
-INCS = -I. -I./src @INCS@
+INCS = -I. -I$(DODS_ROOT)/include -Isrc @INCS@
 DEFS = @DEFS@ -DUSE_LIBGXX_INLINES
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
 CXXFLAGS = @CXXFLAGS@ -Wall
