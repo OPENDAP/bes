@@ -17,13 +17,12 @@
 
 // STL includes
 #include <string>
+#include <sstream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 
-using std::cerr ;
-using std::ends ;
-using std::endl ;
+using namespace std;
 
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
@@ -113,14 +112,13 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	}
 	else {
 	    // create a DODS variable for each subfield
-	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
-#if 0
-		ostringstream strm(subname,hdfclass::MAXSTR);
-		strm << vd.fields[i].name << "__" << j
-#endif
+
+		ostringstream strm;
+		strm << vd.fields[i].name << "__" << j;
+
 		BaseType *bt = 
-		    NewDAPVar(subname,
+		    NewDAPVar(strm.str(),
 			      vd.fields[i].vals[j].number_type());
 		if (bt == 0) {
 		    delete st;
@@ -553,6 +551,10 @@ LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 }
 
 // $Log: hc2dap.cc,v $
+// Revision 1.19  2004/02/06 00:35:04  jimg
+// Uses stringstream in place of srtstream. Fixed bug introduced in the last rev
+// where Structure member names were not picked up.
+//
 // Revision 1.18  2004/02/04 16:52:56  jimg
 // Removed Pix methods.
 //
