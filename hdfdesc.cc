@@ -12,6 +12,12 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.14  1999/11/06 00:32:40  jimg
+// Result of merge with the 3-1-2 sources
+//
+// Revision 1.13.8.1  1999/10/21 00:29:57  jimg
+// Removed duplicate definition of hdf_dim
+//
 // Revision 1.13  1999/05/06 03:23:36  jimg
 // Merged changes from no-gnu branch
 //
@@ -85,7 +91,9 @@ template class vector<hdf_sds>;
 template class vector<hdf_vdata>;
 template class vector<hdf_genvec>;
 template class vector<hdf_field>;
+#if 0
 template class vector<hdf_dim>;
+#endif
 template class vector<hdf_gri>;
 template class vector<hdf_palette>;
 #endif

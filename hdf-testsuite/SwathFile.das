@@ -1,19 +1,6 @@
 Attributes {
-    MRGFLD_Longitude {
-        Int32 Field%20Dims 1, 1;
-        Int32 Field%20Offsets 0, 1;
-    }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.0";
-    }
-    Spectra_dim_0 {
-        String name "Bands:Swath1";
-    }
-    Spectra_dim_1 {
-        String name "Res2tr:Swath1";
-    }
-    Spectra_dim_2 {
-        String name "Res2xtr:Swath1";
     }
     StructMetadata {
         SwathStructure {
@@ -138,6 +125,19 @@ Attributes {
     }
     Pressure_dim_1 {
         String name "Res2xtr:Swath1";
+    }
+    Spectra_dim_0 {
+        String name "Bands:Swath1";
+    }
+    Spectra_dim_1 {
+        String name "Res2tr:Swath1";
+    }
+    Spectra_dim_2 {
+        String name "Res2xtr:Swath1";
+    }
+    MRGFLD_Longitude {
+        Int32 Field%20Dims 1, 1;
+        Int32 Field%20Offsets 0, 1;
     }
     MRGFLD_Longitude_dim_0 {
         String name "MRGDIM:Swath1_2";

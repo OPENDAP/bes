@@ -10,24 +10,21 @@ To Build the hdf-dods software:
 
 3) Type `make install' to install the new library. 
 
-4) Look at the Perl script nph-hdf. In it there are two variable named
-   $spool_dir and $cache_dir. Set these variables to reasonable values for
-   your computer. In *most* cases you'll want to have them name the same
-   directory and that will *not* be one of the directories that contains your
-   data files. It is probably a very good idea to create a special
-   cache/spool directory somewhere on your system and set both $cache_dir and
-   $spool_dir to that directory's name.
+4) To install the data server you copy the programs nph-hdf,
+   hdf_{das,dds,dods}, usage, deflate, asciival, DODS_Dispatch.pm,
+   DODS_Cache.pm, FilterDirHTML.pm and the directories HTML, LWP and MIME
+   into one of your WWW server's script alias directories. Data should be
+   located within your WWW server's document root directory or be
+   (symbolicly) linked to DocumentRoot. You must turn on FollowSymLinks in
+   your access.conf file. Use one of the DODS client programs to test your
+   installation.
 
-5) To install the data server you need to copy the four executables (one
-   script and three binary programs) named `hdf', `hdf_das', `hdf_dds' and
-   `hdf_dods' to your http server's CGI directory. The executables are
-   located in the subdirectory named for you machine type (ie. sun, sgi). For
-   many UNIX computers, this will be named cgi-bin and will reside within the
-   http server's home directory (e.g., on my system the cgi binary directory
-   is called /usr/local/etc/httpd/cgi-bin). You can find out the name of this
-   directory if you don't know it by looking in the http server's srm.conf
-   configuration file (which will be located in a directory called `conf'
-   within the http server's home directory.
+5) The HDF server caches some of its responses to requests. In the past this
+   cache was stored in the same directory as the data files being served.
+   However, that caused problems with read-only datasets. In the current
+   version of the HDF server the cache directory is /usr/tmp and can be
+   configured by changing the value of the variable $cache_dir in the file
+   nph-hdf.
 
 For information about installing secure DODS servers, see the file SECURITY
 in DODS_ROOT.

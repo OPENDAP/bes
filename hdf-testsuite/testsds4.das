@@ -1,16 +1,4 @@
 Attributes {
-    SDS_1_dim_0 {
-        String name "Y_Axis";
-        String long_name "Ylabel";
-        String units "Yunit";
-        String format "Yformat";
-    }
-    SDS_1_dim_1 {
-        String name "X_Axis";
-        String long_name "Xlabel";
-        String units "Xunit";
-        String format "Xformat";
-    }
     SDS_1 {
         Float64 scale_factor 5;
         Float64 scale_factor_err 0.001;
@@ -22,5 +10,17 @@ Attributes {
         String units "unit";
         String format "F7.2";
         String coordsys "cartesian";
+    }
+    SDS_1_dim_0 {
+        String name "Y_Axis";
+        String long_name "Ylabel";
+        String units "Yunit";
+        String format "Yformat";
+    }
+    SDS_1_dim_1 {
+        String name "X_Axis";
+        String long_name "Xlabel";
+        String units "Xunit";
+        String format "Xformat";
     }
 }

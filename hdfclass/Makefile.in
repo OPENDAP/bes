@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.10 1998/11/11 17:59:12 jimg Exp $
+# $Id: Makefile.in,v 1.11 1999/11/06 00:32:40 jimg Exp $
 
 @SET_MAKE@
 
@@ -56,6 +56,14 @@ libhdfclass.a:	$(OBJS)
 	$(AR) ru libhdfclass.a $(OBJS)
 	$(RANLIB) libhdfclass.a
 
+Makefile: Makefile.in
+	if [ -x ../config.status ]; \
+	then \
+	    ${SHELL} ../config.status; \
+	else \
+	    ../configure; \
+	fi
+
 clean:		
 	-rm -fr libhdfclass.a $(OBJS)
 
@@ -70,12 +78,19 @@ distclean: clean
 
 .PHONY: depend
 depend: 
-	> dependencies
-	@depend@ -m dependencies -- $(CPPFLAGS) -I@GPP_INC@ -- \
-	src/*.cc
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- src/*.cc
 
 .PHONY: tags
 tags:
 	$(TAGS) $(TAGS_FLAGS) src/*.cc src/*.h 
 
-include dependencies
+# DO NOT DELETE; depend depends on this line.
+annot.o: src/annot.cc
+genvec.o: src/genvec.cc
+gri.o: src/gri.cc
+hcerr.o: src/hcerr.cc
+hcutil.o: src/hcutil.cc
+inst.o: src/inst.cc
+sds.o: src/sds.cc
+vdata.o: src/vdata.cc
+vgroup.o: src/vgroup.cc

@@ -3,7 +3,7 @@
 # various servers (hdf, dsp, netcdf, matlab, ...) on serveral different
 # platforms. 
 # 
-# $Id: unix.exp,v 1.2 1999/05/06 03:23:33 jimg Exp $
+# $Id: unix.exp,v 1.3 1999/11/06 00:32:40 jimg Exp $
 
 # Make sure the global var GETURL is set correctly.
 
@@ -20,41 +20,13 @@ if ![info exists GETURL] then {
 # NB: $expected may be either a string or a file name. If it is the latter,
 # read the file and compare its contents to $comp_output.
 
-proc compare_stdout {expected msg {xfailp 0}} {
-    global comp_output
-    global verbose
-
-    # If $expected is the name of a file, read that file's contents and store
-    # in $expected, then procede to compare $expected to $comp_output.
-
-    if {[file exists $expected] && [file isfile $expected]} {
-	if {$verbose >= 1} {
-	    send_user "PWD: [pwd]\n"
-	    send_user "Reading file: $expected\n"
-	}
-	set fd [open $expected r]
-	set expected [read $fd]
-	close $fd
-    }
-
-    # Trim is used here to remove trailing `\n's from files of data.
-    set expected [string trim $expected]
-    set comp_output [string trim $comp_output]
-
-    if ![string compare $expected $comp_output] {
-	pass "$msg"
-	send_user "PASS: $msg\n"
-    } elseif {$xfailp == 1} {
-	xfail "$msg"
-	send_user "XFAIL: $msg\n"
-    } else {
-	fail "$msg"
-    }
-
-    if {$verbose >= 1} {
-	send_user "Comp output:$comp_output\n"
-	send_user "Expected output:$expected\n"
-    }
+if {[info exists env(DODS_ROOT)] && [file exists $env(DODS_ROOT)/etc/common_tests.exp]} {
+    source $env(DODS_ROOT)/etc/common_tests.exp
+} elseif {[file exists ../../etc/common_tests.exp]} {
+    source ../../etc/common_tests.exp
+} else {
+    send_user "Could not load common tests!"
+    exit(1)
 }
 
 # The four `required' procs are _start, _load, _exit and _version.
@@ -91,15 +63,15 @@ proc geturl_version {} {
     send_user "geturl test suite 1.0\n"
 }
 
-proc geturl_all {path dataset {constraint ""}} {
+proc geturl_all {path dataset {constraint ""} {xfailp 0}} {
     geturl_start "-a" "${path}/${dataset}.hdf"
-    compare_stdout "hdf-testsuite/${dataset}.das" "${dataset} DAS"
+    compare_stdout "hdf-testsuite/${dataset}.das" "${dataset} DAS" $xfailp
     
     geturl_start "-d" "${path}/${dataset}.hdf"
-    compare_stdout "hdf-testsuite/${dataset}.dds" "${dataset} DDS"
+    compare_stdout "hdf-testsuite/${dataset}.dds" "${dataset} DDS" $xfailp
     
     geturl_start "-D" "${path}/${dataset}.hdf?${constraint}"
-    compare_stdout "hdf-testsuite/${dataset}.data" "${dataset} Data"
+    compare_stdout "hdf-testsuite/${dataset}.data" "${dataset} Data" $xfailp
 }
 
 proc geturl_subset {path dataset constraint {num "1"}} {

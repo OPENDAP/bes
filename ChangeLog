@@ -1,3 +1,10 @@
+1999-11-05  James Gallagher  <jimg@dcz.dods.org>
+
+	* Merge: cvs update -j release-3-1, the next merge should use -j
+	release-3-1-2 -j release-3-1
+
+	* Fixes to simplify building.
+
 1999-05-28  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merge with alpha-3-0-0
@@ -34,4 +41,4 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.8 1999/05/28 16:43:59 jimg Exp $
+$Id: ChangeLog,v 1.9 1999/11/06 00:32:37 jimg Exp $

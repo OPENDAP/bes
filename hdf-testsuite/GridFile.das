@@ -1,42 +1,6 @@
 Attributes {
-    MRGFLD_Temperature_dim_0 {
-        String name "MRGDIM:PolarGrid_2";
-    }
-    MRGFLD_Temperature_dim_1 {
-        String name "YDim:PolarGrid";
-    }
-    Pollution {
-        Float64 _FillValue -7;
-    }
     HDF_GLOBAL {
         String HDFEOSVersion "HDFEOS_V2.0";
-    }
-    Vegetation_dim_0 {
-        String name "YDim:UTMGrid";
-    }
-    Vegetation_dim_1 {
-        String name "XDim:UTMGrid";
-    }
-    Soil%20Dryness_dim_0 {
-        String name "YDim:PolarGrid";
-    }
-    Soil%20Dryness_dim_1 {
-        String name "XDim:PolarGrid";
-    }
-    Spectra_dim_2 {
-        String name "XDim:PolarGrid";
-    }
-    MRGFLD_Temperature_dim_2 {
-        String name "XDim:PolarGrid";
-    }
-    Pollution_dim_0 {
-        String name "Time:UTMGrid";
-    }
-    Pollution_dim_1 {
-        String name "YDim:UTMGrid";
-    }
-    Pollution_dim_2 {
-        String name "XDim:UTMGrid";
     }
     StructMetadata {
         SwathStructure {
@@ -143,14 +107,50 @@ Attributes {
         PointStructure {
         }
     }
+    Pollution {
+        Float64 _FillValue -7;
+    }
+    Pollution_dim_0 {
+        String name "Time:UTMGrid";
+    }
+    Pollution_dim_1 {
+        String name "YDim:UTMGrid";
+    }
+    Pollution_dim_2 {
+        String name "XDim:UTMGrid";
+    }
+    Vegetation_dim_0 {
+        String name "YDim:UTMGrid";
+    }
+    Vegetation_dim_1 {
+        String name "XDim:UTMGrid";
+    }
+    Soil%20Dryness_dim_0 {
+        String name "YDim:PolarGrid";
+    }
+    Soil%20Dryness_dim_1 {
+        String name "XDim:PolarGrid";
+    }
+    MRGFLD_Temperature {
+        Int32 Field%20Dims 1, 1;
+        Int32 Field%20Offsets 0, 1;
+    }
+    MRGFLD_Temperature_dim_0 {
+        String name "MRGDIM:PolarGrid_2";
+    }
+    MRGFLD_Temperature_dim_1 {
+        String name "YDim:PolarGrid";
+    }
+    MRGFLD_Temperature_dim_2 {
+        String name "XDim:PolarGrid";
+    }
     Spectra_dim_0 {
         String name "Bands:PolarGrid";
     }
     Spectra_dim_1 {
         String name "YDim:PolarGrid";
     }
-    MRGFLD_Temperature {
-        Int32 Field%20Dims 1, 1;
-        Int32 Field%20Offsets 0, 1;
+    Spectra_dim_2 {
+        String name "XDim:PolarGrid";
     }
 }
