@@ -1,5 +1,4 @@
-#!/bin/sh -- # -*- perl -*-
-eval "exec perl -T -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
+#!@PERL@ -T
 
 # Replace the above two lines witn #!/path/to/your/perl to avoid the overhead
 # of first running the shell and then starting perl. 
@@ -26,9 +25,15 @@ eval "exec perl -T -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.6 1999/05/24 17:36:12 jimg Exp $
+# $Id: nph-hdf.in,v 1.7 2000/03/09 01:44:33 jimg Exp $
 #
 # $Log: nph-hdf.in,v $
+# Revision 1.7  2000/03/09 01:44:33  jimg
+# merge with 3.1.3
+#
+# Revision 1.6.6.1  2000/02/12 05:07:00  jimg
+# Changed Perl start up line to @PERL@ -T
+#
 # Revision 1.6  1999/05/24 17:36:12  jimg
 # Security fixes; see nph-nc.in and DODS_Dispatch.pm
 #

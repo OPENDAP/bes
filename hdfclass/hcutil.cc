@@ -9,6 +9,12 @@
 // $RCSfile: hcutil.cc,v $ - misc utility routines for HDFClass
 //
 // $Log: hcutil.cc,v $
+// Revision 1.4  2000/03/09 01:44:33  jimg
+// merge with 3.1.3
+//
+// Revision 1.3.8.1  2000/03/09 00:24:59  jimg
+// Replaced int and uint32 with string::size_type
+//
 // Revision 1.3  1999/05/06 03:23:33  jimg
 // Merged changes from no-gnu branch
 //
@@ -32,9 +38,9 @@
 vector<string> split(const string& str, const string& delim) {
     vector<string> rv;
 
-    int len = str.length();
-    int dlen = delim.length();
-    for (int i=0, previ=-dlen; ;previ = i) {
+    string::size_type len = str.length();
+    string::size_type dlen = delim.length();
+    for (string::size_type i=0, previ=-dlen; ;previ = i) {
 	i = str.find(delim, previ+dlen);
 	if (i == 0)
 	    continue;
