@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.23 2000/03/09 00:46:17 jimg Exp $
+# $Id: Makefile.in,v 1.24 2000/03/31 16:52:23 jimg Exp $
 
 @SET_MAKE@
 
@@ -102,6 +102,9 @@ lex.hdfeos.c: src/hdfeos.lex hdfeos.tab.c hdfeos.tab.h
 lex.hdfeos.o: lex.hdfeos.c
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c lex.hdfeos.c -o lex.hdfeos.o
 
+eosdas-test: eosdas-test.o lex.hdfeos.o hdfeos.tab.o libhdf-dods.a HDFClass
+	$(CXX) -o eosdas-test eosdas-test.o $(LDFLAGS) $(LIBS)
+
 libhdf-dods.a:	$(HDFOBJS)
 	ar ru libhdf-dods.a $(HDFOBJS)
 
@@ -115,7 +118,7 @@ escfilt: escfilt.o libhdf-dods.a
 	$(CXX) escfilt.o -o escfilt $(LDFLAGS) $(LIBS)
 
 clean:
-	-rm *.o $(PROGS) core hdf_das hdf_dds *~
+	-rm *.o $(PROGS) core hdf_das hdf_dds eosdas-test *~
 	-cd hdfclass && $(MAKE) $(MFLAGS) clean
 
 distclean: clean

@@ -12,6 +12,16 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.16  2000/03/31 16:51:37  jimg
+// Merged with release-3-1-4
+//
+// Revision 1.13.8.4  2000/03/31 00:51:02  jimg
+// Removed some old code.
+// Added check of hdf-eos parser status.
+//
+// Revision 1.13.8.3  2000/03/20 22:26:52  jimg
+// Switched to the id2dods, etc. escaping function in the dap.
+//
 // Revision 1.15  2000/03/09 00:47:49  jimg
 // *** empty log message ***
 //
@@ -78,6 +88,7 @@
 // DODS includes
 #include "DDS.h"
 #include "DAS.h"
+#include "escaping.h"
 
 // DODS/HDF includes
 #include "dhdferr.h"
@@ -97,9 +108,6 @@ template class vector<hdf_sds>;
 template class vector<hdf_vdata>;
 template class vector<hdf_genvec>;
 template class vector<hdf_field>;
-#if 0
-template class vector<hdf_dim>;
-#endif
 template class vector<hdf_gri>;
 template class vector<hdf_palette>;
 #endif
@@ -206,8 +214,6 @@ static void update_descriptions(const string& cachedir, const string& filename) 
 	build_descriptions(dds, das, filename);
 	if (!dds.check_semantics()) // DDS didn't get built right
 	    THROW(dhdferr_ddssem);
-//	if (!das.check_semantics()) // DAS didn't get built right
-//	    THROW(dhdferr_dassem);
 
 	// output DDS, DAS to cache
 	ofstream ddsout(ddsfile.filename());
@@ -492,9 +498,9 @@ void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
 		at = das.add_table(container_name, new AttrTable);
 
 	      hdfeos_scan_string(attv[j].c_str());  // tell lexer to scan attribute string
-	      
 	      parser_arg arg(at);
-	      if (hdfeosparse((void *)&arg) != 0)
+	      if (hdfeosparse((void *)&arg) != 0 
+		  || arg.status() == false)
 		cerr << "HDF-EOS parse error!\n";
 	    } else {
 	      if (attrtype == "String") 
