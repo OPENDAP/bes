@@ -20,7 +20,7 @@
 
 #define YYSTYPE char *
 
-  // static char rcsid[] __unused__ = {"$Id: hdfeos.y,v 1.1 1998/09/10 20:33:51 jehamby Exp $"};
+  // static char rcsid[] __unused__ = {"$Id: hdfeos.y,v 1.2 1998/09/10 23:15:39 jehamby Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,8 +33,6 @@
 #else
 #include <sstream>
 #endif
-
-#define DODS_DEBUG 1
 
 #include "DAS.h"
 #include "Error.h"
