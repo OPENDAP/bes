@@ -1,5 +1,4 @@
 
-
 To Build the hdf-dods software:
 
 1) Type `./configure' at the system prompt. On some systems you may have to
@@ -13,16 +12,17 @@ testing software DejaGNU to run the makefile's check target.
 
 4) To install the data server you need to copy the four executables (one
 script and three binary programs) named `hdf', `hdf_das', `hdf_dds' and
-`hdf_dods' to your http server's CGI directory. The executables are located in 
-the subdirectory named for you machine type (ie. sun, sgi). For many UNIX computers, 
-this will be named cgi-bin and will reside within the http server's home
-directory (e.g., on my system the cgi binary directory is called
-/usr/local/etc/httpd/cgi-bin). You can find out the name of this directory if
-you don't know it by looking in the http server's srm.conf configuration file
-(which will be located in a directory called `conf' within the http server's
-home directory. 
+`hdf_dods' to your http server's CGI directory. The executables are located
+in the subdirectory named for you machine type (ie. sun, sgi). For many UNIX
+computers, this will be named cgi-bin and will reside within the http
+server's home directory (e.g., on my system the cgi binary directory is
+called /usr/local/etc/httpd/cgi-bin). You can find out the name of this
+directory if you don't know it by looking in the http server's srm.conf
+configuration file (which will be located in a directory called `conf' within
+the http server's home directory.
 
 For information about installing secure DODS servers, see the file SECURITY
 in DODS_ROOT.
 
 ich 
+
