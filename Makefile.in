@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.16 1998/09/26 22:35:33 jimg Exp $
+# $Id: Makefile.in,v 1.17 1998/11/11 17:59:11 jimg Exp $
 
 @SET_MAKE@
 
@@ -144,8 +144,7 @@ depend:
 # that the root directory for DODS is called `DODS' (no version number).
 .PHONY: tar
 tar:
-	@echo "You should first run distclean in DODS_ROOT!"
-	@echo "(ignore this if you have)"
+	-rm -r config.cache config.log config.status
 	cd $(DODS_ROOT)/.. && \
 	tar --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
 	    --gzip --create --dereference --file DODS-$(dir).tar.gz \
@@ -174,5 +173,7 @@ check-version:
 
 .PHONY: tags
 tags:
-	$(TAGS) $(TAGS_FLAGS) *.cc *.h *.lex *.y
+	$(TAGS) $(TAGS_FLAGS) src/*.cc src/*.h 
+	(cd hdfclass && $(MAKE) $(MFLAGS) tags)
+
 include dependencies

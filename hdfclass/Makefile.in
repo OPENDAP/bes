@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.9 1998/09/17 17:56:11 jimg Exp $
+# $Id: Makefile.in,v 1.10 1998/11/11 17:59:12 jimg Exp $
 
 @SET_MAKE@
 
@@ -73,5 +73,9 @@ depend:
 	> dependencies
 	@depend@ -m dependencies -- $(CPPFLAGS) -I@GPP_INC@ -- \
 	src/*.cc
+
+.PHONY: tags
+tags:
+	$(TAGS) $(TAGS_FLAGS) src/*.cc src/*.h 
 
 include dependencies

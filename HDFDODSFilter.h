@@ -8,6 +8,9 @@
 //	jhrg,jimg	James Gallagher (jgallagher@gso.uri.edu)
 
 // $Log: HDFDODSFilter.h,v $
+// Revision 1.2  1998/11/11 17:59:13  jimg
+// *** empty log message ***
+//
 // Revision 1.1  1998/09/25 23:02:15  jimg
 // Created.
 //
@@ -19,6 +22,8 @@
 #pragma "interface"
 #endif
 
+#include "DODSFilter.h"
+
 #include <String.h>
 
 /**
@@ -28,7 +33,7 @@
    @memo Special methods for the HDF server filter programs.
    @author jhrg 9/25/98 */
 
-class DODSFilter {
+class HDFDODSFilter : DODSFilter {
 private:
     HDFDODSFilter() {}		// Private default ctor.
 
