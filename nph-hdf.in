@@ -1,7 +1,7 @@
-#!@PERL@
-#
-# -*- Perl -*-
-#
+#!/bin/sh -- # -*- perl -*-
+eval "exec perl -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
+# Replace the above two lines witn #!/path/to/your/perl to avoid the overhead
+# of first running the shell and then starting perl. 
 
 # Do dispatch for DODS servers. Use the `MIME type extension' of the URL to
 # select the correct DODS server program. This dispatch cgi assumes that the
@@ -25,9 +25,12 @@
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.4 1999/05/18 21:17:50 jimg Exp $
+# $Id: nph-hdf.in,v 1.5 1999/05/18 22:40:39 jimg Exp $
 #
 # $Log: nph-hdf.in,v $
+# Revision 1.5  1999/05/18 22:40:39  jimg
+# Perl is now started using /bin/sh.
+#
 # Revision 1.4  1999/05/18 21:17:50  jimg
 # Added simple test for perl. This won't do much for binaries...
 #
