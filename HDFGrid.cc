@@ -11,6 +11,9 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
+// Revision 1.7  1998/09/14 20:48:56  jimg
+// Resolved conflicts
+//
 // Revision 1.6  1998/09/10 20:30:15  jehamby
 // Fixed misuse of read member function in serialize.  Set `error' parameter
 // on error, instead of using return value of the read(...) member function.
@@ -95,8 +98,8 @@ bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err)
 	return false;
     }
 #endif
-    
-    return true;
+    err = 0;      // no error
+    return false; // no more data
 }
 
 Grid *NewGrid(const String &n) { return new HDFGrid(n); }

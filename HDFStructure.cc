@@ -12,7 +12,7 @@
 HDFStructure::HDFStructure(const String &n = (char *)0) : Structure(n) {}
 HDFStructure::~HDFStructure() {}
 BaseType *HDFStructure::ptr_duplicate() { return new HDFStructure(*this); }
-void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vgroup,
+int LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vgroup,
 			     const String& hdf_file);
 
 void HDFStructure::set_read_p(bool state) {
@@ -56,8 +56,8 @@ bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int 
   set_read_p(true);
   
   if (foundvgroup) {
-    LoadStructureFromVgroup(this, vgroup, hdf_file);
-    return true;
+    err = LoadStructureFromVgroup(this, vgroup, hdf_file);
+    return false;   // no more data
   }
   else {
     err = 1;

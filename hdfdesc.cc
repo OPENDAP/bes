@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.11  1998/09/14 20:48:57  jimg
+// Resolved conflicts
+//
 // Revision 1.10  1998/09/10 23:03:47  jehamby
 // Add support for Vdata and Vgroup attributes
 //
@@ -62,6 +65,7 @@
 #include <string>
 #include <fstream.h>
 #include <strstream.h>
+#include <string.h>
 
 // HDF and HDFClass includes
 #include <mfhdf.h>
