@@ -11,13 +11,13 @@
 ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
-ac_default_prefix="$(DODS_ROOT)"
+ac_default_prefix="\$(DODS_ROOT)"
 ac_help="$ac_help
   --with-hdf=ARG          Where is the HDF libarry (directory)"
 ac_help="$ac_help
   --with-www=DIR          Directory containing the W3C software"
 ac_help="$ac_help
-  --with-expect=ARG       Where are the Tcl and Expect root directories"
+  --with-expect=ARG       What is the Tcl and Expect prefix directory"
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -1228,9 +1228,9 @@ fi
     if test "$WWW_ROOT"
     then
 	
-	INCS="$INCS -I$(WWW_ROOT) -I$(WWW_ROOT)/Library/src"
+	INCS="$INCS -I\$(WWW_ROOT) -I\$(WWW_ROOT)/Library/src"
 	
-	LDFLAGS="$LDFLAGS -L$(WWW_ROOT)/Library/src"
+	LDFLAGS="$LDFLAGS -L\$(WWW_ROOT)/Library/src"
 	echo "$ac_t""Set WWW root directory to $WWW_ROOT" 1>&6 
     else
 	echo "configure: warning: not found!" 1>&2
@@ -1302,9 +1302,15 @@ else
 fi
 
 
-    if test -z "$EXPECT_PATH"
+    if test "$EXPECT_PATH"
     then
-      echo $ac_n "checking for -lexpect521""... $ac_c" 1>&6
+      INCS="$INCS -I${EXCEPT_PATH}/include"
+      LDFLAGS="$LDFLAGS -L${EXCEPT_PATH}/lib"
+      echo "$ac_t"""Set the Tcl and Expect root directory to $EXPECT_PATH"" 1>&6
+    fi
+
+    
+    echo $ac_n "checking for -lexpect521""... $ac_c" 1>&6
 ac_lib_var=`echo expect521'_'main | tr './+\055' '__p_'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1312,7 +1318,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lexpect521 -ltcl76 $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1316 "configure"
+#line 1322 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -1320,7 +1326,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:1324: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1330: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1340,8 +1346,9 @@ else
 fi
 
 
-      if test $HAVE_EXPECT -eq 0; then
-	  echo $ac_n "checking for -lexpect5.21""... $ac_c" 1>&6
+    if test $HAVE_EXPECT -eq 0
+    then
+        echo $ac_n "checking for -lexpect5.21""... $ac_c" 1>&6
 ac_lib_var=`echo expect5.21'_'main | tr './+\055' '__p_'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -1349,7 +1356,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lexpect5.21 -ltcl7.6 $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 1353 "configure"
+#line 1360 "configure"
 #include "confdefs.h"
 
 int main() { return 0; }
@@ -1357,7 +1364,7 @@ int t() {
 main()
 ; return 0; }
 EOF
-if { (eval echo configure:1361: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+if { (eval echo configure:1368: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -1377,138 +1384,22 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-      fi
+    fi
 
-      if test $HAVE_EXPECT -eq 0; then
-	  echo $ac_n "checking for -lexpect520""... $ac_c" 1>&6
-ac_lib_var=`echo expect520'_'main | tr './+\055' '__p_'`
-if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  ac_save_LIBS="$LIBS"
-LIBS="-lexpect520 -ltcl75 $LIBS"
-cat > conftest.$ac_ext <<EOF
-#line 1392 "configure"
-#include "confdefs.h"
 
-int main() { return 0; }
-int t() {
-main()
-; return 0; }
-EOF
-if { (eval echo configure:1400: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=yes"
-else
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=no"
-fi
-rm -f conftest*
-LIBS="$ac_save_LIBS"
-
-fi
-if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  \
-		  HAVE_EXPECT=1;expect=expect520;tcl=tcl75;\
-		  LIBS="$LIBS -l${expect} -l${tcl}"
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-      fi
-
-      if test $HAVE_EXPECT -eq 0; then
-	  echo $ac_n "checking for -lexpect5.20""... $ac_c" 1>&6
-ac_lib_var=`echo expect5.20'_'main | tr './+\055' '__p_'`
-if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  ac_save_LIBS="$LIBS"
-LIBS="-lexpect5.20 -ltcl7.5 $LIBS"
-cat > conftest.$ac_ext <<EOF
-#line 1431 "configure"
-#include "confdefs.h"
-
-int main() { return 0; }
-int t() {
-main()
-; return 0; }
-EOF
-if { (eval echo configure:1439: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=yes"
-else
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=no"
-fi
-rm -f conftest*
-LIBS="$ac_save_LIBS"
-
-fi
-if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  \
-		  HAVE_EXPECT=1;expect=expect5.20;tcl=tcl7.5;\
-		  LIBS="$LIBS -l${expect} -l${tcl}"
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-      fi
-
-      if test $HAVE_EXPECT -eq 0; then
-	  echo $ac_n "checking for -lexpect""... $ac_c" 1>&6
-ac_lib_var=`echo expect'_'main | tr './+\055' '__p_'`
-if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  ac_save_LIBS="$LIBS"
-LIBS="-lexpect -ltcl7.4 $LIBS"
-cat > conftest.$ac_ext <<EOF
-#line 1470 "configure"
-#include "confdefs.h"
-
-int main() { return 0; }
-int t() {
-main()
-; return 0; }
-EOF
-if { (eval echo configure:1478: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=yes"
-else
-  rm -rf conftest*
-  eval "ac_cv_lib_$ac_lib_var=no"
-fi
-rm -f conftest*
-LIBS="$ac_save_LIBS"
-
-fi
-if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-  \
-		  HAVE_EXPECT=1;expect=expect;tcl=tcl7.4;\
-		  LIBS="$LIBS -l${expect} -l${tcl}"
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-      fi
-
-                  
-      ac_safe=`echo "tclRegexp.h" | tr './\055' '___'`
+            
+    ac_safe=`echo "tclRegexp.h" | tr './\055' '___'`
 echo $ac_n "checking for tclRegexp.h""... $ac_c" 1>&6
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 1507 "configure"
+#line 1398 "configure"
 #include "confdefs.h"
 #include <tclRegexp.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:1512: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:1403: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -1529,34 +1420,29 @@ found=0
 fi
 
 
-      
-      tcl_include_paths="$DODS_ROOT/third_party/tcl7.6/generic \
-			  /usr/local/src/tcl7.5/generic \
-			  /usr/local/src/tcl7.6/generic \
-			  /usr/local/src/tcl7.4/"
+    
+    tcl_include_paths="/usr/local/src/tcl7.6/generic \
+		       $EXCEPT_PATH/src/tcl7.6/generic"
 
-      if test $found -eq 0
-      then
-	  echo $ac_n "checking for tclRegex.h in some more places""... $ac_c" 1>&6
+    if test $found -eq 0
+    then
+	echo $ac_n "checking for tclRegex.h in some more places""... $ac_c" 1>&6
 
-	  for d in $tcl_include_paths
-	  do
-	      if test -f ${d}/tclRegexp.h
-	      then
-		  INCS="$INCS -I${d}"
-		  
-		  echo "$ac_t""$d" 1>&6
-		  found=1
-		  break
-	      fi
-	  done
-	  if test $found -eq 0 
-	  then
-	      echo "configure: warning: not found" 1>&2
-	  fi
-      fi
-    else
-      echo "$ac_t"""Set the Tcl and Expect root directory to $EXPECT_PATH"" 1>&6
+	for d in $tcl_include_paths
+	do
+	    if test -f ${d}/tclRegexp.h
+	    then
+		INCS="$INCS -I${d}"
+		echo "$ac_t""$d" 1>&6
+		found=1
+		break
+	    fi
+	done
+
+	if test $found -eq 0 
+	then
+	    echo "configure: warning: not found" 1>&2
+	fi
     fi
 
     cat >> confdefs.h <<EOF
