@@ -1,0 +1,111 @@
+
+dnl -*- m4 -*-
+dnl Process this file with autoconf to produce a configure script.
+
+AC_REVISION($Id: configure.in,v 1.1 2001/07/16 22:49:27 jimg Exp $)
+AC_INIT(h5util.h)
+
+dnl Note that multiple calls to AC_CONFIG_HEADER don't work in autoconf 2.13. 
+dnl Each header must be listed in a single call. Also note two of the netcdf
+dnl headers' init files don't follow the HEADER.in convention so I used the
+dnl HEADER:INIT syntax of AC_CONFIG_HEADER. 1/25/2000 jhrg
+
+dnl AC_CONFIG_HEADER(config_h5.h)
+
+AC_CONFIG_AUX_DIR(../../etc)
+
+AC_CANONICAL_HOST
+
+AC_PREFIX_DEFAULT("\$(DODS_ROOT)")
+
+DODS_GET_DODS_ROOT
+DODS_DIRECTORY_VERSION
+
+dnl `depend' is the command to use to generate dependencies for Makefiles.
+
+depend=${dods_root}/etc/depend.sh
+AC_SUBST(depend)
+
+CFLAGS="-gstabs -O2 $CFLAGS"
+CXXFLAGS="-gstabs -O2 $CXXFLAGS"
+
+dnl Checks for programs.
+
+AC_ISC_POSIX
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+AC_PROG_CPP
+AC_PROG_INSTALL
+
+DODS_PROG_PERL
+DODS_PROG_GTAR
+DODS_GCC
+DODS_CHECK_GCC_DEBUG
+
+DODS_OS
+DODS_MACHINE
+if test "$OS" = ultrix && test "$MACHINE" = vax; then
+    case "$CC" in
+        /bin/cc*|cc*)
+echo "changing C compiler to \`vcc' because \`cc' floating-point is broken"
+            CC=vcc
+            ;;
+    esac
+fi
+
+CXX=${CXX-g++}
+AC_MSG_RESULT(Setting CXX to $CXX)
+AC_SUBST(CXX)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(fcntl.h limits.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_OFF_T
+AC_TYPE_SIZE_T
+AC_CHECK_TYPE(ssize_t, int)
+AC_CHECK_TYPE(ptrdiff_t, int)
+AC_CHECK_TYPE(uchar, unsigned char)
+AC_C_CHAR_UNSIGNED
+AC_C_BIGENDIAN
+
+dnl Checks for library functions.
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(strerror strtol)
+
+DODS_CHECK_SIZES
+
+DODS_LIBS
+
+DODS_COMPRESSION_LIB
+DODS_RX_LIB
+DODS_WWW_LIB
+dnl DODS_TCL_LIB
+dnl DODS_TK_LIB
+
+DODS_EFENCE
+
+DODS_DBNEW
+
+DODS_DEBUG_OPTION
+
+AC_ARG_WITH(hdf5_path,
+    [  --with-hdf5-path=ARG    Pathname to the hdf 5 software],
+    hdf5_path=${withval}, hdf5_path="/usr/local/hdf5")
+
+LDFLAGS="$LDFLAGS -L${hdf5_path}/lib"
+AC_CHECK_LIB(hdf5, H5open, hdf_found=1, hdf_found=0, -lz)
+if test $hdf_found -ne 1
+then
+    AC_MSG_ERROR(HDF5 library not found (looked in ${hdf5_path}/lib)!)
+fi 
+AC_SUBST(hdf5_path)
+
+AC_OUTPUT(Makefile)
+
+

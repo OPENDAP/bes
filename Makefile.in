@@ -1,0 +1,212 @@
+
+# $Id: Makefile.in,v 1.1 2001/07/16 22:49:28 jimg Exp $
+
+@SET_MAKE@
+
+# Set makefile variables, some with values supplid by configure 
+# DEFS gets the `-D' defines that describe what a particular system has
+# or doesn't have.
+
+PROG = h5_das h5_dds h5_dods
+DODS_ROOT = ../..
+H5_ROOT = @hdf5_path@
+# /afs/ncsa/packages/hdf5/5-1.4.0-linux/
+WWW_ROOT = @WWW_ROOT@
+INCS = -I$(DODS_ROOT)/include -I$(H5_ROOT)/include @INCS@
+DEFS = @DEFS@
+CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS) 
+CFLAGS = @CFLAGS@
+CXXFLAGS = @CXXFLAGS@
+TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+TAGS_FLAGS = -i ../dap/TAGS
+
+# Make sure that the core software libraries just built can be found without
+# first running make install, but that if `make install' and `make clean' has
+# been run those libraries will be found in the `lib' directory.
+LDFLAGS = -L. -L$(DODS_ROOT)/lib @LDFLAGS@
+LFLAGS=-8
+YFLAGS=-d
+LIBS = -ldap++ -lhdf5 @LIBS@
+
+# Set the instalation directories; prefix can be set on the command line
+# during Makefile construction with `./configure --prefix /my/choice'
+
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
+manext = 1
+mandir = $(prefix)/man/man$(manext)
+
+src = $(DODS_ROOT)/src
+etcdir = $(DODS_ROOT)/etc
+
+INSTALLMAN = man
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+version = @VERSION@
+basedir = nc3-dods
+dir = $(basedir)-$(version)
+host = @host@
+
+COMPONENT_NAME = DODS netCDF Server
+AWK = @AWK@
+TAR = @TAR@
+PERL = @PERL@
+
+# testsuite specifics
+RUNTEST= runtest
+RUNTESTFLAGS= #--all --verbose
+
+# names of key programs
+
+LN_S = @LN_S@
+CC = @CC@
+CXX = @CXX@
+YACC = @YACC@
+LEX = @LEX@
+AR = ar
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+TAGS = etags
+STRIP = strip
+
+HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
+	HDF5Int32.cc HDF5List.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc \
+	HDF5Url.cc HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc
+
+HDF5OBJ = HDF5Array.o HDF5Byte.o HDF5Float64.o HDF5Grid.o HDF5Int32.o \
+	HDF5List.o HDF5Sequence.o HDF5Str.o HDF5Structure.o HDF5Url.o \
+	HDF5UInt32.o HDF5UInt16.o HDF5Int16.o HDF5Float32.o
+
+SSRCS = h5_das.cc h5_dds.cc h5dds.cc h5_dods.cc h5util.cc H5Git.c
+DASOBJS = h5_das.o h5util.o H5Git.o
+DDSOBJS = h5_dds.o h5dds.o h5util.o H5Git.o
+SRVOBJS = h5_dods.o h5dds.o h5util.o H5Git.o
+
+# Matlab client can be suppressed by a switch to configure.
+all: $(PROG)
+
+h5_das:	$(DASOBJS) $(HDF5OBJ)
+	$(CXX) $(LDFLAGS) -o h5_das $(DASOBJS) $(HDF5OBJ) $(LIBS)	
+
+h5_dds: $(DDSOBJS) $(HDF5OBJ)
+	$(CXX) $(LDFLAGS) -o h5_dds $(DDSOBJS) $(HDF5OBJ) $(LIBS)
+
+h5_dods: $(SRVOBJS) $(HDF5OBJ)
+	$(CXX) $(LDFLAGS) -o h5_dods $(SRVOBJS) $(HDF5OBJ) $(LIBS)
+
+configure: configure.in
+	autoconf --localdir=$(DODS_ROOT)/etc
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+test-coverage: clean
+	$(MAKE) $(MFLAGS) CXXFLAGS="$(CXXFLAGS) $(TEST_COV_FLAGS)" check
+
+# Note that the gcov options -f and -b are useful but sometimes make looking
+# at the results of coverage analysis a little taxing. -b reports on all
+# branched and -f reports on all functions. The -l -o options summarize on a
+# per-file basis. 3/27/98 jhrg
+collect-coverage-data:
+	(cd test-coverage; \
+         cov_dat="coverage-data-`date +%m.%d.%y`"; \
+	 touch $$cov_dat; \
+	 for f in $(ALLSRCS); do \
+	     echo "\n*** Coverage data for $$f ***\n" >> $$cov_dat; \
+	     gcov -l -o ../ $$f >> $$cov_dat; \
+         done)
+
+install: $(PROG)
+
+# Do not intall in the fortran jackets directory - the jackets are added to
+# the library at build time
+# cd fortran && $(MAKE) $(MFLAGS) install && cd ..
+
+clean:	
+	-rm -f *.o *.sum *.log *~ core
+	-rm -f $(PROG)
+
+distclean:
+	-rm -f *.o *.sum *.log *~ core
+	-rm -f $(PROG)
+	-rm -f config.status config.log config.cache nph-nc
+	-rm -f site.exp config_nc.h lnetcdf/ncconfig.h
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SSRCS) $(CSRCS)
+
+.PHONY: tar
+tar:
+	-rm -f config.cache config.log config.status
+	cd $(DODS_ROOT)/.. && \
+	$(TAR) --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
+	    --exclude '*/.snprj*' --exclude '*/.flc*' \
+	    --gzip --create --dereference --file DODS-$(dir).tar.gz \
+	    DODS/src/$(dir)
+
+# Creates tar files for binary distributions.
+#
+.PHONY: binary-tar
+binary-tar:
+	cd $(DODS_ROOT)/.. && \
+        $(TAR) --gzip --create --dereference \
+            --file DODS-h5-server-$(version)-$(host).tar.gz \
+            DODS/etc/nph-h5 \
+            DODS/etc/h5_das \
+            DODS/etc/h5_dds \
+            DODS/etc/h5_dods
+
+.PHONY: update-version
+update-version: check-version
+	@echo "Version is: `cat version.h`"
+	if [ ! -d ../$(dir) ]; then \
+	    mv ../$(basedir)* ../$(dir);\
+	fi
+	touch $(DODS_ROOT)/VERSION; cat $(DODS_ROOT)/VERSION | \
+	  $(AWK) ' \
+	    BEGIN { found = 0 } \
+	    { if ( $$0 ~ /^$(COMPONENT_NAME):/) \
+	        { print "$(COMPONENT_NAME): $(version)"; found = 1 } \
+	      else { print $$0 } } \
+	    END { if ( ! found) { print "$(COMPONENT_NAME): $(version)" } \
+	        }' > $(DODS_ROOT)/VERSION
+
+# Compare the version encoded in this Makefile (set by configure) with the
+# version in version.h. The version make variable is set up near the top of
+# the Makefile.
+.PHONY: check-version
+check-version:
+	@echo "Checking for version.h and Makefile version match-up"
+	@if [ "$(version)" != "`cat version.h`" ]; \
+	then \
+		echo "You must manually re-run configure!"; \
+		exit 1; \
+	else \
+		echo "Yes, they match."; \
+	fi
+
+.PHONY: tags
+tags:
+	$(TAGS) $(TAGS_FLAGS) *.cc *.h lnetcdf/*.c lnetcdf/*.h
+
+.SUFFIXES:      .o .cc .c
+
+.c.o:
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+.cc.o:
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+# DO NOT DELETE; depend depends on this line.
