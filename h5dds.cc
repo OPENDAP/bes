@@ -315,7 +315,7 @@ Get_bt(string varname, hid_t datatype)
 	    temp_bt = NewFloat32(varname);
 	} else if (H5Tget_size(datatype) == 8) {
 
-	    temp_bt = NewFloat32(varname);
+	    temp_bt = NewFloat64(varname);
 	} else {
 	    temp_bt = NULL;
 
