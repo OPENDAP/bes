@@ -9,6 +9,9 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
 // Revision 1.3  1998/09/10 21:38:39  jehamby
 // Hide HDF chunking information from DDS.
 //
@@ -106,6 +109,8 @@ void hdfistream_vdata::_seek(int32 ref) {
       _vdata_id = 0;
       THROW(hcerr_vdataopen);
     }
+    _attr_index = 0;
+    _nattrs = VSfnattrs(_vdata_id, _HDF_VDATA);
     return;
 }
 
@@ -154,7 +159,7 @@ void hdfistream_vdata::close(void) {
 	Vend(_file_id);
 	Hclose(_file_id);
     }
-    _vdata_id = _file_id = _index = 0;
+    _vdata_id = _file_id = _index = _attr_index = _nattrs = 0;
     _vdata_refs.clear(); // clear refs
     _recs.set = false;
     return;
@@ -207,6 +212,27 @@ bool hdfistream_vdata::setrecs(int32 begin, int32 end) {
   return true;
 }
 
+// check to see if stream is positioned past the last attribute in the
+// currently open Vdata
+bool hdfistream_vdata::eo_attr(void) const {
+    if (_filename.length() == 0) // no file open
+	THROW(hcerr_invstream);
+    if (eos() && !bos())	// if eos(), then always eo_attr()
+	return true;
+    else {
+      return (_attr_index >= _nattrs); // or positioned after last Vdata attr?
+    }
+}
+
+// Read all attributes in the stream
+hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_attr>& hav) {
+//    hav = vector<hdf_attr>0;	// reset vector
+    for (hdf_attr att;!eo_attr();) {
+	*this>>att;
+	hav.push_back(att);
+    }
+    return *this;
+}
 
 // read all Vdata's in the stream
 hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_vdata>& hvv) {
@@ -214,6 +240,51 @@ hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_vdata>& hvv) {
 	*this>>hv;
 	hvv.push_back(hv);
     }
+    return *this;
+}
+
+// read an attribute from the stream
+hdfistream_vdata& hdfistream_vdata::operator>>(hdf_attr& ha) {
+    // delete any previous data in ha
+    ha.name = String();
+    ha.values = hdf_genvec();
+
+    if (_filename.length() == 0) // no file open
+        THROW(hcerr_invstream);
+    if (eo_attr())               // if positioned past last attr, do nothing
+        return *this;
+
+    char name[hdfclass::MAXSTR];
+    int32 number_type, count, size;
+    if (VSattrinfo(_vdata_id, _HDF_VDATA, _attr_index, name, &number_type, &count, &size) < 0)
+        THROW(hcerr_vdatainfo);
+
+    // allocate a temporary C array to hold data from VSgetattr()
+    void *data;
+    data = (void *)new char[count*DFKNTsize(number_type)];
+    if (data == 0)
+	THROW(hcerr_nomemory);
+
+    // read attribute values and store them in an hdf_genvec
+    if (VSgetattr(_vdata_id, _HDF_VDATA, _attr_index, data) < 0) {
+	delete []data; // problem: clean up and throw an exception
+	THROW(hcerr_vdatainfo);
+    }
+
+    // try { // try to allocate an hdf_genvec
+    if (count > 0) {
+	ha.values = hdf_genvec(number_type, data, count);
+	// }
+	// catch(...) { // problem allocating hdf_genvec: clean up and rethrow
+	//    delete []data;
+	//    throw;
+	// }
+    }
+    delete []data; // deallocate temporary C array
+
+    // increment attribute index to next attribute
+    ++_attr_index;
+    ha.name = name;		// assign attribute name
     return *this;
 }
 
@@ -231,6 +302,8 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
 
     // assign Vdata ref
     hv.ref = _vdata_refs[_index];
+    // retrieve Vdata attributes
+    *this >> hv.attrs;
     // retrieve Vdata name, class, number of records
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];

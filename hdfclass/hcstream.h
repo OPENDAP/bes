@@ -12,6 +12,9 @@
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
 // $Log: hcstream.h,v $
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
 // Revision 1.3  1998/07/13 20:26:35  jimg
 // Fixes from the final test of the new build process
 //
@@ -210,10 +213,13 @@ public:
 	{ return (_index <= 0); }
     virtual bool eos(void) const      // positioned past the last Vdata?
 	{ return (_index >= (int)_vdata_refs.size()); }
+    virtual bool eo_attr(void) const;  // positioned past the last attribute?
     void setmeta(bool val) { _meta = val; }  // set metadata loading
     bool setrecs(int32 begin, int32 end);
     hdfistream_vdata& operator>>(hdf_vdata& hs);	       // read a Vdata
     hdfistream_vdata& operator>>(vector<hdf_vdata>& hsv);  // read all Vdata's
+    hdfistream_vdata& operator>>(hdf_attr& ha);          // read an attribute
+    hdfistream_vdata& operator>>(vector<hdf_attr>& hav); // read all attributes
 protected:
     void _init(void);
     void _del(void) { close(); }
@@ -222,8 +228,10 @@ protected:
     void _seek(const char *name); // find the Vdata w/ specified name
     void _seek(int32 ref); // find the index'th Vdata in the stream
     void _rewind(void)  // position to beginning of the stream
-	{ _index = 0; if (_vdata_refs.size() > 0) _seek(_vdata_refs[0]); }
+	{ _index = _attr_index = 0; if (_vdata_refs.size() > 0) _seek(_vdata_refs[0]); }
     int32 _vdata_id;	     // handle of open object in annotation interface
+    int32 _attr_index;       // index of current attribute
+    int32 _nattrs;           // number of attributes for this Vdata
     hdfistream_vdata& operator>>(hdf_field& hf);	   // read a field
     hdfistream_vdata& operator>>(vector<hdf_field>& hfv);  // read all fields
     bool _meta;
@@ -254,9 +262,12 @@ public:
 	{ return (_index <= 0); }
     virtual bool eos(void) const      // positioned past the last Vgroup?
 	{ return (_index >= (int)_vgroup_refs.size()); }
+    virtual bool eo_attr(void) const;  // positioned past the last attribute?
     void setmeta(bool val) { _meta = val; }  // set metadata loading
     hdfistream_vgroup& operator>>(hdf_vgroup& hs);	       // read a Vgroup
     hdfistream_vgroup& operator>>(vector<hdf_vgroup>& hsv);  // read all Vgroup's
+    hdfistream_vgroup& operator>>(hdf_attr& ha);          // read an attribute
+    hdfistream_vgroup& operator>>(vector<hdf_attr>& hav); // read all attributes
 protected:
     void _init(void);
     void _del(void) { close(); }
@@ -265,8 +276,10 @@ protected:
     void _seek(const char *name); // find the Vgroup w/ specified name
     void _seek(int32 ref); // find the index'th Vgroup in the stream
     void _rewind(void)  // position to beginning of the stream
-	{ _index = 0; if (_vgroup_refs.size() > 0) _seek(_vgroup_refs[0]); }
+	{ _index = _attr_index = 0; if (_vgroup_refs.size() > 0) _seek(_vgroup_refs[0]); }
     int32 _vgroup_id;	     // handle of open object in annotation interface
+    int32 _attr_index;       // index of current attribute
+    int32 _nattrs;           // number of attributes for this Vgroup
     bool _meta;
     vector<int32> _vgroup_refs;	// list of refs for Vgroup's in the file
     struct {

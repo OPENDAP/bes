@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.10  1998/09/10 23:03:47  jehamby
+// Add support for Vdata and Vgroup attributes
+//
 // Revision 1.9  1998/09/10 21:33:25  jehamby
 // Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
 //
@@ -112,8 +115,8 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv);
 static void update_descriptions(const String& cachedir, const String& filename);
 static void build_descriptions(DDS& dds, DAS& das, const String& filename);
 static void SDS_descriptions(sds_map& map, DAS& das, const String& filename);
-static void Vdata_descriptions(vd_map& map, const String& filename);
-static void Vgroup_descriptions(DDS& dds, const String& filename,
+static void Vdata_descriptions(vd_map& map, DAS& das, const String& filename);
+static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
 				sds_map& sdmap, vd_map& vdmap, gr_map& grmap);
 static void GR_descriptions(gr_map& map, DAS& das, const String& filename);
 static void FileAnnot_descriptions(DAS& das, const String& filename);
@@ -229,13 +232,13 @@ static void build_descriptions(DDS& dds, DAS& das, const String& filename) {
     FileAnnot_descriptions(das, filename);
 
     // Build descriptions of Vdatas
-    Vdata_descriptions(vdatamap, filename);
+    Vdata_descriptions(vdatamap, das, filename);
 
     // Build descriptions of General Rasters
     GR_descriptions(grmap, das, filename);
 
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
-    Vgroup_descriptions(dds, filename, sdsmap, vdatamap, grmap);
+    Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
 
     return;
 }
@@ -278,7 +281,7 @@ static void SDS_descriptions(sds_map& map, DAS& das, const String& filename) {
 }
 
 // Read Vdata's out of filename, build descriptions and put them into dds.
-static void Vdata_descriptions(vd_map& map, const String& filename) {
+static void Vdata_descriptions(vd_map& map, DAS& das, const String& filename) {
 
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
@@ -292,11 +295,18 @@ static void Vdata_descriptions(vd_map& map, const String& filename) {
     }
     vdin.close();
 
+    // Build DAS
+    vector<hdf_attr> dattrs;
+    for (VDI s=map.begin(); s!=map.end(); ++s) {
+      const hdf_vdata *vd = &s->second.vdata;
+      AddHDFAttr(das, id2dods(vd->name), vd->attrs);
+    }
+
     return;
 }
 
 // Read Vgroup's out of filename, build descriptions and put them into dds.
-static void Vgroup_descriptions(DDS& dds, const String& filename,
+static void Vgroup_descriptions(DDS& dds, DAS& das, const String& filename,
 				sds_map& sdmap, vd_map& vdmap, gr_map& grmap) {
     hdfistream_vgroup vgin(filename);
 
@@ -309,9 +319,14 @@ static void Vgroup_descriptions(DDS& dds, const String& filename,
       vgmap[vgi.vgroup.ref] = vgi; // assign to map by vgroup ref
     }
     vgin.close();
-    // for each vgroup, assign children
+    // for each Vgroup
     for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
       const hdf_vgroup *vg = &v->second.vgroup;
+
+      // Add Vgroup attributes
+      AddHDFAttr(das, id2dods(vg->name), vg->attrs);
+
+      // now, assign children
       for(uint32 i=0; i<vg->tags.size(); i++) {
 	int32 tag = vg->tags[i];
 	int32 ref = vg->refs[i];

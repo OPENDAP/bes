@@ -10,6 +10,9 @@
 // $RCSfile: vgroup.cc,v $ - classes for HDF VGROUP
 //
 // $Log: vgroup.cc,v $
+// Revision 1.2  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
 // Revision 1.1  1998/04/06 16:40:36  jimg
 // Added by Jake Hamby (via patch)
 //
@@ -39,7 +42,7 @@ static bool IsInternalVgroup(int32 fid, int32 ref);
 
 // initialize hdfistream_vgroup
 void hdfistream_vgroup::_init(void) {
-    _vgroup_id = _index = 0;
+    _vgroup_id = _index = _attr_index = _nattrs = 0;
     _meta = false;
     _vgroup_refs.clear();
     _recs.set = false;
@@ -86,6 +89,8 @@ void hdfistream_vgroup::_seek(int32 ref) {
       _vgroup_id = 0;
       THROW(hcerr_vgroupopen);
     }
+    _attr_index = 0;
+    _nattrs = Vnattrs(_vgroup_id);
     return;
 }
 
@@ -134,7 +139,7 @@ void hdfistream_vgroup::close(void) {
 	Vend(_file_id);
 	Hclose(_file_id);
     }
-    _vgroup_id = _file_id = _index = 0;
+    _vgroup_id = _file_id = _index = _attr_index = _nattrs = 0;
     _vgroup_refs = vector<int32>(); // clear refs
     _recs.set = false;
     return;
@@ -191,6 +196,8 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
 
     // assign Vgroup ref
     hv.ref = _vgroup_refs[_index];
+    // retrieve Vgroup attributes
+    *this >> hv.attrs;
     // retrieve Vgroup name, class, number of entries
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
@@ -272,3 +279,69 @@ bool IsInternalVgroup(int32 fid, int32 ref) {
 
 }
  
+// check to see if stream is positioned past the last attribute in the
+// currently open Vgroup
+bool hdfistream_vgroup::eo_attr(void) const {
+    if (_filename.length() == 0) // no file open
+	THROW(hcerr_invstream);
+    if (eos() && !bos())	// if eos(), then always eo_attr()
+	return true;
+    else {
+      return (_attr_index >= _nattrs); // or positioned after last Vgroup attr?
+    }
+}
+
+// Read all attributes in the stream
+hdfistream_vgroup& hdfistream_vgroup::operator>>(vector<hdf_attr>& hav) {
+//    hav = vector<hdf_attr>0;	// reset vector
+    for (hdf_attr att;!eo_attr();) {
+	*this>>att;
+	hav.push_back(att);
+    }
+    return *this;
+}
+
+// read an attribute from the stream
+hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
+    // delete any previous data in ha
+    ha.name = String();
+    ha.values = hdf_genvec();
+
+    if (_filename.length() == 0) // no file open
+        THROW(hcerr_invstream);
+    if (eo_attr())               // if positioned past last attr, do nothing
+        return *this;
+
+    char name[hdfclass::MAXSTR];
+    int32 number_type, count, size;
+    if (Vattrinfo(_vgroup_id, _attr_index, name, &number_type, &count, &size) < 0)
+        THROW(hcerr_vgroupinfo);
+
+    // allocate a temporary C array to hold data from VSgetattr()
+    void *data;
+    data = (void *)new char[count*DFKNTsize(number_type)];
+    if (data == 0)
+	THROW(hcerr_nomemory);
+
+    // read attribute values and store them in an hdf_genvec
+    if (Vgetattr(_vgroup_id, _attr_index, data) < 0) {
+	delete []data; // problem: clean up and throw an exception
+	THROW(hcerr_vgroupinfo);
+    }
+
+    // try { // try to allocate an hdf_genvec
+    if (count > 0) {
+	ha.values = hdf_genvec(number_type, data, count);
+	// }
+	// catch(...) { // problem allocating hdf_genvec: clean up and rethrow
+	//    delete []data;
+	//    throw;
+	// }
+    }
+    delete []data; // deallocate temporary C array
+
+    // increment attribute index to next attribute
+    ++_attr_index;
+    ha.name = name;		// assign attribute name
+    return *this;
+}

@@ -12,6 +12,9 @@
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
 // $Log: hdfclass.h,v $
+// Revision 1.4  1998/09/10 23:03:46  jehamby
+// Add support for Vdata and Vgroup attributes
+//
 // Revision 1.3  1998/09/10 20:33:50  jehamby
 // Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
 // is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
@@ -219,6 +222,7 @@ public:
     String name;		// name of vdata
     String vclass;		// class name of vdata
     vector<hdf_field> fields;
+    vector<hdf_attr> attrs;
 protected:
     bool _ok(void) const;	// is this hdf_vdata correctly initialized?
 };
@@ -232,6 +236,7 @@ public:
   String vclass;                // class name of vgroup
   vector<int32> tags;           // vector of tags inside vgroup
   vector<int32> refs;           // vector of refs inside vgroup
+  vector<hdf_attr> attrs;
 protected:
   bool _ok(void) const;         // is this hdf_vgroup correctly initialized?
 };
