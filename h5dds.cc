@@ -99,12 +99,17 @@ depth_first(hid_t pid, char *gname, DDS &dds, const char *fname)
     case H5G_DATASET: {
       string full_path_name = string(gname) + string(oname);
       hid_t dgroup= H5Gopen(pid,gname);
+      if (dgroup <0) {
+	string msg ="h5_dds handler: cannot open hdf5 group";
+	msg +=gname;
+	throw InternalErr(msg,__FILE__,__LINE__);
+      }
 
       char *t_fpn = new char[full_path_name.length()+1];
       strcpy(t_fpn, full_path_name.c_str());
       /* obtain hdf5 dataset handle. */
       if ((get_dataset(dgroup, t_fpn, &dt_inst, Msgt)) < 0) {
-	string msg = "h5_dds handler: getting hdf5 dataset wrong for ";
+	string msg = "h5_dds handler: get hdf5 dataset wrong for ";
 	msg += t_fpn;
 	msg += string("\n") + string(Msgt);
 	delete [] t_fpn;
