@@ -9,6 +9,11 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.6  1998/03/26 00:29:34  jimg
+// Fixed bug in _ok() where has_scale was incorrectly dereferenced. The pointer
+// was supposed to be tested and then dereferenced, but instead was dereferenced
+// first. Pointed out by Jake Hamby.
+//
 // Revision 1.5  1998/03/17 18:01:02  jimg
 // Added comments about virtual memory error when compiling
 //
@@ -672,14 +677,14 @@ bool hdf_sds::has_scale(void) const {
 
 bool hdf_sds::_ok(bool *has_scale) const {
 
-    if (*has_scale)
+    if (has_scale)
 	*has_scale = false;
 
     // Check to see that for each SDS dimension scale, that the length of the
     // scale matches the size of the dimension.
     for (int i=0; i<(int)dims.size(); ++i)
 	if (dims[i].scale.size() != 0) {
-	    if (*has_scale)
+	    if (has_scale)
 		*has_scale = true;
 	    if (dims[i].scale.size() != dims[i].count)
 		return false;
