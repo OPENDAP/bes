@@ -1,3 +1,9 @@
+1999-01-21  James Gallagher  <jimg@dcz.cvo.oneworld.com>
+
+	* The server now registers the file name properly. This ensures
+	that the new projection functions can call the read() member
+	function and not fail.
+
 1998-11-11  James Gallagher  <jimg@dcz.cvo.oneworld.com>
 
 	* Added Jake Hambey's tests.
@@ -12,4 +18,4 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.3 1998/11/11 17:43:45 jimg Exp $
+$Id: ChangeLog,v 1.4 1999/01/21 22:41:38 jimg Exp $
