@@ -12,6 +12,9 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.10  1998/09/10 21:33:25  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+//
 // Revision 1.9  1998/07/13 20:26:37  jimg
 // Fixes from the final test of the new build process
 //
@@ -350,10 +353,8 @@ BaseType *NewDAPVar(const String& varname, int32 hdf_type) {
 #endif
     case DFNT_UINT8:
     case DFNT_UCHAR8:
-	bt = new HDFByte(id2dods(varname));
-	break;
     case DFNT_CHAR8:
-	bt = new HDFStr(id2dods(varname));
+	bt = new HDFByte(id2dods(varname));
 	break;
     default:
 	bt = 0;			// unsupported or invalid type
@@ -385,11 +386,11 @@ String DAPTypeName(int32 hdf_type) {
     case DFNT_INT8:
 #endif
     case DFNT_UINT8:
-    case DFNT_UCHAR8:
 	rv = "Byte";
 	break;
     case DFNT_CHAR8:
-	rv = "String";
+    case DFNT_UCHAR8:
+	rv = "String";  // note: DFNT_CHAR8 is Byte in DDS but String in DAS
 	break;
     default:
 	rv = String();

@@ -9,6 +9,9 @@
 // $RCSfile: genvec.cc,v $ - implementation of HDF generic vector class
 //
 // $Log: genvec.cc,v $
+// Revision 1.3  1998/09/10 21:33:24  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+//
 // Revision 1.2  1998/02/05 20:14:29  jimg
 // DODS now compiles with gcc 2.8.x
 //
@@ -301,7 +304,13 @@ void hdf_genvec::import(int32 nt, const vector<String>& sv) {
 	break;
     }
     case DFNT_CHAR8: {
-	strncpy((char *)obuf,sv[0].chars(),hdfclass::MAXSTR);
+	char8 val;
+	for (int i=0; i<(int)sv.size(); ++i) {
+	    strncpy(strbuf,sv[i].chars(),hdfclass::MAXSTR-1);
+	    istrstream(strbuf,hdfclass::MAXSTR) >> val;
+	    *((char8 *)obuf+i) = val;
+	}
+	//	strncpy((char *)obuf,sv[0].chars(),hdfclass::MAXSTR);
 	break;
     }
     default:
@@ -391,7 +400,7 @@ char8 hdf_genvec::elt_char8(int i) const  {
 	THROW(hcerr_range);
     if (_nt == DFNT_INT8)
 	rv = (char8)*((int8 *)_data+i);
-    else if (_nt == DFNT_CHAR8)
+    else if (_nt == DFNT_CHAR8 || _nt == DFNT_UCHAR8)
 	rv = *((char8 *)_data+i);
     else
 	THROW(hcerr_dataexport);
@@ -405,7 +414,8 @@ vector<char8> hdf_genvec::exportv_char8(void) const {
     if (_nt == DFNT_INT8)  // cast to char8 array and export
 	ConvertArrayByCast((int8 *)_data, _nelts, &dtmp);
     else if (_nt == DFNT_CHAR8)
-	dtmp = (char8 *)_data;
+        ConvertArrayByCast((char8 *)_data, _nelts, &dtmp);
+//	dtmp = (char8 *)_data;
     else
 	THROW(hcerr_dataexport);
     rv = vector<char8>(dtmp, dtmp+_nelts);
@@ -417,7 +427,7 @@ vector<char8> hdf_genvec::exportv_char8(void) const {
 // export an hdf_genvec holding uchar8 or uint8 data to a uint8 array
 uint8 *hdf_genvec::export_uint8(void) const {
     uint8 *rv = 0;
-    if (_nt == DFNT_UCHAR8)
+    if (_nt == DFNT_UCHAR8 || _nt == DFNT_CHAR8)
 	ConvertArrayByCast((uchar8 *)_data, _nelts, &rv);
     else if (_nt == DFNT_UINT8)
 	ConvertArrayByCast((uint8 *)_data, _nelts, &rv);
@@ -431,7 +441,7 @@ uint8 hdf_genvec::elt_uint8(int i) const  {
     uint8 rv;
     if (i < 0  || i > _nelts)
 	THROW(hcerr_range);
-    if (_nt == DFNT_UCHAR8)
+    if (_nt == DFNT_UCHAR8 || _nt == DFNT_CHAR8)
 	rv = (uint8)*((uchar8 *)_data+i);
     else if (_nt == DFNT_UINT8)
 	rv = *((uint8 *)_data+i);
@@ -444,7 +454,7 @@ uint8 hdf_genvec::elt_uint8(int i) const  {
 vector<uint8> hdf_genvec::exportv_uint8(void) const {
     vector<uint8> rv = vector<uint8>(0);
     uint8 *dtmp = 0;
-    if (_nt == DFNT_UCHAR8)  // cast to uint8 array and export
+    if (_nt == DFNT_UCHAR8 || _nt == DFNT_CHAR8)  // cast to uint8 array and export
 	ConvertArrayByCast((uchar8 *)_data, _nelts, &dtmp);
     else if (_nt == DFNT_UINT8)
 	dtmp = (uint8 *)_data;
@@ -631,7 +641,7 @@ uint32 hdf_genvec::elt_uint32(int i) const  {
     else if (_nt == DFNT_UINT8)
 	return (uint32)(*((uint8 *)_data+i));
     else if (_nt == DFNT_UINT16)
-	return (uint32)(*((uint8 *)_data+i));
+	return (uint32)(*((uint16 *)_data+i));
     else if (_nt == DFNT_UINT32)
 	return *((uint32 *)_data+i);
     else
@@ -805,7 +815,7 @@ vector<float64> hdf_genvec::exportv_float64(void) const {
 
 // export an hdf_genvec holding char data to a String
 String hdf_genvec::export_string(void) const {
-    if (_nt != DFNT_CHAR) {
+    if (_nt != DFNT_CHAR8 && _nt != DFNT_UCHAR8) {
 	THROW(hcerr_dataexport);
 	return String();
     }
@@ -831,7 +841,7 @@ void hdf_genvec::print(vector<String>& sv, int begin, int end, int stride) const
     if (begin < 0 || begin > _nelts || stride < 1  ||  end < 0  ||  end < begin  || 
 	stride <= 0  ||  end > _nelts-1)
 	THROW(hcerr_range);
-    if (_nt == DFNT_CHAR) {
+    if (_nt == DFNT_CHAR8 || _nt == DFNT_UCHAR8) {
 	String sub;
 	sub = String((char *)_data+begin,(end-begin+1));
 	if (stride > 1) {
@@ -848,7 +858,7 @@ void hdf_genvec::print(vector<String>& sv, int begin, int end, int stride) const
 	switch(_nt) {
 	case DFNT_UCHAR8:
 	    for (i=begin; i<=end; i+=stride) {
-		ostrstream(buf,hdfclass::MAXSTR) << hex << 
+		ostrstream(buf,hdfclass::MAXSTR) <<
 		    (int)*((uchar8 *)_data+i) << ends;
 		sv.push_back(String(buf));
 	    }

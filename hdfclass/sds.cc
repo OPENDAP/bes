@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.8  1998/09/10 21:33:24  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+//
 // Revision 1.7  1998/04/03 18:34:19  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -633,11 +636,6 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_attr& ha) {
 	delete []data; // problem: clean up and throw an exception
 	THROW(hcerr_sdsinfo);
     }
-
-    // eliminate trailing null characters from the data string; 
-    // they cause GNU's String class problems
-    if (number_type == DFNT_CHAR)
-	count = (int32)min((int)count,(int)strlen((char *)data));
 
     // try { // try to allocate an hdf_genvec
     if (count > 0) {

@@ -12,6 +12,9 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.9  1998/09/10 21:33:25  jehamby
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+//
 // Revision 1.8  1998/09/10 20:33:51  jehamby
 // Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
 // is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
@@ -505,12 +508,7 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv) {
     String anntype = DAPTypeName(DFNT_CHAR);
     String an;
     for (int i=0; i<(int)anv.size(); ++i) { // for each annotation
-#ifdef BROKEN_PARSER		// this is to make the DAS parser happy
-	    an = "\"" + anv[i] + "\""; // quote strings and remove embedded newlines
-	    gsub(an,"\n","");
-#else
-	    an = anv[i];
-#endif
+	    an = "\"" + escattr(anv[i]) + "\""; // quote strings
 	if (atp->append_attr(String("HDF_ANNOT"), anntype, an) == 0)
 	    THROW(dhdferr_addattr);
     }	
