@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script
 dnl for the hdfbrowse installation.
 dnl
-dnl $Id: configure.in,v 1.6 1997/03/27 18:23:27 jimg Exp $
+dnl $Id: configure.in,v 1.7 1997/04/18 22:51:57 jimg Exp $
 
 #--------------------------------------------------------------------
 #   Configure.in  10/18/96
@@ -18,7 +18,7 @@ dnl output variable defaults
 CXX=${CXX-g++}
 AC_MSG_RESULT(Setting CXX to $CXX)
 AC_SUBST(CXX)
-AC_PREFIX_DEFAULT("$(DODS_ROOT)")
+AC_PREFIX_DEFAULT("\$(DODS_ROOT)")
 
 fulldir=`pwd`
 dir=`basename ${fulldir}`
