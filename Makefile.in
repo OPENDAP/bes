@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.32 2003/05/14 21:28:33 jimg Exp $
+# $Id: Makefile.in,v 1.33 2004/01/22 18:11:05 jimg Exp $
 
 @SET_MAKE@
 
@@ -218,20 +218,21 @@ dhdferr.o: dhdferr.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf2netcdf.h hdfclass/hcerr.h dhdferr.h
 eosdas-test.o: eosdas-test.cc config_hdf.h ../../include/Pix.h \
   ../../include/IteratorAdapter.h ../../include/GetOpt.h \
-  ../../include/gnu-std.h ../../include/DAS.h ../../include/AttrTable.h \
-  ../../include/Error.h ../../include/parser.h ../../include/GSEClause.h \
+  ../../include/DAS.h ../../include/AttrTable.h ../../include/Error.h \
+  ../../include/parser.h ../../include/GSEClause.h \
   ../../include/BaseType.h ../../include/InternalErr.h \
-  ../../include/Array.h ../../include/dods-limits.h \
-  ../../include/Vector.h ../../include/DDS.h ../../include/Clause.h \
-  ../../include/expr.h ../../include/RValue.h ../../include/Grid.h \
-  ../../include/Constructor.h hdfeos.tab.h
+  ../../include/dods-datatypes.h ../../include/Array.h \
+  ../../include/dods-limits.h ../../include/Vector.h ../../include/DDS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  ../../include/Grid.h ../../include/Constructor.h hdfeos.tab.h
 funcs.o: funcs.cc config_hdf.h ../../include/BaseType.h \
-  ../../include/InternalErr.h ../../include/Error.h HDFArray.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h HDFArray.h \
   ../../include/Array.h ../../include/dods-limits.h \
-  ../../include/Vector.h ../../include/DDS.h ../../include/Pix.h \
-  ../../include/IteratorAdapter.h ../../include/Clause.h \
-  ../../include/expr.h ../../include/RValue.h ReadTagRef.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
+  ../../include/Vector.h ../../include/DDS.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  ReadTagRef.h /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
   /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
   /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
   /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
@@ -247,18 +248,19 @@ hc2dap.o: hc2dap.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf2netcdf.h hdfclass/hdfclass.h \
   hdfclass/hcstream.h hdfclass/hcerr.h ../../include/escaping.h \
   HDFInt32.h ../../include/Int32.h ../../include/dods-datatypes.h \
-  ../../include/BaseType.h ../../include/InternalErr.h \
-  ../../include/Error.h HDFInt16.h ../../include/Int16.h HDFUInt32.h \
-  ../../include/UInt32.h HDFUInt16.h ../../include/UInt16.h HDFFloat64.h \
-  ../../include/Float64.h HDFFloat32.h ../../include/Float32.h HDFByte.h \
-  ../../include/Byte.h HDFStr.h ../../include/dods-limits.h \
-  ../../include/Str.h HDFArray.h ../../include/Array.h \
-  ../../include/Vector.h ../../include/DDS.h ../../include/Pix.h \
-  ../../include/IteratorAdapter.h ../../include/Clause.h \
-  ../../include/expr.h ../../include/RValue.h ReadTagRef.h HDFGrid.h \
-  ../../include/Grid.h ../../include/Constructor.h HDFSequence.h \
-  ../../include/Sequence.h HDFStructure.h ../../include/Structure.h \
-  hdfutil.h dhdferr.h hdf-maps.h ../../include/debug.h
+  ../../include/BaseType.h ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/Error.h \
+  ../../include/InternalErr.h HDFInt16.h ../../include/Int16.h \
+  HDFUInt32.h ../../include/UInt32.h HDFUInt16.h ../../include/UInt16.h \
+  HDFFloat64.h ../../include/Float64.h HDFFloat32.h \
+  ../../include/Float32.h HDFByte.h ../../include/Byte.h HDFStr.h \
+  ../../include/dods-limits.h ../../include/Str.h HDFArray.h \
+  ../../include/Array.h ../../include/Vector.h ../../include/DDS.h \
+  ../../include/DAS.h ../../include/Clause.h ../../include/expr.h \
+  ../../include/RValue.h ReadTagRef.h HDFGrid.h ../../include/Grid.h \
+  ../../include/Constructor.h HDFSequence.h ../../include/Sequence.h \
+  HDFStructure.h ../../include/Structure.h hdfutil.h dhdferr.h hdf-maps.h \
+  ../../include/debug.h
 HDFArray.o: HDFArray.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
   /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
@@ -270,13 +272,16 @@ HDFArray.o: HDFArray.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   hdfclass/hcstream.h hdfclass/hcerr.h ../../include/escaping.h \
   HDFArray.h ../../include/Array.h ../../include/dods-limits.h \
   ../../include/Vector.h ../../include/BaseType.h \
-  ../../include/InternalErr.h ../../include/Error.h ../../include/DDS.h \
-  ../../include/Pix.h ../../include/IteratorAdapter.h \
-  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
-  ReadTagRef.h dhdferr.h
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h \
+  ../../include/DDS.h ../../include/DAS.h ../../include/Clause.h \
+  ../../include/expr.h ../../include/RValue.h ReadTagRef.h dhdferr.h
 HDFByte.o: HDFByte.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFByte.h ../../include/Byte.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 hdfdesc.o: hdfdesc.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
   /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
@@ -287,9 +292,10 @@ hdfdesc.o: hdfdesc.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf2netcdf.h hdfclass/hcstream.h \
   hdfclass/hcerr.h hdfclass/hdfclass.h ../../include/DDS.h \
   ../../include/Pix.h ../../include/IteratorAdapter.h \
-  ../../include/BaseType.h ../../include/InternalErr.h \
-  ../../include/Error.h ../../include/Clause.h ../../include/expr.h \
-  ../../include/RValue.h ../../include/DAS.h ../../include/AttrTable.h \
+  ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
   ../../include/escaping.h ../../include/debug.h dhdferr.h HDFArray.h \
   ../../include/Array.h ../../include/dods-limits.h \
   ../../include/Vector.h ReadTagRef.h HDFSequence.h \
@@ -297,20 +303,16 @@ hdfdesc.o: hdfdesc.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   ../../include/Grid.h dodsutil.h HDFStructure.h \
   ../../include/Structure.h hdf-dods.h hdf-maps.h ../../include/parser.h \
   ../../include/GSEClause.h
-hdf_dods.o: hdf_dods.cc config_hdf.h ../../include/DODSFilter.h \
-  ../../include/DAS.h ../../include/Pix.h ../../include/IteratorAdapter.h \
-  ../../include/AttrTable.h ../../include/Error.h ../../include/DDS.h \
-  ../../include/BaseType.h ../../include/InternalErr.h \
-  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
-  ../../include/DataDDS.h ../../include/debug.h ../../include/cgi_util.h \
-  ../../include/ObjectType.h ../../include/EncodingType.h \
-  hdfclass/hcerr.h dhdferr.h
 HDFFloat32.o: HDFFloat32.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFFloat32.h ../../include/Float32.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFFloat64.o: HDFFloat64.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFFloat64.h ../../include/Float64.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFGrid.o: HDFGrid.cc config_hdf.h ../../include/Pix.h \
   ../../include/IteratorAdapter.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
@@ -321,31 +323,38 @@ HDFGrid.o: HDFGrid.cc config_hdf.h ../../include/Pix.h \
   /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
   /usr/local/hdf/include/hdf2netcdf.h hdfclass/hdfclass.h \
   hdfclass/hcstream.h hdfclass/hcerr.h ../../include/escaping.h HDFGrid.h \
-  ../../include/Grid.h ../../include/BaseType.h \
-  ../../include/InternalErr.h ../../include/Error.h \
-  ../../include/Constructor.h ReadTagRef.h HDFArray.h \
-  ../../include/Array.h ../../include/dods-limits.h \
-  ../../include/Vector.h ../../include/DDS.h ../../include/Clause.h \
-  ../../include/expr.h ../../include/RValue.h hdfutil.h dhdferr.h
+  ../../include/Grid.h ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Error.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/Constructor.h ReadTagRef.h \
+  HDFArray.h ../../include/Array.h ../../include/dods-limits.h \
+  ../../include/Vector.h ../../include/DDS.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  hdfutil.h dhdferr.h
 hdf_handler.o: hdf_handler.cc config_hdf.h ../../include/DODSFilter.h \
   ../../include/DAS.h ../../include/Pix.h ../../include/IteratorAdapter.h \
   ../../include/AttrTable.h ../../include/Error.h ../../include/DDS.h \
   ../../include/BaseType.h ../../include/InternalErr.h \
-  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
-  ../../include/DataDDS.h ../../include/debug.h ../../include/cgi_util.h \
+  ../../include/dods-datatypes.h ../../include/Clause.h \
+  ../../include/expr.h ../../include/RValue.h ../../include/DataDDS.h \
+  ../../include/debug.h ../../include/cgi_util.h \
   ../../include/ObjectType.h ../../include/EncodingType.h \
   hdfclass/hcerr.h dhdferr.h
 HDFInt16.o: HDFInt16.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFInt16.h ../../include/Int16.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFInt32.o: HDFInt32.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFInt32.h ../../include/Int32.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFList.o: HDFList.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFList.h ../../include/List.h \
   ../../include/dods-limits.h ../../include/Vector.h \
-  ../../include/BaseType.h ../../include/DDS.h ../../include/Pix.h \
-  ../../include/IteratorAdapter.h ../../include/Clause.h \
+  ../../include/BaseType.h ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/dods-datatypes.h \
+  ../../include/DDS.h ../../include/DAS.h ../../include/Clause.h \
   ../../include/expr.h ../../include/RValue.h
 HDFSequence.o: HDFSequence.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
@@ -358,14 +367,17 @@ HDFSequence.o: HDFSequence.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   hdfclass/hcstream.h hdfclass/hcerr.h HDFSequence.h \
   ../../include/Sequence.h ../../include/Pix.h \
   ../../include/IteratorAdapter.h ../../include/BaseType.h \
-  ../../include/InternalErr.h ../../include/Error.h \
+  ../../include/AttrTable.h ../../include/Error.h \
+  ../../include/InternalErr.h ../../include/dods-datatypes.h \
   ../../include/Constructor.h ReadTagRef.h HDFStructure.h \
-  ../../include/Structure.h ../../include/DDS.h ../../include/Clause.h \
-  ../../include/expr.h ../../include/RValue.h dhdferr.h \
-  ../../include/escaping.h
+  ../../include/Structure.h ../../include/DDS.h ../../include/DAS.h \
+  ../../include/Clause.h ../../include/expr.h ../../include/RValue.h \
+  dhdferr.h ../../include/escaping.h
 HDFStr.o: HDFStr.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFStr.h ../../include/dods-limits.h \
-  ../../include/Str.h ../../include/BaseType.h
+  ../../include/Str.h ../../include/BaseType.h ../../include/AttrTable.h \
+  ../../include/Pix.h ../../include/IteratorAdapter.h \
+  ../../include/dods-datatypes.h
 HDFStructure.o: HDFStructure.cc config_hdf.h \
   /usr/local/hdf/include/mfhdf.h /usr/local/hdf/include/hdf.h \
   /usr/local/hdf/include/hdfi.h /usr/local/hdf/include/hlimits.h \
@@ -378,18 +390,26 @@ HDFStructure.o: HDFStructure.cc config_hdf.h \
   ../../include/Error.h ../../include/escaping.h HDFStructure.h \
   ../../include/Structure.h ../../include/Pix.h \
   ../../include/IteratorAdapter.h ../../include/BaseType.h \
-  ../../include/InternalErr.h ../../include/Constructor.h \
-  ../../include/DDS.h ../../include/Clause.h ../../include/expr.h \
-  ../../include/RValue.h ReadTagRef.h ../../include/Sequence.h dhdferr.h
+  ../../include/AttrTable.h ../../include/InternalErr.h \
+  ../../include/dods-datatypes.h ../../include/Constructor.h \
+  ../../include/DDS.h ../../include/DAS.h ../../include/Clause.h \
+  ../../include/expr.h ../../include/RValue.h ReadTagRef.h \
+  ../../include/Sequence.h dhdferr.h
 HDFUInt16.o: HDFUInt16.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFUInt16.h ../../include/UInt16.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFUInt32.o: HDFUInt32.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFUInt32.h ../../include/UInt32.h \
-  ../../include/dods-datatypes.h ../../include/BaseType.h
+  ../../include/dods-datatypes.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h
 HDFUrl.o: HDFUrl.cc config_hdf.h ../../include/InternalErr.h \
   ../../include/Error.h HDFUrl.h ../../include/Url.h \
   ../../include/dods-limits.h ../../include/BaseType.h \
+  ../../include/AttrTable.h ../../include/Pix.h \
+  ../../include/IteratorAdapter.h ../../include/dods-datatypes.h \
   ../../include/Str.h
 hdfutil.o: hdfutil.cc config_hdf.h /usr/local/hdf/include/mfhdf.h \
   /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
