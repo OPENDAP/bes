@@ -23,7 +23,7 @@ hid_t get_Gattr_numb(hid_t pid,int* num_attr,char *dname,char *);
 hid_t get_dataset(hid_t pid,char *dname,DS_t *dt_inst_ptr,char *);
 int get_data(hid_t dset, void *buf,char *);
 int get_slabdata(hid_t dset,int *,int *,int *,int num_dim,hsize_t,void *,char *);
-hid_t get_fileid(char *filename);
+hid_t get_fileid(const char *filename);
 char* get_dimname(hid_t,int);
 int get_dimnum(hid_t);
 hid_t get_diminfo(hid_t,int,int*,size_t*,hid_t *);

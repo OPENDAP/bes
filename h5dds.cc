@@ -51,7 +51,7 @@ static char Msgt[255];
  *
  *-------------------------------------------------------------------------
  */		
-bool depth_first( hid_t pid, char *gname,DDS &dds,char *fname,string *error)
+bool depth_first(hid_t pid, char *gname,DDS &dds, const char *fname,string *error)
 {
   int nelems = 0;
   int type = -1;

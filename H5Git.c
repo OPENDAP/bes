@@ -16,8 +16,8 @@ Kent Yang 2001/5/14/
 #include <string.h>
 #define FALSE 0
 
-herr_t count_elems(hid_t loc_id, const char *name, void *opdata);
-herr_t obj_info(hid_t loc_id, const char *name, void *opdata);
+static herr_t count_elems(hid_t loc_id, const char *name, void *opdata);
+static herr_t obj_info(hid_t loc_id, const char *name, void *opdata);
 
 typedef struct retval {
 	char * name;
@@ -450,7 +450,7 @@ hid_t get_attr_info (hid_t dset,int index,DSattr_t *attr_inst_ptr,int* ignoreptr
 /* this function is used because H5Fopen cannot be directly used in a 
    C++ code. */
 
-hid_t get_fileid(char * filename) {
+hid_t get_fileid(const char * filename) {
   return H5Fopen(filename,H5F_ACC_RDWR,H5P_DEFAULT);
 }
 

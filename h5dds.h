@@ -1,7 +1,9 @@
+
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>
 #include <H5Ipublic.h>
-//#include <H5Ppublic.h>
+// Did not work with C++. 
+// #include <H5Ppublic.h>
 #include <H5Tpublic.h>
 #include <H5Spublic.h>
 #include<H5Apublic.h>
@@ -30,17 +32,16 @@
 #include "HDF5Float64.h"
 #include "HDF5Grid.h"
 #include "h5util.h"
-//int walk_hdf5(DAS &,const string &,string *);
 
-bool depth_first( hid_t,char *,DDS &,char *,string *); 
+bool depth_first(hid_t, char *, DDS &, const char *, string *); 
    
+#if 0
 static char *
 print_attr(hid_t, int, void *);
-
+#endif
 
 bool
 read_objects(DDS &dds, const string &varname, string *error,const string& filename);
-                                                 
                                                             
 static const char STRING[]="String";
 static const char BYTE[]="Byte";

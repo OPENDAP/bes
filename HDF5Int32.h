@@ -14,8 +14,8 @@
 // ReZa 1/12/95
 
 /* $Log: HDF5Int32.h,v $
-/* Revision 1.1  2001/07/16 22:49:27  jimg
-/* Initial revision
+/* Revision 1.2  2001/07/17 15:40:55  jimg
+/* Added support for exceptions to DDS and DODS handlers
 /*
 /* Revision 1.1  1999/07/28 00:22:43  jimg
 /* Added
