@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.14 1998/09/26 04:08:48 jimg Exp $
+# $Id: Makefile.in,v 1.15 1998/09/26 22:32:44 jimg Exp $
 
 @SET_MAKE@
 
@@ -43,7 +43,7 @@ dir = hdf-dods-@VERSION@
 # testsuite specifics
 RUNTEST = runtest
 RUNTESTFLAGS = #--all --verbose
-TESTDIR = http://localhost/cgi-bin/nph-hdf
+TESTDIR = @testurl@
 
 # names of key programs
 
