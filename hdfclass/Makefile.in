@@ -1,14 +1,14 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.2 1996/11/13 22:31:22 jimg Exp $
+# $Id: Makefile.in,v 1.3 1997/03/13 00:45:45 jimg Exp $
 
 @SET_MAKE@
 
 DODS_ROOT = ../../../..
 
 INCS = -I. -I./src @INCS@
-DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DDEBUG
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DDEBUG -DNO_EXCEPTIONS
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
 CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall
 
