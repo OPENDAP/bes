@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.2  1997/06/08 22:14:35  jimg
+// Applied Todd's patch for the `stride bug' (See the TODO list).
+//
 // Revision 1.1  1996/10/31 18:43:06  jimg
 // Added.
 //
@@ -373,7 +376,10 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
     else {
 	if (_slab.set) {	// load a slab of SDS array data
 	    for (int i=0; i<rank; ++i)
+ 		nelts *= _slab.edge[i];
+#if 0
 		nelts *= (int)( (_slab.edge[i] - 1) / _slab.stride[i] + 1);
+#endif
 	    
 	    // allocate a temporray C array to hold the data from SDreaddata()
 	    int datasize = nelts * DFKNTsize(number_type);
@@ -503,7 +509,10 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 	    void *datastart = (char *)data + 
 		_slab.start[_dim_index] * DFKNTsize(number_type);
 	    hd.scale = hdf_genvec(number_type, datastart, 0, 
+				  _slab.edge[_dim_index]*_slab.stride[_dim_index]-1,
+#if 0
 				  _slab.edge[_dim_index]-1, 
+#endif
 				  _slab.stride[_dim_index]);
 	}
 	else
@@ -519,7 +528,10 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
     // assign dim size; if slabbing is set, assigned calculated size, otherwise
     // assign size from SDdiminfo()
     if (_slab.set)
+ 	hd.count = _slab.edge[_dim_index];
+#if 0
 	hd.count = ( _slab.edge[_dim_index] - 1) /_slab.stride[_dim_index] + 1;
+#endif
     else
 	hd.count = count;
     _dim_index++;
