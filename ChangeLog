@@ -1,3 +1,7 @@
+1999-05-05  James Gallagher  <jimg@dcz.dods.org>
+
+	* Added test-coverage target to Makefile.in
+
 1999-03-26  James Gallagher  <jimg@dcz.dods.org>
 
 	* Added stubs for the new datatypes.
@@ -22,4 +26,4 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.5 1999/03/30 19:09:01 jimg Exp $
+$Id: ChangeLog,v 1.6 1999/05/05 21:44:49 jimg Exp $
