@@ -32,5 +32,32 @@ To Build the hdf-dods software:
 For information about installing secure DODS servers, see the file SECURITY
 in DODS_ROOT.
 
+-----------------------------------------------------------------------------
 
+NOTE FOR LINUX
+
+The linux shell gags on the syntax we use in the Perl scripts to locate the
+perl interpreter on your system. Look at the nph-jg script. The top two lines
+look like:
+
+    #!/bin/sh -- # -*- perl -*-
+    eval "exec perl -T -S $0 $*" if 0;	# Trick to find perl. Must be on PATH.
+
+On Linux you should replace these lines with:
+
+    #!/path/to/your/perl -T
+
+Where /path/to/your/perl is the full pathname of the perl interpreter you
+want the servers to use. You can find the path to perl on your computer by
+typing:
+
+    which perl
+
+You can check the version of perl by typing:
+
+    perl -v
+
+You need Perl version 5.001 or greater.
+
+------------------------------------------------------------------------------
 
