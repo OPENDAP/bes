@@ -11,6 +11,9 @@
 // $RCSfile: HDFArray.h,v $ - HDFArray class declaration
 //
 // $Log: HDFArray.h,v $
+// Revision 1.5  1998/04/06 16:08:17  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.4  1998/04/03 18:34:21  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -37,17 +40,17 @@ typedef string String;
 
 // DODS includes
 #include "Array.h"
-#include <hdf.h>
+#include "ReadTagRef.h"
 
-class HDFArray: public Array {
+class HDFArray: public Array, public ReadTagRef {
 public:
     HDFArray(const String &n = (char *)0, BaseType *v = 0);
     virtual ~HDFArray();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &dataset, int &error);
+    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
     bool GetSlabConstraint(vector<int>& start_array, vector<int>& edge_array, 
 			   vector<int>& stride_array);
-    bool read_tagref(const String &datset, int32 tag, int32 ref, int &error);
 };
 
 Array *NewArray(const String &n, BaseType *v);

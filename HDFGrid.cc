@@ -11,6 +11,9 @@
 // $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
 //
 // $Log: HDFGrid.cc,v $
+// Revision 1.5  1998/04/06 16:08:18  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.4  1998/04/03 18:34:22  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -43,10 +46,10 @@ void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds);
 
 // Read in a Grid from an SDS in an HDF file.
 bool HDFGrid::read(const String& dataset, int& err) {
-  return read_ref(dataset, -1, err);
+  return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFGrid::read_ref(const String& dataset, int32 ref, int& err) {
+bool HDFGrid::read_tagref(const String& dataset, int32 tag, int32 ref, int& err) {
     err = -1;			// OK initially
 
     String hdf_file = dods2id(dataset);

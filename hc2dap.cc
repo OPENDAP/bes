@@ -12,6 +12,9 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.7  1998/04/06 16:08:20  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.6  1998/04/03 18:34:27  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -524,27 +527,7 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
     int32 tag = vg.tags[i];
     int32 ref = vg.refs[i];
 
-    int err;
-    bool status;
-    switch(tag) {
-    case DFTAG_VH:
-      status = (dynamic_cast<HDFSequence*>(p))->read_ref(hdf_file, ref, err);
-      break;
-    case DFTAG_NDG:
-      if(p->type_name() == "Grid")
-	status = (dynamic_cast<HDFGrid*>(p))->read_ref(hdf_file, ref, err);
-      else
-	status = (dynamic_cast<HDFArray*>(p))->read_tagref(hdf_file, tag, ref, err);
-      break;
-    case DFTAG_VG:
-      if(p->type_name() == "Structure")
-	status = (dynamic_cast<HDFStructure*>(p))->read_ref(hdf_file, ref, err);
-      else
-	status = (dynamic_cast<HDFArray*>(p))->read_tagref(hdf_file, tag, ref, err);
-      break;
-    default:
-      cerr << "Error: Unknown vgroup child: " << tag << endl;
-      break;
+    (dynamic_cast<ReadTagRef*>(p))->read_tagref(hdf_file, tag, ref, err);
     }
   }
 }

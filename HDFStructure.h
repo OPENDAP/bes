@@ -11,6 +11,9 @@
 // $RCSfile: HDFStructure.h,v $ - HDFStructure class declarations
 //
 // $Log: HDFStructure.h,v $
+// Revision 1.5  1998/04/06 16:08:20  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.4  1998/04/03 18:34:24  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -33,15 +36,15 @@ typedef string String;
 
 // DODS includes
 #include "Structure.h"
-#include <hdf.h>
+#include "ReadTagRef.h"
 
-class HDFStructure: public Structure {
+class HDFStructure: public Structure, public ReadTagRef {
 public:
     HDFStructure(const String &n = (char *)0);
     virtual ~HDFStructure();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &, int &);
-    virtual bool read_ref(const String &dataset, int32 ref, int &error);
+    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
     virtual void set_read_p(bool state);
 //    virtual int nvars(void) { return _vars.length(); }
 };

@@ -21,10 +21,10 @@ void HDFStructure::set_read_p(bool state) {
 }
 
 bool HDFStructure::read(const String& dataset, int &err) {
-  return read_ref(dataset, -1, err);
+  return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFStructure::read_ref(const String& dataset, int32 ref, int &err) { 
+bool HDFStructure::read_tagref(const String& dataset, int32 tag, int32 ref, int &err) { 
   if (read_p())
     return true;
 

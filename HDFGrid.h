@@ -11,6 +11,9 @@
 // $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
 //
 // $Log: HDFGrid.h,v $
+// Revision 1.5  1998/04/06 16:08:18  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.4  1998/04/03 18:34:23  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -36,15 +39,15 @@ typedef string String;
 
 // DODS includes
 #include "Grid.h"
-#include <hdf.h>
+#include "ReadTagRef.h"
 
-class HDFGrid: public Grid {
+class HDFGrid: public Grid, public ReadTagRef {
 public:
     HDFGrid(const String &n = (char *)0);
     virtual ~HDFGrid();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &dataset, int &);
-    virtual bool read_ref(const String &dataset, int32 ref, int &error);
+    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
 };
 
 Grid *NewGrid(const String &n);

@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.cc,v $ - HDFSequence class implementation
 //
 // $Log: HDFSequence.cc,v $
+// Revision 1.7  1998/04/06 16:08:19  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.6  1998/04/03 18:34:23  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -54,10 +57,10 @@ Sequence *NewSequence(const String &n) { return new HDFSequence(n); }
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 
 bool HDFSequence::read(const String& dataset, int& err) {
-  return read_ref(dataset, -1, err);
+  return read_tagref(dataset, -1, -1, err);
 }
 
-bool HDFSequence::read_ref(const String& dataset, int32 ref, int& err) { 
+bool HDFSequence::read_tagref(const String& dataset, int32 tag, int32 ref, int& err) { 
 
     String hdf_file = dods2id(dataset);
     String hdf_name = dods2id(this->name());

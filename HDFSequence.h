@@ -11,6 +11,9 @@
 // $RCSfile: HDFSequence.h,v $ - HDFSequence class declaration
 //
 // $Log: HDFSequence.h,v $
+// Revision 1.5  1998/04/06 16:08:19  jimg
+// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
+//
 // Revision 1.4  1998/04/03 18:34:24  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -36,15 +39,15 @@ typedef string String;
 
 // DODS includes
 #include "Sequence.h"
-#include <hdf.h>
+#include "ReadTagRef.h"
 
-class HDFSequence: public Sequence {
+class HDFSequence: public Sequence, public ReadTagRef {
 public:
     HDFSequence(const String &n = (char *)0);
     virtual ~HDFSequence();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const String &, int &);
-    virtual bool read_ref(const String &dataset, int32 ref, int &error);
+    virtual bool read_tagref(const String &dataset, int32 tag, int32 ref, int &error);
 protected:
     int row;         // current row
     hdf_vdata vd;    // holds Vdata
