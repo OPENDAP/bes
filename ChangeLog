@@ -1,3 +1,7 @@
+1998-11-11  James Gallagher  <jimg@dcz.cvo.oneworld.com>
+
+	* Added Jake Hambey's tests.
+
 1998-09-17  James Gallagher  <jimg@dcz.cvo.oneworld.com>
 
 	* Many changes includig support for vdata.
@@ -8,4 +12,4 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.2 1998/09/17 17:55:04 jimg Exp $
+$Id: ChangeLog,v 1.3 1998/11/11 17:43:45 jimg Exp $
