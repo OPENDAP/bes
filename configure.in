@@ -1,5 +1,7 @@
 dnl Process this file with autoconf to produce a configure script
 dnl for the hdfbrowse installation.
+dnl
+dnl $Id: configure.in,v 1.2 1996/11/13 22:33:19 jimg Exp $
 
 #--------------------------------------------------------------------
 #   Configure.in  10/18/96
@@ -8,12 +10,16 @@ dnl for the hdfbrowse installation.
 
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
+
 AC_CANONICAL_SYSTEM
-AC_CONFIG_SUBDIRS(hdfclass)
 
 dnl output variable defaults
-CXX=g++
+
+CXX=${CXX-g++}
+AC_MSG_RESULT(Setting CXX to $CXX)
+AC_SUBST(CXX)
 AC_PREFIX_DEFAULT("$(DODS_ROOT)")
+
 fulldir=`pwd`
 dir=`basename ${fulldir}`
 AC_SUBST(dir)
@@ -27,34 +33,26 @@ AC_SUBST(depend)
 #       Program Check
 #--------------------------------------------------------------------
 
-dnl checks for programs
-AC_PROG_CXX
-dnl test for exceptions support in compiler
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+AC_PROG_LN_S
 DODS_CHECK_EXCEPTIONS()
-if test $CXX = g++; then
-   EXCEPTIONS_SWITCH="-fhandle-exceptions -O0"
-fi
-AC_SUBST(EXCEPTIONS_SWITCH)
+
 AC_PROG_INSTALL
 
 if echo $INSTALL | egrep 'install-sh'
 then
-     INSTALL="$(DODS_ROOT)/etc/install-sh -c"
-     AC_SUBST(INSTALL)
+        INSTALL="$(DODS_ROOT)/etc/install-sh -c"
+        AC_SUBST(INSTALL)
 fi
-
 
 #--------------------------------------------------------------------
 #       Library Check
 #--------------------------------------------------------------------
 
-dnl look for xdr routines in std libs or in -lnsl
-AC_CHECK_FUNC(xdr_int, , AC_CHECK_LIB(nsl, xdr_int, LIBS="-lnsl $LIBS", noxdr=1))
-
-# Check for hdf libraries
+DODS_LIBS
 DODS_HDF_LIBRARY
-DODS_WWW_LIBRARY
-DODS_FIND_WWW_INCLUDES
+DODS_WWW_ROOT
 DODS_FIND_EXPECT
 
 #--------------------------------------------------------------------
@@ -78,14 +76,17 @@ fi
 #       Output to Makefiles
 #--------------------------------------------------------------------
 
-AC_MSG_CHECKING(for $host_vendor directory)
-if test -d $host_vendor; 
-then
-   AC_MSG_RESULT(found)
-else
-   AC_MSG_RESULT(creating)
-  `mkdir $host_vendor`
-fi
+dnl AC_MSG_CHECKING(for $host_vendor directory)
+dnl if test -d $host_vendor;
+dnl then
+dnl    AC_MSG_RESULT(found)
+dnl else
+dnl    AC_MSG_RESULT(creating)
+dnl   `mkdir $host_vendor`
+dnl fi
 
-AC_OUTPUT(Makefile $host_vendor/Makefile:hdf-dods.mk)
+AC_OUTPUT(Makefile hdfclass/Makefile)
+
+
+
 

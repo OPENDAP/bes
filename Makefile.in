@@ -1,8 +1,22 @@
+
+# Makefile for hdf-dods.
 #
+# $Id: Makefile.in,v 1.2 1996/11/13 22:33:16 jimg Exp $
+
+@SET_MAKE@
+
+PROGS = hdf_dods hdf_das hdf_dds srvtest libhdf-dods.a
 
 DODS_ROOT = ../..
+WWW_ROOT = @WWW_ROOT@
 
-SHELL = /bin/sh
+INCS = -I. -I$(DODS_ROOT)/include -Isrc -Ihdfclass/src @INCS@ 
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H -DDEBUG -DNO_CACHING
+CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
+CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall
+LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
+LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass -lwww @LIBS@
+
 # Set the instalation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
 
@@ -13,38 +27,101 @@ libdir = $(exec_prefix)/lib
 includedir = $(prefix)/include
 manext = 1
 mandir = $(prefix)/man/man$(manext)
+
 src = $(DODS_ROOT)/src
 etcdir = $(DODS_ROOT)/etc
+
+INSTALLMAN = man
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+
+# names of key programs
+
+LN_S = @LN_S@
+CP = cp
+CXX = @CXX@
+AR = ar
+TAGS = etags
+RANLIB = @RANLIB@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 STRIP = strip
 
-all:		HDFClass hdf-dods 
+vpath %.h src
+vpath %.cc src
 
-HDFClass:	
-		cd ./hdfclass/@host_vendor@; $(MAKE)
+HDFOBJS = HDFArray.o HDFByte.o HDFFloat64.o HDFFunction.o HDFGrid.o \
+	  HDFInt32.o HDFUInt32.o HDFList.o HDFSequence.o HDFStr.o \
+	  HDFStructure.o HDFUrl.o hdfdesc.o hc2dap.o dhdferr.o \
+	  hdfutil.o
 
-hdf-dods:	
-		cd ./@host_vendor@; $(MAKE)
+DDSOBJS = hdf_dds.o
+DASOBJS = hdf_das.o
+SRVOBJS = hdf_dods.o
 
-install:	all
-		$(INSTALL_DATA) ./@host_vendor@/libhdf-dods.a $(libdir)
-		$(RANLIB) $(libdir)/libhdf-dods.a
-		$(INSTALL_DATA) ./hdfclass/@host_vendor@/libhdfclass.a $(libdir)
-		$(RANLIB) $(libdir)/libhdfclass.a
-		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_das $(etcdir)
-		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_dds $(etcdir)
-		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_dods $(etcdir)
-		$(STRIP) $(etcdir)/hdf_das $(etcdir)/hdf_dds $(etcdir)/hdf_dods
-		$(INSTALL) ./src/HDF*.h $(includedir)
-		$(INSTALL) ./hdfclass/src/hdfclass.h $(includedir)
-		$(INSTALL) ./hdfclass/src/hcstream.h $(includedir)
+all:	HDFClass $(PROGS)
+
+HDFClass:
+	cd ./hdfclass; $(MAKE) $(MFLAGS)
+
+libhdf-dods.a:	$(HDFOBJS)
+	ar ru libhdf-dods.a $(HDFOBJS)
+
+hdf_dds: $(DDSOBJS) libhdf-dods.a
+	$(CXX) $(DDSOBJS) -o hdf_dds $(LDFLAGS) $(LIBS)
+
+hdf_das: $(DASOBJS) libhdf-dods.a
+	$(CXX) $(DASOBJS) -o hdf_das $(LDFLAGS) $(LIBS)
+
+hdf_dods: $(SRVOBJS) libhdf-dods.a
+	$(CXX) $(SRVOBJS) -o hdf_dods $(LDFLAGS) $(LIBS)
+
+srvtest: srvtest.o libhdf-dods.a
+	$(CXX) srvtest.o -o srvtest $(LDFLAGS) $(LIBS)
+
+escfilt: escfilt.o libhdf-dods.a
+	$(CXX) escfilt.o -o escfilt $(LDFLAGS) $(LIBS)
 
 clean:
-		cd ./@host_vendor@/; $(MAKE) clean
-		cd ./hdfclass/@host_vendor@/; $(MAKE) clean
+	-rm *.o $(PROGS)
+	-cd hdfclass && $(MAKE) $(MFLAGS) clean
 
-ultraclean:
-		cd ./@host_vendor@/; $(MAKE) ultraclean
-		cd ./hdfclass/@host_vendor@/; $(MAKE) ultraclean
+distclean: clean
+	-rm config.* Makefile
+
+install: all
+	$(INSTALL_PROGRAM) ./hdf_das $(etcdir)
+	$(INSTALL_PROGRAM) ./hdf_dds $(etcdir)
+	$(INSTALL_PROGRAM) ./hdf_dods $(etcdir)
+	$(STRIP) $(etcdir)/hdf_das $(etcdir)/hdf_dds $(etcdir)/hdf_dods
+#	$(INSTALL_DATA) ./hdfclass/@host_vendor@/libhdfclass.a $(libdir)
+#	$(INSTALL_DATA) ./@host_vendor@/libhdf-dods.a $(libdir)
+#	$(RANLIB) $(libdir)/libhdf-dods.a
+#	$(RANLIB) $(libdir)/libhdfclass.a
+#	$(INSTALL) ./src/HDF*.h $(includedir)
+#	$(INSTALL) ./hdfclass/src/hdfclass.h $(includedir)
+#	$(INSTALL) ./hdfclass/src/hcstream.h $(includedir)
+
+.SUFFIXES:      .o .cc .c
+
+.c.o:
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+.cc.o:
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,35 +1,72 @@
 
-vpath %.h ../src
-vpath %.cc ../src
+# Makefile for hdfclass library.
+#
+# $Id: Makefile.in,v 1.2 1996/11/13 22:31:22 jimg Exp $
 
-# GNU G++ options
-CXX = g++
+@SET_MAKE@
+
 DODS_ROOT = ../../../..
 
-CFLAGS = @INCS@ \
-	 -I../src \
-	 @EXCEPTIONS_SWITCH@ -gstabs+ -Wall \
-	 -DDEBUG 
+INCS = -I. -I./src @INCS@
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DDEBUG
+CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
+CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall
 
 # Set the instalation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
 
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
+manext = 1
+mandir = $(prefix)/man/man$(manext)
+
+src = $(DODS_ROOT)/src
+etcdir = $(DODS_ROOT)/etc
+
+INSTALLMAN = man
+
 SHELL = /bin/sh
+srcdir = @srcdir@
 
-.SUFFIXES:	.o .cc .c
+# names of key programs
 
-.cc.o:		hdfclass.h hcstream.h
-		$(CXX) -c $(CFLAGS) $<
+LN_S = @LN_S@
+CP = cp
+CXX = @CXX@
+AR = ar
+TAGS = etags
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+STRIP = strip
 
-OBJS =		hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o
+vpath %.h src
+vpath %.cc src
+
+#vpath %.h ../src
+#vpath %.cc ../src
+
+OBJS = hcerr.o genvec.o sds.o annot.o vdata.o hcutil.o gri.o inst.o
 
 libhdfclass.a:	$(OBJS)
-		ar ru libhdfclass.a $(OBJS)
-		ranlib libhdfclass.a
+	$(AR) ru libhdfclass.a $(OBJS)
+	$(RANLIB) libhdfclass.a
 
 clean:		
-		rm -fr libhdfclass.a
+	-rm -fr libhdfclass.a $(OBJS)
 
-ultraclean:	
-		rm -fr libhdfclass.a $(OBJS)
+distclean: clean
+	-rm -fr libhdfclass.a $(OBJS)
+
+
+.SUFFIXES: .o .cc .c
+
+.cc.o:	hdfclass.h hcstream.h
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+
 
