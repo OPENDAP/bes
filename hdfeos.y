@@ -21,7 +21,7 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 
-// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.6 2000/10/09 19:46:20 jimg Exp $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y,v 1.7 2000/10/12 23:50:16 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,11 +54,7 @@
 #define ERROR_OBJ(arg) ((parser_arg *)(arg))->_error
 #define STATUS(arg) ((parser_arg *)(arg))->_status
 
-#if DODS_BISON_VER > 124
 #define YYPARSE_PARAM arg
-#else
-#define YYPARSE_PARAM void *arg
-#endif
 
 extern int hdfeos_line_num;	/* defined in hdfeos.lex */
 
