@@ -1,7 +1,8 @@
 
+dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.13 1998/09/26 22:32:23 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.14 1998/10/06 16:55:58 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 
@@ -18,18 +19,16 @@ dnl `depend' is the command to use to generate dependencies for Makefiles.
 depend=${dods_root}/etc/depend.sh
 AC_SUBST(depend)
 
-CFLAGS="-g -O2"
+CFLAGS="-g -O2 $CFLAGS"
+LDFLAGS="-g $LDFLAGS"
 
 dnl Turn off all optimizations for g++ 2.7.x since this code uses the STL.
 DODS_GCC_VERSION
 echo "GCC_VER: $GCC_VER"
 case $GCC_VER in
-    2.8*) CXXFLAGS="-g -O0";;
-    *) CXXFLAGS="-g -O0";;
+    2.8*) CXXFLAGS="-g -O0 $CXXFLAGS";;
+    *) CXXFLAGS="-g -O0 $CXXFLAGS";;
 esac
-
-dnl GNU ld doesn't need this, but others do.
-LDFLAGS="-g"
 
 dnl Checks for programs.
 
