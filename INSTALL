@@ -2,27 +2,35 @@
 To Build the hdf-dods software:
 
 1) Type `./configure' at the system prompt. On some systems you may have to
-type `sh configure'.
+   type `sh configure'.
 
 2) Type `make' to build the new library and the three server programs, `make
-check' to build the test software. NB: you must have the GNU automated
-testing software DejaGNU to run the makefile's check target.
+   check' to build the test software. NB: you must have the GNU automated
+   testing software DejaGNU to run the makefile's check target.
 
 3) Type `make install' to install the new library. 
 
-4) To install the data server you need to copy the four executables (one
-script and three binary programs) named `hdf', `hdf_das', `hdf_dds' and
-`hdf_dods' to your http server's CGI directory. The executables are located
-in the subdirectory named for you machine type (ie. sun, sgi). For many UNIX
-computers, this will be named cgi-bin and will reside within the http
-server's home directory (e.g., on my system the cgi binary directory is
-called /usr/local/etc/httpd/cgi-bin). You can find out the name of this
-directory if you don't know it by looking in the http server's srm.conf
-configuration file (which will be located in a directory called `conf' within
-the http server's home directory.
+4) Look at the Perl script nph-hdf. In it there are two variable named
+   $spool_dir and $cache_dir. Set these variables to reasonable values for
+   your computer. In *most* cases you'll want to have them name the same
+   directory and that will *not* be one of the directories that contains your
+   data files. It is probably a very good idea to create a special
+   cache/spool directory somewhere on your system and set both $cache_dir and
+   $spool_dir to that directory's name.
+
+5) To install the data server you need to copy the four executables (one
+   script and three binary programs) named `hdf', `hdf_das', `hdf_dds' and
+   `hdf_dods' to your http server's CGI directory. The executables are
+   located in the subdirectory named for you machine type (ie. sun, sgi). For
+   many UNIX computers, this will be named cgi-bin and will reside within the
+   http server's home directory (e.g., on my system the cgi binary directory
+   is called /usr/local/etc/httpd/cgi-bin). You can find out the name of this
+   directory if you don't know it by looking in the http server's srm.conf
+   configuration file (which will be located in a directory called `conf'
+   within the http server's home directory.
 
 For information about installing secure DODS servers, see the file SECURITY
 in DODS_ROOT.
 
-ich 
+
 
