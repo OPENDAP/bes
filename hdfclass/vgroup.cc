@@ -10,6 +10,9 @@
 // $RCSfile: vgroup.cc,v $ - classes for HDF VGROUP
 //
 // $Log: vgroup.cc,v $
+// Revision 1.3  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.2  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
 //
@@ -23,10 +26,10 @@
 
 #include <mfhdf.h>
 #ifdef __GNUG__
-#include <String.h>
+#include <string.h>
 #else
 #include <bstring.h>
-typedef string String;
+typedef string string;
 #endif
 #include <vector.h>
 #include <set.h>
@@ -102,20 +105,12 @@ void hdfistream_vgroup::_seek(int32 ref) {
 hdfistream_vgroup::hdfistream_vgroup(const char *filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a null filename
-#ifdef __GNUG__  // GNU string
-	open(_filename.chars());
-#else // STL string
-	open(_filename.data());
-#endif
+	open(_filename.c_str());
     return;
 }
 
-void hdfistream_vgroup::open(const String& filename) {
-#ifdef __GNUG__
-    open(filename.chars());
-#else
-    open(filename.data());
-#endif
+void hdfistream_vgroup::open(const string& filename) {
+    open(filename.c_str());
     return;
 }
 
@@ -158,12 +153,8 @@ void hdfistream_vgroup::seek_ref(int ref) {
     return;
 }
 
-void hdfistream_vgroup::seek(const String& name) {
-#ifdef __GNUG__
-    seek(name.chars());
-#else
-    seek(name.data());
-#endif
+void hdfistream_vgroup::seek(const string& name) {
+    seek(name.c_str());
 }
 
 void hdfistream_vgroup::seek(const char *name) {
@@ -187,7 +178,7 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     // delete any previous data in hv
     hv.tags.clear();
     hv.refs.clear();
-    hv.vclass = hv.name = String();
+    hv.vclass = hv.name = string();
 
     if (_vgroup_id == 0)
 	THROW(hcerr_invstream);	// no vgroup open!
@@ -205,10 +196,10 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     if (Vinquire(_vgroup_id, &nentries, name) 
 	< 0)
 	THROW(hcerr_vgroupinfo);
-    hv.name = String(name);
+    hv.name = string(name);
     if (Vgetclass(_vgroup_id, vclass) < 0)
 	THROW(hcerr_vgroupinfo);
-    hv.vclass = String(vclass);
+    hv.vclass = string(vclass);
 
     // retrieve entry tags and refs
     int32 npairs = Vntagrefs(_vgroup_id);
@@ -242,11 +233,11 @@ bool hdf_vgroup::_ok(void) const {
 
 bool IsInternalVgroup(int32 fid, int32 ref) { 
     // block vgroups used internally
-    set<String, less<String> > reserved_names;
+    set<string, less<string> > reserved_names;
     reserved_names.insert("RIATTR0.0N");
     reserved_names.insert("RIG0.0");
 
-    set<String, less<String> > reserved_classes;
+    set<string, less<string> > reserved_classes;
     reserved_classes.insert("Attr0.0");
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
@@ -268,12 +259,12 @@ bool IsInternalVgroup(int32 fid, int32 ref) {
     char vclass[hdfclass::MAXSTR];
     if (Vgetname(vid, name) < 0)
         THROW(hcerr_vdatainfo);
-    if (reserved_names.find(String(name)) != reserved_names.end())
+    if (reserved_names.find(string(name)) != reserved_names.end())
         return true;
 
     if (Vgetclass(vid, vclass) < 0)
         THROW(hcerr_vdatainfo);
-    if (reserved_classes.find(String(vclass)) != reserved_classes.end())
+    if (reserved_classes.find(string(vclass)) != reserved_classes.end())
         return true;
     return false;
 
@@ -304,7 +295,7 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(vector<hdf_attr>& hav) {
 // read an attribute from the stream
 hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
     // delete any previous data in ha
-    ha.name = String();
+    ha.name = string();
     ha.values = hdf_genvec();
 
     if (_filename.length() == 0) // no file open

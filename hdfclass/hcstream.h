@@ -12,6 +12,9 @@
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
 // $Log: hcstream.h,v $
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.4  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
 //
@@ -54,7 +57,7 @@
 // Added support for Vdata.
 //
 // Revision 1.2  1996/04/19  17:40:18  todd
-// Added seek(const char *) and _seek_arr(const String&) mfuncs.
+// Added seek(const char *) and _seek_arr(const string&) mfuncs.
 // Added a cast in the eos() mfunc to silence g++'s warning.
 //
 // Revision 1.1  1996/04/19  01:17:02  todd
@@ -62,13 +65,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
-#include <vector.h>
+#include <string>
+#include <vector>
+
 #include <hcerr.h>
 #include <hdfclass.h>
 
@@ -91,7 +90,7 @@ protected:
 	if (filename != 0) _filename = filename;
 	_file_id = _index = 0;  
     }
-    String _filename;
+    string _filename;
     int32 _file_id;
     int _index;
 };
@@ -132,13 +131,13 @@ protected:
     void _close_sds(void);	// close the open SDS
     void _seek_next_arr(void);	// find the next SDS array in the stream
     void _seek_arr(int index);	// find the index'th SDS array in the stream
-    void _seek_arr(const String& name);	// find the SDS array w/ specified name
+    void _seek_arr(const string& name);	// find the SDS array w/ specified name
     void _seek_arr_ref(int ref); // find the SDS array in the stream by ref
     void _rewind(void) { _index = -1; _attr_index = _dim_index = 0; }
 				// position to the beginning of the stream
-    static const String long_name; // label
-    static const String units;
-    static const String format;
+    static const string long_name; // label
+    static const string units;
+    static const string format;
     int32 _sds_id;	     // handle of open object in annotation interface
     int32 _attr_index;	     // index of current attribute
     int32 _dim_index;	     // index of current dimension
@@ -176,8 +175,8 @@ public:
     virtual void rewind(void) { _index = 0; }
     virtual void set_annot_type(bool label, bool desc)  // specify types of
 	{ _lab = label; _desc = desc; }		// annots to read
-    hdfistream_annot& operator>>(String& an);    // read current annotation
-    hdfistream_annot& operator>>(vector<String>& anv); // read all annots
+    hdfistream_annot& operator>>(string& an);    // read current annotation
+    hdfistream_annot& operator>>(vector<string>& anv); // read all annots
 protected:
     void _init(const char *filename=0);
     void _init(const char *filename, int32 tag, int32 ref);
@@ -201,11 +200,11 @@ public:
     virtual ~hdfistream_vdata(void) { _del(); }
     void operator=(const hdfistream_vdata&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename); // open stream, seek to BOS
-    virtual void open(const String& filename); // open stream, seek to BOS
+    virtual void open(const string& filename); // open stream, seek to BOS
     virtual void close(void);	       // close stream
     virtual void seek(int index=0);    // seek the index'th Vdata
     virtual void seek(const char *name); // seek the Vdata by name
-    virtual void seek(const String& name); // seek the Vdata by name
+    virtual void seek(const string& name); // seek the Vdata by name
     virtual void seek_next(void) { _seek_next(); } // seek the next Vdata in file
     virtual void seek_ref(int ref);        // seek the Vdata by ref
     virtual void rewind(void) { _rewind(); } // position in front of first Vdata
@@ -250,11 +249,11 @@ public:
     virtual ~hdfistream_vgroup(void) { _del(); }
     void operator=(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename); // open stream, seek to BOS
-    virtual void open(const String& filename); // open stream, seek to BOS
+    virtual void open(const string& filename); // open stream, seek to BOS
     virtual void close(void);	       // close stream
     virtual void seek(int index=0);    // seek the index'th Vgroup
     virtual void seek(const char *name); // seek the Vgroup by name
-    virtual void seek(const String& name); // seek the Vgroup by name
+    virtual void seek(const string& name); // seek the Vgroup by name
     virtual void seek_next(void) { _seek_next(); } // seek the next Vgroup in file
     virtual void seek_ref(int ref);      // seek the Vgroup by ref
     virtual void rewind(void) { _rewind(); } // position in front of first Vgroup

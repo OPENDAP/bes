@@ -9,6 +9,9 @@
 // $RCSfile: annot.cc,v $ - input stream class for HDF annotations
 // 
 // $Log: annot.cc,v $
+// Revision 1.3  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.2  1998/09/10 21:57:10  jehamby
 // Fix incorrect checking of HDF return values and other incorrect HDF calls.
 //
@@ -16,7 +19,7 @@
 // Added.
 //
 // Revision 1.3  1996/06/14  23:07:37  todd
-// Fixed minor bug in operator>>(String)
+// Fixed minor bug in operator>>(string)
 //
 // Revision 1.2  1996/05/23  18:15:08  todd
 // Added copyright statement.
@@ -28,10 +31,10 @@
 
 #include <mfhdf.h>
 #ifdef __GNUG__
-#include <String.h>
+#include <string.h>
 #else
 #include <bstring.h>
-typedef string String;
+typedef string string;
 #endif
 #include <vector.h>
 #include <hcerr.h>
@@ -49,7 +52,7 @@ void hdfistream_annot::_init(const char *filename) {
     _lab = _desc = true;
     _an_ids = vector<int32>();
     if (filename == 0)
-	_filename = String();
+	_filename = string();
     else
 	_filename = filename;
     return;
@@ -154,22 +157,14 @@ hdfistream_annot::hdfistream_annot(const char *filename) :
   hdfistream_obj(filename) {
     _init(filename);
     if (_filename.length() != 0)
-#ifdef __GNUG__  // GNU string
-	open(_filename.chars());
-#else // STL string
-	open(_filename.data());
-#endif
+	open(_filename.c_str());
     return;
 }
 
 hdfistream_annot::hdfistream_annot(const char *filename, int32 tag, int32 ref) : 
   hdfistream_obj(filename) {
     _init(filename);
-#ifdef __GNUG__  // GNU string
-    open(_filename.chars(), tag, ref);
-#else // STL string
-    open(_filename.data(), tag, ref);
-#endif
+    open(_filename.c_str(), tag, ref);
     return;
 }
 
@@ -197,10 +192,10 @@ void hdfistream_annot::close(void) {
     return;
 }
 
-hdfistream_annot& hdfistream_annot::operator>>(String& an) {
+hdfistream_annot& hdfistream_annot::operator>>(string& an) {
 
     // delete any previous data in an
-    an = String();
+    an = string();
 
     if (_an_id == 0  ||  _index < 0)
 	THROW(hcerr_invstream);
@@ -217,8 +212,8 @@ hdfistream_annot& hdfistream_annot::operator>>(String& an) {
     return *this;
 }
     
-hdfistream_annot& hdfistream_annot::operator>>(vector<String>& anv) {
-    for (String an; !eos(); ) {
+hdfistream_annot& hdfistream_annot::operator>>(vector<string>& anv) {
+    for (string an; !eos(); ) {
 	*this>>an;
 	anv.push_back(an);
     }

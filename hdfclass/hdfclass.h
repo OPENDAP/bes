@@ -12,6 +12,9 @@
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
 // $Log: hdfclass.h,v $
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.4  1998/09/10 23:03:46  jehamby
 // Add support for Vdata and Vgroup attributes
 //
@@ -28,7 +31,7 @@
 //
 // Revision 1.16  1996/10/14 23:07:53  todd
 // Added a new import function to hdf_genvec to allow import from a vector
-// of String.
+// of string.
 //
 // Revision 1.15  1996/09/20 17:56:02  ike
 // Added interlace data member to GR class.
@@ -84,17 +87,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
-#ifdef __GNUG__
-#include <String.h>
-//#ifndef NO_EXCEPTIONS
-//#include <typeinfo>
-//#endif // NO_EXCEPTIONS
-#else
-#include <bstring.h>
-typedef string String;
-#endif // __GNUG__
-#include <vector.h>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #ifdef NO_BOOL
 enum bool {false=0,true=1};
@@ -128,7 +123,7 @@ public:
     void import(int32 nt, void *data, int nelts) { import(nt, data, 0, nelts-1, 1); }
     void import(int32 nt, void *data, int begin, int end, int stride=1);
     void import(int32 nt) { import(nt, 0, 0, 0, 0); }
-    void import(int32 nt, const vector<String>& sv);
+    void import(int32 nt, const vector<string>& sv);
     vector<uchar8> exportv_uchar8(void) const; 
     uchar8 *export_uchar8(void) const; 
     uchar8 elt_uchar8(int i) const; 
@@ -159,9 +154,9 @@ public:
     vector<float64> exportv_float64(void) const; 
     float64 *export_float64(void) const; 
     float64 elt_float64(int i) const; 
-    String export_string(void) const; 
-    void print(vector<String>& strv) const;
-    void print(vector<String>& strv, int begin, int end, int stride) const;
+    string export_string(void) const; 
+    void print(vector<string>& strv) const;
+    void print(vector<string>& strv, int begin, int end, int stride) const;
 protected:
     void _init(int32 nt, void *data, int begin, int end, int stride=1);
     void _init(void);
@@ -175,17 +170,17 @@ protected:
 // HDF attribute class
 class hdf_attr {
 public:
-    String name;		// name of attribute
+    string name;		// name of attribute
     hdf_genvec values;		// value(s) of attribute
 };
 
 // HDF dimension class - holds dimension info and scale for an SDS
 class hdf_dim {
 public:
-    String name;		// name of dimension
-    String label;		// label of dimension
-    String unit;		// units of this dimension
-    String format;		// format to use when displaying
+    string name;		// name of dimension
+    string label;		// label of dimension
+    string unit;		// units of this dimension
+    string format;		// format to use when displaying
     int32 count;		// size of this dimension
     hdf_genvec scale;		// dimension scale data
     vector<hdf_attr> attrs;	// vector of dimension attributes
@@ -197,7 +192,7 @@ public:
     bool operator!(void) const { return !_ok(); }
     bool has_scale(void) const;	// does this SDS have a dim scale?
     int32 ref;                // ref number of SDS
-    String name;
+    string name;
     vector<hdf_dim> dims;	// dimensions and dimension scales
     hdf_genvec data;		// data stored in SDS
     vector<hdf_attr> attrs;	// vector of attributes
@@ -209,7 +204,7 @@ class hdf_field {
 public:
     friend class hdf_vdata;
     bool operator!(void) const { return !_ok(); }
-    String name;
+    string name;
     vector<hdf_genvec> vals; // values for field; vals.size() is order of field
 protected:
     bool _ok(void) const;	// is this hdf_field correctly initialized?
@@ -219,8 +214,8 @@ class hdf_vdata {
 public:
     bool operator!(void) const { return !_ok(); }
     int32 ref;                  // ref number
-    String name;		// name of vdata
-    String vclass;		// class name of vdata
+    string name;		// name of vdata
+    string vclass;		// class name of vdata
     vector<hdf_field> fields;
     vector<hdf_attr> attrs;
 protected:
@@ -232,8 +227,8 @@ class hdf_vgroup {
 public:
   bool operator!(void) const { return !_ok(); }
   int32 ref;                    // ref number of vgroup
-  String name;                  // name of vgroup
-  String vclass;                // class name of vgroup
+  string name;                  // name of vgroup
+  string vclass;                // class name of vgroup
   vector<int32> tags;           // vector of tags inside vgroup
   vector<int32> refs;           // vector of refs inside vgroup
   vector<hdf_attr> attrs;
@@ -244,7 +239,7 @@ protected:
 // Palette container class 
 class hdf_palette {
 public:
-    String name;        // palettes name
+    string name;        // palettes name
     hdf_genvec table;   // palette
     int32 ncomp;        // number of components
     int32 num_entries;  // number of entries
@@ -254,7 +249,7 @@ public:
 class hdf_gri {
 public:
     int32 ref;                    // ref number of raster
-    String name;
+    string name;
     vector<hdf_palette> palettes; // vector of associated palettes
     vector<hdf_attr> attrs;       // vector of attributes
     int32 dims[2];                // the image dimensions
@@ -269,8 +264,8 @@ protected:
 
 // misc utility functions
 
-vector<String> split(const String& str, const String& delim);
-String join(const vector<String>& sv, const String& delim);
+vector<string> split(const string& str, const string& delim);
+string join(const vector<string>& sv, const string& delim);
 bool SDSExists(const char *filename, const char *sdsname);
 bool GRExists(const char *filename, const char *grname);
 bool VdataExists(const char *filename, const char *vdname);

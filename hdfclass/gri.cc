@@ -9,11 +9,14 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.5  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.4  1998/09/10 21:50:22  jehamby
 // Fix subsetting for multi-component GR (Note: due to an HDF library bug,
 // you can't actually subset a GR with >1 component, but at least retrieving
 // the entire image works).  Also, remove debugging output and work around
-// another HDF bug so palettes output as Byte instead of String.
+// another HDF bug so palettes output as Byte instead of string.
 //
 // Revision 1.3  1998/07/13 20:26:35  jimg
 // Fixes from the final test of the new build process
@@ -64,10 +67,10 @@
 #include <mfhdf.h>
 #include <mfgr.h>
 #ifdef __GNUG__
-#include <String.h>
+#include <string.h>
 #else
 #include <bstring.h>
-typedef string String;
+typedef string string;
 #endif
 #include <vector.h>
 #include <hcstream.h>
@@ -119,11 +122,7 @@ void hdfistream_gri::_close_ri(void) {
 hdfistream_gri::hdfistream_gri(const char *filename) : hdfistream_obj(filename) {
   _init();
   if (_filename.length() != 0)
-#ifdef __GNUG__
-    open(_filename.chars());
-#else
-  open(_filename.data());
-#endif
+    open(_filename.c_str());
   return;
 }
 
@@ -298,7 +297,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
   hr.palettes = vector<hdf_palette>();
   hr.attrs = vector<hdf_attr>();
   hr.image = hdf_genvec();
-  hr.name = String();
+  hr.name = string();
   if (bos())
     seek(0);
   if (eos())
@@ -412,7 +411,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_attr& ha) {
     THROW(hcerr_griinfo);
   }
   // eliminate trailing null characters from the data string
-  // they cause GNU's String class problems
+  // they cause GNU's string class problems
   if (number_type == DFNT_CHAR)
     count = (int32)min((int)count,(int)strlen((char *)data));
   // try { // try to allocate an hdf_genvec
@@ -459,7 +458,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp) {
   }
   // Note: due to a bug in the HDF library, the palette number type is returned
   // as DFNT_UCHAR8 instead of DFNT_UINT8.  We correct that here because
-  // the current mapping for DFNT_UCHAR8 is String instead of Byte
+  // the current mapping for DFNT_UCHAR8 is string instead of Byte
   if(number_type==DFNT_UCHAR8)
     number_type = DFNT_UINT8;
 

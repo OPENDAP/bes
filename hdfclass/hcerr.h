@@ -12,6 +12,9 @@
 // $RCSfile: hcerr.h,v $ - error handling for HDFclass library
 // 
 // $Log: hcerr.h,v $
+// Revision 1.3  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.2  1998/04/03 18:34:17  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -26,13 +29,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-#include <iostream.h>
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+#include <iostream>
+#include <string>
 
 class hcerr;
 
@@ -50,13 +48,13 @@ public:
          _errmsg(msg), _file(file), _line(line) {}
     virtual ~hcerr(void) {}
     friend ostream& operator<<(ostream& out, const hcerr& x);
-    String errmsg(void) const { return _errmsg; }
-    String file(void) const { return _file; }
+    string errmsg(void) const { return _errmsg; }
+    string file(void) const { return _file; }
     int line(void) const { return _line; }
 protected:
     void _print(ostream& out) const;
-    String _errmsg;
-    String _file;
+    string _errmsg;
+    string _file;
     int _line;
 };
 

@@ -9,6 +9,9 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.6  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.5  1998/09/17 21:11:08  jehamby
 // Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
 //
@@ -46,10 +49,10 @@
 #include <mfhdf.h>
 #include <vg.h>  // Include _HDF_VDATA definition
 #ifdef __GNUG__
-#include <String.h>
+#include <string.h>
 #else
 #include <bstring.h>
-typedef string String;
+typedef string string;
 #endif
 #include <vector.h>
 #include <set.h>
@@ -126,20 +129,12 @@ void hdfistream_vdata::_seek(int32 ref) {
 hdfistream_vdata::hdfistream_vdata(const char *filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a null filename
-#ifdef __GNUG__  // GNU string
-	open(_filename.chars());
-#else // STL string
-	open(_filename.data());
-#endif
+	open(_filename.c_str());
     return;
 }
 
-void hdfistream_vdata::open(const String& filename) {
-#ifdef __GNUG__
-    open(filename.chars());
-#else
-    open(filename.data());
-#endif
+void hdfistream_vdata::open(const string& filename) {
+    open(filename.c_str());
     return;
 }
 
@@ -182,12 +177,8 @@ void hdfistream_vdata::seek_ref(int ref) {
     return;
 }
 
-void hdfistream_vdata::seek(const String& name) {
-#ifdef __GNUG__
-    seek(name.chars());
-#else
-    seek(name.data());
-#endif
+void hdfistream_vdata::seek(const string& name) {
+    seek(name.c_str());
 }
 
 void hdfistream_vdata::seek(const char *name) {
@@ -250,7 +241,7 @@ hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_vdata>& hvv) {
 // read an attribute from the stream
 hdfistream_vdata& hdfistream_vdata::operator>>(hdf_attr& ha) {
     // delete any previous data in ha
-    ha.name = String();
+    ha.name = string();
     ha.values = hdf_genvec();
 
     if (_filename.length() == 0) // no file open
@@ -297,7 +288,7 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
 
     // delete any previous data in hv
     hv.fields.clear();
-    hv.vclass = hv.name = String();
+    hv.vclass = hv.name = string();
 
     if (_vdata_id == 0)
 	THROW(hcerr_invstream);	// no vdata open!
@@ -315,10 +306,10 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
     if (VSinquire(_vdata_id, &nrecs, (int32 *)0, (char *)0, (int32 *)0, name) 
 	< 0)
 	THROW(hcerr_vdatainfo);
-    hv.name = String(name);
+    hv.name = string(name);
     if (VSgetclass(_vdata_id, vclass) < 0)
 	THROW(hcerr_vdatainfo);
-    hv.vclass = String(vclass);
+    hv.vclass = string(vclass);
 
     // retrieve number of fields
     int nfields = VFnfields(_vdata_id);
@@ -351,7 +342,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f
     char *fieldname = VFfieldname(vid, index);
     if (fieldname == 0)
 	THROW(hcerr_vdatainfo);
-    f.name = String(fieldname);
+    f.name = string(fieldname);
 
     // retrieve order of field
     int32 fieldorder = VFfieldorder(vid, index);
@@ -439,10 +430,10 @@ bool hdf_vdata::_ok(void) const {
 }
 
 bool IsInternalVdata(int32 fid, int32 ref) { 
-    set<String, less<String> > reserved_names;
+    set<string, less<string> > reserved_names;
     reserved_names.insert("RIATTR0.0N");
 
-    set<String, less<String> > reserved_classes;
+    set<string, less<string> > reserved_classes;
     reserved_classes.insert("Attr0.0");
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
@@ -459,12 +450,12 @@ bool IsInternalVdata(int32 fid, int32 ref) {
     char vclass[hdfclass::MAXSTR];
     if (VSgetname(vid, name) < 0)
 	THROW(hcerr_vdatainfo);
-    if (reserved_names.find(String(name)) != reserved_names.end())
+    if (reserved_names.find(string(name)) != reserved_names.end())
 	return true;
 
     if (VSgetclass(vid, vclass) < 0)
 	THROW(hcerr_vdatainfo);
-    if (reserved_classes.find(String(vclass)) != reserved_classes.end())
+    if (reserved_classes.find(string(vclass)) != reserved_classes.end())
 	return true;
     return false;
 }

@@ -9,11 +9,14 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.10  1999/05/05 23:33:43  jimg
+// String --> string conversion
+//
 // Revision 1.9  1998/09/10 23:11:25  jehamby
 // Fix for SDS not outputting global attributes if no SDS's are in the dataset
 //
 // Revision 1.8  1998/09/10 21:33:24  jehamby
-// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
+// Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of string in SDS.
 //
 // Revision 1.7  1998/04/03 18:34:19  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
@@ -75,10 +78,10 @@
 // that are padded onto the end of an attribute.  For some strange reason,
 // AVHRR Pathfinder SST files seem to have a null character padded at the end of the
 // values of text attributes.  This caused problems when the text was loaded into
-// libg++ Strings.
+// libg++ strings.
 //
 // Revision 1.5  1996/04/19  17:36:19  todd
-// Added public mfunc seek(const char *) and protected mfunc _seek_arr(const String&)
+// Added public mfunc seek(const char *) and protected mfunc _seek_arr(const string&)
 // which is used in implementing t.
 //
 // Revision 1.4  1996/04/19  01:14:28  todd
@@ -102,10 +105,10 @@
 
 #include <mfhdf.h>
 #ifdef __GNUG__
-#include <String.h>
+#include <string.h>
 #else
 #include <bstring.h>
-typedef string String;
+typedef string string;
 #endif
 #include <vector.h>
 #include <hcstream.h>
@@ -115,9 +118,9 @@ typedef string String;
 inline int min(int t1, int t2) { return ( t1 < t2? t1 : t2 ); }
 
 // static initializations
-const String hdfistream_sds::long_name = "long_name";
-const String hdfistream_sds::units = "units";
-const String hdfistream_sds::format = "format";
+const string hdfistream_sds::long_name = "long_name";
+const string hdfistream_sds::units = "units";
+const string hdfistream_sds::format = "format";
 
 //
 // protected member functions
@@ -185,13 +188,9 @@ void hdfistream_sds::_seek_arr(int arr_index) {
 }
 
 // find the SDS array with specified name
-void hdfistream_sds::_seek_arr(const String& name) {
+void hdfistream_sds::_seek_arr(const string& name) {
     int index;
-#ifdef __GNUG__
-    const char *nm = name.chars();
-#else
-    const char *nm = name.data();
-#endif
+    const char *nm = name.c_str();
 
     if ( (index = SDnametoindex(_file_id, (char *)nm)) < 0)
 	THROW(hcerr_sdsfind);
@@ -234,11 +233,7 @@ void hdfistream_sds::_seek_arr_ref(int ref) {
 hdfistream_sds::hdfistream_sds(const char *filename) : hdfistream_obj(filename) {
     _init();
     if (_filename.length() != 0) // if ctor specified a file to open
-#ifdef __GNUG__  // GNU string
-	open(_filename.chars());
-#else // STL string
-	open(_filename.data());
-#endif
+	open(_filename.c_str());
     return;
 }
 
@@ -338,7 +333,7 @@ void hdfistream_sds::seek(const char *name) {
     if (_filename.length() == 0) // no file open
 	THROW(hcerr_invstream);
     _close_sds();		// close any currently open SDS
-    _seek_arr(String(name));		// seek to index'th SDS array
+    _seek_arr(string(name));		// seek to index'th SDS array
     if (!eos() && !bos())	// if not BOS or EOS, get SDS information
 	_get_sdsinfo();
 }
@@ -403,7 +398,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
     hs.dims = vector<hdf_dim>();
     hs.attrs = vector<hdf_attr>();
     hs.data = hdf_genvec();
-    hs.name = String();
+    hs.name = string();
 
     if (_filename.length() == 0) // no file open
 	THROW(hcerr_invstream);
@@ -491,7 +486,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 
     // delete any previous data in hd
-    hd.name = hd.label = hd.unit = hd.format = String();
+    hd.name = hd.label = hd.unit = hd.format = string();
     hd.count = 0;
     hd.scale = hdf_genvec();
     hd.attrs = vector<hdf_attr>();
@@ -603,7 +598,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_dim &hd) {
 hdfistream_sds& hdfistream_sds::operator>>(hdf_attr& ha) {
 
     // delete any previous data in ha
-    ha.name = String();
+    ha.name = string();
     ha.values = hdf_genvec();
 
     if (_filename.length() == 0) // no file open
