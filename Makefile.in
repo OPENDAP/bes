@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.4 1997/01/22 23:50:57 jimg Exp $
+# $Id: Makefile.in,v 1.5 1997/03/14 18:01:28 jimg Exp $
 
 @SET_MAKE@
 
@@ -11,9 +11,9 @@ DODS_ROOT = ../..
 WWW_ROOT = @WWW_ROOT@
 
 INCS = -I. -I$(DODS_ROOT)/include -Isrc -Ihdfclass/src @INCS@ 
-DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H -DDEBUG -DNO_CACHING
+DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H -DDEBUG -DNO_CACHING -DNO_EXCEPTIONS 
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
-CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall
+CXXFLAGS = @CXXFLAGS@ -gstabs+ -Wall -O0
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
 LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass -lwww @LIBS@
 
@@ -55,11 +55,11 @@ vpath %.cc src
 HDFOBJS = HDFArray.o HDFByte.o HDFFloat64.o HDFFunction.o HDFGrid.o \
 	  HDFInt32.o HDFUInt32.o HDFList.o HDFSequence.o HDFStr.o \
 	  HDFStructure.o HDFUrl.o hdfdesc.o hc2dap.o dhdferr.o \
-	  hdfutil.o
+	  hdfutil.o dodsutil.o
 
 DDSOBJS = hdf_dds.o
 DASOBJS = hdf_das.o
-SRVOBJS = hdf_dods.o
+SRVOBJS = hdf_dods.o funcs.o
 
 all:	HDFClass $(PROGS)
 
@@ -92,18 +92,10 @@ distclean: clean
 	-rm config.* Makefile
 
 install: all
-	$(INSTALL_PROGRAM) ./hdf_das $(etcdir)
-	$(INSTALL_PROGRAM) ./hdf_dds $(etcdir)
-	$(INSTALL_PROGRAM) ./hdf_dods $(etcdir)
+	$(INSTALL_PROGRAM) -s ./hdf_das $(etcdir)
+	$(INSTALL_PROGRAM) -s ./hdf_dds $(etcdir)
+	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
 	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
-	$(STRIP) $(etcdir)/hdf_das $(etcdir)/hdf_dds $(etcdir)/hdf_dods
-#	$(INSTALL_DATA) ./hdfclass/@host_vendor@/libhdfclass.a $(libdir)
-#	$(INSTALL_DATA) ./@host_vendor@/libhdf-dods.a $(libdir)
-#	$(RANLIB) $(libdir)/libhdf-dods.a
-#	$(RANLIB) $(libdir)/libhdfclass.a
-#	$(INSTALL) ./src/HDF*.h $(includedir)
-#	$(INSTALL) ./hdfclass/src/hdfclass.h $(includedir)
-#	$(INSTALL) ./hdfclass/src/hcstream.h $(includedir)
 
 .SUFFIXES:      .o .cc .c
 
@@ -113,9 +105,13 @@ install: all
 .cc.o:
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
 
-# DO NOT DELETE THIS LINE -- make depend depends on it.
+.PHONY: depend
+depend: 
+	> dependencies
+	@depend@ -m dependencies -- $(CPPFLAGS) @GPP_INC@ -- \
+	$(HDFOBJS) $(DASOBJS) $(DDSOBJS) $(SRVOBJS)
 
-
+include dependencies
 
 
 

@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.3 1997/03/13 00:45:45 jimg Exp $
+# $Id: Makefile.in,v 1.4 1997/03/14 18:01:39 jimg Exp $
 
 @SET_MAKE@
 
@@ -67,6 +67,14 @@ distclean: clean
 
 .cc.o:	hdfclass.h hcstream.h
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+.PHONY: depend
+depend: 
+	> dependencies
+	@depend@ -m dependencies -- $(CPPFLAGS) @GPP_INC@ -- \
+	$(OBJS)
+
+include dependencies
 
 
 
