@@ -11,6 +11,9 @@
 // $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: dodsutil.h,v $
+// Revision 1.2  1998/09/10 21:32:28  jehamby
+// Properly escape high-ASCII strings with octstring() and hexstring()
+//
 // Revision 1.1  1997/03/10 22:55:02  jimg
 // New files for the 2.12 compatible HDF server
 //
@@ -118,12 +121,12 @@ inline String& gsub(String& s, const String& in, const String& out) {
     return s;
 }
 
-String hexstring(int val);
+String hexstring(unsigned char val);
 char unhexstring(String s);
 String id2dods(String s);
 String dods2id(String s);
 char unoctstring(String s);
-String octstring(int val);
+String octstring(unsigned char val);
 String escattr(String s);
 String unescattr(String s);
 HDFStructure *CastBaseTypeToStructure(BaseType *p);
