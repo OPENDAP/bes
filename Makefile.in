@@ -1,11 +1,11 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.36 2004/07/09 18:08:50 jimg Exp $
+# $Id: Makefile.in,v 1.37 2005/02/03 03:57:04 jimg Exp $
 
 @SET_MAKE@
 
-PROGS = hdf_handler libhdf-dods.a
+PROGS = hdf_handler libhdf-dods.a libhdf-server4.a
 
 DODS_ROOT = @dods_relative@
 
@@ -107,6 +107,10 @@ eosdas-test: eosdas-test.o lex.hdfeos.o hdfeos.tab.o libhdf-dods.a HDFClass
 
 libhdf-dods.a:	$(HDFOBJS)
 	ar ru libhdf-dods.a $(HDFOBJS)
+
+libhdf-server4.a: $(HDFOBJS) HDFRequestHandler.o
+	$(AR) -cru $@ $^
+	$(RANLIB) $@
 
 hdf_handler: $(SRVOBJS) libhdf-dods.a hdfclass/libhdfclass.a
 	$(CXX) $(SRVOBJS) -o hdf_handler $(LDFLAGS) $(LIBS)
