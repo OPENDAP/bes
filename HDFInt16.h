@@ -8,6 +8,9 @@
 // Author: James Gallagher
 //
 // $Log: HDFInt16.h,v $
+// Revision 1.2  1999/05/06 00:27:22  jimg
+// Jakes String --> string changes
+//
 // Revision 1.1  1999/03/27 00:20:16  jimg
 // Added
 //
@@ -15,26 +18,20 @@
 #ifndef _HDFINT16_H
 #define _HDFINT16_H
 
-// STL/libg++ includes
-#ifdef __GNUG__
-#include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif
+#include <string>
 
 // DODS includes
 #include "Int16.h"
 
 class HDFInt16: public Int16 {
 public:
-    HDFInt16(const String &n = (char *)0);
+    HDFInt16(const string &n = (char *)0);
     virtual ~HDFInt16();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const String &, int &); 
+    virtual bool read(const string &, int &); 
 };
 
-Int16 *NewInt16(const String &n);
+Int16 *NewInt16(const string &n);
 
 typedef HDFInt16 * HDFInt16Ptr;
 
