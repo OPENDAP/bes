@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.2 1996/11/13 22:33:16 jimg Exp $
+# $Id: Makefile.in,v 1.3 1996/12/18 18:24:10 jimg Exp $
 
 @SET_MAKE@
 
@@ -95,6 +95,7 @@ install: all
 	$(INSTALL_PROGRAM) ./hdf_das $(etcdir)
 	$(INSTALL_PROGRAM) ./hdf_dds $(etcdir)
 	$(INSTALL_PROGRAM) ./hdf_dods $(etcdir)
+	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
 	$(STRIP) $(etcdir)/hdf_das $(etcdir)/hdf_dds $(etcdir)/hdf_dods
 #	$(INSTALL_DATA) ./hdfclass/@host_vendor@/libhdfclass.a $(libdir)
 #	$(INSTALL_DATA) ./@host_vendor@/libhdf-dods.a $(libdir)
