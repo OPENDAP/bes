@@ -9,6 +9,9 @@
 // $RCSfile: sds.cc,v $ - input stream class for HDF SDS
 // 
 // $Log: sds.cc,v $
+// Revision 1.4  1997/12/16 01:46:46  jimg
+// Merged release 2.14d changes
+//
 // Revision 1.3  1997/10/04 00:33:10  jimg
 // Release 2.14c fixes
 //
@@ -16,7 +19,6 @@
 // Fixed _ok() so that if `has_scale' is null (the default) it is not
 // dereferenced.
 //
-// Revision 1.2  1997/06/08 22:14:35  jimg
 // Applied Todd's patch for the `stride bug' (See the TODO list).
 //
 // Revision 1.1  1996/10/31 18:43:06  jimg
