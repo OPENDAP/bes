@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.20 2000/10/09 19:46:19 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.21 2000/10/20 00:10:21 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 AC_CONFIG_HEADER(config_hdf.h)
@@ -24,7 +24,6 @@ AC_CANONICAL_HOST
 AC_SUBST(host)
 
 CFLAGS="-gstabs -O2 $CFLAGS"
-dnl LDFLAGS="-gstabs $LDFLAGS"
 
 dnl Turn off all optimizations
 DODS_GCC_VERSION
@@ -53,8 +52,6 @@ DODS_PROG_BISON
 DODS_CHECK_GCC_DEBUG
 
 dnl Never use exceptions with this code until 2.8.x is out!
-
-dnl DODS_CHECK_EXCEPTIONS
 
 DODS_OS
 DODS_MACHINE
@@ -89,13 +86,10 @@ DODS_CHECK_SIZES
 DODS_HDF_LIBRARY
 
 DODS_RX_LIB
-
-. ${DODS_PACKAGES_DIR}/lib/tkConfig.sh
-AC_SUBST(TK_LIBS)
 DODS_WWW_LIB
 DODS_COMPRESSION_LIB
-DODS_TCL_LIB
-DODS_TK_LIB
+dnl DODS_TCL_LIB
+dnl DODS_TK_LIB
 
 DODS_EFENCE
 DODS_DBNEW
@@ -120,4 +114,4 @@ AC_ARG_WITH(testurl,
 AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)
 
-AC_OUTPUT(Makefile nph-hdf hdfclass/Makefile)
+AC_OUTPUT(Makefile hdfclass/Makefile)
