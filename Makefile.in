@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.34 2004/01/26 23:30:35 jimg Exp $
+# $Id: Makefile.in,v 1.35 2004/02/03 22:58:54 jimg Exp $
 
 @SET_MAKE@
 
@@ -72,7 +72,7 @@ STRIP = strip
 #vpath %.cc src
 
 HDFOBJS = HDFArray.o HDFByte.o HDFFloat64.o HDFGrid.o \
-	  HDFInt32.o HDFUInt32.o HDFList.o HDFSequence.o HDFStr.o \
+	  HDFInt32.o HDFUInt32.o HDFSequence.o HDFStr.o \
 	  HDFStructure.o HDFUrl.o hdfdesc.o hc2dap.o dhdferr.o \
 	  hdfutil.o hdfeos.tab.o lex.hdfeos.o HDFInt16.o \
 	  HDFUInt16.o HDFFloat32.o
