@@ -12,6 +12,11 @@
 // $RCSfile: hdfclass.h,v $ - primary include file for HDFclass library
 // 
 // $Log: hdfclass.h,v $
+// Revision 1.3  1998/09/10 20:33:50  jehamby
+// Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
+// is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
+// symlinked to the other two locations to save disk space.
+//
 // Revision 1.2  1998/04/03 18:34:18  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -93,11 +98,16 @@ enum bool {false=0,true=1};
 #endif
 
 // Global values -- someday change "struct" to "namespace"
-struct hdfclass {		
-    const int MAXSTR = 32767;	// maximum length of a string
-    const int MAXDIMS = 20;	// maximum dimensions in a dataset
-    const int MAXANNOTS = 20;	// max number of annotations per object
-    const int MAXREFS=1000;	// max number of instances of a tag in a file
+// Note: The enum-inside-of-struct hack is more portable than the previous
+// const int-inside-of-struct hack, which EGCS complains about and Sun C++
+// won't accept.
+struct hdfclass {
+  enum hdfenum {
+    MAXSTR = 32767,	// maximum length of a string
+    MAXDIMS = 20,	// maximum dimensions in a dataset
+    MAXANNOTS = 20,	// max number of annotations per object
+    MAXREFS=1000	// max number of instances of a tag in a file
+  };
 };
 
 // generic vector class

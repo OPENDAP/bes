@@ -12,6 +12,11 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.8  1998/09/10 20:33:51  jehamby
+// Updates to add cache directory and HDF-EOS support.  Also, the number of CGI's
+// is reduced from three (hdf_das, hdf_dds, hdf_dods) to one (hdf_dods) which is
+// symlinked to the other two locations to save disk space.
+//
 // Revision 1.7  1998/04/03 18:34:28  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -47,12 +52,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 // STL and/or libg++ includes
-#ifdef __GNUG__
 #include <String.h>
-#else
-#include <bstring.h>
-typedef string String;
-#endif // ifdef __GNUG__
+#include <string>
 #include <fstream.h>
 #include <strstream.h>
 
@@ -74,6 +75,7 @@ typedef string String;
 #include "dodsutil.h"
 #include "hdf-dods.h"
 #include "hdf-maps.h"
+#include "parser.h"
 
 #ifdef __GNUG__			// force template instantiation due to g++ bug
 template class vector<hdf_attr>;
@@ -97,10 +99,14 @@ String num2string(T n) {
     return (String)buf;
 }
 
+struct yy_buffer_state;
+yy_buffer_state *hdfeos_scan_string(const char *str);
+extern int hdfeosparse(void *arg); // defined in hdfeos.tab.c
+
 void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav);
 void AddHDFAttr(DAS& das, const String& varname, const vector<String>& anv);
 
-static void update_descriptions(const String& filename);
+static void update_descriptions(const String& cachedir, const String& filename);
 static void build_descriptions(DDS& dds, DAS& das, const String& filename);
 static void SDS_descriptions(sds_map& map, DAS& das, const String& filename);
 static void Vdata_descriptions(vd_map& map, const String& filename);
@@ -111,36 +117,65 @@ static void FileAnnot_descriptions(DAS& das, const String& filename);
 static vector<hdf_attr> Pals2Attrs(const vector<hdf_palette>palv);
 static vector<hdf_attr> Dims2Attrs(const hdf_dim dim);
 
+// Generate cache filename.
+string cache_name(const String& cd, const String& f) {
+  string cachedir(cd);
+  string filename(f);
+
+  // default behavior: if no cache dir, store cache file with HDF
+  if(cachedir=="")
+    return filename;
+
+  string newname = filename; // create a writable copy
+  // skip over common path component (usually something like "/usr/local/www")
+  uint32 start = 0, dirstart = 0;
+  while(newname[start] == cachedir[dirstart]) {
+    start++;
+    dirstart++;
+  }
+  // now backup to the last path separator
+  while(newname[start-1] != '/')
+    start--;
+
+  // turn the remaining path separators into "."
+  uint32 slash = start;
+  while((slash = newname.find_first_of('/', slash)) != newname.npos) {
+    newname[slash] = '.';
+  }
+  string retval = cachedir + "/" + newname.substr(start);
+  return retval; // return the new string
+}
+
 // Read DDS from cache
-void read_dds(DDS& dds, const String& filename) {
+void read_dds(DDS& dds, const String& cachedir, const String& filename) {
 
-    update_descriptions(filename);
+    update_descriptions(cachedir, filename);
 
-    String ddsfile = filename + ".cdds";
-    dds.parse(ddsfile);
+    string ddsfile = cache_name(cachedir, filename) + ".cdds";
+    dds.parse(String(ddsfile.c_str()));
     return;
 }
 
 // Read DAS from cache
-void read_das(DAS& das, const String& filename) {
+void read_das(DAS& das, const String& cachedir, const String& filename) {
 
-    update_descriptions(filename);
+    update_descriptions(cachedir, filename);
 
-    String dasfile = filename + ".cdas";
-    das.parse(dasfile);
+    string dasfile = cache_name(cachedir, filename) + ".cdas";
+    das.parse(String(dasfile.c_str()));
     return;
 }
 
 
 // check dates of datafile and cached DDS, DAS; update cached files if necessary
-static void update_descriptions(const String& filename) {
+static void update_descriptions(const String& cachedir, const String& filename) {
 
     // if cached version of DDS or DAS is nonexistent or out of date, 
     // then regenerate DDS, DAS (cached DDS, DAS are assumed to be in the 
     // same directory as the data file)
     Stat datafile(filename);
-    Stat ddsfile((filename + ".cdds"));
-    Stat dasfile((filename + ".cdas"));
+    Stat ddsfile((String(cache_name(cachedir, filename).c_str()) + ".cdds"));
+    Stat dasfile((String(cache_name(cachedir, filename).c_str()) + ".cdas"));
 
     // flag error if could find filename
     if (!datafile)
@@ -418,10 +453,32 @@ void AddHDFAttr(DAS& das, const String& varname, const vector<hdf_attr>& hav) {
 	
 	// add the attribute and its values to the DAS
 	for (int j=0; j<(int)attv.size(); ++j) {
-	    if (attrtype == "String") 
+	    // handle HDF-EOS metadata with separate parser
+	    string container_name = string(hav[i].name);
+	    if (container_name.find("StructMetadata") == 0
+		|| container_name.find("CoreMetadata") == 0
+		|| container_name.find("ProductMetadata") == 0
+		|| container_name.find("ArchiveMetadata") == 0
+		|| container_name.find("coremetadata") == 0
+		|| container_name.find("productmetadata") == 0) {
+	      uint32 dotzero = container_name.find('.');
+	      if(dotzero != container_name.npos)
+		container_name.erase(dotzero); // erase .0
+	      AttrTable *at = das.get_table(String(container_name.c_str()));
+	      if (!at)
+		at = das.add_table(String(container_name.c_str()), new AttrTable);
+
+	      hdfeos_scan_string(attv[j]);  // tell lexer to scan attribute string
+	      
+	      parser_arg arg(at);
+	      if (hdfeosparse((void *)&arg) != 0)
+		cerr << "HDF-EOS parse error!\n";
+	    } else {
+	      if (attrtype == "String") 
 		attv[j] = (String)'"' + escattr(attv[j]) + '"';
-	    if (atp->append_attr(id2dods(hav[i].name), attrtype, attv[j]) == 0)
+	      if (atp->append_attr(id2dods(hav[i].name), attrtype, attv[j]) == 0)
 		THROW(dhdferr_addattr);
+	    }
 	}
     }	
     

@@ -1,11 +1,11 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.10 1998/07/13 20:26:31 jimg Exp $
+# $Id: Makefile.in,v 1.11 1998/09/10 20:33:48 jehamby Exp $
 
 @SET_MAKE@
 
-PROGS = hdf_dods hdf_das hdf_dds libhdf-dods.a
+PROGS = hdf_dods libhdf-dods.a
 
 DODS_ROOT = ../..
 WWW_ROOT = @WWW_ROOT@
@@ -15,9 +15,11 @@ DEFS = @DEFS@ -DUSE_LIBGXX_INLINES -DHAVE_CONFIG_H
 CPPFLAGS = @CPPFLAGS@ $(DEFS) $(INCS)
 CXXFLAGS = @CXXFLAGS@ -Wall
 LDFLAGS = @LDFLAGS@ -L. -L$(DODS_ROOT)/lib -Lhdfclass
+LFLAGS = -8
+YFLAGS = -d -v
 LIBS = -lhdf-dods -ldap++ -lhdf-dods -ldap++ -lhdfclass @LIBS@
 
-# Set the instalation directories; prefix can be set on the command line
+# Set the installation directories; prefix can be set on the command line
 # during Makefile construction with `./configure --prefix /my/choice'
 
 prefix = @prefix@
@@ -38,11 +40,18 @@ srcdir = @srcdir@
 version = @VERSION@
 dir = hdf-dods-@VERSION@
 
+# testsuite specifics
+RUNTEST = runtest
+RUNTESTFLAGS = #--all --verbose
+TESTDIR = http://localhost/cgi-bin/nph-hdf
+
 # names of key programs
 
 LN_S = @LN_S@
 CP = cp
 CXX = @CXX@
+YACC = @YACC@
+LEX = @LEX@
 AR = ar
 TAGS = etags
 RANLIB = @RANLIB@
@@ -57,10 +66,8 @@ vpath %.cc src
 HDFOBJS = HDFArray.o HDFByte.o HDFFloat64.o HDFFunction.o HDFGrid.o \
 	  HDFInt32.o HDFUInt32.o HDFList.o HDFSequence.o HDFStr.o \
 	  HDFStructure.o HDFUrl.o hdfdesc.o hc2dap.o dhdferr.o \
-	  hdfutil.o dodsutil.o
+	  hdfutil.o dodsutil.o hdfeos.tab.o lex.hdfeos.o
 
-DDSOBJS = hdf_dds.o
-DASOBJS = hdf_das.o
 SRVOBJS = hdf_dods.o funcs.o
 
 all:	HDFClass $(PROGS)
@@ -68,14 +75,28 @@ all:	HDFClass $(PROGS)
 HDFClass:
 	cd ./hdfclass; $(MAKE) $(MFLAGS)
 
+# Build the HDF-EOS parser
+
+hdfeos.tab.c hdfeos.tab.h: src/hdfeos.y
+	cp src/hdfeos.y .
+	$(YACC) $(YFLAGS) -p hdfeos hdfeos.y
+	rm hdfeos.y
+
+hdfeos.tab.o: hdfeos.tab.c	# build using C++ compiler
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c hdfeos.tab.c -o hdfeos.tab.o
+
+# Build the HDF-EOS scanner
+
+lex.hdfeos.c: src/hdfeos.lex hdfeos.tab.c hdfeos.tab.h
+	cp src/hdfeos.lex .
+	$(LEX) $(LFLAGS) -Phdfeos hdfeos.lex
+	rm hdfeos.lex
+
+lex.hdfeos.o: lex.hdfeos.c
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c lex.hdfeos.c -o lex.hdfeos.o
+
 libhdf-dods.a:	$(HDFOBJS)
 	ar ru libhdf-dods.a $(HDFOBJS)
-
-hdf_dds: $(DDSOBJS) libhdf-dods.a
-	$(CXX) $(DDSOBJS) -o hdf_dds $(LDFLAGS) $(LIBS)
-
-hdf_das: $(DASOBJS) libhdf-dods.a
-	$(CXX) $(DASOBJS) -o hdf_das $(LDFLAGS) $(LIBS)
 
 hdf_dods: $(SRVOBJS) libhdf-dods.a
 	$(CXX) $(SRVOBJS) -o hdf_dods $(LDFLAGS) $(LIBS)
@@ -94,10 +115,14 @@ distclean: clean
 	-rm config.* Makefile
 
 install: all
-	$(INSTALL_PROGRAM) -s ./hdf_das $(etcdir)
-	$(INSTALL_PROGRAM) -s ./hdf_dds $(etcdir)
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
+	$(LN_S) ./hdf_dods $(etcdir)/hdf_das
+	$(LN_S) ./hdf_dods $(etcdir)/hdf_dds
 	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
+
+check:
+	-rootme=`pwd` && export rootme && \
+	${RUNTEST} ${RUNTESTFLAGS} --tool geturl --srcdir hdf-testsuite TESTDIR="$(TESTDIR)"
 
 .SUFFIXES:      .o .cc .c
 

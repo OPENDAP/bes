@@ -1,4 +1,6 @@
 struct hdfdods {
-    const int MAXSTR = 1024;
+  enum hdfenum {
+    MAXSTR = 1024
+  };
 };
 
