@@ -453,6 +453,9 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 	goto exit;
     }
 
+#if 0
+    // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
+    // read-only, we don't care if any dimensions are unlimited or not
     for (j = 0; j < ndims; j++) {
 	if (maxsize[j] == H5S_UNLIMITED) {
 	    strcpy(error,
@@ -462,6 +465,7 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 	}
 
     }
+#endif
 
     /* return ndims and size[ndims]. */
 
@@ -493,7 +497,7 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 hid_t
 get_fileid(const char *filename)
 {
-    return H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT);
+    return H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
 }
 
 /*-------------------------------------------------------------------------
@@ -587,6 +591,9 @@ get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 
     namebuf = malloc(buf_size);
 
+#if 0
+    // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
+    // read-only, we don't care if any dimensions are unlimited or not
     for (j = 0; j < ndims; j++) {
 	if (maxsize[j] == H5S_UNLIMITED) {
 	    strcpy(error,
@@ -594,6 +601,7 @@ get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 	    return -1;
 	}
     }
+#endif
 
     /* return ndims and size[ndims]. */
 
