@@ -20,7 +20,7 @@
 
 #define YYSTYPE char *
 
-  // static char rcsid[] __unused__ = {"$Id: hdfeos.y,v 1.2 1998/09/10 23:15:39 jehamby Exp $"};
+  // static char rcsid[] __unused__ = {"$Id: hdfeos.y,v 1.3 1999/03/27 00:20:16 jimg Exp $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -228,8 +228,8 @@ ints:           INT
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($1) << endl);
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
-		    if (!(check_int($1, hdfeos_line_num) 
-			  || check_uint($1, hdfeos_line_num))) {
+		    if (!(check_int32($1, hdfeos_line_num) 
+			  || check_uint32($1, hdfeos_line_num))) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not an Int32 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -248,8 +248,8 @@ ints:           INT
 		{
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!(check_int($3, hdfeos_line_num)
-			  || check_uint($1, hdfeos_line_num))) {
+		    if (!(check_int32($3, hdfeos_line_num)
+			  || check_uint32($1, hdfeos_line_num))) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not an Int32 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -270,7 +270,7 @@ floats:		FLOAT
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
-		    if (!check_float($1, hdfeos_line_num)) {
+		    if (!check_float64($1, hdfeos_line_num)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -289,7 +289,7 @@ floats:		FLOAT
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!check_float($3, hdfeos_line_num)) {
+		    if (!check_float64($3, hdfeos_line_num)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -310,7 +310,7 @@ floatints:	float_or_int
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
-		    if (!check_float($1, hdfeos_line_num)) {
+		    if (!check_float64($1, hdfeos_line_num)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
@@ -329,7 +329,7 @@ floatints:	float_or_int
 		{
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
-		    if (!check_float($3, hdfeos_line_num)) {
+		    if (!check_float64($3, hdfeos_line_num)) {
 			ostrstream msg;
 			msg << "`" << $1 << "' is not a Float64 value." << ends;
 			parse_error((parser_arg *)arg, msg.str());
