@@ -44,7 +44,7 @@
 %{
 #include "config_dap.h"
 
-static char rcsid[] not_used ={"$Id: hdfeos.lex,v 1.3 2000/03/31 16:56:06 jimg Exp $"};
+static char rcsid[] not_used ={"$Id: hdfeos.lex,v 1.4 2001/08/27 17:21:34 jimg Exp $"};
 
 #include <string.h>
 #include <assert.h>
@@ -60,6 +60,7 @@ static int start_line;		/* used in quote and comment error handlers */
 
 %}
     
+%option noyywrap
 %x quote
 %x comment
 
@@ -150,9 +151,3 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 			  }
 			}
 %%
-
-int 
-yywrap(void)
-{
-    return 1;
-}

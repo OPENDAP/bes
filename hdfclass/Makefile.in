@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.14 2001/04/02 18:53:36 rmorris Exp $
+# $Id: Makefile.in,v 1.15 2001/08/27 17:21:34 jimg Exp $
 
 @SET_MAKE@
 
@@ -59,9 +59,9 @@ libhdfclass.a:	$(OBJS)
 Makefile: Makefile.in
 	if [ -x ../config.status ]; \
 	then \
-	    ${SHELL} ../config.status; \
+	    (cd .. && ${SHELL} ./config.status;) \
 	else \
-	    ../configure; \
+	    (cd .. && ./configure;) \
 	fi
 
 clean:		

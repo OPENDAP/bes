@@ -27,9 +27,18 @@
 #define INT8_MIN	(-128)
 #define UINT8_MAX	255
 #define FLOAT32_MAX	((float)3.40282346638528860e+38)
-#define FLOAT32_MIN	((float)1.40129846432481707e-45)
+#define FLOAT32_MIN	((float)1.175494351e-38F)
 #define FLOAT64_MAX	1.79769313486231570e+308
+#define FLOAT64_MIN     2.2250738585072014e-308
+
+#if 0
+// Original values. I replaced these since they are outside the limits of the
+// IEEE spec. Some machines recognize them; other don't. HDF4 will gladly
+// copy them into a file since it uses memcpy (from Rob M.) to load values.
+// However, strtod() barfs, at least on Linux and Solaris. 6/5/2001 jhrg
 #define FLOAT64_MIN	4.94065645841246544e-324
+#define FLOAT32_MIN	((float)1.40129846432481707e-45)
+#endif
 
 
 struct sdsinfo {

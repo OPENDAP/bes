@@ -189,13 +189,25 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
 
     // retrieve entry tags and refs
     int32 npairs = Vntagrefs(_vgroup_id);
+    hdfistream_vdata vdin(_filename);
     for (int i=0; i<npairs; ++i) {
       int32 tag, ref;
       if (Vgettagref(_vgroup_id, i, &tag, &ref) < 0)
 	THROW(hcerr_vgroupread);
-      hv.tags.push_back(tag);
-      hv.refs.push_back(ref);
+	switch(tag) {
+	case DFTAG_VH:
+	  if (!vdin.isInternalVdata(ref))
+	    {
+	      hv.tags.push_back(tag);
+	      hv.refs.push_back(ref);
+	    }
+	  break;
+	default:
+	  hv.tags.push_back(tag);
+	  hv.refs.push_back(ref);
+	}
     }
+    vdin.close();
     _seek_next();
     return *this;
 }
@@ -324,6 +336,15 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
 }
 
 // $Log: vgroup.cc,v $
+// Revision 1.6  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.5.4.1  2001/05/15 17:56:51  dan
+// Modified the '>>' stream operator to test for internal
+// vdata references, and not add them to the vg data structure
+// used by various functions within the server to dereference
+// the local hdf file.
+//
 // Revision 1.5  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

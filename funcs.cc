@@ -81,7 +81,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
     Master_Catalog::Dataset_Info dsinfo;
     for (int i=0; i<(int)dslist.size(); ++i) 
 	if (dslist[i].dsregex.length() > 0) {
-	    if (dods2id(dds.filename()).matches(Regex(dslist[i].dsregex))) {
+	    if (dds.filename().matches(Regex(dslist[i].dsregex))) {
 		dsinfo = dslist[i];
 		break;
 	    }
@@ -122,7 +122,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
 	ErrorHandler("Could not parse spatial region arguments");
 	return 0;
     }
-    string filename = dsinfo.dspath + "/" + dods2id(dds.filename());
+    string filename = dsinfo.dspath + "/" + dds.filename();
 
     // if a SwathArray,
     if (ds->type() == Dataset::swatharray) {

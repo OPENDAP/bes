@@ -24,6 +24,7 @@
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f);
 static bool IsInternalVdata(int32 fid, int32 ref);
+//static bool IsInternalVdata(int32 ref);
 
 //
 // hdfistream_vdata -- protected member functions
@@ -292,7 +293,36 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
     return *this;
 }
 
+bool hdfistream_vdata::isInternalVdata(int ref) const { 
+    set<string, less<string> > reserved_names;
+    reserved_names.insert("RIATTR0.0N");
 
+    set<string, less<string> > reserved_classes;
+    reserved_classes.insert("Attr0.0");
+    reserved_classes.insert("RIATTR0.0C");
+    reserved_classes.insert("DimVal0.0");
+    reserved_classes.insert("DimVal0.1");
+    reserved_classes.insert("_HDF_CHK_TBL_0");
+
+    // get name, class of vdata
+    int vid;
+    if ( (vid = VSattach(_file_id, ref, "r")) < 0) {
+	vid = 0;
+	THROW(hcerr_vdataopen);
+    }
+    char name[hdfclass::MAXSTR];
+    char vclass[hdfclass::MAXSTR];
+    if (VSgetname(vid, name) < 0)
+	THROW(hcerr_vdatainfo);
+    if (reserved_names.find(string(name)) != reserved_names.end())
+	return true;
+
+    if (VSgetclass(vid, vclass) < 0)
+	THROW(hcerr_vdatainfo);
+    if (reserved_classes.find(string(vclass)) != reserved_classes.end())
+	return true;
+    return false;
+}
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f) {
 
@@ -422,8 +452,16 @@ bool IsInternalVdata(int32 fid, int32 ref) {
 	return true;
     return false;
 }
+
  
 // $Log: vdata.cc,v $
+// Revision 1.9  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.8.4.1  2001/05/15 17:55:46  dan
+// Added hdfistream_vdata method isInternalVdata(ref) to test for
+// internal (reserved attribute) vdata containers.
+//
 // Revision 1.8  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

@@ -5,10 +5,10 @@ Attributes {
     SDS_RLE_dim_1 {
         String name "fakeDim1";
     }
-    SDS_N%2dbit_dim_0 {
+    SDS_N-bit_dim_0 {
         String name "fakeDim2";
     }
-    SDS_N%2dbit_dim_1 {
+    SDS_N-bit_dim_1 {
         String name "fakeDim3";
     }
     SDS_Skip_Huffman_dim_0 {

@@ -26,10 +26,11 @@
 #define INT8_MAX        127
 #define INT8_MIN        (-128)
 #define UINT8_MAX       255
-#define FLOAT32_MAX     ((float)3.40282346638528860e+38)
-#define FLOAT32_MIN     ((float)1.40129846432481707e-45)
-#define FLOAT64_MAX     1.79769313486231570e+308
-#define FLOAT64_MIN     4.94065645841246544e-324
+// See makesds5.c for an explaination of these values. 6/5/2001 jhrg
+#define FLOAT32_MAX	((float)3.40282346638528860e+38)
+#define FLOAT32_MIN	((float)1.175494351e-38F)
+#define FLOAT64_MAX	1.79769313486231570e+308
+#define FLOAT64_MIN     2.2250738585072014e-308
 
 
 struct vdinfo {

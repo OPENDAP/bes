@@ -11,6 +11,13 @@
 // $RCSfile: dodsutil.h,v $ - Miscellaneous classes and routines for DODS HDF server
 //
 // $Log: dodsutil.h,v $
+// Revision 1.6  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.5.4.1  2001/06/14 17:27:00  rich
+// Modified basename() so it would remove the garbage from the beginning of
+// the names of decompressed files
+//
 // Revision 1.5  2000/03/31 16:56:06  jimg
 // Merged with release 3.1.4
 //
@@ -113,7 +120,15 @@ protected:
 
 // return the last component of a full pathname
 inline string basename(string path) {
-    return path.substr(path.find_last_of("/")+1);
+   
+    // If the filename has a # in it, it's probably been decompressed
+    // to <cachedir>/the#path#of#the#file#<filename> and all we want is
+    // <filename>.  rph 06/14/01.
+
+    if(path.find("#") != string::npos) 
+        return path.substr(path.find_last_of("#")+1);
+    else
+        return path.substr(path.find_last_of("/")+1);
 }
 
 // globally substitute in for out in string s

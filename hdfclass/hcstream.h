@@ -167,6 +167,7 @@ public:
     hdfistream_vdata& operator>>(vector<hdf_vdata>& hsv);  // read all Vdata's
     hdfistream_vdata& operator>>(hdf_attr& ha);          // read an attribute
     hdfistream_vdata& operator>>(vector<hdf_attr>& hav); // read all attributes
+    virtual bool isInternalVdata(int ref) const;  // check reference against internal type
 protected:
     void _init(void);
     void _del(void) { close(); }
@@ -292,6 +293,12 @@ protected:
 }; /* Note: multiple palettes is not supported in the current HDF 4.0 GR API */
 
 // $Log: hcstream.h,v $
+// Revision 1.8  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.7.4.1  2001/05/15 17:54:47  dan
+// Added hdfistream_vdata method isInternalVdata.
+//
 // Revision 1.7  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

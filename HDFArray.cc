@@ -52,8 +52,8 @@ bool HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err
 	return true;
 
     // get the HDF dataset name, SDS name
-    string hdf_file = dods2id(dataset);
-    string hdf_name = dods2id(this->name());
+    string hdf_file = dataset;
+    string hdf_name = this->name();
 
     bool foundsds = false;
     hdf_sds sds;
@@ -164,6 +164,13 @@ bool HDFArray::GetSlabConstraint(vector<int>& start_array,
 }
 
 // $Log: HDFArray.cc,v $
+// Revision 1.11  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.10.4.1  2001/07/28 00:25:15  jimg
+// I removed the code which escapes names. This function is now handled
+// for all the servers by the dap.
+//
 // Revision 1.10  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

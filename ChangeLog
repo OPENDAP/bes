@@ -1,3 +1,20 @@
+2001-08-27  James Gallagher  <jimg@dcz.dods.org>
+
+	* Merged with release-3-2-2. The next merge should use -j
+	release-3-2-2 -j release-3-2.
+
+2001-08-21  James Gallagher  <jimg@dcz.dods.org>
+
+	* Fixed a bug in the hdf-eos lex scanner (Ethan).
+
+	* Changed to the new way DODSFilter handles version requests.
+
+	* Modified basename() so it would remove the garbage from the
+	beginning of the names of decompressed files.
+
+	* Removed the code which escapes names. This function is now
+	handled for all the servers by the dap.
+
 2001-06-18  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merged with release-3-2 head (tagged release-3-2-1). The next
@@ -123,12 +140,3 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-<<<<<<< ChangeLog
-<<<<<<< ChangeLog
-$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
-=======
-$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
->>>>>>> 1.8.4.2
-=======
-$Id: ChangeLog,v 1.12 2001/06/19 00:58:35 jimg Exp $
->>>>>>> 1.8.4.3

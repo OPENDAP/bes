@@ -48,8 +48,8 @@ bool HDFSequence::read(const string& dataset) {
 
 bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& err) { 
 
-    string hdf_file = dods2id(dataset);
-    string hdf_name = dods2id(this->name());
+    string hdf_file = dataset;
+    string hdf_name = this->name();
 
     // check to see if vd is empty; if so, read in Vdata
     if (vd.name.length() == 0) {
@@ -92,6 +92,13 @@ bool HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, int& 
 }
 
 // $Log: HDFSequence.cc,v $
+// Revision 1.12  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.11.4.1  2001/07/28 00:25:15  jimg
+// I removed the code which escapes names. This function is now handled
+// for all the servers by the dap.
+//
 // Revision 1.11  2000/10/09 19:46:19  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

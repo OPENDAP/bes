@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.21 2000/10/20 00:10:21 jimg Exp $)
+AC_REVISION($Id: configure.in,v 1.22 2001/08/27 17:21:34 jimg Exp $)
 AC_INIT(src)
 AC_CONFIG_AUX_DIR(../../etc)
 AC_CONFIG_HEADER(config_hdf.h)
@@ -15,9 +15,12 @@ dnl subtree.
 DODS_GET_DODS_ROOT
 DODS_DIRECTORY_VERSION
 
+DODS_SERVER_VERSION=\"hdf-dods/$VERSION\"
+AC_DEFINE_UNQUOTED(DODS_SERVER_VERSION, $DODS_SERVER_VERSION)
+
 dnl `depend' is the command to use to generate dependencies for Makefiles.
 
-depend=${dods_root}/etc/depend.sh
+depend=${dods_relative}/etc/depend.sh
 AC_SUBST(depend)
 
 AC_CANONICAL_HOST
@@ -49,7 +52,6 @@ DODS_PROG_LEX
 DODS_PROG_GTAR
 DODS_PROG_PERL
 DODS_PROG_BISON
-DODS_CHECK_GCC_DEBUG
 
 dnl Never use exceptions with this code until 2.8.x is out!
 
@@ -83,13 +85,13 @@ AC_CHECK_FUNCS(strerror strtol)
 
 DODS_CHECK_SIZES
 
+DODS_XTRALIBS
+
 DODS_HDF_LIBRARY
 
 DODS_RX_LIB
 DODS_WWW_LIB
 DODS_COMPRESSION_LIB
-dnl DODS_TCL_LIB
-dnl DODS_TK_LIB
 
 DODS_EFENCE
 DODS_DBNEW
@@ -107,9 +109,9 @@ AC_SUBST(HDF_CACHE)
 
 dnl setup the url for the testsuite.
 
-AC_ARG_WITH(testurl,
-    [  --with-test-url=url     Test file base URL (default: http://localhost/test/nph-hdf/)],
-    testurl=${withval}, testurl=http://dcz.dods.org/test-3.1/nph-hdf/data/hdf/server-tests/)
+AC_ARG_WITH(test-url,
+    [  --with-test-url=url     Test file base URL (default: http://www.dods.org/dods-3.2/nph-dods/data/hdf/server-tests/)],
+    testurl=${withval}, testurl=http://localhost/test/nph-dods/data/hdf/server-tests/)
 
 AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)

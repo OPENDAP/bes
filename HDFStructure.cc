@@ -38,8 +38,8 @@ bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int 
     return true;
 
   // get the HDF dataset name, Vgroup name
-  string hdf_file = dods2id(dataset);
-  string hdf_name = dods2id(this->name());
+  string hdf_file = dataset;
+  string hdf_name = this->name();
 
   bool foundvgroup = false;
   hdf_vgroup vgroup;

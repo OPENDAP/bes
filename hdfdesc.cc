@@ -222,12 +222,11 @@ static void SDS_descriptions(sds_map& map, DAS& das, const string& filename) {
     vector<hdf_attr> dattrs;
     for (SDSI s=map.begin(); s!=map.end(); ++s) {
       const hdf_sds *sds = &s->second.sds;
-      AddHDFAttr(das, id2dods(sds->name), sds->attrs);
+      AddHDFAttr(das, sds->name, sds->attrs);
       for (int k=0; k<(int)sds->dims.size(); ++k) {
 	dattrs = Dims2Attrs(sds->dims[k]);
-	AddHDFAttr(das,id2dods(sds->name)+"_dim_"+num2string(k),dattrs);
+	AddHDFAttr(das, sds->name+"_dim_"+num2string(k), dattrs);
       }
-//    ADDHDFAttr(das, id2dods(sdslist[j].name), sdslist[j].annots);
     }
     return;
 }
@@ -251,7 +250,7 @@ static void Vdata_descriptions(vd_map& map, DAS& das, const string& filename) {
     vector<hdf_attr> dattrs;
     for (VDI s=map.begin(); s!=map.end(); ++s) {
       const hdf_vdata *vd = &s->second.vdata;
-      AddHDFAttr(das, id2dods(vd->name), vd->attrs);
+      AddHDFAttr(das, vd->name, vd->attrs);
     }
 
     return;
@@ -276,7 +275,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
       const hdf_vgroup *vg = &v->second.vgroup;
       
       // Add Vgroup attributes
-      AddHDFAttr(das, id2dods(vg->name), vg->attrs);
+      AddHDFAttr(das, vg->name, vg->attrs);
 
       // now, assign children
       for(uint32 i=0; i<vg->tags.size(); i++) {
@@ -372,11 +371,11 @@ static void GR_descriptions(gr_map& map, DAS& das, const string& filename) {
     for (GRI g=map.begin(); g!=map.end(); ++g) {
         const hdf_gri *gri = &g->second.gri;
 	// add GR attributes 
-	AddHDFAttr(das, id2dods(gri->name), gri->attrs);
+	AddHDFAttr(das, gri->name, gri->attrs);
 
 	// add palettes as attributes
 	pattrs = Pals2Attrs(gri->palettes);
-	AddHDFAttr(das, id2dods(gri->name), pattrs);
+	AddHDFAttr(das, gri->name, pattrs);
 
     }
 
@@ -446,7 +445,7 @@ void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
 	    } else {
 	      if (attrtype == "String") 
 		attv[j] = "\"" + escattr(attv[j]) + '"';
-	      if (atp->append_attr(id2dods(hav[i].name), attrtype, attv[j]) == 0)
+	      if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
 		THROW(dhdferr_addattr);
 	    }
 	}
@@ -545,6 +544,13 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
 }
 
 // $Log: hdfdesc.cc,v $
+// Revision 1.18  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.17.4.1  2001/07/28 00:25:15  jimg
+// I removed the code which escapes names. This function is now handled
+// for all the servers by the dap.
+//
 // Revision 1.17  2000/10/09 19:46:20  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.

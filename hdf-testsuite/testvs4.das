@@ -18,9 +18,19 @@ Attributes {
         Byte Attr_DFNT_UINT8 0, 1, 255;
     }
     Vdata_DFNT_FLOAT32 {
-        Float64 Attr_DFNT_FLOAT32 0, 1, -1, 3.40282e+38, 1.4013e-45, -3.40282e+38, -1.4013e-45;
+        Float64 Attr_DFNT_FLOAT32 0, 1, -1, 3.40282e+38, 1.17549e-38, -3.40282e+38, -1.17549e-38;
     }
     Vdata_DFNT_FLOAT64 {
-        Float64 Attr_DFNT_FLOAT64 0, 1, -1, 1.79769e+308;
+        Float64 Attr_DFNT_FLOAT64 0, 1, -1, 1.79769e+308, -1.79769e+308;
+        Vdata_DFNT_FLOAT64_dods_errors {
+            Float64 Attr_DFNT_FLOAT64 2.22507e-308, -2.22507e-308;
+            String Attr_DFNT_FLOAT64_explanation "`2.22507e-308' is not a Float64 value.", "`-2.22507e-308' is not a Float64 value.";
+        }
+    }
+    Vdata_DFNT_CHAR8 {
+        String Attr_DFNT_CHAR8 "\000\001\377\177\200";
+    }
+    Vdata_DFNT_UCHAR8 {
+        String Attr_DFNT_UCHAR8 "\000\001\377";
     }
 }

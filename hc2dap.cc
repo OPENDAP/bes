@@ -72,7 +72,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	return 0;
 
     // construct HDFSequence
-    HDFSequence *seq = new HDFSequence(id2dods(vd.name));
+    HDFSequence *seq = new HDFSequence(vd.name);
     if (seq == 0)
 	return 0;
 
@@ -83,7 +83,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    delete seq;		// problem with the field
 	    return 0;
 	}
-	HDFStructure *st = new HDFStructure(id2dods(vd.fields[i].name));
+	HDFStructure *st = new HDFStructure(vd.fields[i].name);
 	if (st == 0) {
 	    delete seq;
 	    return 0;
@@ -94,7 +94,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 
 	    // collapse char subfields into one string
 	    string subname = vd.fields[i].name + "__0";
-	    BaseType *bt = new HDFStr(id2dods(subname));
+	    BaseType *bt = new HDFStr(subname);
 	    if (bt == 0) {
 		delete st;
 		delete seq;
@@ -109,7 +109,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 		ostrstream strm(subname,hdfclass::MAXSTR);
 		strm << vd.fields[i].name << "__" << j << ends;
 		BaseType *bt = 
-		    NewDAPVar(id2dods(subname), 
+		    NewDAPVar(subname,
 			      vd.fields[i].vals[j].number_type());
 		if (bt == 0) {
 		    delete st;
@@ -136,7 +136,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup& vg, vg_map& vgmap,
 	return 0;
     
     // construct HDFStructure
-    HDFStructure *str = new HDFStructure(id2dods(vg.name));
+    HDFStructure *str = new HDFStructure(vg.name);
     if (str == 0)
 	return 0;
     bool nonempty = false;
@@ -189,10 +189,10 @@ HDFArray *NewArrayFromSDS(const hdf_sds& sds) {
 	return 0;
 
     // construct HDFArray, assign data type
-    HDFArray *ar = new HDFArray(id2dods(sds.name));
+    HDFArray *ar = new HDFArray(sds.name);
     if (ar == 0)
 	return 0;
-    BaseType *bt = NewDAPVar(id2dods(sds.name), sds.data.number_type());
+    BaseType *bt = NewDAPVar(sds.name, sds.data.number_type());
     if (bt == 0) {		// something is not right with SDS number type?
 	delete ar;
 	return 0;
@@ -201,7 +201,7 @@ HDFArray *NewArrayFromSDS(const hdf_sds& sds) {
 
     // add dimension info to HDFArray
     for (int i=0; i<(int)sds.dims.size(); ++i)
-	ar->append_dim(sds.dims[i].count, id2dods(sds.dims[i].name));
+	ar->append_dim(sds.dims[i].count, sds.dims[i].name);
 
     return ar;
 }
@@ -212,10 +212,10 @@ HDFArray *NewArrayFromGR(const hdf_gri& gr) {
 	return 0;
 
     // construct HDFArray, assign data type
-    HDFArray *ar = new HDFArray(id2dods(gr.name));
+    HDFArray *ar = new HDFArray(gr.name);
     if (ar == 0)
 	return 0;
-    BaseType *bt = NewDAPVar(id2dods(gr.name), gr.image.number_type());
+    BaseType *bt = NewDAPVar(gr.name, gr.image.number_type());
     if (bt == 0) {		// something is not right with GR number type?
 	delete ar;
 	return 0;
@@ -224,9 +224,9 @@ HDFArray *NewArrayFromGR(const hdf_gri& gr) {
 
     // add dimension info to HDFArray
     if (gr.num_comp > 1)
-	ar->append_dim(gr.num_comp, id2dods(gr.name + "__comps"));
-    ar->append_dim(gr.dims[1], id2dods(gr.name + "__Y"));
-    ar->append_dim(gr.dims[0], id2dods(gr.name + "__X"));
+	ar->append_dim(gr.num_comp, gr.name + "__comps");
+    ar->append_dim(gr.dims[1], gr.name + "__Y");
+    ar->append_dim(gr.dims[0], gr.name + "__X");
     return ar;
 }
 
@@ -240,7 +240,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
     HDFArray *ar = NewArrayFromSDS(sds);
     if (ar == 0)
 	return 0;
-    HDFGrid *gr = new HDFGrid(id2dods(sds.name));
+    HDFGrid *gr = new HDFGrid(sds.name);
     if (gr == 0) {
 	delete ar;
 	return 0;
@@ -257,12 +257,12 @@ HDFGrid *NewGridFromSDS(const hdf_sds& sds) {
 	    return 0;
 	}
 	mapname = sds.dims[i].name;
-	if ( (dsbt = NewDAPVar(id2dods(mapname),
+	if ( (dsbt = NewDAPVar(mapname,
 			       sds.dims[i].scale.number_type())) == 0) {
 	    delete gr;		// note: ~HDFGrid() cleans up the attached ar
 	    return 0;
 	}
-	if ( (dmar = new HDFArray(id2dods(mapname))) == 0) {
+	if ( (dmar = new HDFArray(mapname)) == 0) {
 	    delete gr;
 	    delete dsbt;
 	    return 0;
@@ -283,18 +283,18 @@ BaseType *NewDAPVar(const string& varname, int32 hdf_type) {
     switch(hdf_type) {
     case DFNT_FLOAT32:
     case DFNT_FLOAT64:
-	bt = new HDFFloat64(id2dods(varname));
+	bt = new HDFFloat64(varname);
 	break;
 #ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
 #endif
     case DFNT_INT16:
     case DFNT_INT32:
-	bt = new HDFInt32(id2dods(varname));
+	bt = new HDFInt32(varname);
 	break;
     case DFNT_UINT16:
     case DFNT_UINT32:
-	bt = new HDFUInt32(id2dods(varname));
+	bt = new HDFUInt32(varname);
 	break;
 	// INT8 and UINT8 *should* be grouped under Int32 and UInt32, but
 	// that breaks too many programs. jhrg 12/30/97
@@ -304,7 +304,7 @@ BaseType *NewDAPVar(const string& varname, int32 hdf_type) {
     case DFNT_UINT8:
     case DFNT_UCHAR8:
     case DFNT_CHAR8:
-	bt = new HDFByte(id2dods(varname));
+	bt = new HDFByte(varname);
 	break;
     default:
 	bt = 0;			// unsupported or invalid type
@@ -416,7 +416,7 @@ void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
     for (Pix p=seq->first_var(); p!=0; seq->next_var(p)) {
 	
 	stru = CastBaseTypeToStructure(seq->var(p));
-        string fieldname = dods2id(stru->name());
+        string fieldname = stru->name();
 
 	// find corresponding field in vd
 	vector<hdf_field>::iterator vf = 
@@ -505,6 +505,13 @@ void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 }
 
 // $Log: hc2dap.cc,v $
+// Revision 1.16  2001/08/27 17:21:34  jimg
+// Merged with version 3.2.2
+//
+// Revision 1.15.4.1  2001/07/28 00:25:15  jimg
+// I removed the code which escapes names. This function is now handled
+// for all the servers by the dap.
+//
 // Revision 1.15  2000/10/09 19:46:20  jimg
 // Moved the CVS Log entries to the end of each file.
 // Added code to catch Error objects thrown by the dap library.
