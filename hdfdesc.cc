@@ -12,6 +12,10 @@
 // $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
 // 
 // $Log: hdfdesc.cc,v $
+// Revision 1.5  1997/12/30 23:55:42  jimg
+// The Dataset name is no longer filtered by id2dods(). Now `.'s in the
+// filename look like dots not `%2e'.
+//
 // Revision 1.4  1997/10/09 22:19:40  jimg
 // Resolved conflicts in merge of 2.14c to trunk.
 //
@@ -148,7 +152,7 @@ static void update_descriptions(const String& filename) {
 	datafile.mtime() > dasfile.mtime()) {
 #endif
 	DDS dds;
-	dds.set_dataset_name(id2dods(basename(CONST_CAST(String,filename))));
+	dds.set_dataset_name(basename(CONST_CAST(String,filename)));
 	DAS das;
 	
 	// generate DDS, DAS
