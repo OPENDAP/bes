@@ -45,10 +45,10 @@ void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 bool
 HDFSequence::read(const string& dataset) {
     int err = 0;
-    read_tagref(dataset, -1, -1, err);
+    int status = read_tagref(dataset, -1, -1, err);
     if (err)
 	throw Error(unknown_error, "Could not read from dataset.");
-    return false;
+    return status;
 }
 
 bool 
@@ -99,6 +99,10 @@ HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref,
 }
 
 // $Log: HDFSequence.cc,v $
+// Revision 1.15  2003/01/31 06:46:33  jimg
+// Fixed a laten bug in read() that I fixed on 3.2 but that got lost in the
+// merge.
+//
 // Revision 1.14  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.
 //
