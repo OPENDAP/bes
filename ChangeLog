@@ -1,3 +1,8 @@
+2003-05-06  James Gallagher  <jimg@dcz.dods.org>
+
+	* Added tests.conf file which can be used by the configure script
+	so that builders don't have to use a long, unwieldy, command line.
+
 2003-01-30    <jimg@dcz.dods.org>
 
 	* I merged with the code marked release-3-2-4, which was the last
