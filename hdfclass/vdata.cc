@@ -9,6 +9,9 @@
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
 //
 // $Log: vdata.cc,v $
+// Revision 1.3  1998/09/10 21:38:39  jehamby
+// Hide HDF chunking information from DDS.
+//
 // Revision 1.2  1998/04/03 18:34:19  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -367,6 +370,7 @@ bool IsInternalVdata(int32 fid, int32 ref) {
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
     reserved_classes.insert("DimVal0.1");
+    reserved_classes.insert("_HDF_CHK_TBL_0");
 
     // get name, class of vdata
     int vid;
