@@ -12,6 +12,9 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.11  1998/09/10 23:03:06  jehamby
+// Output both DFNT_CHAR8 and DFNT_UCHAR8 Vdata fields as String, not Byte.
+//
 // Revision 1.10  1998/09/10 21:33:25  jehamby
 // Map DFNT_CHAR8 and DFNT_UCHAR8 to Byte instead of String in SDS.
 //
@@ -139,11 +142,12 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    return 0;
 	}
 	// for each subfield add the subfield to st
-	if (vd.fields[i].vals[0].number_type() == DFNT_CHAR8) {
+	if (vd.fields[i].vals[0].number_type() == DFNT_CHAR8 ||
+	    vd.fields[i].vals[0].number_type() == DFNT_UCHAR8) {
 
 	    // collapse char subfields into one string
 	    String subname = vd.fields[i].name + "__0";
-	    BaseType *bt = NewDAPVar(id2dods(subname), DFNT_CHAR8);
+	    BaseType *bt = new HDFStr(id2dods(subname));
 	    if (bt == 0) {
 		delete st;
 		delete seq;
