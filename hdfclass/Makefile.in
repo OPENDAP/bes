@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.13 2000/10/30 17:28:11 jimg Exp $
+# $Id: Makefile.in,v 1.14 2001/04/02 18:53:36 rmorris Exp $
 
 @SET_MAKE@
 
@@ -85,12 +85,12 @@ tags:
 	$(TAGS) $(TAGS_FLAGS) src/*.cc src/*.h 
 
 # DO NOT DELETE; depend depends on this line.
-annot.o: src/annot.cc config_hdf.h
-genvec.o: src/genvec.cc config_hdf.h
-gri.o: src/gri.cc config_hdf.h
-hcerr.o: src/hcerr.cc config_hdf.h
-hcutil.o: src/hcutil.cc config_hdf.h
-inst.o: src/inst.cc config_hdf.h
-sds.o: src/sds.cc config_hdf.h
-vdata.o: src/vdata.cc config_hdf.h
-vgroup.o: src/vgroup.cc config_hdf.h
+annot.o: src/annot.cc ../config_hdf.h
+genvec.o: src/genvec.cc ../config_hdf.h
+gri.o: src/gri.cc ../config_hdf.h
+hcerr.o: src/hcerr.cc ../config_hdf.h
+hcutil.o: src/hcutil.cc ../config_hdf.h
+inst.o: src/inst.cc ../config_hdf.h
+sds.o: src/sds.cc ../config_hdf.h
+vdata.o: src/vdata.cc ../config_hdf.h
+vgroup.o: src/vgroup.cc ../config_hdf.h
