@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.15 2001/08/27 17:21:34 jimg Exp $
+# $Id: Makefile.in,v 1.16 2001/09/28 22:36:09 jimg Exp $
 
 @SET_MAKE@
 
@@ -78,7 +78,7 @@ distclean: clean
 
 .PHONY: depend
 depend: 
-	@depend@ -m Makefile.in -- $(CPPFLAGS) -- src/*.cc
+	../@depend@ -m Makefile.in -- $(CPPFLAGS) -- src/*.cc
 
 .PHONY: tags
 tags:

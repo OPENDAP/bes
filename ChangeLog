@@ -1,3 +1,20 @@
+2001-09-28  James Gallagher  <jimg@dcz.dods.org>
+
+	* Merged with release-3-2-3. The next merge should use
+	release-3-2-3 -j release-3-2.
+
+2001-09-26  James Gallagher  <jimg@dcz.dods.org>
+
+	* Minor build fixes.
+
+2001-08-29  James Gallagher  <jimg@dcz.dods.org>
+
+	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
+	were no longer used. I also updated Makefile.in's list of
+	dependencies. This should fix a nagging problem (bug 246) where
+	the HDF server would not build on Solaris because make there
+	wanted to compile dattr.cc (which no longer builds).
+
 2001-08-27  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merged with release-3-2-2. The next merge should use -j
@@ -140,3 +157,65 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
+<<<<<<< ChangeLog
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+
+=======
+2001-09-26  James Gallagher  <jimg@dcz.dods.org>
+
+	* Minor build fixes.
+
+2001-08-29  James Gallagher  <jimg@dcz.dods.org>
+
+	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
+	were no longer used. I also updated Makefile.in's list of
+	dependencies. This should fix a nagging problem (bug 246) where
+	the HDF server would not build on Solaris because make there
+	wanted to compile dattr.cc (which no longer builds).
+
+>>>>>>> 1.8.4.2
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+<<<<<<< ChangeLog
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+
+=======
+2001-09-26  James Gallagher  <jimg@dcz.dods.org>
+
+	* Minor build fixes.
+
+2001-08-29  James Gallagher  <jimg@dcz.dods.org>
+
+	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
+	were no longer used. I also updated Makefile.in's list of
+	dependencies. This should fix a nagging problem (bug 246) where
+	the HDF server would not build on Solaris because make there
+	wanted to compile dattr.cc (which no longer builds).
+
+>>>>>>> 1.8.4.3
+<<<<<<< ChangeLog
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+=======
+$Id: ChangeLog,v 1.14 2001/09/28 22:36:09 jimg Exp $
+
+=======
+2001-09-26  James Gallagher  <jimg@dcz.dods.org>
+
+	* Minor build fixes.
+
+2001-08-29  James Gallagher  <jimg@dcz.dods.org>
+
+	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
+	were no longer used. I also updated Makefile.in's list of
+	dependencies. This should fix a nagging problem (bug 246) where
+	the HDF server would not build on Solaris because make there
+	wanted to compile dattr.cc (which no longer builds).
+
+>>>>>>> 1.11.4.4
