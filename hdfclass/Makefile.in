@@ -1,7 +1,7 @@
 
 # Makefile for hdfclass library.
 #
-# $Id: Makefile.in,v 1.19 2004/07/09 18:08:50 jimg Exp $
+# $Id: Makefile.in,v 1.20 2005/03/16 20:48:37 jimg Exp $
 
 @SET_MAKE@
 
@@ -79,80 +79,19 @@ distclean: clean
 
 .PHONY: depend
 depend: 
-	../@depend@ -m Makefile.in -- $(CPPFLAGS) -- *.cc
+	@echo "Run depend.sh by hand and remove the hdf includes."
 
 .PHONY: tags
 tags:
 	$(TAGS) $(TAGS_FLAGS) *.cc *.h 
 
 # DO NOT DELETE; depend depends on this line.
-annot.o: annot.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcerr.h hcstream.h hdfclass.h
-genvec.o: genvec.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcerr.h hdfclass.h
-gri.o: gri.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcstream.h hcerr.h hdfclass.h
-hcerr.o: hcerr.cc ../config_hdf.h /usr/local/hdf/include/hdf.h \
-  /usr/local/hdf/include/hdfi.h /usr/local/hdf/include/hlimits.h \
-  /usr/local/hdf/include/hntdefs.h /usr/local/hdf/include/htags.h \
-  /usr/local/hdf/include/hbitio.h /usr/local/hdf/include/hcomp.h \
-  /usr/local/hdf/include/herr.h /usr/local/hdf/include/hproto.h \
-  /usr/local/hdf/include/vg.h /usr/local/hdf/include/mfgr.h hcerr.h
-hcutil.o: hcutil.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h
-inst.o: inst.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hdfclass.h
-sds.o: sds.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcstream.h hcerr.h hdfclass.h
-vdata.o: vdata.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcstream.h hcerr.h hdfclass.h
-vgroup.o: vgroup.cc ../config_hdf.h /usr/local/hdf/include/mfhdf.h \
-  /usr/local/hdf/include/hdf.h /usr/local/hdf/include/hdfi.h \
-  /usr/local/hdf/include/hlimits.h /usr/local/hdf/include/hntdefs.h \
-  /usr/local/hdf/include/htags.h /usr/local/hdf/include/hbitio.h \
-  /usr/local/hdf/include/hcomp.h /usr/local/hdf/include/herr.h \
-  /usr/local/hdf/include/hproto.h /usr/local/hdf/include/vg.h \
-  /usr/local/hdf/include/mfgr.h /usr/local/hdf/include/netcdf.h \
-  /usr/local/hdf/include/hdf2netcdf.h hcstream.h hcerr.h hdfclass.h
+annot.o: annot.cc ../config_hdf.h ./hcerr.h ./hcstream.h ./hdfclass.h
+genvec.o: genvec.cc ../config_hdf.h ./hcerr.h ./hdfclass.h
+gri.o: gri.cc ../config_hdf.h ./hcerr.h ./hdfclass.h
+hcerr.o: hcerr.cc ../config_hdf.h ./hcerr.h
+hcutil.o: hcutil.cc ../config_hdf.h
+inst.o: inst.cc ../config_hdf.h ./hdfclass.h
+sds.o: sds.cc ../config_hdf.h ./hcstream.h ./hcerr.h ./hdfclass.h
+vdata.o: vdata.cc ../config_hdf.h ./hcstream.h ./hcerr.h ./hdfclass.h
+vgroup.o: vgroup.cc ../config_hdf.h ./hcstream.h ./hcerr.h ./hdfclass.h
