@@ -1,3 +1,48 @@
+2002-06-03    <jimg@dcz.dods.org>
+
+	* HDFSequence.cc: Removed call to Sequence::set_level().
+
+2002-05-01    <jimg@dcz.dods.org>
+
+	* Merged with release-3-2-6.
+
+2002-04-11    <jimg@dcz.dods.org>
+
+	* Fixed casts littered throughout the code. Files: HDFArray.cc,
+	HDFFloat32.cc, HDFFloat32.h, HDFGrid.cc, HDFInt16.cc, HDFInt16.h,
+	HDFSequence.cc, HDFStructure.cc, HDFUInt16.cc, HDFUInt16.h,
+	dodsutil.h, funcs.cc, hdfdesc.cc.
+
+	* dodsutil.cc: Not used; removed. 
+
+	* hc2dap.cc: Removed HDFTypeName functions.
+
+	* funcs.cc: Replaced BaseType::type_name() with BaseType::type()
+	* dodsutil.cc: Ibid.
+
+	* Massive changes to the code (checked in on 4/9/2002 and
+	4/10/2002). Changed HDFArray, HDFStructure, HDFSequence and
+	HDFGrid so that all of the DODS numeric types are used when
+	spitting out variables from HDF files. Also changes hc2dap.cc so
+	that calls to ExportDataForDODS are no longer made.
+
+2002-01-29  Dan Holloway <d.holloway@gso.uri.edu>
+
+	* Added new elements in the hdf_vgroup structure
+	to maintain the string-representation of the variable
+	associated with each vgroup tag/ref in the hdf datafile.
+	This is required to support modifications to the Ancillary
+	DDS to limit the number of variables accessible (Modis M3)
+	to a more manageable number.   Previously, the Ancillary
+	DDS was assumed to be a simple cache of the actual DDS
+	from the hdf datafile, no modifications were possible.  The
+	new behavior allows removing variables only, you cannot
+	move vgroup variables among containers, though that is
+	certainly possible just not supported.
+
+	* Fixes in hdfclass/hcstream.h,hdfclass.h,vgroup.cc
+	* Fixes in hc2dap.cc/LoadStructureFromVgroup
+	
 2001-10-13  James Gallagher  <jimg@dcz.dods.org>
 
 	* Merged with release-3-2-4.
@@ -164,112 +209,3 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	* Changed the filter programs so that they use the new DODSFilter
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
-
-<<<<<<< ChangeLog
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-
-=======
-2001-09-26  James Gallagher  <jimg@dcz.dods.org>
-
-	* Minor build fixes.
-
-2001-08-29  James Gallagher  <jimg@dcz.dods.org>
-
-	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
-	were no longer used. I also updated Makefile.in's list of
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
->>>>>>> 1.8.4.2
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-<<<<<<< ChangeLog
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-
-=======
-2001-09-26  James Gallagher  <jimg@dcz.dods.org>
-
-	* Minor build fixes.
-
-2001-08-29  James Gallagher  <jimg@dcz.dods.org>
-
-	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
-	were no longer used. I also updated Makefile.in's list of
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
->>>>>>> 1.11.4.5
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-
-=======
-<<<<<<< ChangeLog
-2001-09-26  James Gallagher  <jimg@dcz.dods.org>
-
-	* Minor build fixes.
-
-2001-08-29  James Gallagher  <jimg@dcz.dods.org>
-
-	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
-	were no longer used. I also updated Makefile.in's list of
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
->>>>>>> 1.11.4.5
-<<<<<<< ChangeLog
-2001-09-26  James Gallagher  <jimg@dcz.dods.org>
-
-	* Minor build fixes.
-
-2001-08-29  James Gallagher  <jimg@dcz.dods.org>
-
-	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
-	were no longer used. I also updated Makefile.in's list of
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
->>>>>>> 1.8.4.3
-<<<<<<< ChangeLog
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-=======
-$Id: ChangeLog,v 1.15 2001/10/14 01:42:09 jimg Exp $
-
-=======
-2001-09-26  James Gallagher  <jimg@dcz.dods.org>
-
-	* Minor build fixes.
-
-2001-08-29  James Gallagher  <jimg@dcz.dods.org>
-
-	* I removed some old files in src (dattr.cc, escfilt.cc, ...) that
-	were no longer used. I also updated Makefile.in's list of
-	dependencies. This should fix a nagging problem (bug 246) where
-	the HDF server would not build on Solaris because make there
-	wanted to compile dattr.cc (which no longer builds).
-
->>>>>>> 1.11.4.4
