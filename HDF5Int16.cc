@@ -11,6 +11,7 @@
 
 #define HAVE_CONFIG_H
 #include "config_dap.h"
+#include "InternalErr.h"
 #include "HDF5Int16.h"
 
 Int16 *
@@ -39,21 +40,19 @@ HDF5Int16::read(const string &dataset, int &error)
     char * Msgi;
     string cint16="Int16";
     Msgi = new char[255*sizeof(char)];
-
  
     if (read_p()) {
       delete Msgi;
       return false;
     }
-     
-    
+         
     if (return_type(ty_id)==cint16){
 
        if (get_data(dset_id,(void *)&buf,Msgi)<0) {
-           cerr << Msgi << endl;
 	   delete [] Msgi;
-	   error = 1;
-	   return false;
+	   throw InternalErr(
+	   string("hdf5_dods server failed when getting int16 data\n")+Msgi,
+			     __FILE__,__LINE__);
        }
 
        set_read_p(true);

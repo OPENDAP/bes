@@ -93,11 +93,7 @@ HDF5Array::read(const string &dataset, int &error)
   // Throws Error.
   int nelms = format_constraint(offset, step, count);
 
-#if 0
-  cout << "coming into array reading " << endl;fflush(stdout);
-  cout << "dset id "<< dset_id << endl;fflush(stdout);
-  cout << "nelms " << nelms << endl;fflush(stdout);
-#endif
+
 
   if (nelms == num_elm) {
     data_size = memneed;	// memneed is a member; from the field.

@@ -10,6 +10,7 @@
 #include <ctype.h>
 #define HAVE_CONFIG_H
 #include "config_dap.h"
+#include "InternalErr.h"
 #include "HDF5Byte.h"
 
 
@@ -44,20 +45,15 @@ HDF5Byte::read(const string &dataset, int &error)
     Msgi = new char[255*sizeof(char)];
 
     if (read_p()) {
-      delete []Msgi;
+      delete [] Msgi;
         return false;
     }
-    //   get_data(buf);
-    
-    
-    // if (!strcmp(print_type(ty_id),cbyte)){
 
     if (return_type(ty_id)==cbyte) {
        if(get_data(dset_id,(void *)&Dbyte,Msgi)<0){
-	 cerr << Msgi << endl;
-	 delete Msgi;
-	 error = 1;
-	 return false;
+	 delete [] Msgi;
+	 throw InternalErr(string("hdf5_dods server failed when getting one byte data\n")
+				  +Msgi,__FILE__,__LINE__);
        }
        set_read_p(true);
        val2buf( &Dbyte);

@@ -13,6 +13,7 @@
 
 #define HAVE_CONFIG_H
 #include "config_dap.h"
+#include "InternalErr.h"
 #include "HDF5Str.h"
 
 
@@ -26,7 +27,6 @@ HDF5Str::HDF5Str(const string &n) : Str(n)
 {
   ty_id = -1;
   dset_id = -1;
-  //  cerr <<"coming to the string" << endl;
 }
 
 BaseType *
@@ -63,15 +63,11 @@ HDF5Str::read(const string &dataset, int &error)
 
       size = H5Tget_size(type);
       chr = new char[size +1];
-      //  cout << "before getting data \n" << endl;
         if(get_data(dset,(void *)chr,Msgi)<0) {
-	  // cerr << Msgi << endl;
-	  // cerr << "failed at get_data "<< endl;
-	  cout <<Msgi <<endl;
-          cout <<"error getting data"<<endl;
-	 delete Msgi;
-	 error = 1;
-	 return false;
+	 delete [] Msgi;
+	 throw InternalErr(
+	   string("hdf5_dods server failed when getting string data\n")
+	   +Msgi,__FILE__,__LINE__);
        }
 	set_read_p(true);
 	string str = chr;

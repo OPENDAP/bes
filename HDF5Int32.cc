@@ -11,6 +11,7 @@
 
 #define HAVE_CONFIG_H
 #include "config_dap.h"
+#include "InternalErr.h"
 #include "HDF5Int32.h"
 
 Int32 *
@@ -51,10 +52,10 @@ HDF5Int32::read(const string &dataset, int &error)
     if (return_type(type)==cint32){
 
        if(get_data(dset,(void *)&buf,Msgi)<0) {
-	 cerr << Msgi << endl;
 	 delete [] Msgi;
-	 error = 1;
-	 return false;
+	 throw InternalErr(
+	   string("hdf5_dods server failed when getting int32 data\n")
+	   +Msgi,__FILE__,__LINE__);
        }
 
        set_read_p(true);

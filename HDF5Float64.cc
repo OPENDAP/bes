@@ -12,6 +12,7 @@
 
 #define HAVE_CONFIG_H
 #include "config_dap.h"
+#include "InternalErr.h"
 #include "HDF5Float64.h"
 
 Float64 *
@@ -48,10 +49,10 @@ HDF5Float64::read(const string &dataset, int &error)
  
     if (return_type(ty_id)==cfloat64) {
        if(get_data(dset,(void *)&buf,Msgi)<0) {
-	 cerr << Msgi << endl;
 	 delete [] Msgi;
-	 error = 1;
-	 return false;
+	 throw InternalErr(
+	   string("hdf5_dods server failed when getting float64 data\n")
+	   +Msgi,__FILE__,__LINE__);
        }
        set_read_p(true);
        flt64 = (dods_float64) buf;
