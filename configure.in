@@ -1,0 +1,91 @@
+dnl Process this file with autoconf to produce a configure script
+dnl for the hdfbrowse installation.
+
+#--------------------------------------------------------------------
+#   Configure.in  10/18/96
+#
+#--------------------------------------------------------------------
+
+AC_INIT(src)
+AC_CONFIG_AUX_DIR(../../etc)
+AC_CANONICAL_SYSTEM
+AC_CONFIG_SUBDIRS(hdfclass)
+
+dnl output variable defaults
+CXX=g++
+AC_PREFIX_DEFAULT("$(DODS_ROOT)")
+fulldir=`pwd`
+dir=`basename ${fulldir}`
+AC_SUBST(dir)
+dods_root=`echo $fulldir | sed 's@\(.*\)/.*/.*@\1@'`
+AC_DEFINE_UNQUOTED(DODS_ROOT, "$dods_root")
+
+depend=${dods_root}/etc/depend.sh
+AC_SUBST(depend)
+
+#--------------------------------------------------------------------
+#       Program Check
+#--------------------------------------------------------------------
+
+dnl checks for programs
+AC_PROG_CXX
+dnl test for exceptions support in compiler
+DODS_CHECK_EXCEPTIONS()
+if test $CXX = g++; then
+   EXCEPTIONS_SWITCH="-fhandle-exceptions -O0"
+fi
+AC_SUBST(EXCEPTIONS_SWITCH)
+AC_PROG_INSTALL
+
+if echo $INSTALL | egrep 'install-sh'
+then
+     INSTALL="$(DODS_ROOT)/etc/install-sh -c"
+     AC_SUBST(INSTALL)
+fi
+
+
+#--------------------------------------------------------------------
+#       Library Check
+#--------------------------------------------------------------------
+
+dnl look for xdr routines in std libs or in -lnsl
+AC_CHECK_FUNC(xdr_int, , AC_CHECK_LIB(nsl, xdr_int, LIBS="-lnsl $LIBS", noxdr=1))
+
+# Check for hdf libraries
+DODS_HDF_LIBRARY
+DODS_WWW_LIBRARY
+DODS_FIND_WWW_INCLUDES
+DODS_FIND_EXPECT
+
+#--------------------------------------------------------------------
+#       Warning Messages
+#--------------------------------------------------------------------
+
+if test "$noxdr" = 1; then
+AC_MSG_WARN("XDR library is missing")
+fi
+if test "$nohdf" = 1; then
+AC_MSG_WARN("HDF library is missing")
+fi
+if test "$nodap" = 1; then
+AC_MSG_WARN("DAP++ library is missing")
+fi
+if test "$nostdcpp" = 1; then
+AC_MSG_WARN("stdc++ library is missing")
+fi
+
+#--------------------------------------------------------------------
+#       Output to Makefiles
+#--------------------------------------------------------------------
+
+AC_MSG_CHECKING(for $host_vendor directory)
+if test -d $host_vendor; 
+then
+   AC_MSG_RESULT(found)
+else
+   AC_MSG_RESULT(creating)
+  `mkdir $host_vendor`
+fi
+
+AC_OUTPUT(Makefile $host_vendor/Makefile:hdf-dods.mk)
+

@@ -1,0 +1,50 @@
+#
+
+DODS_ROOT = ../..
+
+SHELL = /bin/sh
+# Set the instalation directories; prefix can be set on the command line
+# during Makefile construction with `./configure --prefix /my/choice'
+
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
+manext = 1
+mandir = $(prefix)/man/man$(manext)
+src = $(DODS_ROOT)/src
+etcdir = $(DODS_ROOT)/etc
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+STRIP = strip
+
+all:		HDFClass hdf-dods 
+
+HDFClass:	
+		cd ./hdfclass/@host_vendor@; $(MAKE)
+
+hdf-dods:	
+		cd ./@host_vendor@; $(MAKE)
+
+install:	all
+		$(INSTALL_DATA) ./@host_vendor@/libhdf-dods.a $(libdir)
+		$(RANLIB) $(libdir)/libhdf-dods.a
+		$(INSTALL_DATA) ./hdfclass/@host_vendor@/libhdfclass.a $(libdir)
+		$(RANLIB) $(libdir)/libhdfclass.a
+		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_das $(etcdir)
+		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_dds $(etcdir)
+		$(INSTALL_PROGRAM) ./@host_vendor@/hdf_dods $(etcdir)
+		$(STRIP) $(etcdir)/hdf_das $(etcdir)/hdf_dds $(etcdir)/hdf_dods
+		$(INSTALL) ./src/HDF*.h $(includedir)
+		$(INSTALL) ./hdfclass/src/hdfclass.h $(includedir)
+		$(INSTALL) ./hdfclass/src/hcstream.h $(includedir)
+
+clean:
+		cd ./@host_vendor@/; $(MAKE) clean
+		cd ./hdfclass/@host_vendor@/; $(MAKE) clean
+
+ultraclean:
+		cd ./@host_vendor@/; $(MAKE) ultraclean
+		cd ./hdfclass/@host_vendor@/; $(MAKE) ultraclean
