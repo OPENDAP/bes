@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.9 1998/03/11 00:40:27 jimg Exp $
+# $Id: Makefile.in,v 1.10 1998/07/13 20:26:31 jimg Exp $
 
 @SET_MAKE@
 
@@ -35,6 +35,8 @@ INSTALLMAN = man
 
 SHELL = /bin/sh
 srcdir = @srcdir@
+version = @VERSION@
+dir = hdf-dods-@VERSION@
 
 # names of key programs
 
@@ -96,7 +98,6 @@ install: all
 	$(INSTALL_PROGRAM) -s ./hdf_dds $(etcdir)
 	$(INSTALL_PROGRAM) -s ./hdf_dods $(etcdir)
 	$(INSTALL_PROGRAM) ./nph-hdf $(etcdir)
-	$(INSTALL_PROGRAM) ./DODS_Cache.pm $(etcdir)
 
 .SUFFIXES:      .o .cc .c
 
@@ -113,4 +114,38 @@ depend:
 	src/*.cc
 	cd hdfclass && $(MAKE) $(MFLAGS) depend && cd ..
 
+# This is a special tar target because it builds not only the tar file for
+# the core software but also the lib, etc, and bin directories. It assumes
+# that the root directory for DODS is called `DODS' (no version number).
+.PHONY: tar
+tar:
+	@echo "You should first run distclean in DODS_ROOT!"
+	@echo "(ignore this if you have)"
+	cd $(DODS_ROOT)/.. && \
+	tar --exclude '*/old' --exclude '*/.#*' --exclude '*/CVS' \
+	    --gzip --create --dereference --file DODS-$(dir).tar.gz \
+	    DODS/src/$(dir)
+
+.PHONY: update-version
+update-version: check-version
+	@echo "Version is: `cat version.h`"
+	mv ../hdf-dods* ../hdf-dods-$(version)
+
+# Compare the version encoded in this Makefile (set by configure) with the
+# version in version.h. The version make variable is set up near the top of
+# the Makefile.
+.PHONY: check-version
+check-version:
+	@echo "Checking for version.h and Makefile version match-up"
+	@if [ "$(version)" != "`cat version.h`" ]; \
+	then \
+		echo "You must manually re-run configure!"; \
+		exit 1; \
+	else \
+		echo "Yes, they match."; \
+	fi
+
+.PHONY: tags
+tags:
+	$(TAGS) $(TAGS_FLAGS) *.cc *.h *.lex *.y
 include dependencies

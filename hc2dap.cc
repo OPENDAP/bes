@@ -12,6 +12,12 @@
 //                           data structures
 // 
 // $Log: hc2dap.cc,v $
+// Revision 1.9  1998/07/13 20:26:37  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.8.4.1  1998/05/22 19:50:53  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
 // Revision 1.8  1998/04/14 18:42:05  jimg
 // Temporary fix for LoadStructureFromVgroup. Added err. There is a more
 // comprehensive fix from Jake Hamby that will added later.
@@ -266,8 +272,8 @@ HDFArray *NewArrayFromGR(const hdf_gri& gr) {
     // add dimension info to HDFArray
     if (gr.num_comp > 1)
 	ar->append_dim(gr.num_comp, id2dods(gr.name + "__comps"));
-    ar->append_dim(gr.dims[0], id2dods(gr.name + "__X"));
     ar->append_dim(gr.dims[1], id2dods(gr.name + "__Y"));
+    ar->append_dim(gr.dims[0], id2dods(gr.name + "__X"));
     return ar;
 }
 

@@ -12,6 +12,12 @@
 // $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
 // 
 // $Log: hcstream.h,v $
+// Revision 1.3  1998/07/13 20:26:35  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.2.4.1  1998/05/22 19:50:52  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
 // Revision 1.2  1998/04/03 18:34:18  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -289,6 +295,9 @@ public:
     virtual bool eo_attr(void) const;          // positioned past last attribute?
     virtual bool eo_pal(void) const;           // positioned past last palette?
     void setmeta(bool val) { _meta = val; }    // set metadata loading
+    void setslab(vector<int> start, vector<int> edge, vector<int> stride,
+		 bool reduce_rank = false);
+    void unsetslab(void) { _slab.set = _slab.reduce_rank = false; }
     void setinterlace(int32 interlace_mode);   // set interlace type for next read
     hdfistream_gri & operator>>(hdf_gri & hr);              // read a single RI
     hdfistream_gri & operator>>(vector<hdf_gri> & hrv);     // read all RI's
@@ -313,6 +322,13 @@ protected:
     int32 _npals;               // number of palettes, set to one for now
     int32 _interlace_mode;      // interlace mode for reading images
     bool _meta;                 // metadata only
+    struct {
+	bool set;
+	bool reduce_rank;
+	int32 start[2];
+	int32 edge[2];
+	int32 stride[2];
+    } _slab;
 }; /* Note: multiple palettes is not supported in the current HDF 4.0 GR API */
 
 #endif // ifndef _HCSTREAM_H

@@ -9,6 +9,12 @@
 // $RCSfile: gri.cc,v $ - input stream class for HDF GR
 // 
 // $Log: gri.cc,v $
+// Revision 1.3  1998/07/13 20:26:35  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.2.4.1  1998/05/22 19:50:51  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
 // Revision 1.2  1998/04/03 18:34:17  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -66,7 +72,7 @@ typedef string String;
 void hdfistream_gri::_init(void) {
   _ri_id = _attr_index = _pal_index = 0;
   _npals = _nri = _nattrs = _nfattrs = _gr_id = _file_id = 0;
-  _index = _interlace_mode = -1; _meta = false;
+  _index = _interlace_mode = -1; _meta = _slab.set = false;
   return;
 }
 
@@ -246,6 +252,34 @@ bool hdfistream_gri::eo_pal(void) const {
   }
 }
 
+// set slab parameters
+void hdfistream_gri::setslab(vector<int> start, vector<int> edge, 
+			     vector<int> stride, bool reduce_rank) {
+    // check validity of input
+    if (start.size() != edge.size()  ||  edge.size() != stride.size()  ||
+	start.size() == 0)
+	THROW(hcerr_invslab);
+
+    for (int i=0; i<2; ++i) {
+	if (start[i] < 0)
+	    THROW(hcerr_invslab);
+	if (edge[i] <= 0)
+	    THROW(hcerr_invslab);
+	if (stride[i] <= 0)
+	    THROW(hcerr_invslab);
+	// swap the X and Y dimensions because DODS prints data in [y][x] form
+	// but HDF wants dimensions in [x][y]
+	_slab.start[1-i] = start[i];
+	_slab.edge[1-i] = edge[i];
+	_slab.stride[1-i] = stride[i];
+    }
+    cerr << "start[0] = " << start[0] << " start[1] = " << start[1] << endl;
+    cerr << "edge[0] = " << edge[0] << " edge[1] = " << edge[1] << endl;
+    cerr << "stride[0] = " << stride[0] << " stride[1] = " << stride[1] << endl;
+
+    _slab.set = true;
+    _slab.reduce_rank = reduce_rank;
+}
 
 // read a single RI
 hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
@@ -283,19 +317,38 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr){
   if (_meta)
     hr.image.import(data_type);
   else {
-    int32 zero[2];
-    zero[0] = zero[1] = 0;
-    int32 nelts = dim_sizes[0] * dim_sizes[1] * ncomp;
-    // allocate a templorray C array to hold the data from GRreadimage()
-    int imagesize = nelts * DFKNTsize(data_type);
-    void *image = (void *)new char[imagesize];
-    if (image == 0)
-      THROW(hcerr_nomemory);
-    // read the image and store it in a hdf_genvec
-    GRreqimageil(_ri_id,_interlace_mode);
-    if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
-      delete []image;   // problem: clean up and throw an exception
-      THROW(hcerr_griread);
+    int32 nelts;
+    void *image;
+    if (_slab.set) {
+      nelts = _slab.edge[0] * _slab.edge[1] * ncomp;
+      // allocate a temporary C array to hold the data from GRreadimage()
+      int imagesize = nelts * DFKNTsize(data_type);
+      image = (void *)new char[imagesize];
+      if (image == 0)
+	THROW(hcerr_nomemory);
+      // read the image and store it in a hdf_genvec
+      GRreqimageil(_ri_id,_interlace_mode);
+      if (GRreadimage(_ri_id, _slab.start, _slab.stride, _slab.edge, image) < 0) {
+	delete []image;   // problem: clean up and throw an exception
+	THROW(hcerr_griread);
+      }
+    } else {
+      int32 zero[2];
+      zero[0] = zero[1] = 0;
+      nelts = dim_sizes[0] * dim_sizes[1] * ncomp;
+      // allocate a temporary C array to hold the data from GRreadimage()
+      int imagesize = nelts * DFKNTsize(data_type);
+      image = (void *)new char[imagesize];
+      if (image == 0)
+	THROW(hcerr_nomemory);
+      // read the image and store it in a hdf_genvec
+      GRreqimageil(_ri_id,_interlace_mode);
+      cerr << "dim_sizes[0] = " << dim_sizes[0] << " dim_sizes[1] = "
+	   << dim_sizes[1] << endl;
+      if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
+	delete []image;   // problem: clean up and throw an exception
+	THROW(hcerr_griread);
+      }
     }
     // try { // try to import into an hdf_genvec
     hr.image.import(data_type, image, nelts);

@@ -11,6 +11,12 @@
 // $RCSfile: HDFArray.cc,v $ - implmentation of HDFArray class
 //
 // $Log: HDFArray.cc,v $
+// Revision 1.6  1998/07/13 20:26:36  jimg
+// Fixes from the final test of the new build process
+//
+// Revision 1.5.4.1  1998/05/22 19:50:53  jimg
+// Patch from Jake Hamby to support subsetting raster images
+//
 // Revision 1.5  1998/04/03 18:34:21  jimg
 // Fixes for vgroups and Sequences from Jake Hamby
 //
@@ -107,6 +113,8 @@ bool HDFArray::read_tagref(const String &dataset, int32 tag, int32 ref, int &err
 	      grin.seek_ref(ref);
 	    else
 	      grin.seek(hdf_name.chars());
+	    if (isslab)
+	      grin.setslab(start, edge, stride, false);
 	    grin >> gr;
 	    grin.close();
 	    foundgr = true;
