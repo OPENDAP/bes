@@ -1,3 +1,7 @@
+1999-03-26  James Gallagher  <jimg@dcz.dods.org>
+
+	* Added stubs for the new datatypes.
+
 1999-01-21  James Gallagher  <jimg@dcz.cvo.oneworld.com>
 
 	* The server now registers the file name properly. This ensures
@@ -18,4 +22,4 @@ Tue Dec 30 15:59:46 1997  James Gallagher  <jimg@localhost>
 	class. This corrects problems with those program and the
 	DODS_Dispatch perl class.
 
-$Id: ChangeLog,v 1.4 1999/01/21 22:41:38 jimg Exp $
+$Id: ChangeLog,v 1.5 1999/03/30 19:09:01 jimg Exp $
