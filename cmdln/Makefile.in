@@ -1,0 +1,62 @@
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+AR = ar
+CXX = @CXX@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+CLIENT_SRCS = Client.cc ClientMain.cc
+CLIENT_OBJS = Client.o ClientMain.o
+PROG = dodsclient
+
+INCS:=-I../openDap-client -I../../ppt @INCS@
+DEPLIBS:=../openDap-client/libdodsclient.a ../../ppt/libdodsppt.a
+LDFLAGS:=@LDFLAGS@
+LIBS:=@LIBS@
+
+DEFS:=@DEFS@
+#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLASGS) $(DEFS) $(INCS)
+
+all : $(PROG)
+
+$(PROG): $(CLIENT_OBJS) $(DEPLIBS)
+	$(CXX) $(CXXFLAGS) -o $(PROG) $(CLIENT_OBJS) $(DEPLIBS) $(LDFLAGS) $(LIBS)
+
+.c.o:
+	$(CXX) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+.cc.o:
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) -o $@ $<
+
+install: all install-progs
+
+install-progs:
+	-mkdir -p $(bindir)
+	for x in $(PROG); \
+	    do $(INSTALL_PROGRAM) $$x $(bindir); done
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(CLIENT_SRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean :
+	-rm -f $(CLIENT_OBJS) $(PROG)
+
+distclean : clean
+	-rm -f Makefile config.status config.log config.cache
+
+# DO NOT DELETE; depend requires this line
