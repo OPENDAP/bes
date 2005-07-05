@@ -1,0 +1,76 @@
+@SET_MAKE@
+
+prefix = @prefix@
+exec_prefix = $(prefix)
+libdir = $(exec_prefix)/lib
+includedir = $(prefix)/include
+AR = ar
+CXX = @CXX@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+SRCS:=DODSClient.cc DODSClientXDRControl.cc DODS_C_ControlClient.cc OPeNDAPConnector.cc
+OBJS:=DODSClient.o DODSClientXDRControl.o DODS_C_ControlClient.o OPeNDAPConnector.o
+HDRS:=DODSClient.h DODSClientConfig.h DODSClientUtilities.h DODSClientXDRControl.h OPeNDAPConnector.h
+
+INCS:=-I. -I../../ppt -I../../dispatch
+LIB:=libdodsclient.a
+DEFS:=@DEFS@
+#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLASGS) $(DEFS) $(INCS)
+
+all : $(LIB)
+
+%.o : %.cc
+	$(CXX) -c -g -O2 $(CPPFLAGS) $<
+
+$(LIB) : $(OBJS)
+	$(AR) cru $@ $?
+	$(RANLIB) $@
+
+install: all install-headers
+	-mkdir -p $(libdir)
+	$(INSTALL_DATA) $(LIB) $(libdir)
+	$(RANLIB) $(libdir)/$(LIB)
+
+install-headers:
+	-mkdir -p $(includedir)
+	for h in $(HDRS); \
+	    do $(INSTALL_DATA) $$h $(includedir); done
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(MODSRCS) $(TESTSRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean :
+	-rm -f $(OBJS) $(LIB) $(MODOBJS) $(TESTEXEC) $(TESTOBJ)
+
+distclean : clean
+	-rm -f Makefile config.status config.log config.cache
+
+# DO NOT DELETE; depend requires this line
+DODSClient.o: DODSClient.cc DODSClient.h ../../ppt/PPTSocket.h \
+  ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
+  ../../ppt/PPTClientServerSessionProtocol.h ../../ppt/PPTUtilities.h
+DODSClientXDRControl.o: DODSClientXDRControl.cc DODSClientXDRControl.h
+DODS_C_ControlClient.o: DODS_C_ControlClient.cc DODSClient.h \
+  ../../ppt/PPTSocket.h ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
+  ../../ppt/PPTClientServerSessionProtocol.h DODSClientConfig.h
+OPeNDAPConnector.o: OPeNDAPConnector.cc DODSClient.h \
+  ../../ppt/PPTSocket.h ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
+  ../../dispatch/DODSDataRequestInterface.h \
+  ../../dispatch/DODSProcessEncodedString.h OPeNDAPConnector.h \
+  ../../dispatch/DODSStatusReturn.h
