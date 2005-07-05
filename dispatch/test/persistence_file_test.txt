@@ -1,0 +1,5 @@
+sym1 real1 type1
+sym2 real2 type2
+sym3 real3 type3
+sym4 real4 type4
+sym5 real5 type5

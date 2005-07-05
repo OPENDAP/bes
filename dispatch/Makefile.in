@@ -1,0 +1,208 @@
+@SET_MAKE@
+
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+includedir = $(exec_prefix)/include
+infodir = $(exec_prefix)/info
+AR = ar
+CXX = @CXX@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+SRCS:=DODS.cc DODSApache.cc DODSCgi.cc DODSWrapper.cc DODSGlobalIQ.cc \
+	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc TheDODSLog.cc \
+	DODSKeys.cc TheDODSKeys.cc \
+	DODSTestAuthenticate.cc DODSParser.cc DODSTokenizer.cc \
+	DODSContainer.cc DODSStatus.cc \
+	DODSContainerPersistence.cc DODSContainerPersistenceCGI.cc \
+	DODSContainerPersistenceFile.cc DODSContainerPersistenceList.cc \
+	ThePersistenceList.cc \
+	DODSContainerPersistenceVolatile.cc \
+	GetResponseHandler.cc DASResponseHandler.cc DDSResponseHandler.cc \
+	DDXResponseHandler.cc ProcIdResponseHandler.cc ShowResponseHandler.cc \
+	DODSResponseHandler.cc DataResponseHandler.cc HelpResponseHandler.cc \
+	StatusResponseHandler.cc DefineResponseHandler.cc \
+	SetResponseHandler.cc VersionResponseHandler.cc \
+	ContainersResponseHandler.cc DefinitionsResponseHandler.cc \
+	DeleteResponseHandler.cc KeysResponseHandler.cc \
+	DODSResponseHandlerList.cc TheResponseHandlerList.cc \
+	DODSInfo.cc DODSTextInfo.cc DODSHTMLInfo.cc \
+	DODSRequestHandler.cc DODSRequestHandlerList.cc \
+	TheRequestHandlerList.cc DODSBasicTransmitter.cc \
+	DODSBasicHttpTransmitter.cc DODSFilterTransmitter.cc \
+	DODSReporterList.cc TheReporterList.cc DODSBasicException.cc \
+	DODSMemoryException.cc DODSAutoPtr.cc DODSConstraintFuncs.cc \
+	DODSEncode.cc DODSHeapManager.cc DODSMemoryGlobalArea.cc \
+	DODSProcessEncodedString.cc \
+	DODSReturnManager.cc TheDODSReturnManager.cc \
+	DODSDefineList.cc TheDefineList.cc
+OBJS:=DODS.o DODSApache.o DODSCgi.o DODSWrapper.o DODSGlobalIQ.o \
+	DODSGlobalInit.o DODSInitList.o DODSLog.o TheDODSLog.o DODSStatus.o \
+	DODSKeys.o TheDODSKeys.o \
+	DODSTestAuthenticate.o DODSParser.o DODSTokenizer.o DODSContainer.o \
+	DODSContainerPersistence.o DODSContainerPersistenceCGI.o \
+	DODSContainerPersistenceFile.o DODSContainerPersistenceList.o \
+	ThePersistenceList.o \
+	DODSContainerPersistenceVolatile.o \
+	GetResponseHandler.o DASResponseHandler.o DDSResponseHandler.o \
+	DDXResponseHandler.o ProcIdResponseHandler.o ShowResponseHandler.o \
+	DODSResponseHandler.o DataResponseHandler.o HelpResponseHandler.o \
+	StatusResponseHandler.o DefineResponseHandler.o SetResponseHandler.o \
+	VersionResponseHandler.o DODSResponseHandlerList.o \
+	ContainersResponseHandler.o DefinitionsResponseHandler.o \
+	DeleteResponseHandler.o TheResponseHandlerList.o \
+	KeysResponseHandler.o \
+	DODSInfo.o DODSTextInfo.o DODSHTMLInfo.o \
+	DODSRequestHandler.o DODSRequestHandlerList.o \
+	TheRequestHandlerList.o DODSBasicTransmitter.o \
+	DODSBasicHttpTransmitter.o DODSFilterTransmitter.o \
+	DODSReporterList.o TheReporterList.o DODSBasicException.o \
+	DODSMemoryException.o \
+	DODSAutoPtr.o DODSConstraintFuncs.o \
+	DODSEncode.o DODSHeapManager.o DODSMemoryGlobalArea.o \
+	DODSProcessEncodedString.o \
+	DODSReturnManager.o TheDODSReturnManager.o \
+	DODSDefineList.o TheDefineList.o
+HDRS:=DODS.h DODSApache.h DODSCgi.h DODSWrapper.h DODSGlobalIQ.h \
+	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
+	DODSInitializer.h DODSLog.h TheDODSLog.h DODSLogException.h \
+	DODSKeys.h TheDODSKeys.h DODSKeysException.h DODSAuthenticate.h \
+	DODSTestAuthenticate.h DODSStatus.h \
+	TheDODSAuthenticator.h DODSAuthenticateException.h DODSParser.h \
+	DODSParserException.h DODSTokenizer.h DODSContainer.h \
+	DODSContainerPersistence.h DODSTransmitException.h \
+	DODSContainerPersistenceCGI.h DODSContainerPersistenceFile.h \
+	DODSContainerPersistenceList.h \
+	ThePersistenceList.h DODSContainerPersistenceException.h \
+	DODSContainerPersistenceVolatile.h \
+	GetResponseHandler.h DASResponseHandler.h DDSResponseHandler.h \
+	DDXResponseHandler.h ProcIdResponseHandler.h ShowResponseHandler.h \
+	DODSResponseHandler.h DataResponseHandler.h HelpResponseHandler.h \
+	StatusResponseHandler.h DefineResponseHandler.h SetResponseHandler.h \
+	VersionResponseHandler.h DODSResponseHandlerList.h \
+	ContainersResponseHandler.h DefinitionsResponseHandler.h \
+	DeleteResponseHandler.h TheResponseHandlerList.h \
+	KeysResponseHandler.h \
+	DODSResponseNames.h DODSResponseException.h \
+	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSRequestHandler.h \
+	DODSRequestHandlerList.h TheRequestHandlerList.h \
+	DODSIncorrectRequestException.h DODSDataHandlerInterface.h \
+	DODSDataRequestInterface.h DODSTransmitter.h \
+	DODSBasicHttpTransmitter.h DODSBasicTransmitter.h \
+	DODSFilterTransmitter.h DODSReporter.h DODSReporterList.h \
+	TheReporterList.h DODSBasicException.h DODSException.h \
+	DODSHandlerException.h DODSAggregationException.h \
+	DODSMemoryException.h \
+	DODSAutoPtr.cc DODSAutoPtr.h \
+	DODSConstraintFuncs.h DODSEncode.h DODSHeapManager.h \
+	DODSMemoryGlobalArea.h \
+	DODSProcessEncodedString.h \
+	DODSServerSystemResources.h DODSStatusReturn.h dispatch_version.h \
+	TheAggregationServer.h DODSAggregationServer.h DODSReturnManager.h \
+	TheDODSReturnManager.h \
+	DODSDefineList.h TheDefineList.h DODSDefine.h \
+	DODSMySQLConnectException.h DODSMySQLQueryException.h
+MODSRCS:=dods_module.cc cgi_persistence.cc \
+	file_persistence.cc test_authenticator.cc \
+	ini_authenticator.cc no_aggserver.cc
+MODOBJS:=dods_module.o cgi_persistence.o \
+	file_persistence.o test_authenticator.o \
+	ini_authenticator.o no_aggserver.o
+
+MYSQLSRCS:=DODSMySQLAuthenticate.cc DODSContainerPersistenceMySQL.cc \
+	DODSMySQLChannel.cc DODSMySQLConnect.cc DODSMySQLQuery.cc \
+	DODSMySQLResult.cc
+MYSQLOBJS:=DODSMySQLAuthenticate.o DODSContainerPersistenceMySQL.o \
+	DODSMySQLChannel.o DODSMySQLConnect.o DODSMySQLQuery.o \
+	DODSMySQLResult.o
+MYSQLHDRS:=DODSMySQLAuthenticate.h DODSContainerPersistenceMySQL.h \
+	DODSMySQLChannel.h DODSMySQLConnect.h \
+	DODSMySQLQuery.h DODSMySQLResult.h
+MYSQLMODSRCS:=mysql_persistence.cc mysql_authenticator.cc
+MYSQLMODOBJS:=mysql_persistence.o mysql_authenticator.o
+
+DISPATCHSRCS:=@DISPATCHSRCS@
+DISPATCHOBJS:=@DISPATCHOBJS@
+DISPATCHHDRS:=@DISPATCHHDRS@
+
+TESTSRC:=dispatch_test.cc
+TESTOBJ:=dispatch_test.o
+TESTEXEC:=dispatch_test
+
+INCS:=-I. @INCS@
+LIB:=libdispatch.a
+#LIBS = -L../cedar-handler -lcedar-handler \
+#	-L/project/cedar/lib/Cedar-2.0.1/lib -lCedar $(LIB) \
+#	-L../dap -ldap++ \
+#	-L/project/cedar/lib/dap-3.4.6/lib \
+#	/project/cedar/bin/mysql-4.0.18/lib/mysql/libmysqlclient.a \
+#	-lxml2 -lz -lpthread \
+#	-lm -lnsl -lcurl -lz -lnsl -lz  \
+#	-lpthread -lrx -lz -ldl -lssl -lcrypt
+LDFLAGS = @LDFLAGS@
+LIBS = -L../cedar-handler -lcedar-handler \
+	-L/project/cedar/lib/Cedar-2.0.1/lib -lCedar $(LIB) \
+	@LIBS@
+DEFS:=@DEFS@
+#CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop -Wno-deprecated
+#CXXFLAGS:=$(CXXFLAGS_DEBUG)
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
+
+all : $(LIB) $(MODOBJS)
+
+test : $(TESTEXEC)
+
+%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $<
+
+$(LIB) : $(DISPATCHOBJS)
+	$(AR) cru $@ $?
+	$(RANLIB) $@
+
+$(TESTEXEC) : $(LIB) $(TESTOBJ) dods_module.o no_aggserver.o file_persistence.o test_authenticator.o ../cedar-handler/cedar_module.o ../cedar-handler/cedar_persistence.o ../cedar-handler/libcedar-handler.a
+	$(CXX) -o $(TESTEXEC) $(LDFLAGS) $(TESTOBJ) dods_module.o no_aggserver.o file_persistence.o test_authenticator.o ../cedar-handler/cedar_module.o ../cedar-handler/cedar_persistence.o $(LIBS)
+
+install: all install-headers install-mods install-help
+	-mkdir -p $(libdir)
+	$(INSTALL_DATA) $(LIB) $(libdir)
+	$(RANLIB) $(libdir)/$(LIB)
+
+install-headers:
+	-mkdir -p $(includedir)
+	for h in $(DISPATCHHDRS); \
+	    do $(INSTALL_DATA) $$h $(includedir); done
+
+install-mods:
+	-mkdir -p $(libdir)
+	for h in $(MODOBJS); \
+	    do $(INSTALL_DATA) $$h $(libdir); done
+
+install-help:
+	-mkdir -p $(infodir)
+	$(INSTALL_DATA) dispatch_help.html dispatch_help.txt $(infodir)
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(DISPATCHSRCS) $(MODSRCS) $(TESTSRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean :
+	-rm -f $(DISPATCHOBJS) $(LIB) $(MODOBJS) $(TESTEXEC) $(TESTOBJ)
+
+distclean : clean
+	-rm -f Makefile config.status config.log config.cache
+
+# DO NOT DELETE; depend requires this line

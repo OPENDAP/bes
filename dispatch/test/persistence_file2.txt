@@ -1,0 +1,5 @@
+sym6 real6 type6
+sym7 real7 type7
+sym8 real8 type8
+sym9 real9 type9
+sym10 real10 type10
