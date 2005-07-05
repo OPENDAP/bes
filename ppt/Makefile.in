@@ -1,0 +1,72 @@
+prefix = @prefix@
+exec_prefix = $(prefix)
+libdir = $(exec_prefix)/lib
+includedir = $(exec_prefix)/include
+AR = ar
+CXX = @CXX@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+SRCS:=PPTBuffer.cc PPTClient.cc PPTServer.cc PPTServerListener.cc PPTSocket.cc PPTUtilities.cc
+OBJS:=PPTBuffer.o PPTClient.o PPTServer.o PPTServerListener.o PPTSocket.o PPTUtilities.o
+HDRS:=PPTBuffer.h PPTClient.h PPTClientServerSessionProtocol.h PPTConfig.h PPTException.h PPTServer.h PPTServerListener.h PPTSocket.h PPTUtilities.h
+
+INCS:=-I.
+LIB:=libdodsppt.a
+DEFS:=@DEFS@
+#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
+
+all : $(LIB)
+
+%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $<
+
+$(LIB) : $(OBJS)
+	$(AR) cru $@ $?
+	$(RANLIB) $@
+
+install: all install-headers
+	-mkdir -p $(libdir)
+	$(INSTALL_DATA) $(LIB) $(libdir)
+	$(RANLIB) $(libdir)/$(LIB)
+
+install-headers:
+	-mkdir -p $(includedir)
+	for h in $(HDRS); \
+	    do $(INSTALL_DATA) $$h $(includedir); done
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(MODSRCS) $(TESTSRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean :
+	/bin/rm -rf $(OBJS) $(LIB) $(MODOBJS) $(TESTEXEC) $(TESTOBJ)
+
+distclean : clean
+	-rm -f Makefile config.status config.log config.cache
+
+# DO NOT DELETE; depend requires this line
+PPTBuffer.o: PPTBuffer.cc PPTBuffer.h
+PPTClient.o: PPTClient.cc PPTClient.h PPTException.h PPTSocket.h \
+  PPTBuffer.h
+PPTServer.o: PPTServer.cc PPTServer.h PPTSocket.h PPTException.h \
+  PPTBuffer.h PPTServerListener.h PPTUtilities.h
+PPTServerListener.o: PPTServerListener.cc PPTSocket.h PPTException.h \
+  PPTBuffer.h PPTUtilities.h PPTConfig.h PPTServerListener.h
+PPTSocket.o: PPTSocket.cc PPTConfig.h PPTSocket.h PPTException.h \
+  PPTBuffer.h
+PPTUtilities.o: PPTUtilities.cc PPTUtilities.h
