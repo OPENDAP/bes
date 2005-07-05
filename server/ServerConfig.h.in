@@ -1,0 +1,130 @@
+/* ServerConfig.h.in.  Generated automatically from configure.in by autoheader.  */
+#ifndef ServerConfig_h_
+#define ServerConfig_h_
+
+//#define _USE_LTOA
+
+//#define SERVER_DEBUGGING_SOURCE_LEVEL
+
+
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef pid_t
+
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+//
+#undef _OS_HAS_SOCKLEN_T
+//
+#undef _ACCEPT_USES_SOCKLEN_T
+//
+#undef _GETSOCKNAME_USES_SOCKLEN_T
+
+/* Define if you have the select function.  */
+#undef HAVE_SELECT
+
+/* Define if you have the socket function.  */
+#undef HAVE_SOCKET
+
+/* Define if you have the strerror function.  */
+#undef HAVE_STRERROR
+
+/* Define if you have the <dirent.h> header file.  */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the <ndir.h> header file.  */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <sgtty.h> header file.  */
+#undef HAVE_SGTTY_H
+
+/* Define if you have the <strings.h> header file.  */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the <sys/dir.h> header file.  */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/file.h> header file.  */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/ioctl.h> header file.  */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/ndir.h> header file.  */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <termio.h> header file.  */
+#undef HAVE_TERMIO_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the mysqlclient library (-lmysqlclient).  */
+#undef HAVE_LIBMYSQLCLIENT
+
+/* Define if you have the nsl library (-lnsl).  */
+#undef HAVE_LIBNSL
+
+/* Define if you have the socket library (-lsocket).  */
+#undef HAVE_LIBSOCKET
+
+/* Define if you have the z library (-lz).  */
+#undef HAVE_LIBZ
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+
+// Support for the Sun Pro compiler
+
+#ifdef __SUNPRO_CC      // __SUNPRO_CC always defined for Sun CC 4.2
+#ifdef ansi
+#ifndef __STRICT_ANSI__
+#define __STRICT_ANSI__
+#endif // __STRICT_ANSI__ 
+#endif // ansi 
+#endif // __SUNPRO_CC 
+
+// Support for the Microsoft compiler
+
+#ifdef __WIN32         // __WIN32 always defined for Microsoft Visual C++ 5.0
+#ifdef ansi
+#ifndef __STRICT_ANSI__
+#define __STRICT_ANSI__
+#endif // __STRICT_ANSI__ 
+#endif // ansi 
+#endif // __WIN32
+
+// This code take cares of getting the necessary system header files if the API is not ANSI C++
+
+#ifndef __STRICT_ANSI__
+#if defined (unix) && !defined(_WINDOWS) && !defined(WIN32) && !defined(_WIN32) && !defined(__NT__) && !defined(_WINDOWS)&& !defined(OS2)
+#include <unistd.h>
+#endif // unix style 
+#if (defined (_WINDOWS) || defined(__NT__)) && !defined (unix)
+#include <windows.h>
+#include <process.h>
+#endif // windows style 
+#endif // __STRICT_ANSI__
+
+
+#endif // ServerConfig_h_

@@ -1,0 +1,13 @@
+Note: xdods is currently not linked to any data types, such as cedar or
+netcdf. No requests will be completed by this server until the Makefile is
+modified to include a data type server.
+
+Note: xdods authentication is currently set to test_autnethicate, which
+means no authentication is done.
+
+TTD: Write a configuration script that will configure the xdods server to
+link in data type servers, such as cedar or netcdf.
+
+For an example see the Makefile in dispatch, which creates a test program
+dispatch_test that uses cedar as the data type server. This will show what
+is needed.

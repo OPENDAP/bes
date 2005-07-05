@@ -1,0 +1,82 @@
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+AR = ar
+CXX = @CXX@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+MODULES = @MODULES@
+PACKAGES = @PACKAGES@
+AGGREGATION = @AGGREGATION@
+
+PROGS:=dodsserverd xdods
+XDODSSRCS:=ServerMain.cc Server.cc
+XDODSOBJS:=ServerMain.o Server.o
+XDODSLIBS:=../dispatch/test_authenticator.o ../dispatch/dods_module.o ../ppt/libdodsppt.a  ../dispatch/libdispatch.a
+LDFLAGS:=@LDFLAGS@
+LIBS:=@LIBS@
+XDODSLDFLAGS:=$(XDODSOBJS) $(AGGREGATION) $(MODULES) $(PACKAGES) $(XDODSLIBS) $(LDFLAGS) $(LIBS)
+
+DAEMONSRCS:=ServerDaemon.cc
+DAEMONOBJS:=ServerDaemon.o
+DAEMONLIBS:=
+
+INCS:=-I. -I../ppt -I../dispatch
+
+DEFS:=@DEFS@
+
+#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
+
+all : $(PROGS)
+
+xdods : $(XDODSOBJS) $(XDODSLIBS)
+	$(CXX) -o xdods $(XDODSLDFLAGS)
+
+dodsserverd : $(DAEMONOBJS)
+	$(CXX) -o dodsserverd $(DAEMONOBJS) $(DAEMONLIBS)
+
+%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $<
+
+install: install-progs
+
+install-progs: $(PROGS)
+	-mkdir -p $(bindir)
+	$(INSTALL_PROGRAM) -s $(PROGS) $(bindir)
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(XDODSSRCS) $(DAEMONSRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean :
+	-rm -f $(XDODSOBJS) $(DAEMONOBJS) $(PROGS)
+
+distclean : clean
+	-rm -f Makefile config.log config.status config.cache
+
+# DO NOT DELETE; depend requires this line
+ServerMain.o: ServerMain.cc Server.h ../dispatch/DODSGlobalIQ.h \
+  ../dispatch/DODSException.h
+Server.o: Server.cc Server.h ../ppt/PPTSocket.h ../ppt/PPTException.h \
+  ../ppt/PPTBuffer.h ../ppt/PPTUtilities.h ../ppt/PPTServerListener.h \
+  ../ppt/PPTClientServerSessionProtocol.h ServerStatusControl.h \
+  ServerExitConditions.h ../dispatch/DODSDataRequestInterface.h \
+  ../dispatch/DODSWrapper.h ../dispatch/DODSMemoryGlobalArea.h \
+  ../dispatch/TheDODSKeys.h ../dispatch/DODSKeys.h \
+  ../dispatch/DODSKeysException.h ../dispatch/DODSBasicException.h \
+  ../dispatch/DODSException.h ../dispatch/DODSStatusReturn.h
+ServerDaemon.o: ServerDaemon.cc ServerExitConditions.h

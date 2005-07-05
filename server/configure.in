@@ -1,0 +1,206 @@
+dnl Some reminders:
+dnl     "dnl" is a "delete to newline" command for m4 - the remainder of the
+dnl             line it's on, including the newline, will be discarded
+dnl     "#" comments will usually be copied through
+dnl     "[]" are quoting characters; use changequote around code that really
+dnl             needs to use them, but try not to invoke autoconf macros
+dnl             within such code
+dnl
+dnl When you change this file, re-run "autoreconf" -- that'll automatically
+dnl re-run both autoconf and autoheader.
+dnl
+dnl
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(Server.h)
+AC_CONFIG_AUX_DIR(../../etc) 
+AC_CONFIG_HEADER(ServerConfig.h)
+
+AC_PREFIX_DEFAULT("/usr/local")
+
+# check for module
+AC_DEFUN(CHECK_MODULES, [dnl
+    AC_ARG_WITH(modules,
+        [  --with-modules=ARG          modules(object modules)],
+        MODULES=${withval}, MODULES="")
+    AC_MSG_CHECKING([for modules])
+    AC_MSG_RESULT(using modules $MODULES)
+    AC_SUBST(MODULES)
+    ])
+
+CHECK_MODULES
+
+# check for packages
+AC_DEFUN(CHECK_PACKAGES, [dnl
+    AC_ARG_WITH(packages,
+        [  --with-packages=ARG          packages(object packages)],
+        PACKAGES=${withval}, PACKAGES="")
+    AC_MSG_CHECKING([for packages])
+    AC_MSG_RESULT(using packages $PACKAGES)
+    AC_SUBST(PACKAGES)
+    ])
+
+CHECK_PACKAGES
+
+# check for module
+AC_DEFUN(CHECK_AGGREGATION, [dnl
+    AC_ARG_WITH(aggregation,
+        [  --with-aggregation=ARG          aggregation server (object modules)],
+        AGGREGATION=${withval}, AGGREGATION="../dispatch/no_aggserver.o")
+    AC_MSG_CHECKING([for aggregation])
+    AC_MSG_RESULT(using modules $AGGREGATION)
+    AC_SUBST(AGGREGATION)
+    ])
+
+CHECK_AGGREGATION
+
+AC_MSG_CHECKING(for the compiler flags)
+case "${host_cpu}:${host_vendor}:${host_os}" in
+     powerpc:apple:netbsd*)
+       CFLAGS=${CFLAGS-"-O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-O2 $CXXFLAGS"}
+       break;;
+     alphaev56:dec:osf5.*)
+       CFLAGS=${CFLAGS-"-O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-O2 $CXXFLAGS"}
+       break;;
+    *:*:*)
+       CFLAGS=${CFLAGS-"-gstabs -O2 $CFLAGS"}
+       CXXFLAGS=${CXXFLAGS-"-gstabs -O2 $CXXFLAGS"}
+       break;;
+esac
+AC_MSG_RESULT(Setting CXXFLAGS to $CXXFLAGS)
+AC_SUBST(CXXFLAGS)
+
+AC_MSG_CHECKING(for the C++ compiler)
+CXX=${CXX-g++}
+AC_MSG_RESULT(setting CXX to $CXX)
+AC_SUBST(CXX)
+
+depend=${DODS_ROOT}/etc/depend.sh
+AC_MSG_RESULT(setting depend to $depend)
+AC_SUBST(depend)
+
+# check for dap libraries, not in usual location
+AC_DEFUN(CHECK_LIBDAP, [dnl
+    AC_ARG_WITH(dap,
+        [  --with-dap=ARG       Where is the external dap sources (directory)],
+        DAP_PATH=${withval}, DAP_PATH="/usr/local")
+
+        LIBS="`$DAP_PATH/bin/libdap-config --libs` $LIBS"
+
+	AC_SUBST(LIBS)
+    ])
+
+CHECK_LIBDAP
+
+AC_LANG_CPLUSPLUS
+
+AC_MSG_CHECKING(for socklen_t)
+AC_CACHE_VAL(ppt_socklen_t,
+    [
+	AC_TRY_COMPILE(
+	    [#include <sys/types.h>
+#include <sys/socket.h>],
+	    [socklen_t foo;],
+	    [ppt_socklen_t=yes],
+	    [ppt_socklen_t=no]
+	)
+    ]
+)
+AC_MSG_RESULT(set ppt_socklen_t to $ppt_socklen_t)
+if test $ppt_socklen_t = yes ; then
+  AC_DEFINE(_OS_HAS_SOCKLEN_T)
+fi
+
+dnl     lets see if accept uses socklen_t
+dnl 
+AC_CACHE_VAL(ppt_accept_using_socklen_t,
+    [
+	AC_TRY_COMPILE(
+	    [
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+	    ],
+	    [
+struct sockaddr_in from; 
+int len_from=sizeof(from);
+int _socket;
+int msgsock=accept(_socket,(struct sockaddr *)&from, (socklen_t *)&len_from);
+	    ],
+	    [ppt_accept_using_socklen_t=yes],
+	    [ppt_accept_using_socklen_t=no]
+	)
+    ]
+)
+AC_MSG_RESULT(does accept use socklen_t...$ppt_accept_using_socklen_t)
+if test $ppt_accept_using_socklen_t = yes ; then
+  AC_DEFINE(_ACCEPT_USES_SOCKLEN_T)
+fi
+
+dnl     lets see if getsockname uses socklen_t
+dnl 
+AC_CACHE_VAL(ppt_getsockname_using_socklen_t,
+    [
+	AC_TRY_COMPILE(
+	    [
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+	    ],
+	    [
+struct sockaddr_in server;
+int length =sizeof (server);
+int _socket;
+getsockname(_socket,(struct sockaddr *)&server,(socklen_t *)&length);
+	    ],
+	    [ppt_getsockname_using_socklen_t=yes],
+	    [ppt_getsockname_using_socklen_t=no]
+	)
+    ]
+)
+AC_MSG_RESULT(does getsockname use socklen_t...$ppt_getsockname_using_socklen_t)
+if test $ppt_getsockname_using_socklen_t = yes ; then
+  AC_DEFINE(_GETSOCKNAME_USES_SOCKLEN_T)
+fi
+
+AC_LANG_C
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+dnl AC_MSG_CHECKING(for the mysql client library)
+dnl if  test "$MYSQL" = ""
+dnl then
+dnl    AC_MSG_ERROR(please set MYSQL to the right MySQL client library)
+dnl else
+dnl   MYSQL=$MYSQL
+dnl   AC_MSG_RESULT(setting MYSQL to $MYSQL)
+dnl   AC_SUBST(MYSQL)
+dnl fi
+
+dnl Checks for libraries.
+AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(mysqlclient, mysql_query)
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h sgtty.h strings.h sys/file.h sys/ioctl.h sys/time.h termio.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+dnl AC_C_CONST
+AC_TYPE_PID_T
+AC_HEADER_TIME
+
+dnl Checks for library functions.
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(select socket strerror)
+
+AC_OUTPUT(Makefile)

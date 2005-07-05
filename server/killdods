@@ -1,0 +1,28 @@
+#!/bin/sh
+
+what=$1
+
+os=`uname`
+
+if [ $DODS_ROOT ]; then
+    echo "DODS Root is set to $DODS_ROOT"
+else
+    echo "Please set the environment variable DODS_ROOT"
+    exit;
+fi
+
+if [ "$what" = "all" ]; then
+    if [ "$os" = "SunOS" ]; then
+	user=`cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f4`
+	echo "Killing all xdods processes running under user $user..."
+	ps -u$user | sed -e"s/  */:/g" | grep xdods | cut -d: -f2 | xargs -L100 kill -INT
+    fi
+    if [ "$os" = "Linux" ]; then
+        user=`cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f4`
+	echo "Killing all xdods processes running under user $user..."
+	(ps -u$user | sed -e"s/  */:/g" | grep xdods | cut -d: -f1 | xargs kill -INT > /dev/tty) >& /dev/null
+    fi
+else
+    echo "Shutting down dods listener..."
+    (cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f2 | xargs kill -INT >/dev/tty) 2> /dev/null
+fi
