@@ -9,10 +9,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
 CLIENT_SRCS = Client.cc ClientMain.cc
 CLIENT_OBJS = Client.o ClientMain.o
-PROG = dodsclient
+PROG = opendapcmdln
 
-INCS:=-I../openDap-client -I../../ppt @INCS@
-DEPLIBS:=../openDap-client/libdodsclient.a ../../ppt/libdodsppt.a
+INCS:=-I../client -I../ppt @INCS@
+DEPLIBS:=../client/libopendapclient.a ../ppt/libppt.a
 LDFLAGS:=@LDFLAGS@
 LIBS:=@LIBS@
 
