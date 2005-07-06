@@ -271,7 +271,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="Server.h"
-ac_default_prefix="/usr/local"
+ac_default_prefix="${OPENDAP_ROOT}"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -309,7 +309,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MODULES PACKAGES AGGREGATION CXXFLAGS CXX depend LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE CPP EGREP LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS MODULES PACKAGES AGGREGATION CXXFLAGS CXX depend INCS MODS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA SET_MAKE CPP EGREP LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -851,6 +851,7 @@ Optional Packages:
   --with-modules=ARG          modules(object modules)
   --with-packages=ARG          packages(object packages)
   --with-aggregation=ARG          aggregation server (object modules)
+  --with-daemon=ARG          Where is the local opendap-g daemon library sources (directory)
   --with-dap=ARG       Where is the external dap sources (directory)
 
 Some influential environment variables:
@@ -1345,7 +1346,7 @@ if test "${with_aggregation+set}" = set; then
   withval="$with_aggregation"
   AGGREGATION=${withval}
 else
-  AGGREGATION="../dispatch/no_aggserver.o"
+  AGGREGATION="${OPENDAP_ROOT}/lib/no_aggserver.o"
 fi;
     echo "$as_me:$LINENO: checking for aggregation" >&5
 echo $ECHO_N "checking for aggregation... $ECHO_C" >&6
@@ -1386,6 +1387,31 @@ echo "$as_me:$LINENO: result: setting depend to $depend" >&5
 echo "${ECHO_T}setting depend to $depend" >&6
 
 
+# check for opendap-g daemon libraries, not in usual location
+
+
+
+# Check whether --with-daemon or --without-daemon was given.
+if test "${with_daemon+set}" = set; then
+  withval="$with_daemon"
+  DAEMON_PATH=${withval}
+else
+  DAEMON_PATH="$OPENDAP_ROOT"
+fi;
+    if test ! -d "$DAEMON_PATH"
+    then
+	{ { echo "$as_me:$LINENO: error: Could not find opendap-g daemon library" >&5
+echo "$as_me: error: Could not find opendap-g daemon library" >&2;}
+   { (exit 1); exit 1; }; }
+    else
+	INCS="$INCS -I${DAEMON_PATH}/include/opendap-g"
+	LIBS="$LIBS -L${DAEMON_PATH}/lib -ldispatch -lppt"
+	MODS="$MODS ${DAEMON_PATH}/lib/dods_module.o ${DAEMON_PATH}/lib/test_authenticator.o"
+
+
+
+    fi
+
 # check for dap libraries, not in usual location
 
 
@@ -1395,10 +1421,10 @@ if test "${with_dap+set}" = set; then
   withval="$with_dap"
   DAP_PATH=${withval}
 else
-  DAP_PATH="/usr/local"
+  DAP_PATH="${OPENDAP_ROOT}"
 fi;
 
-        LIBS="`$DAP_PATH/bin/libdap-config --libs` $LIBS"
+        LIBS="$LIBS `$DAP_PATH/bin/dap-config --libs`"
 
 
 
@@ -4873,6 +4899,8 @@ s,@AGGREGATION@,$AGGREGATION,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@CXX@,$CXX,;t t
 s,@depend@,$depend,;t t
+s,@INCS@,$INCS,;t t
+s,@MODS@,$MODS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
 s,@CPPFLAGS@,$CPPFLAGS,;t t
 s,@ac_ct_CXX@,$ac_ct_CXX,;t t
