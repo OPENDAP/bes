@@ -1,7 +1,7 @@
 prefix = @prefix@
 exec_prefix = $(prefix)
 libdir = $(exec_prefix)/lib
-includedir = $(exec_prefix)/include
+includedir = $(exec_prefix)/include/opendap-g
 AR = ar
 CXX = @CXX@
 RANLIB = @RANLIB@
@@ -14,7 +14,7 @@ OBJS:=PPTBuffer.o PPTClient.o PPTServer.o PPTServerListener.o PPTSocket.o PPTUti
 HDRS:=PPTBuffer.h PPTClient.h PPTClientServerSessionProtocol.h PPTConfig.h PPTException.h PPTServer.h PPTServerListener.h PPTSocket.h PPTUtilities.h
 
 INCS:=-I.
-LIB:=libdodsppt.a
+LIB:=libppt.a
 DEFS:=@DEFS@
 #CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS:=$(CXXFLAGS_DEBUG) 
