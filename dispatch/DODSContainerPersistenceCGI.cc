@@ -17,7 +17,7 @@
  * these cannot be determined or if the regular expressions are incorrectly
  * formed.
  *
- * <data type>:<reg exp>;<data type>:<reg exp>;
+ * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
  *
  * each type/reg expression pair is separated by a semicolon and ends with a
  * semicolon. The data type/expression pair itself is separated by a
@@ -136,9 +136,19 @@ DODSContainerPersistenceCGI::look_for( DODSContainer &d )
     }
 }
 
+/** @brief adds a container with the provided information
+ *
+ * This method adds a container to the persistence store with the
+ * specified information. This functionality is not currently supported for
+ * cgi persistence.
+ *
+ * @param s_name symbolic name for the container
+ * @param r_name real name for the container
+ * @param type type of data represented by this container
+ */
 void
 DODSContainerPersistenceCGI::add_container( string s_name,
-                                            string r_ame,
+                                            string r_name,
 					    string type )
 {
     throw DODSContainerPersistenceException( "Unable to add a container to CGI persistence\n" ) ;
@@ -173,7 +183,7 @@ DODSContainerPersistenceCGI::rem_container( const string &s_name )
  * expression followed by the regular expression and the type of data that
  * that regular expression matches.
  *
- * @parameter info object to store the container and persistent store information into
+ * @param info object to store the container and persistent store information into
  * @see DODSInfo
  */
 void

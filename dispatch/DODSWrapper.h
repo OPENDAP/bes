@@ -7,6 +7,11 @@
 
 /** @brief Wrapper class to OpenDAP for Apache Modules.
 
+    @see _DODSDataRequestInterface
+*/
+
+/*
+
     This wrapper is necessary because trying to include DODS.h directly from
     Apache cause a conflict since DODS.h uses the header file <string> which
     then calls:
@@ -14,21 +19,22 @@
     which in line 38 has the statement: #include <alloc.h> which really is:
     $(HOME_OF_GCC)/lib/gcc-lib/sparc-sun-solaris2.5.1/2.95.1/../../../../include/g++-3/alloc.h
     which is in conflict which $(APACHE_HOME)/src/include/alloc.h
-
-    @see _DODSDataRequestInterface
 */
 
 #include "DODSDataRequestInterface.h"
 
+class DODSProcessEncodedString ;
+
 class DODSWrapper
 {
-    char *		_data_request ;
+    DODSProcessEncodedString *	_encoder ;
 public:
-    			DODSWrapper() ;
-    			~DODSWrapper() ;
+    				DODSWrapper() ;
+    				~DODSWrapper() ;
 
-    int			call_DODS( const DODSDataRequestInterface &re ) ;
-    const char *	process_request( const char *s ) ;
+    int				call_DODS( const DODSDataRequestInterface &re );
+    void			process_commands( const char *s ) ;
+    const char *		get_command( const char *s ) ;
 };
 
 #endif // DODSWrapper_h_

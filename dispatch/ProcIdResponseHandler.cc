@@ -20,6 +20,20 @@ ProcIdResponseHandler::~ProcIdResponseHandler( )
 {
 }
 
+/** @brief parses the request 'show process;'
+ *
+ * The syntax for a request handled by this response handler is 'show
+ * process;'. The keywords 'show' and 'process' have already been
+ * parsed, which is how we got to the parse method. This method makes sure
+ * that the command is terminated by a semicolon and that there is no more
+ * text after the keyword 'process'.
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 ProcIdResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -59,6 +73,18 @@ ProcIdResponseHandler::fastpidconverter(
       return buf;
 }
 
+/** @brief executes the command 'show process;' by returning the process id of
+ * the server process
+ *
+ * This response handler knows how to retrieve the process id for the server
+ * and stores it in a DODSTextInfo informational response object.
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSTextInfo
+ */
 void
 ProcIdResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -69,6 +95,17 @@ ProcIdResponseHandler::execute( DODSDataHandlerInterface &dhi )
     info->add_data( (string)mypid + "\n" ) ;
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSResponseObject
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 ProcIdResponseHandler::transmit( DODSTransmitter *transmitter,
                                   DODSDataHandlerInterface &dhi )

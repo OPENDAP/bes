@@ -17,6 +17,13 @@ using std::string ;
 
 class DODSRequestHandler ;
 
+/** @brief maintains the list of registered request handlers for this server
+ *
+ * For a type of data to be handled by an OPeNDAP-g server the data type must
+ * registered a request handler with the server. This request handler knows
+ * how to fill in specific response objects, such as DAS, DDS, help, version,
+ * etc... The request handlers are registered with this request handler list.
+ */
 class DODSRequestHandlerList {
 private:
     map< string, DODSRequestHandler *, less< string >, allocator< string > > _handler_list ;

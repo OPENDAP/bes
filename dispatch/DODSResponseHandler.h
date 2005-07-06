@@ -39,23 +39,46 @@ class DODSResponseHandler {
 protected:
     string			_response_name ;
     DODSResponseObject		*_response ;
-public:
+
 				DODSResponseHandler( string name ) ;
+public:
     virtual			~DODSResponseHandler(void) ;
 
+    /** @brief return the current response object
+     *
+     * Returns the current response object, null if one has not yet been
+     * created. The response handler maintains ownership of the response
+     * object, unless the set_response_object() method is called at which
+     * point the caller of get_response_object() becomes the owner.
+     *
+     * @see DODSResponseObject
+     */
     virtual DODSResponseObject  *get_response_object() ;
-    // FIX: CLUDGE
+
+    /** @brief replaces the current response object to the specified one
+     *
+     * This method is used to replace the response object with a new one, for
+     * example if during aggregation a new response object is built from the
+     * current response object.
+     *
+     * The current response object is NOT deleted. The response handler
+     * assumes ownership of the new response object.
+     *
+     * @param o new response object used to replace the current one
+     * @see DODSResponseObject
+     */
     virtual void		set_response_object( DODSResponseObject *o ) ;
 
-    /** @brief parse the request to be used to build this response
+    /** @brief parse the request that will be used to build this response
      *
      * Derived instances of this abstract base class know how to parse a
-     * request string to determine how to build the response object.
+     * request string to determine how to build the response object. For
+     * example, how to parse a constraint expression or an aggregation
+     * expression.
      *
-     * @param tokenizer holds the list of tokens to use to build the request
-     * plan
-     * @throws DODSParserException if there is a problem building the
-     * request plan.
+     * @param tokenizer holds list of tokens used to build the request plan
+     * @param dhi structure that holds request and response information
+     * @throws DODSParserException if problem building the request plan.
      * @see DODSTokenizer
      * @see _DODSDataHandlerInterface
      */
@@ -79,8 +102,8 @@ public:
     /** @brief transmit the respobse object built by the execute command
      * using the specified transmitter object
      *
-     * @param transmitter
-     * @param dhi
+     * @param transmitter object that knows how to transmit specific basic types
+     * @param dhi structure that holds the request and response information
      * @see DODSResponseObject
      * @see DODSTransmitter
      * @see _DODSDataHandlerInterface

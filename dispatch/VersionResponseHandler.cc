@@ -20,6 +20,20 @@ VersionResponseHandler::~VersionResponseHandler( )
 {
 }
 
+/** @brief parses the request 'show version;'
+ *
+ * The syntax for a request handled by this response handler is 'show
+ * version;'. The keywords 'show' and 'status' have already been
+ * parsed, which is how we got to this parse method. This method makes sure
+ * that the command is terminated by a semicolon and that there is no more
+ * text after the keyword 'version'.
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 VersionResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -31,6 +45,22 @@ VersionResponseHandler::parse( DODSTokenizer &tokenizer,
     }
 }
 
+/** @brief executes the command 'show version;' by returning the version of
+ * the OPeNDAP-g server and the version of all registered data request
+ * handlers.
+ *
+ * This response handler knows how to retrieve the version of the OPeNDAP-g
+ * server. It adds this information to a DODSTextInfo informational response
+ * object. It also forwards the request to all registered data request
+ * handlers.
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSTextInfo
+ * @see TheRequestHandlerList
+ */
 void
 VersionResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -43,6 +73,17 @@ VersionResponseHandler::execute( DODSDataHandlerInterface &dhi )
     TheRequestHandlerList->execute_all( dhi ) ;
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSResponseObject
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 VersionResponseHandler::transmit( DODSTransmitter *transmitter,
                                   DODSDataHandlerInterface &dhi )

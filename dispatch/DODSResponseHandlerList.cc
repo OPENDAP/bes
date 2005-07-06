@@ -4,6 +4,21 @@
 
 #include "DODSResponseHandlerList.h"
 
+/** @brief add a response handler to the list
+ *
+ * This method actually adds to the list a method that knows how to build a
+ * response handler. For each request that comes in, the response name (such
+ * as get or set or show) is looked up in this list and the method is used to
+ * build a new response handler that knows how to build the response object
+ * for the given request.
+ *
+ * @param handler_name name of the handler to add to the list
+ * @param handler_method method that knows how to build the named response
+ * handler
+ * @return true if successfully added, false if it already exists
+ * @see DODSResponseHandler
+ * @see DODSResponseObject
+ */
 bool
 DODSResponseHandlerList::add_handler( string handler_name,
 			      p_response_handler handler_method )
@@ -18,6 +33,15 @@ DODSResponseHandlerList::add_handler( string handler_name,
     return false ;
 }
 
+/** @brief removes a response handler from the list
+ *
+ * The method that knows how to build the specified response handler is
+ * removed from the list.
+ *
+ * @param handler_name name of the handler build method to remove from the list
+ * @return true if successfully removed, false if it doesn't exist in the list
+ * @see DODSResponseHandler
+ */
 bool
 DODSResponseHandlerList::remove_handler( string handler_name )
 {
@@ -31,6 +55,18 @@ DODSResponseHandlerList::remove_handler( string handler_name )
     return false ;
 }
 
+/** @brief returns the response handler with the given name in the list
+ *
+ * This method looks up the build method with the given name in the list. If
+ * it is found then the build method is invoked with the given handler name
+ * and the response handler built with the build method is returned. If the
+ * handler build method does not exist in the list then NULL is returned.
+ *
+ * @param handler_name name of the handler to build and return
+ * @return a DODSResponseHandler using the specified build method, or NULL if
+ * it doesn't exist in the list.
+ * @see DODSResponseHandler
+ */
 DODSResponseHandler *
 DODSResponseHandlerList::find_handler( string handler_name )
 {
@@ -47,6 +83,14 @@ DODSResponseHandlerList::find_handler( string handler_name )
     return 0 ;
 }
 
+/** @brief returns the list of all response handlers currently registered with
+ * this server.
+ *
+ * Builds a comma separated list of response handlers registered with this
+ * server.
+ *
+ * @return comma separated list of response handler names
+ */
 string
 DODSResponseHandlerList::get_handler_names()
 {

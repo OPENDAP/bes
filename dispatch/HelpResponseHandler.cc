@@ -21,6 +21,17 @@ HelpResponseHandler::~HelpResponseHandler( )
 {
 }
 
+/** @brief parses the request 'show help;'
+ *
+ * This request has already been parsed by the ShowResponseHandler, so there is
+ * nothing more to parse. If there is, then throw an exception.
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 HelpResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -32,6 +43,27 @@ HelpResponseHandler::parse( DODSTokenizer &tokenizer,
     }
 }
 
+/** @brief executes the command 'show help;' by returning general help
+ * information as well as help information for all of the data request
+ * handlers registered with TheRequestHandlerList.
+ *
+ * The HelpResponseHandler first retreives general help information from help
+ * files located in the file pointed to by either the key OPeNDAP.Help.TXT if
+ * the client is a basic text client or OPeNDAP.Help.HTTP if the client is
+ * HTML based. It then lists each of the data types registered to handle
+ * requests (such as NetCDF, HDF, Cedar, etc...). Then for all data request
+ * handlers registered with TheRequestHandlerList help information can be
+ * added to the informational object.
+ *
+ * The response object DODSHTMLInfo is created to store the help information.
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSHTMLInfo
+ * @see TheRequestHandlerList
+ */
 void
 HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -43,13 +75,13 @@ HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
     {
 	info->add_data( "<HTML>\n" ) ;
 	info->add_data( "<HEAD>\n" ) ;
-	info->add_data( "<TITLE>DODS Dispatch Help</TITLE>\n" ) ;
+	info->add_data( "<TITLE>OPeNDAP General Help</TITLE>\n" ) ;
 	info->add_data( "</HEAD>\n" ) ;
 	info->add_data( "<BODY>\n" ) ;
     }
 
     // get the list of registered servers and the responses that they handle
-    info->add_data( "Registered servers:\n" ) ;
+    info->add_data( "Registered data request handlers:\n" ) ;
     DODSRequestHandlerList::Handler_citer i =
 	TheRequestHandlerList->get_first_handler() ;
     DODSRequestHandlerList::Handler_citer ie =
@@ -75,7 +107,7 @@ HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
 	key = (string)"OPeNDAP.Help." + dhi.transmit_protocol ;
     else
 	key = "OPeNDAP.Help.TXT" ;
-    info->add_data_from_file( key, "general" ) ;
+    info->add_data_from_file( key, "general help" ) ;
 
     // execute help for each registered request server
     if( dhi.transmit_protocol == "HTTP" )
@@ -101,11 +133,22 @@ HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text or html, depending
+ * on whether the client making the request can handle HTML information.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSHTMLInfo
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 HelpResponseHandler::transmit( DODSTransmitter *transmitter,
                                DODSDataHandlerInterface &dhi )
 {
-    // FIX: what if html help display???
     if( _response )
     {
 	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;

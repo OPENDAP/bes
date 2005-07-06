@@ -9,7 +9,7 @@ AC_INIT(DODS.cc)
 AC_CONFIG_HEADER(config_dispatch.h)
 AC_CONFIG_AUX_DIR(../../etc)
 
-AC_PREFIX_DEFAULT("/usr/local")
+AC_PREFIX_DEFAULT("${OPENDAP_ROOT}")
 
 dnl I think that the new dir naming scheme obviates this... 6/5/98 jhrg
 dnl the variable `dir' is used as a basename for the directory tar file

@@ -7,6 +7,16 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that returns the status of server process
+ *
+ * A request 'show status;' will be handled by this response handler. It
+ * returns the status of the server in an informational response object.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class StatusResponseHandler : public DODSResponseHandler
 {
 public:

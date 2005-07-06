@@ -7,6 +7,21 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that builds an OPeNDAP DDS object that includes
+ * attribute information from a corresponding OPeNDAP DAS object.
+ *
+ * A request 'get ddx for &lt;def_name&gt;;' will be handled by this
+ * response handler. Given a definition name it determines what containers
+ * are to be used to build the OPeNDAP DDS response object that includes
+ * attributes that are contained in the OPeNDAP DAS response object. It then
+ * transmits it using the method send_ddx.
+ *
+ * @see DAS
+ * @see DDS
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class DDXResponseHandler : public DODSResponseHandler {
 public:
 				DDXResponseHandler( string name ) ;

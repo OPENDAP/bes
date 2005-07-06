@@ -186,9 +186,9 @@ DODSApache::validate_data_request()
 
     The request comes in the form:
 
-    get <response> for <sym1>[,<sym2>,...,<symn>]
-	with <sym1>.constraint="<constraint1>"
-	     [,<sym2>.constraint="<constraint2>",...,<symn>.constraint="<constraintn>"];
+    get &lt;response&gt; for &lt;sym1&gt;[,&lt;sym2&gt;,...,&lt;symn&gt;]
+	with &lt;sym1&gt;.constraint="&lt;constraint1&gt;"
+	     [,&lt;sym2&gt;.constraint="&lt;constraint2&gt;",...,&lt;symn&gt;.constraint="&lt;constraintn&gt;"];
 
     Each symbolic name is resolved to a physical file and a server type and
     stored in a DODSContainer. The constraint for the symbolic name is also

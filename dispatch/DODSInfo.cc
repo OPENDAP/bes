@@ -116,23 +116,24 @@ DODSInfo::add_data( const string &s )
  * informational object, no exception is thrown.
  *
  * @param key Key from the initialization file specifying the file to be
+ * @param name naem information to add to error messages
  * loaded.
  */
 void
-DODSInfo::add_data_from_file( const string &key, const string &srvr_name )
+DODSInfo::add_data_from_file( const string &key, const string &name )
 {
     bool found = false ;
     string file = TheDODSKeys->get_key( key, found ) ;
     if( found == false )
     {
-	add_data( srvr_name + " help file key " + key + " not found, help information not available\n" ) ;
+	add_data( name + " file key " + key + " not found, information not available\n" ) ;
     }
     else
     {
 	ifstream ifs( file.c_str() ) ;
 	if( !ifs )
 	{
-	    add_data( srvr_name + " help file " + file + "not found, help information not available\n" ) ;
+	    add_data( name + " file " + file + "not found, information not available\n" ) ;
 	}
 	else
 	{

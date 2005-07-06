@@ -18,11 +18,11 @@
  * MySQL database and to determine if authentication is turned on or off. The
  * key/value pairs used from the intialization file are:
  *
- * DODS.Authenticate.MySQL.server=<serverName>
- * DODS.Authenticate.MySQL.user=<userName>
- * DODS.Authenticate.MySQL.password=<encryptedPassword>
- * DODS.Authenticate.MySQL.database=<databaseName>
- * DODS.Authenticate.MySQL.mode=<on|off>
+ * DODS.Authenticate.MySQL.server=&lt;serverName&gt;
+ * DODS.Authenticate.MySQL.user=&lt;userName&gt;
+ * DODS.Authenticate.MySQL.password=&lt;encryptedPassword&gt;
+ * DODS.Authenticate.MySQL.database=&lt;databaseName&gt;
+ * DODS.Authenticate.MySQL.mode=&lt;on|off&gt;
  *
  * @throws DODSAuthenticateException if unable to read information from
  * initialization file.

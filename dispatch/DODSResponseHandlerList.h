@@ -17,6 +17,27 @@ class DODSResponseHandler ;
 
 typedef DODSResponseHandler * (*p_response_handler)( string name ) ;
 
+/** @brief List of all registered response handlers for this server
+ *
+ * A DODSResponseHandlerList allows the developer to add or remove response
+ * handlers from the list of handlers available for this server. When a
+ * request comes in, for example of the for 'get das for d1;', there is a
+ * response handler that knows how to build a response object for the get
+ * request, or for the command 'set container values sym1,real1,type1;' there
+ * is a response handler that knows how to build a response object for the set
+ * request.
+ *
+ * The response handler knows how to build a response object, whereas a
+ * request handler knows how to fill in the response object built by the
+ * response handler.
+ *
+ * In the case of some response handlers, such as get and show, there is a sub
+ * response handler that knows how to build a specific get request, such as
+ * 'get das' or 'get dds' or 'show version;' or 'show help;'
+ * @see DODSResponseHandler
+ * @see DODSResponseObject
+ * @see DODSRequestHandler
+ */
 class DODSResponseHandlerList {
 private:
     map< string, p_response_handler, less< string >, allocator< string > > _handler_list ;

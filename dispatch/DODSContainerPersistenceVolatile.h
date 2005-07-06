@@ -39,7 +39,7 @@ public:
     typedef map< string, DODSContainer *, less< string >, allocator< string > >::const_iterator Container_citer ;
     typedef map< string, DODSContainer *, less< string >, allocator< string > >::iterator Container_iter ;
     virtual void		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_ame,
+    virtual void		add_container( string s_name, string r_name,
 					       string type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 

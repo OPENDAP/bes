@@ -85,7 +85,7 @@ DODSLog:: ~DODSLog()
  *
  * The time is dumped to the log file in the format:
  *
- * [MDT Thu Sep  9 11:05:16 2004 id: <pid>]
+ * [MDT Thu Sep  9 11:05:16 2004 id: &lt;pid&gt;]
  */
 void
 DODSLog::dump_time()

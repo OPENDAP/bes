@@ -7,6 +7,16 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that returns the process id for the server process
+ *
+ * A request 'show process;' will be handled by this response handler. It
+ * returns the process id of the server.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class ProcIdResponseHandler : public DODSResponseHandler
 {
 private:

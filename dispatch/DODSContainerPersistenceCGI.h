@@ -25,22 +25,22 @@ using std::allocator ;
  * file using TheDODSKeys as well as the base directory for where the files
  * exist.
  *
- * DODS.Container.Persistence.CGI.<name>.BaseDirectory is the key representing
- * the base directory where the files are physically located. The real_name
- * of the container is determined by concatenating the file name to the base
- * directory.
+ * DODS.Container.Persistence.CGI.&lt;name&gt;.BaseDirectory is the key
+ * representing the base directory where the files are physically located.
+ * The real_name of the container is determined by concatenating the file
+ * name to the base directory.
  *
- * DODS.Container.Persistence.CGI.<name>.TypeMatch is the key representing the
- * regular expressions. This key is formatted as follows:
+ * DODS.Container.Persistence.CGI.&lt;name&gt;.TypeMatch is the key
+ * representing the regular expressions. This key is formatted as follows:
  *
- * <data type>:<reg exp>;<data type>:<reg exp>;
+ * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
  *
  * For example: cedar:cedar\/.*\.cbf;cdf:cdf\/.*\.cdf;
  *
  * The first would match anything that might look like: cedar/datfile01.cbf
  *
- * <name> is the name of this persistent store, so you could have multiple
- * persistent stores using regular expressions.
+ * &lt;name&gt; is the name of this persistent store, so you could have
+ * multiple persistent stores using regular expressions.
  *
  * @see DODSContainerPersistence
  * @see DODSContainer
@@ -59,7 +59,7 @@ public:
     virtual			~DODSContainerPersistenceCGI() ;
 
     virtual void		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_ame,
+    virtual void		add_container( string s_name, string r_name,
 					       string type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 

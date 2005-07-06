@@ -7,6 +7,18 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that builds an OPeNDAP DAS object
+ *
+ * A request 'get das for &lt;def_name&gt;;' will be handled by this
+ * response handler. Given a definition name it determines what containers
+ * are to be used to build the OPeNDAP DAS response object. It then
+ * transmits the DAS object using the method send_das.
+ *
+ * @see DAS
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class DASResponseHandler : public DODSResponseHandler {
 public:
 				DASResponseHandler( string name ) ;

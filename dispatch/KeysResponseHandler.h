@@ -9,6 +9,18 @@
 
 class DODSTextInfo ;
 
+/** @brief response handler that returns the list of keys defined in the
+ * OPeNDAP initialization file.
+ *
+ * A request 'show keys;' will be handled by this response handler. It
+ * returns the list of all keys currently defined in the OPeNDAP
+ * initialization file and transmits the response as an informational response.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class KeysResponseHandler : public DODSResponseHandler
 {
 public:

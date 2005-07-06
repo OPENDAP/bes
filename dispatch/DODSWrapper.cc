@@ -11,16 +11,16 @@ using std::string ;
 #include "DODSProcessEncodedString.h"
 
 DODSWrapper::DODSWrapper()
+    : _encoder( 0 )
 {
-    _data_request = 0 ;
 }
 
 DODSWrapper::~DODSWrapper()
 {
-    if( _data_request )
+    if( _encoder )
     {
-	delete [] _data_request ;
-	_data_request = 0 ;
+	delete _encoder ;
+	_encoder = 0 ;
     }
 }
 
@@ -39,19 +39,40 @@ DODSWrapper::call_DODS( const DODSDataRequestInterface & re )
     return ret ;
 }
 
-/** @brief Find the request from the URL and convert it to readable format
+/** @brief Parse the command section of the given URL and convert it to
+ * readable format
 
-    @param s URL to convert into an OpenDAP request
-    @return Resulting OpenDAP request string
+ * @param s URL to parse and convert the different commands to readable
+ * format
+ */
+void
+DODSWrapper::process_commands( const char *s )
+{
+    if( !_encoder )
+	_encoder = new DODSProcessEncodedString( s ) ;
+}
+
+/** @brief Find the specified command from the URL and convert it to readable
+ * format
+ *
+ * There can be many different requests given to a server, such as setting the
+ * user name, creating a container, creating a definition, etc... Find the
+ * desired command from the URL.
+ *
+ * @param s command string to find in the URL
+ * @return the value of the specified command string
  */
 const char *
-DODSWrapper::process_request(const char*s)
+DODSWrapper::get_command( const char *s )
 {
-    DODSProcessEncodedString h( s ) ;
-    string str = h.get_key( "request" ) ;
-    _data_request = new char[strlen( str.c_str() ) + 1] ;
-    strcpy( _data_request, str.c_str() ) ;
-    return _data_request ;
+    char *command = 0 ;
+    if( _encoder )
+    {
+	string str = _encoder->get_key( s ) ;
+	char *command = new char[strlen( str.c_str() ) + 1] ;
+	strcpy( command, str.c_str() ) ;
+    }
+    return command ;
 }
 
 // $Log: DODSWrapper.cc,v $

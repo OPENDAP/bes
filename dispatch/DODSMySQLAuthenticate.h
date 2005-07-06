@@ -15,11 +15,11 @@ class DODSMySQLQuery ;
  * specified through the dods initialization file. The database is specified
  * with the following keys in the initialization file:
  *
- * DODS.Authenticate.MySQL.server=<serverName>
- * DODS.Authenticate.MySQL.user=<userName>
- * DODS.Authenticate.MySQL.password=<encryptedPassword>
- * DODS.Authenticate.MySQL.database=<databaseName>
- * DODS.Authenticate.MySQL.mode=<on|off>
+ * DODS.Authenticate.MySQL.server=&lt;serverName&gt;
+ * DODS.Authenticate.MySQL.user=&lt;userName&gt;
+ * DODS.Authenticate.MySQL.password=&lt;encryptedPassword&gt;
+ * DODS.Authenticate.MySQL.database=&lt;databaseName&gt;
+ * DODS.Authenticate.MySQL.mode=&lt;on|off&gt;
  *
  * The relevant columns for authentication in the session table tbl_session,
  * looks like this:

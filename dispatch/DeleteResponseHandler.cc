@@ -24,6 +24,25 @@ DeleteResponseHandler::~DeleteResponseHandler( )
 {
 }
 
+/** @brief parses the request to delete a container, a definition or all
+ * definitions.
+ *
+ * Possible requests handled by this response handler are:
+ *
+ * delete container &lt;container_name&gt;;
+ * <BR />
+ * delete definition &lt;def_name&gt;;
+ * <BR />
+ * delete definitions;
+ *
+ * And remember to terminate all commands with a semicolon (;)
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 DeleteResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -68,6 +87,37 @@ DeleteResponseHandler::parse( DODSTokenizer &tokenizer,
     }
 }
 
+/** @brief executes the command to delete a container, a definition, or all
+ * definitions.
+ *
+ * Removes definitions from TheDefineList and containers from volatile
+ * container persistence object, which is found in ThePersistenceList.
+ *
+ * The response object built is a DODSTextInfo object. Status of the delition
+ * will be added to the informational object, one of:
+ *
+ * Successfully deleted all definitions
+ * <BR />
+ * Successfully deleted definition "&lt;_def_name&gt;"
+ * <BR />
+ * Definition "&lt;def_name&gt;" does not exist.  Unable to delete.
+ * <BR />
+ * Successfully deleted container "&lt;container_name&gt;" from persistent store "volatile"
+ * <BR />
+ * Unable to delete container. The container "&lt;container_name&gt;" does not exist in the persistent store "volatile"
+ * <BR />
+ * The persistence store "volatile" does not exist. Unable to delete container "&lt;container_name&gt;"
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSTextInfo
+ * @see TheDefineList
+ * @see DODSDefine
+ * @see ThePersistenceList
+ * @see DODSContainerPersistence
+ */
 void
 DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -130,16 +180,32 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 			  + "\" does not exist. "
 			  + "Unable to delete container \""
 			  + _container_name
-			  + "\".\n" ;
+			  + "\"\n" ;
 	    info->add_data( line ) ;
 	}
     }
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSTextInfo
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 DeleteResponseHandler::transmit( DODSTransmitter *transmitter,
                                DODSDataHandlerInterface &dhi )
 {
+    if( _response )
+    {
+	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	transmitter->send_text( *info, dhi );
+    }
 }
 
 DODSResponseHandler *

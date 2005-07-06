@@ -7,6 +7,16 @@
 
 #include "DODSRequestHandlerList.h"
 
+/** @brief The global request handler list used by this server.
+ *
+ * TheRequestHandlerList is the global DODSRequestHandlerList object used to
+ * store registered request handlers. The object is built during global
+ * initialization. The order of initialization is REQUESTHANDLERLIST_INIT.
+ *
+ * @see DODSRequestHandlerList
+ * @see DODSRequestHandler
+ * @see DODSGlobalIQ
+ */
 extern DODSRequestHandlerList *TheRequestHandlerList;
 
 #endif // E_TheRequestHandlerList_h

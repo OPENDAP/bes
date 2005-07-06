@@ -14,42 +14,21 @@ using std::string ;
 /** @brief parses an incoming request and creates the information necessary to
  * carry out the request.
  *
- * Parses the incoming request, retrieving the type of response object to be
- * built, the type of data being requested, the physical information about
- * where the data is, and constraints on the data to be retrieved. Multiple
- * sets of data can be requested, each one can have a constraint string.
+ * Parses the incoming request, retrieving first the type of response object
+ * that is being requested and passing off the parsing of the request to that
+ * response handler. For example, if a "get" request is being sent, the parser
+ * parses the string "get", locates the response handler that handes a "get"
+ * request, and hands off the parsing of the ramaining request string to
+ * that response handler.
  *
- * Format for requests:
- * <pre>
- * get <action> for <symbolic_name1, symbolic_name2, ..., symbolic_namen>
- *     where <symbolic_name1>.constraint="<constraint>",
- *           <symbolic_name2>.constraint="<constraint>",
- *           ...,
- *           <symbolic_namen>.constraint="<constraint>";
- * </pre>
- *
- * requests also available include:
- *
- * show version;
- * show help;
+ * First, the parser builds the list of tokens using the DODSTokernizer
+ * object. This list of tokens is then passed to the response handler to
+ * parse the remainder of the request.
  *
  * All requests must end with a semicolon.
  *
- * <action> can be any string that represents a response object requested by the
- * user, such as das, dds, dods, etc...
- *
- * <symbolic_name> are names used to represent the type of data being
- * requested (netcdf, cdf, cedar, etc...) and the actual file being requested.
- * See DODSContainer and DODSContainerPersistence for more information and
- * examples.
- *
- * <constraint> represents a constraint string to be used for accessing the
- * data for the specific symbolic name.
- *
+ * @see DODSTokenizer
  * @see DODSParserException
- * @see DODSContainer
- * @see DODSContainerPersistence
- * @see DODS
  */
 class DODSParser
 {

@@ -19,16 +19,16 @@ DODSParser::~DODSParser()
 /** @brief parse the request string and build the execution plan for the
  * request.
  *
- * Parse the request string and builds the execution plan for the request.
- * This plan includes the type of response object that is being requested.
+ * Parse the request string into a list of tokens using the DODSTokenizer
+ * object and builds the execution plan for the request. This plan includes
+ * the type of response object that is being requested.
  *
  * @param request string representing the request from the client
  * @param dhi information needed to build the request and to store request
  * information for the server
  * @throws DODSParserException thrown if there is an error in syntax
- * @see DODSContainer
- * @see DODSContainerPersistence
- * @see DODS
+ * @see DODSTokenizer
+ * @see DODSResponseHandler
  * @see _DODSDataHandlerInterface
  */
 void

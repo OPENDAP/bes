@@ -27,7 +27,7 @@ DODSTokenizer::~DODSTokenizer()
  * tokens that have been read leading up to the point that this method is
  * called.
  *
- * @parameter s error string passed by caller to be display with list of
+ * @param s error string passed by caller to be display with list of
  * tokens
  * @throws DODSException with the passed error string as well as all tokens
  * leading up to the error.
@@ -107,7 +107,7 @@ DODSTokenizer::get_next_token()
  *  quote and includes all test between the quotes, and including the
  *  quotes, as a single token.
  *
- * @parameter p request command string
+ * @param p request command string
  * @throws DODSException if quoted text is missing an end quote, if the
  * request string is not terminated by a semiclon, if the number of tokens
  * is less than 2.
@@ -199,15 +199,15 @@ DODSTokenizer::tokenize( const char *p )
  * type is set to 1, if it is attributes for the container then type is set
  * to 2. The syntax should look like the following.
  *
- * <container_name>.constraint=
+ * &lt;container_name&gt;.constraint=
  * or
- * <container_name>.attributes=
+ * &lt;container_name&gt;.attributes=
  *
  * The equal sign must be present.
  *
- * @parameter s the string to be parsed to determine if constraint or
+ * @param s the string to be parsed to determine if constraint or
  * attributes
- * @parameter type set to 1 if constraint or 2 if attributes
+ * @param type set to 1 if constraint or 2 if attributes
  * @returns the container name
  * @throws DODSException if the syntax is incorrect
  * @see DODSException
@@ -249,7 +249,7 @@ DODSTokenizer::parse_container_name( const string &s, unsigned int &type )
  * Removes quotes from a quoted token. The passed string must begin with a
  * double quote and must end with a double quote.
  *
- * @parameter s string where the double quotes are removed.
+ * @param s string where the double quotes are removed.
  * @returns the unquoted token
  * @throws DODSException if the string does not begin and end with a double
  * quote

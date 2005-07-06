@@ -7,6 +7,19 @@
 
 #include "DODSBasicException.h"
 
+/** @brief an exception object representing any exceptions thrown during the
+ * building of a response object in a response handler
+ *
+ * A DODSResponseException can be built by either passing the error string
+ * to the constructor or by instantiating an empty object and using the
+ * derived set_error_description method.
+ *
+ * To retreive the error string simpy use the get_error_description method.
+ *
+ * @see DODSBasicException
+ * @see DODSResponseHandler
+ * @see DODSResponseObject
+ */
 class DODSResponseException: public DODSBasicException
 {
 public:

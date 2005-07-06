@@ -13,23 +13,28 @@ using std::string ;
 
 class DODSResponseObject ;
 
-/** @brief handler object that knows how to build a specific response object
+/** @brief handler object that knows how to build the response object for a
+ * get command
  *
  * A response handler object is an object that knows how to build a response
  * object, such as a DAS, DDS, DDX response object. It knows how to
  * construct the requested response object, and how to build that object
- * given the list of containers that are a part of the request.
+ * given the list of containers that are a part of the request. A get response
+ * handler knows how to build a response object in response to a get request,
+ * such as get das, or get dds given the name of a definition and an optional
+ * method of returning that response object.
  *
  * A response handler object also knows how to transmit the response object
  * using a DODSTransmitter object.
  *
- * This is an abstract base class for response handlers. Derived classes
- * implement the methods execute and transmit.
+ * The GetResponseHandler actually builds a sub response handler specific to
+ * the response object being requested, such as a DASResponseHandler object
+ * and redirects calls to this object to the sub handler.
  *
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSRequestHandler
- * @see ShowResponseHandlerList
+ * @see GetResponseHandlerList
  * @see DODSTransmitter
  */
 class ShowResponseHandler : public DODSResponseHandler
@@ -42,45 +47,11 @@ public:
 
     virtual DODSResponseObject  *get_response_object() ;
 
-    /** @brief knows how to parse a show request
-     *
-     * This class knows how to parse a show request, building a response
-     * handler that actually knows how to build the requested response
-     * object
-     *
-     * @param tokenizer holds on to the list of tokens to be parsed
-     * @throws DODSParserException if there is a problem parsing the request
-     */
     virtual void		parse( DODSTokenizer &tokenizer,
                                        DODSDataHandlerInterface &dhi ) ;
 
-    /** @brief knows how to build a requested response object
-     *
-     * Derived instances of this base class know how to build a
-     * specific response object, which containers to use, which request
-     * handlers to go to, etc... This response handler invokes the execute
-     * method on the stored derived response handler.
-     *
-     * @param dhi structure that holds request and response information
-     * @throws DODSResponseException if there is a problem building the
-     * response object
-     * @see _DODSDataHandlerInterface
-     * @see DODSResponseObject
-     */
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
 
-    /** @brief transmit the respobse object built by the execute command
-     * using the specified transmitter object
-     *
-     * THis base class simply hands off the transmit request to the stored
-     * response handler.
-     *
-     * @param transmitter
-     * @param dhi
-     * @see DODSResponseObject
-     * @see DODSTransmitter
-     * @see _DODSDataHandlerInterface
-     */
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;
 

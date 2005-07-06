@@ -7,6 +7,17 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that returns list of definitions currently defined
+ *
+ * A request 'show definitions;' will be handled by this response handler. It
+ * returns the list of currently defined definitions and transmits the
+ * response as an informational response.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class DefinitionsResponseHandler : public DODSResponseHandler {
 public:
 				DefinitionsResponseHandler( string name ) ;

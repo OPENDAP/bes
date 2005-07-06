@@ -108,7 +108,7 @@ DODSContainerPersistenceVolatile::rem_container( const string &s_name )
  * In the case of this persistent store information from each container
  * added to the volatile list is added to the information object.
  *
- * @parameter info object to store the container and persistent store information into
+ * @param info object to store the container and persistent store information
  * @see DODSInfo
  */
 void

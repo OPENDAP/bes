@@ -17,6 +17,20 @@ DataResponseHandler::~DataResponseHandler( )
 {
 }
 
+/** @brief parses the request 'get data for &lt;def_name&gt; [return as
+ * &lt;ret_name&gt;];' where def_name is the name of a definition previously
+ * created.
+ *
+ * This request has already been parsed by the GetResponseHandler, so there is
+ * nothing more to parse. If there is, then throw an exception.
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if this method is called, as the request string
+ * should have already been parsed.
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 DataResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -24,6 +38,22 @@ DataResponseHandler::parse( DODSTokenizer &tokenizer,
     throw( DODSParserException( (string)"Improper command " + get_name() ) ) ;
 }
 
+/** @brief executes the command 'get data for &lt;def_name&gt; [return as
+ * &lt;ret_name&gt;];' by executing the request for each container in the
+ * specified definition def_name
+ *
+ * For each container in the specified defnition def_name go to the request
+ * handler for that container and have it add to the OPeNDAP DDS data response
+ * object. The data response object is built within this method and passed
+ * to the request handler list.
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DDS
+ * @see TheRequestHandlerList
+ */
 void
 DataResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -31,6 +61,17 @@ DataResponseHandler::execute( DODSDataHandlerInterface &dhi )
     TheRequestHandlerList->execute_each( dhi ) ;
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it using the send_data method.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DDS
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 DataResponseHandler::transmit( DODSTransmitter *transmitter,
                                DODSDataHandlerInterface &dhi )

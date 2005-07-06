@@ -11,6 +11,8 @@
  *
  * Basic implementation of DODSException providing a basic constructor and
  * implementations of the get_error_description and set_error_description.
+ * Error strings can also be passed to the constructor instead of using the
+ * set_error_description method.
  */
 class DODSBasicException: public DODSException
 {

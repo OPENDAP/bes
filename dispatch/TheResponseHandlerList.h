@@ -7,6 +7,17 @@
 
 #include "DODSResponseHandlerList.h"
 
+/** @brief The global response handler list used by this server.
+ *
+ * TheResponseHandlerList is the global DODSResponseHandlerList object used to
+ * store registered response handlers. The object is built during global
+ * initialization. The order of initialization is RESPONSEHANDLERLIST_INIT.
+ *
+ * @see DODSResponseHandlerList
+ * @see DODSResponseHandler
+ * @see DODSResponseObject
+ * @see DODSGlobalIQ
+ */
 extern DODSResponseHandlerList *TheResponseHandlerList;
 
 #endif // E_TheResponseHandlerList_h

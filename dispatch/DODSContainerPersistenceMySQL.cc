@@ -18,12 +18,12 @@
  *
  * The keys in the dods initialization file that represent the database are:
  *
- * DODS.Container.Persistence.MySQL.<name>.server
- * DODS.Container.Persistence.MySQL.<name>.user
- * DODS.Container.Persistence.MySQL.<name>.password
- * DODS.Container.Persistence.MySQL.<name>.database
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.server
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.user
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.password
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.database
  *
- * where <name> is the name of this instance of the persistent store.
+ * where &lt;name&gt; is the name of this instance of the persistent store.
  *
  * @param n name of this persistent store.
  * @throws DODSContainerPersistenceException if unable to retrieve the MySQL
@@ -134,9 +134,19 @@ DODSContainerPersistenceMySQL::look_for( DODSContainer &d )
     }
 }
 
+/** @brief adds a container with the provided information
+ *
+ * This method adds a container to the persistence store with the
+ * specified information. This functionality is not currently supported for
+ * MySQL persistence.
+ *
+ * @param s_name symbolic name for the container
+ * @param r_name real name for the container
+ * @param type type of data represented by this container
+ */
 void
 DODSContainerPersistenceMySQL::add_container( string s_name,
-                                            string r_ame,
+                                            string r_name,
 					    string type )
 {
     throw DODSContainerPersistenceException( "Unable to add a container to MySQL container persistence, not yet implemented\n" ) ;
@@ -170,7 +180,7 @@ DODSContainerPersistenceMySQL::rem_container( const string &s_name )
  * and the symbolic name, real name and container type are retrieved and
  * added to the information object.
  *
- * @parameter info object to store the container and persistent store information into
+ * @param info object to store the container and persistent store information
  * @see DODSInfo
  */
 void

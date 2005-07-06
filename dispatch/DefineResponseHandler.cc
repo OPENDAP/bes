@@ -19,6 +19,41 @@ DefineResponseHandler::~DefineResponseHandler( )
 {
 }
 
+/** @brief parses the request to build a definition that can be used in other
+ * requests, such as get commands.
+ *
+ * A request looks like:
+ *
+ * define &lt;def_name&gt; as &lt;container_list&gt;
+ * <BR />
+ * &nbsp;&nbsp;[where &lt;container_x&gt;.constraint="&lt;constraint&gt;"]
+ * <BR />
+ * &nbsp;&nbsp;[,&lt;container_x&gt;.attributes="&lt;attrs&gt;"]
+ * <BR />
+ * &nbsp;&nbsp;[aggregate by "&lt;aggregation_command&gt;"];
+ *
+ * where container_list is a list of containers representing points of data,
+ * such as a file. For each container in the container_list the user can
+ * specify a constraint and a list of attributes. You need not specify a
+ * constraint for a given container or a list of attributes. If just
+ * specifying a constraint then leave out the attributes. If just specifying a
+ * list of attributes then leave out the constraint. For example:
+ *
+ * define d1 as container_1,container_2
+ * <BR />
+ * &nbsp;&nbsp;where container_1.constraint="constraint1"
+ * <BR />
+ * &nbsp;&nbsp;,container_2.constraint="constraint2"
+ * <BR />
+ * &nbsp;&nbsp;,container_2.attributes="attr1,attr2";
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if this method is called, as the request string
+ * should have already been parsed.
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 DefineResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -173,6 +208,30 @@ DefineResponseHandler::parse( DODSTokenizer &tokenizer,
     }
 }
 
+/** @brief executes the command to create a new definition.
+ *
+ * A DODSDefine object is created and added to TheDefineList. If a definition
+ * already exists with the given name then it is removed and the new one
+ * added.
+ *
+ * The DODSDefine object is created using the containers, constraints,
+ * attribute lists and aggregation command parsed in the parse method.
+ *
+ * The response object built for this command is a DODSTextInfo response
+ * object. It will contain one of two possible responses:
+ *
+ * Successfully added definition &lt;def_name&gt;
+ * <BR />
+ * Successfully replaced definition &lt;def_name&gt;
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSTextInfo
+ * @see DODSDefine
+ * @see TheDefineList
+ */
 void
 DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -202,6 +261,19 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
     info->add_data( ret ) ;
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * A DODSTextInfo response object was built in the exeucte command to inform
+ * the user whether the definition was successfully added or replaced. The
+ * method send_text is called on the DODSTransmitter object.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSTextInfo
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 DefineResponseHandler::transmit( DODSTransmitter *transmitter,
                                   DODSDataHandlerInterface &dhi )

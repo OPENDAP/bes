@@ -19,6 +19,23 @@ SetResponseHandler::~SetResponseHandler( )
 {
 }
 
+/** @brief parses the request to create a new container or replace an already
+ * existing container given a symbolic name, a real name, and a data type.
+ *
+ * The syntax for a request handled by this response handler is:
+ *
+ * set container values * &lt;sym_name&gt;,&lt;real_name&gt;,&lt;data_type&gt;;
+ *
+ * The request must end with a semicolon and must contain the symbolic name,
+ * the real name (in most cases a file name), and the type of data represented
+ * by this container (e.g. cedar, netcdf, cdf, hdf, etc...).
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ * @see DODSTokenizer
+ * @see _DODSDataHandlerInterface
+ */
 void
 SetResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -80,6 +97,32 @@ SetResponseHandler::parse( DODSTokenizer &tokenizer,
     }
 }
 
+/** @brief executes the command to create a new container or replaces an
+ * already existing container based on the provided symbolic name.
+ *
+ * The symbolic name is first looked up in the volatile persistence object. If
+ * the symbolic name already exists (the container already exists) then the
+ * already existing container is removed and the new one added using the given
+ * real name (usually a file name) and the type of data represented by this
+ * container (e.g. cedar, cdf, netcdf, hdf, etc...)
+ *
+ * An informational response object DODSTextInfo is created to hold whether or
+ * not the container was successfully added/replaced. Possible responses are:
+ *
+ * Successfully added container &lt;sym_name&gt; to persistent store volatile
+ * Successfully replaced container &lt;sym_name&gt; to persistent store volatile
+ *
+ * Unable to add container &lt;sym_name&gt; to persistent store volatile
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSTextInfo
+ * @see ThePersistenceList
+ * @see DODSContainerPersistence
+ * @see DODSContainer
+ */
 void
 SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
@@ -122,6 +165,17 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
 }
 
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it as text.
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSTextInfo
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 SetResponseHandler::transmit( DODSTransmitter *transmitter,
                                   DODSDataHandlerInterface &dhi )

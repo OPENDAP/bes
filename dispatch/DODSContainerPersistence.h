@@ -74,7 +74,7 @@ public:
      * @param r_name real name for the container
      * @param type type of data represented by this container
      */
-    virtual void		add_container( string s_name, string r_ame,
+    virtual void		add_container( string s_name, string r_name,
 					       string type ) = 0 ;
 
     /** @brief removes a container with the given symbolic name
@@ -95,7 +95,7 @@ public:
      * persistent store on the first line followed by the symbolic name,
      * real name and data type for each container, one per line.
      *
-     * @parameter info information object to store the information in
+     * @param info information object to store the information in
      */
     virtual void		show_containers( DODSInfo &info ) = 0 ;
 };

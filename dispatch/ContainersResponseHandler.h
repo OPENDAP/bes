@@ -7,6 +7,18 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that returns list of continers currently defined
+ *
+ * A request 'show containers;' will be handled by this response handler. It
+ * returns the list of currently defined containers for each container
+ * persistence registered with the server and transmits the response as an
+ * informational response.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class ContainersResponseHandler : public DODSResponseHandler {
 public:
 				ContainersResponseHandler( string name ) ;

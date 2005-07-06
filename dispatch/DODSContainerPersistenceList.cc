@@ -258,7 +258,7 @@ DODSContainerPersistenceList::look_for( DODSContainer &d )
  * container within that persistent store which includes the symbolic name,
  * the real name, and the data type, separated by commas.
  *
- * @parameter info object to store the container and persistent store information into
+ * @param info object to store the container and persistent store information
  * @see DODSInfo
  */
 void

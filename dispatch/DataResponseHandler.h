@@ -7,6 +7,19 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that builds an OPeNDAP DDS object that includes
+ * not only the data definitions, but also the data.
+ *
+ * A request 'get data for &lt;def_name&gt; [return as &lt;ret_name&gt;];'
+ * will be handled by this response handler. Given a definition name it
+ * determines what containers are to be used to build the response object.
+ * It then transmits the response object using the method send_data.
+ *
+ * @see DDS
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class DataResponseHandler : public DODSResponseHandler {
 public:
 				DataResponseHandler( string name ) ;

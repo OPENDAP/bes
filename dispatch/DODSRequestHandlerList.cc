@@ -6,6 +6,15 @@
 #include "DODSRequestHandler.h"
 #include "DODSHandlerException.h"
 
+/** @brief add a request handler to the list of registered handlers for this
+ * server
+ *
+ * @param handler_name name of the data type handled by this request handler
+ * @param handler_object the request handler object that knows how to fill in
+ * specific response objects
+ * @return true if successfully added, false if already exists
+ * @see DODSRequestHandler
+ */
 bool
 DODSRequestHandlerList::add_handler( string handler_name,
 			      DODSRequestHandler *handler_object )
@@ -18,6 +27,18 @@ DODSRequestHandlerList::add_handler( string handler_name,
     return false ;
 }
 
+/** @brief remove and return the specified request handler
+ *
+ * Finds, removes and returns the specified request handler. if the handler
+ * exists then it is removed from the list, but not deleted. Deleting the
+ * request handler is the responsability of the caller. The request handler is
+ * then returned to the caller. If not found, NULL is returned
+ *
+ * @param handler_name name of the data type request handler to be removed and
+ * returned
+ * @return returns the request handler if found, NULL otherwise
+ * @see DODSRequestHandler
+ */
 DODSRequestHandler *
 DODSRequestHandlerList::remove_handler( string handler_name )
 {
@@ -32,6 +53,12 @@ DODSRequestHandlerList::remove_handler( string handler_name )
     return ret ;
 }
 
+/** @brief find and return the specified request handler
+ *
+ * @param handler_name name of the data type request handler
+ * @return the request handler for the specified data type, NULL if not found
+ * @see DODSRequestHandler
+ */
 DODSRequestHandler *
 DODSRequestHandlerList::find_handler( string handler_name )
 {
@@ -44,18 +71,37 @@ DODSRequestHandlerList::find_handler( string handler_name )
     return 0 ;
 }
 
+/** @brief return an iterator pointing to the first request handler in the
+ * list
+ *
+ * @return a constant iterator pointing to the first request handler in the
+ * list
+ * @see DODSRequestHandler
+ */
 DODSRequestHandlerList::Handler_citer
 DODSRequestHandlerList::get_first_handler()
 {
     return _handler_list.begin() ;
 }
 
+/** @brief return a constant iterator pointing to the end of the list
+ *
+ * @return a constant iterator pointing to the end of the list
+ * @see DODSRequestHandler
+ */
 DODSRequestHandlerList::Handler_citer
 DODSRequestHandlerList::get_last_handler()
 {
     return _handler_list.end() ;
 }
 
+/** @brief Returns a comma separated string of request handlers registered
+ * with the server
+ *
+ * @return comma separated string of request handler names registered with the
+ * server.
+ * @see DODSRequestHandler
+ */
 string
 DODSRequestHandlerList::get_handler_names()
 {
@@ -72,6 +118,26 @@ DODSRequestHandlerList::get_handler_names()
     return ret ;
 }
 
+/** @brief for each container in the given data handler interface, execute the
+ * given request
+ *
+ * For some response objects it is necessary to iterate over all of the
+ * containers listed in the specified data handler interface. For each
+ * container, get the type of data represented by that container, find the
+ * request handler for that data type, find the method within that request
+ * handler that knows how to handle the response object to be filled in, and
+ * execute that method.
+ *
+ * @param dhi the data handler interface that contains the list of containers
+ * to be iterated over
+ * @throws DODSHandlerException if any one of the request handlers does not
+ * know how to fill in the specified response object or if any one of the
+ * request handlers does not exist.
+ * @see _DODSDataHandlerInterface
+ * @see DODSContainer
+ * @see DODSRequestHandler
+ * @see DODSResponseObject
+ */
 void
 DODSRequestHandlerList::execute_each( DODSDataHandlerInterface &dhi )
 {
@@ -112,6 +178,21 @@ DODSRequestHandlerList::execute_each( DODSDataHandlerInterface &dhi )
      }
 }
 
+/** @brief for all of the registered request handlers, execute the given
+ * request
+ *
+ * In some cases, such as a version or help request, it is necessary to
+ * iterate over all of the registered request handlers to fill in the response
+ * object. If a request handler does not know how to fill in the response
+ * object, i.e. doesn't handle the response type, then simply move on to the
+ * next. No exception is thrown in this case.
+ *
+ * @param dhi data handler interface that contains the necessary information
+ * to fill in the response object.
+ * @see _DODSDataHandlerInterface
+ * @see DODSRequestHandler
+ * @see DODSResponseObject
+ */
 void
 DODSRequestHandlerList::execute_all( DODSDataHandlerInterface &dhi )
 {
@@ -128,6 +209,24 @@ DODSRequestHandlerList::execute_all( DODSDataHandlerInterface &dhi )
     }
 }
 
+/** @brief Execute a single method that will fill in the response object
+ * rather than iterating over the list of containers or request handlers.
+ *
+ * This method is for requests of a single type of data. The request is passed
+ * off to the request handler for the first container in the data handler
+ * interface. It is up to this request handlers method for the specified
+ * response object type to fill in the response object. It can iterate over
+ * the containers in the data handler interface, for example.
+ *
+ * @param dhi data handler interface that contains the necessary information
+ * to fill in the response object
+ * @throws DODSHandlerException if the request handler cannot be found for the
+ * first containers data type or if the request handler cannot fill in the
+ * specified response object.
+ * @see _DODSDataHandlerInterface
+ * @see DODSContainer
+ * @see DODSResponseObject
+ */
 void
 DODSRequestHandlerList::execute_once( DODSDataHandlerInterface &dhi )
 {

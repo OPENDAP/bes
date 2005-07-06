@@ -53,13 +53,15 @@ class DODSTransmitter ;
     which has the data type (cedar, cdf, nph, etc...) and the file to be
     read. The DODSDataHandlerInterface is built in the build request method.
 
-    The response handlers know how to build the requested response object.
+    The response handlers know how to build the specified response object,
+    such as DAS, DDS, help, status, version, etc...
+
     For each container in the DODSDataHandlerInterface find the
-    request handler (DODSRequestHandler) for the data type. Each request
-    handler registers functions that know how to build a certain type of
-    response (DAS, DDS, etc...). Find that function and invoke it. So, for
-    example, there is a CedarRequestHandler class that registers functions
-    that knows how to build the different response objects from cedar files.
+    request handler (DODSRequestHandler) for the containers data type. Each
+    request handler registers functions that know how to fill in a certain
+    type of response (DAS, DDS, etc...). Find that function and invoke it. So,
+    for example, there is a CedarRequestHandler class that registers functions
+    that knows how to fill in the different response objects from cedar files.
 
     Once the response object is filled it is transmitted using a specified
     DODSTransmitter.

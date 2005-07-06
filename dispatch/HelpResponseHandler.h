@@ -7,6 +7,19 @@
 
 #include "DODSResponseHandler.h"
 
+/** @brief response handler that returns help information about the server
+ * including what types of data are handled by the server and information
+ * about those handlers, and what commands are accepted by the server.
+ *
+ * A request 'show help;' will be handled by this response handler. It
+ * returns general help information as well as help information for all of
+ * the different types of data handled by this server.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class HelpResponseHandler : public DODSResponseHandler {
 public:
 				HelpResponseHandler( string name ) ;

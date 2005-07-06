@@ -22,18 +22,18 @@ using std::allocator ;
  * from a file. The name of the file is determined from the dods
  * initiailization file. The key is:
  *
- * DODS.Container.Persistence.File.<name>
+ * DODS.Container.Persistence.File.&lt;name&gt;
  *
- * where <name> is the name of this persistent store.
+ * where &lt;name&gt; is the name of this persistent store.
  *
  * The format of the file is:
  *
- * <symbolic_name> <real_name> <data type>
+ * &lt;symbolic_name&gt; &lt;real_name&gt; &lt;data type&gt;
  *
- * where the symbolic name is the symbolic name of the container, the
- * <real_name represents the physical location of the data, such as a file,
- * and the <data type> is the type of data being represented, such as netcdf,
- * cedar, etc...
+ * where the &lt;symbolic_name&gt; is the symbolic name of the container, the
+ * &lt;real_name&gt; represents the physical location of the data, such as a
+ * file, and the &lt;data type&gt; is the type of data being represented,
+ * such as netcdf, cedar, etc...
  *
  * One container per line, can not span multiple lines
  *
@@ -59,7 +59,7 @@ public:
     virtual			~DODSContainerPersistenceFile() ;
 
     virtual void		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_ame,
+    virtual void		add_container( string s_name, string r_name,
 					       string type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 

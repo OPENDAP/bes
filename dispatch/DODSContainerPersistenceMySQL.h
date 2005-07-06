@@ -19,12 +19,12 @@ class DODSMySQLQuery ;
  * information in a MySQL database. The database is sepcified in the dods
  * initialization file using the keys:
  *
- * DODS.Container.Persistence.MySQL.<name>.server
- * DODS.Container.Persistence.MySQL.<name>.user
- * DODS.Container.Persistence.MySQL.<name>.password
- * DODS.Container.Persistence.MySQL.<name>.database
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.server
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.user
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.password
+ * DODS.Container.Persistence.MySQL.&lt;name&gt;.database
  *
- * where <name> is the name of this instance of the persistent store.
+ * where &lt;name&gt; is the name of this instance of the persistent store.
  *
  * The table name used is tbl_containers and has the following columns
  *
@@ -51,7 +51,7 @@ public:
     virtual			~DODSContainerPersistenceMySQL();
 
     virtual void 		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_ame,
+    virtual void		add_container( string s_name, string r_name,
 				       string type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 

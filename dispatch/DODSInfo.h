@@ -49,7 +49,7 @@ public:
 
     virtual void 	add_data( const string &s ) ;
     virtual void 	add_data_from_file( const string &key,
-                                            const string &srvr_name ) ;
+                                            const string &name ) ;
     virtual void 	print( FILE *out ) ;
     /** @brief return whether the information is to be buffered or not.
      *

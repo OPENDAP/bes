@@ -9,6 +9,19 @@
 
 class DODSTextInfo ;
 
+/** @brief response handler that returns the version of the OPeNDAP-g server
+ * and the version of any data request handlers registered with the server.
+ *
+ * A request 'show version;' will be handled by this response handler. It
+ * returns the version of the OPeNDAP-g server and the version of any data
+ * request handlers registered with the server.
+ *
+ * @see DODSResponseObject
+ * @see DODSRequestHandler
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
 class VersionResponseHandler : public DODSResponseHandler
 {
 public:

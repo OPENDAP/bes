@@ -4,8 +4,8 @@ AC_DEFUN(DISPATCH_DAP, [dnl
         [  --with-dap=ARG       Where is the external dap sources (directory)],
         DAP_PATH=${withval}, DAP_PATH="/usr/local")
 
-        LIBS="`$DAP_PATH/bin/libdap-config --libs` $LIBS"
-	INCS="`$DAP_PATH/bin/libdap-config --cflags` $INCS"
+        LIBS="`$DAP_PATH/bin/dap-config --libs` $LIBS"
+	INCS="`$DAP_PATH/bin/dap-config --cflags` $INCS"
 	CXXFLAGS="$CXXFLAGS -DDEFAULT_BASETYPE_FACTORY"
 
 	AC_SUBST(INCS)

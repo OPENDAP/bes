@@ -27,6 +27,19 @@ GetResponseHandler::~GetResponseHandler( )
     _sub_response = 0 ;
 }
 
+/** @brief return the current response object
+ *
+ * Returns the current response object, null if one has not yet been
+ * created. The response handler maintains ownership of the response
+ * object, unless the set_response_object() method is called at which
+ * point the caller of get_response_object() becomes the owner.
+ *
+ * Because a get response handler contains a sub response handler that really
+ * knows how to build the response object, this get_response_object method
+ * turns around and calls the same method on the sub response handler.
+ *
+ * @see DODSResponseObject
+ */
 DODSResponseObject *
 GetResponseHandler::get_response_object()
 {
@@ -34,6 +47,30 @@ GetResponseHandler::get_response_object()
     return DODSResponseHandler::get_response_object() ;
 }
 
+/** @brief knows how to parse a get request
+ *
+ * This class knows how to parse a get request, building a sub response
+ * handler that actually knows how to build the requested response
+ * object, such as das, dds, data, ddx, etc...
+ *
+ * A get request looks like:
+ *
+ * get &lt;response_type&gt; for &lt;def_name&gt; [return as &lt;ret_name&gt;;
+ *
+ * where response_type is the type of response being requested, for example
+ * das, dds, dods.
+ * where def_name is the name of the definition that has already been created,
+ * like a view into the data
+ * where ret_name is the method of transmitting the response. This is
+ * optional.
+ *
+ * This parse method creates the sub response handler, retrieves the
+ * definition information and finds the return object if one is specified.
+ *
+ * @param tokenizer holds on to the list of tokens to be parsed
+ * @param dhi structure that holds request and response information
+ * @throws DODSParserException if there is a problem parsing the request
+ */
 void
 GetResponseHandler::parse( DODSTokenizer &tokenizer,
                            DODSDataHandlerInterface &dhi )
@@ -102,12 +139,35 @@ GetResponseHandler::parse( DODSTokenizer &tokenizer,
     dhi.aggregation_command = d->aggregation_command ;
 }
 
+/** @brief knows how to build a requested response object
+ *
+ * Redirects the execute method to the sub response handler, which knows how
+ * to build the response object.
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSResponseObject
+ */
 void
 GetResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     if( _sub_response ) _sub_response->execute( dhi ) ;
 }
 
+/** @brief transmit the respobse object built by the execute command
+ * using the specified transmitter object
+ *
+ * Redirects the transmit method to the sub response handler, which knows
+ * which method of the transmitter to use
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSResponseObject
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
 void
 GetResponseHandler::transmit( DODSTransmitter *transmitter,
 			      DODSDataHandlerInterface &dhi )
@@ -115,6 +175,21 @@ GetResponseHandler::transmit( DODSTransmitter *transmitter,
     if( _sub_response ) _sub_response->transmit( transmitter, dhi ) ;
 }
 
+/** @brief replaces the current response object with the specified one
+ *
+ * This method is used to replace the response object with a new one, for
+ * example if during aggregation a new response object is built from the
+ * current response object.
+ *
+ * The current response object is NOT deleted. The response handler
+ * assumes ownership of the new response object.
+ *
+ * Redirects the transmit method to the sub response handler, which knows how
+ * to build the response object.
+ *
+ * @param new_response new response object used to replace the current one
+ * @see DODSResponseObject
+ */
 void
 GetResponseHandler::set_response_object( DODSResponseObject *new_response )
 {

@@ -5,6 +5,30 @@
 #ifndef D_DODSResponseNames_H
 #define D_DODSResponseNames_H 1
 
+/** @brief macros representing the default response objects handled
+ *
+ * These include
+ * <pre>
+ * set
+ * define
+ * send
+ * get
+ *     das
+ *     dds
+ *     ddx
+ *     dods
+ * show
+ *     help
+ *     process
+ *     version
+ *     containers
+ *     definitions
+ *     keys
+ *     status
+ * delete
+ * </pre>
+ */
+
 #define SET_RESPONSE "set"
 
 #define DEFINE_RESPONSE "define"
@@ -24,7 +48,6 @@
 #define CONTAINERS_RESPONSE "containers"
 #define DEFINITIONS_RESPONSE "definitions"
 #define KEYS_RESPONSE "keys"
-
 #define STATUS_RESPONSE "status"
 
 #define DELETE_RESPONSE "delete"

@@ -21,19 +21,19 @@ using std::ifstream ;
  * a key in the dods initialization file. The key is constructed using the
  * name of this persistent store.
  *
- * DODS.Container.Persistence.File.<name>
+ * DODS.Container.Persistence.File.&lt;name&gt;
  *
- * where <name> is the name of this persistent store.
+ * where &lt;name&gt; is the name of this persistent store.
  *
  * The containers are then read into memory. The format of the file is as
  * follows.
  *
- * <symbolic_name> <real_name> <data type>
+ * &lt;symbolic_name&gt; &lt;real_name&gt; &lt;data type&gt;
  *
  * where the symbolic name is the symbolic name of the container, the
- * <real_name represents the physical location of the data, such as a file,
- * and the <data type> is the type of data being represented, such as netcdf,
- * cedar, etc...
+ * &lt;real_name&gt; represents the physical location of the data, such as
+ * a file, and the &lt;data type&gt; is the type of data being represented,
+ * such as netcdf, cedar, etc...
  *
  * One container per line, can not span multiple lines
  *
@@ -145,9 +145,19 @@ DODSContainerPersistenceFile::look_for( DODSContainer &d )
     }
 }
 
+/** @brief adds a container with the provided information
+ *
+ * This method adds a container to the persistence store with the
+ * specified information. This functionality is not currently supported for
+ * file persistence.
+ *
+ * @param s_name symbolic name for the container
+ * @param r_name real name for the container
+ * @param type type of data represented by this container
+ */
 void
 DODSContainerPersistenceFile::add_container( string s_name,
-                                            string r_ame,
+                                            string r_name,
 					    string type )
 {
     throw DODSContainerPersistenceException( "Unable to add a container to a file, not yet implemented\n" ) ;
@@ -187,10 +197,11 @@ DODSContainerPersistenceFile::rem_container( const string &s_name )
  * separated by commas.
  *
  * In the case of this persistent store all of the containers loaded from
- * the file specified by the key DODS.Container.Persistence.File.<store_name>
+ * the file specified by the key
+ * DODS.Container.Persistence.File.&lt;store_name&gt;
  * is added to the information object.
  *
- * @parameter info object to store the container and persistent store information into
+ * @param info object to store the container and persistent store information into
  * @see DODSInfo
  */
 void

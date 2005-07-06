@@ -16,25 +16,25 @@ typedef struct _DODSDataRequestInterface
     /** @brief not used
      */
     const char *server_address;
-    /** @brief protocol of the request, such as "HTTP/0.9" or "HTTP/1.1"</LI>
+    /** @brief protocol of the request, such as "HTTP/0.9" or "HTTP/1.1"
      */
     const char *server_protocol;
-    /** @brief TCP port number where the server running Apache is listening</LI>
+    /** @brief TCP port number where the server running Apache is listening
      */
     const char *server_port;
-    /** @brief uri of the request</LI>
+    /** @brief uri of the request
      */
     const char *script_name;
-    /** @brief remote ip address of client machine</LI>
+    /** @brief remote ip address of client machine
      */
     const char *user_address;
-    /** @brief information about the user agent originating the request, e.g. Mozilla/4.04 (X11; I; SunOS 5.4 sun4m)</LI>
+    /** @brief information about the user agent originating the request, e.g. Mozilla/4.04 (X11; I; SunOS 5.4 sun4m)
      */
     const char *user_agent;
-    /** @brief OpenDAP request string from URL</LI>
+    /** @brief OpenDAP request string from URL
      */
     const char *request;
-    /** @brief server cookies set in users browser</LI>
+    /** @brief server cookies set in users browser
      */
     const char *cookie;
 } DODSDataRequestInterface;
