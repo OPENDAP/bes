@@ -3,7 +3,7 @@
 prefix = @prefix@
 exec_prefix = $(prefix)
 libdir = $(exec_prefix)/lib
-includedir = $(prefix)/include
+includedir = $(prefix)/include/opendap-g
 AR = ar
 CXX = @CXX@
 RANLIB = @RANLIB@
@@ -15,8 +15,8 @@ SRCS:=DODSClient.cc DODSClientXDRControl.cc DODS_C_ControlClient.cc OPeNDAPConne
 OBJS:=DODSClient.o DODSClientXDRControl.o DODS_C_ControlClient.o OPeNDAPConnector.o
 HDRS:=DODSClient.h DODSClientConfig.h DODSClientUtilities.h DODSClientXDRControl.h OPeNDAPConnector.h
 
-INCS:=-I. -I../../ppt -I../../dispatch
-LIB:=libdodsclient.a
+INCS:=-I. -I../ppt -I../dispatch
+LIB:=libopendapclient.a
 DEFS:=@DEFS@
 #CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS:=$(CXXFLAGS_DEBUG) 
@@ -62,15 +62,3 @@ distclean : clean
 	-rm -f Makefile config.status config.log config.cache
 
 # DO NOT DELETE; depend requires this line
-DODSClient.o: DODSClient.cc DODSClient.h ../../ppt/PPTSocket.h \
-  ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
-  ../../ppt/PPTClientServerSessionProtocol.h ../../ppt/PPTUtilities.h
-DODSClientXDRControl.o: DODSClientXDRControl.cc DODSClientXDRControl.h
-DODS_C_ControlClient.o: DODS_C_ControlClient.cc DODSClient.h \
-  ../../ppt/PPTSocket.h ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
-  ../../ppt/PPTClientServerSessionProtocol.h DODSClientConfig.h
-OPeNDAPConnector.o: OPeNDAPConnector.cc DODSClient.h \
-  ../../ppt/PPTSocket.h ../../ppt/PPTException.h ../../ppt/PPTBuffer.h \
-  ../../dispatch/DODSDataRequestInterface.h \
-  ../../dispatch/DODSProcessEncodedString.h OPeNDAPConnector.h \
-  ../../dispatch/DODSStatusReturn.h
