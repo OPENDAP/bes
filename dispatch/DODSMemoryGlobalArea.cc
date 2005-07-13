@@ -141,6 +141,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	    exit(1) ;
 	}
     }
+    TheDODSLog->resume();
 }
 
 DODSMemoryGlobalArea::~DODSMemoryGlobalArea()
