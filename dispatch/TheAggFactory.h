@@ -5,9 +5,9 @@
 #ifndef E_TheAggregationServer_h
 #define E_TheAggregationServer_h 1
 
-#include "DODSAggregationServer.h"
+#include "OPeNDAPAggFactory.h"
 
-extern DODSAggregationServer *TheAggregationServer;
+extern OPeNDAPAggFactory *TheAggFactory;
 
 #endif // E_TheAggregationServer_h
 

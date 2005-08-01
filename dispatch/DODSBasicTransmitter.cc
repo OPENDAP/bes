@@ -37,8 +37,8 @@ void
 DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
     dhi.first_container();
-    printf("Data name: %s\n", dhi.container->get_real_name().c_str());
-    printf("Post CE: %s\n", dhi.post_constraint.c_str());
+    //printf("Data name: %s\n", dhi.container->get_real_name().c_str());
+    //printf("Post CE: %s\n", dhi.post_constraint.c_str());
 
     dds.send( dhi.container->get_real_name(), dhi.post_constraint, stdout, false ) ;
 

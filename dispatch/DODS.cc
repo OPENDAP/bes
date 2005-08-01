@@ -14,7 +14,8 @@ using std::string ;
 #include "TheDODSKeys.h"
 #include "TheResponseHandlerList.h"
 #include "DODSResponseHandler.h"
-#include "TheAggregationServer.h"
+#include "TheAggFactory.h"
+#include "DODSAggregationServer.h"
 #include "cgi_util.h"
 #include "TheReporterList.h"
 
@@ -197,9 +198,14 @@ DODS::execute_data_request_plan()
 void
 DODS::invoke_aggregation()
 {
-    if( _dhi.aggregation_command != "" && TheAggregationServer )
+    if( _dhi.aggregation_command != "" )
     {
-	TheAggregationServer->aggregate( _dhi ) ;
+	DODSAggregationServer *agg =
+	    TheAggFactory->find_handler( _dhi.aggregation_handler ) ;
+	if( agg )
+	{
+	    agg->aggregate( _dhi ) ;
+	}
     }
 }
 

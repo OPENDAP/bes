@@ -187,18 +187,31 @@ DefineResponseHandler::parse( DODSTokenizer &tokenizer,
 	if( with_aggregation == true )
 	{
 	    my_token = tokenizer.get_next_token() ;
-	    if( my_token != "by" )
-		tokenizer.parse_error( my_token + " not expected" ) ;
-	    else
+	    if( my_token != "using" )
 	    {
-		my_token = tokenizer.get_next_token() ;
-		if( my_token == ";" )
-		    tokenizer.parse_error( my_token + " not expected" ) ;
-		else
-		{
-		    dhi.aggregation_command = tokenizer.remove_quotes( my_token ) ;
-		}
+		tokenizer.parse_error( my_token + " not expected" ) ;
 	    }
+
+	    my_token = tokenizer.get_next_token() ;
+	    if( my_token == ";" )
+	    {
+		tokenizer.parse_error( my_token + " not expected" ) ;
+	    }
+	    dhi.aggregation_handler = my_token ;
+
+	    my_token = tokenizer.get_next_token() ;
+	    if( my_token != "by" )
+	    {
+		tokenizer.parse_error( my_token + " not expected" ) ;
+	    }
+
+	    my_token = tokenizer.get_next_token() ;
+	    if( my_token == ";" )
+	    {
+		tokenizer.parse_error( my_token + " not expected" ) ;
+	    }
+	    dhi.aggregation_command = tokenizer.remove_quotes( my_token ) ;
+
 	    my_token = tokenizer.get_next_token() ;
 	}
 	if( my_token != ";" )

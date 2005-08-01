@@ -19,7 +19,8 @@ using std::endl ;
 #include "DODSBasicHttpTransmitter.h"
 #include "TheDODSReturnManager.h"
 #include "DODSTransmitException.h"
-#include "TheAggregationServer.h"
+#include "TheAggFactory.h"
+#include "DODSAggregationServer.h"
 
 #define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
 
@@ -248,6 +249,7 @@ DODSApache::build_data_request_plan()
 	*(TheDODSLog) << "    user_address = " << _dhi.user_address << endl ;
 	*(TheDODSLog) << "    transmit_protocol = " << _dhi.transmit_protocol << endl ;
 	*(TheDODSLog) << "    request = " << _dhi.request << endl ;
+	*(TheDODSLog) << "    aggregation = " << _dhi.aggregation_handler << endl ;
 	*(TheDODSLog) << "    aggregation = " << _dhi.aggregation_command << endl ;
 	*(TheDODSLog) << "    return = " << _dhi.return_command << endl ;
     }
@@ -284,26 +286,28 @@ DODSApache::invoke_aggregation()
 {
     if( TheDODSLog )
     {
-	if( _dhi.aggregation_command != "" && TheAggregationServer )
+	if( _dhi.aggregation_command == "" )
 	{
 	    *(TheDODSLog) << _dri->user_address
-			  << " [" << _dri->request << "] aggregating"
+			  << " [" << _dri->request << "]"
+			  << " not aggregating, aggregation command empty"
 			  << endl ;
 	}
 	else
 	{
-	    if( _dhi.aggregation_command == "" )
+	    DODSAggregationServer *agg =
+		TheAggFactory->find_handler( _dhi.aggregation_handler ) ;
+	    if( !agg )
 	    {
 		*(TheDODSLog) << _dri->user_address
 			      << " [" << _dri->request << "]"
-			      << " not aggregating, aggregation command empty"
+			      << " not aggregating, no aggregation handler"
 			      << endl ;
 	    }
-	    if( !TheAggregationServer )
+	    else
 	    {
 		*(TheDODSLog) << _dri->user_address
-			      << " [" << _dri->request << "]"
-			      << " not aggregating, no aggregation server"
+			      << " [" << _dri->request << "] aggregating"
 			      << endl ;
 	    }
 	}

@@ -6,7 +6,7 @@
 #include "DODSContainer.h"
 #include "DODSContainerPersistenceException.h"
 #include "TheDODSKeys.h"
-#include "Regex.h"
+#include "GNURegex.h"
 #include "DODSInfo.h"
 
 /** @brief create an instance of this persistent store with the given name.

@@ -24,7 +24,7 @@ DODSBasicHttpTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 void
 DODSBasicHttpTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    set_mime_binary( stdout, dods_data ) ;
+    //set_mime_binary( stdout, dods_data ) ;
     DODSBasicTransmitter::send_data( dds, dhi ) ;
 }
 

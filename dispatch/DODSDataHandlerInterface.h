@@ -69,6 +69,10 @@ typedef struct _DODSDataHandlerInterface
      */
     string post_constraint ;
 
+    /** @brief aggregation handler name
+     */
+    string aggregation_handler ;
+
     /** @brief aggregation command
      */
     string aggregation_command ;

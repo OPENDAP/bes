@@ -1319,7 +1319,7 @@ _ACEOF
 
 
 
-depend=${DODS_ROOT}/etc/depend.sh
+depend=${OPENDAP_ROOT}/etc/depend.sh
 
 
 

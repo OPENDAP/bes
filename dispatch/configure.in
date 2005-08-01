@@ -20,7 +20,7 @@ DISPATCH_VERSION="OPeNDAP Dispatch/$VERSION"
 AC_DEFINE_UNQUOTED(DISPATCH_VERSION, "$DISPATCH_VERSION", [Dispatch Version])
 AC_SUBST(DISPATCH_VERSION)
 
-depend=${DODS_ROOT}/etc/depend.sh
+depend=${OPENDAP_ROOT}/etc/depend.sh
 AC_SUBST(depend)
 
 dnl flags for the compilers and linkers - set these before locating the
