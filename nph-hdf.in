@@ -25,7 +25,7 @@
 # links. To configure your server to follow symbolic links, add
 # FollowSymLinks to the Options in the access.conf file. 
 #
-# $Id: nph-hdf.in,v 1.9 2003/01/31 02:08:36 jimg Exp $
+# $Id$
 #
 # $Log: nph-hdf.in,v $
 # Revision 1.9  2003/01/31 02:08:36  jimg

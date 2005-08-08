@@ -28,7 +28,7 @@
 
 #include "config_hdf.h"
 
-static char rcsid[] not_used = {"$Id: eosdas-test.cc,v 1.4 2003/01/31 02:08:36 jimg Exp $"};
+static char rcsid[] not_used = {"$Id$"};
 
 #include <iostream>
 #include <string>
@@ -54,7 +54,7 @@ int hdfeoslex();
 
 extern int hdfeosdebug;
 const char *prompt = "hdfeos-test: ";
-const char *version = "$Revision: 1.4 $";
+const char *version = "$Revision$";
 
 void
 usage(string name)

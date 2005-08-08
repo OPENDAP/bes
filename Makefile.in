@@ -1,7 +1,7 @@
 
 # Makefile for hdf-dods.
 #
-# $Id: Makefile.in,v 1.38 2005/03/16 21:00:20 jimg Exp $
+# $Id$
 
 @SET_MAKE@
 
