@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.4 2004/02/05 00:32:53 jimg Exp $)
+AC_REVISION($Id$)
 
 AC_INIT(h5util.h)
 AC_CONFIG_HEADER(config_hdf5.h)

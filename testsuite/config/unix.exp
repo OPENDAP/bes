@@ -3,7 +3,7 @@
 # various servers (hdf, dsp, netcdf, matlab, ...) on serveral different
 # platforms. 
 # 
-# $Id: unix.exp,v 1.2 2001/07/25 00:20:19 jimg Exp $
+# $Id$
 
 global H5DAS
 if ![info exists H5DAS] then {
