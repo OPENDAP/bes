@@ -2,7 +2,7 @@
 dnl -*- m4 -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_REVISION($Id: configure.in,v 1.7 2005/05/06 22:14:28 pwest Exp $)
+AC_REVISION($Id$)
 
 builtin(include, dispatch.m4)
 AC_INIT(DODS.cc)
