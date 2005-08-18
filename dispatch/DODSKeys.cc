@@ -35,24 +35,18 @@ using std::cout ;
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-DODSKeys::DODSKeys()
+DODSKeys::DODSKeys( const string &keys_file_name )
     : _keys_file( 0 ),
-      _keys_file_name( "" ),
+      _keys_file_name( keys_file_name ),
       _the_keys( 0 )
 {
-    char *dods_ini = DODS_INI_FILE ;
-    if( !dods_ini )
-    {
-	throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
-    }
-    _keys_file_name = dods_ini ;
-    _keys_file = new ifstream( dods_ini ) ;
+    _keys_file = new ifstream( _keys_file_name.c_str() ) ;
     if( !(*_keys_file) )
     {
 	char path[500] ;
 	getcwd( path, sizeof( path ) ) ;
 	string s = string("DODS: fatal, can not open initialization file ")
-		   + dods_ini + "\n"
+		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
 	throw DODSKeysException( s ) ;
     }

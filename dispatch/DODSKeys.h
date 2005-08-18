@@ -14,8 +14,6 @@ using std::map ;
 using std::less ;
 using std::ifstream ;
 
-#define DODS_INI_FILE getenv("DODS_INI")
-
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
  *
@@ -62,9 +60,10 @@ private:
 				    string& key,
 				    string &value ) ;
     bool		only_blanks( const char *line ) ;
+    			DODSKeys() {}
 public:
-    			DODSKeys();
-    			~DODSKeys();
+    			DODSKeys( const string &keys_file_name ) ;
+    			~DODSKeys() ;
 
     string		keys_file_name() { return _keys_file_name ; }
 
