@@ -32,6 +32,7 @@ using std::string ;
 #include "DODSResponseException.h"
 #include "DODSAggregationException.h"
 #include "Error.h"
+#include "OPeNDAPDataNames.h"
 
 #define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
 
@@ -198,10 +199,10 @@ DODS::execute_data_request_plan()
 void
 DODS::invoke_aggregation()
 {
-    if( _dhi.aggregation_command != "" )
+    if( _dhi.data[AGG_CMD] != "" )
     {
 	DODSAggregationServer *agg =
-	    TheAggFactory->find_handler( _dhi.aggregation_handler ) ;
+	    TheAggFactory->find_handler( _dhi.data[AGG_HANDLER] ) ;
 	if( agg )
 	{
 	    agg->aggregate( _dhi ) ;
@@ -340,7 +341,7 @@ DODS::exception_manager(DODSException &e)
 	    fprintf( stdout, "%s %s %s.\n",
 	             "We were unable to authenticate your session",
 		     "for user",
-		     _dhi.user_name.c_str() ) ;
+		     _dhi.data[USER_NAME].c_str() ) ;
 	    fprintf( stdout, "<BR />\n" ) ;
 	    fprintf( stdout, "<BR />\n" ) ;
 	    fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;

@@ -26,6 +26,7 @@ public:
     DODSDefine::containers_iterator end_container() { return containers.end() ; }
 
     string			aggregation_command ;
+    string			aggregation_handler ;
 } ;
 
 #endif // DODSDefine_h_

@@ -20,31 +20,6 @@ ProcIdResponseHandler::~ProcIdResponseHandler( )
 {
 }
 
-/** @brief parses the request 'show process;'
- *
- * The syntax for a request handled by this response handler is 'show
- * process;'. The keywords 'show' and 'process' have already been
- * parsed, which is how we got to the parse method. This method makes sure
- * that the command is terminated by a semicolon and that there is no more
- * text after the keyword 'process'.
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-ProcIdResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token != ";" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-}
-
 char *
 ProcIdResponseHandler::fastpidconverter(
       long val,                                 /* value to be converted */

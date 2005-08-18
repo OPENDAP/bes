@@ -48,14 +48,10 @@
  */
 class DefineResponseHandler : public DODSResponseHandler
 {
-private:
-    string			_def_name ;
 public:
 				DefineResponseHandler( string name ) ;
     virtual			~DefineResponseHandler( void ) ;
 
-    virtual void		parse( DODSTokenizer &tokenizer,
-                                       DODSDataHandlerInterface &dhi ) ;
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;

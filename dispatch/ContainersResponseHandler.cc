@@ -16,31 +16,6 @@ ContainersResponseHandler::~ContainersResponseHandler( )
 {
 }
 
-/** @brief parses the request 'show containers;'
- *
- * The syntax for a request handled by this response handler is 'show
- * containers;'. The keywords 'show' and 'containers' have already been
- * parsed, which is how we got to the parse method. This method makes sure
- * that the command is terminated by a semicolon and that there is no more
- * text after the keyword 'containers'.
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-ContainersResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token != ";" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-}
-
 /** @brief executes the command 'show containers;' by returning the list of
  * currently defined containers
  *

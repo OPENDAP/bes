@@ -5,6 +5,7 @@
 #include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
 #include "DODSHandlerException.h"
+#include "OPeNDAPDataNames.h"
 
 /** @brief add a request handler to the list of registered handlers for this
  * server
@@ -153,9 +154,11 @@ DODSRequestHandlerList::execute_each( DODSDataHandlerInterface &dhi )
                if( p )
                {
                    p( dhi ) ;
-                   if( dhi.real_name_list != "" )
-                       dhi.real_name_list += ", " ;
-                   dhi.real_name_list += dhi.container->get_real_name() ;
+		   string c_list = dhi.data[REAL_NAME_LIST] ;
+                   if( c_list != "" )
+                       c_list += ", " ;
+                   c_list += dhi.container->get_real_name() ;
+		   dhi.data[REAL_NAME_LIST] = c_list ;
                } else {
                    DODSHandlerException he ;
                    string se = "Request handler \""

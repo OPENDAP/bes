@@ -69,22 +69,6 @@ public:
      */
     virtual void		set_response_object( DODSResponseObject *o ) ;
 
-    /** @brief parse the request that will be used to build this response
-     *
-     * Derived instances of this abstract base class know how to parse a
-     * request string to determine how to build the response object. For
-     * example, how to parse a constraint expression or an aggregation
-     * expression.
-     *
-     * @param tokenizer holds list of tokens used to build the request plan
-     * @param dhi structure that holds request and response information
-     * @throws DODSParserException if problem building the request plan.
-     * @see DODSTokenizer
-     * @see _DODSDataHandlerInterface
-     */
-    virtual void		parse( DODSTokenizer &tokenizer,
-                                       DODSDataHandlerInterface &dhi ) = 0 ;
-
     /** @brief knows how to build a requested response object
      *
      * Derived instances of this abstract base class know how to build a

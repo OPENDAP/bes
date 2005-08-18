@@ -8,6 +8,7 @@
 #include "DODSHandlerException.h"
 #include "TheResponseHandlerList.h"
 #include "cgi_util.h"
+#include "OPeNDAPDataNames.h"
 
 /** @brief Instantiate an instance of the DODSCgi interface
 

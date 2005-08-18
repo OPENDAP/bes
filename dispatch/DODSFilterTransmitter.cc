@@ -5,6 +5,7 @@
 #include "DODSFilterTransmitter.h"
 #include "DODSFilter.h"
 #include "DODSInfo.h"
+#include "OPeNDAPDataNames.h"
 
 void
 DODSFilterTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
@@ -15,21 +16,21 @@ DODSFilterTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
 void
 DODSFilterTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    _df->set_ce( dhi.post_constraint ) ;
+    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
     _df->send_dds( stdout, dds, true ) ;
 }
 
 void
 DODSFilterTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    _df->set_ce( dhi.post_constraint ) ;
+    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
     _df->send_data( dds, stdout ) ;
 }
 
 void
 DODSFilterTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    _df->set_ce( dhi.post_constraint ) ;
+    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
     _df->send_ddx( dds, stdout ) ;
 }
 

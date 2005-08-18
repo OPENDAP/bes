@@ -6,6 +6,7 @@
 #include "DAS.h"
 #include "DDS.h"
 #include "DODSInfo.h"
+#include "OPeNDAPDataNames.h"
 
 void
 DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
@@ -17,7 +18,7 @@ DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
 void
 DODSBasicTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    dds.parse_constraint( dhi.post_constraint ) ;
+    dds.parse_constraint( dhi.data[POST_CONSTRAINT] ) ;
     dds.print_constrained( stdout ) ;
 
 #if 0
@@ -40,22 +41,22 @@ DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
     //printf("Data name: %s\n", dhi.container->get_real_name().c_str());
     //printf("Post CE: %s\n", dhi.post_constraint.c_str());
 
-    dds.send( dhi.container->get_real_name(), dhi.post_constraint, stdout, false ) ;
+    dds.send( dhi.container->get_real_name(), dhi.data[POST_CONSTRAINT], stdout, false ) ;
 
-    // FIX: Do I need to flush?
     fflush( stdout ) ;
 }
 
 void
 DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    if( dhi.post_constraint != "" )
+    string constraint = dhi.data[POST_CONSTRAINT] ;
+    if( constraint != "" )
     {
-	dds.parse_constraint( dhi.post_constraint, stdout, true ) ;
+	dds.parse_constraint( constraint, stdout, true ) ;
     }
     // FIX: print_xml assumes http
     // FIX: need to figure out blob
-    dds.print_xml( stdout, !dhi.post_constraint.empty(), ".blob" ) ;
+    dds.print_xml( stdout, !constraint.empty(), ".blob" ) ;
 
     // FIX: Do I need to flush?
     fflush( stdout ) ;

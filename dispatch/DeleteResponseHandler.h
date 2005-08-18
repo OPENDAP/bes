@@ -29,17 +29,10 @@
  * @see DODSTokenizer
  */
 class DeleteResponseHandler : public DODSResponseHandler {
-private:
-    string			_def_name ;
-    string			_store_name ;
-    string			_container_name ;
-    bool			_definitions ;
 public:
 				DeleteResponseHandler( string name ) ;
     virtual			~DeleteResponseHandler( void ) ;
 
-    virtual void		parse( DODSTokenizer &tokenizer,
-                                       DODSDataHandlerInterface &dhi ) ;
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;

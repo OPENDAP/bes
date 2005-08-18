@@ -30,6 +30,7 @@
  */
 
 #define SET_RESPONSE "set"
+#define SETCONTAINER "container"
 
 #define DEFINE_RESPONSE "define"
 
@@ -51,6 +52,9 @@
 #define STATUS_RESPONSE "status"
 
 #define DELETE_RESPONSE "delete"
+#define DELETE_CONTAINER "container"
+#define DELETE_DEFINITION "definition"
+#define DELETE_DEFINITIONS "definitions"
 
 #endif // E_DODSResponseNames_H
 

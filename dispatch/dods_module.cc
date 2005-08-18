@@ -11,13 +11,11 @@ using std::endl ;
 #include "DODSResponseNames.h"
 #include "TheResponseHandlerList.h"
 
-#include "GetResponseHandler.h"
 #include "DASResponseHandler.h"
 #include "DDSResponseHandler.h"
 #include "DataResponseHandler.h"
 #include "DDXResponseHandler.h"
 
-#include "ShowResponseHandler.h"
 #include "HelpResponseHandler.h"
 #include "ProcIdResponseHandler.h"
 #include "VersionResponseHandler.h"
@@ -45,10 +43,6 @@ DODSModuleInit(int, char**) {
 	(*TheDODSLog) << "Initializing DODS:" << endl;
 
     if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << GET_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( GET_RESPONSE, GetResponseHandler::GetResponseBuilder ) ;
-
-    if( TheDODSLog->is_verbose() )
 	(*TheDODSLog) << "    adding " << DAS_RESPONSE << " response handler" << endl;
     TheResponseHandlerList->add_handler( DAS_RESPONSE, DASResponseHandler::DASResponseBuilder ) ;
 
@@ -63,10 +57,6 @@ DODSModuleInit(int, char**) {
     if( TheDODSLog->is_verbose() )
 	(*TheDODSLog) << "    adding " << DATA_RESPONSE << " response handler" << endl;
     TheResponseHandlerList->add_handler( DATA_RESPONSE, DataResponseHandler::DataResponseBuilder ) ;
-
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << SHOW_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( SHOW_RESPONSE, ShowResponseHandler::ShowResponseBuilder ) ;
 
     if( TheDODSLog->is_verbose() )
 	(*TheDODSLog) << "    adding " << HELP_RESPONSE << " response handler" << endl;

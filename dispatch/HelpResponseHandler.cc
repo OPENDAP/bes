@@ -21,28 +21,6 @@ HelpResponseHandler::~HelpResponseHandler( )
 {
 }
 
-/** @brief parses the request 'show help;'
- *
- * This request has already been parsed by the ShowResponseHandler, so there is
- * nothing more to parse. If there is, then throw an exception.
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-HelpResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token != ";" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-}
-
 /** @brief executes the command 'show help;' by returning general help
  * information as well as help information for all of the data request
  * handlers registered with TheRequestHandlerList.

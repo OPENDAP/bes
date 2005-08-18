@@ -3,6 +3,7 @@
 // 2004 Copyright University Corporation for Atmospheric Research
 
 #include "DODSConstraintFuncs.h"
+#include "OPeNDAPDataNames.h"
 
 string
 DODSConstraintFuncs::pre_to_post_constraint( const string &name,
@@ -35,9 +36,11 @@ DODSConstraintFuncs::post_append( DODSDataHandlerInterface &dhi )
 	string to_append =
 	    pre_to_post_constraint( dhi.container->get_symbolic_name(),
 				    dhi.container->get_constraint() ) ;
-	if( dhi.post_constraint != "" )
-	    dhi.post_constraint += "," ;
-	dhi.post_constraint.append( to_append ) ;
+	string constraint = dhi.data[POST_CONSTRAINT] ;
+	if( constraint != "" )
+	    constraint += "," ;
+	constraint.append( to_append ) ;
+	dhi.data[POST_CONSTRAINT] = constraint ;
     }
 }
 

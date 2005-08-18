@@ -91,23 +91,23 @@ protected:
     DODSDataHandlerInterface	_dhi ;
     DODSTransmitter		*_transmitter ;
 
-    virtual int			exception_manager(DODSException &e);
-    virtual void		authenticate();
-    virtual void		initialize();
-    virtual void		validate_data_request();
-    virtual void		build_data_request_plan();
-    virtual void		execute_data_request_plan();
-    virtual void		invoke_aggregation();
-    virtual void		transmit_data();
-    virtual void		log_status();
-    virtual void		report_request();
-    virtual void		clean();
+    virtual int			exception_manager(DODSException &e) ;
+    virtual void		authenticate() ;
+    virtual void		initialize() ;
+    virtual void		validate_data_request() ;
+    virtual void		build_data_request_plan() ;
+    virtual void		execute_data_request_plan() ;
+    virtual void		invoke_aggregation() ;
+    virtual void		transmit_data() ;
+    virtual void		log_status() ;
+    virtual void		report_request() ;
+    virtual void		clean() ;
 
-    				DODS();
-    virtual			~DODS();
+    				DODS() ;
+    virtual			~DODS() ;
 public:
-    virtual int			execute_request();
-};
+    virtual int			execute_request() ;
+} ;
 
 #endif // DODS_h_
 

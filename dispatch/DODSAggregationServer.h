@@ -11,8 +11,12 @@
  */
 class DODSAggregationServer
 {
+private:
+    string		_name ;
+			DODSAggregationServer() {}
 protected:
-    			DODSAggregationServer() {} ;
+    			DODSAggregationServer( string name )
+			    : _name( name ) {}
 public:
     virtual		~DODSAggregationServer() {} ;
     /** @brief aggregate the response object
@@ -24,6 +28,8 @@ public:
      * @see _DODSDataHandlerInterface
      */
     virtual void	aggregate( DODSDataHandlerInterface &dhi ) = 0 ;
+
+    virtual string	get_name() { return _name ; }
 };
 
 #endif // DODSAggregationServer_h_

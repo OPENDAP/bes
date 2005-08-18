@@ -20,31 +20,6 @@ VersionResponseHandler::~VersionResponseHandler( )
 {
 }
 
-/** @brief parses the request 'show version;'
- *
- * The syntax for a request handled by this response handler is 'show
- * version;'. The keywords 'show' and 'status' have already been
- * parsed, which is how we got to this parse method. This method makes sure
- * that the command is terminated by a semicolon and that there is no more
- * text after the keyword 'version'.
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-VersionResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token != ";" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-}
-
 /** @brief executes the command 'show version;' by returning the version of
  * the OPeNDAP-g server and the version of all registered data request
  * handlers.

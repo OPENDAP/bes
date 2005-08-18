@@ -16,31 +16,6 @@ DefinitionsResponseHandler::~DefinitionsResponseHandler( )
 {
 }
 
-/** @brief parses the request 'show definitions;'
- *
- * The syntax for a request handled by this response handler is 'show
- * definitions;'. The keywords 'show' and 'definitions' have already been
- * parsed, which is how we got to this parse method. This method makes sure
- * that the command is terminated by a semicolon and that there is no more
- * text after the keyword 'definitions'.
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-DefinitionsResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token != ";" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-}
-
 /** @brief executes the command 'show definitions;' by returning the list of
  * currently defined definitions
  *

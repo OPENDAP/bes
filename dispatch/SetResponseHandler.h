@@ -27,17 +27,10 @@
  */
 class SetResponseHandler : public DODSResponseHandler
 {
-private:
-    string			_symbolic_name ;
-    string			_real_name ;
-    string			_type ;
-    string			_persistence ;
 public:
 				SetResponseHandler( string name ) ;
     virtual			~SetResponseHandler( void ) ;
 
-    virtual void		parse( DODSTokenizer &tokenizer,
-                                       DODSDataHandlerInterface &dhi ) ;
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;

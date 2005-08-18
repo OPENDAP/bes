@@ -9,6 +9,7 @@
 #include "ThePersistenceList.h"
 #include "DODSContainerPersistence.h"
 #include "DODSContainerPersistenceException.h"
+#include "OPeNDAPDataNames.h"
 
 SetResponseHandler::SetResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -17,84 +18,6 @@ SetResponseHandler::SetResponseHandler( string name )
 
 SetResponseHandler::~SetResponseHandler( )
 {
-}
-
-/** @brief parses the request to create a new container or replace an already
- * existing container given a symbolic name, a real name, and a data type.
- *
- * The syntax for a request handled by this response handler is:
- *
- * set container values * &lt;sym_name&gt;,&lt;real_name&gt;,&lt;data_type&gt;;
- *
- * The request must end with a semicolon and must contain the symbolic name,
- * the real name (in most cases a file name), and the type of data represented
- * by this container (e.g. cedar, netcdf, cdf, hdf, etc...).
- *
- * @param tokenizer holds on to the list of tokens to be parsed
- * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
- * @see _DODSDataHandlerInterface
- */
-void
-SetResponseHandler::parse( DODSTokenizer &tokenizer,
-                           DODSDataHandlerInterface &dhi )
-{
-    dhi.action = _response_name ;
-    string my_token = tokenizer.get_next_token() ;
-    if( my_token == "container" )
-    {
-	_persistence = PERSISTENCE_VOLATILE ;
-	my_token = tokenizer.get_next_token() ;
-	if( my_token != "values" )
-	{
-	    if( my_token == "in" )
-	    {
-		_persistence = tokenizer.get_next_token() ;
-	    }
-	    else
-	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
-	    }
-	    my_token = tokenizer.get_next_token() ;
-	}
-
-	if( my_token == "values" )
-	{
-	    _symbolic_name = tokenizer.get_next_token() ;
-	    my_token = tokenizer.get_next_token() ;
-	    if( my_token == "," )
-	    {
-		_real_name = tokenizer.get_next_token() ; 
-		my_token = tokenizer.get_next_token() ;
-		if( my_token == "," )
-		{
-		    _type = tokenizer.get_next_token() ;
-		    my_token = tokenizer.get_next_token() ;
-		    if( my_token != ";" )
-		    {
-			tokenizer.parse_error( my_token + " not expected\n" ) ;
-		    }
-		}
-		else
-		{
-		    tokenizer.parse_error( my_token + " not expected\n" ) ;
-		}
-	    }
-	    else
-	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
-	    }
-	}
-	else
-	{
-	    tokenizer.parse_error( my_token + " not expected\n" ) ;
-	}
-    }
-    else
-    {
-	tokenizer.parse_error( my_token + " not expected\n" ) ;
-    }
 }
 
 /** @brief executes the command to create a new container or replaces an
@@ -129,28 +52,33 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
-    DODSContainerPersistence *cp = ThePersistenceList->find_persistence( _persistence ) ;
+    string store_name = dhi.data[STORE_NAME] ;
+    string symbolic_name = dhi.data[SYMBOLIC_NAME] ;
+    string real_name = dhi.data[REAL_NAME] ;
+    string container_type = dhi.data[CONTAINER_TYPE] ;
+    DODSContainerPersistence *cp =
+	ThePersistenceList->find_persistence( store_name ) ;
     if( cp )
     {
 	try
 	{
 	    string def_type = "added" ;
-	    bool deleted = cp->rem_container( _symbolic_name ) ;
+	    bool deleted = cp->rem_container( symbolic_name ) ;
 	    if( deleted == true )
 	    {
 		def_type = "replaced" ;
 	    }
-	    cp->add_container( _symbolic_name, _real_name, _type ) ;
+	    cp->add_container( symbolic_name, real_name, container_type ) ;
 	    string ret = (string)"Successfully " + def_type + " container "
-			 + _symbolic_name + " to persistent store "
-			 + _persistence + "\n" ;
+			 + symbolic_name + " to persistent store "
+			 + store_name + "\n" ;
 	    info->add_data( ret ) ;
 	}
 	catch( DODSContainerPersistenceException &e )
 	{
 	    string ret = (string)"Unable to add container "
-			 + _symbolic_name + " to persistent store "
-			 + _persistence + "\n" ;
+			 + symbolic_name + " to persistent store "
+			 + store_name + "\n" ;
 	    info->add_data( ret ) ;
 	    info->add_data( e.get_error_description() ) ;
 	}
@@ -158,10 +86,10 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     else
     {
 	string ret = (string)"Unable to add container "
-		     + _symbolic_name + " to persistent store "
-		     + _persistence + "\n" ;
+		     + symbolic_name + " to persistent store "
+		     + store_name + "\n" ;
 	info->add_data( ret ) ;
-	info->add_data( (string)"Persistence store " + _persistence + " does not exist" ) ;
+	info->add_data( (string)"Persistence store " + store_name + " does not exist" ) ;
     }
 }
 

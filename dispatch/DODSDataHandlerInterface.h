@@ -7,9 +7,11 @@
 
 #include <string>
 #include <list>
+#include <map>
 
 using std::string ;
 using std::list ;
+using std::map ;
 
 class DODSResponseHandler ;
 
@@ -61,41 +63,15 @@ typedef struct _DODSDataHandlerInterface
      */
     string action ;
 
-    /** @brief list of the files accessed for this request
-     */
-    string real_name_list ;
-
-    /** @brief constraint not handled by data type server that should be handled by OpenDAP
-     */
-    string post_constraint ;
-
-    /** @brief aggregation handler name
-     */
-    string aggregation_handler ;
-
-    /** @brief aggregation command
-     */
-    string aggregation_command ;
-
-    /** @brief how to return the requested response object
-     */
-    string return_command ;
-
-    /** @brief name of the OpenDAP user making this request
-     */
-    string user_name ;
-
-    /** @brief remote ip address of client machine
-     */
-    string user_address ;
-
     /** @brief request protocol, such as HTTP
      */
     string transmit_protocol ;
 
-    /** @brief string representation of the request made by the user
+    /** @brief the map of string data that will be required for the current
+     * request.
      */
-    string request ;
+    map<string, string> data ;
+
 } DODSDataHandlerInterface ;
 
 #endif //  DODSDataHandlerInterface_h_
