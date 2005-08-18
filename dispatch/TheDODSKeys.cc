@@ -3,14 +3,22 @@
 // 2004 Copyright University Corporation for Atmospheric Research
 
 #include "TheDODSKeys.h"
+#include "DODSKeysException.h"
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
+
+#define DODS_INI_FILE getenv("DODS_INI")
 
 DODSKeys *TheDODSKeys = 0;
 
 static bool
 buildDODSKeys(int, char**) {
-    TheDODSKeys = new DODSKeys ;
+    char *dods_ini = DODS_INI_FILE ;
+    if( !dods_ini )
+    {
+	throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
+    }
+    TheDODSKeys = new DODSKeys( dods_ini ) ;
     return true ;
 }
 
