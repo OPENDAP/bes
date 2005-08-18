@@ -139,6 +139,7 @@ public:
     typedef ostream& (*p_ostream_manipulator) (ostream&);
 
     DODSLog& operator << (string&);
+    DODSLog& operator << (const string&);
     DODSLog& operator << (char*);
     DODSLog& operator << (const char*);
     DODSLog& operator << (int);

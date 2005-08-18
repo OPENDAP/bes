@@ -118,6 +118,21 @@ DODSLog& DODSLog::operator<<(string &s)
     return *this;
 }
 
+/** @brief Overloaded inserter that writes the specified const string.
+ *
+ * @param s const string to write to the log file
+ */
+DODSLog& DODSLog::operator<<(const string &s) 
+{
+    if (!_suspended)
+    {
+	if (_flushed)
+	    dump_time();
+	(*_file_buffer) << s;
+    }
+    return *this;
+}
+
 /** @brief Overloaded inserter that writes the specified char *.
  *
  * @param val char * to write to the log file
