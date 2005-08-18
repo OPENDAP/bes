@@ -1,0 +1,89 @@
+prefix = @prefix@
+exec_prefix = $(prefix)
+libdir = $(exec_prefix)/lib
+includedir = $(exec_prefix)/include/opendap-g
+AR = ar
+CXX = @CXX@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc \
+	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
+	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc
+OBJS:=OPeNDAPCmdInterface.o OPeNDAPCmdParser.o OPeNDAPCommand.o \
+	OPeNDAPDefineCommand.o OPeNDAPDeleteCommand.o OPeNDAPGetCommand.o \
+	OPeNDAPSetCommand.o OPeNDAPShowCommand.o OPeNDAPTermCommand.o
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPCmdParser.h OPeNDAPCommand.h
+
+MOD_SRCS:=opendap_commands.cc
+MOD_OBJS:=opendap_commands.o
+
+TEST_SRC:=cmd_test.cc
+TEST_OBJ:=cmd_test.o
+TEST_EXEC:=cmd_test
+
+INCS:=-I. -I../dispatch
+LIB:=libopendap_command.a
+DEFS:=@DEFS@
+#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
+#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
+CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
+CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
+
+LIBS:=../dispatch/dods_module.o -L../dispatch -ldispatch \
+	-L/project/cedar/src/pwest/opendap-g/lib -ldap  -L/project/cedar/src/pwest/packages/lib -lcurl -L/usr/kerberos/lib -lssl -lcrypto -ldl -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lz -L/usr/lib -lxml2 -lz -lpthread -lm -lpthread 
+
+all : $(LIB) $(MOD_OBJS)
+
+%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $<
+
+$(LIB) : $(OBJS)
+	$(AR) cru $@ $?
+	$(RANLIB) $@
+
+test : $(TEST_EXEC)
+
+$(TEST_EXEC) : $(TEST_OBJ) $(LIB) $(MOD_OBJS)
+	$(CXX) -o $(TEST_EXEC) $(TEST_OBJ) $(MOD_OBJS) $(LIB) $(LIBS)
+
+install: all install-headers install-mods
+	-mkdir -p $(libdir)
+	$(INSTALL_DATA) $(LIB) $(libdir)
+	$(RANLIB) $(libdir)/$(LIB)
+
+install-headers:
+	-mkdir -p $(includedir)
+	for h in $(HDRS); \
+	    do $(INSTALL_DATA) $$h $(includedir); done
+
+install-mods:
+	-mkdir -p $(libdir)
+	for h in $(MOD_OBJS); \
+	    do $(INSTALL_DATA) $$h $(libdir); done
+
+Makefile: Makefile.in
+	if [ -x ./config.status ]; \
+	then \
+	    ${SHELL} ./config.status; \
+	else \
+	    ./configure; \
+	fi
+
+.PHONY: depend
+depend: 
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(MOD_SRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
+clean : clean-test
+	/bin/rm -rf $(OBJS) $(MOD_OBJS) $(LIB)
+
+clean-test :
+	/bin/rm -rf $(TEST_EXEC) $(TEST_OBJ)
+
+distclean : clean
+	-rm -rf Makefile config.status config.log config.cache autom4te.cache CommandConfig.h
+
+# DO NOT DELETE; depend requires this line
