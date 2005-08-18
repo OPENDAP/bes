@@ -7,12 +7,13 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
-CLIENT_SRCS = Client.cc ClientMain.cc
-CLIENT_OBJS = Client.o ClientMain.o
-PROG = opendapcmdln
+CLIENT_SRCS:=CmdApp.cc CmdClient.cc
+CLIENT_OBJS:=CmdApp.o CmdClient.o
 
-INCS:=-I../client -I../ppt @INCS@
-DEPLIBS:=../client/libopendapclient.a ../ppt/libppt.a
+PROG:=opendapcmdln
+
+INCS:=-I. -I../ppt -I../dispatch @INCS@
+DEPLIBS:=../ppt/libppt.a ../dispatch/libdispatch.a
 LDFLAGS:=@LDFLAGS@
 LIBS:=@LIBS@
 
@@ -57,6 +58,6 @@ clean :
 	-rm -f $(CLIENT_OBJS) $(PROG)
 
 distclean : clean
-	-rm -f Makefile config.status config.log config.cache
+	-rm -rf Makefile config.status config.log config.cache autom4te.cache ClientConfig.h
 
 # DO NOT DELETE; depend requires this line
