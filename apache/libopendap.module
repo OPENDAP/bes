@@ -1,0 +1,10 @@
+/* Module configuration hints
+MODULE-DEFINITION-START
+Name: opendap_module
+ConfigStart 
+LIBS="$LIBS /project/cedar/lib/dispatch-2.0.1/lib/dods_module.o /project/cedar/lib/cedar-handler-2.0.1/lib/cedar_module.o /project/cedar/lib/cedar-handler-2.0.1/lib/cedar_persistence.o /project/cedar/lib/dispatch-2.0.1/lib/mysql_authenticator.o /project/cedar/lib/cedar-handler-2.0.1/lib/libcedar-handler.a /project/cedar/lib/Cedar-2.0.1/lib/libCedar.a /project/cedar/lib/dispatch-2.0.1/lib/libdispatch.a /project/cedar/bin/mysql-4.0.18/lib/mysql/libmysqlclient.a /project/cedar/lib/dap-3.4.6/lib/libdap++.a /project/cedar/lib/dap-3.4.6/lib/libxml2.a /project/cedar/lib/dap-3.4.6/lib/libz.a -lpthread -lm -lnsl -lcurl /project/cedar/lib/dap-3.4.6/lib/librx.a -lstdc++ -lgcc -lm -lcrypt"
+   echo " + building module for DODS server."
+ConfigEnd
+MODULE-DEFINITION-END
+*/
+

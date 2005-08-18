@@ -1,0 +1,18 @@
+MODULES = mod_opendap.o
+CC=g++
+CC_OBJECT_FLAG=-c
+INCLUDE=-I../../../src/include -I../../../src/os/unix -I/project/cedar/lib/dispatch-2.0.1/include
+ARCHIVE=ar
+ARCHIVE_FLAGS=cru
+
+all:            libopendap.a
+
+libopendap.a:   $(MODULES) DODSApacheWrapper.o DODSApache.o
+		$(ARCHIVE) $(ARCHIVE_FLAGS) $@ $?
+
+.cc.o:                          
+		$(CC) $(CC_OBJECT_FLAG) $(INCLUDE) $<
+
+
+# DO NOT REMOVE
+

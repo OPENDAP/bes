@@ -1,0 +1,26 @@
+SRCS:=DODSApache.cc DODSApacheWrapper.cc mod_opendap.cc
+OBJS:=DODSApache.o DODSApacheWrapper.o mod_opendap.o
+
+INCS:=-I. -I../dispatch -I../command -I$(OPENDAP_ROOT)/include/libdap
+APACHE_SRC:=/project/cedar/src/pwest/apache_1.3.29/src
+APACHE_INCS:=-I$(APACHE_SRC)/include -I$(APACHE_SRC)/os/unix
+
+all: $(OBJS)
+
+DODSApache.o: DODSApache.cc
+	g++ $(INCS) -c -o DODSApache.o DODSApache.cc
+
+DODSApacheWrapper.o: DODSApacheWrapper.cc
+	g++ $(INCS) -c -o DODSApacheWrapper.o DODSApacheWrapper.cc
+
+mod_opendap.o: mod_opendap.cc
+	g++ $(INCS) $(APACHE_INCS) -c -o mod_opendap.o mod_opendap.cc
+
+clean:
+	/bin/rm -f *.o
+
+.PHONY: depend
+depend: 
+	$(OPENDAP_ROOT)/etc/depend.sh -m Makefile -- $(INCS) $(APACHE_INCS) -- $(SRCS)
+	$(MAKE) $(MFLAGS) Makefile
+
