@@ -3,8 +3,8 @@
 // (c) COPYRIGHT UCAR/HAO 1993-2002
 // Please read the full copyright statement in the file COPYRIGHT.
 
-#ifndef PPTException_h_
-#define PPTException_h_ 1
+#ifndef SocketException_h_
+#define SocketException_h_ 1
 
 #include <string>
 
@@ -13,20 +13,20 @@ using std::string ;
 /**
  */
 
-class PPTException
+class SocketException
 {
 protected:
     string _msg ;
     string _file ;
     int _line ;
 public:
-    PPTException( const string &msg,
+    SocketException( const string &msg,
                   const string &file = "UNDEFINED",
                   const int & line = 0 )
 	: _msg( msg ),
 	  _file( file ),
 	  _line( line ) {}
-    virtual ~PPTException() {}
+    virtual ~SocketException() {}
     virtual string getMessage()
     {
 	return _msg;
@@ -43,6 +43,6 @@ public:
     }
 };
 
-#endif // PPTException_h_ 
+#endif // SocketException_h_ 
 
-// $Log: PPTException.h,v $
+// $Log: SocketException.h,v $

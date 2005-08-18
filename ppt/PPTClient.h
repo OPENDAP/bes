@@ -1,50 +1,26 @@
-// -*- C++ -*-
+// PPTClient.h
 
-// (c) COPYRIGHT UCAR/HAO 1993-2002
-// Please read the full copyright statement in the file COPYRIGHT.
+// 2005 Copyright University Corporation for Atmospheric Research
 
-#ifndef PPTClient_h_
-#define PPTClient_h_ 1
+#ifndef PPTClient_h
+#define PPTClient_hS 1
 
-//forward declaration
-class PPTSocket;
+#include "PPTConnection.h"
 
-/**
- */
+class Socket ;
 
-class PPTClient
+class PPTClient : public PPTConnection
 {
-  ///
-  static int __timeout;
-  ///
-  static int __CONNECTION_OK;
-  ///
-  static PPTClient *singletonRef;
-  ///
-  static int __debugging;
-  
- 
-  PPTClient() throw(){};
-  ///
-  PPTClient(const PPTClient&)throw(){};
-  ///
-  void operator delete(void*)throw(){};
-
+private:
+    bool			_connected ;
 public:
-  
-  ///
-  static const PPTClient* instanceOf() throw()
-  {
-    if (!singletonRef) 
-      singletonRef = new PPTClient();
-    
-    return singletonRef;
-  }
+    				PPTClient( const string &hostStr, int portVal );
+    				PPTClient( const string &unix_socket );
+    				~PPTClient() ;
+    virtual void		initConnection() ;
+    virtual void		closeConnection() ;
+} ;
 
-  ///
-  PPTSocket start_client(const char *host, int port, int debug, int timeout=5) const throw();
-  
+#endif // PPTClient_h
 
-};
-
-#endif // PPTClient_h_
+// $Log: PPTClient.h,v $

@@ -1,56 +1,32 @@
-// -*- C++ -*-
+// PPTServer.h
 
-// (c) COPYRIGHT UCAR/HAO 1993-2002
-// Please read the full copyright statement in the file COPYRIGHT.
+// 2005 Copyright University Corporation for Atmospheric Research
 
-#ifndef PPTServer_h_
-#define PPTServer_h_ 1
+#ifndef PPTServer_h
+#define PPTServer_h 1
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <signal.h>
+#include "PPTConnection.h"
 
-#include <sys/wait.h>
+class ServerHandler ;
+class SocketListener ;
+class Socket ;
 
-#include "PPTSocket.h"
-#include "PPTException.h"
-#include "PPTServerListener.h"
-
-#include "PPTUtilities.h"
-
-/**
- */
-
-class PPTServer
+class PPTServer : public PPTConnection
 {
-  ///
-  static PPTServer *singletonRef;
-  ///
-  PPTServer() throw();
-  ///
-  PPTServer(const PPTServer&){};
-  ///
-  void operator delete(void*){};
-  ///
-  static void signal_terminate(int sig) throw();
-  ///
-  static void signal_restart(int sig) throw();
-  
+private:
+    ServerHandler *		_handler ;
+    SocketListener *		_listener ;
+
+    void			welcomeClient() ;
 public:
+    				PPTServer( ServerHandler *handler,
+					   SocketListener *listener ) ;
+    virtual			~PPTServer() ;
 
-  ///
-  static const PPTServer* instanceOf() throw()
-  {
-    if (!singletonRef) 
-      singletonRef = new PPTServer();
-    
-    return singletonRef;
-  }
-  ///
-  PPTSocket start (int port, const char*) const throw();
-  
-};
+    virtual void		initConnection() ;
+    virtual void		closeConnection() ;
+} ;
 
-#endif // PPTServer_h_
+#endif // PPTServer_h
+
+// $Log: PPTServer.h,v $

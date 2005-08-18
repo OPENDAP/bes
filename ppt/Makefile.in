@@ -9,9 +9,16 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
-SRCS:=PPTBuffer.cc PPTClient.cc PPTServer.cc PPTServerListener.cc PPTSocket.cc PPTUtilities.cc
-OBJS:=PPTBuffer.o PPTClient.o PPTServer.o PPTServerListener.o PPTSocket.o PPTUtilities.o
-HDRS:=PPTBuffer.h PPTClient.h PPTClientServerSessionProtocol.h PPTConfig.h PPTException.h PPTServer.h PPTServerListener.h PPTSocket.h PPTUtilities.h
+SRCS:=PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
+	SocketListener.cc PPTServer.cc PPTProtocol.cc \
+	PPTConnection.cc
+OBJS:=PPTClient.o Socket.o TcpSocket.o UnixSocket.o SocketUtilities.o \
+	SocketListener.o PPTServer.o PPTProtocol.o \
+	PPTConnection.o
+HDRS:=PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h \
+	SocketException.h PPTException.h SocketConfig.h \
+	SocketListener.h PPTServer.h PPTProtocol.h \
+	PPTConnection.h Connection.h ServerHandler.h
 
 INCS:=-I.
 LIB:=libppt.a
@@ -50,7 +57,7 @@ Makefile: Makefile.in
 
 .PHONY: depend
 depend: 
-	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(MODSRCS) $(TESTSRCS)
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS)
 	$(MAKE) $(MFLAGS) Makefile
 
 clean :
@@ -60,13 +67,3 @@ distclean : clean
 	-rm -f Makefile config.status config.log config.cache
 
 # DO NOT DELETE; depend requires this line
-PPTBuffer.o: PPTBuffer.cc PPTBuffer.h
-PPTClient.o: PPTClient.cc PPTClient.h PPTException.h PPTSocket.h \
-  PPTBuffer.h
-PPTServer.o: PPTServer.cc PPTServer.h PPTSocket.h PPTException.h \
-  PPTBuffer.h PPTServerListener.h PPTUtilities.h
-PPTServerListener.o: PPTServerListener.cc PPTSocket.h PPTException.h \
-  PPTBuffer.h PPTUtilities.h PPTConfig.h PPTServerListener.h
-PPTSocket.o: PPTSocket.cc PPTConfig.h PPTSocket.h PPTException.h \
-  PPTBuffer.h
-PPTUtilities.o: PPTUtilities.cc PPTUtilities.h

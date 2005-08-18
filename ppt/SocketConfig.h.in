@@ -1,17 +1,13 @@
-/* PPTConfig.h.in.  Generated automatically from configure.in by autoheader.  */
+/* SocketConfig.h.in.  Generated automatically from configure.in by autoheader.  */
 // -*- C++ -*-
 
 // (c) COPYRIGHT UCAR/HAO 1993-2002
 // Please read the full copyright statement in the file COPYRIGHT.
 
-#ifndef PPTConfig_h_
-#define PPTConfig_h_
+#ifndef SocketConfig_h_
+#define SocketConfig_h_
 
-//#define PPT_USE_LTOA
-
-//#define PPTSERVER_DEBUGGING_SOURCE_LEVEL
-
-
+//#define SOCKET_USE_LTOA
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -78,4 +74,4 @@
 #endif // __STRICT_ANSI__
 
 
-#endif // PPTConfig_h_
+#endif // SocketConfig_h_

@@ -270,8 +270,8 @@ PACKAGE_VERSION=
 PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
-ac_unique_file="PPTSocket.h"
-ac_default_prefix="/usr/local"
+ac_unique_file="Socket.h"
+ac_default_prefix="${OPENDAP_ROOT}"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -1287,7 +1287,7 @@ ac_config_guess="$SHELL $ac_aux_dir/config.guess"
 ac_config_sub="$SHELL $ac_aux_dir/config.sub"
 ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
 
-          ac_config_headers="$ac_config_headers PPTConfig.h"
+          ac_config_headers="$ac_config_headers SocketConfig.h"
 
 
 
@@ -1319,7 +1319,7 @@ echo "$as_me:$LINENO: result: setting CXX to $CXX" >&5
 echo "${ECHO_T}setting CXX to $CXX" >&6
 
 
-depend=${DODS_ROOT}/etc/depend.sh
+depend=${OPENDAP_ROOT}/etc/depend.sh
 echo "$as_me:$LINENO: result: setting depend to $depend" >&5
 echo "${ECHO_T}setting depend to $depend" >&6
 
@@ -4242,7 +4242,7 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "PPTConfig.h" ) CONFIG_HEADERS="$CONFIG_HEADERS PPTConfig.h" ;;
+  "SocketConfig.h" ) CONFIG_HEADERS="$CONFIG_HEADERS SocketConfig.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;

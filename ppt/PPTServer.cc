@@ -1,65 +1,85 @@
-// -*- C++ -*-
+// PPTServer.cc
 
-// (c) COPYRIGHT UCAR/HAO 1993-2002
-// Please read the full copyright statement in the file COPYRIGHT.
+// 2005 Copyright University Corporation for Atmospheric Research
 
-#include "PPTServer.h"
-
+#include <string>
 #include <iostream>
 
+using std::string ;
 using std::cout ;
 using std::endl ;
+using std::flush ;
 
-extern const char* NameProgram;
+#include "PPTServer.h"
+#include "PPTException.h"
+#include "PPTProtocol.h"
+#include "SocketListener.h"
+#include "ServerHandler.h"
+#include "Socket.h"
 
-PPTServer *PPTServer::singletonRef=0;
-
-PPTServer::PPTServer() throw()
+PPTServer::PPTServer( ServerHandler *handler, SocketListener *listener )
 {
-
+    if( !handler )
+    {
+	string err( "Null handler passed to PPTServer" ) ;
+	throw PPTException( err, __FILE__, __LINE__ ) ;
+    }
+    if( !listener )
+    {
+	string err( "Null listener passed to PPTServer" ) ;
+	throw PPTException( err, __FILE__, __LINE__ ) ;
+    }
+    _handler = handler ;
+    _listener = listener ;
 }
 
-
-
-PPTSocket PPTServer::start(int port, const char* s) const throw()
+PPTServer::~PPTServer()
 {
-  PPTServerListener listener;
-  try
-    {
-      listener.startListening(port, s);
-    }
-  catch(PPTException &e)
-    {
-      cout<<__FILE__<<":"<<__LINE__<<" got an exception"<<endl;
-      cout<<e.getErrorFile()<<":"<<e.getErrorLine()<<" "<<e.getErrorDescription()<<endl;
-      cout<<"Process must exit because it can not start listening!"<<endl;
-      exit(1);
-    }
-
-
-  try
-      {
-	  PPTSocket pptsocket=listener.acceptConnections();
-	  return pptsocket;
-	}
-      catch(PPTException &e)
-	{
-	  cout<<__FILE__<<":"<<__LINE__<<" got an exception"<<endl;
-	  cout<<e.getErrorFile()<<":"<<e.getErrorLine()<<" "<<e.getErrorDescription()<<endl;
-	  cout<<"server process halt!"<<endl;
-	  exit(1);
-	}
-      // This kind of unknown exception may leave the server in an unstable state better leave now
-      catch(...)
-	{
-	  cout<<__FILE__<<":"<<__LINE__<<" got an exception"<<endl;
-	  cout<<NameProgram<<"Undefined exception, must exit!"<<endl;
-	  exit(1);
-	}
 }
 
+void
+PPTServer::initConnection()
+{
+    for(;;)
+    {
+	_mySock = _listener->accept() ;
+	if( _mySock )
+	{
+	    // welcome the client
+	    welcomeClient( ) ;
 
+	    // now hand it off to the handler
+	    _handler->handle( this ) ;
+	}
+    }
+}
 
-	     
+void
+PPTServer::closeConnection()
+{
+    _mySock->close() ;
+}
 
+void
+PPTServer::welcomeClient()
+{
+    cout << "Incoming connection, initiating handshake ... " << flush ;
+    char *inBuff = new char[4096] ;
+    int bytesRead = _mySock->receive( inBuff, 4096 ) ;
+    string status( inBuff, bytesRead ) ;
+    if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
+    {
+	cout << "FAILED" << endl ;
+	string err( "PPT Can not negotiate, " ) ;
+	err += " client started the connection with " + status ;
+	throw PPTException( err, __FILE__, __LINE__ ) ;
+    }
+    else
+    {
+	int len = PPTProtocol::PPTSERVER_CONNECTION_OK.length() ;
+	_mySock->send( PPTProtocol::PPTSERVER_CONNECTION_OK, 0, len ) ;
+	cout << "OK" << endl ;
+    }
+}
 
+// $Log: PPTServer.cc,v $
