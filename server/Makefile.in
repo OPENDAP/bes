@@ -9,23 +9,22 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
 MODULES = @MODULES@
 PACKAGES = @PACKAGES@
-AGGREGATION = @AGGREGATION@
 
-PROGS:=dodsserverd xdods
-XDODSSRCS:=ServerMain.cc Server.cc
-XDODSOBJS:=ServerMain.o Server.o
-LDFLAGS:=@LDFLAGS@
-LIBS:=@LIBS@
-MODS:=@MODS@
-XDODSLDFLAGS:=$(XDODSOBJS) $(MODS) $(AGGREGATION) $(MODULES) $(PACKAGES) $(LDFLAGS) $(LIBS)
+SRCS:=OPeNDAPServerHandler.cc ServerApp.cc
+OBJS:=OPeNDAPServerHandler.o ServerApp.o
 
-DAEMONSRCS:=ServerDaemon.cc
-DAEMONOBJS:=ServerDaemon.o
-DAEMONLIBS:=
+PROGS:=opendapserver opendapdaemon
+PROG_SRCS:=daemon.cc
+PROG_OBJS:=daemon.o
 
 INCS:=-I. @INCS@
 
 DEFS:=@DEFS@
+
+LDFLAGS:=@LDFLAGS@
+LIBS:=@LIBS@
+MODS:=@MODS@
+SLDFLAGS:=$(OBJS) $(MODS) $(MODULES) $(PACKAGES) $(LDFLAGS) $(LIBS)
 
 #CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS:=$(CXXFLAGS_DEBUG) 
@@ -34,11 +33,11 @@ CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
 
 all : $(PROGS)
 
-xdods : $(XDODSOBJS) $(XDODSLIBS)
-	$(CXX) -o xdods $(XDODSLDFLAGS)
+opendapserver : $(OBJS)
+	$(CXX) -o opendapserver $(SLDFLAGS)
 
-dodsserverd : $(DAEMONOBJS)
-	$(CXX) -o dodsserverd $(DAEMONOBJS) $(DAEMONLIBS)
+opendapdaemon : daemon.o
+	$(CXX) -o opendapdaemon daemon.o $(LDFLAGS)
 
 %.o : %.cc
 	$(CXX) -c $(CPPFLAGS) $<
@@ -63,9 +62,9 @@ depend:
 	$(MAKE) $(MFLAGS) Makefile
 
 clean :
-	-rm -f $(XDODSOBJS) $(DAEMONOBJS) $(PROGS)
+	-rm -f $(OBJS) $(PROG_OBJS) $(PROGS)
 
 distclean : clean
-	-rm -f Makefile config.log config.status config.cache
+	-rm -rf ServerConfig.h Makefile config.log config.status config.cache autom4te.cache
 
 # DO NOT DELETE; depend requires this line

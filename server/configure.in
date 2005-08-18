@@ -12,7 +12,7 @@ dnl
 dnl
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(Server.h)
+AC_INIT(ServerApp.h)
 AC_CONFIG_AUX_DIR(../../etc) 
 AC_CONFIG_HEADER(ServerConfig.h)
 
@@ -42,18 +42,6 @@ AC_DEFUN(CHECK_PACKAGES, [dnl
 
 CHECK_PACKAGES
 
-# check for module
-AC_DEFUN(CHECK_AGGREGATION, [dnl
-    AC_ARG_WITH(aggregation,
-        [  --with-aggregation=ARG          aggregation server (object modules)],
-        AGGREGATION=${withval}, AGGREGATION="${OPENDAP_ROOT}/lib/no_aggserver.o")
-    AC_MSG_CHECKING([for aggregation])
-    AC_MSG_RESULT(using modules $AGGREGATION)
-    AC_SUBST(AGGREGATION)
-    ])
-
-CHECK_AGGREGATION
-
 AC_MSG_CHECKING(for the compiler flags)
 case "${host_cpu}:${host_vendor}:${host_os}" in
      powerpc:apple:netbsd*)
@@ -77,7 +65,7 @@ CXX=${CXX-g++}
 AC_MSG_RESULT(setting CXX to $CXX)
 AC_SUBST(CXX)
 
-depend=${DODS_ROOT}/etc/depend.sh
+depend=${OPENDAP_ROOT}/etc/depend.sh
 AC_MSG_RESULT(setting depend to $depend)
 AC_SUBST(depend)
 
@@ -91,8 +79,8 @@ AC_DEFUN(DAEMON_PACKAGE, [dnl
 	AC_MSG_ERROR([Could not find opendap-g daemon library])
     else
 	INCS="$INCS -I${DAEMON_PATH}/include/opendap-g"
-	LIBS="$LIBS -L${DAEMON_PATH}/lib -ldispatch -lppt"
-	MODS="$MODS ${DAEMON_PATH}/lib/dods_module.o ${DAEMON_PATH}/lib/test_authenticator.o"
+	LIBS="$LIBS -L${DAEMON_PATH}/lib -lopendap_command -ldispatch -lppt"
+	MODS="$MODS ${DAEMON_PATH}/lib/opendap_commands.o ${DAEMON_PATH}/lib/dods_module.o ${DAEMON_PATH}/lib/test_authenticator.o"
 	AC_SUBST(INCS)
 	AC_SUBST(LIBS)
 	AC_SUBST(MODS)
@@ -115,77 +103,6 @@ CHECK_LIBDAP
 
 AC_LANG_CPLUSPLUS
 
-AC_MSG_CHECKING(for socklen_t)
-AC_CACHE_VAL(ppt_socklen_t,
-    [
-	AC_TRY_COMPILE(
-	    [#include <sys/types.h>
-#include <sys/socket.h>],
-	    [socklen_t foo;],
-	    [ppt_socklen_t=yes],
-	    [ppt_socklen_t=no]
-	)
-    ]
-)
-AC_MSG_RESULT(set ppt_socklen_t to $ppt_socklen_t)
-if test $ppt_socklen_t = yes ; then
-  AC_DEFINE(_OS_HAS_SOCKLEN_T)
-fi
-
-dnl     lets see if accept uses socklen_t
-dnl 
-AC_CACHE_VAL(ppt_accept_using_socklen_t,
-    [
-	AC_TRY_COMPILE(
-	    [
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-	    ],
-	    [
-struct sockaddr_in from; 
-int len_from=sizeof(from);
-int _socket;
-int msgsock=accept(_socket,(struct sockaddr *)&from, (socklen_t *)&len_from);
-	    ],
-	    [ppt_accept_using_socklen_t=yes],
-	    [ppt_accept_using_socklen_t=no]
-	)
-    ]
-)
-AC_MSG_RESULT(does accept use socklen_t...$ppt_accept_using_socklen_t)
-if test $ppt_accept_using_socklen_t = yes ; then
-  AC_DEFINE(_ACCEPT_USES_SOCKLEN_T)
-fi
-
-dnl     lets see if getsockname uses socklen_t
-dnl 
-AC_CACHE_VAL(ppt_getsockname_using_socklen_t,
-    [
-	AC_TRY_COMPILE(
-	    [
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-	    ],
-	    [
-struct sockaddr_in server;
-int length =sizeof (server);
-int _socket;
-getsockname(_socket,(struct sockaddr *)&server,(socklen_t *)&length);
-	    ],
-	    [ppt_getsockname_using_socklen_t=yes],
-	    [ppt_getsockname_using_socklen_t=no]
-	)
-    ]
-)
-AC_MSG_RESULT(does getsockname use socklen_t...$ppt_getsockname_using_socklen_t)
-if test $ppt_getsockname_using_socklen_t = yes ; then
-  AC_DEFINE(_GETSOCKNAME_USES_SOCKLEN_T)
-fi
-
 AC_LANG_C
 
 dnl Checks for programs.
@@ -193,19 +110,8 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-dnl AC_MSG_CHECKING(for the mysql client library)
-dnl if  test "$MYSQL" = ""
-dnl then
-dnl    AC_MSG_ERROR(please set MYSQL to the right MySQL client library)
-dnl else
-dnl   MYSQL=$MYSQL
-dnl   AC_MSG_RESULT(setting MYSQL to $MYSQL)
-dnl   AC_SUBST(MYSQL)
-dnl fi
-
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
-AC_CHECK_LIB(mysqlclient, mysql_query)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
@@ -220,6 +126,5 @@ AC_HEADER_TIME
 
 dnl Checks for library functions.
 AC_TYPE_SIGNAL
-AC_CHECK_FUNCS(select socket strerror)
 
 AC_OUTPUT(Makefile)
