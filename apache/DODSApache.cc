@@ -125,7 +125,7 @@ DODSApache::initialize()
 
     string https = _dri->server_protocol ;
     int http = https.find("HTTP");
-    if( http < 0 )
+    if( http == string::npos )
     {
 	_dhi.transmit_protocol = _dri->server_protocol ;
     }
