@@ -1,6 +1,18 @@
 #!/bin/sh
 
-TEMPLATE_DIR=${OPENDAP_ROOT}/etc/templates
+if [ "${OPENDAP_ROOT}" = "" ]
+then
+    echo "please set OPENDAP_ROOT to the root directory of opendap-g"
+    exit 1
+fi
+
+TEMPLATE_DIR=${OPENDAP_ROOT}/daemon/templates
+if [ ! -d ${TEMPLATE_DIR} ]
+then
+    echo "the templates directory does not exist."
+    echo "It containes template files for use by your new server"
+    exit 1
+fi
 
 echo "Enter server type, e.g. cedar, fits, netcdf: "
 read serverType
