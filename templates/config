@@ -1,0 +1,16 @@
+/* config_OPENDAP_TYPE.h.in.  Generated from configure.in by autoheader.  */
+
+#ifndef _config_OPENDAP_TYPE_h
+#define _config_OPENDAP_TYPE_h
+
+/* Client name and vesion combined */
+#undef OPENDAP_CLASS_VERSION
+
+/* Shorthand for gcc's unused attribute feature */
+#if defined(__GNUG__) || defined(__GNUC__)
+#define not_used __attribute__ ((unused))
+#else
+#define not_used 
+#endif /* __GNUG__ || __GNUC__ */
+
+#endif /* _config_OPENDAP_TYPE_h */

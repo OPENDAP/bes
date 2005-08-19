@@ -1,0 +1,237 @@
+#!/bin/sh
+
+TEMPLATE_DIR=${OPENDAP_ROOT}/etc/templates
+
+echo "Enter server type, e.g. cedar, fits, netcdf: "
+read serverType
+if [ "$serverType" = "" ]
+then
+    echo "you must enter a server type"
+    exit 1
+fi
+
+echo "Enter C++ class prefix, e.g. Cedar, Fits, Netcdf: "
+read classPrefix
+if [ "$classPrefix" = "" ]
+then
+    echo "you must enter a class prefix"
+    exit 1
+fi
+
+DEFAULT_RESPONSE="das dds data"
+RESPONSE_TYPES=
+echo "Enter response types handled by this server (das dds data):"
+echo "(space separated , help and version are added for you, no need to include them here)"
+read responseTypes
+if [ "$responseTypes" = "" ]
+then
+    RESPONSE_TYPES=${DEFAULT_RESPONSE}
+else
+    RESPONSE_TYPES=${responseTypes}
+fi
+
+for i in RequestHandler.cc RequestHandler.h ResponseNames.h
+do
+/bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
+ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+w
+q
+EOF
+done
+
+for i in _handler.cc _module.cc _version.h
+do
+/bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
+ed ./${serverType}${i} << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+w
+q
+EOF
+done
+
+/bin/cp ${TEMPLATE_DIR}/config config_${serverType}.h.in
+ed ./config_${serverType}.h.in << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+w
+q
+EOF
+
+for i in Makefile.in configure.in
+do
+/bin/cp ${TEMPLATE_DIR}/${i} ./${i}
+ed ./${i} << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+w
+q
+EOF
+done
+/bin/cp ${TEMPLATE_DIR}/version.h .
+
+for i in $RESPONSE_TYPES
+do
+    ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
+1
+/${serverType}_build_vers
+-1
+a
+    static bool		${serverType}_build_${i}( DODSDataHandlerInterface &dhi ) ;
+.
+w
+q
+EOF
+    responseName=
+    if [ "$i" = "das" ]
+    then
+	responseName="DAS"
+	headerFile="DAS.h"
+	castLine="DAS *das = dynamic_cast<DAS *>(dhi.response_handler->get_response_object());"
+    elif [ "$i" = "dds" ]
+    then
+	responseName="DDS"
+	headerFile="DDS.h"
+	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+    elif [ "$i" = "data" ]
+    then
+	responseName="DATA"
+	headerFile="DDS.h"
+	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+    else
+	responseName="$i"
+	headerFile="DODSTextInfo.h"
+	castLine="DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(dhi.response_handler->get_response_object());"
+	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
+/${classPrefix}_NAME
+a
+    #define ${i}_RESPONSE "${i}"
+.
+w
+q
+EOF
+	ed ${serverType}_module.cc << EOF > /dev/null 2>&1
+/${classPrefix}ResponseNames
+a
+#include "${classPrefix}${i}ResponseHandler.h"
+.
+/return true
+-1
+a
+    if( TheDODSLog->is_verbose() )
+	(*TheDODSLog) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
+    TheResponseHandlerList->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+
+.
+w
+q
+EOF
+
+    if [ ! -f ${serverType}_commands.cc ]
+    then
+	/bin/cp ${TEMPLATE_DIR}/_commands.cc ./${serverType}_commands.cc
+    fi
+    ed ${serverType}_commands.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+1
+/return true
+-1
+a
+    cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
+    if( TheDODSLog->is_verbose() )
+	(*TheDODSLog) << "    adding " << cmd_name << " command" << endl;
+    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
+
+.
+w
+q
+EOF
+
+    /bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
+    ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+w
+q
+EOF
+    /bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
+    ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+w
+q
+EOF
+
+    ed ./Makefile.in << EOF > /dev/null 2>&1
+/^SRCS
+. s/$/ ${classPrefix}${i}ResponseHandler.cc
+1
+/^OBJS
+. s/$/ ${classPrefix}${i}ResponseHandler.o
+w
+q
+EOF
+
+    fi
+
+    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+1
+/DODSTextInfo
+a
+#include "${headerFile}"
+.
+1
+/VERS_RESPONSE
+-1
+a
+    add_handler( ${responseName}_RESPONSE, ${classPrefix}RequestHandler::${serverType}_build_${i} ) ;
+.
+1
+/::${serverType}_build_vers(
+-2
+a
+bool
+${classPrefix}RequestHandler::${serverType}_build_${i}( DODSDataHandlerInterface &dhi )
+{
+    bool ret = true ;
+    ${castLine}
+
+    // Your code goes here
+
+    return ret ;
+}
+
+.
+w
+q
+EOF
+
+done
+
+currdir=`pwd`
+echo "#!/bin/sh" > runServerConfig
+echo "" >> runServerConfig
+echo "./configure --with-modules=${currdir}/${serverType}_module.o --with-packages=\"-L${currdir} -l${serverType}-handler\" --with-aggregation=${OPENDAP_ROOT}/lib/no_aggserver.o" >> runServerConfig
+echo "" >> runServerConfig
+chmod +x runServerConfig
+
+/bin/cp ${TEMPLATE_DIR}/opendap.ini ./opendap.ini
+ed ./opendap.ini << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_TYPE/${serverType}/g
+,s/OPENDAP_DIR/${OPENDAP_ROOT}/g
+w
+q
+EOF
+
+echo "*******************************************************"
+echo "*                                                     *"
+echo "* Your ${classPrefix} files have been created         *"
+echo "*                                                     *"
+echo "* You will need to make modifications to some of the  *"
+echo "* code created here. Please refer to the document     *"
+echo "* OPeNDAPgBuildingServer document for more information*"
+echo "*                                                     *"
+echo "*******************************************************"
+
