@@ -53,6 +53,16 @@ q
 EOF
 done
 
+for i in HandlerApp.h HandlerApp.cc
+do
+/bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
+ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+w
+q
+EOF
+done
+
 for i in _handler.cc _module.cc _version.h
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
@@ -236,6 +246,27 @@ ed ./opendap.ini << EOF > /dev/null 2>&1
 w
 q
 EOF
+
+echo "*******************************************************"
+echo "*                                                     *"
+echo "* Creating your configuration script                  *"
+echo "*                                                     *"
+echo "*******************************************************"
+autoconf
+
+echo "*******************************************************"
+echo "*                                                     *"
+echo "* Running your configuration script                   *"
+echo "*                                                     *"
+echo "*******************************************************"
+./configure
+
+echo "*******************************************************"
+echo "*                                                     *"
+echo "* Building your server                                *"
+echo "*                                                     *"
+echo "*******************************************************"
+make
 
 echo "*******************************************************"
 echo "*                                                     *"
