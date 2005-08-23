@@ -17,14 +17,15 @@ PROGS:=opendapserver opendapdaemon
 PROG_SRCS:=daemon.cc
 PROG_OBJS:=daemon.o
 
-INCS:=-I. @INCS@
+INCS:=-I. -I../ppt -I../dispatch -I../command @INCS@
 
 DEFS:=@DEFS@
 
 LDFLAGS:=@LDFLAGS@
+DEPLIBS:=../ppt/libppt.a ../command/libopendap_command.a ../dispatch/libdispatch.a
 LIBS:=@LIBS@
-MODS:=@MODS@
-SLDFLAGS:=$(OBJS) $(MODS) $(MODULES) $(PACKAGES) $(LDFLAGS) $(LIBS)
+MODS=../command/opendap_commands.o ../dispatch/dods_module.o ../dispatch/test_authenticator.o
+SLDFLAGS:=$(OBJS) $(MODS) $(MODULES) $(PACKAGES) $(LDFLAGS) $(DEPLIBS) $(LIBS)
 
 #CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS:=$(CXXFLAGS_DEBUG) 
@@ -33,7 +34,7 @@ CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
 
 all : $(PROGS)
 
-opendapserver : $(OBJS)
+opendapserver : $(OBJS) $(MODS) $(DEPLIBS)
 	$(CXX) -o opendapserver $(SLDFLAGS)
 
 opendapdaemon : daemon.o
@@ -58,7 +59,7 @@ Makefile: Makefile.in
 
 .PHONY: depend
 depend: 
-	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(XDODSSRCS) $(DAEMONSRCS)
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(PROG_SRCS)
 	$(MAKE) $(MFLAGS) Makefile
 
 clean :

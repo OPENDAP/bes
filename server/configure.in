@@ -69,34 +69,16 @@ depend=${OPENDAP_ROOT}/etc/depend.sh
 AC_MSG_RESULT(setting depend to $depend)
 AC_SUBST(depend)
 
-# check for opendap-g daemon libraries, not in usual location
-AC_DEFUN(DAEMON_PACKAGE, [dnl
-    AC_ARG_WITH(daemon,
-        [  --with-daemon=ARG          Where is the local opendap-g daemon library sources (directory)],
-        DAEMON_PATH=${withval}, DAEMON_PATH="$OPENDAP_ROOT")
-    if test ! -d "$DAEMON_PATH"
-    then
-	AC_MSG_ERROR([Could not find opendap-g daemon library])
-    else
-	INCS="$INCS -I${DAEMON_PATH}/include/opendap-g"
-	LIBS="$LIBS -L${DAEMON_PATH}/lib -lopendap_command -ldispatch -lppt"
-	MODS="$MODS ${DAEMON_PATH}/lib/opendap_commands.o ${DAEMON_PATH}/lib/dods_module.o ${DAEMON_PATH}/lib/test_authenticator.o"
-	AC_SUBST(INCS)
-	AC_SUBST(LIBS)
-	AC_SUBST(MODS)
-    fi])
-
-DAEMON_PACKAGE
-AC_MSG_RESULT(using daemon in $DAEMON_PATH)
-
 # check for dap libraries, not in usual location
 AC_DEFUN(CHECK_LIBDAP, [dnl
     AC_ARG_WITH(dap,
         [  --with-dap=ARG       Where is the external dap sources (directory)],
         DAP_PATH=${withval}, DAP_PATH="${OPENDAP_ROOT}")
 
+	INCS="`$DAP_PATH/bin/dap-config --cflags` $INCS"
         LIBS="$LIBS `$DAP_PATH/bin/dap-config --libs`"
 
+	AC_SUBST(INCS)
 	AC_SUBST(LIBS)
     ])
 
