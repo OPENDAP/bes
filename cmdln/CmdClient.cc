@@ -332,7 +332,14 @@ CmdClient::interact()
 	}
 	else if( len != 0 && message != "" )
 	{
-	    this->executeCommands( message ) ;
+	    if( message[message.length()-1] != ';' )
+	    {
+		cerr << "Commands must end with a semicolon" << endl ;
+	    }
+	    else
+	    {
+		this->executeCommands( message ) ;
+	    }
 	}
     }
 }
