@@ -1,10 +1,12 @@
 // CmdClient.cc
 
 #include <iostream>
+#include <fstream>
 
 using std::cout ;
 using std::endl ;
 using std::cerr ;
+using std::ofstream ;
 
 #include "readline.h"
 #include "history.h"
@@ -13,6 +15,20 @@ using std::cerr ;
 
 #include "CmdClient.h"
 #include "PPTClient.h"
+
+CmdClient::~CmdClient()
+{
+    if( _strmCreated && _strm )
+    {
+	_strm->flush() ;
+	delete _strm ;
+	_strm = 0 ;
+    }
+    else if( _strm )
+    {
+	_strm->flush() ;
+    }
+}
 
 /**
 * Connect the OpenDAP client to the OpenDAP server.
@@ -82,9 +98,72 @@ CmdClient::shutdownClient()
 * @see    PPTException
 */
 void
-CmdClient::setOutput( ostream *strm )
+CmdClient::setOutput( ostream *strm, bool created )
 {
+    if( _strmCreated && _strm  )
+    {
+	_strm->flush() ;
+	delete _strm ;
+    }
+    else if( _strm )
+    {
+	_strm->flush() ;
+    }
     _strm = strm ;
+    _strmCreated = created ;
+}
+
+/**
+* @brief Executes a client side command
+* <p>
+* Client side commands include
+* client suppress;
+* client output to screen;
+* client output to &lt;filename&gt;;
+*
+* @param  cmd  The OPeNDAP client side command to execute
+* @see    PPTException
+*/
+void
+CmdClient::executeClientCommand( const string &cmd )
+{
+    string suppress = "suppress" ;
+    if( cmd.compare( 0, suppress.length(), suppress ) == 0 )
+    {
+	setOutput( NULL, false ) ;
+    }
+    else
+    {
+	string output = "output to" ;
+	if( cmd.compare( 0, output.length(), output ) == 0 )
+	{
+	    string subcmd = cmd.substr( output.length()+1 ) ;
+	    string screen = "screen" ;
+	    if( subcmd.compare( 0, screen.length(), screen ) == 0 )
+	    {
+		setOutput( &cout, false ) ;
+	    }
+	    else
+	    {
+		// subcmd is the name of the file - the semicolon
+		string file = subcmd.substr( 0, subcmd.length() - 1 ) ;
+		ofstream *fstrm = new ofstream( file.c_str() ) ;
+		if( !(*fstrm) )
+		{
+		    cerr << "Unable to set client output to file " << subcmd
+		         << endl ;
+		}
+		else
+		{
+		    setOutput( fstrm, true ) ;
+		}
+	    }
+	}
+	else
+	{
+	    cerr << "Improper client command " << cmd << endl ;
+	}
+    }
 }
 
 /**
@@ -104,8 +183,16 @@ CmdClient::setOutput( ostream *strm )
 void
 CmdClient::executeCommand( const string &cmd )
 {
-    _client->send( cmd ) ;
-    _client->receive( _strm ) ;
+    string client = "client" ;
+    if( cmd.compare( 0, client.length(), client ) == 0 )
+    {
+	executeClientCommand( cmd.substr( client.length()+1 ) ) ;
+    }
+    else
+    {
+	_client->send( cmd ) ;
+	_client->receive( _strm ) ;
+    }
 }
 
 /**

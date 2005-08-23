@@ -32,6 +32,11 @@ CmdApp::CmdApp()
 
 CmdApp::~CmdApp()
 {
+    if( _client )
+    {
+	delete _client ;
+	_client = 0 ;
+    }
 }
 
 void
@@ -302,14 +307,14 @@ CmdApp::run()
 	    _client->startClient( _unixStr ) ;
 	}
 
-	cout << "seting output" << endl ;
+	cout << "setting output" << endl ;
 	if( _outputStrm )
 	{
-	    _client->setOutput( _outputStrm ) ;
+	    _client->setOutput( _outputStrm, true ) ;
 	}
 	else
 	{
-	    _client->setOutput( &cout ) ;
+	    _client->setOutput( &cout, false ) ;
 	}
     }
     catch( PPTException &e )

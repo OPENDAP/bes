@@ -45,15 +45,21 @@ class CmdClient
 private:
     PPTClient *			_client ;
     ostream *			_strm ;
+    bool			_strmCreated ;
 
     int				readLine( string &str ) ;
 public:
-    				CmdClient( ) : _client( 0 ), _strm( 0 ) {}
+    				CmdClient( )
+				    : _client( 0 ),
+				      _strm( 0 ),
+				      _strmCreated( false ) {}
+				~CmdClient() ;
 
     void			startClient( const string &host, int portVal ) ;
     void			startClient( const string &unixSocket ) ;
     void			shutdownClient() ;
-    void			setOutput( ostream *strm ) ;
+    void			setOutput( ostream *strm, bool created ) ;
+    void			executeClientCommand( const string &cmd ) ;
     void			executeCommand( const string &cmd ) ;
     void			executeCommands( const string &cmd_list ) ;
     void			executeCommands( ifstream &inputFile ) ;
