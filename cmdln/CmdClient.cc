@@ -7,6 +7,7 @@ using std::cout ;
 using std::endl ;
 using std::cerr ;
 using std::ofstream ;
+using std::ios ;
 
 #include "readline.h"
 #include "history.h"
@@ -147,7 +148,7 @@ CmdClient::executeClientCommand( const string &cmd )
 	    {
 		// subcmd is the name of the file - the semicolon
 		string file = subcmd.substr( 0, subcmd.length() - 1 ) ;
-		ofstream *fstrm = new ofstream( file.c_str() ) ;
+		ofstream *fstrm = new ofstream( file.c_str(), ios::app ) ;
 		if( !(*fstrm) )
 		{
 		    cerr << "Unable to set client output to file " << subcmd
