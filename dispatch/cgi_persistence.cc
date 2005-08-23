@@ -30,7 +30,7 @@ CGIPersistenceTerm(void) {
     return true ;
 }
 
-FUNINITQUIT( CGIPersistenceInit, CGIPersistenceTerm, CGIPERSISTENCE_INIT ) ;
+FUNINITQUIT( CGIPersistenceInit, CGIPersistenceTerm, PERSISTENCE_INIT ) ;
 
 // $Log: cgi_persistence.cc,v $
 // Revision 1.2  2004/09/09 17:17:12  pwest

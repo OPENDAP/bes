@@ -30,7 +30,7 @@ FilePersistenceTerm(void) {
     return true ;
 }
 
-FUNINITQUIT( FilePersistenceInit, FilePersistenceTerm, FILEPERSISTENCE_INIT ) ;
+FUNINITQUIT( FilePersistenceInit, FilePersistenceTerm, PERSISTENCE_INIT ) ;
 
 // $Log: file_persistence.cc,v $
 // Revision 1.2  2004/09/09 17:17:12  pwest

@@ -33,7 +33,6 @@ using std::endl ;
 
 #include "TheDODSReturnManager.h"
 #include "DODSBasicTransmitter.h"
-#include "DODSBasicHttpTransmitter.h"
 
 #include "TheDODSLog.h"
 
@@ -101,10 +100,6 @@ DODSModuleInit(int, char**) {
     if( TheDODSLog->is_verbose() )
 	(*TheDODSLog) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
     TheDODSReturnManager->add_transmitter( BASIC_TRANSMITTER, new DODSBasicTransmitter ) ;
-
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
-    TheDODSReturnManager->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
 
     return true;
 }

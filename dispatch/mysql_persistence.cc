@@ -30,7 +30,7 @@ MySQLPersistenceTerm(void) {
     return true ;
 }
 
-FUNINITQUIT( MySQLPersistenceInit, MySQLPersistenceTerm, MYSQLPERSISTENCE_INIT ) ;
+FUNINITQUIT( MySQLPersistenceInit, MySQLPersistenceTerm, PERSISTENCE_INIT ) ;
 
 // $Log: mysql_persistence.cc,v $
 // Revision 1.2  2004/09/09 17:17:12  pwest
