@@ -27,17 +27,20 @@ CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
 CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
 
 # Definition of target and object modules.
-SRCS=OPENDAP_TYPE_module.cc OPENDAP_TYPE_commands.cc OPENDAP_CLASSRequestHandler.cc
-OBJS=OPENDAP_CLASSRequestHandler.o
+SRCS:=OPENDAP_TYPE_module.cc OPENDAP_TYPE_commands.cc OPENDAP_CLASSRequestHandler.cc
+HDRS:=
+OBJS:=OPENDAP_CLASSRequestHandler.o
 
 MODOBJS:=OPENDAP_TYPE_module.o
 CMDOBJS:=OPENDAP_TYPE_commands.o
+HANDLER_SRCS:=OPENDAP_TYPE_handler.cc OPENDAP_CLASSHandlerApp.cc
+HANDLER_OBJS:=OPENDAP_TYPE_handler.o OPENDAP_CLASSHandlerApp.o
 HANDLER:=OPENDAP_TYPE_handler
 
 all : $(HANDLER)
 
-$(HANDLER) : $(LIB) $(MODOBJS) $(HANDLER).o
-	$(CXX) -o $(HANDLER) $(HANDLER).o $(MODOBJS) $(MODS) $(LIB) $(LIBS)
+$(HANDLER) : $(HANDLER_OBJS) $(LIB) $(MODOBJS)
+	$(CXX) -o $(HANDLER) $(HANDLER_OBJS) $(MODOBJS) $(MODS) $(LIB) $(LIBS)
 
 $(LIB): $(OBJS)
 	$(AR) $(AR_FLAGS) $@ $?
@@ -66,7 +69,7 @@ install-progs:
 	$(INSTALL_PROGRAM) -s $(HANDLER) $(bindir)
 
 clean:
-	rm -f *~ *.bak *.o *.out *.a core $(HANDLER)
+	rm -f *~ *.bak *.out *.a core $(HANDLER) $(HANDLER_OBJS) $(OBJS) $(MODOBJS)
 
 distclean : clean
 	-rm -f config_hdf.h config.status config.log config.cache Makefile
@@ -82,7 +85,7 @@ Makefile: Makefile.in
 
 .PHONY: depend
 depend: 
-	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS)
+	@depend@ -m Makefile.in -- $(CPPFLAGS) -- $(SRCS) $(HANDLER_SRCS)
 	$(MAKE) $(MFLAGS) Makefile
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
