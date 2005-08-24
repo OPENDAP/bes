@@ -21,6 +21,7 @@ using std::flush ;
 #include "PPTServer.h"
 #include "PPTException.h"
 #include "SocketException.h"
+#include "DODSMemoryManager.h"
 
 ServerApp::ServerApp()
     : _portVal( 0 ),
@@ -144,6 +145,8 @@ ServerApp::run()
 {
     try
     {
+	DODSMemoryManager::initialize_memory_pool() ;
+
 	SocketListener listener ;
 
 	TcpSocket ts( _portVal ) ;
