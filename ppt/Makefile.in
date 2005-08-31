@@ -67,3 +67,19 @@ distclean : clean
 	-rm -f Makefile config.status config.log config.cache
 
 # DO NOT DELETE; depend requires this line
+PPTClient.o: PPTClient.cc PPTClient.h PPTConnection.h Connection.h \
+  Socket.h TcpSocket.h UnixSocket.h PPTProtocol.h SocketException.h \
+  PPTException.h
+Socket.o: Socket.cc Socket.h SocketException.h
+TcpSocket.o: TcpSocket.cc TcpSocket.h Socket.h SocketConfig.h \
+  SocketException.h
+UnixSocket.o: UnixSocket.cc UnixSocket.h Socket.h SocketException.h \
+  SocketUtilities.h
+SocketUtilities.o: SocketUtilities.cc SocketUtilities.h
+SocketListener.o: SocketListener.cc SocketListener.h SocketException.h \
+  Socket.h SocketConfig.h
+PPTServer.o: PPTServer.cc PPTServer.h PPTConnection.h Connection.h \
+  Socket.h PPTException.h PPTProtocol.h SocketListener.h ServerHandler.h
+PPTProtocol.o: PPTProtocol.cc PPTProtocol.h
+PPTConnection.o: PPTConnection.cc PPTConnection.h Connection.h Socket.h \
+  PPTProtocol.h
