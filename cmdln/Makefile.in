@@ -61,9 +61,3 @@ distclean : clean
 	-rm -rf Makefile config.status config.log config.cache autom4te.cache ClientConfig.h
 
 # DO NOT DELETE; depend requires this line
-CmdApp.o: CmdApp.cc CmdApp.h ../dispatch/OPeNDAPBaseApp.h \
-  ../dispatch/OPeNDAPApp.h ../dispatch/OPeNDAPObj.h CmdClient.h \
-  ../ppt/PPTException.h
-CmdClient.o: CmdClient.cc /usr/include/readline/readline.h \
-  /usr/include/readline/history.h CmdClient.h ../ppt/PPTClient.h \
-  ../ppt/PPTConnection.h ../ppt/Connection.h ../ppt/Socket.h
