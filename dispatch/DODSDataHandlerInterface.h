@@ -71,6 +71,8 @@ typedef struct _DODSDataHandlerInterface
      * request.
      */
     map<string, string> data ;
+    const map<string, string> &data_c() const { return data ; }
+    typedef map<string, string>::const_iterator data_citer ;
 
 } DODSDataHandlerInterface ;
 
