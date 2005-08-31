@@ -1,0 +1,61 @@
+Set OPENDAP_ROOT to the parent directory where you installed the daemon
+directory. You could specify the different configure options (--prefix for
+example), the defaults are set using OPENDAP_ROOT. The location of libdap
+also defaults to OPENDAP_ROOT.
+
+So, if you dump the daemon code into /home/pwest/opendap-g (so there is a
+directory /home/pwest/opendap-g/daemon) then set OPENDAP_ROOT to
+/home/pwest/opendap-g.
+
+Order of building:
+    dispatch
+    command
+    ppt
+    cmdln
+    server
+
+Building the daemon code:
+I'm going to assume that you have NOT set OPENDAP_ROOT. If you did set
+OPENDAP_ROOT then you don't need to specify any options for dispatch,
+command, ppt or cmdln.
+
+cd dispatch
+./configure --with-dap=<dir libdap installed> --prefix=<install-dir>
+make
+make install
+
+cd ../command
+./configure --prefix=<install-dir>
+make
+make install
+
+cd ../ppt
+./configure --prefix=<install-dir>
+make
+make install
+
+cd ../cmdln
+./configure --prefix=<install-dir> --with-readline=<default /usr>
+make
+make install
+
+cd ../server
+Now this is the tough one! You could just do the following:
+./configure --prefix=<install-dir> --with-dap=<dir libdap installed>
+make
+make install
+
+And this would work. You can't serve any data, but you can do things like
+'show version;', 'show help;', and even set containers and create
+definitions, but there's nothing to serve the data.
+
+I would take a look at runconfig in the server directory to see a few
+different examples of how to configure a server. One builds in cedar, another
+the esg netcdf, another the fits-handler. There are two different options to
+configure:
+
+--with-modules
+--with-packages
+
+Again, check out runconfig in the server directory to see some examples.
+
