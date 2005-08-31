@@ -87,3 +87,80 @@ distclean : clean
 	-rm -rf Makefile config.status config.log config.cache autom4te.cache CommandConfig.h
 
 # DO NOT DELETE; depend requires this line
+OPeNDAPCmdInterface.o: OPeNDAPCmdInterface.cc OPeNDAPCmdInterface.h \
+  ../dispatch/DODS.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSDataRequestInterface.h \
+  OPeNDAPCmdParser.h ../dispatch/TheDODSLog.h ../dispatch/DODSLog.h \
+  ../dispatch/DODSBasicHttpTransmitter.h \
+  ../dispatch/DODSBasicTransmitter.h ../dispatch/DODSTransmitter.h \
+  ../dispatch/TheDODSReturnManager.h ../dispatch/DODSReturnManager.h \
+  ../dispatch/DODSTransmitException.h ../dispatch/DODSBasicException.h \
+  ../dispatch/DODSException.h ../dispatch/TheAggFactory.h \
+  ../dispatch/OPeNDAPAggFactory.h ../dispatch/DODSAggregationServer.h \
+  ../dispatch/OPeNDAPDataNames.h
+OPeNDAPCmdParser.o: OPeNDAPCmdParser.cc OPeNDAPCmdParser.h \
+  ../dispatch/DODSDataHandlerInterface.h ../dispatch/DODSContainer.h \
+  ../dispatch/DODSTokenizer.h OPeNDAPCommand.h \
+  ../dispatch/DODSResponseHandler.h ../dispatch/DODSTransmitter.h \
+  ../dispatch/DODSParserException.h ../dispatch/DODSBasicException.h \
+  ../dispatch/DODSException.h
+OPeNDAPCommand.o: OPeNDAPCommand.cc OPeNDAPCommand.h \
+  ../dispatch/DODSDataHandlerInterface.h ../dispatch/DODSContainer.h \
+  OPeNDAPTermCommand.h
+OPeNDAPDefineCommand.o: OPeNDAPDefineCommand.cc OPeNDAPDefineCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/ThePersistenceList.h \
+  ../dispatch/DODSContainerPersistenceList.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/DODSParserException.h \
+  ../dispatch/DODSBasicException.h ../dispatch/DODSException.h \
+  ../dispatch/OPeNDAPDataNames.h
+OPeNDAPDeleteCommand.o: OPeNDAPDeleteCommand.cc OPeNDAPDeleteCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/ThePersistenceList.h \
+  ../dispatch/DODSContainerPersistenceList.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/DODSParserException.h \
+  ../dispatch/DODSBasicException.h ../dispatch/DODSException.h \
+  ../dispatch/OPeNDAPDataNames.h
+OPeNDAPGetCommand.o: OPeNDAPGetCommand.cc OPeNDAPGetCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/TheDefineList.h \
+  ../dispatch/DODSDefineList.h ../dispatch/DODSDefine.h \
+  ../dispatch/DODSParserException.h ../dispatch/DODSBasicException.h \
+  ../dispatch/DODSException.h ../dispatch/OPeNDAPDataNames.h
+OPeNDAPSetCommand.o: OPeNDAPSetCommand.cc OPeNDAPSetCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/ThePersistenceList.h \
+  ../dispatch/DODSContainerPersistenceList.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/DODSParserException.h \
+  ../dispatch/DODSBasicException.h ../dispatch/DODSException.h \
+  ../dispatch/OPeNDAPDataNames.h
+OPeNDAPShowCommand.o: OPeNDAPShowCommand.cc OPeNDAPShowCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/DODSParserException.h \
+  ../dispatch/DODSBasicException.h ../dispatch/DODSException.h
+OPeNDAPTermCommand.o: OPeNDAPTermCommand.cc OPeNDAPTermCommand.h \
+  OPeNDAPCommand.h ../dispatch/DODSDataHandlerInterface.h \
+  ../dispatch/DODSContainer.h ../dispatch/DODSTokenizer.h \
+  ../dispatch/ThePersistenceList.h \
+  ../dispatch/DODSContainerPersistenceList.h \
+  ../dispatch/TheResponseHandlerList.h \
+  ../dispatch/DODSResponseHandlerList.h ../dispatch/DODSParserException.h \
+  ../dispatch/DODSBasicException.h ../dispatch/DODSException.h
+opendap_commands.o: opendap_commands.cc ../dispatch/DODSInitList.h \
+  ../dispatch/DODSGlobalInit.h ../dispatch/DODSInitializer.h \
+  ../dispatch/DODSInitFuns.h ../dispatch/DODSInitOrder.h \
+  ../dispatch/DODSResponseNames.h ../dispatch/TheDODSLog.h \
+  ../dispatch/DODSLog.h OPeNDAPGetCommand.h OPeNDAPCommand.h \
+  ../dispatch/DODSDataHandlerInterface.h ../dispatch/DODSContainer.h \
+  OPeNDAPSetCommand.h OPeNDAPShowCommand.h OPeNDAPDefineCommand.h \
+  OPeNDAPDeleteCommand.h
