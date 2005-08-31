@@ -66,7 +66,12 @@ PPTConnection::receive( ostream *strm )
 		    }
 		}
 		for( int j = 0; j < writeBytes; j++ )
-		    (*use_strm) << inBuff[j] ;
+		{
+		    if( use_strm )
+		    {
+			(*use_strm) << inBuff[j] ;
+		    }
+		}
 	    }
 	}
 	else
