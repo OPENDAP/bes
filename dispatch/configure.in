@@ -6,7 +6,7 @@ AC_REVISION($Id$)
 builtin(include, dispatch.m4)
 AC_INIT(DODS.cc)
 AC_CONFIG_HEADER(config_dispatch.h)
-AC_CONFIG_AUX_DIR(../etc)
+AC_CONFIG_AUX_DIR(../conf)
 
 AC_PREFIX_DEFAULT("${OPENDAP_ROOT}")
 
