@@ -12,5 +12,3 @@ DEFAULT_CONF="--with-dap=${OPENDAP_ROOT} --prefix=${OPENDAP_ROOT}"
 # fits
 #./configure --with-modules=${OPENDAP_ROOT}/lib/fits_module.o --with-packages="-L${OPENDAP_ROOT}/lib -lfits-handler -L/project/cedar/src/pwest/packages/lib -lcfitsio" ${DEFAULT_CONF}
 
-# cdf
-

@@ -69,3 +69,19 @@ distclean : clean
 	-rm -rf ServerConfig.h Makefile config.log config.status config.cache autom4te.cache
 
 # DO NOT DELETE; depend requires this line
+OPeNDAPServerHandler.o: OPeNDAPServerHandler.cc OPeNDAPServerHandler.h \
+  ../ppt/ServerHandler.h ../ppt/Connection.h ../ppt/Socket.h \
+  ../command/OPeNDAPCmdInterface.h ../dispatch/DODS.h \
+  ../dispatch/DODSDataHandlerInterface.h ../dispatch/DODSContainer.h \
+  ../dispatch/DODSDataRequestInterface.h ../dispatch/TheDODSKeys.h \
+  ../dispatch/DODSKeys.h ../dispatch/DODSBasicException.h \
+  ../dispatch/DODSException.h ServerExitConditions.h \
+  ../dispatch/DODSStatusReturn.h
+ServerApp.o: ServerApp.cc ServerApp.h ../dispatch/OPeNDAPBaseApp.h \
+  ../dispatch/OPeNDAPApp.h ../dispatch/OPeNDAPObj.h \
+  ServerExitConditions.h ../dispatch/TheDODSKeys.h ../dispatch/DODSKeys.h \
+  ../ppt/SocketListener.h ../ppt/TcpSocket.h ../ppt/Socket.h \
+  ../ppt/UnixSocket.h OPeNDAPServerHandler.h ../ppt/ServerHandler.h \
+  ../ppt/PPTException.h ../ppt/PPTServer.h ../ppt/PPTConnection.h \
+  ../ppt/Connection.h ../ppt/SocketException.h
+daemon.o: daemon.cc ServerExitConditions.h
