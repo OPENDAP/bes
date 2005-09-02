@@ -1,3 +1,21 @@
+
+ $Id$
+
+See the INSTALL file for build instructions.
+
+What's in this direcotry and the subdirectories:
+
+Here there's abes-config script which will be installing in $prefix/bin and
+can be used to determine where the libraries and their header files have been
+installed. This directory also contains some documentation files.
+
+dispatch: Holds libdispatch and libmodules.
+
+###########################################################################
+
+These are the old build instructions; I'm switching to automake support.
+9/2/05 jhrg.
+
 Set OPENDAP_ROOT to the parent directory where you installed the daemon
 directory. You could specify the different configure options (--prefix for
 example), the defaults are set using OPENDAP_ROOT. The location of libdap
