@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-# AM_CPPFLAGS =
+AM_CPPFLAGS = -I../dispatch
 # AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
@@ -13,7 +13,7 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libdispatch.la libmodules.la
+lib_LTLIBRARIES = libopendap_command.la
 
 libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
 
@@ -39,32 +39,10 @@ HDRS:=OPeNDAPCmdInterface.h OPeNDAPCmdParser.h OPeNDAPCommand.h
 MOD_SRCS:=opendap_commands.cc
 MOD_OBJS:=opendap_commands.o
 
-TEST_SRC:=cmd_test.cc
-TEST_OBJ:=cmd_test.o
-TEST_EXEC:=cmd_test
+# TEST_SRC:=cmd_test.cc
+# TEST_OBJ:=cmd_test.o
+# TEST_EXEC:=cmd_test
 
-INCS:=-I. -I../dispatch
-LIB:=libopendap_command.a
-DEFS:=@DEFS@
-#CXXFLAGS_DEBUG:=-g3 -O0 -Wall -fno-default-inline -fno-defer-pop
-#CXXFLAGS:=$(CXXFLAGS_DEBUG) 
-CXXFLAGS:=@CXXFLAGS@ -Wall -Wno-deprecated
-CPPFLAGS:=$(CXXFLAGS) $(DEFS) $(INCS)
-
-LIBS:=../dispatch/dods_module.o -L../dispatch -ldispatch \
-	-L/project/cedar/src/pwest/opendap-g/lib -ldap  -L/project/cedar/src/pwest/packages/lib -lcurl -L/usr/kerberos/lib -lssl -lcrypto -ldl -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto -lresolv -ldl -lz -lz -L/usr/lib -lxml2 -lz -lpthread -lm -lpthread 
-
-all : $(LIB) $(MOD_OBJS)
-
-%.o : %.cc
-	$(CXX) -c $(CPPFLAGS) $<
-
-$(LIB) : $(OBJS)
-	$(AR) cru $@ $?
-	$(RANLIB) $@
-
-test : $(TEST_EXEC)
-
-$(TEST_EXEC) : $(TEST_OBJ) $(LIB) $(MOD_OBJS)
-	$(CXX) -o $(TEST_EXEC) $(TEST_OBJ) $(MOD_OBJS) $(LIB) $(LIBS)
+# $(TEST_EXEC) : $(TEST_OBJ) $(LIB) $(MOD_OBJS)
+# 	$(CXX) -o $(TEST_EXEC) $(TEST_OBJ) $(MOD_OBJS) $(LIB) $(LIBS)
 

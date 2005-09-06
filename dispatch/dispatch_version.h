@@ -14,7 +14,7 @@ using std::string ;
 inline string
 dispatch_version()
 {
-    return (string)DISPATCH_VERSION + ": compiled on " + __DATE__ + ":" + __TIME__ ;
+    return (string)PACKAGE_STRING + ": compiled on " + __DATE__ + ":" + __TIME__ ;
 }
 
 #endif // E_dispatch_version_h
