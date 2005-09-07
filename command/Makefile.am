@@ -21,11 +21,29 @@ libopendap_command_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
 
+all-local: $(MODOBJS)
+
+install-data-local: $(MODOBJS)
+	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
+	@list='$(MODOBJS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f
+	  else :; fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(MODOBJS)'; for p in $$list; do \
+	  p=$(am__strip_dir) \
+	  rm -f '$(DESTDIR)$(pkglibdir)/$$p'; \
+	done
+
 # noinst_HEADERS = 
 
-# EXTRA_DIST = 
+EXTRA_DIST = $(MODSRCS)
 
-# CLEANFILES = 
+CLEANFILES = $(MODOBJS)
+
 
 ##############################################################################
 #
@@ -36,8 +54,8 @@ SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc \
 
 HDRS:=OPeNDAPCmdInterface.h OPeNDAPCmdParser.h OPeNDAPCommand.h
 
-MOD_SRCS:=opendap_commands.cc
-MOD_OBJS:=opendap_commands.o
+MODSRCS:=opendap_commands.cc
+MODOBJS:=opendap_commands.o
 
 # TEST_SRC:=cmd_test.cc
 # TEST_OBJ:=cmd_test.o
