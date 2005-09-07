@@ -4,7 +4,6 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I../dispatch
-# AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:

@@ -6,7 +6,6 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch command ppt cmdln
-# server
+SUBDIRS = dispatch ppt cmdln command server
 
 DIST_SUBDIRS = templates apache

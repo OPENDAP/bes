@@ -22,7 +22,7 @@ AC_SUBST(host)
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=1
+LIB_DIS_CURRENT=3
 LIB_DIS_AGE=0
 LIB_DIS_REVISION=0
 AC_SUBST(LIB_DIS_CURRENT)
@@ -31,14 +31,23 @@ AC_SUBST(LIB_DIS_REVISION)
 LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
 
-LIB_MOD_CURRENT=1
-LIB_MOD_AGE=0
-LIB_MOD_REVISION=0
-AC_SUBST(LIB_MOD_CURRENT)
-AC_SUBST(LIB_MOD_AGE)
-AC_SUBST(LIB_MOD_REVISION)
-LIBMODULES_VERSION="$LIB_MOD_CURRENT:$LIB_MOD_REVISION:$LIB_MOD_AGE"
-AC_SUBST(LIBMODULES_VERSION)
+LIB_PPT_CURRENT=3
+LIB_PPT_AGE=0
+LIB_PPT_REVISION=0
+AC_SUBST(LIB_PPT_CURRENT)
+AC_SUBST(LIB_PPT_AGE)
+AC_SUBST(LIB_PPT_REVISION)
+LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
+AC_SUBST(LIBPPT_VERSION)
+
+LIB_COM_CURRENT=3
+LIB_COM_AGE=0
+LIB_COM_REVISION=0
+AC_SUBST(LIB_COM_CURRENT)
+AC_SUBST(LIB_COM_AGE)
+AC_SUBST(LIB_COM_REVISION)
+LIBCOMMAND_VERSION="$LIB_COM_CURRENT:$LIB_COM_REVISION:$LIB_COM_AGE"
+AC_SUBST(LIBCOMMAND_VERSION)
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -64,7 +73,18 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
 
-DISPATCH_MYSQL
+dnl I'm not building the mysql code right now (9/7/05). When we do, grab a 
+dnl macro for autoconf from the autoconf macro archive.
+dnl DISPATCH_MYSQL
+
+dnl Checks for libraries.
+AC_CHECK_LIB(termcap, main)
+
+# check for readline
+VL_LIB_READLINE
+if test "$vl_cv_lib_readline" = "no"; then
+   AC_MSG_ERROR(I could not find the readline library!)
+fi
 
 AC_CHECK_LIBDAP([3.5.2],
  [

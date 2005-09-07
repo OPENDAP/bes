@@ -4,7 +4,6 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I../dispatch
-# AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -17,7 +16,7 @@ lib_LTLIBRARIES = libopendap_command.la
 
 libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
 
-libopendap_command_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
 
