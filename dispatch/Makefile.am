@@ -25,17 +25,17 @@ all-local: $(MODOBJS)
 
 install-data-local: $(MODOBJS)
 	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
-	@list='$(MODOBJS)'; for p in $$list; do \
+	list='$(MODOBJS)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    f=$(am__strip_dir) \
-	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f
-	  else :; fi; \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
+	  fi; \
 	done
 
 uninstall-local:
 	@set -x; list='$(MODOBJS)'; for p in $$list; do \
-	  p=$(am__strip_dir) \
-	  rm -f '$(DESTDIR)$(pkglibdir)/$$p'; \
+	  f=$(am__strip_dir) \
+	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
 	done
 
 # noinst_HEADERS = 
