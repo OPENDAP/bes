@@ -76,7 +76,9 @@ AC_CHECK_LIBDAP([3.5.2],
 
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
-		 command/Makefile])
+		 command/Makefile
+		 ppt/Makefile
+		 cmdln/Makefile])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 		 

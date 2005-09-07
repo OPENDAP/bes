@@ -223,10 +223,8 @@ libopendap_command_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 pkginclude_HEADERS = $(HDRS)
 
 # noinst_HEADERS = 
-
-# EXTRA_DIST = 
-
-# CLEANFILES = 
+EXTRA_DIST = $(MODSRCS)
+CLEANFILES = $(MODOBJS)
 
 ##############################################################################
 #
@@ -236,8 +234,8 @@ SRCS := OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc \
 	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc
 
 HDRS := OPeNDAPCmdInterface.h OPeNDAPCmdParser.h OPeNDAPCommand.h
-MOD_SRCS := opendap_commands.cc
-MOD_OBJS := opendap_commands.o
+MODSRCS := opendap_commands.cc
+MODOBJS := opendap_commands.o
 all: all-am
 
 .SUFFIXES:
@@ -442,7 +440,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS) all-local
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
@@ -464,6 +462,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -492,7 +491,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-pkgincludeHEADERS
+install-data-am: install-data-local install-pkgincludeHEADERS
 
 install-exec-am: install-libLTLIBRARIES
 
@@ -521,22 +520,40 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
-	uninstall-pkgincludeHEADERS
+	uninstall-local uninstall-pkgincludeHEADERS
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
+.PHONY: CTAGS GTAGS all all-am all-local check check-am clean \
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-data-local install-exec \
 	install-exec-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-pkgincludeHEADERS \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-info-am uninstall-libLTLIBRARIES \
+	uninstall-info-am uninstall-libLTLIBRARIES uninstall-local \
 	uninstall-pkgincludeHEADERS
 
+
+all-local: $(MODOBJS)
+
+install-data-local: $(MODOBJS)
+	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
+	@list='$(MODOBJS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f
+	  else :; fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(MODOBJS)'; for p in $$list; do \
+	  p=$(am__strip_dir) \
+	  rm -f '$(DESTDIR)$(pkglibdir)/$$p'; \
+	done
 
 # TEST_SRC:=cmd_test.cc
 # TEST_OBJ:=cmd_test.o

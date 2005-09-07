@@ -2,7 +2,7 @@
 #
 # Use AC_CHECK_LIBDAP instead. jhrg 9/2/05
 
-AC_DEFUN(DISPATCH_DAP, [dnl
+AC_DEFUN([DISPATCH_DAP], [dnl
     AC_ARG_WITH(dap,
         [  --with-dap=ARG       Where is the external dap sources (directory)],
         DAP_PATH=${withval}, DAP_PATH="${OPENDAP_ROOT}")
