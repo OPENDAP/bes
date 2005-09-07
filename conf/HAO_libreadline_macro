@@ -1,0 +1,27 @@
+# check for readline
+AC_DEFUN(OPENDAP_READLINE_CHECK, [dnl
+    AC_ARG_WITH(readline,
+        [  --with-readline=ARG    Where is the readline library (directory)],
+        READLINE_PATH=${withval}, READLINE_PATH="not_used")
+    AC_MSG_CHECKING([for readline])
+    if test -d "$READLINE_PATH"
+    then
+	    AC_MSG_RESULT(using readline in $READLINE_PATH)
+            LDFLAGS="$LDFLAGS -L${READLINE_PATH}/lib"
+            AC_SUBST(LDFLAGS)
+            LIBS="$LIBS -lreadline -lhistory"
+            AC_SUBST(LIBS)
+            INCS="$INCS -I${READLINE_PATH}/include/readline"
+            AC_SUBST(INCS)
+    else
+	    AC_MSG_RESULT(using default readline)
+            LIBS="$LIBS -lreadline -lhistory"
+            AC_SUBST(LIBS)
+	    INCS="$INCS -I/usr/include/readline"
+            AC_SUBST(INCS)
+    fi])
+
+OPENDAP_READLINE_CHECK
+
+dnl Must also find termcap when using this macro
+AC_CHECK_LIB(termcap, main)
