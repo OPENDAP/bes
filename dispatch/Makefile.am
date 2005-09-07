@@ -13,21 +13,36 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libdispatch.la libmodules.la
+lib_LTLIBRARIES = libdispatch.la
 
 libdispatch_la_SOURCES = $(SRCS) $(HDRS)
-libmodules_la_SOURCES = $(MODSRCS)
 
 libdispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libmodules_la_LDFLAGS = -version-info $(LIBMODULES_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
 
+all-local: $(MODOBJS)
+
+install-data-local: $(MODOBJS)
+	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
+	@list='$(MODOBJS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f
+	  else :; fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(MODOBJS)'; for p in $$list; do \
+	  p=$(am__strip_dir) \
+	  rm -f '$(DESTDIR)$(pkglibdir)/$$p'; \
+	done
+
 # noinst_HEADERS = 
 
-# EXTRA_DIST = 
+EXTRA_DIST = $(MODSRCS)
 
-# CLEANFILES = 
+CLEANFILES = $(MODOBJS)
 
 ##############################################################################
 #
@@ -106,6 +121,9 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 
 MODSRCS:=dods_module.cc cgi_persistence.cc file_persistence.cc \
 	ini_authenticator.cc http_transmitter.cc
+
+MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
+	ini_authenticator.o http_transmitter.o
 
 # test_authenticator.cc
 
