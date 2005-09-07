@@ -71,7 +71,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSBasicHttpTransmitter.cc DODSFilterTransmitter.cc \
 	DODSReporterList.cc TheReporterList.cc DODSBasicException.cc \
 	DODSMemoryException.cc DODSAutoPtr.cc DODSConstraintFuncs.cc \
-	DODSEncode.cc DODSHeapManager.cc DODSMemoryGlobalArea.cc \
+	DODSHeapManager.cc DODSMemoryGlobalArea.cc \
 	DODSMemoryManager.cc DODSProcessEncodedString.cc \
 	TheAggFactory.cc OPeNDAPAggFactory.cc \
 	DODSReturnManager.cc TheDODSReturnManager.cc \
@@ -109,21 +109,20 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSHandlerException.h DODSAggregationException.h \
 	DODSMemoryException.h \
 	DODSAutoPtr.cc DODSAutoPtr.h \
-	DODSConstraintFuncs.h DODSEncode.h DODSHeapManager.h \
+	DODSConstraintFuncs.h DODSHeapManager.h \
 	DODSMemoryGlobalArea.h DODSMemoryManager.h \
 	DODSProcessEncodedString.h \
 	DODSServerSystemResources.h DODSStatusReturn.h dispatch_version.h \
 	TheAggFactory.h OPeNDAPAggFactory.h DODSAggregationServer.h \
 	DODSReturnManager.h TheDODSReturnManager.h \
 	DODSDefineList.h TheDefineList.h DODSDefine.h \
-	DODSMySQLConnectException.h DODSMySQLQueryException.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h
 
 MODSRCS:=dods_module.cc cgi_persistence.cc file_persistence.cc \
-	ini_authenticator.cc http_transmitter.cc
+	ini_authenticator.cc http_transmitter.cc test_authenticator.cc
 
 MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
-	ini_authenticator.o http_transmitter.o
+	ini_authenticator.o http_transmitter.o test_authenticator.o
 
 # test_authenticator.cc
 
@@ -131,9 +130,12 @@ MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
 # 	DODSMySQLChannel.cc DODSMySQLConnect.cc DODSMySQLQuery.cc \
 # 	DODSMySQLResult.cc
 
+# Only used by the MySQL sources: DODSEncode.cc DODSEncode.h 
+
 # MYSQLHDRS:=DODSMySQLAuthenticate.h DODSContainerPersistenceMySQL.h \
 # 	DODSMySQLChannel.h DODSMySQLConnect.h \
 # 	DODSMySQLQuery.h DODSMySQLResult.h
+#	DODSMySQLConnectException.h DODSMySQLQueryException.h 
 
 # MYSQLMODSRCS:=mysql_persistence.cc mysql_authenticator.cc
 

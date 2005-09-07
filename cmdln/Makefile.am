@@ -16,5 +16,6 @@ bin_PROGRAMS = opendapcmdln
 
 opendapcmdln_SOURCES = CmdApp.cc CmdClient.cc
 
-opendapcmdln_LDADD=-L../dispatch -ldispatch -L../ppt -lppt
+opendapcmdln_LDADD = $(AUTH_MOD) -L../dispatch -ldispatch -L../ppt -lppt
 
+AUTH_MOD = ../dispatch/test_authenticator.o
