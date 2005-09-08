@@ -9,8 +9,6 @@
 
 using std::string ;
 
-#include "config.h"
-
 inline string
 dispatch_version()
 {

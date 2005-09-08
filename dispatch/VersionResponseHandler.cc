@@ -2,6 +2,8 @@
 
 // 2004 Copyright University Corporation for Atmospheric Research
 
+#include "config.h"
+
 #include "VersionResponseHandler.h"
 #include "DODSTextInfo.h"
 #include "cgi_util.h"
