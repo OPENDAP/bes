@@ -45,6 +45,14 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
+  o You will need a copy of the readline library. You can get a copy
+    from http://cnswww.cns.cwru.edu/~chet/readline/rltop.html. Most
+    unix OSs have something that will fit the bill, but OS/X does not
+    (as of 10.3). The configure script will look for a suitable
+    library and stop with an error if nothing is found, so the easiest
+    thing to do is to run configure and see if it complains. If it
+    does, go to the above link and grab the library.
+
   o To build from a fresh SVN checkout, you'll need automake 1.9.2, autoconf
     2.59 (2.57 will probably work and that's what's listed in the configure.ac
     file) and libtool 1.5.6. Earlier versions may work, but may cause
