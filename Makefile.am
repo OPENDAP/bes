@@ -8,4 +8,4 @@ ACLOCAL_AMFLAGS = -I conf
 
 SUBDIRS = dispatch ppt cmdln command server
 
-DIST_SUBDIRS = templates apache
+EXTRA_DIST = templates apache

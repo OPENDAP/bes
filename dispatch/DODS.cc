@@ -20,8 +20,11 @@ using std::string ;
 #include "TheReporterList.h"
 
 // exceptions
+#ifdef MYSQL_SUPPORT
 #include "DODSMySQLConnectException.h"
 #include "DODSMySQLQueryException.h"
+#endif // MYSQL_SUPPORT
+
 #include "DODSParserException.h"
 #include "DODSContainerPersistenceException.h"
 #include "DODSKeysException.h"
@@ -272,6 +275,10 @@ DODS::clean()
     manager and should be called once derived methods have caught their
     exceptions.
 
+    @note This method may catch the DODSMySQLConnectException and
+    DODSMySQLQueryException if the library has been compiled with support for
+    MySQL. This is not the default build, however.
+
     @param e DODSException to be managed
     @return status after exception is handled
     @see DODSException
@@ -358,6 +365,7 @@ DODS::exception_manager(DODSException &e)
 	}
 	return DODS_AUTHENTICATE_EXCEPTION;
     } 
+#ifdef MYSQL_SUPPORT
     DODSMySQLConnectException *ce=dynamic_cast<DODSMySQLConnectException*>(&e);
     if(ce)
     {
@@ -374,6 +382,7 @@ DODS::exception_manager(DODSException &e)
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return DODS_MYSQL_BAD_QUERY;
     }  
+#endif // MYSQL_SUPPORT
     DODSParserException *pe=dynamic_cast<DODSParserException*>(&e);
     if(pe)
     {
