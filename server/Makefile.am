@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../ppt -I../dispatch -I../command
+AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch -I$(top_srcdir)/command
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -14,7 +14,8 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 bin_PROGRAMS = opendapserver opendapdaemon
 
-opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc
+opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
+	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
 
 opendapserver_LDADD = $(MODS) $(AUTH_MOD) $(SERVER_LIBS)
 

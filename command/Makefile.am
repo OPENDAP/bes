@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../dispatch
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -47,11 +47,14 @@ CLEANFILES = $(MODOBJS)
 ##############################################################################
 #
 # Sources and Headers for 
-SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc \
+SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
 	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
 	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc
 
-HDRS:=OPeNDAPCmdInterface.h OPeNDAPCmdParser.h OPeNDAPCommand.h
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPDefineCommand.h OPeNDAPSetCommand.h	\
+	OPeNDAPCmdParser.h OPeNDAPDeleteCommand.h OPeNDAPShowCommand.h	\
+	OPeNDAPCommand.h OPeNDAPGetCommand.h OPeNDAPTermCommand.h
+
 
 MODSRCS:=opendap_commands.cc
 MODOBJS:=opendap_commands.o

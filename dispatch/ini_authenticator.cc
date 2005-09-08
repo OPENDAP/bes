@@ -8,7 +8,11 @@ using std::endl ;
 
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
+#ifdef MYSQL_SUPPORT
 #include "DODSMySQLAuthenticate.h"
+#else
+#include "DODSBasicException.h"
+#endif
 #include "DODSTestAuthenticate.h"
 #include "TheDODSAuthenticator.h"
 #include "TheDODSLog.h"
@@ -27,7 +31,11 @@ TheDODSAuthenticatorInit(int, char**) {
 
     if( authType == "mysql" || authType == "MYSQL" || authType == "MySQL" )
     {
+#ifdef MYSQL_SUPPORT
 	TheDODSAuthenticator = new DODSMySQLAuthenticate ;
+#else
+	throw DODSBasicException("Cannot use MySQL authentication with this particular server because it was not built with MySQL support");
+#endif
     }
     else
     {
