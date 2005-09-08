@@ -32,4 +32,4 @@ AUTH_MOD = ../dispatch/test_authenticator.o
 MODULES=
 PACKAGES=
 
-SERVER_LIBS=-L../dispatch -ldispatch -L../ppt -lppt -L../command -lopendap_command
+SERVER_LIBS=-L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
