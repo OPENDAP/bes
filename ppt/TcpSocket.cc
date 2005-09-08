@@ -3,8 +3,8 @@
 // 2005 Copyright University Corporation for Atmospheric Research
 
 #include <ctype.h>
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>

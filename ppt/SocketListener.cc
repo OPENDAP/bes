@@ -2,9 +2,13 @@
 
 // 2005 Copyright University Corporation for Atmospheric Research
 
+#include <iostream>
+#include <ctype.h>
+
 #include <errno.h>
 
-#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 using std::cout ;
 using std::endl ;
