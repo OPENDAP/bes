@@ -156,9 +156,9 @@ DODSContainerPersistenceFile::look_for( DODSContainer &d )
  * @param type type of data represented by this container
  */
 void
-DODSContainerPersistenceFile::add_container( string s_name,
-                                            string r_name,
-					    string type )
+DODSContainerPersistenceFile::add_container( string,
+                                            string,
+					    string )
 {
     throw DODSContainerPersistenceException( "Unable to add a container to a file, not yet implemented\n" ) ;
 }

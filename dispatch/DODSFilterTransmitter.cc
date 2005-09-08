@@ -8,7 +8,7 @@
 #include "OPeNDAPDataNames.h"
 
 void
-DODSFilterTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
+DODSFilterTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
 {
     _df->send_das( stdout, das ) ;
 }
@@ -36,7 +36,7 @@ DODSFilterTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 
 void
 DODSFilterTransmitter::send_text( DODSInfo &info,
-                                  DODSDataHandlerInterface &dhi )
+                                  DODSDataHandlerInterface & )
 {
     if( info.is_buffered() )
     {
@@ -47,7 +47,7 @@ DODSFilterTransmitter::send_text( DODSInfo &info,
 
 void
 DODSFilterTransmitter::send_html( DODSInfo &info,
-                                  DODSDataHandlerInterface &dhi )
+                                  DODSDataHandlerInterface & )
 {
     if( info.is_buffered() )
     {

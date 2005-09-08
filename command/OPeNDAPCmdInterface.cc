@@ -11,6 +11,7 @@ using std::stringstream ;
 
 #include "OPeNDAPCmdInterface.h"
 #include "OPeNDAPCmdParser.h"
+#include "DODS.h"
 #include "TheDODSLog.h"
 #include "DODSBasicHttpTransmitter.h"
 #include "TheDODSReturnManager.h"

@@ -26,7 +26,7 @@ public:
 				      _listening( false ),
 				      _addr_set( false ) {}
 				Socket( int socket,
-				        const struct sockaddr_in &f )
+				        const struct sockaddr_in & )
 				    : _socket( socket ),
 				      _connected( true ),
 				      _listening( false ),

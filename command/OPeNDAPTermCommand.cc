@@ -10,7 +10,7 @@
 
 DODSResponseHandler *
 OPeNDAPTermCommand::parse_request( DODSTokenizer &tokenizer,
-                                     DODSDataHandlerInterface &dhi )
+                                     DODSDataHandlerInterface & )
 {
     tokenizer.parse_error( "Invalid command" ) ;
     return NULL ;

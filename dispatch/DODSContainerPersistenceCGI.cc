@@ -147,9 +147,9 @@ DODSContainerPersistenceCGI::look_for( DODSContainer &d )
  * @param type type of data represented by this container
  */
 void
-DODSContainerPersistenceCGI::add_container( string s_name,
-                                            string r_name,
-					    string type )
+DODSContainerPersistenceCGI::add_container( string ,
+                                            string ,
+					    string )
 {
     throw DODSContainerPersistenceException( "Unable to add a container to CGI persistence\n" ) ;
 }
@@ -164,7 +164,7 @@ DODSContainerPersistenceCGI::add_container( string s_name,
  * @return true if successfully removed and false otherwise
  */
 bool
-DODSContainerPersistenceCGI::rem_container( const string &s_name )
+DODSContainerPersistenceCGI::rem_container( const string & )
 {
     throw DODSContainerPersistenceException( "Unable to remove a container from CGI persistence\n" ) ;
     return false ;

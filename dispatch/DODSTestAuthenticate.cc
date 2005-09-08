@@ -18,7 +18,7 @@ DODSTestAuthenticate::~DODSTestAuthenticate()
  * @see DODSDataHandlerInterface
  */
 void
-DODSTestAuthenticate::authenticate( DODSDataHandlerInterface &dhi )
+DODSTestAuthenticate::authenticate( DODSDataHandlerInterface & )
 {
 }
 

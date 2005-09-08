@@ -9,7 +9,7 @@
 #include "OPeNDAPDataNames.h"
 
 void
-DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
+DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
 {
     das.print( stdout ) ;
     fflush( stdout ) ;
@@ -64,14 +64,14 @@ DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 
 void
 DODSBasicTransmitter::send_text( DODSInfo &info,
-                                 DODSDataHandlerInterface &dhi )
+                                 DODSDataHandlerInterface & )
 {
     info.print( stdout ) ;
 }
 
 void
 DODSBasicTransmitter::send_html( DODSInfo &info,
-                                 DODSDataHandlerInterface &dhi )
+                                 DODSDataHandlerInterface & )
 {
     info.print( stdout ) ;
 }
