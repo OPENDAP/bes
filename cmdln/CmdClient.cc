@@ -238,8 +238,8 @@ CmdClient::executeCommand( const string &cmd )
 void
 CmdClient::executeCommands( const string &cmd_list )
 {
-    unsigned int start = 0 ;
-    unsigned int end = 0 ;
+    std::string::size_type start = 0;
+    std::string::size_type end = 0;
     while( ( end = cmd_list.find( ';', start ) ) != string::npos )
     {
 	string cmd = cmd_list.substr( start, end - start + 1 ) ;
@@ -364,6 +364,8 @@ CmdClient::interact()
 	    else
 	    {
 		this->executeCommands( message ) ;
+		message = "";	// Needed? Added during debugging. jhrg 9/8/05
+		len = 0;
 	    }
 	}
     }
