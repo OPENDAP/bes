@@ -181,13 +181,14 @@ DODSTokenizer::tokenize( const char *p )
 	    s += p[j] ;
 	}
     }
+
     if( s != "" )
 	tokens.push_back( s ) ;
     _number_tokens = tokens.size() ;
     if( passing_raw )
 	parse_error( "Unclose quote found.(\")" ) ;
     if( _number_tokens < 2 )
-	parse_error( "Unknown command " + (string)p ) ;
+	parse_error( "Unknown command: '" + (string)p + (string)"'") ;
     if( tokens[_number_tokens - 1] != ";" )
 	parse_error( "The request must be terminated by a semicolon (;)" ) ;
 }
