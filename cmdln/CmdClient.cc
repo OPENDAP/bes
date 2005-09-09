@@ -289,7 +289,7 @@ CmdClient::executeCommands( ifstream &istrm )
 	}
 	else
 	{
-	    unsigned int i = nextLine.find_last_of( ';' ) ;
+	    std::string::size_type = nextLine.find_last_of( ';' ) ;
 	    if( i == string::npos )
 	    {
 		if( cmd == "" )

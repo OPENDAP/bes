@@ -124,7 +124,7 @@ DODSApache::initialize()
     DODSMemoryManager::initialize_memory_pool() ;
 
     string https = _dri->server_protocol ;
-    int http = https.find("HTTP");
+    std::string::size_type http = https.find("HTTP");
     if( http == string::npos )
     {
 	_dhi.transmit_protocol = _dri->server_protocol ;
