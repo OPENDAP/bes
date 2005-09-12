@@ -11,15 +11,15 @@ PPTConnection::send( const string &buffer )
 {
     if( buffer != "" )
     {
-	this->writeBuffer( buffer ) ;
+	writeBuffer( buffer ) ;
     }
-    this->writeBuffer( PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ) ;
+    writeBuffer( PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ) ;
 }
 
 void
 PPTConnection::sendExit()
 {
-    this->writeBuffer( PPTProtocol::PPT_EXIT_NOW ) ;
+    writeBuffer( PPTProtocol::PPT_EXIT_NOW ) ;
 }
 
 void
@@ -40,7 +40,7 @@ PPTConnection::receive( ostream *strm )
     while( done == false )
     {
 	char *inBuff = new char[4096] ;
-	int bytesRead = this->readBuffer( inBuff ) ;
+	int bytesRead = readBuffer( inBuff ) ;
 	if( bytesRead != 0 )
 	{
 	    int exitlen = PPTProtocol::PPT_EXIT_NOW.length() ;

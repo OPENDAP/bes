@@ -51,7 +51,7 @@ PPTClient::initConnection()
 {
     try
     {
-	this->writeBuffer( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
+	writeBuffer( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
     }
     catch( SocketException &e )
     {
@@ -61,7 +61,7 @@ PPTClient::initConnection()
     }
 
     char *inBuff = new char[4096] ;
-    int bytesRead = this->readBuffer( inBuff ) ;
+    int bytesRead = readBuffer( inBuff ) ;
     string status( inBuff, 0, bytesRead ) ;
     if( status == PPTProtocol::PPT_PROTOCOL_UNDEFINED )
     {
@@ -82,7 +82,7 @@ PPTClient::closeConnection()
 	{
 	    try
 	    {
-		this->sendExit() ;
+		sendExit() ;
 	    }
 	    catch( SocketException e )
 	    {
