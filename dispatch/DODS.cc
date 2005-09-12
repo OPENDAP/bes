@@ -20,11 +20,7 @@ using std::string ;
 #include "TheReporterList.h"
 
 // exceptions
-#ifdef MYSQL_SUPPORT
-#include "DODSMySQLConnectException.h"
-#include "DODSMySQLQueryException.h"
-#endif // MYSQL_SUPPORT
-
+#include "OPeNDAPDatabaseException.h"
 #include "DODSParserException.h"
 #include "DODSContainerPersistenceException.h"
 #include "DODSKeysException.h"
@@ -275,16 +271,12 @@ DODS::clean()
     manager and should be called once derived methods have caught their
     exceptions.
 
-    @note This method may catch the DODSMySQLConnectException and
-    DODSMySQLQueryException if the library has been compiled with support for
-    MySQL. This is not the default build, however.
-
     @param e DODSException to be managed
     @return status after exception is handled
     @see DODSException
     @see DODSIncorrectException
     @see DODSAuthenticateException
-    @see DODSMySQLConnectException
+    @see OPeNDAPDatabaseException
     @see DODSMySQLQueryException
     @see DODSParserException
     @see DODSContainerPersistenceException
@@ -365,24 +357,14 @@ DODS::exception_manager(DODSException &e)
 	}
 	return DODS_AUTHENTICATE_EXCEPTION;
     } 
-#ifdef MYSQL_SUPPORT
-    DODSMySQLConnectException *ce=dynamic_cast<DODSMySQLConnectException*>(&e);
+    OPeNDAPDatabaseException *ce=dynamic_cast<OPeNDAPDatabaseException*>(&e);
     if(ce)
     {
 	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting MySQL Connect Exception.\n" ) ;
+	fprintf( stdout, "Reporting Database Exception.\n" ) ;
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return DODS_MYSQL_CONNECTION_FAILURE;
+	return OPENDAP_DATABASE_FAILURE;
     }
-    DODSMySQLQueryException *qe=dynamic_cast<DODSMySQLQueryException*>(&e);
-    if(qe)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting MySQL Query Exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return DODS_MYSQL_BAD_QUERY;
-    }  
-#endif // MYSQL_SUPPORT
     DODSParserException *pe=dynamic_cast<DODSParserException*>(&e);
     if(pe)
     {
