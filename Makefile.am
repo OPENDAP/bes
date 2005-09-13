@@ -8,4 +8,6 @@ ACLOCAL_AMFLAGS = -I conf
 
 SUBDIRS = dispatch ppt cmdln command server
 
+bin_SCRIPTS = bes-config
+
 EXTRA_DIST = templates apache
