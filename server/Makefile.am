@@ -23,13 +23,27 @@ opendapdaemon_SOURCES = daemon.cc
 
 opendapdaemon_LDADD = $(AUTH_MOD) $(SERVER_LIBS)
 
+all-local: $(MODOBJS)
+
+install-data-local: $(MODOBJS)
+	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
+	list='$(MODOBJS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
+	  fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(MODOBJS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
+	done
+
 # Maybe the source files for these should be added to this directory.
 MODS = ../command/opendap_commands.o ../dispatch/dods_module.o
 AUTH_MOD = ../dispatch/test_authenticator.o
 
-# The original code uses MODULES and PACKAGES to include more object files.
-# I'll add this here as a reminder...
-MODULES=
-PACKAGES=
+MODOBJS=OPeNDAPServerHandler.o ServerApp.o
 
 SERVER_LIBS=-L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch

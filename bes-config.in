@@ -57,7 +57,7 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-       	echo "-L${libdir} -ldispatch -lcommand -lppt @LIBS@"
+       	echo "-L${libdir} -ldispatch -lopendap_command -lppt @LIBS@"
        	;;
 
     --prefix)

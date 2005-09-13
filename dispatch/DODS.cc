@@ -20,7 +20,9 @@ using std::string ;
 #include "TheReporterList.h"
 
 // exceptions
+#if 0
 #include "OPeNDAPDatabaseException.h"
+#endif
 #include "DODSParserException.h"
 #include "DODSContainerPersistenceException.h"
 #include "DODSKeysException.h"
@@ -357,6 +359,7 @@ DODS::exception_manager(DODSException &e)
 	}
 	return DODS_AUTHENTICATE_EXCEPTION;
     } 
+#if 0
     OPeNDAPDatabaseException *ce=dynamic_cast<OPeNDAPDatabaseException*>(&e);
     if(ce)
     {
@@ -365,6 +368,7 @@ DODS::exception_manager(DODSException &e)
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return OPENDAP_DATABASE_FAILURE;
     }
+#endif
     DODSParserException *pe=dynamic_cast<DODSParserException*>(&e);
     if(pe)
     {
