@@ -73,10 +73,6 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
 
-dnl I'm not building the mysql code right now (9/7/05). When we do, grab a 
-dnl macro for autoconf from the autoconf macro archive.
-dnl DISPATCH_MYSQL
-
 dnl Checks for libraries.
 AC_CHECK_LIB(termcap, main)
 
