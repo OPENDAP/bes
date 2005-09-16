@@ -119,10 +119,10 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h
 
 MODSRCS:=dods_module.cc cgi_persistence.cc file_persistence.cc \
-	ini_authenticator.cc http_transmitter.cc test_authenticator.cc
+	http_transmitter.cc test_authenticator.cc
 
 MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
-	ini_authenticator.o http_transmitter.o test_authenticator.o
+	http_transmitter.o test_authenticator.o
 
 # test_authenticator.cc
 
