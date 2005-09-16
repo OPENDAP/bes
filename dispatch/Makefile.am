@@ -126,22 +126,6 @@ MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
 
 # test_authenticator.cc
 
-# MYSQLSRCS:=DODSMySQLAuthenticate.cc DODSContainerPersistenceMySQL.cc \
-# 	DODSMySQLChannel.cc DODSMySQLConnect.cc DODSMySQLQuery.cc \
-# 	DODSMySQLResult.cc
-
-# Only used by the MySQL sources: DODSEncode.cc DODSEncode.h 
-
-# MYSQLHDRS:=DODSMySQLAuthenticate.h DODSContainerPersistenceMySQL.h \
-# 	DODSMySQLChannel.h DODSMySQLConnect.h \
-# 	DODSMySQLQuery.h DODSMySQLResult.h
-#	DODSMySQLConnectException.h DODSMySQLQueryException.h 
-
-# MYSQLMODSRCS:=mysql_persistence.cc mysql_authenticator.cc
-
-# DISPATCHSRCS:=@DISPATCHSRCS@
-# DISPATCHHDRS:=@DISPATCHHDRS@
-
 # TESTSRC:=dispatch_test.cc
 # TESTEXEC:=dispatch_test
 
