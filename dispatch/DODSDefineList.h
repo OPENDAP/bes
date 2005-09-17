@@ -9,8 +9,6 @@
 #include <string>
 
 using std::map ;
-using std::less ;
-using std::allocator ;
 using std::string ;
 
 class DODSDefine ;
@@ -18,9 +16,9 @@ class DODSInfo ;
 
 class DODSDefineList {
 private:
-    map< string, DODSDefine *, less< string >, allocator< string > > _def_list ;
-    typedef map< string, DODSDefine *, less< string >, allocator< string > >::const_iterator Define_citer ;
-    typedef map< string, DODSDefine *, less< string >, allocator< string > >::iterator Define_iter ;
+    map< string, DODSDefine * > _def_list ;
+    typedef map< string, DODSDefine * >::const_iterator Define_citer ;
+    typedef map< string, DODSDefine * >::iterator Define_iter ;
 public:
 				DODSDefineList(void) {}
     virtual			~DODSDefineList(void) {}

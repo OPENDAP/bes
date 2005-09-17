@@ -10,8 +10,6 @@
 
 using std::map ;
 using std::string ;
-using std::less ;
-using std::allocator ;
 
 #include "DODSContainerPersistence.h"
 
@@ -49,8 +47,8 @@ using std::allocator ;
 class DODSContainerPersistenceCGI : public DODSContainerPersistence
 {
 private:
-    map< string, string, less< string >, allocator< string > > _match_list ;
-    typedef map< string, string, less< string >, allocator< string > >::const_iterator Match_list_citer ;
+    map< string, string > _match_list ;
+    typedef map< string, string >::const_iterator Match_list_citer ;
 
     string			_base_dir ;
 

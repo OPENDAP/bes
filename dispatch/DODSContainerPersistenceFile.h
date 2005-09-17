@@ -10,8 +10,6 @@
 
 using std::string ;
 using std::map ;
-using std::less ;
-using std::allocator ;
 
 #include "DODSContainerPersistence.h"
 
@@ -50,9 +48,9 @@ private:
 	string _real_name ;
 	string _container_type ;
     } container ;
-    map< string, DODSContainerPersistenceFile::container *, less< string >, allocator< string > > _container_list ;
-    typedef map< string, DODSContainerPersistenceFile::container *, less< string >, allocator< string > >::const_iterator Container_citer ;
-    typedef map< string, DODSContainerPersistenceFile::container *, less< string >, allocator< string > >::iterator Container_iter ;
+    map< string, DODSContainerPersistenceFile::container * > _container_list ;
+    typedef map< string, DODSContainerPersistenceFile::container * >::const_iterator Container_citer ;
+    typedef map< string, DODSContainerPersistenceFile::container * >::iterator Container_iter ;
 
 public:
     				DODSContainerPersistenceFile( const string &n );

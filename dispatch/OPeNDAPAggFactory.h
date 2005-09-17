@@ -9,8 +9,6 @@
 #include <string>
 
 using std::map ;
-using std::less ;
-using std::allocator ;
 using std::string ;
 
 class DODSAggregationServer ;
@@ -26,13 +24,13 @@ typedef DODSAggregationServer * (*p_agg_handler)( string name ) ;
  */
 class OPeNDAPAggFactory {
 private:
-    map< string, p_agg_handler, less< string >, allocator< string > > _handler_list ;
+    map< string, p_agg_handler > _handler_list ;
 public:
 				OPeNDAPAggFactory(void) {}
     virtual			~OPeNDAPAggFactory(void) {}
 
-    typedef map< string, p_agg_handler, less< string >, allocator< string > >::const_iterator Handler_citer ;
-    typedef map< string, p_agg_handler, less< string >, allocator< string > >::iterator Handler_iter ;
+    typedef map< string, p_agg_handler >::const_iterator Handler_citer ;
+    typedef map< string, p_agg_handler >::iterator Handler_iter ;
 
     virtual bool		add_handler( string handler_name,
 					   p_agg_handler handler_method ) ;

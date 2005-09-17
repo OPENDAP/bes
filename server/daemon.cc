@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include <fstream>
 #include <iostream>
@@ -31,7 +32,6 @@ void store_listener_id( int pid ) ;
 bool load_names() ;
 
 string NameProgram ;
-extern "C" { extern int errno ; }
 
 // This two variables are set by load_names
 string server_name ;

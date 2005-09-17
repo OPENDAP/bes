@@ -4,7 +4,7 @@
 #include "OPeNDAPTermCommand.h"
 
 OPeNDAPCommand *OPeNDAPCommand::TermCommand = new OPeNDAPTermCommand( "term" ) ;
-map< string, OPeNDAPCommand *, less< string >, allocator< string > > OPeNDAPCommand::cmd_list ;
+map< string, OPeNDAPCommand * > OPeNDAPCommand::cmd_list ;
 
 void
 OPeNDAPCommand::add_command( const string &cmd_str, OPeNDAPCommand *cmd )

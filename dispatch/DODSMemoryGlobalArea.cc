@@ -2,12 +2,11 @@
 
 // 2004 Copyright University Corporation for Atmospheric Research
 
+#include <errno.h>
 #include <iostream>
 
 using std::cerr ;
 using std::endl ;
-
-extern int errno;
 
 #include "DODSMemoryGlobalArea.h"
 #include "DODSMemoryException.h"

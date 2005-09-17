@@ -11,7 +11,6 @@
 
 using std::string ;
 using std::map ;
-using std::less ;
 using std::ifstream ;
 
 /** @brief mapping of key/value pairs defining different behaviors of an
@@ -52,7 +51,7 @@ class DODSKeys
 private:
     ifstream *		_keys_file ;
     string		_keys_file_name ;
-    map<string,string,less<string> > *	_the_keys ;
+    map<string,string> *	_the_keys ;
 
     void		clean() ;
     void 		load_keys() ;
@@ -72,7 +71,7 @@ public:
     string		get_key( const string& s, bool &found ) ;
     void		show_keys();
 
-    typedef map< string, string, less< string > >::const_iterator Keys_citer ;
+    typedef map< string, string >::const_iterator Keys_citer ;
     Keys_citer		keys_begin() { return _the_keys->begin() ; }
     Keys_citer		keys_end() { return _the_keys->end() ; }
 };

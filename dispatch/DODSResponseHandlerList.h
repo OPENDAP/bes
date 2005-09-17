@@ -9,8 +9,6 @@
 #include <string>
 
 using std::map ;
-using std::less ;
-using std::allocator ;
 using std::string ;
 
 class DODSResponseHandler ;
@@ -40,13 +38,13 @@ typedef DODSResponseHandler * (*p_response_handler)( string name ) ;
  */
 class DODSResponseHandlerList {
 private:
-    map< string, p_response_handler, less< string >, allocator< string > > _handler_list ;
+    map< string, p_response_handler > _handler_list ;
 public:
 				DODSResponseHandlerList(void) {}
     virtual			~DODSResponseHandlerList(void) {}
 
-    typedef map< string, p_response_handler, less< string >, allocator< string > >::const_iterator Handler_citer ;
-    typedef map< string, p_response_handler, less< string >, allocator< string > >::iterator Handler_iter ;
+    typedef map< string, p_response_handler >::const_iterator Handler_citer ;
+    typedef map< string, p_response_handler >::iterator Handler_iter ;
 
     virtual bool		add_handler( string handler_name,
 					   p_response_handler handler_method ) ;

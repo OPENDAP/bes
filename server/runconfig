@@ -2,8 +2,11 @@
 
 DEFAULT_CONF="--with-dap=${OPENDAP_ROOT} --prefix=${OPENDAP_ROOT}"
 
+# netcdf
+./configure ${DEFAULT_CONF} --with-modules=/project/cedar/src/pwest/opendap-g/lib/nc_module.o --with-packages="-L/project/cedar/src/pwest/opendap-g/lib -lnetcdf_handler -L/project/cedar/src/pwest/packages/lib/ -lnetcdf"
+
 # ncesg
-./configure ${DEFAULT_CONF} --with-modules=/project/cedar/src/pwest/esg/EarthSystemGrid/src/ncesg_module.o --with-packages="-L/project/cedar/src/pwest/esg/EarthSystemGrid/src -lncesg -L/project/cedar/src/pwest/packages/netcdf-3.5.0/libsrc -lnetcdf"
+#./configure ${DEFAULT_CONF} --with-modules=/project/cedar/src/pwest/esg/EarthSystemGrid/src/ncesg_module.o --with-packages="-L/project/cedar/src/pwest/esg/EarthSystemGrid/src -lncesg -L/project/cedar/src/pwest/packages/netcdf-3.5.0/libsrc -lnetcdf"
 
 
 # cedar

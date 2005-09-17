@@ -8,8 +8,6 @@
 
 using std::string ;
 using std::map ;
-using std::less ;
-using std::allocator ;
 
 #include "DODSDataHandlerInterface.h"
 
@@ -19,8 +17,8 @@ class DODSTokenizer ;
 class OPeNDAPCommand
 {
 private:
-    static map< string, OPeNDAPCommand *, less< string >, allocator< string > > cmd_list ;
-    typedef map< string, OPeNDAPCommand *, less< string >, allocator< string > >::iterator cmd_iter ;
+    static map< string, OPeNDAPCommand * > cmd_list ;
+    typedef map< string, OPeNDAPCommand * >::iterator cmd_iter ;
 protected:
     string				_cmd ;
 public:

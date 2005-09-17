@@ -51,7 +51,7 @@ DODSKeys::DODSKeys( const string &keys_file_name )
 	throw DODSKeysException( s ) ;
     }
 
-    _the_keys = new map<string,string,less<string> >;
+    _the_keys = new map<string,string>;
     try
     {
 	load_keys();
@@ -196,7 +196,7 @@ DODSKeys::only_blanks(const char *line)
 string
 DODSKeys::set_key( const string &key, const string &val )
 {
-    map< string, string, less<string> >::iterator i ;
+    map< string, string >::iterator i ;
     i = _the_keys->find( key ) ;
     if( i == _the_keys->end() )
     {
@@ -246,7 +246,7 @@ DODSKeys::set_key( const string &pair )
 string
 DODSKeys::get_key( const string& s, bool &found ) 
 {
-    map<string,string,less<string> >::iterator i;
+    map<string,string>::iterator i;
     i=_the_keys->find(s);
     if(i!=_the_keys->end())
     {
@@ -272,7 +272,7 @@ DODSKeys::get_key( const string& s, bool &found )
 void
 DODSKeys::show_keys()
 {
-    map<string,string,less<string> >::iterator i ;
+    map<string,string>::iterator i ;
     for( i= _the_keys->begin(); i != _the_keys->end(); ++i )
     {
 	cout << "key: \"" << (*i).first

@@ -10,8 +10,6 @@
 
 using std::map ;
 using std::string ;
-using std::less ;
-using std::allocator ;
 
 #include "DODSContainerPersistence.h"
 
@@ -31,13 +29,13 @@ using std::allocator ;
 class DODSContainerPersistenceVolatile : public DODSContainerPersistence
 {
 private:
-    map< string, DODSContainer *, less< string >, allocator< string > > _container_list ;
+    map< string, DODSContainer * > _container_list ;
 public:
     				DODSContainerPersistenceVolatile( const string &n ) ;
     virtual			~DODSContainerPersistenceVolatile() ;
 
-    typedef map< string, DODSContainer *, less< string >, allocator< string > >::const_iterator Container_citer ;
-    typedef map< string, DODSContainer *, less< string >, allocator< string > >::iterator Container_iter ;
+    typedef map< string, DODSContainer * >::const_iterator Container_citer ;
+    typedef map< string, DODSContainer * >::iterator Container_iter ;
     virtual void		look_for( DODSContainer &d ) ;
     virtual void		add_container( string s_name, string r_name,
 					       string type ) ;

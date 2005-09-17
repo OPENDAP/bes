@@ -3,6 +3,7 @@
 // 2004 Copyright University Corporation for Atmospheric Research
 
 #include <string.h>
+#include <errno.h>
 #include <iostream>
 
 using std::cerr ;
@@ -10,8 +11,6 @@ using std::cout ;
 using std::endl ;
 
 #include "DODSHeapManager.h"
-
-extern int errno;
 
 #define DODS_MEGABYTE 1024*1024
 

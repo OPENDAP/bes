@@ -11,13 +11,12 @@
 
 using std::map ;
 using std::string ; 
-using std::less ;
 using std::cout ;
 using std::endl ;
 
 class DODSProcessEncodedString
 {
-    map<string,string,less<string> > _entries;
+    map<string,string> _entries;
     string parseHex(const char *hexstr); 
     const unsigned int convertHex( const char* what );
 public:
@@ -25,7 +24,7 @@ public:
     string get_key(const string& s); 
     void show_keys()
     {
-	map<string,string,less<string> >::iterator i;
+	map<string,string>::iterator i;
 	for(i=_entries.begin(); i!=_entries.end(); ++i)
 	    cout<<"key: "<<(*i).first<<", value: "<<(*i).second<<endl;
     }

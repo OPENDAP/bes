@@ -101,7 +101,7 @@ DODSProcessEncodedString::convertHex( const char* what )
 string
 DODSProcessEncodedString::get_key( const string& s ) 
 {
-    map<string,string,less<string> >::iterator i ;
+    map<string,string>::iterator i ;
     i = _entries.find( s ) ;
     if( i != _entries.end() )
 	return (*i).second ;

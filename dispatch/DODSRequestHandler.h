@@ -9,8 +9,6 @@
 #include <string>
 
 using std::map ;
-using std::less ;
-using std::allocator ;
 using std::string ;
 
 #include "DODSDataHandlerInterface.h"
@@ -44,15 +42,15 @@ typedef bool (*p_request_handler)(DODSDataHandlerInterface &);
  */
 class DODSRequestHandler {
 private:
-    map< string, p_request_handler, less< string >, allocator< string > > _handler_list ;
+    map< string, p_request_handler > _handler_list ;
     string			_name ;
 public:
 				DODSRequestHandler( string name )
 				    : _name( name ) {}
     virtual			~DODSRequestHandler(void) {}
 
-    typedef map< string, p_request_handler, less< string >, allocator< string > >::const_iterator Handler_citer ;
-    typedef map< string, p_request_handler, less< string >, allocator< string > >::iterator Handler_iter ;
+    typedef map< string, p_request_handler >::const_iterator Handler_citer ;
+    typedef map< string, p_request_handler >::iterator Handler_iter ;
 
     virtual string		get_name( ) { return _name ; }
 

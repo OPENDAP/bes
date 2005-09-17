@@ -9,8 +9,6 @@
 #include <string>
 
 using std::map ;
-using std::less ;
-using std::allocator ;
 using std::string ;
 
 #include "DODSDataHandlerInterface.h"
@@ -24,13 +22,13 @@ class DODSTransmitter ;
  */
 class DODSReturnManager {
 private:
-    map< string, DODSTransmitter *, less< string >, allocator< string > > _transmitter_list ;
+    map< string, DODSTransmitter * > _transmitter_list ;
 public:
 				DODSReturnManager() ;
     virtual			~DODSReturnManager() ;
 
-    typedef map< string, DODSTransmitter *, less< string >, allocator< string > >::const_iterator Transmitter_citer ;
-    typedef map< string, DODSTransmitter *, less< string >, allocator< string > >::iterator Transmitter_iter ;
+    typedef map< string, DODSTransmitter * >::const_iterator Transmitter_citer ;
+    typedef map< string, DODSTransmitter * >::iterator Transmitter_iter ;
 
     virtual bool		add_transmitter( const string &name,
 						 DODSTransmitter *transmitter );
