@@ -80,9 +80,8 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
 	DODSInitializer.h DODSLog.h DODSLogException.h \
-	DODSKeys.h TheDODSKeys.h DODSKeysException.h DODSAuthenticate.h \
+	DODSKeys.h TheDODSKeys.h DODSKeysException.h \
 	DODSStatus.h \
-	TheDODSAuthenticator.h DODSAuthenticateException.h \
 	DODSParserException.h DODSTokenizer.h DODSContainer.h \
 	DODSContainerPersistence.h DODSTransmitException.h \
 	DODSContainerPersistenceCGI.h DODSContainerPersistenceFile.h \
