@@ -18,6 +18,8 @@ class DODSInfo ;
 class DODSTransmitter
 {
 public:
+    			DODSTransmitter() {}
+    virtual		~DODSTransmitter() {}
     virtual void	send_das( DAS &das, DODSDataHandlerInterface &dhi ) = 0 ;
     virtual void	send_dds( DDS &dds, DODSDataHandlerInterface &dhi ) = 0 ;
     virtual void	send_data( DDS &dds, DODSDataHandlerInterface &dhi ) = 0 ;
