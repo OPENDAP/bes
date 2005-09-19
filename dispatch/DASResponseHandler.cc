@@ -6,7 +6,7 @@
 #include "DAS.h"
 #include "cgi_util.h"
 #include "DODSParserException.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 
 DASResponseHandler::DASResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -30,13 +30,13 @@ DASResponseHandler::~DASResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DAS
- * @see TheRequestHandlerList
+ * @see DODSRequestHandlerList
  */
 void
 DASResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     _response = new DAS ;
-    TheRequestHandlerList->execute_each( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
 /** @brief transmit the response object built by the execute command

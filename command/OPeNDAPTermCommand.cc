@@ -4,13 +4,10 @@
 
 #include "OPeNDAPTermCommand.h"
 #include "DODSTokenizer.h"
-#include "ThePersistenceList.h"
-#include "TheResponseHandlerList.h"
-#include "DODSParserException.h"
 
 DODSResponseHandler *
 OPeNDAPTermCommand::parse_request( DODSTokenizer &tokenizer,
-                                     DODSDataHandlerInterface & )
+                                   DODSDataHandlerInterface & )
 {
     tokenizer.parse_error( "Invalid command" ) ;
     return NULL ;

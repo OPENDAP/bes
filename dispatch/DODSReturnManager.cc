@@ -4,6 +4,8 @@
 
 #include "DODSReturnManager.h"
 
+DODSReturnManager *DODSReturnManager::_instance = 0 ;
+
 DODSReturnManager::DODSReturnManager()
 {
 }
@@ -55,5 +57,15 @@ DODSReturnManager::find_transmitter( const string &name )
 	return (*i).second;
     }
     return 0 ;
+}
+
+DODSReturnManager *
+DODSReturnManager::TheManager()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSReturnManager ;
+    }
+    return _instance ;
 }
 

@@ -24,9 +24,12 @@ typedef DODSAggregationServer * (*p_agg_handler)( string name ) ;
  */
 class OPeNDAPAggFactory {
 private:
+    static OPeNDAPAggFactory *	_instance ;
+
     map< string, p_agg_handler > _handler_list ;
-public:
+protected:
 				OPeNDAPAggFactory(void) {}
+public:
     virtual			~OPeNDAPAggFactory(void) {}
 
     typedef map< string, p_agg_handler >::const_iterator Handler_citer ;
@@ -38,6 +41,8 @@ public:
     virtual DODSAggregationServer *find_handler( string handler_name ) ;
 
     virtual string		get_handler_names() ;
+
+    static OPeNDAPAggFactory *	TheFactory() ;
 };
 
 #endif // I_OPeNDAPAggFactory_h

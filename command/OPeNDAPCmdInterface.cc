@@ -12,11 +12,11 @@ using std::stringstream ;
 #include "OPeNDAPCmdInterface.h"
 #include "OPeNDAPCmdParser.h"
 #include "DODS.h"
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 #include "DODSBasicHttpTransmitter.h"
-#include "TheDODSReturnManager.h"
+#include "DODSReturnManager.h"
 #include "DODSTransmitException.h"
-#include "TheAggFactory.h"
+#include "OPeNDAPAggFactory.h"
 #include "DODSAggregationServer.h"
 #include "OPeNDAPDataNames.h"
 
@@ -111,18 +111,18 @@ OPeNDAPCmdInterface::validate_data_request()
 void
 OPeNDAPCmdInterface::build_data_request_plan()
 {
-    if( TheDODSLog && TheDODSLog->is_verbose() )
+    if( DODSLog::TheLog()->is_verbose() )
     {
-	*(TheDODSLog) << _dhi.data[SERVER_PID]
-		      << " [" << _dhi.data[DATA_REQUEST] << "] building"
-		      << endl ;
+	*(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " [" << _dhi.data[DATA_REQUEST] << "] building"
+			     << endl ;
     }
     OPeNDAPCmdParser parser ;
     parser.parse( _dhi.data[DATA_REQUEST], _dhi ) ;
 
     if( _dhi.data[RETURN_CMD] != "" )
     {
-	_transmitter = TheDODSReturnManager->find_transmitter( _dhi.data[RETURN_CMD] ) ;
+	_transmitter = DODSReturnManager::TheManager()->find_transmitter( _dhi.data[RETURN_CMD] ) ;
 	if( !_transmitter )
 	{
 	    throw DODSTransmitException( (string)"Unable to find transmitter " + _dhi.data[RETURN_CMD] ) ;
@@ -133,7 +133,7 @@ OPeNDAPCmdInterface::build_data_request_plan()
 	string protocol = _dhi.transmit_protocol ;
 	if( protocol != "HTTP" )
 	{
-	    _transmitter = TheDODSReturnManager->find_transmitter( BASIC_TRANSMITTER ) ;
+	    _transmitter = DODSReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
 	    if( !_transmitter )
 	    {
 		throw DODSTransmitException( (string)"Unable to find transmitter " + BASIC_TRANSMITTER ) ;
@@ -141,22 +141,24 @@ OPeNDAPCmdInterface::build_data_request_plan()
 	}
 	else
 	{
-	    _transmitter = TheDODSReturnManager->find_transmitter( HTTP_TRANSMITTER ) ;
+	    _transmitter = DODSReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
 	    if( !_transmitter )
 	    {
 		throw DODSTransmitException( (string)"Unable to find transmitter " + HTTP_TRANSMITTER ) ;
 	    }
 	}
     }
-    if( TheDODSLog && TheDODSLog->is_verbose() )
+    if( DODSLog::TheLog()->is_verbose() )
     {
-	*(TheDODSLog) << "Data Handler Interface:" << endl ;
-	*(TheDODSLog) << "    action = " << _dhi.action << endl ;
-	*(TheDODSLog) << "    transmit = " << _dhi.transmit_protocol << endl ;
+	*(DODSLog::TheLog()) << "Data Handler Interface:" << endl ;
+	*(DODSLog::TheLog()) << "    action = " << _dhi.action << endl ;
+	*(DODSLog::TheLog()) << "    transmit = "
+	                     << _dhi.transmit_protocol
+	                     << endl ;
 	map< string, string>::const_iterator data_citer ;
 	for( data_citer = _dhi.data.begin(); data_citer != _dhi.data.end(); data_citer++ )
 	{
-	    *(TheDODSLog) << "    " << (*data_citer).first << " = "
+	    *(DODSLog::TheLog()) << "    " << (*data_citer).first << " = "
 	                  << (*data_citer).second << endl ;
 	}
     }
@@ -172,12 +174,9 @@ OPeNDAPCmdInterface::build_data_request_plan()
 void
 OPeNDAPCmdInterface::execute_data_request_plan()
 {
-    if( TheDODSLog )
-    {
-	*(TheDODSLog) << _dhi.data[SERVER_PID]
-		      << " [" << _dhi.data[DATA_REQUEST] << "] executing"
-		      << endl ;
-    }
+    *(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+		         << " [" << _dhi.data[DATA_REQUEST] << "] executing"
+		         << endl ;
     DODS::execute_data_request_plan() ;
 }
 
@@ -193,35 +192,31 @@ OPeNDAPCmdInterface::invoke_aggregation()
 {
     if( _dhi.data[AGG_CMD] == "" )
     {
-	if( TheDODSLog )
-	{
-	    *(TheDODSLog) << _dhi.data[SERVER_PID]
-			  << " [" << _dhi.data[DATA_REQUEST] << "]"
-			  << " not aggregating, aggregation command empty"
-			  << endl ;
-	}
+	*(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " [" << _dhi.data[DATA_REQUEST] << "]"
+			     << " not aggregating, aggregation command empty"
+			     << endl ;
     }
     else
     {
-	DODSAggregationServer *agg =
-	    TheAggFactory->find_handler( _dhi.data[AGG_HANDLER] ) ;
+	DODSAggregationServer *agg = OPeNDAPAggFactory::TheFactory()->find_handler( _dhi.data[AGG_HANDLER] ) ;
 	if( !agg )
 	{
-	    if( TheDODSLog && TheDODSLog->is_verbose() )
+	    if( DODSLog::TheLog()->is_verbose() )
 	    {
-		*(TheDODSLog) << _dhi.data[SERVER_PID]
-			      << " [" << _dhi.data[DATA_REQUEST] << "]"
-			      << " not aggregating, no aggregation handler"
-			      << endl ;
+		*(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+				     << " [" << _dhi.data[DATA_REQUEST] << "]"
+				     << " not aggregating, no handler"
+				     << endl ;
 	    }
 	}
 	else
 	{
-	    if( TheDODSLog && TheDODSLog->is_verbose() )
+	    if( DODSLog::TheLog()->is_verbose() )
 	    {
-		*(TheDODSLog) << _dhi.data[SERVER_PID]
-			      << " [" << _dhi.data[DATA_REQUEST] << "] aggregating"
-			      << endl ;
+		*(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+				     << " [" << _dhi.data[DATA_REQUEST]
+				     << "] aggregating" << endl ;
 	    }
 	    agg->aggregate( _dhi ) ;
 	}
@@ -239,11 +234,11 @@ OPeNDAPCmdInterface::invoke_aggregation()
 void
 OPeNDAPCmdInterface::transmit_data()
 {
-    if( TheDODSLog && TheDODSLog->is_verbose() )
+    if( DODSLog::TheLog()->is_verbose() )
     {
-	*(TheDODSLog) << _dhi.data[SERVER_PID]
-		      << " [" << _dhi.data[DATA_REQUEST] << "] transmitting"
-		      << endl ;
+	*(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " [" << _dhi.data[DATA_REQUEST]
+			     << "] transmitting" << endl ;
     }
     DODS::transmit_data() ;
 } 
@@ -255,10 +250,9 @@ OPeNDAPCmdInterface::transmit_data()
 void
 OPeNDAPCmdInterface::log_status()
 {
-    if( TheDODSLog )
-	*(TheDODSLog) << _dhi.data[SERVER_PID]
-		      << " [" << _dhi.data[DATA_REQUEST] << "] completed"
-		      << endl ;
+    *(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+		         << " [" << _dhi.data[DATA_REQUEST] << "] completed"
+		         << endl ;
 }
 
 /** @brief Clean up after the request is completed
@@ -273,10 +267,9 @@ void
 OPeNDAPCmdInterface::clean()
 {
     DODS::clean() ;
-    if( TheDODSLog )
-	*(TheDODSLog) << _dhi.data[SERVER_PID]
-		      << " [" << _dhi.data[DATA_REQUEST] << "] exiting"
-		      << endl ;
+    *(DODSLog::TheLog()) << _dhi.data[SERVER_PID]
+		         << " [" << _dhi.data[DATA_REQUEST] << "] exiting"
+		         << endl ;
 }
 
 // $Log: OPeNDAPCmdInterface.cc,v $

@@ -10,7 +10,7 @@ using std::endl ;
 
 #include "DODSMemoryGlobalArea.h"
 #include "DODSMemoryException.h"
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 #include "TheDODSKeys.h"
 
 int DODSMemoryGlobalArea::_counter = 0 ;
@@ -24,13 +24,13 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	try
 	{
 	    bool found = false ;
-	    string s = TheDODSKeys->get_key( "DODS.Memory.GlobalArea.EmergencyPoolSize", found ) ;
-	    string s1 = TheDODSKeys->get_key( "DODS.Memory.GlobalArea.MaximunHeapSize", found ) ;
-	    string verbose = TheDODSKeys->get_key( "DODS.Memory.GlobalArea.Verbose", found ) ;
-	    string control_heap = TheDODSKeys->get_key( "DODS.Memory.GlobalArea.ControlHeap", found ) ;
+	    string s = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.EmergencyPoolSize", found ) ;
+	    string s1 = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.MaximunHeapSize", found ) ;
+	    string verbose = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.Verbose", found ) ;
+	    string control_heap = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.ControlHeap", found ) ;
 	    if( (s=="") || (s1=="") || (verbose=="") || (control_heap=="") )
 	    {
-		(*TheDODSLog) << "DODS: Unable to start: "
+		(*DODSLog::TheLog()) << "DODS: Unable to start: "
 			      << "unable to determine memory keys.\n";
 		DODSMemoryException me;
 		me.set_error_description( "can not determine memory keys.\n" ) ;
@@ -39,24 +39,24 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	    else
 	    {
 		if( verbose=="no" )
-		    TheDODSLog->suspend();
+		    DODSLog::TheLog()->suspend();
 
 		unsigned int emergency=atol(s.c_str());
 
 		if( control_heap == "yes" )
 		{
 		    unsigned int max = atol(s1.c_str());
-		    (*TheDODSLog) << "Trying to initialize emergency size to "
+		    (*DODSLog::TheLog()) << "Trying to initialize emergency size to "
 				  << (long int)emergency
 				  << " and maximun size to ";
-		    (*TheDODSLog) << (long int)(max+1) << " megabytes" << endl ;
+		    (*DODSLog::TheLog()) << (long int)(max+1) << " megabytes" << endl ;
 		    if( emergency > max )
 		    {
 			string s = string ( "DODS: " )
 				   + "unable to start since the emergency "
 				   + "pool is larger than the maximun size of "
 				   + "the heap.\n" ;
-			(*TheDODSLog) << s ;
+			(*DODSLog::TheLog()) << s ;
 			DODSMemoryException me;
 			me.set_error_description( s );
 			throw me;
@@ -64,9 +64,9 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		    log_limits() ;
 		    limit.rlim_cur = megabytes( max + 1 ) ;
 		    limit.rlim_max = megabytes( max + 1 ) ;
-		    (*TheDODSLog) << "DODS: Trying limits soft to "
+		    (*DODSLog::TheLog()) << "DODS: Trying limits soft to "
 			          << (long int)limit.rlim_cur ;
-		    (*TheDODSLog) << " and hard to "
+		    (*DODSLog::TheLog()) << " and hard to "
 			          << (long int)limit.rlim_max
 			          << endl ;
 		    if( setrlimit( RLIMIT_DATA, &limit ) < 0 )
@@ -74,7 +74,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 			string s = string( "DODS: " )
 				   + "Could not set limit for the heap "
 			           + "because " + strerror(errno) + "\n" ;
-			(*TheDODSLog) << s ;
+			(*DODSLog::TheLog()) << s ;
 			DODSMemoryException me;
 			me.set_error_description( s ) ;
 			throw me;
@@ -87,7 +87,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 			string s = string( "DODS: " ) 
 				   + "can not get heap large enough to "
 				   + "start running\n" ;
-			(*TheDODSLog) << s ;
+			(*DODSLog::TheLog()) << s ;
 			DODSMemoryException me;
 			me.set_error_description( s );
 			me.set_amount_of_memory_required ( atoi( s.c_str() ) ) ;
@@ -110,7 +110,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		_buffer = malloc( _size ) ;
 		if( !_buffer )
 		{
-		    (*TheDODSLog) << "DODS: can not expand heap enough to start running.\n";
+		    (*DODSLog::TheLog()) << "DODS: can not expand heap enough to start running.\n";
 		    DODSMemoryException me ;
 		    me.set_error_description( "Can no allocated memory\n" ) ;
 		    me.set_amount_of_memory_required( atoi( s.c_str() ) ) ;
@@ -118,9 +118,9 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		}
 		else
 		{
-		    if( TheDODSLog->is_verbose() )
+		    if( DODSLog::TheLog()->is_verbose() )
 		    {
-			(*TheDODSLog) << "DODS: Memory emergency area "
+			(*DODSLog::TheLog()) << "DODS: Memory emergency area "
 				      << "initialized with size " 
 				      << _size << " megabytes" << endl;
 		    }
@@ -140,7 +140,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	    exit(1) ;
 	}
     }
-    TheDODSLog->resume();
+    DODSLog::TheLog()->resume();
 }
 
 DODSMemoryGlobalArea::~DODSMemoryGlobalArea()
@@ -158,7 +158,7 @@ DODSMemoryGlobalArea::log_limits()
 {
     if( getrlimit( RLIMIT_DATA, &limit ) < 0 )
     {
-	(*TheDODSLog) << "Could not get limits because "
+	(*DODSLog::TheLog()) << "Could not get limits because "
 		      << strerror( errno ) << endl ;
 	DODSMemoryException me ;
 	me.set_error_description( strerror( errno ) ) ;
@@ -166,14 +166,14 @@ DODSMemoryGlobalArea::log_limits()
 	throw me ;
     }
     if( limit.rlim_cur == RLIM_INFINITY )
-	(*TheDODSLog) << "I have infinity soft limit for the heap" << endl ;
+	(*DODSLog::TheLog()) << "I have infinity soft limit for the heap" << endl ;
     else
-	(*TheDODSLog) << "I have soft limit "
+	(*DODSLog::TheLog()) << "I have soft limit "
 		      << (long int)limit.rlim_cur << endl ;
     if( limit.rlim_max == RLIM_INFINITY )
-	(*TheDODSLog) << "I have infinity hard limit for the heap" << endl ;
+	(*DODSLog::TheLog()) << "I have infinity hard limit for the heap" << endl ;
     else
-	(*TheDODSLog) << "I have hard limit "
+	(*DODSLog::TheLog()) << "I have hard limit "
 		      << (long int)limit.rlim_max << endl ;
 }
 

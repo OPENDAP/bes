@@ -11,8 +11,10 @@ using std::endl ;
 #include "DODSContainerPersistenceException.h"
 #include "DODSContainer.h"
 #include "TheDODSKeys.h"
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 #include "DODSInfo.h"
+
+DODSContainerPersistenceList *DODSContainerPersistenceList::_instance = 0 ;
 
 DODSContainerPersistenceList::DODSContainerPersistenceList()
     : _first( 0 )
@@ -180,7 +182,7 @@ DODSContainerPersistenceList::isnice()
     bool ret = false ;
     string key = "DODS.Container.Persistence" ;
     bool found = false ;
-    string isnice = TheDODSKeys->get_key( key, found ) ;
+    string isnice = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( isnice == "Nice" || isnice == "nice" || isnice == "NICE" )
 	ret = true ;
     else 
@@ -236,7 +238,7 @@ DODSContainerPersistenceList::look_for( DODSContainer &d )
     if( d.is_valid() == false )
     {
 	if( isnice() )
-	    (*TheDODSLog) << "Could not find the symbolic name "
+	    (*DODSLog::TheLog()) << "Could not find the symbolic name "
 	                  << d.get_symbolic_name().c_str() << endl ;
 	else
 	{
@@ -281,6 +283,16 @@ DODSContainerPersistenceList::show_containers( DODSInfo &info )
 	pl->_persistence_obj->show_containers( info ) ;
 	pl = pl->_next ;
     }
+}
+
+DODSContainerPersistenceList *
+DODSContainerPersistenceList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSContainerPersistenceList ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSContainerPersistenceList.cc,v $

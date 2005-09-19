@@ -14,6 +14,8 @@ using std::cerr ;
 using std::endl ;
 using std::flush ;
 
+DODSLog *DODSLog::_instance = 0 ;
+
 /** @brief constructor that sets up logging for the application.
  *
  * Sets up logging for the application by opening up the logging file and
@@ -37,7 +39,7 @@ DODSLog::DODSLog()
 {
     _suspended = 0 ;
     bool found = false ;
-    string log_name = TheDODSKeys->get_key( "DODS.LogName", found ) ;
+    string log_name = TheDODSKeys::TheKeys()->get_key( "DODS.LogName", found ) ;
     if( log_name=="" )
     {
 	cerr << "DODS: can not start log facility because can not determine DODS log name.\n";
@@ -63,7 +65,7 @@ DODSLog::DODSLog()
 	}
 	*/
     }
-    string verbose = TheDODSKeys->get_key( "DODS.LogVerbose", found ) ;
+    string verbose = TheDODSKeys::TheKeys()->get_key( "DODS.LogVerbose", found ) ;
     if( verbose == "YES" || verbose == "Yes" || verbose == "yes" )
     {
 	_verbose = true ;
@@ -275,6 +277,16 @@ DODSLog& DODSLog::operator<<(p_ios_manipulator val)
     if (!_suspended)
 	(*_file_buffer)<<val;
     return *this;
+}
+
+DODSLog *
+DODSLog::TheLog()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSLog ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSLog.cc,v $

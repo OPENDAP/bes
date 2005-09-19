@@ -10,7 +10,7 @@
 #include "util.h"
 #include "dispatch_version.h"
 #include "DODSParserException.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 #include "DODSTokenizer.h"
 
 VersionResponseHandler::VersionResponseHandler( string name )
@@ -36,7 +36,7 @@ VersionResponseHandler::~VersionResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DODSTextInfo
- * @see TheRequestHandlerList
+ * @see DODSRequestHandlerList
  */
 void
 VersionResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -47,7 +47,7 @@ VersionResponseHandler::execute( DODSDataHandlerInterface &dhi )
     info->add_data( (string)"    " + dispatch_version() + "\n" ) ;
     info->add_data( (string)"    " + dap_version() + "\n" ) ;
     info->add_data( "Request Handlers\n" ) ;
-    TheRequestHandlerList->execute_all( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_all( dhi ) ;
 }
 
 /** @brief transmit the response object built by the execute command

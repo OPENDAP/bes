@@ -16,11 +16,14 @@ class DODSInfo ;
 
 class DODSDefineList {
 private:
+    static DODSDefineList *	_instance ;
+
     map< string, DODSDefine * > _def_list ;
     typedef map< string, DODSDefine * >::const_iterator Define_citer ;
     typedef map< string, DODSDefine * >::iterator Define_iter ;
-public:
+protected:
 				DODSDefineList(void) {}
+public:
     virtual			~DODSDefineList(void) {}
 
     virtual bool		add_def( const string &def_name,
@@ -29,6 +32,8 @@ public:
     virtual void		remove_defs( ) ;
     virtual DODSDefine *	find_def( const string &def_name ) ;
     virtual void		show_definitions( DODSInfo &info ) ;
+
+    static DODSDefineList *	TheList() ;
 };
 
 #endif // I_DODSDefineList_h

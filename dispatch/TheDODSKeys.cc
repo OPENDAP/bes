@@ -9,30 +9,22 @@
 
 #define DODS_INI_FILE getenv("DODS_INI")
 
-DODSKeys *TheDODSKeys = 0;
+DODSKeys *TheDODSKeys::_instance = 0;
 
-static bool
-buildDODSKeys(int, char**) {
-    char *dods_ini = DODS_INI_FILE ;
-    if( !dods_ini )
+DODSKeys *
+TheDODSKeys::TheKeys()
+{
+    if( _instance == 0 )
     {
-	throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
+	char *dods_ini = DODS_INI_FILE ;
+	if( !dods_ini )
+	{
+	    throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
+	}
+	_instance = new TheDODSKeys( dods_ini ) ;
     }
-    TheDODSKeys = new DODSKeys( dods_ini ) ;
-    return true ;
+    return _instance ;
 }
-
-static bool
-destroyDODSKeys(void) {
-    if( TheDODSKeys )
-    {
-	delete (DODSKeys *)TheDODSKeys ;
-    }
-    TheDODSKeys = 0 ;
-    return true ;
-}
-
-FUNINITQUIT( buildDODSKeys, destroyDODSKeys, DODSKEYS_INIT ) ;
 
 // $Log: TheDODSKeys.cc,v $
 // Revision 1.2  2004/09/09 17:17:12  pwest

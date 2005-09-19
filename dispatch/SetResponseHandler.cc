@@ -6,7 +6,7 @@
 #include "DODSTextInfo.h"
 #include "DODSParserException.h"
 #include "DODSTokenizer.h"
-#include "ThePersistenceList.h"
+#include "DODSContainerPersistenceList.h"
 #include "DODSContainerPersistence.h"
 #include "DODSContainerPersistenceException.h"
 #include "OPeNDAPDataNames.h"
@@ -42,7 +42,7 @@ SetResponseHandler::~SetResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DODSTextInfo
- * @see ThePersistenceList
+ * @see DODSContainerPersistenceList
  * @see DODSContainerPersistence
  * @see DODSContainer
  */
@@ -57,7 +57,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     string real_name = dhi.data[REAL_NAME] ;
     string container_type = dhi.data[CONTAINER_TYPE] ;
     DODSContainerPersistence *cp =
-	ThePersistenceList->find_persistence( store_name ) ;
+	DODSContainerPersistenceList::TheList()->find_persistence( store_name );
     if( cp )
     {
 	try

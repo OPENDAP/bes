@@ -4,6 +4,8 @@
 
 #include "OPeNDAPAggFactory.h"
 
+OPeNDAPAggFactory *OPeNDAPAggFactory::_instance = 0 ;
+
 /** @brief add an aggregation handler to the list
  *
  * This method actually adds to the list a method that knows how to build an
@@ -100,6 +102,16 @@ OPeNDAPAggFactory::get_handler_names()
 	first_name = false ;
     }
     return ret ;
+}
+
+OPeNDAPAggFactory *
+OPeNDAPAggFactory::TheFactory()
+{
+    if( _instance == 0 )
+    {
+	_instance = new OPeNDAPAggFactory ;
+    }
+    return _instance ;
 }
 
 // $Log: OPeNDAPAggFactory.cc,v $

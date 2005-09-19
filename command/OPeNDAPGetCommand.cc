@@ -4,8 +4,8 @@
 
 #include "OPeNDAPGetCommand.h"
 #include "DODSTokenizer.h"
-#include "TheResponseHandlerList.h"
-#include "TheDefineList.h"
+#include "DODSResponseHandlerList.h"
+#include "DODSDefineList.h"
 #include "DODSDefine.h"
 #include "DODSParserException.h"
 #include "OPeNDAPDataNames.h"
@@ -58,7 +58,7 @@ OPeNDAPGetCommand::parse_request( DODSTokenizer &tokenizer,
     /* No subcommand - so proceed as a default get command
      */
     DODSResponseHandler *retResponse =
-	TheResponseHandlerList->find_handler( my_token ) ;
+	DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
     if( !retResponse )
     {
 	string err( "Command " ) ;
@@ -107,7 +107,7 @@ OPeNDAPGetCommand::parse_request( DODSTokenizer &tokenizer,
 	}
     }
 
-    DODSDefine *d = TheDefineList->find_def( def_name ) ;
+    DODSDefine *d = DODSDefineList::TheList()->find_def( def_name ) ;
     if( !d )
     {
 	throw DODSParserException( (string)"Unable to find definition " + def_name ) ;

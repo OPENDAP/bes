@@ -9,24 +9,24 @@ using std::endl ;
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
 #include "DODSContainerPersistenceCGI.h"
-#include "ThePersistenceList.h"
-#include "TheDODSLog.h"
+#include "DODSContainerPersistenceList.h"
+#include "DODSLog.h"
 
 static bool
 CGIPersistenceInit(int, char**) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Adding CGI Persistence" << endl;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Adding CGI Persistence" << endl;
     DODSContainerPersistenceCGI *cpf =
 	    new DODSContainerPersistenceCGI( "CGI" ) ;
-    ThePersistenceList->add_persistence( cpf ) ;
+    DODSContainerPersistenceList::TheList()->add_persistence( cpf ) ;
     return true;
 }
 
 static bool
 CGIPersistenceTerm(void) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Removing CGI Persistence" << endl;
-    ThePersistenceList->rem_persistence( "CGI" ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Removing CGI Persistence" << endl;
+    DODSContainerPersistenceList::TheList()->rem_persistence( "CGI" ) ;
     return true ;
 }
 

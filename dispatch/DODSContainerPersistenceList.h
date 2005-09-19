@@ -13,6 +13,8 @@ class DODSContainerPersistence ;
 class DODSContainer ;
 class DODSInfo ;
 
+#define PERSISTENCE_VOLATILE "volatile"
+
 /** @brief Provides a mechanism for accessing container information from
  * different persistent stores.
  *
@@ -39,6 +41,8 @@ class DODSInfo ;
 class DODSContainerPersistenceList
 {
 private:
+    static DODSContainerPersistenceList * _instance ;
+
     typedef struct _persistence_list
     {
 	DODSContainerPersistence *_persistence_obj ;
@@ -48,8 +52,9 @@ private:
     DODSContainerPersistenceList::persistence_list *_first ;
 
     bool			isnice() ;
-public:
+protected:
 				DODSContainerPersistenceList() ;
+public:
     virtual			~DODSContainerPersistenceList() ;
 
     virtual bool		add_persistence( DODSContainerPersistence *p ) ;
@@ -59,6 +64,8 @@ public:
     virtual void		look_for( DODSContainer &d ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
+
+    static DODSContainerPersistenceList *TheList() ;
 } ;
 
 #endif // I_DODSContainerPersistenceList_H

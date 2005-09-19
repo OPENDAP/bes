@@ -43,10 +43,10 @@ KeysResponseHandler::execute( DODSDataHandlerInterface &dhi )
 
     info->add_data( (string)"List of currently defined keys "
                     + " from the initialization file "
-                    + TheDODSKeys->keys_file_name() + "\n" ) ;
+                    + TheDODSKeys::TheKeys()->keys_file_name() + "\n" ) ;
 
-    DODSKeys::Keys_citer ki = TheDODSKeys->keys_begin() ;
-    DODSKeys::Keys_citer ke = TheDODSKeys->keys_end() ;
+    DODSKeys::Keys_citer ki = TheDODSKeys::TheKeys()->keys_begin() ;
+    DODSKeys::Keys_citer ke = TheDODSKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
     {
 	string line = (string)"key: \"" + (*ki).first

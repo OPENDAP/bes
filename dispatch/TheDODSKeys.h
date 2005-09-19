@@ -7,7 +7,16 @@
 
 #include "DODSKeys.h"
 
-extern DODSKeys *TheDODSKeys;
+class TheDODSKeys : public DODSKeys
+{
+private:
+    static DODSKeys *		_instance ;
+protected:
+    				TheDODSKeys( const string &keys_file_name )
+				    : DODSKeys( keys_file_name ) {}
+public:
+    static DODSKeys *		TheKeys() ;
+} ;
 
 #endif // E_TheDODSKeys_h
 

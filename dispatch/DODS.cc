@@ -9,27 +9,21 @@ using std::string ;
 
 #include "DODS.h"
 
-#include "TheDODSAuthenticator.h"
 #include "DODSStatusReturn.h"
 #include "TheDODSKeys.h"
-#include "TheResponseHandlerList.h"
 #include "DODSResponseHandler.h"
-#include "TheAggFactory.h"
+#include "OPeNDAPAggFactory.h"
 #include "DODSAggregationServer.h"
 #include "cgi_util.h"
-#include "TheReporterList.h"
+#include "DODSReporterList.h"
 
-// exceptions
-#if 0
 #include "OPeNDAPDatabaseException.h"
-#endif
 #include "DODSParserException.h"
 #include "DODSContainerPersistenceException.h"
 #include "DODSKeysException.h"
 #include "DODSLogException.h"
 #include "DODSHandlerException.h"
 #include "DODSIncorrectRequestException.h"
-#include "DODSAuthenticateException.h"
 #include "DODSResponseException.h"
 #include "DODSAggregationException.h"
 #include "Error.h"
@@ -50,20 +44,18 @@ DODS::~DODS()
 
     Execute the request by:
     1. initializing DODS
-    2. authenticating the user
-    3. validating the request, make sure all elements are present
-    4. build the request plan (ie filling in the DODSDataHandlerInterface)
-    5. execute the request plan using the DODSDataHandlerInterface
-    6. transmit the resulting response object
-    7. log the status of the execution
-    8. notify the reporters of the request
+    2. validating the request, make sure all elements are present
+    3. build the request plan (ie filling in the DODSDataHandlerInterface)
+    4. execute the request plan using the DODSDataHandlerInterface
+    5. transmit the resulting response object
+    6. log the status of the execution
+    7. notify the reporters of the request
 
     If an exception is thrown in any of these steps the exception is handed
     over to the exception manager in order to generate the proper response.
 
     @return status of the execution of the request, 0 if okay, !0 otherwise
     @see initialize
-    @see authenticate
     @see validate_data_request
     @see build_data_request_plan
     @see execute_data_request_plan
@@ -80,7 +72,6 @@ DODS::execute_request()
     try
     {
 	initialize() ;
-	authenticate() ;
 	validate_data_request() ;
 	build_data_request_plan() ;
 	execute_data_request_plan() ;
@@ -120,28 +111,6 @@ DODS::execute_request()
 void
 DODS::initialize()
 {
-}
-
-/** @brief Authenticate the user
-
-    Authentication MUST be implemented in order to continue. If no
-    authentication is needed then link in the test_authenticator object
-    which will simply authenticate without checking any credentials.
-
-    @see DODSAuthenticate
- */
-void
-DODS::authenticate()
-{
-    // if can't authenticate then throw an authentication exception
-    if( !TheDODSAuthenticator )
-    {
-	string s = "No means to authenticate user, exiting" ;
-	DODSAuthenticateException ae ;
-	ae.set_error_description( s ) ;
-	throw ae;
-    }
-    TheDODSAuthenticator->authenticate( _dhi ) ;
 }
 
 /** @brief Validate the incoming request information
@@ -202,8 +171,7 @@ DODS::invoke_aggregation()
 {
     if( _dhi.data[AGG_CMD] != "" )
     {
-	DODSAggregationServer *agg =
-	    TheAggFactory->find_handler( _dhi.data[AGG_HANDLER] ) ;
+	DODSAggregationServer *agg = OPeNDAPAggFactory::TheFactory()->find_handler( _dhi.data[AGG_HANDLER] ) ;
 	if( agg )
 	{
 	    agg->aggregate( _dhi ) ;
@@ -240,20 +208,21 @@ DODS::log_status()
 {
 }
 
-/** @brief Report the request and status of the request to TheReporterList
+/** @brief Report the request and status of the request to
+ * DODSReporterList::TheList()
 
     If interested in reporting the request and status of the request then
-    one must register a DODSReporter with TheReporterList.
+    one must register a DODSReporter with DODSReporterList::TheList().
 
     If no DODSReporter objects are registered then nothing happens.
 
-    @see TheReporterList
+    @see DODSReporterList
     @see DODSReporter
  */
 void
 DODS::report_request()
 {
-    if( TheReporterList ) TheReporterList->report( _dhi ) ;
+    DODSReporterList::TheList()->report( _dhi ) ;
 }
 
 /** @brief Clean up after the request
@@ -277,7 +246,6 @@ DODS::clean()
     @return status after exception is handled
     @see DODSException
     @see DODSIncorrectException
-    @see DODSAuthenticateException
     @see OPeNDAPDatabaseException
     @see DODSMySQLQueryException
     @see DODSParserException
@@ -300,7 +268,7 @@ DODS::exception_manager(DODSException &e)
 	if( ishttp ) set_mime_text( stdout, dods_error ) ;
 	bool found = false ;
 	string administrator =
-	    TheDODSKeys->get_key( "DODS.ServerAdministrator", found ) ;
+	    TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
 	if( administrator=="" )
 	    fprintf( stdout, "%s %s %s\n",
 			     "DODS: internal server error please contact",
@@ -314,52 +282,6 @@ DODS::exception_manager(DODSException &e)
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return DODS_REQUEST_INCORRECT;
     }
-    DODSAuthenticateException *ae = dynamic_cast<DODSAuthenticateException*>(&e);
-    if(ae)
-    {
-	if( ishttp )
-	{
-	    set_mime_html( stdout, dods_error ) ;
-	    fprintf( stdout, "<HTML>" ) ;
-	    fprintf( stdout, "<HEAD></HEAD>" ) ;
-	    fprintf( stdout, "<BODY BACKGROUND='http://cedarweb.hao.ucar.edu/images/Texture_lt_gray_004.jpg'>") ;
-	    fprintf( stdout, "<TABLE BACKGROUND='http://cedarweb.hao.ucar.edu/images/Texture_lt_gray_004.jpg' BORDER='0' WIDTH='100%%' CELLPADDING='1' CELLSPACING='0'>" ) ;
-	    fprintf( stdout, "<TR>" ) ;
-	    fprintf( stdout, "<TD WIDTH='20%%' BACKGROUND='http://cedarweb.hao.ucar.edu/images/Texture_lt_gray_004.jpg'>" ) ;
-	    fprintf( stdout, "<P ALIGN='center'>" ) ;
-	    fprintf( stdout, "<A HREF='http://www.ucar.edu' TARGET='_blank'><IMG SRC='http://cedarweb.hao.ucar.edu/images/CedarwebUCAR.gif' ALT='UCAR' BORDER='0'><BR><FONT SIZE='2'>UCAR</FONT></A>" ) ;
-	    fprintf( stdout, "</P>" ) ;
-	    fprintf( stdout, "</TD>" ) ;
-	    fprintf( stdout, "<TD WIDTH='80%%' BACKGROUND='http://cedarweb.hao.ucar.edu/images/Texture_lt_gray_004.jpg'>" ) ;
-	    fprintf( stdout, "<P ALIGN='center'>" ) ;
-	    fprintf( stdout, "<IMG BORDER='0' SRC='http://cedarweb.hao.ucar.edu/images/Cedarweb.jpg' ALT='CEDARweb'>" ) ;
-	    fprintf( stdout, "</P>" ) ;
-	    fprintf( stdout, "</TD>" ) ;
-	    fprintf( stdout, "</TR>" ) ;
-	    fprintf( stdout, "</TABLE>" ) ;
-	    fprintf( stdout, "<BR />" ) ;
-	    fprintf( stdout, "<BR />" ) ;
-	    fprintf( stdout, "%s %s %s.\n",
-	             "We were unable to authenticate your session",
-		     "for user",
-		     _dhi.data[USER_NAME].c_str() ) ;
-	    fprintf( stdout, "<BR />\n" ) ;
-	    fprintf( stdout, "<BR />\n" ) ;
-	    fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	    fprintf( stdout, "<BR />\n" ) ;
-	    fprintf( stdout, "<BR />\n" ) ;
-	    fprintf( stdout, "Please follow <A HREF=\"https://cedarweb.hao.ucar.edu:443/cgi-bin/ion-p?page=login.ion\" TARGET=\"NEW\">this link</A> to login.\n" ) ;
- 	    fprintf( stdout, "Then refresh this page to get your data once you have logged in\n" ) ;
-	    fprintf( stdout, "</BODY></HTML>" ) ;
-	}
-	else
-	{
-	    fprintf( stdout, "Reporting Authentication Exception.\n" ) ;
-	    fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	}
-	return DODS_AUTHENTICATE_EXCEPTION;
-    } 
-#if 0
     OPeNDAPDatabaseException *ce=dynamic_cast<OPeNDAPDatabaseException*>(&e);
     if(ce)
     {
@@ -368,7 +290,6 @@ DODS::exception_manager(DODSException &e)
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return OPENDAP_DATABASE_FAILURE;
     }
-#endif
     DODSParserException *pe=dynamic_cast<DODSParserException*>(&e);
     if(pe)
     {
@@ -429,7 +350,7 @@ DODS::exception_manager(DODSException &e)
     fprintf( stdout, "Reporting unknown exception.\n" ) ;
     bool found = false ;
     string administrator =
-	TheDODSKeys->get_key( "DODS.ServerAdministrator", found ) ;
+	TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
     fprintf( stdout, "Unmanaged DODS exception\n report to admin %s\n",
 	     administrator.c_str() ) ;
     fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;

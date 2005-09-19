@@ -128,7 +128,7 @@ ServerApp::initialize( int argc, char **argv )
 
     bool found = false ;
     string key = "DODS.ServerUnixSocket" ;
-    _unixSocket = TheDODSKeys->get_key( key, found ) ;
+    _unixSocket = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( !found || _unixSocket == "" )
     {
 	cout << "Unable to determine unix socket" << endl ;

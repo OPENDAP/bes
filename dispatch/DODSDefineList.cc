@@ -8,6 +8,8 @@
 #include "DODSInfo.h"
 #include "DODSContainer.h"
 
+DODSDefineList *DODSDefineList::_instance = 0 ;
+
 bool
 DODSDefineList::add_def( const string &def_name,
 			     DODSDefine *def )
@@ -106,6 +108,16 @@ DODSDefineList::show_definitions( DODSInfo &info )
 	    info.add_data( "Aggregation: " + def->aggregation_command + "\n" ) ;
 	}
     }
+}
+
+DODSDefineList *
+DODSDefineList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSDefineList ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSDefineList.cc,v $

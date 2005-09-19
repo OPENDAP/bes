@@ -5,6 +5,8 @@
 #include "DODSReporterList.h"
 #include "DODSReporter.h"
 
+DODSReporterList *DODSReporterList::_instance = 0 ;
+
 DODSReporterList::DODSReporterList()
 {
 }
@@ -69,6 +71,16 @@ DODSReporterList::report( const DODSDataHandlerInterface &dhi )
 	reporter = (*i).second ;
 	if( reporter ) reporter->report( dhi ) ;
     }
+}
+
+DODSReporterList *
+DODSReporterList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSReporterList ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSReporterList.cc,v $

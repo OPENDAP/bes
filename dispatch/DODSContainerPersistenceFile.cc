@@ -49,7 +49,7 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
 {
     string key = "DODS.Container.Persistence.File." + n ;
     bool found = false ;
-    string my_file = TheDODSKeys->get_key( key, found ) ;
+    string my_file = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( my_file == "" )
     {
 	string s = key + " not defined in key file" ;

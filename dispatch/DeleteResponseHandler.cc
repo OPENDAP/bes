@@ -5,9 +5,9 @@
 #include "DeleteResponseHandler.h"
 #include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
-#include "TheDefineList.h"
+#include "DODSDefineList.h"
 #include "DODSDefine.h"
-#include "ThePersistenceList.h"
+#include "DODSContainerPersistenceList.h"
 #include "DODSContainerPersistence.h"
 #include "DODSContainer.h"
 #include "OPeNDAPDataNames.h"
@@ -24,8 +24,9 @@ DeleteResponseHandler::~DeleteResponseHandler( )
 /** @brief executes the command to delete a container, a definition, or all
  * definitions.
  *
- * Removes definitions from TheDefineList and containers from volatile
- * container persistence object, which is found in ThePersistenceList.
+ * Removes definitions from the list of definitions and containers from
+ * volatile container persistence object, which is found in
+ * DODSContainerPersistenceList::TheList().
  *
  * The response object built is a DODSTextInfo object. Status of the delition
  * will be added to the informational object, one of:
@@ -47,10 +48,10 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DODSTextInfo
- * @see TheDefineList
+ * @see DODSDefineList
  * @see DODSDefine
- * @see ThePersistenceList
  * @see DODSContainerPersistence
+ * @see DODSContainerPersistenceList
  */
 void
 DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -60,12 +61,13 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 
     if( dhi.data[DEFINITIONS] == "true" )
     {
-	TheDefineList->remove_defs() ;
+	DODSDefineList::TheList()->remove_defs() ;
 	info->add_data( "Successfully deleted all definitions\n" ) ;
     }
     else if( dhi.data[DEF_NAME] != "" )
     {
-	bool deleted = TheDefineList->remove_def( dhi.data[DEF_NAME] ) ;
+	bool deleted =
+	    DODSDefineList::TheList()->remove_def( dhi.data[DEF_NAME] ) ;
 	if( deleted == true )
 	{
 	    string line = (string)"Successfully deleted definition \""
@@ -83,8 +85,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
     else if( dhi.data[STORE_NAME] != "" && dhi.data[CONTAINER_NAME] != "" )
     {
-	DODSContainerPersistence *cp =
-		ThePersistenceList->find_persistence( dhi.data[STORE_NAME] ) ;
+	DODSContainerPersistence *cp = DODSContainerPersistenceList::TheList()->find_persistence( dhi.data[STORE_NAME] ) ;
 	if( cp )
 	{
 	    bool deleted =  cp->rem_container( dhi.data[CONTAINER_NAME] ) ;

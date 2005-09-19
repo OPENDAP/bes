@@ -8,7 +8,7 @@
 #include "cgi_util.h"
 #include "DODSResponseNames.h"
 #include "DODSParserException.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 
 DDXResponseHandler::DDXResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -34,7 +34,7 @@ DDXResponseHandler::~DDXResponseHandler( )
  * @see _DODSDataHandlerInterface
  * @see DDS
  * @see DAS
- * @see TheRequestHandlerList
+ * @see DODSRequestHandlerList
  */
 void
 DDXResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -43,13 +43,13 @@ DDXResponseHandler::execute( DODSDataHandlerInterface &dhi )
     DDS *dds = new DDS( "virtual" ) ;
     _response = dds ;
     _response_name = DDS_RESPONSE ;
-    TheRequestHandlerList->execute_each( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // Fill the DAS
     DAS *das = new DAS ;
     _response = das ;
     _response_name = DAS_RESPONSE ;
-    TheRequestHandlerList->execute_each( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // Transfer the DAS to the DDS
     dds->transfer_attributes( das ) ;

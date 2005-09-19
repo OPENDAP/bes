@@ -6,7 +6,7 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch ppt cmdln command server
+SUBDIRS = dispatch command ppt cmdln server
 
 bin_SCRIPTS = bes-config
 

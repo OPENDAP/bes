@@ -73,7 +73,7 @@ DODSInfo::initialize( string key )
     }
 
     bool found = false ;
-    string b = TheDODSKeys->get_key( key, found ) ;
+    string b = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( b == "true" || b == "True" || b == "TRUE" ||
 	b == "yes" || b == "Yes" || b == "YES" )
     {
@@ -123,7 +123,7 @@ void
 DODSInfo::add_data_from_file( const string &key, const string &name )
 {
     bool found = false ;
-    string file = TheDODSKeys->get_key( key, found ) ;
+    string file = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( found == false )
     {
 	add_data( name + " file key " + key + " not found, information not available\n" ) ;

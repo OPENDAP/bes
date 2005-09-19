@@ -22,9 +22,12 @@ class DODSTransmitter ;
  */
 class DODSReturnManager {
 private:
+    static DODSReturnManager *	_instance ;
+
     map< string, DODSTransmitter * > _transmitter_list ;
-public:
+protected:
 				DODSReturnManager() ;
+public:
     virtual			~DODSReturnManager() ;
 
     typedef map< string, DODSTransmitter * >::const_iterator Transmitter_citer ;
@@ -34,6 +37,8 @@ public:
 						 DODSTransmitter *transmitter );
     virtual DODSTransmitter *	rem_transmitter( const string &name) ;
     virtual DODSTransmitter *	find_transmitter( const string &name ) ;
+
+    static DODSReturnManager *	TheManager() ;
 };
 
 #endif // I_DODSReturnManager_h

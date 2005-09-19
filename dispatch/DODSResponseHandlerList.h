@@ -38,20 +38,24 @@ typedef DODSResponseHandler * (*p_response_handler)( string name ) ;
  */
 class DODSResponseHandlerList {
 private:
-    map< string, p_response_handler > _handler_list ;
+    static DODSResponseHandlerList *	_instance ;
+    map< string, p_response_handler >	_handler_list ;
+protected:
+					DODSResponseHandlerList(void) {}
 public:
-				DODSResponseHandlerList(void) {}
-    virtual			~DODSResponseHandlerList(void) {}
+    virtual				~DODSResponseHandlerList(void) {}
 
     typedef map< string, p_response_handler >::const_iterator Handler_citer ;
     typedef map< string, p_response_handler >::iterator Handler_iter ;
 
-    virtual bool		add_handler( string handler_name,
+    virtual bool			add_handler( string handler_name,
 					   p_response_handler handler_method ) ;
-    virtual bool		remove_handler( string handler_name ) ;
-    virtual DODSResponseHandler *find_handler( string handler_name ) ;
+    virtual bool			remove_handler( string handler_name ) ;
+    virtual DODSResponseHandler *	find_handler( string handler_name ) ;
 
-    virtual string		get_handler_names() ;
+    virtual string			get_handler_names() ;
+
+    static DODSResponseHandlerList *	TheList() ;
 };
 
 #endif // I_DODSResponseHandlerList_h

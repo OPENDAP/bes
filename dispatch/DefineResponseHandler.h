@@ -35,13 +35,13 @@
  * <BR />
  * &nbsp;&nbsp;,container_2.attributes="attr1,attr2";
  *
- * It adds the new definition to TheDefineList. If a definition already exists
+ * It adds the new definition to the list. If a definition already exists
  * in the list with the given name then it is removed first and the new one is
  * added. The definition is currently available through the life of the server
  * process and is not persistent.
  *
  * @see DODSDefine
- * @see TheDefineList
+ * @see DODSDefineList
  * @see DODSContainer
  * @see DODSTransmitter
  * @see DODSTokenizer

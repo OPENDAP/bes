@@ -49,13 +49,12 @@ CLEANFILES = $(MODOBJS)
 # Sources and Headers for libdispatch.
 
 SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
-	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc TheDODSLog.cc \
+	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc \
 	DODSKeys.cc TheDODSKeys.cc \
 	DODSTestAuthenticate.cc DODSTokenizer.cc \
 	DODSContainer.cc DODSStatus.cc \
 	DODSContainerPersistence.cc DODSContainerPersistenceCGI.cc \
 	DODSContainerPersistenceFile.cc DODSContainerPersistenceList.cc \
-	ThePersistenceList.cc \
 	DODSContainerPersistenceVolatile.cc \
 	DASResponseHandler.cc DDSResponseHandler.cc \
 	DDXResponseHandler.cc ProcIdResponseHandler.cc SetResponseHandler.cc \
@@ -64,23 +63,23 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	VersionResponseHandler.cc \
 	ContainersResponseHandler.cc DefinitionsResponseHandler.cc \
 	DeleteResponseHandler.cc KeysResponseHandler.cc \
-	DODSResponseHandlerList.cc TheResponseHandlerList.cc \
+	DODSResponseHandlerList.cc \
 	DODSInfo.cc DODSTextInfo.cc DODSHTMLInfo.cc \
 	DODSRequestHandler.cc DODSRequestHandlerList.cc \
-	TheRequestHandlerList.cc DODSBasicTransmitter.cc \
+	DODSBasicTransmitter.cc \
 	DODSBasicHttpTransmitter.cc DODSFilterTransmitter.cc \
-	DODSReporterList.cc TheReporterList.cc DODSBasicException.cc \
+	DODSReporterList.cc DODSBasicException.cc \
 	DODSMemoryException.cc DODSAutoPtr.cc DODSConstraintFuncs.cc \
 	DODSHeapManager.cc DODSMemoryGlobalArea.cc \
 	DODSMemoryManager.cc DODSProcessEncodedString.cc \
-	TheAggFactory.cc OPeNDAPAggFactory.cc \
-	DODSReturnManager.cc TheDODSReturnManager.cc \
-	DODSDefineList.cc TheDefineList.cc \
+	OPeNDAPAggFactory.cc \
+	DODSReturnManager.cc \
+	DODSDefineList.cc \
 	OPeNDAPBaseApp.cc
 
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
-	DODSInitializer.h DODSLog.h TheDODSLog.h DODSLogException.h \
+	DODSInitializer.h DODSLog.h DODSLogException.h \
 	DODSKeys.h TheDODSKeys.h DODSKeysException.h DODSAuthenticate.h \
 	DODSTestAuthenticate.h DODSStatus.h \
 	TheDODSAuthenticator.h DODSAuthenticateException.h \
@@ -88,7 +87,7 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSContainerPersistence.h DODSTransmitException.h \
 	DODSContainerPersistenceCGI.h DODSContainerPersistenceFile.h \
 	DODSContainerPersistenceList.h \
-	ThePersistenceList.h DODSContainerPersistenceException.h \
+	DODSContainerPersistenceException.h \
 	DODSContainerPersistenceVolatile.h \
 	DASResponseHandler.h DDSResponseHandler.h \
 	DDXResponseHandler.h ProcIdResponseHandler.h SetResponseHandler.h \
@@ -96,16 +95,16 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	StatusResponseHandler.h DefineResponseHandler.h \
 	VersionResponseHandler.h DODSResponseHandlerList.h \
 	ContainersResponseHandler.h DefinitionsResponseHandler.h \
-	DeleteResponseHandler.h TheResponseHandlerList.h \
+	DeleteResponseHandler.h \
 	KeysResponseHandler.h \
 	DODSResponseNames.h DODSResponseException.h \
 	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSRequestHandler.h \
-	DODSRequestHandlerList.h TheRequestHandlerList.h \
+	DODSRequestHandlerList.h \
 	DODSIncorrectRequestException.h DODSDataHandlerInterface.h \
 	DODSDataRequestInterface.h DODSTransmitter.h \
 	DODSBasicHttpTransmitter.h DODSBasicTransmitter.h \
 	DODSFilterTransmitter.h DODSReporter.h DODSReporterList.h \
-	TheReporterList.h DODSBasicException.h DODSException.h \
+	DODSBasicException.h DODSException.h \
 	DODSHandlerException.h DODSAggregationException.h \
 	DODSMemoryException.h \
 	DODSAutoPtr.cc DODSAutoPtr.h \
@@ -113,27 +112,25 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSMemoryGlobalArea.h DODSMemoryManager.h \
 	DODSProcessEncodedString.h \
 	DODSServerSystemResources.h DODSStatusReturn.h dispatch_version.h \
-	TheAggFactory.h OPeNDAPAggFactory.h DODSAggregationServer.h \
-	DODSReturnManager.h TheDODSReturnManager.h \
-	DODSDefineList.h TheDefineList.h DODSDefine.h \
+	OPeNDAPAggFactory.h DODSAggregationServer.h \
+	DODSReturnManager.h \
+	DODSDefineList.h DODSDefine.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h
 
 MODSRCS:=dods_module.cc cgi_persistence.cc file_persistence.cc \
-	http_transmitter.cc test_authenticator.cc
+	http_transmitter.cc
 
 MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
-	http_transmitter.o test_authenticator.o
-
-# test_authenticator.cc
+	http_transmitter.o
 
 # TESTSRC:=dispatch_test.cc
 # TESTEXEC:=dispatch_test
 
 # $(TESTEXEC) : $(LIB) $(TESTOBJ) dods_module.o file_persistence.o \
-# 	test_authenticator.o ../cedar-handler/cedar_module.o \
+# 	../cedar-handler/cedar_module.o \
 # 	../cedar-handler/cedar_persistence.o \
 # 	../cedar-handler/libcedar-handler.a  \
 # 	$(CXX) -o $(TESTEXEC) $(LDFLAGS) $(TESTOBJ) dods_module.o \
-# 		file_persistence.o test_authenticator.o \
+# 		file_persistence.o \
 # 		../cedar-handler/cedar_module.o \
 # 		../cedar-handler/cedar_persistence.o $(LIBS)

@@ -4,7 +4,7 @@
 
 #include "OPeNDAPShowCommand.h"
 #include "DODSTokenizer.h"
-#include "TheResponseHandlerList.h"
+#include "DODSResponseHandlerList.h"
 #include "DODSParserException.h"
 
 /** @brief knows how to parse a show request
@@ -46,7 +46,7 @@ OPeNDAPShowCommand::parse_request( DODSTokenizer &tokenizer,
 
     dhi.action = my_token ;
     DODSResponseHandler *retResponse =
-	TheResponseHandlerList->find_handler( my_token ) ;
+	DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
     if( !retResponse )
     {
 	string err( "Command " ) ;

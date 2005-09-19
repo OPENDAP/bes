@@ -10,8 +10,7 @@ using std::set_new_handler ;
 
 #include "DODSMemoryManager.h"
 
-#include "TheDODSLog.h"
-#include "TheDODSKeys.h"
+#include "DODSLog.h"
 #include "DODSMemoryGlobalArea.h"
 
 DODSMemoryGlobalArea* DODSMemoryManager::_memory;
@@ -35,7 +34,7 @@ DODSMemoryManager::register_global_pool()
 void
 DODSMemoryManager::swap_memory()
 {
-    if( TheDODSLog ) *(TheDODSLog) << "DODSMemoryManager::This is just a simulation, here we tell DODS to go to persistence state" << endl;
+    *(DODSLog::TheLog()) << "DODSMemoryManager::This is just a simulation, here we tell DODS to go to persistence state" << endl;
     set_new_handler( DODSMemoryManager::release_global_pool ) ;
 }
 
@@ -56,20 +55,20 @@ DODSMemoryManager::check_memory_pool()
 { 
     if( _storage_used )
     {
-	if( TheDODSLog ) *(TheDODSLog) << "DODS: global pool is used, trying to get it back...";
+	*(DODSLog::TheLog()) << "DODS: global pool is used, trying to get it back...";
 	//Try to regain the memory...
 	if( _memory->reclaim_memory() )
 	{
 	    _storage_used = false ;
-	    if( TheDODSLog ) *(TheDODSLog) << "got it!" << endl ;
+	    *(DODSLog::TheLog()) << "got it!" << endl ;
 	    return true ;
 	}
 	else
 	{
-	    if( TheDODSLog ) *(TheDODSLog) << "can not get it!" << endl;
-	    if( TheDODSLog ) *(TheDODSLog) << "DODS: Unable to continue: "
-			  << "no emergency memory pool"
-			  << endl;
+	    *(DODSLog::TheLog()) << "can not get it!" << endl;
+	    *(DODSLog::TheLog()) << "DODS: Unable to continue: "
+			         << "no emergency memory pool"
+			         << endl;
 	    return false ;
 	}
     }
@@ -84,8 +83,9 @@ DODSMemoryManager::release_global_pool() throw (bad_alloc)
     // It releases enough memory for an exception sequence to be carried.
     // Without this pool of memory for emergencies we will get really
     // unexpected behavior from the program.
-    if( TheDODSLog ) *(TheDODSLog) << "DODS Warning: low in memory, releasing global memory pool"
-		  << endl;
+    *(DODSLog::TheLog()) << "DODS Warning: low in memory, "
+                         << "releasing global memory pool!"
+		         << endl;
     _storage_used = true ;
     _memory->release_memory() ;
 

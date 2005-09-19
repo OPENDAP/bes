@@ -4,8 +4,8 @@
 
 #include "OPeNDAPDefineCommand.h"
 #include "DODSTokenizer.h"
-#include "ThePersistenceList.h"
-#include "TheResponseHandlerList.h"
+#include "DODSContainerPersistenceList.h"
+#include "DODSResponseHandlerList.h"
 #include "DODSParserException.h"
 #include "OPeNDAPDataNames.h"
 
@@ -72,7 +72,7 @@ OPeNDAPDefineCommand::parse_request( DODSTokenizer &tokenizer,
      */
     dhi.action = _cmd ;
     DODSResponseHandler *retResponse =
-	TheResponseHandlerList->find_handler( _cmd ) ;
+	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
     if( !retResponse )
     {
 	throw DODSParserException( (string)"Improper command " + _cmd );
@@ -105,7 +105,7 @@ OPeNDAPDefineCommand::parse_request( DODSTokenizer &tokenizer,
 	    else
 	    {
 		DODSContainer d( my_token ) ;
-		ThePersistenceList->look_for( d ) ;
+		DODSContainerPersistenceList::TheList()->look_for( d ) ;
 		dhi.containers.push_back( d ) ;
 		expecting_comma = true ;
 	    }

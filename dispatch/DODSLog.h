@@ -28,9 +28,9 @@ using std::string ;
  * DODSLog is used similar to cerr and cout using the overloaded operator <<.
  *
  * <PRE>
- * if( TheDODSLog && TheDODSLog->is_verbose() )
+ * if( DODSLog::TheLog()->is_verbose() )
  * {
- *     *(TheDODSLog) << "This is some information to be logged"
+ *     *(DODSLog::TheLog()) << "This is some information to be logged"
  * 		  << endl ;
  * }
  * </PRE>
@@ -49,16 +49,15 @@ using std::string ;
  * <LI>ios manipulators hex, oct, dec
  * </UL>
  *
- * OpenDAP provides a global variable for access to a single DODSLog object,
- * TheDODSLog. This global object is created during global initialization
- * using DODSGlobalIQ.
+ * DODSLog provides a static method for access to a single DODSLog object,
+ * TheLog.
  *
  * @see DODSKeys
- * @see DODSGlobalIQ
  */
 class DODSLog 
 {
 private:
+    static DODSLog *	_instance ;
     int			_flushed ;
     ofstream *		_file_buffer;
     // Flag to indicate the object is not routing data to its associated stream
@@ -66,10 +65,11 @@ private:
     // Flag to indicate whether to log verbose messages
     bool		_verbose ;
 protected:
+    DODSLog(); 
+
     // Dumps the current system time.
     void		dump_time() ;
 public:
-    DODSLog(); 
     ~DODSLog();
 
     /** @brief Suspend logging of any information until resumed.
@@ -150,6 +150,8 @@ public:
 
     DODSLog& operator<<(p_ostream_manipulator); 
     DODSLog& operator<<(p_ios_manipulator); 
+
+    static DODSLog *TheLog() ;
 };
 
 #endif // DODSLog_h_

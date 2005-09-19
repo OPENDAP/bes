@@ -4,8 +4,8 @@
 
 #include "OPeNDAPSetCommand.h"
 #include "DODSTokenizer.h"
-#include "ThePersistenceList.h"
-#include "TheResponseHandlerList.h"
+#include "DODSResponseHandlerList.h"
+#include "DODSContainerPersistenceList.h"
 #include "DODSParserException.h"
 #include "OPeNDAPDataNames.h"
 
@@ -47,7 +47,7 @@ OPeNDAPSetCommand::parse_request( DODSTokenizer &tokenizer,
      */
     dhi.action = _cmd ;
     DODSResponseHandler *retResponse =
-	TheResponseHandlerList->find_handler( _cmd ) ;
+	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
     if( !retResponse )
     {
 	throw DODSParserException( (string)"Improper command " + _cmd );

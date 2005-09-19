@@ -25,11 +25,8 @@ using std::cerr ;
 
 OPeNDAPServerHandler::OPeNDAPServerHandler()
 {
-    if( TheDODSKeys )
-    {
-	bool found = false ;
-	_method = TheDODSKeys->get_key( "DODS.ProcessManagerMethod", found ) ;
-    }
+    bool found = false ;
+    _method = TheDODSKeys::TheKeys()->get_key( "DODS.ProcessManagerMethod", found ) ;
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "

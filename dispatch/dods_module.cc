@@ -9,7 +9,7 @@ using std::endl ;
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
 #include "DODSResponseNames.h"
-#include "TheResponseHandlerList.h"
+#include "DODSResponseHandlerList.h"
 
 #include "DASResponseHandler.h"
 #include "DDSResponseHandler.h"
@@ -31,89 +31,94 @@ using std::endl ;
 
 #include "DeleteResponseHandler.h"
 
-#include "TheDODSReturnManager.h"
+#include "DODSReturnManager.h"
 #include "DODSBasicTransmitter.h"
+#include "DODSContainerPersistenceList.h"
+#include "DODSContainerPersistenceVolatile.h"
 
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 
 static bool
 DODSModuleInit(int, char**) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Initializing DODS:" << endl;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Initializing DODS:" << endl;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DAS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DAS_RESPONSE, DASResponseHandler::DASResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DAS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DAS_RESPONSE, DASResponseHandler::DASResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DDS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DDS_RESPONSE, DDSResponseHandler::DDSResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DDS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, DDSResponseHandler::DDSResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DDX_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DDX_RESPONSE, DDXResponseHandler::DDXResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DDX_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DDX_RESPONSE, DDXResponseHandler::DDXResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DATA_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DATA_RESPONSE, DataResponseHandler::DataResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DATA_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, DataResponseHandler::DataResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << HELP_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( HELP_RESPONSE, HelpResponseHandler::HelpResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << HELP_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, HelpResponseHandler::HelpResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << PROCESS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( PROCESS_RESPONSE, ProcIdResponseHandler::ProcIdResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( PROCESS_RESPONSE, ProcIdResponseHandler::ProcIdResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << CONTAINERS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( CONTAINERS_RESPONSE, ContainersResponseHandler::ContainersResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << CONTAINERS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( CONTAINERS_RESPONSE, ContainersResponseHandler::ContainersResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DEFINITIONS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DEFINITIONS_RESPONSE, DefinitionsResponseHandler::DefinitionsResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DEFINITIONS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DEFINITIONS_RESPONSE, DefinitionsResponseHandler::DefinitionsResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << KEYS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( KEYS_RESPONSE, KeysResponseHandler::KeysResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << KEYS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( KEYS_RESPONSE, KeysResponseHandler::KeysResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << VERS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( VERS_RESPONSE, VersionResponseHandler::VersionResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << VERS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( VERS_RESPONSE, VersionResponseHandler::VersionResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( STATUS_RESPONSE, StatusResponseHandler::StatusResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, StatusResponseHandler::StatusResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DEFINE_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DEFINE_RESPONSE, DefineResponseHandler::DefineResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DEFINE_RESPONSE, DefineResponseHandler::DefineResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << SET_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( SET_RESPONSE, SetResponseHandler::SetResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << SET_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( SET_RESPONSE, SetResponseHandler::SetResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << DELETE_RESPONSE << " response handler" << endl;
-    TheResponseHandlerList->add_handler( DELETE_RESPONSE, DeleteResponseHandler::DeleteResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << DELETE_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( DELETE_RESPONSE, DeleteResponseHandler::DeleteResponseBuilder ) ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
-    TheDODSReturnManager->add_transmitter( BASIC_TRANSMITTER, new DODSBasicTransmitter ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
+    DODSReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new DODSBasicTransmitter ) ;
 
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " persistence" << endl;
+    DODSContainerPersistenceList::TheList()->add_persistence( new DODSContainerPersistenceVolatile( PERSISTENCE_VOLATILE ) ) ;
     return true;
 }
 
 static bool
 DODSModuleTerm(void) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Removing DODS Response Handlers" << endl;
-    TheResponseHandlerList->remove_handler( DAS_RESPONSE ) ;
-    TheResponseHandlerList->remove_handler( DDS_RESPONSE ) ;
-    TheResponseHandlerList->remove_handler( DDX_RESPONSE ) ;
-    TheResponseHandlerList->remove_handler( DATA_RESPONSE ) ;
-    TheResponseHandlerList->remove_handler( HELP_RESPONSE ) ;
-    TheResponseHandlerList->remove_handler( VERS_RESPONSE ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Removing DODS Response Handlers" << endl;
+    DODSResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
+    DODSResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
+    DODSResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
+    DODSResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
+    DODSResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
+    DODSResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
     return true;
 }
 

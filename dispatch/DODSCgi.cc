@@ -6,7 +6,7 @@
 #include "DODSFilter.h"
 #include "DODSFilterTransmitter.h"
 #include "DODSHandlerException.h"
-#include "TheResponseHandlerList.h"
+#include "DODSResponseHandlerList.h"
 #include "cgi_util.h"
 #include "OPeNDAPDataNames.h"
 
@@ -59,7 +59,8 @@ DODSCgi::build_data_request_plan()
 
     _dhi.containers.push_back( d ) ;
     _dhi.action = _df->get_action() ;
-    _dhi.response_handler = TheResponseHandlerList->find_handler( _df->get_action() ) ;
+    _dhi.response_handler =
+	DODSResponseHandlerList::TheList()->find_handler( _df->get_action() ) ;
     if( !_dhi.response_handler )
     {
 	DODSHandlerException he ;

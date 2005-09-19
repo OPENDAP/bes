@@ -9,24 +9,24 @@ using std::endl ;
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
 #include "DODSContainerPersistenceFile.h"
-#include "ThePersistenceList.h"
-#include "TheDODSLog.h"
+#include "DODSContainerPersistenceList.h"
+#include "DODSLog.h"
 
 static bool
 FilePersistenceInit(int, char**) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Adding File Persistence" << endl;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Adding File Persistence" << endl;
     DODSContainerPersistenceFile *cpf =
 	    new DODSContainerPersistenceFile( "DODSFile" ) ;
-    ThePersistenceList->add_persistence( cpf ) ;
+    DODSContainerPersistenceList::TheList()->add_persistence( cpf ) ;
     return true;
 }
 
 static bool
 FilePersistenceTerm(void) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Removing File Persistence" << endl;
-    ThePersistenceList->rem_persistence( "DODSFile" ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Removing File Persistence" << endl;
+    DODSContainerPersistenceList::TheList()->rem_persistence( "DODSFile" ) ;
     return true ;
 }
 

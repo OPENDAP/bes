@@ -6,9 +6,8 @@
 #include "DODSTextInfo.h"
 #include "DODSParserException.h"
 #include "DODSTokenizer.h"
-#include "ThePersistenceList.h"
 #include "DODSDefine.h"
-#include "TheDefineList.h"
+#include "DODSDefineList.h"
 #include "OPeNDAPDataNames.h"
 
 DefineResponseHandler::DefineResponseHandler( string name )
@@ -22,9 +21,9 @@ DefineResponseHandler::~DefineResponseHandler( )
 
 /** @brief executes the command to create a new definition.
  *
- * A DODSDefine object is created and added to TheDefineList. If a definition
- * already exists with the given name then it is removed and the new one
- * added.
+ * A DODSDefine object is created and added to the list of definitions. If
+ * a definition already exists with the given name then it is removed and
+ * the new one added.
  *
  * The DODSDefine object is created using the containers, constraints,
  * attribute lists and aggregation command parsed in the parse method.
@@ -42,7 +41,7 @@ DefineResponseHandler::~DefineResponseHandler( )
  * @see _DODSDataHandlerInterface
  * @see DODSTextInfo
  * @see DODSDefine
- * @see TheDefineList
+ * @see DODSDefineList
  */
 void
 DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -52,7 +51,7 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
     
     string def_name = dhi.data[DEF_NAME] ;
     string def_type = "added" ;
-    bool deleted = TheDefineList->remove_def( def_name ) ;
+    bool deleted = DODSDefineList::TheList()->remove_def( def_name ) ;
     if( deleted == true )
     {
 	def_type = "replaced" ;
@@ -70,7 +69,7 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
     dhi.data[AGG_CMD] = "" ;
     dhi.data[AGG_HANDLER] = "" ;
 
-    TheDefineList->add_def( def_name, dd ) ;
+    DODSDefineList::TheList()->add_def( def_name, dd ) ;
     string ret = (string)"Successfully " + def_type + " definition "
 		 + def_name + "\n" ;
     info->add_data( ret ) ;

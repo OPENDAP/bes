@@ -3,7 +3,6 @@
 // 2004 Copyright University Corporation for Atmospheric Research
 
 #include "DODSResponseHandler.h"
-#include "TheRequestHandlerList.h"
 #include "DODSResponseObject.h"
 #include "DODSRequestHandler.h"
 #include "DODSHandlerException.h"

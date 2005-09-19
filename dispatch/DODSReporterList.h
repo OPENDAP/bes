@@ -17,9 +17,11 @@ class DODSReporter ;
 
 class DODSReporterList {
 private:
+    static DODSReporterList *	_instance ;
     map< string, DODSReporter * > _reporter_list ;
-public:
+protected:
 				DODSReporterList(void) ;
+public:
     virtual			~DODSReporterList(void) ;
 
     typedef map< string, DODSReporter * >::const_iterator Reporter_citer ;
@@ -31,6 +33,8 @@ public:
     virtual DODSReporter *	find_reporter( string reporter_name ) ;
 
     virtual void		report( const DODSDataHandlerInterface &dhi ) ;
+
+    static DODSReporterList *	TheList() ;
 };
 
 #endif // I_DODSReporterList_h

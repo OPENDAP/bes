@@ -5,11 +5,9 @@
 #include "HelpResponseHandler.h"
 #include "DODSHTMLInfo.h"
 #include "cgi_util.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
-#include "TheResponseHandlerList.h"
 #include "DODSParserException.h"
-#include "TheRequestHandlerList.h"
 #include "DODSTokenizer.h"
 
 HelpResponseHandler::HelpResponseHandler( string name )
@@ -23,14 +21,14 @@ HelpResponseHandler::~HelpResponseHandler( )
 
 /** @brief executes the command 'show help;' by returning general help
  * information as well as help information for all of the data request
- * handlers registered with TheRequestHandlerList.
+ * handlers registered with DODSRequestHandlerList.
  *
  * The HelpResponseHandler first retreives general help information from help
  * files located in the file pointed to by either the key OPeNDAP.Help.TXT if
  * the client is a basic text client or OPeNDAP.Help.HTTP if the client is
  * HTML based. It then lists each of the data types registered to handle
  * requests (such as NetCDF, HDF, Cedar, etc...). Then for all data request
- * handlers registered with TheRequestHandlerList help information can be
+ * handlers registered with DODSRequestHandlerList help information can be
  * added to the informational object.
  *
  * The response object DODSHTMLInfo is created to store the help information.
@@ -40,7 +38,7 @@ HelpResponseHandler::~HelpResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DODSHTMLInfo
- * @see TheRequestHandlerList
+ * @see DODSRequestHandlerList
  */
 void
 HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -61,9 +59,9 @@ HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
     // get the list of registered servers and the responses that they handle
     info->add_data( "Registered data request handlers:\n" ) ;
     DODSRequestHandlerList::Handler_citer i =
-	TheRequestHandlerList->get_first_handler() ;
+	DODSRequestHandlerList::TheList()->get_first_handler() ;
     DODSRequestHandlerList::Handler_citer ie =
-	TheRequestHandlerList->get_last_handler() ;
+	DODSRequestHandlerList::TheList()->get_last_handler() ;
     for( ; i != ie; i++ ) 
     {
 	if( dhi.transmit_protocol == "HTTP" )
@@ -97,7 +95,7 @@ HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
 	info->add_data( "\n\n" ) ;
     }
 
-    TheRequestHandlerList->execute_all( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_all( dhi ) ;
 
     // if http then close out the html format
     if( dhi.transmit_protocol == "HTTP" )

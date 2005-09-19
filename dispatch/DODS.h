@@ -18,8 +18,6 @@ class DODSTransmitter ;
 
     <OL>
     <LI>initialize the OPeNDAP environment</LI>
-    <LI>authenticate the user attempting to retrieve the information if
-    authentication is needed</LI>
     <LI>validate the incoming information to make sure that all information
     is available to perform the query</LI>
     <LI>build the request plan to retrieve the information. A response can
@@ -70,12 +68,12 @@ class DODSTransmitter ;
     to derived classes of DODS to implement the log_status method.)
 
     The request and status are then reported. The default action is to
-    pass off the reporting to TheReporterList, which has a list of
+    pass off the reporting to DODSReporterList::TheList(), which has a list of
     registered reporters and passes off the information to each of those
     reporters. For example, if the Cedar project wants to report on any
-    cedar access then it can register a reporter with TheReporterList and if
-    OPeNDAP wants to keep track of usage then it can register a reporter
-    that will report/log all requests.
+    cedar access then it can register a reporter with 
+    DODSReporterList::TheList() and if OPeNDAP wants to keep track of
+    usage then it can register a reporter that will report/log all requests.
 
     @see DODSGlobalInit
     @see DODSKeys
@@ -92,7 +90,6 @@ protected:
     DODSTransmitter		*_transmitter ;
 
     virtual int			exception_manager(DODSException &e) ;
-    virtual void		authenticate() ;
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
     virtual void		build_data_request_plan() ;

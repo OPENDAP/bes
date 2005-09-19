@@ -40,11 +40,8 @@ using std::ifstream ;
  * Key/value pairs can also be set by passing in a key=value string, or by
  * passing in a key and value string to the object.
  *
- * OpenDAP provides a global variable for access to a single DODSKeys object,
- * TheDODSKeys. This global object is created during global initialization
- * using DODSGlobalIQ.
- *
- * @see DODSGlobalIQ
+ * OpenDAP provides a single object for access to a single DODSKeys object,
+ * TheDODSKeys.
  */
 class DODSKeys
 {
@@ -60,8 +57,9 @@ private:
 				    string &value ) ;
     bool		only_blanks( const char *line ) ;
     			DODSKeys() {}
-public:
+protected:
     			DODSKeys( const string &keys_file_name ) ;
+public:
     			~DODSKeys() ;
 
     string		keys_file_name() { return _keys_file_name ; }

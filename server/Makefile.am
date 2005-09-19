@@ -17,7 +17,7 @@ bin_PROGRAMS = opendapserver opendapdaemon
 opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
 	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
 
-opendapserver_LDADD = $(MODS) $(AUTH_MOD) $(SERVER_LIBS)
+opendapserver_LDADD = $(MODS) $(SERVER_LIBS)
 
 opendapdaemon_SOURCES = daemon.cc
 
@@ -42,7 +42,6 @@ uninstall-local:
 
 # Maybe the source files for these should be added to this directory.
 MODS = ../command/opendap_commands.o ../dispatch/dods_module.o
-AUTH_MOD = ../dispatch/test_authenticator.o
 
 MODOBJS=OPeNDAPServerHandler.o ServerApp.o
 

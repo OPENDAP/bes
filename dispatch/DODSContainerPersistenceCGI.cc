@@ -35,7 +35,7 @@ DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
 {
     string base_key = "DODS.Container.Persistence.CGI." + n + ".BaseDirectory" ;
     bool found = false ;
-    _base_dir = TheDODSKeys->get_key( base_key, found ) ;
+    _base_dir = TheDODSKeys::TheKeys()->get_key( base_key, found ) ;
     if( _base_dir == "" )
     {
 	string s = base_key + " not defined in key file" ;
@@ -45,7 +45,7 @@ DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
     }
 
     string key = "DODS.Container.Persistence.CGI." + n + ".TypeMatch" ;
-    string curr_str = TheDODSKeys->get_key( key, found ) ;
+    string curr_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( curr_str == "" )
     {
 	string s = key + " not defined in key file" ;

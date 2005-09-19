@@ -4,6 +4,8 @@
 
 #include "DODSResponseHandlerList.h"
 
+DODSResponseHandlerList *DODSResponseHandlerList::_instance = 0 ;
+
 /** @brief add a response handler to the list
  *
  * This method actually adds to the list a method that knows how to build a
@@ -105,6 +107,16 @@ DODSResponseHandlerList::get_handler_names()
 	first_name = false ;
     }
     return ret ;
+}
+
+DODSResponseHandlerList *
+DODSResponseHandlerList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSResponseHandlerList ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSResponseHandlerList.cc,v $

@@ -8,15 +8,15 @@ using std::endl ;
 
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
-#include "TheDODSLog.h"
-#include "TheDODSReturnManager.h"
+#include "DODSLog.h"
+#include "DODSReturnManager.h"
 #include "DODSBasicHttpTransmitter.h"
 
 static bool
 HTTPTransmitterInit(int, char**) {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
-    TheDODSReturnManager->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
+    DODSReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
 
     return true;
 }

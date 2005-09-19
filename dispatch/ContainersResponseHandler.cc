@@ -5,7 +5,7 @@
 #include "ContainersResponseHandler.h"
 #include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
-#include "ThePersistenceList.h"
+#include "DODSContainerPersistenceList.h"
 
 ContainersResponseHandler::ContainersResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -35,7 +35,7 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    ThePersistenceList->show_containers( *info ) ;
+    DODSContainerPersistenceList::TheList()->show_containers( *info ) ;
 }
 
 /** @brief transmit the response object built by the execute command

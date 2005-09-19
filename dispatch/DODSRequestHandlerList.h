@@ -24,9 +24,11 @@ class DODSRequestHandler ;
  */
 class DODSRequestHandlerList {
 private:
+    static DODSRequestHandlerList *	_instance ;
     map< string, DODSRequestHandler * > _handler_list ;
-public:
+protected:
 				DODSRequestHandlerList(void) {}
+public:
     virtual			~DODSRequestHandlerList(void) {}
 
     typedef map< string, DODSRequestHandler * >::const_iterator Handler_citer ;
@@ -45,6 +47,8 @@ public:
     virtual void		execute_each( DODSDataHandlerInterface &dhi ) ;
     virtual void		execute_all( DODSDataHandlerInterface &dhi ) ;
     virtual void		execute_once( DODSDataHandlerInterface &dhi ) ;
+
+    static DODSRequestHandlerList *TheList() ;
 };
 
 #endif // I_DODSRequestHandlerList_h

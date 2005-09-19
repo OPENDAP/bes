@@ -7,6 +7,8 @@
 #include "DODSHandlerException.h"
 #include "OPeNDAPDataNames.h"
 
+DODSRequestHandlerList *DODSRequestHandlerList::_instance = 0 ;
+
 /** @brief add a request handler to the list of registered handlers for this
  * server
  *
@@ -261,6 +263,16 @@ DODSRequestHandlerList::execute_once( DODSDataHandlerInterface &dhi )
 	    throw he;
 	}
     }
+}
+
+DODSRequestHandlerList *
+DODSRequestHandlerList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new DODSRequestHandlerList ;
+    }
+    return _instance ;
 }
 
 // $Log: DODSRequestHandlerList.cc,v $

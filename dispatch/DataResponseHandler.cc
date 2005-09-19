@@ -6,7 +6,7 @@
 #include "DDS.h"
 #include "cgi_util.h"
 #include "DODSParserException.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 
 DataResponseHandler::DataResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -31,13 +31,13 @@ DataResponseHandler::~DataResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DDS
- * @see TheRequestHandlerList
+ * @see DODSRequestHandlerList
  */
 void
 DataResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     _response = new DDS( "virtual" ) ;
-    TheRequestHandlerList->execute_each( dhi ) ;
+    DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
 /** @brief transmit the response object built by the execute command
