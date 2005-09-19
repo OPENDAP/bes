@@ -176,7 +176,7 @@ CmdClient::executeClientCommand( const string &cmd )
 		ofstream *fstrm = new ofstream( file.c_str(), ios::app ) ;
 		if( !(*fstrm) )
 		{
-		    cerr << "Unable to set client output to file " << subcmd
+		    cerr << "Unable to set client output to file " << file
 		         << endl ;
 		}
 		else
@@ -218,6 +218,7 @@ CmdClient::executeCommand( const string &cmd )
     {
 	_client->send( cmd ) ;
 	_client->receive( _strm ) ;
+	_strm->flush() ;
     }
 }
 
