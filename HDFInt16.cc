@@ -1,9 +1,27 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 1999, University of Rhode Island
-// ALL RIGHTS RESERVED. 
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+
+// Copyright (c) 2005 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
 //
-// Please read the full copyright notice in the file COPYRIGHT in
-// DODS_Root/etc
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+// 
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+ 
+// (c) COPYRIGHT URI/MIT 1994-1999
+// Please read the full copyright statement in the file COPYRIGHT_URI.
 
 // Author: James Gallagher
 //
@@ -23,6 +41,9 @@ bool HDFInt16::read(const string &) {
 Int16 *NewInt16(const string &n) { return new HDFInt16(n); }
 
 // $Log: HDFInt16.cc,v $
+// Revision 1.4.4.1  2003/05/21 16:26:51  edavis
+// Updated/corrected copyright statements.
+//
 // Revision 1.4  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.
 //

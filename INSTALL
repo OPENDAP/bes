@@ -1,6 +1,8 @@
 	
 	$Id$
 
+Updated for version 3.4 of the DODS/NVODS/OPeNDAP software.
+
 Installing the HDF 4 server for DODS.
 
 ---------------------------------------------------------------------------
@@ -12,12 +14,13 @@ NOTES
 ---------------------------------------------------------------------------
 
 *** Important note *** 
-The 3.2.6 HDF 4 server now uses the full range of datatypes available in
-DODS. Because the server caches certain responses, it's important to delete
-those cache files before using the server. Look in the cache directory (check
-your current nph-dods or nph-hdf script for the location of the cache
-directory. Delete all the files named *.cdas and *.cdds. If you've never
-installed the HDF 4 server, then you don't need to bother with any of this.
+The 3.2.6 HDF 4 server now uses the full range of
+datatypes available in DODS. Because the server caches certain responses,
+it's important to delete those cache files before upgrading from an older
+version of the server. Look in the cache directory (check your current
+dods.rc, nph-dods or nph-hdf script for the location of the cache directory).
+Delete all the files named *.cdas and *.cdds. If you've never installed the
+HDF 4 server, then you don't need to bother with any of this. 
 *** Important note ***
 
 BUILDING THE SOFTWARE
@@ -125,8 +128,9 @@ BUILDING THE SOFTWARE
 
 REQUIREMENTS
 
-  o You need to have the DAP library and at least libwww, libz and librx from
-    the third-party packages installed before building this software.
+  o You need to have the DAP library and at least libcurl, libxml2, libz and
+    librx from the third-party packages installed before building this
+    software.
 
   o You must have a copy of HDF4.1r4. Earlier versions of HDF4 work with the
     server but some valid files work be served correctly.
@@ -138,7 +142,7 @@ NOTES
     dependencies.
 
   o For information about installing secure DODS servers, see the file
-    SECURITY in DODS_ROOT.
+    README-security in DODS_ROOT/etc.
 
   o The README file has some information about writing the format files used
     to describe data so that it can be served by the software. More complete

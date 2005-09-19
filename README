@@ -1,5 +1,19 @@
 DODS/HDF Server Notes:
 
+Updated for version 3.4 of the DODS/NVODS/OPeNDAP software.
+
+Copyright information
+
+This software was originally written at JPL as part of the DODS NASA ESIP
+Federation Cooperative Agreement Notice. The original copyright described 
+free use of the software 'for research purposes' although it was not clear 
+what exactly those were. In Spring of 2003 we (OPeNDAP) sought clarification
+of that language and JPL/CalTech asked us to change to the copyright text
+now included in the code. 
+
+In Fall of 2005 we decided to release the software under the LGPL, based on a
+previous discussion with personnel at JPL.
+
 Client Library is not included in this release.
 
 Support for HDF data types:
@@ -39,7 +53,7 @@ Support for HDF data types:
 Special characters in HDF identifiers:
   - A number of non-alphanumeric characters (e.g., space, #, +, -)
     used in HDF identifiers are not allowed in the names of DODS
-    objects or object components nor in URLs.  The HDF server and
+    objects or object components nor in URLs.  The HDF server
     therefore deals internally with translated versions of these
     identifiers.  To translate the WWW convention of escaping such
     characters by replacing them with "%" followed by the hexadecimal
@@ -48,8 +62,6 @@ Special characters in HDF identifiers:
     transparent to users of the server (but they will be visible in
     the DDS, DAS and in any applications which use a client that does
     not translate the identifiers back to their original form).   
-  - DODS does not permit identifiers to start with a number; hence
-    these are preceded internally by a _ character.
 
 Known problems:
 
@@ -75,7 +87,10 @@ Handling of global attributes:
 Tested platforms:
   - This software has been tested under SGI IRIX 5.3 and Sun Solaris
     2.6.  It should in principle work under other flavors of Unix.
-
+    
+  - As of 1/7/2004 this software has been built and tested on all platforms
+    where we support binary builds. This includes SGI/IRIX, Solaris, Linux,
+    Alpha/OSF. Please check our web page for complete details. 01/07/04 jhrg
 
 Todd Karakashian (Todd.K.Karakashian@jpl.nasa.gov)
 Isaac Henry (ike@seanet.jpl.nasa.gov)

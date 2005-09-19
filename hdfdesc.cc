@@ -1,10 +1,37 @@
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+
+// Copyright (c) 2005 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+// 
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+ 
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 1996, California Institute of Technology.  
-// ALL RIGHTS RESERVED.   U.S. Government Sponsorship acknowledged. 
-//
-// Please read the full copyright notice in the file COPYRIGH 
-// in this directory.
-//
+// Copyright 1996, by the California Institute of Technology.
+// ALL RIGHTS RESERVED. United States Government Sponsorship
+// acknowledged. Any commercial use must be negotiated with the
+// Office of Technology Transfer at the California Institute of
+// Technology. This software may be subject to U.S. export control
+// laws and regulations. By accepting this software, the user
+// agrees to comply with all applicable U.S. export laws and
+// regulations. User has the responsibility to obtain export
+// licenses, or other export authority as may be required before
+// exporting such information to foreign countries or providing
+// access to foreign persons.
+
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
@@ -68,10 +95,17 @@ template class vector<hdf_palette>;
 
 template<class T>
 string num2string(T n) {
-    ostringstream buf;
-    buf << n;
+#if 0
+    static char buf[hdfdods::MAXSTR];
 
-    return buf.str();
+    ostrstream(buf,hdfdods::MAXSTR) << n << ends;
+
+    return (string)buf;
+#endif
+    
+    ostringstream oss;
+    oss << n;
+    return oss.str();
 }
 
 struct yy_buffer_state;
@@ -170,12 +204,13 @@ static void update_descriptions(const string& cachedir, const string& filename) 
 
 	// output DDS, DAS to cache
 	ofstream ddsout(ddsfile.filename());
-	if (!ddsout)
+	if (!ddsout.is_open())	// Explicit call to is_open() as per bug 812.
+				// 10/08/04 jhrg
 	    THROW(dhdferr_ddsout);
 	dds.print(ddsout);
 	ddsout.close();
 	ofstream dasout(dasfile.filename());
-	if (!dasout)
+	if (!dasout.is_open())	// See above; bug 812. 10/08/04 jhrg
 	    THROW(dhdferr_dasout);
 	das.print(dasout);
 	dasout.close();
@@ -646,8 +681,16 @@ static vector<hdf_attr> Dims2Attrs(const hdf_dim dim) {
 }
 
 // $Log: hdfdesc.cc,v $
-// Revision 1.20  2004/02/06 00:35:50  jimg
-// Switched from strstream to stringstream.
+// Revision 1.19.4.2.2.1  2004/10/08 22:01:04  jimg
+// I changed the tests for the cdas/cdds files so they use is_open() as per bug
+// 812. I removed use of strstream.
+//
+// Revision 1.19.4.2  2003/06/29 05:20:21  rmorris
+// Use the standard template libraries appropriately - headers and usage
+// statements.
+//
+// Revision 1.19.4.1  2003/05/21 16:26:55  edavis
+// Updated/corrected copyright statements.
 //
 // Revision 1.19  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.

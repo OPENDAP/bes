@@ -1,10 +1,37 @@
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+
+// Copyright (c) 2005 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+// 
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+ 
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 1996, California Institute of Technology.  
-// ALL RIGHTS RESERVED.   U.S. Government Sponsorship acknowledged. 
-//
-// Please read the full copyright notice in the file COPYRIGH 
-// in this directory.
-//
+// Copyright 1996, by the California Institute of Technology.
+// ALL RIGHTS RESERVED. United States Government Sponsorship
+// acknowledged. Any commercial use must be negotiated with the
+// Office of Technology Transfer at the California Institute of
+// Technology. This software may be subject to U.S. export control
+// laws and regulations. By accepting this software, the user
+// agrees to comply with all applicable U.S. export laws and
+// regulations. User has the responsibility to obtain export
+// licenses, or other export authority as may be required before
+// exporting such information to foreign countries or providing
+// access to foreign persons.
+
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
@@ -16,13 +43,17 @@
 #include "config_hdf.h"
 
 // STL includes
+#include <fstream>
+#include <strstream>
 #include <string>
-#include <sstream>
-#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
-using namespace std;
+using std::ostrstream ;
+using std::cerr ;
+using std::ends ;
+using std::endl ;
 
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
@@ -112,13 +143,12 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	}
 	else {
 	    // create a DODS variable for each subfield
+	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
-
-		ostringstream strm;
-		strm << vd.fields[i].name << "__" << j;
-
+		ostrstream strm(subname,hdfclass::MAXSTR);
+		strm << vd.fields[i].name << "__" << j << ends;
 		BaseType *bt = 
-		    NewDAPVar(strm.str(),
+		    NewDAPVar(subname,
 			      vd.fields[i].vals[j].number_type());
 		if (bt == 0) {
 		    delete st;
@@ -422,43 +452,38 @@ void LoadGridFromSDS(HDFGrid *gr, const hdf_sds& sds) {
     if (primary_array.dimensions() != sds.dims.size())
 	THROW(dhdferr_consist);	// # of dims of SDS and HDFGrid should agree!
 
-    Grid::Map_iter p = gr->map_begin();
-#if 0
     Pix p = gr->first_map_var();
-#endif
-    for (unsigned int i = 0; i < sds.dims.size() && p != gr->map_end(); ++i, ++p) {
-	if ((*p)->send_p()) {
+    for (unsigned int i = 0; i < sds.dims.size() && p; 
+	 ++i, gr->next_map_var(p)) {
+	if (gr->map_var(p)->send_p()) {
 #ifdef SIGNED_BYTE_TO_INT32
 	    switch (sds.dims[i].scale.number_type()) {
 	      case DFNT_INT8: {
 		  char *data = static_cast<char *>
 		      (ExportDataForDODS(sds.dims[i].scale));
-		  (*p)->val2buf(data);
+		  gr->map_var(p)->val2buf(data);
 		  delete []data;
 		  break;
 	      }
 	      default:
-		(*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
+		gr->map_var(p)->val2buf(const_cast<char *>
+					(sds.dims[i].scale.data()));
 	    }
 #else
-	    (*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
+	    gr->map_var(p)->val2buf(const_cast<char *>
+				    (sds.dims[i].scale.data()));
 #endif
-	    (*p)->set_read_p(true);
+	    gr->map_var(p)->set_read_p(true);
 	}
     }
     return;
 }
 
 // load an HDFSequence from a row of an hdf_vdata
-void 
-LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) 
-{
+void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row) {
 
-    for (Sequence::Vars_iter p = seq->var_begin(); p != seq->var_end(); ++p) {
-#if 0
     for (Pix p = seq->first_var(); p; seq->next_var(p)) {
-#endif
-	HDFStructure &stru = dynamic_cast<HDFStructure &>(*(*p));
+	HDFStructure &stru = dynamic_cast<HDFStructure &>(*seq->var(p));
 
 	// find corresponding field in vd
 	vector<hdf_field>::iterator vf = 
@@ -476,17 +501,12 @@ LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row)
 
 // Load an HDFStructure with the components of a row of an hdf_field.  If the
 // field is made of char8 components, collapse these into one String component
-void 
-LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) 
-{
+void LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row) {
 
     if (row < 0 || f.vals.size() <= 0  ||  row > (int)f.vals[0].size())
 	THROW(dhdferr_conv);
 
-    BaseType *firstp = *(stru->var_begin());
-#if 0
     BaseType *firstp = stru->var(stru->first_var());
-#endif
     if (firstp->type() == dods_str_c) {
 	// If the Structure contains a String, then that is all it will 
 	// contain.  In that case, concatenate the different char8 
@@ -504,18 +524,15 @@ LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row)
 	// for each component of the field, load the corresponding component
 	// of the DODS Structure.
 	int i = 0;
-	for (Structure::Vars_iter q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
-#if 0
 	for (Pix q=stru->first_var(); q; stru->next_var(q), ++i) {
-#endif
 	    // AccessDataForDODS does the same basic thing that
 	    // ExportDataForDODS(hdf_genvec &, int) does except that the
 	    // Access function does not allocate memeory; it provides access
 	    // using the data held in the hdf_genvec without copying it. See
 	    // hdfutil.cc. 4/10/2002 jhrg
-	    (*q)->val2buf(static_cast<char *>
+	    stru->var(q)->val2buf(static_cast<char *>
 				  (ExportDataForDODS(f.vals[i], row)));
-	    (*q)->set_read_p(true);
+	    stru->var(q)->set_read_p(true);
 	}
 
     }
@@ -523,17 +540,12 @@ LoadStructureFromField(HDFStructure *stru, hdf_field& f, int row)
 }
 
 // Load an HDFStructure with the contents of a vgroup.
-void 
-LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
-			const string& hdf_file) 
-{
+void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
+			     const string& hdf_file) {
     int i = 0;
     int err = 0;
-    for (Structure::Vars_iter q = str->var_begin(); q != str->var_end(); ++q, ++i) {
-#if 0
     for (Pix q = str->first_var(); err == 0 && q; str->next_var(q), ++i) {
-#endif
-	BaseType *p = (*q);
+	BaseType *p = str->var(q);
 	if (p->send_p() && p->name() == vg.vnames[i] ) {
 #ifdef __SUNPRO_CC
 	    // As of v4.1, SunPro C++ is too braindamaged to support
@@ -551,12 +563,12 @@ LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vg,
 }
 
 // $Log: hc2dap.cc,v $
-// Revision 1.19  2004/02/06 00:35:04  jimg
-// Uses stringstream in place of srtstream. Fixed bug introduced in the last rev
-// where Structure member names were not picked up.
+// Revision 1.17.4.2  2003/06/29 05:20:21  rmorris
+// Use the standard template libraries appropriately - headers and usage
+// statements.
 //
-// Revision 1.18  2004/02/04 16:52:56  jimg
-// Removed Pix methods.
+// Revision 1.17.4.1  2003/05/21 16:26:55  edavis
+// Updated/corrected copyright statements.
 //
 // Revision 1.17  2003/01/31 02:08:36  jimg
 // Merged with release-3-2-7.
