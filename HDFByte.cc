@@ -51,7 +51,9 @@ bool HDFByte::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Byte *NewByte(const string &n) { return new HDFByte(n); }
+#endif
 
 // $Log: HDFByte.cc,v $
 // Revision 1.5.8.1  2003/05/21 16:26:51  edavis

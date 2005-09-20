@@ -141,10 +141,12 @@ HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
     }
 }
 
+#if 0
 Array *NewArray(const string &n, BaseType *v)
 { 
     return new HDFArray(n, v); 
 } 
+#endif
 
 // Read the slab constraint parameters; the arrays start_array, edge_array,
 // stride_array.  Returns true if there is a slab constraint, false otherwise.
@@ -158,7 +160,7 @@ bool HDFArray::GetSlabConstraint(vector<int>& start_array,
     edge_array = vector<int>(0);
     stride_array = vector<int>(0);
 
-    for (Pix p=first_dim(); p; next_dim(p)) {
+    for (Array::Dim_iter p = dim_begin(); p != dim_end(); ++p) {
 	start = dimension_start(p,true);
 	stride = dimension_stride(p,true);
 	stop = dimension_stop(p,true);

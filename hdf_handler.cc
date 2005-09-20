@@ -48,6 +48,7 @@
 #include "cgi_util.h"
 #include "ObjectType.h"
 
+#include "HDFTypeFactory.h"
 #include "hcerr.h"
 #include "dhdferr.h"
 
@@ -57,7 +58,7 @@ extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
 extern void register_funcs(DDS& dds);
 
-const string cgi_version = DODS_SERVER_VERSION;
+const string cgi_version = PACKAGE_VERSION;
 
 int 
 main(int argc, char *argv[])
@@ -80,7 +81,8 @@ main(int argc, char *argv[])
 	  }
 
 	  case DODSFilter::DDS_Response: {
-	      DDS dds;
+              HDFTypeFactory factory;
+	      DDS dds(&factory);
 
 	      read_dds(dds, df.get_cache_dir(), df.get_dataset_name());
 	      df.read_ancillary_dds(dds);
@@ -89,7 +91,8 @@ main(int argc, char *argv[])
 	  }
 
 	  case DODSFilter::DataDDS_Response: {
-	      DDS dds;
+              HDFTypeFactory factory;
+	      DDS dds(&factory);
 
 	      read_dds(dds, df.get_cache_dir(), df.get_dataset_name());
 	      register_funcs(dds);

@@ -154,7 +154,7 @@ BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {
 	    return 0;		// HoW to do this??
 
 	// formulate constraint for DODS
-	Pix p = ((Array *)argv[7])->first_dim();
+	Array::Dim_iter p = ((Array *)argv[7])->dim_begin();
 	((Array *)argv[7])->add_constraint(p,exts[0].first, 1, exts[0].second);
     }
 

@@ -51,7 +51,9 @@ bool HDFInt32::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Int32 *NewInt32(const string &n) { return new HDFInt32(n); }
+#endif
 
 // $Log: HDFInt32.cc,v $
 // Revision 1.6.4.1  2003/05/21 16:26:51  edavis

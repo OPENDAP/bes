@@ -48,7 +48,7 @@
 */
 
 %{
-#include "config_dap.h"
+#include "config_hdf.h"
 
 static char rcsid[] not_used ={"$Id$"};
 

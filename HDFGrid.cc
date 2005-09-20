@@ -41,7 +41,6 @@
 
 #include "config_hdf.h"
 
-#include <Pix.h>
 #include <vector>
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
@@ -74,14 +73,14 @@ HDFGrid::get_map_constraints()
     vector<array_ce> a_ce_vec;
 
     // Load the array_ce vector with info about each map vector.
-    for (Pix p = first_map_var(); p; next_map_var(p)) {
-	Array *a = dynamic_cast<Array *>(map_var(p));
-	Pix q = a->first_dim(); // maps have only one dimension.
-	int start = a->dimension_start(q, true);
-	int stop = a->dimension_stop(q, true);
-	int stride = a->dimension_stride(q, true);
+    for (Grid::Map_iter p = map_begin(); p != map_end(); ++p) {
+	Array &a = dynamic_cast<Array &>(**p);
+	Array::Dim_iter q = a.dim_begin(); // maps have only one dimension.
+	int start = a.dimension_start(q, true);
+	int stop = a.dimension_stop(q, true);
+	int stride = a.dimension_stride(q, true);
 	int edge = (int)((stop - start)/stride) + 1;
-	array_ce a_ce(a->name(), start, edge, stride);
+	array_ce a_ce(a.name(), start, edge, stride);
 	a_ce_vec.push_back(a_ce);
     }
 
@@ -157,15 +156,15 @@ bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref,
 	    sdsin >> sds.dims;
 	}
 
-	for (Pix p = first_map_var(); p; next_map_var(p)) {
-	    if (map_var(p)->send_p() || map_var(p)->is_in_selection()) {
+	for (Grid::Map_iter p = map_begin(); p != map_end(); ++p) {
+	    if ((*p)->send_p() || (*p)->is_in_selection()) {
 		for (unsigned int i = 0; i < sds.dims.size(); i++) {
-		    if (map_var(p)->name() == sds.dims[i].name) {
+		    if ((*p)->name() == sds.dims[i].name) {
 			// Read the data from the sds dimension.
 			char *data = static_cast<char *>(ExportDataForDODS(sds.dims[i].scale));
-			map_var(p)->val2buf(data);
+			(*p)->val2buf(data);
 			delete []data;
-			map_var(p)->set_read_p(true);
+			(*p)->set_read_p(true);
 		    }
 		}
 	    }
@@ -182,7 +181,9 @@ bool HDFGrid::read_tagref(const string& dataset, int32 tag, int32 ref,
     return true;
 }
 
+#if 0
 Grid *NewGrid(const string &n) { return new HDFGrid(n); }
+#endif
 
 // $Log: HDFGrid.cc,v $
 // Revision 1.12.4.2  2003/09/06 23:33:14  jimg

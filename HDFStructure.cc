@@ -118,8 +118,9 @@ bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int 
   }
 }
 
+#if 0
 Structure *NewStructure(const string &n) { return new HDFStructure(n); }
-
+#endif
 // $Log: HDFStructure.cc,v $
 // Revision 1.12.4.1  2003/05/21 16:26:52  edavis
 // Updated/corrected copyright statements.

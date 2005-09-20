@@ -38,7 +38,9 @@ bool HDFInt16::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Int16 *NewInt16(const string &n) { return new HDFInt16(n); }
+#endif
 
 // $Log: HDFInt16.cc,v $
 // Revision 1.4.4.1  2003/05/21 16:26:51  edavis

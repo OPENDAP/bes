@@ -46,7 +46,8 @@
 #include <string>
 
 // DODS includes
-#include "Grid.h"
+#include <Grid.h>
+
 #include "ReadTagRef.h"
 
 class HDFGrid: public Grid, public ReadTagRef {

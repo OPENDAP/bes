@@ -68,6 +68,7 @@ HDFRequestHandler::hdf_build_das( DODSDataHandlerInterface &dhi )
 bool
 HDFRequestHandler::hdf_build_dds( DODSDataHandlerInterface &dhi )
 {
+    // Needs to use the factory class. jhrg 9/20/05
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
 
     read_dds( *dds, "/tmp/", dhi.container->get_real_name() );
@@ -79,6 +80,7 @@ HDFRequestHandler::hdf_build_dds( DODSDataHandlerInterface &dhi )
 bool
 HDFRequestHandler::hdf_build_data( DODSDataHandlerInterface &dhi )
 {
+    // Needs to use the factory class. jhrg 9/20/05
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
 
     dds->filename( dhi.container->get_real_name() );

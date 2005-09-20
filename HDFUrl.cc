@@ -51,7 +51,9 @@ bool HDFUrl::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Url *NewUrl(const string &n) { return new HDFUrl(n); }
+#endif
 
 // $Log: HDFUrl.cc,v $
 // Revision 1.6.4.1  2003/05/21 16:26:52  edavis

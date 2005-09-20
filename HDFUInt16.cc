@@ -28,9 +28,8 @@
 
 #include "config_hdf.h"
 
-#ifndef DONT_HAVE_UINT
+#include <InternalErr.h>
 
-#include "InternalErr.h"
 #include "HDFUInt16.h"
 
 HDFUInt16::HDFUInt16(const string &n) : UInt16(n) {}
@@ -40,8 +39,9 @@ bool HDFUInt16::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 UInt16 *NewUInt16(const string &n) { return new HDFUInt16(n); }
-
+#endf
 // $Log: HDFUInt16.cc,v $
 // Revision 1.4.4.1  2003/05/21 16:26:52  edavis
 // Updated/corrected copyright statements.

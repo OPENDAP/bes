@@ -128,12 +128,13 @@ BUILDING THE SOFTWARE
 
 REQUIREMENTS
 
-  o You need to have the DAP library and at least libcurl, libxml2, libz and
-    librx from the third-party packages installed before building this
-    software.
+  o You need to have the DAP library, version 3.5.2 or later.
 
   o You must have a copy of HDF4.1r4. Earlier versions of HDF4 work with the
     server but some valid files work be served correctly.
+    
+  o You will need the OPeNDAP Data Server base software to use the handler 
+    to serve data.
 
 NOTES
 

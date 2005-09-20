@@ -80,6 +80,7 @@ using namespace std;
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
+#include "HDFTypeFactory.h"
 
 #ifdef __GNUG__			// force template instantiation due to g++ bug
 template class vector<hdf_attr>;
@@ -193,7 +194,8 @@ static void update_descriptions(const string& cachedir, const string& filename) 
     if (!ddsfile || !dasfile || (datafile.mtime() > ddsfile.mtime()) ||
 	datafile.mtime() > dasfile.mtime()) {
 #endif
-	DDS dds;
+        HDFTypeFactory factory;
+	DDS dds(&factory);
 	dds.set_dataset_name(basename(filename));
 	DAS das;
 	

@@ -65,7 +65,9 @@ HDFSequence::~HDFSequence() {}
 
 BaseType *HDFSequence::ptr_duplicate() { return new HDFSequence(*this); }  
 
+#if 0
 Sequence *NewSequence(const string &n) { return new HDFSequence(n); }
+#endif
 
 void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
 

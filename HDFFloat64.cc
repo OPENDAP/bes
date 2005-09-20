@@ -51,7 +51,9 @@ bool HDFFloat64::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Float64 *NewFloat64(const string &n) { return new HDFFloat64(n); }
+#endif
 
 // $Log: HDFFloat64.cc,v $
 // Revision 1.5.8.1  2003/05/21 16:26:51  edavis

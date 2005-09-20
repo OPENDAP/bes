@@ -37,8 +37,9 @@ bool HDFFloat32::read(const string &) {
   throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
 }
 
+#if 0
 Float32 *NewFloat32(const string &n) { return new HDFFloat32(n); }
-
+#endif
 // $Log: HDFFloat32.cc,v $
 // Revision 1.4.4.1  2003/05/21 16:26:51  edavis
 // Updated/corrected copyright statements.
