@@ -54,6 +54,11 @@ CmdClient::~CmdClient()
     {
 	_strm->flush() ;
     }
+    if( _client )
+    {
+	delete _client ;
+	_client = 0 ;
+    }
 }
 
 /**

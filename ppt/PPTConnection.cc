@@ -39,7 +39,7 @@ PPTConnection::receive( ostream *strm )
     bool done = false ;
     while( done == false )
     {
-	char *inBuff = new char[4096] ;
+	char *inBuff = new char[4097] ;
 	int bytesRead = readBuffer( inBuff ) ;
 	if( bytesRead != 0 )
 	{
@@ -78,6 +78,7 @@ PPTConnection::receive( ostream *strm )
 	{
 	    done = true ;
 	}
+	delete [] inBuff ;
     }
     return isDone ;
 }
