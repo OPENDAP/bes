@@ -124,6 +124,24 @@ DODSCommandInit(int, char**) {
 static bool
 DODSCommandTerm( void )
 {
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Removing DODS Commands:" << endl;
+
+    OPeNDAPCommand *cmd = OPeNDAPCommand::rem_command( GET_RESPONSE ) ;
+    if( cmd ) delete cmd ;
+
+    cmd = OPeNDAPCommand::rem_command( SHOW_RESPONSE ) ;
+    if( cmd ) delete cmd ;
+
+    cmd = OPeNDAPCommand::rem_command( DEFINE_RESPONSE ) ;
+    if( cmd ) delete cmd ;
+
+    cmd = OPeNDAPCommand::rem_command( SET_RESPONSE ) ;
+    if( cmd ) delete cmd ;
+
+    cmd = OPeNDAPCommand::rem_command( DELETE_RESPONSE ) ;
+    if( cmd ) delete cmd ;
+
     return true;
 }
 

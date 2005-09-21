@@ -67,6 +67,7 @@ PPTServer::welcomeClient()
     char *inBuff = new char[4096] ;
     int bytesRead = _mySock->receive( inBuff, 4096 ) ;
     string status( inBuff, bytesRead ) ;
+    delete [] inBuff ;
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
     {
 	cout << "FAILED" << endl ;
