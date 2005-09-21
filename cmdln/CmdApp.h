@@ -18,7 +18,6 @@ private:
     int				_portVal ;
     string			_cmd ;
     ofstream *			_outputStrm ;
-    bool			_createdOutputStrm ;
     ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
     int				_timeoutVal ;

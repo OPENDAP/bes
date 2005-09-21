@@ -24,7 +24,6 @@ CmdApp::CmdApp()
       _unixStr( "" ),
       _portVal( 0 ),
       _outputStrm( 0 ),
-      _createdOutputStrm( false ),
       _inputStrm( 0 ),
       _createdInputStrm( false )
 {
@@ -274,7 +273,6 @@ CmdApp::initialize( int argc, char **argv )
 	    cerr << "could not open the output file " << outputStr << endl ;
 	    badUsage = true ;
 	}
-	_createdOutputStrm = true ;
     }
 
     if( inputStr != "" )
@@ -286,6 +284,12 @@ CmdApp::initialize( int argc, char **argv )
 	    badUsage = true ;
 	}
 	_createdInputStrm = true ;
+    }
+
+    if( badUsage == true )
+    {
+	showUsage( ) ;
+	return 1 ;
     }
 
     return 0 ;
@@ -359,13 +363,6 @@ CmdApp::run()
 	    _inputStrm->close() ;
 	    delete _inputStrm ;
 	    _inputStrm = 0 ;
-	}
-	if( _createdOutputStrm )
-	{
-	    _outputStrm->flush() ;
-	    _outputStrm->close() ;
-	    delete _outputStrm ;
-	    _outputStrm = 0 ;
 	}
     }
     catch( PPTException &e )

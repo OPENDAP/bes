@@ -304,7 +304,7 @@ CmdClient::executeCommands( ifstream &istrm )
 	    }
 	    else
 	    {
-		string sub = nextLine.substr( 0, i ) ;
+		string sub = nextLine.substr( 0, i+1 ) ;
 		if( cmd == "" )
 		{
 		    cmd = sub ;
