@@ -490,7 +490,7 @@ char *yytext;
 #line 51 "hdfeos.lex"
 #include "config_hdf.h"
 
-static char rcsid[] not_used ={"$Id: hdfeos.lex 12203 2005-09-19 19:13:39Z jimg $"};
+static char rcsid[] not_used ={"$Id: hdfeos.lex 12212 2005-09-20 15:54:05 -0600 (Tue, 20 Sep 2005) jimg $"};
 
 #include <string.h>
 #include <assert.h>

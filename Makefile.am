@@ -5,7 +5,7 @@
 #
 # $Id: Makefile.am 12175 2005-09-15 20:22:36Z jimg $
 
-AUTOMAKE_OPTIONS = foreign check-news
+AUTOMAKE_OPTIONS = foreign check-news dejagnu
 
 ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir)/hdfclass
@@ -41,7 +41,10 @@ eosdas_test_LDADD = hdfclass/libhdfclass.a
 
 noinst_HEADERS = config_hdf.h
 
-EXTRA_DIST = 
+EXTRA_DIST = hdf-testsuite hdf-testfiles
+
+DEJATOOL = dap_hdf4_handler
+RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
 CLEANFILES = *~
 

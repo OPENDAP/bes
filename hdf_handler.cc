@@ -14,17 +14,22 @@
 // License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with this library; if not, write to the Free Software Foundation,
+// along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
  
-/////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 1996, California Institute of Technology.  
-// ALL RIGHTS RESERVED.   U.S. Government Sponsorship acknowledged. 
-//
-// Please read the full copyright notice in the file COPYRIGH 
-// in this directory.
+// Copyright (c) 1996, California Institute of Technology.
+// ALL RIGHTS RESERVED. United States Government Sponsorship
+// acknowledged. Any commercial use must be negotiated with the
+// Office of Technology Transfer at the California Institute of
+// Technology. This software may be subject to U.S. export control
+// laws and regulations. By accepting this software, the user
+// agrees to comply with all applicable U.S. export laws and
+// regulations. User has the responsibility to obtain export
+// licenses, or other export authority as may be required before
+// exporting such information to foreign countries or providing
+// access to foreign persons.
 //
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov

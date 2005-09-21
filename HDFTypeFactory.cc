@@ -18,7 +18,7 @@
 // License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
+// License along with this software; if not, write to the Free Software
 // Foundation, IHDF., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, IHDF. at PO Box 112, Saunderstown, RI. 02874-0112.
@@ -109,11 +109,11 @@ HDFTypeFactory::NewStructure(const string &n ) const
     return new HDFStructure(n);
 }
 
-SequeHDFe *
-HDFTypeFactory::NewSequeHDFe(const string &n ) const 
+Sequence *
+HDFTypeFactory::NewSequence(const string &n ) const 
 { 
-    DBG(cerr << "Inside HDFTypeFactory::NewSequeHDFe" << endl);
-    return new HDFSequeHDFe(n);
+    DBG(cerr << "Inside HDFTypeFactory::NewSequence" << endl);
+    return new HDFSequence(n);
 }
 
 Grid *
