@@ -44,7 +44,7 @@ EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
-CLEANFILES = *~
+CLEANFILES = *~ *.log *.sum
 
 ###########################################################################
 
