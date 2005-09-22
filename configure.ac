@@ -61,7 +61,7 @@ AC_DEFUN([AC_CHECK_HDF4],
 AC_ARG_WITH([hdf4],
             [AS_HELP_STRING([--with-hdf4=ARG],[hdf4 directory])],
             [H4_PATH=${withval}], 
-            [H4_PATH="/usr/local"])
+            [H4_PATH="/usr/local/hdf4.2r1"])
 
 AC_ARG_WITH([hdf4_inc],
             [AS_HELP_STRING([--with-hdf4-include=ARG],[hdf4 include directory])],

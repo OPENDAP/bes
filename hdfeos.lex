@@ -151,7 +151,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 {NEVER}                 {
                           if (yytext) {	/* suppress msgs about `' chars */
-                            fprintf(stderr, "Character `%c' is not", *yytext);
+                            fprintf(stderr, "Character '%c' (%d) is not", *yytext, *yytext);
                             fprintf(stderr, " allowed (except within");
 			    fprintf(stderr, " quotes) and has been ignored\n");
 			  }

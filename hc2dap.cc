@@ -143,7 +143,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
 		ostringstream strm(subname);
-		strm << vd.fields[i].name << "__" << j << ends;
+		strm << vd.fields[i].name << "__" << j;
 		BaseType *bt = 
 		    NewDAPVar(subname,
 			      vd.fields[i].vals[j].number_type());

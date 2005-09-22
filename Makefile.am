@@ -30,7 +30,7 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 HANDLER_SRC = dhdferr.cc hdfdesc.cc funcs.cc hc2dap.cc hdfutil.cc \
 	hdf_handler.cc dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
 	hdf-dods.h hdf-maps.h hdfeos.tab.cc hdfeos.tab.h \
-	lex.hdfeos.cc
+	lex.hdfeos.cc config_hdf.h
 
 dap_hdf4_handler_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR)
 dap_hdf4_handler_LDADD = hdfclass/libhdfclass.a
@@ -39,9 +39,7 @@ eosdas_test_SOURCES = eosdas-test.cc hdfeos.tab.cc hdfeos.tab.h \
 	lex.hdfeos.cc
 eosdas_test_LDADD = hdfclass/libhdfclass.a
 
-noinst_HEADERS = config_hdf.h
-
-EXTRA_DIST = hdf-testsuite hdf-testfiles
+EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI
 
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
