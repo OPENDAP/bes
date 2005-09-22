@@ -39,13 +39,24 @@ eosdas_test_SOURCES = eosdas-test.cc hdfeos.tab.cc hdfeos.tab.h \
 	lex.hdfeos.cc
 eosdas_test_LDADD = hdfclass/libhdfclass.a
 
-EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI
+EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI \
+	hdf4_handler.spec
 
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
 CLEANFILES = *~ *.log *.sum
 
+###########################################################################
+
+# Build linux RPMs
+
+srpm:
+	rpmbuild -ts hdf4_handler-@PACKAGE_VERSION@.tar.gz
+
+rpm:
+	rpmbuild -tb hdf4_handler-@PACKAGE_VERSION@.tar.gz
+	
 ###########################################################################
 
 # Build the HDF-EOS parser

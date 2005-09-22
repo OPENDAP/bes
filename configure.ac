@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(dap_hdf4_handler, 3.5.0, dods-tech@unidata.ucar.edu)
+AC_INIT([hdf4_handler], [3.5.0], [dods-tech@unidata.ucar.edu])
 AC_CONFIG_AUX_DIR([conf])
 
 AM_INIT_AUTOMAKE
