@@ -1,9 +1,8 @@
-	
-	$Id$
 
-Updated for version 3.4 of the DODS/NVODS/OPeNDAP software.
+$Id$
 
-Installing the HDF 4 server for DODS.
+Installing the HDF4 server software and client library for the OPeNDAP
+server.
 
 ---------------------------------------------------------------------------
 
@@ -13,168 +12,59 @@ NOTES
 
 ---------------------------------------------------------------------------
 
-*** Important note *** 
-The 3.2.6 HDF 4 server now uses the full range of
-datatypes available in DODS. Because the server caches certain responses,
-it's important to delete those cache files before upgrading from an older
-version of the server. Look in the cache directory (check your current
-dods.rc, nph-dods or nph-hdf script for the location of the cache directory).
-Delete all the files named *.cdas and *.cdds. If you've never installed the
-HDF 4 server, then you don't need to bother with any of this. 
-*** Important note ***
-
 BUILDING THE SOFTWARE
+
+0) Please skim REQUIREMENTS and NOTES sections of this file before reporting
+   problems. Thanks.
 
 1) Type `./configure' at the system prompt. On some systems you may have to
-   type `sh configure.' If the configure script cannot find you HDF4 library
-   and include files, use the --with-hdf=<hdf dir> option. Use the --help
-   option for more information.
+   type `sh configure.' If you want this part of the server to install
+   someplace other than /usr/local/bin, use --prefix to change the prefix
+   from the default "/use/local/." Make sure that the dap-server CGI knows
+   where the handler is located (you can list the complete pathname in the
+   dap-server.rc file; see dap-server's INSTALL and README files).
 
-2a) Type `make' to build the three server programs
+2) Type `make' to build the three server programs
 
-3a) Install the server components in DODS_ROOT/etc by running `make
-    install.' 
+3) Install the server components in $prefix by running `make install.'
 
-3b) To install the data server, use the new installServer shell script in the
-    DODS_ROOT/etc.
+Building from Our SVN Repository
 
-3c) By default the server will cache small files in /usr/tmp. You can change
-    this by changing the pathname in:
-
-    $dispatch->cache_dir("/usr/tmp");
-
-3d) Optionally, run the tests using `make check.' You'll also need DejaGNU
-    installed on your system. To set up the tests, first copy the test
-    datasets to a place in your web server's document root so that they can
-    be accessed by the newly installed DODS HDF4 server. Then run configure
-    so that the testsuite can find various datasets it uses. Use the
-    --with-test-url=url option where `url' is the DODS URL to the directory
-    that holds the test datasets.
-
-3e) Set the dods.ini file so that the server will know how to handle
-    different types of files you are serving.
-
-    The nph-dods dispatch script receives a request and dispatches it to the
-    appropriate service program. The way it figures out what is the
-    appropriate service program is to match the filename part of the URL it
-    received with a set of patterns listed in a configuration file. Each line
-    of the configuration file contains a pattern and the name of a "handler"
-    to use for files that match that pattern.
-
-    Here is the default configuration file:
-
-    .*\.(HDF|hdf)(.Z|.gz)*$ hdf
-    .*\.(NC|nc|cdf|CDF)$ nc
-    .*\.(mat|Mat|MAT)$ mat
-    .*\.(dat|bin)$ ff
-    .*\.(pvu)(.Z|.gz)*$ dsp
-    .*\/test$ jg
-    .*\/[^\.]+$ jg
-
-    Each line consists of a regular expression pattern followed by an
-    abbreviation like "jg" or "mat". Consider a URL like this:
-
-    http://dods.org/cgi-bin/nph-dods/data/ctd.mat?temp  
-
-    When the nph-dods script is executed, the "file name" part of the URL is
-    /data/ctd.mat. Testing this against the default initialization file
-    matches the third line, which indicates that the mat (Matlab) service
-    programs are the ones to use to process this request. The request is then
-    dispatched to the mat-dods (or mat-dds or mat-das) programs for
-    processing.
-
-    NOTE: The default configuration file is set up so that files without
-    extensions are handled by the JGOFS service programs. If this is not
-    right for your installation, delete the last line shown above.
-
-    "Regular expressions", advanced pattern-matching languages, are a
-    powerful feature of Perl and many other computer programs. Powerful
-    enough, in fact, to warrant at least one book about them (Mastering
-    Regular Expressions by Jeffrey Friedl, O'Reilly, 1997). You can find a
-    brief tutorial to regular expressions in the DODS bookshelf at
-    http://www.unidata.ucar.edu/packages/dods/user/regex-html/. (For a
-    complete reference online--not a particularly good place to learn about
-    them for the first time--see
-    http://www.perldoc.com/perl5.6/pod/perlre.html.
-
-    Briefly, however, the above patterns test whether a filename is of the
-    form file.ext.comp, where comp (if present) is Z or gz, and ext is one of
-    several possible filename extensions that might indicate a specific
-    storage API. If a file has no extension, it is assumed to be a JGOFS
-    file.
-
-    If these default rules will not work for your installation, you can
-    rewrite them. For example, if all your files are HDF files, you could
-    replace the default configuration file with one that looks like this:
-
-    .* hdf
-
-    The .* pattern matches all possible names, and indicates that whatever
-    the name of the file sought, the HDF service programs are the ones to
-    use.
-
-    If you have a situation where all the files in a particular directory
-    (whatever its extension) are to be handled by the DSP service programs,
-    and all other files served are JGOFS files, try this:
-
-    \/dsp_data\/.* dsp
-    .* jg
-
-    The rules are applied in order, and the first rule with a successful
-    match returns the handler that will be applied. The above set of rules
-    implies that everything in the dsp_data directory will be handled with
-    the DSP service programs, and everything else will be handled with the
-    JGOFS programs.
+  If you are building from a SVN checkout, run 'autoreconf --verbose' before
+  './configure; make'. If you try to run autoconf, et c., by hand and wind up
+  with build files that don't work, use 'autoreconf --force --verbose'. Once
+  autoreconf has made the configure and Makefile.in files, do ./configure;
+  make; make install as outlined above.
 
 REQUIREMENTS
 
-  o You need to have the DAP library, version 3.5.2 or later.
+  o You need the libdap library to build and install this software. If you're
+    using Linux, this means either building form source or using the libdap
+    and libdap-devel RPM packages.
 
-  o You must have a copy of HDF4.1r4. Earlier versions of HDF4 work with the
-    server but some valid files work be served correctly.
-    
-  o You will need the OPeNDAP Data Server base software to use the handler 
-    to serve data.
+  o You also need a recent copy of HDF4. We've tested this server with
+    version 4.2r1, although any recent version should work fine. If the
+    configure script cannot find your copy of hdf4, use the
+    --with-netcdf options to tell it where to look (see configure --help).
+    By default the configure script will look in /usr/local/hdf4.2r1.
 
 NOTES
 
-  o If the build fails because make reports that it does not know how to make
-    a particular file, try runing `make depend' to rebuild the Makefile's
-    dependencies.
-
-  o For information about installing secure DODS servers, see the file
-    README-security in DODS_ROOT/etc.
-
-  o The README file has some information about writing the format files used
-    to describe data so that it can be served by the software. More complete
-    documentation is available in the documentation section of the DODS home
-    page at http://unidata.ucar.edu/packages/dods/.
-
-  o If the build fails because make reports that it does not know how to make
-    a particular file, try runing `make depend' to rebuild the Makefile's
-    dependencies.
+  o For information about installing secure OPeNDAP servers, see the file
+    SECURITY included with the dap-server software.
 
   o DEBUGGING AIDS
 
-    - The DODS API includes the following debugging aids that may be of help
-      to you in developing new DODS applications.
+    - The OPeNDAP libdap library includes the following debugging aids that
+      may be of help to you in developing new applications.
 
-    - DBG: simple program instrumentation -- see the file debug.h in
-      $DODS_ROOT/include for more information
+    - DBG: simple program instrumentation -- see the file debug.h distributed
+      with libdap (which is installed in the libdap header directory; use
+      'config-libdap --cflags' and look at the value if -I).
 
     - DBG2: more elaborate program instrumentation -- by convention this is
       used for output that is half a page or more, while DEBUG is used for
       single line output.
-
-    - dbnew: include -ldbnew and -lefence when linking. libdbnew.a contains
-      overloaded versions of new, new[] delete and delete[]. It also contains
-      code to `walk the malloc chain' and simple checks for out-of-bounds
-      errors.
-
-    - efence: a freely available bounds checker for dynamically allocated
-      memory. When used with dbnew, efence must be set to 8-byte alignment.
-      efence will find all over- or under-writes of dynamically allocated
-      memory, but only works on some machines.
 
     - To build with program instrumentation use `--enable-debug=<level>'
       where <level> is 1 or 2.
@@ -184,4 +74,3 @@ NOTES
       `./configure'. If you want the extra features, use:
 
       ./configure --enable-dbnew --enable-debug=2
-

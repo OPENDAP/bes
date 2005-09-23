@@ -95,15 +95,9 @@ template class vector<hdf_palette>;
 #endif
 
 template<class T>
-string num2string(T n) {
-#if 0
-    static char buf[hdfdods::MAXSTR];
-
-    ostrstream(buf,hdfdods::MAXSTR) << n << ends;
-
-    return (string)buf;
-#endif
-    
+string 
+num2string(T n)
+{
     ostringstream oss;
     oss << n;
     return oss.str();
@@ -141,7 +135,7 @@ string cache_name(const string& cachedir, const string& filename) {
     dirstart++;
   }
   // now backup to the last path separator
-  while(newname[start-1] != '/')
+  while(newname[start-1] != '/' && start != 0)
     start--;
 
   // turn the remaining path separators into "#"

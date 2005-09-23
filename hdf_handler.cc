@@ -118,7 +118,7 @@ main(int argc, char *argv[])
     }
     catch (dhdferr &d) {
         ostringstream s;
-	s << "hdf_dods: " << d;
+	s << "hdf4 handler: " << d;
         ErrMsgT(s.str());
 	Error e(unknown_error, d.errmsg());
 	set_mime_text(cout, dods_error, cgi_version);
@@ -127,7 +127,7 @@ main(int argc, char *argv[])
     }
     catch (hcerr &h) {
         ostringstream s;
-	s << "hdf_dods: " << h;
+	s << "hdf4 handler: " << h;
         ErrMsgT(s.str());
 	Error e(unknown_error, h.errmsg());
 	set_mime_text(cout, dods_error, cgi_version);
@@ -136,14 +136,14 @@ main(int argc, char *argv[])
     }
     catch (Error &e) {
         string s;
-	s = (string)"hdf_dods: " + e.get_error_message() + "\n";
+	s = (string)"hdf4 handler: " + e.get_error_message() + "\n";
         ErrMsgT(s);
 	set_mime_text(cout, dods_error, cgi_version);
 	e.print(cout);
 	return 1;
     }
     catch (...) {
-        string s("hdf_dods: Unknown exception");
+        string s("hdf4 handler: Unknown exception");
 	ErrMsgT(s);
 	Error e(unknown_error, s);
 	set_mime_text(cout, dods_error, cgi_version);

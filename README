@@ -1,9 +1,18 @@
-DODS/HDF Server Notes:
 
-Updated for version 3.4 of the DODS/NVODS/OPeNDAP software.
+$Id$
 
-Copyright information
+This is the OPeNDAP HDF4 Data Handler. It is used along with the OPeNDAP
+DAP Server.
 
+For information about building the OPeNDAP netCDF Data Handler, see the
+INSTALL file.
+
+This data handler is component of the OPeNDAP DAP Server; the server base
+software is designed to allow any number of handlers to be configured easily.
+See the DAP Server README and INSTALL files for information about
+configuration, including how to use this handler.
+
+Copyright information:
 This software was originally written at JPL as part of the DODS NASA ESIP
 Federation Cooperative Agreement Notice. The original copyright described 
 free use of the software 'for research purposes' although it was not clear 
@@ -14,20 +23,18 @@ now included in the code.
 In Fall of 2005 we decided to release the software under the LGPL, based on a
 previous discussion with personnel at JPL.
 
-Client Library is not included in this release.
-
 Support for HDF data types:
     HDF Version:  This release of the server supports HDF4.0r2. 
-    SDS:          This is mapped to DODS Grid (if it has a dimension 
-                  scale) or DODS Array (if it lacks a dim scale).  
+    SDS:          This is mapped to a DAP2 Grid (if it has a dimension 
+                  scale) or Array (if it lacks a dim scale).  
     Raster image: This is read via the HDF 4.0 General Raster
-                  interface and is mapped to DODS Array.  Each
+                  interface and is mapped to Array.  Each
                   component of a raster is mapped to a new dimension
-                  labelled accordingly.  For example, a 2-dimensional,
+                  labelled accordingly. For example, a 2-dimensional,
                   3-component raster is mapped to an  m x n x 3
                   Array. 
-    Vdata:        This is mapped to a DODS Sequence, each element of
-                  which is a DODS Structure.  Each subfield of the
+    Vdata:        This is mapped to a Sequence, each element of
+                  which is a Structure.  Each subfield of the
                   Vdata is mapped to an element of the Structure.
                   Thus a Vdata with one field of order 3 would be
                   mapped to a Sequence of 1 Structure containing 3
@@ -43,7 +50,7 @@ Support for HDF data types:
                   values of type "String" attached to the fake DAP
                   variable named "HDF_ANNOT".  HDF annotations on
                   objects are currently not read by the server. 
-    Vgroups:      Vgroups are straight-forwardly mapped to DODS
+    Vgroups:      Vgroups are straight-forwardly mapped to 
                   Structures.  This is a new feature of DODS-2.15 and
                   may still contain bugs, although it has been tested
                   thoroughly.  Note that Vgroups are *not* implemented
@@ -52,8 +59,8 @@ Support for HDF data types:
 
 Special characters in HDF identifiers:
   - A number of non-alphanumeric characters (e.g., space, #, +, -)
-    used in HDF identifiers are not allowed in the names of DODS
-    objects or object components nor in URLs.  The HDF server
+    used in HDF identifiers are not allowed in the names of DAP
+    objects, object components or in URLs.  The HDF4 data handler
     therefore deals internally with translated versions of these
     identifiers.  To translate the WWW convention of escaping such
     characters by replacing them with "%" followed by the hexadecimal
@@ -66,7 +73,7 @@ Special characters in HDF identifiers:
 Known problems:
 
 Handling of floating point attributes:
-  - Because the DODS core software encodes attribute values as ASCII
+  - Because the DAP software encodes attribute values as ASCII
     strings there will be a loss of accuracy for floating point
     attributes.  This loss of accuracy is dependent on the version of
     the C++ I/O library used in compiling the DODS software (i.e., the
@@ -84,16 +91,11 @@ Handling of global attributes:
     accessible because the constraint creates a "virtual dataset"
     which is a subset of the original unconstrained dataset.
 
-Tested platforms:
-  - This software has been tested under SGI IRIX 5.3 and Sun Solaris
-    2.6.  It should in principle work under other flavors of Unix.
-    
-  - As of 1/7/2004 this software has been built and tested on all platforms
-    where we support binary builds. This includes SGI/IRIX, Solaris, Linux,
-    Alpha/OSF. Please check our web page for complete details. 01/07/04 jhrg
-
 Todd Karakashian (Todd.K.Karakashian@jpl.nasa.gov)
 Isaac Henry (ike@seanet.jpl.nasa.gov)
 Jake Hamby (Jake.Hamby@jpl.nasa.gov)
 
 NASA/JPL April 1998
+
+James Gallagher
+Updated 9/22/2005 
