@@ -172,8 +172,7 @@ void read_das(DAS& das, const string& cachedir, const string& filename) {
 static void update_descriptions(const string& cachedir, const string& filename) {
 
     // if cached version of DDS or DAS is nonexistent or out of date, 
-    // then regenerate DDS, DAS (cached DDS, DAS are assumed to be in the 
-    // same directory as the data file)
+    // then regenerate DDS, DAS.
     Stat datafile(filename);
     Stat ddsfile((cache_name(cachedir, filename) + ".cdds"));
     Stat dasfile((cache_name(cachedir, filename) + ".cdas"));
@@ -432,7 +431,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
 }
     // Build DDS for all toplevel vgroups
     BaseType *pbt = 0;
-{    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
       if(!v->second.toplevel)
 	continue;   // skip over non-toplevel vgroups
       pbt = NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap, grmap);
@@ -440,7 +439,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
 	dds.add_var(pbt);
       }
     }
-}
+
     // add lone SDS's
     for(SDSI s=sdmap.begin(); s!=sdmap.end(); ++s) {
       if(s->second.in_vgroup)
