@@ -22,9 +22,6 @@ DODSHeapManager::DODSHeapManager()
     {
 	limit.rlim_cur=megabytes(3);
 	limit.rlim_max=megabytes(3);
-	cout << "Trying limits soft, hard "
-	     << limit.rlim_cur << " " << limit.rlim_max
-	     << endl;
 	if(setrlimit(RLIMIT_DATA, &limit)<0)
 	{
 	    cerr << "DODS: Could not set limit for the heap because "
@@ -33,7 +30,6 @@ DODSHeapManager::DODSHeapManager()
 	    exit(1);
 	}
     }
-    cout << "I am object " << counter << endl;
 }
 
 DODSHeapManager::~DODSHeapManager()
