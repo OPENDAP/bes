@@ -102,9 +102,8 @@ private:
 // Create a DAP HDFSequence from an hdf_vdata.
 HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
     // check to make sure hdf_vdata object is set up properly
-    if (vd.name.length() == 0)		// Vdata must have a name
-	return 0;
-    if (!vd  ||  vd.fields.size() == 0)	// 
+    // Vdata must have a name
+    if (!vd  ||  vd.fields.size() == 0 || vd.name.empty())
 	return 0;
 
     // construct HDFSequence
@@ -115,7 +114,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
     // step through each field and create a variable in the DAP Sequence
     for (int i=0; i<(int)vd.fields.size(); ++i) {
 	if (!vd.fields[i]  ||  vd.fields[i].vals.size() < 1  ||
-	    vd.fields[i].name.length() == 0) {
+	    vd.fields[i].name.empty()) {
 	    delete seq;		// problem with the field
 	    return 0;
 	}
@@ -140,12 +139,11 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd) {
 	}
 	else {
 	    // create a DODS variable for each subfield
-	    char subname[hdfclass::MAXSTR];
 	    for (int j=0; j<(int)vd.fields[i].vals.size(); ++j ) {
-		ostringstream strm(subname);
+		ostringstream strm;
 		strm << vd.fields[i].name << "__" << j;
 		BaseType *bt = 
-		    NewDAPVar(subname,
+		    NewDAPVar(strm.str(),
 			      vd.fields[i].vals[j].number_type());
 		if (bt == 0) {
 		    delete st;
