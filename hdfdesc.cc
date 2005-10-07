@@ -574,8 +574,8 @@ void AddHDFAttr(DAS& das, const string& varname, const vector<hdf_attr>& hav) {
 		  || arg.status() == false)
 		  cerr << "HDF-EOS parse error!\n";
 	    } else {
-		if (attrtype == "String") 
-		    attv[j] = "\"" + escattr(attv[j]) + '"';
+		if (attrtype == "String")
+		    attv[j] = "\"" + escattr(attv[j]) + "\"";
 		if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
 		    THROW(dhdferr_addattr);
 	    }
