@@ -1,9 +1,17 @@
 
 Created for version 3.5.0
 
-This version of the software has been converted to work witht eh 3.5.x version
+This version of the software has been converted to work with the 3.5.x version
 of the OPeNDAP data server.
 
 It uses automake and includes a spec file that can be used to build RPM
 packages.
 
+Some of the test files have been modified because they included images 
+compressed using a lossy algorithm (JPEG). It's hard to verify that the 
+values in the files are correct, so I've removed those from the files.
+
+An issue with HDF 4.2r1 and earlier versions of HDF4 has been discovered. In
+some cases a file written using an older vesion of HDF4 that contains CHAR8
+or UCHAR8 SDSs may not be correctly represented as a DAP2 Grid. Instead it
+show up as an Array.
