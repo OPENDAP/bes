@@ -399,7 +399,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
     }
     vgin.close();
     // for each Vgroup
-{    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
+    for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
       const hdf_vgroup *vg = &v->second.vgroup;
       
       // Add Vgroup attributes
@@ -428,7 +428,7 @@ static void Vgroup_descriptions(DDS& dds, DAS& das, const string& filename,
 	}
       }
     }
-}
+
     // Build DDS for all toplevel vgroups
     BaseType *pbt = 0;
     for(VGI v=vgmap.begin(); v!=vgmap.end(); ++v) {
