@@ -1,5 +1,5 @@
 
-Created for version 3.5.0
+Version 3.5.0
 
 This version of the software has been converted to work with the 3.5.x version
 of the OPeNDAP data server.
@@ -11,7 +11,23 @@ Some of the test files have been modified because they included images
 compressed using a lossy algorithm (JPEG). It's hard to verify that the 
 values in the files are correct, so I've removed those from the files.
 
+Known problems:
+
 An issue with HDF 4.2r1 and earlier versions of HDF4 has been discovered. In
 some cases a file written using an older vesion of HDF4 that contains CHAR8
 or UCHAR8 SDSs may not be correctly represented as a DAP2 Grid. Instead it
 show up as an Array.
+
+Bug #61: Vlens (which are one-dimensional arrays with an undeclared length
+and cannot be subsampled) appear as Sequences. In version 3.4 access to
+these using the [] array access notation was broken. Requesting [0:4] returned 
+the first four elements, not the first five. That problem has been fixed, but
+the larger issue of representing vlens as sequences has not. 
+
+Bug #71: The dot (.) character is 'overloaded' in that it can be both a 
+separater and a regular character in an identifier. If a Structure name 
+contains a dot, trying to access a field using 'name.field' breaks since
+'name' contians a dot itself and the parser thinks it's a separator. The 
+fix for this will be introduced in DAP3. Until then, use the shorthand 
+variable referencing notation where a field is requested using the
+unqualified field name.
