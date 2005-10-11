@@ -18,6 +18,9 @@ AC_DEFUN([AC_CHECK_HDF4],
             [HDF4_PATH_LIBDIR=$withval], 
             [HDF4_PATH_LIBDIR=""])
 
+  dnl This is a very common location for the hdf4 code. jhrg 10/11/05
+  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
+      
   AS_IF([test "z$HDF4_PATH" != "z"],
   [
     AS_IF([test "z$HDF4_PATH_LIBDIR" = "z"],
