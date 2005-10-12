@@ -42,16 +42,9 @@
 #include <assert.h>
 
 #include <vector>
-#ifdef __GNUG__
-#include <strstream>
-#else
 #include <sstream>
-#endif
 
-using std::ostrstream ;
-using std::cerr ;
-using std::endl ;
-using std::ends ;
+using namespace std;
 
 #include "DAS.h"
 #include "Error.h"
@@ -197,9 +190,9 @@ attribute:    	GROUP '=' STR
                 '=' data
 
 		| COMMENT {
-		    ostrstream name, comment;
-		    name << "comment" << commentnum++ << ends;
-		    comment << "\"" << $1 << "\"" << ends;
+		    ostringstream name, comment;
+		    name << "comment" << commentnum++;
+		    comment << "\"" << $1 << "\"";
 		    DBG(cerr << name.str() << ":" << comment.str() << endl);
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -207,8 +200,8 @@ attribute:    	GROUP '=' STR
 		    else
 		      a = TOP_OF_STACK;
 		    if (!a->append_attr(name.str(), "String", comment.str())) {
-		      ostrstream msg;
-		      msg << "`" << name.str() << "' previously defined." << ends;
+		      ostringstream msg;
+		      msg << "`" << name.str() << "' previously defined.";
 		      parse_error((parser_arg *)arg, msg.str());
 		      msg.rdbuf()->freeze(0); 
 		      name.rdbuf()->freeze(0);
@@ -265,15 +258,15 @@ ints:           INT
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
 		    if (!(check_int32($1) 
 			  || check_uint32($1))) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not an Int32 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not an Int32 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, "Int32", $1)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -285,15 +278,15 @@ ints:           INT
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!(check_int32($3)
 			  || check_uint32($1))) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not an Int32 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not an Int32 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -306,15 +299,15 @@ floats:		FLOAT
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not a Float64 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -325,15 +318,15 @@ floats:		FLOAT
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not a Float64 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -346,15 +339,15 @@ floatints:	float_or_int
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!check_float64($1)) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not a Float64 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -365,15 +358,15 @@ floatints:	float_or_int
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
-			ostrstream msg;
-			msg << "`" << $1 << "' is not a Float64 value." << ends;
+			ostringstream msg;
+			msg << "`" << $1 << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0);
 			YYABORT;
@@ -389,8 +382,8 @@ strs:		STR
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($1) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $1)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0); 
 			YYABORT;
@@ -400,9 +393,6 @@ strs:		STR
 		      string newname = $1+1;
 		      newname.erase(newname.end()-1);
 		      // and convert embedded spaces to _
-#if 0
-		      unsigned int space = 0;
-#endif
 		      string::size_type space = 0;
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
@@ -415,8 +405,8 @@ strs:		STR
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, $3)) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str());
 			msg.rdbuf()->freeze(0); 
 			YYABORT;
