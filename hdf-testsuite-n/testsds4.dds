@@ -1,0 +1,16 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+Date: *
+Last-Modified: *
+Content-type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Grid {
+      Array:
+        Int32 SDS_1\[Y_Axis = 16\]\[X_Axis = 5\];
+      Maps:
+        Float64 Y_Axis\[16\];
+        Int16 X_Axis\[5\];
+    } SDS_1;
+} testsds4.hdf;

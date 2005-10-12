@@ -1,0 +1,11 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+Date: *
+Last-Modified: *
+Content-type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Byte Raster%20Image%20%230\[Raster%20Image%20%230__Y = 6\]\[Raster%20Image%20%230__X = 5\];
+    Byte Raster%20Image%20%231\[Raster%20Image%20%231__Y = 6\]\[Raster%20Image%20%231__X = 5\];
+} testdfr2.hdf;

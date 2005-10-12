@@ -1,0 +1,6 @@
+The data:
+Sequence {
+    Structure {
+        UInt16 Field_DFNT_UINT16__0;
+    } Field_DFNT_UINT16;
+} Vdata_DFNT_UINT16 = { { { 0 } }, { { 1 } } };

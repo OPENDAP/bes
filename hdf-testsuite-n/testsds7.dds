@@ -1,0 +1,14 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+Date: *
+Last-Modified: *
+Content-type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Int16 SDS_None\[fakeDim0 = 9\]\[fakeDim1 = 4\];
+    Int16 SDS_RLE\[fakeDim2 = 9\]\[fakeDim3 = 4\];
+    Int16 SDS_N-bit\[fakeDim4 = 9\]\[fakeDim5 = 4\];
+    Int16 SDS_Skip_Huffman\[fakeDim6 = 9\]\[fakeDim7 = 4\];
+    Int16 SDS_Deflate\[fakeDim8 = 9\]\[fakeDim9 = 4\];
+} testsds7.hdf;
