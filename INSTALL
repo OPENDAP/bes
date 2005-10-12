@@ -1,8 +1,7 @@
 
 $Id$
 
-Installing the HDF4 server software and client library for the OPeNDAP
-server.
+Installing the HDF4 handler for the OPeNDAP server.
 
 ---------------------------------------------------------------------------
 
@@ -42,11 +41,14 @@ REQUIREMENTS
     using Linux, this means either building form source or using the libdap
     and libdap-devel RPM packages.
 
+  o To use this software with our data server, you will need the OPeNDAP
+    dap-server software package.
+
   o You also need a recent copy of HDF4. We've tested this server with
     version 4.2r1, although any recent version should work fine. If the
     configure script cannot find your copy of hdf4, use the
     --with-netcdf options to tell it where to look (see configure --help).
-    By default the configure script will look in /usr/local/hdf4.2r1.
+    By default the configure script will look in /usr/local/hdf.
 
 NOTES
 

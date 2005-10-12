@@ -24,7 +24,7 @@ In Fall of 2005 we decided to release the software under the LGPL, based on a
 previous discussion with personnel at JPL.
 
 Support for HDF data types:
-    HDF Version:  This release of the server supports HDF4.0r2. 
+    HDF Version:  This release of the server supports HDF4.2r1. 
     SDS:          This is mapped to a DAP2 Grid (if it has a dimension 
                   scale) or Array (if it lacks a dim scale).  
     Raster image: This is read via the HDF 4.0 General Raster
@@ -51,11 +51,7 @@ Support for HDF data types:
                   variable named "HDF_ANNOT".  HDF annotations on
                   objects are currently not read by the server. 
     Vgroups:      Vgroups are straight-forwardly mapped to 
-                  Structures.  This is a new feature of DODS-2.15 and
-                  may still contain bugs, although it has been tested
-                  thoroughly.  Note that Vgroups are *not* implemented
-                  as DAP attributes, as the previous version of this
-                  README predicted.
+                  Structures.
 
 Special characters in HDF identifiers:
   - A number of non-alphanumeric characters (e.g., space, #, +, -)
