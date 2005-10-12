@@ -1,0 +1,33 @@
+README for HDF test file generators
+Jake Hamby (jake.hamby@jpl.nasa.gov)
+------------------------------------
+
+This directory contains a series of simple programs to generate the HDF files
+used by the included test suite.  Unlike the rest of DODS, the Makefile doesn't
+use autoconf, but should be fairly straightforward.
+
+To test the DODS HDF server, you must first install the CGI's into your web
+server's cgi-bin directory.  You can't test the server without installing it
+first.
+
+To generate the HDF test files, run 'make' in this directory.  If HDF is
+installed somewhere other than /usr/local/hdf, you'll need to edit the HDFDIR
+line of the Makefile first.  To install the testfiles, change the INSTALLDIR
+line if necessary, and run 'make install', or simply copy '*.hdf' to a location
+inside your Web server's document root.
+
+In order to run the HDF-EOS server tests, you will also need three test files:
+GridFile.hdf, PointFile.hdf, and SwathFile.hdf.  I created these by running
+all of the sample programs in the sample directory of the HDF-EOS
+distribution.  Email me if you need a copy of them and don't want to compile
+HDF-EOS on your system, as the test files are too large to include here.
+
+As with the DAP core tests, you will need to have the DejaGNU test framework
+installed before you can run the server test.  If you have installed the
+testfiles in a different location than your DocumentRoot, or if you want to
+test a machine other than localhost (a good idea if you want to test a server
+but only have DejaGNU installed on your development box), edit TESTDIR in
+the hdf-dods Makefile appropriately.  You'll also need to make sure geturl
+is in the DODS bin directory.  If all is well, run "make check" in the hdf-dods
+directory (the parent of this one).  All of the tests, except for the HDF-EOS
+tests (if you don't have the sample HDF-EOS files installed) should pass.
