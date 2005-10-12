@@ -93,7 +93,7 @@
 #define YYSTYPE char *
 #define YYDEBUG 1
 
-// static char rcsid[] not_used = {"$Id: hdfeos.y 12203 2005-09-19 19:13:39Z jimg $"};
+// static char rcsid[] not_used = {"$Id: hdfeos.y 12377 2005-10-12 14:02:57 -0600 (Wed, 12 Oct 2005) jimg $"};
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -102,16 +102,9 @@
 #include <assert.h>
 
 #include <vector>
-#ifdef __GNUG__
-#include <strstream>
-#else
 #include <sstream>
-#endif
 
-using std::ostrstream ;
-using std::cerr ;
-using std::endl ;
-using std::ends ;
+using namespace std;
 
 #include "DAS.h"
 #include "Error.h"
@@ -191,7 +184,7 @@ typedef int YYSTYPE;
 
 
 /* Line 214 of yacc.c.  */
-#line 195 "hdfeos.tab.c"
+#line 188 "hdfeos.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -369,10 +362,10 @@ static const yysigned_char yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const unsigned short yyrline[] =
 {
-       0,   161,   161,   161,   166,   170,   174,   169,   182,   186,
-     181,   194,   193,   199,   222,   238,   239,   240,   243,   244,
-     245,   246,   252,   253,   256,   282,   304,   323,   344,   363,
-     384,   384,   387,   413
+       0,   154,   154,   154,   159,   163,   167,   162,   175,   179,
+     174,   187,   186,   192,   210,   226,   227,   228,   231,   232,
+     233,   234,   240,   241,   244,   268,   288,   305,   324,   341,
+     360,   360,   363,   385
 };
 #endif
 
@@ -1106,7 +1099,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 161 "hdfeos.y"
+#line 154 "hdfeos.y"
     {
 		    if (!attr_tab_stack)
 			attr_tab_stack = new vector<AttrTable *>;
@@ -1114,14 +1107,14 @@ yyreduce:
     break;
 
   case 5:
-#line 170 "hdfeos.y"
+#line 163 "hdfeos.y"
     {
 		    process_group((parser_arg *)arg, yyvsp[0]);
 		;}
     break;
 
   case 6:
-#line 174 "hdfeos.y"
+#line 167 "hdfeos.y"
     {
 		  /* pop top of stack; store in attr_tab */
 		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
@@ -1130,14 +1123,14 @@ yyreduce:
     break;
 
   case 8:
-#line 182 "hdfeos.y"
+#line 175 "hdfeos.y"
     {
 		    process_group((parser_arg *)arg, yyvsp[0]);
 		;}
     break;
 
   case 9:
-#line 186 "hdfeos.y"
+#line 179 "hdfeos.y"
     {
 		  /* pop top of stack; store in attr_tab */
 		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
@@ -1146,18 +1139,18 @@ yyreduce:
     break;
 
   case 11:
-#line 194 "hdfeos.y"
+#line 187 "hdfeos.y"
     { 
 		    name = yyvsp[0]; 
 		;}
     break;
 
   case 13:
-#line 199 "hdfeos.y"
+#line 192 "hdfeos.y"
     {
-		    ostrstream name, comment;
-		    name << "comment" << commentnum++ << ends;
-		    comment << "\"" << yyvsp[0] << "\"" << ends;
+		    ostringstream name, comment;
+		    name << "comment" << commentnum++;
+		    comment << "\"" << yyvsp[0] << "\"";
 		    DBG(cerr << name.str() << ":" << comment.str() << endl);
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -1165,21 +1158,16 @@ yyreduce:
 		    else
 		      a = TOP_OF_STACK;
 		    if (!a->append_attr(name.str(), "String", comment.str())) {
-		      ostrstream msg;
-		      msg << "`" << name.str() << "' previously defined." << ends;
-		      parse_error((parser_arg *)arg, msg.str());
-		      msg.rdbuf()->freeze(0); 
-		      name.rdbuf()->freeze(0);
-		      comment.rdbuf()->freeze(0);
+		      ostringstream msg;
+		      msg << "`" << name.str() << "' previously defined.";
+		      parse_error((parser_arg *)arg, msg.str().c_str());
 		      YYABORT;
 		    }
-		    name.rdbuf()->freeze(0);
-		    comment.rdbuf()->freeze(0);
 		;}
     break;
 
   case 14:
-#line 223 "hdfeos.y"
+#line 211 "hdfeos.y"
     {
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -1196,7 +1184,7 @@ yyreduce:
     break;
 
   case 24:
-#line 257 "hdfeos.y"
+#line 245 "hdfeos.y"
     {
 		    /* NB: On the Sun (SunOS 4) strtol does not check for */
 		    /* overflow. Thus it will never figure out that 4 */
@@ -1208,143 +1196,130 @@ yyreduce:
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
 		    if (!(check_int32(yyvsp[0]) 
 			  || check_uint32(yyvsp[0]))) {
-			ostrstream msg;
-			msg << "`" << yyvsp[0] << "' is not an Int32 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[0] << "' is not an Int32 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, "Int32", yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 25:
-#line 283 "hdfeos.y"
+#line 269 "hdfeos.y"
     {
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!(check_int32(yyvsp[0])
 			  || check_uint32(yyvsp[-2]))) {
-			ostrstream msg;
-			msg << "`" << yyvsp[-2] << "' is not an Int32 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[-2] << "' is not an Int32 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 26:
-#line 305 "hdfeos.y"
+#line 289 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!check_float64(yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << yyvsp[0] << "' is not a Float64 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[0] << "' is not a Float64 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 27:
-#line 324 "hdfeos.y"
+#line 306 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!check_float64(yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << yyvsp[-2] << "' is not a Float64 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[-2] << "' is not a Float64 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 28:
-#line 345 "hdfeos.y"
+#line 325 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!check_float64(yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << yyvsp[0] << "' is not a Float64 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[0] << "' is not a Float64 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 29:
-#line 364 "hdfeos.y"
+#line 342 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!check_float64(yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << yyvsp[-2] << "' is not a Float64 value." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << yyvsp[-2] << "' is not a Float64 value.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
     break;
 
   case 32:
-#line 388 "hdfeos.y"
+#line 364 "hdfeos.y"
     {
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0); 
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    if (name=="GridName" || name=="SwathName" || name=="PointName") {
@@ -1352,9 +1327,6 @@ yyreduce:
 		      string newname = yyvsp[0]+1;
 		      newname.erase(newname.end()-1);
 		      // and convert embedded spaces to _
-#if 0
-		      unsigned int space = 0;
-#endif
 		      string::size_type space = 0;
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
@@ -1365,15 +1337,14 @@ yyreduce:
     break;
 
   case 33:
-#line 414 "hdfeos.y"
+#line 386 "hdfeos.y"
     {
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
 		    if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
-			ostrstream msg;
-			msg << "`" << name << "' previously defined." << ends;
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0); 
+			ostringstream msg;
+			msg << "`" << name << "' previously defined.";
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		;}
@@ -1383,7 +1354,7 @@ yyreduce:
     }
 
 /* Line 993 of yacc.c.  */
-#line 1387 "hdfeos.tab.c"
+#line 1358 "hdfeos.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1608,7 +1579,7 @@ yyreturn:
 }
 
 
-#line 427 "hdfeos.y"
+#line 398 "hdfeos.y"
 
 
 // This function is required for linking, but DODS uses its own error

@@ -1,7 +1,0 @@
-The data:
-Structure {
-    Structure {
-        Float32 Vegetation[YDim%3aUTMGrid = 6][XDim%3aUTMGrid = 6];
-    } Data%20Fields;
-} UTMGrid = { { {{10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13},{14, 14, 14, 14, 14, 14},{15, 15, 15, 15, 15, 15}} } };
-

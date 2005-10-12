@@ -202,14 +202,9 @@ attribute:    	GROUP '=' STR
 		    if (!a->append_attr(name.str(), "String", comment.str())) {
 		      ostringstream msg;
 		      msg << "`" << name.str() << "' previously defined.";
-		      parse_error((parser_arg *)arg, msg.str());
-		      msg.rdbuf()->freeze(0); 
-		      name.rdbuf()->freeze(0);
-		      comment.rdbuf()->freeze(0);
+		      parse_error((parser_arg *)arg, msg.str().c_str());
 		      YYABORT;
 		    }
-		    name.rdbuf()->freeze(0);
-		    comment.rdbuf()->freeze(0);
 		}
 
                 | error
@@ -260,15 +255,13 @@ ints:           INT
 			  || check_uint32($1))) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not an Int32 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, "Int32", $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -280,15 +273,13 @@ ints:           INT
 			  || check_uint32($1))) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not an Int32 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -301,15 +292,13 @@ floats:		FLOAT
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -320,15 +309,13 @@ floats:		FLOAT
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -341,15 +328,13 @@ floatints:	float_or_int
 		    if (!check_float64($1)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -360,15 +345,13 @@ floatints:	float_or_int
 		    if (!check_float64($3)) {
 			ostringstream msg;
 			msg << "`" << $1 << "' is not a Float64 value.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    else if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0);
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
@@ -384,8 +367,7 @@ strs:		STR
 		    if (!TOP_OF_STACK->append_attr(name, type, $1)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0); 
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		    if (name=="GridName" || name=="SwathName" || name=="PointName") {
@@ -407,8 +389,7 @@ strs:		STR
 		    if (!TOP_OF_STACK->append_attr(name, type, $3)) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
-			parse_error((parser_arg *)arg, msg.str());
-			msg.rdbuf()->freeze(0); 
+			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
 		}
