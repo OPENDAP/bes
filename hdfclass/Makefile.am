@@ -2,7 +2,7 @@
 #
 # 9/19/2005 jhrg
 #
-# $Id: Makefile.am 12175 2005-09-15 20:22:36Z jimg $
+# $Id$
 
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)

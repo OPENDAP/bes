@@ -3,7 +3,7 @@
 # various servers (hdf, dsp, netcdf, matlab, ...) on serveral different
 # platforms. 
 # 
-# $Id: unix.exp,v 1.3 1999/11/06 00:32:40 jimg Exp $
+# $Id$
 
 # Compare $expected to the global $comp_output. Run `pass' if they match,
 # `fail' otherwise unless `xfailp' is true in which case run `xfail' if they
