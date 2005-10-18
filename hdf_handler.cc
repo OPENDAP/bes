@@ -106,6 +106,26 @@ main(int argc, char *argv[])
 	      break;
 	  }
 
+          case DODSFilter::DDX_Response: {
+              HDFTypeFactory factory;
+              DDS dds(&factory);
+              DAS das;
+
+              dds.filename(df.get_dataset_name());
+
+              read_dds(dds, df.get_cache_dir(), df.get_dataset_name());
+              register_funcs(dds);
+              df.read_ancillary_dds(dds);
+
+              read_das(das, df.get_cache_dir(), df.get_dataset_name());
+              df.read_ancillary_das(das);
+
+              dds.transfer_attributes(&das);
+
+              df.send_ddx(dds, stdout);
+              break;
+          }
+
 	  case DODSFilter::Version_Response: {
 	      df.send_version_info();
 
