@@ -64,7 +64,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	ContainersResponseHandler.cc DefinitionsResponseHandler.cc \
 	DeleteResponseHandler.cc KeysResponseHandler.cc \
 	DODSResponseHandlerList.cc \
-	DODSInfo.cc DODSTextInfo.cc DODSHTMLInfo.cc \
+	DODSInfo.cc DODSTextInfo.cc DODSVersionInfo.cc DODSHTMLInfo.cc \
 	DODSRequestHandler.cc DODSRequestHandlerList.cc \
 	DODSBasicTransmitter.cc \
 	DODSBasicHttpTransmitter.cc DODSFilterTransmitter.cc \
@@ -97,7 +97,8 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DeleteResponseHandler.h \
 	KeysResponseHandler.h \
 	DODSResponseNames.h DODSResponseException.h \
-	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSRequestHandler.h \
+	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSVersionInfo.h \
+	DODSRequestHandler.h \
 	DODSRequestHandlerList.h \
 	DODSIncorrectRequestException.h DODSDataHandlerInterface.h \
 	DODSDataRequestInterface.h DODSTransmitter.h \

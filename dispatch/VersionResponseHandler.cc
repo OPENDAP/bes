@@ -5,7 +5,7 @@
 #include "config.h"
 
 #include "VersionResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSVersionInfo.h"
 #include "cgi_util.h"
 #include "util.h"
 #include "dispatch_version.h"
@@ -27,7 +27,7 @@ VersionResponseHandler::~VersionResponseHandler( )
  * handlers.
  *
  * This response handler knows how to retrieve the version of the OPeNDAP-g
- * server. It adds this information to a DODSTextInfo informational response
+ * server. It adds this information to a DODSVersionInfo informational response
  * object. It also forwards the request to all registered data request
  * handlers.
  *
@@ -35,18 +35,20 @@ VersionResponseHandler::~VersionResponseHandler( )
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSVersionInfo
  * @see DODSRequestHandlerList
  */
 void
 VersionResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSVersionInfo *info =
+	new DODSVersionInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    info->add_data( "Core Libraries\n" ) ;
-    info->add_data( (string)"    " + dispatch_version() + "\n" ) ;
-    info->add_data( (string)"    " + dap_version() + "\n" ) ;
-    info->add_data( "Request Handlers\n" ) ;
+    info->addDAPVersion( "2.0" ) ;
+    info->addDAPVersion( "3.0" ) ;
+    info->addDAPVersion( "3.2" ) ;
+    info->addBESVersion( libdap_name(), libdap_version() ) ;
+    info->addBESVersion( bes_name(), bes_version() ) ;
     DODSRequestHandlerList::TheList()->execute_all( dhi ) ;
 }
 
@@ -67,7 +69,7 @@ VersionResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSVersionInfo *info = dynamic_cast<DODSVersionInfo *>(_response) ;
 	transmitter->send_text( *info, dhi );
     }
 }
