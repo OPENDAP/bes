@@ -7,12 +7,20 @@
 
 #include <string>
 
+#include "config.h"
+
 using std::string ;
 
 inline string
-dispatch_version()
+bes_name()
 {
-    return (string)PACKAGE_STRING + ": compiled on " + __DATE__ + ":" + __TIME__ ;
+    return (string)PACKAGE_NAME ;
+}
+
+inline string
+bes_version()
+{
+    return (string)PACKAGE_VERSION ;
 }
 
 #endif // E_dispatch_version_h
