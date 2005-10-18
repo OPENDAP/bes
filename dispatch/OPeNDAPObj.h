@@ -13,6 +13,7 @@ using std::ostream ;
 class OPeNDAPObj
 {
 public:
+    virtual		~OPeNDAPObj() {}
     virtual void	dump( ostream &strm ) const = 0 ;
 } ;
 

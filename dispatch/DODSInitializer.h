@@ -23,6 +23,7 @@
  */
 class DODSInitializer {
 public:
+    virtual			~DODSInitializer() {}
     /** @brief function for the initialization of objects, such as globals.
      * 
      * @param argc number of arguments passed on the command line, same as command line argc.
