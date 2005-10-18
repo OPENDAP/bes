@@ -4,8 +4,6 @@
 
 #include "TheDODSKeys.h"
 #include "DODSKeysException.h"
-#include "DODSInitList.h"
-#include "DODSInitOrder.h"
 
 #define DODS_INI_FILE getenv("DODS_INI")
 
