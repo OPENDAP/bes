@@ -1,6 +1,9 @@
 
 Version 3.5.0
 
+This handler can return the DDX response (which is an experimental feature,
+not to be relied upon).
+
 This version of the software has been converted to work with the 3.5.x version
 of the OPeNDAP data server.
 
