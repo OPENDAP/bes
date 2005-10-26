@@ -58,17 +58,20 @@ DODSVersionInfo::DODSVersionInfo( bool is_http )
 
 DODSVersionInfo::~DODSVersionInfo()
 {
+    if( _DAPstrm ) delete _DAPstrm ;
+    if( _BESstrm ) delete _BESstrm ;
+    if( _Handlerstrm ) delete _Handlerstrm ;
 }
 
 void
 DODSVersionInfo::print( FILE *out )
 {
-    if( !_firstDAPVersion ) (*_DAPstrm) << "        </DAP>\n" ;
-    if( !_firstBESVersion ) (*_BESstrm) << "        </BES>\n" ;
-    if( !_firstHandlerVersion ) (*_Handlerstrm) << "        </Handlers>\n" ;
-    add_data( ((ostringstream *)_DAPstrm)->str() ) ;
-    add_data( ((ostringstream *)_BESstrm)->str() ) ;
-    add_data( ((ostringstream *)_Handlerstrm)->str() ) ;
+    if( !_firstDAPVersion && _DAPstrm ) (*_DAPstrm) << "        </DAP>\n" ;
+    if( !_firstBESVersion && _BESstrm ) (*_BESstrm) << "        </BES>\n" ;
+    if( !_firstHandlerVersion && _Handlerstrm ) (*_Handlerstrm) << "        </Handlers>\n" ;
+    if( _DAPstrm ) add_data( ((ostringstream *)_DAPstrm)->str() ) ;
+    if( _BESstrm ) add_data( ((ostringstream *)_BESstrm)->str() ) ;
+    if( _Handlerstrm ) add_data( ((ostringstream *)_Handlerstrm)->str() ) ;
     add_data( "    </response>\n" ) ;
     add_data( "</showVersion>\n" ) ;
     DODSInfo::print( out ) ;
