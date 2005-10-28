@@ -52,6 +52,7 @@ DODSVersionInfo::DODSVersionInfo( bool is_http )
 {
     _buffered = true ;
     _strm = new ostringstream ;
+    add_data( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ) ;
     add_data( "<showVersion>\n" ) ;
     add_data( "    <response>\n" ) ;
 }
