@@ -8,7 +8,7 @@ Source0:         http://www.opendap.org/pub/3.5/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.5.2
+BuildRequires:   libdap-devel >= 3.5.2 hdf-devel
 Requires:        dap-server >= 3.5.0
 
 %description
@@ -36,5 +36,5 @@ rm -rf $RPM_BUILD_ROOT
 %doc README
 
 %changelog
-* Thu Sep 21 2005 James Gallagher <jgallagher@opendap.org> 3.5.0
+* Thu Sep 21 2005 James Gallagher <jgallagher@opendap.org> 3.5.0-1
 - initial release

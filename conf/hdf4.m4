@@ -29,47 +29,65 @@ AC_DEFUN([AC_CHECK_HDF4],
       [HDF4_PATH_INC="$HDF4_PATH/include"])  
   ])
   
-  HDF4_LDFLAGS=
-  AS_IF([test "z$HDF4_PATH_LIBDIR" != "z"],
-    [HDF4_LDFLAGS="-L$HDF4_PATH_LIBDIR"])
   
-  HDF4_LIBS=
+  ac_hdf4_lib_ok='no'
   ac_hdf4_save_LDFLAGS=$LDFLAGS
-  ac_hdf4_save_LIBS=$LIBS
-  LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
-  AC_CHECK_LIB([sz], [SZ_BufftoBuffCompress],
-  [
-      LIBS="$LIBS -lsz"
-      HDF4_LIBS='-lsz'
-  ])
-
-dnl -lsz is not required because due to licencing it may not be present
-dnl nor required everywhere
-  ac_hdf4_lib='no'
-  AC_CHECK_LIB([z],[deflate],
-  [ AC_CHECK_LIB([jpeg],[jpeg_start_compress],
-    [ AC_CHECK_LIB([df],[Hopen],
-      [ AC_CHECK_LIB([mfhdf],[SDstart],
-        [ ac_hdf4_lib="yes"
-          HDF4_LIBS="-lmfhdf -ldf -ljpeg -lz $HDF4_LIBS"
-        ],[],[-ldf -ljpeg -lz])
-      ],[],[-ljpeg -lz])
+  HDF4_LIBS=
+  AS_IF([test "z$HDF4_PATH_LIBDIR" != "z"],
+    [
+      HDF4_LDFLAGS="-L$HDF4_PATH_LIBDIR"
+      LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
+      AC_CHECK_HDF4_LIB([ac_hdf4_lib_ok='yes'])
+    ],
+    [
+      for ac_hdf4_libdir in "" /usr/local/hdf4.2r1/lib /opt/hdf4.2r1/lib \ 
+       /usr/hdf4.2r1/lib /usr/local/lib/hdf4.2r1 /opt/lib/hdf4.2r1 \
+       /usr/lib/hdf4.2r1 /usr/local/hdf/lib/ /opt/hdf/lib /usr/hdf/lib \
+       /usr/local/lib/hdf /opt/lib/hdf /usr/lib/hdf ; do
+        AS_IF([test "z$ac_hdf4_libdir" = 'z'],
+           [HDF4_LDFLAGS=],
+           [
+             AC_MSG_NOTICE([searching hdf libraries in $ac_hdf4_libdir])
+             HDF4_LDFLAGS="-L$ac_hdf4_libdir"
+           ])
+        LDFLAGS="$LDFLAGS $HDF4_LDFLAGS" 
+        AC_CHECK_HDF4_LIB([ac_hdf4_lib_ok='yes'])
+        AS_IF([test $ac_hdf4_lib_ok = 'yes'],[break])
+        LDFLAGS=$ac_hdf4_save_LDFLAGS
+      done
     ])
-  ])
   LDFLAGS=$ac_hdf4_save_LDFLAGS
-  LIBS=$ac_hdf4_save_LIBS
   
-  HDF4_CPPFLAGS=
-  AS_IF([test "z$HDF4_PATH_INC" != "z"],
-    [HDF4_CPPFLAGS="-I$HDF4_PATH_INC"])
-
   ac_hdf4_h='no'
+  HDF4_CPPFLAGS=
   ac_hdf4_save_CPPFLAGS=$CPPFLAGS
-  CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS"
-  AC_CHECK_HEADER([mfhdf.h],[ac_hdf4_h='yes'])
+  AS_IF([test "z$HDF4_PATH_INC" != "z"],
+    [
+       HDF4_CPPFLAGS="-I$HDF4_PATH_INC"
+       CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS"
+       AC_CHECK_HEADER_NOCACHE_HDF4([mfhdf.h],[ac_hdf4_h='yes'])
+    ],
+    [
+      for ac_hdf4_incdir in "" /usr/local/hdf4.2r1/include /opt/hdf4.2r1/include \ 
+       /usr/hdf4.2r1/include /usr/local/include/hdf4.2r1 \
+       /opt/include/hdf4.2r1 /usr/include/hdf4.2r1 /usr/local/hdf/include \
+       /opt/hdf/include /usr/hdf/include /usr/local/include/hdf \
+       /opt/include/hdf /usr/include/hdf ; do
+        AS_IF([test "z$ac_hdf4_incdir" = 'z'],
+           [HDF4_CPPFLAGS=],
+           [
+             AC_MSG_NOTICE([searching hdf includes in $ac_hdf4_incdir])
+             HDF4_CPPFLAGS="-I$ac_hdf4_incdir"
+           ])
+        CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS" 
+        AC_CHECK_HEADER_NOCACHE_HDF4([mfhdf.h],[ac_hdf4_h='yes'])
+        AS_IF([test $ac_hdf4_h = 'yes'],[break])
+        CPPFLAGS=$ac_hdf4_save_CPPFLAGS
+      done
+    ])
   CPPFLAGS=$ac_hdf4_save_CPPFLAGS
   
-  AS_IF([test "$ac_hdf4_h" = 'yes' -a "$ac_hdf4_lib" = 'yes'],
+  AS_IF([test "$ac_hdf4_h" = 'yes' -a "$ac_hdf4_lib_ok" = 'yes'],
   [m4_if([$1], [], [:], [$1])],
   [m4_if([$2], [], [:], [$2])])
 
@@ -111,4 +129,82 @@ AC_DEFUN([AC_CHECK_HDF4_NETCDF],
   [m4_if([$1], [], [:], [$1])],
   [m4_if([$2], [], [:], [$2])])
   
+])
+
+AC_DEFUN([AC_CHECK_HDF4_LIB],
+[
+  HDF4_LIBS=
+  ac_hdf4_save_LIBS=$LIBS
+  AC_CHECK_LIB_NOCACHE_HDF4([sz], [SZ_BufftoBuffCompress],
+  [
+      LIBS="$LIBS -lsz"
+      HDF4_LIBS='-lsz'
+  ])
+
+dnl -lsz is not required because due to licencing it may not be present
+dnl nor required everywhere
+  ac_hdf4_lib='no'
+  AC_CHECK_LIB_NOCACHE_HDF4([z],[deflate],
+  [ AC_CHECK_LIB_NOCACHE_HDF4([jpeg],[jpeg_start_compress],
+    [ AC_CHECK_LIB_NOCACHE_HDF4([df],[Hopen],
+      [ AC_CHECK_LIB_NOCACHE_HDF4([mfhdf],[SDstart],
+        [ ac_hdf4_lib="yes"
+          HDF4_LIBS="-lmfhdf -ldf -ljpeg -lz $HDF4_LIBS"
+        ],[],[-ldf -ljpeg -lz])
+      ],[],[-ljpeg -lz])
+    ])
+  ])
+  LIBS=$ac_hdf4_save_LIBS
+  
+  AS_IF([test "$ac_hdf4_lib" = 'yes'],
+  [m4_if([$1], [], [:], [$1])],
+  [m4_if([$2], [], [:], [$2])])
+])
+
+AC_DEFUN([AC_CHECK_LIB_NOCACHE_HDF4],
+[
+  AS_TR_SH([ac_check_lib_nocache_ok_$1_$2])='no'
+  AS_TR_SH([ac_check_lib_nocache_$1_$2_LIBS])=$LIBS
+  LIBS="-l$1 $5 $LIBS"
+  AC_MSG_CHECKING([for $2 in -l$1])
+  AC_LINK_IFELSE([AC_LANG_CALL([], [$2])],
+  [ 
+    AS_TR_SH([ac_check_lib_nocache_ok_$1_$2])='yes' 
+    AC_MSG_RESULT([yes])
+  ],[ 
+    AC_MSG_RESULT([no])
+  ])
+  LIBS=$AS_TR_SH([ac_check_lib_nocache_$1_$2_LIBS])
+  AS_IF([test $AS_TR_SH([ac_check_lib_nocache_ok_$1_$2]) = 'yes'],
+  [m4_if([$3], [], [:], [$3])],
+  [m4_if([$4], [], [:], [$4])])
+])
+ 
+AC_DEFUN([AC_CHECK_HEADER_NOCACHE_HDF4],
+[
+  AS_TR_SH([ac_check_header_nocache_compile_$1])='no'
+  AS_TR_SH([ac_check_header_nocache_preproc_$1])='no'
+  AC_MSG_CHECKING([for $1 with compiler])
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#include <$1>]])],
+    [
+      AC_MSG_RESULT([yes])
+      AS_TR_SH([ac_check_header_nocache_compile_$1])='yes'
+    ],
+    [
+      AC_MSG_RESULT([no])
+    ])
+  AC_MSG_CHECKING([for $1 with preprocessor])
+  AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <$1>]])],
+    [
+      AC_MSG_RESULT([yes])
+      AS_TR_SH([ac_check_header_nocache_preproc_$1])='yes'
+    ],
+    [
+      AC_MSG_RESULT([no])
+      AS_IF([test "$AS_TR_SH([ac_check_header_nocache_compile_$1])" = 'yes'],
+        [AC_MSG_WARN([trusting compiler result, ignoring preprocessor error])])
+    ])
+  AS_IF([test "$AS_TR_SH([ac_check_header_nocache_compile_$1])" = 'yes'],
+  [m4_if([$2], [], [:], [$2])],
+  [m4_if([$3], [], [:], [$3])])
 ])
