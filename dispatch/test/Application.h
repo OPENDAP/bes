@@ -5,6 +5,7 @@
 
 class Application {
 public:
+    virtual			~Application() {}
     virtual int			main(int argC, char **argV) = 0;
     virtual int			initialize(int argC, char **argV) = 0;
     virtual int			run(void) = 0;

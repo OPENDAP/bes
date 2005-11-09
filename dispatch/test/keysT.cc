@@ -8,8 +8,19 @@ using std::cout ;
 using std::endl ;
 
 #include "keysT.h"
-#include "DODSKeys.h"
+#include "TheDODSKeys.h"
 #include "DODSException.h"
+
+int keysT::
+initialize( int argC, char **argV )
+{
+    if( argC == 2 )
+    {
+	_keyFile = argV[1] ;
+    }
+
+    return baseApp::initialize( argC, argV ) ;
+}
 
 int keysT::
 run(void)
@@ -17,14 +28,36 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "Entered keysT::run" << endl;
     int retVal = 0;
-    DODSKeys *keys = 0 ;
+
+    if( _keyFile != "" )
+    {
+	char envVal[256] ;
+	sprintf( envVal, "DODS_INI=%s", _keyFile.c_str() ) ;
+	putenv( envVal ) ;
+	try
+	{
+	    TheDODSKeys::TheKeys()->show_keys() ;
+	}
+	catch( DODSException &e )
+	{
+	    cout << "unable to create DODSKeys:" << endl ;
+	    cout << e.get_error_description() << endl ;
+	}
+	catch( ... )
+	{
+	    cout << "unable to create DODSKeys: unkown exception caught"
+	         << endl ;
+	}
+
+	return 0 ;
+    }
 
     cout << endl << "*****************************************" << endl;
     cout << "no file set" << endl;
     putenv( "DODS_INI=" ) ;
     try
     {
-	keys = new DODSKeys ;
+	TheDODSKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
@@ -33,14 +66,13 @@ run(void)
 	cout << "unable to create DODSKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
-    keys = 0 ;
 
     cout << endl << "*****************************************" << endl;
     cout << "notfound file set" << endl;
     putenv( "DODS_INI=notfound.ini" ) ;
     try
     {
-	keys = new DODSKeys ;
+	TheDODSKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
@@ -49,7 +81,6 @@ run(void)
 	cout << "unable to create DODSKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
-    keys = 0 ;
 
     cout << endl << "*****************************************" << endl;
     cout << "bad keys, not enough equal signs" << endl;
@@ -65,7 +96,7 @@ run(void)
     putenv( env1 ) ;
     try
     {
-	keys = new DODSKeys ;
+	TheDODSKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
@@ -74,7 +105,6 @@ run(void)
 	cout << "unable to create DODSKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
-    keys = 0 ;
 
     cout << endl << "*****************************************" << endl;
     cout << "bad keys, too many equal signs" << endl;
@@ -84,7 +114,7 @@ run(void)
     putenv( env2 ) ;
     try
     {
-	keys = new DODSKeys ;
+	TheDODSKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
@@ -93,7 +123,6 @@ run(void)
 	cout << "unable to create DODSKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
-    keys = 0 ;
 
     cout << endl << "*****************************************" << endl;
     cout << "good keys file, should load" << endl;
@@ -103,7 +132,7 @@ run(void)
     putenv( env3 ) ;
     try
     {
-	keys = new DODSKeys ;
+	TheDODSKeys::TheKeys() ;
 	cout << "created, good" << endl ;
     }
     catch( DODSException &e )
@@ -125,7 +154,7 @@ run(void)
 	sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
 	ret = "" ;
-	ret = keys->get_key( key, found ) ;
+	ret = TheDODSKeys::TheKeys()->get_key( key, found ) ;
 	if( found == false )
 	{
 	    cerr << key << " not found" << endl ;
@@ -149,7 +178,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for non existant key" << endl;
-    ret = keys->get_key( "DODS.NOTFOUND", found ) ;
+    ret = TheDODSKeys::TheKeys()->get_key( "DODS.NOTFOUND", found ) ;
     if( found == true )
     {
 	cerr << "found DODS.NOTFOUND = \"" << ret << "\"" << endl ;
@@ -162,7 +191,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for key with empty value" << endl;
-    ret = keys->get_key( "DODS.KEY4", found ) ;
+    ret = TheDODSKeys::TheKeys()->get_key( "DODS.KEY4", found ) ;
     if( found == true )
     {
 	if( ret == "" )
@@ -185,7 +214,7 @@ run(void)
     cout << "set bad key, 0 = characters" << endl;
     try
     {
-	ret = keys->set_key( "DODS.NOEQS" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "DODS.NOEQS" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -199,7 +228,7 @@ run(void)
     cout << "set bad key, 2 = characters" << endl;
     try
     {
-	ret = keys->set_key( "DODS.2EQS=val1=val2" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "DODS.2EQS=val1=val2" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -213,7 +242,7 @@ run(void)
     cout << "set DODS.KEY5 to val5" << endl;
     try
     {
-	ret = keys->set_key( "DODS.KEY5=val5" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "DODS.KEY5=val5" ) ;
 	if( ret == "val5" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -236,7 +265,7 @@ run(void)
     cout << "set DODS.KEY6 to val6" << endl;
     try
     {
-	ret = keys->set_key( "DODS.KEY6", "val6" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "DODS.KEY6", "val6" ) ;
 	if( ret == "val6" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -266,7 +295,7 @@ run(void)
 	else sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
 	ret = "" ;
-	ret = keys->get_key( key, found ) ;
+	ret = TheDODSKeys::TheKeys()->get_key( key, found ) ;
 	if( found == false )
 	{
 	    cerr << key << " not found" << endl ;

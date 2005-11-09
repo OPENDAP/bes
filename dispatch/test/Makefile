@@ -5,7 +5,7 @@ SRCS:=Animal.cc TestRequestHandler.cc TestResponseHandler.cc TheCat.cc \
 	keysT.cc containerT.cc replistT.cc authtestT.cc encodeT.cc \
 	tokenizerT.cc parserT.cc pvolT.cc constraintT.cc defT.cc
 
-INCS:=-I. -I.. -I../../dap -I../../dap/GNU
+INCS:=-I. -I.. -I../../dap
 DEFS:=-DHAVE_CONFIG_H
 CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS:=-gstabs -O2  -Wall -Wno-deprecated
@@ -19,7 +19,7 @@ TESTS:=initT failInitT reqlistT reqhandlerT resplistT pfileT plistT pcgiT \
 INITOBJS:=TheCat.o TheDog.o baseApp.o cat.o dog.o Animal.o
 
 LIB:=../libdispatch.a
-LIBS:=-L.. -ldispatch
+LIBS:=-L../.libs -ldispatch
 
 all : $(TESTS)
 
