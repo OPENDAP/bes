@@ -36,17 +36,14 @@ using std::endl ;
 #include "DODSApache.h"
 #include "DODSMemoryManager.h"
 
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 #include "TheDODSKeys.h"
 #include "DODSMemoryGlobalArea.h"
-#include "DODSParser.h"
 #include "DODSStatusReturn.h"
 #include "DODSIncorrectRequestException.h"
 #include "cgi_util.h"
 #include "DODSBasicHttpTransmitter.h"
-#include "TheDODSReturnManager.h"
 #include "DODSTransmitException.h"
-#include "TheAggFactory.h"
 #include "DODSAggregationServer.h"
 #include "OPeNDAPDataNames.h"
 
@@ -172,21 +169,21 @@ DODSApache::initialize()
 
     _dhi.data[USER_NAME] = user ;
 
-    if( TheDODSLog && TheDODSLog->is_verbose() )
+    if( DODSLog::TheLog() && DODSLog::TheLog()->is_verbose() )
     {
-	*(TheDODSLog) << "Data Request Interface:" << endl ;
-	*(TheDODSLog) << "    server_name = " << _dri->server_name << endl ;
-	*(TheDODSLog) << "    server_address = " << _dri->server_address << endl ;
-	*(TheDODSLog) << "    server_protocol = " << _dri->server_protocol << endl ;
-	*(TheDODSLog) << "    server_port = " << _dri->server_port << endl ;
-	*(TheDODSLog) << "    script_name = " << _dri->script_name << endl ;
-	*(TheDODSLog) << "    user_address = " << _dri->user_address << endl ;
-	*(TheDODSLog) << "    user_agent = " << _dri->user_agent << endl ;
-	*(TheDODSLog) << "    request = " << _dri->request << endl ;
+	*(DODSLog::TheLog()) << "Data Request Interface:" << endl ;
+	*(DODSLog::TheLog()) << "    server_name = " << _dri->server_name << endl ;
+	*(DODSLog::TheLog()) << "    server_address = " << _dri->server_address << endl ;
+	*(DODSLog::TheLog()) << "    server_protocol = " << _dri->server_protocol << endl ;
+	*(DODSLog::TheLog()) << "    server_port = " << _dri->server_port << endl ;
+	*(DODSLog::TheLog()) << "    script_name = " << _dri->script_name << endl ;
+	*(DODSLog::TheLog()) << "    user_address = " << _dri->user_address << endl ;
+	*(DODSLog::TheLog()) << "    user_agent = " << _dri->user_agent << endl ;
+	*(DODSLog::TheLog()) << "    request = " << _dri->request << endl ;
 	if( _dri->cookie )
-	    *(TheDODSLog) << "    cookie = " << _dri->cookie << endl ;
+	    *(DODSLog::TheLog()) << "    cookie = " << _dri->cookie << endl ;
 	else
-	    *(TheDODSLog) << "    cookie = no cookie set" << endl ;
+	    *(DODSLog::TheLog()) << "    cookie = no cookie set" << endl ;
     }
 }
 
@@ -262,8 +259,8 @@ DODSApache::welcome_browser()
 {
     string who = _dri->user_address ;
     string agent = _dri->user_agent ;
-    if( TheDODSLog )
-	(*TheDODSLog) << "Incoming request from " << who.c_str() << " using " << agent.c_str() << endl;
+    if( DODSLog::TheLog() )
+	(*DODSLog::TheLog()) << "Incoming request from " << who.c_str() << " using " << agent.c_str() << endl;
 
     // see if request comes from the Netscape or the HotJava...
     int mo=agent.find("Mozilla");
@@ -273,7 +270,7 @@ DODSApache::welcome_browser()
 	set_mime_text( stdout, unknown_type ) ;
 	bool found = false ;
 	string administrator =
-	    TheDODSKeys->get_key( "DODS.ServerAdministrator", found ) ;
+	    TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
 	if(administrator=="")
 	    fprintf( stdout, "%s %s %s\n",
 			     "DODS: internal server error please contact",
@@ -291,13 +288,13 @@ DODSApache::welcome_browser()
     {
 	bool found = false ;
 	string method =
-	    TheDODSKeys->get_key( "DODS.DefaultResponseMethod", found ) ;
+	    TheDODSKeys::TheKeys()->get_key( "DODS.DefaultResponseMethod", found ) ;
 	if( (method!="GET") && (method!="POST") )
 	{
 	    set_mime_text( stdout, dods_error ) ;
 	    found = false ;
 	    string administrator =
-		TheDODSKeys->get_key( "DODS.ServerAdministrator", found ) ;
+		TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
 	    if(administrator=="")
 		fprintf( stdout, "%s %s %s\n",
 				 "DODS: internal server error please contact",
