@@ -32,10 +32,18 @@
 #ifndef DODS_h_
 #define DODS_h_ 1
 
+#include <list>
+
+using std::list ;
+
 #include "DODSDataHandlerInterface.h"
 
 class DODSException ;
 class DODSTransmitter ;
+
+typedef bool (*p_opendap_init)( DODSDataHandlerInterface &dhi ) ;
+typedef int (*p_opendap_ehm)( DODSException &e, DODSDataHandlerInterface &dhi );
+typedef void (*p_opendap_end)( DODSDataHandlerInterface &dhi ) ;
 
 /** @brief Entry point into OPeNDAP, building responses to given requests.
 
@@ -55,6 +63,7 @@ class DODSTransmitter ;
     <LI>log the status of the request</LI>
     <LI>send out report information that can be reported on by any number of
     reporters registered with the system.</LI>
+    <LI>end the request</LI>
     </OL>
 
     The way in which the response is generated is as follows.
@@ -112,6 +121,18 @@ class DODSTransmitter ;
  */
 class DODS
 {
+private:
+    typedef list< p_opendap_init >::const_iterator init_citer ;
+    typedef list< p_opendap_init >::iterator init_iter ;
+    static list< p_opendap_init > _init_list ;
+
+    typedef list< p_opendap_ehm >::const_iterator ehm_citer ;
+    typedef list< p_opendap_ehm >::iterator ehm_iter ;
+    static list< p_opendap_ehm > _ehm_list ;
+
+    typedef list< p_opendap_end >::const_iterator end_citer ;
+    typedef list< p_opendap_end >::iterator end_iter ;
+    static list< p_opendap_end > _end_list ;
 protected:
     DODSDataHandlerInterface	_dhi ;
     DODSTransmitter		*_transmitter ;
@@ -125,12 +146,17 @@ protected:
     virtual void		transmit_data() ;
     virtual void		log_status() ;
     virtual void		report_request() ;
+    virtual void		end_request() ;
     virtual void		clean() ;
 
     				DODS() ;
     virtual			~DODS() ;
 public:
     virtual int			execute_request() ;
+
+    static void			add_init_callback( p_opendap_init init ) ;
+    static void			add_ehm_callback( p_opendap_ehm ehm ) ;
+    static void			add_end_callback( p_opendap_end end ) ;
 } ;
 
 #endif // DODS_h_

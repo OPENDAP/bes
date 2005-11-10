@@ -58,6 +58,10 @@ using std::string ;
 
 #define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
 
+list< p_opendap_init > DODS::_init_list ;
+list< p_opendap_ehm > DODS::_ehm_list ;
+list< p_opendap_end > DODS::_end_list ;
+
 DODS::DODS()
     : _transmitter( 0 )
 {
@@ -77,6 +81,8 @@ DODS::~DODS()
     5. transmit the resulting response object
     6. log the status of the execution
     7. notify the reporters of the request
+    8. end the request, which allows developers to add callbacks to notify
+    them of the end of the request
 
     If an exception is thrown in any of these steps the exception is handed
     over to the exception manager in order to generate the proper response.
@@ -89,6 +95,7 @@ DODS::~DODS()
     @see transmit_data
     @see log_status
     @see report_request
+    @see end_request
     @see exception_manager
  */
 int
@@ -106,6 +113,7 @@ DODS::execute_request()
 	transmit_data() ;
 	log_status() ;
 	report_request() ;
+	end_request() ;
     }
     catch( DODSException &ex )
     {
@@ -130,6 +138,12 @@ DODS::execute_request()
     return status;
 }
 
+void
+DODS::add_init_callback( p_opendap_init init )
+{
+    _init_list.push_back( init ) ;
+}
+
 /** @brief Initialize the DODS object
  *
  *  This method must be called by all derived classes as it will initialize
@@ -138,6 +152,13 @@ DODS::execute_request()
 void
 DODS::initialize()
 {
+    bool do_continue = true ;
+    init_iter i = _init_list.begin() ;
+    for( i; i != _init_list.end() && do_continue == true; i++ )
+    {
+	p_opendap_init p = *i ;
+	do_continue = p( _dhi ) ;
+    }
 }
 
 /** @brief Validate the incoming request information
@@ -252,6 +273,28 @@ DODS::report_request()
     DODSReporterList::TheList()->report( _dhi ) ;
 }
 
+void
+DODS::add_end_callback( p_opendap_end end )
+{
+    _end_list.push_back( end ) ;
+}
+
+/** @brief End the OPeNDAP request
+ *
+ *  This method allows developers to add callbacks at the end of a request,
+ *  to do any cleanup or do any extra work at the end of a request
+ */
+void
+DODS::end_request()
+{
+    end_iter i = _end_list.begin() ;
+    for( i; i != _end_list.end(); i++ )
+    {
+	p_opendap_end p = *i ;
+	p( _dhi ) ;
+    }
+}
+
 /** @brief Clean up after the request
  */
 void
@@ -259,6 +302,12 @@ DODS::clean()
 {
     if( _dhi.response_handler ) delete _dhi.response_handler ;
     _dhi.response_handler = 0 ;
+}
+
+void
+DODS::add_ehm_callback( p_opendap_ehm ehm )
+{
+    _ehm_list.push_back( ehm ) ;
 }
 
 /** @brief Manage any exceptions thrown during the whole process
@@ -283,8 +332,21 @@ DODS::clean()
     @see DODSResponseException
  */
 int
-DODS::exception_manager(DODSException &e)
+DODS::exception_manager( DODSException &e )
 {
+    // Let's see if any of these exception callbacks can handle the
+    // exception. The first callback that can handle the exception wins
+    ehm_iter i = _ehm_list.begin() ;
+    for( i; i != _ehm_list.end(); i++ )
+    {
+	p_opendap_ehm p = *i ;
+	int handled = p( e, _dhi ) ;
+	if( handled )
+	{
+	    return handled ;
+	}
+    }
+
     bool ishttp = false ;
     if( _dhi.transmit_protocol == "HTTP" )
 	ishttp = true ;
