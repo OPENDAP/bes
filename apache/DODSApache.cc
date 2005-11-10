@@ -143,8 +143,6 @@ find_user_from_cookie( const char *cookie, string &user )
 void
 DODSApache::initialize()
 {
-    OPeNDAPCmdInterface::initialize() ;
-
     DODSMemoryManager::initialize_memory_pool() ;
 
     string https = _dri->server_protocol ;
@@ -185,6 +183,8 @@ DODSApache::initialize()
 	else
 	    *(DODSLog::TheLog()) << "    cookie = no cookie set" << endl ;
     }
+
+    OPeNDAPCmdInterface::initialize() ;
 }
 
 /** @brief Validate the information in the DODSDataRequestInterface
