@@ -69,9 +69,11 @@ DODSLog::DODSLog()
     string log_name = TheDODSKeys::TheKeys()->get_key( "DODS.LogName", found ) ;
     if( log_name=="" )
     {
-	cerr << "DODS: can not start log facility because can not determine DODS log name.\n";
+	string err = (string)"OPeNDAP Fatal: unable to determine log file name."
+	             + " Please set DODS.LogName in your initialization file" ;
+	cerr << err << endl ;
 	DODSLogException e;
-	e.set_error_description("can not determine DODS log name");
+	e.set_error_description( err ) ;
 	throw e;
     }
     else
@@ -79,9 +81,11 @@ DODSLog::DODSLog()
 	_file_buffer=new ofstream(log_name.c_str(), ios::out | ios::app);
 	if (!(*_file_buffer))
 	{
-	    cerr << "DODS Fatal; can not open DODS log file.\n";
+	    string err = (string)"OPeNDAP Fatal; can not open log file "
+	                 + log_name + "." ;
+	    cerr << err << endl ;
 	    DODSLogException le;
-	    le.set_error_description("can not open log file");
+	    le.set_error_description( err ) ;
 	    throw le;
 	} 
 	/*
