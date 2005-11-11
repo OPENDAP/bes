@@ -49,12 +49,13 @@ CLEANFILES = $(MODOBJS)
 # Sources and Headers for 
 SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
 	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
-	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc
+	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc     \
+	OPeNDAPNodesCommand.cc OPeNDAPLeavesCommand.cc
 
 HDRS:=OPeNDAPCmdInterface.h OPeNDAPDefineCommand.h OPeNDAPSetCommand.h	\
 	OPeNDAPCmdParser.h OPeNDAPDeleteCommand.h OPeNDAPShowCommand.h	\
-	OPeNDAPCommand.h OPeNDAPGetCommand.h OPeNDAPTermCommand.h
-
+	OPeNDAPCommand.h OPeNDAPGetCommand.h OPeNDAPTermCommand.h       \
+	OPeNDAPNodesCommand.h OPeNDAPLeavesCommand.h
 
 MODSRCS:=opendap_commands.cc
 MODOBJS:=opendap_commands.o

@@ -1,4 +1,4 @@
-// OPeNDAPShowCommand.cc
+// OPeNDAPLeavesCommand.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,70 +29,69 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "OPeNDAPShowCommand.h"
+#include "OPeNDAPLeavesCommand.h"
 #include "DODSTokenizer.h"
 #include "DODSResponseHandlerList.h"
 #include "DODSParserException.h"
+#include "OPeNDAPDataNames.h"
+#include "DODSResponseNames.h"
 
-/** @brief knows how to parse a show request
+/** @brief knows how to parse a show leaves request
  *
- * This class knows how to parse a show request, building a sub response
+ * This class knows how to parse a show leaves request, building a sub response
  * handler that actually knows how to build the requested response
- * object, such as for show help or show version.
+ * object.
  *
- * A show request looks like:
+ * A show leaves request looks like:
  *
- * get &lt;info_type&gt;;
+ * show leaves [for &lt;node&gt;];
  *
- * where info_type is the type of information that the user is requesting,
- * such as help or version
+ * where node is a node in the tree returned from a previous show nodes
+ * request.
  *
  * This parse method creates the sub response handler that knows how to create
- * the specified information, such as creating HelpResponseHandler.
+ * the specified information
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
  * @throws DODSParserException if there is a problem parsing the request
  */
 DODSResponseHandler *
-OPeNDAPShowCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPLeavesCommand::parse_request( DODSTokenizer &tokenizer,
                                    DODSDataHandlerInterface &dhi )
 {
-    DODSResponseHandler *retResponse = 0 ;
-
     string my_token = tokenizer.get_next_token() ;
-
-    /* First we will make sure that the developer has not over-written this
-     * command to work with a sub command. In other words, they have a new
-     * command called "show something". Look up show.something
-     */
-    string newcmd = _cmd + "." + my_token ;
-    OPeNDAPCommand *cmdobj = OPeNDAPCommand::find_command( newcmd ) ;
-    if( cmdobj && cmdobj != OPeNDAPCommand::TermCommand )
+    if( my_token != "for" )
     {
-	retResponse = cmdobj->parse_request( tokenizer, dhi ) ;
+	tokenizer.parse_error( my_token + " not expected" ) ;
     }
     else
     {
-	dhi.action = my_token ;
-	retResponse =
-	    DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
-	if( !retResponse )
+	string node = tokenizer.get_next_token() ;
+	if( node == ";" || node == "" )
 	{
-	    string err( "Command " ) ;
-	    err += _cmd + " " + my_token ;
-	    err += " does not have a registered response handler" ;
-	    throw DODSParserException( err ) ;
+	    tokenizer.parse_error( node + " not expected" ) ;
 	}
-
+	dhi.data[NODE] = tokenizer.remove_quotes( node ) ;
 	my_token = tokenizer.get_next_token() ;
-	if( my_token != ";" )
-	{
-	    tokenizer.parse_error( my_token + " not expected" ) ;
-	}
+    }
+    if( my_token != ";" )
+    {
+	tokenizer.parse_error( my_token + " not expected" ) ;
+    }
+
+    dhi.action = LEAVES_RESPONSE ;
+    DODSResponseHandler *retResponse =
+	DODSResponseHandlerList::TheList()->find_handler( LEAVES_RESPONSE ) ;
+    if( !retResponse )
+    {
+	string err( "Command " ) ;
+	err += _cmd ;
+	err += " does not have a registered response handler" ;
+	throw DODSParserException( err ) ;
     }
 
     return retResponse ;
 }
 
-// $Log: OPeNDAPShowCommand.cc,v $
+// $Log: OPeNDAPLeavesCommand.cc,v $

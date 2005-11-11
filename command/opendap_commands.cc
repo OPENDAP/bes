@@ -44,6 +44,8 @@ using std::endl ;
 #include "OPeNDAPShowCommand.h"
 #include "OPeNDAPDefineCommand.h"
 #include "OPeNDAPDeleteCommand.h"
+#include "OPeNDAPNodesCommand.h"
+#include "OPeNDAPLeavesCommand.h"
 
 static bool
 DODSCommandInit(int, char**) {
@@ -115,6 +117,18 @@ DODSCommandInit(int, char**) {
 	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
     OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
 
+    cmd_name = string( SHOW_RESPONSE ) + "." + NODES_RESPONSE ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    cmd = new OPeNDAPNodesCommand( cmd_name ) ;
+    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
+
+    cmd_name = string( SHOW_RESPONSE ) + "." + LEAVES_RESPONSE ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    cmd = new OPeNDAPLeavesCommand( cmd_name ) ;
+    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
+
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
     cmd = new OPeNDAPDefineCommand( DEFINE_RESPONSE ) ;
@@ -127,7 +141,7 @@ DODSCommandInit(int, char**) {
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << DELETE_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPShowCommand( DELETE_RESPONSE ) ;
+    cmd = new OPeNDAPDeleteCommand( DELETE_RESPONSE ) ;
     OPeNDAPCommand::add_command( DELETE_RESPONSE, cmd ) ;
 
     cmd_name = string( DELETE_RESPONSE ) + "." + DELETE_CONTAINER ;
