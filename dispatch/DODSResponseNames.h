@@ -52,6 +52,8 @@
  *     definitions
  *     keys
  *     status
+ *     nodes
+ *     leaves
  * delete
  * </pre>
  */
@@ -77,6 +79,8 @@
 #define DEFINITIONS_RESPONSE "definitions"
 #define KEYS_RESPONSE "keys"
 #define STATUS_RESPONSE "status"
+#define NODES_RESPONSE "nodes"
+#define LEAVES_RESPONSE "leaves"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "container"

@@ -49,8 +49,9 @@ using std::endl ;
 #include "ContainersResponseHandler.h"
 #include "DefinitionsResponseHandler.h"
 #include "KeysResponseHandler.h"
-
 #include "StatusResponseHandler.h"
+#include "NodesResponseHandler.h"
+#include "LeavesResponseHandler.h"
 
 #include "DefineResponseHandler.h"
 
@@ -113,6 +114,14 @@ DODSModuleInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
     DODSResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, StatusResponseHandler::StatusResponseBuilder ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << NODES_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( NODES_RESPONSE, NodesResponseHandler::NodesResponseBuilder ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << LEAVES_RESPONSE << " response handler" << endl;
+    DODSResponseHandlerList::TheList()->add_handler( LEAVES_RESPONSE, LeavesResponseHandler::LeavesResponseBuilder ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " response handler" << endl;

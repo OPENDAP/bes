@@ -1,4 +1,4 @@
-// OPeNDAPDataNames.h
+// LeavesResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,29 +29,34 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#define DATA_REQUEST "request"
+#ifndef I_LeavesResponseHandler_h
+#define I_LeavesResponseHandler_h 1
 
-#define AGG_CMD "aggregation_command"
-#define AGG_HANDLER "aggregation_handler"
+#include "DODSResponseHandler.h"
 
-#define POST_CONSTRAINT "post_constraint"
+/** @brief response handler that returns nodes either at the root or at a
+ * specified node.
+ *
+ * A request 'show leaves for &lt;node&gt;;' will be handled by this
+ * response handler. It returns leaves at the specified node.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ * @see DODSTokenizer
+ */
+class LeavesResponseHandler : public DODSResponseHandler {
+public:
+				LeavesResponseHandler( string name ) ;
+    virtual			~LeavesResponseHandler( void ) ;
 
-#define RETURN_CMD "return_command"
+    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
+    virtual void		transmit( DODSTransmitter *transmitter,
+                                          DODSDataHandlerInterface &dhi ) ;
 
-#define USER_ADDRESS "user_address"
-#define USER_NAME "user_name"
+    static DODSResponseHandler *LeavesResponseBuilder( string handler_name ) ;
+};
 
-#define SERVER_PID "pid"
+#endif // I_LeavesResponseHandler_h
 
-#define CONTAINER_NAME "container_name"
-#define STORE_NAME "store_name"
-#define SYMBOLIC_NAME "symbolic_name"
-#define REAL_NAME "real_name"
-#define REAL_NAME_LIST "real_name_list"
-#define CONTAINER_TYPE "type"
-
-#define DEF_NAME "def_name"
-#define DEFINITIONS "definitions"
-
-#define NODE "node"
-
+// $Log: LeavesResponseHandler.h,v $

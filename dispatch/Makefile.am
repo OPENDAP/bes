@@ -63,6 +63,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	VersionResponseHandler.cc \
 	ContainersResponseHandler.cc DefinitionsResponseHandler.cc \
 	DeleteResponseHandler.cc KeysResponseHandler.cc \
+	NodesResponseHandler.cc LeavesResponseHandler.cc \
 	DODSResponseHandlerList.cc \
 	DODSInfo.cc DODSTextInfo.cc DODSVersionInfo.cc DODSHTMLInfo.cc \
 	DODSRequestHandler.cc DODSRequestHandlerList.cc \
@@ -96,6 +97,7 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	ContainersResponseHandler.h DefinitionsResponseHandler.h \
 	DeleteResponseHandler.h \
 	KeysResponseHandler.h \
+	NodesResponseHandler.h LeavesResponseHandler.h \
 	DODSResponseNames.h DODSResponseException.h \
 	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSVersionInfo.h \
 	DODSRequestHandler.h \
