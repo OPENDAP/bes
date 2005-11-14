@@ -80,9 +80,10 @@ OPeNDAPLeavesCommand::parse_request( DODSTokenizer &tokenizer,
 	tokenizer.parse_error( my_token + " not expected" ) ;
     }
 
-    dhi.action = LEAVES_RESPONSE ;
+    dhi.data[ISLEAVES] = "true" ;
+    dhi.action = CATALOG_RESPONSE ;
     DODSResponseHandler *retResponse =
-	DODSResponseHandlerList::TheList()->find_handler( LEAVES_RESPONSE ) ;
+	DODSResponseHandlerList::TheList()->find_handler( CATALOG_RESPONSE ) ;
     if( !retResponse )
     {
 	string err( "Command " ) ;

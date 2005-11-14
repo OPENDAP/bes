@@ -76,9 +76,10 @@ OPeNDAPNodesCommand::parse_request( DODSTokenizer &tokenizer,
 	tokenizer.parse_error( my_token + " not expected" ) ;
     }
 
-    dhi.action = NODES_RESPONSE ;
+    dhi.data[ISLEAVES] = "false" ;
+    dhi.action = CATALOG_RESPONSE ;
     DODSResponseHandler *retResponse =
-	DODSResponseHandlerList::TheList()->find_handler( NODES_RESPONSE ) ;
+	DODSResponseHandlerList::TheList()->find_handler( CATALOG_RESPONSE ) ;
     if( !retResponse )
     {
 	string err( "Command " ) ;
