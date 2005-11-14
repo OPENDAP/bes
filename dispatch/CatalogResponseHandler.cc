@@ -1,4 +1,4 @@
-// NodesResponseHandler.cc
+// CatalogResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,7 +29,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "NodesResponseHandler.h"
+#include "CatalogResponseHandler.h"
 #include "DODSTextInfo.h"
 #include "cgi_util.h"
 #include "DODSRequestHandlerList.h"
@@ -38,22 +38,17 @@
 #include "DODSTokenizer.h"
 #include "OPeNDAPDataNames.h"
 
-NodesResponseHandler::NodesResponseHandler( string name )
+CatalogResponseHandler::CatalogResponseHandler( string name )
     : DODSResponseHandler( name )
 {
 }
 
-NodesResponseHandler::~NodesResponseHandler( )
+CatalogResponseHandler::~CatalogResponseHandler( )
 {
 }
 
-/** @brief executes the command 'show nodes [for &lt;node&gt;];' by returning
- * nodes at the top level or at the specified node.
- *
- * If no node is specified then return the data types (request handlers)
- * handled by this server. If a node is specified, then the first level of
- * the node is the data type. Find the request handler for that data type
- * and hand off the request to that request handler.
+/** @brief executes the command 'show nodes|leaves [for &lt;node&gt;];' by
+ * returning nodes or leaves at the top level or at the specified node.
  *
  * The response object DODSTextInfo is created to store the information.
  *
@@ -65,73 +60,13 @@ NodesResponseHandler::~NodesResponseHandler( )
  * @see DODSRequestHandlerList
  */
 void
-NodesResponseHandler::execute( DODSDataHandlerInterface &dhi )
+CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     string node = dhi.data[NODE] ;
-    if( node == "" )
-    {
-	// if no node is specified then the nodes are the list of data types
-	// handled by this server, the names of the request handlers. Only
-	// return the data types that handle nodes and leaves requests.
-	DODSRequestHandlerList::Handler_citer i =
-	    DODSRequestHandlerList::TheList()->get_first_handler() ;
-	DODSRequestHandlerList::Handler_citer ie =
-	    DODSRequestHandlerList::TheList()->get_last_handler() ;
-	for( ; i != ie; i++ ) 
-	{
-	    info->add_data( "<showNodes>\n" ) ;
-	    info->add_data( "    <response>\n" ) ;
-	    DODSRequestHandler *rh = (*i).second ;
-	    p_request_handler p = rh->find_handler( get_name() ) ;
-	    if( p )
-	    {
-		info->add_data( "        <node>\n" ) ;
-		info->add_data( (string)"            <name>"
-		                + rh->get_name()
-				+ "</name>\n" ) ;
-		info->add_data( "        </node>\n" ) ;
-	    }
-	    info->add_data( "    </response>\n" ) ;
-	    info->add_data( "</showNodes>\n" ) ;
-	}
-    }
-    else
-    {
-	// if there is a node specified then the first name in the path is
-	// the name of the data type being requested. Pass off the request
-	// to this request handler.
-	string rh_name ;
-	std::string::size_type slash = node.find( "/" ) ;
-	if( slash != string::npos )
-	{
-	    rh_name = node.substr( 0, slash-1 ) ;
-	}
-	else
-	{
-	    rh_name = node ;
-	}
-	DODSRequestHandler *rh =
-	    DODSRequestHandlerList::TheList()->find_handler( rh_name ) ;
-	if( rh )
-	{
-	    p_request_handler p = rh->find_handler( get_name() ) ;
-	    if( p )
-	    {
-		p( dhi ) ;
-	    }
-	    else
-	    {
-		cerr << "Could not find the node " << node << endl ;
-	    }
-	}
-	else
-	{
-	    cerr << "Could not find the node " << node << endl ;
-	}
-    }
+    string isleaves = dhi.data[ISLEAVES] ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -146,7 +81,7 @@ NodesResponseHandler::execute( DODSDataHandlerInterface &dhi )
  * @see _DODSDataHandlerInterface
  */
 void
-NodesResponseHandler::transmit( DODSTransmitter *transmitter,
+CatalogResponseHandler::transmit( DODSTransmitter *transmitter,
                                DODSDataHandlerInterface &dhi )
 {
     if( _response )
@@ -157,9 +92,9 @@ NodesResponseHandler::transmit( DODSTransmitter *transmitter,
 }
 
 DODSResponseHandler *
-NodesResponseHandler::NodesResponseBuilder( string handler_name )
+CatalogResponseHandler::CatalogResponseBuilder( string handler_name )
 {
-    return new NodesResponseHandler( handler_name ) ;
+    return new CatalogResponseHandler( handler_name ) ;
 }
 
-// $Log: NodesResponseHandler.cc,v $
+// $Log: CatalogResponseHandler.cc,v $

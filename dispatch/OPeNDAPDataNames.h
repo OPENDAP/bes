@@ -54,4 +54,5 @@
 #define DEFINITIONS "definitions"
 
 #define NODE "node"
+#define ISLEAVES "isLeaves"
 

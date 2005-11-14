@@ -1,4 +1,4 @@
-// LeavesResponseHandler.h
+// CatalogResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,34 +29,36 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef I_LeavesResponseHandler_h
-#define I_LeavesResponseHandler_h 1
+#ifndef I_CatalogResponseHandler_h
+#define I_CatalogResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that returns nodes either at the root or at a
- * specified node.
+/** @brief response handler that returns nodes or leaves either at the root
+ * or at a specified node.
  *
- * A request 'show leaves for &lt;node&gt;;' will be handled by this
- * response handler. It returns leaves at the specified node.
+ * A request 'show nodes [for &lt;node&gt;];' or 'show leaves for &lt;node&gt;;
+ * will be handled by this response handler. It returns nodes or leaves either
+ * at the root level if no node is specified in the request, or the nodes or
+ * leaves under the specified node.
  *
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
  * @see DODSTokenizer
  */
-class LeavesResponseHandler : public DODSResponseHandler {
+class CatalogResponseHandler : public DODSResponseHandler {
 public:
-				LeavesResponseHandler( string name ) ;
-    virtual			~LeavesResponseHandler( void ) ;
+				CatalogResponseHandler( string name ) ;
+    virtual			~CatalogResponseHandler( void ) ;
 
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler *LeavesResponseBuilder( string handler_name ) ;
+    static DODSResponseHandler *CatalogResponseBuilder( string handler_name ) ;
 };
 
-#endif // I_LeavesResponseHandler_h
+#endif // I_CatalogResponseHandler_h
 
-// $Log: LeavesResponseHandler.h,v $
+// $Log: CatalogResponseHandler.h,v $

@@ -81,6 +81,7 @@
 #define STATUS_RESPONSE "status"
 #define NODES_RESPONSE "nodes"
 #define LEAVES_RESPONSE "leaves"
+#define CATALOG_RESPONSE "catalog"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "container"
