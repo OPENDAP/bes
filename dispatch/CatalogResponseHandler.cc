@@ -67,6 +67,14 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
 
     string node = dhi.data[NODE] ;
     string isleaves = dhi.data[ISLEAVES] ;
+    if( isleaves == "true" || isleaves == "yes" )
+    {
+	info->add_data( "handling leaves\n" ) ;
+    }
+    else
+    {
+	info->add_data( "handling nodes\n" ) ;
+    }
 }
 
 /** @brief transmit the response object built by the execute command
