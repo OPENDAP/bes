@@ -11,3 +11,11 @@ SUBDIRS = dispatch command ppt cmdln server
 bin_SCRIPTS = bes-config
 
 EXTRA_DIST = templates apache
+
+#########################################################################
+#
+# docs
+
+.PHONY: docs
+docs:
+	doxygen doxy.conf
