@@ -64,6 +64,11 @@ PPTServer::~PPTServer()
 {
 }
 
+/** Using the info passed into the SocketLister, wait for an inbound 
+    request (see SocketListener::accept()). When one is found, do the
+    welcome message stuff (welcomeClient()) and then pass \c this to
+    the handler's \c handle method. Note that \c this is a pointer to
+    a PPTServer which is a kind of Connection. */
 void
 PPTServer::initConnection()
 {

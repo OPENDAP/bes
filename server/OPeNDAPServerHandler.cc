@@ -65,6 +65,7 @@ OPeNDAPServerHandler::OPeNDAPServerHandler()
     }
 }
 
+// *** I'm not sure that we need to fork twice. jhrg 11/14/05
 void
 OPeNDAPServerHandler::handle( Connection *c )
 {

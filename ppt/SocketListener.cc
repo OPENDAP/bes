@@ -88,6 +88,7 @@ SocketListener::listen( Socket *s )
     }
 }
 
+/** Use the select() system call to wait for an incoming connection */
 Socket *
 SocketListener::accept()
 {

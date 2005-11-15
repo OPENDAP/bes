@@ -121,6 +121,9 @@ DefineResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
+        // If this dynamic_cast is to a reference an not a pointer, then if
+        // _response is not a DODSTextInfo the cast will throw bad_cast. 
+        // Casting to a pointer will make ti null on error. jhrg 11/10/2005
 	DODSTextInfo *ti = dynamic_cast<DODSTextInfo *>(_response) ;
 	transmitter->send_text( *ti, dhi ) ;
     }
