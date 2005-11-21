@@ -47,7 +47,9 @@
  * @see DODSTransmitter
  * @see DODSTokenizer
  */
-class CatalogResponseHandler : public DODSResponseHandler {
+class CatalogResponseHandler : public DODSResponseHandler
+{
+private:
 public:
 				CatalogResponseHandler( string name ) ;
     virtual			~CatalogResponseHandler( void ) ;

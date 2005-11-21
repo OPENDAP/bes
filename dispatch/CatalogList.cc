@@ -1,4 +1,4 @@
-// DirectoryCatalog.cc
+// CatalogList.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,68 +29,61 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "sys/types.h"
-#include "dirent.h"
+#include "CatalogList.h"
+#include "OPeNDAPCatalog.h"
 
-#include "DirectoryCatalog.h"
-#include "TheDODSKeys.h"
-#include "DODSTextInfo.h"
-#include "DODSResponseException.h"
+CatalogList *CatalogList::_instance = 0 ;
 
-DirectoryCatalog::DirectoryCatalog( const string &key )
+CatalogList::~CatalogList()
 {
-    bool found = false ;
-    _rootDir = TheDODSKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || _rootDir == "" )
+    catalog_iterator i = _catalogs.begin() ;
+    catalog_iterator e = _catalogs.end() ;
+    for( ; i != e; i++ )
     {
-	string serr = "DirectoryCatalog - unable to load root directory key "
-		      + key + " from initialization file" ;
-	DODSResponseException e( serr ) ;
-	throw e ;
-    }
-
-    DIR *dip = opendir( _rootDir.c_str() ) ;
-    if( dip == NULL )
-    {
-	string serr = "DirectoryCatalog - unable to load root directory "
-	              + _rootDir ;
-	DODSResponseException e( serr ) ;
-	throw e ;
-    }
-    closedir( dip ) ;
-}
-
-DirectoryCatalog::~DirectoryCatalog( )
-{
-}
-
-void
-DirectoryCatalog::show_nodes( const string &node, DODSTextInfo *info )
-{
-    string newdir ;
-    if( node == "" )
-    {
-	newdir = _rootDir ;
-    }
-    else
-    {
-	newdir = _rootDir + "/" + node ;
+	OPeNDAPCatalog *catalog = (*i) ;
+	if( catalog ) delete catalog ;
     }
 }
 
 void
-DirectoryCatalog::show_leaves( const string &node, DODSTextInfo *info )
+CatalogList::add_catalog( OPeNDAPCatalog *catalog )
 {
-    string newdir ;
-    if( node == "" )
+    _catalogs.push_back( catalog ) ;
+}
+
+void
+CatalogList::show_nodes( const string &node, DODSTextInfo *info )
+{
+    catalog_iterator i = _catalogs.begin() ;
+    catalog_iterator e = _catalogs.end() ;
+    for( ; i != e; i++ )
     {
-	newdir = _rootDir ;
-    }
-    else
-    {
-	newdir = _rootDir + "/" + node ;
+	OPeNDAPCatalog *catalog = (*i) ;
+	catalog->show_nodes( node, info ) ;
     }
 }
 
-// $Log: DirectoryCatalog.cc,v $
+void
+CatalogList::show_leaves( const string &node, DODSTextInfo *info )
+{
+    catalog_iterator i = _catalogs.begin() ;
+    catalog_iterator e = _catalogs.end() ;
+    for( ; i != e; i++ )
+    {
+	OPeNDAPCatalog *catalog = (*i) ;
+	catalog->show_leaves( node, info ) ;
+    }
+}
+
+CatalogList *
+CatalogList::TheCatalogList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new CatalogList ;
+    }
+    return _instance ;
+}
+
+// $Log: CatalogList.cc,v $
 

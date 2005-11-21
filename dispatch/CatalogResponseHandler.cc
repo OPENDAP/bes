@@ -37,6 +37,7 @@
 #include "DODSParserException.h"
 #include "DODSTokenizer.h"
 #include "OPeNDAPDataNames.h"
+#include "CatalogList.h"
 
 CatalogResponseHandler::CatalogResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -69,11 +70,11 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
     string isleaves = dhi.data[ISLEAVES] ;
     if( isleaves == "true" || isleaves == "yes" )
     {
-	info->add_data( "handling leaves\n" ) ;
+	CatalogList::TheCatalogList()->show_leaves( node, info ) ;
     }
     else
     {
-	info->add_data( "handling nodes\n" ) ;
+	CatalogList::TheCatalogList()->show_nodes( node, info ) ;
     }
 }
 

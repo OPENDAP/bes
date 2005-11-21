@@ -1,4 +1,4 @@
-// DirectoryCatalog.cc
+// CatalogList.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,68 +29,38 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "sys/types.h"
-#include "dirent.h"
+#ifndef CatalogList_h_
+#define CatalogList_h_ 1
 
-#include "DirectoryCatalog.h"
-#include "TheDODSKeys.h"
-#include "DODSTextInfo.h"
-#include "DODSResponseException.h"
+#include <list>
+#include <string>
 
-DirectoryCatalog::DirectoryCatalog( const string &key )
+using std::list ;
+using std::string ;
+
+class OPeNDAPCatalog ;
+class DODSTextInfo ;
+
+class CatalogList
 {
-    bool found = false ;
-    _rootDir = TheDODSKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || _rootDir == "" )
-    {
-	string serr = "DirectoryCatalog - unable to load root directory key "
-		      + key + " from initialization file" ;
-	DODSResponseException e( serr ) ;
-	throw e ;
-    }
+private:
+    list<OPeNDAPCatalog *>	_catalogs ;
+    static CatalogList *	_instance ;
+public:
+    typedef list<OPeNDAPCatalog *>::iterator catalog_iterator ;
 
-    DIR *dip = opendir( _rootDir.c_str() ) ;
-    if( dip == NULL )
-    {
-	string serr = "DirectoryCatalog - unable to load root directory "
-	              + _rootDir ;
-	DODSResponseException e( serr ) ;
-	throw e ;
-    }
-    closedir( dip ) ;
-}
+    				CatalogList() {}
+    virtual			~CatalogList() ;
+    virtual void		add_catalog( OPeNDAPCatalog *catalog ) ;
+    virtual void		show_nodes( const string &node,
+					    DODSTextInfo *info ) ;
+    virtual void		show_leaves( const string &node,
+					     DODSTextInfo *info ) ;
 
-DirectoryCatalog::~DirectoryCatalog( )
-{
-}
+    static CatalogList *	TheCatalogList() ;
+} ;
 
-void
-DirectoryCatalog::show_nodes( const string &node, DODSTextInfo *info )
-{
-    string newdir ;
-    if( node == "" )
-    {
-	newdir = _rootDir ;
-    }
-    else
-    {
-	newdir = _rootDir + "/" + node ;
-    }
-}
+#endif // CatalogList_h_
 
-void
-DirectoryCatalog::show_leaves( const string &node, DODSTextInfo *info )
-{
-    string newdir ;
-    if( node == "" )
-    {
-	newdir = _rootDir ;
-    }
-    else
-    {
-	newdir = _rootDir + "/" + node ;
-    }
-}
-
-// $Log: DirectoryCatalog.cc,v $
+// $Log: CatalogList.h,v $
 
