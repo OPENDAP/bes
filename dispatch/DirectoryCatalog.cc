@@ -64,7 +64,7 @@ DirectoryCatalog::~DirectoryCatalog( )
 {
 }
 
-void
+bool
 DirectoryCatalog::show_nodes( const string &node, DODSTextInfo *info )
 {
     string newdir ;
@@ -76,9 +76,16 @@ DirectoryCatalog::show_nodes( const string &node, DODSTextInfo *info )
     {
 	newdir = _rootDir + "/" + node ;
     }
+    DIR *dip = opendir( newdir.c_str() ) ;
+    if( dip == NULL )
+    {
+	return false ;
+    }
+    closedir( dip ) ;
+    return true ;
 }
 
-void
+bool
 DirectoryCatalog::show_leaves( const string &node, DODSTextInfo *info )
 {
     string newdir ;
@@ -90,6 +97,13 @@ DirectoryCatalog::show_leaves( const string &node, DODSTextInfo *info )
     {
 	newdir = _rootDir + "/" + node ;
     }
+    DIR *dip = opendir( newdir.c_str() ) ;
+    if( dip == NULL )
+    {
+	return false ;
+    }
+    closedir( dip ) ;
+    return true ;
 }
 
 // $Log: DirectoryCatalog.cc,v $
