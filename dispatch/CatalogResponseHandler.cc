@@ -70,11 +70,19 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
     string isleaves = dhi.data[ISLEAVES] ;
     if( isleaves == "true" || isleaves == "yes" )
     {
+	info->add_data( "<showLeaves>\n" ) ;
+	info->add_data( "    <response>\n" ) ;
 	CatalogList::TheCatalogList()->show_leaves( node, info ) ;
+	info->add_data( "    </response>\n" ) ;
+	info->add_data( "</showLeaves>\n" ) ;
     }
     else
     {
+	info->add_data( "<showNodes>\n" ) ;
+	info->add_data( "    <response>\n" ) ;
 	CatalogList::TheCatalogList()->show_nodes( node, info ) ;
+	info->add_data( "    </response>\n" ) ;
+	info->add_data( "</showNodes>\n" ) ;
     }
 }
 

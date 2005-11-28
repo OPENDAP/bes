@@ -89,7 +89,7 @@ CatalogList::show_leaves( const string &node, DODSTextInfo *info )
     for( ; i != e && done == false; i++ )
     {
 	OPeNDAPCatalog *catalog = (*i) ;
-	catalog->show_leaves( node, info ) ;
+	done = catalog->show_leaves( node, info ) ;
     }
     if( done == false )
     {

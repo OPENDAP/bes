@@ -30,7 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "sys/types.h"
+#include "sys/stat.h"
 #include "dirent.h"
+#include "stdio.h"
 
 #include "DirectoryCatalog.h"
 #include "TheDODSKeys.h"
@@ -81,6 +83,41 @@ DirectoryCatalog::show_nodes( const string &node, DODSTextInfo *info )
     {
 	return false ;
     }
+    struct dirent *dit;
+    while( ( dit = readdir( dip ) ) != NULL )
+    {
+	struct stat buf;
+	string dirEntry = dit->d_name ;
+	if( dirEntry != "." && dirEntry != ".." )
+	{
+	    string fullPath = newdir + "/" + dirEntry ;
+	    stat( fullPath.c_str(), &buf ) ;
+
+	    // look at the mode and determine if this is a directory
+	    if ( S_ISDIR( buf.st_mode ) )
+	    {
+		off_t sz = buf.st_size ;
+		char ssz[64] ;
+		sprintf( ssz, "%ul", sz ) ;
+		// %T = %H:%M:%S
+		// %F = %Y-%m-%d
+		time_t mod = buf.st_mtime ;
+		struct tm *stm = gmtime( &mod ) ;
+		char mdate[64] ;
+		strftime( mdate, 64, "%F", stm ) ;
+		char mtime[64] ;
+		strftime( mtime, 64, "%T", stm ) ;
+		info->add_data( "        <node>\n" ) ;
+		info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
+		info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
+		info->add_data( "            <lastmodified>\n" ) ;
+		info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
+		info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		info->add_data( "            </lastmodified>\n" ) ;
+		info->add_data( "        </node>\n" ) ;
+	    }
+	}
+    }
     closedir( dip ) ;
     return true ;
 }
@@ -101,6 +138,41 @@ DirectoryCatalog::show_leaves( const string &node, DODSTextInfo *info )
     if( dip == NULL )
     {
 	return false ;
+    }
+    struct dirent *dit;
+    while( ( dit = readdir( dip ) ) != NULL )
+    {
+	struct stat buf;
+	string dirEntry = dit->d_name ;
+	if( dirEntry != "." && dirEntry != ".." )
+	{
+	    string fullPath = newdir + "/" + dirEntry ;
+	    stat( fullPath.c_str(), &buf ) ;
+
+	    // look at the mode and determine if this is a directory
+	    if ( S_ISREG( buf.st_mode ) )
+	    {
+		off_t sz = buf.st_size ;
+		char ssz[64] ;
+		sprintf( ssz, "%ul", sz ) ;
+		// %T = %H:%M:%S
+		// %F = %Y-%m-%d
+		time_t mod = buf.st_mtime ;
+		struct tm *stm = gmtime( &mod ) ;
+		char mdate[64] ;
+		strftime( mdate, 64, "%F", stm ) ;
+		char mtime[64] ;
+		strftime( mtime, 64, "%T", stm ) ;
+		info->add_data( "        <leaf>\n" ) ;
+		info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
+		info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
+		info->add_data( "            <lastmodified>\n" ) ;
+		info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
+		info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		info->add_data( "            </lastmodified>\n" ) ;
+		info->add_data( "        </leaf>\n" ) ;
+	    }
+	}
     }
     closedir( dip ) ;
     return true ;
