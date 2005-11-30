@@ -80,7 +80,6 @@ DODSVersionInfo::DODSVersionInfo( bool is_http )
     _buffered = true ;
     _strm = new ostringstream ;
     add_data( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ) ;
-    //add_data( "<showVersion  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opendap.org/ns/OPeNDAP\" xsi:schemaLocation=\"http://www.opendap.org/ns/OPeNDAP  http://dods.coas.oregonstate.edu:8080/opendap/opendap.xsd\">\n" ) ;
     add_data( "<showVersion>\n" ) ;
     add_data( "    <response>\n" ) ;
 }
