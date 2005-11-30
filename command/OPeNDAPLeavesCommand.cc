@@ -61,11 +61,7 @@ OPeNDAPLeavesCommand::parse_request( DODSTokenizer &tokenizer,
                                    DODSDataHandlerInterface &dhi )
 {
     string my_token = tokenizer.get_next_token() ;
-    if( my_token != "for" )
-    {
-	tokenizer.parse_error( my_token + " not expected" ) ;
-    }
-    else
+    if( my_token == "for" )
     {
 	string node = tokenizer.get_next_token() ;
 	if( node == ";" || node == "" )
