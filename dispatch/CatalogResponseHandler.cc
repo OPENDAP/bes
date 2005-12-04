@@ -66,24 +66,12 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
     DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
-    string node = dhi.data[NODE] ;
-    string isleaves = dhi.data[ISLEAVES] ;
-    if( isleaves == "true" || isleaves == "yes" )
-    {
-	info->add_data( "<showLeaves>\n" ) ;
-	info->add_data( "    <response>\n" ) ;
-	CatalogList::TheCatalogList()->show_leaves( node, info ) ;
-	info->add_data( "    </response>\n" ) ;
-	info->add_data( "</showLeaves>\n" ) ;
-    }
-    else
-    {
-	info->add_data( "<showNodes>\n" ) ;
-	info->add_data( "    <response>\n" ) ;
-	CatalogList::TheCatalogList()->show_nodes( node, info ) ;
-	info->add_data( "    </response>\n" ) ;
-	info->add_data( "</showNodes>\n" ) ;
-    }
+    string container = dhi.data[CONTAINER] ;
+    info->add_data( "<showCatalog>\n" ) ;
+    info->add_data( "    <response>\n" ) ;
+    CatalogList::TheCatalogList()->show_catalog( container, info ) ;
+    info->add_data( "    </response>\n" ) ;
+    info->add_data( "</showCatalog>\n" ) ;
 }
 
 /** @brief transmit the response object built by the execute command

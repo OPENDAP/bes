@@ -79,8 +79,6 @@
 #define DEFINITIONS_RESPONSE "definitions"
 #define KEYS_RESPONSE "keys"
 #define STATUS_RESPONSE "status"
-#define NODES_RESPONSE "nodes"
-#define LEAVES_RESPONSE "leaves"
 #define CATALOG_RESPONSE "catalog"
 
 #define DELETE_RESPONSE "delete"

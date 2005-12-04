@@ -45,10 +45,8 @@ public:
 				DirectoryCatalog( const string &key ) ;
     virtual			~DirectoryCatalog( void ) ;
 
-    virtual bool		show_nodes( const string &node,
-					    DODSTextInfo *info ) ;
-    virtual bool		show_leaves( const string &node,
-					     DODSTextInfo *info ) ;
+    virtual bool		show_catalog( const string &container,
+					      DODSTextInfo *info ) ;
 };
 
 #endif // I_DirectoryCatalog_h

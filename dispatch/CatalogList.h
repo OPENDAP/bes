@@ -52,10 +52,8 @@ public:
     				CatalogList() {}
     virtual			~CatalogList() ;
     virtual void		add_catalog( OPeNDAPCatalog *catalog ) ;
-    virtual void		show_nodes( const string &node,
-					    DODSTextInfo *info ) ;
-    virtual void		show_leaves( const string &node,
-					     DODSTextInfo *info ) ;
+    virtual void		show_catalog( const string &container,
+					      DODSTextInfo *info ) ;
 
     static CatalogList *	TheCatalogList() ;
 } ;

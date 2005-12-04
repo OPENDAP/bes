@@ -47,10 +47,8 @@ protected:
 public:
     virtual			~OPeNDAPCatalog( void ) {} ;
 
-    virtual bool		show_nodes( const string &node,
-					    DODSTextInfo *info ) = 0 ;
-    virtual bool		show_leaves( const string &node,
-					     DODSTextInfo *info ) = 0 ;
+    virtual bool		show_catalog( const string &container,
+					      DODSTextInfo *info ) = 0 ;
 };
 
 #endif // I_OPeNDAPCatalog_h

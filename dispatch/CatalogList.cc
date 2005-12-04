@@ -53,7 +53,7 @@ CatalogList::add_catalog( OPeNDAPCatalog *catalog )
 }
 
 void
-CatalogList::show_nodes( const string &node, DODSTextInfo *info )
+CatalogList::show_catalog( const string &container, DODSTextInfo *info )
 {
     catalog_iterator i = _catalogs.begin() ;
     catalog_iterator e = _catalogs.end() ;
@@ -61,47 +61,19 @@ CatalogList::show_nodes( const string &node, DODSTextInfo *info )
     for( ; i != e && done == false; i++ )
     {
 	OPeNDAPCatalog *catalog = (*i) ;
-	done = catalog->show_nodes( node, info ) ;
+	done = catalog->show_catalog( container, info ) ;
     }
     if( done == false )
     {
 	string serr ;
-	if( node != "" )
+	if( container != "" )
 	{
-	    serr = (string)"Unable to find catalog information for the node "
-		   + node ;
+	    serr = (string)"Unable to find catalog information for container "
+		   + container ;
 	}
 	else
 	{
-	    serr = "Unable to find catalog information for the root node" ;
-	}
-	DODSResponseException e( serr ) ;
-	throw e ;
-    }
-}
-
-void
-CatalogList::show_leaves( const string &node, DODSTextInfo *info )
-{
-    catalog_iterator i = _catalogs.begin() ;
-    catalog_iterator e = _catalogs.end() ;
-    bool done = false ;
-    for( ; i != e && done == false; i++ )
-    {
-	OPeNDAPCatalog *catalog = (*i) ;
-	done = catalog->show_leaves( node, info ) ;
-    }
-    if( done == false )
-    {
-	string serr ;
-	if( node != "" )
-	{
-	    serr = (string)"Unable to find catalog information for the node "
-		   + node ;
-	}
-	else
-	{
-	    serr = "Unable to find catalog information for the root node" ;
+	    serr = "Unable to find catalog information for root" ;
 	}
 	DODSResponseException e( serr ) ;
 	throw e ;

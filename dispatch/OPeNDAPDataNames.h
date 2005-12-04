@@ -53,6 +53,5 @@
 #define DEF_NAME "def_name"
 #define DEFINITIONS "definitions"
 
-#define NODE "node"
-#define ISLEAVES "isLeaves"
+#define CONTAINER "container"
 
