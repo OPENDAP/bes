@@ -44,8 +44,7 @@ using std::endl ;
 #include "OPeNDAPShowCommand.h"
 #include "OPeNDAPDefineCommand.h"
 #include "OPeNDAPDeleteCommand.h"
-#include "OPeNDAPNodesCommand.h"
-#include "OPeNDAPLeavesCommand.h"
+#include "OPeNDAPCatalogCommand.h"
 
 static bool
 DODSCommandInit(int, char**) {
@@ -117,16 +116,10 @@ DODSCommandInit(int, char**) {
 	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
     OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
 
-    cmd_name = string( SHOW_RESPONSE ) + "." + NODES_RESPONSE ;
+    cmd_name = string( SHOW_RESPONSE ) + "." + CATALOG_RESPONSE ;
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    cmd = new OPeNDAPNodesCommand( cmd_name ) ;
-    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + LEAVES_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    cmd = new OPeNDAPLeavesCommand( cmd_name ) ;
+    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
     OPeNDAPCommand::add_command( cmd_name, cmd ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
