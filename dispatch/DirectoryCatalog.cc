@@ -98,7 +98,7 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	    {
 		off_t sz = buf.st_size ;
 		char ssz[64] ;
-		sprintf( ssz, "%ul", sz ) ;
+		sprintf( ssz, "%u", sz ) ;
 		// %T = %H:%M:%S
 		// %F = %Y-%m-%d
 		time_t mod = buf.st_mtime ;
@@ -120,7 +120,7 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	    {
 		off_t sz = buf.st_size ;
 		char ssz[64] ;
-		sprintf( ssz, "%ul", sz ) ;
+		sprintf( ssz, "%u", sz ) ;
 		// %T = %H:%M:%S
 		// %F = %Y-%m-%d
 		time_t mod = buf.st_mtime ;
