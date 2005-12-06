@@ -79,68 +79,99 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	newdir = _rootDir + "/" + container ;
     }
     DIR *dip = opendir( newdir.c_str() ) ;
-    if( dip == NULL )
+    if( dip != NULL )
     {
-	return false ;
-    }
-    struct dirent *dit;
-    while( ( dit = readdir( dip ) ) != NULL )
-    {
-	struct stat buf;
-	string dirEntry = dit->d_name ;
-	if( dirEntry != "." && dirEntry != ".." )
+	struct dirent *dit;
+	while( ( dit = readdir( dip ) ) != NULL )
 	{
-	    string fullPath = newdir + "/" + dirEntry ;
-	    stat( fullPath.c_str(), &buf ) ;
+	    struct stat buf;
+	    string dirEntry = dit->d_name ;
+	    if( dirEntry != "." && dirEntry != ".." )
+	    {
+		string fullPath = newdir + "/" + dirEntry ;
+		stat( fullPath.c_str(), &buf ) ;
 
-	    // look at the mode and determine if this is a directory
-	    if ( S_ISDIR( buf.st_mode ) )
-	    {
-		off_t sz = buf.st_size ;
-		char ssz[64] ;
-		sprintf( ssz, "%u", sz ) ;
-		// %T = %H:%M:%S
-		// %F = %Y-%m-%d
-		time_t mod = buf.st_mtime ;
-		struct tm *stm = gmtime( &mod ) ;
-		char mdate[64] ;
-		strftime( mdate, 64, "%F", stm ) ;
-		char mtime[64] ;
-		strftime( mtime, 64, "%T", stm ) ;
-		info->add_data( "        <dataset container=\"true\">\n" ) ;
-		info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
-		info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
-		info->add_data( "            <lastmodified>\n" ) ;
-		info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
-		info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
-		info->add_data( "            </lastmodified>\n" ) ;
-		info->add_data( "        </dataset>\n" ) ;
-	    }
-	    else if ( S_ISREG( buf.st_mode ) )
-	    {
-		off_t sz = buf.st_size ;
-		char ssz[64] ;
-		sprintf( ssz, "%u", sz ) ;
-		// %T = %H:%M:%S
-		// %F = %Y-%m-%d
-		time_t mod = buf.st_mtime ;
-		struct tm *stm = gmtime( &mod ) ;
-		char mdate[64] ;
-		strftime( mdate, 64, "%F", stm ) ;
-		char mtime[64] ;
-		strftime( mtime, 64, "%T", stm ) ;
-		info->add_data( "        <dataset container=\"false\">\n" ) ;
-		info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
-		info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
-		info->add_data( "            <lastmodified>\n" ) ;
-		info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
-		info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
-		info->add_data( "            </lastmodified>\n" ) ;
-		info->add_data( "        </dataset>\n" ) ;
+		// look at the mode and determine if this is a directory
+		if ( S_ISDIR( buf.st_mode ) )
+		{
+		    off_t sz = buf.st_size ;
+		    char ssz[64] ;
+		    sprintf( ssz, "%u", sz ) ;
+		    // %T = %H:%M:%S
+		    // %F = %Y-%m-%d
+		    time_t mod = buf.st_mtime ;
+		    struct tm *stm = gmtime( &mod ) ;
+		    char mdate[64] ;
+		    strftime( mdate, 64, "%F", stm ) ;
+		    char mtime[64] ;
+		    strftime( mtime, 64, "%T", stm ) ;
+		    info->add_data( "        <dataset container=\"true\">\n" ) ;
+		    info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
+		    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
+		    info->add_data( "            <lastmodified>\n" ) ;
+		    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
+		    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		    info->add_data( "            </lastmodified>\n" ) ;
+		    info->add_data( "        </dataset>\n" ) ;
+		}
+		else if ( S_ISREG( buf.st_mode ) )
+		{
+		    off_t sz = buf.st_size ;
+		    char ssz[64] ;
+		    sprintf( ssz, "%u", sz ) ;
+		    // %T = %H:%M:%S
+		    // %F = %Y-%m-%d
+		    time_t mod = buf.st_mtime ;
+		    struct tm *stm = gmtime( &mod ) ;
+		    char mdate[64] ;
+		    strftime( mdate, 64, "%F", stm ) ;
+		    char mtime[64] ;
+		    strftime( mtime, 64, "%T", stm ) ;
+		    info->add_data( "        <dataset container=\"false\">\n" ) ;
+		    info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
+		    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
+		    info->add_data( "            <lastmodified>\n" ) ;
+		    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
+		    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		    info->add_data( "            </lastmodified>\n" ) ;
+		    info->add_data( "        </dataset>\n" ) ;
+		}
 	    }
 	}
+	closedir( dip ) ;
     }
-    closedir( dip ) ;
+    else
+    {
+	struct stat buf;
+	int statret = stat( newdir.c_str(), &buf ) ;
+	if ( statret == 0 && S_ISREG( buf.st_mode ) )
+	{
+	    off_t sz = buf.st_size ;
+	    char ssz[64] ;
+	    sprintf( ssz, "%u", sz ) ;
+	    // %T = %H:%M:%S
+	    // %F = %Y-%m-%d
+	    time_t mod = buf.st_mtime ;
+	    struct tm *stm = gmtime( &mod ) ;
+	    char mdate[64] ;
+	    strftime( mdate, 64, "%F", stm ) ;
+	    char mtime[64] ;
+	    strftime( mtime, 64, "%T", stm ) ;
+	    info->add_data( "        <dataset container=\"false\">\n" ) ;
+	    info->add_data( "            <name>" + container + "</name>\n" ) ;
+	    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
+	    info->add_data( "            <lastmodified>\n" ) ;
+	    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
+	    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+	    info->add_data( "            </lastmodified>\n" ) ;
+	    info->add_data( "        </dataset>\n" ) ;
+	}
+	else
+	{
+	    return false ;
+	}
+    }
+
     return true ;
 }
 
