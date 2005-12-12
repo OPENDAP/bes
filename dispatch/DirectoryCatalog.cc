@@ -175,7 +175,6 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	    stringstream snm ;
 	    snm << "            <name>" << container << "</name>\n" ;
 	    info->add_data( snm.str() ) ;
-	    info->add_data( "            <name>" + container + "</name>\n" ) ;
 
 	    off_t sz = buf.st_size ;
 	    stringstream ssz ;
