@@ -34,6 +34,10 @@
 #include "dirent.h"
 #include "stdio.h"
 
+#include <sstream>
+
+using std::stringstream ;
+
 #include "DirectoryCatalog.h"
 #include "TheDODSKeys.h"
 #include "DODSTextInfo.h"
@@ -94,9 +98,17 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 		// look at the mode and determine if this is a directory
 		if ( S_ISDIR( buf.st_mode ) )
 		{
+		    info->add_data( "        <dataset container=\"true\">\n" ) ;
+
+		    stringstream snm ;
+		    snm << "            <name>" << dirEntry << "</name>\n" ;
+		    info->add_data( snm.str() ) ;
+
 		    off_t sz = buf.st_size ;
-		    char ssz[64] ;
-		    sprintf( ssz, "%u", sz ) ;
+		    stringstream ssz ;
+		    ssz << "            <size>" << sz << "</size>\n" ;
+		    info->add_data( ssz.str() ) ;
+
 		    // %T = %H:%M:%S
 		    // %F = %Y-%m-%d
 		    time_t mod = buf.st_mtime ;
@@ -105,20 +117,30 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 		    strftime( mdate, 64, "%F", stm ) ;
 		    char mtime[64] ;
 		    strftime( mtime, 64, "%T", stm ) ;
-		    info->add_data( "        <dataset container=\"true\">\n" ) ;
-		    info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
-		    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
 		    info->add_data( "            <lastmodified>\n" ) ;
-		    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
-		    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		    stringstream sdt ;
+		    sdt << "                <date>" << mdate << "</date>\n" ;
+		    info->add_data( sdt.str() ) ;
+		    stringstream stt ;
+		    stt << "                <time>" << mtime << "</time>\n" ;
+		    info->add_data( stt.str() ) ;
 		    info->add_data( "            </lastmodified>\n" ) ;
+
 		    info->add_data( "        </dataset>\n" ) ;
 		}
 		else if ( S_ISREG( buf.st_mode ) )
 		{
+		    info->add_data( "        <dataset container=\"false\">\n" ) ;
+
+		    stringstream snm ;
+		    snm << "            <name>" << dirEntry << "</name>\n" ;
+		    info->add_data( snm.str() ) ;
+
 		    off_t sz = buf.st_size ;
-		    char ssz[64] ;
-		    sprintf( ssz, "%u", sz ) ;
+		    stringstream ssz ;
+		    ssz << "            <size>" << sz << "</size>\n" ;
+		    info->add_data( ssz.str() ) ;
+
 		    // %T = %H:%M:%S
 		    // %F = %Y-%m-%d
 		    time_t mod = buf.st_mtime ;
@@ -127,13 +149,15 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 		    strftime( mdate, 64, "%F", stm ) ;
 		    char mtime[64] ;
 		    strftime( mtime, 64, "%T", stm ) ;
-		    info->add_data( "        <dataset container=\"false\">\n" ) ;
-		    info->add_data( "            <name>" + dirEntry + "</name>\n" ) ;
-		    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
 		    info->add_data( "            <lastmodified>\n" ) ;
-		    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
-		    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+		    stringstream sdt ;
+		    sdt << "                <date>" << mdate << "</date>\n" ;
+		    info->add_data( sdt.str() ) ;
+		    stringstream stt ;
+		    stt << "                <time>" << mtime << "</time>\n" ;
+		    info->add_data( stt.str() ) ;
 		    info->add_data( "            </lastmodified>\n" ) ;
+
 		    info->add_data( "        </dataset>\n" ) ;
 		}
 	    }
@@ -146,9 +170,18 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	int statret = stat( newdir.c_str(), &buf ) ;
 	if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	{
+	    info->add_data( "        <dataset container=\"false\">\n" ) ;
+
+	    stringstream snm ;
+	    snm << "            <name>" << container << "</name>\n" ;
+	    info->add_data( snm.str() ) ;
+	    info->add_data( "            <name>" + container + "</name>\n" ) ;
+
 	    off_t sz = buf.st_size ;
-	    char ssz[64] ;
-	    sprintf( ssz, "%u", sz ) ;
+	    stringstream ssz ;
+	    ssz << "            <size>" << sz << "</size>\n" ;
+	    info->add_data( ssz.str() ) ;
+
 	    // %T = %H:%M:%S
 	    // %F = %Y-%m-%d
 	    time_t mod = buf.st_mtime ;
@@ -157,13 +190,15 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	    strftime( mdate, 64, "%F", stm ) ;
 	    char mtime[64] ;
 	    strftime( mtime, 64, "%T", stm ) ;
-	    info->add_data( "        <dataset container=\"false\">\n" ) ;
-	    info->add_data( "            <name>" + container + "</name>\n" ) ;
-	    info->add_data( (string)"            <size>" + ssz + "</size>\n" ) ;
 	    info->add_data( "            <lastmodified>\n" ) ;
-	    info->add_data( (string)"                <date>" + mdate + "</date>\n" ) ;
-	    info->add_data( (string)"                <time>" + mtime + "</time>\n" ) ;
+	    stringstream sdt ;
+	    sdt << "                <date>" << mdate << "</date>\n" ;
+	    info->add_data( sdt.str() ) ;
+	    stringstream stt ;
+	    stt << "                <time>" << mtime << "</time>\n" ;
+	    info->add_data( stt.str() ) ;
 	    info->add_data( "            </lastmodified>\n" ) ;
+
 	    info->add_data( "        </dataset>\n" ) ;
 	}
 	else
