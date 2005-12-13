@@ -101,6 +101,12 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 			string s = string( "DODS: " )
 				   + "Could not set limit for the heap "
 			           + "because " + strerror(errno) + "\n" ;
+			if( errno == EPERM )
+			{
+			    s = s + "Attempting to increase the soft/hard "
+			          + "limit above the current hard limit, "
+				  + "must be superuser\n" ;
+			}
 			(*DODSLog::TheLog()) << s ;
 			DODSMemoryException me;
 			me.set_error_description( s ) ;
@@ -139,7 +145,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		{
 		    (*DODSLog::TheLog()) << "DODS: can not expand heap enough to start running.\n";
 		    DODSMemoryException me ;
-		    me.set_error_description( "Can no allocated memory\n" ) ;
+		    me.set_error_description( "Can not allocate memory\n" ) ;
 		    me.set_amount_of_memory_required( atoi( s.c_str() ) ) ;
 		    throw me ;
 		}
