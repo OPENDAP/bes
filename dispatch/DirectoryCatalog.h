@@ -32,6 +32,8 @@
 #ifndef I_DirectoryCatalog_h
 #define I_DirectoryCatalog_h 1
 
+#include "sys/stat.h"
+
 #include "OPeNDAPCatalog.h"
 
 class DODSTextInfo ;
@@ -47,6 +49,10 @@ public:
 
     virtual bool		show_catalog( const string &container,
 					      DODSTextInfo *info ) ;
+    void			add_stat_info( DODSTextInfo *info,
+                                               struct stat &buf,
+					       const string &node,
+					       const string &indent ) ;
 };
 
 #endif // I_DirectoryCatalog_h
