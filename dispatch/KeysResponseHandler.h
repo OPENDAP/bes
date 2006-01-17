@@ -46,7 +46,6 @@ class DODSTextInfo ;
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class KeysResponseHandler : public DODSResponseHandler
 {

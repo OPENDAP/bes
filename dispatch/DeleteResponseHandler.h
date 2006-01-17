@@ -53,7 +53,6 @@
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DeleteResponseHandler : public DODSResponseHandler {
 public:

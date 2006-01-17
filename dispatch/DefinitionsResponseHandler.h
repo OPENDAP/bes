@@ -43,7 +43,6 @@
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DefinitionsResponseHandler : public DODSResponseHandler {
 public:

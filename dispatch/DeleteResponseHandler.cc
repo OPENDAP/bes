@@ -30,7 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "DeleteResponseHandler.h"
-#include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
 #include "DODSDefineList.h"
 #include "DODSDefine.h"

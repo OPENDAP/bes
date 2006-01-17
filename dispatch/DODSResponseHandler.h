@@ -40,7 +40,6 @@ using std::string ;
 #include "DODSTransmitter.h"
 
 class DODSResponseObject ;
-class DODSTokenizer ;
 
 /** @brief handler object that knows how to build a specific response object
  *
@@ -60,7 +59,6 @@ class DODSTokenizer ;
  * @see DODSRequestHandler
  * @see DODSResponseHandlerList
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DODSResponseHandler {
 protected:

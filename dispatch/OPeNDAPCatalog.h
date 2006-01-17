@@ -48,6 +48,7 @@ public:
     virtual			~OPeNDAPCatalog( void ) {} ;
 
     virtual bool		show_catalog( const string &container,
+					      const string &catalog_or_info,
 					      DODSTextInfo *info ) = 0 ;
 };
 

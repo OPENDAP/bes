@@ -45,7 +45,6 @@ using std::string ;
 #include "DODSReporterList.h"
 
 #include "OPeNDAPDatabaseException.h"
-#include "DODSParserException.h"
 #include "DODSContainerPersistenceException.h"
 #include "DODSKeysException.h"
 #include "DODSLogException.h"
@@ -324,7 +323,6 @@ DODS::add_ehm_callback( p_opendap_ehm ehm )
     @see DODSIncorrectException
     @see OPeNDAPDatabaseException
     @see DODSMySQLQueryException
-    @see DODSParserException
     @see DODSContainerPersistenceException
     @see DODSKeysException
     @see DODSLogException
@@ -378,14 +376,6 @@ DODS::exception_manager( DODSException &e )
 	fprintf( stdout, "Reporting Database Exception.\n" ) ;
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return OPENDAP_DATABASE_FAILURE;
-    }
-    DODSParserException *pe=dynamic_cast<DODSParserException*>(&e);
-    if(pe)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "There is a parse error!\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return DODS_PARSER_ERROR;
     }
     DODSContainerPersistenceException *dpe=dynamic_cast<DODSContainerPersistenceException*>(&e);
     if(dpe)

@@ -48,6 +48,7 @@ public:
     virtual			~DirectoryCatalog( void ) ;
 
     virtual bool		show_catalog( const string &container,
+					      const string &catalog_or_info,
 					      DODSTextInfo *info ) ;
     void			add_stat_info( DODSTextInfo *info,
                                                struct stat &buf,

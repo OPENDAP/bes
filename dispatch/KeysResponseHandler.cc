@@ -32,8 +32,6 @@
 #include "KeysResponseHandler.h"
 #include "TheDODSKeys.h"
 #include "DODSTextInfo.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 
 KeysResponseHandler::KeysResponseHandler( string name )
     : DODSResponseHandler( name )

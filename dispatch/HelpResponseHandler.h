@@ -45,7 +45,6 @@
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class HelpResponseHandler : public DODSResponseHandler {
 public:

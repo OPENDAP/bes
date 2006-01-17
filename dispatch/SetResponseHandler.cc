@@ -31,8 +31,6 @@
 
 #include "SetResponseHandler.h"
 #include "DODSTextInfo.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 #include "DODSContainerPersistenceList.h"
 #include "DODSContainerPersistence.h"
 #include "DODSContainerPersistenceException.h"

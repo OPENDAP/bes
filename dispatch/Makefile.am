@@ -51,7 +51,6 @@ CLEANFILES = $(MODOBJS)
 SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc \
 	DODSKeys.cc TheDODSKeys.cc \
-	DODSTokenizer.cc \
 	DODSContainer.cc DODSStatus.cc \
 	DODSContainerPersistence.cc DODSContainerPersistenceCGI.cc \
 	DODSContainerPersistenceFile.cc DODSContainerPersistenceList.cc \
@@ -83,7 +82,7 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSInitializer.h DODSLog.h DODSLogException.h \
 	DODSKeys.h TheDODSKeys.h DODSKeysException.h \
 	DODSStatus.h \
-	DODSParserException.h DODSTokenizer.h DODSContainer.h \
+	DODSContainer.h \
 	DODSContainerPersistence.h DODSTransmitException.h \
 	DODSContainerPersistenceCGI.h DODSContainerPersistenceFile.h \
 	DODSContainerPersistenceList.h \

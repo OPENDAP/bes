@@ -36,9 +36,7 @@
 #include "cgi_util.h"
 #include "util.h"
 #include "dispatch_version.h"
-#include "DODSParserException.h"
 #include "DODSRequestHandlerList.h"
-#include "DODSTokenizer.h"
 
 VersionResponseHandler::VersionResponseHandler( string name )
     : DODSResponseHandler( name )

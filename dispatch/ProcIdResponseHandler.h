@@ -42,7 +42,6 @@
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class ProcIdResponseHandler : public DODSResponseHandler
 {

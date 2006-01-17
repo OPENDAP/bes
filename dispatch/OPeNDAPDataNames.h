@@ -54,4 +54,5 @@
 #define DEFINITIONS "definitions"
 
 #define CONTAINER "container"
+#define CATALOG_OR_INFO "catalog_or_info"
 

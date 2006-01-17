@@ -34,8 +34,6 @@
 #include "cgi_util.h"
 #include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 #include "OPeNDAPDataNames.h"
 #include "CatalogList.h"
 
@@ -67,9 +65,10 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
     _response = info ;
 
     string container = dhi.data[CONTAINER] ;
+    string coi = dhi.data[CATALOG_OR_INFO] ;
     info->add_data( "<showCatalog>\n" ) ;
     info->add_data( "    <response>\n" ) ;
-    CatalogList::TheCatalogList()->show_catalog( container, info ) ;
+    CatalogList::TheCatalogList()->show_catalog( container, coi, info ) ;
     info->add_data( "    </response>\n" ) ;
     info->add_data( "</showCatalog>\n" ) ;
 }

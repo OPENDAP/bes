@@ -30,7 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "ContainersResponseHandler.h"
-#include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
 #include "DODSContainerPersistenceList.h"
 

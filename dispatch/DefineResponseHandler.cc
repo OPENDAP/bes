@@ -31,8 +31,6 @@
 
 #include "DefineResponseHandler.h"
 #include "DODSTextInfo.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 #include "DODSDefine.h"
 #include "DODSDefineList.h"
 #include "OPeNDAPDataNames.h"

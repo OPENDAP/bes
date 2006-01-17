@@ -50,7 +50,6 @@
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class SetResponseHandler : public DODSResponseHandler
 {

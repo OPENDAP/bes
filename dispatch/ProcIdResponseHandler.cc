@@ -35,8 +35,6 @@
 #include "DODSTextInfo.h"
 #include "cgi_util.h"
 #include "util.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 
 ProcIdResponseHandler::ProcIdResponseHandler( string name )
     : DODSResponseHandler( name )

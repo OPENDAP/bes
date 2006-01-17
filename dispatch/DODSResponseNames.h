@@ -80,6 +80,7 @@
 #define KEYS_RESPONSE "keys"
 #define STATUS_RESPONSE "status"
 #define CATALOG_RESPONSE "catalog"
+#define SHOW_INFO_RESPONSE "info"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "container"

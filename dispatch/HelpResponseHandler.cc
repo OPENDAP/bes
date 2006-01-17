@@ -34,8 +34,6 @@
 #include "cgi_util.h"
 #include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
-#include "DODSParserException.h"
-#include "DODSTokenizer.h"
 
 HelpResponseHandler::HelpResponseHandler( string name )
     : DODSResponseHandler( name )

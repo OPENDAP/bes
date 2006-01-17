@@ -42,6 +42,7 @@ using std::stringstream ;
 #include "TheDODSKeys.h"
 #include "DODSTextInfo.h"
 #include "DODSResponseException.h"
+#include "DODSResponseNames.h"
 
 DirectoryCatalog::DirectoryCatalog( const string &key )
 {
@@ -71,7 +72,9 @@ DirectoryCatalog::~DirectoryCatalog( )
 }
 
 bool
-DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
+DirectoryCatalog::show_catalog( const string &container,
+                                const string &coi,
+				DODSTextInfo *info )
 {
     string newdir ;
     if( container == "" )
@@ -87,7 +90,7 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
     {
 	struct stat cbuf ;
 	stat( newdir.c_str(), &cbuf ) ;
-	info->add_data( "        <dataset container=\"true\">\n" ) ;
+	info->add_data( "        <dataset thredds_container=\"true\">\n" ) ;
 	if( container == "" )
 	{
 	    add_stat_info( info, cbuf, "/", "        " ) ;
@@ -98,27 +101,46 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	}
 
 	struct dirent *dit;
+	unsigned int cnt = 0 ;
 	while( ( dit = readdir( dip ) ) != NULL )
 	{
-	    struct stat buf;
 	    string dirEntry = dit->d_name ;
 	    if( dirEntry != "." && dirEntry != ".." )
 	    {
-		string fullPath = newdir + "/" + dirEntry ;
-		stat( fullPath.c_str(), &buf ) ;
+		cnt++ ;
+	    }
+	}
 
-		// look at the mode and determine if this is a directory
-		if ( S_ISDIR( buf.st_mode ) )
+	stringstream sscnt ;
+	sscnt << "            <count>" << cnt << "</count>" << endl ;
+	info->add_data( sscnt.str() ) ;
+
+	if( coi == CATALOG_RESPONSE )
+	{
+	    rewinddir( dip ) ;
+
+	    while( ( dit = readdir( dip ) ) != NULL )
+	    {
+		struct stat buf;
+		string dirEntry = dit->d_name ;
+		if( dirEntry != "." && dirEntry != ".." )
 		{
-		    info->add_data( "            <dataset container=\"true\">\n" ) ;
-		    add_stat_info( info, buf, dirEntry, "            " ) ;
-		    info->add_data( "            </dataset>\n" ) ;
-		}
-		else if ( S_ISREG( buf.st_mode ) )
-		{
-		    info->add_data( "            <dataset container=\"false\">\n" );
-		    add_stat_info( info, buf, dirEntry, "            " ) ;
-		    info->add_data( "            </dataset>\n" );
+		    string fullPath = newdir + "/" + dirEntry ;
+		    stat( fullPath.c_str(), &buf ) ;
+
+		    // look at the mode and determine if this is a directory
+		    if ( S_ISDIR( buf.st_mode ) )
+		    {
+			info->add_data( "            <dataset thredds_container=\"true\">\n" ) ;
+			add_stat_info( info, buf, dirEntry, "            " ) ;
+			info->add_data( "            </dataset>\n" ) ;
+		    }
+		    else if ( S_ISREG( buf.st_mode ) )
+		    {
+			info->add_data( "            <dataset thredds_container=\"false\">\n" );
+			add_stat_info( info, buf, dirEntry, "            " ) ;
+			info->add_data( "            </dataset>\n" );
+		    }
 		}
 	    }
 	}
@@ -131,7 +153,7 @@ DirectoryCatalog::show_catalog( const string &container, DODSTextInfo *info )
 	int statret = stat( newdir.c_str(), &buf ) ;
 	if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	{
-	    info->add_data( "        <dataset container=\"false\">\n" ) ;
+	    info->add_data( "        <dataset thredds_container=\"false\">\n" ) ;
 	    add_stat_info( info, buf, container, "        " ) ;
 	    info->add_data( "        </dataset>\n" ) ;
 	}

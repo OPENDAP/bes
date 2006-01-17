@@ -44,7 +44,6 @@
  * @see DAS
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DASResponseHandler : public DODSResponseHandler {
 public:

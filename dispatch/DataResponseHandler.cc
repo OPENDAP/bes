@@ -32,7 +32,6 @@
 #include "DataResponseHandler.h"
 #include "DDS.h"
 #include "cgi_util.h"
-#include "DODSParserException.h"
 #include "DODSRequestHandlerList.h"
 
 DataResponseHandler::DataResponseHandler( string name )

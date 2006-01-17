@@ -47,7 +47,6 @@
  * @see DDS
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DDXResponseHandler : public DODSResponseHandler {
 public:

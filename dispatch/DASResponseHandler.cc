@@ -32,7 +32,6 @@
 #include "DASResponseHandler.h"
 #include "DAS.h"
 #include "cgi_util.h"
-#include "DODSParserException.h"
 #include "DODSRequestHandlerList.h"
 
 DASResponseHandler::DASResponseHandler( string name )

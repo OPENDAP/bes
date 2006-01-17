@@ -71,7 +71,6 @@
  * @see DODSDefineList
  * @see DODSContainer
  * @see DODSTransmitter
- * @see DODSTokenizer
  */
 class DefineResponseHandler : public DODSResponseHandler
 {

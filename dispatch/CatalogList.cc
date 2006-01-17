@@ -53,7 +53,9 @@ CatalogList::add_catalog( OPeNDAPCatalog *catalog )
 }
 
 void
-CatalogList::show_catalog( const string &container, DODSTextInfo *info )
+CatalogList::show_catalog( const string &container,
+			   const string &coi,
+			   DODSTextInfo *info )
 {
     catalog_iterator i = _catalogs.begin() ;
     catalog_iterator e = _catalogs.end() ;
@@ -61,7 +63,7 @@ CatalogList::show_catalog( const string &container, DODSTextInfo *info )
     for( ; i != e && done == false; i++ )
     {
 	OPeNDAPCatalog *catalog = (*i) ;
-	done = catalog->show_catalog( container, info ) ;
+	done = catalog->show_catalog( container, coi, info ) ;
     }
     if( done == false )
     {

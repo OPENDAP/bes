@@ -34,7 +34,6 @@
 #include "DDS.h"
 #include "cgi_util.h"
 #include "DODSResponseNames.h"
-#include "DODSParserException.h"
 #include "DODSRequestHandlerList.h"
 
 DDXResponseHandler::DDXResponseHandler( string name )

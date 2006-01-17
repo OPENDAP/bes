@@ -31,9 +31,7 @@
 
 #include "StatusResponseHandler.h"
 #include "DODSTextInfo.h"
-#include "DODSParserException.h"
 #include "DODSStatus.h"
-#include "DODSTokenizer.h"
 
 StatusResponseHandler::StatusResponseHandler( string name )
     : DODSResponseHandler( name )

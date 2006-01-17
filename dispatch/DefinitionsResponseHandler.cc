@@ -30,7 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "DefinitionsResponseHandler.h"
-#include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
 #include "DODSDefineList.h"
 
