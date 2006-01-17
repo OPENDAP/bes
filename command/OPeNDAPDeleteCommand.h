@@ -42,7 +42,7 @@ public:
     					OPeNDAPDeleteCommand( const string &cmd)
 					    : OPeNDAPCommand( cmd ) {}
     virtual				~OPeNDAPDeleteCommand() {}
-    virtual DODSResponseHandler *	parse_request( DODSTokenizer &tokenizer,
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokenizer,
 					  DODSDataHandlerInterface &dhi ) ;
 } ;
 

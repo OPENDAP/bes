@@ -30,10 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPDefineCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "DODSContainerPersistenceList.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
 /** @brief parses the request to build a definition that can be used in other
@@ -66,13 +66,13 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws DODSParserException if this method is called, as the request string
+ * @throws OPeNDAPParserException if this method is called, as the request string
  * should have already been parsed.
- * @see DODSTokenizer
+ * @see OPeNDAPTokenizer
  * @see _DODSDataHandlerInterface
  */
 DODSResponseHandler *
-OPeNDAPDefineCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPDefineCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                      DODSDataHandlerInterface &dhi )
 {
     string my_token = tokenizer.get_next_token() ;
@@ -102,7 +102,7 @@ OPeNDAPDefineCommand::parse_request( DODSTokenizer &tokenizer,
 	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
     if( !retResponse )
     {
-	throw DODSParserException( (string)"Improper command " + _cmd );
+	throw OPeNDAPParserException( (string)"Improper command " + _cmd );
     }
 
     bool with_aggregation = false ;

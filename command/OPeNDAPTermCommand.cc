@@ -30,10 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPTermCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 
 DODSResponseHandler *
-OPeNDAPTermCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPTermCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                    DODSDataHandlerInterface & )
 {
     tokenizer.parse_error( "Invalid command" ) ;

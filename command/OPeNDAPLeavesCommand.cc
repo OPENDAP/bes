@@ -30,9 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPLeavesCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 #include "DODSResponseNames.h"
 
@@ -54,10 +54,10 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
+ * @throws OPeNDAPParserException if there is a problem parsing the request
  */
 DODSResponseHandler *
-OPeNDAPLeavesCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPLeavesCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                    DODSDataHandlerInterface &dhi )
 {
     string my_token = tokenizer.get_next_token() ;
@@ -85,7 +85,7 @@ OPeNDAPLeavesCommand::parse_request( DODSTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd ;
 	err += " does not have a registered response handler" ;
-	throw DODSParserException( err ) ;
+	throw OPeNDAPParserException( err ) ;
     }
 
     return retResponse ;

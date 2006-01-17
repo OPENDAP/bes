@@ -42,7 +42,7 @@ public:
     					OPeNDAPTermCommand( const string &cmd)
 					    : OPeNDAPCommand( cmd ) {}
     virtual				~OPeNDAPTermCommand() {}
-    virtual DODSResponseHandler *	parse_request( DODSTokenizer &tokenizer,
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokenizer,
 					  DODSDataHandlerInterface &dhi ) ;
 } ;
 

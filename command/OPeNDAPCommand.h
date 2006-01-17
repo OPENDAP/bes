@@ -41,7 +41,7 @@ using std::map ;
 #include "DODSDataHandlerInterface.h"
 
 class DODSResponseHandler ;
-class DODSTokenizer ;
+class OPeNDAPTokenizer ;
 
 class OPeNDAPCommand
 {
@@ -54,7 +54,7 @@ public:
     					OPeNDAPCommand( const string &cmd )
 					    : _cmd( cmd ) {}
     virtual				~OPeNDAPCommand() {}
-    virtual DODSResponseHandler *	parse_request( DODSTokenizer &tokenizer,
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokenizer,
 					  DODSDataHandlerInterface &dhi ) = 0 ;
 
     static OPeNDAPCommand *		TermCommand ;

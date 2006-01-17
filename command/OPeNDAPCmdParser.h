@@ -54,8 +54,8 @@ using std::string ;
  *
  * All requests must end with a semicolon.
  *
- * @see DODSTokenizer
- * @see DODSParserException
+ * @see OPeNDAPTokenizer
+ * @see OPeNDAPParserException
  */
 class OPeNDAPCmdParser
 {

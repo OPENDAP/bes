@@ -30,10 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPSetCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
 #include "DODSContainerPersistenceList.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
 /** @brief parses the request to create a new container or replace an already
@@ -49,12 +49,12 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
- * @see DODSTokenizer
+ * @throws OPeNDAPParserException if there is a problem parsing the request
+ * @see OPeNDAPTokenizer
  * @see _DODSDataHandlerInterface
  */
 DODSResponseHandler *
-OPeNDAPSetCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPSetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                   DODSDataHandlerInterface &dhi )
 {
     string my_token = tokenizer.get_next_token() ;
@@ -77,7 +77,7 @@ OPeNDAPSetCommand::parse_request( DODSTokenizer &tokenizer,
 	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
     if( !retResponse )
     {
-	throw DODSParserException( (string)"Improper command " + _cmd );
+	throw OPeNDAPParserException( (string)"Improper command " + _cmd );
     }
 
     if( my_token == "container" )

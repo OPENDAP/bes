@@ -1,4 +1,4 @@
-// DODSParserException.h
+// OPeNDAPParserException.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,26 +29,32 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSParserException_h_
-#define DODSParserException_h_ 1
+#ifndef OPeNDAPParserException_h_
+#define OPeNDAPParserException_h_ 1
 
 #include "DODSBasicException.h"
+#include "DODSDataHandlerInterface.h"
+
+#define OPENDAP_PARSER_ERROR 6
 
 /** @brief exception thrown if there is a problem parsing the request string
  * passed by the user.
  */
-class DODSParserException : public DODSBasicException
+class OPeNDAPParserException : public DODSBasicException
 {
 public:
-      			DODSParserException() {}
-      			DODSParserException( const string &s )
+      			OPeNDAPParserException() {}
+      			OPeNDAPParserException( const string &s )
 			    : DODSBasicException( s ) {}
-      virtual		~DODSParserException() {}
+      virtual		~OPeNDAPParserException() {}
+
+      static int	handleException( DODSException &e,
+					 DODSDataHandlerInterface &dhi ) ;
 };
 
-#endif //  DODSParserException_h_
+#endif //  OPeNDAPParserException_h_
 
-// $Log: DODSParserException.h,v $
+// $Log: OPeNDAPParserException.h,v $
 // Revision 1.4  2005/02/01 17:48:17  pwest
 //
 // integration of ESG into opendap

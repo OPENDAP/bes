@@ -30,10 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPCmdParser.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "OPeNDAPCommand.h"
 #include "DODSResponseHandler.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 
 OPeNDAPCmdParser::OPeNDAPCmdParser( )
 {
@@ -46,22 +46,22 @@ OPeNDAPCmdParser::~OPeNDAPCmdParser()
 /** @brief parse the request string and build the execution plan for the
  * request.
  *
- * Parse the request string into a list of tokens using the DODSTokenizer
+ * Parse the request string into a list of tokens using the OPeNDAPTokenizer
  * object and builds the execution plan for the request. This plan includes
  * the type of response object that is being requested.
  *
  * @param request string representing the request from the client
  * @param dhi information needed to build the request and to store request
  * information for the server
- * @throws DODSParserException thrown if there is an error in syntax
- * @see DODSTokenizer
+ * @throws OPeNDAPParserException thrown if there is an error in syntax
+ * @see OPeNDAPTokenizer
  * @see DODSResponseHandler
  * @see _DODSDataHandlerInterface
  */
 void
 OPeNDAPCmdParser::parse( const string &request, DODSDataHandlerInterface &dhi )
 {
-    DODSTokenizer t ;
+    OPeNDAPTokenizer t ;
     t.tokenize( request.c_str() ) ;
     string my_token = t.get_first_token() ;
     OPeNDAPCommand *cmd = OPeNDAPCommand::find_command( my_token ) ;
@@ -70,18 +70,18 @@ OPeNDAPCmdParser::parse( const string &request, DODSDataHandlerInterface &dhi )
 	dhi.response_handler = cmd->parse_request( t, dhi ) ;
 	if( !dhi.response_handler )
 	{
-	    throw DODSParserException( (string)"Unable to build command" ) ;
+	    throw OPeNDAPParserException( (string)"Unable to build command" ) ;
 	}
     }
     else
     {
-	throw DODSParserException( (string)"Invalid command " + my_token ) ;
+	throw OPeNDAPParserException( (string)"Invalid command " + my_token ) ;
     }
 }
 
 // $Log: OPeNDAPCmdParser.cc,v $
 // Revision 1.5  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
+// using OPeNDAPTokenizer to get first and next tokens
 //
 // Revision 1.4  2005/02/01 17:48:17  pwest
 //

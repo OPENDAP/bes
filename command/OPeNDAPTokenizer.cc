@@ -1,4 +1,4 @@
-// DODSTokenizer.cc
+// OPeNDAPTokenizer.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -34,16 +34,16 @@
 using std::cout ;
 using std::endl ;
 
-#include "DODSTokenizer.h"
-#include "DODSParserException.h"
+#include "OPeNDAPTokenizer.h"
+#include "OPeNDAPParserException.h"
 #include "DODSMemoryException.h"
 
-DODSTokenizer::DODSTokenizer( )
+OPeNDAPTokenizer::OPeNDAPTokenizer( )
     : _counter( -1 )
 {
 }
 
-DODSTokenizer::~DODSTokenizer()
+OPeNDAPTokenizer::~OPeNDAPTokenizer()
 {
 }
 
@@ -60,7 +60,7 @@ DODSTokenizer::~DODSTokenizer()
  * leading up to the error.
  */
 void
-DODSTokenizer::parse_error( const string &s )
+OPeNDAPTokenizer::parse_error( const string &s )
 {
     string error = "Parse error." ;
     string where = "" ;
@@ -73,7 +73,7 @@ DODSTokenizer::parse_error( const string &s )
     }
     if( s != "" )
 	error += "\n" + s ;
-    DODSParserException pe ;
+    OPeNDAPParserException pe ;
     pe.set_error_description( error ) ;
     throw pe ;
 }
@@ -87,9 +87,34 @@ DODSTokenizer::parse_error( const string &s )
  * @returns the first token in the token list
  */
 string &
-DODSTokenizer::get_first_token()
+OPeNDAPTokenizer::get_first_token()
 {
     _counter = 0 ;
+    return tokens[_counter] ;
+}
+
+/** @brief returns the current token from the token list
+ *
+ * Returns the current token from the token list and returns it to the caller.
+ *
+ * @returns current token
+ * @throws DODSException if the first token has not yet been retrieved or if
+ * the caller is attempting to access more tokens than are available.
+ * @see DODSException
+ */
+string &
+OPeNDAPTokenizer::get_current_token()
+{
+    if( _counter == -1 )
+    {
+	parse_error( "incomplete expression!" ) ;
+    }
+
+    if( _counter > _number_tokens-1 )
+    {
+	parse_error( "incomplete expression!" ) ;
+    }
+
     return tokens[_counter] ;
 }
 
@@ -103,7 +128,7 @@ DODSTokenizer::get_first_token()
  * @see DODSException
  */
 string &
-DODSTokenizer::get_next_token()
+OPeNDAPTokenizer::get_next_token()
 {
     if( _counter == -1 )
     {
@@ -120,7 +145,7 @@ DODSTokenizer::get_next_token()
 
 /** @brief tokenize the OPeNDAP request/command string
  *
- *  DODSTokenizer tokenizes an OPeNDAP request command string, such as a get
+ *  OPeNDAPTokenizer tokenizes an OPeNDAP request command string, such as a get
  *  request, a define command, a set command, etc... Tokens are separated by
  *  the following characters:
  *
@@ -141,7 +166,7 @@ DODSTokenizer::get_next_token()
  * @see DODSException
  */
 void
-DODSTokenizer::tokenize( const char *p )
+OPeNDAPTokenizer::tokenize( const char *p )
 {
     int len = strlen( p ) ;
     string s = "" ;
@@ -241,7 +266,7 @@ DODSTokenizer::tokenize( const char *p )
  * @see DODSException
  */
 string
-DODSTokenizer::parse_container_name( const string &s, unsigned int &type )
+OPeNDAPTokenizer::parse_container_name( const string &s, unsigned int &type )
 {
     int where = s.rfind( ".constraint=", s.size() ) ;
     if( where < 0 )
@@ -284,7 +309,7 @@ DODSTokenizer::parse_container_name( const string &s, unsigned int &type )
  * @see DODSException
  */
 string
-DODSTokenizer::remove_quotes( const string &s )
+OPeNDAPTokenizer::remove_quotes( const string &s )
 {
     if( (s[0] != '"' ) || (s[s.size() - 1] != '"' ) )
     {
@@ -302,7 +327,7 @@ DODSTokenizer::remove_quotes( const string &s )
  * if there are any spaces or special characters in the token.
  */
 void
-DODSTokenizer::dump_tokens()
+OPeNDAPTokenizer::dump_tokens()
 {
     for( tokens_iterator = tokens.begin();
 	 tokens_iterator != tokens.end();
@@ -312,9 +337,9 @@ DODSTokenizer::dump_tokens()
     }
 }
 
-// $Log: DODSTokenizer.cc,v $
+// $Log: OPeNDAPTokenizer.cc,v $
 // Revision 1.3  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
+// using OPeNDAPTokenizer to get first and next tokens
 //
 // Revision 1.2  2005/02/10 19:27:35  pwest
 // beginning quotes were being removed when tokenizing

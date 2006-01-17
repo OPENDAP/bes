@@ -1,4 +1,4 @@
-// DODSTokenizer.h
+// OPeNDAPTokenizer.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,8 +29,8 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSTokenizer_h_
-#define DODSTokenizer_h_ 1
+#ifndef OPeNDAPTokenizer_h_
+#define OPeNDAPTokenizer_h_ 1
 
 #include <vector>
 #include <string>
@@ -40,7 +40,7 @@ using std::string ;
 
 /** @brief tokenizer for the OPeNDAP request command string
 
-    DODSTokenizer tokenizes an OPeNDAP request command string, such as a get
+    OPeNDAPTokenizer tokenizes an OPeNDAP request command string, such as a get
     request, a define command, a set command, etc... Tokens are separated by
     the following characters:
 
@@ -66,7 +66,7 @@ using std::string ;
 
     @see DODSException
  */
-class DODSTokenizer
+class OPeNDAPTokenizer
 {
 private:
     vector <string>		tokens ;
@@ -75,11 +75,12 @@ private:
     int				_number_tokens ;
 
 public:
-    				DODSTokenizer() ;
-    				~DODSTokenizer();
+    				OPeNDAPTokenizer() ;
+    				~OPeNDAPTokenizer();
 
     void			tokenize( const char *p ) ;
     string &			get_first_token() ;
+    string &			get_current_token() ;
     string &			get_next_token() ;
     void			parse_error( const string &s = "" ) ;
     string			parse_container_name( const string &s,
@@ -89,11 +90,11 @@ public:
     void			dump_tokens() ;
 } ;
 
-#endif // DODSTokenizer_h_
+#endif // OPeNDAPTokenizer_h_
 
-// $Log: DODSTokenizer.h,v $
+// $Log: OPeNDAPTokenizer.h,v $
 // Revision 1.3  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
+// using OPeNDAPTokenizer to get first and next tokens
 //
 // Revision 1.2  2005/02/10 19:27:45  pwest
 // beginning quotes were being removed when tokenizing

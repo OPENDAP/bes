@@ -30,11 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPGetCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
 #include "DODSDefineList.h"
 #include "DODSDefine.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
 /** @brief knows how to parse a get request
@@ -59,10 +59,10 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
+ * @throws OPeNDAPParserException if there is a problem parsing the request
  */
 DODSResponseHandler *
-OPeNDAPGetCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPGetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                   DODSDataHandlerInterface &dhi )
 {
     string def_name ;
@@ -91,7 +91,7 @@ OPeNDAPGetCommand::parse_request( DODSTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd + " " + my_token ;
 	err += " does not have a registered response handler" ;
-	throw DODSParserException( err ) ;
+	throw OPeNDAPParserException( err ) ;
     }
     dhi.action = my_token ;
 
@@ -137,7 +137,7 @@ OPeNDAPGetCommand::parse_request( DODSTokenizer &tokenizer,
     DODSDefine *d = DODSDefineList::TheList()->find_def( def_name ) ;
     if( !d )
     {
-	throw DODSParserException( (string)"Unable to find definition " + def_name ) ;
+	throw OPeNDAPParserException( (string)"Unable to find definition " + def_name ) ;
     }
 
     DODSDefine::containers_iterator i = d->first_container() ;

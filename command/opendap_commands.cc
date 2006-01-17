@@ -46,6 +46,9 @@ using std::endl ;
 #include "OPeNDAPDeleteCommand.h"
 #include "OPeNDAPCatalogCommand.h"
 
+#include "OPeNDAPParserException.h"
+#include "DODS.h"
+
 static bool
 DODSCommandInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
@@ -122,6 +125,18 @@ DODSCommandInit(int, char**) {
     cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
     OPeNDAPCommand::add_command( cmd_name, cmd ) ;
 
+    cmd_name = string( SHOW_RESPONSE ) + "." + CATALOG_RESPONSE ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
+    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
+
+    cmd_name = string( SHOW_RESPONSE ) + "." + SHOW_INFO_RESPONSE ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
+    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
+
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
     cmd = new OPeNDAPDefineCommand( DEFINE_RESPONSE ) ;
@@ -151,6 +166,10 @@ DODSCommandInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
     OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding parser exception callback" << endl ;
+    DODS::add_ehm_callback( OPeNDAPParserException::handleException ) ;
 
     return true;
 }

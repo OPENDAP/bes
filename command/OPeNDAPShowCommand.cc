@@ -30,9 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "OPeNDAPShowCommand.h"
-#include "DODSTokenizer.h"
+#include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSParserException.h"
+#include "OPeNDAPParserException.h"
 
 /** @brief knows how to parse a show request
  *
@@ -52,10 +52,10 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws DODSParserException if there is a problem parsing the request
+ * @throws OPeNDAPParserException if there is a problem parsing the request
  */
 DODSResponseHandler *
-OPeNDAPShowCommand::parse_request( DODSTokenizer &tokenizer,
+OPeNDAPShowCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                    DODSDataHandlerInterface &dhi )
 {
     DODSResponseHandler *retResponse = 0 ;
@@ -82,7 +82,7 @@ OPeNDAPShowCommand::parse_request( DODSTokenizer &tokenizer,
 	    string err( "Command " ) ;
 	    err += _cmd + " " + my_token ;
 	    err += " does not have a registered response handler" ;
-	    throw DODSParserException( err ) ;
+	    throw OPeNDAPParserException( err ) ;
 	}
 
 	my_token = tokenizer.get_next_token() ;

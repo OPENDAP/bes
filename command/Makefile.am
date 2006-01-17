@@ -50,12 +50,9 @@ CLEANFILES = $(MODOBJS)
 SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
 	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
 	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc     \
-	OPeNDAPCatalogCommand.cc
+	OPeNDAPCatalogCommand.cc OPeNDAPParserException.cc OPeNDAPTokenizer.cc
 
-HDRS:=OPeNDAPCmdInterface.h OPeNDAPDefineCommand.h OPeNDAPSetCommand.h	\
-	OPeNDAPCmdParser.h OPeNDAPDeleteCommand.h OPeNDAPShowCommand.h	\
-	OPeNDAPCommand.h OPeNDAPGetCommand.h OPeNDAPTermCommand.h       \
-	OPeNDAPCatalogCommand.h
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h
 
 MODSRCS:=opendap_commands.cc
 MODOBJS:=opendap_commands.o
