@@ -45,7 +45,7 @@ using std::string ;
 #include "DODSReporterList.h"
 
 #include "OPeNDAPDatabaseException.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageException.h"
 #include "DODSKeysException.h"
 #include "DODSLogException.h"
 #include "DODSHandlerException.h"
@@ -323,7 +323,7 @@ DODS::add_ehm_callback( p_opendap_ehm ehm )
     @see DODSIncorrectException
     @see OPeNDAPDatabaseException
     @see DODSMySQLQueryException
-    @see DODSContainerPersistenceException
+    @see ContainerStorageException
     @see DODSKeysException
     @see DODSLogException
     @see DODSHandlerException
@@ -377,7 +377,7 @@ DODS::exception_manager( DODSException &e )
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return OPENDAP_DATABASE_FAILURE;
     }
-    DODSContainerPersistenceException *dpe=dynamic_cast<DODSContainerPersistenceException*>(&e);
+    ContainerStorageException *dpe=dynamic_cast<ContainerStorageException*>(&e);
     if(dpe)
     {
 	if( ishttp ) set_mime_text( stdout, dods_error ) ;

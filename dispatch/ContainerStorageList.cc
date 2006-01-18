@@ -1,4 +1,4 @@
-// DODSContainerPersistenceList.cc
+// ContainerStorageList.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -33,31 +33,31 @@
 
 using std::endl ;
 
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistence.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorage.h"
+#include "ContainerStorageException.h"
 #include "DODSContainer.h"
 #include "TheDODSKeys.h"
 #include "DODSLog.h"
 #include "DODSInfo.h"
 
-DODSContainerPersistenceList *DODSContainerPersistenceList::_instance = 0 ;
+ContainerStorageList *ContainerStorageList::_instance = 0 ;
 
-DODSContainerPersistenceList::DODSContainerPersistenceList()
+ContainerStorageList::ContainerStorageList()
     : _first( 0 )
 {
 }
 
-DODSContainerPersistenceList::~DODSContainerPersistenceList()
+ContainerStorageList::~ContainerStorageList()
 {
-    DODSContainerPersistenceList::persistence_list *pl = _first ;
+    ContainerStorageList::persistence_list *pl = _first ;
     while( pl )
     {
 	if( pl->_persistence_obj )
 	{
 	    delete pl->_persistence_obj ;
 	}
-	DODSContainerPersistenceList::persistence_list *next = pl->_next ;
+	ContainerStorageList::persistence_list *next = pl->_next ;
 	delete pl ;
 	pl = next ;
     }
@@ -73,22 +73,22 @@ DODSContainerPersistenceList::~DODSContainerPersistenceList()
  *
  * @param cp persistent store to add to the list
  * @return true if successfully added, false otherwise
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  */
 bool
-DODSContainerPersistenceList::add_persistence( DODSContainerPersistence *cp )
+ContainerStorageList::add_persistence( ContainerStorage *cp )
 {
     bool ret = false ;
     if( !_first )
     {
-	_first = new DODSContainerPersistenceList::persistence_list ;
+	_first = new ContainerStorageList::persistence_list ;
 	_first->_persistence_obj = cp ;
 	_first->_next = 0 ;
 	ret = true ;
     }
     else
     {
-	DODSContainerPersistenceList::persistence_list *pl = _first ;
+	ContainerStorageList::persistence_list *pl = _first ;
 	bool done = false ;
 	while( done == false )
 	{
@@ -100,7 +100,7 @@ DODSContainerPersistenceList::add_persistence( DODSContainerPersistence *cp )
 		}
 		else
 		{
-		    pl->_next = new DODSContainerPersistenceList::persistence_list ;
+		    pl->_next = new ContainerStorageList::persistence_list ;
 		    pl->_next->_persistence_obj = cp ;
 		    pl->_next->_next = 0 ;
 		    done = true ;
@@ -123,14 +123,14 @@ DODSContainerPersistenceList::add_persistence( DODSContainerPersistence *cp )
  *
  * @param persist_name name of the persistent store to be removed
  * @return true if successfully removed, false otherwise
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  */
 bool
-DODSContainerPersistenceList::rem_persistence( const string &persist_name )
+ContainerStorageList::rem_persistence( const string &persist_name )
 {
     bool ret = false ;
-    DODSContainerPersistenceList::persistence_list *pl = _first ;
-    DODSContainerPersistenceList::persistence_list *last = 0 ;
+    ContainerStorageList::persistence_list *pl = _first ;
+    ContainerStorageList::persistence_list *last = 0 ;
 
     bool done = false ;
     while( done == false )
@@ -172,14 +172,14 @@ DODSContainerPersistenceList::rem_persistence( const string &persist_name )
  * Returns the persistence store with the given name
  *
  * @param persist_name name of the persistent store to be found
- * @return the persistence store DODSContainerPersistence
- * @see DODSContainerPersistence
+ * @return the persistence store ContainerStorage
+ * @see ContainerStorage
  */
-DODSContainerPersistence *
-DODSContainerPersistenceList::find_persistence( const string &persist_name )
+ContainerStorage *
+ContainerStorageList::find_persistence( const string &persist_name )
 {
-    DODSContainerPersistence *ret = NULL ;
-    DODSContainerPersistenceList::persistence_list *pl = _first ;
+    ContainerStorage *ret = NULL ;
+    ContainerStorageList::persistence_list *pl = _first ;
     bool done = false ;
     while( done == false )
     {
@@ -204,7 +204,7 @@ DODSContainerPersistenceList::find_persistence( const string &persist_name )
 }
 
 bool
-DODSContainerPersistenceList::isnice()
+ContainerStorageList::isnice()
 {
     bool ret = false ;
     string key = "DODS.Container.Persistence" ;
@@ -221,7 +221,7 @@ DODSContainerPersistenceList::isnice()
  * persistent stores.
  *
  * If the container information is found in one of the
- * DODSContainerPersistence instances then it is the responsibility of that
+ * ContainerStorage instances then it is the responsibility of that
  * instance to fill in the container information in the DODSContainer
  * instances passed.
  *
@@ -233,15 +233,15 @@ DODSContainerPersistenceList::isnice()
  *
  * @param d container information to look for and, if found, to store the
  * container information in.
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  * @see DODSContainer
  * @see DODSKeys
  * @see DODSLog
  */
 void
-DODSContainerPersistenceList::look_for( DODSContainer &d )
+ContainerStorageList::look_for( DODSContainer &d )
 {
-    DODSContainerPersistenceList::persistence_list *pl = _first ;
+    ContainerStorageList::persistence_list *pl = _first ;
     bool done = false ;
     while( done == false )
     {
@@ -271,7 +271,7 @@ DODSContainerPersistenceList::look_for( DODSContainer &d )
 	{
 	    string s = (string)"Could not find the symbolic name "
 	               + d.get_symbolic_name() ;
-	    DODSContainerPersistenceException pe ;
+	    ContainerStorageException pe ;
 	    pe.set_error_description( s ) ;
 	    throw pe;
 	}
@@ -291,9 +291,9 @@ DODSContainerPersistenceList::look_for( DODSContainer &d )
  * @see DODSInfo
  */
 void
-DODSContainerPersistenceList::show_containers( DODSInfo &info )
+ContainerStorageList::show_containers( DODSInfo &info )
 {
-    DODSContainerPersistenceList::persistence_list *pl = _first ;
+    ContainerStorageList::persistence_list *pl = _first ;
     if( !pl )
     {
 	info.add_data( "No persistence stores available\n" ) ;
@@ -312,17 +312,17 @@ DODSContainerPersistenceList::show_containers( DODSInfo &info )
     }
 }
 
-DODSContainerPersistenceList *
-DODSContainerPersistenceList::TheList()
+ContainerStorageList *
+ContainerStorageList::TheList()
 {
     if( _instance == 0 )
     {
-	_instance = new DODSContainerPersistenceList ;
+	_instance = new ContainerStorageList ;
     }
     return _instance ;
 }
 
-// $Log: DODSContainerPersistenceList.cc,v $
+// $Log: ContainerStorageList.cc,v $
 // Revision 1.6  2005/03/17 19:24:39  pwest
 // in show_containers, if no persistence stores available then add message to response info object saying so
 //

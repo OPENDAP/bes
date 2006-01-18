@@ -1,4 +1,4 @@
-// DODSContainerPersistenceList.h
+// ContainerStorageList.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,14 +29,14 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef I_DODSContainerPersistenceList_H
-#define I_DODSContainerPersistenceList_H 1
+#ifndef I_ContainerStorageList_H
+#define I_ContainerStorageList_H 1
 
 #include <string>
 
 using std::string ;
 
-class DODSContainerPersistence ;
+class ContainerStorage ;
 class DODSContainer ;
 class DODSInfo ;
 
@@ -49,55 +49,55 @@ class DODSInfo ;
  * from different persistent stores, such as from a MySQL database, a file, or
  * in memory.
  *
- * Users can add different DODSContainerPersistence instances to this
+ * Users can add different ContainerStorage instances to this
  * persistent list. Then, when a user looks for a symbolic name, that search
  * goes through the list of persistent stores in order.
  *
  * If the symbolic name is found then it is the responsibility of the
- * DODSContainerPersistence instances to fill in the container information in
+ * ContainerStorage instances to fill in the container information in
  * the specified DODSContainer object.
  *
  * If the symbolic name is not found then a flag is checked to determine
  * whether to simply log the fact that the symbolic name was not found, or to
- * throw an exception of type DODSContainerPersistenceException.
+ * throw an exception of type ContainerStorageException.
  *
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  * @see DODSContainer
- * @see DODSContainerPersistenceException
+ * @see ContainerStorageException
  */
-class DODSContainerPersistenceList
+class ContainerStorageList
 {
 private:
-    static DODSContainerPersistenceList * _instance ;
+    static ContainerStorageList * _instance ;
 
     typedef struct _persistence_list
     {
-	DODSContainerPersistence *_persistence_obj ;
-	DODSContainerPersistenceList::_persistence_list *_next ;
+	ContainerStorage *_persistence_obj ;
+	ContainerStorageList::_persistence_list *_next ;
     } persistence_list ;
 
-    DODSContainerPersistenceList::persistence_list *_first ;
+    ContainerStorageList::persistence_list *_first ;
 
     bool			isnice() ;
 protected:
-				DODSContainerPersistenceList() ;
+				ContainerStorageList() ;
 public:
-    virtual			~DODSContainerPersistenceList() ;
+    virtual			~ContainerStorageList() ;
 
-    virtual bool		add_persistence( DODSContainerPersistence *p ) ;
+    virtual bool		add_persistence( ContainerStorage *p ) ;
     virtual bool		rem_persistence( const string &persist_name ) ;
-    virtual DODSContainerPersistence *find_persistence( const string &persist_name ) ;
+    virtual ContainerStorage *find_persistence( const string &persist_name ) ;
 
     virtual void		look_for( DODSContainer &d ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
 
-    static DODSContainerPersistenceList *TheList() ;
+    static ContainerStorageList *TheList() ;
 } ;
 
-#endif // I_DODSContainerPersistenceList_H
+#endif // I_ContainerStorageList_H
 
-// $Log: DODSContainerPersistenceList.h,v $
+// $Log: ContainerStorageList.h,v $
 // Revision 1.5  2005/03/15 19:55:36  pwest
 // show containers and show definitions
 //

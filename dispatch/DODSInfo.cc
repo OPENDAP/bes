@@ -207,7 +207,7 @@ DODSInfo::print(FILE *out)
 // Added copywrite information
 //
 // Revision 1.2  2004/07/09 16:10:29  pwest
-// Removed static var in DODSContainerPersistence to check if strict or nice
+// Removed static var in ContainerStorage to check if strict or nice
 // had been already set. In DODSInfo only using one key to see if information
 // buffered or not unless a different key is passed in from child class.
 //

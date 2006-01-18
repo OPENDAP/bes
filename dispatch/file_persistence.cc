@@ -35,17 +35,17 @@ using std::endl ;
 
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
-#include "DODSContainerPersistenceFile.h"
-#include "DODSContainerPersistenceList.h"
+#include "ContainerStorageFile.h"
+#include "ContainerStorageList.h"
 #include "DODSLog.h"
 
 static bool
 FilePersistenceInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Adding File Persistence" << endl;
-    DODSContainerPersistenceFile *cpf =
-	    new DODSContainerPersistenceFile( "DODSFile" ) ;
-    DODSContainerPersistenceList::TheList()->add_persistence( cpf ) ;
+    ContainerStorageFile *cpf =
+	    new ContainerStorageFile( "DODSFile" ) ;
+    ContainerStorageList::TheList()->add_persistence( cpf ) ;
     return true;
 }
 
@@ -53,7 +53,7 @@ static bool
 FilePersistenceTerm(void) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Removing File Persistence" << endl;
-    DODSContainerPersistenceList::TheList()->rem_persistence( "DODSFile" ) ;
+    ContainerStorageList::TheList()->rem_persistence( "DODSFile" ) ;
     return true ;
 }
 

@@ -1,4 +1,4 @@
-// DODSContainerPersistenceException.h
+// ContainerStorageException.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,26 +29,26 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSContainerPersistenceException_h_
-#define DODSContainerPersistenceException_h_ 1
+#ifndef ContainerStorageException_h_
+#define ContainerStorageException_h_ 1
 
 #include "DODSBasicException.h"
 
 /** @brief exception thrown if problems locating container information for a
  * symbolic name
  */
-class DODSContainerPersistenceException:public DODSBasicException
+class ContainerStorageException:public DODSBasicException
 {
 public:
-      			DODSContainerPersistenceException() {}
-      			DODSContainerPersistenceException( const string &s )
+      			ContainerStorageException() {}
+      			ContainerStorageException( const string &s )
 			    : DODSBasicException( s ) {}
-      virtual		~DODSContainerPersistenceException() {}
+      virtual		~ContainerStorageException() {}
 };
 
-#endif // DODSContainerPersistenceException_h_
+#endif // ContainerStorageException_h_
 
-// $Log: DODSContainerPersistenceException.h,v $
+// $Log: ContainerStorageException.h,v $
 // Revision 1.4  2005/02/01 17:48:17  pwest
 //
 // integration of ESG into opendap

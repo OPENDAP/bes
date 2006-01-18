@@ -1,4 +1,4 @@
-// DODSContainerPersistenceVolatile.h
+// ContainerStorageVolatile.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,8 +29,8 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSContainerPersistenceVolatile_h_
-#define DODSContainerPersistenceVolatile_h_ 1
+#ifndef ContainerStorageVolatile_h_
+#define ContainerStorageVolatile_h_ 1
 
 #include <map>
 #include <string>
@@ -38,42 +38,43 @@
 using std::map ;
 using std::string ;
 
-#include "DODSContainerPersistence.h"
+#include "ContainerStorage.h"
 
-/** @brief implementation of DODSContainerPersistence that stores containers
+/** @brief implementation of ContainerStorage that stores containers
  * for the duration of this process.
  *
- * This implementation of DODSContainerPersistence stores volatile
+ * This implementation of ContainerStorage stores volatile
  * containers for the duration of this process. A list of containers is
  * stored in the object. The look_for method simply looks for the specified
  * symbolic name in the list of containers and returns if a match is found.
  * Containers can be added to this instance as long as the symbolic name
  * doesn't already exist.
  *
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  * @see DODSContainer
  */
-class DODSContainerPersistenceVolatile : public DODSContainerPersistence
+class ContainerStorageVolatile : public ContainerStorage
 {
 private:
     map< string, DODSContainer * > _container_list ;
 public:
-    				DODSContainerPersistenceVolatile( const string &n ) ;
-    virtual			~DODSContainerPersistenceVolatile() ;
+    				ContainerStorageVolatile( const string &n ) ;
+    virtual			~ContainerStorageVolatile() ;
 
     typedef map< string, DODSContainer * >::const_iterator Container_citer ;
     typedef map< string, DODSContainer * >::iterator Container_iter ;
     virtual void		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_name,
-					       string type ) ;
+    virtual void		add_container( const string &s_name,
+                                               const string &r_name,
+					       const string &type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
 };
 
-#endif // DODSContainerPersistenceVolatile_h_
+#endif // ContainerStorageVolatile_h_
 
-// $Log: DODSContainerPersistenceVolatile.h,v $
+// $Log: ContainerStorageVolatile.h,v $
 // Revision 1.4  2005/03/17 19:23:58  pwest
 // deleting the container in rem_container instead of returning the removed container, returning true if successfully removed and false otherwise
 //

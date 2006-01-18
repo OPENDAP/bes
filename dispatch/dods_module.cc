@@ -60,8 +60,8 @@ using std::endl ;
 
 #include "DODSReturnManager.h"
 #include "DODSBasicTransmitter.h"
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistenceVolatile.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorageVolatile.h"
 
 #include "DODSLog.h"
 
@@ -136,7 +136,7 @@ DODSModuleInit(int, char**) {
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " persistence" << endl;
-    DODSContainerPersistenceList::TheList()->add_persistence( new DODSContainerPersistenceVolatile( PERSISTENCE_VOLATILE ) ) ;
+    ContainerStorageList::TheList()->add_persistence( new ContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
     return true;
 }
 

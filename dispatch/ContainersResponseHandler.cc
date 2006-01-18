@@ -31,7 +31,7 @@
 
 #include "ContainersResponseHandler.h"
 #include "DODSTextInfo.h"
-#include "DODSContainerPersistenceList.h"
+#include "ContainerStorageList.h"
 
 ContainersResponseHandler::ContainersResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -61,7 +61,7 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    DODSContainerPersistenceList::TheList()->show_containers( *info ) ;
+    ContainerStorageList::TheList()->show_containers( *info ) ;
 }
 
 /** @brief transmit the response object built by the execute command

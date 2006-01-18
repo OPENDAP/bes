@@ -1,4 +1,4 @@
-// DODSContainerPersistenceVolatile.cc
+// ContainerStorageVolatile.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,24 +29,24 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "DODSContainerPersistenceVolatile.h"
+#include "ContainerStorageVolatile.h"
 #include "DODSContainer.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageException.h"
 #include "DODSInfo.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
- * Creates an instances of DODSContainerPersistenceVolatile with the given name.
+ * Creates an instances of ContainerStorageVolatile with the given name.
  *
  * @param n name of this persistent store
  * @see DODSContainer
  */
-DODSContainerPersistenceVolatile::DODSContainerPersistenceVolatile( const string &n )
-    : DODSContainerPersistence( n )
+ContainerStorageVolatile::ContainerStorageVolatile( const string &n )
+    : ContainerStorage( n )
 {
 }
 
-DODSContainerPersistenceVolatile::~DODSContainerPersistenceVolatile()
+ContainerStorageVolatile::~ContainerStorageVolatile()
 { 
 }
 
@@ -59,13 +59,13 @@ DODSContainerPersistenceVolatile::~DODSContainerPersistenceVolatile()
  * @param d container to look for and, if found, store the information in.
  */
 void
-DODSContainerPersistenceVolatile::look_for( DODSContainer &d )
+ContainerStorageVolatile::look_for( DODSContainer &d )
 {
     d.set_valid_flag( false ) ;
 
     string sym_name = d.get_symbolic_name() ;
     
-    DODSContainerPersistenceVolatile::Container_citer i =
+    ContainerStorageVolatile::Container_citer i =
 	    _container_list.begin() ;
 
     i = _container_list.find( sym_name ) ;
@@ -79,25 +79,27 @@ DODSContainerPersistenceVolatile::look_for( DODSContainer &d )
 }
 
 void
-DODSContainerPersistenceVolatile::add_container( string s_name,
-						 string r_name,
-						 string type )
+ContainerStorageVolatile::add_container( const string &s_name,
+					 const string &r_name,
+					 const string &type )
 {
-    DODSContainerPersistenceVolatile::Container_citer i =
+    if( type == "" )
+    {
+	throw ContainerStorageException( "Unable to add container, the type of data can not be determined" ) ;
+    }
+
+    ContainerStorageVolatile::Container_citer i =
 	    _container_list.begin() ;
 
     i = _container_list.find( s_name ) ;
     if( i != _container_list.end() )
     {
-	throw DODSContainerPersistenceException( (string)"A container with the name " + s_name + " already exists" ) ;
+	throw ContainerStorageException( (string)"A container with the name " + s_name + " already exists" ) ;
     }
-    else
-    {
-	DODSContainer *c = new DODSContainer( s_name ) ;
-	c->set_real_name( r_name ) ;
-	c->set_container_type( type ) ;
-	_container_list[s_name] = c ;
-    }
+    DODSContainer *c = new DODSContainer( s_name ) ;
+    c->set_real_name( r_name ) ;
+    c->set_container_type( type ) ;
+    _container_list[s_name] = c ;
 }
 
 /** @brief removes a container with the given symbolic name
@@ -109,10 +111,10 @@ DODSContainerPersistenceVolatile::add_container( string s_name,
  * @return true if successfully removed and false otherwise
  */
 bool
-DODSContainerPersistenceVolatile::rem_container( const string &s_name )
+ContainerStorageVolatile::rem_container( const string &s_name )
 {
     bool ret = false ;
-    DODSContainerPersistenceVolatile::Container_iter i ;
+    ContainerStorageVolatile::Container_iter i ;
     i = _container_list.find( s_name ) ;
     if( i != _container_list.end() )
     {
@@ -139,11 +141,11 @@ DODSContainerPersistenceVolatile::rem_container( const string &s_name )
  * @see DODSInfo
  */
 void
-DODSContainerPersistenceVolatile::show_containers( DODSInfo &info )
+ContainerStorageVolatile::show_containers( DODSInfo &info )
 {
     info.add_data( get_name() ) ;
     info.add_data( "\n" ) ;
-    DODSContainerPersistenceVolatile::Container_iter i =
+    ContainerStorageVolatile::Container_iter i =
 	_container_list.begin() ;
     if( i == _container_list.end() )
     {
@@ -163,7 +165,7 @@ DODSContainerPersistenceVolatile::show_containers( DODSInfo &info )
     }
 }
 
-// $Log: DODSContainerPersistenceVolatile.cc,v $
+// $Log: ContainerStorageVolatile.cc,v $
 // Revision 1.5  2005/03/17 20:37:50  pwest
 // added documentation for rem_container and show_containers
 //

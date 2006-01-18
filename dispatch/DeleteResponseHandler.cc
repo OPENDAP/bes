@@ -33,8 +33,8 @@
 #include "DODSTextInfo.h"
 #include "DODSDefineList.h"
 #include "DODSDefine.h"
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistence.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorage.h"
 #include "DODSContainer.h"
 #include "OPeNDAPDataNames.h"
 
@@ -52,7 +52,7 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  *
  * Removes definitions from the list of definitions and containers from
  * volatile container persistence object, which is found in
- * DODSContainerPersistenceList::TheList().
+ * ContainerStorageList::TheList().
  *
  * The response object built is a DODSTextInfo object. Status of the delition
  * will be added to the informational object, one of:
@@ -76,8 +76,8 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * @see DODSTextInfo
  * @see DODSDefineList
  * @see DODSDefine
- * @see DODSContainerPersistence
- * @see DODSContainerPersistenceList
+ * @see ContainerStorage
+ * @see ContainerStorageList
  */
 void
 DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -111,7 +111,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
     else if( dhi.data[STORE_NAME] != "" && dhi.data[CONTAINER_NAME] != "" )
     {
-	DODSContainerPersistence *cp = DODSContainerPersistenceList::TheList()->find_persistence( dhi.data[STORE_NAME] ) ;
+	ContainerStorage *cp = ContainerStorageList::TheList()->find_persistence( dhi.data[STORE_NAME] ) ;
 	if( cp )
 	{
 	    bool deleted =  cp->rem_container( dhi.data[CONTAINER_NAME] ) ;

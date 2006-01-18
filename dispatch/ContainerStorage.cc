@@ -1,4 +1,4 @@
-// DODSContainerPersistence.cc
+// ContainerStorage.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,5 +29,5 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "DODSContainerPersistence.h"
+#include "ContainerStorage.h"
 

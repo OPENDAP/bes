@@ -1,4 +1,4 @@
-// DODSContainerPersistenceCGI.h
+// ContainerStorageFile.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,71 +29,75 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSContainerPersistenceCGI_h_
-#define DODSContainerPersistenceCGI_h_ 1
+#ifndef I_ContainerStorageFile_h_
+#define I_ContainerStorageFile_h_ 1
 
-#include <map>
 #include <string>
+#include <map>
 
-using std::map ;
 using std::string ;
+using std::map ;
 
-#include "DODSContainerPersistence.h"
+#include "ContainerStorage.h"
 
-/** @brief implementation of DODSContainerPersistence that represents a
- * regular expression means of determining a data type.
+/** @brief implementation of ContainerStorage that represents a
+ * way to read container information from a file.
  *
- * This implementation of DODSContainerPersistence looks the name of a data
- * file as the symbolic name of the container and compares that data file to a
- * set of regular expressions to determine the type of data it is. The
- * implementation gets these regular expressions from the dods initialization
- * file using TheDODSKeys as well as the base directory for where the files
- * exist.
+ * This impelementation of ContainerStorage load container information
+ * from a file. The name of the file is determined from the dods
+ * initiailization file. The key is:
  *
- * DODS.Container.Persistence.CGI.&lt;name&gt;.BaseDirectory is the key
- * representing the base directory where the files are physically located.
- * The real_name of the container is determined by concatenating the file
- * name to the base directory.
+ * DODS.Container.Persistence.File.&lt;name&gt;
  *
- * DODS.Container.Persistence.CGI.&lt;name&gt;.TypeMatch is the key
- * representing the regular expressions. This key is formatted as follows:
+ * where &lt;name&gt; is the name of this persistent store.
  *
- * &lt;data type&gt;:&lt;reg exp&gt;;&lt;data type&gt;:&lt;reg exp&gt;;
+ * The format of the file is:
  *
- * For example: cedar:cedar\/.*\.cbf;cdf:cdf\/.*\.cdf;
+ * &lt;symbolic_name&gt; &lt;real_name&gt; &lt;data type&gt;
  *
- * The first would match anything that might look like: cedar/datfile01.cbf
+ * where the &lt;symbolic_name&gt; is the symbolic name of the container, the
+ * &lt;real_name&gt; represents the physical location of the data, such as a
+ * file, and the &lt;data type&gt; is the type of data being represented,
+ * such as netcdf, cedar, etc...
  *
- * &lt;name&gt; is the name of this persistent store, so you could have
- * multiple persistent stores using regular expressions.
+ * One container per line, can not span multiple lines
  *
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  * @see DODSContainer
  * @see DODSKeys
  */
-class DODSContainerPersistenceCGI : public DODSContainerPersistence
+class ContainerStorageFile : public ContainerStorage
 {
 private:
-    map< string, string > _match_list ;
-    typedef map< string, string >::const_iterator Match_list_citer ;
-
-    string			_base_dir ;
+    typedef struct _container
+    {
+	string _symbolic_name ;
+	string _real_name ;
+	string _container_type ;
+    } container ;
+    map< string, ContainerStorageFile::container * > _container_list ;
+    typedef map< string, ContainerStorageFile::container * >::const_iterator Container_citer ;
+    typedef map< string, ContainerStorageFile::container * >::iterator Container_iter ;
 
 public:
-    				DODSContainerPersistenceCGI( const string &n ) ;
-    virtual			~DODSContainerPersistenceCGI() ;
+    				ContainerStorageFile( const string &n );
+    virtual			~ContainerStorageFile() ;
 
     virtual void		look_for( DODSContainer &d ) ;
-    virtual void		add_container( string s_name, string r_name,
-					       string type ) ;
+    virtual void		add_container( const string &s_name,
+                                               const string &r_name,
+					       const string &type ) ;
     virtual bool		rem_container( const string &s_name ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
 };
 
-#endif // DODSContainerPersistenceCGI_h_
+#endif // I_ContainerStorageFile_h_
 
-// $Log: DODSContainerPersistenceCGI.h,v $
+// $Log: ContainerStorageFile.h,v $
+// Revision 1.8  2005/03/17 20:37:14  pwest
+// implemented rem_container to remove the container from memory, but not from the file. Added documentation for rem_container and show_containers
+//
 // Revision 1.7  2005/03/17 19:23:58  pwest
 // deleting the container in rem_container instead of returning the removed container, returning true if successfully removed and false otherwise
 //

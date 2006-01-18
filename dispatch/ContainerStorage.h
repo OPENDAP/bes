@@ -1,4 +1,4 @@
-// DODSContainerPersistence.h
+// ContainerStorage.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,8 +29,8 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef DODSContainerPersistence_h_
-#define DODSContainerPersistence_h_ 1
+#ifndef ContainerStorage_h_
+#define ContainerStorage_h_ 1
 
 #include <string>
 
@@ -42,7 +42,7 @@ class DODSInfo ;
 /** @brief provides persistent storage for data storage information
  * represented by a symbolic name.
  *
- * An implementation of the abstract interface DODSContainerPersistence
+ * An implementation of the abstract interface ContainerStorage
  * provides storage for information about accessing data of different types.
  * The information is represented by a symbolic name. A user can request a
  * symbolic name that represents a certain data file of a certain data type.
@@ -54,27 +54,27 @@ class DODSInfo ;
  * For example, the main persistent storage for containers could be a mysql
  * database, but a user could store temporary information in different files.
  * If the user wishes to remove one of these persistence stores they would
- * request that a named DODSContainerPersistence object be removed from the
+ * request that a named ContainerStorage object be removed from the
  * list.
  * 
  * @see DODSContainer
- * @see DODSContainerPersistenceList
+ * @see ContainerStorageList
  */
-class DODSContainerPersistence
+class ContainerStorage
 {
 protected:
     string		_my_name ;
 
 public:
-    /** @brief create an instance of DODSContainerPersistence with the give
+    /** @brief create an instance of ContainerStorage with the give
      * name.
      *
      * @param name name of this persistence store
      */
-    				DODSContainerPersistence( const string &name )
+    				ContainerStorage( const string &name )
 				    : _my_name( name ) {} ;
 
-    virtual 			~DODSContainerPersistence() {} ;
+    virtual 			~ContainerStorage() {} ;
 
     /** @brief retrieve the name of this persistent store
      *
@@ -101,8 +101,9 @@ public:
      * @param r_name real name for the container
      * @param type type of data represented by this container
      */
-    virtual void		add_container( string s_name, string r_name,
-					       string type ) = 0 ;
+    virtual void		add_container( const string &s_name,
+                                               const string &r_name,
+					       const string &type ) = 0 ;
 
     /** @brief removes a container with the given symbolic name
      *
@@ -127,9 +128,9 @@ public:
     virtual void		show_containers( DODSInfo &info ) = 0 ;
 };
 
-#endif // DODSContainerPersistence_h_
+#endif // ContainerStorage_h_
 
-// $Log: DODSContainerPersistence.h,v $
+// $Log: ContainerStorage.h,v $
 // Revision 1.9  2005/03/17 20:37:50  pwest
 // added documentation for rem_container and show_containers
 //
@@ -156,7 +157,7 @@ public:
 // Added copywrite information
 //
 // Revision 1.2  2004/07/09 16:10:29  pwest
-// Removed static var in DODSContainerPersistence to check if strict or nice
+// Removed static var in ContainerStorage to check if strict or nice
 // had been already set. In DODSInfo only using one key to see if information
 // buffered or not unless a different key is passed in from child class.
 //

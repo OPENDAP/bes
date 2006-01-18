@@ -1,4 +1,4 @@
-// DODSContainerPersistenceFile.cc
+// ContainerStorageFile.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -36,15 +36,15 @@
 using std::stringstream ;
 using std::ifstream ;
 
-#include "DODSContainerPersistenceFile.h"
+#include "ContainerStorageFile.h"
 #include "DODSContainer.h"
 #include "TheDODSKeys.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageException.h"
 #include "DODSInfo.h"
 
 /** @brief pull container information from the specified file
  *
- * Constructs a DODSContainerPersistenceFile from a file specified by
+ * Constructs a ContainerStorageFile from a file specified by
  * a key in the dods initialization file. The key is constructed using the
  * name of this persistent store.
  *
@@ -65,14 +65,14 @@ using std::ifstream ;
  * One container per line, can not span multiple lines
  *
  * @param n name of this persistent store
- * @throws DODSContainerPersistenceException if the file can not be opened or
+ * @throws ContainerStorageException if the file can not be opened or
  * if there is an error in reading in the container information.
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  * @see DODSContainer
- * @see DODSContainerPersistenceException
+ * @see ContainerStorageException
  */
-DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
-    : DODSContainerPersistence( n )
+ContainerStorageFile::ContainerStorageFile( const string &n )
+    : ContainerStorage( n )
 {
     string key = "DODS.Container.Persistence.File." + n ;
     bool found = false ;
@@ -80,7 +80,7 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
     if( my_file == "" )
     {
 	string s = key + " not defined in key file" ;
-	DODSContainerPersistenceException pe ;
+	ContainerStorageException pe ;
 	pe.set_error_description( s ) ;
 	throw pe;
     }
@@ -89,7 +89,7 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
     if( !persistence_file )
     {
 	string s = "Unable to open persistence file " + my_file ;
-	DODSContainerPersistenceException pe ;
+	ContainerStorageException pe ;
 	pe.set_error_description( s ) ;
 	throw pe;
     }
@@ -103,8 +103,8 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
 	if( !persistence_file.eof() )
 	{
 	    strm << cline ;
-	    DODSContainerPersistenceFile::container *c =
-		new DODSContainerPersistenceFile::container ;
+	    ContainerStorageFile::container *c =
+		new ContainerStorageFile::container ;
 	    strm >> c->_symbolic_name ;
 	    strm >> c->_real_name ;
 	    strm >> c->_container_type ;
@@ -117,7 +117,7 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
 		delete c ;
 		string s = "Incomplete container persistence line in file "
 			   + my_file ;
-		DODSContainerPersistenceException pe ;
+		ContainerStorageException pe ;
 		pe.set_error_description( s ) ;
 		throw pe;
 	    }
@@ -126,7 +126,7 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
 		delete c ;
 		string s = "Too many fields in persistence file "
 			   + my_file ;
-		DODSContainerPersistenceException pe ;
+		ContainerStorageException pe ;
 		pe.set_error_description( s ) ;
 		throw pe;
 	    }
@@ -136,13 +136,13 @@ DODSContainerPersistenceFile::DODSContainerPersistenceFile( const string &n )
     persistence_file.close() ;
 }
 
-DODSContainerPersistenceFile::~DODSContainerPersistenceFile()
+ContainerStorageFile::~ContainerStorageFile()
 {
-    DODSContainerPersistenceFile::Container_citer i = _container_list.begin() ;
-    DODSContainerPersistenceFile::Container_citer ie = _container_list.end() ;
+    ContainerStorageFile::Container_citer i = _container_list.begin() ;
+    ContainerStorageFile::Container_citer ie = _container_list.end() ;
     for( ; i != ie; i++ )
     {
-	DODSContainerPersistenceFile::container *c = (*i).second ;
+	ContainerStorageFile::container *c = (*i).second ;
 	delete c ;
     }
 }
@@ -158,14 +158,14 @@ DODSContainerPersistenceFile::~DODSContainerPersistenceFile()
  * @see DODSContainer
  */
 void
-DODSContainerPersistenceFile::look_for( DODSContainer &d )
+ContainerStorageFile::look_for( DODSContainer &d )
 {
     d.set_valid_flag( false ) ;
-    DODSContainerPersistenceFile::Container_citer i ;
+    ContainerStorageFile::Container_citer i ;
     i = _container_list.find( d.get_symbolic_name() ) ;
     if( i != _container_list.end() )
     {
-	DODSContainerPersistenceFile::container *c = (*i).second;
+	ContainerStorageFile::container *c = (*i).second;
 	d.set_real_name( c->_real_name ) ;
 	d.set_container_type( c->_container_type ) ;
 	d.set_valid_flag( true ) ;
@@ -183,11 +183,11 @@ DODSContainerPersistenceFile::look_for( DODSContainer &d )
  * @param type type of data represented by this container
  */
 void
-DODSContainerPersistenceFile::add_container( string,
-                                            string,
-					    string )
+ContainerStorageFile::add_container( const string &,
+				     const string &,
+				     const string & )
 {
-    throw DODSContainerPersistenceException( "Unable to add a container to a file, not yet implemented\n" ) ;
+    throw ContainerStorageException( "Unable to add a container to a file, not yet implemented\n" ) ;
 }
 
 /** @brief removes a container with the given symbolic name
@@ -200,14 +200,14 @@ DODSContainerPersistenceFile::add_container( string,
  * @return true if successfully removed and false otherwise
  */
 bool
-DODSContainerPersistenceFile::rem_container( const string &s_name )
+ContainerStorageFile::rem_container( const string &s_name )
 {
     bool ret = false ;
-    DODSContainerPersistenceFile::Container_iter i ;
+    ContainerStorageFile::Container_iter i ;
     i = _container_list.find( s_name ) ;
     if( i != _container_list.end() )
     {
-	DODSContainerPersistenceFile::container *c = (*i).second;
+	ContainerStorageFile::container *c = (*i).second;
 	_container_list.erase( i ) ;
 	delete c ;
 	ret = true ;
@@ -232,15 +232,15 @@ DODSContainerPersistenceFile::rem_container( const string &s_name )
  * @see DODSInfo
  */
 void
-DODSContainerPersistenceFile::show_containers( DODSInfo &info )
+ContainerStorageFile::show_containers( DODSInfo &info )
 {
     info.add_data( get_name() ) ;
     info.add_data( "\n" ) ;
-    DODSContainerPersistenceFile::Container_citer i ;
+    ContainerStorageFile::Container_citer i ;
     i = _container_list.begin() ;
     for( i = _container_list.begin(); i != _container_list.end(); i++ )
     {
-	DODSContainerPersistenceFile::container *c = (*i).second;
+	ContainerStorageFile::container *c = (*i).second;
 	string sym = c->_symbolic_name ;
 	string real = c->_real_name ;
 	string type = c->_container_type ;
@@ -248,7 +248,7 @@ DODSContainerPersistenceFile::show_containers( DODSInfo &info )
 	info.add_data( line ) ;
     }
 }
-// $Log: DODSContainerPersistenceFile.cc,v $
+// $Log: ContainerStorageFile.cc,v $
 // Revision 1.8  2005/03/17 20:37:14  pwest
 // implemented rem_container to remove the container from memory, but not from the file. Added documentation for rem_container and show_containers
 //

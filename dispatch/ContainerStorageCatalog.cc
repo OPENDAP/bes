@@ -1,4 +1,4 @@
-// DODSContainerPersistenceCGI.cc
+// ContainerStorageCatalog.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,16 +29,16 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include "DODSContainerPersistenceCGI.h"
+#include "ContainerStorageCatalog.h"
 #include "DODSContainer.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageException.h"
 #include "TheDODSKeys.h"
 #include "GNURegex.h"
 #include "DODSInfo.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
- * Creates an instances of DODSContainerPersistenceCGI with the given name.
+ * Creates an instances of ContainerStorageCatalog with the given name.
  * Looks up the base directory and regular expressions in the dods
  * initialization file using TheDODSKeys. THrows an exception if either of
  * these cannot be determined or if the regular expressions are incorrectly
@@ -51,32 +51,32 @@
  * semicolon.
  *
  * @param n name of this persistent store
- * @throws DODSContainerPersistenceException if unable to find the base
+ * @throws ContainerStorageException if unable to find the base
  * directory or regular expressions in the dods initialization file. Also
  * thrown if the type matching expressions are malformed.
  * @see DODSKeys
  * @see DODSContainer
  */
-DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
-    : DODSContainerPersistence( n )
+ContainerStorageCatalog::ContainerStorageCatalog( const string &n )
+    : ContainerStorageVolatile( n )
 {
-    string base_key = "DODS.Container.Persistence.CGI." + n + ".BaseDirectory" ;
+    string base_key = "Catalog." + n + ".RootDirectory" ;
     bool found = false ;
-    _base_dir = TheDODSKeys::TheKeys()->get_key( base_key, found ) ;
-    if( _base_dir == "" )
+    _root_dir = TheDODSKeys::TheKeys()->get_key( base_key, found ) ;
+    if( _root_dir == "" )
     {
 	string s = base_key + " not defined in key file" ;
-	DODSContainerPersistenceException pe ;
+	ContainerStorageException pe ;
 	pe.set_error_description( s ) ;
 	throw pe;
     }
 
-    string key = "DODS.Container.Persistence.CGI." + n + ".TypeMatch" ;
+    string key = "Catalog." + n + ".TypeMatch" ;
     string curr_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( curr_str == "" )
     {
 	string s = key + " not defined in key file" ;
-	DODSContainerPersistenceException pe ;
+	ContainerStorageException pe ;
 	pe.set_error_description( s ) ;
 	throw pe;
     }
@@ -90,9 +90,9 @@ DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
 	semi = curr_str.find( ";", str_begin ) ;
 	if( semi == -1 )
 	{
-	    string s = (string)"CGI type match malformed, no semicolon, "
+	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
-	    DODSContainerPersistenceException pe ;
+	    ContainerStorageException pe ;
 	    pe.set_error_description( s ) ;
 	    throw pe;
 	}
@@ -108,9 +108,9 @@ DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
 	    int col = a_pair.find( ":" ) ;
 	    if( col == -1 )
 	    {
-		string s = (string)"CGI type match malformed, no colon, "
+		string s = (string)"Catalog type match malformed, no colon, "
 			   + "looking for type:regexp;[type:regexp;]" ;
-		DODSContainerPersistenceException pe ;
+		ContainerStorageException pe ;
 		pe.set_error_description( s ) ;
 		throw pe;
 	    }
@@ -124,113 +124,50 @@ DODSContainerPersistenceCGI::DODSContainerPersistenceCGI( const string &n )
     }
 }
 
-DODSContainerPersistenceCGI::~DODSContainerPersistenceCGI()
+ContainerStorageCatalog::~ContainerStorageCatalog()
 { 
-}
-
-/** @brief looks for the specified container using the regular expressiono
- * matching.
- *
- * If a match is made with the symbolic name found in the container then the
- * information is stored in the passed container object and the is_valid flag
- * is set to true. If not found, then is_valid is set to false.
- *
- * The real name of the container (the file name) is constructed using the
- * base directory from the dods initialization file with the symbolic name
- * appended to it.
- *
- * @param d container to look for and, if found, store the information in.
- */
-void
-DODSContainerPersistenceCGI::look_for( DODSContainer &d )
-{
-    d.set_valid_flag( false ) ;
-    string sym_name = d.get_symbolic_name() ;
-    DODSContainerPersistenceCGI::Match_list_citer i = _match_list.begin() ;
-    DODSContainerPersistenceCGI::Match_list_citer ie = _match_list.end() ;
-    for( ; i != ie; i++ )
-    {
-	string reg = (*i).second ;
-	Regex reg_expr( reg.c_str() ) ;
-	if( reg_expr.match( sym_name.c_str(), sym_name.length() ) != -1 )
-	{
-	    d.set_container_type( (*i).first ) ;
-	    string real_name = _base_dir + "/" + d.get_symbolic_name() ;
-	    d.set_real_name( real_name ) ;
-	    d.set_valid_flag( true ) ;
-	    break ;
-	}
-    }
 }
 
 /** @brief adds a container with the provided information
  *
- * This method adds a container to the persistence store with the
- * specified information. This functionality is not currently supported for
- * cgi persistence.
+ * If a match is made with the real name passed then the type is set.
+ *
+ * The real name of the container (the file name) is constructed using the
+ * root directory from the initialization file with the passed real name
+ * appended to it.
+ *
+ * The information is then passed to the add_container method in the parent
+ * class.
  *
  * @param s_name symbolic name for the container
- * @param r_name real name for the container
+ * @param r_name real name (full path to the file) for the container
  * @param type type of data represented by this container
  */
 void
-DODSContainerPersistenceCGI::add_container( string ,
-                                            string ,
-					    string )
+ContainerStorageCatalog::add_container( const string &s_name,
+					const string &r_name,
+					const string &type )
 {
-    throw DODSContainerPersistenceException( "Unable to add a container to CGI persistence\n" ) ;
-}
-
-/** @brief removes a container with the given symbolic name, not implemented
- * in this implementation class.
- *
- * This method removes a container to the persistence store with the
- * given symbolic name. It deletes the container.
- *
- * @param s_name symbolic name for the container
- * @return true if successfully removed and false otherwise
- */
-bool
-DODSContainerPersistenceCGI::rem_container( const string & )
-{
-    throw DODSContainerPersistenceException( "Unable to remove a container from CGI persistence\n" ) ;
-    return false ;
-}
-
-/** @brief show information for each container in this persistent store
- *
- * For each container in this persistent store, add infomation about each of
- * those containers. The information added to the information object
- * includes a line for each container within this persistent store which 
- * includes the symbolic name, the real name, and the data type, 
- * separated by commas.
- *
- * In the case of this persistent store the symbolic name is the regular
- * expression and the real name is the base directory for that regular
- * expression followed by the regular expression and the type of data that
- * that regular expression matches.
- *
- * @param info object to store the container and persistent store information into
- * @see DODSInfo
- */
-void
-DODSContainerPersistenceCGI::show_containers( DODSInfo &info )
-{
-    info.add_data( get_name() ) ;
-    info.add_data( "\n" ) ;
-    DODSContainerPersistenceCGI::Match_list_citer i = _match_list.begin() ;
-    DODSContainerPersistenceCGI::Match_list_citer ie = _match_list.end() ;
-    for( ; i != ie; i++ )
+    string new_r_name = _root_dir + "/" + r_name ;
+    string new_type = type ;
+    if( new_type == "" )
     {
-	string reg = (*i).second ;
-	string type = (*i).first ;
-	string real = _base_dir + "/" + reg ;
-	string line = reg + "," + real + "," + type + "\n" ;
-	info.add_data( line ) ;
+	ContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
+	ContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    string reg = (*i).second ;
+	    Regex reg_expr( reg.c_str() ) ;
+	    if( reg_expr.match( r_name.c_str(), r_name.length() ) != -1 )
+	    {
+		new_type = (*i).first ;
+	    }
+	}
     }
+    ContainerStorageVolatile::add_container( s_name, new_r_name, new_type ) ;
 }
 
-// $Log: DODSContainerPersistenceCGI.cc,v $
+// $Log: ContainerStorageCatalog.cc,v $
 // Revision 1.8  2005/03/17 20:37:50  pwest
 // added documentation for rem_container and show_containers
 //

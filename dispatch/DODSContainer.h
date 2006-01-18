@@ -49,7 +49,7 @@ using std::string ;
  * source is saved in the DODSContainer and is used to execute the request
  * from the client.
  *
- * @see DODSContainerPersistence
+ * @see ContainerStorage
  */
 class DODSContainer
 {

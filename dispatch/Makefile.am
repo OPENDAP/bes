@@ -52,9 +52,9 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc \
 	DODSKeys.cc TheDODSKeys.cc \
 	DODSContainer.cc DODSStatus.cc \
-	DODSContainerPersistence.cc DODSContainerPersistenceCGI.cc \
-	DODSContainerPersistenceFile.cc DODSContainerPersistenceList.cc \
-	DODSContainerPersistenceVolatile.cc \
+	ContainerStorage.cc ContainerStorageCatalog.cc \
+	ContainerStorageFile.cc ContainerStorageList.cc \
+	ContainerStorageVolatile.cc \
 	DASResponseHandler.cc DDSResponseHandler.cc \
 	DDXResponseHandler.cc ProcIdResponseHandler.cc SetResponseHandler.cc \
 	DODSResponseHandler.cc DataResponseHandler.cc HelpResponseHandler.cc \
@@ -83,11 +83,11 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSKeys.h TheDODSKeys.h DODSKeysException.h \
 	DODSStatus.h \
 	DODSContainer.h \
-	DODSContainerPersistence.h DODSTransmitException.h \
-	DODSContainerPersistenceCGI.h DODSContainerPersistenceFile.h \
-	DODSContainerPersistenceList.h \
-	DODSContainerPersistenceException.h \
-	DODSContainerPersistenceVolatile.h \
+	ContainerStorage.h DODSTransmitException.h \
+	ContainerStorageCatalog.h ContainerStorageFile.h \
+	ContainerStorageList.h \
+	ContainerStorageException.h \
+	ContainerStorageVolatile.h \
 	DASResponseHandler.h DDSResponseHandler.h \
 	DDXResponseHandler.h ProcIdResponseHandler.h SetResponseHandler.h \
 	DODSResponseHandler.h DataResponseHandler.h HelpResponseHandler.h \
@@ -119,10 +119,10 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSDefineList.h DODSDefine.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h
 
-MODSRCS:=dods_module.cc cgi_persistence.cc file_persistence.cc \
+MODSRCS:=dods_module.cc file_persistence.cc \
 	http_transmitter.cc
 
-MODOBJS:=dods_module.o cgi_persistence.o file_persistence.o \
+MODOBJS:=dods_module.o file_persistence.o \
 	http_transmitter.o
 
 # TESTSRC:=dispatch_test.cc

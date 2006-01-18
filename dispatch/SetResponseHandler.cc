@@ -31,9 +31,9 @@
 
 #include "SetResponseHandler.h"
 #include "DODSTextInfo.h"
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistence.h"
-#include "DODSContainerPersistenceException.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorage.h"
+#include "ContainerStorageException.h"
 #include "OPeNDAPDataNames.h"
 
 SetResponseHandler::SetResponseHandler( string name )
@@ -67,8 +67,8 @@ SetResponseHandler::~SetResponseHandler( )
  * response object
  * @see _DODSDataHandlerInterface
  * @see DODSTextInfo
- * @see DODSContainerPersistenceList
- * @see DODSContainerPersistence
+ * @see ContainerStorageList
+ * @see ContainerStorage
  * @see DODSContainer
  */
 void
@@ -81,8 +81,8 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     string symbolic_name = dhi.data[SYMBOLIC_NAME] ;
     string real_name = dhi.data[REAL_NAME] ;
     string container_type = dhi.data[CONTAINER_TYPE] ;
-    DODSContainerPersistence *cp =
-	DODSContainerPersistenceList::TheList()->find_persistence( store_name );
+    ContainerStorage *cp =
+	ContainerStorageList::TheList()->find_persistence( store_name );
     if( cp )
     {
 	try
@@ -99,7 +99,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
 			 + store_name + "\n" ;
 	    info->add_data( ret ) ;
 	}
-	catch( DODSContainerPersistenceException &e )
+	catch( ContainerStorageException &e )
 	{
 	    string ret = (string)"Unable to add container "
 			 + symbolic_name + " to persistent store "
