@@ -41,8 +41,8 @@ using std::endl ;
 #include "DODSGlobalIQ.h"
 #include "DODSException.h"
 
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistence.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorage.h"
 #include "DODSDefineList.h"
 #include "DODSDefine.h"
 #include "DODSContainer.h"
@@ -59,7 +59,7 @@ main( int argc, char **argv )
 	    OPeNDAPCmdParser p ;
 	    DODSDataHandlerInterface dhi ;
 	    p.parse( "set container values c1,/home/pwest/c1,cedar;", dhi  ) ;
-	    DODSContainerPersistence *cp = DODSContainerPersistenceList::TheList->find_persistence( "volatile" ) ;
+	    ContainerStorage *cp = ContainerStorageList::TheList->find_persistence( "volatile" ) ;
 	    if( cp )
 	    {
 		cp->add_container( "c1", "/home/pwest/c1", "cedar" ) ;

@@ -31,7 +31,7 @@
 
 #include "OPeNDAPDefineCommand.h"
 #include "OPeNDAPTokenizer.h"
-#include "DODSContainerPersistenceList.h"
+#include "ContainerStorageList.h"
 #include "DODSResponseHandlerList.h"
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
@@ -132,7 +132,7 @@ OPeNDAPDefineCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 	    else
 	    {
 		DODSContainer d( my_token ) ;
-		DODSContainerPersistenceList::TheList()->look_for( d ) ;
+		ContainerStorageList::TheList()->look_for( d ) ;
 		dhi.containers.push_back( d ) ;
 		expecting_comma = true ;
 	    }

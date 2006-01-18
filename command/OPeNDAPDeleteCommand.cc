@@ -32,7 +32,7 @@
 #include "OPeNDAPDeleteCommand.h"
 #include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSContainerPersistenceList.h"
+#include "ContainerStorageList.h"
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
