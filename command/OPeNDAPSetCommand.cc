@@ -32,7 +32,7 @@
 #include "OPeNDAPSetCommand.h"
 #include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSContainerPersistenceList.h"
+#include "ContainerStorageList.h"
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
@@ -116,7 +116,11 @@ OPeNDAPSetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 		}
 		else
 		{
-		    tokenizer.parse_error( my_token + " not expected\n" ) ;
+		    dhi.data[CONTAINER_TYPE] = "" ;
+		    if( my_token != ";" )
+		    {
+			tokenizer.parse_error( my_token + " not expected\n" ) ;
+		    }
 		}
 	    }
 	    else
