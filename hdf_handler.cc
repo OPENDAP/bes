@@ -141,7 +141,7 @@ main(int argc, char *argv[])
 	s << "hdf4 handler: " << d;
         ErrMsgT(s.str());
 	Error e(unknown_error, d.errmsg());
-	set_mime_text(cout, dods_error, cgi_version);
+	set_mime_text(stdout, dods_error, cgi_version);
 	e.print(cout);
 	return 1;
     }
@@ -150,7 +150,7 @@ main(int argc, char *argv[])
 	s << "hdf4 handler: " << h;
         ErrMsgT(s.str());
 	Error e(unknown_error, h.errmsg());
-	set_mime_text(cout, dods_error, cgi_version);
+	set_mime_text(stdout, dods_error, cgi_version);
 	e.print(cout);
 	return 1;
     }
@@ -158,7 +158,7 @@ main(int argc, char *argv[])
         string s;
 	s = (string)"hdf4 handler: " + e.get_error_message() + "\n";
         ErrMsgT(s);
-	set_mime_text(cout, dods_error, cgi_version);
+	set_mime_text(stdout, dods_error, cgi_version);
 	e.print(cout);
 	return 1;
     }
@@ -166,7 +166,7 @@ main(int argc, char *argv[])
         string s("hdf4 handler: Unknown exception");
 	ErrMsgT(s);
 	Error e(unknown_error, s);
-	set_mime_text(cout, dods_error, cgi_version);
+	set_mime_text(stdout, dods_error, cgi_version);
 	e.print(cout);
 	return 1;
     }
