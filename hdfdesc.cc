@@ -198,6 +198,18 @@ static void update_descriptions(const string& cachedir, const string& filename) 
 	    THROW(dhdferr_ddssem);
 
 	// output DDS, DAS to cache
+        FILE *ddsout = fopen(ddsfile.filename(), "w");
+        if (!ddsout)
+            THROW(dhdferr_ddsout);
+        dds.print(ddsout);
+        fclose(ddsout);
+
+        FILE *dasout = fopen(dasfile.filename(), "w");
+        if (!dasout)
+            THROW(dhdferr_dasout);
+        das.print(dasout);
+        fclose(dasout);
+#if 0
 	ofstream ddsout(ddsfile.filename());
 	if (!ddsout.is_open())	// Explicit call to is_open() as per bug 812.
 				// 10/08/04 jhrg
@@ -209,6 +221,7 @@ static void update_descriptions(const string& cachedir, const string& filename) 
 	    THROW(dhdferr_dasout);
 	das.print(dasout);
 	dasout.close();
+#endif
     }
     return;
 }

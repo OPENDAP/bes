@@ -199,6 +199,6 @@ parser_driver(DAS &das)
     if (hdfeosparse((void *)&arg) != 0)
 	cerr << "HDF-EOS parse error!\n";
 
-    das.print();
+    das.print(stdout);
 }
 

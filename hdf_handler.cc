@@ -142,7 +142,7 @@ main(int argc, char *argv[])
         ErrMsgT(s.str());
 	Error e(unknown_error, d.errmsg());
 	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(cout);
+	e.print(stdout);
 	return 1;
     }
     catch (hcerr &h) {
@@ -151,7 +151,7 @@ main(int argc, char *argv[])
         ErrMsgT(s.str());
 	Error e(unknown_error, h.errmsg());
 	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(cout);
+	e.print(stdout);
 	return 1;
     }
     catch (Error &e) {
@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 	s = (string)"hdf4 handler: " + e.get_error_message() + "\n";
         ErrMsgT(s);
 	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(cout);
+	e.print(stdout);
 	return 1;
     }
     catch (...) {
@@ -167,7 +167,7 @@ main(int argc, char *argv[])
 	ErrMsgT(s);
 	Error e(unknown_error, s);
 	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(cout);
+	e.print(stdout);
 	return 1;
     }
     
