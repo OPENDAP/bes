@@ -15,8 +15,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Url * NewUrl(const string &n = "");
-
 class HDF5Url: public Url {
 
 private:

@@ -12,12 +12,6 @@
 #include "InternalErr.h"
 #include "HDF5Int16.h"
 
-Int16 *
-NewInt16(const string & n)
-{
-    return new HDF5Int16(n);
-}
-
 HDF5Int16::HDF5Int16(const string & n):Int16(n)
 {
 }

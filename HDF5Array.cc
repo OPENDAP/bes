@@ -24,12 +24,6 @@
 
 using namespace std;
 
-Array *
-NewArray(const string & n, BaseType * v)
-{
-    return new HDF5Array(n, v);
-}
-
 BaseType *
 HDF5Array::ptr_duplicate()
 {

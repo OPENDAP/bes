@@ -11,12 +11,6 @@
 #include "InternalErr.h"
 #include "HDF5Byte.h"
 
-Byte *
-NewByte(const string & n)
-{
-    return new HDF5Byte(n);
-}
-
 HDF5Byte::HDF5Byte(const string & n) : Byte(n)
 {
     ty_id = -1;

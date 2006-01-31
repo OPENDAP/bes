@@ -14,8 +14,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Grid * NewGrid(const string &n = "");
-
 class HDF5Grid: public Grid {
 
 private:

@@ -11,12 +11,6 @@
 #include "HDF5Url.h"
 #include "InternalErr.h"
 
-Url *
-NewUrl(const string & n)
-{
-    return new HDF5Url(n);
-}
-
 HDF5Url::HDF5Url(const string & n):Url(n)
 {
 }

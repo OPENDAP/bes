@@ -14,8 +14,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Float32 * NewFloat32(const string &n = "");
-
 class HDF5Float32: public Float32 {
  private:
     hid_t dset_id;

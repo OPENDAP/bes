@@ -11,12 +11,6 @@
 #include "InternalErr.h"
 #include "HDF5UInt32.h"
 
-UInt32 *
-NewUInt32(const string & n)
-{
-    return new HDF5UInt32(n);
-}
-
 HDF5UInt32::HDF5UInt32(const string & n):UInt32(n)
 {
 }

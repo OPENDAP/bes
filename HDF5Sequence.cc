@@ -11,13 +11,6 @@
 #include "HDF5Sequence.h"
 #include "InternalErr.h"
 
-Sequence *
-NewSequence(const string & n)
-{
-    return new HDF5Sequence(n);
-}
-
-
 BaseType *
 HDF5Sequence::ptr_duplicate()
 {

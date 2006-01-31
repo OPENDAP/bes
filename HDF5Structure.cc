@@ -11,12 +11,6 @@
 #include "HDF5Structure.h"
 #include "InternalErr.h"
 
-Structure *
-NewStructure(const string & n)
-{
-    return new HDF5Structure(n);
-}
-
 BaseType *
 HDF5Structure::ptr_duplicate()
 {

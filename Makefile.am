@@ -17,10 +17,10 @@ bin_PROGRAMS = dap_h5_handler
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
-	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc
+	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc
 HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
-	HDF5Int16.h HDF5Str.h HDF5UInt32.h
+	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h
 
 SRCS = h5_handler.cc h5dds.cc H5Git.c
 HDRS = common.h h5dds.h H5Git.h version.h

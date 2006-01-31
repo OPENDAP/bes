@@ -12,12 +12,6 @@
 #include "InternalErr.h"
 #include "HDF5Int32.h"
 
-Int32 *
-NewInt32(const string & n)
-{
-    return new HDF5Int32(n);
-}
-
 HDF5Int32::HDF5Int32(const string & n):Int32(n)
 {
     ty_id = -1;

@@ -16,8 +16,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Int32 * NewInt32(const string &n = "");
-
 class HDF5Int32: public Int32 {
 private:
     hid_t dset_id;

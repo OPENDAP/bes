@@ -14,8 +14,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Structure * NewStructure(const string &n = "");
-
 class HDF5Structure: public Structure {
 private:
   hid_t dset_id;

@@ -15,8 +15,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char*);
 
-extern UInt32 * NewUInt32(const string &n = "");
-
 class HDF5UInt32: public UInt32 {
 
 private:

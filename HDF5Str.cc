@@ -11,13 +11,6 @@
 #include "InternalErr.h"
 #include "HDF5Str.h"
 
-
-Str *
-NewStr(const string & n)
-{
-    return new HDF5Str(n);
-}
-
 HDF5Str::HDF5Str(const string & n):Str(n)
 {
     ty_id = -1;

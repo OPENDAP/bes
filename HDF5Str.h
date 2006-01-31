@@ -26,8 +26,6 @@ extern "C"{
     size_t H5Tget_size(hid_t type_id);
 }
 
-extern Str * NewStr(const string &n = "");
-
 class HDF5Str: public Str {
  private:
     hid_t dset_id;

@@ -45,6 +45,7 @@
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Grid.h"
+#include "HDF5TypeFactory.h"
 
 #include "common.h"
 

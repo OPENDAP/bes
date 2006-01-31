@@ -11,8 +11,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Sequence * NewSequence(const string &n = "");
-
 class HDF5Sequence: public Sequence {
 
 private:

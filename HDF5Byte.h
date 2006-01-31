@@ -14,8 +14,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Byte * NewByte(const string &n = "");
-
 class HDF5Byte: public Byte {
 
 private:

@@ -15,8 +15,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern Float64 * NewFloat64(const string &n = "");
-
 class HDF5Float64: public Float64 {
 
 private:

@@ -11,12 +11,6 @@
 #include "InternalErr.h"
 #include "HDF5Float64.h"
 
-Float64 *
-NewFloat64(const string & n)
-{
-    return new HDF5Float64(n);
-}
-
 HDF5Float64::HDF5Float64(const string & n):Float64(n)
 {
     ty_id = -1;

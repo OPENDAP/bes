@@ -14,8 +14,6 @@
 
 extern "C" int get_data(hid_t dset,void *buf,char *);
 
-extern UInt16 * NewUInt16(const string &n = "");
-
 class HDF5UInt16: public UInt16 {
 private:
   hid_t dset_id;

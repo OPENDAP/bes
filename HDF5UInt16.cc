@@ -12,12 +12,6 @@
 #include "InternalErr.h"
 #include "HDF5UInt16.h"
 
-UInt16 *
-NewUInt16(const string & n)
-{
-    return new HDF5UInt16(n);
-}
-
 HDF5UInt16::HDF5UInt16(const string & n):UInt16(n)
 {
     ty_id = -1;

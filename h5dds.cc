@@ -10,6 +10,7 @@
 
 #include "config_hdf5.h"
 #include "h5dds.h"
+#include "HDF5TypeFactory.h"
 
 #include "InternalErr.h"
 
@@ -259,8 +260,8 @@ return_type(hid_t type)
  *-------------------------------------------------------------------------
  */
 
-BaseType *
-Get_bt(string varname, hid_t datatype)
+static BaseType *
+Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
     BaseType *temp_bt;
 
@@ -272,33 +273,33 @@ Get_bt(string varname, hid_t datatype)
 	if (H5Tequal(datatype, H5T_STD_I8BE) ||
 	    H5Tequal(datatype, H5T_STD_I8LE) ||
 	    H5Tequal(datatype, H5T_NATIVE_SCHAR)) {
-	    temp_bt = NewByte(varname);
+	    temp_bt = factory.NewByte(varname);
 	    //   return (NewByte(varname)); 
 	} else if (H5Tequal(datatype, H5T_STD_I16BE) ||
 		   H5Tequal(datatype, H5T_STD_I16LE) ||
 		   H5Tequal(datatype, H5T_NATIVE_SHORT)) {
-	    temp_bt = NewInt16(varname);
+	    temp_bt = factory.NewInt16(varname);
 	    // return (NewInt16(varname));
 	}
 
 	else if (H5Tequal(datatype, H5T_STD_I32BE) ||
 		 H5Tequal(datatype, H5T_STD_I32LE) ||
 		 H5Tequal(datatype, H5T_NATIVE_INT)) {
-	    temp_bt = NewInt32(varname);
+	    temp_bt = factory.NewInt32(varname);
 	    //return (NewInt32(varname));
 	}
 
 	else if (H5Tequal(datatype, H5T_STD_U16BE) ||
 		 H5Tequal(datatype, H5T_STD_U16LE) ||
 		 H5Tequal(datatype, H5T_NATIVE_USHORT)) {
-	    temp_bt = NewUInt16(varname);
+	    temp_bt = factory.NewUInt16(varname);
 	    //return (NewUInt16(varname));
 	}
 
 	else if (H5Tequal(datatype, H5T_STD_U32BE) ||
 		 H5Tequal(datatype, H5T_STD_U32LE) ||
 		 H5Tequal(datatype, H5T_NATIVE_UINT)) {
-	    temp_bt = NewUInt32(varname);
+	    temp_bt = factory.NewUInt32(varname);
 	    //return (NewUInt32(varname));
 	}
 
@@ -312,10 +313,10 @@ Get_bt(string varname, hid_t datatype)
 
 	if (H5Tget_size(datatype) == 4) {
 	    //return (NewFloat32(varname));
-	    temp_bt = NewFloat32(varname);
+	    temp_bt = factory.NewFloat32(varname);
 	} else if (H5Tget_size(datatype) == 8) {
 
-	    temp_bt = NewFloat64(varname);
+	    temp_bt = factory.NewFloat64(varname);
 	} else {
 	    temp_bt = NULL;
 
@@ -323,7 +324,7 @@ Get_bt(string varname, hid_t datatype)
 	break;
 
     case H5T_STRING:
-	temp_bt = NewStr(varname);
+	temp_bt = factory.NewStr(varname);
 
 	break;
 
@@ -500,7 +501,8 @@ read_objects(DDS & dds_table, const string & varname,
 
     dds_table.set_dataset_name(name_path(filename));
 
-    BaseType *bt = Get_bt(newname, dt_inst.type);
+    BaseType *bt = Get_bt(newname, dt_inst.type,
+                      dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
 
     if (!bt) {
 	delete[]temp_varname;
@@ -523,7 +525,7 @@ read_objects(DDS & dds_table, const string & varname,
 
     else {
 	// dealing with array data. 
-	ar = NewArray(temp_varname);
+	ar = dds_table.get_factory()->NewArray(temp_varname);
 
 	(dynamic_cast < HDF5Array * >(ar))->set_did(dt_inst.dset);
 	(dynamic_cast < HDF5Array * >(ar))->set_tid(dt_inst.type);
@@ -542,7 +544,7 @@ read_objects(DDS & dds_table, const string & varname,
 	    // start building up the grid.
 	    //  gr = NewGrid(temp_varname);
 
-	    gr = NewGrid(newname);
+	    gr = dds_table.get_factory()->NewGrid(newname);
 	    pr = array;
 
 	    for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
@@ -575,8 +577,10 @@ read_objects(DDS & dds_table, const string & varname,
 		dimid =
 		    get_diminfo(dt_inst.dset, dim_index, &num_dimelm,
 				&dimsize, &dimtype);
-		bt = Get_bt(newdimname, dimtype);
-		ar = NewArray(newdimname);
+		bt = Get_bt(newdimname, dimtype,
+                      dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
+
+		ar = dds_table.get_factory()->NewArray(newdimname);
 		(dynamic_cast < HDF5Array * >(ar))->set_did(dimid);
 		(dynamic_cast < HDF5Array * >(ar))->set_tid(dimtype);
 		(dynamic_cast < HDF5Array * >(ar))->set_memneed(dimsize);

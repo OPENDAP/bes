@@ -9,12 +9,6 @@
 
 #include "HDF5Grid.h"
 
-Grid *
-NewGrid(const string & n)
-{
-    return new HDF5Grid(n);
-}
-
 // protected
 
 BaseType *

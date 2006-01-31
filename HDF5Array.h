@@ -26,8 +26,6 @@ extern "C" {
     int check_h5str(hid_t);
 }
 
-extern Array * NewArray(const string &n = "", BaseType *v = 0);
-
 class HDF5Array: public Array {
 private:
     int d_num_dim;

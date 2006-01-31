@@ -11,12 +11,6 @@
 #include "InternalErr.h"
 #include "HDF5Float32.h"
 
-Float32 *
-NewFloat32(const string & n)
-{
-    return new HDF5Float32(n);
-}
-
 HDF5Float32::HDF5Float32(const string & n):Float32(n)
 {
     ty_id = -1;
