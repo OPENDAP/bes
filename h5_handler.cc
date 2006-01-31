@@ -75,7 +75,9 @@ extern "C" {
 static char Msgt[255];		// used as scratch in various places
 static int slinkindex;		// used by depth_first()
 
-const static string cgi_version = DODS_SERVER_VERSION;
+// This vesion should really be 1.0, to match the version of the handler,
+// but that will break all sorts of client code. jhrg 1/31/06
+const static string cgi_version = "3.0";
 static const char STRING[]="String";
 static const char BYTE[]="Byte";
 static const char INT32[]="Int32";
@@ -122,14 +124,16 @@ main(int argc, char *argv[])
 	  }
 
 	  case DODSFilter::DDS_Response: {
-	      DDS dds;
+              HDF5TypeFactory factory;
+	      DDS dds(&factory);
 	      depth_first(file1, "/", dds, df.get_dataset_name().c_str());
 	      df.send_dds(dds, true);
 	      break;
 	  }
 
 	  case DODSFilter::DataDDS_Response: {
-	      DDS dds;
+              HDF5TypeFactory factory;
+	      DDS dds(&factory);
 	      depth_first(file1, "/", dds, df.get_dataset_name().c_str());
 	      df.send_data(dds, stdout);
 	      break;
@@ -149,16 +153,16 @@ main(int argc, char *argv[])
         string s;
 	s = string("h5_handler: ") + e.get_error_message() + "\n";
         ErrMsgT(s);
-	set_mime_text(cout, dods_error, cgi_version);
-	e.print(cout);
+	set_mime_text(stdout, dods_error, cgi_version);
+	e.print(stdout);
 	return 1;
     }
     catch (...) {
         string s("h5_handler: Unknown exception");
 	ErrMsgT(s);
 	Error e(unknown_error, s);
-	set_mime_text(cout, dods_error, cgi_version);
-	e.print(cout);
+	set_mime_text(stdout, dods_error, cgi_version);
+	e.print(stdout);
 	return 1;
     }
     

@@ -45,8 +45,16 @@ HDF5Grid::read(const string & dataset)
     array_var()->read(dataset);
 
     // read maps elements
+    Map_iter p = map_begin();
+    while (p != map_end()) {
+        (*p)->read(dataset);
+        ++p;
+    }
+
+#if 0
     for (Pix p = first_map_var(); p; next_map_var(p))
 	map_var(p)->read(dataset);
+#endif
 
     set_read_p(true);
 
