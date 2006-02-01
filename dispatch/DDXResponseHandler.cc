@@ -66,7 +66,7 @@ void
 DDXResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     // Fill the DDS
-    DDS *dds = new DDS( "virtual" ) ;
+    DDS *dds = new DDS( get_factory(), "virtual" ) ;
     _response = dds ;
     _response_name = DDS_RESPONSE ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;

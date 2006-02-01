@@ -87,7 +87,11 @@ DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
     string constraint = dhi.data[POST_CONSTRAINT] ;
     if( constraint != "" )
     {
+#if 0
+        // This method was deprecated and has been removed. jhrg 2/1/06
 	dds.parse_constraint( constraint, stdout, true ) ;
+#endif
+        dds.parse_constraint( constraint ) ;
     }
     // FIX: print_xml assumes http
     // FIX: need to figure out blob

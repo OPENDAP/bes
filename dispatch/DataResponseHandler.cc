@@ -62,7 +62,7 @@ DataResponseHandler::~DataResponseHandler( )
 void
 DataResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    _response = new DDS( "virtual" ) ;
+    _response = new DDS( get_factory(), "virtual" ) ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
