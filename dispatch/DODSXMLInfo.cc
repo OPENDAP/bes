@@ -85,7 +85,7 @@ DODSXMLInfo::add_exception( const string &type, const string &msg,
                             const string &file, int line )
 {
     add_data( "<BESException>\n" ) ;
-    add_data( (string)"    <Type>" + type + "</TYPE>\n" ) ;
+    add_data( (string)"    <Type>" + type + "</Type>\n" ) ;
     add_data( (string)"    <Message>" + msg + "</Message>\n" ) ;
     ostringstream s ;
     s << "    <Location>Filename: " << file << " LineNumber: " << line << "</Location>\n" ;
