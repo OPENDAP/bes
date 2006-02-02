@@ -36,6 +36,23 @@
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
+string
+OPeNDAPSetCommand::parse_options( OPeNDAPTokenizer &tokens,
+			          DODSDataHandlerInterface &dhi )
+{
+    string my_token = tokens.get_next_token() ;
+    if( my_token == "silently" || my_token == "silent" )
+    {
+	dhi.data[SILENT] = "yes" ;
+	my_token = tokens.get_next_token() ;
+    }
+    else
+    {
+	dhi.data[SILENT] = "no" ;
+    }
+    return my_token ;
+}
+
 /** @brief parses the request to create a new container or replace an already
  * existing container given a symbolic name, a real name, and a data type.
  *
@@ -57,7 +74,7 @@ DODSResponseHandler *
 OPeNDAPSetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                   DODSDataHandlerInterface &dhi )
 {
-    string my_token = tokenizer.get_next_token() ;
+    string my_token = parse_options( tokenizer, dhi ) ;
 
     /* First we will make sure that the developer has not over-written this
      * command to work with a sub command. In other words, they have a new

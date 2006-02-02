@@ -67,7 +67,7 @@ OPeNDAPGetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 {
     string def_name ;
 
-    string my_token = tokenizer.get_next_token() ;
+    string my_token = parse_options( tokenizer, dhi ) ;
 
     /* First we will make sure that the developer has not over-written this
      * command to work with a sub command. In other words, they have a new

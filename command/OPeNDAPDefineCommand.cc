@@ -36,6 +36,23 @@
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
+string
+OPeNDAPDefineCommand::parse_options( OPeNDAPTokenizer &tokens,
+			          DODSDataHandlerInterface &dhi )
+{
+    string my_token = tokens.get_next_token() ;
+    if( my_token == "silently" || my_token == "silent" )
+    {
+	dhi.data[SILENT] = "yes" ;
+	my_token = tokens.get_next_token() ;
+    }
+    else
+    {
+	dhi.data[SILENT] = "no" ;
+    }
+    return my_token ;
+}
+
 /** @brief parses the request to build a definition that can be used in other
  * requests, such as get commands.
  *
@@ -75,7 +92,7 @@ DODSResponseHandler *
 OPeNDAPDefineCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                      DODSDataHandlerInterface &dhi )
 {
-    string my_token = tokenizer.get_next_token() ;
+    string my_token = parse_options( tokenizer, dhi ) ;
 
     /* First we will make sure that the developer has not over-written this
      * command to work with a sub command. In other words, they have a new

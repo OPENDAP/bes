@@ -42,7 +42,8 @@ public:
     					OPeNDAPCatalogCommand( const string &cmd )
 					    : OPeNDAPCommand( cmd ) {}
     virtual				~OPeNDAPCatalogCommand() {}
-    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokenizer,
+
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokens,
 					  DODSDataHandlerInterface &dhi ) ;
 } ;
 

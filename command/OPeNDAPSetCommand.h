@@ -42,7 +42,11 @@ public:
     					OPeNDAPSetCommand( const string &cmd )
 					    : OPeNDAPCommand( cmd ) {}
     virtual				~OPeNDAPSetCommand() {}
-    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokenizer,
+
+    virtual string			parse_options( OPeNDAPTokenizer &tokens,
+					  DODSDataHandlerInterface &dhi ) ;
+
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokens,
 					  DODSDataHandlerInterface &dhi ) ;
 } ;
 

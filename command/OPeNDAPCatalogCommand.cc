@@ -62,7 +62,7 @@ OPeNDAPCatalogCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     string curr_token = tokenizer.get_current_token() ;
     dhi.data[CATALOG_OR_INFO] = curr_token ;
 
-    string my_token = tokenizer.get_next_token() ;
+    string my_token = parse_options( tokenizer, dhi ) ;
     if( my_token == "for" )
     {
 	string container = tokenizer.get_next_token() ;

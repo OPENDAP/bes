@@ -31,6 +31,16 @@
 
 #include "OPeNDAPCommand.h"
 #include "OPeNDAPTermCommand.h"
+#include "OPeNDAPTokenizer.h"
+#include "OPeNDAPDataNames.h"
+
+string
+OPeNDAPCommand::parse_options( OPeNDAPTokenizer &tokens,
+			       DODSDataHandlerInterface &dhi )
+{
+    string my_token = tokens.get_next_token() ;
+    return my_token ;
+}
 
 OPeNDAPCommand *OPeNDAPCommand::TermCommand = new OPeNDAPTermCommand( "term" ) ;
 map< string, OPeNDAPCommand * > OPeNDAPCommand::cmd_list ;
