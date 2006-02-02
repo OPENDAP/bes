@@ -32,21 +32,27 @@
 #ifndef DODSHTMLInfo_h_
 #define DODSHTMLInfo_h_ 1
 
-#include "DODSInfo.h"
+#include "DODSTextInfo.h"
 
 /** @brief represents an html formatted response object
  *
  * Uses the default add_data method, but overwrites print method in order to
  * set the mime type to html.
  *
- * @see DODSInfo
+ * @see DODSTextInfo
  * @see DODSResponseObject
  */
-class DODSHTMLInfo : public DODSInfo {
+class DODSHTMLInfo : public DODSTextInfo {
 public:
-  			DODSHTMLInfo() ;
-  			DODSHTMLInfo( bool is_http ) ;
+  			DODSHTMLInfo( ObjectType type = unknown_type ) ;
+  			DODSHTMLInfo( bool is_http,
+			              ObjectType type = unknown_type ) ;
     virtual 		~DODSHTMLInfo() ;
+
+    virtual void	add_exception( const string &type,
+                                       const string &msg,
+				       const string &file,
+				       int line ) ;
 };
 
 #endif // DODSHTMLInfo_h_

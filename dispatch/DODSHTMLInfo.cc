@@ -33,6 +33,10 @@
 #pragma implementation
 #endif
 
+#include <sstream>
+
+using std::ostringstream ;
+
 #include "DODSHTMLInfo.h"
 
 /** @brief constructs an html information response object.
@@ -40,11 +44,11 @@
  * Uses the default DODS.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
  *
- * @see DODSInfo
+ * @see DODSTextInfo
  * @see DODSResponseObject
  */
-DODSHTMLInfo::DODSHTMLInfo()
-    : DODSInfo( unknown_type )
+DODSHTMLInfo::DODSHTMLInfo( ObjectType otype)
+    : DODSTextInfo( otype )
 {
     initialize( "" ) ;
 }
@@ -55,17 +59,37 @@ DODSHTMLInfo::DODSHTMLInfo()
  * determine whether the information should be buffered or not.
  *
  * @param is_http whether the response is going to a browser
- * @see DODSInfo
+ * @see DODSTextInfo
  * @see DODSResponseObject
  */
-DODSHTMLInfo::DODSHTMLInfo( bool is_http )
-    : DODSInfo( is_http, unknown_type )
+DODSHTMLInfo::DODSHTMLInfo( bool is_http, ObjectType otype )
+    : DODSTextInfo( is_http, otype )
 {
     initialize( "" ) ;
 }
 
 DODSHTMLInfo::~DODSHTMLInfo()
 {
+}
+
+/** @brief add exception data to this informational object. If buffering is
+ * not set then the information is output directly to the output stream.
+ *
+ * @param type type of the exception received
+ * @param msg the error message
+ * @param file file name of where the error was sent
+ * @param line line number in the file where the error was sent
+ */
+void
+DODSHTMLInfo::add_exception( const string &type, const string &msg,
+                             const string &file, int line )
+{
+    add_data( "Exception Received<BR />\n" ) ;
+    add_data( (string)"    Type: " + type + "<BR />\n" ) ;
+    add_data( (string)"    Message: " + msg + "<BR />\n" ) ;
+    ostringstream s ;
+    s << "    Filename: " << file << " LineNumber: " << line << "<BR />\n" ;
+    add_data( s.str() ) ;
 }
 
 // $Log: DODSHTMLInfo.cc,v $

@@ -29,6 +29,9 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
+#ifndef D_OPeNDAPDataNames_h
+#define D_OPeNDAPDataNames_h 1
+
 #define DATA_REQUEST "request"
 
 #define AGG_CMD "aggregation_command"
@@ -56,3 +59,10 @@
 #define CONTAINER "container"
 #define CATALOG_OR_INFO "catalog_or_info"
 
+/*
+ * Options
+ */
+#define SILENT "silent"
+#define BUFFERED "buffered"
+
+#endif // D_OPeNDAPDataNames_h

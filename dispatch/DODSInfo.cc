@@ -179,6 +179,26 @@ DODSInfo::add_data_from_file( const string &key, const string &name )
     }
 }
 
+/** @brief add exception data to this informational object. If buffering is
+ * not set then the information is output directly to the output stream.
+ *
+ * @param type type of the exception received
+ * @param msg the error message
+ * @param file file name of where the error was sent
+ * @param line line number in the file where the error was sent
+ */
+void
+DODSInfo::add_exception( const string &type, const string &msg,
+                         const string &file, int line )
+{
+    add_data( "Exception Received\n" ) ;
+    add_data( (string)"    Type: " + type + "\n" ) ;
+    add_data( (string)"    Message: " + msg + "\n" ) ;
+    ostringstream s ;
+    s << "    Filename: " << file << " LineNumber: " << line << "\n" ;
+    add_data( s.str() ) ;
+}
+
 /** @brief print the information from this informational object to the
  * specified FILE descriptor
  *

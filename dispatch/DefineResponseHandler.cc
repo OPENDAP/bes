@@ -31,6 +31,7 @@
 
 #include "DefineResponseHandler.h"
 #include "DODSTextInfo.h"
+#include "OPeNDAPSilentInfo.h"
 #include "DODSDefine.h"
 #include "DODSDefineList.h"
 #include "OPeNDAPDataNames.h"
@@ -71,7 +72,15 @@ DefineResponseHandler::~DefineResponseHandler( )
 void
 DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = 0 ;
+    if( dhi.data[SILENT] == "yes" )
+    {
+	info = new OPeNDAPSilentInfo() ;
+    }
+    else
+    {
+	info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    }
     _response = info ;
     
     string def_name = dhi.data[DEF_NAME] ;
@@ -122,7 +131,7 @@ DefineResponseHandler::transmit( DODSTransmitter *transmitter,
         // If this dynamic_cast is to a reference an not a pointer, then if
         // _response is not a DODSTextInfo the cast will throw bad_cast. 
         // Casting to a pointer will make ti null on error. jhrg 11/10/2005
-	DODSTextInfo *ti = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *ti = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *ti, dhi ) ;
     }
 }

@@ -34,8 +34,6 @@
 
 #include "DODSResponseHandler.h"
 
-class DODSTextInfo ;
-
 /** @brief response handler that returns the version of the OPeNDAP-g server
  * and the version of any data request handlers registered with the server.
  *

@@ -44,11 +44,11 @@ using std::ostringstream ;
  * Uses the default DODS.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
  *
- * @see DODSInfo
+ * @see DODSXMLInfo
  * @see DODSResponseObject
  */
 DODSVersionInfo::DODSVersionInfo()
-    : DODSInfo( unknown_type ),
+    : DODSXMLInfo( unknown_type ),
       _firstDAPVersion( true ),
       _DAPstrm( 0 ),
       _firstBESVersion( true ),
@@ -65,11 +65,11 @@ DODSVersionInfo::DODSVersionInfo()
  * determine whether the information should be buffered or not.
  *
  * @param is_http whether the response is going to a browser
- * @see DODSInfo
+ * @see DODSXMLInfo
  * @see DODSResponseObject
  */
 DODSVersionInfo::DODSVersionInfo( bool is_http )
-    : DODSInfo( is_http, unknown_type ),
+    : DODSXMLInfo( is_http ),
       _firstDAPVersion( true ),
       _DAPstrm( 0 ),
       _firstBESVersion( true ),

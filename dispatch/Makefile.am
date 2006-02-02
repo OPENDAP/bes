@@ -65,6 +65,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	CatalogResponseHandler.cc DirectoryCatalog.cc CatalogList.cc \
 	DODSResponseHandlerList.cc \
 	DODSInfo.cc DODSTextInfo.cc DODSVersionInfo.cc DODSHTMLInfo.cc \
+	DODSXMLInfo.cc OPeNDAPSilentInfo.cc \
 	DODSRequestHandler.cc DODSRequestHandlerList.cc \
 	DODSBasicTransmitter.cc \
 	DODSBasicHttpTransmitter.cc DODSFilterTransmitter.cc \
@@ -100,6 +101,7 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	CatalogList.h \
 	DODSResponseNames.h DODSResponseException.h \
 	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSVersionInfo.h \
+	DODSXMLInfo.h OPeNDAPSilentInfo.h \
 	DODSRequestHandler.h \
 	DODSRequestHandlerList.h \
 	DODSIncorrectRequestException.h DODSDataHandlerInterface.h \

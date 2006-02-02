@@ -60,6 +60,7 @@ using std::endl ;
 
 #include "DODSReturnManager.h"
 #include "DODSBasicTransmitter.h"
+#include "DODSBasicHttpTransmitter.h"
 #include "ContainerStorageList.h"
 #include "ContainerStorageVolatile.h"
 
@@ -133,6 +134,10 @@ DODSModuleInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
     DODSReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new DODSBasicTransmitter ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
+    DODSReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " persistence" << endl;

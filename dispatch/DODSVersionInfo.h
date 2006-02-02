@@ -32,7 +32,7 @@
 #ifndef DODSVersionInfo_h_
 #define DODSVersionInfo_h_ 1
 
-#include "DODSInfo.h"
+#include "DODSXMLInfo.h"
 
 /** brief represents simple text information in a response object, such as
  * version and help inforamtion.
@@ -40,10 +40,10 @@
  * Uses the default add_data and print methods, where the print method, if the
  * response is going to a browser, sets the mime type to text.
  *
- * @see DODSInfo
+ * @see DODSXMLInfo
  * @see DODSResponseObject
  */
-class DODSVersionInfo : public DODSInfo {
+class DODSVersionInfo : public DODSXMLInfo {
 private:
     bool		_firstDAPVersion ;
     ostream		*_DAPstrm ;

@@ -1,4 +1,4 @@
-// DODSTextInfo.cc
+// DODSXMLInfo.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -33,9 +33,13 @@
 #pragma implementation
 #endif
 
-#include "DODSTextInfo.h"
+#include <sstream>
 
-/** @brief constructs a basic text information response object.
+using std::ostringstream ;
+
+#include "DODSXMLInfo.h"
+
+/** @brief constructs an html information response object.
  *
  * Uses the default DODS.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
@@ -43,13 +47,13 @@
  * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSTextInfo::DODSTextInfo( ObjectType otype )
-    : DODSInfo( otype )
+DODSXMLInfo::DODSXMLInfo( ObjectType otype )
+    : DODSTextInfo( otype )
 {
     initialize( "" ) ;
 }
 
-/** @brief constructs a basic text information response object.
+/** @brief constructs an html information response object.
  *
  * Uses the default DODS.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
@@ -58,24 +62,35 @@ DODSTextInfo::DODSTextInfo( ObjectType otype )
  * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSTextInfo::DODSTextInfo( bool is_http, ObjectType otype )
-    : DODSInfo( is_http, otype )
+DODSXMLInfo::DODSXMLInfo( bool is_http, ObjectType otype )
+    : DODSTextInfo( is_http, otype )
 {
     initialize( "" ) ;
 }
 
-DODSTextInfo::~DODSTextInfo()
+DODSXMLInfo::~DODSXMLInfo()
 {
 }
 
-// $Log: DODSTextInfo.cc,v $
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//
+/** @brief add exception data to this informational object. If buffering is
+ * not set then the information is output directly to the output stream.
+ *
+ * @param type type of the exception received
+ * @param msg the error message
+ * @param file file name of where the error was sent
+ * @param line line number in the file where the error was sent
+ */
+void
+DODSXMLInfo::add_exception( const string &type, const string &msg,
+                            const string &file, int line )
+{
+    add_data( "<BESException>\n" ) ;
+    add_data( (string)"    <Type>" + type + "</TYPE>\n" ) ;
+    add_data( (string)"    <Message>" + msg + "</Message>\n" ) ;
+    ostringstream s ;
+    s << "    <Location>Filename: " << file << " LineNumber: " << line << "</Location>\n" ;
+    add_data( s.str() ) ;
+    add_data( "</BESException>\n" ) ;
+}
+
+// $Log: DODSXMLInfo.cc,v $

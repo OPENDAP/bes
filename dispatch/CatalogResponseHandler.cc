@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "CatalogResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSXMLInfo.h"
 #include "cgi_util.h"
 #include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
@@ -49,19 +49,19 @@ CatalogResponseHandler::~CatalogResponseHandler( )
 /** @brief executes the command 'show nodes|leaves [for &lt;node&gt;];' by
  * returning nodes or leaves at the top level or at the specified node.
  *
- * The response object DODSTextInfo is created to store the information.
+ * The response object DODSXMLInfo is created to store the information.
  *
  * @param dhi structure that holds request and response information
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSXMLInfo
  * @see DODSRequestHandlerList
  */
 void
 CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSXMLInfo *info = new DODSXMLInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     string container = dhi.data[CONTAINER] ;
@@ -80,7 +80,7 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSXMLInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -90,7 +90,7 @@ CatalogResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSXMLInfo *info = dynamic_cast<DODSXMLInfo *>(_response) ;
 	transmitter->send_text( *info, dhi ) ;
     }
 }

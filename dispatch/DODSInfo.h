@@ -68,7 +68,8 @@ protected:
     ObjectType		_otype ;
 
     			DODSInfo( ObjectType type ) ;
-    			DODSInfo( bool is_http, ObjectType type ) ;
+    			DODSInfo( bool is_http,
+				  ObjectType type = unknown_type ) ;
 
     virtual void	initialize( string key ) ;
 public:
@@ -77,6 +78,10 @@ public:
     virtual void 	add_data( const string &s ) ;
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
+    virtual void	add_exception( const string &type,
+                                       const string &msg,
+				       const string &file,
+				       int line ) ;
     virtual void 	print( FILE *out ) ;
     /** @brief return whether the information is to be buffered or not.
      *

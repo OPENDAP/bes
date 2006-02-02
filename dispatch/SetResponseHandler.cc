@@ -31,6 +31,7 @@
 
 #include "SetResponseHandler.h"
 #include "DODSTextInfo.h"
+#include "OPeNDAPSilentInfo.h"
 #include "ContainerStorageList.h"
 #include "ContainerStorage.h"
 #include "ContainerStorageException.h"
@@ -74,7 +75,15 @@ SetResponseHandler::~SetResponseHandler( )
 void
 SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = 0 ;
+    if( dhi.data[SILENT] == "yes" )
+    {
+	info = new OPeNDAPSilentInfo() ;
+    }
+    else
+    {
+	info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    }
     _response = info ;
 
     string store_name = dhi.data[STORE_NAME] ;
@@ -135,7 +144,7 @@ SetResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi ) ;
     }
 }

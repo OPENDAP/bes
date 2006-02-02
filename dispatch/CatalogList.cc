@@ -32,6 +32,7 @@
 #include "CatalogList.h"
 #include "OPeNDAPCatalog.h"
 #include "DODSResponseException.h"
+#include "DODSTextInfo.h"
 
 CatalogList *CatalogList::_instance = 0 ;
 
@@ -77,8 +78,7 @@ CatalogList::show_catalog( const string &container,
 	{
 	    serr = "Unable to find catalog information for root" ;
 	}
-	DODSResponseException e( serr ) ;
-	throw e ;
+	info->add_exception( "Error", serr, __FILE__, __LINE__ ) ;
     }
 }
 
