@@ -7,7 +7,7 @@ AC_CONFIG_AUX_DIR([conf])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_SRCDIR([HDF5UInt32.h])
-AC_CONFIG_HEADER([config_hdf5.h])
+AM_CONFIG_HEADER([config_hdf5.h])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -30,7 +30,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.5.3],
+AC_CHECK_LIBDAP([3.5.0],
  [
   LIBS="$LIBS $DAP_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
