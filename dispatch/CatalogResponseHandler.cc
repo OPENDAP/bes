@@ -35,6 +35,7 @@
 #include "DODSRequestHandlerList.h"
 #include "DODSRequestHandler.h"
 #include "OPeNDAPDataNames.h"
+#include "DODSResponseNames.h"
 #include "CatalogList.h"
 
 CatalogResponseHandler::CatalogResponseHandler( string name )
@@ -66,11 +67,25 @@ CatalogResponseHandler::execute( DODSDataHandlerInterface &dhi )
 
     string container = dhi.data[CONTAINER] ;
     string coi = dhi.data[CATALOG_OR_INFO] ;
-    info->add_data( "<showCatalog>\n" ) ;
+    if( coi == CATALOG_RESPONSE )
+    {
+	info->add_data( "<showCatalog>\n" ) ;
+    }
+    else
+    {
+	info->add_data( "<showInfo>\n" ) ;
+    }
     info->add_data( "    <response>\n" ) ;
     CatalogList::TheCatalogList()->show_catalog( container, coi, info ) ;
     info->add_data( "    </response>\n" ) ;
-    info->add_data( "</showCatalog>\n" ) ;
+    if( coi == CATALOG_RESPONSE )
+    {
+	info->add_data( "</showCatalog>\n" ) ;
+    }
+    else
+    {
+	info->add_data( "</showInfo>\n" ) ;
+    }
 }
 
 /** @brief transmit the response object built by the execute command
