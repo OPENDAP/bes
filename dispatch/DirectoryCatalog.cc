@@ -90,7 +90,7 @@ DirectoryCatalog::show_catalog( const string &container,
     {
 	struct stat cbuf ;
 	stat( newdir.c_str(), &cbuf ) ;
-	info->add_data( "        <dataset thredds_container=\"true\">\n" ) ;
+	info->add_data( "        <dataset thredds_collection=\"true\">\n" ) ;
 	if( container == "" )
 	{
 	    add_stat_info( info, cbuf, "/", "        " ) ;
@@ -131,13 +131,13 @@ DirectoryCatalog::show_catalog( const string &container,
 		    // look at the mode and determine if this is a directory
 		    if ( S_ISDIR( buf.st_mode ) )
 		    {
-			info->add_data( "            <dataset thredds_container=\"true\">\n" ) ;
+			info->add_data( "            <dataset thredds_collection=\"true\">\n" ) ;
 			add_stat_info( info, buf, dirEntry, "            " ) ;
 			info->add_data( "            </dataset>\n" ) ;
 		    }
 		    else if ( S_ISREG( buf.st_mode ) )
 		    {
-			info->add_data( "            <dataset thredds_container=\"false\">\n" );
+			info->add_data( "            <dataset thredds_collection=\"false\">\n" );
 			add_stat_info( info, buf, dirEntry, "            " ) ;
 			info->add_data( "            </dataset>\n" );
 		    }
@@ -153,7 +153,7 @@ DirectoryCatalog::show_catalog( const string &container,
 	int statret = stat( newdir.c_str(), &buf ) ;
 	if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	{
-	    info->add_data( "        <dataset thredds_container=\"false\">\n" ) ;
+	    info->add_data( "        <dataset thredds_collection=\"false\">\n" ) ;
 	    add_stat_info( info, buf, container, "        " ) ;
 	    info->add_data( "        </dataset>\n" ) ;
 	}
