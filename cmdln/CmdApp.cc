@@ -105,22 +105,36 @@ CmdApp::signalCannotConnect( int sig )
 		exit( 1 ) ;
 	    }
 	}
-	cout << "OK" ;
+    }
+}
+
+void
+CmdApp::signalInterrupt( int sig )
+{
+    if( sig == SIGINT )
+    {
+	cout << OPeNDAPApp::TheApplication()->appName()
+	     << ": Please type exit to terminate the session" << endl ;
+    }
+    if( signal( SIGINT, CmdApp::signalInterrupt ) == SIG_ERR )
+    {
+	cerr << OPeNDAPApp::TheApplication()->appName()
+	     << ": Could not re-register signal\n" ;
     }
 }
 
 void
 CmdApp::signalTerminate( int sig )
 {
-    if( sig == SIGINT )
+    if( sig == SIGTERM )
     {
 	cout << OPeNDAPApp::TheApplication()->appName()
-	     << ": please type exit to terminate the session" << endl ;
+	     << ": Please type exit to terminate the session" << endl ;
     }
-    if( signal( SIGINT, CmdApp::signalTerminate ) == SIG_ERR )
+    if( signal( SIGTERM, CmdApp::signalTerminate ) == SIG_ERR )
     {
 	cerr << OPeNDAPApp::TheApplication()->appName()
-	     << "Could not re-register signal\n" ;
+	     << ": Could not re-register signal\n" ;
     }
 }
 
@@ -150,32 +164,39 @@ void
 CmdApp::registerSignals()
 {
     // Registering SIGCONT for connection unblocking
-    cout << appName() << "Registering signal SIGCONT ... " << flush ;
     if( signal( SIGCONT, signalCannotConnect ) == SIG_ERR )
     {
-	cout << "FAILED" << endl ;
+	cerr << appName() << ": Registering signal SIGCONT ... " << flush ;
+	cerr << "FAILED" << endl ;
 	exit( 1 ) ;
     }
-    cout << "OK" << endl ;
 
     // Registering SIGINT to disable Ctrl-C from the user in order to avoid
     // server instability
-    cout << appName() << "Registering signal SIGINT ... " << flush ;
-    if( signal( SIGINT, signalTerminate ) == SIG_ERR )
+    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
-	cout << "FAILED" << endl ;
+	cerr << appName() << ": Registering signal SIGINT ... " << flush ;
+	cerr << "FAILED" << endl ;
 	exit( 1 ) ;
     }
-    cout << "OK" << endl ;
+
+    // Registering SIGTERM to disable kill from the user in order to avoid
+    // server instability
+    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
+    {
+	cerr << appName() << ": Registering signal SIGINT ... " << flush ;
+	cerr << "FAILED" << endl ;
+	exit( 1 ) ;
+    }
 
     // Registering SIGPIE for broken pipes managment.
-    cout << appName() << "Registering signal SIGPIPE ... " << flush ;
+    // Registering SIGPIE for broken pipes managment.
     if( signal( SIGPIPE, CmdApp::signalBrokenPipe ) == SIG_ERR )
     {
-	cout << "FAILED" << endl ;
+	cerr << appName() << ": Registering signal SIGPIPE ... " << flush ;
+	cerr << "FAILED" << endl ;
 	exit( 1 ) ;
     }
-    cout << "OK" << endl ;
 }
 
 int
@@ -192,8 +213,6 @@ CmdApp::initialize( int argc, char **argv )
     string inputStr = "" ;
     string timeoutStr = "" ;
 
-    bool debug = false ;
-
     bool badUsage = false ;
 
     int c ;
@@ -209,7 +228,7 @@ CmdApp::initialize( int argc, char **argv )
 		_hostStr = optarg ;
 		break ;
 	    case 'd':
-		debug = true ;
+		setDebug( true ) ;
 		break ;
 	    case 'v':
 		showVersion() ;
@@ -332,7 +351,6 @@ CmdApp::run()
 	_client = new CmdClient( ) ;
 	if( _hostStr != "" )
 	{
-	    cout << "starting client" << endl ;
 	    _client->startClient( _hostStr, _portVal ) ;
 	}
 	else
@@ -340,7 +358,6 @@ CmdApp::run()
 	    _client->startClient( _unixStr ) ;
 	}
 
-	cout << "setting output" << endl ;
 	if( _outputStrm )
 	{
 	    _client->setOutput( _outputStrm, true ) ;
@@ -371,7 +388,6 @@ CmdApp::run()
 	}
 	else
 	{
-	    cout << "interact" << endl ;
 	    _client->interact() ;
 	}
     }

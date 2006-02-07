@@ -381,6 +381,11 @@ CmdClient::executeCommands( ifstream &istrm )
 void
 CmdClient::interact()
 {
+    cout << endl << endl
+         << "Type 'exit' to exit the command line client and 'help' or '?' "
+         << "to display the help screen"
+	 << endl << endl ;
+
     bool done = false ;
     while( !done )
     {

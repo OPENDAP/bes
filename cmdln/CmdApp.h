@@ -62,6 +62,7 @@ public:
 
     CmdClient *			client() { return _client ; }
     static void			signalCannotConnect( int sig ) ;
+    static void			signalInterrupt( int sig ) ;
     static void			signalTerminate( int sig ) ;
     static void			signalBrokenPipe( int sig ) ;
 } ;
