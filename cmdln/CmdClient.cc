@@ -390,6 +390,10 @@ CmdClient::interact()
 	{
 	    done = true ;
 	}
+	else if( message == "help" || message == "?" )
+	{
+	    this->displayHelp() ;
+	}
 	else if( len != 0 && message != "" )
 	{
 	    if( message[message.length()-1] != ';' )
@@ -434,6 +438,37 @@ CmdClient::readLine( string &msg )
 	buf = (char*)NULL ;
     }
     return len ;
+}
+
+void
+CmdClient::displayHelp()
+{
+    cout << endl ;
+    cout << endl ;
+    cout << "OPeNDAP BES Command Client Help"
+         << endl ;
+    cout << endl ;
+    cout << "Client commands available:"
+         << endl ;
+    cout << "    exit                     - exit the command line interface"
+         << endl ;
+    cout << "    help                     - display this help screen"
+         << endl ;
+    cout << "    client suppress;         - suppress output from the server"
+         << endl ;
+    cout << "    client output to screen; - display server output to the screen"
+         << endl ;
+    cout << "    client output to <file>; - display server output to specified file"
+         << endl ;
+    cout << endl ;
+    cout << "Any commands beginning with 'client' must end with a semicolon"
+         << endl ;
+    cout << endl ;
+    cout << "To display the list of commands available from the server "
+         << "please type the command 'show help;'"
+	 << endl ;
+    cout << endl ;
+    cout << endl ;
 }
 
 bool

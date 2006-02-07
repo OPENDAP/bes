@@ -77,6 +77,7 @@ private:
     bool			_strmCreated ;
 
     int				readLine( string &str ) ;
+    void			displayHelp() ;
 public:
     				CmdClient( )
 				    : _client( 0 ),
