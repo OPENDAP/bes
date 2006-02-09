@@ -24,9 +24,13 @@
 using std::endl ;
 
 #include "DODSInitList.h"
+#if 0
 #include "TheRequestHandlerList.h"
+#endif
 #include "HDFRequestHandler.h"
+#if 0
 #include "TheDODSLog.h"
+#endif
 
 static bool
 HDFInit(int, char**)
