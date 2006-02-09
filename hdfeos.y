@@ -94,7 +94,7 @@ Check that the URL is correct.";
 void mem_list_report();
 int hdfeoslex(void);
 void hdfeoserror(char *s);
-void process_group(parser_arg *arg, const string &s);
+static void process_group(parser_arg *arg, const string &s);
 
 %}
 
@@ -379,7 +379,7 @@ strs:		STR
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
 		      }
-		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
+ 		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
 		    }
 		}
                 | strs ',' STR
@@ -405,28 +405,43 @@ hdfeoserror(char *s)
 {
 }
 
-void process_group(parser_arg *arg, const string &id)
+// I wrote this because I thought at one point that it was the solution to 
+// having some of the libdap methods change out from under the hdfeos code
+// here. In the end, I added a new find methof to the AttrTable class that 
+// doesn't require FQNs for th paths. (see AttrTable::recurrsive_find)
+static string
+build_fqn(AttrTable *at, string fqn)
 {
-  AttrTable *at;
-  DBG(cerr << "Processing ID: " << id << endl);
-  /* If we are at the outer most level of attributes, make
-     sure to use the AttrTable in the DAS. */
-  if (STACK_EMPTY) {
-    at = ATTR_OBJ(arg)->get_attr_table(id);
-    if (!at)
-      at = ATTR_OBJ(arg)->append_container(id);
-  }
-  else {
-    at = TOP_OF_STACK->get_attr_table(id);
-    if (!at)
-      at = TOP_OF_STACK->append_container(id);
-  }
-  
-  if(id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
-     id.find("POINT_") == 0) {
-    last_grid_swath = id;
-  }
+    // The strange behavior at the top level is because the top level of an
+    // AttrTable (i.e. the DAS) is anonymous. Another bad design... jhrg 2/8/06
+    if (!at || !at->get_parent() || at->get_name().empty())
+        return fqn;
+    else
+        return build_fqn(at->get_parent(), at->get_name() + string(".") + fqn);
+}
 
-  PUSH(at);
-  DBG(cerr << " Pushed attr_tab: " << at << endl);
+static void 
+process_group(parser_arg * arg, const string & id)
+{
+    AttrTable *at;
+    DBG(cerr << "Processing ID: " << id << endl);
+    /* If we are at the outer most level of attributes, make
+       sure to use the AttrTable in the DAS. */
+    if (STACK_EMPTY) {
+        at = ATTR_OBJ(arg)->get_attr_table(id);
+        if (!at)
+            at = ATTR_OBJ(arg)->append_container(id);
+    } else {
+        at = TOP_OF_STACK->get_attr_table(id);
+        if (!at)
+            at = TOP_OF_STACK->append_container(id);
+    }
+
+    if (id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
+        id.find("POINT_") == 0) {
+        last_grid_swath = id;
+    }
+
+    PUSH(at);
+    DBG(cerr << " Pushed attr_tab: " << at << endl);
 }

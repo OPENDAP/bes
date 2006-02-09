@@ -1,7 +1,7 @@
-/* A Bison parser, made by GNU Bison 1.875c.  */
+/* A Bison parser, made by GNU Bison 2.0.  */
 
 /* Skeleton parser for Yacc-like parsing with Bison,
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -45,8 +45,7 @@
 /* Using locations.  */
 #define YYLSP_NEEDED 0
 
-/* If NAME_PREFIX is specified substitute the variables and functions
-   names.  */
+/* Substitute the variable and function names.  */
 #define yyparse hdfeosparse
 #define yylex   hdfeoslex
 #define yyerror hdfeoserror
@@ -154,7 +153,7 @@ Check that the URL is correct.";
 void mem_list_report();
 int hdfeoslex(void);
 void hdfeoserror(char *s);
-void process_group(parser_arg *arg, const string &s);
+static void process_group(parser_arg *arg, const string &s);
 
 
 
@@ -183,23 +182,26 @@ typedef int YYSTYPE;
 /* Copy the second part of user declarations.  */
 
 
-/* Line 214 of yacc.c.  */
-#line 188 "hdfeos.tab.c"
+/* Line 213 of yacc.c.  */
+#line 187 "hdfeos.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
+
+# ifndef YYFREE
+#  define YYFREE free
+# endif
+# ifndef YYMALLOC
+#  define YYMALLOC malloc
+# endif
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
 # ifdef YYSTACK_USE_ALLOCA
 #  if YYSTACK_USE_ALLOCA
-#   define YYSTACK_ALLOC alloca
-#  endif
-# else
-#  if defined (alloca) || defined (_ALLOCA_H)
-#   define YYSTACK_ALLOC alloca
-#  else
 #   ifdef __GNUC__
 #    define YYSTACK_ALLOC __builtin_alloca
+#   else
+#    define YYSTACK_ALLOC alloca
 #   endif
 #  endif
 # endif
@@ -212,8 +214,8 @@ typedef int YYSTYPE;
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   define YYSIZE_T size_t
 #  endif
-#  define YYSTACK_ALLOC malloc
-#  define YYSTACK_FREE free
+#  define YYSTACK_ALLOC YYMALLOC
+#  define YYSTACK_FREE YYFREE
 # endif
 #endif /* ! defined (yyoverflow) || YYERROR_VERBOSE */
 
@@ -225,7 +227,7 @@ typedef int YYSTYPE;
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  short yyss;
+  short int yyss;
   YYSTYPE yyvs;
   };
 
@@ -235,7 +237,7 @@ union yyalloc
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (short) + sizeof (YYSTYPE))				\
+     ((N) * (sizeof (short int) + sizeof (YYSTYPE))			\
       + YYSTACK_GAP_MAXIMUM)
 
 /* Copy COUNT objects from FROM to TO.  The source and destination do
@@ -277,7 +279,7 @@ union yyalloc
 #if defined (__STDC__) || defined (__cplusplus)
    typedef signed char yysigned_char;
 #else
-   typedef short yysigned_char;
+   typedef short int yysigned_char;
 #endif
 
 /* YYFINAL -- State number of the termination state. */
@@ -360,7 +362,7 @@ static const yysigned_char yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const unsigned short yyrline[] =
+static const unsigned short int yyrline[] =
 {
        0,   154,   154,   154,   159,   163,   167,   162,   175,   179,
      174,   187,   186,   192,   210,   226,   227,   228,   231,   232,
@@ -385,7 +387,7 @@ static const char *const yytname[] =
 # ifdef YYPRINT
 /* YYTOKNUM[YYLEX-NUM] -- Internal token number corresponding to
    token YYLEX-NUM.  */
-static const unsigned short yytoknum[] =
+static const unsigned short int yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,    61,    40,    41,    44
@@ -542,19 +544,52 @@ do								\
     }								\
 while (0)
 
+
 #define YYTERROR	1
 #define YYERRCODE	256
 
-/* YYLLOC_DEFAULT -- Compute the default location (before the actions
-   are run).  */
 
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
 #ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-   ((Current).first_line   = (Rhs)[1].first_line,	\
-    (Current).first_column = (Rhs)[1].first_column,	\
-    (Current).last_line    = (Rhs)[N].last_line,	\
-    (Current).last_column  = (Rhs)[N].last_column)
+# define YYLLOC_DEFAULT(Current, Rhs, N)				\
+    do									\
+      if (N)								\
+	{								\
+	  (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;	\
+	  (Current).first_column = YYRHSLOC (Rhs, 1).first_column;	\
+	  (Current).last_line    = YYRHSLOC (Rhs, N).last_line;		\
+	  (Current).last_column  = YYRHSLOC (Rhs, N).last_column;	\
+	}								\
+      else								\
+	{								\
+	  (Current).first_line   = (Current).last_line   =		\
+	    YYRHSLOC (Rhs, 0).last_line;				\
+	  (Current).first_column = (Current).last_column =		\
+	    YYRHSLOC (Rhs, 0).last_column;				\
+	}								\
+    while (0)
 #endif
+
+
+/* YY_LOCATION_PRINT -- Print the location on the stream.
+   This macro was not mandated originally: define only if we know
+   we won't break user code: when these are the locations we know.  */
+
+#ifndef YY_LOCATION_PRINT
+# if YYLTYPE_IS_TRIVIAL
+#  define YY_LOCATION_PRINT(File, Loc)			\
+     fprintf (File, "%d.%d-%d.%d",			\
+              (Loc).first_line, (Loc).first_column,	\
+              (Loc).last_line,  (Loc).last_column)
+# else
+#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+# endif
+#endif
+
 
 /* YYLEX -- calling `yylex' with the right arguments.  */
 
@@ -578,19 +613,13 @@ do {						\
     YYFPRINTF Args;				\
 } while (0)
 
-# define YYDSYMPRINT(Args)			\
-do {						\
-  if (yydebug)					\
-    yysymprint Args;				\
-} while (0)
-
-# define YYDSYMPRINTF(Title, Token, Value, Location)		\
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)		\
 do {								\
   if (yydebug)							\
     {								\
       YYFPRINTF (stderr, "%s ", Title);				\
       yysymprint (stderr, 					\
-                  Token, Value);	\
+                  Type, Value);	\
       YYFPRINTF (stderr, "\n");					\
     }								\
 } while (0)
@@ -602,12 +631,12 @@ do {								\
 
 #if defined (__STDC__) || defined (__cplusplus)
 static void
-yy_stack_print (short *bottom, short *top)
+yy_stack_print (short int *bottom, short int *top)
 #else
 static void
 yy_stack_print (bottom, top)
-    short *bottom;
-    short *top;
+    short int *bottom;
+    short int *top;
 #endif
 {
   YYFPRINTF (stderr, "Stack now");
@@ -657,8 +686,7 @@ do {					\
 int yydebug;
 #else /* !YYDEBUG */
 # define YYDPRINTF(Args)
-# define YYDSYMPRINT(Args)
-# define YYDSYMPRINTF(Title, Token, Value, Location)
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
@@ -675,10 +703,6 @@ int yydebug;
    Do not make this value too large; the results are undefined if
    SIZE_MAX < YYSTACK_BYTES (YYMAXDEPTH)
    evaluated with infinite-precision integer arithmetic.  */
-
-#if defined (YYMAXDEPTH) && YYMAXDEPTH == 0
-# undef YYMAXDEPTH
-#endif
 
 #ifndef YYMAXDEPTH
 # define YYMAXDEPTH 10000
@@ -761,15 +785,15 @@ yysymprint (yyoutput, yytype, yyvaluep)
   (void) yyvaluep;
 
   if (yytype < YYNTOKENS)
-    {
-      YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
-# ifdef YYPRINT
-      YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
-# endif
-    }
+    YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
   else
     YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
 
+
+# ifdef YYPRINT
+  if (yytype < YYNTOKENS)
+    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
+# endif
   switch (yytype)
     {
       default:
@@ -785,16 +809,21 @@ yysymprint (yyoutput, yytype, yyvaluep)
 
 #if defined (__STDC__) || defined (__cplusplus)
 static void
-yydestruct (int yytype, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 #else
 static void
-yydestruct (yytype, yyvaluep)
+yydestruct (yymsg, yytype, yyvaluep)
+    const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
 #endif
 {
   /* Pacify ``unused variable'' warnings.  */
   (void) yyvaluep;
+
+  if (!yymsg)
+    yymsg = "Deleting";
+  YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
   switch (yytype)
     {
@@ -823,10 +852,10 @@ int yyparse ();
 
 
 
-/* The lookahead symbol.  */
+/* The look-ahead symbol.  */
 int yychar;
 
-/* The semantic value of the lookahead symbol.  */
+/* The semantic value of the look-ahead symbol.  */
 YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
@@ -862,7 +891,7 @@ yyparse ()
   int yyresult;
   /* Number of tokens to shift before error messages enabled.  */
   int yyerrstatus;
-  /* Lookahead token as an internal (translated) token number.  */
+  /* Look-ahead token as an internal (translated) token number.  */
   int yytoken = 0;
 
   /* Three stacks and their tools:
@@ -874,9 +903,9 @@ yyparse ()
      to reallocate them elsewhere.  */
 
   /* The state stack.  */
-  short	yyssa[YYINITDEPTH];
-  short *yyss = yyssa;
-  register short *yyssp;
+  short int yyssa[YYINITDEPTH];
+  short int *yyss = yyssa;
+  register short int *yyssp;
 
   /* The semantic value stack.  */
   YYSTYPE yyvsa[YYINITDEPTH];
@@ -913,6 +942,9 @@ yyparse ()
   yyssp = yyss;
   yyvsp = yyvs;
 
+
+  yyvsp[0] = yylval;
+
   goto yysetstate;
 
 /*------------------------------------------------------------.
@@ -938,7 +970,7 @@ yyparse ()
 	   these so that the &'s don't force the real ones into
 	   memory.  */
 	YYSTYPE *yyvs1 = yyvs;
-	short *yyss1 = yyss;
+	short int *yyss1 = yyss;
 
 
 	/* Each stack pointer address is followed by the size of the
@@ -966,7 +998,7 @@ yyparse ()
 	yystacksize = YYMAXDEPTH;
 
       {
-	short *yyss1 = yyss;
+	short int *yyss1 = yyss;
 	union yyalloc *yyptr =
 	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
 	if (! yyptr)
@@ -1002,18 +1034,18 @@ yyparse ()
 yybackup:
 
 /* Do appropriate processing given the current state.  */
-/* Read a lookahead token if we need one and don't already have one.  */
+/* Read a look-ahead token if we need one and don't already have one.  */
 /* yyresume: */
 
-  /* First try to decide what to do without reference to lookahead token.  */
+  /* First try to decide what to do without reference to look-ahead token.  */
 
   yyn = yypact[yystate];
   if (yyn == YYPACT_NINF)
     goto yydefault;
 
-  /* Not known => get a lookahead token if don't already have one.  */
+  /* Not known => get a look-ahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+  /* YYCHAR is either YYEMPTY or YYEOF or a valid look-ahead symbol.  */
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
@@ -1028,7 +1060,7 @@ yybackup:
   else
     {
       yytoken = YYTRANSLATE (yychar);
-      YYDSYMPRINTF ("Next token is", yytoken, &yylval, &yylloc);
+      YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
     }
 
   /* If the proper action on seeing token YYTOKEN is to reduce or to
@@ -1048,8 +1080,8 @@ yybackup:
   if (yyn == YYFINAL)
     YYACCEPT;
 
-  /* Shift the lookahead token.  */
-  YYDPRINTF ((stderr, "Shifting token %s, ", yytname[yytoken]));
+  /* Shift the look-ahead token.  */
+  YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
   /* Discard the token being shifted unless it is eof.  */
   if (yychar != YYEOF)
@@ -1109,7 +1141,7 @@ yyreduce:
   case 5:
 #line 163 "hdfeos.y"
     {
-		    process_group((parser_arg *)arg, yyvsp[0]);
+		    process_group((parser_arg *)arg, (yyvsp[0]));
 		;}
     break;
 
@@ -1125,7 +1157,7 @@ yyreduce:
   case 8:
 #line 175 "hdfeos.y"
     {
-		    process_group((parser_arg *)arg, yyvsp[0]);
+		    process_group((parser_arg *)arg, (yyvsp[0]));
 		;}
     break;
 
@@ -1141,7 +1173,7 @@ yyreduce:
   case 11:
 #line 187 "hdfeos.y"
     { 
-		    name = yyvsp[0]; 
+		    name = (yyvsp[0]); 
 		;}
     break;
 
@@ -1150,7 +1182,7 @@ yyreduce:
     {
 		    ostringstream name, comment;
 		    name << "comment" << commentnum++;
-		    comment << "\"" << yyvsp[0] << "\"";
+		    comment << "\"" << (yyvsp[0]) << "\"";
 		    DBG(cerr << name.str() << ":" << comment.str() << endl);
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -1192,16 +1224,16 @@ yyreduce:
 		    /* integer. What's worse, long is 64  bits on Alpha and */
 		    /* SGI/IRIX 6.1... jhrg 10/27/96 */
 		    /* type = "Int32"; */
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
+		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
 		    DBG(cerr << " to AttrTable: " << TOP_OF_STACK << endl);
-		    if (!(check_int32(yyvsp[0]) 
-			  || check_uint32(yyvsp[0]))) {
+		    if (!(check_int32((yyvsp[0])) 
+			  || check_uint32((yyvsp[0])))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[0] << "' is not an Int32 value.";
+			msg << "`" << (yyvsp[0]) << "' is not an Int32 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, "Int32", yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, "Int32", (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1214,15 +1246,15 @@ yyreduce:
 #line 269 "hdfeos.y"
     {
 		    type = "Int32";
-		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!(check_int32(yyvsp[0])
-			  || check_uint32(yyvsp[-2]))) {
+		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!(check_int32((yyvsp[0]))
+			  || check_uint32((yyvsp[-2])))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[-2] << "' is not an Int32 value.";
+			msg << "`" << (yyvsp[-2]) << "' is not an Int32 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1235,14 +1267,14 @@ yyreduce:
 #line 289 "hdfeos.y"
     {
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!check_float64(yyvsp[0])) {
+		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!check_float64((yyvsp[0]))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[0] << "' is not a Float64 value.";
+			msg << "`" << (yyvsp[0]) << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1255,14 +1287,14 @@ yyreduce:
 #line 306 "hdfeos.y"
     {
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!check_float64(yyvsp[0])) {
+		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!check_float64((yyvsp[0]))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[-2] << "' is not a Float64 value.";
+			msg << "`" << (yyvsp[-2]) << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1275,14 +1307,14 @@ yyreduce:
 #line 325 "hdfeos.y"
     {
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!check_float64(yyvsp[0])) {
+		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!check_float64((yyvsp[0]))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[0] << "' is not a Float64 value.";
+			msg << "`" << (yyvsp[0]) << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1295,14 +1327,14 @@ yyreduce:
 #line 342 "hdfeos.y"
     {
 		    type = "Float64";
-		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!check_float64(yyvsp[0])) {
+		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!check_float64((yyvsp[0]))) {
 			ostringstream msg;
-			msg << "`" << yyvsp[-2] << "' is not a Float64 value.";
+			msg << "`" << (yyvsp[-2]) << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
-		    else if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    else if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1315,8 +1347,8 @@ yyreduce:
 #line 364 "hdfeos.y"
     {
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1324,14 +1356,14 @@ yyreduce:
 		    }
 		    if (name=="GridName" || name=="SwathName" || name=="PointName") {
 		      // Strip off quotes in new ID
-		      string newname = yyvsp[0]+1;
+		      string newname = (yyvsp[0])+1;
 		      newname.erase(newname.end()-1);
 		      // and convert embedded spaces to _
 		      string::size_type space = 0;
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
 			newname[space] = '_';
 		      }
-		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
+ 		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
 		    }
 		;}
     break;
@@ -1340,8 +1372,8 @@ yyreduce:
 #line 386 "hdfeos.y"
     {
 		    type = "String";
-		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE(yyvsp[0]) << endl);
-		    if (!TOP_OF_STACK->append_attr(name, type, yyvsp[0])) {
+		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE((yyvsp[0])) << endl);
+		    if (!TOP_OF_STACK->append_attr(name, type, (yyvsp[0]))) {
 			ostringstream msg;
 			msg << "`" << name << "' previously defined.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
@@ -1353,8 +1385,8 @@ yyreduce:
 
     }
 
-/* Line 993 of yacc.c.  */
-#line 1358 "hdfeos.tab.c"
+/* Line 1037 of yacc.c.  */
+#line 1390 "hdfeos.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1454,7 +1486,7 @@ yyerrlab:
 
   if (yyerrstatus == 3)
     {
-      /* If just tried and failed to reuse lookahead token after an
+      /* If just tried and failed to reuse look-ahead token after an
 	 error, discard it.  */
 
       if (yychar <= YYEOF)
@@ -1464,23 +1496,22 @@ yyerrlab:
 	  if (yychar == YYEOF)
 	     for (;;)
 	       {
+
 		 YYPOPSTACK;
 		 if (yyssp == yyss)
 		   YYABORT;
-		 YYDSYMPRINTF ("Error: popping", yystos[*yyssp], yyvsp, yylsp);
-		 yydestruct (yystos[*yyssp], yyvsp);
+		 yydestruct ("Error: popping",
+                             yystos[*yyssp], yyvsp);
 	       }
         }
       else
 	{
-	  YYDSYMPRINTF ("Error: discarding", yytoken, &yylval, &yylloc);
-	  yydestruct (yytoken, &yylval);
+	  yydestruct ("Error: discarding", yytoken, &yylval);
 	  yychar = YYEMPTY;
-
 	}
     }
 
-  /* Else will try to reuse lookahead token after shifting the error
+  /* Else will try to reuse look-ahead token after shifting the error
      token.  */
   goto yyerrlab1;
 
@@ -1497,7 +1528,7 @@ yyerrorlab:
      goto yyerrorlab;
 #endif
 
-  yyvsp -= yylen;
+yyvsp -= yylen;
   yyssp -= yylen;
   yystate = *yyssp;
   goto yyerrlab1;
@@ -1527,8 +1558,8 @@ yyerrlab1:
       if (yyssp == yyss)
 	YYABORT;
 
-      YYDSYMPRINTF ("Error: popping", yystos[*yyssp], yyvsp, yylsp);
-      yydestruct (yystos[yystate], yyvsp);
+
+      yydestruct ("Error: popping", yystos[yystate], yyvsp);
       YYPOPSTACK;
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -1537,10 +1568,11 @@ yyerrlab1:
   if (yyn == YYFINAL)
     YYACCEPT;
 
-  YYDPRINTF ((stderr, "Shifting error token, "));
-
   *++yyvsp = yylval;
 
+
+  /* Shift the error token. */
+  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -1557,6 +1589,9 @@ yyacceptlab:
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
 yyabortlab:
+  yydestruct ("Error: discarding lookahead",
+              yytoken, &yylval);
+  yychar = YYEMPTY;
   yyresult = 1;
   goto yyreturn;
 
@@ -1590,29 +1625,43 @@ hdfeoserror(char *s)
 {
 }
 
-void process_group(parser_arg *arg, const string &id)
+static string
+build_fqn(AttrTable *at, string fqn)
 {
-  AttrTable *at;
-  DBG(cerr << "Processing ID: " << id << endl);
-  /* If we are at the outer most level of attributes, make
-     sure to use the AttrTable in the DAS. */
-  if (STACK_EMPTY) {
-    at = ATTR_OBJ(arg)->get_attr_table(id);
-    if (!at)
-      at = ATTR_OBJ(arg)->append_container(id);
-  }
-  else {
-    at = TOP_OF_STACK->get_attr_table(id);
-    if (!at)
-      at = TOP_OF_STACK->append_container(id);
-  }
-  
-  if(id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
-     id.find("POINT_") == 0) {
-    last_grid_swath = id;
-  }
+    // The strange behavior at the top level is because the top level of an
+    // AttrTable (i.e. the DAS) is anonymous. Another bad design... jhrg 2/8/06
+    if (!at || !at->get_parent() || at->get_name().empty())
+        return fqn;
+    else
+        return build_fqn(at->get_parent(), at->get_name() + string(".") + fqn);
+}
 
-  PUSH(at);
-  DBG(cerr << " Pushed attr_tab: " << at << endl);
+static void 
+process_group(parser_arg * arg, const string & id)
+{
+    AttrTable *at;
+    DBG(cerr << "Processing ID: " << id << endl);
+    /* If we are at the outer most level of attributes, make
+       sure to use the AttrTable in the DAS. */
+    if (STACK_EMPTY) {
+        at = ATTR_OBJ(arg)->get_attr_table(id);
+        if (!at)
+            at = ATTR_OBJ(arg)->append_container(id);
+    } else {
+        at = TOP_OF_STACK->get_attr_table(id);
+        if (!at)
+            at = TOP_OF_STACK->append_container(id);
+    }
+
+    if (id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
+        id.find("POINT_") == 0) {
+        // Take AttrTable at and build up the FQN for it, then prefix id with it.
+        // jhrg 2/7/06; see ticket 289. This requires libdap >= 3.6.0
+        //last_grid_swath = build_fqn(at->get_parent(), at->get_name());
+        last_grid_swath = id;
+    }
+
+    PUSH(at);
+    DBG(cerr << " Pushed attr_tab: " << at << endl);
 }
 
