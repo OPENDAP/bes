@@ -1625,6 +1625,10 @@ hdfeoserror(char *s)
 {
 }
 
+// I wrote this because I thought at one point that it was the solution to 
+// having some of the libdap methods change out from under the hdfeos code
+// here. In the end, I added a new find methof to the AttrTable class that 
+// doesn't require FQNs for th paths. (see AttrTable::recurrsive_find)
 static string
 build_fqn(AttrTable *at, string fqn)
 {
@@ -1655,9 +1659,6 @@ process_group(parser_arg * arg, const string & id)
 
     if (id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
         id.find("POINT_") == 0) {
-        // Take AttrTable at and build up the FQN for it, then prefix id with it.
-        // jhrg 2/7/06; see ticket 289. This requires libdap >= 3.6.0
-        //last_grid_swath = build_fqn(at->get_parent(), at->get_name());
         last_grid_swath = id;
     }
 
