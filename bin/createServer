@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-TEMPLATE_DIR=${OPENDAP_ROOT}/daemon/templates
+TEMPLATE_DIR=${OPENDAP_ROOT}/bes/templates
 if [ ! -d ${TEMPLATE_DIR} ]
 then
     echo "the templates directory does not exist."
@@ -63,7 +63,7 @@ q
 EOF
 done
 
-for i in _handler.cc _module.cc _version.h
+for i in _handler.cc _module.cc
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
 ed ./${serverType}${i} << EOF > /dev/null 2>&1
@@ -82,7 +82,7 @@ w
 q
 EOF
 
-for i in Makefile.in configure.in
+for i in Makefile.am configure.ac
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${i}
 ed ./${i} << EOF > /dev/null 2>&1
@@ -92,7 +92,8 @@ w
 q
 EOF
 done
-/bin/cp ${TEMPLATE_DIR}/version.h .
+
+/bin/cp -R ${TEMPLATE_DIR}/conf .
 
 for i in $RESPONSE_TYPES
 do
@@ -142,9 +143,9 @@ a
 /return true
 -1
 a
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
-    TheResponseHandlerList->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
+    DODSResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
 
 .
 w
@@ -154,6 +155,20 @@ EOF
     if [ ! -f ${serverType}_commands.cc ]
     then
 	/bin/cp ${TEMPLATE_DIR}/_commands.cc ./${serverType}_commands.cc
+
+	ed ./Makefile.am << EOF > /dev/null 2>&1
+/^SRVR_HANDLER_SRC
+a
+	${serverType}_commands.cc \\
+.
+/^BES_HANDLER_SRC
+a
+	${serverType}_commands.cc \\
+.
+w
+q
+EOF
+
     fi
     ed ${serverType}_commands.cc << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
@@ -163,8 +178,8 @@ EOF
 -1
 a
     cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << cmd_name << " command" << endl;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
     OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
 
 .
@@ -185,12 +200,15 @@ w
 q
 EOF
 
-    ed ./Makefile.in << EOF > /dev/null 2>&1
-/^SRCS
-. s/$/ ${classPrefix}${i}ResponseHandler.cc
-1
-/^OBJS
-. s/$/ ${classPrefix}${i}ResponseHandler.o
+    ed ./Makefile.am << EOF > /dev/null 2>&1
+/^SRVR_HANDLER_SRC
+a
+	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}ResponseHandler.h \\
+.
+/^BES_HANDLER_SRC
+a
+	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}ResponseHandler.h \\
+.
 w
 q
 EOF
@@ -231,18 +249,11 @@ EOF
 
 done
 
-currdir=`pwd`
-echo "#!/bin/sh" > runServerConfig
-echo "" >> runServerConfig
-echo "./configure --with-modules=${currdir}/${serverType}_module.o --with-packages=\"-L${currdir} -l${serverType}-handler\" --with-aggregation=${OPENDAP_ROOT}/lib/no_aggserver.o" >> runServerConfig
-echo "" >> runServerConfig
-chmod +x runServerConfig
-
 /bin/cp ${TEMPLATE_DIR}/opendap.ini ./opendap.ini
 ed ./opendap.ini << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_TYPE/${serverType}/g
-,s/OPENDAP_DIR/${OPENDAP_ROOT}/g
+,s:OPENDAP_DIR:${OPENDAP_ROOT}:g
 w
 q
 EOF
@@ -252,14 +263,14 @@ echo "*                                                     *"
 echo "* Creating your configuration script                  *"
 echo "*                                                     *"
 echo "*******************************************************"
-autoconf
+autoreconf
 
 echo "*******************************************************"
 echo "*                                                     *"
 echo "* Running your configuration script                   *"
 echo "*                                                     *"
 echo "*******************************************************"
-./configure
+./configure --with-dap=${OPENDAP_ROOT} --with-bes=${OPENDAP_ROOT}
 
 echo "*******************************************************"
 echo "*                                                     *"
@@ -274,7 +285,7 @@ echo "* Your ${classPrefix} files have been created         *"
 echo "*                                                     *"
 echo "* You will need to make modifications to some of the  *"
 echo "* code created here. Please refer to the document     *"
-echo "* OPeNDAPgBuildingServer document for more information*"
+echo "* OPeNDAPCreatingServer document for more information *"
 echo "*                                                     *"
 echo "*******************************************************"
 
