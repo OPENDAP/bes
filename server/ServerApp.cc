@@ -157,7 +157,7 @@ ServerApp::initialize( int argc, char **argv )
     }
 
     bool found = false ;
-    string key = "DODS.ServerUnixSocket" ;
+    string key = "OPeNDAP.ServerUnixSocket" ;
     _unixSocket = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( !found || _unixSocket == "" )
     {

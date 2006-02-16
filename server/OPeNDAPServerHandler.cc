@@ -55,7 +55,7 @@ using std::cerr ;
 OPeNDAPServerHandler::OPeNDAPServerHandler()
 {
     bool found = false ;
-    _method = TheDODSKeys::TheKeys()->get_key( "DODS.ProcessManagerMethod", found ) ;
+    _method = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.ProcessManagerMethod", found ) ;
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "
