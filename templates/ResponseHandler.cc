@@ -1,7 +1,6 @@
 // OPENDAP_RESPONSEResponseHandler.cc
 
 #include "OPENDAP_RESPONSEResponseHandler.h"
-#include "DODSTokenizer.h"
 #include "DODSTextInfo.h"
 
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( string name )

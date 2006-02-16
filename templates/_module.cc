@@ -5,21 +5,21 @@
 using std::endl ;
 
 #include "DODSInitList.h"
-#include "TheRequestHandlerList.h"
+#include "DODSRequestHandlerList.h"
 #include "OPENDAP_CLASSRequestHandler.h"
-#include "TheDODSLog.h"
-#include "TheResponseHandlerList.h"
+#include "DODSLog.h"
+#include "DODSResponseHandlerList.h"
 #include "OPENDAP_CLASSResponseNames.h"
 
 static bool
 OPENDAP_CLASSInit(int, char**)
 {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Initializing OPENDAP_CLASS Handler:" << endl ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Initializing OPENDAP_CLASS Handler:" << endl ;
 
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "    adding " << OPENDAP_CLASS_NAME << " request handler" << endl ;
-    TheRequestHandlerList->add_handler( OPENDAP_CLASS_NAME, new OPENDAP_CLASSRequestHandler( OPENDAP_CLASS_NAME ) ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << OPENDAP_CLASS_NAME << " request handler" << endl ;
+    DODSRequestHandlerList::TheList()->add_handler( OPENDAP_CLASS_NAME, new OPENDAP_CLASSRequestHandler( OPENDAP_CLASS_NAME ) ) ;
 
     return true ;
 }
@@ -27,9 +27,9 @@ OPENDAP_CLASSInit(int, char**)
 static bool
 OPENDAP_CLASSTerm(void)
 {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Removing OPENDAP_CLASS Handlers" << endl;
-    DODSRequestHandler *rh = TheRequestHandlerList->remove_handler( OPENDAP_CLASS_NAME ) ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Removing OPENDAP_CLASS Handlers" << endl;
+    DODSRequestHandler *rh = DODSRequestHandlerList::TheList()->remove_handler( OPENDAP_CLASS_NAME ) ;
     if( rh ) delete rh ;
     return true ;
 }

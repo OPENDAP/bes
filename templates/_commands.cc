@@ -9,15 +9,15 @@ using std::endl ;
 #include "DODSInitList.h"
 #include "DODSInitOrder.h"
 #include "OPeNDAPCommand.h"
-#include "TheDODSLog.h"
+#include "DODSLog.h"
 #include "DODSResponseNames.h"
 #include "OPENDAP_CLASSResponseNames.h"
 
 static bool
 OPENDAP_CLASSCmdInit(int, char**)
 {
-    if( TheDODSLog->is_verbose() )
-	(*TheDODSLog) << "Initializing OPENDAP_CLASS Commands:" << endl ;
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "Initializing OPENDAP_CLASS Commands:" << endl ;
 
     string cmd_name ;
 

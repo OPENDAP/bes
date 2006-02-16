@@ -5,8 +5,8 @@
 #include "DODSResponseException.h"
 #include "DODSResponseNames.h"
 #include "OPENDAP_CLASSResponseNames.h"
-#include "DODSTextInfo.h"
-#include "OPENDAP_TYPE_version.h"
+#include "DODSVersionInfo.h"
+#include "config_OPENDAP_TYPE.h"
 #include "DODSConstraintFuncs.h"
 
 OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( string name )
@@ -24,8 +24,8 @@ bool
 OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers( DODSDataHandlerInterface &dhi )
 {
     bool ret = true ;
-    DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(dhi.response_handler->get_response_object());
-    info->add_data( (string)"    " + OPENDAP_TYPE_version() + "\n" ) ;
+    DODSVersionInfo *info = dynamic_cast<DODSVersionInfo *>(dhi.response_handler->get_response_object() ) ;
+    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return ret ;
 }
 
@@ -35,7 +35,7 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( DODSDataHandlerInterface &
     bool ret = true ;
     DODSInfo *info = dynamic_cast<DODSInfo *>(dhi.response_handler->get_response_object());
 
-    info->add_data( (string)"OPENDAP_TYPE-handler help: " + OPENDAP_TYPE_version() + "\n" ) ;
+    info->add_data( (string)PACKAGE_NAME + " help: " + PACKAGE_VERSION + "\n" );
 
     string key ;
     if( dhi.transmit_protocol == "HTTP" )
