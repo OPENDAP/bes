@@ -96,7 +96,7 @@ DODSInfo::initialize( string key )
 {
     if( key == "" )
     {
-	key = "DODS.Info.Buffered" ;
+	key = "OPeNDAP.Info.Buffered" ;
     }
 
     bool found = false ;

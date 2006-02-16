@@ -46,12 +46,12 @@ using std::cout ;
 #include "DODSKeys.h"
 #include "DODSKeysException.h"
 
-/** @brief default constructor that reads the environment variable "DODS_INI"
- * in order to load key/value pairs.
+/** @brief default constructor that reads loads key/value pairs from the
+ * specified file.
  *
- * This constructor reads the environment variable DODS_INI to determine the
- * initialization file to load. This file holds different key/value pairs for
- * the application, on key/value pair per line separated by an equal (=) sign.
+ * This constructor uses the specified file to load key/value pairs.
+ * This file holds different key/value pairs for the application, one
+ * key/value pair per line separated by an equal (=) sign.
  *
  * key=value
  *
@@ -72,7 +72,7 @@ DODSKeys::DODSKeys( const string &keys_file_name )
     {
 	char path[500] ;
 	getcwd( path, sizeof( path ) ) ;
-	string s = string("DODS: fatal, can not open initialization file ")
+	string s = string("OPeNDAP: fatal, can not open initialization file ")
 		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
 	throw DODSKeysException( s ) ;
@@ -156,7 +156,7 @@ DODSKeys::break_pair(const char* b, string& key, string &value)
 	    {
 		char howmany[256] ;
 		sprintf( howmany, "%d", how_many_equals ) ;
-		string s = string( "DODS: invalid entry " ) + b
+		string s = string( "OPeNDAP: invalid entry " ) + b
 		           + "; there are " + howmany
 			   + " = characters.\n";
 		throw DODSKeysException( s );

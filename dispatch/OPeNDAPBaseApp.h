@@ -34,6 +34,19 @@
 
 #include <OPeNDAPApp.h>
 
+/** @brief Base application object for all BES applications
+ *
+ * Implements the initialization method to initialize all global objects
+ * registered with the Global Initialization routines of BES.
+ *
+ * Implements the terminate method to clean up any global objects registered
+ * with the Global Initialization routines of BES.
+ *
+ * It is up to the derived classes to implement the run method.
+ *
+ * @see OPeNDAPApp
+ * @see DODSGlobalIQ
+ */
 class OPeNDAPBaseApp : public OPeNDAPApp {
 public:
                                 OPeNDAPBaseApp( void ) ;

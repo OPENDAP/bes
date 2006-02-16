@@ -32,6 +32,7 @@
 #include "TheDODSKeys.h"
 #include "DODSKeysException.h"
 
+#define OPENDAP_INI_FILE getenv("OPENDAP_INI")
 #define DODS_INI_FILE getenv("DODS_INI")
 
 DODSKeys *TheDODSKeys::_instance = 0;
@@ -41,12 +42,16 @@ TheDODSKeys::TheKeys()
 {
     if( _instance == 0 )
     {
-	char *dods_ini = DODS_INI_FILE ;
-	if( !dods_ini )
+	char *ini_file = OPENDAP_INI_FILE ;
+	if( !ini_file )
 	{
-	    throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
+	    ini_file = DODS_INI_FILE ;
+	    if( !ini_file )
+	    {
+		throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
+	    }
 	}
-	_instance = new TheDODSKeys( dods_ini ) ;
+	_instance = new TheDODSKeys( ini_file ) ;
     }
     return _instance ;
 }

@@ -65,8 +65,10 @@ DDXResponseHandler::~DDXResponseHandler( )
 void
 DDXResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    // Fill the DDS
-    DDS *dds = new DDS( get_factory(), "virtual" ) ;
+    // Create the DDS.
+    // NOTE: It is the responsbility of the specific request handler to set
+    // the BaseTypeFactory. It is set to NULL here
+    DDS *dds = new DDS( NULL, "virtual" ) ;
     _response = dds ;
     _response_name = DDS_RESPONSE ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;

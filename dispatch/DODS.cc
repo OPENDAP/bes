@@ -355,15 +355,15 @@ DODS::exception_manager( DODSException &e )
 	if( ishttp ) set_mime_text( stdout, dods_error ) ;
 	bool found = false ;
 	string administrator =
-	    TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
+	    TheDODSKeys::TheKeys()->get_key( "OPeNDAP.ServerAdministrator", found ) ;
 	if( administrator=="" )
 	    fprintf( stdout, "%s %s %s\n",
-			     "DODS: internal server error please contact",
+			     "OPeNDAP: internal server error please contact",
 			     DEFAULT_ADMINISTRATOR,
 			     "with the following message:" ) ;
 	else
 	    fprintf( stdout, "%s %s %s\n",
-			     "DODS: internal server error please contact",
+			     "OPeNDAP: internal server error please contact",
 			     administrator.c_str(),
 			     "with the following message:" ) ;
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
@@ -429,7 +429,7 @@ DODS::exception_manager( DODSException &e )
     fprintf( stdout, "Reporting unknown exception.\n" ) ;
     bool found = false ;
     string administrator =
-	TheDODSKeys::TheKeys()->get_key( "DODS.ServerAdministrator", found ) ;
+	TheDODSKeys::TheKeys()->get_key( "OPeNDAP.ServerAdministrator", found ) ;
     fprintf( stdout, "Unmanaged DODS exception\n report to admin %s\n",
 	     administrator.c_str() ) ;
     fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;

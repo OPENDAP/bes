@@ -51,7 +51,7 @@ DODSHeapManager::DODSHeapManager()
 	limit.rlim_max=megabytes(3);
 	if(setrlimit(RLIMIT_DATA, &limit)<0)
 	{
-	    cerr << "DODS: Could not set limit for the heap because "
+	    cerr << "OPeNDAP: Could not set limit for the heap because "
 		 << strerror(errno)
 		 << endl;
 	    exit(1);

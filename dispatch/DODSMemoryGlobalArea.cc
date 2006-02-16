@@ -51,13 +51,14 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	try
 	{
 	    bool found = false ;
-	    string s = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.EmergencyPoolSize", found ) ;
-	    string s1 = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.MaximunHeapSize", found ) ;
-	    string verbose = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.Verbose", found ) ;
-	    string control_heap = TheDODSKeys::TheKeys()->get_key( "DODS.Memory.GlobalArea.ControlHeap", found ) ;
+	    string key = "OPeNDAP.Memory.GlobalArea." ;
+	    string s = TheDODSKeys::TheKeys()->get_key( key + "EmergencyPoolSize", found ) ;
+	    string s1 = TheDODSKeys::TheKeys()->get_key( key + "MaximunHeapSize", found ) ;
+	    string verbose = TheDODSKeys::TheKeys()->get_key( key + "Verbose", found ) ;
+	    string control_heap = TheDODSKeys::TheKeys()->get_key( key + "ControlHeap", found ) ;
 	    if( (s=="") || (s1=="") || (verbose=="") || (control_heap=="") )
 	    {
-		(*DODSLog::TheLog()) << "DODS: Unable to start: "
+		(*DODSLog::TheLog()) << "OPeNDAP: Unable to start: "
 			      << "unable to determine memory keys.\n";
 		DODSMemoryException me;
 		me.set_error_description( "can not determine memory keys.\n" ) ;
@@ -79,7 +80,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		    (*DODSLog::TheLog()) << (long int)(max+1) << " megabytes" << endl ;
 		    if( emergency > max )
 		    {
-			string s = string ( "DODS: " )
+			string s = string ( "OPeNDAP: " )
 				   + "unable to start since the emergency "
 				   + "pool is larger than the maximun size of "
 				   + "the heap.\n" ;
@@ -91,14 +92,14 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		    log_limits() ;
 		    limit.rlim_cur = megabytes( max + 1 ) ;
 		    limit.rlim_max = megabytes( max + 1 ) ;
-		    (*DODSLog::TheLog()) << "DODS: Trying limits soft to "
+		    (*DODSLog::TheLog()) << "OPeNDAP: Trying limits soft to "
 			          << (long int)limit.rlim_cur ;
 		    (*DODSLog::TheLog()) << " and hard to "
 			          << (long int)limit.rlim_max
 			          << endl ;
 		    if( setrlimit( RLIMIT_DATA, &limit ) < 0 )
 		    {
-			string s = string( "DODS: " )
+			string s = string( "OPeNDAP: " )
 				   + "Could not set limit for the heap "
 			           + "because " + strerror(errno) + "\n" ;
 			if( errno == EPERM )
@@ -117,7 +118,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		    _buffer = malloc( megabytes( max ) ) ;
 		    if( !_buffer )
 		    {
-			string s = string( "DODS: " ) 
+			string s = string( "OPeNDAP: " ) 
 				   + "can not get heap large enough to "
 				   + "start running\n" ;
 			(*DODSLog::TheLog()) << s ;
@@ -143,7 +144,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		_buffer = malloc( _size ) ;
 		if( !_buffer )
 		{
-		    (*DODSLog::TheLog()) << "DODS: can not expand heap enough to start running.\n";
+		    (*DODSLog::TheLog()) << "OPeNDAP: can not expand heap enough to start running.\n";
 		    DODSMemoryException me ;
 		    me.set_error_description( "Can not allocate memory\n" ) ;
 		    me.set_amount_of_memory_required( atoi( s.c_str() ) ) ;
@@ -153,7 +154,7 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 		{
 		    if( DODSLog::TheLog()->is_verbose() )
 		    {
-			(*DODSLog::TheLog()) << "DODS: Memory emergency area "
+			(*DODSLog::TheLog()) << "OPeNDAP: Memory emergency area "
 				      << "initialized with size " 
 				      << _size << " megabytes" << endl;
 		    }
@@ -162,14 +163,14 @@ DODSMemoryGlobalArea::DODSMemoryGlobalArea()
 	}
 	catch(DODSException &ex)
 	{
-	    cerr << "DODS: unable to start properly because "
+	    cerr << "OPeNDAP: unable to start properly because "
 		 << ex.get_error_description()
 		 << endl ;
 	    exit(1) ;
 	}
 	catch(...)
 	{
-	    cerr << "DODS: unable to start: undefined exception happened\n" ;
+	    cerr << "OPeNDAP: unable to start: undefined exception happened\n" ;
 	    exit(1) ;
 	}
     }

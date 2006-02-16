@@ -35,7 +35,6 @@
 #include <string>
 
 #include <DODSResponseObject.h>
-#include <BaseTypeFactory.h>
 
 #include "DODSDataHandlerInterface.h"
 #include "DODSTransmitter.h"
@@ -68,34 +67,11 @@ class DODSResponseHandler {
 protected:
     string			_response_name ;
     DODSResponseObject		*_response ;
-    BaseTypeFactory             *d_factory;     // Added. jhrg 2/1/06
     
 				DODSResponseHandler( string name ) ;
 public:
     virtual			~DODSResponseHandler(void) ;
     
-    /** @brief Return the DODSResponseHandler's current BaseType factory
-     *  
-     * Each DODSResponseHandler holds a pointer to a BaseTypeFactory
-     * which is used by DDS t instantiate the child classes of BaseType.
-     * This method returns a pointer to the current factory object stored
-     * in the class.
-     * 
-     * @see BaseTypeFactory in libdap. */
-    virtual BaseTypeFactory *get_factory() {  return d_factory; }
-    
-    /** @brief replace the current factory with a new one.
-     * 
-     * Delete the current BaseTYpeFactory and assing a copy of \e f as the
-     * new factory to use in future operations. 
-     * 
-     * @note Using this method may break existing DDS instances since those
-     * store pointers to the factory and do not copy it. */
-    virtual void set_factory(BaseTypeFactory *f) {
-        delete d_factory;
-        *d_factory = *f;
-    }
-
     /** @brief return the current response object
      *
      * Returns the current response object, null if one has not yet been

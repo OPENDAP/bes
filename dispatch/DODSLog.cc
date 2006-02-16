@@ -49,10 +49,10 @@ DODSLog *DODSLog::_instance = 0 ;
  * determining verbose logging.
  *
  * The file name is determined using the DODSKeys mechanism. The key used is
- * DODS.LogName. The application must be able to write to this directory/file.
+ * OPeNDAP.LogName. The application must be able to write to this directory/file.
  *
  * Verbose logging is determined also using the DODSKeys mechanism. The key
- * used is DODS.LogVerbose.
+ * used is OPeNDAP.LogVerbose.
  *
  * @throws DODSLogException if DODSLogName is not set or if there are
  * problems opening or writing to the log file.
@@ -66,11 +66,11 @@ DODSLog::DODSLog()
 {
     _suspended = 0 ;
     bool found = false ;
-    string log_name = TheDODSKeys::TheKeys()->get_key( "DODS.LogName", found ) ;
+    string log_name = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.LogName", found ) ;
     if( log_name=="" )
     {
 	string err = (string)"OPeNDAP Fatal: unable to determine log file name."
-	             + " Please set DODS.LogName in your initialization file" ;
+	             + " Please set OPeNDAP.LogName in your initialization file" ;
 	cerr << err << endl ;
 	DODSLogException e;
 	e.set_error_description( err ) ;
@@ -96,7 +96,7 @@ DODSLog::DODSLog()
 	}
 	*/
     }
-    string verbose = TheDODSKeys::TheKeys()->get_key( "DODS.LogVerbose", found ) ;
+    string verbose = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.LogVerbose", found ) ;
     if( verbose == "YES" || verbose == "Yes" || verbose == "yes" )
     {
 	_verbose = true ;

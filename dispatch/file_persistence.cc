@@ -44,7 +44,7 @@ FilePersistenceInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Adding File Persistence" << endl;
     ContainerStorageFile *cpf =
-	    new ContainerStorageFile( "DODSFile" ) ;
+	    new ContainerStorageFile( "OPeNDAPContainerFile" ) ;
     ContainerStorageList::TheList()->add_persistence( cpf ) ;
     return true;
 }
@@ -53,7 +53,7 @@ static bool
 FilePersistenceTerm(void) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Removing File Persistence" << endl;
-    ContainerStorageList::TheList()->rem_persistence( "DODSFile" ) ;
+    ContainerStorageList::TheList()->rem_persistence( "OPeNDAPContainerFile" ) ;
     return true ;
 }
 

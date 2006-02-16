@@ -207,7 +207,7 @@ bool
 ContainerStorageList::isnice()
 {
     bool ret = false ;
-    string key = "DODS.Container.Persistence" ;
+    string key = "OPeNDAP.Container.Persistence" ;
     bool found = false ;
     string isnice = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( isnice == "Nice" || isnice == "nice" || isnice == "NICE" )

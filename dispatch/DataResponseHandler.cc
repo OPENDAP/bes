@@ -62,7 +62,9 @@ DataResponseHandler::~DataResponseHandler( )
 void
 DataResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    _response = new DDS( get_factory(), "virtual" ) ;
+    // NOTE: It is the responsbility of the specific request handler to set
+    // the BaseTypeFactory. It is set to NULL here
+    _response = new DDS( NULL, "virtual" ) ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 

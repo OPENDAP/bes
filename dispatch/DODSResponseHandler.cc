@@ -36,10 +36,8 @@
 
 DODSResponseHandler::DODSResponseHandler( string name )
     : _response_name( name ),
-      _response( 0 ),
-      d_factory( 0 )
+      _response( 0 )
 {
-    d_factory = new BaseTypeFactory;
 }
 
 DODSResponseHandler::~DODSResponseHandler( )
@@ -49,8 +47,6 @@ DODSResponseHandler::~DODSResponseHandler( )
 	delete _response ;
     }
     _response = 0 ;
-    
-    delete d_factory; d_factory = 0;
 }
 
 DODSResponseObject *

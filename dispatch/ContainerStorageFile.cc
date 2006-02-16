@@ -74,7 +74,7 @@ using std::ifstream ;
 ContainerStorageFile::ContainerStorageFile( const string &n )
     : ContainerStorage( n )
 {
-    string key = "DODS.Container.Persistence.File." + n ;
+    string key = "OPeNDAP.Container.Persistence.File." + n ;
     bool found = false ;
     string my_file = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( my_file == "" )

@@ -82,7 +82,7 @@ DODSMemoryManager::check_memory_pool()
 { 
     if( _storage_used )
     {
-	*(DODSLog::TheLog()) << "DODS: global pool is used, trying to get it back...";
+	*(DODSLog::TheLog()) << "OPeNDAP: global pool is used, trying to get it back...";
 	//Try to regain the memory...
 	if( _memory->reclaim_memory() )
 	{
@@ -93,7 +93,7 @@ DODSMemoryManager::check_memory_pool()
 	else
 	{
 	    *(DODSLog::TheLog()) << "can not get it!" << endl;
-	    *(DODSLog::TheLog()) << "DODS: Unable to continue: "
+	    *(DODSLog::TheLog()) << "OPeNDAP: Unable to continue: "
 			         << "no emergency memory pool"
 			         << endl;
 	    return false ;
@@ -110,7 +110,7 @@ DODSMemoryManager::release_global_pool() throw (bad_alloc)
     // It releases enough memory for an exception sequence to be carried.
     // Without this pool of memory for emergencies we will get really
     // unexpected behavior from the program.
-    *(DODSLog::TheLog()) << "DODS Warning: low in memory, "
+    *(DODSLog::TheLog()) << "OPeNDAP Warning: low in memory, "
                          << "releasing global memory pool!"
 		         << endl;
     _storage_used = true ;
