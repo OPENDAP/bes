@@ -52,7 +52,7 @@ class DODSGlobalInit : public DODSInitializer {
 public:
                                 DODSGlobalInit(DODSInitFun, DODSTermFun,
 					       DODSInitializer *nextInit,
-					       long lvl);
+					       int lvl);
     virtual                     ~DODSGlobalInit(void);
     virtual bool           	initialize(int argc, char **argv);
     virtual bool           	terminate(void);

@@ -81,9 +81,9 @@ ContainerStorageCatalog::ContainerStorageCatalog( const string &n )
 	throw pe;
     }
 
-    int str_begin = 0 ;
-    int str_end = curr_str.length() ;
-    int semi = 0 ;
+    string::size_type str_begin = 0 ;
+    string::size_type str_end = curr_str.length() ;
+    string::size_type semi = 0 ;
     bool done = false ;
     while( done == false )
     {
@@ -105,7 +105,7 @@ ContainerStorageCatalog::ContainerStorageCatalog( const string &n )
 		done = true ;
 	    }
 
-	    int col = a_pair.find( ":" ) ;
+	    string::size_type col = a_pair.find( ":" ) ;
 	    if( col == -1 )
 	    {
 		string s = (string)"Catalog type match malformed, no colon, "

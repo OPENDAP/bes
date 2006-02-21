@@ -52,7 +52,7 @@
 DODSGlobalInit::DODSGlobalInit( DODSInitFun initFun,
 				DODSTermFun termFun,
 				DODSInitializer *nextInit,
-				long lvl )
+				int lvl )
 {
     _initFun = initFun;
     _termFun = termFun;

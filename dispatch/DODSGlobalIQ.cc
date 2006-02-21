@@ -63,7 +63,7 @@ DODSGlobalIQ::DODSGlobalInit(int argc, char **argv)
     bool retVal = true;
     if( DODSGlobalIQ::is_initialized == false )
     {
-	for(long i = 0; i < 5; i++)
+	for(int i = 0; i < 5; i++)
 	{
 	    if(DODSGlobalInitList[i])
 	    {
@@ -95,7 +95,7 @@ DODSGlobalIQ::DODSGlobalQuit()
 {
     if( DODSGlobalIQ::is_initialized == true )
     {
-	for(long i = 4; i >= 0; i--)
+	for(int i = 4; i >= 0; i--)
 	{
 	    if(DODSGlobalInitList[i])
 	    {

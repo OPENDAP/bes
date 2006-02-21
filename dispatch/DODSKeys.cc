@@ -138,12 +138,12 @@ DODSKeys::break_pair(const char* b, string& key, string &value)
 {
     if((b[0]!='#') && (!only_blanks(b)))//Ignore comments a lines with only spaces
     {
-	register int l=strlen(b);
+	register size_t l=strlen(b);
 	if(l>1)
 	{
 	    register int how_many_equals=0;
 	    int pos=0;
-	    for (register int j=0;j<l;j++)
+	    for (register size_t j=0;j<l;j++)
 	    {
 		if(b[j] == '=')
 		{
