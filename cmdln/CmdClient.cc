@@ -390,7 +390,7 @@ CmdClient::interact()
     while( !done )
     {
 	string message = "" ;
-	int len = this->readLine( message ) ;
+	size_t len = this->readLine( message ) ;
 	if( message == "exit" )
 	{
 	    done = true ;
@@ -415,10 +415,10 @@ CmdClient::interact()
     }
 }
 
-int
+size_t
 CmdClient::readLine( string &msg )
 {
-    int len = 0 ;
+    size_t len = 0 ;
     char *buf = (char*)NULL ;
     buf = ::readline( "OPeNDAPClient> " ) ;
     if( buf && *buf )

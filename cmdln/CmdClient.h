@@ -76,7 +76,7 @@ private:
     ostream *			_strm ;
     bool			_strmCreated ;
 
-    int				readLine( string &str ) ;
+    size_t			readLine( string &str ) ;
     void			displayHelp() ;
 public:
     				CmdClient( )
