@@ -168,7 +168,7 @@ OPeNDAPTokenizer::get_next_token()
 void
 OPeNDAPTokenizer::tokenize( const char *p )
 {
-    int len = strlen( p ) ;
+    size_t len = strlen( p ) ;
     string s = "" ;
     bool passing_raw = false ;
     for( int j = 0; j < len; j++ )
@@ -268,7 +268,7 @@ OPeNDAPTokenizer::tokenize( const char *p )
 string
 OPeNDAPTokenizer::parse_container_name( const string &s, unsigned int &type )
 {
-    int where = s.rfind( ".constraint=", s.size() ) ;
+    string::size_type where = s.rfind( ".constraint=", s.size() ) ;
     if( where < 0 )
     {
 	where = s.rfind( ".attributes=", s.size() ) ;
