@@ -826,9 +826,8 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 	offset++;
     }
 
-    if (H5Sselect_hyperslab
-	(dataspace, H5S_SELECT_SET, dyn_offset, dyn_step, dyn_count,
-	 NULL) < 0) {
+    if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, dyn_offset, dyn_step,
+                            dyn_count, NULL) < 0) {
 	sprintf(error, "h5_dods server: selection error for dataspace %d",
 		dataspace);
 	return 0;
