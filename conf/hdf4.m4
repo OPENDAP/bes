@@ -1,6 +1,5 @@
 dnl AC_CHECK_HDF : Check for hdf4
 dnl args :             action-if-yes, action-if-no
-
 AC_DEFUN([AC_CHECK_HDF4],
 [
   AC_ARG_WITH([hdf4],
@@ -19,7 +18,7 @@ AC_DEFUN([AC_CHECK_HDF4],
             [HDF4_PATH_LIBDIR=""])
 
   dnl This is a very common location for the hdf4 code. jhrg 10/11/05
-  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
+dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
       
   AS_IF([test "z$HDF4_PATH" != "z"],
   [
@@ -40,7 +39,11 @@ AC_DEFUN([AC_CHECK_HDF4],
       AC_CHECK_HDF4_LIB([ac_hdf4_lib_ok='yes'])
     ],
     [
-      for ac_hdf4_libdir in "" /usr/local/hdf4.2r1/lib /opt/hdf4.2r1/lib \ 
+      for ac_hdf4_libdir in "" /usr/local/hdf4.2r1/lib64 /opt/hdf4.2r1/lib64 \ 
+       /usr/hdf4.2r1/lib64 /usr/local/lib64/hdf4.2r1 /opt/lib64/hdf4.2r1 \
+       /usr/lib64/hdf4.2r1 /usr/local/hdf/lib64/ /opt/hdf/lib64 /usr/hdf/lib64 \
+       /usr/local/lib64/hdf /opt/lib64/hdf /usr/lib64/hdf \
+       /usr/local/hdf4.2r1/lib /opt/hdf4.2r1/lib \ 
        /usr/hdf4.2r1/lib /usr/local/lib/hdf4.2r1 /opt/lib/hdf4.2r1 \
        /usr/lib/hdf4.2r1 /usr/local/hdf/lib/ /opt/hdf/lib /usr/hdf/lib \
        /usr/local/lib/hdf /opt/lib/hdf /usr/lib/hdf ; do
@@ -97,17 +100,41 @@ AC_DEFUN([AC_CHECK_HDF4],
 ])
 
 dnl check for the netcdf 2 interface provided by hdf
+dnl it defines the C preprocessor macro HDF_NETCDF_NAME(name) which
+dnl prepends sd_ to name if needed and otherwise keep the name
+dnl as is.
+dnl
+dnl args            action-if-found,
+dnl                 action-if-found with sd_ appended to netcdf symbols,
+dnl                 action-if-no-found
+dnl
+dnl in case it is detected that sd_ should be appended, the C preprocessor
+dnl symbol HDF_SD_NETCDF is defined.
+
 AC_DEFUN([AC_CHECK_HDF4_NETCDF],
 [
   ac_hdf4_netcdf_lib='no'
+  ac_hdf4_sd_netcdf_lib='no'
   ac_hdf4_netcdf_h='no'
   AC_CHECK_HDF4([
     ac_hdf4_netcdf_save_LDFLAGS=$LDFLAGS
     ac_hdf4_netcdf_save_LIBS=$LIBS
     LIBS="$LIBS $HDF4_LIBS"
     LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
-    AC_MSG_CHECKING([for ncopen with hdf link flags])
-    AC_LINK_IFELSE([AC_LANG_CALL([],[ncopen])],
+    AC_MSG_CHECKING([for sd_ncopen])
+    AC_LINK_IFELSE([AC_LANG_CALL([],[sd_ncopen])],
+      [
+        AC_MSG_RESULT([yes])
+        ac_hdf4_sd_netcdf_lib='yes'
+      ],
+      [
+        AC_MSG_RESULT([no])
+        ac_hdf4_sd_netcdf_lib='no'
+      ])
+    AS_IF([test "$ac_hdf4_sd_netcdf_lib" = 'no'],
+    [
+      AC_MSG_CHECKING([for ncopen with hdf link flags])
+      AC_LINK_IFELSE([AC_LANG_CALL([],[ncopen])],
       [
         AC_MSG_RESULT([yes])
         ac_hdf4_netcdf_lib='yes'
@@ -116,6 +143,7 @@ AC_DEFUN([AC_CHECK_HDF4_NETCDF],
         AC_MSG_RESULT([no])
         ac_hdf4_netcdf_lib='no'
       ])
+    ])
     LDFLAGS=$ac_hdf4_netcdf_save_LDFLAGS
     LIBS=$ac_hdf4_netcdf_save_LIBS
 
@@ -125,10 +153,19 @@ AC_DEFUN([AC_CHECK_HDF4_NETCDF],
     CPPFLAGS=$ac_hdf4_netcdf_save_CPPFLAGS
   ])
 
-  AS_IF([test $ac_hdf4_netcdf_lib = 'yes' -a $ac_hdf4_netcdf_h = 'yes'],
-  [m4_if([$1], [], [:], [$1])],
-  [m4_if([$2], [], [:], [$2])])
-  
+  AH_TEMPLATE([HDF_NETCDF_NAME],[A macro that append sd_ to netcdf symbols if needed])
+  AS_IF([test $ac_hdf4_netcdf_h = 'yes' -a $ac_hdf4_sd_netcdf_lib = 'yes'],
+  [
+     AC_DEFINE([HDF_SD_NETCDF],[],[Define if hdf prefixes netcdf symbols by sd])
+     AC_DEFINE([HDF_NETCDF_NAME(name)], [sd_ ## name])
+     m4_if([$2], [], [:], [$2])
+  ],
+  [
+    AC_DEFINE([HDF_NETCDF_NAME(name)], [name])
+    AS_IF([test $ac_hdf4_netcdf_h = 'yes' -a $ac_hdf4_netcdf_lib = 'yes'],
+    [m4_if([$1], [], [:], [$1])],
+    [m4_if([$3], [], [:], [$3])])
+  ])
 ])
 
 AC_DEFUN([AC_CHECK_HDF4_LIB],
