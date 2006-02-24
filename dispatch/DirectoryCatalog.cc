@@ -43,10 +43,12 @@ using std::stringstream ;
 #include "DODSTextInfo.h"
 #include "DODSResponseException.h"
 #include "DODSResponseNames.h"
+#include "GNURegex.h"
 
-DirectoryCatalog::DirectoryCatalog( const string &key )
+DirectoryCatalog::DirectoryCatalog( const string &name )
 {
     bool found = false ;
+    string key = (string)"Catalog." + name + ".RootDirectory" ;
     _rootDir = TheDODSKeys::TheKeys()->get_key( key, found ) ;
     if( !found || _rootDir == "" )
     {
@@ -65,6 +67,20 @@ DirectoryCatalog::DirectoryCatalog( const string &key )
 	throw e ;
     }
     closedir( dip ) ;
+
+    key = (string)"Catalog." + name + ".Exclude" ;
+    string e_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+    if( found && e_str != "" )
+    {
+	buildList( _exclude, e_str ) ;
+    }
+
+    key = (string)"Catalog." + name + ".Include" ;
+    string i_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+    if( found && i_str != "" )
+    {
+	buildList( _include, i_str ) ;
+    }
 }
 
 DirectoryCatalog::~DirectoryCatalog( )
@@ -72,32 +88,32 @@ DirectoryCatalog::~DirectoryCatalog( )
 }
 
 bool
-DirectoryCatalog::show_catalog( const string &container,
+DirectoryCatalog::show_catalog( const string &node,
                                 const string &coi,
 				DODSTextInfo *info )
 {
-    string newdir ;
-    if( container == "" )
+    string fullnode ;
+    if( node == "" )
     {
-	newdir = _rootDir ;
+	fullnode = _rootDir ;
     }
     else
     {
-	newdir = _rootDir + "/" + container ;
+	fullnode = _rootDir + "/" + node ;
     }
-    DIR *dip = opendir( newdir.c_str() ) ;
+    DIR *dip = opendir( fullnode.c_str() ) ;
     if( dip != NULL )
     {
 	struct stat cbuf ;
-	stat( newdir.c_str(), &cbuf ) ;
+	stat( fullnode.c_str(), &cbuf ) ;
 	info->add_data( "        <dataset thredds_collection=\"true\">\n" ) ;
-	if( container == "" )
+	if( node == "" )
 	{
 	    add_stat_info( info, cbuf, "/", "        " ) ;
 	}
 	else
 	{
-	    add_stat_info( info, cbuf, container, "        " ) ;
+	    add_stat_info( info, cbuf, node, "        " ) ;
 	}
 
 	struct dirent *dit;
@@ -105,7 +121,7 @@ DirectoryCatalog::show_catalog( const string &container,
 	while( ( dit = readdir( dip ) ) != NULL )
 	{
 	    string dirEntry = dit->d_name ;
-	    if( dirEntry != "." && dirEntry != ".." )
+	    if( dirEntry != "." && dirEntry != ".." && include( dirEntry ) )
 	    {
 		cnt++ ;
 	    }
@@ -123,9 +139,9 @@ DirectoryCatalog::show_catalog( const string &container,
 	    {
 		struct stat buf;
 		string dirEntry = dit->d_name ;
-		if( dirEntry != "." && dirEntry != ".." )
+		if( dirEntry != "." && dirEntry != ".." && include( dirEntry ) )
 		{
-		    string fullPath = newdir + "/" + dirEntry ;
+		    string fullPath = fullnode + "/" + dirEntry ;
 		    stat( fullPath.c_str(), &buf ) ;
 
 		    // look at the mode and determine if this is a directory
@@ -150,11 +166,11 @@ DirectoryCatalog::show_catalog( const string &container,
     else
     {
 	struct stat buf;
-	int statret = stat( newdir.c_str(), &buf ) ;
+	int statret = stat( fullnode.c_str(), &buf ) ;
 	if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	{
 	    info->add_data( "        <dataset thredds_collection=\"false\">\n" ) ;
-	    add_stat_info( info, buf, container, "        " ) ;
+	    add_stat_info( info, buf, node, "        " ) ;
 	    info->add_data( "        </dataset>\n" ) ;
 	}
 	else
@@ -164,6 +180,74 @@ DirectoryCatalog::show_catalog( const string &container,
     }
 
     return true ;
+}
+
+bool
+DirectoryCatalog::include( const string &inQuestion )
+{
+    bool toInclude = true ;
+    // First check the file against the exclude list. If there is a
+    // match (the node should be excluded) then check the node against
+    // the include list. If there is a match with the include list then
+    // include the node (return true).
+    list<string>::iterator e_iter = _exclude.begin() ;
+    list<string>::iterator e_end = _exclude.end() ;
+    for( ; e_iter != e_end; e_iter++ )
+    {
+	string reg = *e_iter ;
+	Regex reg_expr( reg.c_str() ) ;
+	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	{
+	    toInclude = false ;
+	}
+    }
+
+    if( toInclude == false )
+    {
+	list<string>::iterator i_iter = _include.begin() ;
+	list<string>::iterator i_end = _include.end() ;
+	for( ; i_iter != i_end; i_iter++ )
+	{
+	    string reg = *i_iter ;
+	    Regex reg_expr( reg.c_str() ) ;
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	    {
+		toInclude = true ;
+	    }
+	}
+    }
+    return toInclude ;
+}
+
+void
+DirectoryCatalog::buildList( list<string> &theList, const string &listStr )
+{
+    string::size_type str_begin = 0 ;
+    string::size_type str_end = listStr.length() ;
+    string::size_type semi = 0 ;
+    bool done = false ;
+    while( done == false )
+    {
+	semi = listStr.find( ";", str_begin ) ;
+	if( semi == -1 )
+	{
+	    string s = (string)"Catalog type match malformed, no semicolon, "
+		       "looking for type:regexp;[type:regexp;]" ;
+	    DODSResponseException pe ;
+	    pe.set_error_description( s ) ;
+	    throw pe;
+	}
+	else
+	{
+	    string a_member = listStr.substr( str_begin, semi-str_begin ) ;
+	    str_begin = semi+1 ;
+	    if( semi == str_end-1 )
+	    {
+		done = true ;
+	    }
+	    theList.push_back( a_member ) ;
+	}
+    }
 }
 
 void

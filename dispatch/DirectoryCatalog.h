@@ -34,6 +34,12 @@
 
 #include "sys/stat.h"
 
+#include <list>
+#include <string>
+
+using std::list ;
+using std::string ;
+
 #include "OPeNDAPCatalog.h"
 
 class DODSTextInfo ;
@@ -43,17 +49,23 @@ class DODSTextInfo ;
 class DirectoryCatalog : public OPeNDAPCatalog {
 private:
     string			_rootDir ;
+    list<string>		_exclude ;
+    list<string>		_include ;
+
+    void			buildList( list<string> &theList,
+					   const string &listStr ) ;
+    bool			include( const string &inQuestion ) ;
+    void			add_stat_info( DODSTextInfo *info,
+                                               struct stat &buf,
+					       const string &node,
+					       const string &indent ) ;
 public:
-				DirectoryCatalog( const string &key ) ;
+				DirectoryCatalog( const string &name ) ;
     virtual			~DirectoryCatalog( void ) ;
 
     virtual bool		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      DODSTextInfo *info ) ;
-    void			add_stat_info( DODSTextInfo *info,
-                                               struct stat &buf,
-					       const string &node,
-					       const string &indent ) ;
 };
 
 #endif // I_DirectoryCatalog_h
