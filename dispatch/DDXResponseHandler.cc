@@ -71,17 +71,20 @@ DDXResponseHandler::execute( DODSDataHandlerInterface &dhi )
     DDS *dds = new DDS( NULL, "virtual" ) ;
     _response = dds ;
     _response_name = DDS_RESPONSE ;
+    dhi.action = DDS_RESPONSE ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // Fill the DAS
     DAS *das = new DAS ;
     _response = das ;
     _response_name = DAS_RESPONSE ;
+    dhi.action = DAS_RESPONSE ;
     DODSRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // Transfer the DAS to the DDS
     dds->transfer_attributes( das ) ;
 
+    dhi.action = DDX_RESPONSE ;
     _response = dds ;
 }
 

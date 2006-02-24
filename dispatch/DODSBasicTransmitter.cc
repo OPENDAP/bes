@@ -41,6 +41,7 @@ void
 DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
 {
     das.print( stdout ) ;
+
     fflush( stdout ) ;
 }
 
@@ -50,16 +51,6 @@ DODSBasicTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
     dds.parse_constraint( dhi.data[POST_CONSTRAINT] ) ;
     dds.print_constrained( stdout ) ;
 
-#if 0
-    if( dhi.post_constraint != "" )
-    {
-	printf("The post constraint is: %s\n", dhi.post_constraint.c_str());
-	dds.parse_constraint( dhi.post_constraint ) ;
-	dds.print_constrained( stdout ) ;
-    } else {
-	dds.print( stdout ) ;
-    }
-#endif
     fflush( stdout ) ;
 }
 
@@ -67,38 +58,30 @@ void
 DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
     dhi.first_container();
-    //printf("Data name: %s\n", dhi.container->get_real_name().c_str());
-    //printf("Post CE: %s\n", dhi.post_constraint.c_str());
 
     DODSFilter df;
     df.set_dataset_name(dhi.container->get_real_name());
     df.set_ce(dhi.data[POST_CONSTRAINT]);
     
     df.send_data(dds, stdout, "", false);
-#if 0
-    dds.send( dhi.container->get_real_name(), dhi.data[POST_CONSTRAINT], stdout, false ) ;
-#endif
+
     fflush( stdout ) ;
 }
 
 void
 DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    string constraint = dhi.data[POST_CONSTRAINT] ;
-    if( constraint != "" )
-    {
-#if 0
-        // This method was deprecated and has been removed. jhrg 2/1/06
-	dds.parse_constraint( constraint, stdout, true ) ;
-#endif
-        dds.parse_constraint( constraint ) ;
-    }
-    // FIX: print_xml assumes http
-    // FIX: need to figure out blob
-    // Comment: Using DODSFilter may solve these issues. jhrg 9/16/05
-    dds.print_xml( stdout, !constraint.empty(), ".blob" ) ;
+    cerr << "creating dods filter" << endl ;
+    DODSFilter df;
+    //cerr << "setting dataset name" << endl ;
+    //df.set_dataset_name(dhi.container->get_real_name());
+    cerr << "setting ce" << endl ;
+    df.set_ce(dhi.data[POST_CONSTRAINT]);
 
-    // FIX: Do I need to flush?
+    cerr << "sending ddx to dods filter" << endl ;
+    df.send_ddx( dds, stdout, false ) ;
+    cerr << "done sending ddx to dods filter" << endl ;
+
     fflush( stdout ) ;
 }
 
@@ -107,6 +90,8 @@ DODSBasicTransmitter::send_text( DODSInfo &info,
                                  DODSDataHandlerInterface & )
 {
     info.print( stdout ) ;
+
+    fflush( stdout ) ;
 }
 
 void
@@ -114,5 +99,7 @@ DODSBasicTransmitter::send_html( DODSInfo &info,
                                  DODSDataHandlerInterface & )
 {
     info.print( stdout ) ;
+
+    fflush( stdout ) ;
 }
 
