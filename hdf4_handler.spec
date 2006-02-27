@@ -1,6 +1,6 @@
 Summary:         HDF4 data handler for the OPeNDAP Data server
 Name:            hdf4_handler
-Version:         3.5.0
+Version:         3.6.0
 Release:         1
 License:         LGPL
 Group:           System Environment/Daemons 
@@ -14,7 +14,7 @@ BuildRequires:   libdap-devel hdf-devel
 %description
 This is the hdf4 data handler for our data server. It reads HDF4 and HDF-EOS
 files and returns DAP responses that are compatible with DAP2 and the
-dap-server 3.5 software.
+dap-server 3.6 software.
 
 %prep 
 %setup -q

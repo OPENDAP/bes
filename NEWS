@@ -1,4 +1,6 @@
 
+Version 3.6.0
+
 Due to a fix in the handling of HDFEOS files, this handler requires at least
 libdap 3.6.0.
 
