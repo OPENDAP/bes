@@ -58,7 +58,7 @@ public:
     virtual ~HDFGrid();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &dataset);
-    virtual vector<array_ce> HDFGrid::get_map_constraints();
+    virtual vector<array_ce> get_map_constraints();
     virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
 };
 

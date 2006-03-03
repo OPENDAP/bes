@@ -96,11 +96,11 @@ public:
 		 bool reduce_rank = false);
     void setslab(int *start, int *edge, int *stride, bool reduce_rank = false);
     void unsetslab(void) { _slab.set = _slab.reduce_rank = false; }
-    void hdfistream_sds::set_map_ce(const vector<array_ce> &a_ce) {
+    void set_map_ce(const vector<array_ce> &a_ce) {
 	_map_ce_set = true;
 	_map_ce_vec = a_ce;
     }
-    vector<array_ce> hdfistream_sds::get_map_ce() {
+    vector<array_ce> get_map_ce() {
 	return _map_ce_vec;
     }
     bool is_map_ce_set() {
