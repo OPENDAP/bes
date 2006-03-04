@@ -31,7 +31,6 @@
 
 #include "DODSDefineList.h"
 #include "DODSDefine.h"
-#include "DODSHandlerException.h"
 #include "DODSInfo.h"
 #include "DODSContainer.h"
 

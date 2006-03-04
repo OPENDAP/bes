@@ -32,7 +32,6 @@
 #include "DODSResponseHandler.h"
 #include "DODSResponseObject.h"
 #include "DODSRequestHandler.h"
-#include "DODSHandlerException.h"
 
 DODSResponseHandler::DODSResponseHandler( string name )
     : _response_name( name ),

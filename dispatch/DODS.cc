@@ -407,7 +407,7 @@ DODS::exception_manager( DODSException &e )
 	if( ishttp ) set_mime_text( stdout, dods_error ) ;
 	fprintf( stdout, "Reporting handler exception.\n" ) ;
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return DODS_DATA_HANDLER_FAILURE;
+	return DODS_DATA_HANDLER_PROBLEM;
     }
     DODSResponseException *ranex=dynamic_cast <DODSResponseException*>(&e);
     if(ranex)

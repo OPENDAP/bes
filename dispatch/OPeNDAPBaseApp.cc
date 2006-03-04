@@ -156,8 +156,9 @@ run(void)
 int OPeNDAPBaseApp::
 terminate( int sig )
 {
-    if( sig ) {
-	cerr << "OPeNDAPBaseApp::terminating with value " << sig << endl ;
+    if( sig )
+    {
+	cerr << "OPeNDAPBaseApp::terminating with signal " << sig << endl ;
     }
     DODSGlobalIQ::DODSGlobalQuit() ;
     _isInitialized = false ;
