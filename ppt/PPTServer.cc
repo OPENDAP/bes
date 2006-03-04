@@ -89,7 +89,7 @@ PPTServer::initConnection()
 void
 PPTServer::closeConnection()
 {
-    _mySock->close() ;
+    if( _mySock ) _mySock->close() ;
 }
 
 void

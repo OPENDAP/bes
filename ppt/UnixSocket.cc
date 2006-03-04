@@ -231,6 +231,15 @@ UnixSocket::close()
 	{
 	    remove( _tempSocket.c_str() ) ;
 	}
+	_connected = false ;
+    }
+    if( _listening && _unixSocket != "" )
+    {
+	if( !access( _unixSocket.c_str(), F_OK ) )
+	{
+	    remove( _unixSocket.c_str() ) ;
+	}
+	_listening = false ;
     }
 }
 
