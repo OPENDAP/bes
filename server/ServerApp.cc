@@ -56,8 +56,14 @@ using std::flush ;
 ServerApp::ServerApp()
     : _portVal( 0 ),
       _gotPort( false ),
-      _unixSocket( "" )
+      _unixSocket( "" ),
+      _mypid( 0 ),
+      _ts( 0 ),
+      _us( 0 ),
+      _ps( 0 )
 {
+    _mypid = getpid() ;
+    cout << "**** my pid = " << _mypid << endl ;
 }
 
 ServerApp::~ServerApp()
@@ -67,10 +73,23 @@ ServerApp::~ServerApp()
 void
 ServerApp::signalTerminate( int sig )
 {
+    if( sig == SIGTERM )
+    {
+	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
+	     << ": got terminate signal, exiting!" << endl ;
+	OPeNDAPApp::TheApplication()->terminate( sig ) ;
+	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
+    }
+}
+
+void
+ServerApp::signalInterrupt( int sig )
+{
     if( sig == SIGINT )
     {
-	cout << OPeNDAPApp::TheApplication()->appName() << ":" << getpid()
-	     << ": got termination signal, exiting!" << endl ;
+	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
+	     << ": got interrupt signal, exiting!" << endl ;
+	OPeNDAPApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
@@ -80,8 +99,9 @@ ServerApp::signalRestart( int sig )
 {
     if( sig == SIGUSR1 )
     {
-	cout << OPeNDAPApp::TheApplication()->appName() << ":" << getpid()
+	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
 	     << ": got restart signal." << endl ;
+	OPeNDAPApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_RESTART ) ;
     }
 }
@@ -111,8 +131,17 @@ ServerApp::initialize( int argc, char **argv )
     if( retVal != 0 )
 	return retVal ;
 
+    cout << "Trying to register SIGTERM ... " << flush ;
+    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
+    {
+	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    else
+	cout << "OK" << endl ;
+
     cout << "Trying to register SIGINT ... " << flush ;
-    if( signal( SIGINT, signalTerminate ) == SIG_ERR )
+    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
@@ -179,17 +208,16 @@ ServerApp::run()
 
 	SocketListener listener ;
 
-	TcpSocket ts( _portVal ) ;
-	listener.listen( &ts ) ;
+	_ts = new TcpSocket( _portVal ) ;
+	listener.listen( _ts ) ;
 
-	UnixSocket us( _unixSocket ) ;
-	listener.listen( &us ) ;
+	_us = new UnixSocket( _unixSocket ) ;
+	listener.listen( _us ) ;
 
 	OPeNDAPServerHandler handler ;
 
-	PPTServer ps( &handler, &listener ) ;
-	ps.initConnection() ;
-	ps.closeConnection() ;
+	_ps = new PPTServer( &handler, &listener ) ;
+	_ps->initConnection() ;
     }
     catch( PPTException &pe )
     {
@@ -210,6 +238,38 @@ ServerApp::run()
     }
 
     return 0 ;
+}
+
+int
+ServerApp::terminate( int sig )
+{
+    pid_t apppid = getpid() ;
+    cout << "**** terminating" << endl ;
+    cout << "apppid = " << apppid << endl ;
+    cout << "mypid = " << _mypid << endl ;
+    if( apppid == _mypid )
+    {
+	if( _ps )
+	{
+	    cout << "closing connection" << endl ;
+	    _ps->closeConnection() ;
+	    delete _ps ;
+	}
+	if( _ts )
+	{
+	    cout << "closing tcp socket" << endl ;
+	    _ts->close() ;
+	    delete _ts ;
+	}
+	if( _us )
+	{
+	    cout << "closing unix socket" << endl ;
+	    _us->close() ;
+	    delete _us ;
+	}
+	OPeNDAPBaseApp::terminate( sig ) ;
+    }
+    return sig ;
 }
 
 int

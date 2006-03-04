@@ -35,20 +35,30 @@ using std::string ;
 
 #include "OPeNDAPBaseApp.h"
 
+class TcpSocket ;
+class UnixSocket ;
+class PPTServer ;
+
 class ServerApp : public OPeNDAPBaseApp
 {
 private:
     int				_portVal ;
     bool			_gotPort ;
     string			_unixSocket ;
+    pid_t			_mypid ;
+    TcpSocket			*_ts ;
+    UnixSocket			*_us ;
+    PPTServer			*_ps ;
     void			showVersion() ;
 public:
     				ServerApp() ;
     virtual			~ServerApp() ;
     virtual int			initialize( int argc, char **argv ) ;
     virtual int			run() ;
+    virtual int			terminate( int sig = 0 ) ;
 
     static void			signalTerminate( int sig ) ;
+    static void			signalInterrupt( int sig ) ;
     static void			signalRestart( int sig ) ;
     static void			showUsage() ;
 } ;

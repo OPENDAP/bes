@@ -113,8 +113,9 @@ OPeNDAPServerHandler::handle( Connection *c )
 		error += " " + (string)error_info ;
 	    throw DODSBasicException( error ) ;
 	} 
-	c->closeConnection() ;
+	//c->closeConnection() ;
     }
+    c->closeConnection() ;
 }
 
 void
@@ -157,6 +158,7 @@ OPeNDAPServerHandler::execute( Connection *c )
 			string toSend = "FATAL ERROR: server must exit!" ;
 			c->send( toSend ) ;
 			c->sendExit() ;
+			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
 		    }
 		    break;
@@ -168,15 +170,12 @@ OPeNDAPServerHandler::execute( Connection *c )
 			string toSend = "Data Handler Error: server my exit!" ;
 			c->send( toSend ) ;
 			c->sendExit() ;
+			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
 		    }
 		    break;
 		case DODS_REQUEST_INCORRECT: 
 		case DODS_MEMORY_EXCEPTION:
-#if 0
-		case DODS_MYSQL_CONNECTION_FAILURE: 
-		case DODS_MYSQL_BAD_QUERY:
-#endif
 		case DODS_CONTAINER_PERSISTENCE_ERROR:
 		case DODS_INITIALIZATION_FILE_PROBLEM:
 		case DODS_LOG_FILE_PROBLEM:
