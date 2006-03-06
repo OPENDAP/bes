@@ -1,3 +1,297 @@
+2006-03-06  James Gallagher <jgallagher@opendap.org>
+
+	Updated the release number to three.
+
+2006-03-03  James Gallagher <jgallagher@opendap.org>
+
+	Bumped up the release number since I applied a patch from Patrice
+	Dumas (Fixed a gcc 4.1 compilation problem in htstream.h and
+	HDFGrid.h).
+
+2006-03-03  James Gallagher <jgallagher@opendap.org>
+
+	Applied a patch from Partice Dumas that fixes two compile problems
+	that are flagged by gcc 4.1. In hdfclass/htstream.h and HDFGrid.h
+	some methods were qualified with the class name even though they
+	were inside a class declaration.
+
+2006-02-27  James Gallagher <jgallagher@opendap.org>
+
+	Updated version numbers.
+
+2006-02-24  James Gallagher <jgallagher@opendap.org>
+
+	Applied patches from Patrice Dumas for hdf4_handler.spec and
+	conf/hdf4.m4.
+
+2006-02-14  James Gallagher <jgallagher@opendap.org>
+
+	hdf4_handler.spec: add libdap-devel as a BuildRequires. From a
+	patch by Patrice Dumas
+
+2006-02-09  James Gallagher <jgallagher@opendap.org>
+
+	updated
+
+2006-02-09  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: now requires libdap 3.6.0
+
+2006-02-09  James Gallagher <jgallagher@opendap.org>
+
+	I removed two includes from hdf_module.cc since they no longer
+	appear in the BES software.
+
+2006-02-09  James Gallagher <jgallagher@opendap.org>
+
+	Modified the hdfeos parser (hdfeos.y, ...) so that the aliases
+	work with the changes in libdap. In the end, I modified libdap and
+	wound up using mostly unchanged code here, but I did add a
+	function (unused as of now) that might come in handly later on
+	when we use only the DDX in the servers.
+
+2006-01-24  James Gallagher <jgallagher@opendap.org>
+
+	Modified hdf_handler.cc, eosdas-test.cc and hdfdesc.cc so that
+	they no longer call any of the libdap iostreams methods (which
+	have been removed from libdap).
+
+2006-01-19  James Gallagher <jgallagher@opendap.org>
+
+	Changed set_mime-test() in hdf_handler.cc so that it uses stdout
+	and not cout. I removed the iostreams versions of the
+	set_mime...() function from libdap in version 3.6.
+
+2005-11-04  James Gallagher <jgallagher@opendap.org>
+
+	Moved to the correct place this time!
+
+2005-11-04  James Gallagher <jgallagher@opendap.org>
+
+	Moved to the top level
+
+2005-10-29  James Gallagher <jgallagher@opendap.org>
+
+	Updates from Patrice
+
+2005-10-24  James Gallagher <jgallagher@opendap.org>
+
+	Added version numbers
+
+2005-10-24  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2005-10-23  James Gallagher <jgallagher@opendap.org>
+
+	Added libdap.m4. Property fiddling.
+
+2005-10-18  James Gallagher <jgallagher@opendap.org>
+
+	updated
+
+2005-10-18  James Gallagher <jgallagher@opendap.org>
+
+	Added support for the DDX response
+
+2005-10-17  James Gallagher <jgallagher@opendap.org>
+
+	Initial import.
+
+2005-10-13  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	grammar file (generated)
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	finished moving files from the brnach/release-3-4 to here.
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	same...
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	same...
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	trying to fix my earlier goof (checked out branch/release-3-4 code
+	sub dirs into a trunk directory).
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	Removed strstream in favor of stringstream
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	Update configure's required version of libdap to 3.5.3.
+
+2005-10-12  James Gallagher <jgallagher@opendap.org>
+
+	Updates to the documentation files.
+
+2005-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Added known problems
+
+2005-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Added /usr/local/hdf as a default location for the hdf code.
+
+2005-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Updated for version 3.5 of the dap-server software.
+
+2005-10-11  James Gallagher <jgallagher@opendap.org>
+
+	Removed some unneeded braces.
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bug where ostringstream was not used correctly.
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Corrected a comment and removed some unneeded code.
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Changed from '"' to "\"" to append a double quote to a string
+	attribute. Not the fix for the bug bug an improvement none the
+	less.
+
+2005-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed the Makefile.in from hdfclass
+
+2005-10-03  James Gallagher <jgallagher@opendap.org>
+
+	Build improvements from Patrice Dumas.
+
+2005-09-23  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for tests. Updated README, et cetera.
+
+2005-09-22  James Gallagher <jgallagher@opendap.org>
+
+	Added rpm spec file and two new targets for rpms to the
+	Makefile.am
+
+2005-09-22  James Gallagher <jgallagher@opendap.org>
+
+	Copied from dap-server
+
+2005-09-22  James Gallagher <jgallagher@opendap.org>
+
+	One last set of build fixes for distcheck.
+
+2005-09-22  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes: distcheck now works
+
+2005-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Working on the tests... about half work.
+
+2005-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Added copyright info
+
+2005-09-20  James Gallagher <jgallagher@opendap.org>
+
+	Automake build mostly works, and the Factory class has been added.
+
+2005-09-19  James Gallagher <jgallagher@opendap.org>
+
+	Updated the copyright.
+
+2005-08-08  root
+
+	Auto reset of Subversion properties
+
+2005-07-05  Rob Morris <Robert.O.Morris@jpl.nasa.gov>
+
+	Set eol-style to native on all text file in the trunk
+
+2005-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the dependencies. Build by hand or figure out how to get gcc
+	to do it correctly. Note change of -MM for version 3.x.
+
+2005-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Fixed dependencies. Do not use depend.sh for these unless you edit
+	the resulting Makefile.in by hand.
+
+2005-02-02  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the HDF handler.
+
+2005-02-02  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2004-07-19  Rob Morris <Robert.O.Morris@jpl.nasa.gov>
+
+	Bad patch into the trunc removed.
+
+2004-07-09  James Gallagher <jgallagher@opendap.org>
+
+	07/09/04 jhrg
+
+2004-07-09  James Gallagher <jgallagher@opendap.org>
+
+	Merged with release-3-4-3FCS.
+
+2004-02-19  James Gallagher <jgallagher@opendap.org>
+
+	Merged with release-3-4-2FCS and resolved conflicts.
+
+2004-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Switched from strstream to stringstream.
+
+2004-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Uses stringstream in place of srtstream. Fixed bug introduced in
+	the last rev where Structure member names were not picked up.
+
+2004-02-04  James Gallagher <jgallagher@opendap.org>
+
+	Removed Pix methods.
+
+2004-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Remove List from build
+
+2004-01-26  James Gallagher <jgallagher@opendap.org>
+
+	Make Depend.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2004-01-26  James Gallagher  <jimg@comet.dods.org>
 
 	* I moved the release-3-4 tag to a branch (because at least some
