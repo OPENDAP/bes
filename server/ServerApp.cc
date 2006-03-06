@@ -244,26 +244,20 @@ int
 ServerApp::terminate( int sig )
 {
     pid_t apppid = getpid() ;
-    cout << "**** terminating" << endl ;
-    cout << "apppid = " << apppid << endl ;
-    cout << "mypid = " << _mypid << endl ;
     if( apppid == _mypid )
     {
 	if( _ps )
 	{
-	    cout << "closing connection" << endl ;
 	    _ps->closeConnection() ;
 	    delete _ps ;
 	}
 	if( _ts )
 	{
-	    cout << "closing tcp socket" << endl ;
 	    _ts->close() ;
 	    delete _ts ;
 	}
 	if( _us )
 	{
-	    cout << "closing unix socket" << endl ;
 	    _us->close() ;
 	    delete _us ;
 	}
