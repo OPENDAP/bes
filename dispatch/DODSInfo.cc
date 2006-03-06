@@ -109,7 +109,6 @@ DODSInfo::initialize( string key )
     }
     else
     {
-	_strm = &cout ;
 	_buffered = false ;
     }
 }
@@ -127,7 +126,14 @@ DODSInfo::add_data( const string &s )
 	set_mime_text( stdout, _otype ) ;
 	_header = true ;
     }
-    (*_strm) << s ;
+    if( !_buffered )
+    {
+	fprintf( stdout, "%s", s.c_str() ) ;
+    }
+    else
+    {
+	(*_strm) << s ;
+    }
 }
 
 /** @brief add data from a file to the informational object.
