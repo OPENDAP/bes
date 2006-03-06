@@ -121,7 +121,7 @@ DODS::execute_request()
     catch( Error &e )
     {
 	if( _dhi.transmit_protocol == "HTTP" ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "%s\n", e.error_message().c_str() ) ;
+	fprintf( stdout, "%s\n", e.get_error_message().c_str() ) ;
     }
     catch( bad_alloc &b )
     {
