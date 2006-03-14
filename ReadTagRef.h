@@ -63,6 +63,7 @@
 
 class ReadTagRef {
 public:
+  virtual ~ReadTagRef() {}
   virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error) = 0;
 };
 
