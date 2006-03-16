@@ -1,3 +1,18 @@
+2006-03-14  James Gallagher <jgallagher@opendap.org>
+
+	Added code to hdfdesc.cc and hdf_handler.cc so that if the
+	cache dir is not given or not usable, the handler now defaults
+	to not caching the files (as opposed to throwing an exception).
+	Also added a virtual destructor to ReadTagRef.h.
+
+2006-03-06  James Gallagher <jgallagher@opendap.org>
+
+	Updated for release 3.6.0-3.
+
+2006-03-06  James Gallagher <jgallagher@opendap.org>
+
+	Updated the release number to three.
+
 2006-03-06  James Gallagher <jgallagher@opendap.org>
 
 	Updated the release number to three.

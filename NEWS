@@ -1,4 +1,19 @@
 
+Version 3.6.1
+
+The handler has never been very good about situations where the cache 
+directory is bad or missing. That is, if the handler was not told where to
+write files it caches, it was writing them in same directory that holds
+the data. The problem with this is/was that the server often does not have
+write access to that directory. Furtermore, the server always cached parts
+of some responses, even if built with the NO_CACHE compile-time option. Bummer.
+This, combined with the first problem meant that a misconfigured server
+would often crash (and return a particularly inscrutable error message as well).
+This has been fixed. The server now checks to see if the cache directory is
+writable and defaults to not caching DAS and DDS objects when caching won't
+work. This does degrade the performance of the server, so an error message
+is written to the httpd error log.
+
 Version 3.6.0
 
 Due to a fix in the handling of HDFEOS files, this handler requires at least
