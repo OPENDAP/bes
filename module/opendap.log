@@ -1,0 +1,45 @@
+[MST Thu Mar 23 14:14:26 2006 id: 1367] Initializing OPeNDAP Default Commands
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding get command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding get.das command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding get.dds command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding get.ddx command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding get.dods command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.help command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.process command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.containers command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.definitions command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.keys command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.version command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.status command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.catalog command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.catalog command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding show.info command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding define command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding set command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding delete command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding delete.container command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding delete.definition command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding delete.definitions command
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding parser exception callback
+[MST Thu Mar 23 14:14:26 2006 id: 1367] Initializing OPeNDAP:
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding das response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding dds response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding ddx response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding dods response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding help response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding process response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding containers response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding definitions response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding keys response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding version response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding status response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding catalog response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding define response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding set response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding delete response handler
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding basic transmitter
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding HTTP transmitter
+[MST Thu Mar 23 14:14:26 2006 id: 1367]     adding volatile persistence
+[MST Thu Mar 23 14:14:26 2006 id: 1367] Removing OPeNDAP Default Commands
+[MST Thu Mar 23 14:14:26 2006 id: 1367] Removing OPeNDAP Response Handlers
