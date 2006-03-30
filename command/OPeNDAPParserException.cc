@@ -49,5 +49,6 @@ OPeNDAPParserException::handleException( DODSException &e,
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return OPENDAP_PARSER_ERROR;
     }
+    return 0 ;
 }
 
