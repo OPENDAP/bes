@@ -34,8 +34,6 @@
 
 #include "DODSBasicTransmitter.h"
 
-#define HTTP_TRANSMITTER "HTTP"
-
 class DODSBasicHttpTransmitter : public DODSBasicTransmitter
 {
 public:

@@ -39,16 +39,21 @@
 
 #include "DODSDataRequestInterface.h"
 
+class DODSApacheRequests ;
+
 class DODSApacheWrapper
 {
     char *		_data_request ;
     char *		_user_name ;
+    DODSApacheRequests	*_requests ;
 public:
     			DODSApacheWrapper() ;
     			~DODSApacheWrapper() ;
 
     int			call_DODS( const DODSDataRequestInterface &re ) ;
-    const char *	process_request( const char *s ) ;
+    void		process_request( const char *s ) ;
+    const char *	get_first_request() ;
+    const char *	get_next_request() ;
     const char *	process_user( const char *s ) ;
 };
 

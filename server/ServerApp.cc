@@ -53,6 +53,9 @@ using std::flush ;
 #include "SocketException.h"
 #include "DODSMemoryManager.h"
 
+#include "dods_module.h"
+#include "opendap_commands.h"
+
 ServerApp::ServerApp()
     : _portVal( 0 ),
       _gotPort( false ),
@@ -127,10 +130,6 @@ ServerApp::showVersion()
 int
 ServerApp::initialize( int argc, char **argv )
 {
-    int retVal = OPeNDAPBaseApp::initialize( argc, argv ) ;
-    if( retVal != 0 )
-	return retVal ;
-
     cout << "Trying to register SIGTERM ... " << flush ;
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
@@ -191,12 +190,15 @@ ServerApp::initialize( int argc, char **argv )
     if( !found || _unixSocket == "" )
     {
 	cout << "Unable to determine unix socket" << endl ;
-	cout << "Please " << key << " in the opendap initialization file"
+	cout << "Please set " << key << " in the opendap initialization file"
 	     << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 
-    return 0 ;
+    dods_module::initialize( argc, argv ) ;
+    opendap_commands::initialize( argc, argv ) ;
+
+    return OPeNDAPBaseApp::initialize( argc, argv ) ;
 }
 
 int

@@ -41,8 +41,9 @@ uninstall-local:
 	done
 
 # Maybe the source files for these should be added to this directory.
-MODS = ../command/opendap_commands.o ../dispatch/dods_module.o
+MODS = 
 
 MODOBJS=OPeNDAPServerHandler.o ServerApp.o
 
 SERVER_LIBS=-L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
+

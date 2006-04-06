@@ -40,7 +40,7 @@ using std::stringstream ;
 
 #include "DirectoryCatalog.h"
 #include "TheDODSKeys.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "DODSResponseException.h"
 #include "DODSResponseNames.h"
 #include "GNURegex.h"
@@ -90,7 +90,7 @@ DirectoryCatalog::~DirectoryCatalog( )
 bool
 DirectoryCatalog::show_catalog( const string &node,
                                 const string &coi,
-				DODSTextInfo *info )
+				DODSInfo *info )
 {
     string fullnode ;
     if( node == "" )
@@ -251,7 +251,7 @@ DirectoryCatalog::buildList( list<string> &theList, const string &listStr )
 }
 
 void
-DirectoryCatalog::add_stat_info( DODSTextInfo *info,
+DirectoryCatalog::add_stat_info( DODSInfo *info,
 				 struct stat &buf,
 				 const string &node,
 				 const string &indent )

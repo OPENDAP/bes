@@ -39,7 +39,7 @@ using std::list ;
 using std::string ;
 
 class OPeNDAPCatalog ;
-class DODSTextInfo ;
+class DODSInfo ;
 
 class CatalogList
 {
@@ -54,7 +54,7 @@ public:
     virtual void		add_catalog( OPeNDAPCatalog *catalog ) ;
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
-					      DODSTextInfo *info ) ;
+					      DODSInfo *info ) ;
 
     static CatalogList *	TheCatalogList() ;
 } ;

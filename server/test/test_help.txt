@@ -1,0 +1,3 @@
+Added commands in the test handler
+    test sig - test the raising of a signal from a loaded handler
+    test ehm - test the throwing of exceptions from a loaded handler

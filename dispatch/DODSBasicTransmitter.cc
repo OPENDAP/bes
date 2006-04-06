@@ -71,16 +71,12 @@ DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 void
 DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    cerr << "creating dods filter" << endl ;
     DODSFilter df;
     //cerr << "setting dataset name" << endl ;
     //df.set_dataset_name(dhi.container->get_real_name());
-    cerr << "setting ce" << endl ;
     df.set_ce(dhi.data[POST_CONSTRAINT]);
 
-    cerr << "sending ddx to dods filter" << endl ;
     df.send_ddx( dds, stdout, false ) ;
-    cerr << "done sending ddx to dods filter" << endl ;
 
     fflush( stdout ) ;
 }

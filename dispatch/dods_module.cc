@@ -33,8 +33,8 @@
 
 using std::endl ;
 
-#include "DODSInitList.h"
-#include "DODSInitOrder.h"
+#include "dods_module.h"
+
 #include "DODSResponseNames.h"
 #include "DODSResponseHandlerList.h"
 
@@ -58,6 +58,7 @@ using std::endl ;
 
 #include "DeleteResponseHandler.h"
 
+#include "OPeNDAPTransmitterNames.h"
 #include "DODSReturnManager.h"
 #include "DODSBasicTransmitter.h"
 #include "DODSBasicHttpTransmitter.h"
@@ -66,8 +67,9 @@ using std::endl ;
 
 #include "DODSLog.h"
 
-static bool
-DODSModuleInit(int, char**) {
+int
+dods_module::initialize(int, char**)
+{
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Initializing DODS:" << endl;
 
@@ -142,45 +144,22 @@ DODSModuleInit(int, char**) {
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " persistence" << endl;
     ContainerStorageList::TheList()->add_persistence( new ContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-    return true;
+    return 0 ;
 }
 
-static bool
-DODSModuleTerm(void) {
+int
+dods_module::terminate(void)
+{
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Removing DODS Response Handlers" << endl;
+
     DODSResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
     DODSResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     DODSResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     DODSResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
     DODSResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
     DODSResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
-    return true;
+
+    return 0;
 }
 
-FUNINITQUIT(DODSModuleInit, DODSModuleTerm, DODSMODULE_INIT);
-
-// $Log: dods_module.cc,v $
-// Revision 1.7  2005/04/19 17:53:34  pwest
-// added keys handler for show keys command
-//
-// Revision 1.6  2005/03/17 19:26:22  pwest
-// added delete command to delete a specific container, a specific definition, or all definitions
-//
-// Revision 1.5  2005/03/15 19:55:36  pwest
-// show containers and show definitions
-//
-// Revision 1.4  2005/02/09 19:46:55  pwest
-// added basic transmitter and http transmitter to return manager
-//
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

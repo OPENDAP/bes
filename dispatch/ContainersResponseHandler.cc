@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "ContainersResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "ContainerStorageList.h"
 
 ContainersResponseHandler::ContainersResponseHandler( string name )
@@ -48,18 +48,18 @@ ContainersResponseHandler::~ContainersResponseHandler( )
  * This response handler knows how to retrieve the list of containers
  * currently defined in the server. It simply asks the container persistence
  * list, that all containers have registered with, to show all containers
- * given the DODSTextInfo object created here.
+ * given the DODSInfo object created here.
  *
  * @param dhi structure that holds request and response information
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  */
 void
 ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
     ContainerStorageList::TheList()->show_containers( *info ) ;
 }
@@ -71,7 +71,7 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -81,7 +81,7 @@ ContainersResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi );
     }
 }

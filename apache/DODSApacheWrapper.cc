@@ -34,13 +34,17 @@
 using std::string ;
 
 #include "DODSApacheWrapper.h"
+#include "DODSApacheRequests.h"
 #include "DODSApache.h"
 #include "DODSProcessEncodedString.h"
+#include "DODSGlobalIQ.h"
 
 DODSApacheWrapper::DODSApacheWrapper()
 {
     _data_request = 0 ;
     _user_name = 0 ;
+    _requests = 0 ;
+    DODSGlobalIQ::DODSGlobalInit( 0, 0 ) ;
 }
 
 DODSApacheWrapper::~DODSApacheWrapper()
@@ -55,6 +59,7 @@ DODSApacheWrapper::~DODSApacheWrapper()
 	delete [] _user_name ;
 	_user_name = 0 ;
     }
+    DODSGlobalIQ::DODSGlobalQuit() ;
 }
 
 /** @brief Execute the given request using DODSApache interface
@@ -75,16 +80,44 @@ DODSApacheWrapper::call_DODS( const DODSDataRequestInterface & re )
 /** @brief Find the request from the URL and convert it to readable format
 
     @param s URL to convert into an OpenDAP request
-    @return Resulting OpenDAP request string
  */
-const char *
+void
 DODSApacheWrapper::process_request(const char*s)
 {
     DODSProcessEncodedString h( s ) ;
     string str = h.get_key( "request" ) ;
-    _data_request = new char[strlen( str.c_str() ) + 1] ;
-    strcpy( _data_request, str.c_str() ) ;
-    return _data_request ;
+    _requests = new DODSApacheRequests( str ) ;
+}
+
+const char *
+DODSApacheWrapper::get_first_request()
+{
+    if( _requests )
+    {
+	DODSApacheRequests::requests_citer rcurr = _requests->get_first_request() ;
+	DODSApacheRequests::requests_citer rend = _requests->get_end_request() ;
+	if( rcurr == rend )
+	    return 0 ;
+	return (*rcurr).c_str() ;
+    }
+    return 0 ;
+}
+
+const char *
+DODSApacheWrapper::get_next_request()
+{
+    if( _requests )
+    {
+	static DODSApacheRequests::requests_citer rcurr = _requests->get_first_request() ;
+	static DODSApacheRequests::requests_citer rend = _requests->get_end_request() ;
+	if( rcurr == rend )
+	    return 0 ;
+	rcurr++ ;
+	if( rcurr == rend )
+	    return 0 ;
+	return (*rcurr).c_str() ;
+    }
+    return 0 ;
 }
 
 /** @brief Find the username from the URL and convert it to readable format

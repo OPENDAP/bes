@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "DefineResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "OPeNDAPSilentInfo.h"
 #include "DODSDefine.h"
 #include "DODSDefineList.h"
@@ -54,7 +54,7 @@ DefineResponseHandler::~DefineResponseHandler( )
  * The DODSDefine object is created using the containers, constraints,
  * attribute lists and aggregation command parsed in the parse method.
  *
- * The response object built for this command is a DODSTextInfo response
+ * The response object built for this command is a DODSInfo response
  * object. It will contain one of two possible responses:
  *
  * Successfully added definition &lt;def_name&gt;
@@ -65,7 +65,7 @@ DefineResponseHandler::~DefineResponseHandler( )
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSDefine
  * @see DODSDefineList
  */
@@ -79,7 +79,7 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
     else
     {
-	info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+	info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     }
     _response = info ;
     
@@ -112,13 +112,13 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * A DODSTextInfo response object was built in the exeucte command to inform
+ * A DODSInfo response object was built in the exeucte command to inform
  * the user whether the definition was successfully added or replaced. The
  * method send_text is called on the DODSTransmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -129,7 +129,7 @@ DefineResponseHandler::transmit( DODSTransmitter *transmitter,
     if( _response )
     {
         // If this dynamic_cast is to a reference an not a pointer, then if
-        // _response is not a DODSTextInfo the cast will throw bad_cast. 
+        // _response is not a DODSInfo the cast will throw bad_cast. 
         // Casting to a pointer will make ti null on error. jhrg 11/10/2005
 	DODSInfo *ti = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *ti, dhi ) ;

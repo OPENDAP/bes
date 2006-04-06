@@ -47,10 +47,9 @@ using std::ostringstream ;
  * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSXMLInfo::DODSXMLInfo( ObjectType otype )
-    : DODSTextInfo( otype )
+DODSXMLInfo::DODSXMLInfo( const string &buffer_key, ObjectType otype )
+    : DODSInfo( buffer_key, otype )
 {
-    initialize( "" ) ;
 }
 
 /** @brief constructs an html information response object.
@@ -62,10 +61,11 @@ DODSXMLInfo::DODSXMLInfo( ObjectType otype )
  * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSXMLInfo::DODSXMLInfo( bool is_http, ObjectType otype )
-    : DODSTextInfo( is_http, otype )
+DODSXMLInfo::DODSXMLInfo( bool is_http,
+                          const string &buffer_key,
+			  ObjectType otype )
+    : DODSInfo( is_http, buffer_key, otype )
 {
-    initialize( "" ) ;
 }
 
 DODSXMLInfo::~DODSXMLInfo()

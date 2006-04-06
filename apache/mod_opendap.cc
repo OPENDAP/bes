@@ -149,7 +149,6 @@ static int opendap_handler(request_rec *r)
     rq.user_address=r->connection->remote_ip;
     rq.user_agent = ap_table_get(r->headers_in, "User-Agent");
 
-    DODSApacheWrapper wrapper;
     const char* m_method = r->method;
     if (!m_method) 
     {
@@ -157,11 +156,12 @@ static int opendap_handler(request_rec *r)
 	return SERVER_ERROR;
     }
 
+    DODSApacheWrapper wrapper;
     if ( strcmp(m_method, "GET") == 0 ) 
     {
 	if(r->parsed_uri.query)
 	{
-	    rq.request=wrapper.process_request(r->parsed_uri.query);
+	    wrapper.process_request(r->parsed_uri.query);
 	    rq.cookie=wrapper.process_user(r->parsed_uri.query);
 	}
 	else
@@ -174,7 +174,7 @@ static int opendap_handler(request_rec *r)
     {
 	const char *post_data=0;
 	util_read(r, &post_data);
-	rq.request=wrapper.process_request(post_data);
+	wrapper.process_request(post_data);
 	rq.cookie=wrapper.process_user(post_data);
     }
     else
@@ -193,7 +193,12 @@ static int opendap_handler(request_rec *r)
 	rq.cookie = ap_table_get( r->headers_in, "Cookie" ) ;
     }
 
-    wrapper.call_DODS(rq);
+    rq.request = wrapper.get_first_request() ;
+    while( rq.request )
+    {
+	wrapper.call_DODS(rq);
+	rq.request = wrapper.get_next_request() ;
+    }
 
     // always flush the socket at the end...
     // and since stdout is now the tcp/ip socket for this connection

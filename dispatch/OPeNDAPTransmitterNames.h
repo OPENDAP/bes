@@ -1,4 +1,4 @@
-// OPeNDAPModule.h
+// OPeNDAPTransmitterNames.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,19 +29,21 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef A_OPeNDAPModule_H
-#define A_OPeNDAPModule_H 1
+#ifndef D_OPeNDAPTransmitterNames_H
+#define D_OPeNDAPTransmitterNames_H 1
 
-#include "OPeNDAPAbstractModule.h"
+/** @brief macros representing the default transmitter objects
+ *
+ * These include
+ * <pre>
+ * basic
+ * HTTP
+ * cgi
+ * </pre>
+ */
 
-class OPeNDAPModule : public OPeNDAPAbstractModule
-{
-public:
-    				OPeNDAPModule() {}
-    virtual		    	~OPeNDAPModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
-} ;
+#define BASIC_TRANSMITTER "basic"
+#define HTTP_TRANSMITTER "http"
 
-#endif // A_OPeNDAPModule_H
+#endif // E_OPeNDAPTransmitterNames_H
 

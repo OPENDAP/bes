@@ -1,4 +1,4 @@
-// file_persistence.cc
+// TestSigResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,41 +29,52 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include <iostream>
+#include <signal.h>
 
-using std::endl ;
+#include "TestSigResponseHandler.h"
 
-#include "DODSInitList.h"
-#include "DODSInitOrder.h"
-#include "ContainerStorageFile.h"
-#include "ContainerStorageList.h"
-#include "DODSLog.h"
-
-static bool
-FilePersistenceInit(int, char**) {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Adding File Persistence" << endl;
-    ContainerStorageFile *cpf =
-	    new ContainerStorageFile( "OPeNDAPContainerFile" ) ;
-    ContainerStorageList::TheList()->add_persistence( cpf ) ;
-    return true;
+TestSigResponseHandler::TestSigResponseHandler( string name )
+    : DODSResponseHandler( name )
+{
 }
 
-static bool
-FilePersistenceTerm(void) {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing File Persistence" << endl;
-    ContainerStorageList::TheList()->rem_persistence( "OPeNDAPContainerFile" ) ;
-    return true ;
+TestSigResponseHandler::~TestSigResponseHandler( )
+{
 }
 
-FUNINITQUIT( FilePersistenceInit, FilePersistenceTerm, PERSISTENCE_INIT ) ;
+/** @brief executes the command 'test sig;'
+ *
+ * @param dhi structure that holds request and response information
+ * @throws DODSResponseException if there is a problem building the
+ * response object
+ * @see _DODSDataHandlerInterface
+ * @see DODSRequestHandlerList
+ */
+void
+TestSigResponseHandler::execute( DODSDataHandlerInterface &dhi )
+{
+    raise( SIGINT ) ;
+}
 
-// $Log: file_persistence.cc,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//
+/** @brief transmit the response object built by the execute command
+ * using the specified transmitter object
+ *
+ * If a response object was built then transmit it
+ *
+ * @param transmitter object that knows how to transmit specific basic types
+ * @param dhi structure that holds the request and response information
+ * @see DODSTransmitter
+ * @see _DODSDataHandlerInterface
+ */
+void
+TestSigResponseHandler::transmit( DODSTransmitter *transmitter,
+                              DODSDataHandlerInterface &dhi )
+{
+}
+
+DODSResponseHandler *
+TestSigResponseHandler::TestSigResponseBuilder( string handler_name )
+{
+    return new TestSigResponseHandler( handler_name ) ;
+}
+

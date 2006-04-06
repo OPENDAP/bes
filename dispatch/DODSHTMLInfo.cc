@@ -44,13 +44,12 @@ using std::ostringstream ;
  * Uses the default DODS.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
  *
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSHTMLInfo::DODSHTMLInfo( ObjectType otype)
-    : DODSTextInfo( otype )
+DODSHTMLInfo::DODSHTMLInfo( const string &buffer_key, ObjectType otype)
+    : DODSInfo( buffer_key, otype )
 {
-    initialize( "" ) ;
 }
 
 /** @brief constructs an html information response object.
@@ -59,17 +58,34 @@ DODSHTMLInfo::DODSHTMLInfo( ObjectType otype)
  * determine whether the information should be buffered or not.
  *
  * @param is_http whether the response is going to a browser
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSResponseObject
  */
-DODSHTMLInfo::DODSHTMLInfo( bool is_http, ObjectType otype )
-    : DODSTextInfo( is_http, otype )
+DODSHTMLInfo::DODSHTMLInfo( bool is_http,
+                            const string &buffer_key,
+			    ObjectType otype )
+    : DODSInfo( is_http, buffer_key, otype )
 {
-    initialize( "" ) ;
 }
 
 DODSHTMLInfo::~DODSHTMLInfo()
 {
+}
+
+/** @brief add data to this informational object. If buffering is not set then
+ * the information is output directly to the output stream.
+ *
+ * @param s information to be added to this response object
+ */
+void
+DODSHTMLInfo::add_data( const string &s )
+{
+    if( !_header && !_buffered && _is_http )
+    {
+	set_mime_html( stdout, _otype ) ;
+	_header = true ;
+    }
+    DODSInfo::add_data( s ) ;
 }
 
 /** @brief add exception data to this informational object. If buffering is

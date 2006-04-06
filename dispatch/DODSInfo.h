@@ -59,7 +59,7 @@ using std::string ;
 class DODSInfo :public DODSResponseObject
 {
 private:
-			DODSInfo() {}
+    virtual void	initialize( string key ) ;
 protected:
     ostream		*_strm ;
     bool		_buffered ;
@@ -67,12 +67,13 @@ protected:
     bool		_is_http ;
     ObjectType		_otype ;
 
-    			DODSInfo( ObjectType type ) ;
+public:
+    			DODSInfo( const string &buffer_key = "",
+			          ObjectType type = unknown_type ) ;
     			DODSInfo( bool is_http,
+				  const string &buffer_key = "",
 				  ObjectType type = unknown_type ) ;
 
-    virtual void	initialize( string key ) ;
-public:
     virtual		~DODSInfo() ;
 
     virtual void 	add_data( const string &s ) ;

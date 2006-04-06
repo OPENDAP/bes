@@ -68,7 +68,11 @@ HelpResponseHandler::~HelpResponseHandler( )
 void
 HelpResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSInfo *info = new DODSHTMLInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = 0 ;
+    if( dhi.transmit_protocol == "HTTP" )
+	info = new DODSHTMLInfo( dhi.transmit_protocol == "HTTP" ) ;
+    else
+	info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     // if http then prepare header information for html output

@@ -48,7 +48,7 @@ using std::ostringstream ;
  * @see DODSResponseObject
  */
 DODSVersionInfo::DODSVersionInfo()
-    : DODSXMLInfo( unknown_type ),
+    : DODSXMLInfo(),
       _firstDAPVersion( true ),
       _DAPstrm( 0 ),
       _firstBESVersion( true ),

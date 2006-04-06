@@ -36,7 +36,7 @@
 
 using std::string ;
 
-class DODSTextInfo ;
+class DODSInfo ;
 
 /** @brief abstract base class catalog object. Derived classes know how to
  * show nodes and leaves in a catalog.
@@ -49,7 +49,7 @@ public:
 
     virtual bool		show_catalog( const string &container,
 					      const string &catalog_or_info,
-					      DODSTextInfo *info ) = 0 ;
+					      DODSInfo *info ) = 0 ;
 };
 
 #endif // I_OPeNDAPCatalog_h

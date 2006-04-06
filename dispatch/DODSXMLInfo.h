@@ -32,7 +32,7 @@
 #ifndef DODSXMLInfo_h_
 #define DODSXMLInfo_h_ 1
 
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 
 /** @brief represents an xml formatted response object
  *
@@ -40,14 +40,16 @@
  * version of the exception. Currently the user is required to add elements,
  * properties, etc... into the xml document.
  *
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSResponseObject
  */
-class DODSXMLInfo : public DODSTextInfo {
+class DODSXMLInfo : public DODSInfo {
 public:
-  			DODSXMLInfo( ObjectType otype = unknown_type ) ;
-  			DODSXMLInfo( bool is_http,
+  			DODSXMLInfo( const string &buffer_key = "",
 			             ObjectType otype = unknown_type ) ;
+  			DODSXMLInfo( bool is_http,
+			             const string &buffer_key = "",
+				     ObjectType otype = unknown_type ) ;
     virtual 		~DODSXMLInfo() ;
 
     virtual void	add_exception( const string &type,

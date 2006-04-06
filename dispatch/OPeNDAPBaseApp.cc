@@ -32,12 +32,15 @@
 #include <iostream>
 
 using std::cerr ;
-using std::cout ;
 using std::endl ;
 
 #include "OPeNDAPBaseApp.h"
 #include "DODSGlobalIQ.h"
 #include "DODSBasicException.h"
+#include "OPeNDAPPluginFactory.h"
+#include "OPeNDAPAbstractModule.h"
+#include "OPeNDAPPluginException.h"
+#include "TheDODSKeys.h"
 
 OPeNDAPApp *OPeNDAPApp::_theApplication = 0;
 
@@ -126,7 +129,77 @@ initialize(int argC, char **argV)
 	throw DODSBasicException( newerr ) ;
     }
 
-    return retVal;
+    return loadModules() ;
+}
+
+/** @brief load data handler modules using the initialization file
+ */
+int
+OPeNDAPBaseApp::loadModules()
+{
+    int retVal = 0 ;
+
+    bool found = false ;
+    string mods = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.modules", found ) ;
+    if( mods != "" )
+    {
+	std::string::size_type start = 0 ;
+	std::string::size_type comma = 0 ;
+	bool done = false ;
+	while( !done )
+	{
+	    string mod ;
+	    comma = mods.find( ',', start ) ;
+	    if( comma == string::npos )
+	    {
+		mod = mods.substr( start, mods.length() - start ) ;
+		done = true ;
+	    }
+	    else
+	    {
+		mod = mods.substr( start, comma - start ) ;
+	    }
+	    string key = "OPeNDAP.module." + mod ;
+	    string so = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	    if( so == "" )
+	    {
+		cerr << "couldn't find the module for " << mod << endl ;
+		return 1 ;
+	    }
+	    _module_list[mod] = so ;
+
+	    start = comma + 1 ;
+	}
+
+	map< string, string >::iterator i = _module_list.begin() ;
+	map< string, string >::iterator e = _module_list.end() ;
+	for( ; i != e; i++ )
+	{
+	    _moduleFactory.add_mapping( (*i).first, (*i).second ) ;
+	}
+
+	try
+	{
+	    for( i = _module_list.begin(); i != e; i++ )
+	    {
+		OPeNDAPAbstractModule *o = _moduleFactory.get( (*i).first ) ;
+		o->initialize() ;
+	    }
+	}
+	catch( OPeNDAPPluginException &e )
+	{
+	    cerr << "Caught exception during initialize: "
+	         << e.get_error_description() << endl ;
+	    retVal = 1 ;
+	}
+	catch( ... )
+	{
+	    cerr << "Caught unknown exception during initialize" << endl ;
+	    retVal = 1 ;
+	}
+    }
+
+    return retVal ;
 }
 
 /** @brief the applications functionality is implemented in the run method
@@ -160,6 +233,27 @@ terminate( int sig )
     {
 	cerr << "OPeNDAPBaseApp::terminating with signal " << sig << endl ;
     }
+
+    map< string, string >::iterator i = _module_list.begin() ;
+    map< string, string >::iterator e = _module_list.end() ;
+    try
+    {
+	for( i = _module_list.begin(); i != e; i++ )
+	{
+	    OPeNDAPAbstractModule *o = _moduleFactory.get( (*i).first ) ;
+	    o->terminate() ;
+	}
+    }
+    catch( OPeNDAPPluginException &e )
+    {
+	cerr << "Caught exception during terminate: "
+	     << e.get_error_description() << endl ;
+    }
+    catch( ... )
+    {
+	cerr << "Caught unknown exception during terminate" << endl ;
+    }
+
     DODSGlobalIQ::DODSGlobalQuit() ;
     _isInitialized = false ;
     return sig ;

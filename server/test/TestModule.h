@@ -1,4 +1,4 @@
-// http_transmitter.cc
+// TestModule.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,30 +29,19 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include <iostream>
+#ifndef A_TestModule_H
+#define A_TestModule_H 1
 
-using std::endl ;
+#include "OPeNDAPAbstractModule.h"
 
-#include "DODSInitList.h"
-#include "DODSInitOrder.h"
-#include "DODSLog.h"
-#include "DODSReturnManager.h"
-#include "DODSBasicHttpTransmitter.h"
+class TestModule : public OPeNDAPAbstractModule
+{
+public:
+    				TestModule() {}
+    virtual		    	~TestModule() {}
+    virtual void		initialize() ;
+    virtual void		terminate() ;
+} ;
 
-static bool
-HTTPTransmitterInit(int, char**) {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
-    DODSReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
+#endif // A_TestModule_H
 
-    return true;
-}
-
-static bool
-HTTPTransmitterQuit(void) {
-    return true ;
-}
-
-FUNINITQUIT( HTTPTransmitterInit, HTTPTransmitterQuit, TRANSMITTER_INIT ) ;
-
-// $Log: http_transmitter.cc,v $

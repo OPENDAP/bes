@@ -32,7 +32,15 @@
 #ifndef B_OPeNDAPBaseApp_H
 #define B_OPeNDAPBaseApp_H
 
-#include <OPeNDAPApp.h>
+#include <map>
+#include <string>
+
+using std::map ;
+using std::string ;
+
+#include "OPeNDAPApp.h"
+#include "OPeNDAPPluginFactory.h"
+#include "OPeNDAPAbstractModule.h"
 
 /** @brief Base application object for all BES applications
  *
@@ -48,6 +56,10 @@
  * @see DODSGlobalIQ
  */
 class OPeNDAPBaseApp : public OPeNDAPApp {
+private:
+    OPeNDAPPluginFactory<OPeNDAPAbstractModule> _moduleFactory ;
+    map< string, string > 	_module_list ;
+    int				loadModules( void ) ;
 public:
                                 OPeNDAPBaseApp( void ) ;
     virtual                     ~OPeNDAPBaseApp( void ) ;

@@ -31,7 +31,7 @@
 
 #include "KeysResponseHandler.h"
 #include "TheDODSKeys.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 
 KeysResponseHandler::KeysResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -46,7 +46,7 @@ KeysResponseHandler::~KeysResponseHandler( )
  * all keys defined in the OPeNDAP initialization file.
  *
  * This response handler knows how to retrieve the list of keys retrieved from
- * the OPeNDAP initialization file and stored in TheDODSKeys. A DODSTextInfo
+ * the OPeNDAP initialization file and stored in TheDODSKeys. A DODSInfo
  * informational response object is built to hold all of the information.
  *
  * The information is returned, one key per line, like:
@@ -57,13 +57,13 @@ KeysResponseHandler::~KeysResponseHandler( )
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see TheDODSKeys
  */
 void
 KeysResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     info->add_data( (string)"List of currently defined keys "
@@ -88,7 +88,7 @@ KeysResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -98,7 +98,7 @@ KeysResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi );
     }
 }

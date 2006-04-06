@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dynamic
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -20,14 +20,41 @@ libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
 
+all-local: $(MODOBJS)
+
+install-data-local: $(MODOBJS)
+	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
+	list='$(MODOBJS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
+	  fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(MODOBJS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
+	done
+
+EXTRA_DIST = $(MODSRCS)
+
+CLEANFILES = $(MODOBJS)
+
 ##############################################################################
 #
-# Sources and Headers for 
+# Sources and Headers
+#
+##############################################################################
 SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
 	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
 	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc     \
 	OPeNDAPCatalogCommand.cc OPeNDAPParserException.cc \
-	OPeNDAPTokenizer.cc OPeNDAPCommandModule.cc
+	OPeNDAPTokenizer.cc OPeNDAPCommandModule.cc opendap_commands.cc
 
-HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h opendap_commands.h
+
+MODSRCS:=
+
+MODOBJS:=
 

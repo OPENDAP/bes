@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "DeleteResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "DODSDefineList.h"
 #include "DODSDefine.h"
 #include "ContainerStorageList.h"
@@ -54,7 +54,7 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * volatile container persistence object, which is found in
  * ContainerStorageList::TheList().
  *
- * The response object built is a DODSTextInfo object. Status of the delition
+ * The response object built is a DODSInfo object. Status of the delition
  * will be added to the informational object, one of:
  *
  * Successfully deleted all definitions
@@ -73,7 +73,7 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSDefineList
  * @see DODSDefine
  * @see ContainerStorage
@@ -82,7 +82,7 @@ DeleteResponseHandler::~DeleteResponseHandler( )
 void
 DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     if( dhi.data[DEFINITIONS] == "true" )
@@ -155,7 +155,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -165,7 +165,7 @@ DeleteResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi );
     }
 }

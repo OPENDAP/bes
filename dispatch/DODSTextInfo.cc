@@ -44,9 +44,8 @@
  * @see DODSResponseObject
  */
 DODSTextInfo::DODSTextInfo( ObjectType otype )
-    : DODSInfo( otype )
+    : DODSInfo( "", otype )
 {
-    initialize( "" ) ;
 }
 
 /** @brief constructs a basic text information response object.
@@ -59,9 +58,8 @@ DODSTextInfo::DODSTextInfo( ObjectType otype )
  * @see DODSResponseObject
  */
 DODSTextInfo::DODSTextInfo( bool is_http, ObjectType otype )
-    : DODSInfo( is_http, otype )
+    : DODSInfo( is_http, "", otype )
 {
-    initialize( "" ) ;
 }
 
 DODSTextInfo::~DODSTextInfo()

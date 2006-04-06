@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "StatusResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "DODSStatus.h"
 
 StatusResponseHandler::StatusResponseHandler( string name )
@@ -46,20 +46,20 @@ StatusResponseHandler::~StatusResponseHandler( )
  * the server process using DODSStatus
  *
  * This response handler knows how to retrieve the status for the server
- * from DODSStatus and stores it in a DODSTextInfo informational response
+ * from DODSStatus and stores it in a DODSInfo informational response
  * object.
  *
  * @param dhi structure that holds request and response information
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSStatus
  */
 void
 StatusResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
     DODSStatus s ;
     info->add_data( "Listener boot time: " + s.get_status() ) ;
@@ -82,7 +82,7 @@ StatusResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi ) ;
     }
 }

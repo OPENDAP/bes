@@ -44,13 +44,14 @@ using std::ifstream ;
  *
  * @param otype type of data represented by this response object
  */
-DODSInfo::DODSInfo( ObjectType otype )
+DODSInfo::DODSInfo( const string &buffer_key, ObjectType otype )
     : _strm( 0 ),
       _buffered( true ),
       _header( false ),
       _is_http( true ),
       _otype( otype )
 {
+    initialize( buffer_key ) ;
 }
 
 /** @brief constructs a DODSInfo object for the specified type where the
@@ -59,13 +60,14 @@ DODSInfo::DODSInfo( ObjectType otype )
  * @param is_http is the output to be in http format
  * @param otype type of data represented by this response object
  */
-DODSInfo::DODSInfo( bool is_http, ObjectType otype )
+DODSInfo::DODSInfo( bool is_http, const string &buffer_key, ObjectType otype )
     : _strm( 0 ),
       _buffered( true ),
       _header( false ),
       _is_http( is_http ),
       _otype( otype )
 {
+    initialize( buffer_key ) ;
 }
 
 DODSInfo::~DODSInfo()

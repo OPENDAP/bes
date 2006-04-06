@@ -32,7 +32,7 @@
 #include "CatalogList.h"
 #include "OPeNDAPCatalog.h"
 #include "DODSResponseException.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 
 CatalogList *CatalogList::_instance = 0 ;
 
@@ -56,7 +56,7 @@ CatalogList::add_catalog( OPeNDAPCatalog *catalog )
 void
 CatalogList::show_catalog( const string &container,
 			   const string &coi,
-			   DODSTextInfo *info )
+			   DODSInfo *info )
 {
     catalog_iterator i = _catalogs.begin() ;
     catalog_iterator e = _catalogs.end() ;

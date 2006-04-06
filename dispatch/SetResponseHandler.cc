@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "SetResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "OPeNDAPSilentInfo.h"
 #include "ContainerStorageList.h"
 #include "ContainerStorage.h"
@@ -55,7 +55,7 @@ SetResponseHandler::~SetResponseHandler( )
  * real name (usually a file name) and the type of data represented by this
  * container (e.g. cedar, cdf, netcdf, hdf, etc...)
  *
- * An informational response object DODSTextInfo is created to hold whether or
+ * An informational response object DODSInfo is created to hold whether or
  * not the container was successfully added/replaced. Possible responses are:
  *
  * Successfully added container &lt;sym_name&gt; to persistent store volatile
@@ -67,7 +67,7 @@ SetResponseHandler::~SetResponseHandler( )
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see ContainerStorageList
  * @see ContainerStorage
  * @see DODSContainer
@@ -82,7 +82,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
     }
     else
     {
-	info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+	info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     }
     _response = info ;
 
@@ -134,7 +134,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */

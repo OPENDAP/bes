@@ -32,7 +32,7 @@
 #include <unistd.h>
 
 #include "ProcIdResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "cgi_util.h"
 #include "util.h"
 
@@ -77,18 +77,18 @@ ProcIdResponseHandler::fastpidconverter(
  * the server process
  *
  * This response handler knows how to retrieve the process id for the server
- * and stores it in a DODSTextInfo informational response object.
+ * and stores it in a DODSInfo informational response object.
  *
  * @param dhi structure that holds request and response information
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  */
 void
 ProcIdResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
     char mypid[12] ;
     fastpidconverter( getpid(), mypid, 10 ) ;
@@ -112,7 +112,7 @@ ProcIdResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi ) ;
     }
 }

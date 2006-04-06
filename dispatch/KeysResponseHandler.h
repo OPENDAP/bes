@@ -34,8 +34,6 @@
 
 #include "DODSResponseHandler.h"
 
-class DODSTextInfo ;
-
 /** @brief response handler that returns the list of keys defined in the
  * OPeNDAP initialization file.
  *

@@ -34,8 +34,6 @@
 
 #include "DODSTransmitter.h"
 
-#define BASIC_TRANSMITTER "basic"
-
 class DODSBasicTransmitter : public DODSTransmitter
 {
 public:

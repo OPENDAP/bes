@@ -76,7 +76,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	OPeNDAPAggFactory.cc \
 	DODSReturnManager.cc \
 	DODSDefineList.cc \
-	OPeNDAPBaseApp.cc
+	OPeNDAPBaseApp.cc dods_module.cc
 
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
@@ -119,22 +119,11 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	OPeNDAPAggFactory.h DODSAggregationServer.h \
 	DODSReturnManager.h \
 	DODSDefineList.h DODSDefine.h \
-	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h
+	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h \
+	OPeNDAPAbstractModule.h OPeNDAPPluginFactory.h OPeNDAPPlugin.h \
+	OPeNDAPPluginException.h dods_module.h OPeNDAPTransmitterNames.h
 
-MODSRCS:=dods_module.cc file_persistence.cc \
-	http_transmitter.cc
+MODSRCS:=
 
-MODOBJS:=dods_module.o file_persistence.o \
-	http_transmitter.o
+MODOBJS:=
 
-# TESTSRC:=dispatch_test.cc
-# TESTEXEC:=dispatch_test
-
-# $(TESTEXEC) : $(LIB) $(TESTOBJ) dods_module.o file_persistence.o \
-# 	../cedar-handler/cedar_module.o \
-# 	../cedar-handler/cedar_persistence.o \
-# 	../cedar-handler/libcedar-handler.a  \
-# 	$(CXX) -o $(TESTEXEC) $(LDFLAGS) $(TESTOBJ) dods_module.o \
-# 		file_persistence.o \
-# 		../cedar-handler/cedar_module.o \
-# 		../cedar-handler/cedar_persistence.o $(LIBS)

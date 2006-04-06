@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include "DefinitionsResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 #include "DODSDefineList.h"
 
 DefinitionsResponseHandler::DefinitionsResponseHandler( string name )
@@ -47,19 +47,19 @@ DefinitionsResponseHandler::~DefinitionsResponseHandler( )
  *
  * This response handler knows how to retrieve the list of definitions
  * currently defined in the server. It simply asks the definition list
- * to show all definitions given the DODSTextInfo object created here.
+ * to show all definitions given the DODSInfo object created here.
  *
  * @param dhi structure that holds request and response information
  * @throws DODSResponseException if there is a problem building the
  * response object
  * @see _DODSDataHandlerInterface
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSDefineList
  */
 void
 DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
-    DODSTextInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
     DODSDefineList::TheList()->show_definitions( *info ) ;
 }
@@ -71,7 +71,7 @@ DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTextInfo
+ * @see DODSInfo
  * @see DODSTransmitter
  * @see _DODSDataHandlerInterface
  */
@@ -81,7 +81,7 @@ DefinitionsResponseHandler::transmit( DODSTransmitter *transmitter,
 {
     if( _response )
     {
-	DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(_response) ;
+	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
 	transmitter->send_text( *info, dhi );
     }
 }

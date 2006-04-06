@@ -45,6 +45,7 @@ using std::stringstream ;
 #include "DODSTransmitException.h"
 #include "OPeNDAPAggFactory.h"
 #include "DODSAggregationServer.h"
+#include "OPeNDAPTransmitterNames.h"
 #include "OPeNDAPDataNames.h"
 
 /** @brief Instantiate a OPeNDAPCmdInterface object

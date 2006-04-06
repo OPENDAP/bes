@@ -95,7 +95,8 @@ AC_CONFIG_FILES([Makefile
 		 command/Makefile
 		 ppt/Makefile
 		 cmdln/Makefile
-		 server/Makefile])
+		 server/Makefile
+		 server/test/Makefile])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 		 
