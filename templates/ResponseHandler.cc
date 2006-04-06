@@ -1,7 +1,7 @@
 // OPENDAP_RESPONSEResponseHandler.cc
 
 #include "OPENDAP_RESPONSEResponseHandler.h"
-#include "DODSTextInfo.h"
+#include "DODSInfo.h"
 
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -17,7 +17,7 @@ OPENDAP_RESPONSEResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     // This is an example. Here you would build the DODSResponseObject
     // object and set it to the _response protected data member
-    DODSInfo *info = new DODSTextInfo( dhi.transmit_protocol == "HTTP" ) ;
+    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     // And here is where your code would code to fill in that response
