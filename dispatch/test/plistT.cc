@@ -7,8 +7,8 @@ using std::cout ;
 using std::endl ;
 
 #include "plistT.h"
-#include "DODSContainerPersistenceList.h"
-#include "DODSContainerPersistenceFile.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorageFile.h"
 #include "DODSContainer.h"
 #include "DODSException.h"
 #include "DODSTextInfo.h"
@@ -22,13 +22,13 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Create the DODSContainerPersistentList" << endl;
-    DODSContainerPersistenceList cpl ;
+    ContainerStorageList *cpl = ContainerStorageList::TheList() ;
 
     cout << endl << "*****************************************" << endl;
-    cout << "Add DODSContainerPersistenceFile for File1 and File2" << endl;
-    DODSContainerPersistenceFile *cpf ;
-    cpf = new DODSContainerPersistenceFile( "File1" ) ;
-    if( cpl.add_persistence( cpf ) == true )
+    cout << "Add ContainerStorageFile for File1 and File2" << endl;
+    ContainerStorageFile *cpf ;
+    cpf = new ContainerStorageFile( "File1" ) ;
+    if( cpl->add_persistence( cpf ) == true )
     {
 	cout << "successfully added File1" << endl ;
     }
@@ -38,8 +38,8 @@ run(void)
 	return 1 ;
     }
 
-    cpf = new DODSContainerPersistenceFile( "File2" ) ;
-    if( cpl.add_persistence( cpf ) == true )
+    cpf = new ContainerStorageFile( "File2" ) ;
+    if( cpl->add_persistence( cpf ) == true )
     {
 	cout << "successfully added File2" << endl ;
     }
@@ -51,8 +51,8 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Try to add File2 again" << endl;
-    cpf = new DODSContainerPersistenceFile( "File2" ) ;
-    if( cpl.add_persistence( cpf ) == true )
+    cpf = new ContainerStorageFile( "File2" ) ;
+    if( cpl->add_persistence( cpf ) == true )
     {
 	cerr << "successfully added File2 again" << endl ;
 	delete cpf ;
@@ -77,7 +77,7 @@ run(void)
 	try
 	{
 	    DODSContainer d( s ) ;
-	    cpl.look_for( d ) ;
+	    cpl->look_for( d ) ;
 	    if( d.is_valid() )
 	    {
 		if( d.get_real_name() == r && d.get_container_type() == c )
@@ -109,7 +109,7 @@ run(void)
     try
     {
 	DODSContainer dnot( "thingy" ) ;
-	cpl.look_for( dnot ) ;
+	cpl->look_for( dnot ) ;
 	if( dnot.is_valid() )
 	{
 	    cerr << "found thingy, shouldn't have" << endl ;
@@ -128,12 +128,12 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
     DODSTextInfo info( false ) ;
-    cpl.show_containers( info ) ;
+    cpl->show_containers( info ) ;
     info.print( stdout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "remove File1" << endl;
-    if( cpl.rem_persistence( "File1" ) == true )
+    if( cpl->rem_persistence( "File1" ) == true )
     {
 	cout << "successfully removed File1" << endl ;
     }
@@ -148,7 +148,7 @@ run(void)
     try
     {
 	DODSContainer d2( "sym2" ) ;
-	cpl.look_for( d2 ) ;
+	cpl->look_for( d2 ) ;
 	if( d2.is_valid() )
 	{
 	    cerr << "found sym2 with real = " << d2.get_real_name()
@@ -170,7 +170,7 @@ run(void)
     try
     {
 	DODSContainer d7( "sym7" ) ;
-	cpl.look_for( d7 ) ;
+	cpl->look_for( d7 ) ;
 	if( d7.is_valid() )
 	{
 	    if( d7.get_real_name() == "real7" &&
@@ -206,7 +206,7 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new plistT();
-    putenv( "DODS_INI=./persistence_file_test.ini" ) ;
+    putenv( "OPENDAP_INI=./persistence_file_test.ini" ) ;
     return app->main(argC, argV);
 }
 

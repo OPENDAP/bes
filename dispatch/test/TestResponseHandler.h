@@ -10,8 +10,6 @@ public:
 				TestResponseHandler( string name ) ;
     virtual			~TestResponseHandler( void ) ;
 
-    virtual void		parse( DODSTokenizer &tokenizer,
-                                       DODSDataHandlerInterface &dhi ) ;
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSDataHandlerInterface &dhi ) ;
     virtual void		execute_each( DODSDataHandlerInterface &dhi ) ;

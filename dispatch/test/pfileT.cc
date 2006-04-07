@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "pfileT.h"
-#include "DODSContainerPersistenceFile.h"
+#include "ContainerStorageFile.h"
 #include "DODSContainer.h"
 #include "DODSException.h"
 #include "DODSTextInfo.h"
@@ -23,7 +23,7 @@ run(void)
     cout << "Try to get one called File" << endl;
     try
     {
-	DODSContainerPersistenceFile cpf( "File" ) ;
+	ContainerStorageFile cpf( "File" ) ;
 	cerr << "opened file File, shouldn't have" << endl ;
 	return 1 ;
     }
@@ -37,7 +37,7 @@ run(void)
     cout << "Try to get one called FileNot" << endl;
     try
     {
-	DODSContainerPersistenceFile cpf( "FileNot" ) ;
+	ContainerStorageFile cpf( "FileNot" ) ;
 	cerr << "opened file FileNot, shouldn't have" << endl ;
 	return 1 ;
     }
@@ -51,7 +51,7 @@ run(void)
     cout << "Try to get one called FileTooMany" << endl;
     try
     {
-	DODSContainerPersistenceFile cpf( "FileTooMany" ) ;
+	ContainerStorageFile cpf( "FileTooMany" ) ;
 	cerr << "opened file FileTooMany, shouldn't have" << endl ;
 	return 1 ;
     }
@@ -65,7 +65,7 @@ run(void)
     cout << "Try to get one called FileTooFew" << endl;
     try
     {
-	DODSContainerPersistenceFile cpf( "FileTooFew" ) ;
+	ContainerStorageFile cpf( "FileTooFew" ) ;
 	cerr << "opened file FileTooFew, shouldn't have" << endl ;
 	return 1 ;
     }
@@ -79,7 +79,7 @@ run(void)
     cout << "Get one called File1" << endl;
     try
     {
-	DODSContainerPersistenceFile cpf( "File1" ) ;
+	ContainerStorageFile cpf( "File1" ) ;
 	cout << "opened file File1, good" << endl ;
     }
     catch( DODSException &ex )
@@ -89,7 +89,7 @@ run(void)
 	return 1 ;
     }
 
-    DODSContainerPersistenceFile cpf( "File1" ) ;
+    ContainerStorageFile cpf( "File1" ) ;
     char s[10] ;
     char r[10] ;
     char c[10] ;
@@ -150,7 +150,7 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "DODS_INI=./persistence_file_test.ini" ) ;
+    putenv( "OPENDAP_INI=./persistence_file_test.ini" ) ;
     Application *app = new pfileT();
     return app->main(argC, argV);
 }

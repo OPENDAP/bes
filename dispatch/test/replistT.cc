@@ -19,12 +19,12 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 reporters" << endl ;
-    DODSReporterList rl ;
+    DODSReporterList *rl = DODSReporterList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
 	sprintf( num, "rep%d", i ) ;
-	if( rl.add_reporter( num, new TestReporter( num ) ) == true )
+	if( rl->add_reporter( num, new TestReporter( num ) ) == true )
 	{
 	    cout << "successfully added " << num << endl ;
 	}
@@ -38,7 +38,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "try to add rep3 again" << endl ;
     TestReporter *r = new TestReporter( "rep3" ) ;
-    if( rl.add_reporter( "rep3", r ) == true )
+    if( rl->add_reporter( "rep3", r ) == true )
     {
 	cerr << "successfully added rep3 again" << endl ;
 	return 1 ;
@@ -54,7 +54,7 @@ run(void)
     for( int i = 4; i >=0; i-- )
     {
 	sprintf( num, "rep%d", i ) ;
-	r = (TestReporter *)rl.find_reporter( num ) ;
+	r = (TestReporter *)rl->find_reporter( num ) ;
 	if( r )
 	{
 	    if( r->get_name() == num )
@@ -74,7 +74,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    r = (TestReporter *)rl.find_reporter( "thingy" ) ;
+    r = (TestReporter *)rl->find_reporter( "thingy" ) ;
     if( r )
     {
 	if( r->get_name() == "thingy" )
@@ -95,7 +95,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "removing rep2" << endl ;
-    r = (TestReporter *)rl.remove_reporter( "rep2" ) ;
+    r = (TestReporter *)rl->remove_reporter( "rep2" ) ;
     if( r )
     {
 	string name = r->get_name() ;
@@ -116,7 +116,7 @@ run(void)
 	return 1 ;
     }
 
-    r = (TestReporter *)rl.find_reporter( "rep2" ) ;
+    r = (TestReporter *)rl->find_reporter( "rep2" ) ;
     if( r )
     {
 	if( r->get_name() == "rep2" )
@@ -136,7 +136,7 @@ run(void)
 	cout << "couldn't find rep2, good" << endl ;
     }
 
-    if( rl.add_reporter( "rep2", new TestReporter( "rep2" ) ) == true )
+    if( rl->add_reporter( "rep2", new TestReporter( "rep2" ) ) == true )
     {
 	cout << "successfully added rep2 back" << endl ;
     }
@@ -146,7 +146,7 @@ run(void)
 	return 1 ;
     }
 
-    r = (TestReporter *)rl.find_reporter( "rep2" ) ;
+    r = (TestReporter *)rl->find_reporter( "rep2" ) ;
     if( r )
     {
 	if( r->get_name() == "rep2" )
@@ -168,7 +168,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "report" << endl;
     DODSDataHandlerInterface dhi ;
-    rl.report( dhi ) ;
+    rl->report( dhi ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from replistT::run" << endl;

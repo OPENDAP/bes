@@ -11,6 +11,7 @@ using std::endl ;
 #include "DODSDataHandlerInterface.h"
 #include "DODSConstraintFuncs.h"
 #include "DODSException.h"
+#include "OPeNDAPDataNames.h"
 
 int constraintT::
 run(void)
@@ -36,16 +37,16 @@ run(void)
     DODSConstraintFuncs::post_append( dhi ) ;
 
     string should_be = "sym1.var1,sym2.var2" ;
-    if( dhi.post_constraint != should_be )
+    if( dhi.data[POST_CONSTRAINT] != should_be )
     {
 	cerr << "bad things man" << endl ;
-	cerr << "    post constraint: " << dhi.post_constraint << endl;
+	cerr << "    post constraint: " << dhi.data[POST_CONSTRAINT] << endl;
 	cerr << "    should be: " << should_be << endl;
     }
     else
     {
 	cout << "good" << endl ;
-	cout << "    post constraint: " << dhi.post_constraint << endl;
+	cout << "    post constraint: " << dhi.data[POST_CONSTRAINT] << endl;
 	cout << "    should be: " << should_be << endl;
     }
 
@@ -57,7 +58,7 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "DODS_INI=./persistence_cgi_test.ini" ) ;
+    putenv( "OPENDAP_INI=./persistence_cgi_test.ini" ) ;
     Application *app = new constraintT();
     return app->main(argC, argV);
 }

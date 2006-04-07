@@ -9,7 +9,7 @@ using std::endl ;
 using std::stringstream ;
 
 #include "defT.h"
-#include "TheDefineList.h"
+#include "DODSDefineList.h"
 #include "DODSDefine.h"
 #include "DODSTextInfo.h"
 
@@ -28,7 +28,7 @@ run(void)
 	stringstream agg ; agg << "d" << i << "agg" ;
 	DODSDefine *dd = new DODSDefine ;
 	dd->aggregation_command = agg.str() ;
-	bool status = TheDefineList->add_def( name.str(), dd ) ;
+	bool status = DODSDefineList::TheList()->add_def( name.str(), dd ) ;
 	if( status == true )
 	{
 	    cout << "successfully added " << name.str() << endl ;
@@ -46,7 +46,7 @@ run(void)
     {
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
-	DODSDefine *dd = TheDefineList->find_def( name.str() ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( name.str() ) ;
 	if( dd )
 	{
 	    cout << "found " << name.str() << endl ;
@@ -73,14 +73,14 @@ run(void)
     cout << "show definitions" << endl;
     {
 	DODSTextInfo info( false ) ;
-	TheDefineList->show_definitions( info ) ;
+	DODSDefineList::TheList()->show_definitions( info ) ;
 	info.print( stdout ) ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "delete d3" << endl;
     {
-	bool ret = TheDefineList->remove_def( "d3" ) ;
+	bool ret = DODSDefineList::TheList()->remove_def( "d3" ) ;
 	if( ret == true )
 	{
 	    cout << "successfully deleted d3" << endl ;
@@ -90,7 +90,7 @@ run(void)
 	    cerr << "unable to delete d3" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = TheDefineList->find_def( "d3" ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( "d3" ) ;
 	if( dd )
 	{
 	    cerr << "    found d3, bad" << endl ;
@@ -105,7 +105,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "delete d1" << endl;
     {
-	bool ret = TheDefineList->remove_def( "d1" ) ;
+	bool ret = DODSDefineList::TheList()->remove_def( "d1" ) ;
 	if( ret == true )
 	{
 	    cout << "successfully deleted d1" << endl ;
@@ -115,7 +115,7 @@ run(void)
 	    cerr << "unable to delete d1" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = TheDefineList->find_def( "d1" ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( "d1" ) ;
 	if( dd )
 	{
 	    cerr << "    found d1, bad" << endl ;
@@ -130,7 +130,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "delete d5" << endl;
     {
-	bool ret = TheDefineList->remove_def( "d5" ) ;
+	bool ret = DODSDefineList::TheList()->remove_def( "d5" ) ;
 	if( ret == true )
 	{
 	    cout << "successfully deleted d5" << endl ;
@@ -140,7 +140,7 @@ run(void)
 	    cerr << "unable to delete d5" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = TheDefineList->find_def( "d5" ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( "d5" ) ;
 	if( dd )
 	{
 	    cerr << "    found d5, bad" << endl ;
@@ -155,7 +155,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "find d2 and d4" << endl;
     {
-	DODSDefine *dd = TheDefineList->find_def( "d2" ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( "d2" ) ;
 	if( dd )
 	{
 	    cout << "found " << "d2" << ", good" << endl ;
@@ -166,7 +166,7 @@ run(void)
 	    return 1 ;
 	}
 
-	dd = TheDefineList->find_def( "d4" ) ;
+	dd = DODSDefineList::TheList()->find_def( "d4" ) ;
 	if( dd )
 	{
 	    cout << "found " << "d4" << ", good" << endl ;
@@ -180,7 +180,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "delete all definitions" << endl;
-    TheDefineList->remove_defs() ;
+    DODSDefineList::TheList()->remove_defs() ;
 
     cout << endl << "*****************************************" << endl;
     cout << "find definitions d1, d2, d3, d4, d5" << endl;
@@ -188,7 +188,7 @@ run(void)
     {
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
-	DODSDefine *dd = TheDefineList->find_def( name.str() ) ;
+	DODSDefine *dd = DODSDefineList::TheList()->find_def( name.str() ) ;
 	if( dd )
 	{
 	    cerr << "found " << name.str() << ", bad" << endl ;
@@ -209,7 +209,7 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new defT();
-    putenv( "DODS_INI=./defT.ini" ) ;
+    putenv( "OPENDAP_INI=./defT.ini" ) ;
     return app->main(argC, argV);
 }
 

@@ -32,7 +32,7 @@ run(void)
     if( _keyFile != "" )
     {
 	char envVal[256] ;
-	sprintf( envVal, "DODS_INI=%s", _keyFile.c_str() ) ;
+	sprintf( envVal, "OPENDAP_INI=%s", _keyFile.c_str() ) ;
 	putenv( envVal ) ;
 	try
 	{
@@ -54,7 +54,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "no file set" << endl;
-    putenv( "DODS_INI=" ) ;
+    putenv( "OPENDAP_INI=" ) ;
     try
     {
 	TheDODSKeys::TheKeys() ;
@@ -69,7 +69,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "notfound file set" << endl;
-    putenv( "DODS_INI=notfound.ini" ) ;
+    putenv( "OPENDAP_INI=notfound.ini" ) ;
     try
     {
 	TheDODSKeys::TheKeys() ;
@@ -90,7 +90,7 @@ run(void)
 	pwd_s = "." ;
     else
 	pwd_s = pwd ;
-    string env_s = "DODS_INI=" + pwd_s + "/bad_keys1.ini" ;
+    string env_s = "OPENDAP_INI=" + pwd_s + "/bad_keys1.ini" ;
     char env1[1024] ;
     sprintf( env1, "%s", env_s.c_str() ) ;
     putenv( env1 ) ;
@@ -108,7 +108,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "bad keys, too many equal signs" << endl;
-    env_s = "DODS_INI=" + pwd_s + "/bad_keys2.ini" ;
+    env_s = "OPENDAP_INI=" + pwd_s + "/bad_keys2.ini" ;
     char env2[1024] ;
     sprintf( env2, "%s", env_s.c_str() ) ;
     putenv( env2 ) ;
@@ -126,7 +126,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "good keys file, should load" << endl;
-    env_s = "DODS_INI=" + pwd_s + "/keys_test.ini" ;
+    env_s = "OPENDAP_INI=" + pwd_s + "/keys_test.ini" ;
     char env3[1024] ;
     sprintf( env3, "%s", env_s.c_str() ) ;
     putenv( env3 ) ;
@@ -149,7 +149,7 @@ run(void)
     for( int i = 1; i < 4; i++ )
     {
 	char key[32] ;
-	sprintf( key, "DODS.KEY%d", i ) ;
+	sprintf( key, "OPeNDAP.KEY%d", i ) ;
 	char val[32] ;
 	sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
@@ -178,7 +178,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for non existant key" << endl;
-    ret = TheDODSKeys::TheKeys()->get_key( "DODS.NOTFOUND", found ) ;
+    ret = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.NOTFOUND", found ) ;
     if( found == true )
     {
 	cerr << "found DODS.NOTFOUND = \"" << ret << "\"" << endl ;
@@ -191,7 +191,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for key with empty value" << endl;
-    ret = TheDODSKeys::TheKeys()->get_key( "DODS.KEY4", found ) ;
+    ret = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.KEY4", found ) ;
     if( found == true )
     {
 	if( ret == "" )
@@ -214,7 +214,7 @@ run(void)
     cout << "set bad key, 0 = characters" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "DODS.NOEQS" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.NOEQS" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -228,7 +228,7 @@ run(void)
     cout << "set bad key, 2 = characters" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "DODS.2EQS=val1=val2" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.2EQS=val1=val2" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -242,7 +242,7 @@ run(void)
     cout << "set DODS.KEY5 to val5" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "DODS.KEY5=val5" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.KEY5=val5" ) ;
 	if( ret == "val5" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -265,7 +265,7 @@ run(void)
     cout << "set DODS.KEY6 to val6" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "DODS.KEY6", "val6" ) ;
+	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.KEY6", "val6" ) ;
 	if( ret == "val6" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -289,7 +289,7 @@ run(void)
     for( int i = 1; i < 7; i++ )
     {
 	char key[32] ;
-	sprintf( key, "DODS.KEY%d", i ) ;
+	sprintf( key, "OPeNDAP.KEY%d", i ) ;
 	char val[32] ;
 	if( i == 4 ) sprintf( val, "" ) ;
 	else sprintf( val, "val%d", i ) ;

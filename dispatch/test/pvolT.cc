@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "pvolT.h"
-#include "DODSContainerPersistenceVolatile.h"
+#include "ContainerStorageVolatile.h"
 #include "DODSContainer.h"
 #include "TheDODSKeys.h"
 #include "DODSException.h"
@@ -22,7 +22,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Create volatile and add five elements" << endl;
-    DODSContainerPersistenceVolatile cpv( "volatile" ) ;
+    ContainerStorageVolatile cpv( "volatile" ) ;
     cpv.add_container( "sym1", "real1", "type1" ) ;
     cpv.add_container( "sym2", "real2", "type2" ) ;
     cpv.add_container( "sym3", "real3", "type3" ) ;
@@ -85,26 +85,10 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "remove sym1" << endl;
-    DODSContainer *rem = cpv.rem_container( "sym1" ) ;
+    bool rem = cpv.rem_container( "sym1" ) ;
     if( rem )
     {
-	if( rem->get_symbolic_name() != "sym1" )
-	{
-	    cerr << "removed, but sym " << rem->get_symbolic_name() << endl ;
-	    return 1 ;
-	}
-	if( rem->get_real_name() != "real1" )
-	{
-	    cerr << "removed, but real " << rem->get_real_name() << endl ;
-	    return 1 ;
-	}
-	if( rem->get_container_type() != "type1" )
-	{
-	    cerr << "removed, but real " << rem->get_container_type() << endl ;
-	    return 1 ;
-	}
 	cout << "successfully removed sym1" << endl ;
-	delete rem ; rem = 0 ;
     }
 
     {
@@ -130,23 +114,7 @@ run(void)
     rem = cpv.rem_container( "sym5" ) ;
     if( rem )
     {
-	if( rem->get_symbolic_name() != "sym5" )
-	{
-	    cerr << "removed, but sym " << rem->get_symbolic_name() << endl ;
-	    return 1 ;
-	}
-	if( rem->get_real_name() != "real5" )
-	{
-	    cerr << "removed, but real " << rem->get_real_name() << endl ;
-	    return 1 ;
-	}
-	if( rem->get_container_type() != "type5" )
-	{
-	    cerr << "removed, but real " << rem->get_container_type() << endl ;
-	    return 1 ;
-	}
 	cout << "successfully removed sym5" << endl ;
-	delete rem ; rem = 0 ;
     }
 
     {
@@ -176,9 +144,7 @@ run(void)
     }
     else
     {
-	cerr << "removed a container with name "
-	     << rem->get_symbolic_name() << ", bad things man" << endl ;
-	delete rem ; rem = 0 ;
+	cerr << "removed a container, bad things man" << endl ;
 	return 1 ;
     }
 
@@ -229,7 +195,7 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "DODS_INI=./persistence_cgi_test.ini" ) ;
+    putenv( "OPENDAP_INI=./persistence_cgi_test.ini" ) ;
     Application *app = new pvolT();
     return app->main(argC, argV);
 }

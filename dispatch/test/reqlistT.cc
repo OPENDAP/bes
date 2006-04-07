@@ -18,12 +18,12 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 request handlers" << endl ;
-    DODSRequestHandlerList rhl ;
+    DODSRequestHandlerList *rhl = DODSRequestHandlerList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
 	sprintf( num, "req%d", i ) ;
-	if( rhl.add_handler( num, new TestRequestHandler( num ) ) == true )
+	if( rhl->add_handler( num, new TestRequestHandler( num ) ) == true )
 	{
 	    cout << "successfully added " << num << endl ;
 	}
@@ -37,7 +37,7 @@ run(void) {
     cout << endl << "*****************************************" << endl;
     cout << "try to add req3 again" << endl ;
     DODSRequestHandler *rh = new TestRequestHandler( "req3" ) ;
-    if( rhl.add_handler( "req3", rh ) == true )
+    if( rhl->add_handler( "req3", rh ) == true )
     {
 	cerr << "successfully added req3 again" << endl ;
 	return 1 ;
@@ -53,7 +53,7 @@ run(void) {
     for( int i = 4; i >=0; i-- )
     {
 	sprintf( num, "req%d", i ) ;
-	rh = rhl.find_handler( num ) ;
+	rh = rhl->find_handler( num ) ;
 	if( rh )
 	{
 	    if( rh->get_name() == num )
@@ -73,7 +73,7 @@ run(void) {
 	    return 1 ;
 	}
     }
-    rh = rhl.find_handler( "thingy" ) ;
+    rh = rhl->find_handler( "thingy" ) ;
     if( rh )
     {
 	if( rh->get_name() == "thingy" )
@@ -94,7 +94,7 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "removing req2" << endl ;
-    rh = rhl.remove_handler( "req2" ) ;
+    rh = rhl->remove_handler( "req2" ) ;
     if( rh )
     {
 	string name = rh->get_name() ;
@@ -115,7 +115,7 @@ run(void) {
 	return 1 ;
     }
 
-    rh = rhl.find_handler( "req2" ) ;
+    rh = rhl->find_handler( "req2" ) ;
     if( rh )
     {
 	if( rh->get_name() == "req2" )
@@ -135,7 +135,7 @@ run(void) {
 	cout << "couldn't find req2, good" << endl ;
     }
 
-    if( rhl.add_handler( "req2", new TestRequestHandler( "req2" ) ) == true )
+    if( rhl->add_handler( "req2", new TestRequestHandler( "req2" ) ) == true )
     {
 	cout << "successfully added req2 back" << endl ;
     }
@@ -145,7 +145,7 @@ run(void) {
 	return 1 ;
     }
 
-    rh = rhl.find_handler( "req2" ) ;
+    rh = rhl->find_handler( "req2" ) ;
     if( rh )
     {
 	if( rh->get_name() == "req2" )
@@ -166,8 +166,8 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "Iterating through handler list" << endl ;
-    DODSRequestHandlerList::Handler_citer h = rhl.get_first_handler() ;
-    DODSRequestHandlerList::Handler_citer hl = rhl.get_last_handler() ;
+    DODSRequestHandlerList::Handler_citer h = rhl->get_first_handler() ;
+    DODSRequestHandlerList::Handler_citer hl = rhl->get_last_handler() ;
     int count = 0 ;
     for( ; h != hl; h++ )
     {

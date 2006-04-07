@@ -18,12 +18,6 @@ TestResponseHandler::~TestResponseHandler()
 }
 
 void
-TestResponseHandler::parse( DODSTokenizer &tokenizer,
-			    DODSDataHandlerInterface &dhi )
-{
-}
-
-void
 TestResponseHandler::execute( DODSDataHandlerInterface & )
 {
 }

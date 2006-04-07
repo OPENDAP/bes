@@ -1,0 +1,25 @@
+#!/bin/sh
+
+echo "** running tests **"
+for i in *T
+do
+    echo "  ${i}"
+    ${i} > ${i}.out 2>&1
+done
+
+echo "** checking results **"
+> failed
+for i in *T
+do
+    if [ "${i}" != "failInitT" ]
+    then
+	echo "  ${i}"
+	g=`grep "Returning from" ${i}.out`
+	if [ "$g" = "" ]
+	then
+	    echo ${i} >> failed
+	fi
+    fi
+done
+echo "** failed tests ** "
+cat failed

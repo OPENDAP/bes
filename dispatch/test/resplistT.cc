@@ -18,12 +18,12 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 response handlers" << endl ;
-    DODSResponseHandlerList rhl ;
+    DODSResponseHandlerList *rhl = DODSResponseHandlerList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
 	sprintf( num, "resp%d", i ) ;
-	if( rhl.add_handler( num, TestResponseHandler::TestResponseBuilder ) == true )
+	if( rhl->add_handler( num, TestResponseHandler::TestResponseBuilder ) == true )
 	{
 	    cout << "successfully added " << num << endl ;
 	}
@@ -36,7 +36,7 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "try to add resp3 again" << endl ;
-    if( rhl.add_handler( "resp3", TestResponseHandler::TestResponseBuilder ) == true )
+    if( rhl->add_handler( "resp3", TestResponseHandler::TestResponseBuilder ) == true )
     {
 	cerr << "successfully added resp3 again" << endl ;
 	return 1 ;
@@ -51,7 +51,7 @@ run(void) {
     for( int i = 4; i >= 0; i-- )
     {
 	sprintf( num, "resp%d", i ) ;
-	DODSResponseHandler *rh = rhl.find_handler( num ) ;
+	DODSResponseHandler *rh = rhl->find_handler( num ) ;
 	if( rh )
 	{
 	    if( rh->get_name() == num )
@@ -76,9 +76,9 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "removing resp2" << endl ;
-    if( rhl.remove_handler( "resp2" ) == true )
+    if( rhl->remove_handler( "resp2" ) == true )
     {
-	DODSResponseHandler *rh = rhl.find_handler( "resp2" ) ;
+	DODSResponseHandler *rh = rhl->find_handler( "resp2" ) ;
 	if( rh )
 	{
 	    if( rh->get_name() == "resp2" )
@@ -106,7 +106,7 @@ run(void) {
 	return 1 ;
     }
 
-    if( rhl.add_handler( "resp2", TestResponseHandler::TestResponseBuilder ) == true )
+    if( rhl->add_handler( "resp2", TestResponseHandler::TestResponseBuilder ) == true )
     {
 	cout << "successfully added resp2 back" << endl ;
     }
@@ -116,7 +116,7 @@ run(void) {
 	return 1 ;
     }
 
-    DODSResponseHandler *rh = rhl.find_handler( "resp2" ) ;
+    DODSResponseHandler *rh = rhl->find_handler( "resp2" ) ;
     if( rh )
     {
 	if( rh->get_name() == "resp2" )
