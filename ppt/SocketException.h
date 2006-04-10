@@ -36,37 +36,19 @@
 
 using std::string ;
 
+#include "PPTException.h"
+
 /**
  */
 
-class SocketException
+class SocketException : public PPTException
 {
-protected:
-    string _msg ;
-    string _file ;
-    int _line ;
 public:
     SocketException( const string &msg,
                   const string &file = "UNDEFINED",
                   const int & line = 0 )
-	: _msg( msg ),
-	  _file( file ),
-	  _line( line ) {}
+	: PPTException( msg, file, line ) { }
     virtual ~SocketException() {}
-    virtual string getMessage()
-    {
-	return _msg;
-    }
-
-    virtual string getErrorFile()
-    {
-	return _file;
-    }
-
-    virtual int getErrorLine()
-    {
-	return _line;
-    }
 };
 
 #endif // SocketException_h_ 
