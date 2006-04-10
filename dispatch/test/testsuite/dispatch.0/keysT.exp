@@ -1,0 +1,110 @@
+# expect/tcl code to test keysT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered keysT::run
+
+*****************************************
+no file set
+unable to create DODSKeys, good, because:
+OPeNDAP: fatal, can not open initialization file 
+The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
+
+
+*****************************************
+notfound file set
+unable to create DODSKeys, good, because:
+OPeNDAP: fatal, can not open initialization file notfound.ini
+The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
+
+
+*****************************************
+bad keys, not enough equal signs
+unable to create DODSKeys, good, because:
+OPeNDAP: invalid entry OPeNDAP.BADKEY; there are 0 = characters.
+
+
+*****************************************
+bad keys, too many equal signs
+unable to create DODSKeys, good, because:
+OPeNDAP: invalid entry OPeNDAP.BADKEY=str1=str2; there are 2 = characters.
+
+
+*****************************************
+good keys file, should load
+created, good
+
+*****************************************
+get keys
+looking for OPeNDAP.KEY1
+OPeNDAP.KEY1 = val1
+looking for OPeNDAP.KEY2
+OPeNDAP.KEY2 = val2
+looking for OPeNDAP.KEY3
+OPeNDAP.KEY3 = val3
+
+*****************************************
+look for non existant key
+did not find DODS.NOTFOUND
+
+*****************************************
+look for key with empty value
+found and is empty
+
+*****************************************
+set bad key, 0 = characters
+unable to set the key, good, because:
+OPeNDAP: invalid entry OPeNDAP.NOEQS; there are 0 = characters.
+
+*****************************************
+set bad key, 2 = characters
+unable to set the key, good, because:
+OPeNDAP: invalid entry OPeNDAP.2EQS=val1=val2; there are 2 = characters.
+
+*****************************************
+set DODS.KEY5 to val5
+set_key successful
+
+*****************************************
+set DODS.KEY6 to val6
+set_key successful
+
+*****************************************
+get keys
+looking for OPeNDAP.KEY1
+OPeNDAP.KEY1 = val1
+looking for OPeNDAP.KEY2
+OPeNDAP.KEY2 = val2
+looking for OPeNDAP.KEY3
+OPeNDAP.KEY3 = val3
+looking for OPeNDAP.KEY4
+OPeNDAP.KEY4 = 
+looking for OPeNDAP.KEY5
+OPeNDAP.KEY5 = val5
+looking for OPeNDAP.KEY6
+OPeNDAP.KEY6 = val6
+
+*****************************************
+Returning from keysT::run"
+
+set dispatchTEST ./keysT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "keysT"
+} else {
+    fail "keysT"
+}
+

@@ -1,0 +1,106 @@
+# expect/tcl code to test pvolT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered pvolT::run
+
+*****************************************
+Create volatile and add five elements
+
+*****************************************
+show containers
+volatile
+sym1,real1,type1
+sym2,real2,type2
+sym3,real3,type3
+sym4,real4,type4
+sym5,real5,type5
+
+*****************************************
+try to add sym1 again
+unable to add sym1 again, good
+A container with the name sym1 already exists
+
+*****************************************
+Looking for sym1
+found sym1
+
+*****************************************
+Looking for sym2
+found sym2
+
+*****************************************
+Looking for sym3
+found sym3
+
+*****************************************
+Looking for sym4
+found sym4
+
+*****************************************
+Looking for sym5
+found sym5
+
+*****************************************
+remove sym1
+successfully removed sym1
+
+*****************************************
+find sym1
+didn't remove it, good
+
+*****************************************
+remove sym5
+successfully removed sym5
+
+*****************************************
+find sym5
+didn't remove it, good
+
+*****************************************
+remove nosym
+didn't find nosym, good
+
+*****************************************
+Looking for sym2
+found sym2
+
+*****************************************
+Looking for sym3
+found sym3
+
+*****************************************
+Looking for sym4
+found sym4
+
+*****************************************
+show containers
+volatile
+sym2,real2,type2
+sym3,real3,type3
+sym4,real4,type4
+
+*****************************************
+Returning from pvolT::run"
+
+set dispatchTEST ./pvolT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "pvolT"
+} else {
+    fail "pvolT"
+}
+

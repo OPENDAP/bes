@@ -1,0 +1,40 @@
+
+# Tcl/Expect code for the dispatch test.
+
+# Make sure the global var dispatchTEST is set correctly.
+
+global dispatchTEST
+if ![info exists dispatchTEST] then {
+    set dispatchTEST [transform ./kaka]
+}
+
+# The four `required' procs are _start, _load, _exit and _version.
+
+proc dispatch_start { } {
+    global verbose
+    global dispatchTEST
+    global comp_output
+    global spawn_id
+
+    if {$verbose >= 1} {
+	send_user "Testing dispatch ...\n"
+	exp_internal 1
+    }
+
+    catch "exec $dispatchTEST" comp_output
+
+    if {$verbose >= 1} {
+	send_user "Comp output:\n$comp_output\n"
+    }
+}
+
+proc dispatch_load {} {
+}
+
+proc dispatch_exit {} {
+    send -raw ""
+}
+
+proc dispatch_version {} {
+    send_user "dispatch test suite 1.0\n"
+}

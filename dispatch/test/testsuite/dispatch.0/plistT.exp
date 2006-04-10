@@ -1,0 +1,114 @@
+# expect/tcl code to test plistT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered plistT::run
+
+*****************************************
+Create the DODSContainerPersistentList
+
+*****************************************
+Add ContainerStorageFile for File1 and File2
+successfully added File1
+successfully added File2
+
+*****************************************
+Try to add File2 again
+unable to add File2, good
+
+*****************************************
+looking for sym1
+found sym1
+
+*****************************************
+looking for sym2
+found sym2
+
+*****************************************
+looking for sym3
+found sym3
+
+*****************************************
+looking for sym4
+found sym4
+
+*****************************************
+looking for sym5
+found sym5
+
+*****************************************
+looking for sym6
+found sym6
+
+*****************************************
+looking for sym7
+found sym7
+
+*****************************************
+looking for sym8
+found sym8
+
+*****************************************
+looking for sym9
+found sym9
+
+*****************************************
+looking for sym10
+found sym10
+
+*****************************************
+looking for non-existant thingy
+didn't find thingy, good
+
+*****************************************
+show containers
+File1
+sym1,real1,type1
+sym2,real2,type2
+sym3,real3,type3
+sym4,real4,type4
+sym5,real5,type5
+
+File2
+sym10,real10,type10
+sym6,real6,type6
+sym7,real7,type7
+sym8,real8,type8
+sym9,real9,type9
+
+*****************************************
+remove File1
+successfully removed File1
+
+*****************************************
+looking for sym2
+couldn't find sym2, good
+
+*****************************************
+looking for sym7
+found sym7
+
+*****************************************
+Returning from plistT::run"
+
+set dispatchTEST ./plistT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "plistT"
+} else {
+    fail "plistT"
+}
+

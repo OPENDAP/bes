@@ -1,0 +1,61 @@
+# expect/tcl code to test containerT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered containerT::run
+
+*****************************************
+try to find symbolic name that doesn't exist, default
+caught exception, didn't find nosym, good
+Could not find the symbolic name nosym
+
+*****************************************
+try to find symbolic name that does exist, default
+found sym1
+
+*****************************************
+set to strict
+
+*****************************************
+try to find symbolic name that doesn't exist, strict
+caught exception, didn't find nosym, good
+Could not find the symbolic name nosym
+
+*****************************************
+try to find symbolic name that does exist, strict
+found sym1
+
+*****************************************
+set to nice
+
+*****************************************
+try to find symbolic name that doesn't exist, nice
+didn't find nosym, didn't throw exception, good
+
+*****************************************
+try to find symbolic name that does exist, nice
+
+*****************************************
+Returning from containerT::run"
+
+set dispatchTEST ./containerT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "containerT"
+} else {
+    fail "containerT"
+}
+

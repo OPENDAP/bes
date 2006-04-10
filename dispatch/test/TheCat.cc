@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using std::cerr ;
+using std::cout ;
 using std::endl ;
 
 #include "TheCat.h"
@@ -13,14 +13,14 @@ Animal *TheCat = 0;
 
 static bool
 buildNewCat(int, char**) {
-    cerr << "I am building new cat" << endl;
+    cout << "I am building new cat" << endl;
     TheCat = new cat("Muffy");
     return true;
 }
 
 static bool
 destroyNewCat(void) {
-    cerr << "I am destroying the cat" << endl;
+    cout << "I am destroying the cat" << endl;
     if(TheCat) delete TheCat;
     return true;
 }

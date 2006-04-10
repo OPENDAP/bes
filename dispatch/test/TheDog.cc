@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using std::cerr ;
+using std::cout ;
 using std::endl ;
 
 #include "TheDog.h"
@@ -13,14 +13,14 @@ Animal *TheDog = 0;
 
 static bool
 buildNewDog(int, char**) {
-    cerr << "I am building new dog, using FUNINIT with no termination" << endl;
+    cout << "I am building new dog, using FUNINIT with no termination" << endl;
     TheDog = new dog("Killer");
     return true;
 }
 
 static bool
 destroyNewDog(void) {
-    cerr << "I am destroying the dog" << endl;
+    cout << "I am destroying the dog" << endl;
     if(TheDog) delete TheDog;
     return true;
 }

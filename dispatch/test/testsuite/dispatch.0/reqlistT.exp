@@ -1,0 +1,67 @@
+# expect/tcl code to test reqlistT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered reqlistT::run
+
+*****************************************
+add the 5 request handlers
+successfully added req0
+successfully added req1
+successfully added req2
+successfully added req3
+successfully added req4
+
+*****************************************
+try to add req3 again
+failed to add req3 again, good
+
+*****************************************
+finding the handlers
+found req4
+found req3
+found req2
+found req1
+found req0
+coundn't find thingy
+
+*****************************************
+removing req2
+successfully removed req2
+couldn't find req2, good
+successfully added req2 back
+found req2
+
+*****************************************
+Iterating through handler list
+found req0
+found req1
+found req2
+found req3
+found req4
+found right number of handlers
+
+*****************************************
+Returning from reqlistT::run"
+
+set dispatchTEST ./reqlistT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "reqlistT"
+} else {
+    fail "reqlistT"
+}
+

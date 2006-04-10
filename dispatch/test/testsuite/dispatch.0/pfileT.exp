@@ -1,0 +1,87 @@
+# expect/tcl code to test pfileT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered pfileT::run
+
+*****************************************
+Try to get one called File
+couldn't get File, good, because
+OPeNDAP.Container.Persistence.File.File not defined in key file
+
+*****************************************
+Try to get one called FileNot
+couldn't get FileNot, good, because
+Unable to open persistence file FileDoesntExist
+
+*****************************************
+Try to get one called FileTooMany
+couldn't get FileTooMany, good, because
+Too many fields in persistence file ./persistence_file3.txt
+
+*****************************************
+Try to get one called FileTooFew
+couldn't get FileTooFew, good, because
+Incomplete container persistence line in file ./persistence_file4.txt
+
+*****************************************
+Get one called File1
+opened file File1, good
+
+*****************************************
+Looking for sym1
+found sym1
+
+*****************************************
+Looking for sym2
+found sym2
+
+*****************************************
+Looking for sym3
+found sym3
+
+*****************************************
+Looking for sym4
+found sym4
+
+*****************************************
+Looking for sym5
+found sym5
+
+*****************************************
+Looking for thingy
+didn't find thingy, good
+
+*****************************************
+show containers
+File1
+sym1,real1,type1
+sym2,real2,type2
+sym3,real3,type3
+sym4,real4,type4
+sym5,real5,type5
+
+*****************************************
+Returning from pfileT::run"
+
+set dispatchTEST ./pfileT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "pfileT"
+} else {
+    fail "pfileT"
+}
+
