@@ -12,6 +12,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch -I$(top_srcdir)/comma
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
+SUBDIRS = test
+DIST_SUBDIRS = test
+
 bin_PROGRAMS = opendapserver opendapdaemon
 
 opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
