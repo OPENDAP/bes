@@ -13,6 +13,9 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
+SUBDIRS = test 
+DIST_SUBDIRS = test
+
 lib_LTLIBRARIES = libdispatch.la
 
 libdispatch_la_SOURCES = $(SRCS) $(HDRS)
