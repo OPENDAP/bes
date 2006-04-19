@@ -53,6 +53,7 @@
 #include "DAS.h"
 #include "DDS.h"
 #include "DataDDS.h"
+#include "ConstraintEvaluator.h"
 
 #include "debug.h"
 #include "cgi_util.h"
@@ -105,27 +106,30 @@ main(int argc, char *argv[])
 	  case DODSFilter::DDS_Response: {
               HDFTypeFactory factory;
 	      DDS dds(&factory);
+              ConstraintEvaluator ce;
 
 	      read_dds(dds, cachedir, df.get_dataset_name());
 	      df.read_ancillary_dds(dds);
-	      df.send_dds(dds, true);
+	      df.send_dds(dds, ce, true);
 	      break;
 	  }
 
 	  case DODSFilter::DataDDS_Response: {
               HDFTypeFactory factory;
 	      DDS dds(&factory);
+              ConstraintEvaluator ce;
 
 	      read_dds(dds, cachedir, df.get_dataset_name());
 	      register_funcs(dds);
 	      df.read_ancillary_dds(dds);
-	      df.send_data(dds, stdout);
+	      df.send_data(dds, ce, stdout);
 	      break;
 	  }
 
           case DODSFilter::DDX_Response: {
               HDFTypeFactory factory;
               DDS dds(&factory);
+              ConstraintEvaluator ce;
               DAS das;
 
               dds.filename(df.get_dataset_name());
@@ -139,7 +143,7 @@ main(int argc, char *argv[])
 
               dds.transfer_attributes(&das);
 
-              df.send_ddx(dds, stdout);
+              df.send_ddx(dds, ce, stdout);
               break;
           }
 

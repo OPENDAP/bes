@@ -44,9 +44,9 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([isascii])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.6.0],
+AC_CHECK_LIBDAP([3.7.0],
  [
-  LIBS="$LIBS $DAP_LIBS"
+  LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
  ],
  [ AC_MSG_ERROR([Cannot find libdap])
