@@ -32,6 +32,7 @@
 #include "cgi_util.h" 
 #include "DAS.h"
 #include "DDS.h"
+#include "ConstraintEvaluator.h"
 #include "DODSFilter.h"
 #include "InternalErr.h"
 
@@ -127,18 +128,44 @@ main(int argc, char *argv[])
 	  case DODSFilter::DDS_Response: {
               HDF5TypeFactory factory;
 	      DDS dds(&factory);
+              ConstraintEvaluator ce;
+              
 	      depth_first(file1, "/", dds, df.get_dataset_name().c_str());
-	      df.send_dds(dds, true);
+	      df.send_dds(dds, ce, true);
 	      break;
 	  }
 
 	  case DODSFilter::DataDDS_Response: {
               HDF5TypeFactory factory;
 	      DDS dds(&factory);
+              ConstraintEvaluator ce;
+
 	      depth_first(file1, "/", dds, df.get_dataset_name().c_str());
-	      df.send_data(dds, stdout);
+	      df.send_data(dds, ce, stdout);
 	      break;
 	  }
+
+          case DODSFilter::DDX_Response: {
+              HDF5TypeFactory factory;
+              DDS dds(&factory);
+              ConstraintEvaluator ce;
+              DAS das;
+
+              depth_first(file1, "/", dds, df.get_dataset_name().c_str());
+              find_gloattr(file1, das);
+              depth_first(file1, "/", das, df.get_dataset_name().c_str());
+
+              dds.transfer_attributes(&das);
+
+              df.send_ddx(dds, ce, stdout);
+              break;
+          }
+
+          case DODSFilter::Version_Response: {
+              df.send_version_info();
+
+              break;
+          }
 
 	  default:
 	    df.print_usage();	// Throws Error
