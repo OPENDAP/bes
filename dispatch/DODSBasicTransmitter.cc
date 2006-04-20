@@ -32,15 +32,20 @@
 #include <DAS.h>
 #include <DDS.h>
 #include <DODSFilter.h>
+#include <ConstraintEvaluator.h>
 
 #include "DODSBasicTransmitter.h"
 #include "DODSInfo.h"
 #include "OPeNDAPDataNames.h"
 
 void
-DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
+DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface &dhi )
 {
-    das.print( stdout ) ;
+    dhi.first_container();
+
+    DODSFilter df ;
+    df.set_dataset_name( dhi.container->get_real_name() ) ;
+    df.send_das( stdout, das, "", false ) ;
 
     fflush( stdout ) ;
 }
@@ -48,8 +53,13 @@ DODSBasicTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
 void
 DODSBasicTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    dds.parse_constraint( dhi.data[POST_CONSTRAINT] ) ;
-    dds.print_constrained( stdout ) ;
+    dhi.first_container();
+
+    DODSFilter df ;
+    ConstraintEvaluator ce ;
+    df.set_dataset_name( dhi.container->get_real_name() ) ;
+    df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
+    df.send_dds( stdout, dds, ce, true, "", false ) ;
 
     fflush( stdout ) ;
 }
@@ -57,13 +67,13 @@ DODSBasicTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 void
 DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    dhi.first_container();
+    dhi.first_container() ;
 
-    DODSFilter df;
+    DODSFilter df ;
+    ConstraintEvaluator ce ;
     df.set_dataset_name(dhi.container->get_real_name());
     df.set_ce(dhi.data[POST_CONSTRAINT]);
-    
-    df.send_data(dds, stdout, "", false);
+    df.send_data(dds, ce, stdout, "", false);
 
     fflush( stdout ) ;
 }
@@ -71,12 +81,13 @@ DODSBasicTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 void
 DODSBasicTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
-    DODSFilter df;
-    //cerr << "setting dataset name" << endl ;
-    //df.set_dataset_name(dhi.container->get_real_name());
-    df.set_ce(dhi.data[POST_CONSTRAINT]);
+    dhi.first_container() ;
 
-    df.send_ddx( dds, stdout, false ) ;
+    DODSFilter df ;
+    ConstraintEvaluator ce ;
+    df.set_dataset_name( dhi.container->get_real_name() ) ;
+    df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
+    df.send_ddx( dds, ce, stdout, false ) ;
 
     fflush( stdout ) ;
 }

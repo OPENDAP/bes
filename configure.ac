@@ -82,7 +82,7 @@ if test "$vl_cv_lib_readline" = "no"; then
    AC_MSG_ERROR(I could not find the readline library!)
 fi
 
-AC_CHECK_LIBDAP([3.5.2],
+AC_CHECK_LIBDAP([3.7.0],
  [
   LIBS="$LIBS $DAP_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"

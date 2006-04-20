@@ -31,6 +31,7 @@
 
 #include "DODSFilterTransmitter.h"
 #include "DODSFilter.h"
+#include "ConstraintEvaluator.h"
 #include "DODSInfo.h"
 #include "OPeNDAPDataNames.h"
 
@@ -43,22 +44,25 @@ DODSFilterTransmitter::send_das( DAS &das, DODSDataHandlerInterface & )
 void
 DODSFilterTransmitter::send_dds( DDS &dds, DODSDataHandlerInterface &dhi )
 {
+    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_dds( stdout, dds, true ) ;
+    _df->send_dds( stdout, dds, ce, true ) ;
 }
 
 void
 DODSFilterTransmitter::send_data( DDS &dds, DODSDataHandlerInterface &dhi )
 {
+    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_data( dds, stdout ) ;
+    _df->send_data( dds, ce, stdout ) ;
 }
 
 void
 DODSFilterTransmitter::send_ddx( DDS &dds, DODSDataHandlerInterface &dhi )
 {
+    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_ddx( dds, stdout ) ;
+    _df->send_ddx( dds, ce, stdout ) ;
 }
 
 void

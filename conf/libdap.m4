@@ -54,7 +54,7 @@ AC_DEFUN([AC_CHECK_LIBDAP],
      if test x$dap_config_is_lt = xyes ; then
        dap_no=yes
      else
-       DAP_LIBS="`$DAP_CONFIG --libs`"
+       DAP_LIBS="`$DAP_CONFIG --server-libs`"
        DAP_CFLAGS="`$DAP_CONFIG --cflags`"
      fi
    fi
