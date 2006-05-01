@@ -43,6 +43,7 @@ protected:
 
     void			writeBuffer( const string &buffer ) ;
     int				readBuffer( char *inBuff ) ;
+    int				readBufferNonBlocking( char *inBuff ) ;
 public:
     virtual			~PPTConnection() {}
 

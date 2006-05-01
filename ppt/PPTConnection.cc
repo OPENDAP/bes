@@ -29,9 +29,17 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
+#include <poll.h>
+#include <errno.h>
+#include <iostream>
+
+using std::cout ;
+using std::flush ;
+
 #include "PPTConnection.h"
 #include "PPTProtocol.h"
 #include "Socket.h"
+#include "PPTException.h"
 
 void
 PPTConnection::send( const string &buffer )
@@ -116,4 +124,39 @@ PPTConnection::readBuffer( char *inBuff )
     return _mySock->receive( inBuff, 4096 ) ;
 }
 
-// $Log: PPTConnection.cc,v $
+int
+PPTConnection::readBufferNonBlocking( char *inBuff )
+{
+    struct pollfd p ;
+    p.fd = getSocket()->getSocketDescriptor();
+    p.events = POLLIN ;
+    struct pollfd arr[1] ;
+    arr[0] = p ;
+
+    // Lets loop 6 times with a delay block on poll of 1000 milliseconds
+    // (duh! 6 seconds) and see if there is any data.
+    for( int j = 0; j < 5; j++ )
+    {
+	if( poll( arr, 1, 1000 ) < 0 )
+	{
+	    string error( "poll error" ) ;
+	    const char* error_info = strerror( errno ) ;
+	    if( error_info )
+		error += " " + (string)error_info ;
+	    throw PPTException( error ) ;
+	}
+	else
+	{
+	    if (arr[0].revents==POLLIN)
+	    {
+		return readBuffer( inBuff ) ;
+	    }
+	    else
+	    {
+		cout << " " << j << flush ;
+	    }
+	}
+    }
+    return -1 ;
+}
+

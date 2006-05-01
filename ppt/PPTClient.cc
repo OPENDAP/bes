@@ -88,13 +88,21 @@ PPTClient::initConnection()
     }
 
     char *inBuff = new char[4096] ;
-    int bytesRead = readBuffer( inBuff ) ;
+    int bytesRead = readBufferNonBlocking( inBuff ) ;
+    if( bytesRead < 1 )
+    {
+	delete [] inBuff ;
+	throw PPTException( "Could not connect to server, server may be down or busy" ) ;
+    }
+
     string status( inBuff, 0, bytesRead ) ;
     delete [] inBuff ;
+
     if( status == PPTProtocol::PPT_PROTOCOL_UNDEFINED )
     {
 	throw PPTException( "Could not connect to server, server may be down or busy" ) ;
     }
+
     if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
     {
 	throw PPTException( "Server reported an invalid connection, \"" + status + "\"" ) ;
