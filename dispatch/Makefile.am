@@ -79,7 +79,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	OPeNDAPAggFactory.cc \
 	DODSReturnManager.cc \
 	DODSDefineList.cc \
-	OPeNDAPBaseApp.cc dods_module.cc
+	OPeNDAPBaseApp.cc OPeNDAPModuleApp.cc dods_module.cc
 
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
@@ -124,7 +124,8 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSDefineList.h DODSDefine.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h \
 	OPeNDAPAbstractModule.h OPeNDAPPluginFactory.h OPeNDAPPlugin.h \
-	OPeNDAPPluginException.h dods_module.h OPeNDAPTransmitterNames.h
+	OPeNDAPPluginException.h dods_module.h OPeNDAPTransmitterNames.h \
+	OPeNDAPModuleApp.h
 
 MODSRCS:=
 

@@ -48,7 +48,8 @@ using std::ofstream ;
 #include "PPTException.h"
 
 CmdApp::CmdApp()
-    : _client( 0 ),
+    : OPeNDAPBaseApp(),
+      _client( 0 ),
       _hostStr( "" ),
       _unixStr( "" ),
       _portVal( 0 ),

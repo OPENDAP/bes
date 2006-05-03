@@ -33,13 +33,13 @@
 
 using std::string ;
 
-#include "OPeNDAPBaseApp.h"
+#include "OPeNDAPModuleApp.h"
 
 class TcpSocket ;
 class UnixSocket ;
 class PPTServer ;
 
-class ServerApp : public OPeNDAPBaseApp
+class ServerApp : public OPeNDAPModuleApp
 {
 private:
     int				_portVal ;

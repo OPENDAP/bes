@@ -1,4 +1,4 @@
-// OPeNDAPBaseApp.h
+// OPeNDAPModuleApp.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,13 +29,18 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#ifndef B_OPeNDAPBaseApp_H
-#define B_OPeNDAPBaseApp_H
+#ifndef B_OPeNDAPModuleApp_H
+#define B_OPeNDAPModuleApp_H
 
 #include <map>
 #include <string>
 
-#include "OPeNDAPApp.h"
+using std::map ;
+using std::string ;
+
+#include "OPeNDAPBaseApp.h"
+#include "OPeNDAPPluginFactory.h"
+#include "OPeNDAPAbstractModule.h"
 
 /** @brief Base application object for all BES applications
  *
@@ -50,13 +55,15 @@
  * @see OPeNDAPApp
  * @see DODSGlobalIQ
  */
-class OPeNDAPBaseApp : public OPeNDAPApp {
+class OPeNDAPModuleApp : public OPeNDAPBaseApp {
+private:
+    OPeNDAPPluginFactory<OPeNDAPAbstractModule> _moduleFactory ;
+    map< string, string > 	_module_list ;
+    int				loadModules( void ) ;
 public:
-                                OPeNDAPBaseApp( void ) ;
-    virtual                     ~OPeNDAPBaseApp( void ) ;
-    virtual int			main( int argC, char **argV ) ;
+                                OPeNDAPModuleApp( void ) ;
+    virtual                     ~OPeNDAPModuleApp( void ) ;
     virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run( void ) ;
     virtual int			terminate( int sig = 0 ) ;
 
     virtual void		dump( ostream &strm ) const ;

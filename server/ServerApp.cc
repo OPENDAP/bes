@@ -57,7 +57,8 @@ using std::flush ;
 #include "opendap_commands.h"
 
 ServerApp::ServerApp()
-    : _portVal( 0 ),
+    : OPeNDAPModuleApp(),
+      _portVal( 0 ),
       _gotPort( false ),
       _unixSocket( "" ),
       _mypid( 0 ),
@@ -198,7 +199,7 @@ ServerApp::initialize( int argc, char **argv )
     dods_module::initialize( argc, argv ) ;
     opendap_commands::initialize( argc, argv ) ;
 
-    return OPeNDAPBaseApp::initialize( argc, argv ) ;
+    return OPeNDAPModuleApp::initialize( argc, argv ) ;
 }
 
 int
@@ -221,16 +222,16 @@ ServerApp::run()
 	_ps = new PPTServer( &handler, &listener ) ;
 	_ps->initConnection() ;
     }
-    catch( PPTException &pe )
-    {
-	cerr << "caught PPTException" << endl ;
-	cerr << pe.getMessage() << endl ;
-	return 1 ;
-    }
     catch( SocketException &se )
     {
 	cerr << "caught SocketException" << endl ;
 	cerr << se.getMessage() << endl ;
+	return 1 ;
+    }
+    catch( PPTException &pe )
+    {
+	cerr << "caught PPTException" << endl ;
+	cerr << pe.getMessage() << endl ;
 	return 1 ;
     }
     catch( ... )
@@ -263,7 +264,7 @@ ServerApp::terminate( int sig )
 	    _us->close() ;
 	    delete _us ;
 	}
-	OPeNDAPBaseApp::terminate( sig ) ;
+	OPeNDAPModuleApp::terminate( sig ) ;
     }
     return sig ;
 }
