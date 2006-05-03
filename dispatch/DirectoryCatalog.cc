@@ -61,8 +61,8 @@ DirectoryCatalog::DirectoryCatalog( const string &name )
     DIR *dip = opendir( _rootDir.c_str() ) ;
     if( dip == NULL )
     {
-	string serr = "DirectoryCatalog - unable to load root directory "
-	              + _rootDir ;
+	string serr = "DirectoryCatalog - root directory "
+	              + _rootDir + " does not exist" ;
 	DODSResponseException e( serr ) ;
 	throw e ;
     }

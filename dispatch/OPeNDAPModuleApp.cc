@@ -35,10 +35,9 @@ using std::cerr ;
 using std::endl ;
 
 #include "OPeNDAPModuleApp.h"
-#include "DODSBasicException.h"
+#include "DODSException.h"
 #include "OPeNDAPPluginFactory.h"
 #include "OPeNDAPAbstractModule.h"
-#include "OPeNDAPPluginException.h"
 #include "TheDODSKeys.h"
 
 /** @brief Default constructor
@@ -81,14 +80,14 @@ initialize(int argC, char **argV)
 	}
 	catch( DODSException &e )
 	{
-	    string newerr = "Error initializing modules: " ;
+	    string newerr = "Error during module initialization: " ;
 	    newerr += e.get_error_description() ;
 	    cerr << newerr << endl ;
 	    retVal = 1 ;
 	}
 	catch( ... )
 	{
-	    string newerr = "Error initializing application: " ;
+	    string newerr = "Error during module initialization: " ;
 	    newerr += "caught unknown exception" ;
 	    cerr << newerr << endl ;
 	    retVal = 1 ;
@@ -144,24 +143,28 @@ OPeNDAPModuleApp::loadModules()
 	    _moduleFactory.add_mapping( (*i).first, (*i).second ) ;
 	}
 
-	try
+	for( i = _module_list.begin(); i != e; i++ )
 	{
-	    for( i = _module_list.begin(); i != e; i++ )
+	    try
 	    {
 		OPeNDAPAbstractModule *o = _moduleFactory.get( (*i).first ) ;
 		o->initialize() ;
 	    }
-	}
-	catch( OPeNDAPPluginException &e )
-	{
-	    cerr << "Caught exception during initialize: "
-	         << e.get_error_description() << endl ;
-	    retVal = 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "Caught unknown exception during initialize" << endl ;
-	    retVal = 1 ;
+	    catch( DODSException &e )
+	    {
+		cerr << "Caught plugin exception during initialization of "
+		     << (*i).first << " module:" << endl << "    "
+		     << e.get_error_description() << endl ;
+		retVal = 1 ;
+		break ;
+	    }
+	    catch( ... )
+	    {
+		cerr << "Caught unknown exception during initialization of "
+		     << (*i).first << " module" << endl ;
+		retVal = 1 ;
+		break ;
+	    }
 	}
     }
 
@@ -189,9 +192,9 @@ terminate( int sig )
 	    o->terminate() ;
 	}
     }
-    catch( OPeNDAPPluginException &e )
+    catch( DODSException &e )
     {
-	cerr << "Caught exception during terminate: "
+	cerr << "Caught exception during module termination: "
 	     << e.get_error_description() << endl ;
     }
     catch( ... )
