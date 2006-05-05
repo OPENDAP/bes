@@ -13,6 +13,7 @@ AM_CONFIG_HEADER([config_hdf5.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 # Checks for libraries.
 
@@ -52,6 +53,27 @@ then
     AC_MSG_ERROR(HDF5 library not found (looked in ${hdf5_path}/lib)!)
 fi 
 AC_SUBST(hdf5_path)
+
+AC_ARG_WITH([bes],
+            [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
+            [BES_PATH=${withval}], 
+            [BES_PATH="/usr/local"])
+
+dnl Simple test for BES. A better test would look something like the libdap
+dnl macro written by Patrice. This will get us going... If --with-bes is not
+dnl given, then don't build the bes code. jhrg 10/3/05
+if test -x "${BES_PATH}/bin/bes-config"
+then
+    AM_CONDITIONAL([OPENDAPSERVER], [true])
+    BES_CPPFLAGS="`${BES_PATH}/bin/bes-config --cflags`"
+    AC_SUBST([BES_CPPFLAGS])
+    BES_LDFLAGS="`${BES_PATH}/bin/bes-config --libs`"
+    AC_SUBST([BES_LDFLAGS])
+    BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --prefix`/lib/bes"
+    AC_SUBST([BES_MODULE_DIR])
+else
+    AM_CONDITIONAL([OPENDAPSERVER], [false])
+fi
 
 dnl autoheader macros; tack some text at the top and bottom of config_dap.h.in
 
