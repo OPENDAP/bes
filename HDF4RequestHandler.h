@@ -28,9 +28,15 @@
 #ifndef I_HDF4RequestHandler_H
 #define I_HDF4RequestHandler_H 1
 
+#include <string>
+
+using std::string ;
+
 #include "DODSRequestHandler.h"
 
 class HDF4RequestHandler : public DODSRequestHandler {
+private:
+    static string	_cachedir ;
 public:
 			HDF4RequestHandler( string name ) ;
     virtual		~HDF4RequestHandler( void ) ;

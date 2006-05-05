@@ -25,6 +25,11 @@
  
 // HDF4RequestHandler.cc
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "HDF4RequestHandler.h"
 #include "DODSResponseNames.h"
 #include "DAS.h"
@@ -33,6 +38,17 @@
 #include "DODSResponseHandler.h"
 #include "DODSVersionInfo.h"
 #include "HDFTypeFactory.h"
+#include "TheDODSKeys.h"
+#include "DODSKeysException.h"
+#include "OPeNDAPDataNames.h"
+#include "ConstraintEvaluator.h"
+#include "config_hdf.h"
+
+extern void read_das(DAS& das, const string& cachedir, const string& filename);
+extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
+extern void register_funcs(ConstraintEvaluator& dds);
+
+string HDF4RequestHandler::_cachedir = "" ;
 
 HDF4RequestHandler::HDF4RequestHandler( string name )
     : DODSRequestHandler( name )
@@ -42,6 +58,30 @@ HDF4RequestHandler::HDF4RequestHandler( string name )
     add_handler( DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data ) ;
     add_handler( HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help ) ;
     add_handler( VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version ) ;
+
+    if( HDF4RequestHandler::_cachedir == "" )
+    {
+	bool found = false ;
+	_cachedir = TheDODSKeys::TheKeys()->get_key( "HDF5.cachedir", found ) ;
+	if( !found || _cachedir == "" )
+	    _cachedir = "/tmp" ;
+
+	string dummy = _cachedir + "/dummy" ;
+	int fd = open( dummy.c_str(), O_CREAT|O_WRONLY|O_TRUNC ) ;
+	unlink( dummy.c_str() ) ;
+	if( fd == -1 )
+	{
+	    if( _cachedir == "/tmp" )
+	    {
+		close(fd);
+		string err = "Could not create a file in the cache directory ("
+			     + _cachedir + ")" ;
+		throw DODSKeysException( err ) ;
+	    }
+	    _cachedir = "/tmp" ;
+	}
+	close(fd);
+    }
 }
 
 HDF4RequestHandler::~HDF4RequestHandler()
@@ -53,7 +93,7 @@ HDF4RequestHandler::hdf4_build_das( DODSDataHandlerInterface &dhi )
 {
     DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
 
-    //read_variables( *das, dhi.container->get_real_name() );
+    read_das( *das, _cachedir, dhi.container->get_real_name() ) ;
 
     return true ;
 }
@@ -62,11 +102,14 @@ bool
 HDF4RequestHandler::hdf4_build_dds( DODSDataHandlerInterface &dhi )
 {
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+
     HDFTypeFactory *factory = new HDFTypeFactory ;
     dds->set_factory( factory ) ;
+    ConstraintEvaluator ce;
 
-    //read_descriptors( *dds, dhi.container->get_real_name() );
-    //dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+    read_dds( *dds, _cachedir, dhi.container->get_real_name() ) ;
+
+    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
     dds->set_factory( NULL ) ;
     delete factory ;
@@ -78,12 +121,15 @@ bool
 HDF4RequestHandler::hdf4_build_data( DODSDataHandlerInterface &dhi )
 {
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+
     HDFTypeFactory *factory = new HDFTypeFactory ;
     dds->set_factory( factory ) ;
+    ConstraintEvaluator ce;
 
     dds->filename( dhi.container->get_real_name() );
-    //read_descriptors( *dds, dhi.container->get_real_name() ); 
-    //dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+
+    read_dds( *dds, _cachedir, dhi.container->get_real_name() ) ;
+    register_funcs( ce ) ;
 
     dds->set_factory( NULL ) ;
     delete factory ;
@@ -104,7 +150,7 @@ bool
 HDF4RequestHandler::hdf4_build_version( DODSDataHandlerInterface &dhi )
 {
     DODSVersionInfo *info = (DODSVersionInfo *)dhi.response_handler->get_response_object() ;
-    //info->addHandlerVersion( "libnc-dods", "0.9" ) ;
+    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return true ;
 }
 
