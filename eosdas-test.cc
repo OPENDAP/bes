@@ -54,6 +54,11 @@ static char rcsid[] not_used = {"$Id$"};
 #include <iostream>
 #include <string>
 
+using std::cout ;
+using std::cerr ;
+using std::endl ;
+using std::flush ;
+using std:: string ;
 #include <GetOpt.h>
 
 #define YYSTYPE char *

@@ -67,7 +67,7 @@ using namespace std;
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
-extern void register_funcs(DDS& dds);
+extern void register_funcs(ConstraintEvaluator& dds);
 
 const string cgi_version = PACKAGE_VERSION;
 
@@ -120,7 +120,7 @@ main(int argc, char *argv[])
               ConstraintEvaluator ce;
 
 	      read_dds(dds, cachedir, df.get_dataset_name());
-	      register_funcs(dds);
+	      register_funcs(ce);
 	      df.read_ancillary_dds(dds);
 	      df.send_data(dds, ce, stdout);
 	      break;
@@ -135,7 +135,7 @@ main(int argc, char *argv[])
               dds.filename(df.get_dataset_name());
 
               read_dds(dds, cachedir, df.get_dataset_name());
-              register_funcs(dds);
+              register_funcs(ce);
               df.read_ancillary_dds(dds);
 
               read_das(das, cachedir, df.get_dataset_name());

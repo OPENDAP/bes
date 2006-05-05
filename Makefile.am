@@ -17,6 +17,12 @@ SUBDIRS = hdfclass
 bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
+if OPENDAPSERVER
+    lib_LTLIBRARIES = libhdf4_handler.la libhdf4_module.la
+else
+    lib_LTLIBRARIES = libhdf4_handler.la
+endif
+
 HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc   HDFUInt32.cc \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
@@ -26,18 +32,26 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h
 
-
 HANDLER_SRC = dhdferr.cc hdfdesc.cc funcs.cc hc2dap.cc hdfutil.cc \
-	hdf_handler.cc dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
-	hdf-dods.h hdf-maps.h hdfeos.tab.cc hdfeos.tab.h \
-	lex.hdfeos.cc config_hdf.h
+	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
+	hdf-dods.h hdf-maps.h config_hdf.h \
+	hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc
 
-dap_hdf4_handler_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR)
-dap_hdf4_handler_LDADD = hdfclass/libhdfclass.a
+SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
-eosdas_test_SOURCES = eosdas-test.cc hdfeos.tab.cc hdfeos.tab.h \
-	lex.hdfeos.cc
-eosdas_test_LDADD = hdfclass/libhdfclass.a
+SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
+
+libhdf4_handler_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR) 
+
+libhdf4_module_la_SOURCES = $(SERVER_SRC) $(SERVER_HDR)
+libhdf4_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+libhdf4_module_la_LDFLAGS = libhdf4_handler.la $(BES_LDFLAGS) -L./hdfclass -lhdfclass
+
+dap_hdf4_handler_SOURCES = hdf_handler.cc
+dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a
+
+eosdas_test_SOURCES = eosdas-test.cc
+eosdas_test_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a
 
 EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI \
 	hdf4_handler.spec

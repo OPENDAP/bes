@@ -33,13 +33,14 @@ using std::endl ;
 #include <BaseType.h>
 #include <HDFArray.h>
 #include <DDS.h>
+#include <ConstraintEvaluator.h>
 
 #define MASTER_CONF "./master.conf" // yuck, yes I know
 
 BaseType *test_func(int argc, BaseType *argv[], DDS &);
 
-void register_funcs(DDS& dds) {
-    dds.add_function("test", test_func);
+void register_funcs(ConstraintEvaluator& ce) {
+    ce.add_function("test", test_func);
 }
 
 // implements a No-op function to test adding functions to the HDF server
