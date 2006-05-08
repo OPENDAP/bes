@@ -193,10 +193,11 @@ static int opendap_handler(request_rec *r)
 	rq.cookie = ap_table_get( r->headers_in, "Cookie" ) ;
     }
 
+    int status = 0 ;
     rq.request = wrapper.get_first_request() ;
-    while( rq.request )
+    while( rq.request && status == 0 )
     {
-	wrapper.call_DODS(rq);
+	status = wrapper.call_DODS(rq);
 	rq.request = wrapper.get_next_request() ;
     }
 
