@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -66,6 +67,9 @@ OPeNDAPServerHandler::OPeNDAPServerHandler()
 }
 
 // *** I'm not sure that we need to fork twice. jhrg 11/14/05
+// The reason that we fork twice is explained in Advanced Programming in the
+// Unit Environment by W. Richard Stevens. In the 'multiple' case we don't
+// want to leave any zombie processes.
 void
 OPeNDAPServerHandler::handle( Connection *c )
 {
@@ -113,9 +117,8 @@ OPeNDAPServerHandler::handle( Connection *c )
 		error += " " + (string)error_info ;
 	    throw DODSBasicException( error ) ;
 	} 
-	//c->closeConnection() ;
+	c->closeConnection() ;
     }
-    c->closeConnection() ;
 }
 
 void
@@ -129,7 +132,8 @@ OPeNDAPServerHandler::execute( Connection *c )
 
 	if( isDone )
 	{
-	    return ;
+	    c->closeConnection() ;
+	    exit( CHILD_SUBPROCESS_READY ) ;
 	}
 
 	int holder = dup( STDOUT_FILENO ) ;

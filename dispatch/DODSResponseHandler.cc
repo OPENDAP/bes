@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DODSResponseHandler.h"
 #include "DODSResponseObject.h"
@@ -54,10 +55,12 @@ DODSResponseHandler::get_response_object()
     return _response ;
 }
 
-void
+DODSResponseObject *
 DODSResponseHandler::set_response_object( DODSResponseObject *new_response )
 {
+    DODSResponseObject *curr_obj = _response ;
     _response = new_response ;
+    return curr_obj ;
 }
 
 // $Log: DODSResponseHandler.cc,v $

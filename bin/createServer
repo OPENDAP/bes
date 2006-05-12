@@ -53,7 +53,7 @@ q
 EOF
 done
 
-for i in HandlerApp.h HandlerApp.cc
+for i in HandlerApp.h HandlerApp.cc Module.h Module.cc
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
 ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
@@ -63,7 +63,7 @@ q
 EOF
 done
 
-for i in _handler.cc _module.cc
+for i in _handler.cc
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
 ed ./${serverType}${i} << EOF > /dev/null 2>&1
@@ -97,6 +97,7 @@ done
 
 for i in $RESPONSE_TYPES
 do
+    echo "adding $i"
     ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
 1
 /${serverType}_build_vers
@@ -125,7 +126,7 @@ EOF
 	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
     else
 	responseName="$i"
-	headerFile="DODSTextInfo.h"
+	headerFile=
 	castLine="DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(dhi.response_handler->get_response_object());"
 	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
@@ -135,48 +136,18 @@ a
 w
 q
 EOF
-	ed ${serverType}_module.cc << EOF > /dev/null 2>&1
+	ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
 /${classPrefix}ResponseNames
 a
 #include "${classPrefix}${i}ResponseHandler.h"
 .
-/return true
+/INIT_END
 -1
 a
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
     DODSResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
 
-.
-w
-q
-EOF
-
-    if [ ! -f ${serverType}_commands.cc ]
-    then
-	/bin/cp ${TEMPLATE_DIR}/_commands.cc ./${serverType}_commands.cc
-
-	ed ./Makefile.am << EOF > /dev/null 2>&1
-/^SRVR_HANDLER_SRC
-a
-	${serverType}_commands.cc \\
-.
-/^BES_HANDLER_SRC
-a
-	${serverType}_commands.cc \\
-.
-w
-q
-EOF
-
-    fi
-    ed ${serverType}_commands.cc << EOF > /dev/null 2>&1
-,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_TYPE/${serverType}/g
-1
-/return true
--1
-a
     cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
@@ -201,13 +172,13 @@ q
 EOF
 
     ed ./Makefile.am << EOF > /dev/null 2>&1
-/^SRVR_HANDLER_SRC
+/^BES_SRCS
 a
-	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}ResponseHandler.h \\
+	${classPrefix}${i}ResponseHandler.cc \\
 .
-/^BES_HANDLER_SRC
+/^BES_HDRS
 a
-	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}ResponseHandler.h \\
+	${classPrefix}${i}ResponseHandler.h \\
 .
 w
 q
@@ -215,12 +186,19 @@ EOF
 
     fi
 
-    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+    if [ "$headerFile" != "" ]
+    then
+	ed ${classPrefix}RequestHandler.cc << EOF
 1
 /DODSTextInfo
 a
 #include "${headerFile}"
 .
+w
+q
+EOF
+    fi
+    ed ${classPrefix}RequestHandler.cc << EOF
 1
 /VERS_RESPONSE
 -1

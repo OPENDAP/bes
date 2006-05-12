@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,13 +28,14 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_DeleteResponseHandler_h
 #define I_DeleteResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that deletes a containers, a definition or all
+/** @brief response handler that deletes a container, a definition or all
  * definitions.
  *
  * Possible requests handled by this response handler are:
@@ -68,7 +69,3 @@ public:
 
 #endif // I_DeleteResponseHandler_h
 
-// $Log: DeleteResponseHandler.h,v $
-// Revision 1.1  2005/03/17 19:26:22  pwest
-// added delete command to delete a specific container, a specific definition, or all definitions
-//

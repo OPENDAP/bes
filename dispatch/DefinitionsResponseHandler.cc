@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DefinitionsResponseHandler.h"
 #include "DODSInfo.h"
@@ -50,8 +51,10 @@ DefinitionsResponseHandler::~DefinitionsResponseHandler( )
  * to show all definitions given the DODSInfo object created here.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DODSDefineList
@@ -67,7 +70,8 @@ DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it as text.
+ * If a response object was built then transmit it as text using the specified
+ * transmitter.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -92,7 +96,3 @@ DefinitionsResponseHandler::DefinitionsResponseBuilder( string handler_name )
     return new DefinitionsResponseHandler( handler_name ) ;
 }
 
-// $Log: DefinitionsResponseHandler.cc,v $
-// Revision 1.1  2005/03/15 20:06:20  pwest
-// show definitions and show containers response handler
-//

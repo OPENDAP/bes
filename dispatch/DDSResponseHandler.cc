@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DDSResponseHandler.h"
 #include "DDS.h"
@@ -44,16 +45,18 @@ DDSResponseHandler::~DDSResponseHandler( )
 }
 
 /** @brief executes the command 'get dds for &lt;def_name&gt;;' by executing
- * the request for each container in the specified defnition def_name.
+ * the request for each container in the specified defnition.
  *
- * For each container in the specified defnition def_name go to the request
+ * For each container in the specified defnition go to the request
  * handler for that container and have it add to the OPeNDAP DDS response
- * object. The DDS response object is built within this method and passed
+ * object. The DDS response object is created within this method and passed
  * to the request handler list.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DDS
  * @see DODSRequestHandlerList
@@ -70,7 +73,8 @@ DDSResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it using the send_dds method.
+ * If a response object was built then transmit it using the send_dds method
+ * on the specified transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -95,15 +99,3 @@ DDSResponseHandler::DDSResponseBuilder( string handler_name )
     return new DDSResponseHandler( handler_name ) ;
 }
 
-// $Log: DDSResponseHandler.cc,v $
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

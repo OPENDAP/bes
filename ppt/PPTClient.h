@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef PPTClient_h
 #define PPTClient_hS 1
@@ -40,6 +41,9 @@ class PPTClient : public PPTConnection
 {
 private:
     bool			_connected ;
+    string			_host ;
+
+    void			authenticateWithServer() ;
 public:
     				PPTClient( const string &hostStr, int portVal );
     				PPTClient( const string &unix_socket );

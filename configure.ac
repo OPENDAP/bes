@@ -82,6 +82,8 @@ if test "$vl_cv_lib_readline" = "no"; then
    AC_MSG_ERROR(I could not find the readline library!)
 fi
 
+BES_CHECK_OPENSSL
+
 AC_CHECK_LIBDAP([3.7.0],
  [
   LIBS="$LIBS $DAP_LIBS"

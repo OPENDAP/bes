@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_ContainersResponseHandler_h
 #define I_ContainersResponseHandler_h 1
@@ -35,13 +36,16 @@
 #include "DODSResponseHandler.h"
 
 /** @brief response handler that returns list of continers currently defined
+ * in all container storage lists.
  *
  * A request 'show containers;' will be handled by this response handler. It
  * returns the list of currently defined containers for each container
- * persistence registered with the server and transmits the response as an
+ * storage registered with the server and transmits the response as an
  * informational response.
  *
  * @see DODSResponseObject
+ * @see ContainerStorage
+ * @see ContainerStorageList
  * @see DODSContainer
  * @see DODSTransmitter
  */
@@ -59,7 +63,3 @@ public:
 
 #endif // I_ContainersResponseHandler_h
 
-// $Log: ContainersResponseHandler.h,v $
-// Revision 1.1  2005/03/15 20:06:20  pwest
-// show definitions and show containers response handler
-//

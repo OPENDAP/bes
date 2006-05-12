@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,14 +28,17 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <string>
 #include <iostream>
+#include <sstream>
 
 using std::string ;
 using std::cerr ;
 using std::cout ;
 using std::endl ;
+using std::ostringstream ;
 
 #include "PPTClient.h"
 #include "TcpSocket.h"
@@ -43,9 +46,11 @@ using std::endl ;
 #include "PPTProtocol.h"
 #include "SocketException.h"
 #include "PPTException.h"
+#include "SSLClient.h"
 
 PPTClient::PPTClient( const string &hostStr, int portVal )
-    : _connected( false )
+    : _connected( false ),
+      _host( hostStr )
 {
     _mySock = new TcpSocket( hostStr, portVal ) ;
     _mySock->connect() ;
@@ -103,12 +108,46 @@ PPTClient::initConnection()
 	throw PPTException( "Could not connect to server, server may be down or busy" ) ;
     }
 
-    if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
+    if( status == PPTProtocol::PPTSERVER_AUTHENTICATE )
+    {
+	authenticateWithServer() ;
+    }
+    else if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
     {
 	throw PPTException( "Server reported an invalid connection, \"" + status + "\"" ) ;
     }
 }
-    
+
+void
+PPTClient::authenticateWithServer()
+{
+    // send request for the authentication port
+    writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
+
+    // receive response with port, terminated with TERMINATE token
+    ostringstream portResponse ;
+    bool isDone = receive( &portResponse ) ;
+    if( isDone )
+    {
+	throw PPTException( "Expecting secure port number response" ) ;
+    }
+    int portVal = atoi( portResponse.str().c_str() ) ;
+    if( portVal == 0 )
+    {
+	throw PPTException( "Expecting valid secure port number response" ) ;
+    }
+
+    // authenticate using SSLClient
+    string cfile = "/home/pwest/temp/ssl/keys/cacert.pem" ;
+    string kfile = "/home/pwest/temp/ssl/keys/privkey.pem" ;
+    SSLClient client( _host, portVal, cfile, kfile ) ;
+    client.initConnection() ;
+    client.closeConnection() ;
+
+    // If it authenticates, good, if not then an exception is thrown. We
+    // don't need to do anything else here.
+}
+
 void
 PPTClient::closeConnection()
 {

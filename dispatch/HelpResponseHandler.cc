@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "HelpResponseHandler.h"
 #include "DODSHTMLInfo.h"
@@ -46,7 +47,7 @@ HelpResponseHandler::~HelpResponseHandler( )
 
 /** @brief executes the command 'show help;' by returning general help
  * information as well as help information for all of the data request
- * handlers registered with DODSRequestHandlerList.
+ * handlers registered.
  *
  * The HelpResponseHandler first retreives general help information from help
  * files located in the file pointed to by either the key OPeNDAP.Help.TXT if
@@ -59,8 +60,10 @@ HelpResponseHandler::~HelpResponseHandler( )
  * The response object DODSHTMLInfo is created to store the help information.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSHTMLInfo
  * @see DODSRequestHandlerList
@@ -170,24 +173,3 @@ HelpResponseHandler::HelpResponseBuilder( string handler_name )
     return new HelpResponseHandler( handler_name ) ;
 }
 
-// $Log: HelpResponseHandler.cc,v $
-// Revision 1.6  2005/04/19 18:00:15  pwest
-// added a newline at the end of the help output
-//
-// Revision 1.5  2005/04/07 19:55:17  pwest
-// added add_data_from_file method to allow for information to be added from a file, for example when adding help information from a file
-//
-// Revision 1.4  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
-//
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

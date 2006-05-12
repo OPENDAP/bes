@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_ContainerStorageList_H
 #define I_ContainerStorageList_H 1
@@ -43,11 +44,11 @@ class DODSInfo ;
 #define PERSISTENCE_VOLATILE "volatile"
 
 /** @brief Provides a mechanism for accessing container information from
- * different persistent stores.
+ * different container stores registered with this server.
  *
  * This class provides a mechanism for users to access container information
- * from different persistent stores, such as from a MySQL database, a file, or
- * in memory.
+ * from different container stores, such as from a MySQL database, a file, or
+ * volatile stores.
  *
  * Users can add different ContainerStorage instances to this
  * persistent list. Then, when a user looks for a symbolic name, that search

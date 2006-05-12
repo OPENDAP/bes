@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,13 +28,18 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "PPTProtocol.h"
 
 string PPTProtocol::PPT_PROTOCOL_UNDEFINED = "PPT_PROTOCOL_UNDEFINED" ;
 string PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION = "PPT_COMPLETE_DATA_TRANSMITION" ;
 string PPTProtocol::PPT_EXIT_NOW = "PPT_EXIT_NOW" ;
+
 string PPTProtocol::PPTCLIENT_TESTING_CONNECTION = "PPTCLIENT_TESTING_CONNECTION" ;
+string PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT = "PPTCLIENT_REQUEST_AUTHPORT" ;
+
 string PPTProtocol::PPTSERVER_CONNECTION_OK = "PPTSERVER_CONNECTION_OK" ;
+string PPTProtocol::PPTSERVER_AUTHENTICATE = "PPTSERVER_AUTHENTICATE" ;
 
 // $Log: PPTProtocol.cc,v $

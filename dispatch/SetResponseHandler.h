@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_SetResponseHandler_h
 #define I_SetResponseHandler_h 1
@@ -38,14 +39,15 @@
  * real name, and data type.
  *
  * This request handler creates a new container, or replaces an already
- * existing container given the symbolic name, real name (in most cases a file
- * name), and the type of data represented by this container (e.g. netcdf,
- * cedar, cdf, hdf, etc...) The request has the syntax:
+ * existing container in the specified container storage given the symbolic 
+ * name, real name (in most cases a file name), and the type of data 
+ * represented by the real name (e.g. netcdf, cedar, cdf, hdf, etc...) The 
+ * request has the syntax:
  *
- * set container values * &lt;sym_name&gt;,&lt;real_name&gt;,&lt;data_type&gt;;
+ * set container in &lt;store_name&gt; values &lt;sym_name&gt;,&lt;real_name&gt;,&lt;data_type&gt;;
  *
  * It returns whether the container was created or replaces successfully in an
- * informational response object and transmits that response obje t.
+ * informational response object and transmits that response object.
  *
  * @see DODSResponseObject
  * @see DODSContainer
@@ -66,8 +68,3 @@ public:
 
 #endif // I_SetResponseHandler_h
 
-// $Log: SetResponseHandler.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

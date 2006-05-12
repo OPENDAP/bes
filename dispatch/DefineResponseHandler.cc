@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DefineResponseHandler.h"
 #include "DODSInfo.h"
@@ -61,9 +62,14 @@ DefineResponseHandler::~DefineResponseHandler( )
  * <BR />
  * Successfully replaced definition &lt;def_name&gt;
  *
+ * If the keyword SILENT is set within the data handler interface then no
+ * information is added.
+ *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DODSDefine
@@ -142,20 +148,3 @@ DefineResponseHandler::DefineResponseBuilder( string handler_name )
     return new DefineResponseHandler( handler_name ) ;
 }
 
-// $Log: DefineResponseHandler.cc,v $
-// Revision 1.5  2005/03/26 00:33:33  pwest
-// fixed aggregation server invoke problems. Other commands use the aggregation command but no aggregation is needed, so set aggregation to empty string when done
-//
-// Revision 1.4  2005/03/17 19:25:29  pwest
-// string parameters changed to const references. remove_def now deletes the definition and returns true if removed or false otherwise. Added method remove_defs to remove all definitions
-//
-// Revision 1.3  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
-//
-// Revision 1.2  2005/02/02 00:03:13  pwest
-// ability to replace containers and definitions
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

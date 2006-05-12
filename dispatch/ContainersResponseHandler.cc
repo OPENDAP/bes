@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "ContainersResponseHandler.h"
 #include "DODSInfo.h"
@@ -43,18 +44,20 @@ ContainersResponseHandler::~ContainersResponseHandler( )
 }
 
 /** @brief executes the command 'show containers;' by returning the list of
- * currently defined containers
+ * currently defined containers in all container stores
  *
- * This response handler knows how to retrieve the list of containers
- * currently defined in the server. It simply asks the container persistence
- * list, that all containers have registered with, to show all containers
- * given the DODSInfo object created here.
+ * This response handler knows how to retrieve information about all
+ * containers stored with any container storage objects. This response handler
+ * creates a DODSInfo response object to store the container information.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
- * response object
+ * @throws DODSHandlerException if there is a problem building the response
+ * @throws DODSResponseException if a fatal error occurs building the response
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
+ * @see ContainerStorageList
+ * @see ContainerStorage
+ * @see DODSContainer
  */
 void
 ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -67,7 +70,7 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it as text.
+ * If a response object was built (DODSInfo) then transmit it as text.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -77,7 +80,7 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
  */
 void
 ContainersResponseHandler::transmit( DODSTransmitter *transmitter,
-                               DODSDataHandlerInterface &dhi )
+                                     DODSDataHandlerInterface &dhi )
 {
     if( _response )
     {
@@ -92,7 +95,3 @@ ContainersResponseHandler::ContainersResponseBuilder( string handler_name )
     return new ContainersResponseHandler( handler_name ) ;
 }
 
-// $Log: ContainersResponseHandler.cc,v $
-// Revision 1.1  2005/03/15 20:06:20  pwest
-// show definitions and show containers response handler
-//

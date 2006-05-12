@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_DODSResponseHandlerList_h
 #define I_DODSResponseHandlerList_h 1
@@ -44,24 +45,17 @@ typedef DODSResponseHandler * (*p_response_handler)( string name ) ;
 
 /** @brief List of all registered response handlers for this server
  *
- * A DODSResponseHandlerList allows the developer to add or remove response
- * handlers from the list of handlers available for this server. When a
- * request comes in, for example of the for 'get das for d1;', there is a
- * response handler that knows how to build a response object for the get
- * request, or for the command 'set container values sym1,real1,type1;' there
- * is a response handler that knows how to build a response object for the set
- * request.
+ * A DODSResponseHandlerList allows the developer to add or remove named
+ * response handlers from the list of handlers available for this server. For
+ * example, when the request 'get das for d1;' a response handler named "das"
+ * is looked up in the response handler list. Another example, 'show help;'
+ * would look up a response handler named "show".
  *
- * The response handler knows how to build a response object, whereas a
- * request handler knows how to fill in the response object built by the
- * response handler.
+ * What is actually added to the list are functions that instantiate the named
+ * response handler, not the response handler themselves.
  *
- * In the case of some response handlers, such as get and show, there is a sub
- * response handler that knows how to build a specific get request, such as
- * 'get das' or 'get dds' or 'show version;' or 'show help;'
  * @see DODSResponseHandler
  * @see DODSResponseObject
- * @see DODSRequestHandler
  */
 class DODSResponseHandlerList {
 private:
@@ -87,11 +81,3 @@ public:
 
 #endif // I_DODSResponseHandlerList_h
 
-// $Log: DODSResponseHandlerList.h,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

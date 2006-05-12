@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DeleteResponseHandler.h"
 #include "DODSInfo.h"
@@ -50,11 +51,11 @@ DeleteResponseHandler::~DeleteResponseHandler( )
 /** @brief executes the command to delete a container, a definition, or all
  * definitions.
  *
- * Removes definitions from the list of definitions and containers from
- * volatile container persistence object, which is found in
+ * Removes a definition or all definitions from the list of definitions 
+ * or a container from a specified container storage found in 
  * ContainerStorageList::TheList().
  *
- * The response object built is a DODSInfo object. Status of the delition
+ * The response object built is a DODSInfo object. Status of the deletion
  * will be added to the informational object, one of:
  *
  * Successfully deleted all definitions
@@ -63,15 +64,17 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * <BR />
  * Definition "&lt;def_name&gt;" does not exist.  Unable to delete.
  * <BR />
- * Successfully deleted container "&lt;container_name&gt;" from persistent store "volatile"
+ * Successfully deleted container "&lt;container_name&gt;" from container storage "&lt;store_name&gt;"
  * <BR />
- * Unable to delete container. The container "&lt;container_name&gt;" does not exist in the persistent store "volatile"
+ * Unable to delete container. The container "&lt;container_name&gt;" does not exist in container storage "&lt;store_name&gt;"
  * <BR />
- * The persistence store "volatile" does not exist. Unable to delete container "&lt;container_name&gt;"
+ * Container storage "&lt;store_name&gt;" does not exist. Unable to delete container "&lt;container_name&gt;"
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DODSDefineList
@@ -119,7 +122,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 	    {
 		string line = (string)"Successfully deleted container \""
 		              + dhi.data[CONTAINER_NAME]
-			      + "\" from persistent store \""
+			      + "\" from container storage \""
 			      + dhi.data[STORE_NAME]
 			      + "\"\n" ;
 		info->add_data( line ) ;
@@ -129,7 +132,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 		string line = (string)"Unable to delete container. "
 		              + "The container \""
 		              + dhi.data[CONTAINER_NAME]
-			      + "\" does not exist in the persistent store \""
+			      + "\" does not exist in container storage \""
 			      + dhi.data[STORE_NAME]
 			      + "\"\n" ;
 		info->add_data( line ) ;
@@ -137,7 +140,7 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 	}
 	else
 	{
-	    string line = (string)"The persistence store \""
+	    string line = (string)"Container storage \""
 	                  + dhi.data[STORE_NAME]
 			  + "\" does not exist. "
 			  + "Unable to delete container \""
@@ -151,7 +154,8 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it as text.
+ * If a response object was built then transmit it as text using the specified
+ * transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -176,7 +180,3 @@ DeleteResponseHandler::DeleteResponseBuilder( string handler_name )
     return new DeleteResponseHandler( handler_name ) ;
 }
 
-// $Log: DeleteResponseHandler.cc,v $
-// Revision 1.1  2005/03/17 19:26:22  pwest
-// added delete command to delete a specific container, a specific definition, or all definitions
-//

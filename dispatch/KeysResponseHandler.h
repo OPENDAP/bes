@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_KeysResponseHandler_h
 #define I_KeysResponseHandler_h 1
@@ -38,7 +39,7 @@
  * OPeNDAP initialization file.
  *
  * A request 'show keys;' will be handled by this response handler. It
- * returns the list of all keys currently defined in the OPeNDAP
+ * returns the list of all key/value pairs currently defined in the OPeNDAP
  * initialization file and transmits the response as an informational response.
  *
  * @see DODSResponseObject
@@ -60,7 +61,3 @@ public:
 
 #endif // I_KeysResponseHandler_h
 
-// $Log: KeysResponseHandler.h,v $
-// Revision 1.1  2005/04/19 17:53:08  pwest
-// show keys handler
-//

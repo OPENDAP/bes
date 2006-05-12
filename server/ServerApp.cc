@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <signal.h>
 #include <unistd.h>
@@ -61,6 +62,7 @@ ServerApp::ServerApp()
       _portVal( 0 ),
       _gotPort( false ),
       _unixSocket( "" ),
+      _secure( false ),
       _mypid( 0 ),
       _ts( 0 ),
       _us( 0 ),
@@ -114,10 +116,12 @@ void
 ServerApp::showUsage()
 {
     cout << OPeNDAPApp::TheApplication()->appName()
-         << ": -d -v -p [PORT]" << endl ;
+         << ": -d -v -s -p <PORT> -u <UNIX_SOCKET>" << endl ;
     cout << "-d set the server to debugging mode" << endl ;
     cout << "-v echos version and exit" << endl ;
+    cout << "-s specifies a secure server using SLL authentication" << endl ;
     cout << "-p set port to PORT" << endl ;
+    cout << "-u set unix socket to UNIX_SOCKET" << endl ;
     exit( 0 ) ;
 }
 
@@ -160,7 +164,7 @@ ServerApp::initialize( int argc, char **argv )
 
     int c = 0 ;
 
-    while( ( c = getopt( argc, argv, "dvp:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "dvsp:u:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -168,11 +172,18 @@ ServerApp::initialize( int argc, char **argv )
 		_portVal = atoi( optarg ) ;
 		_gotPort = true ;
 		break ;
+	    case 'u':
+		_unixSocket = optarg ;
+		break ;
 	    case 'd':
 		setDebug( true ) ;
 		break ;
 	    case 'v':
 		showVersion() ;
+		break ;
+	    case 's':
+		_secure = true ;
+		cout << "**** server is secure" << endl ;
 		break ;
 	    case '?':
 		showUsage() ;
@@ -180,20 +191,50 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
+    bool found = false ;
+    string key ;
     if( !_gotPort )
     {
-	showUsage() ;
+	key = "OPeNDAP.ServerPort" ;
+	string sPort = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	_portVal = atoi( sPort.c_str() ) ;
+	if( !found || _portVal == 0 )
+	{
+	    cout << endl << "Unable to determine server port" << endl ;
+	    cout << "Please specify on the command line with -p <port>"
+	         << endl
+		 << "Or specify in the opendap configuration file with " << key
+		 << endl << endl ;
+	    showUsage() ;
+	}
     }
 
-    bool found = false ;
-    string key = "OPeNDAP.ServerUnixSocket" ;
-    _unixSocket = TheDODSKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || _unixSocket == "" )
+    found = false ;
+    if( _unixSocket == "" )
     {
-	cout << "Unable to determine unix socket" << endl ;
-	cout << "Please set " << key << " in the opendap initialization file"
-	     << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	key = "OPeNDAP.ServerUnixSocket" ;
+	_unixSocket = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	if( !found || _unixSocket == "" )
+	{
+	    cout << endl << "Unable to determine unix socket" << endl ;
+	    cout << "Please specify on the command line with -u <unix_socket>"
+	         << endl
+		 << "Or specify in the opendap configuration file with " << key
+		 << endl << endl ;
+	    showUsage() ;
+	}
+    }
+
+    found = false ;
+    if( _secure == false )
+    {
+	key = "OPeNDAP.ServerSecure" ;
+	string isSecure = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
+	{
+	    cout << "**** server is secure" << endl ;
+	    _secure = true ;
+	}
     }
 
     dods_module::initialize( argc, argv ) ;
@@ -219,7 +260,7 @@ ServerApp::run()
 
 	OPeNDAPServerHandler handler ;
 
-	_ps = new PPTServer( &handler, &listener ) ;
+	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
     catch( SocketException &se )

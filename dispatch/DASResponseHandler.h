@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,18 +28,20 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_DASResponseHandler_h
 #define I_DASResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that builds an OPeNDAP DAS object
+/** @brief response handler that builds an OPeNDAP DAS response object
  *
  * A request 'get das for &lt;def_name&gt;;' will be handled by this
  * response handler. Given a definition name it determines what containers
  * are to be used to build the OPeNDAP DAS response object. It then
- * transmits the DAS object using the method send_das.
+ * transmits the DAS object using the method send_das on the speicifed
+ * transmitter object.
  *
  * @see DAS
  * @see DODSContainer
@@ -59,15 +61,3 @@ public:
 
 #endif // I_DASResponseHandler_h
 
-// $Log: DASResponseHandler.h,v $
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

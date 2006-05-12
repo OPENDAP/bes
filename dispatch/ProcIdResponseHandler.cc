@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <unistd.h>
 
@@ -77,11 +78,14 @@ ProcIdResponseHandler::fastpidconverter(
  * the server process
  *
  * This response handler knows how to retrieve the process id for the server
- * and stores it in a DODSInfo informational response object.
+ * process handling this client's requests and stores it in a DODSInfo 
+ * informational response object.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  */
@@ -98,7 +102,8 @@ ProcIdResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it as text.
+ * If a response object was built then transmit it as text using the specified
+ * transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -123,11 +128,3 @@ ProcIdResponseHandler::ProcIdResponseBuilder( string handler_name )
     return new ProcIdResponseHandler( handler_name ) ;
 }
 
-// $Log: ProcIdResponseHandler.cc,v $
-// Revision 1.2  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

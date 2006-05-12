@@ -20,11 +20,11 @@ bin_PROGRAMS = opendapserver opendapdaemon
 opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
 	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
 
-opendapserver_LDADD = $(MODS) $(SERVER_LIBS)
+opendapserver_LDADD = $(MODS) $(SERVER_LIBS) $(openssl_libs)
 
 opendapdaemon_SOURCES = daemon.cc
 
-opendapdaemon_LDADD = $(AUTH_MOD) $(SERVER_LIBS)
+opendapdaemon_LDADD = $(AUTH_MOD) $(SERVER_LIBS) $(openssl_libs)
 
 all-local: $(MODOBJS)
 

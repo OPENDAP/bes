@@ -52,7 +52,7 @@ SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
 	OPeNDAPCatalogCommand.cc OPeNDAPParserException.cc \
 	OPeNDAPTokenizer.cc OPeNDAPCommandModule.cc opendap_commands.cc
 
-HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h opendap_commands.h
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h OPeNDAPTokenizer.h OPeNDAPParserException.h opendap_commands.h
 
 MODSRCS:=
 

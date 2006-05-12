@@ -16,5 +16,5 @@ bin_PROGRAMS = opendapcmdln
 
 opendapcmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
-opendapcmdln_LDADD = -L../dispatch -ldispatch -L../ppt -lppt
+opendapcmdln_LDADD = -L../dispatch -ldispatch -L../ppt -lppt $(openssl_libs)
 

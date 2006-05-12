@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "CatalogResponseHandler.h"
 #include "DODSXMLInfo.h"
@@ -47,7 +48,7 @@ CatalogResponseHandler::~CatalogResponseHandler( )
 {
 }
 
-/** @brief executes the command 'show nodes|leaves [for &lt;node&gt;];' by
+/** @brief executes the command 'show catalog|leaves [for &lt;node&gt;];' by
  * returning nodes or leaves at the top level or at the specified node.
  *
  * The response object DODSXMLInfo is created to store the information.

@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_DefinitionsResponseHandler_h
 #define I_DefinitionsResponseHandler_h 1
@@ -38,11 +39,12 @@
  *
  * A request 'show definitions;' will be handled by this response handler. It
  * returns the list of currently defined definitions and transmits the
- * response as an informational response.
+ * response as an informational response object.
  *
  * @see DODSResponseObject
  * @see DODSContainer
  * @see DODSTransmitter
+ * @see DODSInfo
  */
 class DefinitionsResponseHandler : public DODSResponseHandler {
 public:
@@ -58,7 +60,3 @@ public:
 
 #endif // I_DefinitionsResponseHandler_h
 
-// $Log: DefinitionsResponseHandler.h,v $
-// Revision 1.1  2005/03/15 20:06:20  pwest
-// show definitions and show containers response handler
-//

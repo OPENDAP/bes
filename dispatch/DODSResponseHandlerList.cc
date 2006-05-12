@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "DODSResponseHandlerList.h"
 
@@ -37,9 +38,8 @@ DODSResponseHandlerList *DODSResponseHandlerList::_instance = 0 ;
  *
  * This method actually adds to the list a method that knows how to build a
  * response handler. For each request that comes in, the response name (such
- * as get or set or show) is looked up in this list and the method is used to
- * build a new response handler that knows how to build the response object
- * for the given request.
+ * as das or help or define) is looked up in this list and the method is used to
+ * build a new response handler.
  *
  * @param handler_name name of the handler to add to the list
  * @param handler_method method that knows how to build the named response
@@ -50,7 +50,7 @@ DODSResponseHandlerList *DODSResponseHandlerList::_instance = 0 ;
  */
 bool
 DODSResponseHandlerList::add_handler( string handler_name,
-			      p_response_handler handler_method )
+			      	      p_response_handler handler_method )
 {
     DODSResponseHandlerList::Handler_citer i ;
     i = _handler_list.find( handler_name ) ;
@@ -84,7 +84,7 @@ DODSResponseHandlerList::remove_handler( string handler_name )
     return false ;
 }
 
-/** @brief returns the response handler with the given name in the list
+/** @brief returns the response handler with the given name from the list
  *
  * This method looks up the build method with the given name in the list. If
  * it is found then the build method is invoked with the given handler name
@@ -112,11 +112,10 @@ DODSResponseHandlerList::find_handler( string handler_name )
     return 0 ;
 }
 
-/** @brief returns the list of all response handlers currently registered with
- * this server.
+/** @brief returns the comma separated list of all response handlers currently registered with this server.
  *
  * Builds a comma separated list of response handlers registered with this
- * server.
+ * server and returns it to the caller.
  *
  * @return comma separated list of response handler names
  */
@@ -146,11 +145,3 @@ DODSResponseHandlerList::TheList()
     return _instance ;
 }
 
-// $Log: DODSResponseHandlerList.cc,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

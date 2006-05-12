@@ -6,6 +6,7 @@
 #include "DODSResponseNames.h"
 #include "OPENDAP_CLASSResponseNames.h"
 #include "DODSVersionInfo.h"
+#include "DODSTextInfo.h"
 #include "config_OPENDAP_TYPE.h"
 #include "DODSConstraintFuncs.h"
 

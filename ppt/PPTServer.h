@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef PPTServer_h
 #define PPTServer_h 1
@@ -43,11 +44,14 @@ class PPTServer : public PPTConnection
 private:
     ServerHandler *		_handler ;
     SocketListener *		_listener ;
+    bool			_secure ;
 
     void			welcomeClient() ;
+    void			authenticateClient() ;
 public:
     				PPTServer( ServerHandler *handler,
-					   SocketListener *listener ) ;
+					   SocketListener *listener,
+					   bool isSecure ) ;
     virtual			~PPTServer() ;
 
     virtual void		initConnection() ;

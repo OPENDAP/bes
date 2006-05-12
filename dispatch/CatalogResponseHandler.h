@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,16 +28,18 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_CatalogResponseHandler_h
 #define I_CatalogResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that returns nodes or leaves either at the root
- * or at a specified node.
+/** @brief response handler that returns nodes or leaves within the catalog
+ * either at the root or at a specified node.
  *
- * A request 'show nodes [for &lt;node&gt;];' or 'show leaves for &lt;node&gt;;
+ * A request 'show catalog [for &lt;node&gt;];' or
+ * 'show leaves for &lt;node&gt;;
  * will be handled by this response handler. It returns nodes or leaves either
  * at the root level if no node is specified in the request, or the nodes or
  * leaves under the specified node.
@@ -62,4 +64,3 @@ public:
 
 #endif // I_CatalogResponseHandler_h
 
-// $Log: CatalogResponseHandler.h,v $

@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,19 +28,22 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_HelpResponseHandler_h
 #define I_HelpResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that returns help information about the server
- * including what types of data are handled by the server and information
- * about those handlers, and what commands are accepted by the server.
+/** @brief response handler that returns help information about the server and
+ * currently loaded modules.
  *
  * A request 'show help;' will be handled by this response handler. It
  * returns general help information as well as help information for all of
- * the different types of data handled by this server.
+ * the different types of data handled by this server. The list of request
+ * handlers (data handlers) registered with the server are listed along with
+ * the responses those handlers can handle. Each of those request handlers are
+ * given the chance to provide further help.
  *
  * @see DODSResponseObject
  * @see DODSContainer
@@ -60,15 +63,3 @@ public:
 
 #endif // I_HelpResponseHandler_h
 
-// $Log: HelpResponseHandler.h,v $
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

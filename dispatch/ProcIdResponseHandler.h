@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_ProcIdResponseHandler_h
 #define I_ProcIdResponseHandler_h 1
@@ -37,7 +38,8 @@
 /** @brief response handler that returns the process id for the server process
  *
  * A request 'show process;' will be handled by this response handler. It
- * returns the process id of the server.
+ * returns the process id of the server process connected to the requesting
+ * client.
  *
  * @see DODSResponseObject
  * @see DODSContainer
@@ -62,8 +64,3 @@ public:
 
 #endif // I_ProcIdResponseHandler_h
 
-// $Log: ProcIdResponseHandler.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

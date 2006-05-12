@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef I_DODSResponseHandler_h
 #define I_DODSResponseHandler_h 1
@@ -44,12 +45,25 @@ using std::string ;
 class DODSResponseObject ;
 #endif
 
-/** @brief handler object that knows how to build a specific response object
+/** @brief handler object that knows how to create a specific response object
  *
- * A response handler object is an object that knows how to build a response
- * object, such as a DAS, DDS, DDX response object. It knows how to
- * construct the requested response object, and how to build that object
- * given the list of containers that are a part of the request.
+ * A response handler is something that knows how to create a response
+ * object, such as a DAS, DDS, DDX, informational response object. It knows
+ * how to construct the requested response object but does not necessarily
+ * fill in the response object. It does know, however, how to have other
+ * objects fill in the response object. For example, a DASResponseHandler
+ * knows that it needs to go to each of the request handlers (data handlers)
+ * for each of the containers requested so that those request handlers can
+ * fill in the response object. Another example is the HelpResponseHandler,
+ * which knows to construct an informational response object and then pass
+ * that informational response object to each registered request handler (data
+ * handler) so that each of the request handlers has an opportunity to add any
+ * help information in needs to add.
+ *
+ * Response handlers such as the StatusResponseHandler (and others) are able
+ * to create the informational response object and fill it in. But usually,
+ * the response handler passes the response object to another object to have
+ * it fill in the response object.
  *
  * A response handler object also knows how to transmit the response object
  * using a DODSTransmitter object.
@@ -76,36 +90,40 @@ public:
      *
      * Returns the current response object, null if one has not yet been
      * created. The response handler maintains ownership of the response
-     * object, unless the set_response_object() method is called at which
-     * point the caller of get_response_object() becomes the owner.
+     * object.
      *
+     * @return current response object
      * @see DODSResponseObject
      */
     virtual DODSResponseObject  *get_response_object() ;
 
-    /** @brief replaces the current response object to the specified one
+    /** @brief replaces the current response object with the specified one,
+     * returning the current response object
      *
      * This method is used to replace the response object with a new one, for
      * example if during aggregation a new response object is built from the
      * current response object.
      *
-     * The current response object is NOT deleted. The response handler
-     * assumes ownership of the new response object.
+     * The caller of set_response_object now owns the returned response
+     * object. The new response object is now owned by the response object.
      *
      * @param o new response object used to replace the current one
+     * @return the response object being replaced
      * @see DODSResponseObject
      */
-    virtual void		set_response_object( DODSResponseObject *o ) ;
+    virtual DODSResponseObject	*set_response_object( DODSResponseObject *o ) ;
 
     /** @brief knows how to build a requested response object
      *
-     * Derived instances of this abstract base class know how to build a
-     * specific response object, which containers to use, which request
-     * handlers to go to.
+     * Derived instances of this abstract base class know how to create a
+     * specific response object and what objects (including itself) to pass
+     * that response object to for it to be filled in.
      *
      * @param dhi structure that holds request and response information
-     * @throws DODSResponseException if there is a problem building the
+     * @throws DODSHandlerException if there is a problem building the
      * response object
+     * @throws DODSResponseException upon fatal error building the response
+     * object
      * @see _DODSDataHandlerInterface
      * @see DODSResponseObject
      */
@@ -116,14 +134,16 @@ public:
      *
      * @param transmitter object that knows how to transmit specific basic types
      * @param dhi structure that holds the request and response information
+     * @throws DODSTransmitException if problem transmitting the response obj
      * @see DODSResponseObject
      * @see DODSTransmitter
      * @see _DODSDataHandlerInterface
+     * @see DODSTransmitException
      */
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) = 0 ;
 
-    /** @brief return the name of this response object, e.g. das
+    /** @brief return the name of this response object
      *
      * This name is used to determine which response handler can handle a
      * requested responose, such as das, dds, ddx, tab, info, version, help,
@@ -136,21 +156,3 @@ public:
 
 #endif // I_DODSResponseHandler_h
 
-// $Log: DODSResponseHandler.h,v $
-// Revision 1.5  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
-//
-// Revision 1.4  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

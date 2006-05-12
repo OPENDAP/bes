@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org>
+// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,7 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "StatusResponseHandler.h"
 #include "DODSInfo.h"
@@ -43,15 +44,17 @@ StatusResponseHandler::~StatusResponseHandler( )
 }
 
 /** @brief executes the command 'show status;' by returning the status of
- * the server process using DODSStatus
+ * the server process
  *
  * This response handler knows how to retrieve the status for the server
- * from DODSStatus and stores it in a DODSInfo informational response
- * object.
+ * process handing this clients requests from DODSStatus and stores it in a
+ * DODSInfo informational response object.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws DODSHandlerException if there is a problem building the
  * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DODSStatus
@@ -68,7 +71,8 @@ StatusResponseHandler::execute( DODSDataHandlerInterface &dhi )
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built then transmit it as text.
+ * If a response object was built then transmit it as text using the specified
+ * transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -93,11 +97,3 @@ StatusResponseHandler::StatusResponseBuilder( string handler_name )
     return new StatusResponseHandler( handler_name ) ;
 }
 
-// $Log: StatusResponseHandler.cc,v $
-// Revision 1.2  2005/03/15 19:58:35  pwest
-// using DODSTokenizer to get first and next tokens
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
