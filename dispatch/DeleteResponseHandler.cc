@@ -32,7 +32,8 @@
 
 #include "DeleteResponseHandler.h"
 #include "DODSInfo.h"
-#include "DODSDefineList.h"
+#include "DefinitionStorageList.h"
+#include "DefinitionStorage.h"
 #include "DODSDefine.h"
 #include "ContainerStorageList.h"
 #include "ContainerStorage.h"
@@ -77,7 +78,7 @@ DeleteResponseHandler::~DeleteResponseHandler( )
  * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
- * @see DODSDefineList
+ * @see DefinitionStorageList
  * @see DODSDefine
  * @see ContainerStorage
  * @see ContainerStorageList
@@ -90,34 +91,80 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 
     if( dhi.data[DEFINITIONS] == "true" )
     {
-	DODSDefineList::TheList()->remove_defs() ;
-	info->add_data( "Successfully deleted all definitions\n" ) ;
-    }
-    else if( dhi.data[DEF_NAME] != "" )
-    {
-	bool deleted =
-	    DODSDefineList::TheList()->remove_def( dhi.data[DEF_NAME] ) ;
-	if( deleted == true )
+	string store_name = dhi.data[STORE_NAME] ;
+	if( store_name == "" )
+	    store_name = PERSISTENCE_VOLATILE ;
+	DefinitionStorage *store =
+	    DefinitionStorageList::TheList()->find_persistence( store_name ) ;
+	if( store )
 	{
-	    string line = (string)"Successfully deleted definition \""
-	                  + dhi.data[DEF_NAME]
-			  + "\"\n" ;
-	    info->add_data( line ) ;
+	    bool deleted = store->del_definitions() ;
+	    if( deleted )
+	    {
+		string line = (string)"Successfully deleted all definitions "
+		              + "from definition store \"" + store_name
+			      + "\"\n" ;
+		info->add_data( line ) ;
+	    }
+	    else
+	    {
+		string line = (string)"Unable to delete all definitions "
+		              + "from definition store \"" + store_name
+			      + "\"\n" ;
+		info->add_data( line ) ;
+	    }
 	}
 	else
 	{
-	    string line = (string)"Definition \""
-	                  + dhi.data[DEF_NAME]
+	    string line = (string)"Definition store \""
+			  + store_name
 			  + "\" does not exist.  Unable to delete.\n" ;
 	    info->add_data( line ) ;
 	}
     }
-    else if( dhi.data[STORE_NAME] != "" && dhi.data[CONTAINER_NAME] != "" )
+    else if( dhi.data[DEF_NAME] != "" )
     {
+	string store_name = dhi.data[STORE_NAME] ;
+	if( store_name == "" )
+	    store_name = PERSISTENCE_VOLATILE ;
+	DefinitionStorage *store =
+	    DefinitionStorageList::TheList()->find_persistence( store_name ) ;
+	if( store )
+	{
+	    bool deleted =
+		store->del_definition( dhi.data[DEF_NAME] ) ;
+	    if( deleted == true )
+	    {
+		string line = (string)"Successfully deleted definition \""
+			      + dhi.data[DEF_NAME]
+			      + "\"\n" ;
+		info->add_data( line ) ;
+	    }
+	    else
+	    {
+		string line = (string)"Definition \""
+			      + dhi.data[DEF_NAME]
+			      + "\" does not exist.  Unable to delete.\n" ;
+		info->add_data( line ) ;
+	    }
+	}
+	else
+	{
+	    string line = (string)"Definition store \""
+			  + store_name
+			  + "\" does not exist.  Unable to delete.\n" ;
+	    info->add_data( line ) ;
+	}
+    }
+    else if( dhi.data[CONTAINER_NAME] != "" )
+    {
+	string store_name = dhi.data[STORE_NAME] ;
+	if( store_name == "" )
+	    store_name = PERSISTENCE_VOLATILE ;
 	ContainerStorage *cp = ContainerStorageList::TheList()->find_persistence( dhi.data[STORE_NAME] ) ;
 	if( cp )
 	{
-	    bool deleted =  cp->rem_container( dhi.data[CONTAINER_NAME] ) ;
+	    bool deleted =  cp->del_container( dhi.data[CONTAINER_NAME] ) ;
 	    if( deleted == true )
 	    {
 		string line = (string)"Successfully deleted container \""
@@ -148,6 +195,13 @@ DeleteResponseHandler::execute( DODSDataHandlerInterface &dhi )
 			  + "\"\n" ;
 	    info->add_data( line ) ;
 	}
+    }
+    else
+    {
+	string line = (string)"No definition or container is specified. "
+		      + "Unable to complete request."
+		      + "\n" ;
+	info->add_data( line ) ;
     }
 }
 

@@ -32,7 +32,7 @@
 
 #include "DefinitionsResponseHandler.h"
 #include "DODSInfo.h"
-#include "DODSDefineList.h"
+#include "DefinitionStorageList.h"
 
 DefinitionsResponseHandler::DefinitionsResponseHandler( string name )
     : DODSResponseHandler( name )
@@ -57,14 +57,14 @@ DefinitionsResponseHandler::~DefinitionsResponseHandler( )
  * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
- * @see DODSDefineList
+ * @see DefinitionStorageList
  */
 void
 DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    DODSDefineList::TheList()->show_definitions( *info ) ;
+    DefinitionStorageList::TheList()->show_definitions( *info ) ;
 }
 
 /** @brief transmit the response object built by the execute command

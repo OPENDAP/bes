@@ -1,4 +1,4 @@
-// DODSDefineList.h
+// DefinitionStorageVolatile.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,50 +30,58 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_DODSDefineList_h
-#define I_DODSDefineList_h 1
+#ifndef DefinitionStorageVolatile_h_
+#define DefinitionStorageVolatile_h_ 1
 
-#include <map>
 #include <string>
+#include <map>
 
-using std::map ;
 using std::string ;
+using std::map ;
+
+#include "DefinitionStorage.h"
 
 class DODSDefine ;
 class DODSInfo ;
 
-class DODSDefineList {
+/** @brief provides volatile storage for a specific definition/view of
+ * different containers including contraints and aggregation.
+ *
+ * An implementation of the abstract interface DefinitionStorage
+ * provides volatile storage for a definition, or view, of a set of data
+ * including possibly constraints on each of those containers and possibly
+ * aggregation of those containers.
+ *
+ * @see DODSDefine
+ * @see DefinitionStorageList
+ */
+class DefinitionStorageVolatile : public DefinitionStorage
+{
 private:
-    static DODSDefineList *	_instance ;
-
     map< string, DODSDefine * > _def_list ;
     typedef map< string, DODSDefine * >::const_iterator Define_citer ;
     typedef map< string, DODSDefine * >::iterator Define_iter ;
-protected:
-				DODSDefineList(void) {}
 public:
-    virtual			~DODSDefineList(void) {}
+    /** @brief create an instance of DefinitionStorageVolatile with the give
+     * name.
+     *
+     * @param name name of this persistence store
+     */
+    				DefinitionStorageVolatile( const string &name )
+				    : DefinitionStorage( name ) {}
 
-    virtual bool		add_def( const string &def_name,
-					 DODSDefine *def ) ;
-    virtual bool		remove_def( const string &def_name ) ;
-    virtual void		remove_defs( ) ;
-    virtual DODSDefine *	find_def( const string &def_name ) ;
+    virtual 			~DefinitionStorageVolatile() ;
+
+    virtual DODSDefine * 	look_for( const string &def_name ) ;
+
+    virtual bool		add_definition( const string &def_name,
+                                                DODSDefine *d ) ;
+
+    virtual bool		del_definition( const string &def_name ) ;
+    virtual bool		del_definitions( ) ;
+
     virtual void		show_definitions( DODSInfo &info ) ;
-
-    static DODSDefineList *	TheList() ;
 };
 
-#endif // I_DODSDefineList_h
+#endif // DefinitionStorageVolatile_h_
 
-// $Log: DODSDefineList.h,v $
-// Revision 1.3  2005/03/17 19:25:29  pwest
-// string parameters changed to const references. remove_def now deletes the definition and returns true if removed or false otherwise. Added method remove_defs to remove all definitions
-//
-// Revision 1.2  2005/03/15 19:55:36  pwest
-// show containers and show definitions
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

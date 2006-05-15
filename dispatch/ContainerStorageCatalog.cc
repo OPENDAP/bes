@@ -168,33 +168,3 @@ ContainerStorageCatalog::add_container( const string &s_name,
     ContainerStorageVolatile::add_container( s_name, new_r_name, new_type ) ;
 }
 
-// $Log: ContainerStorageCatalog.cc,v $
-// Revision 1.8  2005/03/17 20:37:50  pwest
-// added documentation for rem_container and show_containers
-//
-// Revision 1.7  2005/03/17 19:23:58  pwest
-// deleting the container in rem_container instead of returning the removed container, returning true if successfully removed and false otherwise
-//
-// Revision 1.6  2005/03/15 19:55:36  pwest
-// show containers and show definitions
-//
-// Revision 1.5  2005/02/02 00:03:13  pwest
-// ability to replace containers and definitions
-//
-// Revision 1.4  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.3  2004/12/15 17:36:01  pwest
-//
-// Changed the way in which the parser retrieves container information, going
-// instead to ThePersistenceList, which goes through the list of container
-// persistence instances it has.
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

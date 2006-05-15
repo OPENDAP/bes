@@ -112,7 +112,7 @@ ContainerStorageVolatile::add_container( const string &s_name,
  * @return true if successfully removed and false otherwise
  */
 bool
-ContainerStorageVolatile::rem_container( const string &s_name )
+ContainerStorageVolatile::del_container( const string &s_name )
 {
     bool ret = false ;
     ContainerStorageVolatile::Container_iter i ;
@@ -166,20 +166,3 @@ ContainerStorageVolatile::show_containers( DODSInfo &info )
     }
 }
 
-// $Log: ContainerStorageVolatile.cc,v $
-// Revision 1.5  2005/03/17 20:37:50  pwest
-// added documentation for rem_container and show_containers
-//
-// Revision 1.4  2005/03/17 19:23:58  pwest
-// deleting the container in rem_container instead of returning the removed container, returning true if successfully removed and false otherwise
-//
-// Revision 1.3  2005/03/15 19:55:36  pwest
-// show containers and show definitions
-//
-// Revision 1.2  2005/02/02 00:03:13  pwest
-// ability to replace containers and definitions
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

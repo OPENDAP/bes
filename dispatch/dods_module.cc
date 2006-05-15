@@ -65,6 +65,8 @@ using std::endl ;
 #include "DODSBasicHttpTransmitter.h"
 #include "ContainerStorageList.h"
 #include "ContainerStorageVolatile.h"
+#include "DefinitionStorageList.h"
+#include "DefinitionStorageVolatile.h"
 
 #include "DODSLog.h"
 
@@ -143,8 +145,13 @@ dods_module::initialize(int, char**)
     DODSReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " persistence" << endl;
+	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " container persistence" << endl ;
     ContainerStorageList::TheList()->add_persistence( new ContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " definition persistence" << endl ;
+    DefinitionStorageList::TheList()->add_persistence( new DefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
+
     return 0 ;
 }
 

@@ -69,7 +69,7 @@
  * process and is not persistent.
  *
  * @see DODSDefine
- * @see DODSDefineList
+ * @see DefintionStorageList
  * @see DODSContainer
  * @see DODSTransmitter
  */

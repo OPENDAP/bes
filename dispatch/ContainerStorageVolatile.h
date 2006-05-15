@@ -68,24 +68,10 @@ public:
     virtual void		add_container( const string &s_name,
                                                const string &r_name,
 					       const string &type ) ;
-    virtual bool		rem_container( const string &s_name ) ;
+    virtual bool		del_container( const string &s_name ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
 };
 
 #endif // ContainerStorageVolatile_h_
 
-// $Log: ContainerStorageVolatile.h,v $
-// Revision 1.4  2005/03/17 19:23:58  pwest
-// deleting the container in rem_container instead of returning the removed container, returning true if successfully removed and false otherwise
-//
-// Revision 1.3  2005/03/15 19:55:36  pwest
-// show containers and show definitions
-//
-// Revision 1.2  2005/02/02 00:03:13  pwest
-// ability to replace containers and definitions
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

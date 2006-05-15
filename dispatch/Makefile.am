@@ -55,7 +55,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc \
 	DODSKeys.cc TheDODSKeys.cc \
 	DODSContainer.cc DODSStatus.cc \
-	ContainerStorage.cc ContainerStorageCatalog.cc \
+	ContainerStorageCatalog.cc \
 	ContainerStorageFile.cc ContainerStorageList.cc \
 	ContainerStorageVolatile.cc \
 	DASResponseHandler.cc DDSResponseHandler.cc \
@@ -78,7 +78,8 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSMemoryManager.cc DODSProcessEncodedString.cc \
 	OPeNDAPAggFactory.cc \
 	DODSReturnManager.cc \
-	DODSDefineList.cc \
+	DefinitionStorageList.cc \
+	DefinitionStorageVolatile.cc \
 	OPeNDAPBaseApp.cc OPeNDAPModuleApp.cc dods_module.cc
 
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
@@ -121,7 +122,9 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSServerSystemResources.h DODSStatusReturn.h dispatch_version.h \
 	OPeNDAPAggFactory.h DODSAggregationServer.h \
 	DODSReturnManager.h \
-	DODSDefineList.h DODSDefine.h \
+	DODSDefine.h DefinitionStorageList.h \
+	DefinitionStorageException.h DefinitionStorage.h \
+	DefinitionStorageVolatile.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h \
 	OPeNDAPAbstractModule.h OPeNDAPPluginFactory.h OPeNDAPPlugin.h \
 	OPeNDAPPluginException.h dods_module.h OPeNDAPTransmitterNames.h \

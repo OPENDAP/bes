@@ -86,8 +86,8 @@ public:
     virtual			~ContainerStorageList() ;
 
     virtual bool		add_persistence( ContainerStorage *p ) ;
-    virtual bool		rem_persistence( const string &persist_name ) ;
-    virtual ContainerStorage *find_persistence( const string &persist_name ) ;
+    virtual bool		del_persistence( const string &persist_name ) ;
+    virtual ContainerStorage *	find_persistence( const string &persist_name ) ;
 
     virtual void		look_for( DODSContainer &d ) ;
 

@@ -109,7 +109,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
 	try
 	{
 	    string def_type = "added" ;
-	    bool deleted = cp->rem_container( symbolic_name ) ;
+	    bool deleted = cp->del_container( symbolic_name ) ;
 	    if( deleted == true )
 	    {
 		def_type = "replaced" ;

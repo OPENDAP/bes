@@ -1,4 +1,4 @@
-// ContainerStorage.cc
+// DefinitionStorageException.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,5 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "ContainerStorage.h"
+#ifndef DefinitionStorageException_h_
+#define DefinitionStorageException_h_ 1
+
+#include "DODSBasicException.h"
+
+/** @brief exception thrown if problems locating container information for a
+ * symbolic name
+ */
+class DefinitionStorageException:public DODSBasicException
+{
+public:
+      			DefinitionStorageException() {}
+      			DefinitionStorageException( const string &s )
+			    : DODSBasicException( s ) {}
+      virtual		~DefinitionStorageException() {}
+};
+
+#endif // DefinitionStorageException_h_
 

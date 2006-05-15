@@ -30,11 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <iostream>
+
+using std::cout ;
+using std::endl ;
+
 #include "DefineResponseHandler.h"
 #include "DODSInfo.h"
 #include "OPeNDAPSilentInfo.h"
 #include "DODSDefine.h"
-#include "DODSDefineList.h"
+#include "DefinitionStorageList.h"
+#include "DefinitionStorage.h"
 #include "OPeNDAPDataNames.h"
 
 DefineResponseHandler::DefineResponseHandler( string name )
@@ -73,7 +79,7 @@ DefineResponseHandler::~DefineResponseHandler( )
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DODSDefine
- * @see DODSDefineList
+ * @see DefintionStorageList
  */
 void
 DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
@@ -90,29 +96,44 @@ DefineResponseHandler::execute( DODSDataHandlerInterface &dhi )
     _response = info ;
     
     string def_name = dhi.data[DEF_NAME] ;
-    string def_type = "added" ;
-    bool deleted = DODSDefineList::TheList()->remove_def( def_name ) ;
-    if( deleted == true )
+    string store_name = dhi.data[STORE_NAME] ;
+    if( store_name == "" )
+	store_name = PERSISTENCE_VOLATILE ;
+    DefinitionStorage *store =
+	DefinitionStorageList::TheList()->find_persistence( store_name ) ;
+    if( store )
     {
-	def_type = "replaced" ;
-    }
+	string def_type = "added" ;
+	bool deleted = store->del_definition( def_name ) ;
+	if( deleted == true )
+	{
+	    def_type = "replaced" ;
+	}
 
-    DODSDefine *dd = new DODSDefine ;
-    dhi.first_container() ;
-    while( dhi.container )
+	DODSDefine *dd = new DODSDefine ;
+	dhi.first_container() ;
+	while( dhi.container )
+	{
+	    dd->containers.push_back( *dhi.container ) ;
+	    dhi.next_container() ;
+	}
+	dd->aggregation_command = dhi.data[AGG_CMD] ;
+	dd->aggregation_handler = dhi.data[AGG_HANDLER] ;
+	dhi.data[AGG_CMD] = "" ;
+	dhi.data[AGG_HANDLER] = "" ;
+
+	store->add_definition( def_name, dd ) ;
+	string ret = (string)"Successfully " + def_type + " definition \""
+		     + def_name + "\ to \"" + store_name + "\" store\n" ;
+	info->add_data( ret ) ;
+    }
+    else
     {
-	dd->containers.push_back( *dhi.container ) ;
-	dhi.next_container() ;
+	string ret = (string)"Unable to add definition \"" + def_name
+		     + "\" to \"" + store_name
+		     + "\" store. Store does not exist\n" ;
+	info->add_data( ret ) ;
     }
-    dd->aggregation_command = dhi.data[AGG_CMD] ;
-    dd->aggregation_handler = dhi.data[AGG_HANDLER] ;
-    dhi.data[AGG_CMD] = "" ;
-    dhi.data[AGG_HANDLER] = "" ;
-
-    DODSDefineList::TheList()->add_def( def_name, dd ) ;
-    string ret = (string)"Successfully " + def_type + " definition "
-		 + def_name + "\n" ;
-    info->add_data( ret ) ;
 }
 
 /** @brief transmit the response object built by the execute command

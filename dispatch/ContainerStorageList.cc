@@ -127,7 +127,7 @@ ContainerStorageList::add_persistence( ContainerStorage *cp )
  * @see ContainerStorage
  */
 bool
-ContainerStorageList::rem_persistence( const string &persist_name )
+ContainerStorageList::del_persistence( const string &persist_name )
 {
     bool ret = false ;
     ContainerStorageList::persistence_list *pl = _first ;
