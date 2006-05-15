@@ -77,7 +77,7 @@ HDF4Module::terminate()
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "Removing catalog Container Storage" << endl;
-    ContainerStorageList::TheList()->rem_persistence( HDF4_CATALOG ) ;
+    ContainerStorageList::TheList()->del_persistence( HDF4_CATALOG ) ;
 }
 
 extern "C"
