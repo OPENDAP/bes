@@ -1,10 +1,6 @@
 
 	$Id: INSTALL 11941 2005-08-15 18:02:54Z jimg $
 
-This is INSTALL file from libdap, edited here and there. Teh comments about
-autoconf hold true for the code that's been coverted. More work to do. 9/2/05
-jhrg
-
 ---------------------------------------------------------------------------
 
 BUILDING THE SOFTWARE
@@ -28,13 +24,8 @@ BUILDING THE SOFTWARE
      software, then 'cd unit-tests; make check' will build and run the unit
      tests.
 
-  3. Type `make install' to install the DAP2 library. The library
-     (libdap.a), its header files and the getdap and dap-config utilities
-     install under /usr/local/ in lib, include/libdap and bin by default. The
-     deflate utility is installed in /usr/local/sbin by default. Use the
-     --prefix option to specify a different root directory. For example,
-     './configure --prefix=/opt/opendap' would set the build so that the
-     library was installed in /opt/opendap/lib, ...
+  3. Type `make install' to install the BES software. The package installs
+     in /usr/local/ by default; use --prefix to change that.
 
 Building from Our SVN Repository
 
@@ -108,13 +99,15 @@ NOTES
     to do this.
 
   o To build a rpm file for a source or binary distribution: 1) Use 'make
-    dist' to build a libdap-*.tar.gz file; 2) Copy that to ~/rpm/SOURCES,
+    dist' to build a *.tar.gz file; 2) Copy that to ~/rpm/SOURCES,
     and; 3) Run 'rpmbuild -ts ~/rpm/SOURCES/libdap-3.5.1.tar.gz' to make the
     source package. Use '-tb' to make the binary package. I use a
     ~/.rpmmacros file that contains:
 
 	%_topdir		/home/jimg/rpm
 	%_tmppath               /home/jimg/rpm/tmp
+	
+    Or, use the 'rpm' target in the Makefile.
 
     
 
