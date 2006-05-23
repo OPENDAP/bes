@@ -35,11 +35,13 @@
 #include "OPeNDAPParserException.h"
 #include "cgi_util.h"
 
+// Add docs. jhrg 3/29/06
 int
 OPeNDAPParserException::handleException( DODSException &e,
 					 DODSDataHandlerInterface &dhi )
 {
     OPeNDAPParserException *pe=dynamic_cast<OPeNDAPParserException*>(&e);
+    // What if pe is null. jhrg 3/29/06
     if(pe)
     {
 	bool ishttp = false ;
