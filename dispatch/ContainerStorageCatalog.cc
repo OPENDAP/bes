@@ -89,7 +89,7 @@ ContainerStorageCatalog::ContainerStorageCatalog( const string &n )
     while( done == false )
     {
 	semi = curr_str.find( ";", str_begin ) ;
-	if( semi == -1 )
+	if( semi == string::npos )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
@@ -107,7 +107,7 @@ ContainerStorageCatalog::ContainerStorageCatalog( const string &n )
 	    }
 
 	    string::size_type col = a_pair.find( ":" ) ;
-	    if( col == -1 )
+	    if( col == string::npos )
 	    {
 		string s = (string)"Catalog type match malformed, no colon, "
 			   + "looking for type:regexp;[type:regexp;]" ;

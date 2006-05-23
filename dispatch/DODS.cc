@@ -154,7 +154,7 @@ DODS::initialize()
 {
     bool do_continue = true ;
     init_iter i = _init_list.begin() ;
-    for( i; i != _init_list.end() && do_continue == true; i++ )
+    for( ; i != _init_list.end() && do_continue == true; i++ )
     {
 	p_opendap_init p = *i ;
 	do_continue = p( _dhi ) ;
@@ -288,7 +288,7 @@ void
 DODS::end_request()
 {
     end_iter i = _end_list.begin() ;
-    for( i; i != _end_list.end(); i++ )
+    for( ; i != _end_list.end(); i++ )
     {
 	p_opendap_end p = *i ;
 	p( _dhi ) ;
@@ -336,7 +336,7 @@ DODS::exception_manager( DODSException &e )
     // Let's see if any of these exception callbacks can handle the
     // exception. The first callback that can handle the exception wins
     ehm_iter i = _ehm_list.begin() ;
-    for( i; i != _ehm_list.end(); i++ )
+    for( ; i != _ehm_list.end(); i++ )
     {
 	p_opendap_ehm p = *i ;
 	int handled = p( e, _dhi ) ;

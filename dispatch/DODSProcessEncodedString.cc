@@ -42,7 +42,7 @@ DODSProcessEncodedString::DODSProcessEncodedString (const char *s)
 	string value = "" ;
 	bool getting_key_data = true ;
 	size_t len = strlen( s ) ;
-	for( int j = 0; j < len; j++ )
+	for( unsigned int j = 0; j < len; j++ )
 	{
 	    if( getting_key_data )
 	    {

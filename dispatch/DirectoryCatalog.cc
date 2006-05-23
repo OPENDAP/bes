@@ -230,7 +230,7 @@ DirectoryCatalog::buildList( list<string> &theList, const string &listStr )
     while( done == false )
     {
 	semi = listStr.find( ";", str_begin ) ;
-	if( semi == -1 )
+	if( semi == string::npos )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
