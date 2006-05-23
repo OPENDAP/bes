@@ -172,7 +172,7 @@ OPeNDAPTokenizer::tokenize( const char *p )
     size_t len = strlen( p ) ;
     string s = "" ;
     bool passing_raw = false ;
-    for( int j = 0; j < len; j++ )
+    for( unsigned int j = 0; j < len; j++ )
     {
 	if( p[j] == '\"' )
 	{
