@@ -33,7 +33,8 @@
 #include "OPeNDAPGetCommand.h"
 #include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
-#include "DODSDefineList.h"
+#include "DefinitionStorageList.h"
+#include "DefinitionStorage.h"
 #include "DODSDefine.h"
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
@@ -86,7 +87,7 @@ OPeNDAPGetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     /* No subcommand - so proceed as a default get command
      */
     DODSResponseHandler *retResponse =
-	DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
+	DODSResponseHandlerList::TheList()->find_handler( newcmd ) ;
     if( !retResponse )
     {
 	string err( "Command " ) ;
@@ -94,7 +95,7 @@ OPeNDAPGetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 	err += " does not have a registered response handler" ;
 	throw OPeNDAPParserException( err ) ;
     }
-    dhi.action = my_token ;
+    dhi.action = newcmd ;
 
     my_token = tokenizer.get_next_token() ;
     if( my_token != "for" )
@@ -135,7 +136,20 @@ OPeNDAPGetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 	}
     }
 
-    DODSDefine *d = DODSDefineList::TheList()->find_def( def_name ) ;
+    // FIX: should this be using dot notation? Like get das for volatile.d ;
+    // Or do it like the containers, just find the first one available? Same
+    // question for containers then?
+    /*
+    string store_name = PERSISTENCE_VOLATILE ;
+    DefinitionStorage *store =
+	DefinitionStorageList::TheList()->find_def( store_name ) ;
+    if( !store )
+    {
+	throw OPeNDAPParserException( (string)"Unable to find definition store " + store_name ) ;
+    }
+    */
+
+    DODSDefine *d = DefinitionStorageList::TheList()->look_for( def_name ) ;
     if( !d )
     {
 	throw OPeNDAPParserException( (string)"Unable to find definition " + def_name ) ;

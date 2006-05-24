@@ -1,4 +1,4 @@
-// DefinitionsResponseHandler.h
+// ShowDefsResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,8 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_DefinitionsResponseHandler_h
-#define I_DefinitionsResponseHandler_h 1
+#ifndef I_ShowDefsResponseHandler_h
+#define I_ShowDefsResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
@@ -46,17 +46,17 @@
  * @see DODSTransmitter
  * @see DODSInfo
  */
-class DefinitionsResponseHandler : public DODSResponseHandler {
+class ShowDefsResponseHandler : public DODSResponseHandler {
 public:
-				DefinitionsResponseHandler( string name ) ;
-    virtual			~DefinitionsResponseHandler( void ) ;
+				ShowDefsResponseHandler( string name ) ;
+    virtual			~ShowDefsResponseHandler( void ) ;
 
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler *DefinitionsResponseBuilder( string handler_name ) ;
+    static DODSResponseHandler *ShowDefsResponseBuilder( string handler_name ) ;
 };
 
-#endif // I_DefinitionsResponseHandler_h
+#endif // I_ShowDefsResponseHandler_h
 

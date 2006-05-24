@@ -133,7 +133,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "remove File1" << endl;
-    if( cpl->rem_persistence( "File1" ) == true )
+    if( cpl->del_persistence( "File1" ) == true )
     {
 	cout << "successfully removed File1" << endl ;
     }

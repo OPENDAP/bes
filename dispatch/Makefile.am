@@ -16,57 +16,30 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = test 
 DIST_SUBDIRS = test
 
-lib_LTLIBRARIES = libdispatch.la
+lib_LTLIBRARIES = libdispatch.la libdap_module.la
 
 libdispatch_la_SOURCES = $(SRCS) $(HDRS)
-
 libdispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 
+libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
+libdap_module_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+
 pkginclude_HEADERS = $(HDRS)
-
-all-local: $(MODOBJS)
-
-install-data-local: $(MODOBJS)
-	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
-	list='$(MODOBJS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
-	  fi; \
-	done
-
-uninstall-local:
-	@set -x; list='$(MODOBJS)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
-	done
-
-# noinst_HEADERS = 
-
-EXTRA_DIST = $(MODSRCS)
-
-CLEANFILES = $(MODOBJS)
 
 ##############################################################################
 #
 # Sources and Headers for libdispatch.
 
 SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
-	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc \
-	DODSKeys.cc TheDODSKeys.cc \
-	DODSContainer.cc DODSStatus.cc \
-	ContainerStorageCatalog.cc \
-	ContainerStorageFile.cc ContainerStorageList.cc \
-	ContainerStorageVolatile.cc \
-	DASResponseHandler.cc DDSResponseHandler.cc \
-	DDXResponseHandler.cc ProcIdResponseHandler.cc SetResponseHandler.cc \
-	DODSResponseHandler.cc DataResponseHandler.cc HelpResponseHandler.cc \
-	StatusResponseHandler.cc DefineResponseHandler.cc \
-	VersionResponseHandler.cc \
-	ContainersResponseHandler.cc DefinitionsResponseHandler.cc \
-	DeleteResponseHandler.cc KeysResponseHandler.cc \
-	CatalogResponseHandler.cc DirectoryCatalog.cc CatalogList.cc \
+	DODSGlobalInit.cc DODSInitList.cc DODSLog.cc DODSKeys.cc \
+	TheDODSKeys.cc DODSContainer.cc DODSStatus.cc \
+	ContainerStorageCatalog.cc ContainerStorageFile.cc \
+	ContainerStorageList.cc ContainerStorageVolatile.cc \
+	ProcIdResponseHandler.cc DODSResponseHandler.cc \
+	HelpResponseHandler.cc StatusResponseHandler.cc \
+	VersionResponseHandler.cc KeysResponseHandler.cc \
 	DODSResponseHandlerList.cc \
+	DirectoryCatalog.cc CatalogList.cc \
 	DODSInfo.cc DODSTextInfo.cc DODSVersionInfo.cc DODSHTMLInfo.cc \
 	DODSXMLInfo.cc OPeNDAPSilentInfo.cc \
 	DODSRequestHandler.cc DODSRequestHandlerList.cc \
@@ -80,7 +53,7 @@ SRCS:=DODS.cc DODSCgi.cc DODSGlobalIQ.cc \
 	DODSReturnManager.cc \
 	DefinitionStorageList.cc \
 	DefinitionStorageVolatile.cc \
-	OPeNDAPBaseApp.cc OPeNDAPModuleApp.cc dods_module.cc
+	OPeNDAPBaseApp.cc OPeNDAPModuleApp.cc default_module.cc
 
 HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DODSGlobalInit.h DODSInitFuns.h DODSInitList.h DODSInitOrder.h \
@@ -93,15 +66,10 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	ContainerStorageList.h \
 	ContainerStorageException.h \
 	ContainerStorageVolatile.h \
-	DASResponseHandler.h DDSResponseHandler.h \
-	DDXResponseHandler.h ProcIdResponseHandler.h SetResponseHandler.h \
-	DODSResponseHandler.h DataResponseHandler.h HelpResponseHandler.h \
-	StatusResponseHandler.h DefineResponseHandler.h \
-	VersionResponseHandler.h DODSResponseHandlerList.h \
-	ContainersResponseHandler.h DefinitionsResponseHandler.h \
-	DeleteResponseHandler.h \
-	KeysResponseHandler.h \
-	CatalogResponseHandler.h DirectoryCatalog.h OPeNDAPCatalog.h \
+	ProcIdResponseHandler.h DODSResponseHandler.h HelpResponseHandler.h \
+	StatusResponseHandler.h VersionResponseHandler.h \
+	DODSResponseHandlerList.h KeysResponseHandler.h \
+	DirectoryCatalog.h OPeNDAPCatalog.h \
 	CatalogList.h \
 	DODSResponseNames.h DODSResponseException.h \
 	DODSInfo.h DODSTextInfo.h DODSHTMLInfo.h DODSVersionInfo.h \
@@ -127,10 +95,21 @@ HDRS:=DODS.h DODSCgi.h DODSGlobalIQ.h \
 	DefinitionStorageVolatile.h \
 	OPeNDAPDataNames.h OPeNDAPApp.h OPeNDAPObj.h OPeNDAPBaseApp.h \
 	OPeNDAPAbstractModule.h OPeNDAPPluginFactory.h OPeNDAPPlugin.h \
-	OPeNDAPPluginException.h dods_module.h OPeNDAPTransmitterNames.h \
+	OPeNDAPPluginException.h default_module.h OPeNDAPTransmitterNames.h \
 	OPeNDAPModuleApp.h
 
-MODSRCS:=
+DAP_SRCS:=CatalogResponseHandler.cc ShowContainersResponseHandler.cc \
+	DASResponseHandler.cc DDSResponseHandler.cc DDXResponseHandler.cc \
+	DataResponseHandler.cc DefineResponseHandler.cc \
+	ShowDefsResponseHandler.cc \
+	DelContainerResponseHandler.cc DelContainersResponseHandler.cc \
+	DelDefResponseHandler.cc DelDefsResponseHandler.cc \
+	SetContainerResponseHandler.cc OPeNDAPModule.cc
 
-MODOBJS:=
-
+DAP_HDRS:=CatalogResponseHandler.h ShowContainersResponseHandler.h \
+	DASResponseHandler.h DDSResponseHandler.h DDXResponseHandler.h \
+	DataResponseHandler.h DefineResponseHandler.h \
+	ShowDefsResponseHandler.h \
+	DelContainerResponseHandler.h DelContainersResponseHandler.h \
+	DelDefResponseHandler.h DelDefsResponseHandler.h \
+	SetContainerResponseHandler.h OPeNDAPModule.h

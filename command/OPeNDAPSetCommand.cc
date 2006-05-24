@@ -88,75 +88,11 @@ OPeNDAPSetCommand::parse_request( OPeNDAPTokenizer &tokenizer,
 	return cmdobj->parse_request( tokenizer, dhi ) ;
     }
 
-    /* No sub command, so proceed with the default set command
+    /* No sub command, throw an exception. There should be a sub command for
+     * set.
      */
-    dhi.action = _cmd ;
-    DODSResponseHandler *retResponse =
-	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
-    if( !retResponse )
-    {
-	throw OPeNDAPParserException( (string)"Improper command " + _cmd );
-    }
+    tokenizer.parse_error( my_token + " not expected\n" ) ;
 
-    if( my_token == "container" )
-    {
-	dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
-	my_token = tokenizer.get_next_token() ;
-	if( my_token != "values" )
-	{
-	    if( my_token == "in" )
-	    {
-		dhi.data[STORE_NAME] = tokenizer.get_next_token() ;
-	    }
-	    else
-	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
-	    }
-	    my_token = tokenizer.get_next_token() ;
-	}
-
-	if( my_token == "values" )
-	{
-	    dhi.data[SYMBOLIC_NAME] = tokenizer.get_next_token() ;
-	    my_token = tokenizer.get_next_token() ;
-	    if( my_token == "," )
-	    {
-		dhi.data[REAL_NAME] = tokenizer.get_next_token() ; 
-		my_token = tokenizer.get_next_token() ;
-		if( my_token == "," )
-		{
-		    dhi.data[CONTAINER_TYPE] = tokenizer.get_next_token() ;
-		    my_token = tokenizer.get_next_token() ;
-		    if( my_token != ";" )
-		    {
-			tokenizer.parse_error( my_token + " not expected\n" ) ;
-		    }
-		}
-		else
-		{
-		    dhi.data[CONTAINER_TYPE] = "" ;
-		    if( my_token != ";" )
-		    {
-			tokenizer.parse_error( my_token + " not expected\n" ) ;
-		    }
-		}
-	    }
-	    else
-	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
-	    }
-	}
-	else
-	{
-	    tokenizer.parse_error( my_token + " not expected\n" ) ;
-	}
-    }
-    else
-    {
-	tokenizer.parse_error( my_token + " not expected\n" ) ;
-    }
-
-    return retResponse ;
+    return NULL ;
 }
 
-// $Log: OPeNDAPSetCommand.cc,v $

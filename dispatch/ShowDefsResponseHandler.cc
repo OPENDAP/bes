@@ -1,4 +1,4 @@
-// ContainersResponseHandler.cc
+// ShowDefsResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,47 +30,48 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "ContainersResponseHandler.h"
+#include "ShowDefsResponseHandler.h"
 #include "DODSInfo.h"
-#include "ContainerStorageList.h"
+#include "DefinitionStorageList.h"
 
-ContainersResponseHandler::ContainersResponseHandler( string name )
+ShowDefsResponseHandler::ShowDefsResponseHandler( string name )
     : DODSResponseHandler( name )
 {
 }
 
-ContainersResponseHandler::~ContainersResponseHandler( )
+ShowDefsResponseHandler::~ShowDefsResponseHandler( )
 {
 }
 
-/** @brief executes the command 'show containers;' by returning the list of
- * currently defined containers in all container stores
+/** @brief executes the command 'show definitions;' by returning the list of
+ * currently defined definitions
  *
- * This response handler knows how to retrieve information about all
- * containers stored with any container storage objects. This response handler
- * creates a DODSInfo response object to store the container information.
+ * This response handler knows how to retrieve the list of definitions
+ * currently defined in the server. It simply asks the definition list
+ * to show all definitions given the DODSInfo object created here.
  *
  * @param dhi structure that holds request and response information
- * @throws DODSHandlerException if there is a problem building the response
- * @throws DODSResponseException if a fatal error occurs building the response
+ * @throws DODSHandlerException if there is a problem building the
+ * response object
+ * @throws DODSResponseException upon fatal error building the response
+ * object
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
- * @see ContainerStorageList
- * @see ContainerStorage
- * @see DODSContainer
+ * @see DefinitionStorageList
  */
 void
-ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
+ShowDefsResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    ContainerStorageList::TheList()->show_containers( *info ) ;
+    DefinitionStorageList::TheList()->show_definitions( *info ) ;
 }
 
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
- * If a response object was built (DODSInfo) then transmit it as text.
+ * If a response object was built then transmit it as text using the specified
+ * transmitter.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -79,8 +80,8 @@ ContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
  * @see _DODSDataHandlerInterface
  */
 void
-ContainersResponseHandler::transmit( DODSTransmitter *transmitter,
-                                     DODSDataHandlerInterface &dhi )
+ShowDefsResponseHandler::transmit( DODSTransmitter *transmitter,
+                               DODSDataHandlerInterface &dhi )
 {
     if( _response )
     {
@@ -90,8 +91,8 @@ ContainersResponseHandler::transmit( DODSTransmitter *transmitter,
 }
 
 DODSResponseHandler *
-ContainersResponseHandler::ContainersResponseBuilder( string handler_name )
+ShowDefsResponseHandler::ShowDefsResponseBuilder( string handler_name )
 {
-    return new ContainersResponseHandler( handler_name ) ;
+    return new ShowDefsResponseHandler( handler_name ) ;
 }
 

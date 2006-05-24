@@ -128,6 +128,17 @@ OPeNDAPDefineCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     dhi.data[DEF_NAME] = my_token ;
 
     my_token = tokenizer.get_next_token() ;
+    if( my_token == "in" )
+    {
+	string store_name = tokenizer.get_next_token() ;
+	if( store_name == ";" || store_name == "" )
+	{
+	    tokenizer.parse_error( my_token + " not expected, expecting definition store name" ) ;
+	}
+	dhi.data[STORE_NAME] = store_name ;
+	my_token = tokenizer.get_next_token() ;
+    }
+
     if( my_token != "as" )
     {
 	tokenizer.parse_error( my_token + " not expected, expecting \"as\"" ) ;

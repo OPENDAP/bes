@@ -61,6 +61,8 @@ OPeNDAPCommand::rem_command( const string &cmd_str )
     if( iter != OPeNDAPCommand::cmd_list.end() )
     {
 	cmd = (*iter).second ;
+	if( cmd == OPeNDAPCommand::TermCommand )
+	    cmd = NULL ;
 	OPeNDAPCommand::cmd_list.erase( iter ) ;
     }
     return cmd ;

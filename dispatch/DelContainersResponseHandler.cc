@@ -1,4 +1,4 @@
-// DefinitionsResponseHandler.cc
+// DelContainersResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,25 +30,37 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "DefinitionsResponseHandler.h"
+#include "DelContainersResponseHandler.h"
 #include "DODSInfo.h"
 #include "DefinitionStorageList.h"
+#include "DefinitionStorage.h"
+#include "DODSDefine.h"
+#include "ContainerStorageList.h"
+#include "ContainerStorage.h"
+#include "DODSContainer.h"
+#include "OPeNDAPDataNames.h"
 
-DefinitionsResponseHandler::DefinitionsResponseHandler( string name )
+DelContainersResponseHandler::DelContainersResponseHandler( string name )
     : DODSResponseHandler( name )
 {
 }
 
-DefinitionsResponseHandler::~DefinitionsResponseHandler( )
+DelContainersResponseHandler::~DelContainersResponseHandler( )
 {
 }
 
-/** @brief executes the command 'show definitions;' by returning the list of
- * currently defined definitions
+/** @brief executes the command to delete all containers from a specified
+ * container store.
  *
- * This response handler knows how to retrieve the list of definitions
- * currently defined in the server. It simply asks the definition list
- * to show all definitions given the DODSInfo object created here.
+ * Removes all containers from a specified container storage found in 
+ * ContainerStorageList::TheList().
+ *
+ * The response object built is a DODSInfo object. Status of the deletion
+ * will be added to the informational object, one of:
+ *
+ * Successfully deleted all containers
+ * <BR />
+ * Container storage "&lt;store_name&gt;" does not exist. Unable to delete containers
  *
  * @param dhi structure that holds request and response information
  * @throws DODSHandlerException if there is a problem building the
@@ -58,20 +70,58 @@ DefinitionsResponseHandler::~DefinitionsResponseHandler( )
  * @see _DODSDataHandlerInterface
  * @see DODSInfo
  * @see DefinitionStorageList
+ * @see DODSDefine
+ * @see ContainerStorage
+ * @see ContainerStorageList
  */
 void
-DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
+DelContainersResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
-    DefinitionStorageList::TheList()->show_definitions( *info ) ;
+
+    string store_name = dhi.data[STORE_NAME] ;
+    if( store_name == "" )
+    {
+	store_name = PERSISTENCE_VOLATILE ;
+    }
+    ContainerStorage *cp =
+	ContainerStorageList::TheList()->find_persistence( store_name ) ;
+    if( cp )
+    {
+	bool deleted =  cp->del_containers( ) ;
+	if( deleted == true )
+	{
+	    string line = (string)"Successfully deleted container \""
+			  + dhi.data[CONTAINER_NAME]
+			  + "\" from container storage \""
+			  + dhi.data[STORE_NAME]
+			  + "\"\n" ;
+	    info->add_data( line ) ;
+	}
+	else
+	{
+	    string line = (string)"Unable to delete containers from \""
+			  + dhi.data[STORE_NAME]
+			  + "\ container store\n" ;
+	    info->add_data( line ) ;
+	}
+    }
+    else
+    {
+	string line = (string)"Container storage \""
+		      + dhi.data[STORE_NAME]
+		      + "\" does not exist. "
+		      + "Unable to delete containers\n" ;
+	info->add_data( line ) ;
+    }
 }
 
 /** @brief transmit the response object built by the execute command
  * using the specified transmitter object
  *
  * If a response object was built then transmit it as text using the specified
- * transmitter.
+ * transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
@@ -80,7 +130,7 @@ DefinitionsResponseHandler::execute( DODSDataHandlerInterface &dhi )
  * @see _DODSDataHandlerInterface
  */
 void
-DefinitionsResponseHandler::transmit( DODSTransmitter *transmitter,
+DelContainersResponseHandler::transmit( DODSTransmitter *transmitter,
                                DODSDataHandlerInterface &dhi )
 {
     if( _response )
@@ -91,8 +141,8 @@ DefinitionsResponseHandler::transmit( DODSTransmitter *transmitter,
 }
 
 DODSResponseHandler *
-DefinitionsResponseHandler::DefinitionsResponseBuilder( string handler_name )
+DelContainersResponseHandler::DelContainersResponseBuilder( string handler_name )
 {
-    return new DefinitionsResponseHandler( handler_name ) ;
+    return new DelContainersResponseHandler( handler_name ) ;
 }
 

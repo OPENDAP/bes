@@ -38,25 +38,26 @@ found d5
 
 *****************************************
 show definitions
-Definition: d1
-Containers:
-Aggregation: d1agg
+volatile
+  Definition: d1
+    Containers:
+    Aggregation: : d1agg
 
-Definition: d2
-Containers:
-Aggregation: d2agg
+  Definition: d2
+    Containers:
+    Aggregation: : d2agg
 
-Definition: d3
-Containers:
-Aggregation: d3agg
+  Definition: d3
+    Containers:
+    Aggregation: : d3agg
 
-Definition: d4
-Containers:
-Aggregation: d4agg
+  Definition: d4
+    Containers:
+    Aggregation: : d4agg
 
-Definition: d5
-Containers:
-Aggregation: d5agg
+  Definition: d5
+    Containers:
+    Aggregation: : d5agg
 
 *****************************************
 delete d3

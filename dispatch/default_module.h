@@ -1,12 +1,12 @@
-#ifndef dods_module_h
-#define dods_module_h 1
+#ifndef default_module_h
+#define default_module_h 1
 
-class dods_module
+class default_module
 {
 public:
     static int initialize( int argc, char **argv ) ;
     static int terminate( void ) ;
 } ;
 
-#endif // dods_module_h
+#endif // default_module_h
 

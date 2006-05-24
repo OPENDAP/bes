@@ -60,8 +60,7 @@ DODSResponseHandler *
 OPeNDAPCatalogCommand::parse_request( OPeNDAPTokenizer &tokenizer,
                                    DODSDataHandlerInterface &dhi )
 {
-    string curr_token = tokenizer.get_current_token() ;
-    dhi.data[CATALOG_OR_INFO] = curr_token ;
+    dhi.data[CATALOG_OR_INFO] = _cmd ;
 
     string my_token = parse_options( tokenizer, dhi ) ;
     if( my_token == "for" )
@@ -93,4 +92,3 @@ OPeNDAPCatalogCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     return retResponse ;
 }
 
-// $Log: OPeNDAPCatalogCommand.cc,v $

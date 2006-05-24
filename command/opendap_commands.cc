@@ -42,10 +42,8 @@ using std::endl ;
 
 #include "OPeNDAPGetCommand.h"
 #include "OPeNDAPSetCommand.h"
-#include "OPeNDAPShowCommand.h"
-#include "OPeNDAPDefineCommand.h"
 #include "OPeNDAPDeleteCommand.h"
-#include "OPeNDAPCatalogCommand.h"
+#include "OPeNDAPShowCommand.h"
 
 #include "OPeNDAPParserException.h"
 #include "DODS.h"
@@ -54,95 +52,39 @@ int
 opendap_commands::initialize( int, char** )
 {
     if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing DODS Commands:" << endl;
+	(*DODSLog::TheLog()) << "Initializing default commands:" << endl;
+
+    OPeNDAPCommand *cmd = NULL ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << GET_RESPONSE << " command" << endl;
-    OPeNDAPCommand *cmd = new OPeNDAPGetCommand( GET_RESPONSE ) ;
+    cmd = new OPeNDAPGetCommand( GET_RESPONSE ) ;
     OPeNDAPCommand::add_command( GET_RESPONSE, cmd ) ;
-
-    string cmd_name = string( GET_RESPONSE ) + "." + DAS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( GET_RESPONSE ) + "." + DDS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( GET_RESPONSE ) + "." + DDX_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( GET_RESPONSE ) + "." + DATA_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << SHOW_RESPONSE << " command" << endl;
     cmd = new OPeNDAPShowCommand( SHOW_RESPONSE ) ;
     OPeNDAPCommand::add_command( SHOW_RESPONSE, cmd ) ;
 
-    cmd_name = string( SHOW_RESPONSE ) + "." + HELP_RESPONSE ;
     if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + PROCESS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + CONTAINERS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + DEFINITIONS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + KEYS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + VERS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + STATUS_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + CATALOG_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
-    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + CATALOG_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
-    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
-
-    cmd_name = string( SHOW_RESPONSE ) + "." + SHOW_INFO_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    cmd = new OPeNDAPCatalogCommand( cmd_name ) ;
-    OPeNDAPCommand::add_command( cmd_name, cmd ) ;
+	(*DODSLog::TheLog()) << "    adding " << HELP_RESPONSE << " command" << endl;
+    OPeNDAPCommand::add_command( HELP_RESPONSE, OPeNDAPCommand::TermCommand ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPDefineCommand( DEFINE_RESPONSE ) ;
-    OPeNDAPCommand::add_command( DEFINE_RESPONSE, cmd ) ;
+	(*DODSLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " command" << endl;
+    OPeNDAPCommand::add_command( PROCESS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << KEYS_RESPONSE << " command" << endl;
+    OPeNDAPCommand::add_command( KEYS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << VERS_RESPONSE << " command" << endl;
+    OPeNDAPCommand::add_command( VERS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+
+    if( DODSLog::TheLog()->is_verbose() )
+	(*DODSLog::TheLog()) << "    adding " << STATUS_RESPONSE << " command" << endl;
+    OPeNDAPCommand::add_command( STATUS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding " << SET_RESPONSE << " command" << endl;
@@ -153,21 +95,6 @@ opendap_commands::initialize( int, char** )
 	(*DODSLog::TheLog()) << "    adding " << DELETE_RESPONSE << " command" << endl;
     cmd = new OPeNDAPDeleteCommand( DELETE_RESPONSE ) ;
     OPeNDAPCommand::add_command( DELETE_RESPONSE, cmd ) ;
-
-    cmd_name = string( DELETE_RESPONSE ) + "." + DELETE_CONTAINER ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( DELETE_RESPONSE ) + "." + DELETE_DEFINITION ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
-
-    cmd_name = string( DELETE_RESPONSE ) + "." + DELETE_DEFINITIONS ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
 
     if( DODSLog::TheLog()->is_verbose() )
 	(*DODSLog::TheLog()) << "    adding parser exception callback" << endl ;
@@ -186,9 +113,6 @@ opendap_commands::terminate( void )
     if( cmd ) delete cmd ;
 
     cmd = OPeNDAPCommand::rem_command( SHOW_RESPONSE ) ;
-    if( cmd ) delete cmd ;
-
-    cmd = OPeNDAPCommand::rem_command( DEFINE_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
     cmd = OPeNDAPCommand::rem_command( SET_RESPONSE ) ;

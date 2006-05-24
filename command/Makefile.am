@@ -12,34 +12,15 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libopendap_command.la
+lib_LTLIBRARIES = libopendap_command.la libdap_cmdmodule.la
 
 libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
-
 libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
+libdap_cmdmodule_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
+libdap_cmdmodule_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
+
 pkginclude_HEADERS = $(HDRS)
-
-all-local: $(MODOBJS)
-
-install-data-local: $(MODOBJS)
-	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
-	list='$(MODOBJS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
-	  fi; \
-	done
-
-uninstall-local:
-	@set -x; list='$(MODOBJS)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
-	done
-
-EXTRA_DIST = $(MODSRCS)
-
-CLEANFILES = $(MODOBJS)
 
 ##############################################################################
 #
@@ -47,14 +28,18 @@ CLEANFILES = $(MODOBJS)
 #
 ##############################################################################
 SRCS:=OPeNDAPCmdInterface.cc OPeNDAPCmdParser.cc OPeNDAPCommand.cc	     \
-	OPeNDAPDefineCommand.cc OPeNDAPDeleteCommand.cc OPeNDAPGetCommand.cc \
-	OPeNDAPSetCommand.cc OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc     \
-	OPeNDAPCatalogCommand.cc OPeNDAPParserException.cc \
-	OPeNDAPTokenizer.cc OPeNDAPCommandModule.cc opendap_commands.cc
+	OPeNDAPGetCommand.cc OPeNDAPSetCommand.cc \
+	OPeNDAPShowCommand.cc OPeNDAPTermCommand.cc \
+	OPeNDAPParserException.cc OPeNDAPTokenizer.cc \
+	OPeNDAPDeleteCommand.cc opendap_commands.cc
 
-HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h OPeNDAPTokenizer.h OPeNDAPParserException.h opendap_commands.h
+HDRS:=OPeNDAPCmdInterface.h OPeNDAPCommand.h OPeNDAPTokenizer.h \
+	OPeNDAPParserException.h opendap_commands.h
 
-MODSRCS:=
+DAP_SRCS:=OPeNDAPDefineCommand.cc OPeNDAPSetContainerCommand.cc \
+	OPeNDAPCatalogCommand.cc DAPCommandModule.cc \
+	OPeNDAPDelContainerCommand.cc OPeNDAPDelContainersCommand.cc \
+	OPeNDAPDelDefCommand.cc OPeNDAPDelDefsCommand.cc
 
-MODOBJS:=
+DAP_HDRS:=
 

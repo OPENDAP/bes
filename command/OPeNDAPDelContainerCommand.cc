@@ -1,4 +1,4 @@
-// OPeNDAPDeleteCommand.cc
+// OPeNDAPDelContainerCommand.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,24 +30,21 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <iostream>
-
-using std::cout ;
-using std::endl ;
-
-#include "OPeNDAPDeleteCommand.h"
+#include "OPeNDAPDelContainerCommand.h"
 #include "OPeNDAPTokenizer.h"
 #include "DODSResponseHandlerList.h"
 #include "ContainerStorageList.h"
 #include "OPeNDAPParserException.h"
 #include "OPeNDAPDataNames.h"
 
-/** @brief parses the request to delete something
+/** @brief parses the request to delete a container from a specified
+ * container store
  *
- * This command requires a sub command to complete the parsing of the
- * command. You can not just have a command to delete. For example, the
- * command 'delete container &lt;container_name&gt;;' looks for a sub
- * command with the name 'delete.container' to complete parsing the command.
+ * Requests handled by this response handler are:
+ *
+ * delete container &lt;container_name&gt; [from &lt;store_name&gt;];
+ *
+ * If the store name is not specified it defaults to volatile.
  *
  * And remember to terminate all commands with a semicolon (;)
  *
@@ -58,26 +55,40 @@ using std::endl ;
  * @see _DODSDataHandlerInterface
  */
 DODSResponseHandler *
-OPeNDAPDeleteCommand::parse_request( OPeNDAPTokenizer &tokenizer,
-                                     DODSDataHandlerInterface &dhi )
+OPeNDAPDelContainerCommand::parse_request( OPeNDAPTokenizer &tokenizer,
+                                           DODSDataHandlerInterface &dhi )
 {
-    string my_token = parse_options( tokenizer, dhi ) ;
-    /* First we will make sure that the developer has not over-written this
-     * command to work with a sub command. In other words, they have a new
-     * command called "delete something". Look up delete.something
-     */
-    string newcmd = _cmd + "." + my_token ;
-    OPeNDAPCommand *cmdobj = OPeNDAPCommand::find_command( newcmd ) ;
-    if( cmdobj && cmdobj != OPeNDAPCommand::TermCommand )
+    DODSResponseHandler *retResponse =
+	DODSResponseHandlerList::TheList()->find_handler( _cmd ) ;
+    if( !retResponse )
     {
-	return cmdobj->parse_request( tokenizer, dhi ) ;
+	throw OPeNDAPParserException( (string)"Improper command " + _cmd ) ;
     }
 
-    /* No sub command, throw an exception. There should be a sub command for
-     * set.
-     */
-    tokenizer.parse_error( my_token + " not expected, expecting sub command\n" ) ;
+    dhi.action = _cmd ;
+    string my_token = tokenizer.get_next_token() ;
+    dhi.data[CONTAINER_NAME] = my_token ;
+    if( my_token == ";" )
+    {
+	tokenizer.parse_error( my_token + " not expected, expecting container name" ) ;
+    }
+    dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
+    my_token = tokenizer.get_next_token() ;
+    if( my_token == "from" )
+    {
+	dhi.data[STORE_NAME] = tokenizer.get_next_token() ;
+	if( dhi.data[STORE_NAME] == ";" )
+	{
+	    tokenizer.parse_error( my_token + " not expected, expecting persistent name" ) ;
+	}
+	my_token = tokenizer.get_next_token() ;
+    }
 
-    return NULL ;
+    if( my_token != ";" )
+    {
+	tokenizer.parse_error( my_token + " not expected, expecting semicolon (;)" ) ;
+    }
+
+    return retResponse ;
 }
 

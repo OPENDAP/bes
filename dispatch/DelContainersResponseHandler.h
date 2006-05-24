@@ -1,4 +1,4 @@
-// OPeNDAPCommandModule.h
+// DelContainersResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,19 +30,36 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef A_OPeNDAPCommandModule_H
-#define A_OPeNDAPCommandModule_H 1
+#ifndef I_DelContainersResponseHandler_h
+#define I_DelContainersResponseHandler_h 1
 
-#include "OPeNDAPAbstractModule.h"
+#include "DODSResponseHandler.h"
 
-class OPeNDAPCommandModule : public OPeNDAPAbstractModule
-{
+/** @brief response handler that deletes all containers from a specified
+ * container store
+ *
+ * Possible requests handled by this response handler are:
+ *
+ * delete containers [from &lt;store_name&gt;];
+ *
+ * An informational response object is created and returned to the requester
+ * to inform them whether the request was successful.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
+ */
+class DelContainersResponseHandler : public DODSResponseHandler {
 public:
-    				OPeNDAPCommandModule() {}
-    virtual		    	~OPeNDAPCommandModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
-} ;
+				DelContainersResponseHandler( string name ) ;
+    virtual			~DelContainersResponseHandler( void ) ;
 
-#endif // A_OPeNDAPCommandModule_H
+    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
+    virtual void		transmit( DODSTransmitter *transmitter,
+                                          DODSDataHandlerInterface &dhi ) ;
+
+    static DODSResponseHandler *DelContainersResponseBuilder( string handler_name ) ;
+};
+
+#endif // I_DelContainersResponseHandler_h
 

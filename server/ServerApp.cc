@@ -54,7 +54,7 @@ using std::flush ;
 #include "SocketException.h"
 #include "DODSMemoryManager.h"
 
-#include "dods_module.h"
+#include "default_module.h"
 #include "opendap_commands.h"
 
 ServerApp::ServerApp()
@@ -237,7 +237,7 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    dods_module::initialize( argc, argv ) ;
+    default_module::initialize( argc, argv ) ;
     opendap_commands::initialize( argc, argv ) ;
 
     return OPeNDAPModuleApp::initialize( argc, argv ) ;

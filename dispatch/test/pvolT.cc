@@ -85,7 +85,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "remove sym1" << endl;
-    bool rem = cpv.rem_container( "sym1" ) ;
+    bool rem = cpv.del_container( "sym1" ) ;
     if( rem )
     {
 	cout << "successfully removed sym1" << endl ;
@@ -111,7 +111,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "remove sym5" << endl;
-    rem = cpv.rem_container( "sym5" ) ;
+    rem = cpv.del_container( "sym5" ) ;
     if( rem )
     {
 	cout << "successfully removed sym5" << endl ;
@@ -137,7 +137,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "remove nosym" << endl;
-    rem = cpv.rem_container( "nosym" ) ;
+    rem = cpv.del_container( "nosym" ) ;
     if( !rem )
     {
 	cout << "didn't find nosym, good" << endl ;

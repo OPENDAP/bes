@@ -1,4 +1,4 @@
-// DODSResponseNames.h
+// DelContainerResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,64 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_DODSResponseNames_H
-#define D_DODSResponseNames_H 1
+#ifndef I_DelContainerResponseHandler_h
+#define I_DelContainerResponseHandler_h 1
 
-/** @brief macros representing the default response objects handled
+#include "DODSResponseHandler.h"
+
+/** @brief response handler that deletes a container
  *
- * These include
- * <pre>
- * set
- * define
- * send
- * get
- *     das
- *     dds
- *     ddx
- *     dods
- * show
- *     help
- *     process
- *     version
- *     containers
- *     definitions
- *     keys
- *     status
- *     nodes
- *     leaves
- * delete
- * </pre>
+ * Possible requests handled by this response handler are:
+ *
+ * delete container &lt;container_name&gt; [from &lt;store_name&gt;];
+ *
+ * An informational response object is created and returned to the requester
+ * to inform them whether the request was successful or not.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
  */
+class DelContainerResponseHandler : public DODSResponseHandler {
+public:
+				DelContainerResponseHandler( string name ) ;
+    virtual			~DelContainerResponseHandler( void ) ;
 
-#define SET_RESPONSE "set"
-#define SETCONTAINER "set.container"
+    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
+    virtual void		transmit( DODSTransmitter *transmitter,
+                                          DODSDataHandlerInterface &dhi ) ;
 
-#define DEFINE_RESPONSE "define"
+    static DODSResponseHandler *DelContainerResponseBuilder( string handler_name ) ;
+};
 
-#define SEND_RESPONSE "send"
-
-#define GET_RESPONSE "get"
-#define DAS_RESPONSE "get.das"
-#define DDS_RESPONSE "get.dds"
-#define DDX_RESPONSE "get.ddx"
-#define DATA_RESPONSE "get.dods"
-
-#define SHOW_RESPONSE "show"
-#define HELP_RESPONSE "show.help"
-#define PROCESS_RESPONSE "show.process"
-#define VERS_RESPONSE "show.version"
-#define SHOWCONTAINERS_RESPONSE "show.containers"
-#define SHOWDEFS_RESPONSE "show.definitions"
-#define KEYS_RESPONSE "show.keys"
-#define STATUS_RESPONSE "show.status"
-#define CATALOG_RESPONSE "show.catalog"
-#define SHOW_INFO_RESPONSE "show.info"
-
-#define DELETE_RESPONSE "delete"
-#define DELETE_CONTAINER "delete.container"
-#define DELETE_CONTAINERS "delete.containers"
-#define DELETE_DEFINITION "delete.definition"
-#define DELETE_DEFINITIONS "delete.definitions"
-
-#endif // E_DODSResponseNames_H
+#endif // I_DelContainerResponseHandler_h
 

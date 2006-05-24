@@ -1,4 +1,4 @@
-// SetResponseHandler.cc
+// SetContainerResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "SetResponseHandler.h"
+#include "SetContainerResponseHandler.h"
 #include "DODSInfo.h"
 #include "OPeNDAPSilentInfo.h"
 #include "ContainerStorageList.h"
@@ -38,12 +38,12 @@
 #include "ContainerStorageException.h"
 #include "OPeNDAPDataNames.h"
 
-SetResponseHandler::SetResponseHandler( string name )
+SetContainerResponseHandler::SetContainerResponseHandler( string name )
     : DODSResponseHandler( name )
 {
 }
 
-SetResponseHandler::~SetResponseHandler( )
+SetContainerResponseHandler::~SetContainerResponseHandler( )
 {
 }
 
@@ -85,7 +85,7 @@ SetResponseHandler::~SetResponseHandler( )
  * @see DODSContainer
  */
 void
-SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
+SetContainerResponseHandler::execute( DODSDataHandlerInterface &dhi )
 {
     DODSInfo *info = 0 ;
     if( dhi.data[SILENT] == "yes" )
@@ -152,7 +152,7 @@ SetResponseHandler::execute( DODSDataHandlerInterface &dhi )
  * @see _DODSDataHandlerInterface
  */
 void
-SetResponseHandler::transmit( DODSTransmitter *transmitter,
+SetContainerResponseHandler::transmit( DODSTransmitter *transmitter,
                                   DODSDataHandlerInterface &dhi )
 {
     if( _response )
@@ -163,8 +163,8 @@ SetResponseHandler::transmit( DODSTransmitter *transmitter,
 }
 
 DODSResponseHandler *
-SetResponseHandler::SetResponseBuilder( string handler_name )
+SetContainerResponseHandler::SetContainerResponseBuilder( string handler_name )
 {
-    return new SetResponseHandler( handler_name ) ;
+    return new SetContainerResponseHandler( handler_name ) ;
 }
 

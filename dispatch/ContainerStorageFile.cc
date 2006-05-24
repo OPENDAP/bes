@@ -195,7 +195,7 @@ ContainerStorageFile::add_container( const string &,
  *
  * This method removes a container to the persistence store with the
  * given symbolic name. It deletes the container. The container is NOT
- * removed fromt he file from which it was loaded, however.
+ * removed from the file from which it was loaded, however.
  *
  * @param s_name symbolic name for the container
  * @return true if successfully removed and false otherwise
@@ -214,6 +214,29 @@ ContainerStorageFile::del_container( const string &s_name )
 	ret = true ;
     }
     return ret ;
+}
+
+/** @brief removes all container
+ *
+ * This method removes all containers from the persistent store. It does
+ * not delete the real data behind the container.
+ *
+ * @return true if successfully removed and false otherwise
+ */
+bool
+ContainerStorageFile::del_containers( )
+{
+    while( _container_list.size() != 0 )
+    {
+	Container_iter ci = _container_list.begin() ;
+	ContainerStorageFile::container *c = (*ci).second;
+	_container_list.erase( ci ) ;
+	if( c )
+	{
+	    delete c ;
+	}
+    }
+    return true ;
 }
 
 /** @brief show information for each container in this persistent store

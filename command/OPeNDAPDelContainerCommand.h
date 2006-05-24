@@ -1,4 +1,4 @@
-// DODSResponseNames.h
+// OPeNDAPDelContainerCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,64 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_DODSResponseNames_H
-#define D_DODSResponseNames_H 1
+#ifndef A_OPeNDAPDelContainerCommand_h
+#define A_OPeNDAPDelContainerCommand_h 1
 
-/** @brief macros representing the default response objects handled
- *
- * These include
- * <pre>
- * set
- * define
- * send
- * get
- *     das
- *     dds
- *     ddx
- *     dods
- * show
- *     help
- *     process
- *     version
- *     containers
- *     definitions
- *     keys
- *     status
- *     nodes
- *     leaves
- * delete
- * </pre>
- */
+#include "OPeNDAPCommand.h"
 
-#define SET_RESPONSE "set"
-#define SETCONTAINER "set.container"
+class OPeNDAPDelContainerCommand : public OPeNDAPCommand
+{
+private:
+protected:
+public:
+    					OPeNDAPDelContainerCommand( const string &cmd)
+					    : OPeNDAPCommand( cmd ) {}
+    virtual				~OPeNDAPDelContainerCommand() {}
 
-#define DEFINE_RESPONSE "define"
+    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokens,
+					  DODSDataHandlerInterface &dhi ) ;
+} ;
 
-#define SEND_RESPONSE "send"
-
-#define GET_RESPONSE "get"
-#define DAS_RESPONSE "get.das"
-#define DDS_RESPONSE "get.dds"
-#define DDX_RESPONSE "get.ddx"
-#define DATA_RESPONSE "get.dods"
-
-#define SHOW_RESPONSE "show"
-#define HELP_RESPONSE "show.help"
-#define PROCESS_RESPONSE "show.process"
-#define VERS_RESPONSE "show.version"
-#define SHOWCONTAINERS_RESPONSE "show.containers"
-#define SHOWDEFS_RESPONSE "show.definitions"
-#define KEYS_RESPONSE "show.keys"
-#define STATUS_RESPONSE "show.status"
-#define CATALOG_RESPONSE "show.catalog"
-#define SHOW_INFO_RESPONSE "show.info"
-
-#define DELETE_RESPONSE "delete"
-#define DELETE_CONTAINER "delete.container"
-#define DELETE_CONTAINERS "delete.containers"
-#define DELETE_DEFINITION "delete.definition"
-#define DELETE_DEFINITIONS "delete.definitions"
-
-#endif // E_DODSResponseNames_H
+#endif // A_OPeNDAPDelContainerCommand_h
 

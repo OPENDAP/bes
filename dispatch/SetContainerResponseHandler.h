@@ -1,4 +1,4 @@
-// DODSReturnManager.h
+// SetContainerResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,49 +30,41 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_DODSReturnManager_h
-#define I_DODSReturnManager_h 1
+#ifndef I_SetContainerResponseHandler_h
+#define I_SetContainerResponseHandler_h 1
 
-#include <map>
-#include <string>
+#include "DODSResponseHandler.h"
 
-using std::map ;
-using std::string ;
-
-#include "DODSDataHandlerInterface.h"
-#include "DODSTransmitter.h"
-
-class DODSTransmitter ;
-
-/** @brief ReturnManager holds the list of response object transmitter that
- * knows how to transmit response objects in particular ways.
+/** @brief response handler that creates a container given the symbolic name,
+ * real name, and data type.
  *
+ * This request handler creates a new container, or replaces an already
+ * existing container in the specified container storage given the symbolic 
+ * name, real name (in most cases a file name), and the type of data 
+ * represented by the real name (e.g. netcdf, cedar, cdf, hdf, etc...) The 
+ * request has the syntax:
+ *
+ * set container in &lt;store_name&gt; values &lt;sym_name&gt;,&lt;real_name&gt;,&lt;data_type&gt;;
+ *
+ * It returns whether the container was created or replaces successfully in an
+ * informational response object and transmits that response object.
+ *
+ * @see DODSResponseObject
+ * @see DODSContainer
+ * @see DODSTransmitter
  */
-class DODSReturnManager {
-private:
-    static DODSReturnManager *	_instance ;
-
-    map< string, DODSTransmitter * > _transmitter_list ;
-protected:
-				DODSReturnManager() ;
+class SetContainerResponseHandler : public DODSResponseHandler
+{
 public:
-    virtual			~DODSReturnManager() ;
+				SetContainerResponseHandler( string name ) ;
+    virtual			~SetContainerResponseHandler( void ) ;
 
-    typedef map< string, DODSTransmitter * >::const_iterator Transmitter_citer ;
-    typedef map< string, DODSTransmitter * >::iterator Transmitter_iter ;
+    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
+    virtual void		transmit( DODSTransmitter *transmitter,
+                                          DODSDataHandlerInterface &dhi ) ;
 
-    virtual bool		add_transmitter( const string &name,
-						 DODSTransmitter *transmitter );
-    virtual bool		del_transmitter( const string &name) ;
-    virtual DODSTransmitter *	find_transmitter( const string &name ) ;
-
-    static DODSReturnManager *	TheManager() ;
+    static DODSResponseHandler *SetContainerResponseBuilder( string handler_name ) ;
 };
 
-#endif // I_DODSReturnManager_h
+#endif // I_SetContainerResponseHandler_h
 
-// $Log: DODSReturnManager.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

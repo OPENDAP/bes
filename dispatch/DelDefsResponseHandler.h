@@ -1,4 +1,4 @@
-// ContainersResponseHandler.h
+// DelDefsResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,36 +30,37 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_ContainersResponseHandler_h
-#define I_ContainersResponseHandler_h 1
+#ifndef I_DelDefsResponseHandler_h
+#define I_DelDefsResponseHandler_h 1
 
 #include "DODSResponseHandler.h"
 
-/** @brief response handler that returns list of continers currently defined
- * in all container storage lists.
+/** @brief response handler that deletes all definitions from a specified
+ * definition store.
  *
- * A request 'show containers;' will be handled by this response handler. It
- * returns the list of currently defined containers for each container
- * storage registered with the server and transmits the response as an
- * informational response.
+ * Possible requests handled by this response handler are:
+ *
+ * delete definitions [from &lt;store_name&gt;];
+ *
+ * An informational response object is created and returned to the requester
+ * to inform them whether the request was successful.
  *
  * @see DODSResponseObject
- * @see ContainerStorage
- * @see ContainerStorageList
- * @see DODSContainer
+ * @see DODSDefine
+ * @see DefinitionStorage
  * @see DODSTransmitter
  */
-class ContainersResponseHandler : public DODSResponseHandler {
+class DelDefsResponseHandler : public DODSResponseHandler {
 public:
-				ContainersResponseHandler( string name ) ;
-    virtual			~ContainersResponseHandler( void ) ;
+				DelDefsResponseHandler( string name ) ;
+    virtual			~DelDefsResponseHandler( void ) ;
 
     virtual void		execute( DODSDataHandlerInterface &dhi ) ;
     virtual void		transmit( DODSTransmitter *transmitter,
                                           DODSDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler *ContainersResponseBuilder( string handler_name ) ;
+    static DODSResponseHandler *DelDefsResponseBuilder( string handler_name ) ;
 };
 
-#endif // I_ContainersResponseHandler_h
+#endif // I_DelDefsResponseHandler_h
 

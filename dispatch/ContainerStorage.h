@@ -116,6 +116,15 @@ public:
      */
     virtual bool		del_container( const string &s_name ) = 0 ;
 
+    /** @brief removes all container
+     *
+     * This method removes all containers from the persistent store. It does
+     * not delete the real data behind the container.
+     *
+     * @return true if successfully removed and false otherwise
+     */
+    virtual bool		del_containers( ) = 0 ;
+
     /** @brief show the containers stored in this persistent store
      *
      * Add information to the passed information object about each of the

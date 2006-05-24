@@ -127,6 +127,29 @@ ContainerStorageVolatile::del_container( const string &s_name )
     return ret ;
 }
 
+/** @brief removes all container
+ *
+ * This method removes all containers from the persistent store. It does
+ * not delete the real data behind the container.
+ *
+ * @return true if successfully removed and false otherwise
+ */
+bool
+ContainerStorageVolatile::del_containers( )
+{
+    while( _container_list.size() != 0 )
+    {
+	Container_iter ci = _container_list.begin() ;
+	DODSContainer *c = (*ci).second ;
+	_container_list.erase( ci ) ;
+	if( c )
+	{
+	    delete c ;
+	}
+    }
+    return true ;
+}
+
 /** @brief show information for each container in this persistent store
  *
  * For each container in this persistent store, add infomation about each of

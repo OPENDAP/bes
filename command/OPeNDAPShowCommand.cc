@@ -75,9 +75,9 @@ OPeNDAPShowCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     }
     else
     {
-	dhi.action = my_token ;
+	dhi.action = newcmd ;
 	retResponse =
-	    DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
+	    DODSResponseHandlerList::TheList()->find_handler( newcmd ) ;
 	if( !retResponse )
 	{
 	    string err( "Command " ) ;
@@ -96,4 +96,3 @@ OPeNDAPShowCommand::parse_request( OPeNDAPTokenizer &tokenizer,
     return retResponse ;
 }
 
-// $Log: OPeNDAPShowCommand.cc,v $

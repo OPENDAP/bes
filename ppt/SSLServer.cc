@@ -267,6 +267,8 @@ SSLServer::verify_client( int ok, X509_STORE_CTX *ctx )
     if( ok )
     {
 	cout << "VERIFIED " ;
+	X509 *user_cert = X509_STORE_CTX_get_current_cert( ctx ) ;
+	// FIX: Need to save this certificate somewhere, right?
     }
     else
     {

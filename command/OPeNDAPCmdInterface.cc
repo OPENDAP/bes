@@ -122,20 +122,9 @@ OPeNDAPCmdInterface::validate_data_request()
     DODS::validate_data_request() ;
 }
 
-/** @brief Build the data request plan using the DODSParser.
+/** @brief Build the data request plan using the OPeNDAPCmdParser.
 
-    The request comes in the form:
-
-    get &lt;response&gt; for &lt;sym1&gt;[,&lt;sym2&gt;,...,&lt;symn&gt;]
-	with &lt;sym1&gt;.constraint="&lt;constraint1&gt;"
-	     [,&lt;sym2&gt;.constraint="&lt;constraint2&gt;",...,&lt;symn&gt;.constraint="&lt;constraintn&gt;"];
-
-    Each symbolic name is resolved to a physical file and a server type and
-    stored in a DODSContainer. The constraint for the symbolic name is also
-    stored in the container object.
-
-    @see DODSParser
-    @see DODSContainer
+    @see OPeNDAPCmdParser
  */
 void
 OPeNDAPCmdInterface::build_data_request_plan()

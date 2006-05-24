@@ -61,16 +61,18 @@ DODSReturnManager::add_transmitter( const string &name,
     return false ;
 }
 
-DODSTransmitter *
-DODSReturnManager::rem_transmitter( const string &name )
+bool
+DODSReturnManager::del_transmitter( const string &name )
 {
-    DODSTransmitter *ret = 0 ;
+    bool ret = false ;
     DODSReturnManager::Transmitter_iter i ;
     i = _transmitter_list.find( name ) ;
     if( i != _transmitter_list.end() )
     {
-	ret = (*i).second;
+	DODSTransmitter *obj = (*i).second;
 	_transmitter_list.erase( i ) ;
+	if( obj ) delete obj ;
+	ret = true ;
     }
     return ret ;
 }

@@ -89,6 +89,7 @@ public:
                                                const string &r_name,
 					       const string &type ) ;
     virtual bool		del_container( const string &s_name ) ;
+    virtual bool		del_containers( ) ;
 
     virtual void		show_containers( DODSInfo &info ) ;
 };
