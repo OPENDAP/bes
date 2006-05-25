@@ -1,5 +1,5 @@
 
-# Build opendapcmdln, part of the BES code.
+# Build bescmdln, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -12,9 +12,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-bin_PROGRAMS = opendapcmdln
+bin_PROGRAMS = bescmdln
 
-opendapcmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
+bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
-opendapcmdln_LDADD = -L../dispatch -ldispatch -L../ppt -lppt $(openssl_libs)
+bescmdln_LDADD = -L../dispatch -ldispatch -L../ppt -lppt $(openssl_libs)
 
