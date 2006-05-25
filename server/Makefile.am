@@ -15,38 +15,17 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = test
 DIST_SUBDIRS = test
 
-bin_PROGRAMS = opendapserver opendapdaemon
+bin_PROGRAMS = bes besd
 
-opendapserver_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
+bes_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
 	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
 
-opendapserver_LDADD = $(MODS) $(SERVER_LIBS) $(openssl_libs)
+bes_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
-opendapdaemon_SOURCES = daemon.cc
+besd_SOURCES = daemon.cc
 
-opendapdaemon_LDADD = $(AUTH_MOD) $(SERVER_LIBS) $(openssl_libs)
-
-all-local: $(MODOBJS)
-
-install-data-local: $(MODOBJS)
-	test -z "$(pkglibdir)" || $(mkdir_p) "$(DESTDIR)$(pkglibdir)"
-	list='$(MODOBJS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    $(INSTALL) $$p $(DESTDIR)$(pkglibdir)/$$f; \
-	  fi; \
-	done
-
-uninstall-local:
-	@set -x; list='$(MODOBJS)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  rm -f "$(DESTDIR)$(pkglibdir)/$$f"; \
-	done
+besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 # Maybe the source files for these should be added to this directory.
-MODS = 
-
-MODOBJS=OPeNDAPServerHandler.o ServerApp.o
-
 SERVER_LIBS=-L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
 
