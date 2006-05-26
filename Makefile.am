@@ -8,7 +8,7 @@
 AUTOMAKE_OPTIONS = foreign check-news dejagnu
 
 ACLOCAL_AMFLAGS = -I conf
-AM_CPPFLAGS = -I$(top_srcdir)/hdfclass
+AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
@@ -43,9 +43,9 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 libhdf4_handler_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR) 
 
-libhdf4_module_la_SOURCES = $(SERVER_SRC) $(SERVER_HDR)
-libhdf4_module_la_CPPFLAGS = $(BES_CPPFLAGS)
-libhdf4_module_la_LDFLAGS = libhdf4_handler.la $(BES_LDFLAGS) -L./hdfclass -lhdfclass
+libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) $(HDFTYPE_HDR) $(SERVER_HDR)
+libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
+libhdf4_module_la_LDFLAGS = $(BES_LDFLAGS)
 
 dap_hdf4_handler_SOURCES = hdf_handler.cc
 dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a
