@@ -80,9 +80,10 @@ UnixSocket::connect()
     struct sockaddr_un client_addr ;
     struct sockaddr_un server_addr ;
 
-    // On OS/X sun_path is an array of 104 characters
-    strcpy( server_addr.sun_path, _unixSocket.c_str() ) ;
-    std::cerr << "UnixSocket.cc:85: " << server_addr.sun_path << std::endl;
+    // Changed the call below to strncpy; sockaddr_un.sun_path is a char[104] on OS/X.
+    // jhrg 5/26/06
+    strncpy( server_addr.sun_path, _unixSocket.c_str(), 103) ;
+    server_addr.sun_path[103] = '\0';
     server_addr.sun_family = AF_UNIX ;
 
     int descript = socket( AF_UNIX, SOCK_STREAM, 0 ) ;
@@ -93,13 +94,9 @@ UnixSocket::connect()
 
 	cout << "Trying to bind to socket ... " << flush ;
 	int clen = sizeof( client_addr.sun_family ) ;
-	clen += strlen( client_addr.sun_path )  ;
-#if 1
-	// See note on line 182. jhrg 5/26/06
+	// Added +1. jhrg 5/26/06
+	clen += strlen( client_addr.sun_path )  + 1;
 	if( bind( descript, (struct sockaddr*)&client_addr, clen + 1) != -1 )
-#else
-	if( bind( descript, (struct sockaddr*)&client_addr, sizeof( struct sockaddr ) ) != -1 )
-#endif
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to connect to sever ... " << flush ;
@@ -170,8 +167,11 @@ UnixSocket::listen()
     {
 	cout << "OK" << endl ;
 	server_add.sun_family = AF_UNIX;
-	strcpy( server_add.sun_path, _unixSocket.c_str() ) ;
-	std::cerr << "UnixSocket.cc:169: " << server_add.sun_path << std::endl;
+	// Changed the call below to strncpy; sockaddr_un.sun_path is a char[104]
+	// on OS/X. jhrg 5/26/06
+	strncpy( server_add.sun_path, _unixSocket.c_str(), 103) ;
+	server_add.sun_path[103] = '\0';
+
 	unlink( _unixSocket.c_str() ) ;
 	cout << "Trying to set Unix socket properties ... " << flush ;
 	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
@@ -179,14 +179,8 @@ UnixSocket::listen()
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to bind Unix socket ... " << flush ;
-#if 1
-            // Pass the length of the sockaddr struct, not the length of the name 
-            // plus the family field. This problem did not show up on Linux. 
-            // jhrg 5/26/06
+	    // Added a +1 to the size computation. jhrg 5/26/05
 	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
-#else
-	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( struct sockaddr ) ) != -1)
-#endif
 	    {
 		string is_ok = (string)"OK binding to " + _unixSocket ;
 		cout << is_ok.c_str() << endl ;
