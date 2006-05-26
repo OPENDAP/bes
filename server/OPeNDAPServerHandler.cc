@@ -60,7 +60,7 @@ OPeNDAPServerHandler::OPeNDAPServerHandler()
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "
-	     << "single or multiple as defined by DODS.ProcessManagerMethod"
+	     << "single or multiple as defined by OPeNDAP.ProcessManagerMethod"
 	     << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
