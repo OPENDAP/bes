@@ -43,6 +43,7 @@ TheDODSKeys::TheKeys()
 {
     if( _instance == 0 )
     {
+	string use_ini ;
 	char *ini_file = BES_CONF ;
 	if( !ini_file )
 	{
@@ -51,8 +52,16 @@ TheDODSKeys::TheKeys()
 	    {
 		throw DODSKeysException( "Can not load environment variable DODS_INI" ) ;
 	    }
+	    else
+	    {
+		use_ini = (string)ini_file + "/bes.conf" ;
+	    }
 	}
-	_instance = new TheDODSKeys( ini_file ) ;
+	else
+	{
+	    use_ini = ini_file ;
+	}
+	_instance = new TheDODSKeys( use_ini ) ;
     }
     return _instance ;
 }
