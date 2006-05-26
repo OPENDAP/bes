@@ -94,11 +94,12 @@ UnixSocket::connect()
 	cout << "Trying to bind to socket ... " << flush ;
 	int clen = sizeof( client_addr.sun_family ) ;
 	clen += strlen( client_addr.sun_path )  ;
-#if 0
+#if 1
 	// See note on line 182. jhrg 5/26/06
-	if( bind( descript, (struct sockaddr*)&client_addr, clen ) != -1 )
-#endif
+	if( bind( descript, (struct sockaddr*)&client_addr, clen + 1) != -1 )
+#else
 	if( bind( descript, (struct sockaddr*)&client_addr, sizeof( struct sockaddr ) ) != -1 )
+#endif
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to connect to sever ... " << flush ;
@@ -178,13 +179,14 @@ UnixSocket::listen()
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to bind Unix socket ... " << flush ;
-#if 0
+#if 1
             // Pass the length of the sockaddr struct, not the length of the name 
             // plus the family field. This problem did not show up on Linux. 
             // jhrg 5/26/06
-	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) ) != -1)
-#endif
+	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
+#else
 	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( struct sockaddr ) ) != -1)
+#endif
 	    {
 		string is_ok = (string)"OK binding to " + _unixSocket ;
 		cout << is_ok.c_str() << endl ;
