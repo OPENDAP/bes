@@ -80,7 +80,9 @@ UnixSocket::connect()
     struct sockaddr_un client_addr ;
     struct sockaddr_un server_addr ;
 
+    // On OS/X sun_path is an array of 104 characters
     strcpy( server_addr.sun_path, _unixSocket.c_str() ) ;
+    std::cerr << "UnixSocket.cc:85: " << server_addr.sun_path << std::endl;
     server_addr.sun_family = AF_UNIX ;
 
     int descript = socket( AF_UNIX, SOCK_STREAM, 0 ) ;
@@ -92,7 +94,11 @@ UnixSocket::connect()
 	cout << "Trying to bind to socket ... " << flush ;
 	int clen = sizeof( client_addr.sun_family ) ;
 	clen += strlen( client_addr.sun_path )  ;
+#if 0
+	// See note on line 182. jhrg 5/26/06
 	if( bind( descript, (struct sockaddr*)&client_addr, clen ) != -1 )
+#endif
+	if( bind( descript, (struct sockaddr*)&client_addr, sizeof( struct sockaddr ) ) != -1 )
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to connect to sever ... " << flush ;
@@ -164,6 +170,7 @@ UnixSocket::listen()
 	cout << "OK" << endl ;
 	server_add.sun_family = AF_UNIX;
 	strcpy( server_add.sun_path, _unixSocket.c_str() ) ;
+	std::cerr << "UnixSocket.cc:169: " << server_add.sun_path << std::endl;
 	unlink( _unixSocket.c_str() ) ;
 	cout << "Trying to set Unix socket properties ... " << flush ;
 	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
@@ -171,7 +178,13 @@ UnixSocket::listen()
 	{
 	    cout << "OK" << endl ;
 	    cout << "Trying to bind Unix socket ... " << flush ;
+#if 0
+            // Pass the length of the sockaddr struct, not the length of the name 
+            // plus the family field. This problem did not show up on Linux. 
+            // jhrg 5/26/06
 	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) ) != -1)
+#endif
+	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( struct sockaddr ) ) != -1)
 	    {
 		string is_ok = (string)"OK binding to " + _unixSocket ;
 		cout << is_ok.c_str() << endl ;
