@@ -71,14 +71,14 @@ DirectoryCatalog::DirectoryCatalog( const string &name )
 
     key = (string)"Catalog." + name + ".Exclude" ;
     string e_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
-    if( found && e_str != "" )
+    if( found && e_str != "" && e_str != ";" )
     {
 	buildList( _exclude, e_str ) ;
     }
 
     key = (string)"Catalog." + name + ".Include" ;
     string i_str = TheDODSKeys::TheKeys()->get_key( key, found ) ;
-    if( found && i_str != "" )
+    if( found && i_str != "" && i_str != ";" )
     {
 	buildList( _include, i_str ) ;
     }
@@ -246,7 +246,7 @@ DirectoryCatalog::buildList( list<string> &theList, const string &listStr )
 	    {
 		done = true ;
 	    }
-	    theList.push_back( a_member ) ;
+	    if( a_member != "" ) theList.push_back( a_member ) ;
 	}
     }
 }
