@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -39,10 +39,13 @@ using std::endl ;
 #include "DODSApacheWrapper.h"
 #include "DODSDataRequestInterface.h"
 #include "DODSBasicException.h"
+#include "DODSGlobalIQ.h"
 
 int
 main( int argc, char **argv )
 {
+    DODSGlobalIQ::DODSGlobalInit( argc, argv ) ;
+
     /*
     if( argc != 2 )
     {
@@ -89,6 +92,8 @@ main( int argc, char **argv )
     {
 	cerr << "problem: " << e.get_error_description() << endl ;
     }
+
+    DODSGlobalIQ::DODSGlobalQuit() ;
 
     return 0 ;
 }

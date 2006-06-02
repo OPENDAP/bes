@@ -24,7 +24,23 @@ libdispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 
-pkginclude_HEADERS = $(HDRS)
+pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
+
+DISPATCH_INSTALL_FILES=dispatch_help.html dispatch_help.txt
+install-data-local: $(DISPATCH_INSTALL_FILES)
+	test -z "$(sysconfdir)/bes" || $(mkdir_p) "$(DESTDIR)$(sysconfdir)/bes"
+	list='$(DISPATCH_INSTALL_FILES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysconfdir)/bes/$$f; \
+	  fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(DISPATCH_INSTALL_FILES)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  rm -f "$(DESTDIR)$(sysconfdir)/bes/$$f"; \
+	done
 
 ##############################################################################
 #

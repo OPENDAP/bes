@@ -3,12 +3,12 @@ OBJS:=DODSApache.o DODSApacheWrapper.o DODSApacheRequests.o mod_opendap.o
 TESTS:=requestsT wrapperT
 
 INCS:=-I. -I../dispatch -I../command -I$(OPENDAP_ROOT)/include/libdap
-LIBS:=-L../dispatch/.libs -ldispatch -L../command/.libs -lopendap_command
+LIBS:=-L../dispatch/.libs -ldispatch -ldap_module -L../command/.libs -lopendap_command -ldap_cmdmodule
 APACHE_SRC:=/project/cedar/src/pwest/apache_1.3.29/src
 APACHE_INCS:=-I$(APACHE_SRC)/include -I$(APACHE_SRC)/os/unix
 
-CEDAR_MODS:=../dispatch/dods_module.o ../command/opendap_commands.o ../../cedar-handler/cedar_module.o ../../cedar-handler/cedar_commands.o
-CEDAR_LIBS:=-L../../cedar-handler -lcedar-handler -L/project/cedar/src/pwest/cedar/Cedar/library -lCedar -L/project/cedar/bin/mysql-4.0.18/lib/mysql -lmysqlclient
+CEDAR_MODS:=../dispatch/default_module.o ../command/opendap_commands.o ../../cedar-handler/cedar_module.o ../../cedar-handler/cedar_commands.o
+CEDAR_LIBS:=-L../../lib -lcedar_handler -L/project/cedar/src/pwest/cedar/lib -lCedar -L/project/cedar/src/pwest/packages/mysql/lib/mysql -lmysqlclient
 
 all: $(OBJS)
 

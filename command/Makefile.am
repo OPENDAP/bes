@@ -20,7 +20,7 @@ libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 libdap_cmdmodule_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_cmdmodule_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
-pkginclude_HEADERS = $(HDRS)
+pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
 ##############################################################################
 #
@@ -41,5 +41,8 @@ DAP_SRCS:=OPeNDAPDefineCommand.cc OPeNDAPSetContainerCommand.cc \
 	OPeNDAPDelContainerCommand.cc OPeNDAPDelContainersCommand.cc \
 	OPeNDAPDelDefCommand.cc OPeNDAPDelDefsCommand.cc
 
-DAP_HDRS:=
+DAP_HDRS:=OPeNDAPDefineCommand.h OPeNDAPSetContainerCommand.h \
+	OPeNDAPCatalogCommand.h DAPCommandModule.h \
+	OPeNDAPDelContainerCommand.h OPeNDAPDelContainersCommand.h \
+	OPeNDAPDelDefCommand.h OPeNDAPDelDefsCommand.h
 

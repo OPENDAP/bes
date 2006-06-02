@@ -4,7 +4,7 @@
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.org> and Jose Garcia <jgarcia@ucar.org>
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -39,12 +39,18 @@ using std::string ;
 #include "DODSApache.h"
 #include "DODSProcessEncodedString.h"
 #include "DODSGlobalIQ.h"
+#include "default_module.h"
+#include "opendap_commands.h"
 
 DODSApacheWrapper::DODSApacheWrapper()
 {
     _data_request = 0 ;
     _user_name = 0 ;
     _requests = 0 ;
+
+    default_module::initialize( 0, 0 ) ;
+    opendap_commands::initialize( 0, 0 ) ;
+
     DODSGlobalIQ::DODSGlobalInit( 0, 0 ) ;
 }
 

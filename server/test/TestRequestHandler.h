@@ -1,3 +1,4 @@
+// TestRequestHandler.h
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
@@ -5,7 +6,7 @@
 // data
 
 // Copyright (c) 2002,2003 OPeNDAP, Inc.
-// Author: Patrick West <pwest@ucar.edu>
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -26,7 +27,8 @@
 // cdf-handler implementation of OPeNDAP BES REquestHandler class that knows
 // how to fill in OPeNDAP objects
 //
-// pwest 05/08/03
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 // TestRequestHandler.h
 

@@ -15,7 +15,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = test
 DIST_SUBDIRS = test
 
-bin_PROGRAMS = bes besd
+sbin_PROGRAMS = bes besd
 
 bes_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
 	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
@@ -28,4 +28,20 @@ besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 # Maybe the source files for these should be added to this directory.
 SERVER_LIBS=-L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
+
+SERVER_INSTALL_FILES=bes.conf
+install-data-local: $(SERVER_INSTALL_FILES)
+	test -z "$(sysconfdir)/bes" || $(mkdir_p) "$(DESTDIR)$(sysconfdir)/bes"
+	list='$(SERVER_INSTALL_FILES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    f=$(am__strip_dir) \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysconfdir)/bes/$$f; \
+	  fi; \
+	done
+
+uninstall-local:
+	@set -x; list='$(SERVER_INSTALL_FILES)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  rm -f "$(DESTDIR)$(sysconfdir)/bes/$$f"; \
+	done
 
