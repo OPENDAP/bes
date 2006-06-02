@@ -40,28 +40,25 @@ AC_CHECK_LIBDAP([3.7.0],
 ])
 
 dnl Checks for specific libraries
-AC_ARG_WITH(hdf5_path,
-    [  --with-hdf5-path=ARG    Pathname to the hdf 5 software],
-    hdf5_path=${withval}, hdf5_path="/usr/local/hdf5")
-
-# To find the library, AC_CHECK_LIB needs this set.
-LDFLAGS="$LDFLAGS -L${hdf5_path}/lib"
-CPPFLAGS="$CPPFLAGS -I${hdf5_path}/include"
-AC_CHECK_LIB(hdf5, H5open, hdf_found=1, hdf_found=0, -lz)
-if test $hdf_found -ne 1
-then
-    AC_MSG_ERROR(HDF5 library not found (looked in ${hdf5_path}/lib)!)
-fi 
-AC_SUBST(hdf5_path)
+AC_CHECK_HDF5(
+  [
+      LIBS="$LIBS $H5_LIBS"
+      LDFLAGS="$LDFLAGS $H5_LDFLAGS"
+      CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS"
+  ],
+  [
+      echo "*** Use --with-hdf5 for the root hdf5 directory."
+      echo "*** Otherwise use --with-hdf5-include switch for includes directory"
+      echo "*** and --with-hdf5-libdir switch for libraries directory."
+      AC_MSG_ERROR([hdf5 library and hdf5 headers are required.])
+  ]
+)
 
 AC_ARG_WITH([bes],
             [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
             [BES_PATH=${withval}], 
-            [BES_PATH="/usr/local"])
+            [BES_PATH=""])
 
-dnl Simple test for BES. A better test would look something like the libdap
-dnl macro written by Patrice. This will get us going... If --with-bes is not
-dnl given, then don't build the bes code. jhrg 10/3/05
 if test -x "${BES_PATH}/bin/bes-config"
 then
     AM_CONDITIONAL([OPENDAPSERVER], [true])
@@ -72,10 +69,19 @@ then
     BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --prefix`/lib/bes"
     AC_SUBST([BES_MODULE_DIR])
 else
-    AM_CONDITIONAL([OPENDAPSERVER], [false])
+    AC_CHECK_BES([3.1.0],
+    [
+        BES_LDFLAGS=$BES_LIBS
+        # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
+        # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
+        AM_CONDITIONAL([OPENDAPSERVER], [true])
+    ],
+    [ AM_CONDITIONAL([OPENDAPSERVER], [false])
+    ])
+
 fi
 
-dnl autoheader macros; tack some text at the top and bottom of config_dap.h.in
+dnl autoheader macros; tack some text at the top and bottom of config_hdf5.h.in
 
 AH_TOP([#ifndef _config_hdf5_h
 #define _config_hdf5_h])
