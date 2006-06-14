@@ -103,7 +103,7 @@ do
 /${serverType}_build_vers
 -1
 a
-    static bool		${serverType}_build_${i}( DODSDataHandlerInterface &dhi ) ;
+    static bool		${serverType}_build_${i}( BESDataHandlerInterface &dhi ) ;
 .
 w
 q
@@ -127,7 +127,7 @@ EOF
     else
 	responseName="$i"
 	headerFile=
-	castLine="DODSTextInfo *info = dynamic_cast<DODSTextInfo *>(dhi.response_handler->get_response_object());"
+	castLine="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
 	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
 a
@@ -144,14 +144,14 @@ a
 /INIT_END
 -1
 a
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
-    DODSResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
+    BESResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
 
     cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
 
 .
 w
@@ -190,7 +190,7 @@ EOF
     then
 	ed ${classPrefix}RequestHandler.cc << EOF
 1
-/DODSTextInfo
+/BESTextInfo
 a
 #include "${headerFile}"
 .
@@ -210,7 +210,7 @@ a
 -2
 a
 bool
-${classPrefix}RequestHandler::${serverType}_build_${i}( DODSDataHandlerInterface &dhi )
+${classPrefix}RequestHandler::${serverType}_build_${i}( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
     ${castLine}
