@@ -1,5 +1,5 @@
-SRCS:=DODSApache.cc DODSApacheWrapper.cc DODSApacheRequests.cc mod_opendap.cc
-OBJS:=DODSApache.o DODSApacheWrapper.o DODSApacheRequests.o mod_opendap.o
+SRCS:=BESApacheInterface.cc BESApacheWrapper.cc BESApacheRequests.cc mod_opendap.cc
+OBJS:=BESApacheInterface.o BESApacheWrapper.o BESApacheRequests.o mod_opendap.o
 TESTS:=requestsT wrapperT
 
 INCS:=-I. -I../dispatch -I../command -I$(OPENDAP_ROOT)/include/libdap
@@ -12,28 +12,28 @@ CEDAR_LIBS:=-L../../lib -lcedar_handler -L/project/cedar/src/pwest/cedar/lib -lC
 
 all: $(OBJS)
 
-DODSApache.o: DODSApache.cc
-	g++ $(INCS) -c -o DODSApache.o DODSApache.cc
+BESApacheInterface.o: BESApacheInterface.cc
+	g++ $(INCS) -c -o BESApacheInterface.o BESApacheInterface.cc
 
-DODSApacheWrapper.o: DODSApacheWrapper.cc
-	g++ $(INCS) -c -o DODSApacheWrapper.o DODSApacheWrapper.cc
+BESApacheWrapper.o: BESApacheWrapper.cc
+	g++ $(INCS) -c -o BESApacheWrapper.o BESApacheWrapper.cc
 
-DODSApacheRequests.o: DODSApacheRequests.cc
-	g++ $(INCS) -c -o DODSApacheRequests.o DODSApacheRequests.cc
+BESApacheRequests.o: BESApacheRequests.cc
+	g++ $(INCS) -c -o BESApacheRequests.o BESApacheRequests.cc
 
 mod_opendap.o: mod_opendap.cc
 	g++ $(INCS) $(APACHE_INCS) -c -o mod_opendap.o mod_opendap.cc
 
 test: $(TESTS)
 
-requestsT: requestsT.o DODSApacheRequests.o
-	g++ -o requestsT requestsT.o DODSApacheRequests.o $(LIBS)
+requestsT: requestsT.o BESApacheRequests.o
+	g++ -o requestsT requestsT.o BESApacheRequests.o $(LIBS)
 
 requestsT.o: requestsT.cc
 	g++ $(INCS) -c -o requestsT.o requestsT.cc
 
-wrapperT: wrapperT.o DODSApacheWrapper.o DODSApacheRequests.o DODSApache.o
-	g++ -o wrapperT wrapperT.o DODSApacheWrapper.o DODSApacheRequests.o DODSApache.o $(CEDAR_MODS) $(CEDAR_LIBS) $(LIBS)
+wrapperT: wrapperT.o BESApacheWrapper.o BESApacheRequests.o BESApacheInterface.o
+	g++ -o wrapperT wrapperT.o BESApacheWrapper.o BESApacheRequests.o BESApacheInterface.o $(CEDAR_MODS) $(CEDAR_LIBS) $(LIBS)
 
 wrapperT.o: wrapperT.cc
 	g++ $(INCS) -c -o wrapperT.o wrapperT.cc

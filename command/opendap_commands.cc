@@ -36,69 +36,69 @@ using std::endl ;
 
 #include "opendap_commands.h"
 
-#include "DODSResponseNames.h"
+#include "BESResponseNames.h"
 
-#include "DODSLog.h"
+#include "BESLog.h"
 
-#include "OPeNDAPGetCommand.h"
-#include "OPeNDAPSetCommand.h"
-#include "OPeNDAPDeleteCommand.h"
-#include "OPeNDAPShowCommand.h"
+#include "BESGetCommand.h"
+#include "BESSetCommand.h"
+#include "BESDeleteCommand.h"
+#include "BESShowCommand.h"
 
-#include "OPeNDAPParserException.h"
-#include "DODS.h"
+#include "BESParserException.h"
+#include "BESInterface.h"
 
 int
 opendap_commands::initialize( int, char** )
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing default commands:" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing default commands:" << endl;
 
-    OPeNDAPCommand *cmd = NULL ;
+    BESCommand *cmd = NULL ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << GET_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPGetCommand( GET_RESPONSE ) ;
-    OPeNDAPCommand::add_command( GET_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << GET_RESPONSE << " command" << endl;
+    cmd = new BESGetCommand( GET_RESPONSE ) ;
+    BESCommand::add_command( GET_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SHOW_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPShowCommand( SHOW_RESPONSE ) ;
-    OPeNDAPCommand::add_command( SHOW_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOW_RESPONSE << " command" << endl;
+    cmd = new BESShowCommand( SHOW_RESPONSE ) ;
+    BESCommand::add_command( SHOW_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HELP_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( HELP_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << HELP_RESPONSE << " command" << endl;
+    BESCommand::add_command( HELP_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( PROCESS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " command" << endl;
+    BESCommand::add_command( PROCESS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << KEYS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( KEYS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << KEYS_RESPONSE << " command" << endl;
+    BESCommand::add_command( KEYS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << VERS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( VERS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << VERS_RESPONSE << " command" << endl;
+    BESCommand::add_command( VERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << STATUS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( STATUS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << STATUS_RESPONSE << " command" << endl;
+    BESCommand::add_command( STATUS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SET_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPSetCommand( SET_RESPONSE ) ;
-    OPeNDAPCommand::add_command( SET_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SET_RESPONSE << " command" << endl;
+    cmd = new BESSetCommand( SET_RESPONSE ) ;
+    BESCommand::add_command( SET_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DELETE_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPDeleteCommand( DELETE_RESPONSE ) ;
-    OPeNDAPCommand::add_command( DELETE_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_RESPONSE << " command" << endl;
+    cmd = new BESDeleteCommand( DELETE_RESPONSE ) ;
+    BESCommand::add_command( DELETE_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding parser exception callback" << endl ;
-    DODS::add_ehm_callback( OPeNDAPParserException::handleException ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
+    BESInterface::add_ehm_callback( BESParserException::handleException ) ;
 
     return 0;
 }
@@ -106,19 +106,19 @@ opendap_commands::initialize( int, char** )
 int
 opendap_commands::terminate( void )
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing DODS Commands:" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing default commands:" << endl;
 
-    OPeNDAPCommand *cmd = OPeNDAPCommand::rem_command( GET_RESPONSE ) ;
+    BESCommand *cmd = BESCommand::rem_command( GET_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    cmd = OPeNDAPCommand::rem_command( SHOW_RESPONSE ) ;
+    cmd = BESCommand::rem_command( SHOW_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    cmd = OPeNDAPCommand::rem_command( SET_RESPONSE ) ;
+    cmd = BESCommand::rem_command( SET_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    cmd = OPeNDAPCommand::rem_command( DELETE_RESPONSE ) ;
+    cmd = BESCommand::rem_command( DELETE_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
     return true;

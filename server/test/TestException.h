@@ -33,24 +33,24 @@
 #ifndef TestException_h_
 #define TestException_h_ 1
 
-#include "DODSBasicException.h"
-#include "DODSDataHandlerInterface.h"
+#include "BESBasicException.h"
+#include "BESDataHandlerInterface.h"
 
 #define CEDAR_AUTHENTICATE_EXCEPTION 13
 
 /** @brief exception thrown if authentication fails
  */
-class TestException: public DODSBasicException
+class TestException: public BESBasicException
 {
 public:
       			TestException() :
-			    DODSBasicException() {}
+			    BESBasicException() {}
       			TestException( const string &s ) :
-			    DODSBasicException( s ) {}
+			    BESBasicException( s ) {}
       virtual		~TestException() {}
 
-      static int	handleException( DODSException &e,
-					 DODSDataHandlerInterface &dhi ) ;
+      static int	handleException( BESException &e,
+					 BESDataHandlerInterface &dhi ) ;
 };
 
 #endif // TestException_h_ 

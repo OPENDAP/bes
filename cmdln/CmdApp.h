@@ -35,11 +35,11 @@
 using std::ofstream ;
 using std::ifstream ;
 
-#include "OPeNDAPBaseApp.h"
+#include "BESBaseApp.h"
 
 class CmdClient ;
 
-class CmdApp : public OPeNDAPBaseApp
+class CmdApp : public BESBaseApp
 {
 private:
     CmdClient *			_client ;

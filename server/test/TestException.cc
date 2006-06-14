@@ -31,11 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "TestException.h"
-#include "DODSStatusReturn.h"
+#include "BESStatusReturn.h"
 
 int
-TestException::handleException( DODSException &e,
-				DODSDataHandlerInterface &dhi )
+TestException::handleException( BESException &e,
+				BESDataHandlerInterface &dhi )
 {
     TestException *te = dynamic_cast<TestException*>(&e);
     if( te )
@@ -44,6 +44,6 @@ TestException::handleException( DODSException &e,
 	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
 	return 12 ;
     } 
-    return DODS_EXECUTED_OK ;
+    return BES_EXECUTED_OK ;
 }
 

@@ -35,14 +35,14 @@
 #ifndef I_TestRequestHandler_H
 #define I_TestRequestHandler_H 1
 
-#include "DODSRequestHandler.h"
+#include "BESRequestHandler.h"
 
-class TestRequestHandler : public DODSRequestHandler {
+class TestRequestHandler : public BESRequestHandler {
 public:
 			TestRequestHandler( string name ) ;
     virtual		~TestRequestHandler( void ) ;
 
-    static bool		cdf_build_help( DODSDataHandlerInterface &dhi ) ;
+    static bool		cdf_build_help( BESDataHandlerInterface &dhi ) ;
 };
 
 #endif

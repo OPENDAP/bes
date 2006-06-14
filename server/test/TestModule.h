@@ -33,9 +33,9 @@
 #ifndef A_TestModule_H
 #define A_TestModule_H 1
 
-#include "OPeNDAPAbstractModule.h"
+#include "BESAbstractModule.h"
 
-class TestModule : public OPeNDAPAbstractModule
+class TestModule : public BESAbstractModule
 {
 public:
     				TestModule() {}

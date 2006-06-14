@@ -36,55 +36,55 @@ using std::endl ;
 
 #include "default_module.h"
 
-#include "DODSResponseNames.h"
-#include "DODSResponseHandlerList.h"
+#include "BESResponseNames.h"
+#include "BESResponseHandlerList.h"
 
-#include "HelpResponseHandler.h"
-#include "ProcIdResponseHandler.h"
-#include "VersionResponseHandler.h"
-#include "KeysResponseHandler.h"
-#include "StatusResponseHandler.h"
+#include "BESHelpResponseHandler.h"
+#include "BESProcIdResponseHandler.h"
+#include "BESVersionResponseHandler.h"
+#include "BESKeysResponseHandler.h"
+#include "BESStatusResponseHandler.h"
 
-#include "OPeNDAPTransmitterNames.h"
-#include "DODSReturnManager.h"
-#include "DODSBasicTransmitter.h"
-#include "DODSBasicHttpTransmitter.h"
+#include "BESTransmitterNames.h"
+#include "BESReturnManager.h"
+#include "BESBasicTransmitter.h"
+#include "BESBasicHttpTransmitter.h"
 
-#include "DODSLog.h"
+#include "BESLog.h"
 
 int
 default_module::initialize(int, char**)
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing default modules:" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing default modules:" << endl;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HELP_RESPONSE << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, HelpResponseHandler::HelpResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << HELP_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, BESHelpResponseHandler::HelpResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( PROCESS_RESPONSE, ProcIdResponseHandler::ProcIdResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( PROCESS_RESPONSE, BESProcIdResponseHandler::ProcIdResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << KEYS_RESPONSE << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( KEYS_RESPONSE, KeysResponseHandler::KeysResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << KEYS_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( KEYS_RESPONSE, BESKeysResponseHandler::KeysResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << VERS_RESPONSE << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( VERS_RESPONSE, VersionResponseHandler::VersionResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << VERS_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( VERS_RESPONSE, BESVersionResponseHandler::VersionResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, StatusResponseHandler::StatusResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, BESStatusResponseHandler::StatusResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
-    DODSReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new DODSBasicTransmitter ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;
+    BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
-    DODSReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new DODSBasicHttpTransmitter ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
+    BESReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new BESBasicHttpTransmitter ) ;
 
     return 0 ;
 }
@@ -92,17 +92,17 @@ default_module::initialize(int, char**)
 int
 default_module::terminate(void)
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing default modules" << endl ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing default modules" << endl ;
 
-    DODSResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
-    DODSResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
-    DODSResponseHandlerList::TheList()->remove_handler( PROCESS_RESPONSE ) ;
-    DODSResponseHandlerList::TheList()->remove_handler( KEYS_RESPONSE ) ;
-    DODSResponseHandlerList::TheList()->remove_handler( STATUS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( PROCESS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( KEYS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( STATUS_RESPONSE ) ;
 
-    DODSReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
-    DODSReturnManager::TheManager()->del_transmitter( HTTP_TRANSMITTER ) ;
+    BESReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
+    BESReturnManager::TheManager()->del_transmitter( HTTP_TRANSMITTER ) ;
 
     return 0 ;
 }

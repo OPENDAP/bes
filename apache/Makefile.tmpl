@@ -7,7 +7,7 @@ ARCHIVE_FLAGS=cru
 
 all:            libopendap.a
 
-libopendap.a:   $(MODULES) DODSApacheWrapper.o DODSApache.o DODSApacheRequests.o
+libopendap.a:   $(MODULES) BESApacheWrapper.o BESApacheInterface.o BESApacheRequests.o
 		$(ARCHIVE) $(ARCHIVE_FLAGS) $@ $?
 
 .cc.o:                          

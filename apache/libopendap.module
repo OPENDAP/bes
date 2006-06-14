@@ -2,8 +2,8 @@
 MODULE-DEFINITION-START
 Name: opendap_module
 ConfigStart 
-LIBS="$LIBS /project/cedar/src/pwest/opendap-g/lib/bes/dods_module.o /project/cedar/src/pwest/opendap-g/lib/bes/opendap_commands.o /project/cedar/src/pwest/opendap-g/lib/cedar_module.o /project/cedar/src/pwest/opendap-g/lib/cedar_commands.o /project/cedar/src/pwest/opendap-g/lib/libcedar-handler.a /project/cedar/src/pwest/cedar/lib/libCedar.a /project/cedar/src/pwest/opendap-g/lib/libopendap_command.a /project/cedar/src/pwest/opendap-g/lib/libdispatch.a /project/cedar/src/pwest/opendap-g/lib/libdap.a /project/cedar/bin/mysql-4.0.18/lib/mysql/libmysqlclient.a /usr/lib/libxml2.a -lz -lpthread -lm -lnsl -lcurl -lstdc++ -lgcc -lm -lcrypt"
-   echo " + building module for DODS server."
+LIBS="$LIBS /project/cedar/src/pwest/opendap-g/lib/cedar-handler/cedar_module.o /project/cedar/src/pwest/opendap-g/lib/cedar-handler/cedar_commands.o /project/cedar/src/pwest/opendap-g/lib/libcedar_handler.a /project/cedar/src/pwest/opendap-g/lib/bes/libdap_module.a /project/cedar/src/pwest/opendap-g/lib/bes/libdap_cmdmodule.a /project/cedar/src/pwest/cedar/lib/libCedar.a /project/cedar/src/pwest/opendap-g/lib/libopendap_command.a /project/cedar/src/pwest/opendap-g/lib/libdispatch.a /project/cedar/src/pwest/opendap-g/lib/libdapserver.a /project/cedar/src/pwest/opendap-g/lib/libdap.a /project/cedar/bin/mysql-4.0.18/lib/mysql/libmysqlclient.a /usr/lib/libxml2.a -lz -lpthread -lm -lnsl -lcurl -lstdc++ -lgcc -lm -lcrypt"
+   echo " + building module for OPeNDAP BES server."
 ConfigEnd
 MODULE-DEFINITION-END
 */

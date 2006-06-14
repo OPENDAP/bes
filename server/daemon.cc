@@ -50,10 +50,11 @@ using std::flush;
 using std::string ;
 
 #include "ServerExitConditions.h"
+#include "config.h"
 
 #define OPENDAP_SERVER_ROOT "OPENDAP_SERVER_ROOT"
-#define OPENDAP_SERVER "opendapserver"
-#define OPENDAP_SERVER_PID "opendapserver.pid"
+#define OPENDAP_SERVER "bes"
+#define OPENDAP_SERVER_PID "bes.pid"
 
 int  daemon_init() ;
 int  mount_server( char ** ) ;
@@ -289,6 +290,7 @@ load_names()
     {
 	// OPENDAP_SERVER_ROOT is not set, attemp to obtain current
 	// working directory
+	/*
 	char t_buf[1024] ;
 	if( getcwd( t_buf, sizeof( t_buf ) ) )
 	{
@@ -297,6 +299,9 @@ load_names()
 	    server_name = t_buf ;
 	    file_for_listener = t_buf ;
 	}
+	*/
+	server_name = BES_INSTALL_DIR ;
+	file_for_listener = BES_INSTALL_DIR ;
     }
     if( server_name == "" )
     {
@@ -306,9 +311,9 @@ load_names()
 	file_for_listener = "." ;
     }
 
-    server_name += "/" ;
+    server_name += "/sbin/" ;
     server_name += OPENDAP_SERVER ;
-    file_for_listener += "/" ;
+    file_for_listener += "/run/" ;
     file_for_listener += OPENDAP_SERVER_PID ;
 
     cout << NameProgram << ": checking for existance of listener "

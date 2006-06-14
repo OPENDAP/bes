@@ -33,9 +33,9 @@
 #ifndef A_DAPCommandModule_H
 #define A_DAPCommandModule_H 1
 
-#include "OPeNDAPAbstractModule.h"
+#include "BESAbstractModule.h"
 
-class DAPCommandModule : public OPeNDAPAbstractModule
+class DAPCommandModule : public BESAbstractModule
 {
 public:
     				DAPCommandModule() {}

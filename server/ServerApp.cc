@@ -42,23 +42,23 @@ using std::flush ;
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
-#include "TheDODSKeys.h"
+#include "TheBESKeys.h"
 #include "SocketListener.h"
 #include "TcpSocket.h"
 #include "UnixSocket.h"
-#include "OPeNDAPServerHandler.h"
-#include "DODSException.h"
+#include "BESServerHandler.h"
+#include "BESException.h"
 #include "PPTException.h"
 #include "PPTServer.h"
 #include "PPTException.h"
 #include "SocketException.h"
-#include "DODSMemoryManager.h"
+#include "BESMemoryManager.h"
 
 #include "default_module.h"
 #include "opendap_commands.h"
 
 ServerApp::ServerApp()
-    : OPeNDAPModuleApp(),
+    : BESModuleApp(),
       _portVal( 0 ),
       _gotPort( false ),
       _unixSocket( "" ),
@@ -81,9 +81,9 @@ ServerApp::signalTerminate( int sig )
 {
     if( sig == SIGTERM )
     {
-	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
+	cout << BESApp::TheApplication()->appName() << " : " << getpid()
 	     << ": got terminate signal, exiting!" << endl ;
-	OPeNDAPApp::TheApplication()->terminate( sig ) ;
+	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
@@ -93,9 +93,9 @@ ServerApp::signalInterrupt( int sig )
 {
     if( sig == SIGINT )
     {
-	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
+	cout << BESApp::TheApplication()->appName() << " : " << getpid()
 	     << ": got interrupt signal, exiting!" << endl ;
-	OPeNDAPApp::TheApplication()->terminate( sig ) ;
+	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
@@ -105,9 +105,9 @@ ServerApp::signalRestart( int sig )
 {
     if( sig == SIGUSR1 )
     {
-	cout << OPeNDAPApp::TheApplication()->appName() << " : " << getpid()
+	cout << BESApp::TheApplication()->appName() << " : " << getpid()
 	     << ": got restart signal." << endl ;
-	OPeNDAPApp::TheApplication()->terminate( sig ) ;
+	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_RESTART ) ;
     }
 }
@@ -115,11 +115,12 @@ ServerApp::signalRestart( int sig )
 void
 ServerApp::showUsage()
 {
-    cout << OPeNDAPApp::TheApplication()->appName()
-         << ": -d -v -s -p <PORT> -u <UNIX_SOCKET>" << endl ;
+    cout << BESApp::TheApplication()->appName()
+         << ": -d -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
     cout << "-d set the server to debugging mode" << endl ;
     cout << "-v echos version and exit" << endl ;
     cout << "-s specifies a secure server using SLL authentication" << endl ;
+    cout << "-c use back-end server configuration file CONFIG" << endl ;
     cout << "-p set port to PORT" << endl ;
     cout << "-u set unix socket to UNIX_SOCKET" << endl ;
     exit( 0 ) ;
@@ -128,7 +129,7 @@ ServerApp::showUsage()
 void
 ServerApp::showVersion()
 {
-  cout << OPeNDAPApp::TheApplication()->appName() << " version 2.0" << endl ;
+  cout << BESApp::TheApplication()->appName() << " version 2.0" << endl ;
   exit( 0 ) ;
 }
 
@@ -164,10 +165,13 @@ ServerApp::initialize( int argc, char **argv )
 
     int c = 0 ;
 
-    while( ( c = getopt( argc, argv, "dvsp:u:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "dvsc:p:u:" ) ) != EOF )
     {
 	switch( c )
 	{
+	    case 'c':
+		TheBESKeys::ConfigFile = optarg ;
+		break ;
 	    case 'p':
 		_portVal = atoi( optarg ) ;
 		_gotPort = true ;
@@ -196,7 +200,7 @@ ServerApp::initialize( int argc, char **argv )
     if( !_gotPort )
     {
 	key = "OPeNDAP.ServerPort" ;
-	string sPort = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	string sPort = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	_portVal = atoi( sPort.c_str() ) ;
 	if( !found || _portVal == 0 )
 	{
@@ -213,7 +217,7 @@ ServerApp::initialize( int argc, char **argv )
     if( _unixSocket == "" )
     {
 	key = "OPeNDAP.ServerUnixSocket" ;
-	_unixSocket = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	_unixSocket = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( !found || _unixSocket == "" )
 	{
 	    cout << endl << "Unable to determine unix socket" << endl ;
@@ -229,7 +233,7 @@ ServerApp::initialize( int argc, char **argv )
     if( _secure == false )
     {
 	key = "OPeNDAP.ServerSecure" ;
-	string isSecure = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
 	{
 	    cout << "**** server is secure" << endl ;
@@ -240,7 +244,7 @@ ServerApp::initialize( int argc, char **argv )
     default_module::initialize( argc, argv ) ;
     opendap_commands::initialize( argc, argv ) ;
 
-    return OPeNDAPModuleApp::initialize( argc, argv ) ;
+    return BESModuleApp::initialize( argc, argv ) ;
 }
 
 int
@@ -248,7 +252,7 @@ ServerApp::run()
 {
     try
     {
-	DODSMemoryManager::initialize_memory_pool() ;
+	BESMemoryManager::initialize_memory_pool() ;
 
 	SocketListener listener ;
 
@@ -258,7 +262,7 @@ ServerApp::run()
 	_us = new UnixSocket( _unixSocket ) ;
 	listener.listen( _us ) ;
 
-	OPeNDAPServerHandler handler ;
+	BESServerHandler handler ;
 
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
@@ -305,7 +309,7 @@ ServerApp::terminate( int sig )
 	    _us->close() ;
 	    delete _us ;
 	}
-	OPeNDAPModuleApp::terminate( sig ) ;
+	BESModuleApp::terminate( sig ) ;
     }
     return sig ;
 }
@@ -318,7 +322,7 @@ main( int argc, char **argv )
 	ServerApp app ;
 	return app.main( argc, argv ) ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "Caught unhandled exception: " << endl ;
 	cerr << e.get_error_description() << endl ;

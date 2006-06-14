@@ -49,7 +49,7 @@ using std::ofstream ;
 #include "PPTException.h"
 
 CmdApp::CmdApp()
-    : OPeNDAPBaseApp(),
+    : BESBaseApp(),
       _client( 0 ),
       _hostStr( "" ),
       _unixStr( "" ),
@@ -95,13 +95,13 @@ CmdApp::signalCannotConnect( int sig )
 {
     if( sig == SIGCONT )
     {
-	CmdApp *app = dynamic_cast<CmdApp *>(OPeNDAPApp::TheApplication()) ;
+	CmdApp *app = dynamic_cast<CmdApp *>(BESApp::TheApplication()) ;
 	if( app )
 	{
 	    CmdClient *client = app->client() ;
 	    if( client && !client->isConnected() )
 	    {
-		cout << OPeNDAPApp::TheApplication()->appName()
+		cout << BESApp::TheApplication()->appName()
 		     << ": No response, server may be down or "
 		     << "busy with another incoming connection. exiting!\n" ;
 		exit( 1 ) ;
@@ -115,12 +115,12 @@ CmdApp::signalInterrupt( int sig )
 {
     if( sig == SIGINT )
     {
-	cout << OPeNDAPApp::TheApplication()->appName()
+	cout << BESApp::TheApplication()->appName()
 	     << ": Please type exit to terminate the session" << endl ;
     }
     if( signal( SIGINT, CmdApp::signalInterrupt ) == SIG_ERR )
     {
-	cerr << OPeNDAPApp::TheApplication()->appName()
+	cerr << BESApp::TheApplication()->appName()
 	     << ": Could not re-register signal\n" ;
     }
 }
@@ -130,12 +130,12 @@ CmdApp::signalTerminate( int sig )
 {
     if( sig == SIGTERM )
     {
-	cout << OPeNDAPApp::TheApplication()->appName()
+	cout << BESApp::TheApplication()->appName()
 	     << ": Please type exit to terminate the session" << endl ;
     }
     if( signal( SIGTERM, CmdApp::signalTerminate ) == SIG_ERR )
     {
-	cerr << OPeNDAPApp::TheApplication()->appName()
+	cerr << BESApp::TheApplication()->appName()
 	     << ": Could not re-register signal\n" ;
     }
 }
@@ -145,11 +145,11 @@ CmdApp::signalBrokenPipe( int sig )
 {
     if( sig == SIGPIPE )
     {
-	cout << OPeNDAPApp::TheApplication()->appName()
+	cout << BESApp::TheApplication()->appName()
 	     << ": got a broken pipe, server may be down or the port invalid."
 	     << endl
 	     << "Please check parameters and try again" << endl ;
-	CmdApp *app = dynamic_cast<CmdApp *>(OPeNDAPApp::TheApplication()) ;
+	CmdApp *app = dynamic_cast<CmdApp *>(BESApp::TheApplication()) ;
 	if( app )
 	{
 	    CmdClient *client = app->client() ;
@@ -204,7 +204,7 @@ CmdApp::registerSignals()
 int
 CmdApp::initialize( int argc, char **argv )
 {
-    int retVal = OPeNDAPBaseApp::initialize( argc, argv ) ;
+    int retVal = BESBaseApp::initialize( argc, argv ) ;
     if( retVal != 0 )
 	return retVal ;
 

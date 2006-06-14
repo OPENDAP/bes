@@ -33,7 +33,7 @@
 #ifndef I_TestSigResponseHandler_h
 #define I_TestSigResponseHandler_h 1
 
-#include "DODSResponseHandler.h"
+#include "BESResponseHandler.h"
 
 /** @brief response handler that builds an OPeNDAP TestSig object
  *
@@ -43,19 +43,19 @@
  * transmits the TestSig object using the method send_das.
  *
  * @see TestSig
- * @see DODSContainer
- * @see DODSTransmitter
+ * @see BESContainer
+ * @see BESTransmitter
  */
-class TestSigResponseHandler : public DODSResponseHandler {
+class TestSigResponseHandler : public BESResponseHandler {
 public:
 				TestSigResponseHandler( string name ) ;
     virtual			~TestSigResponseHandler( void ) ;
 
-    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
-    virtual void		transmit( DODSTransmitter *transmitter,
-                                          DODSDataHandlerInterface &dhi ) ;
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler *TestSigResponseBuilder( string handler_name ) ;
+    static BESResponseHandler *TestSigResponseBuilder( string handler_name ) ;
 };
 
 #endif // I_TestSigResponseHandler_h

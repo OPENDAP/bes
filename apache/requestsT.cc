@@ -36,8 +36,8 @@ using std::cout ;
 using std::cerr ;
 using std::endl ;
 
-#include "DODSApacheRequests.h"
-#include "DODSBasicException.h"
+#include "BESApacheRequests.h"
+#include "BESBasicException.h"
 
 void test_this( const string &requests ) ;
 
@@ -63,15 +63,15 @@ test_this( const string &requests )
     cout << "testing: " << requests << endl ;
     try
     {
-	DODSApacheRequests r( requests ) ;
-	DODSApacheRequests::requests_citer c = r.get_first_request() ;
-	DODSApacheRequests::requests_citer e = r.get_end_request() ;
+	BESApacheRequests r( requests ) ;
+	BESApacheRequests::requests_citer c = r.get_first_request() ;
+	BESApacheRequests::requests_citer e = r.get_end_request() ;
 	for( ; c != e; c++ )
 	{
 	    cout << "    request: " << (*c) << endl ;
 	}
     }
-    catch( DODSBasicException &e )
+    catch( BESBasicException &e )
     {
 	cerr << "problem: " << e.get_error_description() << endl ;
     }

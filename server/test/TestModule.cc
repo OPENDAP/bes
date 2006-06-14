@@ -36,75 +36,75 @@ using std::endl ;
 
 #include "TestModule.h"
 #include "TestNames.h"
-#include "DODSResponseHandlerList.h"
+#include "BESResponseHandlerList.h"
 #include "TestSigResponseHandler.h"
 #include "TestEhmResponseHandler.h"
 #include "TestCommand.h"
-#include "DODSRequestHandlerList.h"
+#include "BESRequestHandlerList.h"
 #include "TestRequestHandler.h"
 #include "TestException.h"
-#include "DODS.h"
+#include "BESInterface.h"
 
-#include "DODSLog.h"
+#include "BESLog.h"
 
 void
 TestModule::initialize()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing Test Module" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing Test Module" << endl;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << "test" << " request handler" << endl ;
-    DODSRequestHandlerList::TheList()->add_handler( "test", new TestRequestHandler( "test" ) ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << "test" << " request handler" << endl ;
+    BESRequestHandlerList::TheList()->add_handler( "test", new TestRequestHandler( "test" ) ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << TEST_SIG << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( TEST_SIG, TestSigResponseHandler::TestSigResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << TEST_SIG << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( TEST_SIG, TestSigResponseHandler::TestSigResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << TEST_EHM << " response handler" << endl;
-    DODSResponseHandlerList::TheList()->add_handler( TEST_EHM, TestEhmResponseHandler::TestEhmResponseBuilder ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << TEST_EHM << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( TEST_EHM, TestEhmResponseHandler::TestEhmResponseBuilder ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << TEST_RESPONSE << " command" << endl;
-    OPeNDAPCommand *cmd = new TestCommand( TEST_RESPONSE ) ;
-    OPeNDAPCommand::add_command( TEST_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << TEST_RESPONSE << " command" << endl;
+    BESCommand *cmd = new TestCommand( TEST_RESPONSE ) ;
+    BESCommand::add_command( TEST_RESPONSE, cmd ) ;
 
     string cmd_name = string( TEST_RESPONSE ) + "." + TEST_SIG ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
 
     cmd_name = string( TEST_RESPONSE ) + "." + TEST_EHM ;
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    OPeNDAPCommand::add_command( cmd_name, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding Test exception callback" << endl ;
-    DODS::add_ehm_callback( TestException::handleException ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding Test exception callback" << endl ;
+    BESInterface::add_ehm_callback( TestException::handleException ) ;
 }
 
 void
 TestModule::terminate()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Cleaing up Test Module" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Cleaing up Test Module" << endl;
 
-    DODSRequestHandler *rh =
-	DODSRequestHandlerList::TheList()->remove_handler( "test" ) ;
+    BESRequestHandler *rh =
+	BESRequestHandlerList::TheList()->remove_handler( "test" ) ;
     if( rh ) delete rh ;
 
-    OPeNDAPCommand *cmd = OPeNDAPCommand::rem_command( TEST_RESPONSE ) ;
+    BESCommand *cmd = BESCommand::rem_command( TEST_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    DODSResponseHandlerList::TheList()->remove_handler( TEST_SIG ) ;
-    DODSResponseHandlerList::TheList()->remove_handler( TEST_EHM ) ;
+    BESResponseHandlerList::TheList()->remove_handler( TEST_SIG ) ;
+    BESResponseHandlerList::TheList()->remove_handler( TEST_EHM ) ;
 }
 
 extern "C"
 {
-    OPeNDAPAbstractModule *maker()
+    BESAbstractModule *maker()
     {
 	return new TestModule ;
     }

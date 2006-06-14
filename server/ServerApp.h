@@ -34,13 +34,13 @@
 
 using std::string ;
 
-#include "OPeNDAPModuleApp.h"
+#include "BESModuleApp.h"
 
 class TcpSocket ;
 class UnixSocket ;
 class PPTServer ;
 
-class ServerApp : public OPeNDAPModuleApp
+class ServerApp : public BESModuleApp
 {
 private:
     int				_portVal ;

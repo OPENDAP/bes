@@ -35,12 +35,12 @@
 #endif
 
 #include "TestRequestHandler.h"
-#include "DODSResponseNames.h"
-#include "DODSResponseHandler.h"
-#include "DODSInfo.h"
+#include "BESResponseNames.h"
+#include "BESResponseHandler.h"
+#include "BESInfo.h"
 
 TestRequestHandler::TestRequestHandler( string name )
-    : DODSRequestHandler( name )
+    : BESRequestHandler( name )
 {
     add_handler( HELP_RESPONSE, TestRequestHandler::cdf_build_help ) ;
 }
@@ -50,9 +50,9 @@ TestRequestHandler::~TestRequestHandler()
 }
 
 bool
-TestRequestHandler::cdf_build_help( DODSDataHandlerInterface &dhi )
+TestRequestHandler::cdf_build_help( BESDataHandlerInterface &dhi )
 {
-    DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
+    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
     string key ;
     if( dhi.transmit_protocol == "HTTP" )
 	key = (string)"Test.Help." + dhi.transmit_protocol ;

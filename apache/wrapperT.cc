@@ -36,15 +36,15 @@ using std::cout ;
 using std::cerr ;
 using std::endl ;
 
-#include "DODSApacheWrapper.h"
-#include "DODSDataRequestInterface.h"
-#include "DODSBasicException.h"
-#include "DODSGlobalIQ.h"
+#include "BESApacheWrapper.h"
+#include "BESDataRequestInterface.h"
+#include "BESBasicException.h"
+#include "BESGlobalIQ.h"
 
 int
 main( int argc, char **argv )
 {
-    DODSGlobalIQ::DODSGlobalInit( argc, argv ) ;
+    BESGlobalIQ::BESGlobalInit( argc, argv ) ;
 
     /*
     if( argc != 2 )
@@ -54,7 +54,7 @@ main( int argc, char **argv )
     }
     */
 
-    DODSDataRequestInterface rq;
+    BESDataRequestInterface rq;
 
     // BEGIN Initialize all data request elements correctly to a null pointer 
     rq.server_name=0;
@@ -77,23 +77,23 @@ main( int argc, char **argv )
 
     try
     {
-	DODSApacheWrapper wrapper ;
+	BESApacheWrapper wrapper ;
 	rq.cookie=wrapper.process_user( "username=pwest" ) ;
 	wrapper.process_request( "request=define+d1+as+mfp920504a;get+dods+for+d1;" ) ;
 	rq.request = wrapper.get_first_request() ;
 	while( rq.request )
 	{
-	    wrapper.call_DODS(rq);
+	    wrapper.call_BES(rq);
 	    rq.request = wrapper.get_next_request() ;
 	}
 
     }
-    catch( DODSBasicException &e )
+    catch( BESBasicException &e )
     {
 	cerr << "problem: " << e.get_error_description() << endl ;
     }
 
-    DODSGlobalIQ::DODSGlobalQuit() ;
+    BESGlobalIQ::BESGlobalQuit() ;
 
     return 0 ;
 }

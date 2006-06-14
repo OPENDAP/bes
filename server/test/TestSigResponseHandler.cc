@@ -35,7 +35,7 @@
 #include "TestSigResponseHandler.h"
 
 TestSigResponseHandler::TestSigResponseHandler( string name )
-    : DODSResponseHandler( name )
+    : BESResponseHandler( name )
 {
 }
 
@@ -46,13 +46,13 @@ TestSigResponseHandler::~TestSigResponseHandler( )
 /** @brief executes the command 'test sig;'
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws BESResponseException if there is a problem building the
  * response object
- * @see _DODSDataHandlerInterface
- * @see DODSRequestHandlerList
+ * @see _BESDataHandlerInterface
+ * @see BESRequestHandlerList
  */
 void
-TestSigResponseHandler::execute( DODSDataHandlerInterface &dhi )
+TestSigResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     raise( SIGINT ) ;
 }
@@ -64,16 +64,16 @@ TestSigResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTransmitter
- * @see _DODSDataHandlerInterface
+ * @see BESTransmitter
+ * @see _BESDataHandlerInterface
  */
 void
-TestSigResponseHandler::transmit( DODSTransmitter *transmitter,
-                              DODSDataHandlerInterface &dhi )
+TestSigResponseHandler::transmit( BESTransmitter *transmitter,
+                              BESDataHandlerInterface &dhi )
 {
 }
 
-DODSResponseHandler *
+BESResponseHandler *
 TestSigResponseHandler::TestSigResponseBuilder( string handler_name )
 {
     return new TestSigResponseHandler( handler_name ) ;

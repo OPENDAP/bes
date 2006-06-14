@@ -41,10 +41,10 @@ using std::cerr ;
 using std::endl ;
 using std::string;
 
-#include "DODSWrapper.h"
-#include "DODSGlobalIQ.h"
-#include "DODSException.h"
-#include "DODSDataRequestInterface.h"
+#include "BESWrapper.h"
+#include "BESGlobalIQ.h"
+#include "BESException.h"
+#include "BESDataRequestInterface.h"
 
 string
 get_ip()
@@ -67,9 +67,9 @@ main( int argC, char **argV )
 {
     try
     {
-	DODSGlobalIQ::DODSGlobalInit( argC, argV ) ;
-	DODSDataRequestInterface rq ;
-	DODSWrapper wrapper ;
+	BESGlobalIQ::BESGlobalInit( argC, argV ) ;
+	BESDataRequestInterface rq ;
+	BESWrapper wrapper ;
 
 	// Initialize all data request elements
 	rq.server_name="twilek";
@@ -116,7 +116,7 @@ main( int argC, char **argV )
 	{
 	    sprintf( request, "define %s as %s;", argV[2], argV[2] ) ;
 	    rq.request=request;
-	    wrapper.call_DODS( rq ) ;
+	    wrapper.call_BES( rq ) ;
 
 	    sprintf( request, "get %s for %s;", argV[1], argV[2] ) ;
 	}
@@ -125,11 +125,11 @@ main( int argC, char **argV )
 	else
 	    rq.request=request;
 
-	wrapper.call_DODS(rq);
+	wrapper.call_BES(rq);
 
-	DODSGlobalIQ::DODSGlobalQuit() ;
+	BESGlobalIQ::BESGlobalQuit() ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "Caught Exception" << endl ;
 	cerr << e.get_error_description() << endl ;

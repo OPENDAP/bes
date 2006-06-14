@@ -17,8 +17,8 @@ DIST_SUBDIRS = test
 
 sbin_PROGRAMS = bes besd
 
-bes_SOURCES = OPeNDAPServerHandler.cc ServerApp.cc \
-	OPeNDAPServerHandler.h  ServerApp.h  ServerExitConditions.h 
+bes_SOURCES = BESServerHandler.cc ServerApp.cc \
+	BESServerHandler.h  ServerApp.h  ServerExitConditions.h 
 
 bes_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
@@ -38,6 +38,7 @@ install-data-local: $(SERVER_INSTALL_FILES)
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysconfdir)/bes/$$f; \
 	  fi; \
 	done
+	test -z "$(prefix)/run" || $(mkdir_p) "$(DESTDIR)$(prefix)/run"
 
 uninstall-local:
 	@set -x; list='$(SERVER_INSTALL_FILES)'; for p in $$list; do \

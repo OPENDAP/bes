@@ -46,8 +46,8 @@ using std::endl ;
 #include "util_script.h"
 #include "util_md5.h"
 
-#include "DODSDataRequestInterface.h"
-#include "DODSApacheWrapper.h"
+#include "BESDataRequestInterface.h"
+#include "BESApacheWrapper.h"
 
 char * ltoa(long val, char *buf,int base)                         
 {
@@ -128,7 +128,7 @@ static int opendap_handler(request_rec *r)
 { 
     char port_number_buffer[80];
     dup2(r->connection->client->fd,STDOUT_FILENO);
-    DODSDataRequestInterface rq;
+    BESDataRequestInterface rq;
 
     // BEGIN Initialize all data request elements correctly to a null pointer 
     rq.server_name=0;
@@ -157,7 +157,7 @@ static int opendap_handler(request_rec *r)
 	return SERVER_ERROR;
     }
 
-    DODSApacheWrapper wrapper;
+    BESApacheWrapper wrapper;
     if ( strcmp(m_method, "GET") == 0 ) 
     {
 	if(r->parsed_uri.query)
@@ -198,7 +198,7 @@ static int opendap_handler(request_rec *r)
     rq.request = wrapper.get_first_request() ;
     while( rq.request && status == 0 )
     {
-	status = wrapper.call_DODS(rq);
+	status = wrapper.call_BES(rq);
 	rq.request = wrapper.get_next_request() ;
     }
 

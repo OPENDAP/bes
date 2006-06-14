@@ -34,7 +34,7 @@
 #include "TestException.h"
 
 TestEhmResponseHandler::TestEhmResponseHandler( string name )
-    : DODSResponseHandler( name )
+    :BESResponseHandler( name )
 {
 }
 
@@ -45,13 +45,13 @@ TestEhmResponseHandler::~TestEhmResponseHandler( )
 /** @brief executes the command 'test sig;'
  *
  * @param dhi structure that holds request and response information
- * @throws DODSResponseException if there is a problem building the
+ * @throws BESResponseException if there is a problem building the
  * response object
- * @see _DODSDataHandlerInterface
- * @see DODSRequestHandlerList
+ * @see _BESDataHandlerInterface
+ * @see BESRequestHandlerList
  */
 void
-TestEhmResponseHandler::execute( DODSDataHandlerInterface &dhi )
+TestEhmResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     throw TestException( "TestEhmResponseHandler::execute" ) ;
 }
@@ -63,16 +63,16 @@ TestEhmResponseHandler::execute( DODSDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSTransmitter
- * @see _DODSDataHandlerInterface
+ * @see BESTransmitter
+ * @see _BESDataHandlerInterface
  */
 void
-TestEhmResponseHandler::transmit( DODSTransmitter *transmitter,
-                              DODSDataHandlerInterface &dhi )
+TestEhmResponseHandler::transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi )
 {
 }
 
-DODSResponseHandler *
+BESResponseHandler *
 TestEhmResponseHandler::TestEhmResponseBuilder( string handler_name )
 {
     return new TestEhmResponseHandler( handler_name ) ;

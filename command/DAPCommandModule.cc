@@ -37,135 +37,135 @@ using std::cout ;
 
 #include "DAPCommandModule.h"
 
-#include "DODSResponseNames.h"
-#include "DODSLog.h"
+#include "BESResponseNames.h"
+#include "BESLog.h"
 
-#include "OPeNDAPCommand.h"
-#include "OPeNDAPSetContainerCommand.h"
-#include "OPeNDAPDefineCommand.h"
-#include "OPeNDAPDelContainerCommand.h"
-#include "OPeNDAPDelContainersCommand.h"
-#include "OPeNDAPDelDefCommand.h"
-#include "OPeNDAPDelDefsCommand.h"
-#include "OPeNDAPCatalogCommand.h"
+#include "BESCommand.h"
+#include "BESSetContainerCommand.h"
+#include "BESDefineCommand.h"
+#include "BESDelContainerCommand.h"
+#include "BESDelContainersCommand.h"
+#include "BESDelDefCommand.h"
+#include "BESDelDefsCommand.h"
+#include "BESCatalogCommand.h"
 
-#include "OPeNDAPParserException.h"
-#include "DODS.h"
+#include "BESParserException.h"
+#include "BESInterface.h"
 
 
 void
 DAPCommandModule::initialize()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing DAP Commands" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing DAP Commands" << endl;
 
-    OPeNDAPCommand *cmd = NULL ;
+    BESCommand *cmd = NULL ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DAS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( DAS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DAS_RESPONSE << " command" << endl;
+    BESCommand::add_command( DAS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DDS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( DDS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DDS_RESPONSE << " command" << endl;
+    BESCommand::add_command( DDS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DDX_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( DDX_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DDX_RESPONSE << " command" << endl;
+    BESCommand::add_command( DDX_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DATA_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( DATA_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DATA_RESPONSE << " command" << endl;
+    BESCommand::add_command( DATA_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( SHOWCONTAINERS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl;
+    BESCommand::add_command( SHOWCONTAINERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " command" << endl;
-    OPeNDAPCommand::add_command( SHOWDEFS_RESPONSE, OPeNDAPCommand::TermCommand ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " command" << endl;
+    BESCommand::add_command( SHOWDEFS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPCatalogCommand( CATALOG_RESPONSE ) ;
-    OPeNDAPCommand::add_command( CATALOG_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " command" << endl;
+    cmd = new BESCatalogCommand( CATALOG_RESPONSE ) ;
+    BESCommand::add_command( CATALOG_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SHOW_INFO_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPCatalogCommand( SHOW_INFO_RESPONSE ) ;
-    OPeNDAPCommand::add_command( SHOW_INFO_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOW_INFO_RESPONSE << " command" << endl;
+    cmd = new BESCatalogCommand( SHOW_INFO_RESPONSE ) ;
+    BESCommand::add_command( SHOW_INFO_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
-    cmd = new OPeNDAPDefineCommand( DEFINE_RESPONSE ) ;
-    OPeNDAPCommand::add_command( DEFINE_RESPONSE, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
+    cmd = new BESDefineCommand( DEFINE_RESPONSE ) ;
+    BESCommand::add_command( DEFINE_RESPONSE, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << SETCONTAINER << " command" << endl;
-    cmd = new OPeNDAPSetContainerCommand( SETCONTAINER ) ;
-    OPeNDAPCommand::add_command( SETCONTAINER, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SETCONTAINER << " command" << endl;
+    cmd = new BESSetContainerCommand( SETCONTAINER ) ;
+    BESCommand::add_command( SETCONTAINER, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DELETE_CONTAINER << " command" << endl;
-    cmd = new OPeNDAPDelContainerCommand( DELETE_CONTAINER ) ;
-    OPeNDAPCommand::add_command( DELETE_CONTAINER, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINER << " command" << endl;
+    cmd = new BESDelContainerCommand( DELETE_CONTAINER ) ;
+    BESCommand::add_command( DELETE_CONTAINER, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " command" << endl;
-    cmd = new OPeNDAPDelContainersCommand( DELETE_CONTAINERS ) ;
-    OPeNDAPCommand::add_command( DELETE_CONTAINERS, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " command" << endl;
+    cmd = new BESDelContainersCommand( DELETE_CONTAINERS ) ;
+    BESCommand::add_command( DELETE_CONTAINERS, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DELETE_DEFINITION << " command" << endl;
-    cmd = new OPeNDAPDelDefCommand( DELETE_DEFINITION ) ;
-    OPeNDAPCommand::add_command( DELETE_DEFINITION, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITION << " command" << endl;
+    cmd = new BESDelDefCommand( DELETE_DEFINITION ) ;
+    BESCommand::add_command( DELETE_DEFINITION, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " command" << endl;
-    cmd = new OPeNDAPDelDefsCommand( DELETE_DEFINITIONS ) ;
-    OPeNDAPCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " command" << endl;
+    cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
+    BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding parser exception callback" << endl ;
-    DODS::add_ehm_callback( OPeNDAPParserException::handleException ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
+    BESInterface::add_ehm_callback( BESParserException::handleException ) ;
 }
 
 void
 DAPCommandModule::terminate()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing DAP Commands" << endl;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing DAP Commands" << endl;
 
-    OPeNDAPCommand *cmd = NULL ;
+    BESCommand *cmd = NULL ;
 
-    (*DODSLog::TheLog()) << "Removing DEFINE_RESPONSE" << endl;
-    cmd = OPeNDAPCommand::rem_command( DEFINE_RESPONSE ) ;
+    (*BESLog::TheLog()) << "Removing DEFINE_RESPONSE" << endl;
+    cmd = BESCommand::rem_command( DEFINE_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    (*DODSLog::TheLog()) << "Removing SHOWCONTAINERS_RESPONSE" << endl;
-    cmd = OPeNDAPCommand::rem_command( SHOWCONTAINERS_RESPONSE ) ;
+    (*BESLog::TheLog()) << "Removing SHOWCONTAINERS_RESPONSE" << endl;
+    cmd = BESCommand::rem_command( SHOWCONTAINERS_RESPONSE ) ;
     if( cmd ) delete cmd ;
 
-    (*DODSLog::TheLog()) << "Removing DELETE_CONTAINER" << endl;
-    cmd = OPeNDAPCommand::rem_command( DELETE_CONTAINER ) ;
+    (*BESLog::TheLog()) << "Removing DELETE_CONTAINER" << endl;
+    cmd = BESCommand::rem_command( DELETE_CONTAINER ) ;
     if( cmd ) delete cmd ;
 
-    (*DODSLog::TheLog()) << "Removing DELETE_CONTAINERS" << endl;
-    cmd = OPeNDAPCommand::rem_command( DELETE_CONTAINERS ) ;
+    (*BESLog::TheLog()) << "Removing DELETE_CONTAINERS" << endl;
+    cmd = BESCommand::rem_command( DELETE_CONTAINERS ) ;
     if( cmd ) delete cmd ;
 
-    (*DODSLog::TheLog()) << "Removing DELETE_DEFINITION" << endl;
-    cmd = OPeNDAPCommand::rem_command( DELETE_DEFINITION ) ;
+    (*BESLog::TheLog()) << "Removing DELETE_DEFINITION" << endl;
+    cmd = BESCommand::rem_command( DELETE_DEFINITION ) ;
     if( cmd ) delete cmd ;
 
-    (*DODSLog::TheLog()) << "Removing DELETE_DEFINITIONS" << endl;
-    cmd = OPeNDAPCommand::rem_command( DELETE_DEFINITIONS ) ;
+    (*BESLog::TheLog()) << "Removing DELETE_DEFINITIONS" << endl;
+    cmd = BESCommand::rem_command( DELETE_DEFINITIONS ) ;
     if( cmd ) delete cmd ;
 }
 
 extern "C"
 {
-    OPeNDAPAbstractModule *maker()
+    BESAbstractModule *maker()
     {
 	return new DAPCommandModule ;
     }

@@ -33,19 +33,19 @@
 #ifndef A_TestCommand_h
 #define A_TestCommand_h 1
 
-#include "OPeNDAPCommand.h"
+#include "BESCommand.h"
 
-class TestCommand : public OPeNDAPCommand
+class TestCommand : public BESCommand
 {
 private:
 protected:
 public:
     					TestCommand( const string &cmd )
-					    : OPeNDAPCommand( cmd ) {}
+					    : BESCommand( cmd ) {}
     virtual				~TestCommand() {}
 
-    virtual DODSResponseHandler *	parse_request( OPeNDAPTokenizer &tokens,
-					  DODSDataHandlerInterface &dhi ) ;
+    virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
+					    BESDataHandlerInterface &dhi ) ;
 } ;
 
 #endif // A_TestCommand_h

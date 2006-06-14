@@ -31,9 +31,9 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "TestCommand.h"
-#include "OPeNDAPTokenizer.h"
-#include "DODSResponseHandlerList.h"
-#include "OPeNDAPParserException.h"
+#include "BESTokenizer.h"
+#include "BESResponseHandlerList.h"
+#include "BESParserException.h"
 
 /** @brief parses the request to build a test signal response
  *
@@ -43,13 +43,13 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws OPeNDAPParserException if there is a problem parsing the command
- * @see OPeNDAPTokenizer
- * @see _DODSDataHandlerInterface
+ * @throws BESParserException if there is a problem parsing the command
+ * @see BESTokenizer
+ * @see _BESDataHandlerInterface
  */
-DODSResponseHandler *
-TestCommand::parse_request( OPeNDAPTokenizer &tokenizer,
-                                     DODSDataHandlerInterface &dhi )
+BESResponseHandler *
+TestCommand::parse_request( BESTokenizer &tokenizer,
+			    BESDataHandlerInterface &dhi )
 {
     string my_token = parse_options( tokenizer, dhi ) ;
 
@@ -58,8 +58,8 @@ TestCommand::parse_request( OPeNDAPTokenizer &tokenizer,
      * command called "define something". Look up define.something
      */
     string newcmd = _cmd + "." + my_token ;
-    OPeNDAPCommand *cmdobj = OPeNDAPCommand::find_command( newcmd ) ;
-    if( cmdobj && cmdobj != OPeNDAPCommand::TermCommand )
+    BESCommand *cmdobj = BESCommand::find_command( newcmd ) ;
+    if( cmdobj && cmdobj != BESCommand::TermCommand )
     {
 	return cmdobj->parse_request( tokenizer, dhi ) ;
     }
@@ -71,11 +71,11 @@ TestCommand::parse_request( OPeNDAPTokenizer &tokenizer,
      * object for a test sig command.
      */
     dhi.action = my_token ;
-    DODSResponseHandler *retResponse =
-	DODSResponseHandlerList::TheList()->find_handler( my_token ) ;
+    BESResponseHandler *retResponse =
+	BESResponseHandlerList::TheList()->find_handler( my_token ) ;
     if( !retResponse )
     {
-	throw OPeNDAPParserException( (string)"Improper command " + _cmd + " " + my_token );
+	throw BESParserException( (string)"Improper command " + _cmd + " " + my_token );
     }
 
     return retResponse ;
