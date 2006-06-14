@@ -1,10 +1,10 @@
 // OPENDAP_CLASSHandlerApp.h
 
-#include "OPeNDAPBaseApp.h"
+#include "BESBaseApp.h"
 
 class DODSFilter ;
 
-class OPENDAP_CLASSHandlerApp : public OPeNDAPBaseApp
+class OPENDAP_CLASSHandlerApp : public BESBaseApp
 {
 private:
     DODSFilter *		_df ;

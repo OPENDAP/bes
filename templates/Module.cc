@@ -5,23 +5,23 @@
 using std::endl ;
 
 #include "OPENDAP_CLASSModule.h"
-#include "DODSRequestHandlerList.h"
+#include "BESRequestHandlerList.h"
 #include "OPENDAP_CLASSRequestHandler.h"
-#include "DODSLog.h"
-#include "DODSResponseHandlerList.h"
-#include "DODSResponseNames.h"
-#include "OPeNDAPCommand.h"
+#include "BESLog.h"
+#include "BESResponseHandlerList.h"
+#include "BESResponseNames.h"
+#include "BESCommand.h"
 #include "OPENDAP_CLASSResponseNames.h"
 
 void
 OPENDAP_CLASSModule::initialize()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing OPENDAP_CLASS Handler:" << endl ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing OPENDAP_CLASS Handler:" << endl ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << OPENDAP_CLASS_NAME << " request handler" << endl ;
-    DODSRequestHandlerList::TheList()->add_handler( OPENDAP_CLASS_NAME, new OPENDAP_CLASSRequestHandler( OPENDAP_CLASS_NAME ) ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << OPENDAP_CLASS_NAME << " request handler" << endl ;
+    BESRequestHandlerList::TheList()->add_handler( OPENDAP_CLASS_NAME, new OPENDAP_CLASSRequestHandler( OPENDAP_CLASS_NAME ) ) ;
 
     // If new commands are needed, then let's declare this once here. If
     // not, then you can remove this line.
@@ -33,15 +33,15 @@ OPENDAP_CLASSModule::initialize()
 void
 OPENDAP_CLASSModule::terminate()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing OPENDAP_CLASS Handlers" << endl;
-    DODSRequestHandler *rh = DODSRequestHandlerList::TheList()->remove_handler( OPENDAP_CLASS_NAME ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing OPENDAP_CLASS Handlers" << endl;
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( OPENDAP_CLASS_NAME ) ;
     if( rh ) delete rh ;
 }
 
 extern "C"
 {
-    OPeNDAPAbstractModule *maker()
+    BESAbstractModule *maker()
     {
 	return new OPENDAP_CLASSModule ;
     }

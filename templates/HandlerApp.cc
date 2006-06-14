@@ -13,7 +13,7 @@ using std::flush ;
 #include "OPENDAP_CLASSHandlerApp.h"
 #include "OPENDAP_CLASSResponseNames.h"
 #include "DODSFilter.h"
-#include "DODSCgi.h"
+#include "BESCgiInterface.h"
 
 OPENDAP_CLASSHandlerApp::OPENDAP_CLASSHandlerApp()
     : _df( 0 )
@@ -32,7 +32,7 @@ OPENDAP_CLASSHandlerApp::~OPENDAP_CLASSHandlerApp()
 int
 OPENDAP_CLASSHandlerApp::initialize( int argc, char **argv )
 {
-    OPeNDAPBaseApp::initialize( argc, argv ) ;
+    BESBaseApp::initialize( argc, argv ) ;
 
     _df = new DODSFilter( argc, argv ) ;
 
@@ -42,7 +42,7 @@ OPENDAP_CLASSHandlerApp::initialize( int argc, char **argv )
 int
 OPENDAP_CLASSHandlerApp::run()
 {
-    DODSCgi d( OPENDAP_CLASS_NAME, *_df ) ;
+    BESCgiInterface d( OPENDAP_CLASS_NAME, *_df ) ;
     d.execute_request() ;
 
     return 0 ;

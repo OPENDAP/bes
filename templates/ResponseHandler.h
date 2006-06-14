@@ -3,18 +3,18 @@
 #ifndef I_OPENDAP_RESPONSEResponseHandler_h
 #define I_OPENDAP_RESPONSEResponseHandler_h 1
 
-#include "DODSResponseHandler.h"
+#include "BESResponseHandler.h"
 
-class OPENDAP_RESPONSEResponseHandler : public DODSResponseHandler {
+class OPENDAP_RESPONSEResponseHandler : public BESResponseHandler {
 public:
 				OPENDAP_RESPONSEResponseHandler( string name ) ;
     virtual			~OPENDAP_RESPONSEResponseHandler( void ) ;
 
-    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
-    virtual void		transmit( DODSTransmitter *transmitter,
-                                          DODSDataHandlerInterface &dhi ) ;
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler *OPENDAP_RESPONSEResponseBuilder( string handler_name ) ;
+    static BESResponseHandler *OPENDAP_RESPONSEResponseBuilder( string handler_name ) ;
 };
 
 #endif // I_OPENDAP_RESPONSEResponseHandler_h

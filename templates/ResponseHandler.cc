@@ -1,10 +1,10 @@
 // OPENDAP_RESPONSEResponseHandler.cc
 
 #include "OPENDAP_RESPONSEResponseHandler.h"
-#include "DODSInfo.h"
+#include "BESInfo.h"
 
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( string name )
-    : DODSResponseHandler( name )
+    : BESResponseHandler( name )
 {
 }
 
@@ -13,11 +13,11 @@ OPENDAP_RESPONSEResponseHandler::~OPENDAP_RESPONSEResponseHandler( )
 }
 
 void
-OPENDAP_RESPONSEResponseHandler::execute( DODSDataHandlerInterface &dhi )
+OPENDAP_RESPONSEResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    // This is an example. Here you would build the DODSResponseObject
+    // This is an example. Here you would build the BESResponseObject
     // object and set it to the _response protected data member
-    DODSInfo *info = new DODSInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
     _response = info ;
 
     // And here is where your code would code to fill in that response
@@ -25,15 +25,15 @@ OPENDAP_RESPONSEResponseHandler::execute( DODSDataHandlerInterface &dhi )
 }
 
 void
-OPENDAP_RESPONSEResponseHandler::transmit( DODSTransmitter *transmitter,
-                               DODSDataHandlerInterface &dhi )
+OPENDAP_RESPONSEResponseHandler::transmit( BESTransmitter *transmitter,
+                               BESDataHandlerInterface &dhi )
 {
     // Here is where you would transmit your response object using the
-    // specified transmitter object. This is the example using the DODSInfo
+    // specified transmitter object. This is the example using the BESInfo
     // response object
     if( _response )
     {
-	DODSInfo *info = dynamic_cast<DODSInfo *>(_response) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
 	if( dhi.transmit_protocol == "HTTP" )
 	    transmitter->send_html( *info, dhi ) ;
 	else
@@ -41,7 +41,7 @@ OPENDAP_RESPONSEResponseHandler::transmit( DODSTransmitter *transmitter,
     }
 }
 
-DODSResponseHandler *
+BESResponseHandler *
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseBuilder( string handler_name )
 {
     return new OPENDAP_RESPONSEResponseHandler( handler_name ) ;

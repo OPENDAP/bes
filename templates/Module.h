@@ -3,9 +3,9 @@
 #ifndef I_OPENDAP_CLASSModule_H
 #define I_OPENDAP_CLASSModule_H 1
 
-#include "OPeNDAPAbstractModule.h"
+#include "BESAbstractModule.h"
 
-class OPENDAP_CLASSModule : public OPeNDAPAbstractModule
+class OPENDAP_CLASSModule : public BESAbstractModule
 {
 public:
     				OPENDAP_CLASSModule() {}
