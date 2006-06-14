@@ -22,18 +22,18 @@
 #ifndef I_HDFRequestHandler_H
 #define I_HDFRequestHandler_H 1
 
-#include "DODSRequestHandler.h"
+#include "BESRequestHandler.h"
 
-class HDFRequestHandler : public DODSRequestHandler {
+class HDFRequestHandler : public BESRequestHandler {
 public:
     HDFRequestHandler( string name ) ;
     virtual ~HDFRequestHandler( void ) ;
 
-    static bool hdf_build_das( DODSDataHandlerInterface &dhi ) ;
-    static bool hdf_build_dds( DODSDataHandlerInterface &dhi ) ;
-    static bool hdf_build_data( DODSDataHandlerInterface &dhi ) ;
-    static bool hdf_build_help( DODSDataHandlerInterface &dhi ) ;
-    static bool hdf_build_version( DODSDataHandlerInterface &dhi ) ;
+    static bool hdf_build_das( BESDataHandlerInterface &dhi ) ;
+    static bool hdf_build_dds( BESDataHandlerInterface &dhi ) ;
+    static bool hdf_build_data( BESDataHandlerInterface &dhi ) ;
+    static bool hdf_build_help( BESDataHandlerInterface &dhi ) ;
+    static bool hdf_build_version( BESDataHandlerInterface &dhi ) ;
 };
 
 #endif

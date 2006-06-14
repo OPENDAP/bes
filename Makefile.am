@@ -17,10 +17,10 @@ SUBDIRS = hdfclass
 bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
+lib_LTLIBRARIES = libhdf4_handler.la
 if OPENDAPSERVER
-    lib_LTLIBRARIES = libhdf4_handler.la libhdf4_module.la
-else
-    lib_LTLIBRARIES = libhdf4_handler.la
+    lib_besdir=$(prefix)/lib/bes
+    lib_bes_LTLIBRARIES = libhdf4_module.la
 endif
 
 HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc   HDFUInt32.cc \

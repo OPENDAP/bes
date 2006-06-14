@@ -23,23 +23,23 @@
 
 using std::endl ;
 
-#include "DODSInitList.h"
+#include "BESInitList.h"
 #if 0
 #include "TheRequestHandlerList.h"
 #endif
 #include "HDFRequestHandler.h"
 #if 0
-#include "TheDODSLog.h"
+#include "TheBESLog.h"
 #endif
 
 static bool
 HDFInit(int, char**)
 {
-    if( TheDODSLog->is_verbose() )
-       (*TheDODSLog) << "Initializing HDF:" << endl ;
+    if( TheBESLog->is_verbose() )
+       (*TheBESLog) << "Initializing HDF:" << endl ;
 
-    if( TheDODSLog->is_verbose() )
-        (*TheDODSLog) << "    adding hdf4 request handler" << endl ;
+    if( TheBESLog->is_verbose() )
+        (*TheBESLog) << "    adding hdf4 request handler" << endl ;
 
     TheRequestHandlerList->add_handler( "hdf4",
                                        new HDFRequestHandler( "hdf4" ) ) ;
@@ -50,10 +50,10 @@ HDFInit(int, char**)
 static bool
 HDFTerm(void)
 {
-    if( TheDODSLog->is_verbose() )
-        (*TheDODSLog) << "Removing hdf4 Handlers" << endl;
+    if( TheBESLog->is_verbose() )
+        (*TheBESLog) << "Removing hdf4 Handlers" << endl;
 
-    DODSRequestHandler *rh = TheRequestHandlerList->remove_handler( "hdf4" ) ;
+    BESRequestHandler *rh = TheRequestHandlerList->remove_handler( "hdf4" ) ;
     if( rh ) delete rh ;
     return true ;
 }

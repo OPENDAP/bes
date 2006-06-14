@@ -30,19 +30,19 @@ using std::endl ;
 #include "DDS.h"
 
 #include "HDFRequestHandler.h"
-#include "DODSResponseHandler.h"
-#include "DODSResponseNames.h"
-#include "DODSConstraintFuncs.h"
-#include "DODSInfo.h"
-#include "TheDODSKeys.h"
-#include "DODSResponseException.h"
+#include "BESResponseHandler.h"
+#include "BESResponseNames.h"
+#include "BESConstraintFuncs.h"
+#include "BESInfo.h"
+#include "TheBESKeys.h"
+#include "BESResponseException.h"
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
 extern void register_funcs(DDS& dds);
 
 HDFRequestHandler::HDFRequestHandler( string name )
-    : DODSRequestHandler( name )
+    : BESRequestHandler( name )
 {
     add_handler( DAS_RESPONSE, HDFRequestHandler::hdf_build_das ) ;
     add_handler( DDS_RESPONSE, HDFRequestHandler::hdf_build_dds ) ;
@@ -56,7 +56,7 @@ HDFRequestHandler::~HDFRequestHandler()
 }
 
 bool
-HDFRequestHandler::hdf_build_das( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_das( BESDataHandlerInterface &dhi )
 {
     DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
 
@@ -66,7 +66,7 @@ HDFRequestHandler::hdf_build_das( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDFRequestHandler::hdf_build_dds( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_dds( BESDataHandlerInterface &dhi )
 {
     // Needs to use the factory class. jhrg 9/20/05
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
@@ -78,7 +78,7 @@ HDFRequestHandler::hdf_build_dds( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDFRequestHandler::hdf_build_data( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_data( BESDataHandlerInterface &dhi )
 {
     // Needs to use the factory class. jhrg 9/20/05
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
@@ -91,16 +91,16 @@ HDFRequestHandler::hdf_build_data( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDFRequestHandler::hdf_build_help( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_help( BESDataHandlerInterface &dhi )
 {
-    DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
+    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
     info->add_data( (string)"No help for netCDF handler.\n" ) ;
 
 #if 0
     info->add_data( (string)"cdf-dods help: " + hdf_version() + "\n" ) ;
     bool found = false ;
     string key = (string)"HDF.Help." + dhi.transmit_protocol ;
-    string file = TheDODSKeys->get_key( key, found ) ;
+    string file = TheBESKeys->get_key( key, found ) ;
     if( found == false )
     {
      info->add_data( "no help information available for cdf-dods\n" ) ;
@@ -133,9 +133,9 @@ HDFRequestHandler::hdf_build_help( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDFRequestHandler::hdf_build_version( DODSDataHandlerInterface &dhi )
+HDFRequestHandler::hdf_build_version( BESDataHandlerInterface &dhi )
 {
-    DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
+    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
     info->add_data( (string)"    hdf4 0.9\n" ) ;
     info->add_data( (string)"    libhdf-dods 0.9\n" ) ;
 #if 0

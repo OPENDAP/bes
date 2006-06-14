@@ -31,16 +31,16 @@
 #include <unistd.h>
 
 #include "HDF4RequestHandler.h"
-#include "DODSResponseNames.h"
+#include "BESResponseNames.h"
 #include "DAS.h"
 #include "DDS.h"
-#include "DODSInfo.h"
-#include "DODSResponseHandler.h"
-#include "DODSVersionInfo.h"
+#include "BESInfo.h"
+#include "BESResponseHandler.h"
+#include "BESVersionInfo.h"
 #include "HDFTypeFactory.h"
-#include "TheDODSKeys.h"
-#include "DODSKeysException.h"
-#include "OPeNDAPDataNames.h"
+#include "TheBESKeys.h"
+#include "BESKeysException.h"
+#include "BESDataNames.h"
 #include "ConstraintEvaluator.h"
 #include "config_hdf.h"
 
@@ -51,7 +51,7 @@ extern void register_funcs(ConstraintEvaluator& dds);
 string HDF4RequestHandler::_cachedir = "" ;
 
 HDF4RequestHandler::HDF4RequestHandler( string name )
-    : DODSRequestHandler( name )
+    : BESRequestHandler( name )
 {
     add_handler( DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das ) ;
     add_handler( DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds ) ;
@@ -62,7 +62,7 @@ HDF4RequestHandler::HDF4RequestHandler( string name )
     if( HDF4RequestHandler::_cachedir == "" )
     {
 	bool found = false ;
-	_cachedir = TheDODSKeys::TheKeys()->get_key( "HDF5.cachedir", found ) ;
+	_cachedir = TheBESKeys::TheKeys()->get_key( "HDF5.cachedir", found ) ;
 	if( !found || _cachedir == "" )
 	    _cachedir = "/tmp" ;
 
@@ -76,7 +76,7 @@ HDF4RequestHandler::HDF4RequestHandler( string name )
 		close(fd);
 		string err = "Could not create a file in the cache directory ("
 			     + _cachedir + ")" ;
-		throw DODSKeysException( err ) ;
+		throw BESKeysException( err ) ;
 	    }
 	    _cachedir = "/tmp" ;
 	}
@@ -89,7 +89,7 @@ HDF4RequestHandler::~HDF4RequestHandler()
 }
 
 bool
-HDF4RequestHandler::hdf4_build_das( DODSDataHandlerInterface &dhi )
+HDF4RequestHandler::hdf4_build_das( BESDataHandlerInterface &dhi )
 {
     DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
 
@@ -99,7 +99,7 @@ HDF4RequestHandler::hdf4_build_das( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF4RequestHandler::hdf4_build_dds( DODSDataHandlerInterface &dhi )
+HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
 {
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
 
@@ -118,7 +118,7 @@ HDF4RequestHandler::hdf4_build_dds( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF4RequestHandler::hdf4_build_data( DODSDataHandlerInterface &dhi )
+HDF4RequestHandler::hdf4_build_data( BESDataHandlerInterface &dhi )
 {
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
 
@@ -138,18 +138,18 @@ HDF4RequestHandler::hdf4_build_data( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF4RequestHandler::hdf4_build_help( DODSDataHandlerInterface &dhi )
+HDF4RequestHandler::hdf4_build_help( BESDataHandlerInterface &dhi )
 {
-    DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
+    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
     //info->add_data( (string)"No help currently available for netCDF handler.\n" ) ;
 
     return true ;
 }
 
 bool
-HDF4RequestHandler::hdf4_build_version( DODSDataHandlerInterface &dhi )
+HDF4RequestHandler::hdf4_build_version( BESDataHandlerInterface &dhi )
 {
-    DODSVersionInfo *info = (DODSVersionInfo *)dhi.response_handler->get_response_object() ;
+    BESVersionInfo *info = (BESVersionInfo *)dhi.response_handler->get_response_object() ;
     info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return true ;
 }

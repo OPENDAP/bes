@@ -32,20 +32,20 @@
 
 using std::string ;
 
-#include "DODSRequestHandler.h"
+#include "BESRequestHandler.h"
 
-class HDF4RequestHandler : public DODSRequestHandler {
+class HDF4RequestHandler : public BESRequestHandler {
 private:
     static string	_cachedir ;
 public:
 			HDF4RequestHandler( string name ) ;
     virtual		~HDF4RequestHandler( void ) ;
 
-    static bool		hdf4_build_das( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_dds( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_data( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_help( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_version( DODSDataHandlerInterface &dhi ) ;
+    static bool		hdf4_build_das( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf4_build_dds( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf4_build_data( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf4_build_help( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf4_build_version( BESDataHandlerInterface &dhi ) ;
 };
 
 #endif
