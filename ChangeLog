@@ -1,3 +1,61 @@
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	configuration updates. bes modules in lib/bes
+
+2006-06-13  James Gallagher <jgallagher@opendap.org>
+
+	libdap.m4: Updated
+
+2006-05-26  Patrick West <pwest@ucar.edu>
+
+	add hdf4 type source to module library, don't include handler library
+
+2006-05-25  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2006-05-24  Patrick West <pwest@ucar.edu>
+
+	bes module updates
+
+2006-05-15  Patrick West <pwest@ucar.edu>
+
+	container storage changes
+
+2006-05-06  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2006-05-05  Patrick West <pwest@ucar.edu>
+
+	implemented the request handler, always a good thing
+
+2006-05-05  Patrick West <pwest@ucar.edu>
+
+	bes enabled
+
+2006-04-19  James Gallagher <jgallagher@opendap.org>
+
+	libdap.m4, configure.ac, hdf_handler.cc: Updated to use the
+	new libdap 3.7.0 code. Use the ConstraintEvaluator object and
+	supports returning DDX responses.
+
+2006-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Added include of unistd.h to hdf_handler.cc. This is for the
+	unlink function.
+
+2006-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Version 3.6.1
+
+2006-03-14  James Gallagher <jgallagher@opendap.org>
+
+	Added code to hdfdesc.cc and hdf_handler.cc so that if the
+	cache dir is not given or not usable, the handler now defaults
+	to not caching the files (as opposed to throwing an exception).
+	Also added a virtual destructor to ReadTagRef.h.
+
 2006-03-14  James Gallagher <jgallagher@opendap.org>
 
 	Added code to hdfdesc.cc and hdf_handler.cc so that if the

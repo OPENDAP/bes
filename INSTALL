@@ -37,12 +37,16 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.6.0 to build and install this
+  o You need the libdap library version 3.7.0 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages.
 
   o To use this software with our data server, you will need the OPeNDAP
-    dap-server software package, version 3.6.0.
+    dap-server software package, version 3.6.0, although this particular
+    release has not been tested with dap-server 3.6.0.
+
+  o If you're planning on using this with Server4, version 1.2, you'll need
+    version 3.1.0 of the BES software.
 
   o You also need a recent copy of HDF4. We've tested this server with
     version 4.2r1, although any recent version should work fine. If the
