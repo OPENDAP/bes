@@ -86,13 +86,14 @@ BESCgiInterface::build_data_request_plan()
     d.set_valid_flag( true ) ;
 
     _dhi.containers.push_back( d ) ;
-    _dhi.action = _df->get_action() ;
+    string myaction = (string)"get." + _df->get_action() ; 
+    _dhi.action = myaction ;
     _dhi.response_handler =
-	BESResponseHandlerList::TheList()->find_handler( _df->get_action() ) ;
+	BESResponseHandlerList::TheList()->find_handler( myaction ) ;
     if( !_dhi.response_handler )
     {
 	BESHandlerException he ;
-	he.set_error_description( (string)"Improper command " + _df->get_action() ) ;
+	he.set_error_description( (string)"Improper command " + myaction ) ;
 	throw he ;
     }
 }
