@@ -1,7 +1,7 @@
 
 	$Id$
 
-News for version 1.1
+News for version 1.1.0
 
 This version of the hdf5 data handler can be used with both server3 and
 Server4. The handler is really an alpha version of software which NASA has
