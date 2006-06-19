@@ -10,10 +10,10 @@ ACLOCAL_AMFLAGS = -I conf
 
 bin_PROGRAMS = dap_h5_handler
 
+lib_LTLIBRARIES = libhdf5_handler.la
 if OPENDAPSERVER
-    lib_LTLIBRARIES = libhdf5_handler.la libhdf5_module.la
-else
-    lib_LTLIBRARIES = libhdf5_handler.la
+    lib_besdir=$(prefix)/lib/bes
+    lib_bes_LTLIBRARIES = libhdf5_module.la
 endif
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \

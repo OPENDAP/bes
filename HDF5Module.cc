@@ -34,13 +34,13 @@
 using std::endl ;
 
 #include "HDF5Module.h"
-#include "DODSRequestHandlerList.h"
+#include "BESRequestHandlerList.h"
 #include "HDF5RequestHandler.h"
-#include "ContainerStorageList.h"
-#include "ContainerStorageCatalog.h"
-#include "DirectoryCatalog.h"
-#include "CatalogList.h"
-#include "DODSLog.h"
+#include "BESContainerStorageList.h"
+#include "BESContainerStorageCatalog.h"
+#include "BESCatalogDirectory.h"
+#include "BESCatalogList.h"
+#include "BESLog.h"
 
 #define HDF5_NAME "hdf"
 #define HDF5_CATALOG "catalog"
@@ -48,41 +48,41 @@ using std::endl ;
 void
 HDF5Module::initialize()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Initializing HDF5:" << endl ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Initializing HDF5:" << endl ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HDF5_NAME << " request handler" 
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << HDF5_NAME << " request handler" 
 		      << endl ;
-    DODSRequestHandlerList::TheList()->add_handler( HDF5_NAME, new HDF5RequestHandler( HDF5_NAME ) ) ;
+    BESRequestHandlerList::TheList()->add_handler( HDF5_NAME, new HDF5RequestHandler( HDF5_NAME ) ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "    adding " << HDF5_NAME << " catalog" 
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << HDF5_NAME << " catalog" 
 		      << endl ;
-    CatalogList::TheCatalogList()->add_catalog( new DirectoryCatalog( HDF5_CATALOG ) ) ;
+    BESCatalogList::TheCatalogList()->add_catalog( new BESCatalogDirectory( HDF5_CATALOG ) ) ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Adding Catalog Container Storage" << endl;
-    ContainerStorageCatalog *csc = new ContainerStorageCatalog( HDF5_CATALOG ) ;
-    ContainerStorageList::TheList()->add_persistence( csc ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Adding Catalog Container Storage" << endl;
+    BESContainerStorageCatalog *csc = new BESContainerStorageCatalog( HDF5_CATALOG ) ;
+    BESContainerStorageList::TheList()->add_persistence( csc ) ;
 }
 
 void
 HDF5Module::terminate()
 {
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing HDF5 Handlers" << endl;
-    DODSRequestHandler *rh = DODSRequestHandlerList::TheList()->remove_handler( HDF5_NAME ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing HDF5 Handlers" << endl;
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( HDF5_NAME ) ;
     if( rh ) delete rh ;
 
-    if( DODSLog::TheLog()->is_verbose() )
-	(*DODSLog::TheLog()) << "Removing catalog Container Storage" << endl;
-    ContainerStorageList::TheList()->del_persistence( HDF5_CATALOG ) ;
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "Removing catalog Container Storage" << endl;
+    BESContainerStorageList::TheList()->del_persistence( HDF5_CATALOG ) ;
 }
 
 extern "C"
 {
-    OPeNDAPAbstractModule *maker()
+    BESAbstractModule *maker()
     {
 	return new HDF5Module ;
     }

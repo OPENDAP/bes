@@ -32,9 +32,9 @@
 #ifndef A_HDF5Module_H
 #define A_HDF5Module_H 1
 
-#include "OPeNDAPAbstractModule.h"
+#include "BESAbstractModule.h"
 
-class HDF5Module : public OPeNDAPAbstractModule
+class HDF5Module : public BESAbstractModule
 {
 public:
     				HDF5Module() {}

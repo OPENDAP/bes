@@ -28,18 +28,18 @@
 #ifndef I_HDF5RequestHandler_H
 #define I_HDF5RequestHandler_H 1
 
-#include "DODSRequestHandler.h"
+#include "BESRequestHandler.h"
 
-class HDF5RequestHandler : public DODSRequestHandler {
+class HDF5RequestHandler : public BESRequestHandler {
 public:
 			HDF5RequestHandler( string name ) ;
     virtual		~HDF5RequestHandler( void ) ;
 
-    static bool		hdf5_build_das( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_dds( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_data( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_help( DODSDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_version( DODSDataHandlerInterface &dhi ) ;
+    static bool		hdf5_build_das( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf5_build_dds( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf5_build_data( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf5_build_help( BESDataHandlerInterface &dhi ) ;
+    static bool		hdf5_build_version( BESDataHandlerInterface &dhi ) ;
 };
 
 #endif

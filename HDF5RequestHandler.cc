@@ -39,20 +39,20 @@
 
 #include "DAS.h"
 #include "DDS.h"
-#include "DODSInfo.h"
-#include "DODSResponseNames.h"
-#include "DODSContainer.h"
-#include "DODSResponseHandler.h"
-#include "DODSVersionInfo.h"
-#include "OPeNDAPDataNames.h"
-#include "DODSHandlerException.h"
+#include "BESInfo.h"
+#include "BESResponseNames.h"
+#include "BESContainer.h"
+#include "BESResponseHandler.h"
+#include "BESVersionInfo.h"
+#include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 extern "C" {
     hid_t get_fileid(const char *filename);
 }
 
 HDF5RequestHandler::HDF5RequestHandler( string name )
-    : DODSRequestHandler( name )
+    : BESRequestHandler( name )
 {
     add_handler( DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das ) ;
     add_handler( DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds ) ;
@@ -66,13 +66,13 @@ HDF5RequestHandler::~HDF5RequestHandler()
 }
 
 bool
-HDF5RequestHandler::hdf5_build_das( DODSDataHandlerInterface &dhi )
+HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
 {
     string filename = dhi.container->get_real_name() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
-	throw DODSHandlerException( string( "hdf4_build_das: " )
+	throw BESHandlerException( string( "hdf4_build_das: " )
 					  + "Could not open hdf5 file: "
 	                                  + filename ) ;
     }
@@ -86,13 +86,13 @@ HDF5RequestHandler::hdf5_build_das( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF5RequestHandler::hdf5_build_dds( DODSDataHandlerInterface &dhi )
+HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
 {
     string filename = dhi.container->get_real_name() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
-	throw DODSHandlerException( string( "hdf4_build_dds: " )
+	throw BESHandlerException( string( "hdf4_build_dds: " )
 					  + "Could not open hdf5 file: "
 	                                  + filename ) ;
     }
@@ -113,13 +113,13 @@ HDF5RequestHandler::hdf5_build_dds( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF5RequestHandler::hdf5_build_data( DODSDataHandlerInterface &dhi )
+HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
 {
     string filename = dhi.container->get_real_name() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
-	throw DODSHandlerException( string( "hdf4_build_data: " )
+	throw BESHandlerException( string( "hdf4_build_data: " )
 					  + "Could not open hdf5 file: "
 	                                  + filename ) ;
     }
@@ -140,18 +140,18 @@ HDF5RequestHandler::hdf5_build_data( DODSDataHandlerInterface &dhi )
 }
 
 bool
-HDF5RequestHandler::hdf5_build_help( DODSDataHandlerInterface &dhi )
+HDF5RequestHandler::hdf5_build_help( BESDataHandlerInterface &dhi )
 {
-    DODSInfo *info = (DODSInfo *)dhi.response_handler->get_response_object() ;
+    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
     //info->add_data( (string)"No help currently available for netCDF handler.\n" ) ;
 
     return true ;
 }
 
 bool
-HDF5RequestHandler::hdf5_build_version( DODSDataHandlerInterface &dhi )
+HDF5RequestHandler::hdf5_build_version( BESDataHandlerInterface &dhi )
 {
-    DODSVersionInfo *info = (DODSVersionInfo *)dhi.response_handler->get_response_object() ;
+    BESVersionInfo *info = (BESVersionInfo *)dhi.response_handler->get_response_object() ;
     info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return true ;
 }
