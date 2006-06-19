@@ -1,0 +1,81 @@
+
+$Id: INSTALL 14042 2006-06-15 18:21:17Z jimg $
+
+Installing the HDF5 handler for the OPeNDAP server.
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+REQUIREMENTS
+NOTES
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+
+0) Please skim REQUIREMENTS and NOTES sections of this file before reporting
+   problems. Thanks.
+
+1) Type `./configure' at the system prompt. On some systems you may have to
+   type `sh configure.' If you want this part of the server to install
+   someplace other than /usr/local/bin, use --prefix to change the prefix
+   from the default "/use/local/." Make sure that the dap-server CGI knows
+   where the handler is located (you can list the complete pathname in the
+   dap-server.rc file; see dap-server's INSTALL and README files).
+
+2) Type `make' to build the three server programs
+
+3) Install the server components in $prefix by running `make install.'
+
+Building from Our SVN Repository
+
+  If you are building from a SVN checkout, run 'autoreconf --verbose' before
+  './configure; make'. If you try to run autoconf, et c., by hand and wind up
+  with build files that don't work, use 'autoreconf --force --verbose'. Once
+  autoreconf has made the configure and Makefile.in files, do ./configure;
+  make; make install as outlined above.
+
+REQUIREMENTS
+
+  o You need the libdap library version 3.7.0 to build and install this
+    software. If you're using Linux, this means either building form source
+    or using the libdap and libdap-devel RPM packages, once they are
+    available. 
+
+  o To use this software with our data server, you will need the OPeNDAP
+    dap-server software package, version 3.6.0, although this particular
+    release has not been tested with dap-server 3.6.0.
+
+  o If you're planning on using this with Server4, version 1.2, you'll need
+    version 3.1.0 of the BES software.
+
+  o You also need a recent copy of HDF5. Use --with-hdf5 to specify where
+    your hdf5 distribution is located if configure cannot find it on its own.
+    See './configure --help' for more info.
+
+NOTES
+
+  o For information about installing secure OPeNDAP servers, see the file
+    SECURITY included with the dap-server software.
+
+  o DEBUGGING AIDS
+
+    - The OPeNDAP libdap library includes the following debugging aids that
+      may be of help to you in developing new applications.
+
+    - DBG: simple program instrumentation -- see the file debug.h distributed
+      with libdap (which is installed in the libdap header directory; use
+      'config-libdap --cflags' and look at the value if -I).
+
+    - DBG2: more elaborate program instrumentation -- by convention this is
+      used for output that is half a page or more, while DEBUG is used for
+      single line output.
+
+    - To build with program instrumentation use `--enable-debug=<level>'
+      where <level> is 1 or 2.
+
+    - By default, both debug and dbnew are *not* enabled. Thus, if you want
+      to build a straight version of the libraries and test code, use
+      `./configure'. If you want the extra features, use:
+
+      ./configure --enable-dbnew --enable-debug=2

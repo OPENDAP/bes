@@ -1,0 +1,178 @@
+2006-06-02  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: updated to use the new bes and hdf5 macros in conf.
+
+2006-06-02  James Gallagher <jgallagher@opendap.org>
+
+	Added bes, hdf5 and hdf5_header macros; updated libdap4 and
+	mkinstalldirs. Added compile file.
+
+2006-05-26  Patrick West <pwest@ucar.edu>
+
+	include hdf type classes in module library
+
+2006-05-24  Patrick West <pwest@ucar.edu>
+
+	bes module updates
+
+2006-05-15  Patrick West <pwest@ucar.edu>
+
+	container storage changes
+
+2006-05-10  Patrick West <pwest@ucar.edu>
+
+	ltmain added
+
+2006-05-05  Patrick West <pwest@ucar.edu>
+
+	bes enabled, moved das functions from h5_handler.cc to new source
+	file h5das, implemented request handler
+
+2006-04-19  James Gallagher <jgallagher@opendap.org>
+
+	libdap.m4, configure.ac, h5_handler.cc: Updated to use the
+	new libdap 3.7.0 code. Use the ConstraintEvaluator object and
+	supports returning DDX responses.
+
+2006-02-23  James Gallagher <jgallagher@opendap.org>
+
+	Tried to fix the warning in H5Git.c. Not successful
+
+2006-02-02  James Gallagher <jgallagher@opendap.org>
+
+	Added mkinstalldirs, config.guess and config.sub to conf. Fixed a
+	bad macro in configure.ac
+
+2006-02-02  James Gallagher <jgallagher@opendap.org>
+
+	HDF%TypeFactory: Added
+
+2006-02-01  James Gallagher <jgallagher@opendap.org>
+
+	Added conf directory
+
+2006-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Minor updates: version.h version number rest to 1.0; tests
+	commented out in Makefile.am since they won't work. We need new
+	tests that use dap_h5_handler.
+
+2006-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed .indent.pro and config_hdf5.h.in
+
+2006-01-31  James Gallagher <jgallagher@opendap.org>
+
+	More massive changes. Added the HDF5TypeFactory; removed the exec
+	property; removed configure
+
+2006-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed Pix use in HDF5Array and HDF5Grid; Removed use of iostream in
+	hdf5_handler.cc wrote configure.ac and Makefile.am (they probably work
+	but there's a compile-error because this code has not been modified to
+	use the Factory class for object creation).
+
+2005-11-04  James Gallagher <jgallagher@opendap.org>
+
+	Moved to the correct place this time!
+
+2005-11-04  James Gallagher <jgallagher@opendap.org>
+
+	Moved to the top level
+
+2005-08-08  root
+
+	Auto reset of Subversion properties
+
+2005-07-05  Rob Morris <Robert.O.Morris@jpl.nasa.gov>
+
+	Set eol-style to native on all text file in the trunk
+
+2004-04-21  James Gallagher <jgallagher@opendap.org>
+
+	From John Bane: NewFloat32 on line 318 (inside case H5T_FLOAT)
+	should be NewFloat64.
+
+2004-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Applied patch from Bob Bane <bane@gst.com>. This patch removes
+	tests for the unlimited dimension; since the DAP is read-only this
+	code does not need to differentiate unlimited versus fixed
+	dimensions.
+
+2004-02-04  James Gallagher <jgallagher@opendap.org>
+
+	Cleaned up the include file dependencies, sort of...
+
+2004-02-04  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2004-02-04  James Gallagher <jgallagher@opendap.org>
+
+	Modifications to compile with the current dap software. No testing
+	yet.
+
+2004-01-26  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes
+
+2002-02-21  edavis
+
+	Fix update-version target (see bug 221).
+
+2001-07-25  James Gallagher <jgallagher@opendap.org>
+
+	Massive changes: Modified build to work well with 3.2, Fixed
+	compiler warnings, Removed unused variable, Added default cases to
+	switches, et cetera. See the TODO file for things stil left to be
+	done. This server needs testing!
+
+2001-07-25  James Gallagher <jgallagher@opendap.org>
+
+	*** empty log message ***
+
+2001-07-25  James Gallagher <jgallagher@opendap.org>
+
+	*** empty log message ***
+
+2001-07-24  James Gallagher <jgallagher@opendap.org>
+
+	*** empty log message ***
+
+2001-07-24  James Gallagher <jgallagher@opendap.org>
+
+	*** empty log message ***
+
+2001-07-24  James Gallagher <jgallagher@opendap.org>
+
+	*** empty log message ***
+
+2001-07-23  James Gallagher <jgallagher@opendap.org>
+
+	Error handlings are changed according to c++ semantics.
+
+2001-07-23  James Gallagher <jgallagher@opendap.org>
+
+	error handling added.
+
+2001-07-18  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2001-07-17  James Gallagher <jgallagher@opendap.org>
+
+	Added exceptions.
+
+2001-07-17  James Gallagher <jgallagher@opendap.org>
+
+	Moved from above
+
+2001-07-17  James Gallagher <jgallagher@opendap.org>
+
+	Added support for exceptions to DDS and DODS handlers
+
+2001-07-16  James Gallagher <jgallagher@opendap.org>
+
+	Initial revision
