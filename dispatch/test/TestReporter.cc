@@ -8,7 +8,7 @@ using std::endl ;
 #include "TestReporter.h"
 
 TestReporter::TestReporter( string name )
-    : DODSReporter(),
+    : BESReporter(),
       _name( name )
 {
 }
@@ -18,7 +18,7 @@ TestReporter::~TestReporter()
 }
 
 void
-TestReporter::report( const DODSDataHandlerInterface &dhi )
+TestReporter::report( const BESDataHandlerInterface &dhi )
 {
     cout << _name << " reporting" << endl ;
 }

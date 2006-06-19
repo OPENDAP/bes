@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "resplistT.h"
-#include "DODSResponseHandlerList.h"
+#include "BESResponseHandlerList.h"
 #include "TestResponseHandler.h"
 
 int resplistT::
@@ -18,7 +18,7 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 response handlers" << endl ;
-    DODSResponseHandlerList *rhl = DODSResponseHandlerList::TheList() ;
+    BESResponseHandlerList *rhl = BESResponseHandlerList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
@@ -51,7 +51,7 @@ run(void) {
     for( int i = 4; i >= 0; i-- )
     {
 	sprintf( num, "resp%d", i ) ;
-	DODSResponseHandler *rh = rhl->find_handler( num ) ;
+	BESResponseHandler *rh = rhl->find_handler( num ) ;
 	if( rh )
 	{
 	    if( rh->get_name() == num )
@@ -78,7 +78,7 @@ run(void) {
     cout << "removing resp2" << endl ;
     if( rhl->remove_handler( "resp2" ) == true )
     {
-	DODSResponseHandler *rh = rhl->find_handler( "resp2" ) ;
+	BESResponseHandler *rh = rhl->find_handler( "resp2" ) ;
 	if( rh )
 	{
 	    if( rh->get_name() == "resp2" )
@@ -116,7 +116,7 @@ run(void) {
 	return 1 ;
     }
 
-    DODSResponseHandler *rh = rhl->find_handler( "resp2" ) ;
+    BESResponseHandler *rh = rhl->find_handler( "resp2" ) ;
     if( rh )
     {
 	if( rh->get_name() == "resp2" )

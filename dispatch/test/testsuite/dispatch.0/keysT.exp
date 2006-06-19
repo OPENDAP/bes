@@ -17,27 +17,27 @@ Entered keysT::run
 
 *****************************************
 no file set
-unable to create DODSKeys, good, because:
+unable to create BESKeys, good, because:
 OPeNDAP: fatal, can not open initialization file 
 The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
 
 
 *****************************************
 notfound file set
-unable to create DODSKeys, good, because:
+unable to create BESKeys, good, because:
 OPeNDAP: fatal, can not open initialization file notfound.ini
 The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
 
 
 *****************************************
 bad keys, not enough equal signs
-unable to create DODSKeys, good, because:
+unable to create BESKeys, good, because:
 OPeNDAP: invalid entry OPeNDAP.BADKEY; there are 0 = characters.
 
 
 *****************************************
 bad keys, too many equal signs
-unable to create DODSKeys, good, because:
+unable to create BESKeys, good, because:
 OPeNDAP: invalid entry OPeNDAP.BADKEY=str1=str2; there are 2 = characters.
 
 
@@ -56,7 +56,7 @@ OPeNDAP.KEY3 = val3
 
 *****************************************
 look for non existant key
-did not find DODS.NOTFOUND
+did not find BES.NOTFOUND
 
 *****************************************
 look for key with empty value
@@ -73,11 +73,11 @@ unable to set the key, good, because:
 OPeNDAP: invalid entry OPeNDAP.2EQS=val1=val2; there are 2 = characters.
 
 *****************************************
-set DODS.KEY5 to val5
+set BES.KEY5 to val5
 set_key successful
 
 *****************************************
-set DODS.KEY6 to val6
+set BES.KEY6 to val6
 set_key successful
 
 *****************************************

@@ -16,10 +16,10 @@ set test_out "
 Entered plistT::run
 
 *****************************************
-Create the DODSContainerPersistentList
+Create the BESContainerPersistentList
 
 *****************************************
-Add ContainerStorageFile for File1 and File2
+Add BESContainerStorageFile for File1 and File2
 successfully added File1
 successfully added File2
 

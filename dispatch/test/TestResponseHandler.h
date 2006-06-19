@@ -3,21 +3,21 @@
 #ifndef I_TESTRESPONSEHANDLER_H
 #define I_TESTRESPONSEHANDLER_H
 
-#include "DODSResponseHandler.h"
+#include "BESResponseHandler.h"
 
-class TestResponseHandler : public DODSResponseHandler {
+class TestResponseHandler : public BESResponseHandler {
 public:
 				TestResponseHandler( string name ) ;
     virtual			~TestResponseHandler( void ) ;
 
-    virtual void		execute( DODSDataHandlerInterface &dhi ) ;
-    virtual void		transmit( DODSDataHandlerInterface &dhi ) ;
-    virtual void		execute_each( DODSDataHandlerInterface &dhi ) ;
-    virtual void		execute_all( DODSDataHandlerInterface &dhi ) ;
-    virtual void		transmit( DODSTransmitter *transmitter,
-                                          DODSDataHandlerInterface &dhi ) ;
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESDataHandlerInterface &dhi ) ;
+    virtual void		execute_each( BESDataHandlerInterface &dhi ) ;
+    virtual void		execute_all( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-    static DODSResponseHandler	*TestResponseBuilder( string handler_name ) ;
+    static BESResponseHandler	*TestResponseBuilder( string handler_name ) ;
 };
 
 #endif

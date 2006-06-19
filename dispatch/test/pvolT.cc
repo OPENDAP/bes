@@ -7,11 +7,11 @@ using std::cout ;
 using std::endl ;
 
 #include "pvolT.h"
-#include "ContainerStorageVolatile.h"
-#include "DODSContainer.h"
-#include "TheDODSKeys.h"
-#include "DODSException.h"
-#include "DODSTextInfo.h"
+#include "BESContainerStorageVolatile.h"
+#include "BESContainer.h"
+#include "TheBESKeys.h"
+#include "BESException.h"
+#include "BESTextInfo.h"
 
 int pvolT::
 run(void)
@@ -22,7 +22,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Create volatile and add five elements" << endl;
-    ContainerStorageVolatile cpv( "volatile" ) ;
+    BESContainerStorageVolatile cpv( "volatile" ) ;
     cpv.add_container( "sym1", "real1", "type1" ) ;
     cpv.add_container( "sym2", "real2", "type2" ) ;
     cpv.add_container( "sym3", "real3", "type3" ) ;
@@ -31,7 +31,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    DODSTextInfo info( false ) ;
+    BESTextInfo info( false ) ;
     cpv.show_containers( info ) ;
     info.print( stdout ) ;
 
@@ -43,7 +43,7 @@ run(void)
 	cerr << "succesfully added sym1 again, bad things man" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "unable to add sym1 again, good" << endl ;
 	cout << e.get_error_description() << endl ;
@@ -60,7 +60,7 @@ run(void)
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
-	    DODSContainer d( s ) ;
+	    BESContainer d( s ) ;
 	    cpv.look_for( d ) ;
 	    if( d.is_valid() )
 	    {
@@ -94,7 +94,7 @@ run(void)
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "find sym1" << endl;
-	DODSContainer d( "sym1" ) ;
+	BESContainer d( "sym1" ) ;
 	cpv.look_for( d ) ;
 	if( d.is_valid() == true )
 	{
@@ -120,7 +120,7 @@ run(void)
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "find sym5" << endl;
-	DODSContainer d( "sym5" ) ;
+	BESContainer d( "sym5" ) ;
 	cpv.look_for( d ) ;
 	if( d.is_valid() == true )
 	{
@@ -159,7 +159,7 @@ run(void)
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
-	    DODSContainer d( s ) ;
+	    BESContainer d( s ) ;
 	    cpv.look_for( d ) ;
 	    if( d.is_valid() )
 	    {
@@ -184,7 +184,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    DODSTextInfo info2( false ) ;
+    BESTextInfo info2( false ) ;
     cpv.show_containers( info2 ) ;
     info2.print( stdout ) ;
 
@@ -195,7 +195,7 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "OPENDAP_INI=./persistence_cgi_test.ini" ) ;
+    putenv( "BES_CONF=./persistence_cgi_test.ini" ) ;
     Application *app = new pvolT();
     return app->main(argC, argV);
 }

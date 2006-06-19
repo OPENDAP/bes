@@ -7,11 +7,11 @@ using std::cout ;
 using std::endl ;
 
 #include "plistT.h"
-#include "ContainerStorageList.h"
-#include "ContainerStorageFile.h"
-#include "DODSContainer.h"
-#include "DODSException.h"
-#include "DODSTextInfo.h"
+#include "BESContainerStorageList.h"
+#include "BESContainerStorageFile.h"
+#include "BESContainer.h"
+#include "BESException.h"
+#include "BESTextInfo.h"
 
 int plistT::
 run(void)
@@ -21,13 +21,13 @@ run(void)
     int retVal = 0;
 
     cout << endl << "*****************************************" << endl;
-    cout << "Create the DODSContainerPersistentList" << endl;
-    ContainerStorageList *cpl = ContainerStorageList::TheList() ;
+    cout << "Create the BESContainerPersistentList" << endl;
+    BESContainerStorageList *cpl = BESContainerStorageList::TheList() ;
 
     cout << endl << "*****************************************" << endl;
-    cout << "Add ContainerStorageFile for File1 and File2" << endl;
-    ContainerStorageFile *cpf ;
-    cpf = new ContainerStorageFile( "File1" ) ;
+    cout << "Add BESContainerStorageFile for File1 and File2" << endl;
+    BESContainerStorageFile *cpf ;
+    cpf = new BESContainerStorageFile( "File1" ) ;
     if( cpl->add_persistence( cpf ) == true )
     {
 	cout << "successfully added File1" << endl ;
@@ -38,7 +38,7 @@ run(void)
 	return 1 ;
     }
 
-    cpf = new ContainerStorageFile( "File2" ) ;
+    cpf = new BESContainerStorageFile( "File2" ) ;
     if( cpl->add_persistence( cpf ) == true )
     {
 	cout << "successfully added File2" << endl ;
@@ -51,7 +51,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Try to add File2 again" << endl;
-    cpf = new ContainerStorageFile( "File2" ) ;
+    cpf = new BESContainerStorageFile( "File2" ) ;
     if( cpl->add_persistence( cpf ) == true )
     {
 	cerr << "successfully added File2 again" << endl ;
@@ -76,7 +76,7 @@ run(void)
 	cout << "looking for " << s << endl;
 	try
 	{
-	    DODSContainer d( s ) ;
+	    BESContainer d( s ) ;
 	    cpl->look_for( d ) ;
 	    if( d.is_valid() )
 	    {
@@ -97,7 +97,7 @@ run(void)
 		return 1 ;
 	    }
 	}
-	catch( DODSException &e )
+	catch( BESException &e )
 	{
 	    cerr << "couldn't find " << s << endl ;
 	    return 1 ;
@@ -108,7 +108,7 @@ run(void)
     cout << "looking for non-existant thingy" << endl;
     try
     {
-	DODSContainer dnot( "thingy" ) ;
+	BESContainer dnot( "thingy" ) ;
 	cpl->look_for( dnot ) ;
 	if( dnot.is_valid() )
 	{
@@ -120,14 +120,14 @@ run(void)
 	    cout << "didn't find thingy, good" << endl ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "didn't find thingy, good" << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    DODSTextInfo info( false ) ;
+    BESTextInfo info( false ) ;
     cpl->show_containers( info ) ;
     info.print( stdout ) ;
 
@@ -147,7 +147,7 @@ run(void)
     cout << "looking for sym2" << endl;
     try
     {
-	DODSContainer d2( "sym2" ) ;
+	BESContainer d2( "sym2" ) ;
 	cpl->look_for( d2 ) ;
 	if( d2.is_valid() )
 	{
@@ -160,7 +160,7 @@ run(void)
 	    cout << "couldn't find sym2, good" << endl ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "couldn't find sym2, good" << endl ;
     }
@@ -169,7 +169,7 @@ run(void)
     cout << "looking for sym7" << endl;
     try
     {
-	DODSContainer d7( "sym7" ) ;
+	BESContainer d7( "sym7" ) ;
 	cpl->look_for( d7 ) ;
 	if( d7.is_valid() )
 	{
@@ -191,7 +191,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "couldn't find sym7, should have" << endl ;
 	return 1 ;
@@ -206,7 +206,7 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new plistT();
-    putenv( "OPENDAP_INI=./persistence_file_test.ini" ) ;
+    putenv( "BES_CONF=./persistence_file_test.ini" ) ;
     return app->main(argC, argV);
 }
 

@@ -6,7 +6,7 @@ using std::cerr ;
 using std::endl ;
 
 #include "TheFailedCat.h"
-#include "DODSInitList.h"
+#include "BESInitList.h"
 
 Animal *TheFailedCat = 0;
 

@@ -11,7 +11,7 @@ using std::endl ;
 TestRequestHandler *trh = 0 ;
 
 TestRequestHandler::TestRequestHandler( string name )
-    : DODSRequestHandler( name ),
+    : BESRequestHandler( name ),
       _resp_num( 0 )
 {
     trh = this ;
@@ -26,28 +26,28 @@ TestRequestHandler::~TestRequestHandler()
 }
 
 bool
-TestRequestHandler::test_build_resp1( DODSDataHandlerInterface &r )
+TestRequestHandler::test_build_resp1( BESDataHandlerInterface &r )
 {
     trh->_resp_num = 1 ;
     return true ;
 }
 
 bool
-TestRequestHandler::test_build_resp2( DODSDataHandlerInterface &r )
+TestRequestHandler::test_build_resp2( BESDataHandlerInterface &r )
 {
     trh->_resp_num = 2 ;
     return true ;
 }
 
 bool
-TestRequestHandler::test_build_resp3( DODSDataHandlerInterface &r )
+TestRequestHandler::test_build_resp3( BESDataHandlerInterface &r )
 {
     trh->_resp_num = 3 ;
     return true ;
 }
 
 bool
-TestRequestHandler::test_build_resp4( DODSDataHandlerInterface &r )
+TestRequestHandler::test_build_resp4( BESDataHandlerInterface &r )
 {
     trh->_resp_num = 4 ;
     return true ;
@@ -58,7 +58,7 @@ TestRequestHandler::test()
 {
     cout << endl << "*****************************************" << endl;
     cout << "finding the handlers" << endl ;
-    DODSDataHandlerInterface r ;
+    BESDataHandlerInterface r ;
     p_request_handler p = find_handler( "resp1" ) ;
     if( p )
     {

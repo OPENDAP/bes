@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "reqlistT.h"
-#include "DODSRequestHandlerList.h"
+#include "BESRequestHandlerList.h"
 #include "TestRequestHandler.h"
 
 int reqlistT::
@@ -18,7 +18,7 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 request handlers" << endl ;
-    DODSRequestHandlerList *rhl = DODSRequestHandlerList::TheList() ;
+    BESRequestHandlerList *rhl = BESRequestHandlerList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
@@ -36,7 +36,7 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "try to add req3 again" << endl ;
-    DODSRequestHandler *rh = new TestRequestHandler( "req3" ) ;
+    BESRequestHandler *rh = new TestRequestHandler( "req3" ) ;
     if( rhl->add_handler( "req3", rh ) == true )
     {
 	cerr << "successfully added req3 again" << endl ;
@@ -166,8 +166,8 @@ run(void) {
 
     cout << endl << "*****************************************" << endl;
     cout << "Iterating through handler list" << endl ;
-    DODSRequestHandlerList::Handler_citer h = rhl->get_first_handler() ;
-    DODSRequestHandlerList::Handler_citer hl = rhl->get_last_handler() ;
+    BESRequestHandlerList::Handler_citer h = rhl->get_first_handler() ;
+    BESRequestHandlerList::Handler_citer hl = rhl->get_last_handler() ;
     int count = 0 ;
     for( ; h != hl; h++ )
     {

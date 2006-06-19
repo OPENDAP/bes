@@ -9,11 +9,11 @@ using std::endl ;
 using std::stringstream ;
 
 #include "defT.h"
-#include "DefinitionStorageList.h"
-#include "DefinitionStorageVolatile.h"
-#include "DODSDefine.h"
-#include "DODSTextInfo.h"
-#include "DODSException.h"
+#include "BESDefinitionStorageList.h"
+#include "BESDefinitionStorageVolatile.h"
+#include "BESDefine.h"
+#include "BESTextInfo.h"
+#include "BESException.h"
 
 int defT::
 run(void)
@@ -22,8 +22,8 @@ run(void)
     cout << "Entered defT::run" << endl;
     int retVal = 0;
 
-    DefinitionStorageList::TheList()->add_persistence( new DefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-    DefinitionStorage *store = DefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE ) ;
+    BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
+    BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "add d1, d2, d3, d4, d5" << endl;
@@ -31,7 +31,7 @@ run(void)
     {
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
-	DODSDefine *dd = new DODSDefine ;
+	BESDefine *dd = new BESDefine ;
 	dd->aggregation_command = agg.str() ;
 	bool status = store->add_definition( name.str(), dd ) ;
 	if( status == true )
@@ -51,7 +51,7 @@ run(void)
     {
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
-	DODSDefine *dd = store->look_for( name.str() ) ;
+	BESDefine *dd = store->look_for( name.str() ) ;
 	if( dd )
 	{
 	    cout << "found " << name.str() << endl ;
@@ -77,7 +77,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "show definitions" << endl;
     {
-	DODSTextInfo info( false ) ;
+	BESTextInfo info( false ) ;
 	store->show_definitions( info ) ;
 	info.print( stdout ) ;
     }
@@ -95,7 +95,7 @@ run(void)
 	    cerr << "unable to delete d3" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = store->look_for( "d3" ) ;
+	BESDefine *dd = store->look_for( "d3" ) ;
 	if( dd )
 	{
 	    cerr << "    found d3, bad" << endl ;
@@ -120,7 +120,7 @@ run(void)
 	    cerr << "unable to delete d1" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = store->look_for( "d1" ) ;
+	BESDefine *dd = store->look_for( "d1" ) ;
 	if( dd )
 	{
 	    cerr << "    found d1, bad" << endl ;
@@ -145,7 +145,7 @@ run(void)
 	    cerr << "unable to delete d5" << endl ;
 	    return 1 ;
 	}
-	DODSDefine *dd = store->look_for( "d5" ) ;
+	BESDefine *dd = store->look_for( "d5" ) ;
 	if( dd )
 	{
 	    cerr << "    found d5, bad" << endl ;
@@ -160,7 +160,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "find d2 and d4" << endl;
     {
-	DODSDefine *dd = store->look_for( "d2" ) ;
+	BESDefine *dd = store->look_for( "d2" ) ;
 	if( dd )
 	{
 	    cout << "found " << "d2" << ", good" << endl ;
@@ -193,7 +193,7 @@ run(void)
     {
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
-	DODSDefine *dd = store->look_for( name.str() ) ;
+	BESDefine *dd = store->look_for( name.str() ) ;
 	if( dd )
 	{
 	    cerr << "found " << name.str() << ", bad" << endl ;
@@ -214,7 +214,7 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new defT();
-    putenv( "OPENDAP_INI=./defT.ini" ) ;
+    putenv( "BES_CONF=./defT.ini" ) ;
     return app->main(argC, argV);
 }
 

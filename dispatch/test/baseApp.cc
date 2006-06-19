@@ -6,8 +6,8 @@ using std::cerr ;
 using std::endl ;
 
 #include "baseApp.h"
-#include "DODSGlobalIQ.h"
-#include "DODSException.h"
+#include "BESGlobalIQ.h"
+#include "BESException.h"
 
 Application *Application::_theApplication = 0 ;
 
@@ -51,12 +51,12 @@ initialize( int argC, char **argV )
     // initialize application information
     try
     {
-	if( DODSGlobalIQ::DODSGlobalInit( argC, argV ) != true )
+	if( BESGlobalIQ::BESGlobalInit( argC, argV ) != true )
 	{
 	    retVal = 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "Global Initialization failed" << endl ;
 	cerr << e.get_error_description() << endl ;
@@ -78,7 +78,7 @@ terminate( int sig )
     {
 	cerr << "baseApp::terminating with value " << sig << endl ;
     }
-    DODSGlobalIQ::DODSGlobalQuit() ;
+    BESGlobalIQ::BESGlobalQuit() ;
 
     return sig ;
 }

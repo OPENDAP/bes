@@ -7,7 +7,7 @@ using std::endl ;
 
 #include "TheDog.h"
 #include "dog.h"
-#include "DODSInitList.h"
+#include "BESInitList.h"
 
 Animal *TheDog = 0;
 

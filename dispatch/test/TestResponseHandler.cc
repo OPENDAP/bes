@@ -9,7 +9,7 @@ using std::endl ;
 #include "TestResponseHandler.h"
 
 TestResponseHandler::TestResponseHandler( string name )
-    : DODSResponseHandler( name )
+    : BESResponseHandler( name )
 {
 }
 
@@ -18,32 +18,32 @@ TestResponseHandler::~TestResponseHandler()
 }
 
 void
-TestResponseHandler::execute( DODSDataHandlerInterface & )
+TestResponseHandler::execute( BESDataHandlerInterface & )
 {
 }
 
 void
-TestResponseHandler::transmit( DODSDataHandlerInterface & )
+TestResponseHandler::transmit( BESDataHandlerInterface & )
 {
 }
 
 void
-TestResponseHandler::execute_each( DODSDataHandlerInterface & )
+TestResponseHandler::execute_each( BESDataHandlerInterface & )
 {
 }
 
 void
-TestResponseHandler::execute_all( DODSDataHandlerInterface & )
+TestResponseHandler::execute_all( BESDataHandlerInterface & )
 {
 }
 
 void
-TestResponseHandler::transmit( DODSTransmitter *transmitter,
-			       DODSDataHandlerInterface &dhi )
+TestResponseHandler::transmit( BESTransmitter *transmitter,
+			       BESDataHandlerInterface &dhi )
 {
 }
 
-DODSResponseHandler *
+BESResponseHandler *
 TestResponseHandler::TestResponseBuilder( string handler_name )
 {
     return new TestResponseHandler( handler_name ) ;

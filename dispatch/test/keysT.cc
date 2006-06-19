@@ -8,8 +8,8 @@ using std::cout ;
 using std::endl ;
 
 #include "keysT.h"
-#include "TheDODSKeys.h"
-#include "DODSException.h"
+#include "TheBESKeys.h"
+#include "BESException.h"
 
 int keysT::
 initialize( int argC, char **argV )
@@ -32,20 +32,20 @@ run(void)
     if( _keyFile != "" )
     {
 	char envVal[256] ;
-	sprintf( envVal, "OPENDAP_INI=%s", _keyFile.c_str() ) ;
+	sprintf( envVal, "BES_CONF=%s", _keyFile.c_str() ) ;
 	putenv( envVal ) ;
 	try
 	{
-	    TheDODSKeys::TheKeys()->show_keys() ;
+	    TheBESKeys::TheKeys()->show_keys() ;
 	}
-	catch( DODSException &e )
+	catch( BESException &e )
 	{
-	    cout << "unable to create DODSKeys:" << endl ;
+	    cout << "unable to create BESKeys:" << endl ;
 	    cout << e.get_error_description() << endl ;
 	}
 	catch( ... )
 	{
-	    cout << "unable to create DODSKeys: unkown exception caught"
+	    cout << "unable to create BESKeys: unkown exception caught"
 	         << endl ;
 	}
 
@@ -54,31 +54,31 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "no file set" << endl;
-    putenv( "OPENDAP_INI=" ) ;
+    putenv( "BES_CONF=" ) ;
     try
     {
-	TheDODSKeys::TheKeys() ;
+	TheBESKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
-	cout << "unable to create DODSKeys, good, because:" << endl ;
+	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "notfound file set" << endl;
-    putenv( "OPENDAP_INI=notfound.ini" ) ;
+    putenv( "BES_CONF=notfound.ini" ) ;
     try
     {
-	TheDODSKeys::TheKeys() ;
+	TheBESKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
-	cout << "unable to create DODSKeys, good, because:" << endl ;
+	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
 
@@ -90,54 +90,54 @@ run(void)
 	pwd_s = "." ;
     else
 	pwd_s = pwd ;
-    string env_s = "OPENDAP_INI=" + pwd_s + "/bad_keys1.ini" ;
+    string env_s = "BES_CONF=" + pwd_s + "/bad_keys1.ini" ;
     char env1[1024] ;
     sprintf( env1, "%s", env_s.c_str() ) ;
     putenv( env1 ) ;
     try
     {
-	TheDODSKeys::TheKeys() ;
+	TheBESKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
-	cout << "unable to create DODSKeys, good, because:" << endl ;
+	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "bad keys, too many equal signs" << endl;
-    env_s = "OPENDAP_INI=" + pwd_s + "/bad_keys2.ini" ;
+    env_s = "BES_CONF=" + pwd_s + "/bad_keys2.ini" ;
     char env2[1024] ;
     sprintf( env2, "%s", env_s.c_str() ) ;
     putenv( env2 ) ;
     try
     {
-	TheDODSKeys::TheKeys() ;
+	TheBESKeys::TheKeys() ;
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
-	cout << "unable to create DODSKeys, good, because:" << endl ;
+	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_error_description() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "good keys file, should load" << endl;
-    env_s = "OPENDAP_INI=" + pwd_s + "/keys_test.ini" ;
+    env_s = "BES_CONF=" + pwd_s + "/keys_test.ini" ;
     char env3[1024] ;
     sprintf( env3, "%s", env_s.c_str() ) ;
     putenv( env3 ) ;
     try
     {
-	TheDODSKeys::TheKeys() ;
+	TheBESKeys::TheKeys() ;
 	cout << "created, good" << endl ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
-	cerr << "unable to create DODSKeys, because:" << endl ;
+	cerr << "unable to create BESKeys, because:" << endl ;
 	cerr << e.get_error_description() << endl ;
 	return 1 ;
     }
@@ -154,7 +154,7 @@ run(void)
 	sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
 	ret = "" ;
-	ret = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	ret = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( found == false )
 	{
 	    cerr << key << " not found" << endl ;
@@ -178,20 +178,20 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for non existant key" << endl;
-    ret = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.NOTFOUND", found ) ;
+    ret = TheBESKeys::TheKeys()->get_key( "OPeNDAP.NOTFOUND", found ) ;
     if( found == true )
     {
-	cerr << "found DODS.NOTFOUND = \"" << ret << "\"" << endl ;
+	cerr << "found BES.NOTFOUND = \"" << ret << "\"" << endl ;
 	return 1 ;
     }
     else
     {
-	cout << "did not find DODS.NOTFOUND" << endl ;
+	cout << "did not find BES.NOTFOUND" << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "look for key with empty value" << endl;
-    ret = TheDODSKeys::TheKeys()->get_key( "OPeNDAP.KEY4", found ) ;
+    ret = TheBESKeys::TheKeys()->get_key( "OPeNDAP.KEY4", found ) ;
     if( found == true )
     {
 	if( ret == "" )
@@ -200,13 +200,13 @@ run(void)
 	}
 	else
 	{
-	    cerr << "found DODS.NOTFOUND = \"" << ret << "\"" << endl ;
+	    cerr << "found BES.NOTFOUND = \"" << ret << "\"" << endl ;
 	    return 1 ;
 	}
     }
     else
     {
-	cerr << "did not find DODS.KEY4" << endl ;
+	cerr << "did not find BES.KEY4" << endl ;
 	return 1 ;
     }
 
@@ -214,11 +214,11 @@ run(void)
     cout << "set bad key, 0 = characters" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.NOEQS" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.NOEQS" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
 	cout << e.get_error_description() ;
@@ -228,21 +228,21 @@ run(void)
     cout << "set bad key, 2 = characters" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.2EQS=val1=val2" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.2EQS=val1=val2" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
 	cout << e.get_error_description() ;
     }
 
     cout << endl << "*****************************************" << endl;
-    cout << "set DODS.KEY5 to val5" << endl;
+    cout << "set BES.KEY5 to val5" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.KEY5=val5" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.KEY5=val5" ) ;
 	if( ret == "val5" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -254,7 +254,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
 	cerr << e.get_error_description() ;
@@ -262,10 +262,10 @@ run(void)
     }
 
     cout << endl << "*****************************************" << endl;
-    cout << "set DODS.KEY6 to val6" << endl;
+    cout << "set BES.KEY6 to val6" << endl;
     try
     {
-	ret = TheDODSKeys::TheKeys()->set_key( "OPeNDAP.KEY6", "val6" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.KEY6", "val6" ) ;
 	if( ret == "val6" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -277,7 +277,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
 	cerr << e.get_error_description() ;
@@ -295,7 +295,7 @@ run(void)
 	else sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
 	ret = "" ;
-	ret = TheDODSKeys::TheKeys()->get_key( key, found ) ;
+	ret = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( found == false )
 	{
 	    cerr << key << " not found" << endl ;

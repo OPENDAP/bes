@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "failInitT.h"
-#include "DODSException.h"
+#include "BESException.h"
 
 int failInitT::
 run(void) {
@@ -30,7 +30,7 @@ main(int argC, char **argV) {
     {
 	ret = app->main(argC, argV);
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "initialization failed" << endl ;
     }

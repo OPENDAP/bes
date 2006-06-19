@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "replistT.h"
-#include "DODSReporterList.h"
+#include "BESReporterList.h"
 #include "TestReporter.h"
 
 int replistT::
@@ -19,7 +19,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "add the 5 reporters" << endl ;
-    DODSReporterList *rl = DODSReporterList::TheList() ;
+    BESReporterList *rl = BESReporterList::TheList() ;
     char num[10] ;
     for( int i = 0; i < 5; i++ )
     {
@@ -167,7 +167,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "report" << endl;
-    DODSDataHandlerInterface dhi ;
+    BESDataHandlerInterface dhi ;
     rl->report( dhi ) ;
 
     cout << endl << "*****************************************" << endl;

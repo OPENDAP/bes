@@ -7,12 +7,12 @@ using std::cout ;
 using std::endl ;
 
 #include "containerT.h"
-#include "TheDODSKeys.h"
-#include "ContainerStorageList.h"
-#include "DODSContainer.h"
-#include "ContainerStorage.h"
-#include "ContainerStorageFile.h"
-#include "DODSException.h"
+#include "TheBESKeys.h"
+#include "BESContainerStorageList.h"
+#include "BESContainer.h"
+#include "BESContainerStorage.h"
+#include "BESContainerStorageFile.h"
+#include "BESException.h"
 
 int containerT::
 run(void)
@@ -35,10 +35,10 @@ run(void)
     {
 	string key = (string)"OPeNDAP.Container.Persistence.File.TheFile=" +
 		     pwd_s + "/container01.file" ;
-	TheDODSKeys::TheKeys()->set_key( key ) ;
-	ContainerStorageList::TheList()->add_persistence( new ContainerStorageFile( "TheFile" ) ) ;
+	TheBESKeys::TheKeys()->set_key( key ) ;
+	BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageFile( "TheFile" ) ) ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "couldn't add storage to storage list:" << endl ;
 	cerr << e.get_error_description() << endl ;
@@ -49,8 +49,8 @@ run(void)
     cout << "try to find symbolic name that doesn't exist, default" << endl;
     try
     {
-	DODSContainer c( "nosym" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "nosym" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	cerr << "Found nosym, shouldn't have" << endl ;
 	if( c.is_valid() == true )
 	    cerr << "container is valid, should not be" << endl ;
@@ -60,7 +60,7 @@ run(void)
 	cerr << " container type = " << c.get_container_type() << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
 	cout << e.get_error_description() << endl ;
@@ -70,8 +70,8 @@ run(void)
     cout << "try to find symbolic name that does exist, default" << endl;
     try
     {
-	DODSContainer c( "sym1" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "sym1" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	cout << "found sym1" << endl ;
 	if( c.is_valid() == false )
 	{
@@ -97,7 +97,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -105,14 +105,14 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "set to strict" << endl;
-    TheDODSKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=strict" ) ;
+    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=strict" ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "try to find symbolic name that doesn't exist, strict" << endl;
     try
     {
-	DODSContainer c( "nosym" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "nosym" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	cerr << "Found nosym, shouldn't have" << endl ;
 	if( c.is_valid() == true )
 	    cerr << "container is valid, should not be" << endl ;
@@ -122,7 +122,7 @@ run(void)
 	cerr << " container type = " << c.get_container_type() << endl ;
 	return 1 ;
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
 	cout << e.get_error_description() << endl ;
@@ -132,8 +132,8 @@ run(void)
     cout << "try to find symbolic name that does exist, strict" << endl;
     try
     {
-	DODSContainer c( "sym1" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "sym1" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	cout << "found sym1" << endl ;
 	if( c.is_valid() == false )
 	{
@@ -159,7 +159,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -167,14 +167,14 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "set to nice" << endl;
-    TheDODSKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=nice" ) ;
+    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=nice" ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "try to find symbolic name that doesn't exist, nice" << endl;
     try
     {
-	DODSContainer c( "nosym" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "nosym" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	if( c.is_valid() == true )
 	{
 	    cerr << "Found nosym, shouldn't have" << endl ;
@@ -189,7 +189,7 @@ run(void)
 	    cout << "didn't find nosym, didn't throw exception, good" << endl ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "caught exception, shouldn't have" << endl ;
 	cerr << e.get_error_description() << endl ;
@@ -200,8 +200,8 @@ run(void)
     cout << "try to find symbolic name that does exist, nice" << endl;
     try
     {
-	DODSContainer c( "sym1" ) ;
-	ContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer c( "sym1" ) ;
+	BESContainerStorageList::TheList()->look_for( c ) ;
 	if( c.is_valid() == false )
 	{
 	    cerr << "is not valid though" << endl ;
@@ -226,7 +226,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( DODSException &e )
+    catch( BESException &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -241,7 +241,7 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new containerT();
-    putenv( "OPENDAP_INI=./empty.ini" ) ;
+    putenv( "BES_CONF=./empty.ini" ) ;
     return app->main(argC, argV);
 }
 
