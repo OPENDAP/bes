@@ -145,4 +145,3 @@ BESDelContainersResponseHandler::DelContainersResponseBuilder( string handler_na
 {
     return new BESDelContainersResponseHandler( handler_name ) ;
 }
-

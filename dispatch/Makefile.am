@@ -47,7 +47,7 @@ uninstall-local:
 #
 # Sources and Headers for libdispatch.
 
-SRCS:=BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
+SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
 	TheBESKeys.cc BESContainer.cc BESStatus.cc \
 	BESContainerStorageCatalog.cc BESContainerStorageFile.cc \
@@ -72,7 +72,7 @@ SRCS:=BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESDefinitionStorageVolatile.cc \
 	BESBaseApp.cc BESModuleApp.cc default_module.cc
 
-HDRS:=BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
+HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
 	BESInitializer.h BESLog.h BESLogException.h \
 	BESKeys.h TheBESKeys.h BESKeysException.h \
@@ -113,9 +113,9 @@ HDRS:=BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESDataNames.h BESApp.h BESObj.h BESBaseApp.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESPluginException.h default_module.h BESTransmitterNames.h \
-	BESModuleApp.h
+	BESModuleApp.h BESDatabaseException.h
 
-DAP_SRCS:=BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
+DAP_SRCS = BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc BESDDXResponseHandler.cc \
 	BESDataResponseHandler.cc BESDefineResponseHandler.cc \
 	BESShowDefsResponseHandler.cc \
@@ -123,7 +123,7 @@ DAP_SRCS:=BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
 	BESSetContainerResponseHandler.cc BESModule.cc
 
-DAP_HDRS:=BESCatalogResponseHandler.h BESShowContainersResponseHandler.h \
+DAP_HDRS = BESCatalogResponseHandler.h BESShowContainersResponseHandler.h \
 	BESDASResponseHandler.h BESDDSResponseHandler.h BESDDXResponseHandler.h \
 	BESDataResponseHandler.h BESDefineResponseHandler.h \
 	BESShowDefsResponseHandler.h \

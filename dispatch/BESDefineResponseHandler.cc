@@ -168,4 +168,3 @@ BESDefineResponseHandler::DefineResponseBuilder( string handler_name )
 {
     return new BESDefineResponseHandler( handler_name ) ;
 }
-
