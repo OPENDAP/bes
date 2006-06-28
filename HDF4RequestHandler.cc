@@ -62,7 +62,7 @@ HDF4RequestHandler::HDF4RequestHandler( string name )
     if( HDF4RequestHandler::_cachedir == "" )
     {
 	bool found = false ;
-	_cachedir = TheBESKeys::TheKeys()->get_key( "HDF5.cachedir", found ) ;
+	_cachedir = TheBESKeys::TheKeys()->get_key( "HDF4.CacheDir", found ) ;
 	if( !found || _cachedir == "" )
 	    _cachedir = "/tmp" ;
 
@@ -76,7 +76,7 @@ HDF4RequestHandler::HDF4RequestHandler( string name )
 		close(fd);
 		string err = "Could not create a file in the cache directory ("
 			     + _cachedir + ")" ;
-		throw BESKeysException( err ) ;
+		throw BESKeysException( err, __FILE__, __LINE__ ) ;
 	    }
 	    _cachedir = "/tmp" ;
 	}
@@ -141,7 +141,13 @@ bool
 HDF4RequestHandler::hdf4_build_help( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
-    //info->add_data( (string)"No help currently available for netCDF handler.\n" ) ;
+    string handles = (string)DAS_RESPONSE
+                     + "," + DDS_RESPONSE
+                     + "," + DATA_RESPONSE
+                     + "," + HELP_RESPONSE
+                     + "," + VERS_RESPONSE ;
+    info->add_tag( "handles", handles ) ;
+    info->add_tag( "version", PACKAGE_STRING ) ;
 
     return true ;
 }

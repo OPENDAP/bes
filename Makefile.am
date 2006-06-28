@@ -45,10 +45,10 @@ libhdf4_handler_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR)
 
 libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) $(HDFTYPE_HDR) $(SERVER_HDR)
 libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
-libhdf4_module_la_LDFLAGS = $(BES_LDFLAGS)
+libhdf4_module_la_LDFLAGS = $(BES_LDFLAGS) hdfclass/libhdfclass.la
 
 dap_hdf4_handler_SOURCES = hdf_handler.cc
-dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a
+dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.la
 
 eosdas_test_SOURCES = eosdas-test.cc
 eosdas_test_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a

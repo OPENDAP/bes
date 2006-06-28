@@ -10,9 +10,9 @@ AM_CPPFLAGS = -I$(top_srcdir)
 #CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS = @CXXFLAGS@ -Wall
 
-noinst_LIBRARIES = libhdfclass.a
+lib_LTLIBRARIES = libhdfclass.la
 
-libhdfclass_a_SOURCES = annot.cc gri.cc hcerr.h hcutil.cc inst.cc vdata.cc\
+libhdfclass_la_SOURCES = annot.cc gri.cc hcerr.h hcutil.cc inst.cc vdata.cc\
 	genvec.cc hcerr.cc hcstream.h hdfclass.h sds.cc vgroup.cc
 
 EXTRA_DIST = 

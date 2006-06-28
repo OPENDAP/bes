@@ -35,7 +35,6 @@ using std::endl ;
 #include "BESConstraintFuncs.h"
 #include "BESInfo.h"
 #include "TheBESKeys.h"
-#include "BESResponseException.h"
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
