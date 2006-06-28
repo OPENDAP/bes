@@ -1,0 +1,1128 @@
+2006-06-19  Patrick West <pwest@ucar.edu>
+
+	test code and expected output updated with name changes
+
+2006-06-16  Patrick West <pwest@ucar.edu>
+
+	commands changed from just das to get.das
+
+2006-06-16  Patrick West <pwest@ucar.edu>
+
+	unistd required for close function
+
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	DODS to BES
+
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	DODS to BES
+
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	renamed execs to besd and bes, opendap.ini to bes.conf. besd and
+	bes in sbin. bes.conf, dispatch_help in etc/bes, module libraries
+	in lib/bes. Ranamed files to BES. pid file in prefix/run. looks
+	for bes.conf using cmd line arg first, env var second, default
+	location (prefix/etc/bes) third.
+
+2006-06-02  Patrick West <pwest@ucar.edu>
+
+	added Jose as author, re-build bes.conf file, added port and
+	secure configuration information, moved bes and besd configuration
+	to sbin, moved help file installation to /etc/bes
+
+2006-05-30  Patrick West <pwest@ucar.edu>
+
+	ticket 388, empty include list fixed
+
+2006-05-30  Patrick West <pwest@ucar.edu>
+
+	automatically generated
+
+2006-05-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2006-05-26  James Gallagher <jgallagher@opendap.org>
+
+	UnixSocket.cc: I removed so debug code, added some comments and
+	cleaned up my fix for the socket bind bug that showed up on OS/X.
+	I also changed the call to strcpy to strncpy since the size of the
+	string is 104 char.
+
+2006-05-26  James Gallagher <jgallagher@opendap.org>
+
+	UnixSocket.cc: Fix for the fix; Looks like the original way of
+	passing the size of the sockaddr structure was right but missing a
+	'+1.'
+
+2006-05-26  James Gallagher <jgallagher@opendap.org>
+
+	UnixSocket.cc: Fixed the calls to bind. Each call passed a bad
+	value for the size of the sockaddr struct. On OS/X this caused the
+	name of the socket to be truncated and the code could not remove
+	the old socket using unlink. This problem did not show up on
+	Linux.
+
+2006-05-26  Patrick West <pwest@ucar.edu>
+
+	added /bes.conf to BES_CONF_DIR usage
+
+2006-05-26  Patrick West <pwest@ucar.edu>
+
+	configuration file change, first check for BES_CONF env var then
+	use config macro BES_CONF_DIR
+
+2006-05-25  Patrick West <pwest@ucar.edu>
+
+	executible name changes
+
+2006-05-25  Patrick West <pwest@ucar.edu>
+
+	executible name changes
+
+2006-05-25  Patrick West <pwest@ucar.edu>
+
+	additional files
+
+2006-05-25  Patrick West <pwest@ucar.edu>
+
+	additional files
+
+2006-05-24  James Gallagher <jgallagher@opendap.org>
+
+	config.h.in: I removed this from svn since it's a generated file.
+
+2006-05-24  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: Replaced DAP_LIBS with DAP_SERVER_LIBS.
+
+2006-05-24  Patrick West <pwest@ucar.edu>
+
+	broke out dap specific responses (das, ddx, dds, data, containers
+	and definitions) into separate modules. Separated out the delete
+	requests. Separated out the set container request from the set
+	request, in case there are new set requests. Created definition
+	stores just like container stores, default being volatile. Updated
+	dispatch tests.
+
+2006-05-23  James Gallagher <jgallagher@opendap.org>
+
+	Updates to ContainerStorageCatalog, DirectoryCatalog, DODS,
+	DODSProcessEncodedString
+
+2006-05-23  James Gallagher <jgallagher@opendap.org>
+
+	OPeNDAPTokenizer.cc: int to unsigned int
+
+2006-05-23  James Gallagher <jgallagher@opendap.org>
+
+	OPeNDAPParserException.cc: Add docs
+
+2006-05-23  James Gallagher <jgallagher@opendap.org>
+
+	libdap.m4: Updated to the latest version from libdap.
+
+2006-05-23  James Gallagher <jgallagher@opendap.org>
+
+	INSTALL: Added some text about the BES install.
+
+2006-05-15  Patrick West <pwest@ucar.edu>
+
+	definitions stored in same way as containers, with different
+	persistent stores
+
+2006-05-14  Patrick West <pwest@ucar.edu>
+
+	beginnings of secure server implementation
+
+2006-05-12  Patrick West <pwest@ucar.edu>
+
+	updated templates and server creation script to use dynamically
+	loaded modules.
+
+2006-05-12  Patrick West <pwest@ucar.edu>
+
+	added Jose Garcia as author of bes code. updated templates and
+	server creation script to use dynamically loaded modules. Updated
+	documentation for the response handlers (more to come).
+
+2006-05-08  Patrick West <pwest@ucar.edu>
+
+	whenever one request fails, do not proceed to the next
+
+2006-05-02  Patrick West <pwest@ucar.edu>
+
+	catching top level exception during module initialization and
+	displaying error message. Changed error message if root directory
+	does not exist
+
+2006-05-02  Patrick West <pwest@ucar.edu>
+
+	Client inherited from BaseApp which was trying to load modules.
+	Added ModuleApp to load modules. Server inherits from ModuleApp
+	and client inherits, still, from BaseApp
+
+2006-05-01  Patrick West <pwest@ucar.edu>
+
+	polling the initial connection on client side
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	document already in docs directory, updated
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	updated to use with libdap 3.7.0
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	template opendap.ini file for apache module
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	new apache wrapper and unit tests
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	.deps not needed under source code control
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	test server run in single mode
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	added dispatch and server test directories
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	made SocketException inherit from PPTException
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	dejagnu tests in test dir integrated
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	dejagnu tests integrated into dispatch
+
+2006-04-10  Patrick West <pwest@ucar.edu>
+
+	added test directory as sub directory
+
+2006-04-07  Patrick West <pwest@ucar.edu>
+
+	updated dispatch tests
+
+2006-04-05  Patrick West <pwest@ucar.edu>
+
+	made basic handlers automatically loaded instead of needing to be
+	linked in or loaded as a module
+
+2006-04-05  Patrick West <pwest@ucar.edu>
+
+	template updates
+
+2006-03-30  Patrick West <pwest@ucar.edu>
+
+	if don't handle exception, return 0
+
+2006-03-30  Patrick West <pwest@ucar.edu>
+
+	added module source
+
+2006-03-27  Patrick West <pwest@ucar.edu>
+
+	don't need to add object modules
+
+2006-03-27  Patrick West <pwest@ucar.edu>
+
+	dynamic loading of modules
+
+2006-03-27  Patrick West <pwest@ucar.edu>
+
+	dynamic loading of modules
+
+2006-03-27  Patrick West <pwest@ucar.edu>
+
+	dynamic loading of modules
+
+2006-03-06  Patrick West <pwest@ucar.edu>
+
+	shouldn't mix stdout with cout
+
+2006-03-06  Patrick West <pwest@ucar.edu>
+
+	got rid of debug statements
+
+2006-03-06  Patrick West <pwest@ucar.edu>
+
+	Error class changes
+
+2006-03-03  Patrick West <pwest@ucar.edu>
+
+	cleaning up after the sockets
+
+2006-03-03  Patrick West <pwest@ucar.edu>
+
+	cleaning up after the sockets
+
+2006-03-03  Patrick West <pwest@ucar.edu>
+
+	exit codes changed to not terminate
+
+2006-02-24  James Gallagher <jgallagher@opendap.org>
+
+2006-02-24  Patrick West <pwest@ucar.edu>
+
+	ddx response now available
+
+2006-02-24  Patrick West <pwest@ucar.edu>
+
+	added exclude and include list to allow user to exclude dot files
+
+2006-02-21  Patrick West <pwest@ucar.edu>
+
+	using string::size_type for string methods
+
+2006-02-21  Patrick West <pwest@ucar.edu>
+
+	using string::size_type for string methods and using int instead
+	of long
+
+2006-02-21  Patrick West <pwest@ucar.edu>
+
+	more descriptive for server administrator
+
+2006-02-21  Patrick West <pwest@ucar.edu>
+
+	using size_t instead of long and int
+
+2006-02-16  Patrick West <pwest@ucar.edu>
+
+	not needed
+
+2006-02-16  Patrick West <pwest@ucar.edu>
+
+	bes documents to date
+
+2006-02-16  Patrick West <pwest@ucar.edu>
+
+	updated
+
+2006-02-16  Patrick West <pwest@ucar.edu>
+
+	updated
+
+2006-02-15  Patrick West <pwest@ucar.edu>
+
+	changed DODS keys to OPeNDAP
+
+2006-02-15  Patrick West <pwest@ucar.edu>
+
+	changed DODS keys to OPeNDAP
+
+2006-02-15  Patrick West <pwest@ucar.edu>
+
+	changed keys from DODS to OPeNDAP. Removed BaseTypeFactory from
+	DODSResponseHandler, DDSResponseHandler, DataResponseHandler and
+	DDXResponseHandler. The developer is required to set the factory,
+	if needed in their RequestHandler class
+
+2006-02-07  Patrick West <pwest@ucar.edu>
+
+	catching sigint and sigterm. Client cleanup of connection seems to
+	work good
+
+2006-02-07  Patrick West <pwest@ucar.edu>
+
+	added help and ? commands to the client to display help screen
+
+2006-02-03  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Changed thredds_container attribute to the more compatible name
+	thredds_collection. - ndp
+
+2006-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Fixed bug #294
+
+2006-02-02  Patrick West <pwest@ucar.edu>
+
+	<showInfo> for info commands used instead of <showCatalog>
+
+2006-02-02  Patrick West <pwest@ucar.edu>
+
+	replaced Nodes and Leaves with Catalog. Added silently option to
+	Set and Define commands. Passing dhi in parse_request calls.
+
+2006-02-02  Patrick West <pwest@ucar.edu>
+
+	added silently option to set and define commands. Added exception
+	information to DODSInfo. Added DODSXMLInfo for responses requiring
+	XML.
+
+2006-02-01  James Gallagher <jgallagher@opendap.org>
+
+	I added a BaseTypeFactory to DODSResponseHandler and then fixed up
+	the calls to DDS() so that they are passed teh pointer to a
+	BaseTypeFactory.
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	changed name of DODSContainerPersistence to ContainerStorage
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	made type optional in set container command
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	changed the names of DODSContainerPersistence to ContainerStorage.
+	Changed ContainerStorageCGI to ContainerStorageCatalog that
+	matches regular expression using real name to determine type and
+	inherited it from ContainerStorageVolatile
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	removed PARSER return as it is specific to the command like bes
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	function to add to ehm callback in DODS
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	moved DODSParserException and DODSTokenizer to command. Changed
+	show catalog command to include count if container. Added show
+	info command that is like show catalog except it node is a
+	container don't show contents of container, only info about
+	container
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	moved DODSParserException and DODSTokenizer to command. Changed
+	show catalog command to include count if container. Added show
+	info command that is like show catalog except it node is a
+	container don't show contents of container, only info about
+	container
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	moving to command directory where it is actually used
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	moving tokenizer to command directory where it is actually used
+
+2006-01-17  Patrick West <pwest@ucar.edu>
+
+	moving to command where it is used
+
+2005-12-19  Patrick West <pwest@ucar.edu>
+
+	added information about requested node of catalog along with the
+	contents if it is a container
+
+2005-12-12  Patrick West <pwest@ucar.edu>
+
+	setting soft/hard limit on heap size error message added
+
+2005-12-11  Patrick West <pwest@ucar.edu>
+
+	duplicate names fixed
+
+2005-12-11  Patrick West <pwest@ucar.edu>
+
+	fixed size and date and time display problems by using
+	stringstream instead of sprintf
+
+2005-12-05  Patrick West <pwest@ucar.edu>
+
+	show container for leaf node now returns information for that leaf
+	node
+
+2005-12-05  Patrick West <pwest@ucar.edu>
+
+	fixed incorrect format argument to sprintf
+
+2005-12-04  Patrick West <pwest@ucar.edu>
+
+	changed from show nodes and show leaves to show catalog
+
+2005-12-04  Patrick West <pwest@ucar.edu>
+
+	changed from show nodes and show leaves to show catalog
+
+2005-11-30  Patrick West <pwest@ucar.edu>
+
+	for clause of show leaves optional
+
+2005-11-29  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Undoing change comitted in r12683.
+
+2005-11-29  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2005-11-28  Patrick West <pwest@ucar.edu>
+
+	implemented show nodes and show leaves to return xml-like response
+
+2005-11-21  Patrick West <pwest@ucar.edu>
+
+	if catalog objects handled the request then they return true, else
+	false, and the first catalog object to handle the request wins
+
+2005-11-21  Patrick West <pwest@ucar.edu>
+
+	if catalog objects handled the request then they return true, else
+	false, and the first catalog object to handle the request wins
+
+2005-11-21  Patrick West <pwest@ucar.edu>
+
+	added source and headers for handling catalog requests
+
+2005-11-21  Patrick West <pwest@ucar.edu>
+
+	beginnings of implementation of handling catalog requests
+
+2005-11-16  Patrick West <pwest@ucar.edu>
+
+	abstract base class for objects that know how to manipulate
+	catalogs and return information
+
+2005-11-15  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-11-15  James Gallagher <jgallagher@opendap.org>
+
+	Documentation stuff
+
+2005-11-15  Patrick West <pwest@ucar.edu>
+
+	using catalog response handler to handle show nodes and show
+	leaves with different catalog objects like DirectoryCatalog
+
+2005-11-15  James Gallagher <jgallagher@opendap.org>
+
+	Added the doxygen-generated documentation.
+
+2005-11-14  Patrick West <pwest@ucar.edu>
+
+	using one catalog response handler isntead of two response
+	handlers one for nodes and one for leaves. Using data name
+	ISLEAVES to tell CatalogResponseHandler if getting nodes ore
+	leaves
+
+2005-11-14  Patrick West <pwest@ucar.edu>
+
+	different way of handling catalog requests show node and show
+	leaves, not data type dependent
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	added commands to implement THREDDS catalog, show nodes and show
+	leaves
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	added commands to implement THREDDS catalog, show nodes and show
+	leaves
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	moved call to parent initialization to end of initialize routine
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	added initialization, end request, and exception handler callbacks
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	removed authentication exception return
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	changed error messages when opening log file
+
+2005-11-09  Patrick West <pwest@ucar.edu>
+
+	updated globals to use singletons
+
+2005-11-08  Patrick West <pwest@ucar.edu>
+
+	copyright information
+
+2005-10-28  Patrick West <pwest@ucar.edu>
+
+	added xml line to version info response
+
+2005-10-26  Patrick West <pwest@ucar.edu>
+
+	added memory checks in print and deleting strms in destructor
+
+2005-10-18  Patrick West <pwest@ucar.edu>
+
+	part of new version response
+
+2005-10-18  Patrick West <pwest@ucar.edu>
+
+	removed un-needed header includes
+
+2005-10-18  Patrick West <pwest@ucar.edu>
+
+	added virtual destructors
+
+2005-10-18  Patrick West <pwest@ucar.edu>
+
+	new dods version info response object that formats the version
+	response in an XML-like format
+
+2005-10-07  Patrick West <pwest@ucar.edu>
+
+	removed debug cout calls
+
+2005-09-21  Patrick West <pwest@ucar.edu>
+
+	memory cleanup from server perspective
+
+2005-09-21  Patrick West <pwest@ucar.edu>
+
+	memory cleanup from command line client perspective
+
+2005-09-21  Patrick West <pwest@ucar.edu>
+
+	corrected file input error, semicolon was being left off of
+	commands from the file
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	no longer doing authentication in bes
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	no longer need TestAuthentication, removing authentication from bes
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	removing authentication from bes
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	removing authentication from bes
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	changed global variables to static singleton references and
+	removed authentication from dispatch
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	database exception
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	added virtual destructor
+
+2005-09-19  Patrick West <pwest@ucar.edu>
+
+	fixed flushing problem with changing output streams
+
+2005-09-17  Patrick West <pwest@ucar.edu>
+
+	upgrade to gcc 4.0.1
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	removed ini_authenticator from build, not using anymore
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	not using initialization authentication anymore
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	removed references to mysql
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	removed references to mysql
+
+2005-09-16  James Gallagher <jgallagher@opendap.org>
+
+	Added use of the newly hacked DODSFilter class to the send_data()
+	method. This is an example; there's a much more general way to
+	incorporate the changed class but I have not tested even this
+	little modification. Advantages to using DODSFilter are that it
+	knows how to process conditional requests, compressed responses
+	and cached stuff.
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	specific to mysql code moved to cedar-handler
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	specific to mysql code
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	moving mysql code specific to cedar to cedar-handler
+
+2005-09-16  Patrick West <pwest@ucar.edu>
+
+	moving mysql code specific to cedar to cedar-handler
+
+2005-09-13  James Gallagher <jgallagher@opendap.org>
+
+	Build fixes
+
+2005-09-13  James Gallagher <jgallagher@opendap.org>
+
+	Minor build fixes. Now installs bes-config
+
+2005-09-12  Patrick West <pwest@ucar.edu>
+
+	variable i was not set to the result of the find command
+
+2005-09-12  Patrick West <pwest@ucar.edu>
+
+	removed use of this pointer, carry over from Java code from which
+	this code was copied
+
+2005-09-12  Patrick West <pwest@ucar.edu>
+
+	moved MySQL code to cedar as it is specific to the cedar handler.
+	Changed MySQL exception handling to a database exception, but the
+	exception manager code needs to be re-worked to allow developers
+	to capture new exceptions and handle them in their own way
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Repaired two places where string::npos was compared to an int. Now
+	uses std::string::size_type which is 64-bit clean.
+	M    apache/DODSApache.cc
+	M    cmdln/CmdClient.cc
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed instrumentation; changed Unknown command error message a bit.
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Replaced unsigned int with std::string::size_type for 64-bit
+	cleanliness.
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Fix for OS/X. Some include files needed to be added in ppt.
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Fix to the order of libdispatch, libppt and libopendap_command in
+	LDADD.
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed warmings and added missing includes which caused errors
+	when building with --disable-shared.
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Removed config.h from dispatch_version.h and added it to
+	VersionResponseHandler.cc.
+
+2005-09-08  Patrick West <pwest@ucar.edu>
+
+	MySQL code is specific to cedar and is not general
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Now passes the dist and distcheck targets!
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Catching MYSQL exceptions is now a compile-time condition. Set
+	MYSQL_SUPPORT.
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Updated with a blurb about libreadline.
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	uninstall now works
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed. Build cleaning
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Build changes.
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Build. Almost works...
+
+2005-09-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Removed configure scripts.
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Removed the Makefile.in files.
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	All but servers; does not build on os/x
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Added un/install of the object file.
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	This Makefile.am can install/uninstall the object files to
+	$prefix/lib/bes.
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Added build files
+
+2005-09-06  James Gallagher <jgallagher@opendap.org>
+
+	libcommand now builds
+
+2005-09-02  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+2005-09-02  James Gallagher <jgallagher@opendap.org>
+
+	Updated the docs
+
+2005-09-02  James Gallagher <jgallagher@opendap.org>
+
+	Switched to automake.
+
+2005-09-02  James Gallagher <jgallagher@opendap.org>
+
+	Switched to automake
+
+2005-09-01  James Gallagher <jgallagher@opendap.org>
+
+	Renamed the HAO deamon project 'bes'
+
+2005-09-01  James Gallagher <jgallagher@opendap.org>
+
+	I change s number of the properties on these files, removing the
+	exec property on all but the configure scripts.
+
+2005-09-01  Patrick West <pwest@ucar.edu>
+
+	created base object for daemon code as well as an application
+	class that handles global initialization and termination with init
+	and run methods
+
+2005-09-01  Patrick West <pwest@ucar.edu>
+
+	data names for DODSDataHandlerInterface
+
+2005-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Removed etc (botched move?) and changed the configure.in files to
+	point to conf. Rebuilt the configure scripts using new
+	config.{guess,sub} scripts in there (these versions recognize
+	x86_64 architectures).
+
+2005-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Changed the name from etc to conf
+
+2005-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Updated these to newer versions.
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	removed dependency list from bottom of Makefile.in
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	etc directory moved to daemon directory
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	moved etc dir from own project to daemon directory
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	if no strm set then don't output to the strm
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	moved etc dir from own project to daemon directory
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	const method to return data
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	moved etc dir from own project to daemon directory
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	moved etc dir from own project to daemon directory
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	README describing how to build daemon
+
+2005-08-31  Patrick West <pwest@ucar.edu>
+
+	Shouldn't be its own project. Moved to daemon. Will need to add
+	these files to the different handler projects.
+
+2005-08-24  Patrick West <pwest@ucar.edu>
+
+	initializing global memory area for the server
+
+2005-08-23  Patrick West <pwest@ucar.edu>
+
+	added command and http transmitter modules and commands library
+
+2005-08-23  Patrick West <pwest@ucar.edu>
+
+	Using App class for Handler
+
+2005-08-23  Patrick West <pwest@ucar.edu>
+
+	Using App class for Handler
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	in interactive mode all commands, client and server, must end with
+	a semicolon. Let the user know.
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	when setting output to a file in client command, open to append to
+	the file, not truncate
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	added client commands to supress output, send output to screen, or
+	send output to file
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	removed http transmitter from dods_module to http_transmitter
+	module that must be linked in if the server wants http
+	transmission. Removed different PERSISTENCE_INIT macros and
+	replaced with one. Added TRANSMITTER_INIT macro
+
+2005-08-22  Patrick West <pwest@ucar.edu>
+
+	local dependencies on dispatch, ppt and command directories, not
+	installed versions
+
+2005-08-19  Patrick West <pwest@ucar.edu>
+
+	if string not found in find method then string::npos returned, not
+	< 0
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	changed template dir and added checks at beginning
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	script and templates to allow someone to build an opendap-g data
+	handler
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	adding back
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	need to replace somehow
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	no need to check for the c compiler, only the C++ compiler
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	Using new PPT library using sockets and encapsulating the PPT
+	calls. This way we can switch in and out different communication
+	protocols without changing this code.
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	No longer needing this code
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	Completely re-worked PPT to keep it more moduler, more black box,
+	so that external code need not know about how to communicate using
+	PPT, but the underlying client and server connection code knows
+	how to initiate a connection, terminate a connection, transmit
+	data with a terminate string, etc...
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	Using the new PPT library, much more moduler
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	OPeNDAP Apache module that uses command line interface to parse a
+	URL request.
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	Implemented command line command syntax in separate library, not
+	part of dispatch, so now can implement SOAP interface, or some
+	other interface to OPeNDAP-g
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	Removed parse methods from response handler making the command
+	syntax a separate library in a separate directory, the command
+	directory. Removed GetResponseHandler and ShowResponseHandler
+	because these weren't really response handlers but just classes to
+	parse the commands, which have been moved to OPeNDAPGetCommand and
+	OPeNDAPShowCommand in the command directory. Removed most
+	variables from DODSDataHandlerInterface and replaced them with a
+	map of string-string pairs representing those variables. Each
+	request will have a different set of variables needed to execute
+	that request. Moved DODSApache and DODSWrapper to an apache
+	directory. Also moved DODSParser to the command directory and
+	called it OPeNDAPCmdParser. Also changed the aggregation server to
+	be like the return mechanism. The aggregation command was changed
+	to say "aggregate using <name> by <command>". So now the
+	aggregation method looks up the aggregation handler with the given
+	name and executes the command against the handler.
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	changed to have keys file passed in to the constructor instead of
+	specifying dods ini file
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	changed to have keys file passed in to the constructor instead of
+	specifying dods ini file
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	added method to log a const string
+
+2005-08-08  root
+
+	Auto reset of Subversion properties
+
+2005-08-01  Patrick West <pwest@ucar.edu>
+
+	changed aggregation command to be aggregate using <agg_handler> by
+	<agg_command>, agg_command wrapped in quotes still
+
+2005-07-13  Patrick West <pwest@ucar.edu>
+
+	If Verbose key in initialization file was set to no then
+	DODSMemoryGlobalArea suspended logging to TheDODSLog but never
+	turned it back on, so non-verbose logging also didn't get logged.
+	Called the resume method on TheDODSLog to turn logging back on.
+	Might want to think about using the general verbose flag for this.
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	moved dods.ini to opendap.ini. Default prefix is $OPENDAP_ROOT, not
+	installing headers.
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	default prefix is $OPENDAP_ROOT and header install directory is
+	include/opendap-g.
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	default prefix is OPENDAP_ROOT, header install directory is
+	include/opendap-g.
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	Made default prefix $OPENDAP_ROOT and header install directory
+	include/opendap-g.
+
+2005-07-06  Patrick West <pwest@ucar.edu>
+
+	New documentation. Now have wrapper holding on to encoded url
+	string so can ask wrapper for different keyword/value pairs in the
+	url, such as username and request.
+
+2005-07-05  Rob Morris <Robert.O.Morris@jpl.nasa.gov>
+
+	Set eol-style to native on all text file in the trunk
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Renaming
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	These were just example Makefiles that are no longer needed.
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Moving opendap-g command line client code to top level daemon
+	directory
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Moving opendap-g client library code to top level daemon directory
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Moving opendap-g server listener and daemon to top level directory
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Moving opendap-g ppt code to top level directory
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Moving opendap-g dispatch code to top level daemon directory
+
+2005-07-05  Patrick West <pwest@ucar.edu>
+
+	Creating the daemon directory that will be the location for
+	opendap-g code dispatch, ppt, server listener and daemon,
+	opendap-g client library and cmdln.
