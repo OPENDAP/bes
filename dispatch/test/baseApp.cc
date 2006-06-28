@@ -59,7 +59,7 @@ initialize( int argC, char **argV )
     catch( BESException &e )
     {
 	cerr << "Global Initialization failed" << endl ;
-	cerr << e.get_error_description() << endl ;
+	cerr << e.get_message() << endl ;
     }
 
     return retVal ;

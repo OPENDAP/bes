@@ -31,7 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESCatalogResponseHandler.h"
-#include "BESXMLInfo.h"
+#include "BESInfoList.h"
+#include "BESInfo.h"
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
@@ -51,42 +52,34 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler( )
 /** @brief executes the command 'show catalog|leaves [for &lt;node&gt;];' by
  * returning nodes or leaves at the top level or at the specified node.
  *
- * The response object BESXMLInfo is created to store the information.
+ * The response object BESInfo is created to store the information.
  *
  * @param dhi structure that holds request and response information
  * @throws BESResponseException if there is a problem building the
  * response object
  * @see _BESDataHandlerInterface
- * @see BESXMLInfo
+ * @see BESInfo
  * @see BESRequestHandlerList
  */
 void
 BESCatalogResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESXMLInfo *info = new BESXMLInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
     string container = dhi.data[CONTAINER] ;
     string coi = dhi.data[CATALOG_OR_INFO] ;
     if( coi == CATALOG_RESPONSE )
     {
-	info->add_data( "<showCatalog>\n" ) ;
+	info->begin_response( CATALOG_RESPONSE_STR ) ;
     }
     else
     {
-	info->add_data( "<showInfo>\n" ) ;
+	info->begin_response( SHOW_INFO_RESPONSE_STR ) ;
     }
-    info->add_data( "    <response>\n" ) ;
     BESCatalogList::TheCatalogList()->show_catalog( container, coi, info ) ;
-    info->add_data( "    </response>\n" ) ;
-    if( coi == CATALOG_RESPONSE )
-    {
-	info->add_data( "</showCatalog>\n" ) ;
-    }
-    else
-    {
-	info->add_data( "</showInfo>\n" ) ;
-    }
+
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -96,7 +89,7 @@ BESCatalogResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see BESXMLInfo
+ * @see BESInfo
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */
@@ -106,8 +99,8 @@ BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
 {
     if( _response )
     {
-	BESXMLInfo *info = dynamic_cast<BESXMLInfo *>(_response) ;
-	transmitter->send_text( *info, dhi ) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 
@@ -117,4 +110,3 @@ BESCatalogResponseHandler::CatalogResponseBuilder( string handler_name )
     return new BESCatalogResponseHandler( handler_name ) ;
 }
 
-// $Log: BESCatalogResponseHandler.cc,v $

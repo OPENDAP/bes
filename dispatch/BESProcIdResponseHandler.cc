@@ -33,9 +33,11 @@
 #include <unistd.h>
 
 #include "BESProcIdResponseHandler.h"
+#include "BESInfoList.h"
 #include "BESInfo.h"
 #include "cgi_util.h"
 #include "util.h"
+#include "BESResponseNames.h"
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( string name )
     : BESResponseHandler( name )
@@ -92,11 +94,13 @@ BESProcIdResponseHandler::fastpidconverter(
 void
 BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
+    info->begin_response( PROCESS_RESPONSE_STR ) ;
     char mypid[12] ;
     fastpidconverter( getpid(), mypid, 10 ) ;
-    info->add_data( (string)mypid + "\n" ) ;
+    info->add_tag( "pid", mypid ) ;
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -118,7 +122,7 @@ BESProcIdResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi ) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

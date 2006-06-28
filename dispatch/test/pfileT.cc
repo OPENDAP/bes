@@ -30,7 +30,7 @@ run(void)
     catch( BESException &ex )
     {
 	cout << "couldn't get File, good, because" << endl ;
-	cout << ex.get_error_description() << endl ;
+	cout << ex.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -44,7 +44,7 @@ run(void)
     catch( BESException &ex )
     {
 	cout << "couldn't get FileNot, good, because" << endl ;
-	cout << ex.get_error_description() << endl ;
+	cout << ex.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -58,7 +58,7 @@ run(void)
     catch( BESException &ex )
     {
 	cout << "couldn't get FileTooMany, good, because" << endl ;
-	cout << ex.get_error_description() << endl ;
+	cout << ex.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -72,7 +72,7 @@ run(void)
     catch( BESException &ex )
     {
 	cout << "couldn't get FileTooFew, good, because" << endl ;
-	cout << ex.get_error_description() << endl ;
+	cout << ex.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -85,7 +85,7 @@ run(void)
     catch( BESException &ex )
     {
 	cerr << "couldn't get File1 because" << endl ;
-	cerr << ex.get_error_description() << endl ;
+	cerr << ex.get_message() << endl ;
 	return 1 ;
     }
 
@@ -138,7 +138,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    BESTextInfo info( false ) ;
+    BESTextInfo info ;
     cpf.show_containers( info ) ;
     info.print( stdout ) ;
 

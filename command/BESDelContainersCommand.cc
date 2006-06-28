@@ -62,7 +62,8 @@ BESDelContainersCommand::parse_request( BESTokenizer &tokenizer,
 	BESResponseHandlerList::TheList()->find_handler( _cmd ) ;
     if( !retResponse )
     {
-	throw BESParserException( (string)"Improper command " + _cmd ) ;
+	string s = (string)"No response handler for command " + _cmd ;
+	throw BESParserException( s, __FILE__, __LINE__ ) ;
     }
 
     dhi.action = _cmd ;

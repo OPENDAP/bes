@@ -1,4 +1,4 @@
-// BESDeleteResponseHandler.h
+// BESInfoNames.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,42 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESDeleteResponseHandler_h
-#define I_BESDeleteResponseHandler_h 1
+#ifndef D_BESInfoNames_H
+#define D_BESInfoNames_H 1
 
-#include "BESResponseHandler.h"
-
-/** @brief response handler that deletes a container, a definition or all
- * definitions.
+/** @brief macros representing the default informational response objects
  *
- * Possible requests handled by this response handler are:
- *
- * delete container &lt;container_name&gt;;
- * <BR />
- * delete definition &lt;def_name&gt;;
- * <BR />
- * delete definitions;
- *
- * There is no command to delete all containers.
- *
- * An informational response object is created and returned to the requester
- * to inform them whether the request was successful.
- *
- * @see DODSResponseObject
- * @see BESContainer
- * @see BESTransmitter
+ * These include
+ * <pre>
+ * txt
+ * html
+ * xml
+ * </pre>
  */
-class BESDeleteResponseHandler : public BESResponseHandler {
-public:
-				BESDeleteResponseHandler( string name ) ;
-    virtual			~BESDeleteResponseHandler( void ) ;
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+#define BES_TEXT_INFO "txt"
+#define BES_HTML_INFO "html"
+#define BES_XML_INFO "xml"
 
-    static BESResponseHandler *DeleteResponseBuilder( string handler_name ) ;
-};
-
-#endif // I_BESDeleteResponseHandler_h
+#endif // E_BESInfoNames_H
 

@@ -33,17 +33,20 @@
 #ifndef BESDefinitionStorageException_h_
 #define BESDefinitionStorageException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
 /** @brief exception thrown if problems locating container information for a
  * symbolic name
  */
-class BESDefinitionStorageException:public BESBasicException
+class BESDefinitionStorageException:public BESException
 {
-public:
+protected:
       			BESDefinitionStorageException() {}
-      			BESDefinitionStorageException( const string &s )
-			    : BESBasicException( s ) {}
+public:
+      			BESDefinitionStorageException( const string &s,
+			                               const string &file,
+						       int line )
+			    : BESException( s, file, line ) {}
       virtual		~BESDefinitionStorageException() {}
 };
 

@@ -33,7 +33,7 @@
 #ifndef BESVersionInfo_h_
 #define BESVersionInfo_h_ 1
 
-#include "BESXMLInfo.h"
+#include "BESInfo.h"
 
 /** brief represents simple text information in a response object, such as
  * version and help inforamtion.
@@ -44,26 +44,82 @@
  * @see BESXMLInfo
  * @see DODSResponseObject
  */
-class BESVersionInfo : public BESXMLInfo {
+class BESVersionInfo : public BESInfo {
 private:
-    bool		_firstDAPVersion ;
-    ostream		*_DAPstrm ;
-    bool		_firstBESVersion ;
-    ostream		*_BESstrm ;
-    bool		_firstHandlerVersion ;
-    ostream		*_Handlerstrm ;
+    bool		_indap ;
+    bool		_inbes ;
+    bool		_inhandler ;
+    BESInfo *		_info ;
 public:
   			BESVersionInfo() ;
-  			BESVersionInfo( bool is_http ) ;
     virtual 		~BESVersionInfo() ;
 
-    virtual void 	print( FILE *out ) ;
-
+    virtual void	beginDAPVersion( ) ;
     virtual void	addDAPVersion( const string &v ) ;
+    virtual void	endDAPVersion( ) ;
+    virtual void	beginBESVersion( ) ;
     virtual void	addBESVersion( const string &n, const string &v ) ;
+    virtual void	endBESVersion( ) ;
+    virtual void	beginHandlerVersion( ) ;
     virtual void	addHandlerVersion( const string &n, const string &v ) ;
+    virtual void	endHandlerVersion( ) ;
+
+    virtual void	begin_response( const string &response_name )
+			{
+			    _info->begin_response( response_name ) ;
+			}
+    virtual void	end_response( )
+			{
+			    _info->end_response( ) ;
+			}
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 )
+			{
+			    _info->add_tag( tag_name, tag_data, attrs ) ;
+			}
+    virtual void	begin_tag( const string &tag_name,
+                                   map<string,string> *attrs = 0 )
+			{
+			    _info->begin_tag( tag_name, attrs ) ;
+			}
+    virtual void	end_tag( const string &tag_name )
+			{
+			    _info->end_tag( tag_name ) ;
+			}
+
+    virtual void 	add_data( const string &s )
+			{
+			    _info->add_data( s ) ;
+			}
+    virtual void	add_space( unsigned long num_spaces )
+			{
+			    _info->add_space( num_spaces ) ;
+			}
+    virtual void	add_break( unsigned long num_breaks )
+			{
+			    _info->add_break( num_breaks ) ;
+			}
+    virtual void 	add_data_from_file( const string &key,
+                                            const string &name )
+			{
+			    _info->add_data_from_file( key, name ) ;
+			}
+    virtual void	add_exception( const string &type, BESException &e )
+			{
+			    _info->add_exception( type, e ) ;
+			}
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi )
+			{
+			    _info->transmit( transmitter, dhi ) ;
+			}
+    virtual void 	print( FILE *out )
+			{
+			    _info->print( out ) ;
+			}
 };
 
 #endif // BESVersionInfo_h_
 
-// $Log: BESVersionInfo.h,v $

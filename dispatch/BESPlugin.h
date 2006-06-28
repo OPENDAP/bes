@@ -22,17 +22,21 @@ using std::endl;
 /** Thrown as an exception when BESPlugin cannot find the named shareable
     library.
 */
-class NoSuchLibrary : public BESPluginException {
+class NoSuchLibrary : public BESPluginException
+{
 public:
-    NoSuchLibrary(const string &msg) : BESPluginException(msg) {}
+    NoSuchLibrary( const string &msg, const string &file, int line )
+	: BESPluginException( msg, file, line ) {}
 };
 
 /** Thrown as an exception when BESPlugin cannot find or run the maker()
     function in a shared library already loaded.
 */
-class NoSuchObject : public BESPluginException {
+class NoSuchObject : public BESPluginException
+{
 public:
-    NoSuchObject(const string &msg) : BESPluginException(msg) {}
+    NoSuchObject( const string &msg, const string &file, int line )
+	: BESPluginException( msg, file, line ) {}
 };
 
 /** BESPlugin provides a mechanism that can load C++ classes at runtime.
@@ -63,8 +67,9 @@ private:
 
     /** Do not allow empty instances to be created.
     */
-    BESPlugin()  throw(BESPluginException) {	
-	throw BESPluginException( "Unimplemented method.");
+    BESPlugin()  throw(BESPluginException)
+    {	
+	throw BESPluginException( "Unimplemented method", __FILE__, __LINE__ );
     }
 
     /** Do not allow clients to use the copy constructor. BESPlugin
@@ -72,15 +77,17 @@ private:
 	pointer (since doing so could result in calling dlclose too many
 	times, something that is apt to be bad.
     */
-    BESPlugin(const BESPlugin &p) throw(BESPluginException) {
-	throw BESPluginException( "Unimplemented method.");
+    BESPlugin(const BESPlugin &p) throw(BESPluginException)
+    {
+	throw BESPluginException( "Unimplemented method.", __FILE__, __LINE__ );
     }
 
     /** Do not allow clients to use the assignment operator.
 	@see BESPlugin(const BESPlugin &p)
     */
-    BESPlugin &operator=(const BESPlugin &p) throw(BESPluginException) {
-	throw BESPluginException( "Unimplemented method.");
+    BESPlugin &operator=(const BESPlugin &p) throw(BESPluginException)
+    {
+	throw BESPluginException( "Unimplemented method.", __FILE__, __LINE__ );
     }
 
     void *get_lib() throw(NoSuchLibrary) {
@@ -88,7 +95,7 @@ private:
 	    d_lib = dlopen(d_filename.c_str(), RTLD_NOW|RTLD_GLOBAL);
 	    if (d_lib == NULL) {
 		DBG(cerr << "Error opening library: " << dlerror() << endl);
-		throw NoSuchLibrary(string(dlerror()));
+		throw NoSuchLibrary( string( dlerror() ), __FILE__, __LINE__ ) ;
 	    }
 	}
 
@@ -119,7 +126,7 @@ public:
 	void *maker = dlsym(get_lib(), "maker");
 	if (!maker) {
 	    DBG(cerr << "Error running maker: " << dlerror() << endl);
-	    throw NoSuchObject(string(dlerror()));
+	    throw NoSuchObject( string( dlerror() ), __FILE__, __LINE__ ) ;
 	}
     
 	typedef M *(*maker_func_ptr)();

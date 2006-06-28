@@ -52,6 +52,12 @@ using std::endl ;
 
 #include "BESLog.h"
 
+#include "BESTextInfo.h"
+#include "BESHTMLInfo.h"
+#include "BESXMLInfo.h"
+#include "BESInfoList.h"
+#include "BESInfoNames.h"
+
 int
 default_module::initialize(int, char**)
 {
@@ -85,6 +91,21 @@ default_module::initialize(int, char**)
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << HTTP_TRANSMITTER << " transmitter" << endl;
     BESReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new BESBasicHttpTransmitter ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << BES_TEXT_INFO << " info builder" << endl;
+    BESInfoList::TheList()->add_info_builder( BES_TEXT_INFO,
+					      BESTextInfo::BuildTextInfo ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << BES_HTML_INFO << " info builder" << endl;
+    BESInfoList::TheList()->add_info_builder( BES_HTML_INFO,
+					      BESHTMLInfo::BuildHTMLInfo ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << BES_XML_INFO << " info builder" << endl;
+    BESInfoList::TheList()->add_info_builder( BES_XML_INFO,
+					      BESXMLInfo::BuildXMLInfo ) ;
 
     return 0 ;
 }

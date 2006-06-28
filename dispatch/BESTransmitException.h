@@ -33,24 +33,22 @@
 #ifndef BESTransmitException_h_
 #define BESTransmitException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
 /** @brief exception thrown if problems loading keys from dods initialization
  * file.
  */
-class BESTransmitException: public BESBasicException
+class BESTransmitException: public BESException
 {
-public:
+protected:
       			BESTransmitException() {}
-    			BESTransmitException( const string &s )
-			    { _description = s ; }
+public:
+    			BESTransmitException( const string &s,
+			                      const string &file,
+					      int line )
+			    : BESException( s, file, line ) { }
       virtual		~BESTransmitException() {}
 };
 
 #endif // BESTransmitException_h_
 
-// $Log: BESTransmitException.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

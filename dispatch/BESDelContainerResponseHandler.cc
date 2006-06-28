@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelContainerResponseHandler.h"
-#include "BESInfo.h"
+#include "BESSilentInfo.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -39,6 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESDelContainerResponseHandler::BESDelContainerResponseHandler( string name )
     : BESResponseHandler( name )
@@ -75,7 +76,7 @@ BESDelContainerResponseHandler::~BESDelContainerResponseHandler( )
 void
 BESDelContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
     string container_name = dhi.data[CONTAINER_NAME] ;
@@ -89,43 +90,31 @@ BESDelContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 	if( cp )
 	{
 	    bool deleted =  cp->del_container( dhi.data[CONTAINER_NAME] ) ;
-	    if( deleted == true )
+	    if( !deleted )
 	    {
-		string line = (string)"Successfully deleted container \""
-		              + dhi.data[CONTAINER_NAME]
-			      + "\" from container storage \""
-			      + dhi.data[STORE_NAME]
-			      + "\"\n" ;
-		info->add_data( line ) ;
-	    }
-	    else
-	    {
-		string line = (string)"Unable to delete container. "
-		              + "The container \""
-		              + dhi.data[CONTAINER_NAME]
-			      + "\" does not exist in container storage \""
-			      + dhi.data[STORE_NAME]
-			      + "\"\n" ;
-		info->add_data( line ) ;
+		string err_str = (string)"Unable to delete container. "
+				 + "The container \""
+				 + dhi.data[CONTAINER_NAME]
+				 + "\" does not exist in container storage \""
+				 + dhi.data[STORE_NAME] + "\"" ;
+		throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
 	{
-	    string line = (string)"Container storage \""
-	                  + dhi.data[STORE_NAME]
-			  + "\" does not exist. "
-			  + "Unable to delete container \""
-			  + dhi.data[CONTAINER_NAME]
-			  + "\"\n" ;
-	    info->add_data( line ) ;
+	    string err_str = (string)"Container storage \""
+			     + dhi.data[STORE_NAME]
+			     + "\" does not exist. "
+			     + "Unable to delete container \""
+			     + dhi.data[CONTAINER_NAME] + "\"" ;
+	    throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
-	string line = (string)"No container is specified. "
-		      + "Unable to complete request."
-		      + "\n" ;
-	info->add_data( line ) ;
+	string err_str = (string)"No container is specified. "
+			 + "Unable to complete request." ;
+	throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -148,7 +137,7 @@ BESDelContainerResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

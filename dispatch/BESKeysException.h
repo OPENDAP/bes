@@ -33,34 +33,22 @@
 #ifndef BESKeysException_h_
 #define BESKeysException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
-/** @brief exception thrown if problems loading keys from dods initialization
+/** @brief exception thrown if problems loading keys from bes configuration
  * file.
  */
-class BESKeysException: public BESBasicException
+class BESKeysException: public BESException
 {
-public:
+protected:
       			BESKeysException() {}
-    			BESKeysException( const string &s )
-			    { _description = s ; }
+public:
+    			BESKeysException( const string &s,
+			                  const string &file,
+					  int line )
+			    : BESException( s, file, line ) { }
       virtual		~BESKeysException() {}
 };
 
 #endif // BESKeysException_h_
 
-// $Log: BESKeysException.h,v $
-// Revision 1.4  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

@@ -82,7 +82,7 @@ initialize(int argC, char **argV)
 	catch( BESException &e )
 	{
 	    string newerr = "Error during module initialization: " ;
-	    newerr += e.get_error_description() ;
+	    newerr += e.get_message() ;
 	    cerr << newerr << endl ;
 	    retVal = 1 ;
 	}
@@ -155,7 +155,7 @@ BESModuleApp::loadModules()
 	    {
 		cerr << "Caught plugin exception during initialization of "
 		     << (*i).first << " module:" << endl << "    "
-		     << e.get_error_description() << endl ;
+		     << e.get_message() << endl ;
 		retVal = 1 ;
 		break ;
 	    }
@@ -196,7 +196,7 @@ terminate( int sig )
     catch( BESException &e )
     {
 	cerr << "Caught exception during module termination: "
-	     << e.get_error_description() << endl ;
+	     << e.get_message() << endl ;
     }
     catch( ... )
     {

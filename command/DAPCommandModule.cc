@@ -50,7 +50,7 @@ using std::cout ;
 #include "BESCatalogCommand.h"
 
 #include "BESParserException.h"
-#include "BESInterface.h"
+#include "BESExceptionManager.h"
 
 
 void
@@ -127,7 +127,7 @@ DAPCommandModule::initialize()
 
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
-    BESInterface::add_ehm_callback( BESParserException::handleException ) ;
+    BESExceptionManager::TheEHM()->add_ehm_callback( BESParserException::handleException ) ;
 }
 
 void

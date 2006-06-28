@@ -77,7 +77,7 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "show definitions" << endl;
     {
-	BESTextInfo info( false ) ;
+	BESTextInfo info ;
 	store->show_definitions( info ) ;
 	info.print( stdout ) ;
     }

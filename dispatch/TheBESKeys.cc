@@ -53,7 +53,8 @@ TheBESKeys::TheKeys()
 		ini_file = BES_CONF_DIR ;
 		if( !ini_file )
 		{
-		    throw BESKeysException( "Can not load environment variable BES_CONF" ) ;
+		    string s = "Can not load environment variable BES_CONF" ;
+		    throw BESKeysException( s, __FILE__, __LINE__ ) ;
 		}
 		else
 		{

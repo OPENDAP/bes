@@ -1,4 +1,4 @@
-// BESMemoryException.cc
+// BESInfoList.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,25 +30,38 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESMemoryException.h"
+#ifndef I_BESInfoList_h
+#define I_BESInfoList_h 1
 
-void
-BESMemoryException::set_amount_of_memory_required( const unsigned long &a )
-{
-    _mem_required = a ;
-}
+#include <map>
+#include <string>
 
-unsigned int
-BESMemoryException::get_amount_of_memory_required()
-{
-    return _mem_required ;
-}
+using std::map ;
+using std::string ;
 
-// $Log: BESMemoryException.cc,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//
+class BESInfo ;
+
+typedef BESInfo * (*p_info_builder)( const string &info_type ) ;
+
+class BESInfoList {
+private:
+    static BESInfoList *	_instance ;
+    map< string, p_info_builder >_info_list ;
+
+    typedef map< string, p_info_builder >::const_iterator Info_citer ;
+    typedef map< string, p_info_builder >::iterator Info_iter ;
+protected:
+				BESInfoList(void) ;
+public:
+    virtual			~BESInfoList(void) ;
+
+    virtual bool		add_info_builder( const string &info_type,
+					   p_info_builder info_builder ) ;
+    virtual bool		rem_info_builder( const string &info_type ) ;
+    virtual BESInfo *		build_info( ) ;
+
+    static BESInfoList *	TheList() ;
+};
+
+#endif // I_BESInfoList_h
+

@@ -42,56 +42,218 @@ using std::ostringstream ;
 
 /** @brief constructs an html information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
+ * Uses the default OPeNDAP.Info.Buffered key in the bes configuration file to
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
  * @see DODSResponseObject
  */
-BESXMLInfo::BESXMLInfo( const string &buffer_key, ObjectType otype )
-    : BESInfo( buffer_key, otype )
+BESXMLInfo::BESXMLInfo( )
+    : BESInfo( ),
+      _do_indent( true )
 {
-}
-
-/** @brief constructs an html information response object.
- *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
- * determine whether the information should be buffered or not.
- *
- * @param is_http whether the response is going to a browser
- * @see BESInfo
- * @see DODSResponseObject
- */
-BESXMLInfo::BESXMLInfo( bool is_http,
-                          const string &buffer_key,
-			  ObjectType otype )
-    : BESInfo( is_http, buffer_key, otype )
-{
+    //_buffered = false ;
 }
 
 BESXMLInfo::~BESXMLInfo()
 {
 }
 
-/** @brief add exception data to this informational object. If buffering is
- * not set then the information is output directly to the output stream.
+/** @brief begin the informational response
  *
- * @param type type of the exception received
- * @param msg the error message
- * @param file file name of where the error was sent
- * @param line line number in the file where the error was sent
+ * This will add the response name as well as the &lt;response&gt; tag tot
+ * he informational response object
+ *
+ * @param response_name name of the response this information represents
  */
 void
-BESXMLInfo::add_exception( const string &type, const string &msg,
-                            const string &file, int line )
+BESXMLInfo::begin_response( const string &response_name )
 {
-    add_data( "<BESException>\n" ) ;
-    add_data( (string)"    <Type>" + type + "</Type>\n" ) ;
-    add_data( (string)"    <Message>" + msg + "</Message>\n" ) ;
-    ostringstream s ;
-    s << "    <Location>Filename: " << file << " LineNumber: " << line << "</Location>\n" ;
-    add_data( s.str() ) ;
-    add_data( "</BESException>\n" ) ;
+    BESInfo::begin_response( response_name ) ;
+    _response_name = response_name ;
+    add_data( (string)"<" + _response_name + ">\n" ) ;
+    _indent += "    " ;
+    add_data( "<response>\n" ) ;
+    _indent += "    " ;
 }
 
-// $Log: BESXMLInfo.cc,v $
+/** @brief end the response
+ *
+ * Add the terminating tags for the response and for the response name. If
+ * there are still tags that have not been closed then an exception is
+ * thrown.
+ *
+ */
+void
+BESXMLInfo::end_response()
+{
+    BESInfo::end_response() ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( "</response>\n" ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( (string)"</" + _response_name + ">\n" ) ;
+}
+
+/** @brief add tagged information to the inforamtional response
+ *
+ * @param tag_name name of the tag to be added to the response
+ * @param tag_data information describing the tag
+ */
+void
+BESXMLInfo::add_tag( const string &tag_name,
+		     const string &tag_data,
+		     map<string,string> *attrs )
+{
+    add_data( (string)"<" + tag_name ) ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    _do_indent = false ;
+	    if( val != "" )
+		add_data( " " + name + "=" + val ) ;
+	    else
+		add_data( " " + name ) ;
+	}
+    }
+    _do_indent = false ;
+    add_data( ">" + tag_data + "</" + tag_name + ">\n" ) ;
+}
+
+/** @brief begin a tagged part of the information, information to follow
+ *
+ * @param tag_name name of the tag to begin
+ */
+void
+BESXMLInfo::begin_tag( const string &tag_name,
+                       map<string,string> *attrs )
+{
+    BESInfo::begin_tag( tag_name ) ;
+    add_data( (string)"<" + tag_name ) ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    _do_indent = false ;
+	    if( val != "" )
+		add_data( " " + name + "=" + val ) ;
+	    else
+		add_data( " " + name ) ;
+	}
+    }
+    _do_indent = false ;
+    add_data( ">\n" ) ;
+    _indent += "    " ;
+}
+
+/** @brief end a tagged part of the informational response
+ *
+ * If the named tag is not the current tag then an error is thrown.
+ *
+ * @param tag_name name of the tag to end
+ */
+void
+BESXMLInfo::end_tag( const string &tag_name )
+{
+    BESInfo::end_tag( tag_name ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( (string)"</" + tag_name + ">\n" ) ;
+}
+
+/** @brief add a space to the informational response
+ *
+ * @param num_spaces the number of spaces to add to the information
+ */
+void
+BESXMLInfo::add_space( unsigned long num_spaces )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_spaces; i++ )
+    {
+	to_add += " " ;
+    }
+    _do_indent = false ;
+    add_data( to_add ) ;
+}
+
+/** @brief add a line break to the information
+ *
+ * @param num_breaks the number of line breaks to add to the information
+ */
+void
+BESXMLInfo::add_break( unsigned long num_breaks )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_breaks; i++ )
+    {
+	to_add += "\n" ;
+    }
+    _do_indent = false ;
+    add_data( to_add ) ;
+}
+
+void
+BESXMLInfo::add_data( const string &s )
+{
+    if( _do_indent )
+	BESInfo::add_data( _indent + s ) ;
+    else
+	BESInfo::add_data( s ) ;
+    _do_indent = true ;
+}
+
+/** @brief add data from a file to the informational object
+ *
+ * This method simply adds a .XML to the end of the key and passes the
+ * request on up to the BESInfo parent class.
+ *
+ * @param key Key from the initialization file specifying the file to be
+ * @param name A description of what is the information being loaded
+ */
+void
+BESXMLInfo::add_data_from_file( const string &key, const string &name )
+{
+    string newkey = key + ".XML" ;
+    BESInfo::add_data_from_file( newkey, name ) ;
+}
+
+/** @brief transmit the text information as text
+ *
+ * use the send_text method on the transmitter to transmit the information
+ * back to the client.
+ *
+ * @param transmitter The type of transmitter to use to transmit the info
+ * @param dhi information to help with the transmission
+ */
+void
+BESXMLInfo::transmit( BESTransmitter *transmitter,
+		      BESDataHandlerInterface &dhi )
+{
+    transmitter->send_text( *this, dhi ) ;
+}
+
+/** @brief print the information from this informational object to the
+ * specified FILE descriptor
+ *
+ * @param out output to this file descriptor
+ */
+void
+BESXMLInfo::print( FILE *out )
+{
+    BESInfo::print( out ) ;
+}
+
+BESInfo *
+BESXMLInfo::BuildXMLInfo( const string &info_type )
+{
+    return new BESXMLInfo( ) ;
+}
+

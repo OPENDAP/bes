@@ -62,5 +62,3 @@ public:
 
 #endif // BESCatalogList_h_
 
-// $Log: BESCatalogList.h,v $
-

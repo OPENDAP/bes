@@ -81,18 +81,3 @@ public:
 
 #endif // I_BESRequestHandlerList_h
 
-// $Log: BESRequestHandlerList.h,v $
-// Revision 1.4  2005/03/15 20:00:14  pwest
-// added execute_once so that a single function can execute the request using all the containers instead of executing a function for each container. This is for requests that are handled by the same request type, for example, all containers are of type nc
-//
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

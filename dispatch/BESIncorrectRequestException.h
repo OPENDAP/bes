@@ -33,24 +33,19 @@
 #ifndef BESIncorrectRequestException_h_
 #define BESIncorrectRequestException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
-class BESIncorrectRequestException: public BESBasicException
+class BESIncorrectRequestException: public BESException
 {
-public:
+protected:
       			BESIncorrectRequestException() {}
-			BESIncorrectRequestException( const string &s )
-			    : BESBasicException( s ) {}
+public:
+			BESIncorrectRequestException( const string &s,
+			                              const string &file,
+						      int line )
+			    : BESException( s, file, line ) {}
       virtual		~BESIncorrectRequestException() {}
 };
 
 #endif // BESIncorrectRequestException_h_
 
-// $Log: BESIncorrectRequestException.h,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

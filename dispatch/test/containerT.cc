@@ -41,7 +41,7 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "couldn't add storage to storage list:" << endl ;
-	cerr << e.get_error_description() << endl ;
+	cerr << e.get_message() << endl ;
 	return 1 ;
     }
 
@@ -63,7 +63,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -125,7 +125,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -192,7 +192,7 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "caught exception, shouldn't have" << endl ;
-	cerr << e.get_error_description() << endl ;
+	cerr << e.get_message() << endl ;
 	return 1 ;
     }
 

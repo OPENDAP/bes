@@ -73,19 +73,50 @@ didn't find thingy, good
 
 *****************************************
 show containers
-File1
-sym1,real1,type1
-sym2,real2,type2
-sym3,real3,type3
-sym4,real4,type4
-sym5,real5,type5
-
-File2
-sym10,real10,type10
-sym6,real6,type6
-sym7,real7,type7
-sym8,real8,type8
-sym9,real9,type9
+store
+    name: File1
+    container
+        symbolicName: sym1
+        realName: real1
+        dataType: type1
+    container
+        symbolicName: sym2
+        realName: real2
+        dataType: type2
+    container
+        symbolicName: sym3
+        realName: real3
+        dataType: type3
+    container
+        symbolicName: sym4
+        realName: real4
+        dataType: type4
+    container
+        symbolicName: sym5
+        realName: real5
+        dataType: type5
+store
+    name: File2
+    container
+        symbolicName: sym10
+        realName: real10
+        dataType: type10
+    container
+        symbolicName: sym6
+        realName: real6
+        dataType: type6
+    container
+        symbolicName: sym7
+        realName: real7
+        dataType: type7
+    container
+        symbolicName: sym8
+        realName: real8
+        dataType: type8
+    container
+        symbolicName: sym9
+        realName: real9
+        dataType: type9
 
 *****************************************
 remove File1

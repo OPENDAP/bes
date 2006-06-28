@@ -38,6 +38,7 @@
 #include <sstream>
 
 using std::stringstream ;
+using std::endl ;
 
 #include "BESCatalogDirectory.h"
 #include "TheBESKeys.h"
@@ -55,8 +56,7 @@ BESCatalogDirectory::BESCatalogDirectory( const string &name )
     {
 	string serr = "BESCatalogDirectory - unable to load root directory key "
 		      + key + " from initialization file" ;
-	BESResponseException e( serr ) ;
-	throw e ;
+	throw BESResponseException( serr, __FILE__, __LINE__ ) ;
     }
 
     DIR *dip = opendir( _rootDir.c_str() ) ;
@@ -64,8 +64,7 @@ BESCatalogDirectory::BESCatalogDirectory( const string &name )
     {
 	string serr = "BESCatalogDirectory - root directory "
 	              + _rootDir + " does not exist" ;
-	BESResponseException e( serr ) ;
-	throw e ;
+	throw BESResponseException( serr, __FILE__, __LINE__ ) ;
     }
     closedir( dip ) ;
 
@@ -107,14 +106,16 @@ BESCatalogDirectory::show_catalog( const string &node,
     {
 	struct stat cbuf ;
 	stat( fullnode.c_str(), &cbuf ) ;
-	info->add_data( "        <dataset thredds_collection=\"true\">\n" ) ;
+	map<string,string> a1 ;
+	a1["thredds_collection"] = "\"true\"" ;
+	info->begin_tag( "dataset", &a1 ) ;
 	if( node == "" )
 	{
-	    add_stat_info( info, cbuf, "/", "        " ) ;
+	    add_stat_info( info, cbuf, "/" ) ;
 	}
 	else
 	{
-	    add_stat_info( info, cbuf, node, "        " ) ;
+	    add_stat_info( info, cbuf, node ) ;
 	}
 
 	struct dirent *dit;
@@ -129,8 +130,8 @@ BESCatalogDirectory::show_catalog( const string &node,
 	}
 
 	stringstream sscnt ;
-	sscnt << "            <count>" << cnt << "</count>" << endl ;
-	info->add_data( sscnt.str() ) ;
+	sscnt << cnt ;
+	info->add_tag( "count", sscnt.str() ) ;
 
 	if( coi == CATALOG_RESPONSE )
 	{
@@ -148,21 +149,25 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    // look at the mode and determine if this is a directory
 		    if ( S_ISDIR( buf.st_mode ) )
 		    {
-			info->add_data( "            <dataset thredds_collection=\"true\">\n" ) ;
-			add_stat_info( info, buf, dirEntry, "            " ) ;
-			info->add_data( "            </dataset>\n" ) ;
+			map<string,string> a2 ;
+			a2["thredds_collection"] = "\"true\"" ;
+			info->begin_tag( "dataset", &a2 ) ;
+			add_stat_info( info, buf, dirEntry ) ;
+			info->end_tag( "dataset" ) ;
 		    }
 		    else if ( S_ISREG( buf.st_mode ) )
 		    {
-			info->add_data( "            <dataset thredds_collection=\"false\">\n" );
-			add_stat_info( info, buf, dirEntry, "            " ) ;
-			info->add_data( "            </dataset>\n" );
+			map<string,string> a3 ;
+			a3["thredds_collection"] = "\"false\"" ;
+			info->begin_tag( "dataset", &a3 ) ;
+			add_stat_info( info, buf, dirEntry ) ;
+			info->end_tag( "dataset" ) ;
 		    }
 		}
 	    }
 	}
 	closedir( dip ) ;
-	info->add_data( "        </dataset>\n" ) ;
+	info->end_tag( "dataset" ) ;
     }
     else
     {
@@ -170,9 +175,11 @@ BESCatalogDirectory::show_catalog( const string &node,
 	int statret = stat( fullnode.c_str(), &buf ) ;
 	if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	{
-	    info->add_data( "        <dataset thredds_collection=\"false\">\n" ) ;
-	    add_stat_info( info, buf, node, "        " ) ;
-	    info->add_data( "        </dataset>\n" ) ;
+	    map<string,string> a4 ;
+	    a4["thredds_collection"] = "\"false\"" ;
+	    info->begin_tag( "dataset", &a4 ) ;
+	    add_stat_info( info, buf, node ) ;
+	    info->end_tag( "dataset" ) ;
 	}
 	else
 	{
@@ -234,9 +241,7 @@ BESCatalogDirectory::buildList( list<string> &theList, const string &listStr )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
-	    BESResponseException pe ;
-	    pe.set_error_description( s ) ;
-	    throw pe;
+	    throw BESResponseException( s, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
@@ -253,19 +258,15 @@ BESCatalogDirectory::buildList( list<string> &theList, const string &listStr )
 
 void
 BESCatalogDirectory::add_stat_info( BESInfo *info,
-				 struct stat &buf,
-				 const string &node,
-				 const string &indent )
+				    struct stat &buf,
+				    const string &node )
 {
-    string newindent = indent + "    " ;
-    stringstream snm ;
-    snm << newindent << "<name>" << node << "</name>\n" ;
-    info->add_data( snm.str() ) ;
+    info->add_tag( "name", node ) ;
 
     off_t sz = buf.st_size ;
     stringstream ssz ;
-    ssz << newindent << "<size>" << sz << "</size>\n" ;
-    info->add_data( ssz.str() ) ;
+    ssz << sz ;
+    info->add_tag( "size", ssz.str() ) ;
 
     // %T = %H:%M:%S
     // %F = %Y-%m-%d
@@ -275,17 +276,17 @@ BESCatalogDirectory::add_stat_info( BESInfo *info,
     strftime( mdate, 64, "%F", stm ) ;
     char mtime[64] ;
     strftime( mtime, 64, "%T", stm ) ;
-    string lm = newindent + "<lastmodified>\n" ;
-    info->add_data( lm ) ;
-    stringstream sdt ;
-    sdt << newindent << "    <date>" << mdate << "</date>\n" ;
-    info->add_data( sdt.str() ) ;
-    stringstream stt ;
-    stt << newindent << "    <time>" << mtime << "</time>\n" ;
-    info->add_data( stt.str() ) ;
-    lm = newindent + "</lastmodified>\n" ;
-    info->add_data( lm ) ;
-}
 
-// $Log: BESCatalogDirectory.cc,v $
+    info->begin_tag( "lastmodified" ) ;
+
+    stringstream sdt ;
+    sdt << mdate ;
+    info->add_tag( "date", sdt.str() ) ;
+
+    stringstream stt ;
+    stt << mtime ;
+    info->add_tag( "time", stt.str() ) ;
+
+    info->end_tag( "lastmodified" ) ;
+}
 

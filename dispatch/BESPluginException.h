@@ -33,15 +33,17 @@
 #ifndef BESPluginException_h_
 #define BESPluginException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
-class BESPluginException: public BESBasicException
+class BESPluginException: public BESException
 {
+protected:
+      			BESPluginException() ;
 public:
-      			BESPluginException() :
-			    BESBasicException() {}
-      			BESPluginException( const string &msg ) :
-			    BESBasicException( msg ) {}
+      			BESPluginException( const string &msg,
+			                    const string &file,
+					    int line ) :
+			    BESException( msg, file, line ) {}
       virtual		~BESPluginException() {}
 };
 

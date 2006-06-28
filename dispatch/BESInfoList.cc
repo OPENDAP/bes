@@ -1,4 +1,4 @@
-// BESMemoryGlobalArea.h
+// BESInfoList.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,34 +30,86 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESMemoryGlobalArea_h_
-#define BESMemoryGlobalArea_h_ 1
+#include "BESInfoList.h"
+#include "BESInfo.h"
+#include "TheBESKeys.h"
 
-#include <sys/resource.h>
+#define BES_DEFAULT_INFO_TYPE "txt"
 
-#define MEGABYTE 1024*1024
+BESInfoList *BESInfoList::_instance = 0 ;
 
-class BESMemoryGlobalArea
+BESInfoList::BESInfoList()
 {
-    struct rlimit limit;
-    static unsigned long _size;
-    static int _counter;
-    static void *_buffer;
+}
 
-    unsigned long megabytes(unsigned int s) 
+BESInfoList::~BESInfoList()
+{
+}
+
+bool
+BESInfoList::add_info_builder( const string &info_type,
+			       p_info_builder info_builder )
+{
+    BESInfoList::Info_citer i ;
+    i = _info_list.find( info_type ) ;
+    if( i == _info_list.end() )
     {
-	return s*MEGABYTE;
+	_info_list[info_type] = info_builder ;
+	return true ;
     }
-    void log_limits();
+    return false ;
+}
 
-public:
-    BESMemoryGlobalArea();
-    ~BESMemoryGlobalArea();
+bool
+BESInfoList::rem_info_builder( const string &info_type )
+{
+    BESInfoList::Info_iter i ;
+    i = _info_list.find( info_type ) ;
+    if( i != _info_list.end() )
+    {
+	_info_list.erase( i ) ;
+	return true ;
+    }
+    return false ;
+}
 
-    void release_memory();
-    bool reclaim_memory();
-    unsigned long SizeOfEmergencyPool(){return _size;}
-};
+BESInfo *
+BESInfoList::build_info( )
+{
+    string info_type = "" ;
+    bool found = false ;
+    try
+    {
+	info_type = TheBESKeys::TheKeys()->get_key( "OPeNDAP.Info.Type", found ) ;
+    }
+    catch( ... )
+    {
+	info_type = "" ;
+    }
 
-#endif // BESMemoryGlobalArea_h_
+    if( !found || info_type == "" )
+	info_type = BES_DEFAULT_INFO_TYPE ;
+
+    BESInfoList::Info_citer i ;
+    i = _info_list.find( info_type ) ;
+    if( i != _info_list.end() )
+    {
+	p_info_builder p = (*i).second ;
+	if( p )
+	{
+	    return p( info_type ) ;
+	}
+    }
+    return 0 ;
+}
+
+BESInfoList *
+BESInfoList::TheList()
+{
+    if( _instance == 0 )
+    {
+	_instance = new BESInfoList ;
+    }
+    return _instance ;
+}
 

@@ -33,30 +33,19 @@
 #ifndef BESMemoryException_h_
 #define BESMemoryException_h_ 1
 
-#include <new>
+#include "BESException.h"
 
-using std::bad_alloc ;
-
-#include "BESBasicException.h"
-
-class BESMemoryException: public BESBasicException
+class BESMemoryException: public BESException
 {
-private:
-    unsigned long	_mem_required;
+protected:
+    			BESMemoryException() { }
 public:
-    			BESMemoryException() { _mem_required = 0 ; }
+    			BESMemoryException( const string &msg,
+			                    const string &file,
+					    int line )
+			    : BESException( msg, file, line ) { }
     virtual		~BESMemoryException() {}
-    void		set_amount_of_memory_required( const unsigned long &a );
-    unsigned int	get_amount_of_memory_required();
 };
 
 #endif // BESMemoryException_h_
 
-// $Log: BESMemoryException.h,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

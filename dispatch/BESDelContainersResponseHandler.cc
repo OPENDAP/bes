@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelContainersResponseHandler.h"
-#include "BESInfo.h"
+#include "BESSilentInfo.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -39,6 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESDelContainersResponseHandler::BESDelContainersResponseHandler( string name )
     : BESResponseHandler( name )
@@ -77,7 +78,7 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
 void
 BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
     string store_name = dhi.data[STORE_NAME] ;
@@ -90,21 +91,12 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( cp )
     {
 	bool deleted =  cp->del_containers( ) ;
-	if( deleted == true )
-	{
-	    string line = (string)"Successfully deleted container \""
-			  + dhi.data[CONTAINER_NAME]
-			  + "\" from container storage \""
-			  + dhi.data[STORE_NAME]
-			  + "\"\n" ;
-	    info->add_data( line ) ;
-	}
-	else
+	if( !deleted )
 	{
 	    string line = (string)"Unable to delete containers from \""
 			  + dhi.data[STORE_NAME]
-			  + "\ container store\n" ;
-	    info->add_data( line ) ;
+			  + "\ container store" ;
+	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -112,8 +104,8 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 	string line = (string)"Container storage \""
 		      + dhi.data[STORE_NAME]
 		      + "\" does not exist. "
-		      + "Unable to delete containers\n" ;
-	info->add_data( line ) ;
+		      + "Unable to delete containers" ;
+	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -136,7 +128,7 @@ BESDelContainersResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

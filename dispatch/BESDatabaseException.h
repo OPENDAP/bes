@@ -33,18 +33,19 @@
 #ifndef BESDatabaseException_h_
 #define BESDatabaseException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
-class BESDatabaseException: public BESBasicException
+class BESDatabaseException: public BESException
 {
+protected:
+      			BESDatabaseException() {}
 public:
-      			BESDatabaseException()
-			    : BESBasicException() {}
-			BESDatabaseException( const string &s )
-			    : BESBasicException( s ) {}
+			BESDatabaseException( const string &s,
+					      const string &file,
+					      int line )
+			    : BESException( s, file, line ) {}
     virtual		~BESDatabaseException() {}
 };  
 
 #endif // BESDatabaseException
 
-// $Log: BESDatabaseException.h,v $

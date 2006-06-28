@@ -73,9 +73,7 @@ BESLog::BESLog()
 	string err = (string)"OPeNDAP Fatal: unable to determine log file name."
 	             + " Please set OPeNDAP.LogName in your initialization file" ;
 	cerr << err << endl ;
-	BESLogException e;
-	e.set_error_description( err ) ;
-	throw e;
+	throw BESLogException( err, __FILE__, __LINE__ ) ;
     }
     else
     {
@@ -85,9 +83,7 @@ BESLog::BESLog()
 	    string err = (string)"OPeNDAP Fatal; can not open log file "
 	                 + log_name + "." ;
 	    cerr << err << endl ;
-	    BESLogException le;
-	    le.set_error_description( err ) ;
-	    throw le;
+	    throw BESLogException( err, __FILE__, __LINE__ ) ;
 	} 
 	/*
 	if (_flushed)
@@ -321,17 +317,3 @@ BESLog::TheLog()
     return _instance ;
 }
 
-// $Log: BESLog.cc,v $
-// Revision 1.4  2005/02/09 19:49:33  pwest
-// was trying to print null pinter
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

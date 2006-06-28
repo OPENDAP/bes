@@ -258,10 +258,6 @@ void
 BESDefinitionStorageList::show_definitions( BESInfo &info )
 {
     BESDefinitionStorageList::persistence_list *pl = _first ;
-    if( !pl )
-    {
-	info.add_data( "No persistence stores available\n" ) ;
-    }
     bool first = true ;
     while( pl )
     {
@@ -271,7 +267,9 @@ BESDefinitionStorageList::show_definitions( BESInfo &info )
 	    info.add_data( "\n" ) ;
 	}
 	first = false ;
+	info.begin_tag( "store" ) ;
 	pl->_persistence_obj->show_definitions( info ) ;
+	info.end_tag( "store" ) ;
 	pl = pl->_next ;
     }
 }

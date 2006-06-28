@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelDefsResponseHandler.h"
-#include "BESInfo.h"
+#include "BESSilentInfo.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -39,6 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( string name )
     : BESResponseHandler( name )
@@ -80,7 +81,7 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
 void
 BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
     string store_name = dhi.data[STORE_NAME] ;
@@ -91,27 +92,19 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( store )
     {
 	bool deleted = store->del_definitions() ;
-	if( deleted )
-	{
-	    string line = (string)"Successfully deleted all definitions "
-			  + "from definition store \"" + store_name
-			  + "\"\n" ;
-	    info->add_data( line ) ;
-	}
-	else
+	if( !deleted )
 	{
 	    string line = (string)"Unable to delete all definitions "
-			  + "from definition store \"" + store_name
-			  + "\"\n" ;
-	    info->add_data( line ) ;
+			  + "from definition store \"" + store_name + "\"" ;
+	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
 	string line = (string)"Definition store \""
 		      + store_name
-		      + "\" does not exist.  Unable to delete.\n" ;
-	info->add_data( line ) ;
+		      + "\" does not exist.  Unable to delete." ;
+	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -134,7 +127,7 @@ BESDelDefsResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

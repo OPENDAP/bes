@@ -1,0 +1,67 @@
+# expect/tcl code to test resplistT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered infoT::run
+
+*****************************************
+add info builders to info list ... OK
+
+*****************************************
+Set Info type to txt ... OK
+tag1: tag1 data
+tag2
+    tag3: tag3 data
+        attr_name: \"attr_val\"
+
+*****************************************
+Set Info type to html ... 
+OK
+<HTML>
+    <HEAD>
+        <TITLE>testHTMLResponse</TITLE>
+    </HEAD>
+    <BODY>
+        tag1: tag1 data<BR />
+        tag2<BR />
+            tag3: tag3 data<BR />
+                attr_name: \"attr_val\"<BR />
+    </BODY>
+</HTML>
+
+*****************************************
+Set Info type to xml ... 
+OK
+<testXMLResponse>
+    <response>
+        <tag1>tag1 data</tag1>
+        <tag2>
+            <tag3 attr_name=\"attr_val\">tag3 data</tag3>
+        </tag2>
+    </response>
+</testXMLResponse>
+
+*****************************************
+Returning from infoT::run"
+
+set dispatchTEST ./infoT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "infoT"
+} else {
+    fail "infoT"
+}
+

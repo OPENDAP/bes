@@ -75,4 +75,3 @@ public:
 
 #endif // I_BESAggFactory_h
 
-// $Log: BESAggFactory.h,v $

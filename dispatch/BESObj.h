@@ -102,4 +102,3 @@ operator<<( ostream &strm, const BESObj &obj )
 
 #endif // A_BESObj_h
 
-// $Log: BESObj.h,v $

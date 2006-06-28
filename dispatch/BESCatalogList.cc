@@ -34,6 +34,7 @@
 #include "BESCatalog.h"
 #include "BESResponseException.h"
 #include "BESInfo.h"
+#include "BESHandlerException.h"
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
 
@@ -79,7 +80,8 @@ BESCatalogList::show_catalog( const string &container,
 	{
 	    serr = "Unable to find catalog information for root" ;
 	}
-	info->add_exception( "Error", serr, __FILE__, __LINE__ ) ;
+	throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
+	//info->add_exception( "Error", serr, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -92,6 +94,4 @@ BESCatalogList::TheCatalogList()
     }
     return _instance ;
 }
-
-// $Log: BESCatalogList.cc,v $
 

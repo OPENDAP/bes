@@ -37,21 +37,91 @@
  * @param otype type of data represented by this response object
  */
 BESSilentInfo::BESSilentInfo( )
-    : BESInfo( unknown_type )
+    : BESInfo( )
 {
-    _buffered = false ;
 }
 
 BESSilentInfo::~BESSilentInfo()
 {
 }
 
-/** @brief no response is constructed, so do nothing
+/** @brief begin the informational response
+ *
+ * Because this is silent, there is nothing to do
+ *
+ * @param response_name name of the response represented by the information
+ */
+void
+BESSilentInfo::begin_response( const string &response_name )
+{
+    BESInfo::begin_response( response_name ) ;
+}
+
+/** @brief add tagged information to the inforamtional response
+ *
+ * @param tag_name name of the tag to add to the infroamtional response
+ * @param tag_data information describing the tag
+ */
+void
+BESSilentInfo::add_tag( const string &tag_name,
+			const string &tag_data,
+			map<string,string> *attrs )
+{
+}
+
+/** @brief begin a tagged part of the information, information to follow
+ *
+ * @param tag_name name of the tag to begin
+ */
+void
+BESSilentInfo::begin_tag( const string &tag_name ,
+			  map<string,string> *attrs )
+{
+    BESInfo::begin_tag( tag_name ) ;
+}
+
+/** @brief end a tagged part of the informational response
+ *
+ * If the named tag is not the current tag then an error is thrown.
+ *
+ * @param tag_name name of the tag to end
+ */
+void
+BESSilentInfo::end_tag( const string &tag_name )
+{
+    BESInfo::end_tag( tag_name ) ;
+}
+
+/** @brief add data to the inforamtional object
+ *
+ * because this is a silent response, nothing is added
  *
  * @param s information to be ignored
  */
 void
 BESSilentInfo::add_data( const string &s )
+{
+}
+
+/** @brief add a space to the informational response
+ *
+ * because this is a silent response, nothing is added
+ *
+ * @param num_spaces number of spaces to add
+ */
+void
+BESSilentInfo::add_space( unsigned long num_spaces )
+{
+}
+
+/** @brief add a line break to the information
+ *
+ * because this is a silent response, nothing is added
+ *
+ * @param s information to be ignored
+ */
+void
+BESSilentInfo::add_break( unsigned long num_breaks )
 {
 }
 
@@ -75,10 +145,13 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * @param line line number in the file where the error was sent
  */
 void
-BESSilentInfo::add_exception( const string &type,
-				  const string &msg,
-				  const string &file,
-				  int line )
+BESSilentInfo::add_exception( const string &type, BESException &e )
+{
+}
+
+void
+BESSilentInfo::transmit( BESTransmitter *transmitter,
+		         BESDataHandlerInterface &dhi )
 {
 }
 
@@ -87,8 +160,7 @@ BESSilentInfo::add_exception( const string &type,
  * @param out output to this file descriptor if information buffered.
  */
 void
-BESSilentInfo::print(FILE *out)
+BESSilentInfo::print( FILE *out )
 {
 }
 
-// $Log: BESSilentInfo.cc,v $

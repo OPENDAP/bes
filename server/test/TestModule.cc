@@ -43,7 +43,7 @@ using std::endl ;
 #include "BESRequestHandlerList.h"
 #include "TestRequestHandler.h"
 #include "TestException.h"
-#include "BESInterface.h"
+#include "BESExceptionManager.h"
 
 #include "BESLog.h"
 
@@ -82,7 +82,7 @@ TestModule::initialize()
 
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding Test exception callback" << endl ;
-    BESInterface::add_ehm_callback( TestException::handleException ) ;
+    BESExceptionManager::TheEHM()->add_ehm_callback( TestException::handleException ) ;
 }
 
 void

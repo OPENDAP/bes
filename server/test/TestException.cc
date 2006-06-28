@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "TestException.h"
-#include "BESStatusReturn.h"
+#include "BESInfo.h"
 
 int
 TestException::handleException( BESException &e,
@@ -40,10 +40,13 @@ TestException::handleException( BESException &e,
     TestException *te = dynamic_cast<TestException*>(&e);
     if( te )
     {
-	fprintf( stdout, "Reporting Test Exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
+	if( dhi.error_info )
+	{
+	    dhi.error_info->add_exception( "Test", e ) ;
+	    dhi.error_info->end_response() ;
+	}
 	return 12 ;
     } 
-    return BES_EXECUTED_OK ;
+    return 0 ;
 }
 

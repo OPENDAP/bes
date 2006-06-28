@@ -31,8 +31,10 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESShowContainersResponseHandler.h"
+#include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESContainerStorageList.h"
+#include "BESResponseNames.h"
 
 BESShowContainersResponseHandler::BESShowContainersResponseHandler( string name )
     : BESResponseHandler( name )
@@ -62,9 +64,11 @@ BESShowContainersResponseHandler::~BESShowContainersResponseHandler( )
 void
 BESShowContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
+    info->begin_response( SHOWCONTAINERS_RESPONSE_STR ) ;
     BESContainerStorageList::TheList()->show_containers( *info ) ;
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -85,7 +89,7 @@ BESShowContainersResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

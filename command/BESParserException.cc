@@ -33,23 +33,25 @@
 // 2004 Copyright University Corporation for Atmospheric Research
 
 #include "BESParserException.h"
+#include "BESInfo.h"
 #include "cgi_util.h"
 
 // Add docs. jhrg 3/29/06
 int
 BESParserException::handleException( BESException &e,
-					 BESDataHandlerInterface &dhi )
+				     BESDataHandlerInterface &dhi )
 {
     BESParserException *pe=dynamic_cast<BESParserException*>(&e);
     // What if pe is null. jhrg 3/29/06
-    if(pe)
+    // Then this static function returns 0 meaning that the exception wasn't
+    // handled here and to continue trying. pcw 06/27/06
+    if( pe )
     {
-	bool ishttp = false ;
-	if( dhi.transmit_protocol == "HTTP" )
-	    ishttp = true ;
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "There is a parse error!\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
+	if( dhi.error_info )
+	{
+	    dhi.error_info->add_exception( "Parse", e ) ;
+	    dhi.error_info->end_response() ;
+	}
 	return OPENDAP_PARSER_ERROR;
     }
     return 0 ;

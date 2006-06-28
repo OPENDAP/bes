@@ -88,8 +88,3 @@ public:
 
 #endif // I_BESDefineResponseHandler_h
 
-// $Log: BESDefineResponseHandler.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

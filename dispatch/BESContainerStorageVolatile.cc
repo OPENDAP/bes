@@ -81,12 +81,13 @@ BESContainerStorageVolatile::look_for( BESContainer &d )
 
 void
 BESContainerStorageVolatile::add_container( const string &s_name,
-					 const string &r_name,
-					 const string &type )
+					    const string &r_name,
+					    const string &type )
 {
     if( type == "" )
     {
-	throw BESContainerStorageException( "Unable to add container, the type of data can not be determined" ) ;
+	string s = "Unable to add container, type of data must be specified"  ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
     BESContainerStorageVolatile::Container_citer i =
@@ -95,7 +96,9 @@ BESContainerStorageVolatile::add_container( const string &s_name,
     i = _container_list.find( s_name ) ;
     if( i != _container_list.end() )
     {
-	throw BESContainerStorageException( (string)"A container with the name " + s_name + " already exists" ) ;
+	string s = (string)"A container with the name " + s_name
+	           + " already exists" ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
     BESContainer *c = new BESContainer( s_name ) ;
     c->set_real_name( r_name ) ;
@@ -167,25 +170,19 @@ BESContainerStorageVolatile::del_containers( )
 void
 BESContainerStorageVolatile::show_containers( BESInfo &info )
 {
-    info.add_data( get_name() ) ;
-    info.add_data( "\n" ) ;
-    BESContainerStorageVolatile::Container_iter i =
-	_container_list.begin() ;
-    if( i == _container_list.end() )
+    info.add_tag( "name", get_name() ) ;
+    BESContainerStorageVolatile::Container_iter i = _container_list.begin() ;
+    for( ; i != _container_list.end(); i++ )
     {
-	info.add_data( "No containers defined\n" ) ;
-    }
-    else
-    {
-	for( ; i != _container_list.end(); i++ )
-	{
-	    BESContainer *c = (*i).second;
-	    string sym = c->get_symbolic_name() ;
-	    string real = c->get_real_name() ;
-	    string type = c->get_container_type() ;
-	    string line = sym + "," + real + "," + type + "\n" ;
-	    info.add_data( line ) ;
-	}
+	info.begin_tag( "container" ) ;
+	BESContainer *c = (*i).second;
+	string sym = c->get_symbolic_name() ;
+	info.add_tag( "symbolicName", sym ) ;
+	string real = c->get_real_name() ;
+	info.add_tag( "realName", real ) ;
+	string type = c->get_container_type() ;
+	info.add_tag( "dataType", type ) ;
+	info.end_tag( "container" ) ;
     }
 }
 

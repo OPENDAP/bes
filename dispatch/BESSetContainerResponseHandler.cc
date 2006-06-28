@@ -31,12 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESSetContainerResponseHandler.h"
-#include "BESInfo.h"
 #include "BESSilentInfo.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
 #include "BESContainerStorageException.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler( string name )
     : BESResponseHandler( name )
@@ -87,15 +87,7 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
 void
 BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = 0 ;
-    if( dhi.data[SILENT] == "yes" )
-    {
-	info = new BESSilentInfo() ;
-    }
-    else
-    {
-	info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
-    }
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
     string store_name = dhi.data[STORE_NAME] ;
@@ -106,36 +98,15 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 	BESContainerStorageList::TheList()->find_persistence( store_name );
     if( cp )
     {
-	try
-	{
-	    string def_type = "added" ;
-	    bool deleted = cp->del_container( symbolic_name ) ;
-	    if( deleted == true )
-	    {
-		def_type = "replaced" ;
-	    }
-	    cp->add_container( symbolic_name, real_name, container_type ) ;
-	    string ret = (string)"Successfully " + def_type + " container \""
-			 + symbolic_name + "\" in container storage \""
-			 + store_name + "\"\n" ;
-	    info->add_data( ret ) ;
-	}
-	catch( BESContainerStorageException &e )
-	{
-	    string ret = (string)"Unable to add container \""
-			 + symbolic_name + "\" to container storage \""
-			 + store_name + "\"\n" ;
-	    info->add_data( ret ) ;
-	    info->add_data( e.get_error_description() ) ;
-	}
+	bool deleted = cp->del_container( symbolic_name ) ;
+	cp->add_container( symbolic_name, real_name, container_type ) ;
     }
     else
     {
 	string ret = (string)"Unable to add container \""
 		     + symbolic_name + "\" to container storage \""
-		     + store_name + "\"\n" ;
-	info->add_data( ret ) ;
-	info->add_data( (string)"Container storage \"" + store_name + "\" does not exist" ) ;
+		     + store_name + "\". Store does not exist." ;
+	throw BESHandlerException( ret, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -158,7 +129,7 @@ BESSetContainerResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi ) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

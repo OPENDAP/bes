@@ -31,8 +31,10 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESStatusResponseHandler.h"
+#include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESStatus.h"
+#include "BESResponseNames.h"
 
 BESStatusResponseHandler::BESStatusResponseHandler( string name )
     : BESResponseHandler( name )
@@ -62,10 +64,12 @@ BESStatusResponseHandler::~BESStatusResponseHandler( )
 void
 BESStatusResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
     BESStatus s ;
-    info->add_data( "Listener boot time: " + s.get_status() ) ;
+    info->begin_response( STATUS_RESPONSE_STR ) ;
+    info->add_tag( "status", s.get_status() ) ;
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -87,7 +91,7 @@ BESStatusResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi ) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

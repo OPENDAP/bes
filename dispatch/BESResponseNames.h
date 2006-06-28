@@ -61,8 +61,10 @@
 
 #define SET_RESPONSE "set"
 #define SETCONTAINER "set.container"
+#define SETCONTAINER_STR "setContainer"
 
 #define DEFINE_RESPONSE "define"
+#define DEFINE_RESPONSE_STR "define"
 
 #define SEND_RESPONSE "send"
 
@@ -74,20 +76,33 @@
 
 #define SHOW_RESPONSE "show"
 #define HELP_RESPONSE "show.help"
+#define HELP_RESPONSE_STR "showHelp"
 #define PROCESS_RESPONSE "show.process"
+#define PROCESS_RESPONSE_STR "showProcess"
 #define VERS_RESPONSE "show.version"
+#define VERS_RESPONSE_STR "showVersion"
 #define SHOWCONTAINERS_RESPONSE "show.containers"
+#define SHOWCONTAINERS_RESPONSE_STR "showContainers"
 #define SHOWDEFS_RESPONSE "show.definitions"
+#define SHOWDEFS_RESPONSE_STR "showDefinitions"
 #define KEYS_RESPONSE "show.keys"
+#define KEYS_RESPONSE_STR "showKeys"
 #define STATUS_RESPONSE "show.status"
+#define STATUS_RESPONSE_STR "showStatus"
 #define CATALOG_RESPONSE "show.catalog"
+#define CATALOG_RESPONSE_STR "showCatalog"
 #define SHOW_INFO_RESPONSE "show.info"
+#define SHOW_INFO_RESPONSE_STR "showInfo"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "delete.container"
+#define DELETE_CONTAINER_STR "deleteContainer"
 #define DELETE_CONTAINERS "delete.containers"
+#define DELETE_CONTAINERS_STR "deleteContainers"
 #define DELETE_DEFINITION "delete.definition"
+#define DELETE_DEFINITION_STR "deleteDefinition"
 #define DELETE_DEFINITIONS "delete.definitions"
+#define DELETE_DEFINITIONS_STR "deleteDefinitions"
 
 #endif // E_BESResponseNames_H
 

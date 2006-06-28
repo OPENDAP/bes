@@ -44,34 +44,36 @@
  * @see DODSResponseObject
  */
 class BESHTMLInfo : public BESInfo {
+private:
+    bool		_header ;
+    string		_indent ;
+    bool		_do_indent ;
 public:
-  			BESHTMLInfo( const string &buffer_key = "",
-			              ObjectType type = unknown_type ) ;
-  			BESHTMLInfo( bool is_http,
-			              const string &buffer_key = "",
-				      ObjectType type = unknown_type ) ;
+  			BESHTMLInfo( ) ;
+  			BESHTMLInfo( const string &key ) ;
     virtual 		~BESHTMLInfo() ;
 
+    virtual void	begin_response( const string &response_name ) ;
+    virtual void	end_response( ) ;
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 ) ;
+    virtual void	begin_tag( const string &tag_name,
+				   map<string,string> *attrs = 0 ) ;
+    virtual void	end_tag( const string &tag_name ) ;
+
     virtual void 	add_data( const string &s ) ;
-    virtual void	add_exception( const string &type,
-                                       const string &msg,
-				       const string &file,
-				       int line ) ;
+    virtual void	add_space( unsigned long num_spaces ) ;
+    virtual void	add_break( unsigned long num_breaks ) ;
+
+    virtual void 	add_data_from_file( const string &key,
+                                            const string &name ) ;
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi ) ;
+
+    static BESInfo *BuildHTMLInfo( const string &info_type ) ;
 };
 
 #endif // BESHTMLInfo_h_
 
-// $Log: BESHTMLInfo.h,v $
-// Revision 1.4  2005/04/19 17:58:52  pwest
-// print of an html information object must include the header
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

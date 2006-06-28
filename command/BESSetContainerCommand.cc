@@ -68,7 +68,8 @@ BESSetContainerCommand::parse_request( BESTokenizer &tokenizer,
 	BESResponseHandlerList::TheList()->find_handler( SETCONTAINER ) ;
     if( !retResponse )
     {
-	throw BESParserException( (string)"Improper command " + SETCONTAINER );
+	string s = (string)"No response handler for command " + SETCONTAINER ;
+	throw BESParserException( s, __FILE__, __LINE__ ) ;
     }
 
     dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;

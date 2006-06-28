@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDelDefResponseHandler.h"
-#include "BESInfo.h"
+#include "BESSilentInfo.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
@@ -39,6 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESDelDefResponseHandler::BESDelDefResponseHandler( string name )
     : BESResponseHandler( name )
@@ -76,7 +77,7 @@ BESDelDefResponseHandler::~BESDelDefResponseHandler( )
 void
 BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
     string def_name = dhi.data[DEF_NAME] ;
@@ -89,37 +90,28 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
 	    BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
 	if( store )
 	{
-	    bool deleted =
-		store->del_definition( dhi.data[DEF_NAME] ) ;
-	    if( deleted == true )
-	    {
-		string line = (string)"Successfully deleted definition \""
-			      + dhi.data[DEF_NAME]
-			      + "\"\n" ;
-		info->add_data( line ) ;
-	    }
-	    else
+	    bool deleted = store->del_definition( dhi.data[DEF_NAME] ) ;
+	    if( !deleted )
 	    {
 		string line = (string)"Definition \""
 			      + dhi.data[DEF_NAME]
-			      + "\" does not exist.  Unable to delete.\n" ;
-		info->add_data( line ) ;
+			      + "\" does not exist. Unable to delete." ;
+		throw BESHandlerException( line, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
 	{
 	    string line = (string)"Definition store \""
 			  + store_name
-			  + "\" does not exist.  Unable to delete.\n" ;
-	    info->add_data( line ) ;
+			  + "\" does not exist.  Unable to delete." ;
+	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
 	string line = (string)"No definition specified. "
-		      + "Unable to complete request."
-		      + "\n" ;
-	info->add_data( line ) ;
+		      + "Unable to complete request." ;
+	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -142,7 +134,7 @@ BESDelDefResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

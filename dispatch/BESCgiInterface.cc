@@ -92,30 +92,8 @@ BESCgiInterface::build_data_request_plan()
 	BESResponseHandlerList::TheList()->find_handler( myaction ) ;
     if( !_dhi.response_handler )
     {
-	BESHandlerException he ;
-	he.set_error_description( (string)"Improper command " + myaction ) ;
-	throw he ;
+	string s = (string)"Improper command " + myaction ;
+	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
     }
 }
 
-// $Log: BESCgiInterface.cc,v $
-// Revision 1.6  2005/04/19 17:57:27  pwest
-// was not setting the symbolic name on the container, which translated into missing structure name in resulting DAP object
-//
-// Revision 1.5  2005/04/06 20:06:24  pwest
-// was not looking up response handler to handle the request type
-//
-// Revision 1.4  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

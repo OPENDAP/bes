@@ -73,9 +73,7 @@ BESTokenizer::parse_error( const string &s )
     }
     if( s != "" )
 	error += "\n" + s ;
-    BESParserException pe ;
-    pe.set_error_description( error ) ;
-    throw pe ;
+    throw BESParserException( error, __FILE__, __LINE__ ) ;
 }
 
 /** @brief returns the first token from the token list

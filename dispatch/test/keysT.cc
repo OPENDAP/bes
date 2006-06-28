@@ -41,7 +41,7 @@ run(void)
 	catch( BESException &e )
 	{
 	    cout << "unable to create BESKeys:" << endl ;
-	    cout << e.get_error_description() << endl ;
+	    cout << e.get_message() << endl ;
 	}
 	catch( ... )
 	{
@@ -64,7 +64,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -79,7 +79,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -103,7 +103,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -121,7 +121,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -138,7 +138,7 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "unable to create BESKeys, because:" << endl ;
-	cerr << e.get_error_description() << endl ;
+	cerr << e.get_message() << endl ;
 	return 1 ;
     }
 
@@ -221,7 +221,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
-	cout << e.get_error_description() ;
+	cout << e.get_message() ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -235,7 +235,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
-	cout << e.get_error_description() ;
+	cout << e.get_message() ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -257,7 +257,7 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
-	cerr << e.get_error_description() ;
+	cerr << e.get_message() ;
 	return 1 ;
     }
 
@@ -280,7 +280,7 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
-	cerr << e.get_error_description() ;
+	cerr << e.get_message() ;
 	return 1 ;
     }
 

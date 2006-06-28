@@ -32,7 +32,9 @@
 
 #include "BESKeysResponseHandler.h"
 #include "TheBESKeys.h"
+#include "BESInfoList.h"
 #include "BESInfo.h"
+#include "BESResponseNames.h"
 
 BESKeysResponseHandler::BESKeysResponseHandler( string name )
     : BESResponseHandler( name )
@@ -66,22 +68,22 @@ BESKeysResponseHandler::~BESKeysResponseHandler( )
 void
 BESKeysResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
-    info->add_data( (string)"List of currently defined keys "
-                    + " from the initialization file "
-                    + TheBESKeys::TheKeys()->keys_file_name() + "\n" ) ;
+    info->begin_response( KEYS_RESPONSE_STR ) ;
+    info->add_tag( "File", TheBESKeys::TheKeys()->keys_file_name() ) ;
 
     BESKeys::Keys_citer ki = TheBESKeys::TheKeys()->keys_begin() ;
     BESKeys::Keys_citer ke = TheBESKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
     {
-	string line = (string)"key: \"" + (*ki).first
-	              + "\", value:\"" + (*ki).second
-		      + "\"\n" ;
-	info->add_data( line ) ;
+	info->begin_tag( "Key" ) ;
+	info->add_tag( "name", (*ki).first ) ;
+	info->add_tag( "value", (*ki).second ) ;
+	info->end_tag( "Key" ) ;
     }
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -103,7 +105,7 @@ BESKeysResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

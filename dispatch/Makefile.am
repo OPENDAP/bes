@@ -58,18 +58,19 @@ SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESResponseHandlerList.cc \
 	BESCatalogDirectory.cc BESCatalogList.cc \
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc \
+	BESInfoList.cc \
 	BESXMLInfo.cc BESSilentInfo.cc \
 	BESRequestHandler.cc BESRequestHandlerList.cc \
 	BESBasicTransmitter.cc \
 	BESBasicHttpTransmitter.cc BESFilterTransmitter.cc \
-	BESReporterList.cc BESBasicException.cc \
-	BESMemoryException.cc BESAutoPtr.cc BESConstraintFuncs.cc \
+	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
 	BESHeapManager.cc BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc \
 	BESReturnManager.cc \
 	BESDefinitionStorageList.cc \
 	BESDefinitionStorageVolatile.cc \
+	BESExceptionManager.cc \
 	BESBaseApp.cc BESModuleApp.cc default_module.cc
 
 HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
@@ -89,17 +90,16 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESCatalogDirectory.h BESCatalog.h \
 	BESCatalogList.h \
 	BESResponseNames.h BESResponseException.h \
-	BESInfo.h BESTextInfo.h BESHTMLInfo.h BESVersionInfo.h \
-	BESXMLInfo.h BESSilentInfo.h \
+	BESInfo.h BESTextInfo.h BESHTMLInfo.h BESVersionInfo.h BESInfoList.h \
+	BESXMLInfo.h BESSilentInfo.h BESInfoNames.h \
 	BESRequestHandler.h \
 	BESRequestHandlerList.h \
 	BESIncorrectRequestException.h BESDataHandlerInterface.h \
 	BESDataRequestInterface.h BESTransmitter.h \
 	BESBasicHttpTransmitter.h BESBasicTransmitter.h \
 	BESFilterTransmitter.h BESReporter.h BESReporterList.h \
-	BESBasicException.h BESException.h \
-	BESHandlerException.h BESAggregationException.h \
-	BESMemoryException.h \
+	BESException.h BESHandlerException.h BESAggregationException.h \
+	BESMemoryException.h BESDatabaseException.h \
 	BESAutoPtr.cc BESAutoPtr.h \
 	BESConstraintFuncs.h BESHeapManager.h \
 	BESMemoryGlobalArea.h BESMemoryManager.h \
@@ -113,7 +113,8 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESDataNames.h BESApp.h BESObj.h BESBaseApp.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESPluginException.h default_module.h BESTransmitterNames.h \
-	BESModuleApp.h BESDatabaseException.h
+	BESExceptionManager.h \
+	BESModuleApp.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc BESDDXResponseHandler.cc \

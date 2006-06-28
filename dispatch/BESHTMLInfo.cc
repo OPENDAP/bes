@@ -39,33 +39,35 @@
 using std::ostringstream ;
 
 #include "BESHTMLInfo.h"
+#include "cgi_util.h"
 
 /** @brief constructs an html information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
+ * Uses the default OPeNDAP.Info.Buffered key in the bes configuration file to
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
  * @see DODSResponseObject
  */
-BESHTMLInfo::BESHTMLInfo( const string &buffer_key, ObjectType otype)
-    : BESInfo( buffer_key, otype )
+BESHTMLInfo::BESHTMLInfo( )
+    : BESInfo( ),
+      _header( false ),
+      _do_indent( true )
 {
 }
 
-/** @brief constructs an html information response object.
+/** @brief constructs a basic text information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
+ * Uses the default specified key in the bes configuration file to
  * determine whether the information should be buffered or not.
  *
- * @param is_http whether the response is going to a browser
  * @see BESInfo
  * @see DODSResponseObject
  */
-BESHTMLInfo::BESHTMLInfo( bool is_http,
-                            const string &buffer_key,
-			    ObjectType otype )
-    : BESInfo( is_http, buffer_key, otype )
+BESHTMLInfo::BESHTMLInfo( const string &key )
+    : BESInfo( key ),
+      _header( false ),
+      _do_indent( true )
 {
 }
 
@@ -73,53 +75,196 @@ BESHTMLInfo::~BESHTMLInfo()
 {
 }
 
-/** @brief add data to this informational object. If buffering is not set then
- * the information is output directly to the output stream.
+/** @brief begin the informational response
+ *
+ * Because this is text informational object, no begin tags are needed
+ *
+ * @param response_name name of the response this information represents
+ */
+void
+BESHTMLInfo::begin_response( const string &response_name )
+{
+    BESInfo::begin_response( response_name ) ;
+    add_data( "<HTML>\n" ) ;
+    _indent += "    " ;
+    add_data( "<HEAD>\n" ) ;
+    _indent += "    " ;
+    add_data( (string)"<TITLE>" + response_name + "</TITLE>\n" ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( "</HEAD>\n" ) ;
+    add_data( "<BODY>\n" ) ;
+    _indent += "    " ;
+}
+
+/** @brief end the response
+ *
+ * Add the terminating tags for the response and for the response name. If
+ * there are still tags that have not been closed then an exception is
+ * thrown.
+ *
+ */
+void
+BESHTMLInfo::end_response( )
+{
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( "</BODY>\n" ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    add_data( "</HTML>\n" ) ;
+}
+
+/** @brief add tagged information to the inforamtional response
+ *
+ * @param tag_name name of the tag to be added to the response
+ * @param tag_data information describing the tag
+ */
+void
+BESHTMLInfo::add_tag( const string &tag_name,
+		      const string &tag_data,
+		      map<string,string> *attrs )
+{
+    string to_add = tag_name + ": " + tag_data + "<BR />\n" ;
+    add_data( to_add ) ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    BESInfo::add_data( _indent + "    " + name + ": " + val + "<BR />\n" ) ;
+	}
+    }
+}
+
+/** @brief begin a tagged part of the information, information to follow
+ *
+ * @param tag_name name of the tag to begin
+ */
+void
+BESHTMLInfo::begin_tag( const string &tag_name,
+                        map<string,string> *attrs )
+{
+    BESInfo::begin_tag( tag_name ) ;
+    string to_add = tag_name + "<BR />\n" ;
+    add_data( to_add ) ;
+    _indent += "    " ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    BESInfo::add_data( _indent + name + ": " + val + "<BR />\n" ) ;
+	}
+    }
+}
+
+/** @brief end a tagged part of the informational response
+ *
+ * If the named tag is not the current tag then an error is thrown.
+ *
+ * @param tag_name name of the tag to end
+ */
+void
+BESHTMLInfo::end_tag( const string &tag_name )
+{
+    BESInfo::end_tag( tag_name ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+}
+
+/** @brief add a space to the informational response
+ *
+ * @param num_spaces the number of spaces to add to the information
+ */
+void
+BESHTMLInfo::add_space( unsigned long num_spaces )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_spaces; i++ )
+    {
+	to_add += "&nbsp;" ;
+    }
+    _do_indent = false ;
+    add_data( to_add ) ;
+}
+
+/** @brief add a line break to the information
+ *
+ * @param num_breaks the number of line breaks to add to the information
+ */
+void
+BESHTMLInfo::add_break( unsigned long num_breaks )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_breaks; i++ )
+    {
+	to_add += "<BR />" ;
+    }
+    to_add += "\n" ;
+    _do_indent = false ;
+    add_data( to_add ) ;
+}
+
+/** @brief add data to this informational object.
+ *
+ * If buffering is not set then the information is output directly to the
+ * output stream.
+ *
+ * Formatting is up to the user
  *
  * @param s information to be added to this response object
  */
 void
 BESHTMLInfo::add_data( const string &s )
 {
-    if( !_header && !_buffered && _is_http )
+    if( !_header && !_buffered )
     {
-	set_mime_html( stdout, _otype ) ;
+	set_mime_html( stdout, unknown_type ) ;
 	_header = true ;
     }
-    BESInfo::add_data( s ) ;
+    if( _do_indent )
+	BESInfo::add_data( _indent + s ) ;
+    else
+	BESInfo::add_data( s ) ;
+    _do_indent = true ;
 }
 
-/** @brief add exception data to this informational object. If buffering is
- * not set then the information is output directly to the output stream.
+/** @brief add data from a file to the informational object
  *
- * @param type type of the exception received
- * @param msg the error message
- * @param file file name of where the error was sent
- * @param line line number in the file where the error was sent
+ * This method simply adds a .HTML to the end of the key and passes the
+ * request on up to the BESInfo parent class.
+ *
+ * @param key Key from the initialization file specifying the file to be
+ * @param name A description of what is the information being loaded
  */
 void
-BESHTMLInfo::add_exception( const string &type, const string &msg,
-                             const string &file, int line )
+BESHTMLInfo::add_data_from_file( const string &key, const string &name )
 {
-    add_data( "Exception Received<BR />\n" ) ;
-    add_data( (string)"    Type: " + type + "<BR />\n" ) ;
-    add_data( (string)"    Message: " + msg + "<BR />\n" ) ;
-    ostringstream s ;
-    s << "    Filename: " << file << " LineNumber: " << line << "<BR />\n" ;
-    add_data( s.str() ) ;
+    string newkey = key + ".HTML" ;
+    BESInfo::add_data_from_file( newkey, name ) ;
 }
 
-// $Log: BESHTMLInfo.cc,v $
-// Revision 1.4  2005/04/19 17:58:52  pwest
-// print of an html information object must include the header
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//
+/** @brief transmit the text information as text
+ *
+ * use the send_html method on the transmitter to transmit the html
+ * formatted information back to the client
+ *
+ * @param transmitter The type of transmitter to use to transmit the info
+ * @param dhi information to help with the transmission
+ */
+void
+BESHTMLInfo::transmit( BESTransmitter *transmitter,
+		       BESDataHandlerInterface &dhi )
+{
+    transmitter->send_html( *this, dhi ) ;
+}
+
+BESInfo *
+BESHTMLInfo::BuildHTMLInfo( const string &info_type )
+{
+    return new BESHTMLInfo( ) ;
+}
+

@@ -142,4 +142,3 @@ BESAggFactory::TheFactory()
     return _instance ;
 }
 
-// $Log: BESAggFactory.cc,v $

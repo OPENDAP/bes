@@ -34,6 +34,7 @@
 #include "DAS.h"
 #include "DDS.h"
 #include "BESInfo.h"
+#include "cgi_util.h"
 
 void
 BESBasicHttpTransmitter::send_das( DAS &das, BESDataHandlerInterface &dhi )
@@ -68,7 +69,7 @@ BESBasicHttpTransmitter::send_text( BESInfo &info,
                                      BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
-	set_mime_text( stdout, info.type() ) ;
+	set_mime_text( stdout, unknown_type ) ;
     BESBasicTransmitter::send_text( info, dhi ) ;
 }
 
@@ -77,7 +78,7 @@ BESBasicHttpTransmitter::send_html( BESInfo &info,
                                      BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
-	set_mime_html( stdout, info.type() ) ;
+	set_mime_html( stdout, unknown_type ) ;
     BESBasicTransmitter::send_text( info, dhi ) ;
 }
 

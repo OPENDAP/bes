@@ -118,7 +118,7 @@ public:
     {
 	BESPlugin<C> *child_implementation = d_children[name];
 	if (!child_implementation)
-	    throw NoSuchObject(string("No class is bound to ") + name);
+	    throw NoSuchObject(string("No class is bound to ") + name, __FILE__, __LINE__ );
 	return child_implementation->instantiate();
     }
 };

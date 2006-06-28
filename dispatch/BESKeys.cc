@@ -76,7 +76,7 @@ BESKeys::BESKeys( const string &keys_file_name )
 	string s = string("OPeNDAP: fatal, can not open initialization file ")
 		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
-	throw BESKeysException( s ) ;
+	throw BESKeysException( s, __FILE__, __LINE__ ) ;
     }
 
     _the_keys = new map<string,string>;
@@ -92,7 +92,9 @@ BESKeys::BESKeys( const string &keys_file_name )
     catch(...)
     {
 	clean() ;
-	throw BESKeysException("Undefined exception while trying to load keys");
+	string s = (string)"Undefined exception while trying to load keys "
+	           + "from bes configuration file " + _keys_file_name ;
+	throw BESKeysException( s, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -160,7 +162,7 @@ BESKeys::break_pair(const char* b, string& key, string &value)
 		string s = string( "OPeNDAP: invalid entry " ) + b
 		           + "; there are " + howmany
 			   + " = characters.\n";
-		throw BESKeysException( s );
+		throw BESKeysException( s, __FILE__, __LINE__ );
 	    }
 	    else
 	    {
@@ -183,27 +185,38 @@ BESKeys::only_blanks(const char *line)
 {
     int val;
     regex_t rx;
-    val=regcomp (&rx, "[^[:space:]]",REG_ICASE);
+    string expr = "[^[:space:]]" ;
+    val = regcomp( &rx, expr.c_str(), REG_ICASE ) ;
 
-    if(val!=0)
-	throw BESKeysException("Regular expression did not compile correclty");
-    val=regexec (&rx,line,0,0, REG_NOTBOL);
-    if (val==0)
+    if( val != 0 )
     {
-	regfree(&rx);
-	return false;
+	string s = (string)"Regular expression " + expr
+	           + " did not compile correctly" ;
+	throw BESKeysException( s, __FILE__, __LINE__ ) ;
+    }
+    val = regexec( &rx, line, 0, 0, REG_NOTBOL ) ;
+    if( val == 0 )
+    {
+	regfree( &rx ) ;
+	return false ;
     }
     else
     {
-	if (val==REG_NOMATCH)
+	if( val == REG_NOMATCH )
 	{
-	    regfree(&rx);
-	    return true;
+	    regfree( &rx ) ;
+	    return true ;
 	}
-	else if (val==REG_ESPACE)
-	    throw BESKeysException("Regular expression out of space");
+	else if( val == REG_ESPACE )
+	{
+	    string s = "Execution of regular expression out of space" ;
+	    throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	}
 	else
-	    throw BESKeysException("Regular expression has an undefined problem");
+	{
+	    string s = "Execution of regular expression has unknown problem" ;
+	    throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	}
     }
 }
 

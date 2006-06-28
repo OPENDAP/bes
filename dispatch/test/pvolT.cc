@@ -31,7 +31,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    BESTextInfo info( false ) ;
+    BESTextInfo info ;
     cpv.show_containers( info ) ;
     info.print( stdout ) ;
 
@@ -46,7 +46,7 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to add sym1 again, good" << endl ;
-	cout << e.get_error_description() << endl ;
+	cout << e.get_message() << endl ;
     }
 
     {
@@ -184,7 +184,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    BESTextInfo info2( false ) ;
+    BESTextInfo info2 ;
     cpv.show_containers( info2 ) ;
     info2.print( stdout ) ;
 

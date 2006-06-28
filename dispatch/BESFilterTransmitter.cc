@@ -35,6 +35,7 @@
 #include "ConstraintEvaluator.h"
 #include "BESInfo.h"
 #include "BESDataNames.h"
+#include "cgi_util.h"
 
 void
 BESFilterTransmitter::send_das( DAS &das, BESDataHandlerInterface & )
@@ -72,7 +73,7 @@ BESFilterTransmitter::send_text( BESInfo &info,
 {
     if( info.is_buffered() )
     {
-	set_mime_text( stdout, info.type() ) ;
+	set_mime_text( stdout, unknown_type ) ;
 	info.print( stdout ) ;
     }
 }
@@ -83,7 +84,7 @@ BESFilterTransmitter::send_html( BESInfo &info,
 {
     if( info.is_buffered() )
     {
-	set_mime_html( stdout, info.type() ) ;
+	set_mime_html( stdout, unknown_type ) ;
 	info.print( stdout ) ;
     }
 }

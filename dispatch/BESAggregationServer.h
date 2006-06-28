@@ -62,11 +62,3 @@ public:
 
 #endif // BESAggregationServer_h_
 
-// $Log: BESAggregationServer.h,v $
-// Revision 1.2  2005/03/26 00:33:33  pwest
-// fixed aggregation server invoke problems. Other commands use the aggregation command but no aggregation is needed, so set aggregation to empty string when done
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

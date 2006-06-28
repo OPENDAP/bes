@@ -38,7 +38,6 @@
 using std::string ;
 
 #include "BESInfo.h"
-#include "cgi_util.h"
 
 /** @brief silent informational response object
  *
@@ -53,16 +52,26 @@ public:
     			BESSilentInfo() ;
     virtual		~BESSilentInfo() ;
 
+    virtual void	begin_response( const string &response_name ) ;
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 ) ;
+    virtual void	begin_tag( const string &tag_name,
+                                   map<string,string> *attrs = 0 ) ;
+    virtual void	end_tag( const string &tag_name ) ;
+
     virtual void 	add_data( const string &s ) ;
+    virtual void	add_space( unsigned long num_spaces ) ;
+    virtual void	add_break( unsigned long num_breaks ) ;
+
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
-    virtual void	add_exception( const string &type,
-                                       const string &msg,
-				       const string &file,
-				       int line ) ;
+    virtual void	add_exception( const string &type, BESException &e) ;
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi ) ;
     virtual void 	print( FILE *out ) ;
 };
 
 #endif // BESSilentInfo_h_
 
-// $Log: BESSilentInfo.h,v $

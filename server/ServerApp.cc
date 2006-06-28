@@ -325,7 +325,7 @@ main( int argc, char **argv )
     catch( BESException &e )
     {
 	cerr << "Caught unhandled exception: " << endl ;
-	cerr << e.get_error_description() << endl ;
+	cerr << e.get_message() << endl ;
 	return 1 ;
     }
     catch( ... )

@@ -190,21 +190,17 @@ BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
                    c_list += dhi.container->get_real_name() ;
 		   dhi.data[REAL_NAME_LIST] = c_list ;
                } else {
-                   BESHandlerException he ;
                    string se = "Request handler \""
                                + dhi.container->get_container_type()
                                + "\" does not handle the response type \""
                                + dhi.action + "\"" ;
-                   he.set_error_description( se ) ;
-                   throw he;
+                   throw BESHandlerException( se, __FILE__, __LINE__ ) ;
                }
            } else {
-               BESHandlerException he ;
                string se = "The request handler \""
                            + dhi.container->get_container_type()
                            + "\" does not exist" ;
-               he.set_error_description( se ) ;
-               throw he;
+               throw BESHandlerException( se, __FILE__, __LINE__ ) ;
            }
        }
        dhi.next_container() ;
@@ -274,21 +270,17 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
 	    {
 		p( dhi ) ;
 	    } else {
-		BESHandlerException he ;
 		string se = "Request handler \""
 			    + dhi.container->get_container_type()
 			    + "\" does not handle the response type \""
 			    + dhi.action + "\"" ;
-		he.set_error_description( se ) ;
-		throw he;
+		throw BESHandlerException( se, __FILE__, __LINE__ ) ;
 	    }
 	} else {
-	    BESHandlerException he ;
 	    string se = "The request handler \""
 			+ dhi.container->get_container_type()
 			+ "\" does not exist" ;
-	    he.set_error_description( se ) ;
-	    throw he;
+	    throw BESHandlerException( se, __FILE__, __LINE__ ) ;
 	}
     }
 }
@@ -303,18 +295,3 @@ BESRequestHandlerList::TheList()
     return _instance ;
 }
 
-// $Log: BESRequestHandlerList.cc,v $
-// Revision 1.4  2005/03/15 20:00:14  pwest
-// added execute_once so that a single function can execute the request using all the containers instead of executing a function for each container. This is for requests that are handled by the same request type, for example, all containers are of type nc
-//
-// Revision 1.3  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

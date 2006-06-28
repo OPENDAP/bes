@@ -45,23 +45,35 @@
  * @see DODSResponseObject
  */
 class BESTextInfo : public BESInfo {
+private:
+    string		_indent ;
+    bool		_ishttp ;
+    bool		_header ;
 public:
-  			BESTextInfo( ObjectType otype = unknown_type ) ;
-  			BESTextInfo( bool is_http,
-			              ObjectType otype = unknown_type ) ;
+  			BESTextInfo( bool ishttp = false ) ;
+  			BESTextInfo( const string &key, bool ishttp = false ) ;
     virtual 		~BESTextInfo() ;
+
+    virtual void	begin_response( const string &response_name ) ;
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 ) ;
+    virtual void	begin_tag( const string &tag_name,
+                                   map<string,string> *attrs = 0 ) ;
+    virtual void	end_tag( const string &tag_name ) ;
+
+    virtual void 	add_data( const string &s ) ;
+    virtual void	add_space( unsigned long num_spaces ) ;
+    virtual void	add_break( unsigned long num_breaks ) ;
+
+    virtual void 	add_data_from_file( const string &key,
+                                            const string &name ) ;
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi ) ;
+
+    static BESInfo *BuildTextInfo( const string &info_type ) ;
 };
 
 #endif // BESTextInfo_h_
 
-// $Log: BESTextInfo.h,v $
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

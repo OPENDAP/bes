@@ -34,32 +34,45 @@
 #pragma implementation
 #endif
 
+#include <sstream>
+
+using std::ostringstream ;
+
 #include "BESTextInfo.h"
+#include "cgi_util.h"
 
 /** @brief constructs a basic text information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
- * determine whether the information should be buffered or not.
+ * Text informational objects can also be sent as html with an html header.
+ * We need to know this if the informationl is not buffered. If it isn't
+ * buffered then we need to send that text header.
  *
  * @see BESInfo
  * @see DODSResponseObject
  */
-BESTextInfo::BESTextInfo( ObjectType otype )
-    : BESInfo( "", otype )
+BESTextInfo::BESTextInfo( bool ishttp )
+    : BESInfo( ),
+      _ishttp( ishttp ),
+      _header( false )
 {
 }
 
 /** @brief constructs a basic text information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
+ * Uses the default specified key in the bes configuration file to
  * determine whether the information should be buffered or not.
  *
- * @param is_http whether the response is going to a browser
+ * Text informational objects can also be sent as html with an html header.
+ * We need to know this if the informationl is not buffered. If it isn't
+ * buffered then we need to send that text header.
+ *
  * @see BESInfo
  * @see DODSResponseObject
  */
-BESTextInfo::BESTextInfo( bool is_http, ObjectType otype )
-    : BESInfo( is_http, "", otype )
+BESTextInfo::BESTextInfo( const string &key, bool ishttp )
+    : BESInfo( key ),
+      _ishttp( ishttp ),
+      _header( false )
 {
 }
 
@@ -67,14 +80,155 @@ BESTextInfo::~BESTextInfo()
 {
 }
 
-// $Log: BESTextInfo.cc,v $
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//
+/** @brief begin the informational response
+ *
+ * Because this is text informational object, no begin tags are needed
+ *
+ * @param response_name name of the response this information represents
+ */
+void
+BESTextInfo::begin_response( const string &response_name )
+{
+    BESInfo::begin_response( response_name ) ;
+}
+
+/** @brief add tagged information to the inforamtional response
+ *
+ * @param tag_name name of the tag to be added to the response
+ * @param tag_data information describing the tag
+ */
+void
+BESTextInfo::add_tag( const string &tag_name,
+		      const string &tag_data,
+		      map<string,string> *attrs )
+{
+    add_data( _indent + tag_name + ": " + tag_data + "\n" ) ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    add_data( _indent + "    " + name + ": " + val + "\n" ) ;
+	}
+    }
+}
+
+/** @brief begin a tagged part of the information, information to follow
+ *
+ * @param tag_name name of the tag to begin
+ */
+void
+BESTextInfo::begin_tag( const string &tag_name,
+			map<string,string> *attrs )
+{
+    BESInfo::begin_tag( tag_name ) ;
+    add_data( _indent + tag_name + "\n" ) ;
+    _indent += "    " ;
+    if( attrs )
+    {
+	map<string,string>::const_iterator i = attrs->begin() ;
+	map<string,string>::const_iterator e = attrs->end() ;
+	for( ; i != e; i++ )
+	{
+	    string name = (*i).first ;
+	    string val = (*i).second ;
+	    add_data( _indent + name + ": " + val + "\n" ) ;
+	}
+    }
+}
+
+/** @brief end a tagged part of the informational response
+ *
+ * If the named tag is not the current tag then an error is thrown.
+ *
+ * @param tag_name name of the tag to end
+ */
+void
+BESTextInfo::end_tag( const string &tag_name )
+{
+    BESInfo::end_tag( tag_name ) ;
+    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+}
+
+/** @brief
+ */
+void
+BESTextInfo::add_data( const string & s )
+{
+    if( _ishttp && !_header && !_buffered )
+    {
+	set_mime_text( stdout, dods_das ) ;
+	_header = true ;
+    }
+    BESInfo::add_data( s ) ;
+}
+
+/** @brief add a space to the informational response
+ *
+ * @param num_spaces the number of spaces to add to the information
+ */
+void
+BESTextInfo::add_space( unsigned long num_spaces )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_spaces; i++ )
+    {
+	to_add += " " ;
+    }
+    add_data( to_add ) ;
+}
+
+/** @brief add a line break to the information
+ *
+ * @param num_breaks the number of line breaks to add to the information
+ */
+void
+BESTextInfo::add_break( unsigned long num_breaks )
+{
+    string to_add ;
+    for( unsigned long i = 0; i < num_breaks; i++ )
+    {
+	to_add += "\n" ;
+    }
+    add_data( to_add ) ;
+}
+
+/** @brief add data from a file to the informational object
+ *
+ * This method simply adds a .TXT to the end of the key and passes the
+ * request on up to the BESInfo parent class.
+ *
+ * @param key Key from the initialization file specifying the file to be
+ * @param name A description of what is the information being loaded
+ */
+void
+BESTextInfo::add_data_from_file( const string &key, const string &name )
+{
+    string newkey = key + ".TXT" ;
+    BESInfo::add_data_from_file( newkey, name ) ;
+}
+
+/** @brief transmit the text information as text
+ *
+ * use the send_text method on the transmitter to transmit the information
+ * back to the client.
+ *
+ * @param transmitter The type of transmitter to use to transmit the info
+ * @param dhi information to help with the transmission
+ */
+void
+BESTextInfo::transmit( BESTransmitter *transmitter,
+		       BESDataHandlerInterface &dhi )
+{
+    transmitter->send_text( *this, dhi ) ;
+}
+
+BESInfo *
+BESTextInfo::BuildTextInfo( const string &info_type )
+{
+    return new BESTextInfo( ) ;
+}
+

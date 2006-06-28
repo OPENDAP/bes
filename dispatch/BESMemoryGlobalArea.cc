@@ -53,28 +53,27 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	{
 	    bool found = false ;
 	    string key = "OPeNDAP.Memory.GlobalArea." ;
-	    string s = TheBESKeys::TheKeys()->get_key( key + "EmergencyPoolSize", found ) ;
-	    string s1 = TheBESKeys::TheKeys()->get_key( key + "MaximunHeapSize", found ) ;
+	    string eps = TheBESKeys::TheKeys()->get_key( key + "EmergencyPoolSize", found ) ;
+	    string mhs = TheBESKeys::TheKeys()->get_key( key + "MaximunHeapSize", found ) ;
 	    string verbose = TheBESKeys::TheKeys()->get_key( key + "Verbose", found ) ;
 	    string control_heap = TheBESKeys::TheKeys()->get_key( key + "ControlHeap", found ) ;
-	    if( (s=="") || (s1=="") || (verbose=="") || (control_heap=="") )
+	    if( (eps=="") || (mhs=="") || (verbose=="") || (control_heap=="") )
 	    {
 		(*BESLog::TheLog()) << "OPeNDAP: Unable to start: "
 			      << "unable to determine memory keys.\n";
-		BESMemoryException me;
-		me.set_error_description( "can not determine memory keys.\n" ) ;
-		throw me;
+		string line = "can not determine memory keys.\n"  ;
+		throw BESMemoryException( line, __FILE__, __LINE__ ) ;
 	    }
 	    else
 	    {
 		if( verbose=="no" )
 		    BESLog::TheLog()->suspend();
 
-		unsigned int emergency=atol(s.c_str());
+		unsigned int emergency=atol(eps.c_str());
 
 		if( control_heap == "yes" )
 		{
-		    unsigned int max = atol(s1.c_str());
+		    unsigned int max = atol(mhs.c_str());
 		    (*BESLog::TheLog()) << "Trying to initialize emergency size to "
 				  << (long int)emergency
 				  << " and maximun size to ";
@@ -86,9 +85,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 				   + "pool is larger than the maximun size of "
 				   + "the heap.\n" ;
 			(*BESLog::TheLog()) << s ;
-			BESMemoryException me;
-			me.set_error_description( s );
-			throw me;
+			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
 		    }
 		    log_limits() ;
 		    limit.rlim_cur = megabytes( max + 1 ) ;
@@ -110,9 +107,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 				  + "must be superuser\n" ;
 			}
 			(*BESLog::TheLog()) << s ;
-			BESMemoryException me;
-			me.set_error_description( s ) ;
-			throw me;
+			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
 		    }
 		    log_limits() ;
 		    _buffer = 0 ;
@@ -120,13 +115,10 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		    if( !_buffer )
 		    {
 			string s = string( "OPeNDAP: " ) 
-				   + "can not get heap large enough to "
-				   + "start running\n" ;
+				   + "can not get heap of size "
+				   + mhs + " to start running" ;
 			(*BESLog::TheLog()) << s ;
-			BESMemoryException me;
-			me.set_error_description( s );
-			me.set_amount_of_memory_required ( atoi( s.c_str() ) ) ;
-			throw me ;
+			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
 		    }
 		    free( _buffer ) ;
 		}
@@ -134,9 +126,8 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		{
 		    if( emergency > 10 )
 		    {
-			BESMemoryException me ;
-			me.set_error_description( "Emergency pool is larger than 10 Megabytes\n" ) ;
-			throw me ;
+			string s = "Emergency pool is larger than 10 Megabytes";
+			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
 		    }
 		}
 
@@ -145,11 +136,10 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		_buffer = malloc( _size ) ;
 		if( !_buffer )
 		{
-		    (*BESLog::TheLog()) << "OPeNDAP: can not expand heap enough to start running.\n";
-		    BESMemoryException me ;
-		    me.set_error_description( "Can not allocate memory\n" ) ;
-		    me.set_amount_of_memory_required( atoi( s.c_str() ) ) ;
-		    throw me ;
+		    string s = (string)"BES: can not expand heap to "
+		               + eps + " to start running" ;
+		    (*BESLog::TheLog()) << s << endl ;
+		    throw BESMemoryException( s, __FILE__, __LINE__ ) ;
 		}
 		else
 		{
@@ -165,7 +155,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	catch(BESException &ex)
 	{
 	    cerr << "OPeNDAP: unable to start properly because "
-		 << ex.get_error_description()
+		 << ex.get_message()
 		 << endl ;
 	    exit(1) ;
 	}
@@ -195,10 +185,8 @@ BESMemoryGlobalArea::log_limits()
     {
 	(*BESLog::TheLog()) << "Could not get limits because "
 		      << strerror( errno ) << endl ;
-	BESMemoryException me ;
-	me.set_error_description( strerror( errno ) ) ;
 	_counter-- ;
-	throw me ;
+	throw BESMemoryException( strerror( errno ), __FILE__, __LINE__ ) ;
     }
     if( limit.rlim_cur == RLIM_INFINITY )
 	(*BESLog::TheLog()) << "I have infinity soft limit for the heap" << endl ;
@@ -233,13 +221,3 @@ BESMemoryGlobalArea::reclaim_memory()
 	return false ;
 }
 
-//static BESMemoryGlobalArea memoryglobalarea;
-
-// $Log: BESMemoryGlobalArea.cc,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

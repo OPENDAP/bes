@@ -71,12 +71,14 @@ BESCmdParser::parse( const string &request, BESDataHandlerInterface &dhi )
 	dhi.response_handler = cmd->parse_request( t, dhi ) ;
 	if( !dhi.response_handler )
 	{
-	    throw BESParserException( (string)"Unable to build command" ) ;
+	    throw BESParserException( (string)"Unable to build command",
+	                              __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
-	throw BESParserException( (string)"Invalid command " + my_token ) ;
+	throw BESParserException( (string)"Invalid command " + my_token ,
+	                          __FILE__, __LINE__ ) ;
     }
 }
 

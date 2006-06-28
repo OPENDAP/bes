@@ -93,7 +93,7 @@ BESGetCommand::parse_request( BESTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd + " " + my_token ;
 	err += " does not have a registered response handler" ;
-	throw BESParserException( err ) ;
+	throw BESParserException( err, __FILE__, __LINE__ ) ;
     }
     dhi.action = newcmd ;
 
@@ -152,7 +152,8 @@ BESGetCommand::parse_request( BESTokenizer &tokenizer,
     BESDefine *d = BESDefinitionStorageList::TheList()->look_for( def_name ) ;
     if( !d )
     {
-	throw BESParserException( (string)"Unable to find definition " + def_name ) ;
+	string s = (string)"Unable to find definition " + def_name ;
+	throw BESParserException( s, __FILE__, __LINE__ ) ;
     }
 
     BESDefine::containers_iterator i = d->first_container() ;

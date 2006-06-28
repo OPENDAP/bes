@@ -58,8 +58,7 @@ private:
     bool			include( const string &inQuestion ) ;
     void			add_stat_info( BESInfo *info,
                                                struct stat &buf,
-					       const string &node,
-					       const string &indent ) ;
+					       const string &node ) ;
 public:
 				BESCatalogDirectory( const string &name ) ;
     virtual			~BESCatalogDirectory( void ) ;
@@ -71,4 +70,3 @@ public:
 
 #endif // I_BESCatalogDirectory_h
 
-// $Log: BESCatalogDirectory.h,v $

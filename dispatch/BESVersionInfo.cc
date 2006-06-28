@@ -34,11 +34,14 @@
 #pragma implementation
 #endif
 
-#include <sstream>
+#include <iostream>
 
-using std::ostringstream ;
+using std::cerr ;
+using std::endl ;
 
 #include "BESVersionInfo.h"
+#include "BESInfoList.h"
+#include "BESHandlerException.h"
 
 /** @brief constructs a basic text information response object.
  *
@@ -49,103 +52,118 @@ using std::ostringstream ;
  * @see DODSResponseObject
  */
 BESVersionInfo::BESVersionInfo()
-    : BESXMLInfo(),
-      _firstDAPVersion( true ),
-      _DAPstrm( 0 ),
-      _firstBESVersion( true ),
-      _BESstrm( 0 ),
-      _firstHandlerVersion( true ),
-      _Handlerstrm( 0 )
+    : BESInfo(),
+      _indap( false ),
+      _inbes( false ),
+      _inhandler( false ),
+      _info( 0 )
 {
-    _buffered = true ;
-}
-
-/** @brief constructs a version text/xml information response object.
- *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
- * determine whether the information should be buffered or not.
- *
- * @param is_http whether the response is going to a browser
- * @see BESXMLInfo
- * @see DODSResponseObject
- */
-BESVersionInfo::BESVersionInfo( bool is_http )
-    : BESXMLInfo( is_http ),
-      _firstDAPVersion( true ),
-      _DAPstrm( 0 ),
-      _firstBESVersion( true ),
-      _BESstrm( 0 ),
-      _firstHandlerVersion( true ),
-      _Handlerstrm( 0 )
-{
-    _buffered = true ;
-    _strm = new ostringstream ;
-    add_data( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ) ;
-    add_data( "<showVersion>\n" ) ;
-    add_data( "    <response>\n" ) ;
+    _info = BESInfoList::TheList()->build_info() ;
 }
 
 BESVersionInfo::~BESVersionInfo()
 {
-    if( _DAPstrm ) delete _DAPstrm ;
-    if( _BESstrm ) delete _BESstrm ;
-    if( _Handlerstrm ) delete _Handlerstrm ;
 }
 
 void
-BESVersionInfo::print( FILE *out )
+BESVersionInfo::beginDAPVersion( )
 {
-    if( !_firstDAPVersion && _DAPstrm ) (*_DAPstrm) << "        </DAP>\n" ;
-    if( !_firstBESVersion && _BESstrm ) (*_BESstrm) << "        </BES>\n" ;
-    if( !_firstHandlerVersion && _Handlerstrm ) (*_Handlerstrm) << "        </Handlers>\n" ;
-    if( _DAPstrm ) add_data( ((ostringstream *)_DAPstrm)->str() ) ;
-    if( _BESstrm ) add_data( ((ostringstream *)_BESstrm)->str() ) ;
-    if( _Handlerstrm ) add_data( ((ostringstream *)_Handlerstrm)->str() ) ;
-    add_data( "    </response>\n" ) ;
-    add_data( "</showVersion>\n" ) ;
-    BESInfo::print( out ) ;
+    if( _indap || _inbes || _inhandler )
+    {
+	throw BESHandlerException( "Attempting to begin DAP version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
+    }
+    _indap = true ;
+    _info->begin_tag( "DAP" ) ;
 }
 
 void
 BESVersionInfo::addDAPVersion( const string &v )
 {
-    if( _firstDAPVersion )
+    if( !_indap )
     {
-	_DAPstrm = new ostringstream ;
-	_firstDAPVersion = false ;
-	(*_DAPstrm) << "        <DAP>\n" ;
+	throw BESHandlerException( "Attempting to add DAP version information while not in DAP tag", __FILE__, __LINE__ ) ;
     }
-    (*_DAPstrm) << "            <version> " << v << " </version>\n" ;
+    _info->add_tag( "version", v ) ;
+}
+
+void
+BESVersionInfo::endDAPVersion( )
+{
+    if( !_indap )
+    {
+	throw BESHandlerException( "Attempting to end DAP version information while not in DAP tag", __FILE__, __LINE__ ) ;
+    }
+    _indap = false ;
+    _info->end_tag( "DAP" ) ;
+}
+
+void
+BESVersionInfo::beginBESVersion( )
+{
+    if( _indap || _inbes || _inhandler )
+    {
+	throw BESHandlerException( "Attempting to begin BES version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
+    }
+    _inbes = true ;
+    _info->begin_tag( "BES" ) ;
 }
 
 void
 BESVersionInfo::addBESVersion( const string &n, const string &v )
 {
-    if( _firstBESVersion )
+    if( !_inbes )
     {
-	_BESstrm = new ostringstream ;
-	_firstBESVersion = false ;
-	(*_BESstrm) << "        <BES>\n" ;
+	throw BESHandlerException( "Attempting to add BES version information while not in BES tag", __FILE__, __LINE__ ) ;
     }
-    (*_BESstrm) << "            <lib>\n" ;
-    (*_BESstrm) << "                <name> " << n << " </name>\n" ;
-    (*_BESstrm) << "                <version> " << v << " </version>\n" ;
-    (*_BESstrm) << "            </lib>\n" ;
+    _info->begin_tag( "lib" ) ;
+    _info->add_tag( "name", n ) ;
+    _info->add_tag( "version", v ) ;
+    _info->end_tag( "lib" ) ;
+}
+
+void
+BESVersionInfo::endBESVersion( )
+{
+    if( !_inbes )
+    {
+	throw BESHandlerException( "Attempting to end BES version information while not in BES tag", __FILE__, __LINE__ ) ;
+    }
+    _inbes = false ;
+    _info->end_tag( "BES" ) ;
+}
+
+void
+BESVersionInfo::beginHandlerVersion( )
+{
+    if( _indap || _inbes || _inhandler )
+    {
+	throw BESHandlerException( "Attempting to begin Handler version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
+    }
+    _inhandler = true ;
+    _info->begin_tag( "Handlers" ) ;
 }
 
 void
 BESVersionInfo::addHandlerVersion( const string &n, const string &v )
 {
-    if( _firstHandlerVersion )
+    if( !_inhandler )
     {
-	_Handlerstrm = new ostringstream ;
-	_firstHandlerVersion = false ;
-	(*_Handlerstrm) << "        <Handlers>\n" ;
+	throw BESHandlerException( "Attempting to add Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
     }
-    (*_Handlerstrm) << "            <lib>\n" ;
-    (*_Handlerstrm) << "                <name> " << n << " </name>\n" ;
-    (*_Handlerstrm) << "                <version> " << v << " </version>\n" ;
-    (*_Handlerstrm) << "            </lib>\n" ;
+    _info->begin_tag( "lib" ) ;
+    _info->add_tag( "name", n ) ;
+    _info->add_tag( "version", v ) ;
+    _info->end_tag( "lib" ) ;
 }
 
-// $Log: BESVersionInfo.cc,v $
+void
+BESVersionInfo::endHandlerVersion( )
+{
+    if( !_inhandler )
+    {
+	throw BESHandlerException( "Attempting to end Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
+    }
+    _inhandler = true ;
+    _info->end_tag( "Handlers" ) ;
+}
+

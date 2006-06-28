@@ -83,7 +83,7 @@ BESShowCommand::parse_request( BESTokenizer &tokenizer,
 	    string err( "Command " ) ;
 	    err += _cmd + " " + my_token ;
 	    err += " does not have a registered response handler" ;
-	    throw BESParserException( err ) ;
+	    throw BESParserException( err, __FILE__, __LINE__ ) ;
 	}
 
 	my_token = tokenizer.get_next_token() ;

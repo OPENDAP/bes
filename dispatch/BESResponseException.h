@@ -33,37 +33,32 @@
 #ifndef BESResponseException_h_
 #define BESResponseException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
 /** @brief an exception object representing any exceptions thrown during the
  * building of a response object in a response handler
  *
  * A BESResponseException can be built by either passing the error string
  * to the constructor or by instantiating an empty object and using the
- * derived set_error_description method.
+ * set_message method.
  *
- * To retreive the error string simpy use the get_error_description method.
+ * To retreive the error string simpy use the get_message method.
  *
- * @see BESBasicException
+ * @see BESException
  * @see BESResponseHandler
  * @see DODSResponseObject
  */
-class BESResponseException: public BESBasicException
+class BESResponseException: public BESException
 {
-public:
+protected:
       			BESResponseException() {}
-      			BESResponseException( const string &s )
-			    : BESBasicException( s ) {}
+public:
+      			BESResponseException( const string &s,
+			                      const string &file,
+					      int line )
+			    : BESException( s, file, line ) {}
       virtual		~BESResponseException() {}
 };
 
 #endif // BESResponseException_h_ 
 
-// $Log: BESResponseException.h,v $
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

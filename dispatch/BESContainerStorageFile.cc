@@ -81,18 +81,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
     if( my_file == "" )
     {
 	string s = key + " not defined in key file" ;
-	BESContainerStorageException pe ;
-	pe.set_error_description( s ) ;
-	throw pe;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
     ifstream persistence_file( my_file.c_str() ) ;
     if( !persistence_file )
     {
 	string s = "Unable to open persistence file " + my_file ;
-	BESContainerStorageException pe ;
-	pe.set_error_description( s ) ;
-	throw pe;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
     char cline[80] ;
@@ -118,18 +114,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 		delete c ;
 		string s = "Incomplete container persistence line in file "
 			   + my_file ;
-		BESContainerStorageException pe ;
-		pe.set_error_description( s ) ;
-		throw pe;
+		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	    }
 	    if( dummy != "" )
 	    {
 		delete c ;
 		string s = "Too many fields in persistence file "
 			   + my_file ;
-		BESContainerStorageException pe ;
-		pe.set_error_description( s ) ;
-		throw pe;
+		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	    }
 	    _container_list[c->_symbolic_name] = c ;
 	}
@@ -188,7 +180,7 @@ BESContainerStorageFile::add_container( const string &,
 				     const string &,
 				     const string & )
 {
-    throw BESContainerStorageException( "Unable to add a container to a file, not yet implemented\n" ) ;
+    throw BESContainerStorageException( "Unable to add a container to a file, not yet implemented", __FILE__, __LINE__ ) ;
 }
 
 /** @brief removes a container with the given symbolic name
@@ -258,18 +250,20 @@ BESContainerStorageFile::del_containers( )
 void
 BESContainerStorageFile::show_containers( BESInfo &info )
 {
-    info.add_data( get_name() ) ;
-    info.add_data( "\n" ) ;
+    info.add_tag( "name", get_name() ) ;
     BESContainerStorageFile::Container_citer i ;
     i = _container_list.begin() ;
     for( i = _container_list.begin(); i != _container_list.end(); i++ )
     {
+	info.begin_tag( "container" ) ;
 	BESContainerStorageFile::container *c = (*i).second;
 	string sym = c->_symbolic_name ;
+	info.add_tag( "symbolicName", sym ) ;
 	string real = c->_real_name ;
+	info.add_tag( "realName", real ) ;
 	string type = c->_container_type ;
-	string line = sym + "," + real + "," + type + "\n" ;
-	info.add_data( line ) ;
+	info.add_tag( "dataType", type ) ;
+	info.end_tag( "container" ) ;
     }
 }
 

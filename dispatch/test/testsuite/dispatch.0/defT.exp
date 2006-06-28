@@ -38,26 +38,37 @@ found d5
 
 *****************************************
 show definitions
-volatile
-  Definition: d1
-    Containers:
-    Aggregation: : d1agg
-
-  Definition: d2
-    Containers:
-    Aggregation: : d2agg
-
-  Definition: d3
-    Containers:
-    Aggregation: : d3agg
-
-  Definition: d4
-    Containers:
-    Aggregation: : d4agg
-
-  Definition: d5
-    Containers:
-    Aggregation: : d5agg
+name: volatile
+definition
+    name: d1
+    containers
+    aggregation
+        handler: 
+        command: d1agg
+definition
+    name: d2
+    containers
+    aggregation
+        handler: 
+        command: d2agg
+definition
+    name: d3
+    containers
+    aggregation
+        handler: 
+        command: d3agg
+definition
+    name: d4
+    containers
+    aggregation
+        handler: 
+        command: d4agg
+definition
+    name: d5
+    containers
+    aggregation
+        handler: 
+        command: d5agg
 
 *****************************************
 delete d3

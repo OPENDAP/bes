@@ -130,47 +130,41 @@ BESDefinitionStorageVolatile::del_definitions( )
 void
 BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
 {
-    info.add_data( get_name() ) ;
-    info.add_data( "\n" ) ;
-    bool first = true ;
+    info.add_tag( "name", get_name() ) ;
     Define_citer di = _def_list.begin() ;
     Define_citer de = _def_list.end() ;
-    if( di == de )
+    for( ; di != de; di++ )
     {
-	info.add_data( "  No definitions are currently defined\n" ) ;
-    }
-    else
-    {
-	for( ; di != de; di++ )
+	info.begin_tag( "definition" ) ;
+	string def_name = (*di).first ;
+	BESDefine *def = (*di).second ;
+
+	info.add_tag( "name", def_name ) ;
+	info.begin_tag( "containers" ) ;
+
+	BESDefine::containers_iterator ci = def->first_container() ;
+	BESDefine::containers_iterator ce = def->end_container() ;
+	for( ; ci != ce; ci++ )
 	{
-	    string def_name = (*di).first ;
-	    BESDefine *def = (*di).second ;
-
-	    if( !first )
-	    {
-		info.add_data( "\n" ) ;
-	    }
-	    first = false ;
-
-	    info.add_data( "  Definition: " + def_name + "\n" ) ;
-	    info.add_data( "    Containers:\n" ) ;
-
-	    BESDefine::containers_iterator ci = def->first_container() ;
-	    BESDefine::containers_iterator ce = def->end_container() ;
-	    for( ; ci != ce; ci++ )
-	    {
-		string sym = (*ci).get_symbolic_name() ;
-		string real = (*ci).get_real_name() ;
-		string type = (*ci).get_container_type() ;
-		string con = (*ci).get_constraint() ;
-		string attrs = (*ci).get_attributes() ;
-		string line = (string)"      " + sym + "," + real + "," + type
-				  + ",\"" + con + "\",\"" + attrs + "\"\n" ;
-		info.add_data( line ) ;
-	    }
-
-	    info.add_data( "    Aggregation: " + def->aggregation_handler + ": " + def->aggregation_command + "\n" ) ;
+	    string sym = (*ci).get_symbolic_name() ;
+	    info.add_tag( "symbolicName", sym ) ;
+	    string real = (*ci).get_real_name() ;
+	    info.add_tag( "realName", real ) ;
+	    string type = (*ci).get_container_type() ;
+	    info.add_tag( "dataType", type ) ;
+	    string con = (*ci).get_constraint() ;
+	    info.add_tag( "constraint", con ) ;
+	    string attrs = (*ci).get_attributes() ;
+	    info.add_tag( "attributes", attrs ) ;
 	}
+
+	info.end_tag( "containers" ) ;
+	info.begin_tag( "aggregation" ) ;
+	info.add_tag( "handler", def->aggregation_handler ) ;
+	info.add_tag( "command", def->aggregation_command ) ;
+	info.end_tag( "aggregation" ) ;
+
+	info.end_tag( "definition" ) ;
     }
 }
 

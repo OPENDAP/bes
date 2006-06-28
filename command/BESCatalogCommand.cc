@@ -86,7 +86,7 @@ BESCatalogCommand::parse_request( BESTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd ;
 	err += " does not have a registered response handler" ;
-	throw BESParserException( err ) ;
+	throw BESParserException( err, __FILE__, __LINE__ ) ;
     }
 
     return retResponse ;

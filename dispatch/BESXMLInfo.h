@@ -45,20 +45,35 @@
  * @see DODSResponseObject
  */
 class BESXMLInfo : public BESInfo {
+private:
+    string		_indent ;
+    bool		_do_indent ;
 public:
-  			BESXMLInfo( const string &buffer_key = "",
-			             ObjectType otype = unknown_type ) ;
-  			BESXMLInfo( bool is_http,
-			             const string &buffer_key = "",
-				     ObjectType otype = unknown_type ) ;
+  			BESXMLInfo( ) ;
     virtual 		~BESXMLInfo() ;
 
-    virtual void	add_exception( const string &type,
-                                       const string &msg,
-				       const string &file,
-				       int line ) ;
+    virtual void	begin_response( const string &response_name ) ;
+    virtual void	end_response( ) ;
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 ) ;
+    virtual void	begin_tag( const string &tag_name ,
+				   map<string,string> *attrs = 0 ) ;
+    virtual void	end_tag( const string &tag_name ) ;
+
+    virtual void	add_data( const string &s ) ;
+    virtual void	add_space( unsigned long num_spaces ) ;
+    virtual void	add_break( unsigned long num_breaks ) ;
+
+    virtual void 	add_data_from_file( const string &key,
+                                            const string &name ) ;
+    virtual void 	print( FILE *out ) ;
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi ) ;
+
+    static BESInfo *BuildXMLInfo( const string &info_type ) ;
 };
 
 #endif // BESXMLInfo_h_
 
-// $Log: BESXMLInfo.h,v $

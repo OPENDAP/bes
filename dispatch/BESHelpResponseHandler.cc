@@ -31,10 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESHelpResponseHandler.h"
-#include "BESHTMLInfo.h"
+#include "BESInfoList.h"
+#include "BESInfo.h"
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
+#include "BESResponseNames.h"
 
 BESHelpResponseHandler::BESHelpResponseHandler( string name )
     : BESResponseHandler( name )
@@ -71,74 +73,23 @@ BESHelpResponseHandler::~BESHelpResponseHandler( )
 void
 BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = 0 ;
-    if( dhi.transmit_protocol == "HTTP" )
-	info = new BESHTMLInfo( dhi.transmit_protocol == "HTTP" ) ;
-    else
-	info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
-    // if http then prepare header information for html output
-    if( dhi.transmit_protocol == "HTTP" )
-    {
-	info->add_data( "<HTML>\n" ) ;
-	info->add_data( "<HEAD>\n" ) ;
-	info->add_data( "<TITLE>OPeNDAP General Help</TITLE>\n" ) ;
-	info->add_data( "</HEAD>\n" ) ;
-	info->add_data( "<BODY>\n" ) ;
-    }
+    info->begin_response( HELP_RESPONSE_STR ) ;
 
-    // get the list of registered servers and the responses that they handle
-    info->add_data( "Registered data request handlers:\n" ) ;
-    BESRequestHandlerList::Handler_citer i =
-	BESRequestHandlerList::TheList()->get_first_handler() ;
-    BESRequestHandlerList::Handler_citer ie =
-	BESRequestHandlerList::TheList()->get_last_handler() ;
-    for( ; i != ie; i++ ) 
-    {
-	if( dhi.transmit_protocol == "HTTP" )
-	{
-	    info->add_data( "<BR />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n" ) ;
-	}
-	else
-	{
-	    info->add_data( "    " ) ;
-	}
-	BESRequestHandler *rh = (*i).second ;
-	string name = rh->get_name() ;
-	string resp = rh->get_handler_names() ;
-	info->add_data( name + ": handles " + resp + "\n" ) ;
-    }
-
-    string key ;
-    if( dhi.transmit_protocol == "HTTP" )
-	key = (string)"OPeNDAP.Help." + dhi.transmit_protocol ;
-    else
-	key = "OPeNDAP.Help.TXT" ;
-    info->add_data_from_file( key, "general help" ) ;
+    info->begin_tag( "BES" ) ;
+    info->add_data_from_file( "OPeNDAP.Help", "OPeNDAP BES Help" ) ;
+    info->end_tag( "BES" ) ;
 
     // execute help for each registered request server
-    if( dhi.transmit_protocol == "HTTP" )
-    {
-	info->add_data( "<BR /><BR />\n" ) ;
-    }
-    else
-    {
-	info->add_data( "\n\n" ) ;
-    }
+    info->add_break( 2 ) ;
 
+    info->begin_tag( "Handlers" ) ;
     BESRequestHandlerList::TheList()->execute_all( dhi ) ;
+    info->end_tag( "Handlers" ) ;
 
-    // if http then close out the html format
-    if( dhi.transmit_protocol == "HTTP" )
-    {
-	info->add_data( "</BODY>\n" ) ;
-	info->add_data( "</HTML>\n" ) ;
-    }
-    else
-    {
-	info->add_data( "\n" ) ;
-    }
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -160,10 +111,7 @@ BESHelpResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( dhi.transmit_protocol == "HTTP" )
-	    transmitter->send_html( *info, dhi ) ;
-	else
-	    transmitter->send_text( *info, dhi ) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

@@ -71,8 +71,3 @@ public:
 
 #endif // I_BESReturnManager_h
 
-// $Log: BESReturnManager.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

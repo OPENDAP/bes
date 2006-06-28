@@ -32,8 +32,10 @@
 
 #include <unistd.h>
 #include <string>
+#include <sstream>
 
 using std::string ;
+using std::ostringstream ;
 
 #include "BESInterface.h"
 
@@ -45,21 +47,13 @@ using std::string ;
 #include "cgi_util.h"
 #include "BESReporterList.h"
 
-#include "BESDatabaseException.h"
-#include "BESContainerStorageException.h"
-#include "BESKeysException.h"
-#include "BESLogException.h"
+#include "BESExceptionManager.h"
 #include "BESHandlerException.h"
-#include "BESIncorrectRequestException.h"
-#include "BESResponseException.h"
-#include "BESAggregationException.h"
-#include "Error.h"
+#include "BESMemoryException.h"
+
 #include "BESDataNames.h"
 
-#define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
-
 list< p_opendap_init > BESInterface::_init_list ;
-list< p_opendap_ehm > BESInterface::_ehm_list ;
 list< p_opendap_end > BESInterface::_end_list ;
 
 BESInterface::BESInterface()
@@ -110,10 +104,6 @@ BESInterface::execute_request()
 	build_data_request_plan() ;
 	execute_data_request_plan() ;
 	invoke_aggregation() ;
-	transmit_data() ;
-	log_status() ;
-	report_request() ;
-	end_request() ;
     }
     catch( BESException &ex )
     {
@@ -121,18 +111,64 @@ BESInterface::execute_request()
     }
     catch( Error &e )
     {
-	if( _dhi.transmit_protocol == "HTTP" ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "%s\n", e.get_error_message().c_str() ) ;
+	ostringstream s ;
+	s << "libdap exception: error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESException ex( s.str(), __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
     }
     catch( bad_alloc &b )
     {
-	if( _dhi.transmit_protocol == "HTTP" ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "dods server out of memory.\n" ) ;
+	string serr = "BES out of memory" ;
+	BESMemoryException ex( serr, __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
     }
     catch(...)
     {
-	if( _dhi.transmit_protocol == "HTTP" ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "An undefined dods exception ocurred.\n" ) ;
+	string serr = "An undefined exception has been thrown" ;
+	BESException ex( serr, __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
+    }
+
+    try
+    {
+	transmit_data() ;
+	log_status() ;
+	report_request() ;
+	end_request() ;
+	if( _dhi.error_info ) delete _dhi.error_info ;
+	_dhi.error_info = 0 ;
+    }
+    catch( BESException &ex )
+    {
+	status = exception_manager( ex ) ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception: error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESException ex( s.str(), __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
+    }
+    catch( bad_alloc &b )
+    {
+	string serr = "BES out of memory" ;
+	BESMemoryException ex( serr, __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
+    }
+    catch(...)
+    {
+	string serr = "An undefined exception has been thrown" ;
+	BESException ex( serr, __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
+    }
+
+    // If there is error information then the transmit, log, report or end
+    // failed, so just print the error information
+    if( _dhi.error_info )
+    {
+	_dhi.error_info->print( stdout ) ;
     }
 
     return status;
@@ -204,11 +240,9 @@ BESInterface::execute_data_request_plan()
     }
     else
     {
-	BESHandlerException he ;
 	string se = "The response handler \"" + _dhi.action
 		    + "\" does not exist" ;
-	he.set_error_description( se ) ;
-	throw he;
+	throw BESHandlerException( se, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -243,9 +277,23 @@ BESInterface::invoke_aggregation()
 void
 BESInterface::transmit_data()
 {
-    if( _dhi.response_handler && _transmitter )
+    if( _transmitter )
     {
-	_dhi.response_handler->transmit( _transmitter, _dhi ) ;
+	if( _dhi.error_info )
+	{
+	    _dhi.error_info->transmit( _transmitter, _dhi ) ;
+	}
+	else if( _dhi.response_handler )
+	{
+	    _dhi.response_handler->transmit( _transmitter, _dhi ) ;
+	}
+    }
+    else
+    {
+	if( _dhi.error_info )
+	{
+	    _dhi.error_info->print( stdout ) ;
+	}
     }
 }
 
@@ -304,12 +352,6 @@ BESInterface::clean()
     _dhi.response_handler = 0 ;
 }
 
-void
-BESInterface::add_ehm_callback( p_opendap_ehm ehm )
-{
-    _ehm_list.push_back( ehm ) ;
-}
-
 /** @brief Manage any exceptions thrown during the whole process
 
     Specific responses are generated given a specific Exception caught. If
@@ -321,118 +363,10 @@ BESInterface::add_ehm_callback( p_opendap_ehm ehm )
     @param e BESException to be managed
     @return status after exception is handled
     @see BESException
-    @see BESIncorrectException
-    @see BESDatabaseException
-    @see BESContainerStorageException
-    @see BESKeysException
-    @see BESLogException
-    @see BESHandlerException
-    @see BESResponseException
  */
 int
 BESInterface::exception_manager( BESException &e )
 {
-    // Let's see if any of these exception callbacks can handle the
-    // exception. The first callback that can handle the exception wins
-    ehm_iter i = _ehm_list.begin() ;
-    for( ; i != _ehm_list.end(); i++ )
-    {
-	p_opendap_ehm p = *i ;
-	int handled = p( e, _dhi ) ;
-	if( handled )
-	{
-	    return handled ;
-	}
-    }
-
-    bool ishttp = false ;
-    if( _dhi.transmit_protocol == "HTTP" )
-	ishttp = true ;
-
-    BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
-    if (ireqx)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	bool found = false ;
-	string administrator =
-	    TheBESKeys::TheKeys()->get_key( "OPeNDAP.ServerAdministrator", found ) ;
-	if( administrator=="" )
-	    fprintf( stdout, "%s %s %s\n",
-			     "OPeNDAP: internal server error please contact",
-			     DEFAULT_ADMINISTRATOR,
-			     "with the following message:" ) ;
-	else
-	    fprintf( stdout, "%s %s %s\n",
-			     "OPeNDAP: internal server error please contact",
-			     administrator.c_str(),
-			     "with the following message:" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_REQUEST_INCORRECT;
-    }
-    BESDatabaseException *ce=dynamic_cast<BESDatabaseException*>(&e);
-    if(ce)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting Database Exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_DATABASE_FAILURE;
-    }
-    BESContainerStorageException *dpe=dynamic_cast<BESContainerStorageException*>(&e);
-    if(dpe)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting persistence exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_CONTAINER_PERSISTENCE_ERROR;
-    }  
-    BESKeysException *keysex=dynamic_cast<BESKeysException*>(&e);
-    if(keysex)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting keys exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_INITIALIZATION_FILE_PROBLEM;
-    }  
-    BESLogException *logex=dynamic_cast<BESLogException*>(&e);
-    if(logex)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting log exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_LOG_FILE_PROBLEM;
-    }
-    BESHandlerException *hanex=dynamic_cast <BESHandlerException*>(&e);
-    if(hanex)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting handler exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_DATA_HANDLER_PROBLEM;
-    }
-    BESResponseException *ranex=dynamic_cast <BESResponseException*>(&e);
-    if(ranex)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting response exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_DATA_HANDLER_FAILURE;
-    }
-    BESAggregationException *aanex=dynamic_cast <BESAggregationException*>(&e);
-    if(aanex)
-    {
-	if( ishttp ) set_mime_text( stdout, dods_error ) ;
-	fprintf( stdout, "Reporting response exception.\n" ) ;
-	fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-	return BES_AGGREGATION_EXCEPTION ;
-    }
-    if( ishttp ) set_mime_text( stdout, dods_error ) ;
-    fprintf( stdout, "Reporting unknown exception.\n" ) ;
-    bool found = false ;
-    string administrator =
-	TheBESKeys::TheKeys()->get_key( "OPeNDAP.ServerAdministrator", found ) ;
-    fprintf( stdout, "Unmanaged BES exception\n report to admin %s\n",
-	     administrator.c_str() ) ;
-    fprintf( stdout, "%s\n", e.get_error_description().c_str() ) ;
-    return BES_TERMINATE_IMMEDIATE;
+    return BESExceptionManager::TheEHM()->handle_exception( e, _dhi ) ;
 }
 

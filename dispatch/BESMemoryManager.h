@@ -57,4 +57,3 @@ public:
 
 #endif // BESMemoryManager_h_
 
-// $Log: BESMemoryManager.h,v $

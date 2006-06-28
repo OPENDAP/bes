@@ -55,4 +55,3 @@ public:
 
 #endif // I_BESCatalog_h
 
-// $Log: BESCatalog.h,v $

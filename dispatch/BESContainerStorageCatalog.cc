@@ -67,9 +67,7 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
     if( _root_dir == "" )
     {
 	string s = base_key + " not defined in key file" ;
-	BESContainerStorageException pe ;
-	pe.set_error_description( s ) ;
-	throw pe;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
     string key = "Catalog." + n + ".TypeMatch" ;
@@ -77,9 +75,7 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
     if( curr_str == "" )
     {
 	string s = key + " not defined in key file" ;
-	BESContainerStorageException pe ;
-	pe.set_error_description( s ) ;
-	throw pe;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
     string::size_type str_begin = 0 ;
@@ -93,9 +89,7 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
-	    BESContainerStorageException pe ;
-	    pe.set_error_description( s ) ;
-	    throw pe;
+	    throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
@@ -111,9 +105,7 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
 	    {
 		string s = (string)"Catalog type match malformed, no colon, "
 			   + "looking for type:regexp;[type:regexp;]" ;
-		BESContainerStorageException pe ;
-		pe.set_error_description( s ) ;
-		throw pe;
+		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	    }
 	    else
 	    {

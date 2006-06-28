@@ -37,71 +37,37 @@
 using std::ostringstream ;
 using std::cout ;
 using std::ifstream ;
+using std::cerr ;
+using std::endl ;
 
 #include "BESInfo.h"
 #include "TheBESKeys.h"
+#include "BESHandlerException.h"
 
-/** @brief constructs a BESInfo object for the specified type.
+/** @brief constructs a BESInfo object
  *
- * @param otype type of data represented by this response object
+ * By default, informational responses are buffered, so the output stream is
+ * created
  */
-BESInfo::BESInfo( const string &buffer_key, ObjectType otype )
+BESInfo::BESInfo( )
     : _strm( 0 ),
-      _buffered( true ),
-      _header( false ),
-      _is_http( true ),
-      _otype( otype )
+      _buffered( true )
 {
-    initialize( buffer_key ) ;
+    _strm = new ostringstream ;
 }
 
-/** @brief constructs a BESInfo object for the specified type where the
- * output is specified as either http or not.
+/** @brief constructs a BESInfo object
  *
- * @param is_http is the output to be in http format
- * @param otype type of data represented by this response object
- */
-BESInfo::BESInfo( bool is_http, const string &buffer_key, ObjectType otype )
-    : _strm( 0 ),
-      _buffered( true ),
-      _header( false ),
-      _is_http( is_http ),
-      _otype( otype )
-{
-    initialize( buffer_key ) ;
-}
-
-BESInfo::~BESInfo()
-{
-    if( _buffered && _strm ) delete _strm ;
-}
-
-/** @brief initialize the response object to determine if the information is
- * to be buffered or not.
- *
- * Using the key passed, if the key is the empty string then the key in the
- * dods initialization file OPeNDAP.Info.Buffered is found to determine if the
- * information is to be buffered or not. If the key is not empty then it is
- * used as the key in the dods initialization file to determine whether
- * buffering should occur or not.
- *
- * If the key is set to true, True, TRUE, yes, Yes, or YES then the
+ * If the passed key is set to true, True, TRUE, yes, Yes, or YES then the
  * information will be buffered, otherwise it will not be buffered.
  *
  * If the information is not to be buffered then the output stream is set to
- * cout.
- *
- * @param key key in the dods initialization file used to determine if
- * information is to be buffered or not.
+ * standard output.
  */
-void
-BESInfo::initialize( string key )
+BESInfo::BESInfo( const string &key )
+    : _strm( 0 ),
+      _buffered( true )
 {
-    if( key == "" )
-    {
-	key = "OPeNDAP.Info.Buffered" ;
-    }
-
     bool found = false ;
     string b = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( b == "true" || b == "True" || b == "TRUE" ||
@@ -116,19 +82,59 @@ BESInfo::initialize( string key )
     }
 }
 
+BESInfo::~BESInfo()
+{
+    if( _buffered && _strm ) delete _strm ;
+}
+
+void
+BESInfo::begin_response( const string &response_name )
+{
+    _response_started = true ;
+    _response_name = response_name ;
+}
+
+void
+BESInfo::end_response( )
+{
+    _response_started = false ;
+    if( _tags.size() )
+    {
+	string s = "Not all tags were ended in info response" ;
+	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+    }
+}
+
+void
+BESInfo::begin_tag( const string &tag_name,
+		    map<string,string> *attrs )
+{
+    _tags.push( tag_name ) ;
+}
+
+void
+BESInfo::end_tag( const string &tag_name )
+{
+    if( _tags.size() == 0 || _tags.top() != tag_name )
+    {
+	string s = (string)"tag " + tag_name
+	           + " alreaded ended or not started" ;
+	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+    }
+    else
+    {
+	_tags.pop() ;
+    }
+}
+
 /** @brief add data to this informational object. If buffering is not set then
  * the information is output directly to the output stream.
  *
- * @param s information to be added to this response object
+ * @param s information to be added to this informational response object
  */
 void
 BESInfo::add_data( const string &s )
 {
-    if( !_header && !_buffered && _is_http )
-    {
-	set_mime_text( stdout, _otype ) ;
-	_header = true ;
-    }
     if( !_buffered )
     {
 	fprintf( stdout, "%s", s.c_str() ) ;
@@ -142,8 +148,8 @@ BESInfo::add_data( const string &s )
 /** @brief add data from a file to the informational object.
  *
  * Adds data from a file to the informational object using the file
- * specified by the passed key string. The key is found from the dods
- * initialization file.
+ * specified by the passed key string. The key is found from the bes
+ * configuration file.
  *
  * If the key does not exist in the initialization file then this
  * information is added to the informational object, no excetion is thrown.
@@ -152,8 +158,7 @@ BESInfo::add_data( const string &s )
  * informational object, no exception is thrown.
  *
  * @param key Key from the initialization file specifying the file to be
- * @param name naem information to add to error messages
- * loaded.
+ * @param name A description of what is the information being loaded
  */
 void
 BESInfo::add_data_from_file( const string &key, const string &name )
@@ -188,24 +193,28 @@ BESInfo::add_data_from_file( const string &key, const string &name )
     }
 }
 
-/** @brief add exception data to this informational object. If buffering is
- * not set then the information is output directly to the output stream.
+/** @brief add exception information to this informational object
  *
- * @param type type of the exception received
- * @param msg the error message
- * @param file file name of where the error was sent
- * @param line line number in the file where the error was sent
+ * Exception information is added differently to different informational
+ * objects, such as html, xml, plain text. But, using the other methods of
+ * this class we can take care of exceptions here.
+ *
+ * @param type The type of exception being thrown
+ * @param e The exception to add to the informational response object
  */
 void
-BESInfo::add_exception( const string &type, const string &msg,
-                         const string &file, int line )
+BESInfo::add_exception( const string &type, BESException &e )
 {
-    add_data( "Exception Received\n" ) ;
-    add_data( (string)"    Type: " + type + "\n" ) ;
-    add_data( (string)"    Message: " + msg + "\n" ) ;
-    ostringstream s ;
-    s << "    Filename: " << file << " LineNumber: " << line << "\n" ;
-    add_data( s.str() ) ;
+    begin_tag( "BESException" ) ;
+    add_tag( "Type", type ) ;
+    add_tag( "Message", e.get_message() ) ;
+    begin_tag( "Location" ) ;
+    add_tag( "File", e.get_file() ) ;
+    ostringstream sline ;
+    sline << e.get_line() ;
+    add_tag( "Line", sline.str() ) ;
+    end_tag( "Location" ) ;
+    end_tag( "BESException" ) ;
 }
 
 /** @brief print the information from this informational object to the
@@ -225,22 +234,3 @@ BESInfo::print(FILE *out)
     }
 }
 
-// $Log: BESInfo.cc,v $
-// Revision 1.5  2005/04/07 19:55:17  pwest
-// added add_data_from_file method to allow for information to be added from a file, for example when adding help information from a file
-//
-// Revision 1.4  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.3  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.2  2004/07/09 16:10:29  pwest
-// Removed static var in BESContainerStorage to check if strict or nice
-// had been already set. In BESInfo only using one key to see if information
-// buffered or not unless a different key is passed in from child class.
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

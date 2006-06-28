@@ -53,7 +53,7 @@ TestEhmResponseHandler::~TestEhmResponseHandler( )
 void
 TestEhmResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    throw TestException( "TestEhmResponseHandler::execute" ) ;
+    throw TestException( "TestEhmResponseHandler::execute", __FILE__, __LINE__ ) ;
 }
 
 /** @brief transmit the response object built by the execute command

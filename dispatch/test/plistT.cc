@@ -127,7 +127,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
-    BESTextInfo info( false ) ;
+    BESTextInfo info ;
     cpl->show_containers( info ) ;
     info.print( stdout ) ;
 

@@ -34,11 +34,19 @@
 #define BESInfo_h_ 1
 
 #include <string>
+#include <ostream>
+#include <stack>
+#include <map>
 
 using std::string ;
+using std::ostream ;
+using std::stack ;
+using std::map ;
 
 #include "DODSResponseObject.h"
-#include "cgi_util.h"
+#include "BESDataHandlerInterface.h"
+#include "BESTransmitter.h"
+#include "BESException.h"
 
 /** @brief informational response object
  *
@@ -59,57 +67,64 @@ using std::string ;
  */
 class BESInfo :public DODSResponseObject
 {
-private:
-    virtual void	initialize( string key ) ;
 protected:
     ostream		*_strm ;
     bool		_buffered ;
-    bool		_header ;
-    bool		_is_http ;
-    ObjectType		_otype ;
+    bool		_response_started ;
+
+    stack<string>	_tags ;
+    string		_response_name ;
 
 public:
-    			BESInfo( const string &buffer_key = "",
-			          ObjectType type = unknown_type ) ;
-    			BESInfo( bool is_http,
-				  const string &buffer_key = "",
-				  ObjectType type = unknown_type ) ;
-
+    			BESInfo( ) ;
+    			BESInfo( const string &buffered_key ) ;
     virtual		~BESInfo() ;
 
+    virtual void	begin_response( const string &response_name ) ;
+    virtual void	end_response( ) ;
+
+    virtual void	add_tag( const string &tag_name,
+                                 const string &tag_data,
+				 map<string,string> *attrs = 0 ) = 0 ;
+    virtual void	begin_tag( const string &tag_name,
+                                   map<string,string> *attrs = 0 ) ;
+    virtual void	end_tag( const string &tag_name ) ;
+
     virtual void 	add_data( const string &s ) ;
+    virtual void	add_space( unsigned long num_spaces ) = 0 ;
+    virtual void	add_break( unsigned long num_breaks ) = 0 ;
+
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
-    virtual void	add_exception( const string &type,
-                                       const string &msg,
-				       const string &file,
-				       int line ) ;
+
+    virtual void	add_exception( const string &type, BESException &e ) ;
+
+    /** @brief transmit the informational object
+     *
+     * The derived informational object knows how it needs to be
+     * transmitted. Does it need to be sent as html? As text? As something
+     * else?
+     *
+     * @param transmitter The type of transmitter to use to transmit the info
+     * @param dhi information to help with the transmission
+     */
+    virtual void	transmit( BESTransmitter *transmitter,
+				  BESDataHandlerInterface &dhi ) = 0 ;
+
     virtual void 	print( FILE *out ) ;
+
+    /** @brief return whether the information is to be buffered or not.
+     *
+     * @return true if information is buffered, false if not
+     */
+    virtual bool	set_buffered( bool buffered ) { _buffered = buffered ; }
+
     /** @brief return whether the information is to be buffered or not.
      *
      * @return true if information is buffered, false if not
      */
     virtual bool	is_buffered() { return _buffered ; }
-    /** @brief returns the type of data
-     *
-     * @return type of data
-     */
-    virtual ObjectType	type() { return _otype ; }
 };
 
 #endif // BESInfo_h_
 
-// $Log: BESInfo.h,v $
-// Revision 1.4  2005/04/07 19:55:17  pwest
-// added add_data_from_file method to allow for information to be added from a file, for example when adding help information from a file
-//
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

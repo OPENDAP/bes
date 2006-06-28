@@ -37,7 +37,7 @@ using std::endl ;
 
 #include "BESBaseApp.h"
 #include "BESGlobalIQ.h"
-#include "BESBasicException.h"
+#include "BESException.h"
 
 BESApp *BESApp::_theApplication = 0;
 
@@ -98,7 +98,7 @@ main(int argC, char **argV)
  * @return 0 if successful and not 0 otherwise
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
- * @throws BESBasicException if any exceptions or errors are encountered
+ * @throws BESException if any exceptions or errors are encountered
  * @see BESGlobalIQ
  */
 int BESBaseApp::
@@ -116,7 +116,7 @@ initialize(int argC, char **argV)
     catch( BESException &e )
     {
 	string newerr = "Error initializing application: " ;
-	newerr += e.get_error_description() ;
+	newerr += e.get_message() ;
 	cerr << newerr << endl ;
 	retVal = 1 ;
     }
@@ -136,13 +136,14 @@ initialize(int argC, char **argV)
  * It is up to the derived class to implement this method.
  *
  * @return 0 if successful and not 0 otherwise
- * @throws BESBasicException if the derived class does not implement this
+ * @throws BESException if the derived class does not implement this
  * method
  */
 int BESBaseApp::
 run(void)
 {
-    throw BESBasicException( "BESBaseApp::run - overload run operation" ) ;
+    throw BESException( "BESBaseApp::run - run method not implemented",
+                        __FILE__, __LINE__ ) ;
     return 0;
 }
 

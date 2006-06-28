@@ -49,7 +49,7 @@ using std::cerr ;
 #include "Socket.h"
 #include "BESCmdInterface.h"
 #include "TheBESKeys.h"
-#include "BESBasicException.h"
+#include "BESException.h"
 #include "ServerExitConditions.h"
 #include "BESStatusReturn.h"
 
@@ -87,7 +87,7 @@ BESServerHandler::handle( Connection *c )
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw BESBasicException( error ) ;
+	    throw BESException( error, __FILE__, __LINE__ ) ;
 	}
 	else if( pid == 0 ) /* child process */
 	{
@@ -115,7 +115,7 @@ BESServerHandler::handle( Connection *c )
 	    const char *error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw BESBasicException( error ) ;
+	    throw BESException( error, __FILE__, __LINE__ ) ;
 	} 
 	c->closeConnection() ;
     }

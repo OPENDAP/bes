@@ -75,7 +75,8 @@ TestCommand::parse_request( BESTokenizer &tokenizer,
 	BESResponseHandlerList::TheList()->find_handler( my_token ) ;
     if( !retResponse )
     {
-	throw BESParserException( (string)"Improper command " + _cmd + " " + my_token );
+	string s = (string)"No response handler for command " + my_token ;
+	throw BESParserException( s, __FILE__, __LINE__ ) ;
     }
 
     return retResponse ;

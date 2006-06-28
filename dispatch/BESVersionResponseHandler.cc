@@ -34,10 +34,10 @@
 
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
-#include "cgi_util.h"
 #include "util.h"
 #include "dispatch_version.h"
 #include "BESRequestHandlerList.h"
+#include "BESResponseNames.h"
 
 BESVersionResponseHandler::BESVersionResponseHandler( string name )
     : BESResponseHandler( name )
@@ -69,15 +69,26 @@ BESVersionResponseHandler::~BESVersionResponseHandler( )
 void
 BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESVersionInfo *info =
-	new BESVersionInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESVersionInfo *info = new BESVersionInfo() ;
     _response = info ;
+    info->begin_response( VERS_RESPONSE_STR ) ;
+
+    info->beginDAPVersion() ;
     info->addDAPVersion( "2.0" ) ;
     info->addDAPVersion( "3.0" ) ;
     info->addDAPVersion( "3.2" ) ;
+    info->endDAPVersion() ;
+
+    info->beginBESVersion() ;
     info->addBESVersion( libdap_name(), libdap_version() ) ;
     info->addBESVersion( bes_name(), bes_version() ) ;
+    info->endBESVersion() ;
+
+    info->beginHandlerVersion() ;
     BESRequestHandlerList::TheList()->execute_all( dhi ) ;
+    info->endHandlerVersion() ;
+
+    info->end_response() ;
 }
 
 /** @brief transmit the response object built by the execute command
@@ -99,7 +110,7 @@ BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(_response) ;
-	transmitter->send_text( *info, dhi );
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

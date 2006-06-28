@@ -36,12 +36,12 @@ using std::cout ;
 using std::endl ;
 
 #include "BESDefineResponseHandler.h"
-#include "BESInfo.h"
 #include "BESSilentInfo.h"
 #include "BESDefine.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDataNames.h"
+#include "BESHandlerException.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler( string name )
     : BESResponseHandler( name )
@@ -84,17 +84,9 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
 void
 BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = 0 ;
-    if( dhi.data[SILENT] == "yes" )
-    {
-	info = new BESSilentInfo() ;
-    }
-    else
-    {
-	info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
-    }
+    BESInfo *info = new BESSilentInfo() ;
     _response = info ;
-    
+
     string def_name = dhi.data[DEF_NAME] ;
     string store_name = dhi.data[STORE_NAME] ;
     if( store_name == "" )
@@ -103,12 +95,7 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
     if( store )
     {
-	string def_type = "added" ;
 	bool deleted = store->del_definition( def_name ) ;
-	if( deleted == true )
-	{
-	    def_type = "replaced" ;
-	}
 
 	BESDefine *dd = new BESDefine ;
 	dhi.first_container() ;
@@ -123,16 +110,13 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	dhi.data[AGG_HANDLER] = "" ;
 
 	store->add_definition( def_name, dd ) ;
-	string ret = (string)"Successfully " + def_type + " definition \""
-		     + def_name + "\ to \"" + store_name + "\" store\n" ;
-	info->add_data( ret ) ;
     }
     else
     {
-	string ret = (string)"Unable to add definition \"" + def_name
-		     + "\" to \"" + store_name
-		     + "\" store. Store does not exist\n" ;
-	info->add_data( ret ) ;
+	string err_str = (string)"Uanble to add definition \"" + def_name 
+	                 + "\" to \"" + store_name
+			 + "\" store. Store does not exist" ;
+	throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -158,8 +142,8 @@ BESDefineResponseHandler::transmit( BESTransmitter *transmitter,
         // If this dynamic_cast is to a reference an not a pointer, then if
         // _response is not a BESInfo the cast will throw bad_cast. 
         // Casting to a pointer will make ti null on error. jhrg 11/10/2005
-	BESInfo *ti = dynamic_cast<BESInfo *>(_response) ;
-	transmitter->send_text( *ti, dhi ) ;
+	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 

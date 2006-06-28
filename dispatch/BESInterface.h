@@ -43,7 +43,6 @@ class BESException ;
 class BESTransmitter ;
 
 typedef bool (*p_opendap_init)( BESDataHandlerInterface &dhi ) ;
-typedef int (*p_opendap_ehm)( BESException &e, BESDataHandlerInterface &dhi );
 typedef void (*p_opendap_end)( BESDataHandlerInterface &dhi ) ;
 
 /** @brief Entry point into OPeNDAP, building responses to given requests.
@@ -127,10 +126,6 @@ private:
     typedef list< p_opendap_init >::iterator init_iter ;
     static list< p_opendap_init > _init_list ;
 
-    typedef list< p_opendap_ehm >::const_iterator ehm_citer ;
-    typedef list< p_opendap_ehm >::iterator ehm_iter ;
-    static list< p_opendap_ehm > _ehm_list ;
-
     typedef list< p_opendap_end >::const_iterator end_citer ;
     typedef list< p_opendap_end >::iterator end_iter ;
     static list< p_opendap_end > _end_list ;
@@ -138,7 +133,7 @@ protected:
     BESDataHandlerInterface	_dhi ;
     BESTransmitter		*_transmitter ;
 
-    virtual int			exception_manager(BESException &e) ;
+    virtual int			exception_manager( BESException &e ) ;
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
     virtual void		build_data_request_plan() ;
@@ -156,7 +151,6 @@ public:
     virtual int			execute_request() ;
 
     static void			add_init_callback( p_opendap_init init ) ;
-    static void			add_ehm_callback( p_opendap_ehm ehm ) ;
     static void			add_end_callback( p_opendap_end end ) ;
 } ;
 

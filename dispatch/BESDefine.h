@@ -59,8 +59,3 @@ public:
 
 #endif // BESDefine_h_
 
-// $Log: BESDefine.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

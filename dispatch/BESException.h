@@ -43,33 +43,41 @@ using std::string ;
 class BESException
 {
 protected:
-    string		_description;
+    string		_msg ;
+    string		_file ;
+    int			_line ;
+
+    			BESException() { _msg = "UNDEFINED" ; }
 public:
-    			BESException() { _description = "UNDEFINED" ; }
+    			BESException( const string &msg,
+			              const string &file,
+				      int line )
+			    : _msg( msg ),
+			      _file( file ),
+			      _line( line ) {}
     virtual		~BESException() {}
 
     /** @brief set the error message for this exception
      *
      * @param s message string
      */
-    virtual void	set_error_description( const string &s ) = 0 ;
+    virtual void	set_message( const string &msg ) { _msg = msg ; }
     /** @brief get the error message for this exception
      *
      * @return error message
      */
-    virtual string	get_error_description() = 0 ;
+    virtual string	get_message() { return _msg ; }
+    /** @brief get the file name where the exception was thrown
+     *
+     * @return file name
+     */
+    virtual string	get_file() { return _file ; }
+    /** @brief get the line number where the exception was thrown
+     *
+     * @return line number
+     */
+    virtual int		get_line() { return _line ; }
 };
 
 #endif // BESException_h_ 
 
-// $Log: BESException.h,v $
-// Revision 1.3  2004/12/15 17:39:03  pwest
-// Added doxygen comments
-//
-// Revision 1.2  2004/09/09 17:17:12  pwest
-// Added copywrite information
-//
-// Revision 1.1  2004/06/30 20:16:24  pwest
-// dods dispatch code, can be used for apache modules or simple cgi script
-// invocation or opendap daemon. Built during cedar server development.
-//

@@ -65,12 +65,27 @@ didn't find thingy, good
 
 *****************************************
 show containers
-File1
-sym1,real1,type1
-sym2,real2,type2
-sym3,real3,type3
-sym4,real4,type4
-sym5,real5,type5
+name: File1
+container
+    symbolicName: sym1
+    realName: real1
+    dataType: type1
+container
+    symbolicName: sym2
+    realName: real2
+    dataType: type2
+container
+    symbolicName: sym3
+    realName: real3
+    dataType: type3
+container
+    symbolicName: sym4
+    realName: real4
+    dataType: type4
+container
+    symbolicName: sym5
+    realName: real5
+    dataType: type5
 
 *****************************************
 Returning from pfileT::run"

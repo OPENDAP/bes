@@ -33,24 +33,22 @@
 #ifndef BESAggregationException_h_
 #define BESAggregationException_h_ 1
 
-#include "BESBasicException.h"
+#include "BESException.h"
 
 /** @brief exception thrown if problems loading keys from dods initialization
  * file.
  */
-class BESAggregationException: public BESBasicException
+class BESAggregationException: public BESException
 {
-public:
+protected:
       			BESAggregationException() {}
-    			BESAggregationException( const string &s )
-			    { _description = s ; }
+public:
+    			BESAggregationException( const string &s,
+			                         const string &file,
+						 int line )
+			    : BESException( s, file, line ) { }
       virtual		~BESAggregationException() {}
 };
 
 #endif // BESAggregationException_h_
 
-// $Log: BESAggregationException.h,v $
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

@@ -123,4 +123,3 @@ BESMemoryManager::release_global_pool() throw (bad_alloc)
     throw bad_alloc() ;
 } 
 
-// $Log: BESMemoryManager.cc,v $

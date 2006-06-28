@@ -143,7 +143,9 @@ BESCmdInterface::build_data_request_plan()
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( _dhi.data[RETURN_CMD] ) ;
 	if( !_transmitter )
 	{
-	    throw BESTransmitException( (string)"Unable to find transmitter " + _dhi.data[RETURN_CMD] ) ;
+	    string s = (string)"Unable to find transmitter "
+	               + _dhi.data[RETURN_CMD] ;
+	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -154,7 +156,9 @@ BESCmdInterface::build_data_request_plan()
 	    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
 	    if( !_transmitter )
 	    {
-		throw BESTransmitException( (string)"Unable to find transmitter " + BASIC_TRANSMITTER ) ;
+		string s = (string)"Unable to find transmitter "
+		           + BASIC_TRANSMITTER ;
+		throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -162,7 +166,9 @@ BESCmdInterface::build_data_request_plan()
 	    _transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
 	    if( !_transmitter )
 	    {
-		throw BESTransmitException( (string)"Unable to find transmitter " + HTTP_TRANSMITTER ) ;
+		string s = (string)"Unable to find transmitter "
+		           + HTTP_TRANSMITTER ;
+		throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	    }
 	}
     }
@@ -268,9 +274,12 @@ BESCmdInterface::transmit_data()
 void
 BESCmdInterface::log_status()
 {
+    string result = "completed" ;
+    if( _dhi.error_info )
+	result = "failed" ;
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
-		         << " [" << _dhi.data[DATA_REQUEST] << "] completed"
-		         << endl ;
+		         << " [" << _dhi.data[DATA_REQUEST] << "] "
+		         << result << endl ;
 }
 
 /** @brief Clean up after the request is completed
