@@ -72,9 +72,9 @@ HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
-	throw BESHandlerException( string( "hdf4_build_das: " )
-					  + "Could not open hdf5 file: "
-	                                  + filename ) ;
+	throw BESHandlerException( (string)"Could not open hdf file: "
+				   + filename,
+				   __FILE__, __LINE__ ) ;
     }
 
     DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
@@ -94,7 +94,8 @@ HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
     {
 	throw BESHandlerException( string( "hdf4_build_dds: " )
 					  + "Could not open hdf5 file: "
-	                                  + filename ) ;
+	                                  + filename ,
+				   __FILE__, __LINE__ ) ;
     }
 
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
@@ -121,7 +122,8 @@ HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
     {
 	throw BESHandlerException( string( "hdf4_build_data: " )
 					  + "Could not open hdf5 file: "
-	                                  + filename ) ;
+	                                  + filename ,
+				   __FILE__, __LINE__ ) ;
     }
 
     DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
@@ -143,7 +145,13 @@ bool
 HDF5RequestHandler::hdf5_build_help( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
-    //info->add_data( (string)"No help currently available for netCDF handler.\n" ) ;
+    string handles = (string)DAS_RESPONSE
+                     + "," + DDS_RESPONSE
+                     + "," + DATA_RESPONSE
+                     + "," + HELP_RESPONSE
+                     + "," + VERS_RESPONSE ;
+    info->add_tag( "handles", handles ) ;
+    info->add_tag( "version", PACKAGE_STRING ) ;
 
     return true ;
 }
