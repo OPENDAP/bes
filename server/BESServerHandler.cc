@@ -159,8 +159,8 @@ BESServerHandler::execute( Connection *c )
 			cout << "BES server " << getpid()
 			     << ": Status not OK, dispatcher returned value "
 			     << status << endl ;
-			string toSend = "FATAL ERROR: server must exit!" ;
-			c->send( toSend ) ;
+			//string toSend = "FATAL ERROR: server must exit!" ;
+			//c->send( toSend ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
@@ -171,8 +171,8 @@ BESServerHandler::execute( Connection *c )
 			cout << "BES server " << getpid()
 			     << ": Status not OK, dispatcher returned value "
 			     << status << endl ;
-			string toSend = "Data Handler Error: server my exit!" ;
-			c->send( toSend ) ;
+			//string toSend = "Data Handler Error: server my exit!" ;
+			//c->send( toSend ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
