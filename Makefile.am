@@ -51,7 +51,7 @@ dap_hdf4_handler_SOURCES = hdf_handler.cc
 dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.la
 
 eosdas_test_SOURCES = eosdas-test.cc
-eosdas_test_LDADD = libhdf4_handler.la hdfclass/libhdfclass.a
+eosdas_test_LDADD = libhdf4_handler.la hdfclass/libhdfclass.la
 
 EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI \
 	hdf4_handler.spec
