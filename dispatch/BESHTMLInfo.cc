@@ -90,7 +90,8 @@ BESHTMLInfo::begin_response( const string &response_name )
     add_data( "<HEAD>\n" ) ;
     _indent += "    " ;
     add_data( (string)"<TITLE>" + response_name + "</TITLE>\n" ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( "</HEAD>\n" ) ;
     add_data( "<BODY>\n" ) ;
     _indent += "    " ;
@@ -106,9 +107,11 @@ BESHTMLInfo::begin_response( const string &response_name )
 void
 BESHTMLInfo::end_response( )
 {
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( "</BODY>\n" ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( "</HTML>\n" ) ;
 }
 
@@ -172,7 +175,8 @@ void
 BESHTMLInfo::end_tag( const string &tag_name )
 {
     BESInfo::end_tag( tag_name ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
 }
 
 /** @brief add a space to the informational response

@@ -35,10 +35,7 @@
 #include <fstream>
 
 using std::ostringstream ;
-using std::cout ;
 using std::ifstream ;
-using std::cerr ;
-using std::endl ;
 
 #include "BESInfo.h"
 #include "TheBESKeys.h"

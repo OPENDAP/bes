@@ -88,9 +88,11 @@ void
 BESXMLInfo::end_response()
 {
     BESInfo::end_response() ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( "</response>\n" ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( (string)"</" + _response_name + ">\n" ) ;
 }
 
@@ -164,7 +166,8 @@ void
 BESXMLInfo::end_tag( const string &tag_name )
 {
     BESInfo::end_tag( tag_name ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
     add_data( (string)"</" + tag_name + ">\n" ) ;
 }
 

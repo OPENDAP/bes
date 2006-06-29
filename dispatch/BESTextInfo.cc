@@ -150,7 +150,8 @@ void
 BESTextInfo::end_tag( const string &tag_name )
 {
     BESInfo::end_tag( tag_name ) ;
-    _indent = _indent.substr( 0, _indent.length()-4 ) ;
+    if( _indent.length() >= 4 )
+	_indent = _indent.substr( 0, _indent.length()-4 ) ;
 }
 
 /** @brief
