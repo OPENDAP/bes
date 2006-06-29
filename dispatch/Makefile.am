@@ -27,7 +27,7 @@ libdap_module_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
-nobase_sysconf_DATA = bes/bes_help.html bes/bes_help.txt
+nobase_sysconf_DATA = bes/bes_help.html bes/bes_help.txt bes/bes.conf
 
 ##############################################################################
 #

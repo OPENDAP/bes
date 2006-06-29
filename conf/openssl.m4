@@ -3,7 +3,6 @@ AC_DEFUN([BES_FIND_OPENSSL], [
   libs="$2"
   case "$incs---$libs" in
     ---)
-      echo "no I am here"
       for d in /usr/ssl/include /usr/local/ssl/include /usr/include \
 /usr/include/ssl /opt/ssl/include /opt/openssl/include \
 /usr/local/ssl/include /usr/local/include /usr/freeware/include ; do

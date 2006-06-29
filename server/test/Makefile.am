@@ -29,5 +29,5 @@ SRCS:=TestCommand.cc TestEhmResponseHandler.cc TestSigResponseHandler.cc \
 	TestRequestHandler.cc TestException.cc TestModule.cc 
 
 HDRS:=TestCommand.h TestEhmResponseHandler.h TestSigResponseHandler.h \
-	TestRequestHandler.h TestException.h TestModule.h
+	TestRequestHandler.h TestException.h TestModule.h TestNames.h
 

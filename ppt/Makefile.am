@@ -28,5 +28,5 @@ SRCS:=PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 HDRS:=PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h \
 	SocketException.h PPTException.h SocketConfig.h \
 	SocketListener.h PPTServer.h PPTProtocol.h \
-	PPTConnection.h Connection.h ServerHandler.h
+	PPTConnection.h Connection.h ServerHandler.h \
 	SSLClient.h SSLServer.h SSLConnection.h
