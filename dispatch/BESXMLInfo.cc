@@ -70,6 +70,7 @@ void
 BESXMLInfo::begin_response( const string &response_name )
 {
     BESInfo::begin_response( response_name ) ;
+    add_data( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ) ;
     _response_name = response_name ;
     add_data( (string)"<" + _response_name + ">\n" ) ;
     _indent += "    " ;
