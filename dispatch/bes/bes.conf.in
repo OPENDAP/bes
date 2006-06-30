@@ -20,8 +20,51 @@ OPeNDAP.LogVerbose=no
 #-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
+
+# Notes: 
+# 1. When the handlers are built, the handler's 'make' builds the
+# handler executable for Server3 and the shared object module for
+# Server4. The Server4 shared object modules are installed (using 'make
+# install') in<prefix>/lib/bes. Make sure you point to the Server4
+# modules and not the Server3 'handlers'. The Server4 modules all have
+# 'module' in their names.
+# 2. The commands that the BES responds to are also provided by modules,
+# so make sure that those are loaded in as well. Two modules are
+# required for use with Server4, the dap and dap_cmd modules.
+# 
+# Here's an example of the configuration for three handlers (Netcdf hdf4
+# and FreeForm) and the DAP basic and command modules:
+#
+# OPeNDAP.modules=nc,h4,ff,cmd,dap
+# OPeNDAP.module.nc=<prefix>/lib/bes/libnc_module.so
+# OPeNDAP.module.h4=<prefix>/lib/bes/libhdf4_module.so
+# OPeNDAP.module.ff=<prefix>/lib/bes/libff_module.so
+# OPeNDAP.module.dap=/usr/local/tmp/lib/bes/libdap_module.so
+# OPeNDAP.module.cmd=/usr/local/tmp/lib/bes/libdap_cmdmodule.so
+
 OPeNDAP.modules=<name>
 OPeNDAP.module.<name>=<full path to shared library>
+
+#-----------------------------------------------------------------------#
+# Data configuration
+#-----------------------------------------------------------------------#
+Catalog.catalog.RootDirectory=<full path data root directory>
+
+# The TypeMatch parameter is a comma separated list of handler/module
+# names separated by a regular expression. If the regular expression
+# matches an item, then the BES uses the associated handler/module.
+
+Catalog.catalog.TypeMatch=nc:.*\.nc,h4:.*\.hdf;
+
+# Normally, when a client asks for a data catalog only datasets and
+# subdirectories are shown. Use the following two parameters to
+# customize this behavior. In the default text below, direcories with
+# names that start with a dot are not shown and no files other than
+# those described by regular expressions in TypeMatch above are
+# included. 
+
+Catalog.catalog.Exclude=^\..*;
+Catalog.catalog.Include=;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
@@ -32,25 +75,17 @@ OPeNDAP.ServerUnixSocket=/tmp/opendap.socket
 OPeNDAP.ServerSecure=no
 
 #-----------------------------------------------------------------------#
-# THREDDS catalog configuration
-#-----------------------------------------------------------------------#
-Catalog.catalog.RootDirectory=<full path THREDDS root directory>
-Catalog.catalog.TypeMatch=nc:.*\.nc;
-Catalog.catalog.Exclude=^\..*;
-Catalog.catalog.Include=;
-
-#-----------------------------------------------------------------------#
 # help file locations, for text and html versions                       #
 #-----------------------------------------------------------------------#
-OPeNDAP.Help.TXT=<install dir>/etc/bes/dispatch_help.txt
-OPeNDAP.Help.HTTP=<install dir>/etc/bes/dispatch_help.html
+OPeNDAP.Help.TXT=@prefix@/etc/bes/dispatch_help.txt
+OPeNDAP.Help.HTTP=@prefix@/etc/bes/dispatch_help.html
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
 # Should informational objects be formatted as text, html, or xml       #
 #-----------------------------------------------------------------------#
 OPeNDAP.Info.Buffered=no
-OPeNDAP.Info.Type=txt|html|xml
+OPeNDAP.Info.Type=xml
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#
