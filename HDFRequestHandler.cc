@@ -93,7 +93,6 @@ bool
 HDFRequestHandler::hdf_build_help( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
-    info->add_data( (string)"No help for netCDF handler.\n" ) ;
 
 #if 0
     info->add_data( (string)"cdf-dods help: " + hdf_version() + "\n" ) ;

@@ -141,6 +141,8 @@ bool
 HDF4RequestHandler::hdf4_build_help( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
+    info->begin_tag( "Handler" ) ;
+    info->add_tag( "name", PACKAGE_NAME ) ;
     string handles = (string)DAS_RESPONSE
                      + "," + DDS_RESPONSE
                      + "," + DATA_RESPONSE
@@ -148,6 +150,7 @@ HDF4RequestHandler::hdf4_build_help( BESDataHandlerInterface &dhi )
                      + "," + VERS_RESPONSE ;
     info->add_tag( "handles", handles ) ;
     info->add_tag( "version", PACKAGE_STRING ) ;
+    info->end_tag( "Handler" ) ;
 
     return true ;
 }
