@@ -4,8 +4,9 @@
 ---------------------------------------------------------------------------
 
 BUILDING THE SOFTWARE
-REQUIREMENTS
+BUILD REQUIREMENTS
 NOTES
+CONFIGURATION AND TESTING
 
 ---------------------------------------------------------------------------
 
@@ -13,8 +14,11 @@ BUILDING THE SOFTWARE
 
   To build the BES software, follow these steps:
 
-  0. Please skim REQUIREMENTS and NOTES sections of this file
-     before reporting problems. Thanks.
+  0. Please skim BUILD REQUIREMENTS and NOTES sections of this file before
+     reporting problems. Also, this software _requires_ other software
+     components be built and installed and that its configuration file be
+     edited. Make sure you read over the CONFIGURATION AND TESTING section!
+     Thanks.
 
   1. Type `./configure' at the system prompt. On some systems you may have
      to type `sh configure'.
@@ -34,7 +38,7 @@ Building from Our SVN Repository
   with build files that don't work, use 'autoreconf --force --verbose' and
   then './configure; make'.
 
-REQUIREMENTS
+BUILD REQUIREMENTS
 
   o You will need a copy of the readline library. You can get a copy
     from http://cnswww.cns.cwru.edu/~chet/readline/rltop.html. Most
@@ -51,12 +55,12 @@ REQUIREMENTS
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.
 
-  o The library uses libcurl and libxml2. You will need these libraries
-    installed on your system to successfully run configure and build the
-    library. You must have libcurl version 7.12.0 or newer and libxml2 2.5.7
-    or newer. We provide source versions of the packages on the web site; the
-    web pages for these projects are: http://curl.haxx.se/ and
-    http://xmlsoft.org/.
+  o The library uses libdap. You will need version 3.7.0 or greater to build
+    this software. See http://www.opendap.org/download/. Since libdap uses
+    libcurl and libxml2, you will need these libraries, too. You must have
+    libcurl version 7.12.0 or newer and libxml2 2.5.7 or newer. We provide
+    source versions of the packages on the web site; the web pages for these
+    projects are: http://curl.haxx.se/ and http://xmlsoft.org/.
 
   o If you are concerned about introducing problems with your OS's package
     system, build and install curl, et c., into a special directory (e.g.,
@@ -136,3 +140,6 @@ NOTES
 
     - To build with program instrumentation use `--enable-debug=<level>'
       where <level> is 1 or 2.
+
+
+
