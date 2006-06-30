@@ -104,6 +104,7 @@ AC_CHECK_LIBDAP([3.7.0],
 
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
+		 dispatch/bes/bes.conf
 		 dispatch/test/Makefile
 		 command/Makefile
 		 ppt/Makefile
