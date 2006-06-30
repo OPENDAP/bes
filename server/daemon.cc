@@ -262,16 +262,21 @@ store_listener_id( int pid )
     ofstream f( file_for_listener.c_str() ) ;
     if( !f )
     {
-	cerr << NameProgram << ": file open error " ;
+	cerr << NameProgram << ": unable to create pid file "
+	     << file_for_listener << ": " ;
 	perror_string = strerror( errno ) ;
 	if( perror_string )
 	    cerr << perror_string ;
+	cerr << " ... Continuing" << endl ;
 	cerr << endl ;
     }
-    f << "PID: " << pid << " UID: " << getuid() << endl ;
-    f.close() ;
-    cout << NameProgram << ": listener id is at " << file_for_listener
-         << "..." << endl ;
+    else
+    {
+	f << "PID: " << pid << " UID: " << getuid() << endl ;
+	f.close() ;
+	cout << NameProgram << ": listener id is at " << file_for_listener
+	     << "..." << endl ;
+    }
 }
 
 bool
