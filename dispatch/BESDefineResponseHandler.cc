@@ -42,6 +42,7 @@ using std::endl ;
 #include "BESDefinitionStorage.h"
 #include "BESDataNames.h"
 #include "BESHandlerException.h"
+#include "BESResponseNames.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler( string name )
     : BESResponseHandler( name )
@@ -84,6 +85,7 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
 void
 BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    dhi.action_name = DEFINE_RESPONSE_STR ;
     BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 

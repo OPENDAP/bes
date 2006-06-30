@@ -96,6 +96,7 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
+    dhi.action_name = PROCESS_RESPONSE_STR ;
     info->begin_response( PROCESS_RESPONSE_STR ) ;
     char mypid[12] ;
     fastpidconverter( getpid(), mypid, 10 ) ;

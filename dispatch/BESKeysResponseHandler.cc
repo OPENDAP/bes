@@ -71,6 +71,7 @@ BESKeysResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
+    dhi.action_name = KEYS_RESPONSE_STR ;
     info->begin_response( KEYS_RESPONSE_STR ) ;
     info->add_tag( "File", TheBESKeys::TheKeys()->keys_file_name() ) ;
 

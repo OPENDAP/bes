@@ -86,7 +86,10 @@ BESExceptionManager::handle_exception( BESException &e,
 				       BESDataHandlerInterface &dhi )
 {
     dhi.error_info = BESInfoList::TheList()->build_info() ;
-    dhi.error_info->begin_response( "BESException" ) ;
+    string action_name = dhi.action_name ;
+    if( action_name == "" )
+	action_name = "BES" ;
+    dhi.error_info->begin_response( action_name ) ;
 
     string administrator = "" ;
     try

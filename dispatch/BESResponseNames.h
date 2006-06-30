@@ -70,9 +70,13 @@
 
 #define GET_RESPONSE "get"
 #define DAS_RESPONSE "get.das"
+#define DAS_RESPONSE_STR "getDAS"
 #define DDS_RESPONSE "get.dds"
+#define DDS_RESPONSE_STR "getDDS"
 #define DDX_RESPONSE "get.ddx"
+#define DDX_RESPONSE_STR "getDDX"
 #define DATA_RESPONSE "get.dods"
+#define DATA_RESPONSE_STR "getDODS"
 
 #define SHOW_RESPONSE "show"
 #define HELP_RESPONSE "show.help"

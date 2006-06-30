@@ -93,6 +93,7 @@ typedef struct _BESDataHandlerInterface
     /** @brief the response object requested, e.g. das, dds
      */
     string action ;
+    string action_name ;
 
     /** @brief request protocol, such as HTTP
      */

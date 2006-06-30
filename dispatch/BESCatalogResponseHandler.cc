@@ -72,10 +72,12 @@ BESCatalogResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( coi == CATALOG_RESPONSE )
     {
 	info->begin_response( CATALOG_RESPONSE_STR ) ;
+	dhi.action_name = CATALOG_RESPONSE_STR ;
     }
     else
     {
 	info->begin_response( SHOW_INFO_RESPONSE_STR ) ;
+	dhi.action_name = SHOW_INFO_RESPONSE_STR ;
     }
     BESCatalogList::TheCatalogList()->show_catalog( container, coi, info ) ;
 

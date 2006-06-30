@@ -71,6 +71,7 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESVersionInfo *info = new BESVersionInfo() ;
     _response = info ;
+    dhi.action_name = VERS_RESPONSE_STR ;
     info->begin_response( VERS_RESPONSE_STR ) ;
 
     info->beginDAPVersion() ;

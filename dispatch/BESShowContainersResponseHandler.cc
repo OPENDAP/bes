@@ -66,6 +66,7 @@ BESShowContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
+    dhi.action_name = SHOWCONTAINERS_RESPONSE_STR ;
     info->begin_response( SHOWCONTAINERS_RESPONSE_STR ) ;
     BESContainerStorageList::TheList()->show_containers( *info ) ;
     info->end_response() ;

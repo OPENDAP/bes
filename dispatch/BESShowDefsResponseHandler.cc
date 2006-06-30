@@ -66,6 +66,7 @@ BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
+    dhi.action_name = SHOWDEFS_RESPONSE_STR ;
     info->begin_response( SHOWDEFS_RESPONSE_STR ) ;
     BESDefinitionStorageList::TheList()->show_definitions( *info ) ;
     info->end_response() ;

@@ -67,6 +67,7 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
     // NOTE: It is the responsbility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here

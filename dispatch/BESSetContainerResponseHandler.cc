@@ -37,6 +37,7 @@
 #include "BESContainerStorageException.h"
 #include "BESDataNames.h"
 #include "BESHandlerException.h"
+#include "BESResponseNames.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler( string name )
     : BESResponseHandler( name )
@@ -87,6 +88,7 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
 void
 BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    dhi.action_name = SETCONTAINER_STR ;
     BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 

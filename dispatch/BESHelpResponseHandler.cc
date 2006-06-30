@@ -77,6 +77,7 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
     _response = info ;
 
     info->begin_response( HELP_RESPONSE_STR ) ;
+    dhi.action_name = HELP_RESPONSE_STR ;
 
     info->begin_tag( "BES" ) ;
     info->add_data_from_file( "OPeNDAP.Help", "OPeNDAP BES Help" ) ;

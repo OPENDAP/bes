@@ -34,6 +34,7 @@
 #include "DDS.h"
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
+#include "BESResponseNames.h"
 
 BESDDSResponseHandler::BESDDSResponseHandler( string name )
     : BESResponseHandler( name )
@@ -66,6 +67,7 @@ BESDDSResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     // NOTE: It is the responsbility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
+    dhi.action_name = DDS_RESPONSE_STR ;
     _response = new DDS( NULL, "virtual" ) ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }

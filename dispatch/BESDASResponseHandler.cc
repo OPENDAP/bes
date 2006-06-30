@@ -34,6 +34,7 @@
 #include "DAS.h"
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
+#include "BESResponseNames.h"
 
 BESDASResponseHandler::BESDASResponseHandler( string name )
     : BESResponseHandler( name )
@@ -64,6 +65,7 @@ BESDASResponseHandler::~BESDASResponseHandler( )
 void
 BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    dhi.action_name = DAS_RESPONSE_STR ;
     _response = new DAS ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }

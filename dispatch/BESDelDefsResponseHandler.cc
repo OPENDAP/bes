@@ -40,6 +40,7 @@
 #include "BESContainer.h"
 #include "BESDataNames.h"
 #include "BESHandlerException.h"
+#include "BESResponseNames.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( string name )
     : BESResponseHandler( name )
@@ -81,6 +82,7 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
 void
 BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    dhi.action_name = DELETE_DEFINITIONS_STR ;
     BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 

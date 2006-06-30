@@ -67,6 +67,7 @@ BESStatusResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
     BESStatus s ;
+    dhi.action_name = STATUS_RESPONSE_STR ;
     info->begin_response( STATUS_RESPONSE_STR ) ;
     info->add_tag( "status", s.get_status() ) ;
     info->end_response() ;
