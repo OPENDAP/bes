@@ -114,7 +114,7 @@ BESInterface::execute_request()
 	ostringstream s ;
 	s << "libdap exception: error_code = " << e.get_error_code()
 	  << ": " << e.get_error_message() ;
-	BESException ex( s.str(), __FILE__, __LINE__ ) ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
 	status = exception_manager( ex ) ;
     }
     catch( bad_alloc &b )
