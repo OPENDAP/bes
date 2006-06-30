@@ -42,7 +42,7 @@ using std::endl ;
 #include "BESCatalogList.h"
 #include "BESLog.h"
 
-#define HDF5_NAME "hdf"
+#define HDF5_NAME "hdf5"
 #define HDF5_CATALOG "catalog"
 
 void
