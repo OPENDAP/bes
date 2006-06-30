@@ -79,6 +79,7 @@ OPeNDAP.ServerSecure=no
 #-----------------------------------------------------------------------#
 OPeNDAP.Help.TXT=@prefix@/etc/bes/dispatch_help.txt
 OPeNDAP.Help.HTTP=@prefix@/etc/bes/dispatch_help.html
+OPeNDAP.Help.XML=@prefix@/etc/bes/dispatch_help.txt
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
