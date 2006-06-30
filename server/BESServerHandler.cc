@@ -161,6 +161,7 @@ BESServerHandler::execute( Connection *c )
 			     << status << endl ;
 			//string toSend = "FATAL ERROR: server must exit!" ;
 			//c->send( toSend ) ;
+			c->send( "" ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
@@ -173,6 +174,7 @@ BESServerHandler::execute( Connection *c )
 			     << status << endl ;
 			//string toSend = "Data Handler Error: server my exit!" ;
 			//c->send( toSend ) ;
+			c->send( "" ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
