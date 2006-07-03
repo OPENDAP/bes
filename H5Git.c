@@ -908,8 +908,6 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 char *
 get_dimname(hid_t dataset, int index)
 {
-
-
     hid_t attr_id;
     hid_t type, space;
     char *sdsdimname;
@@ -1152,6 +1150,7 @@ correct_name(char *oldname)
     char *cptr;
     char *newname;
     char ORI_SLASH = '/';
+    char CHA_SLASH = '_';
 
     if (oldname == NULL) {
 	printf("inputting name is wrong.\n");
@@ -1159,21 +1158,26 @@ correct_name(char *oldname)
     }
 
     /* the following code is for correcting name from "/" to "_" */
-  /*** newname = malloc((strlen(oldname)+1)*sizeof(char));
-  bzero(newname,(strlen(oldname)+1)*sizeof(char));
-  newname = strncpy(newname, oldname, strlen(oldname));
+    newname = malloc((strlen(oldname)+1)*sizeof(char));
+    bzero(newname,(strlen(oldname)+1)*sizeof(char));
+    newname = strncpy(newname, oldname, strlen(oldname));
   
-  while(strchr(newname,ORI_SLASH)!= NULL){
-    cptr = strchr(newname,ORI_SLASH);
-    *cptr = CHA_SLASH;
-    }*****/
+    while((cptr=strchr(newname,ORI_SLASH)) != NULL){
+	*cptr = CHA_SLASH;
+    }
 
+#if 0
+    /* I don't understand this comment, but the code break a number
+       of datasets. The section above was commented out but I'm undoing that.
+       jhrg 7/3/06 */
     /* Now we want to try DODS ferret demo */
     cptr = strrchr(oldname, ORI_SLASH);
     cptr++;
     newname = malloc((strlen(cptr) + 1) * sizeof(char));
     bzero(newname, strlen(cptr) + 1);
     strncpy(newname, cptr, strlen(cptr));
+#endif
+
     return newname;
 }
 
