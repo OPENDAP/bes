@@ -32,15 +32,15 @@ OPeNDAP.LogVerbose=no
 # so make sure that those are loaded in as well. Two modules are
 # required for use with Server4, the dap and dap_cmd modules.
 # 
-# Here's an example of the configuration for three handlers (Netcdf hdf4
-# and FreeForm) and the DAP basic and command modules:
+# Here's an example of the configuration for three handlers (Netcdf,
+# hdf4 and FreeForm) and the DAP basic and command modules:
 #
 # OPeNDAP.modules=nc,h4,ff,cmd,dap
-# OPeNDAP.module.nc=<prefix>/lib/bes/libnc_module.so
-# OPeNDAP.module.h4=<prefix>/lib/bes/libhdf4_module.so
-# OPeNDAP.module.ff=<prefix>/lib/bes/libff_module.so
-# OPeNDAP.module.dap=/usr/local/tmp/lib/bes/libdap_module.so
-# OPeNDAP.module.cmd=/usr/local/tmp/lib/bes/libdap_cmdmodule.so
+# OPeNDAP.module.nc=@prefix@/lib/bes/libnc_module.so
+# OPeNDAP.module.h4=@prefix@/lib/bes/libhdf4_module.so
+# OPeNDAP.module.ff=@prefix@/lib/bes/libff_module.so
+# OPeNDAP.module.dap=@prefix@/lib/bes/libdap_module.so
+# OPeNDAP.module.cmd=@prefix@/lib/bes/libdap_cmdmodule.so
 
 OPeNDAP.modules=<name>
 OPeNDAP.module.<name>=<full path to shared library>
@@ -50,18 +50,22 @@ OPeNDAP.module.<name>=<full path to shared library>
 #-----------------------------------------------------------------------#
 Catalog.catalog.RootDirectory=<full path data root directory>
 
-# The TypeMatch parameter is a comma separated list of handler/module
-# names separated by a regular expression. If the regular expression
-# matches an item, then the BES uses the associated handler/module.
+# The TypeMatch parameter is a list of handler/module names a colon and
+# a regular expression. If the regular expression matches an item, then
+# the BES uses the associated handler/module. Each <handler>:<regular
+# expression> pair is followed by a semicolon.
 
-Catalog.catalog.TypeMatch=nc:.*\.nc,h4:.*\.hdf;
+# Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF);ff:.*\.dat;
+Catalog.catalog.TypeMatch=<list>;
 
-# Normally, when a client asks for a data catalog only datasets and
+# Normally, when a client asks for a data catalog, only datasets and
 # subdirectories are shown. Use the following two parameters to
 # customize this behavior. In the default text below, direcories with
 # names that start with a dot are not shown and no files other than
 # those described by regular expressions in TypeMatch above are
-# included. 
+# included. Note that like the TypeMatch parameter, Exclude and Include
+# are lists of items (regular expressions) where individual elements are
+# followed by semicolons.
 
 Catalog.catalog.Exclude=^\..*;
 Catalog.catalog.Include=;
@@ -103,7 +107,7 @@ OPeNDAP.Memory.GlobalArea.Verbose=no
 OPeNDAP.Memory.GlobalArea.ControlHeap=no
 
 #-----------------------------------------------------------------------#
-# This key defines is set to either single or multiple                  #
+# This key defines is set to either single or multiple mode.            #
 #                                                                       #
 # In single mode the listener handles the client request itself, and    #
 # only one client can connect at a time                                 #
