@@ -29,3 +29,5 @@ besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 SERVER_LIBS = -L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
 
+EXTRA_DIST = stopbes
+
