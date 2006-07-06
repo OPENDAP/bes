@@ -16,6 +16,7 @@ SUBDIRS = test
 DIST_SUBDIRS = test
 
 sbin_PROGRAMS = bes besd
+sbin_SCRIPTS = stopbes
 
 bes_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
 		ServerApp.h ServerExitConditions.h 
