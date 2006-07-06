@@ -13,13 +13,13 @@ CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 lib_LTLIBRARIES = libopendap_command.la
-pkglib_LTLIBRARIES = libdap_cmdmodule.la
+pkglib_LTLIBRARIES = libdap_cmd_module.la
 
 libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
 libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
-libdap_cmdmodule_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-libdap_cmdmodule_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
+libdap_cmd_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
+libdap_cmd_module_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
