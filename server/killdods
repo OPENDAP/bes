@@ -4,25 +4,25 @@ what=$1
 
 os=`uname`
 
-if [ $DODS_ROOT ]; then
-    echo "DODS Root is set to $DODS_ROOT"
+if [ $OPENDAP_SERVER_ROOT ]; then
+    echo "OPeNDAP Root is set to $OPENDAP_SERVER_ROOT"
 else
-    echo "Please set the environment variable DODS_ROOT"
+    echo "Please set the environment variable OPENDAP_SERVER_ROOT"
     exit;
 fi
 
-if [ "$what" = "all" ]; then
-    if [ "$os" = "SunOS" ]; then
-	user=`cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f4`
-	echo "Killing all xdods processes running under user $user..."
-	ps -u$user | sed -e"s/  */:/g" | grep xdods | cut -d: -f2 | xargs -L100 kill -INT
-    fi
-    if [ "$os" = "Linux" ]; then
-        user=`cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f4`
-	echo "Killing all xdods processes running under user $user..."
-	(ps -u$user | sed -e"s/  */:/g" | grep xdods | cut -d: -f1 | xargs kill -INT > /dev/tty) >& /dev/null
-    fi
-else
-    echo "Shutting down dods listener..."
-    (cat "$DODS_ROOT"/xdods_listener.pid | cut -d' ' -f2 | xargs kill -INT >/dev/tty) 2> /dev/null
-fi
+#if [ "$what" = "all" ]; then
+#    if [ "$os" = "SunOS" ]; then
+#	user=`cat "$OPENDAP_SERVER_ROOT"/run/bes.pid | cut -d' ' -f4`
+#	echo "Killing all bes processes running under user $user..."
+#	ps -u$user | sed -e"s/  */:/g" | grep bes | cut -d: -f2 | xargs -L100 kill -INT
+#    fi
+#    if [ "$os" = "Linux" ]; then
+#        user=`cat "$OPENDAP_SERVER_ROOT"/run/bes.pid | cut -d' ' -f4`
+#	echo "Killing all bes processes running under user $user..."
+#	(ps -u$user | sed -e"s/  */:/g" | grep bes | cut -d: -f1 | xargs kill -INT > /dev/tty) >& /dev/null
+#    fi
+#else
+    echo "Shutting down bes listener..."
+    (cat "$OPENDAP_SERVER_ROOT"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
+#fi

@@ -82,7 +82,8 @@ main(int argc, char *argv[])
     if( !access( file_for_listener.c_str(), F_OK ) )
     {
 	ifstream temp( file_for_listener.c_str() ) ;
-	cout << NameProgram << ": there seems to be a DODS daemon running at " ;
+	cout << NameProgram
+	     << ": there seems to be a BES daemon already running at " ;
 	char buf[500] ;
 	temp.getline( buf, 500 ) ;
 	cout << buf << endl ;
