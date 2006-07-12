@@ -117,7 +117,11 @@ public:
      *
      * @return true if information is buffered, false if not
      */
-    virtual bool	set_buffered( bool buffered ) { _buffered = buffered ; }
+    virtual bool	set_buffered( bool buffered )
+			{
+			    _buffered = buffered ;
+			    return _buffered ;
+			}
 
     /** @brief return whether the information is to be buffered or not.
      *
