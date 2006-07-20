@@ -1,3 +1,15 @@
+2006-07-20  James Gallagher <jgallagher@opendap.org>
+
+	Updated configure.ac so that the build looks for the BES in places
+	other than the default prefix (i.e., it now uses bes-config).
+
+	Updated the version number in configure.ac and the spec file; updated
+	ChangeLog, NEWS, README and INSTALL.
+
+2006-07-20  James Gallagher <jgallagher@opendap.org>
+
+	Added bes.m4 to conf.
+
 2006-07-10  James Gallagher <jgallagher@opendap.org>
 
 	Removed the subdir 'hdf4_handler;' I think this was added by mistake

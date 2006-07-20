@@ -3,6 +3,9 @@ $Id$
 
 Version 3.7.1
 
+Build fixes (now finds the BES using the same logic as the netcdf and
+freeform handlers).
+
 The hdfclass library is shared, not static to avoid a warning about potential
 incompatibilities. 
 
