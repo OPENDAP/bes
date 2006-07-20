@@ -23,6 +23,9 @@ now included in the code.
 In Fall of 2005 we decided to release the software under the LGPL, based on a
 previous discussion with personnel at JPL.
 
+James Gallagher
+Updated 9/22/2005 
+
 Support for HDF data types:
     HDF Version:  This release of the server supports HDF4.2r1. 
     SDS:          This is mapped to a DAP2 Grid (if it has a dimension 
@@ -92,6 +95,3 @@ Isaac Henry (ike@seanet.jpl.nasa.gov)
 Jake Hamby (Jake.Hamby@jpl.nasa.gov)
 
 NASA/JPL April 1998
-
-James Gallagher
-Updated 9/22/2005 

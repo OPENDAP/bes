@@ -1,3 +1,35 @@
+2006-07-10  James Gallagher <jgallagher@opendap.org>
+
+	Removed the subdir 'hdf4_handler;' I think this was added by mistake
+	during one of the tagging operations.
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	dap_cmdmodule library renamed to dap_cmd_module so that all loaded
+	module libraries are named <something>_module
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	In the help response added begin and end tags called handler to
+	separate the different hander help responses and added a tag
+	called name within the handler tag to say which handler this help
+	is for, changed the name of the handler to hdf4 so there isn't a
+	conflict with the hdf5 handler, deleted the extra file
+	HDFRequestHandler and hdf_module.cc
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	bin program depends on shared library, not static library:
+
+2006-06-28  Patrick West <pwest@ucar.edu>
+
+	bes exception updates, cleaned up configuration file, made
+	hdfclass library shared and installed
+
+2006-06-15  James Gallagher <jgallagher@opendap.org>
+
+	Updated NEWS, et c., and configure.ac for the 3.7 source release.
+
 2006-06-14  Patrick West <pwest@ucar.edu>
 
 	configuration updates. bes modules in lib/bes

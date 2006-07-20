@@ -27,6 +27,12 @@ BUILDING THE SOFTWARE
 
 3) Install the server components in $prefix by running `make install.'
 
+4) For many installations, you must arrange for your operating system to find
+   the shared libraries installed by default in $prefix/lib. Do this by
+   either setting an environment variable such as LD_LIBRARY_PATH or by
+   editing /etc/ld.so.conf. Different operating systems handle this in
+   different ways.
+
 Building from Our SVN Repository
 
   If you are building from a SVN checkout, run 'autoreconf --verbose' before

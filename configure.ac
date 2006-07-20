@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([hdf4_handler], [3.7.0], [dods-tech@unidata.ucar.edu])
+AC_INIT([hdf4_handler], [3.7.1], [dods-tech@unidata.ucar.edu])
 AC_CONFIG_AUX_DIR([conf])
 
 AM_INIT_AUTOMAKE
@@ -72,11 +72,8 @@ AC_CHECK_HDF4(
 AC_ARG_WITH([bes],
             [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
             [BES_PATH=${withval}], 
-            [BES_PATH="/usr/local"])
+            [BES_PATH=""])
 
-dnl Simple test for BES. A better test would look something like the libdap
-dnl macro written by Patrice. This will get us going... If --with-bes is not
-dnl given, then don't build the bes code. jhrg 10/3/05
 if test -x "${BES_PATH}/bin/bes-config"
 then
     AM_CONDITIONAL([OPENDAPSERVER], [true])
@@ -87,7 +84,16 @@ then
     BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --prefix`/lib/bes"
     AC_SUBST([BES_MODULE_DIR])
 else
-    AM_CONDITIONAL([OPENDAPSERVER], [false])
+    AC_CHECK_BES([3.1.0],
+    [
+        BES_LDFLAGS=$BES_LIBS
+        # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
+        # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
+        AM_CONDITIONAL([OPENDAPSERVER], [true])
+    ],
+    [ AM_CONDITIONAL([OPENDAPSERVER], [false])
+    ])
+
 fi
 
 OPENDAP_DEBUG_OPTION

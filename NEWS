@@ -1,6 +1,15 @@
 
 $Id$
 
+Version 3.7.1
+
+The hdfclass library is shared, not static to avoid a warning about potential
+incompatibilities. 
+
+Fixes to the help response.
+
+Removed an extraneous directory.
+
 Version 3.7.0
 
 The handler now builds with BES 3.1. The build makes a Server3 executable
