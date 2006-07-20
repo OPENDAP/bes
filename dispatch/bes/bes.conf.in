@@ -35,12 +35,12 @@ OPeNDAP.LogVerbose=no
 # Here's an example of the configuration for three handlers (Netcdf,
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
-# OPeNDAP.modules=nc,h4,ff,cmd,dap
+# OPeNDAP.modules=nc,hdf4,ff,cmd,dap
 # OPeNDAP.module.nc=@prefix@/lib/bes/libnc_module.so
-# OPeNDAP.module.h4=@prefix@/lib/bes/libhdf4_module.so
+# OPeNDAP.module.hdf4=@prefix@/lib/bes/libhdf4_module.so
 # OPeNDAP.module.ff=@prefix@/lib/bes/libff_module.so
 # OPeNDAP.module.dap=@prefix@/lib/bes/libdap_module.so
-# OPeNDAP.module.cmd=@prefix@/lib/bes/libdap_cmdmodule.so
+# OPeNDAP.module.cmd=@prefix@/lib/bes/libdap_cmd_module.so
 
 OPeNDAP.modules=<name>
 OPeNDAP.module.<name>=<full path to shared library>
@@ -55,7 +55,7 @@ Catalog.catalog.RootDirectory=<full path data root directory>
 # the BES uses the associated handler/module. Each <handler>:<regular
 # expression> pair is followed by a semicolon.
 
-# Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF);ff:.*\.dat;
+# Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
 Catalog.catalog.TypeMatch=<list>;
 
 # Normally, when a client asks for a data catalog, only datasets and

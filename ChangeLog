@@ -1,3 +1,202 @@
+2006-07-11  Patrick West <pwest@ucar.edu>
+
+	Method in BESInfo set_buffered should be returning whether the
+	info is being buffered after it sets it. Now it does.
+	
+	M    dispatch/BESInfo.h
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	sbin_SCRIPTS was not being added to the list of files to
+	distribute, so I had to add EXTRA_DIST to Makefile.am.
+	
+	M    server/Makefile.am
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	stopbes script is installed into sbin along with bes and besd.
+	stopbes is a script that can stop the bes daemon given the
+	location of the pid file.
+	
+	M    server/Makefile.am
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	Changed dap_cmdmodule library name to dap_cmd_module so that all loaded
+	module libraries are named <something>_module
+	
+	M    command/Makefile.am
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	Moved killdods to stopbes, removing references to dods
+	A    server/stopbes
+	D    server/killdods
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	Updated killdods to stop the bes daemon properly. Updated error
+	message in daemon.cc to inform users of already running daemon.
+	
+	M    server/killdods
+	M    server/daemon.cc
+
+2006-07-03  James Gallagher <jgallagher@opendap.org>
+
+	bes.conf: Fixed the comments/examples for TypeMatch and related
+	parameters so that they use semicolons instead of commas. Also
+	fixed the example text so that the hdf4 handler will work as
+	described.
+	
+	M    dispatch/bes/bes.conf.in
+
+2006-06-30  James Gallagher <jgallagher@opendap.org>
+
+	bes.conf.in: Added
+	"OPeNDAP.Help.XML=@prefix@/etc/bes/dispatch_help.txt"
+
+2006-06-30  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: The bes.conf file in dispatch/bes) is now generated
+	from bes.conf.in.
+
+2006-06-30  James Gallagher <jgallagher@opendap.org>
+
+	Added bes.conf.in and remove bes.conf. Now configure make the
+	bes.conf, substituting for @prefix@.
+
+2006-06-30  James Gallagher <jgallagher@opendap.org>
+
+	Updated INSTALL and README for the 3.1.0 source release.
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	The error message from the daemon that it could not create or
+	write to the pid file in the run directory ... did say that.
+	Updated the message to more clearly state the problem.
+	
+	M    server/daemon.cc
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	If a libdap Error exception is caught, instead of throw a plain
+	BESException, which will eventually force the server to exit, throw a
+	BESHandlerException instead which will not force an exit. The
+	BESHandlerException simply reports a problem in the data handler.
+	
+	M    dispatch/BESInterface.cc
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	When an exception is caught and the response is built with the
+	exception in BESExceptionManager, the response is still for the
+	request, even though an exception was thrown. The response then
+	needs to be named the same as if the request was successful and no
+	exception was thrown. It was being named BESException, but that's
+	not the name of the response. The response needs to be named, for
+	example, showInfo or setContainer.
+	
+	M    dispatch/BESVersionResponseHandler.cc
+	M    dispatch/BESDelContainerResponseHandler.cc
+	M    dispatch/BESKeysResponseHandler.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESCatalogResponseHandler.cc
+	M    dispatch/BESProcIdResponseHandler.cc
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESDelContainersResponseHandler.cc
+	M    dispatch/BESSetContainerResponseHandler.cc
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDelDefsResponseHandler.cc
+	M    dispatch/BESShowContainersResponseHandler.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESDelDefResponseHandler.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESShowDefsResponseHandler.cc
+	M    dispatch/BESStatusResponseHandler.cc
+	M    dispatch/BESExceptionManager.cc
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	added xml document type header to xml output in BESXMLInfo.cc
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	BES was not sending data completion token when there is an exception
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	When using indentation in informational responses, need to make
+	sure that we aren't reducing the indentation too much. Shouldn't
+	happen, but put the checks in just to make sure.
+	
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/BESTextInfo.cc
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	When exiting, the Back End Server was sending a message that it
+	was exiting. No need to send this kind of exit. The exception type
+	will do that for us, if unknown or a data handler exception. Data
+	Request Handler classes need to catch error specific to their
+	implemtation and throw BESExceptions instead, and determine what
+	exceptions are fatal and which are just problems.
+	
+	M    server/BESServerHandler.cc
+
+2006-06-29  James Gallagher <jgallagher@opendap.org>
+
+	Set the executable property for config.guess, config.sub and install.
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	have to add the three sysconf files to EXTRA_DIST
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	Makefile updates for distcheck
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	Moving bes.conf to dispatch directory
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	moved and renamed help files
+
+2006-06-29  Patrick West <pwest@ucar.edu>
+
+	moved and renamed help files
+
+2006-06-28  Patrick West <pwest@ucar.edu>
+
+	exception management now done in BESExceptionManager rather than
+	BESInterface. BESInfo classes modified and streamlined. Info
+	classes created through BESInfoList now instead with configuration
+	in bes configuration file. Exceptions cleaned up.
+
+2006-06-28  James Gallagher <jgallagher@opendap.org>
+
+	Updated some of the Makefile.am files and tries to remove the 0x40
+	characters in some of the source files (which gcc complains
+	about).
+	
+	M    dispatch/Makefile.am
+	M    dispatch/BESDelContainersResponseHandler.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    command/Makefile.am
+
+2006-06-28  James Gallagher <jgallagher@opendap.org>
+
+	Added ChangeLog and NEWS files.
+
+	A    ChangeLog
+	A    NEWS
+
 2006-06-19  Patrick West <pwest@ucar.edu>
 
 	test code and expected output updated with name changes
