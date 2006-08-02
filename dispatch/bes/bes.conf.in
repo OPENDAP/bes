@@ -99,6 +99,11 @@ OPeNDAP.Info.Type=xml
 OPeNDAP.Container.Persistence=strict
 
 #-----------------------------------------------------------------------#
+# Defines the cache directory for BES servers serving HDF4 data         #
+#-----------------------------------------------------------------------#
+HDF4.CacheDir=/tmp
+
+#-----------------------------------------------------------------------#
 # Defines size of system global memory pool                             #
 #-----------------------------------------------------------------------#
 OPeNDAP.Memory.GlobalArea.EmergencyPoolSize=1
