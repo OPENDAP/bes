@@ -16,7 +16,7 @@ SUBDIRS = test
 DIST_SUBDIRS = test
 
 sbin_PROGRAMS = bes besd
-sbin_SCRIPTS = stopbes
+sbin_SCRIPTS = besctl
 
 bes_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
 		ServerApp.h ServerExitConditions.h 
@@ -29,5 +29,5 @@ besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 SERVER_LIBS = -L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
 
-EXTRA_DIST = stopbes
+EXTRA_DIST = besctl
 
