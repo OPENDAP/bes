@@ -31,3 +31,6 @@ SERVER_LIBS = -L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldisp
 
 EXTRA_DIST = besctl
 
+install-data-local:
+	test -z "$(prefix)/run" || $(mkdir_p) "$(DESTDIR)$(prefix)/run"
+
