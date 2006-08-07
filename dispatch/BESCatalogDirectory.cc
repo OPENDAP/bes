@@ -120,12 +120,26 @@ BESCatalogDirectory::show_catalog( const string &node,
 
 	struct dirent *dit;
 	unsigned int cnt = 0 ;
+	struct stat buf;
 	while( ( dit = readdir( dip ) ) != NULL )
 	{
 	    string dirEntry = dit->d_name ;
-	    if( dirEntry != "." && dirEntry != ".." && include( dirEntry ) )
+	    if( dirEntry != "." && dirEntry != ".." )
 	    {
-		cnt++ ;
+		// look at the mode and determine if this is a directory
+		string fullPath = fullnode + "/" + dirEntry ;
+		stat( fullPath.c_str(), &buf ) ;
+		if ( S_ISDIR( buf.st_mode ) )
+		{
+		    cnt++ ;
+		}
+		else if ( S_ISREG( buf.st_mode ) )
+		{
+		    if( include( dirEntry ) )
+		    {
+			cnt++ ;
+		    }
+		}
 	    }
 	}
 
@@ -139,14 +153,12 @@ BESCatalogDirectory::show_catalog( const string &node,
 
 	    while( ( dit = readdir( dip ) ) != NULL )
 	    {
-		struct stat buf;
 		string dirEntry = dit->d_name ;
-		if( dirEntry != "." && dirEntry != ".." && include( dirEntry ) )
+		if( dirEntry != "." && dirEntry != ".." )
 		{
+		    // look at the mode and determine if this is a directory
 		    string fullPath = fullnode + "/" + dirEntry ;
 		    stat( fullPath.c_str(), &buf ) ;
-
-		    // look at the mode and determine if this is a directory
 		    if ( S_ISDIR( buf.st_mode ) )
 		    {
 			map<string,string> a2 ;
@@ -157,11 +169,14 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    }
 		    else if ( S_ISREG( buf.st_mode ) )
 		    {
-			map<string,string> a3 ;
-			a3["thredds_collection"] = "\"false\"" ;
-			info->begin_tag( "dataset", &a3 ) ;
-			add_stat_info( info, buf, dirEntry ) ;
-			info->end_tag( "dataset" ) ;
+			if( include( dirEntry ) )
+			{
+			    map<string,string> a3 ;
+			    a3["thredds_collection"] = "\"false\"" ;
+			    info->begin_tag( "dataset", &a3 ) ;
+			    add_stat_info( info, buf, dirEntry ) ;
+			    info->end_tag( "dataset" ) ;
+			}
 		    }
 		}
 	    }
@@ -193,24 +208,16 @@ BESCatalogDirectory::show_catalog( const string &node,
 bool
 BESCatalogDirectory::include( const string &inQuestion )
 {
-    bool toInclude = true ;
-    // First check the file against the exclude list. If there is a
-    // match (the node should be excluded) then check the node against
-    // the include list. If there is a match with the include list then
-    // include the node (return true).
-    list<string>::iterator e_iter = _exclude.begin() ;
-    list<string>::iterator e_end = _exclude.end() ;
-    for( ; e_iter != e_end; e_iter++ )
-    {
-	string reg = *e_iter ;
-	Regex reg_expr( reg.c_str() ) ;
-	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
-	{
-	    toInclude = false ;
-	}
-    }
+    bool toInclude = false ;
 
-    if( toInclude == false )
+    // First check the file against the include list. If the file should be
+    // included then check the exclude list to see if there are exceptions
+    // to the include list.
+    if( _include.size() == 0 )
+    {
+	toInclude = true ;
+    }
+    else
     {
 	list<string>::iterator i_iter = _include.begin() ;
 	list<string>::iterator i_end = _include.end() ;
@@ -224,6 +231,22 @@ BESCatalogDirectory::include( const string &inQuestion )
 	    }
 	}
     }
+
+    if( toInclude == true )
+    {
+	list<string>::iterator e_iter = _exclude.begin() ;
+	list<string>::iterator e_end = _exclude.end() ;
+	for( ; e_iter != e_end; e_iter++ )
+	{
+	    string reg = *e_iter ;
+	    Regex reg_expr( reg.c_str() ) ;
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	    {
+		toInclude = false ;
+	    }
+	}
+    }
+
     return toInclude ;
 }
 

@@ -46,29 +46,32 @@ OPeNDAP.modules=<name>
 OPeNDAP.module.<name>=<full path to shared library>
 
 #-----------------------------------------------------------------------#
-# Data configuration
+# Catalog configuration
 #-----------------------------------------------------------------------#
 Catalog.catalog.RootDirectory=<full path data root directory>
 
 # The TypeMatch parameter is a list of handler/module names a colon and
 # a regular expression. If the regular expression matches an item, then
 # the BES uses the associated handler/module. Each <handler>:<regular
-# expression> pair is followed by a semicolon.
+# expression> pair is followed by a semicolon. This is used when creating
+# containers in the BES (the 'set container' command).
 
 # Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
 Catalog.catalog.TypeMatch=<list>;
 
-# Normally, when a client asks for a data catalog, only datasets and
-# subdirectories are shown. Use the following two parameters to
-# customize this behavior. In the default text below, direcories with
-# names that start with a dot are not shown and no files other than
-# those described by regular expressions in TypeMatch above are
-# included. Note that like the TypeMatch parameter, Exclude and Include
-# are lists of items (regular expressions) where individual elements are
-# followed by semicolons.
+# Normally, when a client asks for a data catalog, all files and directories
+# are shown. Use the following two parameters to customize this behavior.
+# Each parameter is a list of regular expressions, each followed by a
+# semicolon (last one must also end with a semicolon as in the example
+# below.) First, the Include parameter is applied to the node, and
+# then the Exclude parameter is applied. All collections of nodes are shown.
+# In the default values below, all nodes with the file extension .nc
+# are included (the Include parameter) except those that begin with a dot
+# (the Exclud parameter).
 
-Catalog.catalog.Exclude=^\..*;
+#Catalog.catalog.Include=.*\.nc;
 Catalog.catalog.Include=;
+Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
