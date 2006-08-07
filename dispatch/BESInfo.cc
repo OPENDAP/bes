@@ -171,7 +171,7 @@ BESInfo::add_data_from_file( const string &key, const string &name )
 	ifstream ifs( file.c_str() ) ;
 	if( !ifs )
 	{
-	    add_data( name + " file " + file + "not found, information not available\n" ) ;
+	    add_data( name + " file " + file + " not found, information not available\n" ) ;
 	}
 	else
 	{
