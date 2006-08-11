@@ -107,18 +107,33 @@ AC_MSG_CHECKING(for OpenSSL)
 	fi
   fi
 
-  # On RedHat 9 we need kerberos to compile openssl
-  for d in /usr/kerberos/include
-  do
-   if test -f $d/krb5.h  ; then
-     OPENSSL_KERBEROS_INCLUDE="$d"
-   fi
-  done
-  if test "$OPENSSL_KERBEROS_INCLUDE"
-  then
-    openssl_includes="$openssl_includes -I$OPENSSL_KERBEROS_INCLUDE"
-  fi
-
   AC_SUBST(openssl_libs)
   AC_SUBST(openssl_includes)
 ])
+
+AC_DEFUN([BES_CHECK_KERBEROS], [
+AC_MSG_CHECKING(for Kerberos Includes)
+  AC_ARG_WITH([kerberos],
+              [  --with-kerberos[=DIR]    Include the Kerberos support],
+              [kerberos="$withval"],
+              [kerberos=no])
+
+  if test "$kerberos" = "no"
+  then
+      # On RedHat 9 we need kerberos to compile openssl
+      for d in /usr/kerberos/include
+      do
+       if test -f $d/krb5.h  ; then
+	 kerberos="$d"
+       fi
+      done
+  fi
+  if test "$kerberos"
+  then
+    AC_MSG_RESULT(yes)
+    kerberos_includes="-I$kerberos"
+  fi
+
+  AC_SUBST(kerberos_includes)
+])
+
