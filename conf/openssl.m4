@@ -34,15 +34,6 @@ AC_DEFUN([BES_FIND_OPENSSL], [
       ;;
   esac
 
-  # On RedHat 9 we need kerberos to compile openssl
-  for d in /usr/kerberos/include
-  do
-   if test -f $d/krb5.h  ; then
-     OPENSSL_KERBEROS_INCLUDE="$d"
-   fi
-  done
-
-
  echo $OPENSSL_LIB
  echo $OPENSSL_INCLUDE
  if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE" ; then
@@ -102,10 +93,6 @@ AC_MSG_CHECKING(for OpenSSL)
     then
 	openssl_includes="$OPENSSL_INCLUDE"
     fi
-    if test "$OPENSSL_KERBEROS_INCLUDE"
-    then
-    	openssl_includes="$openssl_includes -I$OPENSSL_KERBEROS_INCLUDE"
-    fi
     AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
 
   else
@@ -119,6 +106,19 @@ AC_MSG_CHECKING(for OpenSSL)
 		AC_MSG_ERROR(Can't have --with-openssl-libs without --with-openssl);
 	fi
   fi
+
+  # On RedHat 9 we need kerberos to compile openssl
+  for d in /usr/kerberos/include
+  do
+   if test -f $d/krb5.h  ; then
+     OPENSSL_KERBEROS_INCLUDE="$d"
+   fi
+  done
+  if test "$OPENSSL_KERBEROS_INCLUDE"
+  then
+    openssl_includes="$openssl_includes -I$OPENSSL_KERBEROS_INCLUDE"
+  fi
+
   AC_SUBST(openssl_libs)
   AC_SUBST(openssl_includes)
 ])
