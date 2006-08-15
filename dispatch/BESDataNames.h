@@ -44,6 +44,7 @@
 
 #define USER_ADDRESS "user_address"
 #define USER_NAME "user_name"
+#define USER_TOKEN "user_token"
 
 #define SERVER_PID "pid"
 

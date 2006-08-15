@@ -65,6 +65,10 @@ typedef struct _BESDataRequestInterface
     /** @brief server cookies set in users browser
      */
     const char *cookie;
+    /** @brief session token passed in URL
+     */
+    const char *token;
+
 } BESDataRequestInterface;
 
 #endif // BESDataRequestInterface_h_
