@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #ifndef PPTClient_h
-#define PPTClient_hS 1
+#define PPTClient_h 1
 
 #include "PPTConnection.h"
 
@@ -54,4 +54,3 @@ public:
 
 #endif // PPTClient_h
 
-// $Log: PPTClient.h,v $
