@@ -164,11 +164,13 @@ static int opendap_handler(request_rec *r)
 	{
 	    wrapper.process_request(r->parsed_uri.query);
 	    rq.cookie=wrapper.process_user(r->parsed_uri.query);
+	    rq.token=wrapper.process_token(r->parsed_uri.query);
 	}
 	else
 	{
 	    rq.request=0;
 	    rq.cookie=0;
+	    rq.token=0;
 	}
     }
     else if (strcmp(m_method, "POST") == 0 ) 
@@ -177,11 +179,13 @@ static int opendap_handler(request_rec *r)
 	util_read(r, &post_data);
 	wrapper.process_request(post_data);
 	rq.cookie=wrapper.process_user(post_data);
+	rq.token=wrapper.process_token(r->parsed_uri.query);
     }
     else
     {
 	rq.request=0;
 	rq.cookie=0;
+	rq.token=0;
     }
 
     // These two lines will print out the header information to the error

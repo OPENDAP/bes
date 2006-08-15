@@ -46,6 +46,7 @@ BESApacheWrapper::BESApacheWrapper()
 {
     _data_request = 0 ;
     _user_name = 0 ;
+    _token = 0 ;
     _requests = 0 ;
 
     default_module::initialize( 0, 0 ) ;
@@ -65,6 +66,11 @@ BESApacheWrapper::~BESApacheWrapper()
     {
 	delete [] _user_name ;
 	_user_name = 0 ;
+    }
+    if( _token )
+    {
+	delete [] _token ;
+	_token = 0 ;
     }
     BESGlobalIQ::BESGlobalQuit() ;
 }
@@ -129,7 +135,7 @@ BESApacheWrapper::get_next_request()
 
 /** @brief Find the username from the URL and convert it to readable format
 
-    @param s URL to convert into an OpenDAP request
+    @param s URL to convert into an OpenDAP user name
     @return Resulting OpenDAP user name
  */
 const char *
@@ -148,5 +154,20 @@ BESApacheWrapper::process_user(const char*s)
 	sprintf( _user_name, "OpenDAP.remoteuser=%s", str.c_str() ) ;
     }
     return _user_name ;
+}
+
+/** @brief Find the session token from the URL and convert it to readable format
+
+    @param s URL to convert into an OpenDAP session token
+    @return Resulting OpenDAP user name
+ */
+const char *
+BESApacheWrapper::process_token(const char*s)
+{
+    BESProcessEncodedString h( s ) ;
+    string str = h.get_key( "token" ) ;
+    _token = new char[strlen( str.c_str() ) + 1] ;
+    strcpy( _token, str.c_str() ) ;
+    return _token ;
 }
 

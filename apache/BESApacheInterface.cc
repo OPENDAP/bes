@@ -167,6 +167,7 @@ BESApacheInterface::initialize()
     }
 
     _dhi.data[USER_NAME] = user ;
+    _dhi.data[USER_TOKEN] = _dri->token ;
 
     if( BESLog::TheLog() && BESLog::TheLog()->is_verbose() )
     {
@@ -194,21 +195,21 @@ void
 BESApacheInterface::validate_data_request()
 {
     if (!_dri->server_name)
-	throw BESIncorrectRequestException("undefined server name");
+	throw BESIncorrectRequestException("undefined server name", __FILE__, __LINE__ );
     if(!_dri->server_address)
-	throw BESIncorrectRequestException("undefined server address");
+	throw BESIncorrectRequestException("undefined server address", __FILE__, __LINE__ );
     if(!_dri->server_protocol)
-	throw BESIncorrectRequestException("undefined server protocol");
+	throw BESIncorrectRequestException("undefined server protocol", __FILE__, __LINE__ );
     if(!_dri->server_port)
-	throw BESIncorrectRequestException("undefined server port");
+	throw BESIncorrectRequestException("undefined server port", __FILE__, __LINE__ );
     if(!_dri->script_name)
-	throw BESIncorrectRequestException("undefined script name");
+	throw BESIncorrectRequestException("undefined script name", __FILE__, __LINE__ );
     if(!_dri->user_address)
-	throw BESIncorrectRequestException("undefined user address");
+	throw BESIncorrectRequestException("undefined user address", __FILE__, __LINE__ );
     if(!_dri->user_agent)
-	throw BESIncorrectRequestException("undefined user agent");
+	throw BESIncorrectRequestException("undefined user agent", __FILE__, __LINE__ );
     if(!_dri->request)
-	throw BESIncorrectRequestException("undefined request");
+	throw BESIncorrectRequestException("undefined request", __FILE__, __LINE__ );
 }
 
 /** @brief Handle any exceptions generated from the request
@@ -229,7 +230,7 @@ BESApacheInterface::validate_data_request()
     @see BESException
  */
 int
-BESApacheInterface::exception_manager(BESException &e)
+BESApacheInterface::exception_manager( BESException &e )
 {
     bool ishttp = false ;
     if( _dhi.transmit_protocol == "HTTP" )
@@ -238,7 +239,7 @@ BESApacheInterface::exception_manager(BESException &e)
     BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
     if (ireqx)
     {
-	if (e.get_error_description()=="undefined request")
+	if (e.get_message()=="undefined request")
 	{
 	    // Everything is OK but  BESDataRequestInterface::request is null.
 	    if( ishttp )

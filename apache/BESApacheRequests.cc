@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESApacheRequests.h"
-#include "BESBasicException.h"
+#include "BESException.h"
 
 #include <iostream>
 
@@ -80,9 +80,9 @@ BESApacheRequests::BESApacheRequests( const string &requests )
 		    if( index != start )
 		    {
 			if( inquotes )
-			    throw BESBasicException( "ending double quote missing in request string" ) ;
+			    throw BESException( "ending double quote missing in request string", __FILE__, __LINE__ ) ;
 			else
-			    throw BESBasicException( "requests must end with a semicolon (;)" ) ;
+			    throw BESException( "requests must end with a semicolon (;)", __FILE__, __LINE__ ) ;
 		    }
 		    done = true ;
 		}

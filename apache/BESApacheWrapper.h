@@ -46,6 +46,7 @@ class BESApacheWrapper
 {
     char *		_data_request ;
     char *		_user_name ;
+    char *		_token ;
     BESApacheRequests	*_requests ;
 public:
     			BESApacheWrapper() ;
@@ -56,6 +57,7 @@ public:
     const char *	get_first_request() ;
     const char *	get_next_request() ;
     const char *	process_user( const char *s ) ;
+    const char *	process_token( const char *s ) ;
 };
 
 #endif // BESApacheWrapper_h_
