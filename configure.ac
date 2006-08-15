@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.57)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.1.1, dods-tech@unidata.ucar.edu)
+AC_INIT(bes, 3.2.0, dods-tech@unidata.ucar.edu)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
@@ -93,6 +93,7 @@ if test "$vl_cv_lib_readline" = "no"; then
 fi
 
 BES_CHECK_OPENSSL
+BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.7.0],
  [
