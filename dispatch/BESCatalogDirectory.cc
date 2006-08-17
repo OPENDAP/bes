@@ -50,7 +50,7 @@ using std::endl ;
 BESCatalogDirectory::BESCatalogDirectory( const string &name )
 {
     bool found = false ;
-    string key = (string)"Catalog." + name + ".RootDirectory" ;
+    string key = (string)"BES.Catalog." + name + ".RootDirectory" ;
     _rootDir = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( !found || _rootDir == "" )
     {
@@ -68,14 +68,14 @@ BESCatalogDirectory::BESCatalogDirectory( const string &name )
     }
     closedir( dip ) ;
 
-    key = (string)"Catalog." + name + ".Exclude" ;
+    key = (string)"BES.Catalog." + name + ".Exclude" ;
     string e_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( found && e_str != "" && e_str != ";" )
     {
 	buildList( _exclude, e_str ) ;
     }
 
-    key = (string)"Catalog." + name + ".Include" ;
+    key = (string)"BES.Catalog." + name + ".Include" ;
     string i_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( found && i_str != "" && i_str != ";" )
     {

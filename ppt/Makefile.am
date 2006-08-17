@@ -15,7 +15,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 lib_LTLIBRARIES = libppt.la
 
 libppt_la_SOURCES = $(SRCS) $(HDRS)
-libppt_la_CPPFLAGS = $(openssl_includes)
+libppt_la_CPPFLAGS = $(openssl_includes) $(kerberos_includes)
 libppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
@@ -30,3 +30,4 @@ HDRS:=PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h \
 	SocketListener.h PPTServer.h PPTProtocol.h \
 	PPTConnection.h Connection.h ServerHandler.h \
 	SSLClient.h SSLServer.h SSLConnection.h
+

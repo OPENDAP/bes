@@ -96,7 +96,7 @@ BESExceptionManager::handle_exception( BESException &e,
     {
 	bool found = false ;
 	administrator =
-	    TheBESKeys::TheKeys()->get_key( "OPeNDAP.ServerAdministrator", found ) ;
+	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
     }
     catch( ... )
     {

@@ -56,7 +56,7 @@ using std::cerr ;
 BESServerHandler::BESServerHandler()
 {
     bool found = false ;
-    _method = TheBESKeys::TheKeys()->get_key( "OPeNDAP.ProcessManagerMethod", found ) ;
+    _method = TheBESKeys::TheKeys()->get_key( "BES.ProcessManagerMethod", found ) ;
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "

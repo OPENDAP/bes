@@ -106,7 +106,7 @@ BESModuleApp::loadModules()
     int retVal = 0 ;
 
     bool found = false ;
-    string mods = TheBESKeys::TheKeys()->get_key( "OPeNDAP.modules", found ) ;
+    string mods = TheBESKeys::TheKeys()->get_key( "BES.modules", found ) ;
     if( mods != "" )
     {
 	std::string::size_type start = 0 ;
@@ -125,7 +125,7 @@ BESModuleApp::loadModules()
 	    {
 		mod = mods.substr( start, comma - start ) ;
 	    }
-	    string key = "OPeNDAP.module." + mod ;
+	    string key = "BES.module." + mod ;
 	    string so = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	    if( so == "" )
 	    {

@@ -61,7 +61,7 @@
 BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
     : BESContainerStorageVolatile( n )
 {
-    string base_key = "Catalog." + n + ".RootDirectory" ;
+    string base_key = "BES.Catalog." + n + ".RootDirectory" ;
     bool found = false ;
     _root_dir = TheBESKeys::TheKeys()->get_key( base_key, found ) ;
     if( _root_dir == "" )
@@ -70,7 +70,7 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
-    string key = "Catalog." + n + ".TypeMatch" ;
+    string key = "BES.Catalog." + n + ".TypeMatch" ;
     string curr_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( curr_str == "" )
     {

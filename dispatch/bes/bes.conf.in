@@ -1,21 +1,21 @@
-#-----------------------OPeNDAP Initialization file---------------------#
+#-----------------------OPeNDAP BES Initialization file-----------------#
 #									#
 #       National Center for Atmospheric Research (NCAR)			#
 #       High Altitude Observatory (HAO)					#
-#       Key entries for OPeNDAP server run time behavior		#
+#       Key entries for OPeNDAP BES run time behavior			#
 #									#
 #-----------------------------------------------------------------------#
   
 #-----------------------------------------------------------------------#
 # Who is the administrator for this OPeNDAP back-end server             #
 #-----------------------------------------------------------------------#
-OPeNDAP.ServerAdministrator=<admin email address>
+BES.ServerAdministrator=<admin email address>
 
 #-----------------------------------------------------------------------#
 # Where we log the stuff...and how much we log                          #
 #-----------------------------------------------------------------------#
-OPeNDAP.LogName=./bes.log
-OPeNDAP.LogVerbose=no
+BES.LogName=./bes.log
+BES.LogVerbose=no
 
 #-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
@@ -35,20 +35,20 @@ OPeNDAP.LogVerbose=no
 # Here's an example of the configuration for three handlers (Netcdf,
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
-# OPeNDAP.modules=nc,hdf4,ff,cmd,dap
-# OPeNDAP.module.nc=@prefix@/lib/bes/libnc_module.so
-# OPeNDAP.module.hdf4=@prefix@/lib/bes/libhdf4_module.so
-# OPeNDAP.module.ff=@prefix@/lib/bes/libff_module.so
-# OPeNDAP.module.dap=@prefix@/lib/bes/libdap_module.so
-# OPeNDAP.module.cmd=@prefix@/lib/bes/libdap_cmd_module.so
+# BES.modules=nc,hdf4,ff,cmd,dap
+# BES.module.nc=@prefix@/lib/bes/libnc_module.so
+# BES.module.hdf4=@prefix@/lib/bes/libhdf4_module.so
+# BES.module.ff=@prefix@/lib/bes/libff_module.so
+# BES.module.dap=@prefix@/lib/bes/libdap_module.so
+# BES.module.cmd=@prefix@/lib/bes/libdap_cmd_module.so
 
-OPeNDAP.modules=<name>
-OPeNDAP.module.<name>=<full path to shared library>
+BES.modules=<name>
+BES.module.<name>=<full path to shared library>
 
 #-----------------------------------------------------------------------#
 # Catalog configuration
 #-----------------------------------------------------------------------#
-Catalog.catalog.RootDirectory=<full path data root directory>
+BES.Catalog.catalog.RootDirectory=<full path data root directory>
 
 # The TypeMatch parameter is a list of handler/module names a colon and
 # a regular expression. If the regular expression matches an item, then
@@ -56,8 +56,8 @@ Catalog.catalog.RootDirectory=<full path data root directory>
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
-# Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
-Catalog.catalog.TypeMatch=<list>;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
+BES.Catalog.catalog.TypeMatch=<list>;
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.
@@ -69,50 +69,45 @@ Catalog.catalog.TypeMatch=<list>;
 # are included (the Include parameter) except those that begin with a dot
 # (the Exclud parameter).
 
-#Catalog.catalog.Include=.*\.nc;
-Catalog.catalog.Include=;
-Catalog.catalog.Exclude=^\..*;
+#BES.Catalog.catalog.Include=.*\.nc;
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
 # is secure or not                                                      #
 #-----------------------------------------------------------------------#
-OPeNDAP.ServerPort=10002
-OPeNDAP.ServerUnixSocket=/tmp/opendap.socket
-OPeNDAP.ServerSecure=no
+BES.ServerPort=10002
+BES.ServerUnixSocket=/tmp/opendap.socket
+BES.ServerSecure=no
 
 #-----------------------------------------------------------------------#
 # help file locations, for text and html versions                       #
 #-----------------------------------------------------------------------#
-OPeNDAP.Help.TXT=@prefix@/etc/bes/dispatch_help.txt
-OPeNDAP.Help.HTTP=@prefix@/etc/bes/dispatch_help.html
-OPeNDAP.Help.XML=@prefix@/etc/bes/dispatch_help.txt
+BES.Help.TXT=@prefix@/etc/bes/dispatch_help.txt
+BES.Help.HTTP=@prefix@/etc/bes/dispatch_help.html
+BES.Help.XML=@prefix@/etc/bes/dispatch_help.txt
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
 # Should informational objects be formatted as text, html, or xml       #
 #-----------------------------------------------------------------------#
-OPeNDAP.Info.Buffered=no
-OPeNDAP.Info.Type=xml
+BES.Info.Buffered=no
+BES.Info.Type=xml
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#
 # log an error, strict means throw an exception
 #-----------------------------------------------------------------------#
-OPeNDAP.Container.Persistence=strict
-
-#-----------------------------------------------------------------------#
-# Defines the cache directory for BES servers serving HDF4 data         #
-#-----------------------------------------------------------------------#
-HDF4.CacheDir=/tmp
+BES.Container.Persistence=strict
 
 #-----------------------------------------------------------------------#
 # Defines size of system global memory pool                             #
 #-----------------------------------------------------------------------#
-OPeNDAP.Memory.GlobalArea.EmergencyPoolSize=1
-OPeNDAP.Memory.GlobalArea.MaximunHeapSize=2
-OPeNDAP.Memory.GlobalArea.Verbose=no
-OPeNDAP.Memory.GlobalArea.ControlHeap=no
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximunHeapSize=2
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
 
 #-----------------------------------------------------------------------#
 # This key defines is set to either single or multiple mode.            #
@@ -125,12 +120,23 @@ OPeNDAP.Memory.GlobalArea.ControlHeap=no
 # connection and goes back to listening for more connections. More than #
 # one client can connect at a time                                      #
 #-----------------------------------------------------------------------#
-OPeNDAP.ProcessManagerMethod=multiple
+BES.ProcessManagerMethod=multiple
 
 #-----------------------------------------------------------------------#
 # Is the client using the GET or POST method of making requests to a    #
 # back-end server that is a built-in web server module. If the back-end #
 # server is not a web server module, this key/value pair is not used    #
 #-----------------------------------------------------------------------#
-OPeNDAP.DefaultResponseMethod=POST
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#									#
+# Data Handler Specific key/value parameters				#
+#									#
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Defines the cache directory for BES servers serving HDF4 data         #
+#-----------------------------------------------------------------------#
+HDF4.CacheDir=/tmp
 

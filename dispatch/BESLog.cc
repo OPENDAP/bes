@@ -67,7 +67,7 @@ BESLog::BESLog()
 {
     _suspended = 0 ;
     bool found = false ;
-    string log_name = TheBESKeys::TheKeys()->get_key( "OPeNDAP.LogName", found ) ;
+    string log_name = TheBESKeys::TheKeys()->get_key( "BES.LogName", found ) ;
     if( log_name=="" )
     {
 	string err = (string)"OPeNDAP Fatal: unable to determine log file name."
@@ -93,7 +93,7 @@ BESLog::BESLog()
 	}
 	*/
     }
-    string verbose = TheBESKeys::TheKeys()->get_key( "OPeNDAP.LogVerbose", found ) ;
+    string verbose = TheBESKeys::TheKeys()->get_key( "BES.LogVerbose", found ) ;
     if( verbose == "YES" || verbose == "Yes" || verbose == "yes" )
     {
 	_verbose = true ;

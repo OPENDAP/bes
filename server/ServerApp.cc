@@ -199,7 +199,7 @@ ServerApp::initialize( int argc, char **argv )
     string key ;
     if( !_gotPort )
     {
-	key = "OPeNDAP.ServerPort" ;
+	key = "BES.ServerPort" ;
 	string sPort = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	_portVal = atoi( sPort.c_str() ) ;
 	if( !found || _portVal == 0 )
@@ -216,7 +216,7 @@ ServerApp::initialize( int argc, char **argv )
     found = false ;
     if( _unixSocket == "" )
     {
-	key = "OPeNDAP.ServerUnixSocket" ;
+	key = "BES.ServerUnixSocket" ;
 	_unixSocket = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( !found || _unixSocket == "" )
 	{
@@ -232,7 +232,7 @@ ServerApp::initialize( int argc, char **argv )
     found = false ;
     if( _secure == false )
     {
-	key = "OPeNDAP.ServerSecure" ;
+	key = "BES.ServerSecure" ;
 	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
 	{

@@ -75,7 +75,7 @@ using std::ifstream ;
 BESContainerStorageFile::BESContainerStorageFile( const string &n )
     : BESContainerStorage( n )
 {
-    string key = "OPeNDAP.Container.Persistence.File." + n ;
+    string key = "BES.Container.Persistence.File." + n ;
     bool found = false ;
     string my_file = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( my_file == "" )

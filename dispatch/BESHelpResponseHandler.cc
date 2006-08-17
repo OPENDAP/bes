@@ -80,7 +80,7 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = HELP_RESPONSE_STR ;
 
     info->begin_tag( "BES" ) ;
-    info->add_data_from_file( "OPeNDAP.Help", "OPeNDAP BES Help" ) ;
+    info->add_data_from_file( "BES.Help", "OPeNDAP BES Help" ) ;
     info->end_tag( "BES" ) ;
 
     // execute help for each registered request server

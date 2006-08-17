@@ -208,7 +208,7 @@ bool
 BESContainerStorageList::isnice()
 {
     bool ret = false ;
-    string key = "OPeNDAP.Container.Persistence" ;
+    string key = "BES.Container.Persistence" ;
     bool found = false ;
     string isnice = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( isnice == "Nice" || isnice == "nice" || isnice == "NICE" )

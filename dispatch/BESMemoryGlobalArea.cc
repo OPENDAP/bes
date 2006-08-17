@@ -52,7 +52,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	try
 	{
 	    bool found = false ;
-	    string key = "OPeNDAP.Memory.GlobalArea." ;
+	    string key = "BES.Memory.GlobalArea." ;
 	    string eps = TheBESKeys::TheKeys()->get_key( key + "EmergencyPoolSize", found ) ;
 	    string mhs = TheBESKeys::TheKeys()->get_key( key + "MaximunHeapSize", found ) ;
 	    string verbose = TheBESKeys::TheKeys()->get_key( key + "Verbose", found ) ;

@@ -80,7 +80,7 @@ BESInfoList::build_info( )
     bool found = false ;
     try
     {
-	info_type = TheBESKeys::TheKeys()->get_key( "OPeNDAP.Info.Type", found ) ;
+	info_type = TheBESKeys::TheKeys()->get_key( "BES.Info.Type", found ) ;
     }
     catch( ... )
     {
