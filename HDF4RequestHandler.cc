@@ -93,7 +93,7 @@ HDF4RequestHandler::hdf4_build_das( BESDataHandlerInterface &dhi )
 {
     DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
 
-    read_das( *das, _cachedir, dhi.container->get_real_name() ) ;
+    read_das( *das, _cachedir, dhi.container->access() ) ;
 
     return true ;
 }
@@ -107,7 +107,7 @@ HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
     dds->set_factory( factory ) ;
     ConstraintEvaluator ce;
 
-    read_dds( *dds, _cachedir, dhi.container->get_real_name() ) ;
+    read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
     dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
@@ -126,9 +126,9 @@ HDF4RequestHandler::hdf4_build_data( BESDataHandlerInterface &dhi )
     dds->set_factory( factory ) ;
     ConstraintEvaluator ce;
 
-    dds->filename( dhi.container->get_real_name() );
+    dds->filename( dhi.container->access() );
 
-    read_dds( *dds, _cachedir, dhi.container->get_real_name() ) ;
+    read_dds( *dds, _cachedir, dhi.container->access() ) ;
     register_funcs( ce ) ;
 
     dds->set_factory( NULL ) ;
