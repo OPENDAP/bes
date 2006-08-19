@@ -72,9 +72,9 @@ BESBasicTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
 
     DODSFilter df ;
     ConstraintEvaluator ce ;
-    df.set_dataset_name(dhi.container->get_real_name());
+    df.set_dataset_name( dds.filename() ) ;
     df.set_ce(dhi.data[POST_CONSTRAINT]);
-    df.send_data(dds, ce, stdout, "", false);
+    df.send_data( dds, ce, stdout, "", false ) ;
 
     fflush( stdout ) ;
 }

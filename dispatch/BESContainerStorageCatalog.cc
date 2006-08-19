@@ -109,9 +109,10 @@ BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
 	    }
 	    else
 	    {
-		string name = a_pair.substr( 0, col ) ;
-		string val = a_pair.substr( col+1, a_pair.length()-col ) ;
-		_match_list[name] = val ;
+		type_reg newval ;
+		newval.type = a_pair.substr( 0, col ) ;
+		newval.reg = a_pair.substr( col+1, a_pair.length()-col ) ;
+		_match_list.push_back( newval ) ;
 	    }
 	}
     }
@@ -147,13 +148,15 @@ BESContainerStorageCatalog::add_container( const string &s_name,
     {
 	BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
 	BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
-	for( ; i != ie; i++ )
+	bool done = false ;
+	for( ; i != ie && !done; i++ )
 	{
-	    string reg = (*i).second ;
-	    Regex reg_expr( reg.c_str() ) ;
+	    type_reg match = (*i) ;
+	    Regex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( r_name.c_str(), r_name.length() ) != -1 )
 	    {
-		new_type = (*i).first ;
+		new_type = match.type ;
+		done = true ;
 	    }
 	}
     }

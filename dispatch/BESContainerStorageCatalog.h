@@ -33,10 +33,10 @@
 #ifndef BESContainerStorageCatalog_h_
 #define BESContainerStorageCatalog_h_ 1
 
-#include <map>
+#include <list>
 #include <string>
 
-using std::map ;
+using std::list ;
 using std::string ;
 
 #include "BESContainerStorageVolatile.h"
@@ -77,8 +77,13 @@ using std::string ;
 class BESContainerStorageCatalog : public BESContainerStorageVolatile
 {
 private:
-    map< string, string > _match_list ;
-    typedef map< string, string >::const_iterator Match_list_citer ;
+    struct type_reg
+    {
+	string type ;
+	string reg ;
+    } ;
+    list< type_reg > _match_list ;
+    typedef list< type_reg >::const_iterator Match_list_citer ;
 
     string			_root_dir ;
 

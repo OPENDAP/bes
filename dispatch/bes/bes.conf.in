@@ -96,6 +96,26 @@ BES.Info.Buffered=no
 BES.Info.Type=xml
 
 #-----------------------------------------------------------------------#
+# Cache and compression configuration					#
+#									#
+# If a data file is compressed the BES will attempt to uncompress it.	#
+#									#
+# The way that it does this is by executing a shell script, as		#
+# specified by the BES.Compressed.Script. A default script is provided	#
+# for you.								#
+#									#
+# To determine if a data file is compressed it compares the name of the #
+# file to the regular expression in BES.Compressed.Extensions. If none	#
+# is specified, the default is ".*(\.gz|\.Z|\.bz2)$".			#
+#									#
+# BES will uncompress the data file into the directory specified by	#
+# BES.CacheDir, which defaults to /tmp.					#
+#-----------------------------------------------------------------------#
+BES.CacheDir=/tmp
+# BES.Compressed.Extensions=
+BES.Compressed.Script=@prefix@/bin/bes-uncompress.sh
+
+#-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#
 # log an error, strict means throw an exception
 #-----------------------------------------------------------------------#

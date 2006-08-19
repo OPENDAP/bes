@@ -29,6 +29,8 @@ pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
 nobase_sysconf_DATA = bes/bes_help.html bes/bes_help.txt bes/bes.conf
 
+bin_SCRIPTS = bes-uncompress.sh
+
 EXTRA_DIST = bes/bes_help.html bes/bes_help.txt bes/bes.conf
 
 ##############################################################################
