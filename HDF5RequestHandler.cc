@@ -68,7 +68,7 @@ HDF5RequestHandler::~HDF5RequestHandler()
 bool
 HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
 {
-    string filename = dhi.container->get_real_name() ;
+    string filename = dhi.container->access() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
@@ -88,7 +88,7 @@ HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
 bool
 HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
 {
-    string filename = dhi.container->get_real_name() ;
+    string filename = dhi.container->access() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
@@ -116,7 +116,7 @@ HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
 bool
 HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
 {
-    string filename = dhi.container->get_real_name() ;
+    string filename = dhi.container->access() ;
     hid_t file1 = get_fileid( filename.c_str() ) ;
     if( file1 < 0 )
     {
