@@ -42,22 +42,21 @@ using std::endl ;
 #include "BESCatalogList.h"
 #include "BESLog.h"
 
-#define HDF5_NAME "hdf5"
 #define HDF5_CATALOG "catalog"
 
 void
-HDF5Module::initialize()
+HDF5Module::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing HDF5:" << endl ;
 
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << HDF5_NAME << " request handler" 
+	(*BESLog::TheLog()) << "    adding " << modname << " request handler" 
 		      << endl ;
-    BESRequestHandlerList::TheList()->add_handler( HDF5_NAME, new HDF5RequestHandler( HDF5_NAME ) ) ;
+    BESRequestHandlerList::TheList()->add_handler( modname, new HDF5RequestHandler( modname ) ) ;
 
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << HDF5_NAME << " catalog" 
+	(*BESLog::TheLog()) << "    adding " << HDF5_CATALOG << " catalog" 
 		      << endl ;
     BESCatalogList::TheCatalogList()->add_catalog( new BESCatalogDirectory( HDF5_CATALOG ) ) ;
 
@@ -68,11 +67,11 @@ HDF5Module::initialize()
 }
 
 void
-HDF5Module::terminate()
+HDF5Module::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing HDF5 Handlers" << endl;
-    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( HDF5_NAME ) ;
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
     if( BESLog::TheLog()->is_verbose() )

@@ -39,8 +39,8 @@ class HDF5Module : public BESAbstractModule
 public:
     				HDF5Module() {}
     virtual		    	~HDF5Module() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
 } ;
 
 #endif // A_HDF5Module_H
