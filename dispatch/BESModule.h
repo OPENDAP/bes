@@ -39,8 +39,8 @@ class BESModule : public BESAbstractModule
 public:
     				BESModule() {}
     virtual		    	~BESModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
 } ;
 
 #endif // A_BESModule_H

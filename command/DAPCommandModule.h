@@ -40,8 +40,8 @@ class DAPCommandModule : public BESAbstractModule
 public:
     				DAPCommandModule() {}
     virtual		    	~DAPCommandModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
 } ;
 
 #endif // A_DAPCommandModule_H

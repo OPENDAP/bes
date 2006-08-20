@@ -54,7 +54,7 @@ using std::cout ;
 
 
 void
-DAPCommandModule::initialize()
+DAPCommandModule::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing DAP Commands" << endl;
@@ -131,7 +131,7 @@ DAPCommandModule::initialize()
 }
 
 void
-DAPCommandModule::terminate()
+DAPCommandModule::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing DAP Commands" << endl;

@@ -61,7 +61,7 @@ using std::endl ;
 #include "BESDefinitionStorageVolatile.h"
 
 void
-BESModule::initialize()
+BESModule::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing OPeNDAP modules:" << endl;
@@ -129,7 +129,7 @@ BESModule::initialize()
 }
 
 void
-BESModule::terminate()
+BESModule::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing OPeNDAP modules" << endl;

@@ -48,14 +48,14 @@ using std::endl ;
 #include "BESLog.h"
 
 void
-TestModule::initialize()
+TestModule::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing Test Module" << endl;
 
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << "test" << " request handler" << endl ;
-    BESRequestHandlerList::TheList()->add_handler( "test", new TestRequestHandler( "test" ) ) ;
+	(*BESLog::TheLog()) << "    adding " << modname << " request handler" << endl ;
+    BESRequestHandlerList::TheList()->add_handler( modname, new TestRequestHandler( modname ) ) ;
 
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << TEST_SIG << " response handler" << endl;
@@ -86,13 +86,13 @@ TestModule::initialize()
 }
 
 void
-TestModule::terminate()
+TestModule::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Cleaing up Test Module" << endl;
 
     BESRequestHandler *rh =
-	BESRequestHandlerList::TheList()->remove_handler( "test" ) ;
+	BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
     BESCommand *cmd = BESCommand::rem_command( TEST_RESPONSE ) ;

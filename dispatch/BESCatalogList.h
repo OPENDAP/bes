@@ -33,10 +33,10 @@
 #ifndef BESCatalogList_h_
 #define BESCatalogList_h_ 1
 
-#include <list>
+#include <map>
 #include <string>
 
-using std::list ;
+using std::map ;
 using std::string ;
 
 class BESCatalog ;
@@ -45,14 +45,17 @@ class BESInfo ;
 class BESCatalogList
 {
 private:
-    list<BESCatalog *>	_catalogs ;
+    map<string, BESCatalog *>	_catalogs ;
     static BESCatalogList *	_instance ;
 public:
-    typedef list<BESCatalog *>::iterator catalog_iterator ;
+    typedef map<string,BESCatalog *>::iterator catalog_iter ;
+    typedef map<string,BESCatalog *>::const_iterator catalog_citer ;
 
     				BESCatalogList() {}
     virtual			~BESCatalogList() ;
-    virtual void		add_catalog( BESCatalog *catalog ) ;
+    virtual bool		add_catalog( BESCatalog *catalog ) ;
+    virtual bool		rem_catalog( const string &catalog_name ) ;
+    virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) ;

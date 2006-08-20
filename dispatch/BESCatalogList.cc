@@ -40,19 +40,52 @@ BESCatalogList *BESCatalogList::_instance = 0 ;
 
 BESCatalogList::~BESCatalogList()
 {
-    catalog_iterator i = _catalogs.begin() ;
-    catalog_iterator e = _catalogs.end() ;
+    catalog_iter i = _catalogs.begin() ;
+    catalog_iter e = _catalogs.end() ;
     for( ; i != e; i++ )
     {
-	BESCatalog *catalog = (*i) ;
+	BESCatalog *catalog = (*i).second ;
 	if( catalog ) delete catalog ;
     }
 }
 
-void
+bool
 BESCatalogList::add_catalog( BESCatalog *catalog )
 {
-    _catalogs.push_back( catalog ) ;
+    bool stat = false ;
+    if( find_catalog( catalog->get_catalog_name() ) == 0 )
+    {
+	_catalogs[catalog->get_catalog_name()] = catalog ;
+	stat = true ;
+    }
+    return stat ;
+}
+
+bool
+BESCatalogList::rem_catalog( const string &catalog_name )
+{
+    BESCatalog *ret = 0 ;
+    BESCatalogList::catalog_iter i ;
+    i = _catalogs.find( catalog_name ) ;
+    if( i != _catalogs.end() )
+    {
+	ret = (*i).second;
+	_catalogs.erase( i ) ;
+    }
+    return ret ;
+}
+
+BESCatalog *
+BESCatalogList::find_catalog( const string &catalog_name )
+{
+    BESCatalog *ret = 0 ;
+    BESCatalogList::catalog_citer i ;
+    i = _catalogs.find( catalog_name ) ;
+    if( i != _catalogs.end() )
+    {
+	ret = (*i).second;
+    }
+    return ret ;
 }
 
 void
@@ -60,12 +93,12 @@ BESCatalogList::show_catalog( const string &container,
 			   const string &coi,
 			   BESInfo *info )
 {
-    catalog_iterator i = _catalogs.begin() ;
-    catalog_iterator e = _catalogs.end() ;
+    catalog_citer i = _catalogs.begin() ;
+    catalog_citer e = _catalogs.end() ;
     bool done = false ;
     for( ; i != e && done == false; i++ )
     {
-	BESCatalog *catalog = (*i) ;
+	BESCatalog *catalog = (*i).second ;
 	done = catalog->show_catalog( container, coi, info ) ;
     }
     if( done == false )

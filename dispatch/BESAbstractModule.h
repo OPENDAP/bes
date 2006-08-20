@@ -33,13 +33,17 @@
 #ifndef A_BESAbstractModule_H
 #define A_BESAbstractModule_H 1
 
+#include <string>
+
+using std::string ;
+
 class BESAbstractModule
 {
 public:
     				BESAbstractModule() {}
     virtual			~BESAbstractModule() {}
-    virtual void		initialize() = 0 ;
-    virtual void		terminate() = 0 ;
+    virtual void		initialize( const string &modname ) = 0 ;
+    virtual void		terminate( const string &modname ) = 0 ;
 } ;
 
 #endif // A_BESAbstractModule_H

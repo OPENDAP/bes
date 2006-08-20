@@ -40,8 +40,8 @@ class TestModule : public BESAbstractModule
 public:
     				TestModule() {}
     virtual		    	~TestModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
 } ;
 
 #endif // A_TestModule_H

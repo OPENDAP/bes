@@ -148,8 +148,9 @@ BESModuleApp::loadModules()
 	{
 	    try
 	    {
-		BESAbstractModule *o = _moduleFactory.get( (*i).first ) ;
-		o->initialize() ;
+		string modname = (*i).first ;
+		BESAbstractModule *o = _moduleFactory.get( modname ) ;
+		o->initialize( modname ) ;
 	    }
 	    catch( BESException &e )
 	    {
@@ -189,8 +190,9 @@ terminate( int sig )
     {
 	for( i = _module_list.begin(); i != e; i++ )
 	{
-	    BESAbstractModule *o = _moduleFactory.get( (*i).first ) ;
-	    o->terminate() ;
+	    string modname = (*i).first ;
+	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
+	    o->terminate( modname ) ;
 	}
     }
     catch( BESException &e )

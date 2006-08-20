@@ -43,11 +43,17 @@ class BESInfo ;
  * show nodes and leaves in a catalog.
  */
 class BESCatalog {
+private:
+    string			_catalog_name ;
+
+    				BESCatalog() {}
 protected:
-				BESCatalog( ) {} ;
+				BESCatalog( const string &catalog_name )
+				    : _catalog_name( catalog_name ) {} ;
 public:
     virtual			~BESCatalog( void ) {} ;
 
+    virtual string		get_catalog_name() { return _catalog_name ; }
     virtual bool		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) = 0 ;

@@ -48,6 +48,7 @@ using std::endl ;
 #include "GNURegex.h"
 
 BESCatalogDirectory::BESCatalogDirectory( const string &name )
+    : BESCatalog( name )
 {
     bool found = false ;
     string key = (string)"BES.Catalog." + name + ".RootDirectory" ;
