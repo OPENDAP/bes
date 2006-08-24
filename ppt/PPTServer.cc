@@ -31,13 +31,9 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <string>
-#include <iostream>
 #include <sstream>
 
 using std::string ;
-using std::cout ;
-using std::endl ;
-using std::flush ;
 using std::ostringstream ;
 
 #include "PPTServer.h"
@@ -102,14 +98,12 @@ PPTServer::closeConnection()
 void
 PPTServer::welcomeClient()
 {
-    cout << "Incoming connection, initiating handshake ... " << flush ;
     char *inBuff = new char[4096] ;
     int bytesRead = _mySock->receive( inBuff, 4096 ) ;
     string status( inBuff, bytesRead ) ;
     delete [] inBuff ;
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
     {
-	cout << "FAILED" << endl ;
 	string err( "PPT Can not negotiate, " ) ;
 	err += " client started the connection with " + status ;
 	throw PPTException( err, __FILE__, __LINE__ ) ;
@@ -119,12 +113,10 @@ PPTServer::welcomeClient()
     {
 	int len = PPTProtocol::PPTSERVER_CONNECTION_OK.length() ;
 	_mySock->send( PPTProtocol::PPTSERVER_CONNECTION_OK, 0, len ) ;
-	cout << "OK" << endl ;
     }
     else
     {
 	authenticateClient() ;
-	cout << "OK" << endl ;
     }
 }
 
