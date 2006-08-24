@@ -45,6 +45,7 @@ class BESResponseHandler ;
 class BESInfo ;
 
 #include "BESContainer.h"
+#include "ConstraintEvaluator.h"
 
 /** @brief Structure storing information used by OpenDAP to handle the request
 
@@ -105,6 +106,10 @@ typedef struct _BESDataHandlerInterface
     map<string, string> data ;
     const map<string, string> &data_c() const { return data ; }
     typedef map<string, string>::const_iterator data_citer ;
+
+    /** @brief constraint evaulator
+     */
+    ConstraintEvaluator ce ;
 
     /** @brief error information object
      */

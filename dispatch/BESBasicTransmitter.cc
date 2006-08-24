@@ -33,7 +33,6 @@
 #include <DAS.h>
 #include <DDS.h>
 #include <DODSFilter.h>
-#include <ConstraintEvaluator.h>
 
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
@@ -57,10 +56,9 @@ BESBasicTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
     dhi.first_container();
 
     DODSFilter df ;
-    ConstraintEvaluator ce ;
     df.set_dataset_name( dhi.container->get_real_name() ) ;
     df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    df.send_dds( stdout, dds, ce, true, "", false ) ;
+    df.send_dds( stdout, dds, dhi.ce, true, "", false ) ;
 
     fflush( stdout ) ;
 }
@@ -71,10 +69,9 @@ BESBasicTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
     dhi.first_container() ;
 
     DODSFilter df ;
-    ConstraintEvaluator ce ;
     df.set_dataset_name( dds.filename() ) ;
     df.set_ce(dhi.data[POST_CONSTRAINT]);
-    df.send_data( dds, ce, stdout, "", false ) ;
+    df.send_data( dds, dhi.ce, stdout, "", false ) ;
 
     fflush( stdout ) ;
 }
@@ -85,10 +82,9 @@ BESBasicTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
     dhi.first_container() ;
 
     DODSFilter df ;
-    ConstraintEvaluator ce ;
     df.set_dataset_name( dhi.container->get_real_name() ) ;
     df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    df.send_ddx( dds, ce, stdout, false ) ;
+    df.send_ddx( dds, dhi.ce, stdout, false ) ;
 
     fflush( stdout ) ;
 }

@@ -32,7 +32,6 @@
 
 #include "BESFilterTransmitter.h"
 #include "DODSFilter.h"
-#include "ConstraintEvaluator.h"
 #include "BESInfo.h"
 #include "BESDataNames.h"
 #include "cgi_util.h"
@@ -46,25 +45,22 @@ BESFilterTransmitter::send_das( DAS &das, BESDataHandlerInterface & )
 void
 BESFilterTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
 {
-    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_dds( stdout, dds, ce, true ) ;
+    _df->send_dds( stdout, dds, dhi.ce, true ) ;
 }
 
 void
 BESFilterTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
 {
-    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_data( dds, ce, stdout ) ;
+    _df->send_data( dds, dhi.ce, stdout ) ;
 }
 
 void
 BESFilterTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
 {
-    ConstraintEvaluator ce ;
     _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    _df->send_ddx( dds, ce, stdout ) ;
+    _df->send_ddx( dds, dhi.ce, stdout ) ;
 }
 
 void
