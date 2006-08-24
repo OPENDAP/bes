@@ -159,11 +159,6 @@ run(void)
 int BESBaseApp::
 terminate( int sig )
 {
-    if( sig )
-    {
-	cerr << "BESBaseApp::terminating with signal " << sig << endl ;
-    }
-
     BESGlobalIQ::BESGlobalQuit() ;
     _isInitialized = false ;
     return sig ;

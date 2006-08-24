@@ -120,11 +120,8 @@ main(int argc, char *argv[])
     while( restart )
     {
 	sleep( 5 ) ;
-	cout << NameProgram << ": attempting to restart the server ... "
-	     << endl ;
 	restart = mount_server( arguments ) ;
     }
-    cout << NameProgram << ": daemon normal shutdown" << endl ;
     delete [] arguments; arguments = 0 ;
 
     if( !access( file_for_listener.c_str(), F_OK ) )
@@ -164,8 +161,6 @@ mount_server(char* *arguments)
     }
     else if( pid == 0 ) /* child process */
     {
-	cout << NameProgram << ": attempting to mount listener "
-	     << server_name << "..." << endl ;
 	execvp( arguments[0], arguments ) ;
 	cerr << NameProgram
 	     << ": mounting listener, subprocess failed: " ;
@@ -275,8 +270,6 @@ store_listener_id( int pid )
     {
 	f << "PID: " << pid << " UID: " << getuid() << endl ;
 	f.close() ;
-	cout << NameProgram << ": listener id is at " << file_for_listener
-	     << "..." << endl ;
     }
 }
 
@@ -322,18 +315,14 @@ load_names()
     file_for_listener += "/run/" ;
     file_for_listener += OPENDAP_SERVER_PID ;
 
-    cout << NameProgram << ": checking for existance of listener "
-	 << server_name << "... " << flush ;
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
-	cout << "FAILED" << endl ;
 	cerr << NameProgram
 	     << ": can not start. Please set environment variable "
 	    << OPENDAP_SERVER_ROOT << " to the location of your listener "
 	    << server_name << endl ;
 	return false ;
     }
-    cout << " OK" << endl ;
     return true ;
 }
 

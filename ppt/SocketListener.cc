@@ -30,17 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <iostream>
 #include <ctype.h>
-
 #include <errno.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
-
-using std::cout ;
-using std::endl ;
-using std::flush ;
 
 #include "SocketListener.h"
 #include "SocketException.h"
@@ -102,8 +95,6 @@ SocketListener::accept()
 
     for(;;)
     {
-	cout << "accepting connections ... " << flush ;
-
 	timeout.tv_sec = 120 ;
 	timeout.tv_usec = 0 ;
 
@@ -145,7 +136,6 @@ SocketListener::accept()
 		msgsock = ::accept( s, (struct sockaddr *)&from,
 		                    &len_from ) ;
 #endif
-		cout << "ACCEPTED" << endl ;
 		return s_ptr->newSocket( msgsock, from ) ;
 	    }
 	}

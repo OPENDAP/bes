@@ -38,7 +38,6 @@
 using std::cout ;
 using std::cerr ;
 using std::endl ;
-using std::flush ;
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
@@ -69,7 +68,6 @@ ServerApp::ServerApp()
       _ps( 0 )
 {
     _mypid = getpid() ;
-    cout << "**** my pid = " << _mypid << endl ;
 }
 
 ServerApp::~ServerApp()
@@ -81,8 +79,6 @@ ServerApp::signalTerminate( int sig )
 {
     if( sig == SIGTERM )
     {
-	cout << BESApp::TheApplication()->appName() << " : " << getpid()
-	     << ": got terminate signal, exiting!" << endl ;
 	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
@@ -93,8 +89,6 @@ ServerApp::signalInterrupt( int sig )
 {
     if( sig == SIGINT )
     {
-	cout << BESApp::TheApplication()->appName() << " : " << getpid()
-	     << ": got interrupt signal, exiting!" << endl ;
 	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
@@ -105,8 +99,6 @@ ServerApp::signalRestart( int sig )
 {
     if( sig == SIGUSR1 )
     {
-	cout << BESApp::TheApplication()->appName() << " : " << getpid()
-	     << ": got restart signal." << endl ;
 	BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_RESTART ) ;
     }
@@ -136,32 +128,23 @@ ServerApp::showVersion()
 int
 ServerApp::initialize( int argc, char **argv )
 {
-    cout << "Trying to register SIGTERM ... " << flush ;
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
 	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    else
-	cout << "OK" << endl ;
 
-    cout << "Trying to register SIGINT ... " << flush ;
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    else
-	cout << "OK" << endl ;
 
-    cout << "Trying to register SIGUSR1 ... " << flush ;
     if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
     {
 	cerr << "FAILED: Can not register SIGUSR1 signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    else
-	cout << "OK" << endl ;
 
     int c = 0 ;
 
@@ -187,7 +170,6 @@ ServerApp::initialize( int argc, char **argv )
 		break ;
 	    case 's':
 		_secure = true ;
-		cout << "**** server is secure" << endl ;
 		break ;
 	    case '?':
 		showUsage() ;
@@ -236,7 +218,6 @@ ServerApp::initialize( int argc, char **argv )
 	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
 	{
-	    cout << "**** server is secure" << endl ;
 	    _secure = true ;
 	}
     }

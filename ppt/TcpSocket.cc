@@ -38,12 +38,6 @@
 #include <netdb.h>
 #include <errno.h>
 
-#include <iostream>
-
-using std::cout ;
-using std::endl ;
-using std::flush ;
-
 #include "TcpSocket.h"
 #include "SocketConfig.h"
 #include "SocketException.h"
@@ -133,11 +127,8 @@ TcpSocket::connect()
     int descript = socket( AF_INET, SOCK_STREAM, pProtoEnt->p_proto ) ;
     if( descript != -1 )
     {
-	cout << "Trying to connect to socket ... " << flush ;
 	if( ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) ) != 1 )
 	{
-	    cout << "OK: connected to " << _host
-	         << " at " << inet_ntoa( sin.sin_addr ) << endl ;
 	    _socket = descript ;
 	    _connected = true ;
 	}
@@ -171,20 +162,14 @@ TcpSocket::listen()
 	throw SocketException( error, __FILE__, __LINE__ ) ;
     }
     server.sin_port = htons( _portVal ) ;
-    cout << "Trying to get TCP socket ... " << flush ;
     _socket = socket( AF_INET, SOCK_STREAM, 0 ) ;
     if( _socket != -1 )
     {
-	cout << "OK" << endl ;
-	cout << "Trying to set TCP socket properties ... " << flush ;
 	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
 	                 (char*)&on, sizeof( on ) ) )
 	{
-	    cout << "OK" << endl ;
-	    cout << "Trying to bind TCP socket ... " << flush ;
 	    if( bind( _socket, (struct sockaddr*)&server, sizeof server) != -1 )
 	    {
-		cout << "OK" << endl ;
 		int length = sizeof( server ) ;
 #ifdef _GETSOCKNAME_USES_SOCKLEN_T	
 		if( getsockname( _socket, (struct sockaddr *)&server,
@@ -200,26 +185,12 @@ TcpSocket::listen()
 			error += " " + (string)error_info ;
 		    throw SocketException( error, __FILE__, __LINE__ ) ;
 		}
-		cout << "Trying to listen in TCP socket ... " << flush ;
 		if( ::listen( _socket, 5 ) == 0 )
 		{
 		    _listening = true ;
-		    cout << "OK listening: port " ;
-#ifdef SOCKET_USE_LTOA
-		    char tempbuf[50] ;
-		    ltoa( ntohs( server.sin_port ), tempbuf, 10 ) ;
-		    cout << tempbuf << endl ;
-#else
-		    // seems that server.sin_port is uint16_t sin_port on
-		    // Linux and may be alpha too which in Linux at least is
-		    // defined as "typedef unsigned short int __uint16_t",
-		    // let's cast it to int and writeout...
-		    cout << (int)ntohs( server.sin_port ) << endl ;
-#endif
 		}
 		else
 		{
-		    cout << "FAILED" << endl ;
 		    string error( "could not listen TCP socket" ) ;
 		    const char* error_info = strerror( errno ) ;
 		    if( error_info )
@@ -229,7 +200,6 @@ TcpSocket::listen()
 	    }
 	    else
 	    {
-		cout << "FAILED" << endl ;
 		string error( "could not bind TCP socket" ) ;
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
@@ -239,8 +209,7 @@ TcpSocket::listen()
 	}
 	else
 	{
-	    cout << "FAILED" << endl ;
-	    string error( "cout not set SO_REUSEADDR on TCP socket" ) ;
+	    string error( "could not set SO_REUSEADDR on TCP socket" ) ;
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
@@ -249,8 +218,7 @@ TcpSocket::listen()
     }
     else
     {
-	cout << "FAILED" << endl ;
-	string error( "cout not create socket" ) ;
+	string error( "could not create socket" ) ;
 	const char *error_info = strerror( errno ) ;
 	if( error_info )
 	    error += " " + (string)error_info ;
@@ -258,4 +226,3 @@ TcpSocket::listen()
     }
 }
 
-// $Log: TcpSocket.cc,v $

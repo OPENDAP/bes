@@ -6,12 +6,12 @@ then
     location=/usr/local
 fi
 
-echo "BES install directory: ${location}"
 if [ ! -f ${location}/sbin/besd ]
 then
     echo "BES does not appear to be installed in ${location}"
     exit 1
 fi
+echo "BES install directory: ${location}"
 
 what=$1
 shift
@@ -20,44 +20,50 @@ case $what in
 stop)
     if [ ! -f "${location}"/run/bes.pid ]
     then
-	echo "BES Listener is not currently running..."
+	echo "The BES daemon is not currently running"
 	exit 1
     fi
-    echo "Shutting down bes listener..."
+    echo "Shutting down the BES daemon"
     (cat "$location"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     ;;
 start)
     if [ -f "${location}"/run/bes.pid ]
     then
-	echo "BES is already running..."
+	echo "The BES daemon is already running"
 	cat "${location}"/run/bes.pid
 	exit 1
     fi
+    echo "Starting the BES daemon"
     "${location}"/sbin/besd $*
+    sleep 5
+    cat "${location}"/run/bes.pid
     ;;
 restart)
     if [ ! -f "${location}"/run/bes.pid ]
     then
-	echo "BES Listener is not currently running"
+	echo "The BES daemon is not currently running"
 	exit 1
     fi
-    echo "Shutting down BES listener..."
+    echo "Shutting down the BES daemon"
     (cat "${location}"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     sleep 5
     if [ -f ${location}/run/bes.pid ]
     then
-	echo "Unable to stop the BES listener"
+	echo "Unable to stop the BES daemon"
 	exit 1
     fi
+    echo "Starting the BES daemon"
     "${location}"/sbin/besd $*
+    sleep 5
+    cat "${location}"/run/bes.pid
     ;;
 status)
     if [ ! -f "${location}"/run/bes.pid ]
     then
-	echo "BES Listener is not currently running"
+	echo "The BES daemon is not currently running"
 	exit 1
     fi
-    echo "BES Listener is currently running:"
+    echo "The BES daemon is currently running"
     cat "${location}"/run/bes.pid
     ;;
 config)
@@ -67,7 +73,7 @@ config)
 	conf=${location}/etc/bes/bes.conf
 	if [ ! -f "${conf}" ]
 	then
-	    echo "BES configuration file cannot be located at ${conf}"
+	    echo "The BES configuration file cannot be located at ${conf}"
 	    exit 1
 	fi
     fi

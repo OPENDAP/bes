@@ -36,12 +36,6 @@
 #include <sys/types.h>
 #include <errno.h>
 
-#include <iostream>
-
-using std::cout ;
-using std::endl ;
-using std::flush ;
-
 #include "UnixSocket.h"
 #include "SocketException.h"
 #include "SocketUtilities.h"
@@ -69,7 +63,6 @@ UnixSocket::connect()
     _tempSocket += ".unixSocket" ;
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
-    cout << "creating client unix socket@" << _tempSocket << endl ;
     if( _tempSocket.length() > 108 )
     {
 	string msg = "path to temporary unix socket " ;
@@ -92,19 +85,15 @@ UnixSocket::connect()
 	strcpy( client_addr.sun_path, _tempSocket.c_str() ) ;
 	client_addr.sun_family = AF_UNIX ;
 
-	cout << "Trying to bind to socket ... " << flush ;
 	int clen = sizeof( client_addr.sun_family ) ;
 	// Added +1. jhrg 5/26/06
 	clen += strlen( client_addr.sun_path )  + 1;
 	if( bind( descript, (struct sockaddr*)&client_addr, clen + 1) != -1 )
 	{
-	    cout << "OK" << endl ;
-	    cout << "Trying to connect to sever ... " << flush ;
 	    int slen = sizeof( server_addr.sun_family ) ;
 	    slen += strlen( server_addr.sun_path ) ;
 	    if( ::connect( descript, (struct sockaddr*)&server_addr, slen ) != -1)
 	    {
-		cout << "OK" << endl ;
 		_socket = descript ;
 		_connected = true ;
 	    }
@@ -161,11 +150,9 @@ UnixSocket::listen()
 
     int on = 1 ;
     static struct sockaddr_un server_add ;
-    cout << "Trying to get Unix socket ... " << flush ;
     _socket = socket( AF_UNIX,SOCK_STREAM, 0 ) ;
     if( _socket >= 0 )
     {
-	cout << "OK" << endl ;
 	server_add.sun_family = AF_UNIX;
 	// Changed the call below to strncpy; sockaddr_un.sun_path is a char[104]
 	// on OS/X. jhrg 5/26/06
@@ -173,26 +160,18 @@ UnixSocket::listen()
 	server_add.sun_path[103] = '\0';
 
 	unlink( _unixSocket.c_str() ) ;
-	cout << "Trying to set Unix socket properties ... " << flush ;
 	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
 	                 (char*)&on, sizeof( on ) ) )
 	{
-	    cout << "OK" << endl ;
-	    cout << "Trying to bind Unix socket ... " << flush ;
 	    // Added a +1 to the size computation. jhrg 5/26/05
 	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
 	    {
-		string is_ok = (string)"OK binding to " + _unixSocket ;
-		cout << is_ok.c_str() << endl ;
-		cout << "Trying to listen to Unix socket ... " << flush ;
 		if( ::listen( _socket, 5 ) == 0 )
 		{
 		    _listening = true ;
-		    cout << "OK" << endl ;
 		}
 		else
 		{
-		    cout << "FAILED" << endl ;
 		    string error( "could not listen Unix socket" ) ;
 		    const char* error_info = strerror( errno ) ;
 		    if( error_info )
@@ -202,7 +181,6 @@ UnixSocket::listen()
 	    }
 	    else
 	    {
-		cout << "FAILED" << endl ;
 		string error( "could not bind Unix socket" ) ;
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
@@ -212,7 +190,6 @@ UnixSocket::listen()
 	}
 	else
 	{
-	    cout << "FAILED" << endl ;
 	    string error( "could not set SO_REUSEADDR on Unix socket" ) ;
 	    const char *error_info = strerror( errno ) ;
 	    if( error_info )
@@ -222,7 +199,6 @@ UnixSocket::listen()
     }
     else
     {
-	cout << "FAILED" << endl ;
 	string error( "could not get Unix socket" ) ;
 	const char *error_info = strerror( errno ) ;
 	if( error_info )
