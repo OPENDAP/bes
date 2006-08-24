@@ -109,6 +109,7 @@ HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
 
     read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
+    register_funcs( dhi.ce ) ;
     dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
     dds->set_factory( NULL ) ;
@@ -129,7 +130,9 @@ HDF4RequestHandler::hdf4_build_data( BESDataHandlerInterface &dhi )
     dds->filename( dhi.container->access() );
 
     read_dds( *dds, _cachedir, dhi.container->access() ) ;
-    register_funcs( ce ) ;
+
+    register_funcs( dhi.ce ) ;
+    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
     dds->set_factory( NULL ) ;
     delete factory ;
