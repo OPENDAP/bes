@@ -36,7 +36,12 @@ start)
     echo "Starting the BES daemon"
     "${location}"/sbin/besd $*
     sleep 5
-    cat "${location}"/run/bes.pid
+    if [ -f "${location}"/run/bes.pid ]
+    then
+	cat "${location}"/run/bes.pid
+    else
+	echo "The BES daemon did not appear to start"
+    fi
     ;;
 restart)
     if [ ! -f "${location}"/run/bes.pid ]
@@ -55,7 +60,12 @@ restart)
     echo "Starting the BES daemon"
     "${location}"/sbin/besd $*
     sleep 5
-    cat "${location}"/run/bes.pid
+    if [ -f "${location}"/run/bes.pid ]
+    then
+	cat "${location}"/run/bes.pid
+    else
+	echo "The BES daemon did not appear to start"
+    fi
     ;;
 status)
     if [ ! -f "${location}"/run/bes.pid ]
