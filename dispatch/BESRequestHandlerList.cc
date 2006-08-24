@@ -197,7 +197,7 @@ BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
                    throw BESHandlerException( se, __FILE__, __LINE__ ) ;
                }
            } else {
-               string se = "The request handler \""
+               string se = "The data handler \""
                            + dhi.container->get_container_type()
                            + "\" does not exist" ;
                throw BESHandlerException( se, __FILE__, __LINE__ ) ;
@@ -277,7 +277,7 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
 		throw BESHandlerException( se, __FILE__, __LINE__ ) ;
 	    }
 	} else {
-	    string se = "The request handler \""
+	    string se = "The data handler \""
 			+ dhi.container->get_container_type()
 			+ "\" does not exist" ;
 	    throw BESHandlerException( se, __FILE__, __LINE__ ) ;
