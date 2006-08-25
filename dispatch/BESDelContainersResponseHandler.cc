@@ -97,7 +97,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 	{
 	    string line = (string)"Unable to delete containers from \""
 			  + dhi.data[STORE_NAME]
-			  + "\ container store" ;
+			  + "\" container store" ;
 	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
 	}
     }
