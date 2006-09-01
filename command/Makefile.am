@@ -17,6 +17,7 @@ pkglib_LTLIBRARIES = libdap_cmd_module.la
 
 libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
 libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
+libopendap_command_la_LIBADD = ../dispatch/libdispatch.la
 
 libdap_cmd_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_cmd_module_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)

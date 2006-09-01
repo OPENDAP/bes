@@ -36,6 +36,7 @@
 #include "cgi_util.h"
 #include "BESResponseNames.h"
 #include "BESRequestHandlerList.h"
+#include "BESDapTransmit.h"
 
 BESDDXResponseHandler::BESDDXResponseHandler( string name )
     : BESResponseHandler( name )
@@ -109,8 +110,7 @@ BESDDXResponseHandler::transmit( BESTransmitter *transmitter,
 {
     if( _response )
     {
-	DDS *dds = dynamic_cast<DDS *>(_response) ;
-	transmitter->send_ddx( *dds, dhi ) ;
+	transmitter->send_response( DDX_TRANSMITTER, _response, dhi ) ;
     }
 }
 

@@ -36,11 +36,11 @@ BES.LogVerbose=no
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
 # BES.modules=nc,hdf4,ff,cmd,dap
-# BES.module.nc=@prefix@/lib/bes/libnc_module.so
-# BES.module.hdf4=@prefix@/lib/bes/libhdf4_module.so
-# BES.module.ff=@prefix@/lib/bes/libff_module.so
-# BES.module.dap=@prefix@/lib/bes/libdap_module.so
-# BES.module.cmd=@prefix@/lib/bes/libdap_cmd_module.so
+# BES.module.nc=@pkglibdir@/libnc_module.so
+# BES.module.hdf4=@pkglibdir@/libhdf4_module.so
+# BES.module.ff=@pkglibdir@/libff_module.so
+# BES.module.dap=@pkglibdir@/libdap_module.so
+# BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
 
 BES.modules=<name>
 BES.module.<name>=<full path to shared library>
@@ -84,9 +84,9 @@ BES.ServerSecure=no
 #-----------------------------------------------------------------------#
 # help file locations, for text and html versions                       #
 #-----------------------------------------------------------------------#
-BES.Help.TXT=@prefix@/etc/bes/dispatch_help.txt
-BES.Help.HTTP=@prefix@/etc/bes/dispatch_help.html
-BES.Help.XML=@prefix@/etc/bes/dispatch_help.txt
+BES.Help.TXT=@pkgdatadir@/bes/dispatch_help.txt
+BES.Help.HTTP=@pkgdatadir@/dispatch_help.html
+BES.Help.XML=@pkgdatadir@/dispatch_help.txt
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
@@ -113,7 +113,7 @@ BES.Info.Type=xml
 #-----------------------------------------------------------------------#
 BES.CacheDir=/tmp
 # BES.Compressed.Extensions=
-BES.Compressed.Script=@prefix@/bin/bes-uncompress.sh
+BES.Compressed.Script=@bindir@/bes-uncompress.sh
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#

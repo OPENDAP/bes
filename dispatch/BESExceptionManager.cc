@@ -39,6 +39,7 @@
 #include "BESHandlerException.h"
 #include "BESIncorrectRequestException.h"
 #include "BESResponseException.h"
+#include "BESTransmitException.h"
 #include "BESAggregationException.h"
 #include "Error.h"
 
@@ -165,6 +166,13 @@ BESExceptionManager::handle_exception( BESException &e,
 	dhi.error_info->add_exception( "DataHandlerFailure", e ) ;
 	dhi.error_info->end_response() ;
 	return BES_DATA_HANDLER_FAILURE;
+    }
+    BESTransmitException *transex=dynamic_cast <BESTransmitException*>(&e);
+    if(transex)
+    {
+	dhi.error_info->add_exception( "TransmitProblem", e ) ;
+	dhi.error_info->end_response() ;
+	return BES_DATA_HANDLER_PROBLEM;
     }
     BESAggregationException *aanex=dynamic_cast <BESAggregationException*>(&e);
     if(aanex)

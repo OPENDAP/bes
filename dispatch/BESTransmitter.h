@@ -38,22 +38,39 @@
 using std::string ;
 
 #include "BESDataHandlerInterface.h"
+#include "DODSResponseObject.h"
 
 class DAS ;
 class DDS ;
 class BESInfo ;
 
+typedef void (*p_transmitter)( DODSResponseObject *obj, BESDataHandlerInterface &dhi ) ;
+
 class BESTransmitter
 {
+private:
+    map< string, p_transmitter >	_method_list ;
+    typedef map< string, p_transmitter >::const_iterator _method_citer ;
+    typedef map< string, p_transmitter >::iterator _method_iter ;
+
 public:
-    			BESTransmitter() {}
-    virtual		~BESTransmitter() {}
-    virtual void	send_das( DAS &das, BESDataHandlerInterface &dhi ) = 0 ;
-    virtual void	send_dds( DDS &dds, BESDataHandlerInterface &dhi ) = 0 ;
-    virtual void	send_data( DDS &dds, BESDataHandlerInterface &dhi ) = 0 ;
-    virtual void	send_ddx( DDS &dds, BESDataHandlerInterface &dhi ) = 0 ;
-    virtual void	send_text( BESInfo &info, BESDataHandlerInterface &dhi) = 0 ;
-    virtual void	send_html( BESInfo &info, BESDataHandlerInterface &dhi) = 0 ;
+    				BESTransmitter() {}
+    virtual			~BESTransmitter() {}
+
+    virtual bool		add_method( string method_name,
+					    p_transmitter trans_method ) ;
+    virtual bool		remove_method( string method_name ) ;
+    virtual p_transmitter	find_method( string method_name ) ;
+
+    virtual void		send_response( const string &method,
+    					       DODSResponseObject *obj,
+    					       BESDataHandlerInterface &dhi ) ;
+
+    virtual void		send_text( BESInfo &info,
+    					   BESDataHandlerInterface &dhi) = 0 ;
+    virtual void		send_html( BESInfo &info,
+    					   BESDataHandlerInterface &dhi) = 0 ;
 } ;
 
 #endif // A_BESTransmitter_h
+

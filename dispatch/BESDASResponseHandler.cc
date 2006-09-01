@@ -35,6 +35,7 @@
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "BESDapTransmit.h"
 
 BESDASResponseHandler::BESDASResponseHandler( string name )
     : BESResponseHandler( name )
@@ -88,8 +89,7 @@ BESDASResponseHandler::transmit( BESTransmitter *transmitter,
 {
     if( _response )
     {
-	DAS *das = dynamic_cast<DAS *>(_response) ;
-	transmitter->send_das( *das, dhi ) ;
+	transmitter->send_response( DAS_TRANSMITTER, _response, dhi ) ;
     }
 }
 

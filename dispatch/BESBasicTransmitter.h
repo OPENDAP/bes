@@ -41,12 +41,10 @@ public:
     			BESBasicTransmitter() {}
     virtual		~BESBasicTransmitter() {}
 
-    virtual void	send_das( DAS &das, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_dds( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_data( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_ddx( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_text( BESInfo &info, BESDataHandlerInterface &dhi) ;
-    virtual void	send_html( BESInfo &info, BESDataHandlerInterface &dhi) ;
+    virtual void	send_text( BESInfo &info,
+    				   BESDataHandlerInterface &dhi) ;
+    virtual void	send_html( BESInfo &info,
+    				   BESDataHandlerInterface &dhi) ;
 } ;
 
 #endif // A_BESBasicTransmitter_h

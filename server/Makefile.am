@@ -13,10 +13,9 @@ CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = test
-DIST_SUBDIRS = test
 
-sbin_PROGRAMS = bes besd
-sbin_SCRIPTS = besctl
+bin_PROGRAMS = bes besd
+dist_bin_SCRIPTS = besctl
 
 bes_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
 		ServerApp.h ServerExitConditions.h 
@@ -24,13 +23,11 @@ bes_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
 bes_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 besd_SOURCES = daemon.cc
+besd_CPPFLAGS = -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
 
 besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 SERVER_LIBS = -L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
 
-EXTRA_DIST = besctl
-
 install-data-local:
-	test -z "$(prefix)/run" || $(mkdir_p) "$(DESTDIR)$(prefix)/run"
-
+	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"

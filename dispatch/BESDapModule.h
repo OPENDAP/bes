@@ -1,10 +1,10 @@
-// BESTransmitterNames.h
+// BESDapModule.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Author: Patrick West <pwest@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,22 +28,20 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESTransmitterNames_H
-#define D_BESTransmitterNames_H 1
+#ifndef A_BESDapModule_H
+#define A_BESDapModule_H 1
 
-/** @brief macros representing the default transmitter objects
- *
- * These include
- * <pre>
- * basic
- * http
- * </pre>
- */
+#include "BESAbstractModule.h"
 
-#define BASIC_TRANSMITTER "basic"
-#define HTTP_TRANSMITTER "http"
+class BESDapModule : public BESAbstractModule
+{
+public:
+    				BESDapModule() {}
+    virtual		    	~BESDapModule() {}
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
+} ;
 
-#endif // E_BESTransmitterNames_H
+#endif // A_BESDapModule_H
 

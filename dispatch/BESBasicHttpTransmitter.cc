@@ -37,34 +37,6 @@
 #include "cgi_util.h"
 
 void
-BESBasicHttpTransmitter::send_das( DAS &das, BESDataHandlerInterface &dhi )
-{
-    set_mime_text( stdout, dods_das ) ;
-    BESBasicTransmitter::send_das( das, dhi ) ;
-}
-
-void
-BESBasicHttpTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    set_mime_text( stdout, dods_dds ) ;
-    BESBasicTransmitter::send_dds( dds, dhi ) ;
-}
-
-void
-BESBasicHttpTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    //set_mime_binary( stdout, dods_data ) ;
-    BESBasicTransmitter::send_data( dds, dhi ) ;
-}
-
-void
-BESBasicHttpTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    set_mime_text( stdout, dods_dds ) ;
-    BESBasicTransmitter::send_ddx( dds, dhi ) ;
-}
-
-void
 BESBasicHttpTransmitter::send_text( BESInfo &info,
                                      BESDataHandlerInterface &dhi )
 {

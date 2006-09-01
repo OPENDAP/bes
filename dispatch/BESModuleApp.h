@@ -33,10 +33,10 @@
 #ifndef B_BESModuleApp_H
 #define B_BESModuleApp_H
 
-#include <map>
+#include <list>
 #include <string>
 
-using std::map ;
+using std::list ;
 using std::string ;
 
 #include "BESBaseApp.h"
@@ -59,7 +59,12 @@ using std::string ;
 class BESModuleApp : public BESBaseApp {
 private:
     BESPluginFactory<BESAbstractModule> _moduleFactory ;
-    map< string, string > 	_module_list ;
+    typedef struct _bes_module
+    {
+	string _module_name ;
+	string _module_library ;
+    } bes_module ;
+    list< bes_module > 		_module_list ;
     int				loadModules( void ) ;
 public:
                                 BESModuleApp( void ) ;

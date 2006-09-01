@@ -30,64 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DAS.h>
-#include <DDS.h>
-#include <DODSFilter.h>
-
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
-#include "BESDataNames.h"
-
-void
-BESBasicTransmitter::send_das( DAS &das, BESDataHandlerInterface &dhi )
-{
-    dhi.first_container();
-
-    DODSFilter df ;
-    df.set_dataset_name( dhi.container->get_real_name() ) ;
-    df.send_das( stdout, das, "", false ) ;
-
-    fflush( stdout ) ;
-}
-
-void
-BESBasicTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    dhi.first_container();
-
-    DODSFilter df ;
-    df.set_dataset_name( dhi.container->get_real_name() ) ;
-    df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    df.send_dds( stdout, dds, dhi.ce, true, "", false ) ;
-
-    fflush( stdout ) ;
-}
-
-void
-BESBasicTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    dhi.first_container() ;
-
-    DODSFilter df ;
-    df.set_dataset_name( dds.filename() ) ;
-    df.set_ce(dhi.data[POST_CONSTRAINT]);
-    df.send_data( dds, dhi.ce, stdout, "", false ) ;
-
-    fflush( stdout ) ;
-}
-
-void
-BESBasicTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    dhi.first_container() ;
-
-    DODSFilter df ;
-    df.set_dataset_name( dhi.container->get_real_name() ) ;
-    df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    df.send_ddx( dds, dhi.ce, stdout, false ) ;
-
-    fflush( stdout ) ;
-}
 
 void
 BESBasicTransmitter::send_text( BESInfo &info,

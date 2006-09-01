@@ -49,16 +49,6 @@ AC_SUBST(LIB_COM_REVISION)
 LIBCOMMAND_VERSION="$LIB_COM_CURRENT:$LIB_COM_REVISION:$LIB_COM_AGE"
 AC_SUBST(LIBCOMMAND_VERSION)
 
-dnl Temporary hack; if no prefix set then need to define it as /usr/local
-if test "$prefix" = "NONE"
-then
-AC_DEFINE_UNQUOTED([BES_CONF_DIR], ["/usr/local/etc/bes"], ["Define BES configuration directory"])
-AC_DEFINE_UNQUOTED([BES_INSTALL_DIR], ["/usr/local"], ["Define BES installation directory"])
-else
-AC_DEFINE_UNQUOTED([BES_CONF_DIR], ["$prefix/etc/bes"], ["Define BES configuration directory"])
-AC_DEFINE_UNQUOTED([BES_INSTALL_DIR], ["$prefix"], ["Define BES installation directory"])
-fi
-
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_MAKE_SET
@@ -105,7 +95,6 @@ AC_CHECK_LIBDAP([3.7.0],
 
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
-		 dispatch/bes/bes.conf
 		 dispatch/test/Makefile
 		 command/Makefile
 		 ppt/Makefile

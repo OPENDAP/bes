@@ -3,9 +3,10 @@
 # Borrowed the idea for this script (and some code) from libcurl.
 #
 prefix=@prefix@
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+pkglibdir=${libdir}/bes
 
 usage()
 {
@@ -14,13 +15,14 @@ Usage: bes-config [OPTION]
 
 Available values for OPTION include:
 
-  --help      display this help message and exit
-  --cc        C compiler
-  --cxx       C++ compiler
-  --cflags    pre-processor and compiler flags
-  --libs      library linking information for the OPeNDAP/HAO BES
-  --prefix    OPeNDAP install prefix
-  --version   Library version
+  --help       display this help message and exit
+  --cc         C compiler
+  --cxx        C++ compiler
+  --cflags     pre-processor and compiler flags
+  --libs       library linking information for the OPeNDAP/HAO BES
+  --prefix     OPeNDAP install prefix
+  --modulesdir Bes modules directory
+  --version    Library version
 EOF
 
     exit $1
@@ -58,6 +60,10 @@ while test $# -gt 0; do
 
     --libs)
        	echo "-L${libdir} -L${libdir}/bes -ldispatch -lopendap_command -lppt @LIBS@"
+       	;;
+
+    --modulesdir)
+       	echo "${pkglibdir}"
        	;;
 
     --prefix)

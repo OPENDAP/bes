@@ -1,10 +1,10 @@
-// BESModule.h
+// BESTransmitter.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu>
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -28,20 +28,58 @@
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef A_BESModule_H
-#define A_BESModule_H 1
+#include "BESTransmitter.h"
 
-#include "BESAbstractModule.h"
-
-class BESModule : public BESAbstractModule
+bool
+BESTransmitter::add_method( string method_name, p_transmitter trans_method )
 {
-public:
-    				BESModule() {}
-    virtual		    	~BESModule() {}
-    virtual void		initialize( const string &modname ) ;
-    virtual void		terminate( const string &modname ) ;
-} ;
+    BESTransmitter::_method_citer i ;
+    i = _method_list.find( method_name ) ;
+    if( i == _method_list.end() )
+    {
+	_method_list[method_name] = trans_method ;
+	return true ;
+    }
+    return false ;
+}
 
-#endif // A_BESModule_H
+bool
+BESTransmitter::remove_method( string method_name )
+{
+    BESTransmitter::_method_iter i ;
+    i = _method_list.find( method_name ) ;
+    if( i != _method_list.end() )
+    {
+	_method_list.erase( i ) ;
+	return true ;
+    }
+    return false ;
+}
+
+p_transmitter
+BESTransmitter::find_method( string method_name )
+{
+    BESTransmitter::_method_citer i ;
+    i = _method_list.find( method_name ) ;
+    if( i != _method_list.end() )
+    {
+	p_transmitter p = (*i).second ;
+	return p ;
+    }
+    return 0 ;
+}
+
+void
+BESTransmitter::send_response( const string &method_name,
+			       DODSResponseObject *response,
+			       BESDataHandlerInterface &dhi )
+{
+    p_transmitter p = find_method( method_name ) ;
+    if( p )
+    {
+	p( response, dhi ) ;
+    }
+}
 

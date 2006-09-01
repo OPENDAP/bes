@@ -21,17 +21,28 @@ pkglib_LTLIBRARIES = libdap_module.la
 
 libdispatch_la_SOURCES = $(SRCS) $(HDRS)
 libdispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+libdispatch_la_CPPFLAGS = -DBES_CONF_DIR=\"${sysconfdir}\"
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
-nobase_sysconf_DATA = bes/bes_help.html bes/bes_help.txt bes/bes.conf
+nobase_sysconf_DATA = bes/bes.conf
 
-bin_SCRIPTS = bes-uncompress.sh
+pkgdata_DATA = bes/bes_help.html bes/bes_help.txt
 
-EXTRA_DIST = bes/bes_help.html bes/bes_help.txt bes/bes.conf
+dist_bin_SCRIPTS = bes-uncompress.sh
+
+EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt
+DISTCLEANFILES = bes/bes.conf
+
+bes/bes.conf: bes/bes.conf.in ../config.status
+	test -d bes || mkdir bes
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
 
 ##############################################################################
 #
@@ -51,7 +62,7 @@ SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESInfoList.cc \
 	BESXMLInfo.cc BESSilentInfo.cc \
 	BESRequestHandler.cc BESRequestHandlerList.cc \
-	BESBasicTransmitter.cc \
+	BESTransmitter.cc BESBasicTransmitter.cc \
 	BESBasicHttpTransmitter.cc BESFilterTransmitter.cc \
 	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
 	BESHeapManager.cc BESMemoryGlobalArea.cc \
@@ -107,17 +118,21 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESModuleApp.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
-	BESDASResponseHandler.cc BESDDSResponseHandler.cc BESDDXResponseHandler.cc \
+	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
+	BESDDXResponseHandler.cc \
 	BESDataResponseHandler.cc BESDefineResponseHandler.cc \
 	BESShowDefsResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
 	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
-	BESSetContainerResponseHandler.cc BESModule.cc
+	BESSetContainerResponseHandler.cc BESDapModule.cc \
+	BESDapTransmit.cc
 
 DAP_HDRS = BESCatalogResponseHandler.h BESShowContainersResponseHandler.h \
-	BESDASResponseHandler.h BESDDSResponseHandler.h BESDDXResponseHandler.h \
+	BESDASResponseHandler.h BESDDSResponseHandler.h \
+	BESDDXResponseHandler.h \
 	BESDataResponseHandler.h BESDefineResponseHandler.h \
 	BESShowDefsResponseHandler.h \
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
 	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
-	BESSetContainerResponseHandler.h BESModule.h
+	BESSetContainerResponseHandler.h BESDapModule.h \
+	BESDapTransmit.h

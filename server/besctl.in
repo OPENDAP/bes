@@ -1,86 +1,90 @@
 #!/bin/sh
 
-location=@prefix@
-if [ "$location" == "NONE" ]
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+localstatedir=@localstatedir@
+bindir=@bindir@
+sysconfdir=@sysconfdir@
+if [ "$prefix" == "NONE" ]
 then
-    location=/usr/local
+    prefix=/usr/local
 fi
 
-if [ ! -f ${location}/sbin/besd ]
+if [ ! -f ${bindir}/besd ]
 then
-    echo "BES does not appear to be installed in ${location}"
+    echo "BES does not appear to be installed in ${bindir}"
     exit 1
 fi
-echo "BES install directory: ${location}"
+echo "BES install directory: ${bindir}"
 
 what=$1
 shift
 
 case $what in
 stop)
-    if [ ! -f "${location}"/run/bes.pid ]
+    if [ ! -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is not currently running"
 	exit 1
     fi
     echo "Shutting down the BES daemon"
-    (cat "$location"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
+    (cat "$localstatedir"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     ;;
 start)
-    if [ -f "${location}"/run/bes.pid ]
+    if [ -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is already running"
-	cat "${location}"/run/bes.pid
+	cat "${localstatedir}"/run/bes.pid
 	exit 1
     fi
     echo "Starting the BES daemon"
-    "${location}"/sbin/besd $*
+    "${bindir}"/besd $*
     sleep 5
-    if [ -f "${location}"/run/bes.pid ]
+    if [ -f "${localstatedir}"/run/bes.pid ]
     then
-	cat "${location}"/run/bes.pid
+	cat "${localstatedir}"/run/bes.pid
     else
 	echo "The BES daemon did not appear to start"
     fi
     ;;
 restart)
-    if [ ! -f "${location}"/run/bes.pid ]
+    if [ ! -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is not currently running"
 	exit 1
     fi
     echo "Shutting down the BES daemon"
-    (cat "${location}"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
+    (cat "${localstatedir}"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     sleep 5
-    if [ -f ${location}/run/bes.pid ]
+    if [ -f ${localstatedir}/run/bes.pid ]
     then
 	echo "Unable to stop the BES daemon"
 	exit 1
     fi
     echo "Starting the BES daemon"
-    "${location}"/sbin/besd $*
+    "${bindir}"/besd $*
     sleep 5
-    if [ -f "${location}"/run/bes.pid ]
+    if [ -f "${localstatedir}"/run/bes.pid ]
     then
-	cat "${location}"/run/bes.pid
+	cat "${localstatedir}"/run/bes.pid
     else
 	echo "The BES daemon did not appear to start"
     fi
     ;;
 status)
-    if [ ! -f "${location}"/run/bes.pid ]
+    if [ ! -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is not currently running"
 	exit 1
     fi
     echo "The BES daemon is currently running"
-    cat "${location}"/run/bes.pid
+    cat "${localstatedir}"/run/bes.pid
     ;;
 config)
     conf=${BES_CONF}
     if [ ! -f "${conf}" ]
     then
-	conf=${location}/etc/bes/bes.conf
+	conf=${sysconfdir}/bes/bes.conf
 	if [ ! -f "${conf}" ]
 	then
 	    echo "The BES configuration file cannot be located at ${conf}"

@@ -53,7 +53,7 @@ using std::string ;
 #include "config.h"
 
 #define OPENDAP_SERVER_ROOT "OPENDAP_SERVER_ROOT"
-#define OPENDAP_SERVER "bes"
+#define OPENDAP_SERVER "/bes"
 #define OPENDAP_SERVER_PID "bes.pid"
 
 int  daemon_init() ;
@@ -277,12 +277,12 @@ bool
 load_names()
 {
     char *xdap_root = 0 ;
+    string bindir = "/bin";
     xdap_root = getenv( OPENDAP_SERVER_ROOT ) ;
     if( xdap_root )
     {
-	cout << NameProgram << ": using environment variable "
-	     << xdap_root << endl ;
 	server_name = xdap_root ;
+        server_name += bindir ;
 	file_for_listener = xdap_root ;
     }
     else
@@ -299,18 +299,16 @@ load_names()
 	    file_for_listener = t_buf ;
 	}
 	*/
-	server_name = BES_INSTALL_DIR ;
-	file_for_listener = BES_INSTALL_DIR ;
+	server_name = BES_BIN_DIR ;
+	file_for_listener = BES_STATE_DIR ;
     }
     if( server_name == "" )
     {
-	cout << NameProgram << ": using ./ as the current working directory"
-	     << endl ;
 	server_name = "." ;
+        server_name += bindir ;
 	file_for_listener = "." ;
     }
 
-    server_name += "/sbin/" ;
     server_name += OPENDAP_SERVER ;
     file_for_listener += "/run/" ;
     file_for_listener += OPENDAP_SERVER_PID ;
@@ -318,9 +316,10 @@ load_names()
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
 	cerr << NameProgram
-	     << ": can not start. Please set environment variable "
-	    << OPENDAP_SERVER_ROOT << " to the location of your listener "
-	    << server_name << endl ;
+	     << ": can not start." << server_name << endl
+	     << "Please set environment variable "
+	     << OPENDAP_SERVER_ROOT << " to the location of your listener "
+	     << endl ;
 	return false ;
     }
     return true ;

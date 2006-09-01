@@ -31,10 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDataResponseHandler.h"
-#include "DDS.h"
+#include "DataDDS.h"
 #include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "BESDapTransmit.h"
 
 BESDataResponseHandler::BESDataResponseHandler( string name )
     : BESResponseHandler( name )
@@ -49,9 +50,9 @@ BESDataResponseHandler::~BESDataResponseHandler( )
  * executing the request for each container in the specified definition
  *
  * For each container in the specified defnition go to the request
- * handler for that container and have it add to the OPeNDAP DDS data response
- * object. The data response object is created within this method and passed
- * to the request handler list.
+ * handler for that container and have it add to the OPeNDAP DataDDS data
+ * response object. The data response object is created within this method
+ * and passed to the request handler list.
  *
  * @param dhi structure that holds request and response information
  * @throws BESHandlerException if there is a problem building the
@@ -59,7 +60,7 @@ BESDataResponseHandler::~BESDataResponseHandler( )
  * @throws BESResponseException upon fatal error building the response
  * object
  * @see _BESDataHandlerInterface
- * @see DDS
+ * @see DataDDS
  * @see BESRequestHandlerList
  * @see BESDefine
  */
@@ -69,7 +70,7 @@ BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = DATA_RESPONSE_STR ;
     // NOTE: It is the responsbility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    _response = new DDS( NULL, "virtual" ) ;
+    _response = new DataDDS( NULL, "virtual" ) ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
@@ -80,7 +81,7 @@ BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DDS
+ * @see DataDDS
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */
@@ -90,8 +91,7 @@ BESDataResponseHandler::transmit( BESTransmitter *transmitter,
 {
     if( _response )
     {
-	DDS *dds = dynamic_cast<DDS *>(_response) ;
-	transmitter->send_data( *dds, dhi ) ;
+	transmitter->send_response( DATA_TRANSMITTER, _response, dhi ) ;
     }
 }
 

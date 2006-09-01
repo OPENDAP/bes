@@ -1,4 +1,4 @@
-// BESTransmitterNames.h
+// BESDapTransmit.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,20 +30,38 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESTransmitterNames_H
-#define D_BESTransmitterNames_H 1
+#ifndef I_BESDapTransmit_h
+#define I_BESDapTransmit_h 1
 
-/** @brief macros representing the default transmitter objects
- *
- * These include
- * <pre>
- * basic
- * http
- * </pre>
- */
+#include "BESDataHandlerInterface.h"
 
-#define BASIC_TRANSMITTER "basic"
-#define HTTP_TRANSMITTER "http"
+class DODSResponseObject ;
 
-#endif // E_BESTransmitterNames_H
+#define DAS_TRANSMITTER "das"
+#define DDS_TRANSMITTER "dds"
+#define DDX_TRANSMITTER "ddx"
+#define DATA_TRANSMITTER "data"
+
+class BESDapTransmit
+{
+public:
+    static void		send_basic_das( DODSResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_http_das( DODSResponseObject *obj,
+    				       BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_dds( DODSResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_http_dds( DODSResponseObject *obj,
+    				       BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_data( DODSResponseObject *obj,
+    				         BESDataHandlerInterface &dhi ) ;
+    static void		send_http_data( DODSResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_ddx( DODSResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_http_ddx( DODSResponseObject *obj,
+    				       BESDataHandlerInterface &dhi ) ;
+} ;
+
+#endif // I_BESDapTransmit_h
 

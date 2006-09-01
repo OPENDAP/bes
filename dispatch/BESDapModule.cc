@@ -1,4 +1,4 @@
-// BESModule.cc
+// BESDapModule.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -33,7 +33,7 @@
 
 using std::endl ;
 
-#include "BESModule.h"
+#include "BESDapModule.h"
 #include "BESLog.h"
 
 #include "BESResponseNames.h"
@@ -60,8 +60,13 @@ using std::endl ;
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorageVolatile.h"
 
+#include "BESDapTransmit.h"
+#include "BESTransmitter.h"
+#include "BESReturnManager.h"
+#include "BESTransmitterNames.h"
+
 void
-BESModule::initialize( const string &modname )
+BESDapModule::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing OPeNDAP modules:" << endl;
@@ -126,10 +131,49 @@ BESModule::initialize( const string &modname )
 	(*BESLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " definition persistence" << endl ;
     BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
+    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
+    if( t )
+    {
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding basic " << DAS_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_basic_das ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding basic " << DDS_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_basic_dds ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding basic " << DDX_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_basic_ddx ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding basic " << DATA_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_basic_data ) ;
+    }
+
+    t = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
+    if( t )
+    {
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding http " << DAS_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_http_das ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding http " << DDS_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_http_dds ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding http " << DDX_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_http_ddx ) ;
+
+	if( BESLog::TheLog()->is_verbose() )
+	    (*BESLog::TheLog()) << "    adding http " << DATA_TRANSMITTER << " transmit function" << endl ;
+	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_http_data ) ;
+    }
 }
 
 void
-BESModule::terminate( const string &modname )
+BESDapModule::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing OPeNDAP modules" << endl;
@@ -153,7 +197,7 @@ extern "C"
 {
     BESAbstractModule *maker()
     {
-	return new BESModule ;
+	return new BESDapModule ;
     }
 }
 
