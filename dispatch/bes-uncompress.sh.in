@@ -2,6 +2,8 @@
 
 infile=${1}
 cacheDir=${2}
+cacheSize=${3}
+dir=`dirname ${0}`
 
 # Was a file passed to compress?
 if [ "${infile}" = "" ]
@@ -30,6 +32,16 @@ then
     exit 1
 fi
 
+# If the cache size is not specified, then default to 500
+if [ "${cacheSize}" = "" ]
+then
+    cacheSize=500
+fi
+
+# purge the cache directory to make sure we have enough room to uncompress
+# the current file
+${dir}/bes-purge.pl ${cacheDir} ${cacheSize}
+
 # create the uncompressed file name by removing any leading slashes,
 # converting the rest of the slashes to pound signs, and removing the file
 # exension (.gz, .bz2, Z, etc...)
@@ -53,13 +65,13 @@ fi
 # determine the uncompression script to use
 case ${ext} in
     gz)
-	script='gzip'
+	script='@GZIP@'
 	;;
     bz2)
-	script='bzip2'
+	script='@BZIP2@'
 	;;
     Z)
-	script='gzip'
+	script='@GZIP@'
 	;;
 esac
 

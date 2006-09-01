@@ -32,7 +32,7 @@ nobase_sysconf_DATA = bes/bes.conf
 
 pkgdata_DATA = bes/bes_help.html bes/bes_help.txt
 
-dist_bin_SCRIPTS = bes-uncompress.sh
+dist_bin_SCRIPTS = bes-uncompress.sh bes-purge.pl
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt
 DISTCLEANFILES = bes/bes.conf
@@ -43,6 +43,13 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
+
+bes-uncompress.sh: bes-uncompress.sh.in ../config.status
+	sed -e "s%[@]GZIP[@]%${GZIP}%" \
+		-e "s%[@]BZIP2[@]%${BZIP2}%" $< > bes-uncompress.sh
+
+bes-purge.pl: bes-purge.pl.in ../config.status
+	sed -e "s%[@]PERL[@]%${PERL}%" $< > bes-purge.pl
 
 ##############################################################################
 #

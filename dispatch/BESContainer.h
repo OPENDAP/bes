@@ -65,6 +65,7 @@ private:
     static string		_cacheDir ;
     static string		_compressedExt ;
     static string		_script ;
+    static string		_cacheSize ;
 public:
     /** @brief construct a container with the given sumbolic name
      *

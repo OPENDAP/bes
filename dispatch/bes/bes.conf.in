@@ -110,8 +110,12 @@ BES.Info.Type=xml
 #									#
 # BES will uncompress the data file into the directory specified by	#
 # BES.CacheDir, which defaults to /tmp.					#
+#									#
+# BES will purge the CacheDir if the size of uncompressed bes files     #
+# exceeds BES.CacheDir.MaxSize, which defaults to 500 MB		#
 #-----------------------------------------------------------------------#
 BES.CacheDir=/tmp
+BES.CacheDir.MaxSize=500
 # BES.Compressed.Extensions=
 BES.Compressed.Script=@bindir@/bes-uncompress.sh
 

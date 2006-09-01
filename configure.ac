@@ -59,6 +59,9 @@ dnl AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
+AC_CHECK_PROG(GZIP, [gzip], [`which gzip`])
+AC_CHECK_PROG(BZIP2, [bzip2], [`which bzip2`])
+AC_CHECK_PROG(PERL, [perl], [`which perl`])
 
 dnl Checks for header files.
 AC_HEADER_STDC

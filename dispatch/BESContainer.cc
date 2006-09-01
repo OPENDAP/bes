@@ -45,9 +45,10 @@ using std::ostringstream ;
 #include "BESContainerStorageException.h"
 #include "GNURegex.h"
 
-string BESContainer::_cacheDir = "" ;
-string BESContainer::_compressedExt = "" ;
-string BESContainer::_script = "" ;
+string BESContainer::_cacheDir ;
+string BESContainer::_compressedExt ;
+string BESContainer::_script ;
+string BESContainer::_cacheSize ;
 
 BESContainer::BESContainer(const string &s)
     : _valid( false ),
@@ -74,13 +75,13 @@ BESContainer::access()
 {
     // Determine if this file is compressed. If it isn't, then just return
     // the real name
-    if( BESContainer::_compressedExt == "" )
+    if( BESContainer::_compressedExt.empty() )
     {
 	bool found = false ;
 	string key = "BES.Compressed.Extensions" ;
 	BESContainer::_compressedExt =
 	    TheBESKeys::TheKeys()->get_key( key, found ) ;
-	if( !found || BESContainer::_compressedExt == "" )
+	if( !found || BESContainer::_compressedExt.empty() )
 	{
 	    BESContainer::_compressedExt = ".*(\\.gz|\\.Z|\\.bz2)$" ;
 	}
@@ -95,11 +96,11 @@ BESContainer::access()
     // Determine the cache directory where uncompressed files will be
     // stored. If it's already been set then we assume that it exists and is
     // writable
-    if( BESContainer::_cacheDir == "" )
+    if( BESContainer::_cacheDir.empty() )
     {
 	bool found = false ;
 	BESContainer::_cacheDir = TheBESKeys::TheKeys()->get_key( "BES.CacheDir", found ) ;
-	if( !found || BESContainer::_cacheDir == "" )
+	if( !found || BESContainer::_cacheDir.empty() )
 	{
 	    BESContainer::_cacheDir = "/tmp" ;
 	}
@@ -117,11 +118,11 @@ BESContainer::access()
     }
 
     // Determine the script to call
-    if( BESContainer::_script == "" )
+    if( BESContainer::_script.empty() )
     {
 	bool found = false ;
 	BESContainer::_script = TheBESKeys::TheKeys()->get_key( "BES.Compressed.Script", found ) ;
-	if( !found || BESContainer::_script == "" )
+	if( !found || BESContainer::_script.empty() )
 	{
 	    string err = (string)"Script used to uncompress compressed files "
 	                 + "is not set. Please set 'BES.Compressed.Script' "
@@ -130,10 +131,24 @@ BESContainer::access()
 	}
     }
 
+    // Determine the cache size
+    if( BESContainer::_cacheSize.empty() )
+    {
+	bool found = false ;
+	string key = "BES.CacheDir.MaxSize" ;
+	BESContainer::_cacheSize =
+	    TheBESKeys::TheKeys()->get_key( key, found ) ;
+	if( !found || BESContainer::_cacheSize.empty() )
+	{
+	    BESContainer::_cacheSize = "500" ;
+	}
+    }
+
     // Build the command
     string cmd = BESContainer::_script + " "
                  + _real_name + " "
-		 + BESContainer::_cacheDir ;
+		 + BESContainer::_cacheDir + " "
+		 + BESContainer::_cacheSize ;
 
     // Call the script that will uncompress the file. The script should exit
     // with 0 if there are no problems uncompressing the file and echo to
@@ -169,13 +184,13 @@ BESContainer::access()
 {
     // Determine if this file is compressed. If it isn't, then just return
     // the real name
-    if( BESContainer::_compressedExt == "" )
+    if( BESContainer::_compressedExt.empty() )
     {
 	bool found = false ;
 	string key = "BES.CompressedExtensions" ;
 	BESContainer::_compressedExt =
 	    TheBESKeys::TheKeys()->get_key( key, found ) ;
-	if( !found || BESContainer::_compressedExt == "" )
+	if( !found || BESContainer::_compressedExt.empty() )
 	{
 	    BESContainer::_compressedExt = ".*(\\.gz|\\.Z|\\.bz2)$" ;
 	}
@@ -209,11 +224,11 @@ BESContainer::access()
     // Determine the cache directory where uncompressed files will be
     // stored. If it's already been set then we assume that it exists and is
     // writable
-    if( BESContainer::_cacheDir == "" )
+    if( BESContainer::_cacheDir.empty() )
     {
 	bool found = false ;
 	BESContainer::_cacheDir = TheBESKeys::TheKeys()->get_key( "BES.CacheDir", found ) ;
-	if( !found || BESContainer::_cacheDir == "" )
+	if( !found || BESContainer::_cacheDir.empty() )
 	{
 	    BESContainer::_cacheDir = "/tmp" ;
 	}
