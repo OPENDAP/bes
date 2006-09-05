@@ -92,19 +92,6 @@ BESExceptionManager::handle_exception( BESException &e,
 	action_name = "BES" ;
     dhi.error_info->begin_response( action_name ) ;
 
-    string administrator = "" ;
-    try
-    {
-	bool found = false ;
-	administrator =
-	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
-    }
-    catch( ... )
-    {
-	administrator = DEFAULT_ADMINISTRATOR ;
-    }
-    dhi.error_info->add_tag( "Administrator", administrator ) ;
-
     // Let's see if any of these exception callbacks can handle the
     // exception. The first callback that can handle the exception wins
     ehm_iter i = _ehm_list.begin() ;
@@ -117,6 +104,19 @@ BESExceptionManager::handle_exception( BESException &e,
 	    return handled ;
 	}
     }
+
+    string administrator = "" ;
+    try
+    {
+	bool found = false ;
+	administrator =
+	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
+    }
+    catch( ... )
+    {
+	administrator = DEFAULT_ADMINISTRATOR ;
+    }
+    dhi.error_info->add_tag( "Administrator", administrator ) ;
 
     BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
     if( ireqx )
