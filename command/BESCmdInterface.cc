@@ -106,6 +106,37 @@ BESCmdInterface::execute_request()
 void
 BESCmdInterface::initialize()
 {
+    // dhi has already been filled in at this point, so let's set a default
+    // transmitter given the protocol. The transmitter might change after
+    // parsing a request and given a return manager to use. This is done in
+    // build_data_plan.
+    //
+    // The reason I moved this from the build_data_plan method is because a
+    // registered initialization routine might throw an exception and we
+    // will need to transmit the exception info, which needs a transmitter.
+    // If an exception happens before this then the exception info is just
+    // printed to stdout (see BESInterface::transmit_data()). -- pcw 09/05/06
+    string protocol = _dhi.transmit_protocol ;
+    if( protocol != "HTTP" )
+    {
+	_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
+	if( !_transmitter )
+	{
+	    string s = (string)"Unable to find transmitter "
+		       + BASIC_TRANSMITTER ;
+	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
+	}
+    }
+    else
+    {
+	_transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
+	if( !_transmitter )
+	{
+	    string s = (string)"Unable to find transmitter "
+		       + HTTP_TRANSMITTER ;
+	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
+	}
+    }
     pid_t thepid = getpid() ;
     stringstream ss ;
     ss << thepid ;
@@ -138,6 +169,11 @@ BESCmdInterface::build_data_request_plan()
     BESCmdParser parser ;
     parser.parse( _dhi.data[DATA_REQUEST], _dhi ) ;
 
+    // The default _transmitter (either basic or http depending on the
+    // protocol passed) has been set in initialize. If the parsed command
+    // sets a RETURN_CMD (a different transmitter) then look it up here. If
+    // it's set but not found then this is an error. If it's not set then
+    // just use the defaults.
     if( _dhi.data[RETURN_CMD] != "" )
     {
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( _dhi.data[RETURN_CMD] ) ;
@@ -148,30 +184,7 @@ BESCmdInterface::build_data_request_plan()
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
     }
-    else
-    {
-	string protocol = _dhi.transmit_protocol ;
-	if( protocol != "HTTP" )
-	{
-	    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
-	    if( !_transmitter )
-	    {
-		string s = (string)"Unable to find transmitter "
-		           + BASIC_TRANSMITTER ;
-		throw BESTransmitException( s, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-	    _transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
-	    if( !_transmitter )
-	    {
-		string s = (string)"Unable to find transmitter "
-		           + HTTP_TRANSMITTER ;
-		throw BESTransmitException( s, __FILE__, __LINE__ ) ;
-	    }
-	}
-    }
+
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << "Data Handler Interface:" << endl ;
