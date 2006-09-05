@@ -50,10 +50,10 @@ BESLog *BESLog::_instance = 0 ;
  * determining verbose logging.
  *
  * The file name is determined using the BESKeys mechanism. The key used is
- * OPeNDAP.LogName. The application must be able to write to this directory/file.
+ * BES.LogName. The application must be able to write to this directory/file.
  *
  * Verbose logging is determined also using the BESKeys mechanism. The key
- * used is OPeNDAP.LogVerbose.
+ * used is BES.LogVerbose.
  *
  * @throws BESLogException if BESLogName is not set or if there are
  * problems opening or writing to the log file.
@@ -70,8 +70,8 @@ BESLog::BESLog()
     string log_name = TheBESKeys::TheKeys()->get_key( "BES.LogName", found ) ;
     if( log_name=="" )
     {
-	string err = (string)"OPeNDAP Fatal: unable to determine log file name."
-	             + " Please set OPeNDAP.LogName in your initialization file" ;
+	string err = (string)"BES Fatal: unable to determine log file name."
+	             + " Please set BES.LogName in your initialization file" ;
 	cerr << err << endl ;
 	throw BESLogException( err, __FILE__, __LINE__ ) ;
     }
@@ -80,7 +80,7 @@ BESLog::BESLog()
 	_file_buffer=new ofstream(log_name.c_str(), ios::out | ios::app);
 	if (!(*_file_buffer))
 	{
-	    string err = (string)"OPeNDAP Fatal; can not open log file "
+	    string err = (string)"BES Fatal; can not open log file "
 	                 + log_name + "." ;
 	    cerr << err << endl ;
 	    throw BESLogException( err, __FILE__, __LINE__ ) ;
