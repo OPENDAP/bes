@@ -50,7 +50,9 @@ BESBasicHttpTransmitter::send_html( BESInfo &info,
                                      BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
+    {
 	set_mime_html( stdout, unknown_type ) ;
-    BESBasicTransmitter::send_text( info, dhi ) ;
+    }
+    BESBasicTransmitter::send_html( info, dhi ) ;
 }
 
