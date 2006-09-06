@@ -84,9 +84,9 @@ BES.ServerSecure=no
 #-----------------------------------------------------------------------#
 # help file locations, for text and html versions                       #
 #-----------------------------------------------------------------------#
-BES.Help.TXT=@pkgdatadir@/bes/dispatch_help.txt
-BES.Help.HTTP=@pkgdatadir@/dispatch_help.html
-BES.Help.XML=@pkgdatadir@/dispatch_help.txt
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTTP=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.txt
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
