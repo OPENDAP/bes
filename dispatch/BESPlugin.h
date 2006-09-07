@@ -92,7 +92,7 @@ private:
 
     void *get_lib() throw(NoSuchLibrary) {
 	if (!d_lib) {
-	    d_lib = dlopen(d_filename.c_str(), RTLD_NOW|RTLD_GLOBAL);
+	    d_lib = dlopen(d_filename.c_str(), RTLD_NOW|RTLD_LOCAL);
 	    if (d_lib == NULL) {
 		DBG(cerr << "Error opening library: " << dlerror() << endl);
 		throw NoSuchLibrary( string( dlerror() ), __FILE__, __LINE__ ) ;
