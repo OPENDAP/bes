@@ -17,11 +17,27 @@ SUBDIRS = hdfclass
 bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
-lib_LTLIBRARIES = libhdf4_handler.la
 if OPENDAPSERVER
     lib_besdir=$(prefix)/lib/bes
     lib_bes_LTLIBRARIES = libhdf4_module.la
+
+    libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
+                                $(HDFTYPE_HDR) $(SERVER_HDR)
+    libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
+    libhdf4_module_la_LDFLAGS = $(BES_LDFLAGS) $(HDF4_LDFLAGS)
+
+    libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
 endif
+
+dap_hdf4_handler_SOURCES = hdf_handler.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
+                           $(HDFTYPE_HDR)
+dap_hdf4_handler_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
+dap_hdf4_handler_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
+
+eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
+		      $(HDFTYPE_HDR)
+eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
+eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
 
 HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc   HDFUInt32.cc \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
@@ -41,18 +57,6 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-libhdf4_handler_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(HDFTYPE_HDR) 
-
-libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) $(HDFTYPE_HDR) $(SERVER_HDR)
-libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
-libhdf4_module_la_LDFLAGS = $(BES_LDFLAGS) hdfclass/libhdfclass.la
-
-dap_hdf4_handler_SOURCES = hdf_handler.cc
-dap_hdf4_handler_LDADD = libhdf4_handler.la hdfclass/libhdfclass.la
-
-eosdas_test_SOURCES = eosdas-test.cc
-eosdas_test_LDADD = libhdf4_handler.la hdfclass/libhdfclass.la
-
 EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI \
 	hdf4_handler.spec
 
@@ -70,7 +74,7 @@ srpm:
 
 rpm:
 	rpmbuild -tb hdf4_handler-@PACKAGE_VERSION@.tar.gz
-	
+
 ###########################################################################
 
 # Build the HDF-EOS parser
