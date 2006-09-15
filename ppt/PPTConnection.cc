@@ -72,41 +72,51 @@ PPTConnection::receive( ostream *strm )
     if( strm )
 	use_strm = strm ;
 
+    int termlen = PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION.length() ;
+    int exitlen = PPTProtocol::PPT_EXIT_NOW.length() ;
+    int start = termlen ;
     bool done = false ;
+    char *inBuff = new char[4096+termlen+1] ;
     while( done == false )
     {
-	char *inBuff = new char[4097] ;
-	int bytesRead = readBuffer( inBuff ) ;
+	int bytesRead = readBuffer( inBuff+termlen ) ;
 	if( bytesRead != 0 )
 	{
-	    int exitlen = PPTProtocol::PPT_EXIT_NOW.length() ;
-	    if( !strncmp( inBuff, PPTProtocol::PPT_EXIT_NOW.c_str(), exitlen ) )
+	    if( !strncmp( inBuff+start, PPTProtocol::PPT_EXIT_NOW.c_str(), exitlen ) )
 	    {
 		done = true ;
 		isDone = true ;
 	    }
 	    else
 	    {
-		int termlen =
-			PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION.length() ;
-		int writeBytes = bytesRead ;
-		if( bytesRead >= termlen )
+		int charsInBuff = bytesRead + ( termlen - start ) ;
+		int writeBytes = charsInBuff - termlen ;
+		if( charsInBuff >= termlen )
 		{
-		    string inEnd ;
-		    for( int j = 0; j < termlen; j++ )
-			inEnd += inBuff[(bytesRead - termlen) + j] ;
-		    if( inEnd == PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION )
+		    if( !strncmp( inBuff+bytesRead, PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION.c_str(), termlen ) )
 		    {
 			done = true ;
-			writeBytes = bytesRead-termlen ;
+		    }
+
+		    for( int j = 0; j < writeBytes; j++ )
+		    {
+			if( use_strm )
+			{
+			    (*use_strm) << inBuff[start+j] ;
+			}
+		    }
+
+		    if( !done )
+		    {
+			strncpy( inBuff, inBuff + bytesRead, termlen ) ;
+			start = 0 ;
 		    }
 		}
-		for( int j = 0; j < writeBytes; j++ )
+		else
 		{
-		    if( use_strm )
-		    {
-			(*use_strm) << inBuff[j] ;
-		    }
+		    int newstart = termlen - charsInBuff ;
+		    strncpy( inBuff + newstart, inBuff + start, charsInBuff ) ;
+		    start = newstart ;
 		}
 	    }
 	}
@@ -114,8 +124,8 @@ PPTConnection::receive( ostream *strm )
 	{
 	    done = true ;
 	}
-	delete [] inBuff ;
     }
+    delete [] inBuff ;
     return isDone ;
 }
 
