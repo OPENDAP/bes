@@ -152,6 +152,9 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 	for( ; i != ie && !done; i++ )
 	{
 	    type_reg match = (*i) ;
+	    // FIXME: Should we create the Regex and put it in the type_reg
+	    // structure list instead of compiling it each time? Could this
+	    // improive performance? pcw 09/08/06
 	    Regex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( r_name.c_str(), r_name.length() ) != -1 )
 	    {

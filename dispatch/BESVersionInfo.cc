@@ -34,11 +34,6 @@
 #pragma implementation
 #endif
 
-#include <iostream>
-
-using std::cerr ;
-using std::endl ;
-
 #include "BESVersionInfo.h"
 #include "BESInfoList.h"
 #include "BESHandlerException.h"
