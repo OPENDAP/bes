@@ -27,6 +27,7 @@ ppt: The PPT implementation. The BES uses PPT for its communication
 templates: A collection of source files which can be used as templates when
 	 you write your own handlers/modules, et cetera.
 conf: Where the automake and autoconf configuration files live
+docs: Where some bes documentation resides
 
 * About the BES
 
@@ -48,17 +49,17 @@ Install the newly-built handler.
 
 Configure the BES to load the handler by editing the bes.conf file. You can
 find this file in <prefix>/etc/bes/bes.conf. Look for the section with
-OPeNDAP.modules and follow the example. The modules parameter contains a list
+BES.modules and follow the example. The modules parameter contains a list
 of the modules that should be loaded by the server. You can use any name yo
-want for the modules; the OPeNDAP.module.<name> parameter tells the server
+want for the modules; the BES.module.<name> parameter tells the server
 which module to load and use for that name. Even though you _can_ use any
 name you'd like, try to pick mnemonic ones since they will need to be used
 later on in the configuration file.
 
 Next, find the point in the configuration file where the
-OPeNDAP.catalog.TypeMatch parameter is located. The value of this parameter
+BES.catalog.TypeMatch parameter is located. The value of this parameter
 is a comma separated list that matches the name you used in the
-OPeNDAP.modules parameter with different datasets. The BES uses regular
+BES.modules parameter with different datasets. The BES uses regular
 expressions to identify different types of datasets. In the example given in
 the file, any dataset name that ends in '.nc' will be accessed using the
 netcdf hander (because the name 'nc' is used here with the regular expression
@@ -75,45 +76,48 @@ that is the most common case.
 The renaming configuration parameters affect the BES as a whole, you are done
 with the handler/module configuration.
 
-Find the Catalog.catalog.RootDirectory parameter. Set this to the root
-directory of you data. If you're serving data stored in files, this the place
-in the file system where those files are stored. If you're serving data from a
-relational database, see the documentation for the handler used to read from
-the database about what value to use for this parameter.
+Find the BES.Catalog.catalog.RootDirectory parameter. Set this to the root
+directory of you data. If you're serving data stored in files, this is the
+place in the file system where those files are stored. If you're serving
+data from a relational database, see the documentation for the handler used
+to read from the database about what value to use for this parameter.
 
-Check the values of OPeNDAP.Help.TXT and OPeNDAP.Help.HTTP to make sure they
-are correct.
+Check the values of BES.Help.TXT and BES.Help.HTTP and BES.Help.XML to make
+sure they are correct.
 
-At the top of the file, set the value of the ServerAdministrator parameter.
+At the top of the file, set the value of the ServerAdministrator parameter
+to a valid email address. This is the email address that will be displayed
+to users if errors arise.
+
+If you would like to use the ascii, info, and html responses of BES, like in
+the Server3 handlers when you append .ascii, .info, and .html to the URL
+respectively, then you will need to get the dap-server source from OPeNDAP
+at http://www.opendap.org/download/#SVN. Follow the instructions for building
+and installing dap-server. When you install dap-server, three modules will
+be installed into the <prefix>/lib/bes directory, ascii_module,
+usage_module, and www_module.  Add these modules to the BES.modules
+parameter in the BES configuration file. An example is provided for you
+there.
 
 * Testing
 
-To test the server, open a new terminal window and start <prefix>/sbin/bes
+To test the server, open a new terminal window and start the bes by using
+the bes control script besctl, which is installed in <prefix>/bin.
 using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
-    [jimg@zoe sbin]$ ./bes -c /usr/local/tmp/etc/bes/bes.conf
-    **** my pid = 29533
-    Trying to register SIGTERM ... OK
-    Trying to register SIGINT ... OK
-    Trying to register SIGUSR1 ... OK
-    Trying to get TCP socket ... OK
-    Trying to set TCP socket properties ... OK
-    Trying to bind TCP socket ... OK
-    Trying to listen in TCP socket ... OK listening: port 10002
-    Trying to get Unix socket ... OK
-    Trying to set Unix socket properties ... OK
-    Trying to bind Unix socket ... OK binding to /tmp/opendap.socket
-    Trying to listen to Unix socket ... OK
-    accepting connections ...
+    [jimg@zoe sbin]$ besctl start
+    BES install directory: <prefix>/bin
+    Starting the BES daemon
+    PID: <process_id> UID: <uid of process>
 
 Go back to your first window and run the bescmdln program. Use the -h (host)
 and -p (port) switches to tell it how to connect to the BES.
 
-    [jimg@zoe bin]$ ./bescmdln -p 10002 -h localhost
-    Trying to connect to socket ... OK: connected to localhost at 127.0.0.1
+    [jimg@zoe bin]$ bescmdln -p 10002 -h localhost
 
-    ...
+    Type 'exit' to exit the command line client and 'help' or '?' to display
+    the help screen
 
     OPeNDAPClient>
 
@@ -174,8 +178,7 @@ If you got something similar (you would have used a different dataset name
 from "data'nc'fnoc1.nc" and thus would get a different DAS response) the BES
 is configured correctly and is running. 
 
-The last step is to stop the standalone version of the server and start the
-daemon. In the sbin directory, use control-c to exit from the standalone
-server and start 'besd' using the same flags as were used with 'bes'. You can
-fire up the bescmdln  program and make sure the besd daemon is working (show
-help;).
+To stop the BES use the bes control script with the stop option:
+
+    [jimg@zoe sbin]$ besctl start
+

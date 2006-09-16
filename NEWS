@@ -1,7 +1,40 @@
 3.2.0
 	$Id$
 
-Version 3.1.1
+News Version 3.2.0
+
+Created bes control script besctl for starting, stopping, restarting, and
+checking the status of the bes daemon and listener processes.
+
+Executibles are again in $prefix/bin instead of sbin and have been renamed
+besdaemon and beslistener. The bescmdln is also in $prefix/bin.
+
+Modules dynamically loaded by the bes should now be built with the
+-avoid-version and -module flags in LDFLAGS. This will not put version
+information in the module names themselves. All modules should be of the
+form xxx_module
+
+dap-server now has bes support for getting ascii, info, and html responses
+from the bes. Check the README for both bes and dap-server for these
+updates. To use these modules, simply add ascii_module, usage_module and
+www_module to the list of modules for bes to load.
+
+Modules are now names using the name from the configuration file. The data
+types are also named using the name in the BES.modules list. For example,
+for the hdf4_module if you use BES.modules=dap,cmd,h4 then the handler will
+handle data of type h4. For example:
+
+set container values c,hdf/test01.hdf,h4;
+
+BES will then look for the data handler h4 to be loaded.
+
+Transmitter code (derived classes of BESTransmitter) only handle BESInfo
+objects. For additional types of response objects, such as the OpeNDAP
+responses das, dds, data, etc... developers will register functions with the
+different transmitters to handle those types. See BESDapTransmit for
+examples.
+
+News Version 3.1.1
 
 The old killdods script has been renamed 'stopbes' and the build files have
 been fixed so that the script is installed in $prefix/sbin.
@@ -17,7 +50,7 @@ Fixes to the XML output/response formats. See ChangeLog
 
 Fixes to the exception notifications. See ChangeLog.
 
-Version 3.1.0
+News Version 3.1.0
 
 This version of the BES is the first version to make it to a release status.
 This is an release of the 1.2 milestone.

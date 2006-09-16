@@ -1,3 +1,386 @@
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Changed the sys admin email to not use angle brackets so if a user
+	doesn't change it it doesn't mess up any xml responses. Did the same
+	for all other paramers, just in case. Updated the documentation
+	adding more information for some parameters.
+	M    bes/bes.conf.in
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Little tweaks to the expected output of the tests. Also, parameters
+	in the keys files have changed names and weren't being reflected
+	here.
+	M    test/containerT.cc
+	M    test/testsuite/dispatch.0/initT.exp
+	M    test/testsuite/dispatch.0/infoT.exp
+	M    test/testsuite/dispatch.0/keysT.exp
+	M    test/testsuite/dispatch.0/pfileT.exp
+	M    test/info_test.ini
+	M    test/empty.ini
+	M    test/persistence_file_test.ini
+	M    test/keysT.cc
+	M    test/infoT.cc
+	M    test/Makefile.am
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Module libraries are created with -module option and without version
+	information. Docs directory now has a makefile in it so that
+	documentation is included in the release. doxygen information is now
+	included in the release, although the comments in the code need to
+	be updated. bes renamed to beslistener. besd renamed to besdaemon.
+	libraries renamed to have bes_ in their names.
+	M    bes-config.in
+	A    docs/Makefile.am
+	M    cmdln/Makefile.am
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	A    bes.spec
+	M    configure.ac
+	M    ppt/Makefile.am
+	M    server/test/Makefile.am
+	M    server/besctl.in
+	M    server/daemon.cc
+	M    server/Makefile.am
+	M    doxy.conf
+	M    Makefile.am
+	M    command/Makefile.am
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Fixed problem where the PPT_COMPLETE_DATA_TRANSMITION token was
+	split between to reads of the buffer. This meant that the token is
+	written to the stream instead of being recognized as the end of the
+	transmission.
+	M    ppt/PPTConnection.cc
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Cleaning up un-needed includes and comments
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+
+2006-09-07  James Gallagher <jgallagher@opendap.org>
+
+	BESPlugin.h: Changed RTLD_GLOBAL to RTLD_LOCAL in th dlopen() call.
+	This should prevent symbol clashes between two modules. That is, the
+	global symbols of one module will not be used to resolve references
+	in a second module. See ticket #469.
+
+2006-09-06  Patrick West <pwest@ucar.edu>
+
+	help file location incorrect in the bes.conf.in file, updated. Added
+	the uncomnpress and purge scripts .in files to the extra
+	distribution files and the scripts themselves to the distribution
+	clean directive.
+	M    bes/bes.conf.in
+	M    Makefile.am
+
+2006-09-05  Patrick West <pwest@ucar.edu>
+
+	The transmitter was not being set early enough in the process of
+	handling a request. if an exception was thrown then it was possible
+	to not have a transmitter set. It's still possible, if an exception
+	is thrown during startup, but setting the transmitter to either
+	basic or http is being done much sooner. During the build phase it
+	is possible to replace the transmitter with one set in the request,
+	such as using a 'return as' command in a get.
+	M    command/BESCmdInterface.cc
+
+2006-09-05  Patrick West <pwest@ucar.edu>
+
+	Allow any registered exception handlers handle displaying administrator information the way they want. Delay adding this information until after iterating through the registered handlers
+
+2006-09-05  Patrick West <pwest@ucar.edu>
+
+	send_html in BESbassicHttpTransmitter.cc was calling send_text in the parent class instead of send_html
+
+2006-09-05  Patrick West <pwest@ucar.edu>
+
+	error message in BESLog refers to keys that begin with OPeNDAP. Changed to refer to BES.LogName
+
+2006-09-01  Patrick West <pwest@ucar.edu>
+
+	The uncompress script now purges the cache directory using a cache
+	max size that is passed in. I am using the purge_cache perl routine
+	from DODS_Cache.pm in dap-server, with some modifications. The
+	configure now looks for gzip, bzip2, and perl and sets them
+	correctly in the two scripts bes-uncompress.sh and bes-purge.pl.
+	Create .in files to do this and modified the Makefile.am in dispatch
+	to generate the two scripts. Modified BESContainer to look for the
+	key in bes.conf BES.CacheDir.MaxSize, which defaults to 500 MB, and
+	pass that cache size to the uncompress script.
+	AM   dispatch/bes-uncompress.sh.in
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	M    dispatch/BESContainer.h
+	M    dispatch/BESContainer.cc
+	AM   dispatch/bes-purge.pl.in
+	D    dispatch/bes-uncompress.sh
+	M    configure.ac
+
+2006-09-01  Patrick West <pwest@ucar.edu>
+
+	Made configuration updates per Patrice Dumas. Changed the
+	transmitter code to only be able to send BESInfo objects. Added
+	function list where developers can add transmit functions to the
+	different transmitter. Created BESDapTransmit to hold the libdap
+	response objects transmit functions (send_basic_das and
+	send_http_das for example).
+	M    bes-config.in
+	A    dispatch/BESDapModule.h
+	D    dispatch/BESModule.h
+	M    dispatch/BESDDXResponseHandler.cc
+	A    dispatch/BESDapModule.cc
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESDataResponseHandler.cc
+	A    dispatch/BESTransmitter.cc
+	M    dispatch/BESBasicHttpTransmitter.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	M    dispatch/BESTransmitterNames.h
+	M    dispatch/BESBasicTransmitter.h
+	D    dispatch/BESModule.cc
+	A    dispatch/BESDapTransmit.cc
+	M    dispatch/BESBasicHttpTransmitter.h
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESModuleApp.h
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESTransmitter.h
+	A    dispatch/BESDapTransmit.h
+	M    dispatch/BESExceptionManager.cc
+	M    configure.ac
+	M    server/test/Makefile.am
+	M    server/besctl.in
+	M    server/daemon.cc
+	M    server/Makefile.am
+	M    NEWS
+	M    command/Makefile.am
+
+2006-08-25  Patrick West <pwest@ucar.edu>
+
+	Missing end quote around the name of the container.
+	M    BESDelContainersResponseHandler.cc
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	If the bes daemon fails to start for some reason then no pid file is
+	created, so can't cat it. Check to see if the pid file exists. If it
+	does, then the bes started successfully. If it doesn't, then there
+	was a problem.
+	M    server/besctl.in
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Changed the error message where a data handler is not found to say data
+	handler instead of request handler.
+	M    dispatch/BESRequestHandlerList.cc
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Removed yet another message to stdout.
+	M    ppt/PPTServer.cc
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Added a ConstraintEvaluator to the DataHandlerInterface so that data
+	handlers could add constraint functions of the different types to
+	use when sending the response object.
+	M    dispatch/BESFilterTransmitter.cc
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESDataHandlerInterface.h
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Removed output to stdout when starting and stopping the besd and the bes
+	applications. Modified the besctl to output more information.
+	M    dispatch/BESBaseApp.cc
+	M    ppt/UnixSocket.cc
+	M    ppt/SocketListener.cc
+	M    ppt/TcpSocket.cc
+	M    server/besctl.in
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Changed the signature of the Module initialize and terminate
+	routines to take the name of the module as specified in the bes
+	configuration file. This way, request handlers and whatever else can
+	use the name as specified in the bes configuration file instead of a
+	hard-coded name. Changed adding the catalog to first look to see if
+	a catalog with the given name has already been added. if it has,
+	then the new one is not added and false is returned.  Also added
+	rem_catalog and find_catalog methods to BESCatalogList.
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESModule.h
+	M    dispatch/BESCatalog.h
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESCatalogList.h
+	M    dispatch/BESModule.cc
+	M    dispatch/BESAbstractModule.h
+	M    dispatch/BESCatalogDirectory.cc
+	M    server/test/TestModule.cc
+	M    server/test/TestModule.h
+	M    command/DAPCommandModule.cc
+	M    command/DAPCommandModule.h
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Default uncompression script for uncompressing compressed data files
+	using gzip and bzip2
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Added ability to uncompress compressed data files by using the
+	access method on the BESContainer class, rather than simply calling
+	get_real_name, which is what was being called. Call get_real_name to
+	simply get the real name of the file, but use access when ready to
+	access the file for reading. Added three parameters to the
+	configuraiton file. BES.CacheDir specifies where the uncompressed
+	files will be stored, default /tmp. BES.Compressed.Extensions is a
+	regular expression of the different compressed file types.
+	BES.Compressed.Script is the shell command to use to uncompress the
+	files, not just gzip or bzip2, but a script that can determine what
+	to use to uncompress the files, determine the name of the cached
+	file that will be created, uncompress the data file, and echo to
+	stdout what the cached file name is.
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	M    dispatch/BESContainerStorageCatalog.h
+	M    dispatch/BESContainer.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESContainer.cc
+
+2006-08-17  Patrick West <pwest@ucar.edu>
+
+	Changed in the bes configuration file parameters that start with
+	OPeNDAP to BES. Catalog entries that started with Catalog were
+	changed to start with BES.
+	M    dispatch/BESLog.cc
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESInfoList.cc
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    ppt/Makefile.am
+	M    server/BESServerHandler.cc
+	M    server/ServerApp.cc
+
+2006-08-15  Patrick West <pwest@ucar.edu>
+
+	Checking for kerberos and bumped version to 3.2.0 because of Exception
+	changes, changes to creating BESInfo objects and the transfer of those
+	objects.
+	M    configure.ac
+
+2006-08-14  Patrick West <pwest@ucar.edu>
+
+	Apache module using new versions of Exception classes. Also added
+	support for using authentication tokens with the username instead of
+	just the username.
+	M    apache/BESApacheInterface.cc
+	M    apache/BESApacheWrapper.cc
+	M    apache/BESApacheWrapper.h
+	M    apache/mod_opendap.cc
+	M    apache/BESApacheRequests.cc
+
+2006-08-14  Patrick West <pwest@ucar.edu>
+
+	The macro wrapper in PPTClient.h had a typo in the #define. Removed
+	the CVS Log tag from the bottom of the file as well.
+	M    PPTClient.h
+
+2006-08-14  Patrick West <pwest@ucar.edu>
+
+	Instead of user information, clients might send token information,
+	that can be used for authentication.
+	M    BESDataRequestInterface.h
+	M    BESDataNames.h
+
+2006-08-11  Patrick West <pwest@ucar.edu>
+
+	Added a --with-kerberos option to the bes configuration, which
+	defaults to /usr/kerberos/include, in the openssl.m4 file.
+	M    conf/openssl.m4
+
+2006-08-11  Patrick West <pwest@ucar.edu>
+
+	Modified openssl.m4 to check for the kerberos includes whether or
+	not -with-openssl is passed or not. Before, this was only being
+	looked for if that flag was NOT being passed in to the configure
+	script. Modified it so it does look no matter what.
+	M    conf/openssl.m4
+
+2006-08-07  Patrick West <pwest@ucar.edu>
+
+	Ticket #467. The CatalogDirectory includes first what is in the
+	Include parameter in the bes configuration file and then applies the
+	Exclude Paramter. This is different from the original behavior that
+	first applied the Exclude parameter and then the Include parameter.
+	The TypeMatch parameter is only used when creating containers where
+	a regular expression is matched to determine the type of data.
+	Updated the bes.conf.in file to describe better the Include and
+	Exclude parameters.
+	M    BESCatalogDirectory.cc
+	M    bes/bes.conf.in
+
+2006-08-07  Patrick West <pwest@ucar.edu>
+
+	Message letting the client know that the informational file was not
+	found was missing a space before the "not found" part.
+	M    BESInfo.cc
+
+2006-08-03  Patrick West <pwest@ucar.edu>
+
+	stopbes renamed to besctl, which was renamed to besctl.in. Changed
+	Makefile.am to create run directory under $prefix. This is where the
+	bes.pid file is created when besd is run and where besctl looks for
+	the bes.pid file to stop, restart, and check status.
+	D    server/stopbes
+	M    server/Makefile.am
+	D    server/besctl
+
+2006-08-02  Patrick West <pwest@ucar.edu>
+
+	besctl command to start, stop, restart, check status, and display
+	the current config file. Created a .in file in the server directory
+	with the besctl being created during the configure. besctl is
+	installed in the sbin directory.
+	M    configure.ac
+	A    server/besctl.in
+	M    server/Makefile.am
+
+2006-08-02  Patrick West <pwest@ucar.edu>
+
+	BES control script, start, stop, restart, and status commands
+	A    besctl
+
+2006-08-02  Patrick West <pwest@ucar.edu>
+
+	Added default cache directory setting for HDF4 data handler.
+	M    bes.conf.in
+
+2006-07-20  James Gallagher <jgallagher@opendap.org>
+
+	Updated properties on NEWS
+
+2006-07-20  James Gallagher <jgallagher@opendap.org>
+
+	Updates to ChangeLog, configure.ac and NEWS: info about version 3.1.1.
+	dispatch/bes/bes.conf.in: Fixed problems with names in bug #456.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2006-07-11  Patrick West <pwest@ucar.edu>
 
 	Method in BESInfo set_buffered should be returning whether the
