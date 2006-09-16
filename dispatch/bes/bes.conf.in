@@ -8,8 +8,10 @@
   
 #-----------------------------------------------------------------------#
 # Who is the administrator for this OPeNDAP back-end server             #
+# Please replace this with the email address to use that gets displayed	#
+# to users of your server when errors occur.				#
 #-----------------------------------------------------------------------#
-BES.ServerAdministrator=<admin email address>
+BES.ServerAdministrator=admin.email.address@your.domain.name
 
 #-----------------------------------------------------------------------#
 # Where we log the stuff...and how much we log                          #
@@ -27,31 +29,38 @@ BES.LogVerbose=no
 # Server4. The Server4 shared object modules are installed (using 'make
 # install') in<prefix>/lib/bes. Make sure you point to the Server4
 # modules and not the Server3 'handlers'. The Server4 modules all have
-# 'module' in their names.
+# '_module' in their names.
 # 2. The commands that the BES responds to are also provided by modules,
 # so make sure that those are loaded in as well. Two modules are
-# required for use with Server4, the dap and dap_cmd modules.
+# required for use with Server4, the dap and cmd modules.
+# 3. If you want ascii, info, and html responses provided by the bes, just
+# as in the Server3 handlers, then include the ascii, usage, and www
+# modules.
+# 4. Order matters. Include the dap, cmd, ascii, usage, www first before
+# including handler modules like nc, hdf4, ff.
 # 
 # Here's an example of the configuration for three handlers (Netcdf,
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
-# BES.modules=dap,cmd,ascii,usage,www,nc,hdf4,ff
+# BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
 # BES.module.dap=@pkglibdir@/libdap_module.so
 # BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
 # BES.module.ascii=@pkglibdir@/libascii_module.so
 # BES.module.usage=@pkglibdir@/libusage_module.so
 # BES.module.www=@pkglibdir@/libwww_module.so
 # BES.module.nc=@pkglibdir@/libnc_module.so
-# BES.module.hdf4=@pkglibdir@/libhdf4_module.so
+# BES.module.h4=@pkglibdir@/libhdf4_module.so
 # BES.module.ff=@pkglibdir@/libff_module.so
 
-BES.modules=<name>
-BES.module.<name>=<full path to shared library>
+BES.modules=name
+BES.module.name=/full/path/to/shared/library.so
 
 #-----------------------------------------------------------------------#
-# Catalog configuration
+# Catalog configuration							#
+# If you are providing a catalog specify the full path to your data's	#
+# root directory here.
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.RootDirectory=<full path data root directory>
+BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
 
 # The TypeMatch parameter is a list of handler/module names a colon and
 # a regular expression. If the regular expression matches an item, then
@@ -60,7 +69,7 @@ BES.Catalog.catalog.RootDirectory=<full path data root directory>
 # containers in the BES (the 'set container' command).
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
-BES.Catalog.catalog.TypeMatch=<list>;
+BES.Catalog.catalog.TypeMatch=type:expr;
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.
@@ -78,14 +87,14 @@ BES.Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
-# is secure or not                                                      #
+# is secure or not. Secure server is experimental.			#
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
 BES.ServerUnixSocket=/tmp/opendap.socket
 BES.ServerSecure=no
 
 #-----------------------------------------------------------------------#
-# help file locations, for text and html versions                       #
+# help file locations, for text, html, and xml versions			#
 #-----------------------------------------------------------------------#
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTTP=@pkgdatadir@/bes_help.html
