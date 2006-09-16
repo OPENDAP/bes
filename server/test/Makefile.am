@@ -1,6 +1,4 @@
 
-# Build libdispatch, part of the BES code.
-
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/command
@@ -15,14 +13,12 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/command
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libtestmodule.la
+check_LTLIBRARIES = libtestmodule.la
 
 libtestmodule_la_SOURCES = $(SRCS) $(HDRS)
 libtestmodule_la_LDFLAGS = -avoid-version -module
 libtestmodule_la_LIBADD = ../../command/libbes_command.la \
   ../../dispatch/libbes_dispatch.la
-
-pkginclude_HEADERS = $(HDRS)
 
 ##############################################################################
 #

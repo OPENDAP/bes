@@ -30,6 +30,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
+Requires:       libdap-devel >= 3.7.0
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -66,8 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/bes/
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
 %{_datadir}/bes/
-%{_bindir}/bes
-%{_bindir}/besd
+%{_bindir}/beslistener
+%{_bindir}/besdaemon
 %{_bindir}/besctl
 %{_bindir}/bes-uncompress.sh
 %{_bindir}/bes-purge.pl
