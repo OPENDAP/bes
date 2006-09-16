@@ -1,5 +1,5 @@
 
-# Build libdispatch, part of the BES code.
+# Build libbes_dispatch and libdap_module, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -16,15 +16,16 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = test 
 DIST_SUBDIRS = test
 
-lib_LTLIBRARIES = libdispatch.la
+lib_LTLIBRARIES = libbes_dispatch.la
 pkglib_LTLIBRARIES = libdap_module.la
 
-libdispatch_la_SOURCES = $(SRCS) $(HDRS)
-libdispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-libdispatch_la_CPPFLAGS = -DBES_CONF_DIR=\"${sysconfdir}\"
+libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
+libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+libbes_dispatch_la_CPPFLAGS = -DBES_CONF_DIR=\"${sysconfdir}\"
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-libdap_module_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+libdap_module_la_LDFLAGS = -avoid-version -module
+libdap_module_la_LIBADD = libbes_dispatch.la
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
@@ -54,7 +55,7 @@ bes-purge.pl: bes-purge.pl.in ../config.status
 
 ##############################################################################
 #
-# Sources and Headers for libdispatch.
+# Sources and Headers
 
 SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \

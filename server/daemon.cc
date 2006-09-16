@@ -53,7 +53,7 @@ using std::string ;
 #include "config.h"
 
 #define OPENDAP_SERVER_ROOT "OPENDAP_SERVER_ROOT"
-#define OPENDAP_SERVER "/bes"
+#define OPENDAP_SERVER "/beslistener"
 #define OPENDAP_SERVER_PID "bes.pid"
 
 int  daemon_init() ;

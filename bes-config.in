@@ -59,7 +59,7 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-       	echo "-L${libdir} -L${libdir}/bes -ldispatch -lopendap_command -lppt @LIBS@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt @LIBS@"
        	;;
 
     --modulesdir)

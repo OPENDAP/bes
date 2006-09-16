@@ -6,11 +6,11 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch command ppt cmdln server
+SUBDIRS = dispatch command ppt cmdln server docs
 
 bin_SCRIPTS = bes-config
 
-EXTRA_DIST = templates apache
+EXTRA_DIST = templates apache doxy.conf bes.spec
 
 #########################################################################
 #
@@ -18,4 +18,4 @@ EXTRA_DIST = templates apache
 
 .PHONY: docs
 docs:
-	doxygen doxy.conf
+	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf

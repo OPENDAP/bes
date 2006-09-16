@@ -35,12 +35,15 @@ BES.LogVerbose=no
 # Here's an example of the configuration for three handlers (Netcdf,
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
-# BES.modules=nc,hdf4,ff,cmd,dap
+# BES.modules=dap,cmd,ascii,usage,www,nc,hdf4,ff
+# BES.module.dap=@pkglibdir@/libdap_module.so
+# BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
+# BES.module.ascii=@pkglibdir@/libascii_module.so
+# BES.module.usage=@pkglibdir@/libusage_module.so
+# BES.module.www=@pkglibdir@/libwww_module.so
 # BES.module.nc=@pkglibdir@/libnc_module.so
 # BES.module.hdf4=@pkglibdir@/libhdf4_module.so
 # BES.module.ff=@pkglibdir@/libff_module.so
-# BES.module.dap=@pkglibdir@/libdap_module.so
-# BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
 
 BES.modules=<name>
 BES.module.<name>=<full path to shared library>

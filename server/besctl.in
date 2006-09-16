@@ -10,7 +10,7 @@ then
     prefix=/usr/local
 fi
 
-if [ ! -f ${bindir}/besd ]
+if [ ! -f ${bindir}/besdaemon ]
 then
     echo "BES does not appear to be installed in ${bindir}"
     exit 1
@@ -38,7 +38,7 @@ start)
 	exit 1
     fi
     echo "Starting the BES daemon"
-    "${bindir}"/besd $*
+    "${bindir}"/besdaemon $*
     sleep 5
     if [ -f "${localstatedir}"/run/bes.pid ]
     then
@@ -62,7 +62,7 @@ restart)
 	exit 1
     fi
     echo "Starting the BES daemon"
-    "${bindir}"/besd $*
+    "${bindir}"/besdaemon $*
     sleep 5
     if [ -f "${localstatedir}"/run/bes.pid ]
     then

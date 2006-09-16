@@ -14,20 +14,20 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 SUBDIRS = test
 
-bin_PROGRAMS = bes besd
+bin_PROGRAMS = beslistener besdaemon
 dist_bin_SCRIPTS = besctl
 
-bes_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
+beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
 		ServerApp.h ServerExitConditions.h 
 
-bes_LDADD = $(SERVER_LIBS) $(openssl_libs)
+beslistener_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
-besd_SOURCES = daemon.cc
-besd_CPPFLAGS = -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
+besdaemon_SOURCES = daemon.cc
+besdaemon_CPPFLAGS = -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
 
-besd_LDADD = $(SERVER_LIBS) $(openssl_libs)
+besdaemon_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
-SERVER_LIBS = -L../ppt -lppt -L../command -lopendap_command -L../dispatch -ldispatch
+SERVER_LIBS = -L../ppt -lbes_ppt -L../command -lbes_command -L../dispatch -lbes_dispatch
 
 install-data-local:
 	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"

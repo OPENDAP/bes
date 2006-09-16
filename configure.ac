@@ -99,6 +99,7 @@ AC_CHECK_LIBDAP([3.7.0],
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/test/Makefile
+		 docs/Makefile
 		 command/Makefile
 		 ppt/Makefile
 		 cmdln/Makefile

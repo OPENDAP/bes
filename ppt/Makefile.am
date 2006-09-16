@@ -12,11 +12,11 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libppt.la
+lib_LTLIBRARIES = libbes_ppt.la
 
-libppt_la_SOURCES = $(SRCS) $(HDRS)
-libppt_la_CPPFLAGS = $(openssl_includes) $(kerberos_includes)
-libppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
+libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
+libbes_ppt_la_CPPFLAGS = $(openssl_includes) $(kerberos_includes)
+libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
 

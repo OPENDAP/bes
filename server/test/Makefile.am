@@ -18,8 +18,9 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 lib_LTLIBRARIES = libtestmodule.la
 
 libtestmodule_la_SOURCES = $(SRCS) $(HDRS)
-libtestmodule_la_LIBADD = ../../command/libopendap_command.la \
-  ../../dispatch/libdispatch.la
+libtestmodule_la_LDFLAGS = -avoid-version -module
+libtestmodule_la_LIBADD = ../../command/libbes_command.la \
+  ../../dispatch/libbes_dispatch.la
 
 pkginclude_HEADERS = $(HDRS)
 

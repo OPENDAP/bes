@@ -1,5 +1,5 @@
 
-# Build libdispatch, part of the BES code.
+# Build bes command library, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -12,15 +12,16 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-lib_LTLIBRARIES = libopendap_command.la
+lib_LTLIBRARIES = libbes_command.la
 pkglib_LTLIBRARIES = libdap_cmd_module.la
 
-libopendap_command_la_SOURCES = $(SRCS) $(HDRS)
-libopendap_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
-libopendap_command_la_LIBADD = ../dispatch/libdispatch.la
+libbes_command_la_SOURCES = $(SRCS) $(HDRS)
+libbes_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
+libbes_command_la_LIBADD = ../dispatch/libbes_dispatch.la
 
 libdap_cmd_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-libdap_cmd_module_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
+libdap_cmd_module_la_LDFLAGS = -avoid-version -module
+libdap_cmd_module_la_LIBADD = libbes_command.la ../dispatch/libbes_dispatch.la
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 
