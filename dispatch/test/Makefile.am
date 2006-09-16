@@ -42,44 +42,44 @@ DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT plistT 
 # RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir $${tool}suite
 
 constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h baseApp.h Application.h
-constraintT_LDADD =  ../libdispatch.la
+constraintT_LDADD =  ../libbes_dispatch.la
 
 containerT_SOURCES = containerT.cc baseApp.cc containerT.h baseApp.h Application.h
-containerT_LDADD =  ../libdispatch.la
+containerT_LDADD =  ../libbes_dispatch.la
 
 defT_SOURCES = defT.cc baseApp.cc defT.h baseApp.h Application.h
-defT_LDADD =  ../libdispatch.la
+defT_LDADD =  ../libbes_dispatch.la
 
 failInitT_SOURCES = failInitT.cc TheFailedCat.cc baseApp.cc failInitT.h TheFailedCat.h baseApp.h Application.h
-failInitT_LDADD =  ../libdispatch.la
+failInitT_LDADD =  ../libbes_dispatch.la
 
 initT_SOURCES = initT.cc TheCat.cc TheDog.cc cat.cc dog.cc Animal.cc baseApp.cc initT.h TheCat.h TheDog.h cat.h dog.h Animal.h baseApp.h Application.h
-initT_LDADD =  ../libdispatch.la
+initT_LDADD =  ../libbes_dispatch.la
 
 keysT_SOURCES = keysT.cc baseApp.cc keysT.h baseApp.h Application.h
-keysT_LDADD =  ../libdispatch.la
+keysT_LDADD =  ../libbes_dispatch.la
 
 pfileT_SOURCES = pfileT.cc baseApp.cc pfileT.h baseApp.h Application.h
-pfileT_LDADD =  ../libdispatch.la
+pfileT_LDADD =  ../libbes_dispatch.la
 
 plistT_SOURCES = plistT.cc baseApp.cc plistT.h baseApp.h Application.h
-plistT_LDADD =  ../libdispatch.la
+plistT_LDADD =  ../libbes_dispatch.la
 
 pvolT_SOURCES = pvolT.cc baseApp.cc pvolT.h baseApp.h Application.h
-pvolT_LDADD =  ../libdispatch.la
+pvolT_LDADD =  ../libbes_dispatch.la
 
 replistT_SOURCES = replistT.cc TestReporter.cc baseApp.cc replistT.h TestReporter.h baseApp.h Application.h
-replistT_LDADD =  ../libdispatch.la
+replistT_LDADD =  ../libbes_dispatch.la
 
 reqhandlerT_SOURCES = reqhandlerT.cc TestRequestHandler.cc baseApp.cc reqhandlerT.h TestRequestHandler.h baseApp.h Application.h
-reqhandlerT_LDADD =  ../libdispatch.la
+reqhandlerT_LDADD =  ../libbes_dispatch.la
 
 reqlistT_SOURCES = reqlistT.cc TestRequestHandler.cc baseApp.cc reqlistT.h TestRequestHandler.h baseApp.h Application.h
-reqlistT_LDADD =  ../libdispatch.la
+reqlistT_LDADD =  ../libbes_dispatch.la
 
 resplistT_SOURCES = resplistT.cc TestResponseHandler.cc baseApp.cc resplistT.h TestResponseHandler.h baseApp.h Application.h
-resplistT_LDADD =  ../libdispatch.la
+resplistT_LDADD =  ../libbes_dispatch.la
 
 infoT_SOURCES = infoT.cc baseApp.cc infoT.h baseApp.h Application.h
-infoT_LDADD =  ../libdispatch.la
+infoT_LDADD =  ../libbes_dispatch.la
 

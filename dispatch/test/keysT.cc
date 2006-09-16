@@ -64,7 +64,9 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_message() << endl ;
+	// have to comment this out because the error includes the current
+	// working directory of where it is looking for the config file.
+	//cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;
@@ -79,7 +81,9 @@ run(void)
     catch( BESException &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
-	cout << e.get_message() << endl ;
+	// have to comment this out because the error includes the current
+	// working directory of where it is looking for the config file.
+	//cout << e.get_message() << endl ;
     }
 
     cout << endl << "*****************************************" << endl;

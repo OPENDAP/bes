@@ -11,8 +11,8 @@ global dispatchTEST
 # stored in comp_output by das-test_start. The two strings should match
 # exactly.
 
-set test_out "I am building new cat
-I am building new dog, using FUNINIT with no termination
+set test_out "I am building new dog, using FUNINIT with no termination
+I am building new cat
 
 *****************************************
 Entered initT::run

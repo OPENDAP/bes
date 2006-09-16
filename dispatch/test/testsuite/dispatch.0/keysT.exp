@@ -18,16 +18,10 @@ Entered keysT::run
 *****************************************
 no file set
 unable to create BESKeys, good, because:
-OPeNDAP: fatal, can not open initialization file 
-The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
-
 
 *****************************************
 notfound file set
 unable to create BESKeys, good, because:
-OPeNDAP: fatal, can not open initialization file notfound.ini
-The current working directory is /project/cedar/src/pwest/opendap-g/bes/dispatch/test
-
 
 *****************************************
 bad keys, not enough equal signs

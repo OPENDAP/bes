@@ -33,7 +33,7 @@ run(void)
 
     try
     {
-	string key = (string)"OPeNDAP.Container.Persistence.File.TheFile=" +
+	string key = (string)"BES.Container.Persistence.File.TheFile=" +
 		     pwd_s + "/container01.file" ;
 	TheBESKeys::TheKeys()->set_key( key ) ;
 	BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageFile( "TheFile" ) ) ;
@@ -105,7 +105,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "set to strict" << endl;
-    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=strict" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.Container.Persistence=strict" ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "try to find symbolic name that doesn't exist, strict" << endl;
@@ -167,7 +167,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "set to nice" << endl;
-    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Container.Persistence=nice" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.Container.Persistence=nice" ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "try to find symbolic name that doesn't exist, nice" << endl;

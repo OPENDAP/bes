@@ -43,6 +43,7 @@ OK
 *****************************************
 Set Info type to xml ... 
 OK
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <testXMLResponse>
     <response>
         <tag1>tag1 data</tag1>

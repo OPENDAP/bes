@@ -18,7 +18,7 @@ Entered pfileT::run
 *****************************************
 Try to get one called File
 couldn't get File, good, because
-OPeNDAP.Container.Persistence.File.File not defined in key file
+BES.Container.Persistence.File.File not defined in key file
 
 *****************************************
 Try to get one called FileNot

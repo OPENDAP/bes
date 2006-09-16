@@ -36,7 +36,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to txt ... " ;
-    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Info.Type", "txt" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.Info.Type", "txt" ) ;
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     BESTextInfo *t_info = dynamic_cast<BESTextInfo *>(info) ;
     if( t_info )
@@ -58,7 +58,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to html ... " << endl ;
-    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Info.Type", "html" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.Info.Type", "html" ) ;
     info = BESInfoList::TheList()->build_info() ;
     BESHTMLInfo *h_info = dynamic_cast<BESHTMLInfo *>(info) ;
     if( h_info )
@@ -80,7 +80,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to xml ... " << endl ;
-    TheBESKeys::TheKeys()->set_key( "OPeNDAP.Info.Type", "xml" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.Info.Type", "xml" ) ;
     info = BESInfoList::TheList()->build_info() ;
     BESXMLInfo *x_info = dynamic_cast<BESXMLInfo *>(info) ;
     if( x_info )
