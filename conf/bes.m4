@@ -46,7 +46,7 @@ AC_DEFUN([AC_CHECK_BES],
      else
        BES_LIBS="`$BES_CONFIG --libs`"
        BES_CPPFLAGS="`$BES_CONFIG --cflags`"
-       BES_MODULE_DIR="`$BES_CONFIG --prefix`/lib/bes"
+       BES_MODULE_DIR="`$BES_CONFIG --modulesdir`"
      fi
    fi
    if test x$bes_no = x ; then
