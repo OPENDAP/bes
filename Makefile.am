@@ -34,7 +34,8 @@ libhdf5_handler_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS)
 
 libhdf5_module_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS) $(SERVER_SRC) $(SERVER_HDR)
 libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
-libhdf5_module_la_LDFLAGS = $(BES_LDFLAGS) -L${hdf5_path}/lib -lhdf5 -lz
+libhdf5_module_la_LDFLAGS = -avoid-version -module 
+libhdf5_module_la_LIBADD = $(BES_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
 dap_h5_handler_SOURCES = h5_handler.cc
 dap_h5_handler_LDADD = libhdf5_handler.la -L${hdf5_path}/lib -lhdf5 -lz
