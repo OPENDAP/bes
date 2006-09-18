@@ -68,7 +68,7 @@ BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
-# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;hdf4:.*\.(hdf|HDF);ff:.*\.dat;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF);ff:.*\.dat;
 BES.Catalog.catalog.TypeMatch=type:expr;
 
 # Normally, when a client asks for a data catalog, all files and directories
