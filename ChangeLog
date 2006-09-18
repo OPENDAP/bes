@@ -1,3 +1,60 @@
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Added default host and port information to the opendap.ini file.
+	Changed the _module library to not use version information and to
+	be built as a module. Update the bes.m4 file to use the
+	--modulesdir flag to bes-config to get the name of the module
+	directory, which is lib/bes
+	
+	M    opendap.ini
+	M    conf/bes.m4
+	M    Makefile.am
+
+2006-09-08  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac, Makefile.am, hdfclass/Makefile.am: Fixed ticket 469.
+	I made the hdfclass library a convenience library and removed the
+	hdf4_handler library. The handler now builds and runs on OS/X.
+
+2006-08-24  Patrick West <pwest@ucar.edu>
+
+	Delete HDFRequestHandler.h and .cc because we are using
+	HDF4RequestHandler.h and .cc. Setting the post constraint in the
+	data handler interface after building the dds and datadds to be
+	used when sending the response object. Also calling function to
+	register constraint evaluation functions in the constraint
+	evaluator of the data handler interface to be used when sending
+	the response object.
+	
+	D    HDFRequestHandler.h
+	M    HDF4RequestHandler.cc
+	D    HDFRequestHandler.cc
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Changed the name of the module to h4 instead of hdf4.
+	M    opendap.ini
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Passing the name of the module to the initialize and terminate
+	methods of the Module class so that it is set in the bes
+	configuration file instead of hard-coded
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	changed access to file to use access method on Container and added
+	compression parameters to the BES configuraiton file
+
+2006-08-02  Patrick West <pwest@ucar.edu>
+
+	Changed the CacheDir setting to the default, which is /tmp.
+	M    opendap.ini
+
+2006-07-20  James Gallagher <jgallagher@opendap.org>
+
+	NEWS, ChangeLog: Minor update regarding build fix for BES.
+
 2006-07-20  James Gallagher <jgallagher@opendap.org>
 
 	Updated configure.ac so that the build looks for the BES in places

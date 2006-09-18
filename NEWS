@@ -1,6 +1,16 @@
 
 $Id$
 
+Version 3.7.2
+
+Now builds and works on OS/X
+
+Now works with the netcdf handler.
+
+Now the handler name is set inthe BES, not hardcoded here.
+
+Now builds as a (libtool) module
+
 Version 3.7.1
 
 Build fixes (now finds the BES using the same logic as the netcdf and
