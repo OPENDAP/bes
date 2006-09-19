@@ -392,11 +392,11 @@ CmdClient::interact()
     {
 	string message = "" ;
 	size_t len = this->readLine( message ) ;
-	if( message == "exit" )
+	if( len == -1 || message == "exit" || message == "exit;" )
 	{
 	    done = true ;
 	}
-	else if( message == "help" || message == "?" )
+	else if( message == "help" || message == "help;" || message == "?" )
 	{
 	    this->displayHelp() ;
 	}
@@ -436,6 +436,16 @@ CmdClient::readLine( string &msg )
 	else
 	{
 	    msg = buf ;
+	}
+    }
+    else
+    {
+	if( !buf )
+	{
+	    // If a null buffer is returned then this means that EOF is
+	    // returned. This is different from the user just hitting enter,
+	    // which means a character buffer is returned, but is empty.
+	    len = -1 ;
 	}
     }
     if( buf )
