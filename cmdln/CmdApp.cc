@@ -380,12 +380,10 @@ CmdApp::run()
     {
 	if( _cmd != "" )
 	{
-	    cout << "executeCommand" << endl ;
 	    _client->executeCommand( _cmd ) ;
 	}
 	else if( _inputStrm )
 	{
-	    cout << "executeCommands" << endl ;
 	    _client->executeCommands( *_inputStrm ) ;
 	}
 	else
