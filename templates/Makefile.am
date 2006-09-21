@@ -9,26 +9,24 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-bin_PROGRAMS = dap_OPENDAP_TYPE_handler
-lib_LTLIBRARIES = libOPENDAP_TYPE_handler.la
+lib_LTLIBRARIES = libOPENDAP_TYPE_module.la
 
 OPENDAP_CLASS_SRCS:=
 
 OPENDAP_CLASS_HDRS:=
 
 BES_SRCS = \
-		OPENDAP_CLASSModule.cc OPENDAP_CLASSRequestHandler.cc \
-		OPENDAP_CLASSHandlerApp.cc
+		OPENDAP_CLASSModule.cc OPENDAP_CLASSRequestHandler.cc
 
 BES_HDRS = \
 		OPENDAP_CLASSModule.h OPENDAP_CLASSRequestHandler.h \
-		OPENDAP_CLASSHandlerApp.h OPENDAP_CLASSResponseNames.h \
+		OPENDAP_CLASSResponseNames.h \
 		config_OPENDAP_TYPE.h
 
-libOPENDAP_TYPE_handler_la_SOURCES = $(OPENDAP_CLASS_SRCS) $(BES_SRCS) $(OPENDAP_CLASS_HDRS) $(BES_HDRS)
-
-dap_OPENDAP_TYPE_handler_SOURCES = OPENDAP_TYPE_handler.cc
-dap_OPENDAP_TYPE_handler_LDADD = libOPENDAP_TYPE_handler.la
+libOPENDAP_TYPE_module_la_SOURCES = $(OPENDAP_CLASS_SRCS) $(BES_SRCS) $(OPENDAP_CLASS_HDRS) $(BES_HDRS)
+libOPENDAP_TYPE_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+libOPENDAP_TYPE_module_la_LDFLAGS = -avoid-version -module 
+libOPENDAP_TYPE_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
@@ -41,7 +39,7 @@ CLEANFILES = *~
 # Build linux RPMs
 
 srpm:
-	rpmbuild -ts cdf_handler-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts OPENDAP_TYPE_module-@PACKAGE_VERSION@.tar.gz
 
 rpm:
-	rpmbuild -tb cdf_handler-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb OPENDAP_TYPE_module-@PACKAGE_VERSION@.tar.gz

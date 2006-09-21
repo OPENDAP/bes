@@ -1,5 +1,7 @@
 // OPENDAP_CLASSRequestHandler.cc
 
+#include "config.h"
+
 #include "OPENDAP_CLASSRequestHandler.h"
 #include "BESResponseHandler.h"
 #include "BESResponseException.h"
@@ -7,7 +9,6 @@
 #include "OPENDAP_CLASSResponseNames.h"
 #include "BESVersionInfo.h"
 #include "BESTextInfo.h"
-#include "config_OPENDAP_TYPE.h"
 #include "BESConstraintFuncs.h"
 
 OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( string name )

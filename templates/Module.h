@@ -10,8 +10,8 @@ class OPENDAP_CLASSModule : public BESAbstractModule
 public:
     				OPENDAP_CLASSModule() {}
     virtual		    	~OPENDAP_CLASSModule() {}
-    virtual void		initialize() ;
-    virtual void		terminate() ;
+    virtual void		initialize( const string &modname ) ;
+    virtual void		terminate( const string &modname ) ;
 } ;
 
 #endif // I_OPENDAP_CLASSModule_H

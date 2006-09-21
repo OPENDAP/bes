@@ -53,7 +53,7 @@ q
 EOF
 done
 
-for i in HandlerApp.h HandlerApp.cc Module.h Module.cc
+for i in Module.h Module.cc
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
 ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
@@ -63,24 +63,24 @@ q
 EOF
 done
 
-for i in _handler.cc
-do
-/bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
-ed ./${serverType}${i} << EOF > /dev/null 2>&1
-,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_TYPE/${serverType}/g
-w
-q
-EOF
-done
+#for i in _handler.cc
+#do
+#/bin/cp ${TEMPLATE_DIR}/${i} ./${serverType}${i}
+#ed ./${serverType}${i} << EOF > /dev/null 2>&1
+#,s/OPENDAP_CLASS/${classPrefix}/g
+#,s/OPENDAP_TYPE/${serverType}/g
+#w
+#q
+#EOF
+#done
 
-/bin/cp ${TEMPLATE_DIR}/config config_${serverType}.h.in
-ed ./config_${serverType}.h.in << EOF > /dev/null 2>&1
-,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_TYPE/${serverType}/g
-w
-q
-EOF
+#/bin/cp ${TEMPLATE_DIR}/config config_${serverType}.h.in
+#ed ./config_${serverType}.h.in << EOF > /dev/null 2>&1
+#,s/OPENDAP_CLASS/${classPrefix}/g
+#,s/OPENDAP_TYPE/${serverType}/g
+#w
+#q
+#EOF
 
 for i in Makefile.am configure.ac
 do
@@ -93,11 +93,11 @@ q
 EOF
 done
 
-/bin/cp -R ${TEMPLATE_DIR}/conf .
+/bin/mkdir conf
+/bin/cp ${TEMPLATE_DIR}/conf/* conf
 
 for i in $RESPONSE_TYPES
 do
-    echo "adding $i"
     ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
 1
 /${serverType}_build_vers
@@ -188,7 +188,7 @@ EOF
 
     if [ "$headerFile" != "" ]
     then
-	ed ${classPrefix}RequestHandler.cc << EOF
+	ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
 1
 /BESTextInfo
 a
@@ -198,7 +198,7 @@ w
 q
 EOF
     fi
-    ed ${classPrefix}RequestHandler.cc << EOF
+    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
 1
 /VERS_RESPONSE
 -1
@@ -242,6 +242,11 @@ echo "* Creating your configuration script                  *"
 echo "*                                                     *"
 echo "*******************************************************"
 autoreconf
+if [ $? != 0 ]
+then
+    echo "FAILED"
+    exit 1
+fi
 
 echo "*******************************************************"
 echo "*                                                     *"
@@ -249,6 +254,11 @@ echo "* Running your configuration script                   *"
 echo "*                                                     *"
 echo "*******************************************************"
 ./configure --with-dap=${OPENDAP_ROOT} --with-bes=${OPENDAP_ROOT}
+if [ $? != 0 ]
+then
+    echo "FAILED"
+    exit 1
+fi
 
 echo "*******************************************************"
 echo "*                                                     *"
@@ -256,10 +266,15 @@ echo "* Building your server                                *"
 echo "*                                                     *"
 echo "*******************************************************"
 make
+if [ $? != 0 ]
+then
+    echo "FAILED"
+    exit 1
+fi
 
 echo "*******************************************************"
 echo "*                                                     *"
-echo "* Your ${classPrefix} files have been created         *"
+echo "* Your ${classPrefix} files have been created"
 echo "*                                                     *"
 echo "* You will need to make modifications to some of the  *"
 echo "* code created here. Please refer to the document     *"

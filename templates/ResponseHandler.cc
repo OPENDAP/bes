@@ -1,6 +1,7 @@
 // OPENDAP_RESPONSEResponseHandler.cc
 
 #include "OPENDAP_RESPONSEResponseHandler.h"
+#include "BESInfoList.h"
 #include "BESInfo.h"
 
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( string name )
@@ -17,11 +18,10 @@ OPENDAP_RESPONSEResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     // This is an example. Here you would build the BESResponseObject
     // object and set it to the _response protected data member
-    BESInfo *info = new BESInfo( dhi.transmit_protocol == "HTTP" ) ;
+    BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
-    // And here is where your code would code to fill in that response
-    // object
+    // Here is where your code would fill in the new response object
 }
 
 void
@@ -33,11 +33,8 @@ OPENDAP_RESPONSEResponseHandler::transmit( BESTransmitter *transmitter,
     // response object
     if( _response )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( dhi.transmit_protocol == "HTTP" )
-	    transmitter->send_html( *info, dhi ) ;
-	else
-	    transmitter->send_text( *info, dhi ) ;
+	BESInfo *info = dynamic_cast<BESInfo *>( _response ) ;
+	info->transmit( transmitter, dhi ) ;
     }
 }
 
