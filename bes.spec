@@ -1,5 +1,5 @@
 Name:           bes
-Version:        3.2.0
+Version:        3.2.1
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -12,7 +12,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  libdap-devel >= 3.7.0
 BuildRequires:  doxygen
-Requires:       bzip2 gzip
+# I think these are optional. jimg
+# Requires:       bzip2 gzip
 
 %description
 BES is a new, high-performance back-end server software framework for 

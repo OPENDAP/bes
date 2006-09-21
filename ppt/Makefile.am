@@ -21,13 +21,13 @@ libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 pkginclude_HEADERS = $(HDRS)
 
 
-SRCS:=PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
-	SocketListener.cc PPTServer.cc PPTProtocol.cc \
+SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
+	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
 	PPTConnection.cc SSLClient.cc SSLServer.cc SSLConnection.cc
 
-HDRS:=PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h \
-	SocketException.h PPTException.h SocketConfig.h \
-	SocketListener.h PPTServer.h PPTProtocol.h \
-	PPTConnection.h Connection.h ServerHandler.h \
+HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
+	SocketException.h PPTException.h SocketConfig.h			\
+	SocketListener.h PPTServer.h PPTProtocol.h			\
+	PPTConnection.h Connection.h ServerHandler.h			\
 	SSLClient.h SSLServer.h SSLConnection.h
 

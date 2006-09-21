@@ -1,5 +1,15 @@
-3.2.0
+
 	$Id$
+
+News Version 3.2.1
+
+The spec file now does not list gzip and bzip2 as required. You only need them
+to serve compressed files.
+
+The bes.conf.in file used 'hdf4' in some places and 'h4' in others. This meant
+that lazy people like me ;-) who didn't read what they were doing but just
+blindly uncommented lines were confused. I editied the file to use the same
+identifier in all places. jimg.
 
 News Version 3.2.0
 
