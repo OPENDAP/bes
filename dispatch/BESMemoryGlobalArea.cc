@@ -189,15 +189,21 @@ BESMemoryGlobalArea::log_limits()
 	throw BESMemoryException( strerror( errno ), __FILE__, __LINE__ ) ;
     }
     if( limit.rlim_cur == RLIM_INFINITY )
-	(*BESLog::TheLog()) << "I have infinity soft limit for the heap" << endl ;
+	(*BESLog::TheLog()) << "OPeNDAP: I have infinity soft limit for the heap" << endl ;
     else
-	(*BESLog::TheLog()) << "I have soft limit "
-		      << (long int)limit.rlim_cur << endl ;
+	(*BESLog::TheLog()) << "OPeNDAP: I have soft limit "
+		      << (long int)limit.rlim_cur 
+		      << " bytes ("
+		      << (long int)(limit.rlim_cur)/(MEGABYTE)
+		      << " MB - may be rounded up)" << endl ;
     if( limit.rlim_max == RLIM_INFINITY )
-	(*BESLog::TheLog()) << "I have infinity hard limit for the heap" << endl ;
+	(*BESLog::TheLog()) << "OPeNDAP: I have infinity hard limit for the heap" << endl ;
     else
-	(*BESLog::TheLog()) << "I have hard limit "
-		      << (long int)limit.rlim_max << endl ;
+	(*BESLog::TheLog()) << "OPeNDAP: I have hard limit "
+		      << (long int)limit.rlim_max 
+		      << " bytes ("
+		      << (long int)(limit.rlim_cur)/(MEGABYTE)
+		      << " MB - may be rounded up)" << endl ;
 }
 
 void

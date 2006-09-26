@@ -74,7 +74,7 @@ SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESTransmitter.cc BESBasicTransmitter.cc \
 	BESBasicHttpTransmitter.cc BESFilterTransmitter.cc \
 	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
-	BESHeapManager.cc BESMemoryGlobalArea.cc \
+	BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc \
 	BESReturnManager.cc \
@@ -111,7 +111,7 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESException.h BESHandlerException.h BESAggregationException.h \
 	BESMemoryException.h BESDatabaseException.h \
 	BESAutoPtr.cc BESAutoPtr.h \
-	BESConstraintFuncs.h BESHeapManager.h \
+	BESConstraintFuncs.h \
 	BESMemoryGlobalArea.h BESMemoryManager.h \
 	BESProcessEncodedString.h \
 	BESServerSystemResources.h BESStatusReturn.h dispatch_version.h \
