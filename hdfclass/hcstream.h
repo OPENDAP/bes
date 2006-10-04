@@ -77,7 +77,7 @@ protected:
 class hdfistream_sds : public hdfistream_obj {
 public:
     hdfistream_sds(const string filename="");
-    hdfistream_sds(const hdfistream_sds&) { THROW(hcerr_copystream); }
+    hdfistream_sds(const hdfistream_sds&): hdfistream_obj(*this)  { THROW(hcerr_copystream); }
     virtual ~hdfistream_sds(void) { _del(); }
     void operator=(const hdfistream_sds&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename=0); // open stream, seek to BOS
@@ -162,7 +162,7 @@ class hdfistream_annot : public hdfistream_obj {
 public:
     hdfistream_annot(const string filename="");
     hdfistream_annot(const string filename, int32 tag, int32 ref); 
-    hdfistream_annot(const hdfistream_annot&) { THROW(hcerr_copystream); }
+    hdfistream_annot(const hdfistream_annot&) : hdfistream_obj(*this) { THROW(hcerr_copystream); }
     virtual ~hdfistream_annot(void) { _del(); }
     void operator=(const hdfistream_annot&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename); // open file annotations
@@ -198,7 +198,7 @@ protected:
 class hdfistream_vdata : public hdfistream_obj {
 public:
     hdfistream_vdata(const string filename="");
-    hdfistream_vdata(const hdfistream_vdata&) { THROW(hcerr_copystream); }
+    hdfistream_vdata(const hdfistream_vdata&): hdfistream_obj(*this)  { THROW(hcerr_copystream); }
     virtual ~hdfistream_vdata(void) { _del(); }
     void operator=(const hdfistream_vdata&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename); // open stream, seek to BOS
@@ -248,7 +248,7 @@ protected:
 class hdfistream_vgroup : public hdfistream_obj {
 public:
     hdfistream_vgroup(const string filename="");
-    hdfistream_vgroup(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
+    hdfistream_vgroup(const hdfistream_vgroup&): hdfistream_obj(*this)  { THROW(hcerr_copystream); }
     virtual ~hdfistream_vgroup(void) { _del(); }
     void operator=(const hdfistream_vgroup&) { THROW(hcerr_copystream); }
     virtual void open(const char *filename); // open stream, seek to BOS
@@ -298,7 +298,7 @@ protected:
 class hdfistream_gri : public hdfistream_obj {
 public:
     hdfistream_gri(const string filename="");
-    hdfistream_gri(const hdfistream_gri &) { THROW(hcerr_copystream); }
+    hdfistream_gri(const hdfistream_gri &): hdfistream_obj(*this)  { THROW(hcerr_copystream); }
     virtual ~hdfistream_gri(void) { _del(); }
     void operator=(const hdfistream_gri &) { THROW(hcerr_copystream); }
     virtual void open(const char *filename=0); // open stream

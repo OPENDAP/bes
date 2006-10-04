@@ -875,7 +875,9 @@ void hdf_genvec::print(vector<string>& sv, int begin, int end, int stride) const
 	sv.push_back(sub);
     }
     else {
+#if 0
 	char buf[hdfclass::MAXSTR];
+#endif
 	int i;
 	switch(_nt) {
 #if 0

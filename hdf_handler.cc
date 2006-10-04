@@ -118,10 +118,18 @@ main(int argc, char *argv[])
               HDFTypeFactory factory;
 	      DDS dds(&factory);
               ConstraintEvaluator ce;
+              DAS das;
 
-	      read_dds(dds, cachedir, df.get_dataset_name());
-	      register_funcs(ce);
-	      df.read_ancillary_dds(dds);
+              dds.filename(df.get_dataset_name());
+
+              read_dds(dds, cachedir, df.get_dataset_name());
+              df.read_ancillary_dds(dds);
+
+              read_das(das, cachedir, df.get_dataset_name());
+              df.read_ancillary_das(das);
+
+              dds.transfer_attributes(&das);
+
 	      df.send_data(dds, ce, stdout);
 	      break;
 	  }
@@ -135,7 +143,6 @@ main(int argc, char *argv[])
               dds.filename(df.get_dataset_name());
 
               read_dds(dds, cachedir, df.get_dataset_name());
-              register_funcs(ce);
               df.read_ancillary_dds(dds);
 
               read_das(das, cachedir, df.get_dataset_name());

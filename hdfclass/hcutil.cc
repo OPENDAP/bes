@@ -51,6 +51,10 @@ using std::string ;
 
 #include <mfhdf.h>
 
+#if 0
+
+// This function is not used and is broken. The loop depends on i being less
+// than zero for termination, but i is an unsigned type.
 vector<string> split(const string& str, const string& delim) {
     vector<string> rv;
 
@@ -70,6 +74,7 @@ vector<string> split(const string& str, const string& delim) {
 
     return rv;
 }
+#endif
 
 string join(const vector<string>& sv, const string& delim) {
     string str;

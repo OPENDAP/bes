@@ -48,7 +48,7 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h
 
-HANDLER_SRC = dhdferr.cc hdfdesc.cc funcs.cc hc2dap.cc hdfutil.cc \
+HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
 	hdf-dods.h hdf-maps.h config_hdf.h \
 	hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc

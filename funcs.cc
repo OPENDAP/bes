@@ -19,6 +19,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
  
+#if 0
+
 #include "config_hdf.h"
 
 // libg++
@@ -55,7 +57,7 @@ BaseType *test_func(int argc, BaseType *argv[], DDS &) {
     return argv[0];
 }
 
-#if 0
+
 //
 // implements subset_geo(time1,time2,lat1,lon1,lat2,lon2,var) for SwathArray
 BaseType *subset_geo_func(int argc, BaseType *argv[], DDS &dds) {

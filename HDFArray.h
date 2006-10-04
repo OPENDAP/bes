@@ -1,3 +1,5 @@
+// -*- C++ -*-
+
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 
 // Copyright (c) 2005 OPeNDAP, Inc.
