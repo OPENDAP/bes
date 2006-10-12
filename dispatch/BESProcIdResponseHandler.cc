@@ -35,8 +35,6 @@
 #include "BESProcIdResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
-#include "cgi_util.h"
-#include "util.h"
 #include "BESResponseNames.h"
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( string name )

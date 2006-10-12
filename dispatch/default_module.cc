@@ -44,6 +44,7 @@ using std::endl ;
 #include "BESVersionResponseHandler.h"
 #include "BESKeysResponseHandler.h"
 #include "BESStatusResponseHandler.h"
+#include "BESFileResponseHandler.h"
 
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
@@ -83,6 +84,10 @@ default_module::initialize(int, char**)
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << STATUS_RESPONSE << " response handler" << endl;
     BESResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, BESStatusResponseHandler::StatusResponseBuilder ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << FILE_RESPONSE << " response handler" << endl;
+    BESResponseHandlerList::TheList()->add_handler( FILE_RESPONSE, BESFileResponseHandler::BESFileResponseBuilder ) ;
 
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << BASIC_TRANSMITTER << " transmitter" << endl;

@@ -154,7 +154,9 @@ BESTextInfo::end_tag( const string &tag_name )
 	_indent = _indent.substr( 0, _indent.length()-4 ) ;
 }
 
-/** @brief
+/** @brief add string data to the informational response
+ *
+ * @param s string data to add the informational response
  */
 void
 BESTextInfo::add_data( const string & s )

@@ -65,7 +65,7 @@ SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
 	BESProcIdResponseHandler.cc BESResponseHandler.cc \
 	BESHelpResponseHandler.cc BESStatusResponseHandler.cc \
 	BESVersionResponseHandler.cc BESKeysResponseHandler.cc \
-	BESResponseHandlerList.cc \
+	BESFileResponseHandler.cc BESResponseHandlerList.cc \
 	BESCatalogDirectory.cc BESCatalogList.cc \
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc \
 	BESInfoList.cc \
@@ -97,7 +97,7 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESProcIdResponseHandler.h BESResponseHandler.h BESHelpResponseHandler.h \
 	BESStatusResponseHandler.h BESVersionResponseHandler.h \
 	BESResponseHandlerList.h BESKeysResponseHandler.h \
-	BESCatalogDirectory.h BESCatalog.h \
+	BESFileResponseHandler.h BESCatalogDirectory.h BESCatalog.h \
 	BESCatalogList.h \
 	BESResponseNames.h BESResponseException.h \
 	BESInfo.h BESTextInfo.h BESHTMLInfo.h BESVersionInfo.h BESInfoList.h \

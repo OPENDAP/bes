@@ -45,6 +45,7 @@
  *     dds
  *     ddx
  *     dods
+ *     file
  * show
  *     help
  *     process
@@ -77,6 +78,8 @@
 #define DDX_RESPONSE_STR "getDDX"
 #define DATA_RESPONSE "get.dods"
 #define DATA_RESPONSE_STR "getDODS"
+#define FILE_RESPONSE "get.file"
+#define FILE_RESPONSE_STR "getFile"
 
 #define SHOW_RESPONSE "show"
 #define HELP_RESPONSE "show.help"

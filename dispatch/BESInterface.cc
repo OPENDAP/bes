@@ -44,7 +44,6 @@ using std::ostringstream ;
 #include "BESResponseHandler.h"
 #include "BESAggFactory.h"
 #include "BESAggregationServer.h"
-#include "cgi_util.h"
 #include "BESReporterList.h"
 
 #include "BESExceptionManager.h"

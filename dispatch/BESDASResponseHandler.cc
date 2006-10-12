@@ -32,7 +32,6 @@
 
 #include "BESDASResponseHandler.h"
 #include "DAS.h"
-#include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 #include "BESDapTransmit.h"

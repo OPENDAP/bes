@@ -33,7 +33,6 @@
 #include "BESHelpResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
-#include "cgi_util.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESResponseNames.h"
