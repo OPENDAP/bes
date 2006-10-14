@@ -154,7 +154,7 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 	    type_reg match = (*i) ;
 	    // FIXME: Should we create the Regex and put it in the type_reg
 	    // structure list instead of compiling it each time? Could this
-	    // improive performance? pcw 09/08/06
+	    // improve performance? pcw 09/08/06
 	    Regex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( r_name.c_str(), r_name.length() ) != -1 )
 	    {
@@ -164,5 +164,40 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 	}
     }
     BESContainerStorageVolatile::add_container( s_name, new_r_name, new_type ) ;
+}
+
+/** @brief is the specified node in question served by a request handler
+ *
+ * Determine if the node in question is served by a request handler (provides
+ * data) and what the request handler serves for the node
+ *
+ * @param inQuestion node to look up
+ * @param provides what is provided for the node by the node types request handler
+ * return true if a request hanlder serves the specified node, false otherwise
+ */
+bool
+BESContainerStorageCatalog::isData( const string &inQuestion,
+				    list<string> &provides )
+{
+    string node_type = "" ;
+    BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
+    BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
+    bool done = false ;
+    for( ; i != ie && !done; i++ )
+    {
+	type_reg match = (*i) ;
+	// FIXME: Should we create the Regex and put it in the type_reg
+	// structure list instead of compiling it each time? Could this
+	// improve performance? pcw 09/08/06
+	Regex reg_expr( match.reg.c_str() ) ;
+	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1 )
+	{
+	    node_type = match.type ;
+	    done = true ;
+	}
+    }
+    // Now that we have the type, go find the request handler and ask what it
+    // provides (das, dds, ddx, data, etc...)
+    return done ;
 }
 

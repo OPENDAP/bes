@@ -59,6 +59,8 @@ private:
     void			add_stat_info( BESInfo *info,
                                                struct stat &buf,
 					       const string &node ) ;
+    bool			isData( const string &inQuestion,
+    					list<string> &provides ) ;
 public:
 				BESCatalogDirectory( const string &name ) ;
     virtual			~BESCatalogDirectory( void ) ;

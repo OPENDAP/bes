@@ -94,6 +94,8 @@ public:
     virtual void		add_container( const string &s_name,
                                                const string &r_name,
 					       const string &type ) ;
+    bool			isData( const string &inQuestion,
+    					list<string> &provides ) ;
 };
 
 #endif // BESContainerStorageCatalog_h_

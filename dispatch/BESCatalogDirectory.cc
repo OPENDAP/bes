@@ -46,6 +46,8 @@ using std::endl ;
 #include "BESResponseException.h"
 #include "BESResponseNames.h"
 #include "GNURegex.h"
+#include "BESContainerStorageList.h"
+#include "BESContainerStorageCatalog.h"
 
 BESCatalogDirectory::BESCatalogDirectory( const string &name )
     : BESCatalog( name )
@@ -109,6 +111,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 	stat( fullnode.c_str(), &cbuf ) ;
 	map<string,string> a1 ;
 	a1["thredds_collection"] = "\"true\"" ;
+	a1["isData"] = "\"false\"" ;
 	info->begin_tag( "dataset", &a1 ) ;
 	if( node == "" )
 	{
@@ -164,6 +167,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    {
 			map<string,string> a2 ;
 			a2["thredds_collection"] = "\"true\"" ;
+			a2["isData"] = "\"false\"" ;
 			info->begin_tag( "dataset", &a2 ) ;
 			add_stat_info( info, buf, dirEntry ) ;
 			info->end_tag( "dataset" ) ;
@@ -174,6 +178,11 @@ BESCatalogDirectory::show_catalog( const string &node,
 			{
 			    map<string,string> a3 ;
 			    a3["thredds_collection"] = "\"false\"" ;
+			    list<string> provides ;
+			    if( isData( dirEntry, provides ) )
+				a3["isData"] = "\"true\"" ;
+			    else
+				a3["isData"] = "\"false\"" ;
 			    info->begin_tag( "dataset", &a3 ) ;
 			    add_stat_info( info, buf, dirEntry ) ;
 			    info->end_tag( "dataset" ) ;
@@ -193,6 +202,11 @@ BESCatalogDirectory::show_catalog( const string &node,
 	{
 	    map<string,string> a4 ;
 	    a4["thredds_collection"] = "\"false\"" ;
+	    list<string> provides ;
+	    if( isData( node, provides ) )
+		a4["isData"] = "\"true\"" ;
+	    else
+		a4["isData"] = "\"false\"" ;
 	    info->begin_tag( "dataset", &a4 ) ;
 	    add_stat_info( info, buf, node ) ;
 	    info->end_tag( "dataset" ) ;
@@ -312,5 +326,22 @@ BESCatalogDirectory::add_stat_info( BESInfo *info,
     info->add_tag( "time", stt.str() ) ;
 
     info->end_tag( "lastmodified" ) ;
+}
+
+bool
+BESCatalogDirectory::isData( const string &inQuestion,
+			     list<string> &provides )
+{
+    BESContainerStorage *store =
+	BESContainerStorageList::TheList()->find_persistence( get_catalog_name() ) ;
+    if( !store )
+	return false ;
+
+    BESContainerStorageCatalog *cat_store =
+	dynamic_cast<BESContainerStorageCatalog *>(store ) ;
+    if( !cat_store )
+	return false ;
+
+    return cat_store->isData( inQuestion, provides ) ;
 }
 
