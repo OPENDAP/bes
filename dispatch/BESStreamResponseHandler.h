@@ -1,4 +1,4 @@
-// BESFileResponseHandler.h
+// BESStreamResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,22 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESFileResponseHandler_h
-#define I_BESFileResponseHandler_h 1
+#ifndef I_BESStreamResponseHandler_h
+#define I_BESStreamResponseHandler_h 1
 
 #include "BESResponseHandler.h"
 
-class BESFileResponseHandler : public BESResponseHandler {
+class BESStreamResponseHandler : public BESResponseHandler {
 public:
-				BESFileResponseHandler( string handler_name ) ;
-    virtual			~BESFileResponseHandler(void) ;
+				BESStreamResponseHandler( string handler_name ) ;
+    virtual			~BESStreamResponseHandler(void) ;
 
     virtual void		execute( BESDataHandlerInterface &r ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &r ) ;
 
-    static BESResponseHandler *BESFileResponseBuilder( string handler_name ) ;
+    static BESResponseHandler *BESStreamResponseBuilder( string handler_name ) ;
 };
 
-#endif // I_BESFileResponseHandler_h
+#endif // I_BESStreamResponseHandler_h
 

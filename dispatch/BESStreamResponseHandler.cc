@@ -1,4 +1,4 @@
-// BESFileResponseHandler.cc
+// BESStreamResponseHandler.cc
 
 // This file is part of the OPeNDAP Cedar data handler, providing data
 // access views for CedarWEB data
@@ -42,18 +42,18 @@ using std::cerr ;
 using std::endl ;
 using std::string ;
 
-#include "BESFileResponseHandler.h"
+#include "BESStreamResponseHandler.h"
 #include "BESRequestHandlerList.h"
 #include "BESHandlerException.h"
 #include "BESDataNames.h"
 #include "BESContainer.h"
 
-BESFileResponseHandler::BESFileResponseHandler( string name )
+BESStreamResponseHandler::BESStreamResponseHandler( string name )
     : BESResponseHandler( name )
 {
 }
 
-BESFileResponseHandler::~BESFileResponseHandler( )
+BESStreamResponseHandler::~BESStreamResponseHandler( )
 {
 }
 
@@ -70,7 +70,7 @@ BESFileResponseHandler::~BESFileResponseHandler( )
  * @see BESRequestHandlerList
  */
 void
-BESFileResponseHandler::execute( BESDataHandlerInterface &dhi )
+BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     _response = 0 ;
 
@@ -136,15 +136,15 @@ BESFileResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see _BESDataHandlerInterface
  */
 void
-BESFileResponseHandler::transmit( BESTransmitter *transmitter,
+BESStreamResponseHandler::transmit( BESTransmitter *transmitter,
                                  BESDataHandlerInterface & )
 {
     // The Data is transmitted when it is read, dumped to stdout
 }
 
 BESResponseHandler *
-BESFileResponseHandler::BESFileResponseBuilder( string handler_name )
+BESStreamResponseHandler::BESStreamResponseBuilder( string handler_name )
 {
-    return new BESFileResponseHandler( handler_name ) ;
+    return new BESStreamResponseHandler( handler_name ) ;
 }
 
