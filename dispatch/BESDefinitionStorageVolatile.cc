@@ -115,6 +115,7 @@ BESDefinitionStorageVolatile::del_definitions( )
 	    delete d ;
 	}
     }
+    return true ;
 }
 
 /** @brief show the defintions stored in this store
