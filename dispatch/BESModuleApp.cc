@@ -156,6 +156,7 @@ BESModuleApp::loadModules()
 		string modname = curr_mod._module_name ;
 		BESAbstractModule *o = _moduleFactory.get( modname ) ;
 		o->initialize( modname ) ;
+		delete o ;
 	    }
 	    catch( BESException &e )
 	    {
@@ -199,6 +200,7 @@ terminate( int sig )
 	    string modname = curr_mod._module_name ;
 	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
 	    o->terminate( modname ) ;
+	    delete o ;
 	}
     }
     catch( BESException &e )
