@@ -30,10 +30,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <sstream>
+
+using std::ostringstream ;
+
 #include "HDF4RequestHandler.h"
 #include "BESResponseNames.h"
-#include "DAS.h"
-#include "DDS.h"
+#include "BESDASResponse.h"
+#include "BESDDSResponse.h"
+#include "BESDataDDSResponse.h"
 #include "BESInfo.h"
 #include "BESResponseHandler.h"
 #include "BESVersionInfo.h"
@@ -91,9 +96,29 @@ HDF4RequestHandler::~HDF4RequestHandler()
 bool
 HDF4RequestHandler::hdf4_build_das( BESDataHandlerInterface &dhi )
 {
-    DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
+    BESDASResponse *bdas =
+	dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object() ) ;
+    DAS *das = bdas->get_das() ;
 
-    read_das( *das, _cachedir, dhi.container->access() ) ;
+    try
+    {
+	read_das( *das, _cachedir, dhi.container->access() ) ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF4 DAS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF4 DAS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
@@ -101,19 +126,39 @@ HDF4RequestHandler::hdf4_build_das( BESDataHandlerInterface &dhi )
 bool
 HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
 {
-    DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+    BESDDSResponse *bdds =
+	dynamic_cast<BESDDSResponse *>( dhi.response_handler->get_response_object() ) ;
+    DDS *dds = bdds->get_dds() ;
+    ConstraintEvaluator &ce = bdds->get_ce() ;
 
-    HDFTypeFactory *factory = new HDFTypeFactory ;
-    dds->set_factory( factory ) ;
-    ConstraintEvaluator ce;
+    try
+    {
+	HDFTypeFactory *factory = new HDFTypeFactory ;
+	dds->set_factory( factory ) ;
 
-    read_dds( *dds, _cachedir, dhi.container->access() ) ;
+	read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
-    register_funcs( dhi.ce ) ;
-    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	register_funcs( ce ) ;
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
-    dds->set_factory( NULL ) ;
-    delete factory ;
+	dds->set_factory( NULL ) ;
+	delete factory ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF4 DDS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF4 DDS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
@@ -121,21 +166,41 @@ HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
 bool
 HDF4RequestHandler::hdf4_build_data( BESDataHandlerInterface &dhi )
 {
-    DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+    BESDataDDSResponse *bdds =
+	dynamic_cast<BESDataDDSResponse *>( dhi.response_handler->get_response_object() ) ;
+    DataDDS *dds = bdds->get_dds() ;
+    ConstraintEvaluator &ce = bdds->get_ce() ;
 
-    HDFTypeFactory *factory = new HDFTypeFactory ;
-    dds->set_factory( factory ) ;
-    ConstraintEvaluator ce;
+    try
+    {
+	HDFTypeFactory *factory = new HDFTypeFactory ;
+	dds->set_factory( factory ) ;
 
-    dds->filename( dhi.container->access() );
+	dds->filename( dhi.container->access() );
 
-    read_dds( *dds, _cachedir, dhi.container->access() ) ;
+	read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
-    register_funcs( dhi.ce ) ;
-    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	register_funcs( ce ) ;
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
-    dds->set_factory( NULL ) ;
-    delete factory ;
+	dds->set_factory( NULL ) ;
+	delete factory ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF4 DataDDS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF4 DataDDS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
