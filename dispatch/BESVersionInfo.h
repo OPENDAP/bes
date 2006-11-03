@@ -42,7 +42,7 @@
  * response is going to a browser, sets the mime type to text.
  *
  * @see BESXMLInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESVersionInfo : public BESInfo {
 private:
@@ -54,12 +54,10 @@ public:
   			BESVersionInfo() ;
     virtual 		~BESVersionInfo() ;
 
-    virtual void	beginDAPVersion( ) ;
-    virtual void	addDAPVersion( const string &v ) ;
-    virtual void	endDAPVersion( ) ;
     virtual void	beginBESVersion( ) ;
     virtual void	addBESVersion( const string &n, const string &v ) ;
     virtual void	endBESVersion( ) ;
+
     virtual void	beginHandlerVersion( ) ;
     virtual void	addHandlerVersion( const string &n, const string &v ) ;
     virtual void	endHandlerVersion( ) ;

@@ -41,7 +41,7 @@
  * returns the list of currently defined definitions and transmits the
  * response as an informational response object.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  * @see BESInfo

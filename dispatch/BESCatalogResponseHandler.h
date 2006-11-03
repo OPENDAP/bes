@@ -44,7 +44,7 @@
  * at the root level if no node is specified in the request, or the nodes or
  * leaves under the specified node.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

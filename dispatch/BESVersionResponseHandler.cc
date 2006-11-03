@@ -34,8 +34,8 @@
 
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
-#include "util.h"
 #include "dispatch_version.h"
+#include "util.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 
@@ -74,14 +74,7 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = VERS_RESPONSE_STR ;
     info->begin_response( VERS_RESPONSE_STR ) ;
 
-    info->beginDAPVersion() ;
-    info->addDAPVersion( "2.0" ) ;
-    info->addDAPVersion( "3.0" ) ;
-    info->addDAPVersion( "3.2" ) ;
-    info->endDAPVersion() ;
-
     info->beginBESVersion() ;
-    info->addBESVersion( libdap_name(), libdap_version() ) ;
     info->addBESVersion( bes_name(), bes_version() ) ;
     info->endBESVersion() ;
 

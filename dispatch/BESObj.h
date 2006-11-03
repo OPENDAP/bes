@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-/** @brief top level OPeNDAP object to house generic methods
+/** @brief top level BES object to house generic methods
  */
 
 #ifndef A_BESObj_h
@@ -42,7 +42,7 @@ using std::ostream ;
 
 /** @brief Base object for bes objects
  *
- * A base object for any OPeNDAP objects in bes to use. Provides simple
+ * A base object for any BES objects in bes to use. Provides simple
  * methods for dumping the contents of the object.
  */
 

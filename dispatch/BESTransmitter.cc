@@ -73,7 +73,7 @@ BESTransmitter::find_method( string method_name )
 
 void
 BESTransmitter::send_response( const string &method_name,
-			       DODSResponseObject *response,
+			       BESResponseObject *response,
 			       BESDataHandlerInterface &dhi )
 {
     p_transmitter p = find_method( method_name ) ;

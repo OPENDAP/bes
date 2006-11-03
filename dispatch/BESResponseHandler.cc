@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESResponseHandler.h"
-#include "DODSResponseObject.h"
+#include "BESResponseObject.h"
 #include "BESRequestHandler.h"
 
 BESResponseHandler::BESResponseHandler( string name )
@@ -49,16 +49,16 @@ BESResponseHandler::~BESResponseHandler( )
     _response = 0 ;
 }
 
-DODSResponseObject *
+BESResponseObject *
 BESResponseHandler::get_response_object()
 {
     return _response ;
 }
 
-DODSResponseObject *
-BESResponseHandler::set_response_object( DODSResponseObject *new_response )
+BESResponseObject *
+BESResponseHandler::set_response_object( BESResponseObject *new_response )
 {
-    DODSResponseObject *curr_obj = _response ;
+    BESResponseObject *curr_obj = _response ;
     _response = new_response ;
     return curr_obj ;
 }

@@ -42,7 +42,7 @@
  * returns the list of all key/value pairs currently defined in the OPeNDAP
  * initialization file and transmits the response as an informational response.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

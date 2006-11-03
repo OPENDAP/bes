@@ -44,7 +44,7 @@
  * @param handler_method a function pointer to the method that can fill in the
  * specified response object
  * @return true if the handler is added, false if it already exists
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESResponseNames
  */
 bool
@@ -86,7 +86,7 @@ BESRequestHandler::remove_handler( string handler_name )
  *
  * @param handler_name name of the method that can fill in the response object type 
  * @return the method that can fill in the specified response object type
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESResponseNames
  */
 p_request_handler
@@ -105,7 +105,7 @@ BESRequestHandler::find_handler( string handler_name )
  * this request handler
  *
  * @return the comma separated list of response object types
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESResponseNames
  */
 string

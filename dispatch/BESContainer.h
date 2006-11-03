@@ -33,8 +33,10 @@
 #ifndef BESContainer_h_
 #define BESContainer_h_ 1
 
+#include <list>
 #include <string>
 
+using std::list ;
 using std::string ;
 
 /** @brief Holds real data, container type and constraint for symbolic name
@@ -61,11 +63,15 @@ private:
     string 			_symbolic_name ;
     string 			_container_type ;
     string			_attributes ;
+    bool			_compressed ;
+    bool			_compression_determined ;
 
     static string		_cacheDir ;
-    static string		_compressedExt ;
+    static list<string>		_compressedExtensions ;
     static string		_script ;
     static string		_cacheSize ;
+
+    void			build_list( const string &ext_list ) ;
 public:
     /** @brief construct a container with the given sumbolic name
      *

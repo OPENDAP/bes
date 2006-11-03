@@ -42,7 +42,7 @@
  * returns the status of the server process handling the clients requests in
  * an informational response object.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

@@ -36,6 +36,9 @@ using std::endl ;
 #include "BESDapModule.h"
 #include "BESLog.h"
 
+#include "BESDapRequestHandler.h"
+#include "BESRequestHandlerList.h"
+
 #include "BESResponseNames.h"
 #include "BESResponseHandlerList.h"
 
@@ -44,21 +47,7 @@ using std::endl ;
 #include "BESDataResponseHandler.h"
 #include "BESDDXResponseHandler.h"
 
-#include "BESShowContainersResponseHandler.h"
-#include "BESShowDefsResponseHandler.h"
 #include "BESCatalogResponseHandler.h"
-
-#include "BESDefineResponseHandler.h"
-#include "BESSetContainerResponseHandler.h"
-#include "BESDelContainerResponseHandler.h"
-#include "BESDelContainersResponseHandler.h"
-#include "BESDelDefResponseHandler.h"
-#include "BESDelDefsResponseHandler.h"
-
-#include "BESContainerStorageList.h"
-#include "BESContainerStorageVolatile.h"
-#include "BESDefinitionStorageList.h"
-#include "BESDefinitionStorageVolatile.h"
 
 #include "BESDapTransmit.h"
 #include "BESTransmitter.h"
@@ -70,6 +59,11 @@ BESDapModule::initialize( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Initializing OPeNDAP modules:" << endl;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << modname << " request handler" 
+		      << endl ;
+    BESRequestHandlerList::TheList()->add_handler( modname, new BESDapRequestHandler( modname ) ) ;
 
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << DAS_RESPONSE << " response handler" << endl;
@@ -88,48 +82,8 @@ BESDapModule::initialize( const string &modname )
     BESResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder ) ;
 
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( SHOWCONTAINERS_RESPONSE, BESShowContainersResponseHandler::ShowContainersResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( SHOWDEFS_RESPONSE, BESShowDefsResponseHandler::ShowDefsResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " response handler" << endl;
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( DEFINE_RESPONSE, BESDefineResponseHandler::DefineResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SETCONTAINER << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( SETCONTAINER, BESSetContainerResponseHandler::SetContainerResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINER << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINER, BESDelContainerResponseHandler::DelContainerResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINERS, BESDelContainersResponseHandler::DelContainersResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITION << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITION, BESDelDefResponseHandler::DelDefResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " response handler" << endl;
-    BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITIONS, BESDelDefsResponseHandler::DelDefsResponseBuilder ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " container persistence" << endl ;
-    BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << PERSISTENCE_VOLATILE << " definition persistence" << endl ;
-    BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
     BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
     if( t )
@@ -182,15 +136,7 @@ BESDapModule::terminate( const string &modname )
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SHOWCONTAINERS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SHOWDEFS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DEFINE_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( SETCONTAINER ) ;
-    BESResponseHandlerList::TheList()->remove_handler( DELETE_RESPONSE ) ;
-
-    BESContainerStorageList::TheList()->del_persistence( PERSISTENCE_VOLATILE ) ;
-    BESDefinitionStorageList::TheList()->del_persistence( PERSISTENCE_VOLATILE ) ;
 }
 
 extern "C"

@@ -1,11 +1,7 @@
-Current commands available with OPeNDAP:
+Current core commands available with BES:
 
     show help;
 	* shows this help
-    show containers;
-	* shows all containers currently defined
-    show definitions;
-	* shows all definitions currently defined
     show version;
 	* shows the version of OPeNDAP and each data type served by this server
     show process;
@@ -14,38 +10,6 @@ Current commands available with OPeNDAP:
 	* shows the status of the server
     show keys;
 	* shows all keys defined in the dods initialization file
-
-    set container values <symbolic_name>,<real_name>,<container_type>;
-
-	* defines a symbolic name representing a data container, usually a file,
-	  to be used by definitions, described below
-	* <real_name> is the full path to a data file
-	* <container_type> is the type of data that is in the file. For
-	  netcdf files it is nc, for cedar it is cedar, etc...
-
-    define <def_name> as <container_list> [where <container_x>.constraint="<constraint>",<container_x>.attributes="<attribute_list>"] [aggregate by "<aggregation_command"];
-
-	* creates a definition using one or more containers, constraints for
-	  each of the containers, attributes to be retrieved from each
-	  container, and an aggregation. Constraints, attributes, and
-	  aggregation are all optional.
-	* <container_list> is a comma separated list of container names.
-	* The constraints, attributes and aggregation command must be enclosed in quotes
-
-    get das|dds|dods|ddx for <definition_name> [return as <return_name>];
-
-	* dds: request the data descriptor structure
-	* das: request the data attributes
-	* dods: request for the data stream, this output is an octec binary 
-	  stream which requires the analysis by the client dods library
-
-    delete container <container_name>;
-	* deletes the specified container
-    delete definition <definition_name>;
-	* deletes the specified definition
-    delete definitions;
-	* deletes all of the currently defined definitions
-    there is no command "delete containers;"
 
     ** remember to terminate each command with a semicolon (;)
     For more information please contact Patrick West, pwest@ucar.edu

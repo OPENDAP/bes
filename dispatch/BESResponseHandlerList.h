@@ -55,7 +55,7 @@ typedef BESResponseHandler * (*p_response_handler)( string name ) ;
  * response handler, not the response handler themselves.
  *
  * @see BESResponseHandler
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESResponseHandlerList {
 private:

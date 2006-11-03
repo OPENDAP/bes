@@ -1,0 +1,72 @@
+<DIV STYLE="font-weight:none;font-size:12pt;color:black;">
+Current commands available with OPeNDAP:
+<UL>
+    <LI>
+	show containers;
+	<UL><LI>shows all containers currently defined</LI></UL>
+    </LI>
+    <LI>
+	show definitions;
+	<UL><LI>shows all definitions currently defined</LI></UL>
+    </LI>
+    <BR />
+    <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
+    <BR />
+    <LI>
+	set container [in &lt;storage_name&gt;] values &lt;symbolic_name&gt;,&lt;real_name&gt;[,&lt;container_type&gt;];
+	<UL>
+	    <LI>defines a symbolic name representing a data container, usually a file, to be used by definitions, described below</LI>
+	    <LI>&lt;storage_name&gt; is the name of the container storage.  Defaults to volatile storage. Examples might include database storage, volatile storage based on catalog information.
+	    <LI>&lt;real_name&gt; is the full qualtified location of the data container, for example the full path to a data file.</LI>
+	    <LI>&lt;container_type&gt; is the type of data that is in the file.  For netcdf files it is nc. For some container storage the data type is optional, determined by the container storage.</LI>
+	</UL>
+    </LI>
+    <BR />
+    <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
+    <BR />
+    <LI>
+	define &lt;def_name&gt; [in &lt;storage_name&gt;] as &lt;container_list&gt; [where &lt;container_x&gt;.constraint="&lt;constraint&gt;",&lt;container_x&gt;.attributes="&lt;attribute_list&gt;"] [aggregate by "&lt;aggregation_command&gt;"];
+	<UL>
+	    <LI>creates a definition using one or more containers, constraints for each of the containers, attributes to be retrieved from each container, and an aggregation. Constraints, attributes, and aggregation are all optional.</LI>
+	    <LI>&lt;container_list&gt; is a comma separated list of container names</LI>
+	    <LI>&lt;storage_name&gt; is the name of the definition storage.  Defaults to volatile storage. Examples might include database storage.
+	    <LI>The constraints, attributes and aggregation command must be enclosed in quotes</LI>
+	</UL>
+    </LI>
+    <BR />
+    <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
+    <BR />
+    <LI>
+	get das|dds|dods|ddx for &lt;definition_name&gt;;
+	<UL>
+	    <LI>dds: request the data descriptor structure</LI>
+	    <LI>das: request the data attributes</LI>
+	    <LI>dods: request for the data stream, this output is an octec binary stream which requires the analysis by the client dods library</LI>
+	</UL>
+    </LI>
+    <BR />
+    <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
+    <BR />
+    <LI>
+	delete container &lt;container_name&gt; [from &lt;storage_name&gt;];
+	<UL><LI>deletes the specified container from the specified container storage (defaults to volatile storage).</LI></UL>
+    </LI>
+    <LI>
+	delete containers [from &lt;storage_name&gt;];
+	<UL><LI>deletes all of the currently defined containers from the specified container storage (defaults to volatile storage).</LI></UL>
+    </LI>
+    <LI>
+	delete definition &lt;definition_name&gt; [from &lt;storage_name&gt;];
+	<UL><LI>deletes the specified definition from the specified container storage (defaults to volatile storage).</LI></UL>
+    </LI>
+    <LI>
+	delete definitions [from &lt;storage_name&gt;];
+	<UL><LI>deletes all of the currently defined defintions from the specified container storage (defaults to volatile storage).</LI></UL>
+    </LI>
+    <BR />
+    <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
+    <BR />
+    <LI>remember to terminate each command with a semicolon (;)</LI>
+    <LI>For more information please contact Patrick West, <A HREF="mailto:pwest@ucar.edu">pwest@ucar.edu</A></LI>
+</UL>
+</DIV>

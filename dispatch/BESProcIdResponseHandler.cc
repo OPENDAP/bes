@@ -110,7 +110,7 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */

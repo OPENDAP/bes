@@ -41,7 +41,7 @@
  * set the mime type to html.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESHTMLInfo : public BESInfo {
 private:

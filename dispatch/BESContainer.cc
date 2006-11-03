@@ -43,10 +43,9 @@ using std::ostringstream ;
 #include "BESContainer.h"
 #include "TheBESKeys.h"
 #include "BESContainerStorageException.h"
-#include "GNURegex.h"
 
 string BESContainer::_cacheDir ;
-string BESContainer::_compressedExt ;
+list<string> BESContainer::_compressedExtensions ;
 string BESContainer::_script ;
 string BESContainer::_cacheSize ;
 
@@ -56,7 +55,9 @@ BESContainer::BESContainer(const string &s)
       _constraint( "" ),
       _symbolic_name( s ),
       _container_type( "" ),
-      _attributes( "" )
+      _attributes( "" ),
+      _compressed( false ),
+      _compression_determined( false )
 {
 }
 
@@ -66,29 +67,55 @@ BESContainer::BESContainer( const BESContainer &copy_from )
       _constraint( copy_from._constraint ),
       _symbolic_name( copy_from._symbolic_name ),
       _container_type( copy_from._container_type ),
-      _attributes( copy_from._attributes )
+      _attributes( copy_from._attributes ),
+      _compressed( copy_from._compressed ),
+      _compression_determined( copy_from._compression_determined )
 {
 }
 
 string
 BESContainer::access()
 {
-    // Determine if this file is compressed. If it isn't, then just return
-    // the real name
-    if( BESContainer::_compressedExt.empty() )
+    if( !_compression_determined )
     {
-	bool found = false ;
-	string key = "BES.Compressed.Extensions" ;
-	BESContainer::_compressedExt =
-	    TheBESKeys::TheKeys()->get_key( key, found ) ;
-	if( !found || BESContainer::_compressedExt.empty() )
+	// Determine if this file is compressed. If it isn't, then just return
+	// the real name
+	if( BESContainer::_compressedExtensions.empty() )
 	{
-	    BESContainer::_compressedExt = ".*(\\.gz|\\.Z|\\.bz2)$" ;
+	    bool found = false ;
+	    string key = "BES.Compressed.Extensions" ;
+	    string val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+	    if( !found || val.empty() )
+	    {
+		BESContainer::_compressedExtensions.push_back( "gz" ) ;
+		BESContainer::_compressedExtensions.push_back( "Z" ) ;
+		BESContainer::_compressedExtensions.push_back( "bz2" ) ;
+	    }
+	    else
+	    {
+		build_list( val ) ;
+	    }
 	}
+
+	list<string>::const_iterator i =
+	    BESContainer::_compressedExtensions.begin() ;
+	list<string>::const_iterator ie =
+	    BESContainer::_compressedExtensions.end() ;
+	string::size_type real_len = _real_name.length() ;
+	string::size_type dot = _real_name.find_last_of( '.' ) ;
+	string::size_type dot_len = real_len - dot - 1 ;
+	for( ; i != ie && !_compressed; i++ )
+	{
+	    string::size_type ext_len = (*i).length() ;
+	    if( _real_name.compare( dot+1, dot_len, (*i) ) == 0 )
+	    {
+		_compressed = true ;
+	    }
+	}
+	_compression_determined = true ;
     }
 
-    Regex iscompressed( BESContainer::_compressedExt.c_str() ) ;
-    if( iscompressed.match( _real_name.c_str(), _real_name.length() ) == -1)
+    if( !_compressed )
     {
 	return _real_name ;
     }
@@ -171,6 +198,36 @@ BESContainer::access()
     }
 
     return output.str() ;
+}
+
+void
+BESContainer::build_list( const string &ext_list )
+{
+    string::size_type str_begin = 0 ;
+    string::size_type str_end = ext_list.length() ;
+    string::size_type comma = 0 ;
+
+    bool done = false ;
+    while( !done )
+    {
+	comma = ext_list.find( ",", str_begin ) ;
+	if( comma == string::npos )
+	{
+	    string a_member = ext_list.substr( str_begin, str_end-str_begin ) ;
+	    BESContainer::_compressedExtensions.push_back( a_member ) ;
+	    done = true ;
+	}
+	else
+	{
+	    string a_member = ext_list.substr( str_begin, comma-str_begin ) ;
+	    BESContainer::_compressedExtensions.push_back( a_member ) ;
+	    str_begin = comma+1 ;
+	    if( comma == str_end-1 )
+	    {
+		done = true ;
+	    }
+	}
+    }
 }
 
 /* The following code calls the uncompression programs directly after making

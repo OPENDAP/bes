@@ -43,7 +43,7 @@
  * storage registered with the server and transmits the response as an
  * informational response.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainerStorage
  * @see BESContainerStorageList
  * @see BESContainer

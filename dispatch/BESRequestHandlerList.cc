@@ -167,7 +167,7 @@ BESRequestHandlerList::get_handler_names()
  * @see _BESDataHandlerInterface
  * @see BESContainer
  * @see BESRequestHandler
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 void
 BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
@@ -220,7 +220,7 @@ BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
  * to fill in the response object.
  * @see _BESDataHandlerInterface
  * @see BESRequestHandler
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 void
 BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
@@ -254,7 +254,7 @@ BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
  * specified response object.
  * @see _BESDataHandlerInterface
  * @see BESContainer
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 void
 BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )

@@ -43,7 +43,7 @@ using std::ostream ;
 using std::stack ;
 using std::map ;
 
-#include "DODSResponseObject.h"
+#include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 #include "BESException.h"
@@ -61,11 +61,11 @@ using std::map ;
  * the print method performs the output.
  *
  * This class is can not be directly created but simply provides a base class
- * implementation of DODSResponseObject for simple informational responses.
+ * implementation of BESResponseObject for simple informational responses.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
-class BESInfo :public DODSResponseObject
+class BESInfo :public BESResponseObject
 {
 protected:
     ostream		*_strm ;

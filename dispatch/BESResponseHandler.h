@@ -35,14 +35,14 @@
 
 #include <string>
 
-#include <DODSResponseObject.h>
+#include <BESResponseObject.h>
 
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
 using std::string ;
 #if 0
-class DODSResponseObject ;
+class BESResponseObject ;
 #endif
 
 /** @brief handler object that knows how to create a specific response object
@@ -58,10 +58,11 @@ class DODSResponseObject ;
  * which knows to construct an informational response object and then pass
  * that informational response object to each registered request handler (data
  * handler) so that each of the request handlers has an opportunity to add any
- * help information in needs to add.
+ * help information it needs to add.
  *
  * Response handlers such as the BESStatusResponseHandler (and others) are able
- * to create the informational response object and fill it in. But usually,
+ * to create the informational response object and fill it in without handing
+ * off the response object to any other object. But usually,
  * the response handler passes the response object to another object to have
  * it fill in the response object.
  *
@@ -71,7 +72,7 @@ class DODSResponseObject ;
  * This is an abstract base class for response handlers. Derived classes
  * implement the methods execute and transmit.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESRequestHandler
  * @see BESResponseHandlerList
@@ -80,7 +81,7 @@ class DODSResponseObject ;
 class BESResponseHandler {
 protected:
     string			_response_name ;
-    DODSResponseObject		*_response ;
+    BESResponseObject		*_response ;
     
 				BESResponseHandler( string name ) ;
 public:
@@ -93,9 +94,9 @@ public:
      * object.
      *
      * @return current response object
-     * @see DODSResponseObject
+     * @see BESResponseObject
      */
-    virtual DODSResponseObject  *get_response_object() ;
+    virtual BESResponseObject  *get_response_object() ;
 
     /** @brief replaces the current response object with the specified one,
      * returning the current response object
@@ -109,9 +110,9 @@ public:
      *
      * @param o new response object used to replace the current one
      * @return the response object being replaced
-     * @see DODSResponseObject
+     * @see BESResponseObject
      */
-    virtual DODSResponseObject	*set_response_object( DODSResponseObject *o ) ;
+    virtual BESResponseObject	*set_response_object( BESResponseObject *o ) ;
 
     /** @brief knows how to build a requested response object
      *
@@ -125,7 +126,7 @@ public:
      * @throws BESResponseException upon fatal error building the response
      * object
      * @see _BESDataHandlerInterface
-     * @see DODSResponseObject
+     * @see BESResponseObject
      */
     virtual void		execute( BESDataHandlerInterface &dhi ) = 0 ;
 
@@ -135,7 +136,7 @@ public:
      * @param transmitter object that knows how to transmit specific basic types
      * @param dhi structure that holds the request and response information
      * @throws BESTransmitException if problem transmitting the response obj
-     * @see DODSResponseObject
+     * @see BESResponseObject
      * @see BESTransmitter
      * @see _BESDataHandlerInterface
      * @see BESTransmitException

@@ -44,7 +44,7 @@
  * determine whether the information should be buffered or not.
  *
  * @see BESXMLInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESVersionInfo::BESVersionInfo()
     : BESInfo(),
@@ -58,38 +58,6 @@ BESVersionInfo::BESVersionInfo()
 
 BESVersionInfo::~BESVersionInfo()
 {
-}
-
-void
-BESVersionInfo::beginDAPVersion( )
-{
-    if( _indap || _inbes || _inhandler )
-    {
-	throw BESHandlerException( "Attempting to begin DAP version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
-    }
-    _indap = true ;
-    _info->begin_tag( "DAP" ) ;
-}
-
-void
-BESVersionInfo::addDAPVersion( const string &v )
-{
-    if( !_indap )
-    {
-	throw BESHandlerException( "Attempting to add DAP version information while not in DAP tag", __FILE__, __LINE__ ) ;
-    }
-    _info->add_tag( "version", v ) ;
-}
-
-void
-BESVersionInfo::endDAPVersion( )
-{
-    if( !_indap )
-    {
-	throw BESHandlerException( "Attempting to end DAP version information while not in DAP tag", __FILE__, __LINE__ ) ;
-    }
-    _indap = false ;
-    _info->end_tag( "DAP" ) ;
 }
 
 void

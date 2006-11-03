@@ -39,7 +39,7 @@
 using std::ostringstream ;
 
 #include "BESTextInfo.h"
-#include "cgi_util.h"
+#include "BESUtil.h"
 
 /** @brief constructs a basic text information response object.
  *
@@ -48,7 +48,7 @@ using std::ostringstream ;
  * buffered then we need to send that text header.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESTextInfo::BESTextInfo( bool ishttp )
     : BESInfo( ),
@@ -67,7 +67,7 @@ BESTextInfo::BESTextInfo( bool ishttp )
  * buffered then we need to send that text header.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESTextInfo::BESTextInfo( const string &key, bool ishttp )
     : BESInfo( key ),
@@ -163,7 +163,7 @@ BESTextInfo::add_data( const string & s )
 {
     if( _ishttp && !_header && !_buffered )
     {
-	set_mime_text( stdout, dods_das ) ;
+	BESUtil::set_mime_text( stdout ) ;
 	_header = true ;
     }
     BESInfo::add_data( s ) ;

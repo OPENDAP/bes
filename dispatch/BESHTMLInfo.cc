@@ -39,7 +39,7 @@
 using std::ostringstream ;
 
 #include "BESHTMLInfo.h"
-#include "cgi_util.h"
+#include "BESUtil.h"
 
 /** @brief constructs an html information response object.
  *
@@ -47,7 +47,7 @@ using std::ostringstream ;
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESHTMLInfo::BESHTMLInfo( )
     : BESInfo( ),
@@ -62,7 +62,7 @@ BESHTMLInfo::BESHTMLInfo( )
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESHTMLInfo::BESHTMLInfo( const string &key )
     : BESInfo( key ),
@@ -226,7 +226,7 @@ BESHTMLInfo::add_data( const string &s )
 {
     if( !_header && !_buffered )
     {
-	set_mime_html( stdout, unknown_type ) ;
+	BESUtil::set_mime_html( stdout ) ;
 	_header = true ;
     }
     if( _do_indent )

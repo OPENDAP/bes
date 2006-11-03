@@ -38,13 +38,13 @@
 using std::string ;
 
 #include "BESDataHandlerInterface.h"
-#include "DODSResponseObject.h"
+#include "BESResponseObject.h"
 
 class DAS ;
 class DDS ;
 class BESInfo ;
 
-typedef void (*p_transmitter)( DODSResponseObject *obj, BESDataHandlerInterface &dhi ) ;
+typedef void (*p_transmitter)( BESResponseObject *obj, BESDataHandlerInterface &dhi ) ;
 
 class BESTransmitter
 {
@@ -63,7 +63,7 @@ public:
     virtual p_transmitter	find_method( string method_name ) ;
 
     virtual void		send_response( const string &method,
-    					       DODSResponseObject *obj,
+    					       BESResponseObject *obj,
     					       BESDataHandlerInterface &dhi ) ;
 
     virtual void		send_text( BESInfo &info,

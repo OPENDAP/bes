@@ -1,4 +1,4 @@
-// BESFilterTransmitter.cc
+// BESDataDDSResponse.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,61 +30,29 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESFilterTransmitter.h"
-#include "DODSFilter.h"
-#include "BESInfo.h"
-#include "BESDataNames.h"
-#include "cgi_util.h"
+#ifndef I_BESDataDDSResponse
+#define I_BESDataDDSResponse 1
 
-void
-BESFilterTransmitter::send_das( DAS &das, BESDataHandlerInterface & )
-{
-    _df->send_das( stdout, das ) ;
-}
+#include "BESResponseObject.h"
+#include "DataDDS.h"
+#include "ConstraintEvaluator.h"
 
-void
-BESFilterTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
+/** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
+ */
+class BESDataDDSResponse : public BESResponseObject
 {
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_dds( stdout, dds, ce, true ) ;
-}
+private:
+    DataDDS *			_dds ;
+    ConstraintEvaluator		_ce ;
+public:
+    				BESDataDDSResponse( DataDDS *dds )
+				    : BESResponseObject(),
+				      _dds( dds ) {}
+    virtual			~BESDataDDSResponse() ;
 
-void
-BESFilterTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_data( dds, ce, stdout ) ;
-}
+    DataDDS *			get_dds() { return _dds ; }
+    ConstraintEvaluator &	get_ce() { return _ce ; }
+} ;
 
-void
-BESFilterTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_ddx( dds, ce, stdout ) ;
-}
-
-void
-BESFilterTransmitter::send_text( BESInfo &info,
-                                  BESDataHandlerInterface & )
-{
-    if( info.is_buffered() )
-    {
-	set_mime_text( stdout, unknown_type ) ;
-	info.print( stdout ) ;
-    }
-}
-
-void
-BESFilterTransmitter::send_html( BESInfo &info,
-                                  BESDataHandlerInterface & )
-{
-    if( info.is_buffered() )
-    {
-	set_mime_html( stdout, unknown_type ) ;
-	info.print( stdout ) ;
-    }
-}
+#endif // I_BESDataDDSResponse
 

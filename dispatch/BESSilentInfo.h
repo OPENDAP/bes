@@ -44,7 +44,7 @@ using std::string ;
  * This class ignores any data added to an informational object and ignores
  * the print command. Basically, it is silent!
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESSilentInfo :public BESInfo
 {

@@ -42,7 +42,7 @@
  * response is going to a browser, sets the mime type to text.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESTextInfo : public BESInfo {
 private:

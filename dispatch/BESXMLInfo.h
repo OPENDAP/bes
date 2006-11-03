@@ -42,7 +42,7 @@
  * properties, etc... into the xml document.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESXMLInfo : public BESInfo {
 private:

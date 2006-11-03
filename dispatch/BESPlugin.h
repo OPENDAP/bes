@@ -12,7 +12,6 @@
 #include <string>
 #include <iostream>
 
-#include "debug.h"
 #include "BESPluginException.h"
 
 using std::string;
@@ -73,7 +72,6 @@ private:
     }
 
     /** Do not allow clients to use the copy constructor. BESPlugin
-        manages the dlopen resource and it's important to not copy that
 	pointer (since doing so could result in calling dlclose too many
 	times, something that is apt to be bad.
     */
@@ -94,7 +92,6 @@ private:
 	if (!d_lib) {
 	    d_lib = dlopen(d_filename.c_str(), RTLD_NOW|RTLD_LOCAL);
 	    if (d_lib == NULL) {
-		DBG(cerr << "Error opening library: " << dlerror() << endl);
 		throw NoSuchLibrary( string( dlerror() ), __FILE__, __LINE__ ) ;
 	    }
 	}
@@ -125,7 +122,6 @@ public:
     M* instantiate() throw(NoSuchLibrary, NoSuchObject) {
 	void *maker = dlsym(get_lib(), "maker");
 	if (!maker) {
-	    DBG(cerr << "Error running maker: " << dlerror() << endl);
 	    throw NoSuchObject( string( dlerror() ), __FILE__, __LINE__ ) ;
 	}
     

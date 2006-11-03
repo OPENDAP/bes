@@ -45,7 +45,7 @@
  * the responses those handlers can handle. Each of those request handlers are
  * given the chance to provide further help.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

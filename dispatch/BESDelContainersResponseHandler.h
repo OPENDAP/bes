@@ -45,7 +45,7 @@
  * An informational response object is created and returned to the requester
  * to inform them whether the request was successful.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

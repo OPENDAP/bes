@@ -31,8 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDDXResponseHandler.h"
-#include "DAS.h"
-#include "DDS.h"
+#include "BESDASResponse.h"
+#include "BESDDSResponse.h"
 #include "BESResponseNames.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapTransmit.h"
@@ -60,8 +60,8 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
  * @throws BESResponseException upon fatal error building the response
  * object
  * @see _BESDataHandlerInterface
- * @see DDS
- * @see DAS
+ * @see BESDDSResponse
+ * @see BESDASResponse
  * @see BESRequestHandlerList
  */
 void
@@ -72,14 +72,16 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // NOTE: It is the responsbility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
-    _response = dds ;
+    BESDDSResponse *bdds = new BESDDSResponse( dds ) ;
+    _response = bdds ;
     _response_name = DDS_RESPONSE ;
     dhi.action = DDS_RESPONSE ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // Fill the DAS
     DAS *das = new DAS ;
-    _response = das ;
+    BESDASResponse *bdas = new BESDASResponse( das ) ;
+    _response = bdas ;
     _response_name = DAS_RESPONSE ;
     dhi.action = DAS_RESPONSE ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
@@ -88,7 +90,7 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     dds->transfer_attributes( das ) ;
 
     dhi.action = DDX_RESPONSE ;
-    _response = dds ;
+    _response = bdds ;
 }
 
 /** @brief transmit the response object built by the execute command

@@ -16,22 +16,31 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = test 
 DIST_SUBDIRS = test
 
-lib_LTLIBRARIES = libbes_dispatch.la
+if LIBDAP
+lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
 pkglib_LTLIBRARIES = libdap_module.la
+else
+lib_LTLIBRARIES = libbes_dispatch.la
+endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_CPPFLAGS = -DBES_CONF_DIR=\"${sysconfdir}\"
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
+libdap_module_la_CPPFLAGS = $(DAP_CFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module
-libdap_module_la_LIBADD = libbes_dispatch.la
+libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS)
 
-pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
+libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
+libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS)
+libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
+
+pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 
 nobase_sysconf_DATA = bes/bes.conf
 
-pkgdata_DATA = bes/bes_help.html bes/bes_help.txt
+pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html bes/dap_help.txt
 
 dist_bin_SCRIPTS = bes-uncompress.sh bes-purge.pl
 
@@ -57,57 +66,63 @@ bes-purge.pl: bes-purge.pl.in ../config.status
 #
 # Sources and Headers
 
-SRCS = BESInterface.cc BESCgiInterface.cc BESGlobalIQ.cc \
+SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
-	TheBESKeys.cc BESContainer.cc BESStatus.cc \
-	BESContainerStorageCatalog.cc BESContainerStorageFile.cc \
+	TheBESKeys.cc BESStatus.cc \
+	BESContainer.cc \
+	BESContainerStorageFile.cc \
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc \
+	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
+	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
+	BESDefinitionStorageList.cc BESDefinitionStorageVolatile.cc \
+	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc \
+	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
 	BESProcIdResponseHandler.cc BESResponseHandler.cc \
 	BESHelpResponseHandler.cc BESStatusResponseHandler.cc \
 	BESVersionResponseHandler.cc BESKeysResponseHandler.cc \
 	BESStreamResponseHandler.cc BESResponseHandlerList.cc \
-	BESCatalogDirectory.cc BESCatalogList.cc \
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc \
-	BESInfoList.cc \
-	BESXMLInfo.cc BESSilentInfo.cc \
+	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc \
 	BESRequestHandler.cc BESRequestHandlerList.cc \
-	BESTransmitter.cc BESBasicTransmitter.cc \
-	BESBasicHttpTransmitter.cc BESFilterTransmitter.cc \
+	BESTransmitter.cc BESBasicTransmitter.cc BESBasicHttpTransmitter.cc \
 	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
 	BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc \
 	BESReturnManager.cc \
-	BESDefinitionStorageList.cc \
-	BESDefinitionStorageVolatile.cc \
 	BESExceptionManager.cc \
-	BESBaseApp.cc BESModuleApp.cc default_module.cc
+	BESBaseApp.cc BESModuleApp.cc BESUtil.cc default_module.cc
 
-HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
+HDRS = BESInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
 	BESInitializer.h BESLog.h BESLogException.h \
 	BESKeys.h TheBESKeys.h BESKeysException.h \
 	BESStatus.h \
-	BESContainer.h \
-	BESContainerStorage.h BESTransmitException.h \
-	BESContainerStorageCatalog.h BESContainerStorageFile.h \
-	BESContainerStorageList.h \
-	BESContainerStorageException.h \
+	BESTransmitException.h \
+	BESContainer.h BESContainerStorage.h \
+	BESContainerStorageFile.h \
+	BESContainerStorageList.h BESContainerStorageException.h \
 	BESContainerStorageVolatile.h \
-	BESProcIdResponseHandler.h BESResponseHandler.h BESHelpResponseHandler.h \
-	BESStatusResponseHandler.h BESVersionResponseHandler.h \
-	BESResponseHandlerList.h BESKeysResponseHandler.h \
-	BESStreamResponseHandler.h BESCatalogDirectory.h BESCatalog.h \
-	BESCatalogList.h \
+	BESSetContainerResponseHandler.h BESShowContainersResponseHandler.h \
+	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
+	BESDefine.h BESDefinitionStorageList.h \
+	BESDefinitionStorageException.h BESDefinitionStorage.h \
+	BESDefinitionStorageVolatile.h \
+	BESDefineResponseHandler.h BESShowDefsResponseHandler.h \
+	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
+	BESProcIdResponseHandler.h BESResponseHandler.h \
+	BESHelpResponseHandler.h BESStatusResponseHandler.h \
+	BESVersionResponseHandler.h BESKeysResponseHandler.h \
+	BESStreamResponseHandler.h BESResponseHandlerList.h \
 	BESResponseNames.h BESResponseException.h \
-	BESInfo.h BESTextInfo.h BESHTMLInfo.h BESVersionInfo.h BESInfoList.h \
-	BESXMLInfo.h BESSilentInfo.h BESInfoNames.h \
-	BESRequestHandler.h \
-	BESRequestHandlerList.h \
+	BESResponseObject.h BESInfo.h BESTextInfo.h BESHTMLInfo.h \
+	BESVersionInfo.h BESInfoList.h BESXMLInfo.h BESSilentInfo.h \
+	BESInfoNames.h \
+	BESRequestHandler.h BESRequestHandlerList.h \
 	BESIncorrectRequestException.h BESDataHandlerInterface.h \
 	BESDataRequestInterface.h BESTransmitter.h \
 	BESBasicHttpTransmitter.h BESBasicTransmitter.h \
-	BESFilterTransmitter.h BESReporter.h BESReporterList.h \
+	BESReporter.h BESReporterList.h \
 	BESException.h BESHandlerException.h BESAggregationException.h \
 	BESMemoryException.h BESDatabaseException.h \
 	BESAutoPtr.cc BESAutoPtr.h \
@@ -117,31 +132,32 @@ HDRS = BESInterface.h BESCgiInterface.h BESGlobalIQ.h \
 	BESServerSystemResources.h BESStatusReturn.h dispatch_version.h \
 	BESAggFactory.h BESAggregationServer.h \
 	BESReturnManager.h \
-	BESDefine.h BESDefinitionStorageList.h \
-	BESDefinitionStorageException.h BESDefinitionStorage.h \
-	BESDefinitionStorageVolatile.h \
 	BESDataNames.h BESApp.h BESObj.h BESBaseApp.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESPluginException.h default_module.h BESTransmitterNames.h \
 	BESExceptionManager.h \
-	BESModuleApp.h
+	BESModuleApp.h BESUtil.h
 
-DAP_SRCS = BESCatalogResponseHandler.cc BESShowContainersResponseHandler.cc \
+DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
 	BESDDXResponseHandler.cc \
-	BESDataResponseHandler.cc BESDefineResponseHandler.cc \
-	BESShowDefsResponseHandler.cc \
-	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
-	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
-	BESSetContainerResponseHandler.cc BESDapModule.cc \
-	BESDapTransmit.cc
+	BESDataResponseHandler.cc \
+	BESDapModule.cc \
+	BESDapRequestHandler.cc BESDapTransmit.cc
 
-DAP_HDRS = BESCatalogResponseHandler.h BESShowContainersResponseHandler.h \
+DAP_HDRS = BESCatalogResponseHandler.h \
 	BESDASResponseHandler.h BESDDSResponseHandler.h \
 	BESDDXResponseHandler.h \
-	BESDataResponseHandler.h BESDefineResponseHandler.h \
-	BESShowDefsResponseHandler.h \
-	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
-	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
-	BESSetContainerResponseHandler.h BESDapModule.h \
-	BESDapTransmit.h
+	BESDataResponseHandler.h \
+	BESDapModule.h \
+	BESDapRequestHandler.h BESDapTransmit.h
+
+BES_DAP_SRCS = BESDASResponse.cc BESDDSResponse.cc BESDataDDSResponse.cc \
+	BESFilterTransmitter.cc BESCgiInterface.cc \
+	BESContainerStorageCatalog.cc BESCatalogDirectory.cc BESCatalogList.cc
+
+BES_DAP_HDRS = BESDASResponse.h BESDDSResponse.h BESDataDDSResponse.h \
+	BESFilterTransmitter.h BESCgiInterface.h \
+	BESContainerStorageCatalog.h \
+	BESCatalogDirectory.h BESCatalog.h BESCatalogList.h
+

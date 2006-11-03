@@ -100,6 +100,10 @@ BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTTP=@pkgdatadir@/bes_help.html
 BES.Help.XML=@pkgdatadir@/bes_help.txt
 
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTTP=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.txt
+
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #
 # Should informational objects be formatted as text, html, or xml       #

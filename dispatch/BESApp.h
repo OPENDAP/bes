@@ -39,9 +39,9 @@ using std::string ;
 
 #include "BESObj.h"
 
-/** @brief Application class for OPeNDAP applications
+/** @brief Application class for BES applications
  *
- * This class represents the application class for any OPeNDAP BES
+ * This class represents the application class for any BES
  * applications. It provides information about the application, such as any
  * parameters passed to the application, the name of the application,
  * debugging for the application, etc...
@@ -122,18 +122,6 @@ public:
      * @return name of the application
      */
     string			appName( void ) const { return _appName ; }
-
-    /** @brief Returns whether debugging is turned on for the application
-     *
-     * @return true if debugging is turned on, false otherwise
-     */
-    bool			debug( void ) const { return _debug ; }
-
-    /** @brief Turn debugging either on or off
-     *
-     * @param debug set debugging either on or off
-     */
-    void			setDebug( bool debug ) { _debug = debug ; }
 
     /** @brief Returns the BESApp application object for this application
      *

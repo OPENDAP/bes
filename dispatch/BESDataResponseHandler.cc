@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDataResponseHandler.h"
-#include "DataDDS.h"
+#include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 #include "BESDapTransmit.h"
@@ -59,7 +59,7 @@ BESDataResponseHandler::~BESDataResponseHandler( )
  * @throws BESResponseException upon fatal error building the response
  * object
  * @see _BESDataHandlerInterface
- * @see DataDDS
+ * @see BESDataDDSResponse
  * @see BESRequestHandlerList
  * @see BESDefine
  */
@@ -69,7 +69,8 @@ BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = DATA_RESPONSE_STR ;
     // NOTE: It is the responsbility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    _response = new DataDDS( NULL, "virtual" ) ;
+    DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
+    _response = new BESDataDDSResponse( dds ) ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
@@ -80,13 +81,13 @@ BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DataDDS
+ * @see BESDataDDSResponse
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */
 void
 BESDataResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+                                  BESDataHandlerInterface &dhi )
 {
     if( _response )
     {

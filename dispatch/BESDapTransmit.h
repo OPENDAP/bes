@@ -35,7 +35,7 @@
 
 #include "BESDataHandlerInterface.h"
 
-class DODSResponseObject ;
+class BESResponseObject ;
 
 #define DAS_TRANSMITTER "das"
 #define DDS_TRANSMITTER "dds"
@@ -45,21 +45,21 @@ class DODSResponseObject ;
 class BESDapTransmit
 {
 public:
-    static void		send_basic_das( DODSResponseObject *obj,
+    static void		send_basic_das( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_das( DODSResponseObject *obj,
+    static void		send_http_das( BESResponseObject *obj,
     				       BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_dds( DODSResponseObject *obj,
+    static void		send_basic_dds( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_dds( DODSResponseObject *obj,
+    static void		send_http_dds( BESResponseObject *obj,
     				       BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_data( DODSResponseObject *obj,
+    static void		send_basic_data( BESResponseObject *obj,
     				         BESDataHandlerInterface &dhi ) ;
-    static void		send_http_data( DODSResponseObject *obj,
+    static void		send_http_data( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_basic_ddx( DODSResponseObject *obj,
+    static void		send_basic_ddx( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_ddx( DODSResponseObject *obj,
+    static void		send_http_ddx( BESResponseObject *obj,
     				       BESDataHandlerInterface &dhi ) ;
 } ;
 

@@ -46,7 +46,7 @@
  *
  * @see BESException
  * @see BESResponseHandler
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 class BESResponseException: public BESException
 {

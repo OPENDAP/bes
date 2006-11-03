@@ -46,7 +46,7 @@ BESResponseHandlerList *BESResponseHandlerList::_instance = 0 ;
  * handler
  * @return true if successfully added, false if it already exists
  * @see BESResponseHandler
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 bool
 BESResponseHandlerList::add_handler( string handler_name,

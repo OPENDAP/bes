@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESDASResponseHandler.h"
-#include "DAS.h"
+#include "BESDASResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 #include "BESDapTransmit.h"
@@ -59,14 +59,15 @@ BESDASResponseHandler::~BESDASResponseHandler( )
  * @throws BESResponseException upon fatal error building the response
  * object
  * @see _BESDataHandlerInterface
- * @see DAS
+ * @see BESDASResponse
  * @see BESRequestHandlerList
  */
 void
 BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     dhi.action_name = DAS_RESPONSE_STR ;
-    _response = new DAS ;
+    DAS *das = new DAS() ;
+    _response = new BESDASResponse( das ) ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 
@@ -78,7 +79,7 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see DAS
+ * @see BESDASResponse
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */

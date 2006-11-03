@@ -41,7 +41,7 @@
  * returns the process id of the server process connected to the requesting
  * client.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

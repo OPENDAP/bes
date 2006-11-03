@@ -46,7 +46,7 @@ using std::ostringstream ;
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
- * @see DODSResponseObject
+ * @see BESResponseObject
  */
 BESXMLInfo::BESXMLInfo( )
     : BESInfo( ),

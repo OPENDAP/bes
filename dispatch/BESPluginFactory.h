@@ -13,7 +13,6 @@
 #include <algorithm>
 
 #include "BESPlugin.h"
-#include "debug.h"
 
 using std::string;
 using std::map;

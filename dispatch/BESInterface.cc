@@ -36,6 +36,7 @@
 
 using std::string ;
 using std::ostringstream ;
+using std::bad_alloc ;
 
 #include "BESInterface.h"
 
@@ -108,14 +109,6 @@ BESInterface::execute_request()
     {
 	status = exception_manager( ex ) ;
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception: error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
-	status = exception_manager( ex ) ;
-    }
     catch( bad_alloc &b )
     {
 	string serr = "BES out of memory" ;
@@ -140,14 +133,6 @@ BESInterface::execute_request()
     }
     catch( BESException &ex )
     {
-	status = exception_manager( ex ) ;
-    }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception: error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESException ex( s.str(), __FILE__, __LINE__ ) ;
 	status = exception_manager( ex ) ;
     }
     catch( bad_alloc &b )
@@ -227,7 +212,7 @@ BESInterface::build_data_request_plan()
 
     @see _BESDataHandlerInterface
     @see BESResponseHandler
-    @see DODSResponseObject
+    @see BESResponseObject
  */
 void
 BESInterface::execute_data_request_plan()
@@ -270,7 +255,7 @@ BESInterface::invoke_aggregation()
     specified then do nothing here.
 
     @see BESResponseHandler
-    @see DODSResponseObject
+    @see BESResponseObject
     @see BESTransmitter
  */
 void

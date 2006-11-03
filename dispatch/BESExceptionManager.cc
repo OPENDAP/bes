@@ -41,7 +41,6 @@
 #include "BESResponseException.h"
 #include "BESTransmitException.h"
 #include "BESAggregationException.h"
-#include "Error.h"
 
 #include "BESStatusReturn.h"
 #include "TheBESKeys.h"

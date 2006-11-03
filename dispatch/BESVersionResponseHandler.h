@@ -42,7 +42,7 @@
  * returns the version of the OPeNDAP-g server and the version of any data
  * request handlers registered with the server.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESRequestHandler
  * @see BESContainer
  * @see BESTransmitter

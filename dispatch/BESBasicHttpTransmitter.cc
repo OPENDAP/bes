@@ -31,17 +31,15 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESBasicHttpTransmitter.h"
-#include "DAS.h"
-#include "DDS.h"
 #include "BESInfo.h"
-#include "cgi_util.h"
+#include "BESUtil.h"
 
 void
 BESBasicHttpTransmitter::send_text( BESInfo &info,
                                      BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
-	set_mime_text( stdout, unknown_type ) ;
+	BESUtil::set_mime_text( stdout ) ;
     BESBasicTransmitter::send_text( info, dhi ) ;
 }
 
@@ -51,7 +49,7 @@ BESBasicHttpTransmitter::send_html( BESInfo &info,
 {
     if( info.is_buffered() )
     {
-	set_mime_html( stdout, unknown_type ) ;
+	BESUtil::set_mime_html( stdout ) ;
     }
     BESBasicTransmitter::send_html( info, dhi ) ;
 }

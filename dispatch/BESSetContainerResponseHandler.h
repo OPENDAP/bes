@@ -49,7 +49,7 @@
  * It returns whether the container was created or replaces successfully in an
  * informational response object and transmits that response object.
  *
- * @see DODSResponseObject
+ * @see BESResponseObject
  * @see BESContainer
  * @see BESTransmitter
  */

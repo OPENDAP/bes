@@ -167,8 +167,7 @@ terminate( int sig )
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this class along with the name of the
- * application, whether the application is initialized or not and whether the
- * application debugging is turned on.
+ * application, whether the application is initialized or not
  *
  * @param strm C++ i/o stream to dump the information to
  */
@@ -183,11 +182,6 @@ dump( ostream &strm ) const
     else
 	strm << "is not" ;
     strm << " initialized" << endl ;
-    strm << "    debug is turned " ;
-    if( debug() )
-	strm << "on" ;
-    else
-	strm << "off" ;
     strm << endl ;
 }
 
