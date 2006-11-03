@@ -35,7 +35,6 @@
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
 #include "dispatch_version.h"
-#include "util.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 
