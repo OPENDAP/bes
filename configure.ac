@@ -85,6 +85,9 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
 
+dnl dl lib?
+AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
+
 dnl Checks for libraries.
 AC_CHECK_LIB(termcap, main)
 
