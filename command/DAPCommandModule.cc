@@ -41,17 +41,8 @@ using std::cout ;
 #include "BESLog.h"
 
 #include "BESCommand.h"
-#include "BESSetContainerCommand.h"
-#include "BESDefineCommand.h"
-#include "BESDelContainerCommand.h"
-#include "BESDelContainersCommand.h"
-#include "BESDelDefCommand.h"
-#include "BESDelDefsCommand.h"
+
 #include "BESCatalogCommand.h"
-
-#include "BESParserException.h"
-#include "BESExceptionManager.h"
-
 
 void
 DAPCommandModule::initialize( const string &modname )
@@ -78,14 +69,6 @@ DAPCommandModule::initialize( const string &modname )
     BESCommand::add_command( DATA_RESPONSE, BESCommand::TermCommand ) ;
 
     if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl;
-    BESCommand::add_command( SHOWCONTAINERS_RESPONSE, BESCommand::TermCommand ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " command" << endl;
-    BESCommand::add_command( SHOWDEFS_RESPONSE, BESCommand::TermCommand ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " command" << endl;
     cmd = new BESCatalogCommand( CATALOG_RESPONSE ) ;
     BESCommand::add_command( CATALOG_RESPONSE, cmd ) ;
@@ -94,40 +77,6 @@ DAPCommandModule::initialize( const string &modname )
 	(*BESLog::TheLog()) << "    adding " << SHOW_INFO_RESPONSE << " command" << endl;
     cmd = new BESCatalogCommand( SHOW_INFO_RESPONSE ) ;
     BESCommand::add_command( SHOW_INFO_RESPONSE, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
-    cmd = new BESDefineCommand( DEFINE_RESPONSE ) ;
-    BESCommand::add_command( DEFINE_RESPONSE, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SETCONTAINER << " command" << endl;
-    cmd = new BESSetContainerCommand( SETCONTAINER ) ;
-    BESCommand::add_command( SETCONTAINER, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINER << " command" << endl;
-    cmd = new BESDelContainerCommand( DELETE_CONTAINER ) ;
-    BESCommand::add_command( DELETE_CONTAINER, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " command" << endl;
-    cmd = new BESDelContainersCommand( DELETE_CONTAINERS ) ;
-    BESCommand::add_command( DELETE_CONTAINERS, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITION << " command" << endl;
-    cmd = new BESDelDefCommand( DELETE_DEFINITION ) ;
-    BESCommand::add_command( DELETE_DEFINITION, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " command" << endl;
-    cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
-    BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
-    BESExceptionManager::TheEHM()->add_ehm_callback( BESParserException::handleException ) ;
 }
 
 void
@@ -135,32 +84,6 @@ DAPCommandModule::terminate( const string &modname )
 {
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing DAP Commands" << endl;
-
-    BESCommand *cmd = NULL ;
-
-    (*BESLog::TheLog()) << "Removing DEFINE_RESPONSE" << endl;
-    cmd = BESCommand::rem_command( DEFINE_RESPONSE ) ;
-    if( cmd ) delete cmd ;
-
-    (*BESLog::TheLog()) << "Removing SHOWCONTAINERS_RESPONSE" << endl;
-    cmd = BESCommand::rem_command( SHOWCONTAINERS_RESPONSE ) ;
-    if( cmd ) delete cmd ;
-
-    (*BESLog::TheLog()) << "Removing DELETE_CONTAINER" << endl;
-    cmd = BESCommand::rem_command( DELETE_CONTAINER ) ;
-    if( cmd ) delete cmd ;
-
-    (*BESLog::TheLog()) << "Removing DELETE_CONTAINERS" << endl;
-    cmd = BESCommand::rem_command( DELETE_CONTAINERS ) ;
-    if( cmd ) delete cmd ;
-
-    (*BESLog::TheLog()) << "Removing DELETE_DEFINITION" << endl;
-    cmd = BESCommand::rem_command( DELETE_DEFINITION ) ;
-    if( cmd ) delete cmd ;
-
-    (*BESLog::TheLog()) << "Removing DELETE_DEFINITIONS" << endl;
-    cmd = BESCommand::rem_command( DELETE_DEFINITIONS ) ;
-    if( cmd ) delete cmd ;
 }
 
 extern "C"

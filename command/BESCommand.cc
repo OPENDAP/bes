@@ -52,20 +52,24 @@ BESCommand::add_command( const string &cmd_str, BESCommand *cmd )
     BESCommand::cmd_list[cmd_str] = cmd ;
 }
 
-BESCommand *
-BESCommand::rem_command( const string &cmd_str )
+bool
+BESCommand::del_command( const string &cmd_str )
 {
+    bool ret = false ;
     BESCommand *cmd = NULL ;
 
     BESCommand::cmd_iter iter = BESCommand::cmd_list.find( cmd_str ) ;
     if( iter != BESCommand::cmd_list.end() )
     {
 	cmd = (*iter).second ;
+	if( cmd != NULL )
+	    ret = true ;
 	if( cmd == BESCommand::TermCommand )
 	    cmd = NULL ;
 	BESCommand::cmd_list.erase( iter ) ;
     }
-    return cmd ;
+    if( cmd ) delete cmd ;
+    return ret ;
 }
 
 BESCommand *

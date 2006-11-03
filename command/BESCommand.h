@@ -65,7 +65,7 @@ public:
     static BESCommand *		TermCommand ;
     static void				add_command( const string &cmd_str,
                                                      BESCommand *cmd ) ;
-    static BESCommand *		rem_command( const string &cmd_str ) ;
+    static bool			del_command( const string &cmd_str ) ;
     static BESCommand *		find_command( const string &cmd_str ) ;
 } ;
 

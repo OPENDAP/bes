@@ -45,6 +45,14 @@ using std::endl ;
 #include "BESDeleteCommand.h"
 #include "BESShowCommand.h"
 
+#include "BESSetContainerCommand.h"
+#include "BESDelContainerCommand.h"
+#include "BESDelContainersCommand.h"
+
+#include "BESDefineCommand.h"
+#include "BESDelDefCommand.h"
+#include "BESDelDefsCommand.h"
+
 #include "BESParserException.h"
 #include "BESExceptionManager.h"
 
@@ -97,6 +105,44 @@ opendap_commands::initialize( int, char** )
     BESCommand::add_command( DELETE_RESPONSE, cmd ) ;
 
     if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SETCONTAINER << " command" << endl;
+    cmd = new BESSetContainerCommand( SETCONTAINER ) ;
+    BESCommand::add_command( SETCONTAINER, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl;
+    BESCommand::add_command( SHOWCONTAINERS_RESPONSE, BESCommand::TermCommand ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINER << " command" << endl;
+    cmd = new BESDelContainerCommand( DELETE_CONTAINER ) ;
+    BESCommand::add_command( DELETE_CONTAINER, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " command" << endl;
+    cmd = new BESDelContainersCommand( DELETE_CONTAINERS ) ;
+    BESCommand::add_command( DELETE_CONTAINERS, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
+    cmd = new BESDefineCommand( DEFINE_RESPONSE ) ;
+    BESCommand::add_command( DEFINE_RESPONSE, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " command" << endl;
+    BESCommand::add_command( SHOWDEFS_RESPONSE, BESCommand::TermCommand ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITION << " command" << endl;
+    cmd = new BESDelDefCommand( DELETE_DEFINITION ) ;
+    BESCommand::add_command( DELETE_DEFINITION, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
+	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " command" << endl;
+    cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
+    BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
+
+    if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
     BESExceptionManager::TheEHM()->add_ehm_callback( BESParserException::handleException ) ;
 
@@ -109,17 +155,20 @@ opendap_commands::terminate( void )
     if( BESLog::TheLog()->is_verbose() )
 	(*BESLog::TheLog()) << "Removing default commands:" << endl;
 
-    BESCommand *cmd = BESCommand::rem_command( GET_RESPONSE ) ;
-    if( cmd ) delete cmd ;
+    BESCommand::del_command( GET_RESPONSE ) ;
+    BESCommand::del_command( SHOW_RESPONSE ) ;
+    BESCommand::del_command( SET_RESPONSE ) ;
+    BESCommand::del_command( DELETE_RESPONSE ) ;
 
-    cmd = BESCommand::rem_command( SHOW_RESPONSE ) ;
-    if( cmd ) delete cmd ;
+    BESCommand::del_command( SETCONTAINER ) ;
+    BESCommand::del_command( SHOWCONTAINERS_RESPONSE ) ;
+    BESCommand::del_command( DELETE_CONTAINER ) ;
+    BESCommand::del_command( DELETE_CONTAINERS ) ;
 
-    cmd = BESCommand::rem_command( SET_RESPONSE ) ;
-    if( cmd ) delete cmd ;
-
-    cmd = BESCommand::rem_command( DELETE_RESPONSE ) ;
-    if( cmd ) delete cmd ;
+    BESCommand::del_command( DEFINE_RESPONSE ) ;
+    BESCommand::del_command( SHOWDEFS_RESPONSE ) ;
+    BESCommand::del_command( DELETE_DEFINITION ) ;
+    BESCommand::del_command( DELETE_DEFINITIONS ) ;
 
     return true;
 }
