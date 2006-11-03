@@ -33,6 +33,9 @@ pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 SRCS = BESCmdInterface.cc BESCmdParser.cc BESCommand.cc		\
 	BESGetCommand.cc BESSetCommand.cc 			\
 	BESShowCommand.cc BESTermCommand.cc 			\
+	BESDefineCommand.cc BESSetContainerCommand.cc 		\
+	BESDelContainerCommand.cc BESDelContainersCommand.cc 	\
+	BESDelDefCommand.cc BESDelDefsCommand.cc		\
 	BESParserException.cc BESTokenizer.cc 			\
 	BESDeleteCommand.cc opendap_commands.cc
 
@@ -40,15 +43,10 @@ HDRS = BESCmdInterface.h BESCommand.h BESTokenizer.h 		\
 	BESParserException.h opendap_commands.h BESCmdParser.h 	\
 	BESGetCommand.h BESSetCommand.h 			\
 	BESShowCommand.h BESDeleteCommand.h 			\
+	BESDelContainerCommand.h BESDelContainersCommand.h 	\
+	BESDelDefCommand.h BESDelDefsCommand.h			\
+	BESDefineCommand.h BESSetContainerCommand.h 		\
 	BESTermCommand.h
 
-DAP_SRCS = BESDefineCommand.cc BESSetContainerCommand.cc 	\
-	BESCatalogCommand.cc DAPCommandModule.cc 		\
-	BESDelContainerCommand.cc BESDelContainersCommand.cc 	\
-	BESDelDefCommand.cc BESDelDefsCommand.cc
-
-DAP_HDRS = BESDefineCommand.h BESSetContainerCommand.h 		\
-	BESCatalogCommand.h DAPCommandModule.h 			\
-	BESDelContainerCommand.h BESDelContainersCommand.h 	\
-	BESDelDefCommand.h BESDelDefsCommand.h
-
+DAP_SRCS = BESCatalogCommand.cc DAPCommandModule.cc
+DAP_HDRS = BESCatalogCommand.h DAPCommandModule.h
