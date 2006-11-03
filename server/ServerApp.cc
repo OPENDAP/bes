@@ -163,7 +163,8 @@ ServerApp::initialize( int argc, char **argv )
 		_unixSocket = optarg ;
 		break ;
 	    case 'd':
-		setDebug( true ) ;
+		// nothing to do here right now until we get debugging impelemented
+		//setDebug( true ) ;
 		break ;
 	    case 'v':
 		showVersion() ;

@@ -34,7 +34,6 @@
 
 #include "BESParserException.h"
 #include "BESInfo.h"
-#include "cgi_util.h"
 
 // Add docs. jhrg 3/29/06
 int

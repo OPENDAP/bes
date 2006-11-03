@@ -230,7 +230,8 @@ CmdApp::initialize( int argc, char **argv )
 		_hostStr = optarg ;
 		break ;
 	    case 'd':
-		setDebug( true ) ;
+		// nothing to do here right now until we implement debugging with a debug class
+		//setDebug( true ) ;
 		break ;
 	    case 'v':
 		showVersion() ;
