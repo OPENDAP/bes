@@ -48,6 +48,7 @@ using std::ostringstream ;
 #include "BESDataNames.h"
 #include "ConstraintEvaluator.h"
 #include "config_hdf.h"
+#include "BESHandlerException.h"
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
