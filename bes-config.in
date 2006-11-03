@@ -20,6 +20,7 @@ Available values for OPTION include:
   --cxx        C++ compiler
   --cflags     pre-processor and compiler flags
   --libs       library linking information for the OPeNDAP/HAO BES
+  --dap-libs   library linking information for the OPeNDAP/HAO BES using LIBDAP
   --prefix     OPeNDAP install prefix
   --modulesdir Bes modules directory
   --version    Library version
@@ -60,6 +61,10 @@ while test $# -gt 0; do
 
     --libs)
        	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt @LIBS@"
+       	;;
+
+    --dap-libs)
+       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt -lbes_dap @LIBS@"
        	;;
 
     --modulesdir)
