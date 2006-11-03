@@ -30,6 +30,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <sstream>
+
+using std::ostringstream ;
+
 #include "HDF5RequestHandler.h"
 
 #include "h5das.h"
@@ -37,8 +41,9 @@
 #include "config_hdf5.h"
 #include "HDF5TypeFactory.h"
 
-#include "DAS.h"
-#include "DDS.h"
+#include "BESDASResponse.h"
+#include "BESDDSResponse.h"
+#include "BESDataDDSResponse.h"
 #include "BESInfo.h"
 #include "BESResponseNames.h"
 #include "BESContainer.h"
@@ -77,10 +82,30 @@ HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
 				   __FILE__, __LINE__ ) ;
     }
 
-    DAS *das = (DAS *)dhi.response_handler->get_response_object() ;
+    BESDASResponse *bdas =
+	dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object() ) ;
+    DAS *das = bdas->get_das() ;
 
-    find_gloattr( file1, *das ) ;
-    depth_first( file1, "/", *das, filename.c_str() ) ;
+    try
+    {
+	find_gloattr( file1, *das ) ;
+	depth_first( file1, "/", *das, filename.c_str() ) ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF5 DAS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF5 DAS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
@@ -98,17 +123,37 @@ HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
 				   __FILE__, __LINE__ ) ;
     }
 
-    DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+    BESDDSResponse *bdds =
+	dynamic_cast<BESDDSResponse *>( dhi.response_handler->get_response_object() ) ;
+    DDS *dds = bdds->get_dds() ;
 
-    HDF5TypeFactory *factory = new HDF5TypeFactory ;
-    dds->set_factory( factory ) ;
+    try
+    {
+	HDF5TypeFactory *factory = new HDF5TypeFactory ;
+	dds->set_factory( factory ) ;
 
-    depth_first( file1, "/", *dds, filename.c_str() ) ;
+	depth_first( file1, "/", *dds, filename.c_str() ) ;
 
-    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
-    dds->set_factory( NULL ) ;
-    delete factory ;
+	dds->set_factory( NULL ) ;
+	delete factory ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF5 DDS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF5 DDS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
@@ -126,17 +171,37 @@ HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
 				   __FILE__, __LINE__ ) ;
     }
 
-    DDS *dds = (DDS *)dhi.response_handler->get_response_object() ;
+    BESDataDDSResponse *bdds =
+	dynamic_cast<BESDataDDSResponse *>( dhi.response_handler->get_response_object() ) ;
+    DataDDS *dds = bdds->get_dds() ;
 
-    HDF5TypeFactory *factory = new HDF5TypeFactory ;
-    dds->set_factory( factory ) ;
+    try
+    {
+	HDF5TypeFactory *factory = new HDF5TypeFactory ;
+	dds->set_factory( factory ) ;
 
-    depth_first( file1, "/", *dds, filename.c_str() ) ;
+	depth_first( file1, "/", *dds, filename.c_str() ) ;
 
-    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
-    dds->set_factory( NULL ) ;
-    delete factory ;
+	dds->set_factory( NULL ) ;
+	delete factory ;
+    }
+    catch( Error &e )
+    {
+	ostringstream s ;
+	s << "libdap exception building HDF5 DataDDS"
+	  << ": error_code = " << e.get_error_code()
+	  << ": " << e.get_error_message() ;
+	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch( ... )
+    {
+	string s = "unknown exception caught building HDF5 DataDDS" ;
+	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
 
     return true ;
 }
