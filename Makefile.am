@@ -1,7 +1,7 @@
 
 # Automake file for hdf5_handler
 #
-# $Id: Makefile.am 12396 2005-10-13 03:28:41 -0600 (Thu, 13 Oct 2005) jimg $
+# $Id$
 
 AUTOMAKE_OPTIONS = foreign check-news
 # dejagnu
