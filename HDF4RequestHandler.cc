@@ -52,7 +52,6 @@ using std::ostringstream ;
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
-extern void register_funcs(ConstraintEvaluator& dds);
 
 string HDF4RequestHandler::_cachedir = "" ;
 
@@ -139,7 +138,6 @@ HDF4RequestHandler::hdf4_build_dds( BESDataHandlerInterface &dhi )
 
 	read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
-	register_funcs( ce ) ;
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
 	dds->set_factory( NULL ) ;
@@ -181,7 +179,6 @@ HDF4RequestHandler::hdf4_build_data( BESDataHandlerInterface &dhi )
 
 	read_dds( *dds, _cachedir, dhi.container->access() ) ;
 
-	register_funcs( ce ) ;
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
 	dds->set_factory( NULL ) ;

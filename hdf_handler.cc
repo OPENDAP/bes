@@ -67,7 +67,6 @@ using namespace std;
 
 extern void read_das(DAS& das, const string& cachedir, const string& filename);
 extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
-extern void register_funcs(ConstraintEvaluator& dds);
 
 const string cgi_version = PACKAGE_VERSION;
 

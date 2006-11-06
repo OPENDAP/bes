@@ -44,7 +44,7 @@ AC_DEFUN([AC_CHECK_BES],
      if test x$bes_config_is_lt = xyes ; then
        bes_no=yes
      else
-       BES_LIBS="`$BES_CONFIG --libs`"
+       BES_LIBS="`$BES_CONFIG --dap-libs`"
        BES_CPPFLAGS="`$BES_CONFIG --cflags`"
        BES_MODULE_DIR="`$BES_CONFIG --modulesdir`"
      fi

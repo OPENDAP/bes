@@ -81,14 +81,13 @@ then
 	AM_CONDITIONAL([OPENDAPSERVER], [true])
 	BES_CPPFLAGS="`${BES_PATH}/bin/bes-config --cflags`"
 	AC_SUBST([BES_CPPFLAGS])
-	BES_LDFLAGS="`${BES_PATH}/bin/bes-config --libs`"
-	AC_SUBST([BES_LDFLAGS])
+	BES_LIBS="`${BES_PATH}/bin/bes-config --dap-libs`"
+	AC_SUBST([BES_LIBS])
 	BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --modulesdir`"
 	AC_SUBST([BES_MODULE_DIR])
     else
 	AC_CHECK_BES([3.1.0],
 	[
-	    BES_LDFLAGS=$BES_LIBS
 	    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
 	    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
 	    AM_CONDITIONAL([OPENDAPSERVER], [true])
