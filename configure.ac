@@ -97,6 +97,8 @@ if test "$vl_cv_lib_readline" = "no"; then
    AC_MSG_ERROR(I could not find the readline library!)
 fi
 
+SIC_VAR_SYS_ERRLIST
+
 BES_CHECK_OPENSSL
 BES_CHECK_KERBEROS
 

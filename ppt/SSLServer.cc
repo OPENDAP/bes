@@ -146,7 +146,11 @@ SSLServer::initConnection()
 	{
 	    cout << "FAILED" << endl ;
 	    err_msg = "Failed to open port: " ;
+#ifdef HAVE_SYS_ERRLIST
 	    err_msg += sys_errlist[errno] ;
+#else
+	    err_msg += strerror( errno ) ;
+#endif
 	    ok_2_continue = false ;
 	}
     }
@@ -162,7 +166,11 @@ SSLServer::initConnection()
 	{
 	    cout << "FAILED" << endl ;
 	    err_msg = "Failed to accept connection: " ;
+#ifdef HAVE_SYS_ERRLIST
 	    err_msg += sys_errlist[errno] ;
+#else
+	    err_msg += strerror( errno ) ;
+#endif
 	    ok_2_continue = false ;
 	}
     }
