@@ -60,4 +60,3 @@ public:
 
 #endif // PPTServer_h
 
-// $Log: PPTServer.h,v $

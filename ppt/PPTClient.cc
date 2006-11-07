@@ -46,7 +46,11 @@ using std::ostringstream ;
 #include "PPTProtocol.h"
 #include "SocketException.h"
 #include "PPTException.h"
+
+#include "config.h"
+#ifdef HAVE_OPENSSL
 #include "SSLClient.h"
+#endif
 
 PPTClient::PPTClient( const string &hostStr, int portVal )
     : _connected( false ),
@@ -89,7 +93,7 @@ PPTClient::initConnection()
     {
 	string msg = "Failed to initialize connection to server\n" ;
 	msg += e.getMessage() ;
-	throw PPTException( msg ) ;
+	throw PPTException( msg, __FILE__, __LINE__ ) ;
     }
 
     char *inBuff = new char[4096] ;
@@ -97,7 +101,7 @@ PPTClient::initConnection()
     if( bytesRead < 1 )
     {
 	delete [] inBuff ;
-	throw PPTException( "Could not connect to server, server may be down or busy" ) ;
+	throw PPTException( "Could not connect to server, server may be down or busy" , __FILE__, __LINE__) ;
     }
 
     string status( inBuff, 0, bytesRead ) ;
@@ -105,7 +109,7 @@ PPTClient::initConnection()
 
     if( status == PPTProtocol::PPT_PROTOCOL_UNDEFINED )
     {
-	throw PPTException( "Could not connect to server, server may be down or busy" ) ;
+	throw PPTException( "Could not connect to server, server may be down or busy", __FILE__, __LINE__ ) ;
     }
 
     if( status == PPTProtocol::PPTSERVER_AUTHENTICATE )
@@ -114,13 +118,14 @@ PPTClient::initConnection()
     }
     else if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
     {
-	throw PPTException( "Server reported an invalid connection, \"" + status + "\"" ) ;
+	throw PPTException( "Server reported an invalid connection, \"" + status + "\"", __FILE__, __LINE__ ) ;
     }
 }
 
 void
 PPTClient::authenticateWithServer()
 {
+#ifdef HAVE_OPENSSL
     // send request for the authentication port
     writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 
@@ -129,12 +134,12 @@ PPTClient::authenticateWithServer()
     bool isDone = receive( &portResponse ) ;
     if( isDone )
     {
-	throw PPTException( "Expecting secure port number response" ) ;
+	throw PPTException( "Expecting secure port number response", __FILE__, __LINE__ ) ;
     }
     int portVal = atoi( portResponse.str().c_str() ) ;
     if( portVal == 0 )
     {
-	throw PPTException( "Expecting valid secure port number response" ) ;
+	throw PPTException( "Expecting valid secure port number response", __FILE__, __LINE__ ) ;
     }
 
     // authenticate using SSLClient
@@ -146,6 +151,9 @@ PPTClient::authenticateWithServer()
 
     // If it authenticates, good, if not then an exception is thrown. We
     // don't need to do anything else here.
+#else
+    throw PPTException( "Server has requested authentication but OpenSSL is not built into this client", __FILE__, __LINE__ ) ;
+#endif
 }
 
 void
@@ -174,4 +182,3 @@ PPTClient::closeConnection()
     }
 }
 
-// $Log: PPTClient.cc,v $

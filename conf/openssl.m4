@@ -5,19 +5,23 @@ AC_DEFUN([BES_FIND_OPENSSL], [
     ---)
       for d in /usr/ssl/include /usr/local/ssl/include /usr/include \
 /usr/include/ssl /opt/ssl/include /opt/openssl/include \
-/usr/local/ssl/include /usr/local/include /usr/freeware/include ; do
-       if test -f $d/openssl/ssl.h  ; then
-         OPENSSL_INCLUDE=-I$d
-       fi
+/usr/local/ssl/include /usr/local/include /usr/freeware/include
+      do
+        if test -f $d/openssl/ssl.h
+        then
+          OPENSSL_INCLUDE=-I$d
+        fi
       done
 
       for d in /usr/ssl/lib /usr/local/ssl/lib /usr/lib/openssl \
 /usr/lib /usr/lib64 /opt/ssl/lib /opt/openssl/lib \
-/usr/freeware/lib32 /usr/local/lib/ ; do
-      # Just to be safe, we test for ".so" anyway
-      if test -f $d/libssl.a || test -f $d/libssl.so || test -f $d/libssl$shrext_cmds ; then
-        OPENSSL_LIB=$d
-      fi
+/usr/freeware/lib32 /usr/local/lib/
+      do
+        # Just to be safe, we test for ".so" anyway
+        if test -f $d/libssl.a || test -f $d/libssl.so || test -f $d/libssl.dylib || test -f $d/libssl.dll
+	then
+          OPENSSL_LIB=$d
+        fi
       done
       ;;
     ---* | *---)
@@ -34,8 +38,6 @@ AC_DEFUN([BES_FIND_OPENSSL], [
       ;;
   esac
 
- echo $OPENSSL_LIB
- echo $OPENSSL_INCLUDE
  if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE" ; then
    echo "Could not find an installation of OpenSSL"
    if test -n "$OPENSSL_LIB" ; then
@@ -53,7 +55,7 @@ AC_MSG_CHECKING(for OpenSSL)
   AC_ARG_WITH([openssl],
               [  --with-openssl[=DIR]    Include the OpenSSL support],
               [openssl="$withval"],
-              [openssl=no])
+              [openssl=""])
 
   AC_ARG_WITH([openssl-includes],
               [
@@ -71,7 +73,7 @@ AC_MSG_CHECKING(for OpenSSL)
 
   if test "$openssl" != "no"
   then
-	if test "$openssl" != "yes"
+	if test "$openssl" != "yes" -a "$openssl" != ""
 	then
 		if test -z "$openssl_includes" 
 		then
@@ -94,8 +96,10 @@ AC_MSG_CHECKING(for OpenSSL)
 	openssl_includes="$OPENSSL_INCLUDE"
     fi
     AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
+    AM_CONDITIONAL([HAVE_OPENSSL], [true])
 
   else
+    AM_CONDITIONAL([HAVE_OPENSSL], [false])
     AC_MSG_RESULT(no)
 	if test ! -z "$openssl_includes"
 	then

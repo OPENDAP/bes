@@ -42,7 +42,11 @@ using std::ostringstream ;
 #include "SocketListener.h"
 #include "ServerHandler.h"
 #include "Socket.h"
+
+#include "config.h"
+#ifdef HAVE_OPENSSL
 #include "SSLServer.h"
+#endif
 
 PPTServer::PPTServer( ServerHandler *handler,
 		      SocketListener *listener,
@@ -61,6 +65,13 @@ PPTServer::PPTServer( ServerHandler *handler,
 	string err( "Null listener passed to PPTServer" ) ;
 	throw PPTException( err, __FILE__, __LINE__ ) ;
     }
+#ifndef HAVE_OPENSSL
+    if( _secure )
+    {
+	string err("Server requested to be secure but OpenSSL is not built in");
+	throw PPTException( err, __FILE__, __LINE__ ) ;
+    }
+#endif
 }
 
 PPTServer::~PPTServer()
@@ -123,6 +134,7 @@ PPTServer::welcomeClient()
 void
 PPTServer::authenticateClient()
 {
+#ifdef HAVE_OPENSSL
     // let the client know that it needs to authenticate
     int len = PPTProtocol::PPTSERVER_AUTHENTICATE.length() ;
     _mySock->send( PPTProtocol::PPTSERVER_AUTHENTICATE, 0, len ) ;
@@ -154,6 +166,8 @@ PPTServer::authenticateClient()
 
     // if it authenticates, good, if not, an exception is thrown, no need to
     // do anything else here.
+#else
+    throw PPTException( "Authentication requrested for this server but OpenSSL is not built into the server", __FILE__, __LINE__ ) ;
+#endif
 }
 
-// $Log: PPTServer.cc,v $
