@@ -32,21 +32,22 @@ AC_DEFUN([BES_FIND_OPENSSL], [
         OPENSSL_INCLUDE=-I$incs
       fi
       # Just to be safe, we test for ".so" anyway
-      if test -f $libs/libssl.a || test -f $libs/libssl.so || test -f $libs/libssl$shrext_cmds ; then
+      if test -f $libs/libssl.a || test -f $libs/libssl.so || test -f $libs/libssl.dylib || test -f $libs/libssl/dll
+      then
         OPENSSL_LIB=$libs
       fi
       ;;
   esac
 
- if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE" ; then
-   echo "Could not find an installation of OpenSSL"
-   if test -n "$OPENSSL_LIB" ; then
-    if test "$TARGET_LINUX" = "true"; then
-      echo "Looks like you've forgotten to install OpenSSL development RPM"
-    fi
-   fi
-  exit 1
- fi
+# if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE" ; then
+#   echo "Could not find an installation of OpenSSL"
+#   if test -n "$OPENSSL_LIB" ; then
+#    if test "$TARGET_LINUX" = "true"; then
+#      echo "Looks like you've forgotten to install OpenSSL development RPM"
+#    fi
+#   fi
+#  exit 1
+# fi
 
 ])
 
@@ -85,18 +86,28 @@ AC_MSG_CHECKING(for OpenSSL)
 		fi
 	fi
     BES_FIND_OPENSSL([$openssl_includes], [$openssl_libs])
-    #force VIO use
-    AC_MSG_RESULT(yes)
-    openssl_libs="-L$OPENSSL_LIB -lssl -lcrypto"
-    # Don't set openssl_includes to /usr/include as this gives us a lot of
-    # compiler warnings when using gcc 3.x
-    openssl_includes=""
-    if test "$OPENSSL_INCLUDE" != "-I/usr/include"
+    if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE"
     then
-	openssl_includes="$OPENSSL_INCLUDE"
+	if test "$openssl" != ""
+	then
+	    AC_MSG_ERROR(Unable to locate OpenSSL installation using --with-openssl specified);
+	fi
+	AM_CONDITIONAL([HAVE_OPENSSL], [false])
+	AC_MSG_RESULT(no)
+    else
+	#force VIO use
+	AC_MSG_RESULT(yes)
+	openssl_libs="-L$OPENSSL_LIB -lssl -lcrypto"
+	# Don't set openssl_includes to /usr/include as this gives us a lot of
+	# compiler warnings when using gcc 3.x
+	openssl_includes=""
+	if test "$OPENSSL_INCLUDE" != "-I/usr/include"
+	then
+	    openssl_includes="$OPENSSL_INCLUDE"
+	fi
+	AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
+	AM_CONDITIONAL([HAVE_OPENSSL], [true])
     fi
-    AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
-    AM_CONDITIONAL([HAVE_OPENSSL], [true])
 
   else
     AM_CONDITIONAL([HAVE_OPENSSL], [false])
