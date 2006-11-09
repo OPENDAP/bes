@@ -1,8 +1,10 @@
 HTTP/1.0 200 OK
 XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
 Date: *
 Last-Modified: *
-Content-type: text/plain
+Content-Type: text/plain
 Content-Description: dods_das
 
 Attributes {
