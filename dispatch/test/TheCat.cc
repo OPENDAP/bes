@@ -25,5 +25,5 @@ destroyNewCat(void) {
     return true;
 }
 
-FUNINITQUIT(buildNewCat, destroyNewCat, 1);
+FUNINITQUIT(buildNewCat, destroyNewCat, 2);
 
