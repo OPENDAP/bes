@@ -1,0 +1,110 @@
+Attributes {
+    dset1 {
+        String HDF5_OBJ_FULLPATH "/dset1";
+    }
+    group1 {
+        String HDF5_OBJ_FULLPATH "/group1/";
+    }
+    dset2 {
+        String HDF5_OBJ_FULLPATH "/group1/dset2";
+    }
+    dset4 {
+        String HDF5_OBJ_FULLPATH "/group1/dset4";
+    }
+    group2 {
+        String HDF5_OBJ_FULLPATH "/group2/";
+    }
+    dset5 {
+        String HDF5_OBJ_FULLPATH "/group2/dset5";
+    }
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<getDDS>
+    <response>
+        <Administrator>jgallagher@opendap.org</Administrator>
+        <BESException>
+            <Type>DataHandlerProblem</Type>
+            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
+h5_dds handler: get hdf5 dataset wrong for /dset1
+get data unexpected datatype at temp_type
+Please report this to support@unidata.ucar.edu
+</Message>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>148</Line>
+            </Location>
+        </BESException>
+    </response>
+</getDDS>
+<?xml version="1.0" encoding="UTF-8"?>
+<getDDX>
+    <response>
+        <Administrator>jgallagher@opendap.org</Administrator>
+        <BESException>
+            <Type>DataHandlerProblem</Type>
+            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
+h5_dds handler: get hdf5 dataset wrong for /dset1
+get data unexpected datatype at temp_type
+Please report this to support@unidata.ucar.edu
+</Message>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>148</Line>
+            </Location>
+        </BESException>
+    </response>
+</getDDX>
+<?xml version="1.0" encoding="UTF-8"?>
+<getInfoPage>
+    <response>
+        <Administrator>jgallagher@opendap.org</Administrator>
+        <BESException>
+            <Type>DataHandlerProblem</Type>
+            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
+h5_dds handler: get hdf5 dataset wrong for /dset1
+get data unexpected datatype at temp_type
+Please report this to support@unidata.ucar.edu
+</Message>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>148</Line>
+            </Location>
+        </BESException>
+    </response>
+</getInfoPage>
+<?xml version="1.0" encoding="UTF-8"?>
+<getAscii>
+    <response>
+        <Administrator>jgallagher@opendap.org</Administrator>
+        <BESException>
+            <Type>DataHandlerProblem</Type>
+            <Message>libdap exception building HDF5 DataDDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
+h5_dds handler: get hdf5 dataset wrong for /dset1
+get data unexpected datatype at temp_type
+Please report this to support@unidata.ucar.edu
+</Message>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>196</Line>
+            </Location>
+        </BESException>
+    </response>
+</getAscii>
+<?xml version="1.0" encoding="UTF-8"?>
+<getDODS>
+    <response>
+        <Administrator>jgallagher@opendap.org</Administrator>
+        <BESException>
+            <Type>DataHandlerProblem</Type>
+            <Message>libdap exception building HDF5 DataDDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
+h5_dds handler: get hdf5 dataset wrong for /dset1
+get data unexpected datatype at temp_type
+Please report this to support@unidata.ucar.edu
+</Message>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>196</Line>
+            </Location>
+        </BESException>
+    </response>
+</getDODS>
