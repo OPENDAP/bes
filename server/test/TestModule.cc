@@ -95,8 +95,7 @@ TestModule::terminate( const string &modname )
 	BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
-    BESCommand *cmd = BESCommand::rem_command( TEST_RESPONSE ) ;
-    if( cmd ) delete cmd ;
+    BESCommand::del_command( TEST_RESPONSE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( TEST_SIG ) ;
     BESResponseHandlerList::TheList()->remove_handler( TEST_EHM ) ;
