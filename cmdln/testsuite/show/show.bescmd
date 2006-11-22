@@ -1,7 +1,4 @@
-set container in catalog values c,/data/nc/fnoc1.nc, nc;
-define d as c;
-get das for d;
-get dds for d;
-get ddx for d;
-get ascii for d;
+show info for "/data/nc/fnoc1.nc";
+show info for "/data/hdf";
+show catalog for "/data/nc";
 exit

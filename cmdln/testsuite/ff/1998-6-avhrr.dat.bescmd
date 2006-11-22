@@ -3,5 +3,7 @@ define e as av;
 get das for e;
 get dds for e;
 get ddx for e;
+get info_page for e;
 get ascii for e;
+get dods for e;
 exit
