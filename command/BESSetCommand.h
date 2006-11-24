@@ -49,6 +49,8 @@ public:
 
     virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
 					  BESDataHandlerInterface &dhi ) ;
+
+    virtual void			dump( ostream &strm ) const ;
 } ;
 
 #endif // A_BESSetCommand_h

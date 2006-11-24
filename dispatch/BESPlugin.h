@@ -12,6 +12,7 @@
 #include <string>
 #include <iostream>
 
+#include "BESObj.h"
 #include "BESPluginException.h"
 
 using std::string;
@@ -59,7 +60,8 @@ public:
 */
 
 template<typename M>
-class BESPlugin {
+class BESPlugin : public BESObj
+{
 private:
     string d_filename;		// Library filename
     void *d_lib;		// Open library handle
@@ -130,6 +132,13 @@ public:
 	M *my_M = (my_maker)();
 
 	return my_M;
+    }
+
+    virtual void dump( ostream &strm ) const
+    {
+	strm << "BESPlugin::dump - (" << (void *)this << ")" << endl ;
+	strm << "    plugin name: " << d_filename << endl ;
+	strm << "    library handle: " << (void *)d_lib << endl ;
     }
 };
 

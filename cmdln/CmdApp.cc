@@ -47,6 +47,9 @@ using std::ofstream ;
 #include "CmdApp.h"
 #include "CmdClient.h"
 #include "PPTException.h"
+#include "BESDebug.h"
+
+#define BES_CMDLN_DEFAULT_TIMEOUT 5
 
 CmdApp::CmdApp()
     : BESBaseApp(),
@@ -56,7 +59,8 @@ CmdApp::CmdApp()
       _portVal( 0 ),
       _outputStrm( 0 ),
       _inputStrm( 0 ),
-      _createdInputStrm( false )
+      _createdInputStrm( false ),
+      _timeout( 0 )
 {
 }
 
@@ -82,12 +86,13 @@ CmdApp::showUsage( )
     cout << appName() << ": the following flags are available:" << endl ;
     cout << "    -h <host> - specifies a host for TCP/IP connection" << endl ;
     cout << "    -p <port> - specifies a port for TCP/IP connection" << endl ;
-    cout << "The flag -u specifies the name of a Unix socket for connecting to the server." << endl ;
+    cout << "    -u <unixSocket> - specifies a unix socket for connection. " << endl ;
     cout << "    -x <command> - specifies a command for the server to execute" << endl ;
     cout << "    -i <inputFile> - specifies a file name for a sequence of input commands" << endl ;
     cout << "    -f <outputFile> - specifies a file name to output the results of the input" << endl ;
     cout << "    -t <timeoutVal> - specifies an optional timeout value in seconds" << endl ;
     cout << "    -d - sets the optional debug flag for the client session" << endl ;
+    cout << "    -? - display this list of flags" << endl ;
 }
 
 void
@@ -166,39 +171,46 @@ void
 CmdApp::registerSignals()
 {
     // Registering SIGCONT for connection unblocking
+    BESDEBUG( "CmdApp: Registering signal SIGCONT ... " )
     if( signal( SIGCONT, signalCannotConnect ) == SIG_ERR )
     {
-	cerr << appName() << ": Registering signal SIGCONT ... " << flush ;
-	cerr << "FAILED" << endl ;
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << appName() << "Failed to register signal SIGCONT" << endl ;
 	exit( 1 ) ;
     }
+    BESDEBUG( "OK" << endl ) ;
 
     // Registering SIGINT to disable Ctrl-C from the user in order to avoid
     // server instability
+    BESDEBUG( "CmdApp: Registering signal SIGINT ... " )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
-	cerr << appName() << ": Registering signal SIGINT ... " << flush ;
-	cerr << "FAILED" << endl ;
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << appName() << "Failed to register signal SIGINT" << endl ;
 	exit( 1 ) ;
     }
+    BESDEBUG( "OK" << endl ) ;
 
     // Registering SIGTERM to disable kill from the user in order to avoid
     // server instability
+    BESDEBUG( "CmdApp: Registering signal SIGTERM ... " )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
-	cerr << appName() << ": Registering signal SIGINT ... " << flush ;
-	cerr << "FAILED" << endl ;
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << appName() << "Failed to register signal SIGTERM" << endl ;
 	exit( 1 ) ;
     }
+    BESDEBUG( "OK" << endl ) ;
 
     // Registering SIGPIE for broken pipes managment.
-    // Registering SIGPIE for broken pipes managment.
+    BESDEBUG( "CmdApp: Registering signal SIGPIPE ... " )
     if( signal( SIGPIPE, CmdApp::signalBrokenPipe ) == SIG_ERR )
     {
-	cerr << appName() << ": Registering signal SIGPIPE ... " << flush ;
-	cerr << "FAILED" << endl ;
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << appName() << "Failed to register signal SIGPIPE" << endl ;
 	exit( 1 ) ;
     }
+    BESDEBUG( "OK" << endl ) ;
 }
 
 int
@@ -207,8 +219,6 @@ CmdApp::initialize( int argc, char **argv )
     int retVal = BESBaseApp::initialize( argc, argv ) ;
     if( retVal != 0 )
 	return retVal ;
-
-    registerSignals() ;
 
     string portStr = "" ;
     string outputStr = "" ;
@@ -219,7 +229,7 @@ CmdApp::initialize( int argc, char **argv )
 
     int c ;
 
-    while( ( c = getopt( argc, argv, "dvh:p:t:u:x:f:i:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "?vd:h:p:t:u:x:f:i:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -230,11 +240,31 @@ CmdApp::initialize( int argc, char **argv )
 		_hostStr = optarg ;
 		break ;
 	    case 'd':
-		// nothing to do here right now until we implement debugging with a debug class
-		//setDebug( true ) ;
+		{
+		    string dbgstrm = optarg ;
+		    if( dbgstrm == "cerr" )
+		    {
+			BESDebug::Set_debugger( new BESDebug( &cerr ) ) ;
+		    }
+		    else
+		    {
+			ostream *fstrm = new ofstream( dbgstrm.c_str() ) ;
+			if( !(*fstrm) )
+			{
+			    cerr << "Unable to open debug file" << endl ;
+			    showUsage() ;
+			    return 1 ;
+			}
+			BESDebug::Set_debugger( new BESDebug( fstrm ) ) ;
+		    }
+		    BESDebug::Begin_debug() ;
+		}
 		break ;
 	    case 'v':
-		showVersion() ;
+		{
+		    showVersion() ;
+		    exit( 0 ) ;
+		}
 		break ;
 	    case 'p':
 		portStr = optarg ;
@@ -252,13 +282,16 @@ CmdApp::initialize( int argc, char **argv )
 		inputStr = optarg ;
 		break ;
 	    case '?':
-		showUsage() ;
+		{
+		    showUsage() ;
+		    exit( 0 ) ;
+		}
 		break ;
 	}
     }
     if( _hostStr == "" && _unixStr == "" )
     {
-	cerr << "host and port or unix socket must be specified" << endl ;
+	cerr << "host/port or unix socket must be specified" << endl ;
 	badUsage = true ;
     }
 
@@ -289,7 +322,11 @@ CmdApp::initialize( int argc, char **argv )
 
     if( timeoutStr != "" )
     {
-	_timeoutVal = atoi( timeoutStr.c_str() ) ;
+	_timeout = atoi( timeoutStr.c_str() ) ;
+    }
+    else
+    {
+	_timeout = BES_CMDLN_DEFAULT_TIMEOUT ;
     }
 
     if( outputStr != "" )
@@ -343,6 +380,10 @@ CmdApp::initialize( int argc, char **argv )
 	return 1 ;
     }
 
+    registerSignals() ;
+
+    BESDEBUG( "CmdApp: initialized settings:" << endl << *this ) ;
+
     return 0 ;
 }
 
@@ -354,11 +395,15 @@ CmdApp::run()
 	_client = new CmdClient( ) ;
 	if( _hostStr != "" )
 	{
-	    _client->startClient( _hostStr, _portVal ) ;
+	    BESDEBUG( "CmdApp: Connecting to host: " << _hostStr
+	              << " at port: " << _portVal << " ... " ) ;
+	    _client->startClient( _hostStr, _portVal, _timeout ) ;
 	}
 	else
 	{
-	    _client->startClient( _unixStr ) ;
+	    BESDEBUG( "CmdApp: Connecting to unix socket: " << _unixStr
+	              << " ... " ) ;
+	    _client->startClient( _unixStr, _timeout ) ;
 	}
 
 	if( _outputStrm )
@@ -369,9 +414,11 @@ CmdApp::run()
 	{
 	    _client->setOutput( &cout, false ) ;
 	}
+	BESDEBUG( "OK" << endl ) ;
     }
     catch( PPTException &e )
     {
+	BESDEBUG( "FAILED" << endl ) ;
 	cerr << "error starting the client" << endl ;
 	cerr << e.getMessage() << endl ;
 	exit( 1 ) ;
@@ -400,25 +447,66 @@ CmdApp::run()
 
     try
     {
+	BESDEBUG( "CmdApp: shutting down client ... " ) ;
 	if( _client )
 	{
 	    _client->shutdownClient() ;
 	}
+	BESDEBUG( "OK" << endl ) ;
+
+	BESDEBUG( "CmdApp: closing input stream ... " ) ;
 	if( _createdInputStrm )
 	{
 	    _inputStrm->close() ;
 	    delete _inputStrm ;
 	    _inputStrm = 0 ;
 	}
+	BESDEBUG( "OK" << endl ) ;
     }
     catch( PPTException &e )
     {
+	BESDEBUG( "FAILED" << endl ) ;
 	cerr << "error closing the client" << endl ;
 	cerr << e.getMessage() << endl ;
 	return 1 ;
     }
 
     return 0 ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+CmdApp::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "CmdApp::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _client )
+    {
+	strm << BESIndent::LMarg << "client: " << endl ;
+	BESIndent::Indent() ;
+	_client->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "client: null" << endl ;
+    }
+    strm << BESIndent::LMarg << "host: " << _hostStr << endl ;
+    strm << BESIndent::LMarg << "unix socket: " << _unixStr << endl ;
+    strm << BESIndent::LMarg << "port: " << _portVal << endl ;
+    strm << BESIndent::LMarg << "command: " << _cmd << endl ;
+    strm << BESIndent::LMarg << "output stream: " << (void *)_outputStrm << endl ;
+    strm << BESIndent::LMarg << "input stream: " << (void *)_inputStrm << endl ;
+    strm << BESIndent::LMarg << "created input stream? " << _createdInputStrm << endl ;
+    strm << BESIndent::LMarg << "timeout: " << _timeout << endl ;
+    BESBaseApp::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 int

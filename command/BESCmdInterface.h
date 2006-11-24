@@ -42,32 +42,28 @@ using std::bad_alloc ;
 #include "BESDataHandlerInterface.h"
 #include "BESDataRequestInterface.h"
 
-/** @brief Entry point into OPeNDAP using apache modules
-
-    The BESCmdInterface class is the entry point for accessing information using
-    OPeNDAP through apache modules.
+/** @brief Entry point into BES using string command requests
 
     The format of the request looks somethink like:
 
-    get das for sym1,sym2
-	with sym1.constraint="constraint",sym2.constraint="constraint";
+    <PRE>
+    set container in catalog values c,nc/mplot.nc;
+    define d as c;
+    get das for d;
+    </PRE>
 
     In this example a DAS object response is being requested. The DAS object
-    is to be built from the two symbolic names where each symbolic name has
-    a constraint associated with it. The symbolic names are resoleved to be
-    real files for a given server type. For example, sym1 could resolve to a
-    file accessed through cedar and sym2 could resolve to a file accessed
-    through netcdf.
+    is to be built from the definition 'd', where d is defined using the
+    data container c. The data container c is created using the real file
+    nc/mplot.nc
 
-    BESCmdInterface uses BESParser in order to build the list of containers
-    (symbolic containers resolving to real file and server type). Because
-    the request is being made from a browser, a BESBasicHttpTransmitter
-    object is used to transmit the response object back to the requesting
-    browser.
-
+    BESCmdInterface uses BESParser to parse through the request string,
+    building up a plan to be used during the execute method. Most
+    implementations simply log information to the BESLog file before calling
+    the parent class method.
+    
     @see BESInterface
     @see BESParser
-    @see BESBasicHttpTransmitter
  */
 class BESCmdInterface : public BESInterface
 {
@@ -86,6 +82,8 @@ public:
     virtual			~BESCmdInterface() ;
 
     virtual int			execute_request() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // BESCmdInterface_h_

@@ -61,9 +61,7 @@ BESModuleApp::
 {
 }
 
-/** @brief initializes the OPeNDAP BES application
- *
- * Loads and initializes any OPeNDAP modules
+/** @brief Load and initialize any BES modules
  *
  * @return 0 if successful and not 0 otherwise
  * @param argC argc value passed to the main function
@@ -199,8 +197,11 @@ terminate( int sig )
 	    bes_module curr_mod = *i ;
 	    string modname = curr_mod._module_name ;
 	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
-	    o->terminate( modname ) ;
-	    delete o ;
+	    if( o )
+	    {
+		o->terminate( modname ) ;
+		delete o ;
+	    }
 	}
     }
     catch( BESException &e )
@@ -218,7 +219,7 @@ terminate( int sig )
 
 /** @brief dumps information about this object
  *
- * Displays the pointer value of this class along with the name of the
+ * Displays the pointer value of this instance along with the name of the
  * application, whether the application is initialized or not and whether the
  * application debugging is turned on.
  *
@@ -227,23 +228,29 @@ terminate( int sig )
 void BESModuleApp::
 dump( ostream &strm ) const
 {
-    strm << "BESModuleApp::dump - (" << (void *)this << ")" << endl ;
-    strm << "    loaded modules = " << endl ;
-    list< bes_module >::const_iterator i = _module_list.begin() ;
-    list< bes_module >::const_iterator e = _module_list.end() ;
-    bool any_loaded = false ;
-    for( ; i != e; i++ )
+    strm << BESIndent::LMarg << "BESModuleApp::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _module_list.size() )
     {
-	bes_module curr_mod = *i ;
-	strm << "        " << curr_mod._module_name << ": "
-	     << curr_mod._module_library << endl ;
-	any_loaded = true ;
+	strm << BESIndent::LMarg << "loaded modules:" << endl ;
+	BESIndent::Indent() ;
+	list< bes_module >::const_iterator i = _module_list.begin() ;
+	list< bes_module >::const_iterator e = _module_list.end() ;
+	bool any_loaded = false ;
+	for( ; i != e; i++ )
+	{
+	    bes_module curr_mod = *i ;
+	    strm << BESIndent::LMarg << curr_mod._module_name << ": "
+		 << curr_mod._module_library << endl ;
+	    any_loaded = true ;
+	}
+	BESIndent::UnIndent() ;
     }
-    if( !any_loaded )
+    else
     {
-	strm << "        no modules loaded" << endl ;
+	strm << BESIndent::LMarg << "loaded modules: none" << endl ;
     }
-
-    strm << endl ;
+    BESIndent::UnIndent() ;
 }
 

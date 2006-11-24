@@ -35,7 +35,7 @@
 
 #include "BESException.h"
 
-class BESHandlerException: public BESException
+class BESHandlerException : public BESException
 {
 protected:
       			BESHandlerException() {}

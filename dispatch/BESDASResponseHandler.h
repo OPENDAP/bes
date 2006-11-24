@@ -47,7 +47,8 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESDASResponseHandler : public BESResponseHandler {
+class BESDASResponseHandler : public BESResponseHandler
+{
 public:
 				BESDASResponseHandler( string name ) ;
     virtual			~BESDASResponseHandler( void ) ;
@@ -55,6 +56,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *DASResponseBuilder( string handler_name ) ;
 };

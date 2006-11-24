@@ -35,8 +35,8 @@
 
 #include <string>
 
+#include "BESObj.h"
 #include <BESResponseObject.h>
-
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
@@ -78,7 +78,8 @@ class BESResponseObject ;
  * @see BESResponseHandlerList
  * @see BESTransmitter
  */
-class BESResponseHandler {
+class BESResponseHandler : public BESObj
+{
 protected:
     string			_response_name ;
     BESResponseObject		*_response ;
@@ -152,7 +153,9 @@ public:
      *
      * @return response name
      */
-    virtual string		get_name( ) { return _response_name ; }
+    virtual const string &	get_name( ) const { return _response_name ; }
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // I_BESResponseHandler_h

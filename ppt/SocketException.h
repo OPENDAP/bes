@@ -54,4 +54,3 @@ public:
 
 #endif // SocketException_h_ 
 
-// $Log: SocketException.h,v $

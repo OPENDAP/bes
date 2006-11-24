@@ -50,7 +50,8 @@
  * @see BESDefine
  * @see BESTransmitter
  */
-class BESDDXResponseHandler : public BESResponseHandler {
+class BESDDXResponseHandler : public BESResponseHandler
+{
 public:
 				BESDDXResponseHandler( string name ) ;
     virtual			~BESDDXResponseHandler(void) ;
@@ -58,6 +59,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *DDXResponseBuilder( string handler_name ) ;
 };

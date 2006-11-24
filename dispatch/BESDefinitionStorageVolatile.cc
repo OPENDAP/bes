@@ -143,8 +143,8 @@ BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
 	info.add_tag( "name", def_name ) ;
 	info.begin_tag( "containers" ) ;
 
-	BESDefine::containers_iterator ci = def->first_container() ;
-	BESDefine::containers_iterator ce = def->end_container() ;
+	BESDefine::containers_citer ci = def->first_container() ;
+	BESDefine::containers_citer ce = def->end_container() ;
 	for( ; ci != ce; ci++ )
 	{
 	    string sym = (*ci).get_symbolic_name() ;
@@ -161,11 +161,44 @@ BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
 
 	info.end_tag( "containers" ) ;
 	info.begin_tag( "aggregation" ) ;
-	info.add_tag( "handler", def->aggregation_handler ) ;
-	info.add_tag( "command", def->aggregation_command ) ;
+	info.add_tag( "handler", def->get_agg_handler() ) ;
+	info.add_tag( "command", def->get_agg_cmd() ) ;
 	info.end_tag( "aggregation" ) ;
 
 	info.end_tag( "definition" ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with all the definition
+ * stored in this instance.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDefinitionStorageVolatile::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDefinitionStorageVolatile::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
+    if( _def_list.size() )
+    {
+	strm << BESIndent::LMarg << "definitions:" << endl ;
+	BESIndent::Indent() ;
+	Define_citer di = _def_list.begin() ;
+	Define_citer de = _def_list.end() ;
+	for( ; di != de; di++ )
+	{
+	    (*di).second->dump( strm ) ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "definitions: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 

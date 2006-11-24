@@ -33,9 +33,10 @@
 #ifndef A_BESReporter_h
 #define A_BESReporter_h 1
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
-class BESReporter
+class BESReporter : public BESObj
 {
 protected:
 			BESReporter() {} ;
@@ -43,6 +44,8 @@ public:
     virtual		~BESReporter() {} ;
 
     virtual void	report( const BESDataHandlerInterface &dhi ) = 0 ;
+
+    virtual void	dump( ostream &strm ) const = 0 ;
 } ;
 
 #endif // A_BESReporter_h

@@ -285,6 +285,39 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * each of the registered request handlers.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESRequestHandlerList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESRequestHandlerList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _handler_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered handlers:" << endl ;
+	BESIndent::Indent() ;
+	BESRequestHandlerList::Handler_citer i = _handler_list.begin() ;
+	BESRequestHandlerList::Handler_citer ie = _handler_list.end() ;
+	for( ; i != ie; i++ ) 
+	{
+	    BESRequestHandler *rh = (*i).second ;
+	    rh->dump( strm ) ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered handlers: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+
 BESRequestHandlerList *
 BESRequestHandlerList::TheList()
 {

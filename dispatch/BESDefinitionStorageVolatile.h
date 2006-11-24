@@ -81,6 +81,8 @@ public:
     virtual bool		del_definitions( ) ;
 
     virtual void		show_definitions( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESDefinitionStorageVolatile_h_

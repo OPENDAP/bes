@@ -67,8 +67,9 @@ public:
 				{
 				    return new TcpSocket( socket, f ) ;
 				}
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // TcpSocket_h
 
-// $Log: TcpSocket.h,v $

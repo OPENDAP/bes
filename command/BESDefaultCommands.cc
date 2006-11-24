@@ -1,4 +1,4 @@
-// opendap_commands.cc
+// BESDefaultCommands.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -34,11 +34,11 @@
 
 using std::endl ;
 
-#include "opendap_commands.h"
+#include "BESDefaultCommands.h"
 
 #include "BESResponseNames.h"
 
-#include "BESLog.h"
+#include "BESDebug.h"
 
 #include "BESGetCommand.h"
 #include "BESSetCommand.h"
@@ -57,103 +57,83 @@ using std::endl ;
 #include "BESExceptionManager.h"
 
 int
-opendap_commands::initialize( int, char** )
+BESDefaultCommands::initialize( int, char** )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing default commands:" << endl;
+    BESDEBUG( "Initializing default commands:" << endl )
 
     BESCommand *cmd = NULL ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << GET_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << GET_RESPONSE << " command" << endl )
     cmd = new BESGetCommand( GET_RESPONSE ) ;
     BESCommand::add_command( GET_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOW_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << SHOW_RESPONSE << " command" << endl )
     cmd = new BESShowCommand( SHOW_RESPONSE ) ;
     BESCommand::add_command( SHOW_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << HELP_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << HELP_RESPONSE << " command" << endl )
     BESCommand::add_command( HELP_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << PROCESS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << PROCESS_RESPONSE << " command" << endl )
     BESCommand::add_command( PROCESS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << KEYS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << KEYS_RESPONSE << " command" << endl )
     BESCommand::add_command( KEYS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << VERS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << VERS_RESPONSE << " command" << endl )
     BESCommand::add_command( VERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << STATUS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << STATUS_RESPONSE << " command" << endl )
     BESCommand::add_command( STATUS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SET_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << SET_RESPONSE << " command" << endl )
     cmd = new BESSetCommand( SET_RESPONSE ) ;
     BESCommand::add_command( SET_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DELETE_RESPONSE << " command" << endl )
     cmd = new BESDeleteCommand( DELETE_RESPONSE ) ;
     BESCommand::add_command( DELETE_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SETCONTAINER << " command" << endl;
+    BESDEBUG( "    adding " << SETCONTAINER << " command" << endl )
     cmd = new BESSetContainerCommand( SETCONTAINER ) ;
     BESCommand::add_command( SETCONTAINER, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl)
     BESCommand::add_command( SHOWCONTAINERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINER << " command" << endl;
+    BESDEBUG( "    adding " << DELETE_CONTAINER << " command" << endl )
     cmd = new BESDelContainerCommand( DELETE_CONTAINER ) ;
     BESCommand::add_command( DELETE_CONTAINER, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_CONTAINERS << " command" << endl;
+    BESDEBUG( "    adding " << DELETE_CONTAINERS << " command" << endl )
     cmd = new BESDelContainersCommand( DELETE_CONTAINERS ) ;
     BESCommand::add_command( DELETE_CONTAINERS, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DEFINE_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DEFINE_RESPONSE << " command" << endl )
     cmd = new BESDefineCommand( DEFINE_RESPONSE ) ;
     BESCommand::add_command( DEFINE_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOWDEFS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << SHOWDEFS_RESPONSE << " command" << endl )
     BESCommand::add_command( SHOWDEFS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITION << " command" << endl;
+    BESDEBUG( "    adding " << DELETE_DEFINITION << " command" << endl )
     cmd = new BESDelDefCommand( DELETE_DEFINITION ) ;
     BESCommand::add_command( DELETE_DEFINITION, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DELETE_DEFINITIONS << " command" << endl;
+    BESDEBUG( "    adding " << DELETE_DEFINITIONS << " command" << endl )
     cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
     BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding parser exception callback" << endl ;
+    BESDEBUG( "    adding parser exception callback" << endl )
     BESExceptionManager::TheEHM()->add_ehm_callback( BESParserException::handleException ) ;
 
     return 0;
 }
 
 int
-opendap_commands::terminate( void )
+BESDefaultCommands::terminate( void )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing default commands:" << endl;
+    BESDEBUG( "Removing default commands:" << endl )
 
     BESCommand::del_command( GET_RESPONSE ) ;
     BESCommand::del_command( SHOW_RESPONSE ) ;

@@ -64,7 +64,7 @@ public:
     				BESCmdParser() ;
     				~BESCmdParser();
 
-    void			parse( const string &,
+    static void			parse( const string &,
                                        BESDataHandlerInterface & ) ;
 } ;
 

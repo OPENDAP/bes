@@ -73,7 +73,7 @@ BESKeys::BESKeys( const string &keys_file_name )
     {
 	char path[500] ;
 	getcwd( path, sizeof( path ) ) ;
-	string s = string("OPeNDAP: fatal, can not open initialization file ")
+	string s = string("BES: fatal, can not open initialization file ")
 		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
 	throw BESKeysException( s, __FILE__, __LINE__ ) ;
@@ -159,7 +159,7 @@ BESKeys::break_pair(const char* b, string& key, string &value)
 	    {
 		char howmany[256] ;
 		sprintf( howmany, "%d", how_many_equals ) ;
-		string s = string( "OPeNDAP: invalid entry " ) + b
+		string s = string( "BES: invalid entry " ) + b
 		           + "; there are " + howmany
 			   + " = characters.\n";
 		throw BESKeysException( s, __FILE__, __LINE__ );
@@ -320,5 +320,46 @@ BESKeys::show_keys()
 	     << "\", value: \"" << (*i).second << "\""
 	     << endl ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with all of the keys.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESKeys::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESKeys::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "key file:" << _keys_file_name << endl ;
+    if( _keys_file && *_keys_file )
+    {
+	strm << BESIndent::LMarg << "key file is valid" << endl ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "key file is NOT valid" << endl ;
+    }
+    if( _the_keys && _the_keys->size() )
+    {
+	strm << BESIndent::LMarg << "    keys:" << endl ;
+	BESIndent::Indent() ;
+	Keys_citer i = _the_keys->begin() ;
+	Keys_citer ie = _the_keys->end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << ": "
+				     << (*i).second << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "keys: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 

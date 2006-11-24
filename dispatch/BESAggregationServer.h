@@ -33,20 +33,21 @@
 #ifndef BESAggregationServer_h_
 #define BESAggregationServer_h_ 1
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
 /** @brief Abstraction representing mechanism for aggregating data
  */
-class BESAggregationServer
+class BESAggregationServer : public BESObj
 {
 private:
-    string		_name ;
-			BESAggregationServer() {}
+    string			_name ;
+				BESAggregationServer() {}
 protected:
-    			BESAggregationServer( string name )
-			    : _name( name ) {}
+    				BESAggregationServer( string name )
+				    : _name( name ) {}
 public:
-    virtual		~BESAggregationServer() {} ;
+    virtual			~BESAggregationServer() {} ;
     /** @brief aggregate the response object
      *
      * @param dhi structure which contains the response object and the
@@ -55,9 +56,11 @@ public:
      * @see BESAggregationException
      * @see _BESDataHandlerInterface
      */
-    virtual void	aggregate( BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void		aggregate( BESDataHandlerInterface &dhi ) = 0 ;
 
-    virtual string	get_name() { return _name ; }
+    virtual const string &	get_name() const { return _name ; }
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESAggregationServer_h_

@@ -42,6 +42,8 @@ public:
 			TestRequestHandler( string name ) ;
     virtual		~TestRequestHandler( void ) ;
 
+    virtual void	dump( ostream &strm ) const ;
+
     static bool		cdf_build_help( BESDataHandlerInterface &dhi ) ;
 };
 

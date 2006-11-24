@@ -43,7 +43,8 @@
  * @see BESInfo
  * @see BESResponseObject
  */
-class BESHTMLInfo : public BESInfo {
+class BESHTMLInfo : public BESInfo
+{
 private:
     bool		_header ;
     string		_indent ;
@@ -71,6 +72,8 @@ public:
                                             const string &name ) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
+
+    virtual void	dump( ostream &strm ) const ;
 
     static BESInfo *BuildHTMLInfo( const string &info_type ) ;
 };

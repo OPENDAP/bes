@@ -39,11 +39,13 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
 class BESReporter ;
 
-class BESReporterList {
+class BESReporterList : public BESObj
+{
 private:
     static BESReporterList *	_instance ;
     map< string, BESReporter * > _reporter_list ;
@@ -61,6 +63,8 @@ public:
     virtual BESReporter *	find_reporter( string reporter_name ) ;
 
     virtual void		report( const BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESReporterList *	TheList() ;
 };

@@ -135,6 +135,38 @@ BESResponseHandlerList::get_handler_names()
     return ret ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the names of the
+ * registered response handlers.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESResponseHandlerList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESResponseHandlerList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _handler_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered response handlers:" << endl ;
+	BESIndent::Indent() ;
+	BESResponseHandlerList::Handler_citer i = _handler_list.begin() ;
+	BESResponseHandlerList::Handler_citer ie = _handler_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered response handlers: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+
 BESResponseHandlerList *
 BESResponseHandlerList::TheList()
 {

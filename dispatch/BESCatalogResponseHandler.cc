@@ -105,6 +105,22 @@ BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCatalogResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+
 BESResponseHandler *
 BESCatalogResponseHandler::CatalogResponseBuilder( string handler_name )
 {

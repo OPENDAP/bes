@@ -48,6 +48,8 @@ public:
 				      _das( das ) {}
     virtual			~BESDASResponse() ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     DAS *			get_das() { return _das ; }
 } ;
 

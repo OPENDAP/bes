@@ -83,3 +83,36 @@ BESTransmitter::send_response( const string &method_name,
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the names of
+ * register transmit methods
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESTransmitter::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESTransmitter::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _method_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered methods:" << endl ;
+	BESIndent::Indent() ;
+	_method_citer i = _method_list.begin() ;
+	_method_citer ie = _method_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << ": "
+				     << (void *)(*i).second << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered methods: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

@@ -45,11 +45,16 @@ private:
 
     void			authenticateWithServer() ;
 public:
-    				PPTClient( const string &hostStr, int portVal );
-    				PPTClient( const string &unix_socket );
+    				PPTClient( const string &hostStr,
+					   int portVal,
+					   int timeout ) ;
+    				PPTClient( const string &unix_socket,
+					   int timeout ) ;
     				~PPTClient() ;
     virtual void		initConnection() ;
     virtual void		closeConnection() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // PPTClient_h

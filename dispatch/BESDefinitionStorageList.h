@@ -37,6 +37,8 @@
 
 using std::string ;
 
+#include "BESObj.h"
+
 class BESDefinitionStorage ;
 class BESDefine ;
 class BESInfo ;
@@ -59,7 +61,7 @@ class BESInfo ;
  * @see BESDefine
  * @see BESDefinitionStorageException
  */
-class BESDefinitionStorageList
+class BESDefinitionStorageList : public BESObj
 {
 private:
     static BESDefinitionStorageList * _instance ;
@@ -83,6 +85,8 @@ public:
     virtual BESDefine *	look_for( const string &def_name ) ;
 
     virtual void		show_definitions( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESDefinitionStorageList *TheList() ;
 } ;

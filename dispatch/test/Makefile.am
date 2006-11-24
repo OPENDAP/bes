@@ -34,7 +34,7 @@ CLEANFILES = *.log *.sum
 # subclassed types in Test*.cc and the TestTypesFactory.
 
 # noinst_PROGRAMS above uses this variable.
-DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT plistT pvolT replistT reqhandlerT reqlistT resplistT infoT
+DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT plistT pvolT replistT reqhandlerT reqlistT resplistT infoT agglistT
 
 # Use this when automake adds support for multiple dejagnu test drivers. jhrg
 # 6/30/05. 
@@ -82,4 +82,7 @@ resplistT_LDADD =  ../libbes_dispatch.la
 
 infoT_SOURCES = infoT.cc baseApp.cc infoT.h baseApp.h Application.h
 infoT_LDADD =  ../libbes_dispatch.la
+
+agglistT_SOURCES = agglistT.cc TestAggServer.cc baseApp.cc agglistT.h TestAggServer.h baseApp.h Application.h
+agglistT_LDADD =  ../libbes_dispatch.la
 

@@ -46,7 +46,8 @@
  * @see BESTransmitter
  * @see BESInfo
  */
-class BESShowDefsResponseHandler : public BESResponseHandler {
+class BESShowDefsResponseHandler : public BESResponseHandler
+{
 public:
 				BESShowDefsResponseHandler( string name ) ;
     virtual			~BESShowDefsResponseHandler( void ) ;
@@ -54,6 +55,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *ShowDefsResponseBuilder( string handler_name ) ;
 };

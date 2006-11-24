@@ -78,3 +78,19 @@ BESCommand::find_command( const string &cmd_str )
     return BESCommand::cmd_list[cmd_str] ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCommand::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCommand::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "command: " << _cmd << endl ;
+    BESIndent::UnIndent() ;
+}
+

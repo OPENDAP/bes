@@ -34,7 +34,6 @@
 using std::endl ;
 
 #include "BESDapModule.h"
-#include "BESLog.h"
 
 #include "BESDapRequestHandler.h"
 #include "BESRequestHandlerList.h"
@@ -54,74 +53,62 @@ using std::endl ;
 #include "BESReturnManager.h"
 #include "BESTransmitterNames.h"
 
+#include "BESDebug.h"
+
 void
 BESDapModule::initialize( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing OPeNDAP modules:" << endl;
+    BESDEBUG( "Initializing DAP Modules:" << endl )
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << modname << " request handler" 
-		      << endl ;
+    BESDEBUG( "    adding " << modname << " request handler" << endl )
     BESRequestHandlerList::TheList()->add_handler( modname, new BESDapRequestHandler( modname ) ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DAS_RESPONSE << " response handler" << endl;
+    BESDEBUG( "    adding " << DAS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DDS_RESPONSE << " response handler" << endl;
+    BESDEBUG( "    adding " << DDS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DDX_RESPONSE << " response handler" << endl;
+    BESDEBUG( "    adding " << DDX_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DDX_RESPONSE, BESDDXResponseHandler::DDXResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DATA_RESPONSE << " response handler" << endl;
+    BESDEBUG( "    adding " << DATA_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " response handler" << endl;
+    BESDEBUG( "    adding " << CATALOG_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
 
+    BESDEBUG( "Initializing DAP Basic Transmitters:" << endl )
     BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
     if( t )
     {
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding basic " << DAS_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DAS_TRANSMITTER << endl )
 	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_basic_das ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding basic " << DDS_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DDS_TRANSMITTER << endl )
 	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_basic_dds ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding basic " << DDX_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DDX_TRANSMITTER << endl )
 	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_basic_ddx ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding basic " << DATA_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_basic_data ) ;
     }
 
+    BESDEBUG( "Initializing DAP HTTP Transmitters:" << endl )
     t = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
     if( t )
     {
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding http " << DAS_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DAS_TRANSMITTER << endl )
 	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_http_das ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding http " << DDS_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DDS_TRANSMITTER << endl )
 	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_http_dds ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding http " << DDX_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DDX_TRANSMITTER << endl )
 	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_http_ddx ) ;
 
-	if( BESLog::TheLog()->is_verbose() )
-	    (*BESLog::TheLog()) << "    adding http " << DATA_TRANSMITTER << " transmit function" << endl ;
+	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_http_data ) ;
     }
 }
@@ -129,14 +116,26 @@ BESDapModule::initialize( const string &modname )
 void
 BESDapModule::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing OPeNDAP modules" << endl;
+    BESDEBUG( "Removing DAP Modules:" << endl )
 
     BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDapModule::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDapModule::dump - ("
+			     << (void *)this << ")" << endl ;
 }
 
 extern "C"

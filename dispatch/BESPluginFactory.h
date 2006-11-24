@@ -19,6 +19,8 @@ using std::map;
 using std::pair;
 using std::unary_function;
 
+#include "BESObj.h"
+
 /** A Factory for objects whose implementations reside in shared objects
     designed to be loaded at run time. This uses the BESPlugin class
     to perform the actual instantiation of those objects; the role of this
@@ -29,7 +31,8 @@ using std::unary_function;
 */
 
 template<typename C>
-class BESPluginFactory {
+class BESPluginFactory : public BESObj
+{
 private:
     map<string, BESPlugin<C> *> d_children;
 
@@ -119,6 +122,20 @@ public:
 	if (!child_implementation)
 	    throw NoSuchObject(string("No class is bound to ") + name, __FILE__, __LINE__ );
 	return child_implementation->instantiate();
+    }
+
+    virtual void dump( ostream &strm ) const
+    {
+	strm << "BESPluginFactory::dump - (" << (void *)this << ")" << endl ;
+	/*
+	typedef map<string, BESPlugin<C> *>::const_iterator Plugin_citer ;
+	BESPluginFactory::Plugin_citer i = d_children.begin() ;
+	BESPluginFactory::Plugin_citer ie = d_children.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << i.second ;
+	}
+	*/
     }
 };
 

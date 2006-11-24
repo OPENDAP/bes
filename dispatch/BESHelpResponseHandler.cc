@@ -51,8 +51,8 @@ BESHelpResponseHandler::~BESHelpResponseHandler( )
  * handlers registered.
  *
  * The BESHelpResponseHandler first retreives general help information from help
- * files located in the file pointed to by either the key OPeNDAP.Help.TXT if
- * the client is a basic text client or OPeNDAP.Help.HTTP if the client is
+ * files located in the file pointed to by either the key BES.Help.TXT if
+ * the client is a basic text client or BES.Help.HTTP if the client is
  * HTML based. It then lists each of the data types registered to handle
  * requests (such as NetCDF, HDF, Cedar, etc...). Then for all data request
  * handlers registered with BESRequestHandlerList help information can be
@@ -79,7 +79,7 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = HELP_RESPONSE_STR ;
 
     info->begin_tag( "BES" ) ;
-    info->add_data_from_file( "BES.Help", "OPeNDAP BES Help" ) ;
+    info->add_data_from_file( "BES.Help", "BES Help" ) ;
     info->end_tag( "BES" ) ;
 
     // execute help for each registered request server
@@ -113,6 +113,22 @@ BESHelpResponseHandler::transmit( BESTransmitter *transmitter,
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
 	info->transmit( transmitter, dhi ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESHelpResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESHelpResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESResponseHandler *

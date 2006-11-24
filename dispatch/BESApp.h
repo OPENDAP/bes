@@ -67,8 +67,7 @@ protected:
 public:
     virtual			~BESApp() {};
 
-    /** @brief main routine, the main entry point for any OPeNDAP BES
-     * applications.
+    /** @brief main routine, the main entry point for any BES applications.
      *
      * It is up to the derived classes of BESApp to implement the main
      * routine. However, the main method should call initialize, run and
@@ -112,6 +111,15 @@ public:
      * signal to terminate routine.
      */
     virtual int			terminate(int sig = 0) = 0;
+
+    /** @brief dumps information about this object
+     *
+     * Displays information about this object, typically for debugging
+     * purposes.
+     *
+     * @param strm C++ i/o stream to dump the information to
+     */
+    virtual void		dump( ostream &strm ) const = 0 ;
 
     /** @brief Returns the name of the application
      *

@@ -49,7 +49,7 @@ using std::ifstream ;
  * a key in the dods initialization file. The key is constructed using the
  * name of this persistent store.
  *
- * OPeNDAP.Container.Persistence.File.&lt;name&gt;
+ * BES.Container.Persistence.File.&lt;name&gt;
  *
  * where &lt;name&gt; is the name of this persistent store.
  *
@@ -77,17 +77,17 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 {
     string key = "BES.Container.Persistence.File." + n ;
     bool found = false ;
-    string my_file = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( my_file == "" )
+    _file = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( _file == "" )
     {
 	string s = key + " not defined in key file" ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
-    ifstream persistence_file( my_file.c_str() ) ;
+    ifstream persistence_file( _file.c_str() ) ;
     if( !persistence_file )
     {
-	string s = "Unable to open persistence file " + my_file ;
+	string s = "Unable to open persistence file " + _file ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
@@ -113,14 +113,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 	    {
 		delete c ;
 		string s = "Incomplete container persistence line in file "
-			   + my_file ;
+			   + _file ;
 		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	    }
 	    if( dummy != "" )
 	    {
 		delete c ;
 		string s = "Too many fields in persistence file "
-			   + my_file ;
+			   + _file ;
 		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	    }
 	    _container_list[c->_symbolic_name] = c ;
@@ -241,7 +241,7 @@ BESContainerStorageFile::del_containers( )
  *
  * In the case of this persistent store all of the containers loaded from
  * the file specified by the key
- * OPeNDAP.Container.Persistence.File.&lt;store_name&gt;
+ * BES.Container.Persistence.File.&lt;store_name&gt;
  * is added to the information object.
  *
  * @param info object to store the container and persistent store information into
@@ -265,5 +265,43 @@ BESContainerStorageFile::show_containers( BESInfo &info )
 	info.add_tag( "dataType", type ) ;
 	info.end_tag( "container" ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * the containers in this storage
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESContainerStorageFile::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESContainerStorageFile::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
+    strm << BESIndent::LMarg << "file: " << _file << endl ;
+    if( _container_list.size() )
+    {
+	strm << BESIndent::LMarg << "containers:" << endl ;
+	BESIndent::Indent() ;
+	BESContainerStorageFile::Container_citer i = _container_list.begin() ;
+	BESContainerStorageFile::Container_citer ie = _container_list.end() ;
+	for( i = _container_list.begin(); i != ie; i++ )
+	{
+	    BESContainerStorageFile::container *c = (*i).second;
+	    strm << BESIndent::LMarg << c->_symbolic_name ;
+	    strm << ", " << c->_real_name ;
+	    strm << ", " << c->_container_type ;
+	    strm << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "    containers: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 

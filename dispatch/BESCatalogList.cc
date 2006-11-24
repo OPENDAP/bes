@@ -128,3 +128,36 @@ BESCatalogList::TheCatalogList()
     return _instance ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the catalog entries
+ * in this list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCatalogList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCatalogList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _catalogs.size() )
+    {
+	strm << BESIndent::LMarg << "catalog list:" << endl ;
+	BESIndent::Indent() ;
+	catalog_citer i = _catalogs.begin() ;
+	catalog_citer e = _catalogs.end() ;
+	for( ; i != e; i++ )
+	{
+	    BESCatalog *catalog = (*i).second ;
+	    strm << BESIndent::LMarg << (*i).first << catalog << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "catalog list: empty" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

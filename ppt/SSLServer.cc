@@ -323,3 +323,22 @@ SSLServer::verify_client( int ok, X509_STORE_CTX *ctx )
     return 1 ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+SSLServer::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "SSLServer::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "port: " << _port << endl ;
+    strm << BESIndent::LMarg << "certificate file: " << _cfile << endl ;
+    strm << BESIndent::LMarg << "key file: " << _kfile << endl ;
+    SSLConnection::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

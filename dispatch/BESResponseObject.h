@@ -37,18 +37,22 @@
 
 using std::string ;
 
+#include "BESObj.h"
+
 /** @brief Abstract base class representing a specific set of information
-    in response to a request to the OPeNDAP BES.
+    in response to a request to the BES.
     
-    This class' sole purpose is to serve as a base class BES response objects.
-    Code in the OPeNDAP/HAO Back End Server (BES) uses this to pass pointers
-    request handlers, transmitters, etc...
+    This class' sole purpose is to serve as a base class BES response object.
+    The BES framework passes this response object in order to be filled in,
+    transmitted, reported on, etc...
  */
-class BESResponseObject
+class BESResponseObject : public BESObj
 {
 public:
     BESResponseObject() {} ;
     virtual ~BESResponseObject() {} ;
+
+    virtual void		dump( ostream &strm ) const = 0 ;
 };
 
 #endif //BESResponseObject_h_

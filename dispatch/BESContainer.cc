@@ -76,6 +76,53 @@ BESContainer::BESContainer( const BESContainer &copy_from )
 string
 BESContainer::access()
 {
+    if( !is_compressed() )
+    {
+	return _real_name ;
+    }
+
+    // Get the cache directory information (direction and max cache size)
+    // and the name of the script to use to uncompress the compressed file
+    get_cache_info() ;
+
+    // Build the command
+    string cmd = BESContainer::_script + " "
+                 + _real_name + " "
+		 + BESContainer::_cacheDir + " "
+		 + BESContainer::_cacheSize ;
+
+    // Call the script that will uncompress the file. The script should exit
+    // with 0 if there are no problems uncompressing the file and echo to
+    // stdout the name of the cached file. If there is an error, return a
+    // non-zero value and echo out to stdout the problem encountered.
+    ostringstream output ;
+    FILE *f = popen( cmd.c_str(), "r" ) ;
+    if( f )
+    {
+	char buf[4096] ;
+	while( fgets( buf, 4096, f ) != NULL )
+	    output << buf ;
+	int stat = pclose( f ) ;
+	if( stat != 0 )
+	{
+	    string err = "Problem uncompressing the data file: \n"
+	                 + output.str() ;
+	    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	}
+    }
+
+    return output.str() ;
+}
+
+/* Determine if the container is compressed or not. This is done by checking
+ * the Extensions list in the configuration file. If it isn't set, then add
+ * gz, Z, and bz2 as extensions. If the container is compressed then return
+ * true. The check in the configuratioon file should only happen once, so
+ * repeated calls to access this container will simply return the flag.
+ */
+bool
+BESContainer::is_compressed()
+{
     if( !_compression_determined )
     {
 	// Determine if this file is compressed. If it isn't, then just return
@@ -114,12 +161,42 @@ BESContainer::access()
 	}
 	_compression_determined = true ;
     }
+    return _compressed ;
+}
 
-    if( !_compressed )
+void
+BESContainer::build_list( const string &ext_list )
+{
+    string::size_type str_begin = 0 ;
+    string::size_type str_end = ext_list.length() ;
+    string::size_type comma = 0 ;
+
+    bool done = false ;
+    while( !done )
     {
-	return _real_name ;
+	comma = ext_list.find( ",", str_begin ) ;
+	if( comma == string::npos )
+	{
+	    string a_member = ext_list.substr( str_begin, str_end-str_begin ) ;
+	    BESContainer::_compressedExtensions.push_back( a_member ) ;
+	    done = true ;
+	}
+	else
+	{
+	    string a_member = ext_list.substr( str_begin, comma-str_begin ) ;
+	    BESContainer::_compressedExtensions.push_back( a_member ) ;
+	    str_begin = comma+1 ;
+	    if( comma == str_end-1 )
+	    {
+		done = true ;
+	    }
+	}
     }
+}
 
+void
+BESContainer::get_cache_info()
+{
     // Determine the cache directory where uncompressed files will be
     // stored. If it's already been set then we assume that it exists and is
     // writable
@@ -171,63 +248,46 @@ BESContainer::access()
 	}
     }
 
-    // Build the command
-    string cmd = BESContainer::_script + " "
-                 + _real_name + " "
-		 + BESContainer::_cacheDir + " "
-		 + BESContainer::_cacheSize ;
-
-    // Call the script that will uncompress the file. The script should exit
-    // with 0 if there are no problems uncompressing the file and echo to
-    // stdout the name of the cached file. If there is an error, return a
-    // non-zero value and echo out to stdout the problem encountered.
-    ostringstream output ;
-    FILE *f = popen( cmd.c_str(), "r" ) ;
-    if( f )
-    {
-	char buf[4096] ;
-	while( fgets( buf, 4096, f ) != NULL )
-	    output << buf ;
-	int stat = pclose( f ) ;
-	if( stat != 0 )
-	{
-	    string err = "Problem uncompressing the data file: \n"
-	                 + output.str() ;
-	    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
-	}
-    }
-
-    return output.str() ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this container.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
 void
-BESContainer::build_list( const string &ext_list )
+BESContainer::dump( ostream &strm ) const
 {
-    string::size_type str_begin = 0 ;
-    string::size_type str_end = ext_list.length() ;
-    string::size_type comma = 0 ;
-
-    bool done = false ;
-    while( !done )
+    strm << BESIndent::LMarg << "BESContainer::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "is valid: " << _valid << endl ;
+    strm << BESIndent::LMarg << "symbolic name: " << _symbolic_name << endl ;
+    strm << BESIndent::LMarg << "real name: " << _real_name << endl ;
+    strm << BESIndent::LMarg << "data type: " << _container_type << endl ;
+    strm << BESIndent::LMarg << "constraint: " << _constraint << endl ;
+    strm << BESIndent::LMarg << "attributes: " << _attributes << endl ;
+    strm << BESIndent::LMarg << "compression information: " << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "is compressed? " << _compressed << endl ;
+    strm << BESIndent::LMarg << "compression determine " << _compression_determined << endl;
+    strm << BESIndent::LMarg << "compress script: " << BESContainer::_script << endl ;
+    strm << BESIndent::LMarg << "cache directory: " << BESContainer::_cacheDir << endl ;
+    strm << BESIndent::LMarg << "cache max size: " << BESContainer::_cacheSize << endl ;
+    strm << BESIndent::LMarg << "extensions:" ;
+    list<string>::const_iterator i =
+	BESContainer::_compressedExtensions.begin() ;
+    list<string>::const_iterator ie =
+	BESContainer::_compressedExtensions.end() ;
+    for( ; i != ie && !_compressed; i++ )
     {
-	comma = ext_list.find( ",", str_begin ) ;
-	if( comma == string::npos )
-	{
-	    string a_member = ext_list.substr( str_begin, str_end-str_begin ) ;
-	    BESContainer::_compressedExtensions.push_back( a_member ) ;
-	    done = true ;
-	}
-	else
-	{
-	    string a_member = ext_list.substr( str_begin, comma-str_begin ) ;
-	    BESContainer::_compressedExtensions.push_back( a_member ) ;
-	    str_begin = comma+1 ;
-	    if( comma == str_end-1 )
-	    {
-		done = true ;
-	    }
-	}
+	strm << " " << (*i) ;
     }
+    strm << endl ;
+    BESIndent::UnIndent() ;
+    BESIndent::UnIndent() ;
 }
 
 /* The following code calls the uncompression programs directly after making

@@ -34,10 +34,12 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <fstream>
 
 using std::cout ;
 using std::cerr ;
 using std::endl ;
+using std::ofstream ;
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
@@ -52,9 +54,10 @@ using std::endl ;
 #include "PPTException.h"
 #include "SocketException.h"
 #include "BESMemoryManager.h"
+#include "BESDebug.h"
 
-#include "default_module.h"
-#include "opendap_commands.h"
+#include "BESDefaultModule.h"
+#include "BESDefaultCommands.h"
 
 ServerApp::ServerApp()
     : BESModuleApp(),
@@ -108,8 +111,8 @@ void
 ServerApp::showUsage()
 {
     cout << BESApp::TheApplication()->appName()
-         << ": -d -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
-    cout << "-d set the server to debugging mode" << endl ;
+         << ": -d <OPT> -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
+    cout << "-d set debugging to cout, cerr, or file" << endl ;
     cout << "-v echos version and exit" << endl ;
     cout << "-s specifies a secure server using SLL authentication" << endl ;
     cout << "-c use back-end server configuration file CONFIG" << endl ;
@@ -128,27 +131,9 @@ ServerApp::showVersion()
 int
 ServerApp::initialize( int argc, char **argv )
 {
-    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
-    {
-	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-
-    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
-    {
-	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-
-    if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
-    {
-	cerr << "FAILED: Can not register SIGUSR1 signal handler" << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-
     int c = 0 ;
 
-    while( ( c = getopt( argc, argv, "dvsc:p:u:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "vsd:c:p:u:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -163,8 +148,24 @@ ServerApp::initialize( int argc, char **argv )
 		_unixSocket = optarg ;
 		break ;
 	    case 'd':
-		// nothing to do here right now until we get debugging impelemented
-		//setDebug( true ) ;
+		{
+		    string dbgstrm = optarg ;
+		    if( dbgstrm == "cerr" )
+		    {
+			BESDebug::Set_debugger( new BESDebug( &cerr ) ) ;
+		    }
+		    else
+		    {
+			ostream *fstrm = new ofstream( dbgstrm.c_str() ) ;
+			if( !(*fstrm) )
+			{
+			    cerr << "Unable to open debug file" << endl ;
+			    showUsage() ;
+			}
+			BESDebug::Set_debugger( new BESDebug( fstrm ) ) ;
+		    }
+		    BESDebug::Begin_debug() ;
+		}
 		break ;
 	    case 'v':
 		showVersion() ;
@@ -190,7 +191,7 @@ ServerApp::initialize( int argc, char **argv )
 	    cout << endl << "Unable to determine server port" << endl ;
 	    cout << "Please specify on the command line with -p <port>"
 	         << endl
-		 << "Or specify in the opendap configuration file with " << key
+		 << "Or specify in the bes configuration file with " << key
 		 << endl << endl ;
 	    showUsage() ;
 	}
@@ -206,7 +207,7 @@ ServerApp::initialize( int argc, char **argv )
 	    cout << endl << "Unable to determine unix socket" << endl ;
 	    cout << "Please specify on the command line with -u <unix_socket>"
 	         << endl
-		 << "Or specify in the opendap configuration file with " << key
+		 << "Or specify in the bes configuration file with " << key
 		 << endl << endl ;
 	    showUsage() ;
 	}
@@ -223,10 +224,46 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    default_module::initialize( argc, argv ) ;
-    opendap_commands::initialize( argc, argv ) ;
+    BESDEBUG( "ServerApp: Registering signal SIGTERM ... " )
+    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
+    {
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "OK" << endl ) ;
 
-    return BESModuleApp::initialize( argc, argv ) ;
+    BESDEBUG( "ServerApp: Registering signal SIGINT ... " )
+    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
+    {
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "OK" << endl ) ;
+
+    BESDEBUG( "ServerApp: Registering signal SIGUSR1 ... " )
+    if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
+    {
+	BESDEBUG( "FAILED" << endl ) ;
+	cerr << "FAILED: Can not register SIGUSR1 signal handler" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "OK" << endl ) ;
+
+    BESDEBUG( "ServerApp: initializing default module ... " )
+    BESDefaultModule::initialize( argc, argv ) ;
+    BESDEBUG( "OK" << endl ) ;
+
+    BESDEBUG( "ServerApp: initializing default commands ... " )
+    BESDefaultCommands::initialize( argc, argv ) ;
+    BESDEBUG( "OK" << endl ) ;
+
+    int ret = BESModuleApp::initialize( argc, argv ) ;
+
+    BESDEBUG( "ServerApp: initialized settings:" << *this ) ;
+
+    return ret ;
 }
 
 int
@@ -234,7 +271,9 @@ ServerApp::run()
 {
     try
     {
+	BESDEBUG( "ServerApp: initializing memory pool ... " )
 	BESMemoryManager::initialize_memory_pool() ;
+	BESDEBUG( "OK" << endl ) ;
 
 	SocketListener listener ;
 
@@ -246,6 +285,7 @@ ServerApp::run()
 
 	BESServerHandler handler ;
 
+	BESDEBUG( "ServerApp: listening" << endl )
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
@@ -294,6 +334,60 @@ ServerApp::terminate( int sig )
 	BESModuleApp::terminate( sig ) ;
     }
     return sig ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+ServerApp::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "ServerApp::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "got port? " << _gotPort << endl ;
+    strm << BESIndent::LMarg << "port: " << _portVal << endl ;
+    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl ;
+    strm << BESIndent::LMarg << "is secure? " << _secure << endl ;
+    strm << BESIndent::LMarg << "pid: " << _mypid << endl ;
+    if( _ts )
+    {
+	strm << BESIndent::LMarg << "tcp socket:" << endl ;
+	BESIndent::Indent() ;
+	_ts->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "tcp socket: null" << endl ;
+    }
+    if( _us )
+    {
+	strm << BESIndent::LMarg << "unix socket:" << endl ;
+	BESIndent::Indent() ;
+	_us->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "unix socket: null" << endl ;
+    }
+    if( _ps )
+    {
+	strm << BESIndent::LMarg << "ppt server:" << endl ;
+	BESIndent::Indent() ;
+	_ps->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "ppt server: null" << endl ;
+    }
+    BESModuleApp::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 int

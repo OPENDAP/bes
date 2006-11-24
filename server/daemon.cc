@@ -52,9 +52,9 @@ using std::string ;
 #include "ServerExitConditions.h"
 #include "config.h"
 
-#define OPENDAP_SERVER_ROOT "OPENDAP_SERVER_ROOT"
-#define OPENDAP_SERVER "/beslistener"
-#define OPENDAP_SERVER_PID "bes.pid"
+#define BES_SERVER_ROOT "BES_SERVER_ROOT"
+#define BES_SERVER "/beslistener"
+#define BES_SERVER_PID "bes.pid"
 
 int  daemon_init() ;
 int  mount_server( char ** ) ;
@@ -278,7 +278,7 @@ load_names()
 {
     char *xdap_root = 0 ;
     string bindir = "/bin";
-    xdap_root = getenv( OPENDAP_SERVER_ROOT ) ;
+    xdap_root = getenv( BES_SERVER_ROOT ) ;
     if( xdap_root )
     {
 	server_name = xdap_root ;
@@ -287,7 +287,7 @@ load_names()
     }
     else
     {
-	// OPENDAP_SERVER_ROOT is not set, attemp to obtain current
+	// BES_SERVER_ROOT is not set, attemp to obtain current
 	// working directory
 	/*
 	char t_buf[1024] ;
@@ -309,16 +309,16 @@ load_names()
 	file_for_listener = "." ;
     }
 
-    server_name += OPENDAP_SERVER ;
+    server_name += BES_SERVER ;
     file_for_listener += "/run/" ;
-    file_for_listener += OPENDAP_SERVER_PID ;
+    file_for_listener += BES_SERVER_PID ;
 
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
 	cerr << NameProgram
 	     << ": can not start." << server_name << endl
 	     << "Please set environment variable "
-	     << OPENDAP_SERVER_ROOT << " to the location of your listener "
+	     << BES_SERVER_ROOT << " to the location of your listener "
 	     << endl ;
 	return false ;
     }

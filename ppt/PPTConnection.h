@@ -39,8 +39,13 @@ class Socket ;
 
 class PPTConnection : public Connection
 {
+private:
+    int				_timeout ;
 protected:
-				PPTConnection() {}
+    				PPTConnection()
+				    : _timeout( 0 ) {}
+				PPTConnection( int timeout )
+				    : _timeout( timeout ) {}
 
     void			writeBuffer( const string &buffer ) ;
     int				readBuffer( char *inBuff ) ;
@@ -54,8 +59,9 @@ public:
     virtual void		send( const string &buffer ) ;
     virtual void		sendExit() ;
     virtual bool		receive( ostream *strm = 0 ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // PPTConnection_h
 
-// $Log: PPTConnection.h,v $

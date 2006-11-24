@@ -61,6 +61,8 @@ public:
 					   const string &key_file );
     				~SSLClient() ;
     virtual void		initConnection() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // SSLClient_h

@@ -141,9 +141,9 @@ BESTokenizer::get_next_token()
     return tokens[++_counter] ;
 }
 
-/** @brief tokenize the OPeNDAP request/command string
+/** @brief tokenize the BES request/command string
  *
- *  BESTokenizer tokenizes an OPeNDAP request command string, such as a get
+ *  BESTokenizer tokenizes a BES request command string, such as a get
  *  request, a define command, a set command, etc... Tokens are separated by
  *  the following characters:
  *
@@ -327,22 +327,32 @@ BESTokenizer::remove_quotes( const string &s )
 void
 BESTokenizer::dump_tokens()
 {
-    for( tokens_iterator = tokens.begin();
-	 tokens_iterator != tokens.end();
-	 tokens_iterator++ )
+    tokens_citerator i = tokens.begin() ;
+    tokens_citerator ie = tokens.end() ;
+    for( ; i != ie; i++ )
     {
-	cout << "\"" << (*tokens_iterator) << "\"" << endl ;
+	cout << "\"" << (*i) << "\"" << endl ;
     }
 }
 
-// $Log: BESTokenizer.cc,v $
-// Revision 1.3  2005/03/15 19:58:35  pwest
-// using BESTokenizer to get first and next tokens
-//
-// Revision 1.2  2005/02/10 19:27:35  pwest
-// beginning quotes were being removed when tokenizing
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESTokenizer::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESTokenizer::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    tokens_citerator i = tokens.begin() ;
+    tokens_citerator ie = tokens.end() ;
+    for( ; i != ie; i++ )
+    {
+	strm << BESIndent::LMarg << "\"" << (*i) << "\"" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

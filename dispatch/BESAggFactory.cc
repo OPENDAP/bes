@@ -46,7 +46,7 @@ BESAggFactory *BESAggFactory::_instance = 0 ;
  */
 bool
 BESAggFactory::add_handler( string handler_name,
-			        p_agg_handler handler_method )
+			    p_agg_handler handler_method )
 {
     BESAggFactory::Handler_citer i ;
     i = _handler_list.find( handler_name ) ;
@@ -130,6 +130,37 @@ BESAggFactory::get_handler_names()
 	first_name = false ;
     }
     return ret ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the name of all
+ * registered aggrecation servers
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESAggFactory::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESAggFactory::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _handler_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered agg handlers:" << endl ;
+	BESIndent::Indent() ;
+	BESAggFactory::Handler_citer i = _handler_list.begin() ;
+	for( ; i != _handler_list.end(); i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered agg handlers: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 
 BESAggFactory *

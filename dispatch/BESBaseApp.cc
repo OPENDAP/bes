@@ -46,8 +46,7 @@ BESApp *BESApp::_theApplication = 0;
  * Initialized the static _the Applicatioon to point to this application
  * object
  */
-BESBaseApp::
-BESBaseApp(void)
+BESBaseApp::BESBaseApp(void)
 {
     BESApp::_theApplication = this;
 }
@@ -57,8 +56,7 @@ BESBaseApp(void)
  * sets the static _theApplicaiton to null. Does not call terminate. It is up
  * to the main method to call the terminate method.
  */
-BESBaseApp::
-~BESBaseApp(void)
+BESBaseApp::~BESBaseApp(void)
 {
     BESApp::_theApplication = 0;
 }
@@ -73,8 +71,8 @@ BESBaseApp::
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int BESBaseApp::
-main(int argC, char **argV)
+int
+BESBaseApp::main(int argC, char **argV)
 {
     _appName = argV[0] ;
     int retVal = initialize( argC, argV ) ;
@@ -90,7 +88,7 @@ main(int argC, char **argV)
     return retVal ;
 }
 
-/** @brief initializes the OPeNDAP BES application
+/** @brief initialize the BES application
  *
  * uses the BESGlobalIQ static method BESGlobalInit to initialize any global
  * variables needed by this application
@@ -101,8 +99,8 @@ main(int argC, char **argV)
  * @throws BESException if any exceptions or errors are encountered
  * @see BESGlobalIQ
  */
-int BESBaseApp::
-initialize(int argC, char **argV)
+int
+BESBaseApp::initialize(int argC, char **argV)
 {
     int retVal = 0;
 
@@ -139,8 +137,8 @@ initialize(int argC, char **argV)
  * @throws BESException if the derived class does not implement this
  * method
  */
-int BESBaseApp::
-run(void)
+int
+BESBaseApp::run(void)
 {
     throw BESException( "BESBaseApp::run - run method not implemented",
                         __FILE__, __LINE__ ) ;
@@ -156,8 +154,8 @@ run(void)
  * is passed.
  * @see BESGlobalIQ
  */
-int BESBaseApp::
-terminate( int sig )
+int
+BESBaseApp::terminate( int sig )
 {
     BESGlobalIQ::BESGlobalQuit() ;
     _isInitialized = false ;
@@ -166,22 +164,18 @@ terminate( int sig )
 
 /** @brief dumps information about this object
  *
- * Displays the pointer value of this class along with the name of the
+ * Displays the pointer value of this instance along with the name of the
  * application, whether the application is initialized or not
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESBaseApp::
-dump( ostream &strm ) const
+void
+BESBaseApp::dump( ostream &strm ) const
 {
-    strm << "BESBaseApp::dump - (" << (void *)this << ")" << endl ;
-    strm << "    appName = " << appName() << endl ;
-    strm << "    application " ;
-    if( _isInitialized )
-	strm << "is" ;
-    else
-	strm << "is not" ;
-    strm << " initialized" << endl ;
-    strm << endl ;
+    strm << BESIndent::LMarg << "BESBaseApp::dump - (" << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "appName: " << appName() << endl ;
+    strm << BESIndent::LMarg << "is initialized: " << _isInitialized << endl ;
+    BESIndent::UnIndent() ;
 }
 

@@ -229,6 +229,26 @@ BESTextInfo::transmit( BESTransmitter *transmitter,
     transmitter->send_text( *this, dhi ) ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this text information object
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESTextInfo::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESTextInfo::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "has header been added? " << _header << endl ;
+    strm << BESIndent::LMarg << "indentation \"" << _indent << "\"" << endl ;
+    strm << BESIndent::LMarg << "is http? " << _ishttp << endl ;
+    BESInfo::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+
 BESInfo *
 BESTextInfo::BuildTextInfo( const string &info_type )
 {

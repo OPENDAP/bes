@@ -34,7 +34,6 @@
 
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
-#include "dispatch_version.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
 
@@ -48,10 +47,10 @@ BESVersionResponseHandler::~BESVersionResponseHandler( )
 }
 
 /** @brief executes the command 'show version;' by returning the version of
- * the OPeNDAP server and the version of all registered data request
+ * the BES and the version of all registered data request
  * handlers.
  *
- * This response handler knows how to retrieve the version of the OPeNDAP
+ * This response handler knows how to retrieve the version of the BES
  * server. It adds this information to a BESVersionInfo informational response
  * object. It also forwards the request to all registered data request
  * handlers to add their version information.
@@ -74,7 +73,7 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
     info->begin_response( VERS_RESPONSE_STR ) ;
 
     info->beginBESVersion() ;
-    info->addBESVersion( bes_name(), bes_version() ) ;
+    info->addBESVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     info->endBESVersion() ;
 
     info->beginHandlerVersion() ;
@@ -105,6 +104,22 @@ BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
 	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(_response) ;
 	info->transmit( transmitter, dhi ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESVersionResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESResponseHandler *

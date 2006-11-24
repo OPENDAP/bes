@@ -50,11 +50,14 @@ using std::bad_alloc ;
 #include "BESExceptionManager.h"
 #include "BESHandlerException.h"
 #include "BESMemoryException.h"
+#include "BESAggregationException.h"
 
 #include "BESDataNames.h"
 
-list< p_opendap_init > BESInterface::_init_list ;
-list< p_opendap_end > BESInterface::_end_list ;
+#include "BESDebug.h"
+
+list< p_bes_init > BESInterface::_init_list ;
+list< p_bes_end > BESInterface::_end_list ;
 
 BESInterface::BESInterface()
     : _transmitter( 0 )
@@ -159,7 +162,7 @@ BESInterface::execute_request()
 }
 
 void
-BESInterface::add_init_callback( p_opendap_init init )
+BESInterface::add_init_callback( p_bes_init init )
 {
     _init_list.push_back( init ) ;
 }
@@ -172,12 +175,23 @@ BESInterface::add_init_callback( p_opendap_init init )
 void
 BESInterface::initialize()
 {
+    BESDEBUG( "Initializing request: " << _dhi.data[DATA_REQUEST] << " ... " )
     bool do_continue = true ;
     init_iter i = _init_list.begin() ;
     for( ; i != _init_list.end() && do_continue == true; i++ )
     {
-	p_opendap_init p = *i ;
+	p_bes_init p = *i ;
 	do_continue = p( _dhi ) ;
+    }
+    if( !do_continue )
+    {
+	BESDEBUG( "FAILED" << endl )
+	string se = "Initialization callback failed, exiting" ;
+	throw BESException( se, __FILE__, __LINE__ ) ;
+    }
+    else
+    {
+	BESDEBUG( "OK" << endl )
     }
 }
 
@@ -217,6 +231,7 @@ BESInterface::build_data_request_plan()
 void
 BESInterface::execute_data_request_plan()
 {
+    BESDEBUG( "Executing request: " << _dhi.data[DATA_REQUEST] << " ... " )
     BESResponseHandler *rh = _dhi.response_handler ;
     if( rh )
     {
@@ -224,10 +239,12 @@ BESInterface::execute_data_request_plan()
     }
     else
     {
+	BESDEBUG( "FAILED" << endl )
 	string se = "The response handler \"" + _dhi.action
 		    + "\" does not exist" ;
 	throw BESHandlerException( se, __FILE__, __LINE__ ) ;
     }
+    BESDEBUG( "OK" << endl )
 }
 
 /** @brief Aggregate the resulting response object
@@ -237,11 +254,20 @@ BESInterface::invoke_aggregation()
 {
     if( _dhi.data[AGG_CMD] != "" )
     {
+	BESDEBUG( "aggregating with: " << _dhi.data[AGG_CMD] << " ... " )
 	BESAggregationServer *agg = BESAggFactory::TheFactory()->find_handler( _dhi.data[AGG_HANDLER] ) ;
 	if( agg )
 	{
 	    agg->aggregate( _dhi ) ;
 	}
+	else
+	{
+	    BESDEBUG( "FAILED" << endl )
+	    string se = "The aggregation handler " + _dhi.data[AGG_HANDLER]
+	                + "does not exist" ;
+	    throw BESAggregationException( se, __FILE__, __LINE__ ) ;
+	}
+	BESDEBUG( "OK" << endl )
     }
 }
 
@@ -261,6 +287,7 @@ BESInterface::invoke_aggregation()
 void
 BESInterface::transmit_data()
 {
+    BESDEBUG( "Transmitting request: " << _dhi.data[DATA_REQUEST] << " ... " )
     if( _transmitter )
     {
 	if( _dhi.error_info )
@@ -279,6 +306,7 @@ BESInterface::transmit_data()
 	    _dhi.error_info->print( stdout ) ;
 	}
     }
+    BESDEBUG( "OK" << endl )
 }
 
 /** @brief Log the status of the request
@@ -302,16 +330,18 @@ BESInterface::log_status()
 void
 BESInterface::report_request()
 {
+    BESDEBUG( "Reporting on request: " << _dhi.data[DATA_REQUEST] << " ... " )
     BESReporterList::TheList()->report( _dhi ) ;
+    BESDEBUG( "OK" << endl )
 }
 
 void
-BESInterface::add_end_callback( p_opendap_end end )
+BESInterface::add_end_callback( p_bes_end end )
 {
     _end_list.push_back( end ) ;
 }
 
-/** @brief End the OPeNDAP request
+/** @brief End the BES request
  *
  *  This method allows developers to add callbacks at the end of a request,
  *  to do any cleanup or do any extra work at the end of a request
@@ -319,12 +349,14 @@ BESInterface::add_end_callback( p_opendap_end end )
 void
 BESInterface::end_request()
 {
+    BESDEBUG( "Ending request: " << _dhi.data[DATA_REQUEST] << " ... " )
     end_iter i = _end_list.begin() ;
     for( ; i != _end_list.end(); i++ )
     {
-	p_opendap_end p = *i ;
+	p_bes_end p = *i ;
 	p( _dhi ) ;
     }
+    BESDEBUG( "OK" << endl )
 }
 
 /** @brief Clean up after the request
@@ -352,5 +384,71 @@ int
 BESInterface::exception_manager( BESException &e )
 {
     return BESExceptionManager::TheEHM()->handle_exception( e, _dhi ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * BESDataHandlerInterface, the BESTransmitter being used, and the number of
+ * initialization and termimation callbacks.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESInterface::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESInterface::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+
+    if( _init_list.size() )
+    {
+	strm << BESIndent::LMarg << "termination functions:" << endl ;
+	BESIndent::Indent() ;
+	init_iter i = _init_list.begin() ;
+	for( ; i != _init_list.end(); i++ )
+	{
+	    strm << BESIndent::LMarg << (void *)(*i) << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "termination functions: none" << endl ;
+    }
+
+    if( _end_list.size() )
+    {
+	strm << BESIndent::LMarg << "termination functions:" << endl ;
+	BESIndent::Indent() ;
+	end_iter i = _end_list.begin() ;
+	for( ; i != _end_list.end(); i++ )
+	{
+	    strm << BESIndent::LMarg << (void *)(*i) << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "termination functions: none" << endl ;
+    }
+
+    strm << BESIndent::LMarg << "data handler interface:" << endl ;
+    BESIndent::Indent() ;
+    _dhi.dump( strm ) ;
+    BESIndent::UnIndent() ;
+
+    if( _transmitter )
+    {
+	strm << BESIndent::LMarg << "transmitter:" << endl ;
+	BESIndent::Indent() ;
+	_transmitter->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "transmitter: not set" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 

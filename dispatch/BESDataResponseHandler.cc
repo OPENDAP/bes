@@ -95,6 +95,22 @@ BESDataResponseHandler::transmit( BESTransmitter *transmitter,
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDataResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDataResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+
 BESResponseHandler *
 BESDataResponseHandler::DataResponseBuilder( string handler_name )
 {

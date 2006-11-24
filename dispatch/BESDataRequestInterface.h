@@ -59,7 +59,7 @@ typedef struct _BESDataRequestInterface
     /** @brief information about the user agent originating the request, e.g. Mozilla/4.04 (X11; I; SunOS 5.4 sun4m)
      */
     const char *user_agent;
-    /** @brief OpenDAP request string from URL
+    /** @brief BES request string
      */
     const char *request;
     /** @brief server cookies set in users browser

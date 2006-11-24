@@ -39,22 +39,44 @@
 using std::string ;
 using std::list ;
 
+#include "BESObj.h"
 #include "BESContainer.h"
 
-class BESDefine
+class BESDefine : public BESObj
 {
+private:
+    list<BESContainer>		_containers ;
+    string			_agg_cmd ;
+    string			_agg_handler ;
 public:
     				BESDefine() {}
     virtual			~BESDefine() {}
 
-    list<BESContainer>		containers ;
-    typedef list<BESContainer>::iterator containers_iterator ;
+    typedef list<BESContainer>::iterator containers_iter ;
+    typedef list<BESContainer>::const_iterator containers_citer ;
 
-    BESDefine::containers_iterator first_container() { return containers.begin() ; }
-    BESDefine::containers_iterator end_container() { return containers.end() ; }
+    void			add_container( const BESContainer &container ) ;
+    BESDefine::containers_citer first_container() { return _containers.begin() ; }
+    BESDefine::containers_citer end_container() { return _containers.end() ; }
 
-    string			aggregation_command ;
-    string			aggregation_handler ;
+    void			set_agg_cmd( const string &cmd )
+				{
+				    _agg_cmd = cmd ;
+				}
+    const string &		get_agg_cmd()
+				{
+				    return _agg_cmd ;
+				}
+    void			set_agg_handler( const string &handler )
+				{
+				    _agg_handler = handler ;
+				}
+    const string &		get_agg_handler()
+				{
+				    return _agg_handler ;
+				}
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // BESDefine_h_

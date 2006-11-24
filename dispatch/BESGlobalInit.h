@@ -49,7 +49,12 @@
  *
  * @see BESGlobalIQ
  */
-class BESGlobalInit : public BESInitializer {
+class BESGlobalInit : public BESInitializer
+{
+private:
+    BESInitFun                 _initFun;
+    BESTermFun                 _termFun;
+    BESInitializer *           _nextInit;
 public:
                                 BESGlobalInit(BESInitFun, BESTermFun,
 					       BESInitializer *nextInit,
@@ -57,10 +62,8 @@ public:
     virtual                     ~BESGlobalInit(void);
     virtual bool           	initialize(int argc, char **argv);
     virtual bool           	terminate(void);
-private:
-    BESInitFun                 _initFun;
-    BESTermFun                 _termFun;
-    BESInitializer *           _nextInit;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // I_BESGlobalInit_h

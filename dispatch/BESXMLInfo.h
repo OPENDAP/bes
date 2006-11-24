@@ -44,7 +44,8 @@
  * @see BESInfo
  * @see BESResponseObject
  */
-class BESXMLInfo : public BESInfo {
+class BESXMLInfo : public BESInfo
+{
 private:
     string		_indent ;
     bool		_do_indent ;
@@ -71,6 +72,8 @@ public:
     virtual void 	print( FILE *out ) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
+
+    virtual void	dump( ostream &strm ) const ;
 
     static BESInfo *BuildXMLInfo( const string &info_type ) ;
 };

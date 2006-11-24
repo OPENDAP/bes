@@ -32,7 +32,7 @@ run(void)
 	stringstream name ; name << "d" << i ;
 	stringstream agg ; agg << "d" << i << "agg" ;
 	BESDefine *dd = new BESDefine ;
-	dd->aggregation_command = agg.str() ;
+	dd->set_agg_cmd( agg.str() ) ;
 	bool status = store->add_definition( name.str(), dd ) ;
 	if( status == true )
 	{
@@ -55,14 +55,14 @@ run(void)
 	if( dd )
 	{
 	    cout << "found " << name.str() << endl ;
-	    if( dd->aggregation_command == agg.str() )
+	    if( dd->get_agg_cmd() == agg.str() )
 	    {
 		cout << "    agg command correct" << endl ;
 	    }
 	    else
 	    {
 		cerr << "    agg command incorrect, = "
-		     << dd->aggregation_command
+		     << dd->get_agg_cmd()
 		     << ", should be " << agg.str() << endl ;
 		return 1 ;
 	    }

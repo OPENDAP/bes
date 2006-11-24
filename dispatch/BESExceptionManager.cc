@@ -59,7 +59,7 @@ BESExceptionManager::~BESExceptionManager()
 }
 
 void
-BESExceptionManager::add_ehm_callback( p_opendap_ehm ehm )
+BESExceptionManager::add_ehm_callback( p_bes_ehm ehm )
 {
     _ehm_list.push_back( ehm ) ;
 }
@@ -95,7 +95,7 @@ BESExceptionManager::handle_exception( BESException &e,
     ehm_iter i = _ehm_list.begin() ;
     for( ; i != _ehm_list.end(); i++ )
     {
-	p_opendap_ehm p = *i ;
+	p_bes_ehm p = *i ;
 	int handled = p( e, dhi ) ;
 	if( handled )
 	{
@@ -183,6 +183,25 @@ BESExceptionManager::handle_exception( BESException &e,
     dhi.error_info->add_exception( "Unknown", e ) ;
     dhi.error_info->end_response() ;
     return BES_TERMINATE_IMMEDIATE;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the number of
+ * registered exception handler callbacks. Currently there is no way of
+ * telling what callbacks are registered, as no names are passed to the add
+ * method.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESExceptionManager::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESExceptionManager::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "# registered callbacks: " << _ehm_list.size() << endl ;
+    BESIndent::UnIndent() ;
 }
 
 BESExceptionManager *

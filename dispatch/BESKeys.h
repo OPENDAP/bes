@@ -41,6 +41,8 @@ using std::string ;
 using std::map ;
 using std::ifstream ;
 
+#include "BESObj.h"
+
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
  *
@@ -53,30 +55,36 @@ using std::ifstream ;
  * within the application itself, for example from the command line.
  *
  * If from a file the key/value pair is set one per line and cannot span
- * multiple lines. Comments are allowed using the pound (#) character.
+ * multiple lines. Comments are allowed using the pound (#) character. For
+ * example:
  *
  * <PRE>
  * #
- * # These keys define the behavior of database authentication
+ * # Who is responsable for this server
  * #
- * OpenDAP.Authentication.MySQL.username=username
- * OpenDAP.Authentication.MySQL.password=password
- * OpenDAP.Authentication.MySQL.server=myMachine
- * OpenDAP.Authentication.MySQL.database=authDB
+ * BES.ServerAdministrator=dods-tech@unidata.ucar.edu
+ *
+ * #
+ * # Default server port and unix socket information and whether the server
+ * #is secure or not.
+ * #
+ * BES.ServerPort=10002
+ * BES.ServerUnixSocket=/tmp/bes.socket
+ * BES.ServerSecure=no
  * </PRE>
  *
  * Key/value pairs can also be set by passing in a key=value string, or by
  * passing in a key and value string to the object.
  *
- * OpenDAP provides a single object for access to a single BESKeys object,
+ * BES provides a single object for access to a single BESKeys object,
  * TheBESKeys.
  */
-class BESKeys
+class BESKeys : public BESObj
 {
 private:
     ifstream *		_keys_file ;
     string		_keys_file_name ;
-    map<string,string> *	_the_keys ;
+    map<string,string> *_the_keys ;
 
     void		clean() ;
     void 		load_keys() ;
@@ -100,6 +108,8 @@ public:
     typedef map< string, string >::const_iterator Keys_citer ;
     Keys_citer		keys_begin() { return _the_keys->begin() ; }
     Keys_citer		keys_end() { return _the_keys->end() ; }
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESKeys_h_

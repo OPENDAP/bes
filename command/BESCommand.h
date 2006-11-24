@@ -39,32 +39,35 @@
 using std::string ;
 using std::map ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
 class BESResponseHandler ;
 class BESTokenizer ;
 
-class BESCommand
+class BESCommand : public BESObj
 {
 private:
     static map< string, BESCommand * > cmd_list ;
     typedef map< string, BESCommand * >::iterator cmd_iter ;
 protected:
-    string				_cmd ;
+    string			_cmd ;
 public:
-    					BESCommand( const string &cmd )
-					    : _cmd( cmd ) {}
-    virtual				~BESCommand() {}
+    				BESCommand( const string &cmd )
+				    : _cmd( cmd ) {}
+    virtual			~BESCommand() {}
 
-    virtual string			parse_options( BESTokenizer &tokens,
+    virtual string		parse_options( BESTokenizer &tokens,
 					  BESDataHandlerInterface &dhi ) ;
 
-    virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
-					  BESDataHandlerInterface &dhi ) = 0 ;
+    virtual BESResponseHandler *parse_request( BESTokenizer &tokens,
+					   BESDataHandlerInterface &dhi ) = 0 ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESCommand *		TermCommand ;
-    static void				add_command( const string &cmd_str,
-                                                     BESCommand *cmd ) ;
+    static void			add_command( const string &cmd_str,
+					     BESCommand *cmd ) ;
     static bool			del_command( const string &cmd_str ) ;
     static BESCommand *		find_command( const string &cmd_str ) ;
 } ;

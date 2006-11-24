@@ -38,7 +38,7 @@ using std::cout ;
 #include "DAPCommandModule.h"
 
 #include "BESResponseNames.h"
-#include "BESLog.h"
+#include "BESDebug.h"
 
 #include "BESCommand.h"
 
@@ -47,34 +47,27 @@ using std::cout ;
 void
 DAPCommandModule::initialize( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing DAP Commands" << endl;
+    BESDEBUG( "Initializing DAP Commands:" << endl )
 
     BESCommand *cmd = NULL ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DAS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DAS_RESPONSE << " command" << endl )
     BESCommand::add_command( DAS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DDS_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DDS_RESPONSE << " command" << endl )
     BESCommand::add_command( DDS_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DDX_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DDX_RESPONSE << " command" << endl )
     BESCommand::add_command( DDX_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << DATA_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << DATA_RESPONSE << " command" << endl )
     BESCommand::add_command( DATA_RESPONSE, BESCommand::TermCommand ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << CATALOG_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << CATALOG_RESPONSE << " command" << endl )
     cmd = new BESCatalogCommand( CATALOG_RESPONSE ) ;
     BESCommand::add_command( CATALOG_RESPONSE, cmd ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << SHOW_INFO_RESPONSE << " command" << endl;
+    BESDEBUG( "    adding " << SHOW_INFO_RESPONSE << " command" << endl )
     cmd = new BESCatalogCommand( SHOW_INFO_RESPONSE ) ;
     BESCommand::add_command( SHOW_INFO_RESPONSE, cmd ) ;
 }
@@ -82,8 +75,27 @@ DAPCommandModule::initialize( const string &modname )
 void
 DAPCommandModule::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing DAP Commands" << endl;
+    BESDEBUG( "Removing DAP Commands" << endl )
+
+    BESCommand::del_command( DAS_RESPONSE ) ;
+    BESCommand::del_command( DDS_RESPONSE ) ;
+    BESCommand::del_command( DDX_RESPONSE ) ;
+    BESCommand::del_command( DATA_RESPONSE ) ;
+    BESCommand::del_command( CATALOG_RESPONSE ) ;
+    BESCommand::del_command( SHOW_INFO_RESPONSE ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this class
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+DAPCommandModule::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "DAPCommandModule::dump - ("
+			     << (void *)this << ")" << endl ;
 }
 
 extern "C"

@@ -39,20 +39,22 @@ using std::list ;
 
 #include "BESDataHandlerInterface.h"
 
+#include "BESObj.h"
+
 class BESException ;
 class BESTransmitter ;
 
-typedef bool (*p_opendap_init)( BESDataHandlerInterface &dhi ) ;
-typedef void (*p_opendap_end)( BESDataHandlerInterface &dhi ) ;
+typedef bool (*p_bes_init)( BESDataHandlerInterface &dhi ) ;
+typedef void (*p_bes_end)( BESDataHandlerInterface &dhi ) ;
 
-/** @brief Entry point into OPeNDAP, building responses to given requests.
+/** @brief Entry point into BES, building responses to given requests.
 
     BESInterface is an abstract class providing the entry point into the
-    retrieval of information using the OPeNDAP system. There are eight
+    retrieval of information using the BES framework. There are eight
     steps to retrieving a response to a given request:
 
     <OL>
-    <LI>initialize the OPeNDAP environment</LI>
+    <LI>initialize the BES environment</LI>
     <LI>validate the incoming information to make sure that all information
     is available to perform the query</LI>
     <LI>build the request plan to retrieve the information. A response can
@@ -108,8 +110,7 @@ typedef void (*p_opendap_end)( BESDataHandlerInterface &dhi ) ;
     registered reporters and passes off the information to each of those
     reporters. For example, if the Cedar project wants to report on any
     cedar access then it can register a reporter with 
-    BESReporterList::TheList() and if OPeNDAP wants to keep track of
-    usage then it can register a reporter that will report/log all requests.
+    BESReporterList::TheList().
 
     @see BESGlobalInit
     @see BESKeys
@@ -119,16 +120,16 @@ typedef void (*p_opendap_end)( BESDataHandlerInterface &dhi ) ;
     @see BESLog
     @see BESReporter 
  */
-class BESInterface
+class BESInterface : public BESObj
 {
 private:
-    typedef list< p_opendap_init >::const_iterator init_citer ;
-    typedef list< p_opendap_init >::iterator init_iter ;
-    static list< p_opendap_init > _init_list ;
+    typedef list< p_bes_init >::const_iterator init_citer ;
+    typedef list< p_bes_init >::iterator init_iter ;
+    static list< p_bes_init > _init_list ;
 
-    typedef list< p_opendap_end >::const_iterator end_citer ;
-    typedef list< p_opendap_end >::iterator end_iter ;
-    static list< p_opendap_end > _end_list ;
+    typedef list< p_bes_end >::const_iterator end_citer ;
+    typedef list< p_bes_end >::iterator end_iter ;
+    static list< p_bes_end > _end_list ;
 protected:
     BESDataHandlerInterface	_dhi ;
     BESTransmitter		*_transmitter ;
@@ -150,8 +151,10 @@ protected:
 public:
     virtual int			execute_request() ;
 
-    static void			add_init_callback( p_opendap_init init ) ;
-    static void			add_end_callback( p_opendap_end end ) ;
+    virtual void		dump( ostream &strm ) const ;
+
+    static void			add_init_callback( p_bes_init init ) ;
+    static void			add_end_callback( p_bes_end end ) ;
 } ;
 
 #endif // BESInterface_h_

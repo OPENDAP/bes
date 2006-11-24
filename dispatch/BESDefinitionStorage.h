@@ -37,6 +37,8 @@
 
 using std::string ;
 
+#include "BESObj.h"
+
 class BESDefine ;
 class BESInfo ;
 
@@ -59,7 +61,7 @@ class BESInfo ;
  * @see BESDefine
  * @see BESDefinitionStorageList
  */
-class BESDefinitionStorage
+class BESDefinitionStorage : BESObj
 {
 protected:
     string		_my_name ;
@@ -79,7 +81,7 @@ public:
      *
      * @return name of this persistent store.
      */
-    virtual string		get_name() { return _my_name ; }
+    virtual const string &	get_name() const { return _my_name ; }
 
     /** @brief looks for a definition in this persistent store with the
      * given name
@@ -128,6 +130,12 @@ public:
      * @param info information response object to store the information in
      */
     virtual void		show_definitions( BESInfo &info ) = 0 ;
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void		dump( ostream &strm ) const = 0 ;
 };
 
 #endif // BESDefinitionStorage_h_

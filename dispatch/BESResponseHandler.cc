@@ -63,3 +63,31 @@ BESResponseHandler::set_response_object( BESResponseObject *new_response )
     return curr_obj ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the name of this
+ * response handler and, if present, dumps the response object itself.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "response name: " << _response_name << endl ;
+    if( _response )
+    {
+	strm << BESIndent::LMarg << "response object:" << endl ;
+	BESIndent::Indent() ;
+	_response->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "response object: not set" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

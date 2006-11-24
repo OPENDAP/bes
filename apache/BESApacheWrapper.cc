@@ -39,8 +39,8 @@ using std::string ;
 #include "BESApacheInterface.h"
 #include "BESProcessEncodedString.h"
 #include "BESGlobalIQ.h"
-#include "default_module.h"
-#include "opendap_commands.h"
+#include "BESDefaultModule.h"
+#include "BESDefaultCommands.h"
 
 BESApacheWrapper::BESApacheWrapper()
 {
@@ -49,8 +49,8 @@ BESApacheWrapper::BESApacheWrapper()
     _token = 0 ;
     _requests = 0 ;
 
-    default_module::initialize( 0, 0 ) ;
-    opendap_commands::initialize( 0, 0 ) ;
+    BESDefaultModule::initialize( 0, 0 ) ;
+    BESDefaultCommands::initialize( 0, 0 ) ;
 
     BESGlobalIQ::BESGlobalInit( 0, 0 ) ;
 }

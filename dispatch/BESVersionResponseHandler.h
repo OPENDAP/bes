@@ -35,11 +35,11 @@
 
 #include "BESResponseHandler.h"
 
-/** @brief response handler that returns the version of the OPeNDAP server
+/** @brief response handler that returns the version of the BES
  * and the version of any data request handlers registered with the server.
  *
  * A request 'show version;' will be handled by this response handler. It
- * returns the version of the OPeNDAP-g server and the version of any data
+ * returns the version of the BES and the version of any data
  * request handlers registered with the server.
  *
  * @see BESResponseObject
@@ -56,6 +56,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *VersionResponseBuilder( string handler_name ) ;
 };

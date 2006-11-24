@@ -39,6 +39,7 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
 typedef bool (*p_request_handler)(BESDataHandlerInterface &);
@@ -68,7 +69,8 @@ typedef bool (*p_request_handler)(BESDataHandlerInterface &);
  * the request handler can fill in. This method is looked up and is passed the
  * information to fill in the response object.
  */
-class BESRequestHandler {
+class BESRequestHandler : public BESObj
+{
 private:
     map< string, p_request_handler > _handler_list ;
     string			_name ;
@@ -80,7 +82,7 @@ public:
     typedef map< string, p_request_handler >::const_iterator Handler_citer ;
     typedef map< string, p_request_handler >::iterator Handler_iter ;
 
-    virtual string		get_name( ) { return _name ; }
+    virtual const string &	get_name( ) const { return _name ; }
 
     virtual bool		add_handler( string handler_name,
 					    p_request_handler handler_method ) ;
@@ -88,6 +90,8 @@ public:
     virtual p_request_handler	find_handler( string handler_name ) ;
 
     virtual string		get_handler_names() ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // I_BESRequestHandler_h

@@ -45,6 +45,9 @@ public:
     				   BESDataHandlerInterface &dhi) ;
     virtual void	send_html( BESInfo &info,
     				   BESDataHandlerInterface &dhi) ;
+
+    virtual void	dump( ostream &strm ) const ;
 } ;
 
 #endif // A_BESBasicHttpTransmitter_h
+

@@ -37,16 +37,15 @@
 
 using std::string ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESResponseObject.h"
 
-class DAS ;
-class DDS ;
 class BESInfo ;
 
 typedef void (*p_transmitter)( BESResponseObject *obj, BESDataHandlerInterface &dhi ) ;
 
-class BESTransmitter
+class BESTransmitter : public BESObj
 {
 private:
     map< string, p_transmitter >	_method_list ;
@@ -70,6 +69,8 @@ public:
     					   BESDataHandlerInterface &dhi) = 0 ;
     virtual void		send_html( BESInfo &info,
     					   BESDataHandlerInterface &dhi) = 0 ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // A_BESTransmitter_h

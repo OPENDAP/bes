@@ -37,13 +37,16 @@
 
 using std::string ;
 
-class BESAbstractModule
+#include "BESObj.h"
+
+class BESAbstractModule : public BESObj
 {
 public:
     				BESAbstractModule() {}
     virtual			~BESAbstractModule() {}
     virtual void		initialize( const string &modname ) = 0 ;
     virtual void		terminate( const string &modname ) = 0 ;
+    virtual void		dump( ostream &strm ) const = 0 ;
 } ;
 
 #endif // A_BESAbstractModule_H

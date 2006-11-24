@@ -72,6 +72,8 @@ public:
     virtual bool		del_containers( ) ;
 
     virtual void		show_containers( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESContainerStorageVolatile_h_

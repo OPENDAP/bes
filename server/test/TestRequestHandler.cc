@@ -63,3 +63,19 @@ TestRequestHandler::cdf_build_help( BESDataHandlerInterface &dhi )
     return true ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+TestRequestHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "TestRequestHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESRequestHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

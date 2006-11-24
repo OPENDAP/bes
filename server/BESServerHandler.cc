@@ -60,7 +60,7 @@ BESServerHandler::BESServerHandler()
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "
-	     << "single or multiple as defined by OPeNDAP.ProcessManagerMethod"
+	     << "single or multiple as defined by BES.ProcessManagerMethod"
 	     << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
@@ -195,5 +195,21 @@ BESServerHandler::execute( Connection *c )
 	    }
 	}
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESServerHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESServerHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "server method: " << _method << endl ;
+    BESIndent::UnIndent() ;
 }
 

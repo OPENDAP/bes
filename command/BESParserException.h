@@ -36,7 +36,7 @@
 #include "BESException.h"
 #include "BESDataHandlerInterface.h"
 
-#define OPENDAP_PARSER_ERROR 6
+#define BES_PARSER_ERROR 6
 
 /** @brief exception thrown if there is a problem parsing the request string
  * passed by the user.

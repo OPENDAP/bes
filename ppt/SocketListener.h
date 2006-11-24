@@ -37,9 +37,11 @@
 
 using std::map ;
 
+#include "BESObj.h"
+
 class Socket ;
 
-class SocketListener
+class SocketListener : public BESObj
 {
 private:
     map< int, Socket *> _socket_list ;
@@ -51,8 +53,9 @@ public:
     virtual			~SocketListener() ;
     virtual void		listen( Socket *s ) ;
     virtual Socket *		accept() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // SocketListener_h
 
-// $Log: SocketListener.h,v $

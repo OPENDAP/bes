@@ -39,10 +39,12 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
+
 class BESCatalog ;
 class BESInfo ;
 
-class BESCatalogList
+class BESCatalogList : public BESObj
 {
 private:
     map<string, BESCatalog *>	_catalogs ;
@@ -59,6 +61,8 @@ public:
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESCatalogList *	TheCatalogList() ;
 } ;

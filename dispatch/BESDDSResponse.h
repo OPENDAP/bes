@@ -50,6 +50,8 @@ public:
 				      _dds( dds ) {}
     virtual			~BESDDSResponse() ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     DDS *			get_dds() { return _dds ; }
     ConstraintEvaluator &	get_ce() { return _ce ; }
 } ;

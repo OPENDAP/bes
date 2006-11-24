@@ -122,3 +122,23 @@ SSLConnection::receive( ostream *strm )
     return isDone ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+SSLConnection::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "SSLConnection::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "ssl method: " << (void *)_method << endl ;
+    strm << BESIndent::LMarg << "ssl context: " << (void *)_context << endl ;
+    strm << BESIndent::LMarg << "ssl connection: " << (void *)_connection << endl ;
+    strm << BESIndent::LMarg << "is connected? " << (void *)_connected << endl ;
+    Connection::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

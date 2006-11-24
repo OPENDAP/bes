@@ -67,8 +67,8 @@ BESLog::BESLog()
 {
     _suspended = 0 ;
     bool found = false ;
-    string log_name = TheBESKeys::TheKeys()->get_key( "BES.LogName", found ) ;
-    if( log_name=="" )
+    _file_name = TheBESKeys::TheKeys()->get_key( "BES.LogName", found ) ;
+    if( _file_name == "" )
     {
 	string err = (string)"BES Fatal: unable to determine log file name."
 	             + " Please set BES.LogName in your initialization file" ;
@@ -77,11 +77,11 @@ BESLog::BESLog()
     }
     else
     {
-	_file_buffer=new ofstream(log_name.c_str(), ios::out | ios::app);
-	if (!(*_file_buffer))
+	_file_buffer = new ofstream( _file_name.c_str(), ios::out | ios::app ) ;
+	if( !(*_file_buffer) )
 	{
 	    string err = (string)"BES Fatal; can not open log file "
-	                 + log_name + "." ;
+	                 + _file_name + "." ;
 	    cerr << err << endl ;
 	    throw BESLogException( err, __FILE__, __LINE__ ) ;
 	} 
@@ -305,6 +305,34 @@ BESLog& BESLog::operator<<(p_ios_manipulator val)
     if (!_suspended)
 	(*_file_buffer)<<val;
     return *this;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * the log file
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESLog::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESLog::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "log file: " << _file_name << endl ;
+    if( _file_buffer && *_file_buffer )
+    {
+	strm << BESIndent::LMarg << "log is valid" << endl ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "log is NOT valid" << endl ;
+    }
+    strm << BESIndent::LMarg << "is verbose: " << _verbose << endl ;
+    strm << BESIndent::LMarg << "is flushed: " << _flushed << endl ;
+    strm << BESIndent::LMarg << "is suspended: " << _suspended << endl ;
+    BESIndent::UnIndent() ;
 }
 
 BESLog *

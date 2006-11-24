@@ -37,7 +37,7 @@
 
 /** @brief exception thrown if unable to open or write to the dods log file.
  */
-class BESLogException: public BESException
+class BESLogException : public BESException
 {
 protected:
       			BESLogException() {}

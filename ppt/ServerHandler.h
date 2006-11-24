@@ -35,7 +35,9 @@
 
 class Connection ;
 
-class ServerHandler
+#include "BESObj.h"
+
+class ServerHandler : public BESObj
 {
 protected:
     				ServerHandler() {}
@@ -43,8 +45,9 @@ public:
     virtual			~ServerHandler() {}
 
     virtual void		handle( Connection *c ) = 0 ;
+
+    virtual void		dump( ostream &strm ) const = 0 ;
 } ;
 
 #endif // ServerHandler_h
 
-// $Log: ServerHandler.h,v $

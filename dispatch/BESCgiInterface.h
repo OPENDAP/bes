@@ -37,22 +37,22 @@
 
 class DODSFilter ;
 
-/** @brief Represents the classic CGI interface into OpenDAP.
+/** @brief Represents the classic CGI interface into OPeNDAP.
 
-    OpenDAP has been mainly accessed through a CGI interface. A person goes to
-    a website with an OpenDAP server and makes a certain request of that
-    server for files available to that site.
+    OPeNDAP data handlers have been mainly accessed through a CGI interface.
+    A person goes to a website with an OPeNDAP server and makes a certain
+    request of that server for files available to that site.
 
-    This class provides an interface into the dispatch for the CGI interface.
-    It greatly simplifies server coding for developers using the CGI
-    interface.
+    This class provides an interface into the BES framework for the CGI
+    interface.  It greatly simplifies server coding for developers using the
+    CGI interface.
 
     Information from the DODSFilter class is placed in the
     BESDataHandlerInterface and a BESContainer is built from this
-    information so that dispatch can handle the request and build the
-    proper response using the appropriate data handler. BESCgiInterface also creates a
-    Transmitter that interacts with the DODSFilter object for sending the
-    response back to the user.
+    information so that BES can handle the request, building the proper
+    response using the appropriate data handler. BESCgiInterface also
+    creates a Transmitter that interacts with the DODSFilter object for
+    sending the response back to the user.
 
     For example, a server to handle requests for the cedar data type would
     look something like this:
@@ -81,6 +81,8 @@ protected:
 public:
     				BESCgiInterface( const string &type, DODSFilter &df ) ;
     virtual			~BESCgiInterface() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // BESCgiInterface_h_

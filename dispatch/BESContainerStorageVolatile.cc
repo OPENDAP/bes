@@ -186,3 +186,39 @@ BESContainerStorageVolatile::show_containers( BESInfo &info )
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * the containers stored in this volatile list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESContainerStorageVolatile::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESContainerStorageVolatile::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
+    if( _container_list.size() )
+    {
+	strm << BESIndent::LMarg << "containers:" << endl ;
+	BESIndent::Indent() ;
+	BESContainerStorageVolatile::Container_citer i
+	    = _container_list.begin() ;
+	BESContainerStorageVolatile::Container_citer ie
+	    = _container_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    BESContainer *c = (*i).second;
+	    c->dump( strm ) ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "containers: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

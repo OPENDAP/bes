@@ -153,7 +153,7 @@ run(void)
     for( int i = 1; i < 4; i++ )
     {
 	char key[32] ;
-	sprintf( key, "OPeNDAP.KEY%d", i ) ;
+	sprintf( key, "BES.KEY%d", i ) ;
 	char val[32] ;
 	sprintf( val, "val%d", i ) ;
 	cout << "looking for " << key << endl ;
@@ -182,7 +182,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for non existant key" << endl;
-    ret = TheBESKeys::TheKeys()->get_key( "OPeNDAP.NOTFOUND", found ) ;
+    ret = TheBESKeys::TheKeys()->get_key( "BES.NOTFOUND", found ) ;
     if( found == true )
     {
 	cerr << "found BES.NOTFOUND = \"" << ret << "\"" << endl ;
@@ -195,7 +195,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "look for key with empty value" << endl;
-    ret = TheBESKeys::TheKeys()->get_key( "OPeNDAP.KEY4", found ) ;
+    ret = TheBESKeys::TheKeys()->get_key( "BES.KEY4", found ) ;
     if( found == true )
     {
 	if( ret == "" )
@@ -218,7 +218,7 @@ run(void)
     cout << "set bad key, 0 = characters" << endl;
     try
     {
-	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.NOEQS" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "BES.NOEQS" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -232,7 +232,7 @@ run(void)
     cout << "set bad key, 2 = characters" << endl;
     try
     {
-	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.2EQS=val1=val2" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "BES.2EQS=val1=val2" ) ;
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
@@ -246,7 +246,7 @@ run(void)
     cout << "set BES.KEY5 to val5" << endl;
     try
     {
-	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.KEY5=val5" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "BES.KEY5=val5" ) ;
 	if( ret == "val5" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -269,7 +269,7 @@ run(void)
     cout << "set BES.KEY6 to val6" << endl;
     try
     {
-	ret = TheBESKeys::TheKeys()->set_key( "OPeNDAP.KEY6", "val6" ) ;
+	ret = TheBESKeys::TheKeys()->set_key( "BES.KEY6", "val6" ) ;
 	if( ret == "val6" )
 	{
 	    cout << "set_key successful" << endl ;
@@ -293,7 +293,7 @@ run(void)
     for( int i = 1; i < 7; i++ )
     {
 	char key[32] ;
-	sprintf( key, "OPeNDAP.KEY%d", i ) ;
+	sprintf( key, "BES.KEY%d", i ) ;
 	char val[32] ;
 	if( i == 4 ) sprintf( val, "" ) ;
 	else sprintf( val, "val%d", i ) ;

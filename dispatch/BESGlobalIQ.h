@@ -48,7 +48,7 @@
  *
  * To set up a global object to be initialized you first need to determine
  * in what order the global object should be initialized. The header file
- * BESInitOrder lists the current order of initialization for OpenDAP
+ * BESInitOrder lists the current order of initialization for BES
  * objects.
  *
  * Levels of initialization can have multiple objects being initialized.

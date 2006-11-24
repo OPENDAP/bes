@@ -74,7 +74,8 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc \
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
-	BESDefinitionStorageList.cc BESDefinitionStorageVolatile.cc \
+	BESDefine.cc BESDefinitionStorageList.cc \
+	BESDefinitionStorageVolatile.cc \
 	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc \
 	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
 	BESProcIdResponseHandler.cc BESResponseHandler.cc \
@@ -88,10 +89,12 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
 	BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
-	BESAggFactory.cc \
+	BESAggFactory.cc BESAggregationServer.cc \
 	BESReturnManager.cc \
-	BESExceptionManager.cc \
-	BESBaseApp.cc BESModuleApp.cc BESUtil.cc default_module.cc
+	BESException.cc BESExceptionManager.cc \
+	BESDataHandlerInterface.cc \
+	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
+	BESDebug.cc BESDefaultModule.cc
 
 HDRS = BESInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
@@ -129,14 +132,14 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESConstraintFuncs.h \
 	BESMemoryGlobalArea.h BESMemoryManager.h \
 	BESProcessEncodedString.h \
-	BESServerSystemResources.h BESStatusReturn.h dispatch_version.h \
+	BESServerSystemResources.h BESStatusReturn.h \
 	BESAggFactory.h BESAggregationServer.h \
 	BESReturnManager.h \
-	BESDataNames.h BESApp.h BESObj.h BESBaseApp.h \
+	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
-	BESPluginException.h default_module.h BESTransmitterNames.h \
+	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
-	BESModuleApp.h BESUtil.h
+	BESModuleApp.h BESUtil.h BESDebug.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

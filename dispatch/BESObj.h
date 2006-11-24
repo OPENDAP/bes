@@ -39,6 +39,9 @@
 #include <iostream>
 
 using std::ostream ;
+using std::endl ;
+
+#include "BESIndent.h"
 
 /** @brief Base object for bes objects
  *

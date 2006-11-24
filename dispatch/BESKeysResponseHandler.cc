@@ -46,10 +46,10 @@ BESKeysResponseHandler::~BESKeysResponseHandler( )
 }
 
 /** @brief executes the command 'show keys;' by returning the list of
- * all key/value pairs defined in the OPeNDAP initialization file.
+ * all key/value pairs defined in the BES initialization file.
  *
  * This response handler knows how to retrieve the list of keys retrieved from
- * the OPeNDAP initialization file and stored in TheBESKeys. A BESInfo
+ * the BES initialization file and stored in TheBESKeys. A BESInfo
  * informational response object is built to hold all of the key/value pairs.
  *
  * The information is returned, one key per line, like:
@@ -108,6 +108,22 @@ BESKeysResponseHandler::transmit( BESTransmitter *transmitter,
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
 	info->transmit( transmitter, dhi ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESKeysResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESKeysResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESResponseHandler *

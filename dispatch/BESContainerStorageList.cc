@@ -227,7 +227,7 @@ BESContainerStorageList::isnice()
  * instances passed.
  *
  * If the container information is not found then, depending on the value of
- * the key OPeNDAP.Container.Persistence in the dods initiailization file, an
+ * the key BES.Container.Persistence in the dods initiailization file, an
  * exception is thrown or it is logged to the dods log file that it was not
  * found. If the key is set to Nice, nice, or NICE then information is logged
  * to the dods log file stating that the container information was not found.
@@ -266,8 +266,10 @@ BESContainerStorageList::look_for( BESContainer &d )
     if( d.is_valid() == false )
     {
 	if( isnice() )
+	{
 	    (*BESLog::TheLog()) << "Could not find the symbolic name "
 	                  << d.get_symbolic_name().c_str() << endl ;
+	}
 	else
 	{
 	    string s = (string)"Could not find the symbolic name "
@@ -300,6 +302,38 @@ BESContainerStorageList::show_containers( BESInfo &info )
 	info.end_tag( "store" ) ;
 	pl = pl->_next ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * the container storage objects stored in this list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESContainerStorageList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESContainerStorageList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESContainerStorageList::persistence_list *pl = _first ;
+    if( pl )
+    {
+	strm << BESIndent::LMarg << "container storage:" << endl ;
+	BESIndent::Indent() ;
+	while( pl )
+	{
+	    pl->_persistence_obj->dump( strm ) ;
+	    pl = pl->_next ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "container storage: empty" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 
 BESContainerStorageList *

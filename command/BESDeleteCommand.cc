@@ -78,3 +78,19 @@ BESDeleteCommand::parse_request( BESTokenizer &tokenizer,
     return NULL ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDeleteCommand::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDeleteCommand::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESCommand::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

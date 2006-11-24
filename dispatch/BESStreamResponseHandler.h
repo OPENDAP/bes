@@ -35,7 +35,8 @@
 
 #include "BESResponseHandler.h"
 
-class BESStreamResponseHandler : public BESResponseHandler {
+class BESStreamResponseHandler : public BESResponseHandler
+{
 public:
 				BESStreamResponseHandler( string handler_name ) ;
     virtual			~BESStreamResponseHandler(void) ;
@@ -43,6 +44,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &r ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &r ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *BESStreamResponseBuilder( string handler_name ) ;
 };

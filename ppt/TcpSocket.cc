@@ -226,3 +226,21 @@ TcpSocket::listen()
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+TcpSocket::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "TcpSocket::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "host: " << _host << endl ;
+    strm << BESIndent::LMarg << "port: " << _portVal << endl ;
+    Socket::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

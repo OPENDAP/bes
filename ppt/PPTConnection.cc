@@ -146,7 +146,7 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
 
     // Lets loop 6 times with a delay block on poll of 1000 milliseconds
     // (duh! 6 seconds) and see if there is any data.
-    for( int j = 0; j < 5; j++ )
+    for( int j = 0; j < _timeout; j++ )
     {
 	if( poll( arr, 1, 1000 ) < 0 )
 	{
@@ -168,6 +168,23 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
 	    }
 	}
     }
+    cout << endl ;
     return -1 ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+PPTConnection::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "PPTConnection::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    Connection::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 

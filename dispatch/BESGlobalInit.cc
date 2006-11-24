@@ -121,3 +121,21 @@ BESGlobalInit::terminate() {
     return true;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESGlobalInit::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESGlobalInit::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "initialize: " << (void *)_initFun << endl ;
+    strm << BESIndent::LMarg << "terminate: " << (void *)_termFun << endl ;
+    if( _nextInit ) _nextInit->dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

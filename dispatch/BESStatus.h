@@ -46,7 +46,8 @@ public:
 				BESStatus();
 				BESStatus(const BESStatus &);
   				~BESStatus();
-  string			get_status() { return BESStatus::boot_time ; }
+    string			get_status() { return BESStatus::boot_time ; }
 } ;
 
 #endif // BESStatus_h_
+

@@ -101,6 +101,42 @@ BESReporterList::report( const BESDataHandlerInterface &dhi )
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this catalog directory.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESReporterList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESReporterList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _reporter_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered reporters:" << endl ;
+	BESIndent::Indent() ;
+	BESReporterList::Reporter_citer i = _reporter_list.begin() ;
+	BESReporterList::Reporter_citer ie = _reporter_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << "reporter: " << (*i).first << endl ;
+	    BESIndent::Indent() ;
+	    BESReporter *reporter = (*i).second ;
+	    reporter->dump( strm ) ;
+	    BESIndent::UnIndent() ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered reporters: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+
 BESReporterList *
 BESReporterList::TheList()
 {

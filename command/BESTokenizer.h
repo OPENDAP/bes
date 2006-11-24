@@ -39,9 +39,11 @@
 using std::vector ;
 using std::string ;
 
-/** @brief tokenizer for the OPeNDAP request command string
+#include "BESObj.h"
 
-    BESTokenizer tokenizes an OPeNDAP request command string, such as a get
+/** @brief tokenizer for the BES request command string
+
+    BESTokenizer tokenizes an BES request command string, such as a get
     request, a define command, a set command, etc... Tokens are separated by
     the following characters:
 
@@ -67,11 +69,12 @@ using std::string ;
 
     @see BESException
  */
-class BESTokenizer
+class BESTokenizer : public BESObj
 {
 private:
     vector <string>		tokens ;
-    vector <string>::iterator	tokens_iterator ;
+    typedef vector <string>::iterator		tokens_iterator ;
+    typedef vector <string>::const_iterator	tokens_citerator ;
     int				_counter ;
     int				_number_tokens ;
 
@@ -89,18 +92,9 @@ public:
     string			remove_quotes( const string &s ) ;
 
     void			dump_tokens() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // BESTokenizer_h_
 
-// $Log: BESTokenizer.h,v $
-// Revision 1.3  2005/03/15 19:58:35  pwest
-// using BESTokenizer to get first and next tokens
-//
-// Revision 1.2  2005/02/10 19:27:45  pwest
-// beginning quotes were being removed when tokenizing
-//
-// Revision 1.1  2005/02/01 17:48:17  pwest
-//
-// integration of ESG into opendap
-//

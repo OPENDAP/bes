@@ -39,7 +39,9 @@
 
 using std::string ;
 
-class Socket
+#include "BESObj.h"
+
+class Socket : public BESObj
 {
 protected:
     int				_socket ;
@@ -74,8 +76,9 @@ public:
 
     virtual Socket *		newSocket( int socket,
                                            const struct sockaddr_in &f ) = 0 ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // Socket_h
 
-// $Log: Socket.h,v $

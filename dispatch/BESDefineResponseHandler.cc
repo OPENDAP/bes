@@ -103,11 +103,11 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	dhi.first_container() ;
 	while( dhi.container )
 	{
-	    dd->containers.push_back( *dhi.container ) ;
+	    dd->add_container( *dhi.container ) ;
 	    dhi.next_container() ;
 	}
-	dd->aggregation_command = dhi.data[AGG_CMD] ;
-	dd->aggregation_handler = dhi.data[AGG_HANDLER] ;
+	dd->set_agg_cmd( dhi.data[AGG_CMD] ) ;
+	dd->set_agg_handler( dhi.data[AGG_HANDLER] ) ;
 	dhi.data[AGG_CMD] = "" ;
 	dhi.data[AGG_HANDLER] = "" ;
 
@@ -147,6 +147,22 @@ BESDefineResponseHandler::transmit( BESTransmitter *transmitter,
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
 	info->transmit( transmitter, dhi ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDefineResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDefineResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESResponseHandler *

@@ -54,3 +54,19 @@ BESBasicHttpTransmitter::send_html( BESInfo &info,
     BESBasicTransmitter::send_html( info, dhi ) ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESBasicHttpTransmitter::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESBasicHttpTransmitter::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESBasicTransmitter::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

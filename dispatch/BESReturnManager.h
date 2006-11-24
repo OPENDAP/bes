@@ -39,6 +39,7 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
 
@@ -48,7 +49,8 @@ class BESTransmitter ;
  * knows how to transmit response objects in particular ways.
  *
  */
-class BESReturnManager {
+class BESReturnManager : public BESObj
+{
 private:
     static BESReturnManager *	_instance ;
 
@@ -65,6 +67,8 @@ public:
 						 BESTransmitter *transmitter );
     virtual bool		del_transmitter( const string &name) ;
     virtual BESTransmitter *	find_transmitter( const string &name ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESReturnManager *	TheManager() ;
 };

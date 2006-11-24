@@ -37,6 +37,8 @@
 
 using std::string ;
 
+#include "BESObj.h"
+
 class BESContainerStorage ;
 class BESContainer ;
 class BESInfo ;
@@ -66,7 +68,7 @@ class BESInfo ;
  * @see BESContainer
  * @see BESContainerStorageException
  */
-class BESContainerStorageList
+class BESContainerStorageList : public BESObj
 {
 private:
     static BESContainerStorageList * _instance ;
@@ -92,6 +94,8 @@ public:
     virtual void		look_for( BESContainer &d ) ;
 
     virtual void		show_containers( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESContainerStorageList *TheList() ;
 } ;

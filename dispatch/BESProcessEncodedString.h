@@ -42,20 +42,21 @@ using std::string ;
 using std::cout ;
 using std::endl ;
 
-class BESProcessEncodedString
+#include "BESObj.h"
+
+class BESProcessEncodedString : public BESObj
 {
-    map<string,string> _entries;
-    string parseHex(const char *hexstr); 
-    const unsigned int convertHex( const char* what );
+private:
+    map<string,string>		_entries;
+    string			parseHex( const char* hexstr ) ; 
+    const unsigned int		convertHex( const char* what ) ;
 public:
-    BESProcessEncodedString (const char *s);
-    string get_key(const string& s); 
-    void show_keys()
-    {
-	map<string,string>::iterator i;
-	for(i=_entries.begin(); i!=_entries.end(); ++i)
-	    cout<<"key: "<<(*i).first<<", value: "<<(*i).second<<endl;
-    }
+    				BESProcessEncodedString( const char *s ) ;
+    virtual			~BESProcessEncodedString() {}
+    string			get_key( const string& s ) ; 
+    void			show_keys() ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESProcessEncodedString_h_

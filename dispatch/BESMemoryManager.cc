@@ -39,6 +39,7 @@ using std::set_new_handler ;
 #include "BESMemoryManager.h"
 
 #include "BESLog.h"
+#include "BESDebug.h"
 #include "BESMemoryGlobalArea.h"
 
 BESMemoryGlobalArea* BESMemoryManager::_memory;
@@ -83,20 +84,17 @@ BESMemoryManager::check_memory_pool()
 { 
     if( _storage_used )
     {
-	*(BESLog::TheLog()) << "OPeNDAP: global pool is used, trying to get it back...";
+	BESDEBUG( "BES: global pool is used, trying to get it back..." )
 	//Try to regain the memory...
 	if( _memory->reclaim_memory() )
 	{
 	    _storage_used = false ;
-	    *(BESLog::TheLog()) << "got it!" << endl ;
+	    BESDEBUG( "OK" << endl )
 	    return true ;
 	}
 	else
 	{
-	    *(BESLog::TheLog()) << "can not get it!" << endl;
-	    *(BESLog::TheLog()) << "OPeNDAP: Unable to continue: "
-			         << "no emergency memory pool"
-			         << endl;
+	    BESDEBUG( "FAILED" << endl )
 	    return false ;
 	}
     }
@@ -111,9 +109,11 @@ BESMemoryManager::release_global_pool() throw (bad_alloc)
     // It releases enough memory for an exception sequence to be carried.
     // Without this pool of memory for emergencies we will get really
     // unexpected behavior from the program.
-    *(BESLog::TheLog()) << "OPeNDAP Warning: low in memory, "
-                         << "releasing global memory pool!"
-		         << endl;
+    BESDEBUG( "BES Warning: low in memory, "
+	      << "releasing global memory pool!" << endl )
+    *(BESLog::TheLog()) << "BES Warning: low in memory, "
+                        << "releasing global memory pool!"
+		        << endl;
     _storage_used = true ;
     _memory->release_memory() ;
 

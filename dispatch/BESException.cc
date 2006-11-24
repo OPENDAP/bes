@@ -1,4 +1,4 @@
-// dispatch_version.h
+// BESException.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,25 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef E_dispatch_version_h
-#define E_dispatch_version_h 1
+#include "BESException.h"
 
-#include <string>
-
-#include "config.h"
-
-using std::string ;
-
-inline string
-bes_name()
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the exception
+ * message, the file from which the exception was generated, and the line
+ * number in that file.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESException::dump( ostream &strm ) const
 {
-    return (string)PACKAGE_NAME ;
+    strm << BESIndent::LMarg << "BESException::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "error message: " << _msg << endl ;
+    strm << BESIndent::LMarg << "error file: " << _file << endl ;
+    strm << BESIndent::LMarg << "error line: " << _line << endl ;
+    BESIndent::UnIndent() ;
 }
-
-inline string
-bes_version()
-{
-    return (string)PACKAGE_VERSION ;
-}
-
-#endif // E_dispatch_version_h
 

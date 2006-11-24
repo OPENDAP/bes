@@ -128,6 +128,12 @@ public:
      * @return true if information is buffered, false if not
      */
     virtual bool	is_buffered() { return _buffered ; }
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESInfo_h_

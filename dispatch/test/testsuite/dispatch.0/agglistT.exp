@@ -1,0 +1,54 @@
+# expect/tcl code to test agglistT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered agglistT::run
+
+*****************************************
+Adding three handlers to the list
+Successfully added three handlers
+
+*****************************************
+Find the three handlers
+Successfully found handler h1
+Successfully found handler h2
+Successfully found handler h3
+
+*****************************************
+Remove handler h2
+Successfully removed handler h2
+
+*****************************************
+Find the two handlers
+Successfully found handler h1
+Failed to find handler h2, good
+Successfully found handler h3
+
+*****************************************
+Show handler names registered
+h1, h3
+
+*****************************************
+Returning from agglistT::run"
+
+set dispatchTEST ./agglistT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "agglistT"
+} else {
+    fail "agglistT"
+}
+

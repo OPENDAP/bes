@@ -231,3 +231,39 @@ BESInfo::print(FILE *out)
     }
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with values of data
+ * members.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESInfo::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESInfo::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "response name: " << _response_name << endl ;
+    strm << BESIndent::LMarg << "is it buffered? " << _buffered << endl ;
+    strm << BESIndent::LMarg << "has response been started? " << _response_started << endl ;
+    if( _tags.size() )
+    {
+	strm << BESIndent::LMarg << "tags:" << endl ;
+	BESIndent::Indent() ;
+	stack<string> temp_tags = _tags ;
+	while( !temp_tags.empty() )
+	{
+	    string tag = temp_tags.top() ;
+	    strm << BESIndent::LMarg << tag << endl ;
+	    temp_tags.pop() ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "tags: empty" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

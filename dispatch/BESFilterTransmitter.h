@@ -36,6 +36,9 @@
 #include "BESTransmitter.h"
 
 class DODSFilter ;
+class DAS ;
+class DDS ;
+class BESInfo ;
 
 class BESFilterTransmitter : public BESTransmitter
 {

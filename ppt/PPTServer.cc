@@ -171,3 +171,43 @@ PPTServer::authenticateClient()
 #endif
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+PPTServer::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "PPTServer::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _handler )
+    {
+	strm << BESIndent::LMarg << "server handler:" << endl ;
+	BESIndent::Indent() ;
+	_handler->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "server handler: null" << endl ;
+    }
+    ServerHandler *		_handler ;
+    if( _listener )
+    {
+	strm << BESIndent::LMarg << "listener:" << endl ;
+	BESIndent::Indent() ;
+	_listener->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "listener: null" << endl ;
+    }
+    strm << BESIndent::LMarg << "secure? " << _secure << endl ;
+    PPTConnection::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

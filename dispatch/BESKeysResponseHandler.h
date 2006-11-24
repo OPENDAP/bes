@@ -36,10 +36,10 @@
 #include "BESResponseHandler.h"
 
 /** @brief response handler that returns the list of keys defined in the
- * OPeNDAP initialization file.
+ * BES initialization file.
  *
  * A request 'show keys;' will be handled by this response handler. It
- * returns the list of all key/value pairs currently defined in the OPeNDAP
+ * returns the list of all key/value pairs currently defined in the BES
  * initialization file and transmits the response as an informational response.
  *
  * @see BESResponseObject
@@ -55,6 +55,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *KeysResponseBuilder( string handler_name ) ;
 };

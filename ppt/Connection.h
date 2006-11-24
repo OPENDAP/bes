@@ -39,9 +39,10 @@
 using std::ostream ;
 using std::string ;
 
+#include "BESObj.h"
 #include "Socket.h"
 
-class Connection
+class Connection : public BESObj
 {
 protected:
     Socket			*_mySock ;
@@ -87,8 +88,9 @@ public:
 				{
 				    _brokenPipe = true ;
 				}
+
+    virtual void			dump( ostream &strm ) const ;
 } ;
 
 #endif // Connection_h
 
-// $Log: Connection.h,v $

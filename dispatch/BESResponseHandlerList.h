@@ -39,6 +39,8 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
+
 class BESResponseHandler ;
 
 typedef BESResponseHandler * (*p_response_handler)( string name ) ;
@@ -57,7 +59,8 @@ typedef BESResponseHandler * (*p_response_handler)( string name ) ;
  * @see BESResponseHandler
  * @see BESResponseObject
  */
-class BESResponseHandlerList {
+class BESResponseHandlerList : public BESObj
+{
 private:
     static BESResponseHandlerList *	_instance ;
     map< string, p_response_handler >	_handler_list ;
@@ -75,6 +78,8 @@ public:
     virtual BESResponseHandler *	find_handler( string handler_name ) ;
 
     virtual string			get_handler_names() ;
+
+    virtual void			dump( ostream &strm ) const ;
 
     static BESResponseHandlerList *	TheList() ;
 };

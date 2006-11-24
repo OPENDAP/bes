@@ -103,6 +103,48 @@ BESInfoList::build_info( )
     return 0 ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the registered
+ * BESInfo builders and the default values of the BESInfo objects created.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESInfoList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESInfoList::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _info_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered builders:" << endl ;
+	BESIndent::Indent() ;
+	BESInfoList::Info_citer i = _info_list.begin() ;
+	BESInfoList::Info_citer ie = _info_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    p_info_builder p = (*i).second ;
+	    if( p )
+	    {
+		BESInfo *info = p( "dump" ) ;
+		info->dump( strm ) ;
+		delete info ;
+	    }
+	    else
+	    {
+		strm << BESIndent::LMarg << "builder is null" << endl ;
+	    }
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered builders: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+
 BESInfoList *
 BESInfoList::TheList()
 {

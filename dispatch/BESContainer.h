@@ -39,6 +39,8 @@
 using std::list ;
 using std::string ;
 
+#include "BESObj.h"
+
 /** @brief Holds real data, container type and constraint for symbolic name
  * read from persistence.
  *
@@ -54,7 +56,7 @@ using std::string ;
  *
  * @see BESContainerStorage
  */
-class BESContainer
+class BESContainer : public BESObj
 {
 private:
     bool 			_valid ;
@@ -71,7 +73,9 @@ private:
     static string		_script ;
     static string		_cacheSize ;
 
+    bool			is_compressed() ;
     void			build_list( const string &ext_list ) ;
+    void			get_cache_info() ;
 public:
     /** @brief construct a container with the given sumbolic name
      *
@@ -196,7 +200,13 @@ public:
      *
      * @return name of file to access
      */
-     virtual string		access() ;
+    virtual string		access() ;
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESContainer_h_

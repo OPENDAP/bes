@@ -41,15 +41,17 @@ using std::ios ;
 using std::ostream ;
 using std::string ;
 
+#include "BESObj.h"
+
 /** @brief Provides a mechanism for applications to log information to an
  * external file.
  *
  * BESLog provides a mechanism for applications to log information to an
  * external file, such as debugging information. This file is defined in the
- * BESKeys mechanism using the key OPeNDAP.LogName.
+ * BESKeys mechanism using the key BES.LogName.
  *
  * Also provides a mechanism to define whether debugging information should be
- * verbose or not using the BESKeys key/value pair OPeNDAP.LogVerbose.
+ * verbose or not using the BESKeys key/value pair BES.LogVerbose.
  *
  * Logging can also be suspended and resumed using so named methods.
  *
@@ -82,12 +84,13 @@ using std::string ;
  *
  * @see BESKeys
  */
-class BESLog 
+class BESLog : public BESObj
 {
 private:
     static BESLog *	_instance ;
     int			_flushed ;
-    ofstream *		_file_buffer;
+    ofstream *		_file_buffer ;
+    string		_file_name ;
     // Flag to indicate the object is not routing data to its associated stream
     int			_suspended ;
     // Flag to indicate whether to log verbose messages
@@ -144,10 +147,10 @@ public:
     /** @brief Returns true if verbose logging is requested.
      *
      * This method returns true if verbose logging has been requested either
-     * by setting the BESKeys key/value pair OPeNDAP.LogVerbose=value or by
+     * by setting the BESKeys key/value pair BES.LogVerbose=value or by
      * turning on verbose logging using the method verbose_on.
      *
-     * If OPeNDAP.LogVerbose is set to Yes, YES, or yes then verbose logging is
+     * If BES.LogVerbose is set to Yes, YES, or yes then verbose logging is
      * turned on. If set to anything else then verbose logging is not turned
      * on.
      *
@@ -178,6 +181,8 @@ public:
 
     BESLog& operator<<(p_ostream_manipulator); 
     BESLog& operator<<(p_ios_manipulator); 
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESLog *TheLog() ;
 };

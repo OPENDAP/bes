@@ -39,6 +39,8 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
+
 class BESAggregationServer ;
 
 typedef BESAggregationServer * (*p_agg_handler)( string name ) ;
@@ -50,7 +52,8 @@ typedef BESAggregationServer * (*p_agg_handler)( string name ) ;
  *
  * @see 
  */
-class BESAggFactory {
+class BESAggFactory : public BESObj
+{
 private:
     static BESAggFactory *	_instance ;
 
@@ -69,6 +72,8 @@ public:
     virtual BESAggregationServer *find_handler( string handler_name ) ;
 
     virtual string		get_handler_names() ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESAggFactory *	TheFactory() ;
 };

@@ -38,7 +38,7 @@
 /** @brief exception thrown if problems locating container information for a
  * symbolic name
  */
-class BESDefinitionStorageException:public BESException
+class BESDefinitionStorageException : public BESException
 {
 protected:
       			BESDefinitionStorageException() {}

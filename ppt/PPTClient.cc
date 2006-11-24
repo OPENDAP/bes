@@ -52,8 +52,9 @@ using std::ostringstream ;
 #include "SSLClient.h"
 #endif
 
-PPTClient::PPTClient( const string &hostStr, int portVal )
-    : _connected( false ),
+PPTClient::PPTClient( const string &hostStr, int portVal, int timeout )
+    : PPTConnection( timeout ),
+      _connected( false ),
       _host( hostStr )
 {
     _mySock = new TcpSocket( hostStr, portVal ) ;
@@ -61,8 +62,9 @@ PPTClient::PPTClient( const string &hostStr, int portVal )
     _connected = true ;
 }
     
-PPTClient::PPTClient( const string &unix_socket )
-    : _connected( false )
+PPTClient::PPTClient( const string &unix_socket, int timeout )
+    : PPTConnection( timeout ),
+      _connected( false )
 {
     _mySock = new UnixSocket( unix_socket ) ;
     _mySock->connect() ;
@@ -180,5 +182,23 @@ PPTClient::closeConnection()
 	_connected = false ;
 	_brokenPipe = false ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+PPTClient::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "PPTClient::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "connected? " << _connected << endl ;
+    strm << BESIndent::LMarg << "host: " << _host << endl ;
+    PPTConnection::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 

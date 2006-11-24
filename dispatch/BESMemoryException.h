@@ -35,7 +35,7 @@
 
 #include "BESException.h"
 
-class BESMemoryException: public BESException
+class BESMemoryException : public BESException
 {
 protected:
     			BESMemoryException() { }

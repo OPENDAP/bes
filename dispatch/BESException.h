@@ -37,10 +37,12 @@
 
 using std::string ;
 
-/** @brief Abstract exception class for OpenDAP with basic string message
+#include "BESObj.h"
+
+/** @brief Abstract exception class for the BES with basic string message
  *
  */
-class BESException
+class BESException : public BESObj
 {
 protected:
     string		_msg ;
@@ -77,6 +79,12 @@ public:
      * @return line number
      */
     virtual int		get_line() { return _line ; }
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void	dump( ostream &strm ) const ;
 };
 
 #endif // BESException_h_ 

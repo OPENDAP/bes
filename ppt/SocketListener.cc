@@ -143,4 +143,34 @@ SocketListener::accept()
     return 0 ;
 }
 
-// $Log: SocketListener.cc,v $
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+SocketListener::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "SocketListener::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _socket_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered sockets:" << endl ;
+	Socket_citer i = _socket_list.begin() ;
+	Socket_citer ie = _socket_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << "socket: " << (*i).first ;
+	    Socket *s_ptr = (*i).second ;
+	    s_ptr->dump( strm ) ;
+	}
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered sockets: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

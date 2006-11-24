@@ -264,7 +264,7 @@ BESDefinitionStorageList::show_definitions( BESInfo &info )
 	if( !first )
 	{
 	    // separate each store with a blank line
-	    info.add_data( "\n" ) ;
+	    info.add_break( 1 ) ;
 	}
 	first = false ;
 	info.begin_tag( "store" ) ;
@@ -282,5 +282,37 @@ BESDefinitionStorageList::TheList()
 	_instance = new BESDefinitionStorageList ;
     }
     return _instance ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the list of
+ * definition storage instaces registered with the list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDefinitionStorageList::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - ("
+			     << (void *)this << ")" << endl;
+    BESIndent::Indent() ;
+    if( _first )
+    {
+	strm << BESIndent::LMarg << "registered definition storage:" << endl ;
+	BESIndent::Indent() ;
+	BESDefinitionStorageList::persistence_list *pl = _first ;
+	while( pl )
+	{
+	    pl->_persistence_obj->dump( strm ) ;
+	    pl = pl->_next ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered definition storage: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
 }
 

@@ -124,3 +124,36 @@ BESRequestHandler::get_handler_names()
     return ret ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance, the name of the request
+ * handler, and the names of all registered handler functions
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESRequestHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESRequestHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "name: " << _name << endl ;
+    if( _handler_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered handler functions:" << endl ;
+	BESIndent::Indent() ;
+	BESRequestHandler::Handler_citer i = _handler_list.begin() ;
+	BESRequestHandler::Handler_citer ie = _handler_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered handler functions: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

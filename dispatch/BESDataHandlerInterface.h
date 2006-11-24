@@ -36,19 +36,21 @@
 #include <string>
 #include <list>
 #include <map>
+#include <iostream>
 
 using std::string ;
 using std::list ;
 using std::map ;
+using std::ostream ;
 
 class BESResponseHandler ;
 class BESInfo ;
 
 #include "BESContainer.h"
 
-/** @brief Structure storing information used by OpenDAP to handle the request
+/** @brief Structure storing information used by the BES to handle the request
 
-    This information is used throughout the OpenDAP server to handle the
+    This information is used throughout the BES framework to handle the
     request and to also store information for logging and reporting.
  */
 
@@ -109,6 +111,8 @@ typedef struct _BESDataHandlerInterface
     /** @brief error information object
      */
     BESInfo *error_info ;
+
+    void dump( ostream &strm ) const ;
 
 } BESDataHandlerInterface ;
 

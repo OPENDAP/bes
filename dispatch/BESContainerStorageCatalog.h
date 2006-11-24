@@ -46,7 +46,7 @@ using std::string ;
  *
  * When a container is added to this container storage, the file extension
  * is used to determine the type of data using a set of regular expressions.
- * The regular expressions are retrieved from the opendap initialization
+ * The regular expressions are retrieved from the BES initialization
  * file using TheBESKeys. It also gets the root directory for where the
  * files exist. This way, the user need not know the root directory or the
  * type of data represented by the file.
@@ -96,6 +96,8 @@ public:
 					       const string &type ) ;
     bool			isData( const string &inQuestion,
     					list<string> &provides ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESContainerStorageCatalog_h_

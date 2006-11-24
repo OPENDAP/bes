@@ -35,28 +35,32 @@
 
 #include <sys/resource.h>
 
+#include "BESObj.h"
+
 #define MEGABYTE 1024*1024
 
-class BESMemoryGlobalArea
+class BESMemoryGlobalArea : public BESObj
 {
-    struct rlimit limit;
-    static unsigned long _size;
-    static int _counter;
-    static void *_buffer;
+    struct rlimit limit ;
+    static unsigned long _size ;
+    static int _counter ;
+    static void *_buffer ;
 
-    unsigned long megabytes(unsigned int s) 
+    unsigned long megabytes( unsigned int s ) 
     {
-	return s*MEGABYTE;
+	return s*MEGABYTE ;
     }
-    void log_limits();
+    void			log_limits() ;
 
 public:
-    BESMemoryGlobalArea();
-    ~BESMemoryGlobalArea();
+    				BESMemoryGlobalArea() ;
+    				~BESMemoryGlobalArea() ;
 
-    void release_memory();
-    bool reclaim_memory();
-    unsigned long SizeOfEmergencyPool(){return _size;}
+    void			release_memory() ;
+    bool			reclaim_memory() ;
+    unsigned long		SizeOfEmergencyPool() { return _size; }
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // BESMemoryGlobalArea_h_

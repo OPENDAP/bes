@@ -38,7 +38,7 @@
 /** @brief exception thrown if problems loading keys from bes configuration
  * file.
  */
-class BESKeysException: public BESException
+class BESKeysException : public BESException
 {
 protected:
       			BESKeysException() {}

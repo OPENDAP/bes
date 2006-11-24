@@ -48,7 +48,7 @@ using std::map ;
  * from a file. The name of the file is determined from the dods
  * initiailization file. The key is:
  *
- * OPeNDAP.Container.Persistence.File.&lt;name&gt;
+ * BES.Container.Persistence.File.&lt;name&gt;
  *
  * where &lt;name&gt; is the name of this persistent store.
  *
@@ -70,6 +70,7 @@ using std::map ;
 class BESContainerStorageFile : public BESContainerStorage
 {
 private:
+    string			_file ;
     typedef struct _container
     {
 	string _symbolic_name ;
@@ -92,6 +93,8 @@ public:
     virtual bool		del_containers( ) ;
 
     virtual void		show_containers( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // I_BESContainerStorageFile_h_

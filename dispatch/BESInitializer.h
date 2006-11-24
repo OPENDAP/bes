@@ -33,6 +33,8 @@
 #ifndef A_BESInitializer_h
 #define A_BESInitializer_h 1
 
+#include "BESObj.h"
+
 /** @brief Mechanism for the orderly initialization and termination of objects.
  *
  *  The BESInitializer abstraction provides a mechanism for the
@@ -49,7 +51,8 @@
  * @see BESInitList
  * @see BESInitFuns
  */
-class BESInitializer {
+class BESInitializer : public BESObj
+{
 public:
     virtual			~BESInitializer() {}
     /** @brief function for the initialization of objects, such as globals.
@@ -67,6 +70,12 @@ public:
      * @see GlobalIQ
      */
     virtual bool           	terminate(void) = 0;
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void		dump( ostream &strm ) const  = 0 ;
 };
 
 #endif // A_BESInitializer_h

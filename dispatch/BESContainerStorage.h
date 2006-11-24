@@ -37,6 +37,8 @@
 
 using std::string ;
 
+#include "BESObj.h"
+
 class BESContainer ;
 class BESInfo ;
 
@@ -61,7 +63,7 @@ class BESInfo ;
  * @see BESContainer
  * @see BESContainerStorageList
  */
-class BESContainerStorage
+class BESContainerStorage : public BESObj
 {
 protected:
     string		_my_name ;
@@ -81,7 +83,7 @@ public:
      *
      * @return name of this persistent store.
      */
-    virtual string		get_name() { return _my_name ; }
+    virtual const string &	get_name() const { return _my_name ; }
 
     /** @brief looks for a container in this persistent store
      *
@@ -136,6 +138,12 @@ public:
      * @param info information object to store the information in
      */
     virtual void		show_containers( BESInfo &info ) = 0 ;
+
+    /** @brief Displays debug information about this object
+     *
+     * @param strm output stream to use to dump the contents of this object
+     */
+    virtual void		dump( ostream &strm ) const = 0 ;
 };
 
 #endif // BESContainerStorage_h_

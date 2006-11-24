@@ -50,7 +50,7 @@ private:
     ofstream *			_outputStrm ;
     ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
-    int				_timeoutVal ;
+    int				_timeout ;
 
     void			showVersion() ;
     void			showUsage() ;
@@ -60,6 +60,8 @@ public:
     virtual			~CmdApp() ;
     virtual int			initialize( int argc, char **argv ) ;
     virtual int			run() ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     CmdClient *			client() { return _client ; }
     static void			signalCannotConnect( int sig ) ;

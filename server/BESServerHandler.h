@@ -51,6 +51,8 @@ public:
     virtual			~BESServerHandler() {}
 
     virtual void		handle( Connection *c ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // BESServerHandler_h

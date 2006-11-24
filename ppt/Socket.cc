@@ -78,4 +78,26 @@ Socket::receive( char *inBuff, int inSize )
     return bytesRead ;
 }
 
-// $Log: Socket.cc,v $
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+Socket::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "Socket::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "socket: " << _socket << endl ;
+    strm << BESIndent::LMarg << "is connected? " << _connected << endl ;
+    strm << BESIndent::LMarg << "is listening? " << _listening << endl ;
+    strm << BESIndent::LMarg << "socket address set? " << _addr_set << endl ;
+    if( _addr_set )
+    {
+	strm << BESIndent::LMarg << "socket address: " << (void *)&_from << endl;
+    }
+    BESIndent::UnIndent() ;
+}
+

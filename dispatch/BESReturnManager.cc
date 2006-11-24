@@ -89,6 +89,41 @@ BESReturnManager::find_transmitter( const string &name )
     return 0 ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the transmitters
+ * registered with the return manager.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESReturnManager::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESReturnManager::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _transmitter_list.size() )
+    {
+	strm << BESIndent::LMarg << "registered transmitters:" << endl ;
+	BESIndent::Indent() ;
+	BESReturnManager::Transmitter_citer i = _transmitter_list.begin() ;
+	BESReturnManager::Transmitter_citer ie = _transmitter_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    strm << BESIndent::LMarg << (*i).first << endl ;
+	    BESIndent::Indent() ;
+	    (*i).second->dump( strm ) ;
+	    BESIndent::UnIndent() ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "registered transmitters: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+
 BESReturnManager *
 BESReturnManager::TheManager()
 {

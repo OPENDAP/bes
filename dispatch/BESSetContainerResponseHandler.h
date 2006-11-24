@@ -63,6 +63,8 @@ public:
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     static BESResponseHandler *SetContainerResponseBuilder( string handler_name ) ;
 };
 

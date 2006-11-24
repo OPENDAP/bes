@@ -201,3 +201,38 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
     return done ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * the "storage" of containers in a catalog.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESContainerStorageCatalog::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESContainerStorageCatalog::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "name: " << get_name() << endl ;
+    if( _match_list.size() )
+    {
+	strm << BESIndent::LMarg << "type matches:" << endl ;
+	BESIndent::Indent() ;
+	BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
+	BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
+	for( ; i != ie; i++ )
+	{
+	    type_reg match = (*i) ;
+	    strm << BESIndent::LMarg << match.type << " : "
+				     << match.reg << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "    type matches: empty" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

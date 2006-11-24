@@ -59,6 +59,8 @@ public:
     virtual void		send( const string &buffer ) ;
     virtual void		sendExit() {} ;
     virtual bool		receive( ostream *strm = 0 ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // SSLConnection_h

@@ -42,6 +42,7 @@ public:
     virtual		    	~DAPCommandModule() {}
     virtual void		initialize( const string &modname ) ;
     virtual void		terminate( const string &modname ) ;
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // A_DAPCommandModule_H

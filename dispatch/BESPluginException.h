@@ -35,7 +35,7 @@
 
 #include "BESException.h"
 
-class BESPluginException: public BESException
+class BESPluginException : public BESException
 {
 protected:
       			BESPluginException() ;

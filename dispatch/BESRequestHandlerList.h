@@ -39,18 +39,20 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 
 class BESRequestHandler ;
 
 /** @brief maintains the list of registered request handlers for this server
  *
- * For a type of data to be handled by an OPeNDAP-g server the data type must
+ * For a type of data to be handled by the BES the data type must
  * registered a request handler with the server. This request handler knows
  * how to fill in specific response objects, such as DAS, DDS, help, version,
  * etc... The request handlers are registered with this request handler list.
  */
-class BESRequestHandlerList {
+class BESRequestHandlerList : public BESObj
+{
 private:
     static BESRequestHandlerList *	_instance ;
     map< string, BESRequestHandler * > _handler_list ;
@@ -75,6 +77,8 @@ public:
     virtual void		execute_each( BESDataHandlerInterface &dhi ) ;
     virtual void		execute_all( BESDataHandlerInterface &dhi ) ;
     virtual void		execute_once( BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESRequestHandlerList *TheList() ;
 };

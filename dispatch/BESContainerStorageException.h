@@ -38,7 +38,7 @@
 /** @brief exception thrown if problems locating container information for a
  * symbolic name
  */
-class BESContainerStorageException:public BESException
+class BESContainerStorageException : public BESException
 {
 protected:
       			BESContainerStorageException() {}
@@ -47,7 +47,15 @@ public:
 						      const string &file,
 						      int line )
 			    : BESException( s, file, line ) {}
-      virtual		~BESContainerStorageException() {}
+    virtual		~BESContainerStorageException() {}
+
+    virtual void	dump( ostream &strm ) const
+			{
+			    strm << "BESContainerStrorageException::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESException::dump( strm ) ;
+			}
+
 };
 
 #endif // BESContainerStorageException_h_

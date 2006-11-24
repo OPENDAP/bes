@@ -72,4 +72,3 @@ public:
 
 #endif // PPTException_h_ 
 
-// $Log: PPTException.h,v $

@@ -1,7 +1,7 @@
 // BESStreamResponseHandler.cc
 
-// This file is part of the OPeNDAP Cedar data handler, providing data
-// access views for CedarWEB data
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004,2005 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
@@ -140,6 +140,22 @@ BESStreamResponseHandler::transmit( BESTransmitter *transmitter,
                                  BESDataHandlerInterface & )
 {
     // The Data is transmitted when it is read, dumped to stdout
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESStreamResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESStreamResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESResponseHandler *

@@ -39,11 +39,14 @@
 using std::map ;
 using std::string ;
 
+#include "BESObj.h"
+
 class BESInfo ;
 
 typedef BESInfo * (*p_info_builder)( const string &info_type ) ;
 
-class BESInfoList {
+class BESInfoList : public BESObj
+{
 private:
     static BESInfoList *	_instance ;
     map< string, p_info_builder >_info_list ;
@@ -59,6 +62,8 @@ public:
 					   p_info_builder info_builder ) ;
     virtual bool		rem_info_builder( const string &info_type ) ;
     virtual BESInfo *		build_info( ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESInfoList *	TheList() ;
 };

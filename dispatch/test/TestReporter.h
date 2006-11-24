@@ -15,6 +15,8 @@ public:
 
     virtual void	report( const BESDataHandlerInterface &dhi ) ;
     virtual string	get_name() { return _name ; }
+
+    virtual void	dump( ostream &strm ) const { }
 } ;
 
 #endif // A_TestReporter_h

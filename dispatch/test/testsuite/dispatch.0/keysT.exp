@@ -26,13 +26,13 @@ unable to create BESKeys, good, because:
 *****************************************
 bad keys, not enough equal signs
 unable to create BESKeys, good, because:
-OPeNDAP: invalid entry OPeNDAP.BADKEY; there are 0 = characters.
+BES: invalid entry BES.BADKEY; there are 0 = characters.
 
 
 *****************************************
 bad keys, too many equal signs
 unable to create BESKeys, good, because:
-OPeNDAP: invalid entry OPeNDAP.BADKEY=str1=str2; there are 2 = characters.
+BES: invalid entry BES.BADKEY=str1=str2; there are 2 = characters.
 
 
 *****************************************
@@ -41,12 +41,12 @@ created, good
 
 *****************************************
 get keys
-looking for OPeNDAP.KEY1
-OPeNDAP.KEY1 = val1
-looking for OPeNDAP.KEY2
-OPeNDAP.KEY2 = val2
-looking for OPeNDAP.KEY3
-OPeNDAP.KEY3 = val3
+looking for BES.KEY1
+BES.KEY1 = val1
+looking for BES.KEY2
+BES.KEY2 = val2
+looking for BES.KEY3
+BES.KEY3 = val3
 
 *****************************************
 look for non existant key
@@ -59,12 +59,12 @@ found and is empty
 *****************************************
 set bad key, 0 = characters
 unable to set the key, good, because:
-OPeNDAP: invalid entry OPeNDAP.NOEQS; there are 0 = characters.
+BES: invalid entry BES.NOEQS; there are 0 = characters.
 
 *****************************************
 set bad key, 2 = characters
 unable to set the key, good, because:
-OPeNDAP: invalid entry OPeNDAP.2EQS=val1=val2; there are 2 = characters.
+BES: invalid entry BES.2EQS=val1=val2; there are 2 = characters.
 
 *****************************************
 set BES.KEY5 to val5
@@ -76,18 +76,18 @@ set_key successful
 
 *****************************************
 get keys
-looking for OPeNDAP.KEY1
-OPeNDAP.KEY1 = val1
-looking for OPeNDAP.KEY2
-OPeNDAP.KEY2 = val2
-looking for OPeNDAP.KEY3
-OPeNDAP.KEY3 = val3
-looking for OPeNDAP.KEY4
-OPeNDAP.KEY4 = 
-looking for OPeNDAP.KEY5
-OPeNDAP.KEY5 = val5
-looking for OPeNDAP.KEY6
-OPeNDAP.KEY6 = val6
+looking for BES.KEY1
+BES.KEY1 = val1
+looking for BES.KEY2
+BES.KEY2 = val2
+looking for BES.KEY3
+BES.KEY3 = val3
+looking for BES.KEY4
+BES.KEY4 = 
+looking for BES.KEY5
+BES.KEY5 = val5
+looking for BES.KEY6
+BES.KEY6 = val6
 
 *****************************************
 Returning from keysT::run"

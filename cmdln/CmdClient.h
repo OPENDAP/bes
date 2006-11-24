@@ -41,6 +41,8 @@ using std::ostream ;
 using std::ifstream ;
 using std::string ;
 
+#include "BESObj.h"
+
 class PPTClient ;
 
 /**
@@ -70,7 +72,7 @@ class PPTClient ;
  * @author Patrick West <A * HREF="mailto:pwest@hao.ucar.edu">pwest@hao.ucar.edu</A>
 */
 
-class CmdClient
+class CmdClient : public BESObj
 {
 private:
     PPTClient *			_client ;
@@ -86,8 +88,11 @@ public:
 				      _strmCreated( false ) {}
 				~CmdClient() ;
 
-    void			startClient( const string &host, int portVal ) ;
-    void			startClient( const string &unixSocket ) ;
+    void			startClient( const string &host,
+					     int portVal,
+					     int timeout ) ;
+    void			startClient( const string &unixSocket,
+					     int timeout ) ;
     void			shutdownClient() ;
     void			setOutput( ostream *strm, bool created ) ;
     void			executeClientCommand( const string &cmd ) ;
@@ -97,6 +102,8 @@ public:
     void			interact() ;
     bool			isConnected() ;
     void			brokenPipe() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // CmdClient_h

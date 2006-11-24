@@ -40,7 +40,7 @@
 
 /** @brief constructs a basic text information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the dods initialization file to
+ * Uses the default BES.Info.Buffered key in the dods initialization file to
  * determine whether the information should be buffered or not.
  *
  * @see BESXMLInfo
@@ -48,7 +48,6 @@
  */
 BESVersionInfo::BESVersionInfo()
     : BESInfo(),
-      _indap( false ),
       _inbes( false ),
       _inhandler( false ),
       _info( 0 )
@@ -63,9 +62,9 @@ BESVersionInfo::~BESVersionInfo()
 void
 BESVersionInfo::beginBESVersion( )
 {
-    if( _indap || _inbes || _inhandler )
+    if( _inbes || _inhandler )
     {
-	throw BESHandlerException( "Attempting to begin BES version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
+	throw BESHandlerException( "Attempting to begin BES version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
     }
     _inbes = true ;
     _info->begin_tag( "BES" ) ;
@@ -98,9 +97,9 @@ BESVersionInfo::endBESVersion( )
 void
 BESVersionInfo::beginHandlerVersion( )
 {
-    if( _indap || _inbes || _inhandler )
+    if( _inbes || _inhandler )
     {
-	throw BESHandlerException( "Attempting to begin Handler version information while already adding DAP, BES, or Handler info", __FILE__, __LINE__ ) ;
+	throw BESHandlerException( "Attempting to begin Handler version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
     }
     _inhandler = true ;
     _info->begin_tag( "Handlers" ) ;
@@ -128,5 +127,35 @@ BESVersionInfo::endHandlerVersion( )
     }
     _inhandler = true ;
     _info->end_tag( "Handlers" ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this version information object
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESVersionInfo::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESVersionInfo::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "in BES version? " << _inbes << endl ;
+    strm << BESIndent::LMarg << "in Handler version? " << _inhandler << endl ;
+    if( _info )
+    {
+	strm << BESIndent::LMarg << "redirection info object:" << endl ;
+	BESIndent::Indent() ;
+	_info->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "redirection info object: null" << endl ;
+    }
+    BESInfo::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 

@@ -38,13 +38,24 @@ using std::endl ;
 
 #include "BESApacheWrapper.h"
 #include "BESDataRequestInterface.h"
-#include "BESBasicException.h"
+#include "BESException.h"
 #include "BESGlobalIQ.h"
+#include "BESDefaultModule.h"
+#include "BESDefaultCommands.h"
+#include "BESDapModule.h"
+#include "DAPCommandModule.h"
 
 int
 main( int argc, char **argv )
 {
     BESGlobalIQ::BESGlobalInit( argc, argv ) ;
+
+    BESDefaultModule::initialize( argc, argv ) ;
+    BESDefaultCommands::initialize( argc, argv ) ;
+    BESDapModule dm ;
+    dm.initialize( "dap" ) ;
+    DAPCommandModule cm ;
+    cm.initialize( "dap" ) ;
 
     /*
     if( argc != 2 )
@@ -79,7 +90,7 @@ main( int argc, char **argv )
     {
 	BESApacheWrapper wrapper ;
 	rq.cookie=wrapper.process_user( "username=pwest" ) ;
-	wrapper.process_request( "request=define+d1+as+mfp920504a;get+dods+for+d1;" ) ;
+	wrapper.process_request( "request=define+d1+as+mfp920504a;get+das+for+d1;" ) ;
 	rq.request = wrapper.get_first_request() ;
 	while( rq.request )
 	{
@@ -88,9 +99,9 @@ main( int argc, char **argv )
 	}
 
     }
-    catch( BESBasicException &e )
+    catch( BESException &e )
     {
-	cerr << "problem: " << e.get_error_description() << endl ;
+	cerr << "problem: " << e.get_message() << endl ;
     }
 
     BESGlobalIQ::BESGlobalQuit() ;

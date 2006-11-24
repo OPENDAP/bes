@@ -71,6 +71,8 @@ public:
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
     virtual void 	print( FILE *out ) ;
+
+    virtual void	dump( ostream &strm ) const ;
 };
 
 #endif // BESSilentInfo_h_

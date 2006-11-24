@@ -345,3 +345,56 @@ BESCatalogDirectory::isData( const string &inQuestion,
     return cat_store->isData( inQuestion, provides ) ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this catalog directory.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCatalogDirectory::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCatalogDirectory::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+
+    strm << BESIndent::LMarg << "root directory: " << _rootDir << endl ;
+
+    if( _include.size() )
+    {
+	strm << BESIndent::LMarg << "include list:" << endl ;
+	BESIndent::Indent() ;
+	list<string>::const_iterator i_iter = _include.begin() ;
+	list<string>::const_iterator i_end = _include.end() ;
+	for( ; i_iter != i_end; i_iter++ )
+	{
+	    strm << BESIndent::LMarg << *i_iter << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "include list: empty" << endl ;
+    }
+
+    if( _exclude.size() )
+    {
+	strm << BESIndent::LMarg << "exclude list:" << endl ;
+	BESIndent::Indent() ;
+	list<string>::const_iterator e_iter = _exclude.begin() ;
+	list<string>::const_iterator e_end = _exclude.end() ;
+	for( ; e_iter != e_end; e_iter++ )
+	{
+	    strm << BESIndent::LMarg << *e_iter << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "exclude list: empty" << endl ;
+    }
+
+    BESIndent::UnIndent() ;
+}
+

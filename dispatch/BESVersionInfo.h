@@ -44,9 +44,9 @@
  * @see BESXMLInfo
  * @see BESResponseObject
  */
-class BESVersionInfo : public BESInfo {
+class BESVersionInfo : public BESInfo
+{
 private:
-    bool		_indap ;
     bool		_inbes ;
     bool		_inhandler ;
     BESInfo *		_info ;
@@ -117,6 +117,8 @@ public:
 			{
 			    _info->print( out ) ;
 			}
+
+    virtual void	dump( ostream &strm ) const ;
 };
 
 #endif // BESVersionInfo_h_

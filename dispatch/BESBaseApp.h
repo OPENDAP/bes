@@ -51,7 +51,8 @@
  * @see BESApp
  * @see BESGlobalIQ
  */
-class BESBaseApp : public BESApp {
+class BESBaseApp : public BESApp
+{
 public:
                                 BESBaseApp( void ) ;
     virtual                     ~BESBaseApp( void ) ;

@@ -57,4 +57,3 @@ public:
 
 #endif // PPTProtocol_h_
 
-// $Log: PPTProtocol.h,v $

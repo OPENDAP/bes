@@ -60,6 +60,8 @@ public:
 					   const string &key_file );
     				~SSLServer() ;
     virtual void		initConnection() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // SSLServer_h

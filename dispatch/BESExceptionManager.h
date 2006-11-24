@@ -37,27 +37,31 @@
 
 using std::list ;
 
+#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESInfo.h"
 
 class BESException ;
 
-typedef int (*p_opendap_ehm)( BESException &e, BESDataHandlerInterface &dhi ) ;
+typedef int (*p_bes_ehm)( BESException &e, BESDataHandlerInterface &dhi ) ;
 
-class BESExceptionManager
+class BESExceptionManager : public BESObj
 {
 private:
-    typedef list< p_opendap_ehm >::const_iterator ehm_citer ;
-    typedef list< p_opendap_ehm >::iterator ehm_iter ;
-    list< p_opendap_ehm >	_ehm_list ;
+    typedef list< p_bes_ehm >::const_iterator ehm_citer ;
+    typedef list< p_bes_ehm >::iterator ehm_iter ;
+    list< p_bes_ehm >	_ehm_list ;
     static BESExceptionManager *_instance ;
 protected:
     				BESExceptionManager() ;
     virtual			~BESExceptionManager() ;
 public:
-    virtual void		add_ehm_callback( p_opendap_ehm ehm ) ;
+    virtual void		add_ehm_callback( p_bes_ehm ehm ) ;
     virtual int			handle_exception( BESException &e,
 					      BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
     static BESExceptionManager *TheEHM() ;
 } ;
 

@@ -47,7 +47,8 @@ class BESInfo ;
 
 /** @brief builds catalogs from a directory structure
  */
-class BESCatalogDirectory : public BESCatalog {
+class BESCatalogDirectory : public BESCatalog
+{
 private:
     string			_rootDir ;
     list<string>		_exclude ;
@@ -68,6 +69,8 @@ public:
     virtual bool		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 };
 
 #endif // I_BESCatalogDirectory_h

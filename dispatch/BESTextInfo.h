@@ -44,7 +44,8 @@
  * @see BESInfo
  * @see BESResponseObject
  */
-class BESTextInfo : public BESInfo {
+class BESTextInfo : public BESInfo
+{
 private:
     string		_indent ;
     bool		_ishttp ;
@@ -71,6 +72,8 @@ public:
                                             const string &name ) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
+
+    virtual void	dump( ostream &strm ) const ;
 
     static BESInfo *BuildTextInfo( const string &info_type ) ;
 };

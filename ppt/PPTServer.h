@@ -56,6 +56,8 @@ public:
 
     virtual void		initConnection() ;
     virtual void		closeConnection() ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // PPTServer_h

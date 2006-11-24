@@ -51,7 +51,7 @@ BESParserException::handleException( BESException &e,
 	    dhi.error_info->add_exception( "Parse", e ) ;
 	    dhi.error_info->end_response() ;
 	}
-	return OPENDAP_PARSER_ERROR;
+	return BES_PARSER_ERROR;
     }
     return 0 ;
 }

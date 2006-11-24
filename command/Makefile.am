@@ -37,10 +37,10 @@ SRCS = BESCmdInterface.cc BESCmdParser.cc BESCommand.cc		\
 	BESDelContainerCommand.cc BESDelContainersCommand.cc 	\
 	BESDelDefCommand.cc BESDelDefsCommand.cc		\
 	BESParserException.cc BESTokenizer.cc 			\
-	BESDeleteCommand.cc opendap_commands.cc
+	BESDeleteCommand.cc BESDefaultCommands.cc
 
 HDRS = BESCmdInterface.h BESCommand.h BESTokenizer.h 		\
-	BESParserException.h opendap_commands.h BESCmdParser.h 	\
+	BESParserException.h BESDefaultCommands.h BESCmdParser.h 	\
 	BESGetCommand.h BESSetCommand.h 			\
 	BESShowCommand.h BESDeleteCommand.h 			\
 	BESDelContainerCommand.h BESDelContainersCommand.h 	\

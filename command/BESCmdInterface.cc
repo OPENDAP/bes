@@ -41,6 +41,7 @@ using std::stringstream ;
 #include "BESCmdParser.h"
 #include "BESInterface.h"
 #include "BESLog.h"
+#include "BESDebug.h"
 #include "BESBasicHttpTransmitter.h"
 #include "BESReturnManager.h"
 #include "BESTransmitException.h"
@@ -85,23 +86,14 @@ BESCmdInterface::execute_request()
     return BESInterface::execute_request() ;
 }
 
-/** @brief Initialize the BES object from the apache environment
+/** @brief Initialize the BES
 
-    First calls the parent initialization method in order to initialize all
-    global variables.
+    Determines what transmitter this BES will be using to transmit response
+    objects and then calls the parent initialization method in order to
+    initialize all global variables.
 
-    Once this is completed the BESDSDataHandlerInterface is initialized given
-    the BESDSDataRequestInterface constructed within the module code.
-
-    This includes retreiving the user information from the cookie created on
-    the client side in the browser. The cookie name is defined in
-    OPENDAP_USER_COOKIE above.
-
-    Also creates the BESBasicHttpTransmitter object in order to transmit
-    the response object via http, setting the mime type and other header
-    information for the response.
-
-    @see BESGlobalInit
+    @see BESTransmitter
+    @see _BESDataHandlerInterface
  */
 void
 BESCmdInterface::initialize()
@@ -119,6 +111,7 @@ BESCmdInterface::initialize()
     string protocol = _dhi.transmit_protocol ;
     if( protocol != "HTTP" )
     {
+	BESDEBUG( "Finding " << BASIC_TRANSMITTER << " transmitter ... " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
 	if( !_transmitter )
 	{
@@ -126,9 +119,11 @@ BESCmdInterface::initialize()
 		       + BASIC_TRANSMITTER ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
+	BESDEBUG( "OK" << endl )
     }
     else
     {
+	BESDEBUG( "Finding " << HTTP_TRANSMITTER << " transmitter ... " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
 	if( !_transmitter )
 	{
@@ -136,6 +131,7 @@ BESCmdInterface::initialize()
 		       + HTTP_TRANSMITTER ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
+	BESDEBUG( "OK" << endl )
     }
     pid_t thepid = getpid() ;
     stringstream ss ;
@@ -160,14 +156,15 @@ BESCmdInterface::validate_data_request()
 void
 BESCmdInterface::build_data_request_plan()
 {
+    BESDEBUG( "building request plan for: "<< _dhi.data[DATA_REQUEST] << " ...")
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
 			     << " [" << _dhi.data[DATA_REQUEST] << "] building"
 			     << endl ;
     }
-    BESCmdParser parser ;
-    parser.parse( _dhi.data[DATA_REQUEST], _dhi ) ;
+    BESCmdParser::parse( _dhi.data[DATA_REQUEST], _dhi ) ;
+    BESDEBUG( " OK" << endl )
 
     // The default _transmitter (either basic or http depending on the
     // protocol passed) has been set in initialize. If the parsed command
@@ -176,6 +173,7 @@ BESCmdInterface::build_data_request_plan()
     // just use the defaults.
     if( _dhi.data[RETURN_CMD] != "" )
     {
+	BESDEBUG( "Finding transmitter: " << _dhi.data[RETURN_CMD] << " ...  " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( _dhi.data[RETURN_CMD] ) ;
 	if( !_transmitter )
 	{
@@ -183,22 +181,10 @@ BESCmdInterface::build_data_request_plan()
 	               + _dhi.data[RETURN_CMD] ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
+	BESDEBUG( "OK" << endl )
     }
 
-    if( BESLog::TheLog()->is_verbose() )
-    {
-	*(BESLog::TheLog()) << "Data Handler Interface:" << endl ;
-	*(BESLog::TheLog()) << "    action = " << _dhi.action << endl ;
-	*(BESLog::TheLog()) << "    transmit = "
-	                     << _dhi.transmit_protocol
-	                     << endl ;
-	map< string, string>::const_iterator data_citer ;
-	for( data_citer = _dhi.data.begin(); data_citer != _dhi.data.end(); data_citer++ )
-	{
-	    *(BESLog::TheLog()) << "    " << (*data_citer).first << " = "
-	                  << (*data_citer).second << endl ;
-	}
-    }
+    if( BESDebug::Debug() ) _dhi.dump( *(BESDebug::Get_strm()) ) ;
 }
 
 /** @brief Execute the data request plan
@@ -255,7 +241,8 @@ BESCmdInterface::invoke_aggregation()
 				     << " [" << _dhi.data[DATA_REQUEST]
 				     << "] aggregating" << endl ;
 	    }
-	    agg->aggregate( _dhi ) ;
+	    //This is done in BESInterface::invoke_aggregation
+	    //agg->aggregate( _dhi ) ;
 	}
     }
     BESInterface::invoke_aggregation() ;
@@ -308,7 +295,25 @@ BESCmdInterface::clean()
 {
     BESInterface::clean() ;
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
-		         << " [" << _dhi.data[DATA_REQUEST] << "] exiting"
+		         << " [" << _dhi.data[DATA_REQUEST] << "] cleaning"
 		         << endl ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCmdInterface::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCmdInterface::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESInterface::dump( strm ) ;
+    BESIndent::UnIndent() ;
+
+
 }
 

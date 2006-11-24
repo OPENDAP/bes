@@ -44,7 +44,7 @@
     caller. Only the build_data_request_plan method is implemented in this
     class. All other methods are inherited from BESInterface.
     
-    @param type data type handled by this OpenDAP CGI server
+    @param type data type handled by this OPeNDAP CGI server
     @param df DODSFilter object built from command line arguments
     @see DODSFilter
     @see BESFilterTransmitter
@@ -95,5 +95,27 @@ BESCgiInterface::build_data_request_plan()
 	string s = (string)"Improper command " + myaction ;
 	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
     }
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about the
+ * DODSFilter and the type of data handled by this interface.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESCgiInterface::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESCgiInterface::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "data type: " << _type << endl ;
+    strm << BESIndent::LMarg << "action: get." << _df->get_action() << endl ;
+    strm << BESIndent::LMarg << "dataset name: "
+			     << _df->get_dataset_name() << endl ;
+    strm << BESIndent::LMarg << "constraint expression: "
+			     << _df->get_ce() << endl ;
+    BESIndent::UnIndent() ;
 }
 

@@ -15,7 +15,7 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 lib_LTLIBRARIES = libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
-libbes_ppt_la_CPPFLAGS = $(openssl_includes) $(kerberos_includes)
+libbes_ppt_la_CPPFLAGS = -I$(top_srcdir)/dispatch $(openssl_includes) $(kerberos_includes)
 libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 
 pkginclude_HEADERS = $(HDRS)
@@ -23,7 +23,7 @@ pkginclude_HEADERS = $(HDRS)
 
 SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
-	PPTConnection.cc
+	PPTConnection.cc Connection.cc
 
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketException.h PPTException.h SocketConfig.h			\

@@ -59,6 +59,8 @@ public:
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     static BESResponseHandler *CatalogResponseBuilder( string handler_name ) ;
 };
 

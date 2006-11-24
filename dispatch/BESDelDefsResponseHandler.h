@@ -50,7 +50,8 @@
  * @see BESDefinitionStorage
  * @see BESTransmitter
  */
-class BESDelDefsResponseHandler : public BESResponseHandler {
+class BESDelDefsResponseHandler : public BESResponseHandler
+{
 public:
 				BESDelDefsResponseHandler( string name ) ;
     virtual			~BESDelDefsResponseHandler( void ) ;
@@ -58,6 +59,8 @@ public:
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 
     static BESResponseHandler *DelDefsResponseBuilder( string handler_name ) ;
 };

@@ -137,3 +137,45 @@ BESProcessEncodedString::get_key( const string& s )
 	return "" ;
 }
 
+void
+BESProcessEncodedString::show_keys()
+{
+    map<string,string>::iterator i ;
+    map<string,string>::iterator ie = _entries.end() ;
+    for( i = _entries.begin(); i != ie; ++i )
+	cout << "key: " << (*i).first << ", value: " << (*i).second << endl ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the key:value
+ * pairs
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESProcessEncodedString::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESProcessEncodedString::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _entries.size() )
+    {
+	strm << BESIndent::LMarg << "key|value pairs:" << endl ;
+	BESIndent::Indent() ;
+	map<string,string>::const_iterator i ;
+	map<string,string>::const_iterator ie = _entries.end() ;
+	for( i = _entries.begin(); i != ie; ++i )
+	{
+	    strm << BESIndent::LMarg << (*i).first << ": "
+				     << (*i).second << endl ;
+	}
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "key|value pairs: none" << endl ;
+    }
+    BESIndent::UnIndent() ;
+}
+

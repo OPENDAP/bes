@@ -59,6 +59,8 @@ public:
     virtual int			run() ;
     virtual int			terminate( int sig = 0 ) ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     static void			signalTerminate( int sig ) ;
     static void			signalInterrupt( int sig ) ;
     static void			signalRestart( int sig ) ;

@@ -42,7 +42,7 @@ using std::ostringstream ;
 
 /** @brief constructs an html information response object.
  *
- * Uses the default OPeNDAP.Info.Buffered key in the bes configuration file to
+ * Uses the default BES.Info.Buffered key in the bes configuration file to
  * determine whether the information should be buffered or not.
  *
  * @see BESInfo
@@ -253,6 +253,25 @@ void
 BESXMLInfo::print( FILE *out )
 {
     BESInfo::print( out ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * this XML informational object.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESXMLInfo::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESXMLInfo::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "indentation \"" << _indent << "\"" << endl ;
+    strm << BESIndent::LMarg << "do indent? " << _do_indent << endl ;
+    BESInfo::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
 BESInfo *

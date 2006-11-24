@@ -95,9 +95,9 @@ CmdClient::~CmdClient()
 }
 
 /**
-* Connect the OpenDAP client to the OpenDAP server.
+* Connect the BES client to the BES server.
 * <p>
-* Connects to the OpenDAP server on the specified machine listening on
+* Connects to the BES server on the specified machine listening on
 * the specified port.
 *
 * @param  hostStr  The name of the host machine where the server is
@@ -109,25 +109,25 @@ CmdClient::~CmdClient()
 * @see    PPTException
 */
 void
-CmdClient::startClient( const string &host, int portVal )
+CmdClient::startClient( const string &host, int portVal, int timeout )
 {
-    _client = new PPTClient( host, portVal ) ;
+    _client = new PPTClient( host, portVal, timeout ) ;
     _client->initConnection() ;
 }
 
 /**
-* Connect the OpenDAP client to the OpenDAP server using the unix socket
+* Connect the BES client to the BES server using the unix socket
 * <p>
-* Connects to the OpenDAP server using the specified unix socket
+* Connects to the BES server using the specified unix socket
 *
 * @param  unixStr  Full path to the unix socket
-* @throws PPTException Thrown if unable to connect to the OPeNDAP server
+* @throws PPTException Thrown if unable to connect to the BES server
 * @see    PPTException
 */
 void
-CmdClient::startClient( const string &unixStr )
+CmdClient::startClient( const string &unixStr, int timeout )
 {
-    _client = new PPTClient( unixStr ) ;
+    _client = new PPTClient( unixStr, timeout ) ;
     _client->initConnection() ;
 }
 
@@ -147,14 +147,14 @@ CmdClient::shutdownClient()
 }
 
 /**
-* Set the output stream for responses from the OpenDAP server.
+* Set the output stream for responses from the BES server.
 * <p>
-* Specify where the response output from your OpenDAP request will be
-* sent. Set to null if you wish to ignore the response from the OpenDAP
+* Specify where the response output from your BES request will be
+* sent. Set to null if you wish to ignore the response from the BES
 * server.
 * 
 * @param  strm  an OutputStream specifying where to send responses from
-*               the OpenDAP server. If null then the output will not be
+*               the BES server. If null then the output will not be
 *               output but will be thrown away.
 * @throws PPTException catches any problems with opening or writing to
 *                      the output stream and creates a PPTException
@@ -185,7 +185,7 @@ CmdClient::setOutput( ostream *strm, bool created )
 * client output to screen;
 * client output to &lt;filename&gt;;
 *
-* @param  cmd  The OPeNDAP client side command to execute
+* @param  cmd  The BES client side command to execute
 * @see    PPTException
 */
 void
@@ -237,8 +237,8 @@ CmdClient::executeClientCommand( const string &cmd )
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd  The OpenDAP request, ending in a semicolon, that is sent to
-*              the OpenDAP server to handle.
+* @param  cmd  The BES request, ending in a semicolon, that is sent to
+*              the BES server to handle.
 * @throws PPTException Thrown if there is a problem sending the request
 *                      to the server or a problem receiving the response
 *                      from the server.
@@ -266,9 +266,9 @@ CmdClient::executeCommand( const string &cmd )
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd_list  The list of OpenDAP requests, separated by semicolons
+* @param  cmd_list  The list of BES requests, separated by semicolons
 *                   and ending in a semicolon, that will be sent to the
-*                   OpenDAP server to handle, one at a time.
+*                   BES server to handle, one at a time.
 * @throws PPTException Thrown if there is a problem sending any of the
 *                      request to the server or a problem receiving any
 *                      of the responses from the server.
@@ -288,7 +288,7 @@ CmdClient::executeCommands( const string &cmd_list )
 }
 
 /**
-* Sends the requests listed in the specified file to the OpenDAP server,
+* Sends the requests listed in the specified file to the BES server,
 * each command ending with a semicolon.
 * <p>
 * The requests do not have to be one per line but can span multiple
@@ -297,9 +297,9 @@ CmdClient::executeCommands( const string &cmd_list )
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  inputFile  The file holding the list of OpenDAP requests, each
+* @param  inputFile  The file holding the list of BES requests, each
 *                    ending with a semicolon, that will be sent to the
-*                    OpenDAP server to handle.
+*                    BES server to handle.
 * @throws PPTException Thrown if there is a problem opening the file to
 *                      read, reading the requests from the file, sending
 *                      any of the requests to the server or a problem
@@ -366,11 +366,11 @@ CmdClient::executeCommands( ifstream &istrm )
 }
 
 /**
-* An interactive OpenDAP client that takes OpenDAP requests on the command
+* An interactive BES client that takes BES requests on the command
 * line.
 * <p>
 * There can be more than one command per line, but commands can NOT span
-* multiple lines. The user will be prompted to enter a new OpenDAP request.
+* multiple lines. The user will be prompted to enter a new BES request.
 * <p>
 * OpenDAPClient:
 * <p>
@@ -424,7 +424,7 @@ CmdClient::readLine( string &msg )
 {
     size_t len = 0 ;
     char *buf = (char*)NULL ;
-    buf = ::readline( "OPeNDAPClient> " ) ;
+    buf = ::readline( "BESClient> " ) ;
     if( buf && *buf )
     {
 	len = strlen( buf ) ;
@@ -464,7 +464,7 @@ CmdClient::displayHelp()
 {
     cout << endl ;
     cout << endl ;
-    cout << "OPeNDAP BES Command Client Help"
+    cout << "BES Command Line Client Help"
          << endl ;
     cout << endl ;
     cout << "Client commands available:"
@@ -503,5 +503,33 @@ CmdClient::brokenPipe()
 {
     if( _client )
 	_client->brokenPipe() ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+CmdClient::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "CmdClient::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    if( _client )
+    {
+	strm << BESIndent::LMarg << "client:" << endl ;
+	BESIndent::Indent() ;
+	_client->dump( strm ) ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "client: null" << endl ;
+    }
+    strm << BESIndent::LMarg << "stream: " << (void *)_strm << endl ;
+    strm << BESIndent::LMarg << "stream created? " << _strmCreated << endl ;
+    BESIndent::UnIndent() ;
 }
 

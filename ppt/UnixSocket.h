@@ -63,8 +63,9 @@ public:
 				{
 				    return new UnixSocket( socket, f ) ;
 				}
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // UnixSocket_h
 
-// $Log: UnixSocket.h,v $
