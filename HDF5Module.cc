@@ -79,6 +79,19 @@ HDF5Module::terminate( const string &modname )
     BESContainerStorageList::TheList()->del_persistence( HDF5_CATALOG ) ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+HDF5Module::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "HDF5Module::dump - ("
+			     << (void *)this << ")" << endl ;
+}
+
 extern "C"
 {
     BESAbstractModule *maker()
