@@ -109,6 +109,12 @@ BESContainerStorageVolatile::add_container( const string &s_name,
 	           + " already exists" ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
+    string::size_type dotdot = r_name.find( "../" ) ;
+    if( dotdot != string::npos )
+    {
+	string s = (string)"'../' not allowed in container real name " + r_name;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
     BESContainer *c = new BESContainer( s_name ) ;
     string new_r_name = _root_dir + "/" + r_name ;
     c->set_real_name( new_r_name ) ;
