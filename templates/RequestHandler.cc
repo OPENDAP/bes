@@ -49,3 +49,13 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( BESDataHandlerInterface &d
     return ret ;
 }
 
+void
+OPENDAP_CLASSRequestHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "OPENDAP_CLASSRequestHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESRequestHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+

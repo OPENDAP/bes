@@ -14,6 +14,8 @@ public:
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
+    virtual void		dump( ostream &strm ) const ;
+
     static BESResponseHandler *OPENDAP_RESPONSEResponseBuilder( string handler_name ) ;
 };
 

@@ -47,3 +47,10 @@ extern "C"
     }
 }
 
+void
+OPENDAP_CLASSModule::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "OPENDAP_CLASSModule::dump - ("
+			     << (void *)this << ")" << endl ;
+}
+

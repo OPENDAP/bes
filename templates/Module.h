@@ -12,6 +12,8 @@ public:
     virtual		    	~OPENDAP_CLASSModule() {}
     virtual void		initialize( const string &modname ) ;
     virtual void		terminate( const string &modname ) ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // I_OPENDAP_CLASSModule_H

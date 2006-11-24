@@ -38,6 +38,16 @@ OPENDAP_RESPONSEResponseHandler::transmit( BESTransmitter *transmitter,
     }
 }
 
+void
+OPENDAP_RESPONSEResponseHandler::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "OPENDAP_RESPONSEResponseHandler::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESResponseHandler::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
+
 BESResponseHandler *
 OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseBuilder( string handler_name )
 {

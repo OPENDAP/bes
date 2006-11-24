@@ -10,6 +10,8 @@ public:
 			OPENDAP_CLASSRequestHandler( string name ) ;
     virtual		~OPENDAP_CLASSRequestHandler( void ) ;
 
+    virtual void	dump( ostream &strm ) const ;
+
     static bool		OPENDAP_TYPE_build_vers( BESDataHandlerInterface &dhi ) ;
     static bool		OPENDAP_TYPE_build_help( BESDataHandlerInterface &dhi ) ;
 };

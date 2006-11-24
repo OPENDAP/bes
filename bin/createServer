@@ -227,8 +227,8 @@ EOF
 
 done
 
-/bin/cp ${TEMPLATE_DIR}/opendap.ini ./opendap.ini
-ed ./opendap.ini << EOF > /dev/null 2>&1
+/bin/cp ${TEMPLATE_DIR}/bes.conf ./bes.conf
+ed ./bes.conf << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_TYPE/${serverType}/g
 ,s:OPENDAP_DIR:${OPENDAP_ROOT}:g
