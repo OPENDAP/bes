@@ -142,7 +142,6 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 					   const string &r_name,
 					   const string &type )
 {
-    string new_r_name = _root_dir + "/" + r_name ;
     string new_type = type ;
     if( new_type == "" )
     {
@@ -163,7 +162,7 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 	    }
 	}
     }
-    BESContainerStorageVolatile::add_container( s_name, new_r_name, new_type ) ;
+    BESContainerStorageVolatile::add_container( s_name, r_name, new_type ) ;
 }
 
 /** @brief is the specified node in question served by a request handler

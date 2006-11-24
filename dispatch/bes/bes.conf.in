@@ -56,9 +56,15 @@ BES.modules=name
 BES.module.name=/full/path/to/shared/library.so
 
 #-----------------------------------------------------------------------#
+# Root directory where data is located
+#-----------------------------------------------------------------------#
+BES.Data.RootDirectory=/full/path/data/root/directory
+
+#-----------------------------------------------------------------------#
 # Catalog configuration							#
 # If you are providing a catalog specify the full path to your data's	#
-# root directory here.
+# root directory here. This is different from BES.Data.RootDirectory    #
+# in that the RootDirectory specified below is for the data catalog     #
 #-----------------------------------------------------------------------#
 BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
 

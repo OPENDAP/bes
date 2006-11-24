@@ -84,9 +84,6 @@ private:
     } ;
     list< type_reg > _match_list ;
     typedef list< type_reg >::const_iterator Match_list_citer ;
-
-    string			_root_dir ;
-
 public:
     				BESContainerStorageCatalog( const string &n ) ;
     virtual			~BESContainerStorageCatalog() ;

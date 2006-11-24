@@ -34,6 +34,7 @@
 #include "BESContainer.h"
 #include "BESContainerStorageException.h"
 #include "BESInfo.h"
+#include "TheBESKeys.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -45,6 +46,14 @@
 BESContainerStorageVolatile::BESContainerStorageVolatile( const string &n )
     : BESContainerStorage( n )
 {
+    string base_key = "BES.Data.RootDirectory" ;
+    bool found = false ;
+    _root_dir = TheBESKeys::TheKeys()->get_key( base_key, found ) ;
+    if( _root_dir == "" )
+    {
+	string s = base_key + " not defined in bes configuration file" ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
 }
 
 BESContainerStorageVolatile::~BESContainerStorageVolatile()
@@ -101,7 +110,8 @@ BESContainerStorageVolatile::add_container( const string &s_name,
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
     BESContainer *c = new BESContainer( s_name ) ;
-    c->set_real_name( r_name ) ;
+    string new_r_name = _root_dir + "/" + r_name ;
+    c->set_real_name( new_r_name ) ;
     c->set_container_type( type ) ;
     _container_list[s_name] = c ;
 }

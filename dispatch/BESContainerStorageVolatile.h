@@ -58,6 +58,8 @@ class BESContainerStorageVolatile : public BESContainerStorage
 {
 private:
     map< string, BESContainer * > _container_list ;
+protected:
+    string			_root_dir ;
 public:
     				BESContainerStorageVolatile( const string &n ) ;
     virtual			~BESContainerStorageVolatile() ;
