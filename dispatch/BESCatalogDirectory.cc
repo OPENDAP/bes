@@ -36,9 +36,11 @@
 #include "stdio.h"
 
 #include <sstream>
+#include <iostream>
 
 using std::stringstream ;
 using std::endl ;
+using std::cerr ;
 
 #include "BESCatalogDirectory.h"
 #include "TheBESKeys.h"
@@ -95,18 +97,45 @@ BESCatalogDirectory::show_catalog( const string &node,
                                 const string &coi,
 				BESInfo *info )
 {
-    string fullnode ;
-    if( node == "" )
+    // remove any trailing slash
+    string fullnode = node ;
+    if( node != "" )
+    {
+	string::size_type stopat = node.length() - 1 ;
+	while( node[stopat] == '/' )
+	{
+	    stopat-- ;
+	}
+	fullnode = fullnode.substr( 0, stopat + 1 ) ;
+    }
+
+    if( fullnode == "" )
     {
 	fullnode = _rootDir ;
     }
     else
     {
-	fullnode = _rootDir + "/" + node ;
+	fullnode = _rootDir + "/" + fullnode ;
+    }
+    string basename ;
+    string::size_type slash = fullnode.rfind( "/" ) ;
+    if( slash != string::npos )
+    {
+	basename = fullnode.substr( slash+1, fullnode.length() - slash ) ;
+    }
+    else
+    {
+	basename = fullnode ;
     }
     DIR *dip = opendir( fullnode.c_str() ) ;
     if( dip != NULL )
     {
+	// if the directory requested is in the exclude list then we won't
+	// let the user see it.
+	if( exclude( basename ) )
+	{
+	    return false ;
+	}
 	struct stat cbuf ;
 	stat( fullnode.c_str(), &cbuf ) ;
 	map<string,string> a1 ;
@@ -165,12 +194,15 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    stat( fullPath.c_str(), &buf ) ;
 		    if ( S_ISDIR( buf.st_mode ) )
 		    {
-			map<string,string> a2 ;
-			a2["thredds_collection"] = "\"true\"" ;
-			a2["isData"] = "\"false\"" ;
-			info->begin_tag( "dataset", &a2 ) ;
-			add_stat_info( info, buf, dirEntry ) ;
-			info->end_tag( "dataset" ) ;
+			if( exclude( dirEntry ) == false )
+			{
+			    map<string,string> a2 ;
+			    a2["thredds_collection"] = "\"true\"" ;
+			    a2["isData"] = "\"false\"" ;
+			    info->begin_tag( "dataset", &a2 ) ;
+			    add_stat_info( info, buf, dirEntry ) ;
+			    info->end_tag( "dataset" ) ;
+			}
 		    }
 		    else if ( S_ISREG( buf.st_mode ) )
 		    {
@@ -196,20 +228,29 @@ BESCatalogDirectory::show_catalog( const string &node,
     }
     else
     {
-	struct stat buf;
-	int statret = stat( fullnode.c_str(), &buf ) ;
-	if ( statret == 0 && S_ISREG( buf.st_mode ) )
+	// if the node is in the include list then continue, else the node
+	// requested is not included and we return false.
+	if( include( basename ) )
 	{
-	    map<string,string> a4 ;
-	    a4["thredds_collection"] = "\"false\"" ;
-	    list<string> provides ;
-	    if( isData( node, provides ) )
-		a4["isData"] = "\"true\"" ;
+	    struct stat buf;
+	    int statret = stat( fullnode.c_str(), &buf ) ;
+	    if ( statret == 0 && S_ISREG( buf.st_mode ) )
+	    {
+		map<string,string> a4 ;
+		a4["thredds_collection"] = "\"false\"" ;
+		list<string> provides ;
+		if( isData( node, provides ) )
+		    a4["isData"] = "\"true\"" ;
+		else
+		    a4["isData"] = "\"false\"" ;
+		info->begin_tag( "dataset", &a4 ) ;
+		add_stat_info( info, buf, node ) ;
+		info->end_tag( "dataset" ) ;
+	    }
 	    else
-		a4["isData"] = "\"false\"" ;
-	    info->begin_tag( "dataset", &a4 ) ;
-	    add_stat_info( info, buf, node ) ;
-	    info->end_tag( "dataset" ) ;
+	    {
+		return false ;
+	    }
 	}
 	else
 	{
@@ -249,20 +290,32 @@ BESCatalogDirectory::include( const string &inQuestion )
 
     if( toInclude == true )
     {
-	list<string>::iterator e_iter = _exclude.begin() ;
-	list<string>::iterator e_end = _exclude.end() ;
-	for( ; e_iter != e_end; e_iter++ )
+	if( exclude( inQuestion ) )
 	{
-	    string reg = *e_iter ;
-	    Regex reg_expr( reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
-	    {
-		toInclude = false ;
-	    }
+	    toInclude = false ;
 	}
     }
 
     return toInclude ;
+}
+
+bool
+BESCatalogDirectory::exclude( const string &inQuestion )
+{
+    cerr << "exclude checking " << inQuestion << endl ;
+    list<string>::iterator e_iter = _exclude.begin() ;
+    list<string>::iterator e_end = _exclude.end() ;
+    for( ; e_iter != e_end; e_iter++ )
+    {
+	string reg = *e_iter ;
+	cerr << "    against " << reg << endl ;
+	Regex reg_expr( reg.c_str() ) ;
+	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	{
+	    return true ;
+	}
+    }
+    return false ;
 }
 
 void

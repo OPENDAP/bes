@@ -57,6 +57,7 @@ private:
     void			buildList( list<string> &theList,
 					   const string &listStr ) ;
     bool			include( const string &inQuestion ) ;
+    bool			exclude( const string &inQuestion ) ;
     void			add_stat_info( BESInfo *info,
                                                struct stat &buf,
 					       const string &node ) ;
