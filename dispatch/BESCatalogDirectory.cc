@@ -36,11 +36,9 @@
 #include "stdio.h"
 
 #include <sstream>
-#include <iostream>
 
 using std::stringstream ;
 using std::endl ;
-using std::cerr ;
 
 #include "BESCatalogDirectory.h"
 #include "TheBESKeys.h"
@@ -302,13 +300,11 @@ BESCatalogDirectory::include( const string &inQuestion )
 bool
 BESCatalogDirectory::exclude( const string &inQuestion )
 {
-    cerr << "exclude checking " << inQuestion << endl ;
     list<string>::iterator e_iter = _exclude.begin() ;
     list<string>::iterator e_end = _exclude.end() ;
     for( ; e_iter != e_end; e_iter++ )
     {
 	string reg = *e_iter ;
-	cerr << "    against " << reg << endl ;
 	Regex reg_expr( reg.c_str() ) ;
 	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
 	{
