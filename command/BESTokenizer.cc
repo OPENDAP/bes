@@ -267,10 +267,10 @@ string
 BESTokenizer::parse_container_name( const string &s, unsigned int &type )
 {
     string::size_type where = s.rfind( ".constraint=", s.size() ) ;
-    if( where < 0 )
+    if( where == string::npos )
     {
 	where = s.rfind( ".attributes=", s.size() ) ;
-	if( where < 0 )
+	if( where == string::npos )
 	{
 	    parse_error( "Expected property declaration." ) ;
 	}
@@ -289,7 +289,9 @@ BESTokenizer::parse_container_name( const string &s, unsigned int &type )
 	string err = (string)"Invalid container property "
 	             + valid
 		     + " for container "
-		     + s.substr( 0, where ) ;
+		     + s.substr( 0, where )
+		     + ". constraint expressions and attribute lists "
+		     + "must be wrapped in quotes"  ;
 	parse_error( err ) ;
     }
     return s.substr( 0, where ) ;
