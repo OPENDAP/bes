@@ -48,6 +48,8 @@ using std::string ;
 #include "BESDataNames.h"
 #include "BESContainer.h"
 
+#define BES_STREAM_BUFFER_SIZE 4096
+
 BESStreamResponseHandler::BESStreamResponseHandler( string name )
     : BESResponseHandler( name )
 {
@@ -114,7 +116,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     int nbytes ;
     int fd = fileno( stdout ) ;
-    char block[4096] ;
+    char block[BES_STREAM_BUFFER_SIZE] ;
     os.read( block, sizeof block ) ;
     nbytes = os.gcount() ;
     while( nbytes )

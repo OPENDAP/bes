@@ -98,7 +98,7 @@ PPTClient::initConnection()
 	throw PPTException( msg, __FILE__, __LINE__ ) ;
     }
 
-    char *inBuff = new char[4096] ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
     int bytesRead = readBufferNonBlocking( inBuff ) ;
     if( bytesRead < 1 )
     {

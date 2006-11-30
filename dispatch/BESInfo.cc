@@ -41,6 +41,8 @@ using std::ifstream ;
 #include "TheBESKeys.h"
 #include "BESHandlerException.h"
 
+#define BES_INFO_FILE_BUFFER_SIZE 4096
+
 /** @brief constructs a BESInfo object
  *
  * By default, informational responses are buffered, so the output stream is
@@ -175,10 +177,10 @@ BESInfo::add_data_from_file( const string &key, const string &name )
 	}
 	else
 	{
-	    char line[4096] ;
+	    char line[BES_INFO_FILE_BUFFER_SIZE] ;
 	    while( !ifs.eof() )
 	    {
-		ifs.getline( line, 4096 ) ;
+		ifs.getline( line, BES_INFO_FILE_BUFFER_SIZE ) ;
 		if( !ifs.eof() )
 		{
 		    add_data( line ) ;

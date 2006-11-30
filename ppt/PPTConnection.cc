@@ -76,7 +76,7 @@ PPTConnection::receive( ostream *strm )
     int exitlen = PPTProtocol::PPT_EXIT_NOW.length() ;
     int start = termlen ;
     bool done = false ;
-    char *inBuff = new char[4096+termlen+1] ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+termlen+1] ;
     while( done == false )
     {
 	int bytesRead = readBuffer( inBuff+termlen ) ;
@@ -132,7 +132,7 @@ PPTConnection::receive( ostream *strm )
 int
 PPTConnection::readBuffer( char *inBuff )
 {
-    return _mySock->receive( inBuff, 4096 ) ;
+    return _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
 }
 
 int

@@ -44,6 +44,8 @@ using std::ostringstream ;
 #include "TheBESKeys.h"
 #include "BESContainerStorageException.h"
 
+#define BES_POPEN_BUFFER_SIZE 4096
+
 string BESContainer::_cacheDir ;
 list<string> BESContainer::_compressedExtensions ;
 string BESContainer::_script ;
@@ -99,8 +101,8 @@ BESContainer::access()
     FILE *f = popen( cmd.c_str(), "r" ) ;
     if( f )
     {
-	char buf[4096] ;
-	while( fgets( buf, 4096, f ) != NULL )
+	char buf[BES_POPEN_BUFFER_SIZE] ;
+	while( fgets( buf, BES_POPEN_BUFFER_SIZE, f ) != NULL )
 	    output << buf ;
 	int stat = pclose( f ) ;
 	if( stat != 0 )
@@ -406,8 +408,8 @@ BESContainer::access()
     FILE *f = popen( cmd.c_str(), "r" ) ;
     if( f )
     {
-	char buf[4096] ;
-	while( fgets( buf, 4096, f ) != NULL )
+	char buf[BES_POPEN_BUFFER_SIZE] ;
+	while( fgets( buf, BES_POPEN_BUFFER_SIZE, f ) != NULL )
 	    output << buf ;
 	int stat = pclose( f ) ;
 	if( stat != 0 )

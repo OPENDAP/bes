@@ -109,8 +109,8 @@ PPTServer::closeConnection()
 void
 PPTServer::welcomeClient()
 {
-    char *inBuff = new char[4096] ;
-    int bytesRead = _mySock->receive( inBuff, 4096 ) ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    int bytesRead = _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
     string status( inBuff, bytesRead ) ;
     delete [] inBuff ;
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
@@ -140,8 +140,8 @@ PPTServer::authenticateClient()
     _mySock->send( PPTProtocol::PPTSERVER_AUTHENTICATE, 0, len ) ;
 
     // wait for the client request for the secure port
-    char *inBuff = new char[4096] ;
-    int bytesRead = _mySock->receive( inBuff, 4096 ) ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    int bytesRead = _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
     string portRequest( inBuff, bytesRead ) ;
     delete [] inBuff ;
     if( portRequest != PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT )
