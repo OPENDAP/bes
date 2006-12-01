@@ -56,7 +56,7 @@ run(void)
 	for( int i = 1; i < 6; i++ )
 	{
 	    sprintf( s, "sym%d", i ) ;
-	    sprintf( r, "real%d", i ) ;
+	    sprintf( r, "./real%d", i ) ;
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
@@ -70,8 +70,9 @@ run(void)
 		}
 		else
 		{
-		    cerr << "found " << s << " but real = " << r
-			 << " and container = " << c << endl ;
+		    cerr << "found " << s << " but:" << endl ;
+		    cerr << "real = " << r << ", should be " << d.get_real_name() << endl ;
+		    cerr << "type = " << c << ", should be " << d.get_container_type() << endl ;
 		    return 1 ;
 		}
 	    }
@@ -155,7 +156,7 @@ run(void)
 	for( int i = 2; i < 5; i++ )
 	{
 	    sprintf( s, "sym%d", i ) ;
-	    sprintf( r, "real%d", i ) ;
+	    sprintf( r, "./real%d", i ) ;
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
