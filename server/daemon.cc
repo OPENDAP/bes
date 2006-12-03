@@ -49,8 +49,9 @@ using std::cerr ;
 using std::flush;
 using std::string ;
 
-#include "ServerExitConditions.h"
 #include "config.h"
+#include "ServerExitConditions.h"
+#include "BESServerUtils.h"
 
 #define BES_SERVER_ROOT "BES_SERVER_ROOT"
 #define BES_SERVER "/beslistener"
@@ -69,13 +70,6 @@ string server_name ;
 string file_for_listener ;
 
 char **arguments = 0 ; 
-
-void
-showVersion()
-{
-    cout << NameProgram << ": " << PACKAGE_STRING << endl ;
-    exit( 0 ) ;
-}
 
 int
 main(int argc, char *argv[])
@@ -104,12 +98,16 @@ main(int argc, char *argv[])
     // If you change the getopt statement below, be sure to make the
     // corresponding change in ServerApp.cc
     int c = 0 ;
-    while( ( c = getopt( argc, argv, "vsd:c:p:u:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:" ) ) != EOF )
     {
 	switch( c )
 	{
 	    case 'v':
-		showVersion() ;
+		BESServerUtils::show_version( NameProgram ) ;
+		break ;
+	    case '?':
+	    case 'h':
+		BESServerUtils::show_usage( NameProgram ) ;
 		break ;
 	    default:
 		break ;

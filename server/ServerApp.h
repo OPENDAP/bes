@@ -51,7 +51,6 @@ private:
     TcpSocket			*_ts ;
     UnixSocket			*_us ;
     PPTServer			*_ps ;
-    void			showVersion() ;
 public:
     				ServerApp() ;
     virtual			~ServerApp() ;
@@ -64,6 +63,5 @@ public:
     static void			signalTerminate( int sig ) ;
     static void			signalInterrupt( int sig ) ;
     static void			signalRestart( int sig ) ;
-    static void			showUsage() ;
 } ;
 

@@ -57,6 +57,7 @@ using std::ofstream ;
 #include "SocketException.h"
 #include "BESMemoryManager.h"
 #include "BESDebug.h"
+#include "BESServerUtils.h"
 
 #include "BESDefaultModule.h"
 #include "BESDefaultCommands.h"
@@ -109,28 +110,6 @@ ServerApp::signalRestart( int sig )
     }
 }
 
-void
-ServerApp::showUsage()
-{
-    cout << BESApp::TheApplication()->appName()
-         << ": -d <STREAM> -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
-    cout << "-d set debugging to cout, cerr, or file" << endl ;
-    cout << "-v echos version and exit" << endl ;
-    cout << "-s specifies a secure server using SLL authentication" << endl ;
-    cout << "-c use back-end server configuration file CONFIG" << endl ;
-    cout << "-p set port to PORT" << endl ;
-    cout << "-u set unix socket to UNIX_SOCKET" << endl ;
-    exit( 0 ) ;
-}
-
-void
-ServerApp::showVersion()
-{
-    cout << BESApp::TheApplication()->appName()
-         << ": " << PACKAGE_STRING << endl ;
-    exit( 0 ) ;
-}
-
 int
 ServerApp::initialize( int argc, char **argv )
 {
@@ -138,7 +117,7 @@ ServerApp::initialize( int argc, char **argv )
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc
-    while( ( c = getopt( argc, argv, "vsd:c:p:u:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -159,7 +138,7 @@ ServerApp::initialize( int argc, char **argv )
 		    {
 			cout << "Debug filename or stream can not start "
 			     << "with a -" << endl << endl ;
-			showUsage() ;
+			BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 		    }
 		    if( dbgstrm == "cerr" )
 		    {
@@ -171,7 +150,7 @@ ServerApp::initialize( int argc, char **argv )
 			if( !(*fstrm) )
 			{
 			    cerr << "Unable to open debug file" << endl ;
-			    showUsage() ;
+			    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 			}
 			BESDebug::Set_debugger( new BESDebug( fstrm ) ) ;
 		    }
@@ -179,14 +158,15 @@ ServerApp::initialize( int argc, char **argv )
 		}
 		break ;
 	    case 'v':
-		showVersion() ;
+		BESServerUtils::show_version( BESApp::TheApplication()->appName() ) ;
 		break ;
 	    case 's':
 		_secure = true ;
 		break ;
+	    case 'h':
 	    case '?':
 	    default:
-		showUsage() ;
+		BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 		break ;
 	}
     }
@@ -205,7 +185,7 @@ ServerApp::initialize( int argc, char **argv )
 	         << endl
 		 << "Or specify in the bes configuration file with " << key
 		 << endl << endl ;
-	    showUsage() ;
+	    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 	}
     }
 
@@ -221,7 +201,7 @@ ServerApp::initialize( int argc, char **argv )
 	         << endl
 		 << "Or specify in the bes configuration file with " << key
 		 << endl << endl ;
-	    showUsage() ;
+	    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 	}
     }
 

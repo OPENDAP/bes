@@ -17,13 +17,14 @@ SUBDIRS = test
 bin_PROGRAMS = beslistener besdaemon
 dist_bin_SCRIPTS = besctl
 
-beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerHandler.h \
-		ServerApp.h ServerExitConditions.h 
+beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
+		BESServerHandler.h ServerApp.h BESServerUtils.h \
+		ServerExitConditions.h
 
 beslistener_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
-besdaemon_SOURCES = daemon.cc
-besdaemon_CPPFLAGS = -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
+besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
+besdaemon_CPPFLAGS = $(AM_CPPFLAGS) -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
 
 besdaemon_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
