@@ -41,6 +41,8 @@ using std::cerr ;
 using std::endl ;
 using std::ofstream ;
 
+#include "config.h"
+
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
 #include "TheBESKeys.h"
@@ -111,7 +113,7 @@ void
 ServerApp::showUsage()
 {
     cout << BESApp::TheApplication()->appName()
-         << ": -d <OPT> -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
+         << ": -d <STREAM> -v -s -c <CONFIG> -p <PORT> -u <UNIX_SOCKET>" << endl ;
     cout << "-d set debugging to cout, cerr, or file" << endl ;
     cout << "-v echos version and exit" << endl ;
     cout << "-s specifies a secure server using SLL authentication" << endl ;
@@ -124,8 +126,9 @@ ServerApp::showUsage()
 void
 ServerApp::showVersion()
 {
-  cout << BESApp::TheApplication()->appName() << " version 2.0" << endl ;
-  exit( 0 ) ;
+    cout << BESApp::TheApplication()->appName()
+         << ": " << PACKAGE_STRING << endl ;
+    exit( 0 ) ;
 }
 
 int
@@ -133,6 +136,8 @@ ServerApp::initialize( int argc, char **argv )
 {
     int c = 0 ;
 
+    // If you change the getopt statement below, be sure to make the
+    // corresponding change in daemon.cc
     while( ( c = getopt( argc, argv, "vsd:c:p:u:" ) ) != EOF )
     {
 	switch( c )
@@ -150,6 +155,12 @@ ServerApp::initialize( int argc, char **argv )
 	    case 'd':
 		{
 		    string dbgstrm = optarg ;
+		    if( dbgstrm[0] == '-' )
+		    {
+			cout << "Debug filename or stream can not start "
+			     << "with a -" << endl << endl ;
+			showUsage() ;
+		    }
 		    if( dbgstrm == "cerr" )
 		    {
 			BESDebug::Set_debugger( new BESDebug( &cerr ) ) ;
@@ -174,6 +185,7 @@ ServerApp::initialize( int argc, char **argv )
 		_secure = true ;
 		break ;
 	    case '?':
+	    default:
 		showUsage() ;
 		break ;
 	}

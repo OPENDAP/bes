@@ -70,6 +70,13 @@ string file_for_listener ;
 
 char **arguments = 0 ; 
 
+void
+showVersion()
+{
+    cout << NameProgram << ": " << PACKAGE_STRING << endl ;
+    exit( 0 ) ;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -78,18 +85,6 @@ main(int argc, char *argv[])
     // Set the name of the listener and the file for the listenet pid
     if( !load_names() )
 	return 1 ;
-
-    if( !access( file_for_listener.c_str(), F_OK ) )
-    {
-	ifstream temp( file_for_listener.c_str() ) ;
-	cout << NameProgram
-	     << ": there seems to be a BES daemon already running at " ;
-	char buf[500] ;
-	temp.getline( buf, 500 ) ;
-	cout << buf << endl ;
-	temp.close() ;
-	return 1 ;
-    }
 
     arguments = new char *[argc+1] ;
 
@@ -105,6 +100,33 @@ main(int argc, char *argv[])
 	arguments[i] = argv[i] ;
     }
     arguments[argc] = NULL ;
+
+    // If you change the getopt statement below, be sure to make the
+    // corresponding change in ServerApp.cc
+    int c = 0 ;
+    while( ( c = getopt( argc, argv, "vsd:c:p:u:" ) ) != EOF )
+    {
+	switch( c )
+	{
+	    case 'v':
+		showVersion() ;
+		break ;
+	    default:
+		break ;
+	}
+    }
+
+    if( !access( file_for_listener.c_str(), F_OK ) )
+    {
+	ifstream temp( file_for_listener.c_str() ) ;
+	cout << NameProgram
+	     << ": there seems to be a BES daemon already running at " ;
+	char buf[500] ;
+	temp.getline( buf, 500 ) ;
+	cout << buf << endl ;
+	temp.close() ;
+	return 1 ;
+    }
 
     daemon_init() ;
 
@@ -161,6 +183,14 @@ mount_server(char* *arguments)
     }
     else if( pid == 0 ) /* child process */
     {
+	int something = 0 ;
+	char *arg = arguments[something] ;
+	while( arg )
+	{
+	    cerr << "arg[ " << something << "] = " << arg << endl ;
+	    something++ ;
+	    arg = arguments[something] ;
+	}
 	execvp( arguments[0], arguments ) ;
 	cerr << NameProgram
 	     << ": mounting listener, subprocess failed: " ;
