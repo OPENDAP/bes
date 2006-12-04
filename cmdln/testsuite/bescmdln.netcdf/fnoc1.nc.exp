@@ -11,3 +11,6 @@ global srcdir
 bescmdln_start "testsuite/nc/fnoc1.nc.bescmd"
 compare_stdout "testsuite/nc/fnoc1.nc.bescmd.baseline" "/data/nc/fnoc1.nc" 1
 
+bescmdln_start "testsuite/nc/fnoc1.nc.html.bescmd"
+compare_stdout "testsuite/nc/fnoc1.nc.html.bescmd.baseline" "/data/nc/fnoc1.nc.html" 1
+

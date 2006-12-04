@@ -30,10 +30,10 @@
     <response>
         <dataset isData="false" thredds_collection="true">
             <name>/data/nc</name>
-            <size>1190</size>
+            <size>1156</size>
             <lastmodified>
-                <date>2006-11-22</date>
-                <time>18:15:27</time>
+                <date>2006-12-04</date>
+                <time>18:35:26</time>
             </lastmodified>
             <count>27</count>
             <dataset isData="false" thredds_collection="true">
