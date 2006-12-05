@@ -181,14 +181,6 @@ mount_server(char* *arguments)
     }
     else if( pid == 0 ) /* child process */
     {
-	int something = 0 ;
-	char *arg = arguments[something] ;
-	while( arg )
-	{
-	    cerr << "arg[ " << something << "] = " << arg << endl ;
-	    something++ ;
-	    arg = arguments[something] ;
-	}
 	execvp( arguments[0], arguments ) ;
 	cerr << NameProgram
 	     << ": mounting listener, subprocess failed: " ;
