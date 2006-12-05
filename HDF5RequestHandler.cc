@@ -136,8 +136,11 @@ HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
 
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
+#if 0
+    // see ticket 720
 	dds->set_factory( NULL ) ;
 	delete factory ;
+#endif
     }
     catch( Error &e )
     {
@@ -184,8 +187,11 @@ HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
 
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
-	dds->set_factory( NULL ) ;
-	delete factory ;
+#if 0
+    // see ticket 720
+    dds->set_factory( NULL ) ;
+    delete factory ;
+#endif
     }
     catch( Error &e )
     {
