@@ -34,12 +34,12 @@
 #define BESContainerStorageCatalog_h_ 1
 
 #include <list>
-#include <string>
 
 using std::list ;
-using std::string ;
 
 #include "BESContainerStorageVolatile.h"
+
+class BESCatalogUtils ;
 
 /** @brief implementation of BESContainerStorage that represents a
  * regular expression means of determining a data type.
@@ -77,13 +77,7 @@ using std::string ;
 class BESContainerStorageCatalog : public BESContainerStorageVolatile
 {
 private:
-    struct type_reg
-    {
-	string type ;
-	string reg ;
-    } ;
-    list< type_reg > _match_list ;
-    typedef list< type_reg >::const_iterator Match_list_citer ;
+    const BESCatalogUtils *	_utils ;
 public:
     				BESContainerStorageCatalog( const string &n ) ;
     virtual			~BESContainerStorageCatalog() ;

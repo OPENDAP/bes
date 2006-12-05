@@ -32,10 +32,10 @@
 
 #include "BESContainerStorageCatalog.h"
 #include "BESContainer.h"
+#include "BESCatalogUtils.h"
 #include "BESContainerStorageException.h"
-#include "TheBESKeys.h"
-#include "GNURegex.h"
 #include "BESInfo.h"
+#include "GNURegex.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -61,61 +61,15 @@
 BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
     : BESContainerStorageVolatile( n )
 {
-    string base_key = "BES.Catalog." + n + ".RootDirectory" ;
-    bool found = false ;
-    _root_dir = TheBESKeys::TheKeys()->get_key( base_key, found ) ;
-    if( _root_dir == "" )
+    try
     {
-	string s = base_key + " not defined in key file" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	_utils = BESCatalogUtils::Utils( n ) ;
     }
-
-    string key = "BES.Catalog." + n + ".TypeMatch" ;
-    string curr_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( curr_str == "" )
+    catch( BESException &e )
     {
-	string s = key + " not defined in key file" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( e.get_message(), e.get_file(), e.get_line() ) ;
     }
-
-    string::size_type str_begin = 0 ;
-    string::size_type str_end = curr_str.length() ;
-    string::size_type semi = 0 ;
-    bool done = false ;
-    while( done == false )
-    {
-	semi = curr_str.find( ";", str_begin ) ;
-	if( semi == string::npos )
-	{
-	    string s = (string)"Catalog type match malformed, no semicolon, "
-		       "looking for type:regexp;[type:regexp;]" ;
-	    throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    string a_pair = curr_str.substr( str_begin, semi-str_begin ) ;
-	    str_begin = semi+1 ;
-	    if( semi == str_end-1 )
-	    {
-		done = true ;
-	    }
-
-	    string::size_type col = a_pair.find( ":" ) ;
-	    if( col == string::npos )
-	    {
-		string s = (string)"Catalog type match malformed, no colon, "
-			   + "looking for type:regexp;[type:regexp;]" ;
-		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
-	    }
-	    else
-	    {
-		type_reg newval ;
-		newval.type = a_pair.substr( 0, col ) ;
-		newval.reg = a_pair.substr( col+1, a_pair.length()-col ) ;
-		_match_list.push_back( newval ) ;
-	    }
-	}
-    }
+    _root_dir = _utils->get_root_dir() ;
 }
 
 BESContainerStorageCatalog::~BESContainerStorageCatalog()
@@ -142,15 +96,45 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 					   const string &r_name,
 					   const string &type )
 {
+    // make sure that the real name passed in is not oon the exclude list
+    // for the catalog. First, remove any trailing slashes. Then find the
+    // basename of the remaining real name. The make sure it's not on the
+    // exclude list.
+    string::size_type stopat = r_name.length() - 1 ;
+    while( r_name[stopat] == '/' )
+    {
+	stopat-- ;
+    }
+    string new_name = r_name.substr( 0, stopat + 1 ) ;
+
+    string basename ;
+    string::size_type slash = new_name.rfind( "/" ) ;
+    if( slash != string::npos )
+    {
+	basename = new_name.substr( slash+1, new_name.length() - slash ) ;
+    }
+    else
+    {
+	basename = new_name ;
+    }
+    if( _utils->exclude( basename ) )
+    {
+	string s = "Attempting to create a container with real name "
+	           + r_name + " which is on the exclude list" ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
+
+    // If the type is specified, then just pass that on. If not, then match
+    // it against the types in the type list.
     string new_type = type ;
     if( new_type == "" )
     {
-	BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
-	BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
+	BESCatalogUtils::match_citer i = _utils->match_list_begin() ;
+	BESCatalogUtils::match_citer ie = _utils->match_list_end() ;
 	bool done = false ;
 	for( ; i != ie && !done; i++ )
 	{
-	    type_reg match = (*i) ;
+	    BESCatalogUtils::type_reg match = (*i) ;
 	    // FIXME: Should we create the Regex and put it in the type_reg
 	    // structure list instead of compiling it each time? Could this
 	    // improve performance? pcw 09/08/06
@@ -179,12 +163,12 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 				    list<string> &provides )
 {
     string node_type = "" ;
-    BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
-    BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
+    BESCatalogUtils::match_citer i = _utils->match_list_begin() ;
+    BESCatalogUtils::match_citer ie = _utils->match_list_end() ;
     bool done = false ;
     for( ; i != ie && !done; i++ )
     {
-	type_reg match = (*i) ;
+	BESCatalogUtils::type_reg match = (*i) ;
 	// FIXME: Should we create the Regex and put it in the type_reg
 	// structure list instead of compiling it each time? Could this
 	// improve performance? pcw 09/08/06
@@ -214,24 +198,10 @@ BESContainerStorageCatalog::dump( ostream &strm ) const
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "name: " << get_name() << endl ;
-    if( _match_list.size() )
-    {
-	strm << BESIndent::LMarg << "type matches:" << endl ;
-	BESIndent::Indent() ;
-	BESContainerStorageCatalog::Match_list_citer i = _match_list.begin() ;
-	BESContainerStorageCatalog::Match_list_citer ie = _match_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    type_reg match = (*i) ;
-	    strm << BESIndent::LMarg << match.type << " : "
-				     << match.reg << endl ;
-	}
-	BESIndent::UnIndent() ;
-    }
-    else
-    {
-	strm << BESIndent::LMarg << "    type matches: empty" << endl ;
-    }
+    strm << BESIndent::LMarg << "utils: " << get_name() << endl ;
+    BESIndent::Indent() ;
+    _utils->dump( strm ) ;
+    BESIndent::UnIndent() ;
     BESIndent::UnIndent() ;
 }
 

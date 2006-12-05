@@ -44,20 +44,15 @@ using std::string ;
 #include "BESCatalog.h"
 
 class BESInfo ;
+class BESCatalogUtils ;
 
 /** @brief builds catalogs from a directory structure
  */
 class BESCatalogDirectory : public BESCatalog
 {
 private:
-    string			_rootDir ;
-    list<string>		_exclude ;
-    list<string>		_include ;
+    const BESCatalogUtils *	_utils ;
 
-    void			buildList( list<string> &theList,
-					   const string &listStr ) ;
-    bool			include( const string &inQuestion ) ;
-    bool			exclude( const string &inQuestion ) ;
     void			add_stat_info( BESInfo *info,
                                                struct stat &buf,
 					       const string &node ) ;

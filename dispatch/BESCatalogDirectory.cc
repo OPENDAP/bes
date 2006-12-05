@@ -41,48 +41,24 @@ using std::stringstream ;
 using std::endl ;
 
 #include "BESCatalogDirectory.h"
-#include "TheBESKeys.h"
+#include "BESCatalogUtils.h"
 #include "BESInfo.h"
 #include "BESResponseException.h"
 #include "BESResponseNames.h"
-#include "GNURegex.h"
+#include "BESCatalogUtils.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorageCatalog.h"
 
 BESCatalogDirectory::BESCatalogDirectory( const string &name )
     : BESCatalog( name )
 {
-    bool found = false ;
-    string key = (string)"BES.Catalog." + name + ".RootDirectory" ;
-    _rootDir = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( !found || _rootDir == "" )
+    try
     {
-	string serr = "BESCatalogDirectory - unable to load root directory key "
-		      + key + " from initialization file" ;
-	throw BESResponseException( serr, __FILE__, __LINE__ ) ;
+	_utils = BESCatalogUtils::Utils( name ) ;
     }
-
-    DIR *dip = opendir( _rootDir.c_str() ) ;
-    if( dip == NULL )
+    catch( BESException &e )
     {
-	string serr = "BESCatalogDirectory - root directory "
-	              + _rootDir + " does not exist" ;
-	throw BESResponseException( serr, __FILE__, __LINE__ ) ;
-    }
-    closedir( dip ) ;
-
-    key = (string)"BES.Catalog." + name + ".Exclude" ;
-    string e_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( found && e_str != "" && e_str != ";" )
-    {
-	buildList( _exclude, e_str ) ;
-    }
-
-    key = (string)"BES.Catalog." + name + ".Include" ;
-    string i_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( found && i_str != "" && i_str != ";" )
-    {
-	buildList( _include, i_str ) ;
+	throw BESResponseException( e.get_message(), e.get_file(), e.get_line() ) ;
     }
 }
 
@@ -109,11 +85,11 @@ BESCatalogDirectory::show_catalog( const string &node,
 
     if( fullnode == "" )
     {
-	fullnode = _rootDir ;
+	fullnode = _utils->get_root_dir() ;
     }
     else
     {
-	fullnode = _rootDir + "/" + fullnode ;
+	fullnode = _utils->get_root_dir() + "/" + fullnode ;
     }
     string basename ;
     string::size_type slash = fullnode.rfind( "/" ) ;
@@ -130,7 +106,7 @@ BESCatalogDirectory::show_catalog( const string &node,
     {
 	// if the directory requested is in the exclude list then we won't
 	// let the user see it.
-	if( exclude( basename ) )
+	if( _utils->exclude( basename ) )
 	{
 	    return false ;
 	}
@@ -166,7 +142,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		}
 		else if ( S_ISREG( buf.st_mode ) )
 		{
-		    if( include( dirEntry ) )
+		    if( _utils->include( dirEntry ) )
 		    {
 			cnt++ ;
 		    }
@@ -192,7 +168,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    stat( fullPath.c_str(), &buf ) ;
 		    if ( S_ISDIR( buf.st_mode ) )
 		    {
-			if( exclude( dirEntry ) == false )
+			if( _utils->exclude( dirEntry ) == false )
 			{
 			    map<string,string> a2 ;
 			    a2["thredds_collection"] = "\"true\"" ;
@@ -204,7 +180,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    }
 		    else if ( S_ISREG( buf.st_mode ) )
 		    {
-			if( include( dirEntry ) )
+			if( _utils->include( dirEntry ) )
 			{
 			    map<string,string> a3 ;
 			    a3["thredds_collection"] = "\"false\"" ;
@@ -228,7 +204,7 @@ BESCatalogDirectory::show_catalog( const string &node,
     {
 	// if the node is in the include list then continue, else the node
 	// requested is not included and we return false.
-	if( include( basename ) )
+	if( _utils->include( basename ) )
 	{
 	    struct stat buf;
 	    int statret = stat( fullnode.c_str(), &buf ) ;
@@ -257,90 +233,6 @@ BESCatalogDirectory::show_catalog( const string &node,
     }
 
     return true ;
-}
-
-bool
-BESCatalogDirectory::include( const string &inQuestion )
-{
-    bool toInclude = false ;
-
-    // First check the file against the include list. If the file should be
-    // included then check the exclude list to see if there are exceptions
-    // to the include list.
-    if( _include.size() == 0 )
-    {
-	toInclude = true ;
-    }
-    else
-    {
-	list<string>::iterator i_iter = _include.begin() ;
-	list<string>::iterator i_end = _include.end() ;
-	for( ; i_iter != i_end; i_iter++ )
-	{
-	    string reg = *i_iter ;
-	    Regex reg_expr( reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
-	    {
-		toInclude = true ;
-	    }
-	}
-    }
-
-    if( toInclude == true )
-    {
-	if( exclude( inQuestion ) )
-	{
-	    toInclude = false ;
-	}
-    }
-
-    return toInclude ;
-}
-
-bool
-BESCatalogDirectory::exclude( const string &inQuestion )
-{
-    list<string>::iterator e_iter = _exclude.begin() ;
-    list<string>::iterator e_end = _exclude.end() ;
-    for( ; e_iter != e_end; e_iter++ )
-    {
-	string reg = *e_iter ;
-	Regex reg_expr( reg.c_str() ) ;
-	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
-	{
-	    return true ;
-	}
-    }
-    return false ;
-}
-
-void
-BESCatalogDirectory::buildList( list<string> &theList, const string &listStr )
-{
-    string::size_type str_begin = 0 ;
-    string::size_type str_end = listStr.length() ;
-    string::size_type semi = 0 ;
-    bool done = false ;
-    while( done == false )
-    {
-	semi = listStr.find( ";", str_begin ) ;
-	if( semi == string::npos )
-	{
-	    string s = (string)"Catalog type match malformed, no semicolon, "
-		       "looking for type:regexp;[type:regexp;]" ;
-	    throw BESResponseException( s, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    string a_member = listStr.substr( str_begin, semi-str_begin ) ;
-	    str_begin = semi+1 ;
-	    if( semi == str_end-1 )
-	    {
-		done = true ;
-	    }
-	    if( a_member != "" ) theList.push_back( a_member ) ;
-	}
-    }
 }
 
 void
@@ -408,42 +300,10 @@ BESCatalogDirectory::dump( ostream &strm ) const
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
 
-    strm << BESIndent::LMarg << "root directory: " << _rootDir << endl ;
-
-    if( _include.size() )
-    {
-	strm << BESIndent::LMarg << "include list:" << endl ;
-	BESIndent::Indent() ;
-	list<string>::const_iterator i_iter = _include.begin() ;
-	list<string>::const_iterator i_end = _include.end() ;
-	for( ; i_iter != i_end; i_iter++ )
-	{
-	    strm << BESIndent::LMarg << *i_iter << endl ;
-	}
-	BESIndent::UnIndent() ;
-    }
-    else
-    {
-	strm << BESIndent::LMarg << "include list: empty" << endl ;
-    }
-
-    if( _exclude.size() )
-    {
-	strm << BESIndent::LMarg << "exclude list:" << endl ;
-	BESIndent::Indent() ;
-	list<string>::const_iterator e_iter = _exclude.begin() ;
-	list<string>::const_iterator e_end = _exclude.end() ;
-	for( ; e_iter != e_end; e_iter++ )
-	{
-	    strm << BESIndent::LMarg << *e_iter << endl ;
-	}
-	BESIndent::UnIndent() ;
-    }
-    else
-    {
-	strm << BESIndent::LMarg << "exclude list: empty" << endl ;
-    }
-
+    strm << BESIndent::LMarg << "catalog utilities: " << endl ;
+    BESIndent::Indent() ;
+    _utils->dump( strm ) ;
+    BESIndent::UnIndent() ;
     BESIndent::UnIndent() ;
 }
 
