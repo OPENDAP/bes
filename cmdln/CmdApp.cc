@@ -418,6 +418,12 @@ CmdApp::run()
     }
     catch( PPTException &e )
     {
+	if( _client )
+	{
+	    _client->shutdownClient() ;
+	    delete _client ;
+	    _client = 0 ;
+	}
 	BESDEBUG( "FAILED" << endl ) ;
 	cerr << "error starting the client" << endl ;
 	cerr << e.getMessage() << endl ;
@@ -451,6 +457,8 @@ CmdApp::run()
 	if( _client )
 	{
 	    _client->shutdownClient() ;
+	    delete _client ;
+	    _client = 0 ;
 	}
 	BESDEBUG( "OK" << endl ) ;
 
