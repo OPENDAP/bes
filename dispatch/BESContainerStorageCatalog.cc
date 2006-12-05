@@ -117,7 +117,7 @@ BESContainerStorageCatalog::add_container( const string &s_name,
     {
 	basename = new_name ;
     }
-    if( _utils->exclude( basename ) )
+    if( !_utils->include( basename ) || _utils->exclude( basename ) )
     {
 	string s = "Attempting to create a container with real name "
 	           + r_name + " which is on the exclude list" ;
