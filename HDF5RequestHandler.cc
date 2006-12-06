@@ -22,7 +22,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // HDF5RequestHandler.cc
 
 #include <sys/types.h>
@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-using std::ostringstream ;
+using std::ostringstream;
 
 #include "HDF5RequestHandler.h"
 
@@ -54,187 +54,182 @@ using std::ostringstream ;
 
 extern "C" {
     hid_t get_fileid(const char *filename);
-}
-
-HDF5RequestHandler::HDF5RequestHandler( string name )
-    : BESRequestHandler( name )
+} HDF5RequestHandler::HDF5RequestHandler(string name)
+:BESRequestHandler(name)
 {
-    add_handler( DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das ) ;
-    add_handler( DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds ) ;
-    add_handler( DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data ) ;
-    add_handler( HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help ) ;
-    add_handler( VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version ) ;
+    add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
+    add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
+    add_handler(DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data);
+    add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
+    add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 }
 
 HDF5RequestHandler::~HDF5RequestHandler()
 {
 }
 
-bool
-HDF5RequestHandler::hdf5_build_das( BESDataHandlerInterface &dhi )
+bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
-    string filename = dhi.container->access() ;
-    hid_t file1 = get_fileid( filename.c_str() ) ;
-    if( file1 < 0 )
-    {
-	throw BESHandlerException( (string)"Could not open hdf file: "
-				   + filename,
-				   __FILE__, __LINE__ ) ;
+    string filename = dhi.container->access();
+    hid_t file1 = get_fileid(filename.c_str());
+    if (file1 < 0) {
+        throw BESHandlerException((string) "Could not open hdf file: "
+                                  + filename, __FILE__, __LINE__);
     }
 
     BESDASResponse *bdas =
-	dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object() ) ;
-    DAS *das = bdas->get_das() ;
+        dynamic_cast <
+        BESDASResponse * >(dhi.response_handler->get_response_object());
+    DAS *das = bdas->get_das();
 
-    try
-    {
-	find_gloattr( file1, *das ) ;
-	depth_first( file1, "/", *das, filename.c_str() ) ;
+    try {
+        find_gloattr(file1, *das);
+        depth_first(file1, "/", *das, filename.c_str());
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception building HDF5 DAS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception building HDF5 DAS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught building HDF5 DAS" ;
-	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught building HDF5 DAS";
+        BESHandlerException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 
-    return true ;
+    return true;
 }
 
-bool
-HDF5RequestHandler::hdf5_build_dds( BESDataHandlerInterface &dhi )
+bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
-    string filename = dhi.container->access() ;
-    hid_t file1 = get_fileid( filename.c_str() ) ;
-    if( file1 < 0 )
-    {
-	throw BESHandlerException( string( "hdf4_build_dds: " )
-					  + "Could not open hdf5 file: "
-	                                  + filename ,
-				   __FILE__, __LINE__ ) ;
+    string filename = dhi.container->access();
+    hid_t file1 = get_fileid(filename.c_str());
+    if (file1 < 0) {
+        throw BESHandlerException(string("hdf4_build_dds: ")
+                                  + "Could not open hdf5 file: "
+                                  + filename, __FILE__, __LINE__);
     }
 
     BESDDSResponse *bdds =
-	dynamic_cast<BESDDSResponse *>( dhi.response_handler->get_response_object() ) ;
-    DDS *dds = bdds->get_dds() ;
+        dynamic_cast <
+        BESDDSResponse * >(dhi.response_handler->get_response_object());
+    DDS *dds = bdds->get_dds();
 
-    try
-    {
-	HDF5TypeFactory *factory = new HDF5TypeFactory ;
-	dds->set_factory( factory ) ;
+    try {
+        HDF5TypeFactory *factory = new HDF5TypeFactory;
+        dds->set_factory(factory);
 
-	depth_first( file1, "/", *dds, filename.c_str() ) ;
+        depth_first(file1, "/", *dds, filename.c_str());
 
-	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+        DAS das;
+
+        find_gloattr(file1, das);
+        depth_first(file1, "/", das, filename.c_str());
+
+        dds->transfer_attributes(&das);
+
+        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
 #if 0
-    // see ticket 720
-	dds->set_factory( NULL ) ;
-	delete factory ;
+        // see ticket 720
+        dds->set_factory(NULL);
+        delete factory;
 #endif
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception building HDF5 DDS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception building HDF5 DDS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught building HDF5 DDS" ;
-	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught building HDF5 DDS";
+        BESHandlerException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 
-    return true ;
+    return true;
 }
 
-bool
-HDF5RequestHandler::hdf5_build_data( BESDataHandlerInterface &dhi )
+bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
-    string filename = dhi.container->access() ;
-    hid_t file1 = get_fileid( filename.c_str() ) ;
-    if( file1 < 0 )
-    {
-	throw BESHandlerException( string( "hdf4_build_data: " )
-					  + "Could not open hdf5 file: "
-	                                  + filename ,
-				   __FILE__, __LINE__ ) ;
+    string filename = dhi.container->access();
+    hid_t file1 = get_fileid(filename.c_str());
+    if (file1 < 0) {
+        throw BESHandlerException(string("hdf4_build_data: ")
+                                  + "Could not open hdf5 file: "
+                                  + filename, __FILE__, __LINE__);
     }
 
     BESDataDDSResponse *bdds =
-	dynamic_cast<BESDataDDSResponse *>( dhi.response_handler->get_response_object() ) ;
-    DataDDS *dds = bdds->get_dds() ;
+        dynamic_cast <
+        BESDataDDSResponse *
+        >(dhi.response_handler->get_response_object());
+    DataDDS *dds = bdds->get_dds();
 
-    try
-    {
-	HDF5TypeFactory *factory = new HDF5TypeFactory ;
-	dds->set_factory( factory ) ;
+    try {
+        HDF5TypeFactory *factory = new HDF5TypeFactory;
+        dds->set_factory(factory);
 
-	depth_first( file1, "/", *dds, filename.c_str() ) ;
+        depth_first(file1, "/", *dds, filename.c_str());
 
-	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+        DAS das;
+
+        find_gloattr(file1, das);
+        depth_first(file1, "/", das, filename.c_str());
+
+        dds->transfer_attributes(&das);
+
+        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
 #if 0
-    // see ticket 720
-    dds->set_factory( NULL ) ;
-    delete factory ;
+        // see ticket 720
+        dds->set_factory(NULL);
+        delete factory;
 #endif
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception building HDF5 DataDDS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESHandlerException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception building HDF5 DataDDS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught building HDF5 DataDDS" ;
-	BESHandlerException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught building HDF5 DataDDS";
+        BESHandlerException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 
-    return true ;
+    return true;
 }
 
-bool
-HDF5RequestHandler::hdf5_build_help( BESDataHandlerInterface &dhi )
+bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 {
-    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
-    info->begin_tag( "Handler" ) ;
-    info->add_tag( "name", PACKAGE_NAME ) ;
-    string handles = (string)DAS_RESPONSE
-                     + "," + DDS_RESPONSE
-                     + "," + DATA_RESPONSE
-                     + "," + HELP_RESPONSE
-                     + "," + VERS_RESPONSE ;
-    info->add_tag( "handles", handles ) ;
-    info->add_tag( "version", PACKAGE_STRING ) ;
-    info->end_tag( "Handler" ) ;
+    BESInfo *info =
+        (BESInfo *) dhi.response_handler->get_response_object();
+    info->begin_tag("Handler");
+    info->add_tag("name", PACKAGE_NAME);
+    string handles = (string) DAS_RESPONSE
+        + "," + DDS_RESPONSE
+        + "," + DATA_RESPONSE + "," + HELP_RESPONSE + "," + VERS_RESPONSE;
+    info->add_tag("handles", handles);
+    info->add_tag("version", PACKAGE_STRING);
+    info->end_tag("Handler");
 
-    return true ;
+    return true;
 }
 
-bool
-HDF5RequestHandler::hdf5_build_version( BESDataHandlerInterface &dhi )
+bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
 {
-    BESVersionInfo *info = (BESVersionInfo *)dhi.response_handler->get_response_object() ;
-    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
-    return true ;
+    BESVersionInfo *info =
+        (BESVersionInfo *) dhi.response_handler->get_response_object();
+    info->addHandlerVersion(PACKAGE_NAME, PACKAGE_VERSION);
+    return true;
 }
-
