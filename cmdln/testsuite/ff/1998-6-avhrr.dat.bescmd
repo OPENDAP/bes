@@ -4,6 +4,12 @@ get das for e;
 get dds for e;
 get ddx for e;
 get info_page for e;
+get html_form for e using http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat;
+get ascii for e;
+get dods for e;
+define e as av with av.constraint="&GSO_AVHRR.day_num>160&GSO_AVHRR.day_num<162";
+get dds for e;
+get ddx for e;
 get ascii for e;
 get dods for e;
 exit
