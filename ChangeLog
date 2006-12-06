@@ -1,3 +1,64 @@
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Changed the _module library to not use version information and to be built
+	as a module.  Update the bes.m4 file to use the --modulesdir flag to
+	bes-config to get the name of the module directory, which is lib/bes.
+	M    conf/bes.m4
+	M    Makefile.am
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Changed the name of the module and type match to h5 instead of hdf5
+	M    opendap.ini
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	Passing the name of the module to the initialize and terminate methods of the Module class so that it is set in the bes configuration file instead of hard-coded
+
+2006-08-19  Patrick West <pwest@ucar.edu>
+
+	changed access to file to use access method on Container and added compression parameters to the BES configuraiton file
+
+2006-07-06  Patrick West <pwest@ucar.edu>
+
+	dap_cmdmodule library renamed to dap_cmd_module so that all loaded module libraries are named <something>_module
+
+2006-07-03  James Gallagher <jgallagher@opendap.org>
+
+	H5Git.c: Modified common_name() but valgrind indicates it's still broken.
+
+2006-06-30  Patrick West <pwest@ucar.edu>
+
+	In the help response added begin and end tags called handler to separate the different hander help responses and added a tag called name within the handler tag to say which handler this help is for, changed the name of the handler to hdf5 so there isn't a conflict with the hdf4 handler
+
+2006-06-28  Patrick West <pwest@ucar.edu>
+
+	bes exception updates, cleaned up configuration file
+
+2006-06-19  James Gallagher <jgallagher@opendap.org>
+
+	Modifications to the build (configure.ac, et c.)
+
+2006-06-19  Patrick West <pwest@ucar.edu>
+
+	DODS to BES and configuration updates
+
+2006-06-19  James Gallagher <jgallagher@opendap.org>
+
+	Added/updated INSTALL, NEWS, ChangeLog, README and configue.ac.
+
+2006-06-02  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: updated to use the new bes and hdf5 macros in conf.
+
+2006-06-02  James Gallagher <jgallagher@opendap.org>
+
+	Added bes, hdf5 and hdf5_header macros; updated libdap4 and mkinstalldirs.
+	Added compile file.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2006-06-02  James Gallagher <jgallagher@opendap.org>
 
 	configure.ac: updated to use the new bes and hdf5 macros in conf.
