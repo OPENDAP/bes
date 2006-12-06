@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // Copyright (c) 1996, California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
 // acknowledged. Any commercial use must be negotiated with the
@@ -48,7 +48,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
- 
+
 #include "DODSFilter.h"
 #include "DAS.h"
 #include "DDS.h"
@@ -65,139 +65,150 @@
 
 using namespace std;
 
-extern void read_das(DAS& das, const string& cachedir, const string& filename);
-extern void read_dds(DDS& dds, const string& cachedir, const string& filename);
+extern void read_das(DAS & das, const string & cachedir,
+                     const string & filename);
+extern void read_dds(DDS & dds, const string & cachedir,
+                     const string & filename);
 
 const string cgi_version = PACKAGE_VERSION;
 
-int 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     DBG(cerr << "Starting the HDF server." << endl);
 
     try {
-	DODSFilter df(argc, argv);
-	if (df.get_cgi_version() == "")
-	    df.set_cgi_version(cgi_version);
-            
-       string cachedir = df.get_cache_dir();
-       
-       string dummy = df.get_cache_dir()+ "/dummy";
-       int fd = open(dummy.c_str(),  O_CREAT|O_WRONLY|O_TRUNC);
-       unlink(dummy.c_str());
-       if (fd == -1) {
-           cachedir = "";
-           ErrMsgT(string("Could not create a file in the cache directory (")
-                   + df.get_cache_dir() + ")");
-       }
-       close(fd);
+        DODSFilter df(argc, argv);
+        if (df.get_cgi_version() == "")
+            df.set_cgi_version(cgi_version);
 
-	switch (df.get_response()) {
-	  case DODSFilter::DAS_Response: {
-	      DAS das;
-	
-	      read_das(das, cachedir, df.get_dataset_name());
-	      df.read_ancillary_das(das);
-	      df.send_das(das);
-	      break;
-	  }
+        string cachedir = df.get_cache_dir();
 
-	  case DODSFilter::DDS_Response: {
-              HDFTypeFactory factory;
-	      DDS dds(&factory);
-              ConstraintEvaluator ce;
+        string dummy = df.get_cache_dir() + "/dummy";
+        int fd = open(dummy.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
+        unlink(dummy.c_str());
+        if (fd == -1) {
+            cachedir = "";
+            ErrMsgT(string
+                    ("Could not create a file in the cache directory (")
+                    + df.get_cache_dir() + ")");
+        }
+        close(fd);
 
-	      read_dds(dds, cachedir, df.get_dataset_name());
-	      df.read_ancillary_dds(dds);
-	      df.send_dds(dds, ce, true);
-	      break;
-	  }
+        switch (df.get_response()) {
+        case DODSFilter::DAS_Response:{
+                DAS das;
 
-	  case DODSFilter::DataDDS_Response: {
-              HDFTypeFactory factory;
-	      DDS dds(&factory);
-              ConstraintEvaluator ce;
-              DAS das;
+                read_das(das, cachedir, df.get_dataset_name());
+                df.read_ancillary_das(das);
+                df.send_das(das);
+                break;
+            }
 
-              dds.filename(df.get_dataset_name());
+        case DODSFilter::DDS_Response:{
+                HDFTypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+                DAS das;
 
-              read_dds(dds, cachedir, df.get_dataset_name());
-              df.read_ancillary_dds(dds);
+                dds.filename(df.get_dataset_name());
 
-              read_das(das, cachedir, df.get_dataset_name());
-              df.read_ancillary_das(das);
+                read_dds(dds, cachedir, df.get_dataset_name());
+                df.read_ancillary_dds(dds);
 
-              dds.transfer_attributes(&das);
+                read_das(das, cachedir, df.get_dataset_name());
+                df.read_ancillary_das(das);
 
-	      df.send_data(dds, ce, stdout);
-	      break;
-	  }
+                dds.transfer_attributes(&das);
 
-          case DODSFilter::DDX_Response: {
-              HDFTypeFactory factory;
-              DDS dds(&factory);
-              ConstraintEvaluator ce;
-              DAS das;
+                df.send_dds(dds, ce, true);
+                break;
+            }
 
-              dds.filename(df.get_dataset_name());
+        case DODSFilter::DataDDS_Response:{
+                HDFTypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+                DAS das;
 
-              read_dds(dds, cachedir, df.get_dataset_name());
-              df.read_ancillary_dds(dds);
+                dds.filename(df.get_dataset_name());
 
-              read_das(das, cachedir, df.get_dataset_name());
-              df.read_ancillary_das(das);
+                read_dds(dds, cachedir, df.get_dataset_name());
+                df.read_ancillary_dds(dds);
 
-              dds.transfer_attributes(&das);
+                read_das(das, cachedir, df.get_dataset_name());
+                df.read_ancillary_das(das);
 
-              df.send_ddx(dds, ce, stdout);
-              break;
-          }
+                dds.transfer_attributes(&das);
 
-	  case DODSFilter::Version_Response: {
-	      df.send_version_info();
+                df.send_data(dds, ce, stdout);
+                break;
+            }
 
-	      break;
-	  }
+        case DODSFilter::DDX_Response:{
+                HDFTypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+                DAS das;
 
-	  default:
-	    df.print_usage();	// Throws Error
-	}
+                dds.filename(df.get_dataset_name());
+
+                read_dds(dds, cachedir, df.get_dataset_name());
+                df.read_ancillary_dds(dds);
+
+                read_das(das, cachedir, df.get_dataset_name());
+                df.read_ancillary_das(das);
+
+                dds.transfer_attributes(&das);
+
+                df.send_ddx(dds, ce, stdout);
+                break;
+            }
+
+        case DODSFilter::Version_Response:{
+                df.send_version_info();
+
+                break;
+            }
+
+        default:
+            df.print_usage();   // Throws Error
+        }
     }
-    catch (dhdferr &d) {
+    catch(dhdferr & d) {
         ostringstream s;
-	s << "hdf4 handler: " << d;
+        s << "hdf4 handler: " << d;
         ErrMsgT(s.str());
-	Error e(unknown_error, d.errmsg());
-	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(stdout);
-	return 1;
+        Error e(unknown_error, d.errmsg());
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
     }
-    catch (hcerr &h) {
+    catch(hcerr & h) {
         ostringstream s;
-	s << "hdf4 handler: " << h;
+        s << "hdf4 handler: " << h;
         ErrMsgT(s.str());
-	Error e(unknown_error, h.errmsg());
-	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(stdout);
-	return 1;
+        Error e(unknown_error, h.errmsg());
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
     }
-    catch (Error &e) {
+    catch(Error & e) {
         string s;
-	s = (string)"hdf4 handler: " + e.get_error_message() + "\n";
+        s = (string) "hdf4 handler: " + e.get_error_message() + "\n";
         ErrMsgT(s);
-	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(stdout);
-	return 1;
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
     }
-    catch (...) {
+    catch(...) {
         string s("hdf4 handler: Unknown exception");
-	ErrMsgT(s);
-	Error e(unknown_error, s);
-	set_mime_text(stdout, dods_error, cgi_version);
-	e.print(stdout);
-	return 1;
+        ErrMsgT(s);
+        Error e(unknown_error, s);
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
     }
-    
+
     DBG(cerr << "HDF server exitied successfully." << endl);
     return 0;
 }
