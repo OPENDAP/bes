@@ -1,0 +1,15 @@
+set container in catalog values av,/data/ff/gsodock.dat;
+define e as av;
+get das for e;
+get dds for e;
+get ddx for e;
+get info_page for e;
+get html_form for e using http://localhost:8080/opendap/data/ff/gsodock.dat;
+get ascii for e;
+get dods for e;
+define e as av with av.constraint="URI_GSO-Dock.Air_Temp,URI_GSO-Dock.Depth";
+get dds for e;
+get ddx for e;
+get ascii for e;
+get dods for e;
+exit

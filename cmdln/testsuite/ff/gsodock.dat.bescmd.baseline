@@ -1,0 +1,1190 @@
+Attributes {
+    FF_GLOBAL {
+        String Server "DODS FreeFrom based on FFND release 4.2.3";
+        String text "Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar";
+    }
+    Time {
+    }
+    Depth {
+    }
+    Sea_Temp {
+    }
+    Salinity {
+    }
+    DO%20 {
+    }
+    pH {
+    }
+    Turbidity {
+    }
+    Air_Temp {
+    }
+    Wind_Speed {
+    }
+    Wind_Direction {
+    }
+    Barometric_Pres {
+    }
+    Solar_Radiation {
+    }
+}
+Dataset {
+    Sequence {
+        Float64 Time;
+        Float32 Depth;
+        Float32 Sea_Temp;
+        Float32 Salinity;
+        Float32 DO%20;
+        Float32 pH;
+        Float32 Turbidity;
+        Float32 Air_Temp;
+        Float32 Wind_Speed;
+        Float32 Wind_Direction;
+        Float32 Barometric_Pres;
+        Float32 Solar_Radiation;
+    } URI_GSO-Dock;
+} gsodock.dat;
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="gsodock.dat"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>&quot;DODS FreeFrom based on FFND release 4.2.3&quot;</value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <value>&quot;Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar&quot;</value>
+        </Attribute>
+    </Attribute>
+
+    <Sequence name="URI_GSO-Dock">
+        <Float64 name="Time"/>
+        <Float32 name="Depth"/>
+        <Float32 name="Sea_Temp"/>
+        <Float32 name="Salinity"/>
+        <Float32 name="DO "/>
+        <Float32 name="pH"/>
+        <Float32 name="Turbidity"/>
+        <Float32 name="Air_Temp"/>
+        <Float32 name="Wind_Speed"/>
+        <Float32 name="Wind_Direction"/>
+        <Float32 name="Barometric_Pres"/>
+        <Float32 name="Solar_Radiation"/>
+    </Sequence>
+
+    <dataBLOB href=".blob?"/>
+</Dataset>
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>Server</b>:</td>
+<td align=left>"DODS FreeFrom based on FFND release 4.2.3"<br></td></tr>
+
+<tr><td align=right valign=top><b>text</b>:</td>
+<td align=left>"Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>URI_GSO-Dock</b>:</td>
+<td align=left valign=top>Sequence<br><table>
+<tr><td align=right valign=top><b>Time</b>:</td>
+<td align=left valign=top>64 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Depth</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Sea_Temp</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Salinity</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>DO </b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>pH</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Turbidity</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Air_Temp</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Wind_Speed</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Wind_Direction</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Barometric_Pres</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Solar_Radiation</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr></table>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>OPeNDAP Server Dataset Query Form</title>
+<base href="http://www.opendap.org/online_help_files/opendap_form_help.html">
+<script type="text/javascript">
+<!--
+
+// $Id: www.js 13206 2006-02-15 20:16:29Z jimg $
+
+var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
+
+// Event handlers for the disposition button.
+
+// The ascii_button handler sends data to a new window. The user can then 
+// save the data to a file.
+
+function ascii_button() {
+    var url = new String(document.forms[0].url.value);
+
+    var url_parts = url.split("?");
+    /* handle case where constraint is null. */
+    if (url_parts[1] != null) {
+        var ascii_url = url_parts[0] + ".ascii?" + url_parts[1];
+    }
+    else {
+        var ascii_url = url_parts[0] + ".ascii?";
+    }
+
+    window.open(ascii_url, "ASCII_Data");
+}
+
+/* The binary_button handler loads the data to the current window. Since it 
+   is binary, Netscape will ask the user for a filename and save the data
+   to that file. */
+
+function binary_button(ext) {
+    var url = new String(document.forms[0].url.value);
+
+    var url_parts = url.split("?");
+    /* handle case where constraint is null. */
+    if (url_parts[1] != null) {
+        var binary_url = url_parts[0] + "." + ext + "?" + url_parts[1];
+    }
+    else {
+        var binary_url = url_parts[0] + "." + ext + "?";
+    }
+
+    window.location = binary_url;
+}
+
+/* Route the URL to Matlab, IDL, .... Users must add an entry into their mime
+   types file (aka list of Netscape helper applications) so that the URL will
+   be fedd into Matlab which must, in addition, be running loaddods.
+
+   Note that reflection_cgi is a global JavaScript variable set at the 
+   begining of this `file'. 
+
+   DEPRECATED */
+
+function program_button() {
+    var program_url = new String(document.forms[0].url.value);
+
+    /* Build a call to the reflector CGI. */
+    var CGI = reflection_cgi + "?" + "url=" + program_url + "&disposition=matlab";
+
+    window.location = CGI;
+}
+
+var help = 0;			// Our friend, the help window.
+
+function help_button() {
+    // Check the global to keep from opening the window again if it is
+    // already visible. I think Netscape handles this but I know it will
+    // write the contents over and over again. This preents that, too.
+    // 10/8/99 jhrg
+    if (help && !help.closed)
+	return;
+
+    // Resize on Netscape 4 is hosed. When enabled, if a user resizes then
+    // the root window's document gets reloaded. This does not happen on IE5.
+    // regardless, with scrollbars we don't absolutely need to be able to
+    // resize. 10/8/99 jhrg
+    help = window.open("http://www.opendap.org/online_help_files/opendap_form_help.html",
+                       "help", "scrollbars,dependent,width=600,height=400");
+}
+
+//function open_dods_home() {
+//    window.open("http://www.opendap.org/", "DODS_HOME_PAGE");
+//}
+
+
+// Helper functions for the form.
+
+function describe_index() {
+   defaultStatus = "Enter start, stride and stop for the array dimension.";
+}
+
+function describe_selection() {
+   defaultStatus = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+}
+
+function describe_operator() {
+   defaultStatus = "Choose a relational operator. Use - to enter a function name).";
+}
+
+function describe_projection() {
+   defaultStatus = "Add this variable to the projection.";
+}
+
+///////////////////////////////////////////////////////////
+// The dods_url object.
+///////////////////////////////////////////////////////////
+
+// CTOR for dods_url
+// Create the DODS URL object.
+function dods_url(base_url) {
+    this.url = base_url;
+    this.projection = "";
+    this.selection = "";
+    this.num_dods_vars = 0;
+    this.dods_vars = new Array();
+        
+    this.build_constraint = build_constraint;
+    this.add_dods_var = add_dods_var;
+    this.update_url = update_url;
+}
+
+// Method of dods_url
+// Add the projection and selection to the displayed URL.
+function update_url() {
+    this.build_constraint();
+    var url_text = this.url;
+    // Only add the projection & selection (and ?) if there really are
+    // constraints! 
+    if (this.projection.length + this.selection.length > 0)
+        url_text += "?" + this.projection + this.selection;
+    document.forms[0].url.value = url_text;
+}
+
+// Method of dods_url
+// Scan all the form elements and pick out the various pieces of constraint
+// information. Add these to the dods_url instance.
+function build_constraint() {
+    var p = "";
+    var s = "";
+    for (var i = 0; i < this.num_dods_vars; ++i) {
+        if (this.dods_vars[i].is_projected == 1) {
+	    // The comma is a clause separator.
+	    if (p.length > 0)
+	        p += ",";
+            p += this.dods_vars[i].get_projection();
+	}
+	var temp_s = this.dods_vars[i].get_selection();
+	if (temp_s.length > 0)
+	    s += "&" + temp_s;    // The ampersand is a prefix to the clause.
+    }
+
+    this.projection = p;
+    this.selection = s;
+}
+
+// Method of dods_url
+// Add the variable to the dods_var array of dods_vars. The var_index is the
+// number of *this particular* variable in the dataset, zero-based.
+function add_dods_var(dods_var) {
+    this.dods_vars[this.num_dods_vars] = dods_var;
+    this.num_dods_vars++;
+}
+
+/////////////////////////////////////////////////////////////////
+// dods_var
+/////////////////////////////////////////////////////////////////
+
+// CTOR for dods_var
+// name: the name of the variable from DODS' perspective.
+// js_var_name: the name of the variable within the form.
+// is_array: 1 if this is an array, 0 otherwise.
+function dods_var(name, js_var_name, is_array) {
+    // Common members
+    this.name = name;
+    this.js_var_name = js_var_name;
+    this.is_projected = 0;
+    if (is_array > 0) {
+        this.is_array = 1;
+        this.num_dims = 0;        // Holds the number of dimensions
+        this.dims = new Array(); // Holds the length of the dimensions
+
+        this.add_dim = add_dim;
+        this.display_indices = display_indices;
+        this.erase_indices = erase_indices;
+    }
+    else
+        this.is_array = 0;
+
+    this.handle_projection_change = handle_projection_change;
+    this.get_projection = get_projection;
+    this.get_selection = get_selection;
+}
+
+// Method of dods_var
+// Add a dimension to a DODS Array object.
+function add_dim(dim_size) {
+    this.dims[this.num_dims] = dim_size;
+    this.num_dims++;
+}
+
+// Method of dods_var
+// Add the array indices to the text widgets associated with this DODS
+// array object. The text widgets are names <var_name>_0, <var_name>_1, ...
+// <var_name>_n for an array with size N+1.
+function display_indices() {
+    for (var i = 0; i < this.num_dims; ++i) {
+        var end_index = this.dims[i]-1;
+        var s = "0:1:" + end_index.toString();
+	var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	eval(text_widget).value = s;
+    }
+}
+
+// Method of dods_var
+// Use this to remove index information from a DODS array object.
+function erase_indices() {
+    for (var i = 0; i < this.num_dims; ++i) {
+	var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	eval(text_widget).value = "";
+    }
+}
+
+// Method of  dods_var
+function handle_projection_change(check_box) {
+    if (check_box.checked) {
+        this.is_projected = 1;
+	if (this.is_array == 1)
+	    this.display_indices();
+    }
+    else {
+        this.is_projected = 0;
+	if (this.is_array == 1)
+	    this.erase_indices();
+    }
+
+    DODS_URL.update_url();
+}
+
+
+// Method of dods_var
+// Get the projection sub-expression for this variable.
+function get_projection() {
+    var p = "";
+    if (this.is_array == 1) {
+        p = this.name;		// ***
+        for (var i = 0; i < this.num_dims; ++i) {
+	    var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	    p += "[" + eval(text_widget).value + "]";
+	}
+    }
+    else {
+	p = this.name;		// ***
+    }
+
+    return p;
+}
+
+// Method of dods_var
+// Get the selection (which is null for arrays).
+function get_selection() {
+    var s = "";
+    if (this.is_array == 1) {
+        return s;
+    }
+    else {
+	var text_widget = "document.forms[0]." + this.js_var_name + "_selection";
+        if (eval(text_widget).value != "") {
+            var oper_widget_name = "document.forms[0]." + this.js_var_name + "_operator";
+            var oper_widget = eval(oper_widget_name);
+	    var operator = oper_widget.options[oper_widget.selectedIndex].value;
+            // If the operator is `-' then don't prepend the variable name!
+            // This provides a way for users to enter function names as
+            // selection clauses. 
+            if (operator == "-")
+                s = eval(text_widget).value;
+            else
+	        s = this.name + operator + eval(text_widget).value; // ***
+        }
+    }
+
+    return s;
+}    
+
+DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
+// -->
+</script>
+</head>
+<body>
+<p><h2 align='center'>OPeNDAP Server Dataset Access Form</h2>
+<hr>
+<form action="">
+<table>
+<tr>
+<td align="right">
+<h3>
+<a href="opendap_form_help.html#disposition" target="help">Action:</a></h3>
+<td>
+<input type="button" value="Get ASCII" onclick="ascii_button()">
+<input type="button" value="Binary Data Object " onclick="binary_button('dods')">
+<input type="button" value="Show Help" onclick="help_button()">
+
+<tr>
+<td align="right"><h3><a href="opendap_form_help.html#data_url" target="help">Data URL:</a>
+</h3>
+<td><input name="url" type="text" size="70" value="http://localhost:8080/opendap/data/ff/gsodock.dat">
+<tr><td><td><hr>
+
+<tr>
+<td align="right" valign="top"><h3>
+<a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
+<td><textarea name="global_attr" rows="5" cols="70">
+Server: "DODS FreeFrom based on FFND release 4.2.3"
+text: "Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"
+</textarea><p>
+
+<tr><td><td><hr>
+
+<tr>
+<td align="right" valign="top">
+<h3><a href="opendap_form_help.html#dataset_variables" target="help">Variables:</a></h3>
+<td><b>Sequence URI_GSO-Dock</b><br>
+<dl><dd>
+<script type="text/javascript">
+<!--
+org_opendap_Time = new dods_var("Time", "org_opendap_Time", 0);
+DODS_URL.add_dods_var(org_opendap_Time);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Time"
+onclick="org_opendap_Time.handle_projection_change(get_org_opendap_Time)">
+<font size="+1">Time</font>: 64 bit Real</b><br>
+
+Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Time_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Time_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Depth = new dods_var("Depth", "org_opendap_Depth", 0);
+DODS_URL.add_dods_var(org_opendap_Depth);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Depth"
+onclick="org_opendap_Depth.handle_projection_change(get_org_opendap_Depth)">
+<font size="+1">Depth</font>: 32 bit Real</b><br>
+
+Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Depth_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Depth_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Sea_Temp = new dods_var("Sea_Temp", "org_opendap_Sea_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_Sea_Temp);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Sea_Temp"
+onclick="org_opendap_Sea_Temp.handle_projection_change(get_org_opendap_Sea_Temp)">
+<font size="+1">Sea_Temp</font>: 32 bit Real</b><br>
+
+Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Sea_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Sea_Temp_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Salinity = new dods_var("Salinity", "org_opendap_Salinity", 0);
+DODS_URL.add_dods_var(org_opendap_Salinity);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Salinity"
+onclick="org_opendap_Salinity.handle_projection_change(get_org_opendap_Salinity)">
+<font size="+1">Salinity</font>: 32 bit Real</b><br>
+
+Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Salinity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Salinity_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_DO_ = new dods_var("DO%20", "org_opendap_DO_", 0);
+DODS_URL.add_dods_var(org_opendap_DO_);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_DO_"
+onclick="org_opendap_DO_.handle_projection_change(get_org_opendap_DO_)">
+<font size="+1">DO </font>: 32 bit Real</b><br>
+
+DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_DO__selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="DO _attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_pH = new dods_var("pH", "org_opendap_pH", 0);
+DODS_URL.add_dods_var(org_opendap_pH);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_pH"
+onclick="org_opendap_pH.handle_projection_change(get_org_opendap_pH)">
+<font size="+1">pH</font>: 32 bit Real</b><br>
+
+pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_pH_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="pH_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Turbidity = new dods_var("Turbidity", "org_opendap_Turbidity", 0);
+DODS_URL.add_dods_var(org_opendap_Turbidity);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Turbidity"
+onclick="org_opendap_Turbidity.handle_projection_change(get_org_opendap_Turbidity)">
+<font size="+1">Turbidity</font>: 32 bit Real</b><br>
+
+Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Turbidity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Turbidity_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Air_Temp = new dods_var("Air_Temp", "org_opendap_Air_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_Air_Temp);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Air_Temp"
+onclick="org_opendap_Air_Temp.handle_projection_change(get_org_opendap_Air_Temp)">
+<font size="+1">Air_Temp</font>: 32 bit Real</b><br>
+
+Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Air_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Air_Temp_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Wind_Speed = new dods_var("Wind_Speed", "org_opendap_Wind_Speed", 0);
+DODS_URL.add_dods_var(org_opendap_Wind_Speed);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Wind_Speed"
+onclick="org_opendap_Wind_Speed.handle_projection_change(get_org_opendap_Wind_Speed)">
+<font size="+1">Wind_Speed</font>: 32 bit Real</b><br>
+
+Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Wind_Speed_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Wind_Speed_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Wind_Direction = new dods_var("Wind_Direction", "org_opendap_Wind_Direction", 0);
+DODS_URL.add_dods_var(org_opendap_Wind_Direction);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Wind_Direction"
+onclick="org_opendap_Wind_Direction.handle_projection_change(get_org_opendap_Wind_Direction)">
+<font size="+1">Wind_Direction</font>: 32 bit Real</b><br>
+
+Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Wind_Direction_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Wind_Direction_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Barometric_Pres = new dods_var("Barometric_Pres", "org_opendap_Barometric_Pres", 0);
+DODS_URL.add_dods_var(org_opendap_Barometric_Pres);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Barometric_Pres"
+onclick="org_opendap_Barometric_Pres.handle_projection_change(get_org_opendap_Barometric_Pres)">
+<font size="+1">Barometric_Pres</font>: 32 bit Real</b><br>
+
+Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Barometric_Pres_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Barometric_Pres_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Solar_Radiation = new dods_var("Solar_Radiation", "org_opendap_Solar_Radiation", 0);
+DODS_URL.add_dods_var(org_opendap_Solar_Radiation);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Solar_Radiation"
+onclick="org_opendap_Solar_Radiation.handle_projection_change(get_org_opendap_Solar_Radiation)">
+<font size="+1">Solar_Radiation</font>: 32 bit Real</b><br>
+
+Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Solar_Radiation_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<textarea name="Solar_Radiation_attr" rows="5" cols="70">
+</textarea>
+
+<p><p>
+</dd></dl>
+
+<p><p>
+
+<tr><td><td>
+
+</table></form>
+
+<hr>
+
+<address>Send questions or comments to: <a href="mailto:support@unidata.ecar.edu">support@unidata.ecar.edu</a></address><p>
+                    <a href="http://validator.w3.org/check?uri=referer"><img
+                        src="http://www.w3.org/Icons/valid-html40"
+                        alt="Valid HTML 4.0 Transitional" height="31" width="88">
+                    </a></p>
+</body></html>
+Dataset: gsodock.dat
+URI_GSO-Dock.Time, URI_GSO-Dock.Depth, URI_GSO-Dock.Sea_Temp, URI_GSO-Dock.Salinity, URI_GSO-Dock.DO , URI_GSO-Dock.pH, URI_GSO-Dock.Turbidity, URI_GSO-Dock.Air_Temp, URI_GSO-Dock.Wind_Speed, URI_GSO-Dock.Wind_Direction, URI_GSO-Dock.Barometric_Pres, URI_GSO-Dock.Solar_Radiation
+35234, 1.95, 17.62, 30.19, 0, 8.034, 1.3, 21.4, 2, 0, 765.81, -1
+35234.0078, 1.89, 17.76, 30.12, 0, 8.034, 0.9, 21.4, 3, 22.5, 765.81, -1
+35234.0156, 1.84, 18.01, 30.05, 0, 8.029, 0.9, 21.2, 3, 0, 765.56, 5
+35234.0195, 1.76, 17.99, 30.03, 0, 8.017, 2.6, 21, 3, 337.5, 765.56, 3
+35234.0273, 1.73, 17.95, 30.03, 0, 8.016, 2.3, 21, 2, 337.5, 765.3, 5
+35234.0352, 1.68, 18.01, 30.02, 0, 8.015, 1.3, 21, 2, 0, 765.3, 3
+35234.043, 1.63, 18.19, 29.89, 0, 8.003, 2.1, 21, 3, 337.5, 765.05, 2
+35234.0469, 1.58, 18.15, 29.87, 0, 7.985, 2, 20.7, 3, 0, 765.05, -1
+35234.0547, 1.54, 18.08, 29.88, 0, 7.979, 1.9, 20.7, 2, 337.5, 765.05, 15
+35234.0625, 1.47, 18.05, 29.82, 0, 7.957, 2.3, 20.7, 2, 337.5, 764.79, 12
+35234.0703, 1.43, 18.02, 29.86, 0, 7.957, 2.8, 20.7, 2, 292.5, 765.05, 3
+35234.0781, 1.38, 18.02, 29.82, 0, 7.95, 3.8, 20.3, 0, 270, 764.54, 8
+35234.082, 1.37, 17.95, 29.8, 0, 7.926, 2.8, 20.3, 0, 315, 764.79, 3
+35234.0898, 1.33, 17.93, 29.73, 0, 7.889, 4.1, 20.3, 0, 315, 764.79, 4
+35234.0977, 1.3, 17.93, 29.72, 0, 7.882, 3.5, 20.3, 2, 292.5, 764.79, 5
+35234.1055, 1.29, 17.95, 29.67, 0, 7.873, 4, 20.7, 1, 270, 764.79, 1
+35234.1094, 1.27, 18, 29.65, 0, 7.867, 4.4, 20.3, 0, 292.5, 764.29, 3
+35234.1172, 1.27, 18.05, 29.62, 0, 7.865, 3.9, 20.3, 0, 270, 764.54, 3
+35234.125, 1.26, 18.05, 29.63, 0, 7.842, 2.5, 20.3, 1, 247.5, 764.54, 2
+35234.1328, 1.25, 18.05, 29.63, 0, 7.888, 4.6, 19.9, 1, 270, 765.05, 10
+35234.1406, 1.23, 18.07, 29.63, 0, 7.882, 4.3, 19.9, 2, 247.5, 764.54, 4
+35234.1445, 1.23, 18, 29.67, 0, 7.866, 3.8, 19.9, 2, 247.5, 765.05, -1
+35234.1523, 1.23, 18.02, 29.71, 0, 7.871, 4.6, 19.9, 1, 270, 765.05, 1
+35234.1602, 1.24, 18.05, 29.67, 0, 7.886, 3.7, 19.9, 0, 270, 765.05, 19
+35234.168, 1.23, 18.08, 29.66, 0, 7.889, 3.1, 19.9, 0, 292.5, 765.05, 3
+35234.1719, 1.23, 18.17, 29.64, 0, 7.902, 3.3, 19.9, 1, 247.5, 765.05, 3
+35234.1797, 1.24, 18.45, 29.55, 0, 7.927, 2.5, 19.9, 2, 247.5, 764.79, 6
+35234.1875, 1.26, 18.64, 29.48, 0, 7.948, 2.8, 19.9, 2, 247.5, 765.05, 14
+35234.1953, 1.28, 18.72, 29.45, 0, 7.963, 3.3, 19.9, 1, 270, 765.05, 9
+35234.2031, 1.3, 18.74, 29.44, 0, 7.968, 3.1, 19.9, 1, 292.5, 765.05, 7
+35234.207, 1.29, 18.58, 29.49, 0, 7.878, 2.6, 19.9, 1, 270, 765.05, 10
+35234.2148, 1.3, 18.62, 29.47, 0, 7.906, 1.9, 19.9, 0, 270, 765.05, -1
+35234.2227, 1.32, 18.62, 29.47, 0, 7.924, 2.1, 19.9, 1, 292.5, 764.79, -8
+35234.2305, 1.35, 18.55, 29.49, 0, 7.902, 2.4, 19.9, 1, 270, 765.3, 36
+35234.2344, 1.38, 18.47, 29.52, 0, 7.896, 2.8, 20.3, 1, 315, 765.3, 50
+35234.2422, 1.41, 18.55, 29.49, 0, 7.909, 2.4, 20.3, 1, 337.5, 765.3, 35
+35234.25, 1.42, 18.42, 29.52, 0, 7.919, 3.1, 20.3, 1, 292.5, 765.3, -38
+35234.2578, 1.45, 18.47, 29.51, 0, 7.925, 2.4, 20.3, 1, 292.5, 765.3, -24
+35234.2656, 1.49, 18.47, 29.5, 0, 7.924, 3.6, 20.3, 1, 315, 765.3, -26
+35234.2695, 1.53, 18.33, 29.58, 0, 7.892, 2.2, 20.3, 0, 315, 765.3, 46
+35234.2773, 1.56, 18.24, 29.62, 0, 7.88, 2.4, 20.3, 0, 22.5, 765.3, 16
+35234.2852, 1.6, 18.25, 29.6, 0, 7.879, 3.4, 20.3, 0, 337.5, 764.79, 25
+35234.293, 1.62, 18.25, 29.6, 0, 7.893, 3.7, 20.7, 0, 315, 765.3, 119
+35234.2969, 1.68, 18.12, 29.65, 0, 7.882, 2.5, 20.7, 2, 0, 765.3, 68
+35234.3047, 1.72, 18.29, 29.6, 0, 7.901, 2.8, 20.7, 3, 22.5, 765.56, 47
+35234.3125, 1.77, 18.28, 29.61, 0, 7.901, 2.2, 19.9, 6, 22.5, 764.79, -38
+35234.3203, 1.81, 18.22, 29.63, 0, 7.89, 2.6, 19.6, 5, 22.5, 764.79, 138
+35234.3281, 1.83, 18.1, 29.67, 0, 7.866, 2.1, 19.3, 7, 22.5, 765.3, 59
+35234.332, 1.86, 18.05, 29.73, 0, 7.883, 1.9, 19.3, 8, 45, 765.3, -7
+35234.3398, 1.91, 18, 29.76, 0, 7.883, 2.5, 19, 7, 45, 765.3, -30
+35234.3477, 1.97, 18.05, 29.73, 0, 7.879, 2.3, 19, 7, 45, 765.56, -9
+35234.3555, 2.01, 18.07, 29.74, 0, 7.905, 2.7, 19, 8, 45, 765.81, 10
+35234.3594, 2.05, 18.03, 29.77, 0, 7.909, 2.1, 19, 8, 45, 765.56, 115
+35234.3672, 2.07, 17.91, 29.79, 0, 7.877, 2.3, 19.3, 7, 45, 765.81, 224
+35234.375, 2.11, 17.97, 29.77, 0, 7.892, 2.1, 19.3, 8, 45, 765.81, 164
+35234.3828, 2.12, 17.95, 29.78, 0, 7.894, 2.8, 19.3, 8, 45, 766.06, 225
+35234.3906, 2.12, 17.97, 29.76, 0, 7.899, 2.1, 19.6, 7, 45, 766.32, 343
+35234.3945, 2.13, 17.99, 29.76, 0, 7.897, 2, 19.8, 8, 45, 766.32, 319
+35234.4023, 2.14, 18.16, 29.67, 0, 7.901, 2.3, 19.9, 8, 45, 766.32, 366
+35234.4102, 2.14, 18.11, 29.72, 0, 7.903, 2.2, 20.3, 8, 45, 766.57, 665
+35234.418, 2.15, 18.12, 29.74, 0, 7.933, 1.8, 20.3, 8, 67.5, 766.32, 610
+35234.4219, 2.17, 18.15, 29.75, 0, 7.947, 2, 20.3, 6, 45, 766.32, 793
+35234.4297, 2.17, 18.17, 29.73, 0, 7.95, 2.3, 20.7, 6, 45, 766.83, 821
+35234.4375, 2.16, 18.17, 29.73, 0, 7.946, 2.8, 21, 5, 45, 766.83, 772
+35234.4453, 2.15, 18.17, 29.73, 0, 7.939, 2.9, 21.3, 6, 45, 766.83, 733
+35234.4531, 2.13, 18.15, 29.74, 0, 7.945, 2.1, 21.4, 8, 45, 767.08, 737
+35234.457, 2.1, 18.12, 29.75, 0, 7.931, 2.6, 21.4, 8, 45, 767.08, 830
+35234.4648, 2.08, 18.11, 29.76, 0, 7.926, 2, 21.8, 7, 67.5, 767.33, 836
+35234.4727, 2.06, 18.11, 29.77, 0, 7.931, 2.2, 22, 7, 45, 767.08, 838
+35234.4805, 2.04, 18.1, 29.79, 0, 7.937, 2.2, 22.2, 6, 45, 767.33, 851
+35234.4844, 2, 18.04, 29.86, 0, 7.951, 2.5, 22.2, 7, 67.5, 767.33, 766
+35234.4922, 1.97, 18.09, 29.82, 0, 7.949, 2, 22.2, 7, 45, 767.08, 703
+35234.5, 1.92, 18.12, 29.82, 0, 7.963, 2, 22.2, 6, 45, 767.33, 516
+35234.5078, 1.88, 18.67, 29.61, 0, 7.98, 2, 22.2, 5, 45, 767.33, 789
+35234.5156, 1.84, 18.8, 29.52, 0, 7.982, 1.5, 22.5, 6, 45, 767.84, 545
+35234.5195, 1.8, 18.8, 29.52, 0, 7.98, 5.4, 22.5, 7, 67.5, 767.33, 546
+35234.5273, 1.73, 18.69, 29.59, 0, 7.978, 1.8, 22.5, 7, 67.5, 767.33, 691
+35234.5352, 1.68, 18.97, 29.45, 0, 7.978, 2.4, 22.3, 9, 67.5, 767.33, 713
+35234.543, 1.65, 18.84, 29.51, 0, 7.976, 2.7, 22.5, 8, 67.5, 767.33, 721
+35234.5469, 1.61, 18.7, 29.6, 0, 7.974, 1.9, 22.5, 6, 67.5, 767.33, 385
+35234.5547, 1.56, 18.65, 29.63, 0, 7.98, 2, 22.3, 8, 90, 767.33, 599
+35234.5625, 1.52, 18.67, 29.66, 0, 7.978, 2.3, 22.2, 8, 67.5, 767.59, 565
+35234.5703, 1.49, 18.87, 29.51, 0, 7.975, 2.8, 21.8, 7, 67.5, 767.33, 366
+35234.5781, 1.46, 19.44, 29.27, 0, 7.978, 2.6, 21.8, 8, 67.5, 767.33, 594
+35234.582, 1.41, 19.25, 29.33, 0, 7.98, 2.1, 21.4, 8, 67.5, 767.59, 342
+35234.5898, 1.38, 19.18, 29.36, 0, 7.983, 2.5, 21.4, 8, 67.5, 767.84, 385
+35234.5977, 1.35, 19.2, 29.35, 0, 7.986, 2, 21, 7, 67.5, 767.59, 294
+35234.6055, 1.32, 19.3, 29.3, 0, 7.995, 2.9, 21, 5, 67.5, 767.84, 293
+35234.6094, 1.29, 19.42, 29.26, 0, 7.999, 2.5, 21, 6, 67.5, 767.59, 303
+35234.6172, 1.29, 19.33, 29.31, 0, 7.997, 2.4, 21, 5, 67.5, 767.84, 334
+35234.625, 1.28, 19.33, 29.31, 0, 7.993, 2.4, 21, 6, 67.5, 767.84, 306
+35234.6328, 1.27, 19.37, 29.3, 0, 7.994, 2.9, 21, 5, 67.5, 767.84, 285
+35234.6406, 1.27, 19.55, 29.2, 0, 8.005, 1.9, 21.4, 3, 112.5, 768.1, 301
+35234.6445, 1.28, 19.53, 29.21, 0, 7.979, 1.8, 21.8, 1, 67.5, 768.35, 238
+35234.6523, 1.29, 19.54, 29.27, 0, 8.01, 2.7, 22.2, 1, 45, 768.1, 326
+35234.6602, 1.3, 19.64, 29.18, 0, 8.018, 3.1, 21.4, 5, 67.5, 767.59, 329
+35234.668, 1.3, 19.7, 29.15, 0, 8.027, 2.5, 21.4, 4, 67.5, 767.84, 260
+35234.6719, 1.31, 19.72, 29.16, 0, 8.022, 2.3, 21.4, 4, 67.5, 768.1, 234
+35234.6797, 1.32, 19.74, 29.13, 0, 8.015, 2, 21.4, 4, 67.5, 768.35, 184
+35234.6875, 1.34, 19.79, 29.12, 0, 8.028, 2.2, 21, 5, 67.5, 768.1, 206
+35234.6953, 1.36, 19.84, 29.07, 0, 8.019, 2, 21, 5, 67.5, 768.35, 148
+35234.7031, 1.37, 19.84, 29.1, 0, 8.026, 1.6, 21, 4, 67.5, 768.1, 177
+35234.707, 1.38, 19.84, 29.07, 0, 8.014, 1.4, 20.7, 5, 90, 768.35, 155
+35234.7148, 1.4, 19.83, 29.11, 0, 7.986, 1.2, 20.7, 6, 67.5, 768.35, 128
+35234.7227, 1.43, 19.83, 29.11, 0, 7.986, 1.1, 20.7, 5, 67.5, 768.1, 71
+35234.7305, 1.46, 19.82, 29.12, 0, 7.979, 1.3, 20.7, 4, 67.5, 768.35, 43
+35234.7344, 1.47, 19.86, 29.11, 0, 8.01, 1.9, 20.3, 4, 67.5, 768.1, 20
+35234.7422, 1.5, 19.86, 29.11, 0, 8.02, 1.5, 20.3, 3, 67.5, 768.1, 27
+35234.75, 1.54, 19.87, 29.07, 0, 8.012, 1.6, 20.3, 4, 90, 768.1, 32
+35234.7578, 1.59, 19.87, 29.07, 0, 8.013, 1.5, 19.9, 4, 67.5, 768.1, -13
+35234.7656, 1.61, 19.87, 29.07, 0, 8.006, 1.7, 19.9, 4, 67.5, 768.1, 28
+35234.7695, 1.65, 19.86, 29.11, 0, 7.994, 1.8, 19.9, 4, 90, 768.1, 67
+35234.7773, 1.68, 19.86, 29.11, 0, 8.013, 2.3, 19.7, 5, 67.5, 768.1, 19
+35234.7852, 1.71, 19.84, 29.11, 0, 8.005, 1.4, 19.6, 2, 67.5, 768.1, 25
+35234.793, 1.74, 19.82, 29.11, 0, 8.005, 1.4, 19.6, 4, 67.5, 768.1, 13
+35234.7969, 1.77, 19.79, 29.12, 0, 8.019, 1.4, 19.3, 3, 67.5, 768.1, 3
+35234.8047, 1.79, 19.35, 29.31, 0, 7.94, 2.3, 19.3, 4, 67.5, 768.1, 6
+35234.8125, 1.83, 19.78, 29.12, 0, 8.023, 2.2, 19.3, 4, 67.5, 768.1, 6
+35234.8203, 1.87, 19.79, 29.12, 0, 8.039, 2.4, 19, 3, 67.5, 768.35, -4
+35234.8281, 1.91, 19.8, 29.11, 0, 8.04, 2, 19, 3, 67.5, 768.35, 5
+35234.832, 1.95, 19.77, 29.12, 0, 8.044, 2.1, 19, 3, 67.5, 768.1, 7
+35234.8398, 1.99, 19.74, 29.13, 0, 8.029, 2.4, 18.7, 2, 67.5, 767.84, 4
+35234.8477, 2.02, 19.74, 29.12, 0, 8.031, 1.9, 18.7, 3, 67.5, 768.1, 2
+35234.8555, 2.05, 19.74, 29.12, 0, 8.031, 1.8, 18.7, 2, 67.5, 768.1, 3
+35234.8594, 2.07, 19.72, 29.12, 0, 8.011, 2.1, 18.7, 4, 90, 768.35, 7
+35234.8672, 2.11, 19.72, 29.12, 0, 8.013, 1.4, 18.3, 4, 67.5, 768.1, -4
+35234.875, 2.15, 19.7, 29.12, 0, 8.015, 1.3, 18.3, 4, 67.5, 768.35, 6
+35234.8828, 2.17, 19.7, 29.12, 0, 8.008, 1.3, 18.3, 3, 67.5, 768.35, 1
+35234.8906, 2.2, 19.69, 29.13, 0, 8.007, 1.2, 18.3, 4, 67.5, 768.6, 0
+35234.8945, 2.22, 19.68, 29.13, 0, 7.996, 1.1, 18.3, 3, 67.5, 768.86, 6
+35234.9023, 2.25, 19.6, 29.16, 0, 7.978, 1.4, 18.3, 3, 67.5, 768.6, 7
+35234.9102, 2.27, 19.55, 29.17, 0, 7.971, 1.1, 18.3, 3, 67.5, 768.86, 6
+35234.918, 2.28, 19.55, 29.16, 0, 8.006, 2.8, 18.2, 4, 67.5, 768.6, 5
+35234.9219, 2.28, 19.45, 29.2, 0, 8.002, 1.5, 18, 3, 67.5, 768.6, 4
+35234.9297, 2.27, 19.34, 29.27, 0, 8.007, 2.5, 18, 3, 67.5, 768.6, 1
+35234.9375, 2.29, 19.14, 29.34, 0, 7.99, 2.6, 18, 3, 67.5, 768.86, 5
+35234.9453, 2.31, 18.83, 29.47, 0, 7.976, 1.7, 17.9, 2, 67.5, 768.6, 4
+35234.9531, 2.3, 18.16, 29.77, 0, 7.94, 2, 17.7, 2, 67.5, 768.6, 5
+35234.957, 2.28, 18.32, 29.72, 0, 7.948, 1.7, 17.7, 2, 67.5, 768.6, 3
+35234.9648, 2.26, 18.03, 29.79, 0, 7.943, 1.6, 17.7, 1, 67.5, 768.6, 5
+35234.9727, 2.24, 17.95, 29.82, 0, 7.942, 1.9, 17.7, 1, 67.5, 768.6, 3
+35234.9805, 2.23, 17.91, 29.86, 0, 7.941, 2, 17.7, 1, 45, 768.6, 4
+35234.9844, 2.2, 18.47, 29.6, 0, 7.968, 1.4, 17.7, 2, 45, 768.35, 4
+35234.9922, 2.17, 19.29, 29.21, 0, 8.022, 1.8, 17.7, 0, 22.5, 768.35, 6
+Dataset {
+    Sequence {
+        Float64 Time;
+        Float32 Depth;
+        Float32 Sea_Temp;
+        Float32 Salinity;
+        Float32 DO%20;
+        Float32 pH;
+        Float32 Turbidity;
+        Float32 Air_Temp;
+        Float32 Wind_Speed;
+        Float32 Wind_Direction;
+        Float32 Barometric_Pres;
+        Float32 Solar_Radiation;
+    } URI_GSO-Dock;
+} gsodock.dat;
+Data:
+Z   @·4@    ?˘ôöAåı√AÒÖ    A ãD?¶ffA´33@       D?s◊øÄ  Z   @·4@?Â…?ÒÎÖAé{Aı√    A ãD?fffA´33@@  A¥  D?s◊øÄ  Z   @·4@Àí:?ÎÖAê{Aff    A v…?fffA©ôö@@      D?c◊@†  Z   @·4@üæv…?·GÆAèÎÖA=q    A E¢@&ffA®  @@  C®¿ D?c◊@@  Z   @·4@ﬂ§?Ê?›p§AèôöA=q    A Aâ@33A®  @   C®¿ D?S3@†  Z   @·4A [¿?◊
+=Aê{A(ˆ    A =q?¶ffA®  @       D?S3@@  Z   @·4A`Aâ7?–£◊AëÖAÔ∏    A J@ffA®  @@  C®¿ D?C3@   Z   @·4AÄ4m∆? =qAë33AÓı√    @ˇÖ@   A•ôö@@      D?C3øÄ  Z   @·4A¿6„?≈∏Aê£◊AÔ
+=    @ˇS¯?Û33A•ôö@   C®¿ D?C3Ap  Z   @·4B    ?º(ˆAêffAÓè\    @˛üæ@33A•ôö@   C®¿ D?2èA@  Z   @·4B?Â…?∑
+=Aê(ˆAÓ·H    @˛üæ@333A•ôö@   Cí@ D?C3@@  Z   @·4BÀí:?∞£◊Aê(ˆAÓè\    @˛ff@s33A¢ff    Cá  D?"èA   Z   @·4Büæv…?Ø\)AèôöAÓff    @˝°À@333A¢ff    CùÄ D?2è@@  Z   @·4Bﬂ§?Ê?™=qAèp§AÌ◊
+    @¸r∞@É33A¢ff    CùÄ D?2è@Ä  Z   @·4C [¿?¶ffAèp§AÌ¬è    @¸9X@`  A¢ff@   Cí@ D?2è@†  Z   @·4C`Aâ7?•∏AèôöAÌ\)    @˚Ôû@Ä  A•ôö?Ä  Cá  D?2è?Ä  Z   @·4CÄ4m∆?¢è\Aê  AÌ33    @˚æw@åÃÕA¢ff    Cí@ D?è@@  Z   @·4C¿6„?¢è\AêffAÏı√    @˚Æ@yôöA¢ff    Cá  D?"è@@  Z   @·4D    ?°GÆAêffAÌ
+=    @˙Ò™@   A¢ff?Ä  CwÄ D?"è@   Z   @·4D?Â…?†  AêffAÌ
+=    @¸j@ì33Aü33?Ä  Cá  D?C3A   Z   @·4DÀí:?ùp§Aêè\AÌ
+=    @¸9X@âôöAü33@   CwÄ D?"è@Ä  Z   @·4Düæv…?ùp§Aê  AÌ\)    @˚∂F@s33Aü33@   CwÄ D?C3øÄ  Z   @·4Dﬂ§?Ê?ùp§Aê(ˆAÌÆ    @˚ﬂ;@ì33Aü33?Ä  Cá  D?C3?Ä  Z   @·4E [¿?û∏RAêffAÌ\)    @¸Z@lÃÕAü33    Cá  D?C3Aò  Z   @·4E`Aâ7?ùp§Aê£◊AÌGÆ    @¸r∞@FffAü33    Cí@ D?C3@@  Z   @·4EÄ4m∆?ùp§Aë\)AÌ∏    @¸›/@S33Aü33?Ä  CwÄ D?C3@@  Z   @·4E¿6„?û∏RAìôöAÏff    @˝©¸@   Aü33@   CwÄ D?2è@¿  Z   @·4F    ?°GÆAï∏AÎ◊
+    @˛V@333Aü33@   CwÄ D?C3A`  Z   @·4F?Â…?£◊
+Aï¬èAÎôö    @˛–Â@S33Aü33?Ä  Cá  D?C3A  Z   @·4FÀí:?¶ffAïÎÖAÎÖ    @˛˘€@FffAü33?Ä  Cí@ D?C3@‡  Z   @·4Füæv…?•∏Aî£◊AÎÎÖ    @¸ì@&ffAü33?Ä  Cá  D?C3A   Z   @·4Fﬂ§?Ê?¶ffAîı√AÎ¬è    @¸˝Ù?Û33Aü33    Cá  D?C3øÄ  Z   @·4G [¿?®ı√Aîı√AÎ¬è    @˝ëh@ffAü33?Ä  Cí@ D?2è¡   Z   @·4G`Aâ7?¨ÃÕAîffAÎÎÖ    @¸›/@ôöAü33?Ä  Cá  D?S3B  Z   @·4GÄ4m∆?∞£◊Aì¬èAÏ(ˆ    @¸¨@333A¢ff?Ä  CùÄ D?S3BH  Z   @·4G¿6„?¥z·AîffAÎÎÖ    @˝á@ôöA¢ff?Ä  C®¿ D?S3B  Z   @·4H    ?µ¬èAì\)AÏ(ˆ    @˝hs@FffA¢ff?Ä  Cí@ D?S3¬  Z   @·4H?Â…?πôöAì¬èAÏ{    @˝ôö@ôöA¢ff?Ä  Cí@ D?S3¡¿  Z   @·4HÀí:?æ∏RAì¬èAÏ      @˝ëh@fffA¢ff?Ä  CùÄ D?S3¡–  Z   @·4Hüæv…?√◊
+Aí£◊AÏ£◊    @¸ãD@ÃÕA¢ff    CùÄ D?S3B8  Z   @·4Hﬂ§?Ê?«ÆAëÎÖAÏı√    @¸(ˆ@ôöA¢ff    A¥  D?S3AÄ  Z   @·4I [¿?ÃÃÕAí  AÏÃÕ    @¸ ≈@YôöA¢ff    C®¿ D?2èA»  Z   @·4I`Aâ7?œ\)Aí  AÏÃÕ    @¸ìu@lÃÕA•ôö    CùÄ D?S3BÓ  Z   @·4IÄ4m∆?◊
+=Aêı√AÌ33    @¸9X@   A•ôö@       D?S3Bà  Z   @·4I¿6„?‹(ˆAíQÏAÏÃÕ    @¸‘˛@333A•ôö@@  A¥  D?c◊B<  Z   @·4J    ?‚è\Aí=qAÏ·H    @¸‘˛@ÃÕAü33@¿  A¥  D?2è¬  Z   @·4J?Â…?ÁÆAë¬èAÌ
+=    @¸z·@&ffAúÃÕ@†  A¥  D?2èC
+  Z   @·4JÀí:?Í=qAêÃÕAÌ\)    @˚∂F@ffAöff@‡  A¥  D?S3Bl  Z   @·4Jüæv…?Ó{AêffAÌ◊
+    @¸Aâ?Û33AöffA   B4  D?S3¿‡  Z   @·4Jﬂ§?Ê?Ùz·Aê  AÓ{    @¸Aâ@   Aò  @‡  B4  D?S3¡  Z   @·4K [¿?¸(ˆAêffAÌ◊
+    @¸ ≈@33Aò  @‡  B4  D?c◊¡  Z   @·4K`Aâ7@ £◊Aêè\AÌÎÖ    @¸ı√@,ÃÕAò  A   B4  D?s◊A   Z   @·4KÄ4m∆@33Aê=qAÓ(ˆ    @˝á@ffAò  A   B4  D?c◊BÊ  Z   @·4K¿6„@z·AèGÆAÓQÏ    @¸b@33Aöff@‡  B4  D?s◊C`  Z   @·4L    @
+=Aè¬èAÓ(ˆ    @¸ãD@ffAöffA   B4  D?s◊C$  Z   @·4L?Â…@ÆAèôöAÓ=q    @¸õ¶@333AöffA   B4  D?É◊Ca  Z   @·4LÀí:@ÆAè¬èAÓ{    @¸ƒú@ffAúÃÕ@‡  B4  D?î{C´Ä Z   @·4Lüæv…@QÏAèÎÖAÓ{    @¸¥9@   AûffA   B4  D?î{CüÄ Z   @·4Lﬂ§?Ê@ı√AëGÆAÌ\)    @¸‘˛@33Aü33A   B4  D?î{C∑  Z   @·4M [¿@ı√Aê·HAÌ¬è    @¸Â`@ÃÕA¢ffA   B4  D?§{D&@ Z   @·4M`Aâ7@	ôöAêı√AÌÎÖ    @˝€#?ÊffA¢ffA   Bá  D?î{DÄ Z   @·4MÄ4m∆@
+·HAë33AÓ      @˛M”@   A¢ff@¿  B4  D?î{DF@ Z   @·4M¿6„@
+·HAë\)AÌ◊
+    @˛ff@33A•ôö@¿  B4  D?µDM@ Z   @·4N    @
+=qAë\)AÌ◊
+    @˛E¢@333A®  @†  B4  D?µDA  Z   @·4N?Â…@	ôöAë\)AÌ◊
+    @˛J@9ôöA™ff@¿  B4  D?µD7@ Z   @·4NÀí:@QÏAë33AÌÎÖ    @˛=q@ffA´33A   B4  D?≈D8@ Z   @·4Nüæv…@ffAêı√AÓ      @˝ ¡@&ffA´33A   B4  D?≈DOÄ Z   @·4Nﬂ§?Ê@∏Aê·HAÓ{    @˝°À@   AÆff@‡  Bá  D?’DQ  Z   @·4O [¿@◊
+Aê·HAÓ(ˆ    @˝ ¡@ÃÕA∞  @‡  B4  D?≈DQÄ Z   @·4O`Aâ7@è\AêÃÕAÓQÏ    @˝˚Á@ÃÕA±ôö@¿  B4  D?’DT¿ Z   @·4OÄ4m∆@   AêQÏAÓ·H    @˛nò@   A±ôö@‡  Bá  D?’D?Ä Z   @·4O¿6„?¸(ˆAê∏RAÓè\    @˛^5@   A±ôö@‡  B4  D?≈D/¿ Z   @·4P    ?ı¬èAêı√AÓè\    @˛–Â@                               ?Â…?£◊Aï\)AÏ·H    @ˇ\)@   A±ôö@†  B4  D?’DE@ Z   @·4PÀí:?ÎÖAñffAÏ(ˆ    @ˇlã?¿  A¥  @¿  B4  D?ı√D@ Z   @·4Püæv…?ÊffAñffAÏ(ˆ    @ˇ\)@¨ÃÕA¥  @‡  Bá  D?’DÄ Z   @·4Pﬂ§?Ê?›p§AïÖAÏ∏R    @ˇK«?ÊffA¥  @‡  Bá  D?’D,¿ Z   @·4Q [¿?◊
+=Aó¬èAÎôö    @ˇK«@ôöA≤ffA  Bá  D?’D2@ Z   @·4Q`Aâ7?”33Añ∏RAÏ{    @ˇ;d@,ÃÕA¥  A   Bá  D?’D4@ Z   @·4QÄ4m∆?Œ{AïôöAÏÃÕ    @ˇ+?Û33A¥  @¿  Bá  D?’C¿Ä Z   @·4Q¿6„?«ÆAï33AÌ
+=    @ˇ\)@   A≤ffA   B¥  D?’D¿ Z   @·4R    ?¬è\Aï\)AÌGÆ    @ˇK«@33A±ôöA   Bá  D?Â√D@ Z   @·4R?Â…?æ∏RAñı√AÏ{    @ˇ33@333AÆff@‡  Bá  D?’C∑  Z   @·4RÀí:?∫·HAõÖAÍ(ˆ    @ˇK«@&ffAÆffA   Bá  D?’DÄ Z   @·4Rüæv…?¥z·Aö  AÍ£◊    @ˇ\)@ffA´33A   Bá  D?Â√C´  Z   @·4Rﬂ§?Ê?∞£◊Aôp§AÍ·H    @ˇtº@   A´33A   Bá  D?ı√C¿Ä Z   @·4S [¿?¨ÃÕAôôöAÍÃÕ    @ˇçP@   A®  @‡  Bá  D?Â√Cì  Z   @·4S`Aâ7?®ı√AöffAÍff    @ˇ◊
+@9ôöA®  @†  Bá  D?ı√CíÄ Z   @·4SÄ4m∆?•∏Aõ\)AÍ{    @ˇ˜œ@   A®  @¿  Bá  D?Â√CóÄ Z   @·4S¿6„?•∏Aö£◊AÍz·    @ˇÁm@ôöA®  @†  Bá  D?ı√Cß  Z   @·4T    ?£◊
+Aö£◊AÍz·    @ˇ∆®@ôöA®  @¿  Bá  D?ı√Cô  Z   @·4T?Â…?¢è\Aöı√AÍff    @ˇŒŸ@9ôöA®  @†  Bá  D?ı√CéÄ Z   @·4TÀí:?¢è\AúffAÈôö    A {?Û33A´33@@  B·  D@fCñÄ Z   @·4Tüæv…?£◊
+Aú=qAÈÆ    @ˇS¯?ÊffAÆff?Ä  Bá  D@fCn  Z   @·4Tﬂ§?Ê?•∏AúQÏAÍ(ˆ    A (ˆ@,ÃÕA±ôö?Ä  B4  D@fC£  Z   @·4U [¿?¶ffAù∏AÈp§    A I∫@FffA´33@†  Bá  D?Â√C§Ä Z   @·4U`Aâ7?¶ffAùôöAÈ33    A nò@   A´33@Ä  Bá  D?ı√CÇ  Z   @·4UÄ4m∆?ßÆAù¬èAÈGÆ    A Z@33A´33@Ä  Bá  D@fCj  Z   @·4U¿6„?®ı√AùÎÖAÈ
+=    A =q@   A´33@Ä  Bá  D@fC8  Z   @·4V    ?´ÖAûQÏAËı√    A r∞@ÃÕA®  @†  Bá  D@fCN  Z   @·4V?Â…?Æ{Aû∏RAËè\    A M”@   A®  @†  Bá  D@fC  Z   @·4VÀí:?Ø\)Aû∏RAËÃÕ    A j?ÃÃÕA®  @Ä  Bá  D@fC1  Z   @·4Vüæv…?∞£◊Aû∏RAËè\    A 9X?≥33A•ôö@†  B¥  D@fC  Z   @·4Vﬂ§?Ê?≥33Aû£◊AË·H    @ˇçP?ôôöA•ôö@¿  Bá  D@fC   Z   @·4W [¿?∑
+=Aû£◊AË·H    @ˇçP?åÃÕA•ôö@†  Bá  D@fBé  Z   @·4W`Aâ7?∫·HAûè\AËı√    @ˇS¯?¶ffA•ôö@Ä  Bá  D@fB,  Z   @·4WÄ4m∆?º(ˆAû·HAË·H    A (ˆ?Û33A¢ff@Ä  Bá  D@fA†  Z   @·4W¿6„?¿  Aû·HAË·H    A QÏ?¿  A¢ff@@  Bá  D@fAÿ  Z   @·4X    ?≈∏Aûı√AËè\    A 1'?ÃÃÕA¢ff@Ä  B¥  D@fB   Z   @·4X?Â…?ÀÖAûı√AËè\    A 5??¿  Aü33@Ä  Bá  D@f¡P  Z   @·4XÀí:?Œ{Aûı√AËè\    A ì?ŸôöAü33@Ä  Bá  D@fA‡  Z   @·4Xüæv…?”33Aû·HAË·H    @ˇŒŸ?ÊffAü33@Ä  B¥  D@fBÜ  Z   @·4Xﬂ§?Ê?◊
+=Aû·HAË·H    A 5?@33Aùôö@†  Bá  D@fAò  Z   @·4Y [¿?⁄·HAû∏RAË·H    A {?≥33AúÃÕ@   Bá  D@fA»  Z   @·4Y`Aâ7?ﬁ∏RAûè\AË·H    A {?≥33AúÃÕ@Ä  Bá  D@fAP  Z   @·4YÄ4m∆?‚è\AûQÏAËı√    A M”?≥33Aöff@@  Bá  D@f@@  Z   @·4Y¿6„?Â∏AöÃÕAÍz·    @˛{@33Aöff@Ä  Bá  D@f@¿  Z   @·4Z    ?Í=qAû=qAËı√    A ^5@ÃÕAöff@Ä  Bá  D@f@¿  Z   @·4Z?Â…?Ô\)AûQÏAËı√    A üæ@ôöAò  @@  Bá  D@f¿Ä  Z   @·4ZÀí:?Ùz·AûffAË·H    A £◊@   Aò  @@  Bá  D@f@†  Z   @·4Züæv…?˘ôöAû(ˆAËı√    A ¥9@ffAò  @@  Bá  D@f@‡  Z   @·4Zﬂ§?Ê?˛∏RAùÎÖAÈ
+=    A v…@ôöAïôö@   Bá  D?ı√@Ä  Z   @·4[ [¿@GÆAùÎÖAËı√    A ~˙?Û33Aïôö@@  Bá  D@f@   Z   @·4[`Aâ7@33AùÎÖAËı√    A ~˙?ÊffAïôö@   Bá  D@f@@  Z   @·4[Ä4m∆@z·Aù¬èAËı√    A -@ffAïôö@Ä  B¥  D@f@‡  Z   @·4[¿6„@
+=Aù¬èAËı√    A 5??≥33Aíff@Ä  Bá  D@f¿Ä  Z   @·4\    @	ôöAùôöAËı√    A =q?¶ffAíff@Ä  Bá  D@f@¿  Z   @·4\?Â…@
+·HAùôöAËı√    A  ≈?¶ffAíff@@  Bá  D@f?Ä  Z   @·4\Àí:@ÃÕAùÖAÈ
+=    A ¨?ôôöAíff@Ä  Bá  D@&f    Z   @·4\üæv…@{Aùp§AÈ
+=    @ˇﬂ;?åÃÕAíff@@  Bá  D@7
+@¿  Z   @·4\ﬂ§?Ê@  AúÃÕAÈGÆ    @ˇK«?≥33Aíff@@  Bá  D@&f@‡  Z   @·4] [¿@GÆAúffAÈ\)    @ˇo?åÃÕAíff@@  Bá  D@7
+@¿  Z   @·4]`Aâ7@ÎÖAúffAÈGÆ    A ì@333Aëôö@Ä  Bá  D@&f@†  Z   @·4]Ä4m∆@ÎÖAõôöAÈôö    A 1?¿  Aê  @@  Bá  D@&f@Ä  Z   @·4]¿6„@GÆAö∏RAÍ(ˆ    A ¨@   Aê  @@  Bá  D@&f?Ä  Z   @·4^    @è\Aô∏AÍ∏R    @ˇÆ@&ffAê  @@  Bá  D@7
+@†  Z   @·4^?Â…@◊
+Añ£◊AÎ¬è    @ˇ;d?ŸôöAè33@   Bá  D@&f@Ä  Z   @·4^Àí:@33AëGÆAÓ(ˆ    @˛{@   Açôö@   Bá  D@&f@†  Z   @·4^üæv…@ÎÖAíè\AÌ¬è    @˛V?ŸôöAçôö@   Bá  D@&f@@  Z   @·4^ﬂ§?Ê@£◊Aê=qAÓQÏ    @˛-?ÃÃÕAçôö?Ä  Bá  D@&f@†  Z   @·4_ [¿@\)AèôöAÓè\    @˛$›?Û33Açôö?Ä  Bá  D@&f@@  Z   @·4_`Aâ7@∏RAèGÆAÓ·H    @˛¨@   Açôö?Ä  B4  D@&f@Ä  Z   @·4_Ä4m∆@ÃÕAì¬èAÏÃÕ    @˛˘€?≥33Açôö@   B4  D@f@Ä  Z   @·4_¿6„@
+·HAöQÏAÈÆ    A Z?ÊffAçôö    A¥  D@f@¿  •   Dataset {
+    Sequence {
+        Float32 Depth;
+        Float32 Air_Temp;
+    } URI_GSO-Dock;
+} gsodock.dat;
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="gsodock.dat"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>&quot;DODS FreeFrom based on FFND release 4.2.3&quot;</value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <value>&quot;Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar&quot;</value>
+        </Attribute>
+    </Attribute>
+
+    <Sequence name="URI_GSO-Dock">
+        <Float32 name="Depth"/>
+        <Float32 name="Air_Temp"/>
+    </Sequence>
+
+    <dataBLOB href=".blob?URI_GSO-Dock.Air_Temp,URI_GSO-Dock.Depth"/>
+</Dataset>
+Dataset: gsodock.dat
+URI_GSO-Dock.Depth, URI_GSO-Dock.Air_Temp
+1.95, 21.4, , , , , , , , , , 
+1.89, 21.4, , , , , , , , , , 
+1.84, 21.2, , , , , , , , , , 
+1.76, 21, , , , , , , , , , 
+1.73, 21, , , , , , , , , , 
+1.68, 21, , , , , , , , , , 
+1.63, 21, , , , , , , , , , 
+1.58, 20.7, , , , , , , , , , 
+1.54, 20.7, , , , , , , , , , 
+1.47, 20.7, , , , , , , , , , 
+1.43, 20.7, , , , , , , , , , 
+1.38, 20.3, , , , , , , , , , 
+1.37, 20.3, , , , , , , , , , 
+1.33, 20.3, , , , , , , , , , 
+1.3, 20.3, , , , , , , , , , 
+1.29, 20.7, , , , , , , , , , 
+1.27, 20.3, , , , , , , , , , 
+1.27, 20.3, , , , , , , , , , 
+1.26, 20.3, , , , , , , , , , 
+1.25, 19.9, , , , , , , , , , 
+1.23, 19.9, , , , , , , , , , 
+1.23, 19.9, , , , , , , , , , 
+1.23, 19.9, , , , , , , , , , 
+1.24, 19.9, , , , , , , , , , 
+1.23, 19.9, , , , , , , , , , 
+1.23, 19.9, , , , , , , , , , 
+1.24, 19.9, , , , , , , , , , 
+1.26, 19.9, , , , , , , , , , 
+1.28, 19.9, , , , , , , , , , 
+1.3, 19.9, , , , , , , , , , 
+1.29, 19.9, , , , , , , , , , 
+1.3, 19.9, , , , , , , , , , 
+1.32, 19.9, , , , , , , , , , 
+1.35, 19.9, , , , , , , , , , 
+1.38, 20.3, , , , , , , , , , 
+1.41, 20.3, , , , , , , , , , 
+1.42, 20.3, , , , , , , , , , 
+1.45, 20.3, , , , , , , , , , 
+1.49, 20.3, , , , , , , , , , 
+1.53, 20.3, , , , , , , , , , 
+1.56, 20.3, , , , , , , , , , 
+1.6, 20.3, , , , , , , , , , 
+1.62, 20.7, , , , , , , , , , 
+1.68, 20.7, , , , , , , , , , 
+1.72, 20.7, , , , , , , , , , 
+1.77, 19.9, , , , , , , , , , 
+1.81, 19.6, , , , , , , , , , 
+1.83, 19.3, , , , , , , , , , 
+1.86, 19.3, , , , , , , , , , 
+1.91, 19, , , , , , , , , , 
+1.97, 19, , , , , , , , , , 
+2.01, 19, , , , , , , , , , 
+2.05, 19, , , , , , , , , , 
+2.07, 19.3, , , , , , , , , , 
+2.11, 19.3, , , , , , , , , , 
+2.12, 19.3, , , , , , , , , , 
+2.12, 19.6, , , , , , , , , , 
+2.13, 19.8, , , , , , , , , , 
+2.14, 19.9, , , , , , , , , , 
+2.14, 20.3, , , , , , , , , , 
+2.15, 20.3, , , , , , , , , , 
+2.17, 20.3, , , , , , , , , , 
+2.17, 20.7, , , , , , , , , , 
+2.16, 21, , , , , , , , , , 
+2.15, 21.3, , , , , , , , , , 
+2.13, 21.4, , , , , , , , , , 
+2.1, 21.4, , , , , , , , , , 
+2.08, 21.8, , , , , , , , , , 
+2.06, 22, , , , , , , , , , 
+2.04, 22.2, , , , , , , , , , 
+2, 22.2, , , , , , , , , , 
+1.97, 22.2, , , , , , , , , , 
+1.92, 22.2, , , , , , , , , , 
+1.88, 22.2, , , , , , , , , , 
+1.84, 22.5, , , , , , , , , , 
+1.8, 22.5, , , , , , , , , , 
+1.73, 22.5, , , , , , , , , , 
+1.68, 22.3, , , , , , , , , , 
+1.65, 22.5, , , , , , , , , , 
+1.61, 22.5, , , , , , , , , , 
+1.56, 22.3, , , , , , , , , , 
+1.52, 22.2, , , , , , , , , , 
+1.49, 21.8, , , , , , , , , , 
+1.46, 21.8, , , , , , , , , , 
+1.41, 21.4, , , , , , , , , , 
+1.38, 21.4, , , , , , , , , , 
+1.35, 21, , , , , , , , , , 
+1.32, 21, , , , , , , , , , 
+1.29, 21, , , , , , , , , , 
+1.29, 21, , , , , , , , , , 
+1.28, 21, , , , , , , , , , 
+1.27, 21, , , , , , , , , , 
+1.27, 21.4, , , , , , , , , , 
+1.28, 21.8, , , , , , , , , , 
+1.29, 22.2, , , , , , , , , , 
+1.3, 21.4, , , , , , , , , , 
+1.3, 21.4, , , , , , , , , , 
+1.31, 21.4, , , , , , , , , , 
+1.32, 21.4, , , , , , , , , , 
+1.34, 21, , , , , , , , , , 
+1.36, 21, , , , , , , , , , 
+1.37, 21, , , , , , , , , , 
+1.38, 20.7, , , , , , , , , , 
+1.4, 20.7, , , , , , , , , , 
+1.43, 20.7, , , , , , , , , , 
+1.46, 20.7, , , , , , , , , , 
+1.47, 20.3, , , , , , , , , , 
+1.5, 20.3, , , , , , , , , , 
+1.54, 20.3, , , , , , , , , , 
+1.59, 19.9, , , , , , , , , , 
+1.61, 19.9, , , , , , , , , , 
+1.65, 19.9, , , , , , , , , , 
+1.68, 19.7, , , , , , , , , , 
+1.71, 19.6, , , , , , , , , , 
+1.74, 19.6, , , , , , , , , , 
+1.77, 19.3, , , , , , , , , , 
+1.79, 19.3, , , , , , , , , , 
+1.83, 19.3, , , , , , , , , , 
+1.87, 19, , , , , , , , , , 
+1.91, 19, , , , , , , , , , 
+1.95, 19, , , , , , , , , , 
+1.99, 18.7, , , , , , , , , , 
+2.02, 18.7, , , , , , , , , , 
+2.05, 18.7, , , , , , , , , , 
+2.07, 18.7, , , , , , , , , , 
+2.11, 18.3, , , , , , , , , , 
+2.15, 18.3, , , , , , , , , , 
+2.17, 18.3, , , , , , , , , , 
+2.2, 18.3, , , , , , , , , , 
+2.22, 18.3, , , , , , , , , , 
+2.25, 18.3, , , , , , , , , , 
+2.27, 18.3, , , , , , , , , , 
+2.28, 18.2, , , , , , , , , , 
+2.28, 18, , , , , , , , , , 
+2.27, 18, , , , , , , , , , 
+2.29, 18, , , , , , , , , , 
+2.31, 17.9, , , , , , , , , , 
+2.3, 17.7, , , , , , , , , , 
+2.28, 17.7, , , , , , , , , , 
+2.26, 17.7, , , , , , , , , , 
+2.24, 17.7, , , , , , , , , , 
+2.23, 17.7, , , , , , , , , , 
+2.2, 17.7, , , , , , , , , , 
+2.17, 17.7, , , , , , , , , , 
+Dataset {
+    Sequence {
+        Float32 Depth;
+        Float32 Air_Temp;
+    } URI_GSO-Dock;
+} gsodock.dat;
+Data:
+Z   ?˘ôöA´33Z   ?ÒÎÖA´33Z   ?ÎÖA©ôöZ   ?·GÆA®  Z   ?›p§A®  Z   ?◊
+=A®  Z   ?–£◊A®  Z   ? =qA•ôöZ   ?≈∏A•ôöZ   ?º(ˆA•ôöZ   ?∑
+=A•ôöZ   ?∞£◊A¢ffZ   ?Ø\)A¢ffZ   ?™=qA¢ffZ   ?¶ffA¢ffZ   ?•∏A•ôöZ   ?¢è\A¢ffZ   ?¢è\A¢ffZ   ?°GÆA¢ffZ   ?†  Aü33Z   ?ùp§Aü33Z   ?ùp§Aü33Z   ?ùp§Aü33Z   ?û∏RAü33Z   ?ùp§Aü33Z   ?ùp§Aü33Z   ?û∏RAü33Z   ?°GÆAü33Z   ?£◊
+Aü33Z   ?¶ffAü33Z   ?•∏Aü33Z   ?¶ffAü33Z   ?®ı√Aü33Z   ?¨ÃÕAü33Z   ?∞£◊A¢ffZ   ?¥z·A¢ffZ   ?µ¬èA¢ffZ   ?πôöA¢ffZ   ?æ∏RA¢ffZ   ?√◊
+A¢ffZ   ?«ÆA¢ffZ   ?ÃÃÕA¢ffZ   ?œ\)A•ôöZ   ?◊
+=A•ôöZ   ?‹(ˆA•ôöZ   ?‚è\Aü33Z   ?ÁÆAúÃÕZ   ?Í=qAöffZ   ?Ó{AöffZ   ?Ùz·Aò  Z   ?¸(ˆAò  Z   @ £◊Aò  Z   @33Aò  Z   @z·AöffZ   @
+=AöffZ   @ÆAöffZ   @ÆAúÃÕZ   @QÏAûffZ   @ı√Aü33Z   @ı√A¢ffZ   @	ôöA¢ffZ   @
+·HA¢ffZ   @
+·HA•ôöZ   @
+=qA®  Z   @	ôöA™ffZ   @QÏA´33Z   @ffA´33Z   @∏AÆffZ   @◊
+A∞  Z   @è\A±ôöZ   @   A±ôöZ   ?¸(ˆA±ôöZ   ?ı¬èA±ôöZ   ?£◊A±ôöZ   ?ÎÖA¥  Z   ?ÊffA¥  Z   ?›p§A¥  Z   ?◊
+=A≤ffZ   ?”33A¥  Z   ?Œ{A¥  Z   ?«ÆA≤ffZ   ?¬è\A±ôöZ   ?æ∏RAÆffZ   ?∫·HAÆffZ   ?¥z·A´33Z   ?∞£◊A´33Z   ?¨ÃÕA®  Z   ?®ı√A®  Z   ?•∏A®  Z   ?•∏A®  Z   ?£◊
+A®  Z   ?¢è\A®  Z   ?¢è\A´33Z   ?£◊
+AÆffZ   ?•∏A±ôöZ   ?¶ffA´33Z   ?¶ffA´33Z   ?ßÆA´33Z   ?®ı√A´33Z   ?´ÖA®  Z   ?Æ{A®  Z   ?Ø\)A®  Z   ?∞£◊A•ôöZ   ?≥33A•ôöZ   ?∑
+=A•ôöZ   ?∫·HA•ôöZ   ?º(ˆA¢ffZ   ?¿  A¢ffZ   ?≈∏A¢ffZ   ?ÀÖAü33Z   ?Œ{Aü33Z   ?”33Aü33Z   ?◊
+=AùôöZ   ?⁄·HAúÃÕZ   ?ﬁ∏RAúÃÕZ   ?‚è\AöffZ   ?Â∏AöffZ   ?Í=qAöffZ   ?Ô\)Aò  Z   ?Ùz·Aò  Z   ?˘ôöAò  Z   ?˛∏RAïôöZ   @GÆAïôöZ   @33AïôöZ   @z·AïôöZ   @
+=AíffZ   @	ôöAíffZ   @
+·HAíffZ   @ÃÕAíffZ   @{AíffZ   @  AíffZ   @GÆAíffZ   @ÎÖAëôöZ   @ÎÖAê  Z   @GÆAê  Z   @è\Aê  Z   @◊
+Aè33Z   @33AçôöZ   @ÎÖAçôöZ   @£◊AçôöZ   @\)AçôöZ   @∏RAçôöZ                           
