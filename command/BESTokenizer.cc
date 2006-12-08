@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,13 +39,9 @@ using std::endl ;
 #include "BESParserException.h"
 
 BESTokenizer::BESTokenizer( )
-    : _counter( -1 )
-{
-}
+: _counter( -1 ) {}
 
-BESTokenizer::~BESTokenizer()
-{
-}
+BESTokenizer::~BESTokenizer() {}
 
 /** @brief throws an exception giving the tokens up to the point of the
  * problem
@@ -60,19 +56,17 @@ BESTokenizer::~BESTokenizer()
  * leading up to the error.
  */
 void
-BESTokenizer::parse_error( const string &s )
-{
+BESTokenizer::parse_error( const string &s ) {
     string error = "Parse error." ;
     string where = "" ;
-    if( _counter >= 0 )
-    {
-	for( int w = 0; w < _counter+1; w++ )
-	    where += tokens[w] + " " ;
-	where += "<----HERE IS THE ERROR" ;
-	error += "\n" + where ;
+    if( _counter >= 0 ) {
+        for( int w = 0; w < _counter+1; w++ )
+            where += tokens[w] + " " ;
+        where += "<----HERE IS THE ERROR" ;
+        error += "\n" + where ;
     }
     if( s != "" )
-	error += "\n" + s ;
+        error += "\n" + s ;
     throw BESParserException( error, __FILE__, __LINE__ ) ;
 }
 
@@ -85,8 +79,7 @@ BESTokenizer::parse_error( const string &s )
  * @returns the first token in the token list
  */
 string &
-BESTokenizer::get_first_token()
-{
+BESTokenizer::get_first_token() {
     _counter = 0 ;
     return tokens[_counter] ;
 }
@@ -101,16 +94,13 @@ BESTokenizer::get_first_token()
  * @see BESException
  */
 string &
-BESTokenizer::get_current_token()
-{
-    if( _counter == -1 )
-    {
-	parse_error( "incomplete expression!" ) ;
+BESTokenizer::get_current_token() {
+    if( _counter == -1 ) {
+        parse_error( "incomplete expression!" ) ;
     }
 
-    if( _counter > _number_tokens-1 )
-    {
-	parse_error( "incomplete expression!" ) ;
+    if( _counter > _number_tokens-1 ) {
+        parse_error( "incomplete expression!" ) ;
     }
 
     return tokens[_counter] ;
@@ -126,16 +116,13 @@ BESTokenizer::get_current_token()
  * @see BESException
  */
 string &
-BESTokenizer::get_next_token()
-{
-    if( _counter == -1 )
-    {
-	parse_error( "incomplete expression!" ) ;
+BESTokenizer::get_next_token() {
+    if( _counter == -1 ) {
+        parse_error( "incomplete expression!" ) ;
     }
 
-    if( _counter >= _number_tokens-1 )
-    {
-	parse_error( "incomplete expression!" ) ;
+    if( _counter >= _number_tokens-1 ) {
+        parse_error( "incomplete expression!" ) ;
     }
 
     return tokens[++_counter] ;
@@ -156,6 +143,10 @@ BESTokenizer::get_next_token()
  *  When the tokenizer sees a double quote it then finds the next double
  *  quote and includes all test between the quotes, and including the
  *  quotes, as a single token.
+ * 
+ * When a "\" is character is encountered it is treated as an escape character.
+ * The "\" is removed from the token and the character following it is added
+ * to the token - even if it's a double qoute.
  *
  * @param p request command string
  * @throws BESException if quoted text is missing an end quote, if the
@@ -164,83 +155,81 @@ BESTokenizer::get_next_token()
  * @see BESException
  */
 void
-BESTokenizer::tokenize( const char *p )
-{
+BESTokenizer::tokenize( const char *p ) {
     size_t len = strlen( p ) ;
     string s = "" ;
     bool passing_raw = false ;
-    for( unsigned int j = 0; j < len; j++ )
-    {
-	if( p[j] == '\"' )
-	{
-	    if( s != "" )
-	    {
-		if( passing_raw )
-		{
-		    s += "\"" ;
-		    tokens.push_back( s ) ;
-		    s = "" ;
-		}
-		else
-		{
-		    tokens.push_back( s ) ;
-		    s = "\"" ;
-		}
-	    }
-	    else
-	    {
-		s += "\"" ;
-	    }
-	    passing_raw =! passing_raw ;
-	}
-	else if( passing_raw )
-	{
-	    s += p[j] ;
-	}
-	else
-	{
-	    if( ( p[j] == ' ' ) ||
-	        ( p[j] == '\n' ) ||
-		( p[j] == 0x0D ) ||
-		( p[j] == 0x0A ) )
-	    {
-		if( s != "" )
-		{
-		    tokens.push_back( s ) ;
-		    s = "" ;
-		}
-	    }
-	    else if( ( p[j] == ',' ) || ( p[j] == ';' ) )
-	    {
-		if( s!= "" )
-		{
-		    tokens.push_back( s ) ;
-		    s = "" ;
-		}
-		switch( p[j] )
-		{
-		    case ',':
-			tokens.push_back( "," ) ;
-			break;
-		    case ';':
-			tokens.push_back( ";" ) ;
-			break;
-		}
-	    }
-	    else
-	    s += p[j] ;
-	}
+    bool escaped = false ;
+    
+
+    
+    for( unsigned int j = 0; j < len; j++ ) {
+    	
+    	
+        if( !escaped && p[j] == '\"') {
+
+            if( s != "" ) {
+                if( passing_raw ) {
+                    s += "\"" ;
+                    tokens.push_back( s ) ;
+                    s = "" ;
+                } else {
+                    tokens.push_back( s ) ;
+                    s = "\"" ;
+                }
+            } else {
+                s += "\"" ;
+            }
+            passing_raw =! passing_raw ;
+            
+        } else if( passing_raw ) {
+             
+        	if(!escaped && p[j] == '\\' ){
+        	    escaped = true;
+        	} else {          
+                s += p[j] ;
+                               
+                if(escaped)
+                    escaped = false;     
+        	}  
+           
+        } else {
+            if( ( p[j] == ' ' ) ||
+                    ( p[j] == '\n' ) ||
+                    ( p[j] == 0x0D ) ||
+                    ( p[j] == 0x0A ) ) {
+                if( s != "" ) {
+                    tokens.push_back( s ) ;
+                    s = "" ;
+                }
+            } else if( ( p[j] == ',' ) || ( p[j] == ';' ) ) {
+                if( s!= "" ) {
+                    tokens.push_back( s ) ;
+                    s = "" ;
+                }
+                switch( p[j] ) {
+                case ',':
+                    tokens.push_back( "," ) ;
+                    break;
+                case ';':
+                    tokens.push_back( ";" ) ;
+                    break;
+                }
+            } else
+                s += p[j] ;
+        }
     }
 
+
     if( s != "" )
-	tokens.push_back( s ) ;
+        tokens.push_back( s ) ;
     _number_tokens = tokens.size() ;
     if( passing_raw )
-	parse_error( "Unclose quote found.(\")" ) ;
+        parse_error( "Unclose quote found.(\")" ) ;
     if( _number_tokens < 2 )
-	parse_error( "Unknown command: '" + (string)p + (string)"'") ;
+        parse_error( "Unknown command: '" + (string)p + (string)"'") ;
     if( tokens[_number_tokens - 1] != ";" )
-	parse_error( "The request must be terminated by a semicolon (;)" ) ;
+        parse_error( "The request must be terminated by a semicolon (;)" ) ;
 }
 
 /** @brief parses a container name for constraint and attributes
@@ -264,35 +253,27 @@ BESTokenizer::tokenize( const char *p )
  * @see BESException
  */
 string
-BESTokenizer::parse_container_name( const string &s, unsigned int &type )
-{
+BESTokenizer::parse_container_name( const string &s, unsigned int &type ) {
     string::size_type where = s.rfind( ".constraint=", s.size() ) ;
-    if( where == string::npos )
-    {
-	where = s.rfind( ".attributes=", s.size() ) ;
-	if( where == string::npos )
-	{
-	    parse_error( "Expected property declaration." ) ;
-	}
-	else
-	{
-	    type = 2 ;
-	}
-    }
-    else
-    {
-	type = 1 ;
+    if( where == string::npos ) {
+        where = s.rfind( ".attributes=", s.size() ) ;
+        if( where == string::npos ) {
+            parse_error( "Expected property declaration." ) ;
+        } else {
+            type = 2 ;
+        }
+    } else {
+        type = 1 ;
     }
     string valid = s.substr( where, s.size() ) ;
-    if( (valid != ".constraint=") && (valid != ".attributes=") )
-    {
-	string err = (string)"Invalid container property "
-	             + valid
-		     + " for container "
-		     + s.substr( 0, where )
-		     + ". constraint expressions and attribute lists "
-		     + "must be wrapped in quotes"  ;
-	parse_error( err ) ;
+    if( (valid != ".constraint=") && (valid != ".attributes=") ) {
+        string err = (string)"Invalid container property "
+                     + valid
+                     + " for container "
+                     + s.substr( 0, where )
+                     + ". constraint expressions and attribute lists "
+                     + "must be wrapped in quotes"  ;
+        parse_error( err ) ;
     }
     return s.substr( 0, where ) ;
 }
@@ -309,11 +290,9 @@ BESTokenizer::parse_container_name( const string &s, unsigned int &type )
  * @see BESException
  */
 string
-BESTokenizer::remove_quotes( const string &s )
-{
-    if( (s[0] != '"' ) || (s[s.size() - 1] != '"' ) )
-    {
-	parse_error( "item " + s + " must be enclosed by quotes" ) ;
+BESTokenizer::remove_quotes( const string &s ) {
+    if( (s[0] != '"' ) || (s[s.size() - 1] != '"' ) ) {
+        parse_error( "item " + s + " must be enclosed by quotes" ) ;
     }
     return s.substr( 1, s.size() - 2 ) ;
 }
@@ -327,13 +306,11 @@ BESTokenizer::remove_quotes( const string &s )
  * if there are any spaces or special characters in the token.
  */
 void
-BESTokenizer::dump_tokens()
-{
+BESTokenizer::dump_tokens() {
     tokens_citerator i = tokens.begin() ;
     tokens_citerator ie = tokens.end() ;
-    for( ; i != ie; i++ )
-    {
-	cout << "\"" << (*i) << "\"" << endl ;
+    for( ; i != ie; i++ ) {
+        cout << "\"" << (*i) << "\"" << endl ;
     }
 }
 
@@ -344,16 +321,14 @@ BESTokenizer::dump_tokens()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-BESTokenizer::dump( ostream &strm ) const
-{
+BESTokenizer::dump( ostream &strm ) const {
     strm << BESIndent::LMarg << "BESTokenizer::dump - ("
-			     << (void *)this << ")" << endl ;
+    << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     tokens_citerator i = tokens.begin() ;
     tokens_citerator ie = tokens.end() ;
-    for( ; i != ie; i++ )
-    {
-	strm << BESIndent::LMarg << "\"" << (*i) << "\"" << endl ;
+    for( ; i != ie; i++ ) {
+    strm << BESIndent::LMarg << "\"" << (*i) << "\"" << endl ;
     }
     BESIndent::UnIndent() ;
 }
