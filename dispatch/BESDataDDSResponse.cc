@@ -2,8 +2,11 @@
 
 BESDataDDSResponse::~BESDataDDSResponse()
 {
-    if( _dds )
-	delete _dds ;
+    if (_dds) {
+        if (_dds->get_factory())
+            delete _dds->get_factory();
+        delete _dds;
+    }
 }
 
 /** @brief dumps information about this object

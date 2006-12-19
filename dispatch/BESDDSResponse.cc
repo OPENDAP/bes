@@ -2,12 +2,16 @@
 
 BESDDSResponse::~BESDDSResponse()
 {
-    if( _dds )
-	delete _dds ;
+    if (_dds) {
+        if (_dds->get_factory())
+            delete _dds->get_factory();
+        delete _dds;
+    }
 }
 
 /** @brief dumps information about this object
- *
+ *set container in catalog values avhrr, /data/ff/1998.6.avhrr.dat;
+ * 
  * Displays the pointer value of this instance along with the dds object
  * created
  *

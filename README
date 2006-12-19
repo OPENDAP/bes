@@ -182,3 +182,13 @@ To stop the BES use the bes control script with the stop option:
 
     [jimg@zoe sbin]$ besctl start
 
+Note: Constraints and the bes command line client
+
+Constraints are added to the 'define' command using the modifier 'with' like
+so: 
+
+    define d as nscat with nscat.constraint="WVC_LAT";
+
+If there is a list of containers instead of just one, then there can be a
+list of <container>.constraint="" clauses.
+

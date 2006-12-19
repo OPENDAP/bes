@@ -39,22 +39,24 @@
 
 /** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
  */
-class BESDataDDSResponse : public BESResponseObject
-{
-private:
-    DataDDS *			_dds ;
-    ConstraintEvaluator		_ce ;
-public:
-    				BESDataDDSResponse( DataDDS *dds )
-				    : BESResponseObject(),
-				      _dds( dds ) {}
-    virtual			~BESDataDDSResponse() ;
+class BESDataDDSResponse:public BESResponseObject {
+  private:
+    DataDDS * _dds;
+    ConstraintEvaluator _ce;
+  public:
+    BESDataDDSResponse(DataDDS * dds) :BESResponseObject(), _dds(dds) {} 
+    
+    virtual ~ BESDataDDSResponse();
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void dump(ostream & strm) const;
 
-    DataDDS *			get_dds() { return _dds ; }
-    ConstraintEvaluator &	get_ce() { return _ce ; }
-} ;
+    DataDDS *get_dds() {
+        return _dds;
+    }
+    ConstraintEvaluator & get_ce() {
+        return _ce;
+    }
+};
 
 #endif // I_BESDataDDSResponse
 

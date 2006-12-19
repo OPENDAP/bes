@@ -44,8 +44,7 @@ class BESInfo ;
 /** @brief abstract base class catalog object. Derived classes know how to
  * show nodes and leaves in a catalog.
  */
-class BESCatalog : public BESObj
-{
+class BESCatalog : public BESObj {
 private:
     string			_catalog_name ;
 

@@ -49,16 +49,20 @@ BESCatalogList::~BESCatalogList()
     }
 }
 
-bool
-BESCatalogList::add_catalog( BESCatalog *catalog )
+bool BESCatalogList::add_catalog(BESCatalog * catalog)
 {
-    bool stat = false ;
-    if( find_catalog( catalog->get_catalog_name() ) == 0 )
-    {
-	_catalogs[catalog->get_catalog_name()] = catalog ;
-	stat = true ;
+    bool stat = false;
+    if (find_catalog(catalog->get_catalog_name()) == 0) {
+#if 0
+        _catalogs[catalog->get_catalog_name()] = catalog;
+#endif
+        std::pair<const std::string, BESCatalog*> p = std::make_pair("test", catalog);
+        stat = _catalogs.insert(p).second;
+#if 0
+        stat = true;
+#endif
     }
-    return stat ;
+    return stat;
 }
 
 bool
