@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-using std::ostringstream ;
+using std::ostringstream;
 
 #include "BESDapTransmit.h"
 #include "DODSFilter.h"
@@ -46,151 +46,148 @@ using std::ostringstream ;
 #include "Error.h"
 
 void
-BESDapTransmit::send_basic_das( BESResponseObject *obj,
-                                BESDataHandlerInterface &dhi )
+ BESDapTransmit::send_basic_das(BESResponseObject * obj,
+                                BESDataHandlerInterface & dhi)
 {
-    BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(obj) ;
-    DAS *das = bdas->get_das() ;
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
+    DAS *das = bdas->get_das();
     dhi.first_container();
 
-    try
-    {
-	DODSFilter df ;
-	df.set_dataset_name( dhi.container->get_real_name() ) ;
-	df.send_das( stdout, *das, "", false ) ;
-	fflush( stdout ) ;
+    try {
+        DODSFilter df;
+        df.set_dataset_name(dhi.container->get_real_name());
+        df.send_das(stdout, *das, "", false);
+        fflush(stdout);
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception transmitting DAS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESTransmitException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception transmitting DAS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESTransmitException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught transmitting DAS" ;
-	BESTransmitException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught transmitting DAS";
+        BESTransmitException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 }
 
-void
-BESDapTransmit::send_http_das( BESResponseObject *obj,
-                               BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_http_das(BESResponseObject * obj,
+                                   BESDataHandlerInterface & dhi)
 {
-    set_mime_text( stdout, dods_das ) ;
-    BESDapTransmit::send_basic_das( obj, dhi ) ;
+    set_mime_text(stdout, dods_das);
+    BESDapTransmit::send_basic_das(obj, dhi);
 }
 
-void
-BESDapTransmit::send_basic_dds( BESResponseObject *obj,
-				BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
+                                    BESDataHandlerInterface & dhi)
 {
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj) ;
-    DDS *dds = bdds->get_dds() ;
-    ConstraintEvaluator &ce = bdds->get_ce() ;
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
 
-    try
-    {
-	DODSFilter df ;
-	df.set_dataset_name( dhi.container->get_real_name() ) ;
-	df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-	df.send_dds( stdout, *dds, ce, true, "", false ) ;
-	fflush( stdout ) ;
+    try {
+        DODSFilter df;
+        df.set_dataset_name(dhi.container->get_real_name());
+        df.set_ce(dhi.data[POST_CONSTRAINT]);
+        df.send_dds(stdout, *dds, ce, true, "", false);
+        fflush(stdout);
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception transmitting DDS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESTransmitException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception transmitting DDS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESTransmitException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught transmitting DDS" ;
-	BESTransmitException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught transmitting DDS";
+        BESTransmitException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 }
 
-void
-BESDapTransmit::send_http_dds( BESResponseObject *obj,
-			       BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_http_dds(BESResponseObject * obj,
+                                   BESDataHandlerInterface & dhi)
 {
-    set_mime_text( stdout, dods_dds ) ;
-    BESDapTransmit::send_basic_dds( obj, dhi ) ;
+    set_mime_text(stdout, dods_dds);
+    BESDapTransmit::send_basic_dds(obj, dhi);
 }
 
-void
-BESDapTransmit::send_basic_data( BESResponseObject *obj,
-				 BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_basic_data(BESResponseObject * obj,
+                                     BESDataHandlerInterface & dhi)
 {
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(obj) ;
-    DataDDS *dds = bdds->get_dds() ;
-    ConstraintEvaluator &ce = bdds->get_ce() ;
-    dhi.first_container() ;
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+    DataDDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
 
-    try
-    {
-	DODSFilter df ;
-	df.set_dataset_name( dds->filename() ) ;
-	df.set_ce(dhi.data[POST_CONSTRAINT]);
-	df.send_data( *dds, ce, stdout, "", false ) ;
-	fflush( stdout ) ;
+    try {
+        DODSFilter df;
+        df.set_dataset_name(dds->filename());
+        df.set_ce(dhi.data[POST_CONSTRAINT]);
+        df.send_data(*dds, ce, stdout, "", false);
+        fflush(stdout);
     }
-    catch( Error &e )
-    {
-	ostringstream s ;
-	s << "libdap exception transmitting DataDDS"
-	  << ": error_code = " << e.get_error_code()
-	  << ": " << e.get_error_message() ;
-	BESTransmitException ex( s.str(), __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception transmitting DataDDS"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESTransmitException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
     }
-    catch( ... )
-    {
-	string s = "unknown exception caught transmitting DataDDS" ;
-	BESTransmitException ex( s, __FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(...) {
+        string s = "unknown exception caught transmitting DataDDS";
+        BESTransmitException ex(s, __FILE__, __LINE__);
+        throw ex;
     }
 }
 
-void
-BESDapTransmit::send_http_data( BESResponseObject *obj,
-				BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_http_data(BESResponseObject * obj,
+                                    BESDataHandlerInterface & dhi)
 {
     //set_mime_binary( stdout, dods_data ) ;
-    BESDapTransmit::send_basic_data( obj, dhi ) ;
+    BESDapTransmit::send_basic_data(obj, dhi);
 }
 
-void
-BESDapTransmit::send_basic_ddx( BESResponseObject *obj,
-				BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
+                                    BESDataHandlerInterface & dhi)
 {
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj) ;
-    DDS *dds = bdds->get_dds() ;
-    ConstraintEvaluator &ce = bdds->get_ce() ;
-    dhi.first_container() ;
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
 
-    DODSFilter df ;
-    df.set_dataset_name( dhi.container->get_real_name() ) ;
-    df.set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    df.send_ddx( *dds, ce, stdout, false ) ;
-
-    fflush( stdout ) ;
+    try {
+        DODSFilter df;
+        df.set_dataset_name(dhi.container->get_real_name());
+        df.set_ce(dhi.data[POST_CONSTRAINT]);
+        df.send_ddx(*dds, ce, stdout, false);
+        fflush(stdout);
+    }
+    catch(Error & e) {
+        ostringstream s;
+        s << "libdap exception transmitting DDX"
+            << ": error_code = " << e.get_error_code()
+            << ": " << e.get_error_message();
+        BESTransmitException ex(s.str(), __FILE__, __LINE__);
+        throw ex;
+    }
+    catch(...) {
+        string s = "unknown exception caught transmitting DAS";
+        BESTransmitException ex(s, __FILE__, __LINE__);
+        throw ex;
+    }
 }
 
-void
-BESDapTransmit::send_http_ddx( BESResponseObject *obj,
-			       BESDataHandlerInterface &dhi )
+void BESDapTransmit::send_http_ddx(BESResponseObject * obj,
+                                   BESDataHandlerInterface & dhi)
 {
-    set_mime_text( stdout, dods_dds ) ;
-    BESDapTransmit::send_basic_ddx( obj, dhi ) ;
+    set_mime_text(stdout, dods_dds);
+    BESDapTransmit::send_basic_ddx(obj, dhi);
 }
-
