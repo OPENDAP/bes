@@ -49,13 +49,13 @@ class BESDebug
 private:
     bool			_debug ;
     ostream *			_strm ;
-    				BESDebug() : _strm( 0 ), _debug( false ) {}
+    				BESDebug() : _debug( false ), _strm( 0 ) {}
     static BESDebug *		_debugger ;
 public:
     				BESDebug( ostream *strm ) : _strm( strm ) {}
     virtual			~BESDebug() {}
-    virtual bool		begin_debug() { _debug = true ; }
-    virtual bool		end_debug() { _debug = false ; }
+    virtual	void	begin_debug() { _debug = true ; }
+    virtual	void	end_debug() { _debug = false ; }
     virtual bool		debug() { return _debug ; }
     virtual ostream *		get_strm() { return _strm ; }
 
