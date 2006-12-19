@@ -37,6 +37,8 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapTransmit.h"
 
+#include "BESLog.h"
+
 BESDDXResponseHandler::BESDDXResponseHandler( string name )
     : BESResponseHandler( name )
 {
@@ -67,6 +69,8 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
+    (*BESLog::TheLog()) << "Entering BESDDXResponseHandler::execute" << endl;
+    
     dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
     // NOTE: It is the responsbility of the specific request handler to set
@@ -106,12 +110,11 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see _BESDataHandlerInterface
  */
 void
-BESDDXResponseHandler::transmit( BESTransmitter *transmitter,
-                              BESDataHandlerInterface &dhi )
+ BESDDXResponseHandler::transmit(BESTransmitter * transmitter,
+                                 BESDataHandlerInterface & dhi)
 {
-    if( _response )
-    {
-	transmitter->send_response( DDX_TRANSMITTER, _response, dhi ) ;
+    if (_response) {
+        transmitter->send_response(DDX_TRANSMITTER, _response, dhi);
     }
 }
 
