@@ -82,6 +82,13 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action = DDS_RESPONSE ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 
+#if 0
+    // In the handler code, it's now required that DDS objects be built with
+    // attributes included (effectively DDS == DDX). This is needed for
+    // various server-side functions and will pave the way to phase out the 
+    // DDS/DAS responses as the basic building blocks in favor of the DDX.
+    // jhrg 12/20/06
+    
     // Fill the DAS
     DAS *das = new DAS ;
     BESDASResponse *bdas = new BESDASResponse( das ) ;
@@ -92,6 +99,7 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     // Transfer the DAS to the DDS
     dds->transfer_attributes( das ) ;
+#endif
 
     dhi.action = DDX_RESPONSE ;
     _response = bdds ;
