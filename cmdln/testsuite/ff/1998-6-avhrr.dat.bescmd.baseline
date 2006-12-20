@@ -16,6 +16,17 @@ Attributes {
     }
     DODS_URL {
     }
+    DODS_Time {
+        String hours_variable GSO_AVHRR.hh;
+        String minutes_variable GSO_AVHRR.mm;
+        String seconds_variable GSO_AVHRR.ss;
+        String gmt_time true;
+    }
+    DODS_Date {
+        String year_variable GSO_AVHRR.year;
+        Int32 year_base 1900;
+        String year_day_variable GSO_AVHRR.day_num;
+    }
 }
 Dataset {
     Sequence {
@@ -39,6 +50,31 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>&quot;DODS FreeFrom based on FFND release 4.2.3&quot;</value>
         </Attribute>
     </Attribute>
+    <Attribute name="DODS_Time" type="Container">
+        <Attribute name="hours_variable" type="String">
+            <value>GSO_AVHRR.hh</value>
+        </Attribute>
+        <Attribute name="minutes_variable" type="String">
+            <value>GSO_AVHRR.mm</value>
+        </Attribute>
+        <Attribute name="seconds_variable" type="String">
+            <value>GSO_AVHRR.ss</value>
+        </Attribute>
+        <Attribute name="gmt_time" type="String">
+            <value>true</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Date" type="Container">
+        <Attribute name="year_variable" type="String">
+            <value>GSO_AVHRR.year</value>
+        </Attribute>
+        <Attribute name="year_base" type="Int32">
+            <value>1900</value>
+        </Attribute>
+        <Attribute name="year_day_variable" type="String">
+            <value>GSO_AVHRR.day_num</value>
+        </Attribute>
+    </Attribute>
 
     <Sequence name="GSO_AVHRR">
         <String name="satellite"/>
@@ -60,6 +96,27 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 
 <tr><td align=right valign=top><b>Server</b>:</td>
 <td align=left>"DODS FreeFrom based on FFND release 4.2.3"<br></td></tr>
+
+<tr><td align=right valign=top><b>hours_variable</b>:</td>
+<td align=left>GSO_AVHRR.hh<br></td></tr>
+
+<tr><td align=right valign=top><b>minutes_variable</b>:</td>
+<td align=left>GSO_AVHRR.mm<br></td></tr>
+
+<tr><td align=right valign=top><b>seconds_variable</b>:</td>
+<td align=left>GSO_AVHRR.ss<br></td></tr>
+
+<tr><td align=right valign=top><b>gmt_time</b>:</td>
+<td align=left>true<br></td></tr>
+
+<tr><td align=right valign=top><b>year_variable</b>:</td>
+<td align=left>GSO_AVHRR.year<br></td></tr>
+
+<tr><td align=right valign=top><b>year_base</b>:</td>
+<td align=left>1900<br></td></tr>
+
+<tr><td align=right valign=top><b>year_day_variable</b>:</td>
+<td align=left>GSO_AVHRR.day_num<br></td></tr>
 </table>
 </center><p>
 
@@ -409,6 +466,13 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat"
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
 Server: "DODS FreeFrom based on FFND release 4.2.3"
+hours_variable: GSO_AVHRR.hh
+minutes_variable: GSO_AVHRR.mm
+seconds_variable: GSO_AVHRR.ss
+gmt_time: true
+year_variable: GSO_AVHRR.year
+year_base: 1900
+year_day_variable: GSO_AVHRR.day_num
 </textarea><p>
 
 <tr><td><td><hr>
@@ -791,6 +855,31 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
             <value>&quot;DODS FreeFrom based on FFND release 4.2.3&quot;</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Time" type="Container">
+        <Attribute name="hours_variable" type="String">
+            <value>GSO_AVHRR.hh</value>
+        </Attribute>
+        <Attribute name="minutes_variable" type="String">
+            <value>GSO_AVHRR.mm</value>
+        </Attribute>
+        <Attribute name="seconds_variable" type="String">
+            <value>GSO_AVHRR.ss</value>
+        </Attribute>
+        <Attribute name="gmt_time" type="String">
+            <value>true</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_Date" type="Container">
+        <Attribute name="year_variable" type="String">
+            <value>GSO_AVHRR.year</value>
+        </Attribute>
+        <Attribute name="year_base" type="Int32">
+            <value>1900</value>
+        </Attribute>
+        <Attribute name="year_day_variable" type="String">
+            <value>GSO_AVHRR.day_num</value>
         </Attribute>
     </Attribute>
 
