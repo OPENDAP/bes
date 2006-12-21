@@ -1,0 +1,7 @@
+set container in catalog values av,/data/nc/coads_climatology.nc;
+define e as av with av.constraint="SST";
+get dds for e;
+get ddx for e;
+get ascii for e;
+get dods for e;
+exit

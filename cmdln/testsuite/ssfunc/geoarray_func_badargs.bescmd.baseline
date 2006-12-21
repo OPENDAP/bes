@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<getAscii>
+    <response>
+        <Administrator>ndp@opendap.org</Administrator>
+        <BESException>
+            <Type>TransmitProblem</Type>
+            <Message>Failed to read data: Wrong number of arguments to geoarray(). The geoarray() function supports
+three different sets of arguments:
+
+geoarray(var,left,top,right,bottom)
+geoarray(var,left,top,right,bottom,var_left,var_top,var_right,var_bottom)
+geoarray(var,left,top,right,bottom,var_left,var_top,var_right,var_bottom,projection,datum)
+
+In the first version 'var' is the target of the selection and 'left', 'top',
+'right' and 'bottom' are the corners of a longitude-latitude box that defines
+the selection. In the second version the 'var_left', ..., parameters give the
+longitude and latitude extent of the entire array. The projection and dataum are
+assumed to be Plat-Carre and wgs84. In the last version the the projection and
+datum of the image are also provided.(1001)</Message>
+            <Location>
+                <File>BESAsciiTransmit.cc</File>
+                <Line>138</Line>
+            </Location>
+        </BESException>
+    </response>
+</getAscii>
+<?xml version="1.0" encoding="UTF-8"?>
+<getDODS>
+    <response>
+        <Administrator>ndp@opendap.org</Administrator>
+        <BESException>
+            <Type>TransmitProblem</Type>
+            <Message>libdap exception transmitting DataDDS: error_code = 1001: Wrong number of arguments to geoarray(). The geoarray() function supports
+three different sets of arguments:
+
+geoarray(var,left,top,right,bottom)
+geoarray(var,left,top,right,bottom,var_left,var_top,var_right,var_bottom)
+geoarray(var,left,top,right,bottom,var_left,var_top,var_right,var_bottom,projection,datum)
+
+In the first version 'var' is the target of the selection and 'left', 'top',
+'right' and 'bottom' are the corners of a longitude-latitude box that defines
+the selection. In the second version the 'var_left', ..., parameters give the
+longitude and latitude extent of the entire array. The projection and dataum are
+assumed to be Plat-Carre and wgs84. In the last version the the projection and
+datum of the image are also provided.</Message>
+            <Location>
+                <File>BESDapTransmit.cc</File>
+                <Line>141</Line>
+            </Location>
+        </BESException>
+    </response>
+</getDODS>
