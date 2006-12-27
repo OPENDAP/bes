@@ -174,6 +174,508 @@ created by Reza Nekovei at URI/GSO.
 
 </body>
 </html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>OPeNDAP Server Dataset Query Form</title>
+<base href="http://www.opendap.org/online_help_files/opendap_form_help.html">
+<script type="text/javascript">
+<!--
+
+// $Id: www.js 13206 2006-02-15 20:16:29Z jimg $
+
+var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
+
+// Event handlers for the disposition button.
+
+// The ascii_button handler sends data to a new window. The user can then 
+// save the data to a file.
+
+function ascii_button() {
+    var url = new String(document.forms[0].url.value);
+
+    var url_parts = url.split("?");
+    /* handle case where constraint is null. */
+    if (url_parts[1] != null) {
+        var ascii_url = url_parts[0] + ".ascii?" + url_parts[1];
+    }
+    else {
+        var ascii_url = url_parts[0] + ".ascii?";
+    }
+
+    window.open(ascii_url, "ASCII_Data");
+}
+
+/* The binary_button handler loads the data to the current window. Since it 
+   is binary, Netscape will ask the user for a filename and save the data
+   to that file. */
+
+function binary_button(ext) {
+    var url = new String(document.forms[0].url.value);
+
+    var url_parts = url.split("?");
+    /* handle case where constraint is null. */
+    if (url_parts[1] != null) {
+        var binary_url = url_parts[0] + "." + ext + "?" + url_parts[1];
+    }
+    else {
+        var binary_url = url_parts[0] + "." + ext + "?";
+    }
+
+    window.location = binary_url;
+}
+
+/* Route the URL to Matlab, IDL, .... Users must add an entry into their mime
+   types file (aka list of Netscape helper applications) so that the URL will
+   be fedd into Matlab which must, in addition, be running loaddods.
+
+   Note that reflection_cgi is a global JavaScript variable set at the 
+   begining of this `file'. 
+
+   DEPRECATED */
+
+function program_button() {
+    var program_url = new String(document.forms[0].url.value);
+
+    /* Build a call to the reflector CGI. */
+    var CGI = reflection_cgi + "?" + "url=" + program_url + "&disposition=matlab";
+
+    window.location = CGI;
+}
+
+var help = 0;			// Our friend, the help window.
+
+function help_button() {
+    // Check the global to keep from opening the window again if it is
+    // already visible. I think Netscape handles this but I know it will
+    // write the contents over and over again. This preents that, too.
+    // 10/8/99 jhrg
+    if (help && !help.closed)
+	return;
+
+    // Resize on Netscape 4 is hosed. When enabled, if a user resizes then
+    // the root window's document gets reloaded. This does not happen on IE5.
+    // regardless, with scrollbars we don't absolutely need to be able to
+    // resize. 10/8/99 jhrg
+    help = window.open("http://www.opendap.org/online_help_files/opendap_form_help.html",
+                       "help", "scrollbars,dependent,width=600,height=400");
+}
+
+//function open_dods_home() {
+//    window.open("http://www.opendap.org/", "DODS_HOME_PAGE");
+//}
+
+
+// Helper functions for the form.
+
+function describe_index() {
+   defaultStatus = "Enter start, stride and stop for the array dimension.";
+}
+
+function describe_selection() {
+   defaultStatus = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+}
+
+function describe_operator() {
+   defaultStatus = "Choose a relational operator. Use - to enter a function name).";
+}
+
+function describe_projection() {
+   defaultStatus = "Add this variable to the projection.";
+}
+
+///////////////////////////////////////////////////////////
+// The dods_url object.
+///////////////////////////////////////////////////////////
+
+// CTOR for dods_url
+// Create the DODS URL object.
+function dods_url(base_url) {
+    this.url = base_url;
+    this.projection = "";
+    this.selection = "";
+    this.num_dods_vars = 0;
+    this.dods_vars = new Array();
+        
+    this.build_constraint = build_constraint;
+    this.add_dods_var = add_dods_var;
+    this.update_url = update_url;
+}
+
+// Method of dods_url
+// Add the projection and selection to the displayed URL.
+function update_url() {
+    this.build_constraint();
+    var url_text = this.url;
+    // Only add the projection & selection (and ?) if there really are
+    // constraints! 
+    if (this.projection.length + this.selection.length > 0)
+        url_text += "?" + this.projection + this.selection;
+    document.forms[0].url.value = url_text;
+}
+
+// Method of dods_url
+// Scan all the form elements and pick out the various pieces of constraint
+// information. Add these to the dods_url instance.
+function build_constraint() {
+    var p = "";
+    var s = "";
+    for (var i = 0; i < this.num_dods_vars; ++i) {
+        if (this.dods_vars[i].is_projected == 1) {
+	    // The comma is a clause separator.
+	    if (p.length > 0)
+	        p += ",";
+            p += this.dods_vars[i].get_projection();
+	}
+	var temp_s = this.dods_vars[i].get_selection();
+	if (temp_s.length > 0)
+	    s += "&" + temp_s;    // The ampersand is a prefix to the clause.
+    }
+
+    this.projection = p;
+    this.selection = s;
+}
+
+// Method of dods_url
+// Add the variable to the dods_var array of dods_vars. The var_index is the
+// number of *this particular* variable in the dataset, zero-based.
+function add_dods_var(dods_var) {
+    this.dods_vars[this.num_dods_vars] = dods_var;
+    this.num_dods_vars++;
+}
+
+/////////////////////////////////////////////////////////////////
+// dods_var
+/////////////////////////////////////////////////////////////////
+
+// CTOR for dods_var
+// name: the name of the variable from DODS' perspective.
+// js_var_name: the name of the variable within the form.
+// is_array: 1 if this is an array, 0 otherwise.
+function dods_var(name, js_var_name, is_array) {
+    // Common members
+    this.name = name;
+    this.js_var_name = js_var_name;
+    this.is_projected = 0;
+    if (is_array > 0) {
+        this.is_array = 1;
+        this.num_dims = 0;        // Holds the number of dimensions
+        this.dims = new Array(); // Holds the length of the dimensions
+
+        this.add_dim = add_dim;
+        this.display_indices = display_indices;
+        this.erase_indices = erase_indices;
+    }
+    else
+        this.is_array = 0;
+
+    this.handle_projection_change = handle_projection_change;
+    this.get_projection = get_projection;
+    this.get_selection = get_selection;
+}
+
+// Method of dods_var
+// Add a dimension to a DODS Array object.
+function add_dim(dim_size) {
+    this.dims[this.num_dims] = dim_size;
+    this.num_dims++;
+}
+
+// Method of dods_var
+// Add the array indices to the text widgets associated with this DODS
+// array object. The text widgets are names <var_name>_0, <var_name>_1, ...
+// <var_name>_n for an array with size N+1.
+function display_indices() {
+    for (var i = 0; i < this.num_dims; ++i) {
+        var end_index = this.dims[i]-1;
+        var s = "0:1:" + end_index.toString();
+	var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	eval(text_widget).value = s;
+    }
+}
+
+// Method of dods_var
+// Use this to remove index information from a DODS array object.
+function erase_indices() {
+    for (var i = 0; i < this.num_dims; ++i) {
+	var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	eval(text_widget).value = "";
+    }
+}
+
+// Method of  dods_var
+function handle_projection_change(check_box) {
+    if (check_box.checked) {
+        this.is_projected = 1;
+	if (this.is_array == 1)
+	    this.display_indices();
+    }
+    else {
+        this.is_projected = 0;
+	if (this.is_array == 1)
+	    this.erase_indices();
+    }
+
+    DODS_URL.update_url();
+}
+
+
+// Method of dods_var
+// Get the projection sub-expression for this variable.
+function get_projection() {
+    var p = "";
+    if (this.is_array == 1) {
+        p = this.name;		// ***
+        for (var i = 0; i < this.num_dims; ++i) {
+	    var text_widget = "document.forms[0]." + this.js_var_name + "_" + i.toString();
+	    p += "[" + eval(text_widget).value + "]";
+	}
+    }
+    else {
+	p = this.name;		// ***
+    }
+
+    return p;
+}
+
+// Method of dods_var
+// Get the selection (which is null for arrays).
+function get_selection() {
+    var s = "";
+    if (this.is_array == 1) {
+        return s;
+    }
+    else {
+	var text_widget = "document.forms[0]." + this.js_var_name + "_selection";
+        if (eval(text_widget).value != "") {
+            var oper_widget_name = "document.forms[0]." + this.js_var_name + "_operator";
+            var oper_widget = eval(oper_widget_name);
+	    var operator = oper_widget.options[oper_widget.selectedIndex].value;
+            // If the operator is `-' then don't prepend the variable name!
+            // This provides a way for users to enter function names as
+            // selection clauses. 
+            if (operator == "-")
+                s = eval(text_widget).value;
+            else
+	        s = this.name + operator + eval(text_widget).value; // ***
+        }
+    }
+
+    return s;
+}    
+
+DODS_URL = new dods_url("http://localhost:8080/opendap/data/nc/fnoc1.nc");
+// -->
+</script>
+</head>
+<body>
+<p><h2 align='center'>OPeNDAP Server Dataset Access Form</h2>
+<hr>
+<form action="">
+<table>
+<tr>
+<td align="right">
+<h3>
+<a href="opendap_form_help.html#disposition" target="help">Action:</a></h3>
+<td>
+<input type="button" value="Get ASCII" onclick="ascii_button()">
+<input type="button" value="Binary Data Object " onclick="binary_button('dods')">
+<input type="button" value="Show Help" onclick="help_button()">
+
+<tr>
+<td align="right"><h3><a href="opendap_form_help.html#data_url" target="help">Data URL:</a>
+</h3>
+<td><input name="url" type="text" size="70" value="http://localhost:8080/opendap/data/nc/fnoc1.nc">
+<tr><td><td><hr>
+
+<tr>
+<td align="right" valign="top"><h3>
+<a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
+<td><textarea name="global_attr" rows="5" cols="70">
+base_time: "88- 10-00:00:00"
+title: " FNOC UV wind components from 1988- 10 to 1988- 13."
+Unlimited_Dimension: "time_a"
+</textarea><p>
+
+<tr><td><td><hr>
+
+<tr>
+<td align="right" valign="top">
+<h3><a href="opendap_form_help.html#dataset_variables" target="help">Variables:</a></h3>
+<td><script type="text/javascript">
+<!--
+org_opendap_u = new dods_var("u", "org_opendap_u", 1);
+DODS_URL.add_dods_var(org_opendap_u);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_u"
+onclick="org_opendap_u.handle_projection_change(get_org_opendap_u)">
+<font size="+1">u</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
+
+time_a:<input type="text" name="org_opendap_u_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_u.add_dim(16);
+// -->
+</script>
+lat:<input type="text" name="org_opendap_u_1" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_u.add_dim(17);
+// -->
+</script>
+lon:<input type="text" name="org_opendap_u_2" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_u.add_dim(21);
+// -->
+</script>
+<br>
+
+<textarea name="u_attr" rows="5" cols="70">
+units: "meter per second"
+long_name: "Vector wind eastward component"
+missing_value: "-32767"
+scale_factor: "0.005"
+</textarea>
+
+
+<p><p>
+
+<tr><td><td>
+
+<script type="text/javascript">
+<!--
+org_opendap_v = new dods_var("v", "org_opendap_v", 1);
+DODS_URL.add_dods_var(org_opendap_v);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_v"
+onclick="org_opendap_v.handle_projection_change(get_org_opendap_v)">
+<font size="+1">v</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
+
+time_a:<input type="text" name="org_opendap_v_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_v.add_dim(16);
+// -->
+</script>
+lat:<input type="text" name="org_opendap_v_1" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_v.add_dim(17);
+// -->
+</script>
+lon:<input type="text" name="org_opendap_v_2" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_v.add_dim(21);
+// -->
+</script>
+<br>
+
+<textarea name="v_attr" rows="5" cols="70">
+units: "meter per second"
+long_name: "Vector wind northward component"
+missing_value: "-32767"
+scale_factor: "0.005"
+</textarea>
+
+
+<p><p>
+
+<tr><td><td>
+
+<script type="text/javascript">
+<!--
+org_opendap_lat = new dods_var("lat", "org_opendap_lat", 1);
+DODS_URL.add_dods_var(org_opendap_lat);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_lat"
+onclick="org_opendap_lat.handle_projection_change(get_org_opendap_lat)">
+<font size="+1">lat</font>: Array of 32 bit Reals [lat = 0..16]</b><br>
+
+lat:<input type="text" name="org_opendap_lat_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_lat.add_dim(17);
+// -->
+</script>
+<br>
+
+<textarea name="lat_attr" rows="5" cols="70">
+units: "degree North"
+</textarea>
+
+
+<p><p>
+
+<tr><td><td>
+
+<script type="text/javascript">
+<!--
+org_opendap_lon = new dods_var("lon", "org_opendap_lon", 1);
+DODS_URL.add_dods_var(org_opendap_lon);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_lon"
+onclick="org_opendap_lon.handle_projection_change(get_org_opendap_lon)">
+<font size="+1">lon</font>: Array of 32 bit Reals [lon = 0..20]</b><br>
+
+lon:<input type="text" name="org_opendap_lon_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_lon.add_dim(21);
+// -->
+</script>
+<br>
+
+<textarea name="lon_attr" rows="5" cols="70">
+units: "degree East"
+</textarea>
+
+
+<p><p>
+
+<tr><td><td>
+
+<script type="text/javascript">
+<!--
+org_opendap_time = new dods_var("time", "org_opendap_time", 1);
+DODS_URL.add_dods_var(org_opendap_time);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_time"
+onclick="org_opendap_time.handle_projection_change(get_org_opendap_time)">
+<font size="+1">time</font>: Array of 32 bit Reals [time = 0..15]</b><br>
+
+time:<input type="text" name="org_opendap_time_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
+<script type="text/javascript">
+<!--
+org_opendap_time.add_dim(16);
+// -->
+</script>
+<br>
+
+<textarea name="time_attr" rows="5" cols="70">
+units: "hours from base_time"
+</textarea>
+
+
+<p><p>
+
+<tr><td><td>
+
+</table></form>
+
+<hr>
+
+<address>Send questions or comments to: <a href="mailto:support@unidata.ecar.edu">support@unidata.ecar.edu</a></address><p>
+                    <a href="http://validator.w3.org/check?uri=referer"><img
+                        src="http://www.w3.org/Icons/valid-html40"
+                        alt="Valid HTML 4.0 Transitional" height="31" width="88">
+                    </a></p>
+</body></html>
 Dataset: fnoc1.nc
 u[0][0], -1728, -2449, -3099, -3585, -3254, -2406, -1252, 662, 2483, 2910, 2819, 2946, 2745, 2734, 2931, 2601, 2139, 1845, 1754, 1897, 1854
 u[0][1], -1686, -1985, -2508, -3397, -3501, -3268, -2700, -705, 1834, 2728, 2484, 2465, 2531, 2591, 2514, 2200, 1934, 1677, 1401, 1202, 1084
@@ -792,7 +1294,8 @@ Y  :  æ    Û  Z  	;  f  l  E  í    R  ÿÿşÇ   ’  ÿÿÿ’ÿÿşä    
 Ş  	2  ³  	H  ¶  “   ÿÿş ÿÿşÜÿÿıçÿÿı`ÿÿıåÿÿşlÿÿÿ¦  F  G  Ñ  i  	w    U  ®  
 z  ›    a  ê  õÿÿûøÿÿş¦     P  Tÿÿÿ\ÿÿÿƒ  T  ]  s  Î  #  	V  
 Á  
-õ  µ  ö  ¿  f    ÿÿûÄ   w    Š  c  °  z  V  …  ›  9  ®        ¨  R     Ë  N       Š  Ã  å    v  -    ×    ú    •     l   Ã   ~ÿÿÿÂÿÿşºÿÿşS      {   8   Œ     ~   4   Z   œ  ª  Ç   AÿÿÿYÿÿÿ;ÿÿşõÿÿş·ÿÿşÉÿÿÿ7ÿÿş¯ÿÿıÿÿüÑÿÿşùÿÿû¼ÿÿûÂÿÿüFÿÿüÿÿûäÿÿü[ÿÿü×ÿÿıÿÿıËÿÿıñÿÿü±ÿÿûÿÿú“ÿÿûãÿÿıØÿÿş•ÿÿıíÿÿü€ÿÿûÀÿÿı–                    ÿÿú¡ÿÿúVÿÿùİÿÿú“ÿÿûWÿÿû°ÿÿûÅÿÿúÊÿÿùûÿÿú_ÿÿü^ÿÿşgÿÿı¤ÿÿûÀÿÿû}ÿÿıÿÿşºÿÿü(ÿÿûÿÿú–ÿÿú,ÿÿùÿÿÿùQÿÿø¢ÿÿøóÿÿùDÿÿùÔÿÿúıÿÿûGÿÿûÿÿûÿÿü ÿÿş	ÿÿş„ÿÿıÿÿüŸÿÿûÊÿÿû¿ÿÿüÿÿûyÿÿù‰ÿÿøÿÿøÖÿÿøåÿÿø¢ÿÿøYÿÿ÷ôÿÿøjÿÿùäÿÿúÚÿÿûHÿÿûŞÿÿü”ÿÿıáÿÿÿ!ÿÿÿ`ÿÿş}ÿÿü£ÿÿûnÿÿùôÿÿúŸÿÿúÿÿøSÿÿ÷êÿÿøsÿÿøfÿÿø‹ÿÿøÿÿø‚ÿÿù½ÿÿûUÿÿûöÿÿûÁÿÿûÇÿÿüçÿÿşÎ   3ÿÿÿÔÿÿıfÿÿûrÿÿøWÿÿøsÿÿøÖÿÿøÑÿÿøJÿÿøaÿÿùRÿÿúÿÿùSÿÿøœÿÿú|ÿÿü\ÿÿú©ÿÿ÷ıÿÿø7ÿÿûSÿÿÿ¤  †  çÿÿşÿÿûŞÿÿ÷Îÿÿ÷+ÿÿ÷$ÿÿøJÿÿøŸÿÿø•ÿÿú‹ÿÿûÆÿÿùÚÿÿøµÿÿûQÿÿüQÿÿ÷™ÿÿóµÿÿõïÿÿû”  /  I  Ó  »ÿÿÿsÿÿùïÿÿùÿÿø£ÿÿøÿÿ÷ÃÿÿøCÿÿùãÿÿûÿÿûŒÿÿú­ÿÿûÕÿÿüGÿÿ÷¾ÿÿóáÿÿ÷2ÿÿı·  ±  8    I  h  1  	3  Â  	  
+õ  µ  ö  ¿  f    ÿÿûÄ   w    Š  c  °  z  V  …  ›  9  ®        ¨  R     Ë  N       Š  Ã  å    v  -    ×    ú    •     l   Ã   ~ÿÿÿÂÿÿşºÿÿşS      {   8   Œ     ~   4   Z   œ  ª  Ç   AÿÿÿYÿÿÿ;ÿÿşõÿÿş·ÿÿşÉÿÿÿ7ÿÿş¯ÿÿıÿÿüÑÿÿşùÿÿû¼ÿÿûÂÿÿüFÿÿüÿÿûäÿÿü[ÿÿü×ÿÿıÿÿıËÿÿıñÿÿü±ÿÿûÿÿú“ÿÿûãÿÿıØÿÿş•ÿÿıíÿÿü€ÿÿûÀÿÿı–   (ÿÿú
+ÿÿúYÿÿûwÿÿúşÿÿú¡ÿÿúVÿÿùİÿÿú“ÿÿûWÿÿû°ÿÿûÅÿÿúÊÿÿùûÿÿú_ÿÿü^ÿÿşgÿÿı¤ÿÿûÀÿÿû}ÿÿıÿÿşºÿÿü(ÿÿûÿÿú–ÿÿú,ÿÿùÿÿÿùQÿÿø¢ÿÿøóÿÿùDÿÿùÔÿÿúıÿÿûGÿÿûÿÿûÿÿü ÿÿş	ÿÿş„ÿÿıÿÿüŸÿÿûÊÿÿû¿ÿÿüÿÿûyÿÿù‰ÿÿøÿÿøÖÿÿøåÿÿø¢ÿÿøYÿÿ÷ôÿÿøjÿÿùäÿÿúÚÿÿûHÿÿûŞÿÿü”ÿÿıáÿÿÿ!ÿÿÿ`ÿÿş}ÿÿü£ÿÿûnÿÿùôÿÿúŸÿÿúÿÿøSÿÿ÷êÿÿøsÿÿøfÿÿø‹ÿÿøÿÿø‚ÿÿù½ÿÿûUÿÿûöÿÿûÁÿÿûÇÿÿüçÿÿşÎ   3ÿÿÿÔÿÿıfÿÿûrÿÿøWÿÿøsÿÿøÖÿÿøÑÿÿøJÿÿøaÿÿùRÿÿúÿÿùSÿÿøœÿÿú|ÿÿü\ÿÿú©ÿÿ÷ıÿÿø7ÿÿûSÿÿÿ¤  †  çÿÿşÿÿûŞÿÿ÷Îÿÿ÷+ÿÿ÷$ÿÿøJÿÿøŸÿÿø•ÿÿú‹ÿÿûÆÿÿùÚÿÿøµÿÿûQÿÿüQÿÿ÷™ÿÿóµÿÿõïÿÿû”  /  I  Ó  »ÿÿÿsÿÿùïÿÿùÿÿø£ÿÿøÿÿ÷ÃÿÿøCÿÿùãÿÿûÿÿûŒÿÿú­ÿÿûÕÿÿüGÿÿ÷¾ÿÿóáÿÿ÷2ÿÿı·  ±  8    I  h  1  	3  Â  	  
 “  
 ˜  m  ›  Ê  ç  º  o  ş    h  Î  £      2  É  	š  ß  Ë  R  Õ  	Î  
 ¢  Ú    ³  z  †  #  	ï  g  *  «  æ  ß  p  ¯  Ô  @  ¯  ™  ,    ğ  ¨  j    ş  2  ì      C  Õ    å  Ä  ‘ÿÿÿ€ÿÿÿå   æ  Ë  Ù    ç    t  
@@ -822,7 +1325,7 @@ L  	Ö  H  J    =    ô  c  
 ·  1  	ã  ]ÿÿÿ­ÿÿüÇÿÿûvÿÿûíÿÿı´  §  o    &  I  
   ’    
 ‚  
-P  	  #  		  	l  _   ÿÿúVÿÿ÷óÿÿöÉÿÿ÷#ÿÿøÖÿÿüÈ   Ş  ±  x  &  í  	†  	t  	E  p  ´  ñ  ¬  ó    ÿÿø^ÿÿ÷Ãÿÿ÷áÿÿù6ÿÿú–ÿÿüÙÿÿÿ—  œ  Å  ¾  ©  ]  }  ›  à  4  L  /  I  à  ˜ÿÿúªÿÿûµÿÿüÿÿş   Í  Ç  Fÿÿÿ¾   ­  %  E  ö  C  \  ¾  •    ™  ‹  ’  ‰ÿÿş@ÿÿÿòÿÿÿtÿÿÿÜ    Œ  oÿÿÿß   ‰     I    d                              B   À   ôÿÿÿ"ÿÿığ     ú  Æ    4  Ï  l  3  Ø  Ê  u  î  ü  W      ?   ]   :ÿÿÿnÿÿıÁÿÿü©ÿÿıÒÿÿÿpÿÿÿ»ÿÿş¤ÿÿş1ÿÿÿf    Ó  ¨   µÿÿşºÿÿı}ÿÿşpÿÿş¡ÿÿı[ÿÿı‰ÿÿş•ÿÿş ÿÿüİÿÿü“ÿÿü–ÿÿüñÿÿü6ÿÿûlÿÿû…ÿÿûPÿÿû–ÿÿüïÿÿıİÿÿıÛÿÿıxÿÿü“ÿÿûäÿÿüÿÿıCÿÿüRÿÿûnÿÿûÜÿÿûĞÿÿúÿÿú¼ÿÿûàÿÿûÿÿú5ÿÿùäÿÿû?ÿÿû±ÿÿú¬ÿÿú™ÿÿûYÿÿûŸÿÿûõÿÿügÿÿütÿÿü—ÿÿıˆÿÿınÿÿûBÿÿúlÿÿúÿÿø¶ÿÿù‚ÿÿúdÿÿøôÿÿ÷‘ÿÿøŠÿÿúÄÿÿû¦ÿÿúYÿÿù¶ÿÿûÿÿüÿÿıgÿÿıeÿÿı#ÿÿıšÿÿÿ¬   Ëÿÿıßÿÿû2ÿÿú­ÿÿø¸ÿÿø.ÿÿøÿÿöÿÿõÿÿõîÿÿø ÿÿøïÿÿø ÿÿùxÿÿütÿÿÿÿÿşÄÿÿı…ÿÿıÚÿÿşß  e  ä  ÿÿüÏÿÿûIÿÿù,ÿÿ÷3ÿÿ÷ˆÿÿ÷Åÿÿö»ÿÿöÓÿÿ÷²ÿÿø’ÿÿù€ÿÿúyÿÿüøÿÿşÈÿÿüÁÿÿûhÿÿıÿÿÿ/  %  ¹  ÷ÿÿşpÿÿúuÿÿø‘ÿÿ÷‰ÿÿø¾ÿÿùQÿÿùªÿÿúñÿÿûtÿÿû·ÿÿûÓÿÿûjÿÿûõÿÿûäÿÿù¡ÿÿúÿÿşW   {   À  h   ?ÿÿşTÿÿû*ÿÿø¾ÿÿøÿÿø]ÿÿøZÿÿù¨ÿÿüÿÿıÿÿü”ÿÿûÿÿû	ÿÿüœÿÿû©ÿÿùŒÿÿû   U  l  ‡   „ÿÿÿ,ÿÿıÒ  º  `    Û  Î  
+P  	  #  		  	l  _   ÿÿúVÿÿ÷óÿÿöÉÿÿ÷#ÿÿøÖÿÿüÈ   Ş  ±  x  &  í  	†  	t  	E  p  ´  ñ  ¬  ó    ÿÿø^ÿÿ÷Ãÿÿ÷áÿÿù6ÿÿú–ÿÿüÙÿÿÿ—  œ  Å  ¾  ©  ]  }  ›  à  4  L  /  I  à  ˜ÿÿúªÿÿûµÿÿüÿÿş   Í  Ç  Fÿÿÿ¾   ­  %  E  ö  C  \  ¾  •    ™  ‹  ’  ‰ÿÿş@ÿÿÿòÿÿÿtÿÿÿÜ    Œ  oÿÿÿß   ‰     I    d  é  v  :  !  U  Ë  B  B   À   ôÿÿÿ"ÿÿığ     ú  Æ    4  Ï  l  3  Ø  Ê  u  î  ü  W      ?   ]   :ÿÿÿnÿÿıÁÿÿü©ÿÿıÒÿÿÿpÿÿÿ»ÿÿş¤ÿÿş1ÿÿÿf    Ó  ¨   µÿÿşºÿÿı}ÿÿşpÿÿş¡ÿÿı[ÿÿı‰ÿÿş•ÿÿş ÿÿüİÿÿü“ÿÿü–ÿÿüñÿÿü6ÿÿûlÿÿû…ÿÿûPÿÿû–ÿÿüïÿÿıİÿÿıÛÿÿıxÿÿü“ÿÿûäÿÿüÿÿıCÿÿüRÿÿûnÿÿûÜÿÿûĞÿÿúÿÿú¼ÿÿûàÿÿûÿÿú5ÿÿùäÿÿû?ÿÿû±ÿÿú¬ÿÿú™ÿÿûYÿÿûŸÿÿûõÿÿügÿÿütÿÿü—ÿÿıˆÿÿınÿÿûBÿÿúlÿÿúÿÿø¶ÿÿù‚ÿÿúdÿÿøôÿÿ÷‘ÿÿøŠÿÿúÄÿÿû¦ÿÿúYÿÿù¶ÿÿûÿÿüÿÿıgÿÿıeÿÿı#ÿÿıšÿÿÿ¬   Ëÿÿıßÿÿû2ÿÿú­ÿÿø¸ÿÿø.ÿÿøÿÿöÿÿõÿÿõîÿÿø ÿÿøïÿÿø ÿÿùxÿÿütÿÿÿÿÿşÄÿÿı…ÿÿıÚÿÿşß  e  ä  ÿÿüÏÿÿûIÿÿù,ÿÿ÷3ÿÿ÷ˆÿÿ÷Åÿÿö»ÿÿöÓÿÿ÷²ÿÿø’ÿÿù€ÿÿúyÿÿüøÿÿşÈÿÿüÁÿÿûhÿÿıÿÿÿ/  %  ¹  ÷ÿÿşpÿÿúuÿÿø‘ÿÿ÷‰ÿÿø¾ÿÿùQÿÿùªÿÿúñÿÿûtÿÿû·ÿÿûÓÿÿûjÿÿûõÿÿûäÿÿù¡ÿÿúÿÿşW   {   À  h   ?ÿÿşTÿÿû*ÿÿø¾ÿÿøÿÿø]ÿÿøZÿÿù¨ÿÿüÿÿıÿÿü”ÿÿûÿÿû	ÿÿüœÿÿû©ÿÿùŒÿÿû   U  l  ‡   „ÿÿÿ,ÿÿıÒ  º  `    Û  Î  
   ƒ  ú  6  ‰  Ñ  ˆ  a    G  -      
 3  
 f  	Ù  ³  ¹  D  ®  8  Ã  	Û  ë  ¡    Ô  Ü  f    Û  K  ‰  6  g  
@@ -849,7 +1352,7 @@ K  ¹  ÿÿø`ÿÿø„ÿÿùÿÿú–ÿÿûâÿÿızÿÿÿ  S    l      ¦  ©  	n  	    
 ê  
 i  	‚  	?  	Â  <  ú  é  Ö  _    ğÿÿüÈÿÿûiÿÿüùÿÿı ÿÿûÈÿÿıÇ  Ü  j  q  3  	9  œ  2  \  I  "  
 ±  	r  í  Ö  ÿÿùÿÿ÷öÿÿü)ÿÿı¹ÿÿùôÿÿùÿÿüO     0  ¡  N  
-  ¿    	9  ó  	(  P  Ş  r  áÿÿø•ÿÿø@ÿÿüÇÿÿşÿÿù!ÿÿöşÿÿø†ÿÿúÛÿÿş8                          ¤  Ì  ©  º   ô  ÿÿı_ÿÿı¦ÿÿÿÿÿş»ÿÿû¹ÿÿúÿÿùGÿÿøûÿÿûLÿÿşj   »  Ú  ”     A  ò     †  ‚  *  ñ    æ  Ûÿÿÿ¥ÿÿÿ¼ÿÿÿAÿÿıÚÿÿı[ÿÿş\ÿÿÿÿÿÿq  Ñ  b  ´  Æ    Ú  ü  Ş  ‚  Û  	˜  ò  áÿÿşúÿÿşÿÿÿÿª   #   Ó  =  ‘  ^  í    ¶    
+  ¿    	9  ó  	(  P  Ş  r  áÿÿø•ÿÿø@ÿÿüÇÿÿşÿÿù!ÿÿöşÿÿø†ÿÿúÛÿÿş8  	  }  ©  Ÿ  õ  ‰  ¤  Ì  ©  º   ô  ÿÿı_ÿÿı¦ÿÿÿÿÿş»ÿÿû¹ÿÿúÿÿùGÿÿøûÿÿûLÿÿşj   »  Ú  ”     A  ò     †  ‚  *  ñ    æ  Ûÿÿÿ¥ÿÿÿ¼ÿÿÿAÿÿıÚÿÿı[ÿÿş\ÿÿÿÿÿÿq  Ñ  b  ´  Æ    Ú  ü  Ş  ‚  Û  	˜  ò  áÿÿşúÿÿşÿÿÿÿª   #   Ó  =  ‘  ^  í    ¶    
   >  l    E  &  ú  ­ÿÿş®ÿÿü½ÿÿûÌÿÿüsÿÿıXÿÿş   ·  "  Kÿÿşş   —  a  <  Ö  €  Â  :  ƒ  Å  Nÿÿş&ÿÿûÿÿÿûÒÿÿûËÿÿúôÿÿû6ÿÿüÔÿÿşrÿÿÿšÿÿşaÿÿû•ÿÿûDÿÿıÿÿşdÿÿÿÿÿÿ’ÿÿÿ7ÿÿş2ÿÿş‹ÿÿÿÔÿÿıœÿÿû›ÿÿûKÿÿü_ÿÿûşÿÿùÓÿÿúÿÿıÿÿşpÿÿı¬ÿÿı.ÿÿûÿÿøËÿÿùFÿÿûÎÿÿü]ÿÿühÿÿıbÿÿıÆÿÿı"ÿÿüÑÿÿûÿÿúÿÿú‘ÿÿú’ÿÿùÿÿ÷˜ÿÿ÷WÿÿøâÿÿüÿÿşŠÿÿşIÿÿûğÿÿù«ÿÿù‹ÿÿúÂÿÿûÿÿü!ÿÿıÿÿşÂÿÿı@ÿÿúİÿÿù<ÿÿù=ÿÿøùÿÿ÷'ÿÿõ×ÿÿöÿÿõÖÿÿõ3ÿÿ÷§ÿÿü)ÿÿüœÿÿûfÿÿıÿÿıÓÿÿü ÿÿûíÿÿşFÿÿÿhÿÿşPÿÿüjÿÿú­ÿÿø²ÿÿø+ÿÿ÷£ÿÿöÿÿõ ÿÿõ+ÿÿö(ÿÿõ®ÿÿõùÿÿøÿÿùüÿÿıÛ  ç  ÿÿşFÿÿüÿÿüóÿÿşîÿÿşªÿÿüÕÿÿûoÿÿ÷¾ÿÿ÷Uÿÿø«ÿÿù0ÿÿ÷ÿÿö8ÿÿ÷íÿÿø­ÿÿøÿÿø”ÿÿúŸÿÿÿâ  ËÿÿşÇÿÿüáÿÿüVÿÿûÑÿÿıÿÿÿmÿÿÿÿÿüæÿÿ÷òÿÿø_ÿÿûÿÿûsÿÿú
 ÿÿù¢ÿÿùöÿÿú¾ÿÿû6ÿÿúAÿÿúÈÿÿıÙÿÿş+ÿÿûÿÿú:ÿÿüáÿÿşÍÿÿş÷ÿÿÿş   Qÿÿşs  lÿÿÿ´  ë  G  #    D  	Ë  8  M  „    	è  	  	{  
   $  Ğ  –  	  ˆ  Aÿÿÿ‘   9     >  ã  5  	t  
@@ -873,7 +1376,7 @@ B  ·ÿÿş¬ÿÿı½ÿÿüôÿÿü¿ÿÿümÿÿûˆÿÿü*ÿÿşé  X  ş  #ÿÿÿşÿÿó½ÿÿóIÿÿı  H  
 |  	Ï  c  h  º  Q   ‚ÿÿı…ÿÿû¾ÿÿü©ÿÿüGÿÿú‡ÿÿøßÿÿø5ÿÿü   É   ëÿÿÿğ    …  ›  ú  ø  Õ  Kÿÿÿ/ÿÿı€ÿÿı>ÿÿı%ÿÿıÿÿıåÿÿı/ÿÿúuÿÿø´ÿÿùÿÿü!   .  a   ç  {  :   ç  k  ‘  j   ½ÿÿşÿÿü*ÿÿûRÿÿüèÿÿıûÿÿş1ÿÿşmÿÿü~ÿÿúÿÿúÆÿÿüóÿÿÿQ     +  f   ,ÿÿÿ  :  0  šÿÿÿ­ÿÿşœÿÿü§ÿÿûzÿÿıÿÿÿ ÿÿÿÿÿş7ÿÿü•ÿÿûÿÿı"ÿÿÿ:ÿÿÿİ   	   l   aÿÿÿ2ÿÿÿ0ÿÿÿÍÿÿÿàÿÿş5ÿÿıQÿÿıíÿÿıwÿÿü*ÿÿü¿ÿÿşòÿÿşÿÿÿû¼ÿÿùpÿÿû{ÿÿşı   n   ‡   nÿÿÿ»ÿÿşĞÿÿşªÿÿşÜÿÿş[ÿÿıÿÿüŞÿÿü¨ÿÿıÿÿıÿÿüÿÿü ÿÿıÎÿÿıĞÿÿúÿÿ÷Úÿÿú¶ÿÿşÀÿÿÿƒ   s  \ÿÿÿgÿÿşWÿÿş»ÿÿşqÿÿı¢ÿÿı7ÿÿıYÿÿı&ÿÿü„ÿÿü#ÿÿümÿÿıÿÿıÿÿüŸÿÿû¬ÿÿùëÿÿûÿÿıàÿÿşÎÿÿÿš   ÿÿşiÿÿÿ…ÿÿÿ¼ÿÿşúÿÿı½ÿÿıuÿÿıÿÿüÂÿÿüfÿÿûÃÿÿüÿÿı:ÿÿı"ÿÿüÿÿüÿÿüËÿÿı¤ÿÿşÃÿÿÿNÿÿşïÿÿşÿÿüÕ   ‘ÿÿÿ¦ÿÿşæÿÿş?ÿÿıÕÿÿısÿÿıQÿÿüÉÿÿüÿÿü=ÿÿüùÿÿıBÿÿü©ÿÿüZÿÿı‘ÿÿş®ÿÿÿÿÿÿ4ÿÿşœÿÿı…ÿÿük   nÿÿÿ ÿÿşŠÿÿşZÿÿıûÿÿşËÿÿş¥ÿÿı€ÿÿı€ÿÿı9ÿÿüòÿÿı”ÿÿıiÿÿüèÿÿıÿÿı'ÿÿı…ÿÿıôÿÿş#ÿÿşbÿÿıñ  Y   `ÿÿÿ•ÿÿÿkÿÿÿ$ÿÿş³ÿÿşKÿÿş¦ÿÿşsÿÿı ÿÿı¸ÿÿÿGÿÿı‹ÿÿûMÿÿûÔÿÿıŒÿÿşÿÿı1ÿÿız     dÿÿÿ=ÿÿü½ÿÿùÉÿÿû«   a  ß     Î  ú  [  x    á   U      oÿÿÿÔÿÿÿ   d  ƒ  ÿÿüÿÿú%ÿÿø¨ÿÿû&ÿÿÿ  ı  H  ,  F  
 Ë  ¡    ƒ   uÿÿÿëÿÿÿ[ÿÿşˆÿÿıuÿÿş/  q  ¬ÿÿü°ÿÿúÿÿø¼ÿÿûñ        S  
 ±  G  ë  yÿÿÿ²ÿÿÿëÿÿÿeÿÿı¦ÿÿü!ÿÿûñÿÿıVÿÿÿ7   Rÿÿşkÿÿü(ÿÿû
-ÿÿşw                  	r  
+ÿÿşw    ”    ó  	r  
 ;  
   9ÿÿş§ÿÿÿÿÿşQÿÿü—ÿÿûeÿÿûßÿÿıÿÿÿ1  f   ^ÿÿÿ ÿÿşš   ­  Ê  1  ñ  ·  Ï    À   $ÿÿıúÿÿıÑÿÿıAÿÿü0ÿÿü	ÿÿüªÿÿıº   r    Q  »  ÷  ã  ò  ;  ¶  È  Ô  „  öÿÿş€ÿÿüóÿÿıÿÿü¶ÿÿü3ÿÿügÿÿü›ÿÿıc   4  •  2  ª    )  V  s  A  {  ¶   ÆÿÿÿdÿÿıÄÿÿıÿÿü‘ÿÿû§ÿÿûŒÿÿüÿÿüIÿÿıŸÿÿÿã   ÷  Z    Î  ç    ı  š   jÿÿÿWÿÿşÿÿı?ÿÿıÿÿşÿÿü¶ÿÿúPÿÿùÇÿÿûLÿÿıIÿÿÿ‚      S  	    Ò  ?  Á   ­ÿÿÿeÿÿıéÿÿüwÿÿüÿÿüäÿÿş#ÿÿı'ÿÿùôÿÿù5ÿÿûñÿÿş©   ³    ’  J  ‰  £   Ö   …ÿÿÿÉÿÿÿÿÿşéÿÿı¢ÿÿûßÿÿûÎÿÿüŒÿÿı#ÿÿüªÿÿúÃÿÿú„ÿÿüµÿÿşŒÿÿÿï  W   İ   y   D   ÿÿÿoÿÿş×ÿÿıÕÿÿıkÿÿşÿÿı‘ÿÿüÿÿûµÿÿüÿÿüÿÿûıÿÿûŸÿÿûLÿÿûşÿÿı ÿÿÿ„   WÿÿÿÿÿÿdÿÿÿÒ   ÿÿşüÿÿşÿÿıvÿÿıÿÿıVÿÿı6ÿÿü&ÿÿûÿÿû|ÿÿû†ÿÿû¹ÿÿûbÿÿú·ÿÿûDÿÿı<ÿÿÿtÿÿÿ´ÿÿıĞÿÿÿ>ÿÿÿñÿÿÿÒÿÿşàÿÿıóÿÿı¶ÿÿıšÿÿıxÿÿı=ÿÿü3ÿÿûqÿÿûÿÿûªÿÿû·ÿÿû"ÿÿú¨ÿÿû¼ÿÿıRÿÿş7ÿÿıìÿÿüğÿÿÿÿÿÿÿÿşÛÿÿş¢ÿÿıøÿÿıYÿÿı¹ÿÿıvÿÿü•ÿÿûìÿÿûjÿÿû¥ÿÿûãÿÿûßÿÿûùÿÿü>ÿÿı$ÿÿı”ÿÿüàÿÿü,ÿÿü)ÿÿÿpÿÿş+ÿÿşÿÿşRÿÿıïÿÿıbÿÿı ÿÿü$ÿÿûTÿÿû®ÿÿûßÿÿûÈÿÿûÜÿÿü.ÿÿü×ÿÿıAÿÿı†ÿÿı.ÿÿûıÿÿû•ÿÿü4ÿÿÿ.ÿÿş1ÿÿş.ÿÿşÿÿıšÿÿı€ÿÿü9ÿÿûqÿÿü_ÿÿü¶ÿÿü"ÿÿûâÿÿüFÿÿüÈÿÿı=ÿÿıOÿÿıÿÿü”ÿÿûëÿÿü9ÿÿı ÿÿşÿÿşÄÿÿşµÿÿşøÿÿşõÿÿı¼ÿÿükÿÿıeÿÿş;ÿÿüÈÿÿü&ÿÿüÖÿÿüÿÿû¸ÿÿü³ÿÿş¯ÿÿş¤ÿÿı;ÿÿı6ÿÿşÌÿÿÿ¡ÿÿûÃÿÿüòÿÿú´ÿÿøÿÿöNÿÿö'ÿÿú•  \  
 ¨  ö  º  -  
@@ -889,7 +1392,7 @@ B  ·ÿÿş¬ÿÿı½ÿÿüôÿÿü¿ÿÿümÿÿûˆÿÿü*ÿÿşé  X  ş  #ÿÿÿşÿÿó½ÿÿóIÿÿı  H  
 ÿ  E  …  w  1  [  	ø  H  àÿÿşÿÿü?ÿÿü„ÿÿıïÿÿüñÿÿüüÿÿş ÿÿÿåÿÿÿÿÿıƒÿÿÿ#  ş  (  ;  Í  |  Ö  	B  Ú  4   »ÿÿı„ÿÿûyÿÿûÈÿÿÿ6ÿÿıêÿÿü™ÿÿüÄÿÿÿÿÿşÁÿÿüíÿÿı±  À     ï  h  ¥  k  7  }ÿÿÿÿÿıëÿÿüHÿÿû“ÿÿüÿÿÿè   ¥   ä  H   ­ÿÿş:ÿÿı)ÿÿı©  	  	Û  B  ‰  	±  }   Pÿÿşfÿÿügÿÿûÿÿû÷ÿÿüfÿÿı   ©  ;  Ä  |     %   c   œ   û  ß  
 º  	  ù   MÿÿşpÿÿüÊÿÿú¨ÿÿú¾ÿÿı
 ÿÿıXÿÿıa  â  P  ¢  å  Ô  <  ó    `    |  <ÿÿÿ3ÿÿıµÿÿı£ÿÿûßÿÿûÿÿüRÿÿşÿÿş‘ÿÿşi  µ  0  «     <  —  2  ÷  £ÿÿÿ_ÿÿÿÿÿÿ?ÿÿşÿÿüàÿÿû¾ÿÿûIÿÿü4ÿÿıºÿÿÿQÿÿÿúÿÿÿÃ  œ  ü  a  Ì   æ   .   °  v   Öÿÿÿ0ÿÿıõÿÿıÿÿÿı†ÿÿûÿÿúÿÿûÈÿÿıBÿÿş§   %ÿÿÿÿÿşÚ  Ç  Ÿ  ‹   £ÿÿÿ‘ÿÿÿ³   ÿÿÿOÿÿş+ÿÿıkÿÿı,ÿÿıñÿÿı'ÿÿúÕÿÿûGÿÿıqÿÿş!ÿÿşqÿÿşÿÿÿş"ÿÿı=  ?   qÿÿÿFÿÿÿÿÿşĞÿÿÿDÿÿÿğÿÿşkÿÿüÿÿücÿÿü;ÿÿürÿÿü²ÿÿü†ÿÿıáÿÿÿlÿÿş§ÿÿı±ÿÿş1ÿÿşWÿÿı~   ±ÿÿÿÿÿş{ÿÿşDÿÿşHÿÿş¢ÿÿÿ ÿÿşÿÿı6ÿÿü²ÿÿüÿÿûhÿÿûëÿÿı'ÿÿÿ   ÿÿş‹ÿÿı¯ÿÿÿ!ÿÿÿWÿÿş   ‚ÿÿşÿÿÿş—ÿÿı_ÿÿı4ÿÿı±ÿÿı£ÿÿı—ÿÿıqÿÿı.ÿÿüºÿÿüoÿÿıÿÿş1ÿÿÿ)ÿÿÿÿÿıÍÿÿı ÿÿÿoÿÿÿ¨ÿÿıÕ  wÿÿıÙÿÿı6ÿÿüøÿÿüŸÿÿüôÿÿıÿÿıÿÿıÿÿıèÿÿı§ÿÿı^ÿÿıÖÿÿÿ<ÿÿÿ²ÿÿş¢ÿÿıxÿÿıaÿÿşäÿÿÿuÿÿı   IÿÿıRÿÿüäÿÿıÿÿüÇÿÿüüÿÿıGÿÿıWÿÿıôÿÿşhÿÿıÿÿÿı<ÿÿı}ÿÿÿ8ÿÿÿõÿÿşÅÿÿıEÿÿüæÿÿşNÿÿÿÿÿıâÿÿşCÿÿş?ÿÿş+ÿÿıÿÿü_ÿÿüíÿÿı"ÿÿüÎÿÿıÿÿı½ÿÿşÿÿı¡ÿÿıœÿÿşÍÿÿÿeÿÿş†ÿÿı	ÿÿüdÿÿı®ÿÿş×ÿÿşyÿÿı}ÿÿışÿÿııÿÿıÿÿı-ÿÿıùÿÿı‚ÿÿüóÿÿüzÿÿü,ÿÿıÆÿÿÿÿÿıÿÿüÿÿıiÿÿşæÿÿıõÿÿüÂÿÿıû      ÿÿü«ÿÿıÑÿÿı"ÿÿıîÿÿşêÿÿürÿÿùçÿÿùÿÿú2ÿÿş÷  A  *  Ä  È  A  
-  A                            ÿÿşçÿÿÿ®ÿÿş¨ÿÿü¼ÿÿû´ÿÿüDÿÿÿ¦  ,  @  ~    ¢  	ÿ  Š    f   ¸ÿÿÿ©ÿÿûlÿÿû…ÿÿüWÿÿı`ÿÿş~ÿÿÿRÿÿÿ5ÿÿşÿÿı×   J  K  ä  y    
+  A  ×  Y  "  ÿÿù¨ÿÿıœÿÿÿÿÿşçÿÿÿ®ÿÿş¨ÿÿü¼ÿÿû´ÿÿüDÿÿÿ¦  ,  @  ~    ¢  	ÿ  Š    f   ¸ÿÿÿ©ÿÿûlÿÿû…ÿÿüWÿÿı`ÿÿş~ÿÿÿRÿÿÿ5ÿÿşÿÿı×   J  K  ä  y    
 z  I  Z   ÿÿÿPÿÿş°ÿÿıƒÿÿıcÿÿùÆÿÿøüÿÿûÃÿÿıõÿÿÿ=   |   «   œ  S  6  s    
 f  î    ÿÿÿ¯ÿÿı˜ÿÿûöÿÿû„ÿÿşÿÿúZÿÿùˆÿÿüÆÿÿÿL   s  ¦  ë  î  ½  å  ¤  \  D  ‡  ÿÿÿúÿÿıÈÿÿûëÿÿúMÿÿúÇÿÿÿÿÿş­ÿÿÿ$   œ  ƒ  Q  “  ß  ‹  7  Ø  '  ì  »  ûÿÿÿhÿÿı,ÿÿûöÿÿû)ÿÿúôÿÿûº  ¡  Ñ  k  «  O  İ    ¨  §  ™  ;  à     lÿÿşÿÿüÿÿû<ÿÿûÿÿûuÿÿüAÿÿıŞ  ÿ    =  ä  n   µ    6  °   ´   '   ÿÿÿ8ÿÿıÊÿÿûÂÿÿú‚ÿÿûÿÿüiÿÿıPÿÿş@   2  ï    D  »ÿÿÿúÿÿş”   ,  ¦   ]ÿÿıÓÿÿüZÿÿüSÿÿü®ÿÿü2ÿÿûIÿÿûGÿÿüOÿÿıÎÿÿÿ   ±  "    -  š   ÿÿşöÿÿş«ÿÿÿ„   ÿÿş‰ÿÿüÿÿúnÿÿúçÿÿüBÿÿüÿÿûÃÿÿüØÿÿı®ÿÿıòÿÿÿH       s      Ô  b   SÿÿÿAÿÿşôÿÿş¶ÿÿşxÿÿıÿÿû2ÿÿù¾ÿÿû#ÿÿıÿÿıÿÿüıÿÿıÔÿÿşgÿÿşUÿÿş&ÿÿşÅÿÿÿ‚ÿÿÿÎ      ÿÿÿÃÿÿÿŒÿÿşªÿÿıxÿÿü™ÿÿüÿÿû+ÿÿúqÿÿû9ÿÿüßÿÿıíÿÿşÿÿşÿÿıéÿÿı¿ÿÿıæÿÿşXÿÿşÁÿÿÿáÿÿÿåÿÿşÿÿıçÿÿıÆÿÿıÿÿı\ÿÿü˜ÿÿû ÿÿûÏÿÿü…ÿÿıÿÿı{ÿÿş
 ÿÿşÅÿÿşİÿÿıEÿÿûÛÿÿüÖÿÿıìÿÿıÿÿÿ²ÿÿÿ¥ÿÿş‡ÿÿı ÿÿüDÿÿûÊÿÿüËÿÿıKÿÿü¼ÿÿüfÿÿıÿÿş#ÿÿşÿÿüÍÿÿü¯ÿÿıÚÿÿıŒÿÿûÑÿÿû»ÿÿüNÿÿûŒÿÿÿÿÿÿÿÿÿ~ÿÿÿ-ÿÿıPÿÿûªÿÿûíÿÿü«ÿÿütÿÿü[ÿÿü‡ÿÿüÿÿüÿÿû•ÿÿû ÿÿüHÿÿı—ÿÿızÿÿüÓÿÿüqÿÿüwÿÿÿÿÿÿ{ÿÿÿãÿÿÿ‹ÿÿşdÿÿüÜÿÿüÿÿü9ÿÿû¶ÿÿûĞÿÿüÑÿÿü©ÿÿü5ÿÿûßÿÿû­ÿÿüŞÿÿşgÿÿşîÿÿşêÿÿş¸ÿÿşLÿÿşáÿÿÿÿÿÿ	ÿÿş˜ÿÿşhÿÿı„ÿÿü‰ÿÿüjÿÿüÿÿüŞÿÿıĞÿÿşÿÿüµÿÿúÇÿÿûÿÿÿÿÒ   íÿÿÿÿÿÿ»    ÿÿÿ¨  £ÿÿÿôÿÿûuÿÿ÷yÿÿ÷Uÿÿøqÿÿúÿÿûİÿÿıu   <  2  Ñ  	  ƒ    Õ  ñ  3  	G  y   Eÿÿı×ÿÿıÿÿü,ÿÿù#ÿÿ÷ÛÿÿùÿÿüÿÿÿW   Ğ   ı  Q  _  ˆ  %  
@@ -934,5 +1437,5 @@ G  a  „  »    ÿÿÿşÿÿışÿÿûœÿÿú¬ÿÿù¸ÿÿùuÿÿú™ÿÿúçÿÿú7ÿÿùÿÿøÿÿùÿÿş+  >  
 Ñ  	t    ‚  Ø    åÿÿÿÓÿÿû6ÿÿø‚ÿÿù,ÿÿ÷-ÿÿôEÿÿôçÿÿ÷¢ÿÿûãÿÿÿÍ  Ø  o  4  ä  
 l      R  ì  ]  Í   ¸ÿÿüÿÿüÿÿúÿÿ÷”ÿÿ÷lÿÿ÷Tÿÿø†ÿÿûîÿÿÿ  6  Á  a  ù  X  /  q    j  ÷  _   Šÿÿı‡ÿÿı°ÿÿûÿÿù—ÿÿúÿÿøåÿÿúMÿÿıiÿÿşxÿÿÿ­   ¸   ˜     Ç  ñ    	Ş  	à  ü     $ÿÿşÿÿı¸ÿÿüyÿÿû)ÿÿú`ÿÿú¬ÿÿüĞÿÿırÿÿürÿÿşÿÿÿpÿÿş(ÿÿşu  :  º  ‘  †  
 ©  
-  æ   ä   bÿÿşÿÿıÿÿüwÿÿúëÿÿü`ÿÿıÿÿùŞÿÿùÓÿÿıá      ÿÿÿC   ô  ”  	«  ›  	x  ›   Î    ÿÿÿ-ÿÿıWÿÿüÿÿúºÿÿûáÿÿû›ÿÿø7ÿÿøıÿÿüÏÿÿÿë   $ÿÿÿ  *  u  ]  	Ü    “   Ü  T  ÿÿşSÿÿü[ÿÿû~ÿÿúèÿÿüÓÿÿş,ÿÿüŸÿÿû8ÿÿüQÿÿÿÿÿÿñÿÿÿË                  ø  ?   •  l   "ÿÿı4ÿÿûÀÿÿû©ÿÿı      èÿÿşˆÿÿü"ÿÿüÒÿÿÿÄ      0  7    Z  ,  °   Nÿÿÿ^ÿÿÿÿÿş`ÿÿı8ÿÿüçÿÿş¥   oÿÿÿ'ÿÿüÿÿúµÿÿü{ÿÿÿ  m  š   Ã    v   ×  !   öÿÿÿªÿÿÿd   ?ÿÿÿ›ÿÿıèÿÿıyÿÿş!ÿÿşKÿÿıOÿÿûvÿÿúÒÿÿüxÿÿşgÿÿÿÊ  ÿÿÿè         CÿÿÿıÿÿÿŞÿÿş°ÿÿş¡   0ÿÿÿÿÿı.ÿÿı~ÿÿıRÿÿıŒÿÿştÿÿıÿÿûÒÿÿüôÿÿşh   &  6  !  OÿÿÿªÿÿÿBÿÿÿ#ÿÿÿcÿÿşÿÿılÿÿızÿÿüíÿÿüwÿÿübÿÿúÍÿÿúÓÿÿıÿÿüÍÿÿûÿÿüÿÿÿQ   Ñÿÿÿ   ~   Fÿÿş‹ÿÿı·ÿÿş9ÿÿÿ%ÿÿş™ÿÿı.ÿÿüSÿÿü"ÿÿüÿÿúRÿÿöÎÿÿôßÿÿöKÿÿùÿÿú‘ÿÿü‘   =   ôÿÿş¡ÿÿûúÿÿıˆÿÿı‡ÿÿüëÿÿıñÿÿÿÿÿş ÿÿı‹ÿÿıMÿÿş ÿÿı¬ÿÿúÿÿ÷
+  æ   ä   bÿÿşÿÿıÿÿüwÿÿúëÿÿü`ÿÿıÿÿùŞÿÿùÓÿÿıá      ÿÿÿC   ô  ”  	«  ›  	x  ›   Î    ÿÿÿ-ÿÿıWÿÿüÿÿúºÿÿûáÿÿû›ÿÿø7ÿÿøıÿÿüÏÿÿÿë   $ÿÿÿ  *  u  ]  	Ü    “   Ü  T  ÿÿşSÿÿü[ÿÿû~ÿÿúèÿÿüÓÿÿş,ÿÿüŸÿÿû8ÿÿüQÿÿÿÿÿÿñÿÿÿË  û    ş    ø  ?   •  l   "ÿÿı4ÿÿûÀÿÿû©ÿÿı      èÿÿşˆÿÿü"ÿÿüÒÿÿÿÄ      0  7    Z  ,  °   Nÿÿÿ^ÿÿÿÿÿş`ÿÿı8ÿÿüçÿÿş¥   oÿÿÿ'ÿÿüÿÿúµÿÿü{ÿÿÿ  m  š   Ã    v   ×  !   öÿÿÿªÿÿÿd   ?ÿÿÿ›ÿÿıèÿÿıyÿÿş!ÿÿşKÿÿıOÿÿûvÿÿúÒÿÿüxÿÿşgÿÿÿÊ  ÿÿÿè         CÿÿÿıÿÿÿŞÿÿş°ÿÿş¡   0ÿÿÿÿÿı.ÿÿı~ÿÿıRÿÿıŒÿÿştÿÿıÿÿûÒÿÿüôÿÿşh   &  6  !  OÿÿÿªÿÿÿBÿÿÿ#ÿÿÿcÿÿşÿÿılÿÿızÿÿüíÿÿüwÿÿübÿÿúÍÿÿúÓÿÿıÿÿüÍÿÿûÿÿüÿÿÿQ   Ñÿÿÿ   ~   Fÿÿş‹ÿÿı·ÿÿş9ÿÿÿ%ÿÿş™ÿÿı.ÿÿüSÿÿü"ÿÿüÿÿúRÿÿöÎÿÿôßÿÿöKÿÿùÿÿú‘ÿÿü‘   =   ôÿÿş¡ÿÿûúÿÿıˆÿÿı‡ÿÿüëÿÿıñÿÿÿÿÿş ÿÿı‹ÿÿıMÿÿş ÿÿı¬ÿÿúÿÿ÷
 ÿÿô=ÿÿóWÿÿ÷ ÿÿüTÿÿşµ       DÿÿÿÿÿúzÿÿüŒÿÿı§ÿÿşÄÿÿÿ9ÿÿşÿÿıÿÿüÿÿüïÿÿÿóÿÿÿªÿÿüˆÿÿúÓÿÿøôÿÿ÷Vÿÿùøÿÿıåÿÿşÿÿşªÿÿÿ‡ÿÿÿå      BH  B>  B4  B*  B   B  B  B  Ağ  AÜ  AÈ  A´  A   AŒ  Ap  AH  A         Âp  Âf  Â\  ÂR  ÂH  Â>  Â4  Â*  Â   Â  Â  Â  Áğ  ÁÜ  ÁÈ  Á´  Á   ÁŒ  Áp  ÁH  Á             @À  A@  A  AÀ  Ağ  B  B(  B@  BX  Bp  B„  B  Bœ  B¨  B´  
