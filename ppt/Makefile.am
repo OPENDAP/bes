@@ -23,12 +23,12 @@ pkginclude_HEADERS = $(HDRS)
 
 SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
-	PPTConnection.cc Connection.cc
+	PPTConnection.cc Connection.cc PPTMarkFinder.cc
 
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketException.h PPTException.h SocketConfig.h			\
 	SocketListener.h PPTServer.h PPTProtocol.h			\
-	PPTConnection.h Connection.h ServerHandler.h
+	PPTConnection.h Connection.h ServerHandler.h PPTMarkFinder.h
 
 if HAVE_OPENSSL
 SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc

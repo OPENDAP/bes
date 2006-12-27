@@ -41,6 +41,7 @@ using std::flush ;
 #include "PPTProtocol.h"
 #include "Socket.h"
 #include "PPTException.h"
+#include "PPTMarkFinder.h"
 
 void
 PPTConnection::send( const string &buffer )
@@ -64,6 +65,7 @@ PPTConnection::writeBuffer( const string &buffer )
     _mySock->send( buffer, 0, buffer.length() ) ;
 }
     
+/* OLD RECEIVE
 bool
 PPTConnection::receive( ostream *strm )
 {
@@ -108,14 +110,14 @@ PPTConnection::receive( ostream *strm )
 
 		    if( !done )
 		    {
-			strncpy( inBuff, inBuff + bytesRead, termlen ) ;
+			memcpy( inBuff, inBuff + bytesRead, termlen ) ;
 			start = 0 ;
 		    }
 		}
 		else
 		{
 		    int newstart = termlen - charsInBuff ;
-		    strncpy( inBuff + newstart, inBuff + start, charsInBuff ) ;
+		    memcpy( inBuff + newstart, inBuff + start, charsInBuff ) ;
 		    start = newstart ;
 		}
 	    }
@@ -126,6 +128,79 @@ PPTConnection::receive( ostream *strm )
 	}
     }
     delete [] inBuff ;
+    return isDone ;
+}
+*/
+
+bool
+PPTConnection::receive( ostream *strm )
+{
+    bool isDone = false ;
+    ostream *use_strm = _out ;
+    if( strm )
+	use_strm = strm ;
+
+    int bytesRead, markBufBytes, i ;
+
+    int termlen = PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION.length() ;
+    int exitlen = PPTProtocol::PPT_EXIT_NOW.length() ;
+
+    PPTMarkFinder mf( (unsigned char *)PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION.c_str(),
+                      termlen ) ;
+    unsigned char markBuffer[termlen] ;
+    markBufBytes = 0 ; // zero byte count in the mark buffer
+
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+termlen+1] ;
+    bool done = false;
+    while( !done )
+    {
+	bytesRead = readBuffer( inBuff ) ;
+	if( bytesRead != 0 )
+	{
+	    // did we find an exit string?
+	    if( !strncmp( inBuff, PPTProtocol::PPT_EXIT_NOW.c_str(), exitlen ) )
+	    {
+		done = true ;
+		isDone = true ;
+	    }
+	    else
+	    {
+		// look at what we got to find the exit or the term string
+		for( i = 0; i < bytesRead && !done; i++ )
+		{
+		    // check for the mark
+		    done = mf.markCheck( inBuff[i] ) ;
+		    if( !done )
+		    {
+			// didn't find the mark
+			if( mf.getMarkIndex() > 0 )
+			{                 // did ya find part of it?
+			    // we found part of it, so cache what we found
+			    markBuffer[markBufBytes++] = inBuff[i] ;
+			}
+			else
+			{
+			    // if we found part of the mark then send the fragment
+			    if( markBufBytes > 0 )
+			    {
+				for( int j = 0; j < markBufBytes; j++ )
+				{
+				    (*use_strm) << markBuffer[j] ;
+				}
+				markBufBytes = 0;
+			    }
+			    // and send the byte that's not part of the mark
+			    (*use_strm) << inBuff[i] ;
+			}
+		    }
+		}
+	    }
+	}
+	else
+	{
+	    done = true;
+	}
+    }
     return isDone ;
 }
 
