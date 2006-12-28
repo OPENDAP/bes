@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<showInfo>
+    <response>
+        <dataset isData="true" thredds_collection="false">
+            <name>/data/nc/fnoc1.nc</name>
+            <size>23944</size>
+            <lastmodified>
+                <date>*</date>
+                <time>*</time>
+            </lastmodified>
+        </dataset>
+    </response>
+</showInfo>
+<?xml version="1.0" encoding="UTF-8"?>
+<showInfo>
+    <response>
+        <dataset isData="false" thredds_collection="true">
+            <name>/data/hdf</name>
+            <size>544</size>
+            <lastmodified>
+                <date>*</date>
+                <time>*</time>
+            </lastmodified>
+            <count>14</count>
+        </dataset>
+    </response>
+</showInfo>
+<?xml version="1.0" encoding="UTF-8"?>
+<showCatalog>
+    <response>
+        <dataset isData="false" thredds_collection="true">
+            <name>/data/nc</name>
+            <size>1156</size>
+            <lastmodified>
+                <date>*</date>
+                <time>*</time>
+            </lastmodified>
+            <count>27</count>
+            <dataset isData="false" thredds_collection="true">
+                <name>.svn</name>
+                <size>408</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>123.nc</name>
+                <size>852</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>123bears.nc</name>
+                <size>852</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>3fnoc.nc</name>
+                <size>212608</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>a21160601.nc</name>
+                <size>3574848</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>bears.nc</name>
+                <size>852</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>coads_climatology.nc</name>
+                <size>3114044</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>data.nc</name>
+                <size>640</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>fnoc1.nc</name>
+                <size>23944</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>fnoc2.nc</name>
+                <size>123432</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>fnoc3.nc</name>
+                <size>212608</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>in.nc</name>
+                <size>21168</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>in1.nc</name>
+                <size>23636</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>in_2.nc</name>
+                <size>22504</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>in_no_three_double_dmn.nc</name>
+                <size>21168</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>in_v.nc</name>
+                <size>616</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="false" thredds_collection="false">
+                <name>README</name>
+                <size>162</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>saco1.nc</name>
+                <size>20628</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>test.nc</name>
+                <size>12148</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>testfile.nc</name>
+                <size>43392</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPat.nc</name>
+                <size>262452</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPatDbl.nc</name>
+                <size>2097464</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPatFlt.nc</name>
+                <size>1048884</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPatFlt2.nc</name>
+                <size>1048885</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPatInt.nc</name>
+                <size>1048884</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>TestPatSht.nc</name>
+                <size>524596</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>text.nc</name>
+                <size>12148</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+        </dataset>
+    </response>
+</showCatalog>

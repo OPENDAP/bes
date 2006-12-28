@@ -1,0 +1,4 @@
+show info for "/data/nc/fnoc1.nc";
+show info for "/data/hdf";
+show catalog for "/data/nc";
+exit
