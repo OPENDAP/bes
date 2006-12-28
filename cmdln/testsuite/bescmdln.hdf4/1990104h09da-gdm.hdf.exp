@@ -9,5 +9,5 @@ global srcdir
 # The `1' in compare_stdout means call xfail if the test fails.
 
 bescmdln_start "testsuite/hdf4/1990104h09da-gdm.hdf.bescmd"
-compare_stdout "testsuite/hdf4/1990104h09da-gdm.hdf.bescmd.baseline" "/data/hdf/hdf4/1990104h09da-gdm.hdf" 1
+compare_stdout "testsuite/hdf4/1990104h09da-gdm.hdf.bescmd.baseline" "/data/hdf/1990104h09da-gdm.hdf" 1
 
