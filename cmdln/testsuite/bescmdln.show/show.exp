@@ -9,6 +9,6 @@ global srcdir
 # The `1' in compare_stdout means call xfail if the test fails.
 
 
-bescmdln_start "testsuite/show/show.bescmd"
-compare_stdout "testsuite/show/show.bescmd.baseline" "show command interface" 1 match
+bescmdln_start "testsuite/show/show_01.bescmd"
+compare_stdout "testsuite/show/show_01.bescmd.baseline" "show command interface" 1 match
 

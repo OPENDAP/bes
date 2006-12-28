@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getAscii>
     <response>
-        <Administrator>ndp@opendap.org</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>Failed to read data: Wrong number of arguments to geoarray(). The geoarray() function supports
@@ -19,7 +19,7 @@ assumed to be Plat-Carre and wgs84. In the last version the the projection and
 datum of the image are also provided.(1001)</Message>
             <Location>
                 <File>BESAsciiTransmit.cc</File>
-                <Line>138</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>
@@ -27,7 +27,7 @@ datum of the image are also provided.(1001)</Message>
 <?xml version="1.0" encoding="UTF-8"?>
 <getDODS>
     <response>
-        <Administrator>ndp@opendap.org</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>libdap exception transmitting DataDDS: error_code = 1001: Wrong number of arguments to geoarray(). The geoarray() function supports
@@ -45,7 +45,7 @@ assumed to be Plat-Carre and wgs84. In the last version the the projection and
 datum of the image are also provided.</Message>
             <Location>
                 <File>BESDapTransmit.cc</File>
-                <Line>141</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>

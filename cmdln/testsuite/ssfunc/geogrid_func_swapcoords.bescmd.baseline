@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getAscii>
     <response>
-        <Administrator>ndp@opendap.org</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>Failed to read data: The upper and lower latitude indices appear to be reversed. Please provide the latitude bounding box numbers giving the northern-most latitude first.(1001)</Message>
             <Location>
                 <File>BESAsciiTransmit.cc</File>
-                <Line>138</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>
@@ -15,13 +15,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getDODS>
     <response>
-        <Administrator>ndp@opendap.org</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>libdap exception transmitting DataDDS: error_code = 1001: The upper and lower latitude indices appear to be reversed. Please provide the latitude bounding box numbers giving the northern-most latitude first.</Message>
             <Location>
                 <File>BESDapTransmit.cc</File>
-                <Line>141</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>
