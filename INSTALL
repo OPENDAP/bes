@@ -43,7 +43,7 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.7.0 to build and install this
+  o You need the libdap library version 3.7.3 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages.
 

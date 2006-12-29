@@ -1,6 +1,11 @@
 
 $Id$
 
+Version 3.7.3
+
+Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
+leak fixes, and performance enhencements.
+
 Version 3.7.2
 
 Now builds and works on OS/X

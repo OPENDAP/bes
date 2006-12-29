@@ -1,3 +1,114 @@
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2006-12-06  James Gallagher <jgallagher@opendap.org>
+
+	hdf_handler.cc, HDF4RequestHandler.cc: The DDS and DataDDS now
+	include the attributes.
+
+2006-12-05  James Gallagher <jgallagher@opendap.org>
+
+	HDF4RequestHandler.cc: Fix for ticekt #720: The DDS and DataDDS
+	type factories were being deleted and then the CE was being
+	evaluated; this breaks when the CE contains a constant since
+	the factory is used to make a variable to hold the constant's
+	value. I removed the delete calls and add code to the BES to
+	handle the clean up of the DDS/Factory.
+
+2006-11-23  Patrick West <pwest@ucar.edu>
+
+	Added a dump method to the Module class for BES debugging.
+	M    hdf4_handler/HDF4Module.cc
+	M    hdf4_handler/HDF4Module.h
+
+2006-11-10  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2006-11-09  James Gallagher <jgallagher@opendap.org>
+
+	Added the hdf-testsuite/cache directory so that the tests will work
+	the first time!
+
+2006-11-09  James Gallagher <jgallagher@opendap.org>
+
+	Repair of the hdf4 server code. It seems the code in the 3.7.2 tag
+	was the code in my 'working' copy, instead of the code in the trunk.
+
+2006-11-09  James Gallagher <jgallagher@opendap.org>
+
+	Added common_tests.exp; I'm not sure how this got lost, but a copy
+	was living over in tags...
+
+2006-11-06  Patrick West <pwest@ucar.edu>
+
+	Removed the reigster_funcs function that registered functions with
+	the constraint evaluator. The function is no longer needed and no
+	longer used.  Was setting BES_LDFLAGS and using BES_LIBS. Now just
+	setting and using BES_LIBS.
+	M    configure.ac
+	M    hdf_handler.cc
+	M    conf/bes.m4
+	D    funcs.cc
+	M    HDF4RequestHandler.cc
+	M    Makefile.am
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Required include for Exception was left out when changed on the MAC.
+	Since can't build hdf4 code on the MAC was unable to build the HDF4
+	handler on the MAC.
+	M    HDF4RequestHandler.cc
+
+2006-11-02  Patrick West <pwest@ucar.edu>
+
+	ConstraintEvaluator is now a part of the BESDDSResponse and
+	BESDataDDSResponse classes instead of BESDataHandlerInterface. Any Error
+	exceptions need to be caught in the request handlers and converted into
+	BESHandlerException, which is the non-fatal exception.
+	M    hdf4_handler/HDF4RequestHandler.cc
+
+2006-10-04  James Gallagher <jgallagher@opendap.org>
+
+	Changes to various functions so that the code compiles without
+	warnings. Done as part of debugging grid/geogrid.
+	M    HDFArray.h
+	M    hdfclass/Makefile.am
+	M    hdfclass/genvec.cc
+	M    hdfclass/hcstream.h
+	M    hdfclass/hcutil.cc
+	M    hdf_handler.cc
+	M    funcs.cc
+	M    HDFGrid.h
+	M    Makefile.am
+
+2006-09-27  Patrick West <pwest@ucar.edu>
+
+	--without-bes now works for the different handler directories as
+	well as for the dap-server directory. cedar-handler requires bes. If
+	--without-bes is not specified then either --with-bes is looked at
+	if specified, or the bes-config script is looked for.
+	M    fits-handler/configure.ac
+	M    netcdf_handler/configure.ac
+	M    freeform_handler/configure.ac
+	M    hdf4_handler/configure.ac
+	M    hdf5_handler/configure.ac
+	M    jgofs_handler/configure.ac
+	M    cdf-handler/configure.ac
+	M    dap-server/configure.ac
+	M    fits-handler/configure.ac
+	M    netcdf_handler/configure.ac
+	M    freeform_handler/configure.ac
+	M    hdf4_handler/configure.ac
+	M    hdf5_handler/configure.ac
+	M    jgofs_handler/configure.ac
+	M    cdf-handler/configure.ac
+	M    dap-server/configure.ac
+
+2006-09-18  James Gallagher <jgallagher@opendap.org>
+
+	Updated for version 3.7.2
+
 2006-09-15  Patrick West <pwest@ucar.edu>
 
 	Added default host and port information to the opendap.ini file.
