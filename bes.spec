@@ -1,5 +1,5 @@
 Name:           bes
-Version:        3.2.1
+Version:        3.3.1
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -10,7 +10,7 @@ Source0:        ftp://ftp.unidata.ucar.edu/pub/opendap/source/bes-%{version}.tar
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  libdap-devel >= 3.7.0
+BuildRequires:  libdap-devel >= 3.7.3
 BuildRequires:  doxygen
 # I think these are optional. jimg
 # Requires:       bzip2 gzip
@@ -31,7 +31,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.7.0
+Requires:       libdap-devel >= 3.7.3
 
 %description    devel
 The %{name}-devel package contains libraries and header files for

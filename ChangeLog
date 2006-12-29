@@ -1,3 +1,848 @@
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2006-12-28  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Changed some tests in bes/cmdln/testsuit/show and
+	bes/cmdln/testsuit/show/ssfunc to use match for improved portability
+
+2006-12-26  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	BES: Updated tests after repair of bug 754
+
+2006-12-26  Patrick West <pwest@ucar.edu>
+
+	Was not reading in the end of the buffer properly and not checking
+	for the termination properly. Pulled the MarkerFinder class from
+	server4 java code and converted it to C++. Works like a charm.
+	A    ppt/PPTMarkFinder.cc
+	A    ppt/PPTMarkFinder.h
+	M    ppt/PPTConnection.cc
+	M    ppt/Makefile.am
+
+2006-12-21  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	Updated tests and added server side function tests to bescmdln
+
+2006-12-20  James Gallagher <jgallagher@opendap.org>
+
+	BESDDXResponseHandler.cc: Fixed ticket 753. Attributes were
+	appearing twice in the DDX. This was do to a failure to
+	communicate... Code in BESDDXResquestHandler built the DDX using
+	the handler's code to build the DDS and DAS, but in the time
+	since this (BESDDXReq...) was written the handlers have all
+	been changed so that the DDS already contains attributes. So
+	when this code added them, it was adding a second copy. This
+	code has been modified to just use the DDS that comes from the
+	handler.
+
+2006-12-19  James Gallagher <jgallagher@opendap.org>
+
+	Changes to the formatting for some files in dispatch and
+	some new text in the top level README. The formatting changes are
+	the result of some subtle changes in my Eclipse settings and
+	using spaces instead of tabs (which makes the formatting no
+	longer dependent on the tabs setting of any editor).
+
+2006-12-19  James Gallagher <jgallagher@opendap.org>
+
+	BESDapTransmit.cc: Fixed ticket 710. The code for send_basic_ddx()
+	was not trapping the Error objects from DODSFilter::send_ddx()
+	and recasting them in a BESException object, hence the unknown
+	exception error.
+
+2006-12-19  James Gallagher <jgallagher@opendap.org>
+
+	BESDDXResponseHandler.cc: Removed call to dump.
+
+2006-12-19  James Gallagher <jgallagher@opendap.org>
+
+	BESDebug.h: Fixed some warnings about return types and
+	control reaching the end of non-void functions (begin_
+	and end_debug).
+
+2006-12-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	BES: Added escape handling to BESTokenizer
+
+2006-12-05  Patrick West <pwest@ucar.edu>
+
+	Added call to make sure the real name is on the include list as well
+	as not being on the exclude list.
+	M    dispatch/BESContainerStorageCatalog.cc
+
+2006-12-05  Patrick West <pwest@ucar.edu>
+
+	If someone tries to create a container in the catalog framework with a
+	real_name that is on the exclude list then an exception is thrown.
+	M    dispatch/BESCatalogDirectory.h
+	A    dispatch/BESCatalogUtils.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESContainerStorageCatalog.h
+	A    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESCatalogDirectory.cc
+
+2006-12-05  Patrick West <pwest@ucar.edu>
+
+	Closing the connection if establishing the connection fails. The
+	connectiono could have been established, but a problem occurred
+	afterwords. So close the connection.
+	M    CmdApp.cc
+
+2006-12-05  Patrick West <pwest@ucar.edu>
+
+	Removed debug statements that were being displayed when closing a
+	connection.
+	M    daemon.cc
+
+2006-12-04  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bescmdln: repaired freeform test baseline
+
+2006-12-03  Patrick West <pwest@ucar.edu>
+
+	Moved the usage and version code to another class to be shared by
+	the daemon and the listener. Added a -h option for help.
+	A    server/BESServerUtils.cc
+	M    server/daemon.cc
+	A    server/BESServerUtils.h
+	M    server/Makefile.am
+	M    server/ServerApp.cc
+	M    server/ServerApp.h
+
+2006-12-03  Patrick West <pwest@ucar.edu>
+
+	If requesting version then the daemon doesn't try to start the
+	listener.  Fixed the problem where if you specify -d and then
+	another option without specifying a debug option, then an error is
+	displayed and the usage is displayed. The version displayed now uses
+	the PACKAGE macros from the config file.
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+
+2006-12-01  Patrick West <pwest@ucar.edu>
+
+	With the addition of the parameter BES.Data.RootDirectory, the
+	results of adding a container are a bit different. Just had to
+	adjust the test to meet the new requirements for containers.
+	M    test/testsuite/dispatch.0/pvolT.exp
+	M    test/pvolT.cc
+	M    test/persistence_cgi_test.ini
+
+2006-11-29  Patrick West <pwest@ucar.edu>
+
+	Replaced hard coded buffer sizes with macro
+	M    bes/dispatch/BESInfo.cc
+	M    bes/dispatch/BESContainer.cc
+	M    bes/dispatch/BESStreamResponseHandler.cc
+	M    bes/ppt/PPTClient.cc
+	M    bes/ppt/PPTServer.cc
+	M    bes/ppt/PPTConnection.cc
+	M    bes/ppt/PPTProtocol.h
+
+2006-11-29  Patrick West <pwest@ucar.edu>
+
+	If the token after "with" in a define command is not c.constraint=
+	or c.attributes= where c is the container name from a set command,
+	then the parser would crash. The problem was that the result from a
+	std::string find method was being compared to 0 rather than
+	string::npos.
+	M    command/BESTokenizer.cc
+
+2006-11-27  Patrick West <pwest@ucar.edu>
+
+	Removed debug statements from exclude code
+	M    bes/dispatch/BESCatalogDirectory.cc
+
+2006-11-27  Patrick West <pwest@ucar.edu>
+
+	If the node being requested is a directory and is in the exclude
+	list, then return an error message. If the node being requested is a
+	file and is not in the include list or is in the exclude list, then
+	return an error message.  Only if the node being requested can be
+	included will the information be returned. This already worked for
+	sub nodes.
+	M    bes/dispatch/BESCatalogDirectory.h
+	M    bes/dispatch/BESCatalogDirectory.cc
+
+2006-11-24  Patrick West <pwest@ucar.edu>
+
+	../ not allowed when creating a container. This will prevent people
+	from trying to find files they shouldn't be looking at, keeping
+	their containers restricted to below the root directory.
+	M    dispatch/BESContainerStorageVolatile.cc
+
+2006-11-24  Patrick West <pwest@ucar.edu>
+
+	createServer script is up to date with the latest bes.conf file.
+	Added dump methods to the response and request handlers and the
+	module class.
+	M    bes/templates/ResponseHandler.cc
+	M    bes/templates/ResponseHandler.h
+	M    bes/templates/_commands.cc
+	D    bes/templates/opendap.ini
+	M    bes/templates/Module.cc
+	M    bes/templates/RequestHandler.cc
+	M    bes/templates/Module.h
+	M    bes/templates/RequestHandler.h
+	A    bes/templates/bes.conf
+	M    bes/bin/createServer
+
+2006-11-23  Patrick West <pwest@ucar.edu>
+
+	Added BES.Data.RootDirectory key to bes configuration file. Before
+	anyone was able to look at any file on the system. For example, a
+	user could have said 'set container values c,/etc/passwd,txt;define
+	d as c;get stream for d;' and gotten back the /etc/passwd file. Now
+	a root directory is used to make sure that only the data under the
+	root directory is searched.
+	M    dispatch/BESContainerStorageVolatile.h
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/BESContainerStorageCatalog.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESContainerStorageVolatile.cc
+
+2006-11-23  Patrick West <pwest@ucar.edu>
+
+	All classes in BES now inherit from the same parent, BESObj. BESObj
+	has a dump method on it that allows, during debug, for an object's
+	state to be dumped (private data members, whatever else). Also on
+	the BESObj class is a operator<< method so that you can have an
+	object, called obj, and do the following: cout << obj ; Created a
+	BESIndent class so that dumps can be indented nicely for easier
+	debugging.
+
+	Created a BESDebug class and the beginnings of debug information
+	throughout the code. The -d option on the command line client and
+	the server (including the besctl script) now work. The options takes
+	an argument, either cerr (to dump debug information to cerr) or the
+	name of a file where debug information will be sent.
+
+	The -t options on the command line client (and in the PPT client
+	code) is now working. Before we accepted the flag, but ignored it.
+
+	In the command line client the usage information is only dumped
+	once. And, if version is requested, the usage is NOT dumped after
+	the version information is dumped.
+
+	Removed any reference to key/value pairs in the BES configuration
+	file that had OPeNDAP at the front and any error messages that
+	reference them. They all begin with BES.
+	M    bes/apache/BESApacheWrapper.cc
+	M    bes/apache/requestsT.cc
+	M    bes/apache/local_makefile
+	M    bes/apache/wrapperT.cc
+	M    bes/cmdln/CmdClient.cc
+	M    bes/cmdln/CmdApp.cc
+	M    bes/cmdln/CmdClient.h
+	M    bes/cmdln/CmdApp.h
+	M    bes/dispatch/BESVersionInfo.cc
+	M    bes/dispatch/BESLogException.h
+	M    bes/dispatch/BESStatusResponseHandler.h
+	M    bes/dispatch/BESVersionResponseHandler.cc
+	M    bes/dispatch/BESMemoryManager.cc
+	M    bes/dispatch/BESVersionInfo.h
+	M    bes/dispatch/BESDataRequestInterface.h
+	M    bes/dispatch/BESCatalogList.cc
+	M    bes/dispatch/BESHelpResponseHandler.h
+	M    bes/dispatch/BESDefineResponseHandler.h
+	M    bes/dispatch/BESReturnManager.cc
+	M    bes/dispatch/BESStreamResponseHandler.h
+	M    bes/dispatch/BESSilentInfo.h
+	M    bes/dispatch/BESDapModule.h
+	M    bes/dispatch/BESXMLInfo.h
+	M    bes/dispatch/BESAggregationServer.h
+	M    bes/dispatch/BESLog.cc
+	M    bes/dispatch/BESLog.h
+	M    bes/dispatch/BESDelContainerResponseHandler.cc
+	M    bes/dispatch/BESDatabaseException.h
+	M    bes/dispatch/BESDASResponse.cc
+	M    bes/dispatch/BESPluginFactory.h
+	M    bes/dispatch/BESKeysResponseHandler.cc
+	M    bes/dispatch/BESProcessEncodedString.h
+	M    bes/dispatch/BESDDSResponseHandler.h
+	M    bes/dispatch/BESKeysException.h
+	M    bes/dispatch/BESDDXResponseHandler.cc
+	A    bes/dispatch/BESException.cc
+	M    bes/dispatch/BESReporterList.cc
+	D    bes/dispatch/default_module.cc
+	M    bes/dispatch/BESShowDefsResponseHandler.h
+	M    bes/dispatch/BESInterface.h
+	M    bes/dispatch/BESTextInfo.h
+	M    bes/dispatch/BESContainerStorageList.cc
+	M    bes/dispatch/BESContainerStorage.h
+	M    bes/dispatch/BESContainerStorageVolatile.h
+	M    bes/dispatch/BESDapModule.cc
+	M    bes/dispatch/BESSilentInfo.cc
+	M    bes/dispatch/BESKeys.cc
+	M    bes/dispatch/BESBaseApp.cc
+	M    bes/dispatch/BESDapRequestHandler.cc
+	M    bes/dispatch/BESCatalog.h
+	D    bes/dispatch/dispatch_version.h
+	M    bes/dispatch/BESBasicTransmitter.cc
+	M    bes/dispatch/BESApp.h
+	M    bes/dispatch/BESMemoryGlobalArea.h
+	M    bes/dispatch/BESRequestHandlerList.h
+	M    bes/dispatch/BESDataResponseHandler.cc
+	M    bes/dispatch/BESKeysResponseHandler.h
+	M    bes/dispatch/BESInfo.cc
+	M    bes/dispatch/BESDefinitionStorageException.h
+	M    bes/dispatch/BESPlugin.h
+	M    bes/dispatch/BESCatalogDirectory.h
+	M    bes/dispatch/BESReporter.h
+	M    bes/dispatch/BESTransmitter.cc
+	M    bes/dispatch/BESDefinitionStorageVolatile.cc
+	M    bes/dispatch/BESSetContainerResponseHandler.h
+	M    bes/dispatch/BESBasicHttpTransmitter.cc
+	M    bes/dispatch/BESResponseException.h
+	A    bes/dispatch/BESIndent.cc
+	M    bes/dispatch/BESRequestHandlerList.cc
+	M    bes/dispatch/BESMemoryGlobalArea.cc
+	A    bes/dispatch/BESIndent.h
+	A    bes/dispatch/BESDebug.cc
+	M    bes/dispatch/BESModuleApp.cc
+	M    bes/dispatch/BESDASResponseHandler.h
+	M    bes/dispatch/BESResponseObject.h
+	M    bes/dispatch/BESCatalogResponseHandler.cc
+	M    bes/dispatch/BESAggFactory.h
+	M    bes/dispatch/BESMemoryException.h
+	D    bes/dispatch/default_module.h
+	D    bes/dispatch/dispatch_test.cc
+	M    bes/dispatch/BESContainerStorageFile.cc
+	M    bes/dispatch/BESCatalogList.h
+	M    bes/dispatch/BESObj.h
+	M    bes/dispatch/BESXMLInfo.cc
+	M    bes/dispatch/BESHTMLInfo.cc
+	M    bes/dispatch/BESInitializer.h
+	M    bes/dispatch/BESDelDefsResponseHandler.h
+	M    bes/dispatch/BESShowContainersResponseHandler.h
+	M    bes/dispatch/BESInfoList.cc
+	M    bes/dispatch/BESDASResponse.h
+	M    bes/dispatch/Makefile.am
+	M    bes/dispatch/BESGlobalIQ.h
+	M    bes/dispatch/BESProcIdResponseHandler.cc
+	M    bes/dispatch/BESReporterList.h
+	M    bes/dispatch/BESException.h
+	M    bes/dispatch/BESContainerStorageCatalog.h
+	M    bes/dispatch/BESHelpResponseHandler.cc
+	M    bes/dispatch/BESDelContainersResponseHandler.cc
+	M    bes/dispatch/BESDefinitionStorageList.cc
+	M    bes/dispatch/BESDefinitionStorageList.h
+	M    bes/dispatch/BESSetContainerResponseHandler.cc
+	M    bes/dispatch/BESBasicTransmitter.h
+	M    bes/dispatch/BESIncorrectRequestException.h
+	M    bes/dispatch/BESHTMLInfo.h
+	M    bes/dispatch/BESContainer.h
+	M    bes/dispatch/BESDataDDSResponse.h
+	M    bes/dispatch/BESRequestHandler.cc
+	M    bes/dispatch/BESGlobalInit.h
+	M    bes/dispatch/BESDataResponseHandler.h
+	M    bes/dispatch/BESCatalogResponseHandler.h
+	M    bes/dispatch/BESDDSResponse.cc
+	M    bes/dispatch/BESDDSResponse.h
+	M    bes/dispatch/BESDefine.h
+	M    bes/dispatch/BESResponseHandler.h
+	M    bes/dispatch/BESContainerStorageCatalog.cc
+	M    bes/dispatch/BESContainerStorageFile.h
+	A    bes/dispatch/BESAggregationServer.cc
+	M    bes/dispatch/BESBasicHttpTransmitter.h
+	M    bes/dispatch/BESContainer.cc
+	M    bes/dispatch/BESDelDefsResponseHandler.cc
+	M    bes/dispatch/BESShowContainersResponseHandler.cc
+	M    bes/dispatch/BESDASResponseHandler.cc
+	M    bes/dispatch/BESStatus.h
+	M    bes/dispatch/BESCgiInterface.h
+	M    bes/dispatch/BESDelContainerResponseHandler.h
+	M    bes/dispatch/BESModuleApp.h
+	M    bes/dispatch/BESResponseHandlerList.cc
+	A    bes/dispatch/BESDebug.h
+	A    bes/dispatch/BESDataHandlerInterface.cc
+	M    bes/dispatch/BESInfoList.h
+	A    bes/dispatch/BESDefine.cc
+	D    bes/dispatch/version.h
+	M    bes/dispatch/BESDDXResponseHandler.h
+	M    bes/dispatch/BESDelDefResponseHandler.cc
+	M    bes/dispatch/BESDefineResponseHandler.cc
+	M    bes/dispatch/BESDelContainersResponseHandler.h
+	M    bes/dispatch/BESPluginException.h
+	M    bes/dispatch/BESDefinitionStorage.h
+	M    bes/dispatch/BESDefinitionStorageVolatile.h
+	M    bes/dispatch/BESDataDDSResponse.cc
+	M    bes/dispatch/BESProcessEncodedString.cc
+	M    bes/dispatch/BESDDSResponseHandler.cc
+	M    bes/dispatch/BESContainerStorageException.h
+	M    bes/dispatch/BESDataHandlerInterface.h
+	M    bes/dispatch/BESResponseHandlerList.h
+	A    bes/dispatch/BESDefaultModule.h
+	M    bes/dispatch/BESShowDefsResponseHandler.cc
+	M    bes/dispatch/BESStatusResponseHandler.cc
+	M    bes/dispatch/test/TestReporter.h
+	M    bes/dispatch/test/keys_test.ini
+	M    bes/dispatch/test/testsuite/dispatch.0/keysT.exp
+	A    bes/dispatch/test/testsuite/dispatch.0/agglistT.exp
+	M    bes/dispatch/test/defT.ini
+	A    bes/dispatch/test/TestAggServer.h
+	A    bes/dispatch/test/agglistT.cc
+	M    bes/dispatch/test/bad_keys1.ini
+	M    bes/dispatch/test/bad_keys2.ini
+	M    bes/dispatch/test/persistence_cgi_test.ini
+	M    bes/dispatch/test/keysT.cc
+	M    bes/dispatch/test/persistence_mysql_test.ini
+	A    bes/dispatch/test/agglistT.h
+	M    bes/dispatch/test/defT.cc
+	M    bes/dispatch/test/Makefile.am
+	A    bes/dispatch/test/TestAggServer.cc
+	M    bes/dispatch/BESDelDefResponseHandler.h
+	M    bes/dispatch/BESVersionResponseHandler.h
+	M    bes/dispatch/BESContainerStorageList.h
+	M    bes/dispatch/BESContainerStorageVolatile.cc
+	M    bes/dispatch/BESStreamResponseHandler.cc
+	M    bes/dispatch/BESAbstractModule.h
+	M    bes/dispatch/BESReturnManager.h
+	M    bes/dispatch/BESKeys.h
+	M    bes/dispatch/BESBaseApp.h
+	M    bes/dispatch/BESDapRequestHandler.h
+	M    bes/dispatch/BESTransmitter.h
+	M    bes/dispatch/BESCgiInterface.cc
+	M    bes/dispatch/BESGlobalInit.cc
+	M    bes/dispatch/BESFilterTransmitter.h
+	M    bes/dispatch/BESAggFactory.cc
+	M    bes/dispatch/BESRequestHandler.h
+	M    bes/dispatch/BESExceptionManager.cc
+	A    bes/dispatch/BESDefaultModule.cc
+	M    bes/dispatch/BESExceptionManager.h
+	M    bes/dispatch/BESResponseHandler.cc
+	M    bes/dispatch/BESInfo.h
+	M    bes/dispatch/BESHandlerException.h
+	M    bes/dispatch/BESProcIdResponseHandler.h
+	M    bes/dispatch/BESCatalogDirectory.cc
+	M    bes/dispatch/BESInterface.cc
+	M    bes/dispatch/BESTextInfo.cc
+	M    bes/ppt/PPTServer.h
+	M    bes/ppt/UnixSocket.h
+	A    bes/ppt/Connection.cc
+	M    bes/ppt/SocketListener.h
+	M    bes/ppt/Connection.h
+	M    bes/ppt/SSLClient.h
+	M    bes/ppt/PPTClient.cc
+	M    bes/ppt/SSLConnection.cc
+	M    bes/ppt/SSLConnection.h
+	M    bes/ppt/Socket.h
+	M    bes/ppt/SSLServer.h
+	M    bes/ppt/PPTServer.cc
+	M    bes/ppt/UnixSocket.cc
+	M    bes/ppt/SocketListener.cc
+	M    bes/ppt/TcpSocket.cc
+	M    bes/ppt/SSLClient.cc
+	M    bes/ppt/TcpSocket.h
+	M    bes/ppt/PPTClient.h
+	M    bes/ppt/ServerHandler.h
+	M    bes/ppt/SocketException.h
+	M    bes/ppt/PPTConnection.cc
+	M    bes/ppt/PPTException.h
+	M    bes/ppt/Makefile.am
+	M    bes/ppt/PPTConnection.h
+	M    bes/ppt/PPTProtocol.h
+	M    bes/ppt/SSLServer.cc
+	M    bes/ppt/Socket.cc
+	M    bes/server/test/TestSigResponseHandler.cc
+	M    bes/server/test/TestSigResponseHandler.h
+	M    bes/server/test/TestCommand.cc
+	M    bes/server/test/TestCommand.h
+	M    bes/server/test/TestEhmResponseHandler.cc
+	M    bes/server/test/TestRequestHandler.cc
+	M    bes/server/test/TestModule.h
+	M    bes/server/test/TestRequestHandler.h
+	M    bes/server/test/TestEhmResponseHandler.h
+	M    bes/server/BESServerHandler.cc
+	M    bes/server/BESServerHandler.h
+	M    bes/server/daemon.cc
+	M    bes/server/ServerApp.cc
+	M    bes/server/ServerApp.h
+	M    bes/command/BESDeleteCommand.cc
+	M    bes/command/BESDeleteCommand.h
+	M    bes/command/BESTermCommand.cc
+	M    bes/command/BESDelContainerCommand.cc
+	A    bes/command/BESDefaultCommands.cc
+	M    bes/command/BESCatalogCommand.cc
+	M    bes/command/BESCatalogCommand.h
+	M    bes/command/BESTokenizer.h
+	D    bes/command/opendap_commands.cc
+	M    bes/command/BESShowCommand.cc
+	D    bes/command/opendap_commands.h
+	M    bes/command/BESGetCommand.h
+	M    bes/command/BESCommand.h
+	M    bes/command/BESShowCommand.h
+	M    bes/command/BESCmdParser.h
+	M    bes/command/BESDelDefCommand.h
+	M    bes/command/BESCmdInterface.h
+	M    bes/command/BESSetCommand.h
+	M    bes/command/BESDelDefsCommand.cc
+	M    bes/command/BESDelDefsCommand.h
+	M    bes/command/BESTermCommand.h
+	M    bes/command/BESDelContainerCommand.h
+	A    bes/command/BESDefaultCommands.h
+	M    bes/command/BESTokenizer.cc
+	M    bes/command/BESParserException.cc
+	M    bes/command/BESParserException.h
+	M    bes/command/BESGetCommand.cc
+	M    bes/command/BESCommand.cc
+	M    bes/command/DAPCommandModule.cc
+	M    bes/command/BESCmdParser.cc
+	M    bes/command/DAPCommandModule.h
+	M    bes/command/BESDelDefCommand.cc
+	M    bes/command/BESCmdInterface.cc
+	M    bes/command/BESDefineCommand.cc
+	M    bes/command/BESDelContainersCommand.cc
+	M    bes/command/BESSetCommand.cc
+	M    bes/command/BESDefineCommand.h
+	M    bes/command/BESDelContainersCommand.h
+	M    bes/command/Makefile.am
+	M    bes/command/BESSetContainerCommand.cc
+	M    bes/command/BESSetContainerCommand.h
+
+2006-11-22  James Gallagher <jgallagher@opendap.org>
+
+	Updated the hdf5/tcompound2.h5.bescmd.baseline file as per Nathan's
+	request.
+
+2006-11-22  Patrick West <pwest@ucar.edu>
+
+	rem_command replaced with del_command and the corresponding BESCommand
+	instance is deleted for the caller.
+	M    TestModule.cc
+
+2006-11-20  James Gallagher <jgallagher@opendap.org>
+
+	common_tests.exp: Added
+
+2006-11-16  Patrick West <pwest@ucar.edu>
+
+	The purpose of the initT test program is to make sure that global
+	objects are being created in the proper order. Both TheCat and
+	TheDog were being initiatlized at level 1. Changed TheCat to be
+	initialized at level 2 after TheDog is initialized.
+	M    TheCat.cc
+
+2006-11-07  Patrick West <pwest@ucar.edu>
+
+	Building on Solaris 10, readline is not installed by default and the
+	extern declarations in CmdClient.cc had incorrect signatures.
+	M    bes/cmdln/CmdClient.cc
+
+2006-11-07  Patrick West <pwest@ucar.edu>
+
+	The function sys_errlist does not exist on all machines. Created a
+	sys_errlist.m4 file in the conf directory to determine if it is
+	available.  If it is available then use it. If not, then use
+	strerror.
+	A    bes/conf/sys_errlist.m4
+	M    bes/ppt/SSLServer.cc
+	M    bes/configure.ac
+
+2006-11-06  Patrick West <pwest@ucar.edu>
+
+	Default is that if --with-openssl is NOT specified and cannot be
+	found on the system then OpenSSL is not used. If --without-openssl
+	is specified then OpenSSL is not used. If either --with-openssl is
+	specified, --with-openssl is NOT specified nor is --without-openssl
+	and openssl is found then it is used.
+	M    bes/conf/openssl.m4
+
+2006-11-06  Patrick West <pwest@ucar.edu>
+
+	--without-openssl now works correctly. If --without-openssl is
+	specified then openssl is not looked for in the system. If nothing
+	is specified when running configure (no --with-openssl or
+	--without-openssl) then openssl is looked for. If not found an error
+	is reported and the configure fails. If it is found then we
+	continue. If --without--openssl is specified, then the ssl classes
+	in ppt are not built and the code doing authentication is ifdef'd
+	out.
+	M    bes/conf/openssl.m4
+	M    bes/ppt/PPTServer.h
+	M    bes/ppt/PPTClient.cc
+	M    bes/ppt/PPTServer.cc
+	M    bes/ppt/Makefile.am
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Added an option to get dap dependent bes libraries. To be used by an
+	modules that require libdap.
+	M    bes-config.in
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Moved the container and definition commands back to the default list of
+	commands instead of part of the dap module.
+	M    command/Makefile.am
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Added the dl library dependency to the configure script since we are
+	not building with the libdap libraries, which had dl as part of its
+	libs list.
+	M    configure.ac
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Once you get back a module object from the plugin factory it can be
+	deleted after use. So, in the initialization and in the termination
+	method, delete the module object returned by get. It is created each
+	time.
+	M    BESModuleApp.cc
+
+2006-11-03  Patrick West <pwest@ucar.edu>
+
+	Changed rem_command to del_command to have it delete the command (if
+	not the TermCommand) from the list instead of just returning it and
+	requiring the user to delete the command. Moved the container and
+	definition commands back to the default command list instead of the
+	dap command list.
+	M    command/opendap_commands.cc
+	M    command/BESCommand.h
+	M    command/BESCommand.cc
+	M    command/DAPCommandModule.cc
+
+2006-11-02  Patrick West <pwest@ucar.edu>
+
+	util.h was being included from libdap, but is no longer needed.
+	M    dispatch/BESVersionResponseHandler.cc
+
+2006-11-02  Patrick West <pwest@ucar.edu>
+
+	Removed libdap dependence from dispatch library, making libdap
+	dependence and the building of dap_module and bes_dap libraries
+	optional in dispatch.  Removed any dependencies in source files for
+	libdap code.
+	M    bes/cmdln/CmdApp.cc
+	M    bes/configure.ac
+	M    bes/server/ServerApp.cc
+	M    bes/command/BESParserException.cc
+	M    bes/command/Makefile.am
+
+2006-11-02  Patrick West <pwest@ucar.edu>
+
+	The core BES code no longer depends on libdap. Changed the Makfile
+	to check if the dap-config script exists. If it does, then build the
+	dap_module library and the new library bes-dap. If not, just build
+	the dispatch library. Created a new parent class for response
+	objects BESResponseObject, which used to be in libdap and called
+	DODSResponseObject. Created classes to represent DAS, DDS, DataDDS
+	in BES, called BESDASResponse, BESDDSResponse and
+	BESDataDDSResponse. Created a dap request handler that handles the
+	building of help information for dap requests and version
+	information.  Changed the container compression routine to look for
+	a list of compression extensions (default gz, bz2, and Z) instead of
+	a regular expression. Removed the debug flag from the App class
+	until we can get a debug class implemented. Any Error exceptions
+	need to be caught in the data handlers and converted to
+	BESHandlerException (the non-fatal exception). No Error exceptions
+	are caught in the core BES.
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESStatusResponseHandler.h
+	M    dispatch/BESVersionResponseHandler.cc
+	M    dispatch/BESVersionInfo.h
+	M    dispatch/BESHelpResponseHandler.h
+	M    dispatch/BESSilentInfo.h
+	M    dispatch/BESXMLInfo.h
+	M    dispatch/BESFilterTransmitter.cc
+	A    dispatch/BESDASResponse.cc
+	M    dispatch/BESPluginFactory.h
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/default_module.cc
+	M    dispatch/BESShowDefsResponseHandler.h
+	M    dispatch/BESTextInfo.h
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESBaseApp.cc
+	A    dispatch/BESDapRequestHandler.cc
+	M    dispatch/BESApp.h
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESKeysResponseHandler.h
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESTransmitter.cc
+	M    dispatch/BESSetContainerResponseHandler.h
+	M    dispatch/BESBasicHttpTransmitter.cc
+	M    dispatch/BESResponseException.h
+	M    dispatch/BESRequestHandlerList.cc
+	A    dispatch/BESResponseObject.h
+	M    dispatch/bes/bes_help.txt
+	A    dispatch/bes/dap_help.html
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/bes/bes_help.html
+	A    dispatch/bes/dap_help.txt
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESObj.h
+	A    dispatch/BESUtil.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/BESShowContainersResponseHandler.h
+	M    dispatch/BESDelDefsResponseHandler.h
+	A    dispatch/BESDASResponse.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESProcIdResponseHandler.cc
+	M    dispatch/BESHTMLInfo.h
+	M    dispatch/BESContainer.h
+	A    dispatch/BESDataDDSResponse.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESRequestHandler.cc
+	A    dispatch/BESDDSResponse.cc
+	M    dispatch/BESCatalogResponseHandler.h
+	A    dispatch/BESDDSResponse.h
+	M    dispatch/BESResponseHandler.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESDelContainerResponseHandler.h
+	M    dispatch/BESResponseHandlerList.cc
+	M    dispatch/BESDelContainersResponseHandler.h
+	A    dispatch/BESDataDDSResponse.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESResponseHandlerList.h
+	M    dispatch/BESStatusResponseHandler.cc
+	M    dispatch/BESDelDefResponseHandler.h
+	M    dispatch/BESVersionResponseHandler.h
+	A    dispatch/BESDapRequestHandler.h
+	M    dispatch/BESTransmitter.h
+	A    dispatch/BESUtil.h
+	M    dispatch/BESDapTransmit.h
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESResponseHandler.cc
+	M    dispatch/BESInfo.h
+	M    dispatch/BESProcIdResponseHandler.h
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+
+2006-10-14  Patrick West <pwest@ucar.edu>
+
+	Changed 'get file' command to 'get stream' command.
+	A    dispatch/BESStreamResponseHandler.h
+	D    dispatch/BESFileResponseHandler.h
+	M    dispatch/default_module.cc
+	M    dispatch/Makefile.am
+	D    dispatch/BESFileResponseHandler.cc
+	M    dispatch/BESResponseNames.h
+	A    dispatch/BESStreamResponseHandler.cc
+
+2006-10-14  Patrick West <pwest@ucar.edu>
+
+	Feature 42 2b implemented, isData flag set in catalog display to let
+	client know that the node has responses associated with it. Also
+	began implementing 2c of feature 42, which will return the different
+	response types for the node.
+	M    dispatch/BESCatalogDirectory.h a
+	M    dispatch/BESContainerStorageCatalog.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESCatalogDirectory.cc
+
+2006-10-13  Patrick West <pwest@ucar.edu>
+
+	If successfully deleted all definitions then need to return true.
+	Was returning nothing.
+	M    BESDefinitionStorageVolatile.cc
+
+2006-10-12  Patrick West <pwest@ucar.edu>
+
+	Added 'get file' request as default command. Uses the BESGetCommand
+	class to build the request. Also cleaned up some includes.
+	M    dispatch/BESDDXResponseHandler.cc
+	AM   dispatch/BESFileResponseHandler.h
+	M    dispatch/default_module.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESCatalogResponseHandler.cc
+	M    dispatch/Makefile.am
+	AM   dispatch/BESFileResponseHandler.cc
+	M    dispatch/BESProcIdResponseHandler.cc
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESDataNames.h
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+
+2006-09-25  Patrick West <pwest@ucar.edu>
+
+	BESHeapManager had a static singleton, so one was being created. The
+	constructor was setting the current limit and max limit to 3
+	megabytes. So, when a user set the max heap to more than 3 meg, and
+	wasn't running bes as root, the bes would fail. Most systems, the
+	max is infinate, so that the user can set a max without throwing an
+	exception.
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/Makefile.am
+	D    dispatch/BESHeapManager.cc
+	D    dispatch/BESHeapManager.h
+
+2006-09-21  Patrick West <pwest@ucar.edu>
+
+	Using createServer, just build the new BES module. If the user wants
+	an old style cgi app then they can add it. Updated the code to use
+	the latest code.
+	M    templates/ResponseHandler.cc
+	M    templates/conf/bes.m4
+	D    templates/_handler.cc
+	D    templates/HandlerApp.cc
+	M    templates/configure.ac
+	D    templates/HandlerApp.h
+	D    templates/config
+	M    templates/Makefile.am
+	M    templates/Module.cc
+	M    templates/RequestHandler.cc
+	M    templates/Module.h
+	M    bin/createServer
+
+2006-09-21  James Gallagher <jgallagher@opendap.org>
+
+	bes.spec: Removed some of the Required programs used for compression
+	since these are really not required for all uses.  configure.ac:
+	Bumped up the bes rev to 3.2.1 for these changes Makefile.am: Minor
+	changes to formatting NEWS: Added the usual types of comments...
+
+2006-09-19  James Gallagher <jgallagher@opendap.org>
+
+	testsuite: Added. Not functional; waiting on the results of a ticket
+	regarding the -i option to bescmdln.
+
+2006-09-19  Patrick West <pwest@ucar.edu>
+
+	If readline returns a null buffer then this means an EOF was
+	reached, so we're done. It's like typing exit. Changed readLine
+	method to return -1 if EOF is reached and check for that when
+	calling readLine.
+	M    CmdClient.cc
+
+2006-09-19  Patrick West <pwest@ucar.edu>
+
+	debugging messages were left in the code. Removed.
+	M    CmdApp.cc
+
+2006-09-18  James Gallagher <jgallagher@opendap.org>
+
+	in dispatch/bes/bes.conf.in: Changed lone 'hdf4' to 'h4' to make all
+	comments match.
+
+2006-09-18  James Gallagher <jgallagher@opendap.org>
+
+	Added testsuite directory with five sample files. This could become
+	the basis for a bes testsuite based on DejaGNU.
+
+2006-09-16  Patrick West <pwest@ucar.edu>
+
+	spec updated with new bes and besd exec names, which are beslistener
+	and besdaemon. libtestmodule, built in server/test, is now built as
+	part of make check instead of the regular build.
+	M    bes.spec
+	M    server/test/Makefile.am
+
+2006-09-15  Patrick West <pwest@ucar.edu>
+
+	Updates for release 3.2.0 to ChangeLog, README, and NEWS files.
+	M    ChangeLog
+	M    README
+	M    NEWS
+
 2006-09-15  Patrick West <pwest@ucar.edu>
 
 	Changed the sys admin email to not use angle brackets so if a user

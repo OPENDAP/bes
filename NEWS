@@ -1,6 +1,42 @@
 
 	$Id$
 
+News Version 3.3.1
+
+A new default command was added, 'get stream for <definition>' that streams
+back the contents of the specified definition. A definition is created as
+usual, using 'set container' commands and using those containers to create
+the definition.
+
+Modified the way the container creation works. Restrictions were put on what
+files can be used in a 'set container' command. You can not specify ../ in
+the path of the container. You must specify a new parameter in the BES
+configuration file BES.Data.RootDirectory which points to the root directory
+of any containers. This is used for file type containers only.
+
+Created a BESDebug class to allow developers to run the server with debug
+option. The option to use with besctl is '-d cerr|<filename>' to output any
+debug to standard error (standard out is redirected to the socket, which
+would go back to the client) or to the specified file. All BES classes are
+derived from BESObj, where a dump method was added to dump the contents of
+an object (private data members, information about the instance) and added
+an operator<< so that developers can say strm << bes_obj << endl; and have
+the dump method called on that BES object.
+
+The BES now does not require libdap. Default responses, transmitters,
+commands, etc... are available through the BES: showing help, status,
+process id, version information, keys defined in the configuratioon file;
+streaming files using the new command; creating, showing, and deleting
+containers; creating, showing, and deleting definitions. All DAP specific
+commands are now in a loaded module: retrieving the DAS, DDS, DDX, DataDDS
+and a transmitter to handle transmitting those response objects.
+
+A request to the catalog now includes an attribute for the node called
+isData that is true if the file can be handled by one of the data handlers
+registered with the server. For example, if the name of the node ends with
+.nc and the netcdf data handler is loaded into the server, then isData would
+be set to true.
+
 News Version 3.2.1
 
 The spec file now does not list gzip and bzip2 as required. You only need them

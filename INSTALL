@@ -24,9 +24,7 @@ BUILDING THE SOFTWARE
      to type `sh configure'.
 
   2. Type `make' to build the software, `make check' to run the tests. You
-     must have DejaGNU to run `make check.' If you have the CppUnit unit-test
-     software, then 'cd unit-tests; make check' will build and run the unit
-     tests.
+     must have DejaGNU to run `make check.'
 
   3. Type `make install' to install the BES software. The package installs
      in /usr/local/ by default; use --prefix to change that.
@@ -55,12 +53,13 @@ BUILD REQUIREMENTS
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.
 
-  o The library uses libdap. You will need version 3.7.0 or greater to build
-    this software. See http://www.opendap.org/download/. Since libdap uses
-    libcurl and libxml2, you will need these libraries, too. You must have
-    libcurl version 7.12.0 or newer and libxml2 2.5.7 or newer. We provide
-    source versions of the packages on the web site; the web pages for these
-    projects are: http://curl.haxx.se/ and http://xmlsoft.org/.
+  o The library uses libdap, but is not required. You will need version
+    3.7.3 or greater to build this software. See
+    http://www.opendap.org/download/. Since libdap uses libcurl and libxml2,
+    you will need these libraries, too. You must have libcurl version 7.12.0
+    or newer and libxml2 2.5.7 or newer. We provide source versions of the
+    packages on the web site; the web pages for these projects are:
+    http://curl.haxx.se/ and http://xmlsoft.org/.
 
   o If you are concerned about introducing problems with your OS's package
     system, build and install curl, et c., into a special directory (e.g.,
@@ -71,7 +70,7 @@ BUILD REQUIREMENTS
     
 	'PATH="$PATH:/opt/opendap/bin';./configure --prefix=/opt/opendap'
 
-  o You should have gcc/g++ 2.95.x or greater. You'll also need to get the
+  o You should have gcc/g++ 3.3.x or greater. You'll also need to get the
     stdc++ library that matches the compiler (whatever version). NB: gcc
     2.8.x and earlier *won't* build the software. We're working on modifying
     the software so that it will build with a variety of compilers. As of
@@ -117,14 +116,18 @@ NOTES
 
   o DEBUGGING AIDS
 
-    - The DAP API includes the following debugging aids that may be of help
-      to you in developing new OPeNDAP applications.
+    - Debugging is built in to the BES and does not require any special
+      debug flags during compile time. To activate debugging in the BES,
+      simpy use the -d cerr|<filename> option to besctl, besdaemon, and
+      beslistener. You should just need to use besctl. You can either
+      specify cerr or a file name with the -d option. If you specify cerr
+      then debug output will go to standard error. If you specify a file
+      name, then debug output will go to that file. You can not specify
+      cout, as standard output is redirected to the socket.
 
-    - DBG: simple program instrumentation -- see the file debug.h.
-
-    - DBG2: more elaborate program instrumentation -- by convention this is
-      used for output that is half a page or more, while DEBUG is used for
-      single line output.
+    - You can also check the BES log file, where the location is specified
+      in the BES configuration file. There might be some useful information
+      in that file.
 
     - In the past we used efence and dbnew to help debug dynamic memory
       programming errors. We are now using valgrind and suggest you do the
@@ -138,8 +141,24 @@ NOTES
 
 	  export CXXFLAGS="-g3 -O0 -Wall -fno-defer-pop"; ./configure
 
-    - To build with program instrumentation use `--enable-debug=<level>'
-      where <level> is 1 or 2.
+CONFIGURATION AND TESTING
 
+  o CONFIGURATION
 
+    - If you want to include libdap in the build then you will need to
+      either have dap-config on your path, or you can specify
+      --with-dap=<path_to_dap> if it is not on your path.
+
+    - Using openssl with the BES. The BES client/server code can include the
+      use of openssl for secure connections. You can specify the
+      --with-openssl=<path_to_openssl> on the command line if it is not
+      installed in any of the default locations.
+
+  o TESTING
+
+    - Once you have built the software you can run 'make check' to make sure
+      that the software is working properly. There are also tests in the
+      bes/cmdln directory that can be used to test as well, but is not a
+      part of the default test environment. To use the tests in bes/cmdln
+      please contact OPeNDAP for assistance.
 
