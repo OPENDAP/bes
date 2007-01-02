@@ -8,7 +8,7 @@ Source0:         ftp://ftp.unidata.ucar.edu/pub/opendap/source/%{name}-%{version
 URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.7.0 hdf-devel
+BuildRequires:   libdap-devel >= 3.7.4 hdf-devel
 #Requires:        dap-server
 
 %description
