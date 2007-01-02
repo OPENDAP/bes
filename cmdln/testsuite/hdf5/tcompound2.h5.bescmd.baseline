@@ -1,110 +1,106 @@
-Attributes {
-    dset1 {
-        String HDF5_OBJ_FULLPATH "/dset1";
-    }
-    group1 {
-        String HDF5_OBJ_FULLPATH "/group1/";
-    }
-    dset2 {
-        String HDF5_OBJ_FULLPATH "/group1/dset2";
-    }
-    dset4 {
-        String HDF5_OBJ_FULLPATH "/group1/dset4";
-    }
-    group2 {
-        String HDF5_OBJ_FULLPATH "/group2/";
-    }
-    dset5 {
-        String HDF5_OBJ_FULLPATH "/group2/dset5";
-    }
-}
 <?xml version="1.0" encoding="UTF-8"?>
-<getDDS>
+<setContainer>
     <response>
         <Administrator>jgallagher@opendap.org</Administrator>
         <BESException>
-            <Type>DataHandlerProblem</Type>
-            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
-h5_dds handler: get hdf5 dataset wrong for /dset1
-get data unexpected datatype at temp_type
-Please report this to support@unidata.ucar.edu
-</Message>
+            <Type>ContainerStore</Type>
+            <Message>Unable to add container, type of data must be specified</Message>
             <Location>
-                <File>HDF5RequestHandler.cc</File>
-                <Line>148</Line>
+                <File>BESContainerStorageVolatile.cc</File>
+                <Line>99</Line>
             </Location>
         </BESException>
     </response>
-</getDDS>
+</setContainer>
 <?xml version="1.0" encoding="UTF-8"?>
-<getDDX>
+<BES>
     <response>
         <Administrator>jgallagher@opendap.org</Administrator>
         <BESException>
-            <Type>DataHandlerProblem</Type>
-            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
-h5_dds handler: get hdf5 dataset wrong for /dset1
-get data unexpected datatype at temp_type
-Please report this to support@unidata.ucar.edu
-</Message>
+            <Type>ContainerStore</Type>
+            <Message>Could not find the symbolic name c</Message>
             <Location>
-                <File>HDF5RequestHandler.cc</File>
-                <Line>148</Line>
+                <File>BESContainerStorageList.cc</File>
+                <Line>277</Line>
             </Location>
         </BESException>
     </response>
-</getDDX>
+</BES>
 <?xml version="1.0" encoding="UTF-8"?>
-<getInfoPage>
+<BES>
     <response>
-        <Administrator>jgallagher@opendap.org</Administrator>
         <BESException>
-            <Type>DataHandlerProblem</Type>
-            <Message>libdap exception building HDF5 DDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
-h5_dds handler: get hdf5 dataset wrong for /dset1
-get data unexpected datatype at temp_type
-Please report this to support@unidata.ucar.edu
-</Message>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
             <Location>
-                <File>HDF5RequestHandler.cc</File>
-                <Line>148</Line>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
             </Location>
         </BESException>
     </response>
-</getInfoPage>
+</BES>
 <?xml version="1.0" encoding="UTF-8"?>
-<getAscii>
+<BES>
     <response>
-        <Administrator>jgallagher@opendap.org</Administrator>
         <BESException>
-            <Type>DataHandlerProblem</Type>
-            <Message>libdap exception building HDF5 DataDDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
-h5_dds handler: get hdf5 dataset wrong for /dset1
-get data unexpected datatype at temp_type
-Please report this to support@unidata.ucar.edu
-</Message>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
             <Location>
-                <File>HDF5RequestHandler.cc</File>
-                <Line>196</Line>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
             </Location>
         </BESException>
     </response>
-</getAscii>
+</BES>
 <?xml version="1.0" encoding="UTF-8"?>
-<getDODS>
+<BES>
     <response>
-        <Administrator>jgallagher@opendap.org</Administrator>
         <BESException>
-            <Type>DataHandlerProblem</Type>
-            <Message>libdap exception building HDF5 DataDDS: error_code = 1002: An internal error was encountered in h5dds.cc at line 130:
-h5_dds handler: get hdf5 dataset wrong for /dset1
-get data unexpected datatype at temp_type
-Please report this to support@unidata.ucar.edu
-</Message>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
             <Location>
-                <File>HDF5RequestHandler.cc</File>
-                <Line>196</Line>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
             </Location>
         </BESException>
     </response>
-</getDODS>
+</BES>
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
+    <response>
+        <BESException>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
+            <Location>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
+            </Location>
+        </BESException>
+    </response>
+</BES>
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
+    <response>
+        <BESException>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
+            <Location>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
+            </Location>
+        </BESException>
+    </response>
+</BES>
+<?xml version="1.0" encoding="UTF-8"?>
+<BES>
+    <response>
+        <BESException>
+            <Type>Parse</Type>
+            <Message>Unable to find definition d</Message>
+            <Location>
+                <File>BESGetCommand.cc</File>
+                <Line>156</Line>
+            </Location>
+        </BESException>
+    </response>
+</BES>
