@@ -22,7 +22,8 @@ RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
 # Add a test to make sure beslister is running; this is only half correct
 # since beslistener can be running n single access mode and then the tests
-# still won't work... jhrg 1/2/07
+# still won't work... Also, this target is run _after_ 'check:' so we cannot
+# use this to start beslistener. jhrg 1/2/07
 
 check-local:
 	@(ps -el | grep beslistener > /dev/null 2>&1;\
