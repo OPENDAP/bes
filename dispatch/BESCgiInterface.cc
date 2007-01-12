@@ -37,6 +37,7 @@
 #include "BESResponseHandlerList.h"
 #include "cgi_util.h"
 #include "BESDataNames.h"
+#include "BESDebug.h"
 
 /** @brief Instantiate an instance of the BESCgiInterface interface
 
@@ -78,7 +79,12 @@ BESCgiInterface::~BESCgiInterface()
 void
 BESCgiInterface::build_data_request_plan()
 {
+    BESDEBUG( "Building data request plan ... " << endl )
     string symbolic_name = name_path( _df->get_dataset_name() ) ;
+    BESDEBUG( "  symbolic name = " << symbolic_name << endl )
+    BESDEBUG( "  constraint = " << _df->get_ce() << endl )
+    BESDEBUG( "  dataset name = " << _df->get_dataset_name() << endl )
+    BESDEBUG( "  type = " << _type << endl )
     BESContainer d( symbolic_name ) ;
     d.set_constraint( _df->get_ce() ) ;
     d.set_real_name ( _df->get_dataset_name() ) ;
@@ -92,9 +98,11 @@ BESCgiInterface::build_data_request_plan()
 	BESResponseHandlerList::TheList()->find_handler( myaction ) ;
     if( !_dhi.response_handler )
     {
+	BESDEBUG( "Building data request plan ... FAILED" << endl )
 	string s = (string)"Improper command " + myaction ;
 	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
     }
+    BESDEBUG( "Building data request plan ... OK" << endl )
 }
 
 /** @brief dumps information about this object

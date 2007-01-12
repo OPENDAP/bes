@@ -54,6 +54,7 @@ using std::endl ;
 #include "BESTransmitterNames.h"
 
 #include "BESDebug.h"
+#include "BESException.h"
 
 void
 BESDapModule::initialize( const string &modname )
@@ -94,6 +95,12 @@ BESDapModule::initialize( const string &modname )
 	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_basic_data ) ;
     }
+    else
+    {
+	string err = (string)"Unable to initialize basic transmitter "
+	             + "with dap transmit functions" ;
+	throw BESException( err, __FILE__, __LINE__ ) ;
+    }
 
     BESDEBUG( "Initializing DAP HTTP Transmitters:" << endl )
     t = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
@@ -110,6 +117,12 @@ BESDapModule::initialize( const string &modname )
 
 	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_http_data ) ;
+    }
+    else
+    {
+	string err = (string)"Unable to initialize http transmitter "
+	             + "with dap transmit functions" ;
+	throw BESException( err, __FILE__, __LINE__ ) ;
     }
 }
 

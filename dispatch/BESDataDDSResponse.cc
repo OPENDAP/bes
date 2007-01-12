@@ -22,7 +22,19 @@ BESDataDDSResponse::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "BESDataDDSResponse::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "data dds: " << (void *)_dds << endl ;
+    if( _dds )
+    {
+	strm << BESIndent::LMarg << "DDS:" << endl ;
+	BESIndent::Indent() ;
+	DapIndent::SetIndent( BESIndent::GetIndent() ) ;
+	_dds->dump( strm ) ;
+	DapIndent::Reset() ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "DDS: null" << endl ;
+    }
     BESIndent::UnIndent() ;
 }
 

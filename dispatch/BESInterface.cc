@@ -55,6 +55,7 @@ using std::bad_alloc;
 #include "BESDataNames.h"
 
 #include "BESDebug.h"
+#include "BESTransmitException.h"
 
 list < p_bes_init > BESInterface::_init_list;
 list < p_bes_end > BESInterface::_end_list;
@@ -265,18 +266,24 @@ void BESInterface::invoke_aggregation()
  */
 void BESInterface::transmit_data()
 {
-    BESDEBUG("Transmitting request: " << _dhi.
-             data[DATA_REQUEST] << " ... ")
-        if (_transmitter) {
+    BESDEBUG("Transmitting request: " << _dhi.data[DATA_REQUEST] << endl)
+    if (_transmitter) {
         if (_dhi.error_info) {
+	    BESDEBUG( "  transmitting error info using transmitter ... " )
             _dhi.error_info->transmit(_transmitter, _dhi);
         } else if (_dhi.response_handler) {
+	    BESDEBUG( "  transmitting response using transmitter ... " )
             _dhi.response_handler->transmit(_transmitter, _dhi);
         }
     } else {
         if (_dhi.error_info) {
+	    BESDEBUG( "  transmitting error info using stdout ... " )
             _dhi.error_info->print(stdout);
-        }
+        } else {
+	    BESDEBUG( "  Unable to transmit the response ... FAILED " )
+	    string err = "Unable to transmit the response, no transmitter" ;
+	    throw BESTransmitException( err, __FILE__, __LINE__ ) ;
+	}
     }
     BESDEBUG("OK" << endl)
 }

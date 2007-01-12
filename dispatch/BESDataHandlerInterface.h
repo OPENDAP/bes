@@ -116,5 +116,30 @@ typedef struct _BESDataHandlerInterface
 
 } BESDataHandlerInterface ;
 
+/** @brief dump the contents of the specified data handler interface to the
+ * specified ostream
+ *
+ * This inline method uses the dump method of the BESDataHandlerInterface
+ * instance passed to it. This allows a user to dump the contents of the
+ * structure instead of just getting the pointer value of the object.
+ *
+ * For example:
+ *
+ * BESDataHandlerInterface dhi ;
+ * cout << dhi << endl ;
+ *
+ * And the dump method for dhi would display the internal information of the
+ * data handler interface for debugging purposes.
+ *
+ * @param strm C++ i/o stream to dump the object to
+ * @param dhi The BESDataHandlerInterface to dump
+ */
+inline ostream &
+operator<<( ostream &strm, const BESDataHandlerInterface &dhi )
+{
+    dhi.dump( strm ) ;
+    return strm ;
+}
+
 #endif //  BESDataHandlerInterface_h_
 

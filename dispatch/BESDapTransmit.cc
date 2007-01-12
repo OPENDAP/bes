@@ -46,8 +46,8 @@ using std::ostringstream;
 #include "Error.h"
 
 void
- BESDapTransmit::send_basic_das(BESResponseObject * obj,
-                                BESDataHandlerInterface & dhi)
+BESDapTransmit::send_basic_das(BESResponseObject * obj,
+                               BESDataHandlerInterface & dhi)
 {
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
     DAS *das = bdas->get_das();

@@ -47,6 +47,8 @@ public:
     static void			Indent() ;
     static void			UnIndent() ;
     static void			Reset() ;
+    static const string &	GetIndent() ;
+    static void			SetIndent( const string &indent ) ;
     static ostream &		LMarg( ostream &strm ) ;
 } ;
 

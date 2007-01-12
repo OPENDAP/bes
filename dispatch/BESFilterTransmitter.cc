@@ -33,42 +33,36 @@
 #include "BESFilterTransmitter.h"
 #include "DODSFilter.h"
 #include "BESInfo.h"
+#include "BESDASResponse.h"
+#include "BESDDSResponse.h"
+#include "BESDataDDSResponse.h"
 #include "BESDataNames.h"
+#include "BESTransmitter.h"
+#include "BESReturnManager.h"
+#include "BESTransmitterNames.h"
 #include "cgi_util.h"
 
-void
-BESFilterTransmitter::send_das( DAS &das, BESDataHandlerInterface & )
-{
-    _df->send_das( stdout, das ) ;
-}
+#define DAS_TRANSMITTER "das"
+#define DDS_TRANSMITTER "dds"
+#define DDX_TRANSMITTER "ddx"
+#define DATA_TRANSMITTER "data"
 
-void
-BESFilterTransmitter::send_dds( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_dds( stdout, dds, ce, true ) ;
-}
+BESFilterTransmitter *BESFilterTransmitter::Transmitter = 0 ;
 
-void
-BESFilterTransmitter::send_data( DDS &dds, BESDataHandlerInterface &dhi )
+BESFilterTransmitter::BESFilterTransmitter( DODSFilter &df )
+    : _df( &df )
 {
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_data( dds, ce, stdout ) ;
-}
+    BESFilterTransmitter::Transmitter = this ;
 
-void
-BESFilterTransmitter::send_ddx( DDS &dds, BESDataHandlerInterface &dhi )
-{
-    _df->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    ConstraintEvaluator ce ;
-    _df->send_ddx( dds, ce, stdout ) ;
+    add_method( DAS_TRANSMITTER, BESFilterTransmitter::send_basic_das ) ;
+    add_method( DDS_TRANSMITTER, BESFilterTransmitter::send_basic_dds ) ;
+    add_method( DDX_TRANSMITTER, BESFilterTransmitter::send_basic_ddx ) ;
+    add_method( DATA_TRANSMITTER, BESFilterTransmitter::send_basic_data);
 }
 
 void
 BESFilterTransmitter::send_text( BESInfo &info,
-                                  BESDataHandlerInterface & )
+                                 BESDataHandlerInterface & )
 {
     if( info.is_buffered() )
     {
@@ -79,12 +73,74 @@ BESFilterTransmitter::send_text( BESInfo &info,
 
 void
 BESFilterTransmitter::send_html( BESInfo &info,
-                                  BESDataHandlerInterface & )
+                                 BESDataHandlerInterface & )
 {
     if( info.is_buffered() )
     {
 	set_mime_html( stdout, unknown_type ) ;
 	info.print( stdout ) ;
     }
+}
+
+void
+BESFilterTransmitter::send_basic_das( BESResponseObject *obj,
+				      BESDataHandlerInterface &dhi )
+{
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
+    DAS *das = bdas->get_das();
+    BESFilterTransmitter::Transmitter->get_filter()->send_das( stdout, *das ) ;
+}
+
+void
+BESFilterTransmitter::send_basic_dds( BESResponseObject *obj,
+				      BESDataHandlerInterface &dhi )
+{
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+    BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_dds( stdout, *dds, ce, true ) ;
+}
+
+void
+BESFilterTransmitter::send_basic_data( BESResponseObject *obj,
+				       BESDataHandlerInterface &dhi )
+{
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+    DataDDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+    BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_data( *dds, ce, stdout ) ;
+}
+
+void
+BESFilterTransmitter::send_basic_ddx( BESResponseObject *obj,
+				      BESDataHandlerInterface &dhi )
+{
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator &ce = bdds->get_ce();
+    dhi.first_container();
+    BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_ddx( *dds, ce, stdout ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance and calls dump on parent
+ * class
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESFilterTransmitter::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESFilterTransmitter::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    BESTransmitter::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 

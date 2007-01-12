@@ -19,7 +19,19 @@ BESDASResponse::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "BESDASResponse::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "das: " << (void *)_das << endl ;
+    if( _das )
+    {
+	strm << BESIndent::LMarg << "DAS:" << endl ;
+	BESIndent::Indent() ;
+	DapIndent::SetIndent( BESIndent::GetIndent() ) ;
+	_das->dump( strm ) ;
+	DapIndent::Reset() ;
+	BESIndent::UnIndent() ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "DAS: null" << endl ;
+    }
     BESIndent::UnIndent() ;
 }
 

@@ -57,6 +57,18 @@ BESIndent::Reset()
     _indent = "" ;
 }
 
+const string &
+BESIndent::GetIndent()
+{
+    return _indent ;
+}
+
+void
+BESIndent::SetIndent( const string &indent )
+{
+    _indent = indent ;
+}
+
 ostream &
 BESIndent::LMarg( ostream &strm )
 {

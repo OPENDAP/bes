@@ -45,15 +45,28 @@ class BESFilterTransmitter : public BESTransmitter
 private:
     DODSFilter *	_df ;
 public:
-    			BESFilterTransmitter( DODSFilter &df ) : _df( &df ) {}
+    			BESFilterTransmitter( DODSFilter &df ) ;
     virtual		~BESFilterTransmitter() {}
 
-    virtual void	send_das( DAS &das, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_dds( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_data( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_ddx( DDS &dds, BESDataHandlerInterface &dhi ) ;
-    virtual void	send_text( BESInfo &info, BESDataHandlerInterface &dhi) ;
-    virtual void	send_html( BESInfo &info, BESDataHandlerInterface &dhi) ;
+    DODSFilter *	get_filter() { return _df ; }
+
+    virtual void	send_text( BESInfo &info,
+    				   BESDataHandlerInterface &dhi ) ;
+    virtual void	send_html( BESInfo &info,
+    				   BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESFilterTransmitter *Transmitter ;
+
+    static void		send_basic_das( BESResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_dds( BESResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_data( BESResponseObject *obj,
+    				         BESDataHandlerInterface &dhi ) ;
+    static void		send_basic_ddx( BESResponseObject *obj,
+    				        BESDataHandlerInterface &dhi ) ;
 } ;
 
 #endif // A_BESFilterTransmitter_h
