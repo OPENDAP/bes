@@ -42,6 +42,7 @@ using std::ostringstream ;
 #include "SocketListener.h"
 #include "ServerHandler.h"
 #include "Socket.h"
+#include "TheBESKeys.h"
 
 #include "config.h"
 #ifdef HAVE_OPENSSL
@@ -72,11 +73,49 @@ PPTServer::PPTServer( ServerHandler *handler,
 	throw PPTException( err, __FILE__, __LINE__ ) ;
     }
 #endif
+
+    // get the certificate and key file information
+    get_secure_files() ;
 }
 
 PPTServer::~PPTServer()
 {
 }
+
+void
+PPTServer::get_secure_files()
+{
+    bool found = false ;
+    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
+    if( !found || _cfile.empty() )
+    {
+	throw PPTException( "Unable to determine client certificate file.",
+			    __FILE__, __LINE__ ) ;
+    }
+
+    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
+    if( !found || _kfile.empty() )
+    {
+	throw PPTException( "Unable to determine client key file.",
+			    __FILE__, __LINE__ ) ;
+    }
+
+    string portstr = TheBESKeys::TheKeys()->get_key( "BES.ServerSecurePort",
+						     found ) ;
+    if( !found || portstr.empty() )
+    {
+	throw PPTException( "Unable to determine secure connection port.",
+			    __FILE__, __LINE__ ) ;
+    }
+    _securePort = atoi( portstr.c_str() ) ;
+    if( !_securePort )
+    {
+	string err = (string)"Unable to determine secure connection port "
+	             + "from string " + portstr ;
+	throw PPTException( err, __FILE__, __LINE__ ) ;
+    }
+}
+
 
 /** Using the info passed into the SocketLister, wait for an inbound 
     request (see SocketListener::accept()). When one is found, do the
@@ -153,14 +192,12 @@ PPTServer::authenticateClient()
 
     // send the secure port number back to the client
     ostringstream portResponse ;
-    portResponse << 10003 << PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ;
+    portResponse << _securePort << PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ;
     len = portResponse.str().length() ;
     _mySock->send( portResponse.str(), 0, len ) ;
 
     // create a secure server object and authenticate
-    string cfile = "/home/pwest/temp/ssl/keys/cacert.pem" ;
-    string kfile = "/home/pwest/temp/ssl/keys/privkey.pem" ;
-    SSLServer server( 10003, cfile, kfile ) ;
+    SSLServer server( _securePort, _cfile, _kfile ) ;
     server.initConnection() ;
     server.closeConnection() ;
 

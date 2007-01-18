@@ -40,12 +40,11 @@
 
 #include <iostream>
 
-using std::cout ;
 using std::endl ;
-using std::flush ;
 
 #include "SSLClient.h"
 #include "PPTException.h"
+#include "BESDebug.h"
 
 SSLClient::SSLClient( const string &hostStr, int portVal,
                       const string &cert_file, const string &key_file )
@@ -64,18 +63,18 @@ SSLClient::~SSLClient()
 void
 SSLClient::initConnection()
 {
-    cout << "Loading SSL error strings ... " ;
+    BESDEBUG( "Loading SSL error strings ... " )
     SSL_load_error_strings() ;
-    cout << "OK" << endl ;
+    BESDEBUG( "OK" << endl )
 
-    cout << "Initializing SSL library ... " ;
+    BESDEBUG( "Initializing SSL library ... " )
     SSL_library_init() ;
-    cout << "OK" << endl ;
+    BESDEBUG( "OK" << endl )
 
     SSL_METHOD *method = NULL ;
     SSL_CTX *context = NULL ;
 
-    cout << "Creating method and context ... " ;
+    BESDEBUG( "Creating method and context ... " )
     method = SSLv3_client_method() ;
     if( method )
     {
@@ -89,12 +88,12 @@ SSLClient::initConnection()
     }
     else
     {
-	cout << "OK" << endl ;
+	BESDEBUG( "OK" << endl )
     }
 
     bool ok_2_continue = false ;
     string err_msg ;
-    cout << "Setting certificate and key ... " ;
+    BESDEBUG( "Setting certificate and key ... " )
     if( SSL_CTX_use_certificate_file( context, _cfile.c_str(), SSL_FILETYPE_PEM ) <= 0 )
     {
 	err_msg = "FAILED to use certificate file " + _cfile + "\n" ;
@@ -117,8 +116,8 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	cout << "OK" << endl ;
-	cout << "Certificate setup ... " ;
+	BESDEBUG( "OK" << endl )
+	BESDEBUG( "Certificate setup ... " )
 	SSL_CTX_set_verify( context, SSL_VERIFY_PEER, SSLClient::verify_server ) ;
 	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cfile.c_str() ));
 	if( ( !SSL_CTX_load_verify_locations( context, _cfile.c_str(), NULL )) ||
@@ -133,9 +132,9 @@ SSLClient::initConnection()
     int sock_fd = -1 ;
     if( ok_2_continue )
     {
-	cout << "OK" << endl ;
+	BESDEBUG( "OK" << endl )
 
-	cout << "Establishing TCP connection to " << _host << ":" << _port << " ... " ;
+	BESDEBUG( "Establishing TCP connection to " << _host << ":" << _port << " ... " )
 	sock_fd = connect_to_server() ;
 	if( sock_fd < 0 )
 	{
@@ -146,9 +145,9 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	cout << "OK" << endl ;
+	BESDEBUG( "OK" << endl )
 
-	cout << "Establishing secure connection ... " ;
+	BESDEBUG( "Establishing secure connection ... " )
 	int ssl_ret = 0 ;
 	_connection = SSL_new( context ) ;
 	if( !_connection )
@@ -179,11 +178,11 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	cout << "OK" << endl ;
+	BESDEBUG( "OK" << endl )
     }
     else
     {
-	cout << "FAILED" << endl ;
+	BESDEBUG( "FAILED" << endl )
 	if( _context ) SSL_CTX_free( _context ) ; _context = NULL ;
 	throw PPTException( err_msg ) ;
     }
@@ -252,7 +251,7 @@ SSLClient::verify_server( int ok, X509_STORE_CTX *ctx )
 {
     if( ok )
     {
-	cout << "VERIFIED " ;
+	BESDEBUG( "VERIFIED " )
     }
     else
     {
@@ -263,28 +262,28 @@ SSLClient::verify_server( int ok, X509_STORE_CTX *ctx )
 	err_cert = X509_STORE_CTX_get_current_cert( ctx ) ;
 	err = X509_STORE_CTX_get_error( ctx ) ;
 	X509_NAME_oneline( X509_get_subject_name( err_cert ), mybuf, 256 ) ;
-	cout << "FAILED for " << mybuf << endl ;
-	cout << "  " << X509_verify_cert_error_string( err ) << endl ;
+	BESDEBUG( "FAILED for " << mybuf << endl )
+	BESDEBUG( "  " << X509_verify_cert_error_string( err ) << endl )
 	switch( ctx->error )
 	{
 	    case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
 	    {
 		X509_NAME_oneline( X509_get_issuer_name( err_cert ), mybuf, 256 ) ;
-		cout << "  issuer = " << mybuf << endl ;
+		BESDEBUG( "  issuer = " << mybuf << endl )
 		break ;
 	    }
 
 	    case X509_V_ERR_CERT_NOT_YET_VALID:
 	    case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
 	    {
-		cout << "  not yet valid!" << endl ;
+		BESDEBUG( "  not yet valid!" << endl )
 		break ;
 	    }
 
 	    case X509_V_ERR_CERT_HAS_EXPIRED:
 	    case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
 	    {
-		cout << "  expired!" << endl ;
+		BESDEBUG( "  expired!" << endl )
 		break ;
 	    }
 	}

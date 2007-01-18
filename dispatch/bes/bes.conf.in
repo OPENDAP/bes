@@ -93,11 +93,25 @@ BES.Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
-# is secure or not. Secure server is experimental.			#
+# is secure or not.							#
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
 BES.ServerUnixSocket=/tmp/opendap.socket
+
+#-----------------------------------------------------------------------#
+# Security information for this server. ServerSecure specifies whether  #
+# the server is secure or not and requires authorization of the client  #
+# using SSL certificates and keys. The default secure connection port	#
+# is 10003. Then specify the full path to the certificate and key files.#
+# An initialization file can be created for both the client and server	#
+# side.									#
+#-----------------------------------------------------------------------#
 BES.ServerSecure=no
+BES.ServerSecurePort=10003
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 
 #-----------------------------------------------------------------------#
 # help file locations, for text, html, and xml versions			#

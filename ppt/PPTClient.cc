@@ -46,6 +46,7 @@ using std::ostringstream ;
 #include "PPTProtocol.h"
 #include "SocketException.h"
 #include "PPTException.h"
+#include "TheBESKeys.h"
 
 #include "config.h"
 #ifdef HAVE_OPENSSL
@@ -57,6 +58,11 @@ PPTClient::PPTClient( const string &hostStr, int portVal, int timeout )
       _connected( false ),
       _host( hostStr )
 {
+    // get the certificate and key file information
+    get_secure_files() ;
+
+    // connect to the specified host at the specified socket to handle the
+    // secure connection
     _mySock = new TcpSocket( hostStr, portVal ) ;
     _mySock->connect() ;
     _connected = true ;
@@ -66,9 +72,32 @@ PPTClient::PPTClient( const string &unix_socket, int timeout )
     : PPTConnection( timeout ),
       _connected( false )
 {
+    // get the certificate and key file information
+    get_secure_files() ;
+
+    // connect to the specified unix socket to handle the secure connection
     _mySock = new UnixSocket( unix_socket ) ;
     _mySock->connect() ;
     _connected = true ;
+}
+
+void
+PPTClient::get_secure_files()
+{
+    bool found = false ;
+    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertFile", found ) ;
+    if( !found || _cfile.empty() )
+    {
+	throw PPTException( "Unable to determine client certificate file.",
+			    __FILE__, __LINE__ ) ;
+    }
+
+    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ClientKeyFile", found ) ;
+    if( !found || _kfile.empty() )
+    {
+	throw PPTException( "Unable to determine client key file.",
+			    __FILE__, __LINE__ ) ;
+    }
 }
 
 PPTClient::~PPTClient()
@@ -145,9 +174,7 @@ PPTClient::authenticateWithServer()
     }
 
     // authenticate using SSLClient
-    string cfile = "/home/pwest/temp/ssl/keys/cacert.pem" ;
-    string kfile = "/home/pwest/temp/ssl/keys/privkey.pem" ;
-    SSLClient client( _host, portVal, cfile, kfile ) ;
+    SSLClient client( _host, portVal, _cfile, _kfile ) ;
     client.initConnection() ;
     client.closeConnection() ;
 

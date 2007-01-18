@@ -45,9 +45,13 @@ private:
     ServerHandler *		_handler ;
     SocketListener *		_listener ;
     bool			_secure ;
+    int				_securePort ;
+    string			_cfile ;
+    string			_kfile ;
 
     void			welcomeClient() ;
     void			authenticateClient() ;
+    void			get_secure_files() ;
 public:
     				PPTServer( ServerHandler *handler,
 					   SocketListener *listener,

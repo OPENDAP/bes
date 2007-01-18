@@ -42,8 +42,11 @@ class PPTClient : public PPTConnection
 private:
     bool			_connected ;
     string			_host ;
+    string			_cfile ;
+    string			_kfile ;
 
     void			authenticateWithServer() ;
+    void			get_secure_files() ;
 public:
     				PPTClient( const string &hostStr,
 					   int portVal,

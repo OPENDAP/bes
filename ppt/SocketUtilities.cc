@@ -71,4 +71,3 @@ SocketUtilities::create_temp_name()
     return s ;
 }
 
-// $Log: SocketUtilities.cc,v $
