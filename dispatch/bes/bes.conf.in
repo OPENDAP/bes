@@ -1,15 +1,15 @@
 #-----------------------OPeNDAP BES Initialization file-----------------#
-#									#
-#       National Center for Atmospheric Research (NCAR)			#
-#       High Altitude Observatory (HAO)					#
-#       Key entries for OPeNDAP BES run time behavior			#
-#									#
+#                                                                       #
+#       National Center for Atmospheric Research (NCAR)                 #
+#       High Altitude Observatory (HAO)	                                #
+#       Key entries for OPeNDAP BES run time behavior                   #
+#                                                                       #
 #-----------------------------------------------------------------------#
   
 #-----------------------------------------------------------------------#
 # Who is the administrator for this OPeNDAP back-end server             #
-# Please replace this with the email address to use that gets displayed	#
-# to users of your server when errors occur.				#
+# Please replace this with the email address to use that gets displayed #
+# to users of your server when errors occur.                            #
 #-----------------------------------------------------------------------#
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
@@ -56,21 +56,28 @@ BES.modules=name
 BES.module.name=/full/path/to/shared/library.so
 
 #-----------------------------------------------------------------------#
-# Root directory where data is located
+# Setting the data location
 #-----------------------------------------------------------------------#
+ 
+# There are two ways the BES can be used. It can serve as a standalone
+# data server or it can work with the OLFS (i.e., as one component of
+# the OPeNDAP 4 Data Server). How you point to data differs for each of
+# the two cases. If you are using the BES as part of the OPeNDAP 4 Data
+# Server, then set 'BES.Catalog.catalog.RootDirectory' to point to the 
+# root directory that contains the data you want to serve. In this case
+# the value of the 'BES.Data.RootDirectory' parameter doesn't matter, so
+# long as it has some value.
+#
+# If you intend to use the BES as a standalone server, set the value of
+# 'BES.Data.RootDirectory' to point to your data and disregard the 
+# 'BES.Catalog.catalog.RootDirectory' parameter.
+
+BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
 BES.Data.RootDirectory=/full/path/data/root/directory
 
-#-----------------------------------------------------------------------#
-# Catalog configuration							#
-# If you are providing a catalog specify the full path to your data's	#
-# root directory here. This is different from BES.Data.RootDirectory    #
-# in that the RootDirectory specified below is for the data catalog     #
-#-----------------------------------------------------------------------#
-BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
-
-# The TypeMatch parameter is a list of handler/module names a colon and
-# a regular expression. If the regular expression matches an item, then
-# the BES uses the associated handler/module. Each <handler>:<regular
+# The TypeMatch parameter is a list of handler/module names and a regular
+# expression separated by a colon. If the regular expression matches an item,
+# then the BES uses the associated handler/module. Each <handler>:<regular
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
@@ -93,7 +100,7 @@ BES.Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
-# is secure or not.							#
+# is secure or not.                                                     #
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
 BES.ServerUnixSocket=/tmp/opendap.socket
@@ -101,10 +108,10 @@ BES.ServerUnixSocket=/tmp/opendap.socket
 #-----------------------------------------------------------------------#
 # Security information for this server. ServerSecure specifies whether  #
 # the server is secure or not and requires authorization of the client  #
-# using SSL certificates and keys. The default secure connection port	#
+# using SSL certificates and keys. The default secure connection port   #
 # is 10003. Then specify the full path to the certificate and key files.#
-# An initialization file can be created for both the client and server	#
-# side.									#
+# An initialization file can be created for both the client and server  #
+# side.                                                                 #
 #-----------------------------------------------------------------------#
 BES.ServerSecure=no
 BES.ServerSecurePort=10003
@@ -114,7 +121,7 @@ BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
 BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 
 #-----------------------------------------------------------------------#
-# help file locations, for text, html, and xml versions			#
+# help file locations, for text, html, and xml versions                 #
 #-----------------------------------------------------------------------#
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTTP=@pkgdatadir@/bes_help.html
@@ -132,23 +139,23 @@ BES.Info.Buffered=no
 BES.Info.Type=xml
 
 #-----------------------------------------------------------------------#
-# Cache and compression configuration					#
-#									#
-# If a data file is compressed the BES will attempt to uncompress it.	#
-#									#
-# The way that it does this is by executing a shell script, as		#
-# specified by the BES.Compressed.Script. A default script is provided	#
-# for you.								#
-#									#
+# Cache and compression configuration                                   #
+#                                                                       #
+# If a data file is compressed the BES will attempt to uncompress it.   #
+#                                                                       #
+# The way that it does this is by executing a shell script, as          #
+# specified by the BES.Compressed.Script. A default script is provided  #
+# for you.                                                              #
+#                                                                       #
 # To determine if a data file is compressed it compares the name of the #
-# file to the regular expression in BES.Compressed.Extensions. If none	#
-# is specified, the default is ".*(\.gz|\.Z|\.bz2)$".			#
-#									#
-# BES will uncompress the data file into the directory specified by	#
-# BES.CacheDir, which defaults to /tmp.					#
-#									#
+# file to the regular expression in BES.Compressed.Extensions. If none  #
+# is specified, the default is ".*(\.gz|\.Z|\.bz2)$".                   #
+#                                                                       #
+# BES will uncompress the data file into the directory specified by     #
+# BES.CacheDir, which defaults to /tmp.                                 #
+#                                                                       #
 # BES will purge the CacheDir if the size of uncompressed bes files     #
-# exceeds BES.CacheDir.MaxSize, which defaults to 500 MB		#
+# exceeds BES.CacheDir.MaxSize, which defaults to 500 MB                #
 #-----------------------------------------------------------------------#
 BES.CacheDir=/tmp
 BES.CacheDir.MaxSize=500
@@ -157,7 +164,7 @@ BES.Compressed.Script=@bindir@/bes-uncompress.sh
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#
-# log an error, strict means throw an exception
+# log an error, strict means throw an exception                         #
 #-----------------------------------------------------------------------#
 BES.Container.Persistence=strict
 
@@ -190,9 +197,9 @@ BES.ProcessManagerMethod=multiple
 BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
-#									#
-# Data Handler Specific key/value parameters				#
-#									#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
 #-----------------------------------------------------------------------#
 
 #-----------------------------------------------------------------------#
