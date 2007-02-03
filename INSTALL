@@ -36,6 +36,22 @@ Building from Our SVN Repository
   with build files that don't work, use 'autoreconf --force --verbose' and
   then './configure; make'.
 
+AFTER INSTALLING
+
+  o Set PATH environment variable to include the bin directory of where
+  bes was installed. For example, if using the default installation
+  directory, which is /usr/local, make sure that /usr/local/bin is on your
+  path.
+
+  o Set LD_LIBRARY_PATH environment variable to include the lib directory of
+  where bes was installed. For example, if using the default installation
+  directory, which is /usr/local, make sure that /usr/local/lib is part of
+  LD_LIBRARY_PATH. You might want to add the following about LIBRARY PATH:
+  If you have set $prefix so that the libraries are installed in a directory
+  that's included in ld.so.conf (linux, other systems may use a slightly
+  different name) you don't have to use LD_LIBRARY_PATH but, if you don't,
+  make sure to re-run ldconfig.
+
 BUILD REQUIREMENTS
 
   o You will need a copy of the readline library. You can get a copy
