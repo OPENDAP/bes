@@ -37,14 +37,13 @@
 
 class TheBESKeys : public BESKeys
 {
-private:
-    static BESKeys *		_instance ;
-protected:
-    				TheBESKeys( const string &keys_file_name )
-				    : BESKeys( keys_file_name ) {}
-public:
-    static string		ConfigFile ;
-    static BESKeys *		TheKeys() ;
+  private:
+    static BESKeys *_instance ;
+  protected:
+    TheBESKeys( const string &keys_file_name ) : BESKeys( keys_file_name ) {}
+  public:
+    static string ConfigFile ;
+    static BESKeys *TheKeys() ;
 } ;
 
 #endif // E_TheBESKeys_h

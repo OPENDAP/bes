@@ -81,7 +81,7 @@ BES.Data.RootDirectory=/full/path/data/root/directory
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
-# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF);ff:.*\.dat;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF|eos);ff:.*\.dat;
 BES.Catalog.catalog.TypeMatch=type:expr;
 
 # Normally, when a client asks for a data catalog, all files and directories
@@ -94,7 +94,7 @@ BES.Catalog.catalog.TypeMatch=type:expr;
 # are included (the Include parameter) except those that begin with a dot
 # (the Exclud parameter).
 
-#BES.Catalog.catalog.Include=.*\.nc;
+# BES.Catalog.catalog.Include=.*\.nc;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
@@ -157,6 +157,13 @@ BES.Info.Type=xml
 # BES will purge the CacheDir if the size of uncompressed bes files     #
 # exceeds BES.CacheDir.MaxSize, which defaults to 500 MB                #
 #-----------------------------------------------------------------------#
+
+# Suggestion: Change the default CacheDir here (and later in the HDF4 
+# handler configuration) to something other than '/tmp' like '/tmp/bes' 
+# so that files the bes creates are easy to spot. This makes for a cleaner
+# runtime environment. Note that you must create the directory before 
+# starting the BES.
+
 BES.CacheDir=/tmp
 BES.CacheDir.MaxSize=500
 # BES.Compressed.Extensions=
@@ -205,5 +212,9 @@ BES.DefaultResponseMethod=POST
 #-----------------------------------------------------------------------#
 # Defines the cache directory for BES servers serving HDF4 data         #
 #-----------------------------------------------------------------------#
+
+# Suggestion: Consider making this '/tmp/bes'; see the comment at 
+# BES.CacheDir above.
+
 HDF4.CacheDir=/tmp
 

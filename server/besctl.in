@@ -31,6 +31,7 @@ stop)
     (cat "$localstatedir"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     ;;
 start)
+	# Check if the process is running too and if not rm the file and start.
     if [ -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is already running"

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,38 +36,28 @@
 
 #define BES_CONF getenv("BES_CONF")
 
-BESKeys *TheBESKeys::_instance = 0 ;
-string TheBESKeys::ConfigFile = "" ;
+BESKeys *TheBESKeys::_instance = 0;
+string TheBESKeys::ConfigFile = "";
 
-BESKeys *
-TheBESKeys::TheKeys()
+BESKeys *TheBESKeys::TheKeys()
 {
-    if( _instance == 0 )
-    {
-	string use_ini = TheBESKeys::ConfigFile ;
-	if( use_ini == "" )
-	{
-	    char *ini_file = BES_CONF ;
-	    if( !ini_file )
-	    {
-		ini_file = BES_CONF_DIR ;
-		if( !ini_file )
-		{
-		    string s = "Can not load environment variable BES_CONF" ;
-		    throw BESKeysException( s, __FILE__, __LINE__ ) ;
-		}
-		else
-		{
-		    use_ini = (string)ini_file + "/bes.conf" ;
-		}
-	    }
-	    else
-	    {
-		use_ini = ini_file ;
-	    }
-	}
-	_instance = new TheBESKeys( use_ini ) ;
+    if (_instance == 0) {
+        string use_ini = TheBESKeys::ConfigFile;
+        if (use_ini == "") {
+            char *ini_file = BES_CONF;
+            if (!ini_file) {
+                ini_file = BES_CONF_DIR;
+                if (!ini_file) {
+                    string s = "Can not load environment variable BES_CONF";
+                    throw BESKeysException(s, __FILE__, __LINE__);
+                } else {
+                    use_ini = (string) ini_file + "/bes.conf";
+                }
+            } else {
+                use_ini = ini_file;
+            }
+        }
+        _instance = new TheBESKeys(use_ini);
     }
-    return _instance ;
+    return _instance;
 }
-

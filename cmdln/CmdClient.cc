@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -35,62 +35,56 @@
 #include <iostream>
 #include <fstream>
 
-using std::cout ;
-using std::endl ;
-using std::cerr ;
-using std::ofstream ;
-using std::ios ;
+using std::cout;
+using std::endl;
+using std::cerr;
+using std::ofstream;
+using std::ios;
 
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)
 #    include <readline/readline.h>
 #  elif defined(HAVE_READLINE_H)
 #    include <readline.h>
-#  else /* !defined(HAVE_READLINE_H) */
-extern "C" { char *readline ( const char * ); }
-#  endif /* !defined(HAVE_READLINE_H) */
+#  else                         /* !defined(HAVE_READLINE_H) */
+extern "C" {
+    char *readline(const char *);
+}
+#  endif                        /* !defined(HAVE_READLINE_H) */
 char *cmdline = NULL;
-#else /* !defined(HAVE_READLINE_READLINE_H) */
+#else                           /* !defined(HAVE_READLINE_READLINE_H) */
   /* no readline */
-#endif /* HAVE_LIBREADLINE */
+#endif                          /* HAVE_LIBREADLINE */
 
 #ifdef HAVE_READLINE_HISTORY
 #  if defined(HAVE_READLINE_HISTORY_H)
 #    include <readline/history.h>
 #  elif defined(HAVE_HISTORY_H)
 #    include <history.h>
-#  else /* !defined(HAVE_HISTORY_H) */
-extern "C"
-{
-    int add_history ( const char * );
-    int write_history ( const char * );
-    int read_history ( const char * );
+#  else                         /* !defined(HAVE_HISTORY_H) */
+extern "C" {
+    int add_history(const char *);
+    int write_history(const char *);
+    int read_history(const char *);
 }
-#  endif /* defined(HAVE_READLINE_HISTORY_H) */
+#  endif                        /* defined(HAVE_READLINE_HISTORY_H) */
   /* no history */
-#endif /* HAVE_READLINE_HISTORY */
-
+#endif                          /* HAVE_READLINE_HISTORY */
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
-
 #include "CmdClient.h"
 #include "PPTClient.h"
-
 CmdClient::~CmdClient()
 {
-    if( _strmCreated && _strm )
-    {
-	_strm->flush() ;
-	delete _strm ;
-	_strm = 0 ;
+    if (_strmCreated && _strm) {
+        _strm->flush();
+        delete _strm;
+        _strm = 0;
+    } else if (_strm) {
+        _strm->flush();
     }
-    else if( _strm )
-    {
-	_strm->flush() ;
-    }
-    if( _client )
-    {
-	delete _client ;
-	_client = 0 ;
+    if (_client) {
+        delete _client;
+        _client = 0;
     }
 }
 
@@ -109,10 +103,10 @@ CmdClient::~CmdClient()
 * @see    PPTException
 */
 void
-CmdClient::startClient( const string &host, int portVal, int timeout )
+ CmdClient::startClient(const string & host, int portVal, int timeout)
 {
-    _client = new PPTClient( host, portVal, timeout ) ;
-    _client->initConnection() ;
+    _client = new PPTClient(host, portVal, timeout);
+    _client->initConnection();
 }
 
 /**
@@ -124,11 +118,10 @@ CmdClient::startClient( const string &host, int portVal, int timeout )
 * @throws PPTException Thrown if unable to connect to the BES server
 * @see    PPTException
 */
-void
-CmdClient::startClient( const string &unixStr, int timeout )
+void CmdClient::startClient(const string & unixStr, int timeout)
 {
-    _client = new PPTClient( unixStr, timeout ) ;
-    _client->initConnection() ;
+    _client = new PPTClient(unixStr, timeout);
+    _client->initConnection();
 }
 
 /**
@@ -140,10 +133,9 @@ CmdClient::startClient( const string &unixStr, int timeout )
 * @see    OutputStream
 * @see    PPTException
 */
-void
-CmdClient::shutdownClient()
+void CmdClient::shutdownClient()
 {
-    _client->closeConnection() ;
+    _client->closeConnection();
 }
 
 /**
@@ -161,20 +153,16 @@ CmdClient::shutdownClient()
 * @see    OutputStream
 * @see    PPTException
 */
-void
-CmdClient::setOutput( ostream *strm, bool created )
+void CmdClient::setOutput(ostream * strm, bool created)
 {
-    if( _strmCreated && _strm  )
-    {
-	_strm->flush() ;
-	delete _strm ;
+    if (_strmCreated && _strm) {
+        _strm->flush();
+        delete _strm;
+    } else if (_strm) {
+        _strm->flush();
     }
-    else if( _strm )
-    {
-	_strm->flush() ;
-    }
-    _strm = strm ;
-    _strmCreated = created ;
+    _strm = strm;
+    _strmCreated = created;
 }
 
 /**
@@ -188,45 +176,32 @@ CmdClient::setOutput( ostream *strm, bool created )
 * @param  cmd  The BES client side command to execute
 * @see    PPTException
 */
-void
-CmdClient::executeClientCommand( const string &cmd )
+void CmdClient::executeClientCommand(const string & cmd)
 {
-    string suppress = "suppress" ;
-    if( cmd.compare( 0, suppress.length(), suppress ) == 0 )
-    {
-	setOutput( NULL, false ) ;
-    }
-    else
-    {
-	string output = "output to" ;
-	if( cmd.compare( 0, output.length(), output ) == 0 )
-	{
-	    string subcmd = cmd.substr( output.length()+1 ) ;
-	    string screen = "screen" ;
-	    if( subcmd.compare( 0, screen.length(), screen ) == 0 )
-	    {
-		setOutput( &cout, false ) ;
-	    }
-	    else
-	    {
-		// subcmd is the name of the file - the semicolon
-		string file = subcmd.substr( 0, subcmd.length() - 1 ) ;
-		ofstream *fstrm = new ofstream( file.c_str(), ios::app ) ;
-		if( !(*fstrm) )
-		{
-		    cerr << "Unable to set client output to file " << file
-		         << endl ;
-		}
-		else
-		{
-		    setOutput( fstrm, true ) ;
-		}
-	    }
-	}
-	else
-	{
-	    cerr << "Improper client command " << cmd << endl ;
-	}
+    string suppress = "suppress";
+    if (cmd.compare(0, suppress.length(), suppress) == 0) {
+        setOutput(NULL, false);
+    } else {
+        string output = "output to";
+        if (cmd.compare(0, output.length(), output) == 0) {
+            string subcmd = cmd.substr(output.length() + 1);
+            string screen = "screen";
+            if (subcmd.compare(0, screen.length(), screen) == 0) {
+                setOutput(&cout, false);
+            } else {
+                // subcmd is the name of the file - the semicolon
+                string file = subcmd.substr(0, subcmd.length() - 1);
+                ofstream *fstrm = new ofstream(file.c_str(), ios::app);
+                if (!(*fstrm)) {
+                    cerr << "Unable to set client output to file " << file
+                        << endl;
+                } else {
+                    setOutput(fstrm, true);
+                }
+            }
+        } else {
+            cerr << "Improper client command " << cmd << endl;
+        }
     }
 }
 
@@ -244,19 +219,15 @@ CmdClient::executeClientCommand( const string &cmd )
 *                      from the server.
 * @see    PPTException
 */
-void
-CmdClient::executeCommand( const string &cmd )
+void CmdClient::executeCommand(const string & cmd)
 {
-    string client = "client" ;
-    if( cmd.compare( 0, client.length(), client ) == 0 )
-    {
-	executeClientCommand( cmd.substr( client.length()+1 ) ) ;
-    }
-    else
-    {
-	_client->send( cmd ) ;
-	_client->receive( _strm ) ;
-	_strm->flush() ;
+    string client = "client";
+    if (cmd.compare(0, client.length(), client) == 0) {
+        executeClientCommand(cmd.substr(client.length() + 1));
+    } else {
+        _client->send(cmd);
+        _client->receive(_strm);
+        _strm->flush();
     }
 }
 
@@ -274,16 +245,14 @@ CmdClient::executeCommand( const string &cmd )
 *                      of the responses from the server.
 * @see    PPTException
 */
-void
-CmdClient::executeCommands( const string &cmd_list )
+void CmdClient::executeCommands(const string & cmd_list)
 {
     std::string::size_type start = 0;
     std::string::size_type end = 0;
-    while( ( end = cmd_list.find( ';', start ) ) != string::npos )
-    {
-	string cmd = cmd_list.substr( start, end - start + 1 ) ;
-	executeCommand( cmd ) ;
-	start = end + 1 ;
+    while ((end = cmd_list.find(';', start)) != string::npos) {
+        string cmd = cmd_list.substr(start, end - start + 1);
+        executeCommand(cmd);
+        start = end + 1;
     }
 }
 
@@ -307,61 +276,43 @@ CmdClient::executeCommands( const string &cmd_list )
 * @see    File
 * @see    PPTException
 */
-void
-CmdClient::executeCommands( ifstream &istrm )
+void CmdClient::executeCommands(ifstream & istrm)
 {
-    string cmd ;
-    bool done = false ;
-    while( !done )
-    {
-	char line[4096] ;
-	line[0] = '\0' ;
-	istrm.getline( line, 4096, '\n' ) ;
-	string nextLine = line ;
-	if( nextLine == "" )
-	{
-	    if( cmd != "" )
-	    {
-		this->executeCommands( cmd ) ;
-	    }
-	    done = true ;
-	}
-	else
-	{
-	    std::string::size_type i = nextLine.find_last_of( ';' ) ;
-	    if( i == string::npos )
-	    {
-		if( cmd == "" )
-		{
-		    cmd = nextLine ;
-		}
-		else
-		{
-		    cmd += " " + nextLine ;
-		}
-	    }
-	    else
-	    {
-		string sub = nextLine.substr( 0, i+1 ) ;
-		if( cmd == "" )
-		{
-		    cmd = sub ;
-		}
-		else
-		{
-		    cmd += " " + sub ;
-		}
-		this->executeCommands( cmd ) ;
-		if( i == nextLine.length() || i == nextLine.length() - 1 )
-		{
-		    cmd = "" ;
-		}
-		else
-		{
-		    cmd = nextLine.substr( i+1, nextLine.length() ) ;
-		}
-	    }
-	}
+    string cmd;
+    bool done = false;
+    while (!done) {
+        char line[4096];
+        line[0] = '\0';
+        istrm.getline(line, 4096, '\n');
+        string nextLine = line;
+        if (nextLine == "") {
+            if (cmd != "") {
+                this->executeCommands(cmd);
+            }
+            done = true;
+        } else {
+            std::string::size_type i = nextLine.find_last_of(';');
+            if (i == string::npos) {
+                if (cmd == "") {
+                    cmd = nextLine;
+                } else {
+                    cmd += " " + nextLine;
+                }
+            } else {
+                string sub = nextLine.substr(0, i + 1);
+                if (cmd == "") {
+                    cmd = sub;
+                } else {
+                    cmd += " " + sub;
+                }
+                this->executeCommands(cmd);
+                if (i == nextLine.length() || i == nextLine.length() - 1) {
+                    cmd = "";
+                } else {
+                    cmd = nextLine.substr(i + 1, nextLine.length());
+                }
+            }
+        }
     }
 }
 
@@ -382,127 +333,110 @@ CmdClient::executeCommands( ifstream &istrm )
 *                      of the responses from the server.
 * @see    PPTException
 */
-void
-CmdClient::interact()
+void CmdClient::interact()
 {
     cout << endl << endl
-         << "Type 'exit' to exit the command line client and 'help' or '?' "
-         << "to display the help screen"
-	 << endl << endl ;
+        << "Type 'exit' to exit the command line client and 'help' or '?' "
+        << "to display the help screen" << endl << endl;
 
-    bool done = false ;
-    while( !done )
-    {
-	string message = "" ;
-	size_t len = this->readLine( message ) ;
-	if( len == -1 || message == "exit" || message == "exit;" )
-	{
-	    done = true ;
-	}
-	else if( message == "help" || message == "help;" || message == "?" )
-	{
-	    this->displayHelp() ;
-	}
-	else if( len != 0 && message != "" )
-	{
-	    if( message[message.length()-1] != ';' )
-	    {
-		cerr << "Commands must end with a semicolon" << endl ;
-	    }
-	    else
-	    {
-		this->executeCommands( message ) ;
-		message = "";	// Needed? Added during debugging. jhrg 9/8/05
-		len = 0;
-	    }
-	}
+    bool done = false;
+    while (!done) {
+        string message = "";
+        size_t len = this->readLine(message);
+        if (len == -1 || message == "exit" || message == "exit;") {
+            done = true;
+        } else if (message == "help" || message == "help;"
+                   || message == "?") {
+            this->displayHelp();
+        } else if (len != 0 && message != "") {
+            if (message[message.length() - 1] != ';') {
+                cerr << "Commands must end with a semicolon" << endl;
+            } else {
+                this->executeCommands(message);
+                message = "";   // Needed? Added during debugging. jhrg 9/8/05
+                len = 0;
+            }
+        }
     }
 }
 
-size_t
-CmdClient::readLine( string &msg )
+size_t CmdClient::readLine(string & msg)
 {
-    size_t len = 0 ;
-    char *buf = (char*)NULL ;
-    buf = ::readline( "BESClient> " ) ;
-    if( buf && *buf )
-    {
-	len = strlen( buf ) ;
-	add_history( buf ) ;
-	if( len > SIZE_COMMUNICATION_BUFFER )
-	{
-	    cerr << __FILE__ << __LINE__
-		 << ": incoming data buffer exceeds maximum capacity with lenght "
-		 << len << endl ;
-	    exit( 1 ) ;
-	}
-	else
-	{
-	    msg = buf ;
-	}
+    size_t len = 0;
+    char *buf = (char *) NULL;
+    buf =::readline("BESClient> ");
+    if (buf && *buf) {
+        len = strlen(buf);
+        add_history(buf);
+        if (len > SIZE_COMMUNICATION_BUFFER) {
+            cerr << __FILE__ << __LINE__
+                <<
+                ": incoming data buffer exceeds maximum capacity with lenght "
+                << len << endl;
+            exit(1);
+        } else {
+            msg = buf;
+        }
+    } else {
+        if (!buf) {
+            // If a null buffer is returned then this means that EOF is
+            // returned. This is different from the user just hitting enter,
+            // which means a character buffer is returned, but is empty.
+            
+            // Problem: len is unsigned.
+            len = -1;
+        }
     }
-    else
-    {
-	if( !buf )
-	{
-	    // If a null buffer is returned then this means that EOF is
-	    // returned. This is different from the user just hitting enter,
-	    // which means a character buffer is returned, but is empty.
-	    len = -1 ;
-	}
+    if (buf) {
+        free(buf);
+        buf = (char *) NULL;
     }
-    if( buf )
-    {
-	free( buf ) ;
-	buf = (char*)NULL ;
-    }
-    return len ;
+    return len;
 }
 
-void
-CmdClient::displayHelp()
+void CmdClient::displayHelp()
 {
-    cout << endl ;
-    cout << endl ;
-    cout << "BES Command Line Client Help"
-         << endl ;
-    cout << endl ;
-    cout << "Client commands available:"
-         << endl ;
-    cout << "    exit                     - exit the command line interface"
-         << endl ;
-    cout << "    help                     - display this help screen"
-         << endl ;
-    cout << "    client suppress;         - suppress output from the server"
-         << endl ;
-    cout << "    client output to screen; - display server output to the screen"
-         << endl ;
-    cout << "    client output to <file>; - display server output to specified file"
-         << endl ;
-    cout << endl ;
-    cout << "Any commands beginning with 'client' must end with a semicolon"
-         << endl ;
-    cout << endl ;
+    cout << endl;
+    cout << endl;
+    cout << "BES Command Line Client Help" << endl;
+    cout << endl;
+    cout << "Client commands available:" << endl;
+    cout <<
+        "    exit                     - exit the command line interface" <<
+        endl;
+    cout << "    help                     - display this help screen" <<
+        endl;
+    cout <<
+        "    client suppress;         - suppress output from the server" <<
+        endl;
+    cout <<
+        "    client output to screen; - display server output to the screen"
+        << endl;
+    cout <<
+        "    client output to <file>; - display server output to specified file"
+        << endl;
+    cout << endl;
+    cout <<
+        "Any commands beginning with 'client' must end with a semicolon" <<
+        endl;
+    cout << endl;
     cout << "To display the list of commands available from the server "
-         << "please type the command 'show help;'"
-	 << endl ;
-    cout << endl ;
-    cout << endl ;
+        << "please type the command 'show help;'" << endl;
+    cout << endl;
+    cout << endl;
 }
 
-bool
-CmdClient::isConnected()
+bool CmdClient::isConnected()
 {
-    if( _client )
-	return _client->isConnected() ;
-    return false ;
+    if (_client)
+        return _client->isConnected();
+    return false;
 }
 
-void
-CmdClient::brokenPipe()
+void CmdClient::brokenPipe()
 {
-    if( _client )
-	_client->brokenPipe() ;
+    if (_client)
+        _client->brokenPipe();
 }
 
 /** @brief dumps information about this object
@@ -511,25 +445,20 @@ CmdClient::brokenPipe()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-CmdClient::dump( ostream &strm ) const
+void CmdClient::dump(ostream & strm) const const
 {
     strm << BESIndent::LMarg << "CmdClient::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _client )
-    {
-	strm << BESIndent::LMarg << "client:" << endl ;
-	BESIndent::Indent() ;
-	_client->dump( strm ) ;
-	BESIndent::UnIndent() ;
+        << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_client) {
+        strm << BESIndent::LMarg << "client:" << endl;
+        BESIndent::Indent();
+        _client->dump(strm);
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "client: null" << endl;
     }
-    else
-    {
-	strm << BESIndent::LMarg << "client: null" << endl ;
-    }
-    strm << BESIndent::LMarg << "stream: " << (void *)_strm << endl ;
-    strm << BESIndent::LMarg << "stream created? " << _strmCreated << endl ;
-    BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "stream: " << (void *) _strm << endl;
+    strm << BESIndent::LMarg << "stream created? " << _strmCreated << endl;
+    BESIndent::UnIndent();
 }
-
