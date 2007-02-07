@@ -38,6 +38,8 @@ Building from Our SVN Repository
 
 AFTER INSTALLING
 
+  o See the CONFIGURATION section once you have finished building the BES.
+
   o Set PATH environment variable to include the bin directory of where
   bes was installed. For example, if using the default installation
   directory, which is /usr/local, make sure that /usr/local/bin is on your
@@ -51,6 +53,23 @@ AFTER INSTALLING
   that's included in ld.so.conf (linux, other systems may use a slightly
   different name) you don't have to use LD_LIBRARY_PATH but, if you don't,
   make sure to re-run ldconfig.
+
+  o Once built you and configured will start and stop the BES using the
+  besctl script located in the installation directories bin directory. To
+  start the BES:
+
+  besctl start
+
+  To stop the BES:
+
+  besctl stop
+
+  Note: Stopping the BES only stops the daemon and the main listener. If you
+  have clients connected to the BES then the listeners handling requests
+  from those clients will remain up until the connections are closed. This
+  is only the case in the servers 'multiple' mode and not its 'single' mode
+  (refer to the BES configuration file for more on this topic).
+
 
 BUILD REQUIREMENTS
 
@@ -128,8 +147,6 @@ NOTES
 	
     Or, use the 'rpm' target in the Makefile.
 
-    
-
   o DEBUGGING AIDS
 
     - Debugging is built in to the BES and does not require any special
@@ -160,6 +177,11 @@ NOTES
 CONFIGURATION AND TESTING
 
   o CONFIGURATION
+
+    - The configuration file is located in the installation directory under
+      etc/bes and is called bes.conf. This file will need to be edited, and
+      is fairly well documented. So, if you installed in /usr/local, then
+      this file will be located in /usr/local/etc/bes/bes.conf.
 
     - If you want to include libdap in the build then you will need to
       either have dap-config on your path, or you can specify
