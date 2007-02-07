@@ -445,7 +445,7 @@ void CmdClient::brokenPipe()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void CmdClient::dump(ostream & strm) const const
+void CmdClient::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "CmdClient::dump - ("
         << (void *) this << ")" << endl;
