@@ -84,12 +84,6 @@ int
 BESExceptionManager::handle_exception( BESException &e,
 				       BESDataHandlerInterface &dhi )
 {
-    dhi.error_info = BESInfoList::TheList()->build_info() ;
-    string action_name = dhi.action_name ;
-    if( action_name == "" )
-	action_name = "BES" ;
-    dhi.error_info->begin_response( action_name ) ;
-
     // Let's see if any of these exception callbacks can handle the
     // exception. The first callback that can handle the exception wins
     ehm_iter i = _ehm_list.begin() ;
@@ -103,6 +97,12 @@ BESExceptionManager::handle_exception( BESException &e,
 	}
     }
 
+    dhi.error_info = BESInfoList::TheList()->build_info() ;
+    string action_name = dhi.action_name ;
+    if( action_name == "" )
+	action_name = "BES" ;
+    dhi.error_info->begin_response( action_name ) ;
+
     string administrator = "" ;
     try
     {
@@ -115,7 +115,11 @@ BESExceptionManager::handle_exception( BESException &e,
 	administrator = DEFAULT_ADMINISTRATOR ;
     }
     dhi.error_info->add_tag( "Administrator", administrator ) ;
+    dhi.error_info->add_exception( e ) ;
+    dhi.error_info->end_response() ;
+    return e.get_return_code() ;
 
+    /* Replaced with the above three lines
     BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
     if( ireqx )
     {
@@ -183,6 +187,7 @@ BESExceptionManager::handle_exception( BESException &e,
     dhi.error_info->add_exception( "Unknown", e ) ;
     dhi.error_info->end_response() ;
     return BES_TERMINATE_IMMEDIATE;
+    */
 }
 
 /** @brief dumps information about this object

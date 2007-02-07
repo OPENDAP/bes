@@ -45,7 +45,11 @@ public:
       			BESLogException( const string &s,
 			                 const string &file,
 					 int line )
-			    : BESException( s, file, line ) {}
+			    : BESException( s, file, line )
+			{
+			    set_context( "Log" ) ;
+			    set_return_code( BES_LOG_FILE_PROBLEM ) ;
+			}
       virtual		~BESLogException() {}
 };
 

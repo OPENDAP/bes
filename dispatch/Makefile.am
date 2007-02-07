@@ -79,6 +79,8 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESDefinitionStorageVolatile.cc \
 	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc \
 	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
+	BESSetContextResponseHandler.cc BESShowContextResponseHandler.cc \
+	BESContextManager.cc \
 	BESProcIdResponseHandler.cc BESResponseHandler.cc \
 	BESHelpResponseHandler.cc BESStatusResponseHandler.cc \
 	BESVersionResponseHandler.cc BESKeysResponseHandler.cc \
@@ -114,6 +116,8 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESDefinitionStorageVolatile.h \
 	BESDefineResponseHandler.h BESShowDefsResponseHandler.h \
 	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
+	BESSetContextResponseHandler.h BESShowContextResponseHandler.h \
+	BESContextManager.h \
 	BESProcIdResponseHandler.h BESResponseHandler.h \
 	BESHelpResponseHandler.h BESStatusResponseHandler.h \
 	BESVersionResponseHandler.h BESKeysResponseHandler.h \
@@ -159,11 +163,11 @@ DAP_HDRS = BESCatalogResponseHandler.h \
 BES_DAP_SRCS = BESDASResponse.cc BESDDSResponse.cc BESDataDDSResponse.cc \
 	BESFilterTransmitter.cc BESCgiInterface.cc \
 	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
-	BESCatalogUtils.cc BESCatalogList.cc
+	BESCatalogUtils.cc BESCatalogList.cc BESDapHandlerException.cc
 
 BES_DAP_HDRS = BESDASResponse.h BESDDSResponse.h BESDataDDSResponse.h \
 	BESFilterTransmitter.h BESCgiInterface.h \
 	BESContainerStorageCatalog.h \
 	BESCatalogDirectory.h BESCatalog.h \
-	BESCatalogUtils.h BESCatalogList.h
+	BESCatalogUtils.h BESCatalogList.h BESDapHandlerException.h
 

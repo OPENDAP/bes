@@ -1,4 +1,4 @@
-// BESMemoryException.h
+// BESShowContextResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,38 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESMemoryException_h_
-#define BESMemoryException_h_ 1
+#ifndef I_BESShowContextResponseHandler_h
+#define I_BESShowContextResponseHandler_h 1
 
-#include "BESException.h"
+#include "BESResponseHandler.h"
 
-class BESMemoryException : public BESException
+/** @brief response handler that lists the context name/value pairs
+ *
+ * This response handler list all context name/vallue pairs currently set
+ * within the system with the command:
+ *
+ * show context;
+ *
+ * The response is an informational object
+ *
+ * @see BESResponseObject
+ * @see BESContainer
+ * @see BESTransmitter
+ */
+class BESShowContextResponseHandler : public BESResponseHandler
 {
-protected:
-    			BESMemoryException() { }
 public:
-    			BESMemoryException( const string &msg,
-			                    const string &file,
-					    int line )
-			    : BESException( msg, file, line )
-			{
-			    set_context( "Memory" ) ;
-			    set_return_code( BES_MEMORY_EXCEPTION ) ;
-			}
-    virtual		~BESMemoryException() {}
+				BESShowContextResponseHandler( string name ) ;
+    virtual			~BESShowContextResponseHandler( void ) ;
+
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESResponseHandler *ShowContextResponseBuilder( string handler_name ) ;
 };
 
-#endif // BESMemoryException_h_
+#endif // I_BESShowContextResponseHandler_h
 

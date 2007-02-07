@@ -37,9 +37,7 @@
 
 /** @brief represents an xml formatted response object
  *
- * Uses the default add_data method. Implements add_exception to add an xml
- * version of the exception. Currently the user is required to add elements,
- * properties, etc... into the xml document.
+ * An informational response object that is formated as an XML document.
  *
  * @see BESInfo
  * @see BESResponseObject

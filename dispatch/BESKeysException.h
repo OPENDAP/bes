@@ -46,7 +46,11 @@ public:
     			BESKeysException( const string &s,
 			                  const string &file,
 					  int line )
-			    : BESException( s, file, line ) { }
+			    : BESException( s, file, line )
+			{
+			    set_context( "Configuration" ) ;
+			    set_return_code( BES_INITIALIZATION_FILE_PROBLEM ) ;
+			}
       virtual		~BESKeysException() {}
 };
 

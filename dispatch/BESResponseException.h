@@ -56,7 +56,11 @@ public:
       			BESResponseException( const string &s,
 			                      const string &file,
 					      int line )
-			    : BESException( s, file, line ) {}
+			    : BESException( s, file, line )
+			{
+			    set_context( "DataHandlerFailure" ) ;
+			    set_return_code( BES_DATA_HANDLER_FAILURE ) ;
+			}
       virtual		~BESResponseException() {}
 };
 

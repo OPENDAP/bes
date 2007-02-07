@@ -49,11 +49,12 @@ public:
       			BESParserException( const string &s,
 			                    const string &file,
 					    int line )
-			    : BESException( s, file, line ) {}
+			    : BESException( s, file, line )
+			{
+			    set_context( "Parse" ) ;
+			    set_return_code( BES_PARSER_ERROR ) ;
+			}
       virtual		~BESParserException() {}
-
-      static int	handleException( BESException &e,
-					 BESDataHandlerInterface &dhi ) ;
 };
 
 #endif //  BESParserException_h_

@@ -43,7 +43,11 @@ public:
 			BESIncorrectRequestException( const string &s,
 			                              const string &file,
 						      int line )
-			    : BESException( s, file, line ) {}
+			    : BESException( s, file, line )
+			{
+			    set_context( "Request" ) ;
+			    set_return_code( BES_REQUEST_INCORRECT ) ;
+			}
       virtual		~BESIncorrectRequestException() {}
 };
 

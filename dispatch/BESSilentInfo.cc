@@ -145,7 +145,7 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * @param line line number in the file where the error was sent
  */
 void
-BESSilentInfo::add_exception( const string &type, BESException &e )
+BESSilentInfo::add_exception( BESException &e )
 {
 }
 

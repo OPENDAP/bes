@@ -1,4 +1,4 @@
-// BESMemoryException.h
+// BESSetContextCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,25 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESMemoryException_h_
-#define BESMemoryException_h_ 1
+#ifndef A_BESSetContextCommand_h
+#define A_BESSetContextCommand_h 1
 
-#include "BESException.h"
+#include "BESCommand.h"
 
-class BESMemoryException : public BESException
+class BESSetContextCommand : public BESCommand
 {
+private:
 protected:
-    			BESMemoryException() { }
 public:
-    			BESMemoryException( const string &msg,
-			                    const string &file,
-					    int line )
-			    : BESException( msg, file, line )
-			{
-			    set_context( "Memory" ) ;
-			    set_return_code( BES_MEMORY_EXCEPTION ) ;
-			}
-    virtual		~BESMemoryException() {}
-};
+    					BESSetContextCommand( const string &cmd )
+					    : BESCommand( cmd ) {}
+    virtual				~BESSetContextCommand() {}
 
-#endif // BESMemoryException_h_
+    virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
+					  BESDataHandlerInterface &dhi ) ;
+
+    virtual void			dump( ostream &strm ) const ;
+} ;
+
+#endif // A_BESSetContextCommand_h
 

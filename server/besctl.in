@@ -1,21 +1,33 @@
 #!/bin/sh
 
 prefix=@prefix@
-exec_prefix=@exec_prefix@
-localstatedir=@localstatedir@
-bindir=@bindir@
-sysconfdir=@sysconfdir@
 if [ "$prefix" == "NONE" ]
 then
     prefix=/usr/local
 fi
 
+exec_prefix=@exec_prefix@
+localstatedir=@localstatedir@
+bindir=@bindir@
+sysconfdir=@sysconfdir@
+
 if [ ! -f ${bindir}/besdaemon ]
 then
-    echo "BES does not appear to be installed in ${bindir}"
+    echo "BES does not appear to be installed in ${prefix}"
     exit 1
 fi
-echo "BES install directory: ${bindir}"
+echo "BES install directory: ${prefix}"
+
+conf=${BES_CONF}
+if [ ! -f "${conf}" ]
+then
+    conf=${sysconfdir}/bes/bes.conf
+    if [ ! -f "${conf}" ]
+    then
+	echo "The BES configuration file cannot be located at ${conf}"
+    fi
+fi
+echo "BES configuration file: ${conf}"
 
 what=$1
 shift
@@ -92,7 +104,10 @@ config)
 	    exit 1
 	fi
     fi
+    echo ""
+    echo "**************************************************************"
     cat "${conf}"
+    echo "**************************************************************"
     ;;
 *)
     echo "USAGE: besctl (start|stop|restart|status|config)"

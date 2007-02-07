@@ -60,6 +60,9 @@ using std::endl ;
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorageVolatile.h"
 
+#include "BESSetContextResponseHandler.h"
+#include "BESShowContextResponseHandler.h"
+
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
 #include "BESBasicTransmitter.h"
@@ -130,6 +133,12 @@ BESDefaultModule::initialize(int, char**)
               << endl )
     BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
+    BESDEBUG( "    adding " << SET_CONTEXT << " response handler" << endl)
+    BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder ) ;
+
+    BESDEBUG( "    adding " << SHOW_CONTEXT << " response handler" << endl)
+    BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder ) ;
+
     BESDEBUG( "    adding " << BASIC_TRANSMITTER << " transmitter" << endl )
     BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;
 
@@ -173,6 +182,9 @@ BESDefaultModule::terminate(void)
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITION ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITIONS ) ;
     BESDefinitionStorageList::TheList()->del_persistence( PERSISTENCE_VOLATILE ) ;
+
+    BESResponseHandlerList::TheList()->remove_handler( SET_CONTEXT ) ;
+    BESResponseHandlerList::TheList()->remove_handler( SHOW_CONTEXT ) ;
 
     BESReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
     BESReturnManager::TheManager()->del_transmitter( HTTP_TRANSMITTER ) ;

@@ -38,6 +38,7 @@
 using std::string ;
 
 #include "BESObj.h"
+#include "BESStatusReturn.h"
 
 /** @brief Abstract exception class for the BES with basic string message
  *
@@ -46,6 +47,8 @@ class BESException : public BESObj
 {
 protected:
     string		_msg ;
+    string		_context ;
+    int			_return_code ;
     string		_file ;
     int			_line ;
 
@@ -79,6 +82,42 @@ public:
      * @return line number
      */
     virtual int		get_line() { return _line ; }
+
+    /** @brief Set the context name of the error class
+     *
+     * Gives the error context, such as response or request or transmit
+     * @param context name of the context
+     */
+    virtual void	set_context( const string &context )
+			{
+			    _context = context ;
+			}
+
+    /** @brief Return the context name of the error class
+     *
+     * Gives the error context, such as response or request or transmit
+     * @return context string
+     */
+    virtual string	get_context() { return _context ; }
+
+    /** @brief Set the return code for this particular error class
+     *
+     * Sets the return code for this error class, which could represent the
+     * need to terminate or do something specific based on the error.
+     * @param return_code code used when returning from the error
+     */
+    virtual void	set_return_code( int return_code )
+			{
+			    _return_code = return_code ;
+			}
+
+    /** @brief Return the return code for this error class
+     *
+     * Returns the return code for this error class, which could represent
+     * the need to terminate or do something specific base on the error
+     * @return context string
+     */
+    virtual int		get_return_code() { return _return_code ; }
 
     /** @brief Displays debug information about this object
      *

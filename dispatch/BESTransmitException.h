@@ -46,7 +46,11 @@ public:
     			BESTransmitException( const string &s,
 			                      const string &file,
 					      int line )
-			    : BESException( s, file, line ) { }
+			    : BESException( s, file, line )
+			{
+			    set_context( "TransmitProblem" ) ;
+			    set_return_code( BES_DATA_HANDLER_PROBLEM ) ;
+			}
       virtual		~BESTransmitException() {}
 };
 

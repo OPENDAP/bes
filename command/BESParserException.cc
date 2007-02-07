@@ -48,7 +48,7 @@ BESParserException::handleException( BESException &e,
     {
 	if( dhi.error_info )
 	{
-	    dhi.error_info->add_exception( "Parse", e ) ;
+	    dhi.error_info->add_exception( e ) ;
 	    dhi.error_info->end_response() ;
 	}
 	return BES_PARSER_ERROR;

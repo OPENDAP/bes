@@ -1,4 +1,4 @@
-// BESMemoryException.h
+// BESDapHandlerException.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,32 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESMemoryException_h_
-#define BESMemoryException_h_ 1
+#ifndef BESDapHandlerException_h_
+#define BESDapHandlerException_h_ 1
 
-#include "BESException.h"
+#include "BESHandlerException.h"
+#include "Error.h"
+#include "BESDataHandlerInterface.h"
 
-class BESMemoryException : public BESException
+class BESDapHandlerException : public BESHandlerException
 {
+private:
+    ErrorCode		_error_code ;
 protected:
-    			BESMemoryException() { }
+      			BESDapHandlerException() {}
 public:
-    			BESMemoryException( const string &msg,
-			                    const string &file,
-					    int line )
-			    : BESException( msg, file, line )
-			{
-			    set_context( "Memory" ) ;
-			    set_return_code( BES_MEMORY_EXCEPTION ) ;
-			}
-    virtual		~BESMemoryException() {}
+      			BESDapHandlerException( const string &s,
+			                        const string &file,
+					        int line,
+						ErrorCode ec )
+			    : BESHandlerException( s, file, line ),
+			      _error_code( ec ) { }
+      virtual		~BESDapHandlerException() {}
+      int		get_error_code() { return _error_code ; }
+
+      static int	handleException( BESException &e,
+					 BESDataHandlerInterface &dhi ) ;
 };
 
-#endif // BESMemoryException_h_
+#endif // BESDapHandlerException_h_ 
 

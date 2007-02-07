@@ -1,4 +1,4 @@
-// BESMemoryException.h
+// BESContextManager.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,49 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESMemoryException_h_
-#define BESMemoryException_h_ 1
+#ifndef I_BESContextManager_h
+#define I_BESContextManager_h 1
 
-#include "BESException.h"
+#include <map>
+#include <string>
 
-class BESMemoryException : public BESException
+using std::map ;
+using std::string ;
+
+#include "BESObj.h"
+
+class BESInfo ;
+
+/** @brief maintains the list of registered request handlers for this server
+ *
+ * For a type of data to be handled by the BES the data type must
+ * registered a request handler with the server. This request handler knows
+ * how to fill in specific response objects, such as DAS, DDS, help, version,
+ * etc... The request handlers are registered with this request handler list.
+ */
+class BESContextManager : public BESObj
 {
+private:
+    static BESContextManager *	_instance ;
+    map< string, string > _context_list ;
 protected:
-    			BESMemoryException() { }
+				BESContextManager(void) {}
 public:
-    			BESMemoryException( const string &msg,
-			                    const string &file,
-					    int line )
-			    : BESException( msg, file, line )
-			{
-			    set_context( "Memory" ) ;
-			    set_return_code( BES_MEMORY_EXCEPTION ) ;
-			}
-    virtual		~BESMemoryException() {}
+    virtual			~BESContextManager(void) {}
+
+    typedef map< string, string >::const_iterator Context_citer ;
+    typedef map< string, string >::iterator Context_iter ;
+
+    virtual void		set_context( const string &name,
+					     const string &value ) ;
+    virtual string		get_context( const string &name, bool &found ) ;
+
+    virtual void		list_context( BESInfo &info ) ;
+
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESContextManager *	TheManager() ;
 };
 
-#endif // BESMemoryException_h_
+#endif // I_BESContextManager_h
 

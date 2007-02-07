@@ -53,8 +53,7 @@ using std::endl ;
 #include "BESDelDefCommand.h"
 #include "BESDelDefsCommand.h"
 
-#include "BESParserException.h"
-#include "BESExceptionManager.h"
+#include "BESSetContextCommand.h"
 
 int
 BESDefaultCommands::initialize( int, char** )
@@ -124,8 +123,12 @@ BESDefaultCommands::initialize( int, char** )
     cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
     BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
 
-    BESDEBUG( "    adding parser exception callback" << endl )
-    BESExceptionManager::TheEHM()->add_ehm_callback( BESParserException::handleException ) ;
+    BESDEBUG( "    adding " << SET_CONTEXT << " command" << endl )
+    cmd = new BESSetContextCommand( SET_CONTEXT ) ;
+    BESCommand::add_command( SET_CONTEXT, cmd ) ;
+
+    BESDEBUG( "    adding " << SHOW_CONTEXT << " command" << endl )
+    BESCommand::add_command( SHOW_CONTEXT, BESCommand::TermCommand ) ;
 
     return 0;
 }
@@ -149,6 +152,9 @@ BESDefaultCommands::terminate( void )
     BESCommand::del_command( SHOWDEFS_RESPONSE ) ;
     BESCommand::del_command( DELETE_DEFINITION ) ;
     BESCommand::del_command( DELETE_DEFINITIONS ) ;
+
+    BESCommand::del_command( SET_CONTEXT ) ;
+    BESCommand::del_command( SHOW_CONTEXT ) ;
 
     return true;
 }

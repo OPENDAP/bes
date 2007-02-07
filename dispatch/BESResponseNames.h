@@ -63,6 +63,8 @@
 #define SET_RESPONSE "set"
 #define SETCONTAINER "set.container"
 #define SETCONTAINER_STR "setContainer"
+#define SET_CONTEXT "set.context"
+#define SET_CONTEXT_STR "setContext"
 
 #define DEFINE_RESPONSE "define"
 #define DEFINE_RESPONSE_STR "define"
@@ -100,6 +102,8 @@
 #define CATALOG_RESPONSE_STR "showCatalog"
 #define SHOW_INFO_RESPONSE "show.info"
 #define SHOW_INFO_RESPONSE_STR "showInfo"
+#define SHOW_CONTEXT "show.context"
+#define SHOW_CONTEXT_STR "showContext"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "delete.container"

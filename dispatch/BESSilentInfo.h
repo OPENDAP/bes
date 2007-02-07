@@ -67,7 +67,7 @@ public:
 
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
-    virtual void	add_exception( const string &type, BESException &e) ;
+    virtual void	add_exception( BESException &e) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
     virtual void 	print( FILE *out ) ;

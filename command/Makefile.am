@@ -36,8 +36,9 @@ SRCS = BESCmdInterface.cc BESCmdParser.cc BESCommand.cc		\
 	BESDefineCommand.cc BESSetContainerCommand.cc 		\
 	BESDelContainerCommand.cc BESDelContainersCommand.cc 	\
 	BESDelDefCommand.cc BESDelDefsCommand.cc		\
-	BESParserException.cc BESTokenizer.cc 			\
-	BESDeleteCommand.cc BESDefaultCommands.cc
+	BESTokenizer.cc 					\
+	BESDeleteCommand.cc BESDefaultCommands.cc		\
+	BESSetContextCommand.cc
 
 HDRS = BESCmdInterface.h BESCommand.h BESTokenizer.h 		\
 	BESParserException.h BESDefaultCommands.h BESCmdParser.h 	\
@@ -46,7 +47,7 @@ HDRS = BESCmdInterface.h BESCommand.h BESTokenizer.h 		\
 	BESDelContainerCommand.h BESDelContainersCommand.h 	\
 	BESDelDefCommand.h BESDelDefsCommand.h			\
 	BESDefineCommand.h BESSetContainerCommand.h 		\
-	BESTermCommand.h
+	BESSetContextCommand.h BESTermCommand.h
 
 DAP_SRCS = BESCatalogCommand.cc DAPCommandModule.cc
 DAP_HDRS = BESCatalogCommand.h DAPCommandModule.h

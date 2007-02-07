@@ -55,6 +55,8 @@ using std::endl ;
 
 #include "BESDebug.h"
 #include "BESException.h"
+#include "BESExceptionManager.h"
+#include "BESDapHandlerException.h"
 
 void
 BESDapModule::initialize( const string &modname )
@@ -124,6 +126,9 @@ BESDapModule::initialize( const string &modname )
 	             + "with dap transmit functions" ;
 	throw BESException( err, __FILE__, __LINE__ ) ;
     }
+
+    BESDEBUG( "    adding dap exception handler" << endl )
+    BESExceptionManager::TheEHM()->add_ehm_callback( BESDapHandlerException::handleException ) ;
 }
 
 void

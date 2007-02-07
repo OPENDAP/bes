@@ -117,7 +117,7 @@ BESInfo::end_tag( const string &tag_name )
     if( _tags.size() == 0 || _tags.top() != tag_name )
     {
 	string s = (string)"tag " + tag_name
-	           + " alreaded ended or not started" ;
+	           + " already ended or not started" ;
 	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
     }
     else
@@ -202,10 +202,10 @@ BESInfo::add_data_from_file( const string &key, const string &name )
  * @param e The exception to add to the informational response object
  */
 void
-BESInfo::add_exception( const string &type, BESException &e )
+BESInfo::add_exception( BESException &e )
 {
     begin_tag( "BESException" ) ;
-    add_tag( "Type", type ) ;
+    add_tag( "Type", e.get_context() ) ;
     add_tag( "Message", e.get_message() ) ;
     begin_tag( "Location" ) ;
     add_tag( "File", e.get_file() ) ;

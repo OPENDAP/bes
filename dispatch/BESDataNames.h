@@ -62,6 +62,12 @@
 #define CATALOG_OR_INFO "catalog_or_info"
 
 /*
+ * Context
+ */
+#define CONTEXT_NAME "context_name"
+#define CONTEXT_VALUE "context_value"
+
+/*
  * Options
  */
 #define SILENT "silent"

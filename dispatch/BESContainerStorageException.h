@@ -46,7 +46,11 @@ public:
       			BESContainerStorageException( const string &s,
 						      const string &file,
 						      int line )
-			    : BESException( s, file, line ) {}
+			    : BESException( s, file, line )
+			{
+			    set_context( "ContainerStorage" ) ;
+			    set_return_code( BES_CONTAINER_PERSISTENCE_ERROR ) ;
+			}
     virtual		~BESContainerStorageException() {}
 
     virtual void	dump( ostream &strm ) const
