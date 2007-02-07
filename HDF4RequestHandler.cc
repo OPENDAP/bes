@@ -132,11 +132,6 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
-#if 0
-        // see ticket 720
-        dds->set_factory(NULL);
-        delete factory;
-#endif
     }
     catch(Error & e) {
         BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
