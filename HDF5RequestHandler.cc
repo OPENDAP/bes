@@ -30,10 +30,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <sstream>
-
-using std::ostringstream;
-
 #include "HDF5RequestHandler.h"
 
 #include "h5das.h"
@@ -50,7 +46,7 @@ using std::ostringstream;
 #include "BESResponseHandler.h"
 #include "BESVersionInfo.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESDapHandlerException.h"
 
 extern "C" {
     hid_t get_fileid(const char *filename);
@@ -87,11 +83,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         depth_first(file1, "/", *das, filename.c_str());
     }
     catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception building HDF5 DAS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
+				   e.get_error_code() ) ;
         throw ex;
     }
     catch(...) {
@@ -140,11 +133,8 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 #endif
     }
     catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception building HDF5 DDS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
+				   e.get_error_code() ) ;
         throw ex;
     }
     catch(...) {
@@ -194,11 +184,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 #endif
     }
     catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception building HDF5 DataDDS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESHandlerException ex(s.str(), __FILE__, __LINE__);
+        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
+				   e.get_error_code() ) ;
         throw ex;
     }
     catch(...) {
