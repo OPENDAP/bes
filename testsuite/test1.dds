@@ -1,0 +1,16 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Int32 Dataset1\[dim1 = 4\]\[dim2 = 6\];
+    Int32 Dataset2\[dim1 = 4\]\[dim2 = 6\];
+    Int32 Dataset3\[dim1 = 4\]\[dim2 = 6\];
+    Int32 Dataset4\[dim1 = 4\]\[dim2 = 6\];
+    Int32 Dataset4\[dim1 = 4\]\[dim2 = 6\];
+} test1.h5;
