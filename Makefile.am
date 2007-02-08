@@ -3,8 +3,7 @@
 #
 # $Id$
 
-AUTOMAKE_OPTIONS = foreign check-news
-# dejagnu
+AUTOMAKE_OPTIONS = foreign check-news dejagnu
 
 ACLOCAL_AMFLAGS = -I conf
 
@@ -40,11 +39,11 @@ libhdf5_module_la_LIBADD = $(BES_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 dap_h5_handler_SOURCES = h5_handler.cc
 dap_h5_handler_LDADD = libhdf5_handler.la -L${hdf5_path}/lib -lhdf5 -lz
 
-# DEJATOOL = dap_h5_handler
+DEJATOOL = dap_h5_handler
 
-# RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir 
+RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
-EXTRA_DIST = COPYING hdf5_handler.spec
+EXTRA_DIST = testsuite COPYING hdf5_handler.spec
 
 CLEANFILES = *~ *.sum *.log
 
