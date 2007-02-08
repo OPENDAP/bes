@@ -1,41 +1,17 @@
 Current commands available with OPeNDAP:
 
-    show help;
-	* shows this help
-    show containers;
-	* shows all containers currently defined
-    show definitions;
-	* shows all definitions currently defined
-    show version;
-	* shows the version of OPeNDAP and each data type served by this server
-    show process;
-	* shows the process number of this application
-    show status;
-	* shows the status of the server
-    show keys;
-	* shows all keys defined in the dods initialization file
+    show catalog [for 'node';
 
-    set container [in <storage_name>] values <symbolic_name>,<real_name>,<container_type>;
+	* Shows catalog information, including contents if a
+	  container. If node is not specified then the root node
+	  information is returned. If node is specified then that nodes
+	  information is returned. The node name must be in single quotes.
 
-	* defines a symbolic name representing a data container, usually a file,
-	  to be used by definitions, described below
-	* <storage_name> is the name of the container storage. Defaults to
-	  volatile storage. Examples might include database storage, volatile
-	  storage based on catalog information.
-	* <real_name> is the full path to a data file
-	* <container_type> is the type of data that is in the file. For
-	  netcdf files it is nc, for cedar it is cedar, etc...
+    show info [for 'node';
 
-    define <def_name> [in <storage_name>] as <container_list> [where <container_x>.constraint="<constraint>",<container_x>.attributes="<attribute_list>"] [aggregate by "<aggregation_command"];
-
-	* creates a definition using one or more containers, constraints for
-	  each of the containers, attributes to be retrieved from each
-	  container, and an aggregation. Constraints, attributes, and
-	  aggregation are all optional.
-	* <container_list> is a comma separated list of container names.
-	* <storage_name> is the name of the definition storage. Defaults to
-	  volatile storage. Examples might include database storage.
-	* The constraints, attributes and aggregation command must be enclosed in quotes
+	* Shows catalog information for just that node, the root node
+	  if no node is specified. If the node is a container the contents
+	  are not displayed. The node name must be in single quotes.
 
     get das|dds|dods|ddx for <definition_name> [return as <return_name>];
 
@@ -44,18 +20,9 @@ Current commands available with OPeNDAP:
 	* dods: request for the data stream, this output is an octec binary 
 	  stream which requires the analysis by the client dods library
 
-    delete container <container_name> [from <storage_name>];
-	* deletes the specified container from the specified container
-	  storage (defaults to volatile storage).</LI></UL>
-    delete containers [from <storage_name>]
-	* deletes all of the currently defined containers from the
-	  specified container storage (defaults to volatile storage).
-    delete definition <definition_name> [from <storage_name>];
-	* deletes the specificed definition from the specified container
-	  storage (defaults to volatile storage).
-    delete definitions;
-	* deletes all of the currently defined defintions from the
-	  specified container storage (defaults to volatile storage).
+    set context errors to <dap2|xml|html|txt>;
+	* set the context 'errors' to dap2 in order to have all exceptions
+	  and errors formatted as dap2 error messages in the response.
 
     ** remember to terminate each command with a semicolon (;)
     For more information please contact Patrick West, pwest@ucar.edu

@@ -10,6 +10,49 @@ Current core commands available with BES:
 	* shows the status of the server
     show keys;
 	* shows all keys defined in the dods initialization file
+    show containers;
+	* shows all containers currently defined
+    show context;
+	* shows all context name/value pairs set in the BES
+
+    set container [in <storage_name>] values <symbolic_name>,<real_name>,<container_type>;
+
+	* defines a symbolic name representing a data container, usually a file,
+	  to be used by definitions, described below
+	* <storage_name> is the name of the container storage. Defaults to
+	  volatile storage. Examples might include database storage, volatile
+	  storage based on catalog information.
+	* <real_name> is the full path to a data file
+	* <container_type> is the type of data that is in the file. For
+	  netcdf files it is nc, for cedar it is cedar, etc...
+
+    set context <context_name> to <context_value>;
+	* set the given context with the given value. No default context are
+	  available in the BES.
+
+    define <def_name> [in <storage_name>] as <container_list> [where <container_x>.constraint="<constraint>",<container_x>.attributes="<attribute_list>"] [aggregate by "<aggregation_command"];
+
+	* creates a definition using one or more containers, constraints for
+	  each of the containers, attributes to be retrieved from each
+	  container, and an aggregation. Constraints, attributes, and
+	  aggregation are all optional.
+	* <container_list> is a comma separated list of container names.
+	* <storage_name> is the name of the definition storage. Defaults to
+	  volatile storage. Examples might include database storage.
+	* The constraints, attributes and aggregation command must be enclosed in quotes
+
+    delete container <container_name> [from <storage_name>];
+	* deletes the specified container from the specified container
+	  storage (defaults to volatile storage).</LI></UL>
+    delete containers [from <storage_name>]
+	* deletes all of the currently defined containers from the
+	  specified container storage (defaults to volatile storage).
+    delete definition <definition_name> [from <storage_name>];
+	* deletes the specificed definition from the specified container
+	  storage (defaults to volatile storage).
+    delete definitions;
+	* deletes all of the currently defined defintions from the
+	  specified container storage (defaults to volatile storage).
 
     ** remember to terminate each command with a semicolon (;)
     For more information please contact Patrick West, pwest@ucar.edu
