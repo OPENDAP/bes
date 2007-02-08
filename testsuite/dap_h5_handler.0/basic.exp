@@ -1,0 +1,14 @@
+# Basic HDF tests
+
+global comp_output		# contains output from das-test_start
+global verbose 		        # this and srcdir are set by runtest.exp
+global srcdir
+global host
+
+set testdir testsuite
+set test_name "basic"
+set verbose 1
+
+
+dap_hdf5_handler_version 
+dap_hdf5_handler_all "${testdir}" "test1"
