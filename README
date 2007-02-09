@@ -1,7 +1,7 @@
 This file includes descriptions of HDF5-DODS server prototype(1.1.0).
 
 This data handler includes an executable for use with Server3 and a shared
-object module for use with Server4. Version 1.0 was implemented using three
+object module for use with Hyrax. Version 1.0 was implemented using three
 executables instead of just one (or one share-object library). The original
 README from Kent Yang (the author of the software) follows:
 
