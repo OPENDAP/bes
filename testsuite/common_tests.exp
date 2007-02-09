@@ -25,7 +25,7 @@
 
 # Common code for dejaGNU-based automated tests.
 
-# $Id: common_tests.exp 15026 2006-11-04 10:33:56Z jimg $
+# $Id$
 
 # Compare $expected to the global $comp_output. Run `pass' if they match,
 # `fail' otherwise unless `xfailp' is true in which case run `xfail' if they
