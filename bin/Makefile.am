@@ -8,6 +8,8 @@ ACLOCAL_AMFLAGS = -I conf
 
 bin_SCRIPTS = besCreateModule
 
+EXTRA_DIST = besCreateModule.in
+
 besCreateModule: besCreateModule.in ../config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \

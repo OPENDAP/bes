@@ -1,6 +1,23 @@
 
 	$Id$
 
+News Version 3.4.0
+
+Added a new feature to the BES, the ability to create context within the
+BES. This is done through a new command 'set context <name> to <value>; The
+dap module uses the context feature when determining how to deliever error
+messages. If the context 'errors' is set to 'dap2' then all exceptions are
+converted into libdap Error objects. The method print is then called using
+stdout. This way, dap2 clients can recognize errors.
+
+Added a hello world example module. It does not handle data requests, but a
+simple command to say something to someone. It shows the power of creating
+your own module. In doing this, added besCreateModule and the templates
+directory to the build. Updated these files. besCreateModule is a shell
+script that is used to create a new module. Using template files, it creates
+source code, based on a few questions asked. The developer then adds their
+own code.
+
 News Version 3.3.1
 
 A new default command was added, 'get stream for <definition>' that streams

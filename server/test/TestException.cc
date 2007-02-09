@@ -42,7 +42,7 @@ TestException::handleException( BESException &e,
     {
 	if( dhi.error_info )
 	{
-	    dhi.error_info->add_exception( "Test", e ) ;
+	    dhi.error_info->add_exception( e ) ;
 	    dhi.error_info->end_response() ;
 	}
 	return 12 ;

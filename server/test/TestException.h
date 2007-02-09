@@ -48,7 +48,11 @@ public:
       			TestException( const string &s,
 			               const string &file,
 				       int line ) :
-			    BESException( s, file, line ) {}
+			    BESException( s, file, line )
+			{
+			    set_context( "Test" ) ;
+			    set_return_code( 12 ) ;
+			}
       virtual		~TestException() {}
 
       static int	handleException( BESException &e,

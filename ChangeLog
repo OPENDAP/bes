@@ -1,3 +1,266 @@
+2007-02-08  Patrick West <pwest@ucar.edu>
+
+	Changed name from Server4 to Hyrax
+	M    bes/docs/BES_Creating_Module.doc
+	M    bes/README
+	M    bes/templates/bes.conf
+	M    bes/dispatch/bes/bes.conf.in
+	M    bes/hello_world/bes.conf
+
+2007-02-08  Patrick West <pwest@ucar.edu>
+
+	Updated and changed the names of some of the documents available for
+	the BES. Added a document for the BES configuration information that
+	can be referenced by all the other documents.
+
+	Added the hello_world module example under the bes so that people
+	can see how one could write a module. Another example would be a new
+	data handler module that reads csv files.
+
+	Added the installation of the besCreateModule script that creates a
+	module.  The templates directory is used by the besCreateModule
+	script. These files are installed in the share/bes/templates
+	directory.
+
+	Updated the version number for the next beta release.
+
+	Updated some of the comments in the bes.conf.in file.
+
+	A    bes/docs/BES_PPT.doc
+	D    bes/docs/OPeNDAP_Server_Architecture.doc
+	AM   bes/docs/BES_Configuration.doc
+	A    bes/docs/BES_Server_Architecture.doc
+	D    bes/docs/OPeNDAP_Creating_Module.doc
+	D    bes/docs/OPeNDAP_PPT.doc
+	A    bes/docs/BES_Creating_Module.doc
+	A    bes/templates/Makefile.am.template
+	M    bes/templates/Module.cc
+	A    bes/templates/Makefile.am
+	M    bes/templates/RequestHandler.cc
+	M    bes/templates/bes.conf
+	M    bes/dispatch/bes/bes.conf.in
+	M    bes/bes.spec
+	M    bes/configure.ac
+	D    bes/bin/besCreateModule
+	A    bes/bin/besCreateModule.in
+	A    bes/bin/Makefile.am
+	M    bes/Makefile.am
+	A    bes/hello_world
+	A    bes/hello_world/SayCommand.cc
+	A    bes/hello_world/SayResponseHandler.h
+	A    bes/hello_world/config.h.in
+	A    bes/hello_world/SayCommand.h
+	A    bes/hello_world/configure.ac
+	A    bes/hello_world/conf
+	AM   bes/hello_world/conf/mkinstalldirs
+	A    bes/hello_world/conf/acinclude.m4
+	AM   bes/hello_world/conf/depcomp
+	A    bes/hello_world/conf/bes.m4
+	AM   bes/hello_world/conf/missing
+	AM   bes/hello_world/conf/config.guess
+	A    bes/hello_world/conf/libdap.m4
+	AM   bes/hello_world/conf/config.sub
+	A    bes/hello_world/conf/ltmain.sh
+	AM   bes/hello_world/conf/install-sh
+	A    bes/hello_world/SayResponseNames.h
+	A    bes/hello_world/SayModule.cc
+	A    bes/hello_world/SayRequestHandler.cc
+	A    bes/hello_world/SayModule.h
+	A    bes/hello_world/Makefile.am
+	A    bes/hello_world/SayRequestHandler.h
+	A    bes/hello_world/bes.conf
+	A    bes/hello_world/SayResponseHandler.cc
+
+2007-02-08  Patrick West <pwest@ucar.edu>
+
+	Changed the name again to include bes in the name.
+	A    bin/besCreateModule
+	D    bin/createModule
+	D    bin/createServer
+
+2007-02-08  Patrick West <pwest@ucar.edu>
+
+	We are creating a module, not a server. Changed the name.
+	A    docs/OPeNDAP_Creating_Module.doc
+	D    docs/OPeNDAP_Creating_Server.doc
+
+2007-02-08  Patrick West <pwest@ucar.edu>
+
+	Updated the help files with current commands, adding the commands for
+	setting and showing context and showing catalog information.
+	M    bes/bes_help.txt
+	M    bes/dap_help.html
+	M    bes/bes_help.html
+	M    bes/dap_help.txt
+
+2007-02-07  Patrick West <pwest@ucar.edu>
+
+	Added information about configuring the BES in the bes.conf file,
+	about how to start and stop the BES, and a note about what it means
+	to stop the BES, that only the main listener and the daemon are
+	stopped. Any listeners currently connected to clients will not be
+	stopped in multiple mode.
+	M    INSTALL
+
+2007-02-07  Patrick West <pwest@ucar.edu>
+
+	Added the commands 'set context <name> to <value>;' and 'show
+	context;'. The first command allows the client to set a context in
+	the BES. The reason for this is to allow errors to be dumped back as
+	dap2 errors, so the caommand would be 'set context errors to dap2;'.
+	The show command will respond with the list of context name/value
+	pairs currently set in the BES.
+
+	Modified the Exception classes to contain return codes, instead of
+	having these used around the code. Also, a context is set within the
+	exception classes. This cleans up the BESExceptionManager. Instead
+	of trying to dynamically cast the exception classes to see which one
+	it is to set the context and return the correct return code, it's
+	all in the exception class.  This way, users can create new
+	BESException classes without adding exception callbacks.
+
+	Created a new dap handler exception that contains Error class
+	inforamtion, including the ErrorCode. The BESDapModule now adds an
+	exception callback to handle the specific case where the error
+	context is set to dap2. When this happens an Error object is created
+	and dumped to stdout.
+	M    bes/dispatch/BESLogException.h
+	A    bes/dispatch/BESShowContextResponseHandler.cc
+	M    bes/dispatch/BESVersionInfo.h
+	M    bes/dispatch/BESSilentInfo.h
+	A    bes/dispatch/BESSetContextResponseHandler.cc
+	M    bes/dispatch/BESXMLInfo.h
+	M    bes/dispatch/BESDatabaseException.h
+	M    bes/dispatch/BESKeysException.h
+	M    bes/dispatch/BESDapModule.cc
+	M    bes/dispatch/BESSilentInfo.cc
+	A    bes/dispatch/BESDapHandlerException.cc
+	A    bes/dispatch/BESDapHandlerException.h
+	M    bes/dispatch/BESInfo.cc
+	M    bes/dispatch/BESResponseException.h
+	A    bes/dispatch/BESDaphandlerException.h
+	M    bes/dispatch/BESMemoryException.h
+	M    bes/dispatch/Makefile.am
+	M    bes/dispatch/BESException.h
+	A    bes/dispatch/BESContextManager.cc
+	A    bes/dispatch/BESSetContextResponseHandler.h
+	M    bes/dispatch/BESIncorrectRequestException.h
+	M    bes/dispatch/BESResponseNames.h
+	M    bes/dispatch/BESTransmitException.h
+	M    bes/dispatch/BESDataNames.h
+	M    bes/dispatch/BESAggregationException.h
+	A    bes/dispatch/BESContextManager.h
+	M    bes/dispatch/BESContainerStorageException.h
+	A    bes/dispatch/BESShowContextResponseHandler.h
+	M    bes/dispatch/BESExceptionManager.cc
+	M    bes/dispatch/BESDefaultModule.cc
+	M    bes/dispatch/BESInfo.h
+	M    bes/dispatch/BESHandlerException.h
+	M    bes/server/besctl.in
+	A    bes/command/BESSetContextCommand.h
+	M    bes/command/BESDefaultCommands.cc
+	M    bes/command/BESParserException.cc
+	M    bes/command/BESParserException.h
+	M    bes/command/Makefile.am
+	A    bes/command/BESSetContextCommand.cc
+
+2007-02-06  James Gallagher <jgallagher@opendap.org>
+
+	Formatting changes to random source files;
+	dispatch/Makefile.am: Modified the value of BES_CONF_DIR
+	so that it includes the 'bes' subdirectory. This is a fix
+	for #759
+
+2007-02-02  Patrick West <pwest@ucar.edu>
+
+	Added information about PATH and LD_LIBRARY_PATH
+	M    INSTALL
+
+2007-02-01  James Gallagher <jgallagher@opendap.org>
+
+	bes.conf.in: I tried to make the two data root parameters'
+	comments a bit easier to understand...
+
+2007-01-18  Patrick West <pwest@ucar.edu>
+
+	Flushed out a bit more of the secure server development using ssl.
+	The paths to the certificate and key file is specified in the bes
+	configuration file.  Can also specify what secure port to use in the
+	server, defaults to 10003.  Changed debugging in the SSL classes to
+	use BESDEBUG.
+	M    bes/dispatch/bes/bes.conf.in
+	M    bes/ppt/PPTServer.h
+	M    bes/ppt/PPTClient.cc
+	M    bes/ppt/PPTServer.cc
+	M    bes/ppt/SSLClient.cc
+	M    bes/ppt/PPTClient.h
+	M    bes/ppt/SocketUtilities.cc
+	M    bes/ppt/PPTProtocol.cc
+	M    bes/ppt/SSLServer.cc
+
+2007-01-11  Patrick West <pwest@ucar.edu>
+
+	Fixed the issue in the Filter transmitter (the transmitter that uses
+	a dods filter) where the static send functions were not being
+	registered. Only the send_html and send_text methods are on a
+	transmitter. All other transmit functions are registered static
+	functions for the transmission of other respoonse objects.
+
+	Also modified the response objects for DAS, DDS, and DataDDS to dump
+	the actual DAS, DDS, and DataDDS objects in the dump method and not
+	just pointers to the objects.
+
+	Also fixed an issue where if a transmitter is not registered to
+	transmit a given response object, nothing was happening. If there
+	isn't a registered transmit function then an exception is thrown.
+	M    BESFilterTransmitter.cc
+	M    BESDASResponse.cc
+	M    BESDapModule.cc
+	M    BESIndent.cc
+	M    BESIndent.h
+	M    BESDapTransmit.cc
+	M    BESDDSResponse.cc
+	M    BESDataDDSResponse.cc
+	M    BESDataHandlerInterface.h
+	M    BESCgiInterface.cc
+	M    BESFilterTransmitter.h
+	M    BESInterface.cc
+
+2007-01-02  James Gallagher <jgallagher@opendap.org>
+
+	Added a note about check-local to Makefile.am
+
+2007-01-02  Patrick West <pwest@ucar.edu>
+
+	Requires libdap 3.7.4.
+	M    bes.spec
+	M    configure.ac
+
+2007-01-02  James Gallagher <jgallagher@opendap.org>
+
+	Added stuff so 'make check' will run the tests here.
+
+2007-01-02  James Gallagher <jgallagher@opendap.org>
+
+	Updated tcompound2.h5.bescmd.baseline.
+
+2006-12-29  Patrick West <pwest@ucar.edu>
+
+	dap_help.html and dap_help.txt were not being included in the release.
+	M    dispatch/Makefile.am
+
+2006-12-29  Patrick West <pwest@ucar.edu>
+
+	Preparing the BES for 3.3.1 release.
+	M    ChangeLog
+	M    bes.spec
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
