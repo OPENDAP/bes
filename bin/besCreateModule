@@ -82,7 +82,7 @@ done
 #q
 #EOF
 
-for i in Makefile.am configure.ac
+for i in Makefile.am.template configure.ac
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${i}
 ed ./${i} << EOF > /dev/null 2>&1
@@ -92,6 +92,7 @@ w
 q
 EOF
 done
+/bin/mv Makefile.am.template Makefile.am
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf
@@ -278,7 +279,7 @@ echo "* Your ${classPrefix} files have been created"
 echo "*                                                     *"
 echo "* You will need to make modifications to some of the  *"
 echo "* code created here. Please refer to the document     *"
-echo "* OPeNDAPCreatingServer document for more information *"
+echo "* OPeNDAPCreatingServer for more information          *"
 echo "*                                                     *"
 echo "*******************************************************"
 
