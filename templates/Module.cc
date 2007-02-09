@@ -7,7 +7,7 @@ using std::endl ;
 #include "OPENDAP_CLASSModule.h"
 #include "BESRequestHandlerList.h"
 #include "OPENDAP_CLASSRequestHandler.h"
-#include "BESLog.h"
+#include "BESDebug.h"
 #include "BESResponseHandlerList.h"
 #include "BESResponseNames.h"
 #include "BESCommand.h"
@@ -16,11 +16,9 @@ using std::endl ;
 void
 OPENDAP_CLASSModule::initialize( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing OPENDAP_CLASS Handler:" << endl ;
+    BESDEBUG( "Initializing OPENDAP_CLASS Handler:" << endl )
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << modname << " request handler" << endl ;
+    BESDEBUG( "    adding " << modname << " request handler" << endl )
     BESRequestHandlerList::TheList()->add_handler( modname, new OPENDAP_CLASSRequestHandler( modname ) ) ;
 
     // If new commands are needed, then let's declare this once here. If
@@ -33,8 +31,7 @@ OPENDAP_CLASSModule::initialize( const string &modname )
 void
 OPENDAP_CLASSModule::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing OPENDAP_CLASS Handlers" << endl;
+    BESDEBUG( "Removing OPENDAP_CLASS Handlers" << endl )
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 }

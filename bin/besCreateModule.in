@@ -1,12 +1,6 @@
 #!/bin/sh
 
-if [ "${OPENDAP_ROOT}" = "" ]
-then
-    echo "please set OPENDAP_ROOT to the root directory of opendap-g"
-    exit 1
-fi
-
-TEMPLATE_DIR=${OPENDAP_ROOT}/bes/templates
+TEMPLATE_DIR=@pkgdatadir@/templates
 if [ ! -d ${TEMPLATE_DIR} ]
 then
     echo "the templates directory does not exist."
@@ -232,7 +226,6 @@ done
 ed ./bes.conf << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_TYPE/${serverType}/g
-,s:OPENDAP_DIR:${OPENDAP_ROOT}:g
 w
 q
 EOF
@@ -254,7 +247,7 @@ echo "*                                                     *"
 echo "* Running your configuration script                   *"
 echo "*                                                     *"
 echo "*******************************************************"
-./configure --with-dap=${OPENDAP_ROOT} --with-bes=${OPENDAP_ROOT}
+./configure
 if [ $? != 0 ]
 then
     echo "FAILED"
