@@ -51,7 +51,7 @@ REQUIREMENTS
     dap-server software package, version 3.6.0, although this particular
     release has not been tested with dap-server 3.6.0.
 
-  o If you're planning on using this with Server4, version 1.2, you'll need
+  o If you're planning on using this with Hyrax, version 1.2, you'll need
     version 3.1.0 of the BES software.
 
   o You also need a recent copy of HDF4. We've tested this server with
