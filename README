@@ -38,7 +38,7 @@ at least one data handler and edit the bes.conf configuration file so that
 handler can be used to serve data. I'll use the netcdf handler as an example.
 
 Get the netcdf handler source code from http://www.opendap.org/download/,
-making sure that the version supports Server4 (anything past 3.7.0 should).
+making sure that the version supports Hyrax (anything past 3.7.0 should).
 Expand the tar.gz file and follow the instructions with the following caveat:
 If you have installed the BES using a prefix other than /usr/local (the
 default), make sure that the correct bes-config is being run. If you are
