@@ -9,6 +9,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5Str.h"
 
 HDF5Str::HDF5Str(const string & n):Str(n)

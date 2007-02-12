@@ -28,7 +28,8 @@
 #include "h5util.h"
 #endif
 
-bool depth_first(hid_t, char *, DDS &, const char *); 
+bool depth_first(hid_t, char *, DDS &, const char *);
+string return_type(hid_t type);
 void read_objects(DDS &dds, const string &varname, const string& filename);
                                                             
 static const char STRING[]="String";

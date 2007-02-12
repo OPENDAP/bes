@@ -10,6 +10,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5UInt16.h"
 
 HDF5UInt16::HDF5UInt16(const string & n):UInt16(n)

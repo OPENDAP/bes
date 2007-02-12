@@ -9,6 +9,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5Float64.h"
 
 HDF5Float64::HDF5Float64(const string & n):Float64(n)

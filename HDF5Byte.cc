@@ -9,6 +9,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5Byte.h"
 
 HDF5Byte::HDF5Byte(const string & n) : Byte(n)

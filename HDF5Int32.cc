@@ -10,6 +10,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5Int32.h"
 
 HDF5Int32::HDF5Int32(const string & n):Int32(n)

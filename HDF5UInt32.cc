@@ -9,6 +9,8 @@
 #include <ctype.h>
 
 #include "InternalErr.h"
+
+#include "h5dds.h"
 #include "HDF5UInt32.h"
 
 HDF5UInt32::HDF5UInt32(const string & n):UInt32(n)
