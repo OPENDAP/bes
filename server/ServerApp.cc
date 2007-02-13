@@ -203,6 +203,9 @@ ServerApp::initialize( int argc, char **argv )
 		 << endl << endl ;
 	    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 	}
+#if 1
+	cout << "Unix socket name: " << _unixSocket << endl;
+#endif
     }
 
     found = false ;

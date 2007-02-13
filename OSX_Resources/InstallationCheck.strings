@@ -1,0 +1,3 @@
+"16" = "This software has not been tested with Mac OS/X versions prior to Panther. Even though the installer says you cannot install the software, you can go ahead and give it a try...";
+"17" = "To install this version of loaddap you must have libdap version 3.5.3 or newer already installed. See http://opendap.org/download/.";
+
