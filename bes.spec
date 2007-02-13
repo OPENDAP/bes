@@ -74,17 +74,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/bes-uncompress.sh
 %{_bindir}/bes-purge.pl
 %{_bindir}/bescmdln
+%{_bindir}/besCreateModule
 %{_libdir}/*.so.*
 %{_libdir}/bes/
 
 %files devel
 %defattr(-,root,root,-)
-%doc api-html/ docs/OPeNDAP_Creating_Server.doc docs/OPeNDAP_PPT.doc
+%doc api-html/ docs/BES_PPT.doc docs/BES_Creating_Module.doc
+%doc docs/BES_Configuration.doc docs/BES_Server_Architecture.doc
 %{_includedir}/bes/
 %{_libdir}/*.so
 %{_bindir}/bes-config
 
 
 %changelog
+* Tue Feb 13 2007 James Gallagher <jgallagher@opendap.org> 3.4.0-1
+- Update.
 * Sat Jul 22 2006 Patrice Dumas <pertusus@free.fr> 3.2.0-1
 - initial packaging
