@@ -1,6 +1,12 @@
 
 $Id$
 
+Version 3.7.4
+
+Build fixes.
+
+Added test data.
+
 Version 3.7.3
 
 Updates for the 1.4 release of Server 4. Also included are bug fixes, memory

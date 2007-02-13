@@ -1,6 +1,41 @@
-;; Local Variables:
-;; coding: utf-8
-;; End:
+2007-02-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf4_handler: Changed Server4 name to Hyrax as needed.
+
+2007-02-07  James Gallagher <jgallagher@opendap.org>
+
+	HDF4RequestHandler.cc: Removed some old code.
+
+2007-02-07  Patrick West <pwest@ucar.edu>
+
+	Using the new BESDapHandlerException class to maintain more of the
+	Error class information.
+	
+	M    HDF4RequestHandler.cc
+
+2007-01-05  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2007-01-04  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf4_handler: Added test data sets for use with code distribution
+	testing.
+
+2007-01-02  Patrick West <pwest@ucar.edu>
+
+	Replacing with one that requires libdap 3.7.4.
+	M    configure.ac
+	M    hdf4_handler.spec
+
+2006-12-29  Patrick West <pwest@ucar.edu>
+
+	3.7.3 release. Preparation for Server4 1.4 release.
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+
 2006-12-06  James Gallagher <jgallagher@opendap.org>
 
 	hdf_handler.cc, HDF4RequestHandler.cc: The DDS and DataDDS now

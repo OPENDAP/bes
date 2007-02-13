@@ -33,6 +33,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/dap_hdf4_handler
+%{_libdir}/
+%{_libdir}/bes/
 %doc COPYING COPYRIGHT_URI NEWS
 %doc README
 

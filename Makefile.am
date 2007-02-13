@@ -18,7 +18,7 @@ bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
 if OPENDAPSERVER
-    lib_besdir=$(prefix)/lib/bes
+    lib_besdir=$(libdir)/bes
     lib_bes_LTLIBRARIES = libhdf4_module.la
 
     libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
