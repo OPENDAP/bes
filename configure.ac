@@ -71,7 +71,7 @@ then
 	BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --modulesdir`"
 	AC_SUBST([BES_MODULE_DIR])
     else
-	AC_CHECK_BES([3.1.0],
+	AC_CHECK_BES([3.4.0],
 	[
 	    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
 	    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
