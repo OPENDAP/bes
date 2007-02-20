@@ -14,6 +14,8 @@ using std::endl ;
 #include "SayResponseNames.h"
 #include "SayResponseHandler.h"
 #include "SayCommand.h"
+#include "BESReporterList.h"
+#include "SayReporter.h"
 #include "BESDebug.h"
 
 void
@@ -30,6 +32,10 @@ SayModule::initialize( const string &modname )
     BESDEBUG( "    adding " << say_RESPONSE << " command" << endl )
     BESCommand *cmd = new SayCommand( say_RESPONSE ) ;
     BESCommand::add_command( say_RESPONSE, cmd ) ;
+
+    BESDEBUG( "    adding Say reporter" << endl )
+    BESReporterList::TheList()->add_reporter( modname, new SayReporter ) ;
+
 
 
     // INIT_END

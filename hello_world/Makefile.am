@@ -18,13 +18,14 @@ Say_HDRS:=
 BES_SRCS = \
 	SayResponseHandler.cc \
 	SayModule.cc SayRequestHandler.cc	\
-	SayCommand.cc
+	SayCommand.cc SayReporter.cc
 
 BES_HDRS = \
 	SayResponseHandler.h \
 	SayModule.h SayRequestHandler.h \
 	SayCommand.h \
 	SayResponseNames.h \
+	SayReporter.h \
 	config_say.h
 
 libsay_module_la_SOURCES = $(Say_SRCS) $(BES_SRCS) $(Say_HDRS) $(BES_HDRS)
