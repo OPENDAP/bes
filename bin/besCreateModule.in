@@ -107,22 +107,36 @@ EOF
     if [ "$i" = "das" ]
     then
 	responseName="DAS"
-	headerFile="DAS.h"
-	castLine="DAS *das = dynamic_cast<DAS *>(dhi.response_handler->get_response_object());"
+	headerFile="BESDASResponse.h"
+	castLine1="BESResponseObject *response ="
+	castLine2="dhi.response_handler->get_response_object();"
+	castLine3="BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);"
+	castLine4="DAS *das = bdas->get_das();"
     elif [ "$i" = "dds" ]
     then
 	responseName="DDS"
-	headerFile="DDS.h"
+	headerFile="BESDDSResponse.h"
 	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+	castLine1="BESResponseObject *response ="
+	castLine2="dhi.response_handler->get_response_object();"
+	castLine3="BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);"
+	castLine4="DDS *dds = bdds->get_dds();"
     elif [ "$i" = "data" ]
     then
 	responseName="DATA"
-	headerFile="DDS.h"
+	headerFile="BESDataDDSResponse.h"
 	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+	castLine1="BESResponseObject *response ="
+	castLine2="dhi.response_handler->get_response_object();"
+	castLine3="BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);"
+	castLine4="DataDDS *dds = bdds->get_dds();"
     else
 	responseName="$i"
 	headerFile=
-	castLine="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
+	castLine1="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
+	castLine2=""
+	castLine3=""
+	castLine4=""
 	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
 a
@@ -208,7 +222,10 @@ bool
 ${classPrefix}RequestHandler::${serverType}_build_${i}( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
-    ${castLine}
+    ${castLine1}
+    ${castLine2}
+    ${castLine3}
+    ${castLine4}
 
     // Your code goes here
 
