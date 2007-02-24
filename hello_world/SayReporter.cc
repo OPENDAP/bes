@@ -48,12 +48,20 @@ SayReporter::report( const BESDataHandlerInterface &dhi )
 	*(_file_buffer) << b[j] ;
     *(_file_buffer) << "] " ;
 
+    string say_what ;
+    string say_to ;
     BESDataHandlerInterface::data_citer i = dhi.data_c().find( SAY_WHAT ) ;
-    string say_what = (*i).second ;
+    if( i != dhi.data_c().end() )
+    {
+	say_what = (*i).second ;
+    }
     i = dhi.data_c().find( SAY_TO ) ;
-    string say_to = (*i).second ;
-    *(_file_buffer) << "\"" << say_what << "\" said to \"" << say_to << "\""
-                    << endl ;
+    if( i != dhi.data_c().end() )
+    {
+	say_to = (*i).second ;
+	*(_file_buffer) << "\"" << say_what << "\" said to \"" << say_to << "\""
+			<< endl ;
+    }
 }
 
 /** @brief dumps information about this object
