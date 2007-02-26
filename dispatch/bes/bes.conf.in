@@ -81,7 +81,7 @@ BES.Data.RootDirectory=/full/path/data/root/directory
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
-# BES.Catalog.catalog.TypeMatch=nc:.*\.nc;h4:.*\.(hdf|HDF|eos);ff:.*\.dat;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.nc$;h4:.*\.(hdf|HDF|eos)$;ff:.*\.dat$;nc:.*\.nc\.(gz|Z|bz2)$;h4:.*\.(hdf|HDF|eos)\.(gz|Z|bz2)$;ff:.*\.dat\.(gz|Z|bz2)$;
 BES.Catalog.catalog.TypeMatch=type:expr;
 
 # Normally, when a client asks for a data catalog, all files and directories
@@ -103,7 +103,7 @@ BES.Catalog.catalog.Exclude=^\..*;
 # is secure or not.                                                     #
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
-BES.ServerUnixSocket=/tmp/opendap.socket
+BES.ServerUnixSocket=/tmp/bes.socket
 
 #-----------------------------------------------------------------------#
 # Security information for this server. ServerSecure specifies whether  #
