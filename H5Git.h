@@ -1,4 +1,5 @@
-/*-------------------------------------------------------------------------    * Copyright (C) 1997   National Center for Supercomputing Applications.
+/*-------------------------------------------------------------------------
+ * Copyright (C) 1997   National Center for Supercomputing Applications.
  *                      All rights reserved.
  *
  *-------------------------------------------------------------------------

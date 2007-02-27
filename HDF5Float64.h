@@ -13,7 +13,9 @@
 #include <H5Ipublic.h>
 #include "Float64.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+#include "H5Git.h"
+
+// extern "C" int get_data(hid_t dset,void *buf,char *);
 
 class HDF5Float64: public Float64 {
 

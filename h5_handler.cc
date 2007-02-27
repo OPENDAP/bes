@@ -7,7 +7,7 @@
 
 /* This is the HDF5-DAS which extracts DAS class descriptors converted from
    HDF5 attribute of an hdf5 data file. */
-
+// #define DODS_DEBUG 
 #include "config_hdf5.h"
 
 #include <stdio.h>
@@ -29,10 +29,15 @@
 #include "InternalErr.h"
 #include "h5das.h"
 #include "h5dds.h"
+#include "H5Git.h" <hyokyung 2007.02.23. 15:16:53>
 
+/*
 extern "C" {
-    hid_t get_fileid(const char *filename);
-} const static string cgi_version = "3.0";
+hid_t get_fileid(const char *filename);
+} 
+*/
+
+const static string cgi_version = "3.0";
 
 int main(int argc, char *argv[])
 {
@@ -57,7 +62,8 @@ int main(int argc, char *argv[])
             throw Error(no_such_file, string("Could not open hdf5 file: ")
                         + df.get_dataset_name());
 
-        switch (df.get_response()) {
+	// More C++ style? How to use virtual function. <hyokyung 2007.02.20. 13:31:10>
+        switch (df.get_response()) { 
         case DODSFilter::DAS_Response:{
                 DAS das;
                 find_gloattr(file1, das);
@@ -68,42 +74,47 @@ int main(int argc, char *argv[])
             }
 
         case DODSFilter::DDS_Response:{
+	  
                 HDF5TypeFactory factory;
                 DDS dds(&factory);
                 ConstraintEvaluator ce;
                 DAS das;
-
+		
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
                 find_gloattr(file1, das);
-                depth_first(file1, "/", das,
-                            df.get_dataset_name().c_str());
-
-                dds.transfer_attributes(&das);
-
+                //depth_first(file1, "/", das,
+                //            df.get_dataset_name().c_str());
+		DBG(cerr << ">dds.transfer_attributesr" << endl);		
+                dds.transfer_attributes(&das); // ? <hyokyung 2007.02.20. 13:31:49>
+		DBG(cerr << ">df.send_dds()" << endl);				
                 df.send_dds(dds, ce, true);
                 break;
             }
 
         case DODSFilter::DataDDS_Response:{
+	  
+
                 HDF5TypeFactory factory;
                 DDS dds(&factory);
                 ConstraintEvaluator ce;
                 DAS das;
 
+
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
                 find_gloattr(file1, das);
-                depth_first(file1, "/", das,
-                            df.get_dataset_name().c_str());
+                //  depth_first(file1, "/", das,
+                //            df.get_dataset_name().c_str());
 
                 dds.transfer_attributes(&das);
 
-                df.send_data(dds, ce, stdout);
+
+                df.send_data(dds, ce, stdout); // ? <hyokyung 2007.02.20. 13:32:00>
                 break;
             }
 
-        case DODSFilter::DDX_Response:{
+        case DODSFilter::DDX_Response:{ // What is DDX? <hyokyung 2007.02.20. 13:32:11>
                 HDF5TypeFactory factory;
                 DDS dds(&factory);
                 ConstraintEvaluator ce;
@@ -146,6 +157,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     catch(...) {
+      // May not be right? <hyokyung 2007.02.20. 13:32:35>
         string s("h5_handler: Unknown exception");
         ErrMsgT(s);
         Error e(unknown_error, s);

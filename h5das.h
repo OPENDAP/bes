@@ -1,18 +1,17 @@
-/*-------------------------------------------------------------------------
- * Copyright (C) 1999	National Center for Supercomputing Applications.
- *			All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
+//
+// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
+// for HDF5 data.
+/**
 
-/* This is the HDF5-DAS which extracts DAS class descriptors converted from
-   HDF5 attribute of an hdf5 data file. */
+*/
+   
 
 #include <string>
+#include <hdf5.h>
 
 using std::string ;
 
-#include <H5Ipublic.h>
+// #include <H5Ipublic.h>
 
 #include "DAS.h"
 

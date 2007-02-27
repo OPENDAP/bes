@@ -9,7 +9,8 @@
 #include "Sequence.h"
 #include "common.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+#include "H5Git.h"
+//extern "C" int get_data(hid_t dset,void *buf,char *);
 
 class HDF5Sequence: public Sequence {
 

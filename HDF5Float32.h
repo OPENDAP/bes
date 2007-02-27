@@ -12,7 +12,9 @@
 
 #include "Float32.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+#include "H5Git.h"
+
+// extern "C" int get_data(hid_t dset,void *buf,char *); <hyokyung 2007.02.23. 15:45:01>
 
 class HDF5Float32: public Float32 {
  private:

@@ -20,12 +20,13 @@
 #endif
 
 #include "Str.h"
-
+#include "H5Git.h"
+/* <hyokyung 2007.02.23. 15:41:46>
 extern "C"{
     int get_data(hid_t dset,void *buf,char *);
     size_t H5Tget_size(hid_t type_id);
 }
-
+*/
 class HDF5Str: public Str {
  private:
     hid_t dset_id;

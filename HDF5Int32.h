@@ -13,8 +13,9 @@
 #include <H5Ipublic.h>
 
 #include "Int32.h"
+#include "H5Git.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+//extern "C" int get_data(hid_t dset,void *buf,char *);
 
 class HDF5Int32: public Int32 {
 private:

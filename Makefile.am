@@ -22,7 +22,9 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h
 
-SRCS = h5dds.cc h5das.cc H5Git.c
+# <hyokyung 2007.02.23. 14:19:46>
+SRCS = h5dds.cc h5das.cc H5Git.cc
+# SRCS = h5dds.cc h5das.cc H5Git.c
 HDRS = common.h h5dds.h h5das.h H5Git.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc

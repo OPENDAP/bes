@@ -47,10 +47,14 @@
 #include "BESVersionInfo.h"
 #include "BESDataNames.h"
 #include "BESDapHandlerException.h"
-
+#include "H5Git.h"
+/* <hyokyung 2007.02.23. 15:42:55>
 extern "C" {
     hid_t get_fileid(const char *filename);
-} HDF5RequestHandler::HDF5RequestHandler(string name)
+}
+*/
+
+HDF5RequestHandler::HDF5RequestHandler(string name)
 :BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);

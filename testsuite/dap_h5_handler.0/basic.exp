@@ -7,8 +7,9 @@ global host
 
 set testdir testsuite
 set test_name "basic"
-set verbose 1
+# set verbose 1
 
 
 dap_hdf5_handler_version 
 dap_hdf5_handler_all "${testdir}" "test1"
+dap_hdf5_handler_all "${testdir}" "GridFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}

@@ -16,7 +16,7 @@
 #include <H5Ipublic.h>
 
 #include "Array.h"
-
+/*
 extern "C" {
     int get_data(hid_t dset,void *buf,char *);
     int get_slabdata(hid_t,int *,int*,int*,int,hsize_t,void *,char *);
@@ -25,6 +25,8 @@ extern "C" {
     int get_strdata(hid_t,int,char*,char*,char*);
     int check_h5str(hid_t);
 }
+*/
+#include "H5Git.h"
 
 class HDF5Array: public Array {
 private:

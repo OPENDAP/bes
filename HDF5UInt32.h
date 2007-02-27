@@ -12,8 +12,8 @@
 #include <string.h>
 #include <H5Ipublic.h>
 #include "UInt32.h"
-
-extern "C" int get_data(hid_t dset,void *buf,char*);
+#include "H5Git.h"
+// extern "C" int get_data(hid_t dset,void *buf,char*); <hyokyung 2007.02.23. 15:48:59>
 
 class HDF5UInt32: public UInt32 {
 

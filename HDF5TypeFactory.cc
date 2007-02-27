@@ -47,7 +47,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
+// #define DODS_DEBUG 
 #include <string>
 
 #include "HDF5Byte.h"
@@ -112,7 +112,8 @@ HDF5TypeFactory::NewFloat64(const string &n ) const
 
 Str *
 HDF5TypeFactory::NewStr(const string &n ) const 
-{ 
+{
+  DBG(cerr << ">HDF5TypeFactory::NewStr()" << endl);
     return new HDF5Str(n);
 }
 

@@ -11,8 +11,9 @@
 #include <H5Ipublic.h>
 
 #include "Byte.h"
+#include "H5Git.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+// extern "C" int get_data(hid_t dset,void *buf,char *);
 
 class HDF5Byte: public Byte {
 

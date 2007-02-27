@@ -20,6 +20,8 @@ structures of the server.
 Author:  Kent Yang(ymuqun@ncsa.uiuc.edu)
 
 *****************************************************************************/
+#ifndef _common_H
+#define _common_H
 
 #include <H5Ipublic.h>
 
@@ -52,3 +54,4 @@ typedef struct DSattr {
     hsize_t nelmts;
     size_t need;
 } DSattr_t;
+#endif 

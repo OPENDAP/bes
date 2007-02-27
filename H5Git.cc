@@ -9,13 +9,16 @@
 /* this file includes all the routines to search HDF5 group, dataset,links,
    and attributes. since we are using HDF5 C APIs, we include all c functions in this
    file. Kent Yang 2001/5/14/ */
+// #define DODS_DEBUG
 
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <string.h>
-
 #include <hdf5.h>
 
+// using std::string;
+#include "debug.h"
 #include "H5Git.h"
+#include "InternalErr.h" // <hyokyung 2007.02.23. 14:17:32>
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -259,19 +262,31 @@ get_Dattr_numb(hid_t pid, int *num_attr_ptr, char *dname, char *error)
     int num_at;
 
     if ((dset = H5Dopen(pid, dname)) < 0) {
+      /* <hyokyung 2007.02.23. 15:51:38>
         sprintf(error,
                 "h5_das server:  unable to open hdf5 dataset of group %d",
                 pid);
-        return -1;
+      */
+	string msg =
+	    "dap_h5_handler:  unable to open hdf5 dataset of group ";
+	msg += pid;
+	throw InternalErr(__FILE__, __LINE__, msg);      
+        // return -1;
     }
 
     /* obtain number of attributes in this dataset. */
 
     if ((num_at = H5Aget_num_attrs(dset)) < 0) {
+      /*
         sprintf(error,
                 "h5_das server:  failed to obtain hdf5 attribute in dataset %d",
                 dset);
-        return -1;
+      */
+	string msg =
+	    "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
+	msg += dset;
+	throw InternalErr(__FILE__, __LINE__, msg);            
+        // return -1;
     }
 
     *num_attr_ptr = num_at;
@@ -311,19 +326,34 @@ get_Gattr_numb(hid_t pid, int *num_attr_ptr, char *dname, char *error)
     int num_at;
 
     if ((c_group = H5Gopen(pid, dname)) < 0) {
-        sprintf(error,
+      /*
+       sprintf(error,
                 "h5_das server:  unable to open hdf5 group in group %d",
                 pid);
-        return -1;
+      */
+      // <hyokyung 2007.02.23. 16:00:29>
+	string msg =
+	    "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
+	msg += pid;
+	throw InternalErr(__FILE__, __LINE__, msg);
+	
+        // return -1;
     }
 
     /* obtain number of attributes in this dataset. */
 
     if ((num_at = H5Aget_num_attrs(c_group)) < 0) {
+      /* <hyokyung 2007.02.27. 08:42:39>
         sprintf(error,
                 "h5_das server:  failed to obtain hdf5 attribute in group %d",
                 c_group);
-        return -1;
+      */
+	string msg =
+	    "dap_h5_handler:  failed to obtain hdf5 attribute in group  ";
+	msg += c_group;
+	throw InternalErr(__FILE__, __LINE__, msg);
+      
+        // return -1;
     }
 
     *num_attr_ptr = num_at;
@@ -380,40 +410,79 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     /*  int buf_size =30; */
 
     *ignoreptr = 0;
-    namebuf = malloc(DODS_NAMELEN);
+    namebuf = (char*)malloc(DODS_NAMELEN);
 
     if ((attrid = H5Aopen_idx(dset, index)) < 0) {
+      /*
         strcpy(error, " unable to obtain hdf5 attribute ");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:05:45>
+      */
+      
+      	string msg =
+	    "dap_h5_handler: unable to open attribute by index ";
+	msg += index;
+	throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     /* obtain the attribute name. */
     if ((H5Aget_name(attrid, DODS_NAMELEN, namebuf)) < 0) {
+      /*
         strcpy(error, " unable to obtain hdf5 attribute name");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:19:07>
+      */
+      string msg =
+	    "dap_h5_handler: unable to obtain hdf5 attribute name for id=";
+      msg += attrid;
+      throw InternalErr(__FILE__, __LINE__, msg);
     }
 
 
     if ((attrid = H5Aopen_name(dset, namebuf)) < 0) {
+      /*
         strcpy(error, " unable to obtain hdf5 attribute ");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:19:10>
+      */
+      string msg =
+	"dap_h5_handler: unable to obtain hdf5 attribute by name = ";
+      msg += namebuf;
+      throw InternalErr(__FILE__, __LINE__, msg);
+      
     }
 
     /* obtain the type of the attribute. */
     if ((ty_id = H5Aget_type(attrid)) < 0) {
+      /*
         strcpy(error, " unable to get hdf5 attribute type ");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:19:14>
+      */
+      string msg =
+	"dap_h5_handler: unable to obtain hdf5 attribute type for id = ";
+      msg += attrid;
+      throw InternalErr(__FILE__, __LINE__, msg);      
+      
     }
     temp_type = H5Tget_class(ty_id);
 
     if (temp_type < 0) {
+      /*
         strcpy(error, " unable to obtain hdf5 datatype ");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:20:14>
+      */
+      string msg =
+	"dap_h5_handler: unable to obtain hdf5 datatype class for type_id = ";
+      msg += ty_id;
+      throw InternalErr(__FILE__, __LINE__, msg);
+      
     }
 
     if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD)
@@ -432,9 +501,16 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 
     if ((space = H5Aget_space(attrid)) < 0) {
+      /*
         strcpy(error, " unable to get attribute data space");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:29:01>
+      */
+      string msg =
+	"dap_h5_handler: unable to obtain hdf5 data space for id = ";
+      msg += attrid;
+      throw InternalErr(__FILE__, __LINE__, msg);      
     }
 
     ndims = H5Sget_simple_extent_dims(space, size, maxsize);
@@ -442,11 +518,19 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     /* check dimension size. */
 
     if (ndims > DODS_MAX_RANK) {
+      /*
         strcpy(error,
                "number of dimensions exceeds hdf5_das server allowed.");
         attrid = -1;
         goto exit;
+	<hyokyung 2007.02.27. 09:33:06>
+      */
+      string msg =
+	"dap_h5_handler: number of dimensions exceeds hdf5_das server allowed.";
+      msg += attrid;
+      throw InternalErr(__FILE__, __LINE__, msg);
     }
+    
 #if 0
     // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
     // read-only, we don't care if any dimensions are unlimited or not
@@ -518,7 +602,7 @@ hid_t get_fileid(const char *filename)
 hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 {
 
-    hid_t dset;
+    hid_t dset = -1;
     hid_t datatype, dataspace;
     H5T_class_t temp_type;
     hsize_t size[DODS_MAX_RANK];
@@ -581,7 +665,7 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
         return -1;
     }
 
-    namebuf = malloc(buf_size);
+    namebuf = (char*) malloc(buf_size);
 
 #if 0
     // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
@@ -661,7 +745,7 @@ int get_data(hid_t dset, void *buf, char *error)
         if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, buf)
             < 0) {
             sprintf(error,
-                    "h5_das server:  failed to read data from  dataset %d",
+                    "failed to read data from  dataset %d",
                     dset);
             printf("error %s\n", error);
             return -1;
@@ -670,7 +754,7 @@ int get_data(hid_t dset, void *buf, char *error)
         if (H5Dread(dset, memtype, dataspace, dataspace, H5P_DEFAULT, buf)
             < 0) {
             sprintf(error,
-                    "h5_das server:  failed to read data from  dataset %d",
+                    "failed to read data from  dataset %d",
                     dset);
             return -1;
         }
@@ -782,9 +866,9 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     }
 
 
-    dyn_count = calloc(num_dim, sizeof(hsize_t));
-    dyn_step = calloc(num_dim, sizeof(hsize_t));
-    dyn_offset = calloc(num_dim, sizeof(hssize_t));
+    dyn_count = (hsize_t*) calloc(num_dim, sizeof(hsize_t));
+    dyn_step = (hsize_t*)calloc(num_dim, sizeof(hsize_t));
+    dyn_offset = (hssize_t*)calloc(num_dim, sizeof(hssize_t));
 
     if (!dyn_count) {
         sprintf(error,
@@ -818,7 +902,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     }
 
     if (H5Sselect_hyperslab
-        (dataspace, H5S_SELECT_SET, dyn_offset, dyn_step, dyn_count,
+        (dataspace, H5S_SELECT_SET, (const hsize_t*)dyn_offset, dyn_step, dyn_count,
          NULL) < 0) {
         sprintf(error, "h5_dods server: selection error for dataspace %d",
                 dataspace);
@@ -912,15 +996,16 @@ char *get_dimname(hid_t dataset, int index)
     unsigned int i, k, k1;
     char dimscale[21];
 
+    DBG(cerr << ">get_dimname(" << dataset << "," << index << ")" << endl);    
     num_attrs = H5Aget_num_attrs(dataset);
-
+    DBG(cerr << "=get_dimname num_attrs=" << num_attrs << endl);    
     for (i = 0; i < num_attrs; i++) {
         attr_id = H5Aopen_idx(dataset, i);
         bzero(dimscale, sizeof(dimscale));
         attr_namesize = H5Aget_name(attr_id, 20, dimscale);
 
 	// printf("i = %d\n",i);
-        //  printf("dimscale %s\n",dimscale); 
+        printf("dimscale %s\n",dimscale); 
         if (attr_namesize < 0) {
             printf("error in getting attribute name\n");
             return NULL;
@@ -932,12 +1017,12 @@ char *get_dimname(hid_t dataset, int index)
             type_size = H5Tget_size(type);
             space = H5Aget_space(attr_id);
             ssiz = H5Sget_simple_extent_npoints(space);
-            sdsdimname = calloc((size_t) ssiz, type_size);
+            sdsdimname = (char*)calloc((size_t) ssiz, type_size);
 
             temp_buf = (char *) sdsdimname;
             H5Aread(attr_id, type, sdsdimname);
-            newdimname = malloc(type_size);
-            dimname = malloc(type_size);
+            newdimname = (char*)malloc(type_size);
+            dimname = (char*)malloc(type_size);
             for (k = 0; k < ssiz; k++) {
                 dimname = temp_buf;
                 strncpy(newdimname, dimname, type_size);
@@ -953,7 +1038,10 @@ char *get_dimname(hid_t dataset, int index)
             free(sdsdimname);
         }
         H5Aclose(attr_id);
+
+	
     }
+    DBG(cerr << "<get_dimname->" << newdimname << endl);    
     return newdimname;
 }
 
@@ -1005,6 +1093,7 @@ get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
     unsigned int i, j;
     char dimscale[21];
 
+    DBG(cerr << ">get_diminfo()" << endl);    
     num_attrs = H5Aget_num_attrs(dataset);
 
     for (i = 0; i < num_attrs; i++) {
@@ -1025,12 +1114,12 @@ get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
             ssiz = H5Sget_simple_extent_npoints(space);
             ssiz *= H5Tget_size(type);
 
-            buf = calloc((size_t) ssiz, sizeof(char));
+            buf = (char*)calloc((size_t) ssiz, sizeof(char));
             H5Aread(attr_id, H5T_STD_REF_OBJ, buf);
 
             refbuf = (hobj_ref_t *) buf;
             ssiz = H5Sget_simple_extent_npoints(space);
-            sdsdim = malloc(sizeof(hid_t) * ssiz);
+            sdsdim = (hid_t*)malloc(sizeof(hid_t) * ssiz);
 
             for (j = 0; j < ssiz; j++) {
 
@@ -1062,6 +1151,7 @@ get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
     *dsizeptr = (size_t) datasetsize;
     *nelmptr = nelm;
     *dimtypeptr = datatype;
+    DBG(cerr << "<get_diminfo()" << endl);        
     return tempid;
 }
 
@@ -1095,6 +1185,7 @@ int get_dimnum(hid_t dataset)
     unsigned int i;
     char dimscale[21];
 
+    DBG(cerr << ">get_dimnum()" << endl);    
     num_attrs = H5Aget_num_attrs(dataset);
 
     for (i = 0; i < num_attrs; i++) {
@@ -1121,6 +1212,7 @@ int get_dimnum(hid_t dataset)
         }
         H5Aclose(attr_id);
     }
+    DBG(cerr << "<get_dimnum()" << endl);    
     return num_dim;
 }
 
@@ -1142,15 +1234,16 @@ char *correct_name(char *oldname)
 {
 
     char *cptr;
-    char *newname;
+    char *newname = NULL; // <hyokyung 2007.02.27. 10:25:33>
     char ORI_SLASH = '/';
     char CHA_SLASH = '_';
 
+    DBG(cerr << ">correct_name(" << oldname << ")" << endl);
     if (oldname == NULL)
         return NULL;
 
     /* the following code is for correcting name from "/" to "_" */
-    newname = malloc((strlen(oldname) + 1) * sizeof(char));
+    newname = (char*)malloc((strlen(oldname) + 1) * sizeof(char));
     bzero(newname, (strlen(oldname) + 1) * sizeof(char));
     newname = strncpy(newname, oldname, strlen(oldname));
 
@@ -1169,7 +1262,7 @@ char *correct_name(char *oldname)
     bzero(newname, strlen(cptr) + 1);
     strncpy(newname, cptr, strlen(cptr));
 #endif
-
+    DBG(cerr << "<correct_name=>" << newname <<  endl);
     return newname;
 }
 

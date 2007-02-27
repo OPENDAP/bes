@@ -12,7 +12,8 @@
 #include <H5Ipublic.h>
 #include "UInt16.h"
 
-extern "C" int get_data(hid_t dset,void *buf,char *);
+// extern "C" int get_data(hid_t dset,void *buf,char *);
+#include "H5Git.h"
 
 class HDF5UInt16: public UInt16 {
 private:
