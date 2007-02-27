@@ -12,4 +12,4 @@ set test_name "basic"
 
 dap_hdf5_handler_version 
 dap_hdf5_handler_all "${testdir}" "test1"
-dap_hdf5_handler_all "${testdir}" "GridFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
+# dap_hdf5_handler_all "${testdir}" "GridFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
