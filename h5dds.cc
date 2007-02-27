@@ -66,7 +66,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 {
   /* Iterate through the file to see members of the root group */
   DBG(cerr << ">depth_first()" << endl);
-  
+#ifdef KENT_OLD_WAY
+// Old way to obtain members of group.  
   int nelems = H5Gn_members(pid, gname);
 
   if (nelems < 0) {
@@ -75,10 +76,22 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     msg += gname;
     throw InternalErr(__FILE__, __LINE__, msg);
   }
+#else
+  int nelems; 
+  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
+   string msg =
+      "h5_das handler: counting hdf5 group elements error for ";
+    msg += gname;
+    throw InternalErr(__FILE__, __LINE__, msg);
+  }
+#endif
+
 
   for (int i = 0; i < nelems; i++) {
     char *oname = NULL;
     int type = -1;
+
+#ifdef KENT_OLD_WAY
     herr_t ret = H5Gget_obj_info_idx(pid, gname, i, &oname, &type);
 
     if (ret < 0) {
@@ -87,30 +100,73 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
       msg += gname;
       throw InternalErr(__FILE__, __LINE__, msg);
     }
+#else
+    ssize_t oname_size = 0;
+    // Query the length
+    oname_size= H5Gget_objname_by_idx(pid,(hsize_t)i,NULL, (size_t)DODS_NAMELEN);
+
+    if(oname_size <=0) {
+      string msg =
+        "h5_dds handler: getting the size of hdf5 object name error from";
+      msg += gname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    /* Obtain the name of the object */
+    oname = new char[(size_t)oname_size+1];
+    if(H5Gget_objname_by_idx(pid,(hsize_t)i,oname,(size_t)(oname_size+1))<0){
+     string msg =
+        "h5_dds handler: getting the hdf5 object name error from";
+      msg += gname;
+      delete []oname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    type = H5Gget_objtype_by_idx(pid,(hsize_t)i);
+    if(type <0) {
+       string msg =
+        "h5_dds handler: getting the hdf5 object type error from";
+      msg += gname;
+      delete []oname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+#endif
+
+ 
 
     switch (type) { // Can we use virtual function? <hyokyung 2007.02.20. 10:17:24>
 
     case H5G_GROUP:{
       string full_path_name =
 	string(gname) + string(oname) + "/";
-      hid_t pgroup = H5Gopen(pid, gname);
 
       char *t_fpn = new char[full_path_name.length() + 1];
 
       strcpy(t_fpn, full_path_name.c_str());
+      hid_t cgroup = H5Gopen(pid, t_fpn);
       try {
-	depth_first(pgroup, t_fpn, dds, fname);
+	depth_first(cgroup, t_fpn, dds, fname);
       }
       catch(Error & e) {
+#ifndef KENT_OLD_WAY
+       delete[]oname;
+#endif
 	delete[]t_fpn;
 	throw;
       }
+      H5Gclose(cgroup);
       delete[]t_fpn;
       break;
     }
 
     case H5G_DATASET:{
+
       string full_path_name = string(gname) + string(oname);
+      char *t_fpn = new char[full_path_name.length() + 1]; // Can this be string? <hyokyung 2007.02.20. 10:18:16>, probably not, that's the whole point of this operation
+
+      strcpy(t_fpn, full_path_name.c_str());
+ 
+#if 0 
       hid_t dgroup = H5Gopen(pid, gname); // Can this be string? <hyokyung 2007.02.20. 10:17:55>
 
       if (dgroup < 0) {
@@ -119,12 +175,11 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 	msg += gname;
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
+#endif
 
-      char *t_fpn = new char[full_path_name.length() + 1]; // Can this be string? <hyokyung 2007.02.20. 10:18:16>
-
-      strcpy(t_fpn, full_path_name.c_str());
       /* obtain hdf5 dataset handle. */
-      if ((get_dataset(dgroup, t_fpn, &dt_inst, Msgt)) < 0) {
+//      if ((get_dataset(dgroup, t_fpn, &dt_inst, Msgt)) < 0) {
+      if ((get_dataset(pid, t_fpn, &dt_inst, Msgt)) < 0) {
 	string msg =
 	  "h5_dds handler: get hdf5 dataset wrong for ";
 	msg += t_fpn;
@@ -153,6 +208,9 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     }
 
     type = -1;
+#ifndef KENT_OLD_WAY
+    delete[]oname;
+#endif
 
   }
   DBG(cerr << "<depth_first()" << endl);

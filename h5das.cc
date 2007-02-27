@@ -74,14 +74,18 @@ static const char FLOAT_ELSE[]="Float_else";
  *
  *-------------------------------------------------------------------------
  */
-// This is like the same code of DDS! => Can we combine the two into one?
+// 1. This is like the same code of DDS! => Can we combine the two into one?
 // How about using virtual function?
+// 2. gname is kind of redundant with pid, needs to be removed.
+// 3. why need fname?? KY 02/27/2007
 bool
 depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 {
   int num_attr = -1;
 
   /* Iterate through the file to see members of the root group */
+#ifdef KENT_OLD_WAY
+// Old way to obtain members of group 
   int nelems = H5Gn_members(pid, gname);
   if (nelems < 0) {
     string msg =
@@ -90,10 +94,20 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
     throw InternalErr(__FILE__, __LINE__, msg);
   }
 
+#else
+  int nelems;
+  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
+   string msg =
+      "h5_das handler: counting hdf5 group elements error for ";
+    msg += gname;
+    throw InternalErr(__FILE__, __LINE__, msg);
+  } 
+#endif
   for (int i = 0; i < nelems; i++) {
 
     char *oname = NULL;
     int type = -1;
+#ifdef KENT_OLD_WAY
     herr_t ret = H5Gget_obj_info_idx(pid, gname, i, &oname, &type);
 
     if (ret < 0) {
@@ -102,45 +116,123 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       msg += gname;
       throw InternalErr(__FILE__, __LINE__, msg);
     }
+#else
+    ssize_t oname_size = 0;
+    // Query the length
+    oname_size= H5Gget_objname_by_idx(pid,(hsize_t)i,NULL, (size_t)DODS_NAMELEN);
+
+    if(oname_size <=0) {
+      string msg =
+        "h5_das handler: getting the size of hdf5 object name error from";
+      msg += gname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    /* Obtain the name of the object */
+    oname = new char[(size_t)oname_size+1];
+    if(H5Gget_objname_by_idx(pid,(hsize_t)i,oname,(size_t)(oname_size+1))<0){
+     string msg =
+        "h5_das handler: getting the hdf5 object name error from";
+      msg += gname;
+      delete []oname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    type = H5Gget_objtype_by_idx(pid,(hsize_t)i);
+    if(type <0) {
+       string msg =
+        "h5_das handler: getting the hdf5 object type error from";
+      msg += gname;
+      delete []oname;
+      throw InternalErr(__FILE__, __LINE__, msg);
+    }
+#endif
 
     switch (type) {
 
     case H5G_GROUP:{
+// The following string operation may not be the best way to do things
+// We may need to clean up this a bit. KY 02/27/2007
+// Really the pgroup here is pid, we need to remove the redundant operations.
+// KY 02/27/2007, 3:00 PM.
+// All right, I decide to take the risk to remove all the redundant operations next time.
       string full_path_name =
 	string(gname) + string(oname) + "/";
-      hid_t pgroup = H5Gopen(pid, gname);
       char *t_fpn = new char[full_path_name.length() + 1];
 
       strcpy(t_fpn, full_path_name.c_str());
-      hid_t dset =
+#ifdef KENT_OLD_WAY
+      hid_t pgroup = H5Gopen(pid,gname);
+      hid_t cgroup =
 	get_Gattr_numb(pgroup, &num_attr, oname, Msgt);
-      if (dset < 0) {
+      if (cgroup < 0) {
+        string msg =
+          "h5_das handler: open hdf5 group  wrong for ";
+        msg += t_fpn;
+        msg += string("\n") + string(Msgt);
+        delete[]t_fpn;
+        throw InternalErr(__FILE__, __LINE__, msg);
+      }
+
+#else
+      hid_t cgroup = H5Gopen(pid,t_fpn);
+      if (cgroup < 0) {
 	string msg =
-	  "h5_das handler: open hdf5 dataset wrong for ";
+	  "h5_das handler: open hdf5 group  wrong for ";
 	msg += t_fpn;
 	msg += string("\n") + string(Msgt);
 	delete[]t_fpn;
+        delete []oname;
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
+      
+       if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
+      /* <hyokyung 2007.02.27. 08:42:39>
+        sprintf(error,
+                "h5_das server:  failed to obtain hdf5 attribute in group %d",
+                cgroup);
+      */
+        string msg =
+            "dap_h5_handler:  failed to obtain hdf5 attribute in group  ";
+        msg += t_fpn;
+        throw InternalErr(__FILE__, __LINE__, msg);
+
+        // return -1;
+    }
+#endif
+
 
       try {
-	read_objects(das, t_fpn, dset, num_attr);
-	depth_first(pgroup, t_fpn, das, fname);
+	read_objects(das, t_fpn, cgroup, num_attr);
+// change pgroup to cgroup, hopefully it works as I expect. KY 02/27/2007
+	depth_first(cgroup, t_fpn, das, fname);
       }
       catch(Error & e) {
+#ifndef KENT_OLD_WAY
+       delete[]oname;
+#endif
 	delete[]t_fpn;
 	throw;
       }
 
       delete[]t_fpn;
-      H5Gclose(pgroup);
+      H5Gclose(cgroup);// also need error handling.
+#ifdef KENT_OLD_WAY
+      H5Gclose(pgroup);// the same as above, ky 02/27/2007
+#endif
       break;
     }
 
     case H5G_DATASET:{
 
       string full_path_name = string(gname) + string(oname);
-      hid_t dgroup = H5Gopen(pid, gname);
+
+      char *t_fpn = new char[full_path_name.length() + 1];
+
+      strcpy(t_fpn, full_path_name.c_str());
+      hid_t dset;
+#ifdef KENT_OLD_WAY
+       hid_t dgroup = H5Gopen(pid, gname);
 
       if (dgroup < 0) {
 	string msg = "h5_dds handler: cannot open hdf5 group";
@@ -149,17 +241,14 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
 
-      char *t_fpn = new char[full_path_name.length() + 1];
-
-      strcpy(t_fpn, full_path_name.c_str());
-      hid_t dset;
-      try{ // <hyokyung 2007.02.23. 14:17:52>
+     try{ // <hyokyung 2007.02.23. 14:17:52>
 	dset =
 	  get_Dattr_numb(dgroup, &num_attr, t_fpn, Msgt);
       }
       catch(Error &e){
 	throw;
-      }
+      }// Joe, I may need you to explain to me why this works.
+      
 
       if (dset < 0) {
 	string msg = (string) Msgt;
@@ -167,6 +256,35 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 	delete[]t_fpn;
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
+#else
+
+      /* Open the dataset */
+      if((dset = H5Dopen(pid,t_fpn))<0) {
+         string msg =
+            "dap_h5_handler:  unable to open hdf5 dataset of group ";
+        msg += gname;
+        delete[]t_fpn;
+        throw InternalErr(__FILE__, __LINE__, msg);
+        // return -1;
+      }
+
+      /* obtain number of attributes in this dataset. */
+
+    if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
+      /*
+        sprintf(error,
+                "h5_das server:  failed to obtain hdf5 attribute in dataset %d",
+                dset);
+      */
+        string msg =
+            "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
+        msg += t_fpn;
+        delete[]t_fpn;
+        throw InternalErr(__FILE__, __LINE__, msg);
+        // return -1;
+    }
+#endif
+
 
       try {
 	read_objects(das, t_fpn, dset, num_attr);
@@ -176,7 +294,10 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 	throw;
       }
 
-      H5Dclose(dset);
+      H5Dclose(dset); // Need error handling
+#ifdef KENT_OLD_WAY
+      H5Gclose(dgroup);//Error handling, possibly remove.
+#endif
       delete[]t_fpn;
       break;
     }
@@ -204,6 +325,9 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       break;
     }
     type = -1;
+#ifndef KENT_OLD_WAY
+    delete[]oname;
+#endif
   }
 
 

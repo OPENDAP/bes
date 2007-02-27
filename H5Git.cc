@@ -23,6 +23,7 @@
 #define FALSE 0
 #endif
 
+#ifdef KENT_OLD_WAY
 static herr_t count_elems(hid_t loc_id, const char *name, void *opdata);
 static herr_t obj_info(hid_t loc_id, const char *name, void *opdata);
 
@@ -360,7 +361,7 @@ get_Gattr_numb(hid_t pid, int *num_attr_ptr, char *dname, char *error)
     return c_group;
 
 }
-
+#endif
 /*-------------------------------------------------------------------------
  * Function:	get_attr_info
  *

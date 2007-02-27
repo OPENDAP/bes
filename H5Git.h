@@ -10,17 +10,21 @@
 #include <hdf5.h>
 #include "common.h"
 
+//#define KENT_OLD_WAY
+#ifdef KENT_OLD_WAY
 int H5Gn_members(hid_t loc_id, char *group_name);
 herr_t H5Gget_obj_info_idx(hid_t loc_id, char *group_name, int idx,
 			   char **objname, int *type);
+hid_t get_Dattr_numb(hid_t pid, int *num_attr, char *dname, char *);
+hid_t get_Gattr_numb(hid_t pid, int *num_attr, char *dname, char *);
+#endif
+
 
 int get_strdata(hid_t, int, char *, char *, char *);
 int check_h5str(hid_t);
 
 hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, int *,
 		    char *);
-hid_t get_Dattr_numb(hid_t pid, int *num_attr, char *dname, char *);
-hid_t get_Gattr_numb(hid_t pid, int *num_attr, char *dname, char *);
 
 /*int get_attrs(hid_t pid, char *dname);*/
 hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *);
