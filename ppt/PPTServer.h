@@ -49,7 +49,7 @@ private:
     string			_cfile ;
     string			_kfile ;
 
-    void			welcomeClient() ;
+    int				welcomeClient() ;
     void			authenticateClient() ;
     void			get_secure_files() ;
 public:

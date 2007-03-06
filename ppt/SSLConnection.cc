@@ -39,8 +39,6 @@
 
 #include <iostream>
 
-using std::cout ;
-using std::endl ;
 using std::flush ;
 
 #include "SSLConnection.h"
@@ -72,7 +70,8 @@ SSLConnection::closeConnection()
 
     if( _context ) SSL_CTX_free( _context ) ; _context = NULL ;
     _connected = false ;
-    // FIX: Do I need to delete/free the connection object as well?
+
+    SSL_free( _connection ) ;
     _connection = NULL ;
 }
 

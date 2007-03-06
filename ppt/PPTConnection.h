@@ -41,9 +41,9 @@ class PPTConnection : public Connection
 {
 private:
     int				_timeout ;
-protected:
     				PPTConnection()
 				    : _timeout( 0 ) {}
+protected:
 				PPTConnection( int timeout )
 				    : _timeout( timeout ) {}
 

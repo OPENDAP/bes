@@ -58,9 +58,6 @@ PPTClient::PPTClient( const string &hostStr, int portVal, int timeout )
       _connected( false ),
       _host( hostStr )
 {
-    // get the certificate and key file information
-    get_secure_files() ;
-
     // connect to the specified host at the specified socket to handle the
     // secure connection
     _mySock = new TcpSocket( hostStr, portVal ) ;
@@ -72,9 +69,6 @@ PPTClient::PPTClient( const string &unix_socket, int timeout )
     : PPTConnection( timeout ),
       _connected( false )
 {
-    // get the certificate and key file information
-    get_secure_files() ;
-
     // connect to the specified unix socket to handle the secure connection
     _mySock = new UnixSocket( unix_socket ) ;
     _mySock->connect() ;
@@ -157,6 +151,9 @@ void
 PPTClient::authenticateWithServer()
 {
 #ifdef HAVE_OPENSSL
+    // get the certificate and key file information
+    get_secure_files() ;
+
     // send request for the authentication port
     writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 

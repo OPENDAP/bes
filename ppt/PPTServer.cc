@@ -43,16 +43,20 @@ using std::ostringstream ;
 #include "ServerHandler.h"
 #include "Socket.h"
 #include "TheBESKeys.h"
+#include "BESDebug.h"
 
 #include "config.h"
 #ifdef HAVE_OPENSSL
 #include "SSLServer.h"
 #endif
 
+#define PPT_SERVER_DEFAULT_TIMEOUT 1
+
 PPTServer::PPTServer( ServerHandler *handler,
 		      SocketListener *listener,
 		      bool isSecure )
-    : _handler( handler ),
+    : PPTConnection( PPT_SERVER_DEFAULT_TIMEOUT),
+      _handler( handler ),
       _listener( listener ),
       _secure( isSecure )
 {
@@ -75,7 +79,10 @@ PPTServer::PPTServer( ServerHandler *handler,
 #endif
 
     // get the certificate and key file information
-    get_secure_files() ;
+    if( _secure )
+    {
+	get_secure_files() ;
+    }
 }
 
 PPTServer::~PPTServer()
@@ -89,14 +96,14 @@ PPTServer::get_secure_files()
     _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
     if( !found || _cfile.empty() )
     {
-	throw PPTException( "Unable to determine client certificate file.",
+	throw PPTException( "Unable to determine server certificate file.",
 			    __FILE__, __LINE__ ) ;
     }
 
     _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
     if( !found || _kfile.empty() )
     {
-	throw PPTException( "Unable to determine client key file.",
+	throw PPTException( "Unable to determine server key file.",
 			    __FILE__, __LINE__ ) ;
     }
 
@@ -131,10 +138,11 @@ PPTServer::initConnection()
 	if( _mySock )
 	{
 	    // welcome the client
-	    welcomeClient( ) ;
-
-	    // now hand it off to the handler
-	    _handler->handle( this ) ;
+	    if( welcomeClient( ) != -1 )
+	    {
+		// now hand it off to the handler
+		_handler->handle( this ) ;
+	    }
 	}
     }
 }
@@ -145,18 +153,38 @@ PPTServer::closeConnection()
     if( _mySock ) _mySock->close() ;
 }
 
-void
+int
 PPTServer::welcomeClient()
 {
     char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    /* Doing a non blocking read in case the connection is being initiated
+     * by a non-bes client. Don't want this to block. pcw - 3/5/07
     int bytesRead = _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
+     */
+    int bytesRead = readBufferNonBlocking( inBuff ) ;
+
+    // if the read of the initial connection fails or blocks, then return
+    if( bytesRead == -1 )
+    {
+	_mySock->close() ;
+	return -1 ;
+    }
+
     string status( inBuff, bytesRead ) ;
     delete [] inBuff ;
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
     {
+	/* If can not negotiate with the client then we don't want to exit
+	 * by throwing an exception, we want to return and let the caller
+	 * clean up the connection
+	 */
 	string err( "PPT Can not negotiate, " ) ;
 	err += " client started the connection with " + status ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	BESDEBUG( err )
+	//throw PPTException( err, __FILE__, __LINE__ ) ;
+	_mySock->send( err, 0, err.length() ) ;
+	_mySock->close() ;
+	return -1 ;
     }
 
     if( !_secure )
@@ -168,12 +196,15 @@ PPTServer::welcomeClient()
     {
 	authenticateClient() ;
     }
+
+    return  0 ;
 }
 
 void
 PPTServer::authenticateClient()
 {
 #ifdef HAVE_OPENSSL
+    BESDEBUG( "requiring secure connection: port = " << _securePort << endl )
     // let the client know that it needs to authenticate
     int len = PPTProtocol::PPTSERVER_AUTHENTICATE.length() ;
     _mySock->send( PPTProtocol::PPTSERVER_AUTHENTICATE, 0, len ) ;

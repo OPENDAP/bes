@@ -219,8 +219,8 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
     struct pollfd arr[1] ;
     arr[0] = p ;
 
-    // Lets loop 6 times with a delay block on poll of 1000 milliseconds
-    // (duh! 6 seconds) and see if there is any data.
+    // Lets loop _timeout times with a delay block on poll of 1000 milliseconds
+    // and see if there is any data.
     for( int j = 0; j < _timeout; j++ )
     {
 	if( poll( arr, 1, 1000 ) < 0 )
