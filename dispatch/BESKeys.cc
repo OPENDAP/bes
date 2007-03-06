@@ -168,7 +168,9 @@ BESKeys::break_pair(const char* b, string& key, string &value)
 	    {
 		string s=b;
 		key=s.substr(0,pos);
+		removeLeadingAndTrailingBlanks( key ) ;
 		value=s.substr(pos+1,s.size());
+		removeLeadingAndTrailingBlanks( value ) ;
 
 		return true;
 	    }
@@ -178,6 +180,20 @@ BESKeys::break_pair(const char* b, string& key, string &value)
     }
 
     return false;
+}
+
+void
+BESKeys::removeLeadingAndTrailingBlanks( string &key )
+{
+    if( !key.empty() )
+    {
+	string::size_type first = key.find_first_not_of( " 	" ) ;
+	string::size_type last = key.find_last_not_of( " 	" ) ;
+	if( first == string::npos ) first = 0 ;
+	if( last == string::npos ) last = key.length() ;
+	string::size_type num = last - first + 1 ;
+	key = key.substr( first, num ) ;
+    }
 }
 
 bool

@@ -92,6 +92,7 @@ private:
 				    string& key,
 				    string &value ) ;
     bool		only_blanks( const char *line ) ;
+    void		removeLeadingAndTrailingBlanks( string &key ) ;
     			BESKeys() {}
 protected:
     			BESKeys( const string &keys_file_name ) ;
