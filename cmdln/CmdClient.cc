@@ -135,7 +135,8 @@ void CmdClient::startClient(const string & unixStr, int timeout)
 */
 void CmdClient::shutdownClient()
 {
-    _client->closeConnection();
+    if( _client )
+	_client->closeConnection();
 }
 
 /**
