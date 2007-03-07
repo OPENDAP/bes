@@ -138,7 +138,10 @@ BESCatalogDirectory::show_catalog( const string &node,
 		stat( fullPath.c_str(), &buf ) ;
 		if ( S_ISDIR( buf.st_mode ) )
 		{
-		    cnt++ ;
+		    if( _utils->exclude( dirEntry ) == false )
+		    {
+			cnt++ ;
+		    }
 		}
 		else if ( S_ISREG( buf.st_mode ) )
 		{
