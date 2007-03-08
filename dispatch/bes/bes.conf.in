@@ -52,8 +52,9 @@ BES.LogVerbose=no
 # BES.module.h4=@pkglibdir@/libhdf4_module.so
 # BES.module.ff=@pkglibdir@/libff_module.so
 
-BES.modules=name
-BES.module.name=/full/path/to/shared/library.so
+BES.modules=dap,cmd
+BES.module.dap=@pkglibdir@/libdap_module.so
+BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data location
@@ -71,9 +72,14 @@ BES.module.name=/full/path/to/shared/library.so
 # If you intend to use the BES as a standalone server, set the value of
 # 'BES.Data.RootDirectory' to point to your data and disregard the 
 # 'BES.Catalog.catalog.RootDirectory' parameter.
+#
+# The default value of RootDirectory works with the sample data we include
+# with various format handlers distributed for use with the BES. You'll need
+# to change this to point to your data! At this time the BES does not support
+# multiple RootDirectory values. 3/5/07 jhrg
 
-BES.Catalog.catalog.RootDirectory=/full/path/data/root/directory
-BES.Data.RootDirectory=/full/path/data/root/directory
+BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
+BES.Data.RootDirectory=/dev/null
 
 # The TypeMatch parameter is a list of handler/module names and a regular
 # expression separated by a colon. If the regular expression matches an item,
@@ -82,7 +88,7 @@ BES.Data.RootDirectory=/full/path/data/root/directory
 # containers in the BES (the 'set container' command).
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.nc$;h4:.*\.(hdf|HDF|eos)$;ff:.*\.dat$;nc:.*\.nc\.(gz|Z|bz2)$;h4:.*\.(hdf|HDF|eos)\.(gz|Z|bz2)$;ff:.*\.dat\.(gz|Z|bz2)$;
-BES.Catalog.catalog.TypeMatch=type:expr;
+BES.Catalog.catalog.TypeMatch=
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.
