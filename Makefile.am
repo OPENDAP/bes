@@ -10,9 +10,13 @@ ACLOCAL_AMFLAGS = -I conf
 bin_PROGRAMS = dap_h5_handler
 
 lib_LTLIBRARIES = libhdf5_handler.la
+
 if OPENDAPSERVER
-    lib_besdir=$(prefix)/lib/bes
-    lib_bes_LTLIBRARIES = libhdf5_module.la
+
+lib_besdir=$(prefix)/lib/bes
+lib_bes_LTLIBRARIES = libhdf5_module.la
+dist_bin_SCRIPTS = configure-hdf5-data.sh
+
 endif
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
@@ -49,6 +53,29 @@ EXTRA_DIST = testsuite COPYING hdf5_handler.spec
 
 CLEANFILES = *~ *.sum *.log
 
+if OPENDAPSERVER
+
+EXTRA_DIST += configure-hdf5-data.sh.in
+CLEANFILES += configure-hdf5-data.sh
+	
+sample_datadir = $(datadir)/hyrax/data/hdf5
+sample_data_DATA = data/tcompound.h5
+
+do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+		   	   -e 's,[@]libdir[@],$(libdir),g'
+				  
+configure-hdf5-data.sh: configure-hdf5-data.sh.in Makefile
+	$(do_subst) < $(srcdir)/configure-hdf5-data.sh.in > configure-hdf5-data.sh
+	chmod +x configure-hdf5-data.sh
+
+# This makes sure that the handler modifies the bes  which confiure found
+# even with distcheck is run.
+install-data-hook: configure-hdf5-data.sh
+	(bes_prefix=`bes-config --prefix` && \
+	 ./configure-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
+
+endif
+	
 ###########################################################################
 
 # Build linux RPMs
