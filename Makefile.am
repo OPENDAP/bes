@@ -59,8 +59,8 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-EXTRA_DIST = hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex COPYRIGHT_URI \
-	hdf4_handler.spec
+EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
+	COPYRIGHT_URI hdf4_handler.spec
 
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
@@ -76,8 +76,9 @@ sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
-		   	   -e 's,[@]libdir[@],$(libdir),g'
-				  
+		   	   -e 's,[@]libdir[@],$(libdir),g' \
+		   	   -e 's,[@]datadir[@],$(datadir),g'
+
 configure-hdf4-data.sh: configure-hdf4-data.sh.in Makefile
 	$(do_subst) < $(srcdir)/configure-hdf4-data.sh.in > configure-hdf4-data.sh
 	chmod +x configure-hdf4-data.sh

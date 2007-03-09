@@ -31,7 +31,7 @@ sed "s%^\(BES.modules=.*\)%\1,$handler%" < $bes_conf > tmp.conf
 mv tmp.conf $bes_conf
 
 # Add the handler module line (e.g., BES.module.ff) to the conf file
-module="BES.module.h4=$bes_modules_dir/libhdf4_module.so;"
+module="BES.module.h4=$bes_modules_dir/libhdf4_module.so"
 
 awk "BEGIN {bes_module_found=0}
 	 /^BES\.module\./ {bes_module_found=1}
