@@ -280,7 +280,7 @@ ServerApp::run()
 
 	BESServerHandler handler ;
 
-	BESDEBUG( "ServerApp: listening" << endl )
+	BESDEBUG( "ServerApp: listening on port (" << _portVal << ") and unix socket (" << _unixSocket << ")" << endl )
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
