@@ -18,14 +18,17 @@ bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
 if OPENDAPSERVER
-    lib_besdir=$(libdir)/bes
-    lib_bes_LTLIBRARIES = libhdf4_module.la
 
-    libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
-                                $(HDFTYPE_HDR) $(SERVER_HDR)
-    libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
-    libhdf4_module_la_LDFLAGS = -avoid-version -module
-    libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_LIBS)
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libhdf4_module.la
+
+libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
+                            $(HDFTYPE_HDR) $(SERVER_HDR)
+libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
+libhdf4_module_la_LDFLAGS = -avoid-version -module
+libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_LIBS)
+dist_bin_SCRIPTS = configure-hdf4-data.sh
+
 endif
 
 dap_hdf4_handler_SOURCES = hdf_handler.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
@@ -64,6 +67,29 @@ RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
 CLEANFILES = *~ *.log *.sum
 
+if OPENDAPSERVER
+
+EXTRA_DIST += configure-hdf4-data.sh.in
+CLEANFILES += configure-hdf4-data.sh
+	
+sample_datadir = $(datadir)/hyrax/data/hdf4
+sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
+
+do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+		   	   -e 's,[@]libdir[@],$(libdir),g'
+				  
+configure-hdf4-data.sh: configure-hdf4-data.sh.in Makefile
+	$(do_subst) < $(srcdir)/configure-hdf4-data.sh.in > configure-hdf4-data.sh
+	chmod +x configure-hdf4-data.sh
+
+# This makes sure that the handler modifies the bes  which confiure found
+# even with distcheck is run.
+install-data-hook: configure-hdf4-data.sh
+	(bes_prefix=`bes-config --prefix` && \
+	 ./configure-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
+
+endif
+	
 ###########################################################################
 
 # Build linux RPMs
