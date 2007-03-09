@@ -58,7 +58,7 @@ if OPENDAPSERVER
 EXTRA_DIST += configure-hdf5-data.sh.in
 CLEANFILES += configure-hdf5-data.sh
 	
-sample_datadir = $(datadir)/hyrax/data/hdf5
+sample_datadir = $(datadir)/hyrax/data/h5
 sample_data_DATA = data/tcompound.h5
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
