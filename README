@@ -3,6 +3,11 @@
 
 See the INSTALL file for build instructions.
 
+For more information on Hyrax and the BES, please visit our documentation
+wiki at docs.opendap.org. This will include the latest install and build
+instructions, the latest configuration inforamtion, tutorials, how to
+develop new modules for the BES, and more.
+
 Contents
   What's here: What files are in the distribution
   About the BES: What exactly is this

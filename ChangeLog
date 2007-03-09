@@ -1,14 +1,54 @@
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	Initialization and other test files were not being included in the
+	distribution.
+	M    test/Makefile.am
+	D    test/needs_to_test.txt
+
+2007-03-09  James Gallagher <jgallagher@opendap.org>
+
+	Final changes for the default configuration and data install for
+	ticket #764.
+
+	M    ChangeLog
+	M    dispatch/Makefile.am
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	Removed the say module from the list of modules. Let's keep them
+	separate for now.
+	M    csv-handler/bes.conf
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	Added a little more debug information to connection attempt.
+	M    server/ServerApp.cc
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	If bes can not be found then exit out of the configure script. The
+	--with-bes flag works now.
+	M    csv-handler/conf/libdap.m4
+	M    csv-handler/bes.conf
+	M    csv-handler/configure.ac
+
+2007-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Changes to support the automatic configuration of the Hyrax test
+	data which are distributed with the handlers.
+
+	M    bes/bes.conf.in
+
 2007-03-06  Patrick West <pwest@ucar.edu>
 
-	Counting excluded directories in the catalog count.
-	
+	Was counting excluded directories in the catalog count, which made
+	an incorrect count in the respoonse.
 	M    dispatch/BESCatalogDirectory.cc
 
 2007-03-06  Patrick West <pwest@ucar.edu>
 
 	Fixed problem where key or value in the configuration file with
 	leading or trailing blanks weren't being removed.
-	
 	M    dispatch/BESKeys.cc
 	M    dispatch/test/keys_test.ini
 	M    dispatch/BESKeys.h
@@ -22,11 +62,10 @@
 	PPT_TESTING_CONNECTION string, then the BES was hanging. Using a
 	timeout for the initial handshake.
 
-	If a client connects to the BES that is not a BES client, and
-	sends a string other then PPT_TESTING_CONNECTION, then we simply
-	want to close the connection and return rather than throwing an
-	exception and exiting.
-	
+	If a client connects to the BES that is not a BES client, and sends
+	a string other then PPT_TESTING_CONNECTION, then we simply want to
+	close the connection and return rather than throwing an exception
+	and exiting.
 	M    ppt/PPTServer.h
 	M    ppt/PPTClient.cc
 	M    ppt/SSLConnection.cc
@@ -36,19 +75,16 @@
 
 2007-03-06  Patrick West <pwest@ucar.edu>
 
-	If the client does not exist yet, the connection failed for some
-	reason, whatever, we must check to see if it exists before calling
-	close.
-	
+	If the client does not exist yet, the connection failed for some reason,
+	whatever, we must check to see if it exists before calling close.
 	M    cmdln/CmdClient.cc
 
 2007-02-26  Patrick West <pwest@ucar.edu>
 
-	Added dollar sign to end of regular expressions to make sure they
-	didn't match things like .nc.html. Also added expressions to match
-	compressed files. Changed the name of the unix socket from
-	opendap.socket to bes.socket.
-	
+	Added dollar sign to end of regular expressions to make sure they didn't
+	match things like .nc.html. Also added expressions to match compressed
+	files. Changed the name of the unix socket from opendap.socket to
+	bes.socket.
 	M    bes/bes.conf.in
 
 2007-02-23  Patrick West <pwest@ucar.edu>
@@ -56,7 +92,6 @@
 	If not a say hello command then the reporter is still called.
 	Changed it to only report if SAY_WHAT and SAY_TO are found in the
 	data handler interface.
-	
 	M    hello_world/SayReporter.cc
 
 2007-02-23  Patrick West <pwest@ucar.edu>
@@ -70,7 +105,6 @@
 
 	handler example reading in csv file with request handler, response
 	handler, and reporter.
-	
 	A    csv-handler
 	A    csv-handler/CSVResponseNames.h
 	A    csv-handler/CSV_Field.h
@@ -112,19 +146,16 @@
 2007-02-20  Patrick West <pwest@ucar.edu>
 
 	What does PPT stand for was not in the document. Added it.
-	
 	M    docs/BES_PPT.doc
 
 2007-02-20  Patrick West <pwest@ucar.edu>
 
 	Request handler cast lines incorrect.
-	
 	M    bin/besCreateModule.in
 
 2007-02-20  Patrick West <pwest@ucar.edu>
 
 	Added reporter to hello world example module
-	
 	M    hello_world/SayModule.cc
 	M    hello_world/bes.conf
 	AM   hello_world/SayReporter.cc
@@ -166,7 +197,6 @@
 	templates was listed both as a sub directory and as an EXTRA_DIST.
 	So removed it from EXTRA_DIST. Added an EXTRA_DIST variable to the
 	templates Makefile.
-	
 	M    bes/templates/Makefile.am
 	M    bes/Makefile.am
 
@@ -177,12 +207,11 @@
 
 2007-02-09  Patrick West <pwest@ucar.edu>
 
-	Updates to the change log for this release. Running dist check
-	found that the docs Makefile was not up to date with the new names
-	of the documents. The TestException class was out of date with the
-	new exception methods. The Makefile in the bin directory was not
+	Updates to the change log for this release. Running dist check found
+	that the docs Makefile was not up to date with the new names of the
+	documents.  The TestException class was out of date with the new
+	exception methods. The Makefile in the bin directory was not
 	distributing the .in file. Updated the NEWS file.
-	
 	M    bes/ChangeLog
 	M    bes/docs/Makefile.am
 	M    bes/server/test/TestException.cc
@@ -190,6 +219,9 @@
 	M    bes/bin/Makefile.am
 	M    bes/NEWS
 
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-02-08  Patrick West <pwest@ucar.edu>
 
 	Changed name from Server4 to Hyrax
@@ -450,9 +482,6 @@
 	M    INSTALL
 	M    NEWS
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:

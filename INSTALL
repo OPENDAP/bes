@@ -88,6 +88,13 @@ BUILD REQUIREMENTS
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.
 
+    If you have an Intel Mac and you are experiencing configuration issues
+    then you might need to download the latest and greatest autoconf,
+    automake, and libtool using the DarwinPorts tool. We've tried using
+    other download tools, like fink, and building from source these
+    packages, but only DarwinPorts seems to resolve the issues. We continue
+    to watch this issue and hope to get it resolved soon.
+
   o The library uses libdap, but is not required. You will need version
     3.7.3 or greater to build this software. See
     http://www.opendap.org/download/. Since libdap uses libcurl and libxml2,

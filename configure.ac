@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.57)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.4.0, dods-tech@unidata.ucar.edu)
+AC_INIT(bes, 3.4.1, dods-tech@unidata.ucar.edu)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 

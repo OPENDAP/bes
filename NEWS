@@ -1,6 +1,23 @@
 
 	$Id$
 
+News Version 3.4.1
+
+Changed the name of the release from Server4 to Hyrax.
+
+Added two example modules under bes.
+
+The first is the hello world module, which adds a command 'say <something>
+to <someone>;' For example, 'say hello to world;'. Adds a request handler, a
+response handler, a new command (the say command), and a reporter to report
+what is being said to who.
+
+The second is a csv_handler, which can read comma separated files in a
+certain format. This module adds a new request handler that can handle the
+typical dap responses.
+
+Minor bug fixes and clean ups.
+
 News Version 3.4.0
 
 Added a new feature to the BES, the ability to create context within the
