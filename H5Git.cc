@@ -1,391 +1,49 @@
-/*  Should check the current APIs to see if it needs to be updated.  <hyokyung 2007.02.20. 13:33:06> */
-/*-------------------------------------------------------------------------
- * Copyright (C) 1999	National Center for Supercomputing Applications.
- *			All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \file H5Git.cc
+///  iterates all HDF5 internals.
+/// 
+///  This file includes all the routines to search HDF5 group, dataset, links,
+///  and attributes. since we are using HDF5 C APIs, we include all c functions
+///  in this file.
+///
+//   Kent Yang 2001.05.14
+///
+///  Copyright (C) 2007	HDFGroup, Inc.
+///
+///  Copyright (C) 1999	National Center for Supercomputing Applications.
+///			All rights reserved.
+///
+////////////////////////////////////////////////////////////////////////////////
 
-/* this file includes all the routines to search HDF5 group, dataset,links,
-   and attributes. since we are using HDF5 C APIs, we include all c functions in this
-   file. Kent Yang 2001/5/14/ */
+// \todo  Should check the current APIs to see if it needs to be updated.
+// <hyokyung 2007.02.20. 13:33:06>
+
+
 // #define DODS_DEBUG
 
-// #include <stdlib.h>
 #include <string.h>
 #include <hdf5.h>
-
-// using std::string;
 #include "debug.h"
 #include "H5Git.h"
 #include "InternalErr.h" // <hyokyung 2007.02.23. 14:17:32>
-#ifndef FALSE
-#define FALSE 0
-#endif
 
-#ifdef KENT_OLD_WAY
-static herr_t count_elems(hid_t loc_id, const char *name, void *opdata);
-static herr_t obj_info(hid_t loc_id, const char *name, void *opdata);
+// #ifndef FALSE
+// #define FALSE 0
+// #endif
 
-typedef struct retval {
-    char *name;
-    int type;
-} retval_t;
-
-/* Functions H5Gn_members,H5Gget_obj_info_idx,count_elems,obj_info are courtestly provided by Robert McGrath. I simply leave the comments on. Kent Yang */
-/*-------------------------------------------------------------------------
- * Function:	H5Gn_members
- *
- * Purpose:	Return the number of members of a group.  The "members"
- *		are the datasets, groups, and named datatypes in the
- *		group.
- *
- *		This function wraps the H5Ginterate() function in
- *		a completely obvious way, uses the operator
- *		function 'count_members()' below;
- *
- * See also:	H5Giterate()
- *
- *		IN:  hid_t file:  the file id
- *		IN:  char *group_name: the name of the group
- *
- * Errors:
- *
- * Return:	Success:	The object number of members of
- *				the group.
- *
- *		Failure:	FAIL
- *
- * Programmer:	REMcG
- *		Monday, Aug 2, 1999
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- */
-int H5Gn_members(hid_t loc_id, char *group_name)
-{
-    int res;
-    int nelems = 0;
-
-    res =
-        H5Giterate(loc_id, group_name, NULL, count_elems,
-                   (void *) &nelems);
-    if (res < 0) {
-        return res;
-    } else {
-        return (nelems);
-    }
-}
-
-
-
-/*-------------------------------------------------------------------------
- * Function:	H5Gget_obj_info_idx
- *
- * Purpose:	Return the name and type of the member of the group
- *		at index 'idx', as defined by the H5Giterator()
- *		function.
- *
- *		This function wraps the H5Ginterate() function in
- *		a completely obvious way, uses the operator
- *		function 'get_objinfo()' below;
- *
- * See also:	H5Giterate()
- *
- *		IN:  hid_t file:  the file id
- *		IN:  char *group_name: the name of the group
- *		IN:  int idx:  the index of the member object (see
- *		               H5Giterate()
- * 		OUT:  char **objname:  the name of the member object 
- * 		OUT:  int *type:  the type of the object (dataset, 
- *			group, or named datatype)
- *
- * Errors:
- *
- * Return:	Success:	The object number of members of
- *				the group.
- *
- *		Failure:	FAIL
- *
- * Programmer:	REMcG
- *		Monday, Aug 2, 1999
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- */
-herr_t
-H5Gget_obj_info_idx(hid_t loc_id, char *group_name, int idx,
-                    char **objname, int *type)
-{
-    int res;
-    retval_t retVal;
-
-    res = H5Giterate(loc_id, group_name, &idx, obj_info, (void *) &retVal);
-    if (res < 0) {
-        return res;
-    }
-    *objname = retVal.name;
-    *type = retVal.type;
-    return 0;
-}
-
-
-
-/*-------------------------------------------------------------------------
- * Function:	count_elems
- *
- * Purpose:	this is the operator function called by H5Gn_members().
- *
- *		This function is passed to H5Ginterate().
- *
- * See also:	H5Giterate()
- *
- * 		OUT:  'opdata' is returned as an integer with the
- *			number of members in the group.
- *
- * Errors:
- *
- * Return:	Success:	The object number of members of
- *				the group.
- *
- *		Failure:	FAIL
- *
- * Programmer:	REMcG
- *		Monday, Aug 2, 1999
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- */
-
-static herr_t count_elems(hid_t loc_id, const char *name, void *opdata)
-{
-    herr_t res;
-    H5G_stat_t statbuf;
-
-    res = H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
-    if (res < 0) {
-        return 1;
-    }
-    switch (statbuf.type) {
-    case H5G_GROUP:
-        (*(int *) opdata)++;
-        break;
-    case H5G_DATASET:
-        (*(int *) opdata)++;
-        break;
-    case H5G_TYPE:
-        (*(int *) opdata)++;
-        break;
-    default:
-        (*(int *) opdata)++;    /* ???? count links or no? */
-        break;
-    }
-    return 0;
-}
-
-
-/*-------------------------------------------------------------------------
- * Function:	obj_info
- *
- * Purpose:	this is the operator function called by H5Gn_members().
- *
- *		This function is passed to H5Ginterate().
- *
- * See also:	H5Giterate()
- *
- * 		OUT:  'opdata' is returned as a 'recvar_t', containing
- *			the object name and type.
- *
- * Errors:
- *
- * Return:	Success:	The object number of members of
- *				the group.
- *
- *		Failure:	FAIL
- *
- * Programmer:	REMcG
- *		Monday, Aug 2, 1999
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- *			group, or named datatype)
- */
-static herr_t obj_info(hid_t loc_id, const char *name, void *opdata)
-{
-    herr_t res;
-    H5G_stat_t statbuf;
-
-    res = H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
-    if (res < 0) {
-        ((retval_t *) opdata)->type = 0;
-        ((retval_t *) opdata)->name = NULL;
-        return 1;
-    } else {
-        ((retval_t *) opdata)->type = statbuf.type;
-        ((retval_t *) opdata)->name = strdup(name);
-        return 1;
-    }
-}
-
-/*-------------------------------------------------------------------------
- * Function:	get_Dattr_numb
- *
- * Purpose:	obtain number of attributes in a dataset or 
- *              a group.
- *
- *
- * Errors:
- *
- * Return:	object id:	dataset
- *		Failure:	-1
- *
- * In :	        parent object id(pid)
- *              parent object name
- * Out:         pointer of number of attributes(* num_attr_ptr)
- *	     
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- *			
- */
-
-
-hid_t
-get_Dattr_numb(hid_t pid, int *num_attr_ptr, char *dname, char *error)
-{
-
-    hid_t dset;
-    int num_at;
-
-    if ((dset = H5Dopen(pid, dname)) < 0) {
-      /* <hyokyung 2007.02.23. 15:51:38>
-        sprintf(error,
-                "h5_das server:  unable to open hdf5 dataset of group %d",
-                pid);
-      */
-	string msg =
-	    "dap_h5_handler:  unable to open hdf5 dataset of group ";
-	msg += pid;
-	throw InternalErr(__FILE__, __LINE__, msg);      
-        // return -1;
-    }
-
-    /* obtain number of attributes in this dataset. */
-
-    if ((num_at = H5Aget_num_attrs(dset)) < 0) {
-      /*
-        sprintf(error,
-                "h5_das server:  failed to obtain hdf5 attribute in dataset %d",
-                dset);
-      */
-	string msg =
-	    "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
-	msg += dset;
-	throw InternalErr(__FILE__, __LINE__, msg);            
-        // return -1;
-    }
-
-    *num_attr_ptr = num_at;
-    return dset;
-
-}
-
-/*-------------------------------------------------------------------------
- * Function:	get_Gattr_numb
- *
- * Purpose:	this function will get number of attributes in a dataset or 
- *              a group.
- *
- *
- * Errors:
- *
- * Return:	objectid:       group
- *		Failure:	-1
- *
- * In :	        parent object id(pid)
- *              parent object name
- * Out:         pointer of number of attributes(* num_attr_ptr)
- *	     
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- *			
- */
-
-
-hid_t
-get_Gattr_numb(hid_t pid, int *num_attr_ptr, char *dname, char *error)
-{
-
-    hid_t c_group;
-    int num_at;
-
-    if ((c_group = H5Gopen(pid, dname)) < 0) {
-      /*
-       sprintf(error,
-                "h5_das server:  unable to open hdf5 group in group %d",
-                pid);
-      */
-      // <hyokyung 2007.02.23. 16:00:29>
-	string msg =
-	    "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
-	msg += pid;
-	throw InternalErr(__FILE__, __LINE__, msg);
-	
-        // return -1;
-    }
-
-    /* obtain number of attributes in this dataset. */
-
-    if ((num_at = H5Aget_num_attrs(c_group)) < 0) {
-      /* <hyokyung 2007.02.27. 08:42:39>
-        sprintf(error,
-                "h5_das server:  failed to obtain hdf5 attribute in group %d",
-                c_group);
-      */
-	string msg =
-	    "dap_h5_handler:  failed to obtain hdf5 attribute in group  ";
-	msg += c_group;
-	throw InternalErr(__FILE__, __LINE__, msg);
-      
-        // return -1;
-    }
-
-    *num_attr_ptr = num_at;
-    return c_group;
-
-}
-#endif
-/*-------------------------------------------------------------------------
- * Function:	get_attr_info
- *
- * Purpose:	this function will get attribute information:
-                datatype, dataspace(dimension sizes) and number of
-                dimensions and put it into a data struct.
- *
- *
- * Errors:
- *
- * Return:	attribute id:	
- *		Failure:	-1
- *
- * In :	        parent object id(oid)
- *              parent object index
- * Out:         pointer to the attribute struct(* attr_inst_ptr)
- *	     
- *
- * Modifications:
- *
- *-------------------------------------------------------------------------
- *			
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_attr_info(hid_t dset, int index, DSattr_t *attr_inst_ptr,
+///                  int *ignoreptr, char *error)
+///  will get attribute information.
+///
+/// This function will get attribute information: datatype, dataspace(dimension
+/// sizes) and number of dimensions and put it into a data struct.
+///
+/// \param dset  parent object id
+/// \param index parent object index
+/// \return pointer to attribute structure
+/// \throw InternalError 
+////////////////////////////////////////////////////////////////////////////////
 hid_t
 get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
               int *ignoreptr, char *error)
@@ -405,36 +63,21 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     size_t need;
     hsize_t nelmts = 1;
 
-    /*  size_t need; */
+    // size_t need; 
     int j, ndims;
-
-    /*  int buf_size =30; */
 
     *ignoreptr = 0;
     namebuf = (char*)malloc(DODS_NAMELEN);
 
     if ((attrid = H5Aopen_idx(dset, index)) < 0) {
-      /*
-        strcpy(error, " unable to obtain hdf5 attribute ");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:05:45>
-      */
-      
       	string msg =
 	    "dap_h5_handler: unable to open attribute by index ";
 	msg += index;
 	throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    /* obtain the attribute name. */
+    // obtain the attribute name. 
     if ((H5Aget_name(attrid, DODS_NAMELEN, namebuf)) < 0) {
-      /*
-        strcpy(error, " unable to obtain hdf5 attribute name");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:19:07>
-      */
       string msg =
 	    "dap_h5_handler: unable to obtain hdf5 attribute name for id=";
       msg += attrid;
@@ -443,12 +86,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 
 
     if ((attrid = H5Aopen_name(dset, namebuf)) < 0) {
-      /*
-        strcpy(error, " unable to obtain hdf5 attribute ");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:19:10>
-      */
       string msg =
 	"dap_h5_handler: unable to obtain hdf5 attribute by name = ";
       msg += namebuf;
@@ -456,14 +93,8 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
       
     }
 
-    /* obtain the type of the attribute. */
+    // obtain the type of the attribute. 
     if ((ty_id = H5Aget_type(attrid)) < 0) {
-      /*
-        strcpy(error, " unable to get hdf5 attribute type ");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:19:14>
-      */
       string msg =
 	"dap_h5_handler: unable to obtain hdf5 attribute type for id = ";
       msg += attrid;
@@ -473,12 +104,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     temp_type = H5Tget_class(ty_id);
 
     if (temp_type < 0) {
-      /*
-        strcpy(error, " unable to obtain hdf5 datatype ");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:20:14>
-      */
       string msg =
 	"dap_h5_handler: unable to obtain hdf5 datatype class for type_id = ";
       msg += ty_id;
@@ -486,10 +111,11 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
       
     }
 
-    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD)
-        || (temp_type == H5T_OPAQUE) || (temp_type == H5T_COMPOUND)
-        || (temp_type == H5T_ENUM)) {
-        /* strcpy(error,"unexpected datatype for DODS "); */
+    if ((temp_type == H5T_TIME) ||
+	(temp_type == H5T_BITFIELD) ||
+	(temp_type == H5T_OPAQUE) ||
+	// (temp_type == H5T_COMPOUND)|| <hyokyung 2007.03. 8. 11:02:12>
+	(temp_type == H5T_ENUM)) {
         *ignoreptr = 1;
         attrid = 0;
         goto exit;
@@ -502,12 +128,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 
     if ((space = H5Aget_space(attrid)) < 0) {
-      /*
-        strcpy(error, " unable to get attribute data space");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:29:01>
-      */
       string msg =
 	"dap_h5_handler: unable to obtain hdf5 data space for id = ";
       msg += attrid;
@@ -516,16 +136,8 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 
     ndims = H5Sget_simple_extent_dims(space, size, maxsize);
 
-    /* check dimension size. */
-
+    // Check dimension size. 
     if (ndims > DODS_MAX_RANK) {
-      /*
-        strcpy(error,
-               "number of dimensions exceeds hdf5_das server allowed.");
-        attrid = -1;
-        goto exit;
-	<hyokyung 2007.02.27. 09:33:06>
-      */
       string msg =
 	"dap_h5_handler: number of dimensions exceeds hdf5_das server allowed.";
       msg += attrid;
@@ -546,8 +158,7 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 #endif
 
-    /* return ndims and size[ndims]. */
-
+    // return ndims and size[ndims]. 
     if (ndims) {
         for (j = 0; j < ndims; j++)
             nelmts *= size[j];
@@ -569,37 +180,30 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     return attrid;
 }
 
-
-/* this function is used because H5Fopen cannot be directly used in a 
-   C++ code. */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_fileid(const char *filename)
+/// gets HDF5 file id.
+/// 
+/// This function is used because H5Fopen cannot be directly used in a C++ code.
+/// \param filename HDF5 filename
+/// \return a file handler id
+////////////////////////////////////////////////////////////////////////////////
 hid_t get_fileid(const char *filename)
 {
     return H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
 }
 
-/*-------------------------------------------------------------------------
- * Function:	get_dataset
- *
- * Purpose:	 obtain data information in a dataset
- *               datatype, dataspace(dimension sizes) and number of
- *               dimensions and put these information into a pointer of
- *               data struct.
- *
- *
- * Errors:
- *
- * Return:	dataset id:	
-  *
- * In :	        parent object id(group id)
- *              dataset name
- * Out:         pointer to the attribute struct(* attr_inst_ptr)
- *	     
- *
- *-------------------------------------------------------------------------
- *			
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
+/// obtain data information in a dataset datatype, dataspace(dimension sizes)
+/// and number of dimensions and put these information into a pointer of data
+/// struct.
+///
+/// \param[in] pid    parent object id(group id)
+/// \param[in] dname  dataset name
+/// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
+/// \return	dataset id	
+////////////////////////////////////////////////////////////////////////////////
 hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 {
 
@@ -614,22 +218,23 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     int j, ndims;
     int buf_size = 30;
 
+    DBG(cerr << "<get_dataset()" << endl);
     if ((dset = H5Dopen(pid, dname)) < 0) {
-        sprintf(error, "h5_das server:  failed to obtain dataset %s",
+        sprintf(error, "h5_dds handler:  failed to obtain dataset %s",
                 dname);
         return -1;
     }
 
     if ((datatype = H5Dget_type(dset)) < 0) {
         sprintf(error,
-                "h5_das server:  failed to obtain datatype from  dataset %s",
+                "h5_dds handler:  failed to obtain datatype from  dataset %s",
                 dname);
         return -1;
     }
 
     if ((dataspace = H5Dget_space(dset)) < 0) {
         sprintf(error,
-                "h5_das server:  failed to obtain dataspace from  dataset %s",
+                "h5_dds handler:  failed to obtain dataspace from  dataset %s",
                 dname);
         return -1;
     }
@@ -639,27 +244,31 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 
     if (temp_type < 0) {
         sprintf(error,
-                "h5_das server:  failed to obtain type class from %d",
+                "h5_dds handler:  failed to obtain type class from %d",
                 datatype);
         return -1;
     }
 
-    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD)
-        || (temp_type == H5T_OPAQUE) || (temp_type == H5T_COMPOUND)
-        || (temp_type == H5T_ENUM) || (temp_type == H5T_REFERENCE)) {
 
-        strcpy(error, "get data unexpected datatype at temp_type");
+    if ((temp_type == H5T_TIME) ||
+	(temp_type == H5T_BITFIELD)||
+	(temp_type == H5T_OPAQUE) ||
+	// (temp_type == H5T_COMPOUND) || <hyokyung 2007.03. 1. 15:12:57>
+	(temp_type == H5T_ENUM) ||
+	(temp_type == H5T_REFERENCE)) {
+        //  <hyokyung 2007.03. 1. 15:10:03>
+        sprintf(error, "h5_dds handler: get_data0 - unexpected datatype at temp_type = %d", temp_type);
         return -1;
     }
 
-    /* obtain number of attributes in this dataset. */
 
+    // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
-        strcpy(error, " unable to get number of dimensions");
+        strcpy(error, "h5_dds handler: get_data0 - unable to get number of dimensions");
         return -1;
     }
 
-    /* check dimension size. */
+    // check dimension size. 
     if (ndims > DODS_MAX_RANK) {
         strcpy(error,
                "number of dimensions exceeds hdf5-dods server allowed");
@@ -680,8 +289,7 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     }
 #endif
 
-    /* return ndims and size[ndims]. */
-
+    // return ndims and size[ndims]. 
     if (ndims) {
         for (j = 0; j < ndims; j++)
             nelmts *= size[j];
@@ -699,26 +307,20 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     for (j = 0; j < ndims; j++) {
         (*dt_inst_ptr).size[j] = size[j];
     }
+    DBG(cerr << ">get_dataset()" << endl);
     return dset;
 }
 
 
-/*-------------------------------------------------------------------------
- * Function:	get_data
- *
- * Purpose:	this function will get all data of a dataset
- *              and put it into buf.
-
- * Errors:
- *
- * Return:	-1, failed. otherwise,success.
-  *
- * In :	        dataset id(dset)
- * Out:         pointer to a buf.
- *	     
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_data(hid_t dset, void *buf, char *error)
+/// will get all data of a dataset and put it into buf.
+///
+/// \param[in] dset dataset id(dset)
+/// \param[out] buf pointer to a buffer
+/// \return -1, if failed.
+/// \return 0, if succeeded.
+////////////////////////////////////////////////////////////////////////////////
 int get_data(hid_t dset, void *buf, char *error)
 {
 
@@ -769,23 +371,17 @@ int get_data(hid_t dset, void *buf, char *error)
     return 0;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	get_strdata
- *
- * Purpose:	this function will get all data of a dataset
- *              and put it into buf.
-
- * Errors:
- *
- * Return:	-1, failed. otherwise,success.
-  *
- * In :	        dataset id(dset)
-                strindex: index of H5T_STRING
- * Out:         pointer to a buf.
- *	     
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+// \fn get_strdata(hid_t dset, int strindex, char *allbuf, char *buf,char *error)
+/// will get all data of a dataset and put it into buf.
+///
+/// \param[in] dset dataset id(dset)
+/// \param[in] strindex index of H5T_STRING
+/// \param[in] allbuf pointer to string buffer that has been built so far
+/// \param[out] buf pointer to a buf
+/// \return -1 if failed.
+/// \return  0 if succeeded.
+////////////////////////////////////////////////////////////////////////////////
 int
 get_strdata(hid_t dset, int strindex, char *allbuf, char *buf, char *error)
 {
@@ -816,25 +412,20 @@ get_strdata(hid_t dset, int strindex, char *allbuf, char *buf, char *error)
     return 0;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	get_slabdata
- *
- * Purpose:	this function will get hyperslab data of a dataset
- *              and put it into buf.
-
- * Errors:
- *
- * Return:	-1, failed. otherwise,success.
-  *
- * In :	        dataset id(dset)
-                offset : starting point
-                step:  stride
-                count: count
- * Out:         pointer to a buf.
- *	     
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
+///     hsize_t data_size, void *buf, char *error)
+/// will get hyperslab data of a dataset and put it into buf.
+///
+/// \param[in] dset dataset id
+/// \param[in] offset starting point
+/// \param[in] step  stride
+/// \param[in] count  count
+/// \param[out] buf pointer to a buffer
+/// \return 0 if failed
+/// \return 1 otherwise
+/// \todo return 0 if succeed?
+////////////////////////////////////////////////////////////////////////////////
 int
 get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
              hsize_t data_size, void *buf, char *error)
@@ -964,24 +555,14 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     return 1;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	get_dimname
- *
- * Purpose:	 obtain dimensional scale name
- *
- * Errors:
- *
- * Return:	dimensional name	
-  *
- * In :	        hid_t: original HDF5 dataset name that refers to dim. scale
- *              int: index of the dimensional scale
- * Out:         this dimensional scale name
- *	     
- *
- *-------------------------------------------------------------------------
- *			
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_dimname(hid_t dataset, int index)
+/// obtains dimensional scale name.
+///
+/// \param hid_t original HDF5 dataset name that refers to dimensional scale
+/// \param index index of the dimensional scale
+/// \return dimensional name	
+////////////////////////////////////////////////////////////////////////////////
 char *get_dimname(hid_t dataset, int index)
 {
     hid_t attr_id;
@@ -1004,7 +585,6 @@ char *get_dimname(hid_t dataset, int index)
         attr_id = H5Aopen_idx(dataset, i);
         bzero(dimscale, sizeof(dimscale));
         attr_namesize = H5Aget_name(attr_id, 20, dimscale);
-
 	// printf("i = %d\n",i);
         printf("dimscale %s\n",dimscale); 
         if (attr_namesize < 0) {
@@ -1048,38 +628,29 @@ char *get_dimname(hid_t dataset, int index)
 
 
 
-
-
-/*-------------------------------------------------------------------------
- * Function:	get_dimid
- *
- * Purpose:	 obtain dimensional scale ID
- *
- * Errors:
- *
- * Return:	dimensional scale id
-  *
- * In :	        hid_t: original HDF5 dataset name that refers to dim. scale
- *              int: index of the object reference
- * Out:         this dimensional scale id
- *	        nelmptr: pointer to the number of element of this dimension
-                dsizeptr: pointer to total size of this dimension
-		dimtypeptr:pointer to dimensional type 
- *
- *-------------------------------------------------------------------------
- *			
- */
-
-// Needs to be re-written or enhanced since
-// 1) dimensional scale has been updated.
-// 2) needs to fulfill Aura's time.
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
+///            hid_t * dimtypeptr)
+/// obtains dimensional scale ID.
+///
+/// \param dataset original HDF5 dataset name that refers to dim. scale
+/// \param index index of the object reference
+/// \param nelmptr  pointer to the number of element of this dimension
+/// \param dsizeptr pointer to total size of this dimension
+/// \param dimtypeptr pointer to dimensional type
+/// \return dimensional scale id
+///
+/// \todo Needs to be re-written or enhanced since
+/// <ol>
+///    <li> dimensional scale has been updated.
+///    <li> needs to fulfill Aura's time.
+/// </ol>
 // <hyokyung 2007.02.20. 13:39:08>
+////////////////////////////////////////////////////////////////////////////////
 hid_t
 get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
             hid_t * dimtypeptr)
 {
-
-
     hid_t attr_id;
     hid_t tempid;
     hid_t *sdsdim;
@@ -1156,23 +727,13 @@ get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
     return tempid;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	get_dimnum
- *
- * Purpose:	 obtain number of dimensional scale in the dataset
- *
- * Errors:
- *
- * Return:	number
-  *
- * In :	        hid_t: original HDF5 dataset name that refers to dim. scale
- *              
- *	     
- *
- *-------------------------------------------------------------------------
- *			
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_dimnum(hid_t dataset)
+/// obtains number of dimensional scale in the dataset.
+///
+/// \param dataset original HDF5 dataset name that refers to dimensional scale
+/// \return a number
+////////////////////////////////////////////////////////////////////////////////
 int get_dimnum(hid_t dataset)
 {
 
@@ -1204,8 +765,8 @@ int get_dimnum(hid_t dataset)
             if (!H5Tequal(type, H5T_STD_REF_OBJ))
                 return -1;
             space = H5Aget_space(attr_id);
-            /* number of element for HDF5 dimensional object reference array
-               is the number of dimension of HDF5 corresponding array. */
+            // number of element for HDF5 dimensional object reference array
+            // is the number of dimension of HDF5 corresponding array. 
             ssiz = H5Sget_simple_extent_npoints(space);
             num_dim = (int) ssiz;
             H5Aclose(attr_id);
@@ -1217,21 +778,14 @@ int get_dimnum(hid_t dataset)
     return num_dim;
 }
 
-/*-------------------------------------------------------------------------
- * Function:    correct_name
- *
- * Purpose:     modify the hdf5 name when the name contains '/'. Change
-                this character into '_'.
-                
- *              
- * Return:      the corrected name
- *
- * In :	        old name
-                
- 
- *-------------------------------------------------------------------------
- */
-char *correct_name(char *oldname)
+////////////////////////////////////////////////////////////////////////////////
+/// \fn correct_name(char *oldname)
+/// changes the hdf5 name when the name contains '/' into '_'.
+///
+/// \param oldname     old name
+/// \return the corrected name
+////////////////////////////////////////////////////////////////////////////////
+char* correct_name(char *oldname)
 {
 
     char *cptr;
@@ -1243,7 +797,7 @@ char *correct_name(char *oldname)
     if (oldname == NULL)
         return NULL;
 
-    /* the following code is for correcting name from "/" to "_" */
+    // The following code is for correcting name from "/" to "_" 
     newname = (char*)malloc((strlen(oldname) + 1) * sizeof(char));
     bzero(newname, (strlen(oldname) + 1) * sizeof(char));
     newname = strncpy(newname, oldname, strlen(oldname));
@@ -1253,10 +807,10 @@ char *correct_name(char *oldname)
     }
 
 #if 0
-    /* I don't understand this comment, but the code breaks a number
-       of datasets. The section above was commented out but I'm undoing that.
-       jhrg 7/3/06 */
-    /* Now we want to try DODS ferret demo */
+    // I don't understand this comment, but the code breaks a number
+    //  of datasets. The section above was commented out but I'm undoing that.
+    //  jhrg 7/3/06 
+    // Now we want to try DODS ferret demo 
     cptr = strrchr(oldname, ORI_SLASH);
     cptr++;
     newname = malloc((strlen(cptr) + 1) * sizeof(char));
@@ -1267,6 +821,14 @@ char *correct_name(char *oldname)
     return newname;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_memtype(hid_t datatype)
+/// gets machine architecture specific memory type from general HDF5 type.
+/// 
+/// \param datatype HDF5 general data type
+/// \return platform specific datatype
+/// \return -1 if data type mapping is impossible
+////////////////////////////////////////////////////////////////////////////////
 hid_t get_memtype(hid_t datatype)
 {
 
@@ -1276,7 +838,7 @@ hid_t get_memtype(hid_t datatype)
     typesize = H5Tget_size(datatype);
     typeclass = H5Tget_class(datatype);
 
-    /* we will only consider H5T_INTEGER,H5T_FLOAT in this case. */
+    // We will only consider H5T_INTEGER, H5T_FLOAT in this case. 
 
     switch (typeclass) {
 
@@ -1448,7 +1010,14 @@ hid_t get_memtype(hid_t datatype)
     return 0;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn check_h5str(hid_t h5type)
+/// checks if type is HDF5 string type
+/// 
+/// \param h5type data type id
+/// \return 1 if type is string
+/// \return 0 otherwise
+////////////////////////////////////////////////////////////////////////////////
 int check_h5str(hid_t h5type)
 {
     if (H5Tget_class(h5type) == H5T_STRING)
@@ -1456,3 +1025,5 @@ int check_h5str(hid_t h5type)
     else
         return 0;
 }
+
+// $Log$ //

@@ -1,44 +1,22 @@
-/*-------------------------------------------------------------------------
- * Copyright (C) 1999	National Center for Supercomputing Applications.
- *			All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
+/// \file h5_handler.cc
+/// \brief main program source.
+///
+/// Copyright (C) 2007	HDF Group, Inc.
+///
+/// Copyright (C) 1999	National Center for Supercomputing Applications.
+///		All rights reserved.
 
-/* This is the HDF5-DAS which extracts DAS class descriptors converted from
-   HDF5 attribute of an hdf5 data file. */
-// #define DODS_DEBUG 
-#include "config_hdf5.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <assert.h>
-
-#include <iostream>
-#include <string>
-
-#include "debug.h"
-#include "cgi_util.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "ConstraintEvaluator.h"
-#include "HDF5TypeFactory.h"
-#include "DODSFilter.h"
-#include "InternalErr.h"
-#include "h5das.h"
-#include "h5dds.h"
-#include "H5Git.h" <hyokyung 2007.02.23. 15:16:53>
-
-/*
-extern "C" {
-hid_t get_fileid(const char *filename);
-} 
-*/
+#include "h5_handler.h"
 
 const static string cgi_version = "3.0";
 
+/// \fn main(int argc, char *argv[])
+/// main function for HDF5 data handler.
+/// This function processes options and generates the corresponding DAP outputs requested by the user.
+/// @param argc number of arguments
+/// @param argv command line arguments for options
+/// @return 0 if success
+/// @return 1 if error
 int main(int argc, char *argv[])
 {
     DBG(cerr << "Starting the HDF server." << endl);
@@ -83,8 +61,6 @@ int main(int argc, char *argv[])
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
                 find_gloattr(file1, das);
-                //depth_first(file1, "/", das,
-                //            df.get_dataset_name().c_str());
 		DBG(cerr << ">dds.transfer_attributesr" << endl);		
                 dds.transfer_attributes(&das); // ? <hyokyung 2007.02.20. 13:31:49>
 		DBG(cerr << ">df.send_dds()" << endl);				
@@ -104,12 +80,7 @@ int main(int argc, char *argv[])
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
                 find_gloattr(file1, das);
-                //  depth_first(file1, "/", das,
-                //            df.get_dataset_name().c_str());
-
                 dds.transfer_attributes(&das);
-
-
                 df.send_data(dds, ce, stdout); // ? <hyokyung 2007.02.20. 13:32:00>
                 break;
             }
@@ -123,11 +94,10 @@ int main(int argc, char *argv[])
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
                 find_gloattr(file1, das);
-                depth_first(file1, "/", das,
-                            df.get_dataset_name().c_str());
+                //depth_first(file1, "/", das,
+                //            df.get_dataset_name().c_str());
 
                 dds.transfer_attributes(&das);
-
                 df.send_ddx(dds, ce, stdout);
                 break;
             }
@@ -169,3 +139,4 @@ int main(int argc, char *argv[])
     DBG(cerr << "HDF5 server exitied successfully." << endl);
     return 0;
 }
+// $Log$

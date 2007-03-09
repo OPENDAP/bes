@@ -63,7 +63,6 @@
 #include "HDF5Structure.h"
 #include "HDF5Sequence.h"
 #include "HDF5Grid.h"
-
 #include "HDF5TypeFactory.h"
 #include "debug.h"
 

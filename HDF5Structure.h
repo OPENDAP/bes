@@ -1,4 +1,3 @@
-
 #ifndef _HDF5Structure_h
 #define _HDF5Structure_h 1
 
@@ -6,32 +5,39 @@
 #pragma interface
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <string>
 #include <H5Ipublic.h>
 #include "Structure.h"
-
-// extern "C" int get_data(hid_t dset,void *buf,char *);
 #include "H5Git.h"
+// Copied and Extended from HDFStructure.cc in hdf4_handler
+// <hyokyung 2007.03. 2. 13:53:06>
 
+/// A HDF5Structure class.
+/// This class converts HDF5 compound type into DAP structure.
+///
+/// @author James Gallagher
+/// @author Hyo-Kyung Lee
+///
+/// @see Structure 
 class HDF5Structure: public Structure {
 private:
   hid_t dset_id;
   hid_t ty_id;
 public:
-friend string print_type(hid_t datatype);   
+  // friend string print_type(hid_t datatype);   
     HDF5Structure(const string &n = "");
     virtual ~HDF5Structure();
-
     virtual BaseType *ptr_duplicate();
-
     virtual bool read(const string &dataset);
-
+  // virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
+  // virtual void set_read_p(bool state);
+  
     void set_did(hid_t dset);
     void set_tid(hid_t type);
     hid_t get_did();
     hid_t get_tid();
+  
+    friend string return_type(hid_t datatype);   
 };
 
 #endif

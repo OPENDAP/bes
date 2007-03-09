@@ -1,43 +1,31 @@
-//
-// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
-// for HDF5 data.
-// 
-//
-// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-//         Muqun Yang <ymuqun@hdfgroup.org>
-//
-// Copyright (c) 2007 HDF Group
-// Copyright (C) 1999 National Center for Supercomputing Applications.
-// All rights reserved.
-
-
-
-/* This is the HDF5-DAS which extracts DAS class descriptors converted from
-   HDF5 attribute of an hdf5 data file. */
+////////////////////////////////////////////////////////////////////////////////
+/// \file h5das.cc
+/// \brief Data attributes processing source
+///
+/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
+/// for HDF5 data.
+///
+/// This is the HDF5-DAS which extracts DAS class descriptors converted from
+///  HDF5 attribute of an hdf5 data file.
+///
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+/// \author Muqun Yang <ymuqun@hdfgroup.org>
+///
+/// Copyright (c) 2007 HDF Group
+///
+/// Copyright (C) 1999 National Center for Supercomputing Applications.
+///
+/// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
 #include "debug.h"
 #include "h5das.h"
 #include "InternalErr.h"
 #include "common.h"
-
-/* the following "C" functions will be used in this routine. 
-   extern "C" {
-   int H5Gn_members(hid_t loc_id, char *group_name);
-   herr_t H5Gget_obj_info_idx(hid_t loc_id, char *group_name, int idx,
-   char **objname, int *type);
-   hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst,
-   int *ignore_ptr, char *);
-   hid_t get_Dattr_numb(hid_t pid, int *num_attr, char *dname, char *);
-   hid_t get_Gattr_numb(hid_t pid, int *num_attr, char *dname, char *);
-   hid_t get_fileid(const char *filename);
-   hid_t get_memtype(hid_t);
-   } 
-*/
 #include "H5Git.h"
 
 
 static char Msgt[255];		// used as scratch in various places
-// 255? This needs to be fixed. <hyokyung 2007.02.20. 11:54:45>
 static int slinkindex;		// used by depth_first()
 
 // This vesion should really be 1.0, to match the version of the handler,
@@ -53,70 +41,45 @@ static const char UINT32[]="UInt32";
 static const char INT_ELSE[]="Int_else";
 static const char FLOAT_ELSE[]="Float_else";
 
-/*-------------------------------------------------------------------------
- * Function:	depth_first
- *
- * Purpose:	this function will walk through hdf5 group and using depth-
- *              first approach to obtain all the group and dataset attributes 
- *         	of a hdf5 file.
- *            
-
- * Errors:      will return error message to the interface.
- * Return:	false, failed. otherwise,success.
- *
- * In :	        dataset id(group id)
- gname: group name(absolute name from root group).
- das: reference of DAS object.
- error: error message to dods inteface.
- fname: file name.
- * Out:         in the process of depth first search. DAS table will be filled.
- *	     
- *
- *-------------------------------------------------------------------------
- */
-// 1. This is like the same code of DDS! => Can we combine the two into one?
-// How about using virtual function?
-// 2. gname is kind of redundant with pid, needs to be removed.
-// 3. why need fname?? KY 02/27/2007
+////////////////////////////////////////////////////////////////////////////////
+/// \fn depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
+/// depth first traversal of hdf5 file attributes.
+///
+/// This function will walk through hdf5 group and using depth-
+/// first approach to obtain all the group and dataset attributes 
+/// of a hdf5 file.
+/// During the process of depth first search, DAS table will be filled.
+/// In case of errors, it will return error message to the DODS interface.
+///
+/// \param pid    dataset id(group id)
+/// \param gname  group name(absolute name from root group).
+/// \param das    reference of DAS object.
+/// \param fname  filename
+/// \return true  if succeeded
+/// \return false if failed
+///
+/// \todo This is like the same code of DDS! => Can we combine the two into one?
+///   How about using virtual function?
+/// \todo gname is kind of redundant with pid, needs to be removed.
+/// \todo why need fname?? KY 02/27/2007
+////////////////////////////////////////////////////////////////////////////////
 bool
 depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 {
   int num_attr = -1;
 
-  /* Iterate through the file to see members of the root group */
-#ifdef KENT_OLD_WAY
-// Old way to obtain members of group 
-  int nelems = H5Gn_members(pid, gname);
-  if (nelems < 0) {
+  // Iterate through the file to see members of the root group.
+  int nelems;
+  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
     msg += gname;
     throw InternalErr(__FILE__, __LINE__, msg);
-  }
-
-#else
-  int nelems;
-  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
-   string msg =
-      "h5_das handler: counting hdf5 group elements error for ";
-    msg += gname;
-    throw InternalErr(__FILE__, __LINE__, msg);
   } 
-#endif
   for (int i = 0; i < nelems; i++) {
 
     char *oname = NULL;
     int type = -1;
-#ifdef KENT_OLD_WAY
-    herr_t ret = H5Gget_obj_info_idx(pid, gname, i, &oname, &type);
-
-    if (ret < 0) {
-      string msg =
-	"h5_das handler: getting hdf5 object information error from";
-      msg += gname;
-      throw InternalErr(__FILE__, __LINE__, msg);
-    }
-#else
     ssize_t oname_size = 0;
     // Query the length
     oname_size= H5Gget_objname_by_idx(pid,(hsize_t)i,NULL, (size_t)DODS_NAMELEN);
@@ -128,10 +91,10 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    /* Obtain the name of the object */
+    // Obtain the name of the object 
     oname = new char[(size_t)oname_size+1];
     if(H5Gget_objname_by_idx(pid,(hsize_t)i,oname,(size_t)(oname_size+1))<0){
-     string msg =
+      string msg =
         "h5_das handler: getting the hdf5 object name error from";
       msg += gname;
       delete []oname;
@@ -140,41 +103,26 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
     type = H5Gget_objtype_by_idx(pid,(hsize_t)i);
     if(type <0) {
-       string msg =
+      string msg =
         "h5_das handler: getting the hdf5 object type error from";
       msg += gname;
       delete []oname;
       throw InternalErr(__FILE__, __LINE__, msg);
     }
-#endif
 
     switch (type) {
 
     case H5G_GROUP:{
-// The following string operation may not be the best way to do things
-// We may need to clean up this a bit. KY 02/27/2007
-// Really the pgroup here is pid, we need to remove the redundant operations.
-// KY 02/27/2007, 3:00 PM.
-// All right, I decide to take the risk to remove all the redundant operations next time.
+      // The following string operation may not be the best way to do things
+      // We may need to clean up this a bit. KY 02/27/2007
+      // Really the pgroup here is pid, we need to remove the redundant operations.
+      // KY 02/27/2007, 3:00 PM.
+      // All right, I decide to take the risk to remove all the redundant operations next time.
       string full_path_name =
 	string(gname) + string(oname) + "/";
       char *t_fpn = new char[full_path_name.length() + 1];
 
       strcpy(t_fpn, full_path_name.c_str());
-#ifdef KENT_OLD_WAY
-      hid_t pgroup = H5Gopen(pid,gname);
-      hid_t cgroup =
-	get_Gattr_numb(pgroup, &num_attr, oname, Msgt);
-      if (cgroup < 0) {
-        string msg =
-          "h5_das handler: open hdf5 group  wrong for ";
-        msg += t_fpn;
-        msg += string("\n") + string(Msgt);
-        delete[]t_fpn;
-        throw InternalErr(__FILE__, __LINE__, msg);
-      }
-
-#else
       hid_t cgroup = H5Gopen(pid,t_fpn);
       if (cgroup < 0) {
 	string msg =
@@ -186,40 +134,28 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
       
-       if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
-      /* <hyokyung 2007.02.27. 08:42:39>
-        sprintf(error,
-                "h5_das server:  failed to obtain hdf5 attribute in group %d",
-                cgroup);
-      */
+      if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
         string msg =
-            "dap_h5_handler:  failed to obtain hdf5 attribute in group  ";
+	  "dap_h5_handler:  failed to obtain hdf5 attribute in group  ";
         msg += t_fpn;
         throw InternalErr(__FILE__, __LINE__, msg);
+      }
 
-        // return -1;
-    }
-#endif
 
 
       try {
 	read_objects(das, t_fpn, cgroup, num_attr);
-// change pgroup to cgroup, hopefully it works as I expect. KY 02/27/2007
+	// change pgroup to cgroup, hopefully it works as I expect. KY 02/27/2007
 	depth_first(cgroup, t_fpn, das, fname);
       }
       catch(Error & e) {
-#ifndef KENT_OLD_WAY
-       delete[]oname;
-#endif
+	delete[]oname;
 	delete[]t_fpn;
 	throw;
       }
 
       delete[]t_fpn;
-      H5Gclose(cgroup);// also need error handling.
-#ifdef KENT_OLD_WAY
-      H5Gclose(pgroup);// the same as above, ky 02/27/2007
-#endif
+      H5Gclose(cgroup); // also need error handling.
       break;
     }
 
@@ -231,61 +167,23 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
       strcpy(t_fpn, full_path_name.c_str());
       hid_t dset;
-#ifdef KENT_OLD_WAY
-       hid_t dgroup = H5Gopen(pid, gname);
-
-      if (dgroup < 0) {
-	string msg = "h5_dds handler: cannot open hdf5 group";
-
-	msg += gname;
-	throw InternalErr(__FILE__, __LINE__, msg);
-      }
-
-     try{ // <hyokyung 2007.02.23. 14:17:52>
-	dset =
-	  get_Dattr_numb(dgroup, &num_attr, t_fpn, Msgt);
-      }
-      catch(Error &e){
-	throw;
-      }// Joe, I may need you to explain to me why this works.
-      
-
-      if (dset < 0) {
-	string msg = (string) Msgt;
-
-	delete[]t_fpn;
-	throw InternalErr(__FILE__, __LINE__, msg);
-      }
-#else
-
-      /* Open the dataset */
+      // Open the dataset 
       if((dset = H5Dopen(pid,t_fpn))<0) {
-         string msg =
-            "dap_h5_handler:  unable to open hdf5 dataset of group ";
+	string msg =
+	  "dap_h5_handler:  unable to open hdf5 dataset of group ";
         msg += gname;
         delete[]t_fpn;
         throw InternalErr(__FILE__, __LINE__, msg);
-        // return -1;
       }
 
-      /* obtain number of attributes in this dataset. */
-
-    if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
-      /*
-        sprintf(error,
-                "h5_das server:  failed to obtain hdf5 attribute in dataset %d",
-                dset);
-      */
+      // Obtain number of attributes in this dataset. 
+      if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
         string msg =
-            "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
+	  "dap_h5_handler:  failed to obtain hdf5 attribute in dataset  ";
         msg += t_fpn;
         delete[]t_fpn;
         throw InternalErr(__FILE__, __LINE__, msg);
-        // return -1;
-    }
-#endif
-
-
+      }
       try {
 	read_objects(das, t_fpn, dset, num_attr);
       }
@@ -295,9 +193,6 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       }
 
       H5Dclose(dset); // Need error handling
-#ifdef KENT_OLD_WAY
-      H5Gclose(dgroup);//Error handling, possibly remove.
-#endif
       delete[]t_fpn;
       break;
     }
@@ -325,40 +220,27 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       break;
     }
     type = -1;
-#ifndef KENT_OLD_WAY
     delete[]oname;
-#endif
+
   }
-
-
   return true;
 }
 
-// This probably needs to be re-considered! <hyokyung 2007.02.20. 11:56:18>
-/*-------------------------------------------------------------------------
- * Function:	print_attr(this function is based on netcdf-dods server).
- *
- * Purpose:      will get the printed representation of an attribute.
- *              
-
- * Errors:
- *
- * Return:	return a char * to newly allocated memory, the caller
- must call delete [].
- *
- * In :	        hid_t type:  HDF5 data type id
- int loc:     the number of array number
- void* sm_buf: pointer to an attribute
-
-
- *	     
- *
- *-------------------------------------------------------------------------
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn print_attr(hid_t type, int loc, void *sm_buf)
+/// will get the printed representation of an attribute.
+/// 
+/// This function is based on netcdf-dods server.
+/// 
+/// \param hid_t  HDF5 data type id
+/// \param loc    the number of array number
+/// \param sm_buf pointer to an attribute
+/// \return a char * to newly allocated memory, the caller must call delete []
+/// \todo This probably needs to be re-considered! <hyokyung 2007.02.20. 11:56:18> 
+/// \todo Needs to be re-written. <hyokyung 2007.02.20. 11:56:38>
+////////////////////////////////////////////////////////////////////////////////
 static char *
 print_attr(hid_t type, int loc, void *sm_buf)
-  // Needs to be re-written. <hyokyung 2007.02.20. 11:56:38>
 {
 #if 0
   int i;
@@ -388,12 +270,10 @@ print_attr(hid_t type, int loc, void *sm_buf)
 
   case H5T_INTEGER:
 
-    /****  change void pointer into the corresponding integer datatype. ****/
-    /**** 32 should be long enough to hold one integer and one floating point
-	  number. ****/
+    // change void pointer into the corresponding integer datatype. 
+    // 32 should be long enough to hold one integer and one floating point number.
 
     rep = new char[32];
-
 
     bzero(rep, 32);
     // Garbage, Hacking! <hyokyung 2007.02.20. 11:56:49>
@@ -514,99 +394,78 @@ print_attr(hid_t type, int loc, void *sm_buf)
   return rep;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	print_type
- *
- * Purpose:	this function will get the corresponding DODS datatype.
- *              This function will return the "text representation" of
- the correponding datatype translated from HDF5. 
- *              for unknown datatype, put it to string. // Not right?  <hyokyung 2007.02.20. 11:57:43>
 
- * Errors:
- *
- * Return:	static string
- *
- * In :	        datatype id
- *	     
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \fn print_type(hid_t type)
+/// will get the corresponding DODS datatype.
+/// This function will return the "text representation" of the correponding
+/// datatype translated from HDF5. 
+/// For unknown datatype, put it to string. 
+/// \return static string
+/// \param type datatype id
+/// \todo  For unknown type, is null string correct?
+///  <hyokyung 2007.02.20. 11:57:43>
+////////////////////////////////////////////////////////////////////////////////
 string
 print_type(hid_t type)
 {
+  size_t size = 0;
+  H5T_sign_t sign;
 
   switch (H5Tget_class(type)) {
 
 
   case H5T_INTEGER:
-    if (H5Tequal(type, H5T_STD_I8BE) ||       // Should use size to ensure correctness
-	H5Tequal(type, H5T_STD_I8LE) ||
-	H5Tequal(type, H5T_NATIVE_SCHAR))
+    // <hyokyung 2007.03. 8. 09:30:36>
+    size = H5Tget_size(type);
+    sign = H5Tget_sign(type);
+    if (size == 1)
       return BYTE;
 
-    else if (H5Tequal(type, H5T_STD_I16BE) ||
-	     H5Tequal(type, H5T_STD_I16LE) ||
-	     H5Tequal(type, H5T_NATIVE_SHORT))
-      return INT16;
-
-    else if (H5Tequal(type, H5T_STD_I32BE) ||
-	     H5Tequal(type, H5T_STD_I32LE) ||
-	     H5Tequal(type, H5T_NATIVE_INT))
-      return INT32;
-
-    else if (H5Tequal(type, H5T_STD_U16BE) ||
-	     H5Tequal(type, H5T_STD_U16LE) ||
-	     H5Tequal(type, H5T_NATIVE_USHORT))
-      return UINT16;
-
-    else if (H5Tequal(type, H5T_STD_U32BE) ||
-	     H5Tequal(type, H5T_STD_U32LE) ||
-	     H5Tequal(type, H5T_NATIVE_UINT))
-      return UINT32;
-    else
-      return STRING; // Not right! This can be something else.
-
-
+    if (size == 2){
+      if(sign == H5T_SGN_2)
+	return INT16;
+      else
+	return UINT16;
+    }
+    
+    if (size == 4){
+      if(sign == H5T_SGN_2)
+	return INT32;
+      else
+	return UINT32;
+    }
+    return INT_ELSE;
+    
   case H5T_FLOAT:
     if (H5Tget_size(type) == 4)
       return FLOAT32;
     else if (H5Tget_size(type) == 8)
       return FLOAT64;
-
     else
-      return STRING;
+      return FLOAT_ELSE; // <hyokyung 2007.03. 8. 10:01:48>
 
   case H5T_STRING:
     return STRING;
 
-  default: // Should be something else? <hyokyung 2007.02.20. 11:58:34>
-    return "";
+  default: 
+    return "Unmappable Type"; // <hyokyung 2007.02.20. 11:58:34>
   }
 }
 
-/*-------------------------------------------------------------------------
- * Function:	read_objects
- *
- * Purpose:	this function will fill in attributes of a dataset or a 
- group into one DAS table. 
- It will call functions  get_attr_info, print_type, 
- print_rep 
- *              
-
- * Errors:
- *
- * Return:	false, failed. otherwise,success.
- *
- * In :	        DAS object: reference
- object name: absolute name of either a dataset or a group
- error: a string of error message to the dods interface.
- object id: dset
- num_attr: number of attributes.
- *	     
- *
- *-------------------------------------------------------------------------
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
+/// will fill in attributes of a dataset or a group into one DAS table.
+///
+/// \param das DAS object: reference
+/// \param varname absolute name of either a dataset or a group
+/// \param oid dset
+/// \param num_attr number of attributes.
+/// \return nothing
+/// \see get_attr_info(hid_t dset, int index,
+///                    DSattr_t * attr_inst_ptr,int *ignoreptr, char *error)
+/// \see print_type()
+////////////////////////////////////////////////////////////////////////////////
 void
 read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 {
@@ -627,8 +486,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
   ignore_attr = 0;
 
-  /* obtain variable names. Put this variable name into das table 
-     regardless of the existing attributes in this object. */
+  // Obtain variable names. Put this variable name into das table 
+  // regardless of the existing attributes in this object. 
 
   char *newname;
   char attr_name[5];
@@ -663,8 +522,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   else
     newname = temp_varname;
 
-  /* this full path must not be root, root attribute is handled by
-     find_gloattr */
+  // This full path must not be root, root attribute is handled by find_gloattr 
   if (temp_varname[varname.length() - 1] == '/') {
     strncpy(new_varname, temp_varname, varname.length() - 1);
     new_varname[varname.length() - 1] = '\0';
@@ -707,12 +565,12 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   delete[]fullpath;
   delete[]hdf5_path;
 
-  /* check the number of attributes in this HDF5 object,
-     put HDF5 attribute information into DAS table. */
+  // Check the number of attributes in this HDF5 object,
+  // put HDF5 attribute information into DAS table. 
 
   for (int j = 0; j < num_attr; j++) {
 
-    // obtain attribute information.
+    // Obtain attribute information.
     attr_id = get_attr_info(oid, j, &attr_inst, &ignore_attr, Msgt);
     if (attr_id == 0 && ignore_attr == 1) {
       continue;
@@ -729,10 +587,10 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    /* HDF5 attribute may be in string datatype, it must be dealt with 
-       properly. */
+    // HDF5 attribute may be in string datatype, it must be dealt with 
+    //  properly. 
 
-    /* get data type. */
+    // get data type. 
     ty_id = attr_inst.type;
 
     memtype = get_memtype(ty_id);
@@ -753,7 +611,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     }
     bzero(value, (attr_inst.need + sizeof(char)));
 
-    /* read HDF5 attribute data. */
+    // read HDF5 attribute data. 
 
     if (memtype == H5T_STRING) {
       // ty_id: No conversion to be needed. <hyokyung 2007.02.20. 13:28:08>
@@ -779,8 +637,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // add all the attributes in the array
 
     tempvalue = value;
-    /* create the "name" attribute if we can find long_name.
-       Make it compatible with HDF4 server. */
+    // create the "name" attribute if we can find long_name.
+    //  Make it compatible with HDF4 server. 
     // .. if we can... Why? <hyokyung 2007.02.20. 13:28:18>
     if (strcmp(attr_inst.name, "long_name") == 0) {
       for (loc = 0; loc < (int) attr_inst.nelmts; loc++) {
@@ -823,8 +681,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       }
     } else {
 
-      /* 1. if the hdf5 data type is HDF5 string and ndims is not 0;
-	 we will handle this differently. */
+      // 1. if the hdf5 data type is HDF5 string and ndims is not 0;
+      // we will handle this differently. 
 
       loc = 0;
       int elesize = (int) H5Tget_size(attr_inst.type);
@@ -893,26 +751,20 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   delete[]temp_varname;
 }
 
-/*-------------------------------------------------------------------------
- * Function:	find_gloattr
- *
- * Purpose:	this function will fill in attributes of the root group into 
- one DAS table. The attribute is treated as global attribute. 
- It will call functions  get_attr_info, print_type, print_rep 
- *              
-
- * Errors:
- *
- * Return:	false, failed. otherwise, success.
- *
- * In :	        DAS object: reference
- object name: absolute name of either a dataset or a group
- error: a string of error message to the dods interface.
- object id: file id 
- *	     
- *
- *-------------------------------------------------------------------------
- */
+///////////////////////////////////////////////////////////////////////
+/// \fn find_gloattr(hid_t file, DAS & das)
+/// will fill in attributes of the root group into one DAS table.
+///
+/// The attribute is treated as global attribute.
+///
+/// \param das DAS object reference
+/// \param file HDF5 file id
+/// \error a string of error message to the dods interface.
+/// \return true  if succeed
+/// \return false if failed
+/// \see get_attr_info()
+/// \see print_type()
+////////////////////////////////////////////////////////////////////////// 
 bool
 find_gloattr(hid_t file, DAS & das)
 {
@@ -956,28 +808,23 @@ find_gloattr(hid_t file, DAS & das)
   return true;
 }
 
-// This function may be removed. <hyokyung 2007.02.20. 13:29:12>
-/*-------------------------------------------------------------------------
- * Function:	get_softlink(is only a test, not supported in current version.)
- *
- * Purpose:	this function will put softlink information into 
- a DAS table. 
-              
- *              
 
- * Errors:
- *
- * Return:	false, failed. otherwise,success.
- *
- * In :	        DAS object: reference
- object name: absolute name of  a group
- error: a string of error message to the dods interface.
- object id: group id 
- *	     
- *
- *-------------------------------------------------------------------------
- */
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
+/// will put softlink information into a DAS table.
+///
+/// \param das DAS object: reference
+/// \param pgroup object id
+/// \param oname object name: absolute name of a group
+/// \param index Link index
+///
+/// \return true  if succeeded.
+/// \return false if failed.
+/// \remarks In case of error, it returns a string of error message
+///          to the DAP interface.
+/// \warning This is only a test, not supported in current version.
+/// \todo This function may be removed. <hyokyung 2007.02.20. 13:29:12>
+////////////////////////////////////////////////////////////////////////////////
 bool
 get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 {
@@ -994,7 +841,7 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 #endif
   char str_num[6];
 
-  /* softlink attribute name will be "HDF5_softlink" + "link index". */
+  // softlink attribute name will be "HDF5_softlink" + "link index". 
   sprintf(str_num, "%d", index);
   const char *temp_oname = oname.c_str();
   temp_varname = new char[strlen(HDF5_softlink) + 7];
@@ -1012,7 +859,7 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
       throw;
     }
   }
-  /* get the target information at statbuf. */
+  // get the target information at statbuf. 
   herr_t ret = H5Gget_objinfo(pgroup, temp_oname, 0, &statbuf);
 
   if (ret < 0) {
@@ -1027,7 +874,7 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
     throw InternalErr(__FILE__, __LINE__, 
 		      "h5_das handler: no enough memory to hold softlink");
   }
-  /* get link target name */
+  // get link target name 
   if (H5Gget_linkval(pgroup, temp_oname, statbuf.linklen + 1, buf) < 0) {
     string msg = "h5das handler: unable to get link value. ";
 
@@ -1059,3 +906,5 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 
   return true;
 }
+
+// $Log$

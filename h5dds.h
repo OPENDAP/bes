@@ -28,9 +28,9 @@
 #include "h5util.h"
 #endif
 
-bool depth_first(hid_t, char *, DDS &, const char *);
+bool   depth_first(hid_t, char *, DDS &, const char *);
 string return_type(hid_t type);
-void read_objects(DDS &dds, const string &varname, const string& filename);
+void   read_objects(DDS &dds, const string &varname, const string& filename);
                                                             
 static const char STRING[]="String";
 static const char BYTE[]="Byte";
@@ -42,4 +42,4 @@ static const char UINT16[]="UInt16";
 static const char UINT32[]="UInt32";
 static const char INT_ELSE[]="Int_else";
 static const char FLOAT_ELSE[]="Float_else";
-
+static const char COMPOUND[]="Structure";

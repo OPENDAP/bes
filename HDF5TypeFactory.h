@@ -45,10 +45,10 @@ class HDF5Structure;
 class HDF5Sequence;
 class HDF5Grid;
 
-/** A factory for the HDF5 Data Handler types.
-
-    @author James Gallagher
-    @see DDS */
+/// A factory for the HDF5 Data Handler types.
+///
+///    @author James Gallagher
+///    @see DDS 
 class HDF5TypeFactory: public BaseTypeFactory {
 public:
     HDF5TypeFactory() {} 
@@ -72,3 +72,4 @@ public:
 };
 
 #endif // hdf5_type_factory_h
+// $Log$ //

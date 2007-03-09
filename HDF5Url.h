@@ -1,4 +1,15 @@
-
+////////////////////////////////////////////////////////////////////////////////
+//
+// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
+// for HDF5 data.
+//
+//
+// Copyright (c) 2007 HDF Group, Inc.
+//
+// Copyright (c) 2005 OPeNDAP, Inc.
+//
+// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 #ifndef _HDF5Url_h
 #define _HDF5Url_h 1
 
@@ -13,9 +24,16 @@
 #include <H5Ipublic.h>
 #include "Url.h"
 #include "H5Git.h"
-
-//extern "C" int get_data(hid_t dset,void *buf,char *);
-
+////////////////////////////////////////////////////////////////////////////////
+/// A HDF5Url class.
+/// This class generates DAP URL type.
+///
+/// There is a no URL data type in HDF5 so this class is not used in .
+/// \author James Gallagher <jgallagher@opendap.org>
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+///
+/// \see String
+////////////////////////////////////////////////////////////////////////////////
 class HDF5Url: public Url {
 
 private:
