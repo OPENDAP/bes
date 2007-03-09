@@ -25,7 +25,13 @@ dist_check_SCRIPTS = dejagnu_driver.sh
 
 DIRS_EXTRA = testsuite
 
-EXTRA_DIST = $(DIRS_EXTRA) common_tests.exp
+EXTRA_DIST = $(DIRS_EXTRA) common_tests.exp bad_keys1.ini bad_keys2.ini \
+	defT.ini empty.ini info_test.ini keys_test.ini opendap.ini \
+	persistence_cgi_test.ini persistence_file_test.ini \
+	persistence_mysql_test.ini container01.file \
+	persistence_file1.txt persistence_file2.txt \
+	persistence_file3.txt persistence_file4.txt \
+	persistence_file_test.txt
 
 CLEANFILES = *.log *.sum
 
