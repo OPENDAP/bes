@@ -50,6 +50,19 @@ HDF5Structure::~HDF5Structure()
 {
 }
 
+HDF5Structure &
+HDF5Structure::operator=(const HDF5Structure &rhs)
+{
+    if (this == &rhs)
+        return *this;
+
+    dynamic_cast<Structure&>(*this) = rhs; // run Structure assignment
+        
+    
+    return *this;
+}
+
+
 bool
 HDF5Structure::read(const string & dataset)
 {

@@ -27,6 +27,8 @@ public:
   // friend string print_type(hid_t datatype);   
     HDF5Structure(const string &n = "");
     virtual ~HDF5Structure();
+  
+    HDF5Structure &operator=(const HDF5Structure &rhs);
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &dataset);
   // virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);

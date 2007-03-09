@@ -418,14 +418,13 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
 
   Structure *temp_structure = NULL;
-  // HDF5Structure *temp_structure = NULL;
   
   DBG(cerr << ">Get_structure()" << endl);
   if(H5Tget_class(datatype) == H5T_COMPOUND) {
     
-    // temp_structure = new HDF5Structure(varname);
-    // temp_structure->set_did(dt_inst.dset);
-    // temp_structure->set_tid(dt_inst.type);
+    temp_structure = factory.NewStructure(varname);
+    (dynamic_cast <HDF5Structure *>(temp_structure))->set_did(dt_inst.dset);
+    (dynamic_cast <HDF5Structure *>(temp_structure))->set_tid(dt_inst.type);
     
   }
   else{
@@ -535,8 +534,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     (dynamic_cast < HDF5Array * >(ar))->set_tid(dt_inst.type);
     (dynamic_cast < HDF5Array * >(ar))->set_memneed(dt_inst.need);
     (dynamic_cast < HDF5Array * >(ar))->set_numdim(dt_inst.ndims);
-    (dynamic_cast <
-     HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
+    (dynamic_cast < HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
     ar->add_var(bt);
 
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
@@ -650,14 +648,37 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 }
 
 ///
-/// @see LoadStructreFrom... in hdf5_handler/hc2dap.cc 
+/// @see LoadStructreFrom... in hdf4_handler/hc2dap.cc 
 void
 read_objects_structure(DDS & dds_table, const string & varname,
 		       const string & filename)
 {
-  // 
-  // HDF5Structure *temp_structure = Get_structure(newname, dt_inst.type,
-  //			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));  
+  Structure *structure = NULL;
+  
+  char *newname = NULL;
+  char *temp_varname = new char[varname.length() + 1];
+
+  
+  varname.copy(temp_varname, string::npos);
+  temp_varname[varname.length()] = 0;
+  newname = strrchr(temp_varname, '/');
+  newname++;
+  
+  dds_table.set_dataset_name(name_path(filename));
+
+  
+  structure = Get_structure(newname, dt_inst.type,
+  			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
+  if (!structure) {
+    delete[]temp_varname;
+    throw
+      InternalErr(__FILE__, __LINE__,
+		  "Unable to convert hdf5 compound datatype to dods structure");
+  }
+  else{
+    dds_table.add_var(structure);
+  }
+
 }
   
 void
