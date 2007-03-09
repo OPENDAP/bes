@@ -49,7 +49,7 @@ DEJATOOL = dap_h5_handler
 
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
-EXTRA_DIST = testsuite COPYING hdf5_handler.spec
+EXTRA_DIST = data testsuite COPYING hdf5_handler.spec
 
 CLEANFILES = *~ *.sum *.log
 
@@ -62,7 +62,8 @@ sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/tcompound.h5
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
-		   	   -e 's,[@]libdir[@],$(libdir),g'
+		   	   -e 's,[@]libdir[@],$(libdir),g' \
+		   	   -e 's,[@]datadir[@],$(datadir),g'
 				  
 configure-hdf5-data.sh: configure-hdf5-data.sh.in Makefile
 	$(do_subst) < $(srcdir)/configure-hdf5-data.sh.in > configure-hdf5-data.sh
