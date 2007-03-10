@@ -1,0 +1,79 @@
+
+ $Id$
+
+See the INSTALL file for build instructions.
+
+For more information on Hyrax and the BES, please visit our documentation
+wiki at docs.opendap.org. This will include the latest install and build
+instructions, the latest configuration inforamtion, tutorials, how to
+develop new modules for the BES, and more.
+
+Contents
+  What's here: What files are in the distribution
+  Configuration: How to configure the hello world example
+  Testing: Once built and configured, how do you know it works?
+
+* What's here:
+
+The hello_world example module provides developers with an example of how
+modules, commands, and response handlers are added in to the BES
+dynamically.
+
+* Configuration
+
+The bes.conf file should work as is. In order to use the bes.conf file for
+this example, set the environment variable BES_CONF to point to the bes.conf
+file located in this directory.
+
+      setenv BES_CONF ./bes.conf
+
+      or
+
+      BES_CONF=./bes.conf
+      export BES_CONF
+
+* Testing
+
+To test the server, open a new terminal window and start the bes by using
+the bes control script besctl, which is installed in <prefix>/bin.
+using the -c switch to name the configuration file. If the server standalone
+starts correctly it should print something like the following to stdout:
+
+    [jimg@zoe sbin]$ besctl start
+    BES install directory: <prefix>/bin
+    Starting the BES daemon
+    PID: <process_id> UID: <uid of process>
+
+Go back to your first window and run the bescmdln program. Use the -h (host)
+and -p (port) switches to tell it how to connect to the BES.
+
+    [jimg@zoe bin]$ bescmdln -p 10002 -h localhost
+
+    Type 'exit' to exit the command line client and 'help' or '?' to display
+    the help screen
+
+    OPeNDAPClient>
+
+Try the new command
+
+    OPeNDAPClient> say hello to world;
+    <say>
+	<response>
+
+	...
+
+	</response>
+    </say>
+    OPeNDAPClient>
+
+Note that all commands must end with a semicolon except 'exit'.
+
+Now type exit to exit the command line client.
+
+    OPeNDAPClient> exit
+    [jimg@zoe bin]$
+
+To stop the BES use the bes control script with the stop option:
+
+    [jimg@zoe sbin]$ besctl start
+
