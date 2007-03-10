@@ -36,6 +36,7 @@
 #include "BESResponseHandlerList.h"
 #include "BESParserException.h"
 #include "BESDataNames.h"
+#include "BESUtil.h"
 
 string
 BESDefineCommand::parse_options( BESTokenizer &tokens,
@@ -232,7 +233,7 @@ BESDefineCommand::parse_request( BESTokenizer &tokenizer,
 				}
 				if( my_type == 1 )
 				{
-				    dhi.container->set_constraint( tokenizer.remove_quotes( my_token ) ) ;
+				    dhi.container->set_constraint( BESUtil::www2id( tokenizer.remove_quotes( my_token ) ) ) ;
 				}
 				else if( my_type == 2 )
 				{

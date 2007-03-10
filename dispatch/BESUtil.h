@@ -26,6 +26,12 @@ public:
     */
     static void set_mime_text( FILE *out ) ;
     static void set_mime_html( FILE *out ) ;
+
+    /** This functions are used to unescape hex characters from strings **/
+    static string www2id( const string &in,
+                          const string &escape = "%",
+		          const string &except = "" ) ;
+    static string unhexstring( string s ) ;
 } ;
 
 #endif // E_BESUtil_h

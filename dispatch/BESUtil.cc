@@ -1,4 +1,8 @@
 
+#include <sstream>
+
+using std::istringstream ;
+
 #include "BESUtil.h"
 #include "config.h"
 
@@ -100,5 +104,33 @@ BESUtil::rfc822_date(const time_t t)
 	    1900 + stm->tm_year,
 	    stm->tm_hour, stm->tm_min, stm->tm_sec);
     return string(d);
+}
+
+string 
+BESUtil::unhexstring( string s ) 
+{
+    int val;
+    istringstream ss( s ) ;
+    ss >> std::hex >> val;
+    char tmp_str[2];
+    tmp_str[0] = static_cast<char>(val);
+    tmp_str[1] = '\0';
+    return string(tmp_str);
+}
+
+string 
+BESUtil::www2id(const string &in, const string &escape, const string &except)
+{
+    string::size_type i = 0;
+    string res = in;
+    while ((i = res.find_first_of(escape, i)) != string::npos) {
+	if (res.substr(i, 3) == except) {
+	    i += 3;
+	    continue;
+	}
+	res.replace(i, 3, unhexstring(res.substr(i + 1, 2)));
+    }
+
+    return res;
 }
 
