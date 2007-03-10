@@ -52,6 +52,7 @@ using std::cerr ;
 #include "BESException.h"
 #include "ServerExitConditions.h"
 #include "BESStatusReturn.h"
+#include "BESUtil.h"
 
 BESServerHandler::BESServerHandler()
 {
@@ -139,7 +140,7 @@ BESServerHandler::execute( Connection *c )
 	int holder = dup( STDOUT_FILENO ) ;
 	dup2( c->getSocket()->getSocketDescriptor(), STDOUT_FILENO ) ;
 	
-	BESCmdInterface cmd( ss.str() ) ;
+	BESCmdInterface cmd( BESUtil::www2id( ss.str() ) ) ;
 	int status = cmd.execute_request() ;
 
 	fflush( stdout ) ;
