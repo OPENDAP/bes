@@ -140,7 +140,7 @@ BESServerHandler::execute( Connection *c )
 	int holder = dup( STDOUT_FILENO ) ;
 	dup2( c->getSocket()->getSocketDescriptor(), STDOUT_FILENO ) ;
 	
-	BESCmdInterface cmd( BESUtil::www2id( ss.str() ) ) ;
+	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ) ) ;
 	int status = cmd.execute_request() ;
 
 	fflush( stdout ) ;
