@@ -16,7 +16,7 @@ The second is a csv_handler, which can read comma separated files in a
 certain format. This module adds a new request handler that can handle the
 typical dap responses.
 
-Minor bug fixes and clean ups.
+Minor bug fixes and clean ups. See the ChangeLog file for more information.
 
 News Version 3.4.0
 

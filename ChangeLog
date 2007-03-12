@@ -1,3 +1,48 @@
+2007-03-11  James Gallagher <jgallagher@opendap.org>
+
+	Added. Removed with the ticket is closed.
+
+	AM   valgrind_for_ticket_722.txt
+
+2007-03-10  Patrick West <pwest@ucar.edu>
+
+	Adding the csv-handler and hello_world example modules to the
+	release distribution. Added README and INSTALL files to the two
+	module directories to instruct developers how to build and test the
+	modules.
+	A    bes/csv-handler/README
+	M    bes/csv-handler/bes.conf
+	A    bes/csv-handler/INSTALL
+	M    bes/Makefile.am
+	A    bes/hello_world/README
+	A    bes/hello_world/INSTALL
+
+2007-03-10  Patrick West <pwest@ucar.edu>
+
+	Instead of just unescaping the constraint, unescape the entire request
+	command. This way we'll catch any escaped characters in the request.
+	M    bes/server/BESServerHandler.cc
+	M    bes/command/BESDefineCommand.cc
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	Unescaping constraints specified in the definition. Created two new
+	static mthods in BESUtil. Might need to do this in other places, but
+	for now this will work.
+	M    bes/dispatch/BESUtil.cc
+	M    bes/dispatch/BESUtil.h
+	M    bes/command/BESDefineCommand.cc
+
+2007-03-09  Patrick West <pwest@ucar.edu>
+
+	Preparing for Hyrax version 1.1, BES version 3.4.1
+	M    bes/ChangeLog
+	M    bes/README
+	M    bes/bes.spec
+	M    bes/configure.ac
+	M    bes/INSTALL
+	M    bes/NEWS
+
 2007-03-09  Patrick West <pwest@ucar.edu>
 
 	Initialization and other test files were not being included in the
