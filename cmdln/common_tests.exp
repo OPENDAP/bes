@@ -95,6 +95,7 @@ proc compare_stdout {expected msg {xfailp 0} {str_test compare}} {
 	xfail "$msg"
 	send_user "XFAIL: $msg\n"
     } else {
+	send_user "********* "
 	fail "$msg"
     }
 
