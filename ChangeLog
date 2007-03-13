@@ -1,3 +1,32 @@
+2007-03-09  Nathan Potter <ndp@coas.oregonstate.edu>
+
+2007-03-09  James Gallagher <jgallagher@opendap.org>
+
+	Final changes for the default configuration and data install for
+	ticket #764.
+
+	M    hdf4_handler.spec
+	M    configure-hdf4-data.sh.in
+	M    Makefile.am
+
+2007-03-09  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2007-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Added files for the test data and auto configuration ticket
+
+2007-02-13  James Gallagher <jgallagher@opendap.org>
+
+	Updated for the 3.7.4 release.
+
+	M    hdf4_handler.spec
+
+2007-02-13  James Gallagher <jgallagher@opendap.org>
+
+	Updated for hdf4_handler 3.7.4.
+
 2007-02-08  Nathan Potter <ndp@coas.oregonstate.edu>
 
 	hdf4_handler: Changed Server4 name to Hyrax as needed.

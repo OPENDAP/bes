@@ -1,6 +1,6 @@
 Summary:         HDF4 data handler for the OPeNDAP Data server
 Name:            hdf4_handler
-Version:         3.7.4
+Version:         3.7.5
 Release:         1
 License:         LGPL
 Group:           System Environment/Daemons 
@@ -8,7 +8,7 @@ Source0:         ftp://ftp.unidata.ucar.edu/pub/opendap/source/%{name}-%{version
 URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.7.4 hdf-devel
+BuildRequires:   libdap-devel >= 3.7.5 hdf-devel
 #Requires:        bes
 
 %description
@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/configure-hdf4-data.sh
 %{_libdir}/
 %{_libdir}/bes/
-%{_datadir}/hyrax/data/hdf4
+%{_datadir}/hyrax/data/hdf
 %doc COPYING COPYRIGHT_URI NEWS README
 
 %changelog
