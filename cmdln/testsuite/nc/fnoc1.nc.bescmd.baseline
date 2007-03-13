@@ -162,16 +162,6 @@ scale_factor: "0.005"<br>
 
 <hr>
 
-<h3>
-About the Fleet Numerical Ocean Winds dataset
-</h3>
-
-The FNOC dataset is used as a sample dataset for testing DODS. This file was
-created by Reza Nekovei at URI/GSO.
-
-<p>
-
-
 </body>
 </html>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
@@ -181,7 +171,7 @@ created by Reza Nekovei at URI/GSO.
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 13206 2006-02-15 20:16:29Z jimg $
+// $Id: www.js 15676 2007-02-01 18:50:10Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 
@@ -268,19 +258,23 @@ function help_button() {
 // Helper functions for the form.
 
 function describe_index() {
-   defaultStatus = "Enter start, stride and stop for the array dimension.";
+   window.status = "Enter start, stride and stop for the array dimension.";
+   return true;
 }
 
 function describe_selection() {
-   defaultStatus = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+   window.status = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+   return true;
 }
 
 function describe_operator() {
-   defaultStatus = "Choose a relational operator. Use - to enter a function name).";
+   window.status = "Choose a relational operator. Use - to enter a function name).";
+   return true;
 }
 
 function describe_projection() {
-   defaultStatus = "Add this variable to the projection.";
+   window.status = "Add this variable to the projection.";
+   return true;
 }
 
 ///////////////////////////////////////////////////////////
@@ -491,9 +485,9 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/nc/fnoc1.nc");
 <td align="right" valign="top"><h3>
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
-base_time: "88- 10-00:00:00"
-title: " FNOC UV wind components from 1988- 10 to 1988- 13."
-Unlimited_Dimension: "time_a"
+NC_GLOBAL.base_time: "88- 10-00:00:00"
+NC_GLOBAL.title: " FNOC UV wind components from 1988- 10 to 1988- 13."
+DODS_EXTRA.Unlimited_Dimension: "time_a"
 </textarea><p>
 
 <tr><td><td><hr>
@@ -508,7 +502,7 @@ DODS_URL.add_dods_var(org_opendap_u);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_u"
-onclick="org_opendap_u.handle_projection_change(get_org_opendap_u)">
+onclick="org_opendap_u.handle_projection_change(get_org_opendap_u) "  onfocus="describe_projection()">
 <font size="+1">u</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
 
 time_a:<input type="text" name="org_opendap_u_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
@@ -550,7 +544,7 @@ DODS_URL.add_dods_var(org_opendap_v);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_v"
-onclick="org_opendap_v.handle_projection_change(get_org_opendap_v)">
+onclick="org_opendap_v.handle_projection_change(get_org_opendap_v) "  onfocus="describe_projection()">
 <font size="+1">v</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
 
 time_a:<input type="text" name="org_opendap_v_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
@@ -592,7 +586,7 @@ DODS_URL.add_dods_var(org_opendap_lat);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_lat"
-onclick="org_opendap_lat.handle_projection_change(get_org_opendap_lat)">
+onclick="org_opendap_lat.handle_projection_change(get_org_opendap_lat) "  onfocus="describe_projection()">
 <font size="+1">lat</font>: Array of 32 bit Reals [lat = 0..16]</b><br>
 
 lat:<input type="text" name="org_opendap_lat_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
@@ -619,7 +613,7 @@ DODS_URL.add_dods_var(org_opendap_lon);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_lon"
-onclick="org_opendap_lon.handle_projection_change(get_org_opendap_lon)">
+onclick="org_opendap_lon.handle_projection_change(get_org_opendap_lon) "  onfocus="describe_projection()">
 <font size="+1">lon</font>: Array of 32 bit Reals [lon = 0..20]</b><br>
 
 lon:<input type="text" name="org_opendap_lon_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
@@ -646,7 +640,7 @@ DODS_URL.add_dods_var(org_opendap_time);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_time"
-onclick="org_opendap_time.handle_projection_change(get_org_opendap_time)">
+onclick="org_opendap_time.handle_projection_change(get_org_opendap_time) "  onfocus="describe_projection()">
 <font size="+1">time</font>: Array of 32 bit Reals [time = 0..15]</b><br>
 
 time:<input type="text" name="org_opendap_time_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">

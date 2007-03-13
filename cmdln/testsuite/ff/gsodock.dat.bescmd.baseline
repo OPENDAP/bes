@@ -135,7 +135,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 13206 2006-02-15 20:16:29Z jimg $
+// $Id: www.js 15676 2007-02-01 18:50:10Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 
@@ -222,19 +222,23 @@ function help_button() {
 // Helper functions for the form.
 
 function describe_index() {
-   defaultStatus = "Enter start, stride and stop for the array dimension.";
+   window.status = "Enter start, stride and stop for the array dimension.";
+   return true;
 }
 
 function describe_selection() {
-   defaultStatus = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+   window.status = "Enter a relational expression (e.g., <20). String variables may need values to be quoted";
+   return true;
 }
 
 function describe_operator() {
-   defaultStatus = "Choose a relational operator. Use - to enter a function name).";
+   window.status = "Choose a relational operator. Use - to enter a function name).";
+   return true;
 }
 
 function describe_projection() {
-   defaultStatus = "Add this variable to the projection.";
+   window.status = "Add this variable to the projection.";
+   return true;
 }
 
 ///////////////////////////////////////////////////////////
@@ -445,8 +449,8 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
 <td align="right" valign="top"><h3>
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
-Server: "DODS FreeFrom based on FFND release 4.2.3"
-text: "Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"
+FF_GLOBAL.Server: "DODS FreeFrom based on FFND release 4.2.3"
+FF_GLOBAL.text: "Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"
 </textarea><p>
 
 <tr><td><td><hr>
@@ -463,7 +467,7 @@ DODS_URL.add_dods_var(org_opendap_Time);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Time"
-onclick="org_opendap_Time.handle_projection_change(get_org_opendap_Time)">
+onclick="org_opendap_Time.handle_projection_change(get_org_opendap_Time) "  onfocus="describe_projection()">
 <font size="+1">Time</font>: 64 bit Real</b><br>
 
 Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -478,9 +482,6 @@ Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onch
 <input type="text" name="org_opendap_Time_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Time_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -489,7 +490,7 @@ DODS_URL.add_dods_var(org_opendap_Depth);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Depth"
-onclick="org_opendap_Depth.handle_projection_change(get_org_opendap_Depth)">
+onclick="org_opendap_Depth.handle_projection_change(get_org_opendap_Depth) "  onfocus="describe_projection()">
 <font size="+1">Depth</font>: 32 bit Real</b><br>
 
 Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -504,9 +505,6 @@ Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" on
 <input type="text" name="org_opendap_Depth_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Depth_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -515,7 +513,7 @@ DODS_URL.add_dods_var(org_opendap_Sea_Temp);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Sea_Temp"
-onclick="org_opendap_Sea_Temp.handle_projection_change(get_org_opendap_Sea_Temp)">
+onclick="org_opendap_Sea_Temp.handle_projection_change(get_org_opendap_Sea_Temp) "  onfocus="describe_projection()">
 <font size="+1">Sea_Temp</font>: 32 bit Real</b><br>
 
 Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -530,9 +528,6 @@ Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator
 <input type="text" name="org_opendap_Sea_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Sea_Temp_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -541,7 +536,7 @@ DODS_URL.add_dods_var(org_opendap_Salinity);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Salinity"
-onclick="org_opendap_Salinity.handle_projection_change(get_org_opendap_Salinity)">
+onclick="org_opendap_Salinity.handle_projection_change(get_org_opendap_Salinity) "  onfocus="describe_projection()">
 <font size="+1">Salinity</font>: 32 bit Real</b><br>
 
 Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -556,9 +551,6 @@ Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator
 <input type="text" name="org_opendap_Salinity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Salinity_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -567,7 +559,7 @@ DODS_URL.add_dods_var(org_opendap_DO_);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_DO_"
-onclick="org_opendap_DO_.handle_projection_change(get_org_opendap_DO_)">
+onclick="org_opendap_DO_.handle_projection_change(get_org_opendap_DO_) "  onfocus="describe_projection()">
 <font size="+1">DO </font>: 32 bit Real</b><br>
 
 DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -582,9 +574,6 @@ DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchan
 <input type="text" name="org_opendap_DO__selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="DO _attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -593,7 +582,7 @@ DODS_URL.add_dods_var(org_opendap_pH);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_pH"
-onclick="org_opendap_pH.handle_projection_change(get_org_opendap_pH)">
+onclick="org_opendap_pH.handle_projection_change(get_org_opendap_pH) "  onfocus="describe_projection()">
 <font size="+1">pH</font>: 32 bit Real</b><br>
 
 pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -608,9 +597,6 @@ pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange
 <input type="text" name="org_opendap_pH_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="pH_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -619,7 +605,7 @@ DODS_URL.add_dods_var(org_opendap_Turbidity);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Turbidity"
-onclick="org_opendap_Turbidity.handle_projection_change(get_org_opendap_Turbidity)">
+onclick="org_opendap_Turbidity.handle_projection_change(get_org_opendap_Turbidity) "  onfocus="describe_projection()">
 <font size="+1">Turbidity</font>: 32 bit Real</b><br>
 
 Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -634,9 +620,6 @@ Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operat
 <input type="text" name="org_opendap_Turbidity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Turbidity_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -645,7 +628,7 @@ DODS_URL.add_dods_var(org_opendap_Air_Temp);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Air_Temp"
-onclick="org_opendap_Air_Temp.handle_projection_change(get_org_opendap_Air_Temp)">
+onclick="org_opendap_Air_Temp.handle_projection_change(get_org_opendap_Air_Temp) "  onfocus="describe_projection()">
 <font size="+1">Air_Temp</font>: 32 bit Real</b><br>
 
 Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -660,9 +643,6 @@ Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator
 <input type="text" name="org_opendap_Air_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Air_Temp_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -671,7 +651,7 @@ DODS_URL.add_dods_var(org_opendap_Wind_Speed);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Wind_Speed"
-onclick="org_opendap_Wind_Speed.handle_projection_change(get_org_opendap_Wind_Speed)">
+onclick="org_opendap_Wind_Speed.handle_projection_change(get_org_opendap_Wind_Speed) "  onfocus="describe_projection()">
 <font size="+1">Wind_Speed</font>: 32 bit Real</b><br>
 
 Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -686,9 +666,6 @@ Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_oper
 <input type="text" name="org_opendap_Wind_Speed_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Wind_Speed_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -697,7 +674,7 @@ DODS_URL.add_dods_var(org_opendap_Wind_Direction);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Wind_Direction"
-onclick="org_opendap_Wind_Direction.handle_projection_change(get_org_opendap_Wind_Direction)">
+onclick="org_opendap_Wind_Direction.handle_projection_change(get_org_opendap_Wind_Direction) "  onfocus="describe_projection()">
 <font size="+1">Wind_Direction</font>: 32 bit Real</b><br>
 
 Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -712,9 +689,6 @@ Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="descr
 <input type="text" name="org_opendap_Wind_Direction_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Wind_Direction_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -723,7 +697,7 @@ DODS_URL.add_dods_var(org_opendap_Barometric_Pres);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Barometric_Pres"
-onclick="org_opendap_Barometric_Pres.handle_projection_change(get_org_opendap_Barometric_Pres)">
+onclick="org_opendap_Barometric_Pres.handle_projection_change(get_org_opendap_Barometric_Pres) "  onfocus="describe_projection()">
 <font size="+1">Barometric_Pres</font>: 32 bit Real</b><br>
 
 Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -738,9 +712,6 @@ Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="des
 <input type="text" name="org_opendap_Barometric_Pres_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
-<textarea name="Barometric_Pres_attr" rows="5" cols="70">
-</textarea>
-
 <p><p>
 <script type="text/javascript">
 <!--
@@ -749,7 +720,7 @@ DODS_URL.add_dods_var(org_opendap_Solar_Radiation);
 // -->
 </script>
 <b><input type="checkbox" name="get_org_opendap_Solar_Radiation"
-onclick="org_opendap_Solar_Radiation.handle_projection_change(get_org_opendap_Solar_Radiation)">
+onclick="org_opendap_Solar_Radiation.handle_projection_change(get_org_opendap_Solar_Radiation) "  onfocus="describe_projection()">
 <font size="+1">Solar_Radiation</font>: 32 bit Real</b><br>
 
 Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
@@ -763,9 +734,6 @@ Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="des
 </select>
 <input type="text" name="org_opendap_Solar_Radiation_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
-
-<textarea name="Solar_Radiation_attr" rows="5" cols="70">
-</textarea>
 
 <p><p>
 </dd></dl>
