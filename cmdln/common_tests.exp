@@ -95,8 +95,9 @@ proc compare_stdout {expected msg {xfailp 0} {str_test compare}} {
 	xfail "$msg"
 	send_user "XFAIL: $msg\n"
     } else {
-	send_user "********* "
+	send_user "\n    "
 	fail "$msg"
+	send_user "\n"
     }
 
     # Added test for xfailp so that verobse == 1 will show only tests that
