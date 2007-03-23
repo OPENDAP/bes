@@ -593,6 +593,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // get data type. 
     ty_id = attr_inst.type;
 
+#if 0
     memtype = get_memtype(ty_id);
     if (memtype < 0) {
       string msg =
@@ -601,6 +602,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       delete[]new_varname;
       throw InternalErr(__FILE__, __LINE__, msg);
     }
+#endif
     value = new char[attr_inst.need + sizeof(char)];
 
     if (!value) {
@@ -613,7 +615,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
     // read HDF5 attribute data. 
 
-    if (memtype == H5T_STRING) {
+    if (ty_id == H5T_STRING) {
       // ty_id: No conversion to be needed. <hyokyung 2007.02.20. 13:28:08>
       if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
 	string msg =
@@ -624,7 +626,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
     } else {
-      if (H5Aread(attr_id, memtype, (void *) value) < 0) {
+      if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
 	string msg =
 	  "h5_das handler: unable to read HDF5 attribute data";
 	delete[]temp_varname;

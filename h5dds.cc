@@ -446,7 +446,7 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 /// DDS table.
 /// 
 /// Given a reference to an instance of class DDS and a filename that refers
-/// to a hdf5 file, read hdf5 file and extract all the dimensions of
+/// to an hdf5 file, read hdf5 file and extract all the dimensions of
 /// each of its variables. Add the variables and their dimensions to the
 /// instance of DDS.
 ///
@@ -466,55 +466,17 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   Grid *gr;
   Part pr;
   
-  hid_t dimtype;
-  hid_t dimid;
 
-  int dim_index;
-  int num_dimelm;
-  int num_dim;
-
-  char *dimname = NULL;
-  char *newdimname = NULL; // <hyokyung 2007.02.27. 10:25:05>
-  char *newname = NULL;
-  char *temp_varname = new char[varname.length() + 1];
   
-  char dimlab[DODS_MAX_RANK][6];
-  char ORI_SLASH = '/';
-
-  size_t dimsize;
-    
-  DBG(cerr << ">read_objects_base_type(dds)" << endl);
-  varname.copy(temp_varname, string::npos);
-  temp_varname[varname.length()] = 0;
-  //The following code will change "/" into "_"
-  // "/" is reserved in DODS <hyokyung 2007.02.20. 11:52:39>
-#if 0
-  while (strchr(temp_varname, ORI_SLASH) != NULL) {
-    cptr = strchr(temp_varname, ORI_SLASH);
-    *cptr = CHA_SLASH;
-  }
-#endif
-  
-  // This needs an attention <hyokyung 2007.02.20. 11:52:51>
-  newname = strrchr(temp_varname, ORI_SLASH);
-  newname++;
-
-#if 0
-  // make/test this mod sometime in the future.
-  string::size_type pos = varname.rfind(ORI_SLASH);
-  string newname = varname.substr(++pos, varname.end());
-#endif
-
   dds_table.set_dataset_name(name_path(filename));
 
 
-    
-  BaseType *bt = Get_bt(newname, dt_inst.type,
+  // Get base type. It should be int, float and double etc. atomic datatype.   
+  BaseType *bt = Get_bt(varname, dt_inst.type,
 			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
   if (!bt) {
-    delete[]temp_varname;
     // NB: We're throwing InternalErr even though it's possible that
-    // someone might ask for a HDF5 varaible which this server cannot
+    // someone might ask for an HDF5 varaible which this server cannot
     // handle (for example, an HDF5 reference).
     throw
       InternalErr(__FILE__, __LINE__,
@@ -525,10 +487,12 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   if (dt_inst.ndims == 0) {
     dds_table.add_var(bt);
   }
-  // Next, deal with array data. 
+  // Next, deal with array and grid data. 
   else {
+    
+    int dim_index;
 
-    ar = dds_table.get_factory()->NewArray(temp_varname);
+    ar = dds_table.get_factory()->NewArray(varname);
 
     (dynamic_cast < HDF5Array * >(ar))->set_did(dt_inst.dset);
     (dynamic_cast < HDF5Array * >(ar))->set_tid(dt_inst.type);
@@ -537,113 +501,170 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     (dynamic_cast < HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
     ar->add_var(bt);
 
+    for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
+        ar->append_dim(dt_inst.size[dim_index]);
+    delete bt;
+
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
 
 #ifdef DODSGRID
 
-    // Check whether the dimension number matches.
-    
-    num_dim = get_dimnum(dt_inst.dset);
+    H5GridFlag_t check_grid;
 
-    if (num_dim == dt_inst.ndims) {
-      // start building up the grid.
-      //  gr = NewGrid(temp_varname);
-      gr = dds_table.get_factory()->NewGrid(newname);
+    /* 1. Check whether this HDF5 dataset can be mapped to the grid data
+       Should check whether the attribute includes dimension list;
+       If yes and everything is valid, map to DAP grid;
+       Otherwise, map to DAP array. */
+ 
+    check_grid = maptogrid(dt_inst.dset,dt_inst.ndims);
+    if (check_grid != NotGrid) {
+      hid_t  attr_id,temp_dtype,temp_dspace;
+      hid_t  memtype;
+      size_t temp_tsize;
+      size_t name_size;
+      hsize_t temp_nelm;
+      char * dimname;
+      char *EachDimName;
+      hid_t *dimid;
+      hobj_ref_t *refbuf;
+      char *buf;
+
+           
+      gr = dds_table.get_factory()->NewGrid(varname);/* using varname rather than new_name */
+      // First fill the array part of the grid.
       pr = array;
-      for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-	dimname = get_dimname(dt_inst.dset, dim_index);
-	newdimname = correct_name(dimname);
-	/*
-	  1) obtain dimensional id, 
-	  2) number of element in this dim.,
-	  3) total dimensional size of this dimensional scale data
-	  4) the HDF5 dimensional data type
-	*/
-
-	dimid =
-	  get_diminfo(dt_inst.dset, dim_index, &num_dimelm,
-		      &dimsize, &dimtype);
-
-	// printf("num_dimelm at arrays%d\n",num_dimelm);
-	ar->append_dim(num_dimelm, newdimname);
-	free(dimname);
-	if(newdimname != NULL)
-	  free(newdimname);
-      }
+      gr->add_var(ar,pr);
+      delete ar;
+ 
       DBG(cerr << "add_var()" << endl);
-      gr->add_var(ar, pr);
+
+      /* obtain dimensional scale name, it should be a list of dimensional name,
+         Here we will distinguish old h4h5 tool or new h4h5 tool */
+      if(check_grid == NewH4H5Grid) {
+        if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONNAMELIST))<0){
+          throw 
+           InternalErr(__FILE__,__LINE__,
+                       "Unable to open the attribute with the name as DIMENSION_NAMELIST");
+        }
+      }
+      else {
+         if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONNAMELIST))<0){
+          throw
+           InternalErr(__FILE__,__LINE__,
+                       "Unable to open the attribute with the name as OLD_DIMENSION_NAMELIST");
+        }
+      }
+
+      temp_dtype = H5Aget_type(attr_id);
+      temp_tsize = H5Tget_size(temp_dtype);
+
+      temp_dspace = H5Aget_space(attr_id);
+      temp_nelm   = H5Sget_simple_extent_npoints(temp_dspace);
+      dimname     = (char*)calloc((size_t) temp_nelm, temp_tsize);
+      name_size   = temp_tsize;
+      if(H5Aread(attr_id, temp_dtype, dimname)<0) {
+              throw 
+              InternalErr(__FILE__,__LINE__,
+                       "Unable to obtain the attribute");
+      }
+      H5Tclose(temp_dtype);
+      H5Sclose(temp_dspace);
+      H5Aclose(attr_id);
+
+      //obtain dimensional scale data information 
+      /* obtain dimensional scale ids; it should be a list of dimensional ids */
+      if(check_grid == NewH4H5Grid) {
+        if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONLIST))<0){
+          throw 
+           InternalErr(__FILE__,__LINE__,
+                       "Unable to open the attribute with the name as DIMENSION_LIST");
+        }
+      }
+      else {
+         if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONLIST))<0){
+          throw
+           InternalErr(__FILE__,__LINE__,
+                       "Unable to open the attribute with the name as OLD_DIMENSION_LIST");
+        }
+      }
+
+      temp_dtype  = H5Aget_type(attr_id);
+      temp_tsize  = H5Tget_size(temp_dtype);
+      temp_dspace = H5Aget_space(attr_id);
+      temp_nelm   = H5Sget_simple_extent_npoints(temp_dspace);
+      buf = (char*)calloc((size_t)(temp_nelm*temp_tsize), sizeof(char));
+      if(H5Aread(attr_id, H5T_STD_REF_OBJ, buf)<0) {
+         throw 
+         InternalErr(__FILE__,__LINE__,
+                     "Cannot read object reference attributes.");
+      }
+      refbuf = (hobj_ref_t *) buf;
+      dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);
+
+      for (int j = 0; j < temp_nelm; j++) {
+         dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
+         if (dimid[j] < 0) {
+            throw 
+            InternalErr(__FILE__,__LINE__,
+                  "cannot dereference the object.");
+         }
+         refbuf++;
+      }
+      H5Aclose(attr_id);
+      H5Sclose(temp_dspace);
+      H5Tclose(temp_dtype);
+      
+ 
+      // start building Grid.
+      char *TempNamePointer = dimname;
+      EachDimName       = (char*)malloc(name_size+sizeof(char));
       pr = maps;
+
       for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
 	//get dimensional scale datasets. add to grid.
-	dimname = get_dimname(dt_inst.dset, dim_index);
-	newdimname = correct_name(dimname);
-	dimid =
-	  get_diminfo(dt_inst.dset, dim_index, &num_dimelm,
-		      &dimsize, &dimtype);
+        temp_dspace = H5Dget_space(dimid[dim_index]);
+        temp_nelm   = H5Sget_simple_extent_npoints(temp_dspace);
+        temp_dtype  = H5Dget_type(dimid[dim_index]);
+        memtype     = H5Tget_native_type(temp_dtype,H5T_DIR_ASCEND);
+        temp_tsize  = H5Tget_size(memtype);
+        strcpy(EachDimName,TempNamePointer);
+        TempNamePointer=TempNamePointer+name_size;
+
 	try{
-	  bt = Get_bt(newdimname, dimtype,
+	  bt = Get_bt(EachDimName, memtype,
 		      dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
 	}
 	catch(Error& e){
 	  throw;
 	}
 
-	ar = dds_table.get_factory()->NewArray(newdimname);
-	(dynamic_cast < HDF5Array * >(ar))->set_did(dimid);
-	(dynamic_cast < HDF5Array * >(ar))->set_tid(dimtype);
-	(dynamic_cast < HDF5Array * >(ar))->set_memneed(dimsize);
+        ar = new HDF5Array;
+	ar = dds_table.get_factory()->NewArray(EachDimName);
+	(dynamic_cast < HDF5Array * >(ar))->set_did(dimid[dim_index]);
+	(dynamic_cast < HDF5Array * >(ar))->set_tid(memtype);
+	(dynamic_cast < HDF5Array * >(ar))->set_memneed(temp_tsize*temp_nelm);
 	(dynamic_cast < HDF5Array * >(ar))->set_numdim(1);
-	(dynamic_cast < HDF5Array * >(ar))->set_numelm(num_dimelm);
+	(dynamic_cast < HDF5Array * >(ar))->set_numelm(temp_nelm);
 	ar->add_var(bt);
-	//  ar->append_dim(dimsize,dimname);//add this later
-	//    cout <<"dimname at maps"<<newdimname<<endl;
-	//   cout <<"num_dimelm at maps"<<num_dimelm<<endl;
-	//  cout <<"dimid at maps" <<dimid<<endl;
-	ar->append_dim(num_dimelm, newdimname);
+	ar->append_dim(temp_nelm, EachDimName);
 	gr->add_var(ar, pr);
-	free(dimname);
-	free(newdimname);
+        delete ar;
       }
       dds_table.add_var(gr);
-    } else {
-      // Needs to have good comments; Kent has already forgotten this.
-      // <hyokyung 2007.02.20. 11:53:56>
-      for (int d = 0; d < dt_inst.ndims; ++d) {
-	dimlab[d][0] = 'd';
-	dimlab[d][1] = 'i';
-	dimlab[d][2] = 'm';
-	if (d > 9) {
-	  dimlab[d][3] = (char) (d / 10 + 48);
-	  dimlab[d][4] = (char) (d % 10 + 49);
-	  dimlab[d][5] = '\0';
-	} else {
-	  dimlab[d][3] = (char) (d + 49);
-	  dimlab[d][4] = '\0';
-	}
-	ar->append_dim(dt_inst.size[d], dimlab[d]);
-      }
+      delete gr;
+      if(dimname!=NULL) free(dimname);
+      if(EachDimName!=NULL) free(EachDimName);
+      if(dimid!=NULL) free(dimid);
+    } else {// cannot be mapped to grid, it has to be an array.
       dds_table.add_var(ar);
+      delete ar;
     }
-
 #else
-    for (int d = 0; d < dt_inst.ndims; ++d) {
-      dimlab[d][0] = 'd';
-      dimlab[d][1] = 'i';
-      dimlab[d][2] = 'm';
-      if (d > 9) {
-	dimlab[d][3] = (char) (d / 10 + 48);
-	dimlab[d][4] = (char) (d % 10 + 49);
-	dimlab[d][5] = '\0';
-      } else {
-	dimlab[d][3] = (char) (d + 49);
-	dimlab[d][4] = '\0';
-      }
-      ar->append_dim(dt_inst.size[d], dimlab[d]);
-    }
+    // Not define DODS Grid. It has to be an array. 
     dds_table.add_var(ar);
+    delete ar;
 #endif
   }
-  delete[]temp_varname;
   DBG(cerr << "<read_objects_base_type(dds)" << endl);  
 }
 
@@ -655,22 +676,12 @@ read_objects_structure(DDS & dds_table, const string & varname,
 {
   Structure *structure = NULL;
   
-  char *newname = NULL;
-  char *temp_varname = new char[varname.length() + 1];
-
-  
-  varname.copy(temp_varname, string::npos);
-  temp_varname[varname.length()] = 0;
-  newname = strrchr(temp_varname, '/');
-  newname++;
   
   dds_table.set_dataset_name(name_path(filename));
-
   
-  structure = Get_structure(newname, dt_inst.type,
+  structure = Get_structure(varname, dt_inst.type,
   			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
   if (!structure) {
-    delete[]temp_varname;
     throw
       InternalErr(__FILE__, __LINE__,
 		  "Unable to convert hdf5 compound datatype to dods structure");

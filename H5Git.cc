@@ -49,7 +49,7 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
               int *ignoreptr, char *error)
 {
 
-    hid_t ty_id, attrid, space;
+    hid_t ty_id, attrid, space,memtype;
     H5T_class_t temp_type;
     hsize_t size[DODS_MAX_RANK];
 #if 0
@@ -165,7 +165,9 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 
     need = nelmts * H5Tget_size(ty_id);
-    (*attr_inst_ptr).type = ty_id;
+// We want to save memory type in the struct
+    memtype = H5Tget_native_type(ty_id,H5T_DIR_ASCEND);
+    (*attr_inst_ptr).type = memtype;
     (*attr_inst_ptr).ndims = ndims;
     (*attr_inst_ptr).nelmts = nelmts;
     (*attr_inst_ptr).need = need;
@@ -208,15 +210,13 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 {
 
     hid_t dset = -1;
-    hid_t datatype, dataspace;
+    hid_t datatype, memtype,dataspace;
     H5T_class_t temp_type;
     hsize_t size[DODS_MAX_RANK];
     hsize_t maxsize[DODS_MAX_RANK];
-    char *namebuf;
     size_t need;
     hsize_t nelmts = 1;
     int j, ndims;
-    int buf_size = 30;
 
     DBG(cerr << "<get_dataset()" << endl);
     if ((dset = H5Dopen(pid, dname)) < 0) {
@@ -275,7 +275,6 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
         return -1;
     }
 
-    namebuf = (char*) malloc(buf_size);
 
 #if 0
     // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
@@ -295,10 +294,11 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
             nelmts *= size[j];
     }
 
-    need = nelmts * H5Tget_size(datatype);
+    need    = nelmts * H5Tget_size(datatype);
+    memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
     (*dt_inst_ptr).dset = dset;
     (*dt_inst_ptr).dataspace = dataspace;
-    (*dt_inst_ptr).type = datatype;
+    (*dt_inst_ptr).type = memtype;
     (*dt_inst_ptr).ndims = ndims;
     (*dt_inst_ptr).nelmts = nelmts;
     (*dt_inst_ptr).need = need;
@@ -338,7 +338,9 @@ int get_data(hid_t dset, void *buf, char *error)
         return -1;
     }
 
-    memtype = get_memtype(datatype);
+//    memtype = get_memtype(datatype);
+//   using HDF5 H5Tget_native_type API
+    memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
     if (memtype < 0) {
         sprintf(error, "failed to obtain memory type");
         return -1;
@@ -445,7 +447,10 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         return 0;
     }
 
-    memtype = get_memtype(datatype);
+//    memtype = get_memtype(datatype);
+// Using H5T_get_native_type API
+   memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
+
     if (memtype < 0) {
         sprintf(error, "fail to obtain memory type.");
         return 0;
@@ -556,175 +561,26 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn get_dimname(hid_t dataset, int index)
-/// obtains dimensional scale name.
+/// \fn get_dimnum(hid_t dataset)
+/// obtains number of dimensional scale in the dataset.
 ///
-/// \param hid_t original HDF5 dataset name that refers to dimensional scale
-/// \param index index of the dimensional scale
-/// \return dimensional name	
+/// \param dataset original HDF5 dataset name that refers to dimensional scale
+/// \return a number
 ////////////////////////////////////////////////////////////////////////////////
-char *get_dimname(hid_t dataset, int index)
+H5GridFlag_t maptogrid(hid_t dataset,int num_dim)
 {
-    hid_t attr_id;
-    hid_t type, space;
-    char *sdsdimname;
-    char *dimname;
-    char *newdimname = NULL; // <hyokyung 2007.02.16. 13:08:06>
-    char *temp_buf;
-    hsize_t ssiz;
-    size_t type_size;
-    int num_attrs;
-    int attr_namesize;
-    unsigned int i, k, k1;
-    char dimscale[21];
+  int  new_h4h5 = 1;
+  H5GridFlag_t to_grid_flag = NotGrid;
 
-    DBG(cerr << ">get_dimname(" << dataset << "," << index << ")" << endl);    
-    num_attrs = H5Aget_num_attrs(dataset);
-    DBG(cerr << "=get_dimname num_attrs=" << num_attrs << endl);    
-    for (i = 0; i < num_attrs; i++) {
-        attr_id = H5Aopen_idx(dataset, i);
-        bzero(dimscale, sizeof(dimscale));
-        attr_namesize = H5Aget_name(attr_id, 20, dimscale);
-	// printf("i = %d\n",i);
-        printf("dimscale %s\n",dimscale); 
-        if (attr_namesize < 0) {
-            printf("error in getting attribute name\n");
-            return NULL;
-        }
-	// We may keep this and add more contents! <hyokyung 2007.02.20. 13:34:22>
-        if (strncmp(dimscale, "HDF4_DIMENSION_LIST", 19) == 0) {
+  if(map_to_grid(dataset,num_dim,new_h4h5))// first test new h4h5 tool.
+    to_grid_flag = NewH4H5Grid;
+  else { // now try the old h4toh5 tool.
+    new_h4h5 = 0;
+    if(map_to_grid(dataset,num_dim,new_h4h5))
+      to_grid_flag = OldH4H5Grid;
+  }
+  return to_grid_flag;
 
-            type = H5Aget_type(attr_id);
-            type_size = H5Tget_size(type);
-            space = H5Aget_space(attr_id);
-            ssiz = H5Sget_simple_extent_npoints(space);
-            sdsdimname = (char*)calloc((size_t) ssiz, type_size);
-
-            temp_buf = (char *) sdsdimname;
-            H5Aread(attr_id, type, sdsdimname);
-            newdimname = (char*)malloc(type_size);
-            dimname = (char*)malloc(type_size);
-            for (k = 0; k < ssiz; k++) {
-                dimname = temp_buf;
-                strncpy(newdimname, dimname, type_size);
-		// printf("sdsdimname %s\n",dimname);
-                // printf("newdimanme %s\n",newdimname); 
-                for (k1 = 0; k1 < type_size; k1++) {
-                    temp_buf++;
-                }
-                if (k == index)
-                    break;
-            }
-            break;
-            free(sdsdimname);
-        }
-        H5Aclose(attr_id);
-
-	
-    }
-    DBG(cerr << "<get_dimname->" << newdimname << endl);    
-    return newdimname;
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// \fn get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
-///            hid_t * dimtypeptr)
-/// obtains dimensional scale ID.
-///
-/// \param dataset original HDF5 dataset name that refers to dim. scale
-/// \param index index of the object reference
-/// \param nelmptr  pointer to the number of element of this dimension
-/// \param dsizeptr pointer to total size of this dimension
-/// \param dimtypeptr pointer to dimensional type
-/// \return dimensional scale id
-///
-/// \todo Needs to be re-written or enhanced since
-/// <ol>
-///    <li> dimensional scale has been updated.
-///    <li> needs to fulfill Aura's time.
-/// </ol>
-// <hyokyung 2007.02.20. 13:39:08>
-////////////////////////////////////////////////////////////////////////////////
-hid_t
-get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
-            hid_t * dimtypeptr)
-{
-    hid_t attr_id;
-    hid_t tempid;
-    hid_t *sdsdim;
-    hid_t type, datatype, space;
-    hobj_ref_t *refbuf;
-    char *buf;
-    hsize_t datasetsize, ssiz;
-    size_t typesize;
-    int nelm;
-    int num_attrs;
-    int attr_namesize;
-    unsigned int i, j;
-    char dimscale[21];
-
-    DBG(cerr << ">get_diminfo()" << endl);    
-    num_attrs = H5Aget_num_attrs(dataset);
-
-    for (i = 0; i < num_attrs; i++) {
-        attr_id = H5Aopen_idx(dataset, i);
-        bzero(dimscale, sizeof(dimscale));
-        attr_namesize = H5Aget_name(attr_id, 20, dimscale);
-        if (attr_namesize < 0) {
-            printf("error in getting attribute name\n");
-            return -1;
-        }
-        if (strncmp(dimscale, "DIMSCALE", 8) == 0) {
-            type = H5Aget_type(attr_id);
-            if (H5Tget_class(type) != H5T_REFERENCE)
-                return -1;
-            if (!H5Tequal(type, H5T_STD_REF_OBJ))
-                return -1;
-            space = H5Aget_space(attr_id);
-            ssiz = H5Sget_simple_extent_npoints(space);
-            ssiz *= H5Tget_size(type);
-
-            buf = (char*)calloc((size_t) ssiz, sizeof(char));
-            H5Aread(attr_id, H5T_STD_REF_OBJ, buf);
-
-            refbuf = (hobj_ref_t *) buf;
-            ssiz = H5Sget_simple_extent_npoints(space);
-            sdsdim = (hid_t*)malloc(sizeof(hid_t) * ssiz);
-
-            for (j = 0; j < ssiz; j++) {
-
-                sdsdim[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
-                /*printf("sdsdim[j] %d\n",sdsdim[j]); */
-
-                if (sdsdim[j] < 0) {
-                    printf("cannot dereference the object.\n");
-                    return -1;
-                }
-
-                if (j == index) {
-                    tempid = sdsdim[j];
-                    datasetsize = H5Dget_storage_size(sdsdim[j]);
-                    datatype = H5Dget_type(sdsdim[j]);
-                    typesize = H5Tget_size(datatype);
-                    nelm = datasetsize / typesize;
-                    break;
-                }
-                refbuf++;
-            }
-            free(sdsdim);
-            free(buf);
-            H5Aclose(attr_id);
-            break;
-        }
-        H5Aclose(attr_id);
-    }
-    *dsizeptr = (size_t) datasetsize;
-    *nelmptr = nelm;
-    *dimtypeptr = datatype;
-    DBG(cerr << "<get_diminfo()" << endl);        
-    return tempid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -734,48 +590,99 @@ get_diminfo(hid_t dataset, int index, int *nelmptr, size_t * dsizeptr,
 /// \param dataset original HDF5 dataset name that refers to dimensional scale
 /// \return a number
 ////////////////////////////////////////////////////////////////////////////////
-int get_dimnum(hid_t dataset)
+int map_to_grid(hid_t dataset,int num_dim,int new_h4h5)
 {
-
 
     hid_t attr_id;
     hid_t type, space;
     hsize_t ssiz;
-    int num_dim;
+    int num_dim1,num_dim2;
     int num_attrs;
     int attr_namesize;
     unsigned int i;
-    char dimscale[21];
+    char dimscale[HDF5_DIMVARLEN];
+    int temp_check_dimscale = 0;
+    int temp_check_dimscalename = 0;
+    int temp_return;
 
     DBG(cerr << ">get_dimnum()" << endl);    
+    num_dim1=num_dim2=-1;
     num_attrs = H5Aget_num_attrs(dataset);
 
+    // 1.1 Found whether we have attribute "HDF5_DIMENSIONLIST", if no, map to array.
     for (i = 0; i < num_attrs; i++) {
+
         attr_id = H5Aopen_idx(dataset, i);
         bzero(dimscale, sizeof(dimscale));
-        attr_namesize = H5Aget_name(attr_id, 20, dimscale);
+        attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
         if (attr_namesize < 0) {
-            printf("error in getting attribute name\n");
-            return -1;
+            throw
+            InternalErr(__FILE__,__LINE__,"error in getting attribute name\n");
         }
-        if (strncmp(dimscale, "DIMSCALE", 8) == 0) {
+        if(new_h4h5 && !strncmp(dimscale, HDF5_DIMENSIONLIST, strlen(HDF5_DIMENSIONLIST))) temp_check_dimscale =1;
+        if(!new_h4h5 && !strncmp(dimscale, OLD_HDF5_DIMENSIONLIST, strlen(OLD_HDF5_DIMENSIONLIST))) temp_check_dimscale =1;
+        if (temp_check_dimscale) {
             type = H5Aget_type(attr_id);
-            if (H5Tget_class(type) != H5T_REFERENCE)
-                return -1;
-            if (!H5Tequal(type, H5T_STD_REF_OBJ))
-                return -1;
+            if (H5Tget_class(type) != H5T_REFERENCE){
+              throw
+            InternalErr(__FILE__,__LINE__,"The type is supposed to be the reference type \n");
+           }
+
+            if (!H5Tequal(type, H5T_STD_REF_OBJ)){
+               throw
+            InternalErr(__FILE__,__LINE__,"The type should be the object reference type \n");
+           }
+
             space = H5Aget_space(attr_id);
             // number of element for HDF5 dimensional object reference array
             // is the number of dimension of HDF5 corresponding array. 
             ssiz = H5Sget_simple_extent_npoints(space);
-            num_dim = (int) ssiz;
+            num_dim1 = (int) ssiz;
+            H5Tclose(type);
+            H5Sclose(space);
             H5Aclose(attr_id);
             break;
         }
         H5Aclose(attr_id);
     }
-    DBG(cerr << "<get_dimnum()" << endl);    
-    return num_dim;
+    // 1.2 Found whether we have attribute "DIMENSION_NAMELIST",if no, map to array.
+    for (i = 0; i < num_attrs; i++) {
+        attr_id = H5Aopen_idx(dataset, i);
+        bzero(dimscale, sizeof(dimscale));
+        attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
+        if (attr_namesize < 0) {
+           throw
+            InternalErr(__FILE__,__LINE__,"error in getting attribute name\n");
+        }
+
+        if(new_h4h5 && !strncmp(dimscale, HDF5_DIMENSIONNAMELIST, strlen(HDF5_DIMENSIONNAMELIST))) temp_check_dimscalename =1;
+        if(!new_h4h5 && !strncmp(dimscale, OLD_HDF5_DIMENSIONNAMELIST, strlen(OLD_HDF5_DIMENSIONNAMELIST)))temp_check_dimscalename =1;
+
+
+        if (temp_check_dimscalename) {
+            type = H5Aget_type(attr_id);
+            if (H5Tget_class(type) != H5T_STRING) {
+              throw
+              InternalErr(__FILE__,__LINE__,"The type is supposed to be the string type \n");
+           }
+
+           space = H5Aget_space(attr_id);
+           // number of element for HDF5 dimensional object reference array
+           // is the number of dimension of HDF5 corresponding array. 
+           ssiz = H5Sget_simple_extent_npoints(space);
+           num_dim2 = (int) ssiz;
+           H5Tclose(type);
+           H5Sclose(space);
+           H5Aclose(attr_id);
+           break;
+        }
+        H5Aclose(attr_id);
+    }
+ 
+
+    temp_return = ((num_dim == num_dim1)?(num_dim1==num_dim2):0);
+    // If no dimensional information was found according to new h4h5tool, check it for the old one. 
+    return temp_return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
