@@ -8,9 +8,9 @@ Content-Type: text/plain
 Content-Description: dods_dds
 
 Dataset {
-    Int32 Dataset1\[dim1 = 4\]\[dim2 = 6\];
-    Int32 Dataset2\[dim1 = 4\]\[dim2 = 6\];
-    Int32 Dataset3\[dim1 = 4\]\[dim2 = 6\];
-    Int32 Dataset4\[dim1 = 4\]\[dim2 = 6\];
-    Int32 Dataset4\[dim1 = 4\]\[dim2 = 6\];
+    Int32 /Dataset1[4][6];
+    Int32 /Group1/Group2/Dataset2[4][6];
+    Int32 /Group1/Group2/Dataset3[4][6];
+    Int32 /Group1/Group2/Dataset4[4][6];
+    Int32 /Group1/Group2/Group3/Dataset4[4][6];
 } test1.h5;
