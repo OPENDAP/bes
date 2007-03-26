@@ -19,7 +19,8 @@ int get_slabdata(hid_t dset, int *, int *, int *, int num_dim, hsize_t,
 		 void *, char *);
 hid_t get_fileid(const char *filename);
 char *get_dimname(hid_t, int);
-int get_dimnum(hid_t);
+H5GridFlag_t maptogrid(hid_t,int);
+int map_to_grid(hid_t,int,int);
 hid_t get_diminfo(hid_t, int, int *, size_t *, hid_t *);
 hid_t get_memtype(hid_t);
 char *correct_name(char *);
