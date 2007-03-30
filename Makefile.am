@@ -13,7 +13,12 @@ bin_SCRIPTS = bes-config
 EXTRA_DIST = apache hello_world csv-handler doxy.conf bes.spec
 
 #########################################################################
-#
+
+bes-configuration-tests:
+	cd cmdln && make bes-configuration-tests
+
+#########################################################################
+
 # docs
 
 .PHONY: docs
