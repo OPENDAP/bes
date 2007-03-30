@@ -1,7 +1,7 @@
 
 # Build bescmdln, part of the BES code.
 
-AUTOMAKE_OPTIONS = foreign dejagnu
+AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
 
@@ -17,19 +17,36 @@ bin_PROGRAMS = bescmdln
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
 bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs)
-DEJATOOL = bescmdln
-RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
+# DEJATOOL = bescmdln
+# RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
-# Add a test to make sure beslister is running; this is only half correct
-# since beslistener can be running n single access mode and then the tests
-# still won't work... Also, this target is run _after_ 'check:' so we cannot
-# use this to start beslistener. jhrg 1/2/07
+# This is the DejaGNU target copied from the Makefile but with my own name
+# and some of the 'Deja' environment variables substituted since automake
+# will complain it we use those without 'dejagnu' in the options at the of
+# the file. I removed the dejagnu option because I don't want these tests
+# running during the regular build, only after all the handlers have built
+# and installed. I've also added some code to make sure a bes is running
+# before we start the tests. jhrg 3/31/07
 
-check-local:
+bes-configuration-tests: site.exp
 	@(ps -el | grep beslistener > /dev/null 2>&1;\
-	  if test $$? != 0; \
-	    then echo "beslitener must be running for these tests to work!";\
+	  if test $$? != 0; then \
+		echo;\
+		echo "Starting bes using the default configuration!";\
+		echo;\
+		besctl start;\
 	  fi)
-
-
-
+	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
+	EXPECT=$(EXPECT); export EXPECT; \
+	if $(SHELL) -c "runtest --version" > /dev/null 2>&1; then \
+	  runtest --tool bescmdln --srcdir testsuite; \
+	else \
+	  echo "WARNING: could not find \`runtest'" 1>&2; :;\
+	fi
+	@(ps -el | grep beslistener > /dev/null 2>&1;\
+	  if test $$? = 0; then \
+		echo;\
+		echo "Stopping the bes";\
+		echo;\
+		besctl stop;\
+	  fi)
