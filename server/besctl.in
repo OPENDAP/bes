@@ -43,7 +43,15 @@ stop)
     (cat "$localstatedir"/run/bes.pid | cut -d' ' -f2 | xargs kill -INT) 2> /dev/null
     ;;
 start)
-	# Check if the process is running too and if not rm the file and start.
+    # Make sure we can write the pid file! jhrg 3/31/2007
+    if [ ! -x ${localstatedir}/run ] || [ ! -w ${localstatedir}/run ]
+    then
+	echo "The besctl command cannot write to ${localstatedir}/run."
+	echo "Check that the directory exists and that the user running"
+	echo "besctl has write permissions for it."
+	exit 1
+    fi
+    # Check if the process is running too and if not rm the file and start.
     if [ -f "${localstatedir}"/run/bes.pid ]
     then
 	echo "The BES daemon is already running"
