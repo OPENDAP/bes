@@ -62,7 +62,7 @@ PPTClient::PPTClient( const string &hostStr, int portVal, int timeout )
     // secure connection
     _mySock = new TcpSocket( hostStr, portVal ) ;
     _mySock->connect() ;
-    _connected = true ;
+    _connected = _mySock->isConnected();
 }
     
 PPTClient::PPTClient( const string &unix_socket, int timeout )
