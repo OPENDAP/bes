@@ -37,6 +37,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "TcpSocket.h"
 #include "SocketConfig.h"
@@ -122,16 +123,103 @@ TcpSocket::connect()
 	    }
 	}
     }
+
     sin.sin_port = htons( _portVal ) ;
     pProtoEnt = getprotobyname( "tcp" ) ;
+    
+    _connected = false;
     int descript = socket( AF_INET, SOCK_STREAM, pProtoEnt->p_proto ) ;
-    if( descript != -1 )
-    {
-	if( ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) ) != 1 )
-	{
-	    _socket = descript ;
-	    _connected = true ;
+    
+    if( descript == -1 ) {
+      string err("getting socket descriptor: ");
+      const char* error_info = strerror(errno);
+      if(error_info)
+	err += (string)error_info;
+      throw SocketException( err, __FILE__, __LINE__ ) ;
+    } else {
+      long holder;
+      _socket = descript;
+
+      //set socket to non-blocking mode
+      holder = fcntl(_socket, F_GETFL, NULL);
+      holder = holder | O_NONBLOCK;
+      fcntl(_socket, F_SETFL, holder);
+      
+      int res = ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) );
+      
+      if( res == -1 ) {
+	if(errno == EINPROGRESS) {
+	  
+	  fd_set write_fd ;
+	  struct timeval timeout ;
+	  int maxfd = _socket;
+	  
+	  timeout.tv_sec = 5;
+	  timeout.tv_usec = 0;
+	  
+	  FD_ZERO( &write_fd);
+	  FD_SET( _socket, &write_fd );
+	  
+	  if( select( maxfd+1, NULL, &write_fd, NULL, &timeout) < 0 ) {
+	  
+	    //reset socket to blocking mode
+	    holder = fcntl(_socket, F_GETFL, NULL);
+	    holder = holder & (~O_NONBLOCK);
+	    fcntl(_socket, F_SETFL, holder);
+	    
+	    //throw error - select could not resolve socket
+	    string err( "selecting sockets: " ) ;
+	    const char *error_info = strerror( errno ) ;
+	    if( error_info )
+	      err += (string)error_info ;
+	    throw SocketException( err, __FILE__, __LINE__ ) ;
+
+	  } else {
+
+	    //check socket status
+	    socklen_t lon;
+	    int valopt;
+	    lon = sizeof(int);
+	    getsockopt(_socket, SOL_SOCKET, SO_ERROR, (void*) &valopt, &lon);
+	    
+	    if(valopt) {
+
+	      //reset socket to blocking mode
+	      holder = fcntl(_socket, F_GETFL, NULL);
+	      holder = holder & (~O_NONBLOCK);
+	      fcntl(_socket, F_SETFL, holder);
+	      
+	      //throw error - did not successfully connect
+	      string err("Did not successfully connect to server\n");
+	      err += "Server may be down or you may be trying on the wrong port";
+	      throw SocketException( err, __FILE__, __LINE__ ) ;
+	      
+	    } else {
+	      
+	      //reset socket to blocking mode
+	      holder = fcntl(_socket, F_GETFL, NULL);
+	      holder = holder & (~O_NONBLOCK);
+	      fcntl(_socket, F_SETFL, holder);
+	      
+	      //succesful connetion to server
+	      _connected = true;
+	    }
+	  }
+	} else {
+
+	  //reset socket to blocking mode
+	  holder = fcntl(_socket, F_GETFL, NULL);
+	  holder = holder & (~O_NONBLOCK);
+	  fcntl(_socket, F_SETFL, holder);
+	  
+	  //throw error - connect( ) returned unexpected result
+	  string err("socket connect: ");
+	  const char* error_info = strerror(errno);
+	  if(error_info)
+	    err += (string)error_info;
+	  throw SocketException( err, __FILE__, __LINE__ ) ;
 	}
+      }
     }
 }
 
