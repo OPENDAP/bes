@@ -201,6 +201,7 @@ PPTConnection::receive( ostream *strm )
 	    done = true;
 	}
     }
+    delete [] inBuff ;
     return isDone ;
 }
 
