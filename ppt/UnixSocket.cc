@@ -29,6 +29,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      szednik     Stephan Zednik <zednik@ucar.edu>
 
 #include <unistd.h>
 #include <sys/un.h>
@@ -55,7 +56,7 @@ UnixSocket::connect()
 	throw SocketException( err, __FILE__, __LINE__ ) ;
     }
 
-    char path[500] = "" ;
+    char path[107] = "" ;
     getcwd( path, sizeof( path ) ) ;
     _tempSocket = path ;
     _tempSocket += "/" ;
@@ -63,7 +64,8 @@ UnixSocket::connect()
     _tempSocket += ".unixSocket" ;
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
-    if( _tempSocket.length() > 108 )
+    // 107 characters in pathname + '\0'
+    if( _tempSocket.length() > 107 )
     {
 	string msg = "path to temporary unix socket " ;
 	msg += _tempSocket + " is too long" ;
@@ -73,25 +75,25 @@ UnixSocket::connect()
     struct sockaddr_un client_addr ;
     struct sockaddr_un server_addr ;
 
-    // Changed the call below to strncpy; sockaddr_un.sun_path is a char[104] on OS/X.
-    // jhrg 5/26/06
-    strncpy( server_addr.sun_path, _unixSocket.c_str(), 103) ;
-    server_addr.sun_path[103] = '\0';
+    strncpy(server_addr.sun_path, _unixSocket.c_str(), _unixSocket.size());
+    server_addr.sun_path[_unixSocket.size()] = '\0';
     server_addr.sun_family = AF_UNIX ;
 
     int descript = socket( AF_UNIX, SOCK_STREAM, 0 ) ;
     if( descript != -1 )
-    {
-	strcpy( client_addr.sun_path, _tempSocket.c_str() ) ;
+      {
+	strncpy( client_addr.sun_path, _tempSocket.c_str(), _tempSocket.size());
+	client_addr.sun_path[_tempSocket.size()] = '\0';
 	client_addr.sun_family = AF_UNIX ;
 
 	int clen = sizeof( client_addr.sun_family ) ;
-	// Added +1. jhrg 5/26/06
 	clen += strlen( client_addr.sun_path )  + 1;
+
 	if( bind( descript, (struct sockaddr*)&client_addr, clen + 1) != -1 )
 	{
 	    int slen = sizeof( server_addr.sun_family ) ;
-	    slen += strlen( server_addr.sun_path ) ;
+	    slen += strlen( server_addr.sun_path) + 1;
+
 	    if( ::connect( descript, (struct sockaddr*)&server_addr, slen ) != -1)
 	    {
 		_socket = descript ;
