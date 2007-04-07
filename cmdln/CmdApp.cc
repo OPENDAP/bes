@@ -157,10 +157,13 @@ CmdApp::signalBrokenPipe( int sig )
 	CmdApp *app = dynamic_cast<CmdApp *>(BESApp::TheApplication()) ;
 	if( app )
 	{
-	    CmdClient *client = app->client() ;
-	    if( client )
+	  CmdClient *client = app->client() ;
+	  if( client )
 	    {
-		client->brokenPipe() ;
+	      client->brokenPipe() ;
+	      client->shutdownClient() ;
+	      delete client;
+	      client = 0;
 	    }
 	}
 	exit( 1 ) ;
