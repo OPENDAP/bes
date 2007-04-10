@@ -83,33 +83,33 @@ TcpSocket::connect()
 	    switch( h_errno )
 	    {
 		case HOST_NOT_FOUND:
-		{
-		    string err( "No such host " ) ;
-		    err += _host ;
-		    throw SocketException( err, __FILE__, __LINE__ ) ;
-		}
+                    {
+                        string err( "No such host " ) ;
+                        err += _host ;
+                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                    }
 		case TRY_AGAIN:
-		{
-		    string err( "Host " ) ;
-		    err += _host + " is busy, try again later" ;
-		    throw SocketException( err, __FILE__, __LINE__ ) ;
-		}
+                    {
+                        string err( "Host " ) ;
+                        err += _host + " is busy, try again later" ;
+                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                    }
 		case NO_RECOVERY:
-		{
-		    string err( "DNS error for host " ) ;
-		    err += _host ;
-		    throw SocketException( err, __FILE__, __LINE__ ) ;
-		}
+                    {
+                        string err( "DNS error for host " ) ;
+                        err += _host ;
+                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                    }
 		case NO_ADDRESS:
-		{
-		    string err( "No IP address for host " ) ;
-		    err += _host ;
-		    throw SocketException( err, __FILE__, __LINE__ ) ;
-		}
+                    {
+                        string err( "No IP address for host " ) ;
+                        err += _host ;
+                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                    }
 		default:
-		{
-		    throw SocketException( "unknown error", __FILE__, __LINE__ ) ;
-		}
+                    {
+                        throw SocketException( "unknown error", __FILE__, __LINE__ ) ;
+                    }
 	    }
 	}
 	else
@@ -130,96 +130,119 @@ TcpSocket::connect()
     _connected = false;
     int descript = socket( AF_INET, SOCK_STREAM, pProtoEnt->p_proto ) ;
     
-    if( descript == -1 ) {
-      string err("getting socket descriptor: ");
-      const char* error_info = strerror(errno);
-      if(error_info)
-	err += (string)error_info;
-      throw SocketException( err, __FILE__, __LINE__ ) ;
+    if( descript == -1 ) 
+    {
+        string err("getting socket descriptor: ");
+        const char* error_info = strerror(errno);
+        if(error_info)
+            err += (string)error_info;
+        throw SocketException( err, __FILE__, __LINE__ ) ;
     } else {
-      long holder;
-      _socket = descript;
+        long holder;
+        _socket = descript;
 
-      //set socket to non-blocking mode
-      holder = fcntl(_socket, F_GETFL, NULL);
-      holder = holder | O_NONBLOCK;
-      fcntl(_socket, F_SETFL, holder);
+        //set socket to non-blocking mode
+        holder = fcntl(_socket, F_GETFL, NULL);
+        holder = holder | O_NONBLOCK;
+        fcntl(_socket, F_SETFL, holder);
       
-      int res = ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) );
+        int res = ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) );
+
+        std::cout<<"res value is "<<res<<endl;
       
-      if( res == -1 ) {
-	if(errno == EINPROGRESS) {
+        if( res == -1 ) 
+        {
+            std::cout<<"In res = -1"<<endl;
+            if(errno == EINPROGRESS) {
 	  
-	  fd_set write_fd ;
-	  struct timeval timeout ;
-	  int maxfd = _socket;
+                fd_set write_fd ;
+                struct timeval timeout ;
+                int maxfd = _socket;
 	  
-	  timeout.tv_sec = 5;
-	  timeout.tv_usec = 0;
+                timeout.tv_sec = 5;
+                timeout.tv_usec = 0;
 	  
-	  FD_ZERO( &write_fd);
-	  FD_SET( _socket, &write_fd );
+                FD_ZERO( &write_fd);
+                FD_SET( _socket, &write_fd );
 	  
-	  if( select( maxfd+1, NULL, &write_fd, NULL, &timeout) < 0 ) {
+                if( select( maxfd+1, NULL, &write_fd, NULL, &timeout) < 0 ) {
 	  
-	    //reset socket to blocking mode
-	    holder = fcntl(_socket, F_GETFL, NULL);
-	    holder = holder & (~O_NONBLOCK);
-	    fcntl(_socket, F_SETFL, holder);
+                    //reset socket to blocking mode
+                    holder = fcntl(_socket, F_GETFL, NULL);
+                    holder = holder & (~O_NONBLOCK);
+                    fcntl(_socket, F_SETFL, holder);
 	    
-	    //throw error - select could not resolve socket
-	    string err( "selecting sockets: " ) ;
-	    const char *error_info = strerror( errno ) ;
-	    if( error_info )
-	      err += (string)error_info ;
-	    throw SocketException( err, __FILE__, __LINE__ ) ;
+                    //throw error - select could not resolve socket
+                    string err( "selecting sockets: " ) ;
+                    const char *error_info = strerror( errno ) ;
+                    if( error_info )
+                        err += (string)error_info ;
+                    throw SocketException( err, __FILE__, __LINE__ ) ;
 
-	  } else {
+                } 
+                else 
+                {
 
-	    //check socket status
-	    socklen_t lon;
-	    int valopt;
-	    lon = sizeof(int);
-	    getsockopt(_socket, SOL_SOCKET, SO_ERROR, (void*) &valopt, &lon);
+                    //check socket status
+                    socklen_t lon;
+                    int valopt;
+                    lon = sizeof(int);
+                    getsockopt(_socket, SOL_SOCKET, SO_ERROR, (void*) &valopt, &lon);
 	    
-	    if(valopt) {
+                    if(valopt) 
+                    {
 
-	      //reset socket to blocking mode
-	      holder = fcntl(_socket, F_GETFL, NULL);
-	      holder = holder & (~O_NONBLOCK);
-	      fcntl(_socket, F_SETFL, holder);
+                        //reset socket to blocking mode
+                        holder = fcntl(_socket, F_GETFL, NULL);
+                        holder = holder & (~O_NONBLOCK);
+                        fcntl(_socket, F_SETFL, holder);
 	      
-	      //throw error - did not successfully connect
-	      string err("Did not successfully connect to server\n");
-	      err += "Server may be down or you may be trying on the wrong port";
-	      throw SocketException( err, __FILE__, __LINE__ ) ;
+                        //throw error - did not successfully connect
+                        string err("Did not successfully connect to server\n");
+                        err += "Server may be down or you may be trying on the wrong port";
+                        throw SocketException( err, __FILE__, __LINE__ ) ;
 	      
-	    } else {
+                    } 
+                    else 
+                    {
+                        //reset socket to blocking mode
+                        holder = fcntl(_socket, F_GETFL, NULL);
+                        holder = holder & (~O_NONBLOCK);
+                        fcntl(_socket, F_SETFL, holder);
 	      
-	      //reset socket to blocking mode
-	      holder = fcntl(_socket, F_GETFL, NULL);
-	      holder = holder & (~O_NONBLOCK);
-	      fcntl(_socket, F_SETFL, holder);
-	      
-	      //succesful connetion to server
-	      _connected = true;
-	    }
-	  }
-	} else {
+                        //succesful connetion to server
+                        _connected = true;
+                    }
+                }
+            } 
+            else 
+            {
 
-	  //reset socket to blocking mode
-	  holder = fcntl(_socket, F_GETFL, NULL);
-	  holder = holder & (~O_NONBLOCK);
-	  fcntl(_socket, F_SETFL, holder);
+                //reset socket to blocking mode
+                holder = fcntl(_socket, F_GETFL, NULL);
+                holder = holder & (~O_NONBLOCK);
+                fcntl(_socket, F_SETFL, holder);
 	  
-	  //throw error - connect( ) returned unexpected result
-	  string err("socket connect: ");
-	  const char* error_info = strerror(errno);
-	  if(error_info)
-	    err += (string)error_info;
-	  throw SocketException( err, __FILE__, __LINE__ ) ;
-	}
-      }
+                //throw error - errno was not EINPROGRESS
+                string err("socket connect: ");
+                const char* error_info = strerror(errno);
+                if(error_info)
+                    err += (string)error_info;
+                throw SocketException( err, __FILE__, __LINE__ ) ;
+            }
+        }
+        else
+        {
+            // The socket connect request completed immediately
+            // even that the socket was in non-blocking mode
+            
+            //reset socket to blocking mode
+            holder = fcntl(_socket, F_GETFL, NULL);
+            holder = holder & (~O_NONBLOCK);
+            fcntl(_socket, F_SETFL, holder);
+            _connected = true;
+        }
+        
     }
 }
 
@@ -263,16 +286,16 @@ TcpSocket::listen()
 		if( getsockname( _socket, (struct sockaddr *)&server,
 		                 (socklen_t *)&length ) == -1 )
 #else
-		if( getsockname( _socket, (struct sockaddr *)&server,
-		                 &length ) == -1 )
+                    if( getsockname( _socket, (struct sockaddr *)&server,
+                                     &length ) == -1 )
 #endif
-		{
-		    string error( "getting socket name" ) ;
-		    const char* error_info = strerror( errno ) ;
-		    if( error_info )
-			error += " " + (string)error_info ;
-		    throw SocketException( error, __FILE__, __LINE__ ) ;
-		}
+                    {
+                        string error( "getting socket name" ) ;
+                        const char* error_info = strerror( errno ) ;
+                        if( error_info )
+                            error += " " + (string)error_info ;
+                        throw SocketException( error, __FILE__, __LINE__ ) ;
+                    }
 		if( ::listen( _socket, 5 ) == 0 )
 		{
 		    _listening = true ;
@@ -324,7 +347,7 @@ void
 TcpSocket::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "TcpSocket::dump - ("
-			     << (void *)this << ")" << endl ;
+         << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "host: " << _host << endl ;
     strm << BESIndent::LMarg << "port: " << _portVal << endl ;
