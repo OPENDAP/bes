@@ -21,13 +21,13 @@ endif
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
-	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc
+	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc HDF5GridEOS.cc 
 HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
-	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h
+	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h HDF5GridEOS.h
 
 # <hyokyung 2007.02.23. 14:19:46>
-SRCS = h5dds.cc h5das.cc H5Git.cc
+SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc H5EOS.cc
 # SRCS = h5dds.cc h5das.cc H5Git.c
 HDRS = common.h h5dds.h h5das.h H5Git.h
 
@@ -86,3 +86,17 @@ srpm:
 
 rpm:
 	rpmbuild -tb hdf5_handler-@PACKAGE_VERSION@.tar.gz
+
+###########################################################################
+
+# Build the HDF-EOS parser
+
+hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
+	mv hdfeos.tab.c hdfeos.tab.cc
+
+# Build the HDF-EOS scanner
+
+lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
+	mv lex.hdfeos.c lex.hdfeos.cc

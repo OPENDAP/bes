@@ -44,6 +44,7 @@ class HDF5Array;
 class HDF5Structure;
 class HDF5Sequence;
 class HDF5Grid;
+class HDF5GridEOS;
 
 /// A factory for the HDF5 Data Handler types.
 ///
@@ -69,6 +70,7 @@ public:
     virtual Structure *NewStructure(const string &n = "") const;
     virtual Sequence *NewSequence(const string &n = "") const;
     virtual Grid *NewGrid(const string &n = "") const;
+    virtual Grid *NewGridEOS(const string &n = "") const;
 };
 
 #endif // hdf5_type_factory_h

@@ -22,15 +22,15 @@ private:
   hid_t dset_id;
   hid_t ty_id;
 public:
-friend string print_type(hid_t datatype);  
-    HDF5Grid(const string &n = "");
-    virtual ~HDF5Grid();
+  friend string print_type(hid_t datatype);  
+  HDF5Grid(const string &n = "");
+  virtual ~HDF5Grid();
     
-    virtual BaseType *ptr_duplicate();
+  virtual BaseType *ptr_duplicate();
 
-        virtual bool read(const string &dataset);
-//    virtual bool read(String dataset, String var_name, String constraint);
-//    virtual bool read_val(void *stuff);
+  virtual bool read(const string &dataset);
+  //    virtual bool read(String dataset, String var_name, String constraint);
+  //    virtual bool read_val(void *stuff);
 
   void set_did(hid_t dset);
   void set_tid(hid_t type);

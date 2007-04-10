@@ -25,10 +25,11 @@
 #include "HDF5TypeFactory.h"
 #include "InternalErr.h"
 #include "H5Git.h"
+#include "H5EOS.h"
 
 static char Msgt[MAX_ERROR_MESSAGE];
 static DS_t dt_inst;	// ??? 7/25/2001 jhrg
-
+extern H5EOS eos;
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
@@ -455,8 +456,8 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 ///
 ///    \param dds_table Destination for the HDF5 objects. 
 ///    \param varname Absolute name of either a dataset or a group
-///    \throw error a string of error message to the dods interface.
 ///    \param filename Added to the DDS (dds_table).
+///    \throw error a string of error message to the dods interface.
 ////////////////////////////////////////////////////////////////////////////////
 void
 read_objects_base_type(DDS & dds_table, const string & varname,
@@ -464,7 +465,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 {
   Array *ar;
   Grid *gr;
-  Part pr;
+  Part pr; // enum type (see BaseType.h line 100)
   
 
   
@@ -491,7 +492,6 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   else {
     
     int dim_index;
-
     ar = dds_table.get_factory()->NewArray(varname);
 
     (dynamic_cast < HDF5Array * >(ar))->set_did(dt_inst.dset);
@@ -511,14 +511,18 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 
     H5GridFlag_t check_grid;
 
+
     /* 1. Check whether this HDF5 dataset can be mapped to the grid data
        Should check whether the attribute includes dimension list;
        If yes and everything is valid, map to DAP grid;
        Otherwise, map to DAP array. */
  
     check_grid = maptogrid(dt_inst.dset,dt_inst.ndims);
+    
     if (check_grid != NotGrid) {
-      hid_t  attr_id,temp_dtype,temp_dspace;
+      hid_t  attr_id;
+      hid_t temp_dtype;
+      hid_t temp_dspace;
       hid_t  memtype;
       size_t temp_tsize;
       size_t name_size;
@@ -572,7 +576,6 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       H5Aclose(attr_id);
 
       //obtain dimensional scale data information 
-      /* obtain dimensional scale ids; it should be a list of dimensional ids */
       if(check_grid == NewH4H5Grid) {
         if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONLIST))<0){
           throw 
@@ -650,12 +653,55 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 	gr->add_var(ar, pr);
         delete ar;
       }
+      
       dds_table.add_var(gr);
       delete gr;
       if(dimname!=NULL) free(dimname);
       if(EachDimName!=NULL) free(EachDimName);
       if(dimid!=NULL) free(dimid);
-    } else {// cannot be mapped to grid, it has to be an array.
+    }
+    // Check if eos class has this name as grid.
+    else if(eos.is_valid() && eos.is_grid(varname)){
+      DBG(cerr << "EOS Grid: " << varname << endl);
+      // Generate grid based on the parsed StructMetada.
+      gr = (dynamic_cast < HDF5TypeFactory * >(dds_table.get_factory()))->NewGridEOS(varname);
+      // First fill the array part of the grid.
+      pr = array;
+      gr->add_var(ar,pr);
+      delete ar;
+      
+      // Next fill the map part of the grid.
+      pr = maps;
+      // Retrieve the dimension lists from parsed metadata.
+      vector<string> tokens;
+      eos.get_dimensions(varname, tokens);
+      DBG(cerr << "Number of dimensions " << dt_inst.ndims << endl);
+
+      
+      for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {      
+	DBG(cerr << ": " << tokens.at(dim_index) << endl);
+	
+	string str_dim_name = tokens.at(dim_index);
+	
+	// Retrief the full path to the each dimension name.
+	string str_grid_name = eos.get_grid_name(varname);
+	// cerr << "grid name = " << str_grid_name << endl;
+	string str_dim_full_name = str_grid_name + str_dim_name;
+	
+	int dim_size = eos.get_dimension_size(str_dim_full_name);
+
+	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
+	ar = new Array(str_dim_full_name, 0);
+	ar->add_var(bt);            
+	ar->append_dim(dim_size, str_dim_full_name);
+	gr->add_var(ar, pr);
+	delete ar;
+      }
+      dds_table.add_var(gr);      
+      delete gr;
+      
+    }
+    else {// cannot be mapped to grid, it has to be an array.
       dds_table.add_var(ar);
       delete ar;
     }

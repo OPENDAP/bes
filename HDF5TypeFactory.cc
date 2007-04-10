@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of ff_handler a FreeForm API handler for the OPeNDAP
@@ -63,6 +62,7 @@
 #include "HDF5Structure.h"
 #include "HDF5Sequence.h"
 #include "HDF5Grid.h"
+#include "HDF5GridEOS.h"
 #include "HDF5TypeFactory.h"
 #include "debug.h"
 
@@ -145,4 +145,10 @@ Grid *
 HDF5TypeFactory::NewGrid(const string &n ) const 
 { 
     return new HDF5Grid(n);
+}
+
+Grid *
+HDF5TypeFactory::NewGridEOS(const string &n ) const 
+{ 
+    return new HDF5GridEOS(n);
 }

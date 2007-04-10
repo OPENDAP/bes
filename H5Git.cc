@@ -489,10 +489,10 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     }
 
     for (i = 0; i < num_dim; i++) {
-
         dyn_count[i] = (hsize_t) (*count);
         dyn_step[i] = (hsize_t) (*step);
         dyn_offset[i] = (hssize_t) (*offset);
+        // cerr << "count:" << dyn_count[i] << " step:" << dyn_step[i] << " offset:" << dyn_step[i] << endl;	
         count++;
         step++;
         offset++;

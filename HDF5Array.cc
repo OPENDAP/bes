@@ -48,13 +48,12 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
 
     Dim_iter p = dim_begin();
     while (p != dim_end()) {
-#if 0
-    for (Pix p = first_dim(); p; next_dim(p), id++)
-#endif
+      
 	int start = dimension_start(p, true);
 	int stride = dimension_stride(p, true);
 	int stop = dimension_stop(p, true);
 
+        // cerr << "start:" << start << " stride:" << stride << " stop:" << stop << endl;		
 	// Check for empty constraint
 	if (stride <= 0 || start < 0 || stop < 0 || start > stop
 	    || start == 0 && stop == 0) {
@@ -69,7 +68,7 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
 	step[id] = stride;
 	count[id] = ((stop - start) / stride) + 1;	// count of elements
 	nels *= count[id];	// total number of values for variable
-        
+        id++;
         ++p;
     }
 
