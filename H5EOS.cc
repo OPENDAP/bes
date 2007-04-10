@@ -212,7 +212,7 @@ bool H5EOS::set_dimension_array()
       break;
     case 2:
       for(i=0; i< dim_size; i++){
-	convbuf[i] = 0.3; // meaningless number.
+	convbuf[i] = (dods_float32)i; // meaningless number.
       }            
       ncandidatebuf = convbuf;
       break;
