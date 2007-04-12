@@ -17,7 +17,7 @@
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-#define DODS_DEBUG
+// #define DODS_DEBUG
 #include "debug.h"
 #include "h5das.h"
 #include "InternalErr.h"
