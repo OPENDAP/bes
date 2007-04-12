@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
       DDS dds(&factory);
       ConstraintEvaluator ce;
       DAS das;
-
-
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
       // find_gloattr(file1, das);

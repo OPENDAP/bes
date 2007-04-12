@@ -697,6 +697,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 	gr->add_var(ar, pr);
 	delete ar;
       }
+      
       dds_table.add_var(gr);      
       delete gr;
       

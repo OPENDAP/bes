@@ -17,7 +17,7 @@
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-// #define DODS_DEBUG
+#define DODS_DEBUG
 #include "debug.h"
 #include "h5das.h"
 #include "InternalErr.h"
@@ -70,7 +70,10 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
   // Iterate through the file to see members of the root group.
   int nelems;
-  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
+
+  DBG(cerr << ">depth_first():" << gname << endl);
+  
+    if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
     msg += gname;
@@ -223,6 +226,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
     delete[]oname;
 
   }
+  DBG(cerr << "<depth_first():" << gname << endl);  
   return true;
 }
 
@@ -493,6 +497,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   char attr_name[5];
   char *hdf5_path;
 
+  DBG(cerr << ">read_objects():" << varname <<endl);
   strcpy(attr_name, "name");
 
 
@@ -748,9 +753,9 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     }
     delete[]value;
   }
-
   delete[]new_varname;
   delete[]temp_varname;
+  DBG(cerr << "<read_objects()" <<endl);  
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -802,9 +807,11 @@ find_gloattr(hid_t file, DAS & das)
   }
 
   catch(Error & e) {
+    DBG(cerr << "=find_gloattr():Error" <<endl);    
     H5Gclose(root);
     throw;
   }
+  DBG(cerr << "=find_gloattr(): comes here?" <<endl);  
   H5Gclose(root);
   DBG(cerr << "<find_gloattr()" <<endl);
   return true;
