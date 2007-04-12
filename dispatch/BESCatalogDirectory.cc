@@ -255,7 +255,7 @@ BESCatalogDirectory::add_stat_info( BESInfo *info,
     time_t mod = buf.st_mtime ;
     struct tm *stm = gmtime( &mod ) ;
     char mdate[64] ;
-    strftime( mdate, 64, "%F", stm ) ;
+    strftime( mdate, 64, "%Y-%m-%d", stm ) ;
     char mtime[64] ;
     strftime( mtime, 64, "%T", stm ) ;
 
