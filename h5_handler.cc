@@ -54,10 +54,14 @@ int main(int argc, char *argv[])
     switch (df.get_response()) { 
     case DODSFilter::DAS_Response:{
       DAS das;
+
       find_gloattr(file1, das);
+
       depth_first(file1, "/", das,
 		  df.get_dataset_name().c_str());
+
       df.send_das(das);
+
       break;
     }
 
