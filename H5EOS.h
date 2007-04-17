@@ -51,9 +51,6 @@ public:
   H5EOS();
   virtual ~H5EOS();
   
-  dods_float32* xdimbuf;
-  dods_float32* ydimbuf;
-  dods_float32* ncandidatebuf;
   dods_float32** dimension_data;
   
   float point_lower;
@@ -70,11 +67,10 @@ public:
   int    get_dimension_size(const string name);
   void   get_dimensions(const string name, vector<string>& tokens);
   string get_grid_name(const string full_path);
-  bool   set_dimension_array();
   bool   is_grid(const string name);  
   bool   is_valid();
   void   print(); // For debugging
-
+  bool   set_dimension_array();
   
 };
 #endif

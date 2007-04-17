@@ -20,7 +20,7 @@ H5EOS eos;
 /// @return 1 if error
 int main(int argc, char *argv[])
 {
-  DBG(cerr << "Starting the HDF server." << endl);
+  DBG(cerr << "Starting the HDF handler." << endl);
 
   try {
     DODSFilter df(argc, argv);
@@ -37,10 +37,12 @@ int main(int argc, char *argv[])
     }
 
     hid_t file1 = get_fileid(df.get_dataset_name().c_str());
+
     if (file1 < 0)
       throw Error(no_such_file, string("Could not open hdf5 file: ")
 		  + df.get_dataset_name());
 
+    DBG(cerr << "checking EOS file" << endl);
     if(eos.check_eos(file1)){
       DBG(cerr << "eos file is detected" << endl);
       eos.set_dimension_array();
@@ -50,13 +52,15 @@ int main(int argc, char *argv[])
       DBG(cerr << "eos file is not detected" << endl);
     }
 
+    
     // More C++ style? How to use virtual function. <hyokyung 2007.02.20. 13:31:10>
     switch (df.get_response()) { 
     case DODSFilter::DAS_Response:{
       DAS das;
 
-      find_gloattr(file1, das);
 
+      find_gloattr(file1, das);
+      
       depth_first(file1, "/", das,
 		  df.get_dataset_name().c_str());
 

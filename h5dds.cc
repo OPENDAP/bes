@@ -17,7 +17,7 @@
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-// #define DODS_DEBUG
+
 #include "config_hdf5.h"
 #include "debug.h"
 #include "h5dds.h"
@@ -26,6 +26,8 @@
 #include "InternalErr.h"
 #include "H5Git.h"
 #include "H5EOS.h"
+
+
 
 static char Msgt[MAX_ERROR_MESSAGE];
 static DS_t dt_inst;	// ??? 7/25/2001 jhrg

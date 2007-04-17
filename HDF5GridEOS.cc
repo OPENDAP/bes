@@ -93,22 +93,6 @@ HDF5GridEOS::read_dimension(Array* a)
     else{
       cerr << "Could not retrieve map data" << endl;
     }
-    /*
-    if(a->name() == "/HDFEOS/GRIDS/CloudFractionAndPressure/XDim"){
-      
-      a->val2buf((void *)
-		 get_dimension_data(eos.xdimbuf, start, stride, stop, count));
-    }
-    if(a->name() == "/HDFEOS/GRIDS/CloudFractionAndPressure/YDim"){
-      // Format constraints
-      a->val2buf((void *)
-		 get_dimension_data(eos.ydimbuf, start, stride, stop, count));
-    }
-    if(a->name() == "/HDFEOS/GRIDS/CloudFractionAndPressure/nCandidate"){
-      a->val2buf((void *)
-		 get_dimension_data(eos.ncandidatebuf, start, stride, stop, count));
-    }
-    */
 }
 
 dods_float32* HDF5GridEOS::get_dimension_data(dods_float32* buf,

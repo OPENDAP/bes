@@ -53,10 +53,9 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
 	int stride = dimension_stride(p, true);
 	int stop = dimension_stop(p, true);
 
-        // cerr << "start:" << start << " stride:" << stride << " stop:" << stop << endl;		
 	// Check for empty constraint
-	if (stride <= 0 || start < 0 || stop < 0 || start > stop
-	    || start == 0 && stop == 0) {
+	if (stride <= 0 || start < 0 || stop < 0 || start > stop){
+	
 	    ostringstream oss;
 
 	    oss << "Array/Grid hyperslab indices are bad: [" << start <<

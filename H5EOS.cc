@@ -193,29 +193,23 @@ bool H5EOS::set_dimension_array()
     // cerr << "Dim size = " << dim_size << std::endl;
 
     convbuf = new dods_float32[dim_size];
-    // In this version of code, we make a strong assumption that dimension list in StructMetadata
-    // is in the order of XDim, YDim, nCandidate.
-    switch(j){
-    case 0:
+
+    if((dim_name.find("XDim", (int)dim_name.size()-4)) != string::npos){
       float gradient_x = (point_right - point_left) / (float)(dim_size - 1);
       for(i=0; i < dim_size; i++){
 	convbuf[i] = (dods_float32)(point_left + (float)i * gradient_x);
       }
-      xdimbuf = convbuf;
-      break;
-    case 1:
+    }
+    else if((dim_name.find("YDim", (int)dim_name.size()-4)) != string::npos){    
       float gradient_y = (point_upper - point_lower) / (float)(dim_size - 1);      
       for(i=0; i< dim_size; i++){
 	convbuf[i] = (dods_float32)(point_upper - (float)i * gradient_y);
       }      
-      ydimbuf = convbuf;
-      break;
-    case 2:
+    }
+    else{
       for(i=0; i< dim_size; i++){
 	convbuf[i] = (dods_float32)i; // meaningless number.
       }            
-      ncandidatebuf = convbuf;
-      break;
     }
     dimension_data[j] = convbuf;    
   }
@@ -238,3 +232,4 @@ int H5EOS::get_dimension_data_location(string dimension_name)
   }
   return -1;
 }
+

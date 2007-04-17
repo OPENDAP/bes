@@ -25,6 +25,7 @@
 #include "H5Git.h"
 
 
+
 static char Msgt[255];		// used as scratch in various places
 static int slinkindex;		// used by depth_first()
 
@@ -73,6 +74,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
   DBG(cerr << ">depth_first():" << gname << endl);
   
+ 
     if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
@@ -838,11 +840,12 @@ bool
 get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 {
 
-  char *buf;
-  string finaltrans;
+  char *buf = NULL;
+  char *finbuf = NULL;
+  string finaltrans = "";
   H5G_stat_t statbuf;
-  AttrTable *attr_table_ptr;
-  char *temp_varname;
+  AttrTable *attr_table_ptr = NULL;
+  char *temp_varname = NULL;
 #if 0
   char *cptr;
   char ORI_SLASH = '/';
@@ -850,6 +853,8 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 #endif
   char str_num[6];
 
+  DBG(cerr << ">get_softlink():" << oname << endl);
+  
   // softlink attribute name will be "HDF5_softlink" + "link index". 
   sprintf(str_num, "%d", index);
   const char *temp_oname = oname.c_str();
@@ -894,15 +899,17 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
     return false;
   }
 
-  char *finbuf = new char (strlen(buf) + 3);
+  int c = strlen(buf) + 3;
+  finbuf = new char[c];
 
   try {
-    bzero(finbuf, strlen(buf) + 3);
+    bzero(finbuf, c);
     sprintf(finbuf, "\"%s\"", buf);
     attr_table_ptr->append_attr(oname, STRING, finbuf);
   }
 
   catch(Error & e) {
+
     delete[]temp_varname;
     delete[]buf;
     delete[]finbuf;
@@ -910,9 +917,11 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
   }
 
   delete[]temp_varname;
+  DBG(cerr << "<get_softlink(): after temp_varname" << endl);
   delete[]buf;
+  DBG(cerr << "<get_softlink(): after buf:" << finbuf << endl);  
   delete[]finbuf;
-
+  DBG(cerr << "<get_softlink(): after finbuf" <<  endl);  
   return true;
 }
 
