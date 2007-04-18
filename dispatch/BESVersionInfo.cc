@@ -57,6 +57,7 @@ BESVersionInfo::BESVersionInfo()
 
 BESVersionInfo::~BESVersionInfo()
 {
+    if( _info ) delete _info ;
 }
 
 void
