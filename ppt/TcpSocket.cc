@@ -148,11 +148,9 @@ TcpSocket::connect()
       
         int res = ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) );
 
-        std::cout<<"res value is "<<res<<endl;
       
         if( res == -1 ) 
         {
-            std::cout<<"In res = -1"<<endl;
             if(errno == EINPROGRESS) {
 	  
                 fd_set write_fd ;
