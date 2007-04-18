@@ -326,6 +326,15 @@ ServerApp::terminate( int sig )
 	    _us->close() ;
 	    delete _us ;
 	}
+
+	BESDEBUG( "ServerApp: terminating default module ... " )
+	BESDefaultModule::terminate( ) ;
+	BESDEBUG( "OK" << endl ) ;
+
+	BESDEBUG( "ServerApp: terminating default commands ... " )
+	BESDefaultCommands::terminate( ) ;
+	BESDEBUG( "OK" << endl ) ;
+
 	BESModuleApp::terminate( sig ) ;
     }
     return sig ;
