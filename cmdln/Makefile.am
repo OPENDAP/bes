@@ -16,7 +16,7 @@ bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
-bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs)
+bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs) $(READLINE_LIBS)
 # DEJATOOL = bescmdln
 # RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 

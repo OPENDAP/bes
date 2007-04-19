@@ -89,7 +89,7 @@ dnl dl lib?
 AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
 
 dnl Checks for libraries.
-AC_CHECK_LIB(termcap, main)
+dnl AC_CHECK_LIB(termcap, main)
 
 # check for readline
 VL_LIB_READLINE
