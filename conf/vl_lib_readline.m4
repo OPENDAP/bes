@@ -52,6 +52,7 @@ AC_DEFUN([VL_LIB_READLINE], [
   AC_CACHE_CHECK([for a readline compatible library],
                  vl_cv_lib_readline, [
     ORIG_LIBS="$LIBS"
+    READLINE_LIBS=""
     for readline_lib in readline edit editline; do
       for termcap_lib in "" termcap curses ncurses; do
         if test -z "$termcap_lib"; then
@@ -60,6 +61,7 @@ AC_DEFUN([VL_LIB_READLINE], [
           TRY_LIB="-l$readline_lib -l$termcap_lib"
         fi
         LIBS="$ORIG_LIBS $TRY_LIB"
+	READLINE_LIBS="$TRY_LIB"
         AC_TRY_LINK_FUNC(readline, vl_cv_lib_readline="$TRY_LIB")
         if test -n "$vl_cv_lib_readline"; then
           break
@@ -69,15 +71,16 @@ AC_DEFUN([VL_LIB_READLINE], [
         break
       fi
     done
+    LIBS="$ORIG_LIBS"
     if test -z "$vl_cv_lib_readline"; then
       vl_cv_lib_readline="no"
-      LIBS="$ORIG_LIBS"
+      READLINE_LIBS=""
     fi
+    AC_SUBST([READLINE_LIBS])
   ])
 
   if test "$vl_cv_lib_readline" != "no"; then
-    AC_DEFINE(HAVE_LIBREADLINE, 1,
-              [Define if you have a readline compatible library])
+    AC_DEFINE(HAVE_LIBREADLINE, 1, [Define if you have a readline compatible library])
     AC_CHECK_HEADERS(readline.h readline/readline.h)
     AC_CACHE_CHECK([whether readline supports history],
                    vl_cv_lib_readline_history, [
