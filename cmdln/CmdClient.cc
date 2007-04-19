@@ -368,7 +368,9 @@ size_t CmdClient::readLine(string & msg)
     buf =::readline("BESClient> ");
     if (buf && *buf) {
         len = strlen(buf);
+#ifdef HAVE_READLINE_HISTORY
         add_history(buf);
+#endif
         if (len > SIZE_COMMUNICATION_BUFFER) {
             cerr << __FILE__ << __LINE__
                 <<

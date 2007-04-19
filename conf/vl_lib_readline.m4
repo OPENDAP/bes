@@ -79,6 +79,8 @@ AC_DEFUN([VL_LIB_READLINE], [
     AC_SUBST([READLINE_LIBS])
   ])
 
+  ORIG_LIBS="$LIBS"
+  LIBS="$ORIG_LIBS $READLINE_LIBS"
   if test "$vl_cv_lib_readline" != "no"; then
     AC_DEFINE(HAVE_LIBREADLINE, 1, [Define if you have a readline compatible library])
     AC_CHECK_HEADERS(readline.h readline/readline.h)
@@ -93,4 +95,5 @@ AC_DEFUN([VL_LIB_READLINE], [
       AC_CHECK_HEADERS(history.h readline/history.h)
     fi
   fi
+  LIBS="$ORIG_LIBS"
 ])dnl
