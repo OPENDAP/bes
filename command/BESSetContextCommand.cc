@@ -43,7 +43,7 @@
  *
  * The syntax for a request handled by this response handler is:
  *
- * set context &lt;context_name&gt;,&lt;context_value&gt;;
+ * set context &lt;context_name&gt; to &lt;context_value&gt;;
  *
  * The request must end with a semicolon and must contain the context name
  * and the context value.
