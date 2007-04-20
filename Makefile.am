@@ -27,7 +27,7 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h HDF5GridEOS.h
 
 # <hyokyung 2007.02.23. 14:19:46>
-SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc H5EOS.cc
+SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc hdfeos_das.tab.cc lex.hdfeos_das.cc H5EOS.cc
 # SRCS = h5dds.cc h5das.cc H5Git.c
 HDRS = common.h h5dds.h h5das.h H5Git.h
 
@@ -95,8 +95,16 @@ hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
 	mv hdfeos.tab.c hdfeos.tab.cc
 
+hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das $<
+	mv hdfeos_das.tab.c hdfeos_das.tab.cc
+
 # Build the HDF-EOS scanner
 
 lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
 	mv lex.hdfeos.c lex.hdfeos.cc
+
+lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.h
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos_das $<
+	mv lex.hdfeos_das.c lex.hdfeos_das.cc

@@ -23,9 +23,10 @@
 #include "InternalErr.h"
 #include "common.h"
 #include "H5Git.h"
+#include "parser.h"
+#include "H5EOS.h"
 
-
-
+extern H5EOS eos;
 static char Msgt[255];		// used as scratch in various places
 static int slinkindex;		// used by depth_first()
 
@@ -41,6 +42,12 @@ static const char UINT16[]="UInt16";
 static const char UINT32[]="UInt32";
 static const char INT_ELSE[]="Int_else";
 static const char FLOAT_ELSE[]="Float_else";
+
+/// EOS parser related variables
+struct yy_buffer_state;
+int hdfeos_dasparse(void *arg);      // defined in hdfeos.tab.c
+yy_buffer_state *hdfeos_das_scan_string(const char *str);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
@@ -500,8 +507,42 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   char *hdf5_path;
 
   DBG(cerr << ">read_objects():" << varname <<endl);
+  
   strcpy(attr_name, "name");
+  if(eos.is_valid()){
+    if(
+       varname.find("StructMetadata") != string::npos
+       || varname.find("CoreMetadata") != string::npos
+       || varname.find("ProductMetadata") != string::npos
+       || varname.find("ArchivedMetadata") != string::npos
+       || varname.find("coremetadata") != string::npos
+       || varname.find("productmetadata") != string::npos     
+       ){
+      AttrTable *at = das.get_table(varname);
+      if (!at)
+	at = das.add_table(varname, new AttrTable);
+      // Open the dataset.
+      hid_t dset = H5Dopen(oid, varname.c_str());
+      hid_t datatype, dataspace, memtype;
+	    
+      if ((datatype = H5Dget_type(dset)) < 0) {
+	cout << "H5EOS.cc failed to obtain datatype from  dataset " << dset << endl;
+      }
+      if ((dataspace = H5Dget_space(dset)) < 0) {
+	cout << "H5EOS.cc failed to obtain dataspace from  dataset " <<dset << endl;
+      }
+      size_t size = H5Tget_size(datatype);
+      char *chr = new char[size + 1];	    
+      H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, (void*)chr);
+      parser_arg arg(at);    
+      hdfeos_das_scan_string(chr);
 
+      if (hdfeos_dasparse(static_cast < void *>(&arg)) != 0
+	  || arg.status() == false)
+	cerr << "HDF-EOS parse error!\n";
+      return;
+    }
+  }
 
   hdf5_path = new char[strlen(HDF5_OBJ_FULLPATH) + 1];
 

@@ -40,7 +40,6 @@
 proc compare_stdout {expected msg {xfailp 0} {str_test compare}} {
     global comp_output
     global verbose
-
     set verbose 3
 
     # Make sure that the string test method passed in through $str_test is
