@@ -94,7 +94,7 @@
 
 #define YYSTYPE char *
   
-// static char rcsid[] not_used = {"$Id: hdfeos.y 13155 2006-02-09 20:41:24Z jimg $"};
+// static char rcsid[] not_used = {"$Id$"};
 
 #include <stdio.h>
 #include <stdlib.h>
