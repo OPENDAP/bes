@@ -60,7 +60,8 @@ CmdApp::CmdApp()
       _outputStrm( 0 ),
       _inputStrm( 0 ),
       _createdInputStrm( false ),
-      _timeout( 0 )
+      _timeout( 0 ),
+      _repeat( 0 )
 {
 }
 
@@ -92,6 +93,7 @@ CmdApp::showUsage( )
     cout << "    -f <outputFile> - specifies a file name to output the results of the input" << endl ;
     cout << "    -t <timeoutVal> - specifies an optional timeout value in seconds" << endl ;
     cout << "    -d - sets the optional debug flag for the client session" << endl ;
+    cout << "    -r <num> - repeat the command(s) num times" << endl ;
     cout << "    -? - display this list of flags" << endl ;
 }
 
@@ -227,12 +229,13 @@ CmdApp::initialize( int argc, char **argv )
     string outputStr = "" ;
     string inputStr = "" ;
     string timeoutStr = "" ;
+    string repeatStr = "" ;
 
     bool badUsage = false ;
 
     int c ;
 
-    while( ( c = getopt( argc, argv, "?vd:h:p:t:u:x:f:i:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "?vd:h:p:t:u:x:f:i:r:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -283,6 +286,9 @@ CmdApp::initialize( int argc, char **argv )
 		break ;
 	    case 'i':
 		inputStr = optarg ;
+		break ;
+	    case 'r':
+		repeatStr = optarg ;
 		break ;
 	    case '?':
 		{
@@ -377,6 +383,20 @@ CmdApp::initialize( int argc, char **argv )
 	_createdInputStrm = true ;
     }
 
+    if( !repeatStr.empty() )
+    {
+	_repeat = atoi( repeatStr.c_str() ) ;
+	if( !_repeat && repeatStr != "0" )
+	{
+	    cerr << "repeat number invalid: " << repeatStr << endl ;
+	    badUsage = true ;
+	}
+	if( !_repeat )
+	{
+	    _repeat = 1 ;
+	}
+    }
+
     if( badUsage == true )
     {
 	showUsage( ) ;
@@ -437,11 +457,11 @@ CmdApp::run()
     {
 	if( _cmd != "" )
 	{
-	    _client->executeCommand( _cmd ) ;
+	    _client->executeCommands( _cmd, _repeat ) ;
 	}
 	else if( _inputStrm )
 	{
-	    _client->executeCommands( *_inputStrm ) ;
+	    _client->executeCommands( *_inputStrm, _repeat ) ;
 	}
 	else
 	{

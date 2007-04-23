@@ -51,6 +51,7 @@ private:
     ifstream *			_inputStrm ;
     bool			_createdInputStrm ;
     int				_timeout ;
+    int				_repeat ;
 
     void			showVersion() ;
     void			showUsage() ;

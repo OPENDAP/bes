@@ -96,9 +96,12 @@ public:
     void			shutdownClient() ;
     void			setOutput( ostream *strm, bool created ) ;
     void			executeClientCommand( const string &cmd ) ;
-    void			executeCommand( const string &cmd ) ;
-    void			executeCommands( const string &cmd_list ) ;
-    void			executeCommands( ifstream &inputFile ) ;
+    void			executeCommand( const string &cmd,
+						int repeat ) ;
+    void			executeCommands( const string &cmd_list,
+						 int repeat ) ;
+    void			executeCommands( ifstream &inputFile,
+						 int repeat ) ;
     void			interact() ;
     bool			isConnected() ;
     void			brokenPipe() ;

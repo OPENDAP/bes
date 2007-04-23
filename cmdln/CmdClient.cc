@@ -220,15 +220,19 @@ void CmdClient::executeClientCommand(const string & cmd)
 *                      from the server.
 * @see    PPTException
 */
-void CmdClient::executeCommand(const string & cmd)
+void CmdClient::executeCommand(const string & cmd, int repeat )
 {
     string client = "client";
     if (cmd.compare(0, client.length(), client) == 0) {
         executeClientCommand(cmd.substr(client.length() + 1));
     } else {
-        _client->send(cmd);
-        _client->receive(_strm);
-        _strm->flush();
+	if( repeat < 1 ) repeat = 1 ;
+	for( int i = 0; i < repeat; i++ )
+	{
+	    _client->send(cmd);
+	    _client->receive(_strm);
+	    _strm->flush();
+	}
     }
 }
 
@@ -246,14 +250,18 @@ void CmdClient::executeCommand(const string & cmd)
 *                      of the responses from the server.
 * @see    PPTException
 */
-void CmdClient::executeCommands(const string & cmd_list)
+void CmdClient::executeCommands(const string & cmd_list, int repeat)
 {
-    std::string::size_type start = 0;
-    std::string::size_type end = 0;
-    while ((end = cmd_list.find(';', start)) != string::npos) {
-        string cmd = cmd_list.substr(start, end - start + 1);
-        executeCommand(cmd);
-        start = end + 1;
+    if( repeat < 1 ) repeat = 1 ;
+    for( int i = 0; i < repeat; i++ )
+    {
+	std::string::size_type start = 0;
+	std::string::size_type end = 0;
+	while ((end = cmd_list.find(';', start)) != string::npos) {
+	    string cmd = cmd_list.substr(start, end - start + 1);
+	    executeCommand(cmd, 1);
+	    start = end + 1;
+	}
     }
 }
 
@@ -277,43 +285,49 @@ void CmdClient::executeCommands(const string & cmd_list)
 * @see    File
 * @see    PPTException
 */
-void CmdClient::executeCommands(ifstream & istrm)
+void CmdClient::executeCommands(ifstream & istrm, int repeat)
 {
-    string cmd;
-    bool done = false;
-    while (!done) {
-        char line[4096];
-        line[0] = '\0';
-        istrm.getline(line, 4096, '\n');
-        string nextLine = line;
-        if (nextLine == "") {
-            if (cmd != "") {
-                this->executeCommands(cmd);
-            }
-            done = true;
-        } else {
-            std::string::size_type i = nextLine.find_last_of(';');
-            if (i == string::npos) {
-                if (cmd == "") {
-                    cmd = nextLine;
-                } else {
-                    cmd += " " + nextLine;
-                }
-            } else {
-                string sub = nextLine.substr(0, i + 1);
-                if (cmd == "") {
-                    cmd = sub;
-                } else {
-                    cmd += " " + sub;
-                }
-                this->executeCommands(cmd);
-                if (i == nextLine.length() || i == nextLine.length() - 1) {
-                    cmd = "";
-                } else {
-                    cmd = nextLine.substr(i + 1, nextLine.length());
-                }
-            }
-        }
+    if( repeat < 1 ) repeat = 1 ;
+    for( int i = 0; i < repeat; i++ )
+    {
+	istrm.clear( ) ;
+	istrm.seekg( 0, ios::beg ) ;
+	string cmd;
+	bool done = false;
+	while (!done) {
+	    char line[4096];
+	    line[0] = '\0';
+	    istrm.getline(line, 4096, '\n');
+	    string nextLine = line;
+	    if (nextLine == "") {
+		if (cmd != "") {
+		    this->executeCommands(cmd, 1);
+		}
+		done = true;
+	    } else {
+		std::string::size_type i = nextLine.find_last_of(';');
+		if (i == string::npos) {
+		    if (cmd == "") {
+			cmd = nextLine;
+		    } else {
+			cmd += " " + nextLine;
+		    }
+		} else {
+		    string sub = nextLine.substr(0, i + 1);
+		    if (cmd == "") {
+			cmd = sub;
+		    } else {
+			cmd += " " + sub;
+		    }
+		    this->executeCommands(cmd, 1);
+		    if (i == nextLine.length() || i == nextLine.length() - 1) {
+			cmd = "";
+		    } else {
+			cmd = nextLine.substr(i + 1, nextLine.length());
+		    }
+		}
+	    }
+	}
     }
 }
 
@@ -353,7 +367,7 @@ void CmdClient::interact()
             if (message[message.length() - 1] != ';') {
                 cerr << "Commands must end with a semicolon" << endl;
             } else {
-                this->executeCommands(message);
+                this->executeCommands(message, 1);
                 message = "";   // Needed? Added during debugging. jhrg 9/8/05
                 len = 0;
             }
