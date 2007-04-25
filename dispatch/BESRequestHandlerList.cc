@@ -172,39 +172,12 @@ BESRequestHandlerList::get_handler_names()
 void
 BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
 {
-     dhi.first_container() ;
-     while( dhi.container )
-     {
-       if( dhi.container->is_valid() )
-       {
-           BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
-           if( rh )
-           {
-               p_request_handler p = rh->find_handler( dhi.action ) ;
-               if( p )
-               {
-                   p( dhi ) ;
-		   string c_list = dhi.data[REAL_NAME_LIST] ;
-                   if( c_list != "" )
-                       c_list += ", " ;
-                   c_list += dhi.container->get_real_name() ;
-		   dhi.data[REAL_NAME_LIST] = c_list ;
-               } else {
-                   string se = "Request handler \""
-                               + dhi.container->get_container_type()
-                               + "\" does not handle the response type \""
-                               + dhi.action + "\"" ;
-                   throw BESHandlerException( se, __FILE__, __LINE__ ) ;
-               }
-           } else {
-               string se = "The data handler \""
-                           + dhi.container->get_container_type()
-                           + "\" does not exist" ;
-               throw BESHandlerException( se, __FILE__, __LINE__ ) ;
-           }
-       }
-       dhi.next_container() ;
-     }
+    dhi.first_container() ;
+    while( dhi.container )
+    {
+	execute_current( dhi ) ;
+	dhi.next_container() ;
+    }
 }
 
 /** @brief for all of the registered request handlers, execute the given
@@ -260,6 +233,28 @@ void
 BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
 {
     dhi.first_container() ;
+    execute_current( dhi ) ;
+}
+
+/** @brief Execute a single method for the current container that will fill
+ * in the response object rather than iterating over the list of containers
+ * or request handlers.
+ *
+ * The request is passed * off to the request handler for the current
+ * container in the data handler interface.
+ *
+ * @param dhi data handler interface that contains the necessary information
+ * to fill in the response object
+ * @throws BESHandlerException if the request handler cannot be found for the
+ * current containers data type or if the request handler cannot fill in the
+ * specified response object.
+ * @see _BESDataHandlerInterface
+ * @see BESContainer
+ * @see BESResponseObject
+ */
+void
+BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
+{
     if( dhi.container->is_valid() )
     {
 	BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
@@ -269,6 +264,14 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
 	    if( p )
 	    {
 		p( dhi ) ;
+		if( dhi.container )
+		{
+		    string c_list = dhi.data[REAL_NAME_LIST] ;
+		    if( !c_list.empty() )
+		       c_list += ", " ;
+		    c_list += dhi.container->get_real_name() ;
+		    dhi.data[REAL_NAME_LIST] = c_list ;
+		}
 	    } else {
 		string se = "Request handler \""
 			    + dhi.container->get_container_type()

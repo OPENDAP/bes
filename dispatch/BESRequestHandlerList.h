@@ -77,6 +77,7 @@ public:
     virtual void		execute_each( BESDataHandlerInterface &dhi ) ;
     virtual void		execute_all( BESDataHandlerInterface &dhi ) ;
     virtual void		execute_once( BESDataHandlerInterface &dhi ) ;
+    virtual void		execute_current( BESDataHandlerInterface &dhi );
 
     virtual void		dump( ostream &strm ) const ;
 
