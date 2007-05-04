@@ -1,6 +1,186 @@
+2007-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Added notes to the BES.
+
+2007-05-01  jgarcia
+
+	Added svn propedit svn:ignore . so it stops svn status bugging with irrelevant files
+
+2007-04-25  Patrick West <pwest@ucar.edu>
+
+	Ability to execute a request handler with respect to only the current
+	container.
+	M    BESRequestHandlerList.h
+	M    BESRequestHandlerList.cc
+
+2007-04-23  Patrick West <pwest@ucar.edu>
+
+	Added ability to repeat the command(s). Used mainly for testing purposes.
+	Use the -r <num> option to repeat num times.
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.cc
+	M    cmdln/CmdClient.h
+	M    cmdln/CmdApp.h
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	In the vl_lib_readline.m4 file, last section, need to have LIBS set to
+	READLINE_LIBS to test the history functions. In CmdClient.cc need to check
+	to see if HAVEHISTORY is set before calling the function add_history.
+	M    conf/vl_lib_readline.m4
+	M    cmdln/CmdClient.cc
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Corrected comment regarding syntax of set context call. Wasn't including the
+	token 'to' ... set context <name> to <value>;
+	M    BESSetContextCommand.cc
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Setting READLINE_LIBS instead of changing LIBS. The readline macro also
+	checks for a termcap (or ncurses or curses) and adds it to READLINE_LIBS. So
+	we don't need a separate check for termcap.
+	M    cmdln/Makefile.am
+	M    configure.ac
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Set READLINE_LIBS instead of changing libs. This way the bes libraries won't
+	be depending on readline, only cmdln.
+	M    conf/vl_lib_readline.m4
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Redirected informational object was not being deleted in the destructor
+	M    dispatch/BESVersionInfo.cc
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Removed debug printouts
+	M    ppt/TcpSocket.cc
+
+2007-04-18  Patrick West <pwest@ucar.edu>
+
+	Default modules were not being cleaned up. Then again ... the terminate
+	method never gets called, which is a problem.
+	M    server/ServerApp.cc
+
+2007-04-12  Patrick West <pwest@ucar.edu>
+
+	%F not supported on all systems for displaying date information, so went
+	%with the longhand %Y-%m-%d format, which %F represented.
+	M    dispatch/BESCatalogDirectory.cc
+
+2007-04-10  jgarcia
+
+	Added code to deal with the case when the connect call returns
+	zero meaning that the socket is indeed connected immediately even
+	in the case of non-blocking sockets. This behavior is observed in
+	Solaris 10 but not in Mac OS X and Linux where those kernels are
+	implemented in such way that connect *typically* return s-1 which
+	means that you must complete the connect call by a select call.
+
+2007-04-06  szednik
+
+	Added call to PPTClient* client shutdown and destructor methods
+	prior to calling exit( ) in CmdApp.cc SIGPIPE handler.
+
+2007-04-05  szednik
+
+	modified string copy from _tempSocket and _serverSocket to use
+	strncpy( ) and to only copy a string the size of the path opposed
+	to a static length.
+
+2007-04-05  szednik
+
+	Updated the connect( ) method of TcpSocket to immediately check
+	whether a socket is fully connected. The socket is set to
+	non-blocking prior to calling connect(2). connect(2) returns
+	EINPROGRESS if the socket is not yet fully connected. select(2)
+	and getsockopt(2) are used with a 5 second timeout to test for a
+	completed full connection. If a full connection is established
+	_connected is set to true, else a SocketException is thrown.
+	Before exit of method the socket is returned to its original
+	blocking mode.
+
+2007-04-05  jgarcia
+
+	Fixed ticket 885
+
+2007-04-05  jgarcia
+
+	Added guards and make the buffer size a define in order to use in
+	the implementation file.
+
+2007-04-04  jgarcia
+
+	Fixed memory leak in receive, see ticket 879. Probably it will be
+	better to use an BESAutoPtr to deal with how to delete the memory
+	in those cases when exceptions are thrown.
+
+2007-04-04  szednik
+
+	Modified the PPTClient constructor that uses a TCP Socket to set
+	_connected to the result of a _mySock->isConnected() check rather
+	then just to true.
+
+2007-03-30  James Gallagher <jgallagher@opendap.org>
+
+	Added a bes configuration test target so that the new configuration test
+	script will work.
+
+	M    Makefile.am
+
+2007-03-30  James Gallagher <jgallagher@opendap.org>
+
+	The besctl command now checks to see that it can writing into the var/run
+	directory before starting the server.
+
+	M    server/besctl.in
+
+2007-03-30  James Gallagher <jgallagher@opendap.org>
+
+	Modified Makefile.am so that the 'configuration' tests are not run using
+	'make check'. Instead there's a special target which can be run later.
+
+	M    cmdln/Makefile.am
+
+2007-03-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired tests
+
+2007-03-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired test targets
+
+2007-03-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired test targets
+
+2007-03-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired test targets
+
+2007-03-13  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Repaired test targets
+
+2007-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Added 'pass' on %20 so that identifiers with spaces will
+	be passed into the parsers with the %20 in them. See ticket
+	#866
+
+2007-03-12  Patrick West <pwest@ucar.edu>
+
+	Updated from last minute bug fixes.
+	M    bes/ChangeLog
+	M    bes/NEWS
+
 2007-03-11  James Gallagher <jgallagher@opendap.org>
 
-	Added. Removed with the ticket is closed.
+	Added. Removed when the ticket is closed.
 
 	AM   valgrind_for_ticket_722.txt
 
