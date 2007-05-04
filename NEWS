@@ -1,6 +1,15 @@
 
 	$Id$
 
+News for version 3.4.2
+
+Added some security notes to the documentation and to the configuration file
+(bes.conf). By default, data file decompression is now off.
+
+Fixed a problem with dates for Last-Modified headers on Solaris.
+
+Fixed some memory leaks 
+
 News Version 3.4.1
 
 Changed the name of the release from Server4 to Hyrax.

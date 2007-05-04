@@ -1,5 +1,5 @@
 Name:           bes
-Version:        3.4.1
+Version:        3.4.2
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
