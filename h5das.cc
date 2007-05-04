@@ -296,7 +296,7 @@ print_attr(hid_t type, int loc, void *sm_buf)
 
       gp.tcp = (char *) sm_buf;
       tuchar = *(gp.tcp + loc);
-      sprintf(rep, "%c", tuchar);
+      sprintf(rep, "%u", tuchar);
     }
 
     else if (H5Tequal(type, H5T_STD_U16BE) ||
