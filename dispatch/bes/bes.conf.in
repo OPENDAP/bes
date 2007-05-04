@@ -106,7 +106,10 @@ BES.Catalog.catalog.Exclude=^\..*;
 
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
-# is secure or not.                                                     #
+# is secure or not. If you are using this option, make sure the BES is  #
+# behind a firewall which blocks the BES.ServerPort unless you intend   #
+# to provide direct access to the BES for the world. In general, if     #
+# that is the case, you should configure the BES to use SSL.            #
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
 BES.ServerUnixSocket=/tmp/bes.socket
@@ -170,10 +173,14 @@ BES.Info.Type=xml
 # runtime environment. Note that you must create the directory before 
 # starting the BES.
 
+# Until we complete a security audit of eh BES, we suggest that this 
+# option be disabled. That can be accomplished by leaving the value of
+# BES.Compressed.Script empty as below.
+
 BES.CacheDir=/tmp
 BES.CacheDir.MaxSize=500
 # BES.Compressed.Extensions=
-BES.Compressed.Script=@bindir@/bes-uncompress.sh
+BES.Compressed.Script=
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#
