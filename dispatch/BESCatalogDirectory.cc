@@ -83,6 +83,13 @@ BESCatalogDirectory::show_catalog( const string &node,
 	fullnode = fullnode.substr( 0, stopat + 1 ) ;
     }
 
+    string::size_type dotdot = fullnode.find( "../" ) ;
+    if( dotdot != string::npos )
+    {
+	string s = (string)"'../' not allowed in catalog node name " + fullnode;
+	throw BESResponseException( s, __FILE__, __LINE__ ) ;
+    }
+
     if( fullnode == "" )
     {
 	fullnode = _utils->get_root_dir() ;
@@ -91,6 +98,7 @@ BESCatalogDirectory::show_catalog( const string &node,
     {
 	fullnode = _utils->get_root_dir() + "/" + fullnode ;
     }
+
     string basename ;
     string::size_type slash = fullnode.rfind( "/" ) ;
     if( slash != string::npos )
