@@ -296,7 +296,10 @@ print_attr(hid_t type, int loc, void *sm_buf)
 
       gp.tcp = (char *) sm_buf;
       tuchar = *(gp.tcp + loc);
+      //represent uchar with numerical form since at
+     // NASA aura files, type of missing value is unsigned char. ky 2007-5-4
       sprintf(rep, "%u", tuchar);
+      //sprintf(rep, "%c", tuchar);
     }
 
     else if (H5Tequal(type, H5T_STD_U16BE) ||
@@ -328,7 +331,10 @@ print_attr(hid_t type, int loc, void *sm_buf)
 	     H5Tequal(type, H5T_NATIVE_CHAR)) {
 
       gp.tcp = (char *) sm_buf;
-      sprintf(rep, "%c", *(gp.tcp + loc));
+   
+      // display byte in numerical form. This is for Aura file. 2007/5/4
+      sprintf(rep, "%d", *(gp.tcp + loc));
+      //sprintf(rep, "%c", *(gp.tcp + loc));
     }
 
     else if (H5Tequal(type, H5T_STD_I16BE) ||
