@@ -172,46 +172,44 @@ ServerApp::initialize( int argc, char **argv )
     }
 
     bool found = false ;
-    string key ;
+    string port_key = "BES.ServerPort" ;
     if( !_gotPort )
     {
-	key = "BES.ServerPort" ;
-	string sPort = TheBESKeys::TheKeys()->get_key( key, found ) ;
-	_portVal = atoi( sPort.c_str() ) ;
-	if( !found || _portVal == 0 )
+	string sPort = TheBESKeys::TheKeys()->get_key( port_key, found ) ;
+	if( found )
 	{
-	    cout << endl << "Unable to determine server port" << endl ;
-	    cout << "Please specify on the command line with -p <port>"
-	         << endl
-		 << "Or specify in the bes configuration file with " << key
-		 << endl << endl ;
-	    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
+	    _portVal = atoi( sPort.c_str() ) ;
+	    if( _portVal != 0 )
+	    {
+		_gotPort = true ;
+	    }
 	}
     }
 
     found = false ;
+    string socket_key = "BES.ServerUnixSocket" ;
     if( _unixSocket == "" )
     {
-	key = "BES.ServerUnixSocket" ;
-	_unixSocket = TheBESKeys::TheKeys()->get_key( key, found ) ;
-	if( !found || _unixSocket == "" )
-	{
-	    cout << endl << "Unable to determine unix socket" << endl ;
-	    cout << "Please specify on the command line with -u <unix_socket>"
-	         << endl
-		 << "Or specify in the bes configuration file with " << key
-		 << endl << endl ;
-	    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
-	}
-#if 1
-	cout << "Unix socket name: " << _unixSocket << endl;
-#endif
+	_unixSocket = TheBESKeys::TheKeys()->get_key( socket_key, found ) ;
+    }
+
+    if( !_gotPort && _unixSocket == "" )
+    {
+	cout << endl << "Must specify either a tcp port"
+	     << " or a unix socket or both" << endl ;
+	cout << "Please specify on the command line with"
+	     << " -p <port> -u <unix_socket> "
+	     << endl
+	     << "Or specify in the bes configuration file with "
+	     << port_key << " and/or " << socket_key
+	     << endl << endl ;
+	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
     }
 
     found = false ;
     if( _secure == false )
     {
-	key = "BES.ServerSecure" ;
+	string key = "BES.ServerSecure" ;
 	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
 	{
@@ -272,15 +270,22 @@ ServerApp::run()
 
 	SocketListener listener ;
 
-	_ts = new TcpSocket( _portVal ) ;
-	listener.listen( _ts ) ;
+	if( _portVal )
+	{
+	    _ts = new TcpSocket( _portVal ) ;
+	    listener.listen( _ts ) ;
+	    BESDEBUG( "ServerApp: listening on port (" << _portVal << ")" << endl )
+	}
 
-	_us = new UnixSocket( _unixSocket ) ;
-	listener.listen( _us ) ;
+	if( !_unixSocket.empty() )
+	{
+	    _us = new UnixSocket( _unixSocket ) ;
+	    listener.listen( _us ) ;
+	    BESDEBUG( "ServerApp: listening on unix socket (" << _unixSocket << ")" << endl )
+	}
 
 	BESServerHandler handler ;
 
-	BESDEBUG( "ServerApp: listening on port (" << _portVal << ") and unix socket (" << _unixSocket << ")" << endl )
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
