@@ -1,0 +1,114 @@
+# expect/tcl code to test agglistT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered cacheT::run
+
+*****************************************
+Failed to create cache with empty dir, good
+The cache dir was not specified, must be non-empty
+
+*****************************************
+Failed to create cache with bad dir, good
+The cache dir /dummy does not exist
+
+*****************************************
+Failed to create cache with empty prefix, good
+The prefix was not specified, must be non-empty
+
+*****************************************
+Failed to create cache with 0 size, good
+The cache size was not specified, must be non-zero
+
+*****************************************
+Created cache with good params, good
+
+*****************************************
+Failed to create cache with empty dir key, good
+The cache dir key  was not found or is not set
+
+*****************************************
+Failed to create cache with non-exist dir key, good
+The cache dir key BES.CacheDir was not found or is not set
+
+*****************************************
+Failed to create cache with bad dir in conf, good
+The prefix key  was not found or is not set
+
+*****************************************
+Failed to create cache with empty prefix key, good
+The prefix key  was not found or is not set
+
+*****************************************
+Failed to create cache with non-exist prefix key, good
+The prefix key BES.CachePrefix was not found or is not set
+
+*****************************************
+Failed to create cache with empty prefix in conf, good
+The prefix key BES.CachePrefix was not found or is not set
+
+*****************************************
+Failed to create cache with empty size key, good
+The cache size could not be determine from  = 
+
+*****************************************
+Failed to create cache with non-exist size key, good
+The cache size could not be determine from BES.CacheSize = 
+
+*****************************************
+Failed to create cache with bad size in conf, good
+The cache size could not be determine from BES.CacheSize = dummy
+
+*****************************************
+Failed to create cache with 0 size in conf, good
+The cache size could not be determine from BES.CacheSize = 0
+
+*****************************************
+Created cache with good keys
+
+*****************************************
+non-exist file is not cached, good
+
+*****************************************
+bad file is not cached, good
+
+*****************************************
+file is cached, good
+target is good
+
+*****************************************
+Test purge, should remove a few
+
+purge returned with success ... checking
+contents matches what should be there
+
+*****************************************
+Test purge, should not remove any
+
+purge returned with success ... checking
+contents matches what should be there
+
+*****************************************
+Returning from cacheT::run"
+
+set dispatchTEST ./cacheT
+
+cache_start
+
+#if ![string compare $test_out $comp_output] { # check comp_output
+#    pass "agglistT"
+#} else {
+#    fail "agglistT"
+#}
+

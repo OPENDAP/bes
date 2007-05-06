@@ -109,7 +109,7 @@ BESContainerStorageVolatile::add_container( const string &s_name,
 	           + " already exists" ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
-    string::size_type dotdot = r_name.find( "../" ) ;
+    string::size_type dotdot = r_name.find( ".." ) ;
     if( dotdot != string::npos )
     {
 	string s = (string)"'../' not allowed in container real name " + r_name;

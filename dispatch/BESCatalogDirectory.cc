@@ -83,7 +83,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 	fullnode = fullnode.substr( 0, stopat + 1 ) ;
     }
 
-    string::size_type dotdot = fullnode.find( "../" ) ;
+    string::size_type dotdot = fullnode.find( ".." ) ;
     if( dotdot != string::npos )
     {
 	string s = (string)"'../' not allowed in catalog node name " + fullnode;

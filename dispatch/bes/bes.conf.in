@@ -152,19 +152,18 @@ BES.Info.Type=xml
 #                                                                       #
 # If a data file is compressed the BES will attempt to uncompress it.   #
 #                                                                       #
-# The way that it does this is by executing a shell script, as          #
-# specified by the BES.Compressed.Script. A default script is provided  #
-# for you.                                                              #
-#                                                                       #
-# To determine if a data file is compressed it compares the name of the #
-# file to the regular expression in BES.Compressed.Extensions. If none  #
-# is specified, the default is ".*(\.gz|\.Z|\.bz2)$".                   #
-#                                                                       #
 # BES will uncompress the data file into the directory specified by     #
-# BES.CacheDir, which defaults to /tmp.                                 #
+# BES.CacheDir. You must specify a cache directory, no default is	#
+# provided. We've set it here to /tmp					#
+#                                                                       #
+# BES will change all slashes in the file to be uncompressed to the	#
+# pound sign (#) and add the prefix specified by BES.CachePrefix. You	#
+# must specify a prefix, no default is provided. We've set it here to	#
+# bes_cache.								#
 #                                                                       #
 # BES will purge the CacheDir if the size of uncompressed bes files     #
-# exceeds BES.CacheDir.MaxSize, which defaults to 500 MB                #
+# exceeds BES.CacheSize. You must specify a max cache size here, no	#
+# default is provided. We've set it here to 500.			#
 #-----------------------------------------------------------------------#
 
 # Suggestion: Change the default CacheDir here (and later in the HDF4 
@@ -178,9 +177,8 @@ BES.Info.Type=xml
 # BES.Compressed.Script empty as below.
 
 BES.CacheDir=/tmp
-BES.CacheDir.MaxSize=500
-# BES.Compressed.Extensions=
-BES.Compressed.Script=
+BES.CachePrefix=bes_cache
+BES.CacheSize=500
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#

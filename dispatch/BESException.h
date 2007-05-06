@@ -58,6 +58,7 @@ public:
 			              const string &file,
 				      int line )
 			    : _msg( msg ),
+			      _return_code( 0 ),
 			      _file( file ),
 			      _line( line ) {}
     virtual		~BESException() {}
