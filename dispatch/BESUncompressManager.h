@@ -1,4 +1,4 @@
-// BESCache.h
+// BESUncompressManager.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,50 +30,60 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESCache_h_
-#define BESCache_h_ 1
+#ifndef I_BESUncompressManager_h
+#define I_BESUncompressManager_h 1
 
+#include <map>
 #include <string>
 
+using std::map ;
 using std::string ;
 
 #include "BESObj.h"
 
-class BESKeys ;
+class BESCache ;
 
-/** @brief Implementation of a caching mechanism.
+typedef string (*p_bes_uncompress)( const string &name, BESCache &cache ) ;
+
+/** @brief List of all registered uncompress methods
  *
- * The caching mechanism simply allows the user to create a cache. Cached
- * files are typically specified by full path. The file name is changed by
- * changing all slashes to pound signs (#), the ending extension is removed,
- * and the specified prefix is prepended to the name of the cached file.
+ * The BESUncompressManager allows the developer to add or remove named
+ * uncompression methods from the list for this server. By default a gz and
+ * bz2 method is provided.
  *
- * The purge method removes the oldest accessed files until the size of all
- * files is less than that specified by the size in the constructors.
+ * What is actually added to the list are static uncompression functions
+ *
+ * @see BESUncompressGZ
+ * @see BESUncompressBZ2
+ * @see BESCache
  */
-class BESCache : public BESObj
+class BESUncompressManager : public BESObj
 {
 private:
-    string 			_cache_dir ;
-    string 			_prefix ;
-    int 			_cache_size ;
+    static BESUncompressManager *	_instance ;
+    map< string, p_bes_uncompress >	_uncompress_list ;
 
-				BESCache() {}
+    typedef map< string, p_bes_uncompress >::const_iterator UCIter ;
+    typedef map< string, p_bes_uncompress >::iterator UIter ;
+protected:
+					BESUncompressManager(void) ;
 public:
-    				BESCache( const string &cache_dir,
-					  const string &prefix,
-					  int size ) ;
-    				BESCache( BESKeys &keys,
-					  const string &cache_dir_key,
-					  const string &prefix_key,
-					  const string &size_key ) ;
-    virtual			~BESCache() {}
+    virtual				~BESUncompressManager(void) {}
 
-    virtual bool		is_cached( const string &src, string &target ) ;
-    virtual void		purge( ) ;
+    virtual bool			add_method( const string &name,
+						    p_bes_uncompress method ) ;
+    virtual bool			remove_method( const string &name ) ;
+    virtual p_bes_uncompress		find_method( const string &name ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual string			get_method_names() ;
+
+    virtual string			uncompress( const string &src,
+						    BESCache &cache ) ;
+
+    virtual void			dump( ostream &strm ) const ;
+
+    static BESUncompressManager *	TheManager() ;
 };
 
-#endif // BESCache_h_
+#endif // I_BESUncompressManager_h
 

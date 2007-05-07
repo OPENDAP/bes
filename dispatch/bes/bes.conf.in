@@ -172,10 +172,6 @@ BES.Info.Type=xml
 # runtime environment. Note that you must create the directory before 
 # starting the BES.
 
-# Until we complete a security audit of eh BES, we suggest that this 
-# option be disabled. That can be accomplished by leaving the value of
-# BES.Compressed.Script empty as below.
-
 BES.CacheDir=/tmp
 BES.CachePrefix=bes_cache
 BES.CacheSize=500

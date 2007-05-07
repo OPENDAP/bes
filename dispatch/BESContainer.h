@@ -65,17 +65,6 @@ private:
     string 			_symbolic_name ;
     string 			_container_type ;
     string			_attributes ;
-    bool			_compressed ;
-    bool			_compression_determined ;
-
-    static string		_cacheDir ;
-    static list<string>		_compressedExtensions ;
-    static string		_script ;
-    static string		_cacheSize ;
-
-    bool			is_compressed() ;
-    void			build_list( const string &ext_list ) ;
-    void			get_cache_info() ;
 public:
     /** @brief construct a container with the given sumbolic name
      *

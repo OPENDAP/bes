@@ -40,7 +40,9 @@ CLEANFILES = *.log *.sum
 # subclassed types in Test*.cc and the TestTypesFactory.
 
 # noinst_PROGRAMS above uses this variable.
-DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT plistT pvolT replistT reqhandlerT reqlistT resplistT infoT agglistT cacheT
+DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT \
+		plistT pvolT replistT reqhandlerT reqlistT resplistT \
+		infoT agglistT cacheT gzT bz2T uncompressT
 
 # Use this when automake adds support for multiple dejagnu test drivers. jhrg
 # 6/30/05. 
@@ -51,7 +53,7 @@ constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h baseApp.h Applicat
 constraintT_LDADD =  ../libbes_dispatch.la
 
 containerT_SOURCES = containerT.cc baseApp.cc containerT.h baseApp.h Application.h
-containerT_LDADD =  ../libbes_dispatch.la
+containerT_LDADD =  ../libbes_dispatch.la -lbz2 -lz
 
 defT_SOURCES = defT.cc baseApp.cc defT.h baseApp.h Application.h
 defT_LDADD =  ../libbes_dispatch.la
@@ -94,4 +96,13 @@ agglistT_LDADD =  ../libbes_dispatch.la
 
 cacheT_SOURCES = cacheT.cc baseApp.cc cacheT.h baseApp.h Application.h
 cacheT_LDADD =  ../libbes_dispatch.la
+
+gzT_SOURCES = gzT.cc baseApp.cc gzT.h baseApp.h Application.h
+gzT_LDADD =  ../libbes_dispatch.la -lz
+
+bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
+bz2T_LDADD =  ../libbes_dispatch.la -lbz2
+
+uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h Application.h
+uncompressT_LDADD =  ../libbes_dispatch.la -lbz2 -lz
 

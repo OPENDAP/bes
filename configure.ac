@@ -68,13 +68,10 @@ dnl AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
-AC_CHECK_PROG(GZIP, [gzip], [`which gzip`])
-AC_CHECK_PROG(BZIP2, [bzip2], [`which bzip2`])
-AC_CHECK_PROG(PERL, [perl], [`which perl`])
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h limits.h unistd.h pthread.h)
+AC_CHECK_HEADERS(fcntl.h limits.h unistd.h pthread.h bzlib.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -84,6 +81,9 @@ AC_TYPE_SIZE_T
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
+
+dnl bz2 library?
+AC_CHECK_LIB( bz2, BZ2_bzReadOpen )
 
 dnl dl lib?
 AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])

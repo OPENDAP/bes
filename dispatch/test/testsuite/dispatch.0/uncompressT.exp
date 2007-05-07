@@ -1,0 +1,57 @@
+# expect/tcl code to test uncompressT
+# pcw
+#
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+global dispatchTEST
+
+# The variable `test_out' is a string that contains the text that should be
+# stored in comp_output by das-test_start. The two strings should match
+# exactly.
+
+set test_out "
+*****************************************
+Entered uncompressT::run
+
+*****************************************
+uncompress a test gz file
+Uncompression succeeded
+result is correct
+Contents of file correct
+File is now cached
+
+*****************************************
+uncompress a test gz file, should be cached
+Uncompression succeeded
+result is correct
+Contents of file correct
+File is still cached
+
+*****************************************
+uncompress a test bz2 file
+Uncompression succeeded
+result is correct
+Contents of file correct
+File is now cached
+
+*****************************************
+uncompress a test bz2 file, should be cached
+Uncompression succeeded
+result is correct
+Contents of file correct
+
+*****************************************
+Returning from uncompressT::run"
+
+set dispatchTEST ./uncompressT
+
+dispatch_start
+
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "uncompressT"
+} else {
+    fail "uncompressT"
+}
+

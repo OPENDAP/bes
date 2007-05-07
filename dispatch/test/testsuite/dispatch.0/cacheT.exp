@@ -1,4 +1,4 @@
-# expect/tcl code to test agglistT
+# expect/tcl code to test cacheT
 # pcw
 #
 
@@ -106,9 +106,9 @@ set dispatchTEST ./cacheT
 
 cache_start
 
-#if ![string compare $test_out $comp_output] { # check comp_output
-#    pass "agglistT"
-#} else {
-#    fail "agglistT"
-#}
+if ![string compare $test_out $comp_output] { # check comp_output
+    pass "cacheT"
+} else {
+    fail "cacheT"
+}
 

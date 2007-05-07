@@ -12,6 +12,7 @@ using std::endl ;
 #include "BESContainer.h"
 #include "BESContainerStorage.h"
 #include "BESContainerStorageFile.h"
+#include "BESCache.h"
 #include "BESException.h"
 
 int containerT::
@@ -229,6 +230,106 @@ run(void)
     catch( BESException &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
+	return 1 ;
+    }
+
+    char cur_dir[4096] ;
+    getcwd( cur_dir, 4096 ) ;
+    string cache_dir = (string)cur_dir + "/testsuite/cache" ;
+    string src_file = cache_dir + "/testfile.txt" ;
+    string com_file = cache_dir + "/testfile.txt.gz" ;
+
+    TheBESKeys::TheKeys()->set_key( "BES.CacheDir", cache_dir ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.CachePrefix", "cont_cache" ) ;
+    TheBESKeys::TheKeys()->set_key( "BES.CacheSize", "1" ) ;
+
+    cout << endl << "*****************************************" << endl;
+    cout << "access a non compressed file" << endl;
+    try
+    {
+	BESContainer c( "sym" ) ;
+	c.set_real_name( src_file ) ;
+	c.set_container_type( "txt" ) ;
+
+	string result = c.access() ;
+	if( result != src_file )
+	{
+	    cerr << "result " << result << " does not match src "
+		 << src_file << endl ;
+	    return 1 ;
+	}
+	else
+	{
+	    cout << "result matches src" << endl ;
+	}
+    }
+    catch( BESException &e )
+    {
+	cerr << "Failed to access non compressed file" << endl ;
+	cerr << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "Failed to access non compressed file" << endl ;
+	cerr << "Unknown error" << endl ;
+	return 1 ;
+    }
+
+    cout << endl << "*****************************************" << endl;
+    cout << "access a compressed file" << endl;
+    try
+    {
+	BESCache cache( *(TheBESKeys::TheKeys()),
+	                "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
+	string target ;
+	bool is_it = cache.is_cached( com_file, target ) ;
+	if( is_it )
+	{
+	    if( remove( target.c_str() ) != 0 )
+	    {
+		cerr << "Unable to remove target file " << target
+		     << " , initializing test" << endl ;
+		return 1 ;
+	    }
+	}
+
+	BESContainer c( "sym" ) ;
+	c.set_real_name( com_file ) ;
+	c.set_container_type( "txt" ) ;
+
+	string result = c.access() ;
+	if( result != target )
+	{
+	    cerr << "result " << result << " does not match target "
+		 << target << endl ;
+	    return 1 ;
+	}
+	else
+	{
+	    cout << "result matches src" << endl ;
+	}
+
+	if( cache.is_cached( com_file, target ) )
+	{
+	    cout << "file is now cached" << endl ;
+	}
+	else
+	{
+	    cerr << "file should be cached in " << target << endl ;
+	    return 1 ;
+	}
+    }
+    catch( BESException &e )
+    {
+	cerr << "Failed to access non compressed file" << endl ;
+	cerr << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "Failed to access non compressed file" << endl ;
+	cerr << "Unknown error" << endl ;
 	return 1 ;
     }
 

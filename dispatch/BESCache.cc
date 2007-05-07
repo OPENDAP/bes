@@ -46,7 +46,7 @@ using std::endl ;
 
 #include "BESCache.h"
 #include "TheBESKeys.h"
-#include "BESResponseException.h"
+#include "BESContainerStorageException.h"
 #include "BESDebug.h"
 
 #define BES_CACHE_CHAR '#'
@@ -63,7 +63,7 @@ typedef struct _cache_entry
  * @param cache_dir directory where the files are cached
  * @param prefix prefix used to prepend to the resulting cached file
  * @param size cache max size
- * throws BESResponseException if cache_dir or prefix is empty, if size is
+ * throws BESContainerStorageException if cache_dir or prefix is empty, if size is
  * 0, or if the cache directory does not exist.
  */
 BESCache::BESCache( const string &cache_dir,
@@ -76,27 +76,27 @@ BESCache::BESCache( const string &cache_dir,
     if( _cache_dir.empty() )
     {
 	string err = "The cache dir was not specified, must be non-empty" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     DIR *dip = opendir( cache_dir.c_str() ) ;
     if( dip == NULL )
     {
 	string err = "The cache dir " + _cache_dir + " does not exist" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
     closedir( dip ) ;
 
     if( prefix.empty() )
     {
 	string err = "The prefix was not specified, must be non-empty" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     if( !size )
     {
 	string err = "The cache size was not specified, must be non-zero" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -111,7 +111,7 @@ BESCache::BESCache( const string &cache_dir,
  * @param cache_dir_key key to look up in the keys file to find cache dir
  * @param prefix_key key to look up in the keys file to find the cache prefix
  * @param size_key key to look up in the keys file to find the cache size
- * @throws BESResponseException if keys not set, cache dir or prefix empty,
+ * @throws BESContainerStorageException if keys not set, cache dir or prefix empty,
  * size is 0, or if cache dir does not exist.
  */
 BESCache::BESCache( BESKeys &keys,
@@ -126,7 +126,7 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The cache dir key " + cache_dir_key
 	             + " was not found or is not set" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
@@ -135,7 +135,7 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The prefix key " + prefix_key
 	             + " was not found or is not set" ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
@@ -145,7 +145,7 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The cache size could not be determine from "
 	             + size_key + " = " + _cache_size_str ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -287,7 +287,7 @@ BESCache::purge( )
 		    {
 			err.append( "Unknown error" ) ;
 		    }
-		    throw BESResponseException( err, __FILE__, __LINE__ ) ;
+		    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
 		}
 		size -= (*i).second.size ;
 		contents.erase( i ) ;
@@ -307,7 +307,7 @@ BESCache::purge( )
     else
     {
 	string err = "Unable to open cache directory " + _cache_dir ;
-	throw BESResponseException( err, __FILE__, __LINE__ ) ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 }
 

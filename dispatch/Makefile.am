@@ -43,11 +43,11 @@ nobase_sysconf_DATA = bes/bes.conf
 
 pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html bes/dap_help.txt
 
-dist_bin_SCRIPTS = bes-uncompress.sh bes-purge.pl
+#dist_bin_SCRIPTS = bes-uncompress.sh bes-purge.pl
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes-uncompress.sh.in bes-purge.pl.in bes/dap_help.html bes/dap_help.txt
-DISTCLEANFILES = bes/bes.conf bes-uncompress.sh bes-purge.pl
+#DISTCLEANFILES = bes/bes.conf bes-uncompress.sh bes-purge.pl
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	test -d bes || mkdir bes
@@ -57,12 +57,12 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
 
-bes-uncompress.sh: bes-uncompress.sh.in ../config.status
-	sed -e "s%[@]GZIP[@]%${GZIP}%" \
-		-e "s%[@]BZIP2[@]%${BZIP2}%" $< > bes-uncompress.sh
+#bes-uncompress.sh: bes-uncompress.sh.in ../config.status
+#	sed -e "s%[@]GZIP[@]%${GZIP}%" \
+#		-e "s%[@]BZIP2[@]%${BZIP2}%" $< > bes-uncompress.sh
 
-bes-purge.pl: bes-purge.pl.in ../config.status
-	sed -e "s%[@]PERL[@]%${PERL}%" $< > bes-purge.pl
+#bes-purge.pl: bes-purge.pl.in ../config.status
+#	sed -e "s%[@]PERL[@]%${PERL}%" $< > bes-purge.pl
 
 ##############################################################################
 #
@@ -99,7 +99,8 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESDataHandlerInterface.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
 	BESDebug.cc BESDefaultModule.cc \
-	BESCache.cc
+	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
+	BESUncompressBZ2.cc
 
 HDRS = BESInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
@@ -147,7 +148,8 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
 	BESModuleApp.h BESUtil.h BESDebug.h \
-	BESCache.h
+	BESCache.h BESUncompressManager.h BESUncompressGZ.h \
+	BESUncompressBZ2.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

@@ -1,4 +1,4 @@
-// BESCache.h
+// BESUncompressBZ2.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,8 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESCache_h_
-#define BESCache_h_ 1
+#ifndef BESUncompressBZ2_h_
+#define BESUncompressBZ2_h_ 1
 
 #include <string>
 
@@ -39,41 +39,16 @@ using std::string ;
 
 #include "BESObj.h"
 
-class BESKeys ;
+class BESCache ;
 
-/** @brief Implementation of a caching mechanism.
- *
- * The caching mechanism simply allows the user to create a cache. Cached
- * files are typically specified by full path. The file name is changed by
- * changing all slashes to pound signs (#), the ending extension is removed,
- * and the specified prefix is prepended to the name of the cached file.
- *
- * The purge method removes the oldest accessed files until the size of all
- * files is less than that specified by the size in the constructors.
+/** @brief Function to uncompress gzip files with .bz2 extension
  */
-class BESCache : public BESObj
+class BESUncompressBZ2 : public BESObj
 {
-private:
-    string 			_cache_dir ;
-    string 			_prefix ;
-    int 			_cache_size ;
-
-				BESCache() {}
 public:
-    				BESCache( const string &cache_dir,
-					  const string &prefix,
-					  int size ) ;
-    				BESCache( BESKeys &keys,
-					  const string &cache_dir_key,
-					  const string &prefix_key,
-					  const string &size_key ) ;
-    virtual			~BESCache() {}
-
-    virtual bool		is_cached( const string &src, string &target ) ;
-    virtual void		purge( ) ;
-
-    virtual void		dump( ostream &strm ) const ;
+    static string		uncompress( const string &src,
+					    BESCache &cache) ;
 };
 
-#endif // BESCache_h_
+#endif // BESUncompressBZ2_h_
 

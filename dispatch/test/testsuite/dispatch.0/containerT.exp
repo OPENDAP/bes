@@ -47,6 +47,15 @@ didn't find nosym, didn't throw exception, good
 try to find symbolic name that does exist, nice
 
 *****************************************
+access a non compressed file
+result matches src
+
+*****************************************
+access a compressed file
+result matches src
+file is now cached
+
+*****************************************
 Returning from containerT::run"
 
 set dispatchTEST ./containerT
