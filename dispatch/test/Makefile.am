@@ -42,7 +42,11 @@ CLEANFILES = *.log *.sum
 # noinst_PROGRAMS above uses this variable.
 DEJAGNU_TESTS = constraintT containerT defT failInitT initT keysT pfileT \
 		plistT pvolT replistT reqhandlerT reqlistT resplistT \
-		infoT agglistT cacheT gzT bz2T uncompressT
+		infoT agglistT cacheT gzT uncompressT
+
+if BZ2UNCOMPRESS
+DEJAGNU_TESTS += bz2T
+endif
 
 # Use this when automake adds support for multiple dejagnu test drivers. jhrg
 # 6/30/05. 
@@ -53,7 +57,7 @@ constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h baseApp.h Applicat
 constraintT_LDADD =  ../libbes_dispatch.la
 
 containerT_SOURCES = containerT.cc baseApp.cc containerT.h baseApp.h Application.h
-containerT_LDADD =  ../libbes_dispatch.la -lbz2 -lz
+containerT_LDADD =  ../libbes_dispatch.la
 
 defT_SOURCES = defT.cc baseApp.cc defT.h baseApp.h Application.h
 defT_LDADD =  ../libbes_dispatch.la
@@ -101,8 +105,8 @@ gzT_SOURCES = gzT.cc baseApp.cc gzT.h baseApp.h Application.h
 gzT_LDADD =  ../libbes_dispatch.la -lz
 
 bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
-bz2T_LDADD =  ../libbes_dispatch.la -lbz2
+bz2T_LDADD =  ../libbes_dispatch.la
 
 uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h Application.h
-uncompressT_LDADD =  ../libbes_dispatch.la -lbz2 -lz
+uncompressT_LDADD =  ../libbes_dispatch.la
 

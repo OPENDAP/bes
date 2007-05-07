@@ -82,8 +82,15 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
 
-dnl bz2 library?
-AC_CHECK_LIB( bz2, BZ2_bzReadOpen )
+dnl z and bz2 library?
+AC_CHECK_LIB( bz2, BZ2_bzReadOpen,
+    [
+	AM_CONDITIONAL([BZ2UNCOMPRESS], [true])
+	LIBS="-lbz2 $LIBS"
+	AC_DEFINE([HAVE_LIBBZ2], [1], [libbz2])
+    ],
+    [ AM_CONDITIONAL([BZ2UNCOMPRESS], [false]) ] )
+AC_CHECK_LIB( z, gzopen )
 
 dnl dl lib?
 AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
