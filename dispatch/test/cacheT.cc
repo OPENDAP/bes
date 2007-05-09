@@ -63,6 +63,58 @@ cacheT::check_cache( const string &cache_dir, map<string,string> &should_be )
     }
 }
 
+/** @brief Set up the cache.
+    Add to the cache a set of eight test files, with names that are easy to
+    work with and each with an access time two seconds later than the
+    preceding one.
+
+    @param cache_dir Directory that holds the cached files.*/
+void
+cacheT::init_cache( const string &cache_dir )
+{
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template01.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template02.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template03.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template04.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template05.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template06.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template07.txt");
+    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template08.txt");
+
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template08.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template07.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template06.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template05.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template04.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template03.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template02.txt > /dev/null");
+    sleep(1);
+    system("cat testsuite/cache/bes_cache#usr#local#data#template01.txt > /dev/null");
+
+#if 0
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template05.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template03.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template06.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template02.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template04.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template01.txt"
+    catch "exec sleep 2"
+    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template08.txt"
+#endif
+}
+
 int
 cacheT::run(void)
 {
@@ -73,6 +125,8 @@ cacheT::run(void)
     char cur_dir[4096] ;
     getcwd( cur_dir, 4096 ) ;
     string cache_dir = (string)cur_dir + "/testsuite/cache" ;
+
+    init_cache(cache_dir);
 
     BESKeys *keys = TheBESKeys::TheKeys() ;
 
@@ -501,8 +555,8 @@ cacheT::run(void)
     map<string,string> should_be ;
     should_be["bes_cache#usr#local#data#template01.txt"] = "bes_cache#usr#local#data#template01.txt" ;
     should_be["bes_cache#usr#local#data#template02.txt"] = "bes_cache#usr#local#data#template02.txt" ;
+    should_be["bes_cache#usr#local#data#template03.txt"] = "bes_cache#usr#local#data#template03.txt" ;
     should_be["bes_cache#usr#local#data#template04.txt"] = "bes_cache#usr#local#data#template04.txt" ;
-    should_be["bes_cache#usr#local#data#template08.txt"] = "bes_cache#usr#local#data#template08.txt" ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Test purge, should remove a few" << endl;

@@ -35,7 +35,7 @@ proc cache_start { } {
     catch "exec sleep 2"
     catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template08.txt"
 
-    dispatch_start
+    # dispatch_start
 }
 
 proc dispatch_start { } {

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2007 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -23,21 +23,22 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "dirent.h"
-#include "stdio.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <stdio.h>
 #include <errno.h>
 
 #include <map>
 #include <iostream>
+#include <sstream>
 
 using std::multimap ;
 using std::pair ;
@@ -57,21 +58,8 @@ typedef struct _cache_entry
     int size ;
 } cache_entry ;
 
-/** @brief Constructor that takes as arguments the values of the cache dir,
- * the file prefix, and the cache size
- *
- * @param cache_dir directory where the files are cached
- * @param prefix prefix used to prepend to the resulting cached file
- * @param size cache max size
- * throws BESContainerStorageException if cache_dir or prefix is empty, if size is
- * 0, or if the cache directory does not exist.
- */
-BESCache::BESCache( const string &cache_dir,
-		    const string &prefix,
-		    int size )
-    : _cache_dir( cache_dir ),
-      _prefix( prefix ),
-      _cache_size( size )
+void 
+BESCache::check_ctor_params()
 {
     if( _cache_dir.empty() )
     {
@@ -79,25 +67,44 @@ BESCache::BESCache( const string &cache_dir,
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
-    DIR *dip = opendir( cache_dir.c_str() ) ;
-    if( dip == NULL )
+    struct stat buf;
+    int statret = stat( _cache_dir.c_str(), &buf ) ;
+    if( statret != 0 || ! S_ISDIR(buf.st_mode) )
     {
 	string err = "The cache dir " + _cache_dir + " does not exist" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
-    closedir( dip ) ;
 
-    if( prefix.empty() )
+    if( _prefix.empty() )
     {
 	string err = "The prefix was not specified, must be non-empty" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
-    if( !size )
+    if( _cache_size == 0 )
     {
 	string err = "The cache size was not specified, must be non-zero" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
+}
+
+/** @brief Constructor that takes as arguments the values of the cache dir,
+ * the file prefix, and the cache size
+ *
+ * @param cache_dir directory where the files are cached
+ * @param prefix prefix used to prepend to the resulting cached file
+ * @param size cache max size in megabytes (1 == 1048576 bytes)
+ * @exception throws BESContainerStorageException if cache_dir or prefix is 
+ * empty, if size is 0, or if the cache directory does not exist.
+ */
+BESCache::BESCache( const string &cache_dir,
+		    const string &prefix,
+		    unsigned int size )
+    : _cache_dir( cache_dir ),
+      _prefix( prefix ),
+      _cache_size( size )
+{
+    check_ctor_params(); // Throws BESContainerStorageException on error.
 }
 
 /** @brief Constructor that takes as arguments keys to the cache directory,
@@ -122,31 +129,36 @@ BESCache::BESCache( BESKeys &keys,
 {
     bool found = false ;
     _cache_dir = keys.get_key( cache_dir_key, found ) ;
-    if( !found || _cache_dir.empty() )
+    if( !found )
     {
 	string err = "The cache dir key " + cache_dir_key
-	             + " was not found or is not set" ;
+	             + " was not found" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
     _prefix = keys.get_key( prefix_key, found ) ;
-    if( !found || _prefix.empty() )
+    if( !found )
     {
 	string err = "The prefix key " + prefix_key
-	             + " was not found or is not set" ;
+	             + " was not found" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
     string _cache_size_str = keys.get_key( size_key, found ) ;
-    _cache_size = atoi( _cache_size_str.c_str() ) ;
-    if( !found || !_cache_size )
+    if( !found )
     {
-	string err = "The cache size could not be determine from "
-	             + size_key + " = " + _cache_size_str ;
+	string err = "The size key " + size_key
+	             + " was not found" ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
+
+
+    std::istringstream is( _cache_size_str ) ;
+    is >> _cache_size ;
+
+    check_ctor_params(); // Throws BESContainerStorageException on error.
 }
 
 /** @brief Determine if the file specified by src is cached
@@ -170,7 +182,7 @@ BESCache::is_cached( const string &src, string &target )
 
     // Create the file that would be created in the cache directory
     //echo ${infile} | sed 's/^\///' | sed 's/\//#/g' | sed 's/\(.*\)\..*$/\1/g'
-    if( tmp_target[0] == '/' )
+    if( tmp_target.at(0) == '/' )
     {
 	tmp_target = src.substr( 1, tmp_target.length() - 1 ) ;
     }
@@ -241,6 +253,10 @@ BESCache::purge( )
 
 		    // Find out how old the file is
 		    time_t file_time = buf.st_atime ;
+		    // I think we can use the access time without the diff,
+		    // since it's the relative ages that determine when to
+		    // delete a file. Good idea to use the access time so
+		    // recently used (read) files will linger. jhrg 5/9/07
 		    double time_diff = difftime( curr_time, file_time ) ;
 		    cache_entry entry ;
 		    entry.name = fullPath ;
@@ -272,6 +288,8 @@ BESCache::purge( )
 	multimap<double,cache_entry,greater<double> >::iterator i ;
 	if( size > max_size )
 	{
+	    // Maybe change this to size + (fraction of max_size) > max_size?
+	    // jhrg 5/9/07
 	    while( size > max_size )
 	    {
 		i = contents.begin() ;

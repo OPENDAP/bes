@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -40,7 +40,7 @@
 
 BESUncompressManager *BESUncompressManager::_instance = 0 ;
 
-/** @brief construcsts an uncompression manager adding gz and bz2
+/** @brief constructs an uncompression manager adding gz and bz2
  * uncompression methods by default.
  */
 BESUncompressManager::BESUncompressManager()
@@ -151,6 +151,7 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
     if( dot != string::npos )
     {
 	string ext = src.substr( dot+1, src.length() - dot ) ;
+	// Why fold the extension to lowercase? jhrg 5/9/07
 	for( int i = 0; i < ext.length(); i++ )
 	{
 	    ext[i] = tolower( ext[i] ) ;
@@ -186,6 +187,9 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 	    BESDEBUG( "BESUncompressManager::uncompress - uncompress to " \
 	              << target << " using " << ext << " uncompression" \
 		      << endl )
+	    // How about having the p_bes_uncompress() return bool since we
+	    // already know the name of the target? Or return void since it
+	    // throws on error? jhrg 5/9/07
 	    return p( src, target ) ;
 	}
 	else
@@ -245,4 +249,3 @@ BESUncompressManager::TheManager()
     }
     return _instance ;
 }
-

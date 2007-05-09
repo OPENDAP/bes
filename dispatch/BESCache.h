@@ -56,13 +56,14 @@ class BESCache : public BESObj
 private:
     string 			_cache_dir ;
     string 			_prefix ;
-    int 			_cache_size ;
+    unsigned int 		_cache_size ;
 
+    void                        check_ctor_params();
 				BESCache() {}
 public:
     				BESCache( const string &cache_dir,
 					  const string &prefix,
-					  int size ) ;
+					  unsigned int size ) ;
     				BESCache( BESKeys &keys,
 					  const string &cache_dir_key,
 					  const string &prefix_key,

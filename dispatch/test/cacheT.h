@@ -15,6 +15,8 @@ class cacheT : public baseApp {
 private:
     void			check_cache( const string &cache_dir,
 					     map<string,string> &contents ) ;
+    void                        init_cache( const string &cache_dir );
+
 public:
                                 cacheT(void) : baseApp() {}
     virtual                     ~cacheT(void) {}
