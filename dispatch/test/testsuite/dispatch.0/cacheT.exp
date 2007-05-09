@@ -89,13 +89,11 @@ target is good
 
 *****************************************
 Test purge, should remove a few
-
 purge returned with success ... checking
 contents matches what should be there
 
 *****************************************
 Test purge, should not remove any
-
 purge returned with success ... checking
 contents matches what should be there
 

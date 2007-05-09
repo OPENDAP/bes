@@ -48,7 +48,7 @@ gzT::run(void)
 	cout << "uncompress a test file" << endl;
 	try
 	{
-	    string result = BESUncompressGZ::uncompress( src_file, cache ) ;
+	    string result = BESUncompressGZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
 	    if( result == target )
 	    {
@@ -110,7 +110,7 @@ gzT::run(void)
 	cout << "uncompress a test file, should be cached" << endl;
 	try
 	{
-	    string result = BESUncompressGZ::uncompress( src_file, cache ) ;
+	    string result = BESUncompressGZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
 	    if( result == target )
 	    {
