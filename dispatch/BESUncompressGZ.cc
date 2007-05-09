@@ -41,32 +41,19 @@ using std::ostringstream ;
 
 #include "BESUncompressGZ.h"
 #include "BESContainerStorageException.h"
-#include "BESCache.h"
 #include "BESDebug.h"
 
 #define CHUNK 4096
 
 /** @brief uncompress a file with the .gz file extension
  *
- * @param src src file that will be uncompressed
- * @param cache BESCache used to store the uncompressed file
+ * @param src file that will be uncompressed
+ * @param target file to uncompress the src file to
  * @return full path to the uncompressed file
  */
 string
-BESUncompressGZ::uncompress( const string &src, BESCache &cache )
+BESUncompressGZ::uncompress( const string &src, const string &target )
 {
-    // first determine if the file is already cached. The cache object will
-    // munge the src name and return in the target parameter the name of the
-    // file that is or is not cached.
-    BESDEBUG( "BESUncompressGZ::uncompress - is cached " << src << endl )
-    string target ;
-    if( cache.is_cached( src, target ) )
-    {
-	BESDEBUG( "BESUncompressGZ::uncompress - is cached " << target << endl )
-	return target ;
-    }
-    BESDEBUG( "BESUncompressGZ::uncompress - uncompress to " << target << endl )
-
     // buffer to hold the uncompressed data
     char in[CHUNK] ;
 

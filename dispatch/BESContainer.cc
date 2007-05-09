@@ -75,9 +75,6 @@ BESContainer::access()
     BESKeys *keys = TheBESKeys::TheKeys() ;
     BESCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" );
 
-    // purge the cache
-    cache.purge() ;
-
     return BESUncompressManager::TheManager()->uncompress( _real_name, cache ) ;
 }
 

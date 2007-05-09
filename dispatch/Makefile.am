@@ -47,7 +47,8 @@ pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html bes/dap_help
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes-uncompress.sh.in bes-purge.pl.in bes/dap_help.html bes/dap_help.txt
-#DISTCLEANFILES = bes/bes.conf bes-uncompress.sh bes-purge.pl
+
+DISTCLEANFILES = bes/bes.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	test -d bes || mkdir bes

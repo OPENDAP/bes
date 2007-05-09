@@ -33,6 +33,7 @@
 #include "BESUncompressManager.h"
 #include "BESUncompressGZ.h"
 #include "BESUncompressBZ2.h"
+#include "BESCache.h"
 #include "BESContainerStorageException.h"
 #include "BESDebug.h"
 #include "config.h"
@@ -161,9 +162,31 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 	p_bes_uncompress p = find_method( ext ) ;
 	if( p )
 	{
-	    BESDEBUG( "BESUncompressManager::uncompress - using " \
-		      << ext << " uncompression" << endl )
-	    return p( src, cache ) ;
+	    // before calling uncompress on the file, see if the file has
+	    // already been cached. If it has, then simply return the
+	    // target, no need to cache.
+	    BESDEBUG( "BESUncompressManager::uncompress - is cached " \
+	              << src << endl )
+	    string target ;
+	    if( cache.is_cached( src, target ) )
+	    {
+		BESDEBUG( "BESUncompressManager::uncompress - is cached " \
+		          << target << endl )
+		return target ;
+	    }
+
+	    // the file is not cached, so we need to uncompress the file.
+	    // First determine if there is enough space in the cache to
+	    // uncompress the file
+	    BESDEBUG( "BESUncompressManager::uncompress - purging cache" \
+	              << endl )
+	    cache.purge() ;
+
+	    // Now that we have some room ... uncompress the file
+	    BESDEBUG( "BESUncompressManager::uncompress - uncompress to " \
+	              << target << " using " << ext << " uncompression" \
+		      << endl )
+	    return p( src, target ) ;
 	}
 	else
 	{

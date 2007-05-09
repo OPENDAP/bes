@@ -45,7 +45,6 @@
 using std::ostringstream ;
 
 #include "BESUncompressBZ2.h"
-#include "BESCache.h"
 #include "BESContainerStorageException.h"
 #include "BESDebug.h"
 
@@ -61,29 +60,17 @@ bz_internal_error ( int errcode )
 
 /** @brief uncompress a file with the .bz2 file extension
  *
- * @param src src file that will be uncompressed
- * @param cache BESCache used to store the uncompressed file
+ * @param src file that will be uncompressed
+ * @param target file to uncompress the src file to
  * @return full path to the uncompressed file
  */
 string
-BESUncompressBZ2::uncompress( const string &src_name, BESCache &cache )
+BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 {
 #ifndef HAVE_BZLIB_H
     string err = "Unable to uncompress bz2 files, not available" ;
     throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
 #else
-    // first determine if the file is already cached. The cache object will
-    // munge the src name and return in the target parameter the name of the
-    // file that is or is not cached.
-    BESDEBUG( "BESUncompressBZ2::uncompress - is cached " << src_name << endl )
-    string target ;
-    if( cache.is_cached( src_name, target ) )
-    {
-	BESDEBUG( "BESUncompressBZ2::uncompress - is cached " << target << endl)
-	return target ;
-    }
-    BESDEBUG( "BESUncompressBZ2::uncompress - uncompress to " << target << endl)
-
     FILE *src = fopen( src_name.c_str(), "rb" ) ;
     if( !src )
     {

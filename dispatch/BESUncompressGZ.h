@@ -39,15 +39,13 @@ using std::string ;
 
 #include "BESObj.h"
 
-class BESCache ;
-
 /** @brief Function to uncompress gzip files with .gz extension
  */
 class BESUncompressGZ : public BESObj
 {
 public:
     static string		uncompress( const string &src,
-					    BESCache &cache) ;
+					    const string &target ) ;
 };
 
 #endif // BESUncompressGZ_h_
