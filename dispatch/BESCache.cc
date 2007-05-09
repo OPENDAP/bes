@@ -253,7 +253,7 @@ BESCache::purge( )
 	// We're done looking in the directory, close it
 	closedir( dip ) ;
 
-	/*
+#if 0
 	cout << endl << "BEFORE" << endl ;
 	multimap<double,cache_entry,greater<double> >::iterator ti = contents.begin() ;
 	multimap<double,cache_entry,greater<double> >::iterator te = contents.end() ;
@@ -261,12 +261,14 @@ BESCache::purge( )
 	{
 	    cout << (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ;
 	}
-	*/
+#endif
 
 	// if the size of files is greater than max allowed then we need to
 	// purge the cache directory. Keep going until the size is less than
 	// the max.
+#if 0
 	cout << endl ;
+#endif
 	multimap<double,cache_entry,greater<double> >::iterator i ;
 	if( size > max_size )
 	{
@@ -294,7 +296,7 @@ BESCache::purge( )
 	    }
 	}
 
-	/*
+#if 0
 	cout << endl << "AFTER" << endl ;
 	ti = contents.begin() ;
 	te = contents.end() ;
@@ -302,7 +304,7 @@ BESCache::purge( )
 	{
 	    cout << (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ;
 	}
-	*/
+#endif
     }
     else
     {
