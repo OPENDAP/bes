@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -57,6 +57,7 @@ private:
     string 			_cache_dir ;
     string 			_prefix ;
     unsigned int 		_cache_size ;
+    int				_lock_fd ;
 
     void                        check_ctor_params();
 				BESCache() {}
@@ -70,8 +71,16 @@ public:
 					  const string &size_key ) ;
     virtual			~BESCache() {}
 
+    virtual bool		lock( unsigned int retry_ms,
+                                      unsigned int num_tries ) ;
+    virtual bool		unlock() ;
+
     virtual bool		is_cached( const string &src, string &target ) ;
     virtual void		purge( ) ;
+
+    string			cache_dir( ) { return _cache_dir ; }
+    string			prefix( ) { return _prefix ; }
+    unsigned int		cache_size( ) { return _cache_size ; }
 
     virtual void		dump( ostream &strm ) const ;
 };

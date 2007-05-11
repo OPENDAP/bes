@@ -164,6 +164,14 @@ BES.Info.Type=xml
 # BES will purge the CacheDir if the size of uncompressed bes files     #
 # exceeds BES.CacheSize. You must specify a max cache size here, no	#
 # default is provided. We've set it here to 500.			#
+#
+# Each time a file is uncompressed and each time the cache is purged,	#
+# the cache directory is locked. BES.Uncompress.Retry tells the BES	#
+# how long to wait after an unsuccessful attempt to lock the cache.	#
+# BES.Uncompress.NumTries tells the BES how many time to try and lock	#
+# the cache directory. We recommend setting Retry to 0.2s/MB using the	#
+# size of the compressed file. This is based on the number of tries	#
+# being 10.
 #-----------------------------------------------------------------------#
 
 # Suggestion: Change the default CacheDir here (and later in the HDF4 
@@ -175,6 +183,8 @@ BES.Info.Type=xml
 BES.CacheDir=/tmp
 BES.CachePrefix=bes_cache
 BES.CacheSize=500
+BES.Uncompress.Retry=2
+BES.Uncompress.NumTries=10
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#

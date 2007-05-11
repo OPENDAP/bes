@@ -30,12 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <sstream>
+
+using std::istringstream ;
+
 #include "BESUncompressManager.h"
 #include "BESUncompressGZ.h"
 #include "BESUncompressBZ2.h"
 #include "BESCache.h"
 #include "BESContainerStorageException.h"
 #include "BESDebug.h"
+#include "TheBESKeys.h"
 #include "config.h"
 
 BESUncompressManager *BESUncompressManager::_instance = 0 ;
@@ -49,6 +54,31 @@ BESUncompressManager::BESUncompressManager()
 #ifdef HAVE_BZLIB_H
     add_method( "bz2", BESUncompressBZ2::uncompress ) ;
 #endif
+
+    bool found = false ;
+    string key = "BES.Uncompress.Retry" ;
+    string val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( !found || val.empty() )
+    {
+	_retry = 2 ;
+    }
+    else
+    {
+	istringstream is( val ) ;
+	is >> _retry ;
+    }
+
+    key = "BES.Uncompress.NumTries" ;
+    val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( !found || val.empty() )
+    {
+	_num_tries = 10 ;
+    }
+    else
+    {
+	istringstream is( val ) ;
+	is >> _num_tries ;
+    }
 }
 
 /** @brief add a uncompress method to the list
@@ -163,34 +193,71 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 	p_bes_uncompress p = find_method( ext ) ;
 	if( p )
 	{
-	    // before calling uncompress on the file, see if the file has
-	    // already been cached. If it has, then simply return the
-	    // target, no need to cache.
-	    BESDEBUG( "BESUncompressManager::uncompress - is cached " \
-	              << src << endl )
-	    string target ;
-	    if( cache.is_cached( src, target ) )
+	    // the file is compressed so we either need to uncompress it or
+	    // we need to tell if it is already cached. To do this, lock the
+	    // cache so no one else can do anything
+	    if( cache.lock( _retry, _num_tries ) )
 	    {
-		BESDEBUG( "BESUncompressManager::uncompress - is cached " \
-		          << target << endl )
-		return target ;
+		try
+		{
+		    // before calling uncompress on the file, see if the file
+		    // has already been cached. If it has, then simply return
+		    // the target, no need to cache.
+		    BESDEBUG( "BESUncompressManager::uncompress - is cached? " \
+			      << src << endl )
+		    string target ;
+		    if( cache.is_cached( src, target ) )
+		    {
+			BESDEBUG( "BESUncompressManager::uncompress - " \
+			          << "is cached " << target << endl )
+			cache.unlock() ;
+			return target ;
+		    }
+
+		    // the file is not cached, so we need to uncompress the
+		    // file.  First determine if there is enough space in
+		    // the cache to uncompress the file
+		    BESDEBUG( "BESUncompressManager::uncompress - " \
+		              << "purging cache" << endl )
+		    cache.purge() ;
+
+		    // Now that we have some room ... uncompress the file
+		    BESDEBUG( "BESUncompressManager::uncompress - " \
+		              << "uncompress to " << target \
+			      << " using " << ext << " uncompression" \
+			      << endl )
+
+		    // we are now done in the cahce, unlock it
+		    cache.unlock() ;
+
+		    // How about having the p_bes_uncompress() return bool
+		    // since we already know the name of the target? Or
+		    // return void since it throws on error? jhrg 5/9/07
+		    return p( src, target ) ;
+		}
+		catch( BESException &e )
+		{
+		    // a problem in the cache, unlock it and re-throw the
+		    // exception
+		    cache.unlock() ;
+		    throw e ;
+		}
+		catch( ... )
+		{
+		    // an unknown problem in the cache, unlock it and throw a
+		    // BES exception
+		    cache.unlock() ;
+		    string err = (string)"Problem working with the cache, "
+		                 + "unknow error" ;
+		    throw BESContainerStorageException( err, __FILE__,__LINE__);
+		}
 	    }
-
-	    // the file is not cached, so we need to uncompress the file.
-	    // First determine if there is enough space in the cache to
-	    // uncompress the file
-	    BESDEBUG( "BESUncompressManager::uncompress - purging cache" \
-	              << endl )
-	    cache.purge() ;
-
-	    // Now that we have some room ... uncompress the file
-	    BESDEBUG( "BESUncompressManager::uncompress - uncompress to " \
-	              << target << " using " << ext << " uncompression" \
-		      << endl )
-	    // How about having the p_bes_uncompress() return bool since we
-	    // already know the name of the target? Or return void since it
-	    // throws on error? jhrg 5/9/07
-	    return p( src, target ) ;
+	    else
+	    {
+		string err = "Unable to lock the cache " 
+		             + cache.cache_dir() ;
+		throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	    }
 	}
 	else
 	{

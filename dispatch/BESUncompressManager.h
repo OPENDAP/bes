@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -62,6 +62,8 @@ class BESUncompressManager : public BESObj
 private:
     static BESUncompressManager *	_instance ;
     map< string, p_bes_uncompress >	_uncompress_list ;
+    unsigned int			_retry ; // milleseconds
+    unsigned int			_num_tries ;
 
     typedef map< string, p_bes_uncompress >::const_iterator UCIter ;
     typedef map< string, p_bes_uncompress >::iterator UIter ;

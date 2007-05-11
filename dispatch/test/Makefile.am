@@ -17,7 +17,7 @@ check_PROGRAMS = $(TESTS)
 # runs all the dejagnu test drivers by calling runtest 'by hand.'
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
-		infoT agglistT cacheT gzT uncompressT
+		infoT agglistT cacheT gzT uncompressT lockT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -99,6 +99,9 @@ agglistT_LDADD =  ../libbes_dispatch.la
 
 cacheT_SOURCES = cacheT.cc baseApp.cc cacheT.h baseApp.h Application.h
 cacheT_LDADD =  ../libbes_dispatch.la
+
+lockT_SOURCES = lockT.cc baseApp.cc lockT.h baseApp.h Application.h
+lockT_LDADD =  ../libbes_dispatch.la
 
 gzT_SOURCES = gzT.cc baseApp.cc gzT.h baseApp.h Application.h
 gzT_LDADD =  ../libbes_dispatch.la -lz

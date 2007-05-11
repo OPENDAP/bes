@@ -34,6 +34,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <errno.h>
 
 #include <map>
@@ -102,7 +103,8 @@ BESCache::BESCache( const string &cache_dir,
 		    unsigned int size )
     : _cache_dir( cache_dir ),
       _prefix( prefix ),
-      _cache_size( size )
+      _cache_size( size ),
+      _lock_fd( -1 )
 {
     check_ctor_params(); // Throws BESContainerStorageException on error.
 }
@@ -125,7 +127,8 @@ BESCache::BESCache( BESKeys &keys,
 		    const string &cache_dir_key,
 		    const string &prefix_key,
 		    const string &size_key )
-    : _cache_size( 0 )
+    : _cache_size( 0 ),
+      _lock_fd( -1 )
 {
     bool found = false ;
     _cache_dir = keys.get_key( cache_dir_key, found ) ;
@@ -159,6 +162,81 @@ BESCache::BESCache( BESKeys &keys,
     is >> _cache_size ;
 
     check_ctor_params(); // Throws BESContainerStorageException on error.
+}
+
+/** @brief lock the cache using a file lock
+ *
+ * if the cache has not already been locked, lock it using a file lock.
+ *
+ * @throws BESContainerStorageException if the cache is already locked
+ */
+bool
+BESCache::lock( unsigned int retry, unsigned int num_tries )
+{
+    bool got_lock = true ;
+    if( _lock_fd == -1 )
+    {
+	string lock_file = _cache_dir + "/lock" ;
+	unsigned int tries = 0 ;
+	_lock_fd = open( lock_file.c_str(),
+			 O_CREAT | O_EXCL,
+			 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ) ;
+	while( _lock_fd < 0 && got_lock )
+	{
+	    tries ++ ;
+	    if( tries > num_tries )
+	    {
+		_lock_fd = -1 ;
+		got_lock = false ;
+		/*
+		string err = "Unable to lock the cache directory "
+		             + _cache_dir + ", timed out" ;
+		throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+		*/
+	    }
+	    else
+	    {
+		usleep( retry ) ;
+		_lock_fd = open( lock_file.c_str(),
+				 O_CREAT | O_EXCL,
+				 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ) ;
+	    }
+	}
+    }
+    else
+    {
+	// This would be a programming error, or we've gotten into a
+	// situation where the lock is lost. Lock has been called on the
+	// same cache object twice in a row without an unlock being called.
+	string err = "The cache dir " + _cache_dir + " is already locked" ;
+	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+    }
+
+    return got_lock ;
+}
+
+/** @brief unlock the cache
+ *
+ * If the cache is locked, unlock it using the stored file lock descriptor
+ *
+ * @throws BESContainerStorageException if the cache is not already locked
+ */
+bool
+BESCache::unlock()
+{
+    // if we call unlock twice in a row, does it matter? I say no, just say
+    // that it is unlocked.
+    bool unlocked = true ;
+    if( _lock_fd != -1 )
+    {
+	string lock_file = _cache_dir + "/lock" ;
+	close( _lock_fd ) ;
+	unlink( lock_file.c_str() ) ;
+    }
+
+    _lock_fd = -1 ;
+
+    return unlocked ;
 }
 
 /** @brief Determine if the file specified by src is cached
@@ -277,14 +355,12 @@ BESCache::purge( )
 	{
 	    cout << (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ;
 	}
+	cout << endl ;
 #endif
 
 	// if the size of files is greater than max allowed then we need to
 	// purge the cache directory. Keep going until the size is less than
 	// the max.
-#if 0
-	cout << endl ;
-#endif
 	multimap<double,cache_entry,greater<double> >::iterator i ;
 	if( size > max_size )
 	{

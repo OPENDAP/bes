@@ -322,13 +322,13 @@ run(void)
     }
     catch( BESException &e )
     {
-	cerr << "Failed to access non compressed file" << endl ;
+	cerr << "Failed to access compressed file" << endl ;
 	cerr << e.get_message() << endl ;
 	return 1 ;
     }
     catch( ... )
     {
-	cerr << "Failed to access non compressed file" << endl ;
+	cerr << "Failed to access compressed file" << endl ;
 	cerr << "Unknown error" << endl ;
 	return 1 ;
     }
