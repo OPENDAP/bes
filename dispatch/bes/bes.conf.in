@@ -189,8 +189,8 @@ BES.Info.Type=xml
 # inconsistent state. Use the Retry and NumTries parameters to tune this
 # behavior. Generally, NumTries should be set to about 10. The units of Retry
 # are microseconds. To tune the NumTries and Retry, use the formula Retry =
-# (0.2s/Average_file_sizeMB)NumTries. So if your average file size is 10MB
-# and you've settled on a NumTries of 10, (0.2s/10MB/10 = 0.002s or 2000
+# (0.2s/Average_file_sizeMB)/NumTries. So if your average file size is 10MB
+# and you've settled on a NumTries of 10, (0.2s/10MB)/10 = 0.002s or 2000
 # microseconds. If you have really large files (e.g., decompressed they are
 # 500MB), try setting NumTries to 100.
 
