@@ -3,6 +3,17 @@
 
 News for version 3.5.0
 
+Decompressing data files and caching of the result has been completely
+reworked. It's now faster and secure.
+
+Now when the BES has only a TCP or UNIX socket specified in the bes.conf
+file, it is not an error. Thus it's possible to configure the bes to use only
+UNIX or TCP sockets. When using the BES with Hyrax, use TCP and run it behind
+a firewall.
+
+The BES was modified so that it's no longer possible to look at the contents
+of the host computer's file system when asking for catalog information.
+
 News for version 3.4.2
 
 Added some security notes to the documentation and to the configuration file

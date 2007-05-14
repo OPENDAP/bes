@@ -1,3 +1,263 @@
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	In bes.conf.in: Fixed the value of Retry; Removed the UNIX socket.
+	Removed BESAutoPtr from dispatch/Makefile.am
+
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+
+2007-05-14  Patrick West <pwest@ucar.edu>
+
+	And here's test_config.h.in
+	
+	A    test_config.h.in
+
+2007-05-14  Patrick West <pwest@ucar.edu>
+
+	Added unit-tests back to the Makefile.am
+	
+	M    Makefile.am
+
+2007-05-14  Patrick West <pwest@ucar.edu>
+
+	distcheck now working. Created test_config.h.in with a single
+	variable TEST_SRC_DIR, which is set to srcdir. This tells the
+	tests where their configuration files are and where the cache
+	directory is.
+	
+	M    containerT.cc
+	M    constraintT.cc
+	M    pfileT.cc
+	M    cacheT.cc
+	M    pvolT.cc
+	M    persistence_file_test.ini
+	M    keysT.cc
+	M    gzT.cc
+	M    lockT.cc
+	M    infoT.cc
+	M    plistT.cc
+	M    bz2T.cc
+	M    uncompressT.cc
+	M    Makefile.am
+
+2007-05-13  James Gallagher <jgallagher@opendap.org>
+
+	I moved the test directory to unit-tests and made the tests
+	optional - people have to cd to the unit-tests directory to run
+	them. This eliminates problems with the distcheck target, even
+	though I think there should be a better way.
+
+	M    dispatch/Makefile.am
+	D    dispatch/test
+	A    dispatch/unit-tests
+	A    dispatch/unit-tests/containerT.cc
+	A    dispatch/unit-tests/cache
+	D    dispatch/unit-tests/testsuite
+	A    dispatch/unit-tests/cacheT.cc
+	A    dispatch/unit-tests/gzT.cc
+	A    dispatch/unit-tests/lockT.cc
+	A    dispatch/unit-tests/bz2T.cc
+	A    dispatch/unit-tests/uncompressT.cc
+	A    dispatch/unit-tests/Makefile.am
+	M    configure.ac
+
+2007-05-13  James Gallagher <jgallagher@opendap.org>
+
+	Removed testsuite; mv cache out of testsuite here.
+
+	M    test/containerT.cc
+	A    test/cache
+	D    test/testsuite
+	M    test/cacheT.cc
+	M    test/gzT.cc
+	M    test/lockT.cc
+	M    test/bz2T.cc
+	M    test/uncompressT.cc
+	M    test/Makefile.am
+
+2007-05-11  Patrick West <pwest@ucar.edu>
+
+	Changed the comment a bit to be more descriptive about the
+	suggested value for Retry.
+	
+	M    bes/bes.conf.in
+
+2007-05-11  Patrick West <pwest@ucar.edu>
+
+	Added locking mechanism to the BESCache. Added test for locking
+	separate from cacheT. Locking the cache in BESUncompressManager.
+	
+	M    BESCache.h
+	M    BESCache.cc
+	M    BESUncompressManager.h
+	M    BESUncompressManager.cc
+	M    bes/bes.conf.in
+	M    test/containerT.cc
+	A    test/bes.conf
+	D    test/opendap.ini
+	A    test/lockT.cc
+	A    test/lockT.h
+	A    test/testsuite/dispatch.0/lockT.exp
+	M    test/Makefile.am
+
+2007-05-09  James Gallagher <jgallagher@opendap.org>
+
+	Minor changes to BESCaching and Uncompression. I've also reworked
+	the unit tests so that they no longer use dejaGNU.
+
+	M    dispatch/BESCache.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/test/testsuite/config/unix.exp
+	M    dispatch/test/cacheT.cc
+	M    dispatch/test/cacheT.h
+	M    dispatch/test/Makefile.am
+	M    configure.ac
+
+2007-05-08  Patrick West <pwest@ucar.edu>
+
+	Updated tests with new uncompress method signature and the removed
+	debug newlines in BESCache.cc that were removed.
+	
+	M    test/testsuite/dispatch.0/cacheT.exp
+	M    test/gzT.cc
+	M    test/bz2T.cc
+
+2007-05-08  Patrick West <pwest@ucar.edu>
+
+	Checking the cache if the uncompressed file already exists and
+	purging the cache is now done in one place in
+	BESUncompressManager.cc. Was doing it in BESContainer, which
+	didn't make much sense if the container was not compressed.
+	
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESUncompressGZ.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESUncompressBZ2.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESUncompressManager.h
+	M    dispatch/BESUncompressGZ.cc
+
+2007-05-08  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a (potential) problem with a write to stdout and replaced
+	some comments with #if 0 ... #endif sections.
+
+	M    dispatch/BESCache.cc
+
+2007-05-08  Patrick West <pwest@ucar.edu>
+
+	Forgot to purge the cache before accessing the file.
+	M    dispatch/BESContainer.cc
+
+2007-05-06  Patrick West <pwest@ucar.edu>
+
+	Checking if bz2 library exists. If it does then sets SRCS, HDRS,
+	and DEJAGNU_TESTS appropriately (CONDITIONAL).
+	
+	M    dispatch/Makefile.am
+	M    dispatch/test/Makefile.am
+	M    configure.ac
+
+2007-05-06  Patrick West <pwest@ucar.edu>
+
+	Uncompression rewrite. Default is gz and bz2 files. bz2 files
+	available only if bzlib.h and libbz2 library found in
+	configure.ac.
+
+	Configuration file changes. BES.CacheDir same as before, the full
+	path to the cache directory. BES.CachePrefix, prefix to prepend to
+	the cached file. BES.CacheSize, max size of the cache.
+
+	Added unit tests for cache, bz2 uncompression, gz uncompression,
+	uncompression manager. Updated container test.
+
+	Works as before.
+	
+	A    dispatch/BESUncompressBZ2.cc
+	A    dispatch/BESUncompressGZ.h
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	M    dispatch/BESCache.h
+	M    dispatch/BESContainer.h
+	A    dispatch/BESUncompressBZ2.h
+	M    dispatch/BESContainer.cc
+	A    dispatch/BESUncompressManager.cc
+	A    dispatch/BESUncompressManager.h
+	M    dispatch/BESCache.cc
+	M    dispatch/test/containerT.cc
+	M    dispatch/test/dejagnu_driver.sh
+	A    dispatch/test/uncompressT.h
+	AM   dispatch/test/testsuite/cache/testfile.txt.bz2
+	AM   dispatch/test/testsuite/cache/testfile.txt.gz
+	M    dispatch/test/testsuite/dispatch.0/cacheT.exp
+	A    dispatch/test/testsuite/dispatch.0/gzT.exp
+	M    dispatch/test/testsuite/dispatch.0/containerT.exp
+	A    dispatch/test/testsuite/dispatch.0/bz2T.exp
+	A    dispatch/test/testsuite/dispatch.0/uncompressT.exp
+	A    dispatch/test/bz2T.h
+	A    dispatch/test/gzT.h
+	A    dispatch/test/gzT.cc
+	A    dispatch/test/bz2T.cc
+	A    dispatch/test/uncompressT.cc
+	M    dispatch/test/Makefile.am
+	A    dispatch/BESUncompressGZ.cc
+	M    configure.ac
+
+2007-05-06  Patrick West <pwest@ucar.edu>
+
+	BESCache is created to be able to tell whether a src file is
+	cached, returning the target file, and implements purging of the
+	cache. BES.CacheDir must be set in the bes configuration file
+	along with BES.CachePrefix and BES.CacheSize. Added a unit test.
+	This is not yet integrated into the dispatch code. This is a break
+	point.
+	
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	M    dispatch/BESException.h
+	A    dispatch/BESCache.h
+	A    dispatch/BESCache.cc
+	A    dispatch/test/cache_test.ini
+	A    dispatch/test/testsuite/cache
+	A    dispatch/test/testsuite/cache/template.txt
+	M    dispatch/test/testsuite/config/unix.exp
+	A    dispatch/test/testsuite/dispatch.0/cacheT.exp
+	A    dispatch/test/cacheT.cc
+	A    dispatch/test/cacheT.h
+	M    dispatch/test/Makefile.am
+	M    dispatch/BESContainerStorageVolatile.cc
+	M    dispatch/BESCatalogDirectory.cc
+
+2007-05-04  Patrick West <pwest@ucar.edu>
+
+	Now can start up the server with either the port, the unix socket,
+	or both.
+	
+	M    server/ServerApp.cc
+
+2007-05-04  Patrick West <pwest@ucar.edu>
+
+	Just as in creating a container, we will not allow a user to
+	specify ../ in the node name in a show catalog or show info
+	command.
+	
+	M    dispatch/BESCatalogDirectory.cc
+
+2007-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Updated for 3.4.2
+
+	M    ChangeLog
+	M    bes.spec
+	M    configure.ac
+	M    NEWS
+
+2007-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Updated 3 May 2007.
+
 2007-05-03  James Gallagher <jgallagher@opendap.org>
 
 	Added notes to the BES.
