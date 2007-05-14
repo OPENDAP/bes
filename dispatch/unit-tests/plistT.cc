@@ -12,10 +12,18 @@ using std::endl ;
 #include "BESContainer.h"
 #include "BESException.h"
 #include "BESTextInfo.h"
+#include "TheBESKeys.h"
+#include "test_config.h"
 
 int plistT::
 run(void)
 {
+    BESKeys *keys = TheBESKeys::TheKeys() ;
+    keys->set_key( (string)"BES.Container.Persistence.File.FileTooMany=" + TEST_SRC_DIR + "/persistence_file3.txt" ) ;
+    keys->set_key( (string)"BES.Container.Persistence.File.FileTooFew=" + TEST_SRC_DIR + "/persistence_file4.txt" ) ;
+    keys->set_key( (string)"BES.Container.Persistence.File.File1=" + TEST_SRC_DIR + "/persistence_file1.txt" ) ;
+    keys->set_key( (string)"BES.Container.Persistence.File.File2=" + TEST_SRC_DIR + "/persistence_file2.txt" ) ;
+
     cout << endl << "*****************************************" << endl;
     cout << "Entered plistT::run" << endl;
     int retVal = 0;
@@ -206,7 +214,9 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new plistT();
-    putenv( "BES_CONF=./persistence_file_test.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
+                     + "/persistence_file_test.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     return app->main(argC, argV);
 }
 

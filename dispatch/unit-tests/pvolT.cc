@@ -12,6 +12,7 @@ using std::endl ;
 #include "TheBESKeys.h"
 #include "BESException.h"
 #include "BESTextInfo.h"
+#include "test_config.h"
 
 int pvolT::
 run(void)
@@ -196,7 +197,9 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "BES_CONF=./persistence_cgi_test.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
+                     + "/persistence_cgi_test.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new pvolT();
     return app->main(argC, argV);
 }

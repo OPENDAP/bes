@@ -12,6 +12,7 @@ using std::ifstream ;
 #include "BESUncompressBZ2.h"
 #include "BESCache.h"
 #include "BESException.h"
+#include "test_config.h"
 
 #define BES_CACHE_CHAR '#' 
 
@@ -22,9 +23,7 @@ bz2T::run(void)
     cout << "Entered bz2T::run" << endl;
     int retVal = 0;
 
-    char cur_dir[4096] ;
-    getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/cache" ;
+    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
     string src_file = cache_dir + "/testfile.txt.bz2" ;
 
     // we're not testing the caching mechanism, so just create it, but make
@@ -189,6 +188,8 @@ bz2T::run(void)
 
 int
 main(int argC, char **argV) {
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new bz2T();
     return app->main(argC, argV);
 }

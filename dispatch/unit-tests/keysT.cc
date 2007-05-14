@@ -10,6 +10,7 @@ using std::endl ;
 #include "keysT.h"
 #include "TheBESKeys.h"
 #include "BESException.h"
+#include "test_config.h"
 
 int keysT::
 initialize( int argC, char **argV )
@@ -94,7 +95,7 @@ run(void)
 	pwd_s = "." ;
     else
 	pwd_s = pwd ;
-    string env_s = "BES_CONF=" + pwd_s + "/bad_keys1.ini" ;
+    string env_s = (string)"BES_CONF=" + TEST_SRC_DIR + "/bad_keys1.ini" ;
     char env1[1024] ;
     sprintf( env1, "%s", env_s.c_str() ) ;
     putenv( env1 ) ;
@@ -112,7 +113,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "bad keys, too many equal signs" << endl;
-    env_s = "BES_CONF=" + pwd_s + "/bad_keys2.ini" ;
+    env_s = (string)"BES_CONF=" + TEST_SRC_DIR + "/bad_keys2.ini" ;
     char env2[1024] ;
     sprintf( env2, "%s", env_s.c_str() ) ;
     putenv( env2 ) ;
@@ -130,7 +131,7 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "good keys file, should load" << endl;
-    env_s = "BES_CONF=" + pwd_s + "/keys_test.ini" ;
+    env_s = (string)"BES_CONF=" + TEST_SRC_DIR + "/keys_test.ini" ;
     char env3[1024] ;
     sprintf( env3, "%s", env_s.c_str() ) ;
     putenv( env3 ) ;

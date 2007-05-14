@@ -12,6 +12,7 @@ using std::ifstream ;
 #include "BESUncompressManager.h"
 #include "BESCache.h"
 #include "BESException.h"
+#include "test_config.h"
 
 #define BES_CACHE_CHAR '#' 
 
@@ -22,9 +23,7 @@ uncompressT::run(void)
     cout << "Entered uncompressT::run" << endl;
     int retVal = 0;
 
-    char cur_dir[4096] ;
-    getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/cache" ;
+    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
     string src_file = cache_dir + "/testfile.txt.gz" ;
 
     // we're not testing the caching mechanism, so just create it, but make
@@ -330,6 +329,8 @@ uncompressT::run(void)
 
 int
 main(int argC, char **argV) {
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new uncompressT();
     return app->main(argC, argV);
 }

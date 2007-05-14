@@ -13,10 +13,12 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
 
+nodist_include_HEADERS = test_config.h
+
 # This determines what gets run by 'make check.'
-TESTS = constraintT containerT defT initT keysT pfileT plistT pvolT	\
-	replistT reqhandlerT reqlistT resplistT infoT agglistT cacheT	\
-	gzT uncompressT lockT
+TESTS = constraintT containerT defT initT keysT pfileT			\
+		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
+		infoT agglistT cacheT gzT uncompressT lockT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -35,9 +37,18 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
 	persistence_mysql_test.ini container01.file \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
-	persistence_file_test.txt
+	persistence_file_test.txt test_config.h.in \
+	cache_test.ini bes.conf
+
+DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.log *.sum
+
+test_config.h: test_config.h.in
+	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
+
+clean-local:
+	cd ${srcdir}/cache && rm *_cache*
 
 ############################################################################
 
@@ -110,7 +121,7 @@ gzT_LDADD =  ../libbes_dispatch.la -lz
 bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
 bz2T_LDADD =  ../libbes_dispatch.la
 
-uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h	\
-			baseApp.h Application.h
+uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h	\
+			Application.h
 uncompressT_LDADD =  ../libbes_dispatch.la
 

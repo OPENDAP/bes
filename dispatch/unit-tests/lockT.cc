@@ -9,6 +9,7 @@ using std::endl ;
 #include "lockT.h"
 #include "BESCache.h"
 #include "BESException.h"
+#include "test_config.h"
 
 int
 lockT::run(void)
@@ -19,7 +20,8 @@ lockT::run(void)
 
     try
     {
-	BESCache cache( "./cache", "lock_test", 1 ) ;
+	string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
+	BESCache cache( cache_dir, "lock_test", 1 ) ;
 
 	cout << endl << "*****************************************" << endl;
 	cout << "lock, then try to lock again" << endl;
@@ -104,7 +106,7 @@ lockT::run(void)
 	}
 
 	cout << "creating second" << endl;
-	BESCache cache2( "./cache", "lock_test", 1 ) ;
+	BESCache cache2( cache_dir, "lock_test", 1 ) ;
 	try
 	{
 	    cout << "locking second" << endl;
@@ -189,6 +191,8 @@ lockT::run(void)
 
 int
 main(int argC, char **argV) {
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new lockT();
     return app->main(argC, argV);
 }

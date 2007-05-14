@@ -12,6 +12,7 @@ using std::endl ;
 #include "BESConstraintFuncs.h"
 #include "BESException.h"
 #include "BESDataNames.h"
+#include "test_config.h"
 
 int constraintT::
 run(void)
@@ -58,7 +59,9 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "BES_CONF=./persistence_cgi_test.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
+                     + "/persistence_cgi_test.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new constraintT();
     return app->main(argC, argV);
 }

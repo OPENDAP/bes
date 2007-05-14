@@ -7,15 +7,18 @@
 #include <errno.h>
 
 #include <iostream>
+#include <sstream>
 
 using std::cerr ;
 using std::cout ;
 using std::endl ;
+using std::ostringstream ;
 
 #include "cacheT.h"
 #include "BESCache.h"
 #include "TheBESKeys.h"
 #include "BESException.h"
+#include "test_config.h"
 
 void
 cacheT::check_cache( const string &cache_dir, map<string,string> &should_be )
@@ -72,47 +75,34 @@ cacheT::check_cache( const string &cache_dir, map<string,string> &should_be )
 void
 cacheT::init_cache( const string &cache_dir )
 {
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template01.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template02.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template03.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template04.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template05.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template06.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template07.txt");
-    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template08.txt");
+    string chmod = (string)"chmod a+w " + TEST_SRC_DIR + "/cache" ;
+    system( chmod.c_str() ) ;
 
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template08.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template07.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template06.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template05.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template04.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template03.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template02.txt > /dev/null");
-    sleep(1);
-    system("cat cache/bes_cache#usr#local#data#template01.txt > /dev/null");
+    string t_file = cache_dir + "/template.txt" ;
+    for( int i = 1; i < 9; i++ )
+    {
+	ostringstream s ;
+	s << "cp -f " << t_file << " " << TEST_SRC_DIR << "/cache/bes_cache#usr#local#data#template0" << i << ".txt" ;
+	cout << s.str() << endl ;
+	system( s.str().c_str() );
 
-#if 0
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template05.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template03.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template06.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template02.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template04.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template01.txt"
-    catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template08.txt"
-#endif
+	ostringstream m ;
+	m << "chmod a+w " << TEST_SRC_DIR << "/cache/bes_cache#usr#local#data#template0" << i << ".txt" ;
+	cout << m.str() << endl ;
+	system( m.str().c_str() ) ;
+    }
+
+    char *touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" } ;
+    for( int i = 0; i < 8; i++ )
+    {
+	sleep(1);
+	string cmd = (string)"cat " + TEST_SRC_DIR
+	             + "/cache/bes_cache#usr#local#data#template0"
+		     + touchers[i]
+		     + ".txt > /dev/null" ;
+	cout << cmd << endl ;
+	system( cmd.c_str() );
+    }
 }
 
 int
@@ -122,9 +112,7 @@ cacheT::run(void)
     cout << "Entered cacheT::run" << endl;
     int retVal = 0;
 
-    char cur_dir[4096] ;
-    getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/cache" ;
+    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
 
     init_cache(cache_dir);
 
@@ -554,9 +542,9 @@ cacheT::run(void)
 
     map<string,string> should_be ;
     should_be["bes_cache#usr#local#data#template01.txt"] = "bes_cache#usr#local#data#template01.txt" ;
-    should_be["bes_cache#usr#local#data#template02.txt"] = "bes_cache#usr#local#data#template02.txt" ;
-    should_be["bes_cache#usr#local#data#template03.txt"] = "bes_cache#usr#local#data#template03.txt" ;
-    should_be["bes_cache#usr#local#data#template04.txt"] = "bes_cache#usr#local#data#template04.txt" ;
+    should_be["bes_cache#usr#local#data#template03.txt"] = "bes_cache#usr#local#data#template02.txt" ;
+    should_be["bes_cache#usr#local#data#template05.txt"] = "bes_cache#usr#local#data#template03.txt" ;
+    should_be["bes_cache#usr#local#data#template08.txt"] = "bes_cache#usr#local#data#template04.txt" ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Test purge, should remove a few" << endl;
@@ -606,7 +594,9 @@ cacheT::run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "BES_CONF=./cache_test.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
+                     + "/cache_test.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new cacheT();
     return app->main(argC, argV);
 }

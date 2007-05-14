@@ -14,6 +14,7 @@ using std::endl ;
 #include "BESContainerStorageFile.h"
 #include "BESCache.h"
 #include "BESException.h"
+#include "test_config.h"
 
 int containerT::
 run(void)
@@ -22,20 +23,13 @@ run(void)
     cout << "Entered containerT::run" << endl;
     int retVal = 0;
 
-    char *pwd = getenv( "PWD" ) ;
-    string pwd_s ;
-    if( !pwd )
-	pwd_s = "." ;
-    else
-	pwd_s = pwd ;
-
     // test nice, can't find
     // test nice, can find
 
     try
     {
 	string key = (string)"BES.Container.Persistence.File.TheFile=" +
-		     pwd_s + "/container01.file" ;
+		     TEST_SRC_DIR + "/container01.file" ;
 	TheBESKeys::TheKeys()->set_key( key ) ;
 	BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageFile( "TheFile" ) ) ;
     }
@@ -233,15 +227,16 @@ run(void)
 	return 1 ;
     }
 
-    char cur_dir[4096] ;
-    getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/cache" ;
+    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
     string src_file = cache_dir + "/testfile.txt" ;
     string com_file = cache_dir + "/testfile.txt.gz" ;
 
     TheBESKeys::TheKeys()->set_key( "BES.CacheDir", cache_dir ) ;
     TheBESKeys::TheKeys()->set_key( "BES.CachePrefix", "cont_cache" ) ;
     TheBESKeys::TheKeys()->set_key( "BES.CacheSize", "1" ) ;
+
+    string chmod = (string)"chmod a+w " + TEST_SRC_DIR + "/cache" ;
+    system( chmod.c_str() ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "access a non compressed file" << endl;
@@ -342,7 +337,8 @@ run(void)
 int
 main(int argC, char **argV) {
     Application *app = new containerT();
-    putenv( "BES_CONF=./empty.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/empty.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     return app->main(argC, argV);
 }
 

@@ -12,6 +12,7 @@ using std::ifstream ;
 #include "BESUncompressGZ.h"
 #include "BESCache.h"
 #include "BESException.h"
+#include "test_config.h"
 
 #define BES_CACHE_CHAR '#' 
 
@@ -22,9 +23,7 @@ gzT::run(void)
     cout << "Entered gzT::run" << endl;
     int retVal = 0;
 
-    char cur_dir[4096] ;
-    getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/cache" ;
+    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
     string src_file = cache_dir + "/testfile.txt.gz" ;
 
     // we're not testing the caching mechanism, so just create it, but make
@@ -189,6 +188,8 @@ gzT::run(void)
 
 int
 main(int argC, char **argV) {
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new gzT();
     return app->main(argC, argV);
 }

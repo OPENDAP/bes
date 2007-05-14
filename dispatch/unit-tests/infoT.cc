@@ -13,6 +13,7 @@ using std::endl ;
 #include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
+#include "test_config.h"
 
 int infoT::
 run(void)
@@ -108,7 +109,9 @@ run(void)
 
 int
 main(int argC, char **argV) {
-    putenv( "BES_CONF=./info_test.ini" ) ;
+    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
+                     + "/info_test.ini" ;
+    putenv( (char *)env_var.c_str() ) ;
     Application *app = new infoT();
     return app->main(argC, argV);
 }
