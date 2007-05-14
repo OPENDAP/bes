@@ -72,46 +72,46 @@ cacheT::check_cache( const string &cache_dir, map<string,string> &should_be )
 void
 cacheT::init_cache( const string &cache_dir )
 {
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template01.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template02.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template03.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template04.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template05.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template06.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template07.txt");
-    system("cp -f testsuite/cache/template.txt testsuite/cache/bes_cache#usr#local#data#template08.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template01.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template02.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template03.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template04.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template05.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template06.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template07.txt");
+    system("cp -f cache/template.txt cache/bes_cache#usr#local#data#template08.txt");
 
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template08.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template08.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template07.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template07.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template06.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template06.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template05.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template05.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template04.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template04.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template03.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template03.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template02.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template02.txt > /dev/null");
     sleep(1);
-    system("cat testsuite/cache/bes_cache#usr#local#data#template01.txt > /dev/null");
+    system("cat cache/bes_cache#usr#local#data#template01.txt > /dev/null");
 
 #if 0
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template05.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template05.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template03.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template03.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template06.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template06.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template02.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template02.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template04.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template04.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template01.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template01.txt"
     catch "exec sleep 2"
-    catch "exec /bin/echo \"update\" >> testsuite/cache/bes_cache#usr#local#data#template08.txt"
+    catch "exec /bin/echo \"update\" >> cache/bes_cache#usr#local#data#template08.txt"
 #endif
 }
 
@@ -124,7 +124,7 @@ cacheT::run(void)
 
     char cur_dir[4096] ;
     getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/testsuite/cache" ;
+    string cache_dir = (string)cur_dir + "/cache" ;
 
     init_cache(cache_dir);
 

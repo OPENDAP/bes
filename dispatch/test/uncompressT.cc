@@ -24,7 +24,7 @@ uncompressT::run(void)
 
     char cur_dir[4096] ;
     getcwd( cur_dir, 4096 ) ;
-    string cache_dir = (string)cur_dir + "/testsuite/cache" ;
+    string cache_dir = (string)cur_dir + "/cache" ;
     string src_file = cache_dir + "/testfile.txt.gz" ;
 
     // we're not testing the caching mechanism, so just create it, but make

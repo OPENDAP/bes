@@ -26,22 +26,27 @@ if BZ2UNCOMPRESS
 TESTS += bz2T
 endif
 
-DIRS_EXTRA = testsuite
+# DIRS_EXTRA = testsuite cache
 
-EXTRA_DIST = $(DIRS_EXTRA) common_tests.exp bad_keys1.ini bad_keys2.ini \
-	defT.ini empty.ini info_test.ini keys_test.ini opendap.ini \
+CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz
+
+EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
+	defT.ini empty.ini info_test.ini keys_test.ini \
 	persistence_cgi_test.ini persistence_file_test.ini \
 	persistence_mysql_test.ini container01.file \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt
-
+#$(DIRS_EXTRA) 
 CLEANFILES = *.log *.sum
+
+clean-local:
+	cd cache && rm *_cache*
 
 ############################################################################
 
-constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h baseApp.h	\
-			Application.h
+constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h \
+			baseApp.h Application.h
 constraintT_LDADD =  ../libbes_dispatch.la
 
 containerT_SOURCES = containerT.cc baseApp.cc containerT.h baseApp.h	\

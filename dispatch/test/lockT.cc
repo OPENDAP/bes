@@ -19,7 +19,7 @@ lockT::run(void)
 
     try
     {
-	BESCache cache( "./testsuite/cache", "lock_test", 1 ) ;
+	BESCache cache( "./cache", "lock_test", 1 ) ;
 
 	cout << endl << "*****************************************" << endl;
 	cout << "lock, then try to lock again" << endl;
@@ -104,7 +104,7 @@ lockT::run(void)
 	}
 
 	cout << "creating second" << endl;
-	BESCache cache2( "./testsuite/cache", "lock_test", 1 ) ;
+	BESCache cache2( "./cache", "lock_test", 1 ) ;
 	try
 	{
 	    cout << "locking second" << endl;
