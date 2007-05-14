@@ -83,7 +83,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc \
 	BESRequestHandler.cc BESRequestHandlerList.cc \
 	BESTransmitter.cc BESBasicTransmitter.cc BESBasicHttpTransmitter.cc \
-	BESReporterList.cc BESAutoPtr.cc BESConstraintFuncs.cc \
+	BESReporterList.cc BESConstraintFuncs.cc \
 	BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc BESAggregationServer.cc \
@@ -93,6 +93,8 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
 	BESDebug.cc BESDefaultModule.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc
+
+SRCS_NOT_USED = BESAutoPtr.cc 
 
 if BZ2UNCOMPRESS
 SRCS += BESUncompressBZ2.cc
@@ -132,7 +134,6 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESReporter.h BESReporterList.h \
 	BESException.h BESHandlerException.h BESAggregationException.h \
 	BESMemoryException.h BESDatabaseException.h \
-	BESAutoPtr.cc BESAutoPtr.h \
 	BESConstraintFuncs.h \
 	BESMemoryGlobalArea.h BESMemoryManager.h \
 	BESProcessEncodedString.h \
@@ -145,6 +146,8 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESExceptionManager.h \
 	BESModuleApp.h BESUtil.h BESDebug.h \
 	BESCache.h BESUncompressManager.h BESUncompressGZ.h
+
+HDRS_NOT_USED = BESAutoPtr.cc BESAutoPtr.h
 
 if BZ2UNCOMPRESS
 HDRS += BESUncompressBZ2.h

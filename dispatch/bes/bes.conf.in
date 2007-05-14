@@ -87,7 +87,8 @@ BES.Data.RootDirectory=/dev/null
 # expression> pair is followed by a semicolon. This is used when creating
 # containers in the BES (the 'set container' command).
 
-# BES.Catalog.catalog.TypeMatch=nc:.*\.nc$;h4:.*\.(hdf|HDF|eos)$;ff:.*\.dat$;nc:.*\.nc\.(gz|Z|bz2)$;h4:.*\.(hdf|HDF|eos)\.(gz|Z|bz2)$;ff:.*\.dat\.(gz|Z|bz2)$;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.nc\.(gz|Z|bz2)?$;h4:.*\.(hdf|HDF|eos)\.(gz|Z|bz2)?$;ff:.*\.dat\.(gz|Z|bz2)?$;
+
 BES.Catalog.catalog.TypeMatch=
 
 # Normally, when a client asks for a data catalog, all files and directories
@@ -100,7 +101,6 @@ BES.Catalog.catalog.TypeMatch=
 # are included (the Include parameter) except those that begin with a dot
 # (the Exclud parameter).
 
-# BES.Catalog.catalog.Include=.*\.nc;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
@@ -112,7 +112,7 @@ BES.Catalog.catalog.Exclude=^\..*;
 # that is the case, you should configure the BES to use SSL.            #
 #-----------------------------------------------------------------------#
 BES.ServerPort=10002
-BES.ServerUnixSocket=/tmp/bes.socket
+# BES.ServerUnixSocket=/tmp/bes.socket
 
 #-----------------------------------------------------------------------#
 # Security information for this server. ServerSecure specifies whether  #
@@ -152,38 +152,46 @@ BES.Info.Type=xml
 #                                                                       #
 # If a data file is compressed the BES will attempt to uncompress it.   #
 #                                                                       #
-# BES will uncompress the data file into the directory specified by     #
-# BES.CacheDir. You must specify a cache directory, no default is	#
-# provided. We've set it here to /tmp					#
-#                                                                       #
-# BES will change all slashes in the file to be uncompressed to the	#
-# pound sign (#) and add the prefix specified by BES.CachePrefix. You	#
-# must specify a prefix, no default is provided. We've set it here to	#
-# bes_cache.								#
-#                                                                       #
-# BES will purge the CacheDir if the size of uncompressed bes files     #
-# exceeds BES.CacheSize. You must specify a max cache size here, no	#
-# default is provided. We've set it here to 500.			#
-#									#
-# Each time a file is uncompressed and each time the cache is purged,	#
-# the cache directory is locked. BES.Uncompress.Retry tells the BES	#
-# how long to wait after an unsuccessful attempt to lock the cache.	#
-# BES.Uncompress.NumTries tells the BES how many times to try and lock	#
-# the cache directory. We recommend setting Retry to 0.2s/MB using the	#
-# size of your largest compressed file. This is based on the number of	#
-# tries being 10.							#
 #-----------------------------------------------------------------------#
 
-# Suggestion: Change the default CacheDir here (and later in the HDF4 
-# handler configuration) to something other than '/tmp' like '/tmp/bes' 
-# so that files the bes creates are easy to spot. This makes for a cleaner
-# runtime environment. Note that you must create the directory before 
-# starting the BES.
+# All of the following five parameters must be set in this file.
+
+# BES.CacheDir: Where should the result of decompressing a file be stored?
+# We've set the value to '/tmp' but you might want to change that to
+# /tmp/bes, /var/cache/bes, et c., depending on the server-host's
+# organization.
+
+# BES.CachePrefix: Prefix for the name of the file used to store the result
+# of decompression.
+
+# BES.CacheSize: Size of the cache in megabytes. When the size of the cached
+# files exceeds this value, the cache will be purged using a
+# last-accessed-first-removed approach. Because it's usually impossible to
+# determine the sizes of data files before decompressing them, there may be
+# times when the cache holds more data than this value. Ideally this value
+# should be several times the size of the largest file you plan to serve. 
+
+# BES.Uncompress.Retry: When waiting for the cache lock, how long should the
+# BES wait before trying to get the lock again if previous attempts have
+# failed? 
+
+# BES.Uncompress.NumTries: How many times should the BES try to acquire the
+# lock before it signals an error?
+
+# The BES cache directory is locked to prevent the different beslistener
+# processes from simultaneously removing files and leaving the cache in an
+# inconsistent state. Use the Retry and NumTries parameters to tune this
+# behavior. Generally, NumTries should be set to about 10. The units of Retry
+# are microseconds. To tune the NumTries and Retry, use the formula Retry =
+# (0.2s/Average_file_sizeMB)NumTries. So if your average file size is 10MB
+# and you've settled on a NumTries of 10, (0.2s/10MB/10 = 0.002s or 2000
+# microseconds. If you have really large files (e.g., decompressed they are
+# 500MB), try setting NumTries to 100.
 
 BES.CacheDir=/tmp
 BES.CachePrefix=bes_cache
 BES.CacheSize=500
-BES.Uncompress.Retry=2
+BES.Uncompress.Retry=2000
 BES.Uncompress.NumTries=10
 
 #-----------------------------------------------------------------------#
