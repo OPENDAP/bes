@@ -13,11 +13,10 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
 
-# This determines what gets run by 'make check.' The dejagnu_driver.sh 
-# runs all the dejagnu test drivers by calling runtest 'by hand.'
-TESTS = constraintT containerT defT initT keysT pfileT			\
-		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
-		infoT agglistT cacheT gzT uncompressT lockT
+# This determines what gets run by 'make check.'
+TESTS = constraintT containerT defT initT keysT pfileT plistT pvolT	\
+	replistT reqhandlerT reqlistT resplistT infoT agglistT cacheT	\
+	gzT uncompressT lockT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -26,8 +25,8 @@ if BZ2UNCOMPRESS
 TESTS += bz2T
 endif
 
-# DIRS_EXTRA = testsuite cache
-
+# This limits the files copied to just these eliminating the files
+# created when tests are run. jhrg 5/13/07
 CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz
 
 EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
@@ -37,11 +36,8 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt
-#$(DIRS_EXTRA) 
-CLEANFILES = *.log *.sum
 
-clean-local:
-	cd cache && rm *_cache*
+CLEANFILES = *.log *.sum
 
 ############################################################################
 
@@ -114,7 +110,7 @@ gzT_LDADD =  ../libbes_dispatch.la -lz
 bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
 bz2T_LDADD =  ../libbes_dispatch.la
 
-uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h	\
-			Application.h
+uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h	\
+			baseApp.h Application.h
 uncompressT_LDADD =  ../libbes_dispatch.la
 

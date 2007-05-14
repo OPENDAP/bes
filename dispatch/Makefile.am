@@ -13,8 +13,8 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = test 
-DIST_SUBDIRS = test
+SUBDIRS = 
+DIST_SUBDIRS = unit-tests
 
 if LIBDAP
 lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
@@ -41,9 +41,8 @@ pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 
 nobase_sysconf_DATA = bes/bes.conf
 
-pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html bes/dap_help.txt
-
-#dist_bin_SCRIPTS = bes-uncompress.sh bes-purge.pl
+pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html	\
+	bes/dap_help.txt
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes-uncompress.sh.in bes-purge.pl.in bes/dap_help.html bes/dap_help.txt
@@ -57,13 +56,6 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
-
-#bes-uncompress.sh: bes-uncompress.sh.in ../config.status
-#	sed -e "s%[@]GZIP[@]%${GZIP}%" \
-#		-e "s%[@]BZIP2[@]%${BZIP2}%" $< > bes-uncompress.sh
-
-#bes-purge.pl: bes-purge.pl.in ../config.status
-#	sed -e "s%[@]PERL[@]%${PERL}%" $< > bes-purge.pl
 
 ##############################################################################
 #

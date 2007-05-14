@@ -120,7 +120,7 @@ AC_CHECK_LIBDAP([3.7.4],
 
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
-		 dispatch/test/Makefile
+		 dispatch/unit-tests/Makefile
 		 docs/Makefile
 		 command/Makefile
 		 ppt/Makefile
