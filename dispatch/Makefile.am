@@ -13,7 +13,7 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = 
+SUBDIRS = unit-tests
 DIST_SUBDIRS = unit-tests
 
 if LIBDAP
