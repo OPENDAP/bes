@@ -85,9 +85,12 @@ BES.Data.RootDirectory=/dev/null
 # expression separated by a colon. If the regular expression matches an item,
 # then the BES uses the associated handler/module. Each <handler>:<regular
 # expression> pair is followed by a semicolon. This is used when creating
-# containers in the BES (the 'set container' command).
+# containers in the BES (the 'set container' command). The example regular
+# expression says to use the 'h4' handler for any file with an extension of
+# 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
+# case the file will be treated as a compressed file.
 
-# BES.Catalog.catalog.TypeMatch=nc:.*\.nc\.(gz|Z|bz2)?$;h4:.*\.(hdf|HDF|eos)\.(gz|Z|bz2)?$;ff:.*\.dat\.(gz|Z|bz2)?$;
+# BES.Catalog.catalog.TypeMatch=nc:.h4:.*\.(hdf|HDF|eos)(\.gz|\.bz2)?$;
 
 BES.Catalog.catalog.TypeMatch=
 
@@ -153,6 +156,9 @@ BES.Info.Type=xml
 # If a data file is compressed the BES will attempt to uncompress it.   #
 #                                                                       #
 #-----------------------------------------------------------------------#
+
+# Currently the bz2 and gz file compression methods are understood by the
+# BES. We will add support for Z (Unix compress) if there's demand for it.
 
 # All of the following five parameters must be set in this file.
 
