@@ -1,7 +1,7 @@
 Summary:         HDF4 data handler for the OPeNDAP Data server
 Name:            hdf4_handler
 Version:         3.7.5
-Release:         1
+Release:         2
 License:         LGPL
 Group:           System Environment/Daemons 
 Source0:         ftp://ftp.unidata.ucar.edu/pub/opendap/source/%{name}-%{version}.tar.gz

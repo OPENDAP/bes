@@ -86,8 +86,13 @@ configure-hdf4-data.sh: configure-hdf4-data.sh.in Makefile
 # This makes sure that the handler modifies the bes  which confiure found
 # even with distcheck is run.
 install-data-hook: configure-hdf4-data.sh
-	(bes_prefix=`bes-config --prefix` && \
-	 ./configure-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
+	(bes_prefix=`bes-config --prefix` ; \
+	if test "$$bes_prefix" = "/usr" ; \
+	 then \
+	    ./configure-hdf4-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
+	else \
+	    ./configure-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
+	fi)
 
 endif
 
@@ -95,10 +100,10 @@ endif
 
 # Build linux RPMs
 
-srpm:
+srpm: dist
 	rpmbuild -ts hdf4_handler-@PACKAGE_VERSION@.tar.gz
 
-rpm:
+rpm: dist
 	rpmbuild -tb hdf4_handler-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
