@@ -13,7 +13,8 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
 
-nodist_include_HEADERS = test_config.h
+#nodist_include_HEADERS = test_config.h breaks make rpm jhrg
+noinst_HEADERS = test_config.h
 
 # This determines what gets run by 'make check.'
 TESTS = constraintT containerT defT initT keysT pfileT			\

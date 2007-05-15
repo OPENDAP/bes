@@ -12,8 +12,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  libdap-devel >= 3.7.4
 BuildRequires:  doxygen
-# I think these are optional. jimg
-# Requires:       bzip2 gzip
 
 %description
 BES is a new, high-performance back-end server software framework for 
@@ -71,8 +69,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
 %{_bindir}/besctl
-%{_bindir}/bes-uncompress.sh
-%{_bindir}/bes-purge.pl
 %{_bindir}/bescmdln
 %{_bindir}/besCreateModule
 %{_libdir}/*.so.*
