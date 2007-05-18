@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -168,29 +168,79 @@ PPTConnection::receive( ostream *strm )
 		// look at what we got to find the exit or the term string
 		for( i = 0; i < bytesRead && !done; i++ )
 		{
-		    // check for the mark
+		    // check for the mark. If we've found the entire marker then markCheck returns true. If we haven't yet found
+		    // the entire mark but have found part of it then markCheck will return false and the markIndex will be
+		    // greater than 0. If the check failed because the character checked is not part of the marker then the
+		    // markIndex is set to 0 and false is returned.
 		    done = mf.markCheck( inBuff[i] ) ;
 		    if( !done )
 		    {
-			// didn't find the mark
+			// didn't find the mark yet, check if we've found part of it
 			if( mf.getMarkIndex() > 0 )
-			{                 // did ya find part of it?
-			    // we found part of it, so cache what we found
+			{
+			    // we found part of it, so cache what we found in markBuffer
 			    markBuffer[markBufBytes++] = inBuff[i] ;
 			}
 			else
 			{
-			    // if we found part of the mark then send the fragment
+			    // we are here because inBuff[i] does not match the current position in the marker.
+
+			    // if we found part of the mark (there's some characters in markBuffer meaning markBufBytes is
+			    // greater than 0) then we need to send the first character in the markBuffer and begiin
+			    // checking the rest of the characters in the markBuffer against the markFinder. inBuff[i] could
+			    // still be part of the marker, so don't send it to the stream just yet. The case here is
+			    // that the inBuff contains PPPT instead of PPT as the beginning of the marker. PP is in the
+			    // markBuffer and we've just checked the third 'P', which returns false and markIndex is set to 0.
+			    // So, send the first 'P' in markBuffer, shift the remaining characters and check them against the
+			    // markFinder.
 			    if( markBufBytes > 0 )
 			    {
-				for( int j = 0; j < markBufBytes; j++ )
+				// let's put inBuf[i] in the markBuffer so that we don't have to worry about it anymore
+				markBuffer[markBufBytes++] = inBuff[i] ;
+
+				bool isdone = false ;
+				while( !isdone )
 				{
-				    (*use_strm) << markBuffer[j] ;
+				    // always throw the first character iin markBuffer to the stream
+				    (*use_strm) << markBuffer[0] ;
+
+				    // shift the rest of the characters in markBuffer to the left one
+				    for( int j = 1; j < markBufBytes; j++ )
+				    {
+					markBuffer[j-1] = markBuffer[j] ;
+				    }
+
+				    // we've sent the first character to the stream, so reduce the number in markBuffer
+				    markBufBytes-- ;
+
+				    // start checking the rest of the characters in markBuffer
+				    bool partof = true ;
+				    for( int j = 0; j < markBufBytes && partof; j++ )
+				    {
+					// don't need to look at the result of markCheck because we already know that we have not
+					// found the complete marker, we're just dealing with potentially part of the marker
+					mf.markCheck( markBuffer[j] ) ;
+					if( mf.getMarkIndex() == 0 )
+					{
+					    // if the markIndex is 0 then the character we just checked is not part of the
+					    // marker, so repeat this process starting at for( !isdone )
+					    partof = false ;
+					}
+				    }
+
+				    if( partof == true )
+				    {
+					// if we've made it this far then what's in the markBuffer is part of the marker, so
+					// move on to the next character in inBuff
+					isdone = true ;
+				    }
 				}
-				markBufBytes = 0;
 			    }
-			    // and send the byte that's not part of the mark
-			    (*use_strm) << inBuff[i] ;
+			    else
+			    {
+				// There's nothing in the markBuffer so just send inBuff on to the stream
+				(*use_strm) << inBuff[i] ;
+			    }
 			}
 		    }
 		}

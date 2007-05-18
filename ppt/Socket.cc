@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -52,7 +52,8 @@ void
 Socket::send( const string &str, int start, int end )
 {
     string send_str = str.substr( start, end ) ;
-    if( write( _socket, send_str.c_str(), send_str.length() ) == -1 )
+    int bytes_written = write( _socket, send_str.c_str(), send_str.length() ) ;
+    if( bytes_written == -1 )
     {
 	string err( "socket failure, writing on stream socket" ) ;
 	const char* error_info = strerror( errno ) ;
