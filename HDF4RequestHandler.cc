@@ -46,6 +46,9 @@
 #include "config_hdf.h"
 #include "BESDapHandlerException.h"
 
+#include "hcerr.h"
+#include "dhdferr.h"
+
 extern void read_das(DAS & das, const string & cachedir,
                      const string & filename);
 extern void read_dds(DDS & dds, const string & cachedir,
@@ -99,6 +102,14 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
     try {
         read_das(*das, _cachedir, dhi.container->access());
     }
+    catch(dhdferr & d) {
+	string err = "hdf4 handler: " + d.errmsg() ;
+	throw BESDapHandlerException( err, d.file(), d.line(), unknown_error ) ;
+    }
+    catch(hcerr & h) {
+	string err = "hdf4 handler: " + h.errmsg() ;
+	throw BESDapHandlerException( err, h.file(), h.line(), unknown_error ) ;
+    }
     catch(Error & e) {
         BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
 				   e.get_error_code() ) ;
@@ -132,6 +143,14 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+    }
+    catch(dhdferr & d) {
+	string err = "hdf4 handler: " + d.errmsg() ;
+	throw BESDapHandlerException( err, d.file(), d.line(), unknown_error ) ;
+    }
+    catch(hcerr & h) {
+	string err = "hdf4 handler: " + h.errmsg() ;
+	throw BESDapHandlerException( err, h.file(), h.line(), unknown_error ) ;
     }
     catch(Error & e) {
         BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
@@ -172,6 +191,14 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
         dds->set_factory(NULL);
         delete factory;
 #endif
+    }
+    catch(dhdferr & d) {
+	string err = "hdf4 handler: " + d.errmsg() ;
+	throw BESDapHandlerException( err, d.file(), d.line(), unknown_error ) ;
+    }
+    catch(hcerr & h) {
+	string err = "hdf4 handler: " + h.errmsg() ;
+	throw BESDapHandlerException( err, h.file(), h.line(), unknown_error ) ;
     }
     catch(Error & e) {
         BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
