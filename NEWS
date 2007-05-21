@@ -1,6 +1,10 @@
 
 	$Id$
 
+News for version 3.5.1
+
+Ticket #928 fixed in ppt code to correct finding marker issue.
+
 News for version 3.5.0
 
 Decompressing data files and caching of the result has been completely

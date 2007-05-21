@@ -1,3 +1,68 @@
+2007-05-18  Patrick West <pwest@ucar.edu>
+
+	Fixed comments that were written with a wide screen.
+	M    ppt/PPTConnection.cc
+
+2007-05-18  Patrick West <pwest@ucar.edu>
+
+	ticket #928. problem resolved by checking what is in the markBuffer.
+	Other files changed to correct typo in UCAR copyright information.
+	Added UCAR copyright information to PPTMarkFinder classes.
+	M    ppt/PPTConnection.cc
+
+2007-05-16  James Gallagher <jgallagher@opendap.org>
+
+	Added unistd.h to cacheT.cc for the RHEL3 build.
+
+2007-05-15  James Gallagher <jgallagher@opendap.org>
+
+	Added unistd.h to BESCache.cc
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an error in the RPM build - the test_config.h header had to be
+	marked as 'noinst' for automake.
+
+	M    dispatch/unit-tests/Makefile.am
+	M    bes.spec
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Fixed errors in the formula for Retry.
+
+	M    dispatch/bes/bes.conf.in
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an error in bes.conf.in where the regular expressions were
+	wrong for compressed files.
+
+	M    dispatch/bes/bes.conf.in
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Update for version 3.5.0
+
+	M    ChangeLog
+	M    bes.spec
+	M    configure.ac
+	M    NEWS
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Props set on README and INSTALL
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Props set on NEWS
+
+2007-05-14  James Gallagher <jgallagher@opendap.org>
+
+	Props set on NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-05-14  James Gallagher <jgallagher@opendap.org>
 
 	In bes.conf.in: Fixed the value of Retry; Removed the UNIX socket.
