@@ -1,3 +1,35 @@
+2007-05-21  Patrick West <pwest@ucar.edu>
+
+	distcheck was failing because using the wrong test_config.h. So
+	test_config.h now depends on test_config.h.in and Makefile. Also,
+	the source files are using #include <test_config.h> instead of
+	#include "test_config.h".
+
+	M    containerT.cc
+	M    constraintT.cc
+	M    pfileT.cc
+	M    cacheT.cc
+	M    pvolT.cc
+	M    keysT.cc
+	M    gzT.cc
+	M    lockT.cc
+	M    infoT.cc
+	M    plistT.cc
+	M    bz2T.cc
+	M    uncompressT.cc
+	M    Makefile.am
+
+2007-05-21  Patrick West <pwest@ucar.edu>
+
+	Release 3.5.1 update.
+	M    ChangeLog
+	M    bes.spec
+	M    configure.ac
+	M    NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-05-18  Patrick West <pwest@ucar.edu>
 
 	Fixed comments that were written with a wide screen.
