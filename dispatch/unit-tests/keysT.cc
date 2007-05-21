@@ -10,7 +10,7 @@ using std::endl ;
 #include "keysT.h"
 #include "TheBESKeys.h"
 #include "BESException.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int keysT::
 initialize( int argC, char **argV )

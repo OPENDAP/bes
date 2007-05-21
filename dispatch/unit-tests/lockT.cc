@@ -9,7 +9,7 @@ using std::endl ;
 #include "lockT.h"
 #include "BESCache.h"
 #include "BESException.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int
 lockT::run(void)

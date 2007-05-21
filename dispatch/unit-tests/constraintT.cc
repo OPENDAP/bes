@@ -12,7 +12,7 @@ using std::endl ;
 #include "BESConstraintFuncs.h"
 #include "BESException.h"
 #include "BESDataNames.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int constraintT::
 run(void)

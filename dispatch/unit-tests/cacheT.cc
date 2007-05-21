@@ -19,7 +19,7 @@ using std::ostringstream ;
 #include "BESCache.h"
 #include "TheBESKeys.h"
 #include "BESException.h"
-#include "test_config.h"
+#include <test_config.h>
 
 void
 cacheT::check_cache( const string &cache_dir, map<string,string> &should_be )

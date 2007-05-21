@@ -12,7 +12,7 @@ using std::endl ;
 #include "TheBESKeys.h"
 #include "BESException.h"
 #include "BESTextInfo.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int pvolT::
 run(void)

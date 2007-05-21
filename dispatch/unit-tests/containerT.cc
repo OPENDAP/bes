@@ -14,7 +14,7 @@ using std::endl ;
 #include "BESContainerStorageFile.h"
 #include "BESCache.h"
 #include "BESException.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int containerT::
 run(void)

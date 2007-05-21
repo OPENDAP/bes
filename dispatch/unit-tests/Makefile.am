@@ -45,7 +45,7 @@ DISTCLEANFILES = test_config.h
 
 CLEANFILES = *.log *.sum
 
-test_config.h: test_config.h.in
+test_config.h: test_config.h.in Makefile
 	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
 
 clean-local:

@@ -13,7 +13,7 @@ using std::endl ;
 #include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
-#include "test_config.h"
+#include <test_config.h>
 
 int infoT::
 run(void)

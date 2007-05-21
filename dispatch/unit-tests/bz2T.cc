@@ -12,7 +12,7 @@ using std::ifstream ;
 #include "BESUncompressBZ2.h"
 #include "BESCache.h"
 #include "BESException.h"
-#include "test_config.h"
+#include <test_config.h>
 
 #define BES_CACHE_CHAR '#' 
 
