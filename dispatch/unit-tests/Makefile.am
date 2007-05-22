@@ -49,7 +49,7 @@ test_config.h: test_config.h.in Makefile
 	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
 
 clean-local:
-	cd ${srcdir}/cache && rm *_cache*
+	cd ${srcdir}/cache && rm -f *_cache*
 
 ############################################################################
 
