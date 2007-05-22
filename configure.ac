@@ -126,12 +126,12 @@ AC_CONFIG_FILES([Makefile
 		 ppt/Makefile
 		 cmdln/Makefile
 		 server/Makefile
-		 server/besctl
 		 server/test/Makefile
 		 bin/Makefile
 		 templates/Makefile])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
+AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
 		 
 AC_OUTPUT
 
