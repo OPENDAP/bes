@@ -43,8 +43,13 @@ rpm: dist
 
 pkg:
 	./configure --prefix=/usr
+	(cd dispatch; make bes/bes.conf)
 	cp bes-config bes-config.macosx
+	cp server/besctl server/besctl.macosx
+	cp dispatch/bes/bes.conf dispatch/bes/bes.conf.macosx
 	./configure --prefix=`pwd`/mac_osx
 	make clean install
 	mv bes-config.macosx mac_osx/bin/bes-config
+	mv server/besctl.macosx mac_osx/bin/besctl
+	mv dispatch/bes/bes.conf.macosx mac_osx/etc/bes/bes.conf
 
