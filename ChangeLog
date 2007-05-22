@@ -1,3 +1,21 @@
+2007-05-22  Patrick West <pwest@ucar.edu>
+
+	Needed to copy off besctl and bes.conf as well as bes-config.
+	M    Makefile.am
+
+2007-05-22  Patrick West <pwest@ucar.edu>
+
+	besctl needed to be made executable. Moved to its own AC_CONFIG_FILES
+	M    configure.ac
+
+2007-05-22  Patrick West <pwest@ucar.edu>
+
+	If the _cache files do not exist then the rm failed. Added -f.
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-05-21  Patrick West <pwest@ucar.edu>
 
 	distcheck was failing because using the wrong test_config.h. So
