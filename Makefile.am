@@ -41,6 +41,8 @@ rpm: dist
 # are there so that the values built into dap-config will match the mac
 # osx install dirs and not the temp directory used to build the packages
 
+PACKAGEMAKER=/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker*
+
 pkg:
 	./configure --prefix=/usr
 	(cd dispatch; make bes/bes.conf)
@@ -52,4 +54,5 @@ pkg:
 	mv bes-config.macosx mac_osx/bin/bes-config
 	mv server/besctl.macosx mac_osx/bin/besctl
 	mv dispatch/bes/bes.conf.macosx mac_osx/etc/bes/bes.conf
+	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg -f mac_osx -ds -r OSX_Resources -i OSX_Resources/Info.plist -d OSX_Resources/Description.plist
 
