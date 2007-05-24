@@ -44,12 +44,13 @@ rpm: dist
 PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker*
 
 pkg:
-	./configure --prefix=/usr
+	rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg
+	./configure --prefix=/usr $(PKG_CONFIGURE_FLAGS)
 	(cd dispatch; make bes/bes.conf)
 	cp bes-config bes-config.macosx
 	cp server/besctl server/besctl.macosx
 	cp dispatch/bes/bes.conf dispatch/bes/bes.conf.macosx
-	./configure --prefix=`pwd`/mac_osx
+	./configure --prefix=`pwd`/mac_osx $(PKG_CONFIGURE_FLAGS)
 	make clean install
 	mv bes-config.macosx mac_osx/bin/bes-config
 	mv server/besctl.macosx mac_osx/bin/besctl
