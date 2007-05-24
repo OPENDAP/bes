@@ -120,4 +120,19 @@ lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
 	mv lex.hdfeos.c lex.hdfeos.cc
 
+###########################################################################
+#
+# Build OS/X Packages.
+
+PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker*
+
+pkg:
+	rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg
+	./configure --prefix=/usr $(PKG_CONFIGURE_FLAGS)
+	make configure-hdf4-data.sh
+	cp configure-hdf4-data.sh configure-hdf4-data.sh.macosx
+	./configure --prefix=`pwd`/mac_osx $(PKG_CONFIGURE_FLAGS)
+	make clean install
+	mv configure-hdf4-data.sh.macosx mac_osx/bin/configure-hdf4-data.sh
+	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg -f mac_osx -ds -r OSX_Resources -i OSX_Resources/Info.plist -d OSX_Resources/Description.plist
 
