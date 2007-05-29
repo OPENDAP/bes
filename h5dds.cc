@@ -17,7 +17,7 @@
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-
+// #define DODS_DEBUG
 #include "config_hdf5.h"
 #include "debug.h"
 #include "h5dds.h"
@@ -25,13 +25,15 @@
 #include "HDF5TypeFactory.h"
 #include "InternalErr.h"
 #include "H5Git.h"
-#include "H5EOS.h"
 
+
+#include "H5EOS.h"
+extern H5EOS eos;
 
 
 static char Msgt[MAX_ERROR_MESSAGE];
 static DS_t dt_inst;	// ??? 7/25/2001 jhrg
-extern H5EOS eos;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
@@ -128,7 +130,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     case H5G_DATASET:{
 
       string full_path_name = string(gname) + string(oname);
-      // Can this be string? <hyokyung 2007.02.20. 10:18:16>, probably not, that's the whole point of this operation
+      // Can this be string? <hyokyung 2007.02.20. 10:18:16>,
+      // probably not, that's the whole point of this operation
       char *t_fpn = new char[full_path_name.length() + 1]; 
 
       strcpy(t_fpn, full_path_name.c_str());
@@ -242,11 +245,13 @@ return_type(hid_t type)
     
     // HDF5 Compound type maps to DODS Structure. <hyokyung 2007.03. 1. 12:30:03>
   case H5T_COMPOUND:
-    DBG(cerr <<"=return_type(): COMPOUND " << endl);
     return COMPOUND;
 
+  case H5T_ARRAY:
+    // cerr << "comes array" << endl;
+    return ARRAY;    
     // Hmm. Is this really the correct thing to do? 7/25/2001 jhrg
-    // Not sure? <hyokyung 2007.02.20. 10:23:39>
+    // I'm not sure what James meant. <hyokyung 2007.02.20. 10:23:39>
   default:
     return "Unmappable Type";
   }
@@ -274,7 +279,7 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
   int sign = -2;  
 
   
-  DBG(cerr << ">Get_bt(" << varname << ")" << endl);
+  DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype << endl);
   
   switch (H5Tget_class(datatype)) {
 
@@ -318,13 +323,59 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     temp_bt = factory.NewStr(varname);
     break;
     
+  case H5T_ARRAY:
+    DBG(cerr << "=Get_bt() H5T_ARRAY datatype = " << datatype << endl);
+    hsize_t size2[DODS_MAX_RANK];
+    
+    int perm[DODS_MAX_RANK];
+    
+    // Get the array's base datatype
+    hid_t dtype_base=H5Tget_super(datatype);
+    BaseType* ar_bt = Get_bt(varname, dtype_base, factory);
+    
+    
+    // Set the size of the array.
+    int ndim = H5Tget_array_ndims(datatype);
 
+    int size = H5Tget_size(datatype);
+
+    int nelement;
+
+    nelement = 1;
+    
+    DBG(cerr << "=Get_bt()" << " Dim = " << ndim << " Size = " << size << endl);
+    
+    H5Tget_array_dims(datatype, size2, perm);
+    
+    // temp_bt = factory.NewArray(varname, 0);
+    temp_bt = factory.NewArray(varname);
+    temp_bt->add_var(ar_bt);
+    
+    for (int dim_index=0; dim_index < ndim;dim_index++) {
+      (dynamic_cast < HDF5Array * >(temp_bt))->append_dim(size2[dim_index]);
+      DBG(cerr << "=Get_bt() " << size2[dim_index] << endl);
+      nelement = nelement * size2[dim_index];
+    }
+    
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_did(dt_inst.dset);
+    // Assign the array datatype id.
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_tid(datatype);
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_memneed(size);
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_numdim(ndim);
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_numelm(nelement);
+    (dynamic_cast < HDF5Array * >(temp_bt))->set_length(nelement);
+    (dynamic_cast < HDF5Array * >(temp_bt))->d_type = H5Tget_class(dtype_base);
+    delete ar_bt;
+    
+    break;
+    
   default:
     break;
   }
 
-  if (!temp_bt)
+  if (!temp_bt){
     return NULL;
+  }
 
 
   switch (temp_bt->type()) {
@@ -376,12 +427,12 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     (dynamic_cast < HDF5Str * >(temp_bt))->set_tid(dt_inst.type);
     (dynamic_cast < HDF5Str * >(temp_bt))->set_arrayflag(STR_NOFLAG);
     break;
-
+    
+  case dods_array_c:
+    break;
     
 #if 0
-  case dods_array_c:
   case dods_url_c:
-
     (dynamic_cast < HDF5Url * >(temp_bt))->set_did(dt_inst.dset);
     (dynamic_cast < HDF5Url * >(temp_bt))->set_tid(dt_inst.type);
 
@@ -422,13 +473,63 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 
   Structure *temp_structure = NULL;
   
-  DBG(cerr << ">Get_structure()" << endl);
+  DBG(cerr << ">Get_structure()" << datatype <<  endl);
   if(H5Tget_class(datatype) == H5T_COMPOUND) {
     
     temp_structure = factory.NewStructure(varname);
     (dynamic_cast <HDF5Structure *>(temp_structure))->set_did(dt_inst.dset);
     (dynamic_cast <HDF5Structure *>(temp_structure))->set_tid(dt_inst.type);
-    
+    // Retrieve member types
+    int nmembs = H5Tget_nmembers(datatype);
+    DBG(cerr << "=Get_structure() has " << nmembs <<  endl);
+    for (int i=0;i<nmembs;i++)
+      {
+	// Copied from depth_first().
+	char *memb_name = NULL;
+	hid_t memb_type;      // Compound member datatype
+	H5T_class_t memb_cls;
+	size_t memb_offset;
+	
+	memb_name = H5Tget_member_name(datatype,i);
+	memb_offset = H5Tget_member_offset(datatype,i);
+	DBG(cerr << "=Get_structure() name = " << memb_name << " offset = " << memb_offset << endl);
+	// Get member type class 
+	if((memb_cls = H5Tget_member_class (datatype, i))<0) {
+	  string msg =
+	    "h5_dds handler: hdf5 compound member type to DODS type mapping error for ";
+	  msg += i;
+	  throw InternalErr(__FILE__, __LINE__, msg);
+	}
+      
+	// Get member type ID 
+	if((memb_type = H5Tget_member_type(datatype, i))<0) {
+	  string msg =
+	    "h5_dds handler: hdf5 compound member type to DODS type mapping error for ";
+	  msg += i;
+	  throw InternalErr(__FILE__, __LINE__, msg);
+	}
+	
+	if(memb_cls == H5T_COMPOUND){
+	  temp_structure->add_var(Get_structure(memb_name, memb_type, factory));
+	}
+	else{
+	  BaseType *bt = Get_bt(memb_name, memb_type, factory);
+	  temp_structure->add_var(bt);
+	}
+	
+
+	// Don't close it. Closing can give Unmappable type later in DODS.
+	
+	/*
+	// Close member type ID	  
+	if(H5Tclose(memb_type)<0) {
+	  string msg =
+	    "h5_dds handler: hdf5 compound member type close() function error.";
+	  throw InternalErr(__FILE__, __LINE__, msg);
+	}
+        */
+      }
+     
   }
   else{
     string msg =
@@ -492,7 +593,6 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   }
   // Next, deal with array and grid data. 
   else {
-    
     int dim_index;
     ar = dds_table.get_factory()->NewArray(varname);
 
@@ -504,7 +604,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     ar->add_var(bt);
 
     for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
-        ar->append_dim(dt_inst.size[dim_index]);
+      ar->append_dim(dt_inst.size[dim_index]);
     delete bt;
 
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
@@ -549,15 +649,15 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       if(check_grid == NewH4H5Grid) {
         if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONNAMELIST))<0){
           throw 
-           InternalErr(__FILE__,__LINE__,
-                       "Unable to open the attribute with the name as DIMENSION_NAMELIST");
+	    InternalErr(__FILE__,__LINE__,
+			"Unable to open the attribute with the name as DIMENSION_NAMELIST");
         }
       }
       else {
-         if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONNAMELIST))<0){
+	if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONNAMELIST))<0){
           throw
-           InternalErr(__FILE__,__LINE__,
-                       "Unable to open the attribute with the name as OLD_DIMENSION_NAMELIST");
+	    InternalErr(__FILE__,__LINE__,
+			"Unable to open the attribute with the name as OLD_DIMENSION_NAMELIST");
         }
       }
 
@@ -569,9 +669,9 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       dimname     = (char*)calloc((size_t) temp_nelm, temp_tsize);
       name_size   = temp_tsize;
       if(H5Aread(attr_id, temp_dtype, dimname)<0) {
-              throw 
-              InternalErr(__FILE__,__LINE__,
-                       "Unable to obtain the attribute");
+	throw 
+	  InternalErr(__FILE__,__LINE__,
+		      "Unable to obtain the attribute");
       }
       H5Tclose(temp_dtype);
       H5Sclose(temp_dspace);
@@ -581,15 +681,15 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       if(check_grid == NewH4H5Grid) {
         if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONLIST))<0){
           throw 
-           InternalErr(__FILE__,__LINE__,
-                       "Unable to open the attribute with the name as DIMENSION_LIST");
+	    InternalErr(__FILE__,__LINE__,
+			"Unable to open the attribute with the name as DIMENSION_LIST");
         }
       }
       else {
-         if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONLIST))<0){
+	if((attr_id=H5Aopen_name(dt_inst.dset,OLD_HDF5_DIMENSIONLIST))<0){
           throw
-           InternalErr(__FILE__,__LINE__,
-                       "Unable to open the attribute with the name as OLD_DIMENSION_LIST");
+	    InternalErr(__FILE__,__LINE__,
+			"Unable to open the attribute with the name as OLD_DIMENSION_LIST");
         }
       }
 
@@ -599,34 +699,34 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       temp_nelm   = H5Sget_simple_extent_npoints(temp_dspace);
       buf = (char*)calloc((size_t)(temp_nelm*temp_tsize), sizeof(char));
       if(H5Aread(attr_id, H5T_STD_REF_OBJ, buf)<0) {
-         throw 
-         InternalErr(__FILE__,__LINE__,
-                     "Cannot read object reference attributes.");
+	throw 
+	  InternalErr(__FILE__,__LINE__,
+		      "Cannot read object reference attributes.");
       }
       refbuf = (hobj_ref_t *) buf;
       dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);
 
       for (int j = 0; j < temp_nelm; j++) {
-         dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
-         if (dimid[j] < 0) {
-            throw 
+	dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
+	if (dimid[j] < 0) {
+	  throw 
             InternalErr(__FILE__,__LINE__,
-                  "cannot dereference the object.");
-         }
-         refbuf++;
+			"cannot dereference the object.");
+	}
+	refbuf++;
       }
       H5Aclose(attr_id);
       H5Sclose(temp_dspace);
       H5Tclose(temp_dtype);
       
  
-      // start building Grid.
+      // Start building Grid.
       char *TempNamePointer = dimname;
       EachDimName       = (char*)malloc(name_size+sizeof(char));
       pr = maps;
 
       for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-	//get dimensional scale datasets. add to grid.
+	// Get dimensional scale datasets. Add them to grid.
         temp_dspace = H5Dget_space(dimid[dim_index]);
         temp_nelm   = H5Sget_simple_extent_npoints(temp_dspace);
         temp_dtype  = H5Dget_type(dimid[dim_index]);
@@ -662,6 +762,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       if(EachDimName!=NULL) free(EachDimName);
       if(dimid!=NULL) free(dimid);
     }
+    
+#ifdef NASA_EOS_GRID
     // Check if eos class has this name as grid.
     else if(eos.is_valid() && eos.is_grid(varname)){
       DBG(cerr << "EOS Grid: " << varname << endl);
@@ -685,9 +787,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 	
 	string str_dim_name = tokens.at(dim_index);
 	
-	// Retrief the full path to the each dimension name.
+	// Retriev the full path to the each dimension name.
 	string str_grid_name = eos.get_grid_name(varname);
-	// cerr << "grid name = " << str_grid_name << endl;
 	string str_dim_full_name = str_grid_name + str_dim_name;
 	
 	int dim_size = eos.get_dimension_size(str_dim_full_name);
@@ -704,6 +805,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       delete gr;
       
     }
+#endif    
     else {// cannot be mapped to grid, it has to be an array.
       dds_table.add_var(ar);
       delete ar;
@@ -723,24 +825,66 @@ void
 read_objects_structure(DDS & dds_table, const string & varname,
 		       const string & filename)
 {
+  Array *ar;
   Structure *structure = NULL;
   
+  char *newname = NULL;
+  char *temp_varname = new char[varname.length() + 1];
+
+  varname.copy(temp_varname, string::npos);
+  temp_varname[varname.length()] = 0;
+  newname = strrchr(temp_varname, '/');
+  newname++;
   
   dds_table.set_dataset_name(name_path(filename));
   
   structure = Get_structure(varname, dt_inst.type,
-  			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
+			    dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
   if (!structure) {
+    delete[]temp_varname;    
     throw
       InternalErr(__FILE__, __LINE__,
 		  "Unable to convert hdf5 compound datatype to dods structure");
+  }
+  DBG(cerr << "=read_objects_structure(): Dimension is " << dt_inst.ndims << endl);
+
+  if (dt_inst.ndims != 0) {   // Array of Structure
+    int dim_index;
+    DBG(cerr << "=read_objects_structure(): Creating array of size " <<  dt_inst.nelmts << endl);
+    DBG(cerr << "=read_objects_structure(): memory needed = " << dt_inst.need << endl);
+    ar = dds_table.get_factory()->NewArray(temp_varname, 0);
+    (dynamic_cast < HDF5Array * >(ar))->set_did(dt_inst.dset);
+    (dynamic_cast < HDF5Array * >(ar))->set_tid(dt_inst.type);
+    (dynamic_cast < HDF5Array * >(ar))->set_memneed(dt_inst.need);
+    (dynamic_cast < HDF5Array * >(ar))->set_numdim(dt_inst.ndims);
+    (dynamic_cast < HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
+    (dynamic_cast < HDF5Array * >(ar))->set_length((int) (dt_inst.nelmts));
+    ar->add_var(structure);
+    for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) {
+      ar->append_dim(dt_inst.size[dim_index]);
+      DBG(cerr << "=read_objects_structure(): append_dim = " << dt_inst.size[dim_index] << endl);
+    }
+    delete structure;
+    dds_table.add_var(ar);
+    delete ar;
   }
   else{
     dds_table.add_var(structure);
   }
 
 }
-  
+
+////////////////////////////////////////////////////////////////////////////////
+/// \fn read_objects(DDS & dds_table,const string & varname,
+///                  const string & filename)
+/// fills in information of a dataset (name, data type, data space) into one
+/// DDS table.
+/// 
+///    \param dds_table Destination for the HDF5 objects. 
+///    \param varname Absolute name of either a dataset or a group
+///    \param filename Added to the DDS (dds_table).
+///    \throw error a string of error message to the dods interface.
+////////////////////////////////////////////////////////////////////////////////  
 void
 read_objects(DDS & dds_table, const string & varname,
 	     const string & filename)

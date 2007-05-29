@@ -9,7 +9,8 @@
 #include "h5_handler.h"
 
 const static string cgi_version = "3.0";
-H5EOS eos;
+extern H5EOS eos;
+
 
 /// \fn main(int argc, char *argv[])
 /// main function for HDF5 data handler.
@@ -43,16 +44,14 @@ int main(int argc, char *argv[])
 		  + df.get_dataset_name());
 
     DBG(cerr << "checking EOS file" << endl);
-#ifdef NASA_EOS    
     if(eos.check_eos(file1)){
       DBG(cerr << "eos file is detected" << endl);
       eos.set_dimension_array();
-      //eos.print();
     }
     else{
       DBG(cerr << "eos file is not detected" << endl);
     }
-#endif
+    //#endif
     
     // More C++ style? How to use virtual function. <hyokyung 2007.02.20. 13:31:10>
     switch (df.get_response()) { 

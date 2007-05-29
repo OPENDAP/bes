@@ -29,10 +29,13 @@
 #include <string>
 #include <ctype.h>
 #include "hdf5.h"
-
 #include "h5dds.h"
 #include "HDF5Structure.h"
 #include "InternalErr.h"
+
+#define DODS_DEBUG
+#include "debug.h"
+
 
 BaseType *
 HDF5Structure::ptr_duplicate()
@@ -44,6 +47,7 @@ HDF5Structure::HDF5Structure(const string & n):Structure(n)
 {
     ty_id = -1;
     dset_id = -1;
+    array_index = 0;
 }
 
 HDF5Structure::~HDF5Structure()
@@ -62,26 +66,36 @@ HDF5Structure::operator=(const HDF5Structure &rhs)
     return *this;
 }
 
-
+// dataset: Filename
 bool
 HDF5Structure::read(const string & dataset)
 {
+
+  int i = 0;
+  int err = 0;
+  Constructor::Vars_iter q;
+  
+  DBG(cerr
+      << ">read() dataset=" << dataset
+      << " array_index= " << array_index
+      << endl);
+  // Get members via dset_id.
   if(read_p())
     return false;
-  if(return_type(ty_id) == "Structure"){
-    long buf;
-    char Msgi[256];
 
-    if (get_data(dset_id, (void *) &buf, Msgi) < 0) {    
-      throw InternalErr(__FILE__, __LINE__, 
-			"HDF5Structure::read(): Unimplemented method.");
-    }
-
-    set_read_p(true);
-    // libdap/dods-datatypes.h 
-    // dods_uint32 uint32 = (dods_uint32) buf;
-    // val2buf(&uint32);
+  
+  // Read each member in the structure.
+  for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
+    
+      DBG(cerr << "=read() i=" << i << endl);
+      // if(atomic)
+      BaseType *p = dynamic_cast<BaseType*>(*q);
+      // else
+      //   special read for structure
+      p->read(dataset);
   }
+  
+  set_read_p(true);
   return false;
 }
 
@@ -107,4 +121,16 @@ hid_t
 HDF5Structure::get_tid()
 {
     return ty_id;
+}
+
+void
+HDF5Structure::set_array_index(int i)
+{
+  array_index = i;
+}
+
+int
+HDF5Structure::get_array_index()
+{
+  return array_index;
 }

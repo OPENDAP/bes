@@ -261,13 +261,17 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
         return -1;
     }
 
-
+    // <hyokyung 2007.05.25. 15:03:52>
+    // Chunking generates not SCALAR
+    if (H5Sget_simple_extent_type(dataspace) == H5S_SCALAR) {
+      cerr << "simple_extent_type == SCALAR" << endl;
+    }
+    
     // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
         strcpy(error, "h5_dds handler: get_data0 - unable to get number of dimensions");
         return -1;
     }
-
     // check dimension size. 
     if (ndims > DODS_MAX_RANK) {
         strcpy(error,
@@ -307,7 +311,7 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     for (j = 0; j < ndims; j++) {
         (*dt_inst_ptr).size[j] = size[j];
     }
-    DBG(cerr << ">get_dataset()" << endl);
+    DBG(cerr << ">get_dataset() dimension=" << ndims << " elements=" << nelmts <<  endl);
     return dset;
 }
 
@@ -338,8 +342,8 @@ int get_data(hid_t dset, void *buf, char *error)
         return -1;
     }
 
-//    memtype = get_memtype(datatype);
-//   using HDF5 H5Tget_native_type API
+    //  memtype = get_memtype(datatype);
+    //  using HDF5 H5Tget_native_type API
     memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
     if (memtype < 0) {
         sprintf(error, "failed to obtain memory type");
@@ -374,43 +378,37 @@ int get_data(hid_t dset, void *buf, char *error)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// \fn get_strdata(hid_t dset, int strindex, char *allbuf, char *buf,char *error)
-/// will get all data of a dataset and put it into buf.
+// \fn get_strdata(int strindex, char *allbuf, char *buf, int elesize, char *error)
+/// will get an individual string data from all string datas and put it into buf.
 ///
-/// \param[in] dset dataset id(dset)
-/// \param[in] strindex index of H5T_STRING
+/// \param[in] strindex index of H5T_STRING array
 /// \param[in] allbuf pointer to string buffer that has been built so far
+/// \param[in] elesize size of string element in the array
 /// \param[out] buf pointer to a buf
 /// \return -1 if failed.
 /// \return  0 if succeeded.
 ////////////////////////////////////////////////////////////////////////////////
 int
-get_strdata(hid_t dset, int strindex, char *allbuf, char *buf, char *error)
+get_strdata(int strindex, char *allbuf, char *buf, int elesize, char *error)
 {
 
-    hid_t datatype;
-    int elesize;
     int i;
-    char *tempvalue;
+    char *tempvalue = NULL;
 
-    tempvalue = allbuf;
-
-    if ((datatype = H5Dget_type(dset)) < 0) {
-        sprintf(error, "failed to obtain datatype from  dataset %d", dset);
-        return -1;
-    }
-
-    elesize = (int) H5Tget_size(datatype);
-    if (elesize == 0) {
-        sprintf(error, "failed to obtain type size from  dataset");
-        return -1;
-    }
-
-    for (i = 0; i < strindex; i++)
+    
+    tempvalue = allbuf; // The beginning of entier buffer.
+    DBG(cerr
+	<< ">get_strdata(): "
+	<< " strindex=" << strindex
+	<< " allbuf=" << allbuf
+	<< endl);
+    
+    // Tokenize the convbuf. 
+    for (i = 0; i < strindex; i++){
         tempvalue = tempvalue + elesize;
-
-
-    sprintf(buf, "%s", tempvalue);
+    }
+    strncpy(buf,tempvalue, elesize);
+    buf[elesize] = '\0'; // <hyokyung 2007.05.29. 08:16:57>
     return 0;
 }
 
@@ -439,7 +437,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     hssize_t *dyn_offset = NULL;
     int i;
 
-
+    DBG(cerr << ">get_slabdata() " << endl);
     if ((datatype = H5Dget_type(dset)) < 0) {
         sprintf(error,
                 "h5_dods server:  failed to obtain datatype from  dataset %d",
@@ -447,8 +445,8 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         return 0;
     }
 
-//    memtype = get_memtype(datatype);
-// Using H5T_get_native_type API
+  // memtype = get_memtype(datatype);
+  // Using H5T_get_native_type API
    memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
 
     if (memtype < 0) {
@@ -541,8 +539,8 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         return -1;
     }
 
-    /*    printf("datatype is %d\n",datatype);fflush(stdout);
-       printf("about to read data\n");fflush(stdout); */
+
+
     if (H5Dread
         (dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
          (void *) buf) < 0) {
@@ -557,6 +555,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     H5Sclose(memspace);
     H5Tclose(datatype);
     H5Dclose(dset);
+    DBG(cerr << "<get_slabdata() " << endl);    
     return 1;
 }
 

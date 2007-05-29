@@ -20,13 +20,23 @@ H5EOS::H5EOS()
 
 H5EOS::~H5EOS()
 {
+  
 }
+
+
+
+
+
+
 
 
 bool H5EOS::has_group(hid_t id, const char* name)
 {
-
-  if(H5Gopen(id, name) < 0){
+  hid_t hid;
+  H5E_BEGIN_TRY {
+    hid = H5Gopen(id, name);
+  } H5E_END_TRY;    
+  if(hid < 0){
     return false;
   }
   else{
@@ -83,10 +93,12 @@ bool H5EOS::check_eos(hid_t id)
 {
   // Check if this file has the group called "HDFEOS INFORMATION".
   if(has_group(id, "HDFEOS INFORMATION")){
+#ifdef FULL_TEST    
     // Check if this file has the dataset called "ArchivedMetadata".
     if(has_dataset(id, "/HDFEOS INFORMATION/ArchivedMetadata")){
       // Check if this file has the dataset called "CoreMetadata".
       if(has_dataset(id, "/HDFEOS INFORMATION/CoreMetadata")){
+#endif	
 	// Check if this file has the dataset called "StructMetadata".
 	if(has_dataset(id, "/HDFEOS INFORMATION/StructMetadata.0"))
 	  {
@@ -110,8 +122,10 @@ bool H5EOS::check_eos(hid_t id)
 	    valid = true;
 	    return valid;
 	  }
+#ifdef FULL_test	
       }
     }
+#endif    
   }
   return false; 
 }

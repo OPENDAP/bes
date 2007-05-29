@@ -9,7 +9,7 @@
 #include <hdf5.h>
 #include "common.h"
 
-int get_strdata(hid_t, int, char *, char *, char *);
+int get_strdata(int, char *, char *, int, char *);
 int check_h5str(hid_t);
 hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, int *,
 		    char *);

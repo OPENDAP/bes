@@ -24,9 +24,12 @@
 #include "common.h"
 #include "H5Git.h"
 #include "parser.h"
-#include "H5EOS.h"
 
-extern H5EOS eos;
+
+#include "H5EOS.h"
+// extern H5EOS eos;
+H5EOS eos;
+
 static char Msgt[255];		// used as scratch in various places
 static int slinkindex;		// used by depth_first()
 
@@ -47,6 +50,7 @@ static const char FLOAT_ELSE[]="Float_else";
 struct yy_buffer_state;
 int hdfeos_dasparse(void *arg);      // defined in hdfeos.tab.c
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -515,6 +519,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   DBG(cerr << ">read_objects():" << varname <<endl);
   
   strcpy(attr_name, "name");
+#ifdef NASA_EOS_META
   if(eos.is_valid()){
     if(
        varname.find("StructMetadata") != string::npos
@@ -549,7 +554,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       return;
     }
   }
-
+#endif
+  
   hdf5_path = new char[strlen(HDF5_OBJ_FULLPATH) + 1];
 
   bzero(hdf5_path, strlen(HDF5_OBJ_FULLPATH));

@@ -1,4 +1,3 @@
-
 # Automake file for hdf5_handler
 #
 # $Id$
@@ -57,14 +56,13 @@ if OPENDAPSERVER
 
 EXTRA_DIST += configure-hdf5-data.sh.in
 CLEANFILES += configure-hdf5-data.sh
-	
 sample_datadir = $(datadir)/hyrax/data/h5
 sample_data_DATA = data/tcompound.h5
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 		   	   -e 's,[@]libdir[@],$(libdir),g' \
 		   	   -e 's,[@]datadir[@],$(datadir),g'
-				  
+
 configure-hdf5-data.sh: configure-hdf5-data.sh.in Makefile
 	$(do_subst) < $(srcdir)/configure-hdf5-data.sh.in > configure-hdf5-data.sh
 	chmod +x configure-hdf5-data.sh
@@ -76,7 +74,6 @@ install-data-hook: configure-hdf5-data.sh
 	 ./configure-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
 
 endif
-	
 ###########################################################################
 
 # Build linux RPMs

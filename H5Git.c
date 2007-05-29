@@ -860,8 +860,8 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         return -1;
     }
 
-    /*    printf("datatype is %d\n",datatype);fflush(stdout);
-       printf("about to read data\n");fflush(stdout); */
+    //   printf("datatype is %d\n",datatype);fflush(stdout);
+    //   printf("about to read data\n");fflush(stdout); 
     if (H5Dread
         (dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
          (void *) buf) < 0) {

@@ -54,6 +54,21 @@ AC_CHECK_HDF5(
   ]
 )
 
+AC_ARG_ENABLE([eos-grid], 
+	     [AS_HELP_STRING([--enable-eos-grid=yes],[NASA EOS file grid mapping support will be added])],
+	     [use_eos_grid=$enableval],[use_eos_grid=yes])
+if test "${use_eos_grid}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DNASA_EOS_GRID"
+fi 
+
+AC_ARG_ENABLE([eos-meta], 
+	     [AS_HELP_STRING([--enable-eos-meta=yes],[NASA EOS file meta file parse support will be added])],
+	     [use_eos_meta=$enableval],[use_eos_meta=yes])
+if test "${use_eos_meta}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DNASA_EOS_META"
+fi 
+
+
 AC_ARG_WITH([bes],
             [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
             [BES_PATH=${withval}], 

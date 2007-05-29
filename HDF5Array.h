@@ -36,6 +36,7 @@ private:
     hid_t d_ty_id;
     size_t d_memneed;
 
+  
     int format_constraint(int *cor, int *step, int *edg);
 
 public:
@@ -52,7 +53,8 @@ public:
     void set_numelm(int nelms);
     hid_t get_did();
     hid_t get_tid();
-
+    H5T_class_t d_type;
+  
     friend  string return_type(hid_t datatype);  
 };
 
