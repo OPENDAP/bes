@@ -33,7 +33,7 @@
 #include "HDF5Structure.h"
 #include "InternalErr.h"
 
-#define DODS_DEBUG
+// #define DODS_DEBUG
 #include "debug.h"
 
 

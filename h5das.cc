@@ -27,7 +27,7 @@
 
 
 #include "H5EOS.h"
-// extern H5EOS eos;
+
 H5EOS eos;
 
 static char Msgt[255];		// used as scratch in various places

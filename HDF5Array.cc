@@ -112,50 +112,20 @@ HDF5Array::read(const string & dataset)
 
   if(return_type(d_ty_id) == "Structure"){
     
-    int nelms = format_constraint(offset, step, count);
-    
     DBG(cerr << "=read() Array of Structure length=" << length() <<  endl);
     
 
-    int id = 0;
-    int *size = new int[d_num_dim];
-    Dim_iter p2 = dim_begin();
-  
-    while (p2 != dim_end()) {
-      int a_size = dimension_size(p2, false); // unconstrained size
-      size[id] = a_size;
-      ++id;
-      ++p2;
-    } // while()
-    
+    int picks[d_num_dim];
+    int nelms = format_constraint(offset, step, count);
+
     // Honor constraint evaluation here.
-    int *picks[d_num_dim];
-    for(j = 0; j < d_num_dim ; j++){ // For each dimension
-      picks[j] =  new int[count[j]]; // Don't use int().
-      
-      for(k = 0; k < count[j]; k++){ // For each count
-	picks[j][k] = offset[j] + k*step[j];
-	cerr << "pick = " << picks[j][k]  << endl;
-      }
-    }
+    linearize_multi_dimensions(offset, step, count, picks);
     
-    // Compute dim[0] * dim[1]...* dim[n] + dim[1] * dim[2] *...*dim[n] + ... dim[n]
-    for(j = 0; j < d_num_dim ; j++){ // For each dimension
-      for(k = 0; k < count[j]; k++) { // For each count
-	int temp_a = 6*picks[j][0] + picks[j-1][k];
-      }
-      
-    }
-
-
-    // original size[n] * dimension[n]
-    // 
-      
     HDF5Structure *p = dynamic_cast<HDF5Structure*>(var());
 
     // Set the vector.
     for(i=0; i < nelms ; i++){
-      p->set_array_index(offset[0]+i*step[0]);
+      p->set_array_index(picks[i]);
       set_vec(i, p);      
     }
 
@@ -347,3 +317,83 @@ HDF5Array::get_did() {return d_dset_id;}
 hid_t
 HDF5Array::get_tid() {return d_ty_id;}
   
+void
+HDF5Array::linearize_multi_dimensions(int* start, int* stride, int* count, int* picks)
+{
+    int id = 0;
+    int *dim = new int[d_num_dim];
+    
+    Dim_iter p2 = dim_begin();
+  
+    while (p2 != dim_end()) {
+      int a_size = dimension_size(p2, false); // unconstrained size
+      DBG(cerr << "dimension[" <<  id << "] = " << a_size << endl);
+      dim[id] = a_size;
+      ++id;
+      ++p2;
+    } // while()
+
+    // Kent's contribution.
+    int temp_count[d_num_dim];
+    int temp_index;
+    int i;
+    int array_index = 0;
+    int temp_count_dim = 0; /* this variable changes when dim. is added */
+    int temp_dim = 1;
+
+    
+    for (i=0;i<d_num_dim;i++)
+      temp_count[i] = 1;
+
+  
+    int num_ele_so_far = 0;
+    int total_ele = 1;
+    for (i=0;i<d_num_dim;i++)
+      total_ele=total_ele*count[i];
+
+
+    while(num_ele_so_far <total_ele) {
+      // loop through the index 
+
+      while(temp_count_dim < d_num_dim) {
+#ifdef KENT_ORIG
+	// Obtain the index 	
+	//  starting from the fastest changing dimension,
+	//   calculate the index of each dimension and add it up	
+	temp_index = (start[temp_count_dim]+
+		      (temp_count[temp_count_dim]-1)*stride[temp_count_dim])*temp_dim;
+#endif
+	temp_index = (start[d_num_dim - 1 - temp_count_dim]+
+		      (temp_count[d_num_dim - 1 - temp_count_dim]-1)*stride[d_num_dim - 1 - temp_count_dim])*temp_dim;	
+	array_index =array_index+temp_index;
+	temp_dim = temp_dim*dim[d_num_dim - 1 - temp_count_dim];
+	temp_count_dim++;
+      }
+      
+      picks[num_ele_so_far] = array_index;
+      
+      num_ele_so_far++;
+      // index can be added 
+      DBG(cerr << "number of element looped so far = " << num_ele_so_far << endl);
+      for (i =0; i<d_num_dim;i++) {
+	DBG(cerr << "temp_count[" << i << "]=" << temp_count[i] << endl);
+      }
+      DBG(cerr << "index so far " << array_index << endl);
+
+ 
+      temp_dim = 1;
+      temp_count_dim = 0;
+      temp_index = 0;
+      array_index = 0;
+
+      for (i=0;i<d_num_dim;i++) {
+	if(temp_count[i] < count[i]) {
+	  temp_count[i]++;
+	  break;
+	}
+	else {// We reach the end of the dimension, set it to 1 and increase the next level dimension. 
+	  temp_count[i] = 1;
+	}
+      }
+    }
+}
