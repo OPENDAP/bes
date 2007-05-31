@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -68,7 +68,7 @@ string
 BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 {
 #ifndef HAVE_BZLIB_H
-    string err = "Unable to uncompress bz2 files, not available" ;
+    string err = "Unable to uncompress bz2 files, feature not built. Check config.h in bes directory for HAVE_BZLIB_H flag set to 1" ;
     throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
 #else
     FILE *src = fopen( src_name.c_str(), "rb" ) ;

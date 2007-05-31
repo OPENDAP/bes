@@ -92,13 +92,10 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESDataHandlerInterface.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
 	BESDebug.cc BESDefaultModule.cc \
-	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc
+	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
+	BESUncompressBZ2.cc
 
 SRCS_NOT_USED = BESAutoPtr.cc 
-
-if BZ2UNCOMPRESS
-SRCS += BESUncompressBZ2.cc
-endif
 
 HDRS = BESInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
@@ -145,13 +142,10 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
 	BESModuleApp.h BESUtil.h BESDebug.h \
-	BESCache.h BESUncompressManager.h BESUncompressGZ.h
+	BESCache.h BESUncompressManager.h BESUncompressGZ.h \
+	BESUncompressBZ2.h
 
 HDRS_NOT_USED = BESAutoPtr.cc BESAutoPtr.h
-
-if BZ2UNCOMPRESS
-HDRS += BESUncompressBZ2.h
-endif
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

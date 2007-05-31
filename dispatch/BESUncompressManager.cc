@@ -41,7 +41,6 @@ using std::istringstream ;
 #include "BESContainerStorageException.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
-#include "config.h"
 
 BESUncompressManager *BESUncompressManager::_instance = 0 ;
 
@@ -51,9 +50,7 @@ BESUncompressManager *BESUncompressManager::_instance = 0 ;
 BESUncompressManager::BESUncompressManager()
 {
     add_method( "gz", BESUncompressGZ::uncompress ) ;
-#ifdef HAVE_BZLIB_H
     add_method( "bz2", BESUncompressBZ2::uncompress ) ;
-#endif
 
     bool found = false ;
     string key = "BES.Uncompress.Retry" ;
