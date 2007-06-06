@@ -24,6 +24,9 @@ private:
   hid_t dset_id;
   hid_t ty_id;
   int array_index;
+  int array_size; // size constrained by constraint expression
+  int array_entire_size; // entire size in case of array of structure
+  
 public:
   // friend string print_type(hid_t datatype);   
   HDF5Structure(const string &n = "");
@@ -37,10 +40,14 @@ public:
   hid_t get_did();
   hid_t get_tid();
   int get_array_index();
+  int get_array_size();
+  int get_entire_array_size();
   
   void set_did(hid_t dset);
   void set_tid(hid_t type);
   void set_array_index(int i);
+  void set_array_size(int i);
+  void set_entire_array_size(int i);
   
   friend string return_type(hid_t datatype);   
 };

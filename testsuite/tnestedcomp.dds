@@ -1,0 +1,20 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Structure {
+        Int32 a_name;
+        Float32 b_name;
+        Float64 c_name;
+        Structure {
+            String char_name;
+            Float32 array_name\[2\];
+        } d_name;
+    } /ArrayOfStructures\[10\];
+} tnestedcomp.h5;

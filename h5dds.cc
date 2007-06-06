@@ -243,15 +243,12 @@ return_type(hid_t type)
   case H5T_STRING:
     return STRING;
     
-    // HDF5 Compound type maps to DODS Structure. <hyokyung 2007.03. 1. 12:30:03>
   case H5T_COMPOUND:
     return COMPOUND;
 
   case H5T_ARRAY:
-    // cerr << "comes array" << endl;
     return ARRAY;    
-    // Hmm. Is this really the correct thing to do? 7/25/2001 jhrg
-    // I'm not sure what James meant. <hyokyung 2007.02.20. 10:23:39>
+
   default:
     return "Unmappable Type";
   }

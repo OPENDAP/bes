@@ -672,7 +672,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
     bzero(value, (attr_inst.need + sizeof(char)));
-
+    DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
     // read HDF5 attribute data. 
 
     if (ty_id == H5T_STRING) {
@@ -687,6 +687,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       }
     } else {
       if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
+
 	string msg =
 	  "h5_das handler: unable to read HDF5 attribute data";
 	delete[]temp_varname;
@@ -694,6 +695,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	delete[]value;
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
+      DBG(cerr << "value=" << value << endl);
     }
 
     // add all the attributes in the array
@@ -772,8 +774,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 					  print_type(ty_id),
 					  print_rep);
 	      tempvalue = tempvalue + elesize;
+	      DBG(cerr << "tempvalue=" << tempvalue << endl);
 	      // <hyokyung 2007.02.27. 09:31:25>
-	      // printf("print_rep %s\n", print_rep);
 	      delete[]print_rep;
 	    }
 	    catch(Error & e) {
@@ -787,11 +789,14 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
 	  else {
 	    try {
+
 	      char *print_rep =
 		print_attr(ty_id, loc, tempvalue);
+	      DBG(cerr << "print_rep=" <<  print_rep << endl);
 	      attr_table_ptr->append_attr(attr_inst.name,
 					  print_type(ty_id),
 					  print_rep);
+	      tempvalue = tempvalue + elesize; // <hyokyung 2007.06. 4. 15:47:21>
 	      delete[]print_rep;
 	    }
 	    catch(Error & e) {

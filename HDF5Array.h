@@ -38,7 +38,7 @@ private:
 
   
   int  format_constraint(int *cor, int *step, int *edg);
-  void linearize_multi_dimensions(int* start, int* stride, int* count, int* picks);
+  int  linearize_multi_dimensions(int* start, int* stride, int* count, int* picks);
 
 public:
   HDF5Array(const string &n = "", BaseType *v = 0);

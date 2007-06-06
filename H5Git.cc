@@ -263,9 +263,9 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 
     // <hyokyung 2007.05.25. 15:03:52>
     // Chunking generates not SCALAR
-    if (H5Sget_simple_extent_type(dataspace) == H5S_SCALAR) {
-      cerr << "simple_extent_type == SCALAR" << endl;
-    }
+    // if (H5Sget_simple_extent_type(dataspace) == H5S_SCALAR) {
+    //  DBG(cerr << "simple_extent_type == SCALAR" << endl);
+    // }
     
     // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
@@ -331,6 +331,7 @@ int get_data(hid_t dset, void *buf, char *error)
     hid_t datatype, dataspace;
     hid_t memtype;
 
+    DBG(cerr << ">get_data()" << endl);
     if ((datatype = H5Dget_type(dset)) < 0) {
         sprintf(error, "failed to obtain datatype from  dataset %d", dset);
         return -1;
@@ -374,6 +375,7 @@ int get_data(hid_t dset, void *buf, char *error)
         H5Tclose(datatype);
         H5Dclose(dset);
     }
+    DBG(cerr << "<get_data()" << endl);    
     return 0;
 }
 

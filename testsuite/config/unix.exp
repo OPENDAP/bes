@@ -73,6 +73,15 @@ proc dap_hdf5_handler_all {path dataset {constraint ""} {xfailp 0}} {
     compare_stdout "testsuite/${dataset}.data" "${dataset} Data" $xfailp
 }
 
+proc dap_hdf5_handler_no_data {path dataset {constraint ""} {xfailp 0}} {
+    dap_hdf5_handler_start "-t" "-o das -r testsuite/cache" "${path}/${dataset}.h5"
+    compare_stdout "testsuite/${dataset}.das" "${dataset} DAS" $xfailp match
+    
+    dap_hdf5_handler_start "-t" "-o dds -r testsuite/cache" "${path}/${dataset}.h5"
+    compare_stdout "testsuite/${dataset}.dds" "${dataset} DDS" $xfailp match
+}
+
+
 proc dap_hdf5_handler_subset {path dataset constraint {num "1"}} {
     dap_hdf5_handler_start "-b" "-o dods -r testsuite/cache -e \"${constraint}\"" "${path}/${dataset}.h5"
     compare_stdout "testsuite/${dataset}.data${num}" "${dataset} Subset"

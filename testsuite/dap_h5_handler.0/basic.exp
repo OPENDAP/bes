@@ -7,13 +7,27 @@ global host
 
 set testdir testsuite
 set test_name "basic"
-set verbose 1
+set verbose 0
 
 
 dap_hdf5_handler_version 
-dap_hdf5_handler_all "${testdir}" "test1"
-dap_hdf5_handler_all "${testdir}" "tdset"
+
+dap_hdf5_handler_no_data "${testdir}" "tgroup"
+
+dap_hdf5_handler_all "${testdir}" "tnodata"
+
+dap_hdf5_handler_all "${testdir}" "tnestedcomp"
+
+dap_hdf5_handler_all "${testdir}" "tname-gt"
+
+dap_hdf5_handler_all "${testdir}" "thyperslab"
+
 dap_hdf5_handler_all "${testdir}" "tdset2"
+
+dap_hdf5_handler_all "${testdir}" "tdset"
+
+dap_hdf5_handler_all "${testdir}" "test1"
+
 # dap_hdf5_handler_all "${testdir}" "GridFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
 # dap_hdf5_handler_all "${testdir}" "PointFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
-#
+

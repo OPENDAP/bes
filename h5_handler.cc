@@ -5,7 +5,7 @@
 ///
 /// Copyright (C) 1999	National Center for Supercomputing Applications.
 ///		All rights reserved.
-
+// #define DODS_DEBUG
 #include "h5_handler.h"
 
 const static string cgi_version = "3.0";
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 		  + df.get_dataset_name());
 
     DBG(cerr << "checking EOS file" << endl);
+
     if(eos.check_eos(file1)){
       DBG(cerr << "eos file is detected" << endl);
       eos.set_dimension_array();
@@ -51,15 +52,14 @@ int main(int argc, char *argv[])
     else{
       DBG(cerr << "eos file is not detected" << endl);
     }
-    //#endif
+
     
     // More C++ style? How to use virtual function. <hyokyung 2007.02.20. 13:31:10>
-    switch (df.get_response()) { 
+    switch (df.get_response()) {
+      
     case DODSFilter::DAS_Response:{
       DAS das;
-
       find_gloattr(file1, das);
-      
       depth_first(file1, "/", das,
 		  df.get_dataset_name().c_str());
 

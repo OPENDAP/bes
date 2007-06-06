@@ -48,6 +48,8 @@ HDF5Structure::HDF5Structure(const string & n):Structure(n)
     ty_id = -1;
     dset_id = -1;
     array_index = 0;
+    array_size = 1;
+    array_entire_size = 1;
 }
 
 HDF5Structure::~HDF5Structure()
@@ -79,19 +81,15 @@ HDF5Structure::read(const string & dataset)
       << ">read() dataset=" << dataset
       << " array_index= " << array_index
       << endl);
-  // Get members via dset_id.
+
   if(read_p())
     return false;
 
   
   // Read each member in the structure.
   for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
-    
       DBG(cerr << "=read() i=" << i << endl);
-      // if(atomic)
       BaseType *p = dynamic_cast<BaseType*>(*q);
-      // else
-      //   special read for structure
       p->read(dataset);
   }
   
@@ -133,4 +131,28 @@ int
 HDF5Structure::get_array_index()
 {
   return array_index;
+}
+
+void
+HDF5Structure::set_array_size(int i)
+{
+  array_size = i;
+}
+
+int
+HDF5Structure::get_array_size()
+{
+  return array_size;
+}
+
+void
+HDF5Structure::set_entire_array_size(int i)
+{
+  array_entire_size = i;
+}
+
+int
+HDF5Structure::get_entire_array_size()
+{
+  return array_entire_size;
 }

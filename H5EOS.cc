@@ -1,5 +1,7 @@
 //
-// 
+//
+// #define DODS_DEBUG
+#include "debug.h"
 #include "H5EOS.h"
 #include <iostream>
 using namespace std;
@@ -22,13 +24,6 @@ H5EOS::~H5EOS()
 {
   
 }
-
-
-
-
-
-
-
 
 bool H5EOS::has_group(hid_t id, const char* name)
 {
@@ -59,14 +54,14 @@ bool H5EOS::has_dataset(hid_t id, const char* name)
 void H5EOS::add_data_path(const string full_path)
 {
   full_data_paths.push_back(full_path);
-  // cout << "Full path is:" << full_path << endl;
+  DBG(cerr << "Full path is:" << full_path << endl);
 }
 
 
 void H5EOS::add_dimension_list(const string full_path, const string dimension_list)
 {
   full_data_path_to_dimension_list_map[full_path] =  dimension_list;
-  // cout << "Dimension List is:" << full_data_path_to_dimension_list_map[full_path] << endl;
+  DBG(cerr << "Dimension List is:" << full_data_path_to_dimension_list_map[full_path] << endl);
 }
 
 void H5EOS::add_dimension_map(const string dimension_name, int dimension)
@@ -198,34 +193,40 @@ bool H5EOS::set_dimension_array()
   
   dods_float32* convbuf = NULL;
   dimension_data = new dods_float32*[size];
-  
+  DBG(cerr << "Dimensions size = " << size  << endl);
   for(j=0; j < dimensions.size(); j++){
     string dim_name = dimensions.at(j);
     int dim_size = dimension_map[dim_name];
     
-    // cerr << "Dim name = " << dim_name << std::endl;
-    // cerr << "Dim size = " << dim_size << std::endl;
+    DBG(cerr << "Dim name = " << dim_name << std::endl);
+    DBG(cerr << "Dim size = " << dim_size << std::endl);
+    
+    if(dim_size > 0){
+      
+      convbuf = new dods_float32[dim_size];
 
-    convbuf = new dods_float32[dim_size];
-
-    if((dim_name.find("XDim", (int)dim_name.size()-4)) != string::npos){
-      float gradient_x = (point_right - point_left) / (float)(dim_size - 1);
-      for(i=0; i < dim_size; i++){
-	convbuf[i] = (dods_float32)(point_left + (float)i * gradient_x);
+      if((dim_name.find("XDim", (int)dim_name.size()-4)) != string::npos){
+	float gradient_x = (point_right - point_left) / (float)(dim_size - 1);
+	for(i=0; i < dim_size; i++){
+	  convbuf[i] = (dods_float32)(point_left + (float)i * gradient_x);
+	}
       }
-    }
-    else if((dim_name.find("YDim", (int)dim_name.size()-4)) != string::npos){    
-      float gradient_y = (point_upper - point_lower) / (float)(dim_size - 1);      
-      for(i=0; i< dim_size; i++){
-	convbuf[i] = (dods_float32)(point_upper - (float)i * gradient_y);
-      }      
-    }
+      else if((dim_name.find("YDim", (int)dim_name.size()-4)) != string::npos){    
+	float gradient_y = (point_upper - point_lower) / (float)(dim_size - 1);      
+	for(i=0; i< dim_size; i++){
+	  convbuf[i] = (dods_float32)(point_upper - (float)i * gradient_y);
+	}      
+      }
+      else{
+	for(i=0; i< dim_size; i++){
+	  convbuf[i] = (dods_float32)i; // meaningless number.
+	}
+      }
+    } // if dim_size > 0
     else{
-      for(i=0; i< dim_size; i++){
-	convbuf[i] = (dods_float32)i; // meaningless number.
-      }            
+      DBG(cerr << "Negative dimension " << endl);
     }
-    dimension_data[j] = convbuf;    
+    dimension_data[j] = convbuf;        
   }
   return true;
 }

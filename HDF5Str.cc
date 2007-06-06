@@ -40,7 +40,7 @@ HDF5Str::read(const string & dataset)
 	return false;
 
     if (array_flag == 1){
-        cerr << "Must come_here" << endl;
+        DBG(cerr << "=read(): array is dected." << endl);
 	return true;
     }
 
