@@ -7,7 +7,7 @@
 
 class TestResponseHandler : public BESResponseHandler {
 public:
-				TestResponseHandler( string name ) ;
+				TestResponseHandler( const string &name ) ;
     virtual			~TestResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -17,7 +17,7 @@ public:
     virtual void		transmit( BESTransmitter *transmitter,
                                           BESDataHandlerInterface &dhi ) ;
 
-    static BESResponseHandler	*TestResponseBuilder( string handler_name ) ;
+    static BESResponseHandler	*TestResponseBuilder( const string &name ) ;
 };
 
 #endif

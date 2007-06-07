@@ -28,8 +28,8 @@ bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs)
 # and installed. I've also added some code to make sure a bes is running
 # before we start the tests. jhrg 3/31/07
 
-bes-configuration-tests: site.exp
-	@(ps -el | grep beslistener > /dev/null 2>&1;\
+bes-configuration-tests:
+	@(ps -eA | grep beslistener > /dev/null 2>&1;\
 	  if test $$? != 0; then \
 		echo;\
 		echo "Starting bes using the default configuration!";\

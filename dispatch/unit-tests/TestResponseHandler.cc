@@ -8,7 +8,7 @@ using std::endl ;
 
 #include "TestResponseHandler.h"
 
-TestResponseHandler::TestResponseHandler( string name )
+TestResponseHandler::TestResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
@@ -44,8 +44,8 @@ TestResponseHandler::transmit( BESTransmitter *transmitter,
 }
 
 BESResponseHandler *
-TestResponseHandler::TestResponseBuilder( string handler_name )
+TestResponseHandler::TestResponseBuilder( const string &name )
 {
-    return new TestResponseHandler( handler_name ) ;
+    return new TestResponseHandler( name ) ;
 }
 

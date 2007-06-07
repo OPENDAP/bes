@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -64,10 +64,10 @@ public:
     typedef map< string, BESRequestHandler * >::const_iterator Handler_citer ;
     typedef map< string, BESRequestHandler * >::iterator Handler_iter ;
 
-    virtual bool		add_handler( string handler_name,
-					 BESRequestHandler * handler ) ;
-    virtual BESRequestHandler *remove_handler( string handler_name ) ;
-    virtual BESRequestHandler *find_handler( string handler_name ) ;
+    virtual bool		add_handler( const string &handler_name,
+					     BESRequestHandler * handler ) ;
+    virtual BESRequestHandler *	remove_handler( const string &handler_name ) ;
+    virtual BESRequestHandler *	find_handler( const string &handler_name ) ;
 
     virtual Handler_citer	get_first_handler() ;
     virtual Handler_citer	get_last_handler() ;

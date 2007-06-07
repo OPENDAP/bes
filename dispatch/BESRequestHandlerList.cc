@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -47,8 +47,8 @@ BESRequestHandlerList *BESRequestHandlerList::_instance = 0 ;
  * @see BESRequestHandler
  */
 bool
-BESRequestHandlerList::add_handler( string handler_name,
-			      BESRequestHandler *handler_object )
+BESRequestHandlerList::add_handler( const string &handler_name,
+				    BESRequestHandler *handler_object )
 {
     if( find_handler( handler_name ) == 0 )
     {
@@ -71,7 +71,7 @@ BESRequestHandlerList::add_handler( string handler_name,
  * @see BESRequestHandler
  */
 BESRequestHandler *
-BESRequestHandlerList::remove_handler( string handler_name )
+BESRequestHandlerList::remove_handler( const string &handler_name )
 {
     BESRequestHandler *ret = 0 ;
     BESRequestHandlerList::Handler_iter i ;
@@ -91,7 +91,7 @@ BESRequestHandlerList::remove_handler( string handler_name )
  * @see BESRequestHandler
  */
 BESRequestHandler *
-BESRequestHandlerList::find_handler( string handler_name )
+BESRequestHandlerList::find_handler( const string &handler_name )
 {
     BESRequestHandlerList::Handler_citer i ;
     i = _handler_list.find( handler_name ) ;

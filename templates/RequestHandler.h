@@ -7,7 +7,7 @@
 
 class OPENDAP_CLASSRequestHandler : public BESRequestHandler {
 public:
-			OPENDAP_CLASSRequestHandler( string name ) ;
+			OPENDAP_CLASSRequestHandler( const string &name ) ;
     virtual		~OPENDAP_CLASSRequestHandler( void ) ;
 
     virtual void	dump( ostream &strm ) const ;

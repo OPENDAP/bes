@@ -4,7 +4,7 @@
 #include "BESInfoList.h"
 #include "BESInfo.h"
 
-OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( string name )
+OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
@@ -49,8 +49,8 @@ OPENDAP_RESPONSEResponseHandler::dump( ostream &strm ) const
 }
 
 BESResponseHandler *
-OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseBuilder( string handler_name )
+OPENDAP_RESPONSEResponseHandler::OPENDAP_RESPONSEResponseBuilder( const string &name )
 {
-    return new OPENDAP_RESPONSEResponseHandler( handler_name ) ;
+    return new OPENDAP_RESPONSEResponseHandler( name ) ;
 }
 

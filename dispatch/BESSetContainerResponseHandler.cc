@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
  
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -39,7 +39,7 @@
 #include "BESHandlerException.h"
 #include "BESResponseNames.h"
 
-BESSetContainerResponseHandler::BESSetContainerResponseHandler( string name )
+BESSetContainerResponseHandler::BESSetContainerResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
@@ -152,8 +152,8 @@ BESSetContainerResponseHandler::dump( ostream &strm ) const
 }
 
 BESResponseHandler *
-BESSetContainerResponseHandler::SetContainerResponseBuilder( string handler_name )
+BESSetContainerResponseHandler::SetContainerResponseBuilder( const string &name)
 {
-    return new BESSetContainerResponseHandler( handler_name ) ;
+    return new BESSetContainerResponseHandler( name ) ;
 }
 

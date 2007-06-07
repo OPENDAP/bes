@@ -33,7 +33,7 @@
 #include "TestEhmResponseHandler.h"
 #include "TestException.h"
 
-TestEhmResponseHandler::TestEhmResponseHandler( string name )
+TestEhmResponseHandler::TestEhmResponseHandler( const string &name )
     :BESResponseHandler( name )
 {
 }
@@ -72,12 +72,6 @@ TestEhmResponseHandler::transmit( BESTransmitter *transmitter,
 {
 }
 
-BESResponseHandler *
-TestEhmResponseHandler::TestEhmResponseBuilder( string handler_name )
-{
-    return new TestEhmResponseHandler( handler_name ) ;
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance
@@ -92,5 +86,11 @@ TestEhmResponseHandler::dump( ostream &strm ) const
     BESIndent::Indent() ;
     BESResponseHandler::dump( strm ) ;
     BESIndent::UnIndent() ;
+}
+
+BESResponseHandler *
+TestEhmResponseHandler::TestEhmResponseBuilder( const string &name )
+{
+    return new TestEhmResponseHandler( name ) ;
 }
 

@@ -48,7 +48,7 @@
  */
 class TestSigResponseHandler : public BESResponseHandler {
 public:
-				TestSigResponseHandler( string name ) ;
+				TestSigResponseHandler( const string &name ) ;
     virtual			~TestSigResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -57,7 +57,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *TestSigResponseBuilder( string handler_name ) ;
+    static BESResponseHandler *TestSigResponseBuilder( const string &name ) ;
 };
 
 #endif // I_TestSigResponseHandler_h

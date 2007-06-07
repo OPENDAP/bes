@@ -34,7 +34,7 @@
 
 #include "TestSigResponseHandler.h"
 
-TestSigResponseHandler::TestSigResponseHandler( string name )
+TestSigResponseHandler::TestSigResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
@@ -73,12 +73,6 @@ TestSigResponseHandler::transmit( BESTransmitter *transmitter,
 {
 }
 
-BESResponseHandler *
-TestSigResponseHandler::TestSigResponseBuilder( string handler_name )
-{
-    return new TestSigResponseHandler( handler_name ) ;
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance
@@ -93,5 +87,11 @@ TestSigResponseHandler::dump( ostream &strm ) const
     BESIndent::Indent() ;
     BESResponseHandler::dump( strm ) ;
     BESIndent::UnIndent() ;
+}
+
+BESResponseHandler *
+TestSigResponseHandler::TestSigResponseBuilder( const string &name )
+{
+    return new TestSigResponseHandler( name ) ;
 }
 

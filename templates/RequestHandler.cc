@@ -11,7 +11,7 @@
 #include "BESTextInfo.h"
 #include "BESConstraintFuncs.h"
 
-OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( string name )
+OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
     add_handler( VERS_RESPONSE, OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers ) ;

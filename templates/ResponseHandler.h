@@ -7,7 +7,7 @@
 
 class OPENDAP_RESPONSEResponseHandler : public BESResponseHandler {
 public:
-				OPENDAP_RESPONSEResponseHandler( string name ) ;
+				OPENDAP_RESPONSEResponseHandler( const string &name ) ;
     virtual			~OPENDAP_RESPONSEResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
@@ -16,7 +16,7 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *OPENDAP_RESPONSEResponseBuilder( string handler_name ) ;
+    static BESResponseHandler *OPENDAP_RESPONSEResponseBuilder( const string &name ) ;
 };
 
 #endif // I_OPENDAP_RESPONSEResponseHandler_h
