@@ -19,7 +19,7 @@ noinst_HEADERS = test_config.h
 # This determines what gets run by 'make check.'
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
-		infoT agglistT cacheT gzT uncompressT lockT
+		infoT agglistT cacheT gzT zT uncompressT lockT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -121,6 +121,9 @@ gzT_LDADD =  ../libbes_dispatch.la -lz
 
 bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
 bz2T_LDADD =  ../libbes_dispatch.la
+
+zT_SOURCES = zT.cc baseApp.cc zT.h baseApp.h Application.h
+zT_LDADD =  ../libbes_dispatch.la
 
 uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h	\
 			Application.h

@@ -106,7 +106,7 @@ gzT::run(void)
 	}
 
 	cout << endl << "*****************************************" << endl;
-	cout << "uncompress a test file, should be cached" << endl;
+	cout << "uncompress a test file that is already cached" << endl;
 	try
 	{
 	    string result = BESUncompressGZ::uncompress( src_file, target ) ;

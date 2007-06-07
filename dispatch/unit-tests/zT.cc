@@ -1,4 +1,4 @@
-// bz2T.C
+// zT.C
 
 #include <iostream>
 #include <fstream>
@@ -8,8 +8,8 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "bz2T.h"
-#include "BESUncompressBZ2.h"
+#include "zT.h"
+#include "BESUncompressZ.h"
 #include "BESCache.h"
 #include "BESException.h"
 #include <test_config.h>
@@ -17,21 +17,21 @@ using std::ifstream ;
 #define BES_CACHE_CHAR '#' 
 
 int
-bz2T::run(void)
+zT::run(void)
 {
     cout << endl << "*****************************************" << endl;
-    cout << "Entered bz2T::run" << endl;
+    cout << "Entered zT::run" << endl;
     int retVal = 0;
 
     string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
-    string src_file = cache_dir + "/testfile.txt.bz2" ;
+    string src_file = cache_dir + "/testfile.txt.Z" ;
 
     // we're not testing the caching mechanism, so just create it, but make
     // sure it gets created.
     string target ;
     try
     {
-	BESCache cache( cache_dir, "bz2_cache", 1 ) ;
+	BESCache cache( cache_dir, "z_cache", 1 ) ;
 	// get the target name and make sure the target file doesn't exist
 	if( cache.is_cached( src_file, target ) )
 	{
@@ -47,7 +47,7 @@ bz2T::run(void)
 	cout << "uncompress a test file" << endl;
 	try
 	{
-	    string result = BESUncompressBZ2::uncompress( src_file, target ) ;
+	    string result = BESUncompressZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
 	    if( result == target )
 	    {
@@ -109,7 +109,7 @@ bz2T::run(void)
 	cout << "uncompress a test file that is already cached" << endl;
 	try
 	{
-	    string result = BESUncompressBZ2::uncompress( src_file, target ) ;
+	    string result = BESUncompressZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
 	    if( result == target )
 	    {
@@ -181,7 +181,7 @@ bz2T::run(void)
     }
 
     cout << endl << "*****************************************" << endl;
-    cout << "Returning from bz2T::run" << endl;
+    cout << "Returning from zT::run" << endl;
 
     return retVal;
 }
@@ -190,7 +190,7 @@ int
 main(int argC, char **argV) {
     string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
     putenv( (char *)env_var.c_str() ) ;
-    Application *app = new bz2T();
+    Application *app = new zT();
     return app->main(argC, argV);
 }
 
