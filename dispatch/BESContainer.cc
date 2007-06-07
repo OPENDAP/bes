@@ -46,8 +46,6 @@ using std::ostringstream ;
 #include "BESCache.h"
 #include "BESContainerStorageException.h"
 
-#define BES_POPEN_BUFFER_SIZE 4096
-
 BESContainer::BESContainer(const string &s)
     : _valid( false ),
       _real_name( "" ),
