@@ -38,7 +38,7 @@ class HDF4RequestHandler : public BESRequestHandler {
 private:
     static string	_cachedir ;
 public:
-			HDF4RequestHandler( string name ) ;
+			HDF4RequestHandler( const string &name ) ;
     virtual		~HDF4RequestHandler( void ) ;
 
     static bool		hdf4_build_das( BESDataHandlerInterface &dhi ) ;

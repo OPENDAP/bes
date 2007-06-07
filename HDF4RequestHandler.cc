@@ -56,7 +56,7 @@ extern void read_dds(DDS & dds, const string & cachedir,
 
 string HDF4RequestHandler::_cachedir = "";
 
-HDF4RequestHandler::HDF4RequestHandler(string name)
+HDF4RequestHandler::HDF4RequestHandler(const string &name)
 :  BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
