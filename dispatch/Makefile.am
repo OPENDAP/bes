@@ -93,7 +93,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
 	BESDebug.cc BESDefaultModule.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
-	BESUncompressBZ2.cc BESUncompressZ.cc
+	BESUncompressBZ2.cc
 
 SRCS_NOT_USED = BESAutoPtr.cc 
 
@@ -143,7 +143,7 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESExceptionManager.h \
 	BESModuleApp.h BESUtil.h BESDebug.h \
 	BESCache.h BESUncompressManager.h BESUncompressGZ.h \
-	BESUncompressBZ2.h BESUncompressZ.h
+	BESUncompressBZ2.h
 
 HDRS_NOT_USED = BESAutoPtr.cc BESAutoPtr.h
 
