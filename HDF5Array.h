@@ -39,7 +39,8 @@ private:
   
   int  format_constraint(int *cor, int *step, int *edg);
   int  linearize_multi_dimensions(int* start, int* stride, int* count, int* picks);
-
+  hid_t mkstr(int size, H5T_str_t pad);
+  
 public:
   HDF5Array(const string &n = "", BaseType *v = 0);
   virtual ~HDF5Array();

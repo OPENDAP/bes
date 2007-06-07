@@ -1,0 +1,24 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: text/plain
+Content-Description: dods_dds
+
+Dataset {
+    Structure {
+        Int32 a_array\[2\]\[2\]\[2\]\[2\];
+        Float64 b_array\[2\]\[2\]\[2\]\[2\];
+        Float64 c_array\[2\]\[2\]\[2\]\[2\];
+    } /g1/g1.1/dset1\[6\];
+    Structure {
+        Int32 a_array\[2\]\[2\]\[2\]\[2\];
+        Float64 b_array\[2\]\[2\]\[2\]\[2\];
+        Float64 c_array\[2\]\[2\]\[2\]\[2\];
+    } /g1/g1.2/link1\[6\];
+    Int32 /g3/link3\[10\]\[10\];
+    Int32 /g4/dset2\[10\]\[10\];
+    Int32 /g6/dset3\[10\]\[10\];
+} tmany.h5;

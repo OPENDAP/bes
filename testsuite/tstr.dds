@@ -1,0 +1,19 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: *
+Content-Description: dods_dds
+
+Dataset {
+    Structure {
+        Int32 int_array\[8\]\[10\];
+        String string\[3\]\[4\];
+    } /comp1\[3\]\[6\];
+    String /string1\[3\]\[4\];
+    String /string2\[20\];
+    String /string3\[27\];
+    String /string4\[3\];
+} tstr.h5;

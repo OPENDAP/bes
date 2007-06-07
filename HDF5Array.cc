@@ -27,6 +27,8 @@
 #include "HDF5Structure.h"
 #include "HDF5Str.h"
 
+#include "h5dds.h"
+
 using namespace std;
 
 BaseType *
@@ -124,7 +126,7 @@ HDF5Array::read(const string & dataset)
 
     // Honor constraint evaluation here.
     int total_elems = linearize_multi_dimensions(offset, step, count, picks);
-    
+
     HDF5Structure *p = dynamic_cast<HDF5Structure*>(var());
     p->set_array_size(nelms);
     p->set_entire_array_size(total_elems);
@@ -164,11 +166,7 @@ HDF5Array::read(const string & dataset)
     while(q != NULL){
       if(q->is_constructor_type()){ // Grid, structure or sequence
 	if(n == 0){ // Array at the Bottom level 
-
-
-
-    
-	  if(d_type == H5T_INTEGER){
+    	  if(d_type == H5T_INTEGER){
 	    if(size == 1){
 	      s1_array2 = H5Tarray_create(H5T_NATIVE_CHAR, d_num_dim, size2, NULL);	
 	    }
@@ -188,6 +186,13 @@ HDF5Array::read(const string & dataset)
 	      s1_array2 = H5Tarray_create(H5T_NATIVE_DOUBLE, d_num_dim, size2, NULL);
 	    }
 	  }
+	  
+	  if(d_type == H5T_STRING){
+	    DBG(cerr << "string array is detected" << endl);
+	    hid_t str_type = mkstr(size, H5T_STR_SPACEPAD);
+	    s1_array2 = H5Tarray_create(str_type, d_num_dim, size2, NULL);
+	  }
+
 	  H5Tinsert(s1_tid, name().c_str(), 0, s1_array2);
 	  H5Tclose(s1_array2);
 	} // if (n == 0)
@@ -204,9 +209,6 @@ HDF5Array::read(const string & dataset)
 	j = p->get_array_index();
 	k = p->get_array_size();
 	m = p->get_entire_array_size();
-	
-	// Remember the index of array from the last parent.
-	// j = p->get_array_index();	
 	q = q->get_parent();
 	
       } // if (q->is_constructor_type())
@@ -231,7 +233,8 @@ HDF5Array::read(const string & dataset)
     buf_array = malloc(m * data_size);    
     H5Dread(d_dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf_array);
     H5Tclose(s1_tid);
-	
+
+
     for(l=0; l < k; l++){
       for(i=0; i < data_size; i++){
 	// Cast the array buffer into character buffer.
@@ -239,13 +242,35 @@ HDF5Array::read(const string & dataset)
 	convbuf[l*data_size + i] = a[j*data_size+i];
       }
     }
-    
-    set_read_p(true);
-    val2buf((void *) convbuf);
+
+    // Treat string differently with vector of strings.
+    if(d_type == H5T_STRING){
+      
+      string v_str[d_num_elm];
+      
+      for (int strindex = 0; strindex < d_num_elm; strindex++) {
+	char *strbuf = new char[size + 1];
+	if (get_strdata(strindex, convbuf, strbuf, size, Msga) < 0) {
+	  throw InternalErr(__FILE__, __LINE__,
+			    string("hdf5_dods server failed on getting data.\n")
+			    + Msga);
+	}
+	DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
+	v_str[strindex] = strbuf;
+	delete[]strbuf;
+      }      
+      set_read_p(true);
+      val2buf((void*)&v_str);      
+    }
+    else{
+      set_read_p(true);
+      val2buf((void *) convbuf);    
+    }
     free(buf_array);
     return false;
 
   } // if (Array)
+
   
   try {
     int nelms = format_constraint(offset, step, count); // Throws Error.
@@ -267,8 +292,8 @@ HDF5Array::read(const string & dataset)
 	string v_str[d_num_elm];
 	size_t elesize = H5Tget_size(d_ty_id);
 	DBG(cerr
-	    << "element size = " << elesize 
-	    << " d_num_elm = " << d_num_elm
+	    << "=read()<check_h5str()  element size=" << elesize 
+	    << " d_num_elm=" << d_num_elm
 	    << endl);
 
 	for (int strindex = 0; strindex < d_num_elm; strindex++) {
@@ -278,7 +303,7 @@ HDF5Array::read(const string & dataset)
 			      string("hdf5_dods server failed on getting data.\n")
 			      + Msga);
 	  }
-	  DBG(cerr << "strbuf=" << strbuf << endl);
+	  DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
 	  v_str[strindex] = strbuf;
 	  delete[]strbuf;
 	}
@@ -460,4 +485,15 @@ HDF5Array::linearize_multi_dimensions(int* start, int* stride, int* count, int* 
   }
   DBG(cerr << "<linearize_multi_dimensions()" <<endl;);
   return total;
+}
+
+hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
+{
+  hid_t type;
+
+  if ((type=H5Tcopy(H5T_C_S1))<0) return -1;
+  if (H5Tset_size(type, (size_t)size)<0) return -1;
+  if (H5Tset_strpad(type, pad)<0) return -1;
+
+  return type;
 }

@@ -1,0 +1,12 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: *
+Content-Description: dods_dds
+
+Dataset {
+    Int32 /g1.1%3cwithlt/dset1.1.1%3cwithlt\[10\]\[10\];
+} tname-lt.h5;

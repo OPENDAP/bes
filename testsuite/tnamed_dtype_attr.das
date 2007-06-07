@@ -1,0 +1,19 @@
+HTTP/1.0 200 OK
+XDODS-Server: *
+XOPeNDAP-Server: *
+XDAP: *
+Date: *
+Last-Modified: *
+Content-Type: text/plain
+Content-Description: dods_das
+
+Attributes {
+    Dataset {
+        String HDF5_OBJ_FULLPATH "/Dataset";
+        Int32 Attribute 8;
+    }
+    g1 {
+        String HDF5_OBJ_FULLPATH "/g1/";
+        Int32 Attribute 8;
+    }
+}

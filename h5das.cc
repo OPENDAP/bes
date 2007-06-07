@@ -397,11 +397,27 @@ print_attr(hid_t type, int loc, void *sm_buf)
     break;
 
   case H5T_STRING:
+    int str_size = H5Tget_size(type);
+    DBG(cerr
+	<< "=print_attr(): H5T_STRING sm_buf=" << (char*)sm_buf
+	<< " size=" << str_size
+	<< endl);
 
-    rep = new char[H5Tget_size(type) + 3];
-
+    char* buf = new char[str_size+1];
+    strncpy(buf, (char*)sm_buf, str_size);
+    buf[str_size] = '\0';
+    rep = new char[str_size+3];    
+    sprintf(rep, "\"%s\"", buf);
+    rep[str_size+2] = '\0';
+    
+#ifdef KENT
+    //  This fails at tstring-at.h5 test. <hyokyung 2007.06. 7. 10:59:43>
+    rep = new char[H5Tget_size(type) + 3];	    
     bzero(rep, H5Tget_size(type) + 3);
     sprintf(rep, "\"%s\"", (char *) sm_buf);
+    rep[str_size+2] = '\0';
+#endif
+    
     break;
 
     // Is this correct? Note: We have to allocate storage since the
@@ -647,8 +663,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    // HDF5 attribute may be in string datatype, it must be dealt with 
-    //  properly. 
+    // Since HDF5 attribute may be in string datatype,
+    // it must be dealt properly. 
 
     // get data type. 
     ty_id = attr_inst.type;
@@ -673,7 +689,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     }
     bzero(value, (attr_inst.need + sizeof(char)));
     DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
-    // read HDF5 attribute data. 
+    // Read HDF5 attribute data. 
 
     if (ty_id == H5T_STRING) {
       // ty_id: No conversion to be needed. <hyokyung 2007.02.20. 13:28:08>
@@ -701,7 +717,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     // add all the attributes in the array
 
     tempvalue = value;
-    // create the "name" attribute if we can find long_name.
+    //  Create the "name" attribute if we can find long_name.
     //  Make it compatible with HDF4 server. 
     // .. if we can... Why? <hyokyung 2007.02.20. 13:28:18>
     if (strcmp(attr_inst.name, "long_name") == 0) {
@@ -722,9 +738,9 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	  throw;
 	}
       }
-    }
-    // for scalar data, just read data once a time, change it into
-    // DODS string. 
+    } // if (strcmp(attr_inst.name, "long_name") == 0)
+    // For scalar data, just read data once a time,
+    // change it into DODS string. 
 
     if (attr_inst.ndims == 0) {
       for (loc = 0; loc < (int) attr_inst.nelmts; loc++) {
@@ -745,9 +761,11 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       }
     } else {
 
-      // 1. if the hdf5 data type is HDF5 string and ndims is not 0;
+      // 1. If the hdf5 data type is HDF5 string and ndims is not 0;
       // we will handle this differently. 
-
+      DBG(cerr
+	  << "=read_objects(): ndims="<< (int)attr_inst.ndims
+	  << endl);
       loc = 0;
       int elesize = (int) H5Tget_size(attr_inst.type);
 
@@ -759,7 +777,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	delete[]value;
 	throw InternalErr(__FILE__, __LINE__, msg);
       }
-
+      
       for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
 	// Can we use STL here? <hyokyung 2007.02.20. 13:28:47>
 
@@ -774,7 +792,10 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 					  print_type(ty_id),
 					  print_rep);
 	      tempvalue = tempvalue + elesize;
-	      DBG(cerr << "tempvalue=" << tempvalue << endl);
+	      DBG(cerr
+		  << "tempvalue=" << tempvalue
+		  << "elesize=" << elesize
+		  << endl);
 	      // <hyokyung 2007.02.27. 09:31:25>
 	      delete[]print_rep;
 	    }

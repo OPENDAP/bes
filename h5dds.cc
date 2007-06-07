@@ -317,6 +317,12 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     break;
 
   case H5T_STRING:
+    size_t str_size = H5Tget_size(datatype);    
+    DBG(cerr
+	<< "=Get_bt() H5T_STRING datatype = " << datatype
+	<< " size = " << size
+	<< endl);
+
     temp_bt = factory.NewStr(varname);
     break;
     
