@@ -271,9 +271,18 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
 
   BaseType *temp_bt = NULL;
+  BaseType* ar_bt = NULL;
+  
+  hid_t dtype_base;
+  hsize_t size2[DODS_MAX_RANK];
+
+  int nelement = 0;
+  int ndim = 0;
+  int sign = -2;
+  int perm[DODS_MAX_RANK];  
 
   size_t size = 0;
-  int sign = -2;  
+
 
   
   DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype << endl);
@@ -317,33 +326,19 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     break;
 
   case H5T_STRING:
-    size_t str_size = H5Tget_size(datatype);    
-    DBG(cerr
-	<< "=Get_bt() H5T_STRING datatype = " << datatype
-	<< " size = " << size
-	<< endl);
-
     temp_bt = factory.NewStr(varname);
     break;
     
   case H5T_ARRAY:
     DBG(cerr << "=Get_bt() H5T_ARRAY datatype = " << datatype << endl);
-    hsize_t size2[DODS_MAX_RANK];
-    
-    int perm[DODS_MAX_RANK];
     
     // Get the array's base datatype
-    hid_t dtype_base=H5Tget_super(datatype);
-    BaseType* ar_bt = Get_bt(varname, dtype_base, factory);
-    
+    dtype_base=H5Tget_super(datatype);
+    ar_bt = Get_bt(varname, dtype_base, factory);
     
     // Set the size of the array.
-    int ndim = H5Tget_array_ndims(datatype);
-
-    int size = H5Tget_size(datatype);
-
-    int nelement;
-
+    ndim = H5Tget_array_ndims(datatype);
+    size = H5Tget_size(datatype);
     nelement = 1;
     
     DBG(cerr << "=Get_bt()" << " Dim = " << ndim << " Size = " << size << endl);

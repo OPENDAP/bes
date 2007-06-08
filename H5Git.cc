@@ -144,20 +144,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
       throw InternalErr(__FILE__, __LINE__, msg);
     }
     
-#if 0
-    // JRB - this test is unnecessary for DODS/OpenDAP.  Since we are
-    // read-only, we don't care if any dimensions are unlimited or not
-    for (j = 0; j < ndims; j++) {
-        if (maxsize[j] == H5S_UNLIMITED) {
-            strcpy(error,
-                   "unexpected length of dimensions for hdf5_das server");
-            attrid = -1;
-            goto exit;
-        }
-
-    }
-#endif
-
     // return ndims and size[ndims]. 
     if (ndims) {
         for (j = 0; j < ndims; j++)
@@ -165,7 +151,7 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 
     need = nelmts * H5Tget_size(ty_id);
-// We want to save memory type in the struct
+    // We want to save memory type in the struct
     memtype = H5Tget_native_type(ty_id,H5T_DIR_ASCEND);
     (*attr_inst_ptr).type = memtype;
     (*attr_inst_ptr).ndims = ndims;
@@ -253,20 +239,12 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     if ((temp_type == H5T_TIME) ||
 	(temp_type == H5T_BITFIELD)||
 	(temp_type == H5T_OPAQUE) ||
-	// (temp_type == H5T_COMPOUND) || <hyokyung 2007.03. 1. 15:12:57>
 	(temp_type == H5T_ENUM) ||
 	(temp_type == H5T_REFERENCE)) {
-        //  <hyokyung 2007.03. 1. 15:10:03>
         sprintf(error, "h5_dds handler: get_data0 - unexpected datatype at temp_type = %d", temp_type);
         return -1;
     }
 
-    // <hyokyung 2007.05.25. 15:03:52>
-    // Chunking generates not SCALAR
-    // if (H5Sget_simple_extent_type(dataspace) == H5S_SCALAR) {
-    //  DBG(cerr << "simple_extent_type == SCALAR" << endl);
-    // }
-    
     // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
         strcpy(error, "h5_dds handler: get_data0 - unable to get number of dimensions");
