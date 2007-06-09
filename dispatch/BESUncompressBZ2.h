@@ -39,7 +39,20 @@ using std::string ;
 
 #include "BESObj.h"
 
-/** @brief Function to uncompress gzip files with .bz2 extension
+/** @brief Function to uncompress files with .bz2 extension
+ *
+ * The static function is responsible for uncompressing bz2 files. If the
+ * uncompressed target file already exists then this function will overwrite
+ * that file. If it doesn't already exist then it is created.
+ *
+ * If any errors occur during this operation then a
+ * BESContainerStorageException will be thrown
+ *
+ * @param src the source file that is to be uncompressed
+ * @param target the target uncompressed file
+ * @return the target uncompressed file
+ * @throws BESContainerStorageException if errors in uncompressing the file
+ * or if bz2 is not compiled into the BES.
  */
 class BESUncompressBZ2 : public BESObj
 {

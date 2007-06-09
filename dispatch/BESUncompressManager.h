@@ -49,12 +49,18 @@ typedef string (*p_bes_uncompress)( const string &src, const string &target ) ;
  *
  * The BESUncompressManager allows the developer to add or remove named
  * uncompression methods from the list for this server. By default a gz and
- * bz2 method is provided.
+ * bz2 and Z function is provided.
  *
- * What is actually added to the list are static uncompression functions
+ * What is actually added to the list are static uncompression functions.
+ * Each of these functions is responsible for uncompressing a specific type
+ * of compressed file. The manager knows which type to uncompress by the
+ * file extension. All extensions are converted to lower case in order to
+ * make a match, so, for example, all .Z compressed files will be matched
+ * with the static function registered with the name z.
  *
  * @see BESUncompressGZ
  * @see BESUncompressBZ2
+ * @see BESUncompressZ
  * @see BESCache
  */
 class BESUncompressManager : public BESObj

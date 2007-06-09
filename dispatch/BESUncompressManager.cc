@@ -168,9 +168,31 @@ BESUncompressManager::get_method_names()
 /** @brief find the method that can uncompress the specified src and pass
  * control to that method.
  *
+ * First, the cache passed is locked to make sure no one else attempts to
+ * purge the cache at the same time we're checking the cache.
+ *
+ * Secondly, the cache is checked to determine if the target file already
+ * exists. The check method on the cache returns the target file, whether it
+ * is cached or not. If it is cached then that target file is returned and
+ * the cache is unlocked.
+ *
+ * If it is not cached then it is uncompressed using the static function
+ * registered with the same name as the file extension to be uncomressed
+ * (converted to lower case). For example, if the source file is a .GZ file
+ * (gzipped file) then we find the uncompress function with the name gz. The
+ * cache is then unlocked and the target returned.
+ *
+ * If the file extension can not be found in the list then the source file
+ * is returned as the target file. If, for example, a compressed file with
+ * the extension .bozo is passed as the source file, and there is no
+ * uncompression function with the name bozo, then the src file with the
+ * extension .bozo is returned as is.
+ *
  * @param src file to be uncompressed
  * @param cache BESCache object to uncompress the src file in
  * @return full path to the uncompressed file
+ * @throws BESContainerStorageException if there is a problem uncompressing
+ * the file.
  */
 string
 BESUncompressManager::uncompress( const string &src, BESCache &cache )
