@@ -103,7 +103,7 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	dhi.first_container() ;
 	while( dhi.container )
 	{
-	    dd->add_container( *dhi.container ) ;
+	    dd->add_container( dhi.container ) ;
 	    dhi.next_container() ;
 	}
 	dd->set_agg_cmd( dhi.data[AGG_CMD] ) ;

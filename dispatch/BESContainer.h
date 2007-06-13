@@ -41,16 +41,17 @@ using std::string ;
 
 #include "BESObj.h"
 
-/** @brief Holds real data, container type and constraint for symbolic name
- * read from persistence.
+/** @brief A container is something that holds data. I.E. a netcdf file or a
+ * database entry
  *
- * A symbolic name is a name that represents a certain set of data, usually
+ * A symbolic name is a name that represents a set of data, such as
  * a file, and the type of data, such as cedar, netcdf, hdf, etc...
- * Associated with this symbolic name during run time is the constraint
- * associated with the name.
+ * Associated with this symbolic name during run time is a constraint
+ * expression used to constrain the data and attributes desired from
+ * the container.
  *
  * The symbolic name is looked up in persistence, such as a MySQL database,
- * a file, or even in memory. The information retrieved from the persistent
+ * a file, or in volatile memory. The information retrieved from the persistent
  * source is saved in the BESContainer and is used to execute the request
  * from the client.
  *
@@ -59,28 +60,42 @@ using std::string ;
 class BESContainer : public BESObj
 {
 private:
-    bool 			_valid ;
-    string 			_real_name ;
-    string 			_constraint ;
     string 			_symbolic_name ;
+    string 			_real_name ;
     string 			_container_type ;
+    string 			_constraint ;
     string			_attributes ;
-public:
-    /** @brief construct a container with the given sumbolic name
-     *
-     * @param s symbolic name
-     */
-    				BESContainer( const string &s ) ;
+ protected:
+				BESContainer() {}
 
-    /** @brief make a copy of the container
+    /** @brief construct a container with the given symbolic name, real name
+     * and container type.
      *
-     * @param copy_from The container to copy
+     * @param sym_name symbolic name
+     * @param real_name real name of the container, such as a file name
+     * @param type type of data represented by this container, such as netcdf
      */
+    				BESContainer( const string &sym_name,
+				              const string &real_name,
+					      const string &type )
+				    : _symbolic_name( sym_name ),
+				      _real_name( real_name ),
+				      _container_type( type )
+				{}
+
 				BESContainer( const BESContainer &copy_from ) ;
+
+
+    void			_duplicate( BESContainer &copy_to ) ;
+ public:
 
     virtual			~BESContainer() {}
 
-    /** @brief set the constraint for this symbolic name during this * execution
+    /** @brief pure abstract method to duplicate this instances of BESContainer
+     */
+    virtual BESContainer *	ptr_duplicate( ) = 0 ;
+
+    /** @brief set the constraint for this container
      *
      * @param s constraint
      */
@@ -89,47 +104,36 @@ public:
 				    _constraint = s ;
 				}
 
-    /** @brief set the real name for this symbolic name, such as a file name
+    /** @brief set the real name for this container, such as a file name
      * if reading a data file.
      *
-     * @param s real name, such as file name
+     * @param real_name real name, such as the file name
      */
-    void 			set_real_name( const string &s )
+    void 			set_real_name( const string &real_name )
 				{
-				    _real_name = s ;
+				    _real_name = real_name ;
 				}
-    /** @brief set the type of data that this symbolic name represents, such
+
+    /** @brief set the type of data that this container represents, such
      * as cedar or netcdf.
      *
-     * @param s type of data, such as cedar or netcdf
+     * @param type type of data, such as cedar or netcdf
      */
-    void 			set_container_type( const string &s )
+    void 			set_container_type( const string &type )
 				{
-				    _container_type = s ;
+				    _container_type = type ;
 				}
 
-    /** @brief set attributes for this container
+    /** @brief set desired attributes for this container
      *
-     * @param s attributes for this container
+     * @param attrs attributes desired to access for this container
      */
-    void 			set_attributes( const string &s )
+    void 			set_attributes( const string &attrs )
 				{
-				    _attributes = s ;
+				    _attributes = attrs ;
 				}
 
-    /** @brief set whether this container is valid or not
-     *
-     * Set to true of the information provided is accurate, or false if
-     * there was a problem retrieving the information for this symbolic name
-     *
-     * @param b true if information valid, false otherwise
-     */
-    void 			set_valid_flag( bool b )
-				{
-				    _valid = b ;
-				}
-
-    /** @brief retreive the real name for this symbolic name, such as the
+    /** @brief retreive the real name for this container, such as a
      * file name.
      *
      * @return real name, such as file name
@@ -138,10 +142,10 @@ public:
 				{
 				    return _real_name ;
 				}
-    /** @brief retrieve the constraint for this execution for the symbolic
-     * name.
+
+    /** @brief retrieve the constraint expression for this container
      *
-     * @return constraint for this execution for the symbolic name
+     * @return constraint expression for this execution for the symbolic name
      */
     string 			get_constraint() const
 				{
@@ -157,10 +161,10 @@ public:
 				    return _symbolic_name ;
 				}
 
-    /** @brief retrieve the type of data this symbolic name is for, such as
+    /** @brief retrieve the type of data this container holds, such as
      * cedar or netcdf.
      *
-     * @return container type for this symbolic name, such as cedar or
+     * @return type of data this container represents, such as cedar or
      * netcdf
      */
     string 			get_container_type() const
@@ -168,33 +172,28 @@ public:
 				    return _container_type ;
 				}
 
-    /** @brief retrieve the attributes for this container
+    /** @brief retrieve the attributes desired from this container
      *
-     * @return attributes for this container
+     * @return attributes desired from this container
      */
     string 			get_attributes() const
 				{
 				    return _attributes ;
 				}
 
-    /** @brief returns whether the information provided in this container is
-     * accurate or not.
+    /** @brief returns the true name of this container
      *
-     * @return true if information in container is accurate, false otherwise
-     */
-    bool 			is_valid() const {return _valid;}
-
-    /** @brief returns the name of a file to access for this container,
-     * uncompressing if neccessary.
+     * The true name of this container might be an uncompressed file name
+     * from the compressed file name represented by the real name of this
+     * container. This method would uncompress the real name and return the
+     * uncompressed file name. Another example is where the real name
+     * represents a WCS request. The access method would make the WCS
+     * request and return the name of the resulting file.
      *
      * @return name of file to access
      */
-    virtual string		access() ;
+    virtual string		access() = 0 ;
 
-    /** @brief Displays debug information about this object
-     *
-     * @param strm output stream to use to dump the contents of this object
-     */
     virtual void		dump( ostream &strm ) const ;
 };
 

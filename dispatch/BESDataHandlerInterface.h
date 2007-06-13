@@ -63,8 +63,8 @@ typedef struct _BESDataHandlerInterface
 
     BESResponseHandler *response_handler ;
 
-    list<BESContainer> containers ;
-    list<BESContainer>::iterator containers_iterator ;
+    list<BESContainer *> containers ;
+    list<BESContainer *>::iterator containers_iterator ;
 
     /** @brief pointer to current container in this interface
      */
@@ -76,7 +76,7 @@ typedef struct _BESDataHandlerInterface
     {
 	containers_iterator = containers.begin();
 	if( containers_iterator != containers.end() )
-	    container = &(*containers_iterator) ;
+	    container = (*containers_iterator) ;
 	else
 	    container = NULL ;
     }
@@ -87,7 +87,7 @@ typedef struct _BESDataHandlerInterface
     {
 	containers_iterator++ ;
 	if( containers_iterator != containers.end() )
-	    container = &(*containers_iterator) ;
+	    container = (*containers_iterator) ;
 	else
 	    container = NULL ;
     }

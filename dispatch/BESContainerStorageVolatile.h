@@ -42,14 +42,14 @@ using std::string ;
 #include "BESContainerStorage.h"
 
 /** @brief implementation of BESContainerStorage that stores containers
- * for the duration of this process.
+ * in memory for the duration of this process.
  *
  * This implementation of BESContainerStorage stores volatile
- * containers for the duration of this process. A list of containers is
- * stored in the object. The look_for method simply looks for the specified
- * symbolic name in the list of containers and returns if a match is found.
- * Containers can be added to this instance as long as the symbolic name
- * doesn't already exist.
+ * containers in memory for the duration of this process. A list of
+ * containers is stored in the object. The look_for method simply looks for
+ * the specified symbolic name in the list of containers and returns if a
+ * match is found. Containers can be added to this instance as long as the
+ * symbolic name doesn't already exist.
  *
  * @see BESContainerStorage
  * @see BESContainer
@@ -60,15 +60,17 @@ private:
     map< string, BESContainer * > _container_list ;
 protected:
     string			_root_dir ;
+
+    virtual void		add_container( BESContainer *c ) ;
 public:
     				BESContainerStorageVolatile( const string &n ) ;
     virtual			~BESContainerStorageVolatile() ;
 
     typedef map< string, BESContainer * >::const_iterator Container_citer ;
     typedef map< string, BESContainer * >::iterator Container_iter ;
-    virtual void		look_for( BESContainer &d ) ;
-    virtual void		add_container( const string &s_name,
-                                               const string &r_name,
+    virtual BESContainer *	look_for( const string &sym_name ) ;
+    virtual void		add_container( const string &sym_name,
+					       const string &real_name,
 					       const string &type ) ;
     virtual bool		del_container( const string &s_name ) ;
     virtual bool		del_containers( ) ;

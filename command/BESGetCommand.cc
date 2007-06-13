@@ -65,7 +65,7 @@
  */
 BESResponseHandler *
 BESGetCommand::parse_request( BESTokenizer &tokenizer,
-                                  BESDataHandlerInterface &dhi )
+                              BESDataHandlerInterface &dhi )
 {
     string def_name ;
 

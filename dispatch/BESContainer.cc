@@ -30,35 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <stdio.h>
-#include <errno.h>
-#include <fstream>
-#include <sstream>
-
-using std::ifstream ;
-using std::ofstream ;
-using std::ios_base ;
-using std::ostringstream ;
-
 #include "BESContainer.h"
-#include "TheBESKeys.h"
-#include "BESUncompressManager.h"
-#include "BESCache.h"
-#include "BESContainerStorageException.h"
 
-BESContainer::BESContainer(const string &s)
-    : _valid( false ),
-      _real_name( "" ),
-      _constraint( "" ),
-      _symbolic_name( s ),
-      _container_type( "" ),
-      _attributes( "" )
-{
-}
-
+/** @brief make a copy of the passed container
+ *
+ * @param copy_from The container to copy
+ */
 BESContainer::BESContainer( const BESContainer &copy_from )
-    : _valid( copy_from._valid ),
-      _real_name( copy_from._real_name ),
+    : _real_name( copy_from._real_name ),
       _constraint( copy_from._constraint ),
       _symbolic_name( copy_from._symbolic_name ),
       _container_type( copy_from._container_type ),
@@ -66,14 +45,18 @@ BESContainer::BESContainer( const BESContainer &copy_from )
 {
 }
 
-string
-BESContainer::access()
+/** @brief duplicate this instance into the passed container
+ *
+ * @param copy_to The container to copy this instance into
+ */
+void
+BESContainer::_duplicate( BESContainer &copy_to )
 {
-    // This is easy ... create the cache using the different keys
-    BESKeys *keys = TheBESKeys::TheKeys() ;
-    BESCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" );
-
-    return BESUncompressManager::TheManager()->uncompress( _real_name, cache ) ;
+    copy_to._real_name = _real_name ;
+    copy_to._constraint = _constraint ;
+    copy_to._symbolic_name = _symbolic_name ;
+    copy_to._container_type = _container_type ;
+    copy_to._attributes = _attributes ;
 }
 
 /** @brief dumps information about this object
@@ -89,7 +72,6 @@ BESContainer::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "BESContainer::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "is valid: " << _valid << endl ;
     strm << BESIndent::LMarg << "symbolic name: " << _symbolic_name << endl ;
     strm << BESIndent::LMarg << "real name: " << _real_name << endl ;
     strm << BESIndent::LMarg << "data type: " << _container_type << endl ;

@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESContainerStorageVolatile.h"
-#include "BESContainer.h"
+#include "BESFileContainer.h"
 #include "BESContainerStorageException.h"
 #include "BESInfo.h"
 #include "TheBESKeys.h"
@@ -58,39 +58,52 @@ BESContainerStorageVolatile::BESContainerStorageVolatile( const string &n )
 
 BESContainerStorageVolatile::~BESContainerStorageVolatile()
 { 
+    del_containers() ;
 }
 
-/** @brief looks for the specified container using the given name
+/** @brief looks for the specified container using the symbolic name passed
  *
- * If a match is made with the symbolic name found in the container then the
- * information is stored in the passed container object and the is_valid flag
- * is set to true. If not found, then is_valid is set to false.
+ * If a match is made with the symbolic name then the stored container is
+ * duplicated and returned to the user. If not, 0 is returned.
  *
- * @param d container to look for and, if found, store the information in.
+ * @param sym_name symbolic name of the container to look for
+ * @return a new BESContainer instance using the ptr_duplicate method on
+ * BESContainer
  */
-void
-BESContainerStorageVolatile::look_for( BESContainer &d )
+BESContainer *
+BESContainerStorageVolatile::look_for( const string &sym_name )
 {
-    d.set_valid_flag( false ) ;
+    BESContainer *ret_container = 0 ;
 
-    string sym_name = d.get_symbolic_name() ;
-    
-    BESContainerStorageVolatile::Container_citer i =
-	    _container_list.begin() ;
-
+    BESContainerStorageVolatile::Container_citer i ;
     i = _container_list.find( sym_name ) ;
     if( i != _container_list.end() )
     {
 	BESContainer *c = (*i).second ;
-	d.set_real_name( c->get_real_name() ) ;
-	d.set_container_type( c->get_container_type() ) ;
-	d.set_valid_flag( true ) ;
+	ret_container = c->ptr_duplicate() ;
     }
+
+    return ret_container ;
 }
 
+/** @brief add a file container to the volatile list. The container's
+ * realname represents the path to a data file in the file system.
+ *
+ * If a container other than a BESFileContainer is to be added to the list
+ * then a derived class of BESContainerStorageVolatile should call the
+ * protected add_container method that takes an already built container.
+ * This method adds a container represented by a data file.
+ *
+ * @param sym_name symbolic name of the container being created
+ * @param real_name real name of the container
+ * @param type type of data represented by this container
+ * @throws BESContainerStorageExcpetion if no type is specified
+ * @throws BESContainerStorageExcpetion if a container with the passed
+ * symbolic name already exists.
+ */
 void
-BESContainerStorageVolatile::add_container( const string &s_name,
-					    const string &r_name,
+BESContainerStorageVolatile::add_container( const string &sym_name,
+					    const string &real_name,
 					    const string &type )
 {
     if( type == "" )
@@ -99,33 +112,65 @@ BESContainerStorageVolatile::add_container( const string &s_name,
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
-    BESContainerStorageVolatile::Container_citer i =
-	    _container_list.begin() ;
-
-    i = _container_list.find( s_name ) ;
+    BESContainerStorageVolatile::Container_citer i ;
+    i = _container_list.find( sym_name ) ;
     if( i != _container_list.end() )
     {
-	string s = (string)"A container with the name " + s_name
+	string s = (string)"A container with the name "
+	           + sym_name
 	           + " already exists" ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
-    string::size_type dotdot = r_name.find( ".." ) ;
-    if( dotdot != string::npos )
-    {
-	string s = (string)"'../' not allowed in container real name " + r_name;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
-    }
-    BESContainer *c = new BESContainer( s_name ) ;
-    string new_r_name = _root_dir + "/" + r_name ;
-    c->set_real_name( new_r_name ) ;
-    c->set_container_type( type ) ;
-    _container_list[s_name] = c ;
+    string new_r_name = _root_dir + "/" + real_name ;
+    BESContainer *c = new BESFileContainer( sym_name, new_r_name, type ) ;
+    _container_list[sym_name] = c ;
 }
 
-/** @brief removes a container with the given symbolic name
+/** @brief add the passed container to the list of containers in volatile
+ * storage
  *
- * This method removes a container to the persistence store with the
- * given symbolic name. It deletes the container.
+ * This method adds the passed container to the list of volatile containers.
+ * The passed container is owned by the list if added and should not be
+ * deleted by the caller.
+ *
+ * If a container with the symbolic name of the passed container is already
+ * in the list then an exception is thrown.
+ *
+ * @param c container to add to the list
+ * @throws BESContainerStorageExcpetion if the passed container is null
+ * @throws BESContainerStorageExcpetion if no type is specified in the
+ * passed container
+ * @throws BESContainerStorageExcpetion if a container with the passed
+ * symbolic name already exists.
+ */
+void
+BESContainerStorageVolatile::add_container( BESContainer *c )
+{
+    if( !c )
+    {
+	string s = "Unable to add container, container passed is null"  ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
+    if( c->get_container_type() == "" )
+    {
+	string s = "Unable to add container, type of data must be specified"  ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
+    string sym_name = c->get_symbolic_name() ;
+    BESContainerStorageVolatile::Container_citer i ;
+    i = _container_list.find( sym_name ) ;
+    if( i != _container_list.end() )
+    {
+	string s = (string)"A container with the name "
+	           + sym_name
+	           + " already exists" ;
+	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+    }
+    _container_list[sym_name] = c ;
+}
+
+/** @brief removes a container with the given symbolic name from the list
+ * and deletes it.
  *
  * @param s_name symbolic name for the container
  * @return true if successfully removed and false otherwise

@@ -64,7 +64,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
 	TheBESKeys.cc BESStatus.cc \
-	BESContainer.cc \
+	BESContainer.cc BESFileContainer.cc \
 	BESContainerStorageFile.cc \
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc \
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
@@ -103,7 +103,7 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESKeys.h TheBESKeys.h BESKeysException.h \
 	BESStatus.h \
 	BESTransmitException.h \
-	BESContainer.h BESContainerStorage.h \
+	BESContainer.h BESFileContainer.h BESContainerStorage.h \
 	BESContainerStorageFile.h \
 	BESContainerStorageList.h BESContainerStorageException.h \
 	BESContainerStorageVolatile.h \

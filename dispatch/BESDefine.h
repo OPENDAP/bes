@@ -45,17 +45,17 @@ using std::list ;
 class BESDefine : public BESObj
 {
 private:
-    list<BESContainer>		_containers ;
+    list<BESContainer *>	_containers ;
     string			_agg_cmd ;
     string			_agg_handler ;
 public:
     				BESDefine() {}
-    virtual			~BESDefine() {}
+    virtual			~BESDefine() ;
 
-    typedef list<BESContainer>::iterator containers_iter ;
-    typedef list<BESContainer>::const_iterator containers_citer ;
+    typedef list<BESContainer *>::iterator containers_iter ;
+    typedef list<BESContainer *>::const_iterator containers_citer ;
 
-    void			add_container( const BESContainer &container ) ;
+    void			add_container( BESContainer *container ) ;
     BESDefine::containers_citer first_container() { return _containers.begin() ; }
     BESDefine::containers_citer end_container() { return _containers.end() ; }
 

@@ -43,12 +43,13 @@ class BESContainer ;
 class BESInfo ;
 
 /** @brief provides persistent storage for data storage information
- * represented by a symbolic name.
+ * represented by a container.
  *
  * An implementation of the abstract interface BESContainerStorage
- * provides storage for information about accessing data of different types.
- * The information is represented by a symbolic name. A user can request a
- * symbolic name that represents a certain data file of a certain data type.
+ * provides storage for information about accessing data of different date
+ * types. The information is represented by a symbolic name. A user can
+ * request a symbolic name that represents a certain container.
+ *
  * For example, a symbolic name 'nc1' could represent the netcdf file
  * /usr/apache/htdocs/netcdf/datfile01.cdf.
  *
@@ -87,25 +88,25 @@ public:
 
     /** @brief looks for a container in this persistent store
      *
-     * This method looks for a container with the name specified in the given
-     * container and fills in the information in the given container.
+     * This method looks for a container with the given symbolic name.
      *
-     * @param d The container to look for and, if found, the information is
-     * filled in.
+     * @param sym_name The symbolic name of the container to look for
+     * @return If sym_name is found, the BESContainer instance representing
+     * that symbolic name, else NULL is returned.
      */
-    virtual void 		look_for( BESContainer &d ) = 0 ;
+    virtual BESContainer * 	look_for( const string &sym_name ) = 0 ;
 
     /** @brief adds a container with the provided information
      *
      * This method adds a container to the persistence store with the
      * specified information.
      *
-     * @param s_name symbolic name for the container
-     * @param r_name real name for the container
+     * @param sym_name symbolic name for the container
+     * @param real_name real name for the container
      * @param type type of data represented by this container
      */
-    virtual void		add_container( const string &s_name,
-                                               const string &r_name,
+    virtual void		add_container( const string &sym_name,
+					       const string &real_name,
 					       const string &type ) = 0 ;
 
     /** @brief removes a container with the given symbolic name

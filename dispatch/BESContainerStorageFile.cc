@@ -38,7 +38,7 @@ using std::stringstream ;
 using std::ifstream ;
 
 #include "BESContainerStorageFile.h"
-#include "BESContainer.h"
+#include "BESFileContainer.h"
 #include "TheBESKeys.h"
 #include "BESContainerStorageException.h"
 #include "BESInfo.h"
@@ -46,7 +46,7 @@ using std::ifstream ;
 /** @brief pull container information from the specified file
  *
  * Constructs a BESContainerStorageFile from a file specified by
- * a key in the dods initialization file. The key is constructed using the
+ * a key in the bes configuration file. The key is constructed using the
  * name of this persistent store.
  *
  * BES.Container.Persistence.File.&lt;name&gt;
@@ -69,12 +69,16 @@ using std::ifstream ;
  * @throws BESContainerStorageException if the file can not be opened or
  * if there is an error in reading in the container information.
  * @see BESContainerStorage
- * @see BESContainer
+ * @see BESFileContainer
  * @see BESContainerStorageException
  */
 BESContainerStorageFile::BESContainerStorageFile( const string &n )
     : BESContainerStorage( n )
 {
+    // TODO: Need to store the kind of container each line represents. Does
+    // it represent a file? A database entry? What? For now, they all
+    // represent a BESFileContainer.
+
     string key = "BES.Container.Persistence.File." + n ;
     bool found = false ;
     _file = TheBESKeys::TheKeys()->get_key( key, found ) ;
@@ -143,26 +147,29 @@ BESContainerStorageFile::~BESContainerStorageFile()
 /** @brief looks for the specified container in the list of containers loaded
  * from the file.
  *
- * If a match is made with the symbolic name found in the container then the
- * information is stored in the passed container object and the is_valid flag
- * is set to true. If not found, then is_valid is set to false.
+ * If a match is made with the specified symbolic name then a BESFileContainer
+ * instance is created using the the information found (real name and
+ * container type). If not found then NULL is returned.
  *
- * @param d container to look for and, if found, store the information in.
- * @see BESContainer
+ * @param sym_name name of the container to look for
+ * @return a new BESFileContainer if the sym_name is found in the file, else 0
+ * @see BESFileContainer
  */
-void
-BESContainerStorageFile::look_for( BESContainer &d )
+BESContainer *
+BESContainerStorageFile::look_for( const string &sym_name )
 {
-    d.set_valid_flag( false ) ;
+    BESFileContainer *ret_container = 0 ;
     BESContainerStorageFile::Container_citer i ;
-    i = _container_list.find( d.get_symbolic_name() ) ;
+    i = _container_list.find( sym_name ) ;
     if( i != _container_list.end() )
     {
 	BESContainerStorageFile::container *c = (*i).second;
-	d.set_real_name( c->_real_name ) ;
-	d.set_container_type( c->_container_type ) ;
-	d.set_valid_flag( true ) ;
+	ret_container = new BESFileContainer( c->_symbolic_name,
+					      c->_real_name,
+					      c->_container_type ) ;
     }
+
+    return ret_container ;
 }
 
 /** @brief adds a container with the provided information
@@ -176,11 +183,12 @@ BESContainerStorageFile::look_for( BESContainer &d )
  * @param type type of data represented by this container
  */
 void
-BESContainerStorageFile::add_container( const string &,
-				     const string &,
-				     const string & )
+BESContainerStorageFile::add_container( const string &sym_name,
+					const string &real_name,
+					const string &type )
 {
-    throw BESContainerStorageException( "Unable to add a container to a file, not yet implemented", __FILE__, __LINE__ ) ;
+    string err = "Unable to add a container to a file, not yet implemented" ;
+    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
 }
 
 /** @brief removes a container with the given symbolic name
@@ -190,7 +198,7 @@ BESContainerStorageFile::add_container( const string &,
  * removed from the file from which it was loaded, however.
  *
  * @param s_name symbolic name for the container
- * @return true if successfully removed and false otherwise
+ * @return true if successfully removes container, false otherwise
  */
 bool
 BESContainerStorageFile::del_container( const string &s_name )
@@ -208,12 +216,12 @@ BESContainerStorageFile::del_container( const string &s_name )
     return ret ;
 }
 
-/** @brief removes all container
+/** @brief removes all containers
  *
- * This method removes all containers from the persistent store. It does
- * not delete the real data behind the container.
+ * This method removes all containers from the persistent store. The
+ * container is NOT removed from the file from which it was loaded, however.
  *
- * @return true if successfully removed and false otherwise
+ * @return true if successfully removes all containers, false otherwise
  */
 bool
 BESContainerStorageFile::del_containers( )

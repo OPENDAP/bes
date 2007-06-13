@@ -56,10 +56,6 @@ class BESInfo ;
  * persistent list. Then, when a user looks for a symbolic name, that search
  * goes through the list of persistent stores in order.
  *
- * If the symbolic name is found then it is the responsibility of the
- * BESContainerStorage instances to fill in the container information in
- * the specified BESContainer object.
- *
  * If the symbolic name is not found then a flag is checked to determine
  * whether to simply log the fact that the symbolic name was not found, or to
  * throw an exception of type BESContainerStorageException.
@@ -91,7 +87,7 @@ public:
     virtual bool		del_persistence( const string &persist_name ) ;
     virtual BESContainerStorage *	find_persistence( const string &persist_name ) ;
 
-    virtual void		look_for( BESContainer &d ) ;
+    virtual BESContainer *	look_for( const string &sym_name ) ;
 
     virtual void		show_containers( BESInfo &info ) ;
 

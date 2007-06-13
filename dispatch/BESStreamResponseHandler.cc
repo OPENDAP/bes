@@ -38,7 +38,6 @@
 
 using std::ifstream ;
 using std::ios ;
-using std::cerr ;
 using std::endl ;
 using std::string ;
 

@@ -221,35 +221,37 @@ BESContainerStorageList::isnice()
 /** @brief look for the specified container information in the list of
  * persistent stores.
  *
- * If the container information is found in one of the
- * BESContainerStorage instances then it is the responsibility of that
- * instance to fill in the container information in the BESContainer
- * instances passed.
+ * Look for the container with the specified symbolic name in the
+ * BESContainerStorage instances. The first to find it wins.
  *
  * If the container information is not found then, depending on the value of
- * the key BES.Container.Persistence in the dods initiailization file, an
- * exception is thrown or it is logged to the dods log file that it was not
+ * the key BES.Container.Persistence in the bes configuration file, an
+ * exception is thrown or it is logged to the bes log file that it was not
  * found. If the key is set to Nice, nice, or NICE then information is logged
- * to the dods log file stating that the container information was not found.
+ * to the bes log file stating that the container information was not found.
  *
- * @param d container information to look for and, if found, to store the
- * container information in.
+ * @param sym_name symbolic name of the container to look for
+ * @return a new instances of BESContainer if found, else 0. The caller owns
+ * the returned container and is responsible for deleting cleaning
+ * @throws BESContainerStorageException if container not found and strict
+ * set in the bes configuration file for BES.Container.Persistence
  * @see BESContainerStorage
  * @see BESContainer
  * @see BESKeys
  * @see BESLog
  */
-void
-BESContainerStorageList::look_for( BESContainer &d )
+BESContainer *
+BESContainerStorageList::look_for( const string &sym_name )
 {
+    BESContainer *ret_container = 0 ;
     BESContainerStorageList::persistence_list *pl = _first ;
     bool done = false ;
     while( done == false )
     {
 	if( pl )
 	{
-	    pl->_persistence_obj->look_for( d ) ;
-	    if( d.is_valid() )
+	    ret_container = pl->_persistence_obj->look_for( sym_name ) ;
+	    if( ret_container )
 	    {
 		done = true ;
 	    }
@@ -263,20 +265,22 @@ BESContainerStorageList::look_for( BESContainer &d )
 	    done = true ;
 	}
     }
-    if( d.is_valid() == false )
+    if( !ret_container )
     {
 	if( isnice() )
 	{
 	    (*BESLog::TheLog()) << "Could not find the symbolic name "
-	                  << d.get_symbolic_name().c_str() << endl ;
+	                        << sym_name << endl ;
 	}
 	else
 	{
 	    string s = (string)"Could not find the symbolic name "
-	               + d.get_symbolic_name() ;
+	               + sym_name ;
 	    throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
 	}
     }
+
+    return ret_container ;
 }
 
 /** @brief show information for each container in each persistence store

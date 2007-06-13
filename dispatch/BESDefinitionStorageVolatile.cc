@@ -36,6 +36,7 @@
 
 BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
 {
+    del_definitions() ;
 }
 
 /** @brief looks for a definition in this volatile store with the
@@ -147,15 +148,15 @@ BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
 	BESDefine::containers_citer ce = def->end_container() ;
 	for( ; ci != ce; ci++ )
 	{
-	    string sym = (*ci).get_symbolic_name() ;
+	    string sym = (*ci)->get_symbolic_name() ;
 	    info.add_tag( "symbolicName", sym ) ;
-	    string real = (*ci).get_real_name() ;
+	    string real = (*ci)->get_real_name() ;
 	    info.add_tag( "realName", real ) ;
-	    string type = (*ci).get_container_type() ;
+	    string type = (*ci)->get_container_type() ;
 	    info.add_tag( "dataType", type ) ;
-	    string con = (*ci).get_constraint() ;
+	    string con = (*ci)->get_constraint() ;
 	    info.add_tag( "constraint", con ) ;
-	    string attrs = (*ci).get_attributes() ;
+	    string attrs = (*ci)->get_attributes() ;
 	    info.add_tag( "attributes", attrs ) ;
 	}
 

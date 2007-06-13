@@ -32,6 +32,7 @@
 
 #include "BESCgiInterface.h"
 #include "DODSFilter.h"
+#include "BESFileContainer.h"
 #include "BESFilterTransmitter.h"
 #include "BESHandlerException.h"
 #include "BESResponseHandlerList.h"
@@ -85,11 +86,10 @@ BESCgiInterface::build_data_request_plan()
     BESDEBUG( "  constraint = " << _df->get_ce() << endl )
     BESDEBUG( "  dataset name = " << _df->get_dataset_name() << endl )
     BESDEBUG( "  type = " << _type << endl )
-    BESContainer d( symbolic_name ) ;
-    d.set_constraint( _df->get_ce() ) ;
-    d.set_real_name ( _df->get_dataset_name() ) ;
-    d.set_container_type( _type ) ;
-    d.set_valid_flag( true ) ;
+    BESContainer *d = new BESFileContainer( symbolic_name,
+					    _df->get_dataset_name(),
+					    _type ) ;
+    d->set_constraint( _df->get_ce() ) ;
 
     _dhi.containers.push_back( d ) ;
     string myaction = (string)"get." + _df->get_action() ; 

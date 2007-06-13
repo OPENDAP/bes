@@ -40,8 +40,8 @@
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of BESContainerStorageCatalog with the given name.
- * Looks up the base directory and regular expressions in the dods
- * initialization file using TheBESKeys. THrows an exception if either of
+ * Looks up the base directory and regular expressions in the bes
+ * configuration file using TheBESKeys. Throws an exception if either of
  * these cannot be determined or if the regular expressions are incorrectly
  * formed.
  *
@@ -49,11 +49,11 @@
  *
  * each type/reg expression pair is separated by a semicolon and ends with a
  * semicolon. The data type/expression pair itself is separated by a
- * semicolon.
+ * colon.
  *
  * @param n name of this persistent store
- * @throws BESContainerStorageException if unable to find the base
- * directory or regular expressions in the dods initialization file. Also
+ * @throws BESContainerStorageException if unable to find the root
+ * directory or regular expressions in the bes configuraiton file. Also
  * thrown if the type matching expressions are malformed.
  * @see BESKeys
  * @see BESContainer
@@ -78,34 +78,47 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
 
 /** @brief adds a container with the provided information
  *
- * If a match is made with the real name passed then the type is set.
+ * If a match is made with the real name passed against the list of regular
+ * expressions representing the type of data, then the type is set.
  *
  * The real name of the container (the file name) is constructed using the
  * root directory from the initialization file with the passed real name
  * appended to it.
  *
+ * Before adding the actual file name (catalog root directory + real_name
+ * passed), the file name is compared against a list of regular expressions
+ * representing files that can be included in the catalog and against a list
+ * of regular expressions representing files to exclude from the catalog. If
+ * the file name is in the include list and not in the exclude list, then it
+ * is added to the storage.
+ *
  * The information is then passed to the add_container method in the parent
  * class.
  *
- * @param s_name symbolic name for the container
- * @param r_name real name (full path to the file) for the container
+ * @param sym_name symbolic name of the container
+ * @param real_name real name (path to the file relative to the root
+ * catalog's root directory)
  * @param type type of data represented by this container
+ * @throws BESContainerStorageException if the real_name represented is not
+ * in the list of files to include or is in the list of files to exlude.
+ * @throws BESContainerStorageExceptioon if the type of data can not be
+ * determined using the regular expression extensions.
  */
 void
-BESContainerStorageCatalog::add_container( const string &s_name,
-					   const string &r_name,
+BESContainerStorageCatalog::add_container( const string &sym_name,
+					   const string &real_name,
 					   const string &type )
 {
     // make sure that the real name passed in is not oon the exclude list
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
-    string::size_type stopat = r_name.length() - 1 ;
-    while( r_name[stopat] == '/' )
+    string::size_type stopat = real_name.length() - 1 ;
+    while( real_name[stopat] == '/' )
     {
 	stopat-- ;
     }
-    string new_name = r_name.substr( 0, stopat + 1 ) ;
+    string new_name = real_name.substr( 0, stopat + 1 ) ;
 
     string basename ;
     string::size_type slash = new_name.rfind( "/" ) ;
@@ -120,7 +133,7 @@ BESContainerStorageCatalog::add_container( const string &s_name,
     if( !_utils->include( basename ) || _utils->exclude( basename ) )
     {
 	string s = "Attempting to create a container with real name "
-	           + r_name + " which is on the exclude list" ;
+	           + real_name + " which is on the exclude list" ;
 	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
     }
 
@@ -139,14 +152,14 @@ BESContainerStorageCatalog::add_container( const string &s_name,
 	    // structure list instead of compiling it each time? Could this
 	    // improve performance? pcw 09/08/06
 	    Regex reg_expr( match.reg.c_str() ) ;
-	    if( reg_expr.match( r_name.c_str(), r_name.length() ) != -1 )
+	    if( reg_expr.match( real_name.c_str(), real_name.length() ) != -1 )
 	    {
 		new_type = match.type ;
 		done = true ;
 	    }
 	}
     }
-    BESContainerStorageVolatile::add_container( s_name, r_name, new_type ) ;
+    BESContainerStorageVolatile::add_container( sym_name, real_name, new_type );
 }
 
 /** @brief is the specified node in question served by a request handler
@@ -179,8 +192,8 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 	    done = true ;
 	}
     }
-    // Now that we have the type, go find the request handler and ask what it
-    // provides (das, dds, ddx, data, etc...)
+    // TODO: Now that we have the type, go find the request handler and ask
+    // what it provides (das, dds, ddx, data, etc...)
     return done ;
 }
 

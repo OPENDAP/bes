@@ -69,11 +69,11 @@ BESDataHandlerInterface::dump( ostream &strm ) const
     {
 	strm << BESIndent::LMarg << "container list:" << endl ;
 	BESIndent::Indent() ;
-	list<BESContainer>::const_iterator i = containers.begin() ;
-	list<BESContainer>::const_iterator ie = containers.end() ;
+	list<BESContainer *>::const_iterator i = containers.begin() ;
+	list<BESContainer *>::const_iterator ie = containers.end() ;
 	for( ; i != ie; i++ )
 	{
-	    (*i).dump( strm ) ;
+	    (*i)->dump( strm ) ;
 	}
 	BESIndent::UnIndent() ;
     }

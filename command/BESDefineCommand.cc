@@ -161,8 +161,8 @@ BESDefineCommand::parse_request( BESTokenizer &tokenizer,
 		tokenizer.parse_error( my_token + " not expected\n" ) ;
 	    else
 	    {
-		BESContainer d( my_token ) ;
-		BESContainerStorageList::TheList()->look_for( d ) ;
+		BESContainer *d =
+		    BESContainerStorageList::TheList()->look_for( my_token ) ;
 		dhi.containers.push_back( d ) ;
 		expecting_comma = true ;
 	    }

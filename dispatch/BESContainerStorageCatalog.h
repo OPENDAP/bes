@@ -41,15 +41,15 @@ using std::list ;
 
 class BESCatalogUtils ;
 
-/** @brief implementation of BESContainerStorage that represents a
- * regular expression means of determining a data type.
+/** @brief implementation of BESContainerStorage that represents a data
+ * within a catalog repository
  *
  * When a container is added to this container storage, the file extension
  * is used to determine the type of data using a set of regular expressions.
- * The regular expressions are retrieved from the BES initialization
- * file using TheBESKeys. It also gets the root directory for where the
- * files exist. This way, the user need not know the root directory or the
- * type of data represented by the file.
+ * The regular expressions are retrieved from the BES configuraiton
+ * file using TheBESKeys. It also gets the catalogs root directory for
+ * where the files exist. This way, the user need not know the root directory
+ * or the type of data represented by the container.
  *
  * Catalog.&lt;name&gt;.RootDirectory is the key
  * representing the base directory where the files are physically located.
@@ -82,8 +82,8 @@ public:
     				BESContainerStorageCatalog( const string &n ) ;
     virtual			~BESContainerStorageCatalog() ;
 
-    virtual void		add_container( const string &s_name,
-                                               const string &r_name,
+    virtual void		add_container( const string &sym_name,
+					       const string &real_name,
 					       const string &type ) ;
     bool			isData( const string &inQuestion,
     					list<string> &provides ) ;

@@ -32,8 +32,23 @@
 
 #include "BESDefine.h"
 
+BESDefine::~BESDefine()
+{
+    // delete all of the containers in my list, they belong to me
+    while( _containers.size() != 0 )
+    {
+	BESDefine::containers_iter ci = _containers.begin() ;
+	BESContainer *c = (*ci) ;
+	_containers.erase( ci ) ;
+	if( c )
+	{
+	    delete c ;
+	}
+    }
+}
+
 void
-BESDefine::add_container( const BESContainer &container )
+BESDefine::add_container( BESContainer *container )
 {
     _containers.push_back( container ) ;
 }
@@ -60,7 +75,7 @@ BESDefine::dump( ostream &strm ) const
 	BESDefine::containers_citer ie = _containers.end() ;
 	for( ; i != ie; i++ )
 	{
-	    const BESContainer *c = &(*i) ;
+	    const BESContainer *c = (*i) ;
 	    c->dump( strm ) ;
 	}
 	BESIndent::UnIndent() ;

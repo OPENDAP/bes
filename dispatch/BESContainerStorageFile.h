@@ -44,9 +44,9 @@ using std::map ;
 /** @brief implementation of BESContainerStorage that represents a
  * way to read container information from a file.
  *
- * This impelementation of BESContainerStorage load container information
- * from a file. The name of the file is determined from the dods
- * initiailization file. The key is:
+ * This impelementation of BESContainerStorage loads container information
+ * from a file. The name of the file is determined from the bes
+ * configuration file. The key is:
  *
  * BES.Container.Persistence.File.&lt;name&gt;
  *
@@ -64,7 +64,7 @@ using std::map ;
  * One container per line, can not span multiple lines
  *
  * @see BESContainerStorage
- * @see BESContainer
+ * @see BESFileContainer
  * @see BESKeys
  */
 class BESContainerStorageFile : public BESContainerStorage
@@ -85,9 +85,9 @@ public:
     				BESContainerStorageFile( const string &n );
     virtual			~BESContainerStorageFile() ;
 
-    virtual void		look_for( BESContainer &d ) ;
-    virtual void		add_container( const string &s_name,
-                                               const string &r_name,
+    virtual BESContainer *	look_for( const string &sym_name ) ;
+    virtual void		add_container( const string &sym_name,
+					       const string &real_name,
 					       const string &type ) ;
     virtual bool		del_container( const string &s_name ) ;
     virtual bool		del_containers( ) ;

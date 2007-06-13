@@ -255,7 +255,7 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
 void
 BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 {
-    if( dhi.container->is_valid() )
+    if( dhi.container )
     {
 	BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
 	if( rh )
