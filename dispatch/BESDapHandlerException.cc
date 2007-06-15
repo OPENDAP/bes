@@ -84,7 +84,7 @@ BESDapHandlerException::handleException( BESException &e,
 	if( de )
 	{
 	    ostringstream s;
-	    s << "libdap exception building respoonse"
+	    s << "libdap exception building response"
 		<< ": error_code = " << de->get_error_code()
 		<< ": " << de->get_message() ;
 	    e.set_message( s.str() ) ;
