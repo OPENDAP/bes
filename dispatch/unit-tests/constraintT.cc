@@ -7,7 +7,7 @@ using std::cout ;
 using std::endl ;
 
 #include "constraintT.h"
-#include "BESContainer.h"
+#include "BESFileContainer.h"
 #include "BESDataHandlerInterface.h"
 #include "BESConstraintFuncs.h"
 #include "BESException.h"
@@ -24,12 +24,12 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "Build the data and build the post constraint" << endl ;
     BESDataHandlerInterface dhi ;
-    BESContainer d1( "sym1" ) ;
-    d1.set_constraint( "var1" ) ;
+    BESContainer *d1 = new BESFileContainer( "sym1", "real1", "type1" ) ;
+    d1->set_constraint( "var1" ) ;
     dhi.containers.push_back( d1 ) ;
 
-    BESContainer d2( "sym2" ) ;
-    d2.set_constraint( "var2" ) ;
+    BESContainer *d2 = new BESFileContainer( "sym2", "real2", "type2" ) ;
+    d2->set_constraint( "var2" ) ;
     dhi.containers.push_back( d2 ) ;
 
     dhi.first_container() ;

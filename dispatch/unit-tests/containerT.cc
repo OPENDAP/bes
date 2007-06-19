@@ -9,7 +9,7 @@ using std::endl ;
 #include "containerT.h"
 #include "TheBESKeys.h"
 #include "BESContainerStorageList.h"
-#include "BESContainer.h"
+#include "BESFileContainer.h"
 #include "BESContainerStorage.h"
 #include "BESContainerStorageFile.h"
 #include "BESCache.h"
@@ -44,15 +44,15 @@ run(void)
     cout << "try to find symbolic name that doesn't exist, default" << endl;
     try
     {
-	BESContainer c( "nosym" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
+	BESContainer *c =
+	    BESContainerStorageList::TheList()->look_for( "nosym" ) ;
 	cerr << "Found nosym, shouldn't have" << endl ;
-	if( c.is_valid() == true )
+	if( c )
 	    cerr << "container is valid, should not be" << endl ;
-	cerr << " real_name = " << c.get_real_name() << endl ;
-	cerr << " constraint = " << c.get_constraint() << endl ;
-	cerr << " sym_name = " << c.get_symbolic_name() << endl ;
-	cerr << " container type = " << c.get_container_type() << endl ;
+	cerr << " real_name = " << c->get_real_name() << endl ;
+	cerr << " constraint = " << c->get_constraint() << endl ;
+	cerr << " sym_name = " << c->get_symbolic_name() << endl ;
+	cerr << " container type = " << c->get_container_type() << endl ;
 	return 1 ;
     }
     catch( BESException &e )
@@ -65,32 +65,28 @@ run(void)
     cout << "try to find symbolic name that does exist, default" << endl;
     try
     {
-	BESContainer c( "sym1" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
-	cout << "found sym1" << endl ;
-	if( c.is_valid() == false )
+	BESContainer *c =
+	    BESContainerStorageList::TheList()->look_for( "sym1" ) ;
+	if( c ) cout << "found sym1" << endl ;
+	if( c->get_symbolic_name() != "sym1" )
 	{
-	    cerr << "is not valid though" << endl ;
-	    return 1 ;
-	}
-	if( c.get_symbolic_name() != "sym1" )
-	{
-	    cerr << "symbolic name != sym1, " << c.get_symbolic_name()
+	    cerr << "symbolic name != sym1, " << c->get_symbolic_name()
 		 << endl ; 
 	    return 1 ;
 	}
-	if( c.get_real_name() != "real1" )
+	if( c->get_real_name() != "real1" )
 	{
-	    cerr << "real name != real1, " << c.get_real_name()
+	    cerr << "real name != real1, " << c->get_real_name()
 		 << endl ; 
 	    return 1 ;
 	}
-	if( c.get_container_type() != "type1" )
+	if( c->get_container_type() != "type1" )
 	{
-	    cerr << "real name != type1, " << c.get_container_type()
+	    cerr << "real name != type1, " << c->get_container_type()
 		 << endl ; 
 	    return 1 ;
 	}
+	delete c ;
     }
     catch( BESException &e )
     {
@@ -106,15 +102,21 @@ run(void)
     cout << "try to find symbolic name that doesn't exist, strict" << endl;
     try
     {
-	BESContainer c( "nosym" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
-	cerr << "Found nosym, shouldn't have" << endl ;
-	if( c.is_valid() == true )
-	    cerr << "container is valid, should not be" << endl ;
-	cerr << " real_name = " << c.get_real_name() << endl ;
-	cerr << " constraint = " << c.get_constraint() << endl ;
-	cerr << " sym_name = " << c.get_symbolic_name() << endl ;
-	cerr << " container type = " << c.get_container_type() << endl ;
+	BESContainer *c =
+	    BESContainerStorageList::TheList()->look_for( "nosym" ) ;
+	if( c )
+	{
+	    cerr << "Found nosym, shouldn't have" << endl ;
+	    cerr << " real_name = " << c->get_real_name() << endl ;
+	    cerr << " constraint = " << c->get_constraint() << endl ;
+	    cerr << " sym_name = " << c->get_symbolic_name() << endl ;
+	    cerr << " container type = " << c->get_container_type() << endl ;
+	}
+	else
+	{
+	    cerr << "look_for returned with null c, should have thrown"
+	         << endl ;
+	}
 	return 1 ;
     }
     catch( BESException &e )
@@ -127,30 +129,33 @@ run(void)
     cout << "try to find symbolic name that does exist, strict" << endl;
     try
     {
-	BESContainer c( "sym1" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
-	cout << "found sym1" << endl ;
-	if( c.is_valid() == false )
+	BESContainer *c = 
+	    BESContainerStorageList::TheList()->look_for( "sym1" ) ;
+	if( c )
 	{
-	    cerr << "is not valid though" << endl ;
-	    return 1 ;
+	    cout << "found sym1" << endl ;
+	    if( c->get_symbolic_name() != "sym1" )
+	    {
+		cerr << "symbolic name != sym1, " << c->get_symbolic_name()
+		     << endl ; 
+		return 1 ;
+	    }
+	    if( c->get_real_name() != "real1" )
+	    {
+		cerr << "real name != real1, " << c->get_real_name()
+		     << endl ; 
+		return 1 ;
+	    }
+	    if( c->get_container_type() != "type1" )
+	    {
+		cerr << "real name != type1, " << c->get_container_type()
+		     << endl ; 
+		return 1 ;
+	    }
 	}
-	if( c.get_symbolic_name() != "sym1" )
+	else
 	{
-	    cerr << "symbolic name != sym1, " << c.get_symbolic_name()
-		 << endl ; 
-	    return 1 ;
-	}
-	if( c.get_real_name() != "real1" )
-	{
-	    cerr << "real name != real1, " << c.get_real_name()
-		 << endl ; 
-	    return 1 ;
-	}
-	if( c.get_container_type() != "type1" )
-	{
-	    cerr << "real name != type1, " << c.get_container_type()
-		 << endl ; 
+	    cerr << "returned but not found" << endl ;
 	    return 1 ;
 	}
     }
@@ -168,15 +173,15 @@ run(void)
     cout << "try to find symbolic name that doesn't exist, nice" << endl;
     try
     {
-	BESContainer c( "nosym" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
-	if( c.is_valid() == true )
+	BESContainer *c = 
+	    BESContainerStorageList::TheList()->look_for( "nosym" ) ;
+	if( c )
 	{
 	    cerr << "Found nosym, shouldn't have" << endl ;
-	    cerr << " real_name = " << c.get_real_name() << endl ;
-	    cerr << " constraint = " << c.get_constraint() << endl ;
-	    cerr << " sym_name = " << c.get_symbolic_name() << endl ;
-	    cerr << " container type = " << c.get_container_type() << endl ;
+	    cerr << " real_name = " << c->get_real_name() << endl ;
+	    cerr << " constraint = " << c->get_constraint() << endl ;
+	    cerr << " sym_name = " << c->get_symbolic_name() << endl ;
+	    cerr << " container type = " << c->get_container_type() << endl ;
 	    return 1 ;
 	}
 	else
@@ -195,29 +200,32 @@ run(void)
     cout << "try to find symbolic name that does exist, nice" << endl;
     try
     {
-	BESContainer c( "sym1" ) ;
-	BESContainerStorageList::TheList()->look_for( c ) ;
-	if( c.is_valid() == false )
+	BESContainer *c =
+	    BESContainerStorageList::TheList()->look_for( "sym1" ) ;
+	if( c )
 	{
-	    cerr << "is not valid though" << endl ;
-	    return 1 ;
+	    if( c->get_symbolic_name() != "sym1" )
+	    {
+		cerr << "symbolic name != sym1, " << c->get_symbolic_name()
+		     << endl ; 
+		return 1 ;
+	    }
+	    if( c->get_real_name() != "real1" )
+	    {
+		cerr << "real name != real1, " << c->get_real_name()
+		     << endl ; 
+		return 1 ;
+	    }
+	    if( c->get_container_type() != "type1" )
+	    {
+		cerr << "real name != type1, " << c->get_container_type()
+		     << endl ; 
+		return 1 ;
+	    }
 	}
-	if( c.get_symbolic_name() != "sym1" )
+	else
 	{
-	    cerr << "symbolic name != sym1, " << c.get_symbolic_name()
-		 << endl ; 
-	    return 1 ;
-	}
-	if( c.get_real_name() != "real1" )
-	{
-	    cerr << "real name != real1, " << c.get_real_name()
-		 << endl ; 
-	    return 1 ;
-	}
-	if( c.get_container_type() != "type1" )
-	{
-	    cerr << "real name != type1, " << c.get_container_type()
-		 << endl ; 
+	    cerr << "didn't find sym1" << endl ;
 	    return 1 ;
 	}
     }
@@ -242,9 +250,7 @@ run(void)
     cout << "access a non compressed file" << endl;
     try
     {
-	BESContainer c( "sym" ) ;
-	c.set_real_name( src_file ) ;
-	c.set_container_type( "txt" ) ;
+	BESFileContainer c( "sym", src_file, "txt" ) ;
 
 	string result = c.access() ;
 	if( result != src_file )
@@ -289,9 +295,7 @@ run(void)
 	    }
 	}
 
-	BESContainer c( "sym" ) ;
-	c.set_real_name( com_file ) ;
-	c.set_container_type( "txt" ) ;
+	BESFileContainer c( "sym", com_file, "txt" ) ;
 
 	string result = c.access() ;
 	if( result != target )

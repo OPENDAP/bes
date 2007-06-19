@@ -61,19 +61,18 @@ run(void)
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
-	    BESContainer d( s ) ;
-	    cpv.look_for( d ) ;
-	    if( d.is_valid() )
+	    BESContainer *d = cpv.look_for( s ) ;
+	    if( d )
 	    {
-		if( d.get_real_name() == r && d.get_container_type() == c )
+		if( d->get_real_name() == r && d->get_container_type() == c )
 		{
 		    cout << "found " << s << endl ;
 		}
 		else
 		{
 		    cerr << "found " << s << " but:" << endl ;
-		    cerr << "real = " << r << ", should be " << d.get_real_name() << endl ;
-		    cerr << "type = " << c << ", should be " << d.get_container_type() << endl ;
+		    cerr << "real = " << r << ", should be " << d->get_real_name() << endl ;
+		    cerr << "type = " << c << ", should be " << d->get_container_type() << endl ;
 		    return 1 ;
 		}
 	    }
@@ -96,13 +95,12 @@ run(void)
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "find sym1" << endl;
-	BESContainer d( "sym1" ) ;
-	cpv.look_for( d ) ;
-	if( d.is_valid() == true )
+	BESContainer *d = cpv.look_for( "sym1" ) ;
+	if( d )
 	{
-	    cerr << "found " << d.get_symbolic_name() << " with "
-	         << "real = " << d.get_real_name() << " and "
-		 << "type = " << d.get_container_type() << endl ;
+	    cerr << "found " << d->get_symbolic_name() << " with "
+	         << "real = " << d->get_real_name() << " and "
+		 << "type = " << d->get_container_type() << endl ;
 	    return 1 ;
 	}
 	else
@@ -122,13 +120,12 @@ run(void)
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "find sym5" << endl;
-	BESContainer d( "sym5" ) ;
-	cpv.look_for( d ) ;
-	if( d.is_valid() == true )
+	BESContainer *d = cpv.look_for( "sym5" ) ;
+	if( d )
 	{
-	    cerr << "found " << d.get_symbolic_name() << " with "
-	         << "real = " << d.get_real_name() << " and "
-		 << "type = " << d.get_container_type() << endl ;
+	    cerr << "found " << d->get_symbolic_name() << " with "
+	         << "real = " << d->get_real_name() << " and "
+		 << "type = " << d->get_container_type() << endl ;
 	    return 1 ;
 	}
 	else
@@ -161,11 +158,10 @@ run(void)
 	    sprintf( c, "type%d", i ) ;
 	    cout << endl << "*****************************************" << endl;
 	    cout << "Looking for " << s << endl;
-	    BESContainer d( s ) ;
-	    cpv.look_for( d ) ;
-	    if( d.is_valid() )
+	    BESContainer *d = cpv.look_for( s ) ;
+	    if( d )
 	    {
-		if( d.get_real_name() == r && d.get_container_type() == c )
+		if( d->get_real_name() == r && d->get_container_type() == c )
 		{
 		    cout << "found " << s << endl ;
 		}

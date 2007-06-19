@@ -108,11 +108,10 @@ run(void)
 	sprintf( c, "type%d", i ) ;
 	cout << endl << "*****************************************" << endl;
 	cout << "Looking for " << s << endl;
-	BESContainer d( s ) ;
-	cpf.look_for( d ) ;
-	if( d.is_valid() )
+	BESContainer *d = cpf.look_for( s ) ;
+	if( d )
 	{
-	    if( d.get_real_name() == r && d.get_container_type() == c )
+	    if( d->get_real_name() == r && d->get_container_type() == c )
 	    {
 		cout << "found " << s << endl ;
 	    }
@@ -132,9 +131,8 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "Looking for thingy" << endl;
-    BESContainer d( "thingy" ) ;
-    cpf.look_for( d ) ;
-    if( d.is_valid() )
+    BESContainer *d = cpf.look_for( "thingy" ) ;
+    if( d )
     {
 	cerr << "found thingy" << endl ;
 	return 1 ;

@@ -84,18 +84,19 @@ run(void)
 	cout << "looking for " << s << endl;
 	try
 	{
-	    BESContainer d( s ) ;
-	    cpl->look_for( d ) ;
-	    if( d.is_valid() )
+	    BESContainer *d = cpl->look_for( s ) ;
+	    if( d )
 	    {
-		if( d.get_real_name() == r && d.get_container_type() == c )
+		if( d->get_real_name() == r && d->get_container_type() == c )
 		{
 		    cout << "found " << s << endl ;
 		}
 		else
 		{
-		    cerr << "found " << s << " but real = " << d.get_real_name()
-			 << " and container = " << d.get_container_type() << endl;
+		    cerr << "found " << s << " but real = "
+		         << d->get_real_name()
+			 << " and container = "
+			 << d->get_container_type() << endl;
 		    return 1 ;
 		}
 	    }
@@ -116,9 +117,8 @@ run(void)
     cout << "looking for non-existant thingy" << endl;
     try
     {
-	BESContainer dnot( "thingy" ) ;
-	cpl->look_for( dnot ) ;
-	if( dnot.is_valid() )
+	BESContainer *dnot = cpl->look_for( "thingy" ) ;
+	if( dnot )
 	{
 	    cerr << "found thingy, shouldn't have" << endl ;
 	    return 1 ;
@@ -155,12 +155,11 @@ run(void)
     cout << "looking for sym2" << endl;
     try
     {
-	BESContainer d2( "sym2" ) ;
-	cpl->look_for( d2 ) ;
-	if( d2.is_valid() )
+	BESContainer *d2 = cpl->look_for( "sym2" ) ;
+	if( d2 )
 	{
-	    cerr << "found sym2 with real = " << d2.get_real_name()
-		 << " and container = " << d2.get_container_type() << endl ;
+	    cerr << "found sym2 with real = " << d2->get_real_name()
+		 << " and container = " << d2->get_container_type() << endl ;
 	    return 1 ;
 	}
 	else
@@ -177,19 +176,19 @@ run(void)
     cout << "looking for sym7" << endl;
     try
     {
-	BESContainer d7( "sym7" ) ;
-	cpl->look_for( d7 ) ;
-	if( d7.is_valid() )
+	BESContainer *d7 = cpl->look_for( "sym7" ) ;
+	if( d7 )
 	{
-	    if( d7.get_real_name() == "real7" &&
-		d7.get_container_type() == "type7" )
+	    if( d7->get_real_name() == "real7" &&
+		d7->get_container_type() == "type7" )
 	    {
 		cout << "found sym7" << endl ;
 	    }
 	    else
 	    {
-		cerr << "found sym7 but real = " << d7.get_real_name()
-		     << " and container = " << d7.get_container_type() << endl ;
+		cerr << "found sym7 but real = " << d7->get_real_name()
+		     << " and container = " << d7->get_container_type()
+		     << endl ;
 		return 1 ;
 	    }
 	}
