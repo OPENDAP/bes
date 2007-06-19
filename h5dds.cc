@@ -18,6 +18,7 @@
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
+
 #include "config_hdf5.h"
 #include "debug.h"
 #include "h5dds.h"
@@ -25,11 +26,10 @@
 #include "HDF5TypeFactory.h"
 #include "InternalErr.h"
 #include "H5Git.h"
-
-
 #include "H5EOS.h"
-extern H5EOS eos;
 
+extern H5EOS eos;
+extern bool get_hardlink( hid_t, const string &);
 
 static char Msgt[MAX_ERROR_MESSAGE];
 static DS_t dt_inst;	// ??? 7/25/2001 jhrg
@@ -105,16 +105,25 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
     switch (type) { // Can we use virtual function? <hyokyung 2007.02.20. 10:17:24>
 
-    case H5G_GROUP:{
+    case H5G_GROUP:
+      {
       string full_path_name =
 	string(gname) + string(oname) + "/";
-
+      
+      DBG(cerr << "=depth_first():H5G_GROUP " << full_path_name << endl);
+      
+      // Check the hard link loop and break the loop.
+      
       char *t_fpn = new char[full_path_name.length() + 1];
 
       strcpy(t_fpn, full_path_name.c_str());
       hid_t cgroup = H5Gopen(pid, t_fpn);
       try {
-	depth_first(cgroup, t_fpn, dds, fname);
+	int oid = get_hardlink(pid, oname);
+	if(oid == 0){
+	  depth_first(cgroup, t_fpn, dds, fname);	  
+	}
+
       }
       catch(Error & e) {
 
@@ -311,6 +320,15 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
       else
 	temp_bt = factory.NewUInt32(varname);
     }
+
+    // <hyokyung 2007.06.15. 12:42:09>
+    if (size == 8){
+      if(sign == H5T_SGN_2)
+	temp_bt = factory.NewInt32(varname);
+      else
+	temp_bt = factory.NewUInt32(varname);
+    }
+    
     break;
 
   case H5T_FLOAT:

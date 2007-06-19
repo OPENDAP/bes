@@ -77,7 +77,9 @@
      DIMENSION_SIZE = 270,
      DIMENSION_NAME = 271,
      DIMENSION_LIST = 272,
-     DATA_FIELD_NAME = 273
+     DATA_FIELD_NAME = 273,
+     XDIM = 274,
+     YDIM = 275
    };
 #endif
 #define GROUP 258
@@ -96,6 +98,8 @@
 #define DIMENSION_NAME 271
 #define DIMENSION_LIST 272
 #define DATA_FIELD_NAME 273
+#define XDIM 274
+#define YDIM 275
 
 
 
@@ -171,7 +175,7 @@ typedef int YYSTYPE;
 
 
 /* Line 214 of yacc.c.  */
-#line 175 "hdfeos.tab.c"
+#line 179 "hdfeos.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -277,20 +281,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state. */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   82
+#define YYLAST   92
 
 /* YYNTOKENS -- Number of terminals. */
-#define YYNTOKENS  23
+#define YYNTOKENS  25
 /* YYNNTS -- Number of nonterminals. */
-#define YYNNTS  18
+#define YYNNTS  20
 /* YYNRULES -- Number of rules. */
-#define YYNRULES  36
+#define YYNRULES  40
 /* YYNRULES -- Number of states. */
-#define YYNSTATES  68
+#define YYNSTATES  74
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   273
+#define YYMAXUTOK   275
 
 #define YYTRANSLATE(YYX) 						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -302,9 +306,9 @@ static const unsigned char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      19,    20,     2,     2,    21,     2,     2,     2,     2,     2,
+      21,    22,     2,     2,    23,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    22,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    24,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -325,7 +329,7 @@ static const unsigned char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18
+      15,    16,    17,    18,    19,    20
 };
 
 #if YYDEBUG
@@ -335,34 +339,37 @@ static const unsigned char yyprhs[] =
 {
        0,     0,     3,     4,     7,    10,    13,    14,    16,    20,
       22,    26,    27,    29,    31,    33,    35,    37,    39,    41,
-      43,    45,    47,    51,    55,    59,    63,    64,    69,    73,
-      74,    83,    84,    93,    94,   103,   107
+      43,    45,    47,    49,    51,    55,    59,    62,    65,    69,
+      73,    74,    79,    83,    84,    93,    94,   103,   104,   113,
+     117
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS. */
 static const yysigned_char yyrhs[] =
 {
-      24,     0,    -1,    -1,    24,    38,    -1,    24,    28,    -1,
-      24,    35,    -1,    -1,    27,    -1,    19,    26,    20,    -1,
-      27,    -1,    26,    21,    27,    -1,    -1,     7,    -1,     8,
-      -1,     9,    -1,    29,    -1,    30,    -1,    31,    -1,    32,
-      -1,    34,    -1,    40,    -1,    12,    -1,     9,    22,    25,
-      -1,    14,    22,     9,    -1,    16,    22,     9,    -1,    15,
-      22,     7,    -1,    -1,    17,    33,    22,    25,    -1,    18,
-      22,     9,    -1,    -1,     3,    22,     9,    36,    24,     4,
-      22,     9,    -1,    -1,     3,    22,    13,    37,    24,     4,
-      22,    13,    -1,    -1,     5,    22,     9,    39,    24,     6,
-      22,     9,    -1,    10,    22,    11,    -1,    10,    22,     9,
+      26,     0,    -1,    -1,    26,    42,    -1,    26,    30,    -1,
+      26,    39,    -1,    -1,    29,    -1,    21,    28,    22,    -1,
+      29,    -1,    28,    23,    29,    -1,    -1,     7,    -1,     8,
+      -1,     9,    -1,    31,    -1,    32,    -1,    33,    -1,    34,
+      -1,    35,    -1,    36,    -1,    38,    -1,    44,    -1,    12,
+      -1,     9,    24,    27,    -1,    14,    24,     9,    -1,    19,
+       7,    -1,    20,     7,    -1,    16,    24,     9,    -1,    15,
+      24,     7,    -1,    -1,    17,    37,    24,    27,    -1,    18,
+      24,     9,    -1,    -1,     3,    24,     9,    40,    26,     4,
+      24,     9,    -1,    -1,     3,    24,    13,    41,    26,     4,
+      24,    13,    -1,    -1,     5,    24,     9,    43,    26,     6,
+      24,     9,    -1,    10,    24,    11,    -1,    10,    24,     9,
       -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const unsigned char yyrline[] =
+static const unsigned short yyrline[] =
 {
-       0,    63,    63,    64,    65,    66,    67,    68,    69,    73,
-      74,    76,    77,    78,   105,   123,   124,   125,   126,   127,
-     128,   129,   130,   132,   141,   149,   156,   155,   171,   185,
-     184,   194,   193,   205,   204,   211,   220
+       0,    65,    65,    66,    67,    68,    69,    70,    71,    75,
+      76,    78,    79,    80,   107,   125,   126,   127,   128,   129,
+     130,   131,   132,   133,   134,   136,   152,   163,   174,   182,
+     189,   188,   204,   218,   217,   227,   226,   238,   237,   246,
+     257
 };
 #endif
 
@@ -374,12 +381,12 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "GROUP", "END_GROUP", "OBJECT",
   "END_OBJECT", "INT", "FLOAT", "STR", "PROJECTION", "HE5_GCTP_GEO",
   "DATA_TYPE", "GRID_STRUCTURE", "GRID_NAME", "DIMENSION_SIZE",
-  "DIMENSION_NAME", "DIMENSION_LIST", "DATA_FIELD_NAME", "'('", "')'",
-  "','", "'='", "$accept", "attribute_list", "dataseq", "dataseq1", "data",
-  "attribute", "attribute_grid_name", "attribute_dimension_name",
-  "attribute_dimension_size", "attribute_dimensin_list", "@1",
-  "attribute_data_field_name", "group", "@2", "@3", "object", "@4",
-  "projection", 0
+  "DIMENSION_NAME", "DIMENSION_LIST", "DATA_FIELD_NAME", "XDIM", "YDIM",
+  "'('", "')'", "','", "'='", "$accept", "attribute_list", "dataseq",
+  "dataseq1", "data", "attribute", "attribute_grid_name", "attribute_xdim",
+  "attribute_ydim", "attribute_dimension_name", "attribute_dimension_size",
+  "attribute_dimension_list", "@1", "attribute_data_field_name", "group",
+  "@2", "@3", "object", "@4", "projection", 0
 };
 #endif
 
@@ -389,18 +396,19 @@ static const char *const yytname[] =
 static const unsigned short yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,    40,
-      41,    44,    61
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,    40,    41,    44,    61
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const unsigned char yyr1[] =
 {
-       0,    23,    24,    24,    24,    24,    25,    25,    25,    26,
-      26,    27,    27,    27,    27,    28,    28,    28,    28,    28,
-      28,    28,    28,    29,    30,    31,    33,    32,    34,    36,
-      35,    37,    35,    39,    38,    40,    40
+       0,    25,    26,    26,    26,    26,    27,    27,    27,    28,
+      28,    29,    29,    29,    29,    30,    30,    30,    30,    30,
+      30,    30,    30,    30,    30,    31,    32,    33,    34,    35,
+      37,    36,    38,    40,    39,    41,    39,    43,    42,    44,
+      44
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -408,8 +416,9 @@ static const unsigned char yyr2[] =
 {
        0,     2,     0,     2,     2,     2,     0,     1,     3,     1,
        3,     0,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     3,     3,     3,     3,     0,     4,     3,     0,
-       8,     0,     8,     0,     8,     3,     3
+       1,     1,     1,     1,     3,     3,     2,     2,     3,     3,
+       0,     4,     3,     0,     8,     0,     8,     0,     8,     3,
+       3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -417,41 +426,43 @@ static const unsigned char yyr2[] =
    means the default is an error.  */
 static const unsigned char yydefact[] =
 {
-       2,     0,     1,     0,     0,     0,     0,    21,     0,     0,
-       0,    26,     0,     4,    15,    16,    17,    18,    19,     5,
-       3,    20,     0,     0,     6,     0,     0,     0,     0,     0,
-       0,    29,    31,    33,    12,    13,    14,    11,    22,     7,
-      36,    35,    23,    25,    24,     6,    28,     2,     2,     2,
-       0,     9,    27,     0,     0,     0,     8,    11,     0,     0,
-       0,    10,     0,     0,     0,    30,    32,    34
+       2,     0,     1,     0,     0,     0,     0,    23,     0,     0,
+       0,    30,     0,     0,     0,     4,    15,    16,    17,    18,
+      19,    20,    21,     5,     3,    22,     0,     0,     6,     0,
+       0,     0,     0,     0,     0,    26,    27,    33,    35,    37,
+      12,    13,    14,    11,    24,     7,    40,    39,    25,    29,
+      28,     6,    32,     2,     2,     2,     0,     9,    31,     0,
+       0,     0,     8,    11,     0,     0,     0,    10,     0,     0,
+       0,    34,    36,    38
 };
 
 /* YYDEFGOTO[NTERM-NUM]. */
 static const yysigned_char yydefgoto[] =
 {
-      -1,     1,    38,    50,    39,    13,    14,    15,    16,    17,
-      29,    18,    19,    47,    48,    20,    49,    21
+      -1,     1,    44,    56,    45,    15,    16,    17,    18,    19,
+      20,    21,    33,    22,    23,    53,    54,    24,    55,    25
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -38
+#define YYPACT_NINF -43
 static const yysigned_char yypact[] =
 {
-     -38,     1,   -38,   -20,   -17,     7,     9,   -38,    23,    25,
-      32,   -38,    35,   -38,   -38,   -38,   -38,   -38,   -38,   -38,
-     -38,   -38,    -6,    49,    62,     3,    52,    56,    63,    51,
-      65,   -38,   -38,   -38,   -38,   -38,   -38,    17,   -38,   -38,
-     -38,   -38,   -38,   -38,   -38,    62,   -38,   -38,   -38,   -38,
-     -12,   -38,   -38,    18,    34,    50,   -38,    17,    53,    54,
-      55,   -38,    69,    66,    71,   -38,   -38,   -38
+     -43,     0,   -43,   -20,     6,     8,    24,   -43,    26,    35,
+      38,   -43,    39,    59,    61,   -43,   -43,   -43,   -43,   -43,
+     -43,   -43,   -43,   -43,   -43,   -43,    -7,    70,    69,     2,
+      71,    74,    73,    60,    76,   -43,   -43,   -43,   -43,   -43,
+     -43,   -43,   -43,    18,   -43,   -43,   -43,   -43,   -43,   -43,
+     -43,    69,   -43,   -43,   -43,   -43,   -15,   -43,   -43,    19,
+      37,    55,   -43,    18,    62,    63,    64,   -43,    80,    78,
+      83,   -43,   -43,   -43
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yysigned_char yypgoto[] =
 {
-     -38,    -7,    37,   -38,   -37,   -38,   -38,   -38,   -38,   -38,
-     -38,   -38,   -38,   -38,   -38,   -38,   -38,   -38
+     -43,   -10,    32,   -43,   -42,   -43,   -43,   -43,   -43,   -43,
+     -43,   -43,   -43,   -43,   -43,   -43,   -43,   -43,   -43,   -43
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -461,41 +472,44 @@ static const yysigned_char yypgoto[] =
 #define YYTABLE_NINF -1
 static const unsigned char yytable[] =
 {
-      51,     2,    22,    31,     3,    23,     4,    32,    56,    57,
-       5,     6,    40,     7,    41,     8,     9,    10,    11,    12,
-      61,     3,    58,     4,    34,    35,    36,     5,     6,    24,
-       7,    25,     8,     9,    10,    11,    12,     3,    59,     4,
-      53,    54,    55,     5,     6,    26,     7,    27,     8,     9,
-      10,    11,    12,     3,    28,     4,    60,    30,    33,     5,
-       6,    42,     7,    43,     8,     9,    10,    11,    12,    34,
-      35,    36,    44,    45,    46,    62,    63,    64,    65,    66,
-      67,    37,    52
+       2,    57,    37,     3,    26,     4,    38,    62,    63,     5,
+       6,    46,     7,    47,     8,     9,    10,    11,    12,    13,
+      14,    67,     3,    64,     4,    40,    41,    42,     5,     6,
+      27,     7,    28,     8,     9,    10,    11,    12,    13,    14,
+       3,    65,     4,    59,    60,    61,     5,     6,    29,     7,
+      30,     8,     9,    10,    11,    12,    13,    14,     3,    31,
+       4,    66,    32,    34,     5,     6,    35,     7,    36,     8,
+       9,    10,    11,    12,    13,    14,    40,    41,    42,    39,
+      48,    49,    50,    58,    51,    52,    68,    69,    70,    71,
+      43,    72,    73
 };
 
 static const unsigned char yycheck[] =
 {
-      37,     0,    22,     9,     3,    22,     5,    13,    20,    21,
-       9,    10,     9,    12,    11,    14,    15,    16,    17,    18,
-      57,     3,     4,     5,     7,     8,     9,     9,    10,    22,
-      12,    22,    14,    15,    16,    17,    18,     3,     4,     5,
-      47,    48,    49,     9,    10,    22,    12,    22,    14,    15,
-      16,    17,    18,     3,    22,     5,     6,    22,     9,     9,
-      10,     9,    12,     7,    14,    15,    16,    17,    18,     7,
-       8,     9,     9,    22,     9,    22,    22,    22,     9,    13,
-       9,    19,    45
+       0,    43,     9,     3,    24,     5,    13,    22,    23,     9,
+      10,     9,    12,    11,    14,    15,    16,    17,    18,    19,
+      20,    63,     3,     4,     5,     7,     8,     9,     9,    10,
+      24,    12,    24,    14,    15,    16,    17,    18,    19,    20,
+       3,     4,     5,    53,    54,    55,     9,    10,    24,    12,
+      24,    14,    15,    16,    17,    18,    19,    20,     3,    24,
+       5,     6,    24,    24,     9,    10,     7,    12,     7,    14,
+      15,    16,    17,    18,    19,    20,     7,     8,     9,     9,
+       9,     7,     9,    51,    24,     9,    24,    24,    24,     9,
+      21,    13,     9
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const unsigned char yystos[] =
 {
-       0,    24,     0,     3,     5,     9,    10,    12,    14,    15,
-      16,    17,    18,    28,    29,    30,    31,    32,    34,    35,
-      38,    40,    22,    22,    22,    22,    22,    22,    22,    33,
-      22,     9,    13,     9,     7,     8,     9,    19,    25,    27,
-       9,    11,     9,     7,     9,    22,     9,    36,    37,    39,
-      26,    27,    25,    24,    24,    24,    20,    21,     4,     4,
-       6,    27,    22,    22,    22,     9,    13,     9
+       0,    26,     0,     3,     5,     9,    10,    12,    14,    15,
+      16,    17,    18,    19,    20,    30,    31,    32,    33,    34,
+      35,    36,    38,    39,    42,    44,    24,    24,    24,    24,
+      24,    24,    24,    37,    24,     7,     7,     9,    13,     9,
+       7,     8,     9,    21,    27,    29,     9,    11,     9,     7,
+       9,    24,     9,    40,    41,    43,    28,    29,    27,    26,
+      26,    26,    22,    23,     4,     4,     6,    29,    24,    24,
+      24,     9,    13,     9
 };
 
 #if ! defined (YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -1106,7 +1120,7 @@ yyreduce:
   switch (yyn)
     {
         case 13:
-#line 79 "hdfeos.y"
+#line 81 "hdfeos.y"
     {
 #ifdef VERBOSE	   
 	   cout << yyvsp[0] << endl;
@@ -1135,7 +1149,7 @@ yyreduce:
     break;
 
   case 14:
-#line 106 "hdfeos.y"
+#line 108 "hdfeos.y"
     {	
 
 	   if(parser_state == 10){
@@ -1152,19 +1166,48 @@ yyreduce:
     	  ;}
     break;
 
-  case 23:
-#line 133 "hdfeos.y"
+  case 25:
+#line 137 "hdfeos.y"
     {
   // Remember the path.
   grid_name = yyvsp[0];
-  full_path.append(grid_name);	
-  // cout << "Grid Name is:" << grid_name << endl;
-
+  
+  // Reset the full path
+  full_path = "/HDFEOS/GRIDS/";
+  valid_projection = false;
+  full_path.append(grid_name);
+#ifdef VERBOSE  
+  cout << "Grid Name is:" << grid_name << endl;
+#endif
+  
 ;}
     break;
 
-  case 24:
-#line 142 "hdfeos.y"
+  case 26:
+#line 153 "hdfeos.y"
+    {
+  // Remember the X Dimension
+#ifdef VERBOSE  
+  cout << "XDim is:" << atoi(yyvsp[0]) << endl;
+  cout << "Full path is:" << full_path << endl;
+#endif  
+  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi(yyvsp[0]));
+;}
+    break;
+
+  case 27:
+#line 164 "hdfeos.y"
+    {
+  // Remember the Y Dimension
+#ifdef VERBOSE  
+  cout << "YDim is:" << atoi(yyvsp[0]) << endl;
+#endif  
+  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi(yyvsp[0]));
+;}
+    break;
+
+  case 28:
+#line 175 "hdfeos.y"
     {
   // cout << "Full path: " << full_path;
   // Save the dimension name.  
@@ -1173,23 +1216,23 @@ yyreduce:
 ;}
     break;
 
-  case 25:
-#line 150 "hdfeos.y"
+  case 29:
+#line 183 "hdfeos.y"
     {
   // Save the size info.
   ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi(yyvsp[0]));
 ;}
     break;
 
-  case 26:
-#line 156 "hdfeos.y"
+  case 30:
+#line 189 "hdfeos.y"
     {
    parser_state = 10;
 ;}
     break;
 
-  case 27:
-#line 160 "hdfeos.y"
+  case 31:
+#line 193 "hdfeos.y"
     {
   parser_state = 11;
   ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
@@ -1202,8 +1245,8 @@ yyreduce:
 ;}
     break;
 
-  case 28:
-#line 172 "hdfeos.y"
+  case 32:
+#line 205 "hdfeos.y"
     {
   // cout << $3 << endl;
   // Construct the path.	
@@ -1216,17 +1259,17 @@ yyreduce:
 ;}
     break;
 
-  case 29:
-#line 185 "hdfeos.y"
+  case 33:
+#line 218 "hdfeos.y"
     {
 #ifdef VERBOSE	
-	cout << yyvsp[0] <<  endl;
+	cout << "GROUP=" << yyvsp[0] <<  endl;
 #endif	
       ;}
     break;
 
-  case 31:
-#line 194 "hdfeos.y"
+  case 35:
+#line 227 "hdfeos.y"
     {
 #ifdef VERBOSE	
 	cout << yyvsp[0] <<  endl; // $3 refers the STR
@@ -1235,29 +1278,34 @@ yyreduce:
       ;}
     break;
 
-  case 33:
-#line 205 "hdfeos.y"
+  case 37:
+#line 238 "hdfeos.y"
     {
-	// cout <<  $3  <<  endl;
+#ifdef VERBOSE	
+	 cout <<  yyvsp[0]  <<  endl;
+#endif	 
       ;}
     break;
 
-  case 35:
-#line 212 "hdfeos.y"
+  case 39:
+#line 247 "hdfeos.y"
     {
   // Set valid_projection flag to "true".
   valid_projection = true;
+  // Reset the parser state
+  parser_state = 0;
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  
 ;}
     break;
 
-  case 36:
-#line 221 "hdfeos.y"
+  case 40:
+#line 258 "hdfeos.y"
     {
-
+#ifdef VERBOSE  
   cerr << "Got wrong projection " << endl;
+#endif  
 ;}
     break;
 
@@ -1265,7 +1313,7 @@ yyreduce:
     }
 
 /* Line 1000 of yacc.c.  */
-#line 1269 "hdfeos.tab.c"
+#line 1317 "hdfeos.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1490,7 +1538,7 @@ yyreturn:
 }
 
 
-#line 229 "hdfeos.y"
+#line 267 "hdfeos.y"
 
 
 // This function is required for linking, but DODS uses its own error

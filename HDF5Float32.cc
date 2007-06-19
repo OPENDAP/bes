@@ -2,22 +2,22 @@
 #pragma implementation
 #endif
 
-#include "config_hdf5.h"
+// #define DODS_DEBUG
 
 #include <string>
 #include <ctype.h>
 
-#include "InternalErr.h"
-
+#include "config_hdf5.h"
+#include "debug.h"
 #include "h5dds.h"
+#include "InternalErr.h"
 #include "HDF5Float32.h"
 #include "HDF5Structure.h"
-#include "debug.h"
+
 
 typedef struct s2_t {
-  float    a;
+  dods_float32    a;
 } s2_t;
-
 
 
 HDF5Float32::HDF5Float32(const string & n):Float32(n)
@@ -60,7 +60,7 @@ HDF5Float32::read(const string & dataset)
   if (return_type(ty_id) == "Structure") {
     
     BaseType *q = get_parent();
-    
+    HDF5Structure *p = dynamic_cast<HDF5Structure*>(q); 
     char Msgi[256];    
 
     dods_float32 flt32;
@@ -69,7 +69,7 @@ HDF5Float32::read(const string & dataset)
     int j;
     int k = 0;
     
-    s2_t buf[i];
+    s2_t buf[p->get_entire_array_size()];
     
     string myname = name();
     string parent_name;
@@ -90,7 +90,7 @@ HDF5Float32::read(const string & dataset)
 	  s2_tid = stemp_tid;
 	}
 	parent_name = q->name();
-	HDF5Structure *p = dynamic_cast<HDF5Structure*>(q);
+	p = dynamic_cast<HDF5Structure*>(q);
 	// Remember the index of array from the last parent.
 	j = p->get_array_index();	
 	q = q->get_parent();	
@@ -109,7 +109,7 @@ HDF5Float32::read(const string & dataset)
     }
     
     set_read_p(true);
-    flt32 = (dods_float32) buf[j].a;
+    flt32 =  buf[j].a;
     val2buf(&flt32);
   }
   

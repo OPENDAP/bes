@@ -59,6 +59,8 @@ void hdfeoserror(char *s);
 %token DIMENSION_NAME  
 %token DIMENSION_LIST
 %token DATA_FIELD_NAME
+%token XDIM
+%token YDIM
 %%
 attribute_list: /* empty */
           | attribute_list object
@@ -121,9 +123,11 @@ data: /* empty */
 ;
 
 attribute: attribute_grid_name
+        | attribute_xdim
+        | attribute_ydim
 	| attribute_dimension_name
 	| attribute_dimension_size
- 	| attribute_dimensin_list
+ 	| attribute_dimension_list
 	| attribute_data_field_name
         | projection
 	| DATA_TYPE 
@@ -133,11 +137,40 @@ attribute_grid_name: GRID_NAME '=' STR
 {
   // Remember the path.
   grid_name = $3;
-  full_path.append(grid_name);	
-  // cout << "Grid Name is:" << grid_name << endl;
-
+  
+  // Reset the full path
+  full_path = "/HDFEOS/GRIDS/";
+  valid_projection = false;
+  full_path.append(grid_name);
+#ifdef VERBOSE  
+  cout << "Grid Name is:" << grid_name << endl;
+#endif
+  
 }
 ;
+
+attribute_xdim: XDIM INT
+{
+  // Remember the X Dimension
+#ifdef VERBOSE  
+  cout << "XDim is:" << atoi($2) << endl;
+  cout << "Full path is:" << full_path << endl;
+#endif  
+  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi($2));
+}
+;
+
+attribute_ydim: YDIM INT
+{
+  // Remember the Y Dimension
+#ifdef VERBOSE  
+  cout << "YDim is:" << atoi($2) << endl;
+#endif  
+  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi($2));
+}
+;
+
+
 attribute_dimension_name: DIMENSION_NAME '=' STR
 {
   // cout << "Full path: " << full_path;
@@ -152,7 +185,7 @@ attribute_dimension_size: DIMENSION_SIZE '=' INT
   ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi($3));
 }
 ;
-attribute_dimensin_list: DIMENSION_LIST 
+attribute_dimension_list: DIMENSION_LIST 
 {
    parser_state = 10;
 }
@@ -184,7 +217,7 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
 group:GROUP '=' STR
       {
 #ifdef VERBOSE	
-	cout << $3 <<  endl;
+	cout << "GROUP=" << $3 <<  endl;
 #endif	
       }
       attribute_list
@@ -203,7 +236,9 @@ group:GROUP '=' STR
 
 object:OBJECT '=' STR
       {
-	// cout <<  $3  <<  endl;
+#ifdef VERBOSE	
+	 cout <<  $3  <<  endl;
+#endif	 
       }
        attribute_list
        END_OBJECT '=' STR;
@@ -212,6 +247,8 @@ projection: PROJECTION '=' HE5_GCTP_GEO
 {
   // Set valid_projection flag to "true".
   valid_projection = true;
+  // Reset the parser state
+  parser_state = 0;
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  
@@ -219,8 +256,9 @@ projection: PROJECTION '=' HE5_GCTP_GEO
 |
 PROJECTION '=' STR
 {
-
+#ifdef VERBOSE  
   cerr << "Got wrong projection " << endl;
+#endif  
 }
 ;
 

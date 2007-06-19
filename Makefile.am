@@ -25,8 +25,8 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h HDF5GridEOS.h
 
-# <hyokyung 2007.02.23. 14:19:46>
-SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc hdfeos_das.tab.cc lex.hdfeos_das.cc H5EOS.cc
+# <hyokyung 2007.02.23. 14:19:46> <hyokyung 2007.06.14. 13:47:47>
+SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc hdfeos_das.tab.cc lex.hdfeos_das.cc H5EOS.cc H5PathFinder.cc
 # SRCS = h5dds.cc h5das.cc H5Git.c
 HDRS = common.h h5dds.h h5das.h H5Git.h
 
@@ -46,7 +46,7 @@ dap_h5_handler_LDADD = libhdf5_handler.la -L${hdf5_path}/lib -lhdf5 -lz
 
 DEJATOOL = dap_h5_handler
 
-RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
+RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
 
 EXTRA_DIST = data testsuite COPYING hdf5_handler.spec
 

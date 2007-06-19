@@ -3,19 +3,19 @@
 #pragma implementation
 #endif
 
-#include "config_hdf5.h"
+// #define DODS_DEBUG
 
 #include <string>
 #include <ctype.h>
-
+#include "config_hdf5.h"
 #include "InternalErr.h"
-
 #include "h5dds.h"
 #include "HDF5Float64.h"
 #include "HDF5Structure.h"
+#include "debug.h"
 
 typedef struct s2_t {
-  double a;
+  dods_float64 a;
 } s2_t;
 
 
@@ -39,7 +39,7 @@ HDF5Float64::read(const string & dataset)
     return false;
 
   if (return_type(ty_id) == "Float64") {
-    double buf;
+    dods_float64 buf;
     dods_float64 flt64;
     char Msgi[256];
 
@@ -55,9 +55,10 @@ HDF5Float64::read(const string & dataset)
   }
 
   if (return_type(ty_id) == "Structure") {
-
+    DBG(cerr << "=read(): Structure" << endl);
     BaseType *q = get_parent();
-
+    HDF5Structure *p = dynamic_cast<HDF5Structure*>(q); 
+    DBG(cerr << "=read(): Size = " << p->get_entire_array_size() <<  endl);
     char Msgi[256];
     
     dods_float64 flt64;
@@ -66,7 +67,7 @@ HDF5Float64::read(const string & dataset)
     int j;
     int k = 0;
     
-    s2_t buf[i];
+    s2_t buf[p->get_entire_array_size()]; // <hyokyung 2007.06.18. 10:06:47>
     
     string myname = name();
     string parent_name;
@@ -74,6 +75,7 @@ HDF5Float64::read(const string & dataset)
     hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
     hid_t stemp_tid;
 
+    DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname  << " size=" << i << endl);        
     while(q != NULL){
       if(q->is_constructor_type()){ // Grid, structure or sequence
 	if(k == 0){
@@ -86,7 +88,7 @@ HDF5Float64::read(const string & dataset)
 	  s2_tid = stemp_tid;
 	}
 	parent_name = q->name();
-	HDF5Structure *p = dynamic_cast<HDF5Structure*>(q);
+	p = dynamic_cast<HDF5Structure*>(q);
 	// Remember the index of array from the last parent.
 	j = p->get_array_index();	
 	q = q->get_parent();
@@ -104,6 +106,7 @@ HDF5Float64::read(const string & dataset)
 			+ Msgi);      
     }
     set_read_p(true);
+    DBG(cerr << "index " <<  j << endl);
     flt64 = (dods_float64) buf[j].a;
     val2buf(&flt64);      
   }

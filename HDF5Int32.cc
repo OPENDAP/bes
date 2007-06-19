@@ -17,7 +17,7 @@
 #include "debug.h"
 
 typedef struct s2_t {
-  int    a;
+  dods_int32    a;
 } s2_t;
 
 
@@ -67,6 +67,7 @@ HDF5Int32::read(const string & dataset)
   if (return_type(ty_id) == "Structure") {
         
     BaseType *q = get_parent();
+    HDF5Structure *p = dynamic_cast<HDF5Structure*>(q);
     
     char Msgi[256];
 
@@ -77,14 +78,14 @@ HDF5Int32::read(const string & dataset)
     hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
     hid_t stemp_tid;
 
-    s2_t buf[i];
+    s2_t buf[p->get_entire_array_size()];
     
     string myname = name();
     string parent_name;
     
 
 
-    DBG(cerr << "=HDF5Int32::read() ty_id=" << ty_id << " name=" << myname  << " size=" << i << endl);    
+    DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname  << " size=" << i << endl);    
     while(q != NULL){
 
       if(q->is_constructor_type()){ // Grid, structure or sequence
@@ -103,7 +104,7 @@ HDF5Int32::read(const string & dataset)
 	}
 	// Remember the last parent name.
 	parent_name = q->name();
-	HDF5Structure *p = dynamic_cast<HDF5Structure*>(q);
+	p = dynamic_cast<HDF5Structure*>(q);
 	// Remember the index of array from the last parent.
 	j = p->get_array_index();	
 	q = q->get_parent();

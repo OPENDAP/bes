@@ -10,14 +10,15 @@
 #include <hdf5.h>
 
 
-using std::string ;
+using std::string;
 
 // #include <H5Ipublic.h>
 
 #include "DAS.h"
 
-bool depth_first( hid_t , char *, DAS &, const char * ) ; 
-bool get_softlink( DAS &, hid_t, const string &, int ) ;
-void read_objects( DAS &das, const string &varname, hid_t dset, int num_attr ) ;
-bool find_gloattr( hid_t file, DAS &das ) ;
-
+bool depth_first( hid_t , char *, DAS &, const char * );
+bool find_gloattr( hid_t file, DAS &das );
+bool get_softlink( DAS &, hid_t, const string &, int );
+int get_hardlink( hid_t, const string &);
+void read_objects( DAS &das, const string &varname, hid_t dset, int num_attr );
+void read_comments( DAS & das, const string & varname, hid_t oid );

@@ -12,6 +12,18 @@ set verbose 0
 
 dap_hdf5_handler_version 
 
+dap_hdf5_handler_all "${testdir}" "point_Object"
+
+dap_hdf5_handler_all "${testdir}" "Point"
+
+dap_hdf5_handler_all "${testdir}" "ZA" {/HDFEOS/ZAS/ZA1/Data%20Fields/Spectra\[0:1:14\]\[0:1:39\]\[1\]}
+
+dap_hdf5_handler_all "${testdir}" "Grid" {/HDFEOS/GRIDS/UTMGrid/Data%20Fields/Vegetation\[0:2:6\]\[0:2:8\]}
+
+dap_hdf5_handler_no_data "${testdir}" "tloop2"
+
+dap_hdf5_handler_no_data "${testdir}" "tloop"
+
 dap_hdf5_handler_all "${testdir}" "tstring-at"
 
 dap_hdf5_handler_all "${testdir}" "tstr"

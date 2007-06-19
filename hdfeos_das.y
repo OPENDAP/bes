@@ -29,7 +29,7 @@
 */
 
 %{
-
+// #define DODS_DEBUG
 #define YYSTYPE char *
   
 // static char rcsid[] not_used = {"$Id$"};
@@ -111,7 +111,6 @@ static void process_group(parser_arg *arg, const string &s);
 %token FLOAT
 %token STR
 %token COMMENT
-%token DATA_TYPE
 
 %%
 
@@ -160,6 +159,7 @@ attributes:    	/* Create the AttrTable stack if necessary */
                 attribute
     	    	| attributes attribute
 ;
+
     	    	
 attribute:    	GROUP '=' STR
                 {
@@ -172,7 +172,6 @@ attribute:    	GROUP '=' STR
 		  POP;
 		}
 		END_GROUP '=' STR
-		| DATA_TYPE
 		| OBJECT '=' STR
                 {
 		    process_group((parser_arg *)arg, $3);
@@ -221,6 +220,7 @@ attribute:    	GROUP '=' STR
  		    /* YYABORT; */
 		}
 ;
+
 
 attr_list:  	/* empty */
     	    	| attribute
@@ -393,7 +393,6 @@ strs:		STR
 		    }
 		}
 ;
-
 %%
 
 // This function is required for linking, but DODS uses its own error

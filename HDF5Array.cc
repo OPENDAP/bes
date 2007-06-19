@@ -9,24 +9,20 @@
 #pragma implementation
 #endif
 
-
-#include "config_hdf5.h"
-
 // #define DODS_DEBUG
-#include "debug.h"
 
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <ctype.h>
 
+#include "config_hdf5.h"
+#include "debug.h"
 #include "Error.h"
 #include "InternalErr.h"
-
 #include "HDF5Array.h"
 #include "HDF5Structure.h"
 #include "HDF5Str.h"
-
 #include "h5dds.h"
 
 using namespace std;

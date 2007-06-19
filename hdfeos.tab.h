@@ -44,7 +44,9 @@
      DIMENSION_SIZE = 270,
      DIMENSION_NAME = 271,
      DIMENSION_LIST = 272,
-     DATA_FIELD_NAME = 273
+     DATA_FIELD_NAME = 273,
+     XDIM = 274,
+     YDIM = 275     
    };
 #endif
 #define GROUP 258
@@ -63,8 +65,8 @@
 #define DIMENSION_NAME 271
 #define DIMENSION_LIST 272
 #define DATA_FIELD_NAME 273
-
-
+#define XDIM 274
+#define YDIM 275
 
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)

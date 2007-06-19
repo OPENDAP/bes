@@ -75,7 +75,7 @@ END_GROUP  END_GROUP
 OBJECT     OBJECT
 END_OBJECT END_OBJECT
 END        END
-DATA_TYPE  DataType=  
+DATA_TYPE  DataType=[A-Z0-9_]*    
 INT	[-+]?[0-9]+
 
 MANTISA ([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)
@@ -83,7 +83,8 @@ EXPONENT (E|e)[-+]?[0-9]+
 
 FLOAT	[-+]?{MANTISA}{EXPONENT}?
 
-STR 	[-+a-zA-Z0-9_./:%+\-]+
+STR 	[-+a-zA-Z0-9_./:%+\-]+ 
+
 
 NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
@@ -96,7 +97,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {END}                   /* Ignore */
 {INT}                   hdfeos_daslval = yytext; return INT;
 {FLOAT}                 hdfeos_daslval = yytext; return FLOAT;
-{DATA_TYPE}   	    	hdfeos_daslval = yytext; return DATA_TYPE;
+{DATA_TYPE}	    	/* Ignore */
 {STR}	    	    	hdfeos_daslval = yytext; return STR;
 
 "="                     return (int)*yytext;

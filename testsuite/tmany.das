@@ -29,6 +29,9 @@ Attributes {
         Int32 attr2 0, 1, 2, 3;
         Float64 attr3 0., 0.10000000000000001, 0.20000000000000001, 0.30000000000000004, 0.40000000000000002, 0.5, 0.60000000000000009, 0.70000000000000007, 0.80000000000000004, 0.90000000000000002;
     }
+    /g1/g1.2/link1 {
+        String HDF5_HARDLINK /g1/g1.1/dset1;
+    }
     g2 {
         String HDF5_OBJ_FULLPATH "/g2/";
     }
@@ -46,6 +49,9 @@ Attributes {
     }
     dset2 {
         String HDF5_OBJ_FULLPATH "/g4/dset2";
+    }
+    /g4/dset2 {
+        String HDF5_HARDLINK /g3/link3;
     }
     g5 {
         String HDF5_OBJ_FULLPATH "/g5/";

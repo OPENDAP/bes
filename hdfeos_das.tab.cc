@@ -70,8 +70,7 @@
      INT = 263,
      FLOAT = 264,
      STR = 265,
-     COMMENT = 266,
-     DATA_TYPE = 267
+     COMMENT = 266
    };
 #endif
 #define GROUP 258
@@ -83,7 +82,6 @@
 #define FLOAT 264
 #define STR 265
 #define COMMENT 266
-#define DATA_TYPE 267
 
 
 
@@ -91,7 +89,7 @@
 /* Copy the first part of user declarations.  */
 #line 31 "hdfeos_das.y"
 
-
+// #define DODS_DEBUG
 #define YYSTYPE char *
   
 // static char rcsid[] not_used = {"$Id$"};
@@ -186,7 +184,7 @@ typedef int YYSTYPE;
 
 
 /* Line 214 of yacc.c.  */
-#line 190 "hdfeos_das.tab.c"
+#line 188 "hdfeos_das.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -292,20 +290,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state. */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   77
+#define YYLAST   71
 
 /* YYNTOKENS -- Number of terminals. */
-#define YYNTOKENS  17
+#define YYNTOKENS  16
 /* YYNNTS -- Number of nonterminals. */
 #define YYNNTS  17
 /* YYNRULES -- Number of rules. */
-#define YYNRULES  34
+#define YYNRULES  33
 /* YYNRULES -- Number of states. */
-#define YYNSTATES  55
+#define YYNSTATES  54
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   267
+#define YYMAXUTOK   266
 
 #define YYTRANSLATE(YYX) 						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -317,9 +315,9 @@ static const unsigned char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      14,    15,     2,     2,    16,     2,     2,     2,     2,     2,
+      13,    14,     2,     2,    15,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    13,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    12,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -339,7 +337,7 @@ static const unsigned char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12
+       5,     6,     7,     8,     9,    10,    11
 };
 
 #if YYDEBUG
@@ -347,34 +345,34 @@ static const unsigned char yytranslate[] =
    YYRHS.  */
 static const unsigned char yyprhs[] =
 {
-       0,     0,     3,     4,     7,    10,    11,    12,    22,    24,
-      25,    26,    36,    37,    42,    44,    46,    47,    49,    52,
-      54,    56,    58,    62,    64,    66,    68,    72,    74,    78,
-      80,    84,    86,    88,    90
+       0,     0,     3,     4,     7,    10,    11,    12,    22,    23,
+      24,    34,    35,    40,    42,    44,    45,    47,    50,    52,
+      54,    56,    60,    62,    64,    66,    70,    72,    76,    78,
+      82,    84,    86,    88
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS. */
 static const yysigned_char yyrhs[] =
 {
-      18,     0,    -1,    -1,    19,    20,    -1,    18,    20,    -1,
-      -1,    -1,     3,    13,    10,    21,    26,    22,     4,    13,
-      10,    -1,    12,    -1,    -1,    -1,     5,    13,    10,    23,
-      26,    24,     6,    13,    10,    -1,    -1,    10,    25,    13,
-      27,    -1,    11,    -1,     1,    -1,    -1,    20,    -1,    26,
-      20,    -1,    29,    -1,    30,    -1,    33,    -1,    14,    28,
-      15,    -1,    31,    -1,    33,    -1,     8,    -1,    29,    16,
-       8,    -1,     9,    -1,    30,    16,     9,    -1,    32,    -1,
-      31,    16,    32,    -1,     9,    -1,     8,    -1,    10,    -1,
-      33,    16,    10,    -1
+      17,     0,    -1,    -1,    18,    19,    -1,    17,    19,    -1,
+      -1,    -1,     3,    12,    10,    20,    25,    21,     4,    12,
+      10,    -1,    -1,    -1,     5,    12,    10,    22,    25,    23,
+       6,    12,    10,    -1,    -1,    10,    24,    12,    26,    -1,
+      11,    -1,     1,    -1,    -1,    19,    -1,    25,    19,    -1,
+      28,    -1,    29,    -1,    32,    -1,    13,    27,    14,    -1,
+      30,    -1,    32,    -1,     8,    -1,    28,    15,     8,    -1,
+       9,    -1,    29,    15,     9,    -1,    31,    -1,    30,    15,
+      31,    -1,     9,    -1,     8,    -1,    10,    -1,    32,    15,
+      10,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const unsigned short yyrline[] =
 {
-       0,   156,   156,   156,   161,   165,   169,   164,   175,   177,
-     181,   176,   188,   187,   192,   209,   225,   226,   227,   230,
-     231,   232,   233,   239,   240,   243,   267,   287,   304,   323,
-     340,   359,   359,   362,   384
+       0,   155,   155,   155,   160,   165,   169,   164,   176,   180,
+     175,   187,   186,   191,   208,   225,   226,   227,   230,   231,
+     232,   233,   239,   240,   243,   267,   287,   304,   323,   340,
+     359,   359,   362,   384
 };
 #endif
 
@@ -384,10 +382,10 @@ static const unsigned short yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "GROUP", "END_GROUP", "OBJECT",
-  "END_OBJECT", "END", "INT", "FLOAT", "STR", "COMMENT", "DATA_TYPE",
-  "'='", "'('", "')'", "','", "$accept", "attributes", "@1", "attribute",
-  "@2", "@3", "@4", "@5", "@6", "attr_list", "data", "data2", "ints",
-  "floats", "floatints", "float_or_int", "strs", 0
+  "END_OBJECT", "END", "INT", "FLOAT", "STR", "COMMENT", "'='", "'('",
+  "')'", "','", "$accept", "attributes", "@1", "attribute", "@2", "@3",
+  "@4", "@5", "@6", "attr_list", "data", "data2", "ints", "floats",
+  "floatints", "float_or_int", "strs", 0
 };
 #endif
 
@@ -397,26 +395,26 @@ static const char *const yytname[] =
 static const unsigned short yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,    61,    40,    41,    44
+     265,   266,    61,    40,    41,    44
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const unsigned char yyr1[] =
 {
-       0,    17,    19,    18,    18,    21,    22,    20,    20,    23,
-      24,    20,    25,    20,    20,    20,    26,    26,    26,    27,
-      27,    27,    27,    28,    28,    29,    29,    30,    30,    31,
-      31,    32,    32,    33,    33
+       0,    16,    18,    17,    17,    20,    21,    19,    22,    23,
+      19,    24,    19,    19,    19,    25,    25,    25,    26,    26,
+      26,    26,    27,    27,    28,    28,    29,    29,    30,    30,
+      31,    31,    32,    32
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const unsigned char yyr2[] =
 {
-       0,     2,     0,     2,     2,     0,     0,     9,     1,     0,
-       0,     9,     0,     4,     1,     1,     0,     1,     2,     1,
-       1,     1,     3,     1,     1,     1,     3,     1,     3,     1,
-       3,     1,     1,     1,     3
+       0,     2,     0,     2,     2,     0,     0,     9,     0,     0,
+       9,     0,     4,     1,     1,     0,     1,     2,     1,     1,
+       1,     3,     1,     1,     1,     3,     1,     3,     1,     3,
+       1,     1,     1,     3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -424,80 +422,80 @@ static const unsigned char yyr2[] =
    means the default is an error.  */
 static const unsigned char yydefact[] =
 {
-       2,     0,     0,     1,    15,     0,     0,    12,    14,     8,
-       4,     3,     0,     0,     0,     5,     9,     0,     0,     0,
-      25,    27,    33,     0,    13,    19,    20,    21,    17,     0,
-       0,    32,    31,     0,    23,    29,    24,     0,     0,     0,
-      18,     0,     0,    22,     0,    26,    28,    34,     0,     0,
-      30,     0,     0,     7,    11
+       2,     0,     0,     1,    14,     0,     0,    11,    13,     4,
+       3,     0,     0,     0,     5,     8,     0,     0,     0,    24,
+      26,    32,     0,    12,    18,    19,    20,    16,     0,     0,
+      31,    30,     0,    22,    28,    23,     0,     0,     0,    17,
+       0,     0,    21,     0,    25,    27,    33,     0,     0,    29,
+       0,     0,     7,    10
 };
 
 /* YYDEFGOTO[NTERM-NUM]. */
 static const yysigned_char yydefgoto[] =
 {
-      -1,     1,     2,    28,    18,    41,    19,    42,    14,    29,
-      24,    33,    25,    26,    34,    35,    27
+      -1,     1,     2,    27,    17,    40,    18,    41,    13,    28,
+      23,    32,    24,    25,    33,    34,    26
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -10
+#define YYPACT_NINF -9
 static const yysigned_char yypact[] =
 {
-     -10,     2,    56,   -10,   -10,    -9,    -2,   -10,   -10,   -10,
-     -10,   -10,    12,    17,    21,   -10,   -10,    10,     5,    20,
-     -10,   -10,   -10,    30,   -10,    25,    37,    42,   -10,    32,
-      44,   -10,   -10,    31,    46,   -10,    42,    40,    51,    53,
-     -10,    60,    59,   -10,    43,   -10,   -10,   -10,    57,    58,
-     -10,    62,    63,   -10,   -10
+      -9,     2,    52,    -9,    -9,    -8,    11,    -9,    -9,    -9,
+      -9,     1,     4,    14,    -9,    -9,    51,     5,    19,    -9,
+      -9,    -9,     9,    -9,     6,    17,    23,    -9,    30,    41,
+      -9,    -9,    25,    33,    -9,    23,    35,    36,    39,    -9,
+      46,    48,    -9,    28,    -9,    -9,    -9,    44,    53,    -9,
+      56,    57,    -9,    -9
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yysigned_char yypgoto[] =
 {
-     -10,   -10,   -10,    -1,   -10,   -10,   -10,   -10,   -10,    50,
-     -10,   -10,   -10,   -10,   -10,    33,    52
+      -9,    -9,    -9,    -1,    -9,    -9,    -9,    -9,    -9,    40,
+      -9,    -9,    -9,    -9,    -9,    26,    49
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If zero, do what YYDEFACT says.
    If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -17
+#define YYTABLE_NINF -16
 static const yysigned_char yytable[] =
 {
-      10,    11,     3,     4,    12,     5,     4,     6,     5,   -16,
-       6,    13,     7,     8,     9,     7,     8,     9,    20,    21,
-      22,     4,    15,     5,    23,     6,   -16,    16,    40,    40,
-       7,     8,     9,     4,    17,     5,    -6,     6,    31,    32,
-      22,    37,     7,     8,     9,     4,    43,     5,    45,     6,
-     -10,    31,    32,    38,     7,     8,     9,     4,    39,     5,
-      46,     6,    44,    47,    48,    49,     7,     8,     9,    30,
-      51,    52,    53,    54,     0,    36,     0,    50
+       9,    10,     3,     4,    11,     5,     4,     6,     5,   -15,
+       6,    14,     7,     8,    15,     7,     8,    30,    31,    21,
+       4,    36,     5,    12,     6,   -15,    16,    39,    39,     7,
+       8,     4,    37,     5,    -6,     6,    30,    31,    38,    42,
+       7,     8,     4,    44,     5,    45,     6,    -9,    43,    46,
+      47,     7,     8,     4,    48,     5,    50,     6,    29,    19,
+      20,    21,     7,     8,    22,    51,    52,    53,     0,    49,
+       0,    35
 };
 
 static const yysigned_char yycheck[] =
 {
-       1,     2,     0,     1,    13,     3,     1,     5,     3,     4,
-       5,    13,    10,    11,    12,    10,    11,    12,     8,     9,
-      10,     1,    10,     3,    14,     5,     6,    10,    29,    30,
-      10,    11,    12,     1,    13,     3,     4,     5,     8,     9,
-      10,    16,    10,    11,    12,     1,    15,     3,     8,     5,
-       6,     8,     9,    16,    10,    11,    12,     1,    16,     3,
-       9,     5,    16,    10,     4,     6,    10,    11,    12,    19,
-      13,    13,    10,    10,    -1,    23,    -1,    44
+       1,     2,     0,     1,    12,     3,     1,     5,     3,     4,
+       5,    10,    10,    11,    10,    10,    11,     8,     9,    10,
+       1,    15,     3,    12,     5,     6,    12,    28,    29,    10,
+      11,     1,    15,     3,     4,     5,     8,     9,    15,    14,
+      10,    11,     1,     8,     3,     9,     5,     6,    15,    10,
+       4,    10,    11,     1,     6,     3,    12,     5,    18,     8,
+       9,    10,    10,    11,    13,    12,    10,    10,    -1,    43,
+      -1,    22
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const unsigned char yystos[] =
 {
-       0,    18,    19,     0,     1,     3,     5,    10,    11,    12,
-      20,    20,    13,    13,    25,    10,    10,    13,    21,    23,
-       8,     9,    10,    14,    27,    29,    30,    33,    20,    26,
-      26,     8,     9,    28,    31,    32,    33,    16,    16,    16,
-      20,    22,    24,    15,    16,     8,     9,    10,     4,     6,
-      32,    13,    13,    10,    10
+       0,    17,    18,     0,     1,     3,     5,    10,    11,    19,
+      19,    12,    12,    24,    10,    10,    12,    20,    22,     8,
+       9,    10,    13,    26,    28,    29,    32,    19,    25,    25,
+       8,     9,    27,    30,    31,    32,    15,    15,    15,    19,
+      21,    23,    14,    15,     8,     9,    10,     4,     6,    31,
+      12,    12,    10,    10
 };
 
 #if ! defined (YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -1108,7 +1106,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 156 "hdfeos_das.y"
+#line 155 "hdfeos_das.y"
     {
 		    if (!attr_tab_stack)
 			attr_tab_stack = new vector<AttrTable *>;
@@ -1131,15 +1129,15 @@ yyreduce:
 		;}
     break;
 
-  case 9:
-#line 177 "hdfeos_das.y"
+  case 8:
+#line 176 "hdfeos_das.y"
     {
 		    process_group((parser_arg *)arg, yyvsp[0]);
 		;}
     break;
 
-  case 10:
-#line 181 "hdfeos_das.y"
+  case 9:
+#line 180 "hdfeos_das.y"
     {
 		  /* pop top of stack; store in attr_tab */
 		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
@@ -1147,15 +1145,15 @@ yyreduce:
 		;}
     break;
 
-  case 12:
-#line 188 "hdfeos_das.y"
+  case 11:
+#line 187 "hdfeos_das.y"
     { 
 		    name = yyvsp[0]; 
 		;}
     break;
 
-  case 14:
-#line 192 "hdfeos_das.y"
+  case 13:
+#line 191 "hdfeos_das.y"
     {
 		    ostringstream name, comment;
 		    name << "comment" << commentnum++;
@@ -1175,8 +1173,8 @@ yyreduce:
 		;}
     break;
 
-  case 15:
-#line 210 "hdfeos_das.y"
+  case 14:
+#line 209 "hdfeos_das.y"
     {
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -1192,7 +1190,7 @@ yyreduce:
 		;}
     break;
 
-  case 25:
+  case 24:
 #line 244 "hdfeos_das.y"
     {
 		    /* NB: On the Sun (SunOS 4) strtol does not check for */
@@ -1219,7 +1217,7 @@ yyreduce:
 		;}
     break;
 
-  case 26:
+  case 25:
 #line 268 "hdfeos_das.y"
     {
 		    type = "Int32";
@@ -1240,7 +1238,7 @@ yyreduce:
 		;}
     break;
 
-  case 27:
+  case 26:
 #line 288 "hdfeos_das.y"
     {
 		    type = "Float64";
@@ -1260,7 +1258,7 @@ yyreduce:
 		;}
     break;
 
-  case 28:
+  case 27:
 #line 305 "hdfeos_das.y"
     {
 		    type = "Float64";
@@ -1280,7 +1278,7 @@ yyreduce:
 		;}
     break;
 
-  case 29:
+  case 28:
 #line 324 "hdfeos_das.y"
     {
 		    type = "Float64";
@@ -1300,7 +1298,7 @@ yyreduce:
 		;}
     break;
 
-  case 30:
+  case 29:
 #line 341 "hdfeos_das.y"
     {
 		    type = "Float64";
@@ -1320,7 +1318,7 @@ yyreduce:
 		;}
     break;
 
-  case 33:
+  case 32:
 #line 363 "hdfeos_das.y"
     {
 		    type = "String";
@@ -1345,7 +1343,7 @@ yyreduce:
 		;}
     break;
 
-  case 34:
+  case 33:
 #line 385 "hdfeos_das.y"
     {
 		    type = "String";
@@ -1363,7 +1361,7 @@ yyreduce:
     }
 
 /* Line 1000 of yacc.c.  */
-#line 1367 "hdfeos_das.tab.c"
+#line 1365 "hdfeos_das.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1588,7 +1586,7 @@ yyreturn:
 }
 
 
-#line 397 "hdfeos_das.y"
+#line 396 "hdfeos_das.y"
 
 
 // This function is required for linking, but DODS uses its own error

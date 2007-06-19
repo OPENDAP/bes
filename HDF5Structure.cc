@@ -24,18 +24,16 @@
 #pragma implementation
 #endif
 
-#include "config_hdf5.h"
+// #define DODS_DEBUG
 
 #include <string>
 #include <ctype.h>
+#include "config_hdf5.h"
 #include "hdf5.h"
 #include "h5dds.h"
 #include "HDF5Structure.h"
 #include "InternalErr.h"
-
-// #define DODS_DEBUG
 #include "debug.h"
-
 
 BaseType *
 HDF5Structure::ptr_duplicate()

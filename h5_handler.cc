@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
       HDF5TypeFactory factory;
       DDS dds(&factory);
       ConstraintEvaluator ce;
-      DAS das;
+      // DAS das;
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
       // find_gloattr(file1, das);

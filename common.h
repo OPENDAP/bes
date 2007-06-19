@@ -41,6 +41,7 @@ Author:  Kent Yang(ymuqun@ncsa.uiuc.edu)
 #define STR_FLAG 1
 #define STR_NOFLAG 0
 #define HDF5_softlink "HDF5_softlink"
+#define HDF5_hardlink "HDF5_hardlink"
 #define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
 enum H5GridFlag_t{
      NotGrid,
