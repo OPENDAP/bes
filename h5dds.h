@@ -1,9 +1,25 @@
+////////////////////////////////////////////////////////////////////////////////
+/// \file h5dds.h
+/// \brief Data structure and retrieval processing header
+///
+/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
+/// for HDF5 data.
+///    
+/// It defines functions that describe and retrieve group/dataset from HDF5 files.
+/// 
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+/// \author Muqun Yang <ymuqun@hdfgroup.org>
+///
+/// Copyright (C) 2007	HDF Group, Inc.
+///
+/// Copyright (C) 1999 National Center for Supercomputing Applications.
+///
+/// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 #define MAX_ERROR_MESSAGE 512
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>
 #include <H5Ipublic.h>
-// Did not work with C++. 
-// #include <H5Ppublic.h>
 #include <H5Tpublic.h>
 #include <H5Spublic.h>
 #include <H5Apublic.h>

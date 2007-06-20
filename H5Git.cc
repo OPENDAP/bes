@@ -114,7 +114,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     if ((temp_type == H5T_TIME) ||
 	(temp_type == H5T_BITFIELD) ||
 	(temp_type == H5T_OPAQUE) ||
-	// (temp_type == H5T_COMPOUND)|| <hyokyung 2007.03. 8. 11:02:12>
 	(temp_type == H5T_ENUM)) {
         *ignoreptr = 1;
         attrid = 0;
@@ -425,7 +424,6 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         return 0;
     }
 
-  // memtype = get_memtype(datatype);
   // Using H5T_get_native_type API
    memtype = H5Tget_native_type(datatype,H5T_DIR_ASCEND);
 
@@ -470,7 +468,10 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         dyn_count[i] = (hsize_t) (*count);
         dyn_step[i] = (hsize_t) (*step);
         dyn_offset[i] = (hssize_t) (*offset);
-        // cerr << "count:" << dyn_count[i] << " step:" << dyn_step[i] << " offset:" << dyn_step[i] << endl;	
+        DBG(cerr
+	    << "count:" << dyn_count[i]
+	    << " step:" << dyn_step[i]
+	    << " offset:" << dyn_step[i] << endl);	
         count++;
         step++;
         offset++;
@@ -494,14 +495,6 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         sprintf(error, "error on opening space for dataset %d", dset);
         return 0;
     }
-#if 0
-    rank = H5Sget_simple_extent_ndims(memspace);
-    status_n = H5Sget_simple_extent_dims(memspace, dims1_out, NULL);
-    /*   printf("rank mem %d,dimensions %lu x %lu \n",rank,(unsigned long) (dims1_out[0]),
-       (unsigned long)(dims1_out[1]));
-       printf("read data start\n");fflush(stdout); */
-
-#endif
 
     if (H5Dread
         (dset, memtype, memspace, dataspace, H5P_DEFAULT,
@@ -511,25 +504,6 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
                 dset);
         return 0;
     }
-#if 0
-    if (H5Dread
-        (dset, datatype, dataspace, dataspace, H5P_DEFAULT,
-         (void *) tempbuf) < 0) {
-        fprintf(stdout, "error \n");
-        return -1;
-    }
-
-
-
-    if (H5Dread
-        (dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-         (void *) buf) < 0) {
-        fprintf(stdout, "error \n");
-        fflush(stderr);
-        return -1;
-    }
-#endif
-
 
     H5Sclose(dataspace);
     H5Sclose(memspace);

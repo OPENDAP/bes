@@ -145,19 +145,7 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
       strcpy(t_fpn, full_path_name.c_str());
  
-#if 0 
-      hid_t dgroup = H5Gopen(pid, gname); // Can this be string? <hyokyung 2007.02.20. 10:17:55>
-
-      if (dgroup < 0) {
-	string msg = "h5_dds handler: cannot open hdf5 group";
-
-	msg += gname;
-	throw InternalErr(__FILE__, __LINE__, msg);
-      }
-#endif
-
       // obtain hdf5 dataset handle. 
-      //      if ((get_dataset(dgroup, t_fpn, &dt_inst, Msgt)) < 0) {
       if ((get_dataset(pid, t_fpn, &dt_inst, Msgt)) < 0) {
 	string msg =
 	  "h5_dds handler: get hdf5 dataset wrong for ";
@@ -291,7 +279,6 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
   int perm[DODS_MAX_RANK];  
 
   size_t size = 0;
-
 
   
   DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype << endl);
@@ -471,18 +458,21 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+/// \fn Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
+/// returns the pointer of structure type
+/// 
+/// This function will create a new DODS object that corresponds to HDF5 compound
+/// dataset and return a  pointer of a new structure object of DODS.
+///
+/// \param varname object name
+/// \param dataype datatype id
+/// \param factory DODS object class generator
+/// \return pointer to Structure type
+///
+////////////////////////////////////////////////////////////////////////////////
+// <hyokyung 2007.03. 2. 13:22:20>
 
-// Function:	Get_structure
-//
-// Purpose:	this function will create a new DODS object that corresponds 
-//              with  HDF5 compound dataset and return pointer of a new structure
-//              object of DODS
-//
-// Errors:
-// Return:	pointer of structure type. 
-// In :	        datatype id, object name
-//
-// <hyokyung 2007.03. 2. 13:22:20>  
 static Structure *
 Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
@@ -532,18 +522,6 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 	  BaseType *bt = Get_bt(memb_name, memb_type, factory);
 	  temp_structure->add_var(bt);
 	}
-	
-
-	// Don't close it. Closing can give Unmappable type later in DODS.
-	
-	/*
-	// Close member type ID	  
-	if(H5Tclose(memb_type)<0) {
-	  string msg =
-	    "h5_dds handler: hdf5 compound member type close() function error.";
-	  throw InternalErr(__FILE__, __LINE__, msg);
-	}
-        */
       }
      
   }
@@ -624,16 +602,16 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     delete bt;
 
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
-
+    // DODSGRID is defined in common.h by default.
 #ifdef DODSGRID
 
     H5GridFlag_t check_grid;
 
 
-    /* 1. Check whether this HDF5 dataset can be mapped to the grid data
-       Should check whether the attribute includes dimension list;
-       If yes and everything is valid, map to DAP grid;
-       Otherwise, map to DAP array. */
+    // Check whether this HDF5 dataset can be mapped to the grid data
+    //  Should check whether the attribute includes dimension list;
+    //   If yes and everything is valid, map to DAP grid;
+    //   Otherwise, map to DAP array. 
  
     check_grid = maptogrid(dt_inst.dset,dt_inst.ndims);
     
@@ -652,7 +630,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       char *buf;
 
            
-      gr = dds_table.get_factory()->NewGrid(varname);/* using varname rather than new_name */
+      gr = dds_table.get_factory()->NewGrid(varname); // using varname rather than new_name 
       // First fill the array part of the grid.
       pr = array;
       gr->add_var(ar,pr);
@@ -660,8 +638,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
  
       DBG(cerr << "add_var()" << endl);
 
-      /* obtain dimensional scale name, it should be a list of dimensional name,
-         Here we will distinguish old h4h5 tool or new h4h5 tool */
+      // Obtain dimensional scale name, it should be a list of dimensional name.
+      // Here we will distinguish old h4h5 tool or new h4h5 tool. 
       if(check_grid == NewH4H5Grid) {
         if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONNAMELIST))<0){
           throw 
@@ -693,7 +671,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
       H5Sclose(temp_dspace);
       H5Aclose(attr_id);
 
-      //obtain dimensional scale data information 
+      // obtain dimensional scale data information 
       if(check_grid == NewH4H5Grid) {
         if((attr_id=H5Aopen_name(dt_inst.dset,HDF5_DIMENSIONLIST))<0){
           throw 
@@ -835,8 +813,17 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   DBG(cerr << "<read_objects_base_type(dds)" << endl);  
 }
 
-///
-/// @see LoadStructreFrom... in hdf4_handler/hc2dap.cc 
+////////////////////////////////////////////////////////////////////////////////
+/// \fn read_objects_structure(DDS & dds_table,const string & varname,
+///                  const string & filename)
+/// fills in information of a structure dataset (name, data type, data space)
+/// into a DDS table.
+/// 
+///    \param dds_table Destination for the HDF5 objects. 
+///    \param varname Absolute name of structure
+///    \param filename Added to the DDS (dds_table).
+///    \throw error a string of error message to the dods interface.
+////////////////////////////////////////////////////////////////////////////////  
 void
 read_objects_structure(DDS & dds_table, const string & varname,
 		       const string & filename)

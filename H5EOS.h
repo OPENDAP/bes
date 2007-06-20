@@ -1,17 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
-/// for HDF5 data.
-///
-/// This file contains functions that parses NASA EOS StructMetadata and generates
-/// the necessary data for OPeNDAP.
-///
-/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-///
-/// Copyright (c) 2007 HDF Group
-///
-/// All rights reserved.
-//////////////////////////////////////////////////////////////////////////////////
-
 #ifndef _H5EOS_H
 #define _H5EOS_H
 
@@ -26,6 +12,15 @@
 
 using namespace std;
 
+/// A class for handling NASA EOS data.
+/// This class contains functions that parse NASA EOS StructMetadata
+/// and prepares the necessary (grid) data for OPeNDAP.
+///
+/// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+///
+/// Copyright (c) 2007 HDF Group
+///
+/// All rights reserved.
 class H5EOS {
   
 private:

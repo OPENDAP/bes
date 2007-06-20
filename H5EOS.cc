@@ -1,5 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////
+// This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
+// Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+// Copyright (c) 2007 HDF Group, Inc.
 //
+/////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
 #include "debug.h"
 #include "H5EOS.h"
@@ -42,8 +47,11 @@ bool H5EOS::has_group(hid_t id, const char* name)
 
 bool H5EOS::has_dataset(hid_t id, const char* name)
 {
-
-  if(H5Dopen(id, name) <0){
+  hid_t hid;
+  H5E_BEGIN_TRY {
+    hid = H5Dopen(id, name);
+  } H5E_END_TRY; // <hyokyung 2007.06.20. 10:25:25>
+  if( hid < 0){
     return false;
   }
   else{
@@ -126,8 +134,7 @@ bool H5EOS::check_eos(hid_t id)
 }
 
 
-// Check if this class has parsed the argument "name" as grid.
-
+// Check if this class parsed the argument "name" as grid.
 // Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
 void H5EOS::get_dimensions(const string name, vector<string>& tokens)
 {

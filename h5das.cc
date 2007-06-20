@@ -50,7 +50,7 @@ static const char FLOAT_ELSE[]="Float_else";
 
 /// EOS parser related variables
 struct yy_buffer_state;
-int hdfeos_dasparse(void *arg);      // defined in hdfeos.tab.c
+int hdfeos_dasparse(void *arg);      // defined in hdfeos.tab.cc
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
 
@@ -89,24 +89,12 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
   
   read_comments(das, gname, pid);
   
-#ifdef NONE  
-  int oid = get_hardlink(pid, gname);
-  // Break the cyclic loop created by hard links.
-  if(oid != 0)
-  {
-    // Add attribute table with HARDLINK
-    AttrTable* at = das.add_table(gname, new AttrTable);
-    at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
-  }
-#endif
-  
   if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
     msg += gname;
     throw InternalErr(__FILE__, __LINE__, msg);
   }
-
 
   
   for (int i = 0; i < nelems; i++) {
@@ -287,10 +275,6 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 static char *
 print_attr(hid_t type, int loc, void *sm_buf)
 {
-#if 0
-  int i;
-#endif
-  
   int ll;
   int str_size = 0;
   
@@ -332,7 +316,7 @@ print_attr(hid_t type, int loc, void *sm_buf)
 
       gp.tcp = (char *) sm_buf;
       tuchar = *(gp.tcp + loc);
-      //represent uchar with numerical form since at
+      // represent uchar with numerical form since at
       // NASA aura files, type of missing value is unsigned char. ky 2007-5-4
       sprintf(rep, "%u", tuchar);
       //sprintf(rep, "%c", tuchar);
@@ -441,21 +425,8 @@ print_attr(hid_t type, int loc, void *sm_buf)
     rep = new char[str_size+3];    
     sprintf(rep, "\"%s\"", buf);
     rep[str_size+2] = '\0';
-    
-#ifdef KENT
-    //  This fails at tstring-at.h5 test. <hyokyung 2007.06. 7. 10:59:43>
-    rep = new char[H5Tget_size(type) + 3];	    
-    bzero(rep, H5Tget_size(type) + 3);
-    sprintf(rep, "\"%s\"", (char *) sm_buf);
-    rep[str_size+2] = '\0';
-#endif
-    
     break;
 
-    // Is this correct? Note: We have to allocate storage since the
-    // caller will use delete on the value returned here. 7/25/2001 jhrg
-
-    // What's the suggestion? <hyokyung 2007.02.20. 11:57:36>
   default:
     rep = new char[1];
     rep[0] = '\0';
@@ -559,11 +530,6 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
   int ignore_attr;
   int loc;
-
-#if 0
-  char CHA_SLASH = '_';
-  char *cptr;
-#endif
 
   ignore_attr = 0;
 
@@ -1053,10 +1019,9 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn get_hardlink(DAS & das, hid_t pgroup, const string & oname, int index)
+/// \fn get_hardlink(hid_t pgroup, const string & oname)
 /// will put hardlink information into a DAS table.
 ///
-/// \param das DAS object: reference
 /// \param pgroup object id
 /// \param oname object name: absolute name of a group
 ///
@@ -1080,7 +1045,7 @@ get_hardlink(hid_t pgroup, const string & oname)
   DBG(cerr << ">get_hardlink():" << oname << endl);
 
   const char *temp_oname = oname.c_str();
-  // get the target information at statbuf. 
+  // Get the target information at statbuf. 
   herr_t ret = H5Gget_objinfo(pgroup, temp_oname, 0, &statbuf);
   
   if (ret < 0) {

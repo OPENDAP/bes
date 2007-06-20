@@ -1,10 +1,15 @@
+////////////////////////////////////////////////////////////////////////////////
 /// \file h5_handler.cc
 /// \brief main program source.
 ///
+/// \author  Muqun Yang (ymuqun@ncsa.uiuc.edu)
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+/// 
 /// Copyright (C) 2007	HDF Group, Inc.
 ///
 /// Copyright (C) 1999	National Center for Supercomputing Applications.
 ///		All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
 #include "h5_handler.h"
 
@@ -42,9 +47,9 @@ int main(int argc, char *argv[])
     if (file1 < 0)
       throw Error(no_such_file, string("Could not open hdf5 file: ")
 		  + df.get_dataset_name());
-
+    
+    // Check if it is EOS file.
     DBG(cerr << "checking EOS file" << endl);
-
     if(eos.check_eos(file1)){
       DBG(cerr << "eos file is detected" << endl);
       eos.set_dimension_array();
@@ -73,15 +78,9 @@ int main(int argc, char *argv[])
       HDF5TypeFactory factory;
       DDS dds(&factory);
       ConstraintEvaluator ce;
-      // DAS das;
-      // Check if it is EOS file.
-
 		
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
-      // find_gloattr(file1, das);
-      DBG(cerr << ">dds.transfer_attributesr" << endl);		
-      // dds.transfer_attributes(&das); // ? <hyokyung 2007.02.20. 13:31:49>
       DBG(cerr << ">df.send_dds()" << endl);				
       df.send_dds(dds, ce, true);
       break;
@@ -93,12 +92,9 @@ int main(int argc, char *argv[])
       HDF5TypeFactory factory;
       DDS dds(&factory);
       ConstraintEvaluator ce;
-      // DAS das;
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
-      // find_gloattr(file1, das);
-      // dds.transfer_attributes(&das);
-      df.send_data(dds, ce, stdout); // ? <hyokyung 2007.02.20. 13:32:00>
+      df.send_data(dds, ce, stdout); 
       break;
     }
 
@@ -111,9 +107,6 @@ int main(int argc, char *argv[])
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
       find_gloattr(file1, das);
-      //depth_first(file1, "/", das,
-      //            df.get_dataset_name().c_str());
-
       dds.transfer_attributes(&das);
       df.send_ddx(dds, ce, stdout);
       break;
@@ -144,7 +137,6 @@ int main(int argc, char *argv[])
     return 1;
   }
   catch(...) {
-    // May not be right? <hyokyung 2007.02.20. 13:32:35>
     string s("h5_handler: Unknown exception");
     ErrMsgT(s);
     Error e(unknown_error, s);

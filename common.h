@@ -1,25 +1,18 @@
-/*-------------------------------------------------------------------------
- *
- * Copyright (C) 2001   National Center for Supercomputing Applications.
- *                      All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
+///////////////////////////////////////////////////////////////////////////////
+/// \file common.h
+/// \brief a header for common constants and global structures
+/// 
+/// This file is a header file that includes common constants and global
+/// structures of the server. 
+///
+/// \author  Muqun Yang (ymuqun@ncsa.uiuc.edu)
+/// 
+/// Copyright (C) 2007	HDF Group, Inc.
+///
+/// Copyright (C) 2001   National Center for Supercomputing Applications.
+///                      All rights reserved.
+///////////////////////////////////////////////////////////////////////////////
 
-/****************************************************************************
-
-  Description: 
-
-1. HDF5-DODS server
-
-See HDF5-DODS server specification for detailed description.
- 
-This file is a header file that includes common constants and global
-structures of the server. 
-
-Author:  Kent Yang(ymuqun@ncsa.uiuc.edu)
-
-*****************************************************************************/
 #ifndef _common_H
 #define _common_H
 
@@ -43,6 +36,7 @@ Author:  Kent Yang(ymuqun@ncsa.uiuc.edu)
 #define HDF5_softlink "HDF5_softlink"
 #define HDF5_hardlink "HDF5_hardlink"
 #define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
+
 enum H5GridFlag_t{
      NotGrid,
      OldH4H5Grid,

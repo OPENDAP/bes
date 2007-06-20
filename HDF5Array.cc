@@ -439,13 +439,6 @@ HDF5Array::linearize_multi_dimensions(int* start, int* stride, int* count, int* 
     // loop through the index 
 
     while(temp_count_dim < d_num_dim) {
-#ifdef KENT_ORIG
-      // Obtain the index 	
-      //  starting from the fastest changing dimension,
-      //   calculate the index of each dimension and add it up	
-      temp_index = (start[temp_count_dim]+
-		    (temp_count[temp_count_dim]-1)*stride[temp_count_dim])*temp_dim;
-#endif
       temp_index = (start[d_num_dim - 1 - temp_count_dim]+
 		    (temp_count[d_num_dim - 1 - temp_count_dim]-1)*stride[d_num_dim - 1 - temp_count_dim])*temp_dim;	
       array_index =array_index+temp_index;
