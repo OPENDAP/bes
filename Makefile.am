@@ -27,7 +27,7 @@ libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
 libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
 libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_LIBS)
-dist_bin_SCRIPTS = configure-hdf4-data.sh
+dist_bin_SCRIPTS = bes-hdf4-data.sh
 
 endif
 
@@ -69,8 +69,8 @@ CLEANFILES = *~ *.log *.sum
 
 if OPENDAPSERVER
 
-EXTRA_DIST += configure-hdf4-data.sh.in
-CLEANFILES += configure-hdf4-data.sh
+EXTRA_DIST += bes-hdf4-data.sh.in
+CLEANFILES += bes-hdf4-data.sh
 
 sample_datadir = $(datadir)/hyrax/data/hdf
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
@@ -79,19 +79,19 @@ do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 		   	   -e 's,[@]libdir[@],$(libdir),g' \
 		   	   -e 's,[@]datadir[@],$(datadir),g'
 
-configure-hdf4-data.sh: configure-hdf4-data.sh.in Makefile
-	$(do_subst) < $(srcdir)/configure-hdf4-data.sh.in > configure-hdf4-data.sh
-	chmod +x configure-hdf4-data.sh
+bes-hdf4-data.sh: bes-hdf4-data.sh.in Makefile
+	$(do_subst) < $(srcdir)/bes-hdf4-data.sh.in > bes-hdf4-data.sh
+	chmod +x bes-hdf4-data.sh
 
 # This makes sure that the handler modifies the bes  which confiure found
 # even with distcheck is run.
-install-data-hook: configure-hdf4-data.sh
+install-data-hook: bes-hdf4-data.sh
 	(bes_prefix=`bes-config --prefix` ; \
 	if test "$$bes_prefix" = "/usr" ; \
 	 then \
-	    ./configure-hdf4-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
+	    ./bes-hdf4-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
 	else \
-	    ./configure-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
+	    ./bes-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
 	fi)
 
 endif
@@ -129,10 +129,10 @@ PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/P
 pkg:
 	rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg
 	./configure --prefix=/usr $(PKG_CONFIGURE_FLAGS)
-	make configure-hdf4-data.sh
-	cp configure-hdf4-data.sh configure-hdf4-data.sh.macosx
+	make bes-hdf4-data.sh
+	cp bes-hdf4-data.sh bes-hdf4-data.sh.macosx
 	./configure --prefix=`pwd`/mac_osx $(PKG_CONFIGURE_FLAGS)
 	make clean install
-	mv configure-hdf4-data.sh.macosx mac_osx/bin/configure-hdf4-data.sh
+	mv bes-hdf4-data.sh.macosx mac_osx/bin/bes-hdf4-data.sh
 	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg -f mac_osx -ds -r OSX_Resources -i OSX_Resources/Info.plist -d OSX_Resources/Description.plist
 
