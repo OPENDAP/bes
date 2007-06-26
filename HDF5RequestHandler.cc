@@ -54,7 +54,7 @@ extern "C" {
 }
 */
 
-HDF5RequestHandler::HDF5RequestHandler(string name)
+HDF5RequestHandler::HDF5RequestHandler(const string &name)
 :BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);

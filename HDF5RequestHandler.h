@@ -32,7 +32,7 @@
 
 class HDF5RequestHandler : public BESRequestHandler {
 public:
-			HDF5RequestHandler( string name ) ;
+			HDF5RequestHandler( const string &name ) ;
     virtual		~HDF5RequestHandler( void ) ;
 
     static bool		hdf5_build_das( BESDataHandlerInterface &dhi ) ;
