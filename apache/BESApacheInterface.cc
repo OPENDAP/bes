@@ -48,7 +48,7 @@ using std::endl ;
 #include "BESAggregationServer.h"
 #include "BESDataNames.h"
 
-#define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
+#define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
 /** @brief Instantiate a BESApacheInterface object
 

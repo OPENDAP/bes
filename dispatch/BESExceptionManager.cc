@@ -46,7 +46,7 @@
 #include "TheBESKeys.h"
 #include "BESInfoList.h"
 
-#define DEFAULT_ADMINISTRATOR "support@unidata.ucar.edu"
+#define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
 BESExceptionManager *BESExceptionManager::_instance = 0 ;
 
