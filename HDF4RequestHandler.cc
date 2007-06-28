@@ -100,7 +100,8 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
     DAS *das = bdas->get_das();
 
     try {
-        read_das(*das, _cachedir, dhi.container->access());
+	string accessed = dhi.container->access();
+        read_das(*das, _cachedir, accessed);
     }
     catch(dhdferr & d) {
 	string err = "hdf4 handler: " + d.errmsg() ;
@@ -135,11 +136,12 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
     try {
         HDFTypeFactory *factory = new HDFTypeFactory;
         dds->set_factory(factory);
-        dds->filename(dhi.container->access());
-        read_dds(*dds, _cachedir, dhi.container->access());
+	string accessed = dhi.container->access();
+        dds->filename(accessed);
+        read_dds(*dds, _cachedir, accessed);
         
         DAS das;
-        read_das(das, _cachedir, dhi.container->access());
+        read_das(das, _cachedir, accessed);
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
@@ -178,11 +180,12 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
     try {
         HDFTypeFactory *factory = new HDFTypeFactory;
         dds->set_factory(factory);
-        dds->filename(dhi.container->access());
-        read_dds(*dds, _cachedir, dhi.container->access());
+	string accessed = dhi.container->access();
+        dds->filename(accessed);
+        read_dds(*dds, _cachedir, accessed);
         
         DAS das;
-        read_das(das, _cachedir, dhi.container->access());
+        read_das(das, _cachedir, accessed);
         dds->transfer_attributes(&das);
         
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
