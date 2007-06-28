@@ -32,6 +32,9 @@ public:
                           const string &escape = "%",
 		          const string &except = "" ) ;
     static string unhexstring( string s ) ;
+
+    /** Convert a string to all lower case **/
+    static string lowercase( const string &s ) ;
 } ;
 
 #endif // E_BESUtil_h

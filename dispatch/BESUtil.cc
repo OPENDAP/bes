@@ -134,3 +134,15 @@ BESUtil::www2id(const string &in, const string &escape, const string &except)
     return res;
 }
 
+string
+BESUtil::lowercase( const string &s )
+{
+    string return_string = s ;
+    for( int j = 0; j < return_string.length(); j++ )
+    {
+	return_string[j] = (char)tolower( return_string[j] ) ;
+    }
+
+    return return_string ;
+}
+
