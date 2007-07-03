@@ -9,7 +9,7 @@ URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:   libdap-devel >= 3.7.5 hdf-devel
-#Requires:        bes
+BuildRequires:   bes-devel
 
 %description
 This is the hdf4 data handler for our data server. It reads HDF4 and HDF-EOS
@@ -20,26 +20,14 @@ dap-server software.
 %setup -q
 
 %build
-%configure
+%configure --disable-dependency-tracking --disable-static
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-# pre: commands to run before install; post: commnds run after install;
-# preun; postun for commands before and after uninstall
-
-%post -p /sbin/ldconfig
-
-# Only try to configure the bes.conf file if the bes can be found.
-if bes-config --version >/dev/null 2>&1
-then
-	bes_prefix=`bes-config --prefix`
-	configure-hdf4-data.sh $bes_prefix/etc/bes/bes.conf $bes_prefix/lib/bes
-fi
-
-%postun -p /sbin/ldconfig
+rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf4_module.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -47,10 +35,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/dap_hdf4_handler
-%{_bindir}/configure-hdf4-data.sh
-%{_libdir}/
-%{_libdir}/bes/
-%{_datadir}/hyrax/data/hdf
+%{_bindir}/bes-hdf4-data.sh
+%{_libdir}/bes/libhdf4_module.so
+%{_datadir}/hyrax/
 %doc COPYING COPYRIGHT_URI NEWS README
 
 %changelog

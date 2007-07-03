@@ -85,7 +85,7 @@ bes-hdf4-data.sh: bes-hdf4-data.sh.in Makefile
 
 # This makes sure that the handler modifies the bes  which confiure found
 # even with distcheck is run.
-install-data-hook: bes-hdf4-data.sh
+bes-conf: bes-hdf4-data.sh
 	(bes_prefix=`bes-config --prefix` ; \
 	if test "$$bes_prefix" = "/usr" ; \
 	 then \
