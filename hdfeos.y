@@ -209,7 +209,9 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
     data_field_name.append($3);
     full_path.append(data_field_name);
     ((H5EOS*)(h5eos))->add_data_path(full_path);
-    // cout << "Full Path is:" << full_path << endl;
+#ifdef VERBOSE    
+    cout << "add_data_path:" << full_path << endl;
+#endif    
   }
 }
 ;

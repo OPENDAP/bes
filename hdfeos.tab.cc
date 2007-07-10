@@ -368,8 +368,8 @@ static const unsigned short yyrline[] =
        0,    65,    65,    66,    67,    68,    69,    70,    71,    75,
       76,    78,    79,    80,   107,   125,   126,   127,   128,   129,
      130,   131,   132,   133,   134,   136,   152,   163,   174,   182,
-     189,   188,   204,   218,   217,   227,   226,   238,   237,   246,
-     257
+     189,   188,   204,   220,   219,   229,   228,   240,   239,   248,
+     259
 };
 #endif
 
@@ -1254,13 +1254,15 @@ yyreduce:
     data_field_name.append(yyvsp[0]);
     full_path.append(data_field_name);
     ((H5EOS*)(h5eos))->add_data_path(full_path);
-    // cout << "Full Path is:" << full_path << endl;
+#ifdef VERBOSE    
+    cout << "add_data_path:" << full_path << endl;
+#endif    
   }
 ;}
     break;
 
   case 33:
-#line 218 "hdfeos.y"
+#line 220 "hdfeos.y"
     {
 #ifdef VERBOSE	
 	cout << "GROUP=" << yyvsp[0] <<  endl;
@@ -1269,7 +1271,7 @@ yyreduce:
     break;
 
   case 35:
-#line 227 "hdfeos.y"
+#line 229 "hdfeos.y"
     {
 #ifdef VERBOSE	
 	cout << yyvsp[0] <<  endl; // $3 refers the STR
@@ -1279,7 +1281,7 @@ yyreduce:
     break;
 
   case 37:
-#line 238 "hdfeos.y"
+#line 240 "hdfeos.y"
     {
 #ifdef VERBOSE	
 	 cout <<  yyvsp[0]  <<  endl;
@@ -1288,7 +1290,7 @@ yyreduce:
     break;
 
   case 39:
-#line 247 "hdfeos.y"
+#line 249 "hdfeos.y"
     {
   // Set valid_projection flag to "true".
   valid_projection = true;
@@ -1301,7 +1303,7 @@ yyreduce:
     break;
 
   case 40:
-#line 258 "hdfeos.y"
+#line 260 "hdfeos.y"
     {
 #ifdef VERBOSE  
   cerr << "Got wrong projection " << endl;
@@ -1313,7 +1315,7 @@ yyreduce:
     }
 
 /* Line 1000 of yacc.c.  */
-#line 1317 "hdfeos.tab.c"
+#line 1319 "hdfeos.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1538,7 +1540,7 @@ yyreturn:
 }
 
 
-#line 267 "hdfeos.y"
+#line 269 "hdfeos.y"
 
 
 // This function is required for linking, but DODS uses its own error

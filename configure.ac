@@ -54,6 +54,13 @@ AC_CHECK_HDF5(
   ]
 )
 
+AC_ARG_ENABLE([short-path], 
+	     [AS_HELP_STRING([--enable-short-path=yes],[Short path name will be used instead of full path])],
+	     [use_short_path=$enableval],[use_short_path=no])
+if test "${use_short_path}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DSHORT_PATH"
+fi 
+
 AC_ARG_ENABLE([eos-grid], 
 	     [AS_HELP_STRING([--enable-eos-grid=yes],[NASA EOS file grid mapping support will be added])],
 	     [use_eos_grid=$enableval],[use_eos_grid=yes])

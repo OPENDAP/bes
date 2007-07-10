@@ -282,6 +282,10 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
 
   
   DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype << endl);
+
+#ifdef SHORT_PATH
+  varname = get_short_name(varname);
+#endif
   
   switch (H5Tget_class(datatype)) {
 
@@ -478,7 +482,9 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
 
   Structure *temp_structure = NULL;
-  
+#ifdef SHORT_PATH
+  varname = get_short_name(varname);
+#endif  
   DBG(cerr << ">Get_structure()" << datatype <<  endl);
   if(H5Tget_class(datatype) == H5T_COMPOUND) {
     
@@ -557,7 +563,7 @@ Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 ///    \throw error a string of error message to the dods interface.
 ////////////////////////////////////////////////////////////////////////////////
 void
-read_objects_base_type(DDS & dds_table, const string & varname,
+read_objects_base_type(DDS & dds_table, const string & a_name,
 		       const string & filename)
 {
   Array *ar;
@@ -568,7 +574,8 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   
   dds_table.set_dataset_name(name_path(filename));
 
-
+  string varname = a_name;
+  
   // Get base type. It should be int, float and double etc. atomic datatype.   
   BaseType *bt = Get_bt(varname, dt_inst.type,
 			dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
@@ -588,6 +595,11 @@ read_objects_base_type(DDS & dds_table, const string & varname,
   // Next, deal with array and grid data. 
   else {
     int dim_index;
+    
+#ifdef SHORT_PATH
+  varname = get_short_name(varname);
+#endif
+    
     ar = dds_table.get_factory()->NewArray(varname);
 
     (dynamic_cast < HDF5Array * >(ar))->set_did(dt_inst.dset);
@@ -784,10 +796,13 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 	// Retriev the full path to the each dimension name.
 	string str_grid_name = eos.get_grid_name(varname);
 	string str_dim_full_name = str_grid_name + str_dim_name;
-	
+
 	int dim_size = eos.get_dimension_size(str_dim_full_name);
 
-	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
+#ifdef SHORT_PATH
+	str_dim_full_name = str_dim_name;
+#endif
+	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);	
 	ar = new Array(str_dim_full_name, 0);
 	ar->add_var(bt);            
 	ar->append_dim(dim_size, str_dim_full_name);
@@ -903,3 +918,11 @@ read_objects(DDS & dds_table, const string & varname,
   }
 }
 
+#ifdef SHORT_PATH
+string
+get_short_name(string varname)
+{
+  int pos = varname.find_last_of('/', varname.length() - 1);
+  return varname.substr(pos+1);  
+}
+#endif

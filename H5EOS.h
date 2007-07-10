@@ -40,6 +40,9 @@ private:
 
   bool has_group(hid_t id, const char* name);
   bool has_dataset(hid_t id, const char* name);
+#ifdef SHORT_PATH
+  string get_short_name(string a_name);
+#endif
   
 public:
   
@@ -54,15 +57,15 @@ public:
   float point_right;
 
   
-  void   add_data_path(const string full_path);
-  void   add_dimension_list(const string full_path, const string dimension_list);
-  void   add_dimension_map(const string dimension_name, int dimension);  
+  void   add_data_path(string full_path);
+  void   add_dimension_list(string full_path, string dimension_list);
+  void   add_dimension_map(string dimension_name, int dimension);  
   bool   check_eos(hid_t id);
-  int    get_dimension_data_location(const string name);
-  int    get_dimension_size(const string name);
-  void   get_dimensions(const string name, vector<string>& tokens);
-  string get_grid_name(const string full_path);
-  bool   is_grid(const string name);  
+  int    get_dimension_data_location(string name);
+  int    get_dimension_size(string name);
+  void   get_dimensions(string name, vector<string>& tokens);
+  string get_grid_name(string full_path);
+  bool   is_grid(string name);  
   bool   is_valid();
   void   print(); // For debugging
   bool   set_dimension_array();

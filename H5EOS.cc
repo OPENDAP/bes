@@ -6,6 +6,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
+// #define FULL_TEST
 #include "debug.h"
 #include "H5EOS.h"
 #include <iostream>
@@ -59,22 +60,36 @@ bool H5EOS::has_dataset(hid_t id, const char* name)
   }
 }
 
-void H5EOS::add_data_path(const string full_path)
+void H5EOS::add_data_path(string full_path)
 {
-  full_data_paths.push_back(full_path);
+#ifdef SHORT_PATH
+  full_path = get_short_name(full_path);
+#endif
+  
   DBG(cerr << "Full path is:" << full_path << endl);
+  full_data_paths.push_back(full_path);  
 }
 
 
-void H5EOS::add_dimension_list(const string full_path, const string dimension_list)
+void H5EOS::add_dimension_list(string full_path, string dimension_list)
 {
+
+#ifdef SHORT_PATH
+  full_path = get_short_name(full_path);
+  dimension_list = get_short_name(dimension_list);  
+#endif
+  
   full_data_path_to_dimension_list_map[full_path] =  dimension_list;
   DBG(cerr << "Dimension List is:" << full_data_path_to_dimension_list_map[full_path] << endl);
 }
 
-void H5EOS::add_dimension_map(const string dimension_name, int dimension)
+void H5EOS::add_dimension_map(string dimension_name, int dimension)
 {
   bool has_dimension = false;
+#ifdef SHORT_PATH
+  dimension_name = get_short_name(dimension_name);  
+#endif
+  
   int i;
   for(i=0; i < dimensions.size(); i++){
     std::string str = dimensions.at(i);
@@ -125,7 +140,7 @@ bool H5EOS::check_eos(hid_t id)
 	    valid = true;
 	    return valid;
 	  }
-#ifdef FULL_test	
+#ifdef FULL_TEST	
       }
     }
 #endif    
@@ -136,7 +151,7 @@ bool H5EOS::check_eos(hid_t id)
 
 // Check if this class parsed the argument "name" as grid.
 // Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
-void H5EOS::get_dimensions(const string name, vector<string>& tokens)
+void H5EOS::get_dimensions(string name, vector<string>& tokens)
 {
   string str = full_data_path_to_dimension_list_map[name];
   // Skip delimiters at beginning.
@@ -155,13 +170,13 @@ void H5EOS::get_dimensions(const string name, vector<string>& tokens)
     } 
 }
 // Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
-int H5EOS::get_dimension_size(const string name)
+int H5EOS::get_dimension_size(string name)
 {
   return dimension_map[name];
 }
 
 // Check if this class has parsed the argument "name" as grid.
-bool H5EOS::is_grid(const string name)
+bool H5EOS::is_grid(string name)
 {
   int i;
   for(i=0; i < full_data_paths.size(); i++){
@@ -255,3 +270,10 @@ int H5EOS::get_dimension_data_location(string dimension_name)
   return -1;
 }
 
+#ifdef SHORT_PATH
+string H5EOS::get_short_name(string varname)
+{
+  int pos = varname.find_last_of('/', varname.length() - 1);
+  return varname.substr(pos+1);    
+}
+#endif
