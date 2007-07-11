@@ -37,7 +37,7 @@
 #include "BESRequestHandlerList.h"
 #include "BESDapTransmit.h"
 
-#include "BESLog.h"
+#include "BESDebug.h"
 
 BESDDXResponseHandler::BESDDXResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -69,7 +69,7 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    (*BESLog::TheLog()) << "Entering BESDDXResponseHandler::execute" << endl;
+    BESDEBUG( "Entering BESDDXResponseHandler::execute" << endl )
     
     dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
@@ -103,6 +103,8 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 
     dhi.action = DDX_RESPONSE ;
     _response = bdds ;
+
+    BESDEBUG( "Leaving BESDDXResponseHandler::execute" << endl )
 }
 
 /** @brief transmit the response object built by the execute command

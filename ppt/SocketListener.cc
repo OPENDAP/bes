@@ -127,7 +127,7 @@ SocketListener::accept()
 	    int s = s_ptr->getSocketDescriptor() ;
 	    if ( FD_ISSET( s, &read_fd ) )  
 	    {    
-		struct sockaddr_in from ;
+		struct sockaddr from ;
 		int len_from = sizeof( from ) ;
 #ifdef _ACCEPT_USES_SOCKLEN_T 
 		msgsock = ::accept( s, (struct sockaddr *)&from,
@@ -136,7 +136,7 @@ SocketListener::accept()
 		msgsock = ::accept( s, (struct sockaddr *)&from,
 		                    &len_from ) ;
 #endif
-		return s_ptr->newSocket( msgsock, from ) ;
+		return s_ptr->newSocket( msgsock, (struct sockaddr *)&from );
 	    }
 	}
     }

@@ -56,7 +56,7 @@ public:
     				BESCatalogList() {}
     virtual			~BESCatalogList() ;
     virtual bool		add_catalog( BESCatalog *catalog ) ;
-    virtual bool		rem_catalog( const string &catalog_name ) ;
+    virtual bool		del_catalog( const string &catalog_name ) ;
     virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,

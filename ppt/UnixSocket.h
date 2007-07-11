@@ -49,8 +49,8 @@ public:
 				    : _unixSocket( unixSocket ),
 				      _tempSocket( "" ) {}
     				UnixSocket( int socket,
-				            const struct sockaddr_in &f )
-				    : Socket( socket, f ),
+				            struct sockaddr *addr )
+				    : Socket( socket, addr ),
 				      _unixSocket( "" ),
 				      _tempSocket( "" ) {}
     virtual			~UnixSocket() {}
@@ -59,9 +59,9 @@ public:
     virtual void		listen() ;
 
     virtual Socket *		newSocket( int socket,
-                                           const struct sockaddr_in &f )
+                                           struct sockaddr *addr )
 				{
-				    return new UnixSocket( socket, f ) ;
+				    return new UnixSocket( socket, addr ) ;
 				}
 
     virtual void		dump( ostream &strm ) const ;

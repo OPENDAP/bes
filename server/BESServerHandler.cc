@@ -125,6 +125,10 @@ BESServerHandler::handle( Connection *c )
 void
 BESServerHandler::execute( Connection *c )
 {
+    ostringstream strm ;
+    strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort() ;
+    string from = strm.str() ;
+
     for(;;)
     {
 	ostringstream ss ;
@@ -140,7 +144,7 @@ BESServerHandler::execute( Connection *c )
 	int holder = dup( STDOUT_FILENO ) ;
 	dup2( c->getSocket()->getSocketDescriptor(), STDOUT_FILENO ) ;
 	
-	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ) ) ;
+	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ), from ) ;
 	int status = cmd.execute_request() ;
 
 	fflush( stdout ) ;

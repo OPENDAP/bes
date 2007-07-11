@@ -54,8 +54,8 @@ public:
 				      _host( "" ),
 				      _portVal( portVal ) {}
     				TcpSocket( int socket,
-				           const struct sockaddr_in &f )
-				    : Socket( socket, f ),
+				           struct sockaddr *addr )
+				    : Socket( socket, addr ),
 				      _host( "" ),
 				      _portVal( 0 ) {}
     virtual			~TcpSocket() {}
@@ -63,9 +63,9 @@ public:
     virtual void		listen() ;
 
     virtual Socket *		newSocket( int socket,
-                                           const struct sockaddr_in &f )
+                                           struct sockaddr *addr )
 				{
-				    return new TcpSocket( socket, f ) ;
+				    return new TcpSocket( socket, addr ) ;
 				}
 
     virtual void		dump( ostream &strm ) const ;

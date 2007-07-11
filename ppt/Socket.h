@@ -47,7 +47,8 @@ protected:
     int				_socket ;
     bool			_connected ;
     bool			_listening ;
-    struct sockaddr_in		_from ;
+    string			_ip ;
+    unsigned int		_port ;
     bool			_addr_set ;
 public:
     				Socket()
@@ -56,11 +57,7 @@ public:
 				      _listening( false ),
 				      _addr_set( false ) {}
 				Socket( int socket,
-				        const struct sockaddr_in & )
-				    : _socket( socket ),
-				      _connected( true ),
-				      _listening( false ),
-				      _addr_set( true ) {}
+				        struct sockaddr *addr ) ;
     virtual			~Socket() { close() ; }
     virtual void		connect() = 0 ;
     virtual bool		isConnected() { return _connected ; }
@@ -73,9 +70,17 @@ public:
 				{
 				    return _socket ;
 				}
+    unsigned int		getPort()
+				{
+				    return _port ;
+				}
+    string			getIp()
+				{
+				    return _ip ;
+				}
 
     virtual Socket *		newSocket( int socket,
-                                           const struct sockaddr_in &f ) = 0 ;
+                                           struct sockaddr *addr ) = 0 ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;

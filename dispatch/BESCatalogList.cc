@@ -66,15 +66,17 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog)
 }
 
 bool
-BESCatalogList::rem_catalog( const string &catalog_name )
+BESCatalogList::del_catalog( const string &catalog_name )
 {
-    BESCatalog *ret = 0 ;
+    bool ret = false ;
+    BESCatalog *cat = 0 ;
     BESCatalogList::catalog_iter i ;
     i = _catalogs.find( catalog_name ) ;
     if( i != _catalogs.end() )
     {
-	ret = (*i).second;
+	cat = (*i).second;
 	_catalogs.erase( i ) ;
+	delete cat ;
     }
     return ret ;
 }

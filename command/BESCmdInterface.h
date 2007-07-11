@@ -78,7 +78,7 @@ protected:
     virtual void		clean() ;
 public:
     				BESCmdInterface() ;
-    				BESCmdInterface( const string &cmd ) ;
+    				BESCmdInterface( const string &cmd, const string &from ) ;
     virtual			~BESCmdInterface() ;
 
     virtual int			execute_request() ;

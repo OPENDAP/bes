@@ -62,9 +62,10 @@ BESCmdInterface::BESCmdInterface()
 {
 }
 
-BESCmdInterface::BESCmdInterface( const string &cmd )
+BESCmdInterface::BESCmdInterface( const string &cmd, const string &from )
 {
     _dhi.data[DATA_REQUEST] = cmd ;
+    _dhi.data[REQUEST_FROM] = from ;
 }
 
 BESCmdInterface::~BESCmdInterface()
@@ -160,6 +161,7 @@ BESCmdInterface::build_data_request_plan()
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " from " << _dhi.data[REQUEST_FROM]
 			     << " [" << _dhi.data[DATA_REQUEST] << "] building"
 			     << endl ;
     }
@@ -198,6 +200,7 @@ void
 BESCmdInterface::execute_data_request_plan()
 {
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			 << " from " << _dhi.data[REQUEST_FROM]
 		         << " [" << _dhi.data[DATA_REQUEST] << "] executing"
 		         << endl ;
     BESInterface::execute_data_request_plan() ;
@@ -216,6 +219,7 @@ BESCmdInterface::invoke_aggregation()
     if( _dhi.data[AGG_CMD] == "" )
     {
 	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " from " << _dhi.data[REQUEST_FROM]
 			     << " [" << _dhi.data[DATA_REQUEST] << "]"
 			     << " not aggregating, aggregation command empty"
 			     << endl ;
@@ -228,6 +232,7 @@ BESCmdInterface::invoke_aggregation()
 	    if( BESLog::TheLog()->is_verbose() )
 	    {
 		*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+				     << " from " << _dhi.data[REQUEST_FROM]
 				     << " [" << _dhi.data[DATA_REQUEST] << "]"
 				     << " not aggregating, no handler"
 				     << endl ;
@@ -238,6 +243,7 @@ BESCmdInterface::invoke_aggregation()
 	    if( BESLog::TheLog()->is_verbose() )
 	    {
 		*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+				     << " from " << _dhi.data[REQUEST_FROM]
 				     << " [" << _dhi.data[DATA_REQUEST]
 				     << "] aggregating" << endl ;
 	    }
@@ -261,6 +267,7 @@ BESCmdInterface::transmit_data()
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			     << " from " << _dhi.data[REQUEST_FROM]
 			     << " [" << _dhi.data[DATA_REQUEST]
 			     << "] transmitting" << endl ;
     }
@@ -278,6 +285,7 @@ BESCmdInterface::log_status()
     if( _dhi.error_info )
 	result = "failed" ;
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			 << " from " << _dhi.data[REQUEST_FROM]
 		         << " [" << _dhi.data[DATA_REQUEST] << "] "
 		         << result << endl ;
 }
@@ -295,6 +303,7 @@ BESCmdInterface::clean()
 {
     BESInterface::clean() ;
     *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			 << " from " << _dhi.data[REQUEST_FROM]
 		         << " [" << _dhi.data[DATA_REQUEST] << "] cleaning"
 		         << endl ;
 }

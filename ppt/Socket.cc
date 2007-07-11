@@ -32,9 +32,39 @@
 
 #include <unistd.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 #include "Socket.h"
 #include "SocketException.h"
+
+Socket::Socket( int socket, struct sockaddr *addr )
+    : _socket( socket ),
+      _connected( true ),
+      _listening( false ),
+      _addr_set( true )
+{
+    char ip[46];
+    unsigned int port;
+    /* ... */
+    switch (addr->sa_family) {
+	case AF_INET:
+	    inet_ntop (AF_INET, &(((struct sockaddr_in *)addr)->sin_addr), ip, sizeof (ip));
+	    port = ntohs (((struct sockaddr_in *)addr)->sin_port);
+	    break;
+	case AF_INET6:
+	    inet_ntop (AF_INET6, &(((struct sockaddr_in6 *)addr)->sin6_addr), ip, sizeof (ip));
+	    port = ntohs (((struct sockaddr_in6 *)addr)->sin6_port);
+	    break;
+	default:
+	    snprintf (ip, sizeof (ip), "UNKNOWN FAMILY: %d", addr->sa_family);
+	    port = 0;
+	    break;
+    }
+    _port = port ;
+    _ip = ip ;
+}
 
 void
 Socket::close()
@@ -97,7 +127,8 @@ Socket::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "socket address set? " << _addr_set << endl ;
     if( _addr_set )
     {
-	strm << BESIndent::LMarg << "socket address: " << (void *)&_from << endl;
+	strm << BESIndent::LMarg << "socket port: " << _port << endl;
+	strm << BESIndent::LMarg << "socket ip: " << _ip << endl;
     }
     BESIndent::UnIndent() ;
 }
