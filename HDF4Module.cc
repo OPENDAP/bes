@@ -40,43 +40,45 @@ using std::endl ;
 #include "BESContainerStorageCatalog.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogList.h"
-#include "BESLog.h"
+#include "BESDebug.h"
 
 #define HDF4_CATALOG "catalog"
 
 void
 HDF4Module::initialize( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing HDF4:" << endl ;
+    BESDEBUG( "Initializing HDF4 module " << modname << endl )
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << modname << " request handler" 
-		      << endl ;
-    BESRequestHandlerList::TheList()->add_handler( modname, new HDF4RequestHandler( modname ) ) ;
+    BESDEBUG( "    adding " << modname << " request handler" << endl )
+    BESRequestHandler *handler = new HDF4RequestHandler( modname ) ;
+    BESRequestHandlerList::TheList()->add_handler( modname, handler ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << HDF4_CATALOG << " catalog" 
-		      << endl ;
+    BESDEBUG( "    adding " << HDF4_CATALOG << " catalog" << endl )
     BESCatalogList::TheCatalogList()->add_catalog( new BESCatalogDirectory( HDF4_CATALOG ) ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Adding Catalog Container Storage" << endl;
+    BESDEBUG( "    adding catalog container storage" << HDF4_CATALOG << endl )
     BESContainerStorageCatalog *csc = new BESContainerStorageCatalog( HDF4_CATALOG ) ;
     BESContainerStorageList::TheList()->add_persistence( csc ) ;
+
+    BESDEBUG( "Done Initializing HDF4 module " << modname << endl )
 }
 
 void
 HDF4Module::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing HDF4 Handlers" << endl;
+    BESDEBUG( "Cleaning HDF4 module " << modname << endl )
+
+    BESDEBUG( "    removing HDF4 Handler" << modname << endl )
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing catalog Container Storage" << endl;
+    BESDEBUG( "    removing catalog container storage" << HDF4_CATALOG << endl )
     BESContainerStorageList::TheList()->del_persistence( HDF4_CATALOG ) ;
+
+    BESDEBUG( "    removing " << HDF4_CATALOG << " catalog" << endl )
+    BESCatalogList::TheCatalogList()->del_catalog( HDF4_CATALOG ) ;
+
+    BESDEBUG( "Done Cleaning HDF4 module " << modname << endl )
 }
 
 /** @brief dumps information about this object
