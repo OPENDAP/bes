@@ -149,7 +149,7 @@ protected:
     				BESInterface() ;
     virtual			~BESInterface() ;
 public:
-    virtual int			execute_request() ;
+    virtual int			execute_request( const string &from ) ;
 
     virtual void		dump( ostream &strm ) const ;
 

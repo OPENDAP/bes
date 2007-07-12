@@ -78,10 +78,10 @@ protected:
     virtual void		clean() ;
 public:
     				BESCmdInterface() ;
-    				BESCmdInterface( const string &cmd, const string &from ) ;
+    				BESCmdInterface( const string &cmd ) ;
     virtual			~BESCmdInterface() ;
 
-    virtual int			execute_request() ;
+    virtual int			execute_request( const string &from ) ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;

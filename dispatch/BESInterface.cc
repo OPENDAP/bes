@@ -57,6 +57,8 @@ using std::bad_alloc;
 #include "BESDebug.h"
 #include "BESTransmitException.h"
 
+#include "BESLog.h"
+
 list < p_bes_init > BESInterface::_init_list;
 list < p_bes_end > BESInterface::_end_list;
 
@@ -97,8 +99,20 @@ BESInterface::~BESInterface()
     @see exception_manager
  */
 int
- BESInterface::execute_request()
+ BESInterface::execute_request( const string &from )
 {
+    _dhi.data[REQUEST_FROM] = from ;
+
+    pid_t thepid = getpid() ;
+    ostringstream ss ;
+    ss << thepid ;
+    _dhi.data[SERVER_PID] = ss.str() ;
+
+    *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			<< " from " << _dhi.data[REQUEST_FROM]
+			<< " [" << _dhi.data[DATA_REQUEST] << "]"
+			<< endl ;
+
     int status = 0;
 
     try {
