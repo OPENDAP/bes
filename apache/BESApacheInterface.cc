@@ -83,7 +83,7 @@ BESApacheInterface::execute_request()
 {
     BESMemoryManager::register_global_pool() ; 
 
-    int status = BESCmdInterface::execute_request() ;
+    int status = BESCmdInterface::execute_request( "cedar" ) ;
 
     if( !BESMemoryManager::unregister_global_pool() )
 	return BES_TERMINATE_IMMEDIATE ;
