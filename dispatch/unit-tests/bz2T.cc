@@ -23,6 +23,7 @@ bz2T::run(void)
     cout << "Entered bz2T::run" << endl;
     int retVal = 0;
 
+#ifdef HAVE_BZLIB_H
     string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
     string src_file = cache_dir + "/testfile.txt.bz2" ;
 
@@ -179,6 +180,10 @@ bz2T::run(void)
 	cerr << "Unknown exception thrown" << endl ;
 	return 1 ;
     }
+#else
+    cout << endl << "*****************************************" << endl;
+    cout << "BZ2 not compiled in, not running test" << endl;
+#endif
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from bz2T::run" << endl;
