@@ -39,6 +39,7 @@
 using std::cout ;
 using std::cerr ;
 using std::endl ;
+using std::ios ;
 using std::ofstream ;
 
 #include "config.h"
@@ -146,7 +147,7 @@ ServerApp::initialize( int argc, char **argv )
 		    }
 		    else
 		    {
-			ostream *fstrm = new ofstream( dbgstrm.c_str() ) ;
+			ostream *fstrm = new ofstream( dbgstrm.c_str(), ios::app ) ;
 			if( !(*fstrm) )
 			{
 			    cerr << "Unable to open debug file" << endl ;
