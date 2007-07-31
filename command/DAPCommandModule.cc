@@ -47,35 +47,37 @@ using std::cout ;
 void
 DAPCommandModule::initialize( const string &modname )
 {
-    BESDEBUG( "Initializing DAP Commands:" << endl )
+    BESDEBUG( "dap", "Initializing DAP Commands:" << endl )
 
     BESCommand *cmd = NULL ;
 
-    BESDEBUG( "    adding " << DAS_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << DAS_RESPONSE << " command" << endl )
     BESCommand::add_command( DAS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << DDS_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " command" << endl )
     BESCommand::add_command( DDS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << DDX_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << DDX_RESPONSE << " command" << endl )
     BESCommand::add_command( DDX_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << DATA_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << DATA_RESPONSE << " command" << endl )
     BESCommand::add_command( DATA_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << CATALOG_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << CATALOG_RESPONSE << " command" << endl )
     cmd = new BESCatalogCommand( CATALOG_RESPONSE ) ;
     BESCommand::add_command( CATALOG_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << SHOW_INFO_RESPONSE << " command" << endl )
+    BESDEBUG( "dap", "    adding " << SHOW_INFO_RESPONSE << " command" << endl )
     cmd = new BESCatalogCommand( SHOW_INFO_RESPONSE ) ;
     BESCommand::add_command( SHOW_INFO_RESPONSE, cmd ) ;
+
+    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl )
 }
 
 void
 DAPCommandModule::terminate( const string &modname )
 {
-    BESDEBUG( "Removing DAP Commands" << endl )
+    BESDEBUG( "dap", "Removing DAP Commands" << endl )
 
     BESCommand::del_command( DAS_RESPONSE ) ;
     BESCommand::del_command( DDS_RESPONSE ) ;
@@ -83,6 +85,8 @@ DAPCommandModule::terminate( const string &modname )
     BESCommand::del_command( DATA_RESPONSE ) ;
     BESCommand::del_command( CATALOG_RESPONSE ) ;
     BESCommand::del_command( SHOW_INFO_RESPONSE ) ;
+
+    BESDEBUG( "dap", "Done Removing DAP Commands" << endl )
 }
 
 /** @brief dumps information about this object

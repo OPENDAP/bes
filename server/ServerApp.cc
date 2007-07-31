@@ -115,6 +115,7 @@ int
 ServerApp::initialize( int argc, char **argv )
 {
     int c = 0 ;
+    bool needhelp = false ;
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc
@@ -133,30 +134,7 @@ ServerApp::initialize( int argc, char **argv )
 		_unixSocket = optarg ;
 		break ;
 	    case 'd':
-		{
-		    string dbgstrm = optarg ;
-		    if( dbgstrm[0] == '-' )
-		    {
-			cout << "Debug filename or stream can not start "
-			     << "with a -" << endl << endl ;
-			BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
-		    }
-		    if( dbgstrm == "cerr" )
-		    {
-			BESDebug::Set_debugger( new BESDebug( &cerr ) ) ;
-		    }
-		    else
-		    {
-			ostream *fstrm = new ofstream( dbgstrm.c_str(), ios::app ) ;
-			if( !(*fstrm) )
-			{
-			    cerr << "Unable to open debug file" << endl ;
-			    BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
-			}
-			BESDebug::Set_debugger( new BESDebug( fstrm ) ) ;
-		    }
-		    BESDebug::Begin_debug() ;
-		}
+		BESDebug::SetUp( optarg ) ;
 		break ;
 	    case 'v':
 		BESServerUtils::show_version( BESApp::TheApplication()->appName() ) ;
@@ -167,7 +145,7 @@ ServerApp::initialize( int argc, char **argv )
 	    case 'h':
 	    case '?':
 	    default:
-		BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
+		needhelp = true ;
 		break ;
 	}
     }
@@ -218,44 +196,47 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    BESDEBUG( "ServerApp: Registering signal SIGTERM ... " )
+    BESDEBUG( "server", "ServerApp: Registering signal SIGTERM ... " )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "server", "FAILED" << endl ) ;
 	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "ServerApp: Registering signal SIGINT ... " )
+    BESDEBUG( "server", "ServerApp: Registering signal SIGINT ... " )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "server", "FAILED" << endl ) ;
 	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "ServerApp: Registering signal SIGUSR1 ... " )
+    BESDEBUG( "server", "ServerApp: Registering signal SIGUSR1 ... " )
     if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "server", "FAILED" << endl ) ;
 	cerr << "FAILED: Can not register SIGUSR1 signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "ServerApp: initializing default module ... " )
+    BESDEBUG( "server", "ServerApp: initializing default module ... " )
     BESDefaultModule::initialize( argc, argv ) ;
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "ServerApp: initializing default commands ... " )
+    BESDEBUG( "server", "ServerApp: initializing default commands ... " )
     BESDefaultCommands::initialize( argc, argv ) ;
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "server", "OK" << endl ) ;
 
     int ret = BESModuleApp::initialize( argc, argv ) ;
 
-    BESDEBUG( "ServerApp: initialized settings:" << *this ) ;
+    BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
+
+    if( needhelp )
+	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
 
     return ret ;
 }
@@ -265,9 +246,9 @@ ServerApp::run()
 {
     try
     {
-	BESDEBUG( "ServerApp: initializing memory pool ... " )
+	BESDEBUG( "server", "ServerApp: initializing memory pool ... " )
 	BESMemoryManager::initialize_memory_pool() ;
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "server", "OK" << endl ) ;
 
 	SocketListener listener ;
 
@@ -275,14 +256,14 @@ ServerApp::run()
 	{
 	    _ts = new TcpSocket( _portVal ) ;
 	    listener.listen( _ts ) ;
-	    BESDEBUG( "ServerApp: listening on port (" << _portVal << ")" << endl )
+	    BESDEBUG( "server", "ServerApp: listening on port (" << _portVal << ")" << endl )
 	}
 
 	if( !_unixSocket.empty() )
 	{
 	    _us = new UnixSocket( _unixSocket ) ;
 	    listener.listen( _us ) ;
-	    BESDEBUG( "ServerApp: listening on unix socket (" << _unixSocket << ")" << endl )
+	    BESDEBUG( "server", "ServerApp: listening on unix socket (" << _unixSocket << ")" << endl )
 	}
 
 	BESServerHandler handler ;
@@ -333,13 +314,13 @@ ServerApp::terminate( int sig )
 	    delete _us ;
 	}
 
-	BESDEBUG( "ServerApp: terminating default module ... " )
+	BESDEBUG( "server", "ServerApp: terminating default module ... " )
 	BESDefaultModule::terminate( ) ;
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "server", "OK" << endl ) ;
 
-	BESDEBUG( "ServerApp: terminating default commands ... " )
+	BESDEBUG( "server", "ServerApp: terminating default commands ... " )
 	BESDefaultCommands::terminate( ) ;
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "server", "OK" << endl ) ;
 
 	BESModuleApp::terminate( sig ) ;
     }

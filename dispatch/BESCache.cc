@@ -370,7 +370,7 @@ BESCache::purge( )
 	    while( size > max_size )
 	    {
 		i = contents.begin() ;
-		BESDEBUG( "BESCache::purge - removing " << (*i).second.name << endl )
+		BESDEBUG( "bes", "BESCache::purge - removing " << (*i).second.name << endl )
 		if( remove( (*i).second.name.c_str() ) != 0 )
 		{
 		    char *s_err = strerror( errno ) ;

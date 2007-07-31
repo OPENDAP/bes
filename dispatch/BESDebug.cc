@@ -30,8 +30,102 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <fstream>
+
+using std::ofstream ;
+using std::ios ;
 
 #include "BESDebug.h"
+//#include "BESException.h"
 
-BESDebug *BESDebug::_debugger = 0 ;
+ostream *BESDebug::_debug_strm = NULL ;
+bool BESDebug::_debug_strm_created = false ;
+map<string,bool> BESDebug::_debug_map ;
+
+/** @brief Sets up debugging for the bes.
+ *
+ * This static method sets up debugging for the bes given a set of values
+ * typically passed on the command line. Might look like the following:
+ *
+ * -d "bes.debug,nc,hdf4,bes"
+ *
+ * this method will break this down to set the output stream to an ofstream
+ * for the file bes.debug and turn on debugging for nc, hdf4, and bes.
+ *
+ * @param values to be parsed and set for debugging, bes.debug,nc,hdf4,bes
+ */
+void
+BESDebug::SetUp( const string &values )
+{
+    if( values.empty() )
+    {
+	string err = "Empty debug options" ;
+	//throw BESException( err, __FILE__, __LINE__ ) ;
+	throw err;
+    }
+    string::size_type comma = 0 ;
+    comma = values.find( ',' ) ;
+    if( comma == string::npos )
+    {
+	string err = "Missing comma in debug options: " + values ;
+	//throw BESException( err, __FILE__, __LINE__ ) ;
+	throw err;
+    }
+    ostream *strm = 0 ;
+    bool created = false ;
+    string s_strm = values.substr( 0, comma ) ;
+    if( s_strm == "cerr" )
+    {
+	strm = &cerr ;
+    }
+    else
+    {
+	strm = new ofstream( s_strm.c_str(), ios::out ) ;
+	created = true ;
+    }
+
+    BESDebug::SetStrm( strm, created ) ;
+
+    string::size_type new_comma = 0 ;
+    while( ( new_comma = values.find( ',', comma+1 ) ) != string::npos )
+    {
+	string flagName = values.substr( comma+1, new_comma-comma-1 ) ;
+	BESDebug::Set( flagName, true ) ;
+	comma = new_comma ;
+    }
+    string flagName = values.substr( comma+1, values.length()-comma-1 ) ;
+    BESDebug::Set( flagName, true ) ;
+}
+
+/** @brief Writes help information for so that developers know what can be set for
+ * debugging.
+ *
+ * Displays information about possible debugging context, such as nc, hdf4, bes
+ *
+ * @param strm output stream to write the help information to
+ */
+void
+BESDebug::Help( ostream &strm )
+{
+    strm << "Debug help:" << endl
+         << endl
+         << "Set on the command line with "
+         << "-d \"file_name|cerr,context1,context2,...,contextn\"" << endl
+         << endl
+	 << "Possible context:" << endl ;
+
+    if( _debug_map.size() )
+    {
+	BESDebug::_debug_citer i = _debug_map.begin() ;
+	BESDebug::_debug_citer e = _debug_map.end() ;
+	for( ; i != e; i++ )
+	{
+	    strm << "  " << (*i).first << endl ;
+	}
+    }
+    else
+    {
+	strm << "  none specified" << endl ;
+    }
+}
 

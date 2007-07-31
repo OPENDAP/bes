@@ -95,6 +95,8 @@ CmdApp::showUsage( )
     cout << "    -d - sets the optional debug flag for the client session" << endl ;
     cout << "    -r <num> - repeat the command(s) num times" << endl ;
     cout << "    -? - display this list of flags" << endl ;
+    cout << endl ;
+    BESDebug::Help( cout ) ;
 }
 
 void
@@ -176,46 +178,46 @@ void
 CmdApp::registerSignals()
 {
     // Registering SIGCONT for connection unblocking
-    BESDEBUG( "CmdApp: Registering signal SIGCONT ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGCONT ... " )
     if( signal( SIGCONT, signalCannotConnect ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << appName() << "Failed to register signal SIGCONT" << endl ;
 	exit( 1 ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "cmdln", "OK" << endl ) ;
 
     // Registering SIGINT to disable Ctrl-C from the user in order to avoid
     // server instability
-    BESDEBUG( "CmdApp: Registering signal SIGINT ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGINT ... " )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << appName() << "Failed to register signal SIGINT" << endl ;
 	exit( 1 ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "cmdln", "OK" << endl ) ;
 
     // Registering SIGTERM to disable kill from the user in order to avoid
     // server instability
-    BESDEBUG( "CmdApp: Registering signal SIGTERM ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGTERM ... " )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << appName() << "Failed to register signal SIGTERM" << endl ;
 	exit( 1 ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "cmdln", "OK" << endl ) ;
 
     // Registering SIGPIE for broken pipes managment.
-    BESDEBUG( "CmdApp: Registering signal SIGPIPE ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGPIPE ... " )
     if( signal( SIGPIPE, CmdApp::signalBrokenPipe ) == SIG_ERR )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << appName() << "Failed to register signal SIGPIPE" << endl ;
 	exit( 1 ) ;
     }
-    BESDEBUG( "OK" << endl ) ;
+    BESDEBUG( "cmdln", "OK" << endl ) ;
 }
 
 int
@@ -246,25 +248,7 @@ CmdApp::initialize( int argc, char **argv )
 		_hostStr = optarg ;
 		break ;
 	    case 'd':
-		{
-		    string dbgstrm = optarg ;
-		    if( dbgstrm == "cerr" )
-		    {
-			BESDebug::Set_debugger( new BESDebug( &cerr ) ) ;
-		    }
-		    else
-		    {
-			ostream *fstrm = new ofstream( dbgstrm.c_str() ) ;
-			if( !(*fstrm) )
-			{
-			    cerr << "Unable to open debug file" << endl ;
-			    showUsage() ;
-			    return 1 ;
-			}
-			BESDebug::Set_debugger( new BESDebug( fstrm ) ) ;
-		    }
-		    BESDebug::Begin_debug() ;
-		}
+		BESDebug::SetUp( optarg ) ;
 		break ;
 	    case 'v':
 		{
@@ -405,7 +389,7 @@ CmdApp::initialize( int argc, char **argv )
 
     registerSignals() ;
 
-    BESDEBUG( "CmdApp: initialized settings:" << endl << *this ) ;
+    BESDEBUG( "cmdln", "CmdApp: initialized settings:" << endl << *this ) ;
 
     return 0 ;
 }
@@ -418,13 +402,13 @@ CmdApp::run()
 	_client = new CmdClient( ) ;
 	if( _hostStr != "" )
 	{
-	    BESDEBUG( "CmdApp: Connecting to host: " << _hostStr
+	    BESDEBUG( "cmdln", "CmdApp: Connecting to host: " << _hostStr
 	              << " at port: " << _portVal << " ... " ) ;
 	    _client->startClient( _hostStr, _portVal, _timeout ) ;
 	}
 	else
 	{
-	    BESDEBUG( "CmdApp: Connecting to unix socket: " << _unixStr
+	    BESDEBUG( "cmdln", "CmdApp: Connecting to unix socket: " << _unixStr
 	              << " ... " ) ;
 	    _client->startClient( _unixStr, _timeout ) ;
 	}
@@ -437,7 +421,7 @@ CmdApp::run()
 	{
 	    _client->setOutput( &cout, false ) ;
 	}
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "cmdln", "OK" << endl ) ;
     }
     catch( PPTException &e )
     {
@@ -447,7 +431,7 @@ CmdApp::run()
 	    delete _client ;
 	    _client = 0 ;
 	}
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << "error starting the client" << endl ;
 	cerr << e.getMessage() << endl ;
 	exit( 1 ) ;
@@ -476,27 +460,27 @@ CmdApp::run()
 
     try
     {
-	BESDEBUG( "CmdApp: shutting down client ... " ) ;
+	BESDEBUG( "cmdln", "CmdApp: shutting down client ... " ) ;
 	if( _client )
 	{
 	    _client->shutdownClient() ;
 	    delete _client ;
 	    _client = 0 ;
 	}
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "cmdln", "OK" << endl ) ;
 
-	BESDEBUG( "CmdApp: closing input stream ... " ) ;
+	BESDEBUG( "cmdln", "CmdApp: closing input stream ... " ) ;
 	if( _createdInputStrm )
 	{
 	    _inputStrm->close() ;
 	    delete _inputStrm ;
 	    _inputStrm = 0 ;
 	}
-	BESDEBUG( "OK" << endl ) ;
+	BESDEBUG( "cmdln", "OK" << endl ) ;
     }
     catch( PPTException &e )
     {
-	BESDEBUG( "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << "error closing the client" << endl ;
 	cerr << e.getMessage() << endl ;
 	return 1 ;

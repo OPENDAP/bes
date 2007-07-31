@@ -58,77 +58,79 @@ using std::endl ;
 int
 BESDefaultCommands::initialize( int, char** )
 {
-    BESDEBUG( "Initializing default commands:" << endl )
+    BESDEBUG( "bes", "Initializing default commands:" << endl )
 
     BESCommand *cmd = NULL ;
 
-    BESDEBUG( "    adding " << GET_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << GET_RESPONSE << " command" << endl )
     cmd = new BESGetCommand( GET_RESPONSE ) ;
     BESCommand::add_command( GET_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << SHOW_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SHOW_RESPONSE << " command" << endl )
     cmd = new BESShowCommand( SHOW_RESPONSE ) ;
     BESCommand::add_command( SHOW_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << HELP_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << HELP_RESPONSE << " command" << endl )
     BESCommand::add_command( HELP_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << PROCESS_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << PROCESS_RESPONSE << " command" << endl )
     BESCommand::add_command( PROCESS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << KEYS_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << KEYS_RESPONSE << " command" << endl )
     BESCommand::add_command( KEYS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << VERS_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << VERS_RESPONSE << " command" << endl )
     BESCommand::add_command( VERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << STATUS_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << STATUS_RESPONSE << " command" << endl )
     BESCommand::add_command( STATUS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << SET_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SET_RESPONSE << " command" << endl )
     cmd = new BESSetCommand( SET_RESPONSE ) ;
     BESCommand::add_command( SET_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << DELETE_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_RESPONSE << " command" << endl )
     cmd = new BESDeleteCommand( DELETE_RESPONSE ) ;
     BESCommand::add_command( DELETE_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << SETCONTAINER << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SETCONTAINER << " command" << endl )
     cmd = new BESSetContainerCommand( SETCONTAINER ) ;
     BESCommand::add_command( SETCONTAINER, cmd ) ;
 
-    BESDEBUG( "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl)
+    BESDEBUG( "bes", "    adding " << SHOWCONTAINERS_RESPONSE << " command" << endl)
     BESCommand::add_command( SHOWCONTAINERS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << DELETE_CONTAINER << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_CONTAINER << " command" << endl )
     cmd = new BESDelContainerCommand( DELETE_CONTAINER ) ;
     BESCommand::add_command( DELETE_CONTAINER, cmd ) ;
 
-    BESDEBUG( "    adding " << DELETE_CONTAINERS << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_CONTAINERS << " command" << endl )
     cmd = new BESDelContainersCommand( DELETE_CONTAINERS ) ;
     BESCommand::add_command( DELETE_CONTAINERS, cmd ) ;
 
-    BESDEBUG( "    adding " << DEFINE_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DEFINE_RESPONSE << " command" << endl )
     cmd = new BESDefineCommand( DEFINE_RESPONSE ) ;
     BESCommand::add_command( DEFINE_RESPONSE, cmd ) ;
 
-    BESDEBUG( "    adding " << SHOWDEFS_RESPONSE << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SHOWDEFS_RESPONSE << " command" << endl )
     BESCommand::add_command( SHOWDEFS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "    adding " << DELETE_DEFINITION << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_DEFINITION << " command" << endl )
     cmd = new BESDelDefCommand( DELETE_DEFINITION ) ;
     BESCommand::add_command( DELETE_DEFINITION, cmd ) ;
 
-    BESDEBUG( "    adding " << DELETE_DEFINITIONS << " command" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_DEFINITIONS << " command" << endl )
     cmd = new BESDelDefsCommand( DELETE_DEFINITIONS ) ;
     BESCommand::add_command( DELETE_DEFINITIONS, cmd ) ;
 
-    BESDEBUG( "    adding " << SET_CONTEXT << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SET_CONTEXT << " command" << endl )
     cmd = new BESSetContextCommand( SET_CONTEXT ) ;
     BESCommand::add_command( SET_CONTEXT, cmd ) ;
 
-    BESDEBUG( "    adding " << SHOW_CONTEXT << " command" << endl )
+    BESDEBUG( "bes", "    adding " << SHOW_CONTEXT << " command" << endl )
     BESCommand::add_command( SHOW_CONTEXT, BESCommand::TermCommand ) ;
+
+    BESDEBUG( "bes", "Done Initializing default commands:" << endl )
 
     return 0;
 }
@@ -136,7 +138,7 @@ BESDefaultCommands::initialize( int, char** )
 int
 BESDefaultCommands::terminate( void )
 {
-    BESDEBUG( "Removing default commands:" << endl )
+    BESDEBUG( "bes", "Removing default commands:" << endl )
 
     BESCommand::del_command( GET_RESPONSE ) ;
     BESCommand::del_command( SHOW_RESPONSE ) ;
@@ -155,6 +157,8 @@ BESDefaultCommands::terminate( void )
 
     BESCommand::del_command( SET_CONTEXT ) ;
     BESCommand::del_command( SHOW_CONTEXT ) ;
+
+    BESDEBUG( "bes", "Done Removing default commands:" << endl )
 
     return true;
 }

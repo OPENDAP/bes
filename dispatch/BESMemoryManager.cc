@@ -84,17 +84,17 @@ BESMemoryManager::check_memory_pool()
 { 
     if( _storage_used )
     {
-	BESDEBUG( "BES: global pool is used, trying to get it back..." )
+	BESDEBUG( "bes", "BES: global pool is used, trying to get it back..." )
 	//Try to regain the memory...
 	if( _memory->reclaim_memory() )
 	{
 	    _storage_used = false ;
-	    BESDEBUG( "OK" << endl )
+	    BESDEBUG( "bes", "OK" << endl )
 	    return true ;
 	}
 	else
 	{
-	    BESDEBUG( "FAILED" << endl )
+	    BESDEBUG( "bes", "FAILED" << endl )
 	    return false ;
 	}
     }
@@ -109,7 +109,7 @@ BESMemoryManager::release_global_pool() throw (bad_alloc)
     // It releases enough memory for an exception sequence to be carried.
     // Without this pool of memory for emergencies we will get really
     // unexpected behavior from the program.
-    BESDEBUG( "BES Warning: low in memory, "
+    BESDEBUG( "bes", "BES Warning: low in memory, "
 	      << "releasing global memory pool!" << endl )
     *(BESLog::TheLog()) << "BES Warning: low in memory, "
                         << "releasing global memory pool!"

@@ -111,7 +111,7 @@ BESCmdInterface::initialize()
     string protocol = _dhi.transmit_protocol ;
     if( protocol != "HTTP" )
     {
-	BESDEBUG( "Finding " << BASIC_TRANSMITTER << " transmitter ... " )
+	BESDEBUG( "bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
 	if( !_transmitter )
 	{
@@ -119,11 +119,11 @@ BESCmdInterface::initialize()
 		       + BASIC_TRANSMITTER ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
-	BESDEBUG( "OK" << endl )
+	BESDEBUG( "bes", "OK" << endl )
     }
     else
     {
-	BESDEBUG( "Finding " << HTTP_TRANSMITTER << " transmitter ... " )
+	BESDEBUG( "bes", "Finding " << HTTP_TRANSMITTER << " transmitter ... " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
 	if( !_transmitter )
 	{
@@ -131,7 +131,7 @@ BESCmdInterface::initialize()
 		       + HTTP_TRANSMITTER ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
-	BESDEBUG( "OK" << endl )
+	BESDEBUG( "bes", "OK" << endl )
     }
 
     BESInterface::initialize() ;
@@ -152,7 +152,7 @@ BESCmdInterface::validate_data_request()
 void
 BESCmdInterface::build_data_request_plan()
 {
-    BESDEBUG( "building request plan for: "<< _dhi.data[DATA_REQUEST] << " ...")
+    BESDEBUG( "bes", "building request plan for: "<< _dhi.data[DATA_REQUEST] << " ...")
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
@@ -161,7 +161,7 @@ BESCmdInterface::build_data_request_plan()
 			     << endl ;
     }
     BESCmdParser::parse( _dhi.data[DATA_REQUEST], _dhi ) ;
-    BESDEBUG( " OK" << endl )
+    BESDEBUG( "bes", " OK" << endl )
 
     // The default _transmitter (either basic or http depending on the
     // protocol passed) has been set in initialize. If the parsed command
@@ -170,7 +170,7 @@ BESCmdInterface::build_data_request_plan()
     // just use the defaults.
     if( _dhi.data[RETURN_CMD] != "" )
     {
-	BESDEBUG( "Finding transmitter: " << _dhi.data[RETURN_CMD] << " ...  " )
+	BESDEBUG( "bes", "Finding transmitter: " << _dhi.data[RETURN_CMD] << " ...  " )
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( _dhi.data[RETURN_CMD] ) ;
 	if( !_transmitter )
 	{
@@ -178,10 +178,10 @@ BESCmdInterface::build_data_request_plan()
 	               + _dhi.data[RETURN_CMD] ;
 	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
 	}
-	BESDEBUG( "OK" << endl )
+	BESDEBUG( "bes", "OK" << endl )
     }
 
-    if( BESDebug::Debug() ) _dhi.dump( *(BESDebug::Get_strm()) ) ;
+    if( BESDebug::IsSet( "bes" ) ) _dhi.dump( *(BESDebug::GetStrm()) ) ;
 }
 
 /** @brief Execute the data request plan

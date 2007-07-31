@@ -61,40 +61,40 @@ using std::endl ;
 void
 BESDapModule::initialize( const string &modname )
 {
-    BESDEBUG( "Initializing DAP Modules:" << endl )
+    BESDEBUG( "dap", "Initializing DAP Modules:" << endl )
 
-    BESDEBUG( "    adding " << modname << " request handler" << endl )
+    BESDEBUG( "dap", "    adding " << modname << " request handler" << endl )
     BESRequestHandlerList::TheList()->add_handler( modname, new BESDapRequestHandler( modname ) ) ;
 
-    BESDEBUG( "    adding " << DAS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "dap", "    adding " << DAS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DAS_RESPONSE, BESDASResponseHandler::DASResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DDS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "dap", "    adding " << DDS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DDS_RESPONSE, BESDDSResponseHandler::DDSResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DDX_RESPONSE << " response handler" << endl )
+    BESDEBUG( "dap", "    adding " << DDX_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DDX_RESPONSE, BESDDXResponseHandler::DDXResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DATA_RESPONSE << " response handler" << endl )
+    BESDEBUG( "dap", "    adding " << DATA_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << CATALOG_RESPONSE << " response handler" << endl )
+    BESDEBUG( "dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
 
-    BESDEBUG( "Initializing DAP Basic Transmitters:" << endl )
+    BESDEBUG( "dap", "Initializing DAP Basic Transmitters:" << endl )
     BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
     if( t )
     {
-	BESDEBUG( "    adding " << DAS_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DAS_TRANSMITTER << endl )
 	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_basic_das ) ;
 
-	BESDEBUG( "    adding " << DDS_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DDS_TRANSMITTER << endl )
 	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_basic_dds ) ;
 
-	BESDEBUG( "    adding " << DDX_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DDX_TRANSMITTER << endl )
 	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_basic_ddx ) ;
 
-	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_basic_data ) ;
     }
     else
@@ -104,20 +104,20 @@ BESDapModule::initialize( const string &modname )
 	throw BESException( err, __FILE__, __LINE__ ) ;
     }
 
-    BESDEBUG( "Initializing DAP HTTP Transmitters:" << endl )
+    BESDEBUG( "dap", "Initializing DAP HTTP Transmitters:" << endl )
     t = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
     if( t )
     {
-	BESDEBUG( "    adding " << DAS_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DAS_TRANSMITTER << endl )
 	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_http_das ) ;
 
-	BESDEBUG( "    adding " << DDS_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DDS_TRANSMITTER << endl )
 	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_http_dds ) ;
 
-	BESDEBUG( "    adding " << DDX_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DDX_TRANSMITTER << endl )
 	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_http_ddx ) ;
 
-	BESDEBUG( "    adding " << DATA_TRANSMITTER << endl )
+	BESDEBUG( "dap", "    adding " << DATA_TRANSMITTER << endl )
 	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_http_data ) ;
     }
     else
@@ -127,20 +127,27 @@ BESDapModule::initialize( const string &modname )
 	throw BESException( err, __FILE__, __LINE__ ) ;
     }
 
-    BESDEBUG( "    adding dap exception handler" << endl )
+    BESDEBUG( "dap", "    adding dap exception handler" << endl )
     BESExceptionManager::TheEHM()->add_ehm_callback( BESDapHandlerException::handleException ) ;
+
+    BESDEBUG( "dap", "    adding dap debug context" << endl )
+    BESDebug::Register( "dap" ) ;
+
+    BESDEBUG( "dap", "Done Initializing DAP Modules:" << endl )
 }
 
 void
 BESDapModule::terminate( const string &modname )
 {
-    BESDEBUG( "Removing DAP Modules:" << endl )
+    BESDEBUG( "dap", "Removing DAP Modules:" << endl )
 
     BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
+
+    BESDEBUG( "dap", "Done Removing DAP Modules:" << endl )
 }
 
 /** @brief dumps information about this object

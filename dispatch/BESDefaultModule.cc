@@ -79,83 +79,88 @@ using std::endl ;
 int
 BESDefaultModule::initialize(int, char**)
 {
-    BESDEBUG( "Initializing default modules:" << endl )
+    BESDEBUG( "bes", "Initializing default modules:" << endl )
 
-    BESDEBUG( "    adding " << HELP_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << HELP_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, BESHelpResponseHandler::HelpResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << PROCESS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << PROCESS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( PROCESS_RESPONSE, BESProcIdResponseHandler::ProcIdResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << KEYS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << KEYS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( KEYS_RESPONSE, BESKeysResponseHandler::KeysResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << VERS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << VERS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( VERS_RESPONSE, BESVersionResponseHandler::VersionResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << STATUS_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << STATUS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, BESStatusResponseHandler::StatusResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << STREAM_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << STREAM_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( STREAM_RESPONSE, BESStreamResponseHandler::BESStreamResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << SETCONTAINER << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << SETCONTAINER << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( SETCONTAINER, BESSetContainerResponseHandler::SetContainerResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << SHOWCONTAINERS_RESPONSE << " response handler"
+    BESDEBUG( "bes", "    adding " << SHOWCONTAINERS_RESPONSE << " response handler"
               << endl )
     BESResponseHandlerList::TheList()->add_handler( SHOWCONTAINERS_RESPONSE, BESShowContainersResponseHandler::ShowContainersResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DELETE_CONTAINER << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_CONTAINER << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINER, BESDelContainerResponseHandler::DelContainerResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DELETE_CONTAINERS << " response handler" << endl)
+    BESDEBUG( "bes", "    adding " << DELETE_CONTAINERS << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINERS, BESDelContainersResponseHandler::DelContainersResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << PERSISTENCE_VOLATILE << " container persistence"
+    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " container persistence"
               << endl )
     BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
-    BESDEBUG( "    adding " << DEFINE_RESPONSE << " response handler" << endl )
+    BESDEBUG( "bes", "    adding " << DEFINE_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DEFINE_RESPONSE, BESDefineResponseHandler::DefineResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << SHOWDEFS_RESPONSE << " response handler" << endl)
+    BESDEBUG( "bes", "    adding " << SHOWDEFS_RESPONSE << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( SHOWDEFS_RESPONSE, BESShowDefsResponseHandler::ShowDefsResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DELETE_DEFINITION << " response handler" << endl)
+    BESDEBUG( "bes", "    adding " << DELETE_DEFINITION << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITION, BESDelDefResponseHandler::DelDefResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << DELETE_DEFINITIONS << " response handler"
+    BESDEBUG( "bes", "    adding " << DELETE_DEFINITIONS << " response handler"
               << endl )
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITIONS, BESDelDefsResponseHandler::DelDefsResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << PERSISTENCE_VOLATILE << " definition persistence"
+    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " definition persistence"
               << endl )
     BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
-    BESDEBUG( "    adding " << SET_CONTEXT << " response handler" << endl)
+    BESDEBUG( "bes", "    adding " << SET_CONTEXT << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( SET_CONTEXT, BESSetContextResponseHandler::SetContextResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << SHOW_CONTEXT << " response handler" << endl)
+    BESDEBUG( "bes", "    adding " << SHOW_CONTEXT << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder ) ;
 
-    BESDEBUG( "    adding " << BASIC_TRANSMITTER << " transmitter" << endl )
+    BESDEBUG( "bes", "    adding " << BASIC_TRANSMITTER << " transmitter" << endl )
     BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;
 
-    BESDEBUG( "    adding " << HTTP_TRANSMITTER << " transmitter" << endl )
+    BESDEBUG( "bes", "    adding " << HTTP_TRANSMITTER << " transmitter" << endl )
     BESReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new BESBasicHttpTransmitter ) ;
 
-    BESDEBUG( "    adding " << BES_TEXT_INFO << " info builder" << endl )
+    BESDEBUG( "bes", "    adding " << BES_TEXT_INFO << " info builder" << endl )
     BESInfoList::TheList()->add_info_builder( BES_TEXT_INFO,
 					      BESTextInfo::BuildTextInfo ) ;
 
-    BESDEBUG( "    adding " << BES_HTML_INFO << " info builder" << endl )
+    BESDEBUG( "bes", "    adding " << BES_HTML_INFO << " info builder" << endl )
     BESInfoList::TheList()->add_info_builder( BES_HTML_INFO,
 					      BESHTMLInfo::BuildHTMLInfo ) ;
 
-    BESDEBUG( "    adding " << BES_XML_INFO << " info builder" << endl )
+    BESDEBUG( "bes", "    adding " << BES_XML_INFO << " info builder" << endl )
     BESInfoList::TheList()->add_info_builder( BES_XML_INFO,
 					      BESXMLInfo::BuildXMLInfo ) ;
+
+    BESDEBUG( "bes", "    adding bes debug context" << endl )
+    BESDebug::Register( "bes" ) ;
+
+    BESDEBUG( "bes", "Done Initializing default modules:" << endl )
 
     return 0 ;
 }
@@ -163,7 +168,7 @@ BESDefaultModule::initialize(int, char**)
 int
 BESDefaultModule::terminate(void)
 {
-    BESDEBUG( "Removing default modules" << endl )
+    BESDEBUG( "bes", "Removing default modules" << endl )
 
     BESResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
@@ -188,6 +193,8 @@ BESDefaultModule::terminate(void)
 
     BESReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
     BESReturnManager::TheManager()->del_transmitter( HTTP_TRANSMITTER ) ;
+
+    BESDEBUG( "bes", "Done Removing default modules" << endl )
 
     return 0 ;
 }

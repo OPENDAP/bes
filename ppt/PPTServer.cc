@@ -180,7 +180,7 @@ PPTServer::welcomeClient()
 	 */
 	string err( "PPT Can not negotiate, " ) ;
 	err += " client started the connection with " + status ;
-	BESDEBUG( err )
+	BESDEBUG( "ppt", err )
 	//throw PPTException( err, __FILE__, __LINE__ ) ;
 	_mySock->send( err, 0, err.length() ) ;
 	_mySock->close() ;
@@ -204,7 +204,7 @@ void
 PPTServer::authenticateClient()
 {
 #ifdef HAVE_OPENSSL
-    BESDEBUG( "requiring secure connection: port = " << _securePort << endl )
+    BESDEBUG( "ppt", "requiring secure connection: port = " << _securePort << endl )
     // let the client know that it needs to authenticate
     int len = PPTProtocol::PPTSERVER_AUTHENTICATE.length() ;
     _mySock->send( PPTProtocol::PPTSERVER_AUTHENTICATE, 0, len ) ;

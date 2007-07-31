@@ -80,12 +80,12 @@ BESCgiInterface::~BESCgiInterface()
 void
 BESCgiInterface::build_data_request_plan()
 {
-    BESDEBUG( "Building data request plan ... " << endl )
+    BESDEBUG( "bes", "Building data request plan ... " << endl )
     string symbolic_name = name_path( _df->get_dataset_name() ) ;
-    BESDEBUG( "  symbolic name = " << symbolic_name << endl )
-    BESDEBUG( "  constraint = " << _df->get_ce() << endl )
-    BESDEBUG( "  dataset name = " << _df->get_dataset_name() << endl )
-    BESDEBUG( "  type = " << _type << endl )
+    BESDEBUG( "bes", "  symbolic name = " << symbolic_name << endl )
+    BESDEBUG( "bes", "  constraint = " << _df->get_ce() << endl )
+    BESDEBUG( "bes", "  dataset name = " << _df->get_dataset_name() << endl )
+    BESDEBUG( "bes", "  type = " << _type << endl )
     BESContainer *d = new BESFileContainer( symbolic_name,
 					    _df->get_dataset_name(),
 					    _type ) ;
@@ -98,11 +98,11 @@ BESCgiInterface::build_data_request_plan()
 	BESResponseHandlerList::TheList()->find_handler( myaction ) ;
     if( !_dhi.response_handler )
     {
-	BESDEBUG( "Building data request plan ... FAILED" << endl )
+	BESDEBUG( "bes", "Building data request plan ... FAILED" << endl )
 	string s = (string)"Improper command " + myaction ;
 	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
     }
-    BESDEBUG( "Building data request plan ... OK" << endl )
+    BESDEBUG( "bes", "Building data request plan ... OK" << endl )
 }
 
 /** @brief dumps information about this object

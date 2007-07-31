@@ -8,6 +8,7 @@ using std::endl ;
 #include "config.h"
 #include "BESServerUtils.h"
 #include "BESApp.h"
+#include "BESDebug.h"
 
 void
 BESServerUtils::show_usage( const string &app_name )
@@ -22,6 +23,8 @@ BESServerUtils::show_usage( const string &app_name )
     cout << "-s specifies a secure server using SLL authentication" << endl ;
     cout << "-u set unix socket to UNIX_SOCKET" << endl ;
     cout << "-v echos version and exit" << endl ;
+    cout << endl ;
+    BESDebug::Help( cout ) ;
     exit( 0 ) ;
 }
 

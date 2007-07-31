@@ -69,7 +69,7 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESDEBUG( "Entering BESDDXResponseHandler::execute" << endl )
+    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl )
     
     dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
@@ -104,7 +104,7 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action = DDX_RESPONSE ;
     _response = bdds ;
 
-    BESDEBUG( "Leaving BESDDXResponseHandler::execute" << endl )
+    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl )
 }
 
 /** @brief transmit the response object built by the execute command

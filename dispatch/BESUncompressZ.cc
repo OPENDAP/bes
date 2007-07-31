@@ -59,7 +59,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 
     int srcFile ;
     srcFile=open( src.c_str(), O_RDONLY ) ;
-    BESDEBUG( "BESUncompressZ::uncompress - src=" << src.c_str() << endl ) ;
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - src=" << src.c_str() << endl ) ;
     if( srcFile == -1 )
     {
 	string err = "Could not open the compressed file " + src ;
@@ -72,7 +72,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     int destFile ;
     destFile = open( target.c_str(), O_WRONLY | O_CREAT | O_TRUNC
 		     , S_IRUSR | S_IWUSR ) ;
-    BESDEBUG( "BESUncompressZ::uncompress - target=" 
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - target=" 
 	      << target.c_str() 
 	      << endl ) ;
 
@@ -81,7 +81,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	char *serr = strerror( errno ) ;
 	string err = "Unable to create the uncompressed file "
 	             + target + ": " ;
-	BESDEBUG( "BESUncompressZ::uncompress - cant open file" 
+	BESDEBUG( "bes", "BESUncompressZ::uncompress - cant open file" 
 		  << errno 
 		  << endl);
 	
@@ -102,7 +102,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 /*      Start decompress LZW inspired from ncompress-4.2.4.orig         */
 /* ==================================================================== */
 
-    BESDEBUG( "BESUncompressZ::uncompress - start decompress" << endl);
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - start decompress" << endl);
 
 #define	FIRSTBYTE	(unsigned char)'\037'/* First byte of compressed file*/
 #define	SECONDBYTE	(unsigned char)'\235'/* Second byte of compressed file*/
@@ -150,20 +150,20 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     bytes_out = 0;
     insize = 0;
     
-    BESDEBUG( "BESUncompressZ::uncompress - read file" << endl);	    
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - read file" << endl);	    
 /* -------------------------------------------------------------------- */
 /*       Verify if the .Z file start with 0x1f and 0x9d                 */
 /* -------------------------------------------------------------------- */
     while( insize < 3 && (rsize = read(srcFile, inbuf+insize, BUFSIZ)) > 0) {
 	insize += rsize;
     }
-    BESDEBUG( "BESUncompressZ::uncompress - insize: " << insize << endl); 
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - insize: " << insize << endl); 
 
 /* -------------------------------------------------------------------- */
 /*       Do we have compressed file?                                    */
 /* -------------------------------------------------------------------- */
     if( (insize < 3) || (inbuf[0] != FIRSTBYTE) || (inbuf[1] != SECONDBYTE)) {
-	BESDEBUG( "BESUncompressZ::uncompress - in here!!!!! " << endl);     
+	BESDEBUG( "bes", "BESUncompressZ::uncompress - in here!!!!! " << endl);     
 	if( rsize < 0) {
 	    string err = "Could not read file ";
 	    err += src.c_str() ;
@@ -207,7 +207,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 
     free_ent = ((block_mode) ? FIRST : 256);
 
-    BESDEBUG( "BESUncompressZ::uncompress - entering loop" << endl);
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - entering loop" << endl);
    
     memset(codetab, 0, 256);
     
@@ -383,7 +383,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 					    __FILE__, 
 					    __LINE__ ) ;
     }
-    BESDEBUG( "BESUncompressZ::uncompress - end decompres" << endl);
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - end decompres" << endl);
     return target.c_str();
     
 }

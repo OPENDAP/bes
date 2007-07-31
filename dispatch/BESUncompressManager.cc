@@ -197,7 +197,7 @@ BESUncompressManager::get_method_names()
 string
 BESUncompressManager::uncompress( const string &src, BESCache &cache )
 {
-    BESDEBUG( "BESUncompressManager::uncompress - src = " << src << endl )
+    BESDEBUG( "bes", "BESUncompressManager::uncompress - src = " << src << endl )
     string::size_type dot = src.rfind( "." ) ;
     if( dot != string::npos )
     {
@@ -224,12 +224,12 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    // before calling uncompress on the file, see if the file
 		    // has already been cached. If it has, then simply return
 		    // the target, no need to cache.
-		    BESDEBUG( "BESUncompressManager::uncompress - is cached? " \
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - is cached? " \
 			      << src << endl )
 		    string target ;
 		    if( cache.is_cached( src, target ) )
 		    {
-			BESDEBUG( "BESUncompressManager::uncompress - " \
+			BESDEBUG( "bes", "BESUncompressManager::uncompress - " \
 			          << "is cached " << target << endl )
 			cache.unlock() ;
 			return target ;
@@ -238,12 +238,12 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    // the file is not cached, so we need to uncompress the
 		    // file.  First determine if there is enough space in
 		    // the cache to uncompress the file
-		    BESDEBUG( "BESUncompressManager::uncompress - " \
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - " \
 		              << "purging cache" << endl )
 		    cache.purge() ;
 
 		    // Now that we have some room ... uncompress the file
-		    BESDEBUG( "BESUncompressManager::uncompress - " \
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - " \
 		              << "uncompress to " << target \
 			      << " using " << ext << " uncompression" \
 			      << endl )
@@ -282,7 +282,7 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 	}
 	else
 	{
-	    BESDEBUG( "BESUncompressManager::uncompress - not compressed " \
+	    BESDEBUG( "bes", "BESUncompressManager::uncompress - not compressed " \
 		      << endl )
 	}
     }

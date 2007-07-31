@@ -37,58 +37,143 @@
 #define I_BESDebug_h 1
 
 #include <iostream>
+#include <map>
+#include <string>
 
-using std::cout ;
+using std::cerr ;
 using std::endl ;
 using std::ostream ;
+using std::map ;
+using std::string ;
 
-#define BESDEBUG( x ) { if( BESDebug::Debug() ) *(BESDebug::Get_strm()) << x ; }
+/** @brief macro used to send debug information to the debut stream
+ *
+ * The BESDEBUG macro is used by developers to display debug information
+ * if the specified debug context is set to true.
+ *
+ * example:
+ *
+ * BESDEBUG( "bes", "function entered with values " << val1 << " and " << val2 << endl )
+ *
+ * @param x the debug context to check
+ * @param y information to send to the output stream
+ */
+#define BESDEBUG( x, y ) { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << y ; }
+
+/** @breif macro used to determine if the specified debug context is set
+ *
+ * If there is a lot of debugging information, use this macro to determine if
+ * debug context is set.
+ *
+ * example:
+ *
+ * if( BESISDEBUG( "bes" ) )
+ * {
+ *     for( int i = 0; i < _list_size; i++ )
+ *     {
+ *         BESDEBUG( "bes", " _list[" << i << "] = " << _list[i] << endl )
+ *     }
+ * }
+ *
+ * @param x bes debug to check
+ */
+#define BESISDEBUG( x ) BESDebug::IsSet( x )
 
 class BESDebug
 {
 private:
-    bool			_debug ;
-    ostream *			_strm ;
-    				BESDebug() : _debug( false ), _strm( 0 ) {}
-    static BESDebug *		_debugger ;
+    static map<string,bool>	_debug_map ;
+    static ostream *		_debug_strm ;
+    static bool			_debug_strm_created ;
+    typedef map<string,bool>::const_iterator _debug_citer ;
 public:
-    				BESDebug( ostream *strm ) : _strm( strm ) {}
-    virtual			~BESDebug() {}
-    virtual	void	begin_debug() { _debug = true ; }
-    virtual	void	end_debug() { _debug = false ; }
-    virtual bool		debug() { return _debug ; }
-    virtual ostream *		get_strm() { return _strm ; }
-
-    static void			Set_debugger( BESDebug *debugger )
+    /** @brief set the debug context to the specified value
+     *
+     * Static function that sets the specified debug context (flagName)
+     * to the specified debug value (true or false). If the context is
+     * found then the value is set. Else the context is created and the
+     * value set.
+     *
+     * @param flagName debug context flag to set to the given value
+     * @param value set the debug context to this value
+     */
+    static void			Set( const string &flagName, bool value )
     				{
-				    if( BESDebug::_debugger )
-					delete BESDebug::_debugger ;
-				    BESDebug::_debugger = debugger ;
+				    _debug_map[flagName] = value ;
 				}
-    static void			Begin_debug()
-    				{
-				    if( BESDebug::_debugger )
-					BESDebug::_debugger->begin_debug() ;
+    /** @brief register the specified debug flag
+     *
+     * Allows developers to register a debug flag for when Help method
+     * is called.
+     *
+     * @param flagName debug context to register
+     */
+    static void			Register( const string &flagName )
+				{
+				    _debug_citer i = _debug_map.find( flagName ) ;
+				    if( i == _debug_map.end() )
+				    {
+					_debug_map[flagName] = false ;
+				    }
 				}
-    static void			End_debug()
+    /** @brief see if the debug context flagName is set to true
+     *
+     * @param flagName debug context to check if set
+     * @return whether the specified flagName is set or not
+     */
+    static bool			IsSet( const string &flagName )
     				{
-				    if( BESDebug::_debugger )
-					BESDebug::_debugger->end_debug() ;
-				}
-    static bool			Debug()
-    				{
-				    if( BESDebug::_debugger )
-					return BESDebug::_debugger->debug() ;
+				    _debug_citer i = _debug_map.find( flagName ) ;
+				    if( i != _debug_map.end() )
+					return (*i).second ;
 				    else
 					return false ;
 				}
-    static ostream *		Get_strm()
+    /** @brief return the debug stream
+     *
+     * Can be a file output stream or cerr
+     *
+     * @return the current debug stream
+     */
+    static ostream *		GetStrm()
     				{
-				    if( BESDebug::_debugger )
-					return BESDebug::_debugger->get_strm() ;
-				    else
-					return 0 ;
+				    return _debug_strm ;
 				}
+    /** @brief set the debug output stream to the specified stream
+     *
+     * Static method that sets the debug output stream to the specified ostream.
+     *
+     * If the ostream was created (not set to cerr), then the created flag
+     * should be set to true.
+     *
+     * If the current debug stream is set and the _debug_strm_created flag is
+     * set to true then delete the current debug stream.
+     *
+     * set the static _debug_strm_created flag to the passed created flag
+     *
+     * @param strm set the current debug stream to strm
+     * @param created wether the passed debug stream was created
+     */
+    static void			SetStrm( ostream *strm, bool created )
+    				{
+				    if( _debug_strm_created )
+				    {
+					delete _debug_strm ;
+					_debug_strm = NULL ;
+				    }
+				    if( !strm )
+				    {
+					_debug_strm = &cerr ;
+					_debug_strm_created = false ;
+				    }
+				    else
+				    {
+					_debug_strm = strm ;
+					_debug_strm_created = created ;
+				    }
+				}
+    static void			SetUp( const string &values ) ;
+    static void			Help( ostream &strm ) ;
 } ;
 
 #endif // I_BESDebug_h
@@ -98,11 +183,11 @@ int
 main( int argc, char **argv )
 {
     int some_number = 1 ;
-    BESDEBUG( "Shouldn't be seeing this part 1: " << some_number++ << endl )
-    BESDebug::Set_debugger( new BESDebug( &cout ) ) ;
-    BESDEBUG( "Shouldn't be seeing this part 2: " << some_number++ << endl )
-    BESDebug::Begin_debug() ;
-    BESDEBUG( "Should be seeing this: " << some_number++ << endl )
+    BESDEBUG( "something", "Shouldn't be seeing this part 1: " << some_number++ << endl )
+    BESDebug::Set( "something", false ) ;
+    BESDEBUG( "something", "Shouldn't be seeing this part 2: " << some_number++ << endl )
+    BESDebug::Set( "something", true ) ;
+    BESDEBUG( "something", "Should be seeing this: " << some_number++ << endl )
 
     return 0 ;
 }
