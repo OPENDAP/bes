@@ -47,38 +47,41 @@ using std::endl ;
 void
 HDF4Module::initialize( const string &modname )
 {
-    BESDEBUG( "Initializing HDF4 module " << modname << endl )
+    BESDEBUG( "h4", "Initializing HDF4 module " << modname << endl )
 
-    BESDEBUG( "    adding " << modname << " request handler" << endl )
+    BESDEBUG( "h4", "    adding " << modname << " request handler" << endl )
     BESRequestHandler *handler = new HDF4RequestHandler( modname ) ;
     BESRequestHandlerList::TheList()->add_handler( modname, handler ) ;
 
-    BESDEBUG( "    adding " << HDF4_CATALOG << " catalog" << endl )
+    BESDEBUG( "h4", "    adding " << HDF4_CATALOG << " catalog" << endl )
     BESCatalogList::TheCatalogList()->add_catalog( new BESCatalogDirectory( HDF4_CATALOG ) ) ;
 
-    BESDEBUG( "    adding catalog container storage" << HDF4_CATALOG << endl )
+    BESDEBUG( "h4", "    adding catalog container storage" << HDF4_CATALOG << endl )
     BESContainerStorageCatalog *csc = new BESContainerStorageCatalog( HDF4_CATALOG ) ;
     BESContainerStorageList::TheList()->add_persistence( csc ) ;
 
-    BESDEBUG( "Done Initializing HDF4 module " << modname << endl )
+    BESDEBUG( "h4", "    adding h4 debug context" << endl )
+    BESDebug::Register( "h4" ) ;
+
+    BESDEBUG( "h4", "Done Initializing HDF4 module " << modname << endl )
 }
 
 void
 HDF4Module::terminate( const string &modname )
 {
-    BESDEBUG( "Cleaning HDF4 module " << modname << endl )
+    BESDEBUG( "h4", "Cleaning HDF4 module " << modname << endl )
 
-    BESDEBUG( "    removing HDF4 Handler" << modname << endl )
+    BESDEBUG( "h4", "    removing HDF4 Handler" << modname << endl )
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
-    BESDEBUG( "    removing catalog container storage" << HDF4_CATALOG << endl )
+    BESDEBUG( "h4", "    removing catalog container storage" << HDF4_CATALOG << endl )
     BESContainerStorageList::TheList()->del_persistence( HDF4_CATALOG ) ;
 
-    BESDEBUG( "    removing " << HDF4_CATALOG << " catalog" << endl )
+    BESDEBUG( "h4", "    removing " << HDF4_CATALOG << " catalog" << endl )
     BESCatalogList::TheCatalogList()->del_catalog( HDF4_CATALOG ) ;
 
-    BESDEBUG( "Done Cleaning HDF4 module " << modname << endl )
+    BESDEBUG( "h4", "Done Cleaning HDF4 module " << modname << endl )
 }
 
 /** @brief dumps information about this object
