@@ -54,34 +54,42 @@ using std::endl ;
 void
 CSVModule::initialize( const string &modname )
 {
-    BESDEBUG( "Initializing CSV Handler:" << endl )
+    BESDEBUG( "csv", "Initializing CSV Module " << modname << endl )
 
-    BESDEBUG( "    adding " << modname << " request handler" << endl )
+    BESDEBUG( "csv", "    adding " << modname << " request handler" << endl )
     BESRequestHandlerList::TheList()->
 	add_handler( modname, new CSVRequestHandler( modname ) ) ;
 
-    BESDEBUG( "    adding " << CSV_CATALOG << " catalog" << endl )
+    BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl )
     BESCatalogList::TheCatalogList()->
         add_catalog(new BESCatalogDirectory( CSV_CATALOG ) ) ;
 
-    BESDEBUG( "Adding Catalog Container Storage" << endl )
+    BESDEBUG( "csv", "    adding Catalog Container Storage" << endl )
     BESContainerStorageList::TheList()->
 	add_persistence( new BESContainerStorageCatalog( CSV_CATALOG ) ) ;
 
-    // If new commands are needed, then let's declare this once here. If
-    // not, then you can remove this line.
-    string cmd_name ;
+    BESDEBUG( "csv", "    adding csv debug context" << endl )
+    BESDebug::Register( "csv" ) ;
 
-    // INIT_END
+    BESDEBUG( "csv", "Initializing CSV Handler " << modname << endl )
 }
 
 void
 CSVModule::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Removing CSV Handlers" << endl;
+    BESDEBUG( "csv", "Cleaning CSV Module" << modname << endl )
+
+    BESDEBUG( "csv", "    removing " << modname << " request handler" << endl )
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
+    
+    BESDEBUG( "csv", "    removing catalog container storage" << CSV_CATALOG << endl )
+    BESContainerStorageList::TheList()->del_persistence( CSV_CATALOG ) ;
+
+    BESDEBUG( "csv", "    removing " << CSV_CATALOG << " catalog" << endl )
+    BESCatalogList::TheCatalogList()->del_catalog( CSV_CATALOG ) ;
+
+    BESDEBUG( "csv", "Done Cleaning CSV Module" << modname << endl )
 }
 
 extern "C"
