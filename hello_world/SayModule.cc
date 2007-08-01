@@ -66,15 +66,17 @@ SayModule::initialize( const string &modname )
     BESDEBUG( "say", "    adding Say reporter" << endl )
     BESReporterList::TheList()->add_reporter( modname, new SayReporter ) ;
 
+    BESDEBUG( "say", "    adding say debug context" << endl )
+    BESDebug::Register( "say" ) ;
 
-
-    // INIT_END
+    BESDEBUG( "say", "Done Initializing Say Handler:" << endl )
 }
 
 void
 SayModule::terminate( const string &modname )
 {
     BESDEBUG( "say", "Removing Say Handlers" << endl )
+
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
@@ -83,6 +85,8 @@ SayModule::terminate( const string &modname )
 
     BESDEBUG( "say", "    removing " << say_RESPONSE << " command" << endl )
     BESCommand::del_command( say_RESPONSE ) ;
+
+    BESDEBUG( "say", "Done Removing Say Handlers" << endl )
 }
 
 extern "C"
