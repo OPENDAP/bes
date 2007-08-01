@@ -153,14 +153,24 @@ a
 /INIT_END
 -1
 a
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << ${i}_RESPONSE << " response handler" << endl ;
+    BESDEBUG( modname, "    adding " << ${i}_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
 
     cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
+    BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
     BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
+
+.
+w
+/TERM_END
+-1
+a
+    BESDEBUG( modname, "    removing " << ${i}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->remove_handler( ncrpc_RESPONSE ) ;
+
+    cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
+    BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
+    BESCommand::del_command( cmd_name ) ;
 
 .
 w
