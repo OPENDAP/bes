@@ -197,3 +197,10 @@ so:
 If there is a list of containers instead of just one, then there can be a
 list of <container>.constraint="" clauses.
 
+COPYRIGHT INFORMATION
+
+  The OPeNDAP BES code is copyrighted using the GNU Lesser GPL. See the
+  file COPYING or contact the Free Software Foundation, Inc., at 59 Temple
+  Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the BES were
+  copyrighted by the University Corporation for Atmospheric Research;
+  see the file COPYRIGHT_UCAR.
