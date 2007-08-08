@@ -52,7 +52,6 @@ AC_DEFUN([BES_FIND_OPENSSL], [
 ])
 
 AC_DEFUN([BES_CHECK_OPENSSL], [
-AC_MSG_CHECKING(for OpenSSL)
   AC_ARG_WITH([openssl],
               [  --with-openssl[=DIR]    Include the OpenSSL support],
               [openssl="$withval"],
@@ -74,7 +73,22 @@ AC_MSG_CHECKING(for OpenSSL)
 
   if test "$openssl" != "no"
   then
-	if test "$openssl" != "yes" -a "$openssl" != ""
+    if test z"$openssl" = 'z'; then
+      bes_openssl_found=yes
+      PKG_CHECK_MODULES([OPENSSL],[openssl],,[bes_openssl_found=no])
+      if test $bes_openssl_found = 'yes'; then
+         openssl_includes=$OPENSSL_CFLAGS
+         openssl_libs=$OPENSSL_LIBS
+      else
+         bes_openssl_found=no
+         BES_OLD_LIBS=$LIBS
+         AC_CHECK_HEADERS([openssl/ssl.h],[
+         AC_CHECK_LIB([ssl],[SSL_library_init], [bes_openssl_found=yes])
+         ])
+         LIBS=$BES_OLD_LIBS
+         openssl_libs='-lssl -lcrypto'
+      fi
+	elif test "$openssl" != "yes"
 	then
 		if test -z "$openssl_includes" 
 		then
@@ -85,18 +99,18 @@ AC_MSG_CHECKING(for OpenSSL)
 			openssl_libs="$openssl/lib"
 		fi
 	fi
-    BES_FIND_OPENSSL([$openssl_includes], [$openssl_libs])
-    if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE"
-    then
+    if test z"$bes_openssl_found" != 'zyes'; then
+      BES_FIND_OPENSSL([$openssl_includes], [$openssl_libs])
+      if test -z "$OPENSSL_LIB" -o -z "$OPENSSL_INCLUDE"
+      then
 	if test "$openssl" != ""
 	then
 	    AC_MSG_ERROR(Unable to locate OpenSSL installation using --with-openssl specified);
 	fi
-	AM_CONDITIONAL([HAVE_OPENSSL], [false])
-	AC_MSG_RESULT(no)
+	bes_openssl_found=no
     else
+	bes_openssl_found=yes
 	#force VIO use
-	AC_MSG_RESULT(yes)
 	openssl_libs="-L$OPENSSL_LIB -lssl -lcrypto"
 	# Don't set openssl_includes to /usr/include as this gives us a lot of
 	# compiler warnings when using gcc 3.x
@@ -105,13 +119,11 @@ AC_MSG_CHECKING(for OpenSSL)
 	then
 	    openssl_includes="$OPENSSL_INCLUDE"
 	fi
-	AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
-	AM_CONDITIONAL([HAVE_OPENSSL], [true])
     fi
+   fi
 
   else
-    AM_CONDITIONAL([HAVE_OPENSSL], [false])
-    AC_MSG_RESULT(no)
+	bes_openssl_found=no
 	if test ! -z "$openssl_includes"
 	then
 		AC_MSG_ERROR(Can't have --with-openssl-includes without --with-openssl);
@@ -120,6 +132,16 @@ AC_MSG_CHECKING(for OpenSSL)
 	then
 		AC_MSG_ERROR(Can't have --with-openssl-libs without --with-openssl);
 	fi
+  fi
+
+  AC_MSG_CHECKING(for OpenSSL)
+  if test z"$bes_openssl_found" = 'zyes'; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([HAVE_OPENSSL], [1], [OpenSSL])
+    AM_CONDITIONAL([HAVE_OPENSSL], [true])
+  else
+    AM_CONDITIONAL([HAVE_OPENSSL], [false])
+    AC_MSG_RESULT(no)
   fi
 
   AC_SUBST(openssl_libs)

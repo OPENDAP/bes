@@ -30,65 +30,100 @@
 
 AC_DEFUN([AC_CHECK_LIBDAP],
 [
-  AC_PATH_PROG([DAP_CONFIG], [dap-config], [no])
   dap_min_version=m4_if([$1], [], [3.5.0], [$1])
-  AC_MSG_CHECKING([for libdap version >= $dap_min_version])
-  dap_no=""
-  if test "$DAP_CONFIG" = "no" ; then
-     dap_no=yes
-  else
-     dap_config_major_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\1/'`
-     dap_config_minor_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
-     dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
-     dap_min_major_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-     dap_min_minor_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-     dap_min_micro_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+  dap_no=
+  dap_pkgconfig_libdap=yes 
+  PKG_CHECK_MODULES([DAP],[libdap >= $dap_min_version],,
+    [dap_pkgconfig_libdap=no])
+  PKG_CHECK_MODULES([DAP_CLIENT],[libdapclient >= $dap_min_version],,
+    [dap_pkgconfig_libdap=no])
+  PKG_CHECK_MODULES([DAP_SERVER],[libdapserver >= $dap_min_version],,
+    [dap_pkgconfig_libdap=no])
+  
+  if test $dap_pkgconfig_libdap = no; then
+    AC_PATH_PROG([DAP_CONFIG], [dap-config], [no])
+    if test "$DAP_CONFIG" = "no" ; then
+      dap_no=yes
+    else
+      dap_config_major_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\1/'`
+      dap_config_minor_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
+      dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
+      dap_min_major_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+      dap_min_minor_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+      dap_min_micro_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
 
-     dap_config_is_lt=""
-     if test $dap_config_major_version -lt $dap_min_major_version ; then
-       dap_config_is_lt=yes
-     else
-       if test $dap_config_major_version -eq $dap_min_major_version ; then
-         if test $dap_config_minor_version -lt $dap_min_minor_version ; then
-           dap_config_is_lt=yes
-         else
-           if test $dap_config_minor_version -eq $dap_min_minor_version ; then
-             if test $dap_config_micro_version -lt $dap_min_micro_version ; then
-               dap_config_is_lt=yes
-             fi
-           fi
-         fi
-       fi
-     fi
-     if test x$dap_config_is_lt = xyes ; then
-       dap_no=yes
-     else
-       DAP_LIBS="`$DAP_CONFIG --libs`"
-       DAP_CLIENT_LIBS="`$DAP_CONFIG --client-libs`"
-       DAP_SERVER_LIBS="`$DAP_CONFIG --server-libs`"
-       DAP_CFLAGS="`$DAP_CONFIG --cflags`"
-     fi
-   fi
-   if test x$dap_no = x ; then
-     AC_MSG_RESULT([yes])
-     m4_if([$2], [], [:], [$2])
-   else
-     AC_MSG_RESULT([no])
-     if test "$DAP_CONFIG" = "no" ; then
-     AC_MSG_NOTICE([The dap-config script could not be found.])
-     else
-       if test x$dap_config_is_lt = xyes ; then
-         AC_MSG_NOTICE([the installed libdap library is too old.])
-       fi
-     fi
-     DAP_LIBS=""
-     DAP_CFLAGS=""
-     m4_if([$3], [], [:], [$3])
-   fi
-   AC_SUBST([DAP_CFLAGS])
-   AC_SUBST([DAP_LIBS])
-   AC_SUBST([DAP_CLIENT_LIBS])
-   AC_SUBST([DAP_SERVER_LIBS])
+      dap_config_is_lt=""
+      if test $dap_config_major_version -lt $dap_min_major_version ; then
+        dap_config_is_lt=yes
+      else
+        if test $dap_config_major_version -eq $dap_min_major_version ; then
+          if test $dap_config_minor_version -lt $dap_min_minor_version ; then
+            dap_config_is_lt=yes
+          else
+            if test $dap_config_minor_version -eq $dap_min_minor_version ; then
+              if test $dap_config_micro_version -lt $dap_min_micro_version ; then
+                dap_config_is_lt=yes
+              fi
+            fi
+          fi
+        fi
+      fi
+      if test x$dap_config_is_lt = xyes ; then
+        dap_no=yes
+      else
+        DAP_LIBS="`$DAP_CONFIG --libs`"
+        if ($DAP_CONFIG --client-libs 2>&1 | grep unknown) >/dev/null 2>&1; then
+          DAP_CLIENT_LIBS=$DAP_LIBS
+          DAP_SERVER_LIBS=$DAP_LIBS
+        else
+          DAP_CLIENT_LIBS="`$DAP_CONFIG --client-libs`"
+          DAP_SERVER_LIBS="`$DAP_CONFIG --server-libs`"
+        fi
+        DAP_CFLAGS="`$DAP_CONFIG --cflags`"
+      fi
+    fi
+  else
+     DAP_STATIC_LIBS="`$PKG_CONFIG --static --libs libdap`"
+     DAP_CLIENT_STATIC_LIBS="`$PKG_CONFIG --static --libs libdapclient`"
+     DAP_SERVER_STATIC_LIBS="`$PKG_CONFIG --static --libs libdapserver`"
+  fi
+  AC_MSG_CHECKING([for libdap version >= $dap_min_version])
+  if test x$dap_no = x ; then
+    AC_MSG_RESULT([yes])
+    m4_if([$2], [], [:], [$2])
+  else
+    AC_MSG_RESULT([no])
+    if test "$DAP_CONFIG" = "no" ; then
+    AC_MSG_NOTICE([The dap-config script could not be found.])
+    else
+      if test x$dap_config_is_lt = xyes ; then
+        AC_MSG_NOTICE([the installed libdap library is too old.])
+      fi
+    fi
+    DAP_LIBS=""
+    DAP_CFLAGS=""
+    m4_if([$3], [], [:], [$3])
+  fi
+  if test x"$DAP_CFLAGS" != x -a x"$DAP_CLIENT_CFLAGS" = x ; then
+    DAP_CLIENT_CFLAGS=$DAP_CFLAGS
+  fi
+  if test x"$DAP_CFLAGS" != x -a x"$DAP_SERVER_CFLAGS" = x ; then
+    DAP_SERVER_CFLAGS=$DAP_CFLAGS
+  fi
+  if test x"$DAP_STATIC_LIBS" = x ; then
+    DAP_STATIC_LIBS=$DAP_LIBS
+    DAP_CLIENT_STATIC_LIBS=$DAP_CLIENT_LIBS
+    DAP_SERVER_STATIC_LIBS=$DAP_SERVER_LIBS
+  fi
+  AC_SUBST([DAP_CFLAGS])
+  AC_SUBST([DAP_CLIENT_CFLAGS])
+  AC_SUBST([DAP_SERVER_CFLAGS])
+  AC_SUBST([DAP_LIBS])
+  AC_SUBST([DAP_CLIENT_LIBS])
+  AC_SUBST([DAP_SERVER_LIBS])
+  AC_SUBST([DAP_STATIC_LIBS])
+  AC_SUBST([DAP_CLIENT_STATIC_LIBS])
+  AC_SUBST([DAP_SERVER_STATIC_LIBS])
 ]) 
 
 # AC_CHECK_DODS([ ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
@@ -242,13 +277,38 @@ AC_DEFUN([AC_CHECK_DODS],
      fi
   fi 
   if test "x$ac_dods_ok" = "xyes" ; then
+     if test "z$DAP_CLIENT_LIBS" = 'z' ; then
+       DAP_CLIENT_LIBS=$DAP_LIBS
+       DAP_SERVER_LIBS=$DAP_LIBS
+     fi
+     if test x"$DAP_CFLAGS" != x -a x"$DAP_CLIENT_CFLAGS" = x ; then
+        DAP_CLIENT_CFLAGS=$DAP_CFLAGS
+     fi
+     if test x"$DAP_CFLAGS" != x -a x"$DAP_SERVER_CFLAGS" = x ; then
+       DAP_SERVER_CFLAGS=$DAP_CFLAGS
+     fi
+     if test x"$DAP_STATIC_LIBS" = x ; then
+       DAP_STATIC_LIBS=$DAP_LIBS
+       DAP_CLIENT_STATIC_LIBS=$DAP_CLIENT_LIBS
+       DAP_SERVER_STATIC_LIBS=$DAP_SERVER_LIBS
+     fi
      m4_if([$1], [], [:], [$1])
   else
      DAP_LIBS=""
      DAP_CFLAGS=""
+     DAP_CLIENT_LIBS=""
+     DAP_SERVER_LIBS=""
      m4_if([$2], [], [:], [$2])
   fi
-  AC_SUBST([DAP_CFLAGS])
-  AC_SUBST([DAP_LIBS])
-  AC_SUBST([DAP_ROOT])
+dnl done above
+dnl  AC_SUBST([DAP_CFLAGS])
+dnl  AC_SUBST([DAP_CLIENT_CFLAGS])
+dnl  AC_SUBST([DAP_SERVER_CFLAGS])
+dnl  AC_SUBST([DAP_LIBS])
+dnl  AC_SUBST([DAP_CLIENT_LIBS])
+dnl  AC_SUBST([DAP_SERVER_LIBS])
+dnl  AC_SUBST([DAP_STATIC_LIBS])
+dnl  AC_SUBST([DAP_CLIENT_STATIC_LIBS])
+dnl  AC_SUBST([DAP_SERVER_STATIC_LIBS])
+dnl  AC_SUBST([DAP_ROOT])
 ])

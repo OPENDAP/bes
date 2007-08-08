@@ -30,7 +30,7 @@ endif
 
 # This limits the files copied to just these eliminating the files
 # created when tests are run. jhrg 5/13/07
-CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz
+CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
 
 EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \

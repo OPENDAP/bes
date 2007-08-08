@@ -235,7 +235,17 @@ run(void)
 	return 1 ;
     }
 
+    /* Because of the nature of the build system sometimes the cache
+     * directory will contain ../, which is not allowed for a containers
+     * real name (for files). So this test will be different when just doing
+     * a make check or a make distcheck
+     */
     string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
+    bool isdotdot = false ;
+    string::size_type dotdot = cache_dir.find( "../" ) ;
+    if( dotdot != string::npos )
+	isdotdot = true ;
+
     string src_file = cache_dir + "/testfile.txt" ;
     string com_file = cache_dir + "/testfile.txt.gz" ;
 
@@ -248,88 +258,152 @@ run(void)
 
     cout << endl << "*****************************************" << endl;
     cout << "access a non compressed file" << endl;
-    try
+    if( !isdotdot )
     {
-	BESFileContainer c( "sym", src_file, "txt" ) ;
-
-	string result = c.access() ;
-	if( result != src_file )
+	try
 	{
-	    cerr << "result " << result << " does not match src "
-		 << src_file << endl ;
+	    BESFileContainer c( "sym", src_file, "txt" ) ;
+
+	    string result = c.access() ;
+	    if( result != src_file )
+	    {
+		cerr << "result " << result << " does not match src "
+		     << src_file << endl ;
+		return 1 ;
+	    }
+	    else
+	    {
+		cout << "result matches src" << endl ;
+	    }
+	}
+	catch( BESException &e )
+	{
+	    cerr << "Failed to access non compressed file" << endl ;
+	    cerr << e.get_message() << endl ;
 	    return 1 ;
 	}
-	else
+	catch( ... )
 	{
-	    cout << "result matches src" << endl ;
+	    cerr << "Failed to access non compressed file" << endl ;
+	    cerr << "Unknown error" << endl ;
+	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    else
     {
-	cerr << "Failed to access non compressed file" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "Failed to access non compressed file" << endl ;
-	cerr << "Unknown error" << endl ;
-	return 1 ;
+	try
+	{
+	    BESFileContainer c( "sym", src_file, "txt" ) ;
+
+	    string result = c.access() ;
+	    cerr << "Should have failed with ../ in container real name: "
+	         << src_file << endl ;
+	    return 1 ;
+	}
+	catch( BESException &e )
+	{
+	    cout << "Failed to access file with ../ in name, good" << endl ;
+	}
+	catch( ... )
+	{
+	    cerr << "Failed to access non compressed file" << endl ;
+	    cerr << "Unknown error" << endl ;
+	    return 1 ;
+	}
     }
 
     cout << endl << "*****************************************" << endl;
     cout << "access a compressed file" << endl;
-    try
+    if( !isdotdot )
     {
-	BESCache cache( *(TheBESKeys::TheKeys()),
-	                "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
-	string target ;
-	bool is_it = cache.is_cached( com_file, target ) ;
-	if( is_it )
+	try
 	{
-	    if( remove( target.c_str() ) != 0 )
+	    BESCache cache( *(TheBESKeys::TheKeys()),
+			    "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
+	    string target ;
+	    bool is_it = cache.is_cached( com_file, target ) ;
+	    if( is_it )
 	    {
-		cerr << "Unable to remove target file " << target
-		     << " , initializing test" << endl ;
+		if( remove( target.c_str() ) != 0 )
+		{
+		    cerr << "Unable to remove target file " << target
+			 << " , initializing test" << endl ;
+		    return 1 ;
+		}
+	    }
+
+	    BESFileContainer c( "sym", com_file, "txt" ) ;
+
+	    string result = c.access() ;
+	    if( result != target )
+	    {
+		cerr << "result " << result << " does not match target "
+		     << target << endl ;
+		return 1 ;
+	    }
+	    else
+	    {
+		cout << "result matches src" << endl ;
+	    }
+
+	    if( cache.is_cached( com_file, target ) )
+	    {
+		cout << "file is now cached" << endl ;
+	    }
+	    else
+	    {
+		cerr << "file should be cached in " << target << endl ;
 		return 1 ;
 	    }
 	}
-
-	BESFileContainer c( "sym", com_file, "txt" ) ;
-
-	string result = c.access() ;
-	if( result != target )
+	catch( BESException &e )
 	{
-	    cerr << "result " << result << " does not match target "
-		 << target << endl ;
+	    cerr << "Failed to access compressed file" << endl ;
+	    cerr << e.get_message() << endl ;
 	    return 1 ;
 	}
-	else
+	catch( ... )
 	{
-	    cout << "result matches src" << endl ;
-	}
-
-	if( cache.is_cached( com_file, target ) )
-	{
-	    cout << "file is now cached" << endl ;
-	}
-	else
-	{
-	    cerr << "file should be cached in " << target << endl ;
+	    cerr << "Failed to access compressed file" << endl ;
+	    cerr << "Unknown error" << endl ;
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    else
     {
-	cerr << "Failed to access compressed file" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "Failed to access compressed file" << endl ;
-	cerr << "Unknown error" << endl ;
-	return 1 ;
+	try
+	{
+	    BESCache cache( *(TheBESKeys::TheKeys()),
+			    "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
+	    string target ;
+	    bool is_it = cache.is_cached( com_file, target ) ;
+	    if( is_it )
+	    {
+		if( remove( target.c_str() ) != 0 )
+		{
+		    cerr << "Unable to remove target file " << target
+			 << " , initializing test" << endl ;
+		    return 1 ;
+		}
+	    }
+
+	    BESFileContainer c( "sym", com_file, "txt" ) ;
+
+	    string result = c.access() ;
+	    cerr << "Should have failed with ../ in container real name: "
+	         << com_file << endl ;
+	    return 1 ;
+	}
+	catch( BESException &e )
+	{
+	    cout << "Failed to access file with ../ in name, good" << endl ;
+	}
+	catch( ... )
+	{
+	    cerr << "Failed to access compressed file" << endl ;
+	    cerr << "Unknown error" << endl ;
+	    return 1 ;
+	}
     }
 
     cout << endl << "*****************************************" << endl;
