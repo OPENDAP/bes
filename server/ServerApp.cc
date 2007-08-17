@@ -119,10 +119,13 @@ ServerApp::initialize( int argc, char **argv )
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc
-    while( ( c = getopt( argc, argv, "hvsd:c:p:u:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
     {
 	switch( c )
 	{
+	    case 'i':
+		// ignore this flag, used in besdaemon launch to find this app
+		break ;
 	    case 'c':
 		TheBESKeys::ConfigFile = optarg ;
 		break ;

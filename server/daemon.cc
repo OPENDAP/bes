@@ -61,7 +61,7 @@ int  daemon_init() ;
 int  mount_server( char ** ) ;
 int  pr_exit( int status ) ;
 void store_listener_id( int pid ) ;
-bool load_names() ;
+bool load_names( const string &install_dir ) ;
 
 string NameProgram ;
 
@@ -76,8 +76,32 @@ main(int argc, char *argv[])
 {
     NameProgram = argv[0] ;
 
+    string install_dir ;
+
+    // If you change the getopt statement below, be sure to make the
+    // corresponding change in ServerApp.cc
+    int c = 0 ;
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
+    {
+	switch( c )
+	{
+	    case 'v':
+		BESServerUtils::show_version( NameProgram ) ;
+		break ;
+	    case '?':
+	    case 'h':
+		BESServerUtils::show_usage( NameProgram ) ;
+		break ;
+	    case 'i':
+		install_dir = optarg ;
+		break ;
+	    default:
+		break ;
+	}
+    }
+
     // Set the name of the listener and the file for the listenet pid
-    if( !load_names() )
+    if( !load_names( install_dir ) )
 	return 1 ;
 
     arguments = new char *[argc+1] ;
@@ -94,25 +118,6 @@ main(int argc, char *argv[])
 	arguments[i] = argv[i] ;
     }
     arguments[argc] = NULL ;
-
-    // If you change the getopt statement below, be sure to make the
-    // corresponding change in ServerApp.cc
-    int c = 0 ;
-    while( ( c = getopt( argc, argv, "hvsd:c:p:u:" ) ) != EOF )
-    {
-	switch( c )
-	{
-	    case 'v':
-		BESServerUtils::show_version( NameProgram ) ;
-		break ;
-	    case '?':
-	    case 'h':
-		BESServerUtils::show_usage( NameProgram ) ;
-		break ;
-	    default:
-		break ;
-	}
-    }
 
     if( !access( file_for_listener.c_str(), F_OK ) )
     {
@@ -294,51 +299,45 @@ store_listener_id( int pid )
 }
 
 bool
-load_names()
+load_names( const string &install_dir )
 {
     char *xdap_root = 0 ;
     string bindir = "/bin";
-    xdap_root = getenv( BES_SERVER_ROOT ) ;
-    if( xdap_root )
+    if( !install_dir.empty() )
     {
-	server_name = xdap_root ;
-        server_name += bindir ;
-	file_for_listener = xdap_root ;
+	server_name = install_dir ;
+	file_for_listener = install_dir + "/var" ;
     }
     else
     {
-	// BES_SERVER_ROOT is not set, attemp to obtain current
-	// working directory
-	/*
-	char t_buf[1024] ;
-	if( getcwd( t_buf, sizeof( t_buf ) ) )
+	xdap_root = getenv( BES_SERVER_ROOT ) ;
+	if( xdap_root )
 	{
-	    cout << NameProgram << ": using current working directory "
-	         << t_buf << endl ;
-	    server_name = t_buf ;
-	    file_for_listener = t_buf ;
+	    server_name = xdap_root ;
+	    file_for_listener = (string)xdap_root + "/var" ;
 	}
-	*/
-	server_name = BES_BIN_DIR ;
-	file_for_listener = BES_STATE_DIR ;
+	else
+	{
+	    server_name = BES_BIN_DIR ;
+	    file_for_listener = BES_STATE_DIR ;
+	}
     }
     if( server_name == "" )
     {
 	server_name = "." ;
-        server_name += bindir ;
 	file_for_listener = "." ;
     }
 
-    server_name += BES_SERVER ;
-    file_for_listener += "/run/" ;
-    file_for_listener += BES_SERVER_PID ;
+    server_name += bindir + BES_SERVER ;
+    file_for_listener += (string)"/run/" + BES_SERVER_PID ;
 
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
 	cerr << NameProgram
 	     << ": can not start." << server_name << endl
-	     << "Please set environment variable "
-	     << BES_SERVER_ROOT << " to the location of your listener "
+	     << "Please either pass -i <install_dir> on the command line or "
+	     << "set the environment variable " << BES_SERVER_ROOT << " "
+	     << "to the installation directory where the BES listener is."
 	     << endl ;
 	return false ;
     }
