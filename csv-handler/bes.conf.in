@@ -43,17 +43,17 @@ BES.LogVerbose=no
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
 BES.modules=dap,cmd,ascii,usage,www,csv
-BES.module.dap=/Users/pwest/opendap/security/lib/bes/libdap_module.so
-BES.module.cmd=/Users/pwest/opendap/security/lib/bes/libdap_cmd_module.so
-BES.module.ascii=/Users/pwest/opendap/security/lib/bes/libascii_module.so
-BES.module.usage=/Users/pwest/opendap/security/lib/bes/libusage_module.so
-BES.module.www=/Users/pwest/opendap/security/lib/bes/libwww_module.so
-BES.module.csv=./.libs/libcsv_module.so
+BES.module.dap=@BES_MODULE_DIR@/libdap_module.so
+BES.module.cmd=@BES_MODULE_DIR@/libdap_cmd_module.so
+BES.module.ascii=@BES_MODULE_DIR@/libascii_module.so
+BES.module.usage=@BES_MODULE_DIR@/libusage_module.so
+BES.module.www=@BES_MODULE_DIR@/libwww_module.so
+BES.module.csv=@BES_MODULE_DIR@/libcsv_module.so
 
 #-----------------------------------------------------------------------#
 # Root directory where data is located
 #-----------------------------------------------------------------------#
-BES.Data.RootDirectory=/Users/pwest/opendap/data
+BES.Data.RootDirectory=@datadir@/hyrax
 
 #-----------------------------------------------------------------------#
 # Catalog configuration                                                 #
@@ -61,7 +61,7 @@ BES.Data.RootDirectory=/Users/pwest/opendap/data
 # root directory here. This is different from BES.Data.RootDirectory    #
 # in that the RootDirectory specified below is for the data catalog     #
 #-----------------------------------------------------------------------#
-BES.Catalog.catalog.RootDirectory=/Users/pwest/opendap/data
+BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 
 # The TypeMatch parameter is a list of handler/module names a colon and
 # a regular expression. If the regular expression matches an item, then
@@ -93,24 +93,24 @@ BES.ServerPort=10002
 BES.ServerUnixSocket=/tmp/opendap.socket
 BES.ServerSecure=no
 BES.ServerSecurePort=10003
-BES.ServerCertFile=/Users/pwest/temp/ssl/cacert.pem
-BES.ServerKeyFile=/Users/pwest/temp/ssl/privkey.pem
-BES.ClientCertFile=/Users/pwest/temp/ssl/cacert.pem
-BES.ClientKeyFile=/Users/pwest/temp/ssl/privkey.pem
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/certificate/file.pem
+BES.ClientCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/serverside/certificate/file.pem
 
 #-----------------------------------------------------------------------#
 # help file locations, for text, html, and xml versions	                #
 #-----------------------------------------------------------------------#
-BES.Help.TXT=/Users/pwest/opendap/share/bes/bes_help.txt
-BES.Help.HTTP=/Users/pwest/opendap/share/bes/bes_help.html
-BES.Help.XML=/Users/pwest/opendap/share/bes/bes_help.txt
+BES.Help.TXT=@BES_HELP_DIR@/bes_help.txt
+BES.Help.HTTP=@BES_HELP_DIR@/bes_help.html
+BES.Help.XML=@BES_HELP_DIR@/bes_help.txt
 
-DAP.Help.TXT=/Users/pwest/opendap/share/bes/dap_help.txt
-DAP.Help.HTTP=/Users/pwest/opendap/share/bes/dap_help.html
-DAP.Help.XML=/Users/pwest/opendap/share/bes/dap_help.txt
+DAP.Help.TXT=@BES_HELP_DIR@/dap_help.txt
+DAP.Help.HTTP=@BES_HELP_DIR@/dap_help.html
+DAP.Help.XML=@BES_HELP_DIR@/dap_help.txt
 
-CSV.Help.TXT=/Users/zednik/src/OPeNDAP/info/csv_help.txt
-CSV.Help.HTTP=/Users/zednik/src/OPeNDAP/info/csv_help.html
+CSV.Help.TXT=@BES_HELP_DIR@/csv_help.txt
+CSV.Help.HTTP=@BES_HELP_DIR@/csv_help.html
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #

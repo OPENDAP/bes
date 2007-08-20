@@ -64,7 +64,7 @@ BESProcessEncodedString::BESProcessEncodedString (const char *s)
 		}
 		else
 		{
-		    _entries[parseHex( key.c_str() )] = parseHex( value.c_str() ) ;
+		    _entries[parseHex( key.c_str(), key.length() )] = parseHex( value.c_str(), value.length() ) ;
 		    getting_key_data = true ;
 		    key = "" ;
 		}
@@ -74,7 +74,7 @@ BESProcessEncodedString::BESProcessEncodedString (const char *s)
 	    cerr << "BESProcessEncodedString: parse error.\n" ;
 	else
 	{
-	    _entries[parseHex( key.c_str() )] = parseHex( value.c_str() ) ;
+	    _entries[parseHex( key.c_str(), key.length() )] = parseHex( value.c_str(), value.length() ) ;
 	}
     }
     else
@@ -85,16 +85,18 @@ BESProcessEncodedString::BESProcessEncodedString (const char *s)
 }
 
 string
-BESProcessEncodedString::parseHex( const char *s )
-{ 
-    char *hexstr = new char[strlen( s ) + 1] ;
-    strcpy( hexstr, s ) ;
+BESProcessEncodedString::parseHex( const char *s, unsigned int len )
+{
+    if( !s || !len )
+	return "" ;
+    char *hexstr = new char[len + 1] ;
+    strncpy( hexstr, s, len ) ;
 
     if(hexstr == NULL || strlen( hexstr ) == 0 ) 
 	return ""; 
 
     register unsigned int x,y; 
-    for( x = 0, y = 0; hexstr[y]; x++, y++ ) 
+    for( x = 0, y = 0; hexstr[y] && y < len && x < len; x++, y++ ) 
     { 
 	if( ( hexstr[x] = hexstr[y] ) == '+' ) 
 	{ 

@@ -70,7 +70,7 @@ Note that all commands must end with a semicolon except 'exit'.
 
 Now try to get some data:
 
-    BESClient> set container in catalog values c,temperature.csv;
+    BESClient> set container in catalog values c,data/csv/temperature.csv;
     BESClient> define d as c;
     BESClient> get das for d;
     Attributes {

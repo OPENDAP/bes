@@ -48,7 +48,7 @@ class BESProcessEncodedString : public BESObj
 {
 private:
     map<string,string>		_entries;
-    string			parseHex( const char* hexstr ) ; 
+    string			parseHex( const char* hexstr, unsigned int len ) ; 
     const unsigned int		convertHex( const char* what ) ;
 public:
     				BESProcessEncodedString( const char *s ) ;

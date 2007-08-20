@@ -107,8 +107,9 @@ main(int argc, char *argv[])
     arguments = new char *[argc+1] ;
 
     // Set arguments[0] to the name of the listener
-    char temp_name[1024] ;
-    strcpy( temp_name, server_name.c_str() ) ;
+    char temp_name[server_name.length() + 1] ;
+    strncpy( temp_name, server_name.c_str(), server_name.length() ) ;
+    temp_name[server_name.length()] = '\0' ;
     arguments[0] = temp_name ;
 
     // Marshal the arguments to the listener from the command line 
@@ -170,7 +171,7 @@ daemon_init()
 }
 
 int
-mount_server(char* *arguments)
+mount_server(char **arguments)
 {
     const char *perror_string = 0 ;
     pid_t pid ;
@@ -306,6 +307,7 @@ load_names( const string &install_dir )
     if( !install_dir.empty() )
     {
 	server_name = install_dir ;
+	server_name += bindir ;
 	file_for_listener = install_dir + "/var" ;
     }
     else
@@ -314,6 +316,7 @@ load_names( const string &install_dir )
 	if( xdap_root )
 	{
 	    server_name = xdap_root ;
+	    server_name += bindir ;
 	    file_for_listener = (string)xdap_root + "/var" ;
 	}
 	else
@@ -328,7 +331,7 @@ load_names( const string &install_dir )
 	file_for_listener = "." ;
     }
 
-    server_name += bindir + BES_SERVER ;
+    server_name += BES_SERVER ;
     file_for_listener += (string)"/run/" + BES_SERVER_PID ;
 
     if( access( server_name.c_str(), F_OK ) != 0 )

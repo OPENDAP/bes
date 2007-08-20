@@ -44,9 +44,10 @@ AC_DEFUN([AC_CHECK_BES],
      if test x$bes_config_is_lt = xyes ; then
        bes_no=yes
      else
-       BES_LIBS="`$BES_CONFIG --libs`"
+       BES_LIBS="`$BES_CONFIG --dap-libs`"
        BES_CPPFLAGS="`$BES_CONFIG --cflags`"
        BES_MODULE_DIR="`$BES_CONFIG --modulesdir`"
+       BES_HELP_DIR="`$BES_CONFIG --helpdir`"
      fi
    fi
    if test x$bes_no = x ; then
@@ -64,9 +65,11 @@ AC_DEFUN([AC_CHECK_BES],
      BES_LIBS=""
      BES_CPPFLAGS=""
      BES_MODULE_DIR=""
+     BES_HELP_DIR=""
      m4_if([$3], [], [:], [$3])
    fi
    AC_SUBST([BES_LIBS])
    AC_SUBST([BES_CPPFLAGS])
    AC_SUBST([BES_MODULE_DIR])
+   AC_SUBST([BES_HELP_DIR])
 ]) 

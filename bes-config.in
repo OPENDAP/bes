@@ -6,7 +6,9 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+datadir=@datadir@
 pkglibdir=${libdir}/bes
+pkgdatadir=${datadir}/bes
 
 usage()
 {
@@ -23,6 +25,7 @@ Available values for OPTION include:
   --dap-libs   library linking information for the OPeNDAP/HAO BES using LIBDAP
   --prefix     OPeNDAP install prefix
   --modulesdir Bes modules directory
+  --helpdir    BES help file directory
   --version    Library version
 EOF
 
@@ -69,6 +72,10 @@ while test $# -gt 0; do
 
     --modulesdir)
        	echo "${pkglibdir}"
+       	;;
+
+    --helpdir)
+       	echo "${pkgdatadir}"
        	;;
 
     --prefix)

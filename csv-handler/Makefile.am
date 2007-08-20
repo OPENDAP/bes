@@ -9,7 +9,10 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-lib_LTLIBRARIES = libcsv_module.la
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libcsv_module.la
+
+nobase_sysconf_DATA = bes.conf
 
 CSV_SRCS:=
 
@@ -38,6 +41,14 @@ EXTRA_DIST = COPYRIGHT COPYING csv_handler.spec
 
 CLEANFILES = *~
 
+bes.conf: bes.conf.in ../config.status
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+		-e "s%[@]datadir[@]%${datadir}%" \
+		-e "s%[@]BES_MODULE_DIR[@]%${BES_MODULE_DIR}%" \
+		-e "s%[@]BES_HELP_DIR[@]%${BES_HELP_DIR}%" \
+		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 ###########################################################################
 
 # Build linux RPMs
