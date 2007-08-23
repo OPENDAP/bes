@@ -156,7 +156,7 @@ public:
      */
     static void			SetStrm( ostream *strm, bool created )
     				{
-				    if( _debug_strm_created )
+				    if( _debug_strm_created && _debug_strm )
 				    {
 					delete _debug_strm ;
 					_debug_strm = NULL ;

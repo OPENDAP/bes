@@ -31,12 +31,15 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <fstream>
+#include <iostream>
 
 using std::ofstream ;
 using std::ios ;
+using std::cout ;
+using std::endl ;
 
 #include "BESDebug.h"
-//#include "BESException.h"
+#include "BESDebugException.h"
 
 ostream *BESDebug::_debug_strm = NULL ;
 bool BESDebug::_debug_strm_created = false ;
@@ -60,16 +63,14 @@ BESDebug::SetUp( const string &values )
     if( values.empty() )
     {
 	string err = "Empty debug options" ;
-	//throw BESException( err, __FILE__, __LINE__ ) ;
-	throw err;
+	throw BESDebugException( err, __FILE__, __LINE__ ) ;
     }
     string::size_type comma = 0 ;
     comma = values.find( ',' ) ;
     if( comma == string::npos )
     {
 	string err = "Missing comma in debug options: " + values ;
-	//throw BESException( err, __FILE__, __LINE__ ) ;
-	throw err;
+	throw BESDebugException( err, __FILE__, __LINE__ ) ;
     }
     ostream *strm = 0 ;
     bool created = false ;
@@ -81,6 +82,11 @@ BESDebug::SetUp( const string &values )
     else
     {
 	strm = new ofstream( s_strm.c_str(), ios::out ) ;
+	if( !(*strm) )
+	{
+	    string err = "Unable to open the debug file: " + s_strm ;
+	    throw BESDebugException( err, __FILE__, __LINE__ ) ;
+	}
 	created = true ;
     }
 
@@ -90,11 +96,23 @@ BESDebug::SetUp( const string &values )
     while( ( new_comma = values.find( ',', comma+1 ) ) != string::npos )
     {
 	string flagName = values.substr( comma+1, new_comma-comma-1 ) ;
-	BESDebug::Set( flagName, true ) ;
+	if( flagName[0] == '-' )
+	{
+	    string newflag = flagName.substr( 1, flagName.length() - 1 ) ;
+	    BESDebug::Set( newflag, false ) ;
+	}
+	else
+	    BESDebug::Set( flagName, true ) ;
 	comma = new_comma ;
     }
     string flagName = values.substr( comma+1, values.length()-comma-1 ) ;
-    BESDebug::Set( flagName, true ) ;
+    if( flagName[0] == '-' )
+    {
+	string newflag = flagName.substr( 1, flagName.length() - 1 ) ;
+	BESDebug::Set( newflag, false ) ;
+    }
+    else
+	BESDebug::Set( flagName, true ) ;
 }
 
 /** @brief Writes help information for so that developers know what can be set for
@@ -110,7 +128,8 @@ BESDebug::Help( ostream &strm )
     strm << "Debug help:" << endl
          << endl
          << "Set on the command line with "
-         << "-d \"file_name|cerr,context1,context2,...,contextn\"" << endl
+         << "-d \"file_name|cerr,[-]context1,[-]context2,...,[-]contextn\"" << endl
+	 << "  context with dash (-) in front will be turned off" << endl
          << endl
 	 << "Possible context:" << endl ;
 
@@ -120,7 +139,11 @@ BESDebug::Help( ostream &strm )
 	BESDebug::_debug_citer e = _debug_map.end() ;
 	for( ; i != e; i++ )
 	{
-	    strm << "  " << (*i).first << endl ;
+	    strm << "  " << (*i).first << ": " ;
+	    if( (*i).second )
+		strm << "on" << endl ;
+	    else
+		strm << "off" << endl ;
 	}
     }
     else

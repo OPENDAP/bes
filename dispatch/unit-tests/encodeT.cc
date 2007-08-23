@@ -12,8 +12,6 @@ using std::ifstream ;
 #include "BESProcessEncodedString.h"
 #include "test_config.h"
 
-#define BES_CACHE_CHAR '#' 
-
 int
 encodeT::run(void)
 {

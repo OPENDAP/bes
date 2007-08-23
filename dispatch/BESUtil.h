@@ -35,6 +35,9 @@ public:
 
     /** Convert a string to all lower case **/
     static string lowercase( const string &s ) ;
+
+    /** Unescape characters with backslash before them **/
+    static string unescape( const string &s ) ;
 } ;
 
 #endif // E_BESUtil_h

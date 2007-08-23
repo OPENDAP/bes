@@ -139,7 +139,7 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
-	BESModuleApp.h BESUtil.h BESDebug.h \
+	BESModuleApp.h BESUtil.h BESDebug.h BESDebugException.h \
 	BESCache.h BESUncompressManager.h BESUncompressGZ.h \
 	BESUncompressBZ2.h BESUncompressZ.h
 

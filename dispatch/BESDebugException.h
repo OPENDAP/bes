@@ -1,4 +1,4 @@
-// BESStatusReturn.h
+// BESDebugException.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,22 +30,28 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESStatusReturn_h_
-#define BESStatusReturn_h_ 1
+#ifndef BESDebugException_h_
+#define BESDebugException_h_ 1
 
-#define BES_EXECUTED_OK 0
-#define BES_TERMINATE_IMMEDIATE 1
-#define BES_REQUEST_INCORRECT 2
-#define BES_MEMORY_EXCEPTION 3
-#define BES_DATABASE_FAILURE 4
-#define BES_CONTAINER_PERSISTENCE_ERROR 5
-#define BES_INITIALIZATION_FILE_PROBLEM 6
-#define BES_LOG_FILE_PROBLEM 7
-#define BES_DATA_HANDLER_FAILURE 8
-#define BES_AGGREGATION_EXCEPTION 9
-#define BES_FAILED_TO_EXECUTE_COMMIT_COMMAND 10
-#define BES_DATA_HANDLER_PROBLEM 11
-#define BES_DEBUG_ERROR 12
+#include "BESException.h"
 
-#endif // BESStatusReturn_h_
+/** @brief exception thrown if unable to open or write to the dods log file.
+ */
+class BESDebugException : public BESException
+{
+protected:
+      			BESDebugException() {}
+public:
+      			BESDebugException( const string &s,
+			                   const string &file,
+					   int line )
+			    : BESException( s, file, line )
+			{
+			    set_context( "Debug" ) ;
+			    set_return_code( BES_DEBUG_ERROR ) ;
+			}
+      virtual		~BESDebugException() {}
+};
+
+#endif // BESDebugException_h_
 

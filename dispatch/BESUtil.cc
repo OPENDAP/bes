@@ -1,7 +1,10 @@
 
 #include <sstream>
+#include <iostream>
 
 using std::istringstream ;
+using std::cout ;
+using std::endl ;
 
 #include "BESUtil.h"
 #include "config.h"
@@ -144,5 +147,31 @@ BESUtil::lowercase( const string &s )
     }
 
     return return_string ;
+}
+
+string
+BESUtil::unescape( const string &s )
+{
+    bool done = false ;
+    string::size_type index = 0 ;
+    string::size_type new_index = 0 ;
+    string new_str ;
+    while( !done )
+    {
+	string::size_type bs = s.find( '\\', index ) ;
+	if( bs == string::npos )
+	{
+	    new_str += s.substr( index, s.length() - index ) ;
+	    done = true ;
+	}
+	else
+	{
+	    new_str += s.substr( index, bs - index ) ;
+	    new_str += s[bs+1] ;
+	    index = bs+2 ;
+	}
+    }
+
+    return new_str ;
 }
 

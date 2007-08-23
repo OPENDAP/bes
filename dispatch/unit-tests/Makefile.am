@@ -20,7 +20,7 @@ noinst_HEADERS = test_config.h
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT
+		encodeT debugT utilT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -132,4 +132,10 @@ uncompressT_LDADD =  ../libbes_dispatch.la
 
 encodeT_SOURCES = encodeT.cc baseApp.cc encodeT.h baseApp.h Application.h
 encodeT_LDADD =  ../libbes_dispatch.la
+
+debugT_SOURCES = debugT.cc baseApp.cc debugT.h baseApp.h Application.h
+debugT_LDADD =  ../libbes_dispatch.la
+
+utilT_SOURCES = utilT.cc baseApp.cc utilT.h baseApp.h Application.h
+utilT_LDADD =  ../libbes_dispatch.la
 

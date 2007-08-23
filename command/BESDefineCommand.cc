@@ -36,6 +36,7 @@
 #include "BESResponseHandlerList.h"
 #include "BESParserException.h"
 #include "BESDataNames.h"
+#include "BESUtil.h"
 
 string
 BESDefineCommand::parse_options( BESTokenizer &tokens,
@@ -232,11 +233,11 @@ BESDefineCommand::parse_request( BESTokenizer &tokenizer,
 				}
 				if( my_type == 1 )
 				{
-				    dhi.container->set_constraint( tokenizer.remove_quotes( my_token ) ) ;
+				    dhi.container->set_constraint( BESUtil::unescape( tokenizer.remove_quotes( my_token ) ) ) ;
 				}
 				else if( my_type == 2 )
 				{
-				    dhi.container->set_attributes( tokenizer.remove_quotes( my_token ) ) ;
+				    dhi.container->set_attributes( BESUtil::unescape( tokenizer.remove_quotes( my_token ) ) ) ;
 				}
 				else
 				{
@@ -281,7 +282,7 @@ BESDefineCommand::parse_request( BESTokenizer &tokenizer,
 		tokenizer.parse_error( my_token + " not expected" ) ;
 	    }
 	    dhi.data[AGG_CMD] =
-		tokenizer.remove_quotes( my_token ) ;
+		BESUtil::unescape( tokenizer.remove_quotes( my_token ) ) ;
 
 	    my_token = tokenizer.get_next_token() ;
 	}
