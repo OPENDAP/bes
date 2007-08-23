@@ -3,7 +3,7 @@ OBJS:=BESApacheInterface.o BESApacheWrapper.o BESApacheRequests.o mod_opendap.o
 TESTS:=requestsT wrapperT
 
 INCS:=-I. -I../dispatch -I../command -I$(OPENDAP_ROOT)/include/libdap
-LIBS:=-L/Users/pwest/opendap/lib -L/Users/pwest/opendap/lib/bes -lbes_dispatch -lbes_command -lbes_ppt -lbes_dap -ltermcap  -lreadline -ldap_module -ldap_cmd_module
+LIBS:=-L/Users/pwest/opendap/cedar/lib -L/Users/pwest/opendap/cedar/lib/bes -lbes_dispatch -lbes_command -lbes_ppt -lbes_dap -ltermcap  -lreadline -ldap_module -ldap_cmd_module
 APACHE_SRC:=/usr/include/httpd
 APACHE_INCS:=-I$(APACHE_SRC)
 

@@ -42,7 +42,7 @@ using std::endl ;
 #include "BESMemoryGlobalArea.h"
 #include "BESStatusReturn.h"
 #include "BESIncorrectRequestException.h"
-#include "cgi_util.h"
+#include "BESUtil.h"
 #include "BESBasicHttpTransmitter.h"
 #include "BESTransmitException.h"
 #include "BESAggregationServer.h"
@@ -269,7 +269,7 @@ BESApacheInterface::welcome_browser()
     int ho=agent.find("HotJava");
     if ((mo<0)&&(ho<0)) // No, sorry. For you just a message and good bye :-(
     {
-	set_mime_text( stdout, unknown_type ) ;
+	BESUtil::set_mime_text( stdout ) ;
 	bool found = false ;
 	string administrator =
 	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
@@ -293,7 +293,7 @@ BESApacheInterface::welcome_browser()
 	    TheBESKeys::TheKeys()->get_key( "BES.DefaultResponseMethod", found ) ;
 	if( (method!="GET") && (method!="POST") )
 	{
-	    set_mime_text( stdout, dods_error ) ;
+	    BESUtil::set_mime_text( stdout ) ;
 	    found = false ;
 	    string administrator =
 		TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
