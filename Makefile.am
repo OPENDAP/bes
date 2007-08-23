@@ -74,6 +74,16 @@ install-data-hook: configure-hdf5-data.sh
 	 ./configure-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
 
 endif
+
+###########################################################################
+
+# Fortify targets. These 
+
+.PHONY: fortify
+fortify:
+	sourceanalyzer -b hdf5_handler $(MAKE)
+	sourceanalyzer -b hdf5_handler -scan -f hdf5_handler.fpr
+
 ###########################################################################
 
 # Build linux RPMs
