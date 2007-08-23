@@ -25,16 +25,21 @@ bes-configuration-tests:
 docs:
 	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
 
-##########################################################################
+###########################################################################
 
-# Fortify targets. These 
+# Fortify targets.
 
 .PHONY: fortify
 fortify:
-	sourceanalyzer -b bes $(MAKE)
-	sourceanalyzer -b bes -scan -f bes.fpr
+	sourceanalyzer -b @PACKAGE@ $(MAKE)
+	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
-###########################################################################
+# Use this to clean the fortify project.
+.PHONY: fortifyclean
+fortifyclean:
+	sourceanalyzer -b @PACKAGE@ -clean
+
+##########################################################################
 
 # Build linux RPMs
 
