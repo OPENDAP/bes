@@ -98,6 +98,15 @@ endif
 
 ###########################################################################
 
+# Fortify targets. These 
+
+.PHONY: fortify
+fortify:
+	sourceanalyzer -b hdf4_handler $(MAKE)
+	sourceanalyzer -b hdf4_handler -scan -f hdf4_handler.fpr
+
+###########################################################################
+
 # Build linux RPMs
 
 srpm: dist
