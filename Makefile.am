@@ -98,12 +98,17 @@ endif
 
 ###########################################################################
 
-# Fortify targets. These 
+# Fortify targets.
 
 .PHONY: fortify
 fortify:
-	sourceanalyzer -b hdf4_handler $(MAKE)
-	sourceanalyzer -b hdf4_handler -scan -f hdf4_handler.fpr
+	sourceanalyzer -b @PACKAGE@ $(MAKE)
+	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
+
+# Use this to clean the fortify project.
+.PHONY: fortifyclean
+fortifyclean:
+	sourceanalyzer -b @PACKAGE@ -clean
 
 ###########################################################################
 
