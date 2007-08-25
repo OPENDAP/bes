@@ -23,6 +23,8 @@ else
 lib_LTLIBRARIES = libbes_dispatch.la
 endif
 
+bin_PROGRAMS = besregex
+
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 # Defined here because configure does not have the value of $sysconfdir. jhrg
@@ -36,6 +38,10 @@ libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS)
 libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
 libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS)
 libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
+
+besregex_SOURCES = besregex.cc
+besregex_CPPFLAGS = $(DAP_CFLAGS)
+besregex_LDADD = $(DAP_SERVER_LIBS)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 
