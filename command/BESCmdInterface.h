@@ -67,6 +67,8 @@ using std::bad_alloc ;
  */
 class BESCmdInterface : public BESInterface
 {
+private:
+    				BESCmdInterface() ;
 protected:
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
@@ -77,8 +79,7 @@ protected:
     virtual void		log_status() ;
     virtual void		clean() ;
 public:
-    				BESCmdInterface() ;
-    				BESCmdInterface( const string &cmd ) ;
+    				BESCmdInterface( const string &cmd, ostream *strm ) ;
     virtual			~BESCmdInterface() ;
 
     virtual int			execute_request( const string &from ) ;

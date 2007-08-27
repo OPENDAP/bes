@@ -86,7 +86,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <String name="DODS_URL"/>
     </Sequence>
 
-    <dataBLOB href=".blob?"/>
+    <dataBLOB href=""/>
 </Dataset>
 <html><head><title>Dataset Information</title></head>
 <body>
@@ -657,7 +657,7 @@ DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator
 
 <hr>
 
-<address>Send questions or comments to: <a href="mailto:support@unidata.ecar.edu">support@unidata.ecar.edu</a></address><p>
+<address>Send questions or comments to: <a href="mailto:support@opendap.org">support@opendap.org</a></address><p>
                     <a href="http://validator.w3.org/check?uri=referer"><img
                         src="http://www.w3.org/Icons/valid-html40"
                         alt="Valid HTML 4.0 Transitional" height="31" width="88">
@@ -876,7 +876,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <String name="DODS_URL"/>
     </Sequence>
 
-    <dataBLOB href=".blob?&GSO_AVHRR.day_num>160&GSO_AVHRR.day_num<162"/>
+    <dataBLOB href=""/>
 </Dataset>
 Dataset: 1998-6-avhrr.dat
 GSO_AVHRR.satellite, GSO_AVHRR.year, GSO_AVHRR.day_num, GSO_AVHRR.hh, GSO_AVHRR.mm, GSO_AVHRR.ss, GSO_AVHRR.DODS_URL

@@ -35,6 +35,7 @@
 #endif
 
 #include <sstream>
+#include <iostream>
 
 using std::ostringstream ;
 
@@ -64,8 +65,8 @@ BESHTMLInfo::BESHTMLInfo( )
  * @see BESInfo
  * @see BESResponseObject
  */
-BESHTMLInfo::BESHTMLInfo( const string &key )
-    : BESInfo( key ),
+BESHTMLInfo::BESHTMLInfo( const string &key, ostream *strm, bool strm_owned )
+    : BESInfo( key, strm, strm_owned ),
       _header( false ),
       _do_indent( true )
 {
@@ -226,7 +227,7 @@ BESHTMLInfo::add_data( const string &s )
 {
     if( !_header && !_buffered )
     {
-	BESUtil::set_mime_html( stdout ) ;
+	BESUtil::set_mime_html( *_strm ) ;
 	_header = true ;
     }
     if( _do_indent )

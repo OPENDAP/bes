@@ -1788,7 +1788,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension name="Raster Image #1__X" size="4096"/>
     </Array>
 
-    <dataBLOB href=".blob?"/>
+    <dataBLOB href=""/>
 </Dataset>
 Dataset {
     Int32 Sea%20Surface%20Temperature[Longitude = 21][Latitude = 11];
@@ -1935,7 +1935,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension name="Latitude" size="11"/>
     </Array>
 
-    <dataBLOB href=".blob?Sea%20Surface%20Temperature[0:200:4095][0:200:2047]"/>
+    <dataBLOB href=""/>
 </Dataset>
 <html><head><title>Dataset Information</title></head>
 <body>

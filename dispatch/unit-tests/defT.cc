@@ -79,7 +79,7 @@ run(void)
     {
 	BESTextInfo info ;
 	store->show_definitions( info ) ;
-	info.print( stdout ) ;
+	info.print( cout ) ;
     }
 
     cout << endl << "*****************************************" << endl;

@@ -43,6 +43,7 @@ using std::ostringstream ;
 using std::cout ;
 using std::endl ;
 using std::cerr ;
+using std::flush ;
 
 #include "BESServerHandler.h"
 #include "Connection.h"
@@ -144,10 +145,10 @@ BESServerHandler::execute( Connection *c )
 	int holder = dup( STDOUT_FILENO ) ;
 	dup2( c->getSocket()->getSocketDescriptor(), STDOUT_FILENO ) ;
 	
-	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ) ) ;
+	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ), &cout ) ;
 	int status = cmd.execute_request( from ) ;
 
-	fflush( stdout ) ;
+	cout << flush ;
 	dup2( holder, STDOUT_FILENO ) ;
 	close( holder ) ;
 

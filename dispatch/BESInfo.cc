@@ -50,9 +50,11 @@ using std::ifstream ;
  */
 BESInfo::BESInfo( )
     : _strm( 0 ),
+      _strm_owned( false ),
       _buffered( true )
 {
     _strm = new ostringstream ;
+    _strm_owned = true ;
 }
 
 /** @brief constructs a BESInfo object
@@ -62,9 +64,15 @@ BESInfo::BESInfo( )
  *
  * If the information is not to be buffered then the output stream is set to
  * standard output.
+ *
+ * @param key parameter from BES configuration file
+ * @param strm if not buffered then use the passed stream to output information
+ * @param if stream was created (not cout or cerr for example) then either take
+ * ownership or not
  */
-BESInfo::BESInfo( const string &key )
+BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
     : _strm( 0 ),
+      _strm_owned( false ),
       _buffered( true )
 {
     bool found = false ;
@@ -73,17 +81,27 @@ BESInfo::BESInfo( const string &key )
 	b == "yes" || b == "Yes" || b == "YES" )
     {
 	_strm = new ostringstream ;
+	_strm_owned = true ;
 	_buffered = true ;
+	if( strm && strm_owned )
+	    delete strm ;
     }
     else
     {
+	if( !strm )
+	{
+	    string s = "Informational response not buffered but no stream passed" ;
+	    throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+	}
+	_strm = strm ;
+	_strm_owned = strm_owned ;
 	_buffered = false ;
     }
 }
 
 BESInfo::~BESInfo()
 {
-    if( _buffered && _strm ) delete _strm ;
+    if( _strm && _strm_owned ) delete _strm ;
 }
 
 void
@@ -134,14 +152,9 @@ BESInfo::end_tag( const string &tag_name )
 void
 BESInfo::add_data( const string &s )
 {
-    if( !_buffered )
-    {
-	fprintf( stdout, "%s", s.c_str() ) ;
-    }
-    else
-    {
-	(*_strm) << s ;
-    }
+    // If not buffered then we've been passed a stream to use.
+    // If it is buffered then we created the stream.
+    (*_strm) << s ;
 }
 
 /** @brief add data from a file to the informational object.
@@ -217,19 +230,19 @@ BESInfo::add_exception( BESException &e )
 }
 
 /** @brief print the information from this informational object to the
- * specified FILE descriptor
+ * specified stream
  *
  * If the information was not buffered then this method does nothing,
- * otherwise the information is output to the specified FILE descriptor.
+ * otherwise the information is output to the specified ostream.
  *
  * @param out output to this file descriptor if information buffered.
  */
 void
-BESInfo::print(FILE *out)
+BESInfo::print( ostream &strm )
 {
     if( _buffered )
     {
-	fprintf( out, "%s", ((ostringstream *)_strm)->str().c_str() ) ;
+	strm << ((ostringstream *)_strm)->str() ;
     }
 }
 

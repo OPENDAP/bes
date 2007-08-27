@@ -245,14 +245,14 @@ BESXMLInfo::transmit( BESTransmitter *transmitter,
 }
 
 /** @brief print the information from this informational object to the
- * specified FILE descriptor
+ * specified stream
  *
- * @param out output to this file descriptor
+ * @param strm output to this stream
  */
 void
-BESXMLInfo::print( FILE *out )
+BESXMLInfo::print( ostream &strm )
 {
-    BESInfo::print( out ) ;
+    BESInfo::print( strm ) ;
 }
 
 /** @brief dumps information about this object

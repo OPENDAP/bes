@@ -55,7 +55,7 @@ run(void)
     t_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     t_info->end_tag( "tag2" ) ;
     t_info->end_response() ;
-    t_info->print( stdout ) ;
+    t_info->print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to html ... " << endl ;
@@ -77,7 +77,7 @@ run(void)
     h_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     h_info->end_tag( "tag2" ) ;
     h_info->end_response() ;
-    h_info->print( stdout ) ;
+    h_info->print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to xml ... " << endl ;
@@ -99,7 +99,7 @@ run(void)
     x_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     x_info->end_tag( "tag2" ) ;
     x_info->end_response() ;
-    x_info->print( stdout ) ;
+    x_info->print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from infoT::run" << endl;

@@ -67,7 +67,7 @@ public:
 
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
-    virtual void 	print( FILE *out ) ;
+    virtual void 	print( ostream &strm ) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
 

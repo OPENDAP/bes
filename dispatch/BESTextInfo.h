@@ -52,7 +52,8 @@ private:
     bool		_header ;
 public:
   			BESTextInfo( bool ishttp = false ) ;
-  			BESTextInfo( const string &key, bool ishttp = false ) ;
+  			BESTextInfo( const string &key, ostream *strm,
+			             bool strm_owned, bool ishttp = false ) ;
     virtual 		~BESTextInfo() ;
 
     virtual void	begin_response( const string &response_name ) ;

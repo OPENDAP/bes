@@ -30,25 +30,29 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <iostream>
+
+using std::flush ;
+
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
 
 void
 BESBasicTransmitter::send_text( BESInfo &info,
-                                 BESDataHandlerInterface & )
+                                BESDataHandlerInterface &dhi )
 {
-    info.print( stdout ) ;
+    info.print( dhi.get_output_stream() ) ;
 
-    fflush( stdout ) ;
+    dhi.get_output_stream() << flush ;
 }
 
 void
 BESBasicTransmitter::send_html( BESInfo &info,
-                                 BESDataHandlerInterface & )
+                                BESDataHandlerInterface &dhi )
 {
-    info.print( stdout ) ;
+    info.print( dhi.get_output_stream() ) ;
 
-    fflush( stdout ) ;
+    dhi.get_output_stream() << flush ;
 }
 
 /** @brief dumps information about this object

@@ -51,7 +51,7 @@ private:
     bool		_do_indent ;
 public:
   			BESHTMLInfo( ) ;
-  			BESHTMLInfo( const string &key ) ;
+  			BESHTMLInfo( const string &key, ostream *strm, bool strm_owned ) ;
     virtual 		~BESHTMLInfo() ;
 
     virtual void	begin_response( const string &response_name ) ;

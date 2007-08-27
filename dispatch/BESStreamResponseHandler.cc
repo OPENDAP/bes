@@ -8,7 +8,7 @@
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
+// License as published by the Free Software Foundatiion; either
 // version 2.1 of the License, or (at your option) any later version.
 // 
 // This library is distributed in the hope that it will be useful,
@@ -114,14 +114,13 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     }
 
     int nbytes ;
-    int fd = fileno( stdout ) ;
     char block[BES_STREAM_BUFFER_SIZE] ;
     os.read( block, sizeof block ) ;
     nbytes = os.gcount() ;
     while( nbytes )
     {
 	bytes += nbytes ;
-	int written = write( fd, (void*)block, nbytes ) ;
+	dhi.get_output_stream().write( (char*)block, nbytes ) ;
 	os.read( block, sizeof block ) ;
 	nbytes = os.gcount() ;
     }

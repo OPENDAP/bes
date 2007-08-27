@@ -137,7 +137,7 @@ run(void)
     cout << "show containers" << endl;
     BESTextInfo info ;
     cpl->show_containers( info ) ;
-    info.print( stdout ) ;
+    info.print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "remove File1" << endl;

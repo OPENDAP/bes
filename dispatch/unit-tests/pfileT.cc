@@ -146,7 +146,7 @@ run(void)
     cout << "show containers" << endl;
     BESTextInfo info ;
     cpf.show_containers( info ) ;
-    info.print( stdout ) ;
+    info.print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from pfileT::run" << endl;

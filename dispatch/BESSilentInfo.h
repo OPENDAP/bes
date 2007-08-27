@@ -70,7 +70,7 @@ public:
     virtual void	add_exception( BESException &e) ;
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) ;
-    virtual void 	print( FILE *out ) ;
+    virtual void 	print( ostream &strm ) ;
 
     virtual void	dump( ostream &strm ) const ;
 };

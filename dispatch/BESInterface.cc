@@ -33,10 +33,12 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 using std::string;
 using std::ostringstream;
 using std::bad_alloc;
+using std::cout;
 
 #include "BESInterface.h"
 
@@ -62,9 +64,15 @@ using std::bad_alloc;
 list < p_bes_init > BESInterface::_init_list;
 list < p_bes_end > BESInterface::_end_list;
 
-BESInterface::BESInterface()
+BESInterface::BESInterface( ostream *output_stream )
 :  _transmitter(0)
 {
+    if( !output_stream )
+    {
+	string err = "output stream must be set in order to output responses" ;
+	throw BESException( err, __FILE__, __LINE__ ) ;
+    }
+    _dhi.set_output_stream( output_stream ) ;
 }
 
 BESInterface::~BESInterface()
@@ -99,7 +107,7 @@ BESInterface::~BESInterface()
     @see exception_manager
  */
 int
- BESInterface::execute_request( const string &from )
+BESInterface::execute_request( const string &from )
 {
     _dhi.data[REQUEST_FROM] = from ;
 
@@ -162,13 +170,14 @@ int
     // If there is error information then the transmit, log, report or end
     // failed, so just print the error information
     if (_dhi.error_info) {
-        _dhi.error_info->print(stdout);
+        _dhi.error_info->print(cout);
     }
 
     return status;
 }
 
-void BESInterface::add_init_callback(p_bes_init init)
+void
+BESInterface::add_init_callback(p_bes_init init)
 {
     _init_list.push_back(init);
 }
@@ -178,7 +187,8 @@ void BESInterface::add_init_callback(p_bes_init init)
  *  This method must be called by all derived classes as it will initialize
  *  the environment
  */
-void BESInterface::initialize()
+void
+BESInterface::initialize()
 {
     BESDEBUG("bes", "Initializing request: " << _dhi.data[DATA_REQUEST] << " ... ")
     bool do_continue = true;
@@ -200,7 +210,8 @@ void BESInterface::initialize()
 
 /** @brief Validate the incoming request information
  */
-void BESInterface::validate_data_request()
+void
+BESInterface::validate_data_request()
 {
 }
 
@@ -212,7 +223,8 @@ void BESInterface::validate_data_request()
 
     @see _BESDataHandlerInterface
  */
-void BESInterface::build_data_request_plan()
+void
+BESInterface::build_data_request_plan()
 {
 }
 
@@ -229,7 +241,8 @@ void BESInterface::build_data_request_plan()
     @see BESResponseHandler
     @see BESResponseObject
  */
-void BESInterface::execute_data_request_plan()
+void
+BESInterface::execute_data_request_plan()
 {
     BESDEBUG("bes", "Executing request: " << _dhi.data[DATA_REQUEST] << " ... ")
     BESResponseHandler *rh = _dhi.response_handler;
@@ -246,7 +259,8 @@ void BESInterface::execute_data_request_plan()
 
 /** @brief Aggregate the resulting response object
  */
-void BESInterface::invoke_aggregation()
+void
+BESInterface::invoke_aggregation()
 {
     if (_dhi.data[AGG_CMD] != "") {
         BESDEBUG("bes", "aggregating with: " << _dhi.data[AGG_CMD] << " ... ")
@@ -278,7 +292,8 @@ void BESInterface::invoke_aggregation()
     @see BESResponseObject
     @see BESTransmitter
  */
-void BESInterface::transmit_data()
+void
+BESInterface::transmit_data()
 {
     BESDEBUG("bes", "Transmitting request: " << _dhi.data[DATA_REQUEST] << endl)
     if (_transmitter) {
@@ -291,8 +306,8 @@ void BESInterface::transmit_data()
         }
     } else {
         if (_dhi.error_info) {
-	    BESDEBUG( "bes", "  transmitting error info using stdout ... " )
-            _dhi.error_info->print(stdout);
+	    BESDEBUG( "bes", "  transmitting error info using cout ... " )
+            _dhi.error_info->print(cout);
         } else {
 	    BESDEBUG( "bes", "  Unable to transmit the response ... FAILED " )
 	    string err = "Unable to transmit the response, no transmitter" ;
@@ -304,7 +319,8 @@ void BESInterface::transmit_data()
 
 /** @brief Log the status of the request
  */
-void BESInterface::log_status()
+void
+BESInterface::log_status()
 {
 }
 
@@ -319,7 +335,8 @@ void BESInterface::log_status()
     @see BESReporterList
     @see BESReporter
  */
-void BESInterface::report_request()
+void
+BESInterface::report_request()
 {
     BESDEBUG("bes", "Reporting on request: " << _dhi.
              data[DATA_REQUEST] << " ... ")
@@ -327,7 +344,8 @@ void BESInterface::report_request()
     BESDEBUG("bes", "OK" << endl)
 }
 
-void BESInterface::add_end_callback(p_bes_end end)
+void
+BESInterface::add_end_callback(p_bes_end end)
 {
     _end_list.push_back(end);
 }
@@ -337,7 +355,8 @@ void BESInterface::add_end_callback(p_bes_end end)
  *  This method allows developers to add callbacks at the end of a request,
  *  to do any cleanup or do any extra work at the end of a request
  */
-void BESInterface::end_request()
+void
+BESInterface::end_request()
 {
     BESDEBUG("bes", "Ending request: " << _dhi.data[DATA_REQUEST] << " ... ")
     end_iter i = _end_list.begin();
@@ -350,7 +369,8 @@ void BESInterface::end_request()
 
 /** @brief Clean up after the request
  */
-void BESInterface::clean()
+void
+BESInterface::clean()
 {
     if (_dhi.response_handler)
         delete _dhi.response_handler;
@@ -369,7 +389,8 @@ void BESInterface::clean()
     @return status after exception is handled
     @see BESException
  */
-int BESInterface::exception_manager(BESException & e)
+int
+BESInterface::exception_manager(BESException & e)
 {
     return BESExceptionManager::TheEHM()->handle_exception(e, _dhi);
 }
@@ -382,7 +403,8 @@ int BESInterface::exception_manager(BESException & e)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESInterface::dump(ostream & strm) const
+void
+BESInterface::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "BESInterface::dump - ("
         << (void *) this << ")" << endl;

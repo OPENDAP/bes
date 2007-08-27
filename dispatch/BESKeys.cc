@@ -317,27 +317,6 @@ BESKeys::get_key( const string& s, bool &found )
     }
 }
 
-/** @brief displays all key/value pairs defined to standard output.
- *
- * This method allows the user to see all of the key/value pairs that are
- * currently defined. The output looks like:
- *
- * <PRE>
- * key: "key", value: "value"
- * </PRE>
- */
-void
-BESKeys::show_keys()
-{
-    map<string,string>::iterator i ;
-    for( i= _the_keys->begin(); i != _the_keys->end(); ++i )
-    {
-	cout << "key: \"" << (*i).first
-	     << "\", value: \"" << (*i).second << "\""
-	     << endl ;
-    }
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with all of the keys.

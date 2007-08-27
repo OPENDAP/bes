@@ -158,9 +158,11 @@ PPTClient::authenticateWithServer()
     writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 
     // receive response with port, terminated with TERMINATE token
-    ostringstream portResponse ;
-    bool isDone = receive( &portResponse ) ;
-    if( isDone )
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    int bytesRead = readBufferNonBlocking( inBuff ) ;
+    ostringstream portResponse( inBuff ) ;
+    delete [] inBuff ;
+    if( bytesRead < 1 )
     {
 	throw PPTException( "Expecting secure port number response", __FILE__, __LINE__ ) ;
     }

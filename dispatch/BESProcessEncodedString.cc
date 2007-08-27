@@ -139,15 +139,6 @@ BESProcessEncodedString::get_key( const string& s )
 	return "" ;
 }
 
-void
-BESProcessEncodedString::show_keys()
-{
-    map<string,string>::iterator i ;
-    map<string,string>::iterator ie = _entries.end() ;
-    for( i = _entries.begin(); i != ie; ++i )
-	cout << "key: " << (*i).first << ", value: " << (*i).second << endl ;
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with the key:value

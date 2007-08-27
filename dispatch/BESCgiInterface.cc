@@ -52,7 +52,8 @@
     @see BESFilterTransmitter
  */
 BESCgiInterface::BESCgiInterface( const string &type, DODSFilter &df )
-    : _type( type ),
+    : BESInterface( &cout ),
+      _type( type ),
       _df( &df )
 {
     _dhi.transmit_protocol = "HTTP" ;

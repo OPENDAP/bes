@@ -62,7 +62,8 @@ BESCmdInterface::BESCmdInterface()
 {
 }
 
-BESCmdInterface::BESCmdInterface( const string &cmd )
+BESCmdInterface::BESCmdInterface( const string &cmd, ostream *strm )
+    : BESInterface( strm )
 {
     _dhi.data[DATA_REQUEST] = cmd ;
 }
@@ -107,7 +108,7 @@ BESCmdInterface::initialize()
     // registered initialization routine might throw an exception and we
     // will need to transmit the exception info, which needs a transmitter.
     // If an exception happens before this then the exception info is just
-    // printed to stdout (see BESInterface::transmit_data()). -- pcw 09/05/06
+    // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
     string protocol = _dhi.transmit_protocol ;
     if( protocol != "HTTP" )
     {

@@ -146,7 +146,8 @@ protected:
     virtual void		end_request() ;
     virtual void		clean() ;
 
-    				BESInterface() ;
+    				BESInterface( ) {}
+    				BESInterface( ostream *strm ) ;
     virtual			~BESInterface() ;
 public:
     virtual int			execute_request( const string &from ) ;

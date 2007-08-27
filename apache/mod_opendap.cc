@@ -213,7 +213,7 @@ static int opendap_handler(request_rec *r)
 
     // always flush the socket at the end...
     // and since stdout is now the tcp/ip socket for this connection
-    fflush(stdout);
+    cout << flush ;
 
     // exit instead of returning
     exit( 0 ) ;

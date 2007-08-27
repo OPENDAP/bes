@@ -76,6 +76,7 @@ class BESCgiInterface : public BESInterface
 private:
     string			_type ;
     DODSFilter *		_df ;
+    				BESCgiInterface() : BESInterface() {}
 protected:
     virtual void		build_data_request_plan() ;
 public:

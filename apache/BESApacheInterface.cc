@@ -274,17 +274,14 @@ BESApacheInterface::welcome_browser()
 	string administrator =
 	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
 	if(administrator=="")
-	    fprintf( stdout, "%s %s %s\n",
-			     "BES: internal server error please contact",
-			     DEFAULT_ADMINISTRATOR,
-			     "with the following message:" ) ;
+	    cout << "BES: internal server error please contact"
+	         << DEFAULT_ADMINISTRATOR
+		 << "with the following message:\n" ;
 	else
-	    fprintf( stdout, "%s %s %s\n",
-			     "BES: internal server error please contact",
-			     administrator.c_str(),
-			     "with the following message:" ) ;
-	fprintf( stdout, "%s %s\n",
-			 "BES: can not interact with browser", agent.c_str() ) ;
+	    cout << "BES: internal server error please contact"
+	         << administrator.c_str()
+		 << "with the following message:\n" ;
+	cout << "BES: can not interact with browser" << agent.c_str() << endl ;
     }
     else // Yes, _agent contains the signature of a browser               
     {
@@ -298,47 +295,41 @@ BESApacheInterface::welcome_browser()
 	    string administrator =
 		TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
 	    if(administrator=="")
-		fprintf( stdout, "%s %s %s\n",
-				 "BES: internal server error please contact",
-				 DEFAULT_ADMINISTRATOR,
-				 "with the following message:" ) ;
+		cout << "BES: internal server error please contact"
+		     << DEFAULT_ADMINISTRATOR
+		     << "with the following message:\n" ;
 	    else
-		fprintf( stdout, "%s %s %s\n",
-				 "BES: internal server error please contact",
-				 administrator.c_str(),
-				 "with the following message:" ) ;
-	    fprintf( stdout, "%s %s\n",
-			     "BES: fatal, can not get/understand the key",
-			     "BES.DefaultResponseMethod" ) ;
+		cout << "BES: internal server error please contact"
+		     << administrator.c_str()
+		     << "with the following message:\n" ;
+	    cout << "BES: fatal, can not get/understand the key BES.DefaultResponseMethod"
+	         << endl ;
 	}
 	else
 	{
-	    //set_mime_text( stdout, unknown_type ) ;
-	    fprintf( stdout, "HTTP/1.0 200 OK\n" ) ;
-	    fprintf( stdout, "Content-type: text/html\n\n" ) ;
-	    fflush( stdout ) ;
+	    cout << "HTTP/1.0 200 OK\n" ;
+	    cout << "Content-type: text/html\n\n" ;
+	    cout << flush ;
 
-	    fprintf( stdout, "<HTML>\n" ) ;
-	    fprintf( stdout, "<HEAD>\n" ) ;
-	    fprintf( stdout, "<TITLE> Request to the BES server</TITLE>\n" ) ;
-	    fprintf( stdout, "<BODY>\n" ) ;
+	    cout << "<HTML>\n" ;
+	    cout << "<HEAD>\n" ;
+	    cout << "<TITLE> Request to the BES server</TITLE>\n" ;
+	    cout << "<BODY>\n" ;
 	    if (method=="GET")
-		fprintf(stdout,"<form action=\"http://%s:%s%s\" method=get>\n",
-			       _dri->server_name,
-			       _dri->server_port,
-			       _dri->script_name ) ;
+		cout << "<form action=\"http://" << _dri->server_name
+		     << ":" << _dri->server_port << _dri->script_name
+		     << "\" method=get>\n" ;
 	    else if (method=="POST")
-		fprintf(stdout,"<form action=\"http://%s:%s%s\" method=post>\n",
-			       _dri->server_name,
-			       _dri->server_port,
-			       _dri->script_name ) ;
+		cout << "<form action=\"http://" << _dri->server_name
+		     << ":" << _dri->server_port << _dri->script_name
+		     << "\" method=post>\n" ;
 
-	    fprintf( stdout, "<p>Request: <br><textarea name=\"request\" cols=85 rows=11 size=40,4 wrap=\"virtual\" ></textarea></p>\n" ) ;
-	    fprintf( stdout, "<input type=\"submit\" value=\"Submit to BES\">\n" ) ;
-	    fprintf( stdout, "<input type=\"reset\" value=\"Clean Text Field\">\n" ) ;
-	    fprintf( stdout, "</form>\n" ) ;
-	    fprintf( stdout, "</body>\n" ) ;
-	    fprintf( stdout, "</html>\n" ) ;
+	    cout << "<p>Request: <br><textarea name=\"request\" cols=85 rows=11 size=40,4 wrap=\"virtual\" ></textarea></p>\n" ;
+	    cout << "<input type=\"submit\" value=\"Submit to BES\">\n" ;
+	    cout << "<input type=\"reset\" value=\"Clean Text Field\">\n" ;
+	    cout << "</form>\n" ;
+	    cout << "</body>\n" ;
+	    cout << "</html>\n" ;
 	}
     }
 }

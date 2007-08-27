@@ -56,8 +56,8 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
     try {
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
-        df.send_das(stdout, *das, "", false);
-        fflush(stdout);
+        df.send_das(dhi.get_output_stream(), *das, "", false);
+	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -77,7 +77,7 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
 void BESDapTransmit::send_http_das(BESResponseObject * obj,
                                    BESDataHandlerInterface & dhi)
 {
-    set_mime_text(stdout, dods_das);
+    set_mime_text(dhi.get_output_stream(), dods_das);
     BESDapTransmit::send_basic_das(obj, dhi);
 }
 
@@ -93,8 +93,8 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_dds(stdout, *dds, ce, true, "", false);
-        fflush(stdout);
+        df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", false);
+	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -114,7 +114,7 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
 void BESDapTransmit::send_http_dds(BESResponseObject * obj,
                                    BESDataHandlerInterface & dhi)
 {
-    set_mime_text(stdout, dods_dds);
+    set_mime_text(dhi.get_output_stream(), dods_dds);
     BESDapTransmit::send_basic_dds(obj, dhi);
 }
 
@@ -130,8 +130,8 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
         DODSFilter df;
         df.set_dataset_name(dds->filename());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_data(*dds, ce, stdout, "", false);
-        fflush(stdout);
+        df.send_data(*dds, ce, dhi.get_output_stream(), "", false);
+	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -151,7 +151,7 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
 void BESDapTransmit::send_http_data(BESResponseObject * obj,
                                     BESDataHandlerInterface & dhi)
 {
-    //set_mime_binary( stdout, dods_data ) ;
+    //set_mime_binary( dhi.get_output_stream(), dods_data ) ;
     BESDapTransmit::send_basic_data(obj, dhi);
 }
 
@@ -167,8 +167,8 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_ddx(*dds, ce, stdout, false);
-        fflush(stdout);
+        df.send_ddx(*dds, ce, dhi.get_output_stream(), false);
+	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -188,6 +188,6 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
 void BESDapTransmit::send_http_ddx(BESResponseObject * obj,
                                    BESDataHandlerInterface & dhi)
 {
-    set_mime_text(stdout, dods_dds);
+    set_mime_text(dhi.get_output_stream(), dods_dds);
     BESDapTransmit::send_basic_ddx(obj, dhi);
 }

@@ -113,9 +113,9 @@ public:
 			{
 			    _info->transmit( transmitter, dhi ) ;
 			}
-    virtual void 	print( FILE *out )
+    virtual void 	print( ostream &strm )
 			{
-			    _info->print( out ) ;
+			    _info->print( strm ) ;
 			}
 
     virtual void	dump( ostream &strm ) const ;

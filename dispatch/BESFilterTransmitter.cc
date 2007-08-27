@@ -62,23 +62,23 @@ BESFilterTransmitter::BESFilterTransmitter( DODSFilter &df )
 
 void
 BESFilterTransmitter::send_text( BESInfo &info,
-                                 BESDataHandlerInterface & )
+                                 BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
     {
-	set_mime_text( stdout, unknown_type ) ;
-	info.print( stdout ) ;
+	set_mime_text( dhi.get_output_stream(), unknown_type ) ;
+	info.print( dhi.get_output_stream() ) ;
     }
 }
 
 void
 BESFilterTransmitter::send_html( BESInfo &info,
-                                 BESDataHandlerInterface & )
+                                 BESDataHandlerInterface &dhi )
 {
     if( info.is_buffered() )
     {
-	set_mime_html( stdout, unknown_type ) ;
-	info.print( stdout ) ;
+	set_mime_html( dhi.get_output_stream(), unknown_type ) ;
+	info.print( dhi.get_output_stream() ) ;
     }
 }
 
@@ -88,7 +88,7 @@ BESFilterTransmitter::send_basic_das( BESResponseObject *obj,
 {
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
     DAS *das = bdas->get_das();
-    BESFilterTransmitter::Transmitter->get_filter()->send_das( stdout, *das ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_das( dhi.get_output_stream(), *das ) ;
 }
 
 void
@@ -100,7 +100,7 @@ BESFilterTransmitter::send_basic_dds( BESResponseObject *obj,
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
     BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    BESFilterTransmitter::Transmitter->get_filter()->send_dds( stdout, *dds, ce, true ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_dds( dhi.get_output_stream(), *dds, ce, true ) ;
 }
 
 void
@@ -112,7 +112,7 @@ BESFilterTransmitter::send_basic_data( BESResponseObject *obj,
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
     BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    BESFilterTransmitter::Transmitter->get_filter()->send_data( *dds, ce, stdout ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_data( *dds, ce, dhi.get_output_stream() ) ;
 }
 
 void
@@ -124,7 +124,7 @@ BESFilterTransmitter::send_basic_ddx( BESResponseObject *obj,
     ConstraintEvaluator &ce = bdds->get_ce();
     dhi.first_container();
     BESFilterTransmitter::Transmitter->get_filter()->set_ce( dhi.data[POST_CONSTRAINT] ) ;
-    BESFilterTransmitter::Transmitter->get_filter()->send_ddx( *dds, ce, stdout ) ;
+    BESFilterTransmitter::Transmitter->get_filter()->send_ddx( *dds, ce, dhi.get_output_stream() ) ;
 }
 
 /** @brief dumps information about this object

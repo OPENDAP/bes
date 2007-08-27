@@ -37,7 +37,7 @@ run(void)
 	putenv( envVal ) ;
 	try
 	{
-	    TheBESKeys::TheKeys()->show_keys() ;
+	    TheBESKeys::TheKeys()->dump( cout ) ;
 	}
 	catch( BESException &e )
 	{

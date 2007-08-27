@@ -34,7 +34,7 @@ run(void)
     cout << "show containers" << endl;
     BESTextInfo info ;
     cpv.show_containers( info ) ;
-    info.print( stdout ) ;
+    info.print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "try to add sym1 again" << endl;
@@ -184,7 +184,7 @@ run(void)
     cout << "show containers" << endl;
     BESTextInfo info2 ;
     cpv.show_containers( info2 ) ;
-    info2.print( stdout ) ;
+    info2.print( cout ) ;
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from pvolT::run" << endl;

@@ -13,38 +13,38 @@ using std::endl ;
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
 
-    @param out Write the MIME header to this FILE pointer.
+    @param out Write the MIME header to this ostream.
  */
 void
-BESUtil::set_mime_text( FILE *out )
+BESUtil::set_mime_text( ostream &strm )
 {
-    fprintf( out, "HTTP/1.0 200 OK%s", CRLF ) ;
-    fprintf( out, "XBES-Server: %s%s", PACKAGE_STRING, CRLF ) ;
+    strm << "HTTP/1.0 200 OK" << CRLF ;
+    strm << "XBES-Server: " << PACKAGE_STRING << CRLF ;
 
     const time_t t = time(0);
-    fprintf( out, "Date: %s%s", rfc822_date(t).c_str(), CRLF ) ;
-    fprintf( out, "Last-Modified: %sw%s", rfc822_date(t).c_str(), CRLF ) ;
+    strm << "Date: " << rfc822_date(t).c_str() << CRLF ;
+    strm << "Last-Modified: " << rfc822_date(t).c_str() << CRLF ;
 
-    fprintf( out, "Content-Type: text/plain%s", CRLF ) ;
+    strm << "Content-Type: text/plain" << CRLF ;
     // Note that Content-Description is from RFC 2045 (MIME, pt 1), not 2616.
-    fprintf( out, "Content-Description: unknown%s", CRLF ) ;
-    fprintf( out, CRLF ) ;
+    strm << "Content-Description: unknown" << CRLF ;
+    strm << CRLF ;
 }
 
 void
-BESUtil::set_mime_html( FILE *out )
+BESUtil::set_mime_html( ostream &strm )
 {
-    fprintf( out, "HTTP/1.0 200 OK%s", CRLF ) ;
-    fprintf( out, "XBES-Server: %s%s", PACKAGE_STRING, CRLF ) ;
+    strm << "HTTP/1.0 200 OK" << CRLF ;
+    strm << "XBES-Server: " << PACKAGE_STRING << CRLF ;
 
     const time_t t = time(0);
-    fprintf( out, "Date: %s%s", rfc822_date(t).c_str(), CRLF ) ;
-    fprintf( out, "Last-Modified: %sw%s", rfc822_date(t).c_str(), CRLF ) ;
+    strm << "Date: " << rfc822_date(t).c_str() << CRLF ;
+    strm << "Last-Modified: " << rfc822_date(t).c_str() << CRLF ;
 
-    fprintf( out, "Content-type: text/html%s", CRLF ) ;
+    strm << "Content-type: text/html" << CRLF ;
     // Note that Content-Description is from RFC 2045 (MIME, pt 1), not 2616.
-    fprintf( out, "Content-Description: unknown%s", CRLF ) ;
-    fprintf( out, CRLF ) ;
+    strm << "Content-Description: unknown" << CRLF ;
+    strm << CRLF ;
 }
 
 // Return a MIME rfc-822 date. The grammar for this is:

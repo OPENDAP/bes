@@ -69,6 +69,7 @@ class BESInfo :public BESResponseObject
 {
 protected:
     ostream		*_strm ;
+    bool		_strm_owned ;
     bool		_buffered ;
     bool		_response_started ;
 
@@ -77,7 +78,8 @@ protected:
 
 public:
     			BESInfo( ) ;
-    			BESInfo( const string &buffered_key ) ;
+    			BESInfo( const string &buffered_key,
+			         ostream *strm, bool strm_owned ) ;
     virtual		~BESInfo() ;
 
     virtual void	begin_response( const string &response_name ) ;
@@ -111,17 +113,7 @@ public:
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi ) = 0 ;
 
-    virtual void 	print( FILE *out ) ;
-
-    /** @brief return whether the information is to be buffered or not.
-     *
-     * @return true if information is buffered, false if not
-     */
-    virtual bool	set_buffered( bool buffered )
-			{
-			    _buffered = buffered ;
-			    return _buffered ;
-			}
+    virtual void 	print( ostream &strm ) ;
 
     /** @brief return whether the information is to be buffered or not.
      *

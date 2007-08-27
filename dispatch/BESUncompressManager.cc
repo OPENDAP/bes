@@ -288,9 +288,15 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
     }
     else
     {
+	BESDEBUG( "bes", "BESUncompressmanager::uncompress - not file extension" \
+	          << endl )
+#if 0
+	// This could just mean that there is a README file here, so just return the
+	// src file name and let the system run its course.
 	string err = "Unable to determine type of file from "
 	             + src ;
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+#endif
     }
 
     return src ;

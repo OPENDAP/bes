@@ -52,7 +52,8 @@ BESDapHandlerException::handleException( BESException &e,
 					 BESDataHandlerInterface &dhi )
 {
     // If we are handling errors in a dap2 context, then convert all
-    // exceptions into a libdap Error and print it to stdout. This will be
+    // exceptions into a libdap Error and print it to the output stream.
+    // from the data handler interface. This will be
     // like a non-buffered response to a request.
     bool found = false ;
     string context =
@@ -66,7 +67,7 @@ BESDapHandlerException::handleException( BESException &e,
 	    ec = de->get_error_code() ;
 	}
 	Error new_e( ec, e.get_message() ) ;
-	new_e.print( stdout ) ;
+	new_e.print( dhi.get_output_stream() ) ;
 
 	/* in order to not have anything transmitted during the transmit
 	 * phase, create a silent informational object for the error info.

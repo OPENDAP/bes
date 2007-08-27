@@ -74,7 +74,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <Float32 name="Solar_Radiation"/>
     </Sequence>
 
-    <dataBLOB href=".blob?"/>
+    <dataBLOB href=""/>
 </Dataset>
 <html><head><title>Dataset Information</title></head>
 <body>
@@ -746,7 +746,7 @@ Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="des
 
 <hr>
 
-<address>Send questions or comments to: <a href="mailto:support@unidata.ecar.edu">support@unidata.ecar.edu</a></address><p>
+<address>Send questions or comments to: <a href="mailto:support@opendap.org">support@opendap.org</a></address><p>
                     <a href="http://validator.w3.org/check?uri=referer"><img
                         src="http://www.w3.org/Icons/valid-html40"
                         alt="Valid HTML 4.0 Transitional" height="31" width="88">
@@ -982,7 +982,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <Float32 name="Air_Temp"/>
     </Sequence>
 
-    <dataBLOB href=".blob?URI_GSO-Dock.Air_Temp,URI_GSO-Dock.Depth"/>
+    <dataBLOB href=""/>
 </Dataset>
 Dataset: gsodock.dat
 URI_GSO-Dock.Depth, URI_GSO-Dock.Air_Temp

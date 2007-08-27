@@ -47,6 +47,7 @@ class BESResponseHandler ;
 class BESInfo ;
 
 #include "BESContainer.h"
+#include "BESException.h"
 
 /** @brief Structure storing information used by the BES to handle the request
 
@@ -56,10 +57,28 @@ class BESInfo ;
 
 typedef struct _BESDataHandlerInterface
 {
+private:
+    ostream *output_stream ;
+public:
     _BESDataHandlerInterface()
-	: response_handler( 0 ),
+	: output_stream( 0 ),
+	  response_handler( 0 ),
 	  container( 0 ),
 	  error_info( 0 ) {}
+
+
+    void set_output_stream( ostream *strm )
+    {
+	if( output_stream )
+	    throw BESException( "output stream has already been set", __FILE__, __LINE__ ) ;
+	output_stream = strm ;
+    }
+    ostream &get_output_stream()
+    {
+	if( !output_stream )
+	    throw BESException( "output stream has not yet been set, cannot use", __FILE__, __LINE__ ) ;
+	return *output_stream ;
+    }
 
     BESResponseHandler *response_handler ;
 

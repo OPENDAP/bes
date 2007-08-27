@@ -59,8 +59,8 @@ int main(int argc, char* argv[]) {
     //is this only for server3?
 
   } catch(Error& e) {
-    set_mime_text(stdout, dods_error, cgi_version);
-    e.print(stdout);
+    set_mime_text(cout, dods_error, cgi_version);
+    e.print(cout);
     return EXIT_ERROR;
   }
 

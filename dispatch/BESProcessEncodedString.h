@@ -54,7 +54,6 @@ public:
     				BESProcessEncodedString( const char *s ) ;
     virtual			~BESProcessEncodedString() {}
     string			get_key( const string& s ) ; 
-    void			show_keys() ;
 
     virtual void		dump( ostream &strm ) const ;
 };

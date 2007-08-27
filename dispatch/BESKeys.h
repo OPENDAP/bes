@@ -104,13 +104,12 @@ public:
     string		set_key( const string &key, const string &val ) ;
     string		set_key( const string &pair ) ;
     string		get_key( const string& s, bool &found ) ;
-    void		show_keys();
 
     typedef map< string, string >::const_iterator Keys_citer ;
     Keys_citer		keys_begin() { return _the_keys->begin() ; }
     Keys_citer		keys_end() { return _the_keys->end() ; }
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void	dump( ostream &strm ) const ;
 };
 
 #endif // BESKeys_h_

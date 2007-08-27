@@ -157,10 +157,10 @@ BESSilentInfo::transmit( BESTransmitter *transmitter,
 
 /** @brief ignore printing the information
  *
- * @param out output to this file descriptor if information buffered.
+ * @param strm stream to send output to if not ignored.
  */
 void
-BESSilentInfo::print( FILE *out )
+BESSilentInfo::print( ostream &strm )
 {
 }
 

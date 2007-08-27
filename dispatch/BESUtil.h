@@ -3,8 +3,10 @@
 #include <stdio.h>
 
 #include <string>
+#include <iostream>
 
 using std::string ;
+using std::ostream ;
 
 #ifndef E_BESUtil_h
 #define E_BESUtil_h 1
@@ -24,8 +26,8 @@ public:
 	@name MIME utility functions
 	@see DODSFilter
     */
-    static void set_mime_text( FILE *out ) ;
-    static void set_mime_html( FILE *out ) ;
+    static void set_mime_text( ostream &strm ) ;
+    static void set_mime_html( ostream &strm ) ;
 
     /** This functions are used to unescape hex characters from strings **/
     static string www2id( const string &in,

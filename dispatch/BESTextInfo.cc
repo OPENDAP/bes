@@ -35,6 +35,7 @@
 #endif
 
 #include <sstream>
+#include <iostream>
 
 using std::ostringstream ;
 
@@ -66,11 +67,17 @@ BESTextInfo::BESTextInfo( bool ishttp )
  * We need to know this if the informationl is not buffered. If it isn't
  * buffered then we need to send that text header.
  *
+ * @param key parameter from BES configuration file
+ * @param strm if not buffered then use the passed stream
+ * @param strm_owned if strm created (not cout or cerr for example) then
+ * tells whether strm owned or not and can be deleted
+ *
  * @see BESInfo
  * @see BESResponseObject
  */
-BESTextInfo::BESTextInfo( const string &key, bool ishttp )
-    : BESInfo( key ),
+BESTextInfo::BESTextInfo( const string &key, ostream *strm,
+                          bool strm_owned, bool ishttp )
+    : BESInfo( key, strm, strm_owned ),
       _ishttp( ishttp ),
       _header( false )
 {
@@ -163,7 +170,7 @@ BESTextInfo::add_data( const string & s )
 {
     if( _ishttp && !_header && !_buffered )
     {
-	BESUtil::set_mime_text( stdout ) ;
+	BESUtil::set_mime_text( *_strm ) ;
 	_header = true ;
     }
     BESInfo::add_data( s ) ;
