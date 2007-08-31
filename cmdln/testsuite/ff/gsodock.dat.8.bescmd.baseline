@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="gsodock.dat"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="FF_GLOBAL" type="Container">
+        <Attribute name="Server" type="String">
+            <value>&quot;DODS FreeFrom based on FFND release 4.2.3&quot;</value>
+        </Attribute>
+        <Attribute name="text" type="String">
+            <value>&quot;Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar&quot;</value>
+        </Attribute>
+    </Attribute>
+
+    <Sequence name="URI_GSO-Dock">
+        <Float32 name="Depth"/>
+        <Float32 name="Air_Temp"/>
+    </Sequence>
+
+    <dataBLOB href=".blob?URI_GSO-Dock.Air_Temp,URI_GSO-Dock.Depth"/>
+</Dataset>

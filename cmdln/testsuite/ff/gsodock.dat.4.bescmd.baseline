@@ -291,7 +291,7 @@ function get_selection() {
     return s;
 }    
 
-DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat");
+DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
 // -->
 </script>
 </head>
@@ -312,7 +312,7 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat"
 <tr>
 <td align="right"><h3><a href="opendap_form_help.html#data_url" target="help">Data URL:</a>
 </h3>
-<td><input name="url" type="text" size="70" value="http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat">
+<td><input name="url" type="text" size="70" value="http://localhost:8080/opendap/data/ff/gsodock.dat">
 <tr><td><td><hr>
 
 <tr>
@@ -320,13 +320,7 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/1998-6-avhrr.dat"
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
 FF_GLOBAL.Server: "DODS FreeFrom based on FFND release 4.2.3"
-DODS_Time.hours_variable: GSO_AVHRR.hh
-DODS_Time.minutes_variable: GSO_AVHRR.mm
-DODS_Time.seconds_variable: GSO_AVHRR.ss
-DODS_Time.gmt_time: true
-DODS_Date.year_variable: GSO_AVHRR.year
-DODS_Date.year_base: 1900
-DODS_Date.year_day_variable: GSO_AVHRR.day_num
+FF_GLOBAL.text: "Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"
 </textarea><p>
 
 <tr><td><td><hr>
@@ -334,19 +328,19 @@ DODS_Date.year_day_variable: GSO_AVHRR.day_num
 <tr>
 <td align="right" valign="top">
 <h3><a href="opendap_form_help.html#dataset_variables" target="help">Variables:</a></h3>
-<td><b>Sequence GSO_AVHRR</b><br>
+<td><b>Sequence URI_GSO-Dock</b><br>
 <dl><dd>
 <script type="text/javascript">
 <!--
-org_opendap_satellite = new dods_var("satellite", "org_opendap_satellite", 0);
-DODS_URL.add_dods_var(org_opendap_satellite);
+org_opendap_Time = new dods_var("Time", "org_opendap_Time", 0);
+DODS_URL.add_dods_var(org_opendap_Time);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_satellite"
-onclick="org_opendap_satellite.handle_projection_change(get_org_opendap_satellite) "  onfocus="describe_projection()">
-<font size="+1">satellite</font>: string</b><br>
+<b><input type="checkbox" name="get_org_opendap_Time"
+onclick="org_opendap_Time.handle_projection_change(get_org_opendap_Time) "  onfocus="describe_projection()">
+<font size="+1">Time</font>: 64 bit Real</b><br>
 
-satellite <select name="org_opendap_satellite_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -355,21 +349,21 @@ satellite <select name="org_opendap_satellite_operator" onfocus="describe_operat
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_satellite_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_Time_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_year = new dods_var("year", "org_opendap_year", 0);
-DODS_URL.add_dods_var(org_opendap_year);
+org_opendap_Depth = new dods_var("Depth", "org_opendap_Depth", 0);
+DODS_URL.add_dods_var(org_opendap_Depth);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_year"
-onclick="org_opendap_year.handle_projection_change(get_org_opendap_year) "  onfocus="describe_projection()">
-<font size="+1">year</font>: 32 bit Integer</b><br>
+<b><input type="checkbox" name="get_org_opendap_Depth"
+onclick="org_opendap_Depth.handle_projection_change(get_org_opendap_Depth) "  onfocus="describe_projection()">
+<font size="+1">Depth</font>: 32 bit Real</b><br>
 
-year <select name="org_opendap_year_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -378,21 +372,21 @@ year <select name="org_opendap_year_operator" onfocus="describe_operator()" onch
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_year_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_Depth_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_day_num = new dods_var("day_num", "org_opendap_day_num", 0);
-DODS_URL.add_dods_var(org_opendap_day_num);
+org_opendap_Sea_Temp = new dods_var("Sea_Temp", "org_opendap_Sea_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_Sea_Temp);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_day_num"
-onclick="org_opendap_day_num.handle_projection_change(get_org_opendap_day_num) "  onfocus="describe_projection()">
-<font size="+1">day_num</font>: 32 bit Integer</b><br>
+<b><input type="checkbox" name="get_org_opendap_Sea_Temp"
+onclick="org_opendap_Sea_Temp.handle_projection_change(get_org_opendap_Sea_Temp) "  onfocus="describe_projection()">
+<font size="+1">Sea_Temp</font>: 32 bit Real</b><br>
 
-day_num <select name="org_opendap_day_num_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -401,21 +395,21 @@ day_num <select name="org_opendap_day_num_operator" onfocus="describe_operator()
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_day_num_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_Sea_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_hh = new dods_var("hh", "org_opendap_hh", 0);
-DODS_URL.add_dods_var(org_opendap_hh);
+org_opendap_Salinity = new dods_var("Salinity", "org_opendap_Salinity", 0);
+DODS_URL.add_dods_var(org_opendap_Salinity);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_hh"
-onclick="org_opendap_hh.handle_projection_change(get_org_opendap_hh) "  onfocus="describe_projection()">
-<font size="+1">hh</font>: 32 bit Integer</b><br>
+<b><input type="checkbox" name="get_org_opendap_Salinity"
+onclick="org_opendap_Salinity.handle_projection_change(get_org_opendap_Salinity) "  onfocus="describe_projection()">
+<font size="+1">Salinity</font>: 32 bit Real</b><br>
 
-hh <select name="org_opendap_hh_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -424,21 +418,21 @@ hh <select name="org_opendap_hh_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_hh_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_Salinity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_mm = new dods_var("mm", "org_opendap_mm", 0);
-DODS_URL.add_dods_var(org_opendap_mm);
+org_opendap_DO_ = new dods_var("DO%20", "org_opendap_DO_", 0);
+DODS_URL.add_dods_var(org_opendap_DO_);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_mm"
-onclick="org_opendap_mm.handle_projection_change(get_org_opendap_mm) "  onfocus="describe_projection()">
-<font size="+1">mm</font>: 32 bit Integer</b><br>
+<b><input type="checkbox" name="get_org_opendap_DO_"
+onclick="org_opendap_DO_.handle_projection_change(get_org_opendap_DO_) "  onfocus="describe_projection()">
+<font size="+1">DO </font>: 32 bit Real</b><br>
 
-mm <select name="org_opendap_mm_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -447,21 +441,21 @@ mm <select name="org_opendap_mm_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_mm_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_DO__selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_ss = new dods_var("ss", "org_opendap_ss", 0);
-DODS_URL.add_dods_var(org_opendap_ss);
+org_opendap_pH = new dods_var("pH", "org_opendap_pH", 0);
+DODS_URL.add_dods_var(org_opendap_pH);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_ss"
-onclick="org_opendap_ss.handle_projection_change(get_org_opendap_ss) "  onfocus="describe_projection()">
-<font size="+1">ss</font>: 32 bit Integer</b><br>
+<b><input type="checkbox" name="get_org_opendap_pH"
+onclick="org_opendap_pH.handle_projection_change(get_org_opendap_pH) "  onfocus="describe_projection()">
+<font size="+1">pH</font>: 32 bit Real</b><br>
 
-ss <select name="org_opendap_ss_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -470,21 +464,21 @@ ss <select name="org_opendap_ss_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_ss_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_pH_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_DODS_URL = new dods_var("DODS_URL", "org_opendap_DODS_URL", 0);
-DODS_URL.add_dods_var(org_opendap_DODS_URL);
+org_opendap_Turbidity = new dods_var("Turbidity", "org_opendap_Turbidity", 0);
+DODS_URL.add_dods_var(org_opendap_Turbidity);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_DODS_URL"
-onclick="org_opendap_DODS_URL.handle_projection_change(get_org_opendap_DODS_URL) "  onfocus="describe_projection()">
-<font size="+1">DODS_URL</font>: string</b><br>
+<b><input type="checkbox" name="get_org_opendap_Turbidity"
+onclick="org_opendap_Turbidity.handle_projection_change(get_org_opendap_Turbidity) "  onfocus="describe_projection()">
+<font size="+1">Turbidity</font>: 32 bit Real</b><br>
 
-DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -493,7 +487,122 @@ DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_DODS_URL_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_Turbidity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Air_Temp = new dods_var("Air_Temp", "org_opendap_Air_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_Air_Temp);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Air_Temp"
+onclick="org_opendap_Air_Temp.handle_projection_change(get_org_opendap_Air_Temp) "  onfocus="describe_projection()">
+<font size="+1">Air_Temp</font>: 32 bit Real</b><br>
+
+Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Air_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Wind_Speed = new dods_var("Wind_Speed", "org_opendap_Wind_Speed", 0);
+DODS_URL.add_dods_var(org_opendap_Wind_Speed);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Wind_Speed"
+onclick="org_opendap_Wind_Speed.handle_projection_change(get_org_opendap_Wind_Speed) "  onfocus="describe_projection()">
+<font size="+1">Wind_Speed</font>: 32 bit Real</b><br>
+
+Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Wind_Speed_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Wind_Direction = new dods_var("Wind_Direction", "org_opendap_Wind_Direction", 0);
+DODS_URL.add_dods_var(org_opendap_Wind_Direction);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Wind_Direction"
+onclick="org_opendap_Wind_Direction.handle_projection_change(get_org_opendap_Wind_Direction) "  onfocus="describe_projection()">
+<font size="+1">Wind_Direction</font>: 32 bit Real</b><br>
+
+Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Wind_Direction_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Barometric_Pres = new dods_var("Barometric_Pres", "org_opendap_Barometric_Pres", 0);
+DODS_URL.add_dods_var(org_opendap_Barometric_Pres);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Barometric_Pres"
+onclick="org_opendap_Barometric_Pres.handle_projection_change(get_org_opendap_Barometric_Pres) "  onfocus="describe_projection()">
+<font size="+1">Barometric_Pres</font>: 32 bit Real</b><br>
+
+Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Barometric_Pres_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<br>
+
+<p><p>
+<script type="text/javascript">
+<!--
+org_opendap_Solar_Radiation = new dods_var("Solar_Radiation", "org_opendap_Solar_Radiation", 0);
+DODS_URL.add_dods_var(org_opendap_Solar_Radiation);
+// -->
+</script>
+<b><input type="checkbox" name="get_org_opendap_Solar_Radiation"
+onclick="org_opendap_Solar_Radiation.handle_projection_change(get_org_opendap_Solar_Radiation) "  onfocus="describe_projection()">
+<font size="+1">Solar_Radiation</font>: 32 bit Real</b><br>
+
+Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+<option value="=" selected>=
+<option value="!=">!=
+<option value="<"><
+<option value="<="><=
+<option value=">">>
+<option value=">=">>=
+<option value="-">--
+</select>
+<input type="text" name="org_opendap_Solar_Radiation_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>

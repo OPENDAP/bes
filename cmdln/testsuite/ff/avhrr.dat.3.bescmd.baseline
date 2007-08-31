@@ -1,0 +1,108 @@
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>Server</b>:</td>
+<td align=left>"DODS FreeFrom based on FFND release 4.2.3"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_FileType</b>:</td>
+<td align=left>"FileServer"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_Interfaces</b>:</td>
+<td align=left>"date", "time", "date_time"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_Title</b>:</td>
+<td align=left>"Univ. R.I. 5.5KM AVHRR Browse Archive"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_LatRange</b>:</td>
+<td align=left>"60.5750", "9.4250"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_LonRange</b>:</td>
+<td align=left>"-96.2220", "-33.7780"<br></td></tr>
+
+<tr><td align=right valign=top><b>Sel_Vars</b>:</td>
+<td align=left>"Sea_Temp"<br></td></tr>
+
+<tr><td align=right valign=top><b>Dod_Vars</b>:</td>
+<td align=left>"dsp_band_1"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_StartDate</b>:</td>
+<td align=left>"1979/4/11"<br></td></tr>
+
+<tr><td align=right valign=top><b>DODS_EndDate</b>:</td>
+<td align=left>"2002/12/31"<br></td></tr>
+
+<tr><td align=right valign=top><b>year_variable</b>:</td>
+<td align=left>URI_Avhrr.year<br></td></tr>
+
+<tr><td align=right valign=top><b>month_variable</b>:</td>
+<td align=left>URI_Avhrr.month<br></td></tr>
+
+<tr><td align=right valign=top><b>day_variable</b>:</td>
+<td align=left>URI_Avhrr.day<br></td></tr>
+
+<tr><td align=right valign=top><b>hours_variable</b>:</td>
+<td align=left>URI_Avhrr.hours<br></td></tr>
+
+<tr><td align=right valign=top><b>minutes_variable</b>:</td>
+<td align=left>URI_Avhrr.minutes<br></td></tr>
+
+<tr><td align=right valign=top><b>seconds_variable</b>:</td>
+<td align=left>URI_Avhrr.seconds<br></td></tr>
+
+<tr><td align=right valign=top><b>gmt_time</b>:</td>
+<td align=left>true<br></td></tr>
+
+<tr><td align=right valign=top><b>year_variable</b>:</td>
+<td align=left>URI.Avhrr.year<br></td></tr>
+
+<tr><td align=right valign=top><b>month_variable</b>:</td>
+<td align=left>URI_Avhrr.month<br></td></tr>
+
+<tr><td align=right valign=top><b>day_variable</b>:</td>
+<td align=left>URI_Avhrr.day<br></td></tr>
+
+<tr><td align=right valign=top><b>hours_variable</b>:</td>
+<td align=left>URI_Avhrr.hours<br></td></tr>
+
+<tr><td align=right valign=top><b>minutes_variable</b>:</td>
+<td align=left>URI_Avhrr.minutes<br></td></tr>
+
+<tr><td align=right valign=top><b>seconds_variable</b>:</td>
+<td align=left>URI_Avhrr.seconds<br></td></tr>
+
+<tr><td align=right valign=top><b>gmt_time</b>:</td>
+<td align=left>true<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>URI_Avhrr</b>:</td>
+<td align=left valign=top>Sequence<br><table>
+<tr><td align=right valign=top><b>year</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>month</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>day</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>hours</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>minutes</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>seconds</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>DODS_URL</b>:</td>
+<td align=left valign=top>String<br></td>
+</tr></table>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>

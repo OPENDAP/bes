@@ -45,5 +45,5 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <String name="DODS_URL"/>
     </Sequence>
 
-    <dataBLOB href=".blob?&GSO_AVHRR.day_num>160&GSO_AVHRR.day_num<162"/>
+    <dataBLOB href=""/>
 </Dataset>

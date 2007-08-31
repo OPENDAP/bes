@@ -1,0 +1,16 @@
+Dataset {
+    Sequence {
+        Float64 Time;
+        Float32 Depth;
+        Float32 Sea_Temp;
+        Float32 Salinity;
+        Float32 DO%20;
+        Float32 pH;
+        Float32 Turbidity;
+        Float32 Air_Temp;
+        Float32 Wind_Speed;
+        Float32 Wind_Direction;
+        Float32 Barometric_Pres;
+        Float32 Solar_Radiation;
+    } URI_GSO-Dock;
+} gsodock.dat;

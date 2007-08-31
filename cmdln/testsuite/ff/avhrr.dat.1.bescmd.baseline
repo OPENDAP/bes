@@ -1,0 +1,11 @@
+Dataset {
+    Sequence {
+        Int32 year;
+        Int32 month;
+        Int32 day;
+        Int32 hours;
+        Int32 minutes;
+        Int32 seconds;
+        String DODS_URL;
+    } URI_Avhrr;
+} avhrr.dat;

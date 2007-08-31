@@ -1,0 +1,4 @@
+set container in catalog values av,/data/ff/gsodock.dat;
+define e as av;
+get das for e;
+exit

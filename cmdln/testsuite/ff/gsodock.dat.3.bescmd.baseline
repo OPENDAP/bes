@@ -1,0 +1,52 @@
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>Server</b>:</td>
+<td align=left>"DODS FreeFrom based on FFND release 4.2.3"<br></td></tr>
+
+<tr><td align=right valign=top><b>text</b>:</td>
+<td align=left>"Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar"<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>URI_GSO-Dock</b>:</td>
+<td align=left valign=top>Sequence<br><table>
+<tr><td align=right valign=top><b>Time</b>:</td>
+<td align=left valign=top>64 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Depth</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Sea_Temp</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Salinity</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>DO </b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>pH</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Turbidity</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Air_Temp</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Wind_Speed</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Wind_Direction</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Barometric_Pres</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr><tr><td align=right valign=top><b>Solar_Radiation</b>:</td>
+<td align=left valign=top>32 bit Real<br></td>
+</tr></table>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>

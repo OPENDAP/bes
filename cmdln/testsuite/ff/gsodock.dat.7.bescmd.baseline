@@ -1,0 +1,6 @@
+Dataset {
+    Sequence {
+        Float32 Depth;
+        Float32 Air_Temp;
+    } URI_GSO-Dock;
+} gsodock.dat;
