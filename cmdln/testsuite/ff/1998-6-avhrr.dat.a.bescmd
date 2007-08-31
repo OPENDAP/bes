@@ -1,0 +1,4 @@
+set container in catalog values av,/data/ff/1998-6-avhrr.dat;
+define e as av with av.constraint="&GSO_AVHRR.day_num>160&GSO_AVHRR.day_num<162";
+get dods for e;
+exit

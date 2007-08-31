@@ -1,0 +1,6 @@
+Dataset: 1998-6-avhrr.dat
+GSO_AVHRR.satellite, GSO_AVHRR.year, GSO_AVHRR.day_num, GSO_AVHRR.hh, GSO_AVHRR.mm, GSO_AVHRR.ss, GSO_AVHRR.DODS_URL
+"f", 98, 161, 7, 46, 40, "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/f98161074640.pvu.Z"
+"f", 98, 161, 19, 12, 32, "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/f98161191232.pvu.Z"
+"h", 98, 161, 11, 33, 39, "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/h98161113339.pvu.Z"
+"h", 98, 161, 21, 14, 29, "http://dods.gso.uri.edu/cgi-bin/nph-dsp/avhrr/1998/6/h98161211429.pvu.Z"

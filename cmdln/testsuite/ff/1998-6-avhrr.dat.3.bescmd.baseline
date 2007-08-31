@@ -1,0 +1,60 @@
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>Server</b>:</td>
+<td align=left>"DODS FreeFrom based on FFND release 4.2.3"<br></td></tr>
+
+<tr><td align=right valign=top><b>hours_variable</b>:</td>
+<td align=left>GSO_AVHRR.hh<br></td></tr>
+
+<tr><td align=right valign=top><b>minutes_variable</b>:</td>
+<td align=left>GSO_AVHRR.mm<br></td></tr>
+
+<tr><td align=right valign=top><b>seconds_variable</b>:</td>
+<td align=left>GSO_AVHRR.ss<br></td></tr>
+
+<tr><td align=right valign=top><b>gmt_time</b>:</td>
+<td align=left>true<br></td></tr>
+
+<tr><td align=right valign=top><b>year_variable</b>:</td>
+<td align=left>GSO_AVHRR.year<br></td></tr>
+
+<tr><td align=right valign=top><b>year_base</b>:</td>
+<td align=left>1900<br></td></tr>
+
+<tr><td align=right valign=top><b>year_day_variable</b>:</td>
+<td align=left>GSO_AVHRR.day_num<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>GSO_AVHRR</b>:</td>
+<td align=left valign=top>Sequence<br><table>
+<tr><td align=right valign=top><b>satellite</b>:</td>
+<td align=left valign=top>String<br></td>
+</tr><tr><td align=right valign=top><b>year</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>day_num</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>hh</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>mm</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>ss</b>:</td>
+<td align=left valign=top>32 bit Integer<br></td>
+</tr><tr><td align=right valign=top><b>DODS_URL</b>:</td>
+<td align=left valign=top>String<br></td>
+</tr></table>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>
