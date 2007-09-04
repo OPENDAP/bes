@@ -1,0 +1,131 @@
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>Title</b>:</td>
+<td align=left>"AVHRR Oceans Pathfinder Equal Angle\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Data Center</b>:</td>
+<td align=left>"NASA/PO.DAAC AVHRR Oceans Pathfinder\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Station</b>:</td>
+<td align=left>"NOAA/NESDIS\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Mission</b>:</td>
+<td align=left>"AVHRR Oceans Pathfinder\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Mission Characteristics</b>:</td>
+<td align=left>"NOAA/NASA AVHRR Oceans Pathfinder\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Sensor</b>:</td>
+<td align=left>"NOAA polar orbiter data\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Sensor Characteristics</b>:</td>
+<td align=left>"National Oceanic and Atmospheric Administration Polar Orbiter\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Product name</b>:</td>
+<td align=left>"Equal Angle Map HDF\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Quality type</b>:</td>
+<td align=left>"Best SST\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Binning period</b>:</td>
+<td align=left>"DAILY\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Pass</b>:</td>
+<td align=left>"Ascending\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Processing control</b>:</td>
+<td align=left>"Algorithm: V4.0 pathfinder flagtree 26aug96\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Data start time</b>:</td>
+<td align=left>"4/14/1990 00:00:00\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Data end time</b>:</td>
+<td align=left>"4/14/1990 23:59:59\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Data processing time</b>:</td>
+<td align=left>"Thu Jun 26 18:02:09 1997"<br></td></tr>
+
+<tr><td align=right valign=top><b>Start year</b>:</td>
+<td align=left>1990<br></td></tr>
+
+<tr><td align=right valign=top><b>End year</b>:</td>
+<td align=left>1990<br></td></tr>
+
+<tr><td align=right valign=top><b>Start day</b>:</td>
+<td align=left>104<br></td></tr>
+
+<tr><td align=right valign=top><b>End day</b>:</td>
+<td align=left>104<br></td></tr>
+
+<tr><td align=right valign=top><b>Start millisec</b>:</td>
+<td align=left>53143<br></td></tr>
+
+<tr><td align=right valign=top><b>End millisec</b>:</td>
+<td align=left>53143<br></td></tr>
+
+<tr><td align=right valign=top><b>Number of rows</b>:</td>
+<td align=left>2048<br></td></tr>
+
+<tr><td align=right valign=top><b>Number of columns</b>:</td>
+<td align=left>4096<br></td></tr>
+
+<tr><td align=right valign=top><b>Map projection</b>:</td>
+<td align=left>"Equirectangular projection\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Parameter name</b>:</td>
+<td align=left>"Sea Surface Temperature\\000"<br></td></tr>
+
+<tr><td align=right valign=top><b>Orbit</b>:</td>
+<td align=left>8007<br></td></tr>
+
+<tr><td align=right valign=top><b>Maximum Latitude</b>:</td>
+<td align=left>89.9561<br></td></tr>
+
+<tr><td align=right valign=top><b>Minimum Latitude</b>:</td>
+<td align=left>-89.9561<br></td></tr>
+
+<tr><td align=right valign=top><b>Maximum Longitude</b>:</td>
+<td align=left>179.956<br></td></tr>
+
+<tr><td align=right valign=top><b>Minimum Longitude</b>:</td>
+<td align=left>-179.956<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>Sea Surface Temperature</b>:</td>
+<td align=left valign=top>Array of 32 bit Integers [Longitude = 0..4095][Latitude = 0..2047]<br>scale_factor: 0.15<br>
+scale_factor_err: 0<br>
+add_offset: -3<br>
+add_offset_err: 0<br>
+calibrated_nt: 20<br>
+Slope: 0.15<br>
+Intercept: -3<br>
+Unit: "Degree in Celsius\\000"<br>
+Equation: "SST (Celsius) = DN * .15 - 3.0\\000"<br>
+</td>
+</tr><tr><td align=right valign=top><b>Number of Observations per Bin</b>:</td>
+<td align=left valign=top>Array of 32 bit Integers [fakeDim2 = 0..4095][fakeDim3 = 0..2047]<br>Band Name: "Number of Observations per Bin\\000"<br>
+</td>
+</tr><tr><td align=right valign=top><b>Raster Image #0</b>:</td>
+<td align=left valign=top>Array of Bytes [Raster Image #0__Y = 0..2047][Raster Image #0__X = 0..4095]<br>hdf_palette_0: 255, 255, 255, 80, 80, 80, 81, 81, 81, 82, 82, 82, 83, 83, 83, 42, 0, 42, 49, 0, 49, 56, 0, 56, 63, 0, 63, 70, 0, 70, 77, 0, 77, 84, 0, 84, 91, 0, 91, 98, 0, 98, 105, 0, 105, 112, 0, 112, 119, 0, 119, 126, 0, 126, 133, 0, 133, 140, 0, 140, 147, 0, 147, 154, 0, 154, 161, 0, 161, 168, 0, 168, 175, 0, 175, 182, 0, 182, 189, 0, 189, 196, 0, 196, 203, 0, 203, 210, 0, 210, 217, 0, 217, 224, 0, 224, 231, 0, 231, 238, 0, 238, 245, 0, 245, 252, 0, 252, 245, 0, 252, 238, 0, 252, 231, 0, 252, 224, 0, 252, 217, 0, 252, 210, 0, 252, 203, 0, 252, 196, 0, 252, 189, 0, 252, 182, 0, 252, 175, 0, 252, 168, 0, 252, 161, 0, 252, 154, 0, 252, 147, 0, 252, 140, 0, 252, 133, 0, 252, 126, 0, 252, 119, 0, 252, 112, 0, 252, 105, 0, 252, 98, 0, 252, 91, 0, 252, 84, 0, 252, 77, 0, 252, 70, 0, 252, 63, 0, 252, 56, 0, 252, 49, 0, 252, 42, 0, 252, 35, 0, 252, 28, 0, 252, 21, 0, 252, 14, 0, 252, 7, 0, 252, 0, 0, 252, 0, 7, 252, 0, 14, 252, 0, 21, 252, 0, 28, 252, 0, 35, 252, 0, 42, 252, 0, 49, 252, 0, 56, 252, 0, 63, 252, 0, 70, 252, 0, 77, 252, 0, 84, 252, 0, 91, 252, 0, 98, 252, 0, 105, 252, 0, 112, 252, 0, 119, 252, 0, 126, 252, 0, 133, 252, 0, 140, 252, 0, 147, 252, 0, 154, 252, 0, 161, 252, 0, 168, 252, 0, 175, 252, 0, 182, 252, 0, 189, 252, 0, 196, 252, 0, 203, 252, 0, 210, 252, 0, 217, 252, 0, 224, 252, 0, 231, 252, 0, 238, 252, 0, 245, 252, 0, 252, 252, 0, 252, 245, 0, 252, 238, 0, 252, 231, 0, 252, 224, 0, 252, 217, 0, 252, 210, 0, 252, 203, 0, 252, 196, 0, 252, 189, 0, 252, 182, 0, 252, 175, 0, 252, 168, 0, 252, 161, 0, 252, 154, 0, 252, 147, 0, 252, 140, 0, 252, 133, 0, 252, 126, 0, 252, 119, 0, 252, 112, 0, 252, 105, 0, 252, 98, 0, 252, 91, 0, 252, 84, 0, 252, 77, 0, 252, 70, 0, 252, 63, 0, 252, 56, 0, 252, 49, 0, 252, 42, 0, 252, 35, 0, 252, 28, 0, 252, 21, 0, 252, 14, 0, 252, 7, 0, 252, 0, 7, 252, 0, 14, 252, 0, 21, 252, 0, 28, 252, 0, 35, 252, 0, 42, 252, 0, 49, 252, 0, 56, 252, 0, 63, 252, 0, 70, 252, 0, 77, 252, 0, 84, 252, 0, 91, 252, 0, 98, 252, 0, 105, 252, 0, 112, 252, 0, 119, 252, 0, 126, 252, 0, 133, 252, 0, 140, 252, 0, 147, 252, 0, 154, 252, 0, 161, 252, 0, 168, 252, 0, 175, 252, 0, 182, 252, 0, 189, 252, 0, 196, 252, 0, 203, 252, 0, 210, 252, 0, 217, 252, 0, 224, 252, 0, 231, 252, 0, 238, 252, 0, 245, 252, 0, 252, 252, 0, 252, 245, 0, 252, 238, 0, 252, 231, 0, 252, 224, 0, 252, 217, 0, 252, 210, 0, 252, 203, 0, 252, 196, 0, 252, 189, 0, 252, 182, 0, 252, 175, 0, 252, 168, 0, 252, 161, 0, 252, 154, 0, 252, 147, 0, 252, 140, 0, 252, 133, 0, 252, 126, 0, 252, 119, 0, 252, 112, 0, 252, 105, 0, 252, 98, 0, 252, 91, 0, 252, 84, 0, 252, 77, 0, 252, 70, 0, 252, 63, 0, 252, 56, 0, 252, 49, 0, 252, 42, 0, 252, 35, 0, 252, 28, 0, 252, 21, 0, 252, 14, 0, 252, 7, 0, 252, 0, 0, 248, 0, 0, 244, 1, 1, 240, 2, 1, 236, 3, 2, 232, 4, 2, 228, 5, 3, 224, 6, 3, 220, 7, 4, 216, 8, 4, 212, 9, 5, 208, 9, 5, 204, 10, 6, 200, 11, 6, 196, 12, 7, 192, 13, 7, 188, 14, 8, 184, 15, 8, 180, 16, 9, 176, 17, 9, 172, 17, 10, 168, 18, 10, 164, 19, 11, 160, 20, 11, 156, 21, 12, 152, 22, 12, 148, 23, 13, 144, 24, 13, 140, 25, 14, 136, 26, 14, 132, 26, 15, 128, 27, 15, 124, 28, 16, 120, 29, 16, 116, 30, 17, 112, 31, 17, 108, 32, 18, 104, 33, 18, 100, 34, 19, 96, 35, 19, 0, 0, 0<br>
+hdf_palette_0_ncomps: 3<br>
+</td>
+</tr><tr><td align=right valign=top><b>Raster Image #1</b>:</td>
+<td align=left valign=top>Array of Bytes [Raster Image #1__Y = 0..2047][Raster Image #1__X = 0..4095]<br>hdf_palette_0: 255, 255, 255, 7, 0, 252, 252, 189, 0, 252, 0, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 7, 0, 252, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 189, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 252, 0, 0, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 255, 0, 255, 0, 0, 0<br>
+hdf_palette_0_ncomps: 3<br>
+</td>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>

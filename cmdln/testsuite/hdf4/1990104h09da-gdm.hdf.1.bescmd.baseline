@@ -1,0 +1,6 @@
+Dataset {
+    Int32 Sea%20Surface%20Temperature[Longitude = 4096][Latitude = 2048];
+    Int32 Number%20of%20Observations%20per%20Bin[fakeDim2 = 4096][fakeDim3 = 2048];
+    Byte Raster%20Image%20%230[Raster%20Image%20%230__Y = 2048][Raster%20Image%20%230__X = 4096];
+    Byte Raster%20Image%20%231[Raster%20Image%20%231__Y = 2048][Raster%20Image%20%231__X = 4096];
+} 1990104h09da-gdm.hdf;
