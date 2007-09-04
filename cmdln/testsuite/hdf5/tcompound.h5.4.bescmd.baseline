@@ -1,0 +1,49 @@
+Dataset: tcompound.h5
+/dset1[0]
+/dset1.a_name, /dset1.b_name, /dset1.c_name
+0, 0, 0
+/dset1[1]
+/dset1.a_name, /dset1.b_name, /dset1.c_name
+0, 0, 0
+/dset1[2]
+/dset1.a_name, /dset1.b_name, /dset1.c_name
+0, 0, 0
+/dset1[3]
+/dset1.a_name, /dset1.b_name, /dset1.c_name
+0, 0, 0
+/dset1[4]
+/dset1.a_name, /dset1.b_name, /dset1.c_name
+0, 0, 0
+/group1/dset2[0]
+/group1/dset2.int_name, /group1/dset2.float_name
+0, 0
+/group1/dset2[1]
+/group1/dset2.int_name, /group1/dset2.float_name
+0, 0
+/group1/dset2[2]
+/group1/dset2.int_name, /group1/dset2.float_name
+0, 0
+/group1/dset2[3]
+/group1/dset2.int_name, /group1/dset2.float_name
+0, 0
+/group1/dset2[4]
+/group1/dset2.int_name, /group1/dset2.float_name
+0, 0
+/group1/dset3[0][0]
+/group1/dset3.int_array, <?xml version="1.0" encoding="UTF-8"?>
+<getAscii>
+    <response>
+        <Administrator>admin.email.address@your.domain.name</Administrator>
+        <BESException>
+            <Type>TransmitProblem</Type>
+            <Message>Failed to get values as ascii: An internal error was encountered in Int32.cc at line 142:
+The incoming pointer does not contain any data.
+Please report this to support@opendap.org
+(1002)</Message>
+            <Location>
+                <File>BESAsciiTransmit.cc</File>
+                <Line>164</Line>
+            </Location>
+        </BESException>
+    </response>
+</getAscii>

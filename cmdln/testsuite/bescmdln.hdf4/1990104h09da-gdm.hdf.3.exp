@@ -1,0 +1,13 @@
+# Test the hdf5 handler with the bes.
+#
+# $Id: data.1.exp 14588 2006-09-15 21:13:55Z jimg $
+
+global comp_output		# contains output from das-test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+
+# The `1' in compare_stdout means call xfail if the test fails.
+
+bescmdln_start "testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd"
+compare_stdout "testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd.baseline" "DDS /data/hdf/1990104h09da-gdm.hdf" 0
+

@@ -1,0 +1,4 @@
+set container in catalog values c, /data/h5/tcompound.h5;
+define d as c;
+get ddx for d;
+exit

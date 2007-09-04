@@ -1,0 +1,20 @@
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>/dset1</b>:</td>
+<td align=left valign=top>Array of Structures [ = 0..4]<br></td>
+</tr><tr><td align=right valign=top><b>/group1/dset2</b>:</td>
+<td align=left valign=top>Array of Structures [ = 0..4]<br></td>
+</tr><tr><td align=right valign=top><b>/group1/dset3</b>:</td>
+<td align=left valign=top>Array of Structures [ = 0..2][ = 0..5]<br></td>
+</tr><tr><td align=right valign=top><b>/group1/dset4</b>:</td>
+<td align=left valign=top>Array of Structures [ = 0..4]<br></td>
+</tr><tr><td align=right valign=top><b>/group2/dset5</b>:</td>
+<td align=left valign=top>Array of Structures [ = 0..4]<br></td>
+</tr></table>
+</center><p>
+
+<hr>
+
+</body>
+</html>
