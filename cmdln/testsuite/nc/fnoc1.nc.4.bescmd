@@ -1,10 +1,4 @@
 set container in catalog values c,/data/nc/fnoc1.nc;
 define d as c;
-get das for d;
-get dds for d;
-get ddx for d;
-get info_page for d;
 get html_form for d using http://localhost:8080/opendap/data/nc/fnoc1.nc;
-get ascii for d;
-get dods for d;
 exit
