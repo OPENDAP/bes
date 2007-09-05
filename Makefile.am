@@ -6,33 +6,44 @@ AUTOMAKE_OPTIONS = foreign check-news dejagnu
 
 ACLOCAL_AMFLAGS = -I conf
 
+AM_YFLAGS = -d -v
+AM_LFLAGS = -8
+
 bin_PROGRAMS = dap_h5_handler
 
 lib_LTLIBRARIES = libhdf5_handler.la
+
+BUILT_SOURCES = $(GRAM_SRCS)
 
 if OPENDAPSERVER
 
 lib_besdir=$(prefix)/lib/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
-dist_bin_SCRIPTS = configure-hdf5-data.sh
+dist_bin_SCRIPTS = bes-hdf5-data.sh
 
 endif
 
+GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc \
+	hdfeos_das.tab.cc hdfeos_das.tab.h lex.hdfeos_das.cc
+
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
-	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc HDF5GridEOS.cc 
+	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc \
+	HDF5GridEOS.cc 
+
 HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h HDF5GridEOS.h
 
-# <hyokyung 2007.02.23. 14:19:46> <hyokyung 2007.06.14. 13:47:47>
-SRCS = h5dds.cc h5das.cc H5Git.cc hdfeos.tab.cc lex.hdfeos.cc hdfeos_das.tab.cc lex.hdfeos_das.cc H5EOS.cc H5PathFinder.cc
-# SRCS = h5dds.cc h5das.cc H5Git.c
+SRCS = h5dds.cc h5das.cc H5Git.cc H5EOS.cc H5PathFinder.cc $(GRAM_SRCS)
+
 HDRS = common.h h5dds.h h5das.h H5Git.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
 SERVER_HDR = HDF5RequestHandler.h HDF5Module.h
+
+# H5EOS.h: hdfeos.tab.h
 
 libhdf5_handler_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS)
 
@@ -48,30 +59,36 @@ DEJATOOL = dap_h5_handler
 
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
 
-EXTRA_DIST = data testsuite COPYING hdf5_handler.spec
+EXTRA_DIST = hdfeos_das.y  hdfeos.y hdfeos_das.lex  hdfeos.lex
 
 CLEANFILES = *~ *.sum *.log
 
 if OPENDAPSERVER
 
-EXTRA_DIST += configure-hdf5-data.sh.in
-CLEANFILES += configure-hdf5-data.sh
-sample_datadir = $(datadir)/hyrax/data/h5
+EXTRA_DIST += data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
+CLEANFILES += bes-hdf5-data.sh
+
+sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/tcompound.h5
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 		   	   -e 's,[@]libdir[@],$(libdir),g' \
 		   	   -e 's,[@]datadir[@],$(datadir),g'
 
-configure-hdf5-data.sh: configure-hdf5-data.sh.in Makefile
-	$(do_subst) < $(srcdir)/configure-hdf5-data.sh.in > configure-hdf5-data.sh
-	chmod +x configure-hdf5-data.sh
+bes-hdf5-data.sh: bes-hdf5-data.sh.in Makefile
+	$(do_subst) < $(srcdir)/bes-hdf5-data.sh.in > bes-hdf5-data.sh
+	chmod +x bes-hdf5-data.sh
 
-# This makes sure that the handler modifies the bes  which confiure found
-# even with distcheck is run.
-install-data-hook: configure-hdf5-data.sh
-	(bes_prefix=`bes-config --prefix` && \
-	 ./configure-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes)
+# This makes sure that the handler modifies the bes which configure found
+# even when distcheck is run.
+bes-conf: bes-hdf5-data.sh
+	(bes_prefix=`bes-config --prefix` ; \
+	if test "$$bes_prefix" = "/usr" ; \
+	 then \
+	    ./bes-hdf5-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
+	else \
+	    ./bes-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
+	fi)
 
 endif
 
@@ -103,7 +120,7 @@ rpm:
 
 # Build the HDF-EOS parser
 
-hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
+hdfeos.tab.cc hdfeos.tab.h: hdfeos.y H5EOS.h
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
 	mv hdfeos.tab.c hdfeos.tab.cc
 
