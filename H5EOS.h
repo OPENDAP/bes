@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "Array.h"
+#include <Array.h>
 #include "hdfeos.tab.h"
 
 using namespace std;

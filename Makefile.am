@@ -37,13 +37,11 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 
 SRCS = h5dds.cc h5das.cc H5Git.cc H5EOS.cc H5PathFinder.cc $(GRAM_SRCS)
 
-HDRS = common.h h5dds.h h5das.h H5Git.h
+HDRS = common.h h5dds.h h5das.h H5Git.h H5EOS.h H5PathFinder.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
 SERVER_HDR = HDF5RequestHandler.h HDF5Module.h
-
-# H5EOS.h: hdfeos.tab.h
 
 libhdf5_handler_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS)
 
@@ -52,7 +50,7 @@ libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libhdf5_module_la_LDFLAGS = -avoid-version -module 
 libhdf5_module_la_LIBADD = $(BES_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
-dap_h5_handler_SOURCES = h5_handler.cc
+dap_h5_handler_SOURCES = h5_handler.cc h5_handler.h
 dap_h5_handler_LDADD = libhdf5_handler.la -L${hdf5_path}/lib -lhdf5 -lz
 
 DEJATOOL = dap_h5_handler
