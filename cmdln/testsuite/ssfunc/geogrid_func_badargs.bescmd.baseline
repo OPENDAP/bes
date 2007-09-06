@@ -4,9 +4,7 @@
         <Administrator>admin.email.address@your.domain.name</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
-            <Message>Failed to read data: Wrong number of arguments to geogrid(), there must be at least five
-arguments, A Grid followed by the left-top and right-bottom points of a
-longitude-latitude bounding box.(1001)</Message>
+            <Message>Failed to read data: Wrong number of arguments to geogrid(). See geogrid() for more information.(1001)</Message>
             <Location>
                 <File>BESAsciiTransmit.cc</File>
                 <Line>138</Line>
@@ -20,9 +18,7 @@ longitude-latitude bounding box.(1001)</Message>
         <Administrator>admin.email.address@your.domain.name</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
-            <Message>libdap exception transmitting DataDDS: error_code = 1001: Wrong number of arguments to geogrid(), there must be at least five
-arguments, A Grid followed by the left-top and right-bottom points of a
-longitude-latitude bounding box.</Message>
+            <Message>libdap exception transmitting DataDDS: error_code = 1001: Wrong number of arguments to geogrid(). See geogrid() for more information.</Message>
             <Location>
                 <File>BESDapTransmit.cc</File>
                 <Line>141</Line>

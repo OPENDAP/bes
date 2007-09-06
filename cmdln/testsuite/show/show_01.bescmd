@@ -1,4 +1,4 @@
 show info for "/data/nc/fnoc1.nc";
-show info for "/data/hdf";
+show info for "/data/hdf4";
 show catalog for "/data/nc";
 exit
