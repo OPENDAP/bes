@@ -16,7 +16,9 @@ bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
-bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs) $(READLINE_LIBS)
+bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt \
+	$(openssl_libs) $(READLINE_LIBS)
+
 # DEJATOOL = bescmdln
 # RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
@@ -29,13 +31,6 @@ bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt $(openssl_libs)
 # before we start the tests. jhrg 3/31/07
 
 bes-configuration-tests:
-	@(ps -eA | grep beslistener > /dev/null 2>&1;\
-	  if test $$? != 0; then \
-		echo;\
-		echo "Starting bes using the default configuration!";\
-		echo;\
-		besctl start;\
-	  fi)
 	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
 	EXPECT=$(EXPECT); export EXPECT; \
 	if $(SHELL) -c "runtest --version" > /dev/null 2>&1; then \
@@ -43,10 +38,19 @@ bes-configuration-tests:
 	else \
 	  echo "WARNING: could not find \`runtest'" 1>&2; :;\
 	fi
-	@(ps -el | grep beslistener > /dev/null 2>&1;\
-	  if test $$? = 0; then \
-		echo;\
-		echo "Stopping the bes";\
-		echo;\
-		besctl stop;\
-	  fi)
+
+#	@(ps -eA | grep beslistener > /dev/null 2>&1;\
+#	  if test $$? != 0; then \
+#		echo;\
+#		echo "Starting bes using the default configuration!";\
+#		echo;\
+#		besctl start;\
+#	  fi)
+#	@(ps -el | grep beslistener > /dev/null 2>&1;\
+#	  if test $$? = 0; then \
+#		echo;\
+#		echo "Stopping the bes";\
+#		echo;\
+#		besctl stop;\
+#	  fi)
+
