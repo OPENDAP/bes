@@ -3,7 +3,7 @@
 # Run this after 'install' completes to edit the bes.conf scrip so that it
 # will be correctly configured for the handler and the sample data.
 #
-# Usage: configure-hdf5-data.sh [<bes.conf file to modify> [<bes modules dir>]]
+# Usage: bes-hdf5-data.sh [<bes.conf file to modify> [<bes modules dir>]]
 
 bes_conf=${1:-"@sysconfdir@/bes/bes.conf"}
 bes_modules_dir=${2:-"@libdir@/bes"}
@@ -13,15 +13,15 @@ bes_modules_dir=${2:-"@libdir@/bes"}
 # of the file. This could be replaced by a better scheme, but probably not
 # without rewrinting this in Perl or ...
 
-if grep '^# Modified by configure-hdf5-data\..*' $bes_conf >/dev/null 2>&1
+if grep '^# Modified by bes-hdf5-data\..*' $bes_conf >/dev/null 2>&1
 then
 	echo
-	echo "The configure-hdf5-data script has already been run, not modifying"
+	echo "The bes-hdf5-data script has already been run, not modifying"
 	echo "$bes_conf"
 	echo
 	exit
 else
-	echo "# Modified by configure-hdf5-data.sh on `date`" >> $bes_conf
+	echo "# Modified by bes-hdf5-data.sh on `date`" >> $bes_conf
 fi
 
 # Add the handler name(s) to BES.modules
