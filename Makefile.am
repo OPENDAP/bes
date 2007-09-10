@@ -72,7 +72,7 @@ if OPENDAPSERVER
 EXTRA_DIST += bes-hdf4-data.sh.in
 CLEANFILES += bes-hdf4-data.sh
 
-sample_datadir = $(datadir)/hyrax/data/hdf
+sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
