@@ -50,7 +50,7 @@ mv tmp.conf $bes_conf
 # handler.
 
 # Add regular expressions to the BES.Catalog.catalog.TypeMatch parameter
-type_match='ff:.*\.h5(\.bz2|\.gz|\.Z)?$'
+type_match='h5:.*\.h5(\.bz2|\.gz|\.Z)?$'
 
 sed "s%^\(BES.Catalog.catalog.TypeMatch=.*\)%\1$type_match;%" \
     < $bes_conf > tmp.conf
