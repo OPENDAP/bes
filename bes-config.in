@@ -63,11 +63,11 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt @LIBS@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt @LIBS@ @openssl_libs@"
        	;;
 
     --dap-libs)
-       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt -lbes_dap @LIBS@"
+       	echo "-L${libdir} -lbes_dispatch -lbes_command -lbes_ppt -lbes_dap @LIBS@ @openssl_libs@"
        	;;
 
     --modulesdir)
