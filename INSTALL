@@ -27,6 +27,10 @@ BUILDING THE SOFTWARE
 
 3) Install the server components in $prefix by running `make install.'
 
+4) Type 'make bes-conf' to run the bes-nc-data.sh script which inserts the
+   handler in the bes.conf file and adds test data to 
+   $prefix/share/hyrax/data.
+
 Building from Our SVN Repository
 
   If you are building from a SVN checkout, run 'autoreconf --verbose' before
