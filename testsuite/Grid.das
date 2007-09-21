@@ -1,6 +1,6 @@
 HTTP/1.0 200 OK
 XDODS-Server: *
-XOPeNDAP-Server:*
+XOPeNDAP-Server: *
 XDAP: *
 Date: *
 Last-Modified: *
@@ -8,43 +8,49 @@ Content-Type: text/plain
 Content-Description: dods_das
 
 Attributes {
-    HDFEOS {
+    /HDFEOS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/";
     }
-    ADDITIONAL {
+    /HDFEOS/ADDITIONAL/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/";
     }
-    FILE_ATTRIBUTES {
+    /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/";
     }
-    GRIDS {
+    /HDFEOS/GRIDS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/";
     }
-    GEOGrid {
+    /HDFEOS/GRIDS/GEOGrid/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/GEOGrid/";
     }
-    Data%20Fields {
-        String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/GEOGrid/Data Fields/", "/HDFEOS/GRIDS/PolarGrid/Data Fields/", "/HDFEOS/GRIDS/UTMGrid/Data Fields/";
+    /HDFEOS/GRIDS/GEOGrid/Data%20Fields/ {
+        String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/GEOGrid/Data Fields/";
     }
-    PolarGrid {
+    /HDFEOS/GRIDS/PolarGrid/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/PolarGrid/";
     }
-    Pressure {
+    /HDFEOS/GRIDS/PolarGrid/Data%20Fields/ {
+        String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/PolarGrid/Data Fields/";
+    }
+    /HDFEOS/GRIDS/PolarGrid/Data%20Fields/Pressure {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/PolarGrid/Data Fields/Pressure";
         Float32 _FillValue 0.;
     }
-    Temperature {
+    /HDFEOS/GRIDS/PolarGrid/Data%20Fields/Temperature {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/PolarGrid/Data Fields/Temperature";
         Float32 _FillValue 0.;
     }
-    UTMGrid {
+    /HDFEOS/GRIDS/UTMGrid/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/UTMGrid/";
     }
-    Vegetation {
+    /HDFEOS/GRIDS/UTMGrid/Data%20Fields/ {
+        String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/UTMGrid/Data Fields/";
+    }
+    /HDFEOS/GRIDS/UTMGrid/Data%20Fields/Vegetation {
         String HDF5_OBJ_FULLPATH "/HDFEOS/GRIDS/UTMGrid/Data Fields/Vegetation";
         Float32 _FillValue 0.;
     }
-    HDFEOS%20INFORMATION {
+    /HDFEOS%20INFORMATION/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS INFORMATION/";
         String HDFEOSVersion "HDFEOS_5.1.10.1";
     }

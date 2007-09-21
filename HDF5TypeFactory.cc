@@ -63,6 +63,9 @@
 #include "HDF5Sequence.h"
 #include "HDF5Grid.h"
 #include "HDF5GridEOS.h"
+#ifdef CF
+#include "HDF5ArrayEOS.h"
+#endif
 #include "HDF5TypeFactory.h"
 #include "debug.h"
 
@@ -152,3 +155,11 @@ HDF5TypeFactory::NewGridEOS(const string &n ) const
 { 
     return new HDF5GridEOS(n);
 }
+
+#ifdef CF
+Array *
+HDF5TypeFactory::NewArrayEOS(const string &n , BaseType *v) const 
+{ 
+    return new HDF5ArrayEOS(n, v);
+}
+#endif

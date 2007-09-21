@@ -54,6 +54,14 @@ AC_CHECK_HDF5(
   ]
 )
 
+AC_ARG_ENABLE([cf], 
+	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF metadata convention support will be enabled.])],
+	     [use_cf=$enableval],[use_cf=no])
+if test "${use_cf}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DCF"
+fi 
+
+
 AC_ARG_ENABLE([short-path], 
 	     [AS_HELP_STRING([--enable-short-path=yes],[Short path name will be used instead of full path])],
 	     [use_short_path=$enableval],[use_short_path=no])

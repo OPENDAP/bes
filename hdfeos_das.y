@@ -29,7 +29,7 @@
 */
 
 %{
-// #define DODS_DEBUG
+  // #define DODS_DEBUG
 #define YYSTYPE char *
   
 // static char rcsid[] not_used = {"$Id$"};

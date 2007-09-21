@@ -41,11 +41,13 @@ class HDF5Float64;
 class HDF5Str;
 class HDF5Url;
 class HDF5Array;
+#ifdef CF
+class HDF5ArrayEOS;
+#endif
 class HDF5Structure;
 class HDF5Sequence;
 class HDF5Grid;
 class HDF5GridEOS;
-
 /// A factory for the HDF5 Data Handler types.
 ///
 ///    @author James Gallagher
@@ -71,6 +73,9 @@ public:
     virtual Sequence *NewSequence(const string &n = "") const;
     virtual Grid *NewGrid(const string &n = "") const;
     virtual Grid *NewGridEOS(const string &n = "") const;
+#ifdef CF
+    virtual Array *NewArrayEOS(const string &n = "", BaseType *v=0) const;
+#endif  
 };
 
 #endif // hdf5_type_factory_h

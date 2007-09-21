@@ -1,21 +1,21 @@
 HTTP/1.0 200 OK
 XDODS-Server: *
-XOPeNDAP-Server: *
+XOPeNDAP-Server:*
 XDAP: *
 Date: *
 Last-Modified: *
-Content-Type: text/plain
-Content-Description: dods_das
+Content-Type: *
+Content-Description: *
 
 Attributes {
     H5_GLOBAL {
         String HDF5_OBJ_FULLPATH "H5_GLOBAL";
         Byte attr1%26withamp 97, 98, 99, 100, 101, 102, 103, 104, 105, 0;
     }
-    g1.1%26withamp {
+    /g1.1%26withamp/ {
         String HDF5_OBJ_FULLPATH "/g1.1&withamp/";
     }
-    dset1.1.1%26withamp {
+    /g1.1%26withamp/dset1.1.1%26withamp {
         String HDF5_OBJ_FULLPATH "/g1.1&withamp/dset1.1.1&withamp";
     }
 }

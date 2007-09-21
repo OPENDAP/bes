@@ -4,45 +4,45 @@ XOPeNDAP-Server: *
 XDAP: *
 Date: *
 Last-Modified: *
-Content-Type: text/plain
-Content-Description: dods_das
+Content-Type: *
+Content-Description: *
 
 Attributes {
-    HDFEOS {
+    /HDFEOS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/";
     }
-    ADDITIONAL {
+    /HDFEOS/ADDITIONAL/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/";
     }
-    FILE_ATTRIBUTES {
+    /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/";
     }
-    POINTS {
+    /HDFEOS/POINTS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/";
     }
-    OMI%20L2G%20Test {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/";
         UInt32 _LevelWritten 1, 1, 0, 0, 0, 0, 0, 0;
     }
-    Data {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Data/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Data/";
     }
-    Measurements {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Data/Measurements {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Data/Measurements";
     }
-    Stations {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Data/Stations {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Data/Stations";
     }
-    Linkage {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Linkage/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Linkage/";
     }
-    BCKPOINTER%3a1-%3e0 {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Linkage/BCKPOINTER%3a1-%3e0 {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Linkage/BCKPOINTER:1->0";
     }
-    FWDPOINTER%3a0-%3e1 {
+    /HDFEOS/POINTS/OMI%20L2G%20Test/Linkage/FWDPOINTER%3a0-%3e1 {
         String HDF5_OBJ_FULLPATH "/HDFEOS/POINTS/OMI L2G Test/Linkage/FWDPOINTER:0->1";
     }
-    HDFEOS%20INFORMATION {
+    /HDFEOS%20INFORMATION/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS INFORMATION/";
         String HDFEOSVersion "HDFEOS_5.1.10";
     }

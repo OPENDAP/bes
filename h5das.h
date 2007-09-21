@@ -30,4 +30,6 @@ int  get_hardlink( hid_t, const string &);
 bool get_softlink( DAS &, hid_t, const string &, int );
 void read_comments( DAS & das, const string & varname, hid_t oid );
 void read_objects( DAS &das, const string &varname, hid_t dset, int num_attr );
-
+#ifdef CF
+void add_dimension_attributes(DAS & das);
+#endif

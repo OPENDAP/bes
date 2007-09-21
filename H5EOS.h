@@ -21,17 +21,24 @@ using namespace std;
 /// Copyright (c) 2007 HDF Group
 ///
 /// All rights reserved.
+#define BUFFER_MAX 655360 // 10 * (2^16); 10 metadata files can be merged per metadata type.
+
 class H5EOS {
   
 private:
 
   bool                 valid;
-
+#ifdef CF  
+  bool                 shared_dimension;
+#endif
   
   hid_t                hid_hdfeos_information;
 
   map<string, int>     dimension_map;     
   map<string, string>  full_data_path_to_dimension_list_map;
+#ifdef CF
+  map<string, string>  eos_to_grads_map;
+#endif
   
   vector<string>       dimensions;  
   vector<string>       full_data_paths;
@@ -46,8 +53,24 @@ private:
   
 public:
   
-  H5EOS();
-  virtual ~H5EOS();
+  bool bmetadata_Struct;  
+  char metadata_Struct[BUFFER_MAX];
+  
+#ifdef NASA_EOS_META
+  // Flag for merged metadata. Once it's set, don't prcoess for other attribute variables that start with the same name.
+  bool bmetadata_Archived;
+  bool bmetadata_Core;
+  bool bmetadata_core;
+  bool bmetadata_product;
+  bool bmetadata_subset;
+  
+  // Holder for the merged metadata information.
+  char metadata_Archived[BUFFER_MAX];
+  char metadata_Core[BUFFER_MAX];
+  char metadata_core[BUFFER_MAX];
+  char metadata_product[BUFFER_MAX];
+  char metadata_subset[BUFFER_MAX];
+#endif
   
   dods_float32** dimension_data;
   
@@ -56,6 +79,8 @@ public:
   float point_left;
   float point_right;
 
+  H5EOS();
+  virtual ~H5EOS();
   
   void   add_data_path(string full_path);
   void   add_dimension_list(string full_path, string dimension_list);
@@ -69,6 +94,13 @@ public:
   bool   is_valid();
   void   print(); // For debugging
   bool   set_dimension_array();
+  bool   set_metadata(hid_t id, char* metadata_name, char* metadata_buffer);
+  
+#ifdef CF
+  bool  is_shared_dimension_set();
+  void  set_shared_dimension();
+  const char*  set_grads_attribute(char* attr_name);
+#endif  
   
 };
 #endif

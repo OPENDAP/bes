@@ -42,20 +42,25 @@ private:
   hid_t mkstr(int size, H5T_str_t pad);
   
 public:
+  
+  H5T_class_t d_type;
+  
   HDF5Array(const string &n = "", BaseType *v = 0);
   virtual ~HDF5Array();
 
   virtual BaseType *ptr_duplicate();
   virtual bool read(const string &dataset);
 
+  hid_t get_did();
+  hid_t get_tid();
+  
+  bool read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms, int* offset, int* step, int* count);
+  
   void set_did(hid_t dset);
   void set_tid(hid_t type);
   void set_memneed(size_t need);
   void set_numdim(int ndims);
   void set_numelm(int nelms);
-  hid_t get_did();
-  hid_t get_tid();
-  H5T_class_t d_type;
   
   friend  string return_type(hid_t datatype);  
 };

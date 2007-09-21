@@ -20,15 +20,15 @@ dap_hdf5_handler_all "${testdir}" "ZA" {/HDFEOS/ZAS/ZA1/Data%20Fields/Spectra\[0
 
 dap_hdf5_handler_all "${testdir}" "Grid" {/HDFEOS/GRIDS/UTMGrid/Data%20Fields/Vegetation\[0:2:6\]\[0:2:8\]}
 
-dap_hdf5_handler_no_data "${testdir}" "tloop2"
+# dap_hdf5_handler_no_data "${testdir}" "tloop2"
 
-dap_hdf5_handler_no_data "${testdir}" "tloop"
+# dap_hdf5_handler_no_data "${testdir}" "tloop"
 
-dap_hdf5_handler_all "${testdir}" "tstring-at"
+# dap_hdf5_handler_all "${testdir}" "tstring-at"
 
 dap_hdf5_handler_all "${testdir}" "tstr"
 
-dap_hdf5_handler_all "${testdir}" "tstr2"
+# dap_hdf5_handler_all "${testdir}" "tstr2"
 
 dap_hdf5_handler_no_data "${testdir}" "tslink"
 
@@ -48,11 +48,11 @@ dap_hdf5_handler_all "${testdir}" "tname-amp"
 # HDF 1.6 fails all.
 # dap_hdf5_handler_all "${testdir}" "tmany"
 
-dap_hdf5_handler_no_data "${testdir}" "tlonglinks"
+# dap_hdf5_handler_no_data "${testdir}" "tlonglinks"
 
 dap_hdf5_handler_no_data "${testdir}" "tlarge_objname"
 
-dap_hdf5_handler_no_data "${testdir}" "tgrp_comments"
+# dap_hdf5_handler_no_data "${testdir}" "tgrp_comments"
 
 dap_hdf5_handler_no_data "${testdir}" "tgroup"
 

@@ -4,15 +4,14 @@ XOPeNDAP-Server: *
 XDAP: *
 Date: *
 Last-Modified: *
-Content-Type: text/plain
-Content-Description: dods_das
+Content-Type: *
+Content-Description: *
 
 Attributes {
-    dset1 {
+    /dset1 {
         String HDF5_OBJ_FULLPATH "/dset1";
     }
-    dset2 {
+    /dset2 {
         String HDF5_OBJ_FULLPATH "/dset2";
     }
 }
-

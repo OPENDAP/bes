@@ -1,9 +1,18 @@
-/*-------------------------------------------------------------------------
- * Copyright (C) 1999	National Center for Supercomputing Applications.
- *			All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \file HDF5Array.cc
+/// \brief A HDF5Array class
+///
+/// This class converts HDF5 array type into DAP array.
+///
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+/// \author Muqun Yang <ymuqun@hdfgroup.org>
+///
+/// Copyright (c) 2007 HDF Group
+///
+/// Copyright (c) 1999 National Center for Supercomputing Applications.
+/// 
+/// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
 #pragma implementation
@@ -50,6 +59,7 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
   int id = 0;
 
   Dim_iter p = dim_begin();
+  
   while (p != dim_end()) {
       
     int start = dimension_start(p, true);
@@ -71,10 +81,12 @@ HDF5Array::format_constraint(int *offset, int *step, int *count)
     count[id] = ((stop - start) / stride) + 1;	// count of elements
     nels *= count[id];	// total number of values for variable
 	
-    DBG(cerr <<id
-	<< ": offset=" << offset[id]
-	<< " step="    << step[id]
-	<< " count="   << count[id]
+    DBG(cerr
+	<< "=format_constraint():"
+	<< "id="      << id 
+	<< " offset=" << offset[id]
+	<< " step="   << step[id]
+	<< " count="  << count[id]
 	<< endl);
 	
     id++;
@@ -136,7 +148,7 @@ HDF5Array::read(const string & dataset)
     set_read_p(true);
     return false;
   } // if (Structure)
-
+  
   if(return_type(d_ty_id) == "Array"){
     
     DBG(cerr << "=read() Array (in Structure) of length=" << length() <<  endl);
@@ -267,14 +279,163 @@ HDF5Array::read(const string & dataset)
 
   } // if (Array)
 
+  if(return_type(d_ty_id) == "Url"){
+    hsize_t size2[d_num_dim];
+    int perm[d_num_dim];
+    int size = length();
+    int nelms = format_constraint(offset, step, count); // Throws Error.
+    string v_str[nelms];
+
+    // H5Tget_array_dims(d_ty_id, size2, perm);
+    
+    DBG(cerr << "=read() URL type is detected. "
+	<< "nelms=" << nelms
+	<< " full_size=" << d_num_elm
+	<< endl);
+
+
+    // Handle regional Reference.
+    if(H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) > 0){
+
+      hdset_reg_ref_t *rbuf = (hdset_reg_ref_t *)malloc(sizeof(hdset_reg_ref_t)*d_num_elm);
+      
+      DBG(cerr << "=read() Got regional reference. " << endl);
+      herr_t status = H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
+			      H5P_DEFAULT, rbuf);
+      hid_t did_r;
+      
+      for(i=0; i < nelms; i++){
+	// Let's assume that URL array is always 1 dimension.
+	DBG(cerr << "=read() rbuf[" << i << "]" << rbuf[offset[0] + i*step[0]] << endl);
+	if(rbuf[offset[0] + i*step[0]][0] != '\0'){
+	  char buf1[DODS_NAMELEN];
+	  char buf2[DODS_NAMELEN];
+	  
+	  did_r =  H5Rdereference(d_dset_id, H5R_DATASET_REGION, &rbuf[offset[0] + i*step[0]]);
+	  int name_size = H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
+	  DBG(cerr << "=read() dereferenced name is " << buf2 << endl);
+
+	
+	  H5Rget_name(d_dset_id, H5R_DATASET_REGION, &rbuf[0], (char*)buf1, DODS_NAMELEN);
+	  DBG(cerr << "=read() dereferenced region points to " << buf1 << endl);
+	  hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, &rbuf[offset[0] + i*step[0]]);
+	  int ndim = H5Sget_simple_extent_ndims(space_id);
+	  DBG(cerr << "=read() dim is " << ndim << endl);
+	  hsize_t start[ndim];
+	  hsize_t end[ndim];
+
+	  string expression;
+	  char strbuf2[128];
+	  char strbuf3[128];
+	  
+	  switch(H5Sget_select_type(space_id)){
+	    
+	  case H5S_SEL_NONE:
+	    DBG(cerr << "=read() None selected." << endl);
+	    break;
+	    
+	  case H5S_SEL_POINTS:
+	    DBG(cerr << "=read() Points selected." << endl);
+	    hsize_t npoints = H5Sget_select_npoints(space_id);
+	    DBG(cerr << "=read() npoints are " << npoints << endl);
+
+	    hsize_t *buf = (hsize_t *)malloc(sizeof(hsize_t)*npoints*ndim);
+	    H5Sget_select_elem_pointlist(space_id, 0, npoints, buf);
+	    
+#ifdef DODS_DEBUG	    
+	    for(j=0; j < npoints * ndim ;j++){
+	      cerr << "=read() npoints buf[0] =" <<  buf[j] << endl;
+	    }
+#endif
+	    sprintf(strbuf3, ",");
+	    for(j=0; j < npoints; j++){
+      	      expression.append(buf2); // Name of the dataset.
+	      for(k=0; k < ndim; k++){
+		sprintf(strbuf2, "[%d]", buf[j*ndim+k]); // Point indexes.
+		expression.append(strbuf2);
+	      }
+	      if(j != npoints - 1){
+		expression.append(strbuf3);
+	      }
+	    }
+	    v_str[i].append(expression);
+
+	    break;
+	    
+	  case H5S_SEL_HYPERSLABS:
+	    DBG(cerr << "=read() Slabs selected." << endl);
+	    DBG(cerr << "=read() nblock is " << H5Sget_select_hyper_nblocks(space_id) << endl);
+	  
+	    H5Sget_select_bounds(space_id, start, end);
+
+	    for(j=0; j < ndim; j++){
+	      DBG(cerr << "=read() start is " << start[j] << endl);
+	      DBG(cerr << "=read() end is " << end[j] << endl);
+
+	      sprintf(strbuf2, "[%d:", start[j]);
+	      sprintf(strbuf3, "%d]", end[j]);
+	      expression.append(strbuf2);
+	      expression.append(strbuf3);
+	      DBG(cerr << "=read() expression is " << expression << endl);
+	    }
+	    v_str[i] = buf2;
+	    if(!expression.empty()){
+	      v_str[i].append(expression);
+	    }
+	    // Constraint expression. [start:1:end]
+	    
+	    break;
+	    
+	  case H5S_SEL_ALL:
+	    DBG(cerr << "=read() All selected." << endl);
+	    break;
+	  
+	  default:
+	    DBG(cerr << "Unknown space type." << endl);
+	    break;
+	  }
+
+	
+	}
+	else{
+	  v_str[i] = "";
+	}
+      }
+    }
+    
+    // Handle object reference.
+    if(H5Tequal(d_ty_id, H5T_STD_REF_OBJ) > 0){
+      hobj_ref_t *rbuf = (hobj_ref_t *)malloc(sizeof(hobj_ref_t)*d_num_elm);
+      DBG(cerr << "=read() Got object reference. " << endl);
+      herr_t status = H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
+			      H5P_DEFAULT, rbuf);
+      for(i=0; i < nelms; i++){
+	// Let's assume that URL array is always 1 dimension.
+	hid_t did_r =  H5Rdereference(d_dset_id, H5R_OBJECT, &rbuf[offset[0] + i*step[0]]);
+	char buf2[DODS_NAMELEN];
+	int name_size = H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
+	DBG(cerr << "=read() dereferenced name is " << buf2 << endl);
+	v_str[i] = buf2;
+      }
+    }
+    
+    set_read_p(true);
+    val2buf((void*)&v_str);
+    return false;
+	
+  }
+  
   
   try {
     int nelms = format_constraint(offset, step, count); // Throws Error.
+
+    if (H5Tis_variable_str(d_ty_id) && H5Tget_class(d_ty_id) == H5T_STRING) {
+      return read_vlen_string(d_dset_id, d_ty_id, nelms, offset, step, count);
+    }
     
     if (nelms == d_num_elm) {
-      
-      data_size = d_memneed;
-      
+
+      data_size = d_memneed;      
       convbuf = new char[data_size];
 
       if (get_data(d_dset_id, (void *) convbuf, Msga) < 0) {
@@ -283,7 +444,7 @@ HDF5Array::read(const string & dataset)
 			  + Msga);
       }
 
-
+      
       if (check_h5str(d_ty_id)) {
 	string v_str[d_num_elm];
 	size_t elesize = H5Tget_size(d_ty_id);
@@ -313,7 +474,7 @@ HDF5Array::read(const string & dataset)
 	val2buf((void *) convbuf);
       }
 
-    }
+    }  // if (nelms == d_num_elm)
 
     else {
       if ((data_size = nelms * H5Tget_size(d_ty_id)) < 0) {
@@ -329,6 +490,7 @@ HDF5Array::read(const string & dataset)
 			  string("hdf5_dods server failed on getting hyperslab data.\n")
 			  + Msga);
       }
+      // Check URL
       
       if (check_h5str(d_ty_id)) {
 	string v_str[nelms];
@@ -485,4 +647,47 @@ hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
   if (H5Tset_strpad(type, pad)<0) return -1;
 
   return type;
+}
+
+bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id,
+				 int nelms, int* offset, int* step, int* count)
+{
+  DBG(cerr << "=read_vlen_string(): variable string is detected with nelms = " << nelms << endl);
+  hid_t sid = H5Dget_space(d_dset_id);
+  char *convbuf2[d_num_elm];
+  string v_str[d_num_elm];
+
+  H5Dread(d_dset_id, d_ty_id,  H5S_ALL, H5S_ALL, H5P_DEFAULT, convbuf2);
+
+  int size_max = 0;
+  for (int strindex = 0; strindex < d_num_elm; strindex++) {
+    cerr << "convbuf2[" << strindex << "]= " << convbuf2[strindex] << endl;
+    if(convbuf2[strindex] !=NULL){
+      if(strlen(convbuf2[strindex]) > size_max)
+	size_max = strlen(convbuf2[strindex]);
+    }
+  }
+
+  char *strbuf = new char[size_max + 1];
+
+  for (int strindex = 0; strindex < nelms; strindex++) {
+    bzero(strbuf, size_max);
+    // Let's assume that variable length array is 1 dimension.
+    int real_index = offset[0] + strindex * step[0];
+    if(convbuf2[real_index] !=NULL){
+      strncpy(strbuf, convbuf2[real_index], strlen(convbuf2[real_index]));
+      strbuf[size_max] = '\0';
+      v_str[strindex] = strbuf;
+      DBG(cerr << "v_str" << v_str[strindex] <<endl);
+    }
+    else{
+      strbuf[size_max] = '\0';
+      v_str[strindex] = strbuf;
+    }
+  }
+  H5Dclose(d_dset_id);
+
+  set_read_p(true);
+  val2buf((void*)&v_str);
+  return false;
 }

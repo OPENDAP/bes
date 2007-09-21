@@ -40,6 +40,8 @@
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Grid.h"
+#include "HDF5Url.h"
+
 #if 0
 #include "h5util.h"
 #endif
@@ -62,3 +64,5 @@ static const char INT_ELSE[]="Int_else";
 static const char FLOAT_ELSE[]="Float_else";
 static const char COMPOUND[]="Structure";
 static const char ARRAY[]="Array"; // <hyokyung 2007.05.17. 12:58:54>
+static const char URL[]="Url"; // <hyokyung 2007.09.11. 12:47:53>
+

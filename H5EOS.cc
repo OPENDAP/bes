@@ -1,12 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// This file is part of the hdf5 data handler for the OPeNDAP data server.
+//  This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 // Copyright (c) 2007 HDF Group, Inc.
 //
 /////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
-// #define FULL_TEST
 #include "debug.h"
 #include "H5EOS.h"
 #include <iostream>
@@ -16,6 +15,7 @@ int hdfeosparse(void *arg);
 struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
 
+//
 H5EOS::H5EOS()
 {
   valid = false;
@@ -23,7 +23,19 @@ H5EOS::H5EOS()
   point_upper = 0.0;
   point_left = 0.0;
   point_right = 0.0;
-  dimension_data = NULL;  
+  dimension_data = NULL;
+#ifdef CF
+  shared_dimension = false;
+#endif
+  bool bmetadata_Struct = false;  
+#ifdef NASA_EOS_META
+  bool bmetadata_Archived = false;
+  bool bmetadata_Core = false;
+  bool bmetadata_core = false;
+  bool bmetadata_product = false;
+  bool bmetadata_subset = false;
+#endif
+  
 }
 
 H5EOS::~H5EOS()
@@ -104,53 +116,50 @@ void H5EOS::add_dimension_map(string dimension_name, int dimension)
     dimension_map[dimension_name] =  dimension;
   }
 }
-
-
-// Check if this file is EOS file by examining metadata
+////////////////////////////////////////////////////////////////////////////////
+/// Check if this file is EOS file by examining metadata
+///
+/// \param id root group id
+/// \return 1, if it is EOS file.
+/// \return 0, if not.
+////////////////////////////////////////////////////////////////////////////////
 bool H5EOS::check_eos(hid_t id)
 {
+  size_t size_total = 0;
+  unsigned int i = 0;
+
   // Check if this file has the group called "HDFEOS INFORMATION".
   if(has_group(id, "HDFEOS INFORMATION")){
-#ifdef FULL_TEST    
-    // Check if this file has the dataset called "ArchivedMetadata".
-    if(has_dataset(id, "/HDFEOS INFORMATION/ArchivedMetadata")){
-      // Check if this file has the dataset called "CoreMetadata".
-      if(has_dataset(id, "/HDFEOS INFORMATION/CoreMetadata")){
-#endif	
-	// Check if this file has the dataset called "StructMetadata".
-	if(has_dataset(id, "/HDFEOS INFORMATION/StructMetadata.0"))
-	  {
-	    // Open the dataset.
-	    hid_t dset = H5Dopen(id, "/HDFEOS INFORMATION/StructMetadata.0");
-	    hid_t datatype, dataspace, memtype;
-	    
-	    if ((datatype = H5Dget_type(dset)) < 0) {
-              cout << "H5EOS.cc failed to obtain datatype from  dataset " << dset << endl;
-	      return false;
-	    }
-	    if ((dataspace = H5Dget_space(dset)) < 0) {
-	      cout << "H5EOS.cc failed to obtain dataspace from  dataset " <<dset << endl;
-	      return false;
-	    }
-	    size_t size = H5Tget_size(datatype);
-	    char *chr = new char[size + 1];	    
-	    H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, (void*)chr);
-	    hdfeos_scan_string(chr);
-	    hdfeosparse(this);
-	    valid = true;
-	    return valid;
-	  }
-#ifdef FULL_TEST	
-      }
+    
+    if(set_metadata(id, "StructMetadata", metadata_Struct)){
+      valid = true;
     }
-#endif    
+    else {
+      valid = false;
+    }
+	
+    if(valid){
+      hdfeos_scan_string(metadata_Struct);
+      hdfeosparse(this);
+#ifdef NASA_EOS_META
+       set_metadata(id,"coremetadata", metadata_core);
+       set_metadata(id,"CoreMetadata", metadata_Core);
+       set_metadata(id,"ArchivedMetadata", metadata_Archived);
+       set_metadata(id,"subsetMetadata", metadata_subset);
+       set_metadata(id,"productmetadata", metadata_product);       
+	      
+#endif      
+    }
+	
+    return valid;
   }
   return false; 
 }
 
-
-// Check if this class parsed the argument "name" as grid.
-// Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
+///////////////////////////////////////////////////////////////////////////////
+/// Check if this class parsed the argument "name" as grid.
+/// Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
+///////////////////////////////////////////////////////////////////////////////
 void H5EOS::get_dimensions(string name, vector<string>& tokens)
 {
   string str = full_data_path_to_dimension_list_map[name];
@@ -169,13 +178,17 @@ void H5EOS::get_dimensions(string name, vector<string>& tokens)
       pos = str.find_first_of(',', lastPos);
     } 
 }
-// Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
+///////////////////////////////////////////////////////////////////////////////
+/// Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
+///////////////////////////////////////////////////////////////////////////////
 int H5EOS::get_dimension_size(string name)
 {
   return dimension_map[name];
 }
 
-// Check if this class has parsed the argument "name" as grid.
+///////////////////////////////////////////////////////////////////////////////
+/// Check if this class has parsed the argument "name" as grid.
+///////////////////////////////////////////////////////////////////////////////
 bool H5EOS::is_grid(string name)
 {
   int i;
@@ -230,13 +243,14 @@ bool H5EOS::set_dimension_array()
       if((dim_name.find("XDim", (int)dim_name.size()-4)) != string::npos){
 	float gradient_x = (point_right - point_left) / (float)(dim_size - 1);
 	for(i=0; i < dim_size; i++){
-	  convbuf[i] = (dods_float32)(point_left + (float)i * gradient_x);
+	  convbuf[i] = (dods_float32)(point_left + (float)i * gradient_x) / 1000000.0; // <hyokyung 2007.07.26. 12:47:28>
 	}
       }
       else if((dim_name.find("YDim", (int)dim_name.size()-4)) != string::npos){    
-	float gradient_y = (point_upper - point_lower) / (float)(dim_size - 1);      
+	// float gradient_y = (point_upper - point_lower) / (float)(dim_size - 1);
+	float gradient_y = (point_lower - point_upper) / (float)(dim_size - 1);      
 	for(i=0; i< dim_size; i++){
-	  convbuf[i] = (dods_float32)(point_upper - (float)i * gradient_y);
+	  convbuf[i] = (dods_float32)(point_lower - (float)i * gradient_y) / 1000000.0; // <hyokyung 2007.07.26. 12:47:30>
 	}      
       }
       else{
@@ -277,3 +291,88 @@ string H5EOS::get_short_name(string varname)
   return varname.substr(pos+1);    
 }
 #endif
+
+#ifdef CF
+bool H5EOS::is_shared_dimension_set()
+{
+  return shared_dimension;
+}
+
+void H5EOS::set_shared_dimension()
+{
+  shared_dimension = true;
+}
+const char* H5EOS::set_grads_attribute(char* attr_name)
+{
+  string str(attr_name);
+
+  DBG(cerr << ">set_grads_attribute:" << str << endl);
+  // <hyokyung 2007.08. 2. 14:25:58>  
+  eos_to_grads_map["MissingValue"] = "missing_value";
+  eos_to_grads_map["Units"] = "units";
+  // eos_to_grads_map["Offset"] = "add_offset";
+  // eos_to_grads_map["ScaleFactor"] = "scale_factor";
+  // eos_to_grads_map["ValidRange"] = "valid_range";
+  
+  DBG(cerr << eos_to_grads_map[str] << endl);
+  if(eos_to_grads_map[str].size() > 0){
+    return eos_to_grads_map[str].c_str();
+  }
+  else{
+    return str.c_str();
+  }
+}
+
+#endif
+
+
+bool H5EOS::set_metadata(hid_t id, char* metadata_name, char* chr_all)
+{
+  bool valid = false;
+  int i = -1;
+  
+  for(i=-1; i < 10; i++){ // Assume that 10 is reasonable count of StructMetadata files
+    // Check if this file has the dataset called "StructMetadata".
+    // Open the dataset.
+    char dname[255];
+
+    if(i == -1){
+      sprintf(dname, "/HDFEOS INFORMATION/%s", metadata_name);
+    }
+    else{
+      sprintf(dname, "/HDFEOS INFORMATION/%s.%d", metadata_name, i);
+    }
+    
+    DBG(cerr << "Checking Dataset " << dname << endl);
+    
+    if(has_dataset(id, dname)){
+      hid_t dset = H5Dopen(id, dname);
+      hid_t datatype, dataspace, memtype;
+	    
+      if ((datatype = H5Dget_type(dset)) < 0) {
+	cerr << "H5EOS.cc failed to obtain datatype from  dataset " << dset << endl;
+	break;
+      }
+      if ((dataspace = H5Dget_space(dset)) < 0) {
+	cerr << "H5EOS.cc failed to obtain dataspace from  dataset " << dset << endl;
+	break;
+      }
+      size_t size = H5Tget_size(datatype);
+      char *chr = new char[size + 1];	    
+      H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, (void*)chr);
+      strcat(chr_all, chr);
+      valid = true;
+    }
+    else{
+      // The sequence can skip <metdata>.0.
+      // Forexample, "coremetadata" and then "coremetadata.1".
+      if(i > 2)
+	break;
+    }
+  }
+  
+  return valid;
+  
+}
+
+

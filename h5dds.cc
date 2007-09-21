@@ -239,6 +239,9 @@ return_type(hid_t type)
 
   case H5T_STRING:
     return STRING;
+
+  case H5T_REFERENCE:
+    return URL;
     
   case H5T_COMPOUND:
     return COMPOUND;
@@ -376,6 +379,9 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     
     break;
     
+  case H5T_REFERENCE:
+    temp_bt = factory.NewUrl(varname);
+    break;
   default:
     break;
   }
@@ -434,15 +440,21 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     (dynamic_cast < HDF5Str * >(temp_bt))->set_tid(dt_inst.type);
     (dynamic_cast < HDF5Str * >(temp_bt))->set_arrayflag(STR_NOFLAG);
     break;
+
     
   case dods_array_c:
     break;
     
+  case dods_url_c:
+     (dynamic_cast < HDF5Url * >(temp_bt))->set_did(dt_inst.dset);
+     (dynamic_cast < HDF5Url * >(temp_bt))->set_tid(dt_inst.type);
+    break;
+    
 #if 0
   case dods_url_c:
-    (dynamic_cast < HDF5Url * >(temp_bt))->set_did(dt_inst.dset);
-    (dynamic_cast < HDF5Url * >(temp_bt))->set_tid(dt_inst.type);
-
+    ((HDF5Url * )(temp_bt))->set_did(dt_inst.dset);
+    // (dynamic_cast < HDF5Url * >(temp_bt))->set_tid(dt_inst.type);
+    
   case dods_list_c:
   case dods_structure_c:
   case dods_sequence_c:
@@ -571,6 +583,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
   Part pr; // enum type (see BaseType.h line 100)
   
 
+
   
   dds_table.set_dataset_name(name_path(filename));
 
@@ -627,7 +640,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
  
     check_grid = maptogrid(dt_inst.dset,dt_inst.ndims);
     
-    if (check_grid != NotGrid) {
+    if (check_grid != NotGrid) { // It !NotGrid means it's a Grid.
+      hid_t *dimid;  
       hid_t  attr_id;
       hid_t temp_dtype;
       hid_t temp_dspace;
@@ -637,10 +651,9 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       hsize_t temp_nelm;
       char * dimname;
       char *EachDimName;
-      hid_t *dimid;
       hobj_ref_t *refbuf;
       char *buf;
-
+      
            
       gr = dds_table.get_factory()->NewGrid(varname); // using varname rather than new_name 
       // First fill the array part of the grid.
@@ -764,11 +777,108 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       
       dds_table.add_var(gr);
       delete gr;
-      if(dimname!=NULL) free(dimname);
-      if(EachDimName!=NULL) free(EachDimName);
-      if(dimid!=NULL) free(dimid);
+      if(dimname!=NULL)
+	free(dimname);
+      if(EachDimName!=NULL)
+	free(EachDimName);
+      if(dimid!=NULL)
+	free(dimid);
     }
-    
+
+    else if(has_matching_grid_dimscale(dt_inst.dset, dt_inst.ndims, dt_inst.size)){
+      
+      // Construct a grid instead of returning a simple array.
+      
+      int dim = 0;
+      
+      hid_t  attr_id;
+      hid_t *dimid = NULL;   
+      hid_t  temp_dtype;
+      hid_t  temp_dspace;
+      hid_t  memtype;
+
+      
+      hsize_t temp_nelm;
+      hsize_t temp_nelm_dim;
+
+      hvl_t*  refbuf = NULL;
+      
+      size_t temp_tsize;
+      size_t name_size;
+      
+      gr = dds_table.get_factory()->NewGrid(varname); 
+      pr = array;
+      gr->add_var(ar, pr);
+      delete ar;
+
+      attr_id = H5Aopen_name(dt_inst.dset,"DIMENSION_LIST");
+      temp_dtype  = H5Aget_type(attr_id);
+      temp_dspace = H5Aget_space(attr_id);
+      temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+      
+      refbuf = (hvl_t*)calloc((size_t)temp_nelm, sizeof(hvl_t));
+      if(H5Aread(attr_id, temp_dtype, refbuf)<0) {
+	cerr << "Cannot read object reference attributes." << endl;
+      }
+      
+      dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);    
+      for (int j = 0; j < temp_nelm; j++) {
+	dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
+      }
+      
+      char buf2[DODS_NAMELEN]; // Is there a way to know the size of dimension name in advance?
+      pr = maps;      
+      for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+	int dim_name_size = H5Iget_name(dimid[dim_index], (char*)buf2, DODS_NAMELEN);
+	DBG(cerr << "name: " << buf2 << endl);
+	// Open dataset.
+	// Is it OK to search from the current dset (i.e. dt_inst.dset) ?
+	hid_t dset_id = H5Dopen(dt_inst.dset, buf2);
+	DBG(cerr << "dataset id: " << dset_id << endl);
+	// Get the size of the array.
+	temp_dspace = H5Dget_space(dset_id);
+	temp_nelm_dim = H5Sget_simple_extent_npoints(temp_dspace);
+	DBG(cerr << "nelem = " << temp_nelm_dim << endl);
+	temp_dtype  = H5Dget_type(dset_id);
+	memtype     = H5Tget_native_type(temp_dtype,H5T_DIR_ASCEND);
+	temp_tsize  = H5Tget_size(memtype);
+	  
+	string each_dim_name(buf2);
+
+#ifdef SHORT_PATH
+	each_dim_name = get_short_name(each_dim_name);
+#endif
+	try{
+	  bt = Get_bt(each_dim_name, memtype,
+		      dynamic_cast<HDF5TypeFactory&>(*dds_table.get_factory()));
+	}
+	catch(Error& e){
+	  throw;
+	}
+
+	ar = new HDF5Array;
+	ar = dds_table.get_factory()->NewArray(each_dim_name);
+	(dynamic_cast < HDF5Array * >(ar))->set_did(dset_id);
+	(dynamic_cast < HDF5Array * >(ar))->set_tid(memtype);
+	(dynamic_cast < HDF5Array * >(ar))->set_memneed(temp_tsize*temp_nelm_dim);
+	(dynamic_cast < HDF5Array * >(ar))->set_numdim(1);
+	(dynamic_cast < HDF5Array * >(ar))->set_numelm(temp_nelm);
+	ar->add_var(bt);
+	ar->append_dim(temp_nelm_dim, each_dim_name);
+	gr->add_var(ar, pr);
+	delete ar;
+      } // for ()
+      dds_table.add_var(gr);
+      delete gr;
+
+
+      if(dimid!=NULL)
+	free(dimid);
+      if(refbuf!=NULL)
+	free(refbuf);
+
+    }
+
 #ifdef NASA_EOS_GRID
     // Check if eos class has this name as grid.
     else if(eos.is_valid() && eos.is_grid(varname)){
@@ -782,7 +892,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       
       // Next fill the map part of the grid.
       pr = maps;
-      // Retrieve the dimension lists from parsed metadata.
+      // Retrieve the dimension lists from the parsed metadata.
       vector<string> tokens;
       eos.get_dimensions(varname, tokens);
       DBG(cerr << "Number of dimensions " << dt_inst.ndims << endl);
@@ -802,28 +912,41 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #ifdef SHORT_PATH
 	str_dim_full_name = str_dim_name;
 #endif
-	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);	
+	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
 	ar = new Array(str_dim_full_name, 0);
 	ar->add_var(bt);            
 	ar->append_dim(dim_size, str_dim_full_name);
 	gr->add_var(ar, pr);
+#ifdef CF
+	// Add the shared dimension data.
+	if(!eos.is_shared_dimension_set()){
+	  bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
+	  ar = (dynamic_cast < HDF5TypeFactory * >(dds_table.get_factory()))->NewArrayEOS(str_dim_full_name, 0);
+	  ar->add_var(bt);            
+	  ar->append_dim(dim_size, str_dim_full_name);
+	  dds_table.add_var(ar);
+	}
+#endif	 	
 	delete ar;
       }
+#ifdef CF      
+      eos.set_shared_dimension();
+#endif      
       
       dds_table.add_var(gr);      
       delete gr;
-      
+
     }
-#endif    
+#endif // #ifdef  NASA_EOS_GRID
     else {// cannot be mapped to grid, it has to be an array.
-      dds_table.add_var(ar);
-      delete ar;
+	dds_table.add_var(ar);
+	delete ar;
     }
-#else
-    // Not define DODS Grid. It has to be an array. 
+#else // #ifdef DODSGRID
+    // Not define DODS Grid. It has to be an array.
     dds_table.add_var(ar);
     delete ar;
-#endif
+#endif // #ifdef DODSGRID
   }
   DBG(cerr << "<read_objects_base_type(dds)" << endl);  
 }
@@ -908,10 +1031,11 @@ read_objects(DDS & dds_table, const string & varname,
 	     const string & filename)
 {
   switch(H5Tget_class(dt_inst.type)){
+
   case H5T_COMPOUND:
     read_objects_structure(dds_table, varname, filename);
     break;
-
+    
   default:
     read_objects_base_type(dds_table, varname, filename);
     break;

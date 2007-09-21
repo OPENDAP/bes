@@ -1,63 +1,63 @@
 HTTP/1.0 200 OK
 XDODS-Server: *
-XOPeNDAP-Server: *
+XOPeNDAP-Server:*
 XDAP: *
 Date: *
 Last-Modified: *
-Content-Type: text/plain
-Content-Description: dods_das
+Content-Type: *
+Content-Description: *
 
 Attributes {
-    HDFEOS {
+    /HDFEOS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/";
     }
-    ADDITIONAL {
+    /HDFEOS/ADDITIONAL/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/";
     }
-    FILE_ATTRIBUTES {
+    /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/";
     }
-    ZAS {
+    /HDFEOS/ZAS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/";
     }
-    ZA1 {
+    /HDFEOS/ZAS/ZA1/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/";
         Int32 GlobalAttribute 1, 2, 3, 4;
         String GLOBAL_CHAR_ATTR "ABCDEF";
         Int32 GLOBAL_LONG_ATTR 1111111, 2222222, 3333333, 4444444;
         Float64 GLOBAL_DOUBLE_ATTR 1.111111, 2.2222219999999999, 3.3333330000000001, 4.4444439999999998;
     }
-    Data%20Fields {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/";
         Int32 GroupAttribute 10, 20, 30, 40;
     }
-    Count {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Count {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Count";
         Int32 _FillValue 0;
     }
-    Density {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Density {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Density";
         Float32 _FillValue 0.;
         Int32 LocalAttribute 100, 200, 300, 400;
     }
-    Presure {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Presure {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Presure";
         Float64 _FillValue 0.;
     }
-    Spectra {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Spectra {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Spectra";
         Float32 _FillValue 0.;
     }
-    Temperature {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Temperature {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Temperature";
         Float32 _FillValue 0.;
     }
-    Test_string {
+    /HDFEOS/ZAS/ZA1/Data%20Fields/Test_string {
         String HDF5_OBJ_FULLPATH "/HDFEOS/ZAS/ZA1/Data Fields/Test_string";
         Int32 ARRAYOFSTRINGS 57;
         Int32 StringLengthAttribute 72;
     }
-    HDFEOS%20INFORMATION {
+    /HDFEOS%20INFORMATION/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS INFORMATION/";
         String HDFEOSVersion "HDFEOS_5.1.10.1";
     }

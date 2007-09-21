@@ -2,7 +2,7 @@
 
 #define YYSTYPE char *
 #define YYDEBUG 1
-// #define VERBOSE
+  // #define VERBOSE
   
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,8 +79,9 @@ data: /* empty */
       | INT
       | FLOAT
        	 {
-#ifdef VERBOSE	   
-	   cout << $1 << endl;
+
+#ifdef VERBOSE
+	   cout << "data: " << $1 << "parser_state: " << parser_state << endl;	   
 #endif	   
 	    switch(parser_state){
 	     case 0:
@@ -155,7 +156,7 @@ attribute_xdim: XDIM INT
 #ifdef VERBOSE  
   cout << "XDim is:" << atoi($2) << endl;
   cout << "Full path is:" << full_path << endl;
-#endif  
+#endif
   ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi($2));
 }
 ;
@@ -165,7 +166,9 @@ attribute_ydim: YDIM INT
   // Remember the Y Dimension
 #ifdef VERBOSE  
   cout << "YDim is:" << atoi($2) << endl;
-#endif  
+#endif
+  // Reset the parser state
+  parser_state = 0;
   ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi($2));
 }
 ;
@@ -249,8 +252,6 @@ projection: PROJECTION '=' HE5_GCTP_GEO
 {
   // Set valid_projection flag to "true".
   valid_projection = true;
-  // Reset the parser state
-  parser_state = 0;
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  

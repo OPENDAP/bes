@@ -77,8 +77,9 @@ HDF5Byte::read(const string & dataset)
       if(q->is_constructor_type()){ // Grid, structure or sequence
 	if(k == 0){
 	  // Bottom level structure
-	  DBG(cerr << "my_name " << myname.c_str()  << endl);
-	  H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_INT);
+	  DBG(cerr << "=read() my_name=" << myname.c_str()  << endl);
+	  // H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_INT);
+	  H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_CHAR);
 	}
 	else{
 	  DBG(cerr << k << " parent_name=" <<  parent_name << endl);

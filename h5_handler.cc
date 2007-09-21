@@ -16,7 +16,6 @@
 const static string cgi_version = "3.0";
 extern H5EOS eos;
 
-
 /// \fn main(int argc, char *argv[])
 /// main function for HDF5 data handler.
 /// This function processes options and generates the corresponding DAP outputs requested by the user.
@@ -74,13 +73,20 @@ int main(int argc, char *argv[])
     }
 
     case DODSFilter::DDS_Response:{
-	  
+      DAS das;	  
       HDF5TypeFactory factory;
       DDS dds(&factory);
       ConstraintEvaluator ce;
 		
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
+#ifdef TRANSFER
+      find_gloattr(file1, das);
+      depth_first(file1, "/", das,
+		  df.get_dataset_name().c_str());      
+      dds.transfer_attributes(&das);
+#endif
+      
       DBG(cerr << ">df.send_dds()" << endl);				
       df.send_dds(dds, ce, true);
       break;
@@ -92,8 +98,11 @@ int main(int argc, char *argv[])
       HDF5TypeFactory factory;
       DDS dds(&factory);
       ConstraintEvaluator ce;
+      DAS das;
+		      
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
+
       df.send_data(dds, ce, stdout); 
       break;
     }

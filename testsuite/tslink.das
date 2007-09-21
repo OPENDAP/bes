@@ -1,11 +1,11 @@
 HTTP/1.0 200 OK
-XDODS-Server: *
+XDODS-Server:*
 XOPeNDAP-Server: *
 XDAP: *
 Date: *
 Last-Modified: *
-Content-Type: text/plain
-Content-Description: dods_das
+Content-Type: *
+Content-Description: *
 
 Attributes {
     HDF5_softlink1 {
