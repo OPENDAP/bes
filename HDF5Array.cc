@@ -308,16 +308,19 @@ HDF5Array::read(const string & dataset)
 	// Let's assume that URL array is always 1 dimension.
 	DBG(cerr << "=read() rbuf[" << i << "]" << rbuf[offset[0] + i*step[0]] << endl);
 	if(rbuf[offset[0] + i*step[0]][0] != '\0'){
+#ifdef  HDF_1_8_0	  
 	  char buf1[DODS_NAMELEN];
+#endif	  
 	  char buf2[DODS_NAMELEN];
 	  
 	  did_r =  H5Rdereference(d_dset_id, H5R_DATASET_REGION, &rbuf[offset[0] + i*step[0]]);
 	  int name_size = H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
 	  DBG(cerr << "=read() dereferenced name is " << buf2 << endl);
 
-	
+#ifdef  HDF_1_8_0
 	  H5Rget_name(d_dset_id, H5R_DATASET_REGION, &rbuf[0], (char*)buf1, DODS_NAMELEN);
 	  DBG(cerr << "=read() dereferenced region points to " << buf1 << endl);
+#endif	  
 	  hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, &rbuf[offset[0] + i*step[0]]);
 	  int ndim = H5Sget_simple_extent_ndims(space_id);
 	  DBG(cerr << "=read() dim is " << ndim << endl);
