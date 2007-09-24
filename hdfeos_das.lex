@@ -55,6 +55,10 @@
 #include <assert.h>
 #include "parser.h"
 
+#ifndef YY_PROTO
+#define YY_PROTO(proto) proto
+#endif
+
 #define YYSTYPE char *
 #define YY_DECL int hdfeos_daslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
