@@ -328,6 +328,8 @@ HDF5Array::read(const string & dataset)
 	  char strbuf2[128];
 	  char strbuf3[128];
 	  
+	  hsize_t npoints;
+	  hsize_t *buf;
 	  switch(H5Sget_select_type(space_id)){
 	    
 	  case H5S_SEL_NONE:
@@ -336,10 +338,10 @@ HDF5Array::read(const string & dataset)
 	    
 	  case H5S_SEL_POINTS:
 	    DBG(cerr << "=read() Points selected." << endl);
-	    hsize_t npoints = H5Sget_select_npoints(space_id);
+	    npoints = H5Sget_select_npoints(space_id);
 	    DBG(cerr << "=read() npoints are " << npoints << endl);
 
-	    hsize_t *buf = (hsize_t *)malloc(sizeof(hsize_t)*npoints*ndim);
+	    buf = (hsize_t *)malloc(sizeof(hsize_t)*npoints*ndim);
 	    H5Sget_select_elem_pointlist(space_id, 0, npoints, buf);
 	    
 #ifdef DODS_DEBUG	    

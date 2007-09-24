@@ -14,6 +14,7 @@
 #endif
 
 #include <H5Ipublic.h>
+#include <H5Rpublic.h>
 
 #include "Array.h"
 /*
