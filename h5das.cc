@@ -136,14 +136,18 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
     case H5G_GROUP:{
       DBG(cerr << "=depth_first():H5G_GROUP " << oname << endl);
+
+      add_group_structure_info(das, gname, oname, true);
+      
       string full_path_name = string(gname) + string(oname) + "/";
       char *t_fpn = new char[full_path_name.length() + 1];
       strcpy(t_fpn, full_path_name.c_str());
       
       hid_t cgroup = H5Gopen(pid,t_fpn);
+      
       if (cgroup < 0) {
 	string msg =
-	  "h5_das handler: open hdf5 group  wrong for ";
+	  "h5_das handler: opening hdf5 group failed for ";
 	msg += t_fpn;
 	msg += string("\n") + string(Msgt);
 	delete[]t_fpn;
@@ -186,6 +190,9 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
     case H5G_DATASET:{
       DBG(cerr << "=depth_first():H5G_DATASET " << oname << endl);
+
+      add_group_structure_info(das, gname, oname, false);
+      
       string full_path_name = string(gname) + string(oname);
 
       char *t_fpn = new char[full_path_name.length() + 1];
@@ -986,9 +993,13 @@ find_gloattr(hid_t file, DAS & das)
 #ifdef CF
   add_dimension_attributes(das);
 #endif  
-  
-  root = H5Gopen(file, "/");
 
+
+  root = H5Gopen(file, "/");
+  
+  // <hyokyung 2007.09.27. 12:09:40>  
+  das.add_table("HDF5_ROOT_GROUP", new AttrTable);
+  
   if (root < 0) {
     string msg = "unable to open HDF5 root group";
     throw InternalErr(__FILE__, __LINE__, msg);
@@ -1222,6 +1233,47 @@ read_comments(DAS & das, const string & varname, hid_t oid)
   }    
 }
 
+void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group)
+{
+
+  string search("/");
+  string replace(".");
+  string::size_type pos = 1;
+  
+  string full_path = string(gname);
+  // Cut the last '/'.
+  while ( (pos = full_path.find(search, pos)) != string::npos ) {
+    full_path.replace( pos, search.size(), replace );
+    pos++;
+  }
+  if(strcmp(gname, "/") == 0){
+    full_path.replace(0, 1, "HDF5_ROOT_GROUP");
+  }
+  else{
+    full_path.replace(0, 1, "HDF5_ROOT_GROUP.");
+    full_path = full_path.substr(0, full_path.length()-1);
+  }
+  
+  DBG(cerr << full_path << endl);
+
+  AttrTable *at = das.get_table(full_path);
+  
+
+  
+  if(is_group) {
+    at->append_container(oname);  
+  }
+  else{
+    unsigned int str_size = strlen(oname);    
+    char* rep = new char[str_size+3];    
+    sprintf(rep, "\"%s\"", oname);
+    rep[str_size+2] = '\0';
+    
+    at->append_attr("Dataset", "String", rep);
+  }
+
+}
+  
 #ifdef CF
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn add_dimension_attributes(DAS & das)

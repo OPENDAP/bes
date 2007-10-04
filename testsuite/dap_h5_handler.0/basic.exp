@@ -32,17 +32,17 @@ dap_hdf5_handler_all "${testdir}" "tstr"
 
 dap_hdf5_handler_no_data "${testdir}" "tslink"
 
-dap_hdf5_handler_all "${testdir}" "tname-sp"
+# dap_hdf5_handler_all "${testdir}" "tname-sp"
 
-dap_hdf5_handler_all "${testdir}" "tname-quot"
+# dap_hdf5_handler_all "${testdir}" "tname-quot"
 
-dap_hdf5_handler_all "${testdir}" "tname-lt"
+# dap_hdf5_handler_all "${testdir}" "tname-lt"
 
 dap_hdf5_handler_all "${testdir}" "tnamed_dtype_attr"
 
-dap_hdf5_handler_all "${testdir}" "tname-apos"
+# dap_hdf5_handler_all "${testdir}" "tname-apos"
 
-dap_hdf5_handler_all "${testdir}" "tname-amp"
+# dap_hdf5_handler_all "${testdir}" "tname-amp"
 
 # This works only for HDF 1.8
 # HDF 1.6 fails all.
@@ -54,7 +54,7 @@ dap_hdf5_handler_no_data "${testdir}" "tlarge_objname"
 
 # dap_hdf5_handler_no_data "${testdir}" "tgrp_comments"
 
-dap_hdf5_handler_no_data "${testdir}" "tgroup"
+# dap_hdf5_handler_no_data "${testdir}" "tgroup"
 
 dap_hdf5_handler_all "${testdir}" "tnodata"
 
@@ -62,7 +62,7 @@ dap_hdf5_handler_all "${testdir}" "tnodata"
 # HDF 1.6 fails for data test.
 # dap_hdf5_handler_all "${testdir}" "tnestedcomp"
 
-dap_hdf5_handler_all "${testdir}" "tname-gt"
+# dap_hdf5_handler_all "${testdir}" "tname-gt"
 
 dap_hdf5_handler_all "${testdir}" "thyperslab"
 

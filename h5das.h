@@ -23,7 +23,7 @@
 using std::string;
 
 #include "DAS.h"
-
+void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group);
 bool depth_first( hid_t , char *, DAS &, const char * );
 bool find_gloattr( hid_t file, DAS &das );
 int  get_hardlink( hid_t, const string &);

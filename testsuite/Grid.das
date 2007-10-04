@@ -1,13 +1,40 @@
 HTTP/1.0 200 OK
-XDODS-Server: *
-XOPeNDAP-Server: *
-XDAP: *
+XDODS-Server: 3.0
+XOPeNDAP-Server: 3.0
+XDAP: 3.1
 Date: *
 Last-Modified: *
 Content-Type: text/plain
 Content-Description: dods_das
 
 Attributes {
+    HDF5_ROOT_GROUP {
+        HDFEOS {
+            ADDITIONAL {
+                FILE_ATTRIBUTES {
+                }
+            }
+            GRIDS {
+                GEOGrid {
+                    Data%20Fields {
+                    }
+                }
+                PolarGrid {
+                    Data%20Fields {
+                        String Dataset "Pressure", "Temperature";
+                    }
+                }
+                UTMGrid {
+                    Data%20Fields {
+                        String Dataset "Vegetation";
+                    }
+                }
+            }
+        }
+        HDFEOS%20INFORMATION {
+            String Dataset "StructMetadata.0";
+        }
+    }
     /HDFEOS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/";
     }

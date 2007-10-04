@@ -1,13 +1,34 @@
 HTTP/1.0 200 OK
-XDODS-Server: *
-XOPeNDAP-Server: *
-XDAP: *
+XDODS-Server: 3.0
+XOPeNDAP-Server: 3.0
+XDAP: 3.1
 Date: *
 Last-Modified: *
-Content-Type: *
-Content-Description: *
+Content-Type: text/plain
+Content-Description: dods_das
 
 Attributes {
+    HDF5_ROOT_GROUP {
+        HDFEOS {
+            ADDITIONAL {
+                FILE_ATTRIBUTES {
+                }
+            }
+            POINTS {
+                OMI%20L2G%20Test {
+                    Data {
+                        String Dataset "Measurements", "Stations";
+                    }
+                    Linkage {
+                        String Dataset "BCKPOINTER:1->0", "FWDPOINTER:0->1";
+                    }
+                }
+            }
+        }
+        HDFEOS%20INFORMATION {
+            String Dataset "StructMetadata.0";
+        }
+    }
     /HDFEOS/ {
         String HDF5_OBJ_FULLPATH "/HDFEOS/";
     }
