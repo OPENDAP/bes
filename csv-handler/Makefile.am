@@ -11,44 +11,53 @@ ACLOCAL_AMFLAGS = -I conf
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcsv_module.la
+dist_bin_SCRIPTS = bes-csv-data.sh
 
-nobase_sysconf_DATA = bes.conf
-
-CSV_SRCS:=
-
-CSV_HDRS:=
-
-BES_SRCS = \
+CSV_SRCS = \
 		CSVModule.cc CSVRequestHandler.cc \
 		CSV_Data.cc CSV_Header.cc CSV_Obj.cc CSV_Reader.cc \
 		CSVDAS.cc CSVDDS.cc
 
-BES_HDRS = \
+CSV_HDRS = \
 		CSVModule.h CSVRequestHandler.h \
 		CSVResponseNames.h \
 		config_csv.h \
 		CSVDAS.h CSVDDS.h CSV_Data.h CSV_Field.h \
 		CSV_Header.h CSV_Obj.h CSV_Reader.h
 
-libcsv_module_la_SOURCES = $(CSV_SRCS) $(BES_SRCS) $(CSV_HDRS) $(BES_HDRS)
+libcsv_module_la_SOURCES = $(CSV_SRCS) $(CSV_HDRS)
 libcsv_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libcsv_module_la_LDFLAGS = -avoid-version -module 
 libcsv_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING csv_handler.spec
+EXTRA_DIST = COPYRIGHT COPYING csv_handler.spec bes-csv-data.sh.in
 
-CLEANFILES = *~
+CLEANFILES = *~ bes-csv-data.sh
 
-bes.conf: bes.conf.in ../config.status
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]BES_MODULE_DIR[@]%${BES_MODULE_DIR}%" \
-		-e "s%[@]BES_HELP_DIR[@]%${BES_HELP_DIR}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
+sample_datadir = $(datadir)/hyrax/data/csv
+sample_data_DATA = data/temperature.csv
+
+do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+		   	   -e 's,[@]libdir[@],$(libdir),g' \
+		   	   -e 's,[@]datadir[@],$(datadir),g'
+
+bes-csv-data.sh: bes-csv-data.sh.in config.status
+	$(do_subst) < $(srcdir)/bes-csv-data.sh.in > bes-csv-data.sh
+	chmod +x bes-csv-data.sh
+
+# This makes sure that the handler modifies the bes which configure found
+# even when distcheck is run.
+bes-conf: bes-csv-data.sh
+	(bes_prefix=`bes-config --prefix` ; \
+	if test "$$bes_prefix" = "/usr" ; \
+	 then \
+	    ./bes-csv-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
+	else \
+	    ./bes-csv-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
+	fi)
+
 ###########################################################################
 
 # Build linux RPMs

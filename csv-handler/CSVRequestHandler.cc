@@ -163,16 +163,17 @@ bool
 CSVRequestHandler::csv_build_help( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
-    BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    BESInfo *info =
+	dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
 
-    info->add_data( (string)PACKAGE_NAME + " help: " + PACKAGE_VERSION + "\n" );
-
-    string key ;
-    if( dhi.transmit_protocol == "HTTP" )
-	key = (string)"CSV.Help." + dhi.transmit_protocol ;
-    else
-	key = "CSV.Help.TXT" ;
-    info->add_data_from_file( key, CSV_NAME ) ;
+    info->begin_tag("Handler");
+    info->add_tag("name", PACKAGE_NAME);
+    string handles = (string) DAS_RESPONSE
+        + "," + DDS_RESPONSE
+        + "," + DATA_RESPONSE + "," + HELP_RESPONSE + "," + VERS_RESPONSE;
+    info->add_tag("handles", handles);
+    info->add_tag("version", PACKAGE_STRING);
+    info->end_tag("Handler");
 
     return ret ;
 }
