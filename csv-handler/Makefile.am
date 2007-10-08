@@ -21,7 +21,6 @@ CSV_SRCS = \
 CSV_HDRS = \
 		CSVModule.h CSVRequestHandler.h \
 		CSVResponseNames.h \
-		config_csv.h \
 		CSVDAS.h CSVDDS.h CSV_Data.h CSV_Field.h \
 		CSV_Header.h CSV_Obj.h CSV_Reader.h
 
@@ -32,7 +31,7 @@ libcsv_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING csv_handler.spec bes-csv-data.sh.in
+EXTRA_DIST = data COPYRIGHT COPYING csv_handler.spec bes-csv-data.sh.in
 
 CLEANFILES = *~ bes-csv-data.sh
 

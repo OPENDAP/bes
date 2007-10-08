@@ -3,7 +3,7 @@
 # Configure script for OPeNDAP CSV data handler
 
 AC_PREREQ(2.59)
-AC_INIT([csv_module], [1.0.0], [dods-tech@unidata.ucar.edu])
+AC_INIT([csv_module], [3.5.1], [dods-tech@unidata.ucar.edu])
 AC_CONFIG_AUX_DIR([conf])
 
 AM_INIT_AUTOMAKE
