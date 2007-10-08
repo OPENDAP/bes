@@ -43,8 +43,24 @@ CSV_Data::CSV_Data() {
 }
 
 CSV_Data::~CSV_Data() {
-  if(initialized)
-    delete data;
+  if(initialized) {
+    if(type.compare(string(STRING)) == 0) {
+      delete (vector<string> *)data;
+      initialized = false;
+    } else if(type.compare(string(FLOAT32)) == 0) {
+      delete (vector<float> *)data;
+      initialized = false;
+    } else if(type.compare(string(FLOAT64)) == 0) {
+      delete (vector<double> *)data;
+      initialized = false;
+    } else if(type.compare(string(INT16)) == 0) {
+      delete (vector<short> *)data;
+      initialized = false;
+    } else if(type.compare(string(INT32)) == 0) {
+      delete (vector<int> *)data;
+      initialized = false;
+    }
+  }
 }
 
 void CSV_Data::insert(CSV_Field* field, void* value) {
