@@ -68,8 +68,8 @@ BESCatalogDirectory::~BESCatalogDirectory( )
 
 bool
 BESCatalogDirectory::show_catalog( const string &node,
-                                const string &coi,
-				BESInfo *info )
+                                   const string &coi,
+				   BESInfo *info )
 {
     // remove any trailing slash
     string fullnode = node ;

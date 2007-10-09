@@ -44,6 +44,26 @@ using std::string ;
 class BESCatalog ;
 class BESInfo ;
 
+/** @brief List of all registered catalogs
+ *
+ * BESCatalog objecgts can be registered with this list. The BES
+ * allows for multiple catalogs. Most installations will have a 
+ * single catalog registered.
+ *
+ * Catalogs have a uniq name
+ *
+ * If there is only one catalog then the display of the root will
+ * be the display of that catalogs root.
+ *
+ * If there are more than one catalogs registered then the view of
+ * the root will display the list of catalogs registered. To view
+ * the contents of a specific catalog begin each container name with
+ * the name of the catalog followed by a colon.
+ *
+ * show catalog for "cedar_catalog:/instrument/5340/year/2004/";
+ *
+ * @see BESCatalog
+ */
 class BESCatalogList : public BESObj
 {
 private:

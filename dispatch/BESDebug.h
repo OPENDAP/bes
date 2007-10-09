@@ -127,7 +127,11 @@ public:
 				    if( i != _debug_map.end() )
 					return (*i).second ;
 				    else
-					return false ;
+					i = _debug_map.find( "all" ) ;
+					if( i != _debug_map.end() )
+					    return (*i).second ;
+					else
+					    return false ;
 				}
     /** @brief return the debug stream
      *

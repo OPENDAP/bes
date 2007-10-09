@@ -38,6 +38,10 @@
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
 
+/** @brief list destructor deletes all registered catalogs
+ *
+ * @see BESCatalog
+ */
 BESCatalogList::~BESCatalogList()
 {
     catalog_iter i = _catalogs.begin() ;
@@ -49,14 +53,24 @@ BESCatalogList::~BESCatalogList()
     }
 }
 
-bool BESCatalogList::add_catalog(BESCatalog * catalog)
+/** @brief adds the speciifed catalog to the list
+ *
+ * @param catalog new catalog to add to the list
+ * @return false if a catalog with the given catalog's name
+ * already exists. Returns true otherwise.
+ * @see BESCatalog
+ */
+bool
+BESCatalogList::add_catalog(BESCatalog * catalog)
 {
     bool stat = false;
     if (find_catalog(catalog->get_catalog_name()) == 0) {
 #if 0
         _catalogs[catalog->get_catalog_name()] = catalog;
 #endif
-        std::pair<const std::string, BESCatalog*> p = std::make_pair("test", catalog);
+	string name = catalog->get_catalog_name() ;
+        std::pair<const std::string, BESCatalog*> p =
+	    std::make_pair( name, catalog ) ;
         stat = _catalogs.insert(p).second;
 #if 0
         stat = true;
@@ -65,6 +79,15 @@ bool BESCatalogList::add_catalog(BESCatalog * catalog)
     return stat;
 }
 
+/** @brief remove from the list and delete the specified catalog
+ *
+ * Search the list for the catalog with the given name. If the
+ * catalog exists, remove it from the list and delete it.
+ *
+ * @param catalog_name name of the catalog to delete
+ * @return true if successfully removed and deleted, false otherwise
+ * @see BESCatalog
+ */
 bool
 BESCatalogList::del_catalog( const string &catalog_name )
 {
@@ -77,10 +100,17 @@ BESCatalogList::del_catalog( const string &catalog_name )
 	cat = (*i).second;
 	_catalogs.erase( i ) ;
 	delete cat ;
+	ret = true ;
     }
     return ret ;
 }
 
+/** @brief find the catalog in the list with the specified name
+ *
+ * @param catalog_name name of the catalog to find
+ * @return a BESCatalog with the given name if found, 0 otherwise
+ * @see BESCatalog
+ */
 BESCatalog *
 BESCatalogList::find_catalog( const string &catalog_name )
 {
@@ -94,18 +124,103 @@ BESCatalogList::find_catalog( const string &catalog_name )
     return ret ;
 }
 
+/** @brief show the contents of the catalog given the specified container
+ *
+ * This method adds information about the specified container to the
+ * informational object specified.
+ *
+ * If there is only one catalog registered then the container is a node
+ * within that one catalog.
+ *
+ * if there are more than one catalog registered then then:
+ * - if the specified container is empty, display the list of catalogs.
+ *   tag attributes include "catalogRoot".
+ * - if not empty then the specified container must begin with the name
+ *   of the catalog followed by a colon. The remainder of the container
+ *   specified is the node within that catalog.
+ *
+ * If coi is catalog then if the specified container is a collection
+ * then display the elements in the collection. If coi is info then
+ * display information about only the specified container and not
+ * its contents if a collection.
+ *
+ * @param container node to display, empty means root
+ * @param coi is the request to include collections or just the specified
+ * container
+ * @param info informational object to add information to
+ * @throws BESHandlerException if more than one catalog and no catalog
+ * specified; if the specified catalog does not exist; if the container
+ * within the catalog does not exist.
+ */
 void
 BESCatalogList::show_catalog( const string &container,
-			   const string &coi,
-			   BESInfo *info )
+			      const string &coi,
+			      BESInfo *info )
 {
-    catalog_citer i = _catalogs.begin() ;
-    catalog_citer e = _catalogs.end() ;
     bool done = false ;
-    for( ; i != e && done == false; i++ )
+    // if there is only one catalog then go to it to show the catalog
+    if( _catalogs.size() == 1 )
     {
+	catalog_citer i = _catalogs.begin() ;
 	BESCatalog *catalog = (*i).second ;
 	done = catalog->show_catalog( container, coi, info ) ;
+    }
+    else if( _catalogs.size() != 0 )
+    {
+	// This means there are more than one catalog. If the specified container
+	// is empty then display the names of the catalogs
+	if( container.empty() )
+	{
+	    map<string,string> a1 ;
+	    a1["thredds_collection"] = "\"true\"" ;
+	    a1["isData"] = "\"false\"" ;
+	    info->begin_tag( "dataset", &a1 ) ;
+	    info->add_tag( "name", "/" ) ;
+
+	    a1["catalogRoot"] = "\"true\"" ;
+	    catalog_citer i = _catalogs.begin() ;
+	    catalog_citer e = _catalogs.end() ;
+	    for( ; i != e; i++ )
+	    {
+		string name = (*i).first ;
+		BESCatalog *catalog = (*i).second ;
+		info->begin_tag( "dataset", &a1 ) ;
+		info->add_tag( "name", name ) ;
+		info->end_tag( "dataset" ) ;
+	    }
+
+	    info->end_tag( "dataset" ) ;
+
+	    done = true ;
+	}
+	else
+	{
+	    // if a container is specified then the name of the catalog
+	    // comes first, followed by a colon. If no colon, then no
+	    // catalog specified, which means error
+	    string::size_type colon = container.find( ":" ) ;
+	    if( colon == string::npos )
+	    {
+		string serr = "Multiple catalogs present but none specified in request" ;
+		throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
+	    }
+	    else
+	    {
+		// there is a colon. The name is the part before the colon.
+		string name = container.substr( 0, colon ) ;
+		string rest = container.substr( colon+1, container.length() - colon ) ;
+		BESCatalog *catalog = _catalogs[ name ] ;
+		if( catalog )
+		{
+		    done = catalog->show_catalog( rest, coi, info ) ;
+		}
+		else
+		{
+		    string serr = "The catalog " + name + " does not exist." ;
+		    throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
+		}
+	    }
+	}
     }
     if( done == false )
     {
@@ -120,10 +235,11 @@ BESCatalogList::show_catalog( const string &container,
 	    serr = "Unable to find catalog information for root" ;
 	}
 	throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
-	//info->add_exception( "Error", serr, __FILE__, __LINE__ ) ;
     }
 }
 
+/** @brief returns the singleton BESCatalogList instance
+ */
 BESCatalogList *
 BESCatalogList::TheCatalogList()
 {
@@ -136,8 +252,8 @@ BESCatalogList::TheCatalogList()
 
 /** @brief dumps information about this object
  *
- * Displays the pointer value of this instance along with the catalog entries
- * in this list.
+ * Displays the pointer value of this instance along with the catalogs
+ * registered in this list.
  *
  * @param strm C++ i/o stream to dump the information to
  */
