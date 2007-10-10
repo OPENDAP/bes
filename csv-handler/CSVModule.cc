@@ -71,7 +71,7 @@ CSVModule::initialize( const string &modname )
     BESDEBUG( "csv", "    adding csv debug context" << endl )
     BESDebug::Register( "csv" ) ;
 
-    BESDEBUG( "csv", "Initializing CSV Handler " << modname << endl )
+    BESDEBUG( "csv", "Done Initializing CSV Handler " << modname << endl )
 }
 
 void
