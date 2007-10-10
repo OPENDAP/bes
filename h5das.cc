@@ -136,8 +136,9 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
     case H5G_GROUP:{
       DBG(cerr << "=depth_first():H5G_GROUP " << oname << endl);
-
+#ifndef CF
       add_group_structure_info(das, gname, oname, true);
+#endif
       
       string full_path_name = string(gname) + string(oname) + "/";
       char *t_fpn = new char[full_path_name.length() + 1];
@@ -190,9 +191,9 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 
     case H5G_DATASET:{
       DBG(cerr << "=depth_first():H5G_DATASET " << oname << endl);
-
+#ifndef CF
       add_group_structure_info(das, gname, oname, false);
-      
+#endif      
       string full_path_name = string(gname) + string(oname);
 
       char *t_fpn = new char[full_path_name.length() + 1];
@@ -996,10 +997,10 @@ find_gloattr(hid_t file, DAS & das)
 
 
   root = H5Gopen(file, "/");
-  
+#ifndef CF
   // <hyokyung 2007.09.27. 12:09:40>  
   das.add_table("HDF5_ROOT_GROUP", new AttrTable);
-  
+#endif  
   if (root < 0) {
     string msg = "unable to open HDF5 root group";
     throw InternalErr(__FILE__, __LINE__, msg);
@@ -1288,18 +1289,18 @@ void add_dimension_attributes(DAS & das)
   DBG(cerr << ">add_dimension_attributes()" << endl);
   AttrTable *at;
 
-//   at = das.add_table("NC_GLOBAL", new AttrTable);
-//   at->append_attr("title", STRING, "\"Test\"");
-//   at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
-//   at->append_attr("dataType", STRING, "\"Grid\"");
+   at = das.add_table("NC_GLOBAL", new AttrTable);
+   at->append_attr("title", STRING, "\"Test\"");
+   at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
+   at->append_attr("dataType", STRING, "\"Grid\"");
 
-//   at = das.add_table("XDim", new AttrTable);
-//   at->append_attr("units", STRING, "\"degrees_east\"");
-//   at->append_attr("grads_mapping", STRING, "\"linear\"");
+   at = das.add_table("XDim", new AttrTable);
+   at->append_attr("units", STRING, "\"degrees_east\"");
+   at->append_attr("grads_mapping", STRING, "\"linear\"");
   
-//   at = das.add_table("YDim", new AttrTable);
-//   at->append_attr("units", STRING, "\"degrees_north\"");
-//   at->append_attr("grads_mapping", STRING, "\"linear\"");
+   at = das.add_table("YDim", new AttrTable);
+   at->append_attr("units", STRING, "\"degrees_north\"");
+   at->append_attr("grads_mapping", STRING, "\"linear\"");
 
 //   at = das.add_table("ZDim", new AttrTable);
 //   at->append_attr("units", STRING, "\"milibar\"");
