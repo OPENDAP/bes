@@ -28,12 +28,24 @@ DEFAULT_RESPONSE="das dds data"
 RESPONSE_TYPES=
 echo "Enter response types handled by this server (das dds data):"
 echo "(space separated , help and version are added for you, no need to include them here)"
+echo "(enter none if not implementing any data responses)"
 read responseTypes
 if [ "$responseTypes" = "" ]
 then
     RESPONSE_TYPES=${DEFAULT_RESPONSE}
 else
-    RESPONSE_TYPES=${responseTypes}
+    if [ "$responseTypes" != "none" ]
+    then
+	RESPONSE_TYPES=${responseTypes}
+    fi
+fi
+
+NEW_COMMANDS=
+echo "Enter new commands you are implementing:"
+read newCommands
+if [ "$newCommands" != "" ]
+then
+    NEW_COMMANDS=${newCommands}
 fi
 
 for i in RequestHandler.cc RequestHandler.h ResponseNames.h
@@ -91,9 +103,11 @@ done
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf
 
-for i in $RESPONSE_TYPES
-do
-    ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
+if [ "${RESPONSE_TYPES}" != "" ]
+then
+    for i in $RESPONSE_TYPES
+    do
+	ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
 1
 /${serverType}_build_vers
 -1
@@ -103,41 +117,41 @@ a
 w
 q
 EOF
-    responseName=
-    if [ "$i" = "das" ]
-    then
-	responseName="DAS"
-	headerFile="BESDASResponse.h"
-	castLine1="BESResponseObject *response ="
-	castLine2="dhi.response_handler->get_response_object();"
-	castLine3="BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);"
-	castLine4="DAS *das = bdas->get_das();"
-    elif [ "$i" = "dds" ]
-    then
-	responseName="DDS"
-	headerFile="BESDDSResponse.h"
-	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
-	castLine1="BESResponseObject *response ="
-	castLine2="dhi.response_handler->get_response_object();"
-	castLine3="BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);"
-	castLine4="DDS *dds = bdds->get_dds();"
-    elif [ "$i" = "data" ]
-    then
-	responseName="DATA"
-	headerFile="BESDataDDSResponse.h"
-	castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
-	castLine1="BESResponseObject *response ="
-	castLine2="dhi.response_handler->get_response_object();"
-	castLine3="BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);"
-	castLine4="DataDDS *dds = bdds->get_dds();"
-    else
-	responseName="$i"
-	headerFile=
-	castLine1="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
-	castLine2=""
-	castLine3=""
-	castLine4=""
-	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
+	responseName=
+	if [ "$i" = "das" ]
+	then
+	    responseName="DAS"
+	    headerFile="BESDASResponse.h"
+	    castLine1="BESResponseObject *response ="
+	    castLine2="dhi.response_handler->get_response_object();"
+	    castLine3="BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);"
+	    castLine4="DAS *das = bdas->get_das();"
+	elif [ "$i" = "dds" ]
+	then
+	    responseName="DDS"
+	    headerFile="BESDDSResponse.h"
+	    castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+	    castLine1="BESResponseObject *response ="
+	    castLine2="dhi.response_handler->get_response_object();"
+	    castLine3="BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);"
+	    castLine4="DDS *dds = bdds->get_dds();"
+	elif [ "$i" = "data" ]
+	then
+	    responseName="DATA"
+	    headerFile="BESDataDDSResponse.h"
+	    castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
+	    castLine1="BESResponseObject *response ="
+	    castLine2="dhi.response_handler->get_response_object();"
+	    castLine3="BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);"
+	    castLine4="DataDDS *dds = bdds->get_dds();"
+	else
+	    responseName="$i"
+	    headerFile=
+	    castLine1="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
+	    castLine2=""
+	    castLine3=""
+	    castLine4=""
+	    ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
 a
     #define ${i}_RESPONSE "${i}"
@@ -145,7 +159,7 @@ a
 w
 q
 EOF
-	ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
+	    ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
 /${classPrefix}ResponseNames
 a
 #include "${classPrefix}${i}ResponseHandler.h"
@@ -177,20 +191,20 @@ w
 q
 EOF
 
-    /bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
-    ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
+	ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
 ,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
 w
 q
 EOF
-    /bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
-    ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
+	ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
 ,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
 w
 q
 EOF
 
-    ed ./Makefile.am << EOF > /dev/null 2>&1
+	ed ./Makefile.am << EOF > /dev/null 2>&1
 /^BES_SRCS
 a
 	${classPrefix}${i}ResponseHandler.cc \\
@@ -203,11 +217,11 @@ w
 q
 EOF
 
-    fi
+	fi
 
-    if [ "$headerFile" != "" ]
-    then
-	ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+	if [ "$headerFile" != "" ]
+	then
+	    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
 1
 /BESTextInfo
 a
@@ -216,8 +230,8 @@ a
 w
 q
 EOF
-    fi
-    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+	fi
+	ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
 1
 /VERS_RESPONSE
 -1
@@ -247,7 +261,137 @@ w
 q
 EOF
 
-done
+    done
+fi
+
+if [ "${NEW_COMMANDS}" != "" ]
+then
+    for i in ${NEW_COMMANDS}
+    do
+	/bin/cp ${TEMPLATE_DIR}/Command.h ./${classPrefix}${i}Command.h
+	ed ./${classPrefix}${i}Command.h << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_COMMAND/${i}/g
+w
+q
+EOF
+
+	/bin/cp ${TEMPLATE_DIR}/Command.cc ./${classPrefix}${i}Command.cc
+	ed ./${classPrefix}${i}Command.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_CLASS/${classPrefix}/g
+,s/OPENDAP_COMMAND/${i}/g
+w
+q
+EOF
+
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
+	ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+w
+q
+EOF
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
+	ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+w
+q
+EOF
+
+	ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
+/${classPrefix}ResponseNames
+a
+#include "${classPrefix}${i}ResponseHandler.h"
+#include "${classPrefix}${i}Command.h"
+.
+/INIT_END
+-1
+a
+    BESDEBUG( modname, "    adding " << ${i}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+
+    cmd_name = ${i}_RESPONSE ;
+    BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
+    BESCommand *${i}_cmd = new ${classPrefix}${i}Command( ${i}_RESPONSE ) ;
+    BESCommand::add_command( cmd_name, ${i}_cmd ) ;
+
+.
+w
+/TERM_END
+-1
+a
+    BESDEBUG( modname, "    removing " << ${i}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->remove_handler( ${i}_RESPONSE ) ;
+
+    cmd_name = ${i}_RESPONSE ;
+    BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
+    BESCommand::del_command( cmd_name ) ;
+
+.
+w
+q
+EOF
+
+	ed ${classPrefix}RequestHandler.h << EOF > /dev/null 2>&1
+1
+/${serverType}_build_vers
+-1
+a
+    static bool		${serverType}_build_${i}( BESDataHandlerInterface &dhi ) ;
+.
+w
+q
+EOF
+
+	ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+1
+/VERS_RESPONSE
+-1
+a
+    add_handler( ${i}_RESPONSE, ${classPrefix}RequestHandler::${serverType}_build_${i} ) ;
+.
+1
+/::${serverType}_build_vers(
+-2
+a
+bool
+${classPrefix}RequestHandler::${serverType}_build_${i}( BESDataHandlerInterface &dhi )
+{
+    bool ret = true ;
+
+    // Your code goes here
+
+    return ret ;
+}
+
+.
+w
+q
+EOF
+
+	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
+/${classPrefix}_NAME
+a
+    #define ${i}_RESPONSE "${i}"
+.
+w
+q
+EOF
+
+	ed ./Makefile.am << EOF > /dev/null 2>&1
+/^BES_SRCS
+a
+	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}Command.cc \\
+.
+/^BES_HDRS
+a
+	${classPrefix}${i}ResponseHandler.h ${classPrefix}${i}Command.h \\
+.
+w
+q
+EOF
+
+    done
+fi
 
 /bin/cp ${TEMPLATE_DIR}/bes.conf ./bes.conf
 ed ./bes.conf << EOF > /dev/null 2>&1
