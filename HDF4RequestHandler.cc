@@ -103,6 +103,10 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
 	string accessed = dhi.container->access();
         read_das(*das, _cachedir, accessed);
     }
+    catch( BESException &e )
+    {
+	throw e ;
+    }
     catch(dhdferr & d) {
 	string err = "hdf4 handler: " + d.errmsg() ;
 	throw BESDapHandlerException( err, d.file(), d.line(), unknown_error ) ;
@@ -145,6 +149,10 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+    }
+    catch( BESException &e )
+    {
+	throw e ;
     }
     catch(dhdferr & d) {
 	string err = "hdf4 handler: " + d.errmsg() ;
@@ -194,6 +202,10 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
         dds->set_factory(NULL);
         delete factory;
 #endif
+    }
+    catch( BESException &e )
+    {
+	throw e ;
     }
     catch(dhdferr & d) {
 	string err = "hdf4 handler: " + d.errmsg() ;
