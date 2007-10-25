@@ -15,24 +15,15 @@ cmd=$1;
 shift
 BES_PARAMS="$*"
 
-
-BES=/usr/local/bin/besctl
-TOMCAT_START=$CATALINA_HOME/bin/startup.sh
-TOMCAT_STOP=$CATALINA_HOME/bin/shutdown.sh
-
-# Set up the CATALINA_PID environment variable so that the Tomcat startup
-# and shutdown scripts keep track of which process is really Tomcat.
-
-if [ -z $CATALINA_PID ]
-then 
-    CATALINA_PID=$CATALINA_HOME/logs/catalina.pid
-    # Must be exported for use by the Tomcat startup/shutdown scripts.
-    export CATALINA_PID 
+prefix=@prefix@
+if [ "$prefix" == "NONE" ]
+then
+    prefix=/usr/local
 fi
 
-
-
-
+exec_prefix=@exec_prefix@
+localstatedir=@localstatedir@
+bindir=@bindir@
 
 ###########################################################################
 #
@@ -616,9 +607,37 @@ setEchoParam() {
 #
 #..........................................................................
 
+BES=${bindir}/besctl
+
+if [ ! -x ${BES} ]
+then
+    echo "BES control script besctl not found at ${BES}"
+    usage
+    exit
+fi
+
+if [ ! ${CATALINA_HOME} ]
+then
+    echo "CATALINE_HOMA environment variable is not set"
+    usage
+    exit
+fi
+
+TOMCAT_START=${CATALINA_HOME}/bin/startup.sh
+TOMCAT_STOP=${CATALINA_HOME}/bin/shutdown.sh
+
+# Set up the CATALINA_PID environment variable so that the Tomcat startup
+# and shutdown scripts keep track of which process is really Tomcat.
+
+if [ -z $CATALINA_PID ]
+then 
+    CATALINA_PID=$CATALINA_HOME/logs/catalina.pid
+    # Must be exported for use by the Tomcat startup/shutdown scripts.
+    export CATALINA_PID 
+fi
+
 checkPS
 setEchoParam
-
 
 case $cmd in
     start)
@@ -666,16 +685,4 @@ case $cmd in
         exit
 		;;
 esac
-
-
-
-
-
-
-
-
-
-
-
-
 
