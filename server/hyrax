@@ -1,0 +1,681 @@
+#!/bin/sh
+
+
+
+###########################################################################
+#
+#
+#
+#..........................................................................
+
+
+
+#echo "Command Line Params: " $@
+cmd=$1;
+shift
+BES_PARAMS="$*"
+
+
+BES=/usr/local/bin/besctl
+TOMCAT_START=$CATALINA_HOME/bin/startup.sh
+TOMCAT_STOP=$CATALINA_HOME/bin/shutdown.sh
+
+# Set up the CATALINA_PID environment variable so that the Tomcat startup
+# and shutdown scripts keep track of which process is really Tomcat.
+
+if [ -z $CATALINA_PID ]
+then 
+    CATALINA_PID=$CATALINA_HOME/logs/catalina.pid
+    # Must be exported for use by the Tomcat startup/shutdown scripts.
+    export CATALINA_PID 
+fi
+
+
+
+
+
+###########################################################################
+#
+# Prints the Usage Statement
+#
+#..........................................................................
+usage()
+{
+
+cat << EOF
+
+hyrax                                                                   hyrax
+
+NAME
+       hyrax - Hyrax server control interface
+
+SYNOPSIS
+       hyrax command [-d "debugsink,module[,module]"] [-c BESConfigFile]
+       
+DESCRIPTION
+       hyrax is a front end to the OPeNDAP Hyrax data server. It is
+       designed to help the administrator control the functioning of
+       the two Hyrax components, the OLFS and the BES. This script only
+       addresses the situation where the OLFS and BES are running on the
+       same system. For installations where they are run on separate 
+       a different solution (T.B.D.) is required.
+
+OPTIONS
+       The command can be any one or more of the following options:
+
+       start        Start Hyrax (by starting the BES and then the OLFS).
+                    Gives an error if it is already running.
+
+       stop         Stops Hyrax (by stoppping the OLFS and then the BES).
+
+       restart      Restarts Hyrax by stopping the OLFS and then the BES.
+                    If Hyrax is not running, it is started.
+
+
+       startOLFS    Start only the OLFS. Gives an error if it is already 
+                    running. You are advised to start the BES first.
+
+       stopOLFS     Stop only the OLFS.
+
+       restartOLFS  Restarts the OLFS by first stopping it and then starting
+                    it. If the OLFS is not running, it is started.
+
+
+       startBES     Start only the BES. Gives an error if it is already 
+                    running.
+
+       stopBES      Stop only the BES. You are advised to stop the OLFS first.
+
+       restartBES   Restarts the BES by first stopping it and then starting
+                    it. If the BES is not running, it is started.
+
+
+       help         Displays this message.
+
+       usage        Displays this message.
+
+       -d           Places the BES in debugging mode.
+       debugsink    Must be set to cerr or a filename.
+       module       The (comma separated list) of BES module name(s) in
+                    which to enable debugging.
+
+
+       -c filename  Specifies a BES configuration file other than the
+                    default.
+
+REQUIREMENTS
+       In order for the hyrax script to control the OLFS the following 
+       environment variables must be set (and "export"ed in the invoking 
+       shell) prior to running the hyrax script.
+
+
+      CATALINA_HOME   Must point the location of your Catalina/Tomcat
+                      directory.
+
+      JAVA_HOME       Must point at your Java installation.
+
+
+hyrax                                                                  hyrax
+
+
+    
+EOF
+
+}
+
+
+
+
+
+
+###########################################################################
+#
+# Stops Hyrax
+#
+#..........................................................................
+stop()
+{
+    echo "Terminating Hyrax Processes"
+    
+    stopOLFS
+    stopBES
+}
+
+
+
+###########################################################################
+#
+# Starts Hyrax
+#
+#..........................................................................
+start()
+{
+
+
+    startBES
+    
+    if [ $BES_STARTED ]
+    then
+        startOLFS
+        
+        if [ $OLFS_STARTED ] 
+        then
+            echo "Hyrax has been started"
+            exit 0
+        else
+            echo "HYRAX MAY NOT BE RUNNING."
+        fi
+    else
+        echo "HYRAX IS NOT RUNNING."
+    fi
+    exit 1
+
+}
+
+
+
+
+
+
+
+###########################################################################
+#
+# Restarts Hyraxs by first stopping and then starting it.
+#
+#..........................................................................
+restart()
+{
+    stop
+    start
+}
+
+
+
+
+
+
+###########################################################################
+#
+# Starts the OLFS
+#
+#..........................................................................
+startOLFS()
+{
+    unset OLFS_START
+    echo "Starting OLFS"
+    
+    findRunningOLFS
+    
+    if [ $OLFS_RUNNING  ] 
+    then
+        echo "The OLFS is already running! Will not start OLFS."
+
+    else
+        echo "Starting OLFS (launching Tomcat)..."
+        $TOMCAT_START
+        OLFS_STARTED=1
+        echo "OLFS is running"
+    fi
+}
+
+
+
+###########################################################################
+#
+# Stops the OLFS (come hell or high water)
+#
+#..........................................................................
+stopOLFS()
+{
+
+
+    findRunningOLFS
+    
+    if [ $OLFS_RUNNING  ] 
+    then
+
+        echo "Attempting to stop OLFS using Tomcat shutdown script."
+        $TOMCAT_STOP
+        echo "Waiting..."
+        sleep 5
+
+        findRunningOLFS
+        
+        if [ $OLFS_RUNNING  ] 
+        then
+            echo "Hmmmm, OLFS is still running."
+            if [ $CATALINA_PID_VALID ]
+            then
+                echo "Stopping OLFS using Tomcat shutdown script with -force option."
+                $TOMCAT_STOP -force
+                echo "Waiting..."
+                sleep 5
+            fi
+            isActivePID $OLFS_PID
+            if [ "$?" == 1 ]
+            then
+                destroy $OLFS_PID
+            else
+                 echo "The OLFS has been stopped."   
+            fi
+        else
+            echo "The OLFS has been stopped."   
+        fi
+    fi
+
+    
+
+}
+
+###########################################################################
+#
+# Restart the OLFS
+#
+#..........................................................................
+restartOLFS()
+{
+    stopOLFS
+    startOLFS
+
+}
+
+
+
+###########################################################################
+#
+# Terminate the process identified in the passed process ID. 
+# And really get it killed!
+#
+#..........................................................................
+destroy()
+{
+    DOOMED_PID=$1
+    echo "Process $DOOMED_PID not dead yet!  Sending SIGTERM..."
+    kill $DOOMED_PID
+    sleep 5
+    
+    isActivePID $DOOMED_PID
+    if [ "$?" == 1 ]
+    then 
+        echo "Process $DOOMED_PID not responding to SIGTERM. Retrying..."
+        kill $DOOMED_PID
+        sleep 5
+        isActivePID $DOOMED_PID
+        if [ "$?" == 1 ]
+        then 
+            echo "Process $DOOMED_PID not responding to SIGTERM. Trying SIGINT..."
+            kill -INT $DOOMED_PID
+            sleep 5
+            isActivePID $DOOMED_PID
+            if [ "$?" == 1 ]
+            then 
+                echo "Process $DOOMED_PID not responding to SIGINT. Retrying..."
+                kill -INT $DOOMED_PID
+                sleep 5
+                isActivePID $DOOMED_PID
+                if [ "$?" == 1 ]
+                then 
+                    echo "Process $DOOMED_PID not responding to SIGINT. Trying SIGKILL..."
+                    kill -9 $DOOMED_PID
+                    sleep 5
+                    isActivePID $DOOMED_PID
+                    if [ "$?" == 1 ]
+                    then 
+                        echo "Process $DOOMED_PID not responding to SIGKILL (THIS IS BAD). Retrying..."
+                        kill -9 $DOOMED_PID
+                        sleep 5
+                        isActivePID $DOOMED_PID
+                        if [ "$?" == 1 ]
+                        then 
+                            echo "Process $DOOMED_PID not responding to SIGKILL (THIS IS VERY BAD)."
+                            echo "Process $DOOMED_PID may now be a Zombie. Consider rebooting. (Sorry)"
+                            exit 1
+                        fi
+                    fi
+                fi
+            fi
+        fi
+    fi
+
+    
+    echo "Process $DOOMED_PID has been terminated."
+
+}
+
+
+
+
+
+
+
+
+###########################################################################
+#
+# Looks for an active process matching the passed process ID. 
+# Returns 1 if the process is in the process stack and 0 if it's not.
+#
+#..........................................................................
+isActivePID()
+{
+    
+    RESULT=`$PS -p $1 | grep $1 | awk '{print $2}'`
+    
+    if [ -z $RESULT ] 
+    then
+        return 0
+    else 
+        return 1
+    fi    
+
+}
+
+
+
+
+
+###########################################################################
+#
+# Attempts to locate a running OLFS. This accomplished by first checking 
+# for the presence of a CATALINA_PID file and look for the process named
+# there. If that fails, then the ps command is used to search the process
+# stack for a process containing the word "tomcat". If one is found it is
+# assumed to be the Tomcat instance in which the OLFS is running.
+#
+#..........................................................................
+findRunningOLFS()
+{
+    unset OLFS_RUNNING
+    unset CATALINA_PID_VALID
+    
+    echo "Is the OLFS running?"
+    
+    if [ -f $CATALINA_PID ]
+    then
+        OLFS_PID=`cat $CATALINA_PID`
+        echo "OLFS process ID appears to be: $OLFS_PID"
+        echo "Checking..."
+        
+        CHECK_PID=`$PS -p $OLFS_PID | grep $OLFS_PID | awk '{print $2}'`
+        
+        #echo CHECK_PID: $CHECK_PID
+        
+        
+        if [ ! -z $CHECK_PID ]
+        then 
+            echo "Confirmed running OLFS (Process ID: $OLFS_PID)"
+            OLFS_RUNNING=1
+            CATALINA_PID_VALID=1
+            return
+        else
+            echo "False lead, still looking for OLFS..."
+        fi
+    fi
+
+    OLFS_PID=`$PS | grep -v grep  | grep -i tomcat | awk '{print $2}'`
+
+    echo OLFS Process IDs: $OLFS_PID
+
+    if [ "$OLFS_PID" ] 
+    then
+        OLFS_RUNNING=1
+        echo "The OLFS is running"
+    else
+        echo "The OLFS is not running"
+    fi
+}
+
+
+
+
+
+
+
+
+###########################################################################
+#
+# Starts the BES
+#
+#..........................................................................
+startBES()
+{
+    echo "Starting BES"
+    #BES start
+    findRunningBES
+    if [ $BES_RUNNING  ] 
+    then
+        echo "The BES is already running! Will not start BES."
+
+    else
+        echo "Starting BES..."
+        BES_CMD="$BES start $BES_PARAMS"
+        echo "BES start command: " $BES_CMD
+        $BES_CMD
+        status=$?
+        echo BES Startup status: $status
+        if [ $status == 0 ]
+        then
+            BES_STARTED=1
+        else
+            echo "BES failed to start..."
+            exit 1
+        fi
+    fi
+    
+    echo "BES is running"
+}
+
+
+
+
+
+
+###########################################################################
+#
+# Attempts to locate a running BES by using the ps command to search the 
+# process stack for running instances of the besdaemon and beslistner 
+# programs. All of the PIDs are collected and cached in the environment
+# vairable "BES_PIDs"
+#
+#..........................................................................
+findRunningBES()
+{
+    unset BES_RUNNING
+    
+    echo "Is the BES running?"
+#    BES_PIDs=`$PS | grep -v grep  | grep besdaemon | awk '{print $2}'`
+    BESLISTNER_PIDs=`$PS | grep -v grep  | grep beslistener | awk '{print $2}'`
+    BESDAEMON_PIDs=`$PS | grep -v grep  | grep besdaemon | awk '{print $2}'`
+    BES_PIDs=`echo $BESDAEMON_PIDs $BESLISTNER_PIDs`
+    
+    echo "BES Process IDs: \"$BES_PIDs\""
+    if [ "$BES_PIDs" ] 
+    then
+        BES_RUNNING=1
+        echo "The BES is running"
+    else
+
+        echo "The BES is not running"
+    fi
+    
+}
+
+
+
+
+
+
+
+
+
+
+###########################################################################
+#
+# Stops the BES (come hell or high water).
+#
+#..........................................................................
+
+stopBES()
+{
+    echo "Stopping BES"
+    
+    findRunningBES
+    
+    if [ $BES_RUNNING ]
+    then
+        BES_CMD="$BES stop $BES_PARAMS"
+        echo "BES command: " $BES_CMD
+        $BES_CMD
+    fi
+
+    echo "BES should be stopped, checking..."
+    
+    findRunningBES
+  
+    if [ $BES_RUNNING ]
+    then
+        for PID in $BES_PIDs
+        do
+            destroy $PID
+        done
+    fi    
+    
+}
+
+
+
+###########################################################################
+#
+#   Restart the BES
+#
+#
+#..........................................................................
+restartBES()
+{
+    stopBES
+    startBES
+}
+
+
+
+
+###########################################################################
+#
+# Attempts to determine if the system is using the UCB or System V version 
+# of the ps command.
+#
+#..........................................................................
+checkPS()
+{
+
+UCB_PS="ps -axww -o user,pid,command"
+SYSTEM_V_PS="ps -ef -o user,pid,comm"
+
+
+#echo "Checking ps syntax"
+
+$UCB_PS > /dev/null
+if  [ $? == 0 ]
+then 
+    PS=$UCB_PS
+    #echo "Using UCB ps syntax"
+else
+    $SYSTEM_V_PS > /dev/null 
+    if  [ $? == 0 ]
+    then 
+        PS=$SYSTEM_V_PS
+        #echo "Using System V ps syntax"
+    else
+        echo "Cannot determine a functional version of \"ps\" command. Exiting."
+        exit 1
+    fi
+fi
+}
+
+
+
+###########################################################################
+#
+# Sets up a system independant no new line option for the echo command.
+#
+#..........................................................................
+setEchoParam() {
+    if [ "`echo -n`" = "-n" ]; then
+        n=""
+	  	c="\c"
+    else
+	  	n="-n"
+	  	c=""
+    fi
+}
+
+
+###########################################################################
+#
+#  The Bourne shell equivalent of main().
+#  Looks at the command line options and performs the appropriate action.
+#
+#..........................................................................
+
+checkPS
+setEchoParam
+
+
+case $cmd in
+    start)
+        start        # Start Hyrax
+        ;;
+    stop)
+        stop         # Stop Hyrax
+        ;;
+    restart)
+        restart      # Restart Hyrax
+        ;;
+        
+    startOLFS)       # Start only the OLFS
+        startOLFS
+        ;;
+    stopOLFS)        # Stop only the OLFS
+        stopOLFS
+        ;;
+    restartOLFS)     # Restart the OLFS
+        restartOLFS
+        ;;
+            
+    startBES)        # Start only the BES
+        startBES
+        ;;
+    stopBES)         # Stop only the BES
+        stopBES
+        ;;
+    restartBES)      # Restart the BES
+        restartBES
+        ;;
+            
+    usage)
+        usage
+        ;;
+    help)
+        usage
+        ;;
+    -h)
+        usage
+        ;;
+    *)
+        echo "Sorry, I don't understand"
+        usage
+        exit
+		;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+
