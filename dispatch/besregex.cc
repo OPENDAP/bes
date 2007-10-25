@@ -40,6 +40,7 @@ using std::multimap ;
 using std::pair ;
 
 #include "GNURegex.h"
+#include "Error.h"
 
 multimap<string,string> expressions ;
 
@@ -49,7 +50,7 @@ bool break_types( const string &s, string &err ) ;
 void
 usage( const string &prog )
 {
-    cout << "Usage: " << prog << " include|type <regular_expression> <string_to_match>" << endl ;
+    cout << "Usage: " << prog << " include|exclude|type <regular_expression> <string_to_match>" << endl ;
     cout << "  samples:" << endl ;
     cout << "    besregex include 123456; 01234567 matches 6 of 8 characters" << endl ;
     cout << "    besregex include \"^123456$;\" 01234567 does not match" << endl ;
@@ -69,7 +70,7 @@ main( int argc, char **argv )
     }
 
     string what = argv[1] ;
-    if( what != "include" && what != "type" )
+    if( what != "include" && what != "exclude" && what != "type" )
     {
 	cout << "please specify either an Include or TypeMatch expression "
 	     << "by using include or type respectively as first parameter" << endl ;
@@ -79,7 +80,7 @@ main( int argc, char **argv )
 
     string err ;
     bool status = true ;
-    if( what == "include" )
+    if( what == "include" || what == "exclude" )
 	status = break_includes( argv[2], err ) ;
     else
 	status = break_types( argv[2], err ) ;
@@ -99,22 +100,39 @@ main( int argc, char **argv )
     for( ; i != ie; i++ )
     {
 	string reg = (*i).second ;
-	Regex reg_expr( reg.c_str() ) ;
-	int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
-	if( result != -1)
+	try
 	{
-	    cout << reg << " matches " << result << " characters out of "
-		 << inQuestion.length() << " characters" ;
-	    if( what == "type" )
-		cout << ", type = " << (*i).first ;
-	    cout << endl ;
+	    Regex reg_expr( reg.c_str() ) ;
+	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
+	    if( result != -1)
+	    {
+		if( result == inQuestion.length() )
+		{
+		    cout << "expression \"" << reg << "\" matches exactly" ;
+		}
+		else
+		{
+		    cout << "expression \"" << reg << "\" matches " << result
+		         << " characters out of " << inQuestion.length()
+			 << " characters" ;
+		}
+		if( what == "type" )
+		    cout << ", type = " << (*i).first ;
+		cout << endl ;
+	    }
+	    else
+	    {
+		cout << "expression \"" << reg << "\" does not match" ;
+		if( what == "type" )
+		    cout << " for type " << (*i).first ;
+		cout << endl ;
+	    }
 	}
-	else
+	catch( Error &e )
 	{
-	    cout << reg << " does not match" ;
-	    if( what == "type" )
-		cout << " for type " << (*i).first ;
-	    cout << endl ;
+	    string serr = (string)"malformed regular expression \"" 
+			  + reg + "\": " + e.get_error_message() ;
+	    cout << serr << endl ;
 	}
     }
 

@@ -9,6 +9,7 @@
 #include "TheBESKeys.h"
 #include "BESException.h"
 #include "GNURegex.h"
+#include "Error.h"
 
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances ;
 
@@ -142,10 +143,23 @@ BESCatalogUtils::include( const string &inQuestion ) const
 	for( ; i_iter != i_end; i_iter++ )
 	{
 	    string reg = *i_iter ;
-	    Regex reg_expr( reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	    try
 	    {
-		toInclude = true ;
+		// must match exactly, meaing result is = to length of string
+		// in question
+		Regex reg_expr( reg.c_str() ) ;
+		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+		{
+		    toInclude = true ;
+		}
+	    }
+	    catch( Error &e )
+	    {
+		string serr = (string)"Unable to get catalog information, "
+		              + "malformed Catalog Include parameter "
+			      + "in bes configuration file around " 
+			      + reg + ": " + e.get_error_message() ;
+		throw BESException( serr, __FILE__, __LINE__ ) ;
 	    }
 	}
     }
@@ -169,10 +183,21 @@ BESCatalogUtils::exclude( const string &inQuestion ) const
     for( ; e_iter != e_end; e_iter++ )
     {
 	string reg = *e_iter ;
-	Regex reg_expr( reg.c_str() ) ;
-	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1)
+	try
 	{
-	    return true ;
+	    Regex reg_expr( reg.c_str() ) ;
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+	    {
+		return true ;
+	    }
+	}
+	catch( Error &e )
+	{
+	    string serr = (string)"Unable to get catalog information, "
+			  + "malformed Catalog Exclude parameter " 
+			  + "in bes configuration file around " 
+			  + reg + ": " + e.get_error_message() ;
+	    throw BESException( serr, __FILE__, __LINE__ ) ;
 	}
     }
     return false ;

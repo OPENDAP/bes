@@ -109,9 +109,13 @@ BESCatalogDirectory::show_catalog( const string &node,
     {
 	basename = fullnode ;
     }
+
+    // Is this node a directory?
     DIR *dip = opendir( fullnode.c_str() ) ;
     if( dip != NULL )
     {
+	// The node is a directory
+
 	// if the directory requested is in the exclude list then we won't
 	// let the user see it.
 	if( _utils->exclude( basename ) )
@@ -196,7 +200,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 			    map<string,string> a3 ;
 			    a3["thredds_collection"] = "\"false\"" ;
 			    list<string> provides ;
-			    if( isData( dirEntry, provides ) )
+			    if( isData( fullPath, provides ) )
 				a3["isData"] = "\"true\"" ;
 			    else
 				a3["isData"] = "\"false\"" ;

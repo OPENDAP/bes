@@ -90,7 +90,7 @@ BES.Data.RootDirectory=/dev/null
 # 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
 # case the file will be treated as a compressed file.
 
-# BES.Catalog.catalog.TypeMatch=nc:.h4:.*\.(hdf|HDF|eos)(\.gz|\.bz2)?$;
+# BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
 
 BES.Catalog.catalog.TypeMatch=
 

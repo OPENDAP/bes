@@ -36,6 +36,7 @@
 #include "BESContainerStorageException.h"
 #include "BESInfo.h"
 #include "GNURegex.h"
+#include "Error.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -151,11 +152,22 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 	    // FIXME: Should we create the Regex and put it in the type_reg
 	    // structure list instead of compiling it each time? Could this
 	    // improve performance? pcw 09/08/06
-	    Regex reg_expr( match.reg.c_str() ) ;
-	    if( reg_expr.match( real_name.c_str(), real_name.length() ) != -1 )
+	    try
 	    {
-		new_type = match.type ;
-		done = true ;
+		Regex reg_expr( match.reg.c_str() ) ;
+		if( reg_expr.match( real_name.c_str(), real_name.length() ) == real_name.length() )
+		{
+		    new_type = match.type ;
+		    done = true ;
+		}
+	    }
+	    catch( Error &e )
+	    {
+		string serr = (string)"Unable to match data type, "
+		              + "malformed Catalog TypeMatch parameter " 
+			      + "in bes configuration file around " 
+			      + match.reg + ": " + e.get_error_message() ;
+		throw BESContainerStorageException( serr, __FILE__, __LINE__ ) ;
 	    }
 	}
     }
@@ -185,11 +197,22 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 	// FIXME: Should we create the Regex and put it in the type_reg
 	// structure list instead of compiling it each time? Could this
 	// improve performance? pcw 09/08/06
-	Regex reg_expr( match.reg.c_str() ) ;
-	if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) != -1 )
+	try
 	{
-	    node_type = match.type ;
-	    done = true ;
+	    Regex reg_expr( match.reg.c_str() ) ;
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+	    {
+		node_type = match.type ;
+		done = true ;
+	    }
+	}
+	catch( Error &e )
+	{
+	    string serr = (string)"Unable to determine data products (is data), "
+			  + "malformed Catalog TypeMatch parameter " 
+			  + "in bes configuration file around " 
+			  + match.reg + ": " + e.get_error_message() ;
+	    throw BESException( serr, __FILE__, __LINE__ ) ;
 	}
     }
     // TODO: Now that we have the type, go find the request handler and ask
