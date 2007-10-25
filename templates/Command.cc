@@ -14,12 +14,12 @@ OPENDAP_CLASSOPENDAP_COMMANDCommand::parse_request( BESTokenizer &tokenizer,
 
     /* No sub command, so proceed with the default command
      */
-    dhi.action = OPENDAP_COMMAND_RESPONSE ;
+    dhi.action = OPENDAP_MACRO_RESPONSE ;
     BESResponseHandler *retResponse =
-	BESResponseHandlerList::TheList()->find_handler( OPENDAP_COMMAND_RESPONSE ) ;
+	BESResponseHandlerList::TheList()->find_handler( OPENDAP_MACRO_RESPONSE ) ;
     if( !retResponse )
     {
-	string s = (string)"No response handler for command " + OPENDAP_COMMAND_RESPONSE ;
+	string s = (string)"No response handler for command " + OPENDAP_MACRO_RESPONSE ;
 	throw BESParserException( s, __FILE__, __LINE__ ) ;
     }
 

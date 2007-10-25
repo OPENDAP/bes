@@ -28,7 +28,6 @@ DEFAULT_RESPONSE="das dds data"
 RESPONSE_TYPES=
 echo "Enter response types handled by this server (das dds data):"
 echo "(space separated , help and version are added for you, no need to include them here)"
-echo "(enter none if not implementing any data responses)"
 read responseTypes
 if [ "$responseTypes" = "" ]
 then
@@ -46,6 +45,12 @@ read newCommands
 if [ "$newCommands" != "" ]
 then
     NEW_COMMANDS=${newCommands}
+fi
+
+TRY_TR=`echo "abcd" | tr 'a-z' 'A-Z'`
+if [ "$TRY_TR" = "ABCD" ]
+then
+    HAVE_TR=1
 fi
 
 for i in RequestHandler.cc RequestHandler.h ResponseNames.h
@@ -145,16 +150,26 @@ EOF
 	    castLine3="BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);"
 	    castLine4="DataDDS *dds = bdds->get_dds();"
 	else
-	    responseName="$i"
 	    headerFile=
-	    castLine1="BESTextInfo *info = dynamic_cast<BESTextInfo *>(dhi.response_handler->get_response_object());"
+	    castLine1="BESResponseObject *response = dhi.response_handler->get_response_object() ;"
 	    castLine2=""
 	    castLine3=""
 	    castLine4=""
+	    if [ $HAVE_TR ]
+	    then
+		MACRO_NAME=`echo ${i} | tr 'a-z' 'A-Z'`
+		CAP_FIRST=`echo ${i} | cut -c 1 | tr 'a-z' 'A-Z'`
+		REST_NAME=`echo ${i} | cut -c 2-`
+		CAP_NAME=${CAP_FIRST}${REST_NAME}
+	    else
+		MACRO_NAME=${i}
+		CAP_NAME=${i}
+	    fi
+	    responseName="$MACRO_NAME"
 	    ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
 a
-    #define ${i}_RESPONSE "${i}"
+    #define ${MACRO_NAME}_RESPONSE "${i}"
 .
 w
 q
@@ -162,15 +177,15 @@ EOF
 	    ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
 /${classPrefix}ResponseNames
 a
-#include "${classPrefix}${i}ResponseHandler.h"
+#include "${classPrefix}${CAP_NAME}ResponseHandler.h"
 .
 /INIT_END
 -1
 a
-    BESDEBUG( modname, "    adding " << ${i}_RESPONSE << " response handler" << endl )
-    BESResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}${CAP_NAME}ResponseHandler::${classPrefix}${CAP_NAME}ResponseBuilder ) ;
 
-    cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
+    cmd_name = string( GET_RESPONSE ) + "." + ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
     BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
 
@@ -179,10 +194,10 @@ w
 /TERM_END
 -1
 a
-    BESDEBUG( modname, "    removing " << ${i}_RESPONSE << " response handler" << endl )
-    BESResponseHandlerList::TheList()->remove_handler( ${i}_RESPONSE ) ;
+    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->remove_handler( ${MACRO_NAME}_RESPONSE ) ;
 
-    cmd_name = string( GET_RESPONSE ) + "." + ${i}_RESPONSE ;
+    cmd_name = string( GET_RESPONSE ) + "." + ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
     BESCommand::del_command( cmd_name ) ;
 
@@ -191,15 +206,15 @@ w
 q
 EOF
 
-	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
-	ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
-,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${CAP_NAME}ResponseHandler.h
+	ed ./${classPrefix}${CAP_NAME}ResponseHandler.h << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${CAP_NAME}/g
 w
 q
 EOF
-	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
-	ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
-,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${CAP_NAME}ResponseHandler.cc
+	ed ./${classPrefix}${CAP_NAME}ResponseHandler.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${CAP_NAME}/g
 w
 q
 EOF
@@ -207,11 +222,11 @@ EOF
 	ed ./Makefile.am << EOF > /dev/null 2>&1
 /^BES_SRCS
 a
-	${classPrefix}${i}ResponseHandler.cc \\
+	${classPrefix}${CAP_NAME}ResponseHandler.cc \\
 .
 /^BES_HDRS
 a
-	${classPrefix}${i}ResponseHandler.h \\
+	${classPrefix}${CAP_NAME}ResponseHandler.h \\
 .
 w
 q
@@ -268,31 +283,43 @@ if [ "${NEW_COMMANDS}" != "" ]
 then
     for i in ${NEW_COMMANDS}
     do
-	/bin/cp ${TEMPLATE_DIR}/Command.h ./${classPrefix}${i}Command.h
-	ed ./${classPrefix}${i}Command.h << EOF > /dev/null 2>&1
+	if [ $HAVE_TR ]
+	then
+	    MACRO_NAME=`echo ${i} | tr 'a-z' 'A-Z'`
+	    CAP_FIRST=`echo ${i} | cut -c 1 | tr 'a-z' 'A-Z'`
+	    REST_NAME=`echo ${i} | cut -c 2-`
+	    CAP_NAME=${CAP_FIRST}${REST_NAME}
+	else
+	    MACRO_NAME=${i}
+	    CAP_NAME=${i}
+	fi
+	/bin/cp ${TEMPLATE_DIR}/Command.h ./${classPrefix}${CAP_NAME}Command.h
+	ed ./${classPrefix}${CAP_NAME}Command.h << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_COMMAND/${i}/g
+,s/OPENDAP_COMMAND/${CAP_NAME}/g
 w
 q
 EOF
 
-	/bin/cp ${TEMPLATE_DIR}/Command.cc ./${classPrefix}${i}Command.cc
-	ed ./${classPrefix}${i}Command.cc << EOF > /dev/null 2>&1
+	/bin/cp ${TEMPLATE_DIR}/Command.cc ./${classPrefix}${CAP_NAME}Command.cc
+	#ed ./${classPrefix}${CAP_NAME}Command.cc << EOF > /dev/null 2>&1
+	ed ./${classPrefix}${CAP_NAME}Command.cc << EOF
 ,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_COMMAND/${i}/g
+,s/OPENDAP_COMMAND/${CAP_NAME}/g
+,s/OPENDAP_MACRO/${MACRO_NAME}/g
 w
 q
 EOF
 
-	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${i}ResponseHandler.h
-	ed ./${classPrefix}${i}ResponseHandler.h << EOF > /dev/null 2>&1
-,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.h ${classPrefix}${CAP_NAME}ResponseHandler.h
+	ed ./${classPrefix}${CAP_NAME}ResponseHandler.h << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${CAP_NAME}/g
 w
 q
 EOF
-	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${i}ResponseHandler.cc
-	ed ./${classPrefix}${i}ResponseHandler.cc << EOF > /dev/null 2>&1
-,s/OPENDAP_RESPONSE/${classPrefix}${i}/g
+	/bin/cp ${TEMPLATE_DIR}/ResponseHandler.cc ${classPrefix}${CAP_NAME}ResponseHandler.cc
+	ed ./${classPrefix}${CAP_NAME}ResponseHandler.cc << EOF > /dev/null 2>&1
+,s/OPENDAP_RESPONSE/${classPrefix}${CAP_NAME}/g
 w
 q
 EOF
@@ -300,18 +327,18 @@ EOF
 	ed ${classPrefix}Module.cc << EOF > /dev/null 2>&1
 /${classPrefix}ResponseNames
 a
-#include "${classPrefix}${i}ResponseHandler.h"
-#include "${classPrefix}${i}Command.h"
+#include "${classPrefix}${CAP_NAME}ResponseHandler.h"
+#include "${classPrefix}${CAP_NAME}Command.h"
 .
 /INIT_END
 -1
 a
-    BESDEBUG( modname, "    adding " << ${i}_RESPONSE << " response handler" << endl )
-    BESResponseHandlerList::TheList()->add_handler( ${i}_RESPONSE, ${classPrefix}${i}ResponseHandler::${classPrefix}${i}ResponseBuilder ) ;
+    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}${CAP_NAME}ResponseHandler::${classPrefix}${CAP_NAME}ResponseBuilder ) ;
 
-    cmd_name = ${i}_RESPONSE ;
+    cmd_name = ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
-    BESCommand *${i}_cmd = new ${classPrefix}${i}Command( ${i}_RESPONSE ) ;
+    BESCommand *${i}_cmd = new ${classPrefix}${CAP_NAME}Command( ${MACRO_NAME}_RESPONSE ) ;
     BESCommand::add_command( cmd_name, ${i}_cmd ) ;
 
 .
@@ -319,10 +346,10 @@ w
 /TERM_END
 -1
 a
-    BESDEBUG( modname, "    removing " << ${i}_RESPONSE << " response handler" << endl )
-    BESResponseHandlerList::TheList()->remove_handler( ${i}_RESPONSE ) ;
+    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->remove_handler( ${MACRO_NAME}_RESPONSE ) ;
 
-    cmd_name = ${i}_RESPONSE ;
+    cmd_name = ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
     BESCommand::del_command( cmd_name ) ;
 
@@ -347,7 +374,7 @@ EOF
 /VERS_RESPONSE
 -1
 a
-    add_handler( ${i}_RESPONSE, ${classPrefix}RequestHandler::${serverType}_build_${i} ) ;
+    add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}RequestHandler::${serverType}_build_${i} ) ;
 .
 1
 /::${serverType}_build_vers(
@@ -371,7 +398,7 @@ EOF
 	ed ${classPrefix}ResponseNames.h << EOF > /dev/null 2>&1
 /${classPrefix}_NAME
 a
-    #define ${i}_RESPONSE "${i}"
+    #define ${MACRO_NAME}_RESPONSE "${i}"
 .
 w
 q
@@ -380,11 +407,11 @@ EOF
 	ed ./Makefile.am << EOF > /dev/null 2>&1
 /^BES_SRCS
 a
-	${classPrefix}${i}ResponseHandler.cc ${classPrefix}${i}Command.cc \\
+	${classPrefix}${CAP_NAME}ResponseHandler.cc ${classPrefix}${CAP_NAME}Command.cc \\
 .
 /^BES_HDRS
 a
-	${classPrefix}${i}ResponseHandler.h ${classPrefix}${i}Command.h \\
+	${classPrefix}${CAP_NAME}ResponseHandler.h ${classPrefix}${CAP_NAME}Command.h \\
 .
 w
 q
