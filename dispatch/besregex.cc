@@ -52,7 +52,7 @@ usage( const string &prog )
 {
     cout << "Usage: " << prog << " include|exclude|type <regular_expression> <string_to_match>" << endl ;
     cout << "  samples:" << endl ;
-    cout << "    besregex include 123456; 01234567 matches 6 of 8 characters" << endl ;
+    cout << "    besregex include \"123456;\" 01234567 matches 6 of 8 characters" << endl ;
     cout << "    besregex include \"^123456$;\" 01234567 does not match" << endl ;
     cout << "    besregex include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl ;
     cout << "    besregex include \".*\\.nc$;\" fnoc1.nc matches" << endl ;
