@@ -9,15 +9,12 @@
 
 #include "HDF5Grid.h"
 
-// protected
 
 BaseType *
 HDF5Grid::ptr_duplicate()
 {
     return new HDF5Grid(*this);
 }
-
-// public
 
 HDF5Grid::HDF5Grid(const string & n):Grid(n)
 {
@@ -37,17 +34,12 @@ HDF5Grid::read(const string & dataset)
 
     // read array elements
     array_var()->read(dataset);
-    // read maps elements
+    // read maps' elements
     Map_iter p = map_begin();
     while (p != map_end()) {
         (*p)->read(dataset);
         ++p;
     }
-#if 0
-    for (Pix p = first_map_var(); p; next_map_var(p))
-	map_var(p)->read(dataset);
-#endif
-
     set_read_p(true);
 
     return false;

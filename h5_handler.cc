@@ -13,7 +13,11 @@
 // #define DODS_DEBUG
 #include "h5_handler.h"
 
+/// The default CGI version of handler.
 const static string cgi_version = "3.0";
+
+/// An external object that handles NASA EOS HDF5 files for grid generation 
+/// and meta data parsing.
 extern H5EOS eos;
 
 /// \fn main(int argc, char *argv[])

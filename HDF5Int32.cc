@@ -1,5 +1,3 @@
-
-
 #ifdef __GNUG__
 #pragma implementation
 #endif
@@ -17,6 +15,7 @@
 #include "debug.h"
 
 typedef struct s2_t {
+  /// Buffer for a 32-bit integer in compound data
   dods_int32    a;
 } s2_t;
 

@@ -39,11 +39,6 @@ HDF5Url::read(const string &)
   val2buf(&str);
   return false;
   
-#ifdef OLD  
-    throw InternalErr(__FILE__, __LINE__, 
-		      "HDF5Url::read(): Unimplemented method.");
-    return false;
-#endif    
 }
 
 void

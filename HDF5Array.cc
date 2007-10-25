@@ -13,7 +13,6 @@
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-
 #ifdef __GNUG__
 #pragma implementation
 #endif
@@ -488,9 +487,13 @@ HDF5Array::read(const string & dataset)
       }
 
       char *convbuf = new char[data_size];
-
+#ifdef OLD
       if (!get_slabdata(d_dset_id, offset, step, count, d_num_dim, 
 			data_size, (void *)convbuf, Msga)) {
+#endif
+      if (!get_slabdata(d_dset_id, offset, step, count, d_num_dim, 
+			(void *)convbuf, Msga)) {
+	
 	throw InternalErr(__FILE__, __LINE__,
 			  string("hdf5_dods server failed on getting hyperslab data.\n")
 			  + Msga);

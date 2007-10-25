@@ -23,7 +23,7 @@ char*        get_dimname(hid_t, int);
 hid_t        get_fileid(const char *filename);
 hid_t        get_memtype(hid_t);
 int          get_slabdata(hid_t dset, int *, int *, int *,
-			  int num_dim, hsize_t, void *, char *);
+			  int num_dim, void *, char *);
 int          get_strdata(int, char *, char *, int, char *);
 bool         has_matching_grid_dimscale(hid_t dataset, int ndim, int* size);
 H5GridFlag_t maptogrid(hid_t,int);

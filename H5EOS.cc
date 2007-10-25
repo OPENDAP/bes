@@ -116,13 +116,7 @@ void H5EOS::add_dimension_map(string dimension_name, int dimension)
     dimension_map[dimension_name] =  dimension;
   }
 }
-////////////////////////////////////////////////////////////////////////////////
-/// Check if this file is EOS file by examining metadata
-///
-/// \param id root group id
-/// \return 1, if it is EOS file.
-/// \return 0, if not.
-////////////////////////////////////////////////////////////////////////////////
+
 bool H5EOS::check_eos(hid_t id)
 {
   size_t size_total = 0;
@@ -156,10 +150,6 @@ bool H5EOS::check_eos(hid_t id)
   return false; 
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// Check if this class parsed the argument "name" as grid.
-/// Retrieve the dimension list from the argument "name" grid and tokenize the list into the string vector.
-///////////////////////////////////////////////////////////////////////////////
 void H5EOS::get_dimensions(string name, vector<string>& tokens)
 {
   string str = full_data_path_to_dimension_list_map[name];
@@ -186,9 +176,6 @@ int H5EOS::get_dimension_size(string name)
   return dimension_map[name];
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// Check if this class has parsed the argument "name" as grid.
-///////////////////////////////////////////////////////////////////////////////
 bool H5EOS::is_grid(string name)
 {
   int i;
@@ -261,6 +248,7 @@ bool H5EOS::set_dimension_array()
     } // if dim_size > 0
     else{
       DBG(cerr << "Negative dimension " << endl);
+      return false;
     }
     dimension_data[j] = convbuf;        
   }

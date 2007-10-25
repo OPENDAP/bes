@@ -30,27 +30,20 @@
 
 
 H5EOS eos;
+/// A variable for remembering visited paths to break ties if they exist.
 H5PathFinder paths;
 
-static char Msgt[255];		// used as scratch in various places
-static int slinkindex;		// used by depth_first()
-
-// This vesion should really be 1.0, to match the version of the handler,
-// but that will break all sorts of client code. jhrg 1/31/06
-static const char STRING[]="String";
-static const char BYTE[]="Byte";
-static const char INT32[]="Int32";
-static const char INT16[]="Int16";
-static const char FLOAT64[]="Float64";
-static const char FLOAT32[]="Float32";
-static const char UINT16[]="UInt16";
-static const char UINT32[]="UInt32";
-static const char INT_ELSE[]="Int_else";
-static const char FLOAT_ELSE[]="Float_else";
-
+/// Used as scratch buffer in various places
+static char Msgt[255];
+/// To keep track of soft links.
+static int slinkindex;		
 /// EOS parser related variables
 struct yy_buffer_state;
-int hdfeos_dasparse(void *arg);      // defined in hdfeos.tab.cc
+
+/// This function parses Metadata in NASA EOS files.
+int hdfeos_dasparse(void *arg);
+
+/// Buffer state for NASA EOS metadata scanner
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
 
@@ -59,7 +52,7 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 /// \fn depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 /// depth first traversal of hdf5 file attributes.
 ///
-/// This function will walk through hdf5 group and using depth-
+/// This function will walk through hdf5 group using depth-
 /// first approach to obtain all the group and dataset attributes 
 /// of a hdf5 file.
 /// During the process of depth first search, DAS table will be filled.
@@ -277,7 +270,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 /// 
 /// This function is based on netcdf-dods server.
 /// 
-/// \param hid_t  HDF5 data type id
+/// \param type  HDF5 data type id
 /// \param loc    the number of array number
 /// \param sm_buf pointer to an attribute
 /// \return a char * to newly allocated memory, the caller must call delete []
@@ -976,7 +969,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 ///
 /// \param das DAS object reference
 /// \param file HDF5 file id
-/// \error a string of error message to the dods interface.
+/// \exception msg string of error message to the dods interface.
 /// \return true  if succeed
 /// \return false if failed
 /// \see get_attr_info()
@@ -1233,7 +1226,21 @@ read_comments(DAS & das, const string & varname, hid_t oid)
 
   }    
 }
-
+////////////////////////////////////////////////////////////////////////////////
+/// \fn add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group)
+/// will insert group information in a structure format into DAS table.
+///
+/// This function adds a special attribute called "HDF5_ROOT_GROUP" if the \a
+/// gname is "/". If \a is_group is true, it keeps appending new attribute
+/// table called \a oname under the \a gname path. If \a is_group is false, it appends
+/// a string attribute called \a oname.
+/// 
+/// \param das DAS object: reference
+/// \param gname absolute group pathname of an object
+/// \param oname name of object
+/// \param is_group indicates whether it's a dataset or group
+/// \return nothing
+////////////////////////////////////////////////////////////////////////////////
 void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group)
 {
 

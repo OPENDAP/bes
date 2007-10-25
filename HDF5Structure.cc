@@ -66,7 +66,6 @@ HDF5Structure::operator=(const HDF5Structure &rhs)
     return *this;
 }
 
-// dataset: Filename
 bool
 HDF5Structure::read(const string & dataset)
 {

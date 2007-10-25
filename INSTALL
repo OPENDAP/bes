@@ -8,7 +8,7 @@ Installing the HDF5 handler for the OPeNDAP server.
 BUILDING THE SOFTWARE
 REQUIREMENTS
 NOTES
-
+SPECIAL NOTES on Supporting NASA EOS DATA
 ---------------------------------------------------------------------------
 
 BUILDING THE SOFTWARE
@@ -27,7 +27,7 @@ BUILDING THE SOFTWARE
 
 3) Install the server components in $prefix by running `make install.'
 
-4) Type 'make bes-conf' to run the bes-nc-data.sh script which inserts the
+4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which inserts the
    handler in the bes.conf file and adds test data to 
    $prefix/share/hyrax/data.
 
@@ -83,3 +83,29 @@ NOTES
       `./configure'. If you want the extra features, use:
 
       ./configure --enable-dbnew --enable-debug=2
+
+  o Short Path Name
+    
+    - By default, full path names that have group structure information are 
+      are preserved in dataset variable names. You can shorten them by 
+      using "--enable-short-path=yes" configuration option.
+	
+  o CF option 
+    - This is an experimental option to support visualization clients 
+      that follow CF convention. For details, please see technical notes on
+      the web.
+
+      http://hdfdap.hdfgroup.uiuc.edu:8080/cf.html
+
+SPECIAL NOTES on Supporting NASA EOS DATA
+
+  o EOS	Grid Generation
+    - By default, EOS Grid generation is enabled. (See README for details)
+      You can turn it off by using "--use_eos_grid=no" configuration option.
+
+  o EOS Metadata Parsing
+    - By default, metadata is parsed to display the content of metadata in a structured manner.
+      If you want to get the metadata in one big string instead of parsing it, 
+      please use "--use_eos_meta=no" configuration option.
+
+

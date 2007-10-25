@@ -16,6 +16,7 @@
 
 
 typedef struct s2_t {
+  /// Buffer for a 32-bit float in compound data
   dods_float32    a;
 } s2_t;
 

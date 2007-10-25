@@ -16,6 +16,7 @@
 #include "HDF5Structure.h"
 
 typedef struct s2_t {
+  /// Buffer for a 16 bit integer in compound data
   dods_int16    a;
 } s2_t;
 
@@ -31,7 +32,6 @@ HDF5Int16::ptr_duplicate()
     return new HDF5Int16(*this);
 }
 
-// ask experts about this interface.
 bool
 HDF5Int16::read(const string & dataset)
 {
@@ -83,7 +83,6 @@ HDF5Int16::read(const string & dataset)
 	if(k == 0){
 	  // Bottom level structure
 	  DBG(cerr << "=read() my_name " << myname.c_str()  << endl);
-	  // H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_INT);
 	  H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_INT16);
 	}
 	else{

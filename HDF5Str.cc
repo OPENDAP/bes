@@ -15,7 +15,9 @@
 // #define DODS_DEBUG
 #include "debug.h"
 
+/// A temporary structure for retrieving data from HDF5 compound data type.
 typedef struct s2_t {
+  /// Buffer for string in compound data
   char a[max_str_len];
 } s2_t;
 
@@ -136,18 +138,6 @@ void
 HDF5Str::set_tid(hid_t type)
 {
     ty_id = type;
-}
-
-void
-HDF5Str::set_arrayflag(int flag)
-{
-    array_flag = flag;
-}
-
-int
-HDF5Str::get_arrayflag()
-{
-    return array_flag;
 }
 
 hid_t

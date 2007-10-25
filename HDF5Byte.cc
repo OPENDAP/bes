@@ -14,7 +14,8 @@
 #include "HDF5Structure.h"
 
 typedef struct s2_t {
-  dods_byte    a;
+  /// Buffer for a byte in compound data
+  dods_byte    a;		
 } s2_t;
 
 
@@ -78,7 +79,6 @@ HDF5Byte::read(const string & dataset)
 	if(k == 0){
 	  // Bottom level structure
 	  DBG(cerr << "=read() my_name=" << myname.c_str()  << endl);
-	  // H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_INT);
 	  H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a), H5T_NATIVE_CHAR);
 	}
 	else{

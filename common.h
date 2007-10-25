@@ -17,48 +17,99 @@
 #define _common_H
 
 #include <H5Ipublic.h>
-
+/// Maximum number of dimensions in an array.
 #define DODS_MAX_RANK 30
-#define SPACE1_NAME  "Space1"
-#define SPACE1_RANK	1
-#define SPACE1_DIM1	4
+/// Maximum length of variable or attribute name
 #define DODS_NAMELEN    1024
-#define DODS_DIMNAMELEN 256
+/// Maximum length of a dimension name in DIMENSION_LIST attribute.
 #define HDF5_DIMVARLEN  24
+/// The name of dimension list attribute used in HDF5.
 #define HDF5_DIMENSIONLIST "DIMENSIONLIST"
+/// The name of dimension name list attribute used in HDF5.
 #define HDF5_DIMENSIONNAMELIST "DIMENSION_NAMELIST"
+/// The name of dimension list attribute used in HDF4.
 #define OLD_HDF5_DIMENSIONLIST "DIMSCALE"
+/// The name of dimension name list attribute used in HDF4.
 #define OLD_HDF5_DIMENSIONNAMELIST "HDF4_DIMENSION_LIST"
-
+/// This enables generation of Grid from HDF5 array with dimension scales.
+/// If this is commented out, no Grid will be generated from HDF5.
 #define DODSGRID
-#define STR_FLAG 1
-#define STR_NOFLAG 0
+/// The special DAS attribute name for HDF5 soft link.
 #define HDF5_softlink "HDF5_softlink"
+/// The special DAS attribute name for HDF5 hard link.
 #define HDF5_hardlink "HDF5_hardlink"
+/// The special DAS attribute name for HDF5 path information from the top(root) group.
 #define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
 
+/// A flag to indicate whether an array can be mapped to grid or not.
+/// This also indicates whether the Grid-mappable HDF5 array is in old or new format.
 enum H5GridFlag_t{
      NotGrid,
      OldH4H5Grid,
      NewH4H5Grid
 };
-typedef struct DS {
-    char name[DODS_NAMELEN];
-    hid_t dset;
-    hid_t type;
-    hid_t dataspace;
-    int ndims;
-    int size[DODS_MAX_RANK];
-    hsize_t nelmts;
-    size_t need;
-} DS_t;
 
+/// \brief A structure for DDS generation
+typedef struct DS {
+  /// Name of HDF5 group or dataset
+  char name[DODS_NAMELEN];
+  /// HDF5 data set id
+  hid_t dset;
+  /// HDF5 data type id
+  hid_t type;
+  /// HDF5 data space id
+  hid_t dataspace;
+  /// Number of dimensions
+  int ndims;			
+  /// Size of each dimension
+  int size[DODS_MAX_RANK];	
+  /// Number of elements 
+  hsize_t nelmts;
+  /// Space needed 
+  size_t need;			
+} DS_t;
+/// \brief A structure for DAS generation
 typedef struct DSattr {
-    char name[DODS_NAMELEN];
-    int type;
-    int ndims;
-    int size[DODS_MAX_RANK];
-    hsize_t nelmts;
-    size_t need;
+  /// Name of HDF5 group or dataset
+  char name[DODS_NAMELEN];
+  /// Memory type
+  int type;
+  /// Number of dimensions
+  int ndims;
+  /// Size of each dimension
+  int size[DODS_MAX_RANK];
+  /// Number of elements 
+  hsize_t nelmts;
+  /// Memory space needed to hold nelmts type.
+  size_t need;			
 } DSattr_t;
+
+/// An abstract respresntation of DAP String type.
+static const char STRING[]="String";
+/// An abstract respresntation of DAP Byte type.
+static const char BYTE[]="Byte";
+/// An abstract respresntation of DAP Int32 type.
+static const char INT32[]="Int32";
+/// An abstract respresntation of DAP Int16 type.
+static const char INT16[]="Int16";
+/// An abstract respresntation of DAP Float64 type.
+static const char FLOAT64[]="Float64";
+/// An abstract respresntation of DAP Float32 type.
+static const char FLOAT32[]="Float32";
+/// An abstract respresntation of DAP Uint16 type.
+static const char UINT16[]="UInt16";
+/// An abstract respresntation of DAP UInt32 type.
+static const char UINT32[]="UInt32";
+/// For umappable HDF5 integer data types.
+static const char INT_ELSE[]="Int_else";
+/// For unmappable HDF5 float data types.
+static const char FLOAT_ELSE[]="Float_else";
+/// An abstract respresntation of DAP Structure type.
+static const char COMPOUND[]="Structure";
+/// An abstract respresntation of DAP Array type.
+static const char ARRAY[]="Array"; // <hyokyung 2007.05.17. 12:58:54>
+/// An abstract respresntation of DAP Url type.
+static const char URL[]="Url"; // <hyokyung 2007.09.11. 12:47:53>
+
 #endif 
+

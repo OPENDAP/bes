@@ -7,20 +7,20 @@
 ///
 /// \section Usage
 ///
-/// dap_h5_handler -o <response> -u <url> [options ...] [data set]
+/// dap_h5_handler -o \<response\> -u \<url\> [options ...] [data set]
 ///
 /// options:
-///       -  -o <response>: DAS, DDS, DataDDS, DDX, BLOB or Version (Required)
-///       -  -u <url>: The complete URL minus the CE (required for DDX)
+///       -  -o \<response\>: DAS, DDS, DataDDS, DDX, BLOB or Version (Required)
+///       -  -u \<url\>: The complete URL minus the CE (required for DDX)
 ///       -  -c: Compress the response using the deflate algorithm.
-///       -  -e <expr>: When returning a DataDDS, use <expr> as the constraint.
-///       -  -v <version>: Use <version> as the version number
-///       -  -d <dir>: Look for ancillary file in <dir> (deprecated).
-///       -  -f <file>: Look for ancillary data in <file> (deprecated).
-///       -  -r <dir>: Use <dir> as a cache directory
-///       -  -l <time>: Conditional request; if data source is unchanged since
-///                    <time>, return an HTTP 304 response.
-///       -  -t <seconds>: Timeout the handler after <seconds>.
+///       -  -e \<expr\>: When returning a DataDDS, use \<expr\> as the constraint.
+///       -  -v \<version\>: Use \<version\> as the version number
+///       -  -d \<dir\>: Look for ancillary file in \<dir\> (deprecated).
+///       -  -f \<file\>: Look for ancillary data in \<file\> (deprecated).
+///       -  -r \<dir\>: Use \<dir\> as a cache directory
+///       -  -l \<time\>: Conditional request; if data source is unchanged since
+///                    \<time\>, return an HTTP 304 response.
+///       -  -t \<seconds\>: Timeout the handler after \<seconds\>.
 ///
 ///
 ///

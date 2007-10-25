@@ -9,7 +9,7 @@
 
 #include "HDF5GridEOS.h"
 #include "H5EOS.h"
-// protected
+
 extern H5EOS eos;
 
 BaseType *
@@ -39,7 +39,7 @@ HDF5GridEOS::read(const string & dataset)
   array_var()->read(dataset);
   // Read map array elements.
   Map_iter p = map_begin();
-  // string str_group_name = "/HDFEOS/GRIDS/CloudFractionAndPressure/";
+
   while (p != map_end()) {
     Array *a = dynamic_cast < Array * >(*p);
     read_dimension(a);
@@ -77,7 +77,6 @@ HDF5GridEOS::get_tid()
 void
 HDF5GridEOS::read_dimension(Array* a)
 {
-    // cerr << "HDF5GridEOS::>read_dimension():" << a->name() << std::endl;
     Array::Dim_iter d = a->dim_begin();
     int start = a->dimension_start(d, true);
     int stride = a->dimension_stride(d, true);

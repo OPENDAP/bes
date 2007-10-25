@@ -16,7 +16,10 @@
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
+
+/// Maximum size of error message buffer.
 #define MAX_ERROR_MESSAGE 512
+
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>
 #include <H5Ipublic.h>
@@ -52,17 +55,4 @@ void   read_objects(DDS &dds, const string &varname, const string& filename);
 #ifdef SHORT_PATH
 string get_short_name(string name);
 #endif
-static const char STRING[]="String";
-static const char BYTE[]="Byte";
-static const char INT32[]="Int32";
-static const char INT16[]="Int16";
-static const char FLOAT64[]="Float64";
-static const char FLOAT32[]="Float32";
-static const char UINT16[]="UInt16";
-static const char UINT32[]="UInt32";
-static const char INT_ELSE[]="Int_else";
-static const char FLOAT_ELSE[]="Float_else";
-static const char COMPOUND[]="Structure";
-static const char ARRAY[]="Array"; // <hyokyung 2007.05.17. 12:58:54>
-static const char URL[]="Url"; // <hyokyung 2007.09.11. 12:47:53>
 

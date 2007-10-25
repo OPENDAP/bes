@@ -15,6 +15,7 @@
 #include "debug.h"
 
 typedef struct s2_t {
+  /// Buffer for a 64-bit float in compound data
   dods_float64 a;
 } s2_t;
 

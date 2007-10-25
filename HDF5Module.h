@@ -1,5 +1,5 @@
 // HDF5Module.h
-
+// 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
@@ -22,27 +22,29 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+// 
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
+// 
+
 
 #ifndef A_HDF5Module_H
 #define A_HDF5Module_H 1
 
 #include "BESAbstractModule.h"
 
+/// A class for BES support
+///
+/// @author  Patrick West <pwest@ucar.edu>
 class HDF5Module : public BESAbstractModule
 {
 public:
-    				HDF5Module() {}
-    virtual		    	~HDF5Module() {}
-    virtual void		initialize( const string &modname ) ;
-    virtual void		terminate( const string &modname ) ;
-
-    virtual void		dump( ostream &strm ) const ;
+  HDF5Module() {}
+  virtual		    	~HDF5Module() {}
+  virtual void		initialize( const string &modname ) ;
+  virtual void		terminate( const string &modname ) ;
+  virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // A_HDF5Module_H

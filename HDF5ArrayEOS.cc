@@ -98,7 +98,7 @@ HDF5ArrayEOS::get_dimension_data(dods_float32* buf,
     j++;
   }
   if(count != j){
-    cerr << "HDF5GridEOS::get_dimension_data(): index mismatch" << endl;
+    cerr << "HDF5ArrayEOS::get_dimension_data(): index mismatch" << endl;
   }
   return dim_buf;
 }

@@ -27,9 +27,6 @@
 #include "H5Git.h"
 #include "InternalErr.h" // <hyokyung 2007.02.23. 14:17:32>
 
-// #ifndef FALSE
-// #define FALSE 0
-// #endif
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn get_attr_info(hid_t dset, int index, DSattr_t *attr_inst_ptr,
@@ -39,26 +36,22 @@
 /// This function will get attribute information: datatype, dataspace(dimension
 /// sizes) and number of dimensions and put it into a data struct.
 ///
-/// \param dset  parent object id
-/// \param index parent object index
+/// \param[in]  dset  dataset id
+/// \param[in]  index  index of attribute
+/// \param[out] attr_inst_ptr an attribute instance pointer
+/// \param[out] ignoreptr  a flag to record whether it can be ignored.
+/// \param[out] error error message to be reported(not used).
 /// \return pointer to attribute structure
 /// \throw InternalError 
 ////////////////////////////////////////////////////////////////////////////////
-hid_t
-get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
-              int *ignoreptr, char *error)
+hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
+		    int *ignoreptr, char *error)
 {
 
     hid_t ty_id, attrid, space,memtype;
     H5T_class_t temp_type;
     hsize_t size[DODS_MAX_RANK];
-#if 0
-    , dim_n_size;
-#endif
     hsize_t maxsize[DODS_MAX_RANK];
-#if 0
-    char *attr_name;
-#endif
     char *namebuf;
     size_t need;
     hsize_t nelmts = 1;
@@ -90,7 +83,6 @@ get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
 	"dap_h5_handler: unable to obtain hdf5 attribute by name = ";
       msg += namebuf;
       throw InternalErr(__FILE__, __LINE__, msg);
-      
     }
 
     // obtain the type of the attribute. 
@@ -189,6 +181,7 @@ hid_t get_fileid(const char *filename)
 /// \param[in] pid    parent object id(group id)
 /// \param[in] dname  dataset name
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
+/// \param[out] error error message to be reported.
 /// \return	dataset id	
 ////////////////////////////////////////////////////////////////////////////////
 hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
@@ -287,6 +280,7 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
 ///
 /// \param[in] dset dataset id(dset)
 /// \param[out] buf pointer to a buffer
+/// \param[out] error error message to be reported.
 /// \return -1, if failed.
 /// \return 0, if succeeded.
 ////////////////////////////////////////////////////////////////////////////////
@@ -354,6 +348,7 @@ int get_data(hid_t dset, void *buf, char *error)
 /// \param[in] allbuf pointer to string buffer that has been built so far
 /// \param[in] elesize size of string element in the array
 /// \param[out] buf pointer to a buf
+/// \param[out] error error message to be reported.
 /// \return -1 if failed.
 /// \return  0 if succeeded.
 ////////////////////////////////////////////////////////////////////////////////
@@ -383,24 +378,23 @@ get_strdata(int strindex, char *allbuf, char *buf, int elesize, char *error)
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
-///     hsize_t data_size, void *buf, char *error)
+///                  void *buf, char *error)
 /// will get hyperslab data of a dataset and put it into buf.
 ///
 /// \param[in] dset dataset id
 /// \param[in] offset starting point
 /// \param[in] step  stride
 /// \param[in] count  count
+/// \param[in] num_dim  number of array dimensions
 /// \param[out] buf pointer to a buffer
+/// \param[out] error error message to be reported.
 /// \return 0 if failed
 /// \return 1 otherwise
-/// \todo return 0 if succeed?
 ////////////////////////////////////////////////////////////////////////////////
 int
 get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
-             hsize_t data_size, void *buf, char *error)
+             void *buf, char *error)  
 {
-
-
     hid_t dataspace, memspace, datatype, memtype;
     hsize_t *dyn_count = NULL, *dyn_step = NULL;
     hssize_t *dyn_offset = NULL;
@@ -508,6 +502,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 /// obtains number of dimensional scale in the dataset.
 ///
 /// \param dataset original HDF5 dataset name that refers to dimensional scale
+/// \param num_dim number of dimensions
 /// \return a number
 ////////////////////////////////////////////////////////////////////////////////
 H5GridFlag_t maptogrid(hid_t dataset,int num_dim)
@@ -533,6 +528,8 @@ H5GridFlag_t maptogrid(hid_t dataset,int num_dim)
 ///
 ///
 /// \param dataset original HDF5 dataset name that refers to dimensional scale
+/// \param num_dim number of dimensions
+/// \param new_h4h5 indicates whether dataset is new dimensional scale format
 /// \return a number
 ////////////////////////////////////////////////////////////////////////////////
 int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
@@ -582,7 +579,7 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
 	}
 
 	space = H5Aget_space(attr_id);
-	// number of element for HDF5 dimensional object reference array
+	// The number of element for HDF5 dimensional object reference array
 	// is the number of dimension of HDF5 corresponding array. 
 	ssiz = H5Sget_simple_extent_npoints(space);
 	num_dim1 = (int) ssiz;
@@ -664,17 +661,6 @@ char* correct_name(char *oldname)
     *cptr = CHA_SLASH;
   }
 
-#if 0
-  // I don't understand this comment, but the code breaks a number
-  //  of datasets. The section above was commented out but I'm undoing that.
-  //  jhrg 7/3/06 
-  // Now we want to try DODS ferret demo 
-  cptr = strrchr(oldname, ORI_SLASH);
-  cptr++;
-  newname = malloc((strlen(cptr) + 1) * sizeof(char));
-  bzero(newname, strlen(cptr) + 1);
-  strncpy(newname, cptr, strlen(cptr));
-#endif
   DBG(cerr << "<correct_name=>" << newname <<  endl);
   return newname;
 }
@@ -888,7 +874,9 @@ int check_h5str(hid_t h5type)
 /// \fn has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes)
 /// checks if dataset has an attribute called "DIMENSION_LIST" and matching indexes.
 /// 
-/// \param hid_t dataset id
+/// \param dataset dataset id
+/// \param ndims number of dimensions
+/// \param sizes size of each dimension
 /// \return 1 if it has an attribute called "DIMENSION_LIST" and matching indexes.
 /// \return 0 otherwise
 ////////////////////////////////////////////////////////////////////////////////
@@ -899,6 +887,7 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes)
   char dimscale[HDF5_DIMVARLEN];
   
   hid_t attr_id;
+  
   int attr_namesize;
   int i;  
   int num_attrs;

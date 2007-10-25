@@ -31,8 +31,11 @@
 extern H5EOS eos;
 extern bool get_hardlink( hid_t, const string &);
 
+/// This variable is used to generate internal error message.
 static char Msgt[MAX_ERROR_MESSAGE];
-static DS_t dt_inst;	// ??? 7/25/2001 jhrg
+
+/// An instance of DS_t structure defined in common.h.
+static DS_t dt_inst;	
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
@@ -262,8 +265,8 @@ return_type(hid_t type)
 /// dataset and return pointer of a new object of DODS datatype.
 ///
 /// \param varname object name
-/// \param dataype datatype id
-/// \param factory DODS object class generator
+/// \param datatype datatype id
+/// \param &factory DODS object class generator
 /// \return pointer to BaseType
 ////////////////////////////////////////////////////////////////////////////////
 static BaseType *
@@ -357,7 +360,6 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     
     H5Tget_array_dims(datatype, size2, perm);
     
-    // temp_bt = factory.NewArray(varname, 0);
     temp_bt = factory.NewArray(varname);
     temp_bt->add_var(ar_bt);
     
@@ -438,7 +440,6 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
   case dods_str_c:
     (dynamic_cast < HDF5Str * >(temp_bt))->set_did(dt_inst.dset);
     (dynamic_cast < HDF5Str * >(temp_bt))->set_tid(dt_inst.type);
-    (dynamic_cast < HDF5Str * >(temp_bt))->set_arrayflag(STR_NOFLAG);
     break;
 
     
@@ -451,15 +452,10 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
     break;
     
 #if 0
-  case dods_url_c:
-    ((HDF5Url * )(temp_bt))->set_did(dt_inst.dset);
-    // (dynamic_cast < HDF5Url * >(temp_bt))->set_tid(dt_inst.type);
-    
   case dods_list_c:
   case dods_structure_c:
   case dods_sequence_c:
   case dods_grid_c:
-
 #endif
 
   default:
@@ -482,13 +478,11 @@ Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
 /// dataset and return a  pointer of a new structure object of DODS.
 ///
 /// \param varname object name
-/// \param dataype datatype id
-/// \param factory DODS object class generator
+/// \param datatype datatype id
+/// \param &factory DODS object class generator
 /// \return pointer to Structure type
 ///
 ////////////////////////////////////////////////////////////////////////////////
-// <hyokyung 2007.03. 2. 13:22:20>
-
 static Structure *
 Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
 {
@@ -1043,6 +1037,17 @@ read_objects(DDS & dds_table, const string & varname,
 }
 
 #ifdef SHORT_PATH
+////////////////////////////////////////////////////////////////////////////////
+/// \fn get_short_name(string varname)
+/// returns a short name.
+///
+/// This function returns a short name from \a varname.
+/// Short name is defined as  a string from the last '/' to the end of string
+/// excluding the '/'.
+/// 
+/// \param varname a full object name that has a full group path information
+/// \return a shortened string
+////////////////////////////////////////////////////////////////////////////////  
 string
 get_short_name(string varname)
 {

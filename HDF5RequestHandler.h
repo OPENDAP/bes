@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of hdf5_handler, a data handler for the OPeNDAP data
@@ -30,6 +29,9 @@
 
 #include "BESRequestHandler.h"
 
+/// A class for BES support
+///
+/// @author James Gallagher <jgallagher@opendap.org>
 class HDF5RequestHandler : public BESRequestHandler {
 public:
 			HDF5RequestHandler( const string &name ) ;

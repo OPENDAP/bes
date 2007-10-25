@@ -48,11 +48,6 @@
 #include "BESDataNames.h"
 #include "BESDapHandlerException.h"
 #include "H5Git.h"
-/* <hyokyung 2007.02.23. 15:42:55>
-extern "C" {
-    hid_t get_fileid(const char *filename);
-}
-*/
 
 HDF5RequestHandler::HDF5RequestHandler(const string &name)
 :BESRequestHandler(name)
