@@ -1,5 +1,5 @@
 
-# Automake file for say-handler
+# Automake file for sample-handler
 #
 # 5/17/2005 jhrg
 #
@@ -9,33 +9,32 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-lib_LTLIBRARIES = libsay_module.la
+lib_LTLIBRARIES = libsample_module.la
 
-Say_SRCS:=
+Sample_SRCS:=
 
-Say_HDRS:=
+Sample_HDRS:=
 
 BES_SRCS = \
-	SayResponseHandler.cc \
-	SayModule.cc SayRequestHandler.cc	\
-	SayCommand.cc SayReporter.cc
+	SampleSayResponseHandler.cc SampleSayCommand.cc \
+		SampleModule.cc SampleRequestHandler.cc \
+		SayReporter.cc
 
 BES_HDRS = \
-	SayResponseHandler.h \
-	SayModule.h SayRequestHandler.h \
-	SayCommand.h \
-	SayResponseNames.h \
-	SayReporter.h \
-	config_say.h
+	SampleSayResponseHandler.h SampleSayCommand.h \
+		SampleModule.h SampleRequestHandler.h \
+		SampleResponseNames.h \
+		SayReporter.h \
+		config_sample.h
 
-libsay_module_la_SOURCES = $(Say_SRCS) $(BES_SRCS) $(Say_HDRS) $(BES_HDRS)
-libsay_module_la_CPPFLAGS = $(BES_CPPFLAGS)
-libsay_module_la_LDFLAGS = -avoid-version -module 
-libsay_module_la_LIBADD = $(BES_LIBS)
+libsample_module_la_SOURCES = $(Sample_SRCS) $(BES_SRCS) $(Sample_HDRS) $(BES_HDRS)
+libsample_module_la_CPPFLAGS = $(BES_CPPFLAGS)
+libsample_module_la_LDFLAGS = -avoid-version -module 
+libsample_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING say_handler.spec
+EXTRA_DIST = COPYRIGHT COPYING sample_handler.spec
 
 CLEANFILES = *~
 
@@ -44,7 +43,7 @@ CLEANFILES = *~
 # Build linux RPMs
 
 srpm:
-	rpmbuild -ts say_module-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts sample_module-@PACKAGE_VERSION@.tar.gz
 
 rpm:
-	rpmbuild -tb say_module-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb sample_module-@PACKAGE_VERSION@.tar.gz

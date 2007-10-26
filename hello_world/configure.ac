@@ -1,14 +1,14 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-# Configure script for OPeNDAP Say data handler
+# Configure script for OPeNDAP Sample data handler
 
 AC_PREREQ(2.59)
-AC_INIT([say_module], [1.0.0], [dods-tech@unidata.ucar.edu])
+AC_INIT([sample_module], [1.0.0], [dods-tech@unidata.ucar.edu])
 AC_CONFIG_AUX_DIR([conf])
 
 AM_INIT_AUTOMAKE
 
-AC_CONFIG_SRCDIR([SayModule.h])
+AC_CONFIG_SRCDIR([SampleModule.h])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.

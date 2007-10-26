@@ -33,7 +33,7 @@
 #include "SayReporter.h"
 #include "TheBESKeys.h"
 #include "BESLogException.h"
-#include "SayResponseNames.h"
+#include "SampleResponseNames.h"
 
 SayReporter::SayReporter()
     : BESReporter(),

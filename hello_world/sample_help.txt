@@ -1,0 +1,6 @@
+Commands added in the Sample Module
+
+    say <something> to <someone>;
+	* response is informational <something> <someone>
+	* example: "say hello to world;" responds with "hello world".
+

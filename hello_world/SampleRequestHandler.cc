@@ -1,29 +1,29 @@
-// OPENDAP_CLASSRequestHandler.cc
+// SampleRequestHandler.cc
 
 #include "config.h"
 
-#include "OPENDAP_CLASSRequestHandler.h"
+#include "SampleRequestHandler.h"
 #include "BESResponseHandler.h"
 #include "BESResponseException.h"
 #include "BESResponseNames.h"
-#include "OPENDAP_CLASSResponseNames.h"
+#include "SampleResponseNames.h"
 #include "BESVersionInfo.h"
 #include "BESTextInfo.h"
 #include "BESConstraintFuncs.h"
 
-OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( const string &name )
+SampleRequestHandler::SampleRequestHandler( const string &name )
     : BESRequestHandler( name )
 {
-    add_handler( VERS_RESPONSE, OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers ) ;
-    add_handler( HELP_RESPONSE, OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help ) ;
+    add_handler( VERS_RESPONSE, SampleRequestHandler::sample_build_vers ) ;
+    add_handler( HELP_RESPONSE, SampleRequestHandler::sample_build_help ) ;
 }
 
-OPENDAP_CLASSRequestHandler::~OPENDAP_CLASSRequestHandler()
+SampleRequestHandler::~SampleRequestHandler()
 {
 }
 
 bool
-OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers( BESDataHandlerInterface &dhi )
+SampleRequestHandler::sample_build_vers( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object() ) ;
@@ -32,7 +32,7 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers( BESDataHandlerInterface &d
 }
 
 bool
-OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( BESDataHandlerInterface &dhi )
+SampleRequestHandler::sample_build_help( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
@@ -41,7 +41,7 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( BESDataHandlerInterface &d
     info->add_tag("name", PACKAGE_NAME);
     info->add_tag("version", PACKAGE_STRING);
     info->begin_tag("info");
-    info->add_data_from_file( "OPENDAP_CLASS.Help", "OPENDAP_CLASS Help" ) ;
+    info->add_data_from_file( "Sample.Help", "Sample Help" ) ;
     info->end_tag("info");
     info->end_tag("Handler");
 
@@ -49,9 +49,9 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( BESDataHandlerInterface &d
 }
 
 void
-OPENDAP_CLASSRequestHandler::dump( ostream &strm ) const
+SampleRequestHandler::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "OPENDAP_CLASSRequestHandler::dump - ("
+    strm << BESIndent::LMarg << "SampleRequestHandler::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESRequestHandler::dump( strm ) ;

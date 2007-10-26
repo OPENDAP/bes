@@ -136,11 +136,11 @@ BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 # help file locations, for text, html, and xml versions                 #
 #-----------------------------------------------------------------------#
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
-BES.Help.HTTP=@pkgdatadir@/bes_help.html
+BES.Help.HTML=@pkgdatadir@/bes_help.html
 BES.Help.XML=@pkgdatadir@/bes_help.txt
 
 DAP.Help.TXT=@pkgdatadir@/dap_help.txt
-DAP.Help.HTTP=@pkgdatadir@/dap_help.html
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
 DAP.Help.XML=@pkgdatadir@/dap_help.txt
 
 #-----------------------------------------------------------------------#

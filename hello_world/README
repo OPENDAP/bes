@@ -12,6 +12,7 @@ Contents
   What's here: What files are in the distribution
   Configuration: How to configure the hello world example
   Testing: Once built and configured, how do you know it works?
+  Creating this sample module yourself
 
 * What's here:
 
@@ -32,6 +33,10 @@ file located in this directory.
       BES_CONF=./bes.conf
       export BES_CONF
 
+Or you can use the -c option to besctl to specify a configuration file:
+
+      besctl start -c ./bes.conf
+
 * Testing
 
 To test the server, open a new terminal window and start the bes by using
@@ -39,9 +44,10 @@ the bes control script besctl, which is installed in <prefix>/bin.
 using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
-    [jimg@zoe sbin]$ besctl start
+    [jimg@zoe sbin]$ besctl start -c ./bes.coonf
     BES install directory: <prefix>/bin
-    Starting the BES daemon
+    Starting the BES
+    OK: Succesfully started the BES
     PID: <process_id> UID: <uid of process>
 
 Go back to your first window and run the bescmdln program. Use the -h (host)
@@ -52,11 +58,11 @@ and -p (port) switches to tell it how to connect to the BES.
     Type 'exit' to exit the command line client and 'help' or '?' to display
     the help screen
 
-    OPeNDAPClient>
+    BESClient>
 
 Try the new command
 
-    OPeNDAPClient> say hello to world;
+    BESClient> say hello to world;
     <say>
 	<response>
 
@@ -70,10 +76,335 @@ Note that all commands must end with a semicolon except 'exit'.
 
 Now type exit to exit the command line client.
 
-    OPeNDAPClient> exit
+    BESClient> exit
     [jimg@zoe bin]$
 
 To stop the BES use the bes control script with the stop option:
 
-    [jimg@zoe sbin]$ besctl start
+    [jimg@zoe sbin]$ besctl stop
+
+* Creating this sample module yourself.
+
+Here we will tell you how to generate this sample module yourself. It's very
+easy to do.
+
+    1. Create a new directory along side the hello_world directory, call it sample.
+       From the hello_world directory:
+
+       cd ../
+       mkdir sample
+       cd sample
+
+    2. We have provided a script to developers to help in writing modules. The
+       script will ask you some questions.
+
+       besCreateModule
+       Enter server type, e.g. cedar, fits, netcdf: 
+       sample
+       Enter C++ class prefix, e.g. Cedar, Fits, Netcdf: 
+       Sample
+       Enter response types handled by this server (das dds data):
+       (space separated , help and version are added for you, no need to include them here)
+       none
+       Enter new commands you are implementing:
+       say
+
+       The first question asks for the module name. For our example, we say it is "sample".
+
+       The second question asks for a C++ class prefix. Be best if you capitalized the first
+       letter of your answer. For our example, we say it is "Sample".
+
+       Enter response types handled by this server (das dds data):. This quesiton asks what
+       DAP2 objects will be handled by your new module. We aren't serving data in this
+       example, so we answer "none".
+
+       The last questions asks if we are implementing any new commands, which we are. We
+       are adding the command "say <something> to <someone>;", so for our example we 
+       answer "say".
+
+       Once you have answered the last question stubbed out code is placed in the sample
+       directory including configuration files and make files. autoreconf is run, 
+       configure is run, and make is run. You could then start the bes to load your
+       module, but nothing would happen. You could enter the built in commands of the BES,
+       such as "show version;".
+
+    3. What was just created?
+       
+       3.1. A Module class was created called SampleModule. This module class is loaded by
+            the BES dynamically by adding the following to the bes.conf file (this has
+	    already been done, so you don't have to do this.)
+
+	    BES.modules=say
+	    BES.module.say=./.libs/libsample_module.so
+
+	    This tells the BES that you have a module to load called say. The second line
+	    tells the BES where to find the shared object library. Notice that there are
+	    no version numbers in this shared object library. In the Makefile.am file we
+	    specify that we don't want version information and to build the library as a
+	    shared object module:
+
+	    libsample_module_la_LDFLAGS = -avoid-version -module 
+
+	    The SampleModule class implements an initialize and terminate method. The
+	    initialize method is where you add all of your extensions to the BES. For
+	    this example we've added a new request handler, a new command, and a
+	    response handler to handle that new command.
+
+       3.2. A request handler class was created called SampleRequestHandler. This
+            request handler class knows how to fill in certain responses. Although in
+	    our example the response to the say command is filled in by the response
+	    handler itself. If you are implementing a new data handler then you would
+	    write code in this request handler that knows how to fill in a DAP2 object
+	    for a new type of data file.
+
+	    Your request handler does know how to fill in help and version information.
+	    We'll write in a little code to provide help information for your new
+	    command.
+
+       3.3. A new command class was created called SampleSayCommand. This class knows 
+            how to parse a command string for your new command. We store information
+	    in the BESDataHandlerInterface structure for use later in the BES
+	    processing.
+
+       3.4. A new response handler class is created called SampleSayResponseHandler.
+            This class know what type of response object to create and knows how to
+	    fill it in or knows how to get it filled in. For this example, the
+	    response handler will fill in the response object. If you were writing a
+	    new response type for data access, such as data returned in tabbed format,
+	    or comma separated, then you would delegate filling in the response object
+	    to the request handlers.
+
+    4. Now we will add the code to respond to a "say hello to world;" command.
+
+       4.1. Edit the SampleSayCommand.cc file. After the line that says:
+
+	    // Here is where your code would parse the tokens
+
+	    add the following code:
+
+	    dhi.data[SAY_WHAT] = my_token ;
+
+	    // Next token should be the token "to"
+	    my_token = tokenizer.get_next_token() ;
+	    if( my_token != "to" )
+	    {
+		tokenizer.parse_error( my_token + " not expected\n" ) ;
+	    }
+
+	    // Next token should be what is being said
+	    my_token = tokenizer.get_next_token() ;
+	    if( my_token == ";" )
+	    {
+		tokenizer.parse_error( my_token + " not expected\n" ) ;
+	    }
+	    dhi.data[SAY_TO] = my_token ;
+
+	    --------------
+
+	    This will take the next token in the command as what is being said.
+	    The next token should be the word "to". And the next word is
+	    to whom we are saying this to.
+
+	    Now, at the top of the file add this include:
+
+	    #include "SampleResponseNames.h"
+
+       4.2. Edit the SampleResponseNames.h file. After the last macro definition
+            add the following:
+
+	    #define SAY_WHAT "say_what"
+	    #define SAY_TO "say_to"
+
+	    This way we can keep straight what the variable names are when we
+	    use them later.
+
+       4.3. Edit the SampleSayResponseHandler.cc file. After the line that reads:
+
+	    // Here is where your code would fill in the new response object
+
+	    add the following code:
+
+	    info->begin_response( SAY_RESPONSE ) ;
+	    string str = dhi.data[ SAY_WHAT ] + " " + dhi.data[ SAY_TO ] ;
+	    info->add_tag( "text", str ) ;
+	    info->end_response() ;
+
+	    ------------------
+
+	    This code will add a response to the informational response object.
+	    We are just going to repeat back what was said.
+
+	    Now, at the top of the file add this include:
+
+	    #include "SampleResponseNames.h"
+
+       4.4. Edit the SampleRequestHandler.cc file.
+
+            Since we are filling in the response object in the response handler
+	    we do not need the static function sample_build_say. Remove the
+	    line that reads:
+
+	    add_handler( SAY_RESPONSE, SampleRequestHandler::sample_build_say ) ;
+
+	    And remove the function definition:
+
+	    bool
+	    SampleRequestHandler::sample_build_say( BESDataHandlerInterface &dhi )
+	    {
+		bool ret = true ;
+
+		// Your code goes here
+
+		return ret ;
+	    }
+
+	    Edit the SampleRequestHandler.h file. Remove the static function declaration:
+
+	    static bool		sample_build_say( BESDataHandlerInterface &dhi ) ;
+
+       4.5. Add help information. Edit SampleRequestHandler.cc again. Go to the
+            sample_build_help function. You can see here that we are adding help
+	    information from a file specified by the Sample.Help.x parameter in the
+	    BES configuration file. The .x is one of .XML, .HTML, or .TXT depending
+	    on the parameter BES.Info.Type in the BES configuration file.
+
+	    info->begin_tag("info");
+	    info->add_data_from_file( "Sample.Help", "Sample Help" ) ;
+	    info->end_tag("info");
+
+	    All we have to do now is create the help files. So edit sample_help.txt
+	    in the current directory and add the following:
+
+	    Commands added in the Sample Module
+
+	        say <something> to <someone>;
+		    * response is informational <something> <someone>
+		    * example: "say hello to world;" responds with "hello world".
+
+	    Now create the file sample_help.html and add the following:
+
+	    <DIV STYLE="font-weight:none;font-size:12pt;color:black;">
+		Commands added in the Sample Module
+		<UL>
+		    <LI>
+			say &lt;something&gt; to &lt;someone&gt;;
+			<UL><LI>response is informational &lt;something&gt; &lt;someone&gt;</LI></UL>
+			<UL><LI>example: "say hello to world;" responds with "hello world"</LI></UL>
+		    </LI>
+		</UL>
+	    </DIV>
+
+    5. Now we're ready to build, run, and test.
+
+       % make
+       % besctl start -c ./bes.conf
+       BES install directory: <prefix>/bin
+       Starting the BES
+       OK: Succesfully started the BES
+       PID: <process_id> UID: <uid of process>
+       % bescmdln -h localhost -p 10002
+
+
+       Type 'exit' to exit the command line client and 'help' or '?' to display the help screen
+
+       BESClient> say hello to world;
+       <?xml version="1.0" encoding="UTF-8"?>
+       <say>
+	   <response>
+	       <text>hello world</text>
+	   </response>
+       </say>
+       BESClient> show help;
+       ...
+            <Handler>
+                <name>sample_module</name>
+                <version>sample_module 1.0.0</version>
+                <info>
+                    <DIV STYLE="font-weight:none;font-size:12pt;color:black;">                    
+                        Commands added in the Sample Module                    
+                        <UL>                    
+                        <LI>                    
+                            say &lt;something&gt; to &lt;someone&gt;;                    
+                            <UL><LI>response is informational &lt;something&gt; &lt;someone&gt;</LI></UL>                    
+                            <UL><LI>example: "say hello to world;" responds with "hello world"</LI></UL>                    
+                        </LI>                    
+                        </UL>                    
+                    </DIV>                    
+		</info>
+	    </Handler>
+       ...
+       BESClient> exit
+       % besctl stop
+       BES install directory: <prefix>/bin
+       Shutting down the BES daemon
+       Successfully shut down the BES
+
+    6. Now let's add a reporter to keep track of what is being said to whom
+
+       6.1. Copy over the SayReporter.h and SayReporter.cc files
+
+	    % cp ../hello_world/SayReporter.* .
+
+	    Take a look at SayReporter.cc. In the constructor we look for a
+	    configuration paratmeter called Say.LogName. This will tell us
+	    where to write the logged information.
+
+       6.2. Edit the bes.conf file. At the very bottom add the following line:
+
+	    Say.LogName=./say.log
+
+       6.3. Take a look again at SayReporter.cc. This time, look at the report method.
+	    This method will write out the current date and time, and then finds
+	    the SAY_WHAT and SAY_TO variables in the BESDataHandlerInterface structure's
+	    data variable. It writes this information out to the file.
+
+       6.4. Edit Makefile.am to add the two new files. Add the source file to the
+	    BES_SRCS variable and the header file to the BES_HDRS variable.
+
+       6.5. Edit the SampleModule.cc file to extend the BES with this new reporter.
+
+	    Add the includes:
+
+	    #include "BESReporterList.h"
+	    #include "SayReporter.h"
+
+	    Add the following code before // INIT_END
+
+	    BESDEBUG( "say", "    adding Say reporter" << endl )
+	    BESReporterList::TheList()->add_reporter( modname, new SayReporter ) ;
+
+	    This will add the reporter to the list of reporters reporting on
+	    commands going through the BES. We could have added code to SayRepoter.cc
+	    to check to make sure the command was actually the say command.
+
+       6.6. build and test again.
+
+            % make
+	    % besctl start -c bes.conf
+	    BES install directory: <prefix>/bin
+	    Starting the BES
+	    OK: Succesfully started the BES
+	    PID: <process_id> UID: <uid of process>
+	    % bescmdln -h localhost -p 10002
+
+
+	    Type 'exit' to exit the command line client and 'help' or '?' to display the help screen
+
+	    BESClient> say hello to world;
+	    <?xml version="1.0" encoding="UTF-8"?>
+	    <say>
+	       <response>
+		   <text>hello world</text>
+	       </response>
+	    </say>
+	    BESClient> exit
+	    % besctl stop
+	    BES install directory: <prefix>/bin
+	    Shutting down the BES daemon
+	    Successfully shut down the BES
+
+	    This time we will check to see that the say.log file exists.
+
+	    % cat say.log
+	    [MDT Thu Oct 25 22:58:14 2007] "hello" said to "world"
 

@@ -77,15 +77,6 @@ BUILD REQUIREMENTS
     packages, but only DarwinPorts seems to resolve the issues. We continue
     to watch this issue and hope to get it resolved soon.
 
-  o If you are concerned about introducing problems with your OS's package
-    system, build and install curl, et c., into a special directory (e.g.,
-    /opt/opendap/) and then be sure to set PATH to include the curl-config
-    and xml2-config scripts before running configure (e.g., run configure as
-    'PATH="$PATH:/opt/opendap/bin';./configure'). You probably should install
-    libdap.a under /opt/opendap as well, so set prefix to that path:
-    
-	'PATH="$PATH:/opt/opendap/bin';./configure --prefix=/opt/opendap'
-
   o You should have gcc/g++ 3.3.x or greater. You'll also need to get the
     stdc++ library that matches the compiler (whatever version). NB: gcc
     2.8.x and earlier *won't* build the software. We're working on modifying
@@ -95,47 +86,34 @@ BUILD REQUIREMENTS
 
 NOTES
 
-  o If you are building on a new platform (one for which we don't supply
-    binaries), please run the tests and tell us about any failures. To do a
-    really complete job of this you'll need to get the GNU test system called
-    DejaGNU and the CppUnit unit testing package. It is very simple to
-    install these and we're very willing to help, so don't be shy!
+  o To test do the following:
+
+    % besctl start -c ./bes.conf
+    % bescmdln -h localhost -p 10002
+    BESClient> say hello to world;
+    <?xml version="1.0" encoding="UTF-8"?>
+    <say>
+	<response>
+	    <text>hello world</text>
+	</response>
+    </say>
+    BESClient> exit;
+    % cat say.log
+    [MDT Thu Oct 25 21:55:57 2007] "hello" said to "world"
 
   o If you are developing code that uses the DAP, get autoconf and SVN. We
     maintain a SVN-managed source tree that people outside the group may
     access. See http://scm.opendap.org:8090/trac/
 
-  o The gnulib software is used to provide replacement functions when
-    autoconf detects that is necessary. To update the gnulib, check it out
-    from CVS and run '$gnulib_home/gnulib-tool --lgpl --import' in this
-    directory. Macros in configure.ac supply gnulib-tool with all the
-    information it needs. Only developers working on libdap should ever have
-    to do this.
-
-  o To build a rpm file for a source or binary distribution: 1) Use 'make
-    dist' to build a *.tar.gz file; 2) Copy that to ~/rpm/SOURCES,
-    and; 3) Run 'rpmbuild -ts ~/rpm/SOURCES/libdap-3.5.1.tar.gz' to make the
-    source package. Use '-tb' to make the binary package. I use a
-    ~/.rpmmacros file that contains:
-
-	%_topdir		/home/jimg/rpm
-	%_tmppath               /home/jimg/rpm/tmp
-	
-    Or, use the 'rpm' target in the Makefile.
-
   o DEBUGGING AIDS
 
     - Debugging is built in to the BES and does not require any special
       debug flags during compile time. To activate debugging in the BES,
-      simpy use the -d cerr|<filename> option to besctl, besdaemon, and
-      beslistener. You should just need to use besctl. You can either
-      specify cerr or a file name with the -d option. If you specify cerr
-      then debug output will go to standard error. If you specify a file
-      name, then debug output will go to that file. You can not specify
-      cout, as standard output is redirected to the socket.
+      simpy use the -d "./bes.debug,sample" option to besctl. Debugging
+      will go to the file ./bes.debug
 
-    - You can also check the BES log file, where the location is specified
-      in the BES configuration file. There might be some useful information
+    - You can also check the BES log file, the location specified in the
+      BES configuration file. There might be some useful information
       in that file.
 
 CONFIGURATION
@@ -152,4 +130,8 @@ CONFIGURATION
 
       BES_CONF=./bes.conf
       export BES_CONF
+
+      or use the -c option on the command line:
+
+      % besctl start -c ./bes.conf
 
