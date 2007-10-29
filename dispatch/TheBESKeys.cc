@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "sys/stat.h"
 #include "TheBESKeys.h"
 #include "BESKeysException.h"
 #include "config.h"
@@ -45,14 +46,34 @@ BESKeys *TheBESKeys::TheKeys()
         string use_ini = TheBESKeys::ConfigFile;
         if (use_ini == "") {
             char *ini_file = BES_CONF;
-            if (!ini_file) {
-                ini_file = BES_CONF_DIR;
-                if (!ini_file) {
-                    string s = "Can not load environment variable BES_CONF";
-                    throw BESKeysException(s, __FILE__, __LINE__);
-                } else {
-                    use_ini = (string) ini_file + "/bes.conf";
-                }
+            if (!ini_file)
+	    {
+		string try_ini = "/usr/local/etc/bes/bes.conf" ;
+		struct stat buf;
+		int statret = stat( try_ini.c_str(), &buf ) ;
+		if ( statret == -1 || !S_ISREG( buf.st_mode ) )
+		{
+		    try_ini = "/etc/bes/bes.conf" ;
+		    int statret = stat( try_ini.c_str(), &buf ) ;
+		    if ( statret == -1 || !S_ISREG( buf.st_mode ) )
+		    {
+			string s = (string)"Unable to locate BES config file. "
+				+ "Please either pass -c "
+				+ "option when starting the BES, set "
+				+ "the environment variable BES_CONF, "
+				+ "or install in /usr/local/etc/bes/bes.conf "
+				+ "or /etc/bes/bes.conf." ;
+			throw BESKeysException(s, __FILE__, __LINE__);
+		    }
+		    else
+		    {
+			use_ini = try_ini ;
+		    }
+		}
+		else
+		{
+		    use_ini = try_ini ;
+		}
             } else {
                 use_ini = ini_file;
             }

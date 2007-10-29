@@ -28,7 +28,7 @@ bin_PROGRAMS = besregex
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 # Defined here because configure does not have the value of $sysconfdir. jhrg
-libbes_dispatch_la_CPPFLAGS = -DBES_CONF_DIR=\"${sysconfdir}/bes\"
+libbes_dispatch_la_CPPFLAGS = 
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_CPPFLAGS = $(DAP_CFLAGS)
