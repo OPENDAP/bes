@@ -57,13 +57,22 @@ BESKeys *TheBESKeys::TheKeys()
 		    int statret = stat( try_ini.c_str(), &buf ) ;
 		    if ( statret == -1 || !S_ISREG( buf.st_mode ) )
 		    {
-			string s = (string)"Unable to locate BES config file. "
-				+ "Please either pass -c "
-				+ "option when starting the BES, set "
-				+ "the environment variable BES_CONF, "
-				+ "or install in /usr/local/etc/bes/bes.conf "
-				+ "or /etc/bes/bes.conf." ;
-			throw BESKeysException(s, __FILE__, __LINE__);
+			try_ini = "/usr/etc/bes/bes.conf" ;
+			int statret = stat( try_ini.c_str(), &buf ) ;
+			if ( statret == -1 || !S_ISREG( buf.st_mode ) )
+			{
+			    string s = (string)"Unable to locate BES config file. "
+				    + "Please either pass -c "
+				    + "option when starting the BES, set "
+				    + "the environment variable BES_CONF, "
+				    + "or install in /usr/local/etc/bes/bes.conf "
+				    + "or /etc/bes/bes.conf." ;
+			    throw BESKeysException(s, __FILE__, __LINE__);
+			}
+			else
+			{
+			    use_ini = try_ini ;
+			}
 		    }
 		    else
 		    {
@@ -82,3 +91,4 @@ BESKeys *TheBESKeys::TheKeys()
     }
     return _instance;
 }
+
