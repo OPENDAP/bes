@@ -139,23 +139,28 @@ findRunningBES()
 checkPS()
 {
 
-UCB_PS="ps -axww -o user,pid,command"
+# According to the OS/X man page, the UCB version of ps should not use the 
+# dash in front of its options. On OS/X this prints a warning. jimg 10/29/07
+UCB_PS="ps axww -o user,pid,command"
 SYSTEM_V_PS="ps -ef -o user,pid,comm"
 
 
 #echo "Checking ps syntax"
 
-$UCB_PS > /dev/null
+# I switched so that System V is tested first. This is because OS/X supports
+# both syntaxes in a somewhat odd way and mentions that support for UCB might
+# be removed in the future. jimg 10/29/07
+$SYSTEM_V_PS > /dev/null
 if  [ $? == 0 ]
 then 
-    PS=$UCB_PS
-    #echo "Using UCB ps syntax"
+    PS=$SYSTEM_V_PS
+    #echo "Using System V ps syntax"
 else
-    $SYSTEM_V_PS > /dev/null 
+    $UCB_PS > /dev/null     
     if  [ $? == 0 ]
     then 
-        PS=$SYSTEM_V_PS
-        #echo "Using System V ps syntax"
+        PS=$UCB_PS
+        #echo "Using UCB ps syntax"
     else
         echo "Cannot determine a functional version of \"ps\" command. Exiting."
         exit 1
