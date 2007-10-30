@@ -116,18 +116,20 @@ ServerApp::initialize( int argc, char **argv )
 {
     int c = 0 ;
     bool needhelp = false ;
+    string dashi ;
+    string dashc ;
 
     // If you change the getopt statement below, be sure to make the
-    // corresponding change in daemon.cc
+    // corresponding change in daemon.cc and besctl.in
     while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
     {
 	switch( c )
 	{
 	    case 'i':
-		// ignore this flag, used in besdaemon launch to find this app
+		dashi = optarg ;
 		break ;
 	    case 'c':
-		TheBESKeys::ConfigFile = optarg ;
+		dashc = optarg ;
 		break ;
 	    case 'p':
 		_portVal = atoi( optarg ) ;
@@ -151,6 +153,26 @@ ServerApp::initialize( int argc, char **argv )
 		needhelp = true ;
 		break ;
 	}
+    }
+
+    // If the -c optiion was passed, set the config file
+    // name in TheBESKeys
+    if( !dashc.empty() )
+    {
+	TheBESKeys::ConfigFile = dashc ;
+    }
+
+    // If the -c option was not passed, but the -i option
+    // was passed, then use the -i option to construct
+    // the path to the config file
+    if( dashc.empty() && !dashi.empty() )
+    {
+	if( dashi[dashi.length()-1] != '/' )
+	{
+	    dashi += '/' ;
+	}
+	string conf_file = dashi + "etc/bes/bes.conf" ;
+	TheBESKeys::ConfigFile = conf_file ;
     }
 
     bool found = false ;

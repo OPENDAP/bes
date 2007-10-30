@@ -15,7 +15,6 @@ then
     echo "BES does not appear to be installed in ${prefix}"
     exit 1
 fi
-echo "BES install directory: ${prefix}"
 
 ###########################################################################
 #
@@ -35,14 +34,19 @@ startBES()
 	if [ $WRITE_PID ]
 	then
 	    "${bindir}"/besdaemon $otherArgs
-	    sleep 5
-	    findRunningBES
-	    if [ $BES_RUNNING ]
+	    if [ $? != 0 ]
 	    then
-		echo "OK: Successfully started the BES"
-		cat "${localstatedir}"/run/bes.pid
-	    else
 		echo "FAILED: The BES daemon did not appear to start"
+	    else
+		sleep 5
+		findRunningBES
+		if [ $BES_RUNNING ]
+		then
+		    echo "OK: Successfully started the BES"
+		    cat "${localstatedir}"/run/bes.pid
+		else
+		    echo "FAILED: The BES daemon did not appear to start"
+		fi
 	    fi
 	fi
     fi
@@ -193,6 +197,73 @@ checkPS
 what=$1
 shift
 otherArgs=$*
+
+###########################################################################
+#
+# Check for the BES command line options
+# Any changes made here also need to be changed in daemon.cc and
+# ServerApp.cc
+#
+#..........................................................................
+dashi="no"
+dashc="no"
+args=`getopt hvsd:c:p:u:i: $*`
+if [ $? != 0 ]
+then
+    echo 'Usage: ...'
+    exit 2
+fi
+set -- $args
+
+for param
+do
+    case $param in
+	-i)
+	    prefix=$2
+	    localstatedir=${prefix}/var
+	    bindir=${prefix}/bin
+	    dashi="yes"
+	    shift
+	    shift
+	    ;;
+	-c)
+	    dashc=$2
+	    shift
+	    shift
+	    ;;
+	-d|-p|-u)
+	    shift
+	    shift
+	    ;;
+	-h|-v|-s)
+	    shift
+	    ;;
+	--)
+	    shift
+	    break;;
+    esac
+done
+
+echo "BES install directory: ${prefix}"
+
+if [ "$dashi" == "no" ]
+then
+    otherArgs="${otherArgs} -i ${prefix}"
+fi
+
+if [ "$dashc" == "no" ]
+then
+    if [ $BES_CONF ]
+    then
+	echo "BES configuration file: ${BES_CONF}"
+	otherArgs="${otherArgs} -c ${BES_CONF}"
+    else
+	echo "BES configuration file: ${prefix}/etc/bes/bes.conf"
+	otherArgs="${otherArgs} -c ${prefix}/etc/bes/bes.conf"
+    fi
+else
+    echo "BES configuration file: $dashc"
+fi
 
 case $what in
 stop)

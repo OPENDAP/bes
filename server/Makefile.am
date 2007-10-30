@@ -24,7 +24,7 @@ beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
 beslistener_LDADD = $(SERVER_LIBS) $(openssl_libs)
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
-besdaemon_CPPFLAGS = $(AM_CPPFLAGS) -DBES_BIN_DIR=\"${bindir}\" -DBES_STATE_DIR=\"${localstatedir}\"
+besdaemon_CPPFLAGS = $(AM_CPPFLAGS)
 
 besdaemon_LDADD = $(SERVER_LIBS) $(openssl_libs)
 

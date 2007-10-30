@@ -14,8 +14,10 @@ void
 BESServerUtils::show_usage( const string &app_name )
 {
     cout << app_name
-         << ": -c <CONFIG> -d <STREAM> -h -p <PORT> -s -u <UNIX_SOCKET> -v"
+         << ": -i <INSTALL_DIR> -c <CONFIG> -d <STREAM> -h "
+	 << "-p <PORT> -s -u <UNIX_SOCKET> -v"
 	 << endl << endl ;
+    cout << "-i back-end server installation directory" << endl ;
     cout << "-c use back-end server configuration file CONFIG" << endl ;
     cout << "-d set debugging to cerr or <filename>" << endl ;
     cout << "-h show this help screen and exit" << endl ;

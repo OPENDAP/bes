@@ -79,7 +79,7 @@ main(int argc, char *argv[])
     string install_dir ;
 
     // If you change the getopt statement below, be sure to make the
-    // corresponding change in ServerApp.cc
+    // corresponding change in ServerApp.cc and besctl.in
     int c = 0 ;
     while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
     {
@@ -321,8 +321,22 @@ load_names( const string &install_dir )
 	}
 	else
 	{
-	    server_name = BES_BIN_DIR ;
-	    file_for_listener = BES_STATE_DIR ;
+	    string prog = NameProgram ;
+	    string::size_type slash = prog.find_last_of( '/' ) ;
+	    if( slash != string::npos )
+	    {
+		server_name = prog.substr( 0, slash ) ;
+		slash = prog.find_last_of( '/' ) ;
+		if( slash != string::npos )
+		{
+		    string root = prog.substr( 0, slash ) ;
+		    file_for_listener = root + "/var" ;
+		}
+		else
+		{
+		    file_for_listener = server_name ;
+		}
+	    }
 	}
     }
     if( server_name == "" )
