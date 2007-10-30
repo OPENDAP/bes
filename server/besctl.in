@@ -214,7 +214,8 @@ status)
     cat "${localstatedir}"/run/bes.pid
     ;;
 *)
-    echo "USAGE: besctl (start|stop|restart|status)"
+    echo "USAGE: besctl (start|stop|restart|status) [options]"
+    echo "where [options] are passed to besdaemon; see besdaemon -h"
     exit 1
     ;;
 esac
