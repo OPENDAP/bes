@@ -154,13 +154,13 @@ SYSTEM_V_PS="ps -ef -o user,pid,comm"
 # I switched so that System V is tested first. This is because OS/X supports
 # both syntaxes in a somewhat odd way and mentions that support for UCB might
 # be removed in the future. jimg 10/29/07
-$SYSTEM_V_PS > /dev/null
+$SYSTEM_V_PS > /dev/null 2>&1
 if  [ $? == 0 ]
 then 
     PS=$SYSTEM_V_PS
     #echo "Using System V ps syntax"
 else
-    $UCB_PS > /dev/null     
+    $UCB_PS > /dev/null 2>&1
     if  [ $? == 0 ]
     then 
         PS=$UCB_PS
