@@ -1,0 +1,5 @@
+The data:
+UInt32 /Group1/Dataset1[4] = {0, 3, 6, 9};
+Byte /Group1/Dataset2[4] = {0, 0, 0, 0};
+Url /ZZZDataset3[3] = {"/Group1/Dataset1", "/Group1/Dataset2", "/Group1"};
+

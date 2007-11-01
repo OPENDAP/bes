@@ -645,6 +645,9 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	  at = das.add_table(varname, new AttrTable);
 	parser_arg arg(at);
 	DBG(cerr << eos.metadata_subset << endl);
+	// cerr << "Comes here" << endl;
+	// cerr << eos.metadata_subset << endl;
+	// cerr << "Comes here2" << endl;
 	hdfeos_das_scan_string(eos.metadata_subset);
 
 	if (hdfeos_dasparse(static_cast < void *>(&arg)) != 0

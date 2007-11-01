@@ -136,12 +136,11 @@ bool H5EOS::check_eos(hid_t id)
       hdfeos_scan_string(metadata_Struct);
       hdfeosparse(this);
 #ifdef NASA_EOS_META
-       set_metadata(id,"coremetadata", metadata_core);
-       set_metadata(id,"CoreMetadata", metadata_Core);
-       set_metadata(id,"ArchivedMetadata", metadata_Archived);
-       set_metadata(id,"subsetMetadata", metadata_subset);
-       set_metadata(id,"productmetadata", metadata_product);       
-	      
+      set_metadata(id,"coremetadata", metadata_core);
+      set_metadata(id,"CoreMetadata", metadata_Core);
+      set_metadata(id,"ArchivedMetadata", metadata_Archived);
+      set_metadata(id,"subsetmetadata", metadata_subset);
+      set_metadata(id,"productmetadata", metadata_product);       
 #endif      
     }
 	

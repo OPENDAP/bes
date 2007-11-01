@@ -12,6 +12,13 @@ set verbose 0
 
 dap_hdf5_handler_version 
 
+dap_hdf5_handler_all "${testdir}" "tdatareg"
+
+dap_hdf5_handler_all "${testdir}" "tobjref"
+
+dap_hdf5_handler_all "${testdir}" "tref" 
+dap_hdf5_handler_all "${testdir}" "SDS"
+
 dap_hdf5_handler_all "${testdir}" "point_Object"
 
 dap_hdf5_handler_all "${testdir}" "Point"
@@ -24,11 +31,11 @@ dap_hdf5_handler_all "${testdir}" "Grid" {/HDFEOS/GRIDS/UTMGrid/Data%20Fields/Ve
 
 # dap_hdf5_handler_no_data "${testdir}" "tloop"
 
-# dap_hdf5_handler_all "${testdir}" "tstring-at"
+dap_hdf5_handler_all "${testdir}" "tstring-at"
 
 dap_hdf5_handler_all "${testdir}" "tstr"
 
-# dap_hdf5_handler_all "${testdir}" "tstr2"
+dap_hdf5_handler_all "${testdir}" "tstr2"
 
 dap_hdf5_handler_no_data "${testdir}" "tslink"
 
@@ -72,6 +79,4 @@ dap_hdf5_handler_all "${testdir}" "tdset"
 
 dap_hdf5_handler_all "${testdir}" "test1"
 
-# dap_hdf5_handler_all "${testdir}" "GridFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
-# dap_hdf5_handler_all "${testdir}" "PointFile" {UTMGrid.Data%20Fields.Vegetation\[0:5\]\[0:5\]}
 
