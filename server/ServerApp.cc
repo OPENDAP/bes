@@ -32,6 +32,8 @@
 
 #include <signal.h>
 #include <unistd.h>
+#include <grp.h>
+#include <pwd.h>
 
 #include <iostream>
 #include <fstream>
@@ -111,9 +113,143 @@ ServerApp::signalRestart( int sig )
     }
 }
 
+void
+ServerApp::set_group_id()
+{
+#if !defined(OS2) && !defined(TPF)
+    // OS/2 and TPF don't support groups.
+
+    // get group id or name from BES configuration file
+    // If BES.Group begins with # then it is a group id,
+    // else it is a group name and look up the id.
+    BESDEBUG( "server", "ServerApp: Setting group id ... " )
+    bool found = false ;
+    string key = "BES.Group" ;
+    string group_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( !found || group_str.empty() )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: Group not specified in BES configuration file"
+	     << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "server", "to " << group_str << " ... " )
+
+    gid_t new_gid = 0 ;
+    if( group_str[0] == '#' )
+    {
+	// group id starts with a #, so is a group id
+	const char *group_c = group_str.c_str() ;
+	group_c++ ;
+	new_gid = atoi( group_c ) ;
+    }
+    else
+    {
+	// specified group is a group name
+	struct group *ent ;
+	ent = getgrnam( group_str.c_str() ) ;
+	if( !ent )
+	{
+	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    cerr << "FAILED: Group " << group_str << " does not exist" << endl ;
+	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	}
+	new_gid = ent->gr_gid ;
+    }
+
+    if( new_gid < 1 )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: Group id " << new_gid
+	     << " not a valid group id for BES" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
+    BESDEBUG( "server", "to id " << new_gid << " ... " )
+    if( setgid( new_gid ) == -1 )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: unable to set the group id to " << new_gid << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
+    BESDEBUG( "server", "OK" << endl ) ;
+#else
+    BESDEBUG( "server", "ServerApp: Groups not supported in this OS" )
+#endif
+}
+
+void
+ServerApp::set_user_id()
+{
+    BESDEBUG( "server", "ServerApp: Setting user id ... " )
+
+    // Get user name or id from the BES configuration file.
+    // If the BES.User value begins with # then it is a user
+    // id, else it is a user name and need to look up the
+    // user id.
+    bool found = false ;
+    string key = "BES.User" ;
+    string user_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( !found || user_str.empty() )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: User not specified in BES configuration file"
+	     << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "server", "to " << user_str << " ... " )
+
+    uid_t new_id = 0 ;
+    if( user_str[0] == '#' )
+    {
+	const char *user_str_c = user_str.c_str() ;
+	user_str_c++ ;
+	new_id = atoi( user_str_c ) ;
+    }
+    else
+    {
+	struct passwd *ent ;
+	ent = getpwnam( user_str.c_str() ) ;
+	if( !ent )
+	{
+	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    cerr << "FAILED: Bad user name specified: "
+		 << user_str << endl ;
+	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	}
+	new_id = ent->pw_uid ;
+    }
+
+    // new user id can not be root (0)
+    if( !new_id )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: BES can not run as root" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
+    BESDEBUG( "server", "to " << new_id << " ... " )
+    if( setuid( new_id ) == -1 )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	cerr << "FAILED: Unable to set user id to "
+	     << new_id << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+}
+
 int
 ServerApp::initialize( int argc, char **argv )
 {
+    // must be root to run this app and to set user id and group id later
+    uid_t curr_euid = geteuid() ;
+    if( curr_euid )
+    {
+	cerr << "FAILED: Must be root to run BES" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
     int c = 0 ;
     bool needhelp = false ;
     string dashi ;
@@ -261,7 +397,15 @@ ServerApp::initialize( int argc, char **argv )
     BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
 
     if( needhelp )
+    {
 	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
+    }
+
+    // Now that we have loaded all modules and given them the chance to initialize
+    // set the user id and the group id to what is specified in the BES
+    // configuration file.
+    set_group_id() ;
+    set_user_id() ;
 
     return ret ;
 }

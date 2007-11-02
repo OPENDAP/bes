@@ -36,6 +36,8 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <fstream>
 #include <iostream>
@@ -74,6 +76,14 @@ char **arguments = 0 ;
 int
 main(int argc, char *argv[])
 {
+    // must be root to run this app and to set user id and group id later
+    uid_t curr_euid = geteuid() ;
+    if( curr_euid )
+    {
+	cerr << "FAILED: Must be root to run BES" << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
     NameProgram = argv[0] ;
 
     string install_dir ;
@@ -296,6 +306,8 @@ store_listener_id( int pid )
     {
 	f << "PID: " << pid << " UID: " << getuid() << endl ;
 	f.close() ;
+	mode_t new_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ;
+	chmod( file_for_listener.c_str(), new_mode ) ;
     }
 }
 

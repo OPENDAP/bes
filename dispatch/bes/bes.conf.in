@@ -14,6 +14,18 @@
 BES.ServerAdministrator=admin.email.address@your.domain.name
 
 #-----------------------------------------------------------------------#
+# User and Group to run the BES as					#
+#-----------------------------------------------------------------------#
+# Notes:
+# 1. The user_name and group_name can be user and group ids. To use
+# a user or group id specify the id with the '#' character in front.
+# For example:
+# BES.User=#172
+# BES.Group=#14
+BES.User=user_name
+BES.Group=group_name
+
+#-----------------------------------------------------------------------#
 # Where we log the stuff...and how much we log                          #
 #-----------------------------------------------------------------------#
 BES.LogName=./bes.log
