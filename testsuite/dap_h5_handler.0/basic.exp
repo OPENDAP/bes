@@ -12,11 +12,12 @@ set verbose 0
 
 dap_hdf5_handler_version 
 
-dap_hdf5_handler_all "${testdir}" "tdatareg"
+# dap_hdf5_handler_all "${testdir}" "tdatareg"
 
-dap_hdf5_handler_all "${testdir}" "tobjref"
+# dap_hdf5_handler_all "${testdir}" "tobjref"
 
-dap_hdf5_handler_all "${testdir}" "tref" 
+# dap_hdf5_handler_all "${testdir}" "tref" 
+
 dap_hdf5_handler_all "${testdir}" "SDS"
 
 dap_hdf5_handler_all "${testdir}" "point_Object"
