@@ -1,4 +1,4 @@
-// besregex.cc
+// besregtest.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -52,12 +52,12 @@ usage( const string &prog )
 {
     cout << "Usage: " << prog << " include|exclude|type <regular_expression> <string_to_match>" << endl ;
     cout << "  samples:" << endl ;
-    cout << "    besregex include \"123456;\" 01234567 matches 6 of 8 characters" << endl ;
-    cout << "    besregex include \"^123456$;\" 01234567 does not match" << endl ;
-    cout << "    besregex include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl ;
-    cout << "    besregex include \".*\\.nc$;\" fnoc1.nc matches" << endl ;
-    cout << "    besregex include \".*\\.nc$;\" fnoc1.ncd does not matche" << endl ;
-    cout << "    besregex type \"nc:.*\\.nc$;nc:.*\\.nc\\.gz$;ff:.*\\.dat$;ff:.*\\.dat\\.gz$;\" fnoc1.nc matches type nc" << endl ;
+    cout << "    besregtest include \"123456;\" 01234567 matches 6 of 8 characters" << endl ;
+    cout << "    besregtest include \"^123456$;\" 01234567 does not match" << endl ;
+    cout << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl ;
+    cout << "    besregtest include \".*\\.nc$;\" fnoc1.nc matches" << endl ;
+    cout << "    besregtest include \".*\\.nc$;\" fnoc1.ncd does not matche" << endl ;
+    cout << "    besregtest type \"nc:.*\\.nc$;nc:.*\\.nc\\.gz$;ff:.*\\.dat$;ff:.*\\.dat\\.gz$;\" fnoc1.nc matches type nc" << endl ;
 }
 
 int
