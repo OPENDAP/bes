@@ -312,14 +312,14 @@ destroy()
                     isActivePID $DOOMED_PID
                     if [ "$?" == 1 ]
                     then 
-                        echo "Process $DOOMED_PID not responding to SIGKILL (THIS IS BAD). Retrying..."
+                        echo "Process $DOOMED_PID not responding to SIGKILL. Retrying..."
                         kill -9 $DOOMED_PID
                         sleep 5
                         isActivePID $DOOMED_PID
                         if [ "$?" == 1 ]
                         then 
-                            echo "Process $DOOMED_PID not responding to SIGKILL (THIS IS VERY BAD)."
-                            echo "Process $DOOMED_PID may now be a Zombie. Consider rebooting. (Sorry)"
+                            echo "Process $DOOMED_PID not responding to SIGKILL."
+                            echo "Unable to terminate process $DOOMED_PID."
                             exit 1
                         fi
                     fi
@@ -573,13 +573,13 @@ $SYSTEM_V_PS > /dev/null 2>&1
 if  [ $? == 0 ]
 then 
     PS=$SYSTEM_V_PS
-    #echo "Using System V ps syntax"
+    echo "Using System V ps syntax: $SYSTEM_V_PS"
 else
     $UCB_PS > /dev/null 2>&1
     if  [ $? == 0 ]
     then 
         PS=$UCB_PS
-        #echo "Using UCB ps syntax"
+        echo "Using UCB ps syntax: $UCB_PS"
     else
         echo "Cannot determine a functional version of \"ps\" command. Exiting."
         exit 1
