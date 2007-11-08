@@ -126,6 +126,11 @@ TcpSocket::connect()
 
     sin.sin_port = htons( _portVal ) ;
     pProtoEnt = getprotobyname( "tcp" ) ;
+    if( !pProtoEnt )
+    {
+	string err( "Error retreiving tcp protocol information" ) ;
+	throw SocketException( err, __FILE__, __LINE__ ) ;
+    }
     
     _connected = false;
     int descript = socket( AF_INET, SOCK_STREAM, pProtoEnt->p_proto ) ;

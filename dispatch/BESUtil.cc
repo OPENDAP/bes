@@ -1,3 +1,35 @@
+// BESUtil.cc
+
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
+
+// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact University Corporation for Atmospheric Research at
+// 3080 Center Green Drive, Boulder, CO 80301
+ 
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
+// Please read the full copyright statement in the file COPYRIGHT_UCAR.
+//
+// Authors:
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 
 #include <sstream>
 #include <iostream>
@@ -97,15 +129,11 @@ BESUtil::rfc822_date(const time_t t)
     struct tm *stm = gmtime(&t);
     char d[256];
 
-    sprintf(d, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], 
-	    stm->tm_mday, months[stm->tm_mon], 
-#if 0
-	    // On Solaris 2.7 this tm_year is years since 1900. 3/17/2000
-	    // jhrg
-	    stm->tm_year < 100 ? 1900 + stm->tm_year : stm->tm_year, 
-#endif
-	    1900 + stm->tm_year,
-	    stm->tm_hour, stm->tm_min, stm->tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday],
+            stm->tm_mday, months[stm->tm_mon],
+            1900 + stm->tm_year,
+            stm->tm_hour, stm->tm_min, stm->tm_sec);
+    d[255] = '\0';
     return string(d);
 }
 

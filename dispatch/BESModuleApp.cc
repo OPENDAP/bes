@@ -237,13 +237,11 @@ dump( ostream &strm ) const
 	BESIndent::Indent() ;
 	list< bes_module >::const_iterator i = _module_list.begin() ;
 	list< bes_module >::const_iterator e = _module_list.end() ;
-	bool any_loaded = false ;
 	for( ; i != e; i++ )
 	{
 	    bes_module curr_mod = *i ;
 	    strm << BESIndent::LMarg << curr_mod._module_name << ": "
 		 << curr_mod._module_library << endl ;
-	    any_loaded = true ;
 	}
 	BESIndent::UnIndent() ;
     }

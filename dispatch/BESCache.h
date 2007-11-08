@@ -41,6 +41,9 @@ using std::string ;
 
 class BESKeys ;
 
+#define MAX_LOCK_RETRY_MS 100
+#define MAX_LOCK_TRIES 16
+
 /** @brief Implementation of a caching mechanism.
  *
  * The caching mechanism simply allows the user to create a cache. Cached

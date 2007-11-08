@@ -150,7 +150,7 @@ PPTConnection::receive( ostream *strm )
     unsigned char markBuffer[termlen] ;
     markBufBytes = 0 ; // zero byte count in the mark buffer
 
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+termlen+1] ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
     bool done = false;
     while( !done )
     {

@@ -96,7 +96,7 @@ SSLConnection::receive( ostream *strm )
     bool isDone = false ;
     if( _connected )
     {
-	char retbuf[1024] ;
+	char retbuf[1025] ;
 	int retlen = SSL_read( _connection, (void *)retbuf, 1024 ) ;
 	if( retlen <= 0 )
 	{
@@ -113,6 +113,7 @@ SSLConnection::receive( ostream *strm )
 	}
 	else
 	{
+	    if( retlen > 1024 ) retlen = 1024 ;
 	    retbuf[retlen] = '\0' ;
 	    *strm << retbuf << flush ;
 	}

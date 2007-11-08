@@ -260,12 +260,8 @@ BESKeys::set_key( const string &key, const string &val )
 	(*_the_keys)[key] = val ;
 	return val ;
     }
-    else
-    {
-	(*i).second = val ;
-	return val ;
-    }
-    return "" ;
+    (*i).second = val ;
+    return val ;
 }
 
 /** @brief allows the user to set key/value pairs from within the application.

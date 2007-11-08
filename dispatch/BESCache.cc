@@ -174,6 +174,12 @@ BESCache::BESCache( BESKeys &keys,
 bool
 BESCache::lock( unsigned int retry, unsigned int num_tries )
 {
+    // make sure we aren't retrying too many times
+    if( num_tries > MAX_LOCK_TRIES )
+	num_tries = MAX_LOCK_TRIES ;
+    if( retry > MAX_LOCK_RETRY_MS )
+	retry = MAX_LOCK_RETRY_MS ;
+
     bool got_lock = true ;
     if( _lock_fd == -1 )
     {

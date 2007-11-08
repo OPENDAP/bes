@@ -37,10 +37,9 @@
 
 string
 BESCommand::parse_options( BESTokenizer &tokens,
-			       BESDataHandlerInterface &dhi )
+			   BESDataHandlerInterface &dhi )
 {
-    string my_token = tokens.get_next_token() ;
-    return my_token ;
+    return tokens.get_next_token() ;
 }
 
 BESCommand *BESCommand::TermCommand = new BESTermCommand( "term" ) ;

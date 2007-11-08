@@ -121,7 +121,7 @@ PPTClient::initConnection()
 	throw PPTException( msg, __FILE__, __LINE__ ) ;
     }
 
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
     int bytesRead = readBufferNonBlocking( inBuff ) ;
     if( bytesRead < 1 )
     {
@@ -129,6 +129,9 @@ PPTClient::initConnection()
 	throw PPTException( "Could not connect to server, server may be down or busy" , __FILE__, __LINE__) ;
     }
 
+    if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
+	bytesRead = PPT_PROTOCOL_BUFFER_SIZE ;
+    inBuff[bytesRead] = '\0' ;
     string status( inBuff, 0, bytesRead ) ;
     delete [] inBuff ;
 
@@ -158,14 +161,19 @@ PPTClient::authenticateWithServer()
     writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 
     // receive response with port, terminated with TERMINATE token
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
+    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
     int bytesRead = readBufferNonBlocking( inBuff ) ;
-    ostringstream portResponse( inBuff ) ;
-    delete [] inBuff ;
     if( bytesRead < 1 )
     {
 	throw PPTException( "Expecting secure port number response", __FILE__, __LINE__ ) ;
     }
+
+    if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
+	bytesRead = PPT_PROTOCOL_BUFFER_SIZE ;
+    inBuff[bytesRead] = '\0' ;
+    ostringstream portResponse( inBuff ) ;
+    delete [] inBuff ;
+
     int portVal = atoi( portResponse.str().c_str() ) ;
     if( portVal == 0 )
     {

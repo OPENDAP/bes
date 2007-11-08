@@ -206,7 +206,6 @@ PPTServer::authenticateClient()
 #ifdef HAVE_OPENSSL
     BESDEBUG( "ppt", "requiring secure connection: port = " << _securePort << endl )
     // let the client know that it needs to authenticate
-    int len = PPTProtocol::PPTSERVER_AUTHENTICATE.length() ;
     writeBuffer( PPTProtocol::PPTSERVER_AUTHENTICATE ) ;
 
     // wait for the client request for the secure port
@@ -224,7 +223,6 @@ PPTServer::authenticateClient()
     // send the secure port number back to the client
     ostringstream portResponse ;
     portResponse << _securePort << PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ;
-    len = portResponse.str().length() ;
     writeBuffer( portResponse.str() ) ;
 
     // create a secure server object and authenticate

@@ -143,11 +143,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     long int		 maxmaxcode;
     int			 n_bits;
     int			  rsize;
-    long                 bytes_in;
-    long                 bytes_out;
 
-    bytes_in = 0;
-    bytes_out = 0;
     insize = 0;
     
     BESDEBUG( "bes", "BESUncompressZ::uncompress - read file" << endl);	    
@@ -197,7 +193,6 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
     }
 
-    bytes_in = insize;
     maxcode = MAXCODE(n_bits = INIT_BITS)-1;
     bitmask = (1<<n_bits)-1;
     oldcode = -1;
@@ -371,8 +366,6 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 		
 		oldcode = incode;	/* Remember previous code.	*/
 	    }
-	    
-	    bytes_in += rsize;
 	}
 
     while( rsize > 0); /* end of do */

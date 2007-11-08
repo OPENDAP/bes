@@ -138,7 +138,8 @@ BESContainerStorageList::del_persistence( const string &persist_name )
     {
 	if( pl )
 	{
-	    if( pl->_persistence_obj->get_name() == persist_name )
+	    if( pl->_persistence_obj &&
+	        pl->_persistence_obj->get_name() == persist_name )
 	    {
 		ret = true ;
 		done = true ;
@@ -152,6 +153,7 @@ BESContainerStorageList::del_persistence( const string &persist_name )
 		}
 		delete pl->_persistence_obj ;
 		delete pl ;
+		pl = 0 ;
 	    }
 	    else
 	    {

@@ -54,6 +54,7 @@ using std::string ;
 #include "config.h"
 #include "ServerExitConditions.h"
 #include "BESServerUtils.h"
+#include "BESScrub.h"
 
 #define BES_SERVER_ROOT "BES_SERVER_ROOT"
 #define BES_SERVER "/beslistener"
@@ -91,44 +92,119 @@ main(int argc, char *argv[])
     // If you change the getopt statement below, be sure to make the
     // corresponding change in ServerApp.cc and besctl.in
     int c = 0 ;
+
+    // argv[0] is the name of the program, so start num_args at 1
+    unsigned short num_args = 1 ;
     while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
     {
 	switch( c )
 	{
-	    case 'v':
+	    case 'v': // version
 		BESServerUtils::show_version( NameProgram ) ;
 		break ;
-	    case '?':
-	    case 'h':
+	    case '?': // unknown option
+	    case 'h': // help
+		cerr << "usage" << endl ;
 		BESServerUtils::show_usage( NameProgram ) ;
 		break ;
-	    case 'i':
+	    case 'i': // BES install directory
 		install_dir = optarg ;
+		if( BESScrub::pathname_ok( install_dir, true ) == false )
+		{
+		    cout << "The specified install directory (-i option) "
+		         << "is incorrectly formatted. Must be less than "
+			 << "255 characters and include the characters "
+			 << "[0-9A-z_./-]" << endl ;
+		    return 1 ;
+		}
+		num_args+=2 ;
 		break ;
+	    case 's': // secure server
+		num_args++ ;
+		break ;
+	    case 'c': // configuration file
+	    case 'u': // unix socket
+	    {
+		string check_path = optarg ;
+		if( BESScrub::pathname_ok( check_path, true ) == false )
+		{
+		    cout << "The specified install directory (-i option) "
+		         << "is incorrectly formatted. Must be less than "
+			 << "255 characters and include the characters "
+			 << "[0-9A-z_./-]" << endl ;
+		    return 1 ;
+		}
+		num_args+=2 ;
+	    }
+	    break ;
+	    case 'p': // TCP port
+	    {
+		string port_num = optarg ;
+		for( unsigned int i = 0; i < port_num.length(); i++ )
+		{
+		    if( !isdigit( port_num[i] ) )
+		    {
+			cout << "The specified port contains non-digit "
+			     << "characters: " << port_num << endl ;
+			return 1 ;
+		    }
+		}
+		num_args+=2 ;
+	    }
+	    break ;
+	    case 'd': // debug
+	    {
+		string check_arg = optarg ;
+		if( BESScrub::command_line_arg_ok( check_arg ) == false )
+		{
+		    cout << "The specified debug options \"" << check_arg
+		         << "\" contains invalid characters" << endl ;
+		    return 1 ;
+		}
+		num_args+=2 ;
+	    }
+	    break ;
 	    default:
+		BESServerUtils::show_usage( NameProgram ) ;
 		break ;
 	}
+    }
+    // if the number of argumens is greater than the number of allowed arguments
+    // then extra arguments were passed that aren't options. Show usage and
+    // exit.
+    if( argc > num_args )
+    {
+	cout << NameProgram
+	     << ": too many arguments passed to the BES" ;
+	BESServerUtils::show_usage( NameProgram ) ;
     }
 
     // Set the name of the listener and the file for the listenet pid
     if( !load_names( install_dir ) )
 	return 1 ;
 
-    arguments = new char *[argc+1] ;
+    if( BESScrub::size_ok( sizeof( char *), num_args+1 ) == false )
+    {
+	cout << NameProgram
+	     << ": too many arguments passed to the BES" ;
+	BESServerUtils::show_usage( NameProgram ) ;
+    }
+    arguments = new char *[num_args+1] ;
 
     // Set arguments[0] to the name of the listener
-    char temp_name[server_name.length() + 1] ;
-    strncpy( temp_name, server_name.c_str(), server_name.length() ) ;
-    temp_name[server_name.length()] = '\0' ;
+    string::size_type len = server_name.length() ;
+    char temp_name[len + 1] ;
+    strncpy( temp_name, server_name.c_str(), len ) ;
+    temp_name[len] = '\0' ;
     arguments[0] = temp_name ;
 
     // Marshal the arguments to the listener from the command line 
     // arguments to the daemon
-    for( int i = 1; i < argc; i++ )
+    for( int i = 1; i < num_args; i++ )
     {
 	arguments[i] = argv[i] ;
     }
-    arguments[argc] = NULL ;
+    arguments[num_args] = NULL ;
 
     if( !access( file_for_listener.c_str(), F_OK ) )
     {
@@ -324,33 +400,24 @@ load_names( const string &install_dir )
     }
     else
     {
-	xdap_root = getenv( BES_SERVER_ROOT ) ;
-	if( xdap_root )
+	string prog = NameProgram ;
+	string::size_type slash = prog.find_last_of( '/' ) ;
+	if( slash != string::npos )
 	{
-	    server_name = xdap_root ;
-	    server_name += bindir ;
-	    file_for_listener = (string)xdap_root + "/var" ;
-	}
-	else
-	{
-	    string prog = NameProgram ;
-	    string::size_type slash = prog.find_last_of( '/' ) ;
+	    server_name = prog.substr( 0, slash ) ;
+	    slash = prog.find_last_of( '/' ) ;
 	    if( slash != string::npos )
 	    {
-		server_name = prog.substr( 0, slash ) ;
-		slash = prog.find_last_of( '/' ) ;
-		if( slash != string::npos )
-		{
-		    string root = prog.substr( 0, slash ) ;
-		    file_for_listener = root + "/var" ;
-		}
-		else
-		{
-		    file_for_listener = server_name ;
-		}
+		string root = prog.substr( 0, slash ) ;
+		file_for_listener = root + "/var" ;
+	    }
+	    else
+	    {
+		file_for_listener = server_name ;
 	    }
 	}
     }
+
     if( server_name == "" )
     {
 	server_name = "." ;

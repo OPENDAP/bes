@@ -1,4 +1,4 @@
-// BESUtil.h
+// BESScrub.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,47 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef E_BESUtil_h
-#define E_BESUtil_h 1
-
-#include <stdio.h>
+#ifndef E_BESScrub_h
+#define E_BESScrub_h 1
 
 #include <string>
-#include <iostream>
 
 using std::string ;
-using std::ostream ;
 
-class BESUtil
+/** @brief Functions to clean/scrub input for security reasons
+ */
+class BESScrub
 {
-private:
-    static string rfc822_date( const time_t t ) ;
-
 public:
-    /** These functions are used to create the MIME headers for a message
-	from a server to a client.
-
-	NB: These functions actually write both the response status line
-	<i>and</i> the header.
-
-	@name MIME utility functions
-	@see DODSFilter
-    */
-    static void set_mime_text( ostream &strm ) ;
-    static void set_mime_html( ostream &strm ) ;
-
-    /** This functions are used to unescape hex characters from strings **/
-    static string www2id( const string &in,
-                          const string &escape = "%",
-		          const string &except = "" ) ;
-    static string unhexstring( string s ) ;
-
-    /** Convert a string to all lower case **/
-    static string lowercase( const string &s ) ;
-
-    /** Unescape characters with backslash before them **/
-    static string unescape( const string &s ) ;
+    static bool			command_line_arg_ok( const string &arg ) ;
+    static bool			size_ok( uint sz, uint nelem ) ;
+    static bool			pathname_ok( const string &path, bool strict ) ;
 } ;
 
-#endif // E_BESUtil_h
+#endif // E_BESScrub_h
 

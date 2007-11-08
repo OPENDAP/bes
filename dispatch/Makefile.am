@@ -19,16 +19,14 @@ DIST_SUBDIRS = unit-tests
 if LIBDAP
 lib_LTLIBRARIES = libbes_dispatch.la libbes_dap.la
 pkglib_LTLIBRARIES = libdap_module.la
+
+bin_PROGRAMS = besregtest
 else
 lib_LTLIBRARIES = libbes_dispatch.la
 endif
 
-bin_PROGRAMS = besregex
-
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
-# Defined here because configure does not have the value of $sysconfdir. jhrg
-libbes_dispatch_la_CPPFLAGS = 
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_CPPFLAGS = $(DAP_CFLAGS)
@@ -39,9 +37,9 @@ libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
 libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS)
 libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
 
-besregex_SOURCES = besregex.cc
-besregex_CPPFLAGS = $(DAP_CFLAGS)
-besregex_LDADD = $(DAP_SERVER_LIBS)
+besregtest_SOURCES = besregtest.cc
+besregtest_CPPFLAGS = $(DAP_CFLAGS)
+besregtest_LDADD = $(DAP_SERVER_LIBS)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 
@@ -97,7 +95,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESException.cc BESExceptionManager.cc \
 	BESDataHandlerInterface.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
-	BESDebug.cc BESDefaultModule.cc \
+	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
 	BESUncompressBZ2.cc BESUncompressZ.cc
 
@@ -145,9 +143,9 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
-	BESModuleApp.h BESUtil.h BESDebug.h BESDebugException.h \
-	BESCache.h BESUncompressManager.h BESUncompressGZ.h \
-	BESUncompressBZ2.h BESUncompressZ.h
+	BESModuleApp.h BESUtil.h BESRegex.h BESScrub.h BESDebug.h \
+	BESDebugException.h BESCache.h BESUncompressManager.h \
+	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

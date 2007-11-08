@@ -123,56 +123,25 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    return false ;
 	}
 	struct stat cbuf ;
-	stat( fullnode.c_str(), &cbuf ) ;
-	map<string,string> a1 ;
-	a1["thredds_collection"] = "\"true\"" ;
-	a1["isData"] = "\"false\"" ;
-	info->begin_tag( "dataset", &a1 ) ;
-	if( node == "" )
+	int statret = stat( fullnode.c_str(), &cbuf ) ;
+	if( statret == 0 )
 	{
-	    add_stat_info( info, cbuf, "/" ) ;
-	}
-	else
-	{
-	    add_stat_info( info, cbuf, node ) ;
-	}
-
-	struct dirent *dit;
-	unsigned int cnt = 0 ;
-	struct stat buf;
-	while( ( dit = readdir( dip ) ) != NULL )
-	{
-	    string dirEntry = dit->d_name ;
-	    if( dirEntry != "." && dirEntry != ".." )
+	    map<string,string> a1 ;
+	    a1["thredds_collection"] = "\"true\"" ;
+	    a1["isData"] = "\"false\"" ;
+	    info->begin_tag( "dataset", &a1 ) ;
+	    if( node == "" )
 	    {
-		// look at the mode and determine if this is a directory
-		string fullPath = fullnode + "/" + dirEntry ;
-		stat( fullPath.c_str(), &buf ) ;
-		if ( S_ISDIR( buf.st_mode ) )
-		{
-		    if( _utils->exclude( dirEntry ) == false )
-		    {
-			cnt++ ;
-		    }
-		}
-		else if ( S_ISREG( buf.st_mode ) )
-		{
-		    if( _utils->include( dirEntry ) )
-		    {
-			cnt++ ;
-		    }
-		}
+		add_stat_info( info, cbuf, "/" ) ;
 	    }
-	}
+	    else
+	    {
+		add_stat_info( info, cbuf, node ) ;
+	    }
 
-	stringstream sscnt ;
-	sscnt << cnt ;
-	info->add_tag( "count", sscnt.str() ) ;
-
-	if( coi == CATALOG_RESPONSE )
-	{
-	    rewinddir( dip ) ;
-
+	    struct dirent *dit;
+	    unsigned int cnt = 0 ;
+	    struct stat buf;
 	    while( ( dit = readdir( dip ) ) != NULL )
 	    {
 		string dirEntry = dit->d_name ;
@@ -180,40 +149,105 @@ BESCatalogDirectory::show_catalog( const string &node,
 		{
 		    // look at the mode and determine if this is a directory
 		    string fullPath = fullnode + "/" + dirEntry ;
-		    stat( fullPath.c_str(), &buf ) ;
-		    if ( S_ISDIR( buf.st_mode ) )
+		    statret = stat( fullPath.c_str(), &buf ) ;
+		    if ( statret == 0 && S_ISDIR( buf.st_mode ) )
 		    {
 			if( _utils->exclude( dirEntry ) == false )
 			{
-			    map<string,string> a2 ;
-			    a2["thredds_collection"] = "\"true\"" ;
-			    a2["isData"] = "\"false\"" ;
-			    info->begin_tag( "dataset", &a2 ) ;
-			    add_stat_info( info, buf, dirEntry ) ;
-			    info->end_tag( "dataset" ) ;
+			    cnt++ ;
 			}
 		    }
-		    else if ( S_ISREG( buf.st_mode ) )
+		    // if it is a regular file, whether accessible or not, let's
+		    // include it if it passes the include regular expression.
+		    //else if ( statret == 0 && S_ISREG( buf.st_mode ) )
+		    else
 		    {
 			if( _utils->include( dirEntry ) )
 			{
-			    map<string,string> a3 ;
-			    a3["thredds_collection"] = "\"false\"" ;
-			    list<string> provides ;
-			    if( isData( fullPath, provides ) )
-				a3["isData"] = "\"true\"" ;
-			    else
-				a3["isData"] = "\"false\"" ;
-			    info->begin_tag( "dataset", &a3 ) ;
-			    add_stat_info( info, buf, dirEntry ) ;
-			    info->end_tag( "dataset" ) ;
+			    cnt++ ;
 			}
 		    }
 		}
 	    }
+
+	    stringstream sscnt ;
+	    sscnt << cnt ;
+	    info->add_tag( "count", sscnt.str() ) ;
+
+	    if( coi == CATALOG_RESPONSE )
+	    {
+		rewinddir( dip ) ;
+
+		while( ( dit = readdir( dip ) ) != NULL )
+		{
+		    string dirEntry = dit->d_name ;
+		    if( dirEntry != "." && dirEntry != ".." )
+		    {
+			// look at the mode and determine if this is a directory
+			string fullPath = fullnode + "/" + dirEntry ;
+			statret = stat( fullPath.c_str(), &buf ) ;
+			if ( statret == 0 && S_ISDIR( buf.st_mode ) )
+			{
+			    if( _utils->exclude( dirEntry ) == false )
+			    {
+				map<string,string> a2 ;
+				a2["thredds_collection"] = "\"true\"" ;
+				a2["isData"] = "\"false\"" ;
+				a2["isAccessible"] = "\"true\"" ;
+				info->begin_tag( "dataset", &a2 ) ;
+				add_stat_info( info, buf, dirEntry ) ;
+				info->end_tag( "dataset" ) ;
+			    }
+			}
+			else if ( statret == 0 && S_ISREG( buf.st_mode ) )
+			{
+			    if( _utils->include( dirEntry ) )
+			    {
+				map<string,string> a3 ;
+				a3["thredds_collection"] = "\"false\"" ;
+				list<string> provides ;
+				if( isData( fullPath, provides ) )
+				    a3["isData"] = "\"true\"" ;
+				else
+				    a3["isData"] = "\"false\"" ;
+				a3["isAccessible"] = "\"true\"" ;
+				info->begin_tag( "dataset", &a3 ) ;
+				add_stat_info( info, buf, dirEntry ) ;
+				info->end_tag( "dataset" ) ;
+			    }
+			}
+			else
+			{
+			    if( _utils->include( dirEntry ) )
+			    {
+				map<string,string> a3 ;
+				a3["thredds_collection"] = "\"false\"" ;
+				a3["isData"] = "\"false\"" ;
+				a3["isAccessible"] = "\"false\"" ;
+				info->begin_tag( "dataset", &a3 ) ;
+				info->add_tag( "name", dirEntry ) ;
+				info->end_tag( "dataset" ) ;
+			    }
+			}
+		    }
+		}
+	    }
+	    closedir( dip ) ;
+	    info->end_tag( "dataset" ) ;
 	}
-	closedir( dip ) ;
-	info->end_tag( "dataset" ) ;
+	else
+	{
+	    map<string,string> a1 ;
+	    a1["thredds_collection"] = "\"true\"" ;
+	    a1["isData"] = "\"false\"" ;
+	    a1["isAccessible"] = "\"false\"" ;
+	    info->begin_tag( "dataset", &a1 ) ;
+	    if( node == "" )
+		info->add_tag( "name", "/" ) ;
+	    else
+		info->add_tag( "name", node ) ;
+	    info->end_tag( "dataset" ) ;
+	}
     }
     else
     {
@@ -232,6 +266,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    a4["isData"] = "\"true\"" ;
 		else
 		    a4["isData"] = "\"false\"" ;
+		a4["isAccessible"] = "\"true\"" ;
 		info->begin_tag( "dataset", &a4 ) ;
 		add_stat_info( info, buf, node ) ;
 		info->end_tag( "dataset" ) ;
