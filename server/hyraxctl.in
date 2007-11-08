@@ -438,7 +438,7 @@ startBES()
 
     else
         echo "Starting BES..."
-        BES_CMD="sudo $BES start $BES_PARAMS"
+        BES_CMD="$BES start $BES_PARAMS"
         echo "BES start command: " $BES_CMD
         $BES_CMD
         status=$?
@@ -513,7 +513,7 @@ stopBES()
     
     if [ $BES_RUNNING ]
     then
-        BES_CMD="sudo $BES stop $BES_PARAMS"
+        BES_CMD="$BES stop $BES_PARAMS"
         echo "BES command: " $BES_CMD
         $BES_CMD
     fi
