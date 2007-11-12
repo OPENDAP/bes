@@ -1,3 +1,1022 @@
+2007-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Debugging hyraxctl
+
+2007-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Removed imebedded sudo call in hyraxctl
+
+2007-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Attempted to patch bug in hyraxctl
+
+2007-11-08  Patrick West <pwest@ucar.edu>
+
+	Copied over GNURegex from libdap/GNU for use in BES. Added a regexT
+	in unit-tests to test this class. Created BESScrub class with static
+	methods to scrub/clean/check input into the BES for security reasons.
+	Added a scrubT unit test. Cleaned up some buffer overflow, unused
+	variables, comments, and other warning issues.
+	A    dispatch/BESRegex.h
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESContainerStorageList.cc
+	A    dispatch/BESRegex.cc
+	M    dispatch/BESKeys.cc
+	A    dispatch/BESScrub.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESCache.h
+	M    dispatch/BESDefinitionStorageList.cc
+	A    dispatch/BESScrub.h
+	M    dispatch/BESCache.cc
+	A    dispatch/unit-tests/regexT.cc
+	A    dispatch/unit-tests/scrubT.cc
+	A    dispatch/unit-tests/regexT.h
+	A    dispatch/unit-tests/scrubT.h
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESUtil.h
+	M    dispatch/BESCatalogDirectory.cc
+	M    ppt/PPTClient.cc
+	M    ppt/SSLConnection.cc
+	M    ppt/PPTServer.cc
+	M    ppt/TcpSocket.cc
+	M    ppt/PPTConnection.cc
+	M    server/daemon.cc
+	M    command/BESCommand.cc
+
+2007-11-08  Patrick West <pwest@ucar.edu>
+
+	Renamed.
+	D    besregex.cc
+	A    besregtest.cc
+
+2007-11-05  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes; Updated hyraxctl script to use sudo to control the BES
+
+2007-11-02  Patrick West <pwest@ucar.edu>
+
+	Moved hyrax script to hyraxctl
+
+	BES now must run as root, and the main listener sets the uid and gid
+	to what is specified in the BES configuration file by BES.User and
+	BES.Group.
+	M    dispatch/bes/bes.conf.in
+	M    configure.ac
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+	M    server/ServerApp.h
+	D    server/hyrax.in
+	A    server/hyraxctl.in
+	M    server/Makefile.am
+
+2007-11-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Updated test baselinges
+
+2007-10-30  Patrick West <pwest@ucar.edu>
+
+	Redirecting errors to /dev/null as well as standard output.
+	M    server/besctl.in
+
+2007-10-30  Patrick West <pwest@ucar.edu>
+
+	More adjustments to the start of the BES.
+
+	1. Changed besctl script to check for the BES command line options.
+	Any changes here need to be made in daemon.cc and ServerApp.cc as
+	well. If the -i option is NOT passed to the script then we set -i to
+	be the prefix used when running configure and pass it on to the
+	daemon. If the -c option is NOT passed to the script then we set -c
+	to be the -i option if specified plus /etc/bes/bes.conf, or to the
+	BES_CONF environment variable.
+
+	2. Updated BESServerUtils::show_usage to include the -i options,
+	specifying the BES installation directory.
+
+	3. Updated ServerApp.cc to look for the configuration file in -c
+	location, then BES_CONF location, then in the directories
+	/user/local/etc/bes/bes.conf, then /etc/bes/bes.conf, then
+	/usr/etc/bes/bes.conf.
+
+	4. Updated daemon.cc to use the -i option to look for the listener
+	executable and the pid file (already doing this). If -i not specified
+	then use the path to the daemon executable from argv[0]. If no path
+	then look in the current working directory.
+
+	5. Updated server/Makefile.am to not pass any -D options when
+	building. This cleans up the package build targets.
+	M    server/besctl.in
+	M    server/BESServerUtils.cc
+	M    server/daemon.cc
+	M    server/Makefile.am
+	M    server/ServerApp.cc
+
+2007-10-30  James Gallagher <jgallagher@opendap.org>
+
+	Added a few words to the help line regarding options
+
+	M besctl.in
+
+2007-10-30  James Gallagher <jgallagher@opendap.org>
+
+	I changed how the CheckPS function workes - it now tests for the
+	system v version of ps first and does not use a dash when testing
+	for the UCB version.
+
+	M besctl
+
+2007-10-29  Patrick West <pwest@ucar.edu>
+
+	Added check for /usr/etc/bes/bes.conf
+	M    dispatch/TheBESKeys.cc
+
+2007-10-29  Patrick West <pwest@ucar.edu>
+
+	No longer using BES_CONF_DIR variable from Makefile to determine
+	locaiton of bes.conf. First uses -c option if specified, then
+	BES_CONF environment variable if set, and finally checks for
+	/usr/local/etc/bes/bes.conf and then /etc/bes/bes.conf.
+	M    dispatch/Makefile.am
+	M    dispatch/TheBESKeys.cc
+
+2007-10-26  Patrick West <pwest@ucar.edu>
+
+	templates/bes.conf, moved the help information to the bottom with a
+	comment to add Sample Module parameters there.
+	templates/RequestHandler.cc, the contents of the file need to be
+	wrapped in a tag. dispatch/bes/bes.conf.in, the help parameters for
+	html files was incorrect. Changed from HTTP to HTML. Re-wrote the
+	hello_world example with added information in the README of how to
+	write the sample in a separate directory.
+	M    templates/bes.conf
+	M    templates/RequestHandler.cc
+	M    dispatch/bes/bes.conf.in
+	D    hello_world/SayCommand.cc
+	D    hello_world/SayCommand.h
+	A    hello_world/SampleSayCommand.cc
+	A    hello_world/SampleSayCommand.h
+	D    hello_world/SayResponseNames.h
+	D    hello_world/SayModule.cc
+	D    hello_world/SayRequestHandler.cc
+	D    hello_world/SayModule.h
+	D    hello_world/SayRequestHandler.h
+	A    hello_world/sample_help.html
+	M    hello_world/README
+	D    hello_world/SayResponseHandler.cc
+	M    hello_world/bes.conf
+	D    hello_world/SayResponseHandler.h
+	A    hello_world/SampleSayResponseHandler.cc
+	A    hello_world/SampleSayResponseHandler.h
+	M    hello_world/configure.ac
+	M    hello_world/SayReporter.cc
+	M    hello_world/INSTALL
+	A    hello_world/sample_help.txt
+	M    hello_world/Makefile.am
+	A    hello_world/SampleResponseNames.h
+	A    hello_world/SampleModule.cc
+	A    hello_world/SampleRequestHandler.cc
+	A    hello_world/SampleModule.h
+	A    hello_world/SampleRequestHandler.h
+
+2007-10-25  Patrick West <pwest@ucar.edu>
+
+	Some more enhancements to the create module script
+	M    templates/Command.cc
+	M    bin/besCreateModule.in
+
+2007-10-25  Patrick West <pwest@ucar.edu>
+
+	re-wrote besctl to check for beslisteners and remove pid file if
+	orphaned. Added hyrax.in to configure.ac and Makefile.am
+	M    configure.ac
+	M    server/besctl.in
+	D    server/hyrax
+	AM   server/hyrax.in
+	M    server/Makefile.am
+
+2007-10-25  Patrick West <pwest@ucar.edu>
+
+	Fixed example in usage statement
+	M    besregex.cc
+
+2007-10-25  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Addd hyrax control script
+
+2007-10-25  Patrick West <pwest@ucar.edu>
+
+	TypeMatch checking now checks the full path of the file/directory,
+	not just the basename. This way we can use path checking in the
+	regular expressions for handlers such as jgofs, where data files do
+	not have an extension. Also checking for an exact match rather than
+	just partial match or more.
+
+	Corrected the bes.conf file TypeMatch example.
+
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/besregex.cc
+	M    dispatch/BESCatalogDirectory.cc
+
+2007-10-13  Patrick West <pwest@ucar.edu>
+
+	Can reply to list of responses with none signifying that creator not
+	using data responses. Can create new commands with new response
+	handlers.
+	A    templates/Command.cc
+	A    templates/Command.h
+	M    templates/Makefile.am
+	M    bin/besCreateModule.in
+
+2007-10-10  Patrick West <pwest@ucar.edu>
+
+	Ending debug statement in initialize added Done.
+	M    csv-handler/CSVModule.cc
+
+2007-10-09  Patrick West <pwest@ucar.edu>
+
+	Multiple catalogs now works. If there is more than one catalog
+	registered then the request must include the name of the catalog
+	followed by a colon. For example: show catalog for "nc_catalog:/"; If
+	there is only one catalog then works as before.
+
+	Added ability to display all debug information. If "all" context is
+	set in BESDebug then show any BESDEBUG statements.
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESCatalogList.h
+	M    dispatch/BESDebug.h
+	M    dispatch/BESCatalogDirectory.cc
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Casting for delete since deleting void* is undefined
+	M    csv-handler/CSV_Data.cc
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Able to create tarball now. Added NEWS, COPYING, and COPYRIGHT files.
+	EXTRADIST includes data directory and those added files.
+	A    csv-handler/csv_handler.spec
+	M    csv-handler/configure.ac
+	A    csv-handler/COPYING
+	A    csv-handler/COPYRIGHT
+	A    csv-handler/NEWS
+	M    csv-handler/Makefile.am
+
+2007-10-08  Patrick West <pwest@ucar.edu>
+
+	Removed use of help file, only adding usual information in help.
+	Created data directory and moved temperature.csv there. Changed
+	Makefile.am to install the data file into the share/hyrax/data/csv
+	data directory. Added a bes.conf update script, as in the other
+	handlers.
+	M    csv-handler/CSVRequestHandler.cc
+	D    csv-handler/temperature.csv
+	A    csv-handler/bes-csv-data.sh.in
+	D    csv-handler/bes.conf.in
+	M    csv-handler/Makefile.am
+	A    csv-handler/data
+	A    csv-handler/data/temperature.csv
+
+2007-09-11  Patrick West <pwest@ucar.edu>
+
+	SSL libraries might be required by PPT, if installed and found. Need
+	to include these in --libs and --dap-libs.
+	M    bes-config.in
+
+2007-09-10  James Gallagher <jgallagher@opendap.org>
+
+	Updated to reflect the actual numbers of files in the hyrax test data
+	directories.
+
+	M    show_01.bescmd.baseline
+
+2007-09-10  James Gallagher <jgallagher@opendap.org>
+
+	Added.
+
+	A    hdf4/S2000415.HDF.0.bescmd
+	A    hdf4/S2000415.HDF.1.bescmd
+	A    hdf4/S2000415.HDF.2.bescmd
+	A    hdf4/S2000415.HDF.3.bescmd
+	A    hdf4/S2000415.HDF.4.bescmd
+	A    hdf4/S2000415.HDF.0.bescmd.baseline
+	A    hdf4/S2000415.HDF.1.bescmd.baseline
+	A    hdf4/S2000415.HDF.2.bescmd.baseline
+	A    hdf4/S2000415.HDF.3.bescmd.baseline
+	A    hdf4/S2000415.HDF.4.bescmd.baseline
+
+2007-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Updated because the besctl stop/start commands don't seem to be working.
+
+	M    cmdln/Makefile.am
+
+2007-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Added.
+
+	A    bescmdln.hdf4/S2000415.HDF.0.exp
+	A    bescmdln.hdf4/S2000415.HDF.1.exp
+	A    bescmdln.hdf4/S2000415.HDF.2.exp
+	A    bescmdln.hdf4/S2000415.HDF.3.exp
+	A    bescmdln.hdf4/S2000415.HDF.4.exp
+
+2007-09-06  James Gallagher <jgallagher@opendap.org>
+
+	Fixed up tests to match the rest of the Makefile.am and bes-*-data.sh
+	system.
+
+	M    cmdln/testsuite/show/show_01.bescmd
+	M    cmdln/testsuite/show/show_01.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.3.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.5.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.6.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.0.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.1.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.2.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.3.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.4.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.5.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.0.bescmd
+	M    cmdln/testsuite/hdf5/tcompound.h5.1.bescmd
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.3.exp
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.4.exp
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.5.exp
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.0.exp
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.1.exp
+	M    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.2.exp
+
+2007-09-04  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd
+	RM   cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.7.bescmd.baseline
+	A    cmdln/testsuite/hdf5/tcompound.h5.2.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.1.bescmd.baseline
+	A    cmdln/testsuite/hdf5/tcompound.h5.3.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.2.bescmd.baseline
+	D    cmdln/testsuite/hdf5/tcompound2.h5.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.4.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.3.bescmd.baseline
+	D    cmdln/testsuite/hdf5/tcompound2.h5.bescmd.baseline
+	A    cmdln/testsuite/hdf5/tcompound.h5.5.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.4.bescmd.baseline
+	AM   cmdln/testsuite/hdf5/tcompound.h5.5.bescmd.baseline
+	A    cmdln/testsuite/hdf5/tcompound.h5.0.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.1.bescmd
+	A    cmdln/testsuite/hdf5/tcompound.h5.0.bescmd.baseline
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.1.exp
+	D    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.2.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.3.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.4.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.5.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.6.exp
+	A    cmdln/testsuite/bescmdln.netcdf/fnoc1.nc.0.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.4.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.5.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.6.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.7.exp
+	D    cmdln/testsuite/bescmdln.hdf4/S2000415.HDF.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.0.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.1.exp
+	D    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.2.exp
+	A    cmdln/testsuite/bescmdln.hdf4/1990104h09da-gdm.hdf.3.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.3.exp
+	D    cmdln/testsuite/bescmdln.hdf5/tcompound2.h5.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.4.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.5.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.0.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.1.exp
+	A    cmdln/testsuite/bescmdln.hdf5/tcompound.h5.2.exp
+
+2007-09-04  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    nc/fnoc1.nc.0.bescmd.baseline
+	A    nc/fnoc1.nc.1.bescmd.baseline
+	A    nc/fnoc1.nc.2.bescmd.baseline
+	A    nc/fnoc1.nc.3.bescmd.baseline
+	A    nc/fnoc1.nc.4.bescmd.baseline
+	A    nc/fnoc1.nc.5.bescmd.baseline
+	AM   nc/fnoc1.nc.6.bescmd.baseline
+	A    nc/fnoc1.nc.0.bescmd
+	A    nc/fnoc1.nc.1.bescmd
+	A    nc/fnoc1.nc.2.bescmd
+	D    nc/fnoc1.nc.bescmd
+	A    nc/fnoc1.nc.3.bescmd
+	A    nc/fnoc1.nc.4.bescmd
+	A    nc/fnoc1.nc.5.bescmd
+	A    nc/fnoc1.nc.6.bescmd
+
+2007-09-04  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    hdf4/1990104h09da-gdm.hdf.3.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.4.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.5.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.6.bescmd
+	D    hdf4/S2000415.HDF.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.0.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.1.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	D    hdf4/1990104h09da-gdm.hdf.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.3.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.5.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.6.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.7.bescmd.baseline
+	D    hdf4/S2000415.HDF.bescmd.baseline
+	A    hdf4/1990104h09da-gdm.hdf.0.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.1.bescmd
+	D    hdf4/1990104h09da-gdm.hdf.bescmd
+	A    hdf4/1990104h09da-gdm.hdf.2.bescmd
+
+2007-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Updated
+
+	M    cmdln/testsuite/ff/gsodock.dat.6.bescmd.baseline
+
+2007-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Added drivers and baselines for the freeform integration tests.
+
+	A    ff/gsodock.dat.4.bescmd.baseline
+	A    ff/gsodock.dat.5.bescmd.baseline
+	AM   ff/gsodock.dat.6.bescmd.baseline
+	A    ff/gsodock.dat.7.bescmd.baseline
+	A    ff/gsodock.dat.8.bescmd.baseline
+	A    ff/gsodock.dat.9.bescmd.baseline
+	A    ff/avhrr.dat.3.bescmd
+	A    ff/gsodock.dat.2.bescmd
+	A    ff/gsodock.dat.6.bescmd
+	M    ff/1998-6-avhrr.dat.2.bescmd.baseline
+	M    ff/1998-6-avhrr.dat.4.bescmd.baseline
+	A    ff/avhrr.dat.2.bescmd
+	M    ff/1998-6-avhrr.dat.8.bescmd.baseline
+	A    ff/avhrr.dat.6.bescmd
+	A    ff/gsodock.dat.1.bescmd
+	AM   ff/gsodock.dat.a.bescmd.baseline
+	A    ff/gsodock.dat.5.bescmd
+	A    ff/gsodock.dat.9.bescmd
+	A    ff/avhrr.dat.0.bescmd.baseline
+	A    ff/avhrr.dat.1.bescmd.baseline
+	A    ff/avhrr.dat.2.bescmd.baseline
+	A    ff/avhrr.dat.3.bescmd.baseline
+	A    ff/avhrr.dat.4.bescmd.baseline
+	A    ff/avhrr.dat.5.bescmd.baseline
+	AM   ff/avhrr.dat.6.bescmd.baseline
+	A    ff/avhrr.dat.1.bescmd
+	A    ff/avhrr.dat.5.bescmd
+	A    ff/gsodock.dat.0.bescmd
+	A    ff/gsodock.dat.4.bescmd
+	A    ff/gsodock.dat.8.bescmd
+	A    ff/gsodock.dat.a.bescmd
+	A    ff/avhrr.dat.0.bescmd
+	A    ff/avhrr.dat.4.bescmd
+	A    ff/gsodock.dat.3.bescmd
+	A    ff/gsodock.dat.7.bescmd
+	A    ff/gsodock.dat.0.bescmd.baseline
+	A    ff/gsodock.dat.1.bescmd.baseline
+	A    ff/gsodock.dat.2.bescmd.baseline
+	A    ff/gsodock.dat.3.bescmd.baseline
+
+2007-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Added/Removed integration tests for freeform.
+
+	A    bescmdln.freeform/avhrr.dat.0.exp
+	A    bescmdln.freeform/avhrr.dat.1.exp
+	D    bescmdln.freeform/avhrr.dat.exp
+	A    bescmdln.freeform/avhrr.dat.2.exp
+	A    bescmdln.freeform/avhrr.dat.3.exp
+	A    bescmdln.freeform/avhrr.dat.4.exp
+	A    bescmdln.freeform/avhrr.dat.5.exp
+	A    bescmdln.freeform/avhrr.dat.6.exp
+	A    bescmdln.freeform/gsodock.dat.0.exp
+	A    bescmdln.freeform/gsodock.dat.1.exp
+	A    bescmdln.freeform/gsodock.dat.2.exp
+	D    bescmdln.freeform/gsodock.dat.exp
+	A    bescmdln.freeform/gsodock.dat.3.exp
+	A    bescmdln.freeform/gsodock.dat.4.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.0.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.1.exp
+	A    bescmdln.freeform/gsodock.dat.5.exp
+	D    bescmdln.freeform/1998-6-avhrr.dat.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.2.exp
+	A    bescmdln.freeform/gsodock.dat.6.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.3.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.4.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.5.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.6.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.7.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.8.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.9.exp
+	A    bescmdln.freeform/1998-6-avhrr.dat.a.exp
+
+2007-08-31  James Gallagher <jgallagher@opendap.org>
+
+	Added
+
+	A    ff/1998-6-avhrr.dat.0.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.a.bescmd
+	A    ff/1998-6-avhrr.dat.1.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.2.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.3.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.4.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.5.bescmd.baseline
+	AM   ff/1998-6-avhrr.dat.6.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.7.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.8.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.9.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.0.bescmd
+	A    ff/1998-6-avhrr.dat.1.bescmd
+	A    ff/1998-6-avhrr.dat.2.bescmd
+	AM   ff/1998-6-avhrr.dat.a.bescmd.baseline
+	A    ff/1998-6-avhrr.dat.3.bescmd
+	A    ff/1998-6-avhrr.dat.4.bescmd
+	A    ff/1998-6-avhrr.dat.5.bescmd
+	A    ff/1998-6-avhrr.dat.6.bescmd
+	A    ff/1998-6-avhrr.dat.7.bescmd
+	A    ff/1998-6-avhrr.dat.8.bescmd
+	A    ff/1998-6-avhrr.dat.9.bescmd
+
+2007-08-27  Patrick West <pwest@ucar.edu>
+
+	Had a hard coded name in the file generation. Changed it to use
+	variable.
+	M    bin/besCreateModule.in
+
+2007-08-27  Patrick West <pwest@ucar.edu>
+
+	Modifications to be able to write all response objects out to ostream
+	rather than stdout. Beginnings of chunking. Modified unit tests and
+	added new ones to test the funcionality. In PPT making sure that
+	handshaking at beginning of connection is done directly to socket
+	instead of using send and receive methods on PPTConnection, which
+	will be changed to do chunking. The handshaking will NOT do chunking
+	but will simply be tokens.
+	M    apache/BESApacheInterface.cc
+	M    apache/mod_opendap.cc
+	M    cmdln/testsuite/nc/fnoc1.nc.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/ff_date_func.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.bescmd.baseline
+	M    dispatch/BESVersionInfo.h
+	M    dispatch/BESSilentInfo.h
+	M    dispatch/BESXMLInfo.h
+	M    dispatch/BESFilterTransmitter.cc
+	M    dispatch/BESProcessEncodedString.h
+	M    dispatch/BESInterface.h
+	M    dispatch/BESTextInfo.h
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESDapHandlerException.cc
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESBasicHttpTransmitter.cc
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/BESHTMLInfo.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESCgiInterface.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESProcessEncodedString.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/unit-tests/pfileT.cc
+	M    dispatch/unit-tests/pvolT.cc
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/unit-tests/infoT.cc
+	M    dispatch/unit-tests/plistT.cc
+	M    dispatch/unit-tests/defT.cc
+	M    dispatch/BESStreamResponseHandler.cc
+	M    dispatch/BESKeys.h
+	M    dispatch/BESUtil.h
+	M    dispatch/BESCgiInterface.cc
+	M    dispatch/BESInfo.h
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+	M    ppt/PPTClient.cc
+	M    ppt/PPTServer.cc
+	M    server/BESServerHandler.cc
+	M    csv-handler/dap_csv_handler.cc
+	M    command/BESCmdInterface.h
+	M    command/BESCmdInterface.cc
+
+2007-08-24  Patrick West <pwest@ucar.edu>
+
+	Created test program for administrators to test TypeMatch and
+	Include/Exclude configuration parameters called besregex.  Run it
+	without arguments to determine how to use it.
+	M    dispatch/Makefile.am
+	A    dispatch/besregex.cc
+
+2007-08-23  James Gallagher <jgallagher@opendap.org>
+
+	Makefile.am: Improved the fortify targets.
+
+2007-08-23  Patrick West <pwest@ucar.edu>
+
+	Changed BESDebug so that if dash in front of context then set that
+	context to false. Added BESDebugException for exceptions in SetUp
+	static method of BESDebug, was throwing string exceptions. Added
+	method to BESUtil to unescape strings with backslash characters in
+	it. Added unit tests for BESDebug and BESUtil, living unit tests that
+	should be extended to test more.
+	A    dispatch/BESDebugException.h
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESStatusReturn.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESDebug.h
+	M    dispatch/unit-tests/encodeT.cc
+	A    dispatch/unit-tests/utilT.h
+	A    dispatch/unit-tests/debugT.cc
+	A    dispatch/unit-tests/debugT.h
+	A    dispatch/unit-tests/utilT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESUtil.h
+	M    command/BESDefineCommand.cc
+
+2007-08-23  James Gallagher <jgallagher@opendap.org>
+
+	Makefile.am: Added fortify target.
+
+2007-08-22  Patrick West <pwest@ucar.edu>
+
+	Changed usage of BESAutoPtr to autoptr C++ class. Apache module
+	changed to reflect cedar changes.
+	M    apache/BESApacheInterface.cc
+	M    apache/local_makefile
+	M    apache/mod_opendap.cc
+	D    dispatch/BESAutoPtr.h
+	M    dispatch/Makefile.am
+	D    dispatch/BESAutoPtr.cc
+
+2007-08-20  Patrick West <pwest@ucar.edu>
+
+	Buffer overflow fix in BESProcessEncodedString. Added unit test for
+	BESProcessEncodedString. Added --helpdir to bes-config to know where
+	BES help files are located. Updated build instructions and
+	information in csv-handler directory.
+	M    bes-config.in
+	M    dispatch/BESProcessEncodedString.h
+	M    dispatch/BESProcessEncodedString.cc
+	A    dispatch/unit-tests/encodeT.cc
+	A    dispatch/unit-tests/encodeT.h
+	M    dispatch/unit-tests/Makefile.am
+	M    server/daemon.cc
+	M    csv-handler/conf/bes.m4
+	D    csv-handler/bes.conf
+	M    csv-handler/README
+	A    csv-handler/bes.conf.in
+	M    csv-handler/configure.ac
+	M    csv-handler/Makefile.am
+
+2007-08-17  Patrick West <pwest@ucar.edu>
+
+	daemon now takes -i option telling where installation directory is.
+	Adds /bin and /var/run to this directory when processing.
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+
+2007-08-10  Patrick West <pwest@ucar.edu>
+
+	Handle missing PKG_CONFIG config. Copied from libdap
+	A    pkg.m4
+
+2007-08-08  Patrick West <pwest@ucar.edu>
+
+	(L)GPL license file moved from License.txt to COPYING and README updated to
+	reflect.
+	M    README
+	D    License.txt
+	A    COPYING
+
+2007-08-08  Patrick West <pwest@ucar.edu>
+
+	Patrice Dumas updates to openssl.m4, libdap.m4, bes.spec. Fixed issue
+	with containerT unit test regarding directory with ../ in it. When
+	doing a distcheck the test failed because the cache directory is set
+	to the srcdir directory when the build is taking place in the _build
+	directory.
+	M    conf/openssl.m4
+	M    conf/libdap.m4
+	M    dispatch/unit-tests/containerT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    bes.spec
+
+2007-08-01  Patrick West <pwest@ucar.edu>
+
+	Upgraded BESDEBUG call using csv context. Registering csv debug
+	context in Module. Updated bes.conf with new Cache parameters
+	M    csv-handler/CSVModule.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    csv-handler/bes.conf
+
+2007-08-01  Patrick West <pwest@ucar.edu>
+
+	Added say debug context to BESDebug
+	M    hello_world/SayModule.cc
+
+2007-08-01  Patrick West <pwest@ucar.edu>
+
+	BESDEBUG upgrade using context say.
+	M    hello_world/SayModule.cc
+
+2007-07-31  Patrick West <pwest@ucar.edu>
+
+	BESDEBUG upgrade implemented. Completed cleanup of module.
+	M    templates/Module.cc
+	M    bin/besCreateModule.in
+
+2007-07-31  Patrick West <pwest@ucar.edu>
+
+	Added context to BESDebug. Can now set debug on for individual
+	handlers, the bes itself, dap classes, ppt, etc...
+
+	To set pass -d
+	"filename|cerr,context1,context2,context3,...,contextn" where
+	context? is the name of a debug context like bes, dap, nc.
+
+	To find out the possible context run beslistener with -? as the only
+	option.
+
+	To register context with the BES call BESDebug::Register( "context" )
+	in the Module class.
+
+	M    cmdln/CmdApp.cc
+	M    dispatch/BESMemoryManager.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESDebug.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESCgiInterface.cc
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESInterface.cc
+	M    ppt/PPTServer.cc
+	M    ppt/SSLClient.cc
+	M    ppt/SSLServer.cc
+	M    server/BESServerUtils.cc
+	M    server/ServerApp.cc
+	M    command/BESDefaultCommands.cc
+	M    command/DAPCommandModule.cc
+	M    command/BESCmdInterface.cc
+
+2007-07-30  Patrick West <pwest@ucar.edu>
+
+	When a client connection was closed the debug file was also closed,
+	so when a new beslistener started the debug file was being
+	overwritten. Changed this to open and append for output.
+	M    server/ServerApp.cc
+
+2007-07-27  Patrick West <pwest@ucar.edu>
+
+	If bz2 is not compiled or linked in then we can't run the test,
+	return success.
+	M    dispatch/unit-tests/bz2T.cc
+
+2007-07-16  Patrick West <pwest@ucar.edu>
+
+	LGPL GNU license.
+	A    License.txt
+
+2007-07-12  Patrick West <pwest@ucar.edu>
+
+	exeucte_request method signature change to include client information
+	M    BESApacheInterface.cc
+
+2007-07-12  Patrick West <pwest@ucar.edu>
+
+	Added parameter to execute_request to take a string representing from
+	whome the request is coming from. This is included in output.
+	If verbose is set to no for both logging and memory, only one line
+	is output per request.
+	M    dispatch/BESInterface.h
+	M    dispatch/BESInterface.cc
+	M    server/BESServerHandler.cc
+	M    command/BESCmdInterface.h
+	M    command/BESCmdInterface.cc
+
+2007-07-11  Patrick West <pwest@ucar.edu>
+
+	Function was returning a ptr to the BESCatalog but
+	the return type was bool. Instead of returning BESCatalog
+	I'm deleting the BESCatalog and returning a bool.
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESCatalogList.h
+
+	Was using BESLog instead of BESDebug for debugging info
+	M    dispatch/BESDDXResponseHandler.cc
+
+	The accept call now takes a sockaddr instead of sockaddr_in
+	and passes this to the newly created Socket instance. From
+	this information we get the ip address and port of the
+	client application. Store this in dhi and use it to log file.
+	M    dispatch/BESDataNames.h
+	M    ppt/UnixSocket.h
+	M    ppt/Socket.h
+	M    ppt/SocketListener.cc
+	M    ppt/TcpSocket.h
+	M    ppt/Socket.cc
+	M    server/BESServerHandler.cc
+	M    command/BESCmdInterface.h
+	M    command/BESCmdInterface.cc
+
+2007-07-11  Patrick West <pwest@ucar.edu>
+
+	LGPL License
+	M    OSX_Resources/License.txt
+
+2007-06-28  Patrick West <pwest@ucar.edu>
+
+	Created utility function to convert string to lower case
+	M    BESUtil.cc
+	M    BESUtil.h
+
+2007-06-26  James Gallagher <jgallagher@opendap.org>
+
+	Replaced unidata with opendap support email.
+
+2007-06-19  Patrick West <pwest@ucar.edu>
+
+	Unit test fixes
+	M    unit-tests/containerT.cc
+	M    unit-tests/constraintT.cc
+	M    unit-tests/pfileT.cc
+	M    unit-tests/pvolT.cc
+	M    unit-tests/plistT.cc
+
+2007-06-15  Patrick West <pwest@ucar.edu>
+
+	New container representing data from file
+	A    BESFileContainer.cc
+	A    BESFileContainer.h
+
+2007-06-15  Patrick West <pwest@ucar.edu>
+
+	Typo in exception message string.
+	M    BESDapHandlerException.cc
+
+2007-06-13  Patrick West <pwest@ucar.edu>
+
+	Container classes are no longer passed by reference. Users can now
+	create BESContianer subclasses specific to their needs, with derived
+	implementations of the access method. For example, a WCSContainer
+	knows how to access the actual data by making a wcs request. Copies
+	are now made between different components of the framework using
+	ptr_duplicate method on the BESContainer.
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESContainerStorage.h
+	M    dispatch/BESContainerStorageVolatile.h
+	M    dispatch/BESDefinitionStorageVolatile.cc
+	M    dispatch/BESRequestHandlerList.cc
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/Makefile.am
+	M    dispatch/BESContainerStorageCatalog.h
+	M    dispatch/BESContainer.h
+	M    dispatch/BESDefine.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESContainerStorageFile.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESDefine.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESContainerStorageList.h
+	M    dispatch/BESContainerStorageVolatile.cc
+	M    dispatch/BESStreamResponseHandler.cc
+	M    dispatch/BESCgiInterface.cc
+	M    command/BESGetCommand.cc
+	M    command/BESDefineCommand.cc
+
+2007-06-09  Patrick West <pwest@ucar.edu>
+
+	Improved doxygen documentation for the uncompression classes,
+	methods, and functions.
+	M    dispatch/BESUncompressZ.h
+	M    dispatch/BESUncompressGZ.h
+	M    dispatch/BESUncompressBZ2.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESUncompressManager.h
+
+2007-06-09  Patrick West <pwest@ucar.edu>
+
+	Added include of unistd to get close, read, and write.
+	M    dispatch/BESUncompressZ.cc
+
+2007-06-07  James Gallagher <jgallagher@opendap.org>
+
+	Removed old POPEN define from BESContainer.cc
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Added uncompression of .Z files.
+	A    dispatch/BESUncompressZ.cc
+	A    dispatch/BESUncompressZ.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESUncompressManager.cc
+	AM   dispatch/unit-tests/cache/testfile.txt.Z
+	A    dispatch/unit-tests/zT.cc
+	A    dispatch/unit-tests/zT.h
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/bz2T.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	M    dispatch/unit-tests/Makefile.am
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Not yet ready for uncompression of .Z files, removed from Makefile.am
+	M    Makefile.am
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Not yet ready to add the uncompression of .Z files yet. Removed for now.
+	Will add later.
+	M    dispatch/BESUncompressManager.cc
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Modified ResponseHandlerList function signature to take a const string &
+	instead of a string. This required the same change to all ResponseHandler
+	Build methods. Also changed the constructors to take a const string &
+	instead of a string. Also changed the constructors for the RequestHandler
+	classes to take const string & instead of string. Changed the methods in
+	ResponseHandler and RequestHandler classes when adding handlers to take
+	const string & instead of string.
+
+	Changed all the files to correct a typo in the copyright notice.
+
+2007-05-31  Patrick West <pwest@ucar.edu>
+
+	If bz2 library not found now it will throw a runtime error instead of
+	doing nothing. Before if a bz2 file was passed it would simply be
+	passed to the data handler, where it would throw an error saying it
+	can't open the bz2 file. Now, if bz2 is not compiled in an error will
+	be thrown saying can't uncompress a bz2 file.
+	M    Makefile.am
+	M    BESUncompressManager.cc
+	M    BESUncompressBZ2.h
+	M    BESUncompressBZ2.cc
+
+2007-05-24  Patrick West <pwest@ucar.edu>
+
+	In case configure flags need to be passed to configure while building pkg
+	added PKG_CONFIGURE_FLAGS environment variable similar to
+	DISTCHECK_CONFIGURE_FLAGS used when building the distcheck target.
+	M    Makefile.am
+
+2007-05-24  Patrick West <pwest@ucar.edu>
+
+	Standard location of PackageMaker
+	M    Makefile.am
+
+2007-05-23  Patrick West <pwest@ucar.edu>
+
+	Running package manager from the command line
+	M    Makefile.am
+
+2007-05-23  Patrick West <pwest@ucar.edu>
+
+	pkg build information updated, description and informational file used by
+	packagemaker included in Description.plist and Info.plist respectivally.
+	M    OSX_Resources/InstallationCheck
+	A    OSX_Resources/Info.plist
+	A    OSX_Resources/Description.plist
+
+2007-05-22  Patrick West <pwest@ucar.edu>
+
+	pkg target update. Part of 3.5.1
+	M    ChangeLog
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-05-22  Patrick West <pwest@ucar.edu>
 
 	Needed to copy off besctl and bes.conf as well as bes-config.

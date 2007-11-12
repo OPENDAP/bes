@@ -1,6 +1,73 @@
 
 	$Id$
 
+News for version 3.5.2
+
+New options available to the BES control script (besctl) and therefor the
+bes daemon and listener applications. The new options are:
+
+-i <install_dir> -> installation directory of the BES
+-c <configuration_file> -> location of the BES configuration file to use
+
+hyraxctl script now available to run the entire hyrax installation. This
+Hyrax control script uses the BES control script besctl to start and stop
+the BES. Options passed to the hyrax control script are passed on to the
+BES.
+
+The BES now determines the location of the BES configuration file in the
+following manner:
+1. -c option passed
+2. BES_CONF environment variable
+3. Look in default locations /usr/local/etc/bes/bes.conf,
+/etc/bes/bes.conf, /usr/etc/bes/bes.conf
+
+The BES now checks the full path of a file/directory against the BES
+configuration parameter BES.Catalog.<catalog_name>.TypeMatch. Before it
+just checked the basename of the file/directory. This now allows us to
+have TypeMatch parameters that include a directory name as part of its
+regular expression. This was changed to facilitate the jgofs data handler,
+where the file names do not have file extensions. For example, TypeMatch
+could be something like "jg:.*\/jg\/.*;"
+
+A regular expression test program is now available in the BES source and
+binary releases called besregtest that will allow
+administrators/developers to test the regular expressions specified in the
+BES.Catalog.<catalog_name>.Include, BES.Catalog.<catalog_name>.Exclude,
+and BES.Catalog.<catalog_name>.TypeMatch configuration parameters. Usage
+is:
+
+besregtest include|exclude|type "<regular_expression>" <string_to_test>
+
+Multiple catalogs now works. If there is more than one catalog registered
+then the request must include the name of the catalog followed by a colon.
+For example: show catalog for "nc_catalog:/"; If there is only one catalog
+then works as before.
+
+Added context to debugging in the BESDEBUG macro. This allows us to turn
+on and off debugging for different areas of an application, such as bes,
+ppt, nc (for netcdf handler), h4 (for hdf4 handler), etc... For example:
+
+BESDEBUG( "bes", << "some debug " << endl << someobj << endl )
+
+Also modified the -d option passed to the bes control script (besctl) and
+therefor the bes daemon and listener applications to take the name of the
+debug file plus context to debug.
+
+-d "./bes.debug,bes,nc,h4"
+
+Uncompression of .Z (zip) files is now available along with the already
+existing uncompression of bz2 (bzip2) and gz (gnu zip) files.
+
+New regression test created under bes/cmdln to test netcdf, freeform,
+hdf4, hdf5, and server side functions. Must have all of these modules
+installed. To run the regression test you must have a BES running with the
+above specified modules loaded, then go to the bes/cmdln directory and
+type make bes-configuration-tests.
+
+Updated the csv-handler example BES modules and the hello_world example
+modules. In doing so updated the besCreateModule script and all of the
+template files associated with it.
+
 News for version 3.5.1
 
 Ticket #928 fixed in ppt code to correct finding marker issue.
