@@ -94,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
 %{_bindir}/besctl
+%{_bindir}/hyraxctl
+%{_bindir}/besregtest
 %{_bindir}/bescmdln
 %{_libdir}/*.so.*
 %{_libdir}/bes/
