@@ -391,7 +391,7 @@ findRunningOLFS()
         #echo CHECK_PID: $CHECK_PID
         
         
-        if [ ! -z $CHECK_PID ]
+        if [ ! -z "$CHECK_PID" ]
         then 
             echo "Confirmed running OLFS (Process ID: $OLFS_PID)"
             OLFS_RUNNING=1
