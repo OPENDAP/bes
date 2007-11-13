@@ -157,6 +157,10 @@ start()
             echo "HYRAX MAY NOT BE RUNNING."
         fi
     else
+        # If the BES is already running and hyraxctl start is used, then 
+        # the code winds up here and just prints this message. I think it
+        # should start the OLFS using the running BES but print a message 
+        # to that affect.
         echo "HYRAX IS NOT RUNNING."
     fi
     exit 1
@@ -380,33 +384,37 @@ findRunningOLFS()
     
     echo "Is the OLFS running?"
     
-    if [ -f $CATALINA_PID ]
-    then
-        OLFS_PID=`cat $CATALINA_PID`
-        echo "OLFS process ID appears to be: $OLFS_PID"
-        echo "Checking..."
-        
-        CHECK_PID=`$PS -p $OLFS_PID | grep $OLFS_PID | awk '{print $2}'`
-        
-        #echo CHECK_PID: $CHECK_PID
-        
-        
-        if [ ! -z "$CHECK_PID" ]
-        then 
-            echo "Confirmed running OLFS (Process ID: $OLFS_PID)"
-            OLFS_RUNNING=1
-            CATALINA_PID_VALID=1
-            return
-        else
-            echo "False lead, still looking for OLFS..."
-        fi
-    fi
+    # I think this is broken. There's a catalina.pid file on my machine when
+    # tomcat is not running (at least sometimes). The method of finding Tomcat
+    # below will always work unless they change the name of the thing, so lets
+    # use it!
+#   if [ -f $CATALINA_PID ]
+#    then
+#        OLFS_PID=`cat $CATALINA_PID`
+#        echo "OLFS process ID appears to be: $OLFS_PID"
+#        echo "Checking..."
+#        
+#        CHECK_PID=`$PS -p $OLFS_PID | grep $OLFS_PID | awk '{print $2}'`
+#        
+#        #echo CHECK_PID: $CHECK_PID
+#        
+#        
+#        if [ ! -z "$CHECK_PID" ]
+#        then 
+#            echo "Confirmed running OLFS (Process ID: $OLFS_PID)"
+#            OLFS_RUNNING=1
+#            CATALINA_PID_VALID=1
+#            return
+#        else
+#            echo "False lead, still looking for OLFS..."
+#        fi
+#    fi
 
-    OLFS_PID=`$PS | grep -v grep  | grep -i tomcat | awk '{print $2}'`
+    OLFS_PID=`$PS | grep -i tomcat | grep -v grep | awk '{print $2}'`
 
-    echo OLFS Process IDs: $OLFS_PID
+#   echo OLFS Process IDs: $OLFS_PID
 
-    if [ "$OLFS_PID" ] 
+    if [ -n "$OLFS_PID" ] 
     then
         OLFS_RUNNING=1
         echo "The OLFS is running"
