@@ -1,3 +1,35 @@
+2007-11-13  James Gallagher <jgallagher@opendap.org>
+
+	hyraxctl.in: I've fixed this so that it works on FC6/64-bit.
+
+2007-11-13  James Gallagher <jgallagher@opendap.org>
+
+	I added "" to line: if [ ! -z "$CHECK_PID" ] around $CHECK_ID
+	since that's what the -z operator expects (as string). This fixes
+	ticket #997.
+
+2007-11-12  Patrick West <pwest@ucar.edu>
+
+	Added hyraxctl and besregtest to the .spec file.
+	M    bes.spec
+
+2007-11-12  Patrick West <pwest@ucar.edu>
+
+	3.5.2 release file updates
+	M    ChangeLog
+	M    bes.spec
+	M    configure.ac
+	M    NEWS
+
+2007-11-12  Patrick West <pwest@ucar.edu>
+
+	Switched order of checking for PS, starting with UCB and then System
+	V. procps doesn't like the set up of the System V check, but the
+	check passes, but doesn't give the results we want. Checking for the
+	UCB version of ps works for procps.
+	M    server/besctl.in
+	M    server/hyraxctl.in
+
 2007-11-08  Nathan Potter <ndp@coas.oregonstate.edu>
 
 	bes: Debugging hyraxctl
