@@ -47,7 +47,7 @@ AC_DEFUN([AC_CHECK_LIBDAP],
     else
       dap_config_major_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\1/'`
       dap_config_minor_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
-      dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
+      dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$/\3/'`
       dap_min_major_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
       dap_min_minor_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
       dap_min_micro_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`

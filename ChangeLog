@@ -1,3 +1,84 @@
+2007-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Added bounds check to hdfistream_sds operator>>
+
+	M sds.cc
+
+2007-10-25  Patrick West <pwest@ucar.edu>
+
+	Wasn't catching BESException and rethrowing, so it fell through to
+	the catch( ... ). Now catching BESException and rethrowing.
+	
+	M    HDF4RequestHandler.cc
+
+2007-09-17  James Gallagher <jgallagher@opendap.org>
+
+	configure.ac: Corrected the tech mailing list address.
+
+2007-09-17  James Gallagher <jgallagher@opendap.org>
+
+	README: Added text describing how to run the bes-*-data.sh
+	script because it is no longer run automatically.
+	INSTALL: Added a note about the bes-conf target and about
+	LD_LIBRARY_PATH.
+
+2007-09-10  James Gallagher <jgallagher@opendap.org>
+
+	Changed 'configure-' to 'bes-' in the message recording changes to
+	the bes.conf file.
+
+	M    bes-hdf4-data.sh.in
+
+2007-09-10  James Gallagher <jgallagher@opendap.org>
+
+	Changed name of the default data directory from hdf to hdf4 to
+	match tests and cut down on confusion now that hdf5 is in the mix.
+
+	M    Makefile.am
+
+2007-08-24  James Gallagher <jgallagher@opendap.org>
+
+	Makefile.am: Updated fortify targets
+
+2007-08-23  James Gallagher <jgallagher@opendap.org>
+
+	Makefile.am: Added fortify target.
+
+2007-07-31  Patrick West <pwest@ucar.edu>
+
+	BESDebug modifications, passing context to BESDEBUG and registering debug context in Module classes.
+
+	M    HDF4Module.cc
+
+2007-07-17  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2007-07-16  Dan Holloway <dholloway@opendap.org>
+
+	Added pkg.m4 from netcdf_handler to support PKG_CONFIG_MODULE
+	macro. No changes were made to pkg.m4 file that originated in
+	netcdf_handler/conf subdirectory.
+
+2007-07-11  Patrick West <pwest@ucar.edu>
+
+	Using BESDebug instead of BESLog. Removing all things that were
+	added in the module in the terminate method.
+	
+	M    HDF4Module.cc
+
+2007-07-03  James Gallagher <jgallagher@opendap.org>
+
+	Applied Patrice Dumas' patch to remove auto configuration of
+	bes.conf.
+
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    conf/libdap.m4
+	M    README
+	M    Makefile.am
+
 2007-06-30  James Gallagher <jgallagher@opendap.org>
 
 	Don't edit bes.conf automatically. The handler may be installed and
