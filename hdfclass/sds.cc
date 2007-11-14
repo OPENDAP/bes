@@ -394,7 +394,7 @@ hdfistream_sds& hdfistream_sds::operator>>(hdf_sds &hs) {
 	    // prepare for SDreaddata(): make an array of zeroes and calculate
 	    // number of elements of array data
 	    int32 zero[hdfclass::MAXDIMS];
-	    for (int i=0; i<rank; ++i) {
+	    for (int i=0; i<rank && i<hdfclass::MAXDIMS; ++i) {
 		zero[i] = 0;
 		nelts *= dim_sizes[i];
 	    }
