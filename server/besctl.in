@@ -8,13 +8,17 @@ fi
 
 exec_prefix=@exec_prefix@
 localstatedir=@localstatedir@
+sysconfdir=@sysconfdir@
 bindir=@bindir@
 
 if [ ! -f ${bindir}/besdaemon ]
 then
-    echo "BES does not appear to be installed in ${prefix}"
+    echo "BES does not appear to be installed in ${bindir}"
     exit 1
 fi
+
+piddir=${localstatedir}/run
+pidfile=${piddir}/bes.pid
 
 ###########################################################################
 #
@@ -43,7 +47,7 @@ startBES()
 		if [ $BES_RUNNING ]
 		then
 		    echo "OK: Successfully started the BES"
-		    cat "${localstatedir}"/run/bes.pid
+		    cat "${pidfile}"
 		else
 		    echo "FAILED: The BES daemon did not appear to start"
 		fi
@@ -108,16 +112,16 @@ findRunningBES()
 {
     unset BES_RUNNING
     
-    if [ -f "$localstatedir"/run/bes.pid ]
+    if [ -f "$pidfile" ]
     then
-	BES_PID=`cat "$localstatedir"/run/bes.pid | cut -d' ' -f2`
+	BES_PID=`cat "$pidfile" | cut -d' ' -f2`
 	BESLISTENER_PID=`$PS | grep -v grep | grep $BES_PID | grep beslistener | awk '{print $2}'`
 	if [ $BESLISTENER_PID ]
 	then
 	    BES_RUNNING=1
 	else
 	    echo "BES PID file exists but process not running, cleaning up"
-	    /bin/rm -f  "$localstatedir"/run/bes.pid
+	    /bin/rm -f  "$pidfile"
 
 	    BESLISTENER_PID=`$PS | grep -v grep | grep beslistener | awk '{print $2}'`
 	    if [ $BESLISTENER_PID ]
@@ -182,9 +186,9 @@ canWritePid()
     unset WRITE_PID
 
     # Make sure we can write the pid file! jhrg 3/31/2007
-    if [ ! -x ${localstatedir}/run ] || [ ! -w ${localstatedir}/run ]
+    if [ ! -x ${piddir} ] || [ ! -w ${piddir} ]
     then
-	echo "The besctl command cannot write to ${localstatedir}/run."
+	echo "The besctl command cannot write to ${piddir}."
 	echo "Check that the directory exists and that the user running"
 	echo "besctl has write permissions for it."
     else
@@ -207,7 +211,8 @@ otherArgs=$*
 #..........................................................................
 dashi="no"
 dashc="no"
-args=`getopt hvsd:c:p:u:i: $*`
+dashr="no"
+args=`getopt hvsd:c:p:u:i:r: $*`
 if [ $? != 0 ]
 then
     echo 'Usage: ...'
@@ -220,7 +225,8 @@ do
     case $param in
 	-i)
 	    prefix=$2
-	    localstatedir=${prefix}/var
+	    piddir=${prefix}/var/run
+	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"
 	    shift
@@ -228,6 +234,12 @@ do
 	    ;;
 	-c)
 	    dashc=$2
+	    shift
+	    shift
+	    ;;
+	-r)
+	    dashr=$2
+	    pidfile=${2}/bes.pid
 	    shift
 	    shift
 	    ;;
@@ -258,11 +270,16 @@ then
 	echo "BES configuration file: ${BES_CONF}"
 	otherArgs="${otherArgs} -c ${BES_CONF}"
     else
-	echo "BES configuration file: ${prefix}/etc/bes/bes.conf"
-	otherArgs="${otherArgs} -c ${prefix}/etc/bes/bes.conf"
+	echo "BES configuration file: ${sysconfdir}/bes/bes.conf"
+	otherArgs="${otherArgs} -c ${sysconfdir}/bes/bes.conf"
     fi
 else
     echo "BES configuration file: $dashc"
+fi
+
+if [ "$dashr" == "no" ]
+then
+    otherArgs="${otherArgs} -r ${piddir}"
 fi
 
 case $what in
@@ -276,13 +293,13 @@ restart)
     restartBES
     ;;
 status)
-    if [ ! -f "${localstatedir}"/run/bes.pid ]
+    if [ ! -f "${pidfile}" ]
     then
 	echo "The BES daemon is not currently running"
 	exit 1
     fi
     echo "The BES daemon is currently running"
-    cat "${localstatedir}"/run/bes.pid
+    cat "${pidfile}"
     ;;
 *)
     echo "USAGE: besctl (start|stop|restart|status) [options]"

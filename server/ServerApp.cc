@@ -257,7 +257,7 @@ ServerApp::initialize( int argc, char **argv )
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
-    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:r:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -267,6 +267,8 @@ ServerApp::initialize( int argc, char **argv )
 	    case 'c':
 		dashc = optarg ;
 		break ;
+	    case 'r':
+		break ; // we can ignore the /var/run directory option here
 	    case 'p':
 		_portVal = atoi( optarg ) ;
 		_gotPort = true ;

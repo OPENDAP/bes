@@ -58,13 +58,13 @@ using std::string ;
 
 #define BES_SERVER_ROOT "BES_SERVER_ROOT"
 #define BES_SERVER "/beslistener"
-#define BES_SERVER_PID "bes.pid"
+#define BES_SERVER_PID "/bes.pid"
 
 int  daemon_init() ;
 int  mount_server( char ** ) ;
 int  pr_exit( int status ) ;
 void store_listener_id( int pid ) ;
-bool load_names( const string &install_dir ) ;
+bool load_names( const string &install_dir, const string &pid_dir ) ;
 
 string NameProgram ;
 
@@ -88,6 +88,7 @@ main(int argc, char *argv[])
     NameProgram = argv[0] ;
 
     string install_dir ;
+    string pid_dir ;
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in ServerApp.cc and besctl.in
@@ -95,7 +96,7 @@ main(int argc, char *argv[])
 
     // argv[0] is the name of the program, so start num_args at 1
     unsigned short num_args = 1 ;
-    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:" ) ) != EOF )
+    while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:r:" ) ) != EOF )
     {
 	switch( c )
 	{
@@ -122,6 +123,20 @@ main(int argc, char *argv[])
 	    case 's': // secure server
 		num_args++ ;
 		break ;
+	    case 'r': // where to write the pid file
+	    {
+		pid_dir = optarg ;
+		if( BESScrub::pathname_ok( pid_dir, true ) == false )
+		{
+		    cout << "The specified state directory (-r option) "
+		         << "is incorrectly formatted. Must be less than "
+			 << "255 characters and include the characters "
+			 << "[0-9A-z_./-]" << endl ;
+		    return 1 ;
+		}
+		num_args+=2 ;
+	    }
+	    break ;
 	    case 'c': // configuration file
 	    case 'u': // unix socket
 	    {
@@ -179,8 +194,13 @@ main(int argc, char *argv[])
 	BESServerUtils::show_usage( NameProgram ) ;
     }
 
+    if( pid_dir.empty() )
+    {
+	pid_dir = install_dir ;
+    }
+
     // Set the name of the listener and the file for the listenet pid
-    if( !load_names( install_dir ) )
+    if( !load_names( install_dir, pid_dir ) )
 	return 1 ;
 
     if( BESScrub::size_ok( sizeof( char *), num_args+1 ) == false )
@@ -388,15 +408,23 @@ store_listener_id( int pid )
 }
 
 bool
-load_names( const string &install_dir )
+load_names( const string &install_dir, const string &pid_dir )
 {
     char *xdap_root = 0 ;
     string bindir = "/bin";
+    if( !pid_dir.empty() )
+    {
+	file_for_listener = pid_dir ;
+    }
+
     if( !install_dir.empty() )
     {
 	server_name = install_dir ;
 	server_name += bindir ;
-	file_for_listener = install_dir + "/var" ;
+	if( file_for_listener.empty() )
+	{
+	    file_for_listener = install_dir + "/var/run" ;
+	}
     }
     else
     {
@@ -409,11 +437,17 @@ load_names( const string &install_dir )
 	    if( slash != string::npos )
 	    {
 		string root = prog.substr( 0, slash ) ;
-		file_for_listener = root + "/var" ;
+		if( file_for_listener.empty() )
+		{
+		    file_for_listener = root + "/var/run" ;
+		}
 	    }
 	    else
 	    {
-		file_for_listener = server_name ;
+		if( file_for_listener.empty() )
+		{
+		    file_for_listener = server_name ;
+		}
 	    }
 	}
     }
@@ -421,11 +455,14 @@ load_names( const string &install_dir )
     if( server_name == "" )
     {
 	server_name = "." ;
-	file_for_listener = "." ;
+	if( file_for_listener.empty() )
+	{
+	    file_for_listener = "./run" ;
+	}
     }
 
     server_name += BES_SERVER ;
-    file_for_listener += (string)"/run/" + BES_SERVER_PID ;
+    file_for_listener += BES_SERVER_PID ;
 
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
