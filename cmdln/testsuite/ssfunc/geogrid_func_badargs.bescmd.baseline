@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getAscii>
     <response>
-        <Administrator>admin.email.address@your.domain.name</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>Failed to read data: Wrong number of arguments to geogrid(). See geogrid() for more information.(1001)</Message>
             <Location>
                 <File>BESAsciiTransmit.cc</File>
-                <Line>138</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>
@@ -15,13 +15,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <getDODS>
     <response>
-        <Administrator>admin.email.address@your.domain.name</Administrator>
+        <Administrator>*</Administrator>
         <BESException>
             <Type>TransmitProblem</Type>
             <Message>libdap exception transmitting DataDDS: error_code = 1001: Wrong number of arguments to geogrid(). See geogrid() for more information.</Message>
             <Location>
                 <File>BESDapTransmit.cc</File>
-                <Line>141</Line>
+                <Line>*</Line>
             </Location>
         </BESException>
     </response>

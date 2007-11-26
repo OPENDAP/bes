@@ -19,6 +19,8 @@ bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt \
 	$(openssl_libs) $(READLINE_LIBS)
 
+EXTRA_DIST = testsuite common_tests.exp
+
 # DEJATOOL = bescmdln
 # RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
 
