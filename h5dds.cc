@@ -72,11 +72,11 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
   }
 
   for (int i = 0; i < nelems; i++) {
+    
     char *oname = NULL;
     int type = -1;
-
-
     ssize_t oname_size = 0;
+    
     // Query the length
     oname_size= H5Gget_objname_by_idx(pid,(hsize_t)i,NULL, (size_t)DODS_NAMELEN);
 
@@ -142,13 +142,11 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     case H5G_DATASET:{
 
       string full_path_name = string(gname) + string(oname);
-      // Can this be string? <hyokyung 2007.02.20. 10:18:16>,
-      // probably not, that's the whole point of this operation
       char *t_fpn = new char[full_path_name.length() + 1]; 
 
       strcpy(t_fpn, full_path_name.c_str());
  
-      // obtain hdf5 dataset handle. 
+      // Obtain hdf5 dataset handle. 
       if ((get_dataset(pid, t_fpn, &dt_inst, Msgt)) < 0) {
 	string msg =
 	  "h5_dds handler: get hdf5 dataset wrong for ";
@@ -160,7 +158,7 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
       // Put hdf5 dataset structure into DODS dds.
       // read_objects throws InternalErr.
       try {
-	read_objects(dds, t_fpn, fname); // Is t_fpn a must? <hyokyung 2007.02.20. 10:22:20>
+	read_objects(dds, t_fpn, fname); 
       }
       catch(Error & e) {
 	delete[]t_fpn;
@@ -178,9 +176,7 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     }
 
     type = -1;
-#ifndef KENT_OLD_WAY
     delete[]oname;
-#endif
 
   }
   DBG(cerr << "<depth_first()" << endl);

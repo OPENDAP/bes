@@ -2,7 +2,7 @@
 /// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
 /// for HDF5 data.
 ///
-/// This file contains functions that remembers the paths within a HDF5
+/// This file contains functions that remember the paths within a HDF5 file.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///

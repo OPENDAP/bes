@@ -1,3 +1,11 @@
+2007-11-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* H5EOS.cc (get_EOS_name) A new function is added.
+	
+2007-11-07  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc (depth_first)  Removed the redundant argument "fname".
+
 2006-09-15  Patrick West <pwest@ucar.edu>
 
 	Changed the _module library to not use version information and to be built

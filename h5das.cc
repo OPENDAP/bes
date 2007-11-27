@@ -49,7 +49,7 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
+/// \fn depth_first(hid_t pid, char *gname, DAS & das)
 /// depth first traversal of hdf5 file attributes.
 ///
 /// This function will walk through hdf5 group using depth-
@@ -61,27 +61,23 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 /// \param pid    dataset id(group id)
 /// \param gname  group name(absolute name from root group).
 /// \param das    reference of DAS object.
-/// \param fname  filename
 /// \return true  if succeeded
 /// \return false if failed
 ///
 /// \todo This is like the same code of DDS! => Can we combine the two into one?
-///   How about using virtual function?
-/// \todo gname is kind of redundant with pid, needs to be removed.
-/// \todo why need fname?? KY 02/27/2007
+///       How about using virtual function?
 ////////////////////////////////////////////////////////////////////////////////
 bool
-depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
+depth_first(hid_t pid, char *gname, DAS & das)
 {
   
   int num_attr = -1;
-  int nelems;   // Iterate through the file to see members of the root group.
-
+  int nelems;   
 
   DBG(cerr << ">depth_first():" << gname << endl);
   
   read_comments(das, gname, pid);
-  
+
   if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
@@ -95,7 +91,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
     char *oname = NULL;
     int type = -1;
     ssize_t oname_size = 0;
-    // Query the length
+    // Query the length of object name.
     oname_size= H5Gget_objname_by_idx(pid,(hsize_t)i,NULL, (size_t)DODS_NAMELEN);
 
     if(oname_size <=0) {
@@ -105,7 +101,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    // Obtain the name of the object 
+    // Obtain the name of the object.
     oname = new char[(size_t)oname_size+1];
     if(H5Gget_objname_by_idx(pid,(hsize_t)i,oname,(size_t)(oname_size+1))<0){
       string msg =
@@ -163,10 +159,10 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 #endif
 	// Break the cyclic loop created by hard links.
 	if(oid == 0){	// <hyokyung 2007.06.11. 13:53:12>
-	  depth_first(cgroup, t_fpn, das, fname);
+	  depth_first(cgroup, t_fpn, das);
 	}
 	else{
-	  // Add attribute table with HARDLINK
+	  // Add attribute table with HARDLINK.
 	  AttrTable* at = das.add_table(t_fpn, new AttrTable);
 	  at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
 	}
@@ -230,7 +226,7 @@ depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
       H5Dclose(dset); // Need error handling
       delete[]t_fpn;
       break;
-    }
+    } // case H5G_DATASET
     case H5G_TYPE:
       break;
 #ifndef CF
@@ -704,7 +700,6 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 #endif
   attr_table_ptr = das.get_table(newname);
   try {
-    // How's this going to work? <hyokyung 2007.02.20. 13:27:34>
     if (!attr_table_ptr){
       DBG(cerr
 	  << "=read_objects(): adding a table with name " << newname
@@ -712,7 +707,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       attr_table_ptr = das.add_table(newname, new AttrTable);
     }
   }
-  catch(Error & e) { // Why no error handling? <hyokyung 2007.02.20. 13:27:12>
+  catch(Error & e) {
 
     delete[]hdf5_path;
     delete[]temp_varname;
@@ -767,10 +762,8 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    // Since HDF5 attribute may be in string datatype,
-    // it must be dealt properly. 
-
-    // get data type. 
+    // Since HDF5 attribute may be in string datatype,it must be dealt properly. 
+    // Get data type. 
     ty_id = attr_inst.type;
 
     value = new char[attr_inst.need + sizeof(char)];
@@ -814,12 +807,11 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       DBG(cerr << "=read_objects(): value=" << value << endl);
     }
 
-    // add all the attributes in the array
+    // Add all attributes in the array.
 
     tempvalue = value;
     //  Create the "name" attribute if we can find long_name.
     //  Make it compatible with HDF4 server. 
-    // .. if we can... Why? <hyokyung 2007.02.20. 13:28:18>
     if (strcmp(attr_inst.name, "long_name") == 0) {
       for (loc = 0; loc < (int) attr_inst.nelmts; loc++) {
 	try {
@@ -843,7 +835,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       }
     } // if (strcmp(attr_inst.name, "long_name") == 0)
     // For scalar data, just read data once a time,
-    // change it into DODS string. 
+    // Change it into DODS string. 
 
     if (attr_inst.ndims == 0) {
       for (loc = 0; loc < (int) attr_inst.nelmts; loc++) {
@@ -890,8 +882,6 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
       }
       
       for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
-	// Can we use STL here? <hyokyung 2007.02.20. 13:28:47>
-
 	for (int sizeindex = 0;
 	     sizeindex < (int) attr_inst.size[dim]; sizeindex++) {
 	  if (H5Tget_class(attr_inst.type) == H5T_STRING) {
@@ -977,7 +967,6 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 /// \see get_attr_info()
 /// \see print_type()
 //////////////////////////////////////////////////////////////////////////
-
 bool
 find_gloattr(hid_t file, DAS & das)
 {
@@ -1287,7 +1276,9 @@ void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group
 #ifdef CF
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn add_dimension_attributes(DAS & das)
-/// will put pseudo attributes for CF(a.k.a COARDS) convention compatibility
+/// will put pseudo attributes for CF(a.k.a COARDS) convention compatibility.
+/// This function is an example for NASA AURA data.
+/// You need to modify this to add custom attributes that match dimension names.
 ///
 /// \param das DAS object: reference
 /// \remarks This is necessary for grads compatibility only
