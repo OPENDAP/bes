@@ -289,26 +289,46 @@ void H5EOS::set_shared_dimension()
 {
   shared_dimension = true;
 }
-const char* H5EOS::set_grads_attribute(char* attr_name)
-{
-  string str(attr_name);
 
-  DBG(cerr << ">set_grads_attribute:" << str << endl);
+const char* H5EOS::get_CF_name(char* eos_name)
+{
+  string str(eos_name);
+
+  DBG(cerr << ">get_CF_name:" << str << endl);
   // <hyokyung 2007.08. 2. 14:25:58>  
-  eos_to_grads_map["MissingValue"] = "missing_value";
-  eos_to_grads_map["Units"] = "units";
+  eos_to_cf_map["MissingValue"] = "missing_value";
+  eos_to_cf_map["Units"] = "units";
+  eos_to_cf_map["XDim"] = "lon";
+  eos_to_cf_map["YDim"] = "lat";
+    
   // eos_to_grads_map["Offset"] = "add_offset";
   // eos_to_grads_map["ScaleFactor"] = "scale_factor";
   // eos_to_grads_map["ValidRange"] = "valid_range";
   
-  DBG(cerr << eos_to_grads_map[str] << endl);
-  if(eos_to_grads_map[str].size() > 0){
-    return eos_to_grads_map[str].c_str();
+  DBG(cerr << eos_to_cf_map[str] << endl);
+  if(eos_to_cf_map[str].size() > 0){
+    return eos_to_cf_map[str].c_str();
   }
   else{
     return str.c_str();
   }
 }
+
+string H5EOS::get_EOS_name(string str)
+{
+  DBG(cerr << ">get_EOS_name:" << str << endl);
+  cf_to_eos_map["lon"] = "XDim";
+  cf_to_eos_map["lat"] = "YDim";
+  
+  DBG(cerr << cf_to_eos_map[str] << endl);
+  if(cf_to_eos_map[str].size() > 0){
+    return cf_to_eos_map[str];
+  }
+  else{
+    return str;
+  }
+}
+
 
 #endif
 

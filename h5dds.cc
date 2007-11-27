@@ -572,11 +572,9 @@ void
 read_objects_base_type(DDS & dds_table, const string & a_name,
 		       const string & filename)
 {
-  Array *ar;
+  Array *ar, *ar2;
   Grid *gr;
   Part pr; // enum type (see BaseType.h line 100)
-  
-
 
   
   dds_table.set_dataset_name(name_path(filename));
@@ -605,6 +603,10 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     
 #ifdef SHORT_PATH
   varname = get_short_name(varname);
+#ifdef CF 
+  if(varname.length() > 15)
+    return;   
+#endif  
 #endif
     
     ar = dds_table.get_factory()->NewArray(varname);
@@ -615,11 +617,12 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     (dynamic_cast < HDF5Array * >(ar))->set_numdim(dt_inst.ndims);
     (dynamic_cast < HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
     ar->add_var(bt);
-
+#ifndef CF
     for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
       ar->append_dim(dt_inst.size[dim_index]);
     delete bt;
-
+#endif
+    
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
     // DODSGRID is defined in common.h by default.
 #ifdef DODSGRID
@@ -880,10 +883,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       // Generate grid based on the parsed StructMetada.
       gr = (dynamic_cast < HDF5TypeFactory * >(dds_table.get_factory()))->NewGridEOS(varname);
       // First fill the array part of the grid.
-      pr = array;
-      gr->add_var(ar,pr);
-      delete ar;
-      
+      // pr = array;
+      // gr->add_var(ar,pr);
       // Next fill the map part of the grid.
       pr = maps;
       // Retrieve the dimension lists from the parsed metadata.
@@ -906,30 +907,39 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #ifdef SHORT_PATH
 	str_dim_full_name = str_dim_name;
 #endif
+#ifdef CF
+	str_dim_full_name = eos.get_CF_name((char*)str_dim_full_name.c_str());
+#endif	
+	
 	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
-	ar = new Array(str_dim_full_name, 0);
-	ar->add_var(bt);            
+	ar2 = new Array(str_dim_full_name, 0);
+	ar2->add_var(bt);
+        // Rename dimension name according to CF convention.
+	ar2->append_dim(dim_size, str_dim_full_name);
 	ar->append_dim(dim_size, str_dim_full_name);
-	gr->add_var(ar, pr);
+	gr->add_var(ar2, pr);
 #ifdef CF
 	// Add the shared dimension data.
 	if(!eos.is_shared_dimension_set()){
 	  bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
-	  ar = (dynamic_cast < HDF5TypeFactory * >(dds_table.get_factory()))->NewArrayEOS(str_dim_full_name, 0);
-	  ar->add_var(bt);            
-	  ar->append_dim(dim_size, str_dim_full_name);
-	  dds_table.add_var(ar);
+	  ar2 = (dynamic_cast < HDF5TypeFactory * >(dds_table.get_factory()))->NewArrayEOS(str_dim_full_name, 0);
+	  ar2->add_var(bt);            
+	  ar2->append_dim(dim_size, str_dim_full_name);
+	  dds_table.add_var(ar2);
 	}
 #endif	 	
-	delete ar;
+	delete ar2;
       }
-#ifdef CF      
+#ifdef CF
+      // dds_table.add_var(ar);
+       // Set the flag for "shared dimension" true.
       eos.set_shared_dimension();
-#endif      
-      
+#endif
+      pr = array;
+      gr->add_var(ar,pr);
+      delete ar;      
       dds_table.add_var(gr);      
       delete gr;
-
     }
 #endif // #ifdef  NASA_EOS_GRID
     else {// cannot be mapped to grid, it has to be an array.
@@ -1024,6 +1034,7 @@ void
 read_objects(DDS & dds_table, const string & varname,
 	     const string & filename)
 {
+
   switch(H5Tget_class(dt_inst.type)){
 
   case H5T_COMPOUND:

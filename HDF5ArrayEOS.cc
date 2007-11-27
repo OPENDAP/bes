@@ -47,12 +47,17 @@ bool
 HDF5ArrayEOS::read(const string & dataset)
 {
   DBG(cerr << ">read(): " << name() <<  endl);
+
   Array::Dim_iter d = dim_begin();
   int start = dimension_start(d, true);
   int stride = dimension_stride(d, true);
   int stop =  dimension_stop(d, true);
   int count = ((stop - start) / stride) + 1;
-  int loc = eos.get_dimension_data_location(name());
+  string dim_name = name();
+#ifdef CF
+  dim_name = eos.get_EOS_name(dim_name);
+#endif  
+  int loc = eos.get_dimension_data_location(dim_name);
     
   if(loc >= 0){
     set_read_p(true);

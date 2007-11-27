@@ -702,7 +702,6 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   if(strlen(newname) > 15)
     return;
 #endif
-  
   attr_table_ptr = das.get_table(newname);
   try {
     // How's this going to work? <hyokyung 2007.02.20. 13:27:34>
@@ -851,7 +850,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	try {
 	  print_rep = print_attr(ty_id, loc, tempvalue);
 #ifdef CF	  
-	  attr_table_ptr->append_attr(eos.set_grads_attribute(attr_inst.name),
+	  attr_table_ptr->append_attr(eos.get_CF_name(attr_inst.name),
 #else
 	  attr_table_ptr->append_attr(attr_inst.name,
 #endif				      
@@ -900,7 +899,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	      char *print_rep =
 		print_attr(ty_id, loc, tempvalue);
 #ifdef CF	      
-	      attr_table_ptr->append_attr(eos.set_grads_attribute(attr_inst.name),
+	      attr_table_ptr->append_attr(eos.get_CF_name(attr_inst.name),
 #else					  
 	      attr_table_ptr->append_attr(attr_inst.name,
 #endif					  
@@ -932,7 +931,7 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 		print_attr(ty_id, loc, tempvalue);
 	      DBG(cerr << "print_rep=" <<  print_rep << endl);
 #ifdef CF	      
-	      attr_table_ptr->append_attr(eos.set_grads_attribute(attr_inst.name),
+	      attr_table_ptr->append_attr(eos.get_CF_name(attr_inst.name),
 #else					  
    	      attr_table_ptr->append_attr(attr_inst.name,
 #endif					  
@@ -1300,18 +1299,31 @@ void add_dimension_attributes(DAS & das)
   AttrTable *at;
 
    at = das.add_table("NC_GLOBAL", new AttrTable);
-   at->append_attr("title", STRING, "\"Test\"");
+   at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
    at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
    at->append_attr("dataType", STRING, "\"Grid\"");
-
-   at = das.add_table("XDim", new AttrTable);
+   at->append_attr("history", STRING, "\"Sat Oct 20 09:48:56 EDT 2007 : imported by GrADS Data Server 1.3\"");
+   
+   at = das.add_table("lon", new AttrTable);
+   at->append_attr("grads_dim", STRING, "\"x\"");
+   at->append_attr("grads_mapping", STRING, "\"linear\"");
+   at->append_attr("grads_size", STRING, "\"1440\"");
    at->append_attr("units", STRING, "\"degrees_east\"");
+   at->append_attr("long_name", STRING, "\"longitude\"");
+   at->append_attr("minimum", FLOAT32, "-180.0");
+   at->append_attr("maximum", FLOAT32, "180.0");
+   at->append_attr("resolution", FLOAT32, "0.25");
+      
+   at = das.add_table("lat", new AttrTable);
+   at->append_attr("grads_dim", STRING, "\"y\"");
    at->append_attr("grads_mapping", STRING, "\"linear\"");
-  
-   at = das.add_table("YDim", new AttrTable);
+   at->append_attr("grads_size", STRING, "\"720\"");   
    at->append_attr("units", STRING, "\"degrees_north\"");
-   at->append_attr("grads_mapping", STRING, "\"linear\"");
-
+   at->append_attr("long_name", STRING, "\"latitude\"");
+   at->append_attr("minimum", FLOAT32, "-90.0");
+   at->append_attr("maximum", FLOAT32, "90.0");
+   at->append_attr("resolution", FLOAT32, "0.25");
+      
 //   at = das.add_table("ZDim", new AttrTable);
 //   at->append_attr("units", STRING, "\"milibar\"");
 

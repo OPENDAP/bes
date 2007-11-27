@@ -37,7 +37,8 @@ private:
   map<string, int>     dimension_map;     
   map<string, string>  full_data_path_to_dimension_list_map;
 #ifdef CF
-  map<string, string>  eos_to_grads_map;
+  map<string, string>  eos_to_cf_map;
+  map<string, string>  cf_to_eos_map;
 #endif
   
   vector<string>       dimensions;  
@@ -196,7 +197,8 @@ public:
 #ifdef CF
   bool  is_shared_dimension_set();
   void  set_shared_dimension();
-  const char*  set_grads_attribute(char* attr_name);
+  const char*  get_CF_name(char* eos_name);
+  string get_EOS_name(string cf_name);
 #endif  
   
 };

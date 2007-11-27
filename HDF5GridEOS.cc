@@ -82,7 +82,11 @@ HDF5GridEOS::read_dimension(Array* a)
     int stride = a->dimension_stride(d, true);
     int stop = a->dimension_stop(d, true);
     int count = ((stop - start) / stride) + 1;
-    int loc = eos.get_dimension_data_location(a->name());
+    string dim_name = a->name();
+#ifdef CF
+    dim_name = eos.get_EOS_name(dim_name);
+#endif    
+    int loc = eos.get_dimension_data_location(dim_name);
     
     if(loc >= 0){
       a->set_read_p(true);
