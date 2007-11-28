@@ -1,0 +1,4 @@
+set container in catalog values av,/data/nc/coads_climatology.nc;
+define e as av with av.constraint="geoarray(SST.SST,45,135,-45,225,90,0,-90,359)";
+get ascii for e;
+exit

@@ -1,0 +1,4 @@
+set container in catalog values av,/data/nc/coads_climatology.nc;
+define e as av with av.constraint="geogrid(SST,61,-82,38,-19,\"TIME<1500\")";
+get dods for e;
+exit

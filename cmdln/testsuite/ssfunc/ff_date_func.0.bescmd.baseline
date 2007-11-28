@@ -1,0 +1,5 @@
+Dataset {
+    Sequence {
+        String DODS_URL;
+    } URI_Avhrr;
+} avhrr.dat;

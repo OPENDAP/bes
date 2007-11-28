@@ -37,6 +37,7 @@ bes-configuration-tests:
 	EXPECT=$(EXPECT); export EXPECT; \
 	if $(SHELL) -c "runtest --version" > /dev/null 2>&1; then \
 	  runtest --tool bescmdln --srcdir testsuite; \
+	  /bin/rm -f testsuite/*/*.bescmd.output \
 	else \
 	  echo "WARNING: could not find \`runtest'" 1>&2; :;\
 	fi

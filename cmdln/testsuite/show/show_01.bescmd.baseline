@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showInfo>
     <response>
-        <dataset isData="true" thredds_collection="false">
+        <dataset isAccessible="true" isData="true" thredds_collection="false">
             <name>/data/nc/fnoc1.nc</name>
             <size>23944</size>
             <lastmodified>
@@ -14,7 +14,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showInfo>
     <response>
-        <dataset isData="false" thredds_collection="true">
+        <dataset isAccessible="true" isData="false" thredds_collection="true">
             <name>/data/hdf4</name>
             <size>4096</size>
             <lastmodified>
@@ -28,7 +28,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showCatalog>
     <response>
-        <dataset isData="false" thredds_collection="true">
+        <dataset isAccessible="true" isData="false" thredds_collection="true">
             <name>/data/nc</name>
             <size>4096</size>
             <lastmodified>
@@ -36,7 +36,7 @@
                 <time>*</time>
             </lastmodified>
             <count>3</count>
-            <dataset isData="true" thredds_collection="false">
+            <dataset isAccessible="true" isData="true" thredds_collection="false">
                 <name>fnoc1.nc</name>
                 <size>23944</size>
                 <lastmodified>
@@ -44,7 +44,7 @@
                     <time>*</time>
                 </lastmodified>
             </dataset>
-            <dataset isData="true" thredds_collection="false">
+            <dataset isAccessible="true" isData="true" thredds_collection="false">
                 <name>coads_climatology.nc</name>
                 <size>3114044</size>
                 <lastmodified>
@@ -52,7 +52,7 @@
                     <time>*</time>
                 </lastmodified>
             </dataset>
-            <dataset isData="false" thredds_collection="false">
+            <dataset isAccessible="true" isData="false" thredds_collection="false">
                 <name>fnoc1.das</name>
                 <size>162</size>
                 <lastmodified>

@@ -1,8 +1,8 @@
-# Test the hdf5 handler with the bes.
+# Test the hdf4 handler with the bes.
 #
 # $Id: data.1.exp 14588 2006-09-15 21:13:55Z jimg $
 
-global comp_output		# contains output from das-test_start
+global comp_output		# contains output from bescmdln_start
 global verbose			# this and srcdir are set by runtest.exp
 global srcdir
 

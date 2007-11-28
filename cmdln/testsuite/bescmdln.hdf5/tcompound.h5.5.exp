@@ -2,12 +2,12 @@
 #
 # $Id: data.1.exp 14588 2006-09-15 21:13:55Z jimg $
 
-global comp_output		# contains output from das-test_start
+global comp_output		# contains output from bescmdln_start
 global verbose			# this and srcdir are set by runtest.exp
 global srcdir
 
 # The `1' in compare_stdout means call xfail if the test fails.
 
-bescmdln_start "testsuite/hdf5/tcompound.h5.5.bescmd"
-compare_stdout "testsuite/hdf5/tcompound.h5.5.bescmd.baseline" "DODS /data/hdf5/tcompound2.h5" 1
+bescmdln_start "testsuite/hdf5/tcompound.h5.5.bescmd" "testsuite/hdf5/tcompound.h5.5.bescmd.output"
+compare_dods "testsuite/hdf5/tcompound.h5.5.bescmd.baseline" "testsuite/hdf5/tcompound.h5.5.bescmd.output" "DODS /data/hdf5/tcompound2.h5" 1
 

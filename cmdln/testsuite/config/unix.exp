@@ -22,12 +22,12 @@ if {[file exists common_tests.exp]} {
 
 # The four `required' procs are _start, _load, _exit and _version.
 
-proc bescmdln_start { {script ""} {file ""} {switches "-p 10002 -h localhost"} } {
+proc bescmdln_start { {script ""} {outfile ""} {switches "-p 10002 -h localhost"} } {
     global verbose
     global comp_output
     global spawn_id
 
-    if ![string compare $file ""] {
+    if ![string compare $outfile ""] {
 	if {$verbose >= 1} {
 	    send_user "Testing bescmdln $switches -i $script ...\n"
 	    exp_internal 1
@@ -35,10 +35,10 @@ proc bescmdln_start { {script ""} {file ""} {switches "-p 10002 -h localhost"} }
 	catch "exec ./bescmdln $switches -i $script" comp_output
     } else {
 	if {$verbose >= 1} {
-	    send_user "Testing bescmdln $switches -i $script -o $file ...\n"
+	    send_user "Testing bescmdln $switches -i $script -o $outfile ...\n"
 	    exp_internal 1
 	}
-	catch "exec ./bescmdln $switches -i $script -o $file" comp_output
+	catch "exec ./bescmdln $switches -i $script -f $outfile" comp_output
     }
 }
 
