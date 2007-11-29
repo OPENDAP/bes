@@ -1,3 +1,8 @@
+2007-11-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* HDF5RequestHander.cc (hdf5_build_dds) Changed the number of arguments 
+	in depth_first() function for DAS generation.
+
 2007-11-27  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* H5EOS.cc (get_EOS_name) A new function is added.

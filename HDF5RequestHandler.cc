@@ -79,7 +79,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 
     try {
         find_gloattr(file1, *das);
-        depth_first(file1, "/", *das, filename.c_str());
+        depth_first(file1, "/", *das);
     }
     catch(Error & e) {
         BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
@@ -119,7 +119,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         DAS das;
 
         find_gloattr(file1, das);
-        depth_first(file1, "/", das, filename.c_str());
+        depth_first(file1, "/", das);
 
         dds->transfer_attributes(&das);
 
@@ -170,7 +170,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         DAS das;
 
         find_gloattr(file1, das);
-        depth_first(file1, "/", das, filename.c_str());
+        depth_first(file1, "/", das);
 
         dds->transfer_attributes(&das);
 
