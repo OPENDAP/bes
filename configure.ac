@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.57)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.5.2, support@opendap.org)
+AC_INIT(bes, 3.5.3, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
@@ -109,7 +109,7 @@ SIC_VAR_SYS_ERRLIST
 BES_CHECK_OPENSSL
 BES_CHECK_KERBEROS
 
-AC_CHECK_LIBDAP([3.7.4],
+AC_CHECK_LIBDAP([3.7.10],
   [
     AM_CONDITIONAL([LIBDAP], [true])
   ],

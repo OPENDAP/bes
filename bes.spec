@@ -1,5 +1,5 @@
 Name:           bes
-Version:        3.5.2
+Version:        3.5.3
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -11,7 +11,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  libdap-devel >= 3.7.7
+BuildRequires:  libdap-devel >= 3.7.10
 BuildRequires:  readline-devel
 # needed by ppt
 BuildRequires:  openssl-devel
@@ -35,7 +35,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.7.7
+Requires:       libdap-devel >= 3.7.10
 
 %description    devel
 The %{name}-devel package contains libraries and header files for

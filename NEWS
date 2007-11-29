@@ -1,6 +1,13 @@
 
 	$Id$
 
+News for version 3.5.3
+
+New option to the BES control script (besctl) to specify the location of the
+bes.pid file. This was needed for some binary releases as the prefix for
+installation is /usr, but the pid files are located not in /usr/var/run but in
+/var/run. If not specified, then it defaults to the prefix/var/run directory.
+
 News for version 3.5.2
 
 New options available to the BES control script (besctl) and therefor the

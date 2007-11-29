@@ -1,3 +1,39 @@
+2007-11-28  Patrick West <pwest@ucar.edu>
+
+	Updated dods tests in bes/cmdln/testsuite to write the results to a file,
+	then use getdap on the output and getdap on the expected output, and
+	compare the results. Split apart the server side function tests. Updated
+	the comments in the .exp files. Added common-tests.exp and testsuite
+	directory to the distribution.
+
+2007-11-27  James Gallagher <jgallagher@opendap.org>
+
+	Changed '==' to '=' or '-eq'.
+
+	M besctl.in
+
+2007-11-26  Patrick West <pwest@ucar.edu>
+
+	Some of the baseline files were corrupted in bes/cmdln/testsuite. Fixed
+	those. Added the testsuite directory and the common-tests.exp file to the
+	distribution.
+
+2007-11-21  Patrick West <pwest@ucar.edu>
+
+	New option, -r, to tell where the pid file lives. Using sysconfdir in besctl
+	for default location. This fixes rpm build issues.
+	M    server/besctl.in
+	M    server/daemon.cc
+	M    server/ServerApp.cc
+
+2007-11-13  Patrick West <pwest@ucar.edu>
+
+	Few more changes for 3.5.2
+	M    ChangeLog
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-11-13  James Gallagher <jgallagher@opendap.org>
 
 	hyraxctl.in: I've fixed this so that it works on FC6/64-bit.

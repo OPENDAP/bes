@@ -10,6 +10,8 @@ SUBDIRS = dispatch command ppt cmdln server docs bin templates
 
 bin_SCRIPTS = bes-config
 
+dist_aclocal_DATA = conf/bes.m4
+
 EXTRA_DIST = apache hello_world csv-handler doxy.conf bes.spec
 
 #########################################################################
