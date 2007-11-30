@@ -36,6 +36,9 @@ Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       libdap-devel >= 3.7.10
+Requires: pkgconfig
+# for the /usr/share/aclocal directory ownership
+Requires: automake
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -108,6 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/bes/
 %{_libdir}/*.so
 %{_datadir}/bes/templates/
+%{_datadir}/aclocal/*
 
 %files doc
 %defattr(-,root,root,-)
