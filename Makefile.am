@@ -60,7 +60,7 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec
+	COPYRIGHT_URI hdf4_handler.spec OSX_Resources
 
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
@@ -143,10 +143,7 @@ PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/P
 pkg:
 	rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg
 	./configure --prefix=/usr $(PKG_CONFIGURE_FLAGS)
-	make bes-hdf4-data.sh
-	cp bes-hdf4-data.sh bes-hdf4-data.sh.macosx
-	./configure --prefix=`pwd`/mac_osx $(PKG_CONFIGURE_FLAGS)
-	make clean install
-	mv bes-hdf4-data.sh.macosx mac_osx/bin/bes-hdf4-data.sh
-	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg -f mac_osx -ds -r OSX_Resources -i OSX_Resources/Info.plist -d OSX_Resources/Description.plist
+	make clean all
+	DESTDIR=${PWD}/mac_osx make install
+	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg -f mac_osx/usr -ds -r OSX_Resources -i OSX_Resources/Info.plist -d OSX_Resources/Description.plist
 
