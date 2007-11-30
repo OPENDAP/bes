@@ -1,6 +1,6 @@
 Summary:         HDF4 data handler for the OPeNDAP Data server
 Name:            hdf4_handler
-Version:         3.7.9
+Version:         3.7.6
 Release:         2
 License:         LGPL
 Group:           System Environment/Daemons 
