@@ -1,3 +1,29 @@
+2007-11-29  Patrick West <pwest@ucar.edu>
+
+	Added bes.m4 file to be included in the distributions. Fixed a problem in
+	the libdap.m4 file where the micro version number was set to the minor
+	number instead of the micro number. 3.5.3 release updates to README,
+	ChangeLog, bes.spec, NEWS, configure.ac. Mac OSX dmg build resource files
+	updated and _MacOSX.rtf files added to be included in the dmg alongside
+	the .pkg.
+	A    conf/bes.m4
+	M    conf/libdap.m4
+	M    ChangeLog
+	M    README
+	A    README_MacOSX.rtf
+	M    bes.spec
+	M    OSX_Resources/InstallationCheck
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/ReadMe.txt
+	M    OSX_Resources/Welcome.html
+	M    configure.ac
+	M    Makefile.am
+	A    INSTALL_MacOSX.rtf
+	M    NEWS
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-11-28  Patrick West <pwest@ucar.edu>
 
 	Updated dods tests in bes/cmdln/testsuite to write the results to a file,
