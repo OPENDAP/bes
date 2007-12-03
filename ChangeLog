@@ -1,3 +1,23 @@
+2007-11-30  Patrick West <pwest@ucar.edu>
+
+	version number is 3.7.6, not 3.7.9
+	M    hdf4_handler.spec
+
+2007-11-30  Patrick West <pwest@ucar.edu>
+
+	Updated MacOSX pkg build resources and process.
+	M    bes.conf
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/Welcome.html
+	M    Makefile.am
+
+2007-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Updated for version 3.7.6
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2007-11-14  James Gallagher <jgallagher@opendap.org>
 
 	Added bounds check to hdfistream_sds operator>>

@@ -1,6 +1,10 @@
 
 $Id$
 
+Version 3.7.7 (14 Nov 2007)
+
+pkg and rpm build fixes
+
 Version 3.7.6 (14 Nov 2007)
 
 Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh

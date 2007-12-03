@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for version 3.7.6.
+Updated for version 3.7.7
 
 ---------------------------------------------------------------------------
 
@@ -49,12 +49,12 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.7.9 to build and install this
+  o You need the libdap library version 3.7.10 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages.
 
   o If you're planning on using this with the OPeNDAP 4 Data Server (Hyrax),
-    you'll need version 3.5.2 of the BES software. Make sure to build that 
+    you'll need version 3.5.3 of the BES software. Make sure to build that 
     first.
 
   o To use this software with our cgi-based data server, you will need the 
