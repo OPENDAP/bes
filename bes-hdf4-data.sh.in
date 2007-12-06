@@ -57,4 +57,21 @@ sed "s%^\(BES.Catalog.catalog.TypeMatch=.*\)%\1$type_match;%" \
 mv tmp.conf $bes_conf
 
 # Set/append any handler-specific params.
+comment_1="# HDF4 handler specific parameters"
+comment_2="# CacheDir: Cache directory used by the HDF4 data handler."
+comment_3="# Suggestion: Consider making this '/tmp/bes'; see the comment at "
+comment_4="# BES.CacheDir above."
+cache_dir="HDF4.CacheDir=/tmp"
+
+awk "BEGIN {hdf4_found=0}
+	/# Data Handler Specific/ {hdf4_found=1}
+	/^$/ && hdf4_found == 1 {print}
+	/^$/ && hdf4_found == 1 {print \"$comment_1\"}
+	/^$/ && hdf4_found == 1 {print \"$comment_2\"}
+	/^$/ && hdf4_found == 1 {print \"$comment_3\"}
+	/^$/ && hdf4_found == 1 {print \"$comment_4\"}
+	/^$/ && hdf4_found == 1 {print \"$cache_dir\"; hdf4_found=0}
+	{print}" \
+	< $bes_conf > tmp.conf
+mv tmp.conf $bes_conf
 
