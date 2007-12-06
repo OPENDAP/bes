@@ -252,12 +252,3 @@ BES.DefaultResponseMethod=POST
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-#-----------------------------------------------------------------------#
-# Defines the cache directory for BES servers serving HDF4 data         #
-#-----------------------------------------------------------------------#
-
-# Suggestion: Consider making this '/tmp/bes'; see the comment at 
-# BES.CacheDir above.
-
-HDF4.CacheDir=/tmp
-
