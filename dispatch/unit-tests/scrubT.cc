@@ -17,6 +17,7 @@ run(void)
     cout << "Entered scrubT::run" << endl;
     int retVal = 0;
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test command line length over 255 characters" << endl;
@@ -33,7 +34,18 @@ run(void)
 	    cout << "command line not ok, good" << endl ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test command line length ok" << endl;
@@ -48,7 +60,18 @@ run(void)
 	    return 1 ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test path name length over 255 characters" << endl;
@@ -65,7 +88,18 @@ run(void)
 	    cout << "path name not ok, good" << endl ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test path name good" << endl;
@@ -79,7 +113,18 @@ run(void)
 	    return 1 ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test path name bad characters strict" << endl;
@@ -93,7 +138,18 @@ run(void)
 	    cout << "path name not ok, good" << endl ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test array size too big" << endl;
@@ -107,7 +163,18 @@ run(void)
 	    cout << "array size not ok, good" << endl ;
 	}
     }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
+    }
 
+    try
     {
 	cout << endl << "*****************************************" << endl;
 	cout << "Test array size ok" << endl;
@@ -120,6 +187,16 @@ run(void)
 	    cerr << "array size not ok, should be" << endl ;
 	    return 1 ;
 	}
+    }
+    catch( BESException &e )
+    {
+	cerr << "caught exception: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "caught unknown exception" << endl ;
+	return 1 ;
     }
 
     cout << endl << "*****************************************" << endl;

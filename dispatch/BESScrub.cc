@@ -88,7 +88,7 @@ BESScrub::pathname_ok(const string &path, bool strict)
     if (path.length() > 255)
         return false;
     
-    BESRegex name("[0-9A-z_./-]+");
+    BESRegex name("[[:alpha:][:digit:]_./-]+");
     if (!strict)
         name = "[:print:]+";
         
