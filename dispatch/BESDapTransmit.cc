@@ -57,7 +57,6 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
         df.send_das(dhi.get_output_stream(), *das, "", false);
-	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -94,7 +93,6 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", false);
-	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -131,7 +129,6 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
         df.set_dataset_name(dds->filename());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_data(*dds, ce, dhi.get_output_stream(), "", false);
-	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;
@@ -168,7 +165,6 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_ddx(*dds, ce, dhi.get_output_stream(), false);
-	dhi.get_output_stream() << flush ;
     }
     catch(Error & e) {
         ostringstream s;

@@ -64,7 +64,7 @@
  * The header file merely declares a pointer to the global object just as
  * you would for normal global objects.
  *
- * <pre>
+ * @code
     // TheGlobalObject.h
 
     #ifndef E_TheGlobalObject_H
@@ -75,12 +75,12 @@
     extern GlobalObject *TheGlobalObject;
 
     #endif
- * </pre>
+ * @endcode
  *
  * The source file is where you implement the initialization function and,
  * if necessary, the termination function.
  *
- * <pre>
+ * @code
     // TheGlobalObject.C
 
     #include <TheGlobalObject.h>
@@ -104,16 +104,16 @@
     }
 
     FUNINITQUIT(buildTheGlobalObject, destroyTheGlobalObject, APPL_INIT2)
- * </pre>
+ * @endcode
  *
  * The macro FUNINITQUIT takes an initialization function and a termination
  * function to be used in the order specified by the order macro APPL_INIT2,
  * which would be defined in one of TheInit.h header files. If there is
  * nothing to terminate then you could have used the following macro:
  *
- * <pre>
+ * @code
     FUNINIT(buildTheGlobalObject, APPL_INIT2)
- * </pre>
+ * @endcode
  *
  * The macro FUNINIT only takes an initialization function, no termination
  * function, and the order macro APPL_INIT2.

@@ -32,9 +32,8 @@
 
 #include "BESSilentInfo.h"
 
-/** @brief constructs a BESSilentInfo object for the specified type.
- *
- * @param otype type of data represented by this response object
+/** @brief constructs an informational object that doesn't
+ *         write any output to the stream
  */
 BESSilentInfo::BESSilentInfo( )
     : BESInfo( )
@@ -61,6 +60,7 @@ BESSilentInfo::begin_response( const string &response_name )
  *
  * @param tag_name name of the tag to add to the infroamtional response
  * @param tag_data information describing the tag
+ * @param attrs map of attributes to add to the tag
  */
 void
 BESSilentInfo::add_tag( const string &tag_name,
@@ -72,6 +72,7 @@ BESSilentInfo::add_tag( const string &tag_name,
 /** @brief begin a tagged part of the information, information to follow
  *
  * @param tag_name name of the tag to begin
+ * @param attrs map of attributes to begin the tag with
  */
 void
 BESSilentInfo::begin_tag( const string &tag_name ,
@@ -118,7 +119,7 @@ BESSilentInfo::add_space( unsigned long num_spaces )
  *
  * because this is a silent response, nothing is added
  *
- * @param s information to be ignored
+ * @param num_breaks number of breaks to be added
  */
 void
 BESSilentInfo::add_break( unsigned long num_breaks )
@@ -139,23 +140,30 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
 /** @brief ignore exception data to this informational object. If buffering is
  * not set then the information is output directly to the output stream.
  *
- * @param type type of the exception received
- * @param msg the error message
- * @param file file name of where the error was sent
- * @param line line number in the file where the error was sent
+ * @param e the exception to be added to this informational object
+ * @see BESException
  */
 void
 BESSilentInfo::add_exception( BESException &e )
 {
 }
 
+/** @brief transmit this informational object
+ *
+ * Nothing is to be transmotted as this is silent
+ *
+ * @param transmitter The type of transmitter to use to transmit the info
+ * @param dhi information to help with the transmission
+ */
 void
 BESSilentInfo::transmit( BESTransmitter *transmitter,
 		         BESDataHandlerInterface &dhi )
 {
 }
 
-/** @brief ignore printing the information
+/** @brief printg this informational object
+ *
+ * Nothing is to be printed as this is a silent object
  *
  * @param strm stream to send output to if not ignored.
  */

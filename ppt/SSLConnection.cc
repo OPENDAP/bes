@@ -90,14 +90,13 @@ SSLConnection::send( const string &buf )
     }
 }
 
-bool
-SSLConnection::receive( ostream *strm )
+int
+SSLConnection::receive( char *buffer, unsigned int buffer_size )
 {
     bool isDone = false ;
     if( _connected )
     {
-	char retbuf[1025] ;
-	int retlen = SSL_read( _connection, (void *)retbuf, 1024 ) ;
+	int retlen = SSL_read( _connection, (void *)buffer, buffer_size ) ;
 	if( retlen <= 0 )
 	{
 	    if( retlen == 0 )
@@ -113,9 +112,8 @@ SSLConnection::receive( ostream *strm )
 	}
 	else
 	{
-	    if( retlen > 1024 ) retlen = 1024 ;
-	    retbuf[retlen] = '\0' ;
-	    *strm << retbuf << flush ;
+	    if( retlen > buffer_size ) retlen = buffer_size ;
+	    buffer[retlen] = '\0' ;
 	}
     }
 

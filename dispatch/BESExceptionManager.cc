@@ -58,27 +58,44 @@ BESExceptionManager::~BESExceptionManager()
 {
 }
 
+/** @brief Register an exception handler with the manager
+
+    Signature of the function is as follows:
+
+    int function_name( BESException &e, BESDataHandlerInterface &dhi ) ;
+
+    If the handler does not handle the exception then it should return
+    BES_EXECUTED_OK. Otherwise, return a status code. Pre-defined status
+    codes can be found in BESStatusReturn.h
+
+    @param ehm exception handler function
+    @see BESException
+ */
 void
 BESExceptionManager::add_ehm_callback( p_bes_ehm ehm )
 {
     _ehm_list.push_back( ehm ) ;
 }
 
-/** @brief Manage any exceptions thrown during the whole process
+/** @brief Manage any exceptions thrown during the handling of a request
 
-    Specific responses are generated given a specific Exception caught.
+    An informational object should be created and assigned to
+    BESDataHandlerInterface.error_info variable.
+
+    The manager first determines if a registered exception handler
+    can handle the exception. First one to handle the exception wins.
+    BES_EXECUTED_OK is returned from the registered handler if it can NOT
+    handle the exception.
+
+    If no registered handlers can handle the exception then the default
+    is to create an informational object (BESInfo instance) and the exception
+    information stored there.
 
     @param e excption to be managed
     @param dhi information related to request and response
     @return status after exception is handled
     @see BESException
-    @see BESIncorrectException
-    @see BESDatabaseException
-    @see BESContainerStorageException
-    @see BESKeysException
-    @see BESLogException
-    @see BESHandlerException
-    @see BESResponseException
+    @see BESInfo
  */
 int
 BESExceptionManager::handle_exception( BESException &e,
@@ -119,7 +136,7 @@ BESExceptionManager::handle_exception( BESException &e,
     dhi.error_info->end_response() ;
     return e.get_return_code() ;
 
-    /* Replaced with the above three lines
+    /* Replaced with the above code
     BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
     if( ireqx )
     {

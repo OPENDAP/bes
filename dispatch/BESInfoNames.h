@@ -36,11 +36,11 @@
 /** @brief macros representing the default informational response objects
  *
  * These include
- * <pre>
+ * @verbatim
  * txt
  * html
  * xml
- * </pre>
+ * @endverbatim
  */
 
 #define BES_TEXT_INFO "txt"

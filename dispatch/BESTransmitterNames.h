@@ -36,10 +36,10 @@
 /** @brief macros representing the default transmitter objects
  *
  * These include
- * <pre>
+ * @verbatim
  * basic
  * http
- * </pre>
+ * @endverbatim
  */
 
 #define BASIC_TRANSMITTER "basic"

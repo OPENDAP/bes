@@ -58,20 +58,20 @@ using std::ifstream ;
  * multiple lines. Comments are allowed using the pound (#) character. For
  * example:
  *
- * <PRE>
- * #
- * # Who is responsable for this server
- * #
- * BES.ServerAdministrator=dods-tech@unidata.ucar.edu
- *
- * #
- * # Default server port and unix socket information and whether the server
- * #is secure or not.
- * #
- * BES.ServerPort=10002
- * BES.ServerUnixSocket=/tmp/bes.socket
- * BES.ServerSecure=no
- * </PRE>
+ * @verbatim
+ #
+ # Who is responsable for this server
+ #
+ BES.ServerAdministrator=dods-tech@unidata.ucar.edu
+
+ #
+ # Default server port and unix socket information and whether the server
+ #is secure or not.
+ #
+ BES.ServerPort=10002
+ BES.ServerUnixSocket=/tmp/bes.socket
+ BES.ServerSecure=no
+ * @endverbatim
  *
  * Key/value pairs can also be set by passing in a key=value string, or by
  * passing in a key and value string to the object.

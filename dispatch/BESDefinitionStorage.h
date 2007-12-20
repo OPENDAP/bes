@@ -97,6 +97,7 @@ public:
      * ownership of that definition. If the definition already exists, then
      * the definition is NOT added.
      *
+     * @param def_name name of the definition to add
      * @param d definition to add
      * @return true if successfully added, false if already exists
      */

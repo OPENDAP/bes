@@ -61,11 +61,11 @@ BESDefineCommand::parse_options( BESTokenizer &tokens,
  * A request looks like:
  *
  * define &lt;def_name&gt; as &lt;container_list&gt;
- * <BR />
+ * 
  * &nbsp;&nbsp;[where &lt;container_x&gt;.constraint="&lt;constraint&gt;"]
- * <BR />
+ * 
  * &nbsp;&nbsp;[,&lt;container_x&gt;.attributes="&lt;attrs&gt;"]
- * <BR />
+ * 
  * &nbsp;&nbsp;[aggregate by "&lt;aggregation_command&gt;"];
  *
  * where container_list is a list of containers representing points of data,
@@ -76,11 +76,11 @@ BESDefineCommand::parse_options( BESTokenizer &tokens,
  * list of attributes then leave out the constraint. For example:
  *
  * define d1 as container_1,container_2
- * <BR />
+ * 
  * &nbsp;&nbsp;where container_1.constraint="constraint1"
- * <BR />
+ * 
  * &nbsp;&nbsp;,container_2.constraint="constraint2"
- * <BR />
+ * 
  * &nbsp;&nbsp;,container_2.attributes="attr1,attr2";
  *
  * @param tokenizer holds on to the list of tokens to be parsed

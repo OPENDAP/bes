@@ -54,6 +54,8 @@ using std::flush ;
 #include "ServerExitConditions.h"
 #include "BESStatusReturn.h"
 #include "BESUtil.h"
+#include "PPTStreamBuf.h"
+#include "BESDebug.h"
 
 BESServerHandler::BESServerHandler()
 {
@@ -130,34 +132,61 @@ BESServerHandler::execute( Connection *c )
     strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort() ;
     string from = strm.str() ;
 
+    map<string,string> extensions ;
+
     for(;;)
     {
 	ostringstream ss ;
 
-	bool isDone = c->receive( &ss ) ;
+	bool done = false ;
+	while( !done )
+	    done = c->receive( extensions, &ss ) ;
 
-	if( isDone )
+	if( extensions["status"] == c->exit() )
 	{
 	    c->closeConnection() ;
 	    exit( CHILD_SUBPROCESS_READY ) ;
 	}
 
-	int holder = dup( STDOUT_FILENO ) ;
-	dup2( c->getSocket()->getSocketDescriptor(), STDOUT_FILENO ) ;
-	
-	BESCmdInterface cmd( BESUtil::www2id( ss.str(), "%", "%20" ), &cout ) ;
-	int status = cmd.execute_request( from ) ;
+	string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
+	BESDEBUG( "server", "BESServerHandler::execute - command = " << cmd_str << endl )
 
-	cout << flush ;
-	dup2( holder, STDOUT_FILENO ) ;
-	close( holder ) ;
+	PPTStreamBuf fds( c->getSocket()->getSocketDescriptor(), 4000 ) ;
+	std::streambuf *holder ;
+	holder = cout.rdbuf() ;
+	cout.rdbuf( &fds ) ;
+
+	BESCmdInterface cmd( cmd_str, &cout ) ;
+	int status = cmd.execute_request( from ) ;
 
 	if( status == BES_EXECUTED_OK )
 	{
-	    c->send( "" ) ;
+	    BESDEBUG( "server", "BESServerHandler::execute - executed successfully" << endl )
+	    fds.finish() ;
+	    cout.rdbuf( holder ) ;
 	}
 	else
 	{
+	    // an error has occurred.
+	    BESDEBUG( "server", "BESServerHandler::execute - error occurred" << endl )
+
+	    // flush what we have in the stream to the client
+	    cout << flush ;
+
+	    // Send the extension status=error to the client so that it can reset.
+	    map<string,string> extensions ;
+	    extensions["status"] = "error" ;
+	    c->sendExtensions( extensions ) ;
+
+	    // transmit the error message. finish_with_error will transmit the error
+	    cmd.finish_with_error() ;
+
+	    // we are finished, send the last chunk
+	    fds.finish() ;
+
+	    // reset the streams buffer
+	    cout.rdbuf( holder ) ;
+
 	    switch (status)
 	    {
 		case BES_TERMINATE_IMMEDIATE:
@@ -167,7 +196,6 @@ BESServerHandler::execute( Connection *c )
 			     << status << endl ;
 			//string toSend = "FATAL ERROR: server must exit!" ;
 			//c->send( toSend ) ;
-			c->send( "" ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
@@ -180,7 +208,6 @@ BESServerHandler::execute( Connection *c )
 			     << status << endl ;
 			//string toSend = "Data Handler Error: server my exit!" ;
 			//c->send( toSend ) ;
-			c->send( "" ) ;
 			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
@@ -194,9 +221,6 @@ BESServerHandler::execute( Connection *c )
 		case BES_AGGREGATION_EXCEPTION:
 		case BES_FAILED_TO_EXECUTE_COMMIT_COMMAND:
 		default:
-		    {
-			c->send( "" ) ;
-		    }
 		    break;
 	    }
 	}

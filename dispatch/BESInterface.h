@@ -140,6 +140,8 @@ protected:
     virtual void		build_data_request_plan() ;
     virtual void		execute_data_request_plan() ;
     virtual void		invoke_aggregation() ;
+
+    virtual int			finish_no_error( int status = 0 ) ;
     virtual void		transmit_data() ;
     virtual void		log_status() ;
     virtual void		report_request() ;
@@ -151,6 +153,7 @@ protected:
     virtual			~BESInterface() ;
 public:
     virtual int			execute_request( const string &from ) ;
+    virtual int			finish_with_error() ;
 
     virtual void		dump( ostream &strm ) const ;
 

@@ -50,15 +50,25 @@ protected:
     SSL_CTX *			_context ;
     SSL *			_connection ;
     bool			_connected ;
+
+    virtual void		send( const string &buffer ) ;
+    virtual void		sendChunk( const string &buffer,
+					   map<string,string> &extensions ) {}
+    virtual int			receive( char *buffer, unsigned int buffer_size ) ;
 public:
     				SSLConnection( ) ;
     				~SSLConnection() ;
 
     virtual void		closeConnection() ;
 
-    virtual void		send( const string &buffer ) ;
+    virtual string		exit() { return "" ; }
+
+    virtual void		send( const string &buffer,
+				      map<string,string> &extensions ) {}
+    virtual void		sendExtensions( map<string,string> &extensions ) {} ;
     virtual void		sendExit() {} ;
-    virtual bool		receive( ostream *strm = 0 ) ;
+    virtual bool		receive( map<string,string> &extensions,
+                                         ostream *strm = 0 ) {}
 
     virtual void		dump( ostream &strm ) const ;
 } ;

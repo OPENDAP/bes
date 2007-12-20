@@ -55,24 +55,21 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
  * container store.
  *
  * Removes all containers from a specified container storage found in 
- * BESContainerStorageList::TheList().
+ * BESContainerStorageList::TheList(). If no container store is specified,
+ * the default is volatile.
  *
- * The response object built is a BESInfo object. Status of the deletion
- * will be added to the informational object, one of:
- *
- * Successfully deleted all containers
- * <BR />
- * Container storage "&lt;store_name&gt;" does not exist. Unable to delete containers
+ * The response built is a silent informational object. The only response
+ * that a client would receive would be if there were an exception thrown
+ * attempting to delete the containers.
  *
  * @param dhi structure that holds request and response information
  * @throws BESHandlerException if there is a problem building the
  * response object
- * @throws BESResponseException upon fatal error building the response
- * object
+ * @throws BESResponseException if unable to delete all containers from the
+ * specified container store
  * @see _BESDataHandlerInterface
- * @see BESInfo
- * @see BESDefinitionStorageList
- * @see BESDefine
+ * @see BESSilentInfo
+ * @see BESContainer
  * @see BESContainerStorage
  * @see BESContainerStorageList
  */

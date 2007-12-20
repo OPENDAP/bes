@@ -38,10 +38,8 @@
 #include "BESInfoList.h"
 #include "BESHandlerException.h"
 
-/** @brief constructs a basic text information response object.
- *
- * Uses the default BES.Info.Buffered key in the dods initialization file to
- * determine whether the information should be buffered or not.
+/** @brief constructs a basic text information response object to write version
+ *         information
  *
  * @see BESXMLInfo
  * @see BESResponseObject

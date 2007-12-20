@@ -1,4 +1,4 @@
-// ServerApp.h
+// ConnSocket.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,41 +30,32 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <string>
+#ifndef ConnSocket_h
+#define ConnSocket_h 1
 
-using std::string ;
+#include "Socket.h"
 
-#include "BESModuleApp.h"
-
-class TcpSocket ;
-class UnixSocket ;
-class PPTServer ;
-
-class ServerApp : public BESModuleApp
+class ConnSocket : public Socket
 {
 private:
-    int				_portVal ;
-    bool			_gotPort ;
-    string			_unixSocket ;
-    bool			_secure ;
-    pid_t			_mypid ;
-    TcpSocket			*_ts ;
-    UnixSocket			*_us ;
-    PPTServer			*_ps ;
-
-    void			set_group_id() ;
-    void			set_user_id() ;
+    unsigned int		_test_num ;
+    unsigned int		_test_rec ;
+protected:
 public:
-    				ServerApp() ;
-    virtual			~ServerApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+    				ConnSocket() ;
+    virtual			~ConnSocket() ;
+    virtual void		connect() ;
+    virtual void		listen() ;
+    virtual void		close() ;
+    virtual void		send( const string &str, int start, int end ) ;
+    virtual int			receive( char *inBuff, int inSize ) ;
+    virtual void		sync() {}
+
+    virtual Socket *		newSocket( int socket,
+                                           struct sockaddr *addr ) ;
 
     virtual void		dump( ostream &strm ) const ;
-
-    static void			signalTerminate( int sig ) ;
-    static void			signalInterrupt( int sig ) ;
-    static void			signalRestart( int sig ) ;
 } ;
+
+#endif // ConnSocket_h
 

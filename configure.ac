@@ -124,6 +124,7 @@ AC_CONFIG_FILES([Makefile
 		 docs/Makefile
 		 command/Makefile
 		 ppt/Makefile
+		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
 		 server/Makefile
 		 server/test/Makefile

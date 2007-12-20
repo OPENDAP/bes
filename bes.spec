@@ -13,11 +13,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  libdap-devel >= 3.7.10
 BuildRequires:  readline-devel
+BuildRequires:  bzip2 gzip
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  krb5-devel
 BuildRequires:  doxygen graphviz
-Requires:       bzip2 gzip
 
 %description
 BES is a new, high-performance back-end server software framework for 

@@ -62,16 +62,16 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
  * not the container was successfully added/replaced. Possible responses are:
  *
  * Successfully added container "&lt;sym_name&gt;" in container storage "&lt;store_name&gt;"
- * <BR />
- * <BR />
+ * 
+ * 
  * Successfully replaced container "&lt;sym_name&gt;" in container storage "&lt;store_name&gt;"
- * <BR />
- * <BR />
+ * 
+ * 
  * Unable to add container "&lt;sym_name&gt;" to container storage "&lt;store_name&gt;"
- * <BR />
- * <BR />
+ * 
+ * 
  * Unable to add container "&lt;sym_name&gt;" to container storage "&lt;store_name&gt;"
- * <BR />
+ * 
  * Container storage "&lt;store_name&gt;" does not exist
  *
  * @param dhi structure that holds request and response information

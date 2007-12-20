@@ -12,6 +12,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
+SUBDIRS = unit-tests
+DIST_SUBDIRS = unit-tests
+
 lib_LTLIBRARIES = libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
@@ -23,12 +26,12 @@ pkginclude_HEADERS = $(HDRS)
 
 SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
-	PPTConnection.cc Connection.cc PPTMarkFinder.cc
+	PPTConnection.cc Connection.cc PPTStreamBuf.cc
 
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketException.h PPTException.h SocketConfig.h			\
 	SocketListener.h PPTServer.h PPTProtocol.h			\
-	PPTConnection.h Connection.h ServerHandler.h PPTMarkFinder.h
+	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
 if HAVE_OPENSSL
 SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc

@@ -40,10 +40,7 @@ using std::ostringstream ;
 
 #include "BESXMLInfo.h"
 
-/** @brief constructs an html information response object.
- *
- * Uses the default BES.Info.Buffered key in the bes configuration file to
- * determine whether the information should be buffered or not.
+/** @brief constructs an informational response object as an xml document
  *
  * @see BESInfo
  * @see BESResponseObject
@@ -101,6 +98,7 @@ BESXMLInfo::end_response()
  *
  * @param tag_name name of the tag to be added to the response
  * @param tag_data information describing the tag
+ * @param attrs map of attributes to add to the tag
  */
 void
 BESXMLInfo::add_tag( const string &tag_name,
@@ -130,6 +128,7 @@ BESXMLInfo::add_tag( const string &tag_name,
 /** @brief begin a tagged part of the information, information to follow
  *
  * @param tag_name name of the tag to begin
+ * @param attrs map of attributes to begin the tag with
  */
 void
 BESXMLInfo::begin_tag( const string &tag_name,

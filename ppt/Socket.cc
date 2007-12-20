@@ -109,6 +109,12 @@ Socket::receive( char *inBuff, int inSize )
     return bytesRead ;
 }
 
+void
+Socket::sync()
+{
+    fsync( _socket ) ;
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance

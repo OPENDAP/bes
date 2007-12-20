@@ -54,26 +54,24 @@ BESDelDefResponseHandler::~BESDelDefResponseHandler( )
 /** @brief executes the command to delete a definition
  *
  * Removes a definition from a specified definition storage found in 
- * BESDefinitionStorageList::TheList().
+ * BESDefinitionStorageList::TheList(). If no definition store is specified,
+ * the default is volatile.
  *
- * The response object built is a BESInfo object. Status of the deletion
- * will be added to the informational object, one of:
- *
- * Successfully deleted definition "&lt;_def_name&gt;"
- * <BR />
- * Definition "&lt;def_name&gt;" does not exist.  Unable to delete.
- * <BR />
- * Definition store "&lt;store_name&gt;" does not exist. Unable to delete."
+ * The response built is a silent informational object. The only response
+ * that a client would receive would be if there were an exception thrown
+ * attempting to delete the definition.
  *
  * @param dhi structure that holds request and response information
  * @throws BESHandlerException if there is a problem building the
  * response object
- * @throws BESResponseException upon fatal error building the response
+ * @throws BESResponseException if unable to delete the specified definition
+ * from the specified definition store.
  * object
  * @see _BESDataHandlerInterface
- * @see BESInfo
- * @see BESDefinitionStorageList
+ * @see BESSilentInfo
  * @see BESDefine
+ * @see BESDefinitionStorage
+ * @see BESDefinitionStorageList
  */
 void
 BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )

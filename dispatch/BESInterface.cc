@@ -94,17 +94,22 @@ BESInterface::~BESInterface()
 
     If an exception is thrown in any of these steps the exception is handed
     over to the exception manager in order to generate the proper response.
+    Control is returned back to the calling method if an exception is thrown
+    and it is the responsibility of the calling method to call finish_with_error
+    in order to transmit the error message back to the client.
 
     @return status of the execution of the request, 0 if okay, !0 otherwise
-    @see initialize
-    @see validate_data_request
-    @see build_data_request_plan
-    @see execute_data_request_plan
-    @see transmit_data
-    @see log_status
-    @see report_request
-    @see end_request
-    @see exception_manager
+    @see initialize()
+    @see validate_data_request()
+    @see build_data_request_plan()
+    @see execute_data_request_plan()
+    @see finish_no_error()
+    @see finish_with_error()
+    @see transmit_data()
+    @see log_status()
+    @see report_request()
+    @see end_request()
+    @see exception_manager()
  */
 int
 BESInterface::execute_request( const string &from )
@@ -123,6 +128,12 @@ BESInterface::execute_request( const string &from )
 
     int status = 0;
 
+    // We split up the calls for the reason that if we catch an
+    // exception during the initialization, building, or execution
+    // of the request then we can display the exception as if it 
+    // were a regular response. If an exception occurrs after that,
+    // during the transmit, logging, reporting, ending, then 
+    // we can only print the exception and not transmit it
     try {
         initialize();
         validate_data_request();
@@ -131,19 +142,25 @@ BESInterface::execute_request( const string &from )
         invoke_aggregation();
     }
     catch(BESException & ex) {
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
     catch(bad_alloc & b) {
         string serr = "BES out of memory";
         BESMemoryException ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
     catch(...) {
         string serr = "An undefined exception has been thrown";
         BESException ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
+        return exception_manager(ex);
     }
 
+    return finish_no_error() ;
+}
+
+int
+BESInterface::finish_no_error( int status )
+{
     try {
         transmit_data();
         log_status();
@@ -169,11 +186,27 @@ BESInterface::execute_request( const string &from )
 
     // If there is error information then the transmit, log, report or end
     // failed, so just print the error information
-    if (_dhi.error_info) {
+    if (_dhi.error_info)
+    {
         _dhi.error_info->print(cout);
     }
 
     return status;
+}
+
+int
+BESInterface::finish_with_error()
+{
+    int status = 0 ;
+    if( !_dhi.error_info )
+    {
+	// there wasn't an error ... so now what?
+	string serr = "Finish_with_error called with no error object" ;
+	BESException ex( serr, __FILE__, __LINE__ ) ;
+	status = exception_manager( ex ) ;
+    }
+
+    return finish_no_error( status ) ;
 }
 
 void

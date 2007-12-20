@@ -112,7 +112,7 @@ PPTClient::initConnection()
 {
     try
     {
-	writeBuffer( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
+	send( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
     }
     catch( SocketException &e )
     {
@@ -158,7 +158,7 @@ PPTClient::authenticateWithServer()
     get_secure_files() ;
 
     // send request for the authentication port
-    writeBuffer( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
+    send( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 
     // receive response with port, terminated with TERMINATE token
     char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;

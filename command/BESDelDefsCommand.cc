@@ -43,9 +43,9 @@
  * Possible requests handled by this response handler are:
  *
  * delete container &lt;container_name&gt;;
- * <BR />
+ * 
  * delete definition &lt;def_name&gt;;
- * <BR />
+ * 
  * delete definitions;
  *
  * And remember to terminate all commands with a semicolon (;)

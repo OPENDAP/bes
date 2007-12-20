@@ -36,7 +36,7 @@
 /** @brief macros representing the default response objects handled
  *
  * These include
- * <pre>
+ * @verbatim
  * set
  * define
  * send
@@ -57,7 +57,7 @@
  *     nodes
  *     leaves
  * delete
- * </pre>
+ * @endverbatim
  */
 
 #define SET_RESPONSE "set"

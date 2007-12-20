@@ -71,6 +71,8 @@ BESTextInfo::BESTextInfo( bool ishttp )
  * @param strm if not buffered then use the passed stream
  * @param strm_owned if strm created (not cout or cerr for example) then
  * tells whether strm owned or not and can be deleted
+ * @param ishttp tells whether this text information is html text and
+ * therefor requires the html header
  *
  * @see BESInfo
  * @see BESResponseObject
@@ -103,6 +105,7 @@ BESTextInfo::begin_response( const string &response_name )
  *
  * @param tag_name name of the tag to be added to the response
  * @param tag_data information describing the tag
+ * @param attrs map of attributes to add to the tag
  */
 void
 BESTextInfo::add_tag( const string &tag_name,
@@ -126,6 +129,7 @@ BESTextInfo::add_tag( const string &tag_name,
 /** @brief begin a tagged part of the information, information to follow
  *
  * @param tag_name name of the tag to begin
+ * @param attrs map of attributes to begin the tag with
  */
 void
 BESTextInfo::begin_tag( const string &tag_name,

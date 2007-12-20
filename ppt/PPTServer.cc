@@ -182,7 +182,7 @@ PPTServer::welcomeClient()
 	err += " client started the connection with " + status ;
 	BESDEBUG( "ppt", err )
 	//throw PPTException( err, __FILE__, __LINE__ ) ;
-	writeBuffer( err ) ;
+	send( err ) ;
 	_mySock->close() ;
 	return -1 ;
     }
@@ -190,7 +190,7 @@ PPTServer::welcomeClient()
     if( !_secure )
     {
 	int len = PPTProtocol::PPTSERVER_CONNECTION_OK.length() ;
-	writeBuffer( PPTProtocol::PPTSERVER_CONNECTION_OK ) ;
+	send( PPTProtocol::PPTSERVER_CONNECTION_OK ) ;
     }
     else
     {
@@ -206,7 +206,7 @@ PPTServer::authenticateClient()
 #ifdef HAVE_OPENSSL
     BESDEBUG( "ppt", "requiring secure connection: port = " << _securePort << endl )
     // let the client know that it needs to authenticate
-    writeBuffer( PPTProtocol::PPTSERVER_AUTHENTICATE ) ;
+    send( PPTProtocol::PPTSERVER_AUTHENTICATE ) ;
 
     // wait for the client request for the secure port
     char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
@@ -223,7 +223,7 @@ PPTServer::authenticateClient()
     // send the secure port number back to the client
     ostringstream portResponse ;
     portResponse << _securePort << PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION ;
-    writeBuffer( portResponse.str() ) ;
+    send( portResponse.str() ) ;
 
     // create a secure server object and authenticate
     SSLServer server( _securePort, _cfile, _kfile ) ;

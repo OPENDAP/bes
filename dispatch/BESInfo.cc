@@ -67,7 +67,7 @@ BESInfo::BESInfo( )
  *
  * @param key parameter from BES configuration file
  * @param strm if not buffered then use the passed stream to output information
- * @param if stream was created (not cout or cerr for example) then either take
+ * @param strm_owned if stream was created (not cout or cerr for example) then either take
  * ownership or not
  */
 BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
@@ -211,7 +211,6 @@ BESInfo::add_data_from_file( const string &key, const string &name )
  * objects, such as html, xml, plain text. But, using the other methods of
  * this class we can take care of exceptions here.
  *
- * @param type The type of exception being thrown
  * @param e The exception to add to the informational response object
  */
 void
@@ -235,7 +234,7 @@ BESInfo::add_exception( BESException &e )
  * If the information was not buffered then this method does nothing,
  * otherwise the information is output to the specified ostream.
  *
- * @param out output to this file descriptor if information buffered.
+ * @param strm output to this file descriptor if information buffered.
  */
 void
 BESInfo::print( ostream &strm )

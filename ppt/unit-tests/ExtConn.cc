@@ -1,4 +1,4 @@
-// ServerApp.h
+// ExtConn.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,41 +30,46 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <string>
+#include "ExtConn.h"
 
-using std::string ;
-
-#include "BESModuleApp.h"
-
-class TcpSocket ;
-class UnixSocket ;
-class PPTServer ;
-
-class ServerApp : public BESModuleApp
+ExtConn::ExtConn( )
+    : PPTConnection( 0 )
 {
-private:
-    int				_portVal ;
-    bool			_gotPort ;
-    string			_unixSocket ;
-    bool			_secure ;
-    pid_t			_mypid ;
-    TcpSocket			*_ts ;
-    UnixSocket			*_us ;
-    PPTServer			*_ps ;
+}
+    
+ExtConn::~ExtConn()
+{
+}
 
-    void			set_group_id() ;
-    void			set_user_id() ;
-public:
-    				ServerApp() ;
-    virtual			~ServerApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+void
+ExtConn::initConnection()
+{
+}
 
-    virtual void		dump( ostream &strm ) const ;
+void
+ExtConn::closeConnection()
+{
+}
 
-    static void			signalTerminate( int sig ) ;
-    static void			signalInterrupt( int sig ) ;
-    static void			signalRestart( int sig ) ;
-} ;
+void
+ExtConn::read_extensions( map<string,string> &extensions, const string &xstr )
+{
+    PPTConnection::read_extensions( extensions, xstr ) ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+ExtConn::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "ExtConn::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    PPTConnection::dump( strm ) ;
+    BESIndent::UnIndent() ;
+}
 

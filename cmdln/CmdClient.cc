@@ -34,12 +34,14 @@
 
 #include <iostream>
 #include <fstream>
+#include <map>
 
 using std::cout;
 using std::endl;
 using std::cerr;
 using std::ofstream;
 using std::ios;
+using std::map;
 
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)
@@ -73,6 +75,8 @@ extern "C" {
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
 #include "CmdClient.h"
 #include "PPTClient.h"
+#include "BESDebug.h"
+
 CmdClient::~CmdClient()
 {
     if (_strmCreated && _strm) {
@@ -88,44 +92,44 @@ CmdClient::~CmdClient()
     }
 }
 
-/**
-* Connect the BES client to the BES server.
-* <p>
+/** @brief Connect the BES client to the BES server.
+* 
 * Connects to the BES server on the specified machine listening on
 * the specified port.
 *
-* @param  hostStr  The name of the host machine where the server is
+* @param  host     The name of the host machine where the server is
 *                  running.
 * @param  portVal  The port on which the server on the host hostStr is
 *                  listening for requests.
+* @param  timeout  Number of times to try an un-blocked read
 * @throws PPTException Thrown if unable to connect to the specified host
 *                      machine given the specified port.
 * @see    PPTException
 */
 void
- CmdClient::startClient(const string & host, int portVal, int timeout)
+CmdClient::startClient(const string & host, int portVal, int timeout)
 {
     _client = new PPTClient(host, portVal, timeout);
     _client->initConnection();
 }
 
-/**
-* Connect the BES client to the BES server using the unix socket
-* <p>
+/** @brief Connect the BES client to the BES server using the unix socket
+* 
 * Connects to the BES server using the specified unix socket
 *
 * @param  unixStr  Full path to the unix socket
+* @param  timeout  Number of times to try an un-blocked read
 * @throws PPTException Thrown if unable to connect to the BES server
 * @see    PPTException
 */
-void CmdClient::startClient(const string & unixStr, int timeout)
+void
+CmdClient::startClient(const string & unixStr, int timeout)
 {
     _client = new PPTClient(unixStr, timeout);
     _client->initConnection();
 }
 
-/**
-* Closes the connection to the OpeNDAP server and closes the output stream.
+/** @brief Closes the connection to the OpeNDAP server and closes the output stream.
 *
 * @throws PPTException Thrown if unable to close the connection or close
 *                      the output stream.
@@ -133,15 +137,15 @@ void CmdClient::startClient(const string & unixStr, int timeout)
 * @see    OutputStream
 * @see    PPTException
 */
-void CmdClient::shutdownClient()
+void
+CmdClient::shutdownClient()
 {
     if( _client )
 	_client->closeConnection();
 }
 
-/**
-* Set the output stream for responses from the BES server.
-* <p>
+/** @brief Set the output stream for responses from the BES server.
+* 
 * Specify where the response output from your BES request will be
 * sent. Set to null if you wish to ignore the response from the BES
 * server.
@@ -149,12 +153,15 @@ void CmdClient::shutdownClient()
 * @param  strm  an OutputStream specifying where to send responses from
 *               the BES server. If null then the output will not be
 *               output but will be thrown away.
+* @param created true of the passed stream was created and can be deleted
+*                either by being replaced ro in the destructor
 * @throws PPTException catches any problems with opening or writing to
 *                      the output stream and creates a PPTException
 * @see    OutputStream
 * @see    PPTException
 */
-void CmdClient::setOutput(ostream * strm, bool created)
+void
+CmdClient::setOutput(ostream * strm, bool created)
 {
     if (_strmCreated && _strm) {
         _strm->flush();
@@ -166,9 +173,8 @@ void CmdClient::setOutput(ostream * strm, bool created)
     _strmCreated = created;
 }
 
-/**
-* @brief Executes a client side command
-* <p>
+/** @brief Executes a client side command
+* 
 * Client side commands include
 * client suppress;
 * client output to screen;
@@ -177,7 +183,8 @@ void CmdClient::setOutput(ostream * strm, bool created)
 * @param  cmd  The BES client side command to execute
 * @see    PPTException
 */
-void CmdClient::executeClientCommand(const string & cmd)
+void
+CmdClient::executeClientCommand(const string & cmd)
 {
     string suppress = "suppress";
     if (cmd.compare(0, suppress.length(), suppress) == 0) {
@@ -206,21 +213,22 @@ void CmdClient::executeClientCommand(const string & cmd)
     }
 }
 
-/**
-* Sends a single OpeNDAP request ending in a semicolon (;) to the
+/** @brief Sends a single OpeNDAP request ending in a semicolon (;) to the
 * OpeNDAP server.
-* <p>
+* 
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
 * @param  cmd  The BES request, ending in a semicolon, that is sent to
 *              the BES server to handle.
+* @param repeat Number of times to repeat the command
 * @throws PPTException Thrown if there is a problem sending the request
 *                      to the server or a problem receiving the response
 *                      from the server.
 * @see    PPTException
 */
-void CmdClient::executeCommand(const string & cmd, int repeat )
+void
+CmdClient::executeCommand(const string & cmd, int repeat )
 {
     string client = "client";
     if (cmd.compare(0, client.length(), client) == 0) {
@@ -229,28 +237,56 @@ void CmdClient::executeCommand(const string & cmd, int repeat )
 	if( repeat < 1 ) repeat = 1 ;
 	for( int i = 0; i < repeat; i++ )
 	{
-	    _client->send(cmd);
-	    _client->receive(_strm);
+	    BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl )
+	    map<string,string> extensions ;
+	    _client->send(cmd, extensions);
+
+	    BESDEBUG( "cmdln", "cmdclient receiving " << endl )
+	    // keep reading till we get the last chunk, send to _strm
+	    bool done = false ;
+	    while( !done )
+	    {
+		done = _client->receive( extensions, _strm ) ;
+		if( extensions["status"] == "error" )
+		{
+		    // If there is an error, just flush what I have
+		    // and continue on.
+		    _strm->flush() ;
+		}
+	    }
+	    if( BESDebug::IsSet( "cmdln" ) )
+	    {
+		BESDEBUG( "cmdln", "extensions:" << endl )
+		map<string,string>::const_iterator i = extensions.begin() ;
+		map<string,string>::const_iterator e = extensions.end() ;
+		for( ; i != e; i++ )
+		{
+		    BESDEBUG( "cmdln", "  " << (*i).first << " = " << (*i).second << endl )
+		}
+		BESDEBUG( "cmdln", "cmdclient done receiving " << endl )
+	    }
+
 	    _strm->flush();
 	}
     }
 }
 
-/**
-* Execute each of the commands in the cmd_list, separated by a * semicolon.
-* <p>
+/** @brief Execute each of the commands in the cmd_list, separated by a * semicolon.
+* 
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
 * @param  cmd_list  The list of BES requests, separated by semicolons
 *                   and ending in a semicolon, that will be sent to the
 *                   BES server to handle, one at a time.
+* @param repeat     Number of times to repeat the list of commands
 * @throws PPTException Thrown if there is a problem sending any of the
 *                      request to the server or a problem receiving any
 *                      of the responses from the server.
 * @see    PPTException
 */
-void CmdClient::executeCommands(const string & cmd_list, int repeat)
+void
+CmdClient::executeCommands(const string & cmd_list, int repeat)
 {
     if( repeat < 1 ) repeat = 1 ;
     for( int i = 0; i < repeat; i++ )
@@ -265,19 +301,20 @@ void CmdClient::executeCommands(const string & cmd_list, int repeat)
     }
 }
 
-/**
-* Sends the requests listed in the specified file to the BES server,
+/** @brief Sends the requests listed in the specified file to the BES server,
 * each command ending with a semicolon.
-* <p>
+* 
 * The requests do not have to be one per line but can span multiple
 * lines and there can be more than one command per line.
-* <p>
+* 
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  inputFile  The file holding the list of BES requests, each
-*                    ending with a semicolon, that will be sent to the
-*                    BES server to handle.
+* @param  istrm  The file holding the list of BES requests, each
+*                ending with a semicolon, that will be sent to the
+*                BES server to handle.
+* @param repeat  Number of times to repeat the series of commands
+                 from the file.
 * @throws PPTException Thrown if there is a problem opening the file to
 *                      read, reading the requests from the file, sending
 *                      any of the requests to the server or a problem
@@ -285,7 +322,8 @@ void CmdClient::executeCommands(const string & cmd_list, int repeat)
 * @see    File
 * @see    PPTException
 */
-void CmdClient::executeCommands(ifstream & istrm, int repeat)
+void
+CmdClient::executeCommands(ifstream & istrm, int repeat)
 {
     if( repeat < 1 ) repeat = 1 ;
     for( int i = 0; i < repeat; i++ )
@@ -331,15 +369,13 @@ void CmdClient::executeCommands(ifstream & istrm, int repeat)
     }
 }
 
-/**
-* An interactive BES client that takes BES requests on the command
-* line.
-* <p>
+/** @brief An interactive BES client that takes BES requests on the command line.
+* 
 * There can be more than one command per line, but commands can NOT span
 * multiple lines. The user will be prompted to enter a new BES request.
-* <p>
+* 
 * OpenDAPClient:
-* <p>
+* 
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
@@ -348,7 +384,8 @@ void CmdClient::executeCommands(ifstream & istrm, int repeat)
 *                      of the responses from the server.
 * @see    PPTException
 */
-void CmdClient::interact()
+void
+CmdClient::interact()
 {
     cout << endl << endl
         << "Type 'exit' to exit the command line client and 'help' or '?' "
@@ -375,7 +412,13 @@ void CmdClient::interact()
     }
 }
 
-size_t CmdClient::readLine(string & msg)
+/** @brief Read a line from the interactive terminal using the readline library
+ *
+ * @param msg read the line into this string
+ * @return number of characters read
+ */
+size_t
+CmdClient::readLine(string & msg)
 {
     size_t len = 0;
     char *buf = (char *) NULL;
@@ -411,7 +454,10 @@ size_t CmdClient::readLine(string & msg)
     return len;
 }
 
-void CmdClient::displayHelp()
+/** @brief display help information for the command line client
+ */
+void
+CmdClient::displayHelp()
 {
     cout << endl;
     cout << endl;
@@ -443,14 +489,22 @@ void CmdClient::displayHelp()
     cout << endl;
 }
 
-bool CmdClient::isConnected()
+/** @brief return whether the client is connected to the BES
+ *
+ * @return whether the client is connected (true) or not (false)
+ */
+bool
+CmdClient::isConnected()
 {
     if (_client)
         return _client->isConnected();
     return false;
 }
 
-void CmdClient::brokenPipe()
+/** @brief inform the server that there has been a borken pipe
+ */
+void
+CmdClient::brokenPipe()
 {
     if (_client)
         _client->brokenPipe();
@@ -462,7 +516,8 @@ void CmdClient::brokenPipe()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void CmdClient::dump(ostream & strm) const
+void
+CmdClient::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "CmdClient::dump - ("
         << (void *) this << ")" << endl;

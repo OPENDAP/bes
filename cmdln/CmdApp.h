@@ -59,7 +59,7 @@ private:
 public:
     				CmdApp() ;
     virtual			~CmdApp() ;
-    virtual int			initialize( int argc, char **argv ) ;
+    virtual int			initialize( int argC, char **argV ) ;
     virtual int			run() ;
 
     virtual void		dump( ostream &strm ) const ;

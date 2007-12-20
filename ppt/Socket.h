@@ -66,6 +66,7 @@ public:
     virtual void		close() ;
     virtual void		send( const string &str, int start, int end ) ;
     virtual int			receive( char *inBuff, int inSize ) ;
+    virtual void		sync() ;
     virtual int			getSocketDescriptor()
 				{
 				    return _socket ;

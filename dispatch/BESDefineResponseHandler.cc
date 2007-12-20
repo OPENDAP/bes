@@ -65,7 +65,7 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
  * object. It will contain one of two possible responses:
  *
  * Successfully added definition &lt;def_name&gt;
- * <BR />
+ * 
  * Successfully replaced definition &lt;def_name&gt;
  *
  * If the keyword SILENT is set within the data handler interface then no

@@ -1,4 +1,4 @@
-// BESParserException.cc
+// ConnTest.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,29 +30,49 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-// 2004 Copyright University Corporation for Atmospheric Research
+#include "ConnTest.h"
+#include "ConnSocket.h"
 
-#include "BESParserException.h"
-#include "BESInfo.h"
-
-// Add docs. jhrg 3/29/06
-int
-BESParserException::handleException( BESException &e,
-				     BESDataHandlerInterface &dhi )
+ConnTest::ConnTest( )
+    : PPTConnection( 0 )
 {
-    BESParserException *pe=dynamic_cast<BESParserException*>(&e);
-    // What if pe is null. jhrg 3/29/06
-    // Then this static function returns 0 meaning that the exception wasn't
-    // handled here and to continue trying. pcw 06/27/06
-    if( pe )
+    // connect to the specified host at the specified socket to handle the
+    // secure connection
+    _mySock = new ConnSocket ;
+}
+    
+ConnTest::~ConnTest()
+{
+    if( _mySock )
     {
-	if( dhi.error_info )
-	{
-	    dhi.error_info->add_exception( e ) ;
-	    dhi.error_info->end_response() ;
-	}
-	return BES_PARSER_ERROR;
+	delete _mySock ;
+	_mySock = 0 ;
     }
-    return 0 ;
+}
+
+void
+ConnTest::initConnection()
+{
+}
+
+void
+ConnTest::closeConnection()
+{
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+ConnTest::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "ConnTest::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    PPTConnection::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 

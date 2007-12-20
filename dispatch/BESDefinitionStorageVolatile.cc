@@ -61,6 +61,7 @@ BESDefinitionStorageVolatile::look_for( const string &def_name )
  *
  * This method adds a definition to the definition store
  *
+ * @param def_name name of the definition to add
  * @param d definition to add
  */
 bool

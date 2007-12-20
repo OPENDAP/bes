@@ -60,7 +60,7 @@ bz_internal_error ( int errcode )
 
 /** @brief uncompress a file with the .bz2 file extension
  *
- * @param src file that will be uncompressed
+ * @param src_name file that will be uncompressed
  * @param target file to uncompress the src file to
  * @return full path to the uncompressed file
  */

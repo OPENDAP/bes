@@ -35,9 +35,11 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 using std::ostream ;
 using std::string ;
+using std::map ;
 
 #include "BESObj.h"
 #include "Socket.h"
@@ -53,15 +55,24 @@ protected:
 				    : _mySock( 0 ),
 				      _out( 0 ),
 				      _brokenPipe( false ) {}
+
+    virtual void		send( const string &buffer ) = 0 ;
+    virtual void		sendChunk( const string &buffer,
+					   map<string,string> &extensions ) = 0 ;
 public:
     virtual			~Connection() {}
 
     virtual void		initConnection() = 0 ;
     virtual void		closeConnection() = 0 ;
 
-    virtual void		send( const string &buffer ) = 0 ;
+    virtual string		exit() = 0 ;
+
+    virtual void		send( const string &buffer,
+				      map<string,string> &extensions ) = 0 ;
+    virtual void		sendExtensions( map<string,string> &extensions ) = 0 ;
     virtual void		sendExit() = 0 ;
-    virtual bool		receive( ostream *strm = 0 ) = 0 ;
+    virtual bool		receive( map<string,string> &extensions,
+                                         ostream *strm = 0 ) = 0 ;
 
     virtual Socket *		getSocket()
 				{

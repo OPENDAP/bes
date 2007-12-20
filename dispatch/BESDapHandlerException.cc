@@ -36,7 +36,7 @@ using std::ostringstream;
 
 #include "BESDapHandlerException.h"
 #include "BESContextManager.h"
-#include "BESSilentInfo.h"
+#include "BESDapErrorInfo.h"
 
 /** @brief handles exceptions if the error context is set to dap2
  *
@@ -51,10 +51,9 @@ int
 BESDapHandlerException::handleException( BESException &e,
 					 BESDataHandlerInterface &dhi )
 {
-    // If we are handling errors in a dap2 context, then convert all
-    // exceptions into a libdap Error and print it to the output stream.
-    // from the data handler interface. This will be
-    // like a non-buffered response to a request.
+    // If we are handling errors in a dap2 context, then create a
+    // DapErrorInfo object to transmit/print the error as a dap2
+    // response.
     bool found = false ;
     string context =
 	BESContextManager::TheManager()->get_context( "errors", found ) ;
@@ -66,13 +65,8 @@ BESDapHandlerException::handleException( BESException &e,
 	{
 	    ec = de->get_error_code() ;
 	}
-	Error new_e( ec, e.get_message() ) ;
-	new_e.print( dhi.get_output_stream() ) ;
+	dhi.error_info = new BESDapErrorInfo( ec, e.get_message() ) ;
 
-	/* in order to not have anything transmitted during the transmit
-	 * phase, create a silent informational object for the error info.
-	 */
-	dhi.error_info = new BESSilentInfo() ;
 	return e.get_return_code() ;
     }
     else

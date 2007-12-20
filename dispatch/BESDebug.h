@@ -60,7 +60,7 @@ using std::string ;
  */
 #define BESDEBUG( x, y ) { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << y ; }
 
-/** @breif macro used to determine if the specified debug context is set
+/** @brief macro used to determine if the specified debug context is set
  *
  * If there is a lot of debugging information, use this macro to determine if
  * debug context is set.

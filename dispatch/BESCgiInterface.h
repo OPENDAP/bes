@@ -57,11 +57,11 @@ class DODSFilter ;
     For example, a server to handle requests for the cedar data type would
     look something like this:
 
-    <pre>
+    @code
     CedarFilter df(argc, argv);
     BESCgiInterface d( "cedar", df ) ;
     d.execute_request() ;
-    </pre>
+    @endcode
 
     And that's it!
 

@@ -33,6 +33,50 @@
 #ifndef BESStatusReturn_h_
 #define BESStatusReturn_h_ 1
 
+/** @class BESStatusReturn
+ *
+ * @file BESStatusReturn.h
+ * @see BESInterface
+ *
+ @def BES_EXECUTED_OK
+ request completed successfully
+
+ @def BES_TERMINATE_IMMEDIATE
+ an error has occurred and the server must exit
+
+ @def BES_REQUEST_INCORRECT
+ non-fatal, bad request received by the server
+
+ @def BES_MEMORY_EXCEPTION
+ non-fatal, memory exception
+
+ @def BES_DATABASE_FAILURE
+ non-fatal, exception in database code
+
+ @def BES_CONTAINER_PERSISTENCE_ERROR
+ non-fatal, exception handling containers
+
+ @def BES_INITIALIZATION_FILE_PROBLEM
+ non-fatal, BES configuration file problems
+
+ @def BES_LOG_FILE_PROBLEM
+ non-fatal, exception opening or writing logging information
+
+ @def BES_DATA_HANDLER_FAILURE
+ an error in a data handler has failed and cannot recover, exit
+
+ @def BES_AGGREGATION_EXCEPTION
+ non-fatal, exception aggregating data
+
+ @def BES_FAILED_TO_EXECUTE_COMMIT_COMMAND
+ non-fatal, specific to Earth System Grid
+
+ @def BES_DATA_HANDLER_PROBLEM
+ non-fatal, problem in the data handler
+
+ @def BES_DEBUG_ERROR
+ non-fatal, problem writing debug information
+ */
 #define BES_EXECUTED_OK 0
 #define BES_TERMINATE_IMMEDIATE 1
 #define BES_REQUEST_INCORRECT 2

@@ -46,6 +46,7 @@ public:
       * to hold all the digits for val or this routine may be UNSAFE.
       * @param val the value to be converted.
       * @param buf A buffer where to place the conversion.  
+      * @param base base number system to use
       * @return Pointer to the buffer buf.
       */
 

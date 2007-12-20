@@ -63,9 +63,11 @@ private:
 protected:
     virtual void		_duplicate( BESContainer &copy_to ) ;
 public:
-    /** @brief construct a container with the given sumbolic name
+    /** @brief construct a container representing a file
      *
-     * @param s symbolic name
+     * @param sym_name symbolic name of the container
+     * @param real_name real name of the container, a file name in this case
+     * @param type type of the data represented in the file
      */
     				BESFileContainer( const string &sym_name,
 				                  const string &real_name,

@@ -253,7 +253,7 @@ BESCache::unlock()
  * once the file is cached. In other words, if the full path to the file
  * name is /usr/lib/data/fnoc1.nc.gz (a compressed netcdf file) then the
  * resulting file name set in target will be set to 
- * #&lt;prefix&gt;#usr#lib#data#fnoc1.nc.
+ * \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
  *
  * @param src src file that will be cached eventually
  * @param target set to the resulting cached file

@@ -65,7 +65,7 @@ public:
 
     /** @brief set the error message for this exception
      *
-     * @param s message string
+     * @param msg message string
      */
     virtual void	set_message( const string &msg ) { _msg = msg ; }
     /** @brief get the error message for this exception

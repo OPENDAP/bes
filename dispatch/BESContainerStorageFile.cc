@@ -178,8 +178,8 @@ BESContainerStorageFile::look_for( const string &sym_name )
  * specified information. This functionality is not currently supported for
  * file persistence.
  *
- * @param s_name symbolic name for the container
- * @param r_name real name for the container
+ * @param sym_name symbolic name for the container
+ * @param real_name real name for the container
  * @param type type of data represented by this container
  */
 void

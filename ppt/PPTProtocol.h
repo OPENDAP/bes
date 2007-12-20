@@ -38,6 +38,7 @@
 using std::string ;
 
 #define PPT_PROTOCOL_BUFFER_SIZE 4096
+#define CRLF "\r\n"
 
 class PPTProtocol
 {

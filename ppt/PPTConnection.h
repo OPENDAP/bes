@@ -34,6 +34,7 @@
 #define PPTConnection_h 1
 
 #include "Connection.h"
+#include "PPTProtocol.h"
 
 class Socket ;
 
@@ -41,24 +42,43 @@ class PPTConnection : public Connection
 {
 private:
     int				_timeout ;
+    char *			_inBuff ;
+    unsigned int		_index ;
+    unsigned int		_bytesRead ;
+
     				PPTConnection()
 				    : _timeout( 0 ) {}
+
 protected:
 				PPTConnection( int timeout )
-				    : _timeout( timeout ) {}
+				    : _timeout( timeout ),
+				      _inBuff( 0 ),
+				      _index( 0 ),
+				      _bytesRead( 0 ) {}
 
-    void			writeBuffer( const string &buffer ) ;
-    int				readBuffer( char *inBuff ) ;
-    int				readBufferNonBlocking( char *inBuff ) ;
+    virtual int			readBuffer( char *inBuff, unsigned int buff_size ) ;
+    virtual int			readBufferNonBlocking( char *inBuff ) ;
+
+    virtual void		send( const string &buffer ) ;
+    virtual void		sendChunk( const string &buffer,
+					   map<string,string> &extensions ) ;
+    virtual void		read_extensions( map<string,string> &extensions,
+                                                 const string &xstr ) ;
+    virtual void		receive( ostream &strm, unsigned short len ) ;
 public:
     virtual			~PPTConnection() {}
 
     virtual void		initConnection() = 0 ;
     virtual void		closeConnection() = 0 ;
 
-    virtual void		send( const string &buffer ) ;
+    virtual string		exit() { return PPTProtocol::PPT_EXIT_NOW ; }
+
+    virtual void		send( const string &buffer,
+				      map<string,string> &extensions ) ;
+    virtual void		sendExtensions( map<string,string> &extensions ) ;
     virtual void		sendExit() ;
-    virtual bool		receive( ostream *strm = 0 ) ;
+    virtual bool		receive( map<string,string> &extensions,
+                                         ostream *strm = 0 ) ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;

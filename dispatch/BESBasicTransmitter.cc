@@ -32,8 +32,6 @@
 
 #include <iostream>
 
-using std::flush ;
-
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
 
@@ -42,8 +40,6 @@ BESBasicTransmitter::send_text( BESInfo &info,
                                 BESDataHandlerInterface &dhi )
 {
     info.print( dhi.get_output_stream() ) ;
-
-    dhi.get_output_stream() << flush ;
 }
 
 void
@@ -51,8 +47,6 @@ BESBasicTransmitter::send_html( BESInfo &info,
                                 BESDataHandlerInterface &dhi )
 {
     info.print( dhi.get_output_stream() ) ;
-
-    dhi.get_output_stream() << flush ;
 }
 
 /** @brief dumps information about this object

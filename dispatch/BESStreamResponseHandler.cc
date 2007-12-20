@@ -131,15 +131,15 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see BESHTMLInfo
  * @see BESTransmitter
  * @see _BESDataHandlerInterface
  */
 void
 BESStreamResponseHandler::transmit( BESTransmitter *transmitter,
-                                 BESDataHandlerInterface & )
+                                    BESDataHandlerInterface &dhi )
 {
-    // The Data is transmitted when it is read, dumped to stdout
+    // The Data is transmitted when it is read, dumped to stdout, so there is nothing
+    // to transmot here.
 }
 
 /** @brief dumps information about this object

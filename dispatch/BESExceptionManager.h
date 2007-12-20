@@ -45,6 +45,42 @@ class BESException ;
 
 typedef int (*p_bes_ehm)( BESException &e, BESDataHandlerInterface &dhi ) ;
 
+/** @brief manages exception handling code and default exceptions
+ *
+ * The BESExceptionManager, a singleton, manages exceptions that are
+ * thrown during the handling of a request. Exceptions are handled by
+ * creating error informational objects and/or handling the exception
+ * and continuing.
+ *
+ * If an error informational object is created then assign the new
+ * informational object to BESDataHandlerInterface.error_info variable.
+ *
+ * No error information should be transmitted during the handling of
+ * the exception as we give the server code a chance to react to an
+ * exception before the exception information is sent.
+ *
+ * The exception information is sent during the transmit of a response.
+ * An exception is handled just like any other response in terms of
+ * being transmitted.
+ *
+ * Modules have a chance of registering exception handlers to the manager
+ * to be able to handle exceptions differently, or handle specific exceptions
+ * in a specific way. Exception handling functions are registered with the
+ * following signature:
+ *
+ * int function_name( BESException &e, BESDataHandlerInterface &dhi ) ;
+ *
+ * If the registered functioon does not handle the exception then the function
+ * should return BES_EXECUTED_OK. If it does handle the exception, return
+ * a status code representative of the exception. Currently registered
+ * status returns can be found in BESStatusReturn.h
+ *
+ * If no handler can handle the exception then the default is to create
+ * a BESInfo object with the given exception.
+ *
+ * @see BESException
+ */
+
 class BESExceptionManager : public BESObj
 {
 private:

@@ -45,7 +45,7 @@ using std::endl ;
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
 
-    @param out Write the MIME header to this ostream.
+    @param strm Write the MIME header to this ostream.
  */
 void
 BESUtil::set_mime_text( ostream &strm )
@@ -63,6 +63,10 @@ BESUtil::set_mime_text( ostream &strm )
     strm << CRLF ;
 }
 
+/** @brief Generate an HTTP 1.0 response header for a html document.
+
+    @param strm Write the MIME header to this ostream.
+ */
 void
 BESUtil::set_mime_html( ostream &strm )
 {
@@ -122,7 +126,8 @@ static const char *months[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
     1123 modification for four-digit years is implemented.
 
     @return The RFC 822/1123 style date in a C++ string.
-    @param t A const <tt>time_t</tt> pointer. */
+    @param t A const <tt>time_t</tt> pointer.
+ */
 string
 BESUtil::rfc822_date(const time_t t)
 {
