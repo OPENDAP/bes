@@ -1012,6 +1012,8 @@ find_gloattr(hid_t file, DAS & das)
     H5Gclose(root);
     throw;
   }
+
+  
   DBG(cerr << "=find_gloattr(): H5Gclose()" <<endl);  
   H5Gclose(root);
   DBG(cerr << "<find_gloattr()" <<endl);
@@ -1314,7 +1316,15 @@ void add_dimension_attributes(DAS & das)
    at->append_attr("minimum", FLOAT32, "-90.0");
    at->append_attr("maximum", FLOAT32, "90.0");
    at->append_attr("resolution", FLOAT32, "0.25");
-      
+
+   at = das.add_table("lev", new AttrTable);
+   at->append_attr("grads_dim", STRING, "\"z\"");
+   at->append_attr("grads_mapping", STRING, "\"linear\"");
+   at->append_attr("grads_size", STRING, "\"15\"");   
+   at->append_attr("units", STRING, "\"level\"");
+   at->append_attr("long_name", STRING, "\"level converted from nCandidate\"");
+
+   
 //   at = das.add_table("ZDim", new AttrTable);
 //   at->append_attr("units", STRING, "\"milibar\"");
 

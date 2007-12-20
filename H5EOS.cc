@@ -300,7 +300,8 @@ const char* H5EOS::get_CF_name(char* eos_name)
   eos_to_cf_map["Units"] = "units";
   eos_to_cf_map["XDim"] = "lon";
   eos_to_cf_map["YDim"] = "lat";
-    
+  eos_to_cf_map["nCandidate"] = "lev";
+      
   // eos_to_grads_map["Offset"] = "add_offset";
   // eos_to_grads_map["ScaleFactor"] = "scale_factor";
   // eos_to_grads_map["ValidRange"] = "valid_range";
@@ -319,7 +320,8 @@ string H5EOS::get_EOS_name(string str)
   DBG(cerr << ">get_EOS_name:" << str << endl);
   cf_to_eos_map["lon"] = "XDim";
   cf_to_eos_map["lat"] = "YDim";
-  
+  cf_to_eos_map["lev"] = "nCandidate";
+    
   DBG(cerr << cf_to_eos_map[str] << endl);
   if(cf_to_eos_map[str].size() > 0){
     return cf_to_eos_map[str];
