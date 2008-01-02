@@ -1283,56 +1283,46 @@ void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group
 /// You need to modify this to add custom attributes that match dimension names.
 ///
 /// \param das DAS object: reference
-/// \remarks This is necessary for grads compatibility only
-/// \todo This function may be removed. <hyokyung 2007.02.20. 13:29:12>
+/// \remarks This is necessary for GrADS compatibility only
 ////////////////////////////////////////////////////////////////////////////////
 void add_dimension_attributes(DAS & das)
 {
   DBG(cerr << ">add_dimension_attributes()" << endl);
   AttrTable *at;
 
-   at = das.add_table("NC_GLOBAL", new AttrTable);
-   at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
-   at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
-   at->append_attr("dataType", STRING, "\"Grid\"");
-   at->append_attr("history", STRING, "\"Sat Oct 20 09:48:56 EDT 2007 : imported by GrADS Data Server 1.3\"");
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
+  at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
+  at->append_attr("dataType", STRING, "\"Grid\"");
+  at->append_attr("history", STRING, "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
    
-   at = das.add_table("lon", new AttrTable);
-   at->append_attr("grads_dim", STRING, "\"x\"");
-   at->append_attr("grads_mapping", STRING, "\"linear\"");
-   at->append_attr("grads_size", STRING, "\"1440\"");
-   at->append_attr("units", STRING, "\"degrees_east\"");
-   at->append_attr("long_name", STRING, "\"longitude\"");
-   at->append_attr("minimum", FLOAT32, "-180.0");
-   at->append_attr("maximum", FLOAT32, "180.0");
-   at->append_attr("resolution", FLOAT32, "0.25");
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"x\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"1440\"");
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+  at->append_attr("minimum", FLOAT32, "-180.0");
+  at->append_attr("maximum", FLOAT32, "180.0");
+  at->append_attr("resolution", FLOAT32, "0.25");
       
-   at = das.add_table("lat", new AttrTable);
-   at->append_attr("grads_dim", STRING, "\"y\"");
-   at->append_attr("grads_mapping", STRING, "\"linear\"");
-   at->append_attr("grads_size", STRING, "\"720\"");   
-   at->append_attr("units", STRING, "\"degrees_north\"");
-   at->append_attr("long_name", STRING, "\"latitude\"");
-   at->append_attr("minimum", FLOAT32, "-90.0");
-   at->append_attr("maximum", FLOAT32, "90.0");
-   at->append_attr("resolution", FLOAT32, "0.25");
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"y\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"720\"");   
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("minimum", FLOAT32, "-90.0");
+  at->append_attr("maximum", FLOAT32, "90.0");
+  at->append_attr("resolution", FLOAT32, "0.25");
 
-   at = das.add_table("lev", new AttrTable);
-   at->append_attr("grads_dim", STRING, "\"z\"");
-   at->append_attr("grads_mapping", STRING, "\"linear\"");
-   at->append_attr("grads_size", STRING, "\"15\"");   
-   at->append_attr("units", STRING, "\"level\"");
-   at->append_attr("long_name", STRING, "\"level converted from nCandidate\"");
+  at = das.add_table("lev", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"z\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"15\"");   
+  at->append_attr("units", STRING, "\"level\"");
+  at->append_attr("long_name", STRING, "\"level converted from nCandidate\"");
 
-   
-//   at = das.add_table("ZDim", new AttrTable);
-//   at->append_attr("units", STRING, "\"milibar\"");
-
-//   at = das.add_table("nCandidate", new AttrTable);
-//   at->append_attr("units", STRING, "\"level\"");
-
-
-  
   DBG(cerr << "<add_dimension_attributes()" << endl);
 }
 #endif
