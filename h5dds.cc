@@ -593,7 +593,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
   if (dt_inst.ndims == 0) {
     dds_table.add_var(bt);
   }
-  // Next, deal with array and grid data. 
+  // Next, deal with Array and Grid data. 
   else {
     int dim_index;
     
@@ -613,11 +613,25 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     (dynamic_cast < HDF5Array * >(ar))->set_numdim(dt_inst.ndims);
     (dynamic_cast < HDF5Array * >(ar))->set_numelm((int) (dt_inst.nelmts));
     ar->add_var(bt);
-#ifndef CF
-    for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
-      ar->append_dim(dt_inst.size[dim_index]);
-    delete bt;
-#endif
+
+    // #ifndef CF
+    
+#ifdef NASA_EOS_GRID
+    if(!eos.is_valid() || !eos.is_grid(varname)){
+#endif    
+      for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
+	ar->append_dim(dt_inst.size[dim_index]);
+      delete bt;
+#ifdef NASA_EOS_GRID
+    }
+#endif    
+    
+//#endif
+    
+// #endif
+    
+//#endif
+
     
     // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
     // DODSGRID is defined in common.h by default.
@@ -626,10 +640,10 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     H5GridFlag_t check_grid;
 
 
-    // Check whether this HDF5 dataset can be mapped to the grid data
-    //  Should check whether the attribute includes dimension list;
-    //   If yes and everything is valid, map to DAP grid;
-    //   Otherwise, map to DAP array. 
+    // Check whether this HDF5 dataset can be mapped to the grid data.
+    // It should check whether the attribute includes dimension list.
+    // If yes and everything is valid, map to DAP grid;
+    // Otherwise, map to DAP array. 
  
     check_grid = maptogrid(dt_inst.dset,dt_inst.ndims);
     
@@ -873,7 +887,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     }
 
 #ifdef NASA_EOS_GRID
-    // Check if eos class has this name as grid.
+    // Check if eos class has this dataset as Grid.
     else if(eos.is_valid() && eos.is_grid(varname)){
       DBG(cerr << "EOS Grid: " << varname << endl);
       // Generate grid based on the parsed StructMetada.
@@ -886,11 +900,11 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       // Retrieve the dimension lists from the parsed metadata.
       vector<string> tokens;
       eos.get_dimensions(varname, tokens);
-      DBG(cerr << "Number of dimensions " << dt_inst.ndims << endl);
+      DBG(cerr << "=read_objects_base_type():Number of dimensions " << dt_inst.ndims << endl);
 
       
       for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {      
-	DBG(cerr << ": " << tokens.at(dim_index) << endl);
+	DBG(cerr << "=read_objects_base_type():Dim name " << tokens.at(dim_index) << endl);
 	
 	string str_dim_name = tokens.at(dim_index);
 	
@@ -904,15 +918,20 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 	str_dim_full_name = str_dim_name;
 #endif
 #ifdef CF
+	// Rename dimension name according to CF convention.
 	str_dim_full_name = eos.get_CF_name((char*)str_dim_full_name.c_str());
 #endif	
 	
 	bt = dds_table.get_factory()->NewFloat32(str_dim_full_name);
 	ar2 = new Array(str_dim_full_name, 0);
 	ar2->add_var(bt);
-        // Rename dimension name according to CF convention.
+
+	// #ifdef CF	
 	ar2->append_dim(dim_size, str_dim_full_name);
-	ar->append_dim(dim_size, str_dim_full_name);
+	ar->append_dim(dim_size, str_dim_full_name);	
+	//#else
+	//	ar2->append_dim(dim_size);
+	//#endif	
 	gr->add_var(ar2, pr);
 #ifdef CF
 	// Add the shared dimension data.
@@ -928,7 +947,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       }
 #ifdef CF
       // dds_table.add_var(ar);
-       // Set the flag for "shared dimension" true.
+      // Set the flag for "shared dimension" true.
       eos.set_shared_dimension();
 #endif
       pr = array;

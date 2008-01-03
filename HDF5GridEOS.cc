@@ -1,7 +1,7 @@
 #ifdef __GNUG__
 #pragma implementation
 #endif
-
+#define DODS_DEBUG
 #include "config_hdf5.h"
 
 #include <string>
@@ -9,6 +9,8 @@
 
 #include "HDF5GridEOS.h"
 #include "H5EOS.h"
+#include "debug.h"
+
 
 extern H5EOS eos;
 
@@ -87,7 +89,7 @@ HDF5GridEOS::read_dimension(Array* a)
     dim_name = eos.get_EOS_name(dim_name);
 #endif    
     int loc = eos.get_dimension_data_location(dim_name);
-    
+    DBG(cerr << "Dim name=" << dim_name << " location=" << loc << endl);
     if(loc >= 0){
       a->set_read_p(true);
       a->val2buf((void *)
@@ -104,13 +106,22 @@ dods_float32* HDF5GridEOS::get_dimension_data(dods_float32* buf,
   int i=0;
   int j=0;
   dods_float32* dim_buf = NULL;
+  DBG(cerr << ">get_dimension_data():stride=" << stride << " count=" << count << endl);
+  
+  if(buf == NULL){
+    cerr << "HDF5GridEOS.cc::get_dimension_data(): argument buf is NULL." << endl;
+    return dim_buf;
+  }
+
   dim_buf = new dods_float32[count];
   for(i=start; i <= stop; i = i+stride){
+    DBG(cerr << "=get_dimension_data():i=" << i << " j=" << j << endl);    
     dim_buf[j] = buf[i];
     j++;
   }
   if(count != j){
-    cerr << "HDF5GridEOS::get_dimension_data(): index mismatch" << endl;
+    cerr << "HDF5GridEOS.cc::get_dimension_data(): index mismatch" << endl;
   }
+  DBG(cerr << "<get_dimension_data()" << endl);  
   return dim_buf;
 }

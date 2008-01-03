@@ -2,7 +2,7 @@
 
 #define YYSTYPE char *
 #define YYDEBUG 1
-  // #define VERBOSE
+// #define VERBOSE
   
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +25,7 @@ extern int yy_line_num;	// defined in hdfeos.lex
 
 static int parser_state = 0; // parser state 
 static bool valid_projection = false;
+static bool grid_structure_found = false; 
 string full_path = "/HDFEOS/GRIDS/";
 string grid_name = "";
 string data_field_name = "/Data Fields/";
@@ -157,7 +158,8 @@ attribute_xdim: XDIM INT
   cout << "XDim is:" << atoi($2) << endl;
   cout << "Full path is:" << full_path << endl;
 #endif
-  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi($2));
+  if(grid_structure_found)    
+    ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi($2));
 }
 ;
 
@@ -169,7 +171,8 @@ attribute_ydim: YDIM INT
 #endif
   // Reset the parser state
   parser_state = 0;
-  ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi($2));
+  if(grid_structure_found)    
+    ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi($2));
 }
 ;
 
@@ -185,7 +188,8 @@ attribute_dimension_name: DIMENSION_NAME '=' STR
 attribute_dimension_size: DIMENSION_SIZE '=' INT
 {
   // Save the size info.
-  ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi($3));
+  if(grid_structure_found)  
+    ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi($3));
 }
 ;
 attribute_dimension_list: DIMENSION_LIST 
@@ -195,7 +199,8 @@ attribute_dimension_list: DIMENSION_LIST
 '=' dataseq
 {
   parser_state = 11;
-  ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
+  if(grid_structure_found)
+    ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
   
   // Reset for next path
   data_field_name = "/Data Fields/";
@@ -230,7 +235,8 @@ group:GROUP '=' STR
 |
       GROUP '=' GRID_STRUCTURE
       {
-#ifdef VERBOSE	
+	grid_structure_found = true;	
+#ifdef VERBOSE
 	cout << $3 <<  endl; // $3 refers the STR
 #endif	
 

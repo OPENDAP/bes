@@ -15,7 +15,7 @@ int hdfeosparse(void *arg);
 struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
 
-//
+
 H5EOS::H5EOS()
 {
   valid = false;
@@ -214,13 +214,13 @@ bool H5EOS::set_dimension_array()
   
   dods_float32* convbuf = NULL;
   dimension_data = new dods_float32*[size];
-  DBG(cerr << "Dimensions size = " << size  << endl);
+  DBG(cerr << ">set_dimension_array():Dimensions size = " << size  << endl);
   for(j=0; j < dimensions.size(); j++){
     string dim_name = dimensions.at(j);
     int dim_size = dimension_map[dim_name];
     
-    DBG(cerr << "Dim name = " << dim_name << std::endl);
-    DBG(cerr << "Dim size = " << dim_size << std::endl);
+    DBG(cerr << "=set_dimension_array():Dim name = " << dim_name << std::endl);
+    DBG(cerr << "=set_dimension_array():Dim size = " << dim_size << std::endl);
     
     if(dim_size > 0){
       
@@ -250,7 +250,8 @@ bool H5EOS::set_dimension_array()
       return false;
     }
     dimension_data[j] = convbuf;        
-  }
+  } // for
+  DBG(cerr << "<set_dimension_array()" << endl);  
   return true;
 }
 
