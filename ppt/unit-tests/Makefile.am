@@ -31,11 +31,14 @@ CLEANFILES =
 UNIT_TESTS = connT sbT extT
 
 connT_SOURCES = connT.cc ConnSocket.cc ConnTest.cc ConnSocket.h ConnTest.h
+connT_CPPFLAGS = $(AM_CPPFLAGS)
 connT_LDADD = -lcppunit $(top_srcdir)/ppt/libbes_ppt.la $(top_srcdir)/dispatch/libbes_dispatch.la $(openssl_libs)
 
 sbT_SOURCES = sbT.cc
+sbT_CPPFLAGS = $(AM_CPPFLAGS)
 sbT_LDADD = -lcppunit $(top_srcdir)/ppt/libbes_ppt.la $(top_srcdir)/dispatch/libbes_dispatch.la $(openssl_libs)
 
 extT_SOURCES = extT.cc ExtConn.cc ExtConn.h
+extT_CPPFLAGS = $(AM_CPPFLAGS)
 extT_LDADD = -lcppunit $(top_srcdir)/ppt/libbes_ppt.la $(top_srcdir)/dispatch/libbes_dispatch.la $(openssl_libs)
 
