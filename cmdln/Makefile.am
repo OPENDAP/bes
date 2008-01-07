@@ -16,8 +16,7 @@ bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
 
-bescmdln_LDADD = -L../dispatch -lbes_dispatch -L../ppt -lbes_ppt \
-	$(openssl_libs) $(READLINE_LIBS)
+bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS)
 
 EXTRA_DIST = testsuite common_tests.exp
 

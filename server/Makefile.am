@@ -21,14 +21,12 @@ beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
 		BESServerHandler.h ServerApp.h BESServerUtils.h \
 		ServerExitConditions.h
 
-beslistener_LDADD = $(SERVER_LIBS) $(openssl_libs)
+beslistener_LDADD = ../ppt/libbes_ppt.la ../command/libbes_command.la ../dispatch/libbes_dispatch.la
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
 besdaemon_CPPFLAGS = $(AM_CPPFLAGS)
 
-besdaemon_LDADD = $(SERVER_LIBS) $(openssl_libs)
-
-SERVER_LIBS = -L../ppt -lbes_ppt -L../command -lbes_command -L../dispatch -lbes_dispatch
+besdaemon_LDADD = ../dispatch/libbes_dispatch.la
 
 install-data-local:
 	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"

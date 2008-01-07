@@ -1,5 +1,5 @@
 
-# Build libdispatch, part of the BES code.
+# Build libbes_ppt, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
 
@@ -18,8 +18,9 @@ DIST_SUBDIRS = unit-tests
 lib_LTLIBRARIES = libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
-libbes_ppt_la_CPPFLAGS = -I$(top_srcdir)/dispatch $(openssl_includes) $(kerberos_includes)
+libbes_ppt_la_CPPFLAGS = -I$(top_srcdir)/dispatch
 libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
+libbes_ppt_la_LIBADD = ../dispatch/libbes_dispatch.la
 
 pkginclude_HEADERS = $(HDRS)
 
@@ -34,6 +35,8 @@ HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
 if HAVE_OPENSSL
+libbes_ppt_la_CPPFLAGS += $(openssl_includes)
+libbes_ppt_la_LIBADD += $(openssl_libs)
 SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
 HDRS+=SSLClient.h SSLServer.h SSLConnection.h
 endif

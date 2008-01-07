@@ -82,18 +82,25 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
 
+
+BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
 AC_CHECK_LIB( bz2, BZ2_bzReadOpen,
     [
 	AM_CONDITIONAL([BZ2UNCOMPRESS], [true])
-	LIBS="-lbz2 $LIBS"
+	BES_BZ2_LIBS=-lbz2
 	AC_DEFINE([HAVE_LIBBZ2], [1], [libbz2])
     ],
     [ AM_CONDITIONAL([BZ2UNCOMPRESS], [false]) ] )
-AC_CHECK_LIB( z, gzopen )
+AC_CHECK_LIB( z, gzopen, [BES_ZLIB_LIBS=-lz])
 
 dnl dl lib?
-AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen) ])
+AC_CHECK_FUNC(dlclose, , [ AC_CHECK_LIB(dl, dlopen, [BES_DL_LIBS=-ldl]) ])
+LIBS=$BES_OLD_LIBS
+
+AC_SUBST(BES_DL_LIBS)
+AC_SUBST(BES_ZLIB_LIBS)
+AC_SUBST(BES_BZ2_LIBS)
 
 dnl Checks for libraries.
 dnl AC_CHECK_LIB(termcap, main)
@@ -101,13 +108,13 @@ dnl AC_CHECK_LIB(termcap, main)
 # check for readline
 VL_LIB_READLINE
 if test "$vl_cv_lib_readline" = "no"; then
-   AC_MSG_ERROR(I could not find the readline library!)
+   AC_MSG_ERROR([I could not find the readline library!])
 fi
 
 SIC_VAR_SYS_ERRLIST
 
 BES_CHECK_OPENSSL
-BES_CHECK_KERBEROS
+dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.7.10],
   [
@@ -129,7 +136,12 @@ AC_CONFIG_FILES([Makefile
 		 server/Makefile
 		 server/test/Makefile
 		 bin/Makefile
-		 templates/Makefile])
+		 templates/Makefile
+		 bes_dispatch.pc
+		 bes_ppt.pc
+		 bes_command.pc
+		 bes_dap.pc
+])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 

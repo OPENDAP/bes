@@ -27,6 +27,7 @@ endif
 
 libbes_dispatch_la_SOURCES = $(SRCS) $(HDRS)
 libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
+libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
 libdap_module_la_CPPFLAGS = $(DAP_CFLAGS)
@@ -36,6 +37,7 @@ libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS)
 libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
 libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS)
 libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
+libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS)
 
 besregtest_SOURCES = besregtest.cc
 besregtest_CPPFLAGS = $(DAP_CFLAGS)

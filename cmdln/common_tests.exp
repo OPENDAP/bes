@@ -39,7 +39,6 @@ proc compare_stdout {expected msg {xfailp 0} {str_test compare}} {
     global comp_output
     global verbose
 
-
     # Make sure that the string test method passed in through $str_test is
     # either "compare" or "match" (The Tcl built in string function supports
     # several other methods, but this code DOES NOT!)

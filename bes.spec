@@ -4,9 +4,8 @@ Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
 Group:          System Environment/Libraries
-License:        LGPL
+License:        LGPLv2+
 URL:            http://www.opendap.org/download/BES.html
-#Source0:        ftp://ftp.unidata.ucar.edu/pub/opendap/source/bes-%{version}.tar.gz
 Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -16,7 +15,7 @@ BuildRequires:  readline-devel
 BuildRequires:  bzip2 gzip
 # needed by ppt
 BuildRequires:  openssl-devel
-BuildRequires:  krb5-devel
+BuildRequires:  pkgconfig
 BuildRequires:  doxygen graphviz
 
 %description
@@ -36,9 +35,10 @@ Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       libdap-devel >= 3.7.10
-Requires: pkgconfig
 # for the /usr/share/aclocal directory ownership
-Requires: automake
+Requires:       automake
+Requires:       openssl-devel, bzip2-devel, zlib-devel
+Requires:       pkgconfig
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
@@ -61,13 +61,13 @@ chmod a-x dispatch/BESStreamResponseHandler*
 %configure --disable-static --disable-dependency-tracking
 make %{?_smp_mflags}
 make docs
-rm -rf __fedora_docs
-cp -pr docs __fedora_docs
-mv __fedora_docs/html __fedora_docs/api-html
+rm -rf __distribution_docs
+cp -pr docs __distribution_docs
+mv __distribution_docs/html __distribution_docs/api-html
 # .map and .md5 files are of dubious use
-rm __fedora_docs/api-html/*.map
-rm __fedora_docs/api-html/*.md5
-chmod a-x __fedora_docs/BES_*.doc
+rm __distribution_docs/api-html/*.map
+rm __distribution_docs/api-html/*.md5
+chmod a-x __distribution_docs/BES_*.doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -105,17 +105,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%doc __fedora_docs/BES_*.doc
+%doc __distribution_docs/BES_*.doc
 %{_bindir}/besCreateModule
 %{_bindir}/bes-config
 %{_includedir}/bes/
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/bes_*.pc
 %{_datadir}/bes/templates/
-%{_datadir}/aclocal/*
+%{_datadir}/aclocal/bes.m4
 
 %files doc
 %defattr(-,root,root,-)
-%doc __fedora_docs/api-html/
+%doc __distribution_docs/api-html/
 
 %changelog
 * Tue Feb 13 2007 James Gallagher <jgallagher@opendap.org> 3.4.0-1

@@ -10,6 +10,9 @@ SUBDIRS = dispatch command ppt cmdln server docs bin templates
 
 bin_SCRIPTS = bes-config
 
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_command.pc bes_dap.pc
+
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
