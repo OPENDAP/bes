@@ -43,7 +43,7 @@ class BESScrub
 {
 public:
     static bool			command_line_arg_ok( const string &arg ) ;
-    static bool			size_ok( uint sz, uint nelem ) ;
+    static bool			size_ok( unsigned int sz, unsigned int nelem ) ;
     static bool			pathname_ok( const string &path, bool strict ) ;
 } ;
 

@@ -61,7 +61,7 @@ BESScrub::command_line_arg_ok( const string &arg )
     @param sz size of each element.
     @return True if the \c nelem elements of \c sz size will overflow an array. */
 bool
-BESScrub::size_ok(uint sz, uint nelem)
+BESScrub::size_ok(unsigned int sz, unsigned int nelem)
 {
     return (sz > 0 && nelem < UINT_MAX / sz);
 }
