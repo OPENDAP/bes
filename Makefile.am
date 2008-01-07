@@ -88,7 +88,7 @@ bes-hdf4-data.sh: bes-hdf4-data.sh.in Makefile
 bes-conf: bes-hdf4-data.sh
 	(bes_prefix=`bes-config --prefix` ; \
 	if test "$$bes_prefix" = "/usr" ; \
-	 then \
+	then \
 	    ./bes-hdf4-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
 	else \
 	    ./bes-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \

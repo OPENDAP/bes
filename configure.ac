@@ -59,7 +59,7 @@ AC_CHECK_HDF4(
    [
 dnl       LIBS="$LIBS $HDF4_LIBS"
 dnl       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
-       CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS"
+       CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
    ],
    [
        echo "*** Use --with-hdf4 for the root hdf4 directory."

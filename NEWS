@@ -14,6 +14,21 @@ pkg-config support added
 
 Various bug fixes.
 
+Version 3.7.6 (?)
+
+Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
+script and the bes-conf make target in README.
+
+Version 3.7.6 (?)
+
+Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
+script and the bes-conf make target in README.
+
+Version 3.7.6 (?)
+
+Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
+script and the bes-conf make target in README.
+
 Version 3.7.5 (13 March 2007)
 
 Added automatic configuration of the handler using 'make install.' Now the

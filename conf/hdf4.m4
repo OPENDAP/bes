@@ -62,12 +62,12 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
   LDFLAGS=$ac_hdf4_save_LDFLAGS
   
   ac_hdf4_h='no'
-  HDF4_CPPFLAGS=
+  HDF4_CFLAGS=
   ac_hdf4_save_CPPFLAGS=$CPPFLAGS
   AS_IF([test "z$HDF4_PATH_INC" != "z"],
     [
-       HDF4_CPPFLAGS="-I$HDF4_PATH_INC"
-       CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS"
+       HDF4_CFLAGS="-I$HDF4_PATH_INC"
+       CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
        AC_CHECK_HEADER_NOCACHE_HDF4([mfhdf.h],[ac_hdf4_h='yes'])
     ],
     [
@@ -77,12 +77,12 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
        /opt/hdf/include /usr/hdf/include /usr/local/include/hdf \
        /opt/include/hdf /usr/include/hdf ; do
         AS_IF([test "z$ac_hdf4_incdir" = 'z'],
-           [HDF4_CPPFLAGS=],
+           [HDF4_CFLAGS=],
            [
              AC_MSG_NOTICE([searching hdf includes in $ac_hdf4_incdir])
-             HDF4_CPPFLAGS="-I$ac_hdf4_incdir"
+             HDF4_CFLAGS="-I$ac_hdf4_incdir"
            ])
-        CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS" 
+        CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS" 
         AC_CHECK_HEADER_NOCACHE_HDF4([mfhdf.h],[ac_hdf4_h='yes'])
         AS_IF([test $ac_hdf4_h = 'yes'],[break])
         CPPFLAGS=$ac_hdf4_save_CPPFLAGS
@@ -95,7 +95,7 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
   [m4_if([$2], [], [:], [$2])])
 
   AC_SUBST([HDF4_LIBS])
-  AC_SUBST([HDF4_CPPFLAGS])
+  AC_SUBST([HDF4_CFLAGS])
   AC_SUBST([HDF4_LDFLAGS])
 ])
 
@@ -109,7 +109,7 @@ dnl                 action-if-found with sd_ appended to netcdf symbols,
 dnl                 action-if-no-found
 dnl
 dnl in case it is detected that sd_ should be appended, the C preprocessor
-dnl symbol HDF_SD_NETCDF is defined.
+dnl symbol HDF_HAVE_NETCDF is defined.
 
 AC_DEFUN([AC_CHECK_HDF4_NETCDF],
 [
@@ -148,15 +148,17 @@ AC_DEFUN([AC_CHECK_HDF4_NETCDF],
     LIBS=$ac_hdf4_netcdf_save_LIBS
 
     ac_hdf4_netcdf_save_CPPFLAGS=$CPPFLAGS
-    CPPFLAGS="$CPPFLAGS $HDF4_CPPFLAGS"
+    ac_hdf4_netcdf_save_NC_CFLAGS=$NC_CFLAGS
+    CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
     AC_CHECK_NETCDF_HEADER([],[ac_hdf4_netcdf_h='yes'])
     CPPFLAGS=$ac_hdf4_netcdf_save_CPPFLAGS
+    NC_CFLAGS=$ac_hdf4_netcdf_save_NC_CFLAGS
   ])
 
   AH_TEMPLATE([HDF_NETCDF_NAME],[A macro that append sd_ to netcdf symbols if needed])
   AS_IF([test $ac_hdf4_netcdf_h = 'yes' -a $ac_hdf4_sd_netcdf_lib = 'yes'],
   [
-     AC_DEFINE([HDF_SD_NETCDF],[],[Define if hdf prefixes netcdf symbols by sd])
+     AC_DEFINE([HDF_HAVE_NETCDF],[],[Define if hdf prefixes netcdf symbols by sd])
      AC_DEFINE([HDF_NETCDF_NAME(name)], [sd_ ## name])
      m4_if([$2], [], [:], [$2])
   ],

@@ -15,9 +15,6 @@
 
 	Updated for version 3.7.6
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2007-11-14  James Gallagher <jgallagher@opendap.org>
 
 	Added bounds check to hdfistream_sds operator>>
