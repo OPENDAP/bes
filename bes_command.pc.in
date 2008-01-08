@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @PACKAGE@_command
+Description: OPeNDAP Back End Server command library
+Version: @VERSION@
+Requires: bes_dispatch
+Libs: -L${libdir} -lbes_command
+Cflags: -I${includedir}/bes
