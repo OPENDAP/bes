@@ -46,7 +46,7 @@ class BESDataDDSResponse:public BESResponseObject {
   public:
     BESDataDDSResponse(DataDDS * dds) :BESResponseObject(), _dds(dds) {} 
     
-    virtual ~ BESDataDDSResponse();
+    virtual ~BESDataDDSResponse();
 
     virtual void dump(ostream & strm) const;
 
