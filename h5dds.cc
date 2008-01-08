@@ -617,7 +617,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     // #ifndef CF
     
 #ifdef NASA_EOS_GRID
-    if(!eos.is_valid() || !eos.is_grid(varname)){
+    if(!(eos.is_valid() && eos.is_grid(varname))){
 #endif    
       for (dim_index=0; dim_index < dt_inst.ndims;dim_index++) 
 	ar->append_dim(dt_inst.size[dim_index]);
