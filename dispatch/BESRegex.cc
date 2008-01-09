@@ -1,11 +1,11 @@
+// BESRegex.cc
 
-// -*- mode: c++; c-basic-offset:4 -*-
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
 
-// This file is part of libdap, A C++ implementation of the OPeNDAP Data
-// Access Protocol.
-
-// Copyright (c) 2005 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
+// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// and James Gallagher <jgallagher@gso.uri.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,16 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// You can contact University Corporation for Atmospheric Research at
+// 3080 Center Green Drive, Boulder, CO 80301
+ 
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
+// Please read the full copyright statement in the file COPYRIGHT_UCAR.
+//
+// Authors:
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      jimg        James Gallagher <jgallagher@gso.uri.edu>
 
 #include <config.h>
 
