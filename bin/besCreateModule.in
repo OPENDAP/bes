@@ -108,6 +108,8 @@ done
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf
 
+include_dap=0
+
 if [ "${RESPONSE_TYPES}" != "" ]
 then
     for i in $RESPONSE_TYPES
@@ -125,6 +127,7 @@ EOF
 	responseName=
 	if [ "$i" = "das" ]
 	then
+	    include_dap=1
 	    responseName="DAS"
 	    headerFile="BESDASResponse.h"
 	    castLine1="BESResponseObject *response ="
@@ -133,6 +136,7 @@ EOF
 	    castLine4="DAS *das = bdas->get_das();"
 	elif [ "$i" = "dds" ]
 	then
+	    include_dap=1
 	    responseName="DDS"
 	    headerFile="BESDDSResponse.h"
 	    castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
@@ -142,6 +146,7 @@ EOF
 	    castLine4="DDS *dds = bdds->get_dds();"
 	elif [ "$i" = "data" ]
 	then
+	    include_dap=1
 	    responseName="DATA"
 	    headerFile="BESDataDDSResponse.h"
 	    castLine="DDS *dds = dynamic_cast<DDS *>(dhi.response_handler->get_response_object());"
@@ -277,6 +282,15 @@ q
 EOF
 
     done
+fi
+
+if [ $include_dap == 1 ]
+then
+    ed ./Makefile.am << EOF > /dev/null 2>&1
+,s/BES_LIBS/BES_DAP_LIBS/g
+w
+q
+EOF
 fi
 
 if [ "${NEW_COMMANDS}" != "" ]
