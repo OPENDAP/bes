@@ -1,4 +1,4 @@
-// BESKeysResponseHandler.h
+// BESConfigResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,8 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESKeysResponseHandler_h
-#define I_BESKeysResponseHandler_h 1
+#ifndef I_BESConfigResponseHandler_h
+#define I_BESConfigResponseHandler_h 1
 
 #include "BESResponseHandler.h"
 
@@ -46,11 +46,11 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESKeysResponseHandler : public BESResponseHandler
+class BESConfigResponseHandler : public BESResponseHandler
 {
 public:
-				BESKeysResponseHandler( const string &name ) ;
-    virtual			~BESKeysResponseHandler( void ) ;
+				BESConfigResponseHandler( const string &name ) ;
+    virtual			~BESConfigResponseHandler( void ) ;
 
     virtual void		execute( BESDataHandlerInterface &dhi ) ;
     virtual void		transmit( BESTransmitter *transmitter,
@@ -58,8 +58,8 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static BESResponseHandler *KeysResponseBuilder( const string &handler_name ) ;
+    static BESResponseHandler *ConfigResponseBuilder( const string &handler_name ) ;
 };
 
-#endif // I_BESKeysResponseHandler_h
+#endif // I_BESConfigResponseHandler_h
 

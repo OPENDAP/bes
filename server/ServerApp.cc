@@ -242,13 +242,17 @@ ServerApp::set_user_id()
 int
 ServerApp::initialize( int argc, char **argv )
 {
-    // must be root to run this app and to set user id and group id later
     uid_t curr_euid = geteuid() ;
+#ifndef BES_DEVELOPER
+    // must be root to run this app and to set user id and group id later
     if( curr_euid )
     {
 	cerr << "FAILED: Must be root to run BES" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
+#else
+    cerr << "Developer Mode: not testing if BES is run by root" << endl ;
+#endif
 
     int c = 0 ;
     bool needhelp = false ;
@@ -403,11 +407,22 @@ ServerApp::initialize( int argc, char **argv )
 	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
     }
 
-    // Now that we have loaded all modules and given them the chance to initialize
-    // set the user id and the group id to what is specified in the BES
-    // configuration file.
-    set_group_id() ;
-    set_user_id() ;
+    if( curr_euid == 0 )
+    {
+	// Now that we have loaded all modules and given them the chance to
+	// initialize set the user id and the group id to what is specified
+	// in the BES configuration file.
+#ifdef BES_DEVELOPER
+	cerr << "Developer Mode: Running as root - setting group and user ids"
+	     << endl ;
+#endif
+	set_group_id() ;
+	set_user_id() ;
+    }
+    else
+    {
+	cerr << "Developer Mode: Not setting group or user ids" << endl ;
+    }
 
     return ret ;
 }

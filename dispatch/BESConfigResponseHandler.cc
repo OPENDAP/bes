@@ -1,4 +1,4 @@
-// BESKeysResponseHandler.cc
+// BESConfigResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,18 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESKeysResponseHandler.h"
+#include "BESConfigResponseHandler.h"
 #include "TheBESKeys.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESResponseNames.h"
 
-BESKeysResponseHandler::BESKeysResponseHandler( const string &name )
+BESConfigResponseHandler::BESConfigResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
 
-BESKeysResponseHandler::~BESKeysResponseHandler( )
+BESConfigResponseHandler::~BESConfigResponseHandler( )
 {
 }
 
@@ -66,13 +66,13 @@ BESKeysResponseHandler::~BESKeysResponseHandler( )
  * @see TheBESKeys
  */
 void
-BESKeysResponseHandler::execute( BESDataHandlerInterface &dhi )
+BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
-    dhi.action_name = KEYS_RESPONSE_STR ;
-    info->begin_response( KEYS_RESPONSE_STR ) ;
+    dhi.action_name = CONFIG_RESPONSE_STR ;
+    info->begin_response( CONFIG_RESPONSE_STR ) ;
     info->add_tag( "File", TheBESKeys::TheKeys()->keys_file_name() ) ;
 
     BESKeys::Keys_citer ki = TheBESKeys::TheKeys()->keys_begin() ;
@@ -100,7 +100,7 @@ BESKeysResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see _BESDataHandlerInterface
  */
 void
-BESKeysResponseHandler::transmit( BESTransmitter *transmitter,
+BESConfigResponseHandler::transmit( BESTransmitter *transmitter,
                                   BESDataHandlerInterface &dhi )
 {
     if( _response )
@@ -117,9 +117,9 @@ BESKeysResponseHandler::transmit( BESTransmitter *transmitter,
  * @param strm C++ i/o stream to dump the information to
  */
 void
-BESKeysResponseHandler::dump( ostream &strm ) const
+BESConfigResponseHandler::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "BESKeysResponseHandler::dump - ("
+    strm << BESIndent::LMarg << "BESConfigResponseHandler::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESResponseHandler::dump( strm ) ;
@@ -127,8 +127,8 @@ BESKeysResponseHandler::dump( ostream &strm ) const
 }
 
 BESResponseHandler *
-BESKeysResponseHandler::KeysResponseBuilder( const string &name )
+BESConfigResponseHandler::ConfigResponseBuilder( const string &name )
 {
-    return new BESKeysResponseHandler( name ) ;
+    return new BESConfigResponseHandler( name ) ;
 }
 

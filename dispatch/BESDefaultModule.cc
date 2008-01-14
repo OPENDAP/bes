@@ -40,9 +40,13 @@ using std::endl ;
 #include "BESResponseHandlerList.h"
 
 #include "BESHelpResponseHandler.h"
-#include "BESProcIdResponseHandler.h"
 #include "BESVersionResponseHandler.h"
-#include "BESKeysResponseHandler.h"
+
+#ifdef BES_DEVELOPER
+#include "BESProcIdResponseHandler.h"
+#include "BESConfigResponseHandler.h"
+#endif
+
 #include "BESStatusResponseHandler.h"
 #include "BESStreamResponseHandler.h"
 
@@ -84,11 +88,13 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << HELP_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( HELP_RESPONSE, BESHelpResponseHandler::HelpResponseBuilder ) ;
 
+#ifdef BES_DEVELOPER
     BESDEBUG( "bes", "    adding " << PROCESS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( PROCESS_RESPONSE, BESProcIdResponseHandler::ProcIdResponseBuilder ) ;
 
-    BESDEBUG( "bes", "    adding " << KEYS_RESPONSE << " response handler" << endl )
-    BESResponseHandlerList::TheList()->add_handler( KEYS_RESPONSE, BESKeysResponseHandler::KeysResponseBuilder ) ;
+    BESDEBUG( "bes", "    adding " << CONFIG_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( CONFIG_RESPONSE, BESConfigResponseHandler::ConfigResponseBuilder ) ;
+#endif
 
     BESDEBUG( "bes", "    adding " << VERS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( VERS_RESPONSE, BESVersionResponseHandler::VersionResponseBuilder ) ;
@@ -173,7 +179,7 @@ BESDefaultModule::terminate(void)
     BESResponseHandlerList::TheList()->remove_handler( HELP_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( VERS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( PROCESS_RESPONSE ) ;
-    BESResponseHandlerList::TheList()->remove_handler( KEYS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( CONFIG_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( STATUS_RESPONSE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( SETCONTAINER ) ;

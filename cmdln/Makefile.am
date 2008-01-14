@@ -5,6 +5,10 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
 
+if BES_DEVELOPER
+AM_CPPFLAGS += -DBES_DEVELOPER
+endif
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -15,7 +19,6 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
-
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS)
 
 EXTRA_DIST = testsuite common_tests.exp

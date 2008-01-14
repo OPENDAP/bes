@@ -5,11 +5,13 @@ Current core commands available with BES:
     show version;
 	* shows the version of OPeNDAP and each data type served by this server
     show process;
-	* shows the process number of this application
+	* shows the process id of the bes listener this client is attached
+	  to. This command is available only in developer mode.
     show status;
 	* shows the status of the server
-    show keys;
-	* shows all keys defined in the dods initialization file
+    show config;
+	* shows all key/value pairs defined in the bes configuration file.
+	  This command is available only in developer mode.
     show containers;
 	* shows all containers currently defined
     show context;

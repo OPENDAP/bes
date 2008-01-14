@@ -5,6 +5,10 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch -I$(top_srcdir)/command
 
+if BES_DEVELOPER
+AM_CPPFLAGS += -DBES_DEVELOPER
+endif
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -24,8 +28,6 @@ beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
 beslistener_LDADD = ../ppt/libbes_ppt.la ../command/libbes_command.la ../dispatch/libbes_dispatch.la
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
-besdaemon_CPPFLAGS = $(AM_CPPFLAGS)
-
 besdaemon_LDADD = ../dispatch/libbes_dispatch.la
 
 install-data-local:

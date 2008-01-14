@@ -5,6 +5,10 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch
 
+if BES_DEVELOPER
+AM_CPPFLAGS += -DBES_DEVELOPER
+endif
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -18,7 +22,7 @@ DIST_SUBDIRS = unit-tests
 lib_LTLIBRARIES = libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
-libbes_ppt_la_CPPFLAGS = -I$(top_srcdir)/dispatch
+libbes_ppt_la_CPPFLAGS = $(AM_CPPFLAGS)
 libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 libbes_ppt_la_LIBADD = ../dispatch/libbes_dispatch.la
 

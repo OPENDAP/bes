@@ -219,12 +219,14 @@ BESInfo::add_exception( BESException &e )
     begin_tag( "BESException" ) ;
     add_tag( "Type", e.get_context() ) ;
     add_tag( "Message", e.get_message() ) ;
+#ifdef BES_DEVELOPER
     begin_tag( "Location" ) ;
     add_tag( "File", e.get_file() ) ;
     ostringstream sline ;
     sline << e.get_line() ;
     add_tag( "Line", sline.str() ) ;
     end_tag( "Location" ) ;
+#endif
     end_tag( "BESException" ) ;
 }
 

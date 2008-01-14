@@ -73,11 +73,13 @@ BESDefaultCommands::initialize( int, char** )
     BESDEBUG( "bes", "    adding " << HELP_RESPONSE << " command" << endl )
     BESCommand::add_command( HELP_RESPONSE, BESCommand::TermCommand ) ;
 
+#ifdef BES_DEVELOPER
     BESDEBUG( "bes", "    adding " << PROCESS_RESPONSE << " command" << endl )
     BESCommand::add_command( PROCESS_RESPONSE, BESCommand::TermCommand ) ;
 
-    BESDEBUG( "bes", "    adding " << KEYS_RESPONSE << " command" << endl )
-    BESCommand::add_command( KEYS_RESPONSE, BESCommand::TermCommand ) ;
+    BESDEBUG( "bes", "    adding " << CONFIG_RESPONSE << " command" << endl )
+    BESCommand::add_command( CONFIG_RESPONSE, BESCommand::TermCommand ) ;
+#endif
 
     BESDEBUG( "bes", "    adding " << VERS_RESPONSE << " command" << endl )
     BESCommand::add_command( VERS_RESPONSE, BESCommand::TermCommand ) ;

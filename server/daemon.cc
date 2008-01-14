@@ -77,6 +77,7 @@ char **arguments = 0 ;
 int
 main(int argc, char *argv[])
 {
+#ifndef BES_DEVELOPER
     // must be root to run this app and to set user id and group id later
     uid_t curr_euid = geteuid() ;
     if( curr_euid )
@@ -84,6 +85,9 @@ main(int argc, char *argv[])
 	cerr << "FAILED: Must be root to run BES" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
+#else
+    cerr << "Developer Mode: not testing if BES is run by root" << endl ;
+#endif
 
     NameProgram = argv[0] ;
 

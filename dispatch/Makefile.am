@@ -3,8 +3,11 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-# AM_CPPFLAGS =
-# AM_CXXFLAGS =
+AM_CPPFLAGS =
+
+if BES_DEVELOPER
+AM_CPPFLAGS += -DBES_DEVELOPER
+endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -30,17 +33,17 @@ libbes_dispatch_la_LDFLAGS = -version-info $(LIBDISPATCH_VERSION)
 libbes_dispatch_la_LIBADD = $(BES_ZLIB_LIBS) $(BES_BZ2_LIBS) $(BES_DL_LIBS)
 
 libdap_module_la_SOURCES = $(DAP_SRCS) $(DAP_HDRS)
-libdap_module_la_CPPFLAGS = $(DAP_CFLAGS)
+libdap_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdap_module_la_LDFLAGS = -avoid-version -module
 libdap_module_la_LIBADD = libbes_dispatch.la libbes_dap.la $(DAP_SERVER_LIBS)
 
 libbes_dap_la_SOURCES = $(BES_DAP_SRCS) $(BES_DAP_HDRS)
-libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS)
+libbes_dap_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
 libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS)
 
 besregtest_SOURCES = besregtest.cc
-besregtest_CPPFLAGS = $(DAP_CFLAGS)
+besregtest_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 besregtest_LDADD = $(DAP_SERVER_LIBS)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
@@ -83,7 +86,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESContextManager.cc \
 	BESProcIdResponseHandler.cc BESResponseHandler.cc \
 	BESHelpResponseHandler.cc BESStatusResponseHandler.cc \
-	BESVersionResponseHandler.cc BESKeysResponseHandler.cc \
+	BESVersionResponseHandler.cc BESConfigResponseHandler.cc \
 	BESStreamResponseHandler.cc BESResponseHandlerList.cc \
 	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc \
 	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc \
@@ -122,7 +125,7 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESContextManager.h \
 	BESProcIdResponseHandler.h BESResponseHandler.h \
 	BESHelpResponseHandler.h BESStatusResponseHandler.h \
-	BESVersionResponseHandler.h BESKeysResponseHandler.h \
+	BESVersionResponseHandler.h BESConfigResponseHandler.h \
 	BESStreamResponseHandler.h BESResponseHandlerList.h \
 	BESResponseNames.h BESResponseException.h \
 	BESResponseObject.h BESInfo.h BESTextInfo.h BESHTMLInfo.h \

@@ -125,6 +125,18 @@ AC_CHECK_LIBDAP([3.7.10],
   ]
 )
 
+AC_ARG_ENABLE([developer],
+  [
+    AS_HELP_STRING([--enable-developer],[developer mode])
+  ],
+  [
+    AM_CONDITIONAL([BES_DEVELOPER], [true])
+  ],
+  [
+    AM_CONDITIONAL([BES_DEVELOPER], [false])
+  ]
+)
+
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
