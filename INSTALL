@@ -13,8 +13,15 @@ SPECIAL NOTES on Supporting NASA EOS DATA
 
 BUILDING THE SOFTWARE
 
-0) Please skim REQUIREMENTS and NOTES sections of this file before reporting
-   problems. Thanks.
+0) !!! WARNING WARNING WARNING WARNING WARNING WARNING!!! 
+   Please read INSTALL_EOS5_GRID instead of this INSTALL
+   If you want to VISUALIZE NASA EOS GRID data with OPeNDAP CLIENTS
+   like Ferret, IDV, ncBrowse, NCL, GrADS and ODC.
+   Continuning the instructions on this INSTALL WILL NOT WORK 
+   with the clients mentioned above.
+
+   You've been WARNED and continue to read if you're not going to deal
+   with visualization clients.
 
 1) Type `./configure' at the system prompt. On some systems you may have to
    type `sh configure.' If you want this part of the server to install
@@ -25,7 +32,7 @@ BUILDING THE SOFTWARE
 
 2) Type `make' to build the three server programs
 
-3) Install the server components in $prefix by running `make install.'
+3) Install the server components in $prefix by running `make install'.
 
 4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which inserts the
    handler in the bes.conf file and adds test data to 
@@ -34,34 +41,38 @@ BUILDING THE SOFTWARE
 Building from Our SVN Repository
 
   If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, et c., by hand and wind up
+  './configure; make'. If you try to run autoconf, etc., by hand and wind up
   with build files that don't work, use 'autoreconf --force --verbose'. Once
   autoreconf has made the configure and Makefile.in files, do ./configure;
   make; make install as outlined above.
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.7.0 to build and install this
+  o You need the libdap library version 3.7.10 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages, once they are
     available. 
 
-  o To use this software with our data server, you will need the OPeNDAP
-    dap-server software package, version 3.6.0, although this particular
-    release has not been tested with dap-server 3.6.0.
-
-  o If you're planning on using this with Hyrax, version 1.2, you'll need
-    version 3.1.0 of the BES software.
-
-  o You also need a recent copy of HDF5. Use --with-hdf5 to specify where
-    your hdf5 distribution is located if configure cannot find it on its own.
+  o You need a recent(version 1.6.6 or above) copy of HDF5. 
+    Use --with-hdf5 to specify where your hdf5 distribution is located 
+    if configure cannot find it on its own.
     See './configure --help' for more info.
+
+  o To use this software with our data server, you will need the OPeNDAP
+    dap-server software package, version 3.8.4.
+
+  o If you're planning on using this with Hyrax, version 1.3, you'll need
+    version 3.5.3 of the BES software.
+
 
 NOTES
 
-  o For information about installing secure OPeNDAP servers, see the file
-    SECURITY included with the dap-server software.
+  o SHORT PATH NAME
 
+    - By default, full path names that have group structure information  
+      are preserved in the dataset variable names. You can shorten them by 
+      using "--enable-short-path=yes" configuration option.
+	
   o DEBUGGING AIDS
 
     - The OPeNDAP libdap library includes the following debugging aids that
@@ -84,28 +95,15 @@ NOTES
 
       ./configure --enable-dbnew --enable-debug=2
 
-  o Short Path Name
-    
-    - By default, full path names that have group structure information are 
-      are preserved in dataset variable names. You can shorten them by 
-      using "--enable-short-path=yes" configuration option.
-	
-  o CF option 
-    - This is an experimental option to support visualization clients 
-      that follow CF convention. For details, please see technical notes on
-      the web.
-
-      http://hdfdap.hdfgroup.uiuc.edu:8080/cf.html
-
-SPECIAL NOTES on Supporting NASA EOS DATA
+SPECIAL NOTES for NASA EOS DATA
 
   o EOS	Grid Generation
     - By default, EOS Grid generation is enabled. (See README for details)
       You can turn it off by using "--use_eos_grid=no" configuration option.
 
   o EOS Metadata Parsing
-    - By default, metadata is parsed to display the content of metadata in a structured manner.
-      If you want to get the metadata in one big string instead of parsing it, 
+    - By default, EOS metadata is parsed to display the content of metadata in a structured manner.
+      If you want to get the metadata in one big string instead of parsing it for structured output, 
       please use "--use_eos_meta=no" configuration option.
 
 

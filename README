@@ -1,10 +1,13 @@
 This file includes descriptions of HDF5-DODS server.
 
 For information about building the OPeNDAP HDF5 Data Handler, see the
-INSTALL file.
+INSTALL or INSTALL_EOS5_GRID file. INSTALL is about building a general purpose 
+handler  while INSTALL_EOS5_GRID is about building a special handler that can 
+support displaying NASA EOS Grid data via existing OPeNDAP visualization clients 
+like ferret and GrADS.
 
-This data handler includes an executable for use with Server3 and a shared
-object module for use with Hyrax. We suggest that Server3 no longer be used.
+This data handler includes an executable for use with Server4 and a shared
+object module for use with Hyrax.
 
 A configuration edition helper script, `bes-hdf5-data.sh' is provided in this 
 package for easy configuration of the Hyrax BES server, designed to edit
@@ -32,7 +35,7 @@ configuration, including how to use this handler.
 HDF Version: 
 	This release of the server supports HDF5 1.6.6 or above.
 
-Support for HDF data types:
+Support for HDF5 data types:
 	Groups: Group structure is mapped into a special attribute HDF5_ROOT_GROUP {...}.
 	Datasets: Array, Byte, Float32/64, (U)Int16/32, String are supported. 
                   If an array has dimensional data, Grid will be generated automatically.
@@ -41,36 +44,33 @@ Support for HDF data types:
 	Compounds: Compound data types are mapped into Structure in DAP.
 	Soft/Hard Links: Links are mapped to DAS attributes.
 	References: Object or regional references are mapped into URLs.
+                    This feature is only available for HDF5 1.8 beta.
 
 Special Support for NASA EOS data: 
-	Metadata: Metadatas (e.g. StructMetadata.x or CoreMetada.x)  are parsed and 
-                  its attributes are generated in a nested structure format.
 	Grids: Based on the projection specified in a metadata file, 
                some arrays are automatically mapped into "Grid" instead of "Array".
 	       You can turn off this behavior through configuration option(e.g. --enable-eos-grid=no).
-	       If "Grid" is chosen, its map data are automatically and artifically generated 
+	       If "Grid" is chosen, its map data are automatically and artificially generated 
 	       based on "UpperLeftPointMtrs" and "LowerRightPointMtrs" values.
                Please see set_dimension_array() in H5EOS.cc for details.
+	Metadata: Metadatas (e.g. StructMetadata.x or CoreMetada.x)  are parsed and 
+                  its attributes are generated in a nested structure format.
+
 
 Implementation details:
 
-	1. HDF5 Data(including data and metadata structure) Retrieval is 
+	1. HDF5 Data(including data and metadata structure) retrieval is 
 	implemented at H5Git.cc.
 
-	2. The current hdf5_handler uses depth-first search to
-	walk through HDF5 graph. If a loop is detected in a graph, it stops
-	searching further which makes it a graph into a tree.
-	The h5_das server retrieves hdf5 attributes and puts them into
+	2. The current dap_h5_handler uses depth-first search to
+	walk through HDF5 graph. If a loop is detected in a graph, 
+        it stops searching further which makes it a graph into a tree.
+	  The handler retrieves HDF5 attributes and puts them into
 	DODS DAS table. DAS table will hold tree structure under HDF5_ROOT_GROUP
-        attribute. By using absolute names of HDF5 object, we also have a good
-	view of the structure of the whole HDF5 file. One thing to be noted
-	is: the current implementation of h5_handler will make it
-	DODS-HDF5 client attribute implementation almost impossible since not
-	the real hdf5 attribute data was translated into DODS DAS table but
-	all attribute data are represented in a string format. This should be
-	aware and may need further investigation.
-
-	3. This prototype is not merged into DODS software with autoconf.
+        attribute. 
+          By using absolute name of HDF5 objects, we also have a good
+	view of the structure of the whole HDF5 file. This absolute name can be
+        suppressed with --enable-short-path configuration option.
 
 
 Limitations:
@@ -82,7 +82,6 @@ Limitations:
 	o No support for BITFIELD and OPAQUE types.
 	o 64 bit integer (array) is not supported.
 	o Both signed and unsigned character maps to Byte in OPeNDAP. 
-
 
 
 Muqun Yang (ymuqun@hdfgroup.org)

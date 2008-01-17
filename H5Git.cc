@@ -15,9 +15,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-// \todo  Should check the current APIs to see if it needs to be updated.
-// <hyokyung 2007.02.20. 13:33:06>
-
 
 // #define DODS_DEBUG
 
