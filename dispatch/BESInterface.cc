@@ -129,17 +129,16 @@ BESInterface::execute_request( const string &from )
     int status = 0;
 
     // We split up the calls for the reason that if we catch an
-    // exception during the initialization, building, or execution
-    // of the request then we can display the exception as if it 
-    // were a regular response. If an exception occurrs after that,
-    // during the transmit, logging, reporting, ending, then 
-    // we can only print the exception and not transmit it
+    // exception during the initialization, building, execution, or response
+    // transmit of the request then we can transmit the exception/error
+    // information.
     try {
         initialize();
         validate_data_request();
         build_data_request_plan();
         execute_data_request_plan();
         invoke_aggregation();
+        transmit_data();
     }
     catch(BESException & ex) {
         return exception_manager(ex);
@@ -155,20 +154,25 @@ BESInterface::execute_request( const string &from )
         return exception_manager(ex);
     }
 
-    return finish_no_error() ;
+    return finish( status ) ;
 }
 
 int
-BESInterface::finish_no_error( int status )
+BESInterface::finish( int status )
 {
     try {
-        transmit_data();
+	// if there was an error duriing initialization, validation,
+	// execution or transmit of the response then we need to transmit
+	// the error information.
+	if( _dhi.error_info )
+	{
+	    transmit_data();
+	    delete _dhi.error_info ;
+	    _dhi.error_info = 0 ;
+	}
         log_status();
         report_request();
         end_request();
-        if (_dhi.error_info)
-            delete _dhi.error_info;
-        _dhi.error_info = 0;
     }
     catch(BESException & ex) {
         status = exception_manager(ex);
@@ -189,15 +193,16 @@ BESInterface::finish_no_error( int status )
     if (_dhi.error_info)
     {
         _dhi.error_info->print(cout);
+	delete _dhi.error_info ;
+	_dhi.error_info = 0 ;
     }
 
     return status;
 }
 
 int
-BESInterface::finish_with_error()
+BESInterface::finish_with_error( int status )
 {
-    int status = 0 ;
     if( !_dhi.error_info )
     {
 	// there wasn't an error ... so now what?
@@ -206,7 +211,7 @@ BESInterface::finish_with_error()
 	status = exception_manager( ex ) ;
     }
 
-    return finish_no_error( status ) ;
+    return finish( status ) ;
 }
 
 void

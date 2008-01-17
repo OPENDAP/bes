@@ -178,8 +178,9 @@ BESServerHandler::execute( Connection *c )
 	    extensions["status"] = "error" ;
 	    c->sendExtensions( extensions ) ;
 
-	    // transmit the error message. finish_with_error will transmit the error
-	    cmd.finish_with_error() ;
+	    // transmit the error message. finish_with_error will transmit
+	    // the error
+	    cmd.finish_with_error( status ) ;
 
 	    // we are finished, send the last chunk
 	    fds.finish() ;
