@@ -1,0 +1,90 @@
+#! /bin/sh
+#
+# Borrowed the idea for this script (and some code) from libcurl.
+#
+usage()
+{
+    cat <<EOF
+Usage: bes-config [OPTION]
+
+Available values for OPTION include:
+
+  --help       display this help message and exit
+  --cc         C compiler
+  --cxx        C++ compiler
+  --cflags     pre-processor and compiler flags
+  --libs       library linking information for the OPeNDAP/HAO BES
+  --dap-libs   library linking information for the OPeNDAP/HAO BES using LIBDAP
+  --prefix     OPeNDAP install prefix
+  --modulesdir Bes modules directory
+  --helpdir    BES help file directory
+  --version    Library version
+EOF
+
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    # this deals with options in the style
+    # --option=value and extracts the value part
+    # [not currently used]
+    -*=*) value=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) value= ;;
+    esac
+
+    case "$1" in
+    --help)
+	usage 0
+	;;
+
+    --cc)
+	pkg-config --variable cppcompiler bes_dispatch
+	;;
+
+    --cxx)
+	pkg-config --variable cppcompiler bes_dispatch
+	;;
+
+    --cflags)
+	pkg-config --cflags libdap
+	;;
+
+    --libs)
+       	pkg-config --libs bes_dispatch bes_command bes_ppt
+       	;;
+
+    --dap-libs)
+       	pkg-config --libs bes_dispatch bes_command bes_ppt bes_dap
+       	;;
+
+    --modulesdir)
+       	pkg-config --variable modulesdir bes_dispatch
+       	;;
+
+    --helpdir)
+       	pkg-config --variable helpdir bes_dispatch
+       	;;
+
+    --prefix)
+       	pkg-config --variable prefix bes_dispatch
+       	;;
+
+    --version)
+	echo "bes `pkg-config --modversion  bes_dispatch`"
+	;;
+
+    *)
+        echo "unknown option: $1"
+	usage
+	exit 1
+	;;
+    esac
+    shift
+done
+
+exit 0

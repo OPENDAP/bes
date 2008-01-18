@@ -3,8 +3,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 datadir=@datadir@
-modulesdir=@pkglibdir@
-helpdir=@pkgdatadir@
+pkglibdir=${libdir}/bes
+modulesdir=${pkglibdir}
+pkgdatadir=${datadir}/bes
+helpdir=${pkgdatadir}
 ccompiler=@CC@
 cppcompiler=@CXX@
 

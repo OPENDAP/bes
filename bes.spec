@@ -1,3 +1,9 @@
+%define bescachedir %{_localstatedir}/cache/%{name}
+%define bespkidir %{_sysconfdir}/pki/%{name}
+%define beslogdir %{_localstatedir}/log/%{name}
+%define besuser %{name}
+%define besgroup %{name}
+
 Name:           bes
 Version:        3.5.3
 Release:        1%{?dist}
@@ -12,11 +18,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  libdap-devel >= 3.7.10
 BuildRequires:  readline-devel
-BuildRequires:  bzip2 gzip
+BuildRequires:  bzip2-devel zlib-devel
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
 BuildRequires:  doxygen graphviz
+Requires(pre): shadow-utils
 
 %description
 BES is a new, high-performance back-end server software framework for 
@@ -60,6 +67,7 @@ chmod a-x dispatch/BESStreamResponseHandler*
 %build
 %configure --disable-static --disable-dependency-tracking
 make %{?_smp_mflags}
+
 make docs
 rm -rf __distribution_docs
 cp -pr docs __distribution_docs
@@ -69,6 +77,16 @@ rm __distribution_docs/api-html/*.map
 rm __distribution_docs/api-html/*.md5
 chmod a-x __distribution_docs/BES_*.doc
 
+sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
+  -e 's:=.*/bes.log:=%{beslogdir}/bes.log:' \
+  -e 's:=/full/path/to/serverside/certificate/file.pem:=%{bespkidir}/cacerts/file.pem:' \
+  -e 's:=/full/path/to/serverside/key/file.pem:=%{bespkidir}/public/file.pem:' \
+  -e 's:=/full/path/to/clientside/certificate/file.pem:=%{bespkidir}/cacerts/file.pem:' \
+  -e 's:=/full/path/to/clientside/key/file.pem:=%{bespkidir}/public/file.pem:' \
+  -e 's:=user_name:=%{besuser}:' \
+  -e 's:=group_name:=%{besgroup}:' \
+  dispatch/bes/bes.conf
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -76,9 +94,21 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 for file in config.guess depcomp missing config.sub install-sh ltmain.sh mkinstalldirs; do
   chmod a+x $RPM_BUILD_ROOT%{_datadir}/bes/templates/conf/$file
 done
+mkdir -p $RPM_BUILD_ROOT%{bescachedir}
+mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
+mkdir -p $RPM_BUILD_ROOT%{beslogdir}
+mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+
+%pre
+getent group %{besgroup} >/dev/null || groupadd -r %{besgroup}
+getent passwd %{besuser} >/dev/null || \
+useradd -r -g %{besuser} -d %{beslogdir} -s /sbin/nologin \
+    -c "BES daemon" %{besuser}
+exit 0
 
 
 %post -p /sbin/ldconfig
@@ -102,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/bescmdln
 %{_libdir}/*.so.*
 %{_libdir}/bes/
+%{bescachedir}
+%{bespkidir}/
+%attr (-,%{besuser},%{besgroup}) %{beslogdir}
 
 %files devel
 %defattr(-,root,root,-)
