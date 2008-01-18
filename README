@@ -1,4 +1,5 @@
-This file includes descriptions of HDF5-DODS server.
+This file includes describes the HDF5 DAP server developed by THG and
+OPeNDAP under a grant from NASA.
 
 For information about building the OPeNDAP HDF5 Data Handler, see the
 INSTALL or INSTALL_EOS5_GRID file. INSTALL is about building a general purpose 
@@ -6,7 +7,7 @@ handler  while INSTALL_EOS5_GRID is about building a special handler that can
 support displaying NASA EOS Grid data via existing OPeNDAP visualization clients 
 like ferret and GrADS.
 
-This data handler includes an executable for use with Server4 and a shared
+This data handler includes an executable for use with Server3 and a shared
 object module for use with Hyrax.
 
 A configuration edition helper script, `bes-hdf5-data.sh' is provided in this 

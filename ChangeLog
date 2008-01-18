@@ -1,3 +1,30 @@
+2008-01-17  hyoklee
+
+	README and INSTALL files are updated. INSTALL_EOS5_GRID is added.
+
+2008-01-08  hyoklee
+
+	Fixed a bug in EOS non-grid array generation.
+
+2008-01-03  hyoklee
+
+	Fixed a bug for inserting wrong dimensional data from Swath
+	section of StructMetadata in HDF5-EOS. Also, HDF5-EOS Grids will
+	have full path description in each dimension.
+
+2008-01-02  hyoklee
+
+	Cleaned up source code.
+
+2007-12-20  hyoklee
+
+	nCandidate mapping for L2G data is added.
+
+2007-11-29  hyoklee
+
+	Changed the number of arguments in depth_first() function for
+	HDF5RequestHander.cc.
+
 2007-11-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5RequestHander.cc (hdf5_build_dds) Changed the number of arguments 

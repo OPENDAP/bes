@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([hdf5_handler], [1.1.0], [opendap-tech@opendap.org])
+AC_INIT([hdf5_handler], [1.2.0], [opendap-tech@opendap.org])
 AC_CONFIG_AUX_DIR([conf])
 AM_INIT_AUTOMAKE
 
@@ -31,7 +31,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.7.0],
+AC_CHECK_LIBDAP([3.7.4],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"

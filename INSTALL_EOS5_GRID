@@ -2,32 +2,34 @@ $Id$
 
 Installing the special NASA EOS5 HDF5 handler for the OPeNDAP clients.
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------
 BUILDING THE SOFTWARE
 REQUIREMENTS
 NOTES
----------------------------------------------------------------------------
+--------------------------------------------------------------------
 
 BUILDING THE SOFTWARE
 
-0) This INSTALL_EOS5_GRID is provided to give a detailed instruction on customizing
-   dap_h5_handler so that it can display NASA AURA EOS5 GRID data
-   with the existing visualization clients(e.g. Ferret and GrADS) that follow strict CF convention.
+0) This INSTALL_EOS5_GRID is provided to give a detailed instruction
+   on customizing dap_h5_handler so that it can display NASA AURA EOS5
+   GRID data with the existing visualization clients(e.g. Ferret and
+   GrADS) that follow strict CF convention.
    
-1) Type `./configure --enable-cf --enable-short-path' at the system prompt. 
-   On some systems you may have to type `sh configure --enable-cf --enable-short-path.' 
-   If you want this part of the server to install
-   someplace other than /usr/local/bin, use --prefix to change the prefix
-   from the default "/use/local/." Make sure that the dap-server CGI knows
-   where the handler is located (you can list the complete pathname in the
-   dap-server.rc file; see dap-server's INSTALL and README files).
+1) Type `./configure --enable-cf --enable-short-path' at the system
+   prompt. On some systems you may have to type `sh configure
+   --enable-cf --enable-short-path.' If you want this part of the
+   server to install someplace other than /usr/local/bin, use --prefix
+   to change the prefix from the default "/use/local/." Make sure that
+   the dap-server CGI knows where the handler is located (you can list
+   the complete pathname in the dap-server.rc file; see dap-server's
+   INSTALL and README files).
 
 2) Type `make' to build 'dap_h5_handler'.
 
 3) Install the server components in $prefix by running `make install.'
 
-4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which inserts the
-   handler in the bes.conf file and adds test data to 
+4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which
+   inserts the handler in the bes.conf file and adds test data to
    $prefix/share/hyrax/data.
 
 Building from Our SVN Repository
@@ -40,7 +42,7 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.7.0 to build and install this
+  o You need the libdap library version 3.7.4 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages, once they are
     available. 
@@ -60,24 +62,25 @@ NOTES
 
   o About CF option 
 
-    - This is an experimental option to support visualization clients 
-      that follow CF convention. For details, please see technical notes on
-      the web.
+    - This is an experimental option to support visualization clients
+      that follow CF convention. For details, please see technical
+      notes on the web.
 
       http://hdfdap.hdfgroup.uiuc.edu:8080/cf.html
 
-  o This handler will hide dataset that has a name longer than 15 characters from DAS/DDS output.
-    That means, some dataset won't be accessible and can't be seen through visualization
-    clients.
-    You can relax this requirement by modifying h5dds.cc near line 602:
+  o This handler will hide dataset that has a name longer than 15
+    characters from DAS/DDS output. That means, some dataset won't be
+    accessible and can't be seen through visualization clients. You
+    can relax this requirement by modifying h5dds.cc near line 602:
 
     #ifdef CF 
      if(varname.length() > 15)
         return;   
     #endif  
 
-    Feel free to change it to bigger number to see if your favorite client can handle it.
-    However, it's safer to restrict it to 15 to serve a wide variety of visualization clients.
+    Feel free to change it to bigger number to see if your favorite
+    client can handle it. However, it's safer to restrict it to 15 to
+    serve a wide variety of visualization clients.
 
   o EOS	Grid Generation
     - EOS Grid generation must be enabled;otherwise, there's no point 
@@ -91,12 +94,14 @@ NOTES
 
   o Dimension name translation
 
-   EOS data use non-standard name like XDim and YDim and they must be renamed to follow CF convention.
+   EOS data use non-standard name like XDim and YDim and they must be
+   renamed to follow CF convention.
 
-   In H5EOS.cc near line 294, there's a function that performs renaming.
-   You can modify existing entries or add new entries if necessary.
-   For example, "nCandidate" in EOS doesn't match the concept of "lev" in CF exactly but 
-   it's useful for displaying L2G EOS data since clients already know the dimension "lev".
+   In H5EOS.cc near line 294, there's a function that performs
+   renaming. You can modify existing entries or add new entries if
+   necessary. For example, "nCandidate" in EOS doesn't match the
+   concept of "lev" in CF exactly but it's useful for displaying L2G
+   EOS data since clients already know the dimension "lev".
 
 	const char* H5EOS::get_CF_name(char* eos_name)
 	{
@@ -132,22 +137,23 @@ NOTES
         String history "Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3";
     }
    
-    Such extra attributes are generated manually and hard coded.
-    We believe some of them may be generated automatically via Metadata Parsing 
-    but we think it's good to leave it as is for a while since there are
-    many variations in EOS L3G data and they're not finalized yet. 
-    In addition, some visualization clients simply don't care while others look for 
-    very specific fields. 
+    Such extra attributes are generated manually and hard coded. We
+    believe some of them may be generated automatically via Metadata
+    Parsing but we think it's good to leave it as is for a while since
+    there are many variations in EOS L3G data and they're not
+    finalized yet. In addition, some visualization clients simply
+    don't care while others look for very specific fields.
 
-    Modification is simple and straightforward. In h5das.cc, look for a function called
-    add_dimension_attributes() at the bottom of the file.
-    Feel free to modify it to correct values or add extra attributes to meet your needs.
+    Modification is simple and straightforward. In h5das.cc, look for
+    a function called add_dimension_attributes() at the bottom of the
+    file. Feel free to modify it to correct values or add extra
+    attributes to meet your needs.
     
   o Shared dimension generation
 
-    For some clients, it's not sufficient to have map data within the grid
-    and map data should be defined outside the Grids.
-    For example, this handler will generate arrays in DDS
+    For some clients, it's not sufficient to have map data within the
+    grid and map data should be defined outside the Grids. For
+    example, this handler will generate arrays in DDS
     
     Float32 lat[lat = 720];
     Float32 lon[lon =1440];

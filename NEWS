@@ -1,6 +1,13 @@
 
 	$Id$
 
+News for version 1.2.0
+
+Support for NASA EOS Grid variables has been added to the handler. See
+the README and INSTALL_EOS5_GRID files. You will need to use some
+special options when configuring the handler's build in order to get
+these features.
+
 News for version 1.1.0
 
 This version of the hdf5 data handler can be used with both server3 and
