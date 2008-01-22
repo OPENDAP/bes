@@ -69,9 +69,10 @@ HDF5Int32::read(const string & dataset)
     HDF5Structure *p = dynamic_cast<HDF5Structure*>(q);
     
     char Msgi[256];
-
+#ifdef DODS_DEBUG
     int i =  H5Tget_nmembers(ty_id);
-    int j;
+#endif    
+    int j = 0;
     int k = 0;
 
     hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));

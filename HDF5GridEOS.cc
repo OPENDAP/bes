@@ -1,7 +1,7 @@
 #ifdef __GNUG__
 #pragma implementation
 #endif
-#define DODS_DEBUG
+// #define DODS_DEBUG
 #include "config_hdf5.h"
 
 #include <string>

@@ -27,13 +27,13 @@ H5EOS::H5EOS()
 #ifdef CF
   shared_dimension = false;
 #endif
-  bool bmetadata_Struct = false;  
+  bmetadata_Struct = false;  
 #ifdef NASA_EOS_META
-  bool bmetadata_Archived = false;
-  bool bmetadata_Core = false;
-  bool bmetadata_core = false;
-  bool bmetadata_product = false;
-  bool bmetadata_subset = false;
+  bmetadata_Archived = false;
+  bmetadata_Core = false;
+  bmetadata_core = false;
+  bmetadata_product = false;
+  bmetadata_subset = false;
 #endif
   
 }
@@ -103,7 +103,7 @@ void H5EOS::add_dimension_map(string dimension_name, int dimension)
 #endif
   
   int i;
-  for(i=0; i < dimensions.size(); i++){
+  for(i=0; i < (int)dimensions.size(); i++){
     std::string str = dimensions.at(i);
     if(str == dimension_name){
       has_dimension = true;
@@ -119,8 +119,7 @@ void H5EOS::add_dimension_map(string dimension_name, int dimension)
 
 bool H5EOS::check_eos(hid_t id)
 {
-  size_t size_total = 0;
-  unsigned int i = 0;
+
 
   // Check if this file has the group called "HDFEOS INFORMATION".
   if(has_group(id, "HDFEOS INFORMATION")){
@@ -178,7 +177,7 @@ int H5EOS::get_dimension_size(string name)
 bool H5EOS::is_grid(string name)
 {
   int i;
-  for(i=0; i < full_data_paths.size(); i++){
+  for(i=0; i < (int)full_data_paths.size(); i++){
     std::string str = full_data_paths.at(i);
     if(str == name){
       return true;
@@ -201,7 +200,7 @@ void H5EOS::print()
   cout << "Upper = " << point_upper << endl;
   
   cout << "Total number of paths = " << full_data_paths.size() << endl;
-  for(int i=0; i < full_data_paths.size(); i++){
+  for(int i=0; i < (int)full_data_paths.size(); i++){
     cout << "Element " << full_data_paths.at(i) << endl;
   }
 }
@@ -215,7 +214,7 @@ bool H5EOS::set_dimension_array()
   dods_float32* convbuf = NULL;
   dimension_data = new dods_float32*[size];
   DBG(cerr << ">set_dimension_array():Dimensions size = " << size  << endl);
-  for(j=0; j < dimensions.size(); j++){
+  for(j=0; j < (int) dimensions.size(); j++){
     string dim_name = dimensions.at(j);
     int dim_size = dimension_map[dim_name];
     
@@ -264,7 +263,7 @@ string H5EOS::get_grid_name(string full_path)
 int H5EOS::get_dimension_data_location(string dimension_name)
 {
   int j;
-  for(j=0; j < dimensions.size(); j++){
+  for(j=0; j < (int)dimensions.size(); j++){
     string dim_name = dimensions.at(j);
     if(dim_name == dimension_name)
       return j;
@@ -357,7 +356,7 @@ bool H5EOS::set_metadata(hid_t id, char* metadata_name, char* chr_all)
     
     if(has_dataset(id, dname)){
       hid_t dset = H5Dopen(id, dname);
-      hid_t datatype, dataspace, memtype;
+      hid_t datatype, dataspace;
 	    
       if ((datatype = H5Dget_type(dset)) < 0) {
 	cerr << "H5EOS.cc failed to obtain datatype from  dataset " << dset << endl;

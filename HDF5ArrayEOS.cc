@@ -66,7 +66,8 @@ HDF5ArrayEOS::read(const string & dataset)
   }
   else{
     cerr << "Could not retrieve map data" << endl;
-  }  
+  }
+  return false;
 }
 
 // public functions to set all parameters needed in read function.

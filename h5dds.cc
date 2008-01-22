@@ -732,7 +732,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       refbuf = (hobj_ref_t *) buf;
       dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);
 
-      for (int j = 0; j < temp_nelm; j++) {
+      for (unsigned int j = 0; j < temp_nelm; j++) {
 	dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
 	if (dimid[j] < 0) {
 	  throw 
@@ -795,9 +795,6 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     else if(has_matching_grid_dimscale(dt_inst.dset, dt_inst.ndims, dt_inst.size)){
       
       // Construct a grid instead of returning a simple array.
-      
-      int dim = 0;
-      
       hid_t  attr_id;
       hid_t *dimid = NULL;   
       hid_t  temp_dtype;
@@ -811,7 +808,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       hvl_t*  refbuf = NULL;
       
       size_t temp_tsize;
-      size_t name_size;
+      // size_t name_size;
       
       gr = dds_table.get_factory()->NewGrid(varname); 
       pr = array;
@@ -829,14 +826,14 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
       }
       
       dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);    
-      for (int j = 0; j < temp_nelm; j++) {
+      for (unsigned int j = 0; j < temp_nelm; j++) {
 	dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
       }
       
       char buf2[DODS_NAMELEN]; // Is there a way to know the size of dimension name in advance?
       pr = maps;      
       for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-	int dim_name_size = H5Iget_name(dimid[dim_index], (char*)buf2, DODS_NAMELEN);
+	H5Iget_name(dimid[dim_index], (char*)buf2, DODS_NAMELEN);
 	DBG(cerr << "name: " << buf2 << endl);
 	// Open dataset.
 	// Is it OK to search from the current dset (i.e. dt_inst.dset) ?

@@ -102,12 +102,12 @@ HDF5Array::read(const string & dataset)
   int *offset = new int[d_num_dim];
   int *count = new int[d_num_dim];
   int *step = new int[d_num_dim];
-  int i;
-  int j;
-  int k;
-  int l;
-  int m;
-  int n;
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int l = 0;
+  int m = 0;
+  int n = 0;
   
   char *convbuf = 0;
   char Msga[255];
@@ -160,7 +160,7 @@ HDF5Array::read(const string & dataset)
     H5Tget_array_dims(d_ty_id, size2, perm);
     
     hid_t s1_tid = H5Tcreate(H5T_COMPOUND, data_size);
-    hid_t s1_array2;
+    hid_t s1_array2 = -1;
     hid_t stemp_tid;
     
     void* buf_array = NULL;
@@ -243,7 +243,7 @@ HDF5Array::read(const string & dataset)
 
 
     for(l=0; l < k; l++){
-      for(i=0; i < data_size; i++){
+      for(i=0; i < (int)data_size; i++){
 	// Cast the array buffer into character buffer.
 	char* a = (char*)buf_array;
 	convbuf[l*data_size + i] = a[j*data_size+i];
@@ -259,7 +259,7 @@ HDF5Array::read(const string & dataset)
 	char *strbuf = new char[size + 1];
 	if (get_strdata(strindex, convbuf, strbuf, size, Msga) < 0) {
 	  throw InternalErr(__FILE__, __LINE__,
-			    string("hdf5_dods server failed on getting data.\n")
+			    string("dap_h5_handler failed on getting data.\n")
 			    + Msga);
 	}
 	DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
@@ -279,14 +279,9 @@ HDF5Array::read(const string & dataset)
   } // if (Array)
 
   if(return_type(d_ty_id) == "Url"){
-    hsize_t size2[d_num_dim];
-    int perm[d_num_dim];
-    int size = length();
     int nelms = format_constraint(offset, step, count); // Throws Error.
     string v_str[nelms];
 
-    // H5Tget_array_dims(d_ty_id, size2, perm);
-    
     DBG(cerr << "=read() URL type is detected. "
 	<< "nelms=" << nelms
 	<< " full_size=" << d_num_elm
@@ -301,6 +296,12 @@ HDF5Array::read(const string & dataset)
       DBG(cerr << "=read() Got regional reference. " << endl);
       herr_t status = H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL,
 			      H5P_DEFAULT, rbuf);
+      if(status < 0){
+	throw InternalErr(__FILE__, __LINE__,
+			  string("dap_h5_handler failed on H5Dread().\n")
+			  + Msga);	
+      }
+      
       hid_t did_r;
       
       for(i=0; i < nelms; i++){
@@ -313,7 +314,7 @@ HDF5Array::read(const string & dataset)
 	  char buf2[DODS_NAMELEN];
 	  
 	  did_r =  H5Rdereference(d_dset_id, H5R_DATASET_REGION, &rbuf[offset[0] + i*step[0]]);
-	  int name_size = H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
+	  H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
 	  DBG(cerr << "=read() dereferenced name is " << buf2 << endl);
 
 #ifdef  HDF_1_8_0
@@ -352,13 +353,13 @@ HDF5Array::read(const string & dataset)
 	    }
 #endif
 	    sprintf(strbuf3, ",");
-	    for(j=0; j < npoints; j++){
+	    for(j=0; j < (int)npoints; j++){
       	      expression.append(buf2); // Name of the dataset.
 	      for(k=0; k < ndim; k++){
-		sprintf(strbuf2, "[%d]", buf[j*ndim+k]); // Point indexes.
+		sprintf(strbuf2, "[%d]", (int)buf[j*ndim+k]); // Point indexes.
 		expression.append(strbuf2);
 	      }
-	      if(j != npoints - 1){
+	      if(j != (int)(npoints - 1)){
 		expression.append(strbuf3);
 	      }
 	    }
@@ -376,8 +377,8 @@ HDF5Array::read(const string & dataset)
 	      DBG(cerr << "=read() start is " << start[j] << endl);
 	      DBG(cerr << "=read() end is " << end[j] << endl);
 
-	      sprintf(strbuf2, "[%d:", start[j]);
-	      sprintf(strbuf3, "%d]", end[j]);
+	      sprintf(strbuf2, "[%d:", (int)start[j]);
+	      sprintf(strbuf3, "%d]", (int)end[j]);
 	      expression.append(strbuf2);
 	      expression.append(strbuf3);
 	      DBG(cerr << "=read() expression is " << expression << endl);
@@ -413,11 +414,17 @@ HDF5Array::read(const string & dataset)
       DBG(cerr << "=read() Got object reference. " << endl);
       herr_t status = H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
 			      H5P_DEFAULT, rbuf);
+      if(status < 0){
+	throw InternalErr(__FILE__, __LINE__,
+			  string("dap_h5_handler failed on H5Dread().\n")
+			  + Msga);	
+      }      
+      
       for(i=0; i < nelms; i++){
 	// Let's assume that URL array is always 1 dimension.
 	hid_t did_r =  H5Rdereference(d_dset_id, H5R_OBJECT, &rbuf[offset[0] + i*step[0]]);
 	char buf2[DODS_NAMELEN];
-	int name_size = H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
+	H5Iget_name(did_r, (char*)buf2, DODS_NAMELEN);
 	DBG(cerr << "=read() dereferenced name is " << buf2 << endl);
 	v_str[i] = buf2;
       }
@@ -661,7 +668,6 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id,
 				 int nelms, int* offset, int* step, int* count)
 {
   DBG(cerr << "=read_vlen_string(): variable string is detected with nelms = " << nelms << endl);
-  hid_t sid = H5Dget_space(d_dset_id);
   char *convbuf2[d_num_elm];
   string v_str[d_num_elm];
 
@@ -671,7 +677,7 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id,
   for (int strindex = 0; strindex < d_num_elm; strindex++) {
     cerr << "convbuf2[" << strindex << "]= " << convbuf2[strindex] << endl;
     if(convbuf2[strindex] !=NULL){
-      if(strlen(convbuf2[strindex]) > size_max)
+      if((int)strlen(convbuf2[strindex]) > size_max)
 	size_max = strlen(convbuf2[strindex]);
     }
   }

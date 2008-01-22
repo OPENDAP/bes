@@ -549,7 +549,7 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
     num_attrs = H5Aget_num_attrs(dataset);
 
     // 1.1 Found whether we have attribute "HDF5_DIMENSIONLIST", if no, map to array.
-    for (i = 0; i < num_attrs; i++) {
+    for (i = 0; i < (unsigned int)num_attrs; i++) {
 
       attr_id = H5Aopen_idx(dataset, i);
       bzero(dimscale, sizeof(dimscale));
@@ -588,7 +588,7 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
       H5Aclose(attr_id);
     }
     // 1.2 Found whether we have attribute "DIMENSION_NAMELIST", if no, map to array.
-    for (i = 0; i < num_attrs; i++) {
+    for (i = 0; i < (unsigned int)num_attrs; i++) {
       attr_id = H5Aopen_idx(dataset, i);
       bzero(dimscale, sizeof(dimscale));
       attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
@@ -934,7 +934,7 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes)
     hid_t* dimid  = (hid_t *)malloc(sizeof(hid_t)*temp_nelm);
 
     // Check size of each dimension.
-    for (int j = 0; j < temp_nelm; j++) {
+    for (int j = 0; j < (int)temp_nelm; j++) {
       DBG(cerr << "refbuf[" << j << "].len=" << (int)(refbuf[j].len) << endl);
       if((int)refbuf[j].len > 0){
 	dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
@@ -945,7 +945,7 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes)
 	}
 	else{
 	  char buf[DODS_NAMELEN]; 
-	  int dim_name_size = H5Iget_name(dimid[j], (char*)buf, DODS_NAMELEN);
+	  H5Iget_name(dimid[j], (char*)buf, DODS_NAMELEN);
 	  hid_t index_dset_id = H5Dopen(dataset, buf);
 	  hid_t index_dspace  = H5Dget_space(index_dset_id);
 	  hsize_t index_ndim = H5Sget_simple_extent_npoints(index_dspace);

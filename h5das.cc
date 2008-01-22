@@ -522,7 +522,9 @@ read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
   char *tempvalue;
   char *print_rep = NULL;  
   char *value;
+#ifdef SHORT_PATH  
   char ORI_SLASH = '/';
+#endif  
   char attr_name[5];
   
   hid_t ty_id;

@@ -75,7 +75,7 @@ HDF5Str::read(const string & dataset)
     char Msgi[max_str_len];
       
     int i =  H5Tget_nmembers(ty_id);
-    int j;
+    int j = 0;
     int k = 0;
 
     hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));

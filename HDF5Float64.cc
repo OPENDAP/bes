@@ -63,9 +63,10 @@ HDF5Float64::read(const string & dataset)
     char Msgi[256];
     
     dods_float64 flt64;
-
+#ifdef DODS_DEBUG
     int i =  H5Tget_nmembers(ty_id);
-    int j;
+#endif    
+    int j = 0;
     int k = 0;
     
     s2_t buf[p->get_entire_array_size()]; // <hyokyung 2007.06.18. 10:06:47>
