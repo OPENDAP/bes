@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
       depth_first(file1, "/", dds,
 		  df.get_dataset_name().c_str());
       find_gloattr(file1, das);
+      depth_first(file1, "/", das);
       dds.transfer_attributes(&das);
       df.send_ddx(dds, ce, stdout);
       break;
