@@ -32,10 +32,7 @@
 
 #include "HDF5RequestHandler.h"
 
-#include "h5das.h"
-#include "h5dds.h"
-#include "config_hdf5.h"
-#include "HDF5TypeFactory.h"
+#include "h5_handler.h"
 
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
@@ -46,11 +43,17 @@
 #include "BESResponseHandler.h"
 #include "BESVersionInfo.h"
 #include "BESDataNames.h"
-#include "BESDapHandlerException.h"
+#include "BESDapError.h"
+#include "BESNotFoundError.h"
+#include "BESInternalFatalError.h"
 #include "H5Git.h"
 
+/// An external object that handles NASA EOS HDF5 files for grid generation 
+/// and meta data parsing.
+extern H5EOS eos;
+
 HDF5RequestHandler::HDF5RequestHandler(const string &name)
-:BESRequestHandler(name)
+    :BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
@@ -68,9 +71,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
-        throw BESHandlerException((string) "Could not open hdf file: "
+        throw BESNotFoundError((string) "Could not open hdf file: "
                                   + filename, __FILE__, __LINE__);
     }
+    if( eos.check_eos( file1 ) )
+      eos.set_dimension_array();
 
     BESDASResponse *bdas =
         dynamic_cast <
@@ -81,14 +86,19 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
     }
+    catch(InternalErr & e) {
+        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
+        throw ex;
+    }
     catch(Error & e) {
-        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
-				   e.get_error_code() ) ;
+        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
         throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF5 DAS";
-        BESHandlerException ex(s, __FILE__, __LINE__);
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
 
@@ -100,10 +110,12 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
-        throw BESHandlerException(string("hdf4_build_dds: ")
+        throw BESNotFoundError(string("hdf4_build_dds: ")
                                   + "Could not open hdf5 file: "
                                   + filename, __FILE__, __LINE__);
     }
+    if( eos.check_eos( file1 ) )
+      eos.set_dimension_array();
 
     BESDDSResponse *bdds =
         dynamic_cast <
@@ -131,14 +143,19 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         delete factory;
 #endif
     }
+    catch(InternalErr & e) {
+        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
+        throw ex;
+    }
     catch(Error & e) {
-        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
-				   e.get_error_code() ) ;
+        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
         throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF5 DDS";
-        BESHandlerException ex(s, __FILE__, __LINE__);
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
 
@@ -150,10 +167,12 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
-        throw BESHandlerException(string("hdf4_build_data: ")
+        throw BESNotFoundError(string("hdf4_build_data: ")
                                   + "Could not open hdf5 file: "
                                   + filename, __FILE__, __LINE__);
     }
+    if( eos.check_eos( file1 ) )
+      eos.set_dimension_array();
 
     BESDataDDSResponse *bdds =
         dynamic_cast <
@@ -182,14 +201,19 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         delete factory;
 #endif
     }
+    catch(InternalErr & e) {
+        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
+        throw ex;
+    }
     catch(Error & e) {
-        BESDapHandlerException ex( e.get_error_message(), __FILE__, __LINE__,
-				   e.get_error_code() ) ;
+        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
+	                __FILE__, __LINE__ ) ;
         throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF5 DataDDS";
-        BESHandlerException ex(s, __FILE__, __LINE__);
+        BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
 
