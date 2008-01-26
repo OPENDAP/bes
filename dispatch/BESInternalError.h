@@ -1,4 +1,4 @@
-// BESIncorrectRequestException.h
+// BESInternalError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,26 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESIncorrectRequestException_h_
-#define BESIncorrectRequestException_h_ 1
+#ifndef BESInternalError_h_
+#define BESInternalError_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
 
-class BESIncorrectRequestException : public BESException
+/** @brief exception thrown if inernal error encountered
+ */
+class BESInternalError : public BESError
 {
 protected:
-      			BESIncorrectRequestException() {}
+      			BESInternalError() {}
 public:
-			BESIncorrectRequestException( const string &s,
-			                              const string &file,
-						      int line )
-			    : BESException( s, file, line )
+      			BESInternalError( const string &msg,
+					  const string &file,
+					  unsigned int line )
+			    : BESError( msg, BES_INTERNAL_ERROR,
+			                file, line ) {}
+    virtual		~BESInternalError() {}
+
+    virtual void	dump( ostream &strm ) const
 			{
-			    set_context( "Request" ) ;
-			    set_return_code( BES_REQUEST_INCORRECT ) ;
+			    strm << "BESInternalError::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESIndent::Indent() ;
+			    BESError::dump( strm ) ;
+			    BESIndent::UnIndent() ;
 			}
-      virtual		~BESIncorrectRequestException() {}
+
 };
 
-#endif // BESIncorrectRequestException_h_
+#endif // BESInternalError_h_
 

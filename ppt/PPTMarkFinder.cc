@@ -31,7 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "PPTMarkFinder.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 
 PPTMarkFinder::PPTMarkFinder( unsigned char *mark, int markLength )
     : _markIndex( 0 ),
@@ -39,7 +39,7 @@ PPTMarkFinder::PPTMarkFinder( unsigned char *mark, int markLength )
 {
     // Lets get sure we will not overrun the buffer
     if (markLength > PPTMarkFinder_Buffer_Size)
-        throw PPTException( "mark given will overrun internal buffer.",
+        throw BESInternalError( "mark given will overrun internal buffer.",
                             __FILE__, __LINE__ ) ;
     memcpy((void*) _mark, (void*) mark, (markLength * sizeof(unsigned char)) );
 }

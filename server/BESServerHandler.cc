@@ -32,6 +32,7 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
@@ -50,9 +51,8 @@ using std::flush ;
 #include "Socket.h"
 #include "BESCmdInterface.h"
 #include "TheBESKeys.h"
-#include "BESException.h"
+#include "BESInternalError.h"
 #include "ServerExitConditions.h"
-#include "BESStatusReturn.h"
 #include "BESUtil.h"
 #include "PPTStreamBuf.h"
 #include "BESDebug.h"
@@ -91,7 +91,7 @@ BESServerHandler::handle( Connection *c )
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw BESException( error, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
 	else if( pid == 0 ) /* child process */
 	{
@@ -119,7 +119,7 @@ BESServerHandler::handle( Connection *c )
 	    const char *error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw BESException( error, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	} 
 	c->closeConnection() ;
     }
@@ -151,6 +151,15 @@ BESServerHandler::execute( Connection *c )
 	string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
 	BESDEBUG( "server", "BESServerHandler::execute - command = " << cmd_str << endl )
 
+	/*
+	int send_size = 0 ;
+	socklen_t send_size_len = (socklen_t)sizeof( send_size ) ;
+	int ret = getsockopt( c->getSocket()->getSocketDescriptor(),
+			      SOL_SOCKET, SO_SNDBUF,
+			      (char *)&send_size, &send_size_len ) ;
+	cerr << "send_size = " << send_size << endl ;
+	*/
+
 	PPTStreamBuf fds( c->getSocket()->getSocketDescriptor(), 4000 ) ;
 	std::streambuf *holder ;
 	holder = cout.rdbuf() ;
@@ -159,7 +168,7 @@ BESServerHandler::execute( Connection *c )
 	BESCmdInterface cmd( cmd_str, &cout ) ;
 	int status = cmd.execute_request( from ) ;
 
-	if( status == BES_EXECUTED_OK )
+	if( status == 0 )
 	{
 	    BESDEBUG( "server", "BESServerHandler::execute - executed successfully" << endl )
 	    fds.finish() ;
@@ -190,7 +199,7 @@ BESServerHandler::execute( Connection *c )
 
 	    switch (status)
 	    {
-		case BES_TERMINATE_IMMEDIATE:
+		case BES_INTERNAL_FATAL_ERROR:
 		    {
 			cout << "BES server " << getpid()
 			     << ": Status not OK, dispatcher returned value "
@@ -202,25 +211,10 @@ BESServerHandler::execute( Connection *c )
 			exit( CHILD_SUBPROCESS_READY ) ;
 		    }
 		    break;
-		case BES_DATA_HANDLER_FAILURE:
-		    {
-			cout << "BES server " << getpid()
-			     << ": Status not OK, dispatcher returned value "
-			     << status << endl ;
-			//string toSend = "Data Handler Error: server my exit!" ;
-			//c->send( toSend ) ;
-			c->sendExit() ;
-			c->closeConnection() ;
-			exit( CHILD_SUBPROCESS_READY ) ;
-		    }
-		    break;
-		case BES_REQUEST_INCORRECT: 
-		case BES_MEMORY_EXCEPTION:
-		case BES_CONTAINER_PERSISTENCE_ERROR:
-		case BES_INITIALIZATION_FILE_PROBLEM:
-		case BES_LOG_FILE_PROBLEM:
-		case BES_AGGREGATION_EXCEPTION:
-		case BES_FAILED_TO_EXECUTE_COMMIT_COMMAND:
+		case BES_INTERNAL_ERROR: 
+		case BES_SYNTAX_USER_ERROR:
+		case BES_FORBIDDEN_ERROR:
+		case BES_NOT_FOUND_ERROR:
 		default:
 		    break;
 	    }

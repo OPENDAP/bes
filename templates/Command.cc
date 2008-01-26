@@ -3,7 +3,7 @@
 #include "OPENDAP_CLASSOPENDAP_COMMANDCommand.h"
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "OPENDAP_CLASSResponseNames.h"
 
 BESResponseHandler *
@@ -20,7 +20,7 @@ OPENDAP_CLASSOPENDAP_COMMANDCommand::parse_request( BESTokenizer &tokenizer,
     if( !retResponse )
     {
 	string s = (string)"No response handler for command " + OPENDAP_MACRO_RESPONSE ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     my_token = tokenizer.get_next_token() ;

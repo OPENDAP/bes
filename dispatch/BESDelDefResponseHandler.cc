@@ -39,7 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESDelDefResponseHandler::BESDelDefResponseHandler( const string &name )
@@ -62,9 +62,7 @@ BESDelDefResponseHandler::~BESDelDefResponseHandler( )
  * attempting to delete the definition.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException if unable to delete the specified definition
+ * @throws BESSyntaxUserError if unable to delete the specified definition
  * from the specified definition store.
  * object
  * @see _BESDataHandlerInterface
@@ -96,7 +94,7 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
 		string line = (string)"Definition \""
 			      + dhi.data[DEF_NAME]
 			      + "\" does not exist. Unable to delete." ;
-		throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+		throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -104,14 +102,14 @@ BESDelDefResponseHandler::execute( BESDataHandlerInterface &dhi )
 	    string line = (string)"Definition store \""
 			  + store_name
 			  + "\" does not exist.  Unable to delete." ;
-	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
 	string line = (string)"No definition specified. "
 		      + "Unable to complete request." ;
-	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
     }
 }
 

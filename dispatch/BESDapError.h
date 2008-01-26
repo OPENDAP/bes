@@ -1,4 +1,4 @@
-// BESPluginException.h
+// BESDapError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,22 +30,48 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESPluginException_h_
-#define BESPluginException_h_ 1
+#ifndef BESDapError_h_
+#define BESDapError_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
+#include "Error.h"
+#include "BESDataHandlerInterface.h"
 
-class BESPluginException : public BESException
+/** @brief error object created from libdap error objects and can handle
+ * those errors
+ *
+ * The BESDapError is an error object that is created from libdap error
+ * objects caught during libdap processing.
+ *
+ * The exception handling function handleException knows how to convert
+ * libdap errors to dap error responses if the context is set to dap2
+ */
+class BESDapError : public BESError
 {
+private:
+    ErrorCode		_error_code ;
 protected:
-      			BESPluginException() ;
+      			BESDapError() {}
 public:
-      			BESPluginException( const string &msg,
-			                    const string &file,
-					    int line ) :
-			    BESException( msg, file, line ) {}
-      virtual		~BESPluginException() {}
+      			BESDapError( const string &s,
+				     bool fatal,
+				     ErrorCode ec,
+				     const string &file,
+				     int line )
+			    : BESError( s, 0, file, line ),
+			      _error_code( ec )
+			    {
+				if( fatal )
+				    set_error_type( BES_INTERNAL_FATAL_ERROR ) ;
+				else
+				    set_error_type( BES_INTERNAL_ERROR ) ;
+			    }
+      virtual		~BESDapError() {}
+      int		get_error_code() { return _error_code ; }
+
+      static int	handleException( BESError &e,
+					 BESDataHandlerInterface &dhi ) ;
 };
 
-#endif // BESPluginException_h_ 
+#endif // BESDapError_h_ 
 

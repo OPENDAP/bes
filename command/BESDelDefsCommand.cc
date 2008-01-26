@@ -34,7 +34,7 @@
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
 #include "BESDefinitionStorageList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 
 /** @brief parses the request to delete a container, a definition or all
@@ -52,7 +52,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if there is a problem parsing the request
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
  */
@@ -65,7 +65,7 @@ BESDelDefsCommand::parse_request( BESTokenizer &tokenizer,
     if( !retResponse )
     {
 	string s = (string)"No response handler for command " + _cmd ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     dhi.action = _cmd ;

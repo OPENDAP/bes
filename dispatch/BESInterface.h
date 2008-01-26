@@ -41,7 +41,7 @@ using std::list ;
 
 #include "BESObj.h"
 
-class BESException ;
+class BESError ;
 class BESTransmitter ;
 
 typedef bool (*p_bes_init)( BESDataHandlerInterface &dhi ) ;
@@ -134,7 +134,7 @@ protected:
     BESDataHandlerInterface	_dhi ;
     BESTransmitter		*_transmitter ;
 
-    virtual int			exception_manager( BESException &e ) ;
+    virtual int			exception_manager( BESError &e ) ;
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
     virtual void		build_data_request_plan() ;

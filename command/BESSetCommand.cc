@@ -65,7 +65,7 @@ BESSetCommand::parse_options( BESTokenizer &tokens,
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if there is a problem parsing the request
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
  */

@@ -53,10 +53,6 @@ BESStatusResponseHandler::~BESStatusResponseHandler( )
  * BESInfo informational response object.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
- * object
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see BESStatus

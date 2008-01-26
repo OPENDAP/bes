@@ -54,9 +54,9 @@ using std::endl ;
 #include "BESTransmitterNames.h"
 
 #include "BESDebug.h"
-#include "BESException.h"
+#include "BESInternalFatalError.h"
 #include "BESExceptionManager.h"
-#include "BESDapHandlerException.h"
+#include "BESDapError.h"
 
 void
 BESDapModule::initialize( const string &modname )
@@ -101,7 +101,7 @@ BESDapModule::initialize( const string &modname )
     {
 	string err = (string)"Unable to initialize basic transmitter "
 	             + "with dap transmit functions" ;
-	throw BESException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
     }
 
     BESDEBUG( "dap", "Initializing DAP HTTP Transmitters:" << endl )
@@ -124,11 +124,11 @@ BESDapModule::initialize( const string &modname )
     {
 	string err = (string)"Unable to initialize http transmitter "
 	             + "with dap transmit functions" ;
-	throw BESException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
     }
 
     BESDEBUG( "dap", "    adding dap exception handler" << endl )
-    BESExceptionManager::TheEHM()->add_ehm_callback( BESDapHandlerException::handleException ) ;
+    BESExceptionManager::TheEHM()->add_ehm_callback( BESDapError::handleException ) ;
 
     BESDEBUG( "dap", "    adding dap debug context" << endl )
     BESDebug::Register( "dap" ) ;

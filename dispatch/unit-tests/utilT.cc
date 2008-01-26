@@ -10,7 +10,7 @@ using std::ifstream ;
 
 #include "utilT.h"
 #include "BESUtil.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "test_config.h"
 
 int

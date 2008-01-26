@@ -33,7 +33,6 @@
 #include "BESGlobalIQ.h"
 #include "BESInitList.h"
 #include "BESInitializer.h"
-#include "BESException.h"
 
 bool BESGlobalIQ::is_initialized = false ;
 

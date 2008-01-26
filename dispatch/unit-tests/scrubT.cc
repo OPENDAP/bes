@@ -8,7 +8,7 @@ using std::endl ;
 
 #include "scrubT.h"
 #include "BESScrub.h"
-#include "BESException.h"
+#include "BESError.h"
 
 int scrubT::
 run(void)
@@ -34,7 +34,7 @@ run(void)
 	    cout << "command line not ok, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -60,7 +60,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -88,7 +88,7 @@ run(void)
 	    cout << "path name not ok, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -113,7 +113,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -138,7 +138,7 @@ run(void)
 	    cout << "path name not ok, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -163,7 +163,7 @@ run(void)
 	    cout << "array size not ok, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;
@@ -188,7 +188,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception: " << e.get_message() << endl ;
 	return 1 ;

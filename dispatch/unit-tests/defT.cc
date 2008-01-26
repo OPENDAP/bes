@@ -13,7 +13,6 @@ using std::stringstream ;
 #include "BESDefinitionStorageVolatile.h"
 #include "BESDefine.h"
 #include "BESTextInfo.h"
-#include "BESException.h"
 
 int defT::
 run(void)

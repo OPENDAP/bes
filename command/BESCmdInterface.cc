@@ -44,7 +44,8 @@ using std::stringstream ;
 #include "BESDebug.h"
 #include "BESBasicHttpTransmitter.h"
 #include "BESReturnManager.h"
-#include "BESTransmitException.h"
+#include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
 #include "BESAggFactory.h"
 #include "BESAggregationServer.h"
 #include "BESTransmitterNames.h"
@@ -118,7 +119,7 @@ BESCmdInterface::initialize()
 	{
 	    string s = (string)"Unable to find transmitter "
 		       + BASIC_TRANSMITTER ;
-	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
 	BESDEBUG( "bes", "OK" << endl )
     }
@@ -130,7 +131,7 @@ BESCmdInterface::initialize()
 	{
 	    string s = (string)"Unable to find transmitter "
 		       + HTTP_TRANSMITTER ;
-	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
 	BESDEBUG( "bes", "OK" << endl )
     }
@@ -177,7 +178,7 @@ BESCmdInterface::build_data_request_plan()
 	{
 	    string s = (string)"Unable to find transmitter "
 	               + _dhi.data[RETURN_CMD] ;
-	    throw BESTransmitException( s, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 	}
 	BESDEBUG( "bes", "OK" << endl )
     }

@@ -20,7 +20,7 @@ using std::ostringstream ;
 using std::list ;
 
 #include "ExtConn.h"
-#include "PPTException.h"
+#include "BESError.h"
 
 list<string> try_list ;
 
@@ -89,9 +89,9 @@ public:
 		    cout << endl ;
 		}
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "Caught exception" << endl << e.getMessage() << endl ;
+		cout << "Caught exception" << endl << e.get_message() << endl ;
 	    }
 	}
     }
@@ -118,9 +118,10 @@ public:
 		cout << "Should have failed with malformed extension" << endl ;
 		CPPUNIT_ASSERT( false ) ;
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "SUCCEEDED with exception" << endl << e.getMessage() << endl ;
+		cout << "SUCCEEDED with exception" << endl << e.get_message()
+		     << endl ;
 		CPPUNIT_ASSERT( true ) ;
 	    }
 	}
@@ -134,9 +135,10 @@ public:
 		cout << "Should have failed with malformed extension" << endl ;
 		CPPUNIT_ASSERT( false ) ;
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "SUCCEEDED with exception" << endl << e.getMessage() << endl ;
+		cout << "SUCCEEDED with exception" << endl << e.get_message()
+		     << endl ;
 		CPPUNIT_ASSERT( true ) ;
 	    }
 	}
@@ -151,9 +153,10 @@ public:
 		expected["var1"] = "" ;
 		check_extensions( 1, expected, extensions ) ;
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "FAILED with exception" << endl << e.getMessage() << endl ;
+		cout << "FAILED with exception" << endl << e.get_message()
+		     << endl ;
 		CPPUNIT_ASSERT( false ) ;
 	    }
 	}
@@ -170,9 +173,10 @@ public:
 		expected["var3"] = "val3" ;
 		check_extensions( 3, expected, extensions ) ;
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "FAILED with exception" << endl << e.getMessage() << endl ;
+		cout << "FAILED with exception" << endl << e.get_message()
+		     << endl ;
 		CPPUNIT_ASSERT( false ) ;
 	    }
 	}

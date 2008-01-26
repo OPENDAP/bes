@@ -47,7 +47,7 @@
 #include <stdexcept>
 
 #include "BESRegex.h"
-#include "BESException.h"
+#include "BESInternalError.h"
 #include "BESScrub.h"
 
 using namespace std;
@@ -64,7 +64,8 @@ BESRegex::init(const char *t)
                                   static_cast<size_t>(0));
         char *msg = new char[msg_len+1];
         regerror(result, static_cast<regex_t*>(d_preg), msg, msg_len);
-        BESException e(string("BESRegex error: ") + string(msg), __FILE__, __LINE__ );
+	string err = string( "BESRegex error: " ) + string( msg ) ;
+        BESInternalError e( err, __FILE__, __LINE__ ) ;
         delete[] msg;
         throw e;
     }

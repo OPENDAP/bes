@@ -34,7 +34,7 @@
 #include "BESSilentInfo.h"
 #include "BESContextManager.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESSetContextResponseHandler::BESSetContextResponseHandler( const string &name )
@@ -55,9 +55,7 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler( )
  * unless there is an exception condition.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
+ * @throws BESSyntaxUserError if no context name was given
  * object
  * @see _BESDataHandlerInterface
  * @see BESInfo
@@ -76,7 +74,7 @@ BESSetContextResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( name.empty() )
     {
 	string e = "No context name was specified in set context command" ;
-	throw BESHandlerException( e, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( e, __FILE__, __LINE__ ) ;
     }
 
     string value = dhi.data[CONTEXT_VALUE] ;

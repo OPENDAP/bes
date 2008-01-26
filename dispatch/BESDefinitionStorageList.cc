@@ -36,7 +36,6 @@ using std::endl ;
 
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
-#include "BESDefinitionStorageException.h"
 #include "BESDefine.h"
 #include "BESInfo.h"
 

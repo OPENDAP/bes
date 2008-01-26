@@ -34,7 +34,7 @@
 #include "DODSFilter.h"
 #include "BESFileContainer.h"
 #include "BESFilterTransmitter.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseHandlerList.h"
 #include "cgi_util.h"
 #include "BESDataNames.h"
@@ -101,7 +101,7 @@ BESCgiInterface::build_data_request_plan()
     {
 	BESDEBUG( "bes", "Building data request plan ... FAILED" << endl )
 	string s = (string)"Improper command " + myaction ;
-	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
     BESDEBUG( "bes", "Building data request plan ... OK" << endl )
 }

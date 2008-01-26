@@ -40,7 +40,7 @@
 using std::ostringstream ;
 
 #include "BESUncompressGZ.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 #define CHUNK 4096
@@ -64,7 +64,7 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
     if( gsrc == NULL )
     {
 	string err = "Could not open the compressed file " + src ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     FILE *dest = fopen( target.c_str(), "wb" ) ;
@@ -82,7 +82,7 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
 	    err.append( "unknown error occurred" ) ;
 	}
 	gzclose( gsrc ) ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     // gzread will read the data in uncompressed. All we have to do is write
@@ -107,7 +107,7 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
 			     << "instead of " << bytes_read ;
 		gzclose( gsrc ) ;
 		fclose( dest ) ;
-		throw BESContainerStorageException( strm.str(), __FILE__, __LINE__ ) ;
+		throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;
 	    }
 	}
     }

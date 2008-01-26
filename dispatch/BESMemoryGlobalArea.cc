@@ -37,7 +37,7 @@ using std::cerr ;
 using std::endl ;
 
 #include "BESMemoryGlobalArea.h"
-#include "BESMemoryException.h"
+#include "BESInternalFatalError.h"
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "TheBESKeys.h"
@@ -65,7 +65,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	    if( (eps=="") || (mhs=="") || (verbose=="") || (control_heap=="") )
 	    {
 		string line = "can not determine memory keys.\n"  ;
-		throw BESMemoryException( line, __FILE__, __LINE__ ) ;
+		throw BESInternalFatalError( line, __FILE__, __LINE__ ) ;
 	    }
 	    else
 	    {
@@ -93,7 +93,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 				   + "pool is larger than the maximun size of "
 				   + "the heap.\n" ;
 			(*BESLog::TheLog()) << s ;
-			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
+			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
 		    log_limits() ;
 		    limit.rlim_cur = megabytes( max + 1 ) ;
@@ -117,7 +117,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 				  + "must be superuser\n" ;
 			}
 			(*BESLog::TheLog()) << s ;
-			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
+			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
 		    log_limits() ;
 		    _buffer = 0 ;
@@ -128,7 +128,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 				   + "can not get heap of size "
 				   + mhs + " to start running" ;
 			(*BESLog::TheLog()) << s ;
-			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
+			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
 		    free( _buffer ) ;
 		}
@@ -137,7 +137,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		    if( emergency > 10 )
 		    {
 			string s = "Emergency pool is larger than 10 Megabytes";
-			throw BESMemoryException( s, __FILE__, __LINE__ ) ;
+			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
 		}
 
@@ -149,7 +149,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		    string s = (string)"BES: can not expand heap to "
 		               + eps + " to start running" ;
 		    (*BESLog::TheLog()) << s << endl ;
-		    throw BESMemoryException( s, __FILE__, __LINE__ ) ;
+		    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		}
 		/* repetative
 		else
@@ -164,7 +164,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		*/
 	    }
 	}
-	catch(BESException &ex)
+	catch( BESError &ex )
 	{
 	    cerr << "BES: unable to start properly because "
 		 << ex.get_message()
@@ -198,7 +198,7 @@ BESMemoryGlobalArea::log_limits()
 	(*BESLog::TheLog()) << "Could not get limits because "
 			    << strerror( errno ) << endl ;
 	_counter-- ;
-	throw BESMemoryException( strerror( errno ), __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( strerror( errno ), __FILE__, __LINE__ ) ;
     }
     if( limit.rlim_cur == RLIM_INFINITY )
 	(*BESLog::TheLog()) << "BES: heap size soft limit is infinte"

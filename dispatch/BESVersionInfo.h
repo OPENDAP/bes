@@ -104,9 +104,9 @@ public:
 			{
 			    _info->add_data_from_file( key, name ) ;
 			}
-    virtual void	add_exception( BESException &e )
+    virtual void	add_exception( BESError &e, const string &admin )
 			{
-			    _info->add_exception( e ) ;
+			    _info->add_exception( e, admin ) ;
 			}
     virtual void	transmit( BESTransmitter *transmitter,
 				  BESDataHandlerInterface &dhi )

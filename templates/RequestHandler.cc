@@ -4,7 +4,6 @@
 
 #include "OPENDAP_CLASSRequestHandler.h"
 #include "BESResponseHandler.h"
-#include "BESResponseException.h"
 #include "BESResponseNames.h"
 #include "OPENDAP_CLASSResponseNames.h"
 #include "BESVersionInfo.h"

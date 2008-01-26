@@ -39,7 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESDelContainerResponseHandler::BESDelContainerResponseHandler( const string &name )
@@ -61,9 +61,7 @@ BESDelContainerResponseHandler::~BESDelContainerResponseHandler( )
  * attempting to delete the container.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException if unable to delete the specified container
+ * @throws BESSyntaxUserError if unable to delete the specified container
  * from the specified container store
  * @see _BESDataHandlerInterface
  * @see BESSilentInfo
@@ -96,7 +94,7 @@ BESDelContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 				 + dhi.data[CONTAINER_NAME]
 				 + "\" does not exist in container storage \""
 				 + dhi.data[STORE_NAME] + "\"" ;
-		throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
+		throw BESSyntaxUserError( err_str, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -106,14 +104,14 @@ BESDelContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 			     + "\" does not exist. "
 			     + "Unable to delete container \""
 			     + dhi.data[CONTAINER_NAME] + "\"" ;
-	    throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( err_str, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
 	string err_str = (string)"No container is specified. "
 			 + "Unable to complete request." ;
-	throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err_str, __FILE__, __LINE__ ) ;
     }
 }
 

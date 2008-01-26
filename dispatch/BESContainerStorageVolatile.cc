@@ -32,9 +32,10 @@
 
 #include "BESContainerStorageVolatile.h"
 #include "BESFileContainer.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESInfo.h"
 #include "TheBESKeys.h"
+#include "BESUtil.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -46,13 +47,21 @@
 BESContainerStorageVolatile::BESContainerStorageVolatile( const string &n )
     : BESContainerStorage( n )
 {
-    string base_key = "BES.Data.RootDirectory" ;
+    string key = "BES.Data.RootDirectory" ;
     bool found = false ;
-    _root_dir = TheBESKeys::TheKeys()->get_key( base_key, found ) ;
+    _root_dir = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( _root_dir == "" )
     {
-	string s = base_key + " not defined in bes configuration file" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	string s = key + " not defined in bes configuration file" ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+    }
+
+    key = (string)"BES.FollowSymLinks" ;
+    string s_str =
+	BESUtil::lowercase( TheBESKeys::TheKeys()->get_key( key, found ) ) ;
+    if( found && ( s_str == "yes" || s_str == "on" || s_str == "true" ) )
+    {
+	_follow_sym_links = true ;
     }
 }
 
@@ -97,8 +106,8 @@ BESContainerStorageVolatile::look_for( const string &sym_name )
  * @param sym_name symbolic name of the container being created
  * @param real_name real name of the container
  * @param type type of data represented by this container
- * @throws BESContainerStorageExcpetion if no type is specified
- * @throws BESContainerStorageExcpetion if a container with the passed
+ * @throws BESInternalError if no type is specified
+ * @throws BESInternalError if a container with the passed
  * symbolic name already exists.
  */
 void
@@ -106,12 +115,15 @@ BESContainerStorageVolatile::add_container( const string &sym_name,
 					    const string &real_name,
 					    const string &type )
 {
+    // The type must be specified so that we can find the request handler
+    // that knows how to handle the container.
     if( type == "" )
     {
 	string s = "Unable to add container, type of data must be specified"  ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 
+    // if the container already exists then throw an error
     BESContainerStorageVolatile::Container_citer i ;
     i = _container_list.find( sym_name ) ;
     if( i != _container_list.end() )
@@ -119,10 +131,21 @@ BESContainerStorageVolatile::add_container( const string &sym_name,
 	string s = (string)"A container with the name "
 	           + sym_name
 	           + " already exists" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
+
+    // make sure that the path to the container exists. If follow_sym_links
+    // is false and there is a symbolic link in the path then an error will
+    // be thrown. If the path does not exist, an error will be thrown.
+    BESUtil::check_path( real_name, _root_dir, _follow_sym_links ) ;
+
+    // add the root directory to the real_name passed
     string new_r_name = _root_dir + "/" + real_name ;
+
+    // Create the file container with the new information
     BESContainer *c = new BESFileContainer( sym_name, new_r_name, type ) ;
+
+    // add it to the container list
     _container_list[sym_name] = c ;
 }
 
@@ -149,12 +172,12 @@ BESContainerStorageVolatile::add_container( BESContainer *c )
     if( !c )
     {
 	string s = "Unable to add container, container passed is null"  ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
     if( c->get_container_type() == "" )
     {
 	string s = "Unable to add container, type of data must be specified"  ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
     string sym_name = c->get_symbolic_name() ;
     BESContainerStorageVolatile::Container_citer i ;
@@ -164,7 +187,7 @@ BESContainerStorageVolatile::add_container( BESContainer *c )
 	string s = (string)"A container with the name "
 	           + sym_name
 	           + " already exists" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
     _container_list[sym_name] = c ;
 }

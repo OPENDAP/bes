@@ -33,7 +33,7 @@
 #include "TestCommand.h"
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 
 /** @brief parses the request to build a test signal response
  *
@@ -43,7 +43,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the command
+ * @throws BESSyntaxUserError if there is a problem parsing the command
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
  */
@@ -76,7 +76,7 @@ TestCommand::parse_request( BESTokenizer &tokenizer,
     if( !retResponse )
     {
 	string s = (string)"No response handler for command " + my_token ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     return retResponse ;

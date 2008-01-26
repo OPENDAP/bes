@@ -38,7 +38,7 @@
 #include <errno.h>
 
 #include "UnixSocket.h"
-#include "SocketException.h"
+#include "BESInternalError.h"
 #include "SocketUtilities.h"
 
 void
@@ -47,13 +47,13 @@ UnixSocket::connect()
     if( _listening )
     {
 	string err( "Socket is already listening" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _connected )
     {
 	string err( "Socket is already connected" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     char path[107] = "" ;
@@ -69,7 +69,7 @@ UnixSocket::connect()
     {
 	string msg = "path to temporary unix socket " ;
 	msg += _tempSocket + " is too long" ;
-	throw( SocketException( msg, __FILE__, __LINE__ ) ) ;
+	throw( BESInternalError( msg, __FILE__, __LINE__ ) ) ;
     }
 
     struct sockaddr_un client_addr ;
@@ -108,7 +108,7 @@ UnixSocket::connect()
 		    msg = msg + "\n" + err ;
 		else
 		    msg = msg + "\nCould not retrieve error message" ;
-		throw SocketException( msg, __FILE__, __LINE__ ) ;
+		throw BESInternalError( msg, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -120,7 +120,7 @@ UnixSocket::connect()
 		msg = msg + "\n" + err ;
 	    else
 		msg = msg + "\nCould not retrieve error message" ;
-	    throw SocketException( msg, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( msg, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -131,7 +131,7 @@ UnixSocket::connect()
 	    msg = msg + "\n" + err ;
 	else
 	    msg = msg + "\nCould not retrieve error message" ;
-	throw SocketException( msg, __FILE__, __LINE__ ) ;
+	throw BESInternalError( msg, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -141,13 +141,13 @@ UnixSocket::listen()
     if( _connected )
     {
 	string err( "Socket is already connected" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _listening )
     {
 	string err( "Socket is already listening" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     int on = 1 ;
@@ -178,7 +178,7 @@ UnixSocket::listen()
 		    const char* error_info = strerror( errno ) ;
 		    if( error_info )
 			error += " " + (string)error_info ;
-		    throw SocketException( error, __FILE__, __LINE__ ) ;
+		    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 		}
 	    }
 	    else
@@ -187,7 +187,7 @@ UnixSocket::listen()
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
 		    error += " " + (string)error_info ;
-		throw SocketException( error, __FILE__, __LINE__ ) ;
+		throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -196,7 +196,7 @@ UnixSocket::listen()
 	    const char *error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw SocketException( error, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -205,7 +205,7 @@ UnixSocket::listen()
 	const char *error_info = strerror( errno ) ;
 	if( error_info )
 	    error += " " + (string)error_info ;
-	throw SocketException( error, __FILE__, __LINE__ ) ;
+	throw BESInternalError( error, __FILE__, __LINE__ ) ;
     }
 }
 

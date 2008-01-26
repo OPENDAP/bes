@@ -1,4 +1,4 @@
-// BESException.h
+// BESError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,38 +30,51 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESException_h_
-#define BESException_h_ 1
+#ifndef BESError_h_
+#define BESError_h_ 1
 
 #include <string>
 
 using std::string ;
 
 #include "BESObj.h"
-#include "BESStatusReturn.h"
+
+#define BES_INTERNAL_ERROR 1
+#define BES_INTERNAL_FATAL_ERROR 2
+#define BES_SYNTAX_USER_ERROR 3
+#define BES_FORBIDDEN_ERROR 4
+#define BES_NOT_FOUND_ERROR 5
 
 /** @brief Abstract exception class for the BES with basic string message
  *
  */
-class BESException : public BESObj
+class BESError : public BESObj
 {
 protected:
     string		_msg ;
-    string		_context ;
-    int			_return_code ;
+    unsigned int	_type ;
     string		_file ;
-    int			_line ;
+    unsigned int	_line ;
 
-    			BESException() { _msg = "UNDEFINED" ; }
+    			BESError() { _msg = "UNDEFINED" ; }
 public:
-    			BESException( const string &msg,
-			              const string &file,
-				      int line )
+    /** @brief constructor that takes message, type of error, source file
+     * the error originated and the line number in the source file
+     *
+     * @param msg error message
+     * @param type type of error generated. Default list of error types are
+     * defined above as internal error, internal fatal error, syntax/user
+     * error, resource forbidden error, resource not found error.
+     */
+    			BESError( const string &msg,
+				  unsigned int type,
+			          const string &file,
+				  unsigned int line )
 			    : _msg( msg ),
-			      _return_code( 0 ),
+			      _type( type ),
 			      _file( file ),
 			      _line( line ) {}
-    virtual		~BESException() {}
+    virtual		~BESError() {}
 
     /** @brief set the error message for this exception
      *
@@ -84,33 +97,13 @@ public:
      */
     virtual int		get_line() { return _line ; }
 
-    /** @brief Set the context name of the error class
-     *
-     * Gives the error context, such as response or request or transmit
-     * @param context name of the context
-     */
-    virtual void	set_context( const string &context )
-			{
-			    _context = context ;
-			}
-
-    /** @brief Return the context name of the error class
-     *
-     * Gives the error context, such as response or request or transmit
-     * @return context string
-     */
-    virtual string	get_context() { return _context ; }
-
     /** @brief Set the return code for this particular error class
      *
      * Sets the return code for this error class, which could represent the
      * need to terminate or do something specific based on the error.
      * @param return_code code used when returning from the error
      */
-    virtual void	set_return_code( int return_code )
-			{
-			    _return_code = return_code ;
-			}
+    virtual void	set_error_type( int type ) { _type = type ; }
 
     /** @brief Return the return code for this error class
      *
@@ -118,7 +111,7 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    virtual int		get_return_code() { return _return_code ; }
+    virtual int		get_error_type() { return _type ; }
 
     /** @brief Displays debug information about this object
      *
@@ -127,5 +120,5 @@ public:
     virtual void	dump( ostream &strm ) const ;
 };
 
-#endif // BESException_h_ 
+#endif // BESError_h_ 
 

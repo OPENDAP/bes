@@ -36,7 +36,7 @@ using std::cerr ;
 using std::endl ;
 
 #include "BESModuleApp.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
 #include "TheBESKeys.h"
@@ -77,7 +77,7 @@ initialize(int argC, char **argV)
 	{
 	    retVal = loadModules() ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    string newerr = "Error during module initialization: " ;
 	    newerr += e.get_message() ;
@@ -156,7 +156,7 @@ BESModuleApp::loadModules()
 		o->initialize( modname ) ;
 		delete o ;
 	    }
-	    catch( BESException &e )
+	    catch( BESError &e )
 	    {
 		cerr << "Caught plugin exception during initialization of "
 		     << curr_mod._module_name << " module:" << endl << "    "
@@ -204,7 +204,7 @@ terminate( int sig )
 	    }
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Caught exception during module termination: "
 	     << e.get_message() << endl ;

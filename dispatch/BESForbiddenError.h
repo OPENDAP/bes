@@ -1,4 +1,4 @@
-// BESTransmitException.h
+// BESForbiddenError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,29 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESTransmitException_h_
-#define BESTransmitException_h_ 1
+#ifndef BESForbiddenError_h_
+#define BESForbiddenError_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
 
-/** @brief exception thrown if problems loading keys from dods initialization
- * file.
+/** @brief error thrown if the BES is not allowed to access the resource requested
  */
-class BESTransmitException: public BESException
+class BESForbiddenError : public BESError
 {
 protected:
-      			BESTransmitException() {}
+      			BESForbiddenError() {}
 public:
-    			BESTransmitException( const string &s,
-			                      const string &file,
-					      int line )
-			    : BESException( s, file, line )
+      			BESForbiddenError( const string &s,
+					  const string &file,
+					  unsigned int line )
+			    : BESError( s, BES_FORBIDDEN_ERROR,
+			                file, line ) {}
+    virtual		~BESForbiddenError() {}
+
+    virtual void	dump( ostream &strm ) const
 			{
-			    set_context( "TransmitProblem" ) ;
-			    set_return_code( BES_DATA_HANDLER_PROBLEM ) ;
+			    strm << "BESForbiddenError::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESIndent::Indent() ;
+			    BESError::dump( strm ) ;
+			    BESIndent::UnIndent() ;
 			}
-      virtual		~BESTransmitException() {}
+
 };
 
-#endif // BESTransmitException_h_
+#endif // BESForbiddenError_h_
 

@@ -36,7 +36,7 @@
 #include <sys/socket.h>
 
 #include "SocketListener.h"
-#include "SocketException.h"
+#include "BESInternalError.h"
 #include "Socket.h"
 #include "SocketConfig.h"
 
@@ -54,8 +54,9 @@ SocketListener::listen( Socket *s )
 {
     if( _accepting )
     {
-	string err( "Already accepting connections ... no more sockets can be added" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	string err = (string)"Already accepting connections, "
+	             + "no more sockets can be added" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( s && !s->isConnected() && !s->isListening() )
@@ -67,17 +68,17 @@ SocketListener::listen( Socket *s )
     {
 	if( !s )
 	{
-	    throw SocketException( "null socket passed", __FILE__, __LINE__ ) ;
+	    throw BESInternalError( "null socket passed", __FILE__, __LINE__ ) ;
 	}
 	else if( s->isConnected() )
 	{
 	    string err( "socket already connected, cannot listen" ) ;
-	    throw SocketException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	else if( s->isListening() )
 	{
 	    string err( "socket already listening" ) ;
-	    throw SocketException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
     }
 }
@@ -117,7 +118,7 @@ SocketListener::accept()
 	    const char *error_info = strerror( errno ) ;
 	    if( error_info )
 		err += " " + (string)error_info ;
-	    throw SocketException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 
 	iter = _socket_list.begin() ;

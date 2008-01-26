@@ -53,11 +53,8 @@ using std::ofstream ;
 #include "TcpSocket.h"
 #include "UnixSocket.h"
 #include "BESServerHandler.h"
-#include "BESException.h"
-#include "PPTException.h"
+#include "BESError.h"
 #include "PPTServer.h"
-#include "PPTException.h"
-#include "SocketException.h"
 #include "BESMemoryManager.h"
 #include "BESDebug.h"
 #include "BESServerUtils.h"
@@ -457,16 +454,9 @@ ServerApp::run()
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
-    catch( SocketException &se )
+    catch( BESError &se )
     {
-	cerr << "caught SocketException" << endl ;
-	cerr << se.getMessage() << endl ;
-	return 1 ;
-    }
-    catch( PPTException &pe )
-    {
-	cerr << "caught PPTException" << endl ;
-	cerr << pe.getMessage() << endl ;
+	cerr << se.get_message() << endl ;
 	return 1 ;
     }
     catch( ... )
@@ -575,7 +565,7 @@ main( int argc, char **argv )
 	ServerApp app ;
 	return app.main( argc, argv ) ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Caught unhandled exception: " << endl ;
 	cerr << e.get_message() << endl ;

@@ -34,9 +34,8 @@
 #include "BESSilentInfo.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
-#include "BESContainerStorageException.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler( const string &name )
@@ -75,10 +74,7 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
  * Container storage "&lt;store_name&gt;" does not exist
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
- * object
+ * @throws BESSyntaxUserError if the specified store name does not exist
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see BESContainerStorageList
@@ -108,7 +104,7 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 	string ret = (string)"Unable to add container \""
 		     + symbolic_name + "\" to container storage \""
 		     + store_name + "\". Store does not exist." ;
-	throw BESHandlerException( ret, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( ret, __FILE__, __LINE__ ) ;
     }
 }
 

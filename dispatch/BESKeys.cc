@@ -45,7 +45,7 @@ using std::endl ;
 using std::cout ;
 
 #include "BESKeys.h"
-#include "BESKeysException.h"
+#include "BESInternalFatalError.h"
 
 /** @brief default constructor that reads loads key/value pairs from the
  * specified file.
@@ -59,7 +59,7 @@ using std::cout ;
  * Comments are allowed in the file and must begin with a pound (#) sign at
  * the beginning of the line. No comments are allowed at the end of lines.
  *
- * @throws BESKeysException thrown if there is an error reading the
+ * @throws BESInternalFatalError thrown if there is an error reading the
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
@@ -76,7 +76,7 @@ BESKeys::BESKeys( const string &keys_file_name )
 	string s = string("BES: fatal, can not open initialization file ")
 		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
-	throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
     }
 
     _the_keys = new map<string,string>;
@@ -84,7 +84,7 @@ BESKeys::BESKeys( const string &keys_file_name )
     {
 	load_keys();
     }
-    catch(BESKeysException &ex)
+    catch(BESInternalFatalError &ex)
     {
 	clean();
 	throw;
@@ -94,7 +94,7 @@ BESKeys::BESKeys( const string &keys_file_name )
 	clean() ;
 	string s = (string)"Undefined exception while trying to load keys "
 	           + "from bes configuration file " + _keys_file_name ;
-	throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -162,7 +162,7 @@ BESKeys::break_pair(const char* b, string& key, string &value)
 		string s = string( "BES: invalid entry " ) + b
 		           + "; there are " + howmany
 			   + " = characters.\n";
-		throw BESKeysException( s, __FILE__, __LINE__ );
+		throw BESInternalFatalError( s, __FILE__, __LINE__ );
 	    }
 	    else
 	    {
@@ -208,7 +208,7 @@ BESKeys::only_blanks(const char *line)
     {
 	string s = (string)"Regular expression " + expr
 	           + " did not compile correctly" ;
-	throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
     }
     val = regexec( &rx, line, 0, 0, REG_NOTBOL ) ;
     if( val == 0 )
@@ -226,12 +226,12 @@ BESKeys::only_blanks(const char *line)
 	else if( val == REG_ESPACE )
 	{
 	    string s = "Execution of regular expression out of space" ;
-	    throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
 	    string s = "Execution of regular expression has unknown problem" ;
-	    throw BESKeysException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 	}
     }
 }

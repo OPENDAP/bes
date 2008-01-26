@@ -46,8 +46,6 @@ TestSigResponseHandler::~TestSigResponseHandler( )
 /** @brief executes the command 'test sig;'
  *
  * @param dhi structure that holds request and response information
- * @throws BESResponseException if there is a problem building the
- * response object
  * @see _BESDataHandlerInterface
  * @see BESRequestHandlerList
  */

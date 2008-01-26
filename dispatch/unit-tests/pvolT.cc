@@ -1,18 +1,47 @@
 // pvolT.cc
 
 #include <iostream>
+#include <fstream>
 
 using std::cerr ;
 using std::cout ;
 using std::endl ;
+using std::ofstream ;
+using std::ios ;
 
 #include "pvolT.h"
 #include "BESContainerStorageVolatile.h"
 #include "BESContainer.h"
 #include "TheBESKeys.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "BESTextInfo.h"
 #include <test_config.h>
+
+int pvolT::
+initialize(int argC, char **argV)
+{
+    int retval = baseApp::initialize( argC, argV ) ;
+    if( retval )
+	return retval ;
+
+    ofstream real1( "./real1", ios::trunc ) ;
+    real1 << "real1" << endl ;
+    real1.close() ;
+    ofstream real2( "./real2", ios::trunc ) ;
+    real2 << "real2" << endl ;
+    real2.close() ;
+    ofstream real3( "./real3", ios::trunc ) ;
+    real3 << "real3" << endl ;
+    real3.close() ;
+    ofstream real4( "./real4", ios::trunc ) ;
+    real4 << "real4" << endl ;
+    real4.close() ;
+    ofstream real5( "./real5", ios::trunc ) ;
+    real5 << "real5" << endl ;
+    real5.close() ;
+
+    return 0 ;
+}
 
 int pvolT::
 run(void)
@@ -21,14 +50,23 @@ run(void)
     cout << "Entered pvolT::run" << endl;
     int retVal = 0;
 
+    BESContainerStorageVolatile cpv( "volatile" ) ;
+
     cout << endl << "*****************************************" << endl;
     cout << "Create volatile and add five elements" << endl;
-    BESContainerStorageVolatile cpv( "volatile" ) ;
-    cpv.add_container( "sym1", "real1", "type1" ) ;
-    cpv.add_container( "sym2", "real2", "type2" ) ;
-    cpv.add_container( "sym3", "real3", "type3" ) ;
-    cpv.add_container( "sym4", "real4", "type4" ) ;
-    cpv.add_container( "sym5", "real5", "type5" ) ;
+    try
+    {
+	cpv.add_container( "sym1", "real1", "type1" ) ;
+	cpv.add_container( "sym2", "real2", "type2" ) ;
+	cpv.add_container( "sym3", "real3", "type3" ) ;
+	cpv.add_container( "sym4", "real4", "type4" ) ;
+	cpv.add_container( "sym5", "real5", "type5" ) ;
+    }
+    catch( BESError &e )
+    {
+	cerr << "failed to add elements" << endl << e.get_message() << endl ;
+	return 1 ;
+    }
 
     cout << endl << "*****************************************" << endl;
     cout << "show containers" << endl;
@@ -44,7 +82,7 @@ run(void)
 	cerr << "succesfully added sym1 again, bad things man" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to add sym1 again, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -189,6 +227,18 @@ run(void)
     cout << endl << "*****************************************" << endl;
     cout << "Returning from pvolT::run" << endl;
     return retVal;
+}
+
+int pvolT::
+terminate(int sig)
+{
+    remove( "./real1" ) ;
+    remove( "./real2" ) ;
+    remove( "./real3" ) ;
+    remove( "./real4" ) ;
+    remove( "./real5" ) ;
+
+    return sig ;
 }
 
 int

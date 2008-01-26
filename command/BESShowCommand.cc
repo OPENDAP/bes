@@ -33,7 +33,7 @@
 #include "BESShowCommand.h"
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 
 /** @brief knows how to parse a show request
  *
@@ -53,7 +53,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if there is a problem parsing the request
  */
 BESResponseHandler *
 BESShowCommand::parse_request( BESTokenizer &tokenizer,
@@ -83,7 +83,7 @@ BESShowCommand::parse_request( BESTokenizer &tokenizer,
 	    string err( "Command " ) ;
 	    err += _cmd + " " + my_token ;
 	    err += " does not have a registered response handler" ;
-	    throw BESParserException( err, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
 
 	my_token = tokenizer.get_next_token() ;

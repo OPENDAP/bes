@@ -39,7 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler( const string &name )
@@ -62,9 +62,7 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
  * attempting to delete the definitions from the store.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException if unable to delete all definitions from the
+ * @throws BESSyntaxUserError if unable to delete all definitions from the
  * specified definition store.
  * object
  * @see _BESDataHandlerInterface
@@ -92,7 +90,7 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 	{
 	    string line = (string)"Unable to delete all definitions "
 			  + "from definition store \"" + store_name + "\"" ;
-	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -100,7 +98,7 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
 	string line = (string)"Definition store \""
 		      + store_name
 		      + "\" does not exist.  Unable to delete." ;
-	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
     }
 }
 

@@ -30,6 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/errno.h>
 
 #include <sstream>
 #include <iostream>
@@ -39,6 +42,8 @@ using std::cout ;
 using std::endl ;
 
 #include "BESUtil.h"
+#include "BESForbiddenError.h"
+#include "BESNotFoundError.h"
 #include "config.h"
 
 #define CRLF "\r\n"
@@ -206,5 +211,160 @@ BESUtil::unescape( const string &s )
     }
 
     return new_str ;
+}
+
+/** Check if the specified path is valid
+ *
+ * Checks to see if the specified path is a valid path or not. The root
+ * directory specified is assumed to be valid, so we don't check that
+ * part of the path. The path parameter is relative to the root
+ * directory.
+ *
+ * If follow_sym_links is false, then if any part of the specified path
+ * is a symbolic link, this function will return false, set the passed
+ * has_sym_link parameter. No error message is specified.
+ *
+ * If there is a problem accessing the specified path then the error
+ * string will be filled with whatever system error message is provided.
+ *
+ * param path path to check
+ * param root root directory path, assumed to be valid
+ * param follow_sym_links specifies whether allowed to follow symbolic links
+ * throws BESForbiddenError if the user is not allowed to traverse the path
+ * throws BESNotFoundError if there is a problem accessing the path or the
+ * path does not exist.
+ **/
+void
+BESUtil::check_path( const string &path,
+		     const string &root,
+		     bool follow_sym_links )
+{
+    // if nothing is passed in path, then the path checks out since root is
+    // assumed to be valid.
+    if( path == "" )
+	return ;
+
+    // make sure there are no ../ in the directory, backing up in any way is
+    // not allowed.
+    string::size_type dotdot = path.find( ".." ) ;
+    if( dotdot != string::npos )
+    {
+	string s = (string)"You are not allowed to access the node " + path;
+	throw BESForbiddenError( s, __FILE__, __LINE__ ) ;
+    }
+
+    // What I want to do is to take each part of path and check to see if it
+    // is a symbolic link and it is accessible. If everything is ok, add the
+    // next part of the path.
+    bool done = false ;
+
+    // what is remaining to check
+    string rem = path ;
+    if( rem[0] == '/' )
+	rem = rem.substr( 1, rem.length() - 1 ) ;
+    if( rem[rem.length()-1] == '/' )
+	rem = rem.substr( 0, rem.length() - 1 ) ;
+
+    // full path of the thing to check
+    string fullpath = root ;
+    if( fullpath[fullpath.length()-1] == '/' )
+    {
+	fullpath = fullpath.substr( 0, fullpath.length() - 1 ) ;
+    }
+
+    // path checked so far
+    string checked ;
+
+    while( !done )
+    {
+	size_t slash = rem.find( '/' ) ;
+	if( slash == string::npos )
+	{
+	    fullpath = fullpath + "/" + rem ;
+	    checked = checked + "/" + rem ;
+	    done = true ;
+	}
+	else
+	{
+	    fullpath = fullpath + "/" + rem.substr( 0, slash ) ;
+	    checked = checked + "/" + rem.substr( 0, slash ) ;
+	    rem = rem.substr( slash + 1, rem.length() - slash ) ;
+	}
+
+	if( !follow_sym_links )
+	{
+	    struct stat buf;
+	    int statret = lstat( fullpath.c_str(), &buf ) ;
+	    if( statret == -1 )
+	    {
+		int errsv = errno ;
+		// stat failed, so not accessible. Get the error string,
+		// store in error, and throw exception
+		char *s_err = strerror( errsv ) ;
+		string error = "Unable to access node " + checked + ": " ;
+		if( s_err )
+		{
+		    error = error + s_err ;
+		}
+		else
+		{
+		    error = error + "unknow access error" ;
+		}
+		// ENOENT means that the node wasn't found. Otherise, access
+		// is denied for some reason
+		if( errsv == ENOENT )
+		{
+		    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
+		}
+		else
+		{
+		    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
+		}
+	    }
+	    else
+	    {
+		// lstat was successful, now check if sym link
+		if( S_ISLNK( buf.st_mode ) )
+		{
+		    string error = "You do not have permission to access "
+		                   + checked ;
+		    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
+		}
+	    }
+	}
+	else
+	{
+	    // just do a stat and see if we can access the thing. If we
+	    // can't, get the error information and throw an exception
+	    struct stat buf ;
+	    int statret = stat( fullpath.c_str(), &buf ) ;
+	    if( statret == -1 )
+	    {
+		int errsv = errno ;
+		// stat failed, so not accessible. Get the error string,
+		// store in error, and throw exception
+		char *s_err = strerror( errsv ) ;
+		string error = "Unable to access node " + checked + ": " ;
+		if( s_err )
+		{
+		    error = error + s_err ;
+		}
+		else
+		{
+		    error = error + "unknow access error" ;
+		}
+		// ENOENT means that the node wasn't found. Otherise, access
+		// is denied for some reason
+		if( errsv == ENOENT )
+		{
+		    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
+		}
+		else
+		{
+		    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
+		}
+	    }
+	}
+    }
 }
 

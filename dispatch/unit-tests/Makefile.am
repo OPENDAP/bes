@@ -20,7 +20,7 @@ noinst_HEADERS = test_config.h
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT debugT utilT regexT scrubT
+		encodeT debugT utilT regexT scrubT checkT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -44,7 +44,7 @@ EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
 
 DISTCLEANFILES = test_config.h
 
-CLEANFILES = *.log *.sum
+CLEANFILES = *.log *.sum real*
 
 test_config.h: test_config.h.in Makefile
 	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
@@ -144,4 +144,7 @@ regexT_LDADD =  ../libbes_dispatch.la
 
 scrubT_SOURCES = scrubT.cc baseApp.cc scrubT.h baseApp.h Application.h
 scrubT_LDADD =  ../libbes_dispatch.la
+
+checkT_SOURCES = checkT.cc baseApp.cc checkT.h baseApp.h Application.h
+checkT_LDADD =  ../libbes_dispatch.la
 

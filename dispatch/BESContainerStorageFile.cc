@@ -40,7 +40,7 @@ using std::ifstream ;
 #include "BESContainerStorageFile.h"
 #include "BESFileContainer.h"
 #include "TheBESKeys.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESInfo.h"
 
 /** @brief pull container information from the specified file
@@ -66,11 +66,11 @@ using std::ifstream ;
  * One container per line, can not span multiple lines
  *
  * @param n name of this persistent store
- * @throws BESContainerStorageException if the file can not be opened or
+ * @throws BESInternalError if the file can not be opened or
  * if there is an error in reading in the container information.
  * @see BESContainerStorage
  * @see BESFileContainer
- * @see BESContainerStorageException
+ * @see BESInternalError
  */
 BESContainerStorageFile::BESContainerStorageFile( const string &n )
     : BESContainerStorage( n )
@@ -85,14 +85,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
     if( _file == "" )
     {
 	string s = key + " not defined in key file" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 
     ifstream persistence_file( _file.c_str() ) ;
     if( !persistence_file )
     {
 	string s = "Unable to open persistence file " + _file ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 
     char cline[80] ;
@@ -118,14 +118,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 		delete c ;
 		string s = "Incomplete container persistence line in file "
 			   + _file ;
-		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+		throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	    }
 	    if( dummy != "" )
 	    {
 		delete c ;
 		string s = "Too many fields in persistence file "
 			   + _file ;
-		throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+		throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	    }
 	    _container_list[c->_symbolic_name] = c ;
 	}
@@ -188,7 +188,7 @@ BESContainerStorageFile::add_container( const string &sym_name,
 					const string &type )
 {
     string err = "Unable to add a container to a file, not yet implemented" ;
-    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 }
 
 /** @brief removes a container with the given symbolic name

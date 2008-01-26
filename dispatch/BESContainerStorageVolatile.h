@@ -60,6 +60,7 @@ private:
     map< string, BESContainer * > _container_list ;
 protected:
     string			_root_dir ;
+    bool			_follow_sym_links ;
 
     virtual void		add_container( BESContainer *c ) ;
 public:

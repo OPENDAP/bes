@@ -37,7 +37,8 @@
 
 #include "BESCatalogUtils.h"
 #include "TheBESKeys.h"
-#include "BESException.h"
+#include "BESInternalError.h"
+#include "BESNotFoundError.h"
 #include "GNURegex.h"
 #include "Error.h"
 
@@ -45,6 +46,7 @@ map<string, BESCatalogUtils *> BESCatalogUtils::_instances ;
 
 BESCatalogUtils::
 BESCatalogUtils( const string &n )
+    : _follow_syms( false )
 {
     string key = "BES.Catalog." + n + ".RootDirectory" ;
     bool found = false ;
@@ -52,14 +54,14 @@ BESCatalogUtils( const string &n )
     if( !found || _root_dir == "" )
     {
 	string s = key + " not defined in key file" ;
-	throw BESException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
     DIR *dip = opendir( _root_dir.c_str() ) ;
     if( dip == NULL )
     {
 	string serr = "BESCatalogDirectory - root directory "
 	              + _root_dir + " does not exist" ;
-	throw BESException( serr, __FILE__, __LINE__ ) ;
+	throw BESNotFoundError( serr, __FILE__, __LINE__ ) ;
     }
     closedir( dip ) ;
 
@@ -82,7 +84,7 @@ BESCatalogUtils( const string &n )
     if( curr_str == "" )
     {
 	string s = key + " not defined in key file" ;
-	throw BESException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 
     string::size_type str_begin = 0 ;
@@ -96,7 +98,7 @@ BESCatalogUtils( const string &n )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
-	    throw BESException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
@@ -112,7 +114,7 @@ BESCatalogUtils( const string &n )
 	    {
 		string s = (string)"Catalog type match malformed, no colon, "
 			   + "looking for type:regexp;[type:regexp;]" ;
-		throw BESException( s, __FILE__, __LINE__ ) ;
+		throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	    }
 	    else
 	    {
@@ -122,6 +124,14 @@ BESCatalogUtils( const string &n )
 		_match_list.push_back( newval ) ;
 	    }
 	}
+    }
+
+    key = (string)"BES.Catalog." + n + ".FollowSymLinks" ;
+    string s_str =
+	BESUtil::lowercase( TheBESKeys::TheKeys()->get_key( key, found ) ) ;
+    if( found && ( s_str == "yes" || s_str == "on" || s_str == "true" ) )
+    {
+	_follow_syms = true ;
     }
 }
 
@@ -139,7 +149,7 @@ BESCatalogUtils::build_list( list<string> &theList, const string &listStr )
 	{
 	    string s = (string)"Catalog type match malformed, no semicolon, "
 		       "looking for type:regexp;[type:regexp;]" ;
-	    throw BESException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
@@ -189,7 +199,7 @@ BESCatalogUtils::include( const string &inQuestion ) const
 		              + "malformed Catalog Include parameter "
 			      + "in bes configuration file around " 
 			      + reg + ": " + e.get_error_message() ;
-		throw BESException( serr, __FILE__, __LINE__ ) ;
+		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	    }
 	}
     }
@@ -227,7 +237,7 @@ BESCatalogUtils::exclude( const string &inQuestion ) const
 			  + "malformed Catalog Exclude parameter " 
 			  + "in bes configuration file around " 
 			  + reg + ": " + e.get_error_message() ;
-	    throw BESException( serr, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	}
     }
     return false ;
@@ -305,6 +315,15 @@ BESCatalogUtils::dump( ostream &strm ) const
     else
     {
 	strm << BESIndent::LMarg << "    type matches: empty" << endl ;
+    }
+
+    if( _follow_syms )
+    {
+	strm << BESIndent::LMarg << "    follow symbolic links: on" << endl ;
+    }
+    else
+    {
+	strm << BESIndent::LMarg << "    follow symbolic links: off" << endl ;
     }
 
     BESIndent::UnIndent() ;

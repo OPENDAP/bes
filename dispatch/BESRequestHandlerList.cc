@@ -32,7 +32,7 @@
 
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
-#include "BESHandlerException.h"
+#include "BESInternalError.h"
 #include "BESDataNames.h"
 
 BESRequestHandlerList *BESRequestHandlerList::_instance = 0 ;
@@ -161,7 +161,7 @@ BESRequestHandlerList::get_handler_names()
  *
  * @param dhi the data handler interface that contains the list of containers
  * to be iterated over
- * @throws BESHandlerException if any one of the request handlers does not
+ * @throws BESInternalError if any one of the request handlers does not
  * know how to fill in the specified response object or if any one of the
  * request handlers does not exist.
  * @see _BESDataHandlerInterface
@@ -222,7 +222,7 @@ BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
  *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object
- * @throws BESHandlerException if the request handler cannot be found for the
+ * @throws BESInternalError if the request handler cannot be found for the
  * first containers data type or if the request handler cannot fill in the
  * specified response object.
  * @see _BESDataHandlerInterface
@@ -245,7 +245,7 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
  *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object
- * @throws BESHandlerException if the request handler cannot be found for the
+ * @throws BESInternalError if the request handler cannot be found for the
  * current containers data type or if the request handler cannot fill in the
  * specified response object.
  * @see _BESDataHandlerInterface
@@ -277,13 +277,13 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 			    + dhi.container->get_container_type()
 			    + "\" does not handle the response type \""
 			    + dhi.action + "\"" ;
-		throw BESHandlerException( se, __FILE__, __LINE__ ) ;
+		throw BESInternalError( se, __FILE__, __LINE__ ) ;
 	    }
 	} else {
 	    string se = "The data handler \""
 			+ dhi.container->get_container_type()
 			+ "\" does not exist" ;
-	    throw BESHandlerException( se, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( se, __FILE__, __LINE__ ) ;
 	}
     }
 }

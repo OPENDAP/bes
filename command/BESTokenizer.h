@@ -65,9 +65,7 @@ using std::string ;
     the first token is accessed, a BESExcpetion is thrown.
 
     If the user of the tokenizer attempts to access more tokens than were
-    read in, a BESException is thrown.
-
-    @see BESException
+    read in, an exception is thrown.
  */
 class BESTokenizer : public BESObj
 {

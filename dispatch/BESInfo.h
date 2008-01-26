@@ -46,7 +46,7 @@ using std::map ;
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 #include "BESTransmitter.h"
-#include "BESException.h"
+#include "BESError.h"
 
 /** @brief informational response object
  *
@@ -99,7 +99,7 @@ public:
     virtual void 	add_data_from_file( const string &key,
                                             const string &name ) ;
 
-    virtual void	add_exception( BESException &e ) ;
+    virtual void	add_exception( BESError &e, const string &admin ) ;
 
     /** @brief transmit the informational object
      *

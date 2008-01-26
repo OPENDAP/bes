@@ -36,7 +36,7 @@
 #include <unistd.h>
 #include "BESLog.h"
 #include "TheBESKeys.h"
-#include "BESLogException.h"
+#include "BESInternalFatalError.h"
 
 using std::cerr ;
 using std::endl ;
@@ -55,7 +55,7 @@ BESLog *BESLog::_instance = 0 ;
  * Verbose logging is determined also using the BESKeys mechanism. The key
  * used is BES.LogVerbose.
  *
- * @throws BESLogException if BESLogName is not set or if there are
+ * @throws BESInternalError if BESLogName is not set or if there are
  * problems opening or writing to the log file.
  * @see BESKeys
  */
@@ -73,7 +73,7 @@ BESLog::BESLog()
 	string err = (string)"BES Fatal: unable to determine log file name."
 	             + " Please set BES.LogName in your initialization file" ;
 	cerr << err << endl ;
-	throw BESLogException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
     }
     else
     {
@@ -83,7 +83,7 @@ BESLog::BESLog()
 	    string err = (string)"BES Fatal; can not open log file "
 	                 + _file_name + "." ;
 	    cerr << err << endl ;
-	    throw BESLogException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
 	} 
 	/*
 	if (_flushed)

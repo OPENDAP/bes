@@ -11,7 +11,7 @@ using std::ifstream ;
 #include "gzT.h"
 #include "BESUncompressGZ.h"
 #include "BESCache.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 #define BES_CACHE_CHAR '#' 
@@ -81,7 +81,7 @@ gzT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -143,7 +143,7 @@ gzT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -167,7 +167,7 @@ gzT::run(void)
 	}
 
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Unable to create the cache object" << endl ;
 	cerr << e.get_message() << endl ;

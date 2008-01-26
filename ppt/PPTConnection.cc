@@ -49,7 +49,7 @@ using std::setfill ;
 #include "PPTConnection.h"
 #include "PPTProtocol.h"
 #include "Socket.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 
 /** @brief Send a message to the server
  *
@@ -449,7 +449,7 @@ PPTConnection::receive( map<string,string> &extensions,
     if( bytesRead != 5 )
     {
 	string err = "Failed to read length and type of chunk" ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     char lenbuffer[5] ;
@@ -482,7 +482,7 @@ PPTConnection::receive( map<string,string> &extensions,
     {
 	string err = (string)"type of data is " + _inBuff[4]
 	             + ", should be x for extensions or d for data" ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     return false ;
@@ -503,13 +503,13 @@ PPTConnection::receive( ostream &strm, unsigned short len )
     if( !_inBuff )
     {
 	string err = "buffer has not been initialized" ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     int bytesRead = readBuffer( _inBuff, len ) ;
     if( bytesRead <= 0 )
     {
 	string err = "Failed to read data from socket" ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     _inBuff[bytesRead] = '\0' ;
     strm.write( _inBuff, bytesRead ) ;
@@ -547,7 +547,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
 	    string err = "malformed extensions "
 	                 + xstr.substr( index, xstr.length() - index )
 			 + ", missing semicolon" ;
-	    throw PPTException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	string::size_type eq = xstr.find( '=', index ) ;
 	if( eq == string::npos || eq > semi )
@@ -561,7 +561,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
 	    string err = "malformed extensions "
 	                 + xstr.substr( index, xstr.length() - index )
 			 + ", missing value after =" ;
-	    throw PPTException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	else
 	{
@@ -605,7 +605,7 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw PPTException( error ) ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
 	else
 	{

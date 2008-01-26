@@ -12,6 +12,7 @@ using std::list ;
 using std::string ;
 
 #include "BESObj.h"
+#include "BESUtil.h"
 
 class BESCatalogUtils : public BESObj
 {
@@ -21,6 +22,7 @@ private:
     string			_root_dir ;
     list<string>		_exclude ;
     list<string>		_include ;
+    bool			_follow_syms ;
 
 public:
     struct type_reg
@@ -39,6 +41,7 @@ public:
     				BESCatalogUtils( const string &name ) ;
     virtual			~BESCatalogUtils() {}
     const string &		get_root_dir() const { return _root_dir ; }
+    bool			follow_sym_links() const { return _follow_syms ; }
     virtual bool		include( const string &inQuestion ) const ;
     virtual bool		exclude( const string &inQuestion ) const ;
 

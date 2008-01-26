@@ -36,7 +36,7 @@
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDefine.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 
 /** @brief knows how to parse a get request
@@ -61,7 +61,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if there is a problem parsing the request
  */
 BESResponseHandler *
 BESGetCommand::parse_request( BESTokenizer &tokenizer,
@@ -93,7 +93,7 @@ BESGetCommand::parse_request( BESTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd + " " + my_token ;
 	err += " does not have a registered response handler" ;
-	throw BESParserException( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     dhi.action = newcmd ;
 
@@ -145,7 +145,7 @@ BESGetCommand::parse_request( BESTokenizer &tokenizer,
 	BESDefinitionStorageList::TheList()->find_def( store_name ) ;
     if( !store )
     {
-	throw BESParserException( (string)"Unable to find definition store " + store_name ) ;
+	throw BESSyntaxUserError( (string)"Unable to find definition store " + store_name ) ;
     }
     */
 
@@ -153,7 +153,7 @@ BESGetCommand::parse_request( BESTokenizer &tokenizer,
     if( !d )
     {
 	string s = (string)"Unable to find definition " + def_name ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     BESDefine::containers_citer i = d->first_container() ;

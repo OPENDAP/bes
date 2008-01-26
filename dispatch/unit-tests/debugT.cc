@@ -12,7 +12,7 @@ using std::ostringstream ;
 
 #include "debugT.h"
 #include "BESDebug.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "test_config.h"
 
 int
@@ -37,7 +37,7 @@ debugT::run(void)
 	    cerr << "Successfully set up, shouldn't have" << endl ;
 	    return 1 ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cout << "Unable to set up debug ... good" << endl ;
 	}
@@ -62,7 +62,7 @@ debugT::run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Unable to set up debug ... should have worked" << endl ;
 	    return 1 ;
@@ -75,7 +75,7 @@ debugT::run(void)
 	    BESDebug::SetUp( "cerr,ff,-cdf" ) ;
 	    cout << "Successfully set up" << endl ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Unable to set up debug ... should have worked" << endl ;
 	    return 1 ;

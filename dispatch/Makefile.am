@@ -97,7 +97,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc BESAggregationServer.cc \
 	BESReturnManager.cc \
-	BESException.cc BESExceptionManager.cc \
+	BESError.cc BESExceptionManager.cc \
 	BESDataHandlerInterface.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc \
@@ -106,18 +106,15 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 
 HDRS = BESInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
-	BESInitializer.h BESLog.h BESLogException.h \
-	BESKeys.h TheBESKeys.h BESKeysException.h \
+	BESInitializer.h BESLog.h \
+	BESKeys.h TheBESKeys.h \
 	BESStatus.h \
-	BESTransmitException.h \
 	BESContainer.h BESFileContainer.h BESContainerStorage.h \
-	BESContainerStorageFile.h \
-	BESContainerStorageList.h BESContainerStorageException.h \
+	BESContainerStorageFile.h BESContainerStorageList.h \
 	BESContainerStorageVolatile.h \
 	BESSetContainerResponseHandler.h BESShowContainersResponseHandler.h \
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
-	BESDefine.h BESDefinitionStorageList.h \
-	BESDefinitionStorageException.h BESDefinitionStorage.h \
+	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h \
 	BESDefinitionStorageVolatile.h \
 	BESDefineResponseHandler.h BESShowDefsResponseHandler.h \
 	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
@@ -127,29 +124,27 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESHelpResponseHandler.h BESStatusResponseHandler.h \
 	BESVersionResponseHandler.h BESConfigResponseHandler.h \
 	BESStreamResponseHandler.h BESResponseHandlerList.h \
-	BESResponseNames.h BESResponseException.h \
+	BESResponseNames.h \
 	BESResponseObject.h BESInfo.h BESTextInfo.h BESHTMLInfo.h \
 	BESVersionInfo.h BESInfoList.h BESXMLInfo.h BESSilentInfo.h \
 	BESInfoNames.h \
 	BESRequestHandler.h BESRequestHandlerList.h \
-	BESIncorrectRequestException.h BESDataHandlerInterface.h \
-	BESDataRequestInterface.h BESTransmitter.h \
+	BESDataHandlerInterface.h BESDataRequestInterface.h BESTransmitter.h \
 	BESBasicHttpTransmitter.h BESBasicTransmitter.h \
 	BESReporter.h BESReporterList.h \
-	BESException.h BESHandlerException.h BESAggregationException.h \
-	BESMemoryException.h BESDatabaseException.h \
-	BESConstraintFuncs.h \
+	BESError.h BESInternalError.h BESInternalFatalError.h \
+	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h \
+	BESConstraintFuncs.h BESProcessEncodedString.h \
 	BESMemoryGlobalArea.h BESMemoryManager.h \
-	BESProcessEncodedString.h \
-	BESServerSystemResources.h BESStatusReturn.h \
+	BESServerSystemResources.h \
 	BESAggFactory.h BESAggregationServer.h \
 	BESReturnManager.h \
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
-	BESPluginException.h BESDefaultModule.h BESTransmitterNames.h \
+	BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
 	BESModuleApp.h BESUtil.h BESRegex.h BESScrub.h BESDebug.h \
-	BESDebugException.h BESCache.h BESUncompressManager.h \
+	BESCache.h BESUncompressManager.h \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
@@ -169,13 +164,13 @@ DAP_HDRS = BESCatalogResponseHandler.h \
 BES_DAP_SRCS = BESDASResponse.cc BESDDSResponse.cc BESDataDDSResponse.cc \
 	BESFilterTransmitter.cc BESCgiInterface.cc \
 	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
-	BESCatalogUtils.cc BESCatalogList.cc BESDapHandlerException.cc \
+	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
 	BESDapErrorInfo.cc
 
 BES_DAP_HDRS = BESDASResponse.h BESDDSResponse.h BESDataDDSResponse.h \
 	BESFilterTransmitter.h BESCgiInterface.h \
 	BESContainerStorageCatalog.h \
 	BESCatalogDirectory.h BESCatalog.h \
-	BESCatalogUtils.h BESCatalogList.h BESDapHandlerException.h \
+	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
 	BESDapErrorInfo.h
 

@@ -40,7 +40,7 @@ using std::endl ;
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESDefineResponseHandler::BESDefineResponseHandler( const string &name )
@@ -72,10 +72,7 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
  * information is added.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
- * object
+ * @throws BESSyntaxUserError if the store name specified does not exist
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see BESDefine
@@ -117,7 +114,7 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	string err_str = (string)"Uanble to add definition \"" + def_name 
 	                 + "\" to \"" + store_name
 			 + "\" store. Store does not exist" ;
-	throw BESHandlerException( err_str, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err_str, __FILE__, __LINE__ ) ;
     }
 }
 

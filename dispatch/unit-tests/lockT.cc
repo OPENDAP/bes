@@ -8,7 +8,7 @@ using std::endl ;
 
 #include "lockT.h"
 #include "BESCache.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 int
@@ -34,7 +34,7 @@ lockT::run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "locking test failed" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -59,7 +59,7 @@ lockT::run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cout << "failed to get lock, good" << endl ;
 	    cout << e.get_message() << endl ;
@@ -90,7 +90,7 @@ lockT::run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "2 cache locking failed" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -115,7 +115,7 @@ lockT::run(void)
 		cout << "failed to lock the cache, good" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "2 cache locking failed" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -147,7 +147,7 @@ lockT::run(void)
 		cout << "got the lock, good" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "locking second cache failed" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -170,7 +170,7 @@ lockT::run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to use the cache" << endl ;
 	cerr << e.get_message() << endl ;

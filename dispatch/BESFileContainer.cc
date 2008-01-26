@@ -34,7 +34,7 @@
 #include "TheBESKeys.h"
 #include "BESUncompressManager.h"
 #include "BESCache.h"
-#include "BESContainerStorageException.h"
+#include "BESForbiddenError.h"
 
 BESFileContainer::BESFileContainer( const string &sym_name,
 				    const string &real_name,
@@ -46,7 +46,7 @@ BESFileContainer::BESFileContainer( const string &sym_name,
     {
 	string s = (string)"'../' not allowed in container real name "
 	           + real_name ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESForbiddenError( s, __FILE__, __LINE__ ) ;
     }
 }
 

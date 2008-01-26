@@ -43,7 +43,8 @@ using std::string ;
 
 #include "BESStreamResponseHandler.h"
 #include "BESRequestHandlerList.h"
-#include "BESHandlerException.h"
+#include "BESNotFoundError.h"
+#include "BESInternalError.h"
 #include "BESDataNames.h"
 #include "BESContainer.h"
 
@@ -62,10 +63,8 @@ BESStreamResponseHandler::~BESStreamResponseHandler( )
  * streaming the specified file
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
- * object
+ * @throws BESNotFoundError if the specified file to stream does not exist
+ * @throws BESInternalError if not all required information is provided
  * @see _BESDataHandlerInterface
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
@@ -89,7 +88,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     {
 	string err = (string)"Unable to stream file: "
 	             + "no container specified" ;
-	throw BESHandlerException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     dhi.first_container() ;
@@ -99,7 +98,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     {
 	string err = (string)"Unable to stream file: "
 	             + "filename not specified" ;
-	throw BESHandlerException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     int bytes = 0 ;
@@ -110,7 +109,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
 	string err = (string)"Unable to stream file: "
 	             + "can not open file "
 		     + filename ;
-	throw BESHandlerException( err, __FILE__, __LINE__ ) ;
+	throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
     }
 
     int nbytes ;

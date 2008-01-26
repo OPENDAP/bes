@@ -18,7 +18,7 @@ using std::ostringstream ;
 #include "cacheT.h"
 #include "BESCache.h"
 #include "TheBESKeys.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 void
@@ -129,7 +129,7 @@ cacheT::run(void)
 	cerr << "Created cache with empty dir, should not have" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty dir, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -148,7 +148,7 @@ cacheT::run(void)
 	cerr << "Created cache with bad dir, should not have" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with bad dir, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -167,7 +167,7 @@ cacheT::run(void)
 	cerr << "Created cache with empty prefix, should not have" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty prefix, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -186,7 +186,7 @@ cacheT::run(void)
 	cerr << "Created cache with 0 size, should not have" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with 0 size, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -204,7 +204,7 @@ cacheT::run(void)
 	BESCache cache( cache_dir, "bes_cache", 1 ) ;
 	cout << "Created cache with good params, good" << endl ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to create cache with good params" << endl ;
 	cerr << e.get_message() << endl ;
@@ -224,7 +224,7 @@ cacheT::run(void)
 	cerr << "Created cache with empty dir key, should not have" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty dir key, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -243,7 +243,7 @@ cacheT::run(void)
 	cerr << "Created cache with non-exist dir key, should not have" << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with non-exist dir key, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -263,7 +263,7 @@ cacheT::run(void)
 	cerr << "Created cache with bad dir in conf, should not have" << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with bad dir in conf, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -283,7 +283,7 @@ cacheT::run(void)
 	cerr << "Created cache with empty prefix key, should not have" << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty prefix key, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -303,7 +303,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with non-exist prefix key, good"
 	     << endl ;
@@ -325,7 +325,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty prefix in conf, good"
 	     << endl ;
@@ -347,7 +347,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with empty size key, good"
 	     << endl ;
@@ -368,7 +368,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with non-exist size key, good"
 	     << endl ;
@@ -390,7 +390,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with bad size in conf, good"
 	     << endl ;
@@ -412,7 +412,7 @@ cacheT::run(void)
 	     << endl;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "Failed to create cache with 0 size in conf, good"
 	     << endl ;
@@ -432,7 +432,7 @@ cacheT::run(void)
 	BESCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" ) ;
 	cout << "Created cache with good keys" << endl;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to create cache with good keys" << endl ;
 	cerr << e.get_message() << endl ;
@@ -461,7 +461,7 @@ cacheT::run(void)
 	    cout << "non-exist file is not cached, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Error checking if non-exist file cached" << endl ;
 	cerr << e.get_message() << endl ;
@@ -488,7 +488,7 @@ cacheT::run(void)
 	    cout << "bad file is not cached, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Error checking if non-exist file cached" << endl ;
 	cerr << e.get_message() << endl ;
@@ -528,7 +528,7 @@ cacheT::run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Error checking if good file cached" << endl ;
 	cerr << e.get_message() << endl ;
@@ -555,7 +555,7 @@ cacheT::run(void)
 	cout << "purge returned with success ... checking" << endl ;
 	check_cache( cache_dir, should_be ) ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "purge failed" << endl ;
 	cerr << e.get_message() << endl ;
@@ -575,7 +575,7 @@ cacheT::run(void)
 	cout << "purge returned with success ... checking" << endl ;
 	check_cache( cache_dir, should_be ) ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "purge failed" << endl ;
 	cerr << e.get_message() << endl ;

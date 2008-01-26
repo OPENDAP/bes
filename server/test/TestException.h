@@ -33,29 +33,25 @@
 #ifndef TestException_h_
 #define TestException_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
 #include "BESDataHandlerInterface.h"
 
 #define CEDAR_AUTHENTICATE_EXCEPTION 13
 
 /** @brief exception thrown if authentication fails
  */
-class TestException: public BESException
+class TestException: public BESError
 {
 private:
       			TestException() ;
 public:
       			TestException( const string &s,
 			               const string &file,
-				       int line ) :
-			    BESException( s, file, line )
-			{
-			    set_context( "Test" ) ;
-			    set_return_code( 12 ) ;
-			}
+				       unsigned int line ) :
+			    BESError( s, 12, file, line ) { }
       virtual		~TestException() {}
 
-      static int	handleException( BESException &e,
+      static int	handleException( BESError &e,
 					 BESDataHandlerInterface &dhi ) ;
 };
 

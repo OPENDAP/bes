@@ -32,7 +32,7 @@
 
 #include "sys/stat.h"
 #include "TheBESKeys.h"
-#include "BESKeysException.h"
+#include "BESInternalFatalError.h"
 #include "config.h"
 
 #define BES_CONF getenv("BES_CONF")
@@ -67,7 +67,7 @@ BESKeys *TheBESKeys::TheKeys()
 				    + "the environment variable BES_CONF, "
 				    + "or install in /usr/local/etc/bes/bes.conf "
 				    + "or /etc/bes/bes.conf." ;
-			    throw BESKeysException(s, __FILE__, __LINE__);
+			    throw BESInternalFatalError(s, __FILE__, __LINE__);
 			}
 			else
 			{

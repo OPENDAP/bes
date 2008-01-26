@@ -119,6 +119,22 @@ BES.Catalog.catalog.TypeMatch=
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
+# Is the BES allowed to follow symbolic links when requesting catalog
+# information. The default is to not allow the BES to follow symbolic links.
+# The values can be either No or Yes. If set to No, and the user requests
+# catalog information on a symbolic link then an error is reported and if a
+# symbolic link is contained within a collection, it is not included in the
+# response. If set to Yes then the requested node in the catalog is treated
+# like any other node.
+#
+# BES.FollowSymLinks parameter is for non-catalog containers and is used in
+# conjunction with the BES.RootDirectory above. It is NOT a general setting.
+# BES.Catalog.catalog.FollowSymLinks is for catalog requests and data
+# containers in the catalog and is used in conjunction with the
+# BES.Catalog.catalog.RootDirectory parameter above.
+BES.FollowSymLinks=No
+BES.Catalog.catalog.FollowSymLinks=No
+
 #-----------------------------------------------------------------------#
 # connection information, unix socket, port number, and whether server  #
 # is secure or not. If you are using this option, make sure the BES is  #

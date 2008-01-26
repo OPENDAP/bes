@@ -7,7 +7,7 @@ using std::endl ;
 
 #include "baseApp.h"
 #include "BESGlobalIQ.h"
-#include "BESException.h"
+#include "BESError.h"
 
 Application *Application::_theApplication = 0 ;
 
@@ -56,7 +56,7 @@ initialize( int argC, char **argV )
 	    retVal = 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Global Initialization failed" << endl ;
 	cerr << e.get_message() << endl ;

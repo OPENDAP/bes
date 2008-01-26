@@ -1,4 +1,4 @@
-// BESDefinitionStorageException.h
+// BESSyntaxUserError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,25 +30,36 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESDefinitionStorageException_h_
-#define BESDefinitionStorageException_h_ 1
+#ifndef BESSyntaxUserError_h_
+#define BESSyntaxUserError_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
 
-/** @brief exception thrown if problems locating container information for a
- * symbolic name
+/** @brief error thrown if there is a user syntax error in the request or
+ * any other user error
  */
-class BESDefinitionStorageException : public BESException
+class BESSyntaxUserError : public BESError
 {
 protected:
-      			BESDefinitionStorageException() {}
+      			BESSyntaxUserError() {}
 public:
-      			BESDefinitionStorageException( const string &s,
-			                               const string &file,
-						       int line )
-			    : BESException( s, file, line ) {}
-      virtual		~BESDefinitionStorageException() {}
+      			BESSyntaxUserError( const string &s,
+					  const string &file,
+					  unsigned int line )
+			    : BESError( s, BES_SYNTAX_USER_ERROR,
+			                file, line ) {}
+    virtual		~BESSyntaxUserError() {}
+
+    virtual void	dump( ostream &strm ) const
+			{
+			    strm << "BESSyntaxUserError::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESIndent::Indent() ;
+			    BESError::dump( strm ) ;
+			    BESIndent::UnIndent() ;
+			}
+
 };
 
-#endif // BESDefinitionStorageException_h_
+#endif // BESSyntaxUserError_h_
 

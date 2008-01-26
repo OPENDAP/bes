@@ -36,7 +36,7 @@ using std::endl ;
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
-#include "BESContainerStorageException.h"
+#include "BESSyntaxUserError.h"
 #include "BESContainer.h"
 #include "TheBESKeys.h"
 #include "BESLog.h"
@@ -235,12 +235,13 @@ BESContainerStorageList::isnice()
  * @param sym_name symbolic name of the container to look for
  * @return a new instances of BESContainer if found, else 0. The caller owns
  * the returned container and is responsible for deleting cleaning
- * @throws BESContainerStorageException if container not found and strict
+ * @throws BESSyntaxUserError if container not found and strict
  * set in the bes configuration file for BES.Container.Persistence
  * @see BESContainerStorage
  * @see BESContainer
  * @see BESKeys
  * @see BESLog
+ * @see BESSyntaxUserError
  */
 BESContainer *
 BESContainerStorageList::look_for( const string &sym_name )
@@ -278,7 +279,7 @@ BESContainerStorageList::look_for( const string &sym_name )
 	{
 	    string s = (string)"Could not find the symbolic name "
 	               + sym_name ;
-	    throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 	}
     }
 

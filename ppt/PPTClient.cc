@@ -44,8 +44,7 @@ using std::ostringstream ;
 #include "TcpSocket.h"
 #include "UnixSocket.h"
 #include "PPTProtocol.h"
-#include "SocketException.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 #include "TheBESKeys.h"
 
 #include "config.h"
@@ -82,15 +81,15 @@ PPTClient::get_secure_files()
     _cfile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertFile", found ) ;
     if( !found || _cfile.empty() )
     {
-	throw PPTException( "Unable to determine client certificate file.",
-			    __FILE__, __LINE__ ) ;
+	string err = "Unable to determine client certificate file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     _kfile = TheBESKeys::TheKeys()->get_key( "BES.ClientKeyFile", found ) ;
     if( !found || _kfile.empty() )
     {
-	throw PPTException( "Unable to determine client key file.",
-			    __FILE__, __LINE__ ) ;
+	string err = "Unable to determine client key file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -114,11 +113,11 @@ PPTClient::initConnection()
     {
 	send( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
     }
-    catch( SocketException &e )
+    catch( BESInternalError &e )
     {
 	string msg = "Failed to initialize connection to server\n" ;
-	msg += e.getMessage() ;
-	throw PPTException( msg, __FILE__, __LINE__ ) ;
+	msg += e.get_message() ;
+	throw BESInternalError( msg, __FILE__, __LINE__ ) ;
     }
 
     char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
@@ -126,7 +125,8 @@ PPTClient::initConnection()
     if( bytesRead < 1 )
     {
 	delete [] inBuff ;
-	throw PPTException( "Could not connect to server, server may be down or busy" , __FILE__, __LINE__) ;
+	string err = "Could not connect to server, server may be down or busy" ;
+	throw BESInternalError( err, __FILE__, __LINE__) ;
     }
 
     if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
@@ -137,7 +137,8 @@ PPTClient::initConnection()
 
     if( status == PPTProtocol::PPT_PROTOCOL_UNDEFINED )
     {
-	throw PPTException( "Could not connect to server, server may be down or busy", __FILE__, __LINE__ ) ;
+	string err = "Could not connect to server, server may be down or busy" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( status == PPTProtocol::PPTSERVER_AUTHENTICATE )
@@ -146,7 +147,9 @@ PPTClient::initConnection()
     }
     else if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
     {
-	throw PPTException( "Server reported an invalid connection, \"" + status + "\"", __FILE__, __LINE__ ) ;
+	string err = "Server reported an invalid connection, \""
+	             + status + "\"" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -165,7 +168,8 @@ PPTClient::authenticateWithServer()
     int bytesRead = readBufferNonBlocking( inBuff ) ;
     if( bytesRead < 1 )
     {
-	throw PPTException( "Expecting secure port number response", __FILE__, __LINE__ ) ;
+	string err = "Expecting secure port number response" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
@@ -177,7 +181,8 @@ PPTClient::authenticateWithServer()
     int portVal = atoi( portResponse.str().c_str() ) ;
     if( portVal == 0 )
     {
-	throw PPTException( "Expecting valid secure port number response", __FILE__, __LINE__ ) ;
+	string err = "Expecting valid secure port number response" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     // authenticate using SSLClient
@@ -188,7 +193,9 @@ PPTClient::authenticateWithServer()
     // If it authenticates, good, if not then an exception is thrown. We
     // don't need to do anything else here.
 #else
-    throw PPTException( "Server has requested authentication but OpenSSL is not built into this client", __FILE__, __LINE__ ) ;
+    string err = "Server has requested authentication "
+                 + "but OpenSSL is not built into this client" ;
+    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 #endif
 }
 
@@ -203,11 +210,11 @@ PPTClient::closeConnection()
 	    {
 		sendExit() ;
 	    }
-	    catch( SocketException e )
+	    catch( BESInternalError e )
 	    {
 		cerr << "Failed to inform server that the client is exiting, "
 		     << "continuing" << endl ;
-		cerr << e.getMessage() << endl ;
+		cerr << e.get_message() << endl ;
 	    }
 	}
 

@@ -9,7 +9,7 @@ using std::endl ;
 #include "pfileT.h"
 #include "BESContainerStorageFile.h"
 #include "BESContainer.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
@@ -35,7 +35,7 @@ run(void)
 	cerr << "opened file File, shouldn't have" << endl ;
 	return 1 ;
     }
-    catch( BESException &ex )
+    catch( BESError &ex )
     {
 	cout << "couldn't get File, good, because" << endl ;
 	cout << ex.get_message() << endl ;
@@ -49,7 +49,7 @@ run(void)
 	cerr << "opened file FileNot, shouldn't have" << endl ;
 	return 1 ;
     }
-    catch( BESException &ex )
+    catch( BESError &ex )
     {
 	cout << "couldn't get FileNot, good, because" << endl ;
 	cout << ex.get_message() << endl ;
@@ -63,7 +63,7 @@ run(void)
 	cerr << "opened file FileTooMany, shouldn't have" << endl ;
 	return 1 ;
     }
-    catch( BESException &ex )
+    catch( BESError &ex )
     {
 	cout << "couldn't get FileTooMany, good, because" << endl ;
 	cout << ex.get_message() << endl ;
@@ -77,7 +77,7 @@ run(void)
 	cerr << "opened file FileTooFew, shouldn't have" << endl ;
 	return 1 ;
     }
-    catch( BESException &ex )
+    catch( BESError &ex )
     {
 	cout << "couldn't get FileTooFew, good, because" << endl ;
 	cout << ex.get_message() << endl ;
@@ -90,7 +90,7 @@ run(void)
 	BESContainerStorageFile cpf( "File1" ) ;
 	cout << "opened file File1, good" << endl ;
     }
-    catch( BESException &ex )
+    catch( BESError &ex )
     {
 	cerr << "couldn't get File1 because" << endl ;
 	cerr << ex.get_message() << endl ;

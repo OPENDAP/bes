@@ -34,8 +34,7 @@ SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 	PPTConnection.cc Connection.cc PPTStreamBuf.cc
 
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
-	SocketException.h PPTException.h SocketConfig.h			\
-	SocketListener.h PPTServer.h PPTProtocol.h			\
+	SocketConfig.h SocketListener.h PPTServer.h PPTProtocol.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
 if HAVE_OPENSSL

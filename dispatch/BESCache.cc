@@ -49,7 +49,7 @@ using std::endl ;
 
 #include "BESCache.h"
 #include "TheBESKeys.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 #define BES_CACHE_CHAR '#'
@@ -66,7 +66,7 @@ BESCache::check_ctor_params()
     if( _cache_dir.empty() )
     {
 	string err = "The cache dir was not specified, must be non-empty" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     struct stat buf;
@@ -74,19 +74,19 @@ BESCache::check_ctor_params()
     if( statret != 0 || ! S_ISDIR(buf.st_mode) )
     {
 	string err = "The cache dir " + _cache_dir + " does not exist" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _prefix.empty() )
     {
 	string err = "The prefix was not specified, must be non-empty" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _cache_size == 0 )
     {
 	string err = "The cache size was not specified, must be non-zero" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -96,7 +96,7 @@ BESCache::check_ctor_params()
  * @param cache_dir directory where the files are cached
  * @param prefix prefix used to prepend to the resulting cached file
  * @param size cache max size in megabytes (1 == 1048576 bytes)
- * @exception throws BESContainerStorageException if cache_dir or prefix is 
+ * @throws BESInternalError if cache_dir or prefix is 
  * empty, if size is 0, or if the cache directory does not exist.
  */
 BESCache::BESCache( const string &cache_dir,
@@ -107,7 +107,7 @@ BESCache::BESCache( const string &cache_dir,
       _cache_size( size ),
       _lock_fd( -1 )
 {
-    check_ctor_params(); // Throws BESContainerStorageException on error.
+    check_ctor_params(); // Throws BESInternalError on error.
 }
 
 /** @brief Constructor that takes as arguments keys to the cache directory,
@@ -121,7 +121,7 @@ BESCache::BESCache( const string &cache_dir,
  * @param cache_dir_key key to look up in the keys file to find cache dir
  * @param prefix_key key to look up in the keys file to find the cache prefix
  * @param size_key key to look up in the keys file to find the cache size
- * @throws BESContainerStorageException if keys not set, cache dir or prefix empty,
+ * @throws BESInternalError if keys not set, cache dir or prefix empty,
  * size is 0, or if cache dir does not exist.
  */
 BESCache::BESCache( BESKeys &keys,
@@ -137,7 +137,7 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The cache dir key " + cache_dir_key
 	             + " was not found" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
@@ -146,7 +146,7 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The prefix key " + prefix_key
 	             + " was not found" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
@@ -155,21 +155,21 @@ BESCache::BESCache( BESKeys &keys,
     {
 	string err = "The size key " + size_key
 	             + " was not found" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
 
     std::istringstream is( _cache_size_str ) ;
     is >> _cache_size ;
 
-    check_ctor_params(); // Throws BESContainerStorageException on error.
+    check_ctor_params(); // Throws BESInternalError on error.
 }
 
 /** @brief lock the cache using a file lock
  *
  * if the cache has not already been locked, lock it using a file lock.
  *
- * @throws BESContainerStorageException if the cache is already locked
+ * @throws BESInternalError if the cache is already locked
  */
 bool
 BESCache::lock( unsigned int retry, unsigned int num_tries )
@@ -195,11 +195,6 @@ BESCache::lock( unsigned int retry, unsigned int num_tries )
 	    {
 		_lock_fd = -1 ;
 		got_lock = false ;
-		/*
-		string err = "Unable to lock the cache directory "
-		             + _cache_dir + ", timed out" ;
-		throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
-		*/
 	    }
 	    else
 	    {
@@ -216,7 +211,7 @@ BESCache::lock( unsigned int retry, unsigned int num_tries )
 	// situation where the lock is lost. Lock has been called on the
 	// same cache object twice in a row without an unlock being called.
 	string err = "The cache dir " + _cache_dir + " is already locked" ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     return got_lock ;
@@ -226,7 +221,7 @@ BESCache::lock( unsigned int retry, unsigned int num_tries )
  *
  * If the cache is locked, unlock it using the stored file lock descriptor
  *
- * @throws BESContainerStorageException if the cache is not already locked
+ * @throws BESInternalError if the cache is not already locked
  */
 bool
 BESCache::unlock()
@@ -391,7 +386,7 @@ BESCache::purge( )
 		    {
 			err.append( "Unknown error" ) ;
 		    }
-		    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		}
 		size -= (*i).second.size ;
 		contents.erase( i ) ;
@@ -412,7 +407,7 @@ BESCache::purge( )
     else
     {
 	string err = "Unable to open cache directory " + _cache_dir ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 

@@ -39,7 +39,7 @@ using std::ifstream ;
 
 #include "BESInfo.h"
 #include "TheBESKeys.h"
-#include "BESHandlerException.h"
+#include "BESInternalError.h"
 
 #define BES_INFO_FILE_BUFFER_SIZE 4096
 
@@ -91,7 +91,7 @@ BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
 	if( !strm )
 	{
 	    string s = "Informational response not buffered but no stream passed" ;
-	    throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
 	_strm = strm ;
 	_strm_owned = strm_owned ;
@@ -118,7 +118,7 @@ BESInfo::end_response( )
     if( _tags.size() )
     {
 	string s = "Not all tags were ended in info response" ;
-	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -136,7 +136,7 @@ BESInfo::end_tag( const string &tag_name )
     {
 	string s = (string)"tag " + tag_name
 	           + " already ended or not started" ;
-	throw BESHandlerException( s, __FILE__, __LINE__ ) ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
     else
     {
@@ -214,11 +214,14 @@ BESInfo::add_data_from_file( const string &key, const string &name )
  * @param e The exception to add to the informational response object
  */
 void
-BESInfo::add_exception( BESException &e )
+BESInfo::add_exception( BESError &e, const string &administrator )
 {
-    begin_tag( "BESException" ) ;
-    add_tag( "Type", e.get_context() ) ;
+    begin_tag( "BESError" ) ;
+    ostringstream stype ;
+    stype << e.get_error_type() ;
+    add_tag( "Type", stype.str() ) ;
     add_tag( "Message", e.get_message() ) ;
+    add_tag( "Administrator", administrator ) ;
 #ifdef BES_DEVELOPER
     begin_tag( "Location" ) ;
     add_tag( "File", e.get_file() ) ;
@@ -227,7 +230,7 @@ BESInfo::add_exception( BESException &e )
     add_tag( "Line", sline.str() ) ;
     end_tag( "Location" ) ;
 #endif
-    end_tag( "BESException" ) ;
+    end_tag( "BESError" ) ;
 }
 
 /** @brief print the information from this informational object to the

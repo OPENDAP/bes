@@ -56,7 +56,6 @@ using std::string ;
  * All requests must end with a semicolon.
  *
  * @see BESTokenizer
- * @see BESParserException
  */
 class BESCmdParser
 {

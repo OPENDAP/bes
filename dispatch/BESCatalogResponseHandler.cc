@@ -54,8 +54,6 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler( )
  * The response object BESInfo is created to store the information.
  *
  * @param dhi structure that holds request and response information
- * @throws BESResponseException if there is a problem building the
- * response object
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see BESRequestHandlerList

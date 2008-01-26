@@ -36,7 +36,7 @@
 
 #include "BESVersionInfo.h"
 #include "BESInfoList.h"
-#include "BESHandlerException.h"
+#include "BESInternalError.h"
 
 /** @brief constructs a basic text information response object to write version
  *         information
@@ -63,7 +63,7 @@ BESVersionInfo::beginBESVersion( )
 {
     if( _inbes || _inhandler )
     {
-	throw BESHandlerException( "Attempting to begin BES version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to begin BES version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
     }
     _inbes = true ;
     _info->begin_tag( "BES" ) ;
@@ -74,7 +74,7 @@ BESVersionInfo::addBESVersion( const string &n, const string &v )
 {
     if( !_inbes )
     {
-	throw BESHandlerException( "Attempting to add BES version information while not in BES tag", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to add BES version information while not in BES tag", __FILE__, __LINE__ ) ;
     }
     _info->begin_tag( "lib" ) ;
     _info->add_tag( "name", n ) ;
@@ -87,7 +87,7 @@ BESVersionInfo::endBESVersion( )
 {
     if( !_inbes )
     {
-	throw BESHandlerException( "Attempting to end BES version information while not in BES tag", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to end BES version information while not in BES tag", __FILE__, __LINE__ ) ;
     }
     _inbes = false ;
     _info->end_tag( "BES" ) ;
@@ -98,7 +98,7 @@ BESVersionInfo::beginHandlerVersion( )
 {
     if( _inbes || _inhandler )
     {
-	throw BESHandlerException( "Attempting to begin Handler version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to begin Handler version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
     }
     _inhandler = true ;
     _info->begin_tag( "Handlers" ) ;
@@ -109,7 +109,7 @@ BESVersionInfo::addHandlerVersion( const string &n, const string &v )
 {
     if( !_inhandler )
     {
-	throw BESHandlerException( "Attempting to add Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to add Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
     }
     _info->begin_tag( "lib" ) ;
     _info->add_tag( "name", n ) ;
@@ -122,7 +122,7 @@ BESVersionInfo::endHandlerVersion( )
 {
     if( !_inhandler )
     {
-	throw BESHandlerException( "Attempting to end Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Attempting to end Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
     }
     _inhandler = true ;
     _info->end_tag( "Handlers" ) ;

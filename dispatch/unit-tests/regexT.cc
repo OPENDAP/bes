@@ -8,7 +8,7 @@ using std::endl ;
 
 #include "regexT.h"
 #include "BESRegex.h"
-#include "BESException.h"
+#include "BESError.h"
 
 int regexT::
 run(void)
@@ -35,7 +35,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -64,7 +64,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -94,7 +94,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -123,7 +123,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -152,7 +152,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -181,7 +181,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;
@@ -210,7 +210,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to match, exception caught" << endl << e.get_message() << endl ;
 	return 1 ;

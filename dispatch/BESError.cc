@@ -1,4 +1,4 @@
-// BESLogException.h
+// BESError.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,28 +30,26 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESLogException_h_
-#define BESLogException_h_ 1
+#include "BESError.h"
 
-#include "BESException.h"
-
-/** @brief exception thrown if unable to open or write to the dods log file.
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the exception
+ * message, the file from which the exception was generated, and the line
+ * number in that file.
+ *
+ * @param strm C++ i/o stream to dump the information to
  */
-class BESLogException : public BESException
+void
+BESError::dump( ostream &strm ) const
 {
-protected:
-      			BESLogException() {}
-public:
-      			BESLogException( const string &s,
-			                 const string &file,
-					 int line )
-			    : BESException( s, file, line )
-			{
-			    set_context( "Log" ) ;
-			    set_return_code( BES_LOG_FILE_PROBLEM ) ;
-			}
-      virtual		~BESLogException() {}
-};
-
-#endif // BESLogException_h_
+    strm << BESIndent::LMarg << "BESError::dump - ("
+			     << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "error message: " << _msg << endl ;
+    strm << BESIndent::LMarg << "error type: " << _type << endl ;
+    strm << BESIndent::LMarg << "error file: " << _file << endl ;
+    strm << BESIndent::LMarg << "error line: " << _line << endl ;
+    BESIndent::UnIndent() ;
+}
 

@@ -35,7 +35,6 @@
 #include "BESResponseHandler.h"
 #include "BESResponseNames.h"
 #include "BESVersionInfo.h"
-#include "BESResponseException.h"
 #include "BESDataNames.h"
 
 BESDapRequestHandler::BESDapRequestHandler( const string &name )

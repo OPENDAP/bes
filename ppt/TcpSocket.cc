@@ -41,7 +41,7 @@
 
 #include "TcpSocket.h"
 #include "SocketConfig.h"
-#include "SocketException.h"
+#include "BESInternalError.h"
 
 void
 TcpSocket::connect()
@@ -49,13 +49,13 @@ TcpSocket::connect()
     if( _listening )
     {
 	string err( "Socket is already listening" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _connected )
     {
 	string err( "Socket is already connected" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _host == "" )
@@ -71,7 +71,7 @@ TcpSocket::connect()
 	{
 	    string err( "Invalid host ip address " ) ;
 	    err += _host ;
-	    throw SocketException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	sin.sin_addr.s_addr = address ;
 	sin.sin_family = AF_INET ;
@@ -86,29 +86,29 @@ TcpSocket::connect()
                     {
                         string err( "No such host " ) ;
                         err += _host ;
-                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( err, __FILE__, __LINE__ ) ;
                     }
 		case TRY_AGAIN:
                     {
                         string err( "Host " ) ;
                         err += _host + " is busy, try again later" ;
-                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( err, __FILE__, __LINE__ ) ;
                     }
 		case NO_RECOVERY:
                     {
                         string err( "DNS error for host " ) ;
                         err += _host ;
-                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( err, __FILE__, __LINE__ ) ;
                     }
 		case NO_ADDRESS:
                     {
                         string err( "No IP address for host " ) ;
                         err += _host ;
-                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( err, __FILE__, __LINE__ ) ;
                     }
 		default:
                     {
-                        throw SocketException( "unknown error", __FILE__, __LINE__ ) ;
+                        throw BESInternalError( "unknown error", __FILE__, __LINE__ ) ;
                     }
 	    }
 	}
@@ -129,7 +129,7 @@ TcpSocket::connect()
     if( !pProtoEnt )
     {
 	string err( "Error retreiving tcp protocol information" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     
     _connected = false;
@@ -141,7 +141,7 @@ TcpSocket::connect()
         const char* error_info = strerror(errno);
         if(error_info)
             err += (string)error_info;
-        throw SocketException( err, __FILE__, __LINE__ ) ;
+        throw BESInternalError( err, __FILE__, __LINE__ ) ;
     } else {
         long holder;
         _socket = descript;
@@ -180,7 +180,7 @@ TcpSocket::connect()
                     const char *error_info = strerror( errno ) ;
                     if( error_info )
                         err += (string)error_info ;
-                    throw SocketException( err, __FILE__, __LINE__ ) ;
+                    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 
                 } 
                 else 
@@ -203,7 +203,7 @@ TcpSocket::connect()
                         //throw error - did not successfully connect
                         string err("Did not successfully connect to server\n");
                         err += "Server may be down or you may be trying on the wrong port";
-                        throw SocketException( err, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	      
                     } 
                     else 
@@ -231,7 +231,7 @@ TcpSocket::connect()
                 const char* error_info = strerror(errno);
                 if(error_info)
                     err += (string)error_info;
-                throw SocketException( err, __FILE__, __LINE__ ) ;
+                throw BESInternalError( err, __FILE__, __LINE__ ) ;
             }
         }
         else
@@ -255,13 +255,13 @@ TcpSocket::listen()
     if( _connected )
     {
 	string err( "Socket is already connected" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _listening )
     {
 	string err( "Socket is already listening" ) ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     int on = 1 ;
@@ -273,7 +273,7 @@ TcpSocket::listen()
     if( sir )
     {
 	string error = sir->s_name + (string)" is using my socket" ;
-	throw SocketException( error, __FILE__, __LINE__ ) ;
+	throw BESInternalError( error, __FILE__, __LINE__ ) ;
     }
     server.sin_port = htons( _portVal ) ;
     _socket = socket( AF_INET, SOCK_STREAM, 0 ) ;
@@ -297,7 +297,7 @@ TcpSocket::listen()
                         const char* error_info = strerror( errno ) ;
                         if( error_info )
                             error += " " + (string)error_info ;
-                        throw SocketException( error, __FILE__, __LINE__ ) ;
+                        throw BESInternalError( error, __FILE__, __LINE__ ) ;
                     }
 		if( ::listen( _socket, 5 ) == 0 )
 		{
@@ -309,7 +309,7 @@ TcpSocket::listen()
 		    const char* error_info = strerror( errno ) ;
 		    if( error_info )
 			error += " " + (string)error_info ;
-		    throw SocketException( error, __FILE__, __LINE__ ) ;
+		    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 		}
 	    }
 	    else
@@ -318,7 +318,7 @@ TcpSocket::listen()
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
 		    error += " " + (string)error_info ;
-		throw SocketException( error, __FILE__, __LINE__ ) ;
+		throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -327,7 +327,7 @@ TcpSocket::listen()
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
-	    throw SocketException( error, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -336,7 +336,7 @@ TcpSocket::listen()
 	const char *error_info = strerror( errno ) ;
 	if( error_info )
 	    error += " " + (string)error_info ;
-	throw SocketException( error, __FILE__, __LINE__ ) ;
+	throw BESInternalError( error, __FILE__, __LINE__ ) ;
     }
 }
 

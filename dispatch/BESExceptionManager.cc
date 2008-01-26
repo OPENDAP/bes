@@ -32,17 +32,7 @@
 
 #include "BESExceptionManager.h"
 
-#include "BESDatabaseException.h"
-#include "BESContainerStorageException.h"
-#include "BESKeysException.h"
-#include "BESLogException.h"
-#include "BESHandlerException.h"
-#include "BESIncorrectRequestException.h"
-#include "BESResponseException.h"
-#include "BESTransmitException.h"
-#include "BESAggregationException.h"
-
-#include "BESStatusReturn.h"
+#include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESInfoList.h"
 
@@ -62,14 +52,14 @@ BESExceptionManager::~BESExceptionManager()
 
     Signature of the function is as follows:
 
-    int function_name( BESException &e, BESDataHandlerInterface &dhi ) ;
+    int function_name( BESError &e, BESDataHandlerInterface &dhi ) ;
 
     If the handler does not handle the exception then it should return
-    BES_EXECUTED_OK. Otherwise, return a status code. Pre-defined status
-    codes can be found in BESStatusReturn.h
+    0. Otherwise, return a status code. Pre-defined status
+    codes can be found in BESError.h
 
     @param ehm exception handler function
-    @see BESException
+    @see BESError
  */
 void
 BESExceptionManager::add_ehm_callback( p_bes_ehm ehm )
@@ -84,7 +74,7 @@ BESExceptionManager::add_ehm_callback( p_bes_ehm ehm )
 
     The manager first determines if a registered exception handler
     can handle the exception. First one to handle the exception wins.
-    BES_EXECUTED_OK is returned from the registered handler if it can NOT
+    0 is returned from the registered handler if it can NOT
     handle the exception.
 
     If no registered handlers can handle the exception then the default
@@ -94,11 +84,11 @@ BESExceptionManager::add_ehm_callback( p_bes_ehm ehm )
     @param e excption to be managed
     @param dhi information related to request and response
     @return status after exception is handled
-    @see BESException
+    @see BESError
     @see BESInfo
  */
 int
-BESExceptionManager::handle_exception( BESException &e,
+BESExceptionManager::handle_exception( BESError &e,
 				       BESDataHandlerInterface &dhi )
 {
     // Let's see if any of these exception callbacks can handle the
@@ -131,80 +121,9 @@ BESExceptionManager::handle_exception( BESException &e,
     {
 	administrator = DEFAULT_ADMINISTRATOR ;
     }
-    dhi.error_info->add_tag( "Administrator", administrator ) ;
-    dhi.error_info->add_exception( e ) ;
+    dhi.error_info->add_exception( e, administrator ) ;
     dhi.error_info->end_response() ;
-    return e.get_return_code() ;
-
-    /* Replaced with the above code
-    BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
-    if( ireqx )
-    {
-	dhi.error_info->add_exception( "Request", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_REQUEST_INCORRECT;
-    }
-    BESDatabaseException *ce=dynamic_cast<BESDatabaseException*>(&e);
-    if(ce)
-    {
-	dhi.error_info->add_exception( "Database", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_DATABASE_FAILURE;
-    }
-    BESContainerStorageException *dpe=dynamic_cast<BESContainerStorageException*>(&e);
-    if(dpe)
-    {
-	dhi.error_info->add_exception( "ContainerStore", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_CONTAINER_PERSISTENCE_ERROR;
-    }  
-    BESKeysException *keysex=dynamic_cast<BESKeysException*>(&e);
-    if(keysex)
-    {
-	dhi.error_info->add_exception( "Configuration", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_INITIALIZATION_FILE_PROBLEM;
-    }  
-    BESLogException *logex=dynamic_cast<BESLogException*>(&e);
-    if(logex)
-    {
-	dhi.error_info->add_exception( "Log", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_LOG_FILE_PROBLEM;
-    }
-    BESHandlerException *hanex=dynamic_cast <BESHandlerException*>(&e);
-    if(hanex)
-    {
-	dhi.error_info->add_exception( "DataHandlerProblem", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_DATA_HANDLER_PROBLEM;
-    }
-    BESResponseException *ranex=dynamic_cast <BESResponseException*>(&e);
-    if(ranex)
-    {
-	dhi.error_info->add_exception( "DataHandlerFailure", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_DATA_HANDLER_FAILURE;
-    }
-    BESTransmitException *transex=dynamic_cast <BESTransmitException*>(&e);
-    if(transex)
-    {
-	dhi.error_info->add_exception( "TransmitProblem", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_DATA_HANDLER_PROBLEM;
-    }
-    BESAggregationException *aanex=dynamic_cast <BESAggregationException*>(&e);
-    if(aanex)
-    {
-	dhi.error_info->add_exception( "Aggregation", e ) ;
-	dhi.error_info->end_response() ;
-	return BES_AGGREGATION_EXCEPTION ;
-    }
-
-    dhi.error_info->add_exception( "Unknown", e ) ;
-    dhi.error_info->end_response() ;
-    return BES_TERMINATE_IMMEDIATE;
-    */
+    return e.get_error_type() ;
 }
 
 /** @brief dumps information about this object

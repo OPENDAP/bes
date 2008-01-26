@@ -4,7 +4,6 @@
 
 #include "SampleRequestHandler.h"
 #include "BESResponseHandler.h"
-#include "BESResponseException.h"
 #include "BESResponseNames.h"
 #include "SampleResponseNames.h"
 #include "BESVersionInfo.h"

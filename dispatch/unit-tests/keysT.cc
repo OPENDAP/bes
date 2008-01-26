@@ -9,7 +9,7 @@ using std::endl ;
 
 #include "keysT.h"
 #include "TheBESKeys.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 int keysT::
@@ -39,7 +39,7 @@ run(void)
 	{
 	    TheBESKeys::TheKeys()->dump( cout ) ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cout << "unable to create BESKeys:" << endl ;
 	    cout << e.get_message() << endl ;
@@ -62,7 +62,7 @@ run(void)
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
 	// have to comment this out because the error includes the current
@@ -79,7 +79,7 @@ run(void)
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
 	// have to comment this out because the error includes the current
@@ -105,7 +105,7 @@ run(void)
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_message() << endl ;
@@ -123,7 +123,7 @@ run(void)
 	cerr << "created, should have not been created" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to create BESKeys, good, because:" << endl ;
 	cout << e.get_message() << endl ;
@@ -140,7 +140,7 @@ run(void)
 	TheBESKeys::TheKeys() ;
 	cout << "created, good" << endl ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "unable to create BESKeys, because:" << endl ;
 	cerr << e.get_message() << endl ;
@@ -223,7 +223,7 @@ run(void)
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
 	cout << e.get_message() ;
@@ -237,7 +237,7 @@ run(void)
 	cerr << "set_key successful with value \"" << ret << "\"" << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "unable to set the key, good, because:" << endl ;
 	cout << e.get_message() ;
@@ -259,7 +259,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
 	cerr << e.get_message() ;
@@ -282,7 +282,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "unable to set the key, because:" << endl ;
 	cerr << e.get_message() ;

@@ -1,4 +1,4 @@
-// BESResponseException.h
+// BESInternalFatalError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,39 +30,36 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef BESResponseException_h_
-#define BESResponseException_h_ 1
+#ifndef BESInternalFatalError_h_
+#define BESInternalFatalError_h_ 1
 
-#include "BESException.h"
+#include "BESError.h"
 
-/** @brief an exception object representing any exceptions thrown during the
- * building of a response object in a response handler
- *
- * A BESResponseException can be built by either passing the error string
- * to the constructor or by instantiating an empty object and using the
- * set_message method.
- *
- * To retreive the error string simpy use the get_message method.
- *
- * @see BESException
- * @see BESResponseHandler
- * @see BESResponseObject
+/** @brief exception thrown if an internal error is found and is fatal to
+ * the BES
  */
-class BESResponseException : public BESException
+class BESInternalFatalError : public BESError
 {
 protected:
-      			BESResponseException() {}
+      			BESInternalFatalError() {}
 public:
-      			BESResponseException( const string &s,
-			                      const string &file,
-					      int line )
-			    : BESException( s, file, line )
+      			BESInternalFatalError( const string &s,
+					       const string &file,
+					       unsigned int line )
+			    : BESError( s, BES_INTERNAL_FATAL_ERROR,
+			                file, line ) {}
+    virtual		~BESInternalFatalError() {}
+
+    virtual void	dump( ostream &strm ) const
 			{
-			    set_context( "DataHandlerFailure" ) ;
-			    set_return_code( BES_DATA_HANDLER_FAILURE ) ;
+			    strm << "BESInternalFatalError::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESIndent::Indent() ;
+			    BESError::dump( strm ) ;
+			    BESIndent::UnIndent() ;
 			}
-      virtual		~BESResponseException() {}
+
 };
 
-#endif // BESResponseException_h_ 
+#endif // BESInternalFatalError_h_
 

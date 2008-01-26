@@ -13,7 +13,7 @@ using std::endl ;
 #include "BESContainerStorage.h"
 #include "BESContainerStorageFile.h"
 #include "BESCache.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 int containerT::
@@ -33,7 +33,7 @@ run(void)
 	TheBESKeys::TheKeys()->set_key( key ) ;
 	BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageFile( "TheFile" ) ) ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "couldn't add storage to storage list:" << endl ;
 	cerr << e.get_message() << endl ;
@@ -55,7 +55,7 @@ run(void)
 	cerr << " container type = " << c->get_container_type() << endl ;
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -88,7 +88,7 @@ run(void)
 	}
 	delete c ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -119,7 +119,7 @@ run(void)
 	}
 	return 1 ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "caught exception, didn't find nosym, good" << endl ;
 	cout << e.get_message() << endl ;
@@ -159,7 +159,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -189,7 +189,7 @@ run(void)
 	    cout << "didn't find nosym, didn't throw exception, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "caught exception, shouldn't have" << endl ;
 	cerr << e.get_message() << endl ;
@@ -229,7 +229,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "didn't find sym1, should have" << endl ;
 	return 1 ;
@@ -276,7 +276,7 @@ run(void)
 		cout << "result matches src" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to access non compressed file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -300,7 +300,7 @@ run(void)
 	         << src_file << endl ;
 	    return 1 ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cout << "Failed to access file with ../ in name, good" << endl ;
 	}
@@ -356,7 +356,7 @@ run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to access compressed file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -394,7 +394,7 @@ run(void)
 	         << com_file << endl ;
 	    return 1 ;
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cout << "Failed to access file with ../ in name, good" << endl ;
 	}

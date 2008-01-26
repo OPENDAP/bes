@@ -70,18 +70,18 @@ private:
 	making this private. 07/18/02 jhrg It won't! 11/05/02 jhrg */
 
     BESPluginFactory(const BESPluginFactory &pf)
-	throw(BESPluginException)
+	throw(BESInternalError)
     {
-	throw BESPluginException( "Unimplemented method.");
+	throw BESInternalError( "Unimplemented method.");
     }
 
     /** The assignment operator is not supported. 
 	@see BESPluginFactory(const BESPluginFactory &pf)
     */
     const BESPluginFactory &operator=(const BESPluginFactory &rhs)
-	throw (BESPluginException)
+	throw (BESInternalError)
     {
-	throw BESPluginException( "Unimplemented method.");
+	throw BESInternalError( "Unimplemented method.");
     }
 
     struct DeletePlugins 

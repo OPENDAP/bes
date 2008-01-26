@@ -36,7 +36,7 @@
 #include <string>
 
 #include "CSVDDS.h"
-#include "BESHandlerException.h"
+#include "BESInternalError.h"
 #include "BaseTypeFactory.h"
 #include "DDS.h"
 #include "Error.h"
@@ -152,7 +152,7 @@ void csv_read_descriptors(DDS &dds, const string &filename) {
 
       ar->set_value(doubles, recordCount);
     } else {
-	throw BESHandlerException( "Bad Things Man", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "Bad Things Man", __FILE__, __LINE__ ) ;
     }
 
     dds.add_var(ar);

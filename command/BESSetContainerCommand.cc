@@ -34,7 +34,7 @@
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
 #include "BESContainerStorageList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
 
@@ -51,7 +51,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if there is a problem parsing the request
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
  */
@@ -69,7 +69,7 @@ BESSetContainerCommand::parse_request( BESTokenizer &tokenizer,
     if( !retResponse )
     {
 	string s = (string)"No response handler for command " + SETCONTAINER ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;

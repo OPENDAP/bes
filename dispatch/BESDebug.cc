@@ -39,7 +39,7 @@ using std::cout ;
 using std::endl ;
 
 #include "BESDebug.h"
-#include "BESDebugException.h"
+#include "BESInternalError.h"
 
 ostream *BESDebug::_debug_strm = NULL ;
 bool BESDebug::_debug_strm_created = false ;
@@ -63,14 +63,14 @@ BESDebug::SetUp( const string &values )
     if( values.empty() )
     {
 	string err = "Empty debug options" ;
-	throw BESDebugException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     string::size_type comma = 0 ;
     comma = values.find( ',' ) ;
     if( comma == string::npos )
     {
 	string err = "Missing comma in debug options: " + values ;
-	throw BESDebugException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     ostream *strm = 0 ;
     bool created = false ;
@@ -85,7 +85,7 @@ BESDebug::SetUp( const string &values )
 	if( !(*strm) )
 	{
 	    string err = "Unable to open the debug file: " + s_strm ;
-	    throw BESDebugException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	created = true ;
     }

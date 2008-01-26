@@ -11,7 +11,7 @@ using std::ifstream ;
 #include "uncompressT.h"
 #include "BESUncompressManager.h"
 #include "BESCache.h"
-#include "BESException.h"
+#include "BESError.h"
 #include <test_config.h>
 
 #define BES_CACHE_CHAR '#' 
@@ -81,7 +81,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -143,7 +143,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -166,7 +166,7 @@ uncompressT::run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Unable to create the gz cache object" << endl ;
 	cerr << e.get_message() << endl ;
@@ -232,7 +232,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -294,7 +294,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -308,7 +308,7 @@ uncompressT::run(void)
 	}
 
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Unable to create the bz2 cache object" << endl ;
 	cerr << e.get_message() << endl ;
@@ -374,7 +374,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -436,7 +436,7 @@ uncompressT::run(void)
 		cout << "Contents of file correct" << endl ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "Failed to uncompress the file" << endl ;
 	    cerr << e.get_message() << endl ;
@@ -450,7 +450,7 @@ uncompressT::run(void)
 	}
 
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Unable to create the z cache object" << endl ;
 	cerr << e.get_message() << endl ;

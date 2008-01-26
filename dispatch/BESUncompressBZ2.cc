@@ -45,7 +45,7 @@
 using std::ostringstream ;
 
 #include "BESUncompressBZ2.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 #define CHUNK 4096
@@ -55,7 +55,7 @@ bz_internal_error ( int errcode )
 {
     ostringstream strm ;
     strm << "internal error in bz2 library occurred: " << errcode ;
-    throw BESContainerStorageException( strm.str(), __FILE__, __LINE__ ) ;
+    throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;
 }
 
 /** @brief uncompress a file with the .bz2 file extension
@@ -69,7 +69,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 {
 #ifndef HAVE_BZLIB_H
     string err = "Unable to uncompress bz2 files, feature not built. Check config.h in bes directory for HAVE_BZLIB_H flag set to 1" ;
-    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 #else
     FILE *src = fopen( src_name.c_str(), "rb" ) ;
     if( !src )
@@ -85,7 +85,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	{
 	    err.append( "unknown error occurred" ) ;
 	}
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     FILE *dest = fopen( target.c_str(), "wb" ) ;
@@ -103,7 +103,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	    err.append( "unknown error occurred" ) ;
 	}
 	fclose( src ) ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     int bzerror = 0 ; // any error flags will be stored here
@@ -131,7 +131,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	fclose( dest ) ;
 	fclose( src ) ;
 
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     bool done = false ;
@@ -155,7 +155,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	    fclose( dest ) ;
 	    fclose( src ) ;
 
-	    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	//if( bytes_read == 0 || bzerror == BZ_STREAM_END )
 	if( bzerror == BZ_STREAM_END )
@@ -175,7 +175,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	    fclose( dest ) ;
 	    fclose( src ) ;
 
-	    throw BESContainerStorageException( strm.str(), __FILE__, __LINE__ ) ;
+	    throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;
 	}
     }
 

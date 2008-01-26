@@ -37,7 +37,7 @@
 #include <arpa/inet.h>
 
 #include "Socket.h"
-#include "SocketException.h"
+#include "BESInternalError.h"
 
 Socket::Socket( int socket, struct sockaddr *addr )
     : _socket( socket ),
@@ -89,7 +89,7 @@ Socket::send( const string &str, int start, int end )
 	const char* error_info = strerror( errno ) ;
 	if( error_info )
 	    err += " " + (string)error_info ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -103,7 +103,7 @@ Socket::receive( char *inBuff, int inSize )
 	const char *error_info = strerror( errno ) ;
 	if( error_info )
 	    err += " " + (string)error_info ;
-	throw SocketException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     inBuff[bytesRead] = '\0' ;
     return bytesRead ;

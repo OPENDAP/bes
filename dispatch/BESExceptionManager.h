@@ -41,9 +41,9 @@ using std::list ;
 #include "BESDataHandlerInterface.h"
 #include "BESInfo.h"
 
-class BESException ;
+class BESError ;
 
-typedef int (*p_bes_ehm)( BESException &e, BESDataHandlerInterface &dhi ) ;
+typedef int (*p_bes_ehm)( BESError &e, BESDataHandlerInterface &dhi ) ;
 
 /** @brief manages exception handling code and default exceptions
  *
@@ -68,17 +68,17 @@ typedef int (*p_bes_ehm)( BESException &e, BESDataHandlerInterface &dhi ) ;
  * in a specific way. Exception handling functions are registered with the
  * following signature:
  *
- * int function_name( BESException &e, BESDataHandlerInterface &dhi ) ;
+ * int function_name( BESError &e, BESDataHandlerInterface &dhi ) ;
  *
  * If the registered functioon does not handle the exception then the function
- * should return BES_EXECUTED_OK. If it does handle the exception, return
+ * should return BES_EXECUTED_OK0. If it does handle the exception, return
  * a status code representative of the exception. Currently registered
- * status returns can be found in BESStatusReturn.h
+ * status returns can be found in BESError.h
  *
  * If no handler can handle the exception then the default is to create
  * a BESInfo object with the given exception.
  *
- * @see BESException
+ * @see BESError
  */
 
 class BESExceptionManager : public BESObj
@@ -93,7 +93,7 @@ protected:
     virtual			~BESExceptionManager() ;
 public:
     virtual void		add_ehm_callback( p_bes_ehm ehm ) ;
-    virtual int			handle_exception( BESException &e,
+    virtual int			handle_exception( BESError &e,
 					      BESDataHandlerInterface &dhi ) ;
 
     virtual void		dump( ostream &strm ) const ;

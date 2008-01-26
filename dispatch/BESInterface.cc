@@ -42,7 +42,6 @@ using std::cout;
 
 #include "BESInterface.h"
 
-#include "BESStatusReturn.h"
 #include "TheBESKeys.h"
 #include "BESResponseHandler.h"
 #include "BESAggFactory.h"
@@ -50,14 +49,12 @@ using std::cout;
 #include "BESReporterList.h"
 
 #include "BESExceptionManager.h"
-#include "BESHandlerException.h"
-#include "BESMemoryException.h"
-#include "BESAggregationException.h"
 
 #include "BESDataNames.h"
 
 #include "BESDebug.h"
-#include "BESTransmitException.h"
+#include "BESInternalError.h"
+#include "BESInternalFatalError.h"
 
 #include "BESLog.h"
 
@@ -70,7 +67,7 @@ BESInterface::BESInterface( ostream *output_stream )
     if( !output_stream )
     {
 	string err = "output stream must be set in order to output responses" ;
-	throw BESException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     _dhi.set_output_stream( output_stream ) ;
 }
@@ -140,18 +137,20 @@ BESInterface::execute_request( const string &from )
         invoke_aggregation();
         transmit_data();
     }
-    catch(BESException & ex) {
-        return exception_manager(ex);
+    catch( BESError & ex )
+    {
+        return exception_manager( ex ) ;
     }
-    catch(bad_alloc & b) {
-        string serr = "BES out of memory";
-        BESMemoryException ex(serr, __FILE__, __LINE__);
-        return exception_manager(ex);
+    catch( bad_alloc & b )
+    {
+        string serr = "BES out of memory" ;
+        BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;
+        return exception_manager( ex ) ;
     }
     catch(...) {
-        string serr = "An undefined exception has been thrown";
-        BESException ex(serr, __FILE__, __LINE__);
-        return exception_manager(ex);
+        string serr = "An undefined exception has been thrown" ;
+        BESInternalError ex( serr, __FILE__, __LINE__ ) ;
+        return exception_manager( ex ) ;
     }
 
     return finish( status ) ;
@@ -160,7 +159,8 @@ BESInterface::execute_request( const string &from )
 int
 BESInterface::finish( int status )
 {
-    try {
+    try
+    {
 	// if there was an error duriing initialization, validation,
 	// execution or transmit of the response then we need to transmit
 	// the error information.
@@ -174,30 +174,33 @@ BESInterface::finish( int status )
         report_request();
         end_request();
     }
-    catch(BESException & ex) {
-        status = exception_manager(ex);
+    catch( BESError &ex )
+    {
+        status = exception_manager( ex ) ;
     }
-    catch(bad_alloc & b) {
-        string serr = "BES out of memory";
-        BESMemoryException ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
+    catch( bad_alloc & b )
+    {
+        string serr = "BES out of memory" ;
+        BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;
+        status = exception_manager( ex ) ;
     }
-    catch(...) {
-        string serr = "An undefined exception has been thrown";
-        BESException ex(serr, __FILE__, __LINE__);
-        status = exception_manager(ex);
+    catch(...)
+    {
+        string serr = "An undefined exception has been thrown" ;
+        BESInternalError ex( serr, __FILE__, __LINE__ ) ;
+        status = exception_manager( ex ) ;
     }
 
     // If there is error information then the transmit, log, report or end
     // failed, so just print the error information
-    if (_dhi.error_info)
+    if( _dhi.error_info )
     {
-        _dhi.error_info->print(cout);
+        _dhi.error_info->print( cout ) ;
 	delete _dhi.error_info ;
 	_dhi.error_info = 0 ;
     }
 
-    return status;
+    return status ;
 }
 
 int
@@ -207,7 +210,7 @@ BESInterface::finish_with_error( int status )
     {
 	// there wasn't an error ... so now what?
 	string serr = "Finish_with_error called with no error object" ;
-	BESException ex( serr, __FILE__, __LINE__ ) ;
+	BESInternalError ex( serr, __FILE__, __LINE__ ) ;
 	status = exception_manager( ex ) ;
     }
 
@@ -232,16 +235,20 @@ BESInterface::initialize()
     bool do_continue = true;
     init_iter i = _init_list.begin();
     
-    for (; i != _init_list.end() && do_continue == true; i++) {
-        p_bes_init p = *i;
-        do_continue = p(_dhi);
+    for( ; i != _init_list.end() && do_continue == true; i++ )
+    {
+        p_bes_init p = *i ;
+        do_continue = p( _dhi ) ;
     }
     
-    if (!do_continue) {
+    if( !do_continue )
+    {
         BESDEBUG("bes", "FAILED" << endl)
         string se = "Initialization callback failed, exiting";
-        throw BESException(se, __FILE__, __LINE__);
-    } else {
+        throw BESInternalError( se, __FILE__, __LINE__ ) ;
+    }
+    else
+    {
         BESDEBUG("bes", "OK" << endl)
     }
 }
@@ -283,14 +290,17 @@ void
 BESInterface::execute_data_request_plan()
 {
     BESDEBUG("bes", "Executing request: " << _dhi.data[DATA_REQUEST] << " ... ")
-    BESResponseHandler *rh = _dhi.response_handler;
-    if (rh) {
-        rh->execute(_dhi);
-    } else {
+    BESResponseHandler *rh = _dhi.response_handler ;
+    if( rh )
+    {
+        rh->execute( _dhi ) ;
+    }
+    else
+    {
         BESDEBUG("bes", "FAILED" << endl)
         string se = "The response handler \"" + _dhi.action
-            + "\" does not exist";
-        throw BESHandlerException(se, __FILE__, __LINE__);
+		    + "\" does not exist" ;
+        throw BESInternalError( se, __FILE__, __LINE__ ) ;
     }
     BESDEBUG("bes", "OK" << endl)
 }
@@ -300,18 +310,22 @@ BESInterface::execute_data_request_plan()
 void
 BESInterface::invoke_aggregation()
 {
-    if (_dhi.data[AGG_CMD] != "") {
+    if( _dhi.data[AGG_CMD] != "" )
+    {
         BESDEBUG("bes", "aggregating with: " << _dhi.data[AGG_CMD] << " ... ")
         BESAggregationServer *agg =
             BESAggFactory::TheFactory()->find_handler(_dhi.
                                                       data[AGG_HANDLER]);
-        if (agg) {
-            agg->aggregate(_dhi);
-        } else {
+        if( agg )
+	{
+            agg->aggregate( _dhi ) ;
+        }
+	else
+	{
             BESDEBUG("bes", "FAILED" << endl)
             string se = "The aggregation handler " + _dhi.data[AGG_HANDLER]
-                + "does not exist";
-            throw BESAggregationException(se, __FILE__, __LINE__);
+                + "does not exist" ;
+            throw BESInternalError( se, __FILE__, __LINE__ ) ;
         }
         BESDEBUG("bes", "OK" << endl)
     }
@@ -334,22 +348,31 @@ void
 BESInterface::transmit_data()
 {
     BESDEBUG("bes", "Transmitting request: " << _dhi.data[DATA_REQUEST] << endl)
-    if (_transmitter) {
-        if (_dhi.error_info) {
+    if (_transmitter)
+    {
+        if( _dhi.error_info )
+	{
 	    BESDEBUG( "bes", "  transmitting error info using transmitter ... " )
-            _dhi.error_info->transmit(_transmitter, _dhi);
-        } else if (_dhi.response_handler) {
-	    BESDEBUG( "bes", "  transmitting response using transmitter ... " )
-            _dhi.response_handler->transmit(_transmitter, _dhi);
+            _dhi.error_info->transmit( _transmitter, _dhi ) ;
         }
-    } else {
-        if (_dhi.error_info) {
+	else if( _dhi.response_handler )
+	{
+	    BESDEBUG( "bes", "  transmitting response using transmitter ... " )
+            _dhi.response_handler->transmit( _transmitter, _dhi ) ;
+        }
+    }
+    else
+    {
+        if( _dhi.error_info )
+	{
 	    BESDEBUG( "bes", "  transmitting error info using cout ... " )
-            _dhi.error_info->print(cout);
-        } else {
+            _dhi.error_info->print( cout ) ;
+        }
+	else
+	{
 	    BESDEBUG( "bes", "  Unable to transmit the response ... FAILED " )
 	    string err = "Unable to transmit the response, no transmitter" ;
-	    throw BESTransmitException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
     }
     BESDEBUG("bes", "OK" << endl)
@@ -423,14 +446,14 @@ BESInterface::clean()
     manager and should be called once derived methods have caught their
     exceptions.
 
-    @param e BESException to be managed
+    @param e BESError to be managed
     @return status after exception is handled
-    @see BESException
+    @see BESError
  */
 int
-BESInterface::exception_manager(BESException & e)
+BESInterface::exception_manager( BESError &e )
 {
-    return BESExceptionManager::TheEHM()->handle_exception(e, _dhi);
+    return BESExceptionManager::TheEHM()->handle_exception( e, _dhi ) ;
 }
 
 /** @brief dumps information about this object

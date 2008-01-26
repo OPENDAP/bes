@@ -34,7 +34,7 @@
 #include "BESTokenizer.h"
 #include "BESContainerStorageList.h"
 #include "BESResponseHandlerList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 #include "BESUtil.h"
 
@@ -85,7 +85,7 @@ BESDefineCommand::parse_options( BESTokenizer &tokens,
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if this method is called, as the request string
+ * @throws BESSyntaxUserError if this method is called, as the request string
  * should have already been parsed.
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
@@ -122,7 +122,7 @@ BESDefineCommand::parse_request( BESTokenizer &tokenizer,
     if( !retResponse )
     {
 	string s = (string)"No response handler for command " + _cmd ;
-	throw BESParserException( s, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     bool with_aggregation = false ;

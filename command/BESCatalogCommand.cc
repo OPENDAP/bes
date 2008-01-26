@@ -33,7 +33,7 @@
 #include "BESCatalogCommand.h"
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
 
@@ -54,7 +54,7 @@
  *
  * @param tokenizer holds on to the list of tokens to be parsed
  * @param dhi structure that holds request and response information
- * @throws BESParserException if there is a problem parsing the request
+ * @throws BESSyntaxUserError if the response handler does not exist
  */
 BESResponseHandler *
 BESCatalogCommand::parse_request( BESTokenizer &tokenizer,
@@ -86,7 +86,7 @@ BESCatalogCommand::parse_request( BESTokenizer &tokenizer,
 	string err( "Command " ) ;
 	err += _cmd ;
 	err += " does not have a registered response handler" ;
-	throw BESParserException( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     return retResponse ;

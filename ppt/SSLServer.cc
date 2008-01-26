@@ -43,7 +43,7 @@
 using std::endl ;
 
 #include "SSLServer.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 SSLServer::SSLServer( int portVal,
@@ -84,7 +84,7 @@ SSLServer::initConnection()
 	BESDEBUG( "ppt", "FAILED" << endl )
 	string msg = "Failed to create SSL context\n" ;
 	msg += ERR_error_string( ERR_get_error(), NULL ) ;
-	throw PPTException( msg ) ;
+	throw BESInternalError( msg, __FILE__, __LINE__ ) ;
     }
     else
     {
@@ -215,7 +215,7 @@ SSLServer::initConnection()
     {
 	BESDEBUG( "ppt", "FAILED" << endl )
 	if( _context ) SSL_CTX_free( _context ) ; _context = NULL ;
-	throw PPTException( err_msg ) ;
+	throw BESInternalError( err_msg, __FILE__, __LINE__ ) ;
     }
 
     _connected = true ;

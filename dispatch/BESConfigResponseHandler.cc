@@ -57,10 +57,6 @@ BESConfigResponseHandler::~BESConfigResponseHandler( )
  * key: "&lt;key_name&gt;", value: "&lt;key_value&gt"
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException upon fatal error building the response
- * object
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see TheBESKeys

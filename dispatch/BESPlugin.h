@@ -40,7 +40,8 @@
 #include <iostream>
 
 #include "BESObj.h"
-#include "BESPluginException.h"
+#include "BESInternalFatalError.h"
+#include "BESInternalError.h"
 
 using std::string;
 using std::cerr;
@@ -49,21 +50,21 @@ using std::endl;
 /** Thrown as an exception when BESPlugin cannot find the named shareable
     library.
 */
-class NoSuchLibrary : public BESPluginException
+class NoSuchLibrary : public BESInternalFatalError
 {
 public:
     NoSuchLibrary( const string &msg, const string &file, int line )
-	: BESPluginException( msg, file, line ) {}
+	: BESInternalFatalError( msg, file, line ) {}
 };
 
 /** Thrown as an exception when BESPlugin cannot find or run the maker()
     function in a shared library already loaded.
 */
-class NoSuchObject : public BESPluginException
+class NoSuchObject : public BESInternalFatalError
 {
 public:
     NoSuchObject( const string &msg, const string &file, int line )
-	: BESPluginException( msg, file, line ) {}
+	: BESInternalFatalError( msg, file, line ) {}
 };
 
 /** BESPlugin provides a mechanism that can load C++ classes at runtime.
@@ -95,26 +96,26 @@ private:
 
     /** Do not allow empty instances to be created.
     */
-    BESPlugin()  throw(BESPluginException)
+    BESPlugin()  throw(BESInternalError)
     {	
-	throw BESPluginException( "Unimplemented method", __FILE__, __LINE__ );
+	throw BESInternalError( "Unimplemented method", __FILE__, __LINE__ );
     }
 
     /** Do not allow clients to use the copy constructor. BESPlugin
 	pointer (since doing so could result in calling dlclose too many
 	times, something that is apt to be bad.
     */
-    BESPlugin(const BESPlugin &p) throw(BESPluginException)
+    BESPlugin(const BESPlugin &p) throw(BESInternalError)
     {
-	throw BESPluginException( "Unimplemented method.", __FILE__, __LINE__ );
+	throw BESInternalError( "Unimplemented method.", __FILE__, __LINE__ );
     }
 
     /** Do not allow clients to use the assignment operator.
 	@see BESPlugin(const BESPlugin &p)
     */
-    BESPlugin &operator=(const BESPlugin &p) throw(BESPluginException)
+    BESPlugin &operator=(const BESPlugin &p) throw(BESInternalError)
     {
-	throw BESPluginException( "Unimplemented method.", __FILE__, __LINE__ );
+	throw BESInternalError( "Unimplemented method.", __FILE__, __LINE__ );
     }
 
     void *get_lib() throw(NoSuchLibrary) {

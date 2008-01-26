@@ -10,7 +10,6 @@ using std::endl ;
 #include "BESFileContainer.h"
 #include "BESDataHandlerInterface.h"
 #include "BESConstraintFuncs.h"
-#include "BESException.h"
 #include "BESDataNames.h"
 #include <test_config.h>
 

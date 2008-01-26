@@ -17,7 +17,7 @@ using std::ostringstream ;
 
 #include "ConnTest.h"
 #include "ConnTestStrs.h"
-#include "PPTException.h"
+#include "BESError.h"
 
 class connT: public TestFixture {
 private:
@@ -103,9 +103,10 @@ public:
 		CPPUNIT_ASSERT( ostrm.str() == test_str[1] ) ;
 		CPPUNIT_ASSERT( no_extensions.size() == 0 ) ;
 	    }
-	    catch( PPTException &e )
+	    catch( BESError &e )
 	    {
-		cout << "failed with exception" << endl << e.getMessage() << endl ;
+		cout << "failed with exception" << endl << e.get_message()
+		     << endl ;
 		CPPUNIT_ASSERT( false ) ;
 	    }
 	}

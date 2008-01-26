@@ -56,7 +56,7 @@ public:
     virtual			~BESCatalog( void ) {} ;
 
     virtual string		get_catalog_name() { return _catalog_name ; }
-    virtual bool		show_catalog( const string &container,
+    virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) = 0 ;
 

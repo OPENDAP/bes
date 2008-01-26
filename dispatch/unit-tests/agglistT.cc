@@ -9,7 +9,7 @@ using std::endl ;
 #include "agglistT.h"
 #include "BESAggFactory.h"
 #include "BESTextInfo.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "TestAggServer.h"
 
 int agglistT::
@@ -28,7 +28,7 @@ run(void)
 	BESAggFactory::TheFactory()->add_handler( "h3", agglistT::h3 ) ;
 	cout << "Successfully added three handlers" << endl ;
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to add aggregation servers to list" << endl ;
 	cerr << e.get_message() << endl ;
@@ -71,7 +71,7 @@ run(void)
 	    cout << "Successfully found handler h3" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to find aggregation servers" << endl ;
 	cerr << e.get_message() << endl ;
@@ -92,7 +92,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to remove aggregation server h2" << endl ;
 	cerr << e.get_message() << endl ;
@@ -135,7 +135,7 @@ run(void)
 	    cout << "Successfully found handler h3" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "Failed to find aggregation servers" << endl ;
 	cerr << e.get_message() << endl ;

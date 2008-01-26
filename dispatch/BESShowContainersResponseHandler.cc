@@ -53,8 +53,6 @@ BESShowContainersResponseHandler::~BESShowContainersResponseHandler( )
  * creates a BESInfo response object to store the container information.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the response
- * @throws BESResponseException if a fatal error occurs building the response
  * @see _BESDataHandlerInterface
  * @see BESInfo
  * @see BESContainerStorageList

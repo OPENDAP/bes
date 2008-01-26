@@ -39,7 +39,7 @@ using std::istringstream ;
 #include "BESUncompressBZ2.h"
 #include "BESUncompressZ.h"
 #include "BESCache.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
@@ -191,7 +191,7 @@ BESUncompressManager::get_method_names()
  * @param src file to be uncompressed
  * @param cache BESCache object to uncompress the src file in
  * @return full path to the uncompressed file
- * @throws BESContainerStorageException if there is a problem uncompressing
+ * @throws BESInternalError if there is a problem uncompressing
  * the file.
  */
 string
@@ -256,7 +256,7 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    // return void since it throws on error? jhrg 5/9/07
 		    return p( src, target ) ;
 		}
-		catch( BESException &e )
+		catch( BESError &e )
 		{
 		    // a problem in the cache, unlock it and re-throw the
 		    // exception
@@ -270,14 +270,14 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    cache.unlock() ;
 		    string err = (string)"Problem working with the cache, "
 		                 + "unknow error" ;
-		    throw BESContainerStorageException( err, __FILE__,__LINE__);
+		    throw BESInternalError( err, __FILE__,__LINE__);
 		}
 	    }
 	    else
 	    {
 		string err = "Unable to lock the cache " 
 		             + cache.cache_dir() ;
-		throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+		throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else
@@ -291,11 +291,11 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 	BESDEBUG( "bes", "BESUncompressmanager::uncompress - not file extension" \
 	          << endl )
 #if 0
-	// This could just mean that there is a README file here, so just return the
-	// src file name and let the system run its course.
+	// This could just mean that there is a README file here, so just
+	// return the src file name and let the system run its course.
 	string err = "Unable to determine type of file from "
 	             + src ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
 #endif
     }
 

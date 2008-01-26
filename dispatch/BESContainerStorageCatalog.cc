@@ -33,7 +33,8 @@
 #include "BESContainerStorageCatalog.h"
 #include "BESContainer.h"
 #include "BESCatalogUtils.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
+#include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "GNURegex.h"
 #include "Error.h"
@@ -53,24 +54,18 @@
  * colon.
  *
  * @param n name of this persistent store
- * @throws BESContainerStorageException if unable to find the root
- * directory or regular expressions in the bes configuraiton file. Also
- * thrown if the type matching expressions are malformed.
+ * @throws BESForbiddenError if the resources requested is not accessible
+ * @throws BESNotFoundError if the resources requested is not found
+ * @throws BESInternalError if there is a problem determining the resource
  * @see BESKeys
  * @see BESContainer
  */
 BESContainerStorageCatalog::BESContainerStorageCatalog( const string &n )
     : BESContainerStorageVolatile( n )
 {
-    try
-    {
-	_utils = BESCatalogUtils::Utils( n ) ;
-    }
-    catch( BESException &e )
-    {
-	throw BESContainerStorageException( e.get_message(), e.get_file(), e.get_line() ) ;
-    }
+    _utils = BESCatalogUtils::Utils( n ) ;
     _root_dir = _utils->get_root_dir() ;
+    _follow_sym_links = _utils->follow_sym_links() ;
 }
 
 BESContainerStorageCatalog::~BESContainerStorageCatalog()
@@ -100,9 +95,9 @@ BESContainerStorageCatalog::~BESContainerStorageCatalog()
  * @param real_name real name (path to the file relative to the root
  * catalog's root directory)
  * @param type type of data represented by this container
- * @throws BESContainerStorageException if the real_name represented is not
- * in the list of files to include or is in the list of files to exlude.
- * @throws BESContainerStorageExceptioon if the type of data can not be
+ * @throws BESForbiddenError if the resources requested is not accessible
+ * @throws BESNotFoundError if the resources requested is not found
+ * @throws BESInternalError if there is a problem determining the resource
  * determined using the regular expression extensions.
  */
 void
@@ -135,7 +130,7 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
     {
 	string s = "Attempting to create a container with real name "
 	           + real_name + " which is on the exclude list" ;
-	throw BESContainerStorageException( s, __FILE__, __LINE__ ) ;
+	throw BESForbiddenError( s, __FILE__, __LINE__ ) ;
     }
 
     // If the type is specified, then just pass that on. If not, then match
@@ -149,9 +144,6 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 	for( ; i != ie && !done; i++ )
 	{
 	    BESCatalogUtils::type_reg match = (*i) ;
-	    // FIXME: Should we create the Regex and put it in the type_reg
-	    // structure list instead of compiling it each time? Could this
-	    // improve performance? pcw 09/08/06
 	    try
 	    {
 		Regex reg_expr( match.reg.c_str() ) ;
@@ -167,7 +159,7 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 		              + "malformed Catalog TypeMatch parameter " 
 			      + "in bes configuration file around " 
 			      + match.reg + ": " + e.get_error_message() ;
-		throw BESContainerStorageException( serr, __FILE__, __LINE__ ) ;
+		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	    }
 	}
     }
@@ -212,7 +204,7 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 			  + "malformed Catalog TypeMatch parameter " 
 			  + "in bes configuration file around " 
 			  + match.reg + ": " + e.get_error_message() ;
-	    throw BESException( serr, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	}
     }
     // TODO: Now that we have the type, go find the request handler and ask

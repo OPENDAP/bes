@@ -37,7 +37,7 @@ using std::string ;
 using std::ostringstream ;
 
 #include "PPTServer.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 #include "PPTProtocol.h"
 #include "SocketListener.h"
 #include "ServerHandler.h"
@@ -63,18 +63,18 @@ PPTServer::PPTServer( ServerHandler *handler,
     if( !handler )
     {
 	string err( "Null handler passed to PPTServer" ) ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     if( !listener )
     {
 	string err( "Null listener passed to PPTServer" ) ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 #ifndef HAVE_OPENSSL
     if( _secure )
     {
 	string err("Server requested to be secure but OpenSSL is not built in");
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 #endif
 
@@ -96,14 +96,14 @@ PPTServer::get_secure_files()
     _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
     if( !found || _cfile.empty() )
     {
-	throw PPTException( "Unable to determine server certificate file.",
+	throw BESInternalError( "Unable to determine server certificate file.",
 			    __FILE__, __LINE__ ) ;
     }
 
     _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
     if( !found || _kfile.empty() )
     {
-	throw PPTException( "Unable to determine server key file.",
+	throw BESInternalError( "Unable to determine server key file.",
 			    __FILE__, __LINE__ ) ;
     }
 
@@ -111,7 +111,7 @@ PPTServer::get_secure_files()
 						     found ) ;
     if( !found || portstr.empty() )
     {
-	throw PPTException( "Unable to determine secure connection port.",
+	throw BESInternalError( "Unable to determine secure connection port.",
 			    __FILE__, __LINE__ ) ;
     }
     _securePort = atoi( portstr.c_str() ) ;
@@ -119,7 +119,7 @@ PPTServer::get_secure_files()
     {
 	string err = (string)"Unable to determine secure connection port "
 	             + "from string " + portstr ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 
@@ -181,7 +181,7 @@ PPTServer::welcomeClient()
 	string err( "PPT Can not negotiate, " ) ;
 	err += " client started the connection with " + status ;
 	BESDEBUG( "ppt", err )
-	//throw PPTException( err, __FILE__, __LINE__ ) ;
+	//throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	send( err ) ;
 	_mySock->close() ;
 	return -1 ;
@@ -217,7 +217,7 @@ PPTServer::authenticateClient()
     {
 	string err( "Secure connection ... expecting request for port" ) ;
 	err += " client requested " + portRequest ;
-	throw PPTException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     // send the secure port number back to the client
@@ -233,7 +233,9 @@ PPTServer::authenticateClient()
     // if it authenticates, good, if not, an exception is thrown, no need to
     // do anything else here.
 #else
-    throw PPTException( "Authentication requrested for this server but OpenSSL is not built into the server", __FILE__, __LINE__ ) ;
+    string err = "Authentication requested for this server "
+                 + "but OpenSSL is not built into the server" ;
+    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 #endif
 }
 

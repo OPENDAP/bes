@@ -6,7 +6,7 @@ global comp_output		# contains output from bescmdln_start
 global verbose			# this and srcdir are set by runtest.exp
 global srcdir
 
-set verbose 2
+#set verbose 2
 
 # The `1' in compare_stdout means call xfail if the test fails.
 

@@ -141,10 +141,10 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * not set then the information is output directly to the output stream.
  *
  * @param e the exception to be added to this informational object
- * @see BESException
+ * @see BESError
  */
 void
-BESSilentInfo::add_exception( BESException &e )
+BESSilentInfo::add_exception( BESError &e, const string &admin )
 {
 }
 

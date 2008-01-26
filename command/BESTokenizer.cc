@@ -36,7 +36,7 @@ using std::cout ;
 using std::endl ;
 
 #include "BESTokenizer.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 
 BESTokenizer::BESTokenizer( )
 : _counter( -1 ) {}
@@ -52,7 +52,7 @@ BESTokenizer::~BESTokenizer() {}
  *
  * @param s error string passed by caller to be display with list of
  * tokens
- * @throws BESException with the passed error string as well as all tokens
+ * @throws BESSyntaxUserError with the passed error string as well as all tokens
  * leading up to the error.
  */
 void
@@ -67,7 +67,7 @@ BESTokenizer::parse_error( const string &s ) {
     }
     if( s != "" )
         error += "\n" + s ;
-    throw BESParserException( error, __FILE__, __LINE__ ) ;
+    throw BESSyntaxUserError( error, __FILE__, __LINE__ ) ;
 }
 
 /** @brief returns the first token from the token list
@@ -89,9 +89,9 @@ BESTokenizer::get_first_token() {
  * Returns the current token from the token list and returns it to the caller.
  *
  * @returns current token
- * @throws BESException if the first token has not yet been retrieved or if
+ * @throws BESError if the first token has not yet been retrieved or if
  * the caller is attempting to access more tokens than are available.
- * @see BESException
+ * @see BESError
  */
 string &
 BESTokenizer::get_current_token() {
@@ -111,9 +111,9 @@ BESTokenizer::get_current_token() {
  * Returns the next token from the token list and returns it to the caller.
  *
  * @returns next token
- * @throws BESException if the first token has not yet been retrieved or if
+ * @throws BESError if the first token has not yet been retrieved or if
  * the caller is attempting to access more tokens than are available.
- * @see BESException
+ * @see BESError
  */
 string &
 BESTokenizer::get_next_token() {
@@ -149,10 +149,10 @@ BESTokenizer::get_next_token() {
  * to the token - even if it's a double qoute.
  *
  * @param p request command string
- * @throws BESException if quoted text is missing an end quote, if the
+ * @throws BESError if quoted text is missing an end quote, if the
  * request string is not terminated by a semiclon, if the number of tokens
  * is less than 2.
- * @see BESException
+ * @see BESError
  */
 void
 BESTokenizer::tokenize( const char *p ) {
@@ -249,8 +249,8 @@ BESTokenizer::tokenize( const char *p ) {
  * attributes
  * @param type set to 1 if constraint or 2 if attributes
  * @returns the container name
- * @throws BESException if the syntax is incorrect
- * @see BESException
+ * @throws BESError if the syntax is incorrect
+ * @see BESError
  */
 string
 BESTokenizer::parse_container_name( const string &s, unsigned int &type ) {
@@ -285,9 +285,9 @@ BESTokenizer::parse_container_name( const string &s, unsigned int &type ) {
  *
  * @param s string where the double quotes are removed.
  * @returns the unquoted token
- * @throws BESException if the string does not begin and end with a double
+ * @throws BESError if the string does not begin and end with a double
  * quote
- * @see BESException
+ * @see BESError
  */
 string
 BESTokenizer::remove_quotes( const string &s ) {

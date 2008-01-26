@@ -39,7 +39,7 @@
 #include "BESContainerStorage.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
 
 BESDelContainersResponseHandler::BESDelContainersResponseHandler( const string &name )
@@ -63,9 +63,7 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
  * attempting to delete the containers.
  *
  * @param dhi structure that holds request and response information
- * @throws BESHandlerException if there is a problem building the
- * response object
- * @throws BESResponseException if unable to delete all containers from the
+ * @throws BESSyntaxUserError if unable to delete all containers from the
  * specified container store
  * @see _BESDataHandlerInterface
  * @see BESSilentInfo
@@ -95,7 +93,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 	    string line = (string)"Unable to delete containers from \""
 			  + dhi.data[STORE_NAME]
 			  + "\" container store" ;
-	    throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	    throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
 	}
     }
     else
@@ -104,7 +102,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
 		      + dhi.data[STORE_NAME]
 		      + "\" does not exist. "
 		      + "Unable to delete containers" ;
-	throw BESHandlerException( line, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( line, __FILE__, __LINE__ ) ;
     }
 }
 

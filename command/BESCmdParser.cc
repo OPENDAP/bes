@@ -34,7 +34,7 @@
 #include "BESTokenizer.h"
 #include "BESCommand.h"
 #include "BESResponseHandler.h"
-#include "BESParserException.h"
+#include "BESSyntaxUserError.h"
 
 BESCmdParser::BESCmdParser( )
 {
@@ -54,7 +54,7 @@ BESCmdParser::~BESCmdParser()
  * @param request string representing the request from the client
  * @param dhi information needed to build the request and to store request
  * information for the server
- * @throws BESParserException thrown if there is an error in syntax
+ * @throws BESSyntaxUserError thrown if there is an error in syntax
  * @see BESTokenizer
  * @see BESResponseHandler
  * @see _BESDataHandlerInterface
@@ -71,14 +71,14 @@ BESCmdParser::parse( const string &request, BESDataHandlerInterface &dhi )
 	dhi.response_handler = cmd->parse_request( t, dhi ) ;
 	if( !dhi.response_handler )
 	{
-	    throw BESParserException( (string)"Unable to build command",
-	                              __FILE__, __LINE__ ) ;
+	    string err = "Problem parsing the request command" ;
+	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
     }
     else
     {
-	throw BESParserException( (string)"Invalid command " + my_token ,
-	                          __FILE__, __LINE__ ) ;
+	string err = "Invalid command " + my_token ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
 

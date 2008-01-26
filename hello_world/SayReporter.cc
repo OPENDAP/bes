@@ -32,7 +32,7 @@
 
 #include "SayReporter.h"
 #include "TheBESKeys.h"
-#include "BESLogException.h"
+#include "BESInternalError.h"
 #include "SampleResponseNames.h"
 
 SayReporter::SayReporter()
@@ -43,7 +43,7 @@ SayReporter::SayReporter()
     _log_name = TheBESKeys::TheKeys()->get_key( "Say.LogName", found );
     if( _log_name == "" )
     {
-	throw BESLogException( "can not determine Say log name", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "can not determine Say log name", __FILE__, __LINE__ ) ;
     }
     else
     {
@@ -51,7 +51,7 @@ SayReporter::SayReporter()
 	if( !(*_file_buffer) )
 	{
 	    string s = "can not open Say log file " + _log_name ;;
-	    throw BESLogException( s, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	} 
     }
 }

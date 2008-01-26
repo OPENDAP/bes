@@ -34,7 +34,7 @@
 #include "BESInfo.h"
 
 int
-TestException::handleException( BESException &e,
+TestException::handleException( BESError &e,
 				BESDataHandlerInterface &dhi )
 {
     TestException *te = dynamic_cast<TestException*>(&e);
@@ -42,7 +42,7 @@ TestException::handleException( BESException &e,
     {
 	if( dhi.error_info )
 	{
-	    dhi.error_info->add_exception( e ) ;
+	    dhi.error_info->add_exception( e, "support@opendap.org" ) ;
 	    dhi.error_info->end_response() ;
 	}
 	return 12 ;

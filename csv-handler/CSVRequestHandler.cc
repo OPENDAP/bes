@@ -43,7 +43,6 @@
 #include "BESDataNames.h"
 #include "CSVRequestHandler.h"
 #include "BESResponseHandler.h"
-#include "BESResponseException.h"
 #include "BESResponseNames.h"
 #include "CSVResponseNames.h"
 #include "BESVersionInfo.h"
@@ -56,7 +55,8 @@
 #include "DAS.h"
 #include "BaseTypeFactory.h"
 #include "BESConstraintFuncs.h"
-#include "BESHandlerException.h"
+#include "InternalErr.h"
+#include "BESDapError.h"
 #include "BESDebug.h"
 
 #include "CSVDDS.h"
@@ -89,8 +89,14 @@ CSVRequestHandler::csv_build_das( BESDataHandlerInterface &dhi )
   try {
     csv_read_attributes(*das, dhi.container->access());
     return ret;
+  } catch(InternalErr &e) {
+    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
   } catch(Error &e) {
-    BESHandlerException ex("unknown exception caught building DataDDS", __FILE__, __LINE__);
+    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
+  } catch(...) {
+    BESDapError ex("Caught unknown error build CSV DAS response", true, unknown_error, __FILE__, __LINE__);
     throw ex;
   }
 }
@@ -116,10 +122,16 @@ CSVRequestHandler::csv_build_dds( BESDataHandlerInterface &dhi )
       BESDEBUG( "csv", "dds = " << endl << *dds << endl )
       dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
       return ret;
-    } catch(Error &e) {
-      BESHandlerException ex("unknown exception caught building DDS", __FILE__, __LINE__);
-      throw ex;
-    }
+  } catch(InternalErr &e) {
+    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
+  } catch(Error &e) {
+    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
+  } catch(...) {
+    BESDapError ex("Caught unknown error build CSV DDS response", true, unknown_error, __FILE__, __LINE__);
+    throw ex;
+  }
 }
 
 bool
@@ -144,10 +156,16 @@ CSVRequestHandler::csv_build_data( BESDataHandlerInterface &dhi )
       BESDEBUG( "csv", "dds = " << endl << *dds << endl )
       dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
       return ret;
-    } catch(Error &e) {
-      BESHandlerException ex("unknown exception caught building DataDDS", __FILE__, __LINE__);
-      throw ex;
-    }
+  } catch(InternalErr &e) {
+    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
+  } catch(Error &e) {
+    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
+    throw ex;
+  } catch(...) {
+    BESDapError ex("Caught unknown error build CSV DataDDS response", true, unknown_error, __FILE__, __LINE__);
+    throw ex;
+  }
 }
 
 bool

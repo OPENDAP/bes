@@ -39,7 +39,7 @@
 
 
 #include "BESUncompressZ.h"
-#include "BESContainerStorageException.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 
@@ -63,7 +63,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     if( srcFile == -1 )
     {
 	string err = "Could not open the compressed file " + src ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
 /* -------------------------------------------------------------------- */
@@ -94,7 +94,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	    err.append( "unknown error occurred" ) ;
 	}
 	close( srcFile ) ;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
 
@@ -163,17 +163,17 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	if( rsize < 0) {
 	    string err = "Could not read file ";
 	    err += src.c_str() ;
-	    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
 	if( insize > 0)  {
 	    string err = src.c_str();
 	    err += ": not in compressed format";
-	    throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
 	string err = "unknown error";
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
 
     }
 
@@ -190,7 +190,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	err += maxbits ;
 	err += " bits, can only handle";
 	err += BITS;
-	throw BESContainerStorageException( err, __FILE__, __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     maxcode = MAXCODE(n_bits = INIT_BITS)-1;
@@ -231,9 +231,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 		if( ( rsize = read( srcFile, inbuf + insize, BUFSIZ )) < 0) {
 		    string err = "Could not read file ";
 		    err += src.c_str() ;
-		    throw BESContainerStorageException( err, 
-							__FILE__, 
-							__LINE__ ) ;
+		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		}
 		
 		insize += rsize;
@@ -274,9 +272,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			string err = "oldcode:-1 code: ";
 			err += code ;
 			err += " !!!! uncompress: corrupt input!!!";
-			throw BESContainerStorageException( err, 
-							    __FILE__, 
-							    __LINE__ ) ;
+			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    outbuf[outpos++] = (unsigned char)(finchar = 
 						   (int)(oldcode = code));
@@ -307,9 +303,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			p = &inbuf[posbits>>3];
 			
 			string err = "uncompress: corrupt input";
-			throw BESContainerStorageException( err, 
-							    __FILE__, 
-							    __LINE__ ) ;
+			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    
 		    *--stackp = ( unsigned char )finchar;
@@ -342,9 +336,9 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			    if( outpos >= BUFSIZ) {
 				if( write(destFile, outbuf,outpos) != outpos) {
 				    string err = "uncompress: write eror";
-				    throw BESContainerStorageException( err, 
-							__FILE__, 
-							__LINE__ ) ;
+				    throw BESInternalError( err, 
+							    __FILE__, 
+							    __LINE__ ) ;
 				}		
 				outpos = 0;
 			    }
@@ -372,9 +366,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     
     if( outpos > 0 && write(destFile, outbuf, outpos) != outpos) {
 	string err = "uncompress: write eror";
-	throw BESContainerStorageException( err, 
-					    __FILE__, 
-					    __LINE__ ) ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     BESDEBUG( "bes", "BESUncompressZ::uncompress - end decompres" << endl);
     return target.c_str();

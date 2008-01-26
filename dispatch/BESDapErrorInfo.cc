@@ -144,7 +144,7 @@ BESDapErrorInfo::add_data_from_file( const string &key, const string &name )
  * @param e exception to be added
  */
 void
-BESDapErrorInfo::add_exception( BESException &e )
+BESDapErrorInfo::add_exception( BESError &e, const string &admin  )
 {
 }
 

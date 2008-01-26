@@ -32,9 +32,8 @@
 
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
-#include "BESResponseException.h"
 #include "BESInfo.h"
-#include "BESHandlerException.h"
+#include "BESSyntaxUserError.h"
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
 
@@ -129,10 +128,10 @@ BESCatalogList::find_catalog( const string &catalog_name )
  * This method adds information about the specified container to the
  * informational object specified.
  *
- * If there is only one catalog registered then the container is a node
- * within that one catalog.
+ * If there is only one catalog registered then the container must be a
+ * node within that one catalog.
  *
- * if there are more than one catalog registered then then:
+ * if there are more than one catalog registered then:
  * - if the specified container is empty, display the list of catalogs.
  *   tag attributes include "catalogRoot".
  * - if not empty then the specified container must begin with the name
@@ -144,11 +143,15 @@ BESCatalogList::find_catalog( const string &catalog_name )
  * display information about only the specified container and not
  * its contents if a collection.
  *
+ * If there is a problem accessing the requested node then the reason for
+ * the problem must be included in the informational response, not an
+ * exception thrown. This method will not throw an exception.
+ *
  * @param container node to display, empty means root
  * @param coi is the request to include collections or just the specified
  * container
  * @param info informational object to add information to
- * @throws BESHandlerException if more than one catalog and no catalog
+ * @throws BESSyntaxUserError if more than one catalog and no catalog
  * specified; if the specified catalog does not exist; if the container
  * within the catalog does not exist.
  */
@@ -157,18 +160,17 @@ BESCatalogList::show_catalog( const string &container,
 			      const string &coi,
 			      BESInfo *info )
 {
-    bool done = false ;
     // if there is only one catalog then go to it to show the catalog
     if( _catalogs.size() == 1 )
     {
 	catalog_citer i = _catalogs.begin() ;
 	BESCatalog *catalog = (*i).second ;
-	done = catalog->show_catalog( container, coi, info ) ;
+	catalog->show_catalog( container, coi, info ) ;
     }
     else if( _catalogs.size() != 0 )
     {
-	// This means there are more than one catalog. If the specified container
-	// is empty then display the names of the catalogs
+	// This means there are more than one catalog. If the specified
+	// container is empty then display the names of the catalogs
 	if( container.empty() )
 	{
 	    map<string,string> a1 ;
@@ -190,8 +192,6 @@ BESCatalogList::show_catalog( const string &container,
 	    }
 
 	    info->end_tag( "dataset" ) ;
-
-	    done = true ;
 	}
 	else
 	{
@@ -201,8 +201,8 @@ BESCatalogList::show_catalog( const string &container,
 	    string::size_type colon = container.find( ":" ) ;
 	    if( colon == string::npos )
 	    {
-		string serr = "Multiple catalogs present but none specified in request" ;
-		throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
+		string serr = "You must specify a catalog to use." ;
+		throw BESSyntaxUserError( serr, __FILE__, __LINE__ ) ;
 	    }
 	    else
 	    {
@@ -212,29 +212,15 @@ BESCatalogList::show_catalog( const string &container,
 		BESCatalog *catalog = _catalogs[ name ] ;
 		if( catalog )
 		{
-		    done = catalog->show_catalog( rest, coi, info ) ;
+		    catalog->show_catalog( rest, coi, info ) ;
 		}
 		else
 		{
 		    string serr = "The catalog " + name + " does not exist." ;
-		    throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
+		    throw BESSyntaxUserError( serr, __FILE__, __LINE__ ) ;
 		}
 	    }
 	}
-    }
-    if( done == false )
-    {
-	string serr ;
-	if( container != "" )
-	{
-	    serr = (string)"Unable to find catalog information for container "
-		   + container ;
-	}
-	else
-	{
-	    serr = "Unable to find catalog information for root" ;
-	}
-	throw BESHandlerException( serr, __FILE__, __LINE__ ) ;
     }
 }
 

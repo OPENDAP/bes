@@ -102,9 +102,9 @@ CmdClient::~CmdClient()
 * @param  portVal  The port on which the server on the host hostStr is
 *                  listening for requests.
 * @param  timeout  Number of times to try an un-blocked read
-* @throws PPTException Thrown if unable to connect to the specified host
+* @throws BESError Thrown if unable to connect to the specified host
 *                      machine given the specified port.
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::startClient(const string & host, int portVal, int timeout)
@@ -119,8 +119,8 @@ CmdClient::startClient(const string & host, int portVal, int timeout)
 *
 * @param  unixStr  Full path to the unix socket
 * @param  timeout  Number of times to try an un-blocked read
-* @throws PPTException Thrown if unable to connect to the BES server
-* @see    PPTException
+* @throws BESError Thrown if unable to connect to the BES server
+* @see    BESError
 */
 void
 CmdClient::startClient(const string & unixStr, int timeout)
@@ -131,11 +131,11 @@ CmdClient::startClient(const string & unixStr, int timeout)
 
 /** @brief Closes the connection to the OpeNDAP server and closes the output stream.
 *
-* @throws PPTException Thrown if unable to close the connection or close
+* @throws BESError Thrown if unable to close the connection or close
 *                      the output stream.
 *                      machine given the specified port.
 * @see    OutputStream
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::shutdownClient()
@@ -155,10 +155,10 @@ CmdClient::shutdownClient()
 *               output but will be thrown away.
 * @param created true of the passed stream was created and can be deleted
 *                either by being replaced ro in the destructor
-* @throws PPTException catches any problems with opening or writing to
-*                      the output stream and creates a PPTException
+* @throws BESError catches any problems with opening or writing to
+*                      the output stream and creates a BESError
 * @see    OutputStream
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::setOutput(ostream * strm, bool created)
@@ -181,7 +181,7 @@ CmdClient::setOutput(ostream * strm, bool created)
 * client output to &lt;filename&gt;;
 *
 * @param  cmd  The BES client side command to execute
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::executeClientCommand(const string & cmd)
@@ -222,10 +222,10 @@ CmdClient::executeClientCommand(const string & cmd)
 * @param  cmd  The BES request, ending in a semicolon, that is sent to
 *              the BES server to handle.
 * @param repeat Number of times to repeat the command
-* @throws PPTException Thrown if there is a problem sending the request
+* @throws BESError Thrown if there is a problem sending the request
 *                      to the server or a problem receiving the response
 *                      from the server.
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::executeCommand(const string & cmd, int repeat )
@@ -280,10 +280,10 @@ CmdClient::executeCommand(const string & cmd, int repeat )
 *                   and ending in a semicolon, that will be sent to the
 *                   BES server to handle, one at a time.
 * @param repeat     Number of times to repeat the list of commands
-* @throws PPTException Thrown if there is a problem sending any of the
+* @throws BESError Thrown if there is a problem sending any of the
 *                      request to the server or a problem receiving any
 *                      of the responses from the server.
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::executeCommands(const string & cmd_list, int repeat)
@@ -315,12 +315,12 @@ CmdClient::executeCommands(const string & cmd_list, int repeat)
 *                BES server to handle.
 * @param repeat  Number of times to repeat the series of commands
                  from the file.
-* @throws PPTException Thrown if there is a problem opening the file to
+* @throws BESError Thrown if there is a problem opening the file to
 *                      read, reading the requests from the file, sending
 *                      any of the requests to the server or a problem
 *                      receiving any of the responses from the server.
 * @see    File
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::executeCommands(ifstream & istrm, int repeat)
@@ -379,10 +379,10 @@ CmdClient::executeCommands(ifstream & istrm, int repeat)
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @throws PPTException Thrown if there is a problem sending any of the
+* @throws BESError Thrown if there is a problem sending any of the
 *                      requests to the server or a problem receiving any
 *                      of the responses from the server.
-* @see    PPTException
+* @see    BESError
 */
 void
 CmdClient::interact()

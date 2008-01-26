@@ -1,4 +1,4 @@
-// BESDapHandlerException.cc
+// BESDapError.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -34,7 +34,7 @@
 
 using std::ostringstream;
 
-#include "BESDapHandlerException.h"
+#include "BESDapError.h"
 #include "BESContextManager.h"
 #include "BESDapErrorInfo.h"
 
@@ -48,8 +48,7 @@ using std::ostringstream;
  * @param dhi structure that holds request and response information
  */
 int
-BESDapHandlerException::handleException( BESException &e,
-					 BESDataHandlerInterface &dhi )
+BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 {
     // If we are handling errors in a dap2 context, then create a
     // DapErrorInfo object to transmit/print the error as a dap2
@@ -60,14 +59,14 @@ BESDapHandlerException::handleException( BESException &e,
     if( context == "dap2" )
     {
 	ErrorCode ec = unknown_error ;
-	BESDapHandlerException *de = dynamic_cast<BESDapHandlerException*>( &e);
+	BESDapError *de = dynamic_cast<BESDapError*>( &e);
 	if( de )
 	{
 	    ec = de->get_error_code() ;
 	}
 	dhi.error_info = new BESDapErrorInfo( ec, e.get_message() ) ;
 
-	return e.get_return_code() ;
+	return e.get_error_type() ;
     }
     else
     {
@@ -75,7 +74,7 @@ BESDapHandlerException::handleException( BESException &e,
 	// handler exception, then convert the error message to include the
 	// error code. If it is or is not a dap exception, we simply return
 	// that the exception was not handled.
-	BESDapHandlerException *de = dynamic_cast<BESDapHandlerException*>( &e);
+	BESDapError *de = dynamic_cast<BESDapError*>( &e);
 	if( de )
 	{
 	    ostringstream s;
@@ -85,6 +84,6 @@ BESDapHandlerException::handleException( BESException &e,
 	    e.set_message( s.str() ) ;
 	}
     }
-    return BES_EXECUTED_OK ;
+    return 0 ;
 }
 

@@ -42,7 +42,7 @@
 using std::flush ;
 
 #include "SSLConnection.h"
-#include "PPTException.h"
+#include "BESInternalError.h"
 
 SSLConnection::SSLConnection( )
     : _method( NULL ),
@@ -85,7 +85,7 @@ SSLConnection::send( const string &buf )
 	{
 	    string msg = "FAILED to write to SSL connection\n" ;
 	    msg += ERR_error_string( ERR_get_error(), NULL ) ;
-	    throw PPTException( msg ) ;
+	    throw BESInternalError( msg, __FILE__, __LINE__ ) ;
 	}
     }
 }
@@ -107,7 +107,7 @@ SSLConnection::receive( char *buffer, unsigned int buffer_size )
 	    {
 		string msg = "FAILED to read from SSL connection\n" ;
 		msg += ERR_error_string( ERR_get_error(), NULL ) ;
-		throw PPTException( msg ) ;
+		throw BESInternalError( msg, __FILE__, __LINE__ ) ;
 	    }
 	}
 	else

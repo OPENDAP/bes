@@ -46,7 +46,7 @@ using std::ofstream ;
 
 #include "CmdApp.h"
 #include "CmdClient.h"
-#include "PPTException.h"
+#include "BESError.h"
 #include "BESDebug.h"
 
 #define BES_CMDLN_DEFAULT_TIMEOUT 5
@@ -423,7 +423,7 @@ CmdApp::run()
 	}
 	BESDEBUG( "cmdln", "OK" << endl ) ;
     }
-    catch( PPTException &e )
+    catch( BESError &e )
     {
 	if( _client )
 	{
@@ -433,7 +433,7 @@ CmdApp::run()
 	}
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << "error starting the client" << endl ;
-	cerr << e.getMessage() << endl ;
+	cerr << e.get_message() << endl ;
 	exit( 1 ) ;
     }
 
@@ -452,10 +452,10 @@ CmdApp::run()
 	    _client->interact() ;
 	}
     }
-    catch( PPTException &e )
+    catch( BESError &e )
     {
 	cerr << "error processing commands" << endl ;
-	cerr << e.getMessage() << endl ;
+	cerr << e.get_message() << endl ;
     }
 
     try
@@ -478,11 +478,11 @@ CmdApp::run()
 	}
 	BESDEBUG( "cmdln", "OK" << endl ) ;
     }
-    catch( PPTException &e )
+    catch( BESError &e )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
 	cerr << "error closing the client" << endl ;
-	cerr << e.getMessage() << endl ;
+	cerr << e.get_message() << endl ;
 	return 1 ;
     }
 

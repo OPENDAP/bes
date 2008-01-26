@@ -52,8 +52,20 @@ class BESCatalogDirectory : public BESCatalog
 {
 private:
     const BESCatalogUtils *	_utils ;
+    typedef struct _bes_dir_entry
+    {
+	bool collection ;
+	bool isData ;
+	string name ;
+	string size ;
+	string mod_date ;
+	string mod_time ;
+    } bes_dir_entry ;
 
     void			add_stat_info( BESInfo *info,
+                                               struct stat &buf,
+					       const string &node ) ;
+    void			add_stat_info( bes_dir_entry &entry,
                                                struct stat &buf,
 					       const string &node ) ;
     bool			isData( const string &inQuestion,
@@ -62,7 +74,7 @@ public:
 				BESCatalogDirectory( const string &name ) ;
     virtual			~BESCatalogDirectory( void ) ;
 
-    virtual bool		show_catalog( const string &container,
+    virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) ;
 

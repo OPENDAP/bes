@@ -10,7 +10,7 @@ using std::endl ;
 #include "BESContainerStorageList.h"
 #include "BESContainerStorageFile.h"
 #include "BESContainer.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
@@ -106,7 +106,7 @@ run(void)
 		return 1 ;
 	    }
 	}
-	catch( BESException &e )
+	catch( BESError &e )
 	{
 	    cerr << "couldn't find " << s << endl ;
 	    return 1 ;
@@ -128,7 +128,7 @@ run(void)
 	    cout << "didn't find thingy, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "didn't find thingy, good" << endl ;
     }
@@ -167,7 +167,7 @@ run(void)
 	    cout << "couldn't find sym2, good" << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cout << "couldn't find sym2, good" << endl ;
     }
@@ -198,7 +198,7 @@ run(void)
 	    return 1 ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "couldn't find sym7, should have" << endl ;
 	return 1 ;

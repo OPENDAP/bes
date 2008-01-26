@@ -47,7 +47,7 @@ class BESResponseHandler ;
 class BESInfo ;
 
 #include "BESContainer.h"
-#include "BESException.h"
+#include "BESInternalError.h"
 
 /** @brief Structure storing information used by the BES to handle the request
 
@@ -70,13 +70,16 @@ public:
     void set_output_stream( ostream *strm )
     {
 	if( output_stream )
-	    throw BESException( "output stream has already been set", __FILE__, __LINE__ ) ;
+	{
+	    string err = "output stream has already been set" ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
 	output_stream = strm ;
     }
     ostream &get_output_stream()
     {
 	if( !output_stream )
-	    throw BESException( "output stream has not yet been set, cannot use", __FILE__, __LINE__ ) ;
+	    throw BESInternalError( "output stream has not yet been set, cannot use", __FILE__, __LINE__ ) ;
 	return *output_stream ;
     }
 

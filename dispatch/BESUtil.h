@@ -70,6 +70,11 @@ public:
 
     /** Unescape characters with backslash before them **/
     static string unescape( const string &s ) ;
+
+    /** Check if the specified path is valid **/
+    static void check_path( const string &path,
+			    const string &root,
+			    bool follow_sym_links ) ;
 } ;
 
 #endif // E_BESUtil_h

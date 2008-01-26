@@ -1,4 +1,4 @@
-// -*- C++ -*-
+// BESNotFoundError.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,45 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef PPTException_h_
-#define PPTException_h_ 1
+#ifndef BESNotFoundError_h_
+#define BESNotFoundError_h_ 1
 
-#include <string>
+#include "BESError.h"
 
-using std::string ;
-
-/**
+/** @brief error thrown if the resource requested can not be found
  */
-
-class PPTException
+class BESNotFoundError : public BESError
 {
 protected:
-    string _msg ;
-    string _file ;
-    int _line ;
+      			BESNotFoundError() {}
 public:
-    PPTException( const string &msg,
-                  const string &file = "UNDEFINED",
-                  const int & line = 0 )
-	: _msg( msg ),
-	  _file( file ),
-	  _line( line ) {}
-    virtual ~PPTException() {}
-    virtual string getMessage()
-    {
-	return _msg;
-    }
+      			BESNotFoundError( const string &s,
+					  const string &file,
+					  unsigned int line )
+			    : BESError( s, BES_NOT_FOUND_ERROR,
+			                file, line ) {}
+    virtual		~BESNotFoundError() {}
 
-    virtual string getErrorFile()
-    {
-	return _file;
-    }
+    virtual void	dump( ostream &strm ) const
+			{
+			    strm << "BESNotFoundError::dump - ("
+			         << (void *)this << ")" << endl ;
+			    BESIndent::Indent() ;
+			    BESError::dump( strm ) ;
+			    BESIndent::UnIndent() ;
+			}
 
-    virtual int getErrorLine()
-    {
-	return _line;
-    }
 };
 
-#endif // PPTException_h_ 
+#endif // BESNotFoundError_h_
 
