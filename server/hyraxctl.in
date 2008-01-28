@@ -631,7 +631,7 @@ fi
 
 if [ ! ${CATALINA_HOME} ]
 then
-    echo "CATALINE_HOMA environment variable is not set"
+    echo "CATALINE_HOME environment variable is not set"
     usage
     exit
 fi
