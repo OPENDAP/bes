@@ -124,7 +124,6 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    map<string,string> a1 ;
 	    a1["thredds_collection"] = "\"true\"" ;
 	    a1["isData"] = "\"false\"" ;
-	    a1["isAccessible"] = "\"true\"" ;
 	    info->begin_tag( "dataset", &a1 ) ;
 	    if( use_node == "" )
 	    {
@@ -295,7 +294,6 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    a4["isData"] = "\"true\"" ;
 		else
 		    a4["isData"] = "\"false\"" ;
-		a4["isAccessible"] = "\"true\"" ;
 		info->begin_tag( "dataset", &a4 ) ;
 		add_stat_info( info, buf, node ) ;
 		info->end_tag( "dataset" ) ;
