@@ -12,7 +12,7 @@
 #include "hdfeos.tab.h"
 
 using namespace std;
-
+using namespace libdap ;
 
 /// A class for handling NASA EOS data.
 /// This class contains functions that parse NASA EOS StructMetadata

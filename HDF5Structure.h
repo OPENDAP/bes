@@ -9,6 +9,9 @@
 #include <H5Ipublic.h>
 #include "Structure.h"
 #include "H5Git.h"
+
+using namespace libdap ;
+
 /// A HDF5Structure class.
 /// This class converts HDF5 compound type into DAP structure.
 ///

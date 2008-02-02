@@ -21,6 +21,8 @@
 #include "Str.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// A class for handling string data type in HDF5.
 ///

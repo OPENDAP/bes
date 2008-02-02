@@ -45,6 +45,8 @@
 #include "HDF5Grid.h"
 #include "HDF5Url.h"
 
+using namespace libdap ;
+
 #if 0
 #include "h5util.h"
 #endif

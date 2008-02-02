@@ -13,6 +13,8 @@
 #include "Grid.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A HDF5Grid class.
 /// 
 /// This class provides a way to map HDF5 array in Grid format to DAP Grid.

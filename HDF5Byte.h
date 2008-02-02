@@ -12,6 +12,7 @@
 #include "Byte.h"
 #include "H5Git.h"
 
+using namespace libdap ;
 
 /// A class for HDF5 byte type.
 /// 

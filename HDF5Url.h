@@ -24,6 +24,9 @@
 
 #include "Url.h"
 #include "H5Git.h"
+
+using namespace libdap ;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// A HDF5Url class.
 /// This class generates DAP URL type.

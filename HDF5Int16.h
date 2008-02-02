@@ -12,6 +12,8 @@
 #include "Int16.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A class for HDF5 signed 16 bit integer type.
 /// 
 /// This class provides a way to map HDF5 signed 16 bit integer to DAP Int16.

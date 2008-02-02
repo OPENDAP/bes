@@ -13,6 +13,8 @@
 #include "UInt16.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A class for HDF5 unsigned 16 bit integer type.
 /// 
 /// This class provides a way to map unsigned HDF5 16 bit integer to DAP UInt16.

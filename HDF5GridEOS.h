@@ -13,6 +13,8 @@
 #include "Grid.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A Grid subclass for handling HDF5 EOS data.
 /// 
 /// This class synthesizes DAP Grids from NASA EOS HDF5 arrays that can be mapped to Grid.

@@ -11,6 +11,8 @@
 #include "Float32.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A class for HDF5 32 bit float type.
 /// 
 /// This class provides a way to map HDF5 32 bit float to DAP Float32.

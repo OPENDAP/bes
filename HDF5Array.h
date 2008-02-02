@@ -10,6 +10,9 @@
 
 #include "Array.h"
 #include "H5Git.h"
+
+using namespace libdap ;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// A class for handling all types of array in HDF5.
 ///

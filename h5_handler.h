@@ -54,3 +54,6 @@
 #include "h5dds.h"
 #include "H5Git.h" // <hyokyung 2007.02.23. 15:16:53>
 #include "H5EOS.h" // <hyokyung 2007.03.23. 15:37:00>
+
+using namespace libdap ;
+

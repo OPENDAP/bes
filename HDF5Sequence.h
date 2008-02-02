@@ -9,6 +9,8 @@
 #include "common.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A HDF5Sequence class.
 /// This class is not used in the current hdf5 handler and
 /// is provided to support DAP Sequence data type if necessary.

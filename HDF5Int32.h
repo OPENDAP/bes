@@ -12,6 +12,7 @@
 #include "Int32.h"
 #include "H5Git.h"
 
+using namespace libdap ;
 
 /// A class for HDF5 32 bit integer type.
 /// 

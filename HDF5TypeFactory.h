@@ -27,6 +27,10 @@
 
 #include <string>
 
+#include "BaseTypeFactory.h"
+
+using namespace libdap ;
+
 // Class declarations; Make sure to include the corresponding headers in the
 // implementation file.
 

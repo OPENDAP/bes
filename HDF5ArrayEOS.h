@@ -10,6 +10,8 @@
 #include "Array.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// A special class for handling array in NASA EOS HDF5 file.
 ///

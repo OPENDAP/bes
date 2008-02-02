@@ -13,6 +13,8 @@
 #include "UInt32.h"
 #include "H5Git.h"
 
+using namespace libdap ;
+
 /// A class for HDF5 unsigned 32 bit integer type.
 /// 
 /// This class provides a way to map unsigned HDF5 32 bit integer to DAP UInt32.

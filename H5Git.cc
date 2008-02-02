@@ -24,6 +24,7 @@
 #include "H5Git.h"
 #include "InternalErr.h" // <hyokyung 2007.02.23. 14:17:32>
 
+using namespace libdap ;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn get_attr_info(hid_t dset, int index, DSattr_t *attr_inst_ptr,

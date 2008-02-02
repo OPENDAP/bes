@@ -19,10 +19,12 @@
 #include <string>
 #include <hdf5.h>
 
-
 using std::string;
 
 #include "DAS.h"
+
+using namespace libdap ;
+
 void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group);
 bool depth_first( hid_t , char *, DAS &);
 bool find_gloattr( hid_t file, DAS &das );
