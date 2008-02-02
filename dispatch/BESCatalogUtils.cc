@@ -42,6 +42,8 @@
 #include "GNURegex.h"
 #include "Error.h"
 
+using namespace libdap ;
+
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances ;
 
 BESCatalogUtils::

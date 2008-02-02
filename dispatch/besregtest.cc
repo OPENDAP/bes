@@ -42,6 +42,8 @@ using std::pair ;
 #include "GNURegex.h"
 #include "Error.h"
 
+using namespace libdap ;
+
 multimap<string,string> expressions ;
 
 bool break_includes( const string &s, string &err ) ;

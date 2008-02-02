@@ -34,8 +34,9 @@
 #define BESCgiInterface_h_ 1
 
 #include "BESInterface.h"
+#include "DODSFilter.h"
 
-class DODSFilter ;
+using namespace libdap ;
 
 /** @brief Represents the classic CGI interface into OPeNDAP.
 

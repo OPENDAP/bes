@@ -42,7 +42,8 @@ using std::ostringstream;
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
-#include "BESInternalError.h"
+#include "BESDapError.h"
+#include "BESInternalFatalError.h"
 #include "Error.h"
 
 void
@@ -59,19 +60,22 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
         df.set_dataset_name( dhi.container->get_real_name() ) ;
         df.send_das( dhi.get_output_stream(), *das, "", false ) ;
     }
+    catch( InternalErr &e )
+    {
+        string err = "libdap error transmitting DAS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
+    }
     catch( Error &e )
     {
-        ostringstream s ;
-        s << "libdap exception transmitting DAS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message() ;
-        BESInternalError ex( s.str(), __FILE__, __LINE__ ) ;
-        throw ex ;
+        string err = "libdap error transmitting DAS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
     }
     catch(...)
     {
-        string s = "unknown exception caught transmitting DAS" ;
-        BESInternalError ex( s, __FILE__, __LINE__ ) ;
+        string s = "unknown error caught transmitting DAS" ;
+        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
 }
@@ -97,17 +101,22 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", false);
     }
-    catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception transmitting DDS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESInternalError ex(s.str(), __FILE__, __LINE__);
-        throw ex;
+    catch( InternalErr &e )
+    {
+        string err = "libdap error transmitting DDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
     }
-    catch(...) {
-        string s = "unknown exception caught transmitting DDS";
-        BESInternalError ex(s, __FILE__, __LINE__);
+    catch( Error &e )
+    {
+        string err = "libdap error transmitting DDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
+    }
+    catch(...)
+    {
+        string s = "unknown error caught transmitting DDS" ;
+        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
 }
@@ -133,17 +142,22 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_data(*dds, ce, dhi.get_output_stream(), "", false);
     }
-    catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception transmitting DataDDS"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESInternalError ex(s.str(), __FILE__, __LINE__);
-        throw ex;
+    catch( InternalErr &e )
+    {
+        string err = "libdap error transmitting DataDDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
     }
-    catch(...) {
-        string s = "unknown exception caught transmitting DataDDS";
-        BESInternalError ex(s, __FILE__, __LINE__);
+    catch( Error &e )
+    {
+        string err = "libdap error transmitting DataDDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
+    }
+    catch(...)
+    {
+        string s = "unknown error caught transmitting DataDDS" ;
+        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
 }
@@ -169,17 +183,22 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
         df.set_ce(dhi.data[POST_CONSTRAINT]);
         df.send_ddx(*dds, ce, dhi.get_output_stream(), false);
     }
-    catch(Error & e) {
-        ostringstream s;
-        s << "libdap exception transmitting DDX"
-            << ": error_code = " << e.get_error_code()
-            << ": " << e.get_error_message();
-        BESInternalError ex(s.str(), __FILE__, __LINE__);
-        throw ex;
+    catch( InternalErr &e )
+    {
+        string err = "libdap error transmitting DDX: "
+            + e.get_error_message() ;
+        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
     }
-    catch(...) {
-        string s = "unknown exception caught transmitting DAS";
-        BESInternalError ex(s, __FILE__, __LINE__);
+    catch( Error &e )
+    {
+        string err = "libdap error transmitting DDX: "
+            + e.get_error_message() ;
+        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
+    }
+    catch(...)
+    {
+        string s = "unknown error caught transmitting DDX" ;
+        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
 }

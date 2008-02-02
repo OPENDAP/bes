@@ -36,6 +36,8 @@
 #include "BESResponseObject.h"
 #include "DAS.h"
 
+using namespace libdap ;
+
 /** @brief Represents an OPeNDAP DAS DAP2 data object within the BES
  */
 class BESDASResponse : public BESResponseObject

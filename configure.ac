@@ -145,6 +145,7 @@ AC_CONFIG_FILES([Makefile
 		 ppt/Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
+		 standalone/Makefile
 		 server/Makefile
 		 server/test/Makefile
 		 bin/Makefile

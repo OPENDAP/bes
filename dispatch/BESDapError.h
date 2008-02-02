@@ -37,6 +37,8 @@
 #include "Error.h"
 #include "BESDataHandlerInterface.h"
 
+using namespace libdap ;
+
 /** @brief error object created from libdap error objects and can handle
  * those errors
  *
@@ -69,6 +71,8 @@ public:
       virtual		~BESDapError() {}
       int		get_error_code() { return _error_code ; }
 
+      static int	convert_error_code( int error_code,
+					    int current_error_type ) ;
       static int	handleException( BESError &e,
 					 BESDataHandlerInterface &dhi ) ;
 };

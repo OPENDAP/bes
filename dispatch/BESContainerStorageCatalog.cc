@@ -39,6 +39,8 @@
 #include "GNURegex.h"
 #include "Error.h"
 
+using namespace libdap ;
+
 /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of BESContainerStorageCatalog with the given name.

@@ -38,6 +38,73 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapErrorInfo.h"
 
+/** @brief converts the libdap error code to the bes error type
+ *
+ * This functions converts the libdap error codes in Error to the proper BES
+ * error type.
+ *
+ *    undefined_error   1000 -> BES_INTERNAL_ERROR
+ *    unknown_error     1001 -> BES_INTERNAL_ERROR
+ *    internal_error    1002 -> BES_INTERNAL_FATAL_ERROR
+ *    no_such_file      1003 -> BES_NOT_FOUND_ERROR
+ *    no_such_variable  1004 -> BES_SYNTAX_USER_ERROR
+ *    malformed_expr    1005 -> BES_SYNTAX_USER_ERROR
+ *    no_authorization  1006 -> BES_FORBIDDEN_ERROR
+ *    cannot_read_file  1007 -> BES_FORBIDDEN_ERROR
+ *    dummy_message     1008 -> BES_FORBIDDEN_ERROR
+ *
+ * If the error type is already set to BES_INTERNAL_FATAL_ERROR it is not
+ * changed.
+ *
+ * @param error_code The libdap error code to convert
+ * @param current_error_type The current error type of the exception
+ * @returns BES error type used in any error response
+ */
+int
+BESDapError::convert_error_code( int error_code, int current_error_type )
+{
+    if( current_error_type == BES_INTERNAL_FATAL_ERROR )
+	return current_error_type ;
+    switch( error_code )
+    {
+	case undefined_error:
+	case unknown_error:
+	{
+	    return BES_INTERNAL_ERROR ;
+	    break ;
+	}
+	case internal_error:
+	{
+	    return BES_INTERNAL_FATAL_ERROR ;
+	    break ;
+	}
+	case no_such_file:
+	{
+	    return BES_NOT_FOUND_ERROR ;
+	    break ;
+	}
+	case no_such_variable:
+	case malformed_expr:
+	{
+	    return BES_SYNTAX_USER_ERROR ;
+	    break ;
+	}
+	case no_authorization:
+	case cannot_read_file:
+	case dummy_message:
+	{
+	    return BES_FORBIDDEN_ERROR ;
+	    break ;
+	}
+	default:
+	{
+	    return BES_INTERNAL_ERROR ;
+	    break ;
+	}
+    }
+    return BES_INTERNAL_ERROR ;
+}
+
 /** @brief handles exceptions if the error context is set to dap2
  *
  * If the error context from the BESContextManager is set to dap2 then
@@ -64,6 +131,8 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 	{
 	    ec = de->get_error_code() ;
 	}
+	e.set_error_type( convert_error_code( de->get_error_code(),
+	                                      e.get_error_type() ) ) ;
 	dhi.error_info = new BESDapErrorInfo( ec, e.get_message() ) ;
 
 	return e.get_error_type() ;
@@ -82,6 +151,8 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 		<< ": error_code = " << de->get_error_code()
 		<< ": " << de->get_message() ;
 	    e.set_message( s.str() ) ;
+	    e.set_error_type( convert_error_code( de->get_error_code(),
+	                                          e.get_error_type() ) ) ;
 	}
     }
     return 0 ;

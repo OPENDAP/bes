@@ -35,9 +35,12 @@
 
 #include "BESTransmitter.h"
 
-class DODSFilter ;
-class DAS ;
-class DDS ;
+#include "DODSFilter.h"
+
+using namespace libdap ;
+
+//class libdap::DAS ;
+//class libdap::DDS ;
 class BESInfo ;
 
 class BESFilterTransmitter : public BESTransmitter

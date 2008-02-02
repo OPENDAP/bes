@@ -37,6 +37,8 @@
 #include "DDS.h"
 #include "ConstraintEvaluator.h"
 
+using namespace libdap ;
+
 /** @brief Represents an OPeNDAP DDS DAP2 data object within the BES
  */
 class BESDDSResponse : public BESResponseObject

@@ -40,6 +40,8 @@ using std::string ;
 #include "BESInfo.h"
 #include "Error.h"
 
+using namespace libdap ;
+
 /** @brief silent informational response object
  *
  * This class ignores any data added to an informational object and ignores
