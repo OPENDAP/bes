@@ -71,6 +71,8 @@ using std:: string ;
 #include "trace_new.h"
 #endif
 
+using namespace libdap ;
+
 extern int hdfeosparse(void *arg); // defined in hdfeos.tab.c
 
 void parser_driver(DAS &das);

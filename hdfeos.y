@@ -56,6 +56,8 @@ using namespace std;
 #include "trace_new.h"
 #endif
 
+using namespace libdap ;
+
 // These macros are used to access the `arguments' passed to the parser. A
 // pointer to an error object and a pointer to an integer status variable are
 // passed in to the parser within a structure (which itself is passed as a

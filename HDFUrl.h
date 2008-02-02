@@ -48,6 +48,8 @@
 // DODS includes
 #include "Url.h"
 
+using namespace libdap ;
+
 class HDFUrl: public Url {
 public:
     HDFUrl(const string &n = "");

@@ -48,6 +48,8 @@
 // DODS includes
 #include "Int32.h"
 
+using namespace libdap ;
+
 class HDFInt32: public Int32 {
 public:
     HDFInt32(const string &n = "");

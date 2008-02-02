@@ -51,6 +51,8 @@
 #include <hdfclass.h>
 #include "ReadTagRef.h"
 
+using namespace libdap ;
+
 class HDFSequence: public Sequence, public ReadTagRef {
 public:
     HDFSequence(const string &n = "");

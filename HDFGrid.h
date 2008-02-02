@@ -54,6 +54,8 @@
 
 #include "ReadTagRef.h"
 
+using namespace libdap ;
+
 class HDFGrid: public Grid, public ReadTagRef {
 public:
     HDFGrid(const string &n = "");

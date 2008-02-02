@@ -49,6 +49,8 @@
 #include "dods-limits.h"
 #include "Str.h"
 
+using namespace libdap ;
+
 class HDFStr: public Str {
 public:
     HDFStr(const string &n = "");

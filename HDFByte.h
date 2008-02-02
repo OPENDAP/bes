@@ -48,6 +48,8 @@
 // DODS includes
 #include "Byte.h"
 
+using namespace libdap ;
+
 class HDFByte: public Byte {
 public:
     HDFByte(const string &n = "");

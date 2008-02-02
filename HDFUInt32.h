@@ -48,6 +48,8 @@
 // DODS includes
 #include "UInt32.h"
 
+using namespace libdap ;
+
 class HDFUInt32: public UInt32 {
 public:
     HDFUInt32(const string &n = "");

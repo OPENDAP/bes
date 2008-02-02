@@ -34,6 +34,8 @@
 // DODS includes
 #include "Float32.h"
 
+using namespace libdap ;
+
 class HDFFloat32: public Float32 {
 public:
     HDFFloat32(const string &n = "");

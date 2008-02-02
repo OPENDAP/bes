@@ -33,6 +33,8 @@
 // DODS includes
 #include "Int16.h"
 
+using namespace libdap ;
+
 class HDFInt16: public Int16 {
 public:
     HDFInt16(const string &n = "");

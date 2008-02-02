@@ -52,6 +52,8 @@
 #include "Array.h"
 #include "ReadTagRef.h"
 
+using namespace libdap ;
+
 class HDFArray: public Array, public ReadTagRef {
 public:
     HDFArray(const string &n = "", BaseType *v = 0);

@@ -49,6 +49,8 @@
 #include "Structure.h"
 #include "ReadTagRef.h"
 
+using namespace libdap ;
+
 class HDFStructure: public Structure, public ReadTagRef {
 public:
     HDFStructure(const string &n = "");

@@ -34,6 +34,8 @@
 
 #include <string>
 
+using namespace libdap ;
+
 /**
    An overload of DODSFilter, this does special processing for the HDF
    server's filter program.

@@ -48,6 +48,8 @@
 // DODS includes
 #include "Float64.h"
 
+using namespace libdap ;
+
 class HDFFloat64: public Float64 {
 public:
     HDFFloat64(const string &n = "");
