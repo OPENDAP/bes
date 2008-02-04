@@ -92,6 +92,12 @@ public:
      */
     virtual string		access() ;
 
+    /** @brief release the resource
+     *
+     * @return true if the resource is released
+     */
+    virtual bool		release() { return true ; }
+
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object

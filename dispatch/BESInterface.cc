@@ -170,9 +170,6 @@ BESInterface::finish( int status )
 	    delete _dhi.error_info ;
 	    _dhi.error_info = 0 ;
 	}
-        log_status();
-        report_request();
-        end_request();
     }
     catch( BESError &ex )
     {
@@ -198,6 +195,51 @@ BESInterface::finish( int status )
         _dhi.error_info->print( cout ) ;
 	delete _dhi.error_info ;
 	_dhi.error_info = 0 ;
+    }
+
+    // if there is a problem with the rest of these steps then all we will
+    // do is log it to the BES log file and not handle the exception with
+    // the exception manager.
+    try
+    {
+        log_status();
+    }
+    catch( BESError &ex )
+    {
+	(*BESLog::TheLog()) << "Problem logging status: " << ex.get_message()
+	                    << endl ;
+    }
+    catch( ... )
+    {
+	(*BESLog::TheLog()) << "Unknown problem logging status" << endl ;
+    }
+
+    try
+    {
+        report_request();
+    }
+    catch( BESError &ex )
+    {
+	(*BESLog::TheLog()) << "Problem reporting request: " << ex.get_message()
+	                    << endl ;
+    }
+    catch( ... )
+    {
+	(*BESLog::TheLog()) << "Unknown problem reporting request" << endl ;
+    }
+
+    try
+    {
+        end_request();
+    }
+    catch( BESError &ex )
+    {
+	(*BESLog::TheLog()) << "Problem ending request: " << ex.get_message()
+	                    << endl ;
+    }
+    catch( ... )
+    {
+	(*BESLog::TheLog()) << "Unknown problem ending request" << endl ;
     }
 
     return status ;
@@ -425,6 +467,16 @@ BESInterface::end_request()
         p_bes_end p = *i;
         p(_dhi);
     }
+
+    // now clean up any containers that were used in the request, release
+    // the resource
+    _dhi.first_container() ;
+    while( _dhi.container )
+    {
+	_dhi.container->release() ;
+	_dhi.next_container() ;
+    }
+
     BESDEBUG("bes", "OK" << endl)
 }
 

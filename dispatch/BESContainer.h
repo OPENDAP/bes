@@ -193,6 +193,7 @@ private:
      * @return name of file to access
      */
     virtual string		access() = 0 ;
+    virtual bool		release() = 0 ;
 
     virtual void		dump( ostream &strm ) const ;
 };
