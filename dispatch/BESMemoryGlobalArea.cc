@@ -57,7 +57,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	    string eps =
 		TheBESKeys::TheKeys()->get_key( key + "EmergencyPoolSize", fnd);
 	    string mhs =
-		TheBESKeys::TheKeys()->get_key( key + "MaximunHeapSize", fnd ) ;
+		TheBESKeys::TheKeys()->get_key( key + "MaximumHeapSize", fnd ) ;
 	    string verbose =
 		TheBESKeys::TheKeys()->get_key( key + "Verbose", fnd ) ;
 	    string control_heap =
@@ -90,12 +90,12 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		    {
 			string s = string ( "BES: " )
 				   + "unable to start since the emergency "
-				   + "pool is larger than the maximun size of "
+				   + "pool is larger than the maximum size of "
 				   + "the heap.\n" ;
 			(*BESLog::TheLog()) << s ;
 			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
-		    log_limits() ;
+		    log_limits( "before setting limits: " ) ;
 		    limit.rlim_cur = megabytes( max + 1 ) ;
 		    limit.rlim_max = megabytes( max + 1 ) ;
 		    /* repetative
@@ -119,7 +119,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 			(*BESLog::TheLog()) << s ;
 			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
 		    }
-		    log_limits() ;
+		    log_limits( "after setting limits: " ) ;
 		    _buffer = 0 ;
 		    _buffer = malloc( megabytes( max ) ) ;
 		    if( !_buffer )
@@ -191,29 +191,29 @@ BESMemoryGlobalArea::~BESMemoryGlobalArea()
 }
 
 inline void
-BESMemoryGlobalArea::log_limits()
+BESMemoryGlobalArea::log_limits( const string &msg )
 {
     if( getrlimit( RLIMIT_DATA, &limit ) < 0 )
     {
-	(*BESLog::TheLog()) << "Could not get limits because "
+	(*BESLog::TheLog()) << msg << "Could not get limits because "
 			    << strerror( errno ) << endl ;
 	_counter-- ;
 	throw BESInternalFatalError( strerror( errno ), __FILE__, __LINE__ ) ;
     }
     if( limit.rlim_cur == RLIM_INFINITY )
-	(*BESLog::TheLog()) << "BES: heap size soft limit is infinte"
+	(*BESLog::TheLog()) << msg << "heap size soft limit is infinte"
 	                    << endl ;
     else
-	(*BESLog::TheLog()) << "BES: heap size soft limit is "
+	(*BESLog::TheLog()) << msg << "heap size soft limit is "
 		      << (long int)limit.rlim_cur 
 		      << " bytes ("
 		      << (long int)(limit.rlim_cur)/(MEGABYTE)
 		      << " MB - may be rounded up)" << endl ;
     if( limit.rlim_max == RLIM_INFINITY )
-	(*BESLog::TheLog()) << "BES: heap size hard limit is infinite"
+	(*BESLog::TheLog()) << msg << "heap size hard limit is infinite"
 			    << endl ;
     else
-	(*BESLog::TheLog()) << "BES: heap size hard limit is "
+	(*BESLog::TheLog()) << msg << "heap size hard limit is "
 			    << (long int)limit.rlim_max 
 			    << " bytes ("
 			    << (long int)(limit.rlim_cur)/(MEGABYTE)

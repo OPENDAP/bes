@@ -238,7 +238,7 @@ BES.Container.Persistence=strict
 # Defines size of system global memory pool                             #
 #-----------------------------------------------------------------------#
 BES.Memory.GlobalArea.EmergencyPoolSize=1
-BES.Memory.GlobalArea.MaximunHeapSize=2
+BES.Memory.GlobalArea.MaximumHeapSize=20
 BES.Memory.GlobalArea.Verbose=no
 BES.Memory.GlobalArea.ControlHeap=no
 

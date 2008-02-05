@@ -50,7 +50,7 @@ class BESMemoryGlobalArea : public BESObj
     {
 	return s*MEGABYTE ;
     }
-    void			log_limits() ;
+    void			log_limits( const string &msg ) ;
 
 public:
     				BESMemoryGlobalArea() ;
