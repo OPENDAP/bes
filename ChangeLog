@@ -24,7 +24,7 @@
 
 	Changed the number of arguments in depth_first() function for
 	HDF5RequestHander.cc.
-
+	
 2007-11-29  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5RequestHander.cc (hdf5_build_dds) Changed the number of arguments 
