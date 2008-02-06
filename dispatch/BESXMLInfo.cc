@@ -122,7 +122,7 @@ BESXMLInfo::add_tag( const string &tag_name,
 	}
     }
     _do_indent = false ;
-    add_data( ">" + tag_data + "</" + tag_name + ">\n" ) ;
+    add_data( ">" + id2xml( tag_data ) + "</" + tag_name + ">\n" ) ;
 }
 
 /** @brief begin a tagged part of the information, information to follow
@@ -211,6 +211,39 @@ BESXMLInfo::add_data( const string &s )
     else
 	BESInfo::add_data( s ) ;
     _do_indent = true ;
+}
+
+string
+BESXMLInfo::entity( char c )
+{
+    switch( c )
+    {
+	case '>': return "&gt;";
+	case '<': return "&lt;";
+	case '&': return "&amp;";
+	case '\'': return "&apos;";
+	case '\"': return "&quot;";
+    }
+}
+
+/** Replace characters that are not allowed in XML
+
+    @param in The string in which to replace characters.
+    @param not_allowed The set of characters that are not allowed in XML.
+    default: ><&'(single quote)"(double quote)
+    @return The modified identifier. */
+string
+BESXMLInfo::id2xml( string in, const string &not_allowed )
+{
+    string::size_type i = 0 ;
+
+    while( ( i = in.find_first_of( not_allowed, i ) ) != string::npos )
+    {
+        in.replace( i, 1, entity( in[i] ) ) ;
+        i++ ;
+    }
+
+    return in ;
 }
 
 /** @brief add data from a file to the informational object

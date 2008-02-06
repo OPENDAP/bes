@@ -47,6 +47,8 @@ class BESXMLInfo : public BESInfo
 private:
     string		_indent ;
     bool		_do_indent ;
+
+    static string	entity( char c ) ;
 public:
   			BESXMLInfo( ) ;
     virtual 		~BESXMLInfo() ;
@@ -62,6 +64,8 @@ public:
     virtual void	end_tag( const string &tag_name ) ;
 
     virtual void	add_data( const string &s ) ;
+    static string	id2xml( string in,
+				const string &not_allowed = "><&'\"" ) ;
     virtual void	add_space( unsigned long num_spaces ) ;
     virtual void	add_break( unsigned long num_breaks ) ;
 
