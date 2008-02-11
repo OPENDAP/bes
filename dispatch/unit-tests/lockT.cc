@@ -1,6 +1,7 @@
 // lockT.C
 
 #include <iostream>
+#include <cstdlib>
 
 using std::cerr ;
 using std::cout ;

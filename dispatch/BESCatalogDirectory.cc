@@ -32,10 +32,10 @@
 
 #include "sys/types.h"
 #include "sys/stat.h"
-#include "sys/errno.h"
 #include "dirent.h"
-#include "stdio.h"
 
+#include <cstring>
+#include <cerrno>
 #include <sstream>
 
 using std::stringstream ;

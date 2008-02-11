@@ -31,9 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <ctype.h>
-#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
+#include <cstring>
+#include <cerrno>
 
 #include "SocketListener.h"
 #include "BESInternalError.h"

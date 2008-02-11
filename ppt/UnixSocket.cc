@@ -31,11 +31,13 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 //      szednik     Stephan Zednik <zednik@ucar.edu>
 
-#include <unistd.h>
+#include <unistd.h>   // for unlink
 #include <sys/un.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <errno.h>
+
+#include <cerrno>
+#include <cstring>
 
 #include "UnixSocket.h"
 #include "BESInternalError.h"

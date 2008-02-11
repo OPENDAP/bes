@@ -30,12 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <cstdlib>
 #include <iostream>
 
 using std::cout ;
 using std::endl ;
 
-#include "config.h"
 #include "BESServerUtils.h"
 #include "BESApp.h"
 #include "BESDebug.h"

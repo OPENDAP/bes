@@ -30,9 +30,6 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
 
 #include "config.h"
 
@@ -40,6 +37,8 @@
 #include <bzlib.h>
 #endif
 
+#include <cstring>
+#include <cerrno>
 #include <sstream>
 
 using std::ostringstream ;

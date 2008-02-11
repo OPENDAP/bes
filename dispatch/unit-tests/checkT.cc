@@ -2,10 +2,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/errno.h>
-#include <unistd.h>
-#include <stdio.h>
 
+#include <cerrno>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 

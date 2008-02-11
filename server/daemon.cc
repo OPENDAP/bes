@@ -30,18 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <errno.h>
+#include <unistd.h>  // for getopt fork setsid execvp access geteuid
+#include <sys/wait.h>  // for waitpid
 #include <sys/types.h>
-#include <sys/stat.h>
+#include <sys/stat.h>  // for chmod
+#include <ctype.h> // for isdigit
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstring>
+#include <cstdlib>
+#include <cerrno>
 
 using std::ifstream ;
 using std::ofstream ;

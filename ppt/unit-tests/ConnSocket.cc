@@ -33,6 +33,7 @@
 #include "cppunit/TestAssert.h"
 
 #include <iostream>
+#include <cstring>
 
 using std::cout ;
 using std::endl ;

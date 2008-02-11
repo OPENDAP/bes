@@ -30,14 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <unistd.h>
+#include <unistd.h>  // for unlink
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#include <stdio.h>
 #include <fcntl.h>
-#include <errno.h>
 
+#include <cstring>
+#include <cerrno>
 #include <map>
 #include <iostream>
 #include <sstream>

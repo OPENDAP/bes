@@ -32,6 +32,9 @@
 
 #include "BESProcessEncodedString.h"
 
+#include <cstring>
+#include <cstdlib>
+
 using std::cerr ;
 
 BESProcessEncodedString::BESProcessEncodedString (const char *s)

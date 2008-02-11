@@ -32,13 +32,18 @@
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <sys/socket.h>
+#include <sys/types.h>   // not needed in POSIX 2001, still safer
+#include <sys/socket.h>  // for accept setsockopt bind listen
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h>   // for htons
 #include <netdb.h>
-#include <unistd.h>
 
 #include <iostream>
+#include <cstring>
+
+#ifndef HAVE_SYS_ERRLIST
+#include <cerrno>
+#endif
 
 using std::endl ;
 

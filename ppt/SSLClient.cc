@@ -32,12 +32,13 @@
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
+#include <sys/socket.h> // for socket connect
+#include <netinet/in.h> // for inet_addr
+#include <arpa/inet.h>  // for htons
+#include <netdb.h>      // for gethostbyname
+#include <ctype.h>      // for isdigit
 
+#include <cstring>
 #include <iostream>
 
 using std::endl ;

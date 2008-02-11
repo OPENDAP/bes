@@ -30,8 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <errno.h>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <cerrno>
 
 using std::cerr ;
 using std::endl ;

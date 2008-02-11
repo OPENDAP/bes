@@ -7,7 +7,6 @@
 using namespace CppUnit ;
 
 #include <fcntl.h>
-#include <unistd.h>
 
 #include <string>
 #include <iostream>

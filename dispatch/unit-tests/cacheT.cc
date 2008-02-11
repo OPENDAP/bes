@@ -1,14 +1,13 @@
 // cacheT.C
 
+#include <unistd.h>  // for sleep
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <stdio.h>
-#include <errno.h>
+#include <dirent.h>  // for closedir opendir
 
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 
 using std::cerr ;
 using std::cout ;

@@ -31,9 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "config.h"
-#include "sys/types.h"
-#include "unistd.h"
 
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 

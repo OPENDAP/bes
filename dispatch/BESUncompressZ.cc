@@ -30,13 +30,12 @@
 //      dnadeau     Denis Nadeau <dnadeau@pop600.gsfc.nasa.gov>
 
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <cstring>
+#include <cerrno>
 
 #include "BESUncompressZ.h"
 #include "BESInternalError.h"

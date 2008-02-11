@@ -31,12 +31,13 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <signal.h>
-#include <unistd.h>
-#include <grp.h>
-#include <pwd.h>
+#include <unistd.h> // for getpid
+#include <grp.h>    // for getgrnam
+#include <pwd.h>    // for getpwnam
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 using std::cout ;
 using std::cerr ;

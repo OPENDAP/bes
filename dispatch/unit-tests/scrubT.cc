@@ -1,6 +1,8 @@
 // scrubT.C
 
 #include <iostream>
+#include <cstring>
+#include <limits.h>
 
 using std::cerr ;
 using std::cout ;

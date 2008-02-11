@@ -33,8 +33,6 @@
 #ifndef E_BESUtil_h
 #define E_BESUtil_h 1
 
-#include <stdio.h>
-
 #include <string>
 #include <iostream>
 

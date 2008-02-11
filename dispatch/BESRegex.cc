@@ -37,11 +37,11 @@
 #ifndef WIN32
 #include <alloca.h>
 #endif
-#include <stdlib.h>
  
 #include <sys/types.h>
 #include <regex.h>
 
+#include <cstdlib>
 #include <new>
 #include <string>
 #include <stdexcept>

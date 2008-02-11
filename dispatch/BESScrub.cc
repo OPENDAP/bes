@@ -32,6 +32,8 @@
 
 #include "config.h"
 
+#include <limits.h>
+
 #include "BESScrub.h"
 #include "BESRegex.h"
 

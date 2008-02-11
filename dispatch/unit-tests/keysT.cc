@@ -1,6 +1,6 @@
 // keysT.C
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 
 using std::cerr ;

@@ -33,8 +33,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <unistd.h>
-#include <stdio.h>
 
 using std::ifstream ;
 using std::ios ;

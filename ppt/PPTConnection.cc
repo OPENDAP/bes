@@ -31,8 +31,9 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <poll.h>
-#include <errno.h>
 
+#include <cerrno>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <iomanip>

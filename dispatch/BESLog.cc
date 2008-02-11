@@ -33,7 +33,6 @@
 #include <iostream>
 #include <time.h>
 #include <string>
-#include <unistd.h>
 #include "BESLog.h"
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"

@@ -32,8 +32,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/errno.h>
 
+#include <cerrno>
+#include <cstring>
 #include <sstream>
 #include <iostream>
 

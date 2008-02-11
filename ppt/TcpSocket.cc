@@ -36,8 +36,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <errno.h>
 #include <fcntl.h>
+
+#include <cstring>
+#include <cerrno>
 
 #include "TcpSocket.h"
 #include "SocketConfig.h"

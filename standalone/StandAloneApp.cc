@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <unistd.h>
+#include <unistd.h>  // for getopt
 #include <signal.h>
 
 #include <iostream>

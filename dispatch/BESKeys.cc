@@ -37,8 +37,7 @@ extern "C" {
 }
 #endif
 
-#include <stdio.h>
-#include <unistd.h>
+#include <cstring>
 #include <iostream>
 
 using std::endl ;

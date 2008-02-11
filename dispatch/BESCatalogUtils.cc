@@ -33,7 +33,6 @@
 #include "sys/types.h"
 #include "sys/stat.h"
 #include "dirent.h"
-#include "stdio.h"
 
 #include "BESCatalogUtils.h"
 #include "TheBESKeys.h"
