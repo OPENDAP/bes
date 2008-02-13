@@ -30,9 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <string>
 #include <sstream>
 #include <iostream>
+
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 using std::string;
 using std::ostringstream;

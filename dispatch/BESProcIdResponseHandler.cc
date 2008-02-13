@@ -30,12 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESProcIdResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESResponseNames.h"
 
 #include <cstdlib>
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
     : BESResponseHandler( name )

@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #include <sys/types.h>
@@ -39,6 +41,10 @@ extern "C" {
 
 #include <cstring>
 #include <iostream>
+
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 using std::endl ;
 using std::cout ;

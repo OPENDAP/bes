@@ -30,12 +30,19 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <iostream>
 #include <time.h>
 #include <string>
+
 #include "BESLog.h"
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"
+
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 using std::cerr ;
 using std::endl ;

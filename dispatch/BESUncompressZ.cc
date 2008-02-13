@@ -29,10 +29,14 @@
 // Authors:
 //      dnadeau     Denis Nadeau <dnadeau@pop600.gsfc.nasa.gov>
 
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <cstring>
 #include <cerrno>
