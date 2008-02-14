@@ -31,7 +31,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.7.4],
+AC_CHECK_LIBDAP([3.7.10],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -83,37 +83,14 @@ if test "${use_eos_meta}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DNASA_EOS_META"
 fi 
 
-
-AC_ARG_WITH([bes],
-            [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
-            [BES_PATH=${withval}], 
-            [BES_PATH=""])
-
-if test "${BES_PATH}" != "no"
-then
-    if test -x "${BES_PATH}/bin/bes-config"
-    then
-	AM_CONDITIONAL([OPENDAPSERVER], [true])
-	BES_CPPFLAGS="`${BES_PATH}/bin/bes-config --cflags`"
-	AC_SUBST([BES_CPPFLAGS])
-	BES_LIBS="`${BES_PATH}/bin/bes-config --dap-libs`"
-	AC_SUBST([BES_LIBS])
-	BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --modulesdir`"
-	AC_SUBST([BES_MODULE_DIR])
-    else
-	AC_CHECK_BES([3.4.0],
-	[
-	    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
-	    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
-	    AM_CONDITIONAL([OPENDAPSERVER], [true])
-	],
-	[ AM_CONDITIONAL([OPENDAPSERVER], [false])
-	])
-
-    fi
-else
-    AM_CONDITIONAL([OPENDAPSERVER], [false])
-fi
+AC_CHECK_BES([3.5.3],
+[
+    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
+    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
+    AM_CONDITIONAL([OPENDAPSERVER], [true])
+],
+[ AM_CONDITIONAL([OPENDAPSERVER], [false])
+])
 
 dnl autoheader macros; tack some text at the top and bottom of config_hdf5.h.in
 
