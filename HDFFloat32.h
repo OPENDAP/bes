@@ -32,7 +32,7 @@
 #include <string>
 
 // DODS includes
-#include "Float32.h"
+#include <Float32.h>
 
 using namespace libdap ;
 

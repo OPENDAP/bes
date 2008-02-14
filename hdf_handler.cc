@@ -49,15 +49,17 @@
 #include <string>
 #include <sstream>
 
-#include "DODSFilter.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "DataDDS.h"
-#include "ConstraintEvaluator.h"
+#include <DODSFilter.h>
+#include <DAS.h>
+#include <DDS.h>
+#include <DataDDS.h>
+#include <ConstraintEvaluator.h>
 
-#include "debug.h"
-#include "cgi_util.h"
-#include "ObjectType.h"
+#include <debug.h>
+#include <cgi_util.h>
+#include <ObjectType.h>
+
+using namespace libdap;
 
 #include "HDFTypeFactory.h"
 #include "hcerr.h"

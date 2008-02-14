@@ -149,6 +149,8 @@ static string type;	/* holds type in attr_pair rule */
 static string last_grid_swath;  /* holds HDF-EOS name for aliasing */
 static int commentnum=0;   /* number of current comment */
 
+using namespace libdap;
+
 static vector<AttrTable *> *attr_tab_stack;
 
 // I use a vector of AttrTable pointers for a stack
@@ -204,7 +206,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 208 "hdfeos.tab.c"
+#line 210 "hdfeos.tab.c"
 
 #ifdef short
 # undef short
@@ -498,10 +500,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   156,   156,   156,   161,   165,   169,   164,   177,   181,
-     176,   189,   188,   194,   212,   228,   229,   230,   233,   234,
-     235,   236,   242,   243,   246,   270,   290,   307,   326,   343,
-     362,   362,   365,   387
+       0,   158,   158,   158,   163,   167,   171,   166,   179,   183,
+     178,   191,   190,   196,   214,   230,   231,   232,   235,   236,
+     237,   238,   244,   245,   248,   272,   292,   309,   328,   345,
+     364,   364,   367,   389
 };
 #endif
 
@@ -1439,7 +1441,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 156 "hdfeos.y"
+#line 158 "hdfeos.y"
     {
 		    if (!attr_tab_stack)
 			attr_tab_stack = new vector<AttrTable *>;
@@ -1447,14 +1449,14 @@ yyreduce:
     break;
 
   case 5:
-#line 165 "hdfeos.y"
+#line 167 "hdfeos.y"
     {
 		    process_group((parser_arg *)arg, (yyvsp[(3) - (3)]));
 		;}
     break;
 
   case 6:
-#line 169 "hdfeos.y"
+#line 171 "hdfeos.y"
     {
 		  /* pop top of stack; store in attr_tab */
 		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
@@ -1463,14 +1465,14 @@ yyreduce:
     break;
 
   case 8:
-#line 177 "hdfeos.y"
+#line 179 "hdfeos.y"
     {
 		    process_group((parser_arg *)arg, (yyvsp[(3) - (3)]));
 		;}
     break;
 
   case 9:
-#line 181 "hdfeos.y"
+#line 183 "hdfeos.y"
     {
 		  /* pop top of stack; store in attr_tab */
 		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
@@ -1479,14 +1481,14 @@ yyreduce:
     break;
 
   case 11:
-#line 189 "hdfeos.y"
+#line 191 "hdfeos.y"
     { 
 		    name = (yyvsp[(1) - (1)]); 
 		;}
     break;
 
   case 13:
-#line 194 "hdfeos.y"
+#line 196 "hdfeos.y"
     {
 		    ostringstream name, comment;
 		    name << "comment" << commentnum++;
@@ -1507,7 +1509,7 @@ yyreduce:
     break;
 
   case 14:
-#line 213 "hdfeos.y"
+#line 215 "hdfeos.y"
     {
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -1524,7 +1526,7 @@ yyreduce:
     break;
 
   case 24:
-#line 247 "hdfeos.y"
+#line 249 "hdfeos.y"
     {
 		    /* NB: On the Sun (SunOS 4) strtol does not check for */
 		    /* overflow. Thus it will never figure out that 4 */
@@ -1551,7 +1553,7 @@ yyreduce:
     break;
 
   case 25:
-#line 271 "hdfeos.y"
+#line 273 "hdfeos.y"
     {
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE((yyvsp[(3) - (3)])) << endl);
@@ -1572,7 +1574,7 @@ yyreduce:
     break;
 
   case 26:
-#line 291 "hdfeos.y"
+#line 293 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[(1) - (1)])) << endl);
@@ -1592,7 +1594,7 @@ yyreduce:
     break;
 
   case 27:
-#line 308 "hdfeos.y"
+#line 310 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[(3) - (3)])) << endl);
@@ -1612,7 +1614,7 @@ yyreduce:
     break;
 
   case 28:
-#line 327 "hdfeos.y"
+#line 329 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[(1) - (1)])) << endl);
@@ -1632,7 +1634,7 @@ yyreduce:
     break;
 
   case 29:
-#line 344 "hdfeos.y"
+#line 346 "hdfeos.y"
     {
 		    type = "Float64";
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE((yyvsp[(3) - (3)])) << endl);
@@ -1652,7 +1654,7 @@ yyreduce:
     break;
 
   case 32:
-#line 366 "hdfeos.y"
+#line 368 "hdfeos.y"
     {
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE((yyvsp[(1) - (1)])) << endl);
@@ -1677,7 +1679,7 @@ yyreduce:
     break;
 
   case 33:
-#line 388 "hdfeos.y"
+#line 390 "hdfeos.y"
     {
 		    type = "String";
 		    DBG(cerr << "Adding STR: " << TYPE_NAME_VALUE((yyvsp[(3) - (3)])) << endl);
@@ -1692,7 +1694,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1696 "hdfeos.tab.c"
+#line 1698 "hdfeos.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1906,7 +1908,7 @@ yyreturn:
 }
 
 
-#line 400 "hdfeos.y"
+#line 402 "hdfeos.y"
 
 
 // This function is required for linking, but DODS uses its own error

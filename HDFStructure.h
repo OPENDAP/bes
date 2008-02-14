@@ -46,7 +46,8 @@
 #include <string>
 
 // DODS includes
-#include "Structure.h"
+#include <Structure.h>
+
 #include "ReadTagRef.h"
 
 using namespace libdap ;

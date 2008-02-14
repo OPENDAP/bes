@@ -46,8 +46,8 @@
 #include <string>
 
 // DODS includes
-#include "dods-limits.h"
-#include "Str.h"
+#include <dods-limits.h>
+#include <Str.h>
 
 using namespace libdap ;
 

@@ -49,7 +49,8 @@
 #include <vector>
 
 // DODS includes
-#include "Array.h"
+#include <Array.h>
+
 #include "ReadTagRef.h"
 
 using namespace libdap ;

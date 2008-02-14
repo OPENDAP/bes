@@ -54,7 +54,12 @@ static char rcsid[] not_used ={"$Id$"};
 
 #include <string.h>
 #include <assert.h>
-#include "parser.h"
+
+#include <parser.h>
+
+#ifndef YY_PROTO
+#define YY_PROTO(proto) proto
+#endif
 
 #define YYSTYPE char *
 #define YY_DECL int hdfeoslex YY_PROTO(( void ))

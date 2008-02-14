@@ -46,7 +46,7 @@
 #include <string>
 
 // DODS includes
-#include "UInt32.h"
+#include <UInt32.h>
 
 using namespace libdap ;
 

@@ -54,23 +54,20 @@ static char rcsid[] not_used = {"$Id$"};
 #include <iostream>
 #include <string>
 
-using std::cout ;
-using std::cerr ;
-using std::endl ;
-using std::flush ;
-using std:: string ;
 #include <GetOpt.h>
 
 #define YYSTYPE char *
 
-#include "DAS.h"
-#include "parser.h"
+#include <DAS.h>
+#include <parser.h>
+
 #include "hdfeos.tab.h"
 
 #ifdef TRACE_NEW
 #include "trace_new.h"
 #endif
 
+using namespace std ;
 using namespace libdap ;
 
 extern int hdfeosparse(void *arg); // defined in hdfeos.tab.c

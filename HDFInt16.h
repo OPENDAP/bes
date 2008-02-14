@@ -31,7 +31,7 @@
 #include <string>
 
 // DODS includes
-#include "Int16.h"
+#include <Int16.h>
 
 using namespace libdap ;
 

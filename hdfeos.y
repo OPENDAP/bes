@@ -76,6 +76,8 @@ static string type;	/* holds type in attr_pair rule */
 static string last_grid_swath;  /* holds HDF-EOS name for aliasing */
 static int commentnum=0;   /* number of current comment */
 
+using namespace libdap;
+
 static vector<AttrTable *> *attr_tab_stack;
 
 // I use a vector of AttrTable pointers for a stack

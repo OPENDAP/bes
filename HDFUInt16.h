@@ -32,7 +32,7 @@
 #include <string>
 
 // DODS includes
-#include "UInt16.h"
+#include <UInt16.h>
 
 using namespace libdap ;
 
