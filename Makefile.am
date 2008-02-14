@@ -26,7 +26,7 @@ libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
                             $(HDFTYPE_HDR) $(SERVER_HDR)
 libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
-libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_LIBS)
+libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_DAP_LIBS)
 dist_bin_SCRIPTS = bes-hdf4-data.sh
 
 endif
