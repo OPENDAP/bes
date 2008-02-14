@@ -38,8 +38,9 @@
 #include<string>
 
 #include "Error.h"
+#include "DAS.h"
 
-class DAS ;
+using namespace libdap ;
 
 void csv_read_attributes(DAS &das, const string &filename) throw(Error);
 

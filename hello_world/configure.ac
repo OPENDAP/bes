@@ -30,7 +30,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_CHECK_FUNCS([strchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.5.3],
+AC_CHECK_LIBDAP([3.5.10],
  [
   LIBS="$LIBS $DAP_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -38,32 +38,11 @@ AC_CHECK_LIBDAP([3.5.3],
  [ AC_MSG_ERROR([Cannot find libdap])
 ])
   
-AC_ARG_WITH([bes],
-            [AS_HELP_STRING([--with-bes=PATH],[bes install root directory])],
-            [BES_PATH=${withval}], 
-            [BES_PATH=""])
-
-if test -x "${BES_PATH}/bin/bes-config"
-then
-    AM_CONDITIONAL([OPENDAPSERVER], [true])
-    BES_CPPFLAGS="`${BES_PATH}/bin/bes-config --cflags`"
-    AC_SUBST([BES_CPPFLAGS])
-    BES_LDFLAGS="`${BES_PATH}/bin/bes-config --libs`"
-    AC_SUBST([BES_LDFLAGS])
-    BES_MODULE_DIR="`${BES_PATH}/bin/bes-config --prefix`/lib/bes"
-    AC_SUBST([BES_MODULE_DIR])
-else
-    AC_CHECK_BES([3.1.0],
-    [
-        BES_LDFLAGS=$BES_LIBS
-        # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
-        # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
-        AM_CONDITIONAL([OPENDAPSERVER], [true])
-    ],
-    [ AM_CONDITIONAL([OPENDAPSERVER], [false])
-    ])
-
-fi
+AC_CHECK_BES([3.5.3],
+[
+],
+[ AC_MSG_ERROR([Cannot find bes])
+])
 
 OPENDAP_DEBUG_OPTION
 

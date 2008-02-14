@@ -39,6 +39,8 @@
 
 #include"DDS.h"
 
+using namespace libdap ;
+
 void csv_read_descriptors(DDS &dds, const string &filename) ;
 
 #endif // E_CSVDDS_h

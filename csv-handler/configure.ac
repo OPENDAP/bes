@@ -30,7 +30,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_CHECK_FUNCS([strchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.7.4],
+AC_CHECK_LIBDAP([3.7.10],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -39,13 +39,10 @@ AC_CHECK_LIBDAP([3.7.4],
 ])
   
 
-AC_CHECK_BES([3.4.0],
+AC_CHECK_BES([3.5.3],
 [
-    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
-    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
-    AM_CONDITIONAL([OPENDAPSERVER], [true])
 ],
-[ AM_CONDITIONAL([OPENDAPSERVER], [false])
+[ AC_MSG_ERROR([Cannot find bes])
 ])
 
 OPENDAP_DEBUG_OPTION
