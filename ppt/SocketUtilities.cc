@@ -30,7 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <cstdlib>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include "SocketUtilities.h"
 

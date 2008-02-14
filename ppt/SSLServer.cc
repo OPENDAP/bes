@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <sys/types.h>   // not needed in POSIX 2001, still safer
@@ -43,6 +45,9 @@
 
 #ifndef HAVE_SYS_ERRLIST
 #include <cerrno>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 using std::endl ;

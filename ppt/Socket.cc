@@ -30,12 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <cerrno>
 #include <cstring>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include "Socket.h"
 #include "BESInternalError.h"

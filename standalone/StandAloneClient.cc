@@ -36,6 +36,10 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 using std::cout;
 using std::endl;
 using std::cerr;
