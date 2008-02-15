@@ -1,7 +1,12 @@
 // checkT.C
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <cerrno>
 #include <cstdlib>
