@@ -88,11 +88,9 @@ bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int 
   bool foundvgroup = false;
   hdf_vgroup vgroup;
 
-#ifdef NO_EXCEPTIONS
-  if (VgroupExists(hdf_file.c_str(), hdf_name.c_str())) {
-#else
+  // Wrap this with a try/catch block but don't do anything with it. The
+  // error condition is checked later in this function. pcw 02/19/2008
   try {
-#endif
     hdfistream_vgroup vgin(hdf_file.c_str());
     if(ref != -1)
       vgin.seek_ref(ref);
@@ -102,9 +100,7 @@ bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int 
     vgin.close();
     foundvgroup = true;
   }
-#ifndef NO_EXCEPTIONS
   catch(...) {}
-#endif
 
   set_read_p(true);
   

@@ -37,23 +37,6 @@
 //
 // $RCSfile: dhdferr.h,v $ - HDF server error class declarations
 //
-// $Log: dhdferr.h,v $
-// Revision 1.4.18.1  2003/05/21 16:26:55  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.4  1999/05/06 03:23:35  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.3.20.1  1999/05/06 00:27:23  jimg
-// Jakes String --> string changes
-//
-// Revision 1.3  1997/03/10 22:45:48  jimg
-// Update for 2.12
-//
-// Revision 1.1  1996/09/27 18:21:32  todd
-// Initial revision
-//
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _DHDFERR_H
@@ -63,40 +46,23 @@
 #include <string>
 #include <hcerr.h>
 
-class dhdferr;
+#include "Error.h"
 
-#ifdef NO_EXCEPTIONS
-#define THROW(x) fakethrow(x(__FILE__,__LINE__))
-void fakethrow(const hcerr&);
-void fakethrow(const dhdferr&);
-#else
+using namespace libdap ;
+
 #define THROW(x) throw x(__FILE__,__LINE__)
-#endif
 
 // DODS/HDF exceptions class
-class dhdferr {
+class dhdferr : public Error {
 public:
-    dhdferr(const string& msg, const string& file, int line) : 
-         _errmsg(msg), _file(file), _line(line) {}
+    dhdferr(const string& msg, const string& file, int line) ; 
     virtual ~dhdferr(void) {}
-    friend ostream& operator<<(ostream& out, const dhdferr& x);
-    string errmsg(void) const { return _errmsg; }
-    string file(void) const { return _file; }
-    int line(void) const { return _line; }
-protected:
-    virtual void _print(ostream& out) const;
-    string _errmsg;
-    string _file;
-    int _line;
 };
 
 // Define valid DODS/HDF exceptions
 class dhdferr_hcerr: public dhdferr {
 public:
-    dhdferr_hcerr(const string& msg, const string& file, int line): 
-         dhdferr(msg, file, line) {}
-protected:
-    virtual void _print(ostream& out) const;
+    dhdferr_hcerr(const string& msg, const string& file, int line); 
 }; // An hdfclass error occured
 
 class dhdferr_addattr: public dhdferr {

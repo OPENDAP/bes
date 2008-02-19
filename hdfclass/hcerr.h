@@ -53,28 +53,17 @@ class hcerr;
 using std::string ;
 using std::ostream ;
 
-#ifdef NO_EXCEPTIONS
-#define THROW(x) fakethrow(x(__FILE__,__LINE__))
-void fakethrow(const hcerr&);
-#else
+#include "Error.h"
+
+using namespace libdap ;
+
 #define THROW(x) throw x(__FILE__,__LINE__)
-#endif
 
 // HDFClass exceptions class
-class hcerr {
+class hcerr : public Error {
 public:
-    hcerr(const char *msg, const char *file, int line) : 
-         _errmsg(msg), _file(file), _line(line) {}
+    hcerr(const char *msg, const char *file, int line) ;
     virtual ~hcerr(void) {}
-    friend ostream& operator<<(ostream& out, const hcerr& x);
-    string errmsg(void) const { return _errmsg; }
-    string file(void) const { return _file; }
-    int line(void) const { return _line; }
-protected:
-    void _print(ostream& out) const;
-    string _errmsg;
-    string _file;
-    int _line;
 };
 
 // Define valid HDFClass exceptions

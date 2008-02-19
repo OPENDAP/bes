@@ -62,8 +62,6 @@
 using namespace libdap;
 
 #include "HDFTypeFactory.h"
-#include "hcerr.h"
-#include "dhdferr.h"
 
 using namespace std;
 
@@ -175,24 +173,6 @@ int main(int argc, char *argv[])
         default:
             df.print_usage();   // Throws Error
         }
-    }
-    catch(dhdferr & d) {
-        ostringstream s;
-        s << "hdf4 handler: " << d;
-        ErrMsgT(s.str());
-        Error e(unknown_error, d.errmsg());
-        set_mime_text(stdout, dods_error, cgi_version);
-        e.print(stdout);
-        return 1;
-    }
-    catch(hcerr & h) {
-        ostringstream s;
-        s << "hdf4 handler: " << h;
-        ErrMsgT(s.str());
-        Error e(unknown_error, h.errmsg());
-        set_mime_text(stdout, dods_error, cgi_version);
-        e.print(stdout);
-        return 1;
     }
     catch(Error & e) {
         string s;

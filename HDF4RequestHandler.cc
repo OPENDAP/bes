@@ -47,9 +47,6 @@
 #include "ConstraintEvaluator.h"
 #include "config_hdf.h"
 
-#include "hcerr.h"
-#include "dhdferr.h"
-
 extern void read_das(DAS & das, const string & cachedir,
                      const string & filename);
 extern void read_dds(DDS & dds, const string & cachedir,
@@ -108,14 +105,6 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
     {
 	throw e ;
     }
-    catch(dhdferr & d) {
-	string err = "hdf4 handler: " + d.errmsg() ;
-	throw BESDapError( err, false, unknown_error, d.file(), d.line() ) ;
-    }
-    catch(hcerr & h) {
-	string err = "hdf4 handler: " + h.errmsg() ;
-	throw BESDapError( err, false, unknown_error, h.file(), h.line() ) ;
-    }
     catch( InternalErr &e ) {
 	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
 			__FILE__, __LINE__ ) ;
@@ -159,14 +148,6 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
     catch( BESError &e )
     {
 	throw e ;
-    }
-    catch(dhdferr & d) {
-	string err = "hdf4 handler: " + d.errmsg() ;
-	throw BESDapError( err, false, unknown_error, d.file(), d.line() ) ;
-    }
-    catch(hcerr & h) {
-	string err = "hdf4 handler: " + h.errmsg() ;
-	throw BESDapError( err, false, unknown_error, h.file(), h.line() ) ;
     }
     catch( InternalErr &e ) {
 	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
@@ -217,14 +198,6 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
     catch( BESError &e )
     {
 	throw e ;
-    }
-    catch(dhdferr & d) {
-	string err = "hdf4 handler: " + d.errmsg() ;
-	throw BESDapError( err, false, unknown_error, d.file(), d.line() ) ;
-    }
-    catch(hcerr & h) {
-	string err = "hdf4 handler: " + h.errmsg() ;
-	throw BESDapError( err, false, unknown_error, h.file(), h.line() ) ;
     }
     catch( InternalErr &e ) {
 	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
