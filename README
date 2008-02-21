@@ -111,23 +111,28 @@ the bes control script besctl, which is installed in <prefix>/bin.
 using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
+<code>
     [jimg@zoe sbin]$ besctl start
     BES install directory: <prefix>/bin
     Starting the BES daemon
     PID: <process_id> UID: <uid of process>
+</code>
 
 Go back to your first window and run the bescmdln program. Use the -h (host)
 and -p (port) switches to tell it how to connect to the BES.
 
+<code>
     [jimg@zoe bin]$ bescmdln -p 10002 -h localhost
 
     Type 'exit' to exit the command line client and 'help' or '?' to display
     the help screen
 
     BESClient>
+</code>
 
 Try some simple commands:
 
+<code>
     BESClient> show help;
     <showHelp>
 	<response>
@@ -137,12 +142,14 @@ Try some simple commands:
 	</response>
     </showHelp>
     BESClient>
+</code>
 
 Note that all commands must end with a semicolon except 'exit'.
 
 Now try to get a DAP response using a handler you registered (the BES
 supports a fairly complex syntax which I won't explain fully here):
 
+<code>
     BESClient> set container in catalog values n1, data/nc/fnoc1.nc;
     BESClient> define d1 as n1;
     BESClient> get das for d1;
@@ -178,6 +185,7 @@ supports a fairly complex syntax which I won't explain fully here):
     }
     BESClient> exit
     [jimg@zoe bin]$
+</code>
 
 If you got something similar (you would have used a different dataset name
 from "data'nc'fnoc1.nc" and thus would get a different DAS response) the BES
@@ -185,14 +193,18 @@ is configured correctly and is running.
 
 To stop the BES use the bes control script with the stop option:
 
+<code>
     [jimg@zoe sbin]$ besctl start
+</code>
 
 Note: Constraints and the bes command line client
 
 Constraints are added to the 'define' command using the modifier 'with' like
 so: 
 
+<code>
     define d as nscat with nscat.constraint="WVC_LAT";
+</code>
 
 If there is a list of containers instead of just one, then there can be a
 list of <container>.constraint="" clauses.
