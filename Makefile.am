@@ -50,10 +50,11 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h
 
+GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
 	hdf-dods.h hdf-maps.h config_hdf.h \
-	hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc
+	$(GRAM_SRC)
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
@@ -65,7 +66,7 @@ EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
 DEJATOOL = dap_hdf4_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
-CLEANFILES = *~ *.log *.sum
+CLEANFILES = *~ *.log *.sum $(GRAM_SRC)
 
 if OPENDAPSERVER
 
@@ -95,6 +96,11 @@ bes-conf: bes-hdf4-data.sh
 	fi)
 
 endif
+
+# Copy the generated grammar files to the 'grammarfiles' directory.
+.PHONY: grammarfiles
+grammarfiles: $(GRAM_SRC)
+	for f in $(GRAM_SRC); do cp $$f grammarfiles; done
 
 ###########################################################################
 
