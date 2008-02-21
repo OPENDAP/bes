@@ -61,7 +61,7 @@ bool
 depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 {
   // Iterate through the file to see members of the root group 
-  DBG(cerr << ">depth_first()" << endl);
+  DBG(cerr << ">depth_first() pid: " << pid  << " gname: " << gname  << " fname: " << fname << endl);
 
   int nelems; 
   if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
@@ -70,6 +70,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     msg += gname;
     throw InternalErr(__FILE__, __LINE__, msg);
   }
+
+  DBG(cerr << " nelems = " << nelems << endl);
 
   for (int i = 0; i < nelems; i++) {
     
@@ -179,7 +181,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
     delete[]oname;
 
   }
-  DBG(cerr << "<depth_first()" << endl);
+
+  DBG(cerr << "<depth_first() " << endl);
   return true;
 }
 
