@@ -69,9 +69,14 @@ HDF4RequestHandler::HDF4RequestHandler(const string &name)
         if (!found || _cachedir == "")
             _cachedir = "/tmp";
 
-        string dummy = _cachedir + "/dummy";
-        int fd = open(dummy.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
-        unlink(dummy.c_str());
+        string dummyx = _cachedir + "/dummy.XXXXXX" ;
+#if defined(WIN32) || defined(TEST_WIN32_TEMPS)
+	char *dummy = _mktemp( (char *)dummyx.c_str() ) ;
+#else
+	char *dummy = mktemp( (char *)dummyx.c_str() ) ;
+#endif
+        int fd = open(dummy, O_CREAT | O_WRONLY | O_TRUNC);
+        unlink(dummy);
         if (fd == -1) {
             if (_cachedir == "/tmp") {
                 close(fd);
