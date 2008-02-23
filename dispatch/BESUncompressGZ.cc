@@ -48,9 +48,8 @@ using std::ostringstream ;
  *
  * @param src file that will be uncompressed
  * @param target file to uncompress the src file to
- * @return full path to the uncompressed file
  */
-string
+void
 BESUncompressGZ::uncompress( const string &src, const string &target )
 {
     // buffer to hold the uncompressed data
@@ -113,7 +112,5 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
 
     gzclose( gsrc ) ;
     fclose( dest ) ;
-
-    return target ;
 }
 

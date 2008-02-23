@@ -43,7 +43,7 @@ using std::string ;
 
 class BESCache ;
 
-typedef string (*p_bes_uncompress)( const string &src, const string &target ) ;
+typedef void (*p_bes_uncompress)( const string &src, const string &target ) ;
 
 /** @brief List of all registered uncompress methods
  *
@@ -85,7 +85,8 @@ public:
 
     virtual string			get_method_names() ;
 
-    virtual string			uncompress( const string &src,
+    virtual bool			uncompress( const string &src,
+						    string &target,
 						    BESCache &cache ) ;
 
     virtual void			dump( ostream &strm ) const ;

@@ -36,6 +36,12 @@
 #include "BESCache.h"
 #include "BESForbiddenError.h"
 
+/** @brief construct a container representing a file
+ *
+ * @param sym_name symbolic name of the container
+ * @param real_name real name of the container, a file name in this case
+ * @param type type of the data represented in the file
+ */
 BESFileContainer::BESFileContainer( const string &sym_name,
 				    const string &real_name,
 				    const string &type )
@@ -50,6 +56,10 @@ BESFileContainer::BESFileContainer( const string &sym_name,
     }
 }
 
+/** @brief make a copy of the container
+ *
+ * @param copy_from The container to copy
+ */
 BESFileContainer::BESFileContainer( const BESFileContainer &copy_from )
     : BESContainer( copy_from )
 {
@@ -61,6 +71,10 @@ BESFileContainer::_duplicate( BESContainer &copy_to )
     BESContainer::_duplicate( copy_to ) ;
 }
 
+/** @brief duplicate this instances of BESFileContainer
+ *
+ * @return a copy of this instance
+ */
 BESContainer *
 BESFileContainer::ptr_duplicate( )
 {
@@ -69,6 +83,11 @@ BESFileContainer::ptr_duplicate( )
     return container ;
 }
 
+/** @brief returns the name of a file to access for this container,
+ * uncompressing if neccessary.
+ *
+ * @return name of file to access
+ */
 string
 BESFileContainer::access()
 {
@@ -76,8 +95,26 @@ BESFileContainer::access()
     BESKeys *keys = TheBESKeys::TheKeys() ;
     BESCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" );
 
-    return BESUncompressManager::TheManager()->uncompress( get_real_name(),
-                                                           cache ) ;
+    _cached = BESUncompressManager::TheManager()->uncompress( get_real_name(),
+							      _target, cache ) ;
+    if( _cached )
+	return _target ;
+    return get_real_name() ;
+}
+
+/** @brief release the file
+ *
+ * If the file was cached (uncompressed) then we need to release the lock on
+ * the cached entry
+ *
+ * @return if successfully released, returns true, otherwise returns false
+ */
+bool
+BESFileContainer::release()
+{
+    // If the file is cached then we will need to release the lock on the
+    // target
+    return true ;
 }
 
 /** @brief dumps information about this object

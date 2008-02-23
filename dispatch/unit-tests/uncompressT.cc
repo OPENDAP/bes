@@ -48,8 +48,14 @@ uncompressT::run(void)
 	cout << "uncompress a test gz file" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -110,8 +116,14 @@ uncompressT::run(void)
 	cout << "uncompress a test gz file, should be cached" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -199,8 +211,14 @@ uncompressT::run(void)
 	cout << "uncompress a test bz2 file" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -261,8 +279,14 @@ uncompressT::run(void)
 	cout << "uncompress a test bz2 file, should be cached" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -341,8 +365,14 @@ uncompressT::run(void)
 	cout << "uncompress a test z file" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -403,8 +433,14 @@ uncompressT::run(void)
 	cout << "uncompress a test z file, should be cached" << endl;
 	try
 	{
-	    string result = BESUncompressManager::TheManager()->uncompress( src_file, cache ) ;
+	    string result ;
+	    bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
 	    cout << "Uncompression succeeded" << endl ;
+	    if( !cached )
+	    {
+		cerr << "Result " << result << " not cached" << endl ;
+		return 1 ;
+	    }
 	    if( result == target )
 	    {
 		cout << "result is correct" << endl ;
@@ -460,6 +496,45 @@ uncompressT::run(void)
     catch( ... )
     {
 	cerr << "Unable to create the z cache object" << endl ;
+	cerr << "Unknown exception thrown" << endl ;
+	return 1 ;
+    }
+
+    src_file = cache_dir + "/testfile.nc" ;
+    try
+    {
+	cout << endl << "*****************************************" << endl;
+	cout << "uncompress a file that is not compressed" << endl;
+
+	BESCache cache( cache_dir, "z_cache", 1 ) ;
+	string result ;
+	bool cached = BESUncompressManager::TheManager()->uncompress( src_file, result, cache ) ;
+	cout << "Uncompression succeeded" << endl ;
+	if( cached )
+	{
+	    cerr << "Result " << result << " should not be cached" << endl ;
+	    return 1 ;
+	}
+	if( result.empty() )
+	{
+	    cout << "result is correct" << endl ;
+	}
+	else
+	{
+	    cerr << "Resulting file " << result << " is not correct, "
+		 << "should be empty" << endl ;
+	    return 1 ;
+	}
+    }
+    catch( BESError &e )
+    {
+	cerr << "Failed to uncompress the file" << endl ;
+	cerr << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "Failed to uncompress the file" << endl ;
 	cerr << "Unknown exception thrown" << endl ;
 	return 1 ;
     }

@@ -50,14 +50,13 @@ using std::string ;
  *
  * @param src the source file that is to be uncompressed
  * @param target the target uncompressed file
- * @return the target uncompressed file
  * @throws BESContainerStorageException if errors in uncompressing the file
  * or if bz2 is not compiled into the BES.
  */
 class BESUncompressBZ2 : public BESObj
 {
 public:
-    static string		uncompress( const string &src,
+    static void			uncompress( const string &src,
 					    const string &target ) ;
 };
 

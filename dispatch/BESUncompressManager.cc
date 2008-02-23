@@ -45,8 +45,14 @@ using std::istringstream ;
 
 BESUncompressManager *BESUncompressManager::_instance = 0 ;
 
-/** @brief constructs an uncompression manager adding gz and bz2
+/** @brief constructs an uncompression manager adding gz, z, and bz2
  * uncompression methods by default.
+ *
+ * Adds methods to uncompress gz, bz2, and Z files.
+ *
+ * Looks for a configuration parameter for the number of times to try to
+ * lock the cache (BES.Uncompress.NumTries) and the time in microseconds
+ * between tries (BES.Uncompress.Retry).
  */
 BESUncompressManager::BESUncompressManager()
 {
@@ -59,7 +65,7 @@ BESUncompressManager::BESUncompressManager()
     string val = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( !found || val.empty() )
     {
-	_retry = 2 ;
+	_retry = 2000 ;
     }
     else
     {
@@ -194,8 +200,9 @@ BESUncompressManager::get_method_names()
  * @throws BESInternalError if there is a problem uncompressing
  * the file.
  */
-string
-BESUncompressManager::uncompress( const string &src, BESCache &cache )
+bool
+BESUncompressManager::uncompress( const string &src, string &target,
+				  BESCache &cache )
 {
     BESDEBUG( "bes", "BESUncompressManager::uncompress - src = " << src << endl )
     string::size_type dot = src.rfind( "." ) ;
@@ -203,6 +210,9 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
     {
 	string ext = src.substr( dot+1, src.length() - dot ) ;
 	// Why fold the extension to lowercase? jhrg 5/9/07
+	// The extension (Z, gz, bz2, GZ, BZ2, z) is used to determine which
+	// uncompression engine to use. It is compared to the list, which is
+	// all lower case. pcw 2/22/08
 	for( int i = 0; i < ext.length(); i++ )
 	{
 	    ext[i] = tolower( ext[i] ) ;
@@ -226,13 +236,12 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    // the target, no need to cache.
 		    BESDEBUG( "bes", "BESUncompressManager::uncompress - is cached? " \
 			      << src << endl )
-		    string target ;
 		    if( cache.is_cached( src, target ) )
 		    {
 			BESDEBUG( "bes", "BESUncompressManager::uncompress - " \
 			          << "is cached " << target << endl )
 			cache.unlock() ;
-			return target ;
+			return true ;
 		    }
 
 		    // the file is not cached, so we need to uncompress the
@@ -251,10 +260,8 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 		    // we are now done in the cahce, unlock it
 		    cache.unlock() ;
 
-		    // How about having the p_bes_uncompress() return bool
-		    // since we already know the name of the target? Or
-		    // return void since it throws on error? jhrg 5/9/07
-		    return p( src, target ) ;
+		    p( src, target ) ;
+		    return true ;
 		}
 		catch( BESError &e )
 		{
@@ -299,7 +306,7 @@ BESUncompressManager::uncompress( const string &src, BESCache &cache )
 #endif
     }
 
-    return src ;
+    return false ;
 }
 
 /** @brief dumps information about this object

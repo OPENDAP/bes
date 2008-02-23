@@ -48,22 +48,12 @@ zT::run(void)
 	cout << "uncompress a test file" << endl;
 	try
 	{
-	    string result = BESUncompressZ::uncompress( src_file, target ) ;
+	    BESUncompressZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
-	    if( result == target )
-	    {
-		cout << "result is correct" << endl ;
-	    }
-	    else
-	    {
-		cerr << "Resulting file " << result << " is not correct, "
-		     << "should be " << target << endl ;
-		return 1 ;
-	    }
 	    ifstream strm( target.c_str() ) ;
 	    if( !strm )
 	    {
-		cerr << "Resulting file " << result << " doesn't exist" << endl;
+		cerr << "Resulting file " << target << " doesn't exist" << endl;
 		return 1 ;
 	    }
 	    char line[80] ;
@@ -110,22 +100,12 @@ zT::run(void)
 	cout << "uncompress a test file that is already cached" << endl;
 	try
 	{
-	    string result = BESUncompressZ::uncompress( src_file, target ) ;
+	    BESUncompressZ::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
-	    if( result == target )
-	    {
-		cout << "result is correct" << endl ;
-	    }
-	    else
-	    {
-		cerr << "Resulting file " << result << " is not correct, "
-		     << "should be " << target << endl ;
-		return 1 ;
-	    }
 	    ifstream strm( target.c_str() ) ;
 	    if( !strm )
 	    {
-		cerr << "Resulting file " << result << " doesn't exist" << endl;
+		cerr << "Resulting file " << target << " doesn't exist" << endl;
 		return 1 ;
 	    }
 	    char line[80] ;

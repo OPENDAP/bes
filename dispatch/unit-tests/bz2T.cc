@@ -13,6 +13,7 @@ using std::ifstream ;
 #include "BESUncompressBZ2.h"
 #include "BESCache.h"
 #include "BESError.h"
+#include "config.h"
 #include <test_config.h>
 
 #define BES_CACHE_CHAR '#' 
@@ -49,22 +50,12 @@ bz2T::run(void)
 	cout << "uncompress a test file" << endl;
 	try
 	{
-	    string result = BESUncompressBZ2::uncompress( src_file, target ) ;
+	    BESUncompressBZ2::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
-	    if( result == target )
-	    {
-		cout << "result is correct" << endl ;
-	    }
-	    else
-	    {
-		cerr << "Resulting file " << result << " is not correct, "
-		     << "should be " << target << endl ;
-		return 1 ;
-	    }
 	    ifstream strm( target.c_str() ) ;
 	    if( !strm )
 	    {
-		cerr << "Resulting file " << result << " doesn't exist" << endl;
+		cerr << "Resulting file " << target << " doesn't exist" << endl;
 		return 1 ;
 	    }
 	    char line[80] ;
@@ -111,22 +102,12 @@ bz2T::run(void)
 	cout << "uncompress a test file that is already cached" << endl;
 	try
 	{
-	    string result = BESUncompressBZ2::uncompress( src_file, target ) ;
+	    BESUncompressBZ2::uncompress( src_file, target ) ;
 	    cout << "Uncompression succeeded" << endl ;
-	    if( result == target )
-	    {
-		cout << "result is correct" << endl ;
-	    }
-	    else
-	    {
-		cerr << "Resulting file " << result << " is not correct, "
-		     << "should be " << target << endl ;
-		return 1 ;
-	    }
 	    ifstream strm( target.c_str() ) ;
 	    if( !strm )
 	    {
-		cerr << "Resulting file " << result << " doesn't exist" << endl;
+		cerr << "Resulting file " << target << " doesn't exist" << endl;
 		return 1 ;
 	    }
 	    char line[80] ;

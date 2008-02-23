@@ -59,44 +59,26 @@ using std::string ;
 class BESFileContainer : public BESContainer
 {
 private:
+    bool			_cached ;
+    string			_target ;
+
 				BESFileContainer() : BESContainer() {}
 protected:
     virtual void		_duplicate( BESContainer &copy_to ) ;
 public:
-    /** @brief construct a container representing a file
-     *
-     * @param sym_name symbolic name of the container
-     * @param real_name real name of the container, a file name in this case
-     * @param type type of the data represented in the file
-     */
     				BESFileContainer( const string &sym_name,
 				                  const string &real_name,
 						  const string &type ) ;
 
-    /** @brief make a copy of the container
-     *
-     * @param copy_from The container to copy
-     */
 				BESFileContainer( const BESFileContainer &copy_from ) ;
 
     virtual			~BESFileContainer() {}
 
-    /** @brief duplicate this instances of BESFileContainer
-     */
     virtual BESContainer *	ptr_duplicate( ) ;
 
-    /** @brief returns the name of a file to access for this container,
-     * uncompressing if neccessary.
-     *
-     * @return name of file to access
-     */
     virtual string		access() ;
 
-    /** @brief release the resource
-     *
-     * @return true if the resource is released
-     */
-    virtual bool		release() { return true ; }
+    virtual bool		release() ;
 
     /** @brief Displays debug information about this object
      *

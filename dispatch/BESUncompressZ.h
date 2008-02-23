@@ -55,7 +55,7 @@ using std::string ;
 class BESUncompressZ : public BESObj
 {
 public:
-    static string		uncompress( const string &src,
+    static void			uncompress( const string &src,
 					    const string &target ) ;
 };
 

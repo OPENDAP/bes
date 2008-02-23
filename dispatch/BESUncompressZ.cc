@@ -50,9 +50,8 @@
  *
  * @param src file that will be uncompressed
  * @param target file to uncompress the src file to
- * @return full path to the uncompressed file
  */
-string
+void
 BESUncompressZ::uncompress( const string &src, const string &target )
 {
 
@@ -372,7 +371,5 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     BESDEBUG( "bes", "BESUncompressZ::uncompress - end decompres" << endl);
-    return target.c_str();
-    
 }
 

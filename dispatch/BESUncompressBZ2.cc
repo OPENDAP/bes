@@ -63,7 +63,7 @@ bz_internal_error ( int errcode )
  * @param target file to uncompress the src file to
  * @return full path to the uncompressed file
  */
-string
+void
 BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 {
 #ifndef HAVE_BZLIB_H
@@ -181,8 +181,6 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
     BZ2_bzReadClose( &bzerror, bsrc ) ;
     fclose( dest ) ;
     fclose( src ) ;
-
-    return target ;
 #endif
 }
 
