@@ -100,7 +100,7 @@ static void process_group(parser_arg *arg, const string &s);
 
 %}
 
-%debug
+/* %debug */ /* Commented because bison 1.28 does not support this option */
 %expect 10
 
 %token GROUP
