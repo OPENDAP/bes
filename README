@@ -51,6 +51,7 @@ Updated 14 Nov 2007
 
 Support for HDF data types:
 
+<code>
     HDF Version:  This release of the server supports HDF4.2r1. It also
 		  supports reading/parsing the HDF-EOS attribute
 		  information which is then available to DAP clients.
@@ -90,44 +91,44 @@ Support for HDF data types:
 
     Vgroups:      Vgroups are straight-forwardly mapped to 
                   Structures.
+</code>
 
 Special characters in HDF identifiers:
 
-  - A number of non-alphanumeric characters (e.g., space, #, +, -) used
-    in HDF identifiers are not allowed in the names of DAP objects,
-    object components or in URLs. The HDF4 data handler therefore deals
-    internally with translated versions of these identifiers. To
-    translate the WWW convention of escaping such characters by
-    replacing them with "%" followed by the hexadecimal value of their
-    ASCII code is used. For example, "Raster Image #1" becomes
-    "Raster%20Image%20%231". These translations should be transparent to
-    users of the server (but they will be visible in the DDS, DAS and in
-    any applications which use a client that does not translate the
-    identifiers back to their original form).
+  A number of non-alphanumeric characters (e.g., space, #, +, -) used in HDF
+  identifiers are not allowed in the names of DAP objects, object components
+  or in URLs. The HDF4 data handler therefore deals internally with
+  translated versions of these identifiers. To translate the WWW convention
+  of escaping such characters by replacing them with "%" followed by the
+  hexadecimal value of their ASCII code is used. For example, "Raster Image
+  #1" becomes "Raster%20Image%20%231". These translations should be
+  transparent to users of the server (but they will be visible in the DDS,
+  DAS and in any applications which use a client that does not translate the
+  identifiers back to their original form).
 
 Known problems:
 
 Handling of floating point attributes:
 
-  - Because the DAP software encodes attribute values as ASCII strings
-    there will be a loss of accuracy for floating point attributes. This
-    loss of accuracy is dependent on the version of the C++ I/O library
-    used in compiling/linking the software (i.e., the amount of floating
-    point precision preserved when outputting to ASCII is dependent on
-    the library). Typically it is very small (e.g., at least six decimal
-    places are preserved).
+  Because the DAP software encodes attribute values as ASCII strings there
+  will be a loss of accuracy for floating point attributes. This loss of
+  accuracy is dependent on the version of the C++ I/O library used in
+  compiling/linking the software (i.e., the amount of floating point
+  precision preserved when outputting to ASCII is dependent on the library).
+  Typically it is very small (e.g., at least six decimal places are
+  preserved).
 
 Handling of global attributes:
 
   - The server will merge the separate global attributes for the SD, GR
-    interfaces with any file annotations into one set of global
-    attributes.  These will then be available through any of the global
-    attribute access functions.
+  interfaces with any file annotations into one set of global attributes.
+  These will then be available through any of the global attribute access
+  functions.
 
-  - If the client opens a constrained dataset (e.g., in SDstart), any
-    global attributes of the unconstrained dataset will not be
-    accessible because the constraint creates a "virtual dataset" which
-    is a subset of the original unconstrained dataset.
+  - If the client opens a constrained dataset (e.g., in SDstart), any global
+  attributes of the unconstrained dataset will not be accessible because the
+  constraint creates a "virtual dataset" which is a subset of the original
+  unconstrained dataset.
 
 Todd Karakashian (Todd.K.Karakashian at jpl.nasa.gov)
 

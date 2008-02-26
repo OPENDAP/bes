@@ -30,37 +30,62 @@ Updated 14 Nov 2007
 
 Support for HDF data types:
 
-    HDF Version:  This release of the server supports HDF4.2r1. It also		  supports reading/parsing the HDF-EOS attribute		  information which is then available to DAP clients.
+    HDF Version:  This release of the server supports HDF4.2r1. It also
+		  supports reading/parsing the HDF-EOS attribute
+		  information which is then available to DAP clients.
 
-    SDS:          This is mapped to a DAP2 Grid (if it has a dimension                   scale) or Array (if it lacks a dim scale).  
+    SDS:          This is mapped to a DAP2 Grid (if it has a dimension 
+                  scale) or Array (if it lacks a dim scale).  
 
-    Raster image: This is read via the HDF 4.0 General Raster                  interface and is mapped to Array.  Each component of a		  raster is mapped to a new dimension labeled		  accordingly. For example, a 2-dimensional, 3-component		  raster is mapped to an  m x n x 3 Array.
+    Raster image: This is read via the HDF 4.0 General Raster
+                  interface and is mapped to Array.  Each component of a
+		  raster is mapped to a new dimension labeled
+		  accordingly. For example, a 2-dimensional, 3-component
+		  raster is mapped to an  m x n x 3 Array.
 
-    Vdata:        This is mapped to a Sequence, each element of                  which is a Structure.  Each subfield of the Vdata is		  mapped to an element of the Structure.  Thus a Vdata		  with one field of order 3 would be mapped to a		  Sequence of 1 Structure containing 3 base types.
+    Vdata:        This is mapped to a Sequence, each element of
+                  which is a Structure.  Each subfield of the Vdata is
+		  mapped to an element of the Structure.  Thus a Vdata
+		  with one field of order 3 would be mapped to a
+		  Sequence of 1 Structure containing 3 base types.
 
-		  Note: Even though these appear as Sequences, the data		  handler does not support applying relational		  constraints to them. You can use the array notation to		  request a range of elements.
+		  Note: Even though these appear as Sequences, the data
+		  handler does not support applying relational
+		  constraints to them. You can use the array notation to
+		  request a range of elements.
 
-    Attributes:   HDF attributes on SDS, rasters are                  straight-forwardly mapped to DAP attributes (HDF		  doesn't yet support Vdata attributes).  File		  attributes (both SDS, raster) are mapped as attributes		  of a DAP variable called "HDF_GLOBAL" (by analogy to		  the way DAP handles netCDF global attributes, i.e.,		  attaching them to "NC_GLOBAL").
+    Attributes:   HDF attributes on SDS, rasters are
+                  straight-forwardly mapped to DAP attributes (HDF
+		  doesn't yet support Vdata attributes).  File
+		  attributes (both SDS, raster) are mapped as attributes
+		  of a DAP variable called "HDF_GLOBAL" (by analogy to
+		  the way DAP handles netCDF global attributes, i.e.,
+		  attaching them to "NC_GLOBAL").
 
-    Annotations:  HDF file annotations mapped in the DAP to attribute                   values of type "String" attached to the fake DAP		  variable named "HDF_ANNOT".  HDF annotations on		  objects are currently not read by the server.
+    Annotations:  HDF file annotations mapped in the DAP to attribute 
+                  values of type "String" attached to the fake DAP
+		  variable named "HDF_ANNOT".  HDF annotations on
+		  objects are currently not read by the server.
 
-    Vgroups:      Vgroups are straight-forwardly mapped to                   Structures.
+    Vgroups:      Vgroups are straight-forwardly mapped to 
+                  Structures.
+
 
 Special characters in HDF identifiers:
 
-  - A number of non-alphanumeric characters (e.g., space, #, +, -) used    in HDF identifiers are not allowed in the names of DAP objects,    object components or in URLs. The HDF4 data handler therefore deals    internally with translated versions of these identifiers. To    translate the WWW convention of escaping such characters by    replacing them with "%" followed by the hexadecimal value of their    ASCII code is used. For example, "Raster Image #1" becomes    "Raster%20Image%20%231". These translations should be transparent to    users of the server (but they will be visible in the DDS, DAS and in    any applications which use a client that does not translate the    identifiers back to their original form).
+  A number of non-alphanumeric characters (e.g., space, #, +, -) used in HDF  identifiers are not allowed in the names of DAP objects, object components  or in URLs. The HDF4 data handler therefore deals internally with  translated versions of these identifiers. To translate the WWW convention  of escaping such characters by replacing them with "%" followed by the  hexadecimal value of their ASCII code is used. For example, "Raster Image  #1" becomes "Raster%20Image%20%231". These translations should be  transparent to users of the server (but they will be visible in the DDS,  DAS and in any applications which use a client that does not translate the  identifiers back to their original form).
 
 Known problems:
 
 Handling of floating point attributes:
 
-  - Because the DAP software encodes attribute values as ASCII strings    there will be a loss of accuracy for floating point attributes. This    loss of accuracy is dependent on the version of the C++ I/O library    used in compiling/linking the software (i.e., the amount of floating    point precision preserved when outputting to ASCII is dependent on    the library). Typically it is very small (e.g., at least six decimal    places are preserved).
+  Because the DAP software encodes attribute values as ASCII strings there  will be a loss of accuracy for floating point attributes. This loss of  accuracy is dependent on the version of the C++ I/O library used in  compiling/linking the software (i.e., the amount of floating point  precision preserved when outputting to ASCII is dependent on the library).  Typically it is very small (e.g., at least six decimal places are  preserved).
 
 Handling of global attributes:
 
-  - The server will merge the separate global attributes for the SD, GR    interfaces with any file annotations into one set of global    attributes.  These will then be available through any of the global    attribute access functions.
+  - The server will merge the separate global attributes for the SD, GR  interfaces with any file annotations into one set of global attributes.  These will then be available through any of the global attribute access  functions.
 
-  - If the client opens a constrained dataset (e.g., in SDstart), any    global attributes of the unconstrained dataset will not be    accessible because the constraint creates a "virtual dataset" which    is a subset of the original unconstrained dataset.
+  - If the client opens a constrained dataset (e.g., in SDstart), any global  attributes of the unconstrained dataset will not be accessible because the  constraint creates a "virtual dataset" which is a subset of the original  unconstrained dataset.
 
 Todd Karakashian (Todd.K.Karakashian at jpl.nasa.gov)
 
