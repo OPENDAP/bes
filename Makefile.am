@@ -57,7 +57,7 @@ DEJATOOL = dap_h5_handler
 
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
 
-EXTRA_DIST = hdfeos_das.y  hdfeos.y hdfeos_das.lex  hdfeos.lex
+EXTRA_DIST = hdfeos_das.y  hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources
 
 CLEANFILES = *~ *.sum *.log
 
@@ -92,6 +92,28 @@ endif
 
 ###########################################################################
 
+# Build the HDF-EOS parser
+
+hdfeos.tab.cc hdfeos.tab.h: hdfeos.y H5EOS.h
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
+	mv hdfeos.tab.c hdfeos.tab.cc
+
+hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das $<
+	mv hdfeos_das.tab.c hdfeos_das.tab.cc
+
+# Build the HDF-EOS scanner
+
+lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
+	mv lex.hdfeos.c lex.hdfeos.cc
+
+lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.h
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos_das $<
+	mv lex.hdfeos_das.c lex.hdfeos_das.cc
+
+###########################################################################
+
 # Fortify targets.
 
 .PHONY: fortify
@@ -116,22 +138,40 @@ rpm:
 
 ###########################################################################
 
-# Build the HDF-EOS parser
+# Build OS/X Packages.
 
-hdfeos.tab.cc hdfeos.tab.h: hdfeos.y H5EOS.h
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
-	mv hdfeos.tab.c hdfeos.tab.cc
+PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker*
 
-hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das $<
-	mv hdfeos_das.tab.c hdfeos_das.tab.cc
+UNIV_ARCH=-arch ppc -arch i386
+MAC_SYSROOT=Developer/SDKs/MacOSX10.4u.sdk
 
-# Build the HDF-EOS scanner
+PKG_CONF_FLAGS=
 
-lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
-	mv lex.hdfeos.c lex.hdfeos.cc
+clean-pkg:
+	-rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
 
-lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.h
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos_das $<
-	mv lex.hdfeos_das.c lex.hdfeos_das.cc
+pkg-build:
+	./configure --prefix=/usr --disable-dependency-tracking $(PKG_CONF_FLAGS)
+	make clean all
+	DESTDIR=${PWD}/mac_osx make install
+
+pkg-main:
+	./OSX_Resources/update_mac_package_contents.pl README "configure.ac" "mac_osx/usr"
+	${PACKAGEMAKER} -build -p @PACKAGE@-@PACKAGE_VERSION@.pkg \
+		-f mac_osx/usr \
+		-ds -r OSX_Resources \
+		-i OSX_Resources/Info.plist \
+		-d OSX_Resources/Description.plist
+	-rm -rf mac_osx
+
+pkg-dmg:
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@.dmg
+	mkdir @PACKAGE@-@PACKAGE_VERSION@
+	mv @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
+	cp README NEWS @PACKAGE@-@PACKAGE_VERSION@
+	dropdmg -i --sanitize-for-servers --format zlib @PACKAGE@-@PACKAGE_VERSION@
+	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
+
+pkg: clean-pkg pkg-build pkg-main pkg-dmg
+
