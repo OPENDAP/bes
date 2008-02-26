@@ -44,7 +44,7 @@ AC_CHECK_HDF5(
   [
       LIBS="$LIBS $H5_LIBS"
       LDFLAGS="$LDFLAGS $H5_LDFLAGS"
-      CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS"
+      CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS -DH5_USE_16_API"
   ],
   [
       echo "*** Use --with-hdf5 for the root hdf5 directory."
