@@ -113,12 +113,14 @@ BESCatalogDirectory::show_catalog( const string &node,
 	// let the user see it.
 	if( _utils->exclude( basename ) )
 	{
+	    closedir( dip ) ;
 	    string error = "You do not have permission to view the node "
 	                   + use_node ;
 	    throw BESForbiddenError( error, __FILE__, __LINE__ ) ;
 	}
 	struct stat cbuf ;
 	int statret = stat( fullnode.c_str(), &cbuf ) ;
+	int my_errno = errno ;
 	if( statret == 0 )
 	{
 	    map<string,string> a1 ;
@@ -242,11 +244,12 @@ BESCatalogDirectory::show_catalog( const string &node,
 	}
 	else
 	{
+	    closedir( dip ) ;
 	    // ENOENT means that the path or part of the path does not exist
-	    if( errno == ENOENT )
+	    if( my_errno == ENOENT )
 	    {
 		string error = "Node " + use_node + " does not exist" ;
-		char *s_err = strerror( errno ) ;
+		char *s_err = strerror( my_errno ) ;
 		if( s_err )
 		{
 		    error = s_err ;
@@ -257,7 +260,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    else
 	    {
 		string error = "Access denied for node " + use_node ;
-		char *s_err = strerror( errno ) ;
+		char *s_err = strerror( my_errno ) ;
 		if( s_err )
 		{
 		    error = error + s_err ;

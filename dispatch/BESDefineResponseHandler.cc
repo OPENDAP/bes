@@ -93,7 +93,7 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
 	BESDefinitionStorageList::TheList()->find_persistence( store_name ) ;
     if( store )
     {
-	bool deleted = store->del_definition( def_name ) ;
+	store->del_definition( def_name ) ;
 
 	BESDefine *dd = new BESDefine ;
 	dhi.first_container() ;

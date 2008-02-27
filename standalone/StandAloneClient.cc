@@ -149,8 +149,9 @@ StandAloneClient::executeClientCommand(const string & cmd)
                 string file = subcmd.substr(0, subcmd.length() - 1);
                 ofstream *fstrm = new ofstream(file.c_str(), ios::app);
                 if (!(*fstrm)) {
+		    if( fstrm ) delete fstrm ;
                     cerr << "Unable to set client output to file " << file
-                        << endl;
+                         << endl;
                 } else {
                     setOutput(fstrm, true);
                 }
@@ -363,8 +364,6 @@ StandAloneClient::interact()
                 cerr << "Commands must end with a semicolon" << endl;
             } else {
                 this->executeCommands(message, 1);
-                message = "";   // Needed? Added during debugging. jhrg 9/8/05
-                len = 0;
             }
         }
     }

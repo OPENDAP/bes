@@ -201,7 +201,6 @@ SSLClient::connect_to_server( )
 {
     int fd = -1 ;
     struct sockaddr_in addr ;
-    struct sockaddr *mapped_addr ;
 
     fd = socket( PF_INET, SOCK_STREAM, 0 ) ;
     if( fd < 0 ) return -1 ;

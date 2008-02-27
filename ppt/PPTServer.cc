@@ -167,11 +167,13 @@ PPTServer::welcomeClient()
     if( bytesRead == -1 )
     {
 	_mySock->close() ;
+	delete [] inBuff ;
 	return -1 ;
     }
 
     string status( inBuff, bytesRead ) ;
     delete [] inBuff ;
+
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
     {
 	/* If can not negotiate with the client then we don't want to exit
@@ -189,7 +191,6 @@ PPTServer::welcomeClient()
 
     if( !_secure )
     {
-	int len = PPTProtocol::PPTSERVER_CONNECTION_OK.length() ;
 	send( PPTProtocol::PPTSERVER_CONNECTION_OK ) ;
     }
     else
@@ -262,7 +263,6 @@ PPTServer::dump( ostream &strm ) const
     {
 	strm << BESIndent::LMarg << "server handler: null" << endl ;
     }
-    ServerHandler *		_handler ;
     if( _listener )
     {
 	strm << BESIndent::LMarg << "listener:" << endl ;

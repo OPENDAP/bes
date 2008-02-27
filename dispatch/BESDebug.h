@@ -162,8 +162,13 @@ public:
     				{
 				    if( _debug_strm_created && _debug_strm )
 				    {
+					_debug_strm->flush();
 					delete _debug_strm ;
 					_debug_strm = NULL ;
+				    }
+				    else if( _debug_strm )
+				    {
+					_debug_strm->flush() ;
 				    }
 				    if( !strm )
 				    {

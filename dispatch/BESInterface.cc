@@ -146,7 +146,7 @@ BESInterface::execute_request( const string &from )
     {
         return exception_manager( ex ) ;
     }
-    catch( bad_alloc & b )
+    catch( bad_alloc & )
     {
         string serr = "BES out of memory" ;
         BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;
@@ -180,7 +180,7 @@ BESInterface::finish( int status )
     {
         status = exception_manager( ex ) ;
     }
-    catch( bad_alloc & b )
+    catch( bad_alloc & )
     {
         string serr = "BES out of memory" ;
         BESInternalFatalError ex( serr, __FILE__, __LINE__ ) ;

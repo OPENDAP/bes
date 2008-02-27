@@ -93,10 +93,16 @@ BESProcessEncodedString::parseHex( const char *s, unsigned int len )
     if( !s || !len )
 	return "" ;
     char *hexstr = new char[len + 1] ;
+    if( hexstr == NULL )
+	return "" ;
+
     strncpy( hexstr, s, len ) ;
 
-    if(hexstr == NULL || strlen( hexstr ) == 0 ) 
+    if(strlen( hexstr ) == 0 ) 
+    {
+	delete [] hexstr ;
 	return ""; 
+    }
 
     register unsigned int x,y; 
     for( x = 0, y = 0; hexstr[y] && y < len && x < len; x++, y++ ) 

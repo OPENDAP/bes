@@ -58,6 +58,12 @@ UnixSocket::connect()
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
+    struct sockaddr_un client_addr ;
+    struct sockaddr_un server_addr ;
+
+    // what is the max size of the path to the unix socket
+    unsigned int max_len = sizeof( client_addr.sun_path ) ;
+
     char path[107] = "" ;
     getcwd( path, sizeof( path ) ) ;
     _tempSocket = path ;
@@ -67,15 +73,18 @@ UnixSocket::connect()
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
     // 107 characters in pathname + '\0'
-    if( _tempSocket.length() > 107 )
+    if( _tempSocket.length() > max_len - 1 )
     {
 	string msg = "path to temporary unix socket " ;
 	msg += _tempSocket + " is too long" ;
 	throw( BESInternalError( msg, __FILE__, __LINE__ ) ) ;
     }
-
-    struct sockaddr_un client_addr ;
-    struct sockaddr_un server_addr ;
+    if( _unixSocket.length() > max_len - 1 )
+    {
+	string msg = "path to unix socket " ;
+	msg += _unixSocket + " is too long" ;
+	throw( BESInternalError( msg, __FILE__, __LINE__ ) ) ;
+    }
 
     strncpy(server_addr.sun_path, _unixSocket.c_str(), _unixSocket.size());
     server_addr.sun_path[_unixSocket.size()] = '\0';
@@ -83,7 +92,7 @@ UnixSocket::connect()
 
     int descript = socket( AF_UNIX, SOCK_STREAM, 0 ) ;
     if( descript != -1 )
-      {
+    {
 	strncpy( client_addr.sun_path, _tempSocket.c_str(), _tempSocket.size());
 	client_addr.sun_path[_tempSocket.size()] = '\0';
 	client_addr.sun_family = AF_UNIX ;

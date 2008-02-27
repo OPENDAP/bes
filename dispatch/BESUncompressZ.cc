@@ -54,39 +54,48 @@
 void
 BESUncompressZ::uncompress( const string &src, const string &target )
 {
+    int srcFile = 0 ;
+    int destFile = 0 ;
+    int my_errno = 0 ;
 
 /* -------------------------------------------------------------------- */
 /*      Open the file to be read                                        */
 /* -------------------------------------------------------------------- */
 
-    int srcFile ;
-    srcFile=open( src.c_str(), O_RDONLY ) ;
-    BESDEBUG( "bes", "BESUncompressZ::uncompress - src=" << src.c_str() << endl ) ;
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - src=" 
+	      << src.c_str() << endl ) ;
+
+    srcFile = open( src.c_str(), O_RDONLY ) ;
+    my_errno = errno ;
     if( srcFile == -1 )
     {
-	string err = "Could not open the compressed file " + src ;
+	string err = "Unable to open the compressed file " + src
+	             + ": " ;
+	char *serr = strerror( my_errno ) ;
+	if( serr )
+	{
+	    err.append( serr ) ;
+	}
+	else
+	{
+	    err.append( "unknown error occurred" ) ;
+	}
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
 /* -------------------------------------------------------------------- */
 /*      Open Output file                                                */
 /* -------------------------------------------------------------------- */
-    int destFile ;
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - target=" 
+	      << target.c_str() << endl ) ;
+
     destFile = open( target.c_str(), O_WRONLY | O_CREAT | O_TRUNC
 		     , S_IRUSR | S_IWUSR ) ;
-    BESDEBUG( "bes", "BESUncompressZ::uncompress - target=" 
-	      << target.c_str() 
-	      << endl ) ;
-
     if( destFile == -1)
     {
-	char *serr = strerror( errno ) ;
 	string err = "Unable to create the uncompressed file "
 	             + target + ": " ;
-	BESDEBUG( "bes", "BESUncompressZ::uncompress - cant open file" 
-		  << errno 
-		  << endl);
-	
+	char *serr = strerror( my_errno ) ;
 	if( serr )
 	{
 	    err.append( serr ) ;
@@ -161,20 +170,27 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 /*       Do we have compressed file?                                    */
 /* -------------------------------------------------------------------- */
     if( (insize < 3) || (inbuf[0] != FIRSTBYTE) || (inbuf[1] != SECONDBYTE)) {
-	BESDEBUG( "bes", "BESUncompressZ::uncompress - in here!!!!! " << endl);     
+	BESDEBUG( "bes", "BESUncompressZ::uncompress - not a compress file"
+	                 << endl);     
 	if( rsize < 0) {
 	    string err = "Could not read file ";
 	    err += src.c_str() ;
+	    close( srcFile ) ;
+	    close( destFile ) ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
 	if( insize > 0)  {
 	    string err = src.c_str();
 	    err += ": not in compressed format";
+	    close( srcFile ) ;
+	    close( destFile ) ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 	
 	string err = "unknown error";
+	close( srcFile ) ;
+	close( destFile ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
 
     }
@@ -192,6 +208,8 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 	err += maxbits ;
 	err += " bits, can only handle";
 	err += BITS;
+	close( srcFile ) ;
+	close( destFile ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
@@ -233,6 +251,8 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 		if( ( rsize = read( srcFile, inbuf + insize, BUFSIZ )) < 0) {
 		    string err = "Could not read file ";
 		    err += src.c_str() ;
+		    close( srcFile ) ;
+		    close( destFile ) ;
 		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		}
 		
@@ -274,6 +294,8 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			string err = "oldcode:-1 code: ";
 			err += code ;
 			err += " !!!! uncompress: corrupt input!!!";
+			close( srcFile ) ;
+			close( destFile ) ;
 			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    outbuf[outpos++] = (unsigned char)(finchar = 
@@ -305,6 +327,8 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			p = &inbuf[posbits>>3];
 			
 			string err = "uncompress: corrupt input";
+			close( srcFile ) ;
+			close( destFile ) ;
 			throw BESInternalError( err, __FILE__, __LINE__ ) ;
 		    }
 		    
@@ -338,6 +362,8 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 			    if( outpos >= BUFSIZ) {
 				if( write(destFile, outbuf,outpos) != outpos) {
 				    string err = "uncompress: write eror";
+				    close( srcFile ) ;
+				    close( destFile ) ;
 				    throw BESInternalError( err, 
 							    __FILE__, 
 							    __LINE__ ) ;
@@ -368,8 +394,14 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     
     if( outpos > 0 && write(destFile, outbuf, outpos) != outpos) {
 	string err = "uncompress: write eror";
+	close( srcFile ) ;
+	close( destFile ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
+
+    close( srcFile ) ;
+    close( destFile ) ;
+
     BESDEBUG( "bes", "BESUncompressZ::uncompress - end decompres" << endl);
 }
 

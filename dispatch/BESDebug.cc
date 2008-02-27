@@ -84,6 +84,11 @@ BESDebug::SetUp( const string &values )
 	strm = new ofstream( s_strm.c_str(), ios::out ) ;
 	if( !(*strm) )
 	{
+	    if( strm )
+	    {
+		delete strm ;
+		strm = 0 ;
+	    }
 	    string err = "Unable to open the debug file: " + s_strm ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}

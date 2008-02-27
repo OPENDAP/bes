@@ -168,12 +168,15 @@ PPTClient::authenticateWithServer()
     int bytesRead = readBufferNonBlocking( inBuff ) ;
     if( bytesRead < 1 )
     {
+	delete [] inBuff ;
 	string err = "Expecting secure port number response" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
+    {
 	bytesRead = PPT_PROTOCOL_BUFFER_SIZE ;
+    }
     inBuff[bytesRead] = '\0' ;
     ostringstream portResponse( inBuff ) ;
     delete [] inBuff ;

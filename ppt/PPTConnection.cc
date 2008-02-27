@@ -439,7 +439,6 @@ PPTConnection::receive( map<string,string> &extensions,
     if( strm )
 	use_strm = strm ;
 
-    unsigned int len_start = _index ;
     // The first buffer will contain the length of the chunk at the beginning.
     if( !_inBuff )
 	_inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;

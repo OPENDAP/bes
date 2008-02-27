@@ -41,7 +41,7 @@ using std::string ;
 
 class BESKeys ;
 
-#define MAX_LOCK_RETRY_MS 100
+#define MAX_LOCK_RETRY_MS 5000	// in microseconds
 #define MAX_LOCK_TRIES 16
 
 /** @brief Implementation of a caching mechanism.

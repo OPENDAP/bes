@@ -144,19 +144,23 @@ BESDefaultCommands::terminate( void )
 
     BESCommand::del_command( GET_RESPONSE ) ;
     BESCommand::del_command( SHOW_RESPONSE ) ;
+    BESCommand::del_command( HELP_RESPONSE ) ;
+#ifdef BES_DEVELOPER
+    BESCommand::del_command( PROCESS_RESPONSE ) ;
+    BESCommand::del_command( CONFIG_RESPONSE ) ;
+#endif
+    BESCommand::del_command( VERS_RESPONSE ) ;
+    BESCommand::del_command( STATUS_RESPONSE ) ;
     BESCommand::del_command( SET_RESPONSE ) ;
     BESCommand::del_command( DELETE_RESPONSE ) ;
-
     BESCommand::del_command( SETCONTAINER ) ;
     BESCommand::del_command( SHOWCONTAINERS_RESPONSE ) ;
     BESCommand::del_command( DELETE_CONTAINER ) ;
     BESCommand::del_command( DELETE_CONTAINERS ) ;
-
     BESCommand::del_command( DEFINE_RESPONSE ) ;
     BESCommand::del_command( SHOWDEFS_RESPONSE ) ;
     BESCommand::del_command( DELETE_DEFINITION ) ;
     BESCommand::del_command( DELETE_DEFINITIONS ) ;
-
     BESCommand::del_command( SET_CONTEXT ) ;
     BESCommand::del_command( SHOW_CONTEXT ) ;
 

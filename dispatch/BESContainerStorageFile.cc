@@ -116,12 +116,14 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 		c->_container_type == "" )
 	    {
 		delete c ;
+		persistence_file.close() ;
 		string s = "Incomplete container persistence line in file "
 			   + _file ;
 		throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	    }
 	    if( dummy != "" )
 	    {
+		persistence_file.close() ;
 		delete c ;
 		string s = "Too many fields in persistence file "
 			   + _file ;

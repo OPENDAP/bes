@@ -43,7 +43,6 @@ class PPTConnection : public Connection
 private:
     int				_timeout ;
     char *			_inBuff ;
-    unsigned int		_index ;
     unsigned int		_bytesRead ;
 
     				PPTConnection()
@@ -53,7 +52,6 @@ protected:
 				PPTConnection( int timeout )
 				    : _timeout( timeout ),
 				      _inBuff( 0 ),
-				      _index( 0 ),
 				      _bytesRead( 0 ) {}
 
     virtual int			readBuffer( char *inBuff, unsigned int buff_size ) ;

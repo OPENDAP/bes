@@ -98,6 +98,14 @@ main(int argc, char *argv[])
     // corresponding change in ServerApp.cc and besctl.in
     int c = 0 ;
 
+    // there are 16 arguments allowed to the daemon, including the program
+    // name. 3 options do not have arguments and 6 have arguments
+    if( argc > 16 )
+    {
+	// the show_usage method exits
+	BESServerUtils::show_usage( NameProgram ) ;
+    }
+
     // argv[0] is the name of the program, so start num_args at 1
     unsigned short num_args = 1 ;
     while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:r:" ) ) != EOF )
@@ -207,6 +215,7 @@ main(int argc, char *argv[])
     if( !load_names( install_dir, pid_dir ) )
 	return 1 ;
 
+    // make sure the array size is not too big
     if( BESScrub::size_ok( sizeof( char *), num_args+1 ) == false )
     {
 	cout << NameProgram

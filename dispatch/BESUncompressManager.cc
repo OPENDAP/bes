@@ -263,12 +263,12 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    p( src, target ) ;
 		    return true ;
 		}
-		catch( BESError &e )
+		catch( BESError & )
 		{
 		    // a problem in the cache, unlock it and re-throw the
 		    // exception
 		    cache.unlock() ;
-		    throw e ;
+		    throw ;
 		}
 		catch( ... )
 		{

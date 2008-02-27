@@ -141,11 +141,16 @@ BESDapModule::terminate( const string &modname )
 {
     BESDEBUG( "dap", "Removing DAP Modules:" << endl )
 
+    BESDEBUG( "dap", "    removing dap Response handlers" << modname << endl )
     BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
+
+    BESDEBUG( "dap", "    removing dap Request Handler" << modname << endl )
+    BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
+    if( rh ) delete rh ;
 
     BESDEBUG( "dap", "Done Removing DAP Modules:" << endl )
 }

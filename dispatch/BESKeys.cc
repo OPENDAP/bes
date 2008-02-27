@@ -1397,7 +1397,7 @@ BESKeys::BESKeys( const string &keys_file_name )
     {
 	load_keys();
     }
-    catch(BESInternalFatalError &ex)
+    catch(BESInternalFatalError &)
     {
 	clean();
 	throw;

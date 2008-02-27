@@ -96,7 +96,7 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
 	BESContainerStorageList::TheList()->find_persistence( store_name );
     if( cp )
     {
-	bool deleted = cp->del_container( symbolic_name ) ;
+	cp->del_container( symbolic_name ) ;
 	cp->add_container( symbolic_name, real_name, container_type ) ;
     }
     else
