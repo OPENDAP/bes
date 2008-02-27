@@ -40,6 +40,8 @@ AC_CHECK_LIBDAP([3.7.10],
 ])
 
 dnl Checks for specific libraries
+dnl In the future, make it optional if you want to support both 1.6 and 1.8.
+dnl At this point, we don't use HDF5 1.8.0 specific APIs in our hdf5 handler.
 AC_CHECK_HDF5(
   [
       LIBS="$LIBS $H5_LIBS"

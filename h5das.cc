@@ -72,13 +72,13 @@ depth_first(hid_t pid, char *gname, DAS & das)
 {
   
   int num_attr = -1;
-  int nelems;   
+  hsize_t nelems = 0;   
 
   DBG(cerr << ">depth_first():" << gname << endl);
   
   read_comments(das, gname, pid);
 
-  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
+  if(H5Gget_num_objs(pid,&nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
     msg += gname;

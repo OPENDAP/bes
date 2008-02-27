@@ -63,8 +63,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
   // Iterate through the file to see members of the root group 
   DBG(cerr << ">depth_first() pid: " << pid  << " gname: " << gname  << " fname: " << fname << endl);
 
-  int nelems; 
-  if(H5Gget_num_objs(pid,(hsize_t *)&nelems)<0) {
+  hsize_t nelems = 0; 
+  if(H5Gget_num_objs(pid, &nelems)<0) {
     string msg =
       "h5_das handler: counting hdf5 group elements error for ";
     msg += gname;
