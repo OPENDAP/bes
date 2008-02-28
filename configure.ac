@@ -137,6 +137,10 @@ AC_ARG_ENABLE([developer],
   ]
 )
 
+AM_PATH_CPPUNIT(1.12.0,
+	[AM_CONDITIONAL([CPPUNIT], [true])],
+	[AM_CONDITIONAL([CPPUNIT], [false])])
+
 AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
