@@ -35,6 +35,10 @@
 #include <cerrno>
 #include <cstring>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -103,7 +107,7 @@ int
 Socket::receive( char *inBuff, int inSize )
 {
     int bytesRead = 0 ;
-    if( ( bytesRead = read( _socket, inBuff, inSize ) ) < 1 )
+    if( ( bytesRead = read( _socket, inBuff, inSize - 1 ) ) < 1 )
     {
 	string err( "socket failure, reading on stream socket: " ) ;
 	const char *error_info = strerror( errno ) ;

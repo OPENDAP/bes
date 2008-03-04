@@ -505,6 +505,16 @@ PPTConnection::receive( ostream &strm, unsigned short len )
 	string err = "buffer has not been initialized" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
+    // I added this test because in PPTConnection::receive( map<string,string>,
+	// ostream ) this method is called with 'len' passed a value that's read from
+	// the input stream. That value could be manipulated to cause a bufer
+	// overflow. Note that _inBuff is PPT_PROTOCOL_BUFFER_SIZE + 1 so reading
+	// that many bytes leaves room for the null byte. jhrg 3/3/08
+    if( len > PPT_PROTOCOL_BUFFER_SIZE )
+    {
+	string err = "buffer is not large enough" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
     int bytesRead = readBuffer( _inBuff, len ) ;
     if( bytesRead <= 0 )
     {
