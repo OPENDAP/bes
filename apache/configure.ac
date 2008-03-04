@@ -55,6 +55,12 @@ dnl Checks for library functions.
 AC_FUNC_ALLOCA
 dnl AC_CHECK_FUNCS(mktime)
 
+AC_CHECK_BES([3.5.3],
+ [
+ ],
+ [ AC_MSG_ERROR([Cannot find bes])
+])
+  
 AC_ARG_WITH([apache],
             [AS_HELP_STRING([--with-apache=PATH],[Apache server directory])],
             [APACHE_DIR=${withval}], 
@@ -72,7 +78,7 @@ fi
 
 AC_SUBST(APACHE_DIR)
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile unit-tests/Makefile])
 
 AC_OUTPUT
 

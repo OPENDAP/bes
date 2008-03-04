@@ -85,9 +85,13 @@ BESApacheWrapper::~BESApacheWrapper()
 int
 BESApacheWrapper::call_BES( const BESDataRequestInterface & re )
 {
-    BESApacheInterface dods( re ) ;
-    int ret = dods.execute_request() ;
-    return ret ;
+    BESApacheInterface interface( re ) ;
+    int status = interface.execute_request() ;
+    if( status != 0 )
+    {
+	interface.finish_with_error( status ) ;
+    }
+    return status ;
 }
 
 /** @brief Find the request from the URL and convert it to readable format

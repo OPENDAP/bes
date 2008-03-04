@@ -47,6 +47,7 @@ using std::flush ;
 #include "BESBasicHttpTransmitter.h"
 #include "BESAggregationServer.h"
 #include "BESDataNames.h"
+#include "BESDebug.h"
 
 #define DEFAULT_ADMINISTRATOR "cedar_db@hao.ucar.edu"
 #define INCORRECT_REQUEST (BES_NOT_FOUND_ERROR + 1)
@@ -188,6 +189,8 @@ BESApacheInterface::initialize()
 	    *(BESLog::TheLog()) << "    cookie = no cookie set" << endl ;
     }
 
+    BESDEBUG( "apache", "BESApacheInterface dhi = " << _dhi << endl )
+
     BESCmdInterface::initialize() ;
 }
 
@@ -196,6 +199,7 @@ BESApacheInterface::initialize()
 void
 BESApacheInterface::validate_data_request()
 {
+    cerr << "validating" << endl ;
     if (!_dri->server_name)
     {
 	BESInternalError e("undefined server name", __FILE__, __LINE__ );
@@ -244,6 +248,7 @@ BESApacheInterface::validate_data_request()
 	e.set_error_type( INCORRECT_REQUEST ) ;
 	throw e ;
     }
+    cerr << "done validating" << endl ;
 }
 
 /** @brief Handle any exceptions generated from the request
@@ -266,6 +271,8 @@ BESApacheInterface::validate_data_request()
 int
 BESApacheInterface::exception_manager( BESError &e )
 {
+    cerr << "exception_manager" << endl ;
+    cerr << e.get_message() << endl ;
     bool ishttp = false ;
     if( _dhi.transmit_protocol == "HTTP" )
 	ishttp = true ;

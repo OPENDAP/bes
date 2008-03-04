@@ -44,26 +44,15 @@ using std::endl ;
 #include "BESDefaultCommands.h"
 #include "BESDapModule.h"
 #include "DAPCommandModule.h"
+#include "BESDebug.h"
 
 int
 main( int argc, char **argv )
 {
-    BESGlobalIQ::BESGlobalInit( argc, argv ) ;
+    string bes_conf = "BES_CONF=./opendap.ini" ;
+    putenv( (char *)bes_conf.c_str() ) ;
 
-    BESDefaultModule::initialize( argc, argv ) ;
-    BESDefaultCommands::initialize( argc, argv ) ;
-    BESDapModule dm ;
-    dm.initialize( "dap" ) ;
-    DAPCommandModule cm ;
-    cm.initialize( "dap" ) ;
-
-    /*
-    if( argc != 2 )
-    {
-	cerr << "usage: " << argv[0] << " <requests>" << endl ;
-	return 1 ;
-    }
-    */
+    BESDebug::SetUp( "cerr,all" ) ;
 
     BESDataRequestInterface rq;
 
@@ -90,18 +79,28 @@ main( int argc, char **argv )
     {
 	BESApacheWrapper wrapper ;
 	rq.cookie=wrapper.process_user( "username=pwest" ) ;
+	rq.token="token" ;
 	wrapper.process_request( "request=define+d1+as+mfp920504a;get+das+for+d1;" ) ;
 	rq.request = wrapper.get_first_request() ;
 	while( rq.request )
 	{
-	    wrapper.call_BES(rq);
-	    rq.request = wrapper.get_next_request() ;
+	    int status = wrapper.call_BES(rq);
+	    if( status == 0 )
+		rq.request = wrapper.get_next_request() ;
+	    else
+		return 1 ;
 	}
 
     }
     catch( BESError &e )
     {
 	cerr << "problem: " << e.get_message() << endl ;
+	return 1 ;
+    }
+    catch( ... )
+    {
+	cerr << "unknown problem:" << endl ;
+	return 1 ;
     }
 
     BESGlobalIQ::BESGlobalQuit() ;
