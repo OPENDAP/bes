@@ -32,7 +32,9 @@
 
 #include <iostream>
 
+using std::cout ;
 using std::endl ;
+using std::flush ;
 
 #include "BESApacheInterface.h"
 #include "BESMemoryManager.h"
@@ -40,15 +42,15 @@ using std::endl ;
 #include "BESLog.h"
 #include "TheBESKeys.h"
 #include "BESMemoryGlobalArea.h"
-#include "BESStatusReturn.h"
-#include "BESIncorrectRequestException.h"
+#include "BESInternalError.h"
 #include "BESUtil.h"
 #include "BESBasicHttpTransmitter.h"
-#include "BESTransmitException.h"
 #include "BESAggregationServer.h"
 #include "BESDataNames.h"
 
-#define DEFAULT_ADMINISTRATOR "support@opendap.org"
+#define DEFAULT_ADMINISTRATOR "cedar_db@hao.ucar.edu"
+#define INCORRECT_REQUEST (BES_NOT_FOUND_ERROR + 1)
+#define INCORRECT_REQUEST_MSG "undefined request"
 
 /** @brief Instantiate a BESApacheInterface object
 
@@ -58,7 +60,7 @@ using std::endl ;
     @see _BESDataRequestInterface
  */
 BESApacheInterface::BESApacheInterface( const BESDataRequestInterface &dri )
-    : BESCmdInterface()
+    : BESCmdInterface( "", &cout )
 {
     _dri = &dri ;
 }
@@ -86,7 +88,7 @@ BESApacheInterface::execute_request()
     int status = BESCmdInterface::execute_request( "cedar" ) ;
 
     if( !BESMemoryManager::unregister_global_pool() )
-	return BES_TERMINATE_IMMEDIATE ;
+	return BES_INTERNAL_FATAL_ERROR ;
 
     return status;
 }
@@ -195,21 +197,53 @@ void
 BESApacheInterface::validate_data_request()
 {
     if (!_dri->server_name)
-	throw BESIncorrectRequestException("undefined server name", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined server name", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->server_address)
-	throw BESIncorrectRequestException("undefined server address", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined server address", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->server_protocol)
-	throw BESIncorrectRequestException("undefined server protocol", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined server protocol", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->server_port)
-	throw BESIncorrectRequestException("undefined server port", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined server port", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->script_name)
-	throw BESIncorrectRequestException("undefined script name", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined script name", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->user_address)
-	throw BESIncorrectRequestException("undefined user address", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined user address", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->user_agent)
-	throw BESIncorrectRequestException("undefined user agent", __FILE__, __LINE__ );
+    {
+	BESInternalError e("undefined user agent", __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
     if(!_dri->request)
-	throw BESIncorrectRequestException("undefined request", __FILE__, __LINE__ );
+    {
+	BESInternalError e(INCORRECT_REQUEST_MSG, __FILE__, __LINE__ );
+	e.set_error_type( INCORRECT_REQUEST ) ;
+	throw e ;
+    }
 }
 
 /** @brief Handle any exceptions generated from the request
@@ -224,22 +258,21 @@ BESApacheInterface::validate_data_request()
     All other exceptions are passed off to the parent exception manager to
     handle.
 
-    @param e BESException to be handled. If this method does not handle the
+    @param e BESError to be handled. If this method does not handle the
     exception then it is passed to the parent class exception_manager method
     to be handled.
-    @see BESException
+    @see BESError
  */
 int
-BESApacheInterface::exception_manager( BESException &e )
+BESApacheInterface::exception_manager( BESError &e )
 {
     bool ishttp = false ;
     if( _dhi.transmit_protocol == "HTTP" )
 	ishttp = true ;
 
-    BESIncorrectRequestException *ireqx=dynamic_cast<BESIncorrectRequestException*>(&e);
-    if (ireqx)
+    if( e.get_error_type() == INCORRECT_REQUEST )
     {
-	if (e.get_message()=="undefined request")
+	if( e.get_message() == INCORRECT_REQUEST_MSG )
 	{
 	    // Everything is OK but  BESDataRequestInterface::request is null.
 	    if( ishttp )
@@ -251,7 +284,7 @@ BESApacheInterface::exception_manager( BESException &e )
 	{
 	    return BESCmdInterface::exception_manager( e ) ;
 	}
-	return BES_REQUEST_INCORRECT;
+	return BES_INTERNAL_ERROR ;
     }
     return BESCmdInterface::exception_manager( e ) ;
 }
@@ -269,7 +302,7 @@ BESApacheInterface::welcome_browser()
     int ho=agent.find("HotJava");
     if ((mo<0)&&(ho<0)) // No, sorry. For you just a message and good bye :-(
     {
-	BESUtil::set_mime_text( stdout ) ;
+	BESUtil::set_mime_text( cout ) ;
 	bool found = false ;
 	string administrator =
 	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
@@ -290,7 +323,7 @@ BESApacheInterface::welcome_browser()
 	    TheBESKeys::TheKeys()->get_key( "BES.DefaultResponseMethod", found ) ;
 	if( (method!="GET") && (method!="POST") )
 	{
-	    BESUtil::set_mime_text( stdout ) ;
+	    BESUtil::set_mime_text( cout ) ;
 	    found = false ;
 	    string administrator =
 		TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;

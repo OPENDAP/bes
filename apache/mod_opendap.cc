@@ -35,6 +35,8 @@
 
 using std::cerr ;
 using std::endl ;
+using std::cout ;
+using std::flush ;
 
 #include "httpd.h"
 #include "http_config.h"
@@ -86,8 +88,7 @@ static int util_read(request_rec *r, const char **rbuf)
 	char argsbuffer[HUGE_STRING_LEN];
 	int rsize, len_read, rpos=0;
 	long length = r->remaining;
-	//*rbuf = (char*) ap_pcalloc(r->pool, length + 1); 
-	*rbuf = (char*) apr_pcalloc(r->pool, length + 1); 
+	*rbuf = (char*) ap_pcalloc(r->pool, length + 1); 
 
 	ap_hard_timeout("util_read", r);
 
@@ -122,8 +123,7 @@ header_trace( void *data, const char *key, const char *val )
 static void
 list_headers( request_rec *r )
 {
-    //ap_table_do( header_trace, r, r->headers_in, NULL ) ;
-    apr_table_do( header_trace, r, r->headers_in, NULL ) ;
+    ap_table_do( header_trace, r, r->headers_in, NULL ) ;
 }
 
 static int opendap_handler(request_rec *r)
@@ -150,15 +150,13 @@ static int opendap_handler(request_rec *r)
     rq.server_port=port_number_buffer;
     rq.script_name=r->uri;
     rq.user_address=r->connection->remote_ip;
-    //rq.user_agent = ap_table_get(r->headers_in, "User-Agent");
-    rq.user_agent = apr_table_get(r->headers_in, "User-Agent");
+    rq.user_agent = ap_table_get(r->headers_in, "User-Agent");
 
     const char* m_method = r->method;
     if (!m_method) 
     {
 	cerr << "mod_opendap: Fatal, Can not load request method" << endl;
-	//return SERVER_ERROR;
-	return HTTP_INTERNAL_SERVER_ERROR;
+	return SERVER_ERROR;
     }
 
     BESApacheWrapper wrapper;
@@ -199,8 +197,7 @@ static int opendap_handler(request_rec *r)
 
     if( !rq.cookie || !strcmp(rq.cookie,"") )
     {
-	//rq.cookie = ap_table_get( r->headers_in, "Cookie" ) ;
-	rq.cookie = apr_table_get( r->headers_in, "Cookie" ) ;
+	rq.cookie = ap_table_get( r->headers_in, "Cookie" ) ;
     }
 
     int status = 0 ;
@@ -213,7 +210,7 @@ static int opendap_handler(request_rec *r)
 
     // always flush the socket at the end...
     // and since stdout is now the tcp/ip socket for this connection
-    cout << flush ;
+    cout.flush() ;
 
     // exit instead of returning
     exit( 0 ) ;

@@ -37,7 +37,7 @@ using std::cerr ;
 using std::endl ;
 
 #include "BESApacheRequests.h"
-#include "BESException.h"
+#include "BESError.h"
 
 void test_this( const string &requests ) ;
 
@@ -71,7 +71,7 @@ test_this( const string &requests )
 	    cout << "    request: " << (*c) << endl ;
 	}
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "problem: " << e.get_message() << endl ;
     }

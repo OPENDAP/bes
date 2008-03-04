@@ -38,7 +38,7 @@ using std::endl ;
 
 #include "BESApacheWrapper.h"
 #include "BESDataRequestInterface.h"
-#include "BESException.h"
+#include "BESError.h"
 #include "BESGlobalIQ.h"
 #include "BESDefaultModule.h"
 #include "BESDefaultCommands.h"
@@ -99,7 +99,7 @@ main( int argc, char **argv )
 	}
 
     }
-    catch( BESException &e )
+    catch( BESError &e )
     {
 	cerr << "problem: " << e.get_message() << endl ;
     }

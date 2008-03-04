@@ -43,7 +43,7 @@ using std::bad_alloc ;
 #include "BESDataRequestInterface.h"
 
 class BESMemoryManager ;
-class BESException ;
+class BESError ;
 
 /** @brief Entry point into OPeNDAP using apache modules
 
@@ -78,7 +78,7 @@ private:
     void			welcome_browser() ;
     const			BESDataRequestInterface * _dri ;
 protected:
-    virtual int			exception_manager(BESException &e) ;
+    virtual int			exception_manager(BESError &e) ;
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
 public:
