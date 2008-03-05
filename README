@@ -9,10 +9,14 @@ instructions, the latest configuration inforamtion, tutorials, how to
 develop new modules for the BES, and more.
 
 Contents
-  What's here: What files are in the distribution
-  About the BES: What exactly is this
-  Configuration: How to configure the BES
-  Testing: Once built and configured, how do you know it works?
+
+  * What's here: What files are in the distribution
+
+  * About the BES: What exactly is this
+
+  * Configuration: How to configure the BES
+
+  * Testing: Once built and configured, how do you know it works?
 
 * What's here:
 
@@ -25,13 +29,17 @@ server: The BES server and standalone executables; build using dispatch
 cmdln: A command line client which can communicate with the bes server.
 
 command: The BES/dispatch software is a framework. The basic commands
-	 recognized by  it are defined and implemented by software in this
-	 directory.
+recognized by  it are defined and implemented by software in this directory.
+
 apache: An Apache module, currently not part of the default build
+
 ppt: The PPT implementation. The BES uses PPT for its communication
+
 templates: A collection of source files which can be used as templates when
-	 you write your own handlers/modules, et cetera.
+you write your own handlers/modules, et cetera.
+
 conf: Where the automake and autoconf configuration files live
+
 docs: Where some bes documentation resides
 
 * About the BES

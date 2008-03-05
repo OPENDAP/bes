@@ -17,6 +17,7 @@ my $package_size = get_package_size($package_dir);
 print "Package_size: $package_size\n" if $debug ge 1;
 
 substitute_values("OSX_Resources/Info.plist", $version_number, $package_size);
+substitute_arch("OSX_Resources/InstallationCheck");
 
 ###################################################################
 
@@ -61,6 +62,36 @@ sub substitute_values {
 
   rename "$info_plist.out", $info_plist 
     or die("Could not rename $info_plist\n");
+}
+
+# Substitute architecture into the named InstallCheck script.
+sub substitute_arch {
+  my ($inst_check) = @_;
+
+  my $sys_arch = `arch`;
+  my $my_arch = "" ;
+  if ( $sys_arch =~ "ppc.*" ) {
+    $my_arch = "ppc.*" ;
+  } elsif ( $sys_arch =~ "i386.*" ) {
+    $my_arch = "i386.*" ;
+  }
+
+  open INST_CHECK, $inst_check or die("Could not open $inst_check\n");
+  open OUT, ">$inst_check.out"  or die("Could not open $inst_check.out\n");
+
+  while (<INST_CHECK>) {
+    if ( /^architecture=/ ) {
+      print OUT "architecture=\"$my_arch\"\n" ;
+    } else {
+      print OUT $_ ;
+    }
+  }
+
+  close INST_CHECK;
+  close OUT;
+
+  rename "$inst_check.out", $inst_check 
+    or die("Could not rename $inst_check\n");
 }
 
 # Find the size in kilobytes of the given directory

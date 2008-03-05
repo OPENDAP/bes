@@ -2,6 +2,24 @@
 #
 # Check to make sure the computer is running 10.3 or later.
 
+# use "i386" or "ppc.*" - nake sure to use a regex for PPC!
+
+architecture="i386.*"
+
+if arch | grep -v "$architecture"
+then
+    if arch | grep "i386"
+    then
+	# You have an intel mac error message
+	exit 115
+    else
+	# PowerPC message
+	exit 116
+    fi
+fi
+
+# Check to make sure the computer is running 10.3 or later.
+
 version=`uname -a | sed 's/.*Darwin Kernel Version \([0-9.]*\):.*/\1/'`
 major=`echo $version | sed 's/\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)/\1/'`
 minor=`echo $version | sed 's/\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)/\2/'`
@@ -25,9 +43,8 @@ version=`dap-config --version | sed 's/\([0-9.]*\) .*/\1/'`
 major=`echo $version | sed 's/\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)/\1/'`
 minor=`echo $version | sed 's/\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)/\2/'`
 
-if test $major -lt 3 -o $major -eq 3 -a $minor -lt 7
+if test $major -lt 3 -o $major -eq 3 -a $minor -lt 8
 then
-    # fail and display message 17
     exit 113
 fi
 

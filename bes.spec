@@ -5,7 +5,7 @@
 %define besgroup %{name}
 
 Name:           bes
-Version:        3.5.3
+Version:        3.6.0
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -16,7 +16,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  libdap-devel >= 3.7.10
+BuildRequires:  libdap-devel >= 3.8.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 # needed by ppt
@@ -41,7 +41,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.7.10
+Requires:       libdap-devel >= 3.8.0
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -152,6 +152,9 @@ exit 0
 %doc __distribution_docs/api-html/
 
 %changelog
+* Fri Feb 29 2008 Patrick West <pwest@ucar.edu> 3.6.0-1
+- Update.
+
 * Tue Feb 13 2007 James Gallagher <jgallagher@opendap.org> 3.4.0-1
 - Update.
 

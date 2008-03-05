@@ -1,11 +1,676 @@
+2008-03-03  James Gallagher <jgallagher@opendap.org>
+
+	Changes from a code review.
+	M    ppt/PPTConnection.cc
+	M    ppt/Socket.cc
+
+2008-02-27  Patrick West <pwest@ucar.edu>
+
+	Added check for cppunit in configure. If present, then the tests
+	will be built and run. if not present then a message will be
+	displayed but no error will be thrown.
+	A    conf/cppunit.m4
+	M    ppt/unit-tests/Makefile.am
+	M    configure.ac
+
+2008-02-27  Patrick West <pwest@ucar.edu>
+
+	Removed unused variables. Checking array sizes. Fortify security
+	warnings and info issues resolved. README_MacOSX.rtf and
+	INSTALL_MacOSX.rtf files removed from Makefile. testdir cleaned up
+	in dispatch unit-tests build.
+	M    ppt/PPTClient.cc
+	M    ppt/PPTServer.cc
+	M    ppt/UnixSocket.cc
+	M    ppt/SSLClient.cc
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTConnection.h
+	M    server/daemon.cc
+	M    command/BESDefaultCommands.cc
+	M    standalone/StandAloneClient.cc
+	M    cmdln/CmdClient.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESCache.h
+	M    dispatch/BESSetContainerResponseHandler.cc
+	M    dispatch/BESDebug.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESProcessEncodedString.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESCatalogDirectory.cc
+	M    dispatch/BESInterface.cc
+	M    Makefile.am
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	No longer need the MacOSX specific readme and install files. These
+	are now automatically generated when the pkg target is built using
+	make.
+	D    INSTALL_MacOSX.rtf
+	D    README_MacOSX.rtf
+
+2008-02-22  Patrick West <pwest@ucar.edu>
+
+	Updated error message in baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+
+2008-02-22  Patrick West <pwest@ucar.edu>
+
+	Re-wrote some of the BESCache functionality to make it more reliable.
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESFileContainer.h
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESFileContainer.cc
+	M    dispatch/BESUncompressZ.h
+	M    dispatch/BESUncompressGZ.h
+	M    dispatch/BESUncompressBZ2.h
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESUncompressManager.h
+	M    dispatch/unit-tests/zT.cc
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/bz2T.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	M    dispatch/BESUncompressGZ.cc
+
+2008-02-21  Patrick West <pwest@ucar.edu>
+
+	New pkg build system for Mac OSX
+	M    README
+	M    OSX_Resources/InstallationCheck
+	AM   OSX_Resources/update_mac_package_contents.pl
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/InstallationCheck.strings
+	M    OSX_Resources/ReadMe.txt
+	M    Makefile.am
+
+2008-02-15  James Gallagher <jgallagher@opendap.org>
+
+	Added conditional include of unistd.h to checkT.cc
+
+2008-02-14  James Gallagher <jgallagher@opendap.org>
+
+	Added include of unistd.h to places that need it on RHEL3 based on
+	nightly build failures there. Include is conditional.
+
+2008-02-14  Patrick West <pwest@ucar.edu>
+
+	Updated libdap.m4 with official one from libdap. Updated csv-handler
+	and hello module to use latest and greatest libdap.m4 and bes.m4.
+	M    conf/libdap.m4
+	M    csv-handler/conf/bes.m4
+	M    csv-handler/conf/libdap.m4
+	M    csv-handler/configure.ac
+	M    csv-handler/CSVDAS.h
+	M    csv-handler/config.h.in
+	M    csv-handler/CSVDDS.h
+	M    templates/conf/libdap.m4
+	M    templates/configure.ac
+	M    hello_world/conf/bes.m4
+	M    hello_world/conf/libdap.m4
+	M    hello_world/config.h.in
+	M    hello_world/configure.ac
+
+2008-02-13  James Gallagher <jgallagher@opendap.org>
+
+	Added #include <unistd.h> and config.h to a handful of files for the
+	RHEL3 build
+
+2008-02-11  Patrick West <pwest@ucar.edu>
+
+	Using C++ c includes (like cstring), per Patrice Dumas.
+
+2008-02-06  Patrick West <pwest@ucar.edu>
+
+	Characters not allowed in XML are now escaped for encoding.
+	M    BESXMLInfo.cc
+	M    BESXMLInfo.h
+
+2008-02-05  Patrick West <pwest@ucar.edu>
+
+	Corrected spelling of memory parameter in bes.conf file and source
+	code. Updated logged messages for heap control.
+	M    dispatch/BESMemoryGlobalArea.h
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/bes/bes.conf.in
+
+2008-02-04  Patrick West <pwest@ucar.edu>
+
+	Added release method to Container classes to allow resources to be
+	released after access. Modified the Interface class to run the log,
+	reporting, and end/cleanup methods whether an error occurs or not.
+	M    dispatch/BESFileContainer.h
+	M    dispatch/BESContainer.h
+	M    dispatch/BESInterface.cc
+
+2008-02-03  Patrick West <pwest@ucar.edu>
+
+	Includes needed for getpid function
+	M    standalone/StandAloneClient.cc
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	Added standalone directory to list of subdirs
+	M    Makefile.am
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	Added standalone BES application to help with testing.
+	A    standalone
+	A    standalone/StandAloneApp.h
+	A    standalone/Makefile.am
+	A    standalone/StandAloneClient.cc
+	A    standalone/StandAloneApp.cc
+	A    standalone/StandAloneClient.h
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	added using namespace libdap where needed. Converting libdap
+	error_code to bes error_type. Fixed where BESError not being
+	converted to BESDapError properly.
+	M    configure.ac
+	M    dispatch/besregtest.cc
+	M    dispatch/BESDapError.cc
+	M    dispatch/BESDapErrorInfo.h
+	M    dispatch/BESDASResponse.h
+	M    dispatch/BESDapError.h
+	M    dispatch/BESDataDDSResponse.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDDSResponse.h
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+	M    dispatch/BESCgiInterface.h
+	M    dispatch/BESFilterTransmitter.h
+
+2008-01-28  Patrick West <pwest@ucar.edu>
+
+	No isAccessible attributes on the dataset tag
+	M    dispatch/BESCatalogDirectory.cc
+
+2008-01-28  Patrick West <pwest@ucar.edu>
+
+	Typo in hyraxctl error message when CATALINA_HOME is not set.
+	M    hyraxctl.in
+
+2008-01-25  Patrick West <pwest@ucar.edu>
+
+	New exception/error processing and responses have been added to the
+	BES.  Instead of many different inherited classes of BESException
+	there is now the BESError class with the inherited classes
+	BESInternalFatalError, BESInternalError, BESSyntaxUserError,
+	BESForbiddenError, and BESNotFoundError. If the fatal error is
+	thrown then the BES will exit. Check the BESError class for the
+	error type numbers. The errors no longer have context information,
+	as it was deemed unnecisary. The XML document returned will have the
+	tag <BESError> instead of <BESException>. Please see the trac
+	documentation for more information.
+
+	Also in this check in is new symbolic link functionality. In the BES
+	configuration file are the new parameters
+	BES.*.FollowSymLinks=No|Yes If set to yes, then container and
+	catalog requests will follow symbolic links relative to the document
+	root. If set to no, then we won't follow symbolic links.
+
+	Set container calls will throw an exception now if the container is
+	not valid, does not exist, contains a symbolic link in the relative
+	path to the document root if FollowSymLinks is set to no.
+
+	Show catalog requests of collections will return the contents of the
+	collection in alphabetical order.
+	M    ppt/PPTClient.cc
+	M    ppt/PPTMarkFinder.cc
+	M    ppt/SSLConnection.cc
+	M    ppt/PPTServer.cc
+	M    ppt/unit-tests/connT.cc
+	M    ppt/unit-tests/extT.cc
+	D    ppt/unit-tests/sbT.out
+	M    ppt/UnixSocket.cc
+	M    ppt/SocketListener.cc
+	M    ppt/TcpSocket.cc
+	M    ppt/SSLClient.cc
+	D    ppt/SocketException.h
+	M    ppt/PPTConnection.cc
+	D    ppt/PPTException.h
+	M    ppt/Makefile.am
+	M    ppt/Socket.cc
+	M    ppt/SSLServer.cc
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    server/test/TestException.cc
+	M    server/test/TestSigResponseHandler.cc
+	M    server/test/TestException.h
+	M    server/test/TestCommand.cc
+	M    server/BESServerHandler.cc
+	M    server/ServerApp.cc
+	M    command/BESDeleteCommand.cc
+	M    command/BESDelContainerCommand.cc
+	M    command/BESCatalogCommand.cc
+	M    command/BESTokenizer.h
+	M    command/BESShowCommand.cc
+	M    command/BESCmdParser.h
+	M    command/BESDelDefsCommand.cc
+	M    command/BESTokenizer.cc
+	D    command/BESParserException.h
+	M    command/BESGetCommand.cc
+	M    command/BESCmdParser.cc
+	M    command/BESDelDefCommand.cc
+	M    command/BESCmdInterface.cc
+	M    command/BESDefineCommand.cc
+	M    command/BESDelContainersCommand.cc
+	M    command/BESSetCommand.cc
+	M    command/Makefile.am
+	M    command/BESSetContainerCommand.cc
+	M    command/BESSetContextCommand.cc
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.cc
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    cmdln/testsuite/bescmdln.freeform/1998-6-avhrr.dat.6.exp
+	M    cmdln/testsuite/bescmdln.freeform/1998-6-avhrr.dat.a.exp
+	M    templates/Command.cc
+	M    templates/RequestHandler.cc
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESShowContextResponseHandler.cc
+	D    dispatch/BESLogException.h
+	M    dispatch/BESVersionResponseHandler.cc
+	M    dispatch/BESVersionInfo.h
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESSilentInfo.h
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESSetContextResponseHandler.cc
+	M    dispatch/BESLog.cc
+	M    dispatch/BESDelContainerResponseHandler.cc
+	D    dispatch/BESDatabaseException.h
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESPluginFactory.h
+	M    dispatch/BESDDXResponseHandler.cc
+	D    dispatch/BESKeysException.h
+	D    dispatch/BESException.cc
+	M    dispatch/BESInterface.h
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESContainerStorageVolatile.h
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESRegex.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESBaseApp.cc
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESDapRequestHandler.cc
+	M    dispatch/BESCatalog.h
+	A    dispatch/BESDapError.cc
+	D    dispatch/BESDapHandlerException.cc
+	M    dispatch/BESFileContainer.cc
+	D    dispatch/BESDapHandlerException.h
+	M    dispatch/BESDataResponseHandler.cc
+	A    dispatch/BESError.cc
+	M    dispatch/BESInfo.cc
+	A    dispatch/BESError.h
+	M    dispatch/BESDapErrorInfo.h
+	D    dispatch/BESDefinitionStorageException.h
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESCatalogDirectory.h
+	D    dispatch/BESDebugException.h
+	D    dispatch/BESResponseException.h
+	M    dispatch/BESMemoryGlobalArea.cc
+	M    dispatch/BESRequestHandlerList.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESCatalogResponseHandler.cc
+	D    dispatch/BESMemoryException.h
+	M    dispatch/BESDapErrorInfo.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/BESCatalogUtils.h
+	A    dispatch/BESInternalFatalError.h
+	M    dispatch/BESContainerStorageFile.cc
+	A    dispatch/BESNotFoundError.h
+	M    dispatch/BESUtil.cc
+	D    dispatch/BESStatusReturn.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESProcIdResponseHandler.cc
+	D    dispatch/BESException.h
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESDelContainersResponseHandler.cc
+	M    dispatch/BESDefinitionStorageList.cc
+	M    dispatch/BESSetContainerResponseHandler.cc
+	M    dispatch/TheBESKeys.cc
+	A    dispatch/BESDapError.h
+	D    dispatch/BESIncorrectRequestException.h
+	M    dispatch/BESConfigResponseHandler.cc
+	M    dispatch/BESDapTransmit.cc
+	A    dispatch/BESInternalError.h
+	M    dispatch/BESGlobalIQ.cc
+	M    dispatch/BESCatalogUtils.cc
+	A    dispatch/BESSyntaxUserError.h
+	M    dispatch/BESContainerStorageCatalog.cc
+	D    dispatch/BESTransmitException.h
+	M    dispatch/BESDelDefsResponseHandler.cc
+	M    dispatch/BESShowContainersResponseHandler.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESDelDefResponseHandler.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	D    dispatch/BESAggregationException.h
+	D    dispatch/BESPluginException.h
+	M    dispatch/BESDDSResponseHandler.cc
+	D    dispatch/BESContainerStorageException.h
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESShowDefsResponseHandler.cc
+	M    dispatch/BESStatusResponseHandler.cc
+	M    dispatch/unit-tests/regexT.cc
+	M    dispatch/unit-tests/scrubT.cc
+	A    dispatch/unit-tests/checkT.h
+	M    dispatch/unit-tests/containerT.cc
+	M    dispatch/unit-tests/zT.cc
+	M    dispatch/unit-tests/pvolT.h
+	M    dispatch/unit-tests/constraintT.cc
+	M    dispatch/unit-tests/debugT.cc
+	M    dispatch/unit-tests/pfileT.cc
+	M    dispatch/unit-tests/cacheT.cc
+	A    dispatch/unit-tests/checkT.cc
+	M    dispatch/unit-tests/pvolT.cc
+	M    dispatch/unit-tests/baseApp.cc
+	M    dispatch/unit-tests/agglistT.cc
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/unit-tests/utilT.cc
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/lockT.cc
+	M    dispatch/unit-tests/plistT.cc
+	M    dispatch/unit-tests/bz2T.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	M    dispatch/unit-tests/defT.cc
+	M    dispatch/unit-tests/failInitT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESContainerStorageVolatile.cc
+	M    dispatch/BESStreamResponseHandler.cc
+	A    dispatch/BESForbiddenError.h
+	M    dispatch/BESUtil.h
+	M    dispatch/BESCgiInterface.cc
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESExceptionManager.h
+	M    dispatch/BESInfo.h
+	D    dispatch/BESHandlerException.h
+	M    dispatch/BESUncompressGZ.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    dispatch/BESInterface.cc
+	M    hello_world/SampleSayCommand.cc
+	M    hello_world/SayReporter.cc
+	M    hello_world/SampleRequestHandler.cc
+
+2008-01-18  Patrick West <pwest@ucar.edu>
+
+	pkgconfig configuration updates from Patrice Dumas
+	A    bes-config-pkgconfig
+	M    bes_dispatch.pc.in
+	M    bes.spec
+	M    Makefile.am
+
+2008-01-17  Patrick West <pwest@ucar.edu>
+
+	If an exception/error occurred during transmit then the error
+	information was being sent twice. Fixed this.
+	M    server/BESServerHandler.cc
+	M    dispatch/BESInterface.h
+	M    dispatch/BESInterface.cc
+
+2008-01-15  Patrick West <pwest@ucar.edu>
+
+	added isAccessible to node requested dataset
+	M    dispatch/BESCatalogDirectory.cc
+
+2008-01-14  Patrick West <pwest@ucar.edu>
+
+	Added --enable-developer to enable a developer mode in the BES. This
+	will allow developers to start the BES without having to be root or
+	have sudo access. Also changed the way exceptions are reported. If
+	the developer mode is on then source code file and line number will
+	be included in the exception response to the client. The command
+	'show keys;' was changed to 'show config;' and is only available in
+	developer mode. 'show process;' is now available only in developer
+	mode as well.
+	M    ppt/Makefile.am
+	M    configure.ac
+	M    server/daemon.cc
+	M    server/Makefile.am
+	M    server/ServerApp.cc
+	M    command/BESDefaultCommands.cc
+	M    command/Makefile.am
+	M    cmdln/Makefile.am
+	D    dispatch/BESKeysResponseHandler.cc
+	D    dispatch/BESKeysResponseHandler.h
+	M    dispatch/BESInfo.cc
+	M    dispatch/bes/bes_help.txt
+	M    dispatch/bes/bes_help.html
+	A    dispatch/BESConfigResponseHandler.h
+	M    dispatch/Makefile.am
+	A    dispatch/BESConfigResponseHandler.cc
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDefaultModule.cc
+
+2008-01-14  Patrick West <pwest@ucar.edu>
+
+	added compiler information to the package config information
+	M    bes_dispatch.pc.in
+	M    bes_ppt.pc.in
+	M    bes_dap.pc.in
+	M    bes_command.pc.in
+
+2008-01-14  Patrick West <pwest@ucar.edu>
+
+	distcheck changes for ppt unit tests
+	M    Makefile.am
+
+2008-01-11  Patrick West <pwest@ucar.edu>
+
+	If including dap responses need to build against BES_DAP_LIBS not
+	BES_LIBS.  Updated templates bes.m4 against bes.m4 in conf
+	directory.
+	M    bin/besCreateModule.in
+	M    templates/conf/bes.m4
+	M    templates/configure.ac
+
+2008-01-09  Patrick West <pwest@ucar.edu>
+
+	Missing header comments added
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/PPTStreamBuf.h
+	M    server/BESServerUtils.cc
+	M    server/BESServerUtils.h
+	M    dispatch/BESRegex.h
+	M    dispatch/BESDASResponse.cc
+	M    dispatch/BESPluginFactory.h
+	M    dispatch/BESRegex.cc
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESDDSResponse.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESDataDDSResponse.cc
+
+2008-01-07  James Gallagher <jgallagher@opendap.org>
+
+	Added the *.pc.in files that were part of Patrice's patch.
+
+2008-01-07  Patrick West <pwest@ucar.edu>
+
+	Space after the tilde is not liked on some systems.
+	M    dispatch/BESDataDDSResponse.h
+
+2008-01-07  James Gallagher <jgallagher@opendap.org>
+
+	Added Patrice's patch of 17 Dec. which updates pkgconfig support.
+	M    bes-config.in
+	M    conf/openssl.m4
+	M    cmdln/common_tests.exp
+	M    cmdln/Makefile.am
+	M    cmdln/testsuite/bescmdln.freeform/1998-6-avhrr.dat.6.exp
+	M    cmdln/testsuite/bescmdln.freeform/1998-6-avhrr.dat.a.exp
+	M    dispatch/Makefile.am
+	M    bes.spec
+	M    configure.ac
+	M    ppt/Makefile.am
+	M    server/Makefile.am
+	M    Makefile.am
+
+2008-01-07  Patrick West <pwest@ucar.edu>
+
+	Using unsigned int instead of uint
+	M    dispatch/BESScrub.cc
+	M    dispatch/BESScrub.h
+
+2008-01-04  Patrick West <pwest@ucar.edu>
+
+	Include for RHEL3 to find close function
+	M    unit-tests/sbT.cc
+
+2008-01-03  Patrick West <pwest@ucar.edu>
+
+	cppunit include directive
+	M    ppt/unit-tests/Makefile.am
+
+2008-01-03  Patrick West <pwest@ucar.edu>
+
+	Added openssl libraries to build
+	M    ppt/unit-tests/Makefile.am
+
+2008-01-03  Patrick West <pwest@ucar.edu>
+
+	Added includes to try and satisfy RHL3
+	M    ppt/PPTStreamBuf.cc
+
+2007-12-21  Patrick West <pwest@ucar.edu>
+
+	Added as part of chunking changes
+	A    BESDapErrorInfo.cc
+	A    BESDapErrorInfo.h
+
+2007-12-20  Patrick West <pwest@ucar.edu>
+
+	Chunking used in PPT instead of tokens. Initial handshaking is the
+	same as before, but all other communication is done using chunking.
+
+	Updated some source code documentation as well.
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.h
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESDefineResponseHandler.h
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESFileContainer.h
+	M    dispatch/BESDelContainerResponseHandler.cc
+	M    dispatch/BESInterface.h
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESBasicTransmitter.cc
+	M    dispatch/BESDapHandlerException.cc
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESDefinitionStorageVolatile.cc
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESHTMLInfo.cc
+	M    dispatch/BESStatusReturn.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESGlobalIQ.h
+	M    dispatch/BESException.h
+	M    dispatch/BESTransmitterNames.h
+	M    dispatch/BESDelContainersResponseHandler.cc
+	M    dispatch/BESSetContainerResponseHandler.cc
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDelDefsResponseHandler.cc
+	M    dispatch/BESCgiInterface.h
+	M    dispatch/BESDebug.h
+	M    dispatch/BESDelDefResponseHandler.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESDefineResponseHandler.cc
+	M    dispatch/BESDefinitionStorage.h
+	M    dispatch/BESStreamResponseHandler.cc
+	M    dispatch/BESKeys.h
+	M    dispatch/BESInfoNames.h
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESExceptionManager.h
+	M    dispatch/BESInterface.cc
+	M    dispatch/BESTextInfo.cc
+	M    bes.spec
+	M    configure.ac
+	M    ppt/Connection.h
+	M    ppt/PPTClient.cc
+	A    ppt/PPTStreamBuf.cc
+	M    ppt/SSLConnection.cc
+	M    ppt/SSLConnection.h
+	M    ppt/SocketUtilities.h
+	M    ppt/Socket.h
+	M    ppt/PPTServer.cc
+	A    ppt/unit-tests
+	A    ppt/unit-tests/ConnTestStrs.h
+	A    ppt/unit-tests/ConnTest.cc
+	A    ppt/unit-tests/ExtConn.cc
+	A    ppt/unit-tests/ConnTest.h
+	A    ppt/unit-tests/ExtConn.h
+	A    ppt/unit-tests/connT.cc
+	A    ppt/unit-tests/extT.cc
+	A    ppt/unit-tests/Makefile.am
+	A    ppt/unit-tests/ConnSocket.cc
+	A    ppt/unit-tests/ConnSocket.h
+	A    ppt/unit-tests/sbT.cc
+	A    ppt/unit-tests/sbT.out
+	A    ppt/PPTStreamBuf.h
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTConnection.h
+	M    ppt/Makefile.am
+	M    ppt/PPTProtocol.h
+	M    ppt/Socket.cc
+	M    server/BESServerHandler.cc
+	M    server/ServerApp.h
+	M    doxy.conf
+	M    command/BESDelDefsCommand.cc
+	D    command/BESParserException.cc
+	M    command/BESDefineCommand.cc
+
+2007-12-06  Patrick West <pwest@ucar.edu>
+
+	Modified the regular expression text to use :alpha: and :digit: that
+	fixes locale problem. Added exception catching to the test.
+	M    dispatch/BESScrub.cc
+	M    dispatch/unit-tests/scrubT.cc
+
+2007-12-06  Patrick West <pwest@ucar.edu>
+
+	Moved the HDF4 specific cache varible to the script in the
+	hdf4_handler directory that modifies the bes.conf file.
+	M    bes.conf.in
+
+2007-11-30  Patrick West <pwest@ucar.edu>
+
+	Added aclocal contents to rpm spec and pkgconfig and automake to the
+	development requirements.
+	M    bes.spec
+
+2007-11-30  Patrick West <pwest@ucar.edu>
+
+	Added MacOSX build files to the distribution
+	M    Makefile.am
+
 2007-11-29  Patrick West <pwest@ucar.edu>
 
-	Added bes.m4 file to be included in the distributions. Fixed a problem in
-	the libdap.m4 file where the micro version number was set to the minor
-	number instead of the micro number. 3.5.3 release updates to README,
-	ChangeLog, bes.spec, NEWS, configure.ac. Mac OSX dmg build resource files
-	updated and _MacOSX.rtf files added to be included in the dmg alongside
-	the .pkg.
+	New and easier way of building .pkg for MacOSX .dmg build.
+	M    Makefile.am
+
+2007-11-29  Patrick West <pwest@ucar.edu>
+
+	Wasn't defining aclocaldir in Makefile.am
+	M    ChangeLog
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2007-11-29  Patrick West <pwest@ucar.edu>
+
+	Added bes.m4 file to be included in the distributions. Fixed a
+	problem in the libdap.m4 file where the micro version number was set
+	to the minor number instead of the micro number. 3.5.3 release
+	updates to README, ChangeLog, bes.spec, NEWS, configure.ac. Mac OSX
+	dmg build resource files updated and _MacOSX.rtf files added to be
+	included in the dmg alongside the .pkg.
 	A    conf/bes.m4
 	M    conf/libdap.m4
 	M    ChangeLog
@@ -26,28 +691,27 @@
 ;; End:
 2007-11-28  Patrick West <pwest@ucar.edu>
 
-	Updated dods tests in bes/cmdln/testsuite to write the results to a file,
-	then use getdap on the output and getdap on the expected output, and
-	compare the results. Split apart the server side function tests. Updated
-	the comments in the .exp files. Added common-tests.exp and testsuite
-	directory to the distribution.
+	Updated dods tests in bes/cmdln/testsuite to write the results to a
+	file, then use getdap on the output and getdap on the expected
+	output, and compare the results. Split apart the server side
+	function tests. Updated the comments in the .exp files. Added
+	common-tests.exp and testsuite directory to the distribution.
 
 2007-11-27  James Gallagher <jgallagher@opendap.org>
 
 	Changed '==' to '=' or '-eq'.
-
 	M besctl.in
 
 2007-11-26  Patrick West <pwest@ucar.edu>
 
-	Some of the baseline files were corrupted in bes/cmdln/testsuite. Fixed
-	those. Added the testsuite directory and the common-tests.exp file to the
-	distribution.
+	Some of the baseline files were corrupted in bes/cmdln/testsuite.
+	Fixed those. Added the testsuite directory and the common-tests.exp
+	file to the distribution.
 
 2007-11-21  Patrick West <pwest@ucar.edu>
 
-	New option, -r, to tell where the pid file lives. Using sysconfdir in besctl
-	for default location. This fixes rpm build issues.
+	New option, -r, to tell where the pid file lives. Using sysconfdir
+	in besctl for default location. This fixes rpm build issues.
 	M    server/besctl.in
 	M    server/daemon.cc
 	M    server/ServerApp.cc

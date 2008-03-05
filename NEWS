@@ -1,6 +1,57 @@
 
 	$Id$
 
+News for version 3.6.0, 29 February 2008
+
+Changed a parameter name in the bes configuration file for memory
+management that contained a typo. If you receive an error "cannot determine
+memory keys" then you need to update the parameter MaximunHeapSize to
+MaximumHeapSize.
+
+BES clients and servers now communicate using HTTP style chunking rather
+than using terminating tokens. This greatly improves performance of the
+clients and servers in that they no longer need to step through any data
+received to find the terminating token. Please refer the release notes on
+docs.opendap.org for Hyrax 1.4 for more information.
+
+Exceptions/Errors have been re-written and consolidated. Changed the name of
+BESException to BESError and now have only five derived classes for the
+different types of errors (BESInternalError, BESInternalFatalError,
+BESForbiddenError, BESNotFoundError and BESSyntaxUserError.) Each error class
+has a type number associated with it to make it easier for clients to
+clasify the given error. Please refer to the release notes on
+docs.opendap.org for Hyrax 1.4 for more information.
+
+BES catalog and data access now includes an option to follow symbolic links
+or not, similar to what is used in Apache.  In the BES configuration file
+is the new parameter BES.*.FollowSymLinks=No|Yes If set to yes, then
+container and catalog requests will follow symbolic links relative to the
+document root. If set to no, then we won't follow symbolic links.
+
+The response to a 'show catalog' request will return the elements of a
+dataset (directory) in alphabetical order.
+
+The 'set container' request now verifies the existance of the data container
+whereas before it did not, leaving the error to be handled by the data
+handler in the get command.
+
+Added a new method to the container class to release the container. The
+access method is used to gain access to the data container. For example, the
+container may need to be uncompressed and cached. The release method would
+release locks on the cached item.
+
+Added a stand-alone application with a bescmdln interface for testing
+purposes. Run just like bescmdln with the addition of a -c option for the
+location of the BES configuration file to use. Can pass a command via the -x
+option, or load commands from a file using the -i option, dump the output to
+a file using the -f option, or run it interactively.
+
+Added .pc files for package configuration.
+
+Other bug fixes. Please refer to the ChangeLog for more details and the
+release notes on docs.opendap.org for the list of tickets resolved in this
+release.
+
 News for version 3.5.3
 
 New option to the BES control script (besctl) to specify the location of the
