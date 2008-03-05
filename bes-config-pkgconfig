@@ -2,6 +2,7 @@
 #
 # Borrowed the idea for this script (and some code) from libcurl.
 #
+
 usage()
 {
     cat <<EOF
