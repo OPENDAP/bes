@@ -126,6 +126,7 @@ exit 0
 %{_datadir}/bes/*.txt
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
+%{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
 %{_bindir}/besregtest
