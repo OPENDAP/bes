@@ -123,11 +123,6 @@ BESInterface::execute_request( const string &from )
     ss << thepid ;
     _dhi.data[SERVER_PID] = ss.str() ;
 
-    *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
-			<< " from " << _dhi.data[REQUEST_FROM]
-			<< " [" << _dhi.data[DATA_REQUEST] << "]"
-			<< endl ;
-
     int status = 0;
 
     // We split up the calls for the reason that if we catch an
@@ -136,6 +131,12 @@ BESInterface::execute_request( const string &from )
     // information.
     try {
         initialize();
+
+	*(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			    << " from " << _dhi.data[REQUEST_FROM]
+			    << " [" << _dhi.data[DATA_REQUEST] << "]"
+			    << endl ;
+
         validate_data_request();
         build_data_request_plan();
         execute_data_request_plan();
