@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>0.0.0, OPeNDAP</string>
+	<string>1.2.0, OPeNDAP</string>
 	<key>CFBundleIdentifier</key>
 	<string>opendap.hdf5_handler</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.0</string>
+	<string>1.2.0</string>
 	<key>IFMajorVersion</key>
 	<integer>3</integer>
 	<key>IFMinorVersion</key>
@@ -27,7 +27,7 @@
 	<key>IFPkgFlagInstallFat</key>
 	<false/>
 	<key>IFPkgFlagInstalledSize</key>
-	<integer>21548</integer>
+	<integer>19628</integer>
 	<key>IFPkgFlagIsRequired</key>
 	<false/>
 	<key>IFPkgFlagOverwritePermissions</key>
