@@ -28,7 +28,7 @@ using namespace libdap ;
 void add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group);
 bool depth_first( hid_t , char *, DAS &);
 bool find_gloattr( hid_t file, DAS &das );
-int  get_hardlink( hid_t, const string &);
+string  get_hardlink( hid_t, const string &);
 bool get_softlink( DAS &, hid_t, const string &, int );
 void read_comments( DAS & das, const string & varname, hid_t oid );
 void read_objects( DAS &das, const string &varname, hid_t dset, int num_attr );

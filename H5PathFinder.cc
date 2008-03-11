@@ -26,7 +26,7 @@ H5PathFinder::~H5PathFinder()
 }
 
 
-bool H5PathFinder::add(int id, const string name)
+bool H5PathFinder::add(string id, const string name)
 {
   DBG(cerr
       << ">add(): id is:" << id
@@ -46,7 +46,7 @@ bool H5PathFinder::add(int id, const string name)
 }
 
 
-bool H5PathFinder::visited(int id)
+bool H5PathFinder::visited(string id)
 {
   string str =  id_to_name_map[id];
   if(!str.empty()){
@@ -57,7 +57,7 @@ bool H5PathFinder::visited(int id)
   }
 }
 
-string H5PathFinder::get_name(int id)
+string H5PathFinder::get_name(string id)
 {
   return id_to_name_map[id];
 }

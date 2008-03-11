@@ -2,7 +2,7 @@
 /// \mainpage
 /// 
 /// \section Introduction
-/// This is the HDF5 OPeNDAP handler which extracts DAS/DDS/DODS information from
+/// This is the OPeNDAP HDF5 server which extracts DAS/DDS/DODS information from
 /// a hdf5 data file. 
 ///
 /// \section Usage
@@ -24,7 +24,7 @@
 ///
 ///
 ///
-/// Copyright (C) 2007	HDF Group, Inc.
+/// Copyright (C) 2007-2008 THG
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////

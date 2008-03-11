@@ -29,7 +29,7 @@
 #include "H5EOS.h"
 
 extern H5EOS eos;
-extern bool get_hardlink( hid_t, const string &);
+extern string get_hardlink(hid_t, const string &);
 
 /// This variable is used to generate internal error message.
 static char Msgt[MAX_ERROR_MESSAGE];
@@ -124,8 +124,8 @@ depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
       strcpy(t_fpn, full_path_name.c_str());
       hid_t cgroup = H5Gopen(pid, t_fpn);
       try {
-	int oid = get_hardlink(pid, oname);
-	if(oid == 0){
+	string oid = get_hardlink(pid, oname);
+	if(oid == ""){
 	  depth_first(cgroup, t_fpn, dds, fname);	  
 	}
 

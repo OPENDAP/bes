@@ -153,12 +153,12 @@ depth_first(hid_t pid, char *gname, DAS & das)
       }
 
       try {
-	int oid = get_hardlink(cgroup, t_fpn);
+	string oid = get_hardlink(cgroup, t_fpn);
 #ifndef CF	
 	read_objects(das, t_fpn, cgroup, num_attr);
 #endif
 	// Break the cyclic loop created by hard links.
-	if(oid == 0){	// <hyokyung 2007.06.11. 13:53:12>
+	if(oid == ""){	// <hyokyung 2007.06.11. 13:53:12>
 	  depth_first(cgroup, t_fpn, das);
 	}
 	else{
@@ -208,10 +208,10 @@ depth_first(hid_t pid, char *gname, DAS & das)
         throw InternalErr(__FILE__, __LINE__, msg);
       }
       try {
-	int oid = get_hardlink(dset, t_fpn);
+	string oid = get_hardlink(dset, t_fpn);
 	// Break the cyclic loop created by hard links.
 	read_objects(das, t_fpn, dset, num_attr);
-	if(oid !=0){
+	if(oid != ""){
 	  // Add attribute table with HARDLINK
 	  AttrTable* at = das.add_table(t_fpn, new AttrTable);
 	  at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
@@ -975,7 +975,7 @@ find_gloattr(hid_t file, DAS & das)
 
   hid_t root;
   int num_attrs;
-  DBG(cerr << ">find_gloattr()" <<endl);
+  DBG(cerr << ">find_gloattr()" << endl);
   
 #ifdef CF
   add_dimension_attributes(das);
@@ -1142,14 +1142,17 @@ get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 ///          to the DAP interface.
 /// \warning This is only a test, not supported in current version.
 ////////////////////////////////////////////////////////////////////////////////
-int
+string 
 get_hardlink(hid_t pgroup, const string & oname)
 {
 
   H5G_stat_t statbuf;
   
-  haddr_t     objno = 0;              // Compact form of object's location 
-
+  string     objno;              // Compact form of object's location
+  
+  char buf0[256];
+  char buf1[256];
+    
   DBG(cerr << ">get_hardlink():" << oname << endl);
 
   const char *temp_oname = oname.c_str();
@@ -1164,18 +1167,23 @@ get_hardlink(hid_t pgroup, const string & oname)
   DBG(cerr << "=get_hardlink(): number of links " << statbuf.nlink << endl);
 
   if(statbuf.nlink >= 2){
-    objno = (haddr_t)statbuf.objno[0] | ((haddr_t)statbuf.objno[1] << (8 * sizeof(long)));
-    DBG(cerr << "=get_hardlink() objno=" << objno << endl);    
+    // objno = (haddr_t)statbuf.objno[0] | ((haddr_t)statbuf.objno[1] << (8 * sizeof(long)));
+    sprintf(buf0, "%x", statbuf.objno[0]);
+    sprintf(buf1, "%x", statbuf.objno[1]);
+    objno.append(buf0);
+    objno.append(buf1);
+    DBG(cerr << "=get_hardlink() objno=" << objno << endl);
+    // cerr << "=get_hardlink() objno=" << objno << endl;    
     if(!paths.add(objno, oname)){
       return objno;
     }
     else{
-      return 0;
+      return "";
     }
       
   }
   else{
-    return 0;
+    return "";
   }
 }
 
