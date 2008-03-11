@@ -35,8 +35,7 @@
 #include "InternalErr.h"
 #include "debug.h"
 
-BaseType *
-HDF5Structure::ptr_duplicate()
+BaseType *HDF5Structure::ptr_duplicate()
 {
     return new HDF5Structure(*this);
 }
@@ -54,102 +53,89 @@ HDF5Structure::~HDF5Structure()
 {
 }
 
-HDF5Structure &
-HDF5Structure::operator=(const HDF5Structure &rhs)
+HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
 {
     if (this == &rhs)
         return *this;
 
-    dynamic_cast<Structure&>(*this) = rhs; // run Structure assignment
-        
-    
+    dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
+
+
     return *this;
 }
 
-bool
-HDF5Structure::read(const string & dataset)
+bool HDF5Structure::read(const string & dataset)
 {
 
-  int i = 0;
-  int err = 0;
-  Constructor::Vars_iter q;
-  
-  DBG(cerr
-      << ">read() dataset=" << dataset
-      << " array_index= " << array_index
-      << endl);
+    int i = 0;
+    int err = 0;
+    Constructor::Vars_iter q;
 
-  if(read_p())
+    DBG(cerr
+        << ">read() dataset=" << dataset
+        << " array_index= " << array_index << endl);
+
+    if (read_p())
+        return false;
+
+
+    // Read each member in the structure.
+    for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
+        DBG(cerr << "=read() i=" << i << endl);
+        BaseType *p = dynamic_cast < BaseType * >(*q);
+        p->read(dataset);
+    }
+
+    set_read_p(true);
     return false;
-
-  
-  // Read each member in the structure.
-  for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
-      DBG(cerr << "=read() i=" << i << endl);
-      BaseType *p = dynamic_cast<BaseType*>(*q);
-      p->read(dataset);
-  }
-  
-  set_read_p(true);
-  return false;
 }
 
-void
-HDF5Structure::set_did(hid_t dset)
+void HDF5Structure::set_did(hid_t dset)
 {
     dset_id = dset;
 }
 
-void
-HDF5Structure::set_tid(hid_t type)
+void HDF5Structure::set_tid(hid_t type)
 {
     ty_id = type;
 }
 
-hid_t
-HDF5Structure::get_did()
+hid_t HDF5Structure::get_did()
 {
     return dset_id;
 }
 
-hid_t
-HDF5Structure::get_tid()
+hid_t HDF5Structure::get_tid()
 {
     return ty_id;
 }
 
-void
-HDF5Structure::set_array_index(int i)
+void HDF5Structure::set_array_index(int i)
 {
-  array_index = i;
+    array_index = i;
 }
 
-int
-HDF5Structure::get_array_index()
+int HDF5Structure::get_array_index()
 {
-  return array_index;
+    return array_index;
 }
 
-void
-HDF5Structure::set_array_size(int i)
+void HDF5Structure::set_array_size(int i)
 {
-  array_size = i;
+    array_size = i;
 }
 
-int
-HDF5Structure::get_array_size()
+int HDF5Structure::get_array_size()
 {
-  return array_size;
+    return array_size;
 }
 
-void
-HDF5Structure::set_entire_array_size(int i)
+void HDF5Structure::set_entire_array_size(int i)
 {
-  array_entire_size = i;
+    array_entire_size = i;
 }
 
-int
-HDF5Structure::get_entire_array_size()
+int HDF5Structure::get_entire_array_size()
 {
-  return array_entire_size;
+    return array_entire_size;
 }

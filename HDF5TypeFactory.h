@@ -29,7 +29,7 @@
 
 #include "BaseTypeFactory.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 // Class declarations; Make sure to include the corresponding headers in the
 // implementation file.
@@ -55,31 +55,33 @@ class HDF5GridEOS;
 ///
 /// @author James Gallagher
 /// @see DDS 
-class HDF5TypeFactory: public BaseTypeFactory {
-public:
-  HDF5TypeFactory() {} 
-  virtual ~HDF5TypeFactory() {}
+class HDF5TypeFactory:public BaseTypeFactory {
+  public:
+    HDF5TypeFactory() {
+    } virtual ~ HDF5TypeFactory() {
+    }
 
-  virtual Byte *NewByte(const string &n = "") const;
-  virtual Int16 *NewInt16(const string &n = "") const;
-  virtual UInt16 *NewUInt16(const string &n = "") const;
-  virtual Int32 *NewInt32(const string &n = "") const;
-  virtual UInt32 *NewUInt32(const string &n = "") const;
-  virtual Float32 *NewFloat32(const string &n = "") const;
-  virtual Float64 *NewFloat64(const string &n = "") const;
+    virtual Byte *NewByte(const string & n = "") const;
+    virtual Int16 *NewInt16(const string & n = "") const;
+    virtual UInt16 *NewUInt16(const string & n = "") const;
+    virtual Int32 *NewInt32(const string & n = "") const;
+    virtual UInt32 *NewUInt32(const string & n = "") const;
+    virtual Float32 *NewFloat32(const string & n = "") const;
+    virtual Float64 *NewFloat64(const string & n = "") const;
 
-  virtual Str *NewStr(const string &n = "") const;
-  virtual Url *NewUrl(const string &n = "") const;
+    virtual Str *NewStr(const string & n = "") const;
+    virtual Url *NewUrl(const string & n = "") const;
 
-  virtual Array *NewArray(const string &n = "", BaseType *v = 0) const;
-  virtual Structure *NewStructure(const string &n = "") const;
-  virtual Sequence *NewSequence(const string &n = "") const;
-  virtual Grid *NewGrid(const string &n = "") const;
-  virtual Grid *NewGridEOS(const string &n = "") const;
+    virtual Array *NewArray(const string & n = "", BaseType * v = 0) const;
+    virtual Structure *NewStructure(const string & n = "") const;
+    virtual Sequence *NewSequence(const string & n = "") const;
+    virtual Grid *NewGrid(const string & n = "") const;
+    virtual Grid *NewGridEOS(const string & n = "") const;
 #ifdef CF
-  virtual Array *NewArrayEOS(const string &n = "", BaseType *v=0) const;
-#endif  
+    virtual Array *NewArrayEOS(const string & n = "", BaseType * v =
+                               0) const;
+#endif
 };
 
-#endif // hdf5_type_factory_h
+#endif                          // hdf5_type_factory_h
 // $Log$ //

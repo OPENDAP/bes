@@ -21,7 +21,7 @@
 #include "Str.h"
 #include "H5Git.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// A class for handling string data type in HDF5.
@@ -39,43 +39,39 @@ using namespace libdap ;
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-class HDF5Str: public Str {
-private:
-  hid_t dset_id;
-  hid_t ty_id;
-  int array_flag; 
+class HDF5Str:public Str {
+  private:
+    hid_t dset_id;
+    hid_t ty_id;
+    int array_flag;
 
-public:
-  
-  /// Constructor
-  HDF5Str(const string &n = "");
-  virtual ~HDF5Str() {}
+  public:
 
-  /// Clone this instance.
-  /// 
-  /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
-  /// \return A newly allocated copy of this class    
-  virtual BaseType *ptr_duplicate();
+    /// Constructor
+     HDF5Str(const string & n = "");
+     virtual ~ HDF5Str() {
+    }
+    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class    
+        virtual BaseType *ptr_duplicate();
 
-  /// Reads HDF5 string data into local buffer  
-  virtual bool read(const string &dataset);
+    /// Reads HDF5 string data into local buffer  
+    virtual bool read(const string & dataset);
 
-  /// See return_type function defined in h5dds.cc.    
-  friend string return_type(hid_t datatype);
-  
-  /// returns HDF5 dataset id.      
-  hid_t get_did();
-  
-  /// returns HDF5 datatype id.
-  hid_t get_tid(); 
-  
-  /// remembers HDF5 dataset id.  
-  void set_did(hid_t dset);
-  
-  /// remembers HDF5 datatype id.
-  void set_tid(hid_t type);
+    /// See return_type function defined in h5dds.cc.    
+    friend string return_type(hid_t datatype);
+
+    /// returns HDF5 dataset id.      
+    hid_t get_did();
+
+    /// returns HDF5 datatype id.
+    hid_t get_tid();
+
+    /// remembers HDF5 dataset id.  
+    void set_did(hid_t dset);
+
+    /// remembers HDF5 datatype id.
+    void set_tid(hid_t type);
 
 };
 
 #endif
-

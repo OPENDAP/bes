@@ -5,10 +5,10 @@
 /// \author Muqun Yang (ymuqun@ncsa.uiuc.edu)
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// 
-/// Copyright (C) 2007	HDF Group, Inc.
+/// Copyright (C) 2007  HDF Group, Inc.
 ///
-/// Copyright (C) 1999	National Center for Supercomputing Applications.
-///		All rights reserved.
+/// Copyright (C) 1999  National Center for Supercomputing Applications.
+///             All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
 #include "h5_handler.h"
@@ -31,128 +31,128 @@ extern H5EOS eos;
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
-  DBG(cerr << "Starting the HDF handler." << endl);
+    DBG(cerr << "Starting the HDF handler." << endl);
 
-  try {
-    DODSFilter df(argc, argv);
-    if (df.get_cgi_version() == "")
-      df.set_cgi_version(cgi_version);
+    try {
+        DODSFilter df(argc, argv);
+        if (df.get_cgi_version() == "")
+            df.set_cgi_version(cgi_version);
 
-    // Handle the version info as a special case since there's no need to
-    // open the hdf5 file. This makes it possible to move the file open
-    // and close code out of the individual case statements.
-    // jhrg 02/04/04 
-    if (df.get_response() == DODSFilter::Version_Response) {
-      df.send_version_info();
-      return 0;
+        // Handle the version info as a special case since there's no need to
+        // open the hdf5 file. This makes it possible to move the file open
+        // and close code out of the individual case statements.
+        // jhrg 02/04/04 
+        if (df.get_response() == DODSFilter::Version_Response) {
+            df.send_version_info();
+            return 0;
+        }
+
+        hid_t file1 = get_fileid(df.get_dataset_name().c_str());
+
+        if (file1 < 0)
+            throw Error(no_such_file, string("Could not open hdf5 file: ")
+                        + df.get_dataset_name());
+
+        // Check if it is EOS file.
+        DBG(cerr << "checking EOS file" << endl);
+        if (eos.check_eos(file1)) {
+            DBG(cerr << "eos file is detected" << endl);
+            eos.set_dimension_array();
+        } else {
+            DBG(cerr << "eos file is not detected" << endl);
+        }
+
+        switch (df.get_response()) {
+
+        case DODSFilter::DAS_Response:{
+                DAS das;
+                find_gloattr(file1, das);
+                depth_first(file1, "/", das);
+
+                df.send_das(das);
+
+                break;
+            }
+
+        case DODSFilter::DDS_Response:{
+                DAS das;
+                HDF5TypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+
+                depth_first(file1, "/", dds,
+                            df.get_dataset_name().c_str());
+
+                DBG(cerr << ">df.send_dds()" << endl);
+                df.send_dds(dds, ce, true);
+                break;
+            }
+
+        case DODSFilter::DataDDS_Response:{
+
+
+                HDF5TypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+                DAS das;
+
+                depth_first(file1, "/", dds,
+                            df.get_dataset_name().c_str());
+
+                df.send_data(dds, ce, stdout);
+                break;
+            }
+
+        case DODSFilter::DDX_Response:{
+                HDF5TypeFactory factory;
+                DDS dds(&factory);
+                ConstraintEvaluator ce;
+                DAS das;
+
+                depth_first(file1, "/", dds,
+                            df.get_dataset_name().c_str());
+                find_gloattr(file1, das);
+                depth_first(file1, "/", das);
+                dds.transfer_attributes(&das);
+                df.send_ddx(dds, ce, stdout);
+                break;
+            }
+
+        case DODSFilter::Version_Response:{
+                df.send_version_info();
+
+                break;
+            }
+
+        default:
+            df.print_usage();   // Throws Error
+        }
+
+        if (H5Fclose(file1) < 0)
+            throw Error(unknown_error,
+                        string("Could not close the HDF5 file: ")
+                        + df.get_dataset_name());
+
+    }
+    catch(Error & e) {
+        string s;
+        s = string("h5_handler: ") + e.get_error_message() + "\n";
+        ErrMsgT(s);
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
+    }
+    catch(...) {
+        string s("h5_handler: Unknown exception");
+        ErrMsgT(s);
+        Error e(unknown_error, s);
+        set_mime_text(stdout, dods_error, cgi_version);
+        e.print(stdout);
+        return 1;
     }
 
-    hid_t file1 = get_fileid(df.get_dataset_name().c_str());
-
-    if (file1 < 0)
-      throw Error(no_such_file, string("Could not open hdf5 file: ")
-		  + df.get_dataset_name());
-    
-    // Check if it is EOS file.
-    DBG(cerr << "checking EOS file" << endl);
-    if(eos.check_eos(file1)){
-      DBG(cerr << "eos file is detected" << endl);
-      eos.set_dimension_array();
-    }
-    else{
-      DBG(cerr << "eos file is not detected" << endl);
-    }
-
-    switch (df.get_response()) {
-      
-    case DODSFilter::DAS_Response:{
-      DAS das;
-      find_gloattr(file1, das);
-      depth_first(file1, "/", das);
-
-      df.send_das(das);
-
-      break;
-    }
-
-    case DODSFilter::DDS_Response:{
-      DAS das;	  
-      HDF5TypeFactory factory;
-      DDS dds(&factory);
-      ConstraintEvaluator ce;
-		
-      depth_first(file1, "/", dds,
-		  df.get_dataset_name().c_str());
-      
-      DBG(cerr << ">df.send_dds()" << endl);				
-      df.send_dds(dds, ce, true);
-      break;
-    }
-
-    case DODSFilter::DataDDS_Response:{
-	  
-
-      HDF5TypeFactory factory;
-      DDS dds(&factory);
-      ConstraintEvaluator ce;
-      DAS das;
-		      
-      depth_first(file1, "/", dds,
-		  df.get_dataset_name().c_str());
-
-      df.send_data(dds, ce, stdout); 
-      break;
-    }
-
-    case DODSFilter::DDX_Response:{ 
-      HDF5TypeFactory factory;
-      DDS dds(&factory);
-      ConstraintEvaluator ce;
-      DAS das;
-
-      depth_first(file1, "/", dds,
-		  df.get_dataset_name().c_str());
-      find_gloattr(file1, das);
-      depth_first(file1, "/", das);
-      dds.transfer_attributes(&das);
-      df.send_ddx(dds, ce, stdout);
-      break;
-    }
-
-    case DODSFilter::Version_Response:{
-      df.send_version_info();
-
-      break;
-    }
-
-    default:
-      df.print_usage();   // Throws Error
-    }
-
-    if (H5Fclose(file1) < 0)
-      throw Error(unknown_error,
-		  string("Could not close the HDF5 file: ")
-		  + df.get_dataset_name());
-
-  }
-  catch(Error & e) {
-    string s;
-    s = string("h5_handler: ") + e.get_error_message() + "\n";
-    ErrMsgT(s);
-    set_mime_text(stdout, dods_error, cgi_version);
-    e.print(stdout);
-    return 1;
-  }
-  catch(...) {
-    string s("h5_handler: Unknown exception");
-    ErrMsgT(s);
-    Error e(unknown_error, s);
-    set_mime_text(stdout, dods_error, cgi_version);
-    e.print(stdout);
-    return 1;
-  }
-
-  DBG(cerr << "HDF5 server exitied successfully." << endl);
-  return 0;
+    DBG(cerr << "HDF5 server exitied successfully." << endl);
+    return 0;
 }
+
 // $Log$

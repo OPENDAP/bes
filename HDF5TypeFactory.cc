@@ -69,97 +69,82 @@
 #include "HDF5TypeFactory.h"
 #include "debug.h"
 
-Byte *
-HDF5TypeFactory::NewByte(const string &n ) const 
-{ 
+Byte *HDF5TypeFactory::NewByte(const string & n) const
+{
     return new HDF5Byte(n);
 }
 
-Int16 *
-HDF5TypeFactory::NewInt16(const string &n ) const 
-{ 
-    return new HDF5Int16(n); 
+Int16 *HDF5TypeFactory::NewInt16(const string & n) const
+{
+    return new HDF5Int16(n);
 }
 
-UInt16 *
-HDF5TypeFactory::NewUInt16(const string &n ) const 
-{ 
+UInt16 *HDF5TypeFactory::NewUInt16(const string & n) const
+{
     return new HDF5UInt16(n);
 }
 
-Int32 *
-HDF5TypeFactory::NewInt32(const string &n ) const 
-{ 
+Int32 *HDF5TypeFactory::NewInt32(const string & n) const
+{
     DBG(cerr << "Inside HDF5TypeFactory::NewInt32" << endl);
     return new HDF5Int32(n);
 }
 
-UInt32 *
-HDF5TypeFactory::NewUInt32(const string &n ) const 
-{ 
+UInt32 *HDF5TypeFactory::NewUInt32(const string & n) const
+{
     return new HDF5UInt32(n);
 }
 
-Float32 *
-HDF5TypeFactory::NewFloat32(const string &n ) const 
-{ 
+Float32 *HDF5TypeFactory::NewFloat32(const string & n) const
+{
     return new HDF5Float32(n);
 }
 
-Float64 *
-HDF5TypeFactory::NewFloat64(const string &n ) const 
-{ 
+Float64 *HDF5TypeFactory::NewFloat64(const string & n) const
+{
     return new HDF5Float64(n);
 }
 
-Str *
-HDF5TypeFactory::NewStr(const string &n ) const 
+Str *HDF5TypeFactory::NewStr(const string & n) const
 {
-  DBG(cerr << ">HDF5TypeFactory::NewStr()" << endl);
+    DBG(cerr << ">HDF5TypeFactory::NewStr()" << endl);
     return new HDF5Str(n);
 }
 
-Url *
-HDF5TypeFactory::NewUrl(const string &n ) const 
-{ 
+Url *HDF5TypeFactory::NewUrl(const string & n) const
+{
     return new HDF5Url(n);
 }
 
-Array *
-HDF5TypeFactory::NewArray(const string &n , BaseType *v) const 
-{ 
+Array *HDF5TypeFactory::NewArray(const string & n, BaseType * v) const
+{
     return new HDF5Array(n, v);
 }
 
-Structure *
-HDF5TypeFactory::NewStructure(const string &n ) const 
-{ 
+Structure *HDF5TypeFactory::NewStructure(const string & n) const
+{
     return new HDF5Structure(n);
 }
 
-Sequence *
-HDF5TypeFactory::NewSequence(const string &n ) const 
-{ 
+Sequence *HDF5TypeFactory::NewSequence(const string & n) const
+{
     DBG(cerr << "Inside HDF5TypeFactory::NewSequence" << endl);
     return new HDF5Sequence(n);
 }
 
-Grid *
-HDF5TypeFactory::NewGrid(const string &n ) const 
-{ 
+Grid *HDF5TypeFactory::NewGrid(const string & n) const
+{
     return new HDF5Grid(n);
 }
 
-Grid *
-HDF5TypeFactory::NewGridEOS(const string &n ) const 
-{ 
+Grid *HDF5TypeFactory::NewGridEOS(const string & n) const
+{
     return new HDF5GridEOS(n);
 }
 
 #ifdef CF
-Array *
-HDF5TypeFactory::NewArrayEOS(const string &n , BaseType *v) const 
-{ 
+Array *HDF5TypeFactory::NewArrayEOS(const string & n, BaseType * v) const
+{
     return new HDF5ArrayEOS(n, v);
 }
 #endif

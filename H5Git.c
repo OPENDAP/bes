@@ -530,20 +530,20 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     int buf_size = 30;
 
     if ((dset = H5Dopen(pid, dname)) < 0) {
-        sprintf(error, "h5_das server:  failed to obtain dataset %s",
-                dname);
+        snprintf(error, MAX_ERROR_MESSAGE, 
+        		"h5_das server:  failed to obtain dataset %s", dname);
         return -1;
     }
 
     if ((datatype = H5Dget_type(dset)) < 0) {
-        sprintf(error,
+        snprintf(error, MAX_ERROR_MESSAGE,
                 "h5_das server:  failed to obtain datatype from  dataset %s",
                 dname);
         return -1;
     }
 
     if ((dataspace = H5Dget_space(dset)) < 0) {
-        sprintf(error,
+        snprintf(error, MAX_ERROR_MESSAGE,
                 "h5_das server:  failed to obtain dataspace from  dataset %s",
                 dname);
         return -1;
@@ -570,14 +570,17 @@ hid_t get_dataset(hid_t pid, char *dname, DS_t * dt_inst_ptr, char *error)
     /* obtain number of attributes in this dataset. */
 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
-        strcpy(error, " unable to get number of dimensions");
+        strncpy(error, " unable to get number of dimensions", MAX_ERROR_MESSAGE);
+        error[MAX_ERROR_MESSAGE-1] = '\0';
         return -1;
     }
 
     /* check dimension size. */
     if (ndims > DODS_MAX_RANK) {
-        strcpy(error,
-               "number of dimensions exceeds hdf5-dods server allowed");
+        strncpy(error,
+               "number of dimensions exceeds hdf5-dods server allowed",
+               MAX_ERROR_MESSAGE);
+        error[MAX_ERROR_MESSAGE-1] = '\0';
         return -1;
     }
 

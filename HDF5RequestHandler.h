@@ -21,7 +21,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // CDFRequestHandler.h
 
 #ifndef I_HDF5RequestHandler_H
@@ -32,17 +32,16 @@
 /// A class for BES support
 ///
 /// @author James Gallagher <jgallagher@opendap.org>
-class HDF5RequestHandler : public BESRequestHandler {
-public:
-			HDF5RequestHandler( const string &name ) ;
-    virtual		~HDF5RequestHandler( void ) ;
+class HDF5RequestHandler:public BESRequestHandler {
+  public:
+    HDF5RequestHandler(const string & name);
+     virtual ~ HDF5RequestHandler(void);
 
-    static bool		hdf5_build_das( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_dds( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_data( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_help( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf5_build_version( BESDataHandlerInterface &dhi ) ;
+    static bool hdf5_build_das(BESDataHandlerInterface & dhi);
+    static bool hdf5_build_dds(BESDataHandlerInterface & dhi);
+    static bool hdf5_build_data(BESDataHandlerInterface & dhi);
+    static bool hdf5_build_help(BESDataHandlerInterface & dhi);
+    static bool hdf5_build_version(BESDataHandlerInterface & dhi);
 };
 
 #endif
-

@@ -10,8 +10,7 @@
 #include "HDF5Grid.h"
 
 
-BaseType *
-HDF5Grid::ptr_duplicate()
+BaseType *HDF5Grid::ptr_duplicate()
 {
     return new HDF5Grid(*this);
 }
@@ -26,11 +25,10 @@ HDF5Grid::~HDF5Grid()
 {
 }
 
-bool
-HDF5Grid::read(const string & dataset)
+bool HDF5Grid::read(const string & dataset)
 {
-    if (read_p())		// nothing to do
-	return false;
+    if (read_p())               // nothing to do
+        return false;
 
     // read array elements
     array_var()->read(dataset);
@@ -45,26 +43,22 @@ HDF5Grid::read(const string & dataset)
     return false;
 }
 
-void
-HDF5Grid::set_did(hid_t dset)
+void HDF5Grid::set_did(hid_t dset)
 {
     dset_id = dset;
 }
 
-void
-HDF5Grid::set_tid(hid_t type)
+void HDF5Grid::set_tid(hid_t type)
 {
     ty_id = type;
 }
 
-hid_t
-HDF5Grid::get_did()
+hid_t HDF5Grid::get_did()
 {
     return dset_id;
 }
 
-hid_t
-HDF5Grid::get_tid()
+hid_t HDF5Grid::get_tid()
 {
     return ty_id;
 }

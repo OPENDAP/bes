@@ -10,7 +10,7 @@
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang <ymuqun@hdfgroup.org>
 ///
-/// Copyright (C) 2007	HDF Group, Inc.
+/// Copyright (C) 2007  HDF Group, Inc.
 ///
 /// Copyright (C) 1999 National Center for Supercomputing Applications.
 ///
@@ -28,7 +28,7 @@
 #include <H5Apublic.h>
 #include <H5public.h>
 
-#include "cgi_util.h" 
+#include "cgi_util.h"
 #include "DDS.h"
 #include "DODSFilter.h"
 #include "common.h"
@@ -45,16 +45,16 @@
 #include "HDF5Grid.h"
 #include "HDF5Url.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 #if 0
 #include "h5util.h"
 #endif
 
-bool   depth_first(hid_t, char *, DDS &, const char *);
+bool depth_first(hid_t, char *, DDS &, const char *);
 string return_type(hid_t type);
-void   read_objects(DDS &dds, const string &varname, const string& filename);
+void read_objects(DDS & dds, const string & varname,
+                  const string & filename);
 #ifdef SHORT_PATH
 string get_short_name(string name);
 #endif
-

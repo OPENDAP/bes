@@ -52,8 +52,8 @@
 /// and meta data parsing.
 extern H5EOS eos;
 
-HDF5RequestHandler::HDF5RequestHandler(const string &name)
-    :BESRequestHandler(name)
+HDF5RequestHandler::HDF5RequestHandler(const string & name)
+:BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
@@ -72,10 +72,10 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
         throw BESNotFoundError((string) "Could not open hdf file: "
-                                  + filename, __FILE__, __LINE__);
+                               + filename, __FILE__, __LINE__);
     }
-    if( eos.check_eos( file1 ) )
-      eos.set_dimension_array();
+    if (eos.check_eos(file1))
+        eos.set_dimension_array();
 
     BESDASResponse *bdas =
         dynamic_cast <
@@ -87,13 +87,13 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         depth_first(file1, "/", *das);
     }
     catch(InternalErr & e) {
-        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(Error & e) {
-        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(...) {
@@ -111,11 +111,11 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
         throw BESNotFoundError(string("hdf4_build_dds: ")
-                                  + "Could not open hdf5 file: "
-                                  + filename, __FILE__, __LINE__);
+                               + "Could not open hdf5 file: "
+                               + filename, __FILE__, __LINE__);
     }
-    if( eos.check_eos( file1 ) )
-      eos.set_dimension_array();
+    if (eos.check_eos(file1))
+        eos.set_dimension_array();
 
     BESDDSResponse *bdds =
         dynamic_cast <
@@ -144,13 +144,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 #endif
     }
     catch(InternalErr & e) {
-        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(Error & e) {
-        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(...) {
@@ -168,11 +168,11 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     hid_t file1 = get_fileid(filename.c_str());
     if (file1 < 0) {
         throw BESNotFoundError(string("hdf4_build_data: ")
-                                  + "Could not open hdf5 file: "
-                                  + filename, __FILE__, __LINE__);
+                               + "Could not open hdf5 file: "
+                               + filename, __FILE__, __LINE__);
     }
-    if( eos.check_eos( file1 ) )
-      eos.set_dimension_array();
+    if (eos.check_eos(file1))
+        eos.set_dimension_array();
 
     BESDataDDSResponse *bdds =
         dynamic_cast <
@@ -202,13 +202,13 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 #endif
     }
     catch(InternalErr & e) {
-        BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(Error & e) {
-        BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-	                __FILE__, __LINE__ ) ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
         throw ex;
     }
     catch(...) {

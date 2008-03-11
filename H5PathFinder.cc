@@ -22,43 +22,35 @@ H5PathFinder::H5PathFinder()
 
 H5PathFinder::~H5PathFinder()
 {
-  
+
 }
 
 
 bool H5PathFinder::add(string id, const string name)
 {
-  DBG(cerr
-      << ">add(): id is:" << id
-      << "   name is:" << name
-      << endl);
-  if(!visited(id)){
-    
-    id_to_name_map[id] = name;
-    return true;
-  }
-  else{
-    DBG(cerr
-	<< "=add(): already added."
-	<< endl);    
-    return false;
-  }
+    DBG(cerr << ">add(): id is:" << id << "   name is:" << name << endl);
+    if (!visited(id)) {
+
+        id_to_name_map[id] = name;
+        return true;
+    } else {
+        DBG(cerr << "=add(): already added." << endl);
+        return false;
+    }
 }
 
 
 bool H5PathFinder::visited(string id)
 {
-  string str =  id_to_name_map[id];
-  if(!str.empty()){
-    return true;
-  }
-  else{
-    return false;
-  }
+    string str = id_to_name_map[id];
+    if (!str.empty()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 string H5PathFinder::get_name(string id)
 {
-  return id_to_name_map[id];
+    return id_to_name_map[id];
 }
-

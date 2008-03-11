@@ -25,7 +25,7 @@
 #include "Url.h"
 #include "H5Git.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// A HDF5Url class.
@@ -37,41 +37,38 @@ using namespace libdap ;
 ///
 /// \see String
 ////////////////////////////////////////////////////////////////////////////////
-class HDF5Url: public Url {
-  
-private:
-  hid_t dset_id;
-  hid_t ty_id;
-  
-public:
-  
-  /// Constructor
-  HDF5Url(const string &n = "");
-  virtual ~HDF5Url() {}
+class HDF5Url:public Url {
 
-  /// Clone this instance.
-  /// 
-  /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
-  /// \return A newly allocated copy of this class      
-  virtual BaseType *ptr_duplicate();
-  
-  /// Reads HDF5 reference data into local buffer as a string
-  virtual bool read(const string &dataset);
+  private:
+    hid_t dset_id;
+    hid_t ty_id;
 
-  /// See return_type function defined in h5dds.cc.  
-  friend string return_type(hid_t datatype);
-  
-  /// returns HDF5 dataset id.  
-  hid_t get_did();
+  public:
 
-  /// returns HDF5 datatype id.    
-  hid_t get_tid();
+    /// Constructor
+     HDF5Url(const string & n = "");
+     virtual ~ HDF5Url() {
+    }
+    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class      
+        virtual BaseType *ptr_duplicate();
 
-  /// remembers HDF5 dataset id.        
-  void set_did(hid_t dset);
+    /// Reads HDF5 reference data into local buffer as a string
+    virtual bool read(const string & dataset);
 
-  /// remembers HDF5 datatype id.    
-  void set_tid(hid_t type);
+    /// See return_type function defined in h5dds.cc.  
+    friend string return_type(hid_t datatype);
+
+    /// returns HDF5 dataset id.  
+    hid_t get_did();
+
+    /// returns HDF5 datatype id.    
+    hid_t get_tid();
+
+    /// remembers HDF5 dataset id.        
+    void set_did(hid_t dset);
+
+    /// remembers HDF5 datatype id.    
+    void set_tid(hid_t type);
 
 
 };
@@ -79,4 +76,3 @@ public:
 
 
 #endif
-

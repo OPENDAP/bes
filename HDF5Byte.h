@@ -12,7 +12,7 @@
 #include "Byte.h"
 #include "H5Git.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 /// A class for HDF5 byte type.
 /// 
@@ -23,42 +23,38 @@ using namespace libdap ;
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
 /// @see HDF5TypeFactory
-class HDF5Byte: public Byte {
+class HDF5Byte:public Byte {
 
-private:
-  hid_t dset_id;
-  hid_t ty_id;
+  private:
+    hid_t dset_id;
+    hid_t ty_id;
 
-public:
-  /// Constructor
-  HDF5Byte(const string &n = "");
-  virtual ~HDF5Byte() {}
-  
-  /// Clone this instance.
-  /// 
-  /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
-  /// \return A newly allocated copy of this class  
-  virtual BaseType *ptr_duplicate();
+  public:
+    /// Constructor
+     HDF5Byte(const string & n = "");
+     virtual ~ HDF5Byte() {
+    }
+    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class  
+        virtual BaseType *ptr_duplicate();
 
-  /// Reads HDF5 byte data into local buffer
-  virtual bool read(const string &dataset);
-  
-  /// See return_type function defined in h5dds.cc.
-  friend string return_type(hid_t datatype);
+    /// Reads HDF5 byte data into local buffer
+    virtual bool read(const string & dataset);
 
-  /// returns HDF5 dataset id.  
-  hid_t get_did();
+    /// See return_type function defined in h5dds.cc.
+    friend string return_type(hid_t datatype);
 
-  /// returns HDF5 datatype id.
-  hid_t get_tid();
-  
-  /// remembers HDF5 dataset id.
-  void set_did(hid_t dset);
+    /// returns HDF5 dataset id.  
+    hid_t get_did();
 
-  /// remembers HDF5 datatype id.
-  void set_tid(hid_t type);
+    /// returns HDF5 datatype id.
+    hid_t get_tid();
+
+    /// remembers HDF5 dataset id.
+    void set_did(hid_t dset);
+
+    /// remembers HDF5 datatype id.
+    void set_tid(hid_t type);
 
 };
 
 #endif
-
