@@ -2,15 +2,14 @@ Summary:         HDF5 data handler for the OPeNDAP Data server
 Name:            hdf5_handler
 Version:         1.2.1
 Release:         1
-License:         LGPL
+License:         LGPLv2+
 Group:           System Environment/Daemons 
-Source0:         ftp://ftp.unidata.ucar.edu/pub/opendap/source/%{name}-%{version}.tar.gz
+Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:   libdap-devel >= 3.8.0
-# hdf-devel
-#Requires:        bes
+BuildRequires:	 bes-devel >= 3.6.0
 
 %description
 This is the hdf5 data handler for our data server. It reads HDF5
@@ -21,26 +20,14 @@ dap-server software.
 %setup -q
 
 %build
-%configure
+%configure --disable-dependency-tracking --disable-static
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-# pre: commands to run before install; post: commnds run after install;
-# preun; postun for commands before and after uninstall
-
-%post -p /sbin/ldconfig
-
-# Only try to configure the bes.conf file if the bes can be found.
-if bes-config --version >/dev/null 2>&1
-then
-	bes_prefix=`bes-config --prefix`
-	configure-hdf5-data.sh $bes_prefix/etc/bes/bes.conf $bes_prefix/lib/bes
-fi
-
-%postun -p /sbin/ldconfig
+rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf4_module.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -48,13 +35,15 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/dap_h5_handler
-%{_bindir}/configure-hdf5-data.sh
-%{_libdir}/
-%{_libdir}/bes/
-%{_datadir}/hyrax/data/hdf5
-%doc COPYING NEWS README
+%{_bindir}/bes-hdf5-data.sh
+%{_libdir}/bes/libhdf5_module.so
+%{_datadir}/hyrax/
+%doc COPYING NEWS README INSTALL
 
 %changelog
+* Wed Mar 12 2008 James Gallagher <jgallagher@opendap.org> - 1.2.1-1
+- Update and copy hdf4_handler.spec features.
+
 * Mon Jun 19 2006 James Gallagher <jimg@zoe.opendap.org> - 
 - Initial build.
 
