@@ -5,10 +5,17 @@ This file includes describes the HDF5 DAP server developed by THG and
 OPeNDAP under a grant from NASA.
 
 For information about building the OPeNDAP HDF5 Data Handler, see the
-INSTALL or INSTALL_EOS5_GRID file. INSTALL is about building a general
-purpose handler  while INSTALL_EOS5_GRID is about building a special
-handler that can support displaying NASA EOS Grid data via existing
-OPeNDAP visualization clients like ferret and GrADS.
+INSTALL. This handler can support existing visualization clients like ferret
+and GrADS using NASA EOS Grid data.
+
+* Known Issues
+
+There are a handful of known issues with this handler that will not affect
+most data providers. They are that the Constraint Expression parser does not
+work with arrays of structures and neither does the HTML form interface. We
+will have fixes to these issues available shortly.
+
+* Installing the handler in Hyrax
 
 This data handler includes an executable for use with Server3 and a
 shared object module for use with Hyrax.
@@ -30,6 +37,8 @@ installation and to see how a working bes.conf should look. To use
 this, make sure that you first install the bes, and that dap-server
 gets installed too.  Finally, every time you install or reinstall
 handlers, make sure to restart the BES and OLFS.
+
+* Background on the handler
 
 This data handler is one component of the OPeNDAP DAP Server; the
 server base software is designed to allow any number of handlers to be
@@ -70,7 +79,7 @@ Special Support for NASA EOS data:
 	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values.  Please see
 	set_dimension_array() in H5EOS.cc for details.
 
-	Metadata: Metadatas (e.g. StructMetadata.x or CoreMetada.x) are
+	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are
 	parsed and its attributes are generated in a nested structure
 	format.
 
