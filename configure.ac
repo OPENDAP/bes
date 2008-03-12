@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(hdf5_handler, 1.2.0, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 1.2.1, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AM_INIT_AUTOMAKE
 
@@ -31,7 +31,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.7.10],
+AC_CHECK_LIBDAP([3.8.0],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -85,7 +85,7 @@ if test "${use_eos_meta}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DNASA_EOS_META"
 fi 
 
-AC_CHECK_BES([3.5.3],
+AC_CHECK_BES([3.6.0],
 [
     # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
     # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06

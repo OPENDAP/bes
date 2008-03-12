@@ -1,3 +1,213 @@
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	More code review changes.
+
+	M    h5das.cc
+	M    H5Git.cc
+	M    HDF5Array.cc
+	M    H5EOS.cc
+
+2008-03-11  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+	M    HDF5UInt32.cc
+	M    HDF5ArrayEOS.cc
+	M    HDF5Module.cc
+	M    HDF5UInt32.h
+	M    HDF5UInt16.cc
+	M    HDF5RequestHandler.cc
+	M    h5das.cc
+	M    h5dds.cc
+	M    h5dds.h
+	M    h5_handler.h
+	M    HDF5Sequence.cc
+	M    H5Git.cc
+	M    HDF5Sequence.h
+	M    HDF5Float32.cc
+	M    HDF5TypeFactory.h
+	M    H5PathFinder.h
+	M    HDF5Array.cc
+	M    HDF5Grid.h
+	M    HDF5Url.cc
+	M    HDF5Int16.h
+	M    HDF5Str.cc
+	M    HDF5TypeFactory.cc
+	M    HDF5Str.h
+	M    H5EOS.cc
+	M    H5EOS.h
+	M    HDF5Grid.cc
+	M    HDF5UInt16.h
+	M    HDF5RequestHandler.h
+	M    HDF5GridEOS.cc
+	M    HDF5GridEOS.h
+	M    HDF5Int32.cc
+	M    HDF5Int16.cc
+	M    h5_handler.cc
+	M    HDF5Byte.cc
+	M    H5PathFinder.cc
+	M    HDF5Float32.h
+	M    HDF5Float64.cc
+	M    HDF5Array.h
+	M    HDF5ArrayEOS.h
+	M    HDF5Module.h
+	M    h5das.h
+	M    HDF5Structure.cc
+	M    HDF5Int32.h
+	M    HDF5Structure.h
+	M    HDF5Url.h
+	M    HDF5Byte.h
+	M    H5Git.c
+	M    H5Git.h
+	M    HDF5Float64.h
+	M    common.h
+
+2008-03-11  hyoklee
+
+	Defect fix for get_hardlink(). See Ticket #1078.
+
+2008-03-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	$i: Fixing bug in OSX build.
+
+2008-02-27  hyoklee
+
+	Bug fix for Mac OS X: the compiler doesn't like type casting on
+	nelems in H5Gget_num_objs() in h5das.cc and h5dds.cc.
+
+2008-02-27  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Removed the version of Hyrax so we don't keep having to edit the
+	Welcome.html file
+	M    OSX_Resources/Welcome.html
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Grabbing version number correctly for pkg build. Updated
+	Welcome.html to display hdf5 instead of hdf4
+	
+	M    configure.ac
+	M    OSX_Resources/Welcome.html
+
+2008-02-26  hyoklee
+
+	-DH5_USE_16_API is defined in configure.ac for 1.8.0 compatibility.
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Added pkg build for Mac OSX using package maker and dropdmg.
+	Updated README for formatting with pkg build.
+	
+	A    OSX_Resources
+	AM   OSX_Resources/InstallationCheck
+	A    OSX_Resources/License.txt
+	AM   OSX_Resources/update_mac_package_contents.pl
+	A    OSX_Resources/Info.plist
+	A    OSX_Resources/InstallationCheck.strings
+	A    OSX_Resources/ReadMe.txt
+	A    OSX_Resources/Description.plist
+	AM   OSX_Resources/background.jpg
+	A    OSX_Resources/Welcome.html
+	M    README
+	M    Makefile.am
+
+2008-02-25  James Gallagher <jgallagher@opendap.org>
+
+	Commented the %debug directive because bison 1.28 (the
+	OS/X default version) does not support this option. It
+	can be accessed using the -d command line option, however.
+
+2008-02-21  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf5_handler: Added some debugging statements.
+
+2008-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2008-02-19  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf5_handler: Copied hdf4_handler/conf/pkg.m4 to
+	hdf5_handler/conf/pkg.m4
+
+2008-02-14  Patrick West <pwest@ucar.edu>
+
+	Updated configure to use latest and greatest libdap and bes config
+	macros and m4 files.
+	
+	M    configure.ac
+	M    conf/bes.m4
+	M    conf/libdap.m4
+	M    Makefile.am
+
+2008-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Resolved conflict in ChangeLog
+
+2008-02-05  James Gallagher <jgallagher@opendap.org>
+
+	Auto reset of Subversion properties
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	Added using namespace libdap where needed
+	M    HDF5UInt32.h
+	M    h5dds.h
+	M    h5_handler.h
+	M    H5Git.cc
+	M    HDF5Sequence.h
+	M    HDF5TypeFactory.h
+	M    hdfeos_das.y
+	M    HDF5Grid.h
+	M    HDF5Int16.h
+	M    HDF5Str.h
+	M    H5EOS.h
+	M    HDF5UInt16.h
+	M    HDF5GridEOS.h
+	M    HDF5Float32.h
+	M    HDF5Array.h
+	M    HDF5ArrayEOS.h
+	M    h5das.h
+	M    HDF5Int32.h
+	M    HDF5Structure.h
+	M    HDF5Url.h
+	M    HDF5Byte.h
+	M    HDF5Float64.h
+
+2008-01-24  Patrick West <pwest@ucar.edu>
+
+	Attributes were not being added to the dds when requesting the ddx
+	response. Fixed this.
+	
+	M    h5_handler.cc
+
+2008-01-24  Patrick West <pwest@ucar.edu>
+
+	Added support for NASA EOS HDF5 files for grid generation and meta
+	data parsing.
+	
+	M    HDF5RequestHandler.cc
+
+2008-01-22  hyoklee
+
+	Cleaned up codes to remove all warnings.
+
+2008-01-18  James Gallagher <jgallagher@opendap.org>
+
+	Updated docs and version number for the 1.2.0 release.
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL_EOS5_GRID
+	M    INSTALL
+	M    hdf5_handler.spec
+	M    README
+
 2008-01-17  hyoklee
 
 	README and INSTALL files are updated. INSTALL_EOS5_GRID is added.

@@ -1,6 +1,14 @@
 
 	$Id$
 
+News for version 1.2.1
+
+DDX responses now contains attributes.
+
+Package Configure (pkg-config) support added.
+
+Support for HDF5 1.8.0 added.
+
 News for version 1.2.0
 
 Support for NASA EOS Grid variables has been added to the handler. See
