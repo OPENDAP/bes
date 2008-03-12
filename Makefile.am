@@ -145,7 +145,7 @@ PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/P
 UNIV_ARCH=-arch ppc -arch i386
 MAC_SYSROOT=Developer/SDKs/MacOSX10.4u.sdk
 
-PKG_CONF_FLAGS=
+PKG_CONF_FLAGS="--enable-cf --enable-short-path"
 
 clean-pkg:
 	-rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@

@@ -20,7 +20,7 @@ dap-server software.
 %setup -q
 
 %build
-%configure --disable-dependency-tracking --disable-static
+%configure --disable-dependency-tracking --disable-static --enable-cf --enable-short-path
 make %{?_smp_mflags}
 
 %install
