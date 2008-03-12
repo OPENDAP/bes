@@ -27,7 +27,10 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf4_module.la
+rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf5_module.la
+
+%post
+libtool --finish %{_libdir}/bes/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
