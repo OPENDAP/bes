@@ -17,7 +17,7 @@ BUILT_SOURCES = $(GRAM_SRCS)
 
 if OPENDAPSERVER
 
-lib_besdir=$(prefix)/lib/bes
+lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
 dist_bin_SCRIPTS = bes-hdf5-data.sh
 
@@ -57,13 +57,13 @@ DEJATOOL = dap_h5_handler
 
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
 
-EXTRA_DIST = hdfeos_das.y  hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources
+EXTRA_DIST = hdfeos_das.y hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources \
+	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
 
 CLEANFILES = *~ *.sum *.log
 
 if OPENDAPSERVER
 
-EXTRA_DIST += data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
 CLEANFILES += bes-hdf5-data.sh
 
 sample_datadir = $(datadir)/hyrax/data/hdf5
@@ -130,10 +130,10 @@ fortifyclean:
 
 # Build linux RPMs
 
-srpm:
+srpm: dist
 	rpmbuild -ts hdf5_handler-@PACKAGE_VERSION@.tar.gz
 
-rpm:
+rpm: dist
 	rpmbuild -tb hdf5_handler-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################

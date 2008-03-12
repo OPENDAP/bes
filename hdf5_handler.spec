@@ -27,7 +27,11 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf5_module.la
+rm $RPM_BUILD_ROOT%{_libdir}/*.la
+rm $RPM_BUILD_ROOT%{_libdir}/*.so
+rm $RPM_BUILD_ROOT%{_libdir}/bes/*.la
+
+# rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf5_module.la
 
 %post
 libtool --finish %{_libdir}/bes/
@@ -39,6 +43,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_bindir}/dap_h5_handler
 %{_bindir}/bes-hdf5-data.sh
+%{_libdir}/libhdf5_handler.so.*
 %{_libdir}/bes/libhdf5_module.so
 %{_datadir}/hyrax/
 %doc COPYING NEWS README INSTALL
