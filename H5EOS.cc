@@ -215,6 +215,7 @@ bool H5EOS::set_dimension_array()
     int size = dimensions.size();
 
     dods_float32 *convbuf = NULL;
+    
     if (libdap::size_ok(sizeof(dods_float32), size))
         dimension_data = new dods_float32 *[size];
     else

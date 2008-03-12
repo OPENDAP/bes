@@ -65,6 +65,8 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     *ignoreptr = 0;
     namebuf = (char *) malloc(DODS_NAMELEN);
 
+	// This try/catch block is used to ensure namebuf is freed. jhrg 3/2008
+	try {
     if ((attrid = H5Aopen_idx(dset, index)) < 0) {
         string msg = "dap_h5_handler: unable to open attribute by index ";
         msg += index;
@@ -151,7 +153,12 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     for (j = 0; j < ndims; j++) {
         (*attr_inst_ptr).size[j] = size[j];
     }
-
+	}
+	catch(...) {
+		free(namebuf);
+		throw;
+	}
+	
   exit:
     free(namebuf);
     return attrid;
@@ -412,9 +419,11 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         sprintf(error,
                 "h5_dods server:  failed to obtain dataspace from  dataset %d",
                 dset);
+        free(dyn_count);
+        free(dyn_offset);
+        free(dyn_step);     
         return 0;
     }
-
 
     dyn_count = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
     dyn_step = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
@@ -424,6 +433,9 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         sprintf(error,
                 "h5_dods server: out of memory for hyperslab dataset %d",
                 dset);
+        free(dyn_count);
+        free(dyn_offset);
+        free(dyn_step);                
         return 0;
     }
 
@@ -431,6 +443,9 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         sprintf(error,
                 "h5_dods server: out of memory for hyperslab dataset %d",
                 dset);
+        free(dyn_count);
+        free(dyn_offset);
+        free(dyn_step);
         return 0;
     }
 

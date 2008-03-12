@@ -296,8 +296,10 @@ static char *print_attr(hid_t type, int loc, void *sm_buf)
     int str_size = 0;
 
     char *buf = NULL;
+#if 0
     char f_fmt[10];
     char d_fmt[10];
+#endif
     char gps[30];
     char *rep;
 
@@ -312,10 +314,10 @@ static char *print_attr(hid_t type, int loc, void *sm_buf)
     } gp;
 
     unsigned char tuchar;
-
+#if 0
     strcpy(f_fmt, "%.10g");
     strcpy(d_fmt, "%.17g");
-
+#endif
     switch (H5Tget_class(type)) {
 
     case H5T_INTEGER:
@@ -407,7 +409,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf)
         bzero(rep, 32);
         if (H5Tget_size(type) == 4) {
             gp.tfp = (float *) sm_buf;
-            sprintf(gps, f_fmt, *(gp.tfp + loc));
+            sprintf(gps, "%.10g", *(gp.tfp + loc));
             ll = strlen(gps);
 
             if (!strchr(gps, '.') && !strchr(gps, 'e'))
@@ -418,7 +420,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf)
         } else if (H5Tget_size(type) == 8) {
 
             gp.tdp = (double *) sm_buf;
-            sprintf(gps, d_fmt, *(gp.tdp + loc));
+            sprintf(gps, "%.17g", *(gp.tdp + loc));
             ll = strlen(gps);
             if (!strchr(gps, '.') && !strchr(gps, 'e'))
                 gps[ll++] = '.';
