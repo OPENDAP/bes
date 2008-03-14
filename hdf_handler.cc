@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
         string cachedir = df.get_cache_dir();
 
         string dummy = df.get_cache_dir() + "/dummy";
-        int fd = open(dummy.c_str(), O_CREAT | O_WRONLY | O_TRUNC);
+        int fd = open(dummy.c_str(), O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
         unlink(dummy.c_str());
         if (fd == -1) {
             cachedir = "";

@@ -75,7 +75,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
 #else
         char *dummy = mktemp((char *) dummyx.c_str());
 #endif
-        int fd = open(dummy, O_CREAT | O_WRONLY | O_TRUNC);
+        int fd = open(dummy, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
         unlink(dummy);
         if (fd == -1) {
             if (_cachedir == "/tmp") {
