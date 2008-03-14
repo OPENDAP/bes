@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 //////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -62,16 +62,18 @@
 //
 
 // initialize hdfistream_annot members
-void hdfistream_annot::_init(const string filename) {
+void hdfistream_annot::_init(const string filename)
+{
     _an_id = _index = _tag = _ref = 0;
     _lab = _desc = true;
-    _an_ids = vector<int32>();
+    _an_ids = vector < int32 > ();
     _filename = filename;
     return;
 }
 
 // initialize hdfistream_annot members, setting _tag, _ref to an object
-void hdfistream_annot::_init(const string filename, int32 tag, int32 ref) {
+void hdfistream_annot::_init(const string filename, int32 tag, int32 ref)
+{
     _init(filename);
     _tag = tag;
     _ref = ref;
@@ -79,81 +81,87 @@ void hdfistream_annot::_init(const string filename, int32 tag, int32 ref) {
 }
 
 // open a file using the annotation interface and set _filename, file_id, _an_id
-void hdfistream_annot::_open(const char *filename) {
+void hdfistream_annot::_open(const char *filename)
+{
     if (_file_id != 0)
-	close();
-    if ( (_file_id = Hopen(filename, DFACC_READ, 0)) < 0)
-	THROW(hcerr_openfile);
-    if ( (_an_id = ANstart(_file_id)) < 0)
-	THROW(hcerr_anninit);
+        close();
+    if ((_file_id = Hopen(filename, DFACC_READ, 0)) < 0)
+        THROW(hcerr_openfile);
+    if ((_an_id = ANstart(_file_id)) < 0)
+        THROW(hcerr_anninit);
     _filename = filename;
     return;
 }
 
 // retrieve information about annotations
-void hdfistream_annot::_get_anninfo(void) {
+void hdfistream_annot::_get_anninfo(void)
+{
     if (bos())
-	_get_file_anninfo();
+        _get_file_anninfo();
     else
-	_get_obj_anninfo();
+        _get_obj_anninfo();
 }
 
 
 // retrieve information about the file annotations for current file
-void hdfistream_annot::_get_file_anninfo(void) {
+void hdfistream_annot::_get_file_anninfo(void)
+{
     int32 nlab, ndesc, junk, junk2;
     if (ANfileinfo(_an_id, &nlab, &ndesc, &junk, &junk2) == FAIL)
-	THROW(hcerr_anninfo);
+        THROW(hcerr_anninfo);
 
     int32 _ann_id;
-    _an_ids = vector<int32>();
+    _an_ids = vector < int32 > ();
     int i;
-    for (i=0; _lab && i<nlab; ++i) {
-	if ( (_ann_id = ANselect(_an_id, i, AN_FILE_LABEL)) == FAIL)
-	    THROW(hcerr_anninfo);
-	_an_ids.push_back(_ann_id);
+    for (i = 0; _lab && i < nlab; ++i) {
+        if ((_ann_id = ANselect(_an_id, i, AN_FILE_LABEL)) == FAIL)
+            THROW(hcerr_anninfo);
+        _an_ids.push_back(_ann_id);
     }
-    for (i=0; _desc && i<ndesc; ++i) {
-	if ( (_ann_id = ANselect(_an_id, i, AN_FILE_DESC)) == FAIL)
-	    THROW(hcerr_anninfo);
-	_an_ids.push_back(_ann_id);
+    for (i = 0; _desc && i < ndesc; ++i) {
+        if ((_ann_id = ANselect(_an_id, i, AN_FILE_DESC)) == FAIL)
+            THROW(hcerr_anninfo);
+        _an_ids.push_back(_ann_id);
     }
     return;
 }
 
 // retrieve information about the annotations for currently pointed-at object
-void hdfistream_annot::_get_obj_anninfo(void) {
+void hdfistream_annot::_get_obj_anninfo(void)
+{
     int nlab = 0, ndesc = 0;
-    if (_desc  && 
-	(ndesc = ANnumann(_an_id, AN_DATA_DESC, _tag, _ref)) == FAIL)
-	THROW(hcerr_anninfo);
-    if (_lab  &&
-	(nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) == FAIL)
-	THROW(hcerr_anninfo);
+    if (_desc &&
+        (ndesc = ANnumann(_an_id, AN_DATA_DESC, _tag, _ref)) == FAIL)
+        THROW(hcerr_anninfo);
+    if (_lab &&
+        (nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) == FAIL)
+        THROW(hcerr_anninfo);
     if (nlab + ndesc > 0) {
-	int32 *annlist = new int32[nlab+ndesc];
-	if (annlist == 0)
-	    THROW(hcerr_annlist);
-	if (_desc  &&  
-	    ANannlist(_an_id, AN_DATA_DESC, _tag, _ref, annlist) == FAIL) {
-	    delete []annlist; annlist = 0;
-	    THROW(hcerr_annlist);
-	}
-	if (_lab  &&
-	    ANannlist(_an_id, AN_DATA_LABEL, _tag, _ref, annlist+ndesc) == FAIL) {
-	    delete []annlist; annlist = 0;
-	    THROW(hcerr_annlist);
-    	}
-	
-	// import into _an_ids vector
-	// try {    // add this when STL supports exceptions
-	_an_ids = vector<int32>(annlist[0],annlist[nlab+ndesc]);
-	// }
-	// catch(...) {
-	// 		delete []annlist; annlist = 0;
-	//		THROW(hcerr_annlist);
-    	// }
-	delete []annlist;
+        int32 *annlist = new int32[nlab + ndesc];
+        if (annlist == 0)
+            THROW(hcerr_annlist);
+        if (_desc &&
+            ANannlist(_an_id, AN_DATA_DESC, _tag, _ref, annlist) == FAIL) {
+            delete[]annlist;
+            annlist = 0;
+            THROW(hcerr_annlist);
+        }
+        if (_lab &&
+            ANannlist(_an_id, AN_DATA_LABEL, _tag, _ref,
+                      annlist + ndesc) == FAIL) {
+            delete[]annlist;
+            annlist = 0;
+            THROW(hcerr_annlist);
+        }
+        // import into _an_ids vector
+        // try {    // add this when STL supports exceptions
+        _an_ids = vector < int32 > (annlist[0], annlist[nlab + ndesc]);
+        // }
+        // catch(...) {
+        //              delete []annlist; annlist = 0;
+        //              THROW(hcerr_annlist);
+        // }
+        delete[]annlist;
     }
     return;
 }
@@ -163,74 +171,81 @@ void hdfistream_annot::_get_obj_anninfo(void) {
 // public member functions
 //
 
-hdfistream_annot::hdfistream_annot(const string filename) : 
-  hdfistream_obj(filename) {
+hdfistream_annot::hdfistream_annot(const string filename):
+hdfistream_obj(filename)
+{
     _init(filename);
     if (_filename.length() != 0)
-	open(_filename.c_str());
+        open(_filename.c_str());
     return;
 }
 
-hdfistream_annot::hdfistream_annot(const string filename, int32 tag, int32 ref) : 
-  hdfistream_obj(filename) {
+hdfistream_annot::hdfistream_annot(const string filename, int32 tag, int32 ref):
+hdfistream_obj(filename)
+{
     _init(filename);
     open(_filename.c_str(), tag, ref);
     return;
 }
 
-void hdfistream_annot::open(const char *filename) {
-    _open(filename);		// get _an_id for open file
-    _tag = _ref = 0;		// set tag, ref for file annotations
-    _get_anninfo();		// retrieve annotation info
+void hdfistream_annot::open(const char *filename)
+{
+    _open(filename);            // get _an_id for open file
+    _tag = _ref = 0;            // set tag, ref for file annotations
+    _get_anninfo();             // retrieve annotation info
     return;
 }
 
-void hdfistream_annot::open(const char *filename, int32 tag, int32 ref) {
-    _open(filename);		// get _an_id for open file
-    _tag = tag;			// set tag, ref for object
+void hdfistream_annot::open(const char *filename, int32 tag, int32 ref)
+{
+    _open(filename);            // get _an_id for open file
+    _tag = tag;                 // set tag, ref for object
     _ref = ref;
-    _get_anninfo();		// retrieve annotation info
+    _get_anninfo();             // retrieve annotation info
     return;
 }
-    
-void hdfistream_annot::close(void) {
+
+void hdfistream_annot::close(void)
+{
     if (_an_id > 0)
-	(void)ANend(_an_id);
+        (void) ANend(_an_id);
     if (_file_id > 0)
-	(void)Hclose(_file_id);
+        (void) Hclose(_file_id);
     _init();
     return;
 }
 
-hdfistream_annot& hdfistream_annot::operator>>(string& an) {
+hdfistream_annot & hdfistream_annot::operator>>(string & an)
+{
 
     // delete any previous data in an
     an = string();
 
-    if (_an_id == 0  ||  _index < 0)
-	THROW(hcerr_invstream);
-    if (eos())			// do nothing if positioned past end of stream
-	return *this;
-    
+    if (_an_id == 0 || _index < 0)
+        THROW(hcerr_invstream);
+    if (eos())                  // do nothing if positioned past end of stream
+        return *this;
+
     int32 _ann_id = _an_ids[_index];
     char buf[hdfclass::MAXSTR];
-    if (ANreadann(_ann_id, buf, hdfclass::MAXSTR-1) < 0)
-	THROW(hcerr_annread);
+    if (ANreadann(_ann_id, buf, hdfclass::MAXSTR - 1) < 0)
+        THROW(hcerr_annread);
     an = buf;
     seek_next();
 
     return *this;
 }
-    
-hdfistream_annot& hdfistream_annot::operator>>(vector<string>& anv) {
-    for (string an; !eos(); ) {
-	*this>>an;
-	anv.push_back(an);
+
+hdfistream_annot & hdfistream_annot::operator>>(vector < string > &anv)
+{
+    for (string an; !eos();) {
+        *this >> an;
+        anv.push_back(an);
     }
     return *this;
 }
-    
-    
+
+
 // $Log: annot.cc,v $
 // Revision 1.5.8.1.2.1  2004/02/23 02:08:03  rmorris
 // There is some incompatibility between the use of isascii() in the hdf library

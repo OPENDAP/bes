@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -48,94 +48,109 @@
 
 #include "Error.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 #define THROW(x) throw x(__FILE__,__LINE__)
 
 // DODS/HDF exceptions class
-class dhdferr : public Error {
-public:
-    dhdferr(const string& msg, const string& file, int line) ; 
-    virtual ~dhdferr(void) {}
-};
+class dhdferr:public Error {
+  public:
+    dhdferr(const string & msg, const string & file, int line);
+     virtual ~ dhdferr(void) {
+}};
 
 // Define valid DODS/HDF exceptions
-class dhdferr_hcerr: public dhdferr {
-public:
-    dhdferr_hcerr(const string& msg, const string& file, int line); 
-}; // An hdfclass error occured
+class dhdferr_hcerr:public dhdferr {
+  public:
+    dhdferr_hcerr(const string & msg, const string & file, int line);
+};                              // An hdfclass error occured
 
-class dhdferr_addattr: public dhdferr {
-public:
-    dhdferr_addattr(const string& file, int line): 
-         dhdferr(string("Error occurred while trying to add attribute to DAS"), 
-		 file, line) {}
-}; // AttrTable::append_attr() failed
+class dhdferr_addattr:public dhdferr {
+  public:
+    dhdferr_addattr(const string & file,
+                    int
+                    line):dhdferr(string
+                                  ("Error occurred while trying to add attribute to DAS"),
+                                  file, line) {
+}};                             // AttrTable::append_attr() failed
 
-class dhdferr_ddssem: public dhdferr {
-public:
-    dhdferr_ddssem(const string& file, int line): 
-         dhdferr(string("Problem with DDS semantics"), file, line) {}
-}; // DDS::check_semantics() returned false
+class dhdferr_ddssem:public dhdferr {
+  public:
+    dhdferr_ddssem(const string & file,
+                   int line):dhdferr(string("Problem with DDS semantics"),
+                                     file, line) {
+}};                             // DDS::check_semantics() returned false
 
-class dhdferr_dassem: public dhdferr {
-public:
-    dhdferr_dassem(const string& file, int line): 
-         dhdferr(string("Problem with DAS semantics"), file, line) {}
-}; // DAS::check_semantics() returned false
+class dhdferr_dassem:public dhdferr {
+  public:
+    dhdferr_dassem(const string & file,
+                   int line):dhdferr(string("Problem with DAS semantics"),
+                                     file, line) {
+}};                             // DAS::check_semantics() returned false
 
-class dhdferr_ddsout: public dhdferr {
-public:
-    dhdferr_ddsout(const string& file, int line): 
-         dhdferr(string("Could not write to DDS file"), file, line) {}
-}; // error writing to DDS file
+class dhdferr_ddsout:public dhdferr {
+  public:
+    dhdferr_ddsout(const string & file,
+                   int line):dhdferr(string("Could not write to DDS file"),
+                                     file, line) {
+}};                             // error writing to DDS file
 
-class dhdferr_dasout: public dhdferr {
-public:
-    dhdferr_dasout(const string& file, int line): 
-         dhdferr(string("Could not write to DAS file"), file, line) {}
-}; // error writing to DAS file
+class dhdferr_dasout:public dhdferr {
+  public:
+    dhdferr_dasout(const string & file,
+                   int line):dhdferr(string("Could not write to DAS file"),
+                                     file, line) {
+}};                             // error writing to DAS file
 
-class dhdferr_arrcons: public dhdferr {
-public:
-    dhdferr_arrcons(const string& file, int line): 
-         dhdferr(string("Error occurred while reading Array constraint"), 
-		 file, line) {}
-}; // constraints read for Array slab did not make sense
+class dhdferr_arrcons:public dhdferr {
+  public:
+    dhdferr_arrcons(const string & file,
+                    int
+                    line):dhdferr(string
+                                  ("Error occurred while reading Array constraint"),
+                                  file, line) {
+}};                             // constraints read for Array slab did not make sense
 
-class dhdferr_datatype: public dhdferr {
-public:
-    dhdferr_datatype(const string& file, int line): 
-         dhdferr(string("Data type is not supported by DODS"), 
-		 file, line) {}
-}; // data type is not supported by DODS
+class dhdferr_datatype:public dhdferr {
+  public:
+    dhdferr_datatype(const string & file,
+                     int
+                     line):dhdferr(string
+                                   ("Data type is not supported by DODS"),
+                                   file, line) {
+}};                             // data type is not supported by DODS
 
-class dhdferr_consist: public dhdferr {
-public:
-    dhdferr_consist(const string& file, int line): 
-         dhdferr(string("Internal consistency problem"), 
-		 file, line) {}
-}; // something that is not supposed to happen did
+class dhdferr_consist:public dhdferr {
+  public:
+    dhdferr_consist(const string & file,
+                    int
+                    line):dhdferr(string("Internal consistency problem"),
+                                  file, line) {
+}};                             // something that is not supposed to happen did
 
-class dhdferr_hcread: public dhdferr {
-public:
-    dhdferr_hcread(const string& file, int line): 
-         dhdferr(string("Problem reading HDF data"), 
-		 file, line) {}
-}; // something went wrong when reading using the HDFCLASS library
+class dhdferr_hcread:public dhdferr {
+  public:
+    dhdferr_hcread(const string & file,
+                   int line):dhdferr(string("Problem reading HDF data"),
+                                     file, line) {
+}};                             // something went wrong when reading using the HDFCLASS library
 
-class dhdferr_conv: public dhdferr {
-public:
-    dhdferr_conv(const string& file, int line): 
-         dhdferr(string("Problem converting HDF data to DODS"), 
-		 file, line) {}
-}; // something went wrong in a conversion to DAP
+class dhdferr_conv:public dhdferr {
+  public:
+    dhdferr_conv(const string & file,
+                 int
+                 line):dhdferr(string
+                               ("Problem converting HDF data to DODS"),
+                               file, line) {
+}};                             // something went wrong in a conversion to DAP
 
-class dhdferr_fexist: public dhdferr {
-public:
-    dhdferr_fexist(const string& file, int line): 
-         dhdferr(string("HDF file does not exist or is unreadable"), 
-		 file, line) {}
-}; // could not stat the input HDF file
+class dhdferr_fexist:public dhdferr {
+  public:
+    dhdferr_fexist(const string & file,
+                   int
+                   line):dhdferr(string
+                                 ("HDF file does not exist or is unreadable"),
+                                 file, line) {
+}};                             // could not stat the input HDF file
 
-#endif // _DHDFERR_H
+#endif                          // _DHDFERR_H

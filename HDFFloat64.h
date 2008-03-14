@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -48,19 +48,19 @@
 // DODS includes
 #include <Float64.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFFloat64: public Float64 {
-public:
-    HDFFloat64(const string &n = "");
-    virtual ~HDFFloat64();
+class HDFFloat64:public Float64 {
+  public:
+    HDFFloat64(const string & n = "");
+     virtual ~ HDFFloat64();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
 };
 
-Float64 *NewFloat64(const string &n);
+Float64 *NewFloat64(const string & n);
 
-typedef HDFFloat64 * HDFFloat64Ptr;
+typedef HDFFloat64 *HDFFloat64Ptr;
 
 // $Log: HDFFloat64.h,v $
 // Revision 1.5.8.1  2003/05/21 16:26:51  edavis
@@ -84,5 +84,4 @@ typedef HDFFloat64 * HDFFloat64Ptr;
 // Added copyright and header.
 //
 
-#endif // _HDFFLOAT64_H
-
+#endif                          // _HDFFLOAT64_H

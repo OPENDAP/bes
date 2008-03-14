@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1998, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -39,46 +39,47 @@
 // STL map include
 #include <map>
 
-using std::map ;
-using std::less ;
+using std::map;
+using std::less;
 
 struct sds_info {
-  hdf_sds sds;
-  bool in_vgroup;
+    hdf_sds sds;
+    bool in_vgroup;
 };
 
 struct vd_info {
-  hdf_vdata vdata;
-  bool in_vgroup;
+    hdf_vdata vdata;
+    bool in_vgroup;
 };
 
 struct gr_info {
-  hdf_gri gri;
-  bool in_vgroup;
+    hdf_gri gri;
+    bool in_vgroup;
 };
 
 struct vg_info {
-  hdf_vgroup vgroup;
-  bool toplevel;
+    hdf_vgroup vgroup;
+    bool toplevel;
 };
 
-typedef map<int32, sds_info, less<int32> > sds_map;
-typedef map<int32, vd_info, less<int32> > vd_map;
-typedef map<int32, gr_info, less<int32> > gr_map;
-typedef map<int32, vg_info, less<int32> > vg_map;
+typedef map < int32, sds_info, less < int32 > >sds_map;
+typedef map < int32, vd_info, less < int32 > >vd_map;
+typedef map < int32, gr_info, less < int32 > >gr_map;
+typedef map < int32, vg_info, less < int32 > >vg_map;
 
-typedef map<int32, sds_info, less<int32> >::const_iterator SDSI;
-typedef map<int32, vd_info, less<int32> >::const_iterator VDI;
-typedef map<int32, gr_info, less<int32> >::const_iterator GRI;
-typedef map<int32, vg_info, less<int32> >::const_iterator VGI;
+typedef map < int32, sds_info, less < int32 > >::const_iterator SDSI;
+typedef map < int32, vd_info, less < int32 > >::const_iterator VDI;
+typedef map < int32, gr_info, less < int32 > >::const_iterator GRI;
+typedef map < int32, vg_info, less < int32 > >::const_iterator VGI;
 
 /* Function prototypes */
-HDFGrid *NewGridFromSDS(const hdf_sds& sds);
-HDFArray *NewArrayFromSDS(const hdf_sds& sds);
-HDFArray *NewArrayFromGR(const hdf_gri& gr);
-HDFSequence *NewSequenceFromVdata(const hdf_vdata& vd);
-HDFStructure *NewStructureFromVgroup(const hdf_vgroup& vg,
-                   vg_map& vgmap, sds_map& map, vd_map& vdmap, gr_map& grmap);
+HDFGrid *NewGridFromSDS(const hdf_sds & sds);
+HDFArray *NewArrayFromSDS(const hdf_sds & sds);
+HDFArray *NewArrayFromGR(const hdf_gri & gr);
+HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd);
+HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg,
+                                     vg_map & vgmap, sds_map & map,
+                                     vd_map & vdmap, gr_map & grmap);
 BaseType *NewDAPVar(int32 hdf_type);
 string DAPTypeName(int32 hdf_type);
 
@@ -104,4 +105,3 @@ string DAPTypeName(int32 hdf_type);
 //
 // Revision 1.1  1998/03/31  15:48:50  jehamby
 // Initial revision
-

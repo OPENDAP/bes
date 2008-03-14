@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -44,15 +44,29 @@
 #include "InternalErr.h"
 #include "HDFStr.h"
 
-HDFStr::HDFStr(const string &n) : Str(n) {}
-HDFStr::~HDFStr() {}
-BaseType *HDFStr::ptr_duplicate() { return new HDFStr(*this); }  
-bool HDFStr::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFStr::HDFStr(const string & n):Str(n)
+{
+}
+
+HDFStr::~HDFStr()
+{
+}
+BaseType *HDFStr::ptr_duplicate()
+{
+    return new HDFStr(*this);
+}
+
+bool HDFStr::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Str *NewStr(const string &n) { return new HDFStr(n); }
+Str *NewStr(const string & n)
+{
+    return new HDFStr(n);
+}
 #endif
 
 // $Log: HDFStr.cc,v $

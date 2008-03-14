@@ -18,14 +18,14 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // -*- C++ -*-
 
 // (c) COPYRIGHT URI/MIT 1998
 // Please first read the full copyright statement in the file COPYRIGH.  
 //
 // Authors:
-//	jhrg,jimg	James Gallagher (jgallagher@gso.uri.edu)
+//      jhrg,jimg       James Gallagher (jgallagher@gso.uri.edu)
 
 #ifndef _HDFDODSFilter_h
 #define _HDFDODSFilter_h
@@ -34,7 +34,7 @@
 
 #include <string>
 
-using namespace libdap ;
+using namespace libdap;
 
 /**
    An overload of DODSFilter, this does special processing for the HDF
@@ -43,19 +43,18 @@ using namespace libdap ;
    @memo Special methods for the HDF server filter programs.
    @author jhrg 9/25/98 */
 
-class HDFDODSFilter : DODSFilter {
-private:
-    HDFDODSFilter() {}		// Private default ctor.
-
-public:
+class HDFDODSFilter:DODSFilter {
+  private:
+    HDFDODSFilter() {
+  } // Private default ctor. public:
   /** Create an instance of HDFDODSFilter using the command line
       arguments passed by the CGI (or other) program.
 
       @memo HDFDODSFilter constructor.
       */
-    HDFDODSFilter(int argc, char *argv[]);
+     HDFDODSFilter(int argc, char *argv[]);
 
-    virtual ~HDFDODSFilter();
+    virtual ~ HDFDODSFilter();
 
   /** Given that the hdf server caches files using pathanmes (a file with
       pathname /data/hdf/file.hdf.gz goes in the cache as data#hdf#file.hdf),
@@ -87,4 +86,4 @@ public:
 // Created.
 //
 
-#endif // _DODSFilter_h
+#endif                          // _DODSFilter_h

@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -44,15 +44,29 @@
 #include "InternalErr.h"
 #include "HDFByte.h"
 
-HDFByte::HDFByte(const string &n) : Byte(n) {}
-HDFByte::~HDFByte() {}
-BaseType *HDFByte::ptr_duplicate() {return new HDFByte(*this); }
-bool HDFByte::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFByte::HDFByte(const string & n):Byte(n)
+{
+}
+
+HDFByte::~HDFByte()
+{
+}
+BaseType *HDFByte::ptr_duplicate()
+{
+    return new HDFByte(*this);
+}
+
+bool HDFByte::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Byte *NewByte(const string &n) { return new HDFByte(n); }
+Byte *NewByte(const string & n)
+{
+    return new HDFByte(n);
+}
 #endif
 
 // $Log: HDFByte.cc,v $

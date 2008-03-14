@@ -149,7 +149,7 @@ string cache_name(const string & cachedir, const string & filename)
 // and then cached, there's no easy way to build them separately (why would
 // you need to? ... well there are lots of reasons). So these global static 
 // pointers are used to hold the last set of das and dds objects for the given
-// filename. When cachedir int eh read_das/dds() functions is empty, use these
+// filename. When cachedir in the read_das/dds() functions is empty, use these
 // if possible.
 static DDS *gs_dds = 0;
 static DAS *gs_das = 0;
@@ -187,11 +187,11 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
             dds = *gs_dds;
         } else {
             // generate DDS, DAS
-            DAS das;   // Throw away... w/o caching this code is very wasteful
+            DAS das;            // Throw away... w/o caching this code is very wasteful
             dds.set_dataset_name(basename(filename));
             build_descriptions(dds, das, filename);
 
-            if (!dds.check_semantics()) { // DDS didn't get built right
+            if (!dds.check_semantics()) {       // DDS didn't get built right
                 dds.print(stderr);
                 THROW(dhdferr_ddssem);
             }
@@ -221,7 +221,7 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
             dds.set_dataset_name(basename(filename));
             build_descriptions(dds, das, filename);
 
-            if (!dds.check_semantics()) {// DDS didn't get built right
+            if (!dds.check_semantics()) {       // DDS didn't get built right
                 dds.print(stdout);
                 THROW(dhdferr_ddssem);
             }

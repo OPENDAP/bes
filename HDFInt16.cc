@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 
@@ -31,15 +31,29 @@
 #include "InternalErr.h"
 #include "HDFInt16.h"
 
-HDFInt16::HDFInt16(const string &n) : Int16(n) {}
-HDFInt16::~HDFInt16() {}
-BaseType *HDFInt16::ptr_duplicate() { return new HDFInt16(*this); }
-bool HDFInt16::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFInt16::HDFInt16(const string & n):Int16(n)
+{
+}
+
+HDFInt16::~HDFInt16()
+{
+}
+BaseType *HDFInt16::ptr_duplicate()
+{
+    return new HDFInt16(*this);
+}
+
+bool HDFInt16::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Int16 *NewInt16(const string &n) { return new HDFInt16(n); }
+Int16 *NewInt16(const string & n)
+{
+    return new HDFInt16(n);
+}
 #endif
 
 // $Log: HDFInt16.cc,v $

@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 
@@ -30,15 +30,29 @@
 #include "InternalErr.h"
 #include "HDFFloat32.h"
 
-HDFFloat32::HDFFloat32(const string &n) : Float32(n) {}
-HDFFloat32::~HDFFloat32() {}
-BaseType *HDFFloat32::ptr_duplicate() { return new HDFFloat32(*this); }
-bool HDFFloat32::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFFloat32::HDFFloat32(const string & n):Float32(n)
+{
+}
+
+HDFFloat32::~HDFFloat32()
+{
+}
+BaseType *HDFFloat32::ptr_duplicate()
+{
+    return new HDFFloat32(*this);
+}
+
+bool HDFFloat32::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Float32 *NewFloat32(const string &n) { return new HDFFloat32(n); }
+Float32 *NewFloat32(const string & n)
+{
+    return new HDFFloat32(n);
+}
 #endif
 // $Log: HDFFloat32.cc,v $
 // Revision 1.4.4.1  2003/05/21 16:26:51  edavis

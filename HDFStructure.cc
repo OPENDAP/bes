@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
 // acknowledged. Any commercial use must be negotiated with the
@@ -40,6 +40,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
+//#define DODS_DEBUG
 
 #include <vector>
 
@@ -52,70 +53,95 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 
-#include "Error.h"
-#include "escaping.h"
+#include <Error.h>
+#include <escaping.h>
+#include <Sequence.h>
+#include <debug.h>
+
 #include "HDFStructure.h"
-#include "Sequence.h"
 #include "dhdferr.h"
 
-HDFStructure::HDFStructure(const string &n) : Structure(n) {}
-HDFStructure::~HDFStructure() {}
-BaseType *HDFStructure::ptr_duplicate() { return new HDFStructure(*this); }
-void LoadStructureFromVgroup(HDFStructure *str, const hdf_vgroup& vgroup,
-			     const string& hdf_file);
-
-void HDFStructure::set_read_p(bool state) {
-  // override Structure::set_read_p() to not set children as read yet
-  BaseType::set_read_p(state);
+HDFStructure::HDFStructure(const string & n):
+Structure(n)
+{
 }
 
-bool HDFStructure::read(const string& dataset) {
-  int err = 0;
-  int status = read_tagref(dataset, -1, -1, err);
-  if (err)
-    throw Error(unknown_error, "Could not read from dataset.");
-  return status;
+HDFStructure::~HDFStructure()
+{
+}
+BaseType *HDFStructure::ptr_duplicate()
+{
+    return new HDFStructure(*this);
+}
+void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vgroup,
+                             const string & hdf_file);
+
+void HDFStructure::set_read_p(bool state)
+{
+    // override Structure::set_read_p() to not set children as read yet
+    BaseType::set_read_p(state);
 }
 
-bool HDFStructure::read_tagref(const string& dataset, int32 tag, int32 ref, int &err) { 
-  if (read_p())
-    return true;
+bool HDFStructure::read(const string & dataset)
+{
+    int err = 0;
+    int status = read_tagref(dataset, -1, -1, err);
+    if (err)
+        throw Error(unknown_error, "Could not read from dataset.");
+    return status;
+}
 
-  // get the HDF dataset name, Vgroup name
-  string hdf_file = dataset;
-  string hdf_name = this->name();
+// TODO: Combine the try/catch block and the following if/then/else and 
+// eliminate the boolean 'foundvgroup' Consider moving the 
+// LoadStructureFromVgroup() from hc2dap.cc here since this is the only
+// place it's used.
+bool HDFStructure::read_tagref(const string & dataset, int32 tag,
+                               int32 ref, int &err)
+{
+    if (read_p())
+        return true;
 
-  bool foundvgroup = false;
-  hdf_vgroup vgroup;
+    // get the HDF dataset name, Vgroup name
+    string hdf_file = dataset;
+    string hdf_name = this->name();
 
-  // Wrap this with a try/catch block but don't do anything with it. The
-  // error condition is checked later in this function. pcw 02/19/2008
-  try {
-    hdfistream_vgroup vgin(hdf_file.c_str());
-    if(ref != -1)
-      vgin.seek_ref(ref);
-    else
-      vgin.seek(hdf_name.c_str());
-    vgin >> vgroup;
-    vgin.close();
-    foundvgroup = true;
-  }
-  catch(...) {}
+    DBG(cerr << " hdf_name = " << hdf_name << endl);
 
-  set_read_p(true);
-  
-  if (foundvgroup) {
-    LoadStructureFromVgroup(this, vgroup, hdf_file);
-    return true;
-  }
-  else {
-    err = 1;
-    return false;
-  }
+    bool foundvgroup = false;
+    hdf_vgroup vgroup;
+
+    // Wrap this with a try/catch block but don't do anything with it. The
+    // error condition is checked later in this function. pcw 02/19/2008
+    try {
+        hdfistream_vgroup vgin(hdf_file.c_str());
+        if (ref != -1)
+            vgin.seek_ref(ref);
+        else
+            vgin.seek(hdf_name.c_str());
+        vgin >> vgroup;
+        vgin.close();
+        foundvgroup = true;
+    }
+    catch(...) {
+    }
+
+    set_read_p(true); //todo: move this inside 'if (foundvgroup)'?
+
+    // todo: refactor: move this up into preceding try block
+    if (foundvgroup) {
+        LoadStructureFromVgroup(this, vgroup, hdf_file);
+        return true;
+    } else {
+        err = 1;
+        return false;
+    }
 }
 
 #if 0
-Structure *NewStructure(const string &n) { return new HDFStructure(n); }
+Structure *NewStructure(const string & n)
+{
+    return new HDFStructure(n);
+}
 #endif
 // $Log: HDFStructure.cc,v $
 // Revision 1.12.4.1  2003/05/21 16:26:52  edavis

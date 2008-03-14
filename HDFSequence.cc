@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -58,71 +58,78 @@
 
 #include "Error.h"
 
-HDFSequence::HDFSequence(const string &n) : Sequence(n), row(0) {
+HDFSequence::HDFSequence(const string & n):Sequence(n), row(0)
+{
 }
 
-HDFSequence::~HDFSequence() {}
+HDFSequence::~HDFSequence()
+{
+}
 
-BaseType *HDFSequence::ptr_duplicate() { return new HDFSequence(*this); }  
+BaseType *HDFSequence::ptr_duplicate()
+{
+    return new HDFSequence(*this);
+}
 
 #if 0
-Sequence *NewSequence(const string &n) { return new HDFSequence(n); }
+Sequence *NewSequence(const string & n)
+{
+    return new HDFSequence(n);
+}
 #endif
 
-void LoadSequenceFromVdata(HDFSequence *seq, hdf_vdata& vd, int row);
+void LoadSequenceFromVdata(HDFSequence * seq, hdf_vdata & vd, int row);
 
-bool
-HDFSequence::read(const string& dataset) {
+bool HDFSequence::read(const string & dataset)
+{
     int err = 0;
     int status = read_tagref(dataset, -1, -1, err);
     if (err)
-	throw Error(unknown_error, "Could not read from dataset.");
+        throw Error(unknown_error, "Could not read from dataset.");
     return status;
 }
 
-bool 
-HDFSequence::read_tagref(const string& dataset, int32 tag, int32 ref, 
-			 int& err) { 
+bool HDFSequence::read_tagref(const string & dataset, int32 tag, int32 ref,
+                              int &err)
+{
 
     string hdf_file = dataset;
     string hdf_name = this->name();
 
     // check to see if vd is empty; if so, read in Vdata
     if (vd.name.length() == 0) {
-	hdfistream_vdata vin(hdf_file.c_str());
-	if(ref != -1)
-	    vin.seek_ref(ref);
-	else
-	    vin.seek(hdf_name.c_str());
-	vin >> vd;
-	vin.close();
-	if (!vd) {		// something is wrong
-	    err = 1;		// indicate error 
-	    return false;
-	}
+        hdfistream_vdata vin(hdf_file.c_str());
+        if (ref != -1)
+            vin.seek_ref(ref);
+        else
+            vin.seek(hdf_name.c_str());
+        vin >> vd;
+        vin.close();
+        if (!vd) {              // something is wrong
+            err = 1;            // indicate error 
+            return false;
+        }
     }
-
     // Return false when no more data are left to be read. Note that error is
     // also false (i.e., no error occurred). 02/06/98 jhrg
     if (row >= vd.fields[0].vals[0].size()) {
-	set_read_p(true); 
-	err = 0;		// everything is OK
-	return false;		// Indicate EOF
+        set_read_p(true);
+        err = 0;                // everything is OK
+        return false;           // Indicate EOF
     }
-
     // is this an empty Vdata.
     // I'm not sure that it should be an error to read from an empty vdata.
     // It maybe that valid files have empty vdatas when they are first
     // created. 02/06/98 jhrg
-    if (vd.fields.size() <= 0  ||  vd.fields[0].vals.size() <= 0) {
-	err = 1;
-	return false;
+    if (vd.fields.size() <= 0 || vd.fields[0].vals.size() <= 0) {
+        err = 1;
+        return false;
     }
 
     LoadSequenceFromVdata(this, vd, row++);
 
-    set_read_p(true); 
-    err = 0;			// everything is OK
+    set_read_p(true);
+    err = 0;                    // everything is OK
     return true;
 
 }

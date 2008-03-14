@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 //////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -46,8 +46,8 @@
 #include <string>
 #include <vector>
 
-using std::vector ;
-using std::string ;
+using std::vector;
+using std::string;
 
 #include <mfhdf.h>
 
@@ -55,74 +55,80 @@ using std::string ;
 
 // This function is not used and is broken. The loop depends on i being less
 // than zero for termination, but i is an unsigned type.
-vector<string> split(const string& str, const string& delim) {
-    vector<string> rv;
+vector < string > split(const string & str, const string & delim)
+{
+    vector < string > rv;
 
     string::size_type len = str.length();
     string::size_type dlen = delim.length();
-    for (string::size_type i=0, previ=-dlen; ;previ = i) {
-	i = str.find(delim, previ+dlen);
-	if (i == 0)
-	    continue;
-	if (i < 0) {
-	    if (previ+dlen < len)
-	        rv.push_back(str.substr(previ+dlen,(len-previ-dlen)));
-	    break;
-	}
-	rv.push_back(str.substr(previ+dlen,(i-previ-dlen)));
+    for (string::size_type i = 0, previ = -dlen;; previ = i) {
+        i = str.find(delim, previ + dlen);
+        if (i == 0)
+            continue;
+        if (i < 0) {
+            if (previ + dlen < len)
+                rv.push_back(str.
+                             substr(previ + dlen, (len - previ - dlen)));
+            break;
+        }
+        rv.push_back(str.substr(previ + dlen, (i - previ - dlen)));
     }
 
     return rv;
 }
 #endif
 
-string join(const vector<string>& sv, const string& delim) {
+string join(const vector < string > &sv, const string & delim)
+{
     string str;
     if (sv.size() > 0) {
-	str = sv[0];
-	for (int i=1; i<(int)sv.size(); ++i)
-	    str += (delim + sv[i]);
+        str = sv[0];
+        for (int i = 1; i < (int) sv.size(); ++i)
+            str += (delim + sv[i]);
     }
     return str;
 }
 
-bool SDSExists(const char *filename, const char *sdsname) {
+bool SDSExists(const char *filename, const char *sdsname)
+{
 
     int32 sd_id, index;
-    if ( (sd_id = SDstart(filename, DFACC_RDONLY)) < 0)
-	return false;
-    
-    index = SDnametoindex(sd_id, (char *)sdsname);
+    if ((sd_id = SDstart(filename, DFACC_RDONLY)) < 0)
+        return false;
+
+    index = SDnametoindex(sd_id, (char *) sdsname);
     SDend(sd_id);
 
     return (index >= 0);
 }
 
-bool GRExists(const char *filename, const char *grname) {
+bool GRExists(const char *filename, const char *grname)
+{
 
     int32 file_id, gr_id, index;
-    if ( (file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
-	return false;
-    if ( (gr_id = GRstart(file_id)) < 0)
-	return false;
-    
-    index = GRnametoindex(gr_id, (char *)grname);
+    if ((file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
+        return false;
+    if ((gr_id = GRstart(file_id)) < 0)
+        return false;
+
+    index = GRnametoindex(gr_id, (char *) grname);
     GRend(gr_id);
     Hclose(file_id);
 
     return (index >= 0);
 }
 
-bool VdataExists(const char *filename, const char *vdname) {
+bool VdataExists(const char *filename, const char *vdname)
+{
 
     int32 file_id, ref;
-    if ( (file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
-	return false;
+    if ((file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
+        return false;
     Vstart(file_id);
     ref = VSfind(file_id, vdname);
     Vend(file_id);
     Hclose(file_id);
-    
+
     return (ref > 0);
 }
 

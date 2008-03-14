@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 
@@ -34,19 +34,19 @@
 // DODS includes
 #include <UInt16.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFUInt16: public UInt16 {
-public:
-    HDFUInt16(const string &n = "");
-    virtual ~HDFUInt16();
+class HDFUInt16:public UInt16 {
+  public:
+    HDFUInt16(const string & n = "");
+     virtual ~ HDFUInt16();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &); 
+    virtual bool read(const string &);
 };
 
-UInt16 *NewUInt16(const string &n);
+UInt16 *NewUInt16(const string & n);
 
-typedef HDFUInt16 * HDFUInt16Ptr;
+typedef HDFUInt16 *HDFUInt16Ptr;
 
 // $Log: HDFUInt16.h,v $
 // Revision 1.4.4.1  2003/05/21 16:26:52  edavis
@@ -70,5 +70,4 @@ typedef HDFUInt16 * HDFUInt16Ptr;
 // Revision 1.1  1999/03/27 00:20:16  jimg
 // Added
 
-#endif // _HDFUINT16_H
-
+#endif                          // _HDFUINT16_H

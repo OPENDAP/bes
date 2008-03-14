@@ -104,6 +104,9 @@ int main(int argc, char *argv[])
                 break;
             }
 
+            // The attributes are included for the DDS response because the DDS
+            // might be subject to a constraint and a CE function might use the
+            // attributes.
         case DODSFilter::DDS_Response:{
                 HDFTypeFactory factory;
                 DDS dds(&factory);

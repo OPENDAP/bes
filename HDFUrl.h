@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -48,19 +48,19 @@
 // DODS includes
 #include <Url.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFUrl: public Url {
-public:
-    HDFUrl(const string &n = "");
-    virtual ~HDFUrl();
+class HDFUrl:public Url {
+  public:
+    HDFUrl(const string & n = "");
+     virtual ~ HDFUrl();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
 };
 
-Url *NewUrl(const string &n);
+Url *NewUrl(const string & n);
 
-typedef HDFUrl * HDFUrlPtr;
+typedef HDFUrl *HDFUrlPtr;
 
 // $Log: HDFUrl.h,v $
 // Revision 1.5.8.1  2003/05/21 16:26:52  edavis
@@ -84,5 +84,4 @@ typedef HDFUrl * HDFUrlPtr;
 // Added copyright and header.
 //
 //
-#endif // _HDFURL_H
-
+#endif                          // _HDFURL_H

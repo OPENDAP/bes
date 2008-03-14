@@ -22,7 +22,7 @@
 // Foundation, IHDF., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, IHDF. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 #include <string>
 
 #include "HDFByte.h"
@@ -42,82 +42,69 @@
 #include "HDFTypeFactory.h"
 #include "debug.h"
 
-Byte *
-HDFTypeFactory::NewByte(const string &n ) const 
-{ 
+Byte *HDFTypeFactory::NewByte(const string & n) const
+{
     return new HDFByte(n);
 }
 
-Int16 *
-HDFTypeFactory::NewInt16(const string &n ) const 
-{ 
-    return new HDFInt16(n); 
+Int16 *HDFTypeFactory::NewInt16(const string & n) const
+{
+    return new HDFInt16(n);
 }
 
-UInt16 *
-HDFTypeFactory::NewUInt16(const string &n ) const 
-{ 
+UInt16 *HDFTypeFactory::NewUInt16(const string & n) const
+{
     return new HDFUInt16(n);
 }
 
-Int32 *
-HDFTypeFactory::NewInt32(const string &n ) const 
-{ 
+Int32 *HDFTypeFactory::NewInt32(const string & n) const
+{
     DBG(cerr << "Inside HDFTypeFactory::NewInt32" << endl);
     return new HDFInt32(n);
 }
 
-UInt32 *
-HDFTypeFactory::NewUInt32(const string &n ) const 
-{ 
+UInt32 *HDFTypeFactory::NewUInt32(const string & n) const
+{
     return new HDFUInt32(n);
 }
 
-Float32 *
-HDFTypeFactory::NewFloat32(const string &n ) const 
-{ 
+Float32 *HDFTypeFactory::NewFloat32(const string & n) const
+{
     return new HDFFloat32(n);
 }
 
-Float64 *
-HDFTypeFactory::NewFloat64(const string &n ) const 
-{ 
+Float64 *HDFTypeFactory::NewFloat64(const string & n) const
+{
     return new HDFFloat64(n);
 }
 
-Str *
-HDFTypeFactory::NewStr(const string &n ) const 
-{ 
+Str *HDFTypeFactory::NewStr(const string & n) const
+{
     return new HDFStr(n);
 }
 
-Url *
-HDFTypeFactory::NewUrl(const string &n ) const 
-{ 
+Url *HDFTypeFactory::NewUrl(const string & n) const
+{
     return new HDFUrl(n);
 }
 
-Array *
-HDFTypeFactory::NewArray(const string &n , BaseType *v) const 
-{ 
+Array *HDFTypeFactory::NewArray(const string & n, BaseType * v) const
+{
     return new HDFArray(n, v);
 }
 
-Structure *
-HDFTypeFactory::NewStructure(const string &n ) const 
-{ 
+Structure *HDFTypeFactory::NewStructure(const string & n) const
+{
     return new HDFStructure(n);
 }
 
-Sequence *
-HDFTypeFactory::NewSequence(const string &n ) const 
-{ 
+Sequence *HDFTypeFactory::NewSequence(const string & n) const
+{
     DBG(cerr << "Inside HDFTypeFactory::NewSequence" << endl);
     return new HDFSequence(n);
 }
 
-Grid *
-HDFTypeFactory::NewGrid(const string &n ) const 
-{ 
+Grid *HDFTypeFactory::NewGrid(const string & n) const
+{
     return new HDFGrid(n);
 }

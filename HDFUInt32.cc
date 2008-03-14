@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
 // acknowledged. Any commercial use must be negotiated with the
@@ -46,15 +46,29 @@
 #include "InternalErr.h"
 #include "HDFUInt32.h"
 
-HDFUInt32::HDFUInt32(const string &n) : UInt32(n) {}
-HDFUInt32::~HDFUInt32() {}
-BaseType *HDFUInt32::ptr_duplicate() { return new HDFUInt32(*this); }
-bool HDFUInt32::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFUInt32::HDFUInt32(const string & n):UInt32(n)
+{
+}
+
+HDFUInt32::~HDFUInt32()
+{
+}
+BaseType *HDFUInt32::ptr_duplicate()
+{
+    return new HDFUInt32(*this);
+}
+
+bool HDFUInt32::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-UInt32 *NewUInt32(const string &n) { return new HDFUInt32(n); }
+UInt32 *NewUInt32(const string & n)
+{
+    return new HDFUInt32(n);
+}
 #endif
 
 // $Log: HDFUInt32.cc,v $
@@ -86,4 +100,4 @@ UInt32 *NewUInt32(const string &n) { return new HDFUInt32(n); }
 // Added copyright and header.
 //
 //
-#endif // DONT_HAVE_UINT
+#endif                          // DONT_HAVE_UINT

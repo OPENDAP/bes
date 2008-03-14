@@ -54,8 +54,8 @@ extern void read_dds(DDS & dds, const string & cachedir,
 
 string HDF4RequestHandler::_cachedir = "";
 
-HDF4RequestHandler::HDF4RequestHandler(const string &name)
-:  BESRequestHandler(name)
+HDF4RequestHandler::HDF4RequestHandler(const string & name)
+:BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
     add_handler(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
@@ -69,11 +69,11 @@ HDF4RequestHandler::HDF4RequestHandler(const string &name)
         if (!found || _cachedir == "")
             _cachedir = "/tmp";
 
-        string dummyx = _cachedir + "/dummy.XXXXXX" ;
+        string dummyx = _cachedir + "/dummy.XXXXXX";
 #if defined(WIN32) || defined(TEST_WIN32_TEMPS)
-	char *dummy = _mktemp( (char *)dummyx.c_str() ) ;
+        char *dummy = _mktemp((char *) dummyx.c_str());
 #else
-	char *dummy = mktemp( (char *)dummyx.c_str() ) ;
+        char *dummy = mktemp((char *) dummyx.c_str());
 #endif
         int fd = open(dummy, O_CREAT | O_WRONLY | O_TRUNC);
         unlink(dummy);
@@ -83,7 +83,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string &name)
                 string err =
                     "Could not create a file in the cache directory (" +
                     _cachedir + ")";
-                throw BESInternalError( err, __FILE__, __LINE__ ) ;
+                throw BESInternalError(err, __FILE__, __LINE__);
             }
             _cachedir = "/tmp";
         }
@@ -103,26 +103,25 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
     DAS *das = bdas->get_das();
 
     try {
-	string accessed = dhi.container->access();
+        string accessed = dhi.container->access();
         read_das(*das, _cachedir, accessed);
     }
-    catch( BESError &e )
-    {
-	throw e ;
+    catch(BESError & e) {
+        throw e;
     }
-    catch( InternalErr &e ) {
-	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(Error & e) {
-	BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF4 DAS";
-        BESDapError ex( s, true, unknown_error, __FILE__, __LINE__ ) ;
+        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
         throw ex;
     }
 
@@ -140,33 +139,32 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
     try {
         HDFTypeFactory *factory = new HDFTypeFactory;
         dds->set_factory(factory);
-	string accessed = dhi.container->access();
+        string accessed = dhi.container->access();
         dds->filename(accessed);
         read_dds(*dds, _cachedir, accessed);
-        
+
         DAS das;
         read_das(das, _cachedir, accessed);
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
     }
-    catch( BESError &e )
-    {
-	throw e ;
+    catch(BESError & e) {
+        throw e;
     }
-    catch( InternalErr &e ) {
-	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(Error & e) {
-	BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF4 DDS";
-        BESDapError ex( s, true, unknown_error, __FILE__, __LINE__ ) ;
+        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
         throw ex;
     }
 
@@ -185,14 +183,14 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
     try {
         HDFTypeFactory *factory = new HDFTypeFactory;
         dds->set_factory(factory);
-	string accessed = dhi.container->access();
+        string accessed = dhi.container->access();
         dds->filename(accessed);
         read_dds(*dds, _cachedir, accessed);
-        
+
         DAS das;
         read_das(das, _cachedir, accessed);
         dds->transfer_attributes(&das);
-        
+
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 #if 0
         // see ticket 720
@@ -200,23 +198,22 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
         delete factory;
 #endif
     }
-    catch( BESError &e )
-    {
-	throw e ;
+    catch(BESError & e) {
+        throw e;
     }
-    catch( InternalErr &e ) {
-	BESDapError ex( e.get_error_message(), true, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+    catch(InternalErr & e) {
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(Error & e) {
-	BESDapError ex( e.get_error_message(), false, e.get_error_code(),
-			__FILE__, __LINE__ ) ;
-	throw ex ;
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
+        throw ex;
     }
     catch(...) {
         string s = "unknown exception caught building HDF4 DataDDS";
-        BESDapError ex( s, true, unknown_error, __FILE__, __LINE__ ) ;
+        BESDapError ex(s, true, unknown_error, __FILE__, __LINE__);
         throw ex;
     }
 

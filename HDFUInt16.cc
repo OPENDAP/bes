@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 
@@ -32,15 +32,30 @@
 
 #include "HDFUInt16.h"
 
-HDFUInt16::HDFUInt16(const string &n) : UInt16(n) {}
-HDFUInt16::~HDFUInt16() {}
-BaseType *HDFUInt16::ptr_duplicate() { return new HDFUInt16(*this); }
-bool HDFUInt16::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFUInt16::HDFUInt16(const string & n):UInt16(n)
+{
+}
+
+HDFUInt16::~HDFUInt16()
+{
+}
+BaseType *HDFUInt16::ptr_duplicate()
+{
+    return new HDFUInt16(*this);
+}
+
+bool HDFUInt16::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-UInt16 *NewUInt16(const string &n) { return new HDFUInt16(n); }
+UInt16 *NewUInt16(const string & n)
+{
+    return new HDFUInt16(n);
+}
+
 #endf
 // $Log: HDFUInt16.cc,v $
 // Revision 1.4.4.1  2003/05/21 16:26:52  edavis
@@ -64,4 +79,4 @@ UInt16 *NewUInt16(const string &n) { return new HDFUInt16(n); }
 // Revision 1.1  1999/03/27 00:20:16  jimg
 // Added
 //
-#endif // DONT_HAVE_UINT
+#endif                          // DONT_HAVE_UINT

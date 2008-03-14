@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1998, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -62,9 +62,12 @@
 #include <hdf.h>
 
 class ReadTagRef {
-public:
-  virtual ~ReadTagRef() {}
-  virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error) = 0;
+  public:
+    virtual ~ ReadTagRef() {
+    } 
+
+    virtual bool read_tagref(const string & dataset, int32 tag,
+			     int32 ref, int &error) = 0;
 };
 
-#endif // _READTAGREF_H
+#endif                          // _READTAGREF_H

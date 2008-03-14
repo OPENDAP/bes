@@ -22,7 +22,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // CDFRequestHandler.h
 
 #ifndef I_HDF4RequestHandler_H
@@ -30,23 +30,22 @@
 
 #include <string>
 
-using std::string ;
+using std::string;
 
 #include "BESRequestHandler.h"
 
-class HDF4RequestHandler : public BESRequestHandler {
-private:
-    static string	_cachedir ;
-public:
-			HDF4RequestHandler( const string &name ) ;
-    virtual		~HDF4RequestHandler( void ) ;
+class HDF4RequestHandler:public BESRequestHandler {
+  private:
+    static string _cachedir;
+  public:
+    HDF4RequestHandler(const string & name);
+    virtual ~ HDF4RequestHandler(void);
 
-    static bool		hdf4_build_das( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_dds( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_data( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_help( BESDataHandlerInterface &dhi ) ;
-    static bool		hdf4_build_version( BESDataHandlerInterface &dhi ) ;
+    static bool hdf4_build_das(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_dds(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_data(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_help(BESDataHandlerInterface & dhi);
+    static bool hdf4_build_version(BESDataHandlerInterface & dhi);
 };
 
 #endif
-

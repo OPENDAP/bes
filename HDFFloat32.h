@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
@@ -34,19 +34,19 @@
 // DODS includes
 #include <Float32.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFFloat32: public Float32 {
-public:
-    HDFFloat32(const string &n = "");
-    virtual ~HDFFloat32();
+class HDFFloat32:public Float32 {
+  public:
+    HDFFloat32(const string & n = "");
+     virtual ~ HDFFloat32();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
 };
 
-Float32 *NewFloat32(const string &n);
+Float32 *NewFloat32(const string & n);
 
-typedef HDFFloat32 * HDFFloat32Ptr;
+typedef HDFFloat32 *HDFFloat32Ptr;
 
 // $Log: HDFFloat32.h,v $
 // Revision 1.4.4.1  2003/05/21 16:26:51  edavis
@@ -70,5 +70,4 @@ typedef HDFFloat32 * HDFFloat32Ptr;
 // Revision 1.1  1999/03/27 00:20:16  jimg
 // Added
 
-#endif // _HDFFLOAT32_H
-
+#endif                          // _HDFFLOAT32_H

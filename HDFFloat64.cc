@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -44,15 +44,29 @@
 #include "InternalErr.h"
 #include "HDFFloat64.h"
 
-HDFFloat64::HDFFloat64(const string &n) : Float64(n) {}
-HDFFloat64::~HDFFloat64() {}
-BaseType *HDFFloat64::ptr_duplicate() { return new HDFFloat64(*this); }
-bool HDFFloat64::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFFloat64::HDFFloat64(const string & n):Float64(n)
+{
+}
+
+HDFFloat64::~HDFFloat64()
+{
+}
+BaseType *HDFFloat64::ptr_duplicate()
+{
+    return new HDFFloat64(*this);
+}
+
+bool HDFFloat64::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Float64 *NewFloat64(const string &n) { return new HDFFloat64(n); }
+Float64 *NewFloat64(const string & n)
+{
+    return new HDFFloat64(n);
+}
 #endif
 
 // $Log: HDFFloat64.cc,v $

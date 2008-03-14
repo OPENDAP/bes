@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 //////////////////////////////////////////////////////////////////////////////
 // Copyright 1998, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -55,9 +55,9 @@
 #include <set>
 #include <algorithm>
 
-using std::vector ;
-using std::set ;
-using std::less ;
+using std::vector;
+using std::set;
+using std::less;
 
 #include <hcstream.h>
 #include <hdfclass.h>
@@ -69,7 +69,8 @@ static bool IsInternalVgroup(int32 fid, int32 ref);
 //
 
 // initialize hdfistream_vgroup
-void hdfistream_vgroup::_init(void) {
+void hdfistream_vgroup::_init(void)
+{
     _vgroup_id = _index = _attr_index = _nattrs = 0;
     _meta = false;
     _vgroup_refs.clear();
@@ -77,65 +78,70 @@ void hdfistream_vgroup::_init(void) {
     return;
 }
 
-void hdfistream_vgroup::_get_fileinfo(void) {
+void hdfistream_vgroup::_get_fileinfo(void)
+{
 
     // build list ref numbers of all Vgroup's in the file
     int32 ref = -1;
-    while ( (ref = Vgetid(_file_id, ref)) != -1) {
-	if (!IsInternalVgroup(_file_id, ref))
-	    _vgroup_refs.push_back(ref);
+    while ((ref = Vgetid(_file_id, ref)) != -1) {
+        if (!IsInternalVgroup(_file_id, ref))
+            _vgroup_refs.push_back(ref);
     }
 
     return;
 }
 
-void hdfistream_vgroup::_seek_next(void) {
+void hdfistream_vgroup::_seek_next(void)
+{
     _index++;
     if (!eos())
-	_seek(_vgroup_refs[_index]);
+        _seek(_vgroup_refs[_index]);
     return;
 }
 
-void hdfistream_vgroup::_seek(const char *name) {
+void hdfistream_vgroup::_seek(const char *name)
+{
     int32 ref = Vfind(_file_id, name);
     if (ref < 0)
-	THROW(hcerr_vgroupfind);
+        THROW(hcerr_vgroupfind);
     else
-	_seek(ref);
-	
+        _seek(ref);
+
     return;
 }
 
-void hdfistream_vgroup::_seek(int32 ref) {
+void hdfistream_vgroup::_seek(int32 ref)
+{
     if (_vgroup_id != 0)
-      Vdetach(_vgroup_id);
-    vector<int32>::iterator r = find(_vgroup_refs.begin(), _vgroup_refs.end(), ref);
+        Vdetach(_vgroup_id);
+    vector < int32 >::iterator r =
+        find(_vgroup_refs.begin(), _vgroup_refs.end(), ref);
     if (r == _vgroup_refs.end())
-      THROW(hcerr_vgroupfind);
+        THROW(hcerr_vgroupfind);
     _index = r - _vgroup_refs.begin();
-    if ( (_vgroup_id = Vattach(_file_id, ref, "r")) < 0) {
-      _vgroup_id = 0;
-      THROW(hcerr_vgroupopen);
+    if ((_vgroup_id = Vattach(_file_id, ref, "r")) < 0) {
+        _vgroup_id = 0;
+        THROW(hcerr_vgroupopen);
     }
     _attr_index = 0;
     _nattrs = Vnattrs(_vgroup_id);
     return;
 }
 
-string hdfistream_vgroup::_memberName(int32 ref) {
+string hdfistream_vgroup::_memberName(int32 ref)
+{
 
     string _member_name = "";
     char _mName[hdfclass::MAXSTR];
 
-    if ( (_member_id = Vattach(_file_id, ref, "r")) >= 0) 
-      {
-	if ( Vgetname(_member_id, _mName) < 0 ) {
-	  Vdetach(_member_id);
-	  THROW(hcerr_vgroupopen);
-	}
-	_member_name = string(_mName);
-	Vdetach(_member_id);
-      }
+    if ((_member_id = Vattach(_file_id, ref, "r")) >= 0) {
+        if (Vgetname(_member_id, _mName) < 0) {
+            Vdetach(_member_id);
+            THROW(hcerr_vgroupopen);
+        }
+        _member_name = string(_mName);
+        Vdetach(_member_id);
+    }
     return _member_name;
 }
 
@@ -144,83 +150,96 @@ string hdfistream_vgroup::_memberName(int32 ref) {
 // hdfistream_vgroup -- public member functions
 //
 
-hdfistream_vgroup::hdfistream_vgroup(const string filename) : hdfistream_obj(filename) {
+hdfistream_vgroup::hdfistream_vgroup(const string filename):hdfistream_obj
+    (filename)
+{
     _init();
-    if (_filename.length() != 0) // if ctor specified a null filename
-	open(_filename.c_str());
+    if (_filename.length() != 0)        // if ctor specified a null filename
+        open(_filename.c_str());
     return;
 }
 
-void hdfistream_vgroup::open(const string& filename) {
+void hdfistream_vgroup::open(const string & filename)
+{
     open(filename.c_str());
     return;
 }
 
-void hdfistream_vgroup::open(const char *filename) {
+void hdfistream_vgroup::open(const char *filename)
+{
     if (_file_id != 0)
-	close();
-    if ( (_file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
-	THROW(hcerr_openfile);
+        close();
+    if ((_file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
+        THROW(hcerr_openfile);
     if (Vstart(_file_id) < 0)
-	THROW(hcerr_openfile);
+        THROW(hcerr_openfile);
     _filename = filename;
     _get_fileinfo();
     rewind();
     return;
 }
 
-void hdfistream_vgroup::close(void) {
+void hdfistream_vgroup::close(void)
+{
     if (_vgroup_id != 0)
-	Vdetach(_vgroup_id);
+        Vdetach(_vgroup_id);
     if (_file_id != 0) {
-	Vend(_file_id);
-	Hclose(_file_id);
+        Vend(_file_id);
+        Hclose(_file_id);
     }
     _vgroup_id = _file_id = _index = _attr_index = _nattrs = 0;
-    _vgroup_refs = vector<int32>(); // clear refs
+    _vgroup_refs = vector < int32 > (); // clear refs
     _recs.set = false;
     return;
 }
 
-void hdfistream_vgroup::seek(int index) {
-    if (index < 0  ||  index >= (int)_vgroup_refs.size())
-	THROW(hcerr_range);
+void hdfistream_vgroup::seek(int index)
+{
+    if (index < 0 || index >= (int) _vgroup_refs.size())
+        THROW(hcerr_range);
     _seek(_vgroup_refs[index]);
     _index = index;
     return;
 }
 
-void hdfistream_vgroup::seek_ref(int ref) {
-    _seek(ref);  // _seek() sets _index
+void hdfistream_vgroup::seek_ref(int ref)
+{
+    _seek(ref);                 // _seek() sets _index
     return;
 }
 
-void hdfistream_vgroup::seek(const string& name) {
+void hdfistream_vgroup::seek(const string & name)
+{
     seek(name.c_str());
 }
 
-void hdfistream_vgroup::seek(const char *name) {
+void hdfistream_vgroup::seek(const char *name)
+{
     _seek(name);
     return;
 }
 
-string hdfistream_vgroup::memberName(int32 ref) {
+string hdfistream_vgroup::memberName(int32 ref)
+{
     string mName = _memberName(ref);
     return mName;
 }
 
 
 // read all Vgroup's in the stream
-hdfistream_vgroup& hdfistream_vgroup::operator>>(vector<hdf_vgroup>& hvv) {
-    for (hdf_vgroup hv;!eos();) {
-	*this>>hv;
-	hvv.push_back(hv);
+hdfistream_vgroup & hdfistream_vgroup::operator>>(vector < hdf_vgroup >
+                                                  &hvv)
+{
+    for (hdf_vgroup hv; !eos();) {
+        *this >> hv;
+        hvv.push_back(hv);
     }
     return *this;
 }
 
 // read a Vgroup from the stream
-hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
+hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
+{
 
     // delete any previous data in hv
     hv.tags.clear();
@@ -229,9 +248,9 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     hv.vclass = hv.name = string();
 
     if (_vgroup_id == 0)
-	THROW(hcerr_invstream);	// no vgroup open!
+        THROW(hcerr_invstream); // no vgroup open!
     if (eos())
-	return *this;
+        return *this;
 
     // assign Vgroup ref
     hv.ref = _vgroup_refs[_index];
@@ -241,36 +260,35 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     int32 nentries;
-    if (Vinquire(_vgroup_id, &nentries, name) 
-	< 0)
-	THROW(hcerr_vgroupinfo);
+    if (Vinquire(_vgroup_id, &nentries, name)
+        < 0)
+        THROW(hcerr_vgroupinfo);
     hv.name = string(name);
     if (Vgetclass(_vgroup_id, vclass) < 0)
-	THROW(hcerr_vgroupinfo);
+        THROW(hcerr_vgroupinfo);
     hv.vclass = string(vclass);
 
     // retrieve entry tags and refs
     int32 npairs = Vntagrefs(_vgroup_id);
     hdfistream_vdata vdin(_filename);
-    for (int i=0; i<npairs; ++i) {
-      int32 tag, ref;
-      string vname;
-      if (Vgettagref(_vgroup_id, i, &tag, &ref) < 0)
-	THROW(hcerr_vgroupread);
-	switch(tag) {
-	case DFTAG_VH:
-	  if (!vdin.isInternalVdata(ref))
-	    {
-	      hv.tags.push_back(tag);
-	      hv.refs.push_back(ref);
-	      hv.vnames.push_back(memberName(ref));
-	    }
-	  break;
-	default:
-	  hv.tags.push_back(tag);
-	  hv.refs.push_back(ref);
-	  hv.vnames.push_back(memberName(ref));
-	}
+    for (int i = 0; i < npairs; ++i) {
+        int32 tag, ref;
+        string vname;
+        if (Vgettagref(_vgroup_id, i, &tag, &ref) < 0)
+            THROW(hcerr_vgroupread);
+        switch (tag) {
+        case DFTAG_VH:
+            if (!vdin.isInternalVdata(ref)) {
+                hv.tags.push_back(tag);
+                hv.refs.push_back(ref);
+                hv.vnames.push_back(memberName(ref));
+            }
+            break;
+        default:
+            hv.tags.push_back(tag);
+            hv.refs.push_back(ref);
+            hv.vnames.push_back(memberName(ref));
+        }
     }
     vdin.close();
     _seek_next();
@@ -281,26 +299,28 @@ hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_vgroup& hv) {
 // hdf_vgroup related member functions
 //
 
-bool hdf_vgroup::_ok(void) const {
-    
+bool hdf_vgroup::_ok(void) const
+{
+
     // make sure there are tags stored in this vgroup
     if (tags.size() == 0)
-	return false;
+        return false;
 
     // make sure there are refs stored in this vgroup
     if (refs.size() == 0)
         return false;
 
-    return true;		// passed all the tests
+    return true;                // passed all the tests
 }
 
-bool IsInternalVgroup(int32 fid, int32 ref) { 
+bool IsInternalVgroup(int32 fid, int32 ref)
+{
     // block vgroups used internally
-    set<string, less<string> > reserved_names;
+    set < string, less < string > >reserved_names;
     reserved_names.insert("RIATTR0.0N");
     reserved_names.insert("RIG0.0");
 
-    set<string, less<string> > reserved_classes;
+    set < string, less < string > >reserved_classes;
     reserved_classes.insert("Attr0.0");
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
@@ -314,7 +334,7 @@ bool IsInternalVgroup(int32 fid, int32 ref) {
 
     // get name, class of vgroup
     int vid;
-    if ( (vid = Vattach(fid, ref, "r")) < 0) {
+    if ((vid = Vattach(fid, ref, "r")) < 0) {
         vid = 0;
         THROW(hcerr_vgroupopen);
     }
@@ -335,68 +355,71 @@ bool IsInternalVgroup(int32 fid, int32 ref) {
 
 // check to see if stream is positioned past the last attribute in the
 // currently open Vgroup
-bool hdfistream_vgroup::eo_attr(void) const {
-    if (_filename.length() == 0) // no file open
-	THROW(hcerr_invstream);
-    if (eos() && !bos())	// if eos(), then always eo_attr()
-	return true;
+bool hdfistream_vgroup::eo_attr(void) const
+{
+    if (_filename.length() == 0)        // no file open
+        THROW(hcerr_invstream);
+    if (eos() && !bos())        // if eos(), then always eo_attr()
+        return true;
     else {
-      return (_attr_index >= _nattrs); // or positioned after last Vgroup attr?
+        return (_attr_index >= _nattrs);        // or positioned after last Vgroup attr?
     }
 }
 
 // Read all attributes in the stream
-hdfistream_vgroup& hdfistream_vgroup::operator>>(vector<hdf_attr>& hav) {
-//    hav = vector<hdf_attr>0;	// reset vector
-    for (hdf_attr att;!eo_attr();) {
-	*this>>att;
-	hav.push_back(att);
+hdfistream_vgroup & hdfistream_vgroup::operator>>(vector < hdf_attr > &hav)
+{
+//    hav = vector<hdf_attr>0;  // reset vector
+    for (hdf_attr att; !eo_attr();) {
+        *this >> att;
+        hav.push_back(att);
     }
     return *this;
 }
 
 // read an attribute from the stream
-hdfistream_vgroup& hdfistream_vgroup::operator>>(hdf_attr& ha) {
+hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_attr & ha)
+{
     // delete any previous data in ha
     ha.name = string();
     ha.values = hdf_genvec();
 
-    if (_filename.length() == 0) // no file open
+    if (_filename.length() == 0)        // no file open
         THROW(hcerr_invstream);
-    if (eo_attr())               // if positioned past last attr, do nothing
+    if (eo_attr())              // if positioned past last attr, do nothing
         return *this;
 
     char name[hdfclass::MAXSTR];
     int32 number_type, count, size;
-    if (Vattrinfo(_vgroup_id, _attr_index, name, &number_type, &count, &size) < 0)
+    if (Vattrinfo
+        (_vgroup_id, _attr_index, name, &number_type, &count, &size) < 0)
         THROW(hcerr_vgroupinfo);
 
     // allocate a temporary C array to hold data from VSgetattr()
     char *data;
-    data = new char[count*DFKNTsize(number_type)];
+    data = new char[count * DFKNTsize(number_type)];
     if (data == 0)
-	THROW(hcerr_nomemory);
+        THROW(hcerr_nomemory);
 
     // read attribute values and store them in an hdf_genvec
     if (Vgetattr(_vgroup_id, _attr_index, data) < 0) {
-	delete []data; // problem: clean up and throw an exception
-	THROW(hcerr_vgroupinfo);
+        delete[]data;           // problem: clean up and throw an exception
+        THROW(hcerr_vgroupinfo);
     }
-
     // try { // try to allocate an hdf_genvec
     if (count > 0) {
-	ha.values = hdf_genvec(number_type, data, count);
-	// }
-	// catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-	//    delete []data;
-	//    throw;
-	// }
+        ha.values = hdf_genvec(number_type, data, count);
+        // }
+        // catch(...) { // problem allocating hdf_genvec: clean up and rethrow
+        //    delete []data;
+        //    throw;
+        // }
     }
-    delete []data; // deallocate temporary C array
+    delete[]data;               // deallocate temporary C array
 
     // increment attribute index to next attribute
     ++_attr_index;
-    ha.name = name;		// assign attribute name
+    ha.name = name;             // assign attribute name
     return *this;
 }
 

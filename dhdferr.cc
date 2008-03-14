@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -41,8 +41,8 @@
 
 #include <sstream>
 
-using std::ostringstream ;
-using std::endl ;
+using std::ostringstream;
+using std::endl;
 
 #include "config_hdf.h"
 
@@ -51,23 +51,23 @@ using std::endl ;
 #include "dhdferr.h"
 #include "cgi_util.h"
 
-dhdferr::dhdferr(const string& msg, const string& file, int line)
-    : Error( msg )
+dhdferr::dhdferr(const string & msg, const string & file, int line)
+:Error(msg)
 {
-    ostringstream strm ;
+    ostringstream strm;
     strm << get_error_message() << endl
-         << "Location: \"" << file << "\", line " << line ;
-    ErrMsgT( strm.str() ) ;
+        << "Location: \"" << file << "\", line " << line;
+    ErrMsgT(strm.str());
 }
 
-dhdferr_hcerr::dhdferr_hcerr(const string& msg, const string& file, int line)
-    : dhdferr( msg, file, line )
+dhdferr_hcerr::dhdferr_hcerr(const string & msg, const string & file,
+                             int line)
+:dhdferr(msg, file, line)
 {
-    ostringstream strm ;
+    ostringstream strm;
     strm << get_error_message() << endl
-         << "Location: \"" << file << "\", line " << line ;
-    for (int i=0; i<5; ++i)
-	strm << i << ") " << HEstring((hdf_err_code_t)HEvalue(i)) << endl;
-    ErrMsgT( strm.str() ) ;
+        << "Location: \"" << file << "\", line " << line;
+    for (int i = 0; i < 5; ++i)
+        strm << i << ") " << HEstring((hdf_err_code_t) HEvalue(i)) << endl;
+    ErrMsgT(strm.str());
 }
-

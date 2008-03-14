@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -44,15 +44,29 @@
 #include "InternalErr.h"
 #include "HDFInt32.h"
 
-HDFInt32::HDFInt32(const string &n) : Int32(n) {}
-HDFInt32::~HDFInt32() {}
-BaseType *HDFInt32::ptr_duplicate() { return new HDFInt32(*this); }
-bool HDFInt32::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFInt32::HDFInt32(const string & n):Int32(n)
+{
+}
+
+HDFInt32::~HDFInt32()
+{
+}
+BaseType *HDFInt32::ptr_duplicate()
+{
+    return new HDFInt32(*this);
+}
+
+bool HDFInt32::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Int32 *NewInt32(const string &n) { return new HDFInt32(n); }
+Int32 *NewInt32(const string & n)
+{
+    return new HDFInt32(n);
+}
 #endif
 
 // $Log: HDFInt32.cc,v $

@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -50,22 +50,26 @@
 
 #include "ReadTagRef.h"
 
-using namespace libdap ;
+using namespace libdap;
 
 class HDFStructure: public Structure, public ReadTagRef {
-public:
-    HDFStructure(const string &n = "");
-    virtual ~HDFStructure();
+ public:
+    HDFStructure(const string & n = "");
+    virtual ~ HDFStructure();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
+    virtual bool read_tagref(const string & dataset, int32 tag, int32 ref,
+                             int &error);
     virtual void set_read_p(bool state);
-//    virtual int nvars(void) { return _vars.length(); }
 };
 
-Structure *NewStructure(const string &n);
+#if 0
+Structure *NewStructure(const string & n);
+#endif
 
-typedef HDFStructure * HDFStructurePtr;
+#if 0
+typedef HDFStructure *HDFStructurePtr;
+#endif
 
 // $Log: HDFStructure.h,v $
 // Revision 1.7.8.1  2003/05/21 16:26:52  edavis
@@ -93,5 +97,4 @@ typedef HDFStructure * HDFStructurePtr;
 //
 //
 
-#endif // _HDFSTRUCTURE_H
-
+#endif                          // _HDFSTRUCTURE_H

@@ -6,7 +6,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)
-
+AM_CXXFLAGS = 
 #CXXFLAGS_DEBUG = -g3 -O0 -Wall -fno-default-inline -fno-defer-pop
 #CXXFLAGS = @CXXFLAGS@ -Wall
 

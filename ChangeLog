@@ -1,3 +1,174 @@
+2008-02-27  James Gallagher <jgallagher@opendap.org>
+	Auto reset of Subversion properties
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Removed the version of Hyrax so we don't keep having to edit the
+	Welcome.html file
+	M    OSX_Resources/Welcome.html
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Grabbing version information correctly for Mac OSX pkg build. Updated
+	formatting for README for Mac OSX pkg build.
+	M    configure.ac
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/ReadMe.txt
+	M    README
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Added script to convert README file for Max OSX pkg build.
+	AM   OSX_Resources/update_mac_package_contents.pl
+
+2008-02-26  Patrick West <pwest@ucar.edu>
+
+	Updated pkg build for Mac OSX, automated using package maker and
+	dropdmg. Updated README for formatting.
+	
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/ReadMe.txt
+	M    README
+	M    Makefile.am
+
+2008-02-22  Patrick West <pwest@ucar.edu>
+
+	Creating dummy file to test HDF4Cache directory using mktemp.
+	M    HDF4RequestHandler.cc
+
+2008-02-21  Patrick West <pwest@ucar.edu>
+
+	Moved generated grammar files to the grammarfiles directory, as is
+	done in libdap. Added grammarfiles target just as in libdap.
+	
+	A    grammarfiles/hdfeos.tab.cc
+	A    grammarfiles/hdfeos.tab.h
+	A    grammarfiles/lex.hdfeos.cc
+	D    lex.hdfeos.cc
+	D    hdfeos.tab.cc
+	D    hdfeos.tab.h
+	M    Makefile.am
+
+2008-02-21  Patrick West <pwest@ucar.edu>
+
+	Directory to store the generated flex and bison files.
+	A    grammarfiles
+
+2008-02-19  Patrick West <pwest@ucar.edu>
+
+	Inheriting dhdferr and hcerr from libdap Error class. Removed
+	_print and ostream methods from there and private data members for
+	msg, file and line. Removed fakethrow functions, as exceptions are
+	what we want. This code was written a while back when exceptions
+	were not quite there yet. So we don't need the fakethrow. Removed
+	the use of NO_EXCEPTION macro. Now only need to catch Error
+	exceptions in hdf_handler and HDF4RequestHandler.
+	
+	M    dhdferr.cc
+	M    hdfclass/hcerr.cc
+	M    hdfclass/hcerr.h
+	M    dhdferr.h
+	M    hdf_handler.cc
+	M    HDF4RequestHandler.cc
+	M    HDFStructure.cc
+
+2008-02-14  James Gallagher <jgallagher@opendap.org>
+
+	Updated. Patrick fixed these but we were not getting the svn
+	update due to some snafu with the cache subdir in hdf-testsuite. I
+	fixed the files, too, before I realized that. I combined the fixes
+	since I changed some of the headers to use angle braces instead of
+	double quotes.
+
+	M    hdfeos.y
+	M    HDFArray.h
+	M    HDFUInt32.h
+	M    HDFInt32.h
+	M    HDFStructure.h
+	M    eosdas-test.cc
+	M    HDFStr.h
+	M    lex.hdfeos.cc
+	M    hdfeos.lex
+	M    hdfeos.tab.cc
+	M    HDFByte.h
+	M    HDFFloat32.h
+	M    hdf_handler.cc
+	M    HDFUInt16.h
+	M    HDFInt16.h
+	M    HDFUrl.h
+	M    HDFFloat64.h
+	M    HDFGrid.h
+
+2008-02-14  Patrick West <pwest@ucar.edu>
+
+	Updated configure to use latest and greatest libdap and bes config macros
+	and m4 files.
+	M    conf/bes.m4
+	M    conf/libdap.m4
+	M    Makefile.am
+
+2008-02-02  Patrick West <pwest@ucar.edu>
+
+	Added using namespace libdap where needed.
+	M    hdfeos.y
+	M    HDFTypeFactory.h
+	M    HDFArray.h
+	M    HDFUInt32.h
+	M    HDFInt32.h
+	M    HDFStructure.h
+	M    eosdas-test.cc
+	M    HDFStr.h
+	M    lex.hdfeos.cc
+	M    hdfeos.tab.cc
+	M    HDFByte.h
+	M    HDFFloat32.h
+	M    HDFUInt16.h
+	M    HDFDODSFilter.h
+	M    HDFInt16.h
+	M    HDFUrl.h
+	M    HDFSequence.h
+	M    HDFFloat64.h
+	M    HDFGrid.h
+	M    hdfeos.tab.h
+
+2008-01-25  Patrick West <pwest@ucar.edu>
+
+	Exception/Error handling changes in the BES
+	M    HDF4RequestHandler.cc
+
+2008-01-07  James Gallagher <jgallagher@opendap.org>
+
+	Applied patch from Patrice.
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    conf/hdf4.m4
+	M    Makefile.am
+
+2007-12-06  Patrick West <pwest@ucar.edu>
+
+	Added HDF4.CacheDir vairable in this script instead of being in
+	the provided bes.conf file.
+	
+	M    bes-hdf4-data.sh.in
+
+2007-12-03  Patrick West <pwest@ucar.edu>
+
+	3.7.7 release
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    OSX_Resources/Info.plist
+	M    hdf4_handler.spec
+	M    INSTALL
+
+2007-11-30  Patrick West <pwest@ucar.edu>
+
+	version number is 3.7.6, not 3.7.9
+	M    hdf4_handler.spec
+
 2007-11-30  Patrick West <pwest@ucar.edu>
 
 	version number is 3.7.6, not 3.7.9

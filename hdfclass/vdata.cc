@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 //////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -54,13 +54,14 @@
 #include <set>
 #include <algorithm>
 
-using std::set ;
-using std::less ;
+using std::set;
+using std::less;
 
 #include <hcstream.h>
 #include <hdfclass.h>
 
-static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f);
+static void LoadField(int32 vid, int index, int32 begin, int32 end,
+                      hdf_field & f);
 static bool IsInternalVdata(int32 fid, int32 ref);
 //static bool IsInternalVdata(int32 ref);
 
@@ -69,7 +70,8 @@ static bool IsInternalVdata(int32 fid, int32 ref);
 //
 
 // initialize hdfistream_vdata
-void hdfistream_vdata::_init(void) {
+void hdfistream_vdata::_init(void)
+{
     _vdata_id = _index = _attr_index = _nattrs = 0;
     _meta = false;
     _vdata_refs.clear();
@@ -77,44 +79,49 @@ void hdfistream_vdata::_init(void) {
     return;
 }
 
-void hdfistream_vdata::_get_fileinfo(void) {
+void hdfistream_vdata::_get_fileinfo(void)
+{
 
     // build list ref numbers of all Vdata's in the file
     int32 ref = -1;
-    while ( (ref = VSgetid(_file_id, ref)) != -1) {
-	if (!IsInternalVdata(_file_id, ref))
-	    _vdata_refs.push_back(ref);
+    while ((ref = VSgetid(_file_id, ref)) != -1) {
+        if (!IsInternalVdata(_file_id, ref))
+            _vdata_refs.push_back(ref);
     }
     return;
 }
 
-void hdfistream_vdata::_seek_next(void) {
+void hdfistream_vdata::_seek_next(void)
+{
     _index++;
     if (!eos())
-	_seek(_vdata_refs[_index]);
+        _seek(_vdata_refs[_index]);
     return;
 }
 
-void hdfistream_vdata::_seek(const char *name) {
+void hdfistream_vdata::_seek(const char *name)
+{
     int32 ref = VSfind(_file_id, name);
     if (ref < 0)
-	THROW(hcerr_vdatafind);
+        THROW(hcerr_vdatafind);
     else
-	_seek(ref);
-	
+        _seek(ref);
+
     return;
 }
 
-void hdfistream_vdata::_seek(int32 ref) {
+void hdfistream_vdata::_seek(int32 ref)
+{
     if (_vdata_id != 0)
-      VSdetach(_vdata_id);
-    vector<int32>::iterator r = find(_vdata_refs.begin(), _vdata_refs.end(), ref);
+        VSdetach(_vdata_id);
+    vector < int32 >::iterator r =
+        find(_vdata_refs.begin(), _vdata_refs.end(), ref);
     if (r == _vdata_refs.end())
-      THROW(hcerr_vdatafind);
+        THROW(hcerr_vdatafind);
     _index = r - _vdata_refs.begin();
-    if ( (_vdata_id = VSattach(_file_id, ref, "r")) < 0) {
-      _vdata_id = 0;
-      THROW(hcerr_vdataopen);
+    if ((_vdata_id = VSattach(_file_id, ref, "r")) < 0) {
+        _vdata_id = 0;
+        THROW(hcerr_vdataopen);
     }
     _attr_index = 0;
     _nattrs = VSfnattrs(_vdata_id, _HDF_VDATA);
@@ -126,174 +133,190 @@ void hdfistream_vdata::_seek(int32 ref) {
 // hdfistream_vdata -- public member functions
 //
 
-hdfistream_vdata::hdfistream_vdata(const string filename) : hdfistream_obj(filename) {
+hdfistream_vdata::hdfistream_vdata(const string filename):hdfistream_obj
+    (filename)
+{
     _init();
-    if (_filename.length() != 0) // if ctor specified a null filename
-	open(_filename.c_str());
+    if (_filename.length() != 0)        // if ctor specified a null filename
+        open(_filename.c_str());
     return;
 }
 
-void hdfistream_vdata::open(const string& filename) {
+void hdfistream_vdata::open(const string & filename)
+{
     open(filename.c_str());
     return;
 }
 
-void hdfistream_vdata::open(const char *filename) {
+void hdfistream_vdata::open(const char *filename)
+{
     if (_file_id != 0)
-	close();
-    if ( (_file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
-	THROW(hcerr_openfile);
+        close();
+    if ((_file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
+        THROW(hcerr_openfile);
     if (Vstart(_file_id) < 0)
-	THROW(hcerr_openfile);
+        THROW(hcerr_openfile);
     _filename = filename;
     _get_fileinfo();
     rewind();
     return;
 }
 
-void hdfistream_vdata::close(void) {
+void hdfistream_vdata::close(void)
+{
     if (_vdata_id != 0)
-	VSdetach(_vdata_id);
+        VSdetach(_vdata_id);
     if (_file_id != 0) {
-	Vend(_file_id);
-	Hclose(_file_id);
+        Vend(_file_id);
+        Hclose(_file_id);
     }
     _vdata_id = _file_id = _index = _attr_index = _nattrs = 0;
-    _vdata_refs.clear(); // clear refs
+    _vdata_refs.clear();        // clear refs
     _recs.set = false;
     return;
 }
 
-void hdfistream_vdata::seek(int index) {
-    if (index < 0  ||  index >= (int)_vdata_refs.size())
-	THROW(hcerr_range);
+void hdfistream_vdata::seek(int index)
+{
+    if (index < 0 || index >= (int) _vdata_refs.size())
+        THROW(hcerr_range);
     _seek(_vdata_refs[index]);
     _index = index;
     return;
 }
 
-void hdfistream_vdata::seek_ref(int ref) {
-    _seek(ref);  // _seek() sets _index
+void hdfistream_vdata::seek_ref(int ref)
+{
+    _seek(ref);                 // _seek() sets _index
     return;
 }
 
-void hdfistream_vdata::seek(const string& name) {
+void hdfistream_vdata::seek(const string & name)
+{
     seek(name.c_str());
 }
 
-void hdfistream_vdata::seek(const char *name) {
+void hdfistream_vdata::seek(const char *name)
+{
     _seek(name);
     return;
 }
 
-bool hdfistream_vdata::setrecs(int32 begin, int32 end) {
-  if (_vdata_id != 0) {
-    int32 il;
-    VSQueryinterlace(_vdata_id,&il);
-    if (il != FULL_INTERLACE)
-      return false;
-    else {
-      int32 cnt;
-      VSQuerycount(_vdata_id,&cnt);
-      if (begin < 0 || end >= cnt)
-	return false;
-      else {
-	_recs.begin = begin;
-	_recs.end = end;
-	_recs.set = true;
-      }
+bool hdfistream_vdata::setrecs(int32 begin, int32 end)
+{
+    if (_vdata_id != 0) {
+        int32 il;
+        VSQueryinterlace(_vdata_id, &il);
+        if (il != FULL_INTERLACE)
+            return false;
+        else {
+            int32 cnt;
+            VSQuerycount(_vdata_id, &cnt);
+            if (begin < 0 || end >= cnt)
+                return false;
+            else {
+                _recs.begin = begin;
+                _recs.end = end;
+                _recs.set = true;
+            }
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 // check to see if stream is positioned past the last attribute in the
 // currently open Vdata
-bool hdfistream_vdata::eo_attr(void) const {
-    if (_filename.length() == 0) // no file open
-	THROW(hcerr_invstream);
-    if (eos() && !bos())	// if eos(), then always eo_attr()
-	return true;
+bool hdfistream_vdata::eo_attr(void) const
+{
+    if (_filename.length() == 0)        // no file open
+        THROW(hcerr_invstream);
+    if (eos() && !bos())        // if eos(), then always eo_attr()
+        return true;
     else {
-      return (_attr_index >= _nattrs); // or positioned after last Vdata attr?
+        return (_attr_index >= _nattrs);        // or positioned after last Vdata attr?
     }
 }
 
 // Read all attributes in the stream
-hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_attr>& hav) {
-//    hav = vector<hdf_attr>0;	// reset vector
-    for (hdf_attr att;!eo_attr();) {
-	*this>>att;
-	hav.push_back(att);
+hdfistream_vdata & hdfistream_vdata::operator>>(vector < hdf_attr > &hav)
+{
+//    hav = vector<hdf_attr>0;  // reset vector
+    for (hdf_attr att; !eo_attr();) {
+        *this >> att;
+        hav.push_back(att);
     }
     return *this;
 }
 
 // read all Vdata's in the stream
-hdfistream_vdata& hdfistream_vdata::operator>>(vector<hdf_vdata>& hvv) {
-    for (hdf_vdata hv;!eos();) {
-	*this>>hv;
-	hvv.push_back(hv);
+hdfistream_vdata & hdfistream_vdata::operator>>(vector < hdf_vdata > &hvv)
+{
+    for (hdf_vdata hv; !eos();) {
+        *this >> hv;
+        hvv.push_back(hv);
     }
     return *this;
 }
 
 // read an attribute from the stream
-hdfistream_vdata& hdfistream_vdata::operator>>(hdf_attr& ha) {
+hdfistream_vdata & hdfistream_vdata::operator>>(hdf_attr & ha)
+{
     // delete any previous data in ha
     ha.name = string();
     ha.values = hdf_genvec();
 
-    if (_filename.length() == 0) // no file open
+    if (_filename.length() == 0)        // no file open
         THROW(hcerr_invstream);
-    if (eo_attr())               // if positioned past last attr, do nothing
+    if (eo_attr())              // if positioned past last attr, do nothing
         return *this;
 
     char name[hdfclass::MAXSTR];
     int32 number_type, count, size;
-    if (VSattrinfo(_vdata_id, _HDF_VDATA, _attr_index, name, &number_type, &count, &size) < 0)
+    if (VSattrinfo
+        (_vdata_id, _HDF_VDATA, _attr_index, name, &number_type, &count,
+         &size) < 0)
         THROW(hcerr_vdatainfo);
 
     // allocate a temporary C array to hold data from VSgetattr()
     char *data;
-    data = new char[count*DFKNTsize(number_type)];
+    data = new char[count * DFKNTsize(number_type)];
     if (data == 0)
-	THROW(hcerr_nomemory);
+        THROW(hcerr_nomemory);
 
     // read attribute values and store them in an hdf_genvec
     if (VSgetattr(_vdata_id, _HDF_VDATA, _attr_index, data) < 0) {
-	delete []data; // problem: clean up and throw an exception
-	THROW(hcerr_vdatainfo);
+        delete[]data;           // problem: clean up and throw an exception
+        THROW(hcerr_vdatainfo);
     }
-
     // try { // try to allocate an hdf_genvec
     if (count > 0) {
-	ha.values = hdf_genvec(number_type, data, count);
-	// }
-	// catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-	//    delete []data;
-	//    throw;
-	// }
+        ha.values = hdf_genvec(number_type, data, count);
+        // }
+        // catch(...) { // problem allocating hdf_genvec: clean up and rethrow
+        //    delete []data;
+        //    throw;
+        // }
     }
-    delete []data; // deallocate temporary C array
+    delete[]data;               // deallocate temporary C array
 
     // increment attribute index to next attribute
     ++_attr_index;
-    ha.name = name;		// assign attribute name
+    ha.name = name;             // assign attribute name
     return *this;
 }
 
 // read a Vdata from the stream
-hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
+hdfistream_vdata & hdfistream_vdata::operator>>(hdf_vdata & hv)
+{
 
     // delete any previous data in hv
     hv.fields.clear();
     hv.vclass = hv.name = string();
 
     if (_vdata_id == 0)
-	THROW(hcerr_invstream);	// no vdata open!
+        THROW(hcerr_invstream); // no vdata open!
     if (eos())
-	return *this;
+        return *this;
 
     // assign Vdata ref
     hv.ref = _vdata_refs[_index];
@@ -303,39 +326,41 @@ hdfistream_vdata& hdfistream_vdata::operator>>(hdf_vdata& hv) {
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     int32 nrecs;
-    if (VSinquire(_vdata_id, &nrecs, (int32 *)0, (char *)0, (int32 *)0, name) 
-	< 0)
-	THROW(hcerr_vdatainfo);
+    if (VSinquire
+        (_vdata_id, &nrecs, (int32 *) 0, (char *) 0, (int32 *) 0, name)
+        < 0)
+        THROW(hcerr_vdatainfo);
     hv.name = string(name);
     if (VSgetclass(_vdata_id, vclass) < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     hv.vclass = string(vclass);
 
     // retrieve number of fields
     int nfields = VFnfields(_vdata_id);
     if (nfields < 0)
         THROW(hcerr_vdatainfo);
-    
+
     // retrieve field information
-    hv.fields = vector<hdf_field>();
-    for (int i=0; i<nfields; ++i) {
+    hv.fields = vector < hdf_field > ();
+    for (int i = 0; i < nfields; ++i) {
         hv.fields.push_back(hdf_field());
-	if (_meta)
-	    LoadField(_vdata_id, i, 0, 0, hv.fields[i]);
-	else if (_recs.set)
-	    LoadField(_vdata_id, i, _recs.begin, _recs.end, hv.fields[i]);
-	else
-	    LoadField(_vdata_id, i, 0, nrecs-1, hv.fields[i]);
+        if (_meta)
+            LoadField(_vdata_id, i, 0, 0, hv.fields[i]);
+        else if (_recs.set)
+            LoadField(_vdata_id, i, _recs.begin, _recs.end, hv.fields[i]);
+        else
+            LoadField(_vdata_id, i, 0, nrecs - 1, hv.fields[i]);
     }
     _seek_next();
     return *this;
 }
 
-bool hdfistream_vdata::isInternalVdata(int ref) const { 
-    set<string, less<string> > reserved_names;
+bool hdfistream_vdata::isInternalVdata(int ref) const
+{
+    set < string, less < string > >reserved_names;
     reserved_names.insert("RIATTR0.0N");
 
-    set<string, less<string> > reserved_classes;
+    set < string, less < string > >reserved_classes;
     reserved_classes.insert("Attr0.0");
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
@@ -344,79 +369,82 @@ bool hdfistream_vdata::isInternalVdata(int ref) const {
 
     // get name, class of vdata
     int vid;
-    if ( (vid = VSattach(_file_id, ref, "r")) < 0) {
-	vid = 0;
-	THROW(hcerr_vdataopen);
+    if ((vid = VSattach(_file_id, ref, "r")) < 0) {
+        vid = 0;
+        THROW(hcerr_vdataopen);
     }
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     if (VSgetname(vid, name) < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     if (reserved_names.find(string(name)) != reserved_names.end())
-	return true;
+        return true;
 
     if (VSgetclass(vid, vclass) < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
-	return true;
+        return true;
     return false;
 }
 
-static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f) {
+static void LoadField(int32 vid, int index, int32 begin, int32 end,
+                      hdf_field & f)
+{
 
     // position to first record too read
     if (VSseek(vid, begin) < 0)
-  	THROW(hcerr_vdataseek);
+        THROW(hcerr_vdataseek);
     int32 nrecs = end - begin + 1;
 
     // retrieve name of field
     char *fieldname = VFfieldname(vid, index);
     if (fieldname == 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     f.name = string(fieldname);
 
     // retrieve order of field
     int32 fieldorder = VFfieldorder(vid, index);
     if (fieldorder < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
 
     // retrieve size of the field in memory
     int32 fieldsize = VFfieldisize(vid, index);
     if (fieldsize < 0)
-	THROW(hcerr_vdatainfo);
-    
+        THROW(hcerr_vdatainfo);
+
     // retrieve HDF data type of field
     int32 fieldtype = VFfieldtype(vid, index);
     if (fieldtype < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
 
     // for each component, set type and optionally load data
     hdf_genvec gv;
     char *data = 0;
-    if (nrecs > 0) {		// if nrecs > 0 then load data for field
-	data = new char[fieldsize*nrecs];
-	if (VSsetfields(vid, fieldname) < 0) // set field to read
-	    THROW(hcerr_vdataread);
-	if (VSread(vid, (uchar8 *)data, nrecs, FULL_INTERLACE) < 0) {
-	    delete []data;
-	    THROW(hcerr_vdataread);
-	}
+    if (nrecs > 0) {            // if nrecs > 0 then load data for field
+        data = new char[fieldsize * nrecs];
+        if (VSsetfields(vid, fieldname) < 0)    // set field to read
+            THROW(hcerr_vdataread);
+        if (VSread(vid, (uchar8 *) data, nrecs, FULL_INTERLACE) < 0) {
+            delete[]data;
+            THROW(hcerr_vdataread);
+        }
     }
     int stride = fieldorder;
-    for (int i=0; i<fieldorder; ++i) {
-	// try {  // try to create an hdf_genvec and add it to the vals vector
-	if (nrecs == 0)
-	    gv = hdf_genvec(fieldtype, 0, 0, 0, 0);
-	else
-	    gv = hdf_genvec(fieldtype, data, i, (nrecs*fieldorder)-1, stride);
-	f.vals.push_back(gv);
-	// }
-	// catch(...) {  // problem: clean up and rethrow
-	//     delete []data;
-	//     throw;
-	// }
+    for (int i = 0; i < fieldorder; ++i) {
+        // try {  // try to create an hdf_genvec and add it to the vals vector
+        if (nrecs == 0)
+            gv = hdf_genvec(fieldtype, 0, 0, 0, 0);
+        else
+            gv = hdf_genvec(fieldtype, data, i, (nrecs * fieldorder) - 1,
+                            stride);
+        f.vals.push_back(gv);
+        // }
+        // catch(...) {  // problem: clean up and rethrow
+        //     delete []data;
+        //     throw;
+        // }
     }
-    delete []data;
+    delete[]data;
 }
 
 
@@ -426,45 +454,48 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end, hdf_field& f
 //
 
 // verify that the hdf_field class is in an OK state.  
-bool hdf_field::_ok(void) const {
-    
+bool hdf_field::_ok(void) const
+{
+
     // make sure that there is some data stored in the hdf_field
     if (vals.size() == 0)
-	return false;
+        return false;
 
     // if the field has order > 1, check to make sure that the number types of all
     // the columns in the field are the same and are not 0
     if (vals.size() > 1) {
-	int32 nt = vals[0].number_type();
-	if (nt == 0)
-	    return false;
-	for (int i=1; i<(int)vals.size(); ++i)
-	    if (vals[i].number_type() != nt  || vals[i].number_type() == 0)
-		return false;
+        int32 nt = vals[0].number_type();
+        if (nt == 0)
+            return false;
+        for (int i = 1; i < (int) vals.size(); ++i)
+            if (vals[i].number_type() != nt || vals[i].number_type() == 0)
+                return false;
     }
 
-    return true;		// passed all the tests
+    return true;                // passed all the tests
 }
 
-bool hdf_vdata::_ok(void) const {
-    
+bool hdf_vdata::_ok(void) const
+{
+
     // make sure there are fields stored in this vdata
     if (fields.size() == 0)
-	return false;
+        return false;
 
     // make sure the fields are themselves OK
-    for (int i=0; i<(int)fields.size(); ++i)
-	if (!fields[i])
-	    return false;
+    for (int i = 0; i < (int) fields.size(); ++i)
+        if (!fields[i])
+            return false;
 
-    return true;		// passed all the tests
+    return true;                // passed all the tests
 }
 
-bool IsInternalVdata(int32 fid, int32 ref) { 
-    set<string, less<string> > reserved_names;
+bool IsInternalVdata(int32 fid, int32 ref)
+{
+    set < string, less < string > >reserved_names;
     reserved_names.insert("RIATTR0.0N");
 
-    set<string, less<string> > reserved_classes;
+    set < string, less < string > >reserved_classes;
     reserved_classes.insert("Attr0.0");
     reserved_classes.insert("RIATTR0.0C");
     reserved_classes.insert("DimVal0.0");
@@ -473,25 +504,25 @@ bool IsInternalVdata(int32 fid, int32 ref) {
 
     // get name, class of vdata
     int vid;
-    if ( (vid = VSattach(fid, ref, "r")) < 0) {
-	vid = 0;
-	THROW(hcerr_vdataopen);
+    if ((vid = VSattach(fid, ref, "r")) < 0) {
+        vid = 0;
+        THROW(hcerr_vdataopen);
     }
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     if (VSgetname(vid, name) < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     if (reserved_names.find(string(name)) != reserved_names.end())
-	return true;
+        return true;
 
     if (VSgetclass(vid, vclass) < 0)
-	THROW(hcerr_vdatainfo);
+        THROW(hcerr_vdatainfo);
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
-	return true;
+        return true;
     return false;
 }
 
- 
+
 // $Log: vdata.cc,v $
 // Revision 1.10.4.1.2.1  2004/02/23 02:08:03  rmorris
 // There is some incompatibility between the use of isascii() in the hdf library

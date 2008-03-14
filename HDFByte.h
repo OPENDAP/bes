@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -48,19 +48,19 @@
 // DODS includes
 #include <Byte.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFByte: public Byte {
-public:
-    HDFByte(const string &n = "");
-    virtual ~HDFByte();
+class HDFByte:public Byte {
+  public:
+    HDFByte(const string & n = "");
+     virtual ~ HDFByte();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
 };
 
-Byte *NewByte(const string &n);
+Byte *NewByte(const string & n);
 
-typedef HDFByte * HDFBytePtr;
+typedef HDFByte *HDFBytePtr;
 
 // $Log: HDFByte.h,v $
 // Revision 1.5.8.1  2003/05/21 16:26:51  edavis
@@ -84,5 +84,4 @@ typedef HDFByte * HDFBytePtr;
 // Added copyright and header.
 //
 
-#endif // _HDFBYTE_H
-
+#endif                          // _HDFBYTE_H

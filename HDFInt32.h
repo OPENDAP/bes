@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -48,19 +48,19 @@
 // DODS includes
 #include <Int32.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFInt32: public Int32 {
-public:
-    HDFInt32(const string &n = "");
-    virtual ~HDFInt32();
+class HDFInt32:public Int32 {
+  public:
+    HDFInt32(const string & n = "");
+     virtual ~ HDFInt32();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &); 
+    virtual bool read(const string &);
 };
 
-Int32 *NewInt32(const string &n);
+Int32 *NewInt32(const string & n);
 
-typedef HDFInt32 * HDFInt32Ptr;
+typedef HDFInt32 *HDFInt32Ptr;
 
 // $Log: HDFInt32.h,v $
 // Revision 1.5.8.1  2003/05/21 16:26:51  edavis
@@ -84,5 +84,4 @@ typedef HDFInt32 * HDFInt32Ptr;
 // Added copyright and header.
 //
 
-#endif // _HDFINT32_H
-
+#endif                          // _HDFINT32_H

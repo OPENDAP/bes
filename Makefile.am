@@ -84,8 +84,8 @@ bes-hdf4-data.sh: bes-hdf4-data.sh.in Makefile
 	$(do_subst) < $(srcdir)/bes-hdf4-data.sh.in > bes-hdf4-data.sh
 	chmod +x bes-hdf4-data.sh
 
-# This makes sure that the handler modifies the bes  which confiure found
-# even with distcheck is run.
+# This makes sure that the handler modifies the bes which confiure found
+# even when distcheck is run.
 bes-conf: bes-hdf4-data.sh
 	(bes_prefix=`bes-config --prefix` ; \
 	if test "$$bes_prefix" = "/usr" ; \

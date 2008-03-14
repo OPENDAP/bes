@@ -20,7 +20,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -53,21 +53,23 @@
 
 #include "ReadTagRef.h"
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFArray: public Array, public ReadTagRef {
-public:
-    HDFArray(const string &n = "", BaseType *v = 0);
-    virtual ~HDFArray();
+class HDFArray:public Array, public ReadTagRef {
+  public:
+    HDFArray(const string & n = "", BaseType * v = 0);
+     virtual ~ HDFArray();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &dataset);
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
-    bool GetSlabConstraint(vector<int>& start_array, vector<int>& edge_array, 
-			   vector<int>& stride_array);
+    virtual bool read(const string & dataset);
+    virtual bool read_tagref(const string & dataset, int32 tag, int32 ref,
+                             int &error);
+    bool GetSlabConstraint(vector < int >&start_array,
+                           vector < int >&edge_array,
+                           vector < int >&stride_array);
 };
 
 #if 0
-Array *NewArray(const string &n, BaseType *v);
+Array *NewArray(const string & n, BaseType * v);
 #endif
 
 // $Log: HDFArray.h,v $
@@ -98,4 +100,4 @@ Array *NewArray(const string &n, BaseType *v);
 // Added copyright and header
 //
 
-#endif // _HDFARRAY_H
+#endif                          // _HDFARRAY_H

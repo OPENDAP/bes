@@ -20,7 +20,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -56,15 +56,15 @@
 
 using namespace libdap;
 
-class HDFGrid: public Grid, public ReadTagRef {
-public:
-    HDFGrid(const string &n = "");
-    virtual ~HDFGrid();
+class HDFGrid:public Grid, public ReadTagRef {
+  public:
+    HDFGrid(const string & n = "");
+     virtual ~ HDFGrid();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &dataset);
-    virtual vector<array_ce> get_map_constraints();
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
+    virtual bool read(const string & dataset);
+    virtual vector < array_ce > get_map_constraints();
+    virtual bool read_tagref(const string & dataset, int32 tag, int32 ref,
+                             int &error);
 };
 
-#endif // _HDFGRID_H
-
+#endif                          // _HDFGRID_H

@@ -1,6 +1,24 @@
 
 $Id$
 
+Version 3.7.8 (14 March 2008)
+
+This version (3.7.8) contains a know problem when several SDSs use the same
+name. This bug is encountered when a Vgroup contains a Vgroup and that inner
+Vgroup contains an SDS, if that SDS's name matches the name of another SDS
+nested in a *second set of objects with the same structure*, the 'first' SDS
+will always be returned. This is ticket #905. Since this version of the
+handler fixes a number of other problems, and this bug affects only a smal
+number of data sets, we're releasing this version now and will release an
+update in a few weeks. It's likely that this bug has been present for some
+time if not since the handler was first written.
+
+OS/X Build improved.
+
+Many fixes, Escpecially in the error/exception processing software.
+
+Works with BES 3.6.0 (and thus as part of Hyrax 1.4).
+
 Version 3.7.7 (14 Nov 2007)
 
 pkg and rpm build fixes

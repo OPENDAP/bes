@@ -18,10 +18,9 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
-struct hdfdods {
-  enum hdfenum {
-    MAXSTR = 1024
-  };
-};
 
+struct hdfdods {
+    enum hdfenum {
+        MAXSTR = 1024
+    };
+};

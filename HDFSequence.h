@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -51,23 +51,24 @@
 #include <hdfclass.h>
 #include "ReadTagRef.h"
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFSequence: public Sequence, public ReadTagRef {
-public:
-    HDFSequence(const string &n = "");
-    virtual ~HDFSequence();
+class HDFSequence:public Sequence, public ReadTagRef {
+  public:
+    HDFSequence(const string & n = "");
+     virtual ~ HDFSequence();
     virtual BaseType *ptr_duplicate();
     virtual bool read(const string &);
-    virtual bool read_tagref(const string &dataset, int32 tag, int32 ref, int &error);
-protected:
-    int row;         // current row
-    hdf_vdata vd;    // holds Vdata
+    virtual bool read_tagref(const string & dataset, int32 tag, int32 ref,
+                             int &error);
+  protected:
+    int row;                    // current row
+    hdf_vdata vd;               // holds Vdata
 };
 
-Sequence *NewSequence(const string &n);
+Sequence *NewSequence(const string & n);
 
-typedef HDFSequence * HDFSequencePtr;
+typedef HDFSequence *HDFSequencePtr;
 
 // $Log: HDFSequence.h,v $
 // Revision 1.7.8.1  2003/05/21 16:26:52  edavis
@@ -98,5 +99,4 @@ typedef HDFSequence * HDFSequencePtr;
 //
 //
 
-#endif // _HDFSEQUENCE_H
-
+#endif                          // _HDFSEQUENCE_H

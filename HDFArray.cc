@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
@@ -40,6 +40,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
+//#define DODS_DEBUG 1
 
 #include <vector>
 
@@ -49,132 +50,148 @@
 #include <sys/param.h>
 #endif
 #include <mfhdf.h>
+
 #include <hdfclass.h>
 #include <hcstream.h>
 
-#include "escaping.h"
+#include <escaping.h>
+#include <Error.h>
+#include <debug.h>
+
 #include "HDFArray.h"
 #include "dhdferr.h"
 
-#include "Error.h"
+HDFArray::HDFArray(const string & n, BaseType * v):
+Array(n, v)
+{
+}
 
-HDFArray::HDFArray(const string &n, BaseType *v) : Array(n, v)
-{}
+HDFArray::~HDFArray()
+{
+}
 
-HDFArray::~HDFArray() {}
-
-BaseType *HDFArray::ptr_duplicate() { return new HDFArray(*this); }
-void LoadArrayFromSDS(HDFArray *ar, const hdf_sds& sds);
-void LoadArrayFromGR(HDFArray *ar, const hdf_gri& gr);
+BaseType *HDFArray::ptr_duplicate()
+{
+    return new HDFArray(*this);
+}
+void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds);
+void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr);
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFArray::read(const string &dataset)
+bool HDFArray::read(const string & dataset)
 {
     int err = 0;
     int status = read_tagref(dataset, -1, -1, err);
     if (err)
-	throw Error(unknown_error, "Could not read from dataset.");
+        throw Error(unknown_error, "Could not read from dataset.");
     return status;
 }
 
-bool 
-HDFArray::read_tagref(const string &dataset, int32 tag, int32 ref, int &err)
+// todo: refactor: get rid of the err value-result parameter; throw from
+// within this method.
+bool HDFArray::read_tagref(const string & dataset, int32 tag, int32 ref,
+                           int &err)
 {
     if (read_p())
-	return true;
+        return true;
 
     // get the HDF dataset name, SDS name
     string hdf_file = dataset;
     string hdf_name = this->name();
 
     // get slab constraint
-    vector<int> start, edge, stride;
+    vector < int >start, edge, stride;
     bool isslab = GetSlabConstraint(start, edge, stride);
 
     bool foundsds = false;
     hdf_sds sds;
-    if (tag==-1 || tag==DFTAG_NDG) {
-	if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
-	    hdfistream_sds sdsin(hdf_file.c_str());
-	    if(ref != -1)
-		sdsin.seek_ref(ref);
-	    else
-		sdsin.seek(hdf_name.c_str());
-	    if (isslab)
-		sdsin.setslab(start, edge, stride, false);
-	    sdsin >> sds;
-	    sdsin.close();
-	    foundsds = true;
-	}
+    if (tag == -1 || tag == DFTAG_NDG) {
+        if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
+            hdfistream_sds sdsin(hdf_file.c_str());
+            if (ref != -1) {
+                DBG(cerr << "sds seek with ref = " << ref << endl);
+                sdsin.seek_ref(ref);
+            } else {
+                DBG(cerr << "sds seek with name = '" << hdf_name << "'" <<
+                    endl);
+                sdsin.seek(hdf_name.c_str());
+            }
+            if (isslab)
+                sdsin.setslab(start, edge, stride, false);
+            sdsin >> sds;
+            sdsin.close();
+            foundsds = true;
+        }
     }
 
     bool foundgr = false;
     hdf_gri gr;
-    if (!foundsds && (tag==-1 || tag==DFTAG_VG))  {
-	if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
-	    hdfistream_gri grin(hdf_file.c_str());
-	    if(ref != -1)
-		grin.seek_ref(ref);
-	    else
-		grin.seek(hdf_name.c_str());
-	    if (isslab)
-		grin.setslab(start, edge, stride, false);
-	    grin >> gr;
-	    grin.close();
-	    foundgr = true;
-	}
+    if (!foundsds && (tag == -1 || tag == DFTAG_VG)) {
+        if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
+            hdfistream_gri grin(hdf_file.c_str());
+            if (ref != -1)
+                grin.seek_ref(ref);
+            else
+                grin.seek(hdf_name.c_str());
+            if (isslab)
+                grin.setslab(start, edge, stride, false);
+            grin >> gr;
+            grin.close();
+            foundgr = true;
+        }
     }
 
+    // Todo: refactor: move this stuff up into the above if stmts.
     if (foundsds)
-	LoadArrayFromSDS(this, sds);
+        LoadArrayFromSDS(this, sds);
     else if (foundgr)
-	LoadArrayFromGR(this, gr);
+        LoadArrayFromGR(this, gr);
 
     if (foundgr || foundsds) {
-	set_read_p(true);	// Moved here; see bug 136
-	err = 0;		// no error
-	return true;
-    }
-    else {
-	err = 1;
-	return false;
+        set_read_p(true);       // Moved here; see bug 136
+        err = 0;                // no error
+        return true;
+    } else {
+        err = 1;
+        return false;
     }
 }
 
 #if 0
-Array *NewArray(const string &n, BaseType *v)
-{ 
-    return new HDFArray(n, v); 
-} 
+Array *NewArray(const string & n, BaseType * v)
+{
+    return new HDFArray(n, v);
+}
 #endif
 
 // Read the slab constraint parameters; the arrays start_array, edge_array,
 // stride_array.  Returns true if there is a slab constraint, false otherwise.
-bool HDFArray::GetSlabConstraint(vector<int>& start_array, 
-				  vector<int>& edge_array, 
-				  vector<int>& stride_array) {
+bool HDFArray::GetSlabConstraint(vector < int >&start_array,
+                                 vector < int >&edge_array,
+                                 vector < int >&stride_array)
+{
     int start = 0, stop = 0, stride = 0;
     int edge = 0;
 
-    start_array = vector<int>(0);
-    edge_array = vector<int>(0);
-    stride_array = vector<int>(0);
+    start_array = vector < int >(0);
+    edge_array = vector < int >(0);
+    stride_array = vector < int >(0);
 
     for (Array::Dim_iter p = dim_begin(); p != dim_end(); ++p) {
-	start = dimension_start(p,true);
-	stride = dimension_stride(p,true);
-	stop = dimension_stop(p,true);
-	if (start == 0 && stop == 0 && stride == 0)
-	    return false;	// no slab constraint
-	if (start > stop)
-	    THROW(dhdferr_arrcons);
-	edge = (int)((stop - start)/stride) + 1;
-	if (start + edge > dimension_size(p))
-	    THROW(dhdferr_arrcons);
+        start = dimension_start(p, true);
+        stride = dimension_stride(p, true);
+        stop = dimension_stop(p, true);
+        if (start == 0 && stop == 0 && stride == 0)
+            return false;       // no slab constraint
+        if (start > stop)
+            THROW(dhdferr_arrcons);
+        edge = (int) ((stop - start) / stride) + 1;
+        if (start + edge > dimension_size(p))
+            THROW(dhdferr_arrcons);
 
-	start_array.push_back(start);
-	edge_array.push_back(edge);
-	stride_array.push_back(stride);
+        start_array.push_back(start);
+        edge_array.push_back(edge);
+        stride_array.push_back(stride);
     }
     return true;
 }

@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
 // acknowledged. Any commercial use must be negotiated with the
@@ -44,15 +44,29 @@
 #include "InternalErr.h"
 #include "HDFUrl.h"
 
-HDFUrl::HDFUrl(const string &n) : Url(n) {}
-HDFUrl::~HDFUrl() {}
-BaseType *HDFUrl::ptr_duplicate() { return new HDFUrl(*this); }  
-bool HDFUrl::read(const string &) { 
-  throw InternalErr(__FILE__, __LINE__, "Unimplemented read method called.");
+HDFUrl::HDFUrl(const string & n):Url(n)
+{
+}
+
+HDFUrl::~HDFUrl()
+{
+}
+BaseType *HDFUrl::ptr_duplicate()
+{
+    return new HDFUrl(*this);
+}
+
+bool HDFUrl::read(const string &)
+{
+    throw InternalErr(__FILE__, __LINE__,
+                      "Unimplemented read method called.");
 }
 
 #if 0
-Url *NewUrl(const string &n) { return new HDFUrl(n); }
+Url *NewUrl(const string & n)
+{
+    return new HDFUrl(n);
+}
 #endif
 
 // $Log: HDFUrl.cc,v $

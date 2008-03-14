@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -34,16 +34,15 @@
 
 #include "BESAbstractModule.h"
 
-class HDF4Module : public BESAbstractModule
-{
-public:
-    				HDF4Module() {}
-    virtual		    	~HDF4Module() {}
-    virtual void		initialize( const string &modname ) ;
-    virtual void		terminate( const string &modname ) ;
+class HDF4Module:public BESAbstractModule {
+  public:
+    HDF4Module() {
+    } virtual ~ HDF4Module() {
+    }
+    virtual void initialize(const string & modname);
+    virtual void terminate(const string & modname);
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void dump(ostream & strm) const;
+};
 
-#endif // A_HDF4Module_H
-
+#endif                          // A_HDF4Module_H

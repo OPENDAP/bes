@@ -19,7 +19,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 // Copyright 1996, by the California Institute of Technology.
 // ALL RIGHTS RESERVED. United States Government Sponsorship
 // acknowledged. Any commercial use must be negotiated with the
@@ -49,90 +49,38 @@
 
 #define SIGNED_BYTE_TO_INT32 1
 
-void *ExportDataForDODS(const hdf_genvec& v) {
-    void *rv;			// reminder: rv is an array; must be deleted
-				// with delete[] not delete
+void *ExportDataForDODS(const hdf_genvec & v)
+{
+    void *rv;                   // reminder: rv is an array; must be deleted
+    // with delete[] not delete
 
     switch (v.number_type()) {
     case DFNT_INT16:
-	rv = v.export_int16();
-	break;
+        rv = v.export_int16();
+        break;
 
 #ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
 #endif
     case DFNT_INT32:
-	rv = v.export_int32();
-	break;
+        rv = v.export_int32();
+        break;
 
     case DFNT_UINT16:
-	rv = v.export_uint16();
-	break;
+        rv = v.export_uint16();
+        break;
 
     case DFNT_UINT32:
-	rv = v.export_uint32();
-	break;
+        rv = v.export_uint32();
+        break;
 
-    case DFNT_FLOAT32: 
-	rv = v.export_float32();
-	break;
+    case DFNT_FLOAT32:
+        rv = v.export_float32();
+        break;
 
-    case DFNT_FLOAT64: 
-	rv = v.export_float64();
-	break;
-
-#ifndef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
-#endif
-    case DFNT_UINT8:
-    case DFNT_UCHAR8: 
-    case DFNT_CHAR8:
-	rv = v.export_uint8();
-	break;
-
-    default:
-	THROW(dhdferr_datatype);
-    }
-
-    return rv;
-}
-
-void *ExportDataForDODS(const hdf_genvec& v, int i) {
-    void *rv;			// reminder: rv is single value, must be
-				// deleted with delete, not delete[]
-    switch (v.number_type()) {
-    case DFNT_INT16:
-	rv = new int16;
-	*(static_cast<int16 *>(rv))= v.elt_int16(i);
-	break;
-
-#ifdef SIGNED_BYTE_TO_INT32
-    case DFNT_INT8:
-#endif
-    case DFNT_INT32:
-	rv = new int32;
-	*(static_cast<int32 *>(rv))= v.elt_int32(i);
-	break;
-
-    case DFNT_UINT16:
-	rv = new uint16;
-	*(static_cast<uint16 *>(rv))= v.elt_uint16(i);
-	break;
-
-    case DFNT_UINT32:
-	rv = new uint32;
-	*(static_cast<uint32 *>(rv))= v.elt_uint32(i);
-	break;
-
-    case DFNT_FLOAT32: 
-	rv = new float32;
-	*(static_cast<float32 *>(rv))= v.elt_float32(i);
-	break;
-
-    case DFNT_FLOAT64: 
-	rv = new float64;
-	*(static_cast<float64 *>(rv))= v.elt_float64(i);
-	break;
+    case DFNT_FLOAT64:
+        rv = v.export_float64();
+        break;
 
 #ifndef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
@@ -140,15 +88,79 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
     case DFNT_UINT8:
     case DFNT_UCHAR8:
     case DFNT_CHAR8:
-	rv = new uint8;
-	*(static_cast<uchar8 *>(rv))= v.elt_uint8(i);
-	break; 
+        rv = v.export_uint8();
+        break;
 
     default:
-	THROW(dhdferr_datatype);
+        THROW(dhdferr_datatype);
     }
 
     return rv;
+}
+
+// Reminder: Use delete and not delete[] to free the storage returned by this
+// function. 
+// 
+// Declaring the pointers to be of specific types addresses an off-by-one
+// error when assigning values from the unsigned types.
+//
+// jhrg 3/2008.
+void *ExportDataForDODS(const hdf_genvec & v, int i)
+{
+    switch (v.number_type()) {
+    case DFNT_INT16:{
+            int16 *temp = new int16;
+            *temp = v.elt_int16(i);
+            return (void *) temp;
+        }
+
+#ifdef SIGNED_BYTE_TO_INT32
+    case DFNT_INT8:
+#endif
+    case DFNT_INT32:{
+            int32 *temp = new int32;
+            *temp = v.elt_int32(i);
+            return (void *) temp;
+        }
+
+    case DFNT_UINT16:{
+            uint16 *temp = new uint16;
+            *temp = v.elt_uint16(i);
+            return (void *) temp;
+        }
+
+    case DFNT_UINT32:{
+            uint32 *temp = new uint32;
+            *temp = v.elt_uint32(i);
+            return (void *) temp;
+        }
+
+    case DFNT_FLOAT32:{
+            float32 *temp = new float32;
+            *temp = v.elt_float32(i);
+            return (void *) temp;
+        }
+
+    case DFNT_FLOAT64:{
+            float64 *temp = new float64;
+            *temp = v.elt_float64(i);
+            return (void *) temp;
+        }
+
+#ifndef SIGNED_BYTE_TO_INT32
+    case DFNT_INT8:
+#endif
+    case DFNT_UINT8:
+    case DFNT_UCHAR8:
+    case DFNT_CHAR8:{
+            uint8 *temp = new uint8;
+            *temp = v.elt_uint8(i);
+            return (void *) temp;
+        }
+
+    default:
+        THROW(dhdferr_datatype);
+    }
 }
 
 // Just like ExportDataFor DODS *except* that this function does not allocate
@@ -160,36 +172,37 @@ void *ExportDataForDODS(const hdf_genvec& v, int i) {
 // data() method can be used (there's no need to cast the returned pointer
 // because it's typically just passed to BaseType::val2buf() which copies the
 // data and into its own internal storage. 4/10/2002 jhrg
-void *AccessDataForDODS(const hdf_genvec& v, int i) {
+void *AccessDataForDODS(const hdf_genvec & v, int i)
+{
 
     void *rv = 0;
     switch (v.number_type()) {
     case DFNT_INT16:
-	*(static_cast<int16 *>(rv))= v.elt_int16(i);
-	break;
+        *(static_cast < int16 * >(rv)) = v.elt_int16(i);
+        break;
 
 #ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
 #endif
     case DFNT_INT32:
-	*(static_cast<int32 *>(rv))= v.elt_int32(i);
-	break;
+        *(static_cast < int32 * >(rv)) = v.elt_int32(i);
+        break;
 
     case DFNT_UINT16:
-	*(static_cast<uint16 *>(rv))= v.elt_uint16(i);
-	break;
+        *(static_cast < uint16 * >(rv)) = v.elt_uint16(i);
+        break;
 
     case DFNT_UINT32:
-	*(static_cast<uint32 *>(rv))= v.elt_uint32(i);
-	break;
+        *(static_cast < uint32 * >(rv)) = v.elt_uint32(i);
+        break;
 
-    case DFNT_FLOAT32: 
-	*(static_cast<float32 *>(rv))= v.elt_float32(i);
-	break;
+    case DFNT_FLOAT32:
+        *(static_cast < float32 * >(rv)) = v.elt_float32(i);
+        break;
 
-    case DFNT_FLOAT64: 
-	*(static_cast<float64 *>(rv))= v.elt_float64(i);
-	break;
+    case DFNT_FLOAT64:
+        *(static_cast < float64 * >(rv)) = v.elt_float64(i);
+        break;
 
 #ifndef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
@@ -197,11 +210,11 @@ void *AccessDataForDODS(const hdf_genvec& v, int i) {
     case DFNT_UINT8:
     case DFNT_UCHAR8:
     case DFNT_CHAR8:
-	*(static_cast<uchar8 *>(rv))= v.elt_uint8(i);
-	break; 
+        *(static_cast < uchar8 * >(rv)) = v.elt_uint8(i);
+        break;
 
     default:
-	THROW(dhdferr_datatype);
+        THROW(dhdferr_datatype);
     }
 
     return rv;

@@ -18,7 +18,7 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
- 
+
 /////////////////////////////////////////////////////////////////////////////
 // (c) COPYRIGHT URI/MIT 1994-1999
 // Please read the full copyright statement in the file COPYRIGHT_URI.
@@ -33,19 +33,19 @@
 // DODS includes
 #include <Int16.h>
 
-using namespace libdap ;
+using namespace libdap;
 
-class HDFInt16: public Int16 {
-public:
-    HDFInt16(const string &n = "");
-    virtual ~HDFInt16();
+class HDFInt16:public Int16 {
+  public:
+    HDFInt16(const string & n = "");
+     virtual ~ HDFInt16();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &); 
+    virtual bool read(const string &);
 };
 
-Int16 *NewInt16(const string &n);
+Int16 *NewInt16(const string & n);
 
-typedef HDFInt16 * HDFInt16Ptr;
+typedef HDFInt16 *HDFInt16Ptr;
 
 // $Log: HDFInt16.h,v $
 // Revision 1.4.4.1  2003/05/21 16:26:51  edavis
@@ -70,5 +70,4 @@ typedef HDFInt16 * HDFInt16Ptr;
 // Added
 //
 
-#endif // _HDFINT16_H
-
+#endif                          // _HDFINT16_H
