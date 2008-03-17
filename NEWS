@@ -1,6 +1,11 @@
 
 	$Id$
 
+News for version 1.2.2
+
+Bug fix release reading map data from EOS Grid, please refer to the
+ChangeLog file for more informaiton.
+
 News for version 1.2.1
 
 DDX responses now contains attributes.

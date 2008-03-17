@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(hdf5_handler, 1.2.1, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 1.2.2, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AM_INIT_AUTOMAKE
 

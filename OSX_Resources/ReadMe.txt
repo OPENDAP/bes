@@ -1,6 +1,16 @@
+
+
+Updated for version 1.2.2
+
 This file includes describes the HDF5 DAP server developed by THG andOPeNDAP under a grant from NASA.
 
-For information about building the OPeNDAP HDF5 Data Handler, see theINSTALL or INSTALL_EOS5_GRID file. INSTALL is about building a generalpurpose handler  while INSTALL_EOS5_GRID is about building a specialhandler that can support displaying NASA EOS Grid data via existingOPeNDAP visualization clients like ferret and GrADS.
+For information about building the OPeNDAP HDF5 Data Handler, see theINSTALL. This handler can support existing visualization clients like ferretand GrADS using NASA EOS Grid data.
+
+* Known Issues
+
+There are a handful of known issues with this handler that will not affectmost data providers. They are that the Constraint Expression parser does notwork with arrays of structures and neither does the HTML form interface. Wewill have fixes to these issues available shortly.
+
+* Installing the handler in Hyrax
 
 This data handler includes an executable for use with Server3 and ashared object module for use with Hyrax.
 
@@ -13,6 +23,8 @@ The `bes-conf' make target runs the script while trying to select pathscleverly,
    make bes-conf
 
 Test data are also installed, so after installing this handler, Hyraxwill have data to serve providing an easy way to test your newinstallation and to see how a working bes.conf should look. To usethis, make sure that you first install the bes, and that dap-servergets installed too.  Finally, every time you install or reinstallhandlers, make sure to restart the BES and OLFS.
+
+* Background on the handler
 
 This data handler is one component of the OPeNDAP DAP Server; theserver base software is designed to allow any number of handlers to beconfigured easily.  See the DAP Server README and INSTALL files forinformation about configuration, including how to use this handler.
 
@@ -40,7 +52,7 @@ Special Support for NASA EOS data:
 
 	Grids: Based on the projection specified in a metadata file, some	arrays are automatically mapped into "Grid" instead of "Array".  You	can turn off this behavior through configuration option(e.g.	--enable-eos-grid=no).  If "Grid" is chosen, its map data are	automatically and artificially generated based on	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values.  Please see	set_dimension_array() in H5EOS.cc for details.
 
-	Metadata: Metadatas (e.g. StructMetadata.x or CoreMetada.x) are	parsed and its attributes are generated in a nested structure	format.
+	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are	parsed and its attributes are generated in a nested structure	format.
 
 Implementation details:
 

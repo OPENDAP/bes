@@ -1,3 +1,50 @@
+2008-03-17  hyoklee
+
+	A quick fix for reading map data from EOS Grid.
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	We use the cf and short-paths options for binary builds by default.
+	M    hdf5_handler.spec
+	M    Makefile.am
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Finally.. RPMs work.
+	M    hdf5_handler.spec
+	M    Makefile.am
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	MOre fixes for RPM.
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the rpm dist.
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Updated with more text for the release...
+	M    README
+
+2008-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Updated vesion numbers, text docs, et c., for release.
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	D    INSTALL_EOS5_GRID
+	M    INSTALL
+	M    hdf5_handler.spec
+	M    README
+
+2008-03-12  hyoklee
+
+	Memory leak problem is fixed. See Ticket #1079.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2008-03-12  James Gallagher <jgallagher@opendap.org>
 
 	More code review changes.
