@@ -517,7 +517,7 @@ static Structure *Get_structure(string varname, hid_t datatype,
 
             memb_name = H5Tget_member_name(datatype, i);
             DBG(cerr << "=Get_structure() name = " << memb_name <<
-                " offset = " << H5Tget_member_offset(datatype, i);
+                " offset = " << H5Tget_member_offset(datatype, i)
                 <<endl);
             // Get member type class 
             if ((memb_cls = H5Tget_member_class(datatype, i)) < 0) {

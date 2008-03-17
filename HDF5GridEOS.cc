@@ -85,11 +85,16 @@ void HDF5GridEOS::read_dimension(Array * a)
     DBG(cerr << "Dim name=" << dim_name << " location=" << loc << endl);
     if (loc >= 0) {
         a->set_read_p(true);
+	/*
         dods_float32 *val =
             get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
         a->value(val);
         delete[]val;
+	*/
+       a->val2buf((void *)
+          get_dimension_data(eos.dimension_data[loc], start, stride, stop, count));
+
     } else {
         cerr << "Could not retrieve map data" << endl;
     }
@@ -116,6 +121,7 @@ dods_float32 *HDF5GridEOS::get_dimension_data(dods_float32 * buf,
     for (i = start; i <= stop; i = i + stride) {
         DBG(cerr << "=get_dimension_data():i=" << i << " j=" << j << endl);
         dim_buf[j] = buf[i];
+	DBG(cerr << "=get_dimension_data():dim_buf[" << j << "] =" << dim_buf[j] << endl);
         j++;
     }
     if (count != j) {
