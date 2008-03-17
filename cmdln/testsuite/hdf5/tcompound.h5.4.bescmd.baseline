@@ -1,49 +1,205 @@
 Dataset: tcompound.h5
 /dset1[0]
 /dset1.a_name, /dset1.b_name, /dset1.c_name
-0, 0, 0
+0, 0, 1
 /dset1[1]
 /dset1.a_name, /dset1.b_name, /dset1.c_name
-0, 0, 0
+1, 1, 0.5
 /dset1[2]
 /dset1.a_name, /dset1.b_name, /dset1.c_name
-0, 0, 0
+2, 4, 0.333333333333333
 /dset1[3]
 /dset1.a_name, /dset1.b_name, /dset1.c_name
-0, 0, 0
+3, 9, 0.25
 /dset1[4]
 /dset1.a_name, /dset1.b_name, /dset1.c_name
-0, 0, 0
+4, 16, 0.2
 /group1/dset2[0]
 /group1/dset2.int_name, /group1/dset2.float_name
 0, 0
 /group1/dset2[1]
 /group1/dset2.int_name, /group1/dset2.float_name
-0, 0
+1, 1.1
 /group1/dset2[2]
 /group1/dset2.int_name, /group1/dset2.float_name
-0, 0
+2, 2.2
 /group1/dset2[3]
 /group1/dset2.int_name, /group1/dset2.float_name
-0, 0
+3, 3.3
 /group1/dset2[4]
 /group1/dset2.int_name, /group1/dset2.float_name
-0, 0
+4, 4.4
 /group1/dset3[0][0]
-/group1/dset3.int_array, <?xml version="1.0" encoding="UTF-8"?>
-<getAscii>
-    <response>
-        <Administrator>admin.email.address@your.domain.name</Administrator>
-        <BESException>
-            <Type>TransmitProblem</Type>
-            <Message>Failed to get values as ascii: An internal error was encountered in Int32.cc at line 142:
-The incoming pointer does not contain any data.
-Please report this to support@opendap.org
-(1002)</Message>
-            <Location>
-                <File>BESAsciiTransmit.cc</File>
-                <Line>164</Line>
-            </Location>
-        </BESException>
-    </response>
-</getAscii>
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[0][1]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[0][2]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[0][3]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[0][4]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[0][5]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][0]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][1]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][2]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][3]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][4]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[1][5]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][0]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][1]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][2]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][3]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][4]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset3[2][5]
+/group1/dset3.int_array, 0, 1, 2, 3
+/group1/dset3.float_array[0], 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+/group1/dset3.float_array[1], 0.2, 0.2, 0.2, 0.2, 0.2, 0.2
+/group1/dset3.float_array[2], 0.3, 0.3, 0.3, 0.3, 0.3, 0.3
+/group1/dset3.float_array[3], 0.4, 0.4, 0.4, 0.4, 0.4, 0.4
+/group1/dset3.float_array[4], 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+
+/group1/dset4[0]
+/group1/dset4.int, /group1/dset4.float
+0, 0
+/group1/dset4[1]
+/group1/dset4.int, /group1/dset4.float
+1, 1
+/group1/dset4[2]
+/group1/dset4.int, /group1/dset4.float
+2, 2
+/group1/dset4[3]
+/group1/dset4.int, /group1/dset4.float
+3, 3
+/group1/dset4[4]
+/group1/dset4.int, /group1/dset4.float
+4, 4
+/group2/dset5[0]
+/group2/dset5.int, /group2/dset5.float
+0, 0
+/group2/dset5[1]
+/group2/dset5.int, /group2/dset5.float
+1, 0.1
+/group2/dset5[2]
+/group2/dset5.int, /group2/dset5.float
+2, 0.2
+/group2/dset5[3]
+/group2/dset5.int, /group2/dset5.float
+3, 0.3
+/group2/dset5[4]
+/group2/dset5.int, /group2/dset5.float
+4, 0.4

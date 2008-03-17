@@ -4,43 +4,38 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns="http://xml.opendap.org/ns/DAP2"
 xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
 
-    <Attribute name="dset1" type="Container">
-        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/dset1&quot;</value>
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="Dataset" type="String">
+            <value>&quot;dset1&quot;</value>
+        </Attribute>
+        <Attribute name="group1" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>&quot;dset2&quot;</value>
+                <value>&quot;dset3&quot;</value>
+                <value>&quot;dset4&quot;</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="group2" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>&quot;dset5&quot;</value>
+            </Attribute>
         </Attribute>
     </Attribute>
-    <Attribute name="group1" type="Container">
+    <Attribute name="/group1/" type="Container">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>&quot;/group1/&quot;</value>
         </Attribute>
     </Attribute>
-    <Attribute name="dset2" type="Container">
-        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset2&quot;</value>
-        </Attribute>
-    </Attribute>
-    <Attribute name="dset3" type="Container">
-        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset3&quot;</value>
-        </Attribute>
-    </Attribute>
-    <Attribute name="dset4" type="Container">
-        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset4&quot;</value>
-        </Attribute>
-    </Attribute>
-    <Attribute name="group2" type="Container">
+    <Attribute name="/group2/" type="Container">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>&quot;/group2/&quot;</value>
         </Attribute>
     </Attribute>
-    <Attribute name="dset5" type="Container">
-        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group2/dset5&quot;</value>
-        </Attribute>
-    </Attribute>
 
     <Array name="/dset1">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>&quot;/dset1&quot;</value>
+        </Attribute>
         <Structure>
             <Int32 name="a_name"/>
             <Float32 name="b_name"/>
@@ -49,6 +44,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="5"/>
     </Array>
     <Array name="/group1/dset2">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>&quot;/group1/dset2&quot;</value>
+        </Attribute>
         <Structure>
             <Int32 name="int_name"/>
             <Float32 name="float_name"/>
@@ -56,6 +54,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="5"/>
     </Array>
     <Array name="/group1/dset3">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>&quot;/group1/dset3&quot;</value>
+        </Attribute>
         <Structure>
             <Array name="int_array">
                 <Int32/>
@@ -71,6 +72,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="6"/>
     </Array>
     <Array name="/group1/dset4">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>&quot;/group1/dset4&quot;</value>
+        </Attribute>
         <Structure>
             <Int32 name="int"/>
             <Float32 name="float"/>
@@ -78,6 +82,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="5"/>
     </Array>
     <Array name="/group2/dset5">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>&quot;/group2/dset5&quot;</value>
+        </Attribute>
         <Structure>
             <Int32 name="int"/>
             <Float32 name="float"/>

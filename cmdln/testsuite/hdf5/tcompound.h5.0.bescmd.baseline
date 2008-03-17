@@ -1,23 +1,32 @@
 Attributes {
-    dset1 {
+    HDF5_ROOT_GROUP {
+        String Dataset "dset1";
+        group1 {
+            String Dataset "dset2", "dset3", "dset4";
+        }
+        group2 {
+            String Dataset "dset5";
+        }
+    }
+    /dset1 {
         String HDF5_OBJ_FULLPATH "/dset1";
     }
-    group1 {
+    /group1/ {
         String HDF5_OBJ_FULLPATH "/group1/";
     }
-    dset2 {
+    /group1/dset2 {
         String HDF5_OBJ_FULLPATH "/group1/dset2";
     }
-    dset3 {
+    /group1/dset3 {
         String HDF5_OBJ_FULLPATH "/group1/dset3";
     }
-    dset4 {
+    /group1/dset4 {
         String HDF5_OBJ_FULLPATH "/group1/dset4";
     }
-    group2 {
+    /group2/ {
         String HDF5_OBJ_FULLPATH "/group2/";
     }
-    dset5 {
+    /group2/dset5 {
         String HDF5_OBJ_FULLPATH "/group2/dset5";
     }
 }
