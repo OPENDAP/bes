@@ -40,6 +40,7 @@ sample_data_DATA = data/temperature.csv
 
 do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 		   	   -e 's,[@]libdir[@],$(libdir),g' \
+		   	   -e 's,[@]datarootdir[@],$(datarootdir),g' \
 		   	   -e 's,[@]datadir[@],$(datadir),g'
 
 bes-csv-data.sh: bes-csv-data.sh.in config.status

@@ -63,6 +63,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+		-e "s%[@]datarootdir[@]%${datarootdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
 
