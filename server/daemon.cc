@@ -117,7 +117,6 @@ main(int argc, char *argv[])
 		break ;
 	    case '?': // unknown option
 	    case 'h': // help
-		cerr << "usage" << endl ;
 		BESServerUtils::show_usage( NameProgram ) ;
 		break ;
 	    case 'i': // BES install directory
