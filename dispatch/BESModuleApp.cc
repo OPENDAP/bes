@@ -67,8 +67,8 @@ BESModuleApp::
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int BESModuleApp::
-initialize(int argC, char **argV)
+int
+BESModuleApp::initialize(int argC, char **argV)
 {
     int retVal = BESBaseApp::initialize( argC, argV ) ;
     if( !retVal )
@@ -185,8 +185,8 @@ BESModuleApp::loadModules()
  * @param sig if the application is terminating due to a signal, otherwise 0
  * is passed.
  */
-int BESModuleApp::
-terminate( int sig )
+int
+BESModuleApp::terminate( int sig )
 {
     list< bes_module >::iterator i = _module_list.begin() ;
     list< bes_module >::iterator e = _module_list.end() ;
@@ -225,8 +225,8 @@ terminate( int sig )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESModuleApp::
-dump( ostream &strm ) const
+void
+BESModuleApp::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "BESModuleApp::dump - ("
 			     << (void *)this << ")" << endl ;
