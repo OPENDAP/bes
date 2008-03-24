@@ -24,7 +24,7 @@ pptcapi_test_LDADD = ../libbes_pptcapi.la
 # running during the regular build, only after all the handlers have built
 # and installed.
 
-bes-configuration-tests:
+bes-pptcapi-tests: pptcapi_test
 	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
 	EXPECT=$(EXPECT); export EXPECT; \
 	if $(SHELL) -c "runtest --version" > /dev/null 2>&1; then \

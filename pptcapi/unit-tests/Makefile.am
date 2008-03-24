@@ -48,9 +48,9 @@ endif
 
 pptcapi_extensionsT_SOURCES = pptcapi_extensionsT.cc
 pptcapi_extensionsT_CPPFLAGS = $(AM_CPPFLAGS)
-pptcapi_extensionsT_LDADD = $(top_builddir)/ppt/libbes_pptcapi.la $(AM_LDADD)
+pptcapi_extensionsT_LDADD = $(top_builddir)/libbes_pptcapi.la $(AM_LDADD)
 
 pptcapi_hexstrtoiT_SOURCES = pptcapi_hexstrtoiT.cc
 pptcapi_hexstrtoiT_CPPFLAGS = $(AM_CPPFLAGS)
-pptcapi_hexstrtoiT_LDADD = $(top_builddir)/ppt/libbes_pptcapi.la $(AM_LDADD)
+pptcapi_hexstrtoiT_LDADD = $(top_builddir)/libbes_pptcapi.la $(AM_LDADD)
 
