@@ -16,14 +16,14 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = unit-tests testsuite
-DIST_SUBDIRS = unit-tests testsuite
+SUBDIRS = unit-tests
+DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_pptcapi.la libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
 libbes_ppt_la_CPPFLAGS = $(AM_CPPFLAGS)
-libbes_ppt_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
+libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 libbes_ppt_la_LIBADD = ../dispatch/libbes_dispatch.la
 
 libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
