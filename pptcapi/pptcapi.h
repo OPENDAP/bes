@@ -27,6 +27,7 @@ struct pptcapi_connection {
     char *			host ;
     int				port ;
     char *			unix_socket ;
+    char *			temp_socket ;
     int				timeout ;
     int				socket ;
 
@@ -56,6 +57,8 @@ int pptcapi_initialize_connect( struct pptcapi_connection *connection,
 
 int pptcapi_close_connection( struct pptcapi_connection *connection,
 			      char **error ) ;
+
+void pptcapi_free_connection_struct( struct pptcapi_connection *connection ) ;
 
 int pptcapi_send( struct pptcapi_connection *connection,
 		  char *buffer, int len, char **error ) ;

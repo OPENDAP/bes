@@ -11,10 +11,6 @@ int pptcapi_dosend( struct pptcapi_connection *connection,
 int pptcapi_send_chunk( struct pptcapi_connection *connection,
 		        char type, char *buffer, int len, char **error ) ;
 
-int pptcapi_send_extensions( struct pptcapi_connection *connection,
-			     struct pptcapi_extensions *extensions,
-			     char **error ) ;
-
 int pptcapi_doreceive( struct pptcapi_connection *connection,
 		       char *buffer, int len, char **error ) ;
 

@@ -16,6 +16,7 @@ pptcapi_initialize_connection_struct( struct pptcapi_connection *connection )
     connection->host = 0 ;
     connection->port = 0 ;
     connection->unix_socket = 0 ;
+    connection->temp_socket = 0 ;
     connection->timeout = 0 ;
     connection->ssl_cert_file = 0 ;
     connection->ssl_key_file = 0 ;
@@ -103,6 +104,16 @@ pptcapi_close_connection( struct pptcapi_connection *connection,
 	    else
 	    {
 		retval = PPTCAPI_OK ;
+		if( connection->is_unix_socket )
+		{
+		    if( connection->temp_socket )
+		    {
+			if( !access( connection->temp_socket, F_OK ) )
+			{
+			    remove( connection->temp_socket ) ;
+			}
+		    }
+		}
 	    }
 	}
 	else
@@ -122,5 +133,45 @@ pptcapi_close_connection( struct pptcapi_connection *connection,
 	sprintf( *error, "Attempting to close an incomplete connection" ) ;
     }
     return retval ;
+}
+
+void
+pptcapi_free_connection_struct( struct pptcapi_connection *connection )
+{
+    if( connection )
+    {
+	connection->is_tcp = 0 ;
+	connection->is_unix_socket = 0 ;
+	if( connection->host )
+	{
+	    free( connection->host ) ;
+	    connection->host = 0 ;
+	}
+	connection->port = 0 ;
+	if( connection->unix_socket )
+	{
+	    free( connection->unix_socket ) ;
+	    connection->unix_socket = 0 ;
+	}
+	if( connection->temp_socket )
+	{
+	    free( connection->temp_socket ) ;
+	    connection->temp_socket = 0 ;
+	}
+	connection->timeout = 0 ;
+	connection->socket = 0 ;
+	if( connection->ssl_cert_file )
+	{
+	    free( connection->ssl_cert_file ) ;
+	    connection->ssl_cert_file = 0 ;
+	}
+	if( connection->ssl_key_file )
+	{
+	    free( connection->ssl_key_file ) ;
+	    connection->ssl_key_file = 0 ;
+	}
+
+	free( connection ) ;
+    }
 }
 

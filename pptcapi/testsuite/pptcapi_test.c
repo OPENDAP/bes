@@ -178,6 +178,7 @@ main( int argc, char **argv )
 
     struct pptcapi_connection *connection =
 	pptcapi_tcp_connect( "localhost", 10002, 5, &error ) ;
+	//pptcapi_socket_connect( "/tmp/bes.socket", 5, &error ) ;
     if( !connection )
     {
 	handle_error( "failed to connect", error ) ;
@@ -192,12 +193,14 @@ main( int argc, char **argv )
 	handle_error( "failed to initialize connection", error ) ;
 	close( ifd ) ;
 	if( ofd != 1 ) close( ofd ) ;
+	pptcapi_free_connection_struct( connection ) ;
 	return 1 ;
     }
 
     // if read_commands fails then it will close the file stream
     if( read_commands( connection, ifd, ofd ) )
     {
+	pptcapi_free_connection_struct( connection ) ;
 	return 1 ;
     }
 
@@ -205,6 +208,7 @@ main( int argc, char **argv )
     if( result != PPTCAPI_OK )
     {
 	handle_error( "failed to send exit", error ) ;
+	pptcapi_free_connection_struct( connection ) ;
 	return 1 ;
     }
 
@@ -212,8 +216,11 @@ main( int argc, char **argv )
     if( result != PPTCAPI_OK )
     {
 	handle_error( "failed to close connection", error ) ;
+	pptcapi_free_connection_struct( connection ) ;
 	return 1 ;
     }
+
+    pptcapi_free_connection_struct( connection ) ;
 
     return 0 ;
 }

@@ -58,7 +58,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 	{
 	    *error = (char *)malloc( 512 ) ;
 	    sprintf( *error, "Invalid host ip address %s", connection->host ) ;
-	    free( vconnection ) ;
+	    pptcapi_free_connection_struct( connection ) ;
 	    return 0 ;
 	}
 	sin.sin_addr.s_addr = address ;
@@ -75,35 +75,35 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
                     {
 			sprintf( *error, "No such host %s",
 				         connection->host ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     }
 		case TRY_AGAIN:
                     {
 			sprintf( *error, "Host %s is busy, try again later",
 			                 connection->host ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     }
 		case NO_RECOVERY:
                     {
 			sprintf( *error, "DNS error for host %s",
 					 connection->host ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     }
 		case NO_ADDRESS:
                     {
 			sprintf( *error, "No IP address for host %s",
 					 connection->host ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     }
 		default:
                     {
 			sprintf( *error, "unknown error getting info for host ",
 					 connection->host ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     }
 	    }
@@ -127,7 +127,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     {
 	*error = (char *)malloc( 512 ) ;
 	sprintf( *error, "Error retreiving tcp protocol information" ) ;
-	free( vconnection ) ;
+	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
     }
     
@@ -142,7 +142,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 	    sprintf( *error, "getting socket descriptor: %s", error_info ) ;
 	else
 	    sprintf( *error, "getting socket descriptor: unknown error" ) ;
-	free( vconnection ) ;
+	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
     } else {
         long holder ;
@@ -186,7 +186,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 					 error_info ) ;
 		    else
 			sprintf( *error, "error selecting sockets: unknown" ) ;
-		    free( vconnection ) ;
+		    pptcapi_free_connection_struct( connection ) ;
 		    return 0 ;
                 } 
                 else 
@@ -208,7 +208,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
                         //throw error - did not successfully connect
 			*error = (char *)malloc( 512 ) ;
 			sprintf( *error, "Did not successfully connect to server. Server may be down or you may be trying on the wrong port" ) ;
-			free( vconnection ) ;
+			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     } 
                     else 
@@ -236,7 +236,7 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 				     error_info ) ;
 		else
 		    sprintf( *error, "error connecting to socket: unknown" ) ;
-		free( vconnection ) ;
+		pptcapi_free_connection_struct( connection ) ;
 		return 0 ;
             }
         }
