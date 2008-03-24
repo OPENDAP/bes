@@ -19,18 +19,14 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 SUBDIRS = unit-tests
 DIST_SUBDIRS = unit-tests
 
-lib_LTLIBRARIES = libbes_pptcapi.la libbes_ppt.la
+lib_LTLIBRARIES = libbes_ppt.la
 
 libbes_ppt_la_SOURCES = $(SRCS) $(HDRS)
 libbes_ppt_la_CPPFLAGS = $(AM_CPPFLAGS)
 libbes_ppt_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
 libbes_ppt_la_LIBADD = ../dispatch/libbes_dispatch.la
 
-libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
-libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPT_VERSION)
-
 pkginclude_HEADERS = $(HDRS)
-
 
 SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
@@ -39,10 +35,6 @@ SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketConfig.h SocketListener.h PPTServer.h PPTProtocol.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
-
-CSRCS = pptcapi_tcp_connect.c pptcapi_socket_connect.c pptcapi.c
-
-CHDRS = pptcapi.h
 
 if HAVE_OPENSSL
 libbes_ppt_la_CPPFLAGS += $(openssl_includes)
