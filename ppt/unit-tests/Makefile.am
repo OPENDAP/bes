@@ -33,7 +33,7 @@ CLEANFILES = sbT.out
 #
 
 if CPPUNIT
-UNIT_TESTS = connT sbT extT pptcapi_extensionsT pptcapi_hexstrtoiT
+UNIT_TESTS = connT sbT extT
 else
 UNIT_TESTS =
 
@@ -59,12 +59,4 @@ sbT_LDADD = $(top_builddir)/ppt/libbes_ppt.la $(top_builddir)/dispatch/libbes_di
 extT_SOURCES = extT.cc ExtConn.cc ExtConn.h
 extT_CPPFLAGS = $(AM_CPPFLAGS)
 extT_LDADD = $(top_builddir)/ppt/libbes_ppt.la $(top_builddir)/dispatch/libbes_dispatch.la $(openssl_libs) $(AM_LDADD)
-
-pptcapi_extensionsT_SOURCES = pptcapi_extensionsT.cc
-pptcapi_extensionsT_CPPFLAGS = $(AM_CPPFLAGS)
-pptcapi_extensionsT_LDADD = $(top_builddir)/ppt/libbes_pptcapi.la $(AM_LDADD)
-
-pptcapi_hexstrtoiT_SOURCES = pptcapi_hexstrtoiT.cc
-pptcapi_hexstrtoiT_CPPFLAGS = $(AM_CPPFLAGS)
-pptcapi_hexstrtoiT_LDADD = $(top_builddir)/ppt/libbes_pptcapi.la $(AM_LDADD)
 
