@@ -181,7 +181,7 @@ PPTConnection::send( const string &buffer )
     _mySock->send( buffer, 0, buffer.length() ) ;
     _mySock->sync() ;
 }
-    
+
 /* OLD RECEIVE
 bool
 PPTConnection::receive( ostream *strm )
