@@ -21,12 +21,14 @@ DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_pptcapi.la
 
+noinst_HEADERS = pptcapi_utils.h
+
 libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
 libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
 
 pkginclude_HEADERS = $(CHDRS)
 
-CSRCS = pptcapi_tcp_connect.c pptcapi_socket_connect.c pptcapi.c
+CSRCS = pptcapi_tcp_connect.c pptcapi_socket_connect.c pptcapi_send.c pptcapi_receive.c pptcapi.c
 
 CHDRS = pptcapi.h
 
