@@ -1,4 +1,4 @@
-// pptcapi_h
+// pptcapi_utils.h
 
 #ifndef pptcapi_utils_h
 #define pptcapi_utils_h 1
@@ -29,5 +29,7 @@ int pptcapi_read_extensions( struct pptcapi_extensions **extensions,
 			     char *buffer, char **error ) ;
 
 int pptcapi_hexstr_to_i( char *hexstr, int *result, char **error ) ;
+
+int pptcapi_authenticate( ) ;
 
 #endif // pptcapi_utils_h

@@ -1,3 +1,5 @@
+// pptcapi.c
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,7 +15,10 @@ pptcapi_initialize_connection_struct( struct pptcapi_connection *connection )
     connection->is_unix_socket = 0 ;
     connection->host = 0 ;
     connection->port = 0 ;
+    connection->unix_socket = 0 ;
     connection->timeout = 0 ;
+    connection->ssl_cert_file = 0 ;
+    connection->ssl_key_file = 0 ;
 }
 
 int
@@ -41,6 +46,7 @@ pptcapi_initialize_connect( struct pptcapi_connection *connection,
 
     int undef_len = strlen( PPT_PROTOCOL_UNDEFINED ) ;
     int ok_len = strlen( PPTSERVER_CONNECTION_OK ) ;
+    int auth_len = strlen( PPTSERVER_AUTHENTICATE ) ;
     if( bytes_read == undef_len )
     {
 	int cmp = strncmp( inbuf, PPT_PROTOCOL_UNDEFINED, undef_len ) ;
@@ -51,19 +57,20 @@ pptcapi_initialize_connect( struct pptcapi_connection *connection,
 	    return PPTCAPI_ERROR ;
 	}
     }
-    /*
-    FIXME
-    if( status == PPTProtocol::PPTSERVER_AUTHENTICATE )
-    {
-	authenticateWithServer() ;
-    }
-    */
     if( bytes_read == ok_len )
     {
 	int cmp = strncmp( inbuf, PPTSERVER_CONNECTION_OK, ok_len ) ;
 	if( cmp == 0 )
 	{
 	    return PPTCAPI_OK ;
+	}
+    }
+    if( bytes_read == auth_len )
+    {
+	int cmp = strncmp( inbuf, PPTSERVER_AUTHENTICATE, auth_len ) ;
+	if( cmp == 0 )
+	{
+	    return pptcapi_authenticate( connection, error ) ;
 	}
     }
     *error = (char *)malloc( 512 ) ;

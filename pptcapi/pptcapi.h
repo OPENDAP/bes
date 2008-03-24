@@ -1,3 +1,5 @@
+// pptcapi.h
+
 #ifndef pptcapi_h
 #define pptcapi_h 1
 
@@ -24,8 +26,12 @@ struct pptcapi_connection {
     int				is_unix_socket ;
     char *			host ;
     int				port ;
+    char *			unix_socket ;
     int				timeout ;
     int				socket ;
+
+    char *			ssl_cert_file ;
+    char *			ssl_key_file ;
 };
 
 struct pptcapi_extensions {
