@@ -1,0 +1,14 @@
+# Test the netcdf handler with the bes.
+#
+# $Id: data.1.exp 14588 2006-09-15 21:13:55Z jimg $
+
+global comp_output		# contains output from pptcapi_test_start
+global verbose			# this and srcdir are set by runtest.exp
+global srcdir
+
+# The `1' in compare_stdout means call xfail if the test fails.
+
+pptcapi_test_start "./nc/fnoc1.nc.1.bescmd"
+compare_stdout "./nc/fnoc1.nc.1.bescmd.baseline" "DDS /data/nc/fnoc1.nc" 0
+
+

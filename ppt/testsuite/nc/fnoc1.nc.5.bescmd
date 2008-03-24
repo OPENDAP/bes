@@ -1,0 +1,3 @@
+set container in catalog values c,/data/nc/fnoc1.nc;
+define d as c;
+get ascii for d;

@@ -1,0 +1,59 @@
+<html><head><title>Dataset Information</title></head>
+<body>
+<h3>Dataset Information</h3>
+<center>
+<table>
+
+<tr><td align=right valign=top><b>base_time</b>:</td>
+<td align=left>"88- 10-00:00:00"<br></td></tr>
+
+<tr><td align=right valign=top><b>title</b>:</td>
+<td align=left>" FNOC UV wind components from 1988- 10 to 1988- 13."<br></td></tr>
+
+<tr><td align=right valign=top><b>Unlimited_Dimension</b>:</td>
+<td align=left>"time_a"<br></td></tr>
+</table>
+</center><p>
+
+<hr>
+<h3>Variables in this Dataset</h3>
+<center>
+<table>
+<tr><td align=right valign=top><b>u</b>:</td>
+<td align=left valign=top>Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]<br>units: "meter per second"<br>
+long_name: "Vector wind eastward component"<br>
+missing_value: "-32767"<br>
+scale_factor: "0.005"<br>
+</td>
+</tr><tr><td align=right valign=top><b>v</b>:</td>
+<td align=left valign=top>Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]<br>units: "meter per second"<br>
+long_name: "Vector wind northward component"<br>
+missing_value: "-32767"<br>
+scale_factor: "0.005"<br>
+</td>
+</tr><tr><td align=right valign=top><b>lat</b>:</td>
+<td align=left valign=top>Array of 32 bit Reals [lat = 0..16]<br>units: "degree North"<br>
+</td>
+</tr><tr><td align=right valign=top><b>lon</b>:</td>
+<td align=left valign=top>Array of 32 bit Reals [lon = 0..20]<br>units: "degree East"<br>
+</td>
+</tr><tr><td align=right valign=top><b>time</b>:</td>
+<td align=left valign=top>Array of 32 bit Reals [time = 0..15]<br>units: "hours from base_time"<br>
+</td>
+</tr></table>
+</center><p>
+
+<hr>
+
+<h3>
+About the Fleet Numerical Ocean Winds dataset
+</h3>
+
+The FNOC dataset is used as a sample dataset for testing DODS. This file was
+created by Reza Nekovei at URI/GSO.
+
+<p>
+
+
+</body>
+</html>

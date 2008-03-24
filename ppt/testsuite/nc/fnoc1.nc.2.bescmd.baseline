@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="fnoc1.nc"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="NC_GLOBAL" type="Container">
+        <Attribute name="base_time" type="String">
+            <value>&quot;88- 10-00:00:00&quot;</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>&quot; FNOC UV wind components from 1988- 10 to 1988- 13.&quot;</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <value>&quot;time_a&quot;</value>
+        </Attribute>
+    </Attribute>
+
+    <Array name="u">
+        <Attribute name="units" type="String">
+            <value>&quot;meter per second&quot;</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>&quot;Vector wind eastward component&quot;</value>
+        </Attribute>
+        <Attribute name="missing_value" type="String">
+            <value>&quot;-32767&quot;</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="String">
+            <value>&quot;0.005&quot;</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="time_a" size="16"/>
+        <dimension name="lat" size="17"/>
+        <dimension name="lon" size="21"/>
+    </Array>
+    <Array name="v">
+        <Attribute name="units" type="String">
+            <value>&quot;meter per second&quot;</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>&quot;Vector wind northward component&quot;</value>
+        </Attribute>
+        <Attribute name="missing_value" type="String">
+            <value>&quot;-32767&quot;</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="String">
+            <value>&quot;0.005&quot;</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="time_a" size="16"/>
+        <dimension name="lat" size="17"/>
+        <dimension name="lon" size="21"/>
+    </Array>
+    <Array name="lat">
+        <Attribute name="units" type="String">
+            <value>&quot;degree North&quot;</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lat" size="17"/>
+    </Array>
+    <Array name="lon">
+        <Attribute name="units" type="String">
+            <value>&quot;degree East&quot;</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="lon" size="21"/>
+    </Array>
+    <Array name="time">
+        <Attribute name="units" type="String">
+            <value>&quot;hours from base_time&quot;</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="time" size="16"/>
+    </Array>
+
+    <dataBLOB href=""/>
+</Dataset>
