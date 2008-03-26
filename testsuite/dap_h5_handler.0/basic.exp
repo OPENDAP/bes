@@ -18,6 +18,8 @@ dap_hdf5_handler_version
 
 # dap_hdf5_handler_all "${testdir}" "tref" 
 
+dap_hdf5_handler_all "${testdir}" "OMI-Aura_L2G-OMTO3G_2004m0817_v002-2006m0301t154534.SUB" {/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Wavelength\[1:3:11\]}
+
 dap_hdf5_handler_all "${testdir}" "SDS"
 
 dap_hdf5_handler_all "${testdir}" "point_Object"
