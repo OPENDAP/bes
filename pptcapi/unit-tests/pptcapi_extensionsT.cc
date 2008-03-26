@@ -90,6 +90,8 @@ public:
 		test++ ;
 	    }
 	    CPPUNIT_ASSERT( test == 4 ) ;
+	    pptcapi_free_extensions_struct( extensions ) ;
+	    extensions = 0 ;
 	}
 
 	{
@@ -120,6 +122,8 @@ public:
 		test++ ;
 	    }
 	    CPPUNIT_ASSERT( test == 2 ) ;
+	    pptcapi_free_extensions_struct( extensions ) ;
+	    extensions = 0 ;
 	}
 
 	{
@@ -148,6 +152,8 @@ public:
 		test++ ;
 	    }
 	    CPPUNIT_ASSERT( test == 2 ) ;
+	    pptcapi_free_extensions_struct( extensions ) ;
+	    extensions = 0 ;
 	}
 
 	{
