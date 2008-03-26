@@ -1,5 +1,8 @@
 // pptcapi_authenticate.c
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "pptcapi.h"
 #include "pptcapi_utils.h"
 
