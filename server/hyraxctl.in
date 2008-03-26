@@ -35,16 +35,16 @@ usage()
 
 cat << EOF
 
-hyrax                                                                   hyrax
+hyraxctl                                                            hyraxctl
 
 NAME
-       hyrax - Hyrax server control interface
+       hyraxctl - Hyrax server control interface
 
 SYNOPSIS
-       hyrax command [-d "debugsink,module[,module]"] [-c BESConfigFile]
+       hyraxctl command [-d "debugsink,module[,module]"] [-c BESConfigFile]
        
 DESCRIPTION
-       hyrax is a front end to the OPeNDAP Hyrax data server. It is
+       hyraxctl is a front end to the OPeNDAP Hyrax data server. It is
        designed to help the administrator control the functioning of
        the two Hyrax components, the OLFS and the BES. This script only
        addresses the situation where the OLFS and BES are running on the
@@ -106,7 +106,7 @@ REQUIREMENTS
       JAVA_HOME       Must point at your Java installation.
 
 
-hyrax                                                                  hyrax
+hyraxctl                                                            hyraxctl
 
 
     
