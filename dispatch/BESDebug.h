@@ -86,6 +86,7 @@ private:
     static ostream *		_debug_strm ;
     static bool			_debug_strm_created ;
     typedef map<string,bool>::const_iterator _debug_citer ;
+    typedef map<string,bool>::iterator _debug_iter ;
 public:
     /** @brief set the debug context to the specified value
      *
@@ -99,6 +100,15 @@ public:
      */
     static void			Set( const string &flagName, bool value )
     				{
+				    if( flagName == "all" && value )
+				    {
+					_debug_iter i = _debug_map.begin() ;
+					_debug_iter e = _debug_map.end() ;
+					for( ; i != e; i++ )
+					{
+					    (*i).second = true ;
+					}
+				    }
 				    _debug_map[flagName] = value ;
 				}
     /** @brief register the specified debug flag
@@ -110,10 +120,18 @@ public:
      */
     static void			Register( const string &flagName )
 				{
+				    _debug_citer a = _debug_map.find( "all" ) ;
 				    _debug_citer i = _debug_map.find( flagName ) ;
 				    if( i == _debug_map.end() )
 				    {
-					_debug_map[flagName] = false ;
+					if( a == _debug_map.end() )
+					{
+					    _debug_map[flagName] = false ;
+					}
+					else
+					{
+					    _debug_map[flagName] = true ;
+					}
 				    }
 				}
     /** @brief see if the debug context flagName is set to true

@@ -396,6 +396,9 @@ ServerApp::initialize( int argc, char **argv )
     BESDefaultCommands::initialize( argc, argv ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 
+    BESDebug::Register( "server" ) ;
+    BESDebug::Register( "ppt" ) ;
+
     int ret = BESModuleApp::initialize( argc, argv ) ;
 
     BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;

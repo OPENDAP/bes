@@ -107,7 +107,9 @@ BESDebug::SetUp( const string &values )
 	    BESDebug::Set( newflag, false ) ;
 	}
 	else
+	{
 	    BESDebug::Set( flagName, true ) ;
+	}
 	comma = new_comma ;
     }
     string flagName = values.substr( comma+1, values.length()-comma-1 ) ;
@@ -117,7 +119,9 @@ BESDebug::SetUp( const string &values )
 	BESDebug::Set( newflag, false ) ;
     }
     else
+    {
 	BESDebug::Set( flagName, true ) ;
+    }
 }
 
 /** @brief Writes help information for so that developers know what can be set for
