@@ -175,3 +175,24 @@ pptcapi_free_connection_struct( struct pptcapi_connection *connection )
     }
 }
 
+void
+pptcapi_free_extensions_struct( struct pptcapi_extensions *extensions )
+{
+    if( extensions )
+    {
+	struct pptcapi_extensions *next_extension = extensions->next ;
+	if( extensions->name )
+	{
+	    free( extensions->name ) ;
+	    extensions->name = 0 ;
+	}
+	if( extensions->value )
+	{
+	    free( extensions->value ) ;
+	    extensions->value = 0 ;
+	}
+	free( extensions ) ;
+	pptcapi_free_extensions_struct( next_extension ) ;
+    }
+}
+

@@ -60,6 +60,8 @@ int pptcapi_close_connection( struct pptcapi_connection *connection,
 
 void pptcapi_free_connection_struct( struct pptcapi_connection *connection ) ;
 
+void pptcapi_free_extensions_struct( struct pptcapi_extensions *extensions ) ;
+
 int pptcapi_send( struct pptcapi_connection *connection,
 		  char *buffer, int len, char **error ) ;
 

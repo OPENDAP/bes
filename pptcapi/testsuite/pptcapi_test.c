@@ -47,16 +47,19 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
 	    return 1 ;
 	}
 	/*
-	while( extensions )
+	struct pptcapi_extensions *next_extension = extensions ;
+	while( next_extension )
 	{
 	    if( extensions->value )
 		fprintf( stdout, "%s = %s\n", extensions->name,
 					      extensions->value ) ;
 	    else
 		fprintf( stdout, "%s\n", extensions->name ) ;
-	    extensions = extensions->next ;
+	    next_extension = next_extension->next ;
 	}
 	*/
+	pptcapi_free_extensions_struct( extensions ) ;
+	extensions = 0 ;
 	if( result != PPTCAPI_RECEIVE_DONE && bytes_read != 0 )
 	{
 	    write( ofd, buffer, bytes_read ) ;
