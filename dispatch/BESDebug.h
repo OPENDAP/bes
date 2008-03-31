@@ -46,6 +46,8 @@ using std::ostream ;
 using std::map ;
 using std::string ;
 
+#include "BESUtil.h"
+
 /** @brief macro used to send debug information to the debut stream
  *
  * The BESDEBUG macro is used by developers to display debug information
@@ -58,7 +60,7 @@ using std::string ;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << y ; }
+#define BESDEBUG( x, y ) { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "] " << y ; }
 
 /** @brief macro used to determine if the specified debug context is set
  *
@@ -85,6 +87,7 @@ private:
     static map<string,bool>	_debug_map ;
     static ostream *		_debug_strm ;
     static bool			_debug_strm_created ;
+    static string		_pid_str ;
     typedef map<string,bool>::const_iterator _debug_citer ;
     typedef map<string,bool>::iterator _debug_iter ;
 public:
@@ -160,6 +163,21 @@ public:
     static ostream *		GetStrm()
     				{
 				    return _debug_strm ;
+				}
+
+    /** @brief return the pid as a string
+     *
+     * @return the pid as a string
+     */
+    static string		GetPidStr()
+				{
+				    if( _pid_str.empty() )
+				    {
+					char mypid[12] ;
+					BESUtil::fastpidconverter( mypid, 10 ) ;
+					_pid_str = mypid ;
+				    }
+				    return _pid_str ;
 				}
     /** @brief set the debug output stream to the specified stream
      *

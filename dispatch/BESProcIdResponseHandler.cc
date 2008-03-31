@@ -36,11 +36,7 @@
 #include "BESInfoList.h"
 #include "BESInfo.h"
 #include "BESResponseNames.h"
-
-#include <cstdlib>
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#include "BESUtil.h"
 
 BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -49,34 +45,6 @@ BESProcIdResponseHandler::BESProcIdResponseHandler( const string &name )
 
 BESProcIdResponseHandler::~BESProcIdResponseHandler( )
 {
-}
-
-char *
-BESProcIdResponseHandler::fastpidconverter(
-      long val,                                 /* value to be converted */
-      char *buf,                                /* output string         */
-      int base)                                 /* conversion base       */
-{
-      ldiv_t r;                                 /* result of val / base  */
-
-      if (base > 36 || base < 2)          /* no conversion if wrong base */
-      {
-            *buf = '\0';
-            return buf;
-      }
-      if (val < 0)
-            *buf++ = '-';
-      r = ldiv (labs(val), base);
-
-      /* output digits of val/base first */
-
-      if (r.quot > 0)
-            buf = fastpidconverter ( r.quot, buf, base);
-      /* output last digit */
-
-      *buf++ = "0123456789abcdefghijklmnopqrstuvwxyz"[(int)r.rem];
-      *buf   = '\0';
-      return buf;
 }
 
 /** @brief executes the command 'show process;' by returning the process id of
@@ -98,7 +66,7 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action_name = PROCESS_RESPONSE_STR ;
     info->begin_response( PROCESS_RESPONSE_STR ) ;
     char mypid[12] ;
-    fastpidconverter( getpid(), mypid, 10 ) ;
+    BESUtil::fastpidconverter( mypid, 10 ) ;
     info->add_tag( "pid", mypid ) ;
     info->end_response() ;
 }

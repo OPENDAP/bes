@@ -42,7 +42,7 @@ using std::ostream ;
 class BESUtil
 {
 private:
-    static string rfc822_date( const time_t t ) ;
+    static string		rfc822_date( const time_t t ) ;
 
 public:
     /** These functions are used to create the MIME headers for a message
@@ -54,25 +54,32 @@ public:
 	@name MIME utility functions
 	@see DODSFilter
     */
-    static void set_mime_text( ostream &strm ) ;
-    static void set_mime_html( ostream &strm ) ;
+    static void			set_mime_text( ostream &strm ) ;
+    static void			set_mime_html( ostream &strm ) ;
 
     /** This functions are used to unescape hex characters from strings **/
-    static string www2id( const string &in,
-                          const string &escape = "%",
-		          const string &except = "" ) ;
-    static string unhexstring( string s ) ;
+    static string		www2id( const string &in,
+				        const string &escape = "%",
+				        const string &except = "" ) ;
+    static string		unhexstring( string s ) ;
 
     /** Convert a string to all lower case **/
-    static string lowercase( const string &s ) ;
+    static string		lowercase( const string &s ) ;
 
     /** Unescape characters with backslash before them **/
-    static string unescape( const string &s ) ;
+    static string		unescape( const string &s ) ;
 
     /** Check if the specified path is valid **/
-    static void check_path( const string &path,
-			    const string &root,
-			    bool follow_sym_links ) ;
+    static void			check_path( const string &path,
+					    const string &root,
+					    bool follow_sym_links ) ;
+
+    /** convert pid and place in provided buffer **/
+    static char *		fastpidconverter( char *buf,
+						  int base ) ;
+    static char *		fastpidconverter( long val,
+						  char *buf,
+						  int base ) ;
 } ;
 
 #endif // E_BESUtil_h

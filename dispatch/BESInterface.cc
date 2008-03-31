@@ -279,7 +279,7 @@ BESInterface::add_init_callback(p_bes_init init)
 void
 BESInterface::initialize()
 {
-    BESDEBUG("bes", "Initializing request: " << _dhi.data[DATA_REQUEST] << " ... ")
+    BESDEBUG("bes", "Initializing request: " << _dhi.data[DATA_REQUEST] << " ... " << endl )
     bool do_continue = true;
     init_iter i = _init_list.begin();
     
@@ -337,7 +337,7 @@ BESInterface::build_data_request_plan()
 void
 BESInterface::execute_data_request_plan()
 {
-    BESDEBUG("bes", "Executing request: " << _dhi.data[DATA_REQUEST] << " ... ")
+    BESDEBUG("bes", "Executing request: " << _dhi.data[DATA_REQUEST] << " ... " << endl )
     BESResponseHandler *rh = _dhi.response_handler ;
     if( rh )
     {
@@ -360,7 +360,7 @@ BESInterface::invoke_aggregation()
 {
     if( _dhi.data[AGG_CMD] != "" )
     {
-        BESDEBUG("bes", "aggregating with: " << _dhi.data[AGG_CMD] << " ... ")
+        BESDEBUG("bes", "aggregating with: " << _dhi.data[AGG_CMD] << " ...  "<< endl )
         BESAggregationServer *agg =
             BESAggFactory::TheFactory()->find_handler(_dhi.
                                                       data[AGG_HANDLER]);
@@ -400,12 +400,12 @@ BESInterface::transmit_data()
     {
         if( _dhi.error_info )
 	{
-	    BESDEBUG( "bes", "  transmitting error info using transmitter ... " )
+	    BESDEBUG( "bes", "  transmitting error info using transmitter ... " << endl )
             _dhi.error_info->transmit( _transmitter, _dhi ) ;
         }
 	else if( _dhi.response_handler )
 	{
-	    BESDEBUG( "bes", "  transmitting response using transmitter ... " )
+	    BESDEBUG( "bes", "  transmitting response using transmitter ...  " << endl )
             _dhi.response_handler->transmit( _transmitter, _dhi ) ;
         }
     }
@@ -413,12 +413,12 @@ BESInterface::transmit_data()
     {
         if( _dhi.error_info )
 	{
-	    BESDEBUG( "bes", "  transmitting error info using cout ... " )
+	    BESDEBUG( "bes", "  transmitting error info using cout ... " << endl )
             _dhi.error_info->print( cout ) ;
         }
 	else
 	{
-	    BESDEBUG( "bes", "  Unable to transmit the response ... FAILED " )
+	    BESDEBUG( "bes", "  Unable to transmit the response ... FAILED " << endl )
 	    string err = "Unable to transmit the response, no transmitter" ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
@@ -448,7 +448,7 @@ void
 BESInterface::report_request()
 {
     BESDEBUG("bes", "Reporting on request: " << _dhi.
-             data[DATA_REQUEST] << " ... ")
+             data[DATA_REQUEST] << " ... " << endl )
         BESReporterList::TheList()->report(_dhi);
     BESDEBUG("bes", "OK" << endl)
 }
@@ -467,7 +467,7 @@ BESInterface::add_end_callback(p_bes_end end)
 void
 BESInterface::end_request()
 {
-    BESDEBUG("bes", "Ending request: " << _dhi.data[DATA_REQUEST] << " ... ")
+    BESDEBUG("bes", "Ending request: " << _dhi.data[DATA_REQUEST] << " ... " << endl )
     end_iter i = _end_list.begin();
     for (; i != _end_list.end(); i++) {
         p_bes_end p = *i;

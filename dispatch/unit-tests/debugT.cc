@@ -13,6 +13,7 @@ using std::ostringstream ;
 #include "debugT.h"
 #include "BESDebug.h"
 #include "BESError.h"
+#include "BESUtil.h"
 #include "test_config.h"
 
 int
@@ -21,6 +22,10 @@ debugT::run(void)
     cout << endl << "*****************************************" << endl;
     cout << "Entered debugT::run" << endl;
     int retVal = 0;
+
+    char mypid[12] ;
+    BESUtil::fastpidconverter( mypid, 10 ) ;
+    string pid_str = (string)"[" + mypid + "] " ;
 
     if( !_tryme.empty() )
     {
@@ -86,10 +91,12 @@ debugT::run(void)
 	ostringstream nc ;
 	BESDebug::SetStrm( &nc, false ) ;
 	string debug_str = "Testing nc debug" ;
+	string result_str = pid_str + debug_str ;
 	BESDEBUG( "nc", debug_str ) ;
-	if( nc.str() != debug_str )
+	if( nc.str() != result_str )
 	{
 	    cerr << "incorrect debug information: " << nc.str() << endl ;
+	    cerr << "should be: " << result_str << endl ;
 	    return 1 ;
 	}
 
@@ -98,10 +105,12 @@ debugT::run(void)
 	ostringstream hdf4 ;
 	BESDebug::SetStrm( &hdf4, false ) ;
 	debug_str = "Testing hdf4 debug" ;
+	result_str = pid_str + debug_str ;
 	BESDEBUG( "hdf4", debug_str ) ;
-	if( hdf4.str() != debug_str )
+	if( hdf4.str() != result_str )
 	{
 	    cerr << "incorrect debug information: " << hdf4.str() << endl ;
+	    cerr << "should be: " << result_str << endl ;
 	    return 1 ;
 	}
 
@@ -109,11 +118,13 @@ debugT::run(void)
 	cout << "try debugging to ff" << endl;
 	ostringstream ff ;
 	BESDebug::SetStrm( &ff, false ) ;
-	debug_str = "Testing ff debug" ;
+	debug_str = pid_str + "Testing ff debug" ;
+	result_str = pid_str + debug_str ;
 	BESDEBUG( "ff", debug_str ) ;
-	if( ff.str() != debug_str )
+	if( ff.str() != result_str )
 	{
 	    cerr << "incorrect debug information: " << ff.str() << endl ;
+	    cerr << "should be: " << result_str << endl ;
 	    return 1 ;
 	}
 

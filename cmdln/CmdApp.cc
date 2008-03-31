@@ -184,7 +184,7 @@ void
 CmdApp::registerSignals()
 {
     // Registering SIGCONT for connection unblocking
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGCONT ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGCONT ... " << endl )
     if( signal( SIGCONT, signalCannotConnect ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -195,7 +195,7 @@ CmdApp::registerSignals()
 
     // Registering SIGINT to disable Ctrl-C from the user in order to avoid
     // server instability
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGINT ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGINT ... " << endl )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -206,7 +206,7 @@ CmdApp::registerSignals()
 
     // Registering SIGTERM to disable kill from the user in order to avoid
     // server instability
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGTERM ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGTERM ... " << endl )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -216,7 +216,7 @@ CmdApp::registerSignals()
     BESDEBUG( "cmdln", "OK" << endl ) ;
 
     // Registering SIGPIE for broken pipes managment.
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGPIPE ... " )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGPIPE ... " << endl )
     if( signal( SIGPIPE, CmdApp::signalBrokenPipe ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -409,13 +409,13 @@ CmdApp::run()
 	if( _hostStr != "" )
 	{
 	    BESDEBUG( "cmdln", "CmdApp: Connecting to host: " << _hostStr
-	              << " at port: " << _portVal << " ... " ) ;
+	              << " at port: " << _portVal << " ... " << endl )
 	    _client->startClient( _hostStr, _portVal, _timeout ) ;
 	}
 	else
 	{
 	    BESDEBUG( "cmdln", "CmdApp: Connecting to unix socket: " << _unixStr
-	              << " ... " ) ;
+	              << " ... " << endl )
 	    _client->startClient( _unixStr, _timeout ) ;
 	}
 
@@ -466,7 +466,7 @@ CmdApp::run()
 
     try
     {
-	BESDEBUG( "cmdln", "CmdApp: shutting down client ... " ) ;
+	BESDEBUG( "cmdln", "CmdApp: shutting down client ... " << endl ) ;
 	if( _client )
 	{
 	    _client->shutdownClient() ;
@@ -475,7 +475,7 @@ CmdApp::run()
 	}
 	BESDEBUG( "cmdln", "OK" << endl ) ;
 
-	BESDEBUG( "cmdln", "CmdApp: closing input stream ... " ) ;
+	BESDEBUG( "cmdln", "CmdApp: closing input stream ... " << endl ) ;
 	if( _createdInputStrm )
 	{
 	    _inputStrm->close() ;

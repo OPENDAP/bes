@@ -108,8 +108,7 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << SETCONTAINER << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( SETCONTAINER, BESSetContainerResponseHandler::SetContainerResponseBuilder ) ;
 
-    BESDEBUG( "bes", "    adding " << SHOWCONTAINERS_RESPONSE << " response handler"
-              << endl )
+    BESDEBUG( "bes", "    adding " << SHOWCONTAINERS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( SHOWCONTAINERS_RESPONSE, BESShowContainersResponseHandler::ShowContainersResponseBuilder ) ;
 
     BESDEBUG( "bes", "    adding " << DELETE_CONTAINER << " response handler" << endl )
@@ -118,8 +117,7 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << DELETE_CONTAINERS << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( DELETE_CONTAINERS, BESDelContainersResponseHandler::DelContainersResponseBuilder ) ;
 
-    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " container persistence"
-              << endl )
+    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " container persistence" << endl )
     BESContainerStorageList::TheList()->add_persistence( new BESContainerStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
     BESDEBUG( "bes", "    adding " << DEFINE_RESPONSE << " response handler" << endl )
@@ -131,12 +129,10 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << DELETE_DEFINITION << " response handler" << endl)
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITION, BESDelDefResponseHandler::DelDefResponseBuilder ) ;
 
-    BESDEBUG( "bes", "    adding " << DELETE_DEFINITIONS << " response handler"
-              << endl )
+    BESDEBUG( "bes", "    adding " << DELETE_DEFINITIONS << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DELETE_DEFINITIONS, BESDelDefsResponseHandler::DelDefsResponseBuilder ) ;
 
-    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " definition persistence"
-              << endl )
+    BESDEBUG( "bes", "    adding " << PERSISTENCE_VOLATILE << " definition persistence" << endl )
     BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
 
     BESDEBUG( "bes", "    adding " << SET_CONTEXT << " response handler" << endl)

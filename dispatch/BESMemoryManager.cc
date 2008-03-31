@@ -83,7 +83,7 @@ BESMemoryManager::check_memory_pool()
 { 
     if( _storage_used )
     {
-	BESDEBUG( "bes", "BES: global pool is used, trying to get it back..." )
+	BESDEBUG( "bes", "BES: global pool is used, trying to get it back..." << endl )
 	//Try to regain the memory...
 	if( _memory->reclaim_memory() )
 	{

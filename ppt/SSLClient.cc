@@ -69,18 +69,18 @@ SSLClient::~SSLClient()
 void
 SSLClient::initConnection()
 {
-    BESDEBUG( "ppt", "Loading SSL error strings ... " )
+    BESDEBUG( "ppt", "Loading SSL error strings ... " << endl )
     SSL_load_error_strings() ;
     BESDEBUG( "ppt", "OK" << endl )
 
-    BESDEBUG( "ppt", "Initializing SSL library ... " )
+    BESDEBUG( "ppt", "Initializing SSL library ... " << endl )
     SSL_library_init() ;
     BESDEBUG( "ppt", "OK" << endl )
 
     SSL_METHOD *method = NULL ;
     SSL_CTX *context = NULL ;
 
-    BESDEBUG( "ppt", "Creating method and context ... " )
+    BESDEBUG( "ppt", "Creating method and context ... " << endl )
     method = SSLv3_client_method() ;
     if( method )
     {
@@ -99,7 +99,7 @@ SSLClient::initConnection()
 
     bool ok_2_continue = false ;
     string err_msg ;
-    BESDEBUG( "ppt", "Setting certificate and key ... " )
+    BESDEBUG( "ppt", "Setting certificate and key ... " << endl )
     if( SSL_CTX_use_certificate_file( context, _cfile.c_str(), SSL_FILETYPE_PEM ) <= 0 )
     {
 	err_msg = "FAILED to use certificate file " + _cfile + "\n" ;
@@ -123,7 +123,7 @@ SSLClient::initConnection()
     if( ok_2_continue )
     {
 	BESDEBUG( "ppt", "OK" << endl )
-	BESDEBUG( "ppt", "Certificate setup ... " )
+	BESDEBUG( "ppt", "Certificate setup ... " << endl )
 	SSL_CTX_set_verify( context, SSL_VERIFY_PEER, SSLClient::verify_server ) ;
 	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cfile.c_str() ));
 	if( ( !SSL_CTX_load_verify_locations( context, _cfile.c_str(), NULL )) ||
@@ -140,7 +140,7 @@ SSLClient::initConnection()
     {
 	BESDEBUG( "ppt", "OK" << endl )
 
-	BESDEBUG( "ppt", "Establishing TCP connection to " << _host << ":" << _port << " ... " )
+	BESDEBUG( "ppt", "Establishing TCP connection to " << _host << ":" << _port << " ... " << endl )
 	sock_fd = connect_to_server() ;
 	if( sock_fd < 0 )
 	{
@@ -153,7 +153,7 @@ SSLClient::initConnection()
     {
 	BESDEBUG( "ppt", "OK" << endl )
 
-	BESDEBUG( "ppt", "Establishing secure connection ... " )
+	BESDEBUG( "ppt", "Establishing secure connection ... " << endl )
 	int ssl_ret = 0 ;
 	_connection = SSL_new( context ) ;
 	if( !_connection )
@@ -256,7 +256,7 @@ SSLClient::verify_server( int ok, X509_STORE_CTX *ctx )
 {
     if( ok )
     {
-	BESDEBUG( "ppt", "VERIFIED " )
+	BESDEBUG( "ppt", "VERIFIED " << endl )
     }
     else
     {

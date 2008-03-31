@@ -47,10 +47,6 @@
  */
 class BESProcIdResponseHandler : public BESResponseHandler
 {
-private:
-    char *			fastpidconverter( long val,
-                                                  char *buf,
-						  int base ) ;
 public:
 				BESProcIdResponseHandler( const string &name ) ;
     virtual			~BESProcIdResponseHandler( void ) ;

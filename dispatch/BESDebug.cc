@@ -43,6 +43,7 @@ using std::endl ;
 
 ostream *BESDebug::_debug_strm = NULL ;
 bool BESDebug::_debug_strm_created = false ;
+string BESDebug::_pid_str = "" ;
 map<string,bool> BESDebug::_debug_map ;
 
 /** @brief Sets up debugging for the bes.

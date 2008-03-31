@@ -182,7 +182,7 @@ PPTServer::welcomeClient()
 	 */
 	string err( "PPT Can not negotiate, " ) ;
 	err += " client started the connection with " + status ;
-	BESDEBUG( "ppt", err )
+	BESDEBUG( "ppt", err << endl )
 	//throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	send( err ) ;
 	_mySock->close() ;

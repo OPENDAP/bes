@@ -208,11 +208,11 @@ StandAloneApp::initialize( int argc, char **argv )
 
     try
     {
-	BESDEBUG( "standalone", "ServerApp: initializing default module ... " )
+	BESDEBUG( "standalone", "ServerApp: initializing default module ... " << endl )
 	BESDefaultModule::initialize( argc, argv ) ;
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
-	BESDEBUG( "standalone", "ServerApp: initializing default commands ... " )
+	BESDEBUG( "standalone", "ServerApp: initializing default commands ... " << endl )
 	BESDefaultCommands::initialize( argc, argv ) ;
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
@@ -284,7 +284,7 @@ StandAloneApp::run()
 
     try
     {
-	BESDEBUG( "cmdln", "StandAloneApp: shutting down client ... " ) ;
+	BESDEBUG( "cmdln", "StandAloneApp: shutting down client ... " << endl )
 	if( _client )
 	{
 	    delete _client ;
@@ -292,18 +292,18 @@ StandAloneApp::run()
 	}
 	BESDEBUG( "cmdln", "OK" << endl ) ;
 
-	BESDEBUG( "cmdln", "StandAloneApp: closing input stream ... " ) ;
+	BESDEBUG( "cmdln", "StandAloneApp: closing input stream ... " << endl )
 	if( _createdInputStrm )
 	{
 	    _inputStrm->close() ;
 	    delete _inputStrm ;
 	    _inputStrm = 0 ;
 	}
-	BESDEBUG( "cmdln", "OK" << endl ) ;
+	BESDEBUG( "cmdln", "OK" << endl )
     }
     catch( BESError &e )
     {
-	BESDEBUG( "cmdln", "FAILED" << endl ) ;
+	BESDEBUG( "cmdln", "FAILED" << endl )
 	cerr << "error closing the client" << endl ;
 	cerr << e.get_message() << endl ;
 	return 1 ;
@@ -320,11 +320,11 @@ StandAloneApp::run()
 int
 StandAloneApp::terminate( int sig )
 {
-    BESDEBUG( "server", "ServerApp: terminating default module ... " )
+    BESDEBUG( "server", "ServerApp: terminating default module ... " << endl )
     BESDefaultModule::terminate( ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "server", "ServerApp: terminating default commands ... " )
+    BESDEBUG( "server", "ServerApp: terminating default commands ... " << endl )
     BESDefaultCommands::terminate( ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 

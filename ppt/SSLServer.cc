@@ -73,17 +73,17 @@ SSLServer::~SSLServer()
 void
 SSLServer::initConnection()
 {
-    BESDEBUG( "ppt", "Loading SSL error strings ... " )
+    BESDEBUG( "ppt", "Loading SSL error strings ... " << endl )
     SSL_load_error_strings() ;
     BESDEBUG( "ppt", "OK" << endl )
 
-    BESDEBUG( "ppt", "Initializing SSL library ... " )
+    BESDEBUG( "ppt", "Initializing SSL library ... " << endl )
     SSL_library_init() ;
     BESDEBUG( "ppt", "OK" << endl )
 
     SSL_METHOD *method = NULL ;
     SSL_CTX *context = NULL ;
-    BESDEBUG( "ppt", "Creating method and context ... " )
+    BESDEBUG( "ppt", "Creating method and context ... " << endl )
     method = SSLv3_server_method() ;
     if( method )
     {
@@ -104,7 +104,7 @@ SSLServer::initConnection()
     bool ok_2_continue = false ;
     string err_msg ;
 
-    BESDEBUG( "ppt", "Setting certificate and key ... " )
+    BESDEBUG( "ppt", "Setting certificate and key ... " << endl )
     if( SSL_CTX_use_certificate_file( context, _cfile.c_str(), SSL_FILETYPE_PEM ) <= 0 )
     {
 	BESDEBUG( "ppt", "FAILED" << endl )
@@ -131,7 +131,7 @@ SSLServer::initConnection()
     if( ok_2_continue )
     {
 	BESDEBUG( "ppt", "OK" << endl )
-	BESDEBUG( "ppt", "Certificate setup ... " )
+	BESDEBUG( "ppt", "Certificate setup ... " << endl )
 	SSL_CTX_set_verify( context, SSL_VERIFY_PEER, verify_client ) ;
 	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cfile.c_str() ));
 	if( ( !SSL_CTX_load_verify_locations( context, _cfile.c_str(), NULL )) ||
@@ -149,7 +149,7 @@ SSLServer::initConnection()
     {
 	BESDEBUG( "ppt", "OK" << endl )
 
-	BESDEBUG( "ppt", "Opening port " << _port << "... " )
+	BESDEBUG( "ppt", "Opening port " << _port << "... " << endl )
 	port_fd = open_port( ) ;
 	if( port_fd < 0 )
 	{
@@ -169,7 +169,7 @@ SSLServer::initConnection()
     {
 	BESDEBUG( "ppt", "OK" << endl )
 
-	BESDEBUG( "ppt", "Waiting for client connection ... " )
+	BESDEBUG( "ppt", "Waiting for client connection ... " << endl )
 	sock_fd = accept( port_fd, NULL, NULL ) ;
 	if( sock_fd < 0 )
 	{
@@ -188,7 +188,7 @@ SSLServer::initConnection()
     {
 	BESDEBUG( "ppt", "OK" << endl )
 
-	BESDEBUG( "ppt", "Establishing secure connection ... " )
+	BESDEBUG( "ppt", "Establishing secure connection ... " << endl )
 	int ssl_ret = 0 ;
 	_connection = SSL_new( context ) ;
 	if( !_connection )
@@ -284,7 +284,7 @@ SSLServer::verify_client( int ok, X509_STORE_CTX *ctx )
 {
     if( ok )
     {
-	BESDEBUG( "ppt", "VERIFIED " )
+	BESDEBUG( "ppt", "VERIFIED " << endl )
 	X509 *user_cert = X509_STORE_CTX_get_current_cert( ctx ) ;
 	// FIX: Need to save this certificate somewhere, right?
     }

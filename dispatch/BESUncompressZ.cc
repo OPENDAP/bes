@@ -62,8 +62,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 /*      Open the file to be read                                        */
 /* -------------------------------------------------------------------- */
 
-    BESDEBUG( "bes", "BESUncompressZ::uncompress - src=" 
-	      << src.c_str() << endl ) ;
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - src=" << src.c_str() << endl ) ;
 
     srcFile = open( src.c_str(), O_RDONLY ) ;
     my_errno = errno ;
@@ -86,8 +85,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 /* -------------------------------------------------------------------- */
 /*      Open Output file                                                */
 /* -------------------------------------------------------------------- */
-    BESDEBUG( "bes", "BESUncompressZ::uncompress - target=" 
-	      << target.c_str() << endl ) ;
+    BESDEBUG( "bes", "BESUncompressZ::uncompress - target=" << target.c_str() << endl ) ;
 
     destFile = open( target.c_str(), O_WRONLY | O_CREAT | O_TRUNC
 		     , S_IRUSR | S_IWUSR ) ;
@@ -170,8 +168,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
 /*       Do we have compressed file?                                    */
 /* -------------------------------------------------------------------- */
     if( (insize < 3) || (inbuf[0] != FIRSTBYTE) || (inbuf[1] != SECONDBYTE)) {
-	BESDEBUG( "bes", "BESUncompressZ::uncompress - not a compress file"
-	                 << endl);     
+	BESDEBUG( "bes", "BESUncompressZ::uncompress - not a compress file" << endl);     
 	if( rsize < 0) {
 	    string err = "Could not read file ";
 	    err += src.c_str() ;
