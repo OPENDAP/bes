@@ -30,8 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -49,7 +52,6 @@ using std::endl ;
 #include "BESUtil.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
-#include "config.h"
 
 #define CRLF "\r\n"
 
