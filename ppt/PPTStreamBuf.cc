@@ -58,7 +58,7 @@ PPTStreamBuf::~PPTStreamBuf()
     if(d_buffer)
     {
 	sync() ;
-	delete d_buffer ;
+	delete [] d_buffer ;
     }
 }
 
