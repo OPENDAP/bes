@@ -61,12 +61,26 @@ CSVModule::initialize( const string &modname )
 	add_handler( modname, new CSVRequestHandler( modname ) ) ;
 
     BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl )
-    BESCatalogList::TheCatalogList()->
-        add_catalog(new BESCatalogDirectory( CSV_CATALOG ) ) ;
+    if( !BESCatalogList::TheCatalogList()->find_catalog( CSV_CATALOG ) )
+    {
+	BESCatalogList::TheCatalogList()->
+	    add_catalog(new BESCatalogDirectory( CSV_CATALOG ) ) ;
+    }
+    else
+    {
+	BESDEBUG( "csv", "    catalog already exists, skipping" << endl )
+    }
 
     BESDEBUG( "csv", "    adding Catalog Container Storage" << endl )
-    BESContainerStorageList::TheList()->
-	add_persistence( new BESContainerStorageCatalog( CSV_CATALOG ) ) ;
+    if( !BESContainerStorageList::TheList()->find_persistence( CSV_CATALOG ) )
+    {
+	BESContainerStorageList::TheList()->
+	    add_persistence( new BESContainerStorageCatalog( CSV_CATALOG ) ) ;
+    }
+    else
+    {
+	BESDEBUG( "csv", "    storage already exists, skipping" << endl )
+    }
 
     BESDEBUG( "csv", "    adding csv debug context" << endl )
     BESDebug::Register( "csv" ) ;

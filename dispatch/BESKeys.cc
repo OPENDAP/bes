@@ -1505,7 +1505,8 @@ BESKeys::removeLeadingAndTrailingBlanks( string &key )
 	if( first == string::npos ) first = 0 ;
 	if( last == string::npos ) last = key.length() ;
 	string::size_type num = last - first + 1 ;
-	key = key.substr( first, num ) ;
+	string new_key = key.substr( first, num ) ;
+	key = new_key ;
     }
 }
 

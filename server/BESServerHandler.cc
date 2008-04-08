@@ -131,7 +131,8 @@ void
 BESServerHandler::execute( Connection *c )
 {
     ostringstream strm ;
-    strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort() ;
+    string ip = c->getSocket()->getIp() ;
+    strm << "ip " << ip << ", port " << c->getSocket()->getPort() ;
     string from = strm.str() ;
 
     map<string,string> extensions ;
