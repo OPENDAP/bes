@@ -1,6 +1,13 @@
 
 	$Id$
 
+News for version 3.6.1, 11 April 2008
+
+Bug fixed in new PPT chunking scheme
+
+Other minor bug fixes and enhancements to code and configuration. Refer to
+the ChangeLog file for more information.
+
 News for version 3.6.0, 29 February 2008
 
 Changed a parameter name in the bes configuration file for memory

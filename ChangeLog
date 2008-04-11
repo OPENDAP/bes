@@ -1,3 +1,118 @@
+2008-04-04  Patrick West <pwest@ucar.edu>
+
+	Fixed delete of the buffer.
+	M    PPTStreamBuf.cc
+
+2008-03-26  Patrick West <pwest@ucar.edu>
+
+	usage updated to use hyraxctl
+	M    hyraxctl.in
+
+2008-03-23  Patrick West <pwest@ucar.edu>
+
+	datarootdir replacing datadir in configurations. Using both as
+	datadir is now defined as datarootdir.
+	M    bes-config.in
+	M    csv-handler/Makefile.am
+	M    bes_dispatch.pc.in
+	M    dispatch/Makefile.am
+
+2008-03-23  Patrick West <pwest@ucar.edu>
+
+	Debug print of test being executed showed wrong option for output
+	file to bescmdln. Should be -f for outpuf file.
+	M    cmdln/testsuite/config/unix.exp
+
+2008-03-23  Patrick West <pwest@ucar.edu>
+
+	Removed debug statement before printing usage statement
+	M    server/daemon.cc
+
+2008-03-07  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes Fixing bug in OSX build
+
+2008-03-05  Patrick West <pwest@ucar.edu>
+
+	This bes-config-pkgconfig file had dos characters in it. Had to
+	re-create.
+	M    bes-config-pkgconfig
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Added besstandalone to the bes.spec file.
+	M    bes.spec
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Release 3.6.0.
+	A    http://scm.opendap.org:8090/svn/tags/bes/3.6.0
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Backed out ppt/Socket.cc change from previous revision. Caused the
+	incorrect number of bytes to be transferred. Updated
+	update_mac_package_contents.pl script to set the architecture in the
+	InstallationCheck script. Updated the InstallationCheck script to
+	check the architecture. Updated the InstallationCheck.strings for
+	new error messages. Release 3.6.0.
+	M    ppt/Socket.cc
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+	M    OSX_Resources/InstallationCheck
+	M    OSX_Resources/update_mac_package_contents.pl
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/InstallationCheck.strings
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Removed debugging statements.
+	M    apache/BESApacheInterface.cc
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Added unit test and debug statements. Upgraded configuration.
+	A    apache/unit-tests/requestsT.cc
+	A    apache/unit-tests/opendap.ini
+	A    apache/unit-tests/wrapperT.cc
+	A    apache/unit-tests/Makefile.am
+	M    apache/BESApacheInterface.cc
+	D    apache/requestsT.cc
+	A    apache/conf/pkg.m4
+	A    apache/conf/bes.m4
+	D    apache/wrapperT.cc
+	M    apache/BESApacheWrapper.cc
+	M    apache/configure.ac
+	M    apache/Makefile.am
+
+2008-03-03  Patrick West <pwest@ucar.edu>
+
+	Configuration upgrades to apache module to locate apache source.
+	A    apache/unit-tests
+	M    apache/BESApacheInterface.cc
+	M    apache/BESApacheInterface.h
+	M    apache/requestsT.cc
+	A    apache/conf
+	AM   apache/conf/mkinstalldirs
+	AM   apache/conf/depcomp
+	AM   apache/conf/missing
+	AM   apache/conf/config.guess
+	AM   apache/conf/config.sub
+	AM   apache/conf/ltmain.sh
+	AM   apache/conf/install-sh
+	M    apache/wrapperT.cc
+	M    apache/BESApacheRequests.cc
+	A    apache/configure.ac
+	M    apache/mod_opendap.cc
+	A    apache/Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2008-03-03  James Gallagher <jgallagher@opendap.org>
 
 	Changes from a code review.
