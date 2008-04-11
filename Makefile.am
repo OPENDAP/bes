@@ -92,25 +92,24 @@ endif
 
 ###########################################################################
 
-# Build the HDF-EOS parser
-
-hdfeos.tab.cc hdfeos.tab.h: hdfeos.y H5EOS.h
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
-	mv hdfeos.tab.c hdfeos.tab.cc
-
-hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das $<
-	mv hdfeos_das.tab.c hdfeos_das.tab.cc
-
 # Build the HDF-EOS scanner
 
-lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
-	mv lex.hdfeos.c lex.hdfeos.cc
+lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+
 
 lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.h
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos_das $<
-	mv lex.hdfeos_das.c lex.hdfeos_das.cc
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
+
+# Build the HDF-EOS parser
+
+hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y H5EOS.h
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos -o hdfeos.tab.cc $<
+	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
+
+hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das -o hdfeos_das.tab.cc $<
+	if test -e hdfeos_das.tab.cc.h; then mv hdfeos_das.tab.cc.h hdfeos_das.tab.hh; fi
 
 ###########################################################################
 

@@ -85,17 +85,21 @@ void HDF5GridEOS::read_dimension(Array * a)
     DBG(cerr << "Dim name=" << dim_name << " location=" << loc << endl);
     if (loc >= 0) {
         a->set_read_p(true);
-	/*
+#if 1
+	// This code was comented out but appears to be correct. The code
+	// below using val2buf() leaks memory. This code passes all the
+	// tests, however, So I using it. 4/9/2008 jhrg
         dods_float32 *val =
-            get_dimension_data(eos.dimension_data[loc], start, stride,
+	    get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
         a->value(val);
         delete[]val;
-	*/
+#else
        a->val2buf((void *)
           get_dimension_data(eos.dimension_data[loc], start, stride, stop, count));
-
-    } else {
+#endif
+    } 
+    else {
         cerr << "Could not retrieve map data" << endl;
     }
 }

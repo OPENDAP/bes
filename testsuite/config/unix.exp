@@ -35,17 +35,18 @@ proc dap_hdf5_handler_start { text_or_bin {switches ""} {data ""}} {
     global spawn_id
 
 # exp_internal 1
+    set VG "valgrind --quiet --trace-children=yes --log-file=dap_h5_handler"
 
     if {[string compare $text_or_bin "-t"] == 0} {
     	if {$verbose >= 1} {
     	    send_user "Testing $PROG $switches $data\n"
     	}
-	catch "exec $PROG $switches {$data}" comp_output
+	catch "exec $VG $PROG $switches {$data}" comp_output
     } else {
     	if {$verbose >= 1} {
     	    send_user "Testing $PROG $switches $data | getdap -\n"
     	}
-	catch "exec $PROG $switches {$data} | getdap -" comp_output
+	catch "exec $VG $PROG $switches {$data} | getdap -" comp_output
     }
 }
 

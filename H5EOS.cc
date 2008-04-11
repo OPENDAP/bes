@@ -389,7 +389,7 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
                     (void *) chr);
             strcat(chr_all, chr);
             valid = true;
-	    free(chr);
+            delete[] chr;
         } else {
             // The sequence can skip <metdata>.0.
             // Forexample, "coremetadata" and then "coremetadata.1".

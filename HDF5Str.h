@@ -40,19 +40,23 @@ using namespace libdap;
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 class HDF5Str:public Str {
-  private:
+ private:
     hid_t dset_id;
     hid_t ty_id;
     int array_flag;
 
-  public:
+ public:
 
     /// Constructor
-     HDF5Str(const string & n = "");
-     virtual ~ HDF5Str() {
+    HDF5Str(const string & n = "");
+    virtual ~ HDF5Str() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class    
-        virtual BaseType *ptr_duplicate();
+    /// Clone this instance.
+    /// 
+    /// Allocate a new instance and copy *this into it. This method must
+    /// perform a deep copy.
+    /// \return A newly allocated copy of this class    
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 string data into local buffer  
     virtual bool read(const string & dataset);

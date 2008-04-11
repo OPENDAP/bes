@@ -21,8 +21,12 @@ static int start_line;		/* used in quote and comment error handlers */
 %}
     
 %option noyywrap
+%option prefix="hdfeos"
+%option outfile="lex.hdfeos.cc"
+
 %x quote
 %x comment
+
 GROUP             	GROUP
 END_GROUP       	END_GROUP
 OBJECT          	OBJECT

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include <Array.h>
-#include "hdfeos.tab.h"
+#include "hdfeos.tab.hh"
 
 using namespace std;
 using namespace libdap;

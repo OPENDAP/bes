@@ -48,7 +48,7 @@ using namespace std;
 #include "Error.h"
 #include "debug.h"
 #include "parser.h"
-#include "hdfeos_das.tab.h"
+#include "hdfeos_das.tab.hh"
 #define YYDEBUG 1
 #define TRACE_new
 

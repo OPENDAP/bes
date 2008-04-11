@@ -63,7 +63,7 @@
 #define YY_DECL int hdfeos_daslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
   
-#include "hdfeos_das.tab.h"
+#include "hdfeos_das.tab.hh"
 
 int hdfeos_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */
@@ -71,6 +71,9 @@ static int start_line;		/* used in quote and comment error handlers */
 %}
     
 %option noyywrap
+%option prefix="hdfeos_das"
+%option outfile="lex.hdfeos_das.cc"
+
 %x quote
 %x comment
 

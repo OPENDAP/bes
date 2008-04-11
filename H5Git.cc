@@ -358,22 +358,21 @@ int
 get_strdata(int strindex, char *allbuf, char *buf, int elesize,
             char *error)
 {
-
     int i;
     char *tempvalue = NULL;
 
-
     tempvalue = allbuf;         // The beginning of entier buffer.
-    DBG(cerr
-        << ">get_strdata(): "
+    DBG(cerr << ">get_strdata(): "
         << " strindex=" << strindex << " allbuf=" << allbuf << endl);
 
     // Tokenize the convbuf. 
     for (i = 0; i < strindex; i++) {
         tempvalue = tempvalue + elesize;
     }
+
     strncpy(buf, tempvalue, elesize);
     buf[elesize] = '\0';        // <hyokyung 2007.05.29. 08:16:57>
+
     return 0;
 }
 
@@ -396,67 +395,48 @@ int
 get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
              void *buf, char *error)
 {
-    hid_t dataspace, memspace, datatype, memtype;
-    hsize_t *dyn_count = NULL, *dyn_step = NULL;
-    hssize_t *dyn_offset = NULL;
-    int i;
-
     DBG(cerr << ">get_slabdata() " << endl);
-    if ((datatype = H5Dget_type(dset)) < 0) {
-        sprintf(error,
-                "h5_dods server:  failed to obtain datatype from  dataset %d",
-                dset);
+
+    hid_t datatype = H5Dget_type(dset);
+    if (datatype < 0) {
+        sprintf(error, "Failed to obtain datatype from  dataset %d", dset);
         return 0;
     }
     // Using H5T_get_native_type API
-    memtype = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
-
+    hid_t memtype = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
     if (memtype < 0) {
         sprintf(error, "fail to obtain memory type.");
         return 0;
     }
-    if ((dataspace = H5Dget_space(dset)) < 0) {
-        sprintf(error,
-                "h5_dods server:  failed to obtain dataspace from  dataset %d",
-                dset);
-        free(dyn_count);
-        free(dyn_offset);
-        free(dyn_step);     
+
+    hid_t dataspace = H5Dget_space(dset);
+    if (dataspace < 0) {
+        sprintf(error, "Failed to obtain dataspace from  dataset %d", dset);
         return 0;
     }
 
-    dyn_count = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
-    dyn_step = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
-    dyn_offset = (hssize_t *) calloc(num_dim, sizeof(hssize_t));
-
+    hsize_t *dyn_count = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
     if (!dyn_count) {
-        sprintf(error,
-                "h5_dods server: out of memory for hyperslab dataset %d",
-                dset);
-        free(dyn_count);
-        free(dyn_offset);
-        free(dyn_step);                
-        return 0;
+        sprintf(error, "Out of memory for hyperslab dataset %d", dset);
+	return 0;
     }
 
+    hsize_t *dyn_step = (hsize_t *) calloc(num_dim, sizeof(hsize_t));
     if (!dyn_step) {
-        sprintf(error,
-                "h5_dods server: out of memory for hyperslab dataset %d",
-                dset);
+        sprintf(error, "Out of memory for hyperslab dataset %d", dset);
         free(dyn_count);
-        free(dyn_offset);
+	return 0;
+    }
+
+    hssize_t *dyn_offset = (hssize_t *) calloc(num_dim, sizeof(hssize_t));
+    if (!dyn_offset) {
+        sprintf(error, "Out of memory for hyperslab dataset %d", dset);
+        free(dyn_count);
         free(dyn_step);
         return 0;
     }
 
-    if (!dyn_offset) {
-        sprintf(error,
-                "h5_dods server: out of memory for hyperslab dataset %d",
-                dset);
-        return 0;
-    }
-
-    for (i = 0; i < num_dim; i++) {
+    for (int i = 0; i < num_dim; i++) {
         dyn_count[i] = (hsize_t) (*count);
         dyn_step[i] = (hsize_t) (*step);
         dyn_offset[i] = (hssize_t) (*offset);
@@ -468,31 +448,32 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         offset++;
     }
 
-    if (H5Sselect_hyperslab
-        (dataspace, H5S_SELECT_SET, (const hsize_t *) dyn_offset, dyn_step,
-         dyn_count, NULL) < 0) {
-        sprintf(error, "h5_dods server: selection error for dataspace %d",
-                dataspace);
+    if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, 
+			    (const hsize_t *)dyn_offset, dyn_step, dyn_count, 
+			    NULL) < 0) {
+        sprintf(error, "Selection error for dataspace %d", dataspace);
+
+	free(dyn_count);
+	free(dyn_offset);
+	free(dyn_step);
+
         return 0;
     }
 
-    memspace = H5Screate_simple(num_dim, dyn_count, NULL);
+    hid_t memspace = H5Screate_simple(num_dim, dyn_count, NULL);
 
     free(dyn_count);
     free(dyn_offset);
     free(dyn_step);
 
     if (memspace < 0) {
-        sprintf(error, "error on opening space for dataset %d", dset);
+        sprintf(error, "Error on opening space for dataset %d", dset);
         return 0;
     }
 
-    if (H5Dread
-        (dset, memtype, memspace, dataspace, H5P_DEFAULT,
-         (void *) buf) < 0) {
-        sprintf(error,
-                "get_selecteddata: unable to get data for dataset %d",
-                dset);
+    if (H5Dread(dset, memtype, memspace, dataspace, H5P_DEFAULT,
+		(void *) buf) < 0) {
+        sprintf(error, "Unable to get data for dataset %d", dset);
         return 0;
     }
 
@@ -500,7 +481,9 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     H5Sclose(memspace);
     H5Tclose(datatype);
     H5Dclose(dset);
+
     DBG(cerr << "<get_slabdata() " << endl);
+
     return 1;
 }
 

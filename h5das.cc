@@ -17,14 +17,20 @@
 ///
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
+
 // #define DODS_DEBUG
-#include "debug.h"
+
+#include <string>
+#include <sstream>
+
+#include <InternalErr.h>
+#include <Str.h>
+#include <parser.h>
+#include <debug.h>
+
 #include "h5das.h"
-#include "InternalErr.h"
 #include "common.h"
 #include "H5Git.h"
-#include "parser.h"
-#include "Str.h"
 #include "H5EOS.h"
 #include "H5PathFinder.h"
 
@@ -1038,14 +1044,22 @@ string get_hardlink(hid_t pgroup, const string & oname)
 
     const char *temp_oname = oname.c_str();
     // Get the target information at statbuf. 
-    herr_t ret = H5Gget_objinfo(pgroup, temp_oname, 0, &statbuf);
+    H5Gget_objinfo(pgroup, temp_oname, 0, &statbuf);
 
     if (statbuf.nlink >= 2) {
         // objno = (haddr_t)statbuf.objno[0] | ((haddr_t)statbuf.objno[1] << (8 * sizeof(long)));
+#if 1
+	// prefer the C++ string manipulation methods to C's functions. jhrg
+        ostringstream oss;
+        oss << hex << statbuf.objno[0] << statbuf.objno[1];
+        objno = oss.str();
+#else        
+	// If used, these should be the 'n' versions (snprintf). jhrg
         sprintf(buf0, "%x", statbuf.objno[0]);
         sprintf(buf1, "%x", statbuf.objno[1]);
         objno.append(buf0);
         objno.append(buf1);
+#endif
         DBG(cerr << "=get_hardlink() objno=" << objno << endl);
         // cerr << "=get_hardlink() objno=" << objno << endl;    
         if (!paths.add(objno, oname)) {
