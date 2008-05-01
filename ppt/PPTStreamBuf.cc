@@ -106,10 +106,12 @@ PPTStreamBuf::finish()
 {
     sync() ;
     ostringstream strm ;
+    /*
     ostringstream xstrm ;
     xstrm << "count=" << hex << setw( 8 ) << setfill( '0' ) << how_many() << ";" ;
     string xstr = xstrm.str() ;
     strm << hex << setw( 4 ) << setfill( '0' ) << (unsigned int)xstr.length() << "x" << xstr ;
+    */
     strm << hex << setw( 4 ) << setfill( '0' ) << (unsigned int)0 << "d" ;
     string tmp_str = strm.str() ;
     write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
