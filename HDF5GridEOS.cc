@@ -1,7 +1,3 @@
-#ifdef __GNUG__
-#pragma implementation
-#endif
-// #define DODS_DEBUG
 #include "config_hdf5.h"
 
 #include <string>
@@ -42,6 +38,8 @@ bool HDF5GridEOS::read(const string & dataset)
 
     while (p != map_end()) {
         Array *a = dynamic_cast < Array * >(*p);
+        if (!a)
+	    throw InternalErr(__FILE__, __LINE__, "null pointer");
         read_dimension(a);
         ++p;
     }
@@ -88,11 +86,11 @@ void HDF5GridEOS::read_dimension(Array * a)
 #if 1
 	// This code was comented out but appears to be correct. The code
 	// below using val2buf() leaks memory. This code passes all the
-	// tests, however, So I using it. 4/9/2008 jhrg
+	// tests, however, So I'm using it. 4/9/2008 jhrg
         dods_float32 *val =
 	    get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
-        a->value(val);
+        a->set_value(val, count);
         delete[]val;
 #else
        a->val2buf((void *)
@@ -115,9 +113,8 @@ dods_float32 *HDF5GridEOS::get_dimension_data(dods_float32 * buf,
         count << endl);
 
     if (buf == NULL) {
-        cerr <<
-            "HDF5GridEOS.cc::get_dimension_data(): argument buf is NULL."
-            << endl;
+        cerr << "HDF5GridEOS.cc::get_dimension_data(): argument buf is NULL."
+	     << endl;
         return dim_buf;
     }
 
@@ -125,7 +122,8 @@ dods_float32 *HDF5GridEOS::get_dimension_data(dods_float32 * buf,
     for (i = start; i <= stop; i = i + stride) {
         DBG(cerr << "=get_dimension_data():i=" << i << " j=" << j << endl);
         dim_buf[j] = buf[i];
-	DBG(cerr << "=get_dimension_data():dim_buf[" << j << "] =" << dim_buf[j] << endl);
+	DBG(cerr << "=get_dimension_data():dim_buf[" << j << "] =" 
+	    << dim_buf[j] << endl);
         j++;
     }
     if (count != j) {
@@ -133,5 +131,6 @@ dods_float32 *HDF5GridEOS::get_dimension_data(dods_float32 * buf,
             endl;
     }
     DBG(cerr << "<get_dimension_data()" << endl);
+
     return dim_buf;
 }

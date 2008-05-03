@@ -1,10 +1,6 @@
 #ifndef _HDF5UInt32_h
 #define _HDF5UInt32_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

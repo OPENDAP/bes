@@ -1,8 +1,4 @@
 
-#ifdef _GNUG_
-#pragma implementation
-#endif
-
 #include "config_hdf5.h"
 
 #include <string>

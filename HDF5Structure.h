@@ -1,10 +1,6 @@
 #ifndef _HDF5Structure_h
 #define _HDF5Structure_h 1
 
-#ifdef _GNUG_
-#pragma interface
-#endif
-
 #include <string>
 #include <H5Ipublic.h>
 #include "Structure.h"

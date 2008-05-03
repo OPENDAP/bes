@@ -1,7 +1,3 @@
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include "config_hdf5.h"
 
 #include <string>
@@ -46,26 +42,20 @@ bool HDF5Int32::read(const string & dataset)
 
     if (return_type(ty_id) == "Int32") {
         DBG(cerr << "=HFInt32::read() ty_id=" << ty_id << endl);
-        char Msgi[256];
-        int buf;
-
-        if (get_data(dset_id, (void *) &buf, Msgi) < 0) {
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting int32 data\n")
-                              + Msgi);
-        }
+        dods_int32 buf;
+	get_data(dset_id, (void *) &buf);
 
         set_read_p(true);
-        dods_int32 intg32 = (dods_int32) buf;
-        val2buf(&intg32);
+	set_value(buf);
     }
 
 
     if (return_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
-        HDF5Structure *p = dynamic_cast < HDF5Structure * >(q);
+        if (!q)
+        	throw InternalErr(__FILE__, __LINE__, "null pointer");
+        HDF5Structure &p = dynamic_cast < HDF5Structure & >(*q);
 
         char Msgi[256];
 #ifdef DODS_DEBUG
@@ -77,8 +67,9 @@ bool HDF5Int32::read(const string & dataset)
         hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
         hid_t stemp_tid;
 
-        s2_t buf[p->get_entire_array_size()];
-
+        s2_t *buf = 0;
+	try {
+	    buf = new s2_t[p.get_entire_array_size()];
         string myname = name();
         string parent_name;
 
@@ -105,9 +96,9 @@ bool HDF5Int32::read(const string & dataset)
                 }
                 // Remember the last parent name.
                 parent_name = q->name();
-                p = dynamic_cast < HDF5Structure * >(q);
+                p = dynamic_cast < HDF5Structure & >(*q);
                 // Remember the index of array from the last parent.
-                j = p->get_array_index();
+                j = p.get_array_index();
                 q = q->get_parent();
 
             } else {
@@ -127,8 +118,17 @@ bool HDF5Int32::read(const string & dataset)
 
         set_read_p(true);
         DBG(cerr << "index " << j << endl);
+#if 0
         dods_int32 intg32 = (dods_int32) buf[j].a;
         val2buf(&intg32);
+#endif
+	set_value(buf[j].a);
+	delete[] buf;
+	}
+	catch(...) {
+	    delete[] buf;
+	    throw;
+	}
 
     }                           // In case of structure
 

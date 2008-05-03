@@ -23,8 +23,8 @@ dist_bin_SCRIPTS = bes-hdf5-data.sh
 
 endif
 
-GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc \
-	hdfeos_das.tab.cc hdfeos_das.tab.h lex.hdfeos_das.cc
+GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc \
+	hdfeos_das.tab.cc hdfeos_das.tab.hh lex.hdfeos_das.cc
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
@@ -98,7 +98,7 @@ lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 
-lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.h
+lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 # Build the HDF-EOS parser

@@ -1,7 +1,3 @@
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include "config_hdf5.h"
 
 #include <string>
@@ -28,19 +24,10 @@ bool HDF5UInt32::read(const string & dataset)
         return false;
 
     if (return_type(ty_id) == "UInt32") {
-        long buf;
-        char Msgi[256];
-
-        if (get_data(dset_id, (void *) &buf, Msgi) < 0) {
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting unsigned int32 data\n")
-                              + Msgi);
-        }
-
+	dods_uint32 buf;
+	get_data(dset_id, (void *) &buf);
         set_read_p(true);
-        dods_uint32 uint32 = (dods_uint32) buf;
-        val2buf(&uint32);
+	set_value(buf);
     }
 
     return false;

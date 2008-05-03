@@ -1,10 +1,6 @@
 #ifndef _hdf5eosarray_h
 #define _hdf5eosarray_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <H5Ipublic.h>
 
 #include "Array.h"

@@ -1,7 +1,3 @@
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include "config_hdf5.h"
 
 #include <string>
@@ -22,10 +18,9 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5Str::HDF5Str(const string & n):Str(n)
+HDF5Str::HDF5Str(const string & n) 
+ : ty_id(-1), dset_id(-1), array_flag(0), Str(n)
 {
-    ty_id = -1;
-    dset_id = -1;
 }
 
 BaseType *HDF5Str::ptr_duplicate()
@@ -40,28 +35,20 @@ bool HDF5Str::read(const string & dataset)
     if (read_p())
         return false;
 
+#if 0
     if (array_flag == 1) {
         DBG(cerr << "=read(): array is dected." << endl);
         return true;
     }
+#endif
 
     if (return_type(ty_id) == "String") {
-        char Msgi[max_str_len];
-        H5Tget_size(ty_id);
         char *chr = new char[size + 1];
-
-        if (get_data(dset_id, (void *) chr, Msgi) < 0) {
-            delete[]chr;
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting string data\n")
-                              + Msgi);
-        }
-
+	get_data(dset_id, (void *)chr);
         set_read_p(true);
         string str = chr;
+	set_value(str);
 
-        val2buf(&str);
         delete[]chr;
     }
 

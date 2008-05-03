@@ -13,10 +13,6 @@
 #ifndef _HDF5Url_h
 #define _HDF5Url_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

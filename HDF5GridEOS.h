@@ -1,10 +1,6 @@
 #ifndef _HDF5GridEOS_h
 #define _HDF5GridEOS_h 1
 
-#ifdef _GNUG_
-#pragma interface
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

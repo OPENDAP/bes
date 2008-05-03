@@ -1,7 +1,3 @@
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 // #define DODS_DEBUG
 
 #include <string>
@@ -41,37 +37,31 @@ bool HDF5Float32::read(const string & dataset)
         return false;
 
     if (return_type(ty_id) == "Float32") {
-        float buf;
-        dods_float32 flt32;
-        char Msgi[256];
-
-        if (get_data(dset_id, (void *) &buf, Msgi) < 0) {
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting float32 data\n")
-                              + Msgi);
-        }
-
+        dods_float32 buf;
+	get_data(dset_id, (void *) &buf);
         set_read_p(true);
-        flt32 = (dods_float32) buf;
-        val2buf(&flt32);
+	set_value(buf);
     }
 
     if (return_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
-        HDF5Structure *p = dynamic_cast < HDF5Structure * >(q);
+        if (!q)
+        	throw InternalErr(__FILE__, __LINE__, "null pointer");
+        HDF5Structure &p = dynamic_cast < HDF5Structure &>(*q);
         char Msgi[256];
-
+#if 0
         dods_float32 flt32;
+#endif
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
 #endif
         int j = 0;
         int k = 0;
 
-        s2_t buf[p->get_entire_array_size()];
-
+        s2_t *buf = 0;
+	try {
+	    buf = new s2_t[p.get_entire_array_size()];
         string myname = name();
         string parent_name;
 
@@ -92,9 +82,9 @@ bool HDF5Float32::read(const string & dataset)
                     s2_tid = stemp_tid;
                 }
                 parent_name = q->name();
-                p = dynamic_cast < HDF5Structure * >(q);
+                p = dynamic_cast < HDF5Structure & >(*q);
                 // Remember the index of array from the last parent.
-                j = p->get_array_index();
+                j = p.get_array_index();
                 q = q->get_parent();
             } else {
                 q = NULL;
@@ -111,8 +101,17 @@ bool HDF5Float32::read(const string & dataset)
         }
 
         set_read_p(true);
+#if 0
         flt32 = buf[j].a;
         val2buf(&flt32);
+#endif
+	set_value(buf[j].a);
+	delete[] buf;
+	}
+	catch(...) {
+	    delete[] buf;
+	    throw;
+	}
     }
 
     return false;

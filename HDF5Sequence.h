@@ -1,10 +1,6 @@
 #ifndef _HDF5Sequence_h
 #define _HDF5Sequence_h 1
 
-#ifdef _GNUG_
-#pragma interface
-#endif
-
 #include "Sequence.h"
 #include "common.h"
 #include "H5Git.h"

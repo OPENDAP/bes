@@ -34,8 +34,8 @@ proc dap_hdf5_handler_start { text_or_bin {switches ""} {data ""}} {
     global comp_output
     global spawn_id
 
-# exp_internal 1
-    set VG "valgrind --quiet --trace-children=yes --log-file=dap_h5_handler"
+    # set VG "valgrind --quiet --trace-children=yes --log-file=dap_h5_handler --leak-check=yes"
+    set VG ""
 
     if {[string compare $text_or_bin "-t"] == 0} {
     	if {$verbose >= 1} {
@@ -60,7 +60,7 @@ proc dap_hdf5_handler_exit {} {
 }
 
 proc dap_hdf5_handler_version {} {
-    send_user "geturl test suite 2.0\n"
+    send_user "HDF5 Hyrax module test suite 1.0\n"
 }
 
 proc dap_hdf5_handler_all {path dataset {constraint ""} {xfailp 0}} {

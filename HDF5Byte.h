@@ -1,10 +1,6 @@
 #ifndef _hdf5byte_h
 #define _hdf5byte_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <string>
 
 #include <H5Ipublic.h>

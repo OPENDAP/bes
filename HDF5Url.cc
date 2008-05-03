@@ -1,8 +1,4 @@
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include "config_hdf5.h"
 
 #include <string>
@@ -24,24 +20,20 @@ BaseType *HDF5Url::ptr_duplicate()
 
 bool HDF5Url::read(const string &)
 {
-    string str[1];
-    hobj_ref_t *rbuf;           // buffer to read
-    rbuf = (hobj_ref_t *) malloc(sizeof(hobj_ref_t));
-    herr_t status = H5Dread(dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
-                            H5P_DEFAULT, rbuf);
-    if (status < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          string("dap_h5_handler failed on H5Dread().\n"));
+    hobj_ref_t rbuf;
+
+    if (H5Dread(dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+		&rbuf) < 0) {
+	throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
     }
 
-    hid_t did_r = H5Rdereference(dset_id, H5R_OBJECT, &rbuf[0]);
-    char buf2[DODS_NAMELEN];
-    H5Iget_name(did_r, (char *) buf2, DODS_NAMELEN);
-    str[0] = buf2;
-    set_read_p(true);
-    val2buf(&str);
-    return false;
+    hid_t did_r = H5Rdereference(dset_id, H5R_OBJECT, &rbuf);
+    char name[DODS_NAMELEN];
+    H5Iget_name(did_r, name, DODS_NAMELEN);
+    string reference = name;
+    set_value(reference);
 
+    return false;
 }
 
 void HDF5Url::set_did(hid_t dset)

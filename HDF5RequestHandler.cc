@@ -78,8 +78,9 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         eos.set_dimension_array();
 
     BESDASResponse *bdas =
-        dynamic_cast <
-        BESDASResponse * >(dhi.response_handler->get_response_object());
+        dynamic_cast <BESDASResponse * >(dhi.response_handler->get_response_object());
+    if (!bdas)
+    	throw InternalErr(__FILE__, __LINE__, "null pointer");
     DAS *das = bdas->get_das();
 
     try {
@@ -118,8 +119,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         eos.set_dimension_array();
 
     BESDDSResponse *bdds =
-        dynamic_cast <
-        BESDDSResponse * >(dhi.response_handler->get_response_object());
+        dynamic_cast <BESDDSResponse * >(dhi.response_handler->get_response_object());
+    if (!bdds)
+    	throw InternalErr(__FILE__, __LINE__, "null pointer");
+
     DDS *dds = bdds->get_dds();
 
     try {
@@ -175,9 +178,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         eos.set_dimension_array();
 
     BESDataDDSResponse *bdds =
-        dynamic_cast <
-        BESDataDDSResponse *
-        >(dhi.response_handler->get_response_object());
+        dynamic_cast <BESDataDDSResponse *>(dhi.response_handler->get_response_object());
+    if (!bdds)
+   	    throw InternalErr(__FILE__, __LINE__, "null pointer");
     DataDDS *dds = bdds->get_dds();
 
     try {

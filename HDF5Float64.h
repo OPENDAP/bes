@@ -1,10 +1,6 @@
 #ifndef _HDF5Float64_h
 #define _HDF5Float64_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

@@ -1,10 +1,6 @@
 #ifndef _hdf5array_h
 #define _hdf5array_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <H5Ipublic.h>
 #include <H5Rpublic.h>
 
@@ -43,6 +39,12 @@ class HDF5Array:public Array {
                                    int *picks);
     hid_t mkstr(int size, H5T_str_t pad);
 
+    bool m_array_of_structure(); // Used by read()
+    bool m_array_in_structure();
+    void m_insert_simple_array(hid_t s1_tid, hsize_t *size2);
+    bool m_array_of_reference();
+    void m_intern_plain_array_data(char *convbuf);
+
   public:
     /// HDF5 data type class
      H5T_class_t d_type;
@@ -53,7 +55,8 @@ class HDF5Array:public Array {
 
     /// Clone this instance.
     /// 
-    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// Allocate a new instance and copy *this into it. This method must 
+    /// perform a deep copy.
     /// \return A newly allocated copy of this class
     virtual BaseType *ptr_duplicate();
 

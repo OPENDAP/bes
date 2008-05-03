@@ -5,10 +5,6 @@
  *-------------------------------------------------------------------------
  */
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 // #define DODS_DEBUG
 
 #include <iostream>

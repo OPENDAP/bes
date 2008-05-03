@@ -7,8 +7,6 @@ global host
 
 set testdir testsuite
 set test_name "basic"
-set verbose 0
-
 
 dap_hdf5_handler_version 
 
