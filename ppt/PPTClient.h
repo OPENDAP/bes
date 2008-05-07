@@ -43,6 +43,7 @@ private:
     bool			_connected ;
     string			_host ;
     string			_cfile ;
+    string			_cafile ;
     string			_kfile ;
 
     void			authenticateWithServer() ;

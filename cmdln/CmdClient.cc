@@ -77,6 +77,7 @@ extern "C" {
 #include "CmdClient.h"
 #include "PPTClient.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 
 CmdClient::~CmdClient()
 {
@@ -240,6 +241,13 @@ CmdClient::executeCommand(const string & cmd, int repeat )
 	for( int i = 0; i < repeat; i++ )
 	{
 	    BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl )
+	    BESStopWatch *sw = 0 ;
+	    if( BESISDEBUG( "timing" ) )
+	    {
+		sw = new BESStopWatch() ;
+		sw->start() ;
+	    }
+
 	    map<string,string> extensions ;
 	    _client->send(cmd, extensions);
 
@@ -266,6 +274,23 @@ CmdClient::executeCommand(const string & cmd, int repeat )
 		    BESDEBUG( "cmdln", "  " << (*i).first << " = " << (*i).second << endl )
 		}
 		BESDEBUG( "cmdln", "cmdclient done receiving " << endl )
+	    }
+	    if( BESISDEBUG( "timing" ) )
+	    {
+		if( sw && sw->stop() )
+		{
+		    BESDEBUG( "timing",
+			      "cmdclient - executed \"" << cmd << "\" in "
+			      << sw->seconds() << " seconds and "
+			      << sw->microseconds() << " microseconds"
+			      << endl )
+		}
+		else
+		{
+		    BESDEBUG( "timing", \
+			  "cmdclient - executed \"" << cmd
+			  << "\" - no timing available" << endl )
+		}
 	    }
 
 	    _strm->flush();

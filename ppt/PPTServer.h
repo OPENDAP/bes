@@ -47,6 +47,7 @@ private:
     bool			_secure ;
     int				_securePort ;
     string			_cfile ;
+    string			_cafile ;
     string			_kfile ;
 
     int				welcomeClient() ;

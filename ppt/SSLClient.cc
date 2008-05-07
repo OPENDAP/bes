@@ -53,11 +53,13 @@ using std::endl ;
 #include "BESDebug.h"
 
 SSLClient::SSLClient( const string &hostStr, int portVal,
-                      const string &cert_file, const string &key_file )
+                      const string &cert_file, const string &cert_auth_file,
+		      const string &key_file )
     : SSLConnection(),
       _host( hostStr ),
       _port( portVal ),
       _cfile( cert_file ),
+      _cafile( cert_auth_file),
       _kfile( key_file )
 {
 }
@@ -125,8 +127,8 @@ SSLClient::initConnection()
 	BESDEBUG( "ppt", "OK" << endl )
 	BESDEBUG( "ppt", "Certificate setup ... " << endl )
 	SSL_CTX_set_verify( context, SSL_VERIFY_PEER, SSLClient::verify_server ) ;
-	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cfile.c_str() ));
-	if( ( !SSL_CTX_load_verify_locations( context, _cfile.c_str(), NULL )) ||
+	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cafile.c_str() ));
+	if( ( !SSL_CTX_load_verify_locations( context, _cafile.c_str(), NULL )) ||
 	    ( !SSL_CTX_set_default_verify_paths( context ) ) )
 	{
 	    err_msg = "Certificate setup failed\n" ;
@@ -311,7 +313,8 @@ SSLClient::dump( ostream &strm ) const
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "host: " << _host << endl ;
     strm << BESIndent::LMarg << "port: " << _port << endl ;
-    strm << BESIndent::LMarg << "certificate file: " << _cfile << endl ;
+    strm << BESIndent::LMarg << "cert file: " << _cfile << endl ;
+    strm << BESIndent::LMarg << "cert authority file: " << _cafile << endl ;
     strm << BESIndent::LMarg << "key file: " << _kfile << endl ;
     SSLConnection::dump( strm ) ;
     BESIndent::UnIndent() ;

@@ -49,6 +49,7 @@ private:
     string			_host ;
     int				_port ;
     string			_cfile ;
+    string			_cafile ;
     string			_kfile ;
 
     int				connect_to_server( ) ;
@@ -58,6 +59,7 @@ private:
 public:
     				SSLClient( const string &hostStr, int portVal,
 					   const string &cert_file,
+					   const string &cert_auth_file,
 					   const string &key_file );
     				~SSLClient() ;
     virtual void		initConnection() ;

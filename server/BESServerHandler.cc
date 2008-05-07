@@ -57,7 +57,9 @@ using std::flush ;
 #include "ServerExitConditions.h"
 #include "BESUtil.h"
 #include "PPTStreamBuf.h"
+#include "PPTProtocol.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 
 BESServerHandler::BESServerHandler()
 {
@@ -163,7 +165,15 @@ BESServerHandler::execute( Connection *c )
 	cerr << "send_size = " << send_size << endl ;
 	*/
 
-	PPTStreamBuf fds( c->getSocket()->getSocketDescriptor(), 4000 ) ;
+	BESStopWatch *sw = 0 ;
+	if( BESISDEBUG( "timing" ) )
+	{
+	    sw = new BESStopWatch() ;
+	    sw->start() ;
+	}
+
+	unsigned int bufsize = PPT_PROTOCOL_CHUNK_SIZE ;
+	PPTStreamBuf fds( c->getSocket()->getSocketDescriptor(), bufsize ) ;
 	std::streambuf *holder ;
 	holder = cout.rdbuf() ;
 	cout.rdbuf( &fds ) ;
@@ -176,6 +186,23 @@ BESServerHandler::execute( Connection *c )
 	    BESDEBUG( "server", "BESServerHandler::execute - executed successfully" << endl )
 	    fds.finish() ;
 	    cout.rdbuf( holder ) ;
+
+	    if( BESISDEBUG( "timing" ) )
+	    {
+		if( sw && sw->stop() )
+		{
+		    BESDEBUG( "timing",
+			      "BESServerHandler::execute - executed in "
+			      << sw->seconds() << " seconds and "
+			      << sw->microseconds() << " microseconds"
+			      << endl )
+		}
+		else
+		{
+		    BESDEBUG( "timing", \
+			  "BESServerHandler::execute - no timing available" )
+		}
+	    }
 	}
 	else
 	{

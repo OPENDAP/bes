@@ -48,6 +48,7 @@ class SSLServer : public SSLConnection
 private:
     int				_port ;
     string			_cfile ;
+    string			_cafile ;
     string			_kfile ;
 
     int				verify_connection( ) ;
@@ -57,6 +58,7 @@ private:
 public:
     				SSLServer( int portVal,
 					   const string &cert_file,
+					   const string &cert_auth_file,
 					   const string &key_file );
     				~SSLServer() ;
     virtual void		initConnection() ;

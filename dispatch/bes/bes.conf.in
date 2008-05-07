@@ -156,8 +156,10 @@ BES.ServerPort=10002
 BES.ServerSecure=no
 BES.ServerSecurePort=10003
 BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerCertAuthFile=/full/path/to/serverside/certificate/authority/file.pem
 BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
 BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientCertAuthFile=/full/path/to/clientside/certificate/authority/file.pem
 BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 
 #-----------------------------------------------------------------------#

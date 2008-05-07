@@ -100,7 +100,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESReturnManager.cc \
 	BESError.cc BESExceptionManager.cc \
 	BESDataHandlerInterface.cc \
-	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc \
+	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
 	BESUncompressBZ2.cc BESUncompressZ.cc
@@ -144,8 +144,8 @@ HDRS = BESInterface.h BESGlobalIQ.h \
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
 	BESDefaultModule.h BESTransmitterNames.h \
 	BESExceptionManager.h \
-	BESModuleApp.h BESUtil.h BESRegex.h BESScrub.h BESDebug.h \
-	BESCache.h BESUncompressManager.h \
+	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h \
+	BESDebug.h BESCache.h BESUncompressManager.h \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \

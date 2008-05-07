@@ -96,23 +96,31 @@ PPTServer::get_secure_files()
     _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
     if( !found || _cfile.empty() )
     {
-	throw BESInternalError( "Unable to determine server certificate file.",
-			    __FILE__, __LINE__ ) ;
+	string err = "Unable to determine server certificate file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    found = false ;
+    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertAuthFile", found );
+    if( !found || _cafile.empty() )
+    {
+	string err = "Unable to determine server certificate authority file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
     _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
     if( !found || _kfile.empty() )
     {
-	throw BESInternalError( "Unable to determine server key file.",
-			    __FILE__, __LINE__ ) ;
+	string err = "Unable to determine server key file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-    string portstr = TheBESKeys::TheKeys()->get_key( "BES.ServerSecurePort",
-						     found ) ;
+    string portstr =
+	TheBESKeys::TheKeys()->get_key( "BES.ServerSecurePort", found ) ;
     if( !found || portstr.empty() )
     {
-	throw BESInternalError( "Unable to determine secure connection port.",
-			    __FILE__, __LINE__ ) ;
+	string err = "Unable to determine secure connection port." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
     _securePort = atoi( portstr.c_str() ) ;
     if( !_securePort )
@@ -122,7 +130,6 @@ PPTServer::get_secure_files()
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
-
 
 /** Using the info passed into the SocketLister, wait for an inbound 
     request (see SocketListener::accept()). When one is found, do the
@@ -227,7 +234,7 @@ PPTServer::authenticateClient()
     send( portResponse.str() ) ;
 
     // create a secure server object and authenticate
-    SSLServer server( _securePort, _cfile, _kfile ) ;
+    SSLServer server( _securePort, _cfile, _cafile, _kfile ) ;
     server.initConnection() ;
     server.closeConnection() ;
 
@@ -275,6 +282,15 @@ PPTServer::dump( ostream &strm ) const
 	strm << BESIndent::LMarg << "listener: null" << endl ;
     }
     strm << BESIndent::LMarg << "secure? " << _secure << endl ;
+    if( _secure )
+    {
+	BESIndent::Indent() ;
+	strm << BESIndent::LMarg << "cert file: " << _cfile << endl ;
+	strm << BESIndent::LMarg << "cert authority file: " << _cafile << endl ;
+	strm << BESIndent::LMarg << "key file: " << _kfile << endl ;
+	strm << BESIndent::LMarg << "secure port: " << _securePort << endl ;
+	BESIndent::UnIndent() ;
+    }
     PPTConnection::dump( strm ) ;
     BESIndent::UnIndent() ;
 }

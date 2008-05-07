@@ -85,6 +85,15 @@ PPTClient::get_secure_files()
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
+    found = false ;
+    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertAuthFile", found );
+    if( !found || _cafile.empty() )
+    {
+	string err = "Unable to determine client certificate authority file." ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    found = false ;
     _kfile = TheBESKeys::TheKeys()->get_key( "BES.ClientKeyFile", found ) ;
     if( !found || _kfile.empty() )
     {
@@ -189,7 +198,7 @@ PPTClient::authenticateWithServer()
     }
 
     // authenticate using SSLClient
-    SSLClient client( _host, portVal, _cfile, _kfile ) ;
+    SSLClient client( _host, portVal, _cfile, _cafile, _kfile ) ;
     client.initConnection() ;
     client.closeConnection() ;
 
