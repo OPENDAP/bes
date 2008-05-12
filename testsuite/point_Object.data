@@ -11,7 +11,7 @@ Structure {
     Float32 Longitude;
     Float32 Altitude;
     UInt16 ID;
-} /HDFEOS/POINTS/OMI%20L2G%20Test/Data/Stations[2] = {{ "ScottBase", -77.8, 165.6, 22, 0 }, { "ArlingtonVA", 38.89, -77.08, 15, 0 }};
+} /HDFEOS/POINTS/OMI%20L2G%20Test/Data/Stations[2] = {{ "ScottBase", -77.8, 165.6, 22, 101 }, { "ArlingtonVA", 38.89, -77.08, 15, 102 }};
 Structure {
     Int32 BCKPOINTER;
 } /HDFEOS/POINTS/OMI%20L2G%20Test/Linkage/BCKPOINTER%3a1-%3e0[4] = {{ 0 }, { 0 }, { 1 }, { 0 }};

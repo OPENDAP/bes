@@ -84,7 +84,7 @@ bool HDF5Int32::read(const string & dataset)
                     // Bottom level structure
                     DBG(cerr << "my_name " << myname.c_str() << endl);
                     H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
-                              H5T_NATIVE_INT);
+                              H5T_NATIVE_INT32);
                 } else {
                     DBG(cerr << k << " parent_name=" << parent_name <<
                         endl);
