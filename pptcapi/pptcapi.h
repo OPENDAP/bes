@@ -5,7 +5,7 @@
 
 /* maximum type sizes and default values */
 #define PPTCAPI_MAX_STR_LEN 256
-#define PPTCAPI_MAX_BUFFER_SIZE 4096
+#define PPTCAPI_MAX_BUFFER_SIZE 65535
 #define PPTCAPI_MAX_TIMEOUT 5
 
 /* ppt protocol tokens */

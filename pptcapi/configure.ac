@@ -53,8 +53,6 @@ AC_TYPE_SIZE_T
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
 
-SIC_VAR_SYS_ERRLIST
-
 AC_ARG_ENABLE([developer],
   [
     AS_HELP_STRING([--enable-developer],[developer mode])

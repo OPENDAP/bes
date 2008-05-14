@@ -99,7 +99,7 @@ pptcapi_send_chunk( struct pptcapi_connection *connection,
     if( len > PPTCAPI_MAX_BUFFER_SIZE )
     {
 	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "length of chunk to send %d is too bif", len ) ;
+	sprintf( *error, "length of chunk to send %d is too big", len ) ;
 	return PPTCAPI_ERROR ;
     }
 
