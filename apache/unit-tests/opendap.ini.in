@@ -28,8 +28,8 @@ Cedar.Authenticate.Mode=off
 
 Cedar.DB.Catalog.Type=mysql
 Cedar.DB.Catalog.Server=localhost
-Cedar.DB.Catalog.User=root
-Cedar.DB.Catalog.Password=1010110110111010100011110111100111000101010100001000100110000100
+Cedar.DB.Catalog.User=
+Cedar.DB.Catalog.Password=
 Cedar.DB.Catalog.Database=CEDARCATALOG
 Cedar.DB.Catalog.Socket=/project/cedar/src/pwest/packages/mysql/mysql.sock
 
