@@ -23,5 +23,5 @@ CLEANFILES = *.log *.sum real*
 requestsT_SOURCES = requestsT.cc
 requestsT_LDADD =  ../.libs/BESApacheRequests.o $(BES_LIBS)
 wrapperT_SOURCES = wrapperT.cc
-wrapperT_LDADD = ../.libs/BESApacheWrapper.o ../.libs/BESApacheRequests.o ../.libs/BESApacheInterface.o ../../../lib/cedar_handler/cedar_commands.o ../../../lib/cedar_handler/cedar_module.o -L$(BES_MODULE_DIR) -ldap_module -ldap_cmd_module $(BES_DAP_LIBS) -lcedar_handler
+wrapperT_LDADD = ../.libs/BESApacheWrapper.o ../.libs/BESApacheRequests.o ../.libs/BESApacheInterface.o -L$(BES_MODULE_DIR) -ldap_module -ldap_cmd_module $(BES_DAP_LIBS)
 

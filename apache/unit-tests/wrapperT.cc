@@ -80,7 +80,7 @@ main( int argc, char **argv )
 	BESApacheWrapper wrapper ;
 	rq.cookie=wrapper.process_user( "username=pwest" ) ;
 	rq.token="token" ;
-	wrapper.process_request( "request=define+d1+as+mfp920504a;get+das+for+d1;" ) ;
+	wrapper.process_request( "request=show+status;show+version;" ) ;
 	rq.request = wrapper.get_first_request() ;
 	while( rq.request )
 	{
