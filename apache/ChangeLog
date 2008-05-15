@@ -1,0 +1,212 @@
+2008-05-14  Patrick West <pwest@ucar.edu>
+
+	Simpler test for wrapperT instead of grabbing data.
+	M    wrapperT.cc
+	M    Makefile.am
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Removed debugging statements.
+	M    apache/BESApacheInterface.cc
+
+2008-03-04  Patrick West <pwest@ucar.edu>
+
+	Added unit test and debug statements. Upgraded configuration.
+	A    apache/unit-tests/requestsT.cc
+	A    apache/unit-tests/opendap.ini
+	A    apache/unit-tests/wrapperT.cc
+	A    apache/unit-tests/Makefile.am
+	M    apache/BESApacheInterface.cc
+	D    apache/requestsT.cc
+	A    apache/conf/pkg.m4
+	A    apache/conf/bes.m4
+	D    apache/wrapperT.cc
+	M    apache/BESApacheWrapper.cc
+	M    apache/configure.ac
+	M    apache/Makefile.am
+
+2008-03-03  Patrick West <pwest@ucar.edu>
+
+	Configuration upgrades to apache module to locate apache source.
+	A    apache/unit-tests
+	M    apache/BESApacheInterface.cc
+	M    apache/BESApacheInterface.h
+	M    apache/requestsT.cc
+	A    apache/conf
+	AM   apache/conf/mkinstalldirs
+	AM   apache/conf/depcomp
+	AM   apache/conf/missing
+	AM   apache/conf/config.guess
+	AM   apache/conf/config.sub
+	AM   apache/conf/ltmain.sh
+	AM   apache/conf/install-sh
+	M    apache/wrapperT.cc
+	M    apache/BESApacheRequests.cc
+	A    apache/configure.ac
+	M    apache/mod_opendap.cc
+	A    apache/Makefile.am
+
+2007-08-27  Patrick West <pwest@ucar.edu>
+
+	Modifications to be able to write all response objects out to
+	ostream rather than stdout. Beginnings of chunking. Modified unit
+	tests and added new ones to test the funcionality. In PPT making
+	sure that handshaking at beginning of connection is done directly to
+	socket instead of using send and receive methods on PPTConnection,
+	which will be changed to do chunking. The handshaking will NOT do
+	chunking but will simply be tokens.
+	M    apache/BESApacheInterface.cc
+	M    apache/mod_opendap.cc
+
+2007-08-22  Patrick West <pwest@ucar.edu>
+
+	Changed usage of BESAutoPtr to autoptr C++ class. Apache module
+	changed to reflect cedar changes.
+	M    apache/BESApacheInterface.cc
+	M    apache/local_makefile
+	M    apache/mod_opendap.cc
+
+2007-07-12  Patrick West <pwest@ucar.edu>
+
+	exeucte_request method signature change to include client information
+	M    BESApacheInterface.cc
+
+2007-06-26  James Gallagher <jgallagher@opendap.org>
+
+	Replaced unidata with opendap support email.
+
+2007-06-07  Patrick West <pwest@ucar.edu>
+
+	Modified ResponseHandlerList function signature to take a const
+	string & instead of a string. This required the same change to all
+	ResponseHandler Build methods. Also changed the constructors to take
+	a const string & instead of a string. Also changed the constructors
+	for the RequestHandler classes to take const string & instead of
+	string. Changed the methods in ResponseHandler and RequestHandler
+	classes when adding handlers to take const string & instead of
+	string.
+
+	Changed all the files to correct a typo in the copyright notice.
+
+2006-11-23  Patrick West <pwest@ucar.edu>
+
+	All classes in BES now inherit from the same parent, BESObj. BESObj
+	has a dump method on it that allows, during debug, for an object's
+	state to be dumped (private data members, whatever else). Also on
+	the BESObj class is a operator<< method so that you can have an
+	object, called obj, and do the following: cout << obj ; Created a
+	BESIndent class so that dumps can be indented nicely for easier
+	debugging.
+
+	Created a BESDebug class and the beginnings of debug information
+	throughout the code. The -d option on the command line client and
+	the server (including the besctl script) now work. The options takes
+	an argument, either cerr (to dump debug information to cerr) or the
+	name of a file where debug information will be sent.
+
+	The -t options on the command line client (and in the PPT client
+	code) is now working. Before we accepted the flag, but ignored it.
+	In the command line client the usage information is only dumped
+	once. And, if version is requested, the usage is NOT dumped after
+	the version information is dumped.
+
+	Removed any reference to key/value pairs in the BES configuration
+	file that had OPeNDAP at the front and any error messages that
+	reference them. They all begin with BES.
+	M    bes/apache/BESApacheWrapper.cc
+	M    bes/apache/requestsT.cc
+	M    bes/apache/local_makefile
+	M    bes/apache/wrapperT.cc
+
+2006-08-14  Patrick West <pwest@ucar.edu>
+
+	Apache module using new versions of Exception classes. Also added
+	support for using authentication tokens with the username instead of
+	just the username.
+	M    apache/BESApacheInterface.cc
+	M    apache/BESApacheWrapper.cc
+	M    apache/BESApacheWrapper.h
+	M    apache/mod_opendap.cc
+	M    apache/BESApacheRequests.cc
+
+2006-06-14  Patrick West <pwest@ucar.edu>
+
+	renamed execs to besd and bes, opendap.ini to bes.conf. besd and bes
+	in sbin. bes.conf, dispatch_help in etc/bes, module libraries in
+	lib/bes. Ranamed files to BES. pid file in prefix/run. looks for
+	bes.conf using cmd line arg first, env var second, default location
+	prefix/etc/bes third.
+
+2006-06-02  Patrick West <pwest@ucar.edu>
+
+	added Jose as author, re-build bes.conf file, added port and secure
+	configuration information, moved bes and besd configuration to sbin,
+	moved help file installation to /etc/bes
+
+2006-05-12  Patrick West <pwest@ucar.edu>
+
+	added Jose Garcia as author of bes code. updated templates and
+	server creation script to use dynamically loaded modules. Updated
+	documentation for the response handlers (more to come).
+
+2006-05-08  Patrick West <pwest@ucar.edu>
+
+	whenever one request fails, do not proceed to the next
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	template opendap.ini file for apache module
+
+2006-04-20  Patrick West <pwest@ucar.edu>
+
+	new apache wrapper and unit tests
+
+2006-04-05  Patrick West <pwest@ucar.edu>
+
+	made basic handlers automatically loaded instead of needing to be
+	linked in or loaded as a module
+
+2005-11-10  Patrick West <pwest@ucar.edu>
+
+	moved call to parent initialization to end of initialize routine
+
+2005-11-09  Patrick West <pwest@ucar.edu>
+
+	updated globals to use singletons
+
+2005-11-08  Patrick West <pwest@ucar.edu>
+
+	copyright information
+
+2005-09-08  James Gallagher <jgallagher@opendap.org>
+
+	Repaired two places where string::npos was compared to an int. Now
+	uses std::string::size_type which is 64-bit clean.
+
+	M    apache/DODSApache.cc
+
+2005-09-01  James Gallagher <jgallagher@opendap.org>
+
+	Renamed the HAO deamon project 'bes'
+
+2005-09-01  James Gallagher <jgallagher@opendap.org>
+
+	I change s number of the properties on these files, removing the exec
+	property on all but the configure scripts.
+
+2005-08-23  Patrick West <pwest@ucar.edu>
+
+	added command and http transmitter modules and commands library
+
+2005-08-19  Patrick West <pwest@ucar.edu>
+
+	if string not found in find method then string::npos returned, not < 0
+
+2005-08-18  Patrick West <pwest@ucar.edu>
+
+	OPeNDAP Apache module that uses command line interface to parse a URL
+	request.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:

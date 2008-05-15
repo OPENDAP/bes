@@ -62,18 +62,22 @@ AC_CHECK_BES([3.5.3],
 ])
   
 AC_ARG_WITH([apache],
-            [AS_HELP_STRING([--with-apache=PATH],[Apache server directory])],
+            [AS_HELP_STRING([--with-apache=PATH],[Apache server source directory])],
             [APACHE_DIR=${withval}], 
             [APACHE_DIR="no"])
 
+AC_MSG_CHECKING([for apache server source directory])
 if test "${APACHE_DIR}" != "no"
 then
-    if ! test -e "${APACHE_DIR}/include/httpd.h"
+    if ! test -e "${APACHE_DIR}/src/include/httpd.h"
     then
-	AC_MSG_ERROR( Apache server directory not found. )
+	AC_MSG_RESULT([no])
+	AC_MSG_ERROR([Apache server source directory not found.])
+    else
+	AC_MSG_RESULT([${APACHE_DIR}])
     fi
 else
-    AC_MSG_ERROR( Specify the apache server directory using --with-apache )
+    AC_MSG_ERROR([Specify the apache server source directory using --with-apache])
 fi
 
 AC_SUBST(APACHE_DIR)

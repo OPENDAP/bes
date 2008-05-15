@@ -31,6 +31,7 @@ AC_DEFUN([AC_CHECK_BES],
   if test $bes_pkgconfig_bes = yes; then
     BES_LIBS="$BES_DISPATCH_LIBS $BES_COMMAND_LIBS $BES_PPT_LIBS"
     BES_CPPFLAGS=$BES_DISPATCH_CFLAGS
+    BES_PREFIX="`$PKG_CONFIG --variable=prefix bes_dispatch`"
   else
     AC_MSG_CHECKING([for bes version >= $bes_min_version])
     if test "$BES_CONFIG" = 'no' ; then
@@ -68,6 +69,7 @@ AC_DEFUN([AC_CHECK_BES],
         BES_COMMAND_LIBS=$BES_LIBS
         BES_PPT_LIBS=$BES_LIBS
         BES_CPPFLAGS="`$BES_CONFIG --cflags`"
+        BES_PREFIX="`$BES_CONFIG --prefix`"
       fi
     fi
   fi
@@ -90,6 +92,7 @@ AC_DEFUN([AC_CHECK_BES],
     BES_COMMAND_LIBS=
     BES_CPPFLAGS=
     BES_MODULE_DIR=
+    BES_PREFIX=
     m4_if([$3], [], [:], [$3])
   fi
   AC_SUBST([BES_LIBS])
@@ -99,4 +102,5 @@ AC_DEFUN([AC_CHECK_BES],
   AC_SUBST([BES_COMMAND_LIBS])
   AC_SUBST([BES_CPPFLAGS])
   AC_SUBST([BES_MODULE_DIR])
+  AC_SUBST([BES_PREFIX])
 ])

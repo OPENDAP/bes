@@ -1,7 +1,7 @@
 MODULES = mod_opendap.o
 CC=g++
 CC_OBJECT_FLAG=-c
-INCLUDE=-I../../../src/include -I../../../src/os/unix -I/project/cedar/src/pwest/opendap-g/include/bes -I/project/cedar/src/pwest/opendap-g/include/libdap
+INCLUDE=-I../../../src/include -I../../../src/os/unix -I@BES_PREFIX@/include/bes -I@BES_PREFIX@/include/libdap
 ARCHIVE=ar
 ARCHIVE_FLAGS=cru
 
