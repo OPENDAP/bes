@@ -16,7 +16,7 @@
 
 using namespace std;
 
-#include "hdfeos.tab.h"
+#include "hdfeos.tab.hh"
 #include "H5EOS.h"
  
 #define YYPARSE_PARAM h5eos

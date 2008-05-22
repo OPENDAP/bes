@@ -13,7 +13,7 @@
 #define YY_DECL int hdfeoslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
 
-#include "hdfeos.tab.h"
+#include "hdfeos.tab.hh"
 
 int yy_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */
