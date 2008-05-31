@@ -45,6 +45,7 @@
 #include "BESDapError.h"
 #include "BESDataNames.h"
 #include "ConstraintEvaluator.h"
+#include "Ancillary.h"
 #include "config_hdf.h"
 
 extern void read_das(DAS & das, const string & cachedir,
@@ -105,6 +106,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
     try {
         string accessed = dhi.container->access();
         read_das(*das, _cachedir, accessed);
+	Ancillary::read_ancillary_das( *das, accessed ) ;
     }
     catch(BESError & e) {
         throw e;
@@ -142,9 +144,11 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
         string accessed = dhi.container->access();
         dds->filename(accessed);
         read_dds(*dds, _cachedir, accessed);
+	Ancillary::read_ancillary_dds( *dds, accessed ) ;
 
         DAS das;
         read_das(das, _cachedir, accessed);
+	Ancillary::read_ancillary_das( das, accessed ) ;
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
@@ -186,9 +190,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
         string accessed = dhi.container->access();
         dds->filename(accessed);
         read_dds(*dds, _cachedir, accessed);
+	Ancillary::read_ancillary_dds( *dds, accessed ) ;
 
         DAS das;
         read_das(das, _cachedir, accessed);
+	Ancillary::read_ancillary_das( das, accessed ) ;
         dds->transfer_attributes(&das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
