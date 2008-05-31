@@ -31,6 +31,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <Attribute name="scale_factor" type="String">
             <value>&quot;0.005&quot;</value>
         </Attribute>
+        <Attribute name="DODS_Name" type="String">
+            <value>&quot;UWind&quot;</value>
+        </Attribute>
+        <Attribute name="b" type="Byte">
+            <value>128</value>
+        </Attribute>
+        <Attribute name="i" type="Int32">
+            <value>32000</value>
+        </Attribute>
+        <Attribute name="WOA01" type="Url">
+            <value>&quot;http://localhost/junk&quot;</value>
+        </Attribute>
         <Int16/>
         <dimension name="time_a" size="16"/>
         <dimension name="lat" size="17"/>
@@ -48,6 +60,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Attribute>
         <Attribute name="scale_factor" type="String">
             <value>&quot;0.005&quot;</value>
+        </Attribute>
+        <Attribute name="DODS_Name" type="String">
+            <value>&quot;VWind&quot;</value>
         </Attribute>
         <Int16/>
         <dimension name="time_a" size="16"/>

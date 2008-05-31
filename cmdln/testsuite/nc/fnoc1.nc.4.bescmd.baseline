@@ -364,6 +364,10 @@ units: "meter per second"
 long_name: "Vector wind eastward component"
 missing_value: "-32767"
 scale_factor: "0.005"
+DODS_Name: "UWind"
+b: 128
+i: 32000
+WOA01: "http://localhost/junk"
 </textarea>
 
 
@@ -406,6 +410,7 @@ units: "meter per second"
 long_name: "Vector wind northward component"
 missing_value: "-32767"
 scale_factor: "0.005"
+DODS_Name: "VWind"
 </textarea>
 
 
