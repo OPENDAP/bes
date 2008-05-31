@@ -37,6 +37,7 @@
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
+#include "Ancillary.h"
 #include "BESInfo.h"
 #include "BESResponseNames.h"
 #include "BESContainer.h"
@@ -86,6 +87,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     try {
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
+	Ancillary::read_ancillary_das( *das, filename ) ;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -131,10 +133,14 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         depth_first(file1, "/", *dds, filename.c_str());
 
+	Ancillary::read_ancillary_dds( *dds, filename ) ;
+
         DAS das;
 
         find_gloattr(file1, das);
         depth_first(file1, "/", das);
+
+	Ancillary::read_ancillary_das( das, filename ) ;
 
         dds->transfer_attributes(&das);
 
@@ -189,10 +195,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         depth_first(file1, "/", *dds, filename.c_str());
 
+	Ancillary::read_ancillary_dds( *dds, filename ) ;
+
         DAS das;
 
         find_gloattr(file1, das);
         depth_first(file1, "/", das);
+
+	Ancillary::read_ancillary_das( das, filename ) ;
 
         dds->transfer_attributes(&das);
 

@@ -55,15 +55,29 @@ void
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
     BESDEBUG("h5", "    adding " << HDF5_CATALOG << " catalog" << endl)
-        BESCatalogList::TheCatalogList()->
-        add_catalog(new BESCatalogDirectory(HDF5_CATALOG));
+    if( !BESCatalogList::TheCatalogList()->find_catalog( HDF5_CATALOG ) )
+    {
+	BESCatalogList::TheCatalogList()->
+	    add_catalog(new BESCatalogDirectory(HDF5_CATALOG));
+    }
+    else
+    {
+	BESDEBUG( "h5", "    catalog already exists, skipping" << endl )
+    }
 
     BESDEBUG("h5",
              "    adding catalog container storage " << HDF5_CATALOG <<
              endl)
-    BESContainerStorageCatalog *csc =
-        new BESContainerStorageCatalog(HDF5_CATALOG);
-    BESContainerStorageList::TheList()->add_persistence(csc);
+    if( !BESContainerStorageList::TheList()->find_persistence( HDF5_CATALOG ) )
+    {
+	BESContainerStorageCatalog *csc =
+	    new BESContainerStorageCatalog(HDF5_CATALOG);
+	BESContainerStorageList::TheList()->add_persistence(csc);
+    }
+    else
+    {
+	BESDEBUG( "h5", "    storage already exists, skipping" << endl )
+    }
 
     BESDEBUG("h5", "    adding h5 debug context" << endl)
         BESDebug::Register("h5");
