@@ -62,7 +62,7 @@ public:
     virtual BESReporter *	remove_reporter( string reporter_name ) ;
     virtual BESReporter *	find_reporter( string reporter_name ) ;
 
-    virtual void		report( const BESDataHandlerInterface &dhi ) ;
+    virtual void		report( BESDataHandlerInterface &dhi ) ;
 
     virtual void		dump( ostream &strm ) const ;
 

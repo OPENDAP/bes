@@ -90,7 +90,7 @@ BESReporterList::find_reporter( string reporter_name )
 }
 
 void
-BESReporterList::report( const BESDataHandlerInterface &dhi )
+BESReporterList::report( BESDataHandlerInterface &dhi )
 {
     BESReporter *reporter = 0 ;
     BESReporterList::Reporter_iter i = _reporter_list.begin() ;

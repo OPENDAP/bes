@@ -43,7 +43,7 @@ protected:
 public:
     virtual		~BESReporter() {} ;
 
-    virtual void	report( const BESDataHandlerInterface &dhi ) = 0 ;
+    virtual void	report( BESDataHandlerInterface &dhi ) = 0 ;
 
     virtual void	dump( ostream &strm ) const = 0 ;
 } ;
