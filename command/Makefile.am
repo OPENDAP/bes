@@ -17,7 +17,9 @@ CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 lib_LTLIBRARIES = libbes_command.la
+if LIBDAP
 pkglib_LTLIBRARIES = libdap_cmd_module.la
+endif
 
 libbes_command_la_SOURCES = $(SRCS) $(HDRS)
 libbes_command_la_LDFLAGS = -version-info $(LIBCOMMAND_VERSION)
