@@ -13,7 +13,7 @@ public:
 			TestReporter( string name ) ;
     virtual		~TestReporter() ;
 
-    virtual void	report( const BESDataHandlerInterface &dhi ) ;
+    virtual void	report( BESDataHandlerInterface &dhi ) ;
     virtual string	get_name() { return _name ; }
 
     virtual void	dump( ostream &strm ) const { }

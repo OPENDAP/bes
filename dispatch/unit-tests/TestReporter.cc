@@ -18,7 +18,7 @@ TestReporter::~TestReporter()
 }
 
 void
-TestReporter::report( const BESDataHandlerInterface &dhi )
+TestReporter::report( BESDataHandlerInterface &dhi )
 {
     cout << _name << " reporting" << endl ;
 }
