@@ -5,7 +5,7 @@
 %define besgroup %{name}
 
 Name:           bes
-Version:        3.6.1
+Version:        3.6.2
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -153,6 +153,9 @@ exit 0
 %doc __distribution_docs/api-html/
 
 %changelog
+* Wed Jun 25 2008 Patrick West <pwest@ucar.edu> 3.6.2-1
+- Update.
+
 * Fri Apr 11 2008 Patrick West <pwest@ucar.edu> 3.6.1-1
 - Update.
 

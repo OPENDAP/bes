@@ -1,3 +1,148 @@
+2008-06-25  Patrick West <pwest@ucar.edu>
+
+	Problem where errors context set to dap2 and BES returns empty
+	response.  Problem was that BES was causing seg fault in
+	BESDapError.cc where getting error code in possible null object when
+	should have been using error code retrieved right above.
+	M    dispatch/BESDapError.cc
+
+2008-06-25  Patrick West <pwest@ucar.edu>
+
+	There is no dap 3.2 response version. Changed it to 3.1. Per James
+	request.
+	M    dispatch/BESDapRequestHandler.cc
+
+2008-06-06  Patrick West <pwest@ucar.edu>
+
+	BESReporter interface change.
+	M    unit-tests/TestReporter.h
+	M    unit-tests/TestReporter.cc
+
+2008-06-01  Patrick West <pwest@ucar.edu>
+
+	Only create the dap_cmd_module if LIBDAP is found
+	M    Makefile.am
+
+2008-05-31  Patrick West <pwest@ucar.edu>
+
+	To allow for easier container iteration, since the container list in
+	BESDataHandlerInterface is not const, remove const for parameter in
+	report method.
+	M    dispatch/BESReporterList.cc
+	M    dispatch/BESReporter.h
+	M    dispatch/BESReporterList.h
+
+2008-05-30  Patrick West <pwest@ucar.edu>
+
+	Ancillary data now included in the DAS, DDX, Info, and HTML responses.
+	M    cmdln/testsuite/nc/fnoc1.nc.0.bescmd.baseline
+	M    cmdln/testsuite/nc/fnoc1.nc.2.bescmd.baseline
+	M    cmdln/testsuite/nc/fnoc1.nc.3.bescmd.baseline
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+
+2008-05-15  Patrick West <pwest@ucar.edu>
+
+	Removed some stuff
+	M    apache/unit-tests/opendap.ini.in
+
+2008-05-15  Patrick West <pwest@ucar.edu>
+
+	Now available for release, as bes_apache-1.0.0. First official release.
+	Updated the configuration and able to do a distcheck build.
+	D    apache/unit-tests/opendap.ini
+	M    apache/unit-tests/Makefile.am
+	A    apache/unit-tests/opendap.ini.in
+	A    apache/COPYRIGHT_UCAR
+	M    apache/conf/bes.m4
+	A    apache/ChangeLog
+	D    apache/local_makefile
+	D    apache/Makefile.tmpl
+	A    apache/Makefile.tmpl.in
+	A    apache/README
+	D    apache/libopendap.module
+	M    apache/configure.ac
+	M    apache/opendap.ini
+	A    apache/libopendap.module.in
+	A    apache/INSTALL
+	A    apache/COPYING
+	M    apache/Makefile.am
+	A    apache/NEWS
+
+2008-05-14  Patrick West <pwest@ucar.edu>
+
+	Simpler test for wrapperT instead of grabbing data.
+	M    wrapperT.cc
+	M    Makefile.am
+
+2008-05-14  Patrick West <pwest@ucar.edu>
+
+	removed reference to sys_errlist check in configure.ac. Changed
+	buffer size to 65535, the max chunk size. Error message in
+	pptcapi_send.c typo.
+	M    pptcapi/configure.ac
+	M    pptcapi/pptcapi.h
+	M    pptcapi/pptcapi_send.c
+
+2008-05-08  Patrick West <pwest@ucar.edu>
+
+	Added copywrite info and changed includes for Linux builds.
+	M    dispatch/BESStopWatch.cc
+	M    dispatch/BESStopWatch.h
+
+2008-05-07  Patrick West <pwest@ucar.edu>
+
+	Added a stop watch class for timings. Added timing calls in the
+	client and server classes. To use, use the debug option -d to besctl
+	or besdaemon or beslistener or bescmdln. For example, -d
+	"cerr,timing" Added certificate authority file to authentication in
+	ppt. All certificate authorities accepted by the client and server
+	should be included in this certificate authority file.
+
+	Changed the default buffer size to 65550 and the default chunk size
+	to its max size, which is 65535.
+	M    ppt/PPTServer.h
+	M    ppt/PPTClient.cc
+	M    ppt/SSLClient.h
+	M    ppt/SSLServer.h
+	M    ppt/PPTServer.cc
+	M    ppt/SSLClient.cc
+	M    ppt/PPTClient.h
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTProtocol.h
+	M    ppt/SSLServer.cc
+	M    server/BESServerHandler.cc
+	M    cmdln/CmdClient.cc
+	A    dispatch/BESStopWatch.cc
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+	A    dispatch/BESStopWatch.h
+
+2008-04-30  Patrick West <pwest@ucar.edu>
+
+	removed total count extension sent at the end of a response. Not
+	needed.
+	M    PPTStreamBuf.cc
+	M    unit-tests/sbT.cc
+
+2008-04-10  Patrick West <pwest@ucar.edu>
+
+	3.6.1 changes made against 3.6.0 tags directory and merged back into
+	the trunk.
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    bes.spec
+
+2008-04-08  Patrick West <pwest@ucar.edu>
+
+	Memory clean up
+	M    csv-handler/CSVModule.cc
+	M    server/BESServerHandler.cc
+	M    dispatch/BESKeys.cc
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2008-04-04  Patrick West <pwest@ucar.edu>
 
 	Fixed delete of the buffer.

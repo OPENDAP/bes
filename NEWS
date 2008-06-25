@@ -1,6 +1,21 @@
 
 	$Id$
 
+News for version 3.6.2, 25 June 2008
+
+Changed default buffer size in PPT to 65535. This should create fewer sends
+and receives in the server and client code for responses making response
+times faster.
+
+Added a BESStopWatch class to help with timings between client and server,
+and for any other debugging required in the BES.
+
+Modified the BESReporter interface to allow for easier iteration through
+containers in get commands.
+
+Other minor bug fixes and enhancements to code and configuration. Refer to
+the ChangeLog file for more information.
+
 News for version 3.6.1, 11 April 2008
 
 Bug fixed in new PPT chunking scheme
