@@ -131,8 +131,7 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 	{
 	    ec = de->get_error_code() ;
 	}
-	e.set_error_type( convert_error_code( de->get_error_code(),
-	                                      e.get_error_type() ) ) ;
+	e.set_error_type( convert_error_code( ec, e.get_error_type() ) ) ;
 	dhi.error_info = new BESDapErrorInfo( ec, e.get_message() ) ;
 
 	return e.get_error_type() ;
