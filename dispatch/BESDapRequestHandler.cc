@@ -66,7 +66,7 @@ BESDapRequestHandler::dap_build_version( BESDataHandlerInterface &dhi )
     info->begin_tag( "DAP" ) ;
     info->add_tag( "version", "2.0" ) ;
     info->add_tag( "version", "3.0" ) ;
-    info->add_tag( "version", "3.2" ) ;
+    info->add_tag( "version", "3.1" ) ;
     info->end_tag( "DAP" ) ;
 
     return true ;
