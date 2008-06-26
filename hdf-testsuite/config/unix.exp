@@ -37,6 +37,7 @@ proc dap_hdf4_handler_start { text_or_bin {switches ""} {data ""}} {
 
 # exp_internal 1
 
+    exec mkdir -p hdf-testsuite/cache
     if {[string compare $text_or_bin "-t"] == 0} {
     	if {$verbose >= 1} {
     	    send_user "Testing $PROG $switches $data\n"
@@ -56,7 +57,7 @@ proc dap_hdf4_handler_load {} {
 proc dap_hdf4_handler_exit {} {
     send_user "Running rm now\n"
     exec rm -rf hdf-testsuite/cache
-    exec mkdir hdf-testsuite/cache
+    exec mkdir -p hdf-testsuite/cache
 }
 
 proc dap_hdf4_handler_version {} {
