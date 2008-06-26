@@ -50,7 +50,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define DODS_DEBUG
+//#define DODS_DEBUG
 #include <debug.h>
 using namespace std;
 
