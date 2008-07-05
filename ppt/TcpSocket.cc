@@ -37,13 +37,24 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
+#include <netinet/tcp.h>
 
 #include <cstring>
 #include <cerrno>
 
+#include <iostream>
+#include <sstream>
+
+using std::cerr ;
+using std::endl ;
+using std::istringstream ;
+
 #include "TcpSocket.h"
 #include "SocketConfig.h"
+#include "TheBESKeys.h"
+#include "BESDebug.h"
 #include "BESInternalError.h"
+#include "BESInternalFatalError.h"
 
 void
 TcpSocket::connect()
@@ -136,6 +147,14 @@ TcpSocket::connect()
     
     _connected = false;
     int descript = socket( AF_INET, SOCK_STREAM, pProtoEnt->p_proto ) ;
+
+    /*
+    unsigned int sockbufsize = 0 ;
+    int size = sizeof(int) ;
+    int err = getsockopt( descript, IPPROTO_TCP, TCP_MAXSEG,
+			  (void *)&sockbufsize, (socklen_t*)&size) ;
+    cerr << "max size of tcp segment = " << sockbufsize << endl ;
+    */
     
     if( descript == -1 ) 
     {
@@ -152,6 +171,10 @@ TcpSocket::connect()
         holder = fcntl(_socket, F_GETFL, NULL);
         holder = holder | O_NONBLOCK;
         fcntl(_socket, F_SETFL, holder);
+    
+	// we must set the send and receive buffer sizes before the connect call
+	setTcpRecvBufferSize( ) ;
+	setTcpSendBufferSize( ) ;
       
         int res = ::connect( descript, (struct sockaddr*)&sin, sizeof( sin ) );
 
@@ -247,7 +270,6 @@ TcpSocket::connect()
             fcntl(_socket, F_SETFL, holder);
             _connected = true;
         }
-        
     }
 }
 
@@ -281,42 +303,46 @@ TcpSocket::listen()
     _socket = socket( AF_INET, SOCK_STREAM, 0 ) ;
     if( _socket != -1 )
     {
-	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
+	if( setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
 	                 (char*)&on, sizeof( on ) ) )
 	{
-	    if( bind( _socket, (struct sockaddr*)&server, sizeof server) != -1 )
-	    {
-		int length = sizeof( server ) ;
+	    string error( "could not set SO_REUSEADDR on TCP socket" ) ;
+	    const char* error_info = strerror( errno ) ;
+	    if( error_info )
+		error += " " + (string)error_info ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
+	}
+
+	if( bind( _socket, (struct sockaddr*)&server, sizeof server) != -1 )
+	{
+	    int length = sizeof( server ) ;
 #ifdef _GETSOCKNAME_USES_SOCKLEN_T	
-		if( getsockname( _socket, (struct sockaddr *)&server,
-		                 (socklen_t *)&length ) == -1 )
+	    if( getsockname( _socket, (struct sockaddr *)&server,
+			     (socklen_t *)&length ) == -1 )
 #else
-                    if( getsockname( _socket, (struct sockaddr *)&server,
-                                     &length ) == -1 )
+	    if( getsockname( _socket, (struct sockaddr *)&server,
+			     &length ) == -1 )
 #endif
-                    {
-                        string error( "getting socket name" ) ;
-                        const char* error_info = strerror( errno ) ;
-                        if( error_info )
-                            error += " " + (string)error_info ;
-                        throw BESInternalError( error, __FILE__, __LINE__ ) ;
-                    }
-		if( ::listen( _socket, 5 ) == 0 )
-		{
-		    _listening = true ;
-		}
-		else
-		{
-		    string error( "could not listen TCP socket" ) ;
-		    const char* error_info = strerror( errno ) ;
-		    if( error_info )
-			error += " " + (string)error_info ;
-		    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-		}
+	    {
+		string error( "getting socket name" ) ;
+		const char* error_info = strerror( errno ) ;
+		if( error_info )
+		    error += " " + (string)error_info ;
+		throw BESInternalError( error, __FILE__, __LINE__ ) ;
+	    }
+
+	    // The send and receive buffer sizes must be set before the call to
+	    // ::listen.
+	    setTcpRecvBufferSize( ) ;
+	    setTcpSendBufferSize( ) ;
+
+	    if( ::listen( _socket, 5 ) == 0 )
+	    {
+		_listening = true ;
 	    }
 	    else
 	    {
-		string error( "could not bind TCP socket" ) ;
+		string error( "could not listen TCP socket" ) ;
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
 		    error += " " + (string)error_info ;
@@ -325,7 +351,7 @@ TcpSocket::listen()
 	}
 	else
 	{
-	    string error( "could not set SO_REUSEADDR on TCP socket" ) ;
+	    string error( "could not bind TCP socket" ) ;
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
@@ -342,6 +368,219 @@ TcpSocket::listen()
     }
 }
 
+/** @brief set the size of the TCP receive buffer
+ *
+ * Two parameters are set in the BES configuration file. They are:
+ *
+ * BES.SetSockRecvSize=Yes|No
+ * BES.SockRecvSize=<num>
+ *
+ * The first tells us if the BES should use the buffer size specified in the
+ * configuration file. If set to yes, then get the second parameter and use
+ * setsockopt to set the receive buffer size. Do NOT set the internal buffer
+ * sizes here. This will happen in the Get calls above that call getsockopt.
+ *
+ * We are trusting that the administrator is not setting the size too small
+ * or too big.
+ *
+ * @throws BESInternalFatalError if unable to set the buffer size as
+ * specified in the configuration file
+ */
+void
+TcpSocket::setTcpRecvBufferSize()
+{
+    if( !_haveRecvBufferSize )
+    {
+	bool found = false ;
+	string setit ;
+	try
+	{
+	    setit = TheBESKeys::TheKeys()->get_key( "BES.SetSockRecvSize", found );
+	}
+	catch( ... )
+	{
+	    // ignore any exceptions caught trying to get this key. The
+	    // client also calls this function.
+	    setit = "No" ;
+	}
+	if( setit == "Yes" || setit == "yes" || setit == "Yes" )
+	{
+	    string sizestr
+		= TheBESKeys::TheKeys()->get_key( "BES.SockRecvSize", found ) ;
+	    istringstream sizestrm( sizestr ) ;
+	    unsigned int sizenum = 0 ;
+	    sizestrm >> sizenum ;
+	    if( !sizenum )
+	    {
+		string err = "Socket Recv Size malformed: " + sizestr ;
+		throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	    }
+
+	    // call setsockopt
+	    int err = setsockopt( _socket, SOL_SOCKET, SO_RCVBUF,
+			      (char *)&sizenum, (socklen_t)sizeof(sizenum) ) ;
+	    int myerrno = errno ;
+	    if( err == -1 )
+	    {
+		char *serr = strerror( myerrno ) ;
+		string err = "Failed to set the socket receive buffer size: " ;
+		if( serr )
+		    err += serr ;
+		else
+		    err += "unknow error occurred" ;
+		throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	    }
+
+	    BESDEBUG( "ppt", "Tcp receive buffer size set to "
+			     << (unsigned long)sizenum << endl )
+	}
+    }
+}
+
+/** @brief set the size of the TCP send buffer
+ *
+ * Two parameters are set in the BES configuration file. They are:
+ *
+ * BES.SetSockSendSize?=Yes|No
+ * BES.SockSendSize?=<num>
+ *
+ * The first tells us if the BES should use the buffer size specified in the
+ * configuration file. If set to yes, then get the second parameter and use
+ * setsockopt to set the send buffer size. If set to no call getsockopt to
+ * get the size of the buffer.
+ *
+ * We are trusting that the administrator is not setting the size too small
+ * or too big.
+ *
+ * @throws BESInternalFatalError if unable to set the buffer size as
+ * specified in the configuration file
+ */
+void
+TcpSocket::setTcpSendBufferSize()
+{
+    bool found = false ;
+    string setit ;
+    try
+    {
+	setit = TheBESKeys::TheKeys()->get_key( "BES.SetSockSendSize", found );
+    }
+    catch( ... )
+    {
+	// ignore any exceptions caught trying to get this key. The
+	// client also calls this function.
+	setit = "No" ;
+    }
+    if( setit == "Yes" || setit == "yes" || setit == "Yes" )
+    {
+	string sizestr
+	    = TheBESKeys::TheKeys()->get_key( "BES.SockSendSize", found ) ;
+	istringstream sizestrm( sizestr ) ;
+	unsigned int sizenum = 0 ;
+	sizestrm >> sizenum ;
+	if( !sizenum )
+	{
+	    string err = "Socket Send Size malformed: " + sizestr ;
+	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	}
+
+	// call setsockopt
+	int err = setsockopt( _socket, SOL_SOCKET, SO_SNDBUF,
+			  (char *)&sizenum, (socklen_t)sizeof(sizenum) ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    string err = "Failed to set the socket send buffer size: " ;
+	    if( serr )
+		err += serr ;
+	    else
+		err += "unknow error occurred" ;
+	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	}
+
+	BESDEBUG( "ppt", "Tcp send buffer size set to "
+			 << (unsigned long)sizenum << endl )
+    }
+}
+
+/** @brief get the tcp receive buffer size using getsockopt
+ *
+ * Get the receive buffer size for this socket descriptor using the getsockopt
+ * system function. We do this to maximize the performance of TCP sockets
+ *
+ * @throws BESInternalFatalError if we are unable to get the size of the
+ * receive buffer
+ */
+unsigned int	
+TcpSocket::getRecvBufferSize()
+{
+    if( !_haveRecvBufferSize )
+    {
+	// call getsockopt and set the internal variables to the result
+	unsigned int sizenum = 0 ;
+	socklen_t sizelen = sizeof(sizenum) ;
+	int err = getsockopt( _socket, SOL_SOCKET, SO_RCVBUF,
+			  (char *)&sizenum, (socklen_t *)&sizelen ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    string err = "Failed to get the socket receive buffer size: " ;
+	    if( serr )
+		err += serr ;
+	    else
+		err += "unknow error occurred" ;
+	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	}
+
+	BESDEBUG( "ppt", "Tcp receive buffer size is "
+			 << (unsigned long)sizenum << endl )
+
+	_haveRecvBufferSize = true ;
+	_recvBufferSize = sizenum ;
+    }
+    return _recvBufferSize ;
+}
+
+/** @brief get the tcp send buffer size using getsockopt
+ *
+ * Get the send buffer size for this socket descriptor using the getsockopt
+ * system function. We do this to maximize the performance of TCP sockets
+ *
+ * @throws BESInternalFatalError if we are unable to get the size of the
+ * send buffer
+ */
+unsigned int
+TcpSocket::getSendBufferSize()
+{
+    if( !_haveSendBufferSize )
+    {
+	// call getsockopt and set the internal variables to the result
+	unsigned int sizenum = 0 ;
+	socklen_t sizelen = sizeof(sizenum) ;
+	int err = getsockopt( _socket, SOL_SOCKET, SO_SNDBUF,
+			  (char *)&sizenum, (socklen_t *)&sizelen ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    string err = "Failed to get the socket send buffer size: " ;
+	    if( serr )
+		err += serr ;
+	    else
+		err += "unknow error occurred" ;
+	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
+	}
+
+	BESDEBUG( "ppt", "Tcp send buffer size is "
+			  << (unsigned long)sizenum << endl )
+
+	_haveSendBufferSize = true ;
+	_sendBufferSize = sizenum ;
+    }
+    return _sendBufferSize ;
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance
@@ -356,6 +595,14 @@ TcpSocket::dump( ostream &strm ) const
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "host: " << _host << endl ;
     strm << BESIndent::LMarg << "port: " << _portVal << endl ;
+    strm << BESIndent::LMarg << "have recv buffer size: " << _haveRecvBufferSize
+         << endl ;
+    strm << BESIndent::LMarg << "recv buffer size: " << _recvBufferSize
+         << endl ;
+    strm << BESIndent::LMarg << "have send buffer size: " << _haveSendBufferSize
+         << endl ;
+    strm << BESIndent::LMarg << "send buffer size: " << _sendBufferSize
+         << endl ;
     Socket::dump( strm ) ;
     BESIndent::UnIndent() ;
 }

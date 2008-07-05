@@ -100,7 +100,10 @@ public:
 				    _brokenPipe = true ;
 				}
 
-    virtual void			dump( ostream &strm ) const ;
+    virtual unsigned int	getRecvChunkSize() = 0 ;
+    virtual unsigned int	getSendChunkSize() = 0 ;
+
+    virtual void		dump( ostream &strm ) const ;
 } ;
 
 #endif // Connection_h

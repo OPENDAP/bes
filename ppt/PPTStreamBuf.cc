@@ -43,7 +43,7 @@ using std::setw ;
 using std::setfill ;
 
 #include "PPTStreamBuf.h"
-#include "PPTProtocol.h"
+#include "BESDebug.h"
 
 PPTStreamBuf::PPTStreamBuf( int fd, unsigned bufsize )
     : d_bufsize( bufsize ),
@@ -78,8 +78,10 @@ PPTStreamBuf::sync()
     if( pptr() > pbase() )
     {
 	ostringstream strm ;
-	strm << hex << setw( 4 ) << setfill( '0' ) << (unsigned int)(pptr() - pbase()) << "d" ;
+	strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)(pptr() - pbase()) << "d" ;
 	string tmp_str = strm.str() ;
+	BESDEBUG( "ppt", "PPTStreamBuf::sync - writing len "
+	          << tmp_str << endl )
 	write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
 	count += write( d_fd, d_buffer, pptr() - pbase() ) ;
 	setp( d_buffer, d_buffer + d_bufsize ) ;
@@ -108,12 +110,13 @@ PPTStreamBuf::finish()
     ostringstream strm ;
     /*
     ostringstream xstrm ;
-    xstrm << "count=" << hex << setw( 8 ) << setfill( '0' ) << how_many() << ";" ;
+    xstrm << "count=" << hex << setw( 7 ) << setfill( '0' ) << how_many() << ";" ;
     string xstr = xstrm.str() ;
-    strm << hex << setw( 4 ) << setfill( '0' ) << (unsigned int)xstr.length() << "x" << xstr ;
+    strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)xstr.length() << "x" << xstr ;
     */
-    strm << hex << setw( 4 ) << setfill( '0' ) << (unsigned int)0 << "d" ;
+    strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)0 << "d" ;
     string tmp_str = strm.str() ;
+    BESDEBUG( "ppt", "PPTStreamBuf::finish - writing " << tmp_str << endl )
     write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
     // If something doesn't look right try using fsync
     fsync(d_fd);

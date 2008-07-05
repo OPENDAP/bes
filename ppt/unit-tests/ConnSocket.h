@@ -51,6 +51,9 @@ public:
     virtual int			receive( char *inBuff, int inSize ) ;
     virtual void		sync() {}
 
+    virtual unsigned int	getRecvBufferSize() { return 65535 ; }
+    virtual unsigned int	getSendBufferSize() { return 65535 ; }
+
     virtual Socket *		newSocket( int socket,
                                            struct sockaddr *addr ) ;
 

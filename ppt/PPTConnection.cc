@@ -39,6 +39,7 @@
 #include <iomanip>
 
 using std::cout ;
+using std::cerr ;
 using std::endl ;
 using std::flush ;
 using std::ostringstream ;
@@ -50,6 +51,7 @@ using std::setfill ;
 #include "PPTConnection.h"
 #include "PPTProtocol.h"
 #include "Socket.h"
+#include "BESDebug.h"
 #include "BESInternalError.h"
 
 /** @brief Send a message to the server
@@ -66,8 +68,8 @@ using std::setfill ;
 
        chunk-extensions= chunk-size 'x' *( chunk-ext-name [ "=" chunk-ext-val ] ;
        chunk          = chunk-size 'd' chunk-data
-       chunk-size     = 4HEX
-       last-chunk     = 4("0") d
+       chunk-size     = 8HEX
+       last-chunk     = 7("0") d
 
        chunk-ext-name = token
        chunk-ext-val  = token | quoted-string
@@ -130,7 +132,7 @@ PPTConnection::sendChunk( const string &buffer, map<string,string> &extensions )
     {
 	sendExtensions( extensions ) ;
     }
-    strm << hex << setw( 4 ) << setfill( '0' ) << buffer.length() << "d" ;
+    strm << hex << setw( 7 ) << setfill( '0' ) << buffer.length() << "d" ;
     if( !buffer.empty() )
     {
 	strm << buffer ;
@@ -163,7 +165,7 @@ PPTConnection::sendExtensions( map<string,string> &extensions )
 	    estrm << ";" ;
 	}
 	string xstr = estrm.str() ;
-	strm << hex << setw( 4 ) << setfill( '0' ) << xstr.length() << "x" << xstr ;
+	strm << hex << setw( 7 ) << setfill( '0' ) << xstr.length() << "x" << xstr ;
 	string toSend = strm.str() ;
 	send( toSend ) ;
     }
@@ -178,6 +180,7 @@ PPTConnection::sendExtensions( map<string,string> &extensions )
 void
 PPTConnection::send( const string &buffer )
 {
+    BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl )
     _mySock->send( buffer, 0, buffer.length() ) ;
     _mySock->sync() ;
 }
@@ -194,16 +197,47 @@ PPTConnection::readBuffer( char *buffer, unsigned int buffer_size )
     return _mySock->receive( buffer, buffer_size ) ;
 }
 
+int
+PPTConnection::readChunkHeader( char *buffer, unsigned int buffer_size )
+{
+    char *temp_buffer = buffer ;
+    int totalBytesRead = 0 ;
+    bool done = false ;
+    while( !done )
+    {
+	int bytesRead = readBuffer( temp_buffer, buffer_size ) ;
+	BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read "
+	                 << bytesRead << " bytes" << endl )
+	if( bytesRead < 0 )
+	{
+	    return bytesRead ;
+	}
+	if( bytesRead < buffer_size )
+	{
+	    buffer_size = buffer_size - bytesRead ;
+	    temp_buffer = temp_buffer + bytesRead ;
+	    totalBytesRead += bytesRead ;
+	}
+	else
+	{
+	    totalBytesRead += bytesRead ;
+	    done = true ;
+	}
+    }
+    buffer[totalBytesRead] = '\0' ;
+    return totalBytesRead ;
+}
+
 /** @brief receive a chunk of either extensions into the specified map or data
  * into the specified stream
  *
- * This receive will read a chunk of information from the socket and determine if what is
- * read are extensions, where they are stored in the extensions map passed, or data, 
- * which is written to the specified stream
+ * This receive will read a chunk of information from the socket and
+ * determine if what is read are extensions, where they are stored in the
+ * extensions map passed, or data, which is written to the specified stream
  *
- * The first 4 bytes is the length of the information that was passed. The 5th character is
- * either the character 'x', signifying that extensions were sent, or 'd', signifying that
- * data was sent.
+ * The first 7 bytes is the length of the information that was passed. The
+ * 5th character is either the character 'x', signifying that extensions
+ * were sent, or 'd', signifying that data was sent.
  *
  * @param extensions map to store the name/value paris into
  * @param strm output stream to write the received data into
@@ -218,35 +252,44 @@ PPTConnection::receive( map<string,string> &extensions,
 	use_strm = strm ;
 
     // The first buffer will contain the length of the chunk at the beginning.
+    unsigned int ppt_buffer_size = _mySock->getRecvBufferSize() ;
+    BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << ppt_buffer_size
+              << endl )
     if( !_inBuff )
-	_inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
+	_inBuff = new char[ppt_buffer_size+1] ;
 
-    // read the first 5 bytes. The first 4 are the length and the next 1
+    // read the first 8 bytes. The first 7 are the length and the next 1
     // if x then extensions follow, if d then data follows.
-    int bytesRead = readBuffer( _inBuff, 5 ) ;
-    if( bytesRead != 5 )
+    int bytesRead = readChunkHeader( _inBuff, 8 ) ;
+    BESDEBUG( "ppt", "Reading header, read " << bytesRead << " bytes" << endl )
+    if( bytesRead != 8 )
     {
 	string err = "Failed to read length and type of chunk" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-    char lenbuffer[5] ;
+    char lenbuffer[8] ;
     lenbuffer[0] = _inBuff[0] ;
     lenbuffer[1] = _inBuff[1] ;
     lenbuffer[2] = _inBuff[2] ;
     lenbuffer[3] = _inBuff[3] ;
-    lenbuffer[4] = '\0' ;
+    lenbuffer[4] = _inBuff[4] ;
+    lenbuffer[5] = _inBuff[5] ;
+    lenbuffer[6] = _inBuff[6] ;
+    lenbuffer[7] = '\0' ;
     istringstream lenstrm( lenbuffer ) ;
-    unsigned short inlen = 0 ;
-    lenstrm >> hex >> setw(4) >> inlen ;
+    unsigned long inlen = 0 ;
+    lenstrm >> hex >> setw(7) >> inlen ;
+    BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl )
+    BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl )
 
-    if( _inBuff[4] == 'x' )
+    if( _inBuff[7] == 'x' )
     {
 	ostringstream xstrm ;
 	receive( xstrm, inlen ) ;
 	read_extensions( extensions, xstrm.str() ) ;
     }
-    else if( _inBuff[4] == 'd' )
+    else if( _inBuff[7] == 'd' )
     {
 	if( !inlen )
 	{
@@ -258,7 +301,7 @@ PPTConnection::receive( map<string,string> &extensions,
     }
     else
     {
-	string err = (string)"type of data is " + _inBuff[4]
+	string err = (string)"type of data is " + _inBuff[7]
 	             + ", should be x for extensions or d for data" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
@@ -276,19 +319,20 @@ PPTConnection::receive( map<string,string> &extensions,
  * @param len number of bytes remaining to be read
  */
 void
-PPTConnection::receive( ostream &strm, unsigned short len )
+PPTConnection::receive( ostream &strm, unsigned int len )
 {
     if( !_inBuff )
     {
 	string err = "buffer has not been initialized" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-    // I added this test because in PPTConnection::receive( map<string,string>,
-	// ostream ) this method is called with 'len' passed a value that's read from
-	// the input stream. That value could be manipulated to cause a bufer
-	// overflow. Note that _inBuff is PPT_PROTOCOL_BUFFER_SIZE + 1 so reading
-	// that many bytes leaves room for the null byte. jhrg 3/3/08
-    if( len > PPT_PROTOCOL_BUFFER_SIZE )
+    // I added this test because in PPTConnection::receive(
+    // map<string,string>, ostream ) this method is called with 'len' passed
+    // a value that's read from the input stream. That value could be
+    // manipulated to cause a bufer overflow. Note that _inBuff is
+    // PPTBufferSize + 1 so reading that many bytes leaves room for the null
+    // byte. jhrg 3/3/08
+    if( len > _mySock->getRecvBufferSize( ) )
     {
 	string err = "buffer is not large enough" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
@@ -375,7 +419,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
  * @return number of bytes read in, -1 if failed to read anything
  */
 int
-PPTConnection::readBufferNonBlocking( char *inBuff )
+PPTConnection::readBufferNonBlocking( char *inBuff, unsigned int buffer_size )
 {
     struct pollfd p ;
     p.fd = getSocket()->getSocketDescriptor();
@@ -399,7 +443,7 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
 	{
 	    if (arr[0].revents==POLLIN)
 	    {
-		return readBuffer( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
+		return readBuffer( inBuff, buffer_size ) ;
 	    }
 	    else
 	    {
@@ -409,6 +453,18 @@ PPTConnection::readBufferNonBlocking( char *inBuff )
     }
     cout << endl ;
     return -1 ;
+}
+
+unsigned int
+PPTConnection::getRecvChunkSize()
+{
+    return _mySock->getRecvBufferSize() - PPT_CHUNK_HEADER_SPACE ;
+}
+
+unsigned int	
+PPTConnection::getSendChunkSize()
+{
+    return _mySock->getSendBufferSize() - PPT_CHUNK_HEADER_SPACE ;
 }
 
 /** @brief dumps information about this object

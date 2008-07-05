@@ -237,6 +237,49 @@ BES.Uncompress.NumTries=10
 BES.Container.Persistence=strict
 
 #-----------------------------------------------------------------------#
+# Defines the TCP buffer size to use in sending and receiving data in   #
+# the BES. With these parameters you will be able to maximize the       #
+# TCP capacity of the client and server communication by setting the	#
+# size of the internal BES buffers to match that of your systems TCP	#
+# window sizes. System administratos can tune the TCP window sizes in	#
+# the kernal. If this is done, set these parameters to match those	#
+# buffer sizes set in the kernel. Or, if your system supports dynamic	#
+# TCP window sizes, as many are doing these days, then leave the	#
+# SetSock*Size parameters to No and the BES will interogate the socket	#
+# for the buffer sizes.							#
+#									#
+# The TCP window size should be equal to the Bandwidth*Delay Product	#
+# (BDP). This is the number of bytes in flight to fill the entire path,	#
+# and is equal to the connection speed times the RTT( Round-Trip Time) 	#
+# divided by 2. For example, if you have a 100 Mbps path and the RTT is	#
+# 75 ms, the BDP = 100 * 0.075 / 2 = 3.75 Mbits (470 KB).		#
+#									#
+# If you are not sure what to do here, we recommend that you leave	#
+# these values set as is.						#
+#									#
+# BES.SetSockRecvSize=No|Yes - if set to no, then do not set the TCP	#
+#                              TCP receive buffer size. If set to yes	#
+#                              then set the TCP receive buffer size to	#
+#                              the value specified by BES.SockRecvSize	#
+#                              Default is No, use the system TCP window	#
+#                              size.					#
+# BES.SockRecvSize=<number> - This value should be set to the size, in	#
+#                              bytes, of the TCP receive buffer size.	#
+# BES.SetSockSendSize=No|Yes - if set to no, then do not set the TCP	#
+#                              TCP send buffer size. If set to yes	#
+#                              then set the TCP send buffer size to	#
+#                              the value specified by BES.SockSendSize.	#
+#                              Default is No, use the system TCP window	#
+#                              size.					#
+# BES.SockSendSize=<number> - This value should be set to the size, in	#
+#                              bytes, of the TCP send buffer size.	#
+#-----------------------------------------------------------------------#
+BES.SetSockRecvSize=No
+BES.SockRecvSize=65535
+BES.SetSockSendSize=No
+BES.SockSendSize=65535
+
+#-----------------------------------------------------------------------#
 # Defines size of system global memory pool                             #
 #-----------------------------------------------------------------------#
 BES.Memory.GlobalArea.EmergencyPoolSize=1

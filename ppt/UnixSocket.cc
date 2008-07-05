@@ -105,6 +105,9 @@ UnixSocket::connect()
 	    int slen = sizeof( server_addr.sun_family ) ;
 	    slen += strlen( server_addr.sun_path) + 1;
 
+	    // we aren't setting the send and receive buffer sizes for a
+	    // unix socket. These will default to a set value
+
 	    if( ::connect( descript, (struct sockaddr*)&server_addr, slen ) != -1)
 	    {
 		_socket = descript ;
@@ -173,28 +176,29 @@ UnixSocket::listen()
 	server_add.sun_path[103] = '\0';
 
 	unlink( _unixSocket.c_str() ) ;
-	if( !setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
+	if( setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
 	                 (char*)&on, sizeof( on ) ) )
 	{
-	    // Added a +1 to the size computation. jhrg 5/26/05
-	    if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
+	    string error( "could not set SO_REUSEADDR on Unix socket" ) ;
+	    const char *error_info = strerror( errno ) ;
+	    if( error_info )
+		error += " " + (string)error_info ;
+	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
+	}
+
+	// we aren't setting the send and receive buffer sizes for a unix
+	// socket. These will default to a set value
+
+	// Added a +1 to the size computation. jhrg 5/26/05
+	if( bind( _socket, (struct sockaddr*)&server_add, sizeof( server_add.sun_family ) + strlen( server_add.sun_path ) + 1) != -1)
+	{
+	    if( ::listen( _socket, 5 ) == 0 )
 	    {
-		if( ::listen( _socket, 5 ) == 0 )
-		{
-		    _listening = true ;
-		}
-		else
-		{
-		    string error( "could not listen Unix socket" ) ;
-		    const char* error_info = strerror( errno ) ;
-		    if( error_info )
-			error += " " + (string)error_info ;
-		    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-		}
+		_listening = true ;
 	    }
 	    else
 	    {
-		string error( "could not bind Unix socket" ) ;
+		string error( "could not listen Unix socket" ) ;
 		const char* error_info = strerror( errno ) ;
 		if( error_info )
 		    error += " " + (string)error_info ;
@@ -203,8 +207,8 @@ UnixSocket::listen()
 	}
 	else
 	{
-	    string error( "could not set SO_REUSEADDR on Unix socket" ) ;
-	    const char *error_info = strerror( errno ) ;
+	    string error( "could not bind Unix socket" ) ;
+	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;
 	    throw BESInternalError( error, __FILE__, __LINE__ ) ;

@@ -80,27 +80,27 @@ ConnSocket::receive( char *inBuff, int inSize )
     if( _test_rec == 0 )
     {
 	_test_rec++ ;
-	memcpy( inBuff, test_exp[0].c_str(), 5 ) ;
-	return 5 ;
+	memcpy( inBuff, test_exp[0].c_str(), 8 ) ;
+	return 8 ;
     }
     if( _test_rec == 1 )
     {
 	_test_rec++ ;
-	string this_return = test_exp[0].substr( 5, test_exp[0].length() - 5 ) ;
+	string this_return = test_exp[0].substr( 8, test_exp[0].length() - 8 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
     if( _test_rec == 2 )
     {
 	_test_rec++ ;
-	memcpy( inBuff, test_exp[0].c_str(), 5 ) ;
-	return 5 ;
+	memcpy( inBuff, test_exp[0].c_str(), 8 ) ;
+	return 8 ;
     }
     if( _test_rec == 3 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[0].substr( 5, 5 ) ;
+	string this_return = test_exp[0].substr( 8, 5 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -108,7 +108,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[0].substr( 10, 5 ) ;
+	string this_return = test_exp[0].substr( 13, 5 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -116,7 +116,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[0].substr( 15, 4 ) ;
+	string this_return = test_exp[0].substr( 18, 4 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -124,14 +124,14 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	memcpy( inBuff, test_exp[2].c_str(), 5 ) ;
-	return 5 ;
+	memcpy( inBuff, test_exp[2].c_str(), 8 ) ;
+	return 8 ;
     }
     if( _test_rec == 7 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[2].substr( 5, 15 ) ;
+	string this_return = test_exp[2].substr( 8, 15 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -139,7 +139,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = "0000d" ;
+	string this_return = "0000000d" ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -147,7 +147,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[3].substr( 0, 5 ) ;
+	string this_return = test_exp[3].substr( 0, 8 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -155,7 +155,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[3].substr( 5, 15 ) ;
+	string this_return = test_exp[3].substr( 8, 15 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }
@@ -163,7 +163,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[3].substr( 20, 5 ) ;
+	string this_return = test_exp[3].substr( 23, 5 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	cout << "returning \"" << this_return << "\" of length " << this_return.length() << endl ;
 	return this_return.length() ;
@@ -172,7 +172,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = test_exp[3].substr( 25, 24 ) ;
+	string this_return = test_exp[3].substr( 28, 24 ) ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	cout << "returning \"" << this_return << "\" of length " << this_return.length() << endl ;
 	return this_return.length() ;
@@ -181,7 +181,7 @@ ConnSocket::receive( char *inBuff, int inSize )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
-	string this_return = "0000d" ;
+	string this_return = "0000000d" ;
 	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
 	return this_return.length() ;
     }

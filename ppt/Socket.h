@@ -80,6 +80,9 @@ public:
 				    return _ip ;
 				}
 
+    virtual unsigned int	getRecvBufferSize() = 0 ;
+    virtual unsigned int	getSendBufferSize() = 0 ;
+
     virtual Socket *		newSocket( int socket,
                                            struct sockaddr *addr ) = 0 ;
 

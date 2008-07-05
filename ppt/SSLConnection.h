@@ -70,6 +70,9 @@ public:
     virtual bool		receive( map<string,string> &extensions,
                                          ostream *strm = 0 ) {}
 
+    virtual unsigned int	getRecvChunkSize() { return 0 ; }
+    virtual unsigned int	getSendChunkSize() { return 0 ; }
+
     virtual void		dump( ostream &strm ) const ;
 } ;
 

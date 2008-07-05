@@ -39,6 +39,8 @@ using std::string ;
 
 #include "Socket.h"
 
+#define UNIX_SOCKET_BUFFER_SIZE 65535
+
 class UnixSocket : public Socket
 {
 private:
@@ -57,6 +59,15 @@ public:
     virtual void		connect() ;
     virtual void		close() ;
     virtual void		listen() ;
+
+    virtual unsigned int	getRecvBufferSize()
+				{
+				    return UNIX_SOCKET_BUFFER_SIZE ;
+				}
+    virtual unsigned int	getSendBufferSize()
+				{
+				    return UNIX_SOCKET_BUFFER_SIZE ;
+				}
 
     virtual Socket *		newSocket( int socket,
                                            struct sockaddr *addr )

@@ -156,15 +156,6 @@ BESServerHandler::execute( Connection *c )
 	string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
 	BESDEBUG( "server", "BESServerHandler::execute - command = " << cmd_str << endl )
 
-	/*
-	int send_size = 0 ;
-	socklen_t send_size_len = (socklen_t)sizeof( send_size ) ;
-	int ret = getsockopt( c->getSocket()->getSocketDescriptor(),
-			      SOL_SOCKET, SO_SNDBUF,
-			      (char *)&send_size, &send_size_len ) ;
-	cerr << "send_size = " << send_size << endl ;
-	*/
-
 	BESStopWatch *sw = 0 ;
 	if( BESISDEBUG( "timing" ) )
 	{
@@ -172,8 +163,20 @@ BESServerHandler::execute( Connection *c )
 	    sw->start() ;
 	}
 
-	unsigned int bufsize = PPT_PROTOCOL_CHUNK_SIZE ;
-	PPTStreamBuf fds( c->getSocket()->getSocketDescriptor(), bufsize ) ;
+	int descript = c->getSocket()->getSocketDescriptor() ;
+	/*
+	unsigned int sockbufsize = 0 ;
+	int size = sizeof(int) ;
+	int err = getsockopt( descript, SOL_SOCKET, SO_RCVBUF,
+			      (void *)&sockbufsize, (socklen_t*)&size) ;
+	cerr << "The size of the receive buffer is " << sockbufsize << endl ;
+	err = getsockopt( descript, SOL_SOCKET, SO_SNDBUF,
+			  (void *)&sockbufsize, (socklen_t*)&size ) ;
+	cerr << "The size of the send buffer is " << sockbufsize << endl ;
+	*/
+
+	unsigned int bufsize = c->getSendChunkSize() ;
+	PPTStreamBuf fds( descript, bufsize ) ;
 	std::streambuf *holder ;
 	holder = cout.rdbuf() ;
 	cout.rdbuf( &fds ) ;

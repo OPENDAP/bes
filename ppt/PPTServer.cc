@@ -163,12 +163,15 @@ PPTServer::closeConnection()
 int
 PPTServer::welcomeClient()
 {
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
-    /* Doing a non blocking read in case the connection is being initiated
-     * by a non-bes client. Don't want this to block. pcw - 3/5/07
-    int bytesRead = _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
-     */
-    int bytesRead = readBufferNonBlocking( inBuff ) ;
+    // Doing a non blocking read in case the connection is being initiated
+    // by a non-bes client. Don't want this to block. pcw - 3/5/07
+    // int bytesRead = _mySock->receive( inBuff, ppt_buffer_size ) ;
+    //
+    // We are receiving handshaking tokens, so the buffer doesn't need to be
+    // all that big. pcw - 05/31/08
+    unsigned int ppt_buffer_size = 64 ;
+    char *inBuff = new char[ppt_buffer_size+1] ;
+    int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
 
     // if the read of the initial connection fails or blocks, then return
     if( bytesRead == -1 )
@@ -217,8 +220,11 @@ PPTServer::authenticateClient()
     send( PPTProtocol::PPTSERVER_AUTHENTICATE ) ;
 
     // wait for the client request for the secure port
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE] ;
-    int bytesRead = _mySock->receive( inBuff, PPT_PROTOCOL_BUFFER_SIZE ) ;
+    // We are waiting for a ppt tocken requesting the secure port number.
+    // The buffer doesn't need to be all that big. pcw - 05/31/08
+    unsigned int ppt_buffer_size = 64 ;
+    char *inBuff = new char[ppt_buffer_size] ;
+    int bytesRead = _mySock->receive( inBuff, ppt_buffer_size ) ;
     string portRequest( inBuff, bytesRead ) ;
     delete [] inBuff ;
     if( portRequest != PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT )

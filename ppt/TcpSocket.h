@@ -44,23 +44,45 @@ class TcpSocket : public Socket
 private:
     string			_host ;
     int				_portVal ;
+
+    void			setTcpRecvBufferSize() ;
+    void			setTcpSendBufferSize() ;
+    bool			_haveRecvBufferSize ;
+    unsigned int		_recvBufferSize ;
+    bool			_haveSendBufferSize ;
+    unsigned int		_sendBufferSize ;
 public:
     				TcpSocket( const string &host, int portVal )
 				    : Socket(),
 				      _host( host ),
-				      _portVal( portVal ) {}
+				      _portVal( portVal ),
+				      _haveRecvBufferSize( false ),
+				      _recvBufferSize( 0 ),
+				      _haveSendBufferSize( false ),
+				      _sendBufferSize( 0 ) {}
 				TcpSocket( int portVal )
 				    : Socket(),
 				      _host( "" ),
-				      _portVal( portVal ) {}
+				      _portVal( portVal ),
+				      _haveRecvBufferSize( false ) ,
+				      _recvBufferSize( 0 ),
+				      _haveSendBufferSize( false ),
+				      _sendBufferSize( 0 ) {}
     				TcpSocket( int socket,
 				           struct sockaddr *addr )
 				    : Socket( socket, addr ),
 				      _host( "" ),
-				      _portVal( 0 ) {}
+				      _portVal( 0 ),
+				      _haveRecvBufferSize( false ) ,
+				      _recvBufferSize( 0 ),
+				      _haveSendBufferSize( false ),
+				      _sendBufferSize( 0 ) {}
     virtual			~TcpSocket() {}
     virtual void		connect() ;
     virtual void		listen() ;
+
+    virtual unsigned int	getRecvBufferSize() ;
+    virtual unsigned int	getSendBufferSize() ;
 
     virtual Socket *		newSocket( int socket,
                                            struct sockaddr *addr )

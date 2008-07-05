@@ -129,8 +129,11 @@ PPTClient::initConnection()
 	throw BESInternalError( msg, __FILE__, __LINE__ ) ;
     }
 
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
-    int bytesRead = readBufferNonBlocking( inBuff ) ;
+    // we're just getting tokens, not a big buffer, so don't need that big
+    // of a buffer. pcw 05/31/08
+    unsigned int ppt_buffer_size = 64 ;
+    char *inBuff = new char[ppt_buffer_size+1] ;
+    int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
     {
 	delete [] inBuff ;
@@ -138,8 +141,8 @@ PPTClient::initConnection()
 	throw BESInternalError( err, __FILE__, __LINE__) ;
     }
 
-    if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
-	bytesRead = PPT_PROTOCOL_BUFFER_SIZE ;
+    if( bytesRead > ppt_buffer_size )
+	bytesRead = ppt_buffer_size ;
     inBuff[bytesRead] = '\0' ;
     string status( inBuff, 0, bytesRead ) ;
     delete [] inBuff ;
@@ -172,9 +175,12 @@ PPTClient::authenticateWithServer()
     // send request for the authentication port
     send( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
 
-    // receive response with port, terminated with TERMINATE token
-    char *inBuff = new char[PPT_PROTOCOL_BUFFER_SIZE+1] ;
-    int bytesRead = readBufferNonBlocking( inBuff ) ;
+    // receive response with port, terminated with TERMINATE token. We are
+    // exchanging a port number and a terminating token. The buffer doesn't
+    // need to be too big. pcw 05/31/08
+    unsigned int ppt_buffer_size = 64 ;
+    char *inBuff = new char[ppt_buffer_size+1] ;
+    int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
     {
 	delete [] inBuff ;
@@ -182,9 +188,9 @@ PPTClient::authenticateWithServer()
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-    if( bytesRead > PPT_PROTOCOL_BUFFER_SIZE )
+    if( bytesRead > ppt_buffer_size )
     {
-	bytesRead = PPT_PROTOCOL_BUFFER_SIZE ;
+	bytesRead = ppt_buffer_size ;
     }
     inBuff[bytesRead] = '\0' ;
     ostringstream portResponse( inBuff ) ;

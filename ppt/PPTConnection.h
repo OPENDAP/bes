@@ -38,6 +38,8 @@
 
 class Socket ;
 
+#define PPT_CHUNK_HEADER_SPACE 15
+
 class PPTConnection : public Connection
 {
 private:
@@ -54,15 +56,19 @@ protected:
 				      _inBuff( 0 ),
 				      _bytesRead( 0 ) {}
 
-    virtual int			readBuffer( char *inBuff, unsigned int buff_size ) ;
-    virtual int			readBufferNonBlocking( char *inBuff ) ;
+    virtual int			readBuffer( char *inBuff,
+					    unsigned int buff_size ) ;
+    virtual int			readChunkHeader( char *inBuff,
+						 unsigned int buff_size ) ;
+    virtual int			readBufferNonBlocking( char *inBuff,
+						       unsigned int buff_size );
 
     virtual void		send( const string &buffer ) ;
     virtual void		sendChunk( const string &buffer,
 					   map<string,string> &extensions ) ;
     virtual void		read_extensions( map<string,string> &extensions,
                                                  const string &xstr ) ;
-    virtual void		receive( ostream &strm, unsigned short len ) ;
+    virtual void		receive( ostream &strm, unsigned int len ) ;
 public:
     virtual			~PPTConnection() {}
 
@@ -77,6 +83,9 @@ public:
     virtual void		sendExit() ;
     virtual bool		receive( map<string,string> &extensions,
                                          ostream *strm = 0 ) ;
+
+    virtual unsigned int	getRecvChunkSize() ;
+    virtual unsigned int	getSendChunkSize() ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;
