@@ -23,8 +23,8 @@ pptcapi_receive( struct pptcapi_connection *connection,
 	*len = PPTCAPI_MAX_BUFFER_SIZE ;
 	inbuf_created = 1 ;
     }
-    *bytes_read = pptcapi_receive_chunk( connection, inbuf, 5, error ) ;
-    if( *bytes_read != 5 )
+    *bytes_read = pptcapi_receive_chunk( connection, inbuf, 8, error ) ;
+    if( *bytes_read != 8 )
     {
 	if( inbuf_created )
 	{
@@ -38,12 +38,15 @@ pptcapi_receive( struct pptcapi_connection *connection,
 	return PPTCAPI_ERROR ;
     }
 
-    char lenbuffer[5] ;
+    char lenbuffer[8] ;
     lenbuffer[0] = inbuf[0] ;
     lenbuffer[1] = inbuf[1] ;
     lenbuffer[2] = inbuf[2] ;
     lenbuffer[3] = inbuf[3] ;
-    lenbuffer[4] = '\0' ;
+    lenbuffer[4] = inbuf[4] ;
+    lenbuffer[5] = inbuf[5] ;
+    lenbuffer[6] = inbuf[6] ;
+    lenbuffer[7] = '\0' ;
     int chunk_len = 0 ;
     int hex_result = pptcapi_hexstr_to_i( lenbuffer, &chunk_len, error ) ;
     if( hex_result == PPTCAPI_ERROR )

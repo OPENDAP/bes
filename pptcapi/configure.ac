@@ -74,5 +74,6 @@ AC_CONFIG_FILES([Makefile
 		 testsuite/Makefile
 ])
 
+AC_CONFIG_FILES([pptcapi-config], [chmod +x pptcapi-config]) 
 AC_OUTPUT
 

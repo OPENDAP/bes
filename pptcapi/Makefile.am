@@ -21,6 +21,8 @@ DIST_SUBDIRS = unit-tests
 
 lib_LTLIBRARIES = libbes_pptcapi.la
 
+bin_SCRIPTS = pptcapi-config
+
 noinst_HEADERS = pptcapi_utils.h
 
 libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
