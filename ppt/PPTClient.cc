@@ -211,9 +211,7 @@ PPTClient::authenticateWithServer()
     // If it authenticates, good, if not then an exception is thrown. We
     // don't need to do anything else here.
 #else
-    string err = "Server has requested authentication "
-                 + "but OpenSSL is not built into this client" ;
-    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    throw BESInternalError( "Server has requested authentication, but OpenSSL is not built into this client", __FILE__, __LINE__ ) ;
 #endif
 }
 
