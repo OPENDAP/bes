@@ -65,8 +65,11 @@ dnl nothing was given, search in pkgconfig, default paths and in a list
          AC_CHECK_LIB([ssl],[SSL_library_init], [bes_openssl_found=default])
          ])
          LIBS=$BES_OLD_LIBS
-         openssl_libs='-lssl -lcrypto'
-         private_openssl="Libs.private: $openssl_libs"
+	 # Added this test. jhrg 7/8/08
+	 if test $bes_openssl_found = 'default'; then
+            openssl_libs='-lssl -lcrypto'
+            private_openssl="Libs.private: $openssl_libs"
+	 fi
       fi
       if test $bes_openssl_found = 'no'; then
         for d in /usr/ssl/include /usr/local/ssl/include /usr/include \
