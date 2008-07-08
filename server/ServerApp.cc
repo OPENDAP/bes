@@ -219,11 +219,11 @@ ServerApp::set_user_id()
 	new_id = ent->pw_uid ;
     }
 
-    // new user id can not be root (0)
+    // new user id cannot be root (0)
     if( !new_id )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: BES can not run as root" << endl ;
+	cerr << "FAILED: BES cannot run as root" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 

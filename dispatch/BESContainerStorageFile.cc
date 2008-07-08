@@ -63,10 +63,10 @@ using std::ifstream ;
  * a file, and the &lt;data type&gt; is the type of data being represented,
  * such as netcdf, cedar, etc...
  *
- * One container per line, can not span multiple lines
+ * One container per line, cannot span multiple lines
  *
  * @param n name of this persistent store
- * @throws BESInternalError if the file can not be opened or
+ * @throws BESInternalError if the file cannot be opened or
  * if there is an error in reading in the container information.
  * @see BESContainerStorage
  * @see BESFileContainer

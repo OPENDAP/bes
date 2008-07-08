@@ -186,7 +186,7 @@ PPTServer::welcomeClient()
 
     if( status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION )
     {
-	/* If can not negotiate with the client then we don't want to exit
+	/* If cannot negotiate with the client then we don't want to exit
 	 * by throwing an exception, we want to return and let the caller
 	 * clean up the connection
 	 */

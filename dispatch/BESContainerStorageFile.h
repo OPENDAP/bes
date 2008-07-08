@@ -61,7 +61,7 @@ using std::map ;
  * file, and the &lt;data type&gt; is the type of data being represented,
  * such as netcdf, cedar, etc...
  *
- * One container per line, can not span multiple lines
+ * One container per line, cannot span multiple lines
  *
  * @see BESContainerStorage
  * @see BESFileContainer

@@ -105,7 +105,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     if( !os )
     {
 	string err = (string)"Unable to stream file: "
-	             + "can not open file "
+	             + "cannot open file "
 		     + filename ;
 	throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
     }

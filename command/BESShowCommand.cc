@@ -43,7 +43,7 @@
  *
  * A show request looks like:
  *
- * get &lt;info_type&gt;;
+ * show &lt;info_type&gt;;
  *
  * where info_type is the type of information that the user is requesting,
  * such as help or version

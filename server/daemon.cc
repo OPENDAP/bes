@@ -256,7 +256,7 @@ main(int argc, char *argv[])
     if( restart == 2 )
     {
 	cout << NameProgram
-	     << ": server can not mount at first try (core dump). "
+	     << ": server cannot mount at first try (core dump). "
 	     << "Please correct problems on the process manager "
 	     << server_name << endl ;
 	return 0 ;
@@ -342,7 +342,7 @@ pr_exit(int status)
 	    case SERVER_EXIT_FATAL_CAN_NOT_START:
 		{
 		    cerr << NameProgram
-		         << ": server can not start, exited with status "
+		         << ": server cannot start, exited with status "
 			 << WEXITSTATUS( status ) << endl ;
 		    cerr << "Please check all error messages "
 		         << "and adjust server installation" << endl ;
@@ -479,7 +479,7 @@ load_names( const string &install_dir, const string &pid_dir )
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
 	cerr << NameProgram
-	     << ": can not start." << server_name << endl
+	     << ": cannot start." << server_name << endl
 	     << "Please either pass -i <install_dir> on the command line or "
 	     << "set the environment variable " << BES_SERVER_ROOT << " "
 	     << "to the installation directory where the BES listener is."

@@ -86,7 +86,7 @@ BESLog::BESLog()
 	_file_buffer = new ofstream( _file_name.c_str(), ios::out | ios::app ) ;
 	if( !(*_file_buffer) )
 	{
-	    string err = (string)"BES Fatal; can not open log file "
+	    string err = (string)"BES Fatal; cannot open log file "
 	                 + _file_name + "." ;
 	    cerr << err << endl ;
 	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;

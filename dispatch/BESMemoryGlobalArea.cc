@@ -66,7 +66,12 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		TheBESKeys::TheKeys()->get_key( key + "ControlHeap", fnd ) ;
 	    if( (eps=="") || (mhs=="") || (verbose=="") || (control_heap=="") )
 	    {
-		string line = "can not determine memory keys.\n"  ;
+		string line = "cannot determine memory keys."  ;
+		line += "Please set values for"
+		     + " BES.Memory.GlobalArea.EmergencyPoolSize,"
+		     + " BES.Memory.GlobalArea.MaxiumumHeapSize,"
+		     + " BES.Memory.GlobalArea.Verbose, and"
+		     + " BES.Memory.GlobalArea.ControlHeap" ;
 		throw BESInternalFatalError( line, __FILE__, __LINE__ ) ;
 	    }
 	    else
@@ -127,7 +132,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		    if( !_buffer )
 		    {
 			string s = string( "BES: " ) 
-				   + "can not get heap of size "
+				   + "cannot get heap of size "
 				   + mhs + " to start running" ;
 			(*BESLog::TheLog()) << s ;
 			throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;
@@ -148,7 +153,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		_buffer = malloc( _size ) ;
 		if( !_buffer )
 		{
-		    string s = (string)"BES: can not expand heap to "
+		    string s = (string)"BES: cannot expand heap to "
 		               + eps + " to start running" ;
 		    (*BESLog::TheLog()) << s << endl ;
 		    throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;

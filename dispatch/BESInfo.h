@@ -60,7 +60,7 @@ using std::map ;
  * then the information is output during the add_data processing, otherwise
  * the print method performs the output.
  *
- * This class is can not be directly created but simply provides a base class
+ * This class is cannot be directly created but simply provides a base class
  * implementation of BESResponseObject for simple informational responses.
  *
  * @see BESResponseObject

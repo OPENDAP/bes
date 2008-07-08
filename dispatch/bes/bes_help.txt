@@ -14,6 +14,8 @@ Current core commands available with BES:
 	  This command is available only in developer mode.
     show containers;
 	* shows all containers currently defined
+    show definitions;
+	* shows all definitions currently defined
     show context;
 	* shows all context name/value pairs set in the BES
 

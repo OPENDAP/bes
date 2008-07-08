@@ -43,14 +43,14 @@ SayReporter::SayReporter()
     _log_name = TheBESKeys::TheKeys()->get_key( "Say.LogName", found );
     if( _log_name == "" )
     {
-	throw BESInternalError( "can not determine Say log name", __FILE__, __LINE__ ) ;
+	throw BESInternalError( "cannot determine Say log name", __FILE__, __LINE__ ) ;
     }
     else
     {
 	_file_buffer = new ofstream( _log_name.c_str(), ios::out | ios::app ) ;
 	if( !(*_file_buffer) )
 	{
-	    string s = "can not open Say log file " + _log_name ;;
+	    string s = "cannot open Say log file " + _log_name ;;
 	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	} 
     }

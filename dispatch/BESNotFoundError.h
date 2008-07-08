@@ -35,7 +35,7 @@
 
 #include "BESError.h"
 
-/** @brief error thrown if the resource requested can not be found
+/** @brief error thrown if the resource requested cannot be found
  */
 class BESNotFoundError : public BESError
 {

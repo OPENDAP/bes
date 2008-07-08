@@ -42,7 +42,7 @@ using std::endl ;
 /** @brief parses the request to delete something
  *
  * This command requires a sub command to complete the parsing of the
- * command. You can not just have a command to delete. For example, the
+ * command. You cannot just have a command to delete. For example, the
  * command 'delete container &lt;container_name&gt;;' looks for a sub
  * command with the name 'delete.container' to complete parsing the command.
  *

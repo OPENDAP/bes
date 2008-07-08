@@ -1386,7 +1386,7 @@ BESKeys::BESKeys( const string &keys_file_name )
     {
 	char path[500] ;
 	getcwd( path, sizeof( path ) ) ;
-	string s = string("BES: fatal, can not open initialization file ")
+	string s = string("BES: fatal, cannot open initialization file ")
 		   + _keys_file_name + "\n"
 		   + "The current working directory is " + path + "\n" ;
 	throw BESInternalFatalError( s, __FILE__, __LINE__ ) ;

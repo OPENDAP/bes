@@ -188,7 +188,7 @@ BESUncompressManager::get_method_names()
  * (gzipped file) then we find the uncompress function with the name gz. The
  * cache is then unlocked and the target returned.
  *
- * If the file extension can not be found in the list then the source file
+ * If the file extension cannot be found in the list then the source file
  * is returned as the target file. If, for example, a compressed file with
  * the extension .bozo is passed as the source file, and there is no
  * uncompression function with the name bozo, then the src file with the

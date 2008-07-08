@@ -317,7 +317,7 @@ BESApacheInterface::welcome_browser()
 	    cout << "BES: internal server error please contact"
 	         << administrator.c_str()
 		 << "with the following message:\n" ;
-	cout << "BES: can not interact with browser" << agent.c_str() << endl ;
+	cout << "BES: cannot interact with browser" << agent.c_str() << endl ;
     }
     else // Yes, _agent contains the signature of a browser               
     {
@@ -338,7 +338,7 @@ BESApacheInterface::welcome_browser()
 		cout << "BES: internal server error please contact"
 		     << administrator.c_str()
 		     << "with the following message:\n" ;
-	    cout << "BES: fatal, can not get/understand the key BES.DefaultResponseMethod"
+	    cout << "BES: fatal, cannot get/understand the key BES.DefaultResponseMethod"
 	         << endl ;
 	}
 	else

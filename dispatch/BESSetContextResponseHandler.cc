@@ -68,7 +68,7 @@ BESSetContextResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = new BESSilentInfo() ;
     _response = info ;
 
-    // the name string can not be the empty string. No other restrictions
+    // the name string cannot be the empty string. No other restrictions
     // apply.
     string name = dhi.data[CONTEXT_NAME] ;
     if( name.empty() )
