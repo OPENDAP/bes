@@ -67,7 +67,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 	    if( (eps=="") || (mhs=="") || (verbose=="") || (control_heap=="") )
 	    {
 		string line = "cannot determine memory keys."  ;
-		line += "Please set values for"
+		line += (string)"Please set values for"
 		     + " BES.Memory.GlobalArea.EmergencyPoolSize,"
 		     + " BES.Memory.GlobalArea.MaxiumumHeapSize,"
 		     + " BES.Memory.GlobalArea.Verbose, and"
