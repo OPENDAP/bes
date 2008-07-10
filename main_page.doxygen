@@ -1,0 +1,81 @@
+// -*- C++ -*-
+
+// $Id: main_page.doxygen 18940 2008-06-25 19:22:37Z jimg $
+
+// Documentation for the main page of the doxygen-generated reference manual
+
+/** \mainpage
+
+\section intro Introduction
+
+This reference documentation corresponds to version 3.6.2 of the BES, a C++
+daemon used with OPeNDAP's Hyrax data server as well as the Earth System Grid
+and other projects.
+
+More documentation about the BES can be found on the OPeNDAP documentation
+site http://docs.opendap.org/index.php/Hyrax#For_Developers.
+
+\section conventions Doxygen Conventions
+
+This section lists some conventions used by the Doxygen comments
+which are used to generate this Reference Guide. Follow these conventions
+when adding to or modifying the reference documentation.
+
+\subsection general General
+
+<ul>
+<li>When using the name of a parameter, use italics (the \c e
+command or \c em tag).</li> 
+<li>Use the \c c command or \c code tag when talking about literal text.</li>
+<li>When talking about functions or methods, using <code>func()</code>
+or <code>func(arg0, ..., agrN)</code> will get Doxygen to insert a link to
+its documentation.</li>
+<li>Typos: If you're using emacs, the command \c ispell-comments-and-strings
+may help in removing typos in the comments (and strings ...)</li>
+</ul>
+
+\subsection classes Classes
+
+Classes should be documented in the header (\c .h) file where they are
+defined. 
+
+Commands that should be used for the documentation of classes:
+
+<dl> 
+<dt>author</dt><dd>Use this to attribute authorship. Include this for
+all the classes except internal ones which are not visible to users of the
+library.</dd>
+</dl>
+
+\subsection methods Methods and Functions
+
+Methods should be documented in the implementation (\c .cc) files where
+they are defined. You can put the \c brief documentation in the header file,
+but that may be more confusing than keeping all the method documentation in
+one place.
+
+Functions should be documented in their implementation files.
+
+Commands that should be used for the documentation of public methods and
+non-static functions:
+
+<dl>
+<dt>param</dt> <dd>Include for all parameters. Doxygen complains if an
+overloaded method changes a parameter name, so scan the warnings and try to
+keep the names in sync..</dd>
+
+<dt>return</dt> <dd>Include for all methods that return something unless the
+method is so simple its full description starts off with "Returns..."</dd>
+
+<dt>brief</dt> <dd>Include for all methods. In doxy.conf I have turned off
+the option that generates the \c brief entry from the first sentence of the
+detailed doc and the option that includes the \c brief documentation in the
+detailed documentation. So, the \c brief doc will appear only with the
+summary information and not with the detailed documentation for the
+method.</dd>
+
+<dt>exception</dt> <dd>Document the exceptions using the \c exception
+command.</dd>
+
+</dl>
+*/

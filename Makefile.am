@@ -31,6 +31,7 @@ bes-configuration-tests:
 .PHONY: docs
 docs:
 	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
+	(cd docs && tar -czf html.tar.gz html)
 
 ###########################################################################
 
