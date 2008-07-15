@@ -8,6 +8,13 @@
 #define PPTCAPI_MAX_BUFFER_SIZE 65535
 #define PPTCAPI_MAX_TIMEOUT 5
 
+/* chunk header sizes ... still need to change code in pptcapi_send in the
+ * sprintf call that creates the header */
+#define PPTCAPI_CHUNK_LEN_SIZE 7
+#define PPTCAPI_CHUNK_TYPE_SIZE 1
+#define PPTCAPI_CHUNK_TYPE_INDEX 7
+#define PPTCAPI_CHUNK_HEADER_SIZE PPTCAPI_CHUNK_LEN_SIZE + PPTCAPI_CHUNK_TYPE_SIZE
+
 /* ppt protocol tokens */
 #define PPT_PROTOCOL_UNDEFINED "PPT_PROTOCOL_UNDEFINED"
 #define PPT_EXIT_NOW "PPT_EXIT_NOW"

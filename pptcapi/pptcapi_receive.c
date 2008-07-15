@@ -14,109 +14,72 @@ pptcapi_receive( struct pptcapi_connection *connection,
 		 struct pptcapi_extensions **extensions,
 		 char **buffer, int *len, int *bytes_read, char **error )
 {
-    char *inbuf = *buffer ;
-    char inbuf_created = 0 ;
-    if( !inbuf )
+    *buffer = 0 ;
+    *len = 0 ;
+    *bytes_read = 0 ;
+
+    char hdrbuf[PPTCAPI_CHUNK_HEADER_SIZE] ;
+    int header_read =
+	pptcapi_receive_chunk( connection, hdrbuf,
+			       PPTCAPI_CHUNK_HEADER_SIZE, error ) ;
+
+    if( header_read != PPTCAPI_CHUNK_HEADER_SIZE )
     {
-	inbuf = (char *)malloc( PPTCAPI_MAX_BUFFER_SIZE + 1 ) ;
-	*buffer = inbuf ;
-	*len = PPTCAPI_MAX_BUFFER_SIZE ;
-	inbuf_created = 1 ;
-    }
-    *bytes_read = pptcapi_receive_chunk( connection, inbuf, 8, error ) ;
-    if( *bytes_read != 8 )
-    {
-	if( inbuf_created )
-	{
-	    free( inbuf ) ;
-	    *buffer = 0 ;
-	    *len = 0 ;
-	}
-	*bytes_read = 0 ;
 	*error = (char *)malloc( 512 ) ;
 	sprintf( *error, "Failed to read length and type of chunk" ) ;
 	return PPTCAPI_ERROR ;
     }
 
-    char lenbuffer[8] ;
-    lenbuffer[0] = inbuf[0] ;
-    lenbuffer[1] = inbuf[1] ;
-    lenbuffer[2] = inbuf[2] ;
-    lenbuffer[3] = inbuf[3] ;
-    lenbuffer[4] = inbuf[4] ;
-    lenbuffer[5] = inbuf[5] ;
-    lenbuffer[6] = inbuf[6] ;
-    lenbuffer[7] = '\0' ;
+    char lenbuffer[PPTCAPI_CHUNK_LEN_SIZE+1] ;
+    int buf_index = 0 ;
+    for( buf_index = 0; buf_index < PPTCAPI_CHUNK_LEN_SIZE; buf_index++ )
+    {
+	lenbuffer[buf_index] = hdrbuf[buf_index] ;
+    }
+    lenbuffer[PPTCAPI_CHUNK_LEN_SIZE] = '\0' ;
     int chunk_len = 0 ;
     int hex_result = pptcapi_hexstr_to_i( lenbuffer, &chunk_len, error ) ;
     if( hex_result == PPTCAPI_ERROR )
     {
-	if( inbuf_created )
-	{
-	    free( inbuf ) ;
-	    *buffer = 0 ;
-	    *len = 0 ;
-	}
-	*bytes_read = 0 ;
 	return PPTCAPI_ERROR ;
     }
 
-    if( inbuf[4] == 'x' )
+    if( hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] == 'x' )
     {
-	if( inbuf_created )
-	{
-	    free( inbuf ) ;
-	    *buffer = 0 ;
-	    *len = 0 ;
-	}
-	*bytes_read = 0 ;
 	return pptcapi_receive_extensions( connection, extensions,
 					   chunk_len, error ) ;
     }
-    else if( inbuf[4] == 'd' )
+    else if( hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] == 'd' )
     {
 	if( chunk_len == 0 )
 	{
-	    if( inbuf_created )
-	    {
-		free( inbuf ) ;
-		*buffer = 0 ;
-		*len = 0 ;
-	    }
-	    *bytes_read = 0 ;
 	    return PPTCAPI_RECEIVE_DONE ;
 	}
 	else
 	{
+	    char *inbuf = (char *)malloc(chunk_len+1) ;
+	    *len = chunk_len + 1 ;
 	    *bytes_read = pptcapi_receive_chunk( connection, inbuf,
 						 chunk_len, error ) ;
 	    if( *bytes_read != chunk_len )
 	    {
-		if( inbuf_created )
-		{
-		    free( inbuf ) ;
-		    *buffer = 0 ;
-		    *len = 0 ;
-		}
+		free( inbuf ) ;
+		*buffer = 0 ;
+		*len = 0 ;
+		*bytes_read = 0 ;
 		*error = (char *)malloc( 512 ) ;
 		sprintf( *error, "Failed to read chunk data of size %d",
 				 chunk_len ) ;
 		return PPTCAPI_ERROR ;
 	    }
+	    *buffer = inbuf ;
 	}
     }
     else
     {
-	if( inbuf_created )
-	{
-	    free( inbuf ) ;
-	    *buffer = 0 ;
-	    *len = 0 ;
-	}
-	*bytes_read = 0 ;
 	*error = (char *)malloc( 512 ) ;
 	sprintf( *error, "specified chunk type %c should be 'd' or 'x'",
-			 inbuf[4] ) ;
+			 hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] ) ;
 	return PPTCAPI_ERROR ;
     }
 

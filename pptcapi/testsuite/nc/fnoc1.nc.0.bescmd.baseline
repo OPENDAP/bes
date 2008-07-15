@@ -4,12 +4,17 @@ Attributes {
         String long_name "Vector wind eastward component";
         String missing_value "-32767";
         String scale_factor "0.005";
+        String DODS_Name "UWind";
+        Byte b 128;
+        Int32 i 32000;
+        Url WOA01 "http://localhost/junk";
     }
     v {
         String units "meter per second";
         String long_name "Vector wind northward component";
         String missing_value "-32767";
         String scale_factor "0.005";
+        String DODS_Name "VWind";
     }
     lat {
         String units "degree North";
