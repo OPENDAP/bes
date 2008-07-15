@@ -12,6 +12,8 @@
 #include "pptcapi.h"
 #include "pptcapi_utils.h"
 
+extern void pptcapi_initialize_connection_struct( struct pptcapi_connection *connection ) ;
+
 char *pptcapi_temp_name() ;
 
 char *pptcapi_ltoa( long value, char *buffer, int base ) ;

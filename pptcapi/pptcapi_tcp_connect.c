@@ -14,6 +14,7 @@
 
 #include "pptcapi.h"
 
+extern void pptcapi_initialize_connection_struct( struct pptcapi_connection *connection ) ;
 
 struct pptcapi_connection *
 pptcapi_tcp_connect( const char *host, int portval, int timeout,
