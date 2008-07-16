@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cerrno>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -184,9 +185,20 @@ BESInfo::add_data_from_file( const string &key, const string &name )
     else
     {
 	ifstream ifs( file.c_str() ) ;
+	int myerrno = errno ;
 	if( !ifs )
 	{
-	    add_data( name + " file " + file + " not found, information not available\n" ) ;
+	    string serr = name + " file " + file
+			  + " not found, information not available: " ;
+	    char *err = strerror( myerrno ) ;
+	    if( err )
+		serr += err ;
+	    else
+		serr += "Unknown error" ;
+
+	    serr += "\n" ;
+
+	    add_data( serr ) ;
 	}
 	else
 	{

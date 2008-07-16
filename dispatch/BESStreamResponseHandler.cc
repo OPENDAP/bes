@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cerrno>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -102,11 +103,18 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
     int bytes = 0 ;
     ifstream os ;
     os.open( filename.c_str(), ios::in ) ;
+    int myerrno = errno ;
     if( !os )
     {
-	string err = (string)"Unable to stream file: "
-	             + "cannot open file "
-		     + filename ;
+	string serr = (string)"Unable to stream file: "
+	              + "cannot open file "
+		      + filename + ": " ;
+	char *err = strerror( myerrno ) ;
+	if( err )
+	    serr += err ;
+	else
+	    serr += "Unknown error" ;
+
 	throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
     }
 

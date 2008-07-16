@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cerrno>
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -89,9 +90,16 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
     }
 
     ifstream persistence_file( _file.c_str() ) ;
+    int myerrno = errno ;
     if( !persistence_file )
     {
-	string s = "Unable to open persistence file " + _file ;
+	char *err = strerror( myerrno ) ;
+	string s = "Unable to open persistence file " + _file + ": " ;
+	if( err )
+	    s += err ;
+	else
+	    s += "Unknown error" ;
+
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 
