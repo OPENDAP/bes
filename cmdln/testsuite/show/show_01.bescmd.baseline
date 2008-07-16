@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showInfo>
     <response>
-        <dataset isAccessible="true" isData="true" thredds_collection="false">
+        <dataset isData="true" thredds_collection="false">
             <name>/data/nc/fnoc1.nc</name>
             <size>23944</size>
             <lastmodified>
@@ -14,9 +14,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showInfo>
     <response>
-        <dataset isAccessible="true" isData="false" thredds_collection="true">
+        <dataset isData="false" thredds_collection="true">
             <name>/data/hdf4</name>
-            <size>4096</size>
+            <size>136</size>
             <lastmodified>
                 <date>*</date>
                 <time>*</time>
@@ -28,23 +28,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <showCatalog>
     <response>
-        <dataset isAccessible="true" isData="false" thredds_collection="true">
+        <dataset isData="false" thredds_collection="true">
             <name>/data/nc</name>
-            <size>4096</size>
+            <size>204</size>
             <lastmodified>
                 <date>*</date>
                 <time>*</time>
             </lastmodified>
-            <count>3</count>
-            <dataset isAccessible="true" isData="true" thredds_collection="false">
-                <name>fnoc1.nc</name>
-                <size>23944</size>
-                <lastmodified>
-                    <date>*</date>
-                    <time>*</time>
-                </lastmodified>
-            </dataset>
-            <dataset isAccessible="true" isData="true" thredds_collection="false">
+            <count>4</count>
+            <dataset isData="true" thredds_collection="false">
                 <name>coads_climatology.nc</name>
                 <size>3114044</size>
                 <lastmodified>
@@ -52,9 +44,25 @@
                     <time>*</time>
                 </lastmodified>
             </dataset>
-            <dataset isAccessible="true" isData="false" thredds_collection="false">
+            <dataset isData="false" thredds_collection="false">
                 <name>fnoc1.das</name>
                 <size>162</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>fnoc1.nc</name>
+                <size>23944</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="false" thredds_collection="false">
+                <name>fnoc1.nc.html</name>
+                <size>177</size>
                 <lastmodified>
                     <date>*</date>
                     <time>*</time>
