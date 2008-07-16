@@ -98,9 +98,11 @@ HDF4RequestHandler::~HDF4RequestHandler()
 
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
 {
-    BESDASResponse *bdas =
-        dynamic_cast <
-        BESDASResponse * >(dhi.response_handler->get_response_object());
+    BESResponseObject *response = dhi.response_handler->get_response_object() ;
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
+    if( !bdas )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
     DAS *das = bdas->get_das();
 
     try {
@@ -132,9 +134,11 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
 
 bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
 {
-    BESDDSResponse *bdds =
-        dynamic_cast <
-        BESDDSResponse * >(dhi.response_handler->get_response_object());
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     DDS *dds = bdds->get_dds();
     ConstraintEvaluator & ce = bdds->get_ce();
 
@@ -177,10 +181,11 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
 
 bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
 {
-    BESDataDDSResponse *bdds =
-        dynamic_cast <
-        BESDataDDSResponse *
-        >(dhi.response_handler->get_response_object());
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     DataDDS *dds = bdds->get_dds();
     ConstraintEvaluator & ce = bdds->get_ce();
 
@@ -228,8 +233,11 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
 
 bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi)
 {
-    BESInfo *info =
-        (BESInfo *) dhi.response_handler->get_response_object();
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESInfo *info = dynamic_cast<BESInfo *>(response);
+    if( !info )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
     info->begin_tag("Handler");
     info->add_tag("name", PACKAGE_NAME);
     string handles = (string) DAS_RESPONSE
@@ -244,8 +252,11 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi)
 
 bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi)
 {
-    BESVersionInfo *info =
-        (BESVersionInfo *) dhi.response_handler->get_response_object();
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
+    if( !info )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     info->addHandlerVersion(PACKAGE_NAME, PACKAGE_VERSION);
     return true;
 }
