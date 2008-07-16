@@ -66,7 +66,7 @@ SayReporter::~SayReporter()
 }
 
 void
-SayReporter::report( const BESDataHandlerInterface &dhi )
+SayReporter::report( BESDataHandlerInterface &dhi )
 {
     const time_t sctime = time( NULL ) ;
     const struct tm *sttime = localtime( &sctime ) ; 

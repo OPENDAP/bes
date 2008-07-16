@@ -9,7 +9,9 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-lib_LTLIBRARIES = libsample_module.la
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libsample_module.la
+dist_bin_SCRIPTS = bes-sample-data.sh
 
 Sample_SRCS:=
 
@@ -34,16 +36,27 @@ libsample_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = COPYRIGHT COPYING sample_handler.spec
+EXTRA_DIST = COPYRIGHT COPYING sample_handler.spec bes-sample-data.sh.in
 
-CLEANFILES = *~
+CLEANFILES = *~ bes-sample-data.sh
 
-###########################################################################
+do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+		   	   -e 's,[@]libdir[@],$(libdir),g' \
+		   	   -e 's,[@]datarootdir[@],$(datarootdir),g' \
+		   	   -e 's,[@]datadir[@],$(datadir),g'
 
-# Build linux RPMs
+bes-sample-data.sh: bes-sample-data.sh.in config.status
+	$(do_subst) < $(srcdir)/bes-sample-data.sh.in > bes-sample-data.sh
+	chmod +x bes-sample-data.sh
 
-srpm:
-	rpmbuild -ts sample_module-@PACKAGE_VERSION@.tar.gz
+# This makes sure that the handler modifies the bes which configure found
+# even when distcheck is run.
+bes-conf: bes-sample-data.sh
+	(bes_prefix=`bes-config --prefix` ; \
+	if test "$$bes_prefix" = "/usr" ; \
+	 then \
+	    ./bes-sample-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
+	else \
+	    ./bes-sample-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
+	fi)
 
-rpm:
-	rpmbuild -tb sample_module-@PACKAGE_VERSION@.tar.gz

@@ -51,7 +51,7 @@ public:
 			SayReporter() ;
     virtual		~SayReporter() ;
 
-    virtual void	report( const BESDataHandlerInterface &dhi ) ;
+    virtual void	report( BESDataHandlerInterface &dhi ) ;
 
     virtual void	dump( ostream &strm ) const ;
 } ;
