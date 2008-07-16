@@ -82,13 +82,13 @@ CSVRequestHandler::csv_build_das( BESDataHandlerInterface &dhi )
     string error ;
     bool ret = true ;
     BESResponseObject *response =
-        dhi.response_handler->get_response_object();
-    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);
+        dhi.response_handler->get_response_object() ;
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
     DAS *das = 0 ;
     if (bdas)
-	das = bdas->get_das();
+	das = bdas->get_das() ;
     else
-	throw InternalErr(__FILE__, __LINE__, "cast error.");
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     try
     {
@@ -126,7 +126,7 @@ CSVRequestHandler::csv_build_dds( BESDataHandlerInterface &dhi )
     if (bdds)
 	dds = bdds->get_dds();
     else
-	throw InternalErr(__FILE__, __LINE__, "cast error.");
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     BaseTypeFactory *factory = new BaseTypeFactory ;
     dds->set_factory(factory);
@@ -178,7 +178,7 @@ CSVRequestHandler::csv_build_data( BESDataHandlerInterface &dhi )
     if (bdds)
 	dds = bdds->get_dds();
     else
-	throw InternalErr(__FILE__, __LINE__, "cast error.");
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     BaseTypeFactory *factory = new BaseTypeFactory ;
     dds->set_factory(factory);
@@ -226,7 +226,7 @@ CSVRequestHandler::csv_build_vers( BESDataHandlerInterface &dhi )
         dhi.response_handler->get_response_object();
     BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
-	throw InternalErr(__FILE__, __LINE__, "cast error.");
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return ret ;
@@ -239,7 +239,7 @@ CSVRequestHandler::csv_build_help( BESDataHandlerInterface &dhi )
     BESInfo *info =
 	dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
     if( !info )
-	throw InternalErr(__FILE__, __LINE__, "cast error.");
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     info->begin_tag("Handler");
     info->add_tag("name", PACKAGE_NAME);
