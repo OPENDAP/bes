@@ -132,6 +132,8 @@ BESDelDefResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	if( !info )
+	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
     }
 }

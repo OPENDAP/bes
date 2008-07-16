@@ -139,8 +139,10 @@ BESDefineResponseHandler::transmit( BESTransmitter *transmitter,
     {
         // If this dynamic_cast is to a reference an not a pointer, then if
         // _response is not a BESInfo the cast will throw bad_cast. 
-        // Casting to a pointer will make ti null on error. jhrg 11/10/2005
+        // Casting to a pointer will make it null on error. jhrg 11/10/2005
 	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
+	if( !info )
+	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
     }
 }

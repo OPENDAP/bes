@@ -98,6 +98,8 @@ BESVersionResponseHandler::transmit( BESTransmitter *transmitter,
     if( _response )
     {
 	BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(_response) ;
+	if( !info )
+	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 	info->transmit( transmitter, dhi ) ;
     }
 }

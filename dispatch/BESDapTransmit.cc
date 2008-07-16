@@ -51,6 +51,8 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
                                BESDataHandlerInterface & dhi)
 {
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
+    if( !bdas )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     DAS *das = bdas->get_das();
     dhi.first_container();
 
@@ -91,6 +93,8 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
                                     BESDataHandlerInterface & dhi)
 {
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     DDS *dds = bdds->get_dds();
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
@@ -132,6 +136,8 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
                                      BESDataHandlerInterface & dhi)
 {
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     DataDDS *dds = bdds->get_dds();
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
@@ -173,6 +179,8 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
                                     BESDataHandlerInterface & dhi)
 {
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     DDS *dds = bdds->get_dds();
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
