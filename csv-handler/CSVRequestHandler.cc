@@ -79,26 +79,40 @@ CSVRequestHandler::~CSVRequestHandler()
 bool
 CSVRequestHandler::csv_build_das( BESDataHandlerInterface &dhi )
 {
-  string error;
-  bool ret = true ;
+    string error ;
+    bool ret = true ;
     BESResponseObject *response =
         dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response);
-    DAS *das = bdas->get_das();
+    DAS *das = 0 ;
+    if (bdas)
+	das = bdas->get_das();
+    else
+	throw InternalErr(__FILE__, __LINE__, "cast error.");
   
-  try {
-    csv_read_attributes(*das, dhi.container->access());
-    return ret;
-  } catch(InternalErr &e) {
-    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(Error &e) {
-    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(...) {
-    BESDapError ex("Caught unknown error build CSV DAS response", true, unknown_error, __FILE__, __LINE__);
-    throw ex;
-  }
+    try
+    {
+	csv_read_attributes(*das, dhi.container->access());
+	return ret;
+    }
+    catch(InternalErr &e)
+    {
+	BESDapError ex( e.get_error_message(), true,
+		        e.get_error_code(), __FILE__, __LINE__ ) ;
+	throw ex ;
+    }
+    catch(Error &e)
+    {
+	BESDapError ex( e.get_error_message(), false,
+			e.get_error_code(), __FILE__, __LINE__);
+	throw ex;
+    }
+    catch(...)
+    {
+	BESDapError ex( "Caught unknown error build CSV DAS response", true,
+			unknown_error, __FILE__, __LINE__);
+	throw ex;
+    }
 }
 
 bool
@@ -108,30 +122,48 @@ CSVRequestHandler::csv_build_dds( BESDataHandlerInterface &dhi )
     BESResponseObject *response =
         dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
-    DDS *dds = bdds->get_dds();
+    DDS *dds = 0 ;
+    if (bdds)
+	dds = bdds->get_dds();
+    else
+	throw InternalErr(__FILE__, __LINE__, "cast error.");
+  
     BaseTypeFactory *factory = new BaseTypeFactory ;
     dds->set_factory(factory);
     
-    try {
-      string accessed = dhi.container->access() ;
-      dds->filename( accessed ) ;
-      csv_read_descriptors( *dds, accessed ) ;
-      DAS das;
-      csv_read_attributes(das, accessed);
-      dds->transfer_attributes( &das ) ;
-      BESDEBUG( "csv", "dds = " << endl << *dds << endl )
-      dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
-      return ret;
-  } catch(InternalErr &e) {
-    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(Error &e) {
-    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(...) {
-    BESDapError ex("Caught unknown error build CSV DDS response", true, unknown_error, __FILE__, __LINE__);
-    throw ex;
+    try
+    {
+	string accessed = dhi.container->access() ;
+	dds->filename( accessed ) ;
+	csv_read_descriptors( *dds, accessed ) ;
+
+	DAS das;
+	csv_read_attributes(das, accessed);
+	dds->transfer_attributes( &das ) ;
+
+	BESDEBUG( "csv", "dds = " << endl << *dds << endl )
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+
+	return ret;
   }
+    catch(InternalErr &e)
+    {
+	BESDapError ex( e.get_error_message(), true,
+			e.get_error_code(), __FILE__, __LINE__);
+	throw ex;
+    }
+    catch(Error &e)
+    {
+	BESDapError ex( e.get_error_message(), false,
+			e.get_error_code(), __FILE__, __LINE__);
+	throw ex;
+    }
+    catch(...)
+    {
+	BESDapError ex( "Caught unknown error build CSV DDS response", true,
+			unknown_error, __FILE__, __LINE__);
+	throw ex;
+    }
 }
 
 bool
@@ -142,37 +174,60 @@ CSVRequestHandler::csv_build_data( BESDataHandlerInterface &dhi )
         dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds =
         dynamic_cast < BESDataDDSResponse * >(response);
-    DataDDS *dds = bdds->get_dds();
+    DataDDS *dds = 0 ;
+    if (bdds)
+	dds = bdds->get_dds();
+    else
+	throw InternalErr(__FILE__, __LINE__, "cast error.");
+  
     BaseTypeFactory *factory = new BaseTypeFactory ;
     dds->set_factory(factory);
 
-    try {
-      string accessed = dhi.container->access() ;
-      dds->filename( accessed ) ;
-      csv_read_descriptors(*dds, dhi.container->access());
-      DAS das;
-      csv_read_attributes(das, accessed);
-      dds->transfer_attributes( &das ) ;
-      BESDEBUG( "csv", "dds = " << endl << *dds << endl )
-      dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
-      return ret;
-  } catch(InternalErr &e) {
-    BESDapError ex(e.get_error_message(), true, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(Error &e) {
-    BESDapError ex(e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
-    throw ex;
-  } catch(...) {
-    BESDapError ex("Caught unknown error build CSV DataDDS response", true, unknown_error, __FILE__, __LINE__);
-    throw ex;
-  }
+    try
+    {
+	string accessed = dhi.container->access() ;
+	dds->filename( accessed ) ;
+	csv_read_descriptors(*dds, accessed);
+
+	DAS das;
+	csv_read_attributes(das, accessed);
+	dds->transfer_attributes( &das ) ;
+
+	BESDEBUG( "csv", "dds = " << endl << *dds << endl )
+	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	return ret;
+    }
+    catch(InternalErr &e)
+    {
+	BESDapError ex( e.get_error_message(), true,
+			e.get_error_code(), __FILE__, __LINE__);
+	throw ex;
+    }
+    catch(Error &e)
+    {
+	BESDapError ex( e.get_error_message(), false,
+			e.get_error_code(), __FILE__, __LINE__);
+	throw ex;
+    }
+    catch(...)
+    {
+	BESDapError ex( "Caught unknown error build CSV DataDDS response", true,
+			unknown_error, __FILE__, __LINE__);
+	throw ex;
+    }
 }
 
 bool
 CSVRequestHandler::csv_build_vers( BESDataHandlerInterface &dhi )
 {
     bool ret = true ;
-    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object() ) ;
+
+    BESResponseObject *response =
+        dhi.response_handler->get_response_object();
+    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
+    if( !info )
+	throw InternalErr(__FILE__, __LINE__, "cast error.");
+  
     info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return ret ;
 }
@@ -183,6 +238,8 @@ CSVRequestHandler::csv_build_help( BESDataHandlerInterface &dhi )
     bool ret = true ;
     BESInfo *info =
 	dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    if( !info )
+	throw InternalErr(__FILE__, __LINE__, "cast error.");
 
     info->begin_tag("Handler");
     info->add_tag("name", PACKAGE_NAME);
