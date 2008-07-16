@@ -78,10 +78,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if (eos.check_eos(file1))
         eos.set_dimension_array();
 
-    BESDASResponse *bdas =
-        dynamic_cast <BESDASResponse * >(dhi.response_handler->get_response_object());
-    if (!bdas)
-    	throw InternalErr(__FILE__, __LINE__, "null pointer");
+    BESResponseObject *response = dhi.response_handler->get_response_object() ;
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
+    if( !bdas )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
     DAS *das = bdas->get_das();
 
     try {
@@ -120,11 +121,11 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     if (eos.check_eos(file1))
         eos.set_dimension_array();
 
-    BESDDSResponse *bdds =
-        dynamic_cast <BESDDSResponse * >(dhi.response_handler->get_response_object());
-    if (!bdds)
-    	throw InternalErr(__FILE__, __LINE__, "null pointer");
-
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     DDS *dds = bdds->get_dds();
 
     try {
@@ -183,10 +184,11 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     if (eos.check_eos(file1))
         eos.set_dimension_array();
 
-    BESDataDDSResponse *bdds =
-        dynamic_cast <BESDataDDSResponse *>(dhi.response_handler->get_response_object());
-    if (!bdds)
-   	    throw InternalErr(__FILE__, __LINE__, "null pointer");
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     DataDDS *dds = bdds->get_dds();
 
     try {
@@ -235,8 +237,11 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 {
-    BESInfo *info =
-        (BESInfo *) dhi.response_handler->get_response_object();
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESInfo *info = dynamic_cast<BESInfo *>(response);
+    if( !info )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
     info->begin_tag("Handler");
     info->add_tag("name", PACKAGE_NAME);
     string handles = (string) DAS_RESPONSE
@@ -251,8 +256,11 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 
 bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
 {
-    BESVersionInfo *info =
-        (BESVersionInfo *) dhi.response_handler->get_response_object();
+    BESResponseObject *response = dhi.response_handler->get_response_object();
+    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
+    if( !info )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+  
     info->addHandlerVersion(PACKAGE_NAME, PACKAGE_VERSION);
     return true;
 }
