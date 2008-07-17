@@ -597,7 +597,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     if (i == string::npos)
         newname = varname;
     else
-        newname = varname.substr(i);
+        newname = varname.substr(i+1);
 #else
     newname = varname;
 #endif
