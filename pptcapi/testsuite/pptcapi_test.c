@@ -64,10 +64,11 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
 	{
 	    write( ofd, buffer, bytes_read ) ;
 	}
-    }
-    if( buffer )
-    {
-	free( buffer ) ;
+
+	if( buffer )
+	{
+	    free( buffer ) ;
+	}
     }
 
     return 0 ;

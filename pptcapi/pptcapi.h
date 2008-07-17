@@ -97,11 +97,11 @@ main( int argc, char **argv )
 	{
 	    write( 1, buffer, bytes_read ) ;
 	}
-    }
 
-    if( buffer )
-    {
-	free( buffer ) ;
+	if( buffer )
+	{
+	    free( buffer ) ;
+	}
     }
 
     result = pptcapi_send_exit( connection, &error ) ;
