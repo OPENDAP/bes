@@ -80,19 +80,26 @@ main( int argc, char **argv )
 	    return 1 ;
 	}
 
+	int got_error = 0 ;
 	struct pptcapi_extensions *next_extension = extensions ;
-	while( next_extension )
+	while( next_extension && !got_error )
 	{
-	    if( extensions->value )
-		fprintf( stdout, "%s = %s\n", extensions->name,
-					      extensions->value ) ;
-	    else
-		fprintf( stdout, "%s\n", extensions->name ) ;
+	    if( extensions->name &&
+	        !strncmp( extensions->name, PPT_STATUS_EXT, PPT_STATUS_EXT_LEN))
+	    {
+		if( extensions->value &&
+		    !strncmp( extensions->value, PPT_STATUS_ERR,
+		    PPT_STATUS_ERR_LEN ) )
+		{
+		    got_error = 1 ;
+		    DO SOME ERROR PROCESSING HERE
+		}
+	    }
 	    next_extension = next_extension->next ;
 	}
-
 	pptcapi_free_extensions_struct( extensions ) ;
 	extensions = 0 ;
+
 	if( bytes_read != 0 )
 	{
 	    write( 1, buffer, bytes_read ) ;
@@ -147,6 +154,12 @@ main( int argc, char **argv )
 #define PPTCLIENT_REQUEST_AUTHPORT "PPTCLIENT_REQUEST_AUTHPORT"
 #define PPTSERVER_CONNECTION_OK "PPTSERVER_CONNECTION_OK"
 #define PPTSERVER_AUTHENTICATE "PPTSERVER_AUTHENTICATE"
+
+/* status extension macros */
+#define PPT_STATUS_EXT "status"
+#define PPT_STATUS_EXT_LEN 6
+#define PPT_STATUS_ERR "error"
+#define PPT_STATUS_ERR_LEN 5
 
 /** @brief pptcapi funciton return values
  *

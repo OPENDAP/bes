@@ -46,18 +46,26 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
 	    handle_error( "failed to receive response", error ) ;
 	    return 1 ;
 	}
-	/*
+
+	int got_error = 0 ;
 	struct pptcapi_extensions *next_extension = extensions ;
-	while( next_extension )
+	while( next_extension && !got_error )
 	{
-	    if( extensions->value )
-		fprintf( stdout, "%s = %s\n", extensions->name,
-					      extensions->value ) ;
-	    else
-		fprintf( stdout, "%s\n", extensions->name ) ;
+	    if( extensions->name &&
+	        !strncmp( extensions->name, PPT_STATUS_EXT, PPT_STATUS_EXT_LEN))
+	    {
+		if( extensions->value &&
+		    !strncmp( extensions->value, PPT_STATUS_ERR,
+		    PPT_STATUS_ERR_LEN ) )
+		{
+		    got_error = 1 ;
+		    /* do some error processing here, but continue to call
+		     * pptcapi_receive in order to get the error document
+		     * from the BES */
+		}
+	    }
 	    next_extension = next_extension->next ;
 	}
-	*/
 	pptcapi_free_extensions_struct( extensions ) ;
 	extensions = 0 ;
 	if( result != PPTCAPI_RECEIVE_DONE && bytes_read != 0 )
