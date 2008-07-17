@@ -22,6 +22,33 @@ pidfile=${piddir}/bes.pid
 
 ###########################################################################
 #
+# Displays besctl usage statement
+#
+#..........................................................................
+besctlHelp()
+{
+    echo ""
+    echo "USAGE: besctl (help|start|stop|restart|status) [options]"
+    echo "where [options] are passed to besdaemon; see besdaemon -h"
+}
+
+###########################################################################
+#
+# Attempts to pass help option to beslistener
+#
+#..........................................................................
+helpBES()
+{
+    "${bindir}"/beslistener $otherArgs -h
+    if [ $? != 0 ]
+    then
+	echo "FAILED: The BES listener failed to return help information"
+    fi
+    besctlHelp
+}
+
+###########################################################################
+#
 # Attempts to start the BES
 #
 #..........................................................................
@@ -283,6 +310,9 @@ then
 fi
 
 case $what in
+help)
+    helpBES
+    ;;
 stop)
     stopBES
     ;;
@@ -302,8 +332,7 @@ status)
     cat "${pidfile}"
     ;;
 *)
-    echo "USAGE: besctl (start|stop|restart|status) [options]"
-    echo "where [options] are passed to besdaemon; see besdaemon -h"
+    besctlHelp
     exit 1
     ;;
 esac
