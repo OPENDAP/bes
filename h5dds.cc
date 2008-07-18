@@ -746,7 +746,7 @@ static void process_grid_matching_dimscale(HDF5TypeFactory &factory,
 
 static void process_grid_nasa_eos(HDF5TypeFactory &factory,
 				  const string &varname, 
-				  Array *array, Grid *gr) {
+				  Array *array, Grid *gr, DDS &dds_table) {
     // Next fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
     vector < string > tokens;
@@ -940,7 +940,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
             // Generate grid based on the parsed StructMetada.
             Grid *gr = factory.NewGridEOS(varname);
 
-	    process_grid_nasa_eos(factory, varname, ar, gr);
+	    process_grid_nasa_eos(factory, varname, ar, gr, dds_table);
             gr->add_var(ar, array);
             delete ar; ar = 0;
 

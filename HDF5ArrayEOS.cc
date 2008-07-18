@@ -54,12 +54,17 @@ bool HDF5ArrayEOS::read(const string & dataset)
     int loc = eos.get_dimension_data_location(dim_name);
 
     if (loc >= 0) {
-        set_read_p(true);
+        // set_value() will call this function.
+        // set_read_p(true); <hyokyung 2008.07.18. 13:40:51>
         dods_float32 *val =
             get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
-        value(val);
-        delete[]val;
+	// We need to use Vector::set_value() instead of Vector::value() since 
+	// Vector::value(dods_float32* b) function doesn't check if _buf is null
+	// and the _buf needs memory allocation.
+	set_value(val, count);
+	// value(val); <hyokyung 2008.07.18. 13:40:42>
+        delete[]val;	
     } else {
         cerr << "Could not retrieve map data" << endl;
     }
