@@ -216,6 +216,10 @@ bool H5EOS::set_dimension_array()
 
     dods_float32 *convbuf = NULL;
     
+#ifdef CF
+    // Resetting this flag is necessary for Hyrax. <hyokyung 2008.07.18. 14:50:05>
+    shared_dimension = false;
+#endif    
     if (libdap::size_ok(sizeof(dods_float32), size))
         dimension_data = new dods_float32 *[size];
     else
