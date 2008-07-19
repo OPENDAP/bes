@@ -25,6 +25,9 @@ bin_SCRIPTS = pptcapi-config
 
 noinst_HEADERS = pptcapi_utils.h
 
+aclocaldir=$(datadir)/aclocal
+dist_aclocal_DATA = conf/pptcapi.m4
+
 libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
 libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
 
