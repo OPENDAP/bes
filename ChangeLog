@@ -1,3 +1,130 @@
+2008-07-18  hyoklee
+
+	The problem of dropping shared dimension variable in Hyrax is
+	fixed when CF configuration option is enabled.
+
+2008-07-18  hyoklee
+
+	h5dds.cc compilation problem and reading the shared dimension
+	variables are fixed when CF option is enabled.
+
+2008-07-17  hyoklee
+
+	When CF option is enabled, a variable's name will start with '/'
+	like '/CloudFraction' in DAS if you don't increment the substring
+	pointer.
+
+2008-07-16  Patrick West <pwest@ucar.edu>
+
+	Checking results of dynamic cast and throwing cast error if fails.
+	
+	M    HDF5RequestHandler.cc
+
+2008-05-30  Patrick West <pwest@ucar.edu>
+
+	Module checking to see if catalog already added. RequestHandler
+	now adding ancillary information to the das and dds.
+	
+	M    HDF5Module.cc
+	M    HDF5RequestHandler.cc
+
+2008-05-22  hyoklee
+
+	Replaced hdfeos.tab.h into hdfeos.tab.hh.
+
+2008-05-12  hyoklee
+
+	Fixed the ticket #1113. Testsuite is updated accordingly.
+
+2008-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Changes from code review.
+
+	M    HDF5UInt32.cc
+	M    HDF5ArrayEOS.cc
+	M    HDF5RequestHandler.cc
+	M    HDF5UInt16.cc
+	M    HDF5UInt32.h
+	M    h5das.cc
+	M    h5dds.cc
+	M    h5dds.h
+	M    HDF5Sequence.cc
+	M    H5Git.cc
+	M    HDF5Sequence.h
+	M    HDF5Float32.cc
+	M    HDF5Array.cc
+	M    HDF5Grid.h
+	M    testsuite/dap_h5_handler.0/basic.exp
+	M    testsuite/config/unix.exp
+	M    HDF5Url.cc
+	M    HDF5Int16.h
+	M    HDF5Str.cc
+	M    HDF5Str.h
+	M    HDF5Grid.cc
+	M    HDF5UInt16.h
+	M    HDF5GridEOS.cc
+	M    HDF5GridEOS.h
+	M    HDF5Int32.cc
+	M    HDF5Int16.cc
+	M    HDF5Byte.cc
+	M    HDF5Float32.h
+	M    HDF5Float64.cc
+	M    HDF5Array.h
+	M    HDF5ArrayEOS.h
+	M    h5das.h
+	M    HDF5Structure.cc
+	M    HDF5Int32.h
+	M    HDF5Structure.h
+	M    HDF5Url.h
+	M    HDF5Byte.h
+	M    H5Git.h
+	M    Makefile.am
+	M    HDF5Float64.h
+
+2008-04-10  James Gallagher <jgallagher@opendap.org>
+
+	Changes from code review.
+
+	M    hdfeos_das.lex
+	M    h5das.cc
+	M    h5dds.cc
+	M    H5Git.cc
+	M    hdfeos_das.y
+	M    HDF5Array.cc
+	M    testsuite/config/unix.exp
+	M    hdfeos.lex
+	M    HDF5Str.cc
+	M    HDF5Str.h
+	M    H5EOS.cc
+	M    H5EOS.h
+	M    HDF5GridEOS.cc
+	M    Makefile.am
+
+2008-04-04  Patrick West <pwest@ucar.edu>
+
+	No longer need individual bes.conf files for testing. Using main one in
+	<prefix>/etc/bes/bes.conf.
+	D    bes.conf
+
+2008-03-26  hyoklee
+
+	EOS Grid file is added for testsuite.
+
+2008-03-17  Patrick West <pwest@ucar.edu>
+
+	1.2.2 bug fix release
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    OSX_Resources/Info.plist
+	M    OSX_Resources/ReadMe.txt
+	M    hdf5_handler.spec
+	M    README
+
+2008-03-17  hyoklee
+
+	A quick fix for reading map data from EOS Grid.
+
 2008-03-17  hyoklee
 
 	A quick fix for reading map data from EOS Grid.

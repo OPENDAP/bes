@@ -1,6 +1,13 @@
 
 	$Id$
 
+News for version 1.2.3
+
+When built using the --enable-cf and --enable-short-path, the handler was
+dropping shared dimensions, breaking access using Ferret and GrADS.
+
+Updates for the newest BES features.
+
 News for version 1.2.2
 
 Bug fix release reading map data from EOS Grid, please refer to the
