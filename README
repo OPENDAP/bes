@@ -1,5 +1,5 @@
 
-Updated for version 1.2.2
+Updated for version 1.2.3
 
 This file includes describes the HDF5 DAP server developed by THG and
 OPeNDAP under a grant from NASA.
@@ -16,6 +16,10 @@ work with arrays of structures and neither does the HTML form interface. We
 will have fixes to these issues available shortly.
 
 * Installing the handler in Hyrax
+
+Note: The RPM Packages are built using the --enable-cf and
+--enable-short-names options. If you don't want those options, you'll need to
+build from the sources.
 
 This data handler includes an executable for use with Server3 and a
 shared object module for use with Hyrax.
