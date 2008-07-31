@@ -34,6 +34,9 @@
 #include "H5EOS.h"
 #include "H5PathFinder.h"
 
+// Added for the fix for ticket 1163. jhrg 7/31/08
+#define ATTR_STRING_QUOTE_FIX
+
 H5EOS eos;
 /// A variable for remembering visited paths to break ties if they exist.
 H5PathFinder paths;
@@ -52,7 +55,7 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 /// depth first traversal of hdf5 file attributes.
 ///
 /// This function will walk through hdf5 group using depth-
-/// first approach to obtain all the group and dataset attributes 
+/// first approach to obtain all the group and dataset attributes
 /// of a hdf5 file.
 /// During the process of depth first search, DAS table will be filled.
 /// In case of errors, a exception will be thrown
@@ -145,7 +148,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 		      depth_first(cgroup, full_path_name.c_str(), das);
 		  } else {
 		      // Add attribute table with HARDLINK.
-		      AttrTable *at = 
+		      AttrTable *at =
 			  das.add_table(full_path_name, new AttrTable);
 		      at->append_attr("HDF5_HARDLINK", STRING,
 				      paths.get_name(oid));
@@ -163,14 +166,14 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 #endif
 		  string full_path_name = string(gname) + string(oname);
 		  hid_t dset;
-		  // Open the dataset 
+		  // Open the dataset
 		  if ((dset = H5Dopen(pid, full_path_name.c_str())) < 0) {
 		      string msg = "unable to open hdf5 dataset of group ";
 		      msg += gname;
 		      throw InternalErr(__FILE__, __LINE__, msg);
 		  }
 
-		  // Obtain number of attributes in this dataset. 
+		  // Obtain number of attributes in this dataset.
 		  int num_attr;
 		  if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
 		      string msg = "failed to get hdf5 attribute in dataset ";
@@ -221,14 +224,14 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
 /// will get the printed representation of an attribute.
-/// 
+///
 /// This function is based on netcdf-dods server.
-/// 
+///
 /// \param type  HDF5 data type id
 /// \param loc    the number of array number
 /// \param sm_buf pointer to an attribute
 /// \return a char * to newly allocated memory, the caller must call delete []
-/// \todo This probably needs to be re-considered! <hyokyung 2007.02.20. 11:56:18> 
+/// \todo This probably needs to be re-considered! <hyokyung 2007.02.20. 11:56:18>
 /// \todo Needs to be re-written. <hyokyung 2007.02.20. 11:56:38>
 ////////////////////////////////////////////////////////////////////////////////
 static char *print_attr(hid_t type, int loc, void *sm_buf) {
@@ -392,8 +395,8 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 /// \fn print_type(hid_t type)
 /// will get the corresponding DODS datatype.
 /// This function will return the "text representation" of the correponding
-/// datatype translated from HDF5. 
-/// For unknown datatype, put it to string. 
+/// datatype translated from HDF5.
+/// For unknown datatype, put it to string.
 /// \return static string
 /// \param type datatype id
 /// \todo  For unknown type, is null string correct?
@@ -467,8 +470,8 @@ string print_type(hid_t type)
 ////////////////////////////////////////////////////////////////////////////////
 void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
-    // Obtain variable names. Put this variable name into das table 
-    // regardless of the existing attributes in this object. 
+    // Obtain variable names. Put this variable name into das table
+    // regardless of the existing attributes in this object.
 
     DBG(cerr << ">read_objects():"
         << "varname=" << varname << " id=" << oid << endl);
@@ -586,7 +589,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
 
-    // <hyokyung 2007.09. 6. 11:55:39> 
+    // <hyokyung 2007.09. 6. 11:55:39>
     // Rewrote to use C++ strings 3/2008 jhrg
     string newname;
 
@@ -615,12 +618,16 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         attr_table_ptr = das.add_table(newname, new AttrTable);
     }
 #ifndef CF
+#ifndef ATTR_STRING_QUOTE_FIX
     string fullpath = string("\"") + varname + string("\"");
     attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, fullpath);
-#endif
+#else
+    attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, varname);
+#endif // ATTR_STRINNG_QUOTE_FIX
+#endif // CF
 
     // Check the number of attributes in this HDF5 object and
-    // put HDF5 attribute information into DAS table. 
+    // put HDF5 attribute information into DAS table.
     char *print_rep = NULL;
     char *value = NULL;
     try {
@@ -639,14 +646,14 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    memset(value, 0, attr_inst.need + sizeof(char));
 
 	    DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
-	    // Read HDF5 attribute data. 
+	    // Read HDF5 attribute data.
 
 	    if (ty_id == H5T_STRING) {
 		// ty_id: No conversion needed. <hyokyung 2007.02.20. 13:28:08>
 		if (H5Aread(attr_id, ty_id, (void *) value) < 0)
 		    throw InternalErr(__FILE__, __LINE__,
 				      "unable to read HDF5 attribute data");
-	    } 
+	    }
 	    else {
 		if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
 		    throw InternalErr(__FILE__, __LINE__,
@@ -657,7 +664,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
 	    // Add all attributes in the array.
             //  Create the "name" attribute if we can find long_name.
-            //  Make it compatible with HDF4 server. 
+            //  Make it compatible with HDF4 server.
             if (strcmp(attr_inst.name, "long_name") == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
@@ -668,7 +675,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             }
 
             // For scalar data, just read data once a time,
-            // Change it into DODS string. 
+            // Change it into DODS string.
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
@@ -682,7 +689,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             }
             else {
                 // 1. If the hdf5 data type is HDF5 string and ndims is not 0;
-                // we will handle this differently. 
+                // we will handle this differently.
                 DBG(cerr << "=read_objects(): ndims=" << (int) attr_inst.
                     ndims << endl);
 
@@ -762,7 +769,7 @@ void find_gloattr(hid_t file, DAS & das)
 	    throw InternalErr(__FILE__, __LINE__,
 			      "unable to open HDF5 root group");
 #ifndef CF
-	// <hyokyung 2007.09.27. 12:09:40>  
+	// <hyokyung 2007.09.27. 12:09:40>
 	das.add_table("HDF5_ROOT_GROUP", new AttrTable);
 #endif
 
@@ -818,7 +825,7 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
     if (!attr_table_ptr)
 	attr_table_ptr = das.add_table(temp_varname, new AttrTable);
 
-    // get the target information at statbuf. 
+    // get the target information at statbuf.
     H5G_stat_t statbuf;
     herr_t ret = H5Gget_objinfo(pgroup, oname.c_str(), 0, &statbuf);
     if (ret < 0)
@@ -828,15 +835,19 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
     char *buf = 0;
     try {
 	buf = new char[(statbuf.linklen + 1) * sizeof(char)];
-	// get link target name 
-	if (H5Gget_linkval(pgroup, oname.c_str(), statbuf.linklen + 1, buf) 
+	// get link target name
+	if (H5Gget_linkval(pgroup, oname.c_str(), statbuf.linklen + 1, buf)
 	    < 0) {
 	    throw InternalErr(__FILE__, __LINE__, "unable to get link value");
 	}
 
+#ifndef ATTR_STRING_QUOTE_FIX
 	string finbuf = string("\"") + string(buf) + string("\"");
         attr_table_ptr->append_attr(oname, STRING, finbuf);
-	delete[]buf;
+#else
+        attr_table_ptr->append_attr(oname, STRING, buf);
+#endif
+        delete[]buf;
     }
     catch (...) {
 	delete[] buf;
@@ -863,13 +874,13 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 string get_hardlink(hid_t pgroup, const string & oname) {
     DBG(cerr << ">get_hardlink():" << oname << endl);
 
-    // Get the target information at statbuf. 
+    // Get the target information at statbuf.
     H5G_stat_t statbuf;
     H5Gget_objinfo(pgroup, oname.c_str(), 0, &statbuf);
 
     if (statbuf.nlink >= 2) {
 #if 0
-        objno = (haddr_t)statbuf.objno[0] 
+        objno = (haddr_t)statbuf.objno[0]
 	    | ((haddr_t)statbuf.objno[1] << (8 * sizeof(long)));
 #endif
         ostringstream oss;
@@ -880,12 +891,12 @@ string get_hardlink(hid_t pgroup, const string & oname) {
 
         if (!paths.add(objno, oname)) {
             return objno;
-        } 
+        }
 	else {
             return "";
         }
 
-    } 
+    }
     else {
         return "";
     }
@@ -900,29 +911,26 @@ string get_hardlink(hid_t pgroup, const string & oname) {
 /// \param oid object id
 /// \return nothing
 ////////////////////////////////////////////////////////////////////////////////
-void read_comments(DAS & das, const string & varname, hid_t oid) {
-
+void read_comments(DAS & das, const string & varname, hid_t oid)
+{
     // Borrowed from the dump_comment(hid_t obj_id) function in h5dump.c.
     char comment[max_str_len - 2];
     comment[0] = '\0';
     H5Gget_comment(oid, ".", sizeof(comment), comment);
     if (comment[0]) {
-	string quoted_comment = string("\"") + string(comment) + string("\"");
-
-	// Insert this comment into the das table.
-        DBG(cerr << "=read_comments(): comment=" << comment2
-            << " varname=" << varname << endl);
+#ifndef ATTR_STRING_QUOTE_FIX
+        string quoted_comment = string("\"") + string(comment) + string("\"");
+#endif
+        // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);
-        if (!at) {
-            DBG(cerr
-                << "=read_comments(): creating a new attribute table for "
-                << varname << endl);
+        if (!at)
             at = das.add_table(varname, new AttrTable);
-            at->append_attr("HDF5_COMMENT", STRING, quoted_comment);
-        } 
-	else {
-            at->append_attr("HDF5_COMMENT", STRING, quoted_comment);
-        }
+
+#ifndef ATTR_STRING_QUOTE_FIX
+        at->append_attr("HDF5_COMMENT", STRING, quoted_comment);
+#else
+        at->append_attr("HDF5_COMMENT", STRING, comment);
+#endif
     }
 }
 
@@ -934,7 +942,7 @@ void read_comments(DAS & das, const string & varname, hid_t oid) {
 /// gname is "/". If \a is_group is true, it keeps appending new attribute
 /// table called \a oname under the \a gname path. If \a is_group is false, it appends
 /// a string attribute called \a oname.
-/// 
+///
 /// \param das DAS object: reference
 /// \param gname absolute group pathname of an object
 /// \param oname name of object
@@ -942,7 +950,8 @@ void read_comments(DAS & das, const string & varname, hid_t oid) {
 /// \return nothing
 ////////////////////////////////////////////////////////////////////////////////
 void add_group_structure_info(DAS & das, const char *gname, char *oname,
-                              bool is_group) {
+        bool is_group)
+{
 
     string search("/");
     string replace(".");
@@ -956,7 +965,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     }
     if (strcmp(gname, "/") == 0) {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP");
-    } 
+    }
     else {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP.");
         full_path = full_path.substr(0, full_path.length() - 1);
@@ -968,10 +977,14 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
 
     if (is_group) {
         at->append_container(oname);
-    } 
+    }
     else {
-	string quoted_oname = string("\"") + string(oname) + string("\"");
+#ifndef ATTR_STRING_QUOTE_FIX
+        string quoted_oname = string("\"") + string(oname) + string("\"");
         at->append_attr("Dataset", "String", quoted_oname);
+#else
+        at->append_attr("Dataset", "String", oname);
+#endif
     }
 }
 

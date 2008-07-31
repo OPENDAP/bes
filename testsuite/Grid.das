@@ -91,7 +91,7 @@ Attributes {
                 Int32 YDim 200;
                 Float64 UpperLeftPointMtrs 210584.500410, 3322395.954450;
                 Float64 LowerRightMtrs 813931.109590, 2214162.532780;
-                String Projection HE5_GCTP_UTM;
+                String Projection "HE5_GCTP_UTM";
                 Int32 ZoneCode 40;
                 Int32 SphereCode 0;
                 Dimension {
@@ -113,7 +113,7 @@ Attributes {
                         String DataFieldName "Vegetation";
                         String DimList "YDim", "XDim";
                         String MaxdimList "Unlim", "Unlim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 6;
                         Float64 TilingDimensions 100, 60;
                     }
@@ -126,12 +126,12 @@ Attributes {
                 String GridName "PolarGrid";
                 Int32 XDim 100;
                 Int32 YDim 100;
-                String UpperLeftPointMtrs DEFAULT;
-                String LowerRightMtrs DEFAULT;
-                String Projection HE5_GCTP_PS;
+                String UpperLeftPointMtrs "DEFAULT";
+                String LowerRightMtrs "DEFAULT";
+                String Projection "HE5_GCTP_PS";
                 Float64 ProjParams 0, 0, 0, 0, 0, 90000000, 0, 0, 0, 0, 0, 0, 0;
                 Int32 SphereCode 3;
-                String GridOrigin HE5_HDFE_GD_LR;
+                String GridOrigin "HE5_HDFE_GD_LR";
                 Dimension {
                     Dimension_1 {
                         String DimensionName "Bands";
@@ -160,7 +160,7 @@ Attributes {
                 Int32 YDim 40;
                 Float64 UpperLeftPointMtrs 0.000000, 30000000.000000;
                 Float64 LowerRightMtrs 15000000.000000, 20000000.000000;
-                String Projection HE5_GCTP_GEO;
+                String Projection "HE5_GCTP_GEO";
                 Dimension {
                 }
                 DataField {

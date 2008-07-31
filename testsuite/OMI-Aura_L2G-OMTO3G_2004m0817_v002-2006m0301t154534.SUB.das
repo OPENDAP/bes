@@ -440,7 +440,7 @@ Attributes {
     }
     /HDFEOS%20INFORMATION/ArchivedMetadata {
         ARCHIVEDMETADATA {
-            String GROUPTYPE MASTERGROUP;
+            String GROUPTYPE "MASTERGROUP";
             LONGNAME {
                 Int32 NUM_VAL 1;
                 String VALUE "OMI/Aura Ozone (O3) Total Column Daily L2 Global 0.25deg Lat/Lon Grid";
@@ -464,9 +464,9 @@ Attributes {
                 Int32 YDim 670;
                 Float64 UpperLeftPointMtrs -170015000.000000, 89015000.000000;
                 Float64 LowerRightMtrs 140015000.000000, -78015000.000000;
-                String Projection HE5_GCTP_GEO;
-                String GridOrigin HE5_HDFE_GD_LL;
-                String PixelRegistration HE5_HDFE_CENTER;
+                String Projection "HE5_GCTP_GEO";
+                String GridOrigin "HE5_HDFE_GD_LL";
+                String PixelRegistration "HE5_HDFE_CENTER";
                 Dimension {
                     Dimension_1 {
                         String DimensionName "XDim";
@@ -494,231 +494,231 @@ Attributes {
                         String DataFieldName "GroundPixelQualityFlags";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_2 {
                         String DataFieldName "Latitude";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_3 {
                         String DataFieldName "LineNumber";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_4 {
                         String DataFieldName "Longitude";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_5 {
                         String DataFieldName "NumberOfCandidateScenes";
                         String DimList "YDim", "XDim";
                         String MaxdimList "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_6 {
                         String DataFieldName "OrbitNumber";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_7 {
                         String DataFieldName "PathLength";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_8 {
                         String DataFieldName "RelativeAzimuthAngle";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_9 {
                         String DataFieldName "SceneNumber";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_10 {
                         String DataFieldName "SecondsInDay";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_11 {
                         String DataFieldName "SolarZenithAngle";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_12 {
                         String DataFieldName "TerrainHeight";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_13 {
                         String DataFieldName "Time";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_14 {
                         String DataFieldName "ViewingZenithAngle";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_15 {
                         String DataFieldName "AlgorithmFlags";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_16 {
                         String DataFieldName "CloudTopPressure";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_17 {
                         String DataFieldName "ColumnAmountO3";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_18 {
                         String DataFieldName "InstrumentConfigurationId";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_19 {
                         String DataFieldName "MeasurementQualityFlags";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_20 {
                         String DataFieldName "NumberSmallPixelColumns";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_21 {
                         String DataFieldName "O3BelowCloud";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_22 {
                         String DataFieldName "QualityFlags";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_23 {
                         String DataFieldName "Reflectivity331";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_24 {
                         String DataFieldName "Reflectivity360";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_25 {
                         String DataFieldName "SmallPixelColumn";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_26 {
                         String DataFieldName "SO2index";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_27 {
                         String DataFieldName "StepTwoO3";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_28 {
                         String DataFieldName "TerrainPressure";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_29 {
                         String DataFieldName "UVAerosolIndex";
                         String DimList "nCandidate", "YDim", "XDim";
                         String MaxdimList "nCandidate", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_30 {
                         String DataFieldName "Wavelength";
                         String DimList "nWavel";
                         String MaxdimList "nWavel";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_31 {
                         String DataFieldName "APrioriLayerO3";
                         String DimList "nCandidate", "nLayers", "YDim", "XDim";
                         String MaxdimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_32 {
                         String DataFieldName "LayerEfficiency";
                         String DimList "nCandidate", "nLayers", "YDim", "XDim";
                         String MaxdimList "nCandidate", "nLayers", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                     DataField_33 {
                         String DataFieldName "Residual";
                         String DimList "nCandidate", "nWavel", "YDim", "XDim";
                         String MaxdimList "nCandidate", "nWavel", "YDim", "XDim";
-                        String CompressionType HE5_HDFE_COMP_DEFLATE;
+                        String CompressionType "HE5_HDFE_COMP_DEFLATE";
                         Int32 DeflateLevel 5;
                     }
                 }
@@ -734,7 +734,7 @@ Attributes {
     }
     /HDFEOS%20INFORMATION/subsetmetadata.0 {
         SUBSETMETADATA {
-            String GROUPTYPE MASTERGROUP;
+            String GROUPTYPE "MASTERGROUP";
             SUBSETFILE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;

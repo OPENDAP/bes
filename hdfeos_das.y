@@ -31,7 +31,8 @@
 %{
   // #define DODS_DEBUG
 #define YYSTYPE char *
-  
+#define ATTR_STRING_QUOTE_FIX
+
 // static char rcsid[] not_used = {"$Id$"};
 
 #include <stdio.h>
@@ -191,6 +192,7 @@ attribute:    	GROUP '=' STR
 		}
                 '=' data
 		| COMMENT {
+#ifndef ATTR_STRING_QUOTE_FIX
 		    ostringstream name, comment;
 		    name << "comment" << commentnum++;
 		    comment << "\"" << $1 << "\"";
@@ -206,9 +208,24 @@ attribute:    	GROUP '=' STR
 		      parse_error((parser_arg *)arg, msg.str().c_str());
 		      YYABORT;
 		    }
+#else
+            ostringstream name;
+            name << "comment" << commentnum++;
+            cerr << name.str() << ":" << $1 << endl;
+            AttrTable *a;
+            if (STACK_EMPTY)
+              a = ATTR_OBJ(arg);
+            else
+              a = TOP_OF_STACK;
+            if (!a->append_attr(name.str(), "String", $1)) {
+              ostringstream msg;
+              msg << "`" << name.str() << "' previously defined.";
+              parse_error((parser_arg *)arg, msg.str().c_str());
+              YYABORT;
+            }
+#endif
 		}
-                | error
-                {
+        | error {
 		    AttrTable *a;
 		    if (STACK_EMPTY)
 			a = ATTR_OBJ(arg);
