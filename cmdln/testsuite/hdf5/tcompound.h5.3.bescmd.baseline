@@ -2,19 +2,19 @@
 <center>
 <table>
 <tr><td align=right valign=top><b>/dset1</b>:</td>
-<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: "/dset1"<br>
+<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: /dset1<br>
 </td>
 </tr><tr><td align=right valign=top><b>/group1/dset2</b>:</td>
-<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: "/group1/dset2"<br>
+<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: /group1/dset2<br>
 </td>
 </tr><tr><td align=right valign=top><b>/group1/dset3</b>:</td>
-<td align=left valign=top>Array of Structures [ = 0..2][ = 0..5]<br>HDF5_OBJ_FULLPATH: "/group1/dset3"<br>
+<td align=left valign=top>Array of Structures [ = 0..2][ = 0..5]<br>HDF5_OBJ_FULLPATH: /group1/dset3<br>
 </td>
 </tr><tr><td align=right valign=top><b>/group1/dset4</b>:</td>
-<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: "/group1/dset4"<br>
+<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: /group1/dset4<br>
 </td>
 </tr><tr><td align=right valign=top><b>/group2/dset5</b>:</td>
-<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: "/group2/dset5"<br>
+<td align=left valign=top>Array of Structures [ = 0..4]<br>HDF5_OBJ_FULLPATH: /group2/dset5<br>
 </td>
 </tr></table>
 </center><p>

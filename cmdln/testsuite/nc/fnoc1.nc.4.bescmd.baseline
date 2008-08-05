@@ -319,9 +319,9 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/nc/fnoc1.nc");
 <td align="right" valign="top"><h3>
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
-NC_GLOBAL.base_time: "88- 10-00:00:00"
-NC_GLOBAL.title: " FNOC UV wind components from 1988- 10 to 1988- 13."
-DODS_EXTRA.Unlimited_Dimension: "time_a"
+NC_GLOBAL.base_time: 88- 10-00:00:00
+NC_GLOBAL.title:  FNOC UV wind components from 1988- 10 to 1988- 13.
+DODS_EXTRA.Unlimited_Dimension: time_a
 </textarea><p>
 
 <tr><td><td><hr>
@@ -360,10 +360,10 @@ org_opendap_u.add_dim(21);
 <br>
 
 <textarea name="u_attr" rows="5" cols="70">
-units: "meter per second"
-long_name: "Vector wind eastward component"
-missing_value: "-32767"
-scale_factor: "0.005"
+units: meter per second
+long_name: Vector wind eastward component
+missing_value: -32767
+scale_factor: 0.005
 DODS_Name: "UWind"
 b: 128
 i: 32000
@@ -406,10 +406,10 @@ org_opendap_v.add_dim(21);
 <br>
 
 <textarea name="v_attr" rows="5" cols="70">
-units: "meter per second"
-long_name: "Vector wind northward component"
-missing_value: "-32767"
-scale_factor: "0.005"
+units: meter per second
+long_name: Vector wind northward component
+missing_value: -32767
+scale_factor: 0.005
 DODS_Name: "VWind"
 </textarea>
 
@@ -437,7 +437,7 @@ org_opendap_lat.add_dim(17);
 <br>
 
 <textarea name="lat_attr" rows="5" cols="70">
-units: "degree North"
+units: degree North
 </textarea>
 
 
@@ -464,7 +464,7 @@ org_opendap_lon.add_dim(21);
 <br>
 
 <textarea name="lon_attr" rows="5" cols="70">
-units: "degree East"
+units: degree East
 </textarea>
 
 
@@ -491,7 +491,7 @@ org_opendap_time.add_dim(16);
 <br>
 
 <textarea name="time_attr" rows="5" cols="70">
-units: "hours from base_time"
+units: hours from base_time
 </textarea>
 
 

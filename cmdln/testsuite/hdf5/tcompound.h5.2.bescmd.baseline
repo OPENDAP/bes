@@ -6,35 +6,35 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="Dataset" type="String">
-            <value>&quot;dset1&quot;</value>
+            <value>dset1</value>
         </Attribute>
         <Attribute name="group1" type="Container">
             <Attribute name="Dataset" type="String">
-                <value>&quot;dset2&quot;</value>
-                <value>&quot;dset3&quot;</value>
-                <value>&quot;dset4&quot;</value>
+                <value>dset2</value>
+                <value>dset3</value>
+                <value>dset4</value>
             </Attribute>
         </Attribute>
         <Attribute name="group2" type="Container">
             <Attribute name="Dataset" type="String">
-                <value>&quot;dset5&quot;</value>
+                <value>dset5</value>
             </Attribute>
         </Attribute>
     </Attribute>
     <Attribute name="/group1/" type="Container">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/&quot;</value>
+            <value>/group1/</value>
         </Attribute>
     </Attribute>
     <Attribute name="/group2/" type="Container">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group2/&quot;</value>
+            <value>/group2/</value>
         </Attribute>
     </Attribute>
 
     <Array name="/dset1">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/dset1&quot;</value>
+            <value>/dset1</value>
         </Attribute>
         <Structure>
             <Int32 name="a_name"/>
@@ -45,7 +45,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Array>
     <Array name="/group1/dset2">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset2&quot;</value>
+            <value>/group1/dset2</value>
         </Attribute>
         <Structure>
             <Int32 name="int_name"/>
@@ -55,7 +55,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Array>
     <Array name="/group1/dset3">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset3&quot;</value>
+            <value>/group1/dset3</value>
         </Attribute>
         <Structure>
             <Array name="int_array">
@@ -73,7 +73,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Array>
     <Array name="/group1/dset4">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group1/dset4&quot;</value>
+            <value>/group1/dset4</value>
         </Attribute>
         <Structure>
             <Int32 name="int"/>
@@ -83,7 +83,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Array>
     <Array name="/group2/dset5">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
-            <value>&quot;/group2/dset5&quot;</value>
+            <value>/group2/dset5</value>
         </Attribute>
         <Structure>
             <Int32 name="int"/>

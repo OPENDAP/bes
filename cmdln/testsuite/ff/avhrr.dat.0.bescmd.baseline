@@ -28,23 +28,23 @@ Attributes {
         String DODS_EndDate "2002/12/31";
     }
     DODS_Date {
-        String year_variable URI_Avhrr.year;
-        String month_variable URI_Avhrr.month;
-        String day_variable URI_Avhrr.day;
+        String year_variable "URI_Avhrr.year";
+        String month_variable "URI_Avhrr.month";
+        String day_variable "URI_Avhrr.day";
     }
     DODS_Time {
-        String hours_variable URI_Avhrr.hours;
-        String minutes_variable URI_Avhrr.minutes;
-        String seconds_variable URI_Avhrr.seconds;
-        String gmt_time true;
+        String hours_variable "URI_Avhrr.hours";
+        String minutes_variable "URI_Avhrr.minutes";
+        String seconds_variable "URI_Avhrr.seconds";
+        String gmt_time "true";
     }
     DODS_Date_Time {
-        String year_variable URI.Avhrr.year;
-        String month_variable URI_Avhrr.month;
-        String day_variable URI_Avhrr.day;
-        String hours_variable URI_Avhrr.hours;
-        String minutes_variable URI_Avhrr.minutes;
-        String seconds_variable URI_Avhrr.seconds;
-        String gmt_time true;
+        String year_variable "URI.Avhrr.year";
+        String month_variable "URI_Avhrr.month";
+        String day_variable "URI_Avhrr.day";
+        String hours_variable "URI_Avhrr.hours";
+        String minutes_variable "URI_Avhrr.minutes";
+        String seconds_variable "URI_Avhrr.seconds";
+        String gmt_time "true";
     }
 }

@@ -6,12 +6,12 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 
     <Attribute name="NC_GLOBAL" type="Container">
         <Attribute name="history" type="String">
-            <value>&quot;FERRET V4.30 (debug/no GUI) 15-Aug-96&quot;</value>
+            <value>FERRET V4.30 (debug/no GUI) 15-Aug-96</value>
         </Attribute>
     </Attribute>
     <Attribute name="DODS_EXTRA" type="Container">
         <Attribute name="Unlimited_Dimension" type="String">
-            <value>&quot;TIME&quot;</value>
+            <value>TIME</value>
         </Attribute>
     </Attribute>
 
@@ -23,13 +23,13 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>-9.999999790e+33</value>
         </Attribute>
         <Attribute name="long_name" type="String">
-            <value>&quot;SEA SURFACE TEMPERATURE&quot;</value>
+            <value>SEA SURFACE TEMPERATURE</value>
         </Attribute>
         <Attribute name="history" type="String">
-            <value>&quot;From coads_climatology&quot;</value>
+            <value>From coads_climatology</value>
         </Attribute>
         <Attribute name="units" type="String">
-            <value>&quot;Deg C&quot;</value>
+            <value>Deg C</value>
         </Attribute>
         <Array name="SST">
             <Float32/>
