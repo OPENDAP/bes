@@ -363,7 +363,15 @@ bool HDF5Array::m_array_of_reference() {
 		    H5Iget_name(did_r, (char *) name, DODS_NAMELEN);
 		    DBG(cerr << "=read() dereferenced name is " << name 
 			<< endl);
-
+		    
+		    // <hyokyung 2008.08. 7. 14:40:47>		    
+		    // Shorten the dataset name
+		    string varname(name);
+#ifdef SHORT_PATH
+		    int pos = varname.find_last_of('/', varname.length() - 1);
+		    varname = varname.substr(pos + 1);
+#endif
+		    
 #ifdef  HDF_1_8_0
 		    // I don't understand why this call is here. jhrg 4/16/08
 		    char buf1[DODS_NAMELEN];
@@ -403,7 +411,7 @@ bool HDF5Array::m_array_of_reference() {
 #endif
 
 			      for (int j = 0; j < (int) npoints; j++) {
-				  expression.append(name); // Name of the dataset.
+				  expression.append(varname); // Name of the dataset.
 				  for (int k = 0; k < ndim; k++) {
 				      ostringstream oss; // <hyokyung 2008.08. 7. 13:35:39>
 				      oss << "[" << (int) buf[j * ndim + k] << "]";
@@ -447,7 +455,7 @@ bool HDF5Array::m_array_of_reference() {
 				  DBG(cerr << "=read() expression is " 
 				      << expression << endl);
 			      }
-			      v_str[i] = name;
+			      v_str[i] = varname;
 			      if (!expression.empty()) {
 				  v_str[i].append(expression);
 			      }
@@ -492,8 +500,16 @@ bool HDF5Array::m_array_of_reference() {
 					     &rbuf[offset[0] + i * step[0]]);
 		char name[DODS_NAMELEN];
 		H5Iget_name(did_r, (char *) name, DODS_NAMELEN);
+		// <hyokyung 2008.08. 7. 14:42:26>
+		// Shorten the dataset name
+		string varname(name);
+#ifdef SHORT_PATH
+		int pos = varname.find_last_of('/', varname.length() - 1);
+		varname = varname.substr(pos + 1);
+#endif
+
 		DBG(cerr << "=read() dereferenced name is " << name <<endl);
-		v_str[i] = name;
+		v_str[i] = varname;
 	    }
 	}
 
