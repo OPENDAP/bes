@@ -233,7 +233,7 @@ bool HDF5Array::m_array_in_structure() {
 	// a chain of H5 Compund objects which ultimately link the stuff we
 	// just built to the top of the dataset.
 	while (q && q->is_constructor_type()) {
-	    DBG(cerr << level << ": parent_name=" << parent_name << endl);
+	    DBG(cerr  << ": parent_name=" << parent_name << endl);
 
 	    hid_t stemp_tid = H5Tcreate(H5T_COMPOUND, d_memneed);
 	    H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid);
@@ -261,7 +261,7 @@ bool HDF5Array::m_array_in_structure() {
     DBG(cerr << "=read() parent's element count=" << array_size << endl);
     DBG(cerr << "=read() parent's entire element count=" << entire_array_size << endl);
     DBG(cerr << "=read() parent's index=" << array_index << endl);
-    DBG(cerr << "=read() element size=" << size << endl);
+
 
     // Read data from te HDF5 file and load those values into this instance.
 
@@ -401,10 +401,11 @@ bool HDF5Array::m_array_of_reference() {
 				       <<endl;
 			      }
 #endif
-			      ostringstream oss;
+
 			      for (int j = 0; j < (int) npoints; j++) {
 				  expression.append(name); // Name of the dataset.
 				  for (int k = 0; k < ndim; k++) {
+				      ostringstream oss; // <hyokyung 2008.08. 7. 13:35:39>
 				      oss << "[" << (int) buf[j * ndim + k] << "]";
 				      expression.append(oss.str());
 				  }
@@ -435,8 +436,9 @@ bool HDF5Array::m_array_of_reference() {
 
 			      H5Sget_select_bounds(space_id, start, end);
 
-			      ostringstream oss;
+
 			      for (int j = 0; j < ndim; j++) {
+  				  ostringstream oss; // <hyokyung 2008.08. 7. 13:35:50>
 				  DBG(cerr << "=read() start is " << start[j] 
 				      << "=read() end is " << end[j] << endl);
 				  oss << "[" << (int) start[j] << ":" 
@@ -495,8 +497,10 @@ bool HDF5Array::m_array_of_reference() {
 	    }
 	}
 
-	set_read_p(true);
-	val2buf((void *) &v_str);
+	set_value(v_str, nelms);
+	// <hyokyung 2008.08. 7. 13:03:02>
+	// set_read_p(true); 
+	// val2buf((void *) &v_str);
 	delete[] offset;
 	delete[] count;
 	delete[] step;
