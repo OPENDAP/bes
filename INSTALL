@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 1.2.1
+Updated for version 1.2.3
 
 --------------------------------------------------------------------
 BUILDING THE SOFTWARE
@@ -32,6 +32,11 @@ BUILDING THE SOFTWARE
    inserts the handler in the bes.conf file and adds test data to
    $prefix/share/hyrax/data.
 
+For very detailed instructions on building the software, please see 
+
+   http://hdfdap.hdfgroup.uiuc.edu:8080/install.html
+
+
 Building from Our SVN Repository
 
   If you are building from a SVN checkout, run 'autoreconf --verbose' before
@@ -39,6 +44,10 @@ Building from Our SVN Repository
   with build files that don't work, use 'autoreconf --force --verbose'. Once
   autoreconf has made the configure and Makefile.in files, do ./configure;
   make; make install as outlined above.
+
+
+
+
 
 REQUIREMENTS
 
@@ -103,7 +112,7 @@ NOTES
    EOS data use non-standard name like XDim and YDim and they must be
    renamed to follow CF convention.
 
-   In H5EOS.cc near line 294, there's a function that performs
+   In H5EOS.cc near line 313, there's a function that performs
    renaming. You can modify existing entries or add new entries if
    necessary. For example, "nCandidate" in EOS doesn't match the
    concept of "lev" in CF exactly but it's useful for displaying L2G
