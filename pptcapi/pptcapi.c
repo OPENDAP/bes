@@ -7,6 +7,7 @@
 #include <errno.h>
 
 #include "pptcapi.h"
+#include "pptcapi_utils.h"
 
 void
 pptcapi_initialize_connection_struct( struct pptcapi_connection *connection )
@@ -34,15 +35,16 @@ pptcapi_initialize_connect( struct pptcapi_connection *connection,
 	return PPTCAPI_ERROR ;
     }
 
-    char inbuf[ PPTCAPI_MAX_BUFFER_SIZE + 1 ] ;
-    int rec_len = PPTCAPI_MAX_BUFFER_SIZE ;
-    int bytes_read = pptcapi_doreceive( connection, inbuf, rec_len, error ) ;
+    char inbuf[ PPTCAPI_DEFAULT_BUFFER_SIZE + 1 ] ;
+    int rec_len = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+    int bytes_read = pptcapi_doreceive( connection, inbuf,
+						 rec_len, error ) ;
     if( bytes_read < 1 )
     {
 	return PPTCAPI_ERROR ;
     }
-    if( bytes_read > PPTCAPI_MAX_BUFFER_SIZE )
-	bytes_read = PPTCAPI_MAX_BUFFER_SIZE ;
+    if( bytes_read > PPTCAPI_DEFAULT_BUFFER_SIZE )
+	bytes_read = PPTCAPI_DEFAULT_BUFFER_SIZE ;
     inbuf[bytes_read] = '\0' ;
 
     int undef_len = strlen( PPT_PROTOCOL_UNDEFINED ) ;

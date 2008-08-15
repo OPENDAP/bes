@@ -36,11 +36,13 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
     char *buffer = 0 ;
     int buffer_len = 0 ;
     int bytes_read = 0 ;
+    int bytes_remaining = 0 ;
     while( result != PPTCAPI_RECEIVE_DONE )
     {
 	struct pptcapi_extensions *extensions = 0 ;
 	result = pptcapi_receive( connection, &extensions, &buffer,
-				  &buffer_len, &bytes_read, &error ) ;
+				  &buffer_len, &bytes_read,
+				  &bytes_remaining, &error ) ;
 	if( result == PPTCAPI_ERROR )
 	{
 	    handle_error( "failed to receive response", error ) ;
@@ -71,11 +73,6 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
 	if( result != PPTCAPI_RECEIVE_DONE && bytes_read != 0 )
 	{
 	    write( ofd, buffer, bytes_read ) ;
-	}
-
-	if( buffer )
-	{
-	    free( buffer ) ;
 	}
     }
 
@@ -135,7 +132,7 @@ read_commands( struct pptcapi_connection *connection, int ifd, int ofd )
 int
 main( int argc, char **argv )
 {
-    if( argc < 2 || argc > 3 )
+    if( argc < 2 || argc > 4 )
     {
 	printf( "usage: %s <input_file>\n", argv[0] ) ;
 	return 1 ;
@@ -188,14 +185,32 @@ main( int argc, char **argv )
 
     char *error = 0 ;
 
+    /*
+    error = pptcapi_debug_on( "./pptcapi.debug" ) ;
+    if( error )
+    {
+	handle_error( "failed to turn debugging on", error ) ;
+	fclose( ifd ) ;
+	if( ofd != 1 ) close( ofd ) ;
+	return 1 ;
+    }
+    */
+
+    int tcp_rcv_buffer_size = 70000 ;
+    int tcp_send_buffer_size = 70000 ;
+    int timeout = 5 ;
     struct pptcapi_connection *connection =
-	pptcapi_tcp_connect( "localhost", 10002, 5, &error ) ;
+	pptcapi_tcp_connect( "localhost", 10002, timeout,
+			     tcp_rcv_buffer_size,
+			     tcp_send_buffer_size,
+			     &error ) ;
 	//pptcapi_socket_connect( "/tmp/bes.socket", 5, &error ) ;
     if( !connection )
     {
 	handle_error( "failed to connect", error ) ;
 	close( ifd ) ;
 	if( ofd != 1 ) close( ofd ) ;
+	//pptcapi_debug_off() ;
 	return 1 ;
     }
 
@@ -206,6 +221,7 @@ main( int argc, char **argv )
 	close( ifd ) ;
 	if( ofd != 1 ) close( ofd ) ;
 	pptcapi_free_connection_struct( connection ) ;
+	//pptcapi_debug_off() ;
 	return 1 ;
     }
 
@@ -213,6 +229,7 @@ main( int argc, char **argv )
     if( read_commands( connection, ifd, ofd ) )
     {
 	pptcapi_free_connection_struct( connection ) ;
+	//pptcapi_debug_off() ;
 	return 1 ;
     }
 
@@ -221,6 +238,7 @@ main( int argc, char **argv )
     {
 	handle_error( "failed to send exit", error ) ;
 	pptcapi_free_connection_struct( connection ) ;
+	//pptcapi_debug_off() ;
 	return 1 ;
     }
 
@@ -229,10 +247,13 @@ main( int argc, char **argv )
     {
 	handle_error( "failed to close connection", error ) ;
 	pptcapi_free_connection_struct( connection ) ;
+	//pptcapi_debug_off() ;
 	return 1 ;
     }
 
     pptcapi_free_connection_struct( connection ) ;
+
+    //pptcapi_debug_off() ;
 
     return 0 ;
 }

@@ -13,13 +13,31 @@
 #include <fcntl.h>
 
 #include "pptcapi.h"
+#include "pptcapi_utils.h"
+#include "pptcapi_debug.h"
 
 extern void pptcapi_initialize_connection_struct( struct pptcapi_connection *connection ) ;
 
+extern int pptcapi_receive_buffer_size ;
+extern char *pptcapi_receive_buffer ;
+
+extern int pptcapi_send_buffer_size ;
+extern char *pptcapi_send_buffer ;
+
+int set_tcp_recv_buffer_size( int socket, int buffer_size, char **error ) ;
+int set_tcp_send_buffer_size( int socket, int buffer_size, char **error ) ;
+
+void get_tcp_recv_buffer_size( int socket ) ;
+void get_tcp_send_buffer_size( int socket ) ;
+
 struct pptcapi_connection *
 pptcapi_tcp_connect( const char *host, int portval, int timeout,
+		     int tcp_recv_buffer_size,
+		     int tcp_send_buffer_size,
 		     char **error )
 {
+    PPTCAPI_DEBUG00( "tcp connect entered\n" ) ;
+
     void *vconnection = malloc( sizeof( struct pptcapi_connection ) ) ;
     struct pptcapi_connection *connection =
 	(struct pptcapi_connection *)vconnection ;
@@ -41,6 +59,8 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 	strncpy( connection->host, host, len ) ;
 	connection->host[len] = '\0' ;
     }
+    PPTCAPI_DEBUG03( "  TCP connection to host %s, port %d, timeout %d\n",
+		     connection->host, portval, timeout )
 
     connection->port = portval ;
 
@@ -154,6 +174,24 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
         holder = holder | O_NONBLOCK ;
         fcntl( connection->socket, F_SETFL, holder ) ;
       
+	// we must set the send and receive buffer sizes before the connect call
+	int isok = set_tcp_recv_buffer_size( descript,
+					     tcp_recv_buffer_size,
+					     error ) ;
+	if( isok != PPTCAPI_OK )
+	{
+	    pptcapi_free_connection_struct( connection ) ;
+	    return 0 ;
+	}
+	isok = set_tcp_send_buffer_size( descript,
+					 tcp_send_buffer_size,
+					 error ) ;
+	if( isok != PPTCAPI_OK )
+	{
+	    pptcapi_free_connection_struct( connection ) ;
+	    return 0 ;
+	}
+      
         int res = connect( descript, (struct sockaddr*)&sin, sizeof( sin ) ) ;
 	my_errno = errno ;
         if( res == -1 ) 
@@ -253,6 +291,173 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
         }
     }
 
+    // we set the send and receive buffer sizes above. Now we need to get
+    // the final sizes. We do this because, even though we may have set the
+    // buffer sizes for the send and receive buffers, the system might have
+    // changed that size. For example, the size was set too big, so the
+    // system changes the value.
+
+    get_tcp_recv_buffer_size( connection->socket ) ;
+    get_tcp_send_buffer_size( connection->socket ) ;
+
+    PPTCAPI_DEBUG00( "tcp connect complete\n" ) ;
+
     return connection ;
+}
+
+int
+set_tcp_recv_buffer_size( int socket, int buffer_size, char **error )
+{
+    if( buffer_size <= 0 )
+    {
+	pptcapi_receive_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+	PPTCAPI_DEBUG01( "  pptcapi_receive_buffer_size set to %d\n",
+			 pptcapi_receive_buffer_size )
+    }
+    else
+    {
+	PPTCAPI_DEBUG01( "  setting receive buffer size to %d\n",
+			 buffer_size )
+	// call setsockopt
+	int err = setsockopt( socket, SOL_SOCKET, SO_RCVBUF,
+			  (char *)&buffer_size,
+			  (socklen_t)sizeof(buffer_size) ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    *error = (char *)malloc( 512 ) ;
+	    if( serr )
+	    {
+		sprintf( *error,
+			 "Failed to set the receive buffer size to %d: %s ",
+			 buffer_size, serr ) ;
+	    }
+	    else
+	    {
+		sprintf( *error,
+			 "Failed to set the receive buffer size to %d: %s ",
+			 buffer_size, "unknown error occurred" ) ;
+	    }
+	    return PPTCAPI_ERROR ;
+	}
+	pptcapi_receive_buffer_size = buffer_size ;
+    }
+    return PPTCAPI_OK ;
+}
+
+int
+set_tcp_send_buffer_size( int socket, int buffer_size, char **error )
+{
+    if( buffer_size <= 0 )
+    {
+	pptcapi_send_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+    }
+    else
+    {
+	// call setsockopt
+	int err = setsockopt( socket, SOL_SOCKET, SO_SNDBUF,
+			  (char *)&buffer_size,
+			  (socklen_t)sizeof(buffer_size) ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    *error = (char *)malloc( 512 ) ;
+	    if( serr )
+	    {
+		sprintf( *error,
+			 "Failed to set the send buffer size to %d: %s ",
+			 buffer_size, serr ) ;
+	    }
+	    else
+	    {
+		sprintf( *error,
+			 "Failed to set the send buffer size to %d: %s ",
+			 buffer_size, "unknown error occurred" ) ;
+	    }
+	    return PPTCAPI_ERROR ;
+	}
+	pptcapi_send_buffer_size = buffer_size ;
+    }
+    return PPTCAPI_OK ;
+}
+
+void
+get_tcp_recv_buffer_size( int socket )
+{
+    static char pptcapi_have_receive_buffer_size = 0 ;
+    if( !pptcapi_have_receive_buffer_size )
+    {
+	// call getsockopt and set the internal variables to the result
+	unsigned int sizenum = 0 ;
+	socklen_t sizelen = sizeof(sizenum) ;
+	int err = getsockopt( socket, SOL_SOCKET, SO_RCVBUF,
+			  (char *)&sizenum, (socklen_t *)&sizelen ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    if( serr )
+	    {
+		fprintf( stderr,
+			 "Failed to get the socket receive buffer size: %s\n",
+			 serr ) ;
+	    }
+	    else
+	    {
+		fprintf( stderr,
+			 "Failed to get the socket receive buffer size: %s\n",
+			 "unknown error occurred" ) ;
+	    }
+	    pptcapi_receive_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+	}
+	else
+	{
+	    pptcapi_receive_buffer_size = sizenum ;
+	}
+	pptcapi_have_receive_buffer_size = 1 ;
+	PPTCAPI_DEBUG01( "  pptcapi_receive_buffer_size get to %d\n",
+			 pptcapi_receive_buffer_size )
+    }
+}
+
+void
+get_tcp_send_buffer_size( int socket )
+{
+    static char pptcapi_have_send_buffer_size = 0 ;
+    if( !pptcapi_have_send_buffer_size )
+    {
+	// call getsockopt and set the internal variables to the result
+	unsigned int sizenum = 0 ;
+	socklen_t sizelen = sizeof(sizenum) ;
+	int err = getsockopt( socket, SOL_SOCKET, SO_SNDBUF,
+			  (char *)&sizenum, (socklen_t *)&sizelen ) ;
+	int myerrno = errno ;
+	if( err == -1 )
+	{
+	    char *serr = strerror( myerrno ) ;
+	    if( serr )
+	    {
+		fprintf( stderr,
+			 "Failed to get the socket send buffer size: %s\n",
+			 serr ) ;
+	    }
+	    else
+	    {
+		fprintf( stderr,
+			 "Failed to get the socket send buffer size: %s\n",
+			 "unknown error occurred" ) ;
+	    }
+	    pptcapi_send_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+	}
+	else
+	{
+	    pptcapi_send_buffer_size = sizenum ;
+	}
+	pptcapi_have_send_buffer_size = 1 ;
+	PPTCAPI_DEBUG01( "  pptcapi_send_buffer_size get to %d\n",
+			 pptcapi_receive_buffer_size )
+    }
 }
 

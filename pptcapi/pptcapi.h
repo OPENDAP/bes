@@ -36,8 +36,23 @@ main( int argc, char **argv )
 {
     char *error = 0 ;
 
+    // for debugging you would call the following function
+    // error = pptcapi_debug_on( "./pptcapi.debug" ) ;
+    // if( error )
+    // {
+    //     handle_error( "failed to turn debugging on", error ) ;
+    //     return 1 ;
+    // }
+
+    // advanced tcp tuning to maximize tcp communication
+    int tcp_receive_buffer_size = 0 ;
+    int tcp_send_buffer_size = 0 ;
+    int connection_timeout = 5 ;
     struct pptcapi_connection *connection =
-	pptcapi_tcp_connect( "localhost", 10002, 5, &error ) ;
+	pptcapi_tcp_connect( "localhost", 10002, connection_timeout,
+	                     tcp_receive_buffer_size,
+			     tcp_send_buffer_size,
+			     &error ) ;
 	//pptcapi_socket_connect( "/tmp/bes.socket", 5, &error ) ;
     if( !connection )
     {
@@ -67,11 +82,13 @@ main( int argc, char **argv )
     char *buffer = 0 ;
     int buffer_len = 0 ;
     int bytes_read = 0 ;
+    int bytes_remaining = 0 ;
     while( result != PPTCAPI_RECEIVE_DONE )
     {
 	struct pptcapi_extensions *extensions = 0 ;
 	result = pptcapi_receive( connection, &extensions, &buffer,
-				  &buffer_len, &bytes_read, &error ) ;
+				  &buffer_len, &bytes_read,
+				  &bytes_remaining, &error ) ;
 
 	if( result == PPTCAPI_ERROR )
 	{
@@ -104,11 +121,6 @@ main( int argc, char **argv )
 	{
 	    write( 1, buffer, bytes_read ) ;
 	}
-
-	if( buffer )
-	{
-	    free( buffer ) ;
-	}
     }
 
     result = pptcapi_send_exit( connection, &error ) ;
@@ -129,6 +141,9 @@ main( int argc, char **argv )
 
     pptcapi_free_connection_struct( connection ) ;
 
+    // if debugging was turned on you would need to turn it off here
+    // pptcapi_debug_off() ;
+
     return 0 ;
 }
 
@@ -137,7 +152,7 @@ main( int argc, char **argv )
 
 /* maximum type sizes and default values */
 #define PPTCAPI_MAX_STR_LEN 256
-#define PPTCAPI_MAX_BUFFER_SIZE 65535
+#define PPTCAPI_DEFAULT_BUFFER_SIZE 65535
 #define PPTCAPI_MAX_TIMEOUT 5
 
 /* chunk header sizes ... still need to change code in pptcapi_send in the
@@ -193,8 +208,8 @@ main( int argc, char **argv )
  * ssl_key_file - file with ssl connection keys
  */
 struct pptcapi_connection {
-    int				is_tcp ;
-    int				is_unix_socket ;
+    char			is_tcp ;
+    char			is_unix_socket ;
     char *			host ;
     int				port ;
     char *			unix_socket ;
@@ -225,9 +240,20 @@ struct pptcapi_extensions {
 
 /** @brief connect to a remote BES server using a tcp connection
  *
+ * System administrators can use the tcp_recv_buffer_size and
+ * tcp_send_buffer_size parameters to tune the buffer sizes used by pptcapi
+ * in receiving and sending data respectively. Please refer to online
+ * documentation regarding tcp tuning for more information. If the
+ * parameters are set to 0 then pptcapi will determine the current set
+ * window sizes in setting the buffer sizes.
+ *
  * @param host name of the host machine trying to attach to
  * @param portval port of the server on the specified host
  * @param timeout how long to wait before timing out on connect
+ * @param tcp_recv_buf_size tcp tuning allows you to set buffer sizes to
+ * maximize performance
+ * @param tcp_send_buf_size tcp tuning allows you to set buffer sizes to
+ * maximize performance
  * @param error out variable representing any errors received on connect
  * @return pptcapi_connection structure if connection successful, 0 if not
  * with error set
@@ -235,6 +261,8 @@ struct pptcapi_extensions {
 struct pptcapi_connection *pptcapi_tcp_connect( const char *host,
 					        int portval,
 					        int timeout,
+						int tcp_recv_buffer_size,
+						int tcp_send_buffer_size,
 						char **error ) ;
 
 /** @brief connect to a local BES server using a unix socket
@@ -358,6 +386,8 @@ int pptcapi_send_exit( struct pptcapi_connection *connection,
  * by fd returned from the call
  * @param bytes_read out variable representing the number of bytes read in
  * this call. Might be less than len.
+ * @param bytes_remaining in/out variable representing the number of bytes
+ * remaining to be read for this chunk.
  * @param error out variable representing any errors received during the
  * receive of extensions or data
  * @return pptcapi function return values specified above. Returns
@@ -365,7 +395,24 @@ int pptcapi_send_exit( struct pptcapi_connection *connection,
  */
 int pptcapi_receive( struct pptcapi_connection *connection,
 		     struct pptcapi_extensions **extensions,
-		     char **fd, int *len, int *bytes_read, char **error ) ;
+		     char **fd, int *len, int *bytes_read,
+		     int *bytes_remaining, char **error ) ;
+
+/** @brief turn debugging on in pptcapi and dump to specified location
+ *
+ * The location string can be set to stderr to have debugging information
+ * dump to the standard error or to a file name, such as ./pptcapi.debug. If
+ * debugging was already turned on then we switch to the specified location,
+ * if different.
+ *
+ * @param location where to dump debugging information to
+ */
+char *pptcapi_debug_on( char *location ) ;
+
+/** @brief turn debugging off in pptcapi
+ *
+ */
+void pptcapi_debug_off() ;
 
 #endif // pptcapi_h
 

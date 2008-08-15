@@ -33,7 +33,9 @@ libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
 
 pkginclude_HEADERS = $(CHDRS)
 
-CSRCS = pptcapi_authenticate.c pptcapi_tcp_connect.c pptcapi_socket_connect.c pptcapi_send.c pptcapi_receive.c pptcapi.c
+CSRCS = pptcapi_authenticate.c pptcapi_tcp_connect.c 	\
+	pptcapi_socket_connect.c pptcapi_send.c 	\
+	pptcapi_receive.c pptcapi.c pptcapi_debug.c
 
 CHDRS = pptcapi.h
 

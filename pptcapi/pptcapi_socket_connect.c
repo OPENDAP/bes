@@ -11,8 +11,15 @@
 
 #include "pptcapi.h"
 #include "pptcapi_utils.h"
+#include "pptcapi_debug.h"
 
 extern void pptcapi_initialize_connection_struct( struct pptcapi_connection *connection ) ;
+
+extern int pptcapi_receive_buffer_size ;
+extern char *pptcapi_receive_buffer ;
+
+extern int pptcapi_send_buffer_size ;
+extern char *pptcapi_send_buffer ;
 
 char *pptcapi_temp_name() ;
 
@@ -21,12 +28,16 @@ char *pptcapi_ltoa( long value, char *buffer, int base ) ;
 struct pptcapi_connection *
 pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 {
+    PPTCAPI_DEBUG00( "socket connect entered\n" ) ;
+
     if( !unix_socket )
     {
 	*error = (char *)malloc( 512 ) ;
 	sprintf( *error, "No unix socket specified for unix connection" ) ;
 	return 0 ;
     }
+    PPTCAPI_DEBUG02( "  unix socket connect to socket %s, timeout %d\n",
+		     unix_socket, timeout ) ;
 
     int unix_socket_len = strlen( unix_socket ) ;
     if( unix_socket_len > PPTCAPI_MAX_STR_LEN )
@@ -164,6 +175,13 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
     }
+
+    PPTCAPI_DEBUG01( "  socket connect: receive/send buffer sizes set to %d\n",
+		     PPTCAPI_DEFAULT_BUFFER_SIZE ) ;
+    pptcapi_receive_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+    pptcapi_send_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
+
+    PPTCAPI_DEBUG00( "socket connect complete\n" ) ;
 }
 
 char *

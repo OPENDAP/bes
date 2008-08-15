@@ -9,6 +9,9 @@
 #include "pptcapi.h"
 #include "pptcapi_utils.h"
 
+int pptcapi_send_buffer_size  = 0 ;
+char *pptcapi_send_buffer  = 0 ;
+
 int
 pptcapi_send( struct pptcapi_connection *connection,
 	      char *buffer, int len, char **error )
@@ -16,7 +19,7 @@ pptcapi_send( struct pptcapi_connection *connection,
     /* if the length len is less than or equal to the max chunk size then we
      * can just send it
      */
-    if( len <= PPTCAPI_MAX_BUFFER_SIZE )
+    if( len <= PPTCAPI_DEFAULT_BUFFER_SIZE )
     {
 	int res = pptcapi_send_chunk( connection, 'd', buffer, len, error ) ;
 	if( res != PPTCAPI_OK )
@@ -31,14 +34,14 @@ pptcapi_send( struct pptcapi_connection *connection,
      * again with the remainder
      */
     int send_result = pptcapi_send_chunk( connection, 'd', buffer,
-					  PPTCAPI_MAX_BUFFER_SIZE, error ) ;
+					  PPTCAPI_DEFAULT_BUFFER_SIZE, error ) ;
     if( send_result != PPTCAPI_OK )
     {
 	return send_result ;
     }
 
-    char *next_buffer = buffer + PPTCAPI_MAX_BUFFER_SIZE ;
-    int next_len = len - PPTCAPI_MAX_BUFFER_SIZE ;
+    char *next_buffer = buffer + PPTCAPI_DEFAULT_BUFFER_SIZE ;
+    int next_len = len - PPTCAPI_DEFAULT_BUFFER_SIZE ;
 
     return pptcapi_send( connection, next_buffer, next_len, error ) ;
 }
@@ -48,7 +51,7 @@ pptcapi_send_extensions( struct pptcapi_connection *connection,
 			 struct pptcapi_extensions *extensions,
 			 char **error )
 {
-    char inbuf[ PPTCAPI_MAX_BUFFER_SIZE ] ;
+    char inbuf[ PPTCAPI_DEFAULT_BUFFER_SIZE ] ;
     int first = 1 ;
     while( extensions )
     {
@@ -96,7 +99,7 @@ int
 pptcapi_send_chunk( struct pptcapi_connection *connection,
 		    char type, char *buffer, int len, char **error )
 {
-    if( len > PPTCAPI_MAX_BUFFER_SIZE )
+    if( len > PPTCAPI_DEFAULT_BUFFER_SIZE )
     {
 	*error = (char *)malloc( 512 ) ;
 	sprintf( *error, "length of chunk to send %d is too big", len ) ;
