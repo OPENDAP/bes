@@ -68,44 +68,44 @@ Attributes {
                 GeoField {
                     GeoField_1 {
                         String GeoFieldName "Time";
-                        String DataType DFNT_FLOAT64;
+                        String DataType "DFNT_FLOAT64";
                         String DimList "GeoTrack";
                     }
                     GeoField_2 {
                         String GeoFieldName "Longitude";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "GeoTrack", "GeoXtrack";
                     }
                     GeoField_3 {
                         String GeoFieldName "Latitude";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "GeoTrack", "GeoXtrack";
                     }
                 }
                 DataField {
                     DataField_1 {
                         String DataFieldName "Density";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "GeoTrack";
                     }
                     DataField_2 {
                         String DataFieldName "Temperature";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "GeoTrack", "GeoXtrack";
                     }
                     DataField_3 {
                         String DataFieldName "Pressure";
-                        String DataType DFNT_FLOAT64;
+                        String DataType "DFNT_FLOAT64";
                         String DimList "Res2tr", "Res2xtr";
                     }
                     DataField_4 {
                         String DataFieldName "Spectra";
-                        String DataType DFNT_FLOAT64;
+                        String DataType "DFNT_FLOAT64";
                         String DimList "Bands", "Res2tr", "Res2xtr";
                     }
                     DataField_5 {
                         String DataFieldName "Count";
-                        String DataType DFNT_INT16;
+                        String DataType "DFNT_INT16";
                         String DimList "Unlim";
                     }
                 }

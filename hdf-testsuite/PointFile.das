@@ -24,17 +24,17 @@ Attributes {
                         String LevelName "Sensor";
                         PointField_1 {
                             String PointFieldName "Time";
-                            String DataType DFNT_FLOAT64;
+                            String DataType "DFNT_FLOAT64";
                             Int32 Order 1;
                         }
                         PointField_2 {
                             String PointFieldName "Concentration";
-                            String DataType DFNT_FLOAT32;
+                            String DataType "DFNT_FLOAT32";
                             Int32 Order 4;
                         }
                         PointField_3 {
                             String PointFieldName "Species";
-                            String DataType DFNT_CHAR8;
+                            String DataType "DFNT_CHAR8";
                             Int32 Order 4;
                         }
                     }

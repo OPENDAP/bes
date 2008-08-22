@@ -21,7 +21,7 @@ Attributes {
                 Int32 YDim 200;
                 Float64 UpperLeftPointMtrs 210584.500410, 3322395.954450;
                 Float64 LowerRightMtrs 813931.109590, 2214162.532780;
-                String Projection GCTP_UTM;
+                String Projection "GCTP_UTM";
                 Int32 ZoneCode 40;
                 Int32 SphereCode 0;
                 Dimension {
@@ -33,17 +33,17 @@ Attributes {
                 DataField {
                     DataField_1 {
                         String DataFieldName "Pollution";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "Time", "YDim", "XDim";
                     }
                     DataField_2 {
                         String DataFieldName "Vegetation";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "YDim", "XDim";
                     }
                     DataField_3 {
                         String DataFieldName "Extern";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "YDim", "XDim";
                     }
                 }
@@ -55,12 +55,12 @@ Attributes {
                 String GridName "PolarGrid";
                 Int32 XDim 100;
                 Int32 YDim 100;
-                String UpperLeftPointMtrs DEFAULT;
-                String LowerRightMtrs DEFAULT;
-                String Projection GCTP_PS;
+                String UpperLeftPointMtrs "DEFAULT";
+                String LowerRightMtrs "DEFAULT";
+                String Projection "GCTP_PS";
                 Float64 ProjParams 0, 0, 0, 0, 0, 90000000, 0, 0, 0, 0, 0, 0, 0;
                 Int32 SphereCode 3;
-                String GridOrigin HDFE_GD_LR;
+                String GridOrigin "HDFE_GD_LR";
                 Dimension {
                     Dimension_1 {
                         String DimensionName "Bands";
@@ -70,22 +70,22 @@ Attributes {
                 DataField {
                     DataField_1 {
                         String DataFieldName "Temperature";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "YDim", "XDim";
                     }
                     DataField_2 {
                         String DataFieldName "Pressure";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "YDim", "XDim";
                     }
                     DataField_3 {
                         String DataFieldName "Soil Dryness";
-                        String DataType DFNT_FLOAT32;
+                        String DataType "DFNT_FLOAT32";
                         String DimList "YDim", "XDim";
                     }
                     DataField_4 {
                         String DataFieldName "Spectra";
-                        String DataType DFNT_FLOAT64;
+                        String DataType "DFNT_FLOAT64";
                         String DimList "Bands", "YDim", "XDim";
                     }
                 }
@@ -103,7 +103,7 @@ Attributes {
                 Int32 YDim 40;
                 Float64 UpperLeftPointMtrs 0.000000, 30000000.000000;
                 Float64 LowerRightMtrs 15000000.000000, 20000000.000000;
-                String Projection GCTP_GEO;
+                String Projection "GCTP_GEO";
                 Dimension {
                 }
                 DataField {
