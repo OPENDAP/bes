@@ -55,9 +55,8 @@ proc dap_hdf4_handler_load {} {
 }
 
 proc dap_hdf4_handler_exit {} {
-    send_user "Running rm now\n"
+    send_user "Running 'rm -rf cache' now\n"
     exec rm -rf hdf-testsuite/cache
-    exec mkdir -p hdf-testsuite/cache
 }
 
 proc dap_hdf4_handler_version {} {
