@@ -106,6 +106,7 @@ AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)
 
 AC_CONFIG_FILES([Makefile
+		 bes-testsuite/Makefile
                  hdfclass/Makefile])
 
 dnl Add this later: hdf-testfiles/Makefile

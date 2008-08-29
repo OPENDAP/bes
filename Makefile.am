@@ -19,6 +19,8 @@ noinst_PROGRAMS = eosdas_test
 
 if OPENDAPSERVER
 
+SUBDIRS += bes-testsuite
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf4_module.la
 
