@@ -251,13 +251,17 @@ PPTConnection::receive( map<string,string> &extensions,
     if( strm )
 	use_strm = strm ;
 
-    // The first buffer will contain the length of the chunk at the beginning.
-    unsigned int ppt_buffer_size = _mySock->getRecvBufferSize() ;
-    BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << ppt_buffer_size
+    // If the receive buffer has not yet been created, get the receive size
+    // and create the buffer.
+    BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len
               << endl )
     if( !_inBuff )
-	_inBuff = new char[ppt_buffer_size+1] ;
+    {
+	_inBuff_len = _mySock->getRecvBufferSize() + 1 ;
+	_inBuff = new char[_inBuff_len+1] ;
+    }
 
+    // The first buffer will contain the length of the chunk at the beginning.
     // read the first 8 bytes. The first 7 are the length and the next 1
     // if x then extensions follow, if d then data follows.
     int bytesRead = readChunkHeader( _inBuff, 8 ) ;
@@ -321,32 +325,40 @@ PPTConnection::receive( map<string,string> &extensions,
 void
 PPTConnection::receive( ostream &strm, unsigned int len )
 {
+    BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl )
     if( !_inBuff )
     {
 	string err = "buffer has not been initialized" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-    // I added this test because in PPTConnection::receive(
-    // map<string,string>, ostream ) this method is called with 'len' passed
-    // a value that's read from the input stream. That value could be
-    // manipulated to cause a bufer overflow. Note that _inBuff is
-    // PPTBufferSize + 1 so reading that many bytes leaves room for the null
-    // byte. jhrg 3/3/08
-    if( len > _mySock->getRecvBufferSize( ) )
+
+    unsigned int to_read = len ;
+    if( len > _inBuff_len )
     {
-	string err = "buffer is not large enough" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	to_read = _inBuff_len ;
     }
-    int bytesRead = readBuffer( _inBuff, len ) ;
+    BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl )
+
+    // read a buffer
+    int bytesRead = readBuffer( _inBuff, to_read ) ;
     if( bytesRead <= 0 )
     {
 	string err = "Failed to read data from socket" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
+    BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = " << bytesRead << endl )
+
+    // write the buffer read to the stream
     _inBuff[bytesRead] = '\0' ;
     strm.write( _inBuff, bytesRead ) ;
+
+    // if bytesRead is less than the chunk length, then we need to go get
+    // some more. It doesn't matter what _inBuff_len is, because we need
+    // len bytes to be read and we read bytesRead bytes.
     if( bytesRead < len )
     {
+	BESDEBUG( "ppt", "PPTConnect::receive - remaining = "
+		         << (len - bytesRead) << endl )
 	receive( strm, len - bytesRead ) ;
     }
 }
