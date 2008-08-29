@@ -36,6 +36,8 @@ else
     if [ "$responseTypes" != "none" ]
     then
 	RESPONSE_TYPES=${responseTypes}
+    else
+	RESPONSE_TYPES=""
     fi
 fi
 
