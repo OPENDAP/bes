@@ -108,5 +108,5 @@ AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
 
 #endif /* _config_hdf5_h */])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile])
 AC_OUTPUT

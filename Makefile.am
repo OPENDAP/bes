@@ -17,6 +17,8 @@ BUILT_SOURCES = $(GRAM_SRCS)
 
 if OPENDAPSERVER
 
+SUBDIRS = bes-testsuite
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
 dist_bin_SCRIPTS = bes-hdf5-data.sh

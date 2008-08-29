@@ -1,0 +1,5 @@
+set context dap_format to dap2;
+set container in catalog values tcompound,/data/tcompound.h5;
+define d as tcompound;
+get das for d;
+exit

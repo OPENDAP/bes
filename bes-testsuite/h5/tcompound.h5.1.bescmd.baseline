@@ -1,0 +1,23 @@
+Dataset {
+    Structure {
+        Int32 a_name;
+        Float32 b_name;
+        Float64 c_name;
+    } /dset1[5];
+    Structure {
+        Int32 int_name;
+        Float32 float_name;
+    } /group1/dset2[5];
+    Structure {
+        Int32 int_array[4];
+        Float32 float_array[5][6];
+    } /group1/dset3[3][6];
+    Structure {
+        Int32 int;
+        Float32 float;
+    } /group1/dset4[5];
+    Structure {
+        Int32 int;
+        Float32 float;
+    } /group2/dset5[5];
+} tcompound.h5;
