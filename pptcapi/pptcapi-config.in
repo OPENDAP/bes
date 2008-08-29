@@ -13,7 +13,7 @@ pkgdatadir=${datadir}/pptcapi
 usage()
 {
     cat <<EOF
-Usage: bes-config [OPTION]
+Usage: pptcapi-config [OPTION]
 
 Available values for OPTION include:
 
@@ -73,7 +73,7 @@ while test $# -gt 0; do
        	;;
 
     --version)
-	echo "bes @PACKAGE_VERSION@"
+	echo "pptcapi @PACKAGE_VERSION@"
 	;;
 
     *)
