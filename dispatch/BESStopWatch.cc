@@ -33,6 +33,7 @@
 #include <cerrno>
 #include <string>
 #include <iostream>
+#include <cstring>
 
 using std::string ;
 using std::cerr ;

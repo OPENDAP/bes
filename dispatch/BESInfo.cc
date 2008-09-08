@@ -34,6 +34,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 using std::ostringstream ;
 using std::ifstream ;
