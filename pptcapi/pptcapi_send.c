@@ -106,7 +106,7 @@ pptcapi_send_chunk( struct pptcapi_connection *connection,
 	return PPTCAPI_ERROR ;
     }
 
-    char header[PPTCAPI_CHUNK_HEADER_SIZE] ;
+    char header[PPTCAPI_CHUNK_HEADER_SIZE+1] ;
     sprintf( header, "%07x%c", len, type ) ;
     int header_send = pptcapi_dosend( connection, header,
 				      PPTCAPI_CHUNK_HEADER_SIZE, error ) ;
@@ -116,7 +116,8 @@ pptcapi_send_chunk( struct pptcapi_connection *connection,
     }
     if( len > 0 )
     {
-	return pptcapi_dosend( connection, buffer, len, error ) ;
+	int dosend = pptcapi_dosend( connection, buffer, len, error ) ;
+	return dosend ;
     }
 
     return PPTCAPI_OK ;
