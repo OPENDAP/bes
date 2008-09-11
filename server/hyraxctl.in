@@ -1,16 +1,11 @@
 #!/bin/sh
 
-
-
 ###########################################################################
 #
 #
 #
 #..........................................................................
 
-
-
-#echo "Command Line Params: " $@
 cmd=$1;
 shift
 BES_PARAMS="$*"
@@ -32,8 +27,7 @@ bindir=@bindir@
 #..........................................................................
 usage()
 {
-
-cat << EOF
+    cat << EOF
 
 hyraxctl                                                            hyraxctl
 
@@ -108,16 +102,9 @@ REQUIREMENTS
 
 hyraxctl                                                            hyraxctl
 
-
     
 EOF
-
 }
-
-
-
-
-
 
 ###########################################################################
 #
@@ -132,8 +119,6 @@ stop()
     stopBES
 }
 
-
-
 ###########################################################################
 #
 # Starts Hyrax
@@ -141,8 +126,6 @@ stop()
 #..........................................................................
 start()
 {
-
-
     startBES
     
     if [ $BES_STARTED ]
@@ -167,12 +150,6 @@ start()
 
 }
 
-
-
-
-
-
-
 ###########################################################################
 #
 # Restarts Hyraxs by first stopping and then starting it.
@@ -183,11 +160,6 @@ restart()
     stop
     start
 }
-
-
-
-
-
 
 ###########################################################################
 #
@@ -213,8 +185,6 @@ startOLFS()
     fi
 }
 
-
-
 ###########################################################################
 #
 # Stops the OLFS (come hell or high water)
@@ -222,13 +192,10 @@ startOLFS()
 #..........................................................................
 stopOLFS()
 {
-
-
     findRunningOLFS
     
     if [ $OLFS_RUNNING  ] 
     then
-
         echo "Attempting to stop OLFS using Tomcat shutdown script."
         $TOMCAT_STOP
         echo "Waiting..."
@@ -257,9 +224,6 @@ stopOLFS()
             echo "The OLFS has been stopped."   
         fi
     fi
-
-    
-
 }
 
 ###########################################################################
@@ -274,8 +238,6 @@ restartOLFS()
 
 }
 
-
-
 ###########################################################################
 #
 # Terminate the process identified in the passed process ID. 
@@ -286,32 +248,32 @@ destroy()
 {
     DOOMED_PID=$1
     echo "Process $DOOMED_PID not dead yet!  Sending SIGTERM..."
-    kill $DOOMED_PID
+    kill $DOOMED_PID 2>/dev/null
     sleep 5
     
     isActivePID $DOOMED_PID
     if [ "$?" == 1 ]
     then 
         echo "Process $DOOMED_PID not responding to SIGTERM. Retrying..."
-        kill $DOOMED_PID
+        kill $DOOMED_PID >2 /dev/null
         sleep 5
         isActivePID $DOOMED_PID
         if [ "$?" == 1 ]
         then 
             echo "Process $DOOMED_PID not responding to SIGTERM. Trying SIGINT..."
-            kill -INT $DOOMED_PID
+            kill -INT $DOOMED_PID >2 /dev/null
             sleep 5
             isActivePID $DOOMED_PID
             if [ "$?" == 1 ]
             then 
                 echo "Process $DOOMED_PID not responding to SIGINT. Retrying..."
-                kill -INT $DOOMED_PID
+                kill -INT $DOOMED_PID >2 /dev/null
                 sleep 5
                 isActivePID $DOOMED_PID
                 if [ "$?" == 1 ]
                 then 
                     echo "Process $DOOMED_PID not responding to SIGINT. Trying SIGKILL..."
-                    kill -9 $DOOMED_PID
+                    kill -9 $DOOMED_PID >2 /dev/null
                     sleep 5
                     isActivePID $DOOMED_PID
                     if [ "$?" == 1 ]
@@ -331,18 +293,9 @@ destroy()
             fi
         fi
     fi
-
     
     echo "Process $DOOMED_PID has been terminated."
-
 }
-
-
-
-
-
-
-
 
 ###########################################################################
 #
@@ -352,10 +305,9 @@ destroy()
 #..........................................................................
 isActivePID()
 {
-    
     RESULT=`$PS -p $1 | grep $1 | awk '{print $2}'`
     
-    if [ -z $RESULT ] 
+    if [ -z "$RESULT" ] 
     then
         return 0
     else 
@@ -363,10 +315,6 @@ isActivePID()
     fi    
 
 }
-
-
-
-
 
 ###########################################################################
 #
@@ -383,36 +331,8 @@ findRunningOLFS()
     unset CATALINA_PID_VALID
     
     echo "Is the OLFS running?"
-    
-    # I think this is broken. There's a catalina.pid file on my machine when
-    # tomcat is not running (at least sometimes). The method of finding Tomcat
-    # below will always work unless they change the name of the thing, so lets
-    # use it!
-#   if [ -f $CATALINA_PID ]
-#    then
-#        OLFS_PID=`cat $CATALINA_PID`
-#        echo "OLFS process ID appears to be: $OLFS_PID"
-#        echo "Checking..."
-#        
-#        CHECK_PID=`$PS -p $OLFS_PID | grep $OLFS_PID | awk '{print $2}'`
-#        
-#        #echo CHECK_PID: $CHECK_PID
-#        
-#        
-#        if [ ! -z "$CHECK_PID" ]
-#        then 
-#            echo "Confirmed running OLFS (Process ID: $OLFS_PID)"
-#            OLFS_RUNNING=1
-#            CATALINA_PID_VALID=1
-#            return
-#        else
-#            echo "False lead, still looking for OLFS..."
-#        fi
-#    fi
 
     OLFS_PID=`$PS | grep -i tomcat | grep -v grep | awk '{print $2}'`
-
-#   echo OLFS Process IDs: $OLFS_PID
 
     if [ -n "$OLFS_PID" ] 
     then
@@ -422,13 +342,6 @@ findRunningOLFS()
         echo "The OLFS is not running"
     fi
 }
-
-
-
-
-
-
-
 
 ###########################################################################
 #
@@ -443,7 +356,6 @@ startBES()
     if [ $BES_RUNNING  ] 
     then
         echo "The BES is already running! Will not start BES."
-
     else
         echo "Starting BES..."
         BES_CMD="$BES start $BES_PARAMS"
@@ -462,11 +374,6 @@ startBES()
     
     echo "BES is running"
 }
-
-
-
-
-
 
 ###########################################################################
 #
@@ -498,15 +405,6 @@ findRunningBES()
     
 }
 
-
-
-
-
-
-
-
-
-
 ###########################################################################
 #
 # Stops the BES (come hell or high water).
@@ -537,10 +435,7 @@ stopBES()
             destroy $PID
         done
     fi    
-    
 }
-
-
 
 ###########################################################################
 #
@@ -554,9 +449,6 @@ restartBES()
     startBES
 }
 
-
-
-
 ###########################################################################
 #
 # Attempts to determine if the system is using the UCB or System V version 
@@ -565,37 +457,29 @@ restartBES()
 #..........................................................................
 checkPS()
 {
+    # According to the OS/X man page, the UCB version of ps should not use the 
+    # dash in front of its options. On OS/X this prints a warning. jimg 10/29/07
+    UCB_PS="ps axww -o user,pid,command"
+    SYSTEM_V_PS="ps -ef -o user,pid,comm"
 
-# According to the OS/X man page, the UCB version of ps should not use the 
-# dash in front of its options. On OS/X this prints a warning. jimg 10/29/07
-UCB_PS="ps axww -o user,pid,command"
-SYSTEM_V_PS="ps -ef -o user,pid,comm"
-
-
-#echo "Checking ps syntax"
-
-# I switched so that System V is tested first. This is because OS/X supports
-# both syntaxes in a somewhat odd way and mentions that support for UCB might
-# be removed in the future. jimg 10/29/07
-$UCB_PS > /dev/null 2>&1
-if  [ $? == 0 ]
-then 
-    PS=$UCB_PS
-    #echo "Using UCB ps syntax: $UCB_PS"
-else
-    $SYSTEM_V_PS > /dev/null 2>&1
+    # I switched so that System V is tested first. This is because OS/X supports
+    # both syntaxes in a somewhat odd way and mentions that support for UCB might
+    # be removed in the future. jimg 10/29/07
+    $UCB_PS > /dev/null 2>&1
     if  [ $? == 0 ]
     then 
-	PS=$SYSTEM_V_PS
-	#echo "Using System V ps syntax: $SYSTEM_V_PS"
+        PS=$UCB_PS
     else
-        echo "Cannot determine a functional version of \"ps\" command. Exiting."
-        exit 1
+        $SYSTEM_V_PS > /dev/null 2>&1
+        if  [ $? == 0 ]
+        then 
+	    PS=$SYSTEM_V_PS
+        else
+            echo "Cannot determine a functional version of \"ps\" command. Exiting."
+            exit 1
+        fi
     fi
-fi
 }
-
-
 
 ###########################################################################
 #
@@ -605,13 +489,12 @@ fi
 setEchoParam() {
     if [ "`echo -n`" = "-n" ]; then
         n=""
-	  	c="\c"
+	c="\c"
     else
-	  	n="-n"
-	  	c=""
+	n="-n"
+	c=""
     fi
 }
-
 
 ###########################################################################
 #
@@ -642,7 +525,7 @@ TOMCAT_STOP=${CATALINA_HOME}/bin/shutdown.sh
 # Set up the CATALINA_PID environment variable so that the Tomcat startup
 # and shutdown scripts keep track of which process is really Tomcat.
 
-if [ -z $CATALINA_PID ]
+if [ -z "$CATALINA_PID" ]
 then 
     CATALINA_PID=$CATALINA_HOME/logs/catalina.pid
     # Must be exported for use by the Tomcat startup/shutdown scripts.
@@ -698,4 +581,3 @@ case $cmd in
         exit
 		;;
 esac
-
