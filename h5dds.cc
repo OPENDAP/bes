@@ -238,7 +238,7 @@ string return_type(hid_t type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn Get_bt(string varname, hid_t datatype, HDF5TypeFactory &factory)
+/// \fn Get_bt(string varname, hid_t datatype, const HDF5TypeFactory &factory)
 /// returns the pointer of base type
 ///
 /// This function will create a new DODS object that corresponds with HDF5

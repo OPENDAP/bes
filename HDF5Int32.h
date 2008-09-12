@@ -30,7 +30,10 @@ class HDF5Int32:public Int32 {
      HDF5Int32(const string & n = "");
      virtual ~ HDF5Int32() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class  
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class  
         virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 32-bit integer data into local buffer

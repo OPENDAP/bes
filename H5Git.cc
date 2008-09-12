@@ -33,7 +33,7 @@ using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn get_attr_info(hid_t dset, int index, DSattr_t *attr_inst_ptr,
-///                  int *ignoreptr, char *error)
+///                  int *ignoreptr)
 ///  will get attribute information.
 ///
 /// This function will get attribute information: datatype, dataspace(dimension
@@ -43,7 +43,6 @@ using namespace libdap;
 /// \param[in]  index  index of attribute
 /// \param[out] attr_inst_ptr an attribute instance pointer
 /// \param[out] ignoreptr  a flag to record whether it can be ignored.
-/// \param[out] error error message to be reported(not used).
 /// \return pointer to attribute structure
 /// \throw InternalError 
 ////////////////////////////////////////////////////////////////////////////////

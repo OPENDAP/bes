@@ -32,7 +32,10 @@ class HDF5Float64:public Float64 {
      HDF5Float64(const string & n = "");
      virtual ~ HDF5Float64() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class      
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class      
         virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 64-bit float data into local buffer

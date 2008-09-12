@@ -30,8 +30,11 @@ class HDF5Float32:public Float32 {
 
      virtual ~ HDF5Float32() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class    
-        virtual BaseType *ptr_duplicate();
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class    
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 32-bit float data into local buffer
     virtual bool read(const string & dataset);

@@ -51,7 +51,7 @@ int hdfeos_dasparse(void *arg);
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn depth_first(hid_t pid, char *gname, DAS & das)
+/// \fn depth_first(hid_t pid, const char *gname, DAS & das)
 /// depth first traversal of hdf5 file attributes.
 ///
 /// This function will walk through hdf5 group using depth-
@@ -935,7 +935,7 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn add_group_structure_info(DAS & das, char* gname, char* oname, bool is_group)
+/// \fn add_group_structure_info(DAS & das, const char* gname, char* oname, bool is_group)
 /// will insert group information in a structure format into DAS table.
 ///
 /// This function adds a special attribute called "HDF5_ROOT_GROUP" if the \a

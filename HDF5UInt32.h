@@ -32,8 +32,11 @@ class HDF5UInt32:public UInt32 {
      HDF5UInt32(const string & n = "");
      virtual ~ HDF5UInt32() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class    
-        virtual BaseType *ptr_duplicate();
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class    
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 unsigned 32-bit integer data into local buffer
     virtual bool read(const string & dataset);

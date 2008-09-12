@@ -32,8 +32,11 @@ class HDF5UInt16:public UInt16 {
      HDF5UInt16(const string & n = "");
      virtual ~ HDF5UInt16() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class    
-        virtual BaseType *ptr_duplicate();
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class    
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 unsigned 16-bit integer data into local buffer
     virtual bool read(const string & dataset);

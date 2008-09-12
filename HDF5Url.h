@@ -45,8 +45,11 @@ class HDF5Url:public Url {
      HDF5Url(const string & n = "");
      virtual ~ HDF5Url() {
     }
-    /// Clone this instance./// /// Allocate a new instance and copy *this into it. This method must perform a deep copy./// \return A newly allocated copy of this class      
-        virtual BaseType *ptr_duplicate();
+    /// Clone this instance.
+    ///
+    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// \return A newly allocated copy of this class      
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 reference data into local buffer as a string
     virtual bool read(const string & dataset);
