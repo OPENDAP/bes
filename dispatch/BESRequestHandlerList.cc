@@ -261,6 +261,13 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 	if( rh )
 	{
 	    p_request_handler p = rh->find_handler( dhi.action ) ;
+	    // if we can't find the function, see if there is a catch all
+	    // function that handles or redirects the request.
+	    if( !p )
+	    {
+		p = rh->find_handler( BES_REQUEST_HANDLER_CATCH_ALL ) ;
+	    }
+
 	    if( p )
 	    {
 		p( dhi ) ;

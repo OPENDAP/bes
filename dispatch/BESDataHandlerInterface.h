@@ -44,6 +44,7 @@ using std::map ;
 using std::ostream ;
 
 class BESResponseHandler ;
+class BESResponseObject ;
 class BESInfo ;
 
 #include "BESContainer.h"
@@ -84,6 +85,7 @@ public:
     }
 
     BESResponseHandler *response_handler ;
+    BESResponseObject *get_response_object() ;
 
     list<BESContainer *> containers ;
     list<BESContainer *>::iterator containers_iterator ;

@@ -43,6 +43,7 @@ using std::string ;
 #include "BESDataHandlerInterface.h"
 
 typedef bool (*p_request_handler)(BESDataHandlerInterface &);
+#define BES_REQUEST_HANDLER_CATCH_ALL "catch_all"
 
 /** @brief Represents a specific data type request handler
  *

@@ -36,6 +36,18 @@
 #include "BESInfo.h"
 #include "BESIndent.h"
 
+BESResponseObject *
+BESDataHandlerInterface::get_response_object()
+{
+    BESResponseObject *response = 0 ;
+
+    if( response_handler )
+    {
+	response = response_handler->get_response_object() ;
+    }
+    return response ;
+}
+
 void
 BESDataHandlerInterface::dump( ostream &strm ) const
 {
