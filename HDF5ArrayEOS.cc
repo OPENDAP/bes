@@ -28,9 +28,9 @@ BaseType *HDF5ArrayEOS::ptr_duplicate()
     return new HDF5ArrayEOS(*this);
 }
 
-HDF5ArrayEOS::HDF5ArrayEOS(const string & n, BaseType * v):Array(n, v)
+HDF5ArrayEOS::HDF5ArrayEOS(const string & n, const string &d, BaseType * v)
+    : Array(n, d, v)
 {
-
 }
 
 HDF5ArrayEOS::~HDF5ArrayEOS()
@@ -38,7 +38,7 @@ HDF5ArrayEOS::~HDF5ArrayEOS()
 }
 
 
-bool HDF5ArrayEOS::read(const string & dataset)
+bool HDF5ArrayEOS::read()
 {
     DBG(cerr << ">read(): " << name() << endl);
 

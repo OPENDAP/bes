@@ -18,7 +18,6 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// @see HDF5TypeFactory
 class HDF5Int32:public Int32 {
 
   private:
@@ -27,17 +26,17 @@ class HDF5Int32:public Int32 {
 
   public:
     /// Constructor
-     HDF5Int32(const string & n = "");
-     virtual ~ HDF5Int32() {
-    }
+    HDF5Int32(const string &n, const string &d);
+    virtual ~ HDF5Int32() { }
+
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class  
-        virtual BaseType *ptr_duplicate();
+    virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 32-bit integer data into local buffer
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.  
     friend string return_type(hid_t datatype);

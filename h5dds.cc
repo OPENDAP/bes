@@ -25,8 +25,20 @@
 #include <debug.h>
 
 #include "h5dds.h"
+#include "HDF5Int32.h"
+#include "HDF5UInt32.h"
+#include "HDF5UInt16.h"
+#include "HDF5Int16.h"
+#include "HDF5Byte.h"
+#include "HDF5Array.h"
+#include "HDF5ArrayEOS.h"
+#include "HDF5Str.h"
+#include "HDF5Float32.h"
+#include "HDF5Float64.h"
+#include "HDF5Grid.h"
+#include "HDF5GridEOS.h"
+#include "HDF5Url.h"
 #include "HDF5Structure.h"
-#include "HDF5TypeFactory.h"
 #include "H5Git.h"
 #include "H5EOS.h"
 
@@ -151,7 +163,7 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 	      // Put hdf5 dataset structure into DODS dds.
 	      // read_objects throws InternalErr.
 
-	      read_objects(dds, full_path_name.c_str(), fname);
+	      read_objects(dds, full_path_name, fname);
 	      break;
 	  }
 
@@ -246,23 +258,24 @@ string return_type(hid_t type)
 /// is found, an exception of type InternalErr is thrown. 
 ///
 /// \param varname object name
+/// \param dataset name of dataset where this object comes from
 /// \param datatype datatype id
-/// \param &factory DODS object class generator
 /// \return pointer to BaseType
 ////////////////////////////////////////////////////////////////////////////////
-static BaseType *Get_bt(string varname, hid_t datatype,
-                        const HDF5TypeFactory & factory)
+static BaseType *Get_bt(const string &varname,
+			const string &dataset,
+			hid_t datatype)
 {
     BaseType *btp = NULL;
     
+    // get_short_name() returns a shortened name if SHORT_PATH is defined.
+    // It does nothing if the symbol is undefined. jhrg 5/1/08
+    string vname = get_short_name(varname);
+
     try {
 
 	DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype
 	    << endl);
-
-	// get_short_name() returns a shortened name if SHORT_PATH is defined.
-	// It does nothing if the symbol is undefined. jhrg 5/1/08
-	varname = get_short_name(varname);
 
 	size_t size = 0;
 	int sign = -2;
@@ -275,26 +288,26 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 		<< sign << endl);
 
 	    if (size == 1) {
-		btp = factory.NewByte(varname);
+		btp = new HDF5Byte(vname, dataset);
 	    }
 	    else if (size == 2) {
 		if (sign == H5T_SGN_2)
-		    btp = factory.NewInt16(varname);
+		    btp = new HDF5Int16(vname, dataset);
 		else
-		    btp = factory.NewUInt16(varname);
+		    btp = new HDF5UInt16(vname, dataset);
 	    }
 	    else if (size == 4) {
 		if (sign == H5T_SGN_2)
-		    btp = factory.NewInt32(varname);
+		    btp = new HDF5Int32(vname, dataset);
 		else
-		    btp = factory.NewUInt32(varname);
+		    btp = new HDF5UInt32(vname, dataset);
 	    }
 	    // <hyokyung 2007.06.15. 12:42:09>
 	    else if (size == 8) {
 		if (sign == H5T_SGN_2)
-		    btp = factory.NewInt32(varname);
+		    btp = new HDF5Int32(vname, dataset);
 		else
-		    btp = factory.NewUInt32(varname);
+		    btp = new HDF5UInt32(vname, dataset);
 	    }
 
 	    break;
@@ -304,15 +317,15 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 	    DBG(cerr << "=Get_bt() H5T_FLOAT size = " << size << endl);
 
 	    if (size == 4) {
-		btp = factory.NewFloat32(varname);
+		btp = new HDF5Float32(vname, dataset);
 	    }
 	    else if (size == 8) {
-		btp = factory.NewFloat64(varname);
+		btp = new HDF5Float64(vname, dataset);
 	    }
 	    break;
 
 	  case H5T_STRING:
-	    btp = factory.NewStr(varname);
+	    btp = new HDF5Str(vname, dataset);
 	    break;
 
 	  case H5T_ARRAY: {
@@ -322,9 +335,8 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 
 		  // Get the array's base datatype
 		  hid_t dtype_base = H5Tget_super(datatype);
-		  ar_bt = Get_bt(varname, dtype_base, factory);
-		  btp = factory.NewArray(varname);
-		  btp->add_var(ar_bt);
+		  ar_bt = Get_bt(vname, dataset, dtype_base);
+		  btp = new HDF5Array(vname, dataset, ar_bt);
 		  delete ar_bt; ar_bt = 0;
 
 		  // Set the size of the array.
@@ -363,12 +375,12 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 	  }
 
 	  case H5T_REFERENCE:
-	    btp = factory.NewUrl(varname);
+	    btp = new HDF5Url(vname, dataset);
 	    break;
         
 	  default:
 	    throw InternalErr(__FILE__, __LINE__,
-			      string("Unsupported HDF5 type:  ") + varname);
+			      string("Unsupported HDF5 type:  ") + vname);
 	}
     }
     catch (...) {
@@ -379,7 +391,7 @@ static BaseType *Get_bt(string varname, hid_t datatype,
     if (!btp)
 	throw InternalErr(__FILE__, __LINE__,
 			  string("Could not make a DAP variable for: ")
-			  + varname);
+			  + vname);
 						  
     switch (btp->type()) {
 
@@ -445,7 +457,7 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 	delete btp;
 	throw InternalErr(__FILE__, __LINE__,
 			  string("error counting hdf5 group elements for ") 
-			  + varname);
+			  + vname);
     }
     
     DBG(cerr << "<Get_bt()" << endl);
@@ -454,7 +466,7 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \fn Get_structure(string varname, hid_t datatype, HDF5TypeFactory &factory)
+/// \fn Get_structure(string varname, hid_t datatype)
 /// returns the pointer of structure type. An exception is thrown if an error
 /// is encountered.
 /// 
@@ -462,30 +474,31 @@ static BaseType *Get_bt(string varname, hid_t datatype,
 /// compound dataset and return a pointer of a new structure object of DODS.
 ///
 /// \param varname object name
+/// \param dataset name of the dataset from which this structure created
 /// \param datatype datatype id
-/// \param &factory DODS object class generator
 /// \return pointer to Structure type
 ///
 ////////////////////////////////////////////////////////////////////////////////
-static Structure *Get_structure(string varname, hid_t datatype,
-                                HDF5TypeFactory & factory)
+static Structure *Get_structure(const string &varname,
+				const string &dataset,
+				hid_t datatype)
 {
-    Structure *structure_ptr = NULL;
+    HDF5Structure *structure_ptr = NULL;
 
-    varname = get_short_name(varname);
+    string vname = get_short_name(varname);
 
     DBG(cerr << ">Get_structure()" << datatype << endl);
 
     if (H5Tget_class(datatype) != H5T_COMPOUND)
 	throw InternalErr(__FILE__, __LINE__,
 			  string("Compound-to-structure mapping error for ")
-			  + varname);
+			  + vname);
 
     try {
-	structure_ptr = factory.NewStructure(varname);
-	HDF5Structure &v = dynamic_cast <HDF5Structure &>(*structure_ptr);
-	v.set_did(dt_inst.dset);
-	v.set_tid(dt_inst.type);
+	structure_ptr = new HDF5Structure(vname, dataset);
+	//FIXME: HDF5Structure &v = *structure_ptr;
+	structure_ptr->set_did(dt_inst.dset);
+	structure_ptr->set_tid(dt_inst.type);
 
 	// Retrieve member types
 	int nmembs = H5Tget_nmembers(datatype);
@@ -503,12 +516,12 @@ static Structure *Get_structure(string varname, hid_t datatype,
 	    
 	    // ~Structure() will delete these if they are added.
 	    if (memb_cls == H5T_COMPOUND) {
-		Structure *s = Get_structure(memb_name, memb_type, factory);
+		Structure *s = Get_structure(memb_name, dataset, memb_type);
 		structure_ptr->add_var(s);
 		delete s; s = 0;
 	    } 
 	    else {
-		BaseType *bt = Get_bt(memb_name, memb_type, factory);
+		BaseType *bt = Get_bt(memb_name, dataset, memb_type);
 		structure_ptr->add_var(bt);
 		delete bt; bt = 0;
 	    }
@@ -545,8 +558,7 @@ static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
 }
 
 // This function modifies the Grid pointer 'gr' as a side effect.
-static void process_grid(HDF5TypeFactory &factory, 
-			 const H5GridFlag_t check_grid, 
+static void process_grid(const H5GridFlag_t check_grid, 
 			 Grid *gr) {
 
     DBG(cerr << "add_var()" << endl);
@@ -622,25 +634,24 @@ static void process_grid(HDF5TypeFactory &factory,
 
 		strcpy(EachDimName, TempNamePointer);
 		TempNamePointer = TempNamePointer + temp_tsize/*name_size*/;
-		BaseType *bt = Get_bt(EachDimName, memtype, factory);
-		Array *map = 0;
+		BaseType *bt = 0;
+		HDF5Array *map = 0;
 		try {
-		    map = factory.NewArray(EachDimName);
-		    HDF5Array &m = dynamic_cast <HDF5Array &>(*map);
-		    m.set_did(dimid[dim_index]);
-		    m.set_tid(memtype);
-		    m.set_memneed(temp_tsize * temp_nelm);
-		    m.set_numdim(1);
-		    m.set_numelm(temp_nelm);
-		    map->add_var(bt);
+		    bt = Get_bt(EachDimName, gr->dataset(), memtype);
+		    map = new HDF5Array(EachDimName, gr->dataset(), bt);
 		    delete bt; bt = 0;
+		    map->set_did(dimid[dim_index]);
+		    map->set_tid(memtype);
+		    map->set_memneed(temp_tsize * temp_nelm);
+		    map->set_numdim(1);
+		    map->set_numelm(temp_nelm);
 		    map->append_dim(temp_nelm, EachDimName);
 		    gr->add_var(map, maps);
 		    delete map; map = 0;
 		}
 		catch(...) {
-		    delete bt;
-		    delete map;
+		    if( bt ) delete bt;
+		    if( map ) delete map;
 		    throw;
 		}
 	    } // for dim_index is 0 .. dt_inst.ndims
@@ -664,8 +675,7 @@ static void process_grid(HDF5TypeFactory &factory,
     }
 }
 
-static void process_grid_matching_dimscale(HDF5TypeFactory &factory,
-					   const H5GridFlag_t check_grid, 
+static void process_grid_matching_dimscale(const H5GridFlag_t check_grid, 
 					   Grid *gr) {
     hid_t attr_id = H5Aopen_name(dt_inst.dset, "DIMENSION_LIST");
     hid_t temp_dtype = H5Aget_type(attr_id);
@@ -710,26 +720,24 @@ static void process_grid_matching_dimscale(HDF5TypeFactory &factory,
 
 	    each_dim_name = get_short_name(each_dim_name);
 	    BaseType *bt = 0;
-	    Array *map = 0;
+	    HDF5Array *map = 0;
 	    try {
-		bt = Get_bt(each_dim_name, memtype, factory);
-		map = factory.NewArray(each_dim_name);
-		HDF5Array &m = dynamic_cast <HDF5Array &>(*map);
-		m.set_did(dset_id);
-		m.set_tid(memtype);
-		m.set_memneed(temp_tsize * temp_nelm_dim);
-		m.set_numdim(1);
-		m.set_numelm(temp_nelm);
-
-		map->add_var(bt);
+		bt = Get_bt(each_dim_name, gr->dataset(), memtype);
+		map = new HDF5Array(each_dim_name, gr->dataset(), bt);
 		delete bt; bt = 0;
+		map->set_did(dset_id);
+		map->set_tid(memtype);
+		map->set_memneed(temp_tsize * temp_nelm_dim);
+		map->set_numdim(1);
+		map->set_numelm(temp_nelm);
+
 		map->append_dim(temp_nelm_dim, each_dim_name);
 		gr->add_var(map, maps);
 		delete map; map = 0;
 	    }
 	    catch(...) {
-		delete bt;
-		delete map;
+		if( bt ) delete bt;
+		if( map ) delete map;
 		throw;
 	    }
 	} // for ()
@@ -744,8 +752,7 @@ static void process_grid_matching_dimscale(HDF5TypeFactory &factory,
     }
 }
 
-static void process_grid_nasa_eos(HDF5TypeFactory &factory,
-				  const string &varname, 
+static void process_grid_nasa_eos(const string &varname, 
 				  Array *array, Grid *gr, DDS &dds_table) {
     // Next fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
@@ -779,10 +786,8 @@ static void process_grid_nasa_eos(HDF5TypeFactory &factory,
 	BaseType *bt = 0;
 	Array *ar = 0;
 	try {
-	    bt = factory.NewFloat32(str_dim_full_name);
-	    ar = factory.NewArray(str_dim_full_name, 0);
-
-	    ar->add_var(bt);
+	    bt = new HDF5Float32(str_dim_full_name, gr->dataset());
+	    ar = new HDF5Array(str_dim_full_name, gr->dataset(), bt);
 	    delete bt; bt = 0;
 
 	    ar->append_dim(dim_size, str_dim_full_name);
@@ -793,10 +798,8 @@ static void process_grid_nasa_eos(HDF5TypeFactory &factory,
 #ifdef CF
 	    // Add the shared dimension data.
 	    if (!eos.is_shared_dimension_set()) {
-		bt = factory.NewFloat32(str_dim_full_name);
-		ar = factory.NewArrayEOS(str_dim_full_name, 0);
-
-		ar->add_var(bt);
+		bt = new HDF5Float32(str_dim_full_name, gr->dataset());
+		ar = new HDF5ArrayEOS(str_dim_full_name, gr->dataset(), bt);
 		delete bt; bt = 0;
 		ar->append_dim(dim_size, str_dim_full_name);
 		dds_table.add_var(ar);
@@ -805,8 +808,8 @@ static void process_grid_nasa_eos(HDF5TypeFactory &factory,
 #endif
 	}
 	catch (...) {
-	    delete bt;
-	    delete ar;
+	    if( bt ) delete bt;
+	    if( ar ) delete ar;
 	    throw;
 	}
     }
@@ -842,13 +845,11 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
                        const string & filename)
 {
     dds_table.set_dataset_name(name_path(filename));
-    HDF5TypeFactory &factory 
-	= dynamic_cast<HDF5TypeFactory &>(*dds_table.get_factory());
     string varname = a_name;
 
     // Get base type. It should be int, float and double etc. atomic
     // datatype. 
-    BaseType *bt = Get_bt(varname, dt_inst.type, factory);
+    BaseType *bt = Get_bt(varname, filename, dt_inst.type);
 
     if (!bt) {
         // NB: We're throwing InternalErr even though it's possible that
@@ -872,16 +873,13 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         if (varname.length() > 15)
             return;
 #endif
-        Array *ar = factory.NewArray(varname);
-	HDF5Array &v = dynamic_cast < HDF5Array & >(*ar);
-        v.set_did(dt_inst.dset);
-        v.set_tid(dt_inst.type);
-        v.set_memneed(dt_inst.need);
-        v.set_numdim(dt_inst.ndims);
-        v.set_numelm((int) (dt_inst.nelmts));
-
-        ar->add_var(bt);
+        HDF5Array *ar = new HDF5Array(varname, filename, bt);
 	delete bt; bt = 0;
+        ar->set_did(dt_inst.dset);
+        ar->set_tid(dt_inst.type);
+        ar->set_memneed(dt_inst.need);
+        ar->set_numdim(dt_inst.ndims);
+        ar->set_numelm((int) (dt_inst.nelmts));
 
 #ifdef NASA_EOS_GRID
         if (!(eos.is_valid() && eos.is_grid(varname)))
@@ -909,12 +907,12 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         H5GridFlag_t check_grid = maptogrid(dt_inst.dset, dt_inst.ndims);
 
         if (check_grid != NotGrid) {    // !NotGrid means it's a Grid.
-	    Grid *gr = factory.NewGrid(varname);
+	    Grid *gr = new HDF5Grid(varname, filename);
 	    // First fill the array part of the grid.
 	    gr->add_var(ar, array);
 	    delete ar; ar = 0;
 
-	    process_grid(factory, check_grid, gr);
+	    process_grid(check_grid, gr);
 
 	    dds_table.add_var(gr);
 	    delete gr; gr = 0;
@@ -924,11 +922,11 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 
             // Construct a grid instead of returning a simple array.
 
-            Grid *gr = factory.NewGrid(varname);
+            Grid *gr = new HDF5Grid(varname, filename);
             gr->add_var(ar, array);
             delete ar; ar = 0;
 
-	    process_grid_matching_dimscale(factory, check_grid, gr);
+	    process_grid_matching_dimscale(check_grid, gr);
 
 	    dds_table.add_var(gr);
 	    delete gr; gr = 0;
@@ -938,9 +936,9 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         else if (eos.is_valid() && eos.is_grid(varname)) {
             DBG(cerr << "EOS Grid: " << varname << endl);
             // Generate grid based on the parsed StructMetada.
-            Grid *gr = factory.NewGridEOS(varname);
+            Grid *gr = new HDF5GridEOS(varname, filename);
 
-	    process_grid_nasa_eos(factory, varname, ar, gr, dds_table);
+	    process_grid_nasa_eos(varname, ar, gr, dds_table);
             gr->add_var(ar, array);
             delete ar; ar = 0;
 
@@ -975,9 +973,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
 {
     dds_table.set_dataset_name(name_path(filename));
 
-    HDF5TypeFactory &factory 
-	= dynamic_cast<HDF5TypeFactory &>(*dds_table.get_factory());
-    Structure *structure = Get_structure(varname, dt_inst.type, factory);
+    Structure *structure = Get_structure(varname, filename, dt_inst.type);
     try {
 	// Assume Get_structure() uses exceptions to signal an error. jhrg
 	DBG(cerr << "=read_objects_structure(): Dimension is " 
@@ -989,18 +985,15 @@ read_objects_structure(DDS & dds_table, const string & varname,
 		dt_inst.nelmts << endl);
 	    DBG(cerr << "=read_objects_structure(): memory needed = " <<
 		dt_inst.need << endl);
-	    Array *ar = dds_table.get_factory()->NewArray(varname, 0);
+	    HDF5Array *ar = new HDF5Array(varname, filename, structure);
+	    delete structure; structure = 0;
 	    try {
-		HDF5Array &v = dynamic_cast < HDF5Array & >(*ar);
-		v.set_did(dt_inst.dset);
-		v.set_tid(dt_inst.type);
-		v.set_memneed(dt_inst.need);
-		v.set_numdim(dt_inst.ndims);
-		v.set_numelm((int) (dt_inst.nelmts));
-		v.set_length((int) (dt_inst.nelmts));
-
-		ar->add_var(structure);
-		delete structure; structure = 0;
+		ar->set_did(dt_inst.dset);
+		ar->set_tid(dt_inst.type);
+		ar->set_memneed(dt_inst.need);
+		ar->set_numdim(dt_inst.ndims);
+		ar->set_numelm((int) (dt_inst.nelmts));
+		ar->set_length((int) (dt_inst.nelmts));
 
 		for (dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
 		    ar->append_dim(dt_inst.size[dim_index]);
@@ -1039,8 +1032,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
 ///    \throw error a string of error message to the dods interface.
 ////////////////////////////////////////////////////////////////////////////////  
 void
-read_objects(DDS & dds_table, const string & varname,
-             const string & filename)
+read_objects(DDS & dds_table, const string &varname, const string &filename)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
@@ -1075,3 +1067,4 @@ string get_short_name(string varname)
     return varname;
 #endif
 }
+

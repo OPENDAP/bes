@@ -17,7 +17,7 @@ typedef struct s2_t {
 
 
 
-HDF5Float64::HDF5Float64(const string & n):Float64(n)
+HDF5Float64::HDF5Float64(const string & n, const string &d) : Float64(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -28,7 +28,7 @@ BaseType *HDF5Float64::ptr_duplicate()
     return new HDF5Float64(*this);
 }
 
-bool HDF5Float64::read(const string & dataset)
+bool HDF5Float64::read()
 {
     if (read_p())
         return false;

@@ -17,7 +17,7 @@ typedef struct s2_t {
 
 
 
-HDF5Int32::HDF5Int32(const string & n):Int32(n)
+HDF5Int32::HDF5Int32(const string & n, const string &d) : Int32(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -29,12 +29,12 @@ BaseType *HDF5Int32::ptr_duplicate()
     return new HDF5Int32(*this);
 }
 
-bool HDF5Int32::read(const string & dataset)
+bool HDF5Int32::read()
 {
     if (read_p())
         return false;
 
-    DBG(cerr << ">HDF5Int32::read() dataset=" << dataset << endl);
+    DBG(cerr << ">HDF5Int32::read() dataset=" << dataset() << endl);
     DBG(cerr << ">HDF5Int32::read() ty_id=" << ty_id << endl);
     DBG(cerr << ">HDF5Int32::read() dset_id=" << dset_id << endl);
 

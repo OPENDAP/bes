@@ -18,8 +18,6 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// @see HDF5TypeFactory
-///
 /// Copyright (c) 2007 HDF Group
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
@@ -50,8 +48,8 @@ class HDF5Array:public Array {
      H5T_class_t d_type;
 
     /// Constructor
-     HDF5Array(const string & n = "", BaseType * v = 0);
-     virtual ~ HDF5Array();
+    HDF5Array(const string & n, const string &d, BaseType * v);
+    virtual ~ HDF5Array();
 
     /// Clone this instance.
     /// 
@@ -61,7 +59,7 @@ class HDF5Array:public Array {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 array data into local buffer
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.
     friend string return_type(hid_t datatype);

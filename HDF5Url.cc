@@ -7,7 +7,7 @@
 #include "HDF5Url.h"
 #include "InternalErr.h"
 
-HDF5Url::HDF5Url(const string & n):Url(n)
+HDF5Url::HDF5Url(const string &n, const string &d) : Url(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -18,7 +18,7 @@ BaseType *HDF5Url::ptr_duplicate()
     return new HDF5Url(*this);
 }
 
-bool HDF5Url::read(const string &)
+bool HDF5Url::read()
 {
     hobj_ref_t rbuf;
 

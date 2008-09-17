@@ -30,12 +30,12 @@ GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc \
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
-	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc HDF5TypeFactory.cc \
+	HDF5UInt16.cc HDF5Int16.cc HDF5Float32.cc \
 	HDF5GridEOS.cc HDF5ArrayEOS.cc 
 
 HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
-	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5TypeFactory.h HDF5GridEOS.h HDF5ArrayEOS.h
+	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5GridEOS.h HDF5ArrayEOS.h
 
 SRCS = h5dds.cc h5das.cc H5Git.cc H5EOS.cc H5PathFinder.cc $(GRAM_SRCS)
 

@@ -17,7 +17,6 @@ using namespace libdap;
 ///
 /// @author Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 ///
-/// @see Grid HDF5TypeFactory
 class HDF5GridEOS:public Grid {
 
   private:
@@ -27,8 +26,8 @@ class HDF5GridEOS:public Grid {
   public:
 
     /// Constructor
-     HDF5GridEOS(const string & n = "");
-     virtual ~ HDF5GridEOS();
+    HDF5GridEOS(const string &n, const string &d);
+    virtual ~ HDF5GridEOS();
 
     /// Clone this instance.
     /// 
@@ -40,7 +39,7 @@ class HDF5GridEOS:public Grid {
     ///
     /// This function is different from normal Grid read function
     /// since maps data are resulted from parsing the metadata.
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See print_type function in h5das.cc  
     friend string print_type(hid_t datatype);

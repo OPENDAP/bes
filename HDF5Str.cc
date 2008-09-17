@@ -18,8 +18,8 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5Str::HDF5Str(const string & n) 
- : ty_id(-1), dset_id(-1), array_flag(0), Str(n)
+HDF5Str::HDF5Str(const string & n, const string &d) 
+ : ty_id(-1), dset_id(-1), array_flag(0), Str(n, d)
 {
 }
 
@@ -28,7 +28,7 @@ BaseType *HDF5Str::ptr_duplicate()
     return new HDF5Str(*this);
 }
 
-bool HDF5Str::read(const string & dataset)
+bool HDF5Str::read()
 {
     size_t size = H5Tget_size(ty_id);
     DBG(cerr << ">read() size=" << size << endl);

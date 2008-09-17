@@ -15,7 +15,7 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5UInt16::HDF5UInt16(const string & n):UInt16(n)
+HDF5UInt16::HDF5UInt16(const string & n, const string &d) : UInt16(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -28,7 +28,7 @@ BaseType *HDF5UInt16::ptr_duplicate()
     return new HDF5UInt16(*this);
 }
 
-bool HDF5UInt16::read(const string & dataset)
+bool HDF5UInt16::read()
 {
     if (read_p())
         return false;

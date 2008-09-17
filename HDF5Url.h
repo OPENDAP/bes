@@ -42,9 +42,9 @@ class HDF5Url:public Url {
   public:
 
     /// Constructor
-     HDF5Url(const string & n = "");
-     virtual ~ HDF5Url() {
-    }
+    HDF5Url(const string &n, const string &d);
+    virtual ~ HDF5Url() { }
+
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
@@ -52,7 +52,7 @@ class HDF5Url:public Url {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 reference data into local buffer as a string
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.  
     friend string return_type(hid_t datatype);

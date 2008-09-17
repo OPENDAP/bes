@@ -17,7 +17,6 @@ using namespace libdap;
 ///
 /// @author Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 ///
-/// @see Grid HDF5TypeFactory
 class HDF5Grid:public Grid {
 
   private:
@@ -26,8 +25,8 @@ class HDF5Grid:public Grid {
   public:
 
     /// Constructor  
-     HDF5Grid(const string & n = "");
-     virtual ~ HDF5Grid();
+    HDF5Grid(const string &n, const string &d);
+    virtual ~ HDF5Grid();
 
     /// Clone this instance.
     /// 
@@ -36,7 +35,7 @@ class HDF5Grid:public Grid {
     virtual BaseType *ptr_duplicate();
 
     /// Reads data array and map arrays in from this Grid.
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See print_type function in h5das.cc
     friend string print_type(hid_t datatype);

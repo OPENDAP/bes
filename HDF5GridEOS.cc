@@ -16,7 +16,7 @@ BaseType *HDF5GridEOS::ptr_duplicate()
 }
 
 
-HDF5GridEOS::HDF5GridEOS(const string & n):Grid(n)
+HDF5GridEOS::HDF5GridEOS(const string &n, const string &d) : Grid(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -26,13 +26,13 @@ HDF5GridEOS::~HDF5GridEOS()
 {
 }
 
-bool HDF5GridEOS::read(const string & dataset)
+bool HDF5GridEOS::read()
 {
     if (read_p())               // nothing to do
         return false;
 
     // Read data array elements.
-    array_var()->read(dataset);
+    array_var()->read();
     // Read map array elements.
     Map_iter p = map_begin();
 

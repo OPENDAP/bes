@@ -47,7 +47,6 @@
 #include "DAS.h"
 #include "DDS.h"
 #include "ConstraintEvaluator.h"
-#include "HDF5TypeFactory.h"
 #include "DODSFilter.h"
 #include "InternalErr.h"
 #include "h5das.h"

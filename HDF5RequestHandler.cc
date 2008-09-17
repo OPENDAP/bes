@@ -83,12 +83,14 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     if( !bdas )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    DAS *das = bdas->get_das();
-
     try {
+	bdas->set_container( dhi.container->get_symbolic_name() ) ;
+	DAS *das = bdas->get_das();
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
 	Ancillary::read_ancillary_das( *das, filename ) ;
+
+	bdas->clear_container() ;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -126,27 +128,28 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     if( !bdds )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
-    DDS *dds = bdds->get_dds();
-
     try {
-        HDF5TypeFactory *factory = new HDF5TypeFactory;
-        dds->set_factory(factory);
+	bdds->set_container( dhi.container->get_symbolic_name() ) ;
+	DDS *dds = bdds->get_dds();
 
         depth_first(file1, "/", *dds, filename.c_str());
 
 	Ancillary::read_ancillary_dds( *dds, filename ) ;
 
-        DAS das;
+        DAS *das = new DAS ;
+	BESDASResponse bdas( das ) ;
+	bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        find_gloattr(file1, das);
-        depth_first(file1, "/", das);
+        find_gloattr(file1, *das);
+        depth_first(file1, "/", *das);
 
-	Ancillary::read_ancillary_das( das, filename ) ;
+	Ancillary::read_ancillary_das( *das, filename ) ;
 
-        dds->transfer_attributes(&das);
+        dds->transfer_attributes(das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
+	bdds->clear_container() ;
 #if 0
         // see ticket 720
         dds->set_factory(NULL);
@@ -188,28 +191,29 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
-    DataDDS *dds = bdds->get_dds();
 
     try {
-        HDF5TypeFactory *factory = new HDF5TypeFactory;
-        dds->set_factory(factory);
+	bdds->set_container( dhi.container->get_symbolic_name() ) ;
+	DataDDS *dds = bdds->get_dds();
 
         depth_first(file1, "/", *dds, filename.c_str());
 
 	Ancillary::read_ancillary_dds( *dds, filename ) ;
 
-        DAS das;
+        DAS *das = new DAS ;
+	BESDASResponse bdas( das ) ;
+	bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
-        find_gloattr(file1, das);
-        depth_first(file1, "/", das);
+        find_gloattr(file1, *das);
+        depth_first(file1, "/", *das);
 
-	Ancillary::read_ancillary_das( das, filename ) ;
+	Ancillary::read_ancillary_das( *das, filename ) ;
 
-        dds->transfer_attributes(&das);
+        dds->transfer_attributes(das);
 
         dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
+	bdds->clear_container() ;
 #if 0
         // see ticket 720
         dds->set_factory(NULL);

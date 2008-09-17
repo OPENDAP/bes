@@ -25,11 +25,11 @@ class HDF5Structure:public Structure {
 
   public:
     /// Constructor
-     HDF5Structure(const string & n = "");
-     virtual ~ HDF5Structure();
+    HDF5Structure(const string &n, const string &d);
+    virtual ~ HDF5Structure();
 
     /// Assignment operator for dynamic cast into generic Structure.
-     HDF5Structure & operator=(const HDF5Structure & rhs);
+    HDF5Structure & operator=(const HDF5Structure & rhs);
 
     /// Clone this instance.
     /// 
@@ -38,7 +38,7 @@ class HDF5Structure:public Structure {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 structure data by calling each member's read method in this structure.
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.  
     friend string return_type(hid_t datatype);

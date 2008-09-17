@@ -38,8 +38,8 @@ BaseType *HDF5Array::ptr_duplicate() {
     return new HDF5Array(*this);
 }
 
-HDF5Array::HDF5Array(const string & n, BaseType * v) :
-    Array(n, v) {
+HDF5Array::HDF5Array(const string & n, const string &d, BaseType * v) :
+    Array(n, d, v) {
 }
 
 HDF5Array::~HDF5Array() {
@@ -580,9 +580,9 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf) {
     }
 }
 
-bool HDF5Array::read(const string & dataset) {
+bool HDF5Array::read() {
     DBG(cerr
-	<< ">read() dataset=" << dataset
+	<< ">read() dataset=" << dataset()
 	<< " data_type_id=" << d_ty_id << " name=" << name()
 	<< " return_type=" << return_type(d_ty_id)
 	<< " dimension=" << d_num_dim

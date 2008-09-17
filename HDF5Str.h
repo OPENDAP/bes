@@ -28,8 +28,6 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// @see HDF5TypeFactory HDF5Array
-///
 /// Copyright (c) 2007 HDF Group
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
@@ -44,9 +42,9 @@ class HDF5Str:public Str {
  public:
 
     /// Constructor
-    HDF5Str(const string & n = "");
-    virtual ~ HDF5Str() {
-    }
+    HDF5Str(const string &n, const string &d);
+    virtual ~ HDF5Str() { }
+
     /// Clone this instance.
     /// 
     /// Allocate a new instance and copy *this into it. This method must
@@ -55,7 +53,7 @@ class HDF5Str:public Str {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 string data into local buffer  
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.    
     friend string return_type(hid_t datatype);

@@ -15,7 +15,7 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5Byte::HDF5Byte(const string & n):Byte(n)
+HDF5Byte::HDF5Byte(const string & n, const string &d):Byte(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -26,7 +26,7 @@ BaseType *HDF5Byte::ptr_duplicate()
     return new HDF5Byte(*this);
 }
 
-bool HDF5Byte::read(const string & dataset)
+bool HDF5Byte::read()
 {
     if (read_p())
         return false;

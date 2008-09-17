@@ -17,8 +17,6 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// @see HDF5TypeFactory H5EOS
-///
 /// Copyright (c) 2007 HDF Group
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
@@ -39,9 +37,8 @@ class HDF5ArrayEOS:public Array {
 
   public:
     /// Constructor
-     HDF5ArrayEOS(const string & n = "", BaseType * v = 0);
-
-     virtual ~ HDF5ArrayEOS();
+    HDF5ArrayEOS(const string &n, const string &d, BaseType * v);
+    virtual ~ HDF5ArrayEOS();
 
     /// Clone this instance.
     /// 
@@ -50,7 +47,7 @@ class HDF5ArrayEOS:public Array {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 NASA EOS array data into local buffer
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// remembers memory size needed.
     void set_memneed(size_t need);

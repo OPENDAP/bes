@@ -76,8 +76,7 @@ int main(int argc, char *argv[])
 
         case DODSFilter::DDS_Response:{
                 DAS das;
-                HDF5TypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
 
                 depth_first(file1, "/", dds,
@@ -91,8 +90,7 @@ int main(int argc, char *argv[])
         case DODSFilter::DataDDS_Response:{
 
 
-                HDF5TypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
                 DAS das;
 
@@ -104,8 +102,7 @@ int main(int argc, char *argv[])
             }
 
         case DODSFilter::DDX_Response:{
-                HDF5TypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
                 DAS das;
 

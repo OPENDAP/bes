@@ -22,11 +22,11 @@ class HDF5Sequence:public Sequence {
 
   public:
 
-     HDF5Sequence(const string & n = "");
-     virtual ~ HDF5Sequence();
+    HDF5Sequence(const string &n, const string &d);
+    virtual ~ HDF5Sequence();
 
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     friend string return_type(hid_t datatype);
 

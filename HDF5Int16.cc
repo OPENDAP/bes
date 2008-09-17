@@ -17,7 +17,7 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5Int16::HDF5Int16(const string & n):Int16(n)
+HDF5Int16::HDF5Int16(const string & n, const string &d) : Int16(n, d)
 {
 }
 
@@ -27,7 +27,7 @@ BaseType *HDF5Int16::ptr_duplicate()
     return new HDF5Int16(*this);
 }
 
-bool HDF5Int16::read(const string & dataset)
+bool HDF5Int16::read()
 {
     if (read_p())
         return false;

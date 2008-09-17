@@ -17,8 +17,6 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// @see HDF5TypeFactory
-///
 class HDF5Float32:public Float32 {
   private:
     hid_t dset_id;
@@ -26,10 +24,9 @@ class HDF5Float32:public Float32 {
 
   public:
     /// Constructor
-     HDF5Float32(const string & n = "");
+    HDF5Float32(const string &n, const string &d);
+    virtual ~ HDF5Float32() { }
 
-     virtual ~ HDF5Float32() {
-    }
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
@@ -37,7 +34,7 @@ class HDF5Float32:public Float32 {
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 32-bit float data into local buffer
-    virtual bool read(const string & dataset);
+    virtual bool read();
 
     /// See return_type function defined in h5dds.cc.
     friend string return_type(hid_t datatype);

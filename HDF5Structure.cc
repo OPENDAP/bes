@@ -36,7 +36,8 @@ BaseType *HDF5Structure::ptr_duplicate()
     return new HDF5Structure(*this);
 }
 
-HDF5Structure::HDF5Structure(const string & n):Structure(n)
+HDF5Structure::HDF5Structure(const string & n, const string &d)
+    : Structure(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -60,7 +61,7 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     return *this;
 }
 
-bool HDF5Structure::read(const string & dataset)
+bool HDF5Structure::read()
 {
 
     int i = 0;
@@ -68,7 +69,7 @@ bool HDF5Structure::read(const string & dataset)
     Constructor::Vars_iter q;
 
     DBG(cerr
-        << ">read() dataset=" << dataset
+        << ">read() dataset=" << dataset()
         << " array_index= " << array_index << endl);
 
     if (read_p())
@@ -79,7 +80,7 @@ bool HDF5Structure::read(const string & dataset)
     for (q = var_begin(); err == 0 && q != var_end(); ++q, ++i) {
         DBG(cerr << "=read() i=" << i << endl);
         BaseType *p = dynamic_cast < BaseType * >(*q);
-        p->read(dataset);
+        p->read();
     }
 
     set_read_p(true);

@@ -11,7 +11,7 @@ BaseType *HDF5Grid::ptr_duplicate()
     return new HDF5Grid(*this);
 }
 
-HDF5Grid::HDF5Grid(const string & n):Grid(n)
+HDF5Grid::HDF5Grid(const string & n, const string &d) : Grid(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -21,17 +21,17 @@ HDF5Grid::~HDF5Grid()
 {
 }
 
-bool HDF5Grid::read(const string & dataset)
+bool HDF5Grid::read()
 {
     if (read_p())               // nothing to do
         return false;
 
     // read array elements
-    array_var()->read(dataset);
+    array_var()->read();
     // read maps' elements
     Map_iter p = map_begin();
     while (p != map_end()) {
-        (*p)->read(dataset);
+        (*p)->read();
         ++p;
     }
     set_read_p(true);

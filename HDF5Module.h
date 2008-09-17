@@ -39,9 +39,8 @@
 /// @author  Patrick West <pwest@ucar.edu>
 class HDF5Module:public BESAbstractModule {
   public:
-    HDF5Module() {
-    } virtual ~ HDF5Module() {
-    }
+    HDF5Module() { }
+    virtual ~ HDF5Module() { }
     virtual void initialize(const string & modname);
     virtual void terminate(const string & modname);
     virtual void dump(ostream & strm) const;

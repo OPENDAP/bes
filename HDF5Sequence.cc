@@ -13,7 +13,7 @@ BaseType *HDF5Sequence::ptr_duplicate()
 }
 
 
-HDF5Sequence::HDF5Sequence(const string & n):Sequence(n)
+HDF5Sequence::HDF5Sequence(const string & n, const string &d) : Sequence(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -23,7 +23,7 @@ HDF5Sequence::~HDF5Sequence()
 {
 }
 
-bool HDF5Sequence::read(const string &)
+bool HDF5Sequence::read()
 {
     throw InternalErr(__FILE__, __LINE__,
                       "HDF5Sequence::read(): Unimplemented method.");

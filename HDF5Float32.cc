@@ -17,7 +17,7 @@ typedef struct s2_t {
 } s2_t;
 
 
-HDF5Float32::HDF5Float32(const string & n):Float32(n)
+HDF5Float32::HDF5Float32(const string & n, const string &d) : Float32(n, d)
 {
     ty_id = -1;
     dset_id = -1;
@@ -28,9 +28,9 @@ BaseType *HDF5Float32::ptr_duplicate()
     return new HDF5Float32(*this);
 }
 
-bool HDF5Float32::read(const string & dataset)
+bool HDF5Float32::read()
 {
-    DBG(cerr << ">HDFFloat32::read() dataset=" << dataset << endl);
+    DBG(cerr << ">HDFFloat32::read() dataset=" << dataset() << endl);
     DBG(cerr << ">HDFFloat32::read() ty_id=" << ty_id << endl);
     DBG(cerr << ">HDFFloat32::read() dset_id=" << dset_id << endl);
     if (read_p())
