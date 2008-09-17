@@ -51,7 +51,7 @@ OPTIONS
        start        Start Hyrax (by starting the BES and then the OLFS).
                     Gives an error if it is already running.
 
-       stop         Stops Hyrax (by stoppping the OLFS and then the BES).
+       stop         Stops Hyrax (by stopping the OLFS and then the BES).
 
        restart      Restarts Hyrax by stopping the OLFS and then the BES.
                     If Hyrax is not running, it is started.
@@ -152,7 +152,7 @@ start()
 
 ###########################################################################
 #
-# Restarts Hyraxs by first stopping and then starting it.
+# Restarts Hyrax by first stopping and then starting it.
 #
 #..........................................................................
 restart()
@@ -380,7 +380,7 @@ startBES()
 # Attempts to locate a running BES by using the ps command to search the 
 # process stack for running instances of the besdaemon and beslistner 
 # programs. All of the PIDs are collected and cached in the environment
-# vairable "BES_PIDs"
+# variable "BES_PIDs"
 #
 #..........................................................................
 findRunningBES()
@@ -483,7 +483,7 @@ checkPS()
 
 ###########################################################################
 #
-# Sets up a system independant no new line option for the echo command.
+# Sets up a system independent no new line option for the echo command.
 #
 #..........................................................................
 setEchoParam() {
@@ -508,14 +508,14 @@ BES=${bindir}/besctl
 if [ ! -x ${BES} ]
 then
     echo "BES control script besctl not found at ${BES}"
-    usage
+    # usage
     exit
 fi
 
 if [ ! ${CATALINA_HOME} ]
 then
-    echo "CATALINE_HOME environment variable is not set"
-    usage
+    echo "CATALINA_HOME environment variable is not set"
+    # usage
     exit
 fi
 
@@ -566,18 +566,12 @@ case $cmd in
         restartBES
         ;;
             
-    usage)
-        usage
-        ;;
-    help)
-        usage
-        ;;
-    -h)
+    usage|help|-h)
         usage
         ;;
     *)
         echo "Sorry, I don't understand"
         usage
         exit
-		;;
+	;;
 esac
