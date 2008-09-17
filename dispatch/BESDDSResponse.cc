@@ -41,6 +41,30 @@ BESDDSResponse::~BESDDSResponse()
     }
 }
 
+/** @brief set the container in the DAP response object
+ *
+ * @param cn name of the current container being operated on
+ */
+void
+BESDDSResponse::set_container( const string &cn )
+{
+    if( _dds && !is_dap2() )
+    {
+	_dds->container_name( cn ) ;
+    }
+}
+
+/** @brief clear the container in the DAP response object
+ */
+void
+BESDDSResponse::clear_container( )
+{
+    if( _dds )
+    {
+	_dds->container_name( "" ) ;
+    }
+}
+
 /** @brief dumps information about this object
  *set container in catalog values avhrr, /data/ff/1998.6.avhrr.dat;
  * 

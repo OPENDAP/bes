@@ -33,7 +33,7 @@
 #ifndef I_BESDDSResponse
 #define I_BESDDSResponse 1
 
-#include "BESResponseObject.h"
+#include "BESDapResponse.h"
 #include "DDS.h"
 #include "ConstraintEvaluator.h"
 
@@ -41,16 +41,19 @@ using namespace libdap ;
 
 /** @brief Represents an OPeNDAP DDS DAP2 data object within the BES
  */
-class BESDDSResponse : public BESResponseObject
+class BESDDSResponse : public BESDapResponse
 {
 private:
     DDS *			_dds ;
     ConstraintEvaluator		_ce ;
 public:
     				BESDDSResponse( DDS *dds )
-				    : BESResponseObject(),
+				    : BESDapResponse(),
 				      _dds( dds ) {}
     virtual			~BESDDSResponse() ;
+
+    virtual void		set_container( const string &cn ) ;
+    virtual void		clear_container( ) ;
 
     virtual void		dump( ostream &strm ) const ;
 

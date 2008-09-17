@@ -1,3 +1,4 @@
+set context dap_format to dap2;
 set container in catalog values av,/data/nc/coads_climatology.nc;
 define e as av with av.constraint="SST";
 get ascii for e;

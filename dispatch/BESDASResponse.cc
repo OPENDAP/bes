@@ -38,6 +38,30 @@ BESDASResponse::~BESDASResponse()
 	delete _das ;
 }
 
+/** @brief set the container in the DAP response object
+ *
+ * @param cn name of the current container being operated on
+ */
+void
+BESDASResponse::set_container( const string &cn )
+{
+    if( _das && !is_dap2() )
+    {
+	_das->container_name( cn ) ;
+    }
+}
+
+/** @brief clear the container in the DAP response object
+ */
+void
+BESDASResponse::clear_container( )
+{
+    if( _das )
+    {
+	_das->container_name( "" ) ;
+    }
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with the das object

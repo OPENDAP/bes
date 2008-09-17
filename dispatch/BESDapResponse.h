@@ -1,4 +1,4 @@
-// BESDataDDSResponse.h
+// BESDapResponse.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,36 +30,32 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESDataDDSResponse
-#define I_BESDataDDSResponse 1
+#ifndef I_BESDapResponse
+#define I_BESDapResponse 1
 
-#include "BESDapResponse.h"
-#include "DataDDS.h"
-#include "ConstraintEvaluator.h"
+#include "BESResponseObject.h"
+#include "DAS.h"
 
 using namespace libdap ;
 
-/** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
+/** @brief Represents an OPeNDAP DAS DAP2 data object within the BES
  */
-class BESDataDDSResponse : public BESDapResponse
+class BESDapResponse : public BESResponseObject
 {
 private:
-    DataDDS *			_dds;
-    ConstraintEvaluator		_ce;
+    DAS *			_das ;
+protected:
+    bool			is_dap2() ;
 public:
-    				BESDataDDSResponse(DataDDS * dds)
-				    : BESDapResponse(), _dds(dds) {} 
-    
-    virtual			~BESDataDDSResponse();
+    				BESDapResponse()
+				    : BESResponseObject() {}
+    virtual			~BESDapResponse() {}
 
-    virtual void		set_container( const string &cn ) ;
-    virtual void		clear_container( ) ;
+    virtual void		set_container( const string &cn ) = 0 ;
+    virtual void		clear_container( ) = 0 ;
 
-    virtual void		dump(ostream & strm) const;
+    virtual void		dump( ostream &strm ) const ;
+} ;
 
-    DataDDS *			get_dds() { return _dds; }
-    ConstraintEvaluator &	get_ce() { return _ce; }
-};
-
-#endif // I_BESDataDDSResponse
+#endif // I_BESDapResponse
 

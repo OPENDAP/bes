@@ -122,7 +122,7 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
     // response.
     bool found = false ;
     string context =
-	BESContextManager::TheManager()->get_context( "errors", found ) ;
+	BESContextManager::TheManager()->get_context( "dap_format", found ) ;
     if( context == "dap2" )
     {
 	ErrorCode ec = unknown_error ;

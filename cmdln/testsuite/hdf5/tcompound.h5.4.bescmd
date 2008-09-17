@@ -1,3 +1,4 @@
+set context dap_format to dap2;
 set container in catalog values c, /data/hdf5/tcompound.h5;
 define d as c;
 get ascii for d;

@@ -1,4 +1,4 @@
-// BESDataDDSResponse.h
+// BESDapResponse.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,36 +30,37 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_BESDataDDSResponse
-#define I_BESDataDDSResponse 1
-
 #include "BESDapResponse.h"
-#include "DataDDS.h"
-#include "ConstraintEvaluator.h"
+#include "BESContextManager.h"
 
-using namespace libdap ;
-
-/** @brief Represents an OPeNDAP DataDDS DAP2 data object within the BES
+/** @brief is dap response excpeted to be in dap2 format
+ *
+ * @return true if dap2 format, false otherwise
  */
-class BESDataDDSResponse : public BESDapResponse
+bool
+BESDapResponse::is_dap2()
 {
-private:
-    DataDDS *			_dds;
-    ConstraintEvaluator		_ce;
-public:
-    				BESDataDDSResponse(DataDDS * dds)
-				    : BESDapResponse(), _dds(dds) {} 
-    
-    virtual			~BESDataDDSResponse();
+    bool found = false ;
+    string context =
+	BESContextManager::TheManager()->get_context( "dap_format", found ) ;
+    if( found && context == "dap2" )
+    {
+	return true ;
+    }
+    return false ;
+}
 
-    virtual void		set_container( const string &cn ) ;
-    virtual void		clear_container( ) ;
-
-    virtual void		dump(ostream & strm) const;
-
-    DataDDS *			get_dds() { return _dds; }
-    ConstraintEvaluator &	get_ce() { return _ce; }
-};
-
-#endif // I_BESDataDDSResponse
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the das object
+ * created
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDapResponse::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDapResponse::dump - ("
+			     << (void *)this << ")" << endl ;
+}
 

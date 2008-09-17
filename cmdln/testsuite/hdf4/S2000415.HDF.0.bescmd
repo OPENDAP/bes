@@ -1,3 +1,4 @@
+set context dap_format to dap2;
 set container in catalog values nscat,/data/hdf4/S2000415.HDF;
 define d as nscat;
 get das for d;

@@ -49,8 +49,8 @@ using std::string ;
 class BESResponseObject : public BESObj
 {
 public:
-    BESResponseObject() {} ;
-    virtual ~BESResponseObject() {} ;
+    				BESResponseObject() {} ;
+    virtual			~BESResponseObject() {} ;
 
     virtual void		dump( ostream &strm ) const = 0 ;
 };
