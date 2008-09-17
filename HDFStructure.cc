@@ -35,8 +35,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: HDFStructure.cc,v $ - HDFStr class implementation
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -61,8 +59,8 @@
 #include "HDFStructure.h"
 #include "dhdferr.h"
 
-HDFStructure::HDFStructure(const string & n):
-Structure(n)
+HDFStructure::HDFStructure(const string &n, const string &d)
+    : Structure(n, d)
 {
 }
 
@@ -82,10 +80,10 @@ void HDFStructure::set_read_p(bool state)
     BaseType::set_read_p(state);
 }
 
-bool HDFStructure::read(const string & dataset)
+bool HDFStructure::read()
 {
     int err = 0;
-    int status = read_tagref(dataset, -1, -1, err);
+    int status = read_tagref(-1, -1, err);
     if (err)
         throw Error(unknown_error, "Could not read from dataset.");
     return status;
@@ -95,14 +93,13 @@ bool HDFStructure::read(const string & dataset)
 // eliminate the boolean 'foundvgroup' Consider moving the 
 // LoadStructureFromVgroup() from hc2dap.cc here since this is the only
 // place it's used.
-bool HDFStructure::read_tagref(const string & dataset, int32 tag,
-                               int32 ref, int &err)
+bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
 {
     if (read_p())
         return true;
 
     // get the HDF dataset name, Vgroup name
-    string hdf_file = dataset;
+    string hdf_file = dataset();
     string hdf_name = this->name();
 
     DBG(cerr << " hdf_name = " << hdf_name << endl);
@@ -137,34 +134,3 @@ bool HDFStructure::read_tagref(const string & dataset, int32 tag,
     }
 }
 
-#if 0
-Structure *NewStructure(const string & n)
-{
-    return new HDFStructure(n);
-}
-#endif
-// $Log: HDFStructure.cc,v $
-// Revision 1.12.4.1  2003/05/21 16:26:52  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.12  2003/01/31 02:08:36  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.9.4.6  2002/04/12 00:07:04  jimg
-// I removed old code that was wrapped in #if 0 ... #endif guards.
-//
-// Revision 1.9.4.5  2002/04/12 00:03:14  jimg
-// Fixed casts that appear throughout the code. I changed most/all of the
-// casts to the new-style syntax. I also removed casts that we're not needed.
-//
-// Revision 1.9.4.4  2002/04/10 18:38:10  jimg
-// I modified the server so that it knows about, and uses, all the DODS
-// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
-// cast most integer data to 32 bits. Now if an HDF file contains these
-// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
-// using those types (which DODS has supported for a while...).
-//
-// Revision 1.9.4.3  2002/03/14 19:15:07  jimg
-// Fixed use of int err in read() so that it's always initialized to zero.
-// This is a fix for bug 135.
-//

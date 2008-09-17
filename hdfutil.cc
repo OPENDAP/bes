@@ -35,8 +35,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: hdfutil.cc,v $ - Miscellaneous routines for DODS HDF server
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -220,55 +218,3 @@ void *AccessDataForDODS(const hdf_genvec & v, int i)
     return rv;
 }
 
-// $Log: hdfutil.cc,v $
-// Revision 1.8.4.1  2003/05/21 16:26:55  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.8  2003/01/31 02:08:36  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.7.4.3  2002/04/11 23:57:12  jimg
-// Fixed up the casts. Now the code uses the new style casts and eliminates
-// unnecessary casts.
-//
-// Revision 1.7.4.2  2002/04/11 03:06:54  jimg
-// Added AccessDataForDODS. This function provides a similar type of access as
-// the ExportDataForDODS except that the Access function does not copy the data
-// into new memory.
-//
-// Revision 1.7.4.1  2002/04/10 18:38:10  jimg
-// I modified the server so that it knows about, and uses, all the DODS
-// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
-// cast most integer data to 32 bits. Now if an HDF file contains these
-// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
-// using those types (which DODS has supported for a while...).
-//
-// Revision 1.7  2000/10/09 19:46:20  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.6  1999/05/06 03:23:36  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5.6.1  1999/05/06 00:27:25  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/02/05 20:14:32  jimg
-// DODS now compiles with gcc 2.8.x
-//
-// Revision 1.3  1997/03/10 22:45:56  jimg
-// Update for 2.12
-//
-// Revision 1.4  1997/02/25 02:03:19  todd
-// Added misc comments.
-//
-// Revision 1.3  1996/11/20  22:28:43  todd
-// Modified to support UInt32 type.
-//
-// Revision 1.2  1996/10/07 21:15:17  todd
-// Changes escape character to % from _.
-//
-// Revision 1.1  1996/09/24 22:38:16  todd
-// Initial revision
-//

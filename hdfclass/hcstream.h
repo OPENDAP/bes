@@ -40,8 +40,6 @@
 // 
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: hcstream.h,v $ - stream class declarations for HDFClass
-// 
 //////////////////////////////////////////////////////////////////////////////
 
 #include <string>
@@ -446,99 +444,5 @@ class hdfistream_gri:public hdfistream_obj {
     } _slab;
 };                              /* Note: multiple palettes is not supported in the current HDF 4.0 GR API */
 
-// $Log: hcstream.h,v $
-// Revision 1.9.4.1  2003/05/21 16:26:58  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.9  2003/01/31 02:08:37  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.7.4.4  2002/02/12 20:09:13  jimg
-// Fix for the latest Grid Map Vector fix. When an SDS is built for an Array
-// (not a Grid) there are no map vectors to work with so the array_ce info
-// must be protected. By default an hdfistream initializes a flag as false that
-// the operator>> methods check before using the saved map vector CEs.
-//
-// Revision 1.7.4.3  2002/02/05 17:46:17  jimg
-// Added struct array_ce to hold a single array constaint.
-// Added _map_ce_vec, a vector<array_ce> object to hdfistream_sds so that
-// instances no longer use the constraint associated with a Grid's array
-// when sending map vectors. This is necessary because some clients ask
-// for just map vectors and the array constraint (which defaults to the
-// whole array) overrides the actual constraint(s) sent by the client.
-//
-// Revision 1.7.4.2  2002/01/29 20:33:02  dan
-// Added new elements to hdf_vgroup structure to maintain
-// member variable names (string-reps) to couple explicit
-// variable names to tag/ref fields in the structure.  Required
-// to support new Ancillary DDS usage.
-//
-// Revision 1.8  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
-//
-// Revision 1.7.4.1  2001/05/15 17:54:47  dan
-// Added hdfistream_vdata method isInternalVdata.
-//
-// Revision 1.7  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.6  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.5  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.4.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.4  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.3  1998/07/13 20:26:35  jimg
-// Fixes from the final test of the new build process
-//
-// Revision 1.2.4.1  1998/05/22 19:50:52  jimg
-// Patch from Jake Hamby to support subsetting raster images
-//
-// Revision 1.2  1998/04/03 18:34:18  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:01  jimg
-// Added.
-//
-// Revision 1.10  1996/09/20  17:53:42  ike
-// Added setinterlace() and _interlace_mode to hdfistream_gri.
-//
-// Revision 1.9  1996/08/14  22:36:17  ike
-// Added hdfistream_vdata:setrecs().
-//
-// Revision 1.8  1996/08/14  17:56:37  todd
-// Added slab setting member function, slab protected data member to hdfistream_sds.
-//
-// Revision 1.7  1996/07/22  17:13:30  todd
-// Const-corrected hdfistream_gri::seek() declaration.
-//
-// Revision 1.6  1996/06/19  18:28:39  todd
-// Fixed a bug in _rewind which caused a core dump if there were no Vdata's in the stream.
-//
-// Revision 1.5  1996/06/18  21:53:55  todd
-// Removed one constructor to be consistent with the interfaces of the other stream
-// classes.
-//
-// Revision 1.4  1996/06/14  23:18:27  ike
-// Added hdfistream_gri stream class.
-//
-// Revision 1.3  1996/06/14  23:07:18  todd
-// Added copyright statement.
-// Added support for Vdata.
-//
-// Revision 1.2  1996/04/19  17:40:18  todd
-// Added seek(const char *) and _seek_arr(const string&) mfuncs.
-// Added a cast in the eos() mfunc to silence g++'s warning.
-//
-// Revision 1.1  1996/04/19  01:17:02  todd
-// Initial revision
-//
 #endif                          // ifndef _HCSTREAM_H
+

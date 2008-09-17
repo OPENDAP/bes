@@ -37,8 +37,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: HDFGrid.h,v $ - HDFGrid class declaration
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _HDFGRID_H
@@ -58,13 +56,12 @@ using namespace libdap;
 
 class HDFGrid:public Grid, public ReadTagRef {
   public:
-    HDFGrid(const string & n = "");
-     virtual ~ HDFGrid();
+    HDFGrid(const string &n, const string &d);
+    virtual ~ HDFGrid();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string & dataset);
+    virtual bool read();
     virtual vector < array_ce > get_map_constraints();
-    virtual bool read_tagref(const string & dataset, int32 tag, int32 ref,
-                             int &error);
+    virtual bool read_tagref(int32 tag, int32 ref, int &error);
 };
 
 #endif                          // _HDFGRID_H

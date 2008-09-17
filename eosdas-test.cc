@@ -28,29 +28,7 @@
 
 // Test the HDF-EOS attribute parser. 3/30/2000 jhrg
 
-// $Log: eosdas-test.cc,v $
-// Revision 1.4  2003/01/31 02:08:36  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.3.4.1  2002/04/12 00:07:04  jimg
-// I removed old code that was wrapped in #if 0 ... #endif guards.
-//
-// Revision 1.3  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.2  2000/03/31 16:56:05  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.1.2.1  2000/03/31 00:52:56  jimg
-// Added
-//
-
 #include "config_hdf.h"
-
-static char rcsid[] not_used =
-    { "$Id$" };
 
 #include <iostream>
 #include <string>

@@ -35,8 +35,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: dhdferr.cc,v $ - HDF server error class implementations
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>

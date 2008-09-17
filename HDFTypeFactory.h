@@ -1,4 +1,3 @@
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of nc_handler, a data handler for the OPeNDAP data
@@ -28,6 +27,8 @@
 
 #include <string>
 
+using std::string ;
+
 #include "BaseTypeFactory.h"
 
 using namespace libdap;
@@ -54,10 +55,12 @@ class HDFGrid;
     @author James Gallagher
     @see DDS */
 class HDFTypeFactory:public BaseTypeFactory {
-  public:
-    HDFTypeFactory() {
-    } virtual ~ HDFTypeFactory() {
-    }
+private:
+    string d_filename ;
+    HDFTypeFactory() {}
+public:
+    HDFTypeFactory( const string &filename ) : d_filename( filename ) {} 
+    virtual ~HDFTypeFactory() {}
 
     virtual Byte *NewByte(const string & n = "") const;
     virtual Int16 *NewInt16(const string & n = "") const;
@@ -76,4 +79,5 @@ class HDFTypeFactory:public BaseTypeFactory {
     virtual Grid *NewGrid(const string & n = "") const;
 };
 
-#endif                          // nc_type_factory_h
+#endif
+

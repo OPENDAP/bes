@@ -35,8 +35,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: HDFGrid.cc,v $ - HDFGrid class implementation
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -59,7 +57,7 @@
 
 #include "Error.h"
 
-HDFGrid::HDFGrid(const string & n):Grid(n)
+HDFGrid::HDFGrid(const string &n, const string &d) : Grid(n, d)
 {
 }
 
@@ -95,24 +93,23 @@ vector < array_ce > HDFGrid::get_map_constraints()
 }
 
 // Read in a Grid from an SDS in an HDF file.
-bool HDFGrid::read(const string & dataset)
+bool HDFGrid::read()
 {
     int err = 0;
-    int status = read_tagref(dataset, -1, -1, err);
+    int status = read_tagref(-1, -1, err);
     if (err)
         throw Error(unknown_error, "Could not read from dataset.");
     return status;
 }
 
-bool HDFGrid::read_tagref(const string & dataset, int32 tag, int32 ref,
-                          int &err)
+bool HDFGrid::read_tagref(int32 tag, int32 ref, int &err)
 {
     if (read_p())
         return true;
 
     err = 0;                    // OK initially
 
-    string hdf_file = dataset;
+    string hdf_file = dataset();
     string hdf_name = this->name();
 
     hdf_sds sds;
@@ -142,7 +139,7 @@ bool HDFGrid::read_tagref(const string & dataset, int32 tag, int32 ref,
             sdsin >> sds;
             if (!sds) {
                 throw Error(string("Could not read ") + array_var()->name()
-                            + string(" from dataset ") + dataset
+                            + string(" from dataset ") + dataset()
                             + string("."));
             }
 
@@ -192,93 +189,3 @@ bool HDFGrid::read_tagref(const string & dataset, int32 tag, int32 ref,
     return true;
 }
 
-#if 0
-Grid *NewGrid(const string & n)
-{
-    return new HDFGrid(n);
-}
-#endif
-
-// $Log: HDFGrid.cc,v $
-// Revision 1.12.4.2  2003/09/06 23:33:14  jimg
-// I modified the read() method implementations so that they test the new
-// in_selection property. If it is true, the methods will read values
-// even if the send_p property is not true. This is so that variables used
-// in the selection part of the CE, or as function arguments, will be read.
-// See bug 657.
-//
-// Revision 1.12.4.1  2003/05/21 16:26:51  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.12  2003/01/31 02:08:36  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.10.4.8  2002/04/12 00:07:04  jimg
-// I removed old code that was wrapped in #if 0 ... #endif guards.
-//
-// Revision 1.10.4.7  2002/04/12 00:03:14  jimg
-// Fixed casts that appear throughout the code. I changed most/all of the
-// casts to the new-style syntax. I also removed casts that we're not needed.
-//
-// Revision 1.10.4.6  2002/04/10 18:38:10  jimg
-// I modified the server so that it knows about, and uses, all the DODS
-// numeric datatypes. Previously the server cast 32 bit floats to 64 bits and
-// cast most integer data to 32 bits. Now if an HDF file contains these
-// datatypes (32 bit floats, 16 bit ints, et c.) the server returns data
-// using those types (which DODS has supported for a while...).
-//
-// Revision 1.10.4.5  2002/03/14 19:15:07  jimg
-// Fixed use of int err in read() so that it's always initialized to zero.
-// This is a fix for bug 135.
-//
-// Revision 1.10.4.4  2002/02/05 17:29:32  jimg
-// Added a new method (get_map_constraints()) that extracts the constraints
-// placed on map vectors and loads them into a vector<array_ce> object which can
-// then be assigned to a hdfistream_sds object.
-// I change hdfistream_sds so that it can hold a vector<array_ce> object. The
-// operator>>(hdf_dim&) method now uses this new object to correctly set the
-// hdfistream_sds::_slab member when maps are requested but the array is not.
-// Currently 17 tests (run make check after installing the server and the test
-// datasets) fail.
-//
-// Revision 1.10.4.3  2002/02/02 00:11:37  dan
-// Updated read_p flag for map vectors.
-//
-// Revision 1.10.4.2  2002/02/01 23:53:17  dan
-// test code in read_tagref
-//
-// Revision 1.11  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
-//
-// Revision 1.10.4.1  2001/07/28 00:25:15  jimg
-// I removed the code which escapes names. This function is now handled
-// for all the servers by the dap.
-//
-// Revision 1.10  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.9  2000/03/31 16:56:06  jimg
-// Merged with release 3.1.4
-//
-// Revision 1.8.8.1  2000/03/20 22:26:52  jimg
-// Switched to the id2dods, etc. escaping function in the dap.
-//
-// Revision 1.8  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.7.6.1  1999/05/06 00:27:21  jimg
-// Jakes String --> string changes
-//
-// Revision 1.5  1998/04/06 16:08:18  jimg
-// Patch from Jake Hamby; change from switch to Mixin class for read_ref()
-//
-// Revision 1.4  1998/04/03 18:34:22  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.3  1997/03/10 22:45:25  jimg
-// Update for 2.12
-//
-// Revision 1.4  1996/09/24 20:53:26  todd
-// Added copyright and header.

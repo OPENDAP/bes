@@ -38,36 +38,11 @@ using namespace libdap;
 
 class HDFUInt16:public UInt16 {
   public:
-    HDFUInt16(const string & n = "");
-     virtual ~ HDFUInt16();
+    HDFUInt16(const string &n, const string &d);
+    virtual ~ HDFUInt16();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string &);
+    virtual bool read();
 };
 
-UInt16 *NewUInt16(const string & n);
-
-typedef HDFUInt16 *HDFUInt16Ptr;
-
-// $Log: HDFUInt16.h,v $
-// Revision 1.4.4.1  2003/05/21 16:26:52  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.4  2003/01/31 02:08:36  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.3.4.1  2002/04/12 00:03:14  jimg
-// Fixed casts that appear throughout the code. I changed most/all of the
-// casts to the new-style syntax. I also removed casts that we're not needed.
-//
-// Revision 1.3  2000/10/09 19:46:20  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.2  1999/05/06 00:27:23  jimg
-// Jakes String --> string changes
-//
-// Revision 1.1  1999/03/27 00:20:16  jimg
-// Added
-
 #endif                          // _HDFUINT16_H
+

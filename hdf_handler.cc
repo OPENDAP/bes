@@ -34,8 +34,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: hdf_handler.cc,v $ - server CGI for data transfer
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -60,9 +58,6 @@
 #include <ObjectType.h>
 
 using namespace libdap;
-
-#include "HDFTypeFactory.h"
-
 using namespace std;
 
 extern void read_das(DAS & das, const string & cachedir,
@@ -108,8 +103,7 @@ int main(int argc, char *argv[])
             // might be subject to a constraint and a CE function might use the
             // attributes.
         case DODSFilter::DDS_Response:{
-                HDFTypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
                 DAS das;
 
@@ -128,8 +122,7 @@ int main(int argc, char *argv[])
             }
 
         case DODSFilter::DataDDS_Response:{
-                HDFTypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
                 DAS das;
 
@@ -148,8 +141,7 @@ int main(int argc, char *argv[])
             }
 
         case DODSFilter::DDX_Response:{
-                HDFTypeFactory factory;
-                DDS dds(&factory);
+                DDS dds(NULL);
                 ConstraintEvaluator ce;
                 DAS das;
 

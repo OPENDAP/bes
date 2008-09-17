@@ -44,67 +44,67 @@
 
 Byte *HDFTypeFactory::NewByte(const string & n) const
 {
-    return new HDFByte(n);
+    return new HDFByte(n, d_filename);
 }
 
 Int16 *HDFTypeFactory::NewInt16(const string & n) const
 {
-    return new HDFInt16(n);
+    return new HDFInt16(n, d_filename);
 }
 
 UInt16 *HDFTypeFactory::NewUInt16(const string & n) const
 {
-    return new HDFUInt16(n);
+    return new HDFUInt16(n, d_filename);
 }
 
 Int32 *HDFTypeFactory::NewInt32(const string & n) const
 {
     DBG(cerr << "Inside HDFTypeFactory::NewInt32" << endl);
-    return new HDFInt32(n);
+    return new HDFInt32(n, d_filename);
 }
 
 UInt32 *HDFTypeFactory::NewUInt32(const string & n) const
 {
-    return new HDFUInt32(n);
+    return new HDFUInt32(n, d_filename);
 }
 
 Float32 *HDFTypeFactory::NewFloat32(const string & n) const
 {
-    return new HDFFloat32(n);
+    return new HDFFloat32(n, d_filename);
 }
 
 Float64 *HDFTypeFactory::NewFloat64(const string & n) const
 {
-    return new HDFFloat64(n);
+    return new HDFFloat64(n, d_filename);
 }
 
 Str *HDFTypeFactory::NewStr(const string & n) const
 {
-    return new HDFStr(n);
+    return new HDFStr(n, d_filename);
 }
 
 Url *HDFTypeFactory::NewUrl(const string & n) const
 {
-    return new HDFUrl(n);
+    return new HDFUrl(n, d_filename);
 }
 
 Array *HDFTypeFactory::NewArray(const string & n, BaseType * v) const
 {
-    return new HDFArray(n, v);
+    return new HDFArray(n, d_filename, v);
 }
 
 Structure *HDFTypeFactory::NewStructure(const string & n) const
 {
-    return new HDFStructure(n);
+    return new HDFStructure(n, d_filename);
 }
 
 Sequence *HDFTypeFactory::NewSequence(const string & n) const
 {
     DBG(cerr << "Inside HDFTypeFactory::NewSequence" << endl);
-    return new HDFSequence(n);
+    return new HDFSequence(n, d_filename);
 }
 
 Grid *HDFTypeFactory::NewGrid(const string & n) const
 {
-    return new HDFGrid(n);
+    return new HDFGrid(n, d_filename);
 }

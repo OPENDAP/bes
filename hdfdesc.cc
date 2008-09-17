@@ -36,8 +36,6 @@
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
 //
-// $RCSfile: hdfdesc.cc,v $ - routines to read, build, and cache the DDS and DAS
-// 
 //////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -75,12 +73,12 @@ using namespace std;
 #include "dhdferr.h"
 #include "HDFArray.h"
 #include "HDFSequence.h"
+#include "HDFTypeFactory.h"
 #include "HDFGrid.h"
 #include "dodsutil.h"
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
-#include "HDFTypeFactory.h"
 
 template < class T > string num2string(T n)
 {
@@ -151,6 +149,23 @@ string cache_name(const string & cachedir, const string & filename)
 // pointers are used to hold the last set of das and dds objects for the given
 // filename. When cachedir in the read_das/dds() functions is empty, use these
 // if possible.
+
+// June 11, 2008 - pcw - These static vars and the static function
+// save_state is used only to save off the last read das and dds.
+// If the cache directory is empty, then we can't cache. The first thing that
+// used to happen is we see if the last das/dds read is the one that we are
+// reading in now. If it is, then use it, don't build a new one. Two things
+// here:
+// 1. In the CGI version, only one file is read in and the CGI server ends, so
+// saving the last dds is pointless.
+// 2. In the BES version, the last file read in could have been a part of a
+// larger request with multiple files. So if the next request comes in with a
+// new set of files, but that file is the first one, then it will use that dds,
+// which we don't want to do.
+// So ... we don't want to have save_state or the gs_dds or gs_filename static
+// variables (or gs_das)
+
+#if 0
 static DDS *gs_dds = 0;
 static DAS *gs_das = 0;
 static string *gs_filename = 0;
@@ -163,16 +178,19 @@ save_state(const string & filename, const DDS & dds, const DAS & das)
     else
         *gs_filename = filename;
 
+    // FIXME: the assignment below won't work if we have multiple containers
     if (!gs_dds)
         gs_dds = new DDS(dds);
     else
         *gs_dds = dds;
 
+    // FIXME: the assignment below won't work if we have multiple containers
     if (!gs_das)
         gs_das = new DAS(das);
     else
         *gs_das = das;
 }
+#endif
 
 // Read DDS from cache
 void read_dds(DDS & dds, const string & cachedir, const string & filename)
@@ -181,23 +199,40 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
         update_descriptions(cachedir, filename);
 
         string ddsfile = cache_name(cachedir, filename) + ".cdds";
+
+	// create the type factory needed to read in hdf data
+	HDFTypeFactory factory( filename ) ;
+	dds.set_factory( &factory ) ;
+
         dds.parse(ddsfile);
+
+	// set the factory back to null, we don't need the factory any more
+	dds.set_factory( NULL  ) ;
     } else {
+#if 0
+	// see above comment from pcw
         if (gs_filename && filename == *gs_filename && gs_dds) {
             dds = *gs_dds;
         } else {
-            // generate DDS, DAS
-            DAS das;            // Throw away... w/o caching this code is very wasteful
-            dds.set_dataset_name(basename(filename));
-            build_descriptions(dds, das, filename);
+#endif
 
-            if (!dds.check_semantics()) {       // DDS didn't get built right
-                dds.print(stderr);
-                THROW(dhdferr_ddssem);
-            }
+	// generate DDS, DAS
 
-            save_state(filename, dds, das);
+	// Throw away... w/o caching this code is very wasteful
+	DAS das;
+
+	dds.set_dataset_name(basename(filename));
+	build_descriptions(dds, das, filename);
+
+	if (!dds.check_semantics()) {       // DDS didn't get built right
+	    dds.print(stderr);
+	    THROW(dhdferr_ddssem);
+	}
+
+	//save_state(filename, dds, das);
+#if 0
         }
+#endif
     }
 
     return;
@@ -212,22 +247,27 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
         string dasfile = cache_name(cachedir, filename) + ".cdas";
         das.parse(dasfile);
     } else {
+#if 0
+	// see above comment from pcw
         if (gs_filename && filename == *gs_filename && gs_das) {
             das = *gs_das;
         } else {
-            // generate DDS, DAS
-            HDFTypeFactory factory;
-            DDS dds(&factory);
-            dds.set_dataset_name(basename(filename));
-            build_descriptions(dds, das, filename);
+#endif
 
-            if (!dds.check_semantics()) {       // DDS didn't get built right
-                dds.print(stdout);
-                THROW(dhdferr_ddssem);
-            }
+	// generate DDS, DAS
+	DDS dds(NULL);
+	dds.set_dataset_name(basename(filename));
+	build_descriptions(dds, das, filename);
 
-            save_state(filename, dds, das);
+	if (!dds.check_semantics()) {       // DDS didn't get built right
+	    dds.print(stdout);
+	    THROW(dhdferr_ddssem);
+	}
+
+	//save_state(filename, dds, das);
+#if 0
         }
+#endif
     }
 
     return;
@@ -251,8 +291,7 @@ static void update_descriptions(const string & cachedir,
     if (!ddsfile || !dasfile || (datafile.mtime() > ddsfile.mtime()) ||
         datafile.mtime() > dasfile.mtime()) {
 
-        HDFTypeFactory factory;
-        DDS dds(&factory);
+        DDS dds(NULL);
         dds.set_dataset_name(basename(filename));
         DAS das;
 
@@ -504,7 +543,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             continue;           // skip over non-toplevel vgroups
         pbt =
             NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap,
-                                   grmap);
+                                   grmap, filename);
         if (pbt != 0) {
             dds.add_var(pbt);
         }
@@ -515,9 +554,9 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         if (s->second.in_vgroup)
             continue;           // skip over SDS's in vgroups
         if (s->second.sds.has_scale())  // make a grid
-            pbt = NewGridFromSDS(s->second.sds);
+            pbt = NewGridFromSDS(s->second.sds, filename);
         else
-            pbt = NewArrayFromSDS(s->second.sds);
+            pbt = NewArrayFromSDS(s->second.sds, filename);
         if (pbt != 0)
             dds.add_var(pbt);
     }
@@ -526,7 +565,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
     for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
         if (v->second.in_vgroup)
             continue;           // skip over Vdata in vgroups
-        pbt = NewSequenceFromVdata(v->second.vdata);
+        pbt = NewSequenceFromVdata(v->second.vdata, filename);
         if (pbt != 0)
             dds.add_var(pbt);
     }
@@ -535,7 +574,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
     for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
         if (g->second.in_vgroup)
             continue;           // skip over GRs in vgroups
-        pbt = NewArrayFromGR(g->second.gri);
+        pbt = NewArrayFromGR(g->second.gri, filename);
         if (pbt != 0)
             dds.add_var(pbt);
     }

@@ -24,3 +24,4 @@ struct hdfdods {
         MAXSTR = 1024
     };
 };
+

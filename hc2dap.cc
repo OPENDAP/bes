@@ -35,9 +35,6 @@
 // Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
 //         Todd.K.Karakashian@jpl.nasa.gov
 //
-// $RCSfile: hc2dap.cc,v $ - routines to convert between HDFClass and DAP 
-//                           data structures
-// 
 //////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
@@ -87,7 +84,9 @@ using namespace std;
 // jhrg.
 #define SIGNED_BYTE_TO_INT32 1
 
-BaseType *NewDAPVar(const string & varname, int32 hdf_type);
+BaseType *NewDAPVar(const string &varname,
+		    const string &dataset,
+		    int32 hdf_type);
 void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row);
 
 // STL predicate comparing equality of hdf_field objects based on their names
@@ -106,7 +105,7 @@ private:
 };
 
 // Create a DAP HDFSequence from an hdf_vdata.
-HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
+HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
 {
     // check to make sure hdf_vdata object is set up properly
     // Vdata must have a name
@@ -114,7 +113,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
         return 0;
 
     // construct HDFSequence
-    HDFSequence *seq = new HDFSequence(vd.name);
+    HDFSequence *seq = new HDFSequence(vd.name, dataset);
     if (seq == 0)
         return 0;
 
@@ -125,7 +124,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
             delete seq;         // problem with the field
             return 0;
         }
-        HDFStructure *st = new HDFStructure(vd.fields[i].name);
+        HDFStructure *st = new HDFStructure(vd.fields[i].name, dataset);
         if (st == 0) {
             delete seq;
             return 0;
@@ -136,7 +135,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
 
             // collapse char subfields into one string
             string subname = vd.fields[i].name + "__0";
-            BaseType *bt = new HDFStr(subname);
+            BaseType *bt = new HDFStr(subname, dataset);
             if (bt == 0) {
                 delete st;
                 delete seq;
@@ -148,9 +147,8 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
             for (int j = 0; j < (int) vd.fields[i].vals.size(); ++j) {
                 ostringstream strm;
                 strm << vd.fields[i].name << "__" << j;
-                BaseType *bt = NewDAPVar(strm.str(),
-                                         vd.fields[i].vals[j].
-                                         number_type());
+                BaseType *bt = NewDAPVar(strm.str(), dataset,
+                                         vd.fields[i].vals[j].number_type());
                 if (bt == 0) {
                     delete st;
                     delete seq;
@@ -167,9 +165,9 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata & vd)
 
 
 // Create a DAP HDFStructure from an hdf_vgroup.
-HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg, vg_map & vgmap,
-                                     sds_map & sdmap, vd_map & vdmap,
-                                     gr_map & grmap)
+HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
+                                     sds_map &sdmap, vd_map &vdmap,
+                                     gr_map &grmap, const string &dataset)
 {
     // check to make sure hdf_vgroup object is set up properly
     if (vg.name.length() == 0)  // Vgroup must have a name
@@ -178,7 +176,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg, vg_map & vgmap,
         return 0;
 
     // construct HDFStructure
-    HDFStructure *str = new HDFStructure(vg.name);
+    HDFStructure *str = new HDFStructure(vg.name, dataset);
     if (str == 0)
         return 0;
     bool nonempty = false;
@@ -189,22 +187,22 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg, vg_map & vgmap,
         BaseType *bt = 0;
         switch (tag) {
         case DFTAG_VH:
-            bt = NewSequenceFromVdata(vdmap[ref].vdata);
+            bt = NewSequenceFromVdata(vdmap[ref].vdata, dataset);
             break;
         case DFTAG_NDG:
             if (sdmap[ref].sds.has_scale()) {
-                bt = NewGridFromSDS(sdmap[ref].sds);
+                bt = NewGridFromSDS(sdmap[ref].sds, dataset);
             } else {
-                bt = NewArrayFromSDS(sdmap[ref].sds);
+                bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
             }
             break;
         case DFTAG_VG:
             // GR's are also stored as Vgroups
             if (grmap.find(ref) != grmap.end())
-                bt = NewArrayFromGR(grmap[ref].gri);
+                bt = NewArrayFromGR(grmap[ref].gri, dataset);
             else
                 bt = NewStructureFromVgroup(vgmap[ref].vgroup, vgmap,
-                                            sdmap, vdmap, grmap);
+                                            sdmap, vdmap, grmap, dataset);
             break;
         default:
             cerr << "Error: Unknown vgroup child: " << tag << endl;
@@ -224,7 +222,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg, vg_map & vgmap,
 }
 
 // Create a DAP HDFArray out of the primary array in an hdf_sds
-HDFArray *NewArrayFromSDS(const hdf_sds & sds)
+HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 {
     if (sds.name.length() == 0) // SDS must have a name
         return 0;
@@ -232,15 +230,17 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds)
         return 0;
 
     // construct HDFArray, assign data type
-    HDFArray *ar = new HDFArray(sds.name);
-    if (ar == 0)
-        return 0;
-    BaseType *bt = NewDAPVar(sds.name, sds.data.number_type());
+    BaseType *bt = NewDAPVar(sds.name, dataset, sds.data.number_type());
     if (bt == 0) {              // something is not right with SDS number type?
-        delete ar;
         return 0;
     }
-    ar->add_var(bt);            // set type of Array; ar now manages bt
+    HDFArray *ar = new HDFArray(sds.name,dataset,bt);
+    if (ar == 0) {
+        delete bt;
+        return 0;
+    }
+    // Array duplicates the base type passed, so delete here
+    delete bt ;
 
     // add dimension info to HDFArray
     for (int i = 0; i < (int) sds.dims.size(); ++i)
@@ -250,21 +250,23 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds)
 }
 
 // Create a DAP HDFArray out of a general raster
-HDFArray *NewArrayFromGR(const hdf_gri & gr)
+HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 {
     if (gr.name.length() == 0)  // GR must have a name
         return 0;
 
     // construct HDFArray, assign data type
-    HDFArray *ar = new HDFArray(gr.name);
-    if (ar == 0)
-        return 0;
-    BaseType *bt = NewDAPVar(gr.name, gr.image.number_type());
+    BaseType *bt = NewDAPVar(gr.name, dataset, gr.image.number_type());
     if (bt == 0) {              // something is not right with GR number type?
-        delete ar;
         return 0;
     }
-    ar->add_var(bt);            // set type of Array; ar now manages bt
+    HDFArray *ar = new HDFArray(gr.name, dataset, bt);
+    if (ar == 0) {
+        delete bt;
+        return 0;
+    }
+    // Array duplicates the base type passed, so delete here
+    delete bt ;
 
     // add dimension info to HDFArray
     if (gr.num_comp > 1)
@@ -275,17 +277,17 @@ HDFArray *NewArrayFromGR(const hdf_gri & gr)
 }
 
 // Create a DAP HDFGrid out of the primary array and dim scale in an hdf_sds
-HDFGrid *NewGridFromSDS(const hdf_sds & sds)
+HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
     if (!sds.has_scale())       // we need a dim scale to make a Grid
         return 0;
 
     // Create the HDFGrid and the primary array.  Add the primary array to 
     // the HDFGrid.
-    HDFArray *ar = NewArrayFromSDS(sds);
+    HDFArray *ar = NewArrayFromSDS(sds, dataset);
     if (ar == 0)
         return 0;
-    HDFGrid *gr = new HDFGrid(sds.name);
+    HDFGrid *gr = new HDFGrid(sds.name, dataset);
     if (gr == 0) {
         delete ar;
         return 0;
@@ -302,17 +304,19 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds)
             return 0;
         }
         mapname = sds.dims[i].name;
-        if ((dsbt = NewDAPVar(mapname,
+        if ((dsbt = NewDAPVar(mapname, dataset,
                               sds.dims[i].scale.number_type())) == 0) {
             delete gr;          // note: ~HDFGrid() cleans up the attached ar
             return 0;
         }
-        if ((dmar = new HDFArray(mapname)) == 0) {
+        if ((dmar = new HDFArray(mapname,dataset,dsbt)) == 0) {
             delete gr;
             delete dsbt;
             return 0;
         }
-        dmar->add_var(dsbt);    // set type of dim map; dmar now manages dsbt
+	// Array duplicates the base type passed to the constructor. Delete
+	// here
+	delete dsbt ;
         dmar->append_dim(sds.dims[i].count);    // set dimension size
         gr->add_var(dmar, maps);        // add dimension map to grid; 
         // gr now manages dmar
@@ -322,29 +326,31 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds)
 
 // Return a ptr to DAP atomic data object corresponding to an HDF Type, or
 // return 0 if the HDF Type is invalid or not supported.
-BaseType *NewDAPVar(const string & varname, int32 hdf_type)
+BaseType *NewDAPVar(const string &varname,
+		    const string &dataset,
+		    int32 hdf_type)
 {
     switch (hdf_type) {
     case DFNT_FLOAT32:
-        return new HDFFloat32(varname);
+        return new HDFFloat32(varname, dataset);
 
     case DFNT_FLOAT64:
-        return new HDFFloat64(varname);
+        return new HDFFloat64(varname, dataset);
 
     case DFNT_INT16:
-        return new HDFInt16(varname);
+        return new HDFInt16(varname, dataset);
 
 #ifdef SIGNED_BYTE_TO_INT32
     case DFNT_INT8:
 #endif
     case DFNT_INT32:
-        return new HDFInt32(varname);
+        return new HDFInt32(varname, dataset);
 
     case DFNT_UINT16:
-        return new HDFUInt16(varname);
+        return new HDFUInt16(varname, dataset);
 
     case DFNT_UINT32:
-        return new HDFUInt32(varname);
+        return new HDFUInt32(varname, dataset);
 
         // INT8 and UINT8 *should* be grouped under Int32 and UInt32, but
         // that breaks too many programs. jhrg 12/30/97
@@ -354,7 +360,7 @@ BaseType *NewDAPVar(const string & varname, int32 hdf_type)
     case DFNT_UINT8:
     case DFNT_UCHAR8:
     case DFNT_CHAR8:
-        return new HDFByte(varname);
+        return new HDFByte(varname, dataset);
 
     default:
         return 0;
@@ -564,10 +570,10 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
         		<< ", send_p: " << p->send_p() << ", vg.names[" << i << "]: "
         		<< vg.vnames[i] << endl);
         if (p->send_p() && p->name() == vg.vnames[i]) {
-            (dynamic_cast < ReadTagRef * >(p))->read_tagref(hdf_file,
-                                                            vg.tags[i],
+            (dynamic_cast < ReadTagRef * >(p))->read_tagref(vg.tags[i],
                                                             vg.refs[i],
                                                             err);
         }
     }
 }
+

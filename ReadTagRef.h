@@ -35,22 +35,6 @@
 // Author: Jake Hamby, NASA/Jet Propulsion Laboratory
 //         Jake.Hamby@jpl.nasa.gov
 //
-// $RCSfile: ReadTagRef.h,v $ - Declaration of abstract read_tagref() method
-//
-// $Log: ReadTagRef.h,v $
-// Revision 1.2.18.1  2003/05/21 16:26:55  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.2  1999/05/06 03:23:35  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.1.10.1  1999/05/06 00:27:23  jimg
-// Jakes String --> string changes
-//
-// Revision 1.1  1998/04/06 16:11:43  jimg
-// Added by Jake Hamby (via patch)
-//
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _READTAGREF_H
@@ -66,8 +50,7 @@ class ReadTagRef {
     virtual ~ ReadTagRef() {
     } 
 
-    virtual bool read_tagref(const string & dataset, int32 tag,
-			     int32 ref, int &error) = 0;
+    virtual bool read_tagref(int32 tag, int32 ref, int &error) = 0;
 };
 
 #endif                          // _READTAGREF_H
