@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -66,10 +66,10 @@ void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl )
-    
+
     dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
-    // NOTE: It is the responsbility of the specific request handler to set
+    // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
     BESDDSResponse *bdds = new BESDDSResponse( dds ) ;
@@ -81,10 +81,10 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 #if 0
     // In the handler code, it's now required that DDS objects be built with
     // attributes included (effectively DDS == DDX). This is needed for
-    // various server-side functions and will pave the way to phase out the 
+    // various server-side functions and will pave the way to phase out the
     // DDS/DAS responses as the basic building blocks in favor of the DDX.
     // jhrg 12/20/06
-    
+
     // Fill the DAS
     DAS *das = new DAS ;
     BESDASResponse *bdas = new BESDASResponse( das ) ;

@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -45,7 +45,7 @@ BESDataResponseHandler::~BESDataResponseHandler( )
 {
 }
 
-/** @brief executes the command 'get data for &lt;def_name&gt;' by 
+/** @brief executes the command 'get data for &lt;def_name&gt;' by
  * executing the request for each container in the specified definition
  *
  * For each container in the specified defnition go to the request
@@ -63,7 +63,7 @@ void
 BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
     dhi.action_name = DATA_RESPONSE_STR ;
-    // NOTE: It is the responsbility of the specific request handler to set
+    // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
     _response = new BESDataDDSResponse( dds ) ;

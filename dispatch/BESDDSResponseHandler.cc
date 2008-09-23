@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -46,9 +46,9 @@ BESDDSResponseHandler::~BESDDSResponseHandler( )
 }
 
 /** @brief executes the command 'get dds for &lt;def_name&gt;;' by executing
- * the request for each container in the specified defnition.
+ * the request for each container in the specified definition.
  *
- * For each container in the specified defnition go to the request
+ * For each container in the specified definition go to the request
  * handler for that container and have it add to the OPeNDAP DDS response
  * object. The DDS response object is created within this method and passed
  * to the request handler list.
@@ -61,7 +61,7 @@ BESDDSResponseHandler::~BESDDSResponseHandler( )
 void
 BESDDSResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    // NOTE: It is the responsbility of the specific request handler to set
+    // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     dhi.action_name = DDS_RESPONSE_STR ;
     DDS *dds = new DDS( NULL, "virtual" ) ;
