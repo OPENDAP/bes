@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -131,7 +131,7 @@ PPTServer::get_secure_files()
     }
 }
 
-/** Using the info passed into the SocketLister, wait for an inbound 
+/** Using the info passed into the SocketLister, wait for an inbound
     request (see SocketListener::accept()). When one is found, do the
     welcome message stuff (welcomeClient()) and then pass \c this to
     the handler's \c handle method. Note that \c this is a pointer to
@@ -190,7 +190,7 @@ PPTServer::welcomeClient()
 	 * by throwing an exception, we want to return and let the caller
 	 * clean up the connection
 	 */
-	string err( "PPT Can not negotiate, " ) ;
+	string err( "PPT cannot negotiate, " ) ;
 	err += " client started the connection with " + status ;
 	BESDEBUG( "ppt", err << endl )
 	//throw BESInternalError( err, __FILE__, __LINE__ ) ;

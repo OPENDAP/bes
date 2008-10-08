@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -93,11 +93,11 @@ StandAloneClient::~StandAloneClient()
 }
 
 /** @brief Set the output stream for responses from the BES server.
-* 
+*
 * Specify where the response output from your BES request will be
 * sent. Set to null if you wish to ignore the response from the BES
 * server.
-* 
+*
 * @param  strm  an OutputStream specifying where to send responses from
 *               the BES server. If null then the output will not be
 *               output but will be thrown away.
@@ -122,7 +122,7 @@ StandAloneClient::setOutput(ostream * strm, bool created)
 }
 
 /** @brief Executes a client side command
-* 
+*
 * Client side commands include
 * client suppress;
 * client output to screen;
@@ -164,7 +164,7 @@ StandAloneClient::executeClientCommand(const string & cmd)
 
 /** @brief Sends a single OpeNDAP request ending in a semicolon (;) to the
 * OpeNDAP server.
-* 
+*
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
@@ -218,7 +218,7 @@ StandAloneClient::executeCommand(const string & cmd, int repeat )
 			    exit( 1 ) ;
 			}
 			break;
-		    case BES_INTERNAL_ERROR: 
+		    case BES_INTERNAL_ERROR:
 		    case BES_SYNTAX_USER_ERROR:
 		    case BES_FORBIDDEN_ERROR:
 		    case BES_NOT_FOUND_ERROR:
@@ -231,7 +231,7 @@ StandAloneClient::executeCommand(const string & cmd, int repeat )
 }
 
 /** @brief Execute each of the commands in the cmd_list, separated by a * semicolon.
-* 
+*
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
@@ -262,10 +262,10 @@ StandAloneClient::executeCommands(const string & cmd_list, int repeat)
 
 /** @brief Sends the requests listed in the specified file to the BES server,
 * each command ending with a semicolon.
-* 
+*
 * The requests do not have to be one per line but can span multiple
 * lines and there can be more than one command per line.
-* 
+*
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
@@ -329,12 +329,12 @@ StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 }
 
 /** @brief An interactive BES client that takes BES requests on the command line.
-* 
-* There can be more than one command per line, but commands can NOT span
+*
+* There can be more than one command per line, but commands cannot span
 * multiple lines. The user will be prompted to enter a new BES request.
-* 
+*
 * OpenDAPClient:
-* 
+*
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
@@ -399,7 +399,7 @@ StandAloneClient::readLine(string & msg)
             // If a null buffer is returned then this means that EOF is
             // returned. This is different from the user just hitting enter,
             // which means a character buffer is returned, but is empty.
-            
+
             // Problem: len is unsigned.
             len = -1;
         }

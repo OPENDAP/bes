@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -365,7 +365,7 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Can not register SIGTERM signal handler" << endl ;
+	cerr << "FAILED: cannot register SIGTERM signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
@@ -374,7 +374,7 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Can not register SIGINT signal handler" << endl ;
+	cerr << "FAILED: cannot register SIGINT signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
@@ -383,7 +383,7 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Can not register SIGUSR1 signal handler" << endl ;
+	cerr << "FAILED: cannot register SIGUSR1 signal handler" << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;

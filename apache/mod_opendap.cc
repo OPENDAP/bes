@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -51,7 +51,7 @@ using std::flush ;
 #include "BESDataRequestInterface.h"
 #include "BESApacheWrapper.h"
 
-char * ltoa(long val, char *buf,int base)                         
+char * ltoa(long val, char *buf,int base)
 {
   ldiv_t r;                                 /* result of val / base  */
   if (base > 36 || base < 2)          /* no conversion if wrong base */
@@ -65,9 +65,9 @@ char * ltoa(long val, char *buf,int base)
   /* output digits of val/base first */
   if (r.quot > 0)
     buf = ltoa ( r.quot, buf, base);
-  
+
   /* output last digit */
-  
+
   *buf++ = "0123456789abcdefghijklmnopqrstuvwxyz"[(int)r.rem];
   *buf   = '\0';
   return buf;
@@ -88,7 +88,7 @@ static int util_read(request_rec *r, const char **rbuf)
 	char argsbuffer[HUGE_STRING_LEN];
 	int rsize, len_read, rpos=0;
 	long length = r->remaining;
-	*rbuf = (char*) ap_pcalloc(r->pool, length + 1); 
+	*rbuf = (char*) ap_pcalloc(r->pool, length + 1);
 
 	ap_hard_timeout("util_read", r);
 
@@ -127,12 +127,12 @@ list_headers( request_rec *r )
 }
 
 static int opendap_handler(request_rec *r)
-{ 
+{
     char port_number_buffer[80];
     dup2(r->connection->client->fd,STDOUT_FILENO);
     BESDataRequestInterface rq;
 
-    // BEGIN Initialize all data request elements correctly to a null pointer 
+    // BEGIN Initialize all data request elements correctly to a null pointer
     rq.server_name=0;
     rq.server_address=0;
     rq.server_protocol=0;
@@ -153,14 +153,14 @@ static int opendap_handler(request_rec *r)
     rq.user_agent = ap_table_get(r->headers_in, "User-Agent");
 
     const char* m_method = r->method;
-    if (!m_method) 
+    if (!m_method)
     {
-	cerr << "mod_opendap: Fatal, Can not load request method" << endl;
+	cerr << "mod_opendap: Fatal, Cannot load request method" << endl;
 	return SERVER_ERROR;
     }
 
     BESApacheWrapper wrapper;
-    if ( strcmp(m_method, "GET") == 0 ) 
+    if ( strcmp(m_method, "GET") == 0 )
     {
 	if(r->parsed_uri.query)
 	{
@@ -175,7 +175,7 @@ static int opendap_handler(request_rec *r)
 	    rq.token=0;
 	}
     }
-    else if (strcmp(m_method, "POST") == 0 ) 
+    else if (strcmp(m_method, "POST") == 0 )
     {
 	const char *post_data=0;
 	util_read(r, &post_data);
