@@ -65,6 +65,13 @@ REQUIREMENTS
 
 NOTES
 
+  o This handler uses a configuration parameter, set in the bes.conf file, to
+    control where copies of some metadata objects built by the server are 
+    cached. By default this cache is in /tmp - you are encouraged to change
+    that. Set the location using the 'HDF4.CacheDir' parameter. For example,
+    if you have set the BES.CacheDir parameter to /var/run/bes/cache you might
+    set HDF4.CacheDir to /var/run/bes/hdf4_cache. 
+
   o DEBUGGING AIDS
 
     - The OPeNDAP libdap library includes the following debugging aids that
