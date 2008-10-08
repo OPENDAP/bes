@@ -9,15 +9,12 @@ DAP Server.
 For information about building the OPeNDAP netCDF Data Handler, see the
 INSTALL file.
 
-This version (3.7.8) contains a know problem when several SDSs use the same
-name. This bug is encountered when a Vgroup contains a Vgroup and that inner
-Vgroup contains an SDS, if that SDS's name matches the name of another SDS
-nested in a *second set of objects with the same structure*, the 'first' SDS
-will always be returned. This is ticket #905. Since this version of the
-handler fixes a number of other problems, and this bug affects only a smal
-number of data sets, we're releasing this version now and will release an
-update in a few weeks. It's likely that this bug has been present for some
-time if not since the handler was first written.
+This handler uses a configuration parameter, set in the bes.conf file, to
+control where copies of some metadata objects built by the server are 
+cached. By default this cache is in /tmp - you are encouraged to change
+that. Set the location using the 'HDF4.CacheDir' parameter. For example,
+if you have set the BES.CacheDir parameter to /var/run/bes/cache you might
+set HDF4.CacheDir to /var/run/bes/hdf4_cache. 
 
 A configuration edition helper script, `bes-hdf4-data.sh' is provided in
 this package for easy configuration of the Hyrax BES server, designed to
