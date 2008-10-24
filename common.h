@@ -5,9 +5,9 @@
 /// This file is a header file that includes common constants and global
 /// structures of the server. 
 ///
-/// \author  Muqun Yang (ymuqun@ncsa.uiuc.edu)
+/// \author  Muqun Yang (myang6@hdfgroup.org)
 /// 
-/// Copyright (C) 2007  HDF Group, Inc.
+/// Copyright (C) 2007   The HDF Group
 ///
 /// Copyright (C) 2001   National Center for Supercomputing Applications.
 ///                      All rights reserved.
@@ -107,8 +107,8 @@ static const char FLOAT_ELSE[] = "Float_else";
 /// An abstract respresntation of DAP Structure type.
 static const char COMPOUND[] = "Structure";
 /// An abstract respresntation of DAP Array type.
-static const char ARRAY[] = "Array";    // <hyokyung 2007.05.17. 12:58:54>
+static const char ARRAY[] = "Array";   
 /// An abstract respresntation of DAP Url type.
-static const char URL[] = "Url";        // <hyokyung 2007.09.11. 12:47:53>
+static const char URL[] = "Url";       
 
 #endif
