@@ -9,9 +9,9 @@
 ///  HDF5 attribute of an hdf5 data file.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Muqun Yang <ymuqun@hdfgroup.org>
+/// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (c) 2007 HDF Group
+/// Copyright (c) 2007 The HDF Group
 ///
 /// Copyright (C) 1999 National Center for Supercomputing Applications.
 ///
@@ -37,7 +37,9 @@
 // Added for the fix for ticket 1163. jhrg 7/31/08
 #define ATTR_STRING_QUOTE_FIX
 
+/// A global variable that handles HDF-EOS5 files.
 H5EOS eos;
+
 /// A variable for remembering visited paths to break ties if they exist.
 H5PathFinder paths;
 
@@ -56,17 +58,15 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 ///
 /// This function will walk through hdf5 group using depth-
 /// first approach to obtain all the group and dataset attributes
-/// of a hdf5 file.
+/// of an hdf5 file.
 /// During the process of depth first search, DAS table will be filled.
-/// In case of errors, a exception will be thrown
+/// In case of errors, an exception will be thrown.
 ///
 /// \param pid    dataset id(group id)
-/// \param gname  group name(absolute name from root group).
-/// \param das    reference of DAS object.
+/// \param gname  group name(absolute name from root group)
+/// \param das    reference of DAS object
 /// \return void
 ///
-/// \todo This is like the same code of DDS! => Can we combine the two into one?
-///       How about using virtual function?
 ////////////////////////////////////////////////////////////////////////////////
 void depth_first(hid_t pid, const char *gname, DAS & das)
 {
@@ -297,8 +297,11 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 		  gp.tcp = (char *) sm_buf;
 		  // display byte in numerical form. This is for Aura file.
 		  // 2007/5/4
+		  // This generates an attribute like "Byte _FillValue -127".
+		  // It can cause IDV to crash since Java OPeNDAP expects
+		  // Byte value > 0.
+		  // See ticket: http://scm.opendap.org/trac/ticket/1199
 		  snprintf(rep, 32, "%d", *(gp.tcp + loc));
-		  //sprintf(rep, "%c", *(gp.tcp + loc));
 	      }
 
 	      else if (H5Tequal(type, H5T_STD_I16BE)
@@ -571,9 +574,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     at = das.add_table(varname, new AttrTable);
                 parser_arg arg(at);
                 DBG(cerr << eos.metadata_subset << endl);
-                // cerr << "Comes here" << endl;
-                // cerr << eos.metadata_subset << endl;
-                // cerr << "Comes here2" << endl;
                 hdfeos_das_scan_string(eos.metadata_subset);
 
                 if (hdfeos_dasparse(static_cast < void *>(&arg)) != 0
@@ -648,19 +648,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
 	    // Read HDF5 attribute data.
 
-	    if (ty_id == H5T_STRING) {
-		// ty_id: No conversion needed. <hyokyung 2007.02.20. 13:28:08>
-		if (H5Aread(attr_id, ty_id, (void *) value) < 0)
-		    throw InternalErr(__FILE__, __LINE__,
-				      "unable to read HDF5 attribute data");
-	    }
-	    else {
-		if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
-		    throw InternalErr(__FILE__, __LINE__,
-				      "unable to read HDF5 attribute data");
-		}
-		DBG(cerr << "=read_objects(): value=" << value << endl);
-	    }
+	    if (H5Aread(attr_id, ty_id, (void *) value) < 0)
+	      throw InternalErr(__FILE__, __LINE__,
+				"unable to read HDF5 attribute data");
 
 	    // Add all attributes in the array.
             //  Create the "name" attribute if we can find long_name.
@@ -704,7 +694,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     for (int sizeindex = 0;
                          sizeindex < (int) attr_inst.size[dim];
                          sizeindex++) {
-                        if (H5Tget_class(attr_inst.type) == H5T_STRING) {
                             print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
                             attr_table_ptr->
                                 append_attr(GET_NAME(attr_inst.name),
@@ -715,18 +704,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                                 << "elesize=" << elesize << endl);
                             // <hyokyung 2007.02.27. 09:31:25>
                             delete[]print_rep; print_rep = 0;
-                        }
-                        else {
-			print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                            DBG(cerr << "print_rep=" << print_rep << endl);
-                            attr_table_ptr->
-                                append_attr(GET_NAME(attr_inst.name),
-                                            print_type(ty_id), print_rep);
-
-			    // <hyokyung 2007.06. 4. 15:47:21>
-                            tempvalue = tempvalue + elesize;
-                            delete[]print_rep; print_rep = 0;
-                        }
                     }           // for (int sizeindex = 0; ...
                 }               // for (int dim = 0; ...
             }			// if attr_inst.ndims != 0
