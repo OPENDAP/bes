@@ -2,16 +2,16 @@
 /// \file h5dds.cc
 /// \brief DDS/DODS request processing source
 ///
-/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
+/// This file is part of h5_dap_handler, a C++ implementation of the DAP handler
 /// for HDF5 data.
 ///
-/// This file contains functions which uses depth-first search to walk through
-/// a hdf5 file and build the in-memeory DDS.
+/// This file contains functions which use depth-first search to walk through
+/// an hdf5 file and build the in-memeory DDS.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-/// \author Muqun Yang <ymuqun@hdfgroup.org>
+/// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (c) 2007 HDF Group
+/// Copyright (c) 2007 The HDF Group
 ///
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
@@ -55,19 +55,20 @@ static DS_t dt_inst;
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
 ///
-/// This function will walk through hdf5 group and using depth-first approach to
-/// obtain data information(data type and data pattern) of all hdf5 dataset and
-/// put it into dds table.
+/// This function will walk through hdf5 \a gname group
+/// using depth-first approach toobtain data information
+/// (data type and data pattern) of all hdf5 datasets and then
+/// put them into dds table.
 ///
 /// \param pid group id
-/// \param gname group name(absolute name from root group).
-/// \param dds reference of DDS object.
-/// \param fname file name.
+/// \param gname group name (absolute name from root group)
+/// \param dds reference of DDS object
+/// \param fname file name
 ///
 /// \return 0, if failed.
 /// \return 1, if succeeded.
 ///
-/// \remarks hard link is treated as a dataset at hdf5. 
+/// \remarks hard link is treated as a dataset.
 /// \remarks will return error message to the DAP interface.
 /// \see depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
 ////////////////////////////////////////////////////////////////////////////////
@@ -189,8 +190,6 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 ///
 /// \return string
 /// \param type datatype id
-/// \todo Check with DODS datatype: BYTE - 8bit INT16 - 16 bits
-//        <hyokyung 2007.02.20. 10:23:02>
 ////////////////////////////////////////////////////////////////////////////////
 string return_type(hid_t type)
 {
@@ -253,8 +252,8 @@ string return_type(hid_t type)
 /// \fn Get_bt(string varname, hid_t datatype, const HDF5TypeFactory &factory)
 /// returns the pointer of base type
 ///
-/// This function will create a new DODS object that corresponds with HDF5
-/// dataset and return pointer of a new object of DODS datatype. If an error
+/// This function will create a new DODS object that corresponds to HDF5
+/// dataset and return a pointer of a new object of DODS datatype. If an error
 /// is found, an exception of type InternalErr is thrown. 
 ///
 /// \param varname object name
@@ -333,7 +332,7 @@ static BaseType *Get_bt(const string &varname,
 	      try {
 		  DBG(cerr << "=Get_bt() H5T_ARRAY datatype = " << datatype << endl);
 
-		  // Get the array's base datatype
+		  // Get the array's base datatype.
 		  hid_t dtype_base = H5Tget_super(datatype);
 		  ar_bt = Get_bt(vname, dataset, dtype_base);
 		  btp = new HDF5Array(vname, dataset, ar_bt);
@@ -396,8 +395,6 @@ static BaseType *Get_bt(const string &varname,
     switch (btp->type()) {
 
       case dods_byte_c: {
-	  // dt_inst is a global struct! This is not right. <hyokyung
-	  // 2007.02.20. 10:36:05> 
 	  HDF5Byte &v = dynamic_cast < HDF5Byte & >(*btp);
 	  v.set_did(dt_inst.dset);
 	  v.set_tid(dt_inst.type);
@@ -447,6 +444,7 @@ static BaseType *Get_bt(const string &varname,
       }
       case dods_array_c:
 	break;
+	
       case dods_url_c: {
 	  HDF5Url &v = dynamic_cast < HDF5Url & >(*btp);
 	  v.set_did(dt_inst.dset);
@@ -467,7 +465,7 @@ static BaseType *Get_bt(const string &varname,
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn Get_structure(string varname, hid_t datatype)
-/// returns the pointer of structure type. An exception is thrown if an error
+/// returns a pointer of structure type. An exception is thrown if an error
 /// is encountered.
 /// 
 /// This function will create a new DODS object that corresponds to HDF5
@@ -569,7 +567,7 @@ static void process_grid(const H5GridFlag_t check_grid,
     hid_t attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
 					       "HDF5_DIMENSIONNAMELIST",
 					       "OLD_HDF5_DIMENSIONNAMELIST");
-    hid_t temp_dtype = H5Aget_type(attr_id);
+    hid_t temp_dtype  = H5Aget_type(attr_id);
     size_t temp_tsize = H5Tget_size(temp_dtype);
     hid_t temp_dspace = H5Aget_space(attr_id);
     hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
@@ -697,9 +695,10 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 	for (unsigned int j = 0; j < temp_nelm; j++) {
 	    dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
 	}
+	
+	// Is there a way to know the size of dimension name in advance? 
+	char buf2[DODS_NAMELEN];
 
-	char buf2[DODS_NAMELEN];    // Is there a way to know the size of
-	// dimension name in advance? 
 	for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
 	    H5Iget_name(dimid[dim_index], (char *) buf2, DODS_NAMELEN);
 	    DBG(cerr << "name: " << buf2 << endl);
@@ -795,17 +794,7 @@ static void process_grid_nasa_eos(const string &varname,
 
 	    gr->add_var(ar, maps);
 	    delete ar; ar = 0;
-#ifdef CF
-	    // Add the shared dimension data.
-	    if (!eos.is_shared_dimension_set()) {
-		bt = new HDF5Float32(str_dim_full_name, gr->dataset());
-		ar = new HDF5ArrayEOS(str_dim_full_name, gr->dataset(), bt);
-		delete bt; bt = 0;
-		ar->append_dim(dim_size, str_dim_full_name);
-		dds_table.add_var(ar);
-		delete ar; ar = 0;
-	    }
-#endif
+	    
 	}
 	catch (...) {
 	    if( bt ) delete bt;
@@ -815,8 +804,30 @@ static void process_grid_nasa_eos(const string &varname,
     }
 
 #ifdef CF
-    // Set the flag for "shared dimension" true.
+  // Add all shared dimension data.
+  if (!eos.is_shared_dimension_set()) {
+
+    int j;
+    BaseType *bt = 0;
+    Array *ar = 0;    
+    vector < string > dimension_names;
+    eos.get_all_dimensions(dimension_names);
+
+    for(j=0; j < dimension_names.size(); j++){
+      int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
+      string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+      bt = new HDF5Float32(str_cf_name, gr->dataset());
+      ar = new HDF5ArrayEOS(str_cf_name,gr->dataset(), bt);
+
+      ar->add_var(bt);
+      delete bt; bt = 0;
+      ar->append_dim(shared_dim_size, str_cf_name);
+      dds_table.add_var(ar);
+      delete ar; ar = 0;
+      // Set the flag for "shared dimension" true.
+    }
     eos.set_shared_dimension();
+  }    
 #endif
 }
 
