@@ -1,6 +1,13 @@
 
 	$Id$
 
+News for version 1.2.3.a
+
+Bug fix release for generating wrong shared dimension values 
+when you browse different OMI data products under Hyrax.
+
+Updates for the newest BES features.
+
 News for version 1.2.3
 
 When built using the --enable-cf and --enable-short-path, the handler was
