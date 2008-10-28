@@ -1,8 +1,8 @@
 
 Updated for version 1.2.3
 
-This file includes describes the HDF5 DAP server developed by THG and
-OPeNDAP under a grant from NASA.
+This file includes describes the HDF5 DAP server developed by 
+The HDF Group and OPeNDAP under a grant from NASA.
 
 For information about building the OPeNDAP HDF5 Data Handler, see the
 INSTALL. This handler can support existing visualization clients like ferret
