@@ -337,7 +337,7 @@ DODS_URL.add_dods_var(org_opendap_u);
 </script>
 <b><input type="checkbox" name="get_org_opendap_u"
 onclick="org_opendap_u.handle_projection_change(get_org_opendap_u) "  onfocus="describe_projection()">
-<font size="+1">u</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
+<font size="+1">u</font></b>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]<br>
 
 time_a:<input type="text" name="org_opendap_u_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
 <script type="text/javascript">
@@ -383,7 +383,7 @@ DODS_URL.add_dods_var(org_opendap_v);
 </script>
 <b><input type="checkbox" name="get_org_opendap_v"
 onclick="org_opendap_v.handle_projection_change(get_org_opendap_v) "  onfocus="describe_projection()">
-<font size="+1">v</font>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]</b><br>
+<font size="+1">v</font></b>: Array of 16 bit Integers [time_a = 0..15][lat = 0..16][lon = 0..20]<br>
 
 time_a:<input type="text" name="org_opendap_v_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
 <script type="text/javascript">
@@ -426,7 +426,7 @@ DODS_URL.add_dods_var(org_opendap_lat);
 </script>
 <b><input type="checkbox" name="get_org_opendap_lat"
 onclick="org_opendap_lat.handle_projection_change(get_org_opendap_lat) "  onfocus="describe_projection()">
-<font size="+1">lat</font>: Array of 32 bit Reals [lat = 0..16]</b><br>
+<font size="+1">lat</font></b>: Array of 32 bit Reals [lat = 0..16]<br>
 
 lat:<input type="text" name="org_opendap_lat_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
 <script type="text/javascript">
@@ -453,7 +453,7 @@ DODS_URL.add_dods_var(org_opendap_lon);
 </script>
 <b><input type="checkbox" name="get_org_opendap_lon"
 onclick="org_opendap_lon.handle_projection_change(get_org_opendap_lon) "  onfocus="describe_projection()">
-<font size="+1">lon</font>: Array of 32 bit Reals [lon = 0..20]</b><br>
+<font size="+1">lon</font></b>: Array of 32 bit Reals [lon = 0..20]<br>
 
 lon:<input type="text" name="org_opendap_lon_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
 <script type="text/javascript">
@@ -480,7 +480,7 @@ DODS_URL.add_dods_var(org_opendap_time);
 </script>
 <b><input type="checkbox" name="get_org_opendap_time"
 onclick="org_opendap_time.handle_projection_change(get_org_opendap_time) "  onfocus="describe_projection()">
-<font size="+1">time</font>: Array of 32 bit Reals [time = 0..15]</b><br>
+<font size="+1">time</font></b>: Array of 32 bit Reals [time = 0..15]<br>
 
 time:<input type="text" name="org_opendap_time_0" size=8 onfocus="describe_index()" onChange="DODS_URL.update_url()">
 <script type="text/javascript">

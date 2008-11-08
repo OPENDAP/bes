@@ -338,15 +338,15 @@ DODS_Date.year_day_variable: GSO_AVHRR.day_num
 <dl><dd>
 <script type="text/javascript">
 <!--
-org_opendap_satellite = new dods_var("satellite", "org_opendap_satellite", 0);
-DODS_URL.add_dods_var(org_opendap_satellite);
+org_opendap_GSO_AVHRR_satellite = new dods_var("GSO_AVHRR.satellite", "org_opendap_GSO_AVHRR_satellite", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_satellite);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_satellite"
-onclick="org_opendap_satellite.handle_projection_change(get_org_opendap_satellite) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_satellite"
+onclick="org_opendap_GSO_AVHRR_satellite.handle_projection_change(get_org_opendap_GSO_AVHRR_satellite) "  onfocus="describe_projection()">
 <font size="+1">satellite</font>: string</b><br>
 
-satellite <select name="org_opendap_satellite_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+satellite <select name="org_opendap_GSO_AVHRR_satellite_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -355,21 +355,21 @@ satellite <select name="org_opendap_satellite_operator" onfocus="describe_operat
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_satellite_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_satellite_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_year = new dods_var("year", "org_opendap_year", 0);
-DODS_URL.add_dods_var(org_opendap_year);
+org_opendap_GSO_AVHRR_year = new dods_var("GSO_AVHRR.year", "org_opendap_GSO_AVHRR_year", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_year);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_year"
-onclick="org_opendap_year.handle_projection_change(get_org_opendap_year) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_year"
+onclick="org_opendap_GSO_AVHRR_year.handle_projection_change(get_org_opendap_GSO_AVHRR_year) "  onfocus="describe_projection()">
 <font size="+1">year</font>: 32 bit Integer</b><br>
 
-year <select name="org_opendap_year_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+year <select name="org_opendap_GSO_AVHRR_year_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -378,21 +378,21 @@ year <select name="org_opendap_year_operator" onfocus="describe_operator()" onch
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_year_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_year_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_day_num = new dods_var("day_num", "org_opendap_day_num", 0);
-DODS_URL.add_dods_var(org_opendap_day_num);
+org_opendap_GSO_AVHRR_day_num = new dods_var("GSO_AVHRR.day_num", "org_opendap_GSO_AVHRR_day_num", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_day_num);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_day_num"
-onclick="org_opendap_day_num.handle_projection_change(get_org_opendap_day_num) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_day_num"
+onclick="org_opendap_GSO_AVHRR_day_num.handle_projection_change(get_org_opendap_GSO_AVHRR_day_num) "  onfocus="describe_projection()">
 <font size="+1">day_num</font>: 32 bit Integer</b><br>
 
-day_num <select name="org_opendap_day_num_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+day_num <select name="org_opendap_GSO_AVHRR_day_num_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -401,21 +401,21 @@ day_num <select name="org_opendap_day_num_operator" onfocus="describe_operator()
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_day_num_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_day_num_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_hh = new dods_var("hh", "org_opendap_hh", 0);
-DODS_URL.add_dods_var(org_opendap_hh);
+org_opendap_GSO_AVHRR_hh = new dods_var("GSO_AVHRR.hh", "org_opendap_GSO_AVHRR_hh", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_hh);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_hh"
-onclick="org_opendap_hh.handle_projection_change(get_org_opendap_hh) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_hh"
+onclick="org_opendap_GSO_AVHRR_hh.handle_projection_change(get_org_opendap_GSO_AVHRR_hh) "  onfocus="describe_projection()">
 <font size="+1">hh</font>: 32 bit Integer</b><br>
 
-hh <select name="org_opendap_hh_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+hh <select name="org_opendap_GSO_AVHRR_hh_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -424,21 +424,21 @@ hh <select name="org_opendap_hh_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_hh_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_hh_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_mm = new dods_var("mm", "org_opendap_mm", 0);
-DODS_URL.add_dods_var(org_opendap_mm);
+org_opendap_GSO_AVHRR_mm = new dods_var("GSO_AVHRR.mm", "org_opendap_GSO_AVHRR_mm", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_mm);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_mm"
-onclick="org_opendap_mm.handle_projection_change(get_org_opendap_mm) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_mm"
+onclick="org_opendap_GSO_AVHRR_mm.handle_projection_change(get_org_opendap_GSO_AVHRR_mm) "  onfocus="describe_projection()">
 <font size="+1">mm</font>: 32 bit Integer</b><br>
 
-mm <select name="org_opendap_mm_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+mm <select name="org_opendap_GSO_AVHRR_mm_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -447,21 +447,21 @@ mm <select name="org_opendap_mm_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_mm_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_mm_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_ss = new dods_var("ss", "org_opendap_ss", 0);
-DODS_URL.add_dods_var(org_opendap_ss);
+org_opendap_GSO_AVHRR_ss = new dods_var("GSO_AVHRR.ss", "org_opendap_GSO_AVHRR_ss", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_ss);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_ss"
-onclick="org_opendap_ss.handle_projection_change(get_org_opendap_ss) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_ss"
+onclick="org_opendap_GSO_AVHRR_ss.handle_projection_change(get_org_opendap_GSO_AVHRR_ss) "  onfocus="describe_projection()">
 <font size="+1">ss</font>: 32 bit Integer</b><br>
 
-ss <select name="org_opendap_ss_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+ss <select name="org_opendap_GSO_AVHRR_ss_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -470,21 +470,21 @@ ss <select name="org_opendap_ss_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_ss_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_ss_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_DODS_URL = new dods_var("DODS_URL", "org_opendap_DODS_URL", 0);
-DODS_URL.add_dods_var(org_opendap_DODS_URL);
+org_opendap_GSO_AVHRR_DODS_URL = new dods_var("GSO_AVHRR.DODS_URL", "org_opendap_GSO_AVHRR_DODS_URL", 0);
+DODS_URL.add_dods_var(org_opendap_GSO_AVHRR_DODS_URL);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_DODS_URL"
-onclick="org_opendap_DODS_URL.handle_projection_change(get_org_opendap_DODS_URL) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_GSO_AVHRR_DODS_URL"
+onclick="org_opendap_GSO_AVHRR_DODS_URL.handle_projection_change(get_org_opendap_GSO_AVHRR_DODS_URL) "  onfocus="describe_projection()">
 <font size="+1">DODS_URL</font>: string</b><br>
 
-DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+DODS_URL <select name="org_opendap_GSO_AVHRR_DODS_URL_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -493,7 +493,7 @@ DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_DODS_URL_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_GSO_AVHRR_DODS_URL_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>

@@ -332,15 +332,15 @@ FF_GLOBAL.text: Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    
 <dl><dd>
 <script type="text/javascript">
 <!--
-org_opendap_Time = new dods_var("Time", "org_opendap_Time", 0);
-DODS_URL.add_dods_var(org_opendap_Time);
+org_opendap_URI_GSO_Dock_Time = new dods_var("URI_GSO-Dock.Time", "org_opendap_URI_GSO_Dock_Time", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Time);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Time"
-onclick="org_opendap_Time.handle_projection_change(get_org_opendap_Time) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Time"
+onclick="org_opendap_URI_GSO_Dock_Time.handle_projection_change(get_org_opendap_URI_GSO_Dock_Time) "  onfocus="describe_projection()">
 <font size="+1">Time</font>: 64 bit Real</b><br>
 
-Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Time <select name="org_opendap_URI_GSO_Dock_Time_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -349,21 +349,21 @@ Time <select name="org_opendap_Time_operator" onfocus="describe_operator()" onch
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Time_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Time_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Depth = new dods_var("Depth", "org_opendap_Depth", 0);
-DODS_URL.add_dods_var(org_opendap_Depth);
+org_opendap_URI_GSO_Dock_Depth = new dods_var("URI_GSO-Dock.Depth", "org_opendap_URI_GSO_Dock_Depth", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Depth);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Depth"
-onclick="org_opendap_Depth.handle_projection_change(get_org_opendap_Depth) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Depth"
+onclick="org_opendap_URI_GSO_Dock_Depth.handle_projection_change(get_org_opendap_URI_GSO_Dock_Depth) "  onfocus="describe_projection()">
 <font size="+1">Depth</font>: 32 bit Real</b><br>
 
-Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Depth <select name="org_opendap_URI_GSO_Dock_Depth_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -372,21 +372,21 @@ Depth <select name="org_opendap_Depth_operator" onfocus="describe_operator()" on
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Depth_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Depth_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Sea_Temp = new dods_var("Sea_Temp", "org_opendap_Sea_Temp", 0);
-DODS_URL.add_dods_var(org_opendap_Sea_Temp);
+org_opendap_URI_GSO_Dock_Sea_Temp = new dods_var("URI_GSO-Dock.Sea_Temp", "org_opendap_URI_GSO_Dock_Sea_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Sea_Temp);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Sea_Temp"
-onclick="org_opendap_Sea_Temp.handle_projection_change(get_org_opendap_Sea_Temp) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Sea_Temp"
+onclick="org_opendap_URI_GSO_Dock_Sea_Temp.handle_projection_change(get_org_opendap_URI_GSO_Dock_Sea_Temp) "  onfocus="describe_projection()">
 <font size="+1">Sea_Temp</font>: 32 bit Real</b><br>
 
-Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Sea_Temp <select name="org_opendap_URI_GSO_Dock_Sea_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -395,21 +395,21 @@ Sea_Temp <select name="org_opendap_Sea_Temp_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Sea_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Sea_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Salinity = new dods_var("Salinity", "org_opendap_Salinity", 0);
-DODS_URL.add_dods_var(org_opendap_Salinity);
+org_opendap_URI_GSO_Dock_Salinity = new dods_var("URI_GSO-Dock.Salinity", "org_opendap_URI_GSO_Dock_Salinity", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Salinity);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Salinity"
-onclick="org_opendap_Salinity.handle_projection_change(get_org_opendap_Salinity) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Salinity"
+onclick="org_opendap_URI_GSO_Dock_Salinity.handle_projection_change(get_org_opendap_URI_GSO_Dock_Salinity) "  onfocus="describe_projection()">
 <font size="+1">Salinity</font>: 32 bit Real</b><br>
 
-Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Salinity <select name="org_opendap_URI_GSO_Dock_Salinity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -418,21 +418,21 @@ Salinity <select name="org_opendap_Salinity_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Salinity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Salinity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_DO_ = new dods_var("DO%20", "org_opendap_DO_", 0);
-DODS_URL.add_dods_var(org_opendap_DO_);
+org_opendap_URI_GSO_Dock_DO_ = new dods_var("URI_GSO-Dock.DO%20", "org_opendap_URI_GSO_Dock_DO_", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_DO_);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_DO_"
-onclick="org_opendap_DO_.handle_projection_change(get_org_opendap_DO_) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_DO_"
+onclick="org_opendap_URI_GSO_Dock_DO_.handle_projection_change(get_org_opendap_URI_GSO_Dock_DO_) "  onfocus="describe_projection()">
 <font size="+1">DO </font>: 32 bit Real</b><br>
 
-DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+DO  <select name="org_opendap_URI_GSO_Dock_DO__operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -441,21 +441,21 @@ DO  <select name="org_opendap_DO__operator" onfocus="describe_operator()" onchan
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_DO__selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_DO__selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_pH = new dods_var("pH", "org_opendap_pH", 0);
-DODS_URL.add_dods_var(org_opendap_pH);
+org_opendap_URI_GSO_Dock_pH = new dods_var("URI_GSO-Dock.pH", "org_opendap_URI_GSO_Dock_pH", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_pH);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_pH"
-onclick="org_opendap_pH.handle_projection_change(get_org_opendap_pH) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_pH"
+onclick="org_opendap_URI_GSO_Dock_pH.handle_projection_change(get_org_opendap_URI_GSO_Dock_pH) "  onfocus="describe_projection()">
 <font size="+1">pH</font>: 32 bit Real</b><br>
 
-pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+pH <select name="org_opendap_URI_GSO_Dock_pH_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -464,21 +464,21 @@ pH <select name="org_opendap_pH_operator" onfocus="describe_operator()" onchange
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_pH_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_pH_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Turbidity = new dods_var("Turbidity", "org_opendap_Turbidity", 0);
-DODS_URL.add_dods_var(org_opendap_Turbidity);
+org_opendap_URI_GSO_Dock_Turbidity = new dods_var("URI_GSO-Dock.Turbidity", "org_opendap_URI_GSO_Dock_Turbidity", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Turbidity);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Turbidity"
-onclick="org_opendap_Turbidity.handle_projection_change(get_org_opendap_Turbidity) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Turbidity"
+onclick="org_opendap_URI_GSO_Dock_Turbidity.handle_projection_change(get_org_opendap_URI_GSO_Dock_Turbidity) "  onfocus="describe_projection()">
 <font size="+1">Turbidity</font>: 32 bit Real</b><br>
 
-Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Turbidity <select name="org_opendap_URI_GSO_Dock_Turbidity_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -487,21 +487,21 @@ Turbidity <select name="org_opendap_Turbidity_operator" onfocus="describe_operat
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Turbidity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Turbidity_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Air_Temp = new dods_var("Air_Temp", "org_opendap_Air_Temp", 0);
-DODS_URL.add_dods_var(org_opendap_Air_Temp);
+org_opendap_URI_GSO_Dock_Air_Temp = new dods_var("URI_GSO-Dock.Air_Temp", "org_opendap_URI_GSO_Dock_Air_Temp", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Air_Temp);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Air_Temp"
-onclick="org_opendap_Air_Temp.handle_projection_change(get_org_opendap_Air_Temp) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Air_Temp"
+onclick="org_opendap_URI_GSO_Dock_Air_Temp.handle_projection_change(get_org_opendap_URI_GSO_Dock_Air_Temp) "  onfocus="describe_projection()">
 <font size="+1">Air_Temp</font>: 32 bit Real</b><br>
 
-Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Air_Temp <select name="org_opendap_URI_GSO_Dock_Air_Temp_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -510,21 +510,21 @@ Air_Temp <select name="org_opendap_Air_Temp_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Air_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Air_Temp_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Wind_Speed = new dods_var("Wind_Speed", "org_opendap_Wind_Speed", 0);
-DODS_URL.add_dods_var(org_opendap_Wind_Speed);
+org_opendap_URI_GSO_Dock_Wind_Speed = new dods_var("URI_GSO-Dock.Wind_Speed", "org_opendap_URI_GSO_Dock_Wind_Speed", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Wind_Speed);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Wind_Speed"
-onclick="org_opendap_Wind_Speed.handle_projection_change(get_org_opendap_Wind_Speed) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Wind_Speed"
+onclick="org_opendap_URI_GSO_Dock_Wind_Speed.handle_projection_change(get_org_opendap_URI_GSO_Dock_Wind_Speed) "  onfocus="describe_projection()">
 <font size="+1">Wind_Speed</font>: 32 bit Real</b><br>
 
-Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Wind_Speed <select name="org_opendap_URI_GSO_Dock_Wind_Speed_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -533,21 +533,21 @@ Wind_Speed <select name="org_opendap_Wind_Speed_operator" onfocus="describe_oper
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Wind_Speed_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Wind_Speed_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Wind_Direction = new dods_var("Wind_Direction", "org_opendap_Wind_Direction", 0);
-DODS_URL.add_dods_var(org_opendap_Wind_Direction);
+org_opendap_URI_GSO_Dock_Wind_Direction = new dods_var("URI_GSO-Dock.Wind_Direction", "org_opendap_URI_GSO_Dock_Wind_Direction", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Wind_Direction);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Wind_Direction"
-onclick="org_opendap_Wind_Direction.handle_projection_change(get_org_opendap_Wind_Direction) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Wind_Direction"
+onclick="org_opendap_URI_GSO_Dock_Wind_Direction.handle_projection_change(get_org_opendap_URI_GSO_Dock_Wind_Direction) "  onfocus="describe_projection()">
 <font size="+1">Wind_Direction</font>: 32 bit Real</b><br>
 
-Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Wind_Direction <select name="org_opendap_URI_GSO_Dock_Wind_Direction_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -556,21 +556,21 @@ Wind_Direction <select name="org_opendap_Wind_Direction_operator" onfocus="descr
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Wind_Direction_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Wind_Direction_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Barometric_Pres = new dods_var("Barometric_Pres", "org_opendap_Barometric_Pres", 0);
-DODS_URL.add_dods_var(org_opendap_Barometric_Pres);
+org_opendap_URI_GSO_Dock_Barometric_Pres = new dods_var("URI_GSO-Dock.Barometric_Pres", "org_opendap_URI_GSO_Dock_Barometric_Pres", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Barometric_Pres);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Barometric_Pres"
-onclick="org_opendap_Barometric_Pres.handle_projection_change(get_org_opendap_Barometric_Pres) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Barometric_Pres"
+onclick="org_opendap_URI_GSO_Dock_Barometric_Pres.handle_projection_change(get_org_opendap_URI_GSO_Dock_Barometric_Pres) "  onfocus="describe_projection()">
 <font size="+1">Barometric_Pres</font>: 32 bit Real</b><br>
 
-Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Barometric_Pres <select name="org_opendap_URI_GSO_Dock_Barometric_Pres_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -579,21 +579,21 @@ Barometric_Pres <select name="org_opendap_Barometric_Pres_operator" onfocus="des
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Barometric_Pres_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Barometric_Pres_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_Solar_Radiation = new dods_var("Solar_Radiation", "org_opendap_Solar_Radiation", 0);
-DODS_URL.add_dods_var(org_opendap_Solar_Radiation);
+org_opendap_URI_GSO_Dock_Solar_Radiation = new dods_var("URI_GSO-Dock.Solar_Radiation", "org_opendap_URI_GSO_Dock_Solar_Radiation", 0);
+DODS_URL.add_dods_var(org_opendap_URI_GSO_Dock_Solar_Radiation);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_Solar_Radiation"
-onclick="org_opendap_Solar_Radiation.handle_projection_change(get_org_opendap_Solar_Radiation) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_GSO_Dock_Solar_Radiation"
+onclick="org_opendap_URI_GSO_Dock_Solar_Radiation.handle_projection_change(get_org_opendap_URI_GSO_Dock_Solar_Radiation) "  onfocus="describe_projection()">
 <font size="+1">Solar_Radiation</font>: 32 bit Real</b><br>
 
-Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+Solar_Radiation <select name="org_opendap_URI_GSO_Dock_Solar_Radiation_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -602,7 +602,7 @@ Solar_Radiation <select name="org_opendap_Solar_Radiation_operator" onfocus="des
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_Solar_Radiation_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_GSO_Dock_Solar_Radiation_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>

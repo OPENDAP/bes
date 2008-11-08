@@ -354,15 +354,15 @@ DODS_Date_Time.gmt_time: true
 <dl><dd>
 <script type="text/javascript">
 <!--
-org_opendap_year = new dods_var("year", "org_opendap_year", 0);
-DODS_URL.add_dods_var(org_opendap_year);
+org_opendap_URI_Avhrr_year = new dods_var("URI_Avhrr.year", "org_opendap_URI_Avhrr_year", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_year);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_year"
-onclick="org_opendap_year.handle_projection_change(get_org_opendap_year) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_year"
+onclick="org_opendap_URI_Avhrr_year.handle_projection_change(get_org_opendap_URI_Avhrr_year) "  onfocus="describe_projection()">
 <font size="+1">year</font>: 32 bit Integer</b><br>
 
-year <select name="org_opendap_year_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+year <select name="org_opendap_URI_Avhrr_year_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -371,21 +371,21 @@ year <select name="org_opendap_year_operator" onfocus="describe_operator()" onch
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_year_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_year_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_month = new dods_var("month", "org_opendap_month", 0);
-DODS_URL.add_dods_var(org_opendap_month);
+org_opendap_URI_Avhrr_month = new dods_var("URI_Avhrr.month", "org_opendap_URI_Avhrr_month", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_month);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_month"
-onclick="org_opendap_month.handle_projection_change(get_org_opendap_month) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_month"
+onclick="org_opendap_URI_Avhrr_month.handle_projection_change(get_org_opendap_URI_Avhrr_month) "  onfocus="describe_projection()">
 <font size="+1">month</font>: 32 bit Integer</b><br>
 
-month <select name="org_opendap_month_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+month <select name="org_opendap_URI_Avhrr_month_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -394,21 +394,21 @@ month <select name="org_opendap_month_operator" onfocus="describe_operator()" on
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_month_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_month_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_day = new dods_var("day", "org_opendap_day", 0);
-DODS_URL.add_dods_var(org_opendap_day);
+org_opendap_URI_Avhrr_day = new dods_var("URI_Avhrr.day", "org_opendap_URI_Avhrr_day", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_day);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_day"
-onclick="org_opendap_day.handle_projection_change(get_org_opendap_day) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_day"
+onclick="org_opendap_URI_Avhrr_day.handle_projection_change(get_org_opendap_URI_Avhrr_day) "  onfocus="describe_projection()">
 <font size="+1">day</font>: 32 bit Integer</b><br>
 
-day <select name="org_opendap_day_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+day <select name="org_opendap_URI_Avhrr_day_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -417,21 +417,21 @@ day <select name="org_opendap_day_operator" onfocus="describe_operator()" onchan
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_day_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_day_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_hours = new dods_var("hours", "org_opendap_hours", 0);
-DODS_URL.add_dods_var(org_opendap_hours);
+org_opendap_URI_Avhrr_hours = new dods_var("URI_Avhrr.hours", "org_opendap_URI_Avhrr_hours", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_hours);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_hours"
-onclick="org_opendap_hours.handle_projection_change(get_org_opendap_hours) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_hours"
+onclick="org_opendap_URI_Avhrr_hours.handle_projection_change(get_org_opendap_URI_Avhrr_hours) "  onfocus="describe_projection()">
 <font size="+1">hours</font>: 32 bit Integer</b><br>
 
-hours <select name="org_opendap_hours_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+hours <select name="org_opendap_URI_Avhrr_hours_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -440,21 +440,21 @@ hours <select name="org_opendap_hours_operator" onfocus="describe_operator()" on
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_hours_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_hours_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_minutes = new dods_var("minutes", "org_opendap_minutes", 0);
-DODS_URL.add_dods_var(org_opendap_minutes);
+org_opendap_URI_Avhrr_minutes = new dods_var("URI_Avhrr.minutes", "org_opendap_URI_Avhrr_minutes", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_minutes);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_minutes"
-onclick="org_opendap_minutes.handle_projection_change(get_org_opendap_minutes) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_minutes"
+onclick="org_opendap_URI_Avhrr_minutes.handle_projection_change(get_org_opendap_URI_Avhrr_minutes) "  onfocus="describe_projection()">
 <font size="+1">minutes</font>: 32 bit Integer</b><br>
 
-minutes <select name="org_opendap_minutes_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+minutes <select name="org_opendap_URI_Avhrr_minutes_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -463,21 +463,21 @@ minutes <select name="org_opendap_minutes_operator" onfocus="describe_operator()
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_minutes_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_minutes_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_seconds = new dods_var("seconds", "org_opendap_seconds", 0);
-DODS_URL.add_dods_var(org_opendap_seconds);
+org_opendap_URI_Avhrr_seconds = new dods_var("URI_Avhrr.seconds", "org_opendap_URI_Avhrr_seconds", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_seconds);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_seconds"
-onclick="org_opendap_seconds.handle_projection_change(get_org_opendap_seconds) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_seconds"
+onclick="org_opendap_URI_Avhrr_seconds.handle_projection_change(get_org_opendap_URI_Avhrr_seconds) "  onfocus="describe_projection()">
 <font size="+1">seconds</font>: 32 bit Integer</b><br>
 
-seconds <select name="org_opendap_seconds_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+seconds <select name="org_opendap_URI_Avhrr_seconds_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -486,21 +486,21 @@ seconds <select name="org_opendap_seconds_operator" onfocus="describe_operator()
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_seconds_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_seconds_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
 <script type="text/javascript">
 <!--
-org_opendap_DODS_URL = new dods_var("DODS_URL", "org_opendap_DODS_URL", 0);
-DODS_URL.add_dods_var(org_opendap_DODS_URL);
+org_opendap_URI_Avhrr_DODS_URL = new dods_var("URI_Avhrr.DODS_URL", "org_opendap_URI_Avhrr_DODS_URL", 0);
+DODS_URL.add_dods_var(org_opendap_URI_Avhrr_DODS_URL);
 // -->
 </script>
-<b><input type="checkbox" name="get_org_opendap_DODS_URL"
-onclick="org_opendap_DODS_URL.handle_projection_change(get_org_opendap_DODS_URL) "  onfocus="describe_projection()">
+<b><input type="checkbox" name="get_org_opendap_URI_Avhrr_DODS_URL"
+onclick="org_opendap_URI_Avhrr_DODS_URL.handle_projection_change(get_org_opendap_URI_Avhrr_DODS_URL) "  onfocus="describe_projection()">
 <font size="+1">DODS_URL</font>: string</b><br>
 
-DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
+DODS_URL <select name="org_opendap_URI_Avhrr_DODS_URL_operator" onfocus="describe_operator()" onchange="DODS_URL.update_url()">
 <option value="=" selected>=
 <option value="!=">!=
 <option value="<"><
@@ -509,7 +509,7 @@ DODS_URL <select name="org_opendap_DODS_URL_operator" onfocus="describe_operator
 <option value=">=">>=
 <option value="-">--
 </select>
-<input type="text" name="org_opendap_DODS_URL_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
+<input type="text" name="org_opendap_URI_Avhrr_DODS_URL_selection" size=12 onFocus="describe_selection()" onChange="DODS_URL.update_url()">
 <br>
 
 <p><p>
