@@ -225,7 +225,7 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 	build_descriptions(dds, das, filename);
 
 	if (!dds.check_semantics()) {       // DDS didn't get built right
-	    dds.print(stderr);
+	    dds.print(cerr);
 	    THROW(dhdferr_ddssem);
 	}
 
@@ -260,7 +260,7 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
 	build_descriptions(dds, das, filename);
 
 	if (!dds.check_semantics()) {       // DDS didn't get built right
-	    dds.print(stdout);
+	    dds.print(cout);
 	    THROW(dhdferr_ddssem);
 	}
 
@@ -300,18 +300,49 @@ static void update_descriptions(const string & cachedir,
         if (!dds.check_semantics())     // DDS didn't get built right
             THROW(dhdferr_ddssem);
 
+
+/* I droppped this file based bit:
+
         // output DDS, DAS to cache
         FILE *ddsout = fopen(ddsfile.filename(), "w");
         if (!ddsout)
             THROW(dhdferr_ddsout);
         dds.print(ddsout);
         fclose(ddsout);
+        
+and replaced it with this: */
+
+        // output DDS to cache
+        ofstream ddsout;
+        ddsout.open (ddsfile.filename());
+        dds.print(ddsout);
+        ddsout.close();
+
+
+
+/* I droppped this file based bit:
 
         FILE *dasout = fopen(dasfile.filename(), "w");
         if (!dasout)
             THROW(dhdferr_dasout);
         das.print(dasout);
         fclose(dasout);
+
+and replaced it with this: */
+
+        
+        // output  DAS to cache
+        ofstream dasout;
+        dasout.open (dasfile.filename());
+        das.print(dasout);
+        dasout.close();
+
+        
+/* end - ndp */
+  
+        
+        
+        
     }
     return;
 }
