@@ -1,5 +1,9 @@
-set context dap_format to dap2;
-set container in catalog values c,/data/nc/fnoc1.nc;
-define d as c;
-get html_form for d using http://localhost:8080/opendap/data/nc/fnoc1.nc;
-exit
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/nc/fnoc1.nc</setContainer>
+    <define name="d">
+	<container name="c" />
+    </define>
+    <get type="html_form" definition="d" url="http://localhost:8080/opendap/data/nc/fnoc1.nc" />
+</request>

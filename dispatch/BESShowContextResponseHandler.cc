@@ -55,7 +55,7 @@ BESShowContextResponseHandler::~BESShowContextResponseHandler( )
  * list of context name/value pairs.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESContextManager
  */
@@ -81,7 +81,7 @@ BESShowContextResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESShowContextResponseHandler::transmit( BESTransmitter *transmitter,

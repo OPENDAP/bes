@@ -73,7 +73,7 @@ BESDefineResponseHandler::~BESDefineResponseHandler( )
  *
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if the store name specified does not exist
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESDefine
  * @see DefintionStorageList
@@ -129,7 +129,7 @@ BESDefineResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESDefineResponseHandler::transmit( BESTransmitter *transmitter,

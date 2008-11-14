@@ -57,7 +57,7 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler( )
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if no context name was given
  * object
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESContextManager
  */
@@ -92,7 +92,7 @@ BESSetContextResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESSetContextResponseHandler::transmit( BESTransmitter *transmitter,

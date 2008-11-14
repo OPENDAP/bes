@@ -2,88 +2,97 @@
 Current core commands available with BES:
 <UL>
     <LI>
-	show help;
+	&lt;showHelp /&gt;
 	<UL><LI>shows this help</LI></UL>
     </LI>
     <LI>
-	show version;
+	&lt;showVersion /&gt;
 	<UL><LI>shows the version of OPeNDAP and each data type served by this server</LI></UL>
     </LI>
     <LI>
-	show process;
-	<UL><LI>shows the process number of this application. This command is only abailable in developer mode.</LI></UL>
+	&lt;showProcess /&gt;
+	<UL><LI>shows the process number of this application. This command is only available in developer mode.</LI></UL>
     </LI>
     <LI>
-	show status;
+	&lt;showStatus /&gt;
 	<UL><LI>shows the status of the server</LI></UL>
     </LI>
     <LI>
-	show config;
+	&lt;showConfig /&gt;
 	<UL><LI>shows all key/value pairs defined in the bes configuration file. This command is only available in developer mode.</LI></UL>
     </LI>
     <LI>
-	show containers;
+	&lt;showContainers /&gt;
 	<UL><LI>shows all containers currently defined</LI></UL>
     </LI>
     <LI>
-	show definitions;
+	&lt;showDefinitions /&gt;
 	<UL><LI>shows all definitions currently defined</LI></UL>
     </LI>
     <LI>
-	show context;
+	&lt;showContext /&gt;
 	<UL><LI>shows all context name/value pairs set in the BES</LI></UL>
     </LI>
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
     <LI>
-	set container [in &lt;storage_name&gt;] values &lt;symbolic_name&gt;,&lt;real_name&gt;[,&lt;container_type&gt;];
+	&lt;setContainer name="container_name" space="store_name" type="data_type"&gt;real_name&lt;/setContainer&gt;
 	<UL>
 	    <LI>defines a symbolic name representing a data container, usually a file, to be used by definitions, described below</LI>
-	    <LI>&lt;storage_name&gt; is the name of the container storage.  Defaults to volatile storage. Examples might include database storage, volatile storage based on catalog information.
-	    <LI>&lt;real_name&gt; is the full qualtified location of the data container, for example the full path to a data file.</LI>
-	    <LI>&lt;container_type&gt; is the type of data that is in the file.  For netcdf files it is nc. For some container storage the data type is optional, determined by the container storage.</LI>
+	    <LI>the space property is the name of the container storage and is optional.  Defaults to default volatile storage. Examples might include database storage, volatile storage based on catalog information.
+	    <LI>real_name is the full qualtified location of the data container, for example the full path to a data file.</LI>
+	    <LI>data_type is the type of data that is in the dataset.  For netcdf files it is nc. For some container storage the data type is optional, determined by the container storage.</LI>
 	</UL>
     </LI>
     <LI>
-	set context &lt;context_name&gt; to &lt;context_value&gt;;
-	<UL><LI>set the given context with the given value. No default
-	context are used in the BES</LI></UL>
+	&lt;setContext name="context_name"&gt;context_value&lt;/setContext&gt;
+	<UL><LI>set the given context with the given value. No default context are used in the BES</LI></UL>
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
     <LI>
-	define &lt;def_name&gt; [in &lt;storage_name&gt;] as &lt;container_list&gt; [where &lt;container_x&gt;.constraint="&lt;constraint&gt;",&lt;container_x&gt;.attributes="&lt;attribute_list&gt;"] [aggregate by "&lt;aggregation_command&gt;"];
+	&lt;define name="definition_name" space="store_name"&gt;
+	<BR>
+	&nbsp;&nbsp;&nbsp;&nbsp;&lt;container name="container_name"&gt;
+	    <BR>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;constraint&gt;legal_constraint&lt;/constraint&gt;
+		<BR>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;attributes&gt;attribute_list&lt;/attributes&gt;
+		<BR>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/container&gt;
+	    <BR>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
+	    <BR>
+	&lt;/define&gt;
 	<UL>
 	    <LI>creates a definition using one or more containers, constraints for each of the containers, attributes to be retrieved from each container, and an aggregation. Constraints, attributes, and aggregation are all optional.</LI>
-	    <LI>&lt;container_list&gt; is a comma separated list of container names</LI>
-	    <LI>&lt;storage_name&gt; is the name of the definition storage.  Defaults to volatile storage. Examples might include database storage.
-	    <LI>The constraints, attributes and aggregation command must be enclosed in quotes</LI>
+	    <LI>There can be more than one container element</LI>
+	    <LI>space is the name of the definition storage.  Defaults to volatile storage. Examples might include database storage.
 	</UL>
     </LI>
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
     <LI>
-	delete container &lt;container_name&gt; [from &lt;storage_name&gt;];
+	&lt;deleteContainer name="container_name" space="store_name" /&gt;
 	<UL><LI>deletes the specified container from the specified container storage (defaults to volatile storage).</LI></UL>
     </LI>
     <LI>
-	delete containers [from &lt;storage_name&gt;];
+	&lt;deleteContainers space="store_name" /&gt;
 	<UL><LI>deletes all of the currently defined containers from the specified container storage (defaults to volatile storage).</LI></UL>
     </LI>
     <LI>
-	delete definition &lt;definition_name&gt; [from &lt;storage_name&gt;];
+	&lt;deleteDefinition name="definition_name" space="store_name" /&gt;
 	<UL><LI>deletes the specified definition from the specified container storage (defaults to volatile storage).</LI></UL>
     </LI>
     <LI>
-	delete definitions [from &lt;storage_name&gt;];
+	&lt;deleteDefinitions space="store_name" /&gt;
 	<UL><LI>deletes all of the currently defined defintions from the specified container storage (defaults to volatile storage).</LI></UL>
     </LI>
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
-    <LI>remember to terminate each command with a semicolon (;)</LI>
     <LI>For more information please contact Patrick West, <A HREF="mailto:pwest@ucar.edu">pwest@ucar.edu</A></LI>
 </UL>
 </DIV>

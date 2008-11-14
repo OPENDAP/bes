@@ -48,16 +48,16 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 {
 }
 
-/** @brief executes the command 'get ddx for &lt;def_name&gt;;'
+/** @brief executes the command 'get ddx for def_name;'
  *
- * For each container in the specified defnition go to the request
+ * For each container in the specified definition go to the request
  * handler for that container and have it first add to the OPeNDAP DDS response
- * object. Oncew the DDS object has been filled in, repeat the process but
+ * object. Once the DDS object has been filled in, repeat the process but
  * this time for the OPeNDAP DAS response object. Then add the attributes from
  * the DAS object to the DDS object.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESDDSResponse
  * @see BESDASResponse
  * @see BESRequestHandlerList
@@ -72,30 +72,21 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS( NULL, "virtual" ) ;
+
     BESDDSResponse *bdds = new BESDDSResponse( dds ) ;
     _response = bdds ;
     _response_name = DDS_RESPONSE ;
     dhi.action = DDS_RESPONSE ;
+
+    BESDEBUG( "bes", "about to set dap version to: "
+                << bdds->get_dap_client_protocol() << endl);
+    BESDEBUG( "bes", "about to set xml:base to: "
+                << bdds->get_request_xml_base() << endl);
+
+    dds->set_client_dap_version( bdds->get_dap_client_protocol() ) ;
+    dds->set_request_xml_base( bdds->get_request_xml_base() );
+
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
-
-#if 0
-    // In the handler code, it's now required that DDS objects be built with
-    // attributes included (effectively DDS == DDX). This is needed for
-    // various server-side functions and will pave the way to phase out the
-    // DDS/DAS responses as the basic building blocks in favor of the DDX.
-    // jhrg 12/20/06
-
-    // Fill the DAS
-    DAS *das = new DAS ;
-    BESDASResponse *bdas = new BESDASResponse( das ) ;
-    _response = bdas ;
-    _response_name = DAS_RESPONSE ;
-    dhi.action = DAS_RESPONSE ;
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
-
-    // Transfer the DAS to the DDS
-    dds->transfer_attributes( das ) ;
-#endif
 
     dhi.action = DDX_RESPONSE ;
     _response = bdds ;
@@ -113,7 +104,7 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see DDS
  * @see DAS
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
  BESDDXResponseHandler::transmit(BESTransmitter * transmitter,

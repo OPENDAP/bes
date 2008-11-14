@@ -57,7 +57,7 @@ BESCmdParser::~BESCmdParser()
  * @throws BESSyntaxUserError thrown if there is an error in syntax
  * @see BESTokenizer
  * @see BESResponseHandler
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESCmdParser::parse( const string &request, BESDataHandlerInterface &dhi )

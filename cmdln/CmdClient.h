@@ -81,6 +81,8 @@ private:
 
     size_t			readLine( string &str ) ;
     void			displayHelp() ;
+    void			executeCommand( const string &cmd,
+						int repeat ) ;
 public:
     				CmdClient( )
 				    : _client( 0 ),
@@ -96,9 +98,7 @@ public:
     void			shutdownClient() ;
     void			setOutput( ostream *strm, bool created ) ;
     void			executeClientCommand( const string &cmd ) ;
-    void			executeCommand( const string &cmd,
-						int repeat ) ;
-    void			executeCommands( const string &cmd_list,
+    void			executeCommands( const string &cmd,
 						 int repeat ) ;
     void			executeCommands( ifstream &inputFile,
 						 int repeat ) ;

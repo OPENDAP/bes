@@ -56,7 +56,8 @@ BESCgiInterface::BESCgiInterface( const string &type, DODSFilter &df )
       _type( type ),
       _df( &df )
 {
-    _dhi.transmit_protocol = "HTTP" ;
+    _dhi = &_cgi_dhi ;
+    _dhi->transmit_protocol = "HTTP" ;
     _transmitter = new BESFilterTransmitter( df ) ;
 }
 
@@ -74,7 +75,7 @@ BESCgiInterface::~BESCgiInterface()
     constraint, data type, dataset, and action are retrieved from the
     DODSFilter to build the request plan.
 
-    @see _BESDataHandlerInterface
+    @see BESDataHandlerInterface
     @see BESContainer
     @see DODSFilter
  */
@@ -92,12 +93,12 @@ BESCgiInterface::build_data_request_plan()
 					    _type ) ;
     d->set_constraint( _df->get_ce() ) ;
 
-    _dhi.containers.push_back( d ) ;
+    _dhi->containers.push_back( d ) ;
     string myaction = (string)"get." + _df->get_action() ; 
-    _dhi.action = myaction ;
-    _dhi.response_handler =
+    _dhi->action = myaction ;
+    _dhi->response_handler =
 	BESResponseHandlerList::TheList()->find_handler( myaction ) ;
-    if( !_dhi.response_handler )
+    if( !_dhi->response_handler )
     {
 	BESDEBUG( "bes", "Building data request plan ... FAILED" << endl )
 	string s = (string)"Improper command " + myaction ;

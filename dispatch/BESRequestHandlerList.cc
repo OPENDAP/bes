@@ -164,7 +164,7 @@ BESRequestHandlerList::get_handler_names()
  * @throws BESInternalError if any one of the request handlers does not
  * know how to fill in the specified response object or if any one of the
  * request handlers does not exist.
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESContainer
  * @see BESRequestHandler
  * @see BESResponseObject
@@ -191,7 +191,7 @@ BESRequestHandlerList::execute_each( BESDataHandlerInterface &dhi )
  *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object.
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESRequestHandler
  * @see BESResponseObject
  */
@@ -225,7 +225,7 @@ BESRequestHandlerList::execute_all( BESDataHandlerInterface &dhi )
  * @throws BESInternalError if the request handler cannot be found for the
  * first containers data type or if the request handler cannot fill in the
  * specified response object.
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESContainer
  * @see BESResponseObject
  */
@@ -248,7 +248,7 @@ BESRequestHandlerList::execute_once( BESDataHandlerInterface &dhi )
  * @throws BESInternalError if the request handler cannot be found for the
  * current containers data type or if the request handler cannot fill in the
  * specified response object.
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESContainer
  * @see BESResponseObject
  */

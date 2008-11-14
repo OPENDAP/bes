@@ -54,7 +54,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler( )
  * The response object BESInfo is created to store the information.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESRequestHandlerList
  */
@@ -90,7 +90,7 @@ BESCatalogResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,

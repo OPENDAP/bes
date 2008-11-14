@@ -54,7 +54,7 @@ BESDDSResponseHandler::~BESDDSResponseHandler( )
  * to the request handler list.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESDDSResponse
  * @see BESRequestHandlerList
  */
@@ -79,7 +79,7 @@ BESDDSResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESDDSResponse
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESDDSResponseHandler::transmit( BESTransmitter *transmitter,

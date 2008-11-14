@@ -1,63 +1,89 @@
 Current core commands available with BES:
 
-    show help;
+    <showHelp />
+
 	* shows this help
-    show version;
+
+    <showVersion />
+
 	* shows the version of OPeNDAP and each data type served by this server
-    show process;
-	* shows the process id of the bes listener this client is attached
-	  to. This command is available only in developer mode.
-    show status;
+
+    <showProcess />
+
+	* shows the process number of this application. This command is
+	  only available in developer mode.
+
+    <showStatus />
+
 	* shows the status of the server
-    show config;
+
+    <showConfig />
+
 	* shows all key/value pairs defined in the bes configuration file.
-	  This command is available only in developer mode.
-    show containers;
+	  This command is only available in developer mode.
+
+    <showContainers />
+
 	* shows all containers currently defined
-    show definitions;
+
+    <showDefinitions />
+
 	* shows all definitions currently defined
-    show context;
+
+    <showContext />
+
 	* shows all context name/value pairs set in the BES
 
-    set container [in <storage_name>] values <symbolic_name>,<real_name>,<container_type>;
+    <setContainer name="container_name" space="store_name" type="data_type">real_name</setContainer>
 
-	* defines a symbolic name representing a data container, usually a file,
-	  to be used by definitions, described below
-	* <storage_name> is the name of the container storage. Defaults to
-	  volatile storage. Examples might include database storage, volatile
-	  storage based on catalog information.
-	* <real_name> is the full path to a data file
-	* <container_type> is the type of data that is in the file. For
-	  netcdf files it is nc, for cedar it is cedar, etc...
+	* defines a symbolic name representing a data container, usually
+	  a file, to be used by definitions, described below
+	* the space property is the name of the container storage and is
+	  optional.  Defaults to default volatile storage. Examples
+	  might include database storage, volatile storage based on
+	  catalog information.
+	* real_name is the full qualtified location of the data container, for example the full path to a data file.
+	* data_type is the type of data that is in the dataset.  For netcdf files it is nc. For some container storage the data type is optional, determined by the container storage.
 
-    set context <context_name> to <context_value>;
-	* set the given context with the given value. No default context are
-	  available in the BES.
+    <setContext name="context_name">context_value</setContext>
 
-    define <def_name> [in <storage_name>] as <container_list> [where <container_x>.constraint="<constraint>",<container_x>.attributes="<attribute_list>"] [aggregate by "<aggregation_command"];
+	* set the given context with the given value. No default context
+	  are used in the BES
 
-	* creates a definition using one or more containers, constraints for
-	  each of the containers, attributes to be retrieved from each
-	  container, and an aggregation. Constraints, attributes, and
-	  aggregation are all optional.
-	* <container_list> is a comma separated list of container names.
-	* <storage_name> is the name of the definition storage. Defaults to
+    <define name="definition_name" space="store_name">
+	<container name="container_name">
+	    <constraint>legal_constraint</constraint>
+	    <attributes>attribute_list</attributes>
+	</container>
+	<aggregate handler="someHandler" cmd="someCommand" />
+    </define>
+
+	* creates a definition using one or more containers, constraints
+	  for each of the containers, attributes to be retrieved from
+	  each container, and an aggregation. Constraints, attributes,
+	  and aggregation are all optional.
+	* There can be more than one container element
+	* space is the name of the definition storage.  Defaults to
 	  volatile storage. Examples might include database storage.
-	* The constraints, attributes and aggregation command must be enclosed in quotes
 
-    delete container <container_name> [from <storage_name>];
+    <deleteContainer name="container_name" space="store_name" />
+
 	* deletes the specified container from the specified container
-	  storage (defaults to volatile storage).</LI></UL>
-    delete containers [from <storage_name>]
+	  storage (defaults to volatile storage).
+
+    <deleteContainers space="store_name" />
+
 	* deletes all of the currently defined containers from the
 	  specified container storage (defaults to volatile storage).
-    delete definition <definition_name> [from <storage_name>];
-	* deletes the specificed definition from the specified container
+
+    <deleteDefinition name="definition_name" space="store_name" />
+
+	* deletes the specified definition from the specified container
 	  storage (defaults to volatile storage).
-    delete definitions;
+
+    <deleteDefinitions space="store_name" />
+
 	* deletes all of the currently defined defintions from the
 	  specified container storage (defaults to volatile storage).
 
-    ** remember to terminate each command with a semicolon (;)
     For more information please contact Patrick West, pwest@ucar.edu
-

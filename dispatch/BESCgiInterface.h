@@ -68,7 +68,7 @@ using namespace libdap ;
 
     @see BESInterface
     @see BESContainer
-    @see _BESDataHandlerInterface
+    @see BESDataHandlerInterface
     @see DODSFilter
     @see BESFilterTransmitter
  */
@@ -77,11 +77,12 @@ class BESCgiInterface : public BESInterface
 private:
     string			_type ;
     DODSFilter *		_df ;
-    				BESCgiInterface() : BESInterface() {}
+    BESDataHandlerInterface	_cgi_dhi ;
 protected:
     virtual void		build_data_request_plan() ;
 public:
-    				BESCgiInterface( const string &type, DODSFilter &df ) ;
+    				BESCgiInterface( const string &type,
+						 DODSFilter &df ) ;
     virtual			~BESCgiInterface() ;
 
     virtual void		dump( ostream &strm ) const ;

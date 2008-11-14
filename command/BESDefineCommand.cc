@@ -62,7 +62,7 @@ BESDefineCommand::parse_options( BESTokenizer &tokens,
  *
  * define &lt;def_name&gt; as &lt;container_list&gt;
  * 
- * &nbsp;&nbsp;[where &lt;container_x&gt;.constraint="&lt;constraint&gt;"]
+ * &nbsp;&nbsp;[with &lt;container_x&gt;.constraint="&lt;constraint&gt;"]
  * 
  * &nbsp;&nbsp;[,&lt;container_x&gt;.attributes="&lt;attrs&gt;"]
  * 
@@ -88,7 +88,7 @@ BESDefineCommand::parse_options( BESTokenizer &tokens,
  * @throws BESSyntaxUserError if this method is called, as the request string
  * should have already been parsed.
  * @see BESTokenizer
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 BESResponseHandler *
 BESDefineCommand::parse_request( BESTokenizer &tokenizer,

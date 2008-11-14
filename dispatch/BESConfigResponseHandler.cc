@@ -57,7 +57,7 @@ BESConfigResponseHandler::~BESConfigResponseHandler( )
  * key: "&lt;key_name&gt;", value: "&lt;key_value&gt"
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see TheBESKeys
  */
@@ -93,7 +93,7 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESConfigResponseHandler::transmit( BESTransmitter *transmitter,

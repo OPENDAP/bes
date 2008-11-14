@@ -126,7 +126,7 @@ public:
      * response object
      * @throws BESResponseException upon fatal error building the response
      * object
-     * @see _BESDataHandlerInterface
+     * @see BESDataHandlerInterface
      * @see BESResponseObject
      */
     virtual void		execute( BESDataHandlerInterface &dhi ) = 0 ;
@@ -139,7 +139,7 @@ public:
      * @throws BESTransmitException if problem transmitting the response obj
      * @see BESResponseObject
      * @see BESTransmitter
-     * @see _BESDataHandlerInterface
+     * @see BESDataHandlerInterface
      * @see BESTransmitException
      */
     virtual void		transmit( BESTransmitter *transmitter,

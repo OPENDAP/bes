@@ -12,17 +12,3 @@
         </BESError>
     </response>
 </getAscii>
-<?xml version="1.0" encoding="UTF-8"?>
-<getDODS>
-    <response>
-        <BESError>
-            <Type>3</Type>
-            <Message>libdap exception building response: error_code = 1005: libdap error transmitting DataDDS: Wrong number of arguments to geoarray(). See geoarray() for more information.</Message>
-            <Administrator>*</Administrator>
-            <Location>
-                <File>BESDapTransmit.cc</File>
-                <Line>*</Line>
-            </Location>
-        </BESError>
-    </response>
-</getDODS>

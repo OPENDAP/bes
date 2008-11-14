@@ -1,4 +1,4 @@
-show info for "/data/nc/fnoc1.nc";
-show info for "/data/hdf4";
-show catalog for "/data/nc";
-exit
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <showInfo node="/data/nc/fnoc1.nc" />
+</request>

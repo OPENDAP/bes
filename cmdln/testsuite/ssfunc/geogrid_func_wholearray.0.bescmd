@@ -1,5 +1,11 @@
-set context dap_format to dap2;
-set container in catalog values av,/data/nc/coads_climatology.nc;
-define e as av with av.constraint="SST";
-get dds for e;
-exit
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="av" space="catalog">/data/nc/coads_climatology.nc</setContainer>
+    <define name="e">
+	<container name="av">
+	    <constraint>SST</constraint>
+	</container>
+    </define>
+    <get type="dds" definition="e" />
+</request>

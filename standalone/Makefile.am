@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/command -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/dispatch
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -20,5 +20,5 @@ bin_PROGRAMS = besstandalone
 
 besstandalone_SOURCES = StandAloneApp.cc StandAloneClient.cc \
 			StandAloneApp.h StandAloneClient.h
-besstandalone_LDADD = ../dispatch/libbes_dispatch.la ../command/libbes_command.la $(READLINE_LIBS)
-
+besstandalone_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
+besstandalone_LDADD = ../dispatch/libbes_dispatch.la ../xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)

@@ -67,6 +67,15 @@ AC_SUBST(LIB_COM_REVISION)
 LIBCOMMAND_VERSION="$LIB_COM_CURRENT:$LIB_COM_REVISION:$LIB_COM_AGE"
 AC_SUBST(LIBCOMMAND_VERSION)
 
+LIB_XML_CMD_CURRENT=1
+LIB_XML_CMD_AGE=0
+LIB_XML_CMD_REVISION=0
+AC_SUBST(LIB_XML_CMD_CURRENT)
+AC_SUBST(LIB_XML_CMD_AGE)
+AC_SUBST(LIB_XML_CMD_REVISION)
+LIBXMLCOMMAND_VERSION="$LIB_XML_CMD_CURRENT:$LIB_XML_CMD_REVISION:$LIB_XML_CMD_AGE"
+AC_SUBST(LIBXMLCOMMAND_VERSION)
+
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_MAKE_SET
@@ -120,6 +129,64 @@ if test "$vl_cv_lib_readline" = "no"; then
    AC_MSG_ERROR([I could not find the readline library!])
 fi
 
+xmlprivatereq=
+xmlprivatelibs=
+libdap_pkgconfig_libxml2=yes
+libdap_libxml2_module='libxml-2.0 >= 2.6.16'
+PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module],,
+  [libdap_pkgconfig_libxml2=no])
+AC_MSG_CHECKING([for libxml2])
+if test $libdap_pkgconfig_libxml2 = 'yes'
+then
+	xmlprivatereq=$libdap_libxml2_module
+	XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
+	AC_DEFINE(LIBXML2_5_10, [1],
+		  [define if you have xml2 2.5.10 or greater])
+	AC_DEFINE(LIBXML2_6_16, [1],
+		  [define if you have xml2 2.6.16 or greater])
+	AC_MSG_RESULT([yes; used pkg-config])
+elif xml2-config --version > /dev/null 2>&1
+then
+	version_libxml2=`xml2-config --version`
+	version_M=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
+	version_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
+	version_m_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
+	
+	dnl Test for several different versions of libxml2. We can use 2.5.7 
+	dnl or newer, but part of the SAX interface changes depending on the
+	dnl version.
+	
+	dnl First test the minimum
+	if test $version_M -lt 2 || test $version_m -lt 5 || test $version_m_m -lt 7
+	then
+		AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+	fi
+	
+	dnl Sort out the particular variant
+	if test $version_M -eq 2 && test $version_m -eq 5 && test $version_m_m -ge 10
+	then
+		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
+	fi
+	if test $version_M -eq 2 && test $version_m -eq 6 && test $version_m_m -ge 16
+	then
+		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
+		AC_DEFINE(LIBXML2_6_16, [1], [define if you have xml2 2.6.16 or greater])
+	fi
+
+	XML2_LIBS="`xml2-config --libs`"
+	XML2_STATIC_LIBS=$XML2_LIBS
+	XML2_CFLAGS="`xml2-config --cflags`"
+	xmlprivatelibs="`xml2-config --libs`"
+	AC_MSG_RESULT([yes; used xml2-config])
+else
+	AC_MSG_ERROR([I could not find libxml2])
+fi
+AC_SUBST([xmlprivatereq])
+AC_SUBST([xmlprivatelibs])
+AC_SUBST([XML2_LIBS])
+AC_SUBST([XML2_STATIC_LIBS])
+AC_SUBST([XML2_CFLAGS])
+
 SIC_VAR_SYS_ERRLIST
 
 BES_CHECK_OPENSSL
@@ -146,6 +213,64 @@ AC_ARG_ENABLE([developer],
   ]
 )
 
+xmlprivatereq=
+xmlprivatelibs=
+libdap_pkgconfig_libxml2=yes
+libdap_libxml2_module='libxml-2.0 >= 2.6.16'
+PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module],,
+  [libdap_pkgconfig_libxml2=no])
+AC_MSG_CHECKING([for libxml2])
+if test $libdap_pkgconfig_libxml2 = 'yes'
+then
+	xmlprivatereq=$libdap_libxml2_module
+	XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
+	AC_DEFINE(LIBXML2_5_10, [1],
+		  [define if you have xml2 2.5.10 or greater])
+	AC_DEFINE(LIBXML2_6_16, [1],
+		  [define if you have xml2 2.6.16 or greater])
+	AC_MSG_RESULT([yes; used pkg-config])
+elif xml2-config --version > /dev/null 2>&1
+then
+	version_libxml2=`xml2-config --version`
+	version_M=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
+	version_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
+	version_m_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
+	
+	dnl Test for several different versions of libxml2. We can use 2.5.7 
+	dnl or newer, but part of the SAX interface changes depending on the
+	dnl version.
+	
+	dnl First test the minimum
+	if test $version_M -lt 2 || test $version_m -lt 5 || test $version_m_m -lt 7
+	then
+		AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+	fi
+	
+	dnl Sort out the particular variant
+	if test $version_M -eq 2 && test $version_m -eq 5 && test $version_m_m -ge 10
+	then
+		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
+	fi
+	if test $version_M -eq 2 && test $version_m -eq 6 && test $version_m_m -ge 16
+	then
+		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
+		AC_DEFINE(LIBXML2_6_16, [1], [define if you have xml2 2.6.16 or greater])
+	fi
+
+	XML2_LIBS="`xml2-config --libs`"
+	XML2_STATIC_LIBS=$XML2_LIBS
+	XML2_CFLAGS="`xml2-config --cflags`"
+	xmlprivatelibs="`xml2-config --libs`"
+	AC_MSG_RESULT([yes; used xml2-config])
+else
+	AC_MSG_ERROR([I could not find libxml2])
+fi
+AC_SUBST([xmlprivatereq])
+AC_SUBST([xmlprivatelibs])
+AC_SUBST([XML2_LIBS])
+AC_SUBST([XML2_STATIC_LIBS])
+AC_SUBST([XML2_CFLAGS])
+
 AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
@@ -155,6 +280,8 @@ AC_CONFIG_FILES([Makefile
 		 dispatch/unit-tests/Makefile
 		 docs/Makefile
 		 command/Makefile
+		 xmlcommand/Makefile
+		 xmlcommand/unit-tests/Makefile
 		 ppt/Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile

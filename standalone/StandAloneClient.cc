@@ -79,7 +79,7 @@ extern "C" {
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
 #include "StandAloneClient.h"
 #include "BESDebug.h"
-#include "BESCmdInterface.h"
+#include "BESXMLInterface.h"
 
 StandAloneClient::~StandAloneClient()
 {
@@ -127,49 +127,78 @@ StandAloneClient::setOutput(ostream * strm, bool created)
 * client suppress;
 * client output to screen;
 * client output to &lt;filename&gt;;
+* client load &lt;filename&gt;;
 *
 * @param  cmd  The BES client side command to execute
 * @see    BESError
 */
 void
-StandAloneClient::executeClientCommand(const string & cmd)
+StandAloneClient::executeClientCommand( const string &cmd )
 {
-    string suppress = "suppress";
-    if (cmd.compare(0, suppress.length(), suppress) == 0) {
-        setOutput(NULL, false);
-    } else {
-        string output = "output to";
-        if (cmd.compare(0, output.length(), output) == 0) {
-            string subcmd = cmd.substr(output.length() + 1);
-            string screen = "screen";
-            if (subcmd.compare(0, screen.length(), screen) == 0) {
-                setOutput(&cout, false);
-            } else {
-                // subcmd is the name of the file - the semicolon
-                string file = subcmd.substr(0, subcmd.length() - 1);
-                ofstream *fstrm = new ofstream(file.c_str(), ios::app);
-                if (!(*fstrm)) {
-		    if( fstrm ) delete fstrm ;
-                    cerr << "Unable to set client output to file " << file
-                         << endl;
-                } else {
-                    setOutput(fstrm, true);
-                }
-            }
-        } else {
-            cerr << "Improper client command " << cmd << endl;
-        }
+    string suppress = "suppress" ;
+    if( cmd.compare( 0, suppress.length(), suppress ) == 0 )
+    {
+        setOutput( NULL, false ) ;
+	return ;
     }
+
+    string output = "output to" ;
+    if( cmd.compare( 0, output.length(), output ) == 0 )
+    {
+	string subcmd = cmd.substr( output.length() + 1 ) ;
+	string screen = "screen" ;
+	if( subcmd.compare( 0, screen.length(), screen ) == 0 )
+	{
+	    setOutput( &cout, false ) ;
+	}
+	else
+	{
+	    // subcmd is the name of the file - then semicolon
+	    string file = subcmd.substr( 0, subcmd.length() - 1 ) ;
+	    ofstream *fstrm = new ofstream( file.c_str(), ios::app ) ;
+	    if( !(*fstrm) )
+	    {
+		if( fstrm ) delete fstrm ;
+		cerr << "Unable to set client output to file " << file
+		     << endl ;
+	    }
+	    else
+	    {
+		setOutput( fstrm, true ) ;
+	    }
+	}
+	return ;
+    }
+
+    // load commands from an input file and run them
+    string load = "load" ;
+    if( cmd.compare( 0, load.length(), load ) == 0 )
+    {
+	string file = cmd.substr( load.length() + 1,
+				  cmd.length() - load.length() - 2 ) ;
+	ifstream fstrm( file.c_str() ) ;
+	if( !fstrm )
+	{
+	    cerr << "Unable to load commands from file " << file
+		 << ": file does not exist or failed to open file" << endl ;
+	}
+	else
+	{
+	    executeCommands( fstrm, 1 ) ;
+	}
+
+	return ;
+    }
+
+    cerr << "Improper client command " << cmd << endl ;
 }
 
-/** @brief Sends a single OpeNDAP request ending in a semicolon (;) to the
-* OpeNDAP server.
+/** @brief Sends a single OpeNDAP request to the OpeNDAP server.
 *
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd  The BES request, ending in a semicolon, that is sent to
-*              the BES server to handle.
+* @param  cmd  The BES request that is sent to the BES server to handle.
 * @param repeat Number of times to repeat the command
 * @throws BESError Thrown if there is a problem sending the request
 *                      to the server or a problem receiving the response
@@ -177,17 +206,20 @@ StandAloneClient::executeClientCommand(const string & cmd)
 * @see    BESError
 */
 void
-StandAloneClient::executeCommand(const string & cmd, int repeat )
+StandAloneClient::executeCommand( const string & cmd, int repeat )
 {
-    string client = "client";
-    if (cmd.compare(0, client.length(), client) == 0) {
-        executeClientCommand(cmd.substr(client.length() + 1));
-    } else {
+    string client = "client" ;
+    if( cmd.compare( 0, client.length(), client ) == 0 )
+    {
+        executeClientCommand( cmd.substr( client.length() + 1 ) ) ;
+    }
+    else
+    {
 	if( repeat < 1 ) repeat = 1 ;
 	for( int i = 0; i < repeat; i++ )
 	{
 	    BESDEBUG( "standalone", "cmdclient sending " << cmd << endl )
-	    BESCmdInterface interface( cmd, _strm ) ;
+	    BESXMLInterface interface( cmd, _strm ) ;
 	    int status = interface.execute_request( "standalone" ) ;
 
 	    if( status == 0 )
@@ -230,38 +262,36 @@ StandAloneClient::executeCommand(const string & cmd, int repeat )
     }
 }
 
-/** @brief Execute each of the commands in the cmd_list, separated by a * semicolon.
+/** @brief Send the command(s) specified to the BES server after wrapping in
+ * request document
+*
+* This takes a command  or set of commands from the command line, wraps it
+* in the proper request document, and sends it to the server.
 *
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd_list  The list of BES requests, separated by semicolons
-*                   and ending in a semicolon, that will be sent to the
-*                   BES server to handle, one at a time.
-* @param repeat     Number of times to repeat the list of commands
-* @throws BESError Thrown if there is a problem sending any of the
-*                      request to the server or a problem receiving any
-*                      of the responses from the server.
+* @param  cmd       The BES commands to send to the BES server
+* @param repeat     Number of times to repeat the command
+* @throws BESError  Thrown if there is a problem sending any of the
+*                   request to the server or a problem receiving any
+*                   of the responses from the server.
 * @see    BESError
 */
 void
-StandAloneClient::executeCommands(const string & cmd_list, int repeat)
+StandAloneClient::executeCommands( const string &cmd_list, int repeat )
 {
     if( repeat < 1 ) repeat = 1 ;
-    for( int i = 0; i < repeat; i++ )
-    {
-	std::string::size_type start = 0;
-	std::string::size_type end = 0;
-	while ((end = cmd_list.find(';', start)) != string::npos) {
-	    string cmd = cmd_list.substr(start, end - start + 1);
-	    executeCommand(cmd, 1);
-	    start = end + 1;
-	}
-    }
+
+    string xml_doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ;
+    xml_doc += "<request reqID=\"some_unique_value\" >\n" ;
+    xml_doc += cmd_list ;
+    xml_doc += "</request>\n" ;
+
+    executeCommand( xml_doc, 1 ) ;
 }
 
-/** @brief Sends the requests listed in the specified file to the BES server,
-* each command ending with a semicolon.
+/** @brief Sends the xml request document from the specified file to the server
 *
 * The requests do not have to be one per line but can span multiple
 * lines and there can be more than one command per line.
@@ -269,15 +299,13 @@ StandAloneClient::executeCommands(const string & cmd_list, int repeat)
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  istrm  The file holding the list of BES requests, each
-*                ending with a semicolon, that will be sent to the
-*                BES server to handle.
+* @param  istrm  The file holding the xml request document
 * @param repeat  Number of times to repeat the series of commands
                  from the file.
 * @throws BESError Thrown if there is a problem opening the file to
-*                      read, reading the requests from the file, sending
-*                      any of the requests to the server or a problem
-*                      receiving any of the responses from the server.
+*                  read, reading the request  document from the file, sending
+*                  the request document to the server or a problem
+*                  receiving any of the responses from the server.
 * @see    File
 * @see    BESError
 */
@@ -289,42 +317,15 @@ StandAloneClient::executeCommands(ifstream & istrm, int repeat)
     {
 	istrm.clear( ) ;
 	istrm.seekg( 0, ios::beg ) ;
-	string cmd;
-	bool done = false;
-	while (!done) {
-	    char line[4096];
-	    line[0] = '\0';
-	    istrm.getline(line, 4096, '\n');
-	    string nextLine = line;
-	    if (nextLine == "") {
-		if (cmd != "") {
-		    this->executeCommands(cmd, 1);
-		}
-		done = true;
-	    } else {
-		std::string::size_type i = nextLine.find_last_of(';');
-		if (i == string::npos) {
-		    if (cmd == "") {
-			cmd = nextLine;
-		    } else {
-			cmd += " " + nextLine;
-		    }
-		} else {
-		    string sub = nextLine.substr(0, i + 1);
-		    if (cmd == "") {
-			cmd = sub;
-		    } else {
-			cmd += " " + sub;
-		    }
-		    this->executeCommands(cmd, 1);
-		    if (i == nextLine.length() || i == nextLine.length() - 1) {
-			cmd = "";
-		    } else {
-			cmd = nextLine.substr(i + 1, nextLine.length());
-		    }
-		}
-	    }
+	string cmd ;
+	while( !istrm.eof() )
+	{
+	    char line[4096] ;
+	    line[0] = '\0' ;
+	    istrm.getline( line, 4096, '\n' ) ;
+	    cmd += line ;
 	}
+	this->executeCommand( cmd, 1 ) ;
     }
 }
 
@@ -348,23 +349,28 @@ StandAloneClient::interact()
 {
     cout << endl << endl
         << "Type 'exit' to exit the command line client and 'help' or '?' "
-        << "to display the help screen" << endl << endl;
+        << "to display the help screen" << endl << endl ;
 
-    bool done = false;
-    while (!done) {
-        string message = "";
-        size_t len = this->readLine(message);
-        if (len == -1 || message == "exit" || message == "exit;") {
-            done = true;
-        } else if (message == "help" || message == "help;"
-                   || message == "?") {
-            this->displayHelp();
-        } else if (len != 0 && message != "") {
-            if (message[message.length() - 1] != ';') {
-                cerr << "Commands must end with a semicolon" << endl;
-            } else {
-                this->executeCommands(message, 1);
-            }
+    bool done = false ;
+    while( !done )
+    {
+        string message = "" ;
+        size_t len = this->readLine( message ) ;
+        if( len == -1 || message == "exit" || message == "exit;" )
+	{
+            done = true ;
+        }
+	else if( message == "help" || message == "help;" || message == "?" )
+	{
+            this->displayHelp() ;
+        }
+	else if( message.length() > 6 && message.substr( 0, 6 ) == "client" )
+	{
+	    this->executeCommand( message, 1 ) ;
+	}
+	else if( len != 0 && message != "" )
+	{
+	    this->executeCommands( message, 1 ) ;
         }
     }
 }

@@ -34,8 +34,8 @@
 #define I_BESDDSResponse 1
 
 #include "BESDapResponse.h"
-#include "DDS.h"
-#include "ConstraintEvaluator.h"
+#include <DDS.h>
+#include <ConstraintEvaluator.h>
 
 using namespace libdap ;
 

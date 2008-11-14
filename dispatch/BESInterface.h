@@ -130,14 +130,26 @@ private:
     typedef list< p_bes_end >::const_iterator end_citer ;
     typedef list< p_bes_end >::iterator end_iter ;
     static list< p_bes_end > _end_list ;
+
+    ostream			*_strm ;
 protected:
-    BESDataHandlerInterface	_dhi ;
+    BESDataHandlerInterface	*_dhi ;
     BESTransmitter		*_transmitter ;
 
     virtual int			exception_manager( BESError &e ) ;
     virtual void		initialize() ;
     virtual void		validate_data_request() ;
-    virtual void		build_data_request_plan() ;
+
+    /** @brief Build the data request plan.
+
+	It is the responsibility of the derived class to build the request plan.
+	In other words, the container list must be filled in and the action set
+	in the BESDataHandlerInterface structure.
+
+	@see BESDataHandlerInterface
+     */
+    virtual void		build_data_request_plan() = 0 ;
+
     virtual void		execute_data_request_plan() ;
     virtual void		invoke_aggregation() ;
 
@@ -148,7 +160,6 @@ protected:
     virtual void		end_request() ;
     virtual void		clean() ;
 
-    				BESInterface( ) {}
     				BESInterface( ostream *strm ) ;
     virtual			~BESInterface() ;
 public:

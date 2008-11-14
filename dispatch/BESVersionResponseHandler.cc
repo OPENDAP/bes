@@ -56,7 +56,7 @@ BESVersionResponseHandler::~BESVersionResponseHandler( )
  * handlers to add their version information.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESVersionInfo
  * @see BESRequestHandlerList
  */
@@ -89,7 +89,7 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESResponseObject
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESVersionResponseHandler::transmit( BESTransmitter *transmitter,

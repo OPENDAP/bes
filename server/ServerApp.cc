@@ -61,7 +61,7 @@ using std::ofstream ;
 #include "BESServerUtils.h"
 
 #include "BESDefaultModule.h"
-#include "BESDefaultCommands.h"
+#include "BESXMLDefaultCommands.h"
 
 ServerApp::ServerApp()
     : BESModuleApp(),
@@ -86,7 +86,7 @@ ServerApp::signalTerminate( int sig )
 {
     if( sig == SIGTERM )
     {
-	BESApp::TheApplication()->terminate( sig ) ;
+        BESApp::TheApplication()->terminate( sig ) ;
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
@@ -393,7 +393,7 @@ ServerApp::initialize( int argc, char **argv )
     BESDEBUG( "server", "OK" << endl ) ;
 
     BESDEBUG( "server", "ServerApp: initializing default commands ... " << endl )
-    BESDefaultCommands::initialize( argc, argv ) ;
+    BESXMLDefaultCommands::initialize( argc, argv ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 
     BESDebug::Register( "server" ) ;
@@ -499,7 +499,7 @@ ServerApp::terminate( int sig )
 	BESDEBUG( "server", "OK" << endl ) ;
 
 	BESDEBUG( "server", "ServerApp: terminating default commands ... " << endl )
-	BESDefaultCommands::terminate( ) ;
+	BESXMLDefaultCommands::terminate( ) ;
 	BESDEBUG( "server", "OK" << endl ) ;
 
 	BESModuleApp::terminate( sig ) ;

@@ -32,6 +32,127 @@ utilT::run(void)
     }
 
     cout << endl << "*****************************************" << endl;
+    cout << "Remove Leading and Trailing Blanks" << endl;
+    s = "This is a test" ;
+    result = s ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = " This is a test" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "	This is a test" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    This is a test" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    	This is a test" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    	This is a test " ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    	This is a test    " ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    	This is a test    	" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "This is a test    " ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "This is a test    	" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = " 	This is a test 	\n" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    " ;
+    result = "" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    s = "    	" ;
+    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+    if( s != result )
+    {
+	cerr << "resulting string incorrect: \"" << s
+	     << "\" should be \"" << result << "\"" << endl ;
+	return 1 ;
+    }
+
+    cout << endl << "*****************************************" << endl;
     cout << "Returning from utilT::run" << endl;
 
     return retVal;

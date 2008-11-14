@@ -65,7 +65,7 @@ BESStreamResponseHandler::~BESStreamResponseHandler( )
  * @param dhi structure that holds request and response information
  * @throws BESNotFoundError if the specified file to stream does not exist
  * @throws BESInternalError if not all required information is provided
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
  */
@@ -138,7 +138,7 @@ BESStreamResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESStreamResponseHandler::transmit( BESTransmitter *transmitter,

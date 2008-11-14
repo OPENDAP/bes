@@ -53,7 +53,7 @@ BESShowDefsResponseHandler::~BESShowDefsResponseHandler( )
  * to show all definitions given the BESInfo object created here.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESDefinitionStorageList
  */
@@ -78,7 +78,7 @@ BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESShowDefsResponseHandler::transmit( BESTransmitter *transmitter,

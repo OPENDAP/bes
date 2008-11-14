@@ -34,6 +34,7 @@
 #define D_BESDataNames_h 1
 
 #define DATA_REQUEST "request"
+#define REQUEST_ID "reqID"
 #define REQUEST_FROM "from"
 
 #define AGG_CMD "aggregation_command"

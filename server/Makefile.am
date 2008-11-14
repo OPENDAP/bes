@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch -I$(top_srcdir)/command
+AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -25,7 +25,8 @@ beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
 		BESServerHandler.h ServerApp.h BESServerUtils.h \
 		ServerExitConditions.h
 
-beslistener_LDADD = ../ppt/libbes_ppt.la ../command/libbes_command.la ../dispatch/libbes_dispatch.la
+beslistener_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
+beslistener_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la ../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
 besdaemon_LDADD = ../dispatch/libbes_dispatch.la

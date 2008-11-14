@@ -65,7 +65,7 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler( )
  * @throws BESSyntaxUserError if unable to delete all definitions from the
  * specified definition store.
  * object
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESSilentInfo
  * @see BESDefine
  * @see BESDefinitionStorage
@@ -112,7 +112,7 @@ BESDelDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESDelDefsResponseHandler::transmit( BESTransmitter *transmitter,

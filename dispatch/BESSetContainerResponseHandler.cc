@@ -75,7 +75,7 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler( )
  *
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if the specified store name does not exist
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESContainerStorageList
  * @see BESContainerStorage
@@ -118,7 +118,7 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESSetContainerResponseHandler::transmit( BESTransmitter *transmitter,

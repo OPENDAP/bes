@@ -36,6 +36,30 @@
 #include "BESInfo.h"
 #include "BESIndent.h"
 
+/** @brief make a copy of only some data from specified object
+ *
+ * makes a copy of only some of the data members in a
+ * BESDataHandlerInterface. The container list and response handler should
+ * not be copied. Each BESDataHandlerInterface should represent a
+ * request/response, so each one should have it's own response handler.
+ *
+ * @param copy_from object to copy informatioon from
+ */
+void
+BESDataHandlerInterface::make_copy( const BESDataHandlerInterface &copy_from )
+{
+    this->data = copy_from.data ;
+    this->output_stream = copy_from.output_stream ;
+    this->transmit_protocol = copy_from.transmit_protocol ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * each of the data members held
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
 BESResponseObject *
 BESDataHandlerInterface::get_response_object()
 {

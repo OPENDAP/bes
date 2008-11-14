@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -51,7 +51,7 @@ using std::flush ;
 #include "BESServerHandler.h"
 #include "Connection.h"
 #include "Socket.h"
-#include "BESCmdInterface.h"
+#include "BESXMLInterface.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
 #include "ServerExitConditions.h"
@@ -103,12 +103,12 @@ BESServerHandler::handle( Connection *c )
 	    // we fork twice so we do not have zombie children
 	    if( ( pid1 = fork() ) < 0 )
 	    {
-		// we must send a signal of inmediate termination to the
-		// main server 
+		// we must send a signal of immediate termination to the
+		// main server
 		kill( main_process, 9 ) ;
 		perror( "fork error" ) ;
 		exit( SERVER_EXIT_CHILD_SUBPROCESS_ABNORMAL_TERMINATION ) ;
-	    } 
+	    }
 	    else if( pid1 == 0 ) /* child of the child */
 	    {
 		execute( c ) ;
@@ -124,7 +124,7 @@ BESServerHandler::handle( Connection *c )
 	    if( error_info )
 		error += " " + (string)error_info ;
 	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	} 
+	}
 	c->closeConnection() ;
     }
 }
@@ -181,7 +181,7 @@ BESServerHandler::execute( Connection *c )
 	holder = cout.rdbuf() ;
 	cout.rdbuf( &fds ) ;
 
-	BESCmdInterface cmd( cmd_str, &cout ) ;
+	BESXMLInterface cmd( cmd_str, &cout ) ;
 	int status = cmd.execute_request( from ) ;
 
 	if( status == 0 )
@@ -244,7 +244,7 @@ BESServerHandler::execute( Connection *c )
 			exit( CHILD_SUBPROCESS_READY ) ;
 		    }
 		    break;
-		case BES_INTERNAL_ERROR: 
+		case BES_INTERNAL_ERROR:
 		case BES_SYNTAX_USER_ERROR:
 		case BES_FORBIDDEN_ERROR:
 		case BES_NOT_FOUND_ERROR:

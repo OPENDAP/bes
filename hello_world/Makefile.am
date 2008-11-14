@@ -18,12 +18,12 @@ Sample_SRCS:=
 Sample_HDRS:=
 
 BES_SRCS = \
-	SampleSayResponseHandler.cc SampleSayCommand.cc \
+	SampleSayResponseHandler.cc SampleSayXMLCommand.cc \
 		SampleModule.cc SampleRequestHandler.cc \
 		SayReporter.cc
 
 BES_HDRS = \
-	SampleSayResponseHandler.h SampleSayCommand.h \
+	SampleSayResponseHandler.h SampleSayXMLCommand.h \
 		SampleModule.h SampleRequestHandler.h \
 		SampleResponseNames.h \
 		SayReporter.h \

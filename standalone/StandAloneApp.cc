@@ -49,7 +49,7 @@ using std::ofstream ;
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESDefaultModule.h"
-#include "BESDefaultCommands.h"
+#include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
 
 StandAloneApp::StandAloneApp()
@@ -213,7 +213,7 @@ StandAloneApp::initialize( int argc, char **argv )
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
 	BESDEBUG( "standalone", "ServerApp: initializing default commands ... " << endl )
-	BESDefaultCommands::initialize( argc, argv ) ;
+	BESXMLDefaultCommands::initialize( argc, argv ) ;
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
 	int retval = BESModuleApp::initialize( argc, argv ) ;
@@ -325,7 +325,7 @@ StandAloneApp::terminate( int sig )
     BESDEBUG( "server", "OK" << endl ) ;
 
     BESDEBUG( "server", "ServerApp: terminating default commands ... " << endl )
-    BESDefaultCommands::terminate( ) ;
+    BESXMLDefaultCommands::terminate( ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 
     BESModuleApp::terminate( sig ) ;

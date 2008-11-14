@@ -52,7 +52,7 @@
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if there is a problem parsing the request
  * @see BESTokenizer
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 BESResponseHandler *
 BESDelDefCommand::parse_request( BESTokenizer &tokenizer,

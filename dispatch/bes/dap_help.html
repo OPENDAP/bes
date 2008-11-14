@@ -2,31 +2,31 @@
 Current commands available with OPeNDAP:
 <UL>
     <LI>
-	show catalog [for '&lt;node&gt;';
+	&lt;showCatalog node="node_name" /&gt;
 	<UL>
 	    <LI>Shows catalog information, including contents if a
 	    container. If node is not specified then the root node
 	    information is returned. If node is specified then that nodes
-	    information is returned. The node name must be in single
-	    quotes</LI>
+	    information is returned.</LI>
 	</UL>
     </LI>
     <LI>
-	show info [for '&lt;node&gt;';
+	&lt;showInfo node="node_name" /&gt;
 	<UL>
 	    <LI>Shows catalog information for just that node, the root node
 	    if no node is specified. If the node is a container the contents
-	    are not displayed. The node name must be in single quotes.</LI>
+	    are not displayed.</LI>
 	</UL>
     </LI>
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
     <LI>
-	get das|dds|dods|ddx for &lt;definition_name&gt;;
+	&lt;get type="das|dds|dods|ddx" definition="def_name" returnAs="returnAs" /&gt;
 	<UL>
 	    <LI>dds: request the data descriptor structure</LI>
 	    <LI>das: request the data attributes</LI>
+	    <LI>ddx: request the data attributes and data descriptor structure returned as an xml document</LI>
 	    <LI>dods: request for the data stream, this output is an octec binary stream which requires the analysis by the client dods library</LI>
 	</UL>
     </LI>
@@ -34,7 +34,7 @@ Current commands available with OPeNDAP:
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
     <LI>
-	set context errors to &lt;dap2|xml|html|txt&gt;;
+	&lt;setContext name="errors"&gt;dap2|xml|html|txt&lt;/setContext&gt;
 	<UL>
 	    <LI>
 		set the context 'errors' to dap2 in order to have all
@@ -46,7 +46,6 @@ Current commands available with OPeNDAP:
     <BR />
     <HR ALIGN="left" WIDTH="300px" SIZE="3" COLOR="gray">
     <BR />
-    <LI>remember to terminate each command with a semicolon (;)</LI>
     <LI>For more information please contact Patrick West, <A HREF="mailto:pwest@ucar.edu">pwest@ucar.edu</A></LI>
 </UL>
 </DIV>

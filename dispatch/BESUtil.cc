@@ -409,3 +409,85 @@ BESUtil::fastpidconverter(
       return buf;
 }
 
+void
+BESUtil::removeLeadingAndTrailingBlanks( string &key )
+{
+    if( !key.empty() )
+    {
+	string::size_type first = key.find_first_not_of( " \t\n\r" ) ;
+	string::size_type last = key.find_last_not_of( " \t\n\r" ) ;
+	if( first == string::npos ) key = "" ;
+	else
+	{
+	    string::size_type num = last - first + 1 ;
+	    string new_key = key.substr( first, num ) ;
+	    key = new_key ;
+	}
+    }
+}
+
+string
+BESUtil::entity( char c )
+{
+    switch( c )
+    {
+	case '>': return "&gt;";
+	case '<': return "&lt;";
+	case '&': return "&amp;";
+	case '\'': return "&apos;";
+	case '\"': return "&quot;";
+    }
+}
+
+/** Replace characters that are not allowed in XML
+
+    @param in The string in which to replace characters.
+    @param not_allowed The set of characters that are not allowed in XML.
+    default: ><&'(single quote)"(double quote)
+    @return The modified identifier. */
+string
+BESUtil::id2xml( string in, const string &not_allowed )
+{
+    string::size_type i = 0 ;
+
+    while( ( i = in.find_first_of( not_allowed, i ) ) != string::npos )
+    {
+        in.replace( i, 1, entity( in[i] ) ) ;
+        i++ ;
+    }
+
+    return in ;
+}
+
+/** Given a string that contains XML escape sequences (i.e., entities),
+    translate those back into ASCII characters. Return the modified string.
+
+    @param in The string to modify.
+    @return The modified string. */
+string
+BESUtil::xml2id(string in)
+{
+    string::size_type i = 0;
+
+    while ((i = in.find("&gt;", i)) != string::npos)
+        in.replace(i, 4, ">");
+
+    i = 0;
+    while ((i = in.find("&lt;", i)) != string::npos)
+        in.replace(i, 4, "<");
+
+    i = 0;
+    while ((i = in.find("&amp;", i)) != string::npos)
+        in.replace(i, 5, "&");
+
+    i = 0;
+    while ((i = in.find("&apos;", i)) != string::npos)
+        in.replace(i, 6, "'");
+
+    i = 0;
+    while ((i = in.find("&quot;", i)) != string::npos)
+        in.replace(i, 6, "\"");
+
+    return in;
+}
+

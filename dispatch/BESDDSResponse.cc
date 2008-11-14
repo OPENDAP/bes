@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -48,7 +48,7 @@ BESDDSResponse::~BESDDSResponse()
 void
 BESDDSResponse::set_container( const string &cn )
 {
-    if( _dds && !is_dap2() )
+    if( _dds && get_explicit_containers() )
     {
 	_dds->container_name( cn ) ;
     }
@@ -67,7 +67,7 @@ BESDDSResponse::clear_container( )
 
 /** @brief dumps information about this object
  *set container in catalog values avhrr, /data/ff/1998.6.avhrr.dat;
- * 
+ *
  * Displays the pointer value of this instance along with the dds object
  * created
  *

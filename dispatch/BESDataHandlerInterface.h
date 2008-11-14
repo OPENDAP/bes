@@ -47,6 +47,7 @@ class BESResponseHandler ;
 class BESResponseObject ;
 class BESInfo ;
 
+#include "BESObj.h"
 #include "BESContainer.h"
 #include "BESInternalError.h"
 
@@ -56,17 +57,28 @@ class BESInfo ;
     request and to also store information for logging and reporting.
  */
 
-typedef struct _BESDataHandlerInterface
+class BESDataHandlerInterface : public BESObj
 {
 private:
     ostream *output_stream ;
-public:
-    _BESDataHandlerInterface()
+
+    BESDataHandlerInterface( BESDataHandlerInterface &from )
 	: output_stream( 0 ),
 	  response_handler( 0 ),
 	  container( 0 ),
+	  executed( false ),
+	  error_info( 0 ) {}
+    BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs) {}
+
+public:
+    BESDataHandlerInterface()
+	: output_stream( 0 ),
+	  response_handler( 0 ),
+	  container( 0 ),
+	  executed( false ),
 	  error_info( 0 ) {}
 
+    void make_copy( const BESDataHandlerInterface &copy_from ) ;
 
     void set_output_stream( ostream *strm )
     {
@@ -120,6 +132,7 @@ public:
      */
     string action ;
     string action_name ;
+    bool executed ;
 
     /** @brief request protocol, such as HTTP
      */
@@ -138,32 +151,7 @@ public:
 
     void dump( ostream &strm ) const ;
 
-} BESDataHandlerInterface ;
-
-/** @brief dump the contents of the specified data handler interface to the
- * specified ostream
- *
- * This inline method uses the dump method of the BESDataHandlerInterface
- * instance passed to it. This allows a user to dump the contents of the
- * structure instead of just getting the pointer value of the object.
- *
- * For example:
- *
- * BESDataHandlerInterface dhi ;
- * cout << dhi << endl ;
- *
- * And the dump method for dhi would display the internal information of the
- * data handler interface for debugging purposes.
- *
- * @param strm C++ i/o stream to dump the object to
- * @param dhi The BESDataHandlerInterface to dump
- */
-inline ostream &
-operator<<( ostream &strm, const BESDataHandlerInterface &dhi )
-{
-    dhi.dump( strm ) ;
-    return strm ;
-}
+} ;
 
 #endif //  BESDataHandlerInterface_h_
 

@@ -32,20 +32,80 @@
 
 #include "BESDapResponse.h"
 #include "BESContextManager.h"
+#include "BESError.h"
 
-/** @brief is dap response expected to be in dap2 format
- *
- * @return true if dap2 format, false otherwise
+/** @brief Extract the dap protocol from the setConext information
+
+    This method checks three contexts: dap_explicit_containers, dap_format and
+    xdap_accept.
+
+    If given, the boolean value of dap_explicit_containers is used. If that's
+    not given then look for dap_format and if that's not given default to
+    true. The OLFS should always send this to make Hyrax work the way DAP
+    clients expect.
+
+    xdap_accept is the value of the DAP that clients can grok. It defaults to
+    "2.0"
+
+    @note This value will be passed on to the DDS so that it can correctly
+    build versions of the DDX which are specified by DAP 3.x and 4.x
+ */
+void
+BESDapResponse::read_contexts()
+{
+    bool found = false;
+
+    // d_explicit_containers is false by default
+    string context = BESContextManager::TheManager()->get_context("dap_explicit_containers", found);
+    if (found) {
+        if (context == "yes")
+            d_explicit_containers = true;
+        else if (context == "no")
+            d_explicit_containers = false;
+        else
+            throw BESError("dap_explicit_containers must be yes or no",
+                    BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
+    }
+
+    if (!found) {
+        context = BESContextManager::TheManager()->get_context("dap_format", found);
+        if (found) {
+            if (context == "dap2")
+                d_explicit_containers = false;
+            else
+                d_explicit_containers = true;
+        }
+    }
+
+    context = BESContextManager::TheManager()->get_context("xdap_accept", found);
+    if (found)
+        d_dap_client_protocol = context;
+
+    context = BESContextManager::TheManager()->get_context("xml:base", found);
+    if (found)
+        d_request_xml_base = context;
+
+}
+
+/** @brief See get_explicit_containers()
+
+    @see get_explicit_containers()
+    @see get_dap_client_protocol()
+    @deprecated
+    @return true if dap2 format, false otherwise
  */
 bool BESDapResponse::is_dap2()
 {
+    return !d_explicit_containers;
+#if 0
     bool found = false;
     string context = BESContextManager::TheManager()->get_context(
             "dap_format", found);
-    if (found && context == "dap2") {
+    if (found && (context == "dap2" || context == "2.0")) {
         return true;
     }
     return false;
+#endif
 }
 
 /** @brief dumps information about this object
@@ -60,5 +120,11 @@ BESDapResponse::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "BESDapResponse::dump - ("
 			     << (void *)this << ")" << endl ;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "d_explicit_containers: " << d_explicit_containers << endl;
+    strm << BESIndent::LMarg << "d_dap_client_protocol: " << d_dap_client_protocol << endl;
+    BESIndent::UnIndent();
+
+    BESIndent::UnIndent();
 }
 

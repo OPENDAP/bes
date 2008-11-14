@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<showCatalog>
+    <response>
+        <dataset isData="false" thredds_collection="true">
+            <name>/data/nc</name>
+            <size>204</size>
+            <lastmodified>
+                <date>*</date>
+                <time>*</time>
+            </lastmodified>
+            <count>4</count>
+            <dataset isData="true" thredds_collection="false">
+                <name>coads_climatology.nc</name>
+                <size>3114044</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="false" thredds_collection="false">
+                <name>fnoc1.das</name>
+                <size>162</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="true" thredds_collection="false">
+                <name>fnoc1.nc</name>
+                <size>23944</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+            <dataset isData="false" thredds_collection="false">
+                <name>fnoc1.nc.html</name>
+                <size>177</size>
+                <lastmodified>
+                    <date>*</date>
+                    <time>*</time>
+                </lastmodified>
+            </dataset>
+        </dataset>
+    </response>
+</showCatalog>

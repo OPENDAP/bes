@@ -6,7 +6,7 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch command ppt cmdln server standalone docs bin templates
+SUBDIRS = dispatch command xmlcommand ppt cmdln server standalone docs bin templates
 
 bin_SCRIPTS = bes-config bes-config-pkgconfig
 
@@ -19,7 +19,7 @@ dist_aclocal_DATA = conf/bes.m4
 EXTRA_DIST = apache hello_world csv-handler doxy.conf bes.spec \
 		OSX_Resources bes-config-pkgconfig
 
-#########################################################################
+##############################################################################
 
 bes-configuration-tests:
 	cd cmdln && make bes-configuration-tests

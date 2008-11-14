@@ -64,9 +64,9 @@ BES.LogVerbose=no
 # BES.module.h4=@pkglibdir@/libhdf4_module.so
 # BES.module.ff=@pkglibdir@/libff_module.so
 
-BES.modules=dap,cmd
+BES.modules=dap,dapcmd
 BES.module.dap=@pkglibdir@/libdap_module.so
-BES.module.cmd=@pkglibdir@/libdap_cmd_module.so
+BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
 
 #-----------------------------------------------------------------------#
 # Setting the data location
@@ -167,11 +167,11 @@ BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 #-----------------------------------------------------------------------#
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTML=@pkgdatadir@/bes_help.html
-BES.Help.XML=@pkgdatadir@/bes_help.txt
+BES.Help.XML=@pkgdatadir@/bes_help.html
 
 DAP.Help.TXT=@pkgdatadir@/dap_help.txt
 DAP.Help.HTML=@pkgdatadir@/dap_help.html
-DAP.Help.XML=@pkgdatadir@/dap_help.txt
+DAP.Help.XML=@pkgdatadir@/dap_help.html
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #

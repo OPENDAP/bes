@@ -44,6 +44,7 @@ class BESUtil
 private:
     static string		rfc822_date( const time_t t ) ;
 
+    static string		entity( char c ) ;
 public:
     /** These functions are used to create the MIME headers for a message
 	from a server to a client.
@@ -80,6 +81,16 @@ public:
     static char *		fastpidconverter( long val,
 						  char *buf,
 						  int base ) ;
+
+    /** remove leading and trailing blanks from a string **/
+    static void			removeLeadingAndTrailingBlanks( string &key ) ;
+
+    /** convert characters not allowed in xml to escaped characters **/
+    static string		id2xml( string in,
+				        const string &not_allowed = "><&'\"" ) ;
+
+    /** unescape xml escaped characters **/
+    static string		xml2id( string in ) ;
 } ;
 
 #endif // E_BESUtil_h

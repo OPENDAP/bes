@@ -71,7 +71,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 #
 # Sources and Headers
 
-SRCS = BESInterface.cc BESGlobalIQ.cc \
+SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
 	TheBESKeys.cc BESStatus.cc \
 	BESContainer.cc BESFileContainer.cc \
@@ -105,7 +105,7 @@ SRCS = BESInterface.cc BESGlobalIQ.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
 	BESUncompressBZ2.cc BESUncompressZ.cc
 
-HDRS = BESInterface.h BESGlobalIQ.h \
+HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h \
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
 	BESInitializer.h BESLog.h \
 	BESKeys.h TheBESKeys.h \

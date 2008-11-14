@@ -65,7 +65,7 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler( )
  * @param dhi structure that holds request and response information
  * @throws BESSyntaxUserError if unable to delete all containers from the
  * specified container store
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESSilentInfo
  * @see BESContainer
  * @see BESContainerStorage
@@ -116,7 +116,7 @@ BESDelContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESDelContainersResponseHandler::transmit( BESTransmitter *transmitter,

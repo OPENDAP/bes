@@ -55,7 +55,7 @@ BESProcIdResponseHandler::~BESProcIdResponseHandler( )
  * informational response object.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  */
 void
@@ -81,7 +81,7 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESResponseObject
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESProcIdResponseHandler::transmit( BESTransmitter *transmitter,

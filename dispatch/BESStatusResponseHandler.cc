@@ -53,7 +53,7 @@ BESStatusResponseHandler::~BESStatusResponseHandler( )
  * BESInfo informational response object.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESStatus
  */
@@ -79,7 +79,7 @@ BESStatusResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESResponseObject
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESStatusResponseHandler::transmit( BESTransmitter *transmitter,

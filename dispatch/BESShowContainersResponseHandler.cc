@@ -53,7 +53,7 @@ BESShowContainersResponseHandler::~BESShowContainersResponseHandler( )
  * creates a BESInfo response object to store the container information.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESInfo
  * @see BESContainerStorageList
  * @see BESContainerStorage
@@ -79,7 +79,7 @@ BESShowContainersResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESShowContainersResponseHandler::transmit( BESTransmitter *transmitter,

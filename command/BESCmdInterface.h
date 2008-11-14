@@ -33,14 +33,7 @@
 #ifndef BESCmdInterface_h_
 #define BESCmdInterface_h_ 1
 
-#include <new>
-
-using std::new_handler ;
-using std::bad_alloc ;
-
-#include "BESInterface.h"
-#include "BESDataHandlerInterface.h"
-#include "BESDataRequestInterface.h"
+#include "BESBasicInterface.h"
 
 /** @brief Entry point into BES using string command requests
 
@@ -65,24 +58,16 @@ using std::bad_alloc ;
     @see BESInterface
     @see BESParser
  */
-class BESCmdInterface : public BESInterface
+class BESCmdInterface : public BESBasicInterface
 {
 private:
-    				BESCmdInterface() ;
+    BESDataHandlerInterface	_cmd_dhi ;
 protected:
-    virtual void		initialize() ;
-    virtual void		validate_data_request() ;
     virtual void		build_data_request_plan() ;
-    virtual void		execute_data_request_plan() ;
-    virtual void		invoke_aggregation();
-    virtual void		transmit_data() ;
-    virtual void		log_status() ;
-    virtual void		clean() ;
 public:
-    				BESCmdInterface( const string &cmd, ostream *strm ) ;
+    				BESCmdInterface( const string &cmd,
+						 ostream *strm ) ;
     virtual			~BESCmdInterface() ;
-
-    virtual int			execute_request( const string &from ) ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;

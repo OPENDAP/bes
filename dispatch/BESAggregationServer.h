@@ -54,7 +54,7 @@ public:
      * aggregation command
      * @throws BESAggregationException if problem aggregating the data
      * @see BESAggregationException
-     * @see _BESDataHandlerInterface
+     * @see BESDataHandlerInterface
      */
     virtual void		aggregate( BESDataHandlerInterface &dhi ) = 0 ;
 

@@ -33,26 +33,47 @@
 #ifndef I_BESDapResponse
 #define I_BESDapResponse 1
 
+#include <DAS.h>
+
 #include "BESResponseObject.h"
-#include "DAS.h"
 
 using namespace libdap ;
 
-/** @brief Represents an OPeNDAP DAS DAP2 data object within the BES
+/** @brief Represents an OPeNDAP DAP response object within the BES
  */
 class BESDapResponse: public BESResponseObject {
     private:
+#if 0
         DAS * _das;
+#endif
+        string d_dap_client_protocol;
+        bool d_explicit_containers;
+
+        string d_request_xml_base;
+
     protected:
         bool is_dap2();
+        void read_contexts();
     public:
         BESDapResponse() :
-            BESResponseObject()
+            BESResponseObject(), d_dap_client_protocol("2.0"),
+            d_explicit_containers(true), d_request_xml_base("")
         {
+            read_contexts();
         }
+
         virtual ~BESDapResponse()
         {
         }
+
+        /// Return the dap version string sent by the client (e.g., the OLFS)
+        string get_dap_client_protocol() const { return d_dap_client_protocol; }
+
+        /// Should containers be explicitly represented in the DD* responses?
+        bool get_explicit_containers() const { return d_explicit_containers; }
+
+        /// Return the xml:base URL for this request.
+        string get_request_xml_base() const { return d_request_xml_base; }
 
         virtual void set_container(const string &cn) = 0;
         virtual void clear_container() = 0;

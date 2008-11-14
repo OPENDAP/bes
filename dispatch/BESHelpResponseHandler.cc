@@ -61,7 +61,7 @@ BESHelpResponseHandler::~BESHelpResponseHandler( )
  * The response object BESHTMLInfo is created to store the help information.
  *
  * @param dhi structure that holds request and response information
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
  */
@@ -98,7 +98,7 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @param dhi structure that holds the request and response information
  * @see BESHTMLInfo
  * @see BESTransmitter
- * @see _BESDataHandlerInterface
+ * @see BESDataHandlerInterface
  */
 void
 BESHelpResponseHandler::transmit( BESTransmitter *transmitter,

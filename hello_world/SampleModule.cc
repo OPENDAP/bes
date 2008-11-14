@@ -10,10 +10,10 @@ using std::endl ;
 #include "BESDebug.h"
 #include "BESResponseHandlerList.h"
 #include "BESResponseNames.h"
-#include "BESCommand.h"
+#include "BESXMLCommand.h"
 #include "SampleResponseNames.h"
 #include "SampleSayResponseHandler.h"
-#include "SampleSayCommand.h"
+#include "SampleSayXMLCommand.h"
 #include "BESReporterList.h"
 #include "SayReporter.h"
 
@@ -34,8 +34,7 @@ SampleModule::initialize( const string &modname )
 
     cmd_name = SAY_RESPONSE ;
     BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
-    BESCommand *say_cmd = new SampleSayCommand( SAY_RESPONSE ) ;
-    BESCommand::add_command( cmd_name, say_cmd ) ;
+    BESXMLCommand::add_command( cmd_name, SampleSayXMLCommand::CommandBuilder ) ;
 
     BESDEBUG( "say", "    adding Say reporter" << endl )
     BESReporterList::TheList()->add_reporter( modname, new SayReporter ) ;
@@ -66,7 +65,7 @@ SampleModule::terminate( const string &modname )
 
     cmd_name = SAY_RESPONSE ;
     BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
-    BESCommand::del_command( cmd_name ) ;
+    BESXMLCommand::del_command( cmd_name ) ;
 
     // TERM_END
     BESDEBUG( modname, "Done Cleaning Sample module " << modname << endl )
