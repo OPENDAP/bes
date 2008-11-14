@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 depth_first(file1, "/", dds,
                             df.get_dataset_name().c_str());
 
-                df.send_data(dds, ce, stdout);
+                df.send_data(dds, ce, cout);
                 break;
             }
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
                 find_gloattr(file1, das);
                 depth_first(file1, "/", das);
                 dds.transfer_attributes(&das);
-                df.send_ddx(dds, ce, stdout);
+                df.send_ddx(dds, ce, cout);
                 break;
             }
 
