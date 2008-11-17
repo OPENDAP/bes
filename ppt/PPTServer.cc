@@ -30,8 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <config.h>
+
 #include <string>
 #include <sstream>
+
+#ifdef HAVE_LIBWRAP
+extern "C" {
+#include "tcpd.h"
+int allow_severity;
+int deny_severity;
+}
+#endif
 
 using std::string ;
 using std::ostringstream ;
@@ -145,11 +155,25 @@ PPTServer::initConnection()
 	if( _mySock )
 	{
 	    // welcome the client
-	    if( welcomeClient( ) != -1 )
-	    {
-		// now hand it off to the handler
-		_handler->handle( this ) ;
-	    }
+#ifdef HAVE_LIBWRAP
+           struct request_info req;
+           request_init(&req, RQ_DAEMON, "besdaemon", RQ_FILE, _mySock->getSocketDescriptor(), 0);
+           fromhost();
+
+           if (!STR_EQ(eval_hostname(), paranoid) && hosts_access()) {
+#endif
+               // welcome the client
+               if( welcomeClient( ) != -1 )
+               {
+                   // now hand it off to the handler
+                   _handler->handle( this ) ;
+               }
+#ifdef HAVE_LIBWRAP
+           }
+           else {
+               _mySock->close();
+           }
+#endif
 	}
     }
 }

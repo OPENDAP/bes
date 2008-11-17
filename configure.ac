@@ -271,6 +271,23 @@ AC_SUBST([XML2_LIBS])
 AC_SUBST([XML2_STATIC_LIBS])
 AC_SUBST([XML2_CFLAGS])
 
+dnl extra argument: --with-libwrap
+    AC_MSG_CHECKING(whether to use libwrap)
+    AC_ARG_WITH(libwrap,
+        [  --with-libwrap          Compile in libwrap (tcp_wrappers) support.],
+        [ case "$withval" in
+        yes) AC_MSG_RESULT(yes)
+            AC_CHECK_LIB(wrap, request_init, 
+                 [ LIBS="-lwrap $LIBS"
+                   AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
+                 [ AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap option to configure.) ])
+            ;;
+        *) AC_MSG_RESULT(no);;
+        esac ],
+        AC_MSG_RESULT(no)
+    )
+
+
 AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
