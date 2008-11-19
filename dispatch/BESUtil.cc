@@ -52,6 +52,7 @@ using std::endl ;
 #include "BESUtil.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+#include "BESInternalError.h"
 
 #define CRLF "\r\n"
 
@@ -489,5 +490,101 @@ BESUtil::xml2id(string in)
         in.replace(i, 6, "\"");
 
     return in;
+}
+
+/** Given a string of values separated by a delimiter, break out the values
+ * and store in the list.
+ *
+ * Quoted values must be escaped.
+ *
+ * If values contain the delimiter then the value must be wrapped in quotes.
+ *
+ * @param delim delimiter separating the values
+ * @param str the original string
+ * @param values list of the delimited values returned to caller
+ * @throws BESInternalError if missing ending quote or delimiter does not
+ * follow end quote
+ */
+void
+BESUtil::explode( char delim, const string &str, list<string> &values )
+{
+    std::string::size_type start = 0 ;
+    std::string::size_type qstart = 0 ;
+    std::string::size_type adelim = 0 ;
+    std::string::size_type aquote = 0 ;
+    bool done = false ;
+    while( !done )
+    {
+	string aval ;
+	if( str[start] == '"' )
+	{
+	    bool endquote = false ;
+	    qstart = start+1 ;
+	    while( !endquote )
+	    {
+		aquote = str.find( '"', qstart ) ;
+		if( aquote == string::npos )
+		{
+		    string currval = str.substr( start, str.length() - start ) ;
+		    string err = "BESUtil::explode - No end quote after value "
+				 + currval ;
+		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		}
+		// could be an escaped escape character and an escaped
+		// quote, or an escaped escape character and a quote
+		if( str[aquote-1] == '\\' )
+		{
+		    if( str[aquote-2] == '\\' )
+		    {
+			endquote = true ;
+			qstart = aquote + 1 ;
+		    }
+		    else
+		    {
+			qstart = aquote+1 ;
+		    }
+		}
+		else
+		{
+		    endquote = true ;
+		    qstart = aquote + 1 ;
+		}
+	    }
+	    if( str[qstart] != delim && qstart != str.length() )
+	    {
+		string currval = str.substr( start, qstart - start ) ;
+		string err = "BESUtil::explode - No delim after end quote "
+			     + currval ;
+		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	    }
+	    if( qstart == str.length() )
+	    {
+		adelim = string::npos ;
+	    }
+	    else
+	    {
+		adelim = qstart ;
+	    }
+	}
+	else
+	{
+	    adelim = str.find( delim, start ) ;
+	}
+	if( adelim == string::npos )
+	{
+	    aval = str.substr( start, str.length() - start ) ;
+	    done = true ;
+	}
+	else
+	{
+	    aval = str.substr( start, adelim - start ) ;
+	}
+	values.push_back( aval ) ;
+	start = adelim + 1 ;
+	if( start == str.length() )
+	{
+	    done = true ;
+	}
+    }
 }
 

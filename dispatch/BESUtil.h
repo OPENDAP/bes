@@ -34,9 +34,11 @@
 #define E_BESUtil_h 1
 
 #include <string>
+#include <list>
 #include <iostream>
 
 using std::string ;
+using std::list ;
 using std::ostream ;
 
 class BESUtil
@@ -91,6 +93,10 @@ public:
 
     /** unescape xml escaped characters **/
     static string		xml2id( string in ) ;
+
+    /** explode a string into an array given a delimiter **/
+    static void			explode( char delim, const string &str,
+					 list<string> &values ) ;
 } ;
 
 #endif // E_BESUtil_h

@@ -40,6 +40,7 @@
 #include "BESNotFoundError.h"
 #include "GNURegex.h"
 #include "Error.h"
+#include "BESUtil.h"
 
 using namespace libdap ;
 
@@ -70,14 +71,26 @@ BESCatalogUtils( const string &n )
     string e_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( found && e_str != "" && e_str != ";" )
     {
-	build_list( _exclude, e_str ) ;
+	BESUtil::explode( ';', e_str, _exclude ) ;
+	list<string>::iterator i = _exclude.begin() ;
+	list<string>::iterator e = _exclude.end() ;
+	for( ; i != e; i++ )
+	{
+	    cout << "exclude " << (*i) << endl ;
+	}
     }
 
     key = (string)"BES.Catalog." + n + ".Include" ;
     string i_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
     if( found && i_str != "" && i_str != ";" )
     {
-	build_list( _include, i_str ) ;
+	BESUtil::explode( ';', i_str, _include ) ;
+	list<string>::iterator i = _include.begin() ;
+	list<string>::iterator e = _include.end() ;
+	for( ; i != e; i++ )
+	{
+	    cout << "include " << (*i) << endl ;
+	}
     }
 
     key = "BES.Catalog." + n + ".TypeMatch" ;
@@ -87,44 +100,26 @@ BESCatalogUtils( const string &n )
 	string s = key + " not defined in key file" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
-
-    string::size_type str_begin = 0 ;
-    string::size_type str_end = curr_str.length() ;
-    string::size_type semi = 0 ;
-    bool done = false ;
-    while( done == false )
+    list<string> match_list ;
+    BESUtil::explode( ';', curr_str, match_list ) ;
+    list<string>::iterator mli = match_list.begin() ;
+    list<string>::iterator mle = match_list.end() ;
+    for( ; mli != mle; mli++ )
     {
-	semi = curr_str.find( ";", str_begin ) ;
-	if( semi == string::npos )
+	list<string> amatch ;
+	BESUtil::explode( ':', (*mli), amatch ) ;
+	if( amatch.size() != 2 )
 	{
-	    string s = (string)"Catalog type match malformed, no semicolon, "
-		       "looking for type:regexp;[type:regexp;]" ;
+	    string s = (string)"Catalog type match malformed, "
+		       + "looking for type:regexp;[type:regexp;]" ;
 	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
 	}
-	else
-	{
-	    string a_pair = curr_str.substr( str_begin, semi-str_begin ) ;
-	    str_begin = semi+1 ;
-	    if( semi == str_end-1 )
-	    {
-		done = true ;
-	    }
-
-	    string::size_type col = a_pair.find( ":" ) ;
-	    if( col == string::npos )
-	    {
-		string s = (string)"Catalog type match malformed, no colon, "
-			   + "looking for type:regexp;[type:regexp;]" ;
-		throw BESInternalError( s, __FILE__, __LINE__ ) ;
-	    }
-	    else
-	    {
-		type_reg newval ;
-		newval.type = a_pair.substr( 0, col ) ;
-		newval.reg = a_pair.substr( col+1, a_pair.length()-col ) ;
-		_match_list.push_back( newval ) ;
-	    }
-	}
+	list<string>::iterator ami = amatch.begin() ;
+	type_reg newval ;
+	newval.type = (*ami) ;
+	ami++ ;
+	newval.reg = (*ami) ;
+	_match_list.push_back( newval ) ;
     }
 
     key = (string)"BES.Catalog." + n + ".FollowSymLinks" ;
@@ -133,35 +128,6 @@ BESCatalogUtils( const string &n )
     if( found && ( s_str == "yes" || s_str == "on" || s_str == "true" ) )
     {
 	_follow_syms = true ;
-    }
-}
-
-void
-BESCatalogUtils::build_list( list<string> &theList, const string &listStr )
-{
-    string::size_type str_begin = 0 ;
-    string::size_type str_end = listStr.length() ;
-    string::size_type semi = 0 ;
-    bool done = false ;
-    while( done == false )
-    {
-	semi = listStr.find( ";", str_begin ) ;
-	if( semi == string::npos )
-	{
-	    string s = (string)"Catalog type match malformed, no semicolon, "
-		       "looking for type:regexp;[type:regexp;]" ;
-	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
-	}
-	else
-	{
-	    string a_member = listStr.substr( str_begin, semi-str_begin ) ;
-	    str_begin = semi+1 ;
-	    if( semi == str_end-1 )
-	    {
-		done = true ;
-	    }
-	    if( a_member != "" ) theList.push_back( a_member ) ;
-	}
     }
 }
 

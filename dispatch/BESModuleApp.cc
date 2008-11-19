@@ -40,6 +40,7 @@ using std::endl ;
 #include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
 #include "TheBESKeys.h"
+#include "BESUtil.h"
 
 /** @brief Default constructor
  *
@@ -107,48 +108,37 @@ BESModuleApp::loadModules()
     string mods = TheBESKeys::TheKeys()->get_key( "BES.modules", found ) ;
     if( mods != "" )
     {
-	std::string::size_type start = 0 ;
-	std::string::size_type comma = 0 ;
-	bool done = false ;
-	while( !done )
+	list<string> mod_list ;
+	BESUtil::explode( ',', mods, mod_list ) ;
+
+	list<string>::iterator i = mod_list.begin() ;
+	list<string>::iterator e = mod_list.end() ;
+	for( ; i != e; i++ )
 	{
-	    string mod ;
-	    comma = mods.find( ',', start ) ;
-	    if( comma == string::npos )
-	    {
-		mod = mods.substr( start, mods.length() - start ) ;
-		done = true ;
-	    }
-	    else
-	    {
-		mod = mods.substr( start, comma - start ) ;
-	    }
-	    string key = "BES.module." + mod ;
+	    string key = "BES.module." + (*i) ;
 	    string so = TheBESKeys::TheKeys()->get_key( key, found ) ;
 	    if( so == "" )
 	    {
-		cerr << "couldn't find the module for " << mod << endl ;
+		cerr << "couldn't find the module for " << (*i) << endl ;
 		return 1 ;
 	    }
 	    bes_module new_mod ;
-	    new_mod._module_name = mod ;
+	    new_mod._module_name = (*i) ;
 	    new_mod._module_library = so ;
 	    _module_list.push_back( new_mod ) ;
-
-	    start = comma + 1 ;
 	}
 
-	list< bes_module >::iterator i = _module_list.begin() ;
-	list< bes_module >::iterator e = _module_list.end() ;
-	for( ; i != e; i++ )
+	list< bes_module >::iterator mi = _module_list.begin() ;
+	list< bes_module >::iterator me = _module_list.end() ;
+	for( ; mi != me; mi++ )
 	{
-	    bes_module curr_mod = *i ;
+	    bes_module curr_mod = *mi ;
 	    _moduleFactory.add_mapping( curr_mod._module_name, curr_mod._module_library ) ;
 	}
 
-	for( i = _module_list.begin(); i != e; i++ )
+	for( mi = _module_list.begin(); mi != me; mi++ )
 	{
-	    bes_module curr_mod = *i ;
+	    bes_module curr_mod = *mi ;
 	    try
 	    {
 		string modname = curr_mod._module_name ;

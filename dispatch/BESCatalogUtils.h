@@ -35,8 +35,6 @@ private:
     list< type_reg >		_match_list ;
 
     				BESCatalogUtils() {}
-    void			build_list( list<string> &theList,
-				   	    const string &listStr ) ;
 public:
     				BESCatalogUtils( const string &name ) ;
     virtual			~BESCatalogUtils() {}
