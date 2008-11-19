@@ -90,7 +90,7 @@ public:
 				    return new TcpSocket( socket, addr ) ;
 				}
 
-    virtual bool		is_valid() ;
+    virtual bool		allowConnection() ;
 
     virtual void		dump( ostream &strm ) const ;
 } ;

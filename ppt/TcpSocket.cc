@@ -593,7 +593,7 @@ TcpSocket::getSendBufferSize()
  *
  */
 bool
-TcpSocket::is_valid()
+TcpSocket::allowConnection()
 {
     bool retval = true ;
 

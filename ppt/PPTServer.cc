@@ -146,7 +146,7 @@ PPTServer::initConnection()
 	_mySock = _listener->accept() ;
 	if( _mySock )
 	{
-	    if( _mySock->is_valid() == true )
+	    if( _mySock->allowConnection() == true )
 	    {
 		// welcome the client
 		if( welcomeClient( ) != -1 )

@@ -250,7 +250,7 @@ UnixSocket::close()
  *
  */
 bool
-UnixSocket::is_valid()
+UnixSocket::allowConnection()
 {
     return true ;
 }
