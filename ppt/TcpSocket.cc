@@ -39,6 +39,14 @@
 #include <fcntl.h>
 #include <netinet/tcp.h>
 
+#ifdef HAVE_LIBWRAP
+extern "C" {
+#include "tcpd.h"
+int allow_severity;
+int deny_severity;
+}
+#endif
+
 #include <cstring>
 #include <cerrno>
 
@@ -579,6 +587,29 @@ TcpSocket::getSendBufferSize()
 	_sendBufferSize = sizenum ;
     }
     return _sendBufferSize ;
+}
+
+/** @brief is there any wrapper code for unix sockets
+ *
+ */
+bool
+TcpSocket::is_valid()
+{
+    bool retval = true ;
+
+#ifdef HAVE_LIBWRAP
+    struct request_info req ;
+    request_init( &req, RQ_DAEMON, "besdaemon", RQ_FILE,
+		  getSocketDescriptor(), 0 ) ;
+    fromhost() ;
+
+    if( STR_EQ( eval_hostname(), paranoid ) && hosts_access() )
+    {
+	retval = false ;
+    }
+#endif
+
+    return retval ;
 }
 
 /** @brief dumps information about this object

@@ -246,6 +246,15 @@ UnixSocket::close()
     }
 }
 
+/** @brief is there any wrapper code for unix sockets
+ *
+ */
+bool
+UnixSocket::is_valid()
+{
+    return true ;
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance

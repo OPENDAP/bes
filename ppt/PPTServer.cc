@@ -35,14 +35,6 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAVE_LIBWRAP
-extern "C" {
-#include "tcpd.h"
-int allow_severity;
-int deny_severity;
-}
-#endif
-
 using std::string ;
 using std::ostringstream ;
 
@@ -154,26 +146,19 @@ PPTServer::initConnection()
 	_mySock = _listener->accept() ;
 	if( _mySock )
 	{
-	    // welcome the client
-#ifdef HAVE_LIBWRAP
-           struct request_info req;
-           request_init(&req, RQ_DAEMON, "besdaemon", RQ_FILE, _mySock->getSocketDescriptor(), 0);
-           fromhost();
-
-           if (!STR_EQ(eval_hostname(), paranoid) && hosts_access()) {
-#endif
-               // welcome the client
-               if( welcomeClient( ) != -1 )
-               {
-                   // now hand it off to the handler
-                   _handler->handle( this ) ;
-               }
-#ifdef HAVE_LIBWRAP
-           }
-           else {
+	    if( _mySock->is_valid() == true )
+	    {
+		// welcome the client
+		if( welcomeClient( ) != -1 )
+		{
+		    // now hand it off to the handler
+		    _handler->handle( this ) ;
+		}
+	    }
+	    else
+	    {
                _mySock->close();
-           }
-#endif
+	    }
 	}
     }
 }
