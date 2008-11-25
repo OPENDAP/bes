@@ -57,6 +57,8 @@ public:
     virtual Socket *		newSocket( int socket,
                                            struct sockaddr *addr ) ;
 
+    virtual bool		allowConnection() { return true ; }
+
     virtual void		dump( ostream &strm ) const ;
 } ;
 
