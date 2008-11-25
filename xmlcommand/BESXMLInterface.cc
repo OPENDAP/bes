@@ -132,16 +132,25 @@ BESXMLInterface::build_data_request_plan()
 	string err = "There is no root element in the xml document" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
-    if( (string)(char *)root_element->name != "request" )
+
+    string root_name ;
+    string root_val ;
+    map< string, string> props ;
+    BESXMLUtils::GetNodeInfo( root_element, root_name, root_val, props ) ;
+    if( root_name != "request" )
     {
 	string err = (string)"The root element should be a request element, "
 		     + "name is " + (char *)root_element->name ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
+    if( root_val != "" )
+    {
+	string err = (string)"The request element should not contain a value, "
+		     + root_val ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    }
 
     // there should be a request id property with one value.
-    map< string, string> props ;
-    BESXMLUtils::GetProps( root_element, props ) ;
     string &reqId = props[REQUEST_ID] ;
     if( reqId.empty() )
     {
