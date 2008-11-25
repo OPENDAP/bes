@@ -2,7 +2,7 @@
 //  This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-// Copyright (c) 2007 HDF Group, Inc.
+// Copyright (c) 2007 The HDF Group
 //
 /////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
@@ -19,8 +19,8 @@ int hdfeoslex();
 int hdfeosparse(void *arg);
 struct yy_buffer_state;
 yy_buffer_state *hdfeos_scan_string(const char *str);
-
-
+extern bool valid_projection;
+extern bool grid_structure_found;
 H5EOS::H5EOS()
 {
   valid = false;

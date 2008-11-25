@@ -24,8 +24,8 @@ using namespace std;
 extern int yy_line_num;	// defined in hdfeos.lex 
 
 static int parser_state = 0; // parser state 
-static bool valid_projection = false;
-static bool grid_structure_found = false; 
+bool valid_projection = false;
+bool grid_structure_found = false; 
 string full_path = "/HDFEOS/GRIDS/";
 string grid_name = "";
 string data_field_name = "/Data Fields/";
