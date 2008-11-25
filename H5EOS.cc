@@ -415,7 +415,8 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 void H5EOS::reset()
 {
   int j;
-
+  grid_structure_found = false;
+  valid_projection = false;
   valid = false;
   point_lower = 0.0;
   point_upper = 0.0;
