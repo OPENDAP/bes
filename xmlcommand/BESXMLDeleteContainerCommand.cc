@@ -46,7 +46,7 @@ BESXMLDeleteContainerCommand::BESXMLDeleteContainerCommand( const BESDataHandler
 
 /** @brief parse a show command. No properties or children elements
  *
-    <deleteContainer name="containerName" store="storeName" />
+    <deleteContainer name="containerName" space="storeName" />
  *
  * @param node xml2 element node pointer
  */
@@ -73,7 +73,7 @@ BESXMLDeleteContainerCommand::parse_request( xmlNode *node )
     _dhi.data[CONTAINER_NAME] = container_name ;
 
     // optional property
-    _dhi.data[STORE_NAME] = props["store"] ; 
+    _dhi.data[STORE_NAME] = props["space"] ; 
     if( _dhi.data[STORE_NAME].empty() )
     {
 	_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
