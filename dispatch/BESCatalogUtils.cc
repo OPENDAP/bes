@@ -72,12 +72,6 @@ BESCatalogUtils( const string &n )
     if( found && e_str != "" && e_str != ";" )
     {
 	BESUtil::explode( ';', e_str, _exclude ) ;
-	list<string>::iterator i = _exclude.begin() ;
-	list<string>::iterator e = _exclude.end() ;
-	for( ; i != e; i++ )
-	{
-	    cout << "exclude " << (*i) << endl ;
-	}
     }
 
     key = (string)"BES.Catalog." + n + ".Include" ;
@@ -85,12 +79,6 @@ BESCatalogUtils( const string &n )
     if( found && i_str != "" && i_str != ";" )
     {
 	BESUtil::explode( ';', i_str, _include ) ;
-	list<string>::iterator i = _include.begin() ;
-	list<string>::iterator e = _include.end() ;
-	for( ; i != e; i++ )
-	{
-	    cout << "include " << (*i) << endl ;
-	}
     }
 
     key = "BES.Catalog." + n + ".TypeMatch" ;
