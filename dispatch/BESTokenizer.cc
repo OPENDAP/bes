@@ -227,7 +227,7 @@ BESTokenizer::tokenize( const char *p ) {
     _number_tokens = tokens.size() ;
     if( passing_raw )
         parse_error( "Unclose quote found.(\")" ) ;
-    if( _number_tokens < 2 )
+    if( _number_tokens < 1 )
         parse_error( "Unknown command: '" + (string)p + (string)"'") ;
     if( tokens[_number_tokens - 1] != ";" )
         parse_error( "The request must be terminated by a semicolon (;)" ) ;

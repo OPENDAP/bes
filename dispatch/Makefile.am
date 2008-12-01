@@ -103,50 +103,51 @@ SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc \
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc \
 	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
-	BESUncompressBZ2.cc BESUncompressZ.cc
+	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc
 
-HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h \
-	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h \
-	BESInitializer.h BESLog.h \
-	BESKeys.h TheBESKeys.h \
-	BESStatus.h \
-	BESContainer.h BESFileContainer.h BESContainerStorage.h \
-	BESContainerStorageFile.h BESContainerStorageList.h \
-	BESContainerStorageVolatile.h \
+HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
+	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h 	\
+	BESInitializer.h BESLog.h 					\
+	BESKeys.h TheBESKeys.h 						\
+	BESStatus.h 							\
+	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
+	BESContainerStorageFile.h BESContainerStorageList.h 		\
+	BESContainerStorageVolatile.h 					\
 	BESSetContainerResponseHandler.h BESShowContainersResponseHandler.h \
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
-	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h \
-	BESDefinitionStorageVolatile.h \
-	BESDefineResponseHandler.h BESShowDefsResponseHandler.h \
-	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h \
-	BESSetContextResponseHandler.h BESShowContextResponseHandler.h \
-	BESContextManager.h \
-	BESProcIdResponseHandler.h BESResponseHandler.h \
-	BESHelpResponseHandler.h BESStatusResponseHandler.h \
-	BESVersionResponseHandler.h BESConfigResponseHandler.h \
-	BESStreamResponseHandler.h BESResponseHandlerList.h \
-	BESResponseNames.h \
-	BESResponseObject.h BESInfo.h BESTextInfo.h BESHTMLInfo.h \
-	BESVersionInfo.h BESInfoList.h BESXMLInfo.h BESSilentInfo.h \
-	BESInfoNames.h \
-	BESRequestHandler.h BESRequestHandlerList.h \
-	BESDataHandlerInterface.h BESDataRequestInterface.h BESTransmitter.h \
-	BESBasicHttpTransmitter.h BESBasicTransmitter.h \
-	BESReporter.h BESReporterList.h \
-	BESError.h BESInternalError.h BESInternalFatalError.h \
-	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h \
-	BESConstraintFuncs.h BESProcessEncodedString.h \
-	BESMemoryGlobalArea.h BESMemoryManager.h \
-	BESServerSystemResources.h \
-	BESAggFactory.h BESAggregationServer.h \
-	BESReturnManager.h \
-	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h \
-	BESAbstractModule.h BESPluginFactory.h BESPlugin.h \
-	BESDefaultModule.h BESTransmitterNames.h \
-	BESExceptionManager.h \
-	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h \
-	BESDebug.h BESCache.h BESUncompressManager.h \
-	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h
+	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h 	\
+	BESDefinitionStorageVolatile.h 					\
+	BESDefineResponseHandler.h BESShowDefsResponseHandler.h 	\
+	BESDelDefResponseHandler.h BESDelDefsResponseHandler.h 		\
+	BESSetContextResponseHandler.h BESShowContextResponseHandler.h 	\
+	BESContextManager.h 						\
+	BESProcIdResponseHandler.h BESResponseHandler.h 		\
+	BESHelpResponseHandler.h BESStatusResponseHandler.h 		\
+	BESVersionResponseHandler.h BESConfigResponseHandler.h 		\
+	BESStreamResponseHandler.h BESResponseHandlerList.h 		\
+	BESResponseNames.h 						\
+	BESResponseObject.h BESInfo.h BESTextInfo.h BESHTMLInfo.h 	\
+	BESVersionInfo.h BESInfoList.h BESXMLInfo.h BESSilentInfo.h 	\
+	BESInfoNames.h 							\
+	BESRequestHandler.h BESRequestHandlerList.h 			\
+	BESDataHandlerInterface.h BESDataRequestInterface.h 		\
+	BESTransmitter.h BESBasicHttpTransmitter.h BESBasicTransmitter.h \
+	BESReporter.h BESReporterList.h 				\
+	BESError.h BESInternalError.h BESInternalFatalError.h 		\
+	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
+	BESConstraintFuncs.h BESProcessEncodedString.h 			\
+	BESMemoryGlobalArea.h BESMemoryManager.h 			\
+	BESServerSystemResources.h 					\
+	BESAggFactory.h BESAggregationServer.h 				\
+	BESReturnManager.h 						\
+	BESDataNames.h BESApp.h BESObj.h BESIndent.h BESBaseApp.h 	\
+	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
+	BESDefaultModule.h BESTransmitterNames.h 			\
+	BESExceptionManager.h 						\
+	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
+	BESDebug.h BESCache.h BESUncompressManager.h 			\
+	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h		\
+	BESTokenizer.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

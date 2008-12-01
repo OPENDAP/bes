@@ -42,12 +42,11 @@ SRCS = BESCmdInterface.cc BESCmdParser.cc BESCommand.cc		\
 	BESDefineCommand.cc BESSetContainerCommand.cc 		\
 	BESDelContainerCommand.cc BESDelContainersCommand.cc 	\
 	BESDelDefCommand.cc BESDelDefsCommand.cc		\
-	BESTokenizer.cc 					\
 	BESDeleteCommand.cc BESDefaultCommands.cc		\
 	BESSetContextCommand.cc
 
-HDRS = BESCmdInterface.h BESCommand.h BESTokenizer.h 		\
-	BESDefaultCommands.h BESCmdParser.h 	\
+HDRS = BESCmdInterface.h BESCommand.h				\
+	BESDefaultCommands.h BESCmdParser.h 			\
 	BESGetCommand.h BESSetCommand.h 			\
 	BESShowCommand.h BESDeleteCommand.h 			\
 	BESDelContainerCommand.h BESDelContainersCommand.h 	\

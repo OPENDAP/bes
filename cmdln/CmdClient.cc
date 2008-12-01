@@ -75,8 +75,12 @@ extern "C"
 #  endif                        /* defined(HAVE_READLINE_HISTORY_H) */
   /* no history */
 #endif                          /* HAVE_READLINE_HISTORY */
+
+#include <libxml/encoding.h>
+
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
 #include "CmdClient.h"
+#include "CmdTranslation.h"
 #include "PPTClient.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -342,8 +346,9 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 /** @brief Send the command(s) specified to the BES server after wrapping in
  * request document
 *
-* This takes a command  or set of commands from the command line, wraps it
-* in the proper request document, and sends it to the server.
+* This takes a string command or set of string commands from the command
+* line, builds an xml document with the commands, and sends it to the
+* server.
 *
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
@@ -360,18 +365,17 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
 {
     if( repeat < 1 ) repeat = 1 ;
 
-    string xml_doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ;
-    xml_doc += "<request reqID=\"some_unique_value\" >\n" ;
-    xml_doc += cmd_list ;
-    xml_doc += "</request>\n" ;
-
-    executeCommand( xml_doc, 1 ) ;
+    string doc = CmdTranslation::translate( cmd_list ) ;
+    if( !doc.empty() )
+    {
+	this->executeCommand( doc, repeat ) ;
+    }
 }
 
 /** @brief Sends the xml request document from the specified file to the server
 *
-* The requests do not have to be one per line but can span multiple
-* lines and there can be more than one command per line.
+* The file can contain only one xml request document and must be well
+* formatted. If not, the server will respond with an exception
 *
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
@@ -451,7 +455,11 @@ CmdClient::interact()
 	}
 	else if( len != 0 && message != "" )
 	{
-	    this->executeCommands( message, 1 ) ;
+	    string doc = CmdTranslation::translate( message ) ;
+	    if( !doc.empty() )
+	    {
+		this->executeCommand( doc, 1 ) ;
+	    }
         }
     }
 }

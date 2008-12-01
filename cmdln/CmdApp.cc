@@ -52,6 +52,7 @@ using std::ofstream ;
 
 #include "CmdApp.h"
 #include "CmdClient.h"
+#include "CmdTranslation.h"
 #include "BESError.h"
 #include "BESDebug.h"
 
@@ -232,6 +233,8 @@ CmdApp::initialize( int argc, char **argv )
     int retVal = BESBaseApp::initialize( argc, argv ) ;
     if( retVal != 0 )
 	return retVal ;
+
+    CmdTranslation::initialize( argc, argv ) ;
 
     string portStr = "" ;
     string outputStr = "" ;

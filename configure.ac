@@ -302,6 +302,7 @@ AC_CONFIG_FILES([Makefile
 		 ppt/Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
+		 cmdln/unit-tests/Makefile
 		 standalone/Makefile
 		 server/Makefile
 		 server/test/Makefile

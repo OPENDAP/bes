@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -16,10 +16,15 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
+SUBDIRS = unit-tests
+DIST_SUBDIRS = unit-tests
+
 bin_PROGRAMS = bescmdln
 
-bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h
-bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS)
+bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdApp.h CmdClient.h 		\
+		CmdTranslation.cc CmdTranslation.h
+
+bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 
 EXTRA_DIST = testsuite common_tests.exp
 
