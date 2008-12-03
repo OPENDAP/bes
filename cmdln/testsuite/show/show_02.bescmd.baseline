@@ -1,14 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<showInfo>
-    <response>
-        <dataset isData="false" thredds_collection="true">
-            <name>/data/hdf4</name>
-            <size>136</size>
-            <lastmodified>
-                <date>*</date>
-                <time>*</time>
-            </lastmodified>
-            <count>2</count>
-        </dataset>
-    </response>
-</showInfo>
+<?xml version="*" encoding="*"?>
+<showInfo><response><dataset isData="false" thredds_collection="true"><name>/data/hdf4</name><size>136</size><lastmodified><date>*</date><time>*</time></lastmodified><count>2</count></dataset></response></showInfo>

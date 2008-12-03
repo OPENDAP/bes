@@ -1,13 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<showInfo>
-    <response>
-        <dataset isData="true" thredds_collection="false">
-            <name>/data/nc/fnoc1.nc</name>
-            <size>23944</size>
-            <lastmodified>
-                <date>*</date>
-                <time>*</time>
-            </lastmodified>
-        </dataset>
-    </response>
-</showInfo>
+<?xml version="*" encoding="*"?>
+<showInfo><response><dataset isData="true" thredds_collection="false"><name>/data/nc/fnoc1.nc</name><size>23944</size><lastmodified><date>*</date><time>*</time></lastmodified></dataset></response></showInfo>

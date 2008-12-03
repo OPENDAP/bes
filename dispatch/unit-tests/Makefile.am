@@ -106,7 +106,8 @@ resplistT_SOURCES = resplistT.cc TestResponseHandler.cc baseApp.cc	\
 resplistT_LDADD =  ../libbes_dispatch.la
 
 infoT_SOURCES = infoT.cc baseApp.cc infoT.h baseApp.h Application.h
-infoT_LDADD =  ../libbes_dispatch.la
+infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
+infoT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 agglistT_SOURCES = agglistT.cc TestAggServer.cc baseApp.cc agglistT.h	\
 			TestAggServer.h baseApp.h Application.h

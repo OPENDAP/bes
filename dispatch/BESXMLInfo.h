@@ -33,6 +33,9 @@
 #ifndef BESXMLInfo_h_
 #define BESXMLInfo_h_ 1
 
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
+
 #include "BESInfo.h"
 
 /** @brief represents an xml formatted response object
@@ -45,8 +48,13 @@
 class BESXMLInfo : public BESInfo
 {
 private:
-    string		_indent ;
-    bool		_do_indent ;
+    xmlTextWriterPtr	_writer ;
+    xmlBufferPtr	_doc_buf ;
+    bool		_started ;
+    bool		_ended ;
+    string		_doc ;
+
+    void		cleanup() ;
 public:
   			BESXMLInfo( ) ;
     virtual 		~BESXMLInfo() ;

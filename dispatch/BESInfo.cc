@@ -103,7 +103,11 @@ BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
 
 BESInfo::~BESInfo()
 {
-    if( _strm && _strm_owned ) delete _strm ;
+    if( _strm && _strm_owned )
+    {
+	delete _strm ;
+	_strm = 0 ;
+    }
 }
 
 void

@@ -1,11 +1,13 @@
 // infoT.C
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 
 using std::cerr ;
 using std::cout ;
 using std::endl ;
+using std::ostringstream ;
 
 #include "infoT.h"
 #include "TheBESKeys.h"
@@ -15,6 +17,26 @@ using std::endl ;
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
 #include <test_config.h>
+
+string txt_baseline = "tag1: tag1 data\n\
+tag2\n\
+    tag3: tag3 data\n\
+        attr_name: \"attr_val\"\n" ;
+
+string html_baseline = "<HTML>\n\
+    <HEAD>\n\
+        <TITLE>testHTMLResponse</TITLE>\n\
+    </HEAD>\n\
+    <BODY>\n\
+        tag1: tag1 data<BR />\n\
+        tag2<BR />\n\
+            tag3: tag3 data<BR />\n\
+                attr_name: \"attr_val\"<BR />\n\
+    </BODY>\n\
+</HTML>\n" ;
+
+string xml_baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+<testXMLResponse><response><tag1>tag1 data</tag1><tag2><tag3 attr_name=\"&quot;attr_val&quot;\">tag3 data</tag3></tag2></response></testXMLResponse>\n" ;
 
 int infoT::
 run(void)
@@ -56,7 +78,15 @@ run(void)
     t_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     t_info->end_tag( "tag2" ) ;
     t_info->end_response() ;
-    t_info->print( cout ) ;
+    ostringstream tstrm ;
+    t_info->print( tstrm ) ;
+    if( tstrm.str() != txt_baseline )
+    {
+	cout << "Failed text" << endl ;
+	cout << tstrm.str() ;
+	cout << txt_baseline ;
+	return 1 ;
+    }
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to html ... " << endl ;
@@ -78,7 +108,15 @@ run(void)
     h_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     h_info->end_tag( "tag2" ) ;
     h_info->end_response() ;
-    h_info->print( cout ) ;
+    ostringstream hstrm ;
+    h_info->print( hstrm ) ;
+    if( hstrm.str() != html_baseline )
+    {
+	cout << "Failed html" << endl ;
+	cout << hstrm.str() ;
+	cout << html_baseline ;
+	return 1 ;
+    }
 
     cout << endl << "*****************************************" << endl;
     cout << "Set Info type to xml ... " << endl ;
@@ -100,7 +138,15 @@ run(void)
     x_info->add_tag( "tag3", "tag3 data", &attrs ) ;
     x_info->end_tag( "tag2" ) ;
     x_info->end_response() ;
-    x_info->print( cout ) ;
+    ostringstream xstrm ;
+    x_info->print( xstrm ) ;
+    if( xstrm.str() != xml_baseline )
+    {
+	cout << "Failed xml" << endl ;
+	cout << xstrm.str() ;
+	cout << xml_baseline ;
+	return 1 ;
+    }
 
     cout << endl << "*****************************************" << endl;
     cout << "Returning from infoT::run" << endl;

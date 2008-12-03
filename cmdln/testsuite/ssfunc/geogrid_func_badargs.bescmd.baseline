@@ -1,14 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<getAscii>
-    <response>
-        <BESError>
-            <Type>3</Type>
-            <Message>libdap exception building response: error_code = 1005: Failed to read data: Wrong number of arguments to geogrid(). See geogrid() for more information.</Message>
-            <Administrator>*</Administrator>
-            <Location>
-                <File>BESAsciiTransmit.cc</File>
-                <Line>*</Line>
-            </Location>
-        </BESError>
-    </response>
-</getAscii>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<getAscii><response><BESError><Type>3</Type><Message>libdap exception building response: error_code = 1005: Failed to read data: Wrong number of arguments to geogrid(). See geogrid() for more information.</Message><Administrator>*</Administrator>*</BESError></response></getAscii>

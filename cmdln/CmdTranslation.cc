@@ -143,7 +143,7 @@ CmdTranslation::translate( const string &commands )
         return "" ;
     }
 
-    /* Start an element named "EXAMPLE". Since thist is the first
+    /* Start an element named "request". Since thist is the first
      * element, this will be the root element of the document. */
     rc = xmlTextWriterStartElement( writer, BAD_CAST "request" ) ;
     if( rc < 0 )

@@ -75,10 +75,10 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESKeys::Keys_citer ke = TheBESKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
     {
-	info->begin_tag( "Key" ) ;
+	info->begin_tag( "key" ) ;
 	info->add_tag( "name", (*ki).first ) ;
 	info->add_tag( "value", (*ki).second ) ;
-	info->end_tag( "Key" ) ;
+	info->end_tag( "key" ) ;
     }
     info->end_response() ;
 }

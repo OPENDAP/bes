@@ -174,12 +174,12 @@ BESCatalogList::show_catalog( const string &container,
 	if( container.empty() )
 	{
 	    map<string,string> a1 ;
-	    a1["thredds_collection"] = "\"true\"" ;
-	    a1["isData"] = "\"false\"" ;
+	    a1["thredds_collection"] = "true" ;
+	    a1["isData"] = "false" ;
 	    info->begin_tag( "dataset", &a1 ) ;
 	    info->add_tag( "name", "/" ) ;
 
-	    a1["catalogRoot"] = "\"true\"" ;
+	    a1["catalogRoot"] = "true" ;
 	    catalog_citer i = _catalogs.begin() ;
 	    catalog_citer e = _catalogs.end() ;
 	    for( ; i != e; i++ )
