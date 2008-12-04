@@ -157,9 +157,19 @@ then
 	dnl version.
 	
 	dnl First test the minimum
-	if test $version_M -lt 2 || test $version_m -lt 5 || test $version_m_m -lt 7
+	if test $version_M -lt 2
 	then
 		AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+	else
+	    if test $version_M -eq 2 && $version_m -lt 5
+	    then
+		    AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+	    else
+		if test $version_M -eq 2 && test $version_m -eq 5 && test $version_m_m -lt 7
+		then
+			AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+		fi
+	    fi
 	fi
 	
 	dnl Sort out the particular variant

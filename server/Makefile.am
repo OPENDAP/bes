@@ -29,7 +29,7 @@ beslistener_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 beslistener_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la ../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h
-besdaemon_LDADD = ../dispatch/libbes_dispatch.la
+besdaemon_LDADD = ../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 install-data-local:
 	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"

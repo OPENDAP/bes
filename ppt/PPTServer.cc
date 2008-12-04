@@ -256,7 +256,7 @@ PPTServer::authenticateClient()
     // if it authenticates, good, if not, an exception is thrown, no need to
     // do anything else here.
 #else
-    string err = "Authentication requested for this server "
+    string err = (string)"Authentication requested for this server "
                  + "but OpenSSL is not built into the server" ;
     throw BESInternalError( err, __FILE__, __LINE__ ) ;
 #endif
