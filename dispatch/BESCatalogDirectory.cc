@@ -30,9 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "dirent.h"
+#include "config.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 #include <cstring>
 #include <cerrno>
@@ -51,6 +53,11 @@ using std::endl ;
 #include "BESLog.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+
+void bes_add_stat_info( BESInfo *info, struct stat &buf, const string &node ) ;
+void bes_get_stat_info( BESCatalogDirectory::bes_dir_entry &entry,
+			struct stat &buf,
+			const string &node);
 
 BESCatalogDirectory::BESCatalogDirectory( const string &name )
     : BESCatalog( name )
@@ -129,11 +136,11 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    info->begin_tag( "dataset", &a1 ) ;
 	    if( use_node == "" )
 	    {
-		add_stat_info( info, cbuf, "/" ) ;
+		bes_add_stat_info( info, cbuf, "/" ) ;
 	    }
 	    else
 	    {
-		add_stat_info( info, cbuf, use_node ) ;
+		bes_add_stat_info( info, cbuf, use_node ) ;
 	    }
 
 	    struct dirent *dit;
@@ -181,7 +188,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 				    bes_dir_entry entry ;
 				    entry.collection = true ;
 				    entry.isData = false ;
-				    add_stat_info( entry, buf, dirEntry ) ;
+				    bes_get_stat_info( entry, buf, dirEntry ) ;
 				    dir_list[dirEntry] = entry ;
 				}
 			    }
@@ -200,7 +207,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 					entry.isData = true ;
 				    else
 					entry.isData = false ;
-				    add_stat_info( entry, buf, dirEntry ) ;
+				    bes_get_stat_info( entry, buf, dirEntry ) ;
 				    dir_list[dirEntry] = entry ;
 				}
 			    }
@@ -298,7 +305,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		else
 		    a4["isData"] = "false" ;
 		info->begin_tag( "dataset", &a4 ) ;
-		add_stat_info( info, buf, node ) ;
+		bes_add_stat_info( info, buf, node ) ;
 		info->end_tag( "dataset" ) ;
 	    }
 	    else if( statret == 0 )
@@ -343,12 +350,10 @@ BESCatalogDirectory::show_catalog( const string &node,
 }
 
 void
-BESCatalogDirectory::add_stat_info( BESInfo *info,
-				    struct stat &buf,
-				    const string &node )
+bes_add_stat_info( BESInfo *info, struct stat &buf, const string &node )
 {
-    bes_dir_entry entry ;
-    add_stat_info( entry, buf, node ) ;
+    BESCatalogDirectory::bes_dir_entry entry ;
+    bes_get_stat_info( entry, buf, node ) ;
     info->add_tag( "name", entry.name ) ;
     info->add_tag( "size", entry.size ) ;
     info->begin_tag( "lastmodified" ) ;
@@ -358,9 +363,8 @@ BESCatalogDirectory::add_stat_info( BESInfo *info,
 }
 
 void
-BESCatalogDirectory::add_stat_info( bes_dir_entry &entry,
-				    struct stat &buf,
-				    const string &node )
+bes_get_stat_info( BESCatalogDirectory::bes_dir_entry &entry,
+		   struct stat &buf, const string &node )
 {
     entry.name = node ;
 

@@ -30,12 +30,13 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "TheBESKeys.h"
-#include "BESInternalFatalError.h"
 #include "config.h"
 
 #include <sys/stat.h>
 #include <cstdlib>
+
+#include "TheBESKeys.h"
+#include "BESInternalFatalError.h"
 
 #define BES_CONF getenv("BES_CONF")
 

@@ -33,8 +33,6 @@
 #ifndef I_BESCatalogDirectory_h
 #define I_BESCatalogDirectory_h 1
 
-#include "sys/stat.h"
-
 #include <list>
 #include <string>
 
@@ -50,8 +48,7 @@ class BESCatalogUtils ;
  */
 class BESCatalogDirectory : public BESCatalog
 {
-private:
-    const BESCatalogUtils *	_utils ;
+public:
     typedef struct _bes_dir_entry
     {
 	bool collection ;
@@ -61,13 +58,9 @@ private:
 	string mod_date ;
 	string mod_time ;
     } bes_dir_entry ;
+private:
+    const BESCatalogUtils *	_utils ;
 
-    void			add_stat_info( BESInfo *info,
-                                               struct stat &buf,
-					       const string &node ) ;
-    void			add_stat_info( bes_dir_entry &entry,
-                                               struct stat &buf,
-					       const string &node ) ;
     bool			isData( const string &inQuestion,
     					list<string> &provides ) ;
 public:

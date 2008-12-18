@@ -99,7 +99,7 @@ AC_TYPE_SIZE_T
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(strdup strftime timegm mktime)
-
+AC_SYS_LARGEFILE
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?

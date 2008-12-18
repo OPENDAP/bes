@@ -62,7 +62,7 @@ BESCatalogList::~BESCatalogList()
 bool
 BESCatalogList::add_catalog(BESCatalog * catalog)
 {
-    bool stat = false;
+    bool result = false;
     if (find_catalog(catalog->get_catalog_name()) == 0) {
 #if 0
         _catalogs[catalog->get_catalog_name()] = catalog;
@@ -70,12 +70,12 @@ BESCatalogList::add_catalog(BESCatalog * catalog)
 	string name = catalog->get_catalog_name() ;
         std::pair<const std::string, BESCatalog*> p =
 	    std::make_pair( name, catalog ) ;
-        stat = _catalogs.insert(p).second;
+        result = _catalogs.insert(p).second;
 #if 0
-        stat = true;
+        result = true;
 #endif
     }
-    return stat;
+    return result;
 }
 
 /** @brief remove from the list and delete the specified catalog

@@ -30,9 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "dirent.h"
+#include "config.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 #include "BESCatalogUtils.h"
 #include "TheBESKeys.h"
