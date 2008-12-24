@@ -46,6 +46,7 @@ using std::map ;
 #define MY_ENCODING "ISO-8859-1"
 
 map< string, CmdTranslation::p_cmd_translator > CmdTranslation::_translations ;
+bool CmdTranslation::_is_show = false ;
 
 int
 CmdTranslation::initialize(int, char**)
@@ -256,6 +257,8 @@ CmdTranslation::do_translate( BESTokenizer &t, xmlTextWriterPtr writer )
 bool
 CmdTranslation::translate_show( BESTokenizer &t, xmlTextWriterPtr writer )
 {
+    CmdTranslation::set_show( true ) ;
+
     string show_what = t.get_next_token() ;
     if( show_what.empty() )
     {

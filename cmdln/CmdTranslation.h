@@ -53,6 +53,8 @@ private:
 				      xmlTextWriterPtr writer ) ;
     static map< string, p_cmd_translator > _translations ;
 
+    static bool			_is_show ;
+
     static bool			translate_show( BESTokenizer &tokenizer,
 					    xmlTextWriterPtr writer ) ;
     static bool			translate_catalog( BESTokenizer &tokenizer,
@@ -75,6 +77,9 @@ private:
 public:
     static int			initialize( int argc, char **argv ) ;
     static int			terminate( void ) ;
+
+    static bool			is_show() { return _is_show ; }
+    static void			set_show( bool val ) { _is_show = val ; }
 
     static void			add_translation( const string &name,
 						 p_cmd_translator func ) ;

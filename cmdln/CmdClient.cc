@@ -35,12 +35,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <map>
 
 using std::cout ;
 using std::endl ;
 using std::cerr ;
 using std::ofstream ;
+using std::ostringstream ;
 using std::ios ;
 using std::map ;
 
@@ -81,9 +83,11 @@ extern "C"
 #define SIZE_COMMUNICATION_BUFFER 4096*4096
 #include "CmdClient.h"
 #include "CmdTranslation.h"
+#include "CmdPretty.h"
 #include "PPTClient.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+#include "BESError.h"
 
 CmdClient::~CmdClient()
 {
@@ -299,15 +303,40 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 	    BESDEBUG( "cmdln", "cmdclient receiving " << endl )
 	    // keep reading till we get the last chunk, send to _strm
 	    bool done = false ;
+	    ostringstream *show_stream = 0 ;
 	    while( !done )
 	    {
-		done = _client->receive( extensions, _strm ) ;
+		if( CmdTranslation::is_show() )
+		{
+		    if( !show_stream )
+		    {
+			show_stream = new ostringstream ;
+		    }
+		}
+		if( show_stream )
+		{
+		    done = _client->receive( extensions, show_stream ) ;
+		}
+		else
+		{
+		    done = _client->receive( extensions, _strm ) ;
+		}
 		if( extensions["status"] == "error" )
 		{
 		    // If there is an error, just flush what I have
 		    // and continue on.
 		    _strm->flush() ;
+
+		    // let's also set show to true because we've gotten back
+		    // an xml document (maybe)
+		    CmdTranslation::set_show( true ) ;
 		}
+	    }
+	    if( show_stream )
+	    {
+		CmdPretty::make_pretty( show_stream->str(), *_strm ) ;
+		delete show_stream ;
+		show_stream = 0 ;
 	    }
 	    if( BESDebug::IsSet( "cmdln" ) )
 	    {
@@ -365,11 +394,21 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
 {
     if( repeat < 1 ) repeat = 1 ;
 
-    string doc = CmdTranslation::translate( cmd_list ) ;
-    if( !doc.empty() )
+    CmdTranslation::set_show( false ) ;
+    try
     {
-	this->executeCommand( doc, repeat ) ;
+	string doc = CmdTranslation::translate( cmd_list ) ;
+	if( !doc.empty() )
+	{
+	    this->executeCommand( doc, repeat ) ;
+	}
     }
+    catch( BESError &e )
+    {
+	CmdTranslation::set_show( false ) ;
+	throw e ;
+    }
+    CmdTranslation::set_show( false ) ;
 }
 
 /** @brief Sends the xml request document from the specified file to the server
@@ -455,11 +494,21 @@ CmdClient::interact()
 	}
 	else if( len != 0 && message != "" )
 	{
-	    string doc = CmdTranslation::translate( message ) ;
-	    if( !doc.empty() )
+	    CmdTranslation::set_show( false ) ;
+	    try
 	    {
-		this->executeCommand( doc, 1 ) ;
+		string doc = CmdTranslation::translate( message ) ;
+		if( !doc.empty() )
+		{
+		    this->executeCommand( doc, 1 ) ;
+		}
 	    }
+	    catch( BESError &e )
+	    {
+		CmdTranslation::set_show( false ) ;
+		throw e ;
+	    }
+	    CmdTranslation::set_show( false ) ;
         }
     }
 }

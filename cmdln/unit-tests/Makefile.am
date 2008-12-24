@@ -41,7 +41,7 @@ test_config.h: test_config.h.in Makefile
 	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > test_config.h
 
 if CPPUNIT
-UNIT_TESTS = translateT
+UNIT_TESTS = translateT prettyT
 else
 UNIT_TESTS =
 
@@ -57,4 +57,8 @@ endif
 translateT_SOURCES = translateT.cc
 translateT_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 translateT_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
+
+prettyT_SOURCES = prettyT.cc
+prettyT_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
+prettyT_LDADD = $(top_builddir)/cmdln/CmdPretty.o $(top_builddir)/cmdln/CmdXMLUtils.o $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
 
