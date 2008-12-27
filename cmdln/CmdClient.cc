@@ -327,9 +327,13 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 		    // and continue on.
 		    _strm->flush() ;
 
-		    // let's also set show to true because we've gotten back
-		    // an xml document (maybe)
-		    CmdTranslation::set_show( true ) ;
+                   // let's also set show to true because we've gotten back
+                   // an xml document (maybe)
+		   if( _isInteractive )
+		   {
+		       CmdTranslation::set_show( true ) ;
+		   }
+
 		}
 	    }
 	    if( show_stream )
@@ -392,6 +396,7 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 void
 CmdClient::executeCommands( const string &cmd_list, int repeat )
 {
+    _isInteractive = true ;
     if( repeat < 1 ) repeat = 1 ;
 
     CmdTranslation::set_show( false ) ;
@@ -406,9 +411,11 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
     catch( BESError &e )
     {
 	CmdTranslation::set_show( false ) ;
+	_isInteractive = false ;
 	throw e ;
     }
     CmdTranslation::set_show( false ) ;
+    _isInteractive = false ;
 }
 
 /** @brief Sends the xml request document from the specified file to the server
@@ -432,6 +439,7 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
 void
 CmdClient::executeCommands( ifstream & istrm, int repeat )
 {
+    _isInteractive = false ;
     if( repeat < 1 ) repeat = 1 ;
     for( int i = 0; i < repeat; i++ )
     {
@@ -471,6 +479,8 @@ CmdClient::executeCommands( ifstream & istrm, int repeat )
 void
 CmdClient::interact()
 {
+    _isInteractive = true ;
+
     cout << endl << endl
         << "Type 'exit' to exit the command line client and 'help' or '?' "
         << "to display the help screen" << endl << endl ;
@@ -506,11 +516,13 @@ CmdClient::interact()
 	    catch( BESError &e )
 	    {
 		CmdTranslation::set_show( false ) ;
+		_isInteractive = false ;
 		throw e ;
 	    }
 	    CmdTranslation::set_show( false ) ;
         }
     }
+    _isInteractive = false ;
 }
 
 /** @brief Read a line from the interactive terminal using the readline library

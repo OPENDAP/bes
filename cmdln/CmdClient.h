@@ -78,6 +78,7 @@ private:
     PPTClient *			_client ;
     ostream *			_strm ;
     bool			_strmCreated ;
+    bool			_isInteractive ;
 
     size_t			readLine( string &str ) ;
     void			displayHelp() ;
@@ -87,7 +88,8 @@ public:
     				CmdClient( )
 				    : _client( 0 ),
 				      _strm( 0 ),
-				      _strmCreated( false ) {}
+				      _strmCreated( false ),
+				      _isInteractive( false ) {}
 				~CmdClient() ;
 
     void			startClient( const string &host,
