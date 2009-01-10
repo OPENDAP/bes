@@ -57,14 +57,14 @@ clean-local:
 
 constraintT_SOURCES = constraintT.cc baseApp.cc constraintT.h \
 			baseApp.h Application.h
-constraintT_LDADD =  ../libbes_dispatch.la
+constraintT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 containerT_SOURCES = containerT.cc baseApp.cc containerT.h baseApp.h	\
 			Application.h
-containerT_LDADD =  ../libbes_dispatch.la
+containerT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 defT_SOURCES = defT.cc baseApp.cc defT.h baseApp.h Application.h
-defT_LDADD =  ../libbes_dispatch.la
+defT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 # failInitT_SOURCES = failInitT.cc TheFailedCat.cc baseApp.cc failInitT.h \
 #			TheFailedCat.h baseApp.h Application.h
@@ -73,37 +73,37 @@ defT_LDADD =  ../libbes_dispatch.la
 initT_SOURCES = initT.cc TheCat.cc TheDog.cc cat.cc dog.cc Animal.cc	\
 		baseApp.cc initT.h TheCat.h TheDog.h cat.h dog.h Animal.h \
 		baseApp.h Application.h
-initT_LDADD =  ../libbes_dispatch.la
+initT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 keysT_SOURCES = keysT.cc baseApp.cc keysT.h baseApp.h Application.h
-keysT_LDADD =  ../libbes_dispatch.la
+keysT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 pfileT_SOURCES = pfileT.cc baseApp.cc pfileT.h baseApp.h Application.h
-pfileT_LDADD =  ../libbes_dispatch.la
+pfileT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 plistT_SOURCES = plistT.cc baseApp.cc plistT.h baseApp.h Application.h
-plistT_LDADD =  ../libbes_dispatch.la
+plistT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 pvolT_SOURCES = pvolT.cc baseApp.cc pvolT.h baseApp.h Application.h
-pvolT_LDADD =  ../libbes_dispatch.la
+pvolT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 replistT_SOURCES = replistT.cc TestReporter.cc baseApp.cc replistT.h	\
 			TestReporter.h baseApp.h Application.h
-replistT_LDADD =  ../libbes_dispatch.la
+replistT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 reqhandlerT_SOURCES = reqhandlerT.cc TestRequestHandler.cc baseApp.cc	\
 			reqhandlerT.h TestRequestHandler.h baseApp.h \
 			Application.h
-reqhandlerT_LDADD =  ../libbes_dispatch.la
+reqhandlerT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 reqlistT_SOURCES = reqlistT.cc TestRequestHandler.cc baseApp.cc reqlistT.h \
 			TestRequestHandler.h baseApp.h Application.h
-reqlistT_LDADD =  ../libbes_dispatch.la
+reqlistT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 resplistT_SOURCES = resplistT.cc TestResponseHandler.cc baseApp.cc	\
 			resplistT.h TestResponseHandler.h baseApp.h \
 			Application.h
-resplistT_LDADD =  ../libbes_dispatch.la
+resplistT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 infoT_SOURCES = infoT.cc baseApp.cc infoT.h baseApp.h Application.h
 infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
@@ -111,42 +111,42 @@ infoT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 agglistT_SOURCES = agglistT.cc TestAggServer.cc baseApp.cc agglistT.h	\
 			TestAggServer.h baseApp.h Application.h
-agglistT_LDADD =  ../libbes_dispatch.la
+agglistT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 cacheT_SOURCES = cacheT.cc baseApp.cc cacheT.h baseApp.h Application.h
-cacheT_LDADD =  ../libbes_dispatch.la
+cacheT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 lockT_SOURCES = lockT.cc baseApp.cc lockT.h baseApp.h Application.h
-lockT_LDADD =  ../libbes_dispatch.la
+lockT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 gzT_SOURCES = gzT.cc baseApp.cc gzT.h baseApp.h Application.h
-gzT_LDADD =  ../libbes_dispatch.la -lz
+gzT_LDADD =  ../libbes_dispatch.la -lz $(XML2_LIBS)
 
 bz2T_SOURCES = bz2T.cc baseApp.cc bz2T.h baseApp.h Application.h
-bz2T_LDADD =  ../libbes_dispatch.la
+bz2T_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 zT_SOURCES = zT.cc baseApp.cc zT.h baseApp.h Application.h
-zT_LDADD =  ../libbes_dispatch.la
+zT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 uncompressT_SOURCES = uncompressT.cc baseApp.cc uncompressT.h baseApp.h	\
 			Application.h
-uncompressT_LDADD =  ../libbes_dispatch.la
+uncompressT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 encodeT_SOURCES = encodeT.cc baseApp.cc encodeT.h baseApp.h Application.h
-encodeT_LDADD =  ../libbes_dispatch.la
+encodeT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 debugT_SOURCES = debugT.cc baseApp.cc debugT.h baseApp.h Application.h
-debugT_LDADD =  ../libbes_dispatch.la
+debugT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 utilT_SOURCES = utilT.cc baseApp.cc utilT.h baseApp.h Application.h
-utilT_LDADD =  ../libbes_dispatch.la
+utilT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 regexT_SOURCES = regexT.cc baseApp.cc regexT.h baseApp.h Application.h
-regexT_LDADD =  ../libbes_dispatch.la
+regexT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 scrubT_SOURCES = scrubT.cc baseApp.cc scrubT.h baseApp.h Application.h
-scrubT_LDADD =  ../libbes_dispatch.la
+scrubT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 checkT_SOURCES = checkT.cc baseApp.cc checkT.h baseApp.h Application.h
-checkT_LDADD =  ../libbes_dispatch.la
+checkT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
