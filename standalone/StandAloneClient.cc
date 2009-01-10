@@ -35,6 +35,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -46,6 +47,7 @@ using std::cerr;
 using std::ofstream;
 using std::ios;
 using std::flush;
+using std::ostringstream;
 
 #ifdef HAVE_LIBREADLINE
 #  if defined(HAVE_READLINE_READLINE_H)
@@ -80,6 +82,8 @@ extern "C" {
 #include "StandAloneClient.h"
 #include "BESDebug.h"
 #include "BESXMLInterface.h"
+#include "CmdTranslation.h"
+#include "CmdPretty.h"
 
 StandAloneClient::~StandAloneClient()
 {
@@ -218,9 +222,22 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 	if( repeat < 1 ) repeat = 1 ;
 	for( int i = 0; i < repeat; i++ )
 	{
+	    ostringstream *show_stream = 0 ;
+	    if( CmdTranslation::is_show() )
+	    {
+		show_stream = new ostringstream ;
+	    }
 	    BESDEBUG( "standalone", "cmdclient sending " << cmd << endl )
-	    BESXMLInterface interface( cmd, _strm ) ;
-	    int status = interface.execute_request( "standalone" ) ;
+	    BESXMLInterface *interface = 0 ;
+	    if( show_stream )
+	    {
+		interface = new BESXMLInterface( cmd, show_stream ) ;
+	    }
+	    else
+	    {
+		interface = new BESXMLInterface( cmd, _strm ) ;
+	    }
+	    int status = interface->execute_request( "standalone" ) ;
 
 	    if( status == 0 )
 	    {
@@ -236,7 +253,7 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 
 		// transmit the error message. finish_with_error will transmit
 		// the error
-		interface.finish_with_error( status ) ;
+		interface->finish_with_error( status ) ;
 
 		switch (status)
 		{
@@ -258,6 +275,17 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 			break;
 		}
 	    }
+	    delete interface ;
+	    interface = 0 ;
+
+	    if( show_stream )
+	    {
+		CmdPretty::make_pretty( show_stream->str(), *_strm ) ;
+		delete show_stream ;
+		show_stream = 0 ;
+	    }
+
+	    _strm->flush() ;
 	}
     }
 }
@@ -281,14 +309,26 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 void
 StandAloneClient::executeCommands( const string &cmd_list, int repeat )
 {
+    _isInteractive = true ;
     if( repeat < 1 ) repeat = 1 ;
 
-    string xml_doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ;
-    xml_doc += "<request reqID=\"some_unique_value\" >\n" ;
-    xml_doc += cmd_list ;
-    xml_doc += "</request>\n" ;
-
-    executeCommand( xml_doc, 1 ) ;
+    CmdTranslation::set_show( false ) ;
+    try
+    {
+	string doc = CmdTranslation::translate( cmd_list ) ;
+	if( !doc.empty() )
+	{
+	    executeCommand( doc, repeat ) ;
+	}
+    }
+    catch( BESError &e )
+    {
+	CmdTranslation::set_show( false ) ;
+	_isInteractive = false ;
+	throw e ;
+    }
+    CmdTranslation::set_show( false ) ;
+    _isInteractive = false ;
 }
 
 /** @brief Sends the xml request document from the specified file to the server
@@ -312,6 +352,7 @@ StandAloneClient::executeCommands( const string &cmd_list, int repeat )
 void
 StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 {
+    _isInteractive = false ;
     if( repeat < 1 ) repeat = 1 ;
     for( int i = 0; i < repeat; i++ )
     {
@@ -347,6 +388,8 @@ StandAloneClient::executeCommands(ifstream & istrm, int repeat)
 void
 StandAloneClient::interact()
 {
+    _isInteractive = true ;
+
     cout << endl << endl
         << "Type 'exit' to exit the command line client and 'help' or '?' "
         << "to display the help screen" << endl << endl ;
@@ -370,9 +413,25 @@ StandAloneClient::interact()
 	}
 	else if( len != 0 && message != "" )
 	{
-	    this->executeCommands( message, 1 ) ;
+	    CmdTranslation::set_show( false ) ;
+	    try
+	    {
+		string doc = CmdTranslation::translate( message ) ;
+		if( !doc.empty() )
+		{
+		    this->executeCommand( doc, 1 ) ;
+		}
+	    }
+	    catch( BESError &e )
+	    {
+		CmdTranslation::set_show( false ) ;
+		_isInteractive = false ;
+		throw e ;
+	    }
+	    CmdTranslation::set_show( false ) ;
         }
     }
+    _isInteractive = false ;
 }
 
 /** @brief Read a line from the interactive terminal using the readline library

@@ -51,6 +51,7 @@ using std::ofstream ;
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
+#include "CmdTranslation.h"
 
 StandAloneApp::StandAloneApp()
     : BESModuleApp(),
@@ -96,6 +97,8 @@ StandAloneApp::showUsage( )
 int
 StandAloneApp::initialize( int argc, char **argv )
 {
+    CmdTranslation::initialize( argc, argv ) ;
+
     string outputStr = "" ;
     string inputStr = "" ;
     string repeatStr = "" ;
@@ -329,6 +332,8 @@ StandAloneApp::terminate( int sig )
     BESDEBUG( "server", "OK" << endl ) ;
 
     BESModuleApp::terminate( sig ) ;
+
+    CmdTranslation::terminate( ) ;
 
     return sig ;
 }

@@ -75,6 +75,7 @@ class StandAloneClient : public BESObj
 private:
     ostream *			_strm ;
     bool			_strmCreated ;
+    bool			_isInteractive ;
 
     size_t			readLine( string &str ) ;
     void			displayHelp() ;
@@ -83,7 +84,8 @@ private:
 public:
     				StandAloneClient( )
 				    : _strm( 0 ),
-				      _strmCreated( false ) {}
+				      _strmCreated( false ),
+				      _isInteractive( false ) {}
 				~StandAloneClient() ;
 
     void			setOutput( ostream *strm, bool created ) ;
