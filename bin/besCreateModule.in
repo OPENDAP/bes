@@ -55,6 +55,13 @@ then
     HAVE_TR=1
 fi
 
+# just need to copy these files over. The developer will eventually need to
+# edit these.
+for i in COPYRIGHT COPYING NEWS README
+do
+/bin/cp ${TEMPLATE_DIR}/${i} ./
+done
+
 for i in RequestHandler.cc RequestHandler.h ResponseNames.h
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
@@ -95,7 +102,7 @@ done
 #q
 #EOF
 
-for i in Makefile.am.template configure.ac bes-data.sh.in
+for i in Makefile.am.template configure.ac bes-data.sh.in module.spec
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${i}
 ed ./${i} << EOF > /dev/null 2>&1
@@ -107,6 +114,7 @@ EOF
 done
 /bin/mv Makefile.am.template Makefile.am
 /bin/mv bes-data.sh.in bes-${serverType}-data.sh.in
+/bin/mv module.spec ${serverType}_module.spec
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf
