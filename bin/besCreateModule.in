@@ -445,14 +445,6 @@ EOF
     done
 fi
 
-/bin/cp ${TEMPLATE_DIR}/bes.conf ./bes.conf
-ed ./bes.conf << EOF > /dev/null 2>&1
-,s/OPENDAP_CLASS/${classPrefix}/g
-,s/OPENDAP_TYPE/${serverType}/g
-w
-q
-EOF
-
 echo "*******************************************************"
 echo "*                                                     *"
 echo "* Creating your configuration script                  *"
