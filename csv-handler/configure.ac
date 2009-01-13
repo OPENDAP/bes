@@ -47,5 +47,5 @@ AC_CHECK_BES([3.5.3],
 
 OPENDAP_DEBUG_OPTION
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile])
 AC_OUTPUT

@@ -13,6 +13,8 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcsv_module.la
 dist_bin_SCRIPTS = bes-csv-data.sh
 
+SUBDIRS = bes-testsuite
+
 CSV_SRCS = \
 		CSVModule.cc CSVRequestHandler.cc \
 		CSV_Data.cc CSV_Header.cc CSV_Obj.cc CSV_Reader.cc \
