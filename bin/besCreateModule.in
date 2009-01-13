@@ -95,7 +95,7 @@ done
 #q
 #EOF
 
-for i in Makefile.am.template configure.ac
+for i in Makefile.am.template configure.ac bes-data.sh.in
 do
 /bin/cp ${TEMPLATE_DIR}/${i} ./${i}
 ed ./${i} << EOF > /dev/null 2>&1
@@ -106,6 +106,7 @@ q
 EOF
 done
 /bin/mv Makefile.am.template Makefile.am
+/bin/mv bes-data.sh.in bes-${serverType}-data.sh.in
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf
