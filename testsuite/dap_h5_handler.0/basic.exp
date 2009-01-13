@@ -20,9 +20,9 @@ dap_hdf5_handler_all "${testdir}" "OMI-Aura_L2G-OMTO3G_2004m0817_v002-2006m0301t
 
 dap_hdf5_handler_all "${testdir}" "SDS"
 
-dap_hdf5_handler_all "${testdir}" "point_Object"
+# dap_hdf5_handler_all "${testdir}" "point_Object"
 
-dap_hdf5_handler_all "${testdir}" "Point"
+# dap_hdf5_handler_all "${testdir}" "Point"
 
 dap_hdf5_handler_all "${testdir}" "ZA" {/HDFEOS/ZAS/ZA1/Data%20Fields/Spectra\[0:1:14\]\[0:1:39\]\[1\]}
 
