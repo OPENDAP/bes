@@ -21,6 +21,8 @@
 #define DODS_MAX_RANK 30
 /// Maximum length of variable or attribute name
 #define DODS_NAMELEN    1024
+/// Maximum length of variable name when --enable-cf option is specified.
+#define DODS_CF_NAMELEN 128
 /// Maximum length of a dimension name in DIMENSION_LIST attribute.
 #define HDF5_DIMVARLEN  24
 /// The name of dimension list attribute used in HDF5.
@@ -88,6 +90,8 @@ typedef struct DSattr {
 static const char STRING[] = "String";
 /// An abstract respresntation of DAP Byte type.
 static const char BYTE[] = "Byte";
+/// An abstract respresntation of DAP Signed Byte type.
+static const char INT8[] = "Int8"; // <hyokyung 2009.01.14. 10:44:57>
 /// An abstract respresntation of DAP Int32 type.
 static const char INT32[] = "Int32";
 /// An abstract respresntation of DAP Int16 type.

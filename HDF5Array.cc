@@ -624,8 +624,21 @@ bool HDF5Array::read() {
 	if (nelms == d_num_elm) {
 	    convbuf = new char[d_memneed];
 	    get_data(d_dset_id, (void *) convbuf);
+	    
+	    // Check if a Signed Byte to Int16 conversion is necessary.
+	    // <hyokyung 2009.01.14. 13:22:50>
+	    if(return_type(d_ty_id) == "Int8"){
+	      short* convbuf2 = new short[nelms];
+	      for(int i=0; i < nelms ; i++){
+		convbuf2[i] = (signed char)(convbuf[i]);
+		DBG(cerr << "convbuf[" << i << "]=" << (signed char)convbuf[i] << endl);
+		DBG(cerr << "convbuf2[" << i << "]=" << convbuf2[i] << endl);
+	      }
+	      // Libdap will generate the wrong output. <hyokyung 2009.01.14. 14:43:39>
+	      m_intern_plain_array_data((char*)convbuf2);
+	      delete[] convbuf2;
+	    }	    
 	    m_intern_plain_array_data(convbuf);
-
 	    delete[] convbuf;
 	} // if (nelms == d_num_elm)
 	else {
@@ -634,7 +647,20 @@ bool HDF5Array::read() {
 		throw InternalErr(__FILE__, __LINE__, "get_size failed");
 	    convbuf = new char[data_size];
 	    get_slabdata(d_dset_id, offset, step, count, d_num_dim, convbuf);
-	    m_intern_plain_array_data(convbuf);
+
+	    // Check if a Signed Byte to Int16 conversion is necessary.
+	    // <hyokyung 2009.01.14. 12:46:03>	    
+	    if(return_type(d_ty_id) == "Int8"){
+	      short* convbuf2 = new short[data_size];
+	      for(int i=0; i < data_size; i++){
+		convbuf2[i] = static_cast<signed char>(convbuf[i]);
+	      }
+	      m_intern_plain_array_data((char*)convbuf2);
+	      delete[] convbuf2;
+	    }
+	    else{
+	      m_intern_plain_array_data(convbuf);
+	    }
 	    
 	    delete[] convbuf;
 	}

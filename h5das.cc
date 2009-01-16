@@ -52,6 +52,8 @@ int hdfeos_dasparse(void *arg);
 /// Buffer state for NASA EOS metadata scanner
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
+extern bool valid_projection;	// <hyokyung 2009.01.16. 10:41:39>
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, const char *gname, DAS & das)
 /// depth first traversal of hdf5 file attributes.
@@ -255,7 +257,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 	      rep = new char[32];
 	      memset(rep, 0, 32);
 
-	      // Garbage, Hacking! <hyokyung 2007.02.20. 11:56:49>
+
 	      if (H5Tequal(type, H5T_STD_U8BE) || H5Tequal(type, H5T_STD_U8LE)
 		  || H5Tequal(type, H5T_NATIVE_UCHAR)) {
 
@@ -416,8 +418,14 @@ string print_type(hid_t type)
         // <hyokyung 2007.03. 8. 09:30:36>
         size = H5Tget_size(type);
         sign = H5Tget_sign(type);
-        if (size == 1)
-            return BYTE;
+        if (size == 1){
+	  if (sign == H5T_SGN_2){
+            return INT16;
+	  }
+	  else{
+	    return BYTE;
+	  }
+	}
 
         if (size == 2) {
             if (sign == H5T_SGN_2)
@@ -607,7 +615,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
     // <hyokyung 2007.08. 2. 12:37:33>
 #ifdef CF
-    if (newname.length() > 15)
+    if (newname.length() > DODS_CF_NAMELEN) // <hyokyung 2009.01.16. 09:45:22>
         return;
 #endif
 
@@ -737,7 +745,9 @@ void find_gloattr(hid_t file, DAS & das)
     DBG(cerr << ">find_gloattr()" << endl);
 
 #ifdef CF
-    add_dimension_attributes(das);
+    if(eos.is_valid() && valid_projection){
+      add_dimension_attributes(das);
+    }
 #endif
 
     hid_t root = H5Gopen(file, "/");
@@ -979,7 +989,8 @@ void add_dimension_attributes(DAS & das)
 {
     DBG(cerr << ">add_dimension_attributes()" << endl);
     AttrTable *at;
-
+    vector < string > tokens;
+    
     at = das.add_table("NC_GLOBAL", new AttrTable);
     at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
     at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
@@ -987,34 +998,64 @@ void add_dimension_attributes(DAS & das)
     at->append_attr("history", STRING,
                     "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
 
-    at = das.add_table("lon", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"x\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"1440\"");
-    at->append_attr("units", STRING, "\"degrees_east\"");
-    at->append_attr("long_name", STRING, "\"longitude\"");
-    at->append_attr("minimum", FLOAT32, "-180.0");
-    at->append_attr("maximum", FLOAT32, "180.0");
-    at->append_attr("resolution", FLOAT32, "0.25");
-
-    at = das.add_table("lat", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"y\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"720\"");
-    at->append_attr("units", STRING, "\"degrees_north\"");
-    at->append_attr("long_name", STRING, "\"latitude\"");
-    at->append_attr("minimum", FLOAT32, "-90.0");
-    at->append_attr("maximum", FLOAT32, "90.0");
-    at->append_attr("resolution", FLOAT32, "0.25");
-
-    at = das.add_table("lev", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"z\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"15\"");
-    at->append_attr("units", STRING, "\"level\"");
-    at->append_attr("long_name", STRING,
-                    "\"level converted from nCandidate\"");
-
+    if(eos.get_dimension_size("XDim") > 0){
+      at = das.add_table("lon", new AttrTable);
+      at->append_attr("grads_dim", STRING, "\"x\"");
+      at->append_attr("grads_mapping", STRING, "\"linear\"");
+      {
+	std::ostringstream o;
+	o << "\"" << eos.get_dimension_size("XDim") << "\"";            
+	at->append_attr("grads_size", STRING, o.str().c_str());
+      }
+      at->append_attr("units", STRING, "\"degrees_east\"");
+      at->append_attr("long_name", STRING, "\"longitude\"");
+      {
+	std::ostringstream o;
+	o << (eos.point_left / 1000000.0);      
+	at->append_attr("minimum", FLOAT32, o.str().c_str());
+      }
+    
+      {
+	std::ostringstream o;
+	o << (eos.point_right / 1000000.0);
+	at->append_attr("maximum", FLOAT32, o.str().c_str());
+      }
+      {
+	std::ostringstream o;
+	o << (eos.gradient_x / 1000000.0);
+	at->append_attr("resolution", FLOAT32, o.str().c_str());
+      }
+    }
+    
+    if(eos.get_dimension_size("YDim") > 0){    
+      at = das.add_table("lat", new AttrTable);
+      at->append_attr("grads_dim", STRING, "\"y\"");
+      at->append_attr("grads_mapping", STRING, "\"linear\"");
+      {
+	std::ostringstream o;
+	o << "\"" << eos.get_dimension_size("YDim") << "\"";                  
+	at->append_attr("grads_size", STRING, o.str().c_str());
+      }
+      at->append_attr("units", STRING, "\"degrees_north\"");
+      at->append_attr("long_name", STRING, "\"latitude\"");
+      {
+	std::ostringstream o;
+	o << (eos.point_lower / 1000000.0);      
+	at->append_attr("minimum", FLOAT32, o.str().c_str());
+      }
+    
+      {
+	std::ostringstream o;
+	o << (eos.point_upper / 1000000.0);            
+	at->append_attr("maximum", FLOAT32, o.str().c_str());
+      }
+    
+      {
+	std::ostringstream o;
+	o << (eos.gradient_y / 1000000.0);
+	at->append_attr("resolution", FLOAT32, o.str().c_str());      
+      }
+    }    
     DBG(cerr << "<add_dimension_attributes()" << endl);
 }
 #endif

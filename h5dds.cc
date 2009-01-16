@@ -16,7 +16,7 @@
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
 /// All rights 
-//#define DODS_DEBUG
+// #define DODS_DEBUG
 
 #include "config_hdf5.h"
 
@@ -74,6 +74,7 @@ static DS_t dt_inst;
 ////////////////////////////////////////////////////////////////////////////////
 bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 {
+
     // Iterate through the file to see members of the root group 
     DBG(cerr << ">depth_first() pid: " << pid << " gname: " << gname <<
         " fname: " << fname << endl);
@@ -202,10 +203,14 @@ string return_type(hid_t type)
         //  <hyokyung 2007.02.27. 13:29:14>
         size = H5Tget_size(type);
         sign = H5Tget_sign(type);
-        DBG(cerr << "=return_type(): INT sign = " << sign << " size = " <<
+        DBG(cerr << "=return_type(): H5T_INTEGER sign = " << sign << " size = " <<
             size << endl);
-        if (size == 1)
-            return BYTE;
+        if (size == 1){
+            if (sign == H5T_SGN_NONE)       // <hyokyung 2009.01.14. 10:42:50>
+		return BYTE;	
+	    else
+		return INT8;
+	}
 
         if (size == 2) {
             if (sign == H5T_SGN_NONE)
@@ -287,6 +292,10 @@ static BaseType *Get_bt(const string &varname,
 		<< sign << endl);
 
 	    if (size == 1) {
+	      // <hyokyung 2009.01.13. 13:46:29>
+	      if (sign == H5T_SGN_2)
+		btp = new HDF5Int16(vname, dataset);
+	      else
 		btp = new HDF5Byte(vname, dataset);
 	    }
 	    else if (size == 2) {
@@ -303,10 +312,13 @@ static BaseType *Get_bt(const string &varname,
 	    }
 	    // <hyokyung 2007.06.15. 12:42:09>
 	    else if (size == 8) {
-		if (sign == H5T_SGN_2)
-		    btp = new HDF5Int32(vname, dataset);
-		else
-		    btp = new HDF5UInt32(vname, dataset);
+	      throw InternalErr(__FILE__, __LINE__,
+				string("Unsupported HDF5 64-bit Integer type:  ") + vname);
+	      //	      <hyokyung 2009.01. 9. 15:13:52>	    
+	      // 		if (sign == H5T_SGN_2) 
+	      // 		    btp = new HDF5Int32(vname, dataset);
+	      // 		else
+	      // 		    btp = new HDF5UInt32(vname, dataset);
 	    }
 
 	    break;
@@ -400,6 +412,7 @@ static BaseType *Get_bt(const string &varname,
 	  v.set_tid(dt_inst.type);
 	  break;
       }
+	
       case dods_int16_c: {
 	  HDF5Int16 &v = dynamic_cast < HDF5Int16 & >(*btp);
 	  v.set_did(dt_inst.dset);
@@ -457,7 +470,6 @@ static BaseType *Get_bt(const string &varname,
 			  string("error counting hdf5 group elements for ") 
 			  + vname);
     }
-    
     DBG(cerr << "<Get_bt()" << endl);
     return btp;
 }
@@ -881,7 +893,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 	// the end of the method. jhrg
         varname = get_short_name(varname);
 #ifdef CF
-        if (varname.length() > 15)
+        if (varname.length() > DODS_CF_NAMELEN)	// <hyokyung 2009.01.16. 09:45:30>
             return;
 #endif
         HDF5Array *ar = new HDF5Array(varname, filename, bt);

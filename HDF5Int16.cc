@@ -31,7 +31,16 @@ bool HDF5Int16::read()
 {
     if (read_p())
         return false;
-
+    // <hyokyung 2009.01.14. 12:04:13>
+    if (return_type(ty_id) == "Int8") {
+        dods_int16 buf;
+	dods_byte buf2;
+	get_data(dset_id, (void *) &buf2);
+	buf = (signed char)buf2;
+        set_read_p(true);
+	set_value(buf);
+    }
+    
     if (return_type(ty_id) == "Int16") {
         dods_int16 buf;
 	get_data(dset_id, (void *) &buf);
@@ -39,6 +48,8 @@ bool HDF5Int16::read()
         set_read_p(true);
 	set_value(buf);
     }
+
+    
     if (return_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
