@@ -10,7 +10,7 @@ pkgdata_templates_DATA = Makefile.am.template Module.cc Module.h \
 	Command.cc Command.h ResponseNames.h \
 	_commands.cc _module.cc \
 	configure.ac bes-data.sh.in \
-	module.spec COPYRIGHT COPYING NEWS README
+	module.spec.template COPYRIGHT COPYING NEWS README
 
 pkgdata_templatesconfdir = $(pkgdatadir)/templates/conf
 pkgdata_templatesconf_DATA = conf/acinclude.m4 conf/bes.m4 conf/config.guess \
@@ -23,4 +23,4 @@ EXTRA_DIST = Makefile.am.template Module.cc Module.h RequestHandler.cc	\
 	bes-data.sh.in configure.ac conf/acinclude.m4		\
 	conf/bes.m4 conf/config.guess conf/config.sub conf/depcomp	\
 	conf/install-sh conf/libdap.m4 conf/ltmain.sh conf/missing	\
-	conf/mkinstalldirs module.spec COPYRIGHT COPYING NEWS README
+	conf/mkinstalldirs module.spec.template COPYRIGHT COPYING NEWS README
