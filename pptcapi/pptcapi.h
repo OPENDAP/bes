@@ -68,8 +68,8 @@ main( int argc, char **argv )
 	return 1 ;
     }
 
-    char cmd[64] ;
-    sprintf( cmd, "show version;" ) ;
+    char cmd[128] ;
+    sprintf( cmd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><request reqID=\"some_unique_value\" ><showVersion /></request>" ) ;
     int len = strlen( cmd ) ;
     result = pptcapi_send( connection, cmd, len, &error ) ;
     if( result != PPTCAPI_OK )
