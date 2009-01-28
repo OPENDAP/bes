@@ -76,9 +76,9 @@ AC_DEFUN([VL_LIB_READLINE], [
       vl_cv_lib_readline="no"
       READLINE_LIBS=""
     fi
-    AC_SUBST([READLINE_LIBS])
   ])
 
+  AC_SUBST([READLINE_LIBS])
   ORIG_LIBS="$LIBS"
   LIBS="$ORIG_LIBS $READLINE_LIBS"
   if test "$vl_cv_lib_readline" != "no"; then
