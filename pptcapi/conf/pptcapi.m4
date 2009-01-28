@@ -11,7 +11,7 @@
 
 AC_DEFUN([AC_CHECK_PPTCAPI],
 [
-  pptcapi_min_version=m4_if([$1], [], [3.1.0], [$1])
+  pptcapi_min_version=m4_if([$1], [], [1.0.0], [$1])
   pptcapi_no=
   pptcapi_pkgconfig=yes
   PKG_CHECK_MODULES([BES_PPTCAPI],[bes_pptcapi >= $pptcapi_min_version],,
@@ -20,7 +20,7 @@ AC_DEFUN([AC_CHECK_PPTCAPI],
 
   if test $pptcapi_pkgconfig = yes; then
     PPTCAPI_LIBS="$PPTCAPI_LIBS"
-    PPTCAPI_CPPFLAGS=$PPTCAPI_CFLAGS
+    PPTCAPI_CFLAGS="$PPTCAPI_CFLAGS"
   else
     AC_PATH_PROG([PPTCAPI_CONFIG], [pptcapi-config], [no])
     AC_MSG_CHECKING([for pptcapi version >= $pptcapi_min_version])
@@ -54,7 +54,7 @@ AC_DEFUN([AC_CHECK_PPTCAPI],
         pptcapi_no=yes
       else
         PPTCAPI_LIBS="`$PPTCAPI_CONFIG --libs`"
-        PPTCAPI_CPPFLAGS="`$PPTCAPI_CONFIG --cflags`"
+        PPTCAPI_CFLAGS="`$PPTCAPI_CONFIG --cflags`"
       fi
     fi
   fi
@@ -71,9 +71,9 @@ AC_DEFUN([AC_CHECK_PPTCAPI],
       fi
     fi
     PPTCAPI_LIBS=
-    PPTCAPI_CPPFLAGS=
+    PPTCAPI_CFLAGS=
     m4_if([$3], [], [:], [$3])
   fi
   AC_SUBST([PPTCAPI_LIBS])
-  AC_SUBST([PPTCAPI_CPPFLAGS])
+  AC_SUBST([PPTCAPI_CFLAGS])
 ])
