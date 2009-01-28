@@ -84,7 +84,7 @@ send_command( struct pptcapi_connection *connection, char *cmd, int ofd )
 int
 read_commands( struct pptcapi_connection *connection, int ifd, int ofd )
 {
-    char buffer[80] ;
+    char buffer[4096] ;
     int index = 0 ;
     char done = 0 ;
     char c = 0 ;
@@ -104,31 +104,19 @@ read_commands( struct pptcapi_connection *connection, int ifd, int ofd )
 	}
 	else
 	{
-	    if( c == '\n' || c == '\r' )
-	    {
-		if( index != 0 )
-		{
-		    buffer[index] = '\0' ;
-		    int result = send_command( connection, buffer, ofd ) ;
-		    if( result )
-		    {
-			close( ifd ) ;
-			if( ofd != 1 ) close( ofd ) ;
-			return result ;
-		    }
-		}
-		index = 0 ;
-	    }
-	    else
-	    {
-		buffer[index] = c ;
-		index++ ;
-	    }
+	    buffer[index] = c ;
+	    index++ ;
 	}
+    }
+    int result = 0 ;
+    if( index != 0 )
+    {
+	buffer[index] = '\0' ;
+	result = send_command( connection, buffer, ofd ) ;
     }
     close( ifd ) ;
     if( ofd != 1 ) close( ofd ) ;
-    return 0 ;
+    return result ;
 }
 
 int
