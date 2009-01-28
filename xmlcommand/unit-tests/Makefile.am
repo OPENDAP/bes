@@ -27,9 +27,9 @@ TESTS = $(UNIT_TESTS)
 
 DIRS_EXTRA = 
 
-EXTRA_DIST = $(DIRS_EXTRA) test_config.h.in
+EXTRA_DIST = $(DIRS_EXTRA) test_config.h.in bes.conf
 
-CLEANFILES = 
+CLEANFILES = bes.log
 
 DISTCLEANFILES = test_config.h
 
