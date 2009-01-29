@@ -1,6 +1,25 @@
 
 	$Id$
 
+News for version 1.3.0
+
+Many bug fixes - see ChangeLog
+
+Updates for the new versions of libdap and bes - this is important since the
+new libdap constraint evaluator now works with Arrays of Structures.
+
+The SHORT_PATH compilation option now has shorter reference names.
+
+Grids are now generated instead of Arrays for Aura Swath data.
+
+Int64 now throws an exception; DAP 3.3 will have an Int64 type.
+
+Signed Byte is now mapped to Int16 (both the DAS and DDS).
+
+If compiled with the CF option then the NC_GLOBAL attribute is produced if
+a valid Grid projection in NASA EOS AURA file is detected. Resolution, min and
+max attributes for lat/lon are extracted from structMetadata.
+
 News for version 1.2.3
 
 When built using the --enable-cf and --enable-short-path, the handler was

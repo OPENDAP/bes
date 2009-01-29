@@ -1,6 +1,6 @@
 Summary:         HDF5 data handler for the OPeNDAP Data server
 Name:            hdf5_handler
-Version:         1.2.3
+Version:         1.3.0
 Release:         1
 License:         LGPLv2+
 Group:           System Environment/Daemons 
@@ -8,8 +8,8 @@ Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.8.0
-BuildRequires:	 bes-devel >= 3.6.0
+BuildRequires:   libdap-devel >= 3.9.0
+BuildRequires:	 bes-devel >= 3.7.0
 
 %description
 This is the hdf5 data handler for our data server. It reads HDF5
@@ -49,6 +49,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING NEWS README INSTALL
 
 %changelog
+* Thu Jan 29 2009 James Gallagher <jimg@zoe.opendap.org> - 1.3.0-1
+- Updated
+
 * Mon Mar 17 2008 Patrick West <pwest@ucar.edu> - 1.2.2-1
 - bug fix release
 

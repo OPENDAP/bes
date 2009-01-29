@@ -1,5 +1,6 @@
 
-Updated for version 1.2.3
+
+Updated for version 1.3.0 (29 Jan 2009)
 
 This file includes describes the HDF5 DAP server developed by 
 The HDF Group and OPeNDAP under a grant from NASA.
@@ -8,12 +9,8 @@ For information about building the OPeNDAP HDF5 Data Handler, see the
 INSTALL. This handler can support existing visualization clients like ferret
 and GrADS using NASA EOS Grid data.
 
-* Known Issues
-
-There are a handful of known issues with this handler that will not affect
-most data providers. They are that the Constraint Expression parser does not
-work with arrays of structures and neither does the HTML form interface. We
-will have fixes to these issues available shortly.
+Note that the libdap constraint evaluator now works with Arrays of
+Structures. This was a known issue with this handler.
 
 * Installing the handler in Hyrax
 

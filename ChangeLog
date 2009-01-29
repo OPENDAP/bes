@@ -1,3 +1,146 @@
+2009-01-16  hyoklee
+
+	First, HDF5 to DAP Mapping change: 1) Int64 throws an exception,
+	no more mapping into Int32 2) Signed Byte is mapped to Int16 in
+	both DDS and DAS. Second, attribute change for enable-cf option.
+	The NC_GLOBAL attribute is produced if valid Grid projection in
+	NASA EOS AURA file is detected. Resolution, min and max attributes
+	for lat/lon are extracted from structMetadata.
+
+2009-01-13  hyoklee
+
+	Removed test files that have 64-bit integer dataset.
+
+2008-11-25  hyoklee
+
+	Under Hyrax, Grids are generated instead of Arrays for Aura Swath
+	data files.
+
+2008-11-25  hyoklee
+
+	Under Hyrax, Grids are generated instead of Arrays for Aura Swath
+	data files.
+
+2008-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlrequest branch to the trunk.
+
+	_M   .
+	M    h5_handler.cc
+	M    bes-testsuite/h5/tcompound.h5.2.bescmd
+	M    bes-testsuite/h5/tcompound.h5.3.bescmd
+	M    bes-testsuite/h5/tcompound.h5.0.bescmd
+	M    bes-testsuite/h5/tcompound.h5.1.bescmd
+
+2008-11-06  James Gallagher <jgallagher@opendap.org>
+
+	Property mods for the directory.
+
+	_M   .
+
+2008-10-28  hyoklee
+
+	THG is changed to The HDF Group
+
+2008-10-27  hyoklee
+
+	Fixed a compilation error when CF option is enabled.
+
+2008-10-24  hyoklee
+
+	H5EOS::reset() is added to fix a bug of concatinating Metadata
+	string under Hyrax.
+
+2008-10-24  hyoklee
+
+	Removed duplicate if/else statements.
+
+2008-10-24  hyoklee
+
+	Cleaned up code.
+
+2008-09-17  James Gallagher <jgallagher@opendap.org>
+
+	Merged multifile branch
+
+2008-09-12  hyoklee
+
+	Comments are fixed to remove warning messages from Doxygen.
+
+2008-08-28  Patrick West <pwest@ucar.edu>
+
+	BES regression tests for hdf5 handler using besstandalone
+	
+	M    configure.ac
+	A    bes-testsuite
+	A    bes-testsuite/bes.conf.in
+	A    bes-testsuite/common_tests.exp
+	A    bes-testsuite/config
+	A    bes-testsuite/config/unix.exp
+	A    bes-testsuite/Makefile.am
+	A    bes-testsuite/h5
+	A    bes-testsuite/h5/tcompound.h5.1.bescmd.baseline
+	A    bes-testsuite/h5/tcompound.h5.2.bescmd
+	A    bes-testsuite/h5/tcompound.h5.2.bescmd.baseline
+	A    bes-testsuite/h5/tcompound.h5.3.bescmd
+	A    bes-testsuite/h5/tcompound.h5.3.bescmd.baseline
+	A    bes-testsuite/h5/tcompound.h5.0.bescmd
+	A    bes-testsuite/h5/tcompound.h5.0.bescmd.baseline
+	A    bes-testsuite/h5/tcompound.h5.1.bescmd
+	A    bes-testsuite/besstandalone.h5
+	A    bes-testsuite/besstandalone.h5/tcompound.h5.3.exp
+	A    bes-testsuite/besstandalone.h5/tcompound.h5.0.exp
+	A    bes-testsuite/besstandalone.h5/tcompound.h5.1.exp
+	A    bes-testsuite/besstandalone.h5/tcompound.h5.2.exp
+	M    Makefile.am
+
+2008-08-14  hyoklee
+
+	Added a URL for detailed installation instructions.
+
+2008-08-07  hyoklee
+
+	Shortened the referenced names for SHORT_PATH configuration option.
+
+2008-08-07  hyoklee
+
+	Fixed the compilation errors that are generated when DODS_DEBUG is
+	defined. Fixed the problem of concatenating array subscripts in
+	URL string generation from HDF5 references. Fixed the segmentation
+	fault problem in reading URL dataset by replacing Vector::value()
+	with Vector::set_value().
+
+2008-07-31  James Gallagher <jgallagher@opendap.org>
+
+	Fix for ticket 1163 - String attributes no longer have quotes
+	added to their values.
+
+	M    h5das.cc
+	M    hdfeos_das.y
+	M    testsuite/Grid.das
+	M    testsuite/OMI-Aura_L2G-OMTO3G_2004m0817_v002-2006m0301t154534.SUB.das
+
+2008-07-22  James Gallagher <jgallagher@opendap.org>
+
+	Updates for the 1.2.3 release.
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf5_handler.spec
+	M    README
+
+2008-07-18  hyoklee
+
+	The problem of dropping shared dimension variable in Hyrax is fixed when CF configuration option is enabled.
+
+2008-07-18  hyoklee
+
+	h5dds.cc compilation problem and reading the shared dimension variables are fixed when CF option is enabled.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2008-07-18  hyoklee
 
 	The problem of dropping shared dimension variable in Hyrax is
