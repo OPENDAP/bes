@@ -1,3 +1,197 @@
+2008-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlrequest branch to the trunk.
+
+	_M   .
+	M    hdfdesc.cc
+	M    hdf_handler.cc
+	M    bes-testsuite/h4/S2000415.HDF.0.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.1.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.3.bescmd
+
+2008-10-08  James Gallagher <jgallagher@opendap.org>
+
+	Added comment about the HDF4.CacheDir parameter in bes.conf.
+
+	M README
+
+2008-10-08  James Gallagher <jgallagher@opendap.org>
+
+	Added comment about the HDF4.CacheDir parameter in bes.conf.
+
+	M INSTALL
+
+2008-09-17  James Gallagher <jgallagher@opendap.org>
+
+	Merged multifile branch
+
+2008-09-17  James Gallagher <jgallagher@opendap.org>
+
+2008-08-28  Patrick West <pwest@ucar.edu>
+
+	Added bes regression test directory using besstandalone
+	
+	M    configure.ac
+	A    bes-testsuite
+	A    bes-testsuite/bes.conf.in
+	A    bes-testsuite/common_tests.exp
+	A    bes-testsuite/config
+	A    bes-testsuite/config/unix.exp
+	A    bes-testsuite/Makefile.am
+	A    bes-testsuite/h4
+	A    bes-testsuite/h4/S2000415.HDF.0.bescmd
+	A    bes-testsuite/h4/S2000415.HDF.0.bescmd.baseline
+	A    bes-testsuite/h4/S2000415.HDF.1.bescmd
+	A    bes-testsuite/h4/S2000415.HDF.1.bescmd.baseline
+	A    bes-testsuite/h4/S2000415.HDF.2.bescmd
+	A    bes-testsuite/h4/S2000415.HDF.2.bescmd.baseline
+	A    bes-testsuite/h4/S2000415.HDF.3.bescmd
+	A    bes-testsuite/h4/S2000415.HDF.3.bescmd.baseline
+	A    bes-testsuite/besstandalone.h4
+	A    bes-testsuite/besstandalone.h4/S2000415.HDF.0.exp
+	A    bes-testsuite/besstandalone.h4/S2000415.HDF.1.exp
+	A    bes-testsuite/besstandalone.h4/S2000415.HDF.2.exp
+	A    bes-testsuite/besstandalone.h4/S2000415.HDF.3.exp
+	M    Makefile.am
+
+2008-08-22  James Gallagher <jgallagher@opendap.org>
+
+	Updated the das baseline files - again. There seems to be a
+	problem with my workspace hdf4 code that svn does not like.
+
+	M    hdf-testsuite/GridFile.das
+	M    hdf-testsuite/SwathFile.das
+	M    hdf-testsuite/PointFile.das
+
+2008-08-22  James Gallagher <jgallagher@opendap.org>
+
+	Modified unix.exp; it does not need to make the cache directory.
+
+	M    hdf-testsuite/config/unix.exp
+
+2008-07-16  Patrick West <pwest@ucar.edu>
+
+	Checking results of dynamic casts and throwing cast error if problem
+	
+	M    HDF4RequestHandler.cc
+
+2008-06-26  Patrick West <pwest@ucar.edu>
+
+	#define DODS_DEBUG was in the source. Commented out.
+	
+	M    hc2dap.cc
+
+2008-06-26  Patrick West <pwest@ucar.edu>
+
+	Create cache directory at the start of the tests.
+	
+	M    hdf-testsuite/config/unix.exp
+
+2008-06-20  James Gallagher <jgallagher@opendap.org>
+
+	Removed.
+
+	D    cache
+
+2008-06-19  James Gallagher <jgallagher@opendap.org>
+
+	Removed comment/log from end of file hc2dap.cc.
+
+2008-05-30  Patrick West <pwest@ucar.edu>
+
+	Module checking to see if catalog already added. RequestHandler
+	now adding ancillary information to the das and dds.
+	
+	M    HDF4Module.cc
+	M    HDF4RequestHandler.cc
+
+2008-04-04  Patrick West <pwest@ucar.edu>
+
+	No longer need individual bes.conf files for testing. Using main
+	one in <prefix>/etc/bes/bes.conf.
+	
+	D    bes.conf
+
+2008-03-14  James Gallagher <jgallagher@opendap.org>
+
+	Added third argument to call to open. I don't know why this shows
+	up only on the rpm build, but there you go...
+
+	M    hdf_handler.cc
+	M    HDF4RequestHandler.cc
+
+2008-03-14  James Gallagher <jgallagher@opendap.org>
+
+	Code review & text file update for 3.7.8 release.
+
+	M    HDFTypeFactory.cc
+	M    HDFTypeFactory.h
+	M    HDFArray.h
+	M    HDFUInt32.h
+	M    dhdferr.cc
+	M    configure.ac
+	M    HDFInt32.h
+	M    HDFStructure.h
+	M    NEWS
+	M    hdf-dods.h
+	M    eosdas-test.cc
+	M    HDFStr.h
+	M    hdfdesc.cc
+	M    HDFArray.cc
+	M    hc2dap.cc
+	M    HDFFloat64.cc
+	M    hdfclass/inst.cc
+	M    hdfclass/annot.cc
+	M    hdfclass/vdata.cc
+	M    hdfclass/gri.cc
+	M    hdfclass/vgroup.cc
+	M    hdfclass/hcerr.cc
+	M    hdfclass/Makefile.am
+	M    hdfclass/hcerr.h
+	M    hdfclass/genvec.cc
+	M    hdfclass/hcstream.h
+	M    hdfclass/hcutil.cc
+	M    hdfclass/hdfclass.h
+	M    hdfclass/sds.cc
+	M    ChangeLog
+	M    ReadTagRef.h
+	M    dhdferr.h
+	M    HDFByte.h
+	M    hdf4_handler.spec
+	M    HDFSequence.cc
+	M    HDF4RequestHandler.h
+	M    HDFFloat32.h
+	M    hdf_handler.cc
+	M    hdfutil.cc
+	M    hdfutil.h
+	M    hdf-maps.h
+	M    HDFUInt16.h
+	M    HDFInt32.cc
+	M    INSTALL
+	M    HDFInt16.cc
+	M    HDFDODSFilter.h
+	M    HDFInt16.h
+	M    HDFUrl.h
+	M    HDF4Module.cc
+	M    HDFSequence.h
+	M    HDF4RequestHandler.cc
+	M    HDFFloat32.cc
+	M    HDF4Module.h
+	M    HDFFloat64.h
+	M    HDFUInt32.cc
+	M    HDFGrid.cc
+	M    HDFUInt16.cc
+	M    HDFGrid.h
+	M    README
+	M    HDFStructure.cc
+	M    HDFUrl.cc
+	M    Makefile.am
+	M    HDFByte.cc
+	M    config_hdf.h
+	M    dodsutil.h
+	M    HDFStr.cc
+
 2008-02-27  James Gallagher <jgallagher@opendap.org>
 	Auto reset of Subversion properties
 

@@ -1,6 +1,10 @@
 
 $Id$
 
+Version 3.7.9 (29 Jan 2009)
+
+Bug fixes and updates for the new versions of libdap and bes.
+
 Version 3.7.8 (14 March 2008)
 
 This version (3.7.8) contains a know problem when several SDSs use the same
