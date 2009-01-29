@@ -87,9 +87,8 @@ BUILD REQUIREMENTS
     thing to do is to run configure and see if it complains. If it
     does, go to the above link and grab the library.
 
-  o To build from a fresh SVN checkout, you'll need automake 1.9.2, autoconf
-    2.59 (2.57 will probably work and that's what's listed in the configure.ac
-    file) and libtool 1.5.6. Earlier versions may work, but may cause
+  o To build from a fresh SVN checkout, you'll need automake 1.10, autoconf
+    2.61 and libtool 1.5.6. Earlier versions may work, but may cause
     problems, particularly with the 'distcheck' target for make. Given those
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.
