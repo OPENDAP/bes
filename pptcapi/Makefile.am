@@ -16,8 +16,8 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = unit-tests
-DIST_SUBDIRS = unit-tests
+SUBDIRS = . unit-tests testsuite
+DIST_SUBDIRS = unit-tests testsuite
 
 lib_LTLIBRARIES = libbes_pptcapi.la
 
@@ -33,7 +33,7 @@ libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
 
 pkginclude_HEADERS = $(CHDRS)
 
-EXTRA_DIST = testsuite
+EXTRA_DIST =
 
 CSRCS = pptcapi_authenticate.c pptcapi_tcp_connect.c 	\
 	pptcapi_socket_connect.c pptcapi_send.c 	\

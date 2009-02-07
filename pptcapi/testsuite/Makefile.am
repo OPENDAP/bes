@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
+AM_CFLAGS = -I$(top_srcdir)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
