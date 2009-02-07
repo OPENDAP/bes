@@ -23,7 +23,7 @@ lib_LTLIBRARIES = libbes_pptcapi.la
 
 bin_SCRIPTS = pptcapi-config
 
-noinst_HEADERS = pptcapi_utils.h
+noinst_HEADERS = pptcapi_utils.h pptcapi_debug.h
 
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/pptcapi.m4
@@ -32,6 +32,8 @@ libbes_pptcapi_la_SOURCES = $(CSRCS) $(CHDRS)
 libbes_pptcapi_la_LDFLAGS = -version-info $(LIBPPTCAPI_VERSION)
 
 pkginclude_HEADERS = $(CHDRS)
+
+EXTRA_DIST = testsuite
 
 CSRCS = pptcapi_authenticate.c pptcapi_tcp_connect.c 	\
 	pptcapi_socket_connect.c pptcapi_send.c 	\

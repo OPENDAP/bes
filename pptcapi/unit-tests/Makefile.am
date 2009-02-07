@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Headers in 'tests' are used by the arrayT unit tests.
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir)
 AM_LDADD = 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
