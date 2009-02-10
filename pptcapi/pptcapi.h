@@ -3,7 +3,29 @@
 #ifndef pptcapi_h
 #define pptcapi_h 1
 
-/** @brief
+/** @mainpage
+ *
+ * The BES PPT C API is a C API for communicating with an OPeNDAP Back-End
+ * Server (BES). PPT stands for Point to Point Transport.
+ *
+ * For more information please refer to the document at
+ * http://docs.opendap.org entited Hyrax - BES PPT.
+ *
+ * In general, a client first does some handshaking with the BES using PPT
+ * to establish a connection, which could include SSL authentication. Once
+ * connected, requests and responses are sent and received using an
+ * HTTP-like chunking scheme, where the first part of the buffer contains
+ * the length of the chunk and the type of the chunk, followed by that much
+ * data. A request to the BES includes closing the connection.
+ *
+ * For an example of using the PPT C API you can the namespace pptcapi
+ * included in this documentation. This example is also available on the
+ * OPeNDAP documentation wiki.
+ */
+
+/** @namespace pptcapi
+ *  @brief The BES PPT C API is a C API for communication to an OPeNDAP
+ *  Back-End Server (BES)
  *
  * pptcapi is the c client api to the BES using the PPT protocol (point to
  * point transport). The following is a simple transaction between the
@@ -150,9 +172,11 @@ main( int argc, char **argv )
 </pre>
  */
 
-/* maximum type sizes and default values */
+/** @brief maximum string length */
 #define PPTCAPI_MAX_STR_LEN 256
+/** @brief default send and receive tcp buffer sizes */
 #define PPTCAPI_DEFAULT_BUFFER_SIZE 65535
+/** @brief maximum timeout for making connection to the BES */
 #define PPTCAPI_MAX_TIMEOUT 5
 
 /* chunk header sizes ... still need to change code in pptcapi_send in the
@@ -162,7 +186,11 @@ main( int argc, char **argv )
 #define PPTCAPI_CHUNK_TYPE_INDEX 7
 #define PPTCAPI_CHUNK_HEADER_SIZE PPTCAPI_CHUNK_LEN_SIZE + PPTCAPI_CHUNK_TYPE_SIZE
 
-/* ppt protocol tokens */
+/**
+ * @defgroup PPT Protocol Tokens for initial handshake
+ */
+/*@{*/
+
 #define PPT_PROTOCOL_UNDEFINED "PPT_PROTOCOL_UNDEFINED"
 #define PPT_EXIT_NOW "PPT_EXIT_NOW"
 #define PPTCLIENT_TESTING_CONNECTION "PPTCLIENT_TESTING_CONNECTION"
@@ -170,13 +198,25 @@ main( int argc, char **argv )
 #define PPTSERVER_CONNECTION_OK "PPTSERVER_CONNECTION_OK"
 #define PPTSERVER_AUTHENTICATE "PPTSERVER_AUTHENTICATE"
 
-/* status extension macros */
+/*@}*/
+
+/**
+ * @defgroup PPT C API Status Extension Macros
+ *
+ * Extensions are variable/value pairs passed in a chunk and can contain
+ * such things as a status code.
+ */
+/*@{*/
+
 #define PPT_STATUS_EXT "status"
 #define PPT_STATUS_EXT_LEN 6
 #define PPT_STATUS_ERR "error"
 #define PPT_STATUS_ERR_LEN 5
 
-/** @brief pptcapi funciton return values
+/*@}*/
+
+/**
+ * @defgroup PPT C API function return values
  *
  * <pre>
  * PPTCAPI_OK		if function completes succesfully
@@ -185,9 +225,13 @@ main( int argc, char **argv )
  *                      last chunk of information is received.
  * </pre>
  */
+/*@{*/
+
 #define PPTCAPI_OK 1
 #define PPTCAPI_ERROR 2
 #define PPTCAPI_RECEIVE_DONE 3
+
+/*@}*/
 
 /** @brief connection structure used by pptcapi.
  *
@@ -250,9 +294,9 @@ struct pptcapi_extensions {
  * @param host name of the host machine trying to attach to
  * @param portval port of the server on the specified host
  * @param timeout how long to wait before timing out on connect
- * @param tcp_recv_buf_size tcp tuning allows you to set buffer sizes to
+ * @param tcp_recv_buffer_size tcp tuning allows you to set buffer sizes to
  * maximize performance
- * @param tcp_send_buf_size tcp tuning allows you to set buffer sizes to
+ * @param tcp_send_buffer_size tcp tuning allows you to set buffer sizes to
  * maximize performance
  * @param error out variable representing any errors received on connect
  * @return pptcapi_connection structure if connection successful, 0 if not

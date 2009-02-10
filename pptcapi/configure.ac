@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.57)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(pptcapi, 1.0.0, support@opendap.org)
+AC_INIT(pptcapi, 1.0.3, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
@@ -70,6 +70,7 @@ AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
 AC_CONFIG_FILES([Makefile
+		 bes_pptcapi.pc
 		 unit-tests/Makefile
 		 testsuite/Makefile
 ])
