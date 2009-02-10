@@ -1,5 +1,41 @@
 2009-02-10  Patrick West <pwest@ucar.edu>
 
+	Fixed the rpm build.
+	M    pptcapi/bes_pptcapi.spec
+	M    pptcapi/testsuite/Makefile.am
+	M    pptcapi/Makefile.am
+
+2009-02-10  Patrick West <pwest@ucar.edu>
+
+	doxygen support added. Fortify build supported. OSX build supported.
+	RPM build supported.
+	A    pptcapi/COPYRIGHT_UCAR
+	A    pptcapi/bes_pptcapi.spec
+	M    pptcapi/pptcapi.h
+	A    pptcapi/ChangeLog
+	A    pptcapi/README
+	A    pptcapi/bes_pptcapi.pc.in
+	M    pptcapi/configure.ac
+	A    pptcapi/OSX_Resources
+	AM   pptcapi/OSX_Resources/InstallationCheck
+	A    pptcapi/OSX_Resources/License.txt
+	AM   pptcapi/OSX_Resources/update_mac_package_contents.pl
+	A    pptcapi/OSX_Resources/Info.plist
+	A    pptcapi/OSX_Resources/InstallationCheck.strings
+	A    pptcapi/OSX_Resources/ReadMe.txt
+	A    pptcapi/OSX_Resources/Description.plist
+	AM   pptcapi/OSX_Resources/background.jpg
+	A    pptcapi/OSX_Resources/Welcome.html
+	A    pptcapi/INSTALL
+	A    pptcapi/doxy.conf
+	A    pptcapi/COPYING
+	A    pptcapi/pptcapi-config-pkgconfig
+	M    pptcapi/Makefile.am
+	A    pptcapi/DoxygenLayout.xml
+	A    pptcapi/NEWS
+
+2009-02-10  Patrick West <pwest@ucar.edu>
+
 	Files in conf directory were not being included in the distribution.
 	Added the ACLOCAL_AMFLAGS = -I conf
 	M    pptcapi/Makefile.am
