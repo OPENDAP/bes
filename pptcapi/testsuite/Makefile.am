@@ -12,7 +12,7 @@ AM_CFLAGS = -I$(top_srcdir)
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-bin_PROGRAMS = pptcapi_test
+noinst_PROGRAMS = pptcapi_test
 
 pptcapi_test_SOURCES = pptcapi_test.c
 pptcapi_test_LDADD = ../libbes_pptcapi.la

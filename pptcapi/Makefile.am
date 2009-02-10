@@ -22,7 +22,7 @@ DIST_SUBDIRS = unit-tests testsuite
 
 lib_LTLIBRARIES = libbes_pptcapi.la
 
-bin_SCRIPTS = pptcapi-config
+bin_SCRIPTS = pptcapi-config pptcapi-config-pkgconfig
 
 noinst_HEADERS = pptcapi_utils.h pptcapi_debug.h
 

@@ -17,7 +17,6 @@ Source0:        http://www.opendap.org/pub/source/pptcapi-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  pkgconfig
-BuildRequires:  doxygen graphviz
 Requires(pre): shadow-utils
 
 %description
@@ -55,8 +54,7 @@ make docs
 rm -rf __distribution_docs
 cp -pr docs __distribution_docs
 mv __distribution_docs/html __distribution_docs/api-html
-# .map and .md5 files are of dubious use
-rm __distribution_docs/api-html/*.map
+# .md5 files are of dubious use
 rm __distribution_docs/api-html/*.md5
 
 %install
@@ -85,15 +83,15 @@ exit 0
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README
 %{_libdir}/*.so.*
-%{bescachedir}
-%{bespkidir}/
+%{pptcapicachedir}
+%{pptcapipkidir}/
 
 %files devel
 %defattr(-,root,root,-)
 %{_bindir}/pptcapi-config
 %{_includedir}/pptcapi/
 %{_libdir}/*.so
-%{_libdir}/pkgconfig/bes_*.pc
+%{_libdir}/pkgconfig/bes_pptcapi.pc
 %{_datadir}/aclocal/pptcapi.m4
 
 %files doc
