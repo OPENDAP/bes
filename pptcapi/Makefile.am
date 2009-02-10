@@ -2,6 +2,7 @@
 # Build libbes_ppt, part of the BES code.
 
 AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS = -I conf
 
 AM_CFLAGS =
 
