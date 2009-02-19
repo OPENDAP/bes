@@ -1,7 +1,7 @@
 
-AUTOMAKE_OPTIONS = foreign dejagnu
+AUTOMAKE_OPTIONS = foreign 
 
-DEJATOOL=besstandalone
+#DEJATOOL=besstandalone
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
@@ -19,7 +19,8 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = ff besstandalone.ff common_tests.exp bes.conf.in
+#EXTRA_DIST = ff besstandalone.ff common_tests.exp bes.conf.in
+EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(DIRS_EXTRA)
 
 DISTCLEANFILES = bes.conf
 
@@ -31,4 +32,37 @@ bes.conf: bes.conf.in ../config.status
 		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
+
+############## Autotest follows #####################
+
+AUTOM4TE = autom4te
+DIRS_EXTRA = bes-testsuite h4 besstandalone.h4 common_tests.exp bes.conf.in
+ 
+TESTSUITE = $(srcdir)/hdf4_handlerTest
+
+check-local: atconfig atlocal $(TESTSUITE)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+
+clean-local:
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+
+distclean-local:
+	-rm atconfig
+
+AUTOTEST = $(AUTOM4TE) --language=autotest
+$(TESTSUITE): $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+	mv $@.tmp $@
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+	:;{ \
+	echo '# Signature of the current package.' && \
+	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
+	echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])' && \
+	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
+	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
+	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	} >'$(srcdir)/package.m4'
+
 

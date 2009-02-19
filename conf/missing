@@ -77,6 +77,7 @@ Supported PROGRAM values:
   aclocal      touch file \`aclocal.m4'
   autoconf     touch file \`configure'
   autoheader   touch file \`config.h.in'
+  autom4te     touch the output file, or create a stub one
   automake     touch all \`Makefile.in' files
   bison        create \`y.tab.[ch]', if possible, from existing .[ch]
   flex         create \`lex.yy.c', if possible, from existing .c

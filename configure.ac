@@ -6,6 +6,7 @@ AC_INIT(hdf4_handler, 3.7.9, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 
 AM_INIT_AUTOMAKE
+AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([HDFStr.h])
 AC_CONFIG_HEADER([config.h])
@@ -107,6 +108,7 @@ AC_SUBST(testurl)
 
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
+		 bes-testsuite/atlocal
                  hdfclass/Makefile])
 
 dnl Add this later: hdf-testfiles/Makefile
