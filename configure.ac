@@ -5,6 +5,7 @@ AC_PREREQ(2.59)
 AC_INIT(hdf5_handler, 1.3.0, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AM_INIT_AUTOMAKE
+AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([HDF5UInt32.h])
 AM_CONFIG_HEADER([config_hdf5.h])
@@ -108,5 +109,5 @@ AH_BOTTOM([/* Shorthand for gcc's unused attribute feature */
 
 #endif /* _config_hdf5_h */])
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal])
 AC_OUTPUT
