@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -34,13 +34,14 @@
 using std::endl;
 
 #include "HDF5Module.h"
-#include "BESRequestHandlerList.h"
+#include <BESRequestHandlerList.h>
 #include "HDF5RequestHandler.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorageCatalog.h"
-#include "BESCatalogDirectory.h"
-#include "BESCatalogList.h"
-#include "BESDebug.h"
+#include <BESDapService.h>
+#include <BESContainerStorageList.h>
+#include <BESContainerStorageCatalog.h>
+#include <BESCatalogDirectory.h>
+#include <BESCatalogList.h>
+#include <BESDebug.h>
 
 #define HDF5_CATALOG "catalog"
 
@@ -54,8 +55,11 @@ void
     BESRequestHandler *handler = new HDF5RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
+    BESDEBUG( "h5", modname << " handles dap services" << endl )
+    BESDapService::handle_dap_service( modname ) ;
+
     BESDEBUG("h5", "    adding " << HDF5_CATALOG << " catalog" << endl)
-    if( !BESCatalogList::TheCatalogList()->find_catalog( HDF5_CATALOG ) )
+    if( !BESCatalogList::TheCatalogList()->ref_catalog( HDF5_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
 	    add_catalog(new BESCatalogDirectory(HDF5_CATALOG));
@@ -65,10 +69,9 @@ void
 	BESDEBUG( "h5", "    catalog already exists, skipping" << endl )
     }
 
-    BESDEBUG("h5",
-             "    adding catalog container storage " << HDF5_CATALOG <<
-             endl)
-    if( !BESContainerStorageList::TheList()->find_persistence( HDF5_CATALOG ) )
+    BESDEBUG("h5", "    adding catalog container storage " << HDF5_CATALOG
+		   << endl)
+    if( !BESContainerStorageList::TheList()->ref_persistence( HDF5_CATALOG ) )
     {
 	BESContainerStorageCatalog *csc =
 	    new BESContainerStorageCatalog(HDF5_CATALOG);
@@ -99,10 +102,10 @@ void HDF5Module::terminate(const string & modname)
     BESDEBUG("h5",
              "    removing catalog container storage " << HDF5_CATALOG <<
              endl)
-        BESContainerStorageList::TheList()->del_persistence(HDF5_CATALOG);
+    BESContainerStorageList::TheList()->deref_persistence(HDF5_CATALOG);
 
     BESDEBUG("h5", "    removing " << HDF5_CATALOG << " catalog" << endl)
-        BESCatalogList::TheCatalogList()->del_catalog(HDF5_CATALOG);
+    BESCatalogList::TheCatalogList()->deref_catalog(HDF5_CATALOG);
 
     BESDEBUG("h5", "Done Cleaning HDF5 module " << modname << endl)
 }

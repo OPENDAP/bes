@@ -34,20 +34,24 @@
 
 #include "h5_handler.h"
 
-#include "BESDASResponse.h"
-#include "BESDDSResponse.h"
-#include "BESDataDDSResponse.h"
-#include "Ancillary.h"
-#include "BESInfo.h"
-#include "BESResponseNames.h"
-#include "BESContainer.h"
-#include "BESResponseHandler.h"
-#include "BESVersionInfo.h"
-#include "BESDataNames.h"
-#include "BESDapError.h"
-#include "BESNotFoundError.h"
-#include "BESInternalFatalError.h"
+#include <BESDASResponse.h>
+#include <BESDDSResponse.h>
+#include <BESDataDDSResponse.h>
+#include <Ancillary.h>
+#include <BESInfo.h>
+#include <BESResponseNames.h>
+#include <BESContainer.h>
+#include <BESResponseHandler.h>
+#include <BESVersionInfo.h>
+#include <BESServiceRegistry.h>
+#include <BESUtil.h>
+#include <BESDataNames.h>
+#include <BESDapError.h>
+#include <BESNotFoundError.h>
+#include <BESInternalFatalError.h>
 #include "H5Git.h"
+
+#define HDF5_NAME "h5"
 
 /// An external object that handles NASA EOS HDF5 files for grid generation 
 /// and meta data parsing.
@@ -147,7 +151,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         dds->transfer_attributes(das);
 
-        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	bdds->set_constraint( dhi ) ;
 
 	bdds->clear_container() ;
 #if 0
@@ -211,7 +215,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         dds->transfer_attributes(das);
 
-        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	bdds->set_constraint( dhi ) ;
 
 	bdds->clear_container() ;
 #if 0
@@ -246,14 +250,18 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    info->begin_tag("Handler");
-    info->add_tag("name", PACKAGE_NAME);
-    string handles = (string) DAS_RESPONSE
-        + "," + DDS_RESPONSE
-        + "," + DATA_RESPONSE + "," + HELP_RESPONSE + "," + VERS_RESPONSE;
-    info->add_tag("handles", handles);
-    info->add_tag("version", PACKAGE_STRING);
-    info->end_tag("Handler");
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
+    list<string> services ;
+    BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
+    if( services.size() > 0 )
+    {
+	string handles = BESUtil::implode( services, ',' ) ;
+	attrs["handles"] = handles ;
+    }
+    info->begin_tag( "module", &attrs ) ;
+    info->end_tag( "module" ) ;
 
     return true;
 }
@@ -265,6 +273,7 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
-    info->addHandlerVersion(PACKAGE_NAME, PACKAGE_VERSION);
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
+
     return true;
 }
