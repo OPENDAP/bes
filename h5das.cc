@@ -601,7 +601,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Rewrote to use C++ strings 3/2008 jhrg
     string newname;
 
-#ifdef SHORT_PATH
+#ifdef CF    
+    newname = eos.get_short_name(varname);
+    /*
     const char ORI_SLASH = '/';
 
     string::size_type i = varname.rfind(ORI_SLASH);
@@ -609,10 +611,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         newname = varname;
     else
         newname = varname.substr(i+1);
+    */
 #else
     newname = varname;
 #endif
 
+    
     // <hyokyung 2007.08. 2. 12:37:33>
 #ifdef CF
     if (newname.length() > DODS_CF_NAMELEN) // <hyokyung 2009.01.16. 09:45:22>

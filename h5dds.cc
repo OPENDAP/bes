@@ -337,6 +337,7 @@ static BaseType *Get_bt(const string &varname,
 
 	  case H5T_STRING:
 	    btp = new HDF5Str(vname, dataset);
+	    // btp = new HDF5Str(varname, dataset);
 	    break;
 
 	  case H5T_ARRAY: {
@@ -782,11 +783,12 @@ static void process_grid_nasa_eos(const string &varname,
 	string str_grid_name = eos.get_grid_name(varname);
 	string str_dim_full_name = str_grid_name + str_dim_name;
 
-	int dim_size = eos.get_dimension_size(str_dim_full_name);
-
-#ifdef SHORT_PATH
+#ifdef CF
 	str_dim_full_name = str_dim_name;
 #endif
+
+	int dim_size = eos.get_dimension_size(str_dim_full_name);
+
 
 #ifdef CF
 	// Rename dimension name according to CF convention.
@@ -891,12 +893,9 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     else {
 	// Next, deal with Array and Grid data. This 'else clause' runs to
 	// the end of the method. jhrg
-        varname = get_short_name(varname);
-#ifdef CF
-        if (varname.length() > DODS_CF_NAMELEN)	// <hyokyung 2009.01.16. 09:45:30>
-            return;
-#endif
-        HDF5Array *ar = new HDF5Array(varname, filename, bt);
+        // varname = get_short_name(varname);
+        string sname = get_short_name(varname);
+        HDF5Array *ar = new HDF5Array(sname, filename, bt);
 	delete bt; bt = 0;
         ar->set_did(dt_inst.dset);
         ar->set_tid(dt_inst.type);
@@ -930,7 +929,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         H5GridFlag_t check_grid = maptogrid(dt_inst.dset, dt_inst.ndims);
 
         if (check_grid != NotGrid) {    // !NotGrid means it's a Grid.
-	    Grid *gr = new HDF5Grid(varname, filename);
+	    Grid *gr = new HDF5Grid(sname, filename);
 	    // First fill the array part of the grid.
 	    gr->add_var(ar, array);
 	    delete ar; ar = 0;
@@ -945,7 +944,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 
             // Construct a grid instead of returning a simple array.
 
-            Grid *gr = new HDF5Grid(varname, filename);
+            Grid *gr = new HDF5Grid(sname, filename);
             gr->add_var(ar, array);
             delete ar; ar = 0;
 
@@ -959,7 +958,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         else if (eos.is_valid() && eos.is_grid(varname)) {
             DBG(cerr << "EOS Grid: " << varname << endl);
             // Generate grid based on the parsed StructMetada.
-            Grid *gr = new HDF5GridEOS(varname, filename);
+            Grid *gr = new HDF5GridEOS(sname, filename);
 
 	    process_grid_nasa_eos(varname, ar, gr, dds_table);
             gr->add_var(ar, array);
@@ -1083,11 +1082,16 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
 ////////////////////////////////////////////////////////////////////////////////  
 string get_short_name(string varname)
 {
-#ifdef SHORT_PATH
+#ifdef CF
+  if(eos.get_short_name(varname) != ""){
+    return eos.get_short_name(varname);
+  }
+  else{
     int pos = varname.find_last_of('/', varname.length() - 1);
-    return varname.substr(pos + 1);
+    return varname.substr(pos + 1);    
+  }
 #else
-    return varname;
+  return varname;
 #endif
 }
 

@@ -10,6 +10,7 @@
 
 #include <Array.h>
 #include "hdfeos.tab.hh"
+#include "H5CF.h"
 
 using namespace std;
 using namespace libdap;
@@ -20,38 +21,25 @@ using namespace libdap;
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
-/// Copyright (c) 2007 HDF Group
+/// Copyright (c) 2007 The HDF Group
 ///
 /// All rights reserved.
-class H5EOS {
+class H5EOS:public H5CF {
 
 private:
 
   bool valid;
-#ifdef CF
-  bool shared_dimension;
-#endif
-
   hid_t hid_hdfeos_information;
 
   map < string, int > dimension_map;
   map < string, string > full_data_path_to_dimension_list_map;
-#ifdef CF
-  map < string, string > eos_to_cf_map;
-  map < string, string > cf_to_eos_map;
-#endif
 
   vector < string > dimensions;
   vector < string > full_data_paths;
 
-
-
   bool has_group(hid_t id, const char *name);
   bool has_dataset(hid_t id, const char *name);
   void reset();
-#ifdef SHORT_PATH
-  string get_short_name(string a_name);
-#endif
 
 public:
 
@@ -126,6 +114,11 @@ public:
   /// \return 0, if not.
   bool check_eos(hid_t id);
 
+  /// Get the vector of all dimensions used in this HDF-EOS5 file.
+  ///
+  /// \param[in] tokens a vector to be fetched 
+  void  get_all_dimensions(vector < string > &tokens);
+  
   /// Get the index of dimension data from the dimension map
   ///
   /// \param name like XDim, YDim and ZDim
@@ -155,7 +148,7 @@ public:
   /// \param[in] full_path a full path name of a Grid variable
   /// \see h5dds.cc
   string get_grid_name(string full_path);
-
+  
   /// Check if this class has already parsed the \a name as grid.
   /// 
   /// \param name a name of variable
@@ -199,16 +192,6 @@ public:
   /// \return false otherwise.
   bool set_metadata(hid_t id, char *metadata_name,
 		    char *metadata_buffer);
-  
-
-  
-#ifdef CF
-  bool is_shared_dimension_set();
-  void set_shared_dimension();
-  const char *get_CF_name(char *eos_name);
-  string get_EOS_name(string cf_name);
-  void get_all_dimensions(vector < string > &tokens);  
-#endif
 
 };
 #endif

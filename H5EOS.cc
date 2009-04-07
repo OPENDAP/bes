@@ -31,9 +31,6 @@ H5EOS::H5EOS()
   gradient_x = 0.0;
   gradient_y = 0.0;
   dimension_data = NULL;
-#ifdef CF
-  shared_dimension = false;
-#endif
   bmetadata_Struct = false;
 #ifdef NASA_EOS_META
   bmetadata_Archived = false;
@@ -79,8 +76,10 @@ bool H5EOS::has_dataset(hid_t id, const char *name)
 
 void H5EOS::add_data_path(string full_path)
 {
-#ifdef SHORT_PATH
-  full_path = get_short_name(full_path);
+#ifdef CF
+  string short_path = generate_short_name(full_path);
+  DBG(cerr << "Short path is:" << short_path << endl);  
+  long_to_short[full_path] = short_path;
 #endif
 
   DBG(cerr << "Full path is:" << full_path << endl);
@@ -90,12 +89,6 @@ void H5EOS::add_data_path(string full_path)
 
 void H5EOS::add_dimension_list(string full_path, string dimension_list)
 {
-
-#ifdef SHORT_PATH
-  full_path = get_short_name(full_path);
-  dimension_list = get_short_name(dimension_list);
-#endif
-
   full_data_path_to_dimension_list_map[full_path] = dimension_list;
   DBG(cerr << "Dimension List is:" <<
       full_data_path_to_dimension_list_map[full_path] << endl);
@@ -104,8 +97,8 @@ void H5EOS::add_dimension_list(string full_path, string dimension_list)
 void H5EOS::add_dimension_map(string dimension_name, int dimension)
 {
   bool has_dimension = false;
-#ifdef SHORT_PATH
-  dimension_name = get_short_name(dimension_name);
+#ifdef CF
+  dimension_name = cut_long_name(dimension_name);
 #endif
 
   int i;
@@ -219,12 +212,6 @@ bool H5EOS::set_dimension_array()
 
   dods_float32 *convbuf = NULL;
     
-  //#ifdef CF
-  // Resetting this flag is necessary for Hyrax. <hyokyung 2008.07.18. 14:50:05>
-  // This has been replaced by reset() member function. <hyokyung 2008.10.20. 14:08:15>
-  //    shared_dimension = false;
-  //#endif
-  
   if (libdap::size_ok(sizeof(dods_float32), size))
     dimension_data = new dods_float32*[size];
   else
@@ -297,68 +284,6 @@ int H5EOS::get_dimension_data_location(string dimension_name)
   return -1;
 }
 
-#ifdef SHORT_PATH
-string H5EOS::get_short_name(string varname)
-{
-  int pos = varname.find_last_of('/', varname.length() - 1);
-  return varname.substr(pos + 1);
-}
-#endif
-
-#ifdef CF
-bool H5EOS::is_shared_dimension_set()
-{
-  return shared_dimension;
-}
-
-void H5EOS::set_shared_dimension()
-{
-  shared_dimension = true;
-}
-
-const char *H5EOS::get_CF_name(char *eos_name)
-{
-  string str(eos_name);
-
-  DBG(cerr << ">get_CF_name:" << str << endl);
-  // <hyokyung 2007.08. 2. 14:25:58>  
-  eos_to_cf_map["MissingValue"] = "missing_value";
-  eos_to_cf_map["Units"] = "units";
-  eos_to_cf_map["XDim"] = "lon";
-  eos_to_cf_map["YDim"] = "lat";
-  eos_to_cf_map["nCandidate"] = "lev";
-
-  // eos_to_grads_map["Offset"] = "add_offset";
-  // eos_to_grads_map["ScaleFactor"] = "scale_factor";
-  // eos_to_grads_map["ValidRange"] = "valid_range";
-
-  DBG(cerr << eos_to_cf_map[str] << endl);
-  if (eos_to_cf_map[str].size() > 0) {
-    return eos_to_cf_map[str].c_str();
-  } else {
-    return str.c_str();
-  }
-}
-
-string H5EOS::get_EOS_name(string str)
-{
-  DBG(cerr << ">get_EOS_name:" << str << endl);
-  cf_to_eos_map["lon"] = "XDim";
-  cf_to_eos_map["lat"] = "YDim";
-  cf_to_eos_map["lev"] = "nCandidate";
-
-  DBG(cerr << cf_to_eos_map[str] << endl);
-  if (cf_to_eos_map[str].size() > 0) {
-    return cf_to_eos_map[str];
-  } else {
-    return str;
-  }
-}
-
-
-#endif
-
-
 bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 {
   bool valid = false;
@@ -424,9 +349,6 @@ void H5EOS::reset()
   point_right = 0.0;
   gradient_x = 0.0;
   gradient_y = 0.0;
-#ifdef CF
-  shared_dimension = false;
-#endif
   bmetadata_Struct = false;
 #ifdef NASA_EOS_META
   bmetadata_Archived = false;
@@ -451,14 +373,6 @@ void H5EOS::reset()
   if(!full_data_path_to_dimension_list_map.empty()){
     full_data_path_to_dimension_list_map.clear();
   }
-#ifdef CF
-  if(!eos_to_cf_map.empty()){
-    eos_to_cf_map.clear();
-  }
-  if(!cf_to_eos_map.empty()){
-    cf_to_eos_map.clear();
-  }
-#endif
   
   if(!dimensions.empty()){
     dimensions.clear();
@@ -473,8 +387,9 @@ void H5EOS::reset()
   strcpy(metadata_core, "");
   strcpy(metadata_product, "");
   strcpy(metadata_subset, "");
+  H5CF::reset();
 }
-#ifdef CF
+
 void H5EOS::get_all_dimensions(vector < string > &tokens)
 {
   int j;
@@ -485,4 +400,4 @@ void H5EOS::get_all_dimensions(vector < string > &tokens)
 	std::endl);
   }
 }
-#endif
+
