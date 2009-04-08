@@ -110,6 +110,9 @@ bool HDF5Int32::read()
 
         if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) <
             0) {
+	    // buf is deleted in the catch ... block below and
+	    // should not be deleted here. pwest Mar 18, 2009
+	    //delete[] buf;
             throw InternalErr(__FILE__, __LINE__,
                               string
                               ("hdf5_dods server failed when getting int32 data for structure\n")
@@ -126,7 +129,10 @@ bool HDF5Int32::read()
 	delete[] buf;
 	}
 	catch(...) {
-	    delete[] buf;
+	    // memory allocaiton exception could have been thrown in
+	    // creating buf, so check if null before deleting.
+	    // pwest Mar 18, 2009
+	    if( buf ) delete[] buf;
 	    throw;
 	}
 

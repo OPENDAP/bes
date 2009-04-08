@@ -96,8 +96,10 @@ bool HDF5Str::read()
 		k++;
 	    }
 
-	    if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf)
-		< 0) {
+	    if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) < 0) {
+		// buf is deleted in the catch ... block below so
+		// shouldn't be deleted here. pwest Mar 18, 2009
+		//delete[] buf;
 		throw InternalErr(__FILE__, __LINE__,
 				  string("hdf5_dods server failed when getting int32 data for structure\n")
 				  + Msgi);

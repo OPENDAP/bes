@@ -107,9 +107,16 @@ bool HDF5Array::m_array_of_structure() {
 	    linearize_multi_dimensions(offset, step, count, picks);
 
 	HDF5Structure *p = dynamic_cast < HDF5Structure * >(var());
-	if (!p)
+	if (!p) {
+	    // These 4 ptrs are deleted in the catch ... block below
+	    // and do not need to be deleted here. pwest Mar 18, 2009
+	    //delete[] offset;
+	    //delete[] count;
+	    //delete[] step;
+	    //delete[] picks;
 	    throw InternalErr(__FILE__, __LINE__, "Not a HDF5Structure");
-
+	}
+	
 	p->set_array_size(nelms);
 	p->set_entire_array_size(total_elems);
 
@@ -129,10 +136,10 @@ bool HDF5Array::m_array_of_structure() {
 	return false;
     }
     catch (...) {
-	delete[] offset;
-	delete[] count;
-	delete[] step;
-	delete[] picks;
+	if( offset ) delete[] offset;
+	if( count ) delete[] count;
+	if( step ) delete[] step;
+	if( picks ) delete[] picks;
 
 	throw;
     }
@@ -190,7 +197,7 @@ void HDF5Array::m_insert_simple_array(hid_t s1_tid, hsize_t *size2) {
 bool HDF5Array::m_array_in_structure() {
     DBG(cerr << "=read() Array in Structure of length=" << length() << endl);
 
-    int array_index, array_size, entire_array_size;
+    int array_index = 0, array_size = 0, entire_array_size = 0;
     hid_t s1_tid = H5Tcreate(H5T_COMPOUND, d_memneed);
 
     // Build the simple array and record its size.
@@ -271,6 +278,8 @@ bool HDF5Array::m_array_in_structure() {
     char *strbuf = 0;
     try {
 	// Allocate enough buffer for entire array to be read.
+	if (!entire_array_size)
+		throw InternalErr(__FILE__, __LINE__, "entire_array_size is zero");
 	char *buf = new char[entire_array_size * d_memneed];
 
 	H5Dread(d_dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
@@ -279,9 +288,29 @@ bool HDF5Array::m_array_in_structure() {
 
 	// Originally this code used entire_array_size, but it looks like
 	// array_size will do. jhrg 4/15/08
+	if (!array_size) {
+		// buf is deleted in the catch ... block below and
+		// does not need to be deleted here. The exception
+		// is thrown, caught below, and buf is deleted.
+		// pwest Mar 18, 2009
+		//delete[] buf;
+		throw InternalErr(__FILE__, __LINE__, "array_size is zero");
+	}
 	char *convbuf = new char[array_size * d_memneed];
 
-	// This code effectively performs the contraint, I think. jhrg 4/11/08 
+	// This code effectively performs the constraint, I think. jhrg 4/11/08
+	// It can be 0. <hyokyung 2009.03.18. 14:10:22>
+	/*
+	if (!array_index) {
+		// buf and convbuf are deleted in the catch ...
+		// block below and should not be deleted here.
+		// pwest Mar 18, 2009
+		//delete[] buf;
+		//delete[] convbuf;
+		throw InternalErr(__FILE__, __LINE__, "array_index is zero");
+	}
+	*/
+	
 	for (int l = 0; l < array_size; l++) {
 	    for (int i = 0; i < (int) d_memneed; i++) {
 		convbuf[l * d_memneed + i] = buf[array_index * d_memneed + i];
@@ -304,7 +333,7 @@ bool HDF5Array::m_array_in_structure() {
 	    }
 	    set_read_p(true);
 	    val2buf((void *)v_str);
-	    delete[]strbuf; strbuf = 0;
+	    delete[] strbuf; strbuf = 0;
 	    delete[] v_str; v_str = 0;
 	} 
 	else {
@@ -314,10 +343,13 @@ bool HDF5Array::m_array_in_structure() {
 	delete[] convbuf; convbuf = 0;
     }
     catch(...) {
-	delete[] buf;
-	delete[] strbuf;
-	delete[] v_str;
-	delete[] convbuf;
+	// memory allocation exceptions could have been thrown in
+	// creating these ptrs, so could still be null. Check if
+	// exists before deleting. pwest Mar 18, 2009
+	if( buf ) delete[] buf;
+	if( strbuf ) delete[] strbuf;
+	if( v_str ) delete[] v_str;
+	if( convbuf ) delete[] convbuf;
 	throw;
     }
 
@@ -347,6 +379,13 @@ bool HDF5Array::m_array_of_reference() {
 	    DBG(cerr << "=read() Got regional reference. " << endl);
 	    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, 
 			H5P_DEFAULT, rbuf) < 0) {
+		// these ptrs are deleted in the catch ... block
+		// below, so should not be deleted here
+		//delete[] offset;
+		//delete[] count;
+		//delete[] step;
+		//delete[] v_str;
+		//delete[] rbuf;
 		throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
 	    }
 
@@ -425,7 +464,19 @@ bool HDF5Array::m_array_of_reference() {
 			      delete[] buf;
 			  }
 			  catch (...) {
-			      delete[] buf;
+			      // memory allocation exception could
+			      // have been thrown in creating buf,
+			      // so check if exists before deleting.
+			      // pwest Mar 18, 2009
+			      if( buf ) delete[] buf;
+			      // These ptrs are deleted in the catch
+			      // ... block below, so should not be
+			      // deleting here. pwest Mar 18, 2009
+			      //delete[] offset;
+			      //delete[] count;
+			      //delete[] step;
+			      //delete[] v_str;
+			      //delete[] rbuf;
 			      throw;
 			  }
 
@@ -464,8 +515,20 @@ bool HDF5Array::m_array_of_reference() {
 			      delete[] end;
 			  }
 			  catch (...) {
-			      delete[] start;
-			      delete[] end;
+			      // memory allocaiton exceptions could
+			      // have been thrown in creating start
+			      // and end, so check if exists before
+			      // deleting. pwest Mar 18, 2009
+			      if( start ) delete[] start;
+			      if( end ) delete[] end;
+			      // These ptrs are deleted in the catch
+			      // ... block below and should not be
+			      // deleted here. pwest Mar 18, 2009
+			      //delete[] offset;
+			      //delete[] count;
+			      //delete[] step;
+			      //delete[] v_str;
+			      //delete[] rbuf;
 			      throw;
 			  }
 			  break;
@@ -491,6 +554,14 @@ bool HDF5Array::m_array_of_reference() {
 	    DBG(cerr << "=read() Got object reference. " << endl);
 	    if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, 
 			H5P_DEFAULT, rbuf) < 0) {
+	        // These ptrs are deleted in the catch
+	        // ... block below and should not be
+	        // deleted here. pwest Mar 18, 2009
+		//delete[] offset;
+		//delete[] count;
+		//delete[] step;
+		//delete[] rbuf;
+		//delete[] v_str;
 		throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
 	    }
 
@@ -526,11 +597,14 @@ bool HDF5Array::m_array_of_reference() {
 	return false;
     }
     catch(...) {
-	delete[] offset;
-	delete[] count;
-	delete[] step;
-	delete[] rbuf;
-	delete[] v_str;
+	// memory allocation exceptions could have been thrown in
+	// creating these ptrs so check if exist before deleting.
+	// pwest Mar 18, 2009
+	if( offset ) delete[] offset;
+	if( count ) delete[] count;
+	if( step ) delete[] step;
+	if( rbuf ) delete[] rbuf;
+	if( v_str ) delete[] v_str;
 
 	throw;
     }
@@ -569,8 +643,11 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf) {
 	    delete[] v_str;
 	}
 	catch (...) {
-	    delete[] strbuf;
-	    delete[] v_str;
+	    // memory allocation exceptions could have been thrown
+	    // in creating these so check if exist before deleting.
+	    // pwest Mar 18, 2009
+	    if( strbuf ) delete[] strbuf;
+	    if( v_str ) delete[] v_str;
 	    throw;
 	}
     } 
@@ -670,10 +747,13 @@ bool HDF5Array::read() {
 	delete[]count;
     }
     catch(...) {
-	delete[]offset;
-	delete[]step;
-	delete[]count;
-	delete[]convbuf;
+	// memory allocation exception could have been thrown in
+	// creating these ptrs so check if exists before deleting.
+	// pwest Mar 18, 2009
+	if( offset ) delete[]offset;
+	if( step ) delete[]step;
+	if( count ) delete[]count;
+	if( convbuf ) delete[]convbuf;
 	throw;
     }
 
@@ -794,8 +874,11 @@ int HDF5Array::linearize_multi_dimensions(int *start, int *stride, int *count,
 	delete[] temp_count;
     }
     catch(...) {
-	delete[] dim;
-	delete[] temp_count;
+	// memory allocation exception could have been thrown in
+	// creating these ptrs so check if exists before deleting.
+	// pwest Mar 18, 2009
+	if( dim ) delete[] dim;
+	if( temp_count ) delete[] temp_count;
 	throw;
     }
 
@@ -865,9 +948,12 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
 	delete[] v_str;
     }
     catch (...) {
-	delete[] strbuf;
-	delete[] convbuf2;
-	delete[] v_str;
+	// memory allocation exception could have been thrown in
+	// creating these ptrs, so check if exist before deleting.
+	// pwest Mar 18, 2009
+	if( strbuf ) delete[] strbuf;
+	if( convbuf2 ) delete[] convbuf2;
+	if( v_str ) delete[] v_str;
 	throw;
     }
     return false;

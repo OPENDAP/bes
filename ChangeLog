@@ -1,3 +1,118 @@
+2009-03-18  Patrick West <pwest@ucar.edu>
+
+	Memory allocation issues cleaned up
+	M    hdf5_handler-1.3.0/HDF5Array.cc
+	M    hdf5_handler-1.3.0/HDF5Str.cc
+	M    hdf5_handler-1.3.0/HDF5Int32.cc
+	M    hdf5_handler-1.3.0/HDF5Int16.cc
+	M    hdf5_handler-1.3.0/HDF5Byte.cc
+	M    hdf5_handler-1.3.0/HDF5Float64.cc
+
+2009-03-18  Patrick West <pwest@ucar.edu>
+
+	Memory cleanup issues
+	M    hdf5_handler-1.3.0/HDF5UInt32.cc
+	M    hdf5_handler-1.3.0/HDF5UInt16.cc
+	M    hdf5_handler-1.3.0/h5das.cc
+	M    hdf5_handler-1.3.0/h5dds.cc
+	M    hdf5_handler-1.3.0/H5Git.cc
+	M    hdf5_handler-1.3.0/HDF5Float32.cc
+
+2009-03-18  hyoklee
+
+	Removed an unnecessary bound check. This is a fix for the test FAIL on bes-testsuite/bes-testsuite/besstandalone.h5/tcompound.h5.3.exp.
+
+2009-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+	M    HDF5UInt32.cc
+	M    HDF5Module.cc
+	M    HDF5UInt16.cc
+	M    h5das.cc
+	M    h5dds.cc
+	M    H5Git.cc
+	M    HDF5Float32.cc
+	M    HDF5Array.cc
+	M    HDF5Str.cc
+	M    HDF5Int32.cc
+	M    HDF5Int16.cc
+	M    HDF5Byte.cc
+	M    HDF5Float64.cc
+	M    HDF5Module.h
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	POST_CONSTRAINT issues with multiple containers. Call set_constraint on
+	BESDapResponse in order to properly have the post constraint set.
+
+	M    HDF5RequestHandler.cc
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	Added handles attribute to help response, specifying what services the
+	module handles.
+
+	M    HDF5RequestHandler.cc
+
+2009-03-04  Patrick West <pwest@ucar.edu>
+
+	container storage and catalog list reference changes
+	
+	M    hdf5_handler-1.3.0/HDF5Module.cc
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlresponse branch with the Hyrax 1.5 release branch.
+
+	_M   .
+	M    HDF5Module.cc
+	M    HDF5RequestHandler.cc
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Added paths to the hdf5.m4 file for macports and fink
+
+2009-02-09  James Gallagher <jgallagher@opendap.org>
+
+	Tests were failing for the hdf5 handler because the baseline files
+	were using XDAP: 3.1 but libdap is now using XDAP: 3.2. I change
+	the line to XDAP: *. The tests pass.
+
+2009-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Moved here to coalesce the branches
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Change ff to h5 in Makefile.am EXTRA_DIST target.
+
+	M    bes-testsuite/Makefile.am
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.5
+
+	A    http://scm.opendap.org/svn/branch/hdf5_handler/1.3.0
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Release 1.3.0
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+	M    hdf5_handler.spec
+	M    README
+
+2009-01-16  hyoklee
+
+	First, HDF5 to DAP Mapping change: 1) Int64 throws an exception, no more mapping into Int32 2) Signed Byte is mapped to Int16 in both DDS and DAS. Second, attribute change for enable-cf option. The NC_GLOBAL attribute is produced if valid Grid projection in NASA EOS AURA file is detected. Resolution, min and max attributes for lat/lon are extracted from structMetadata.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2009-01-16  hyoklee
 
 	First, HDF5 to DAP Mapping change: 1) Int64 throws an exception,

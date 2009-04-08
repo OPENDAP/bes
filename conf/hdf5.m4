@@ -86,7 +86,8 @@ dnl  AC_LINK_IFELSE([AC_LANG_CALL([],[$ac_check_func_checked])],
        /usr/hdf5/lib \
        /usr/local/lib/hdf5 \
        /opt/lib/hdf5 \
-       /usr/lib/hdf5 ; do
+       /usr/lib/hdf5 \
+       /opt/local/lib /opt/local/include /sw/lib /sw/include ; do
         AS_IF([test "z$ac_hdf5_libdir" = 'z'],
           [H5_LDFLAGS=],
           [

@@ -99,8 +99,11 @@ bool HDF5UInt16::read()
         }                       // while ()
 
 
-        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) <
-            0) {
+        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) < 0) {
+	    // this should not be called here. The exception on
+	    // the next line is thrown and caught below. In the
+	    // catch block the buf is deleted. pcw Mar 18, 2009
+	    //delete[] buf;
             throw InternalErr(__FILE__, __LINE__,
                               string
                               ("hdf5_dods server failed when getting int32 data for structure\n")
@@ -117,7 +120,9 @@ bool HDF5UInt16::read()
 	delete[] buf;
 	}
 	catch(...) {
-	    delete[] buf;
+	    // if a memory exception is thrown because buf couldn't
+	    // be allocated then we need to check for buf. pcw Mar 18, 2009
+	    if( buf ) delete[] buf;
 	    throw;
 	}
 

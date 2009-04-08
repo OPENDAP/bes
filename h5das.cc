@@ -106,6 +106,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    oname = new char[(size_t) oname_size + 1];
 	    if (H5Gget_objname_by_idx(pid, (hsize_t) i, oname,
 				      (size_t) (oname_size + 1)) < 0) {
+		// oname is deleted in the catch ... block below so
+		// shouldn't be deleted here. pwest Mar 18, 2009
+		//delete[] oname;
 		string msg = "hdf5 object name error from: ";
 		msg += gname;
 		throw InternalErr(__FILE__, __LINE__, msg);
@@ -113,6 +116,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
 	    int type = H5Gget_objtype_by_idx(pid, (hsize_t) i);
 	    if (type < 0) {
+		// oname is deleted in the catch ... block below so
+		// shouldn't be deleted here. pwest Mar 18, 2009
+	    	//delete[] oname;
 		string msg = "hdf5 object type error from: ";
 		msg += gname;
 		throw InternalErr(__FILE__, __LINE__, msg);
@@ -129,6 +135,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 		  hid_t cgroup = H5Gopen(pid, full_path_name.c_str());
 
 		  if (cgroup < 0) {
+		      // oname is deleted in the catch ... block below so
+		      // shouldn't be deleted here. pwest Mar 18, 2009
+		      //delete[] oname;
 		      string msg = "opening hdf5 group failed for ";
 		      msg += full_path_name;
 		      throw InternalErr(__FILE__, __LINE__, msg);
@@ -136,6 +145,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
 		  int num_attr;
 		  if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
+		      // oname is deleted in the catch ... block below so
+		      // shouldn't be deleted here. pwest Mar 18, 2009
+		      //delete[] oname;
 		      string msg = "failed to obtain hdf5 attribute in group ";
 		      msg += full_path_name;
 		      throw InternalErr(__FILE__, __LINE__, msg);
@@ -170,6 +182,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 		  hid_t dset;
 		  // Open the dataset
 		  if ((dset = H5Dopen(pid, full_path_name.c_str())) < 0) {
+		      // oname is deleted in the catch ... block below so
+		      // shouldn't be deleted here. pwest Mar 18, 2009
+		      //delete[] oname;
 		      string msg = "unable to open hdf5 dataset of group ";
 		      msg += gname;
 		      throw InternalErr(__FILE__, __LINE__, msg);
@@ -178,6 +193,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 		  // Obtain number of attributes in this dataset.
 		  int num_attr;
 		  if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
+		      // oname is deleted in the catch ... block below so
+		      // shouldn't be deleted here. pwest Mar 18, 2009
+		      //delete[] oname;
 		      string msg = "failed to get hdf5 attribute in dataset ";
 		      msg += full_path_name;
 		      throw InternalErr(__FILE__, __LINE__, msg);
@@ -215,7 +233,10 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    delete[]oname;
 	} // try
 	catch (...) {
-	    delete[] oname;
+	    // if a memory allocation exception is thrown creating
+	    // oname it is caught here, meaning oname is null. pwest
+	    // Mar 18, 2009
+	    if( oname ) delete[] oname;
 	    throw;
 	}
     } //  for (int i = 0; i < nelems; i++)
@@ -376,7 +397,14 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 		  delete[] buf; buf = 0;
 	      }
 	      catch (...) {
-		  delete[] buf;
+		  // if memory allocation exceptions are thrown
+		  // creating either buf or rep then they would
+		  // still be null respectively, so need to check if
+		  // the exist before deleting. pwest Mar 18, 2009
+		  if( buf ) delete[] buf;
+		  // rep is deleted in the catch ... below so
+		  // shouldn't be deleted here. pwest Mar 18, 2009
+		  //if( rep ) delete[] rep;
 		  throw;
 	      }
 	      break;
@@ -389,7 +417,9 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 	} // switch(H5Tget_class(type))
     } // try
     catch (...) {
-	delete[] rep;
+	// if a memory allocation exception is thrown creating rep
+	// then it is caught here and rep would be null. pwest Mar 18, 2009
+	if( rep ) delete[] rep;
 	throw;
     }
 
@@ -651,10 +681,13 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
 	    // Read HDF5 attribute data.
 
-	    if (H5Aread(attr_id, ty_id, (void *) value) < 0)
+	    if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
+	      // value is deleted in the catch block below so
+	      // shouldn't be deleted here. pwest Mar 18, 2009
+	      //delete[] value;
 	      throw InternalErr(__FILE__, __LINE__,
 				"unable to read HDF5 attribute data");
-
+	    }
 	    // Add all attributes in the array.
             //  Create the "name" attribute if we can find long_name.
             //  Make it compatible with HDF4 server.
@@ -688,6 +721,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
                 int elesize = (int) H5Tget_size(attr_inst.type);
                 if (elesize == 0) {
+		    // value is deleted in the catch ... block below
+		    // so shouldn't be deleted here. pwest Mar 18, 2009
+		    //delete[] value;
                     throw InternalErr(__FILE__, __LINE__,
 				      "unable to get attibute size");
                 }
@@ -714,8 +750,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	}		// for (int j = 0; j < num_attr; j++)
     }			// try - protects print_rep and value
     catch(...) {
-	delete[] print_rep;
-	delete[] value;
+	if( print_rep ) delete[] print_rep;
+	if( value ) delete[] value;
 	throw;
     }
 
@@ -820,6 +856,9 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 	// get link target name
 	if (H5Gget_linkval(pgroup, oname.c_str(), statbuf.linklen + 1, buf)
 	    < 0) {
+	    // buf is deleted in the catch ... block below so
+	    // shouldn't be deleted here. pwest Mar 18, 2009
+	    //delete[] buf;
 	    throw InternalErr(__FILE__, __LINE__, "unable to get link value");
 	}
 

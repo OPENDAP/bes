@@ -362,11 +362,21 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 	if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, 
 				(const hsize_t *)dyn_offset, dyn_step, dyn_count, 
 				NULL) < 0) {
+	    // these ptrs get deleted in the catch ... block below
+	    // so don't need to be cleaned up here. pwest Mar 18, 2009
+	    //delete[] dyn_count;
+	    //delete[] dyn_step;
+	    //delete[] dyn_offset;
 	    throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
 	}
 
 	hid_t memspace = H5Screate_simple(num_dim, dyn_count, NULL);
 	if (memspace < 0) {
+	    // these ptrs get deleted in the catch ... block below
+	    // so don't need to be cleaned up here. pwest Mar 18, 2009
+	    //delete[] dyn_count;
+	    //delete[] dyn_step;
+	    //delete[] dyn_offset;
 	    throw InternalErr(__FILE__, __LINE__, "could not open space");
 	}
 
@@ -385,9 +395,11 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 	H5Dclose(dset);
     }
     catch (...) {
-	delete[] dyn_count;
-	delete[] dyn_step;
-	delete[] dyn_offset;
+	// memory allocation exceptions could have been thrown when
+	// creating these, so check if not null before deleting.
+	if( dyn_count ) delete[] dyn_count;
+	if( dyn_step ) delete[] dyn_step;
+	if( dyn_offset ) delete[] dyn_offset;
 
 	throw;
     }
@@ -832,6 +844,7 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
 	try {
 	    hvl_t *refbuf = new hvl_t[temp_nelm];
 	    if (H5Aread(attr_id, temp_dtype, refbuf) < 0) {
+	    	delete[] refbuf;
 		throw InternalErr(__FILE__, __LINE__,
 				  "Cannot read object reference attributes");
 	    }
@@ -848,6 +861,8 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
 		    DBG(cerr << "dimid[" << j << "]=" << dimid[j] << endl);
 
 		    if (dimid[j] < 0) {
+		    	delete[] dimid;
+		    	delete[] refbuf;
 			return false;
 		    } else {
 			char buf[DODS_NAMELEN];
@@ -867,16 +882,19 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
 		}
 	    }                       // for (int j = 0; j < temp_nelm; j++)
 
-	    delete[] refbuf;
-	    delete[] dimid;
-
 	    H5Aclose(attr_id);
 	    H5Sclose(temp_dspace);
 	    H5Tclose(temp_dtype);
+
+	    delete[] refbuf; refbuf = 0 ;
+	    delete[] dimid; dimid = 0 ;
 	}                           // try
 	catch (...) {
-	    delete[] refbuf;
-	    delete[] dimid;
+	    // memory allocation exceptions could have been thrown
+	    // when creating these two ptrs, so check if exist
+	    // before deleting.
+	    if( refbuf ) delete[] refbuf;
+	    if( dimid ) delete[] dimid;
 
 	    throw;
 	}

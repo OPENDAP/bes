@@ -137,8 +137,9 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 	      // Check the hard link loop and break the loop.
 
 	      char *t_fpn = new char[full_path_name.length() + 1];
-
-	      strcpy(t_fpn, full_path_name.c_str());
+	      
+	      (void)full_path_name.copy(t_fpn, full_path_name.length());
+	      t_fpn[full_path_name.length()] = '\0';
 	      hid_t cgroup = H5Gopen(pid, t_fpn);
 	      try {
 		  string oid = get_hardlink(pid, oname);
@@ -380,7 +381,8 @@ static BaseType *Get_bt(const string &varname,
 		  h5_ar.d_type = H5Tget_class(dtype_base);
 	      }
 	      catch (...) {
-		  delete ar_bt;
+		  if( ar_bt ) delete ar_bt;
+		  if( btp ) delete btp;
 		  throw;
 	      }
 	      break;
@@ -396,7 +398,7 @@ static BaseType *Get_bt(const string &varname,
 	}
     }
     catch (...) {
-	delete btp;
+	if( btp ) delete btp;
 	throw;
     }
 
@@ -520,6 +522,11 @@ static Structure *Get_structure(const string &varname,
 	    hid_t memb_type = H5Tget_member_type(datatype, i);
 
 	    if (memb_cls < 0 | memb_type < 0) {
+		// structure_ptr is deleted in the catch ... block
+		// below. So if this exception is thrown, it will
+		// get caught below and the ptr deleted.
+		// pwest Mar 18, 2009
+	    	//delete structure_ptr;
 		throw InternalErr(__FILE__, __LINE__,
 				  string("Type mapping error for ")
 				  + string(memb_name) );
@@ -539,7 +546,10 @@ static Structure *Get_structure(const string &varname,
 	}
     }
     catch (...) {
-	delete structure_ptr;
+	// if memory allocation exception thrown it will be caught
+	// here, so should check if structure ptr exists before
+	// deleting it. pwest Mar 18, 2009
+	if( structure_ptr ) delete structure_ptr;
 	throw;
     }
 
@@ -587,9 +597,13 @@ static void process_grid(const H5GridFlag_t check_grid,
 
     char *dimname = new char[temp_nelm * temp_tsize];
     try {
-	if (H5Aread(attr_id, temp_dtype, dimname) < 0)
+	if (H5Aread(attr_id, temp_dtype, dimname) < 0) {
+	    // dimname is deleted below in the catch ... block so
+	    // don't need to do it here. pwest Mar 18, 2009
+	    //delete[] dimname;
 	    throw InternalErr(__FILE__, __LINE__, 
 			      "Unable to get the attribute");
+	}
 	H5Tclose(temp_dtype);
 	H5Sclose(temp_dspace);
 	H5Aclose(attr_id);
@@ -608,21 +622,29 @@ static void process_grid(const H5GridFlag_t check_grid,
 	hid_t *dimid = 0;
 	char *EachDimName = 0;
 	try {
-	    if (H5Aread(attr_id, H5T_STD_REF_OBJ, buf) < 0)
+	    if (H5Aread(attr_id, H5T_STD_REF_OBJ, buf) < 0) {
+		// both of these are deleted below in the catch ...
+		// block so don't need to do it here. pwest Mar 18, 2009
+	    	//delete[] buf;
+	    	//delete[] dimname;
 		throw InternalErr(__FILE__, __LINE__,
 				  "Cannot read object reference attributes.");
+	    }
 	    hobj_ref_t *refbuf = (hobj_ref_t *) buf;
 	    dimid = new hid_t[temp_nelm];
 
-	    if (!dimid)
-		throw InternalErr(__FILE__, __LINE__,
-				  "Error allocating memory");
-
 	    for (unsigned int j = 0; j < temp_nelm; j++) {
 		dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
-		if (dimid[j] < 0)
+		if (dimid[j] < 0) {
+		    // these three ptrs are deleted in the catch ...
+		    // block below, so no need to do it here.
+		    // pwest Mar 18, 2009
+		    //delete[] dimid;
+		    //delete[] buf;
+		    //delete[] dimname;
 		    throw InternalErr(__FILE__, __LINE__,
 				      "cannot dereference the object.");
+		}
 		refbuf++;
 	    }
 
@@ -643,7 +665,7 @@ static void process_grid(const H5GridFlag_t check_grid,
 		hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
 		temp_tsize = H5Tget_size(memtype);
 
-		strcpy(EachDimName, TempNamePointer);
+		strncpy(EachDimName, TempNamePointer, temp_tsize-1);
 		TempNamePointer = TempNamePointer + temp_tsize/*name_size*/;
 		BaseType *bt = 0;
 		HDF5Array *map = 0;
@@ -661,27 +683,45 @@ static void process_grid(const H5GridFlag_t check_grid,
 		    delete map; map = 0;
 		}
 		catch(...) {
-		    if( bt ) delete bt;
-		    if( map ) delete map;
+		    // possible for memory allocation exceptions to
+		    // be thrown in creating bt or map, so check for
+		    // existance before deleting, and set to 0 in
+		    // case deleting further below. pwest Mar 18, 2009
+		    if( bt ) { delete bt; bt = 0 ; }
+		    if( map ) { delete map; map = 0 ; }
+		    // These 4 ptrs are deleted in the catch block
+		    // below, so possible to multiple delete items.
+		    // No need to clean them up here.
+		    // pwest Mar 18, 2009
+		    //delete[] dimid;
+		    //delete[] buf;
+		    //delete[] dimname;
+		    //delete[] EachDimName;
 		    throw;
 		}
 	    } // for dim_index is 0 .. dt_inst.ndims
 
-	    delete[] buf;
-	    delete[] dimid;
-	    delete[] EachDimName;
+	    if( buf ) { delete[] buf; buf = 0 ; }
+	    if( dimid ) { delete[] dimid; dimid = 0 ; }
+	    if( dimname ) { delete[] dimname; dimname = 0 ; }
+	    if( EachDimName ) { delete[] EachDimName; EachDimName = 0 ; }
 	}
 	catch(...) {
-	    delete[] buf;
-	    delete[] dimid;
-	    delete[] EachDimName;
+	    if( buf ) { delete[] buf; buf = 0 ; }
+	    if( dimid ) { delete[] dimid; dimid = 0 ; }
+	    // This one is done in the catch ... block below so no
+	    // need to do here. pwest Mar 18, 2009
+	    //if( dimname ) { delete[] dimname; dimname = 0 ; }
+	    if( EachDimName ) { delete[] EachDimName; EachDimName = 0 ; }
 	    throw;
 	}
 
-	delete[] dimname;
+//	delete[] dimname;
     }
     catch(...) {
-	delete[] dimname;
+	// just in case dimname is deleted and cleared somewhere
+	// above, check before deleting. pwest Mar 18, 2009
+	if( dimname ) delete[] dimname;
 	throw;
     }
 }
@@ -750,16 +790,20 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 	    catch(...) {
 		if( bt ) delete bt;
 		if( map ) delete map;
+		// These two ptrs are cleaned up in the catch ...
+		// block below so no need to do here.
+		//delete[] refbuf;
+		//delete[] dimid;
 		throw;
 	    }
 	} // for ()
 
-	delete[] dimid;
-	delete[] refbuf;
+	delete[] dimid; dimid = 0 ;
+	delete[] refbuf; refbuf = 0 ;
     }
     catch(...) {
-	delete[] dimid;
-	delete[] refbuf;
+	if( dimid ) delete[] dimid;
+	if( refbuf ) delete[] refbuf;
 	throw;
     }
 }
@@ -811,6 +855,9 @@ static void process_grid_nasa_eos(const string &varname,
 	    
 	}
 	catch (...) {
+	    // memory allocation exceptions could be thrown in
+	    // creating one of these two ptrs, so check if exists
+	    // before deleting.
 	    if( bt ) delete bt;
 	    if( ar ) delete ar;
 	    throw;
