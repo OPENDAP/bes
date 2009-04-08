@@ -3,12 +3,14 @@
 #include "config.h"
 
 #include "OPENDAP_CLASSRequestHandler.h"
-#include "BESResponseHandler.h"
-#include "BESResponseNames.h"
+#include <BESResponseHandler.h>
+#include <BESResponseNames.h>
 #include "OPENDAP_CLASSResponseNames.h"
-#include "BESVersionInfo.h"
-#include "BESTextInfo.h"
-#include "BESConstraintFuncs.h"
+#include <BESVersionInfo.h>
+#include <BESTextInfo.h>
+#include <BESConstraintFuncs.h>
+#include <BESServiceRegistry.h>
+#include <BESUtil.h>
 
 OPENDAP_CLASSRequestHandler::OPENDAP_CLASSRequestHandler( const string &name )
     : BESRequestHandler( name )
@@ -26,7 +28,7 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_vers( BESDataHandlerInterface &d
 {
     bool ret = true ;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object() ) ;
-    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return ret ;
 }
 
@@ -36,13 +38,21 @@ OPENDAP_CLASSRequestHandler::OPENDAP_TYPE_build_help( BESDataHandlerInterface &d
     bool ret = true ;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
 
-    info->begin_tag("Handler");
-    info->add_tag("name", PACKAGE_NAME);
-    info->add_tag("version", PACKAGE_STRING);
-    info->begin_tag("info");
-    info->add_data_from_file( "OPENDAP_CLASS.Help", "OPENDAP_CLASS Help" ) ;
-    info->end_tag("info");
-    info->end_tag("Handler");
+    // This is an example. If you had a help file you could load it like
+    // this and if your handler handled the following responses.
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
+    list<string> services ;
+    BESServiceRegistry::TheRegistry()->services_handled( OPENDAP_CLASS_NAME, services );
+    if( services.size() > 0 )
+    {
+	string handles = BESUtil::implode( services, ',' ) ;
+	attrs["handles"] = handles ;
+    }
+    info->begin_tag( "module", &attrs ) ;
+    //info->add_data_from_file( "OPENDAP_CLASS.Help", "OPENDAP_CLASS Help" ) ;
+    info->end_tag( "module" ) ;
 
     return ret ;
 }

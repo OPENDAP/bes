@@ -39,6 +39,16 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     PPTCAPI_DEBUG00( "tcp connect entered\n" ) ;
 
     void *vconnection = malloc( sizeof( struct pptcapi_connection ) ) ;
+    if( !vconnection )
+    {
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Failed to allocate memory for connection struct" ) ;
+	}
+	return 0 ;
+    }
     struct pptcapi_connection *connection =
 	(struct pptcapi_connection *)vconnection ;
     pptcapi_initialize_connection_struct( connection ) ;
@@ -48,6 +58,17 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     {
 	char *localhost = "localhost" ;
 	connection->host = (char *)malloc( strlen( localhost ) + 1 ) ;
+	if( !connection->host )
+	{
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Failed to allocate memory for connection host" ) ;
+	    }
+	    pptcapi_free_connection_struct( connection ) ;
+	    return 0 ;
+	}
 	strcpy( connection->host, localhost ) ;
     }
     else
@@ -56,6 +77,17 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
 	if( len > PPTCAPI_MAX_STR_LEN )
 	    len = PPTCAPI_MAX_STR_LEN ;
 	connection->host = (char *)malloc( len + 1 ) ;
+	if( !connection->host )
+	{
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Failed to allocate memory for connection host" ) ;
+	    }
+	    pptcapi_free_connection_struct( connection ) ;
+	    return 0 ;
+	}
 	strncpy( connection->host, host, len ) ;
 	connection->host[len] = '\0' ;
     }
@@ -77,8 +109,12 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     {
 	if( ( address = inet_addr( connection->host ) ) == -1 )
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "Invalid host ip address %s", connection->host ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Invalid host ip address %s", connection->host ) ;
+	    }
 	    pptcapi_free_connection_struct( connection ) ;
 	    return 0 ;
 	}
@@ -89,44 +125,51 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     {
 	if( ( ph = gethostbyname( connection->host ) ) == NULL )
 	{
-	    switch( h_errno )
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
 	    {
-		*error = (char *)malloc( 512 ) ;
-		case HOST_NOT_FOUND:
-                    {
-			sprintf( *error, "No such host %s",
-				         connection->host ) ;
-			pptcapi_free_connection_struct( connection ) ;
-			return 0 ;
-                    }
-		case TRY_AGAIN:
-                    {
-			sprintf( *error, "Host %s is busy, try again later",
-			                 connection->host ) ;
-			pptcapi_free_connection_struct( connection ) ;
-			return 0 ;
-                    }
-		case NO_RECOVERY:
-                    {
-			sprintf( *error, "DNS error for host %s",
-					 connection->host ) ;
-			pptcapi_free_connection_struct( connection ) ;
-			return 0 ;
-                    }
-		case NO_ADDRESS:
-                    {
-			sprintf( *error, "No IP address for host %s",
-					 connection->host ) ;
-			pptcapi_free_connection_struct( connection ) ;
-			return 0 ;
-                    }
-		default:
-                    {
-			sprintf( *error, "unknown error getting info for host ",
-					 connection->host ) ;
-			pptcapi_free_connection_struct( connection ) ;
-			return 0 ;
-                    }
+		switch( h_errno )
+		{
+		    case HOST_NOT_FOUND:
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "No such host %s", connection->host ) ;
+			    pptcapi_free_connection_struct( connection ) ;
+			    return 0 ;
+			}
+		    case TRY_AGAIN:
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "Host %s is busy, try again later",
+				      connection->host ) ;
+			    pptcapi_free_connection_struct( connection ) ;
+			    return 0 ;
+			}
+		    case NO_RECOVERY:
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "DNS error for host %s",
+				      connection->host ) ;
+			    pptcapi_free_connection_struct( connection ) ;
+			    return 0 ;
+			}
+		    case NO_ADDRESS:
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "No IP address for host %s",
+				      connection->host ) ;
+			    pptcapi_free_connection_struct( connection ) ;
+			    return 0 ;
+			}
+		    default:
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "unknown error getting info for host ",
+				      connection->host ) ;
+			    pptcapi_free_connection_struct( connection ) ;
+			    return 0 ;
+			}
+		}
 	    }
 	}
 	else
@@ -146,8 +189,12 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     pProtoEnt = getprotobyname( "tcp" ) ;
     if( !pProtoEnt )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "Error retreiving tcp protocol information" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Error retreiving tcp protocol information" ) ;
+	}
 	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
     }
@@ -157,12 +204,17 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
     
     if( descript == -1 ) 
     {
-	*error = (char *)malloc( 512 ) ;
-        const char* error_info = strerror( my_errno ) ;
-        if( error_info )
-	    sprintf( *error, "getting socket descriptor: %s", error_info ) ;
-	else
-	    sprintf( *error, "getting socket descriptor: unknown error" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    const char* error_info = strerror( my_errno ) ;
+	    if( error_info )
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "getting socket descriptor: %s", error_info ) ;
+	    else
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "getting socket descriptor: unknown error" ) ;
+	}
 	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
     } else {
@@ -218,13 +270,18 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
                     fcntl( connection->socket, F_SETFL, holder ) ;
 	    
                     //throw error - select could not resolve socket
-		    *error = (char *)malloc( 512 ) ;
-                    const char *error_info = strerror( my_errno ) ;
-                    if( error_info )
-			sprintf( *error, "error selecting sockets: %s",
-					 error_info ) ;
-		    else
-			sprintf( *error, "error selecting sockets: unknown" ) ;
+		    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		    if( *error )
+		    {
+			const char *error_info = strerror( my_errno ) ;
+			if( error_info )
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "error selecting sockets: %s",
+				      error_info ) ;
+			else
+			    snprintf( *error, PPTCAPI_ERR_LEN,
+				      "error selecting sockets: unknown" ) ;
+		    }
 		    pptcapi_free_connection_struct( connection ) ;
 		    return 0 ;
                 } 
@@ -245,8 +302,11 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
                         fcntl( connection->socket, F_SETFL, holder ) ;
 	      
                         //throw error - did not successfully connect
-			*error = (char *)malloc( 512 ) ;
-			sprintf( *error, "Did not successfully connect to server. Server may be down or you may be trying on the wrong port" ) ;
+			*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+			if( *error )
+			{
+			    snprintf( *error, PPTCAPI_ERR_LEN, "Did not successfully connect to server. Server may be down or you may be trying on the wrong port" ) ;
+			}
 			pptcapi_free_connection_struct( connection ) ;
 			return 0 ;
                     } 
@@ -268,13 +328,18 @@ pptcapi_tcp_connect( const char *host, int portval, int timeout,
                 fcntl( connection->socket, F_SETFL, holder ) ;
 	  
                 //throw error - errno was not EINPROGRESS
-		*error = (char *)malloc( 512 ) ;
-		const char *error_info = strerror( my_errno ) ;
-		if( error_info )
-		    sprintf( *error, "error connecting to socket: %s",
-				     error_info ) ;
-		else
-		    sprintf( *error, "error connecting to socket: unknown" ) ;
+		*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		if( *error )
+		{
+		    const char *error_info = strerror( my_errno ) ;
+		    if( error_info )
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "error connecting to socket: %s",
+				  error_info ) ;
+		    else
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "error connecting to socket: unknown" ) ;
+		}
 		pptcapi_free_connection_struct( connection ) ;
 		return 0 ;
             }
@@ -325,19 +390,22 @@ set_tcp_recv_buffer_size( int socket, int buffer_size, char **error )
 	int myerrno = errno ;
 	if( err == -1 )
 	{
-	    char *serr = strerror( myerrno ) ;
-	    *error = (char *)malloc( 512 ) ;
-	    if( serr )
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
 	    {
-		sprintf( *error,
-			 "Failed to set the receive buffer size to %d: %s ",
-			 buffer_size, serr ) ;
-	    }
-	    else
-	    {
-		sprintf( *error,
-			 "Failed to set the receive buffer size to %d: %s ",
-			 buffer_size, "unknown error occurred" ) ;
+		char *serr = strerror( myerrno ) ;
+		if( serr )
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			     "Failed to set the receive buffer size to %d: %s ",
+			     buffer_size, serr ) ;
+		}
+		else
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			     "Failed to set the receive buffer size to %d: %s ",
+			     buffer_size, "unknown error occurred" ) ;
+		}
 	    }
 	    return PPTCAPI_ERROR ;
 	}
@@ -362,19 +430,22 @@ set_tcp_send_buffer_size( int socket, int buffer_size, char **error )
 	int myerrno = errno ;
 	if( err == -1 )
 	{
-	    char *serr = strerror( myerrno ) ;
-	    *error = (char *)malloc( 512 ) ;
-	    if( serr )
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
 	    {
-		sprintf( *error,
-			 "Failed to set the send buffer size to %d: %s ",
-			 buffer_size, serr ) ;
-	    }
-	    else
-	    {
-		sprintf( *error,
-			 "Failed to set the send buffer size to %d: %s ",
-			 buffer_size, "unknown error occurred" ) ;
+		char *serr = strerror( myerrno ) ;
+		if( serr )
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			     "Failed to set the send buffer size to %d: %s ",
+			     buffer_size, serr ) ;
+		}
+		else
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			     "Failed to set the send buffer size to %d: %s ",
+			     buffer_size, "unknown error occurred" ) ;
+		}
 	    }
 	    return PPTCAPI_ERROR ;
 	}

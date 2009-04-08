@@ -9,7 +9,8 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-lib_LTLIBRARIES = libOPENDAP_TYPE_module.la
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libOPENDAP_TYPE_module.la
 dist_bin_SCRIPTS = bes-OPENDAP_TYPE-data.sh
 
 OPENDAP_CLASS_SRCS:=

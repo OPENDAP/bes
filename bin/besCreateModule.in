@@ -117,7 +117,8 @@ done
 /bin/mv module.spec.template ${serverType}_module.spec
 
 /bin/mkdir conf
-/bin/cp ${TEMPLATE_DIR}/conf/* conf
+/bin/cp ${TEMPLATE_DIR}/conf/* conf/
+chmod +x conf/config.guess conf/config.sub conf/depcomp conf/install-sh conf/ltmain.sh conf/missing conf/mkinstalldirs
 
 include_dap=0
 
@@ -201,10 +202,6 @@ a
     BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}${CAP_NAME}ResponseHandler::${classPrefix}${CAP_NAME}ResponseBuilder ) ;
 
-    cmd_name = string( GET_RESPONSE ) + "." + ${MACRO_NAME}_RESPONSE ;
-    BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
-    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
-
 .
 w
 /TERM_END
@@ -212,10 +209,6 @@ w
 a
     BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->remove_handler( ${MACRO_NAME}_RESPONSE ) ;
-
-    cmd_name = string( GET_RESPONSE ) + "." + ${MACRO_NAME}_RESPONSE ;
-    BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
-    BESCommand::del_command( cmd_name ) ;
 
 .
 w
@@ -318,20 +311,18 @@ then
 	    MACRO_NAME=${i}
 	    CAP_NAME=${i}
 	fi
-	/bin/cp ${TEMPLATE_DIR}/Command.h ./${classPrefix}${CAP_NAME}Command.h
-	ed ./${classPrefix}${CAP_NAME}Command.h << EOF > /dev/null 2>&1
+	/bin/cp ${TEMPLATE_DIR}/XMLCommand.h ./${classPrefix}${CAP_NAME}XMLCommand.h
+	ed ./${classPrefix}${CAP_NAME}XMLCommand.h << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_COMMAND/${CAP_NAME}/g
 w
 q
 EOF
 
-	/bin/cp ${TEMPLATE_DIR}/Command.cc ./${classPrefix}${CAP_NAME}Command.cc
-	#ed ./${classPrefix}${CAP_NAME}Command.cc << EOF > /dev/null 2>&1
-	ed ./${classPrefix}${CAP_NAME}Command.cc << EOF
+	/bin/cp ${TEMPLATE_DIR}/XMLCommand.cc ./${classPrefix}${CAP_NAME}XMLCommand.cc
+	ed ./${classPrefix}${CAP_NAME}XMLCommand.cc << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_COMMAND/${CAP_NAME}/g
-,s/OPENDAP_MACRO/${MACRO_NAME}/g
 w
 q
 EOF
@@ -353,7 +344,7 @@ EOF
 /${classPrefix}ResponseNames
 a
 #include "${classPrefix}${CAP_NAME}ResponseHandler.h"
-#include "${classPrefix}${CAP_NAME}Command.h"
+#include "${classPrefix}${CAP_NAME}XMLCommand.h"
 .
 /INIT_END
 -1
@@ -363,8 +354,7 @@ a
 
     cmd_name = ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
-    BESCommand *${i}_cmd = new ${classPrefix}${CAP_NAME}Command( ${MACRO_NAME}_RESPONSE ) ;
-    BESCommand::add_command( cmd_name, ${i}_cmd ) ;
+    BESXMLCommand::add_command( cmd_name, ${classPrefix}${CAP_NAME}XMLCommand::CommandBuilder ) ;
 
 .
 w
@@ -376,7 +366,7 @@ a
 
     cmd_name = ${MACRO_NAME}_RESPONSE ;
     BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
-    BESCommand::del_command( cmd_name ) ;
+    BESXMLCommand::del_command( cmd_name ) ;
 
 .
 w
@@ -432,11 +422,11 @@ EOF
 	ed ./Makefile.am << EOF > /dev/null 2>&1
 /^BES_SRCS
 a
-	${classPrefix}${CAP_NAME}ResponseHandler.cc ${classPrefix}${CAP_NAME}Command.cc \\
+	${classPrefix}${CAP_NAME}ResponseHandler.cc ${classPrefix}${CAP_NAME}XMLCommand.cc \\
 .
 /^BES_HDRS
 a
-	${classPrefix}${CAP_NAME}ResponseHandler.h ${classPrefix}${CAP_NAME}Command.h \\
+	${classPrefix}${CAP_NAME}ResponseHandler.h ${classPrefix}${CAP_NAME}XMLCommand.h \\
 .
 w
 q

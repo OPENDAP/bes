@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -231,7 +231,7 @@ BESXMLUtils::GetChild( xmlNode *node,
 		{
 		    done = true ;
 		    BESXMLUtils::GetNodeInfo( child_node, name,
-					      child_value, child_props) ;
+					      child_value, child_props ) ;
 		}
 		else
 		{

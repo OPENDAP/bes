@@ -21,10 +21,19 @@ bin_PROGRAMS = besstandalone
 besstandalone_SOURCES = StandAloneApp.cc StandAloneClient.cc \
 			../cmdln/CmdTranslation.cc \
 			../cmdln/CmdPretty.cc \
-			../cmdln/CmdXMLUtils.cc \
+			../xmlcommand/BESXMLUtils.cc \
 			StandAloneApp.h StandAloneClient.h \
 			../cmdln/CmdTranslation.h \
 			../cmdln/CmdPretty.h \
-			../cmdln/CmdXMLUtils.h
+			../xmlcommand/BESXMLUtils.h
+
+# 			../cmdln/CmdTranslation.cc \
+# 			../cmdln/CmdPretty.cc \
+# 			../cmdln/CmdXMLUtils.cc \
+# 			StandAloneApp.h StandAloneClient.h \
+# 			../cmdln/CmdTranslation.h \
+# 			../cmdln/CmdPretty.h \
+# 			../cmdln/CmdXMLUtils.h
+
 besstandalone_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 besstandalone_LDADD = ../dispatch/libbes_dispatch.la ../xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)

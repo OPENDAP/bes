@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -76,20 +76,19 @@ BESContextManager::get_context( const string &name, bool &found )
 void
 BESContextManager::list_context( BESInfo &info )
 {
-    info.begin_tag( "context_list" ) ;
     string name ;
     string value ;
+    map<string,string> props ;
     BESContextManager::Context_citer i = _context_list.begin() ;
     BESContextManager::Context_citer e = _context_list.end() ;
     for( ; i != e; i++ )
     {
+	props.clear() ;
 	name = (*i).first ;
 	value = (*i).second ;
-	map<string,string> temp_map ;
-	temp_map["name"] = name ;
-	info.add_tag( "Context", value, &temp_map ) ;
+	props["name"] = name ;
+	info.add_tag( "context", value, &props ) ;
     }
-    info.end_tag( "context_list" ) ;
 }
 
 /** @brief dumps information about this object

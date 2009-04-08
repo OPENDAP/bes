@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -72,26 +72,28 @@ private:
     typedef struct _persistence_list
     {
 	BESContainerStorage *_persistence_obj ;
+	unsigned int _reference ;
 	BESContainerStorageList::_persistence_list *_next ;
     } persistence_list ;
 
     BESContainerStorageList::persistence_list *_first ;
 
-    bool			isnice() ;
+    bool		isnice() ;
 protected:
-				BESContainerStorageList() ;
+			BESContainerStorageList() ;
 public:
-    virtual			~BESContainerStorageList() ;
+    virtual		~BESContainerStorageList() ;
 
-    virtual bool		add_persistence( BESContainerStorage *p ) ;
-    virtual bool		del_persistence( const string &persist_name ) ;
-    virtual BESContainerStorage *	find_persistence( const string &persist_name ) ;
+    virtual bool	add_persistence( BESContainerStorage *p ) ;
+    virtual bool	ref_persistence( const string &persist_name ) ;
+    virtual bool	deref_persistence( const string &persist_name ) ;
+    virtual BESContainerStorage *find_persistence( const string &persist_name ) ;
 
-    virtual BESContainer *	look_for( const string &sym_name ) ;
+    virtual BESContainer *look_for( const string &sym_name ) ;
 
-    virtual void		show_containers( BESInfo &info ) ;
+    virtual void	show_containers( BESInfo &info ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void	dump( ostream &strm ) const ;
 
     static BESContainerStorageList *TheList() ;
 } ;

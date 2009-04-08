@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Stephan Zednik <zednik@ucar.edu> and Patrick West <pwest@ucar.edu>
 // and Jose Garcia <jgarcia@ucar.edu>
 //
@@ -46,6 +46,7 @@
 #include "Int32.h"
 #include "Float32.h"
 #include "Float64.h"
+#include "cgi_util.h"
 
 #include "Array.h"
 
@@ -66,7 +67,7 @@ void csv_read_descriptors(DDS &dds, const string &filename) {
   csvObj->open(filename);
   csvObj->load();
 
-  dds.set_dataset_name(filename);
+  dds.set_dataset_name(name_path(filename));
 
   fieldList = csvObj->getFieldList();
   recordCount = csvObj->getRecordCount();

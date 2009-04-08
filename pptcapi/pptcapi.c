@@ -55,8 +55,12 @@ pptcapi_initialize_connect( struct pptcapi_connection *connection,
 	int cmp = strncmp( inbuf, PPT_PROTOCOL_UNDEFINED, undef_len ) ;
 	if( cmp == 0 )
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "Could not connect to server, server may be down or busy" ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+		  "Could not connect to server, server may be down or busy" ) ;
+	    }
 	    return PPTCAPI_ERROR ;
 	}
     }
@@ -76,9 +80,13 @@ pptcapi_initialize_connect( struct pptcapi_connection *connection,
 	    return pptcapi_authenticate( connection, error ) ;
 	}
     }
-    *error = (char *)malloc( 512 ) ;
-    sprintf( *error, "Server reported an invalid connection \"%s\"",
-		     inbuf ) ;
+    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+    if( *error )
+    {
+	snprintf( *error, PPTCAPI_ERR_LEN,
+		  "Server reported an invalid connection \"%s\"",
+		  inbuf ) ;
+    }
 
     return PPTCAPI_ERROR ;
 }
@@ -96,12 +104,17 @@ pptcapi_close_connection( struct pptcapi_connection *connection,
 	    int my_errno = errno ;
 	    if( res == -1 )
 	    {
-		*error = (char *)malloc( 512 ) ;
-		char *str_err = strerror( my_errno ) ;
-		if( str_err )
-		    sprintf( *error, "Failed to close socket: %s", str_err ) ;
-		else
-		    sprintf( *error, "Failed to close socket: unknown error" ) ;
+		*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		if( *error )
+		{
+		    char *str_err = strerror( my_errno ) ;
+		    if( str_err )
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "Failed to close socket: %s", str_err ) ;
+		    else
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "Failed to close socket: unknown error" ) ;
+		}
 	    }
 	    else
 	    {
@@ -120,19 +133,31 @@ pptcapi_close_connection( struct pptcapi_connection *connection,
 	}
 	else
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "Attempting to close a 0 socket" ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Attempting to close a null socket" ) ;
+	    }
 	}
     }
     else if( !connection )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "Attempting to close connection not created" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Attempting to close connection not created" ) ;
+	}
     }
     else
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "Attempting to close an incomplete connection" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Attempting to close an incomplete connection" ) ;
+	}
     }
     return retval ;
 }

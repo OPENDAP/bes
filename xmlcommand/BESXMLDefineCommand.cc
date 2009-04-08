@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -88,6 +88,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
     }
 
     _dhi.data[DEF_NAME] = def_name ;
+    _str_cmd = (string)"define " + def_name ;
 
     int num_containers = 0 ;
     string child_name ;
@@ -120,6 +121,35 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	string err = action + "The define element must contain at least "
 	             + "one container element" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+    }
+
+    _str_cmd += " as " ;
+    bool first = true ;
+    vector<string>::iterator i = _containers.begin() ;
+    vector<string>::iterator e = _containers.end() ;
+    for( ; i != e; i++ )
+    {
+	if( !first ) _str_cmd += "," ;
+	_str_cmd += (*i) ;
+	first = false ;
+    }
+    if( _constraints.size() )
+    {
+	_str_cmd += " with " ;
+	first = true ;
+	map<string,string>::iterator ci = _constraints.begin() ;
+	map<string,string>::iterator ce = _constraints.end() ;
+	for( ; ci != ce; ci++ )
+	{
+	    if( !first ) _str_cmd += "," ;
+	    _str_cmd += (*ci).first + ".constraint=\"" + (*ci).second + "\"" ;
+	    first = false ;
+	    string attrs = _attributes[(*ci).first] ;
+	    if( !attrs.empty() )
+	    {
+		_str_cmd += "," + (*ci).first + ".attributes=\"" + attrs + "\"";
+	    }
+	}
     }
 
     // now that we've set the action, go get the response handler for the
@@ -255,6 +285,7 @@ BESXMLDefineCommand::handle_aggregate_element( const string &action,
 
     _dhi.data[AGG_HANDLER] = handler ;
     _dhi.data[AGG_CMD] = cmd ;
+    _str_cmd += " aggregate using " + handler + " by " + cmd ;
 }
 
 /** @brief prepare the define command by making sure the containers exist

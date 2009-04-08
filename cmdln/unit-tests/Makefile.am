@@ -60,5 +60,8 @@ translateT_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispat
 
 prettyT_SOURCES = prettyT.cc
 prettyT_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
-prettyT_LDADD = $(top_builddir)/cmdln/CmdPretty.o $(top_builddir)/cmdln/CmdXMLUtils.o $(top_builddir)/dispatch/libbes_dispatch.la $(XML2_LIBS) $(AM_LDADD)
+prettyT_LDADD = $(top_builddir)/cmdln/CmdPretty.o \
+$(top_builddir)/xmlcommand/BESXMLUtils.o \
+$(top_builddir)/dispatch/libbes_dispatch.la \
+$(top_builddir)/xmlcommand/libbes_xml_command.la $(XML2_LIBS) $(AM_LDADD)
 

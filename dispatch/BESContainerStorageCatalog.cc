@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -36,6 +36,7 @@
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESInfo.h"
+#include "BESServiceRegistry.h"
 #include "GNURegex.h"
 #include "Error.h"
 
@@ -188,9 +189,6 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
     for( ; i != ie && !done; i++ )
     {
 	BESCatalogUtils::type_reg match = (*i) ;
-	// FIXME: Should we create the Regex and put it in the type_reg
-	// structure list instead of compiling it each time? Could this
-	// improve performance? pcw 09/08/06
 	try
 	{
 	    Regex reg_expr( match.reg.c_str() ) ;
@@ -209,8 +207,9 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	}
     }
-    // TODO: Now that we have the type, go find the request handler and ask
-    // what it provides (das, dds, ddx, data, etc...)
+
+    BESServiceRegistry::TheRegistry()->services_handled( node_type, provides ) ;
+
     return done ;
 }
 

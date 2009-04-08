@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -51,6 +51,23 @@ BESDataHandlerInterface::make_copy( const BESDataHandlerInterface &copy_from )
     this->data = copy_from.data ;
     this->output_stream = copy_from.output_stream ;
     this->transmit_protocol = copy_from.transmit_protocol ;
+}
+
+/** @brief clean up any information created within this data handler
+ * interface
+ *
+ * It is the job of the BESDataHandlerInterface to clean up the response
+ * handler
+ *
+ */
+void
+BESDataHandlerInterface::clean()
+{
+    if( response_handler )
+    {
+	delete response_handler ;
+    }
+    response_handler = 0 ;
 }
 
 /** @brief dumps information about this object

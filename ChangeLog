@@ -1,12 +1,558 @@
+2009-04-06  Patrick West <pwest@ucar.edu>
+
+	memory cleanup when an exception occurrs
+	
+	M    xmlcommand/BESXMLInterface.cc
+
+2009-03-23  Patrick West <pwest@ucar.edu>
+
+	Added .xml files to EXTRADIST
+	
+	M    Makefile.am
+
+2009-03-17  Patrick West <pwest@ucar.edu>
+
+	Modified error message changes taken into consideration
+	
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+
+2009-03-17  Patrick West <pwest@ucar.edu>
+
+	For 1.5 release commented out the show tests because the results
+	vary from machine to machine depending on the ordering of the
+	attributes in the response element. Will fix for 1.6.
+	
+	M    bes-3.7.0/dispatch/unit-tests/servicesT.cc
+
+2009-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Results of a code review.
+
+	M    server/test/TestException.cc
+	M    server/test/TestSigResponseHandler.cc
+	M    server/test/TestException.h
+	M    server/test/TestSigResponseHandler.h
+	M    server/test/TestNames.h
+	M    server/test/TestCommand.cc
+	M    server/test/TestCommand.h
+	M    server/test/TestModule.cc
+	M    server/test/TestEhmResponseHandler.cc
+	M    server/test/TestModule.h
+	M    server/test/TestEhmResponseHandler.h
+	M    command/test/cmd_test.cc
+	M    cmdln/CmdClient.cc
+	M    dispatch/BESFileContainer.h
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESFileContainer.cc
+	M    dispatch/BESUncompressZ.h
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESContainer.h
+	M    dispatch/BESContainer.cc
+	M    dispatch/unit-tests/TestAggServer.h
+	M    dispatch/unit-tests/TestAggServer.cc
+
+2009-03-13  Patrick West <pwest@ucar.edu>
+
+	Results of a code review
+	
+	M    pptcapi/pptcapi_authenticate.c
+	M    pptcapi/pptcapi.c
+	M    pptcapi/pptcapi_receive.c
+	M    pptcapi/pptcapi.h
+	M    pptcapi/pptcapi_debug.c
+	M    pptcapi/pptcapi_send.c
+	M    pptcapi/pptcapi_tcp_connect.c
+	M    pptcapi/pptcapi_socket_connect.c
+
+2009-03-13  Patrick West <pwest@ucar.edu>
+
+	Node side on a fs different from others, so represent size as
+	regular expression match.
+	
+	M    bes-3.7.0/cmdln/testsuite/show/show_02.bescmd.baseline
+
+2009-03-12  Patrick West <pwest@ucar.edu>
+
+	Added debug for cache information
+	M    bes-3.7.0/dispatch/BESCache.cc
+
+2009-03-12  Patrick West <pwest@ucar.edu>
+
+	sw might not be defined, only if timing debug is turned on. So need to
+	check if sw is null or not before deleting.
+	
+	M    cmdln/CmdClient.cc
+
+2009-03-12  James Gallagher <jgallagher@opendap.org>
+
+	Audit fixes
+
+	M    ppt/UnixSocket.cc
+	M    ppt/SSLClient.cc
+	M    server/BESServerHandler.cc
+	M    server/daemon.cc
+	M    standalone/StandAloneClient.cc
+	M    cmdln/CmdClient.cc
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESDefinitionStorageList.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/BESProcessEncodedString.cc
+	M    dispatch/BESCatalogDirectory.cc
+	M    Makefile.am
+
+2009-03-12  Patrick West <pwest@ucar.edu>
+
+	delete on the buffer needed to be array delete using []. BESCache
+	was not accounting for megabyte conversion exceeding max size of
+	int. Changed to unsigned int and created check for max unsigned int
+	(4095 MB).
+	
+	M    bes-3.7.0/ppt/PPTConnection.cc
+	M    bes-3.7.0/dispatch/BESCache.cc
+
+2009-03-09  Patrick West <pwest@ucar.edu>
+
+	Updated copyright notices.
+
+2009-03-09  Patrick West <pwest@ucar.edu>
+
+	Added copyright headers to all of these files
+	
+	M    pptcapi/unit-tests/pptcapi_hexstrtoiT.cc
+	M    pptcapi/unit-tests/pptcapi_extensionsT.cc
+	M    ppt/unit-tests/connT.cc
+	M    ppt/unit-tests/extT.cc
+	M    ppt/unit-tests/sbT.cc
+	M    cmdln/unit-tests/prettyT.cc
+	M    cmdln/unit-tests/translateT.cc
+	M    dispatch/unit-tests/regexT.cc
+	M    dispatch/unit-tests/scrubT.cc
+	M    dispatch/unit-tests/containerT.cc
+	M    dispatch/unit-tests/encodeT.cc
+	M    dispatch/unit-tests/TestRequestHandler.cc
+	M    dispatch/unit-tests/resplistT.cc
+	M    dispatch/unit-tests/zT.cc
+	M    dispatch/unit-tests/constraintT.cc
+	M    dispatch/unit-tests/TheCat.cc
+	M    dispatch/unit-tests/reqhandlerT.cc
+	M    dispatch/unit-tests/dog.cc
+	M    dispatch/unit-tests/debugT.cc
+	M    dispatch/unit-tests/TheFailedCat.cc
+	M    dispatch/unit-tests/pfileT.cc
+	M    dispatch/unit-tests/cacheT.cc
+	M    dispatch/unit-tests/TestResponseHandler.cc
+	M    dispatch/unit-tests/checkT.cc
+	M    dispatch/unit-tests/Animal.cc
+	M    dispatch/unit-tests/pvolT.cc
+	M    dispatch/unit-tests/baseApp.cc
+	M    dispatch/unit-tests/agglistT.cc
+	M    dispatch/unit-tests/initT.cc
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/unit-tests/utilT.cc
+	M    dispatch/unit-tests/TestReporter.cc
+	M    dispatch/unit-tests/gzT.cc
+	M    dispatch/unit-tests/replistT.cc
+	M    dispatch/unit-tests/cat.cc
+	M    dispatch/unit-tests/reqlistT.cc
+	M    dispatch/unit-tests/servicesT.cc
+	M    dispatch/unit-tests/TheDog.cc
+	M    dispatch/unit-tests/lockT.cc
+	M    dispatch/unit-tests/infoT.cc
+	M    dispatch/unit-tests/plistT.cc
+	M    dispatch/unit-tests/bz2T.cc
+	M    dispatch/unit-tests/defT.cc
+	M    dispatch/unit-tests/uncompressT.cc
+	M    dispatch/unit-tests/failInitT.cc
+	M    xmlcommand/unit-tests/buildT.cc
+	M    xmlcommand/unit-tests/propsT.cc
+	M    hello_world/SampleSayCommand.cc
+	M    hello_world/SampleSayResponseHandler.cc
+	M    hello_world/SampleModule.cc
+	M    hello_world/SampleRequestHandler.cc
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	Added context to these request input files.
+	
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	POST_CONSTRAINT issues with multiple containers. Call set_constraint on
+	BESDapResponse in order to properly have the post constraint set.
+	
+	M    dispatch/BESDapResponse.cc
+	M    dispatch/BESDapResponse.h
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	In order to provide what servies are handled in the help response, a
+	data handler can now get the list of services it handles in its
+	build_help function and take that list and implode it into a string.
+	Added implode to BESUtil. Added this to the template RequestHandler so
+	that new module can be built with this. Modified the besctl script to
+	capture exit codes and exit with those codes if there is a problem.
+	Otherwise exit with 0.
+
+	M    server/besctl.in
+	M    templates/RequestHandler.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/unit-tests/utilT.cc
+	M    dispatch/BESUtil.h
+
+2009-03-04  Patrick West <pwest@ucar.edu>
+
+	Cleaning up memory.
+	M    bes-3.7.0/ppt/PPTConnection.cc
+	M    bes-3.7.0/ppt/PPTConnection.h
+	M    bes-3.7.0/xmlcommand/BESXMLShowCommand.cc
+
+2009-03-04  Patrick West <pwest@ucar.edu>
+
+	Logging and reporting correctly now. Also, cleaning all of the
+	responses.
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+
+2009-03-04  Patrick West <pwest@ucar.edu>
+
+	Modified the way container storage, definition storage and catalog
+	lists manage their members, now using reference counting. When need
+	to add a container storage, definition storage or catalog to their
+	respective lists, first see if one by that name already exists using
+	the ref_x method. If false is returned then add x. If true is
+	returned then it is already added. In the termination method call
+	deref_x to de-reference x.
+	M    bes-3.7.0/dispatch/BESCatalogList.cc
+	M    bes-3.7.0/dispatch/BESContainerStorageList.cc
+	M    bes-3.7.0/dispatch/BESCatalog.h
+	M    bes-3.7.0/dispatch/BESCatalogList.h
+	M    bes-3.7.0/dispatch/BESDefinitionStorageList.cc
+	M    bes-3.7.0/dispatch/BESDefinitionStorageList.h
+	M    bes-3.7.0/dispatch/unit-tests/plistT.cc
+	M    bes-3.7.0/dispatch/BESContainerStorageList.h
+	M    bes-3.7.0/dispatch/BESDefaultModule.cc
+
+2009-03-03  Patrick West <pwest@ucar.edu>
+
+	First pass at cleaning up memory issues. Also, calling lot status and
+	report request for each command in an XML request document.
+	M    xmlcommand/BESXMLCommand.h
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLInterface.h
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+	M    dispatch/BESDataHandlerInterface.cc
+	M    dispatch/BESDataHandlerInterface.h
+	M    dispatch/BESInterface.cc
+
+2009-03-03  Patrick West <pwest@ucar.edu>
+
+	Freeing the text writer frees the buffer as well. Freeing the buffer
+	as well causes a memory problem.
+	M    bes-3.7.0/dispatch/BESXMLInfo.cc
+
+2009-02-27  Patrick West <pwest@ucar.edu>
+
+	Was referencing an old, deleted file. Now using BESXMLUtils.cc in
+	xmlcommand.
+	M    cmdln/unit-tests/Makefile.am
+
+2009-02-27  Patrick West <pwest@ucar.edu>
+
+	Service registry now has formats for commands, not just a
+	description. DAS, DDS, DDX, DataDDS commands now have dap2 for
+	format. Can add dap3, dap4, etc... later. returnAs defaults to
+	dap2 format. Eventually we should change this to requiring a
+	returnAs. BESDapTransmit is now a class that is registered as a
+	transmitter. Was adding transmit functions to the basic
+	transmitters. Modified the servicesT unit test. Updated baseline
+	responses (might need to wildcard out the request id and xmlns in
+	the response element.)
+	
+	M    cmdln/testsuite/nc/fnoc1.nc.4.bescmd.baseline
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/show/show_01.bescmd.baseline
+	M    cmdln/testsuite/show/show_02.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    cmdln/testsuite/ff/gsodock.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/1998-6-avhrr.dat.4.bescmd.baseline
+	M    cmdln/testsuite/ff/avhrr.dat.4.bescmd.baseline
+	M    dispatch/BESDDXResponseHandler.cc
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESDataResponseHandler.cc
+	M    dispatch/BESServiceRegistry.cc
+	M    dispatch/BESServiceRegistry.h
+	M    dispatch/BESTransmitter.cc
+	M    dispatch/BESResponseNames.h
+	M    dispatch/BESDapTransmit.cc
+	M    dispatch/BESDASResponseHandler.cc
+	M    dispatch/BESDDSResponseHandler.cc
+	M    dispatch/unit-tests/servicesT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESDapService.cc
+	M    dispatch/BESDapTransmit.h
+	M    xmlcommand/BESXMLGetCommand.cc
+
+2009-02-25  James Gallagher <jgallagher@opendap.org>
+
+	Removed the call to xmlCleanupParser() in BESXMLInterface.cc
+	Changed the way BESCatalogDireectory.cc removes a trailing
+	slash in file names. When the name was "/" this may have triggered
+	a memory access error flagged by valgrind.
+
+2009-02-24  James Gallagher <jgallagher@opendap.org>
+
+	See Ticket 1248 for the low-down on calling www2id(). For some
+	reason, calling it here in BESCmdInterface.cc does not work but
+	calling it in the handlers does. So it's called in the handlers.
+
+2009-02-23  Patrick West <pwest@ucar.edu>
+
+	besCreateModule now uses XMLCommand instead of the old string
+	command. It all builds and installs properly now. And can now
+	start up the besctl with that module and it all loads.
+	
+	M    bin/besCreateModule.in
+	M    templates/Makefile.am.template
+	A    templates/XMLCommand.cc
+	A    templates/XMLCommand.h
+	A    templates/conf/pkg.m4
+	M    templates/Module.cc
+	M    templates/Makefile.am
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlresponse branch to the Hyrax 1.5.0 release branch.
+
+	_M   .
+	_M   csv-handler
+	_M   csv-handler/bes-testsuite
+	_M   csv-handler/bes-testsuite/config
+	_M   csv-handler/bes-testsuite/csv
+	M    csv-handler/bes-testsuite/csv/temperature.csv.1.bescmd.baseline
+	M    csv-handler/bes-testsuite/csv/temperature.csv.2.bescmd.baseline
+	_M   csv-handler/bes-testsuite/besstandalone.csv
+	M    csv-handler/CSVDDS.cc
+	M    csv-handler/CSVRequestHandler.cc
+	M    standalone/Makefile.am
+	M    cmdln/CmdPretty.cc
+	M    cmdln/unit-tests/Makefile.am
+	M    cmdln/CmdPretty.h
+	D    cmdln/CmdXMLUtils.cc
+	M    cmdln/Makefile.am
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/show/show_01.bescmd.baseline
+	M    cmdln/testsuite/show/show_02.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	D    cmdln/CmdXMLUtils.h
+	_M   templates/module.spec.template
+	M    templates/RequestHandler.cc
+	M    dispatch/BESVersionInfo.cc
+	M    dispatch/BESShowContextResponseHandler.cc
+	M    dispatch/BESVersionResponseHandler.cc
+	M    dispatch/BESVersionInfo.h
+	M    dispatch/BESCatalogList.cc
+	M    dispatch/BESSilentInfo.h
+	M    dispatch/BESXMLInfo.h
+	M    dispatch/BESTextInfo.h
+	M    dispatch/BESContainerStorageList.cc
+	M    dispatch/BESContainerStorage.h
+	M    dispatch/BESDapModule.cc
+	M    dispatch/BESSilentInfo.cc
+	M    dispatch/BESDapRequestHandler.cc
+	A  + dispatch/BESServiceRegistry.cc
+	A  + dispatch/BESServiceRegistry.h
+	M    dispatch/BESInfo.cc
+	M    dispatch/BESDapErrorInfo.h
+	M    dispatch/BESCatalogDirectory.h
+	M    dispatch/BESDefinitionStorageVolatile.cc
+	M    dispatch/BESCatalogResponseHandler.cc
+	M    dispatch/BESDapErrorInfo.cc
+	M    dispatch/bes/dap_help.html
+	A  + dispatch/bes/bes_help.xml
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/bes/bes_help.html
+	A  + dispatch/bes/dap_help.xml
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESCatalogList.h
+	M    dispatch/BESXMLInfo.cc
+	M    dispatch/BESHTMLInfo.cc
+	A  + dispatch/BESDapService.h
+	M    dispatch/Makefile.am
+	M    dispatch/BESProcIdResponseHandler.cc
+	M    dispatch/BESHelpResponseHandler.cc
+	M    dispatch/BESDefinitionStorageList.cc
+	_M   dispatch/BESTokenizer.h
+	M    dispatch/BESContextManager.cc
+	M    dispatch/BESConfigResponseHandler.cc
+	M    dispatch/BESHTMLInfo.h
+	M    dispatch/BESResponseNames.h
+	A  + dispatch/BESServicesResponseHandler.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+	_M   dispatch/BESTokenizer.cc
+	M    dispatch/BESShowContainersResponseHandler.cc
+	A  + dispatch/BESServicesResponseHandler.h
+	M    dispatch/BESShowDefsResponseHandler.cc
+	M    dispatch/BESStatusResponseHandler.cc
+	A  + dispatch/unit-tests/servicesT.cc
+	A  + dispatch/unit-tests/servicesT.h
+	M    dispatch/unit-tests/infoT.cc
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESContainerStorageVolatile.cc
+	A  + dispatch/BESContainerStorage.cc
+	A  + dispatch/BESDapService.cc
+	M    dispatch/BESExceptionManager.cc
+	M    dispatch/BESDefaultModule.cc
+	M    dispatch/BESInfo.h
+	M    dispatch/BESCatalogDirectory.cc
+	M    dispatch/BESTextInfo.cc
+	M    xmlcommand/BESXMLUtils.cc
+	M    xmlcommand/BESXMLDefaultCommands.cc
+	_M   hello_world
+	M    hello_world/SampleSayResponseHandler.cc
+	_M   hello_world/bes-testsuite
+	_M   hello_world/bes-testsuite/hello
+	M    hello_world/bes-testsuite/hello/hello.bescmd.baseline
+	_M   hello_world/bes-testsuite/besstandalone.hello
+	_M   hello_world/bes-testsuite/config
+	M    hello_world/SampleRequestHandler.cc
+
+2009-02-20  Patrick West <pwest@ucar.edu>
+
+	bears.nc file was added to the installed data in share/hyrax/data/nc so
+	needed to change baseline for show_03. The other baseline is for the
+	coads data file. Before it wasn't including any attributes for the
+	shared dimensions. Now it is, so needed to add that to the baseline.
+	M    cmdln/testsuite/show/show_03.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_wholearray.1.bescmd.baseline
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Editorial changes to comments; modified www2id() so that it mimics
+	the change in libdap
+
+2009-02-18  James Gallagher <jgallagher@opendap.org>
+
+	BES Changes: I backed out a change where the CE was run through
+	the www2id (un)escaping function. I think the fix for the '&' bug
+	is to introduce quoting for the CE words. Fixed some spelling
+	errors and updated the www2id() function in BESUtil.cc to match
+	the change in libdap's version (the except parameter can now take
+	several escape codes).
+
+2009-02-10  Patrick West <pwest@ucar.edu>
+
+	Updated ChangeLog and the shared library version
+	M    pptcapi/ChangeLog
+	M    pptcapi/configure.ac
+
+2009-02-10  Patrick West <pwest@ucar.edu>
+
+	doxygen, fortify, rpm, pkg, distcheck all working.
+	A    pptcapi/bes_pptcapi.spec
+	A    pptcapi/COPYRIGHT_UCAR
+	M    pptcapi/pptcapi.h
+	A    pptcapi/ChangeLog
+	M    pptcapi/testsuite/Makefile.am
+	A    pptcapi/README
+	A    pptcapi/bes_pptcapi.pc.in
+	A    pptcapi/OSX_Resources
+	AM   pptcapi/OSX_Resources/InstallationCheck
+	A    pptcapi/OSX_Resources/License.txt
+	AM   pptcapi/OSX_Resources/update_mac_package_contents.pl
+	A    pptcapi/OSX_Resources/Info.plist
+	A    pptcapi/OSX_Resources/InstallationCheck.strings
+	A    pptcapi/OSX_Resources/ReadMe.txt
+	A    pptcapi/OSX_Resources/Description.plist
+	AM   pptcapi/OSX_Resources/background.jpg
+	A    pptcapi/OSX_Resources/Welcome.html
+	M    pptcapi/configure.ac
+	A    pptcapi/INSTALL
+	A    pptcapi/doxy.conf
+	A    pptcapi/COPYING
+	A    pptcapi/pptcapi-config-pkgconfig
+	M    pptcapi/Makefile.am
+	A    pptcapi/DoxygenLayout.xml
+	A    pptcapi/NEWS
+
+2009-02-07  Patrick West <pwest@ucar.edu>
+
+	Instead of just isntalling bes.conf we now move the current one, if one
+	exists, to bes.conf.yymmddHHMM and then install the new one.
+	M    dispatch/Makefile.am
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	distcheck fixes for pptcapi
+	M    pptcapi/unit-tests/Makefile.am
+	M    pptcapi/testsuite/Makefile.am
+	M    pptcapi/Makefile.am
+
+2009-02-06  Patrick West <pwest@ucar.edu>
+
+	When string commands were being passed to the BES it was necessary
+	to translate that string using www2id to unescape characters. This
+	is not necessary in the XML command request documents as it is
+	taken care of by the libxml2 code. For this reason, pass off the
+	calling of www2id to the Interface class. In this case, the
+	BESCmdInterface class.
+	
+	M    server/BESServerHandler.cc
+	M    command/BESCmdInterface.cc
+
+2009-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Moved
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Updated libdap version in configure.ac
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Move the code to a branch while we're in the beta period.
+
+	A    http://scm.opendap.org/svn/branch/bes/3.7.0
+	D    http://scm.opendap.org/svn/tags/bes/3.7.0
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Tagged beta release
+
+	A    http://scm.opendap.org/svn/tags/bes/3.7.0
+
 2009-01-28  Patrick West <pwest@ucar.edu>
 
 	make rpm didn't like module.spec, thinking it was another spec
 	file to read from. Changed to module.spec.template.
-
+	
 	M    bin/besCreateModule.in
 	AM + templates/module.spec.template
 	M    templates/Makefile.am
 	D    templates/module.spec
+
+2009-01-27  Patrick West <pwest@ucar.edu>
+
+	Updated sample code to pass XML request document.
+	M    pptcapi/pptcapi.h
 
 2009-01-27  Patrick West <pwest@ucar.edu>
 

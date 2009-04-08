@@ -1,15 +1,27 @@
 
 	$Id$
 
+News for version 3.7.2, 8 April 2009
+
+Memory leaks fixed.
+
+News for version 3.7.1, 16 March 2009
+
+Many many memory issues resolved.
+
+Fixes for constraint expression parsing issues.
+
+The service interface is now supported.
+
 News for version 3.7.0, 28 Jan 2009
 
 The BES now supports TCP Wrappers (from a patch sent in by
 Gareth.Williams@csiro.au - thank you).
 
 In the past the BES used a SQL-like command language but returned XML
-responses. This seemed odd, so we've adopted a new syntax where the BES
+responses. THis seemed odd, so we've adopted a new syntax where the BES
 accepts XML documents as commands (and still returns XML responses). The XML
-command/documents hold XML that will look very familiar to long-time BES users
+command/documents hold XML that will look very familar to long-time BES users
 but a big change is that more than one command can be included in the
 document, reducing the number of messages needed to get many of the DAP
 responses. The upshot is that the OLFS <--> BES communication is much more

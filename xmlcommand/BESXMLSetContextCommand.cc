@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -82,6 +82,7 @@ BESXMLSetContextCommand::parse_request( xmlNode *node )
     }
     _dhi.data[CONTEXT_NAME] = name ;
     _dhi.data[CONTEXT_VALUE] = value ;
+    _str_cmd = (string)"set context " + name + " to " + value ;
 
     // now that we've set the action, go get the response handler for the
     // action

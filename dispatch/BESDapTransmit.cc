@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -38,6 +38,7 @@ using std::ostringstream;
 #include "DODSFilter.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
+#include "BESResponseNames.h"
 #include "cgi_util.h"
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
@@ -45,6 +46,15 @@ using std::ostringstream;
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
 #include "Error.h"
+
+BESDapTransmit::BESDapTransmit()
+    : BESBasicTransmitter()
+{
+    add_method( DAS_SERVICE, BESDapTransmit::send_basic_das ) ;
+    add_method( DDS_SERVICE, BESDapTransmit::send_basic_dds ) ;
+    add_method( DDX_SERVICE, BESDapTransmit::send_basic_ddx ) ;
+    add_method( DATA_SERVICE, BESDapTransmit::send_basic_data ) ;
+}
 
 void
 BESDapTransmit::send_basic_das(BESResponseObject * obj,
@@ -80,13 +90,6 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
         BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
-}
-
-void BESDapTransmit::send_http_das(BESResponseObject * obj,
-                                   BESDataHandlerInterface & dhi)
-{
-    set_mime_text(dhi.get_output_stream(), dods_das);
-    BESDapTransmit::send_basic_das(obj, dhi);
 }
 
 void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
@@ -125,13 +128,6 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
     }
 }
 
-void BESDapTransmit::send_http_dds(BESResponseObject * obj,
-                                   BESDataHandlerInterface & dhi)
-{
-    set_mime_text(dhi.get_output_stream(), dods_dds);
-    BESDapTransmit::send_basic_dds(obj, dhi);
-}
-
 void BESDapTransmit::send_basic_data(BESResponseObject * obj,
                                      BESDataHandlerInterface & dhi)
 {
@@ -166,13 +162,6 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
         BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }
-}
-
-void BESDapTransmit::send_http_data(BESResponseObject * obj,
-                                    BESDataHandlerInterface & dhi)
-{
-    //set_mime_binary( dhi.get_output_stream(), dods_data ) ;
-    BESDapTransmit::send_basic_data(obj, dhi);
 }
 
 void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
@@ -211,9 +200,3 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
     }
 }
 
-void BESDapTransmit::send_http_ddx(BESResponseObject * obj,
-                                   BESDataHandlerInterface & dhi)
-{
-    set_mime_text(dhi.get_output_stream(), dap4_ddx);
-    BESDapTransmit::send_basic_ddx(obj, dhi);
-}

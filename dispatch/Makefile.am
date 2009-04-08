@@ -48,15 +48,25 @@ besregtest_LDADD = $(DAP_SERVER_LIBS)
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 
-nobase_sysconf_DATA = bes/bes.conf
+#nobase_sysconf_DATA = bes/bes.conf
 
-pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/dap_help.html	\
-	bes/dap_help.txt
+pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml \
+	bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
-	bes-uncompress.sh.in bes-purge.pl.in bes/dap_help.html bes/dap_help.txt
+	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in \
+	bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
 
 DISTCLEANFILES = bes/bes.conf
+
+install-data-local: bes/bes.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(sysconfdir)/bes/bes.conf.$$currdate; \
+	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf
+
+uninstall-local:
+	rm -f $(sysconfdir)/bes/bes.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	test -d bes || mkdir bes
@@ -75,7 +85,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc \
 	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
 	TheBESKeys.cc BESStatus.cc \
 	BESContainer.cc BESFileContainer.cc \
-	BESContainerStorageFile.cc \
+	BESContainerStorage.cc BESContainerStorageFile.cc \
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc \
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
@@ -94,6 +104,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc \
 	BESRequestHandler.cc BESRequestHandlerList.cc \
 	BESTransmitter.cc BESBasicTransmitter.cc BESBasicHttpTransmitter.cc \
 	BESReporterList.cc BESConstraintFuncs.cc \
+	BESServiceRegistry.cc BESServicesResponseHandler.cc \
 	BESMemoryGlobalArea.cc \
 	BESMemoryManager.cc BESProcessEncodedString.cc \
 	BESAggFactory.cc BESAggregationServer.cc \
@@ -133,6 +144,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
 	BESDataHandlerInterface.h BESDataRequestInterface.h 		\
 	BESTransmitter.h BESBasicHttpTransmitter.h BESBasicTransmitter.h \
 	BESReporter.h BESReporterList.h 				\
+	BESServiceRegistry.h BESServicesResponseHandler.h 		\
 	BESError.h BESInternalError.h BESInternalFatalError.h 		\
 	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
 	BESConstraintFuncs.h BESProcessEncodedString.h 			\
@@ -168,7 +180,7 @@ BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
 	BESFilterTransmitter.cc BESCgiInterface.cc \
 	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
 	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
-	BESDapErrorInfo.cc
+	BESDapErrorInfo.cc BESDapService.cc
 
 BES_DAP_HDRS = BESDapResponse.h BESDASResponse.h BESDDSResponse.h \
 	BESDataDDSResponse.h \
@@ -176,5 +188,5 @@ BES_DAP_HDRS = BESDapResponse.h BESDASResponse.h BESDDSResponse.h \
 	BESContainerStorageCatalog.h \
 	BESCatalogDirectory.h BESCatalog.h \
 	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
-	BESDapErrorInfo.h
+	BESDapErrorInfo.h BESDapService.h
 

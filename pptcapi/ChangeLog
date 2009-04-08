@@ -1,21 +1,13 @@
 2009-02-10  Patrick West <pwest@ucar.edu>
 
-	Fixed the rpm build.
-	M    pptcapi/bes_pptcapi.spec
-	M    pptcapi/testsuite/Makefile.am
-	M    pptcapi/Makefile.am
-
-2009-02-10  Patrick West <pwest@ucar.edu>
-
-	doxygen support added. Fortify build supported. OSX build supported.
-	RPM build supported.
-	A    pptcapi/COPYRIGHT_UCAR
+	doxygen, fortify, rpm, pkg, distcheck all working.
 	A    pptcapi/bes_pptcapi.spec
+	A    pptcapi/COPYRIGHT_UCAR
 	M    pptcapi/pptcapi.h
 	A    pptcapi/ChangeLog
+	M    pptcapi/testsuite/Makefile.am
 	A    pptcapi/README
 	A    pptcapi/bes_pptcapi.pc.in
-	M    pptcapi/configure.ac
 	A    pptcapi/OSX_Resources
 	AM   pptcapi/OSX_Resources/InstallationCheck
 	A    pptcapi/OSX_Resources/License.txt
@@ -26,6 +18,7 @@
 	A    pptcapi/OSX_Resources/Description.plist
 	AM   pptcapi/OSX_Resources/background.jpg
 	A    pptcapi/OSX_Resources/Welcome.html
+	M    pptcapi/configure.ac
 	A    pptcapi/INSTALL
 	A    pptcapi/doxy.conf
 	A    pptcapi/COPYING

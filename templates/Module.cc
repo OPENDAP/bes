@@ -10,7 +10,6 @@ using std::endl ;
 #include "BESDebug.h"
 #include "BESResponseHandlerList.h"
 #include "BESResponseNames.h"
-#include "BESCommand.h"
 #include "OPENDAP_CLASSResponseNames.h"
 
 void

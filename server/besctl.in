@@ -40,9 +40,11 @@ besctlHelp()
 helpBES()
 {
     "${bindir}"/beslistener $otherArgs -h
-    if [ $? != 0 ]
+    retval=$?
+    if [ $retval != 0 ]
     then
 	echo "FAILED: The BES listener failed to return help information"
+	exit $retval
     fi
     besctlHelp
 }
@@ -65,9 +67,11 @@ startBES()
 	if [ $WRITE_PID ]
 	then
 	    "${bindir}"/besdaemon $otherArgs
-	    if [ $? != 0 ]
+	    retval=$?
+	    if [ $retval != 0 ]
 	    then
 		echo "FAILED: The BES daemon did not appear to start"
+		exit $retval
 	    else
 		sleep 5
 		findRunningBES
@@ -77,6 +81,7 @@ startBES()
 		    cat "${pidfile}"
 		else
 		    echo "FAILED: The BES daemon did not appear to start"
+		    exit 1
 		fi
 	    fi
 	fi
@@ -97,11 +102,18 @@ stopBES()
 	if [ $BES_PID ]
 	then
 	    kill -INT $BES_PID
+	    retval=$?
+	    if [ $retval != 0 ]
+	    then
+		echo "Unable to stop the BES, PID: $BES_PID"
+		exit $retval
+	    fi
 	    sleep 5
 	    findRunningBES
 	    if [ $BES_RUNNING ]
 	    then
 		echo "Unable to stop the BES, PID: $BES_PID"
+		exit 1
 	    else
 		echo "Successfully shut down the BES"
 	    fi
@@ -218,6 +230,7 @@ canWritePid()
 	echo "The besctl command cannot write to ${piddir}."
 	echo "Check that the directory exists and that the user running"
 	echo "besctl has write permissions for it."
+	exit 1
     else
 	WRITE_PID=1
     fi

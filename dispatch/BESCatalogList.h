@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -44,6 +44,8 @@ using std::string ;
 class BESCatalog ;
 class BESInfo ;
 
+#define BES_DEFAULT_CATALOG "catalog"
+
 /** @brief List of all registered catalogs
  *
  * BESCatalog objecgts can be registered with this list. The BES
@@ -68,15 +70,17 @@ class BESCatalogList : public BESObj
 {
 private:
     map<string, BESCatalog *>	_catalogs ;
+    string			_default_catalog ;
     static BESCatalogList *	_instance ;
 public:
     typedef map<string,BESCatalog *>::iterator catalog_iter ;
     typedef map<string,BESCatalog *>::const_iterator catalog_citer ;
 
-    				BESCatalogList() {}
+    				BESCatalogList() ;
     virtual			~BESCatalogList() ;
     virtual bool		add_catalog( BESCatalog *catalog ) ;
-    virtual bool		del_catalog( const string &catalog_name ) ;
+    virtual bool		ref_catalog( const string &catalog_name ) ;
+    virtual bool		deref_catalog( const string &catalog_name );
     virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,

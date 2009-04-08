@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -49,11 +49,13 @@ BESSilentInfo::~BESSilentInfo()
  * Because this is silent, there is nothing to do
  *
  * @param response_name name of the response represented by the information
+ * @param dhi information about the request and response
  */
 void
-BESSilentInfo::begin_response( const string &response_name )
+BESSilentInfo::begin_response( const string &response_name,
+			       BESDataHandlerInterface &dhi )
 {
-    BESInfo::begin_response( response_name ) ;
+    BESInfo::begin_response( response_name, dhi ) ;
 }
 
 /** @brief add tagged information to the inforamtional response

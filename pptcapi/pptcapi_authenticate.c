@@ -9,8 +9,12 @@
 int
 pptcapi_authenticate( struct pptcapi_connection *connection, char **error )
 {
-    *error = (char *)malloc( 512 ) ;
-    sprintf( *error, "SSL Authentication not yet implemented in PPT C API" ) ;
+    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+    if( *error )
+    {
+	snprintf( *error, PPTCAPI_ERR_LEN,
+		  "SSL Authentication not yet implemented in PPT C API" ) ;
+    }
     return PPTCAPI_ERROR ;
 
     // ask the server what the server port is

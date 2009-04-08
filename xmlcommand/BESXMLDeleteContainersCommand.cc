@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -65,13 +65,17 @@ BESXMLDeleteContainersCommand::parse_request( xmlNode *node )
     }
 
     // optional property, defaults to default
-    _dhi.data[STORE_NAME] = props["space"] ; 
+    string storage = props["space"] ; 
+    _dhi.data[STORE_NAME] = storage ;
     if( _dhi.data[STORE_NAME].empty() )
     {
 	_dhi.data[STORE_NAME] = PERSISTENCE_VOLATILE ;
+	storage = PERSISTENCE_VOLATILE ;
     }
 
     _dhi.action = DELETE_CONTAINERS ;
+
+    _str_cmd = (string)"delete containers from " + storage ;
 
     // now that we've set the action, go get the response handler for the
     // action

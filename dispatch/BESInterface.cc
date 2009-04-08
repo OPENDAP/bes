@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -180,7 +180,8 @@ BESInterface::finish( int status )
     {
 	// if there was an error duriing initialization, validation,
 	// execution or transmit of the response then we need to transmit
-	// the error information.
+	// the error information. Once printed, delete the error
+	// information since we are done with it.
 	if( _dhi->error_info )
 	{
 	    transmit_data();
@@ -206,7 +207,8 @@ BESInterface::finish( int status )
     }
 
     // If there is error information then the transmit of the error failed,
-    // print it to standard out
+    // print it to standard out. Once printed, delete the error
+    // information since we are done with it.
     if( _dhi->error_info )
     {
         _dhi->error_info->print( cout ) ;
@@ -452,7 +454,9 @@ BESInterface::report_request()
 {
     BESDEBUG( "bes", "Reporting on request: " << _dhi->data[DATA_REQUEST]
 		     << " ... " << endl )
-        BESReporterList::TheList()->report( *_dhi ) ;
+
+    BESReporterList::TheList()->report( *_dhi ) ;
+
     BESDEBUG( "bes", "OK" << endl )
 }
 
@@ -495,9 +499,8 @@ BESInterface::end_request()
 void
 BESInterface::clean()
 {
-    if( _dhi->response_handler )
-        delete _dhi->response_handler;
-    _dhi->response_handler = 0 ;
+    if( _dhi )
+	_dhi->clean() ;
 }
 
 /** @brief Manage any exceptions thrown during the whole process

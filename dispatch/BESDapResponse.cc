@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -32,6 +32,8 @@
 
 #include "BESDapResponse.h"
 #include "BESContextManager.h"
+#include "BESConstraintFuncs.h"
+#include "BESDataNames.h"
 #include "BESError.h"
 
 /** @brief Extract the dap protocol from the setConext information
@@ -106,6 +108,32 @@ bool BESDapResponse::is_dap2()
     }
     return false;
 #endif
+}
+
+/** @brief set the constraint depending on the context
+ *
+ * If the context is dap2 then the constraint will be the constraint of
+ * the current container. If not dap2 and we have multiple containers
+ * then the constraint of the current container must be added to the
+ * current post constraint
+ *
+ * @param dhi The BESDataHandlerInterface of the request. THis holds the
+ * current container and the current post constraint
+ */
+void
+BESDapResponse::set_constraint( BESDataHandlerInterface &dhi )
+{
+    if( dhi.container )
+    {
+	if( is_dap2() )
+	{
+	    dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint() ;
+	}
+	else
+	{
+	    BESConstraintFuncs::post_append( dhi ) ;
+	}
+    }
 }
 
 /** @brief dumps information about this object

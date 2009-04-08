@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -226,7 +226,7 @@ main(int argc, char *argv[])
     // Set arguments[0] to the name of the listener
     string::size_type len = server_name.length() ;
     char temp_name[len + 1] ;
-    strncpy( temp_name, server_name.c_str(), len ) ;
+    server_name.copy( temp_name, len ) ;
     temp_name[len] = '\0' ;
     arguments[0] = temp_name ;
 
@@ -270,7 +270,7 @@ main(int argc, char *argv[])
 
     if( !access( file_for_listener.c_str(), F_OK ) )
     {
-	remove( file_for_listener.c_str() ) ;
+	(void)remove( file_for_listener.c_str() ) ;
     }
 
     return 0 ;
@@ -415,7 +415,7 @@ store_listener_id( int pid )
 	f << "PID: " << pid << " UID: " << getuid() << endl ;
 	f.close() ;
 	mode_t new_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ;
-	chmod( file_for_listener.c_str(), new_mode ) ;
+	(void)chmod( file_for_listener.c_str(), new_mode ) ;
     }
 }
 

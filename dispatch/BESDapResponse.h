@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -36,6 +36,7 @@
 #include <DAS.h>
 
 #include "BESResponseObject.h"
+#include "BESDataHandlerInterface.h"
 
 using namespace libdap ;
 
@@ -76,6 +77,7 @@ class BESDapResponse: public BESResponseObject {
         string get_request_xml_base() const { return d_request_xml_base; }
 
         virtual void set_container(const string &cn) = 0;
+	virtual void set_constraint( BESDataHandlerInterface &dhi ) ;
         virtual void clear_container() = 0;
 
         virtual void dump(ostream &strm) const;

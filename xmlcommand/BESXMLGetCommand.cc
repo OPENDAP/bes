@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -94,6 +94,8 @@ BESXMLGetCommand::parse_request( xmlNode *node )
 	return ;
     }
 
+    _str_cmd = (string)"get " + type ;
+
     parse_basic_get( node, name, type, value, props ) ;
 
     // now that we've set the action, go get the response handler for the
@@ -114,8 +116,16 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
 	string err = name + " command: Must specify definition" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
+    _str_cmd += " for " + _definition ;
 
-    _dhi.data[RETURN_CMD] = props["returnAs"] ;
+    string returnAs = props["returnAs"] ;
+    if( returnAs.empty() )
+    {
+	returnAs = DAP2_FORMAT ;
+    }
+    _dhi.data[RETURN_CMD] = returnAs ;
+
+    _str_cmd += " returnAs " + returnAs ;
 
     _dhi.action = "get." ;
     _dhi.action += BESUtil::lowercase( type ) ;

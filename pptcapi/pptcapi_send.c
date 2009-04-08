@@ -58,18 +58,21 @@ pptcapi_send_extensions( struct pptcapi_connection *connection,
 	if( extensions->value )
 	{
 	    if( first )
-		sprintf( inbuf, "%s=%s;", extensions->name,
-			 extensions->value ) ;
+		snprintf( inbuf, PPTCAPI_DEFAULT_BUFFER_SIZE,
+			  "%s=%s;", extensions->name, extensions->value ) ;
 	    else
-		sprintf( inbuf, "%s%s=%s;", inbuf, extensions->name,
-			 extensions->value ) ;
+		snprintf( inbuf, PPTCAPI_DEFAULT_BUFFER_SIZE,
+			  "%s%s=%s;", inbuf, extensions->name,
+			  extensions->value ) ;
 	}
 	else
 	{
 	    if( first )
-		sprintf( inbuf, "%s;", extensions->name ) ;
+		snprintf( inbuf, PPTCAPI_DEFAULT_BUFFER_SIZE,
+			  "%s;", extensions->name ) ;
 	    else
-		sprintf( inbuf, "%s%s;", inbuf, extensions->name ) ;
+		snprintf( inbuf, PPTCAPI_DEFAULT_BUFFER_SIZE,
+			  "%s%s;", inbuf, extensions->name ) ;
 	}
 	first = 0 ;
 	extensions = extensions->next ;
@@ -101,13 +104,17 @@ pptcapi_send_chunk( struct pptcapi_connection *connection,
 {
     if( len > PPTCAPI_DEFAULT_BUFFER_SIZE )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "length of chunk to send %d is too big", len ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "length of chunk to send %d is too big", len ) ;
+	}
 	return PPTCAPI_ERROR ;
     }
 
     char header[PPTCAPI_CHUNK_HEADER_SIZE+1] ;
-    sprintf( header, "%07x%c", len, type ) ;
+    snprintf( header, PPTCAPI_CHUNK_HEADER_SIZE+1, "%07x%c", len, type ) ;
     int header_send = pptcapi_dosend( connection, header,
 				      PPTCAPI_CHUNK_HEADER_SIZE, error ) ;
     if( header_send != PPTCAPI_OK )
@@ -133,14 +140,19 @@ pptcapi_dosend( struct pptcapi_connection *connection,
     int my_errno = errno ;
     if( bytes_written == -1 )
     {
-	*error = (char *)malloc( 512 ) ;
-	const char* error_info = strerror( my_errno ) ;
-	if( error_info )
-	    sprintf( *error, "socket failure, writing on stream socket: %s",
-			     error_info ) ;
-	else
-	    sprintf( *error, "socket failure, writing on stream socket: %s",
-			     "unknown error" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    const char* error_info = strerror( my_errno ) ;
+	    if( error_info )
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "socket failure, writing on stream socket: %s",
+			  error_info ) ;
+	    else
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "socket failure, writing on stream socket: %s",
+			  "unknown error" ) ;
+	}
 	retval = PPTCAPI_ERROR ;
     }
 

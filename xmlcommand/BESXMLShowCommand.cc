@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -71,7 +71,9 @@ BESXMLShowCommand::parse_request( xmlNode *node )
     }
 
     _dhi.action = "show." ;
-    _dhi.action += BESUtil::lowercase( name.substr( 4, name.length() - 4 ) ) ;
+    string toadd = BESUtil::lowercase( name.substr( 4, name.length() - 4 ) ) ;
+    _dhi.action += toadd ;
+    _str_cmd = (string)"show " + toadd ;
     BESDEBUG( "besxml", "Converted xml element name to command "
 			<< _dhi.action << endl )
 

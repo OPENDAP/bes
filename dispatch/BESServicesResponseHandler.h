@@ -1,9 +1,9 @@
-// CmdXMLUtils.h
+// BESServicesResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -30,47 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef CmdXMLUtils_h_
-#define CmdXMLUtils_h_ 1
+#ifndef I_BESServicesResponseHandler_h
+#define I_BESServicesResponseHandler_h 1
 
-#include <map>
-#include <vector>
-#include <string>
+#include "BESResponseHandler.h"
 
-using std::map ;
-using std::vector ;
-using std::string ;
-
-#include <libxml/encoding.h>
-
-class CmdXMLUtils
+/** @brief response handler that returns the list of servies provided by
+ * this BES
+ *
+ * A request 'show services;' will be handled by this response handler. It
+ * returns the list of all services registered in the BES.
+ *
+ * @see BESResponseObject
+ * @see BESServiceRegistry
+ * @see BESTransmitter
+ */
+class BESServicesResponseHandler : public BESResponseHandler
 {
-private:
-    				CmdXMLUtils() ;
 public:
-    virtual			~CmdXMLUtils() ;
+				BESServicesResponseHandler( const string &name ) ;
+    virtual			~BESServicesResponseHandler( void ) ;
 
-    static void			XMLErrorFunc( void *context,
-					      const char *msg, ... ) ;
-    static void			GetProps( xmlNode *node,
-					  map<string, string> &props ) ;
-    static void			GetNodeInfo( xmlNode *node,
-					     string &name,
-					     string &value,
-					     map<string, string> &props ) ;
-    static xmlNode *		GetFirstChild( xmlNode *node,
-					    string &child_name,
-					    string &child_value,
-					    map<string, string> &child_props ) ;
-    static xmlNode *		GetNextChild( xmlNode *child_node,
-					     string &next_name,
-					     string &next_value,
-					     map<string, string> &next_props ) ;
-    static xmlNode *		GetChild( xmlNode *node,
-					  const string &child_name,
-					  string &child_value,
-					  map<string, string> &child_props ) ;
-} ;
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-#endif // CmdXMLUtils_h_
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESResponseHandler *ResponseBuilder( const string &handler_name ) ;
+};
+
+#endif // I_BESServicesResponseHandler_h
 

@@ -1,7 +1,5 @@
 // OPENDAP_TYPE_commands.cc
 
-// 2004 Copyright University Corporation for Atmospheric Research
-
 #include <iostream>
 
 using std::endl ;

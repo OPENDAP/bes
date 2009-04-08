@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
 #include "BESHelpResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
@@ -71,19 +72,20 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
 
-    info->begin_response( HELP_RESPONSE_STR ) ;
+    info->begin_response( HELP_RESPONSE_STR, dhi ) ;
     dhi.action_name = HELP_RESPONSE_STR ;
 
-    info->begin_tag( "BES" ) ;
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
+    info->begin_tag( "module", &attrs ) ;
     info->add_data_from_file( "BES.Help", "BES Help" ) ;
-    info->end_tag( "BES" ) ;
+    info->end_tag( "module" ) ;
 
     // execute help for each registered request server
     info->add_break( 2 ) ;
 
-    info->begin_tag( "Handlers" ) ;
     BESRequestHandlerList::TheList()->execute_all( dhi ) ;
-    info->end_tag( "Handlers" ) ;
 
     info->end_response() ;
 }

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -52,7 +52,7 @@ public:
     typedef struct _bes_dir_entry
     {
 	bool collection ;
-	bool isData ;
+	list<string> services ;
 	string name ;
 	string size ;
 	string mod_date ;
@@ -62,7 +62,7 @@ private:
     const BESCatalogUtils *	_utils ;
 
     bool			isData( const string &inQuestion,
-    					list<string> &provides ) ;
+    					list<string> &services ) ;
 public:
 				BESCatalogDirectory( const string &name ) ;
     virtual			~BESCatalogDirectory( void ) ;

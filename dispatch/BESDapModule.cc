@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -48,6 +48,8 @@ using std::endl ;
 
 #include "BESCatalogResponseHandler.h"
 
+#include "BESServiceRegistry.h"
+
 #include "BESDapTransmit.h"
 #include "BESTransmitter.h"
 #include "BESReturnManager.h"
@@ -81,51 +83,21 @@ BESDapModule::initialize( const string &modname )
     BESDEBUG( "dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
 
+    BESDEBUG( "dap", "Adding " << OPENDAP_SERVICE << " services:" << endl )
+    BESServiceRegistry *registry = BESServiceRegistry::TheRegistry() ;
+    registry->add_service( OPENDAP_SERVICE ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DAS_SERVICE,
+			      DAS_DESCRIPT, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DDS_SERVICE,
+			      DDS_DESCRIPT, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DDX_SERVICE,
+			      DDX_DESCRIPT, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DATA_SERVICE,
+			      DATA_DESCRIPT, DAP2_FORMAT ) ;
+
     BESDEBUG( "dap", "Initializing DAP Basic Transmitters:" << endl )
-    BESTransmitter *t = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
-    if( t )
-    {
-	BESDEBUG( "dap", "    adding " << DAS_TRANSMITTER << endl )
-	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_basic_das ) ;
-
-	BESDEBUG( "dap", "    adding " << DDS_TRANSMITTER << endl )
-	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_basic_dds ) ;
-
-	BESDEBUG( "dap", "    adding " << DDX_TRANSMITTER << endl )
-	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_basic_ddx ) ;
-
-	BESDEBUG( "dap", "    adding " << DATA_TRANSMITTER << endl )
-	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_basic_data ) ;
-    }
-    else
-    {
-	string err = (string)"Unable to initialize basic transmitter "
-	             + "with dap transmit functions" ;
-	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-    }
-
-    BESDEBUG( "dap", "Initializing DAP HTTP Transmitters:" << endl )
-    t = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
-    if( t )
-    {
-	BESDEBUG( "dap", "    adding " << DAS_TRANSMITTER << endl )
-	t->add_method( DAS_TRANSMITTER, BESDapTransmit::send_http_das ) ;
-
-	BESDEBUG( "dap", "    adding " << DDS_TRANSMITTER << endl )
-	t->add_method( DDS_TRANSMITTER, BESDapTransmit::send_http_dds ) ;
-
-	BESDEBUG( "dap", "    adding " << DDX_TRANSMITTER << endl )
-	t->add_method( DDX_TRANSMITTER, BESDapTransmit::send_http_ddx ) ;
-
-	BESDEBUG( "dap", "    adding " << DATA_TRANSMITTER << endl )
-	t->add_method( DATA_TRANSMITTER, BESDapTransmit::send_http_data ) ;
-    }
-    else
-    {
-	string err = (string)"Unable to initialize http transmitter "
-	             + "with dap transmit functions" ;
-	throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-    }
+    BESReturnManager::TheManager()->add_transmitter( DAP2_FORMAT,
+						     new BESDapTransmit( ) ) ;
 
     BESDEBUG( "dap", "    adding dap exception handler" << endl )
     BESExceptionManager::TheEHM()->add_ehm_callback( BESDapError::handleException ) ;
@@ -141,14 +113,17 @@ BESDapModule::terminate( const string &modname )
 {
     BESDEBUG( "dap", "Removing DAP Modules:" << endl )
 
-    BESDEBUG( "dap", "    removing dap Response handlers" << modname << endl )
+    BESDEBUG( "dap", "    removing dap Response handlers " << modname << endl )
     BESResponseHandlerList::TheList()->remove_handler( DAS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
 
-    BESDEBUG( "dap", "    removing dap Request Handler" << modname << endl )
+    BESDEBUG( "dap", "    removing " << OPENDAP_SERVICE << " services" << endl )
+    BESServiceRegistry::TheRegistry()->remove_service( OPENDAP_SERVICE ) ;
+
+    BESDEBUG( "dap", "    removing dap Request Handler " << modname << endl )
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 

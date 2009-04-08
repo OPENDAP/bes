@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -71,16 +71,27 @@
 
 #define SEND_RESPONSE "send"
 
+#define OPENDAP_SERVICE "dap"
+#define DAP2_FORMAT "dap2"
 #define GET_RESPONSE "get"
 #define DAS_RESPONSE "get.das"
+#define DAS_SERVICE "das"
+#define DAS_DESCRIPT "OPeNDAP Data Attribute Structure"
 #define DAS_RESPONSE_STR "getDAS"
 #define DDS_RESPONSE "get.dds"
+#define DDS_SERVICE "dds"
+#define DDS_DESCRIPT "OPeNDAP Data Description Structure"
 #define DDS_RESPONSE_STR "getDDS"
 #define DDX_RESPONSE "get.ddx"
+#define DDX_SERVICE "ddx"
+#define DDX_DESCRIPT "OPeNDAP Data Description and Attribute XML Document"
 #define DDX_RESPONSE_STR "getDDX"
 #define DATA_RESPONSE "get.dods"
+#define DATA_SERVICE "dods"
+#define DATA_DESCRIPT "OPeNDAP Data Object"
 #define DATA_RESPONSE_STR "getDODS"
 #define STREAM_RESPONSE "get.stream"
+#define STREAM_SERVICE "stream"
 #define STREAM_RESPONSE_STR "getStream"
 
 #define SHOW_RESPONSE "show"
@@ -98,6 +109,8 @@
 #define CONFIG_RESPONSE_STR "showConfig"
 #define STATUS_RESPONSE "show.status"
 #define STATUS_RESPONSE_STR "showStatus"
+#define SERVICE_RESPONSE "show.servicedescriptions"
+#define SERVICE_RESPONSE_STR "showServiceDescriptions"
 #define CATALOG_RESPONSE "show.catalog"
 #define CATALOG_RESPONSE_STR "showCatalog"
 #define SHOW_INFO_RESPONSE "show.info"

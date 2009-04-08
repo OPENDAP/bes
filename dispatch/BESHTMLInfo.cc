@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -78,11 +78,13 @@ BESHTMLInfo::~BESHTMLInfo()
  * Because this is text informational object, no begin tags are needed
  *
  * @param response_name name of the response this information represents
+ * @param dhi information about the request and response
  */
 void
-BESHTMLInfo::begin_response( const string &response_name )
+BESHTMLInfo::begin_response( const string &response_name,
+			     BESDataHandlerInterface &dhi )
 {
-    BESInfo::begin_response( response_name ) ;
+    BESInfo::begin_response( response_name, dhi ) ;
     add_data( "<HTML>\n" ) ;
     _indent += "    " ;
     add_data( "<HEAD>\n" ) ;

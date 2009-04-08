@@ -1,2 +1,2 @@
-<?xml version="*" encoding="*"?>
-<showInfo><response><dataset isData="false" thredds_collection="true"><name>/data/hdf4</name><size>136</size><lastmodified><date>*</date><time>*</time></lastmodified><count>2</count></dataset></response></showInfo>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value"><showInfo><dataset catalog="catalog" count="2" lastModified="*" name="/data/hdf4" node="true" size="*"/></showInfo></response>

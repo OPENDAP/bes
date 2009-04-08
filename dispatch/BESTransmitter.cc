@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESTransmitter.h"
+#include "BESInternalError.h"
 
 bool
 BESTransmitter::add_method( string method_name, p_transmitter trans_method )
@@ -80,6 +81,12 @@ BESTransmitter::send_response( const string &method_name,
     if( p )
     {
 	p( response, dhi ) ;
+    }
+    else
+    {
+	string err = (string)"Unable to transmit response, no transmit for "
+		     + method_name ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 }
 

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -64,10 +64,12 @@ BESProcIdResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
     dhi.action_name = PROCESS_RESPONSE_STR ;
-    info->begin_response( PROCESS_RESPONSE_STR ) ;
+    info->begin_response( PROCESS_RESPONSE_STR, dhi ) ;
     char mypid[12] ;
     BESUtil::fastpidconverter( mypid, 10 ) ;
-    info->add_tag( "pid", mypid ) ;
+    map<string,string> props ;
+    props["pid"] = mypid ;
+    info->add_tag( "process", "", &props ) ;
     info->end_response() ;
 }
 

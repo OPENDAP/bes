@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -89,13 +89,25 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
     {
 	_dhi.data[STORE_NAME] = storage ;
     }
+    else
+    {
+	storage = PERSISTENCE_VOLATILE ;
+    }
 
     // this can be the empty string, so just set it this way
-    _dhi.data[CONTAINER_TYPE] = props["type"] ;
+    string container_type = props["type"] ;
+    _dhi.data[CONTAINER_TYPE] = container_type ;
 
     // now that everything has passed tests, set the value in the dhi
     _dhi.data[REAL_NAME] = value ; 
     _dhi.action = SETCONTAINER ;
+
+    _str_cmd = (string)"set container in " + storage
+	       + " values " + name + "," + value ;
+    if( !container_type.empty() )
+    {
+	_str_cmd += "," + container_type ;
+    }
 
     // now that we've set the action, go get the response handler for the
     // action

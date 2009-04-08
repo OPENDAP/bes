@@ -3,26 +3,26 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -129,7 +129,7 @@ BESUtil::set_mime_html( ostream &strm )
 //                                                   ;  hours+min. (HHMM)
 
 static const char *days[]={"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-static const char *months[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", 
+static const char *months[]={"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 			"Aug", "Sep", "Oct", "Nov", "Dec"};
 
 /** Given a constant pointer to a <tt>time_t</tt>, return a RFC
@@ -155,8 +155,8 @@ BESUtil::rfc822_date(const time_t t)
     return string(d);
 }
 
-string 
-BESUtil::unhexstring( string s ) 
+string
+BESUtil::unhexstring( string s )
 {
     int val;
     istringstream ss( s ) ;
@@ -167,13 +167,15 @@ BESUtil::unhexstring( string s )
     return string(tmp_str);
 }
 
-string 
+// I modified this to mirror the version in libdap. The change allows several
+// escape sequences to by listed in 'except'. jhrg 2/18/09
+string
 BESUtil::www2id(const string &in, const string &escape, const string &except)
 {
     string::size_type i = 0;
     string res = in;
     while ((i = res.find_first_of(escape, i)) != string::npos) {
-	if (res.substr(i, 3) == except) {
+	if (except.find(res.substr(i, 3)) != string::npos) {
 	    i += 3;
 	    continue;
 	}
@@ -586,5 +588,40 @@ BESUtil::explode( char delim, const string &str, list<string> &values )
 	    done = true ;
 	}
     }
+}
+
+/** Given a list of string values create a single string of values
+ * delimited by delim
+ *
+ * If the delimiter exists in a value in the list then that value must
+ * be enclosed in quotes
+ *
+ * @param values list of string values to implode
+ * @param delim the delimiter to use in creating the resulting string
+ * @return the delim delimited string of values
+ */
+string
+BESUtil::implode( const list<string> &values, char delim )
+{
+    string result ;
+    list<string>::const_iterator i = values.begin() ;
+    list<string>::const_iterator e = values.end() ;
+    bool first = true ;
+    string::size_type d; // = string::npos ;
+    for( ; i != e; i++ )
+    {
+	if( !first ) result += delim ;
+	d = (*i).find( delim ) ;
+	if( d != string::npos && (*i)[0] != '"' )
+	{
+	    string err = (string)"BESUtil::implode - delimiter exists in value "
+			 + (*i) ;
+	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
+	//d = string::npos ;
+	result += (*i) ;
+	first = false ;
+    }
+    return result ;
 }
 

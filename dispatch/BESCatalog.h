@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -47,15 +47,30 @@ class BESInfo ;
 class BESCatalog : public BESObj {
 private:
     string			_catalog_name ;
+    unsigned int		_reference ;
 
     				BESCatalog() {}
 protected:
 				BESCatalog( const string &catalog_name )
-				    : _catalog_name( catalog_name ) {} ;
+				    : _catalog_name( catalog_name ),
+				      _reference( 0 ) {} ;
 public:
     virtual			~BESCatalog( void ) {} ;
+    virtual void		reference_catalog()
+				{
+				    _reference++ ;
+				}
+    virtual unsigned int	dereference_catalog()
+				{
+				    if( !_reference )
+					return _reference ;
+				    return --_reference ;
+				}
 
-    virtual string		get_catalog_name() { return _catalog_name ; }
+    virtual string		get_catalog_name()
+				{
+				    return _catalog_name ;
+				}
     virtual void		show_catalog( const string &container,
 					      const string &catalog_or_info,
 					      BESInfo *info ) = 0 ;

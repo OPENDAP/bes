@@ -17,10 +17,11 @@ check_PROGRAMS = $(TESTS)
 noinst_HEADERS = test_config.h
 
 # This determines what gets run by 'make check.'
+#TESTS = servicesT
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT debugT utilT regexT scrubT checkT
+		encodeT debugT utilT regexT scrubT checkT servicesT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -149,4 +150,8 @@ scrubT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 
 checkT_SOURCES = checkT.cc baseApp.cc checkT.h baseApp.h Application.h
 checkT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
+
+servicesT_SOURCES = servicesT.cc baseApp.cc servicesT.h baseApp.h Application.h
+servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
+servicesT_LDADD =  ../libbes_dispatch.la $(XML2_LIBS)
 

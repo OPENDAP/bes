@@ -1,5 +1,35 @@
 // SampleRequestHandler.cc
 
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
+
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact University Corporation for Atmospheric Research at
+// 3080 Center Green Drive, Boulder, CO 80301
+
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
+// Please read the full copyright statement in the file COPYRIGHT_UCAR.
+//
+// Authors:
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 #include "config.h"
 
 #include "SampleRequestHandler.h"
@@ -32,7 +62,7 @@ SampleRequestHandler::sample_build_vers( BESDataHandlerInterface &dhi )
     BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
   
     return ret ;
 }
@@ -48,13 +78,12 @@ SampleRequestHandler::sample_build_help( BESDataHandlerInterface &dhi )
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    info->begin_tag("Handler");
-    info->add_tag("name", PACKAGE_NAME);
-    info->add_tag("version", PACKAGE_STRING);
-    info->begin_tag("info");
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
+    info->begin_tag( "module", &attrs ) ;
     info->add_data_from_file( "Sample.Help", "Sample Help" ) ;
-    info->end_tag("info");
-    info->end_tag("Handler");
+    info->end_tag( "module" ) ;
 
     return ret ;
 }

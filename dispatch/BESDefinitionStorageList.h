@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -69,24 +69,26 @@ private:
     typedef struct _persistence_list
     {
 	BESDefinitionStorage *_persistence_obj ;
+	unsigned int _reference ;
 	BESDefinitionStorageList::_persistence_list *_next ;
     } persistence_list ;
 
     BESDefinitionStorageList::persistence_list *_first ;
 protected:
-				BESDefinitionStorageList() ;
+			BESDefinitionStorageList() ;
 public:
-    virtual			~BESDefinitionStorageList() ;
+    virtual		~BESDefinitionStorageList() ;
 
-    virtual bool		add_persistence( BESDefinitionStorage *p ) ;
-    virtual bool		del_persistence( const string &persist_name ) ;
-    virtual BESDefinitionStorage *	find_persistence( const string &persist_name ) ;
+    virtual bool	add_persistence( BESDefinitionStorage *p ) ;
+    virtual bool	ref_persistence( const string &persist_name ) ;
+    virtual bool	deref_persistence( const string &persist_name ) ;
+    virtual BESDefinitionStorage *find_persistence( const string &persist_name ) ;
 
     virtual BESDefine *	look_for( const string &def_name ) ;
 
-    virtual void		show_definitions( BESInfo &info ) ;
+    virtual void	show_definitions( BESInfo &info ) ;
 
-    virtual void		dump( ostream &strm ) const ;
+    virtual void	dump( ostream &strm ) const ;
 
     static BESDefinitionStorageList *TheList() ;
 } ;

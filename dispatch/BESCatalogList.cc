@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -30,12 +30,33 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <sstream>
+
+using std::ostringstream ;
+
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
 #include "BESInfo.h"
 #include "BESSyntaxUserError.h"
+#include "TheBESKeys.h"
+#include "BESResponseNames.h"
 
 BESCatalogList *BESCatalogList::_instance = 0 ;
+
+/** @brief construct a catalog list
+ *
+ * @see BESCatalog
+ */
+BESCatalogList::BESCatalogList()
+{
+    bool found = false ;
+    string key = "BES.Catalog.Default" ;
+    _default_catalog = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    if( !found || _default_catalog.empty() )
+    {
+	_default_catalog = BES_DEFAULT_CATALOG ;
+    }
+}
 
 /** @brief list destructor deletes all registered catalogs
  *
@@ -78,17 +99,18 @@ BESCatalogList::add_catalog(BESCatalog * catalog)
     return result;
 }
 
-/** @brief remove from the list and delete the specified catalog
+/** @brief reference the specified catalog
  *
  * Search the list for the catalog with the given name. If the
- * catalog exists, remove it from the list and delete it.
+ * catalog exists, reference it and return true. If not found then
+ * return false.
  *
- * @param catalog_name name of the catalog to delete
- * @return true if successfully removed and deleted, false otherwise
+ * @param catalog_name name of the catalog to reference
+ * @return true if successfully found and referenced, false otherwise
  * @see BESCatalog
  */
 bool
-BESCatalogList::del_catalog( const string &catalog_name )
+BESCatalogList::ref_catalog( const string &catalog_name )
 {
     bool ret = false ;
     BESCatalog *cat = 0 ;
@@ -97,8 +119,38 @@ BESCatalogList::del_catalog( const string &catalog_name )
     if( i != _catalogs.end() )
     {
 	cat = (*i).second;
-	_catalogs.erase( i ) ;
-	delete cat ;
+	cat->reference_catalog() ;
+	ret = true ;
+    }
+    return ret ;
+}
+
+/** @brief de-reference the specified catalog and remove from list
+ * if no longer referenced
+ *
+ * Search the list for the catalog with the given name. If the
+ * catalog exists, de-reference it. If there are no more references
+ * then remove the catalog from the list and delete it.
+ *
+ * @param catalog_name name of the catalog to de-reference
+ * @return true if successfully de-referenced, false otherwise
+ * @see BESCatalog
+ */
+bool
+BESCatalogList::deref_catalog( const string &catalog_name )
+{
+    bool ret = false ;
+    BESCatalog *cat = 0 ;
+    BESCatalogList::catalog_iter i ;
+    i = _catalogs.find( catalog_name ) ;
+    if( i != _catalogs.end() )
+    {
+	cat = (*i).second;
+	if( !cat->dereference_catalog() )
+	{
+	    _catalogs.erase( i ) ;
+	    delete cat ;
+	}
 	ret = true ;
     }
     return ret ;
@@ -160,66 +212,74 @@ BESCatalogList::show_catalog( const string &container,
 			      const string &coi,
 			      BESInfo *info )
 {
-    // if there is only one catalog then go to it to show the catalog
-    if( _catalogs.size() == 1 )
+    string cat_name ;
+    string cat_node ;
+    BESCatalog *catalog = 0 ;
+    if( container.empty() )
     {
-	catalog_citer i = _catalogs.begin() ;
-	BESCatalog *catalog = (*i).second ;
-	catalog->show_catalog( container, coi, info ) ;
-    }
-    else if( _catalogs.size() != 0 )
-    {
-	// This means there are more than one catalog. If the specified
-	// container is empty then display the names of the catalogs
-	if( container.empty() )
+	if( _catalogs.size() == 1 )
 	{
-	    map<string,string> a1 ;
-	    a1["thredds_collection"] = "true" ;
-	    a1["isData"] = "false" ;
-	    info->begin_tag( "dataset", &a1 ) ;
-	    info->add_tag( "name", "/" ) ;
+	    catalog_citer i = _catalogs.begin() ;
+	    catalog = (*i).second ;
+	    catalog->show_catalog( container, coi, info ) ;
+	}
+	else
+	{
+	    map<string,string> props ;
+	    props["name"] = "/" ;
+	    props["catalog"] = "/" ;
+	    ostringstream ssize ;
+	    ssize << _catalogs.size() ;
+	    props["count"] = ssize.str() ;
+	    props["node"] = "true" ;
+	    info->begin_tag( "dataset", &props ) ;
 
-	    a1["catalogRoot"] = "true" ;
 	    catalog_citer i = _catalogs.begin() ;
 	    catalog_citer e = _catalogs.end() ;
 	    for( ; i != e; i++ )
 	    {
-		string name = (*i).first ;
 		BESCatalog *catalog = (*i).second ;
-		info->begin_tag( "dataset", &a1 ) ;
-		info->add_tag( "name", name ) ;
-		info->end_tag( "dataset" ) ;
+		catalog->show_catalog( "", SHOW_INFO_RESPONSE, info ) ;
 	    }
 
 	    info->end_tag( "dataset" ) ;
 	}
-	else
+    }
+    else
+    {
+	string::size_type colon = container.find( ":" ) ;
+	if( colon == string::npos )
 	{
-	    // if a container is specified then the name of the catalog
-	    // comes first, followed by a colon. If no colon, then no
-	    // catalog specified, which means error
-	    string::size_type colon = container.find( ":" ) ;
-	    if( colon == string::npos )
+	    // no colon, so if only one catalog then use it, otherwise use
+	    // the default name
+	    if( _catalogs.size() == 1 )
 	    {
-		string serr = "You must specify a catalog to use." ;
-		throw BESSyntaxUserError( serr, __FILE__, __LINE__ ) ;
+		catalog_citer i = _catalogs.begin() ;
+		catalog = (*i).second ;
+		cat_name = catalog->get_catalog_name() ;
 	    }
 	    else
 	    {
-		// there is a colon. The name is the part before the colon.
-		string name = container.substr( 0, colon ) ;
-		string rest = container.substr( colon+1, container.length() - colon ) ;
-		BESCatalog *catalog = _catalogs[ name ] ;
-		if( catalog )
-		{
-		    catalog->show_catalog( rest, coi, info ) ;
-		}
-		else
-		{
-		    string serr = "The catalog " + name + " does not exist." ;
-		    throw BESSyntaxUserError( serr, __FILE__, __LINE__ ) ;
-		}
+		cat_name = _default_catalog ;
 	    }
+	    cat_node = container ;
+	}
+	else
+	{
+	    // there is a colon. The name is the part before the colon.
+	    cat_name = container.substr( 0, colon ) ;
+	    cat_node = container.substr( colon+1, container.length() - colon ) ;
+	}
+
+	catalog = _catalogs[ cat_name ] ;
+	if( catalog )
+	{
+	    catalog->show_catalog( cat_node, coi, info ) ;
+	}
+	else
+	{
+	    string serr = "The catalog " + cat_name + " does not exist." ;
+	    throw BESSyntaxUserError( serr, __FILE__, __LINE__ ) ;
 	}
     }
 }

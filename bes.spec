@@ -5,7 +5,7 @@
 %define besgroup %{name}
 
 Name:           bes
-Version:        3.7.0
+Version:        3.7.2
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 

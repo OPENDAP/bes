@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -30,6 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <util.h>
+
+using namespace libdap ;
 
 #include "BESDapRequestHandler.h"
 #include "BESResponseHandler.h"
@@ -51,10 +54,17 @@ BESDapRequestHandler::~BESDapRequestHandler()
 bool
 BESDapRequestHandler::dap_build_help( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = (BESInfo *)dhi.response_handler->get_response_object() ;
-    info->begin_tag( "DAP" ) ;
+    BESResponseObject *response = dhi.response_handler->get_response_object() ;
+    BESInfo *info = dynamic_cast < BESInfo * >(response) ;
+    if( !info )
+       throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
+    map<string,string> attrs ;
+    attrs["name"] = libdap_name() ;
+    attrs["version"] = libdap_version() ;
+    info->begin_tag( "module", &attrs ) ;
     info->add_data_from_file( "DAP.Help", "DAP Help" ) ;
-    info->end_tag( "DAP" ) ;
+    info->end_tag( "module" ) ;
 
     return true ;
 }
@@ -62,12 +72,17 @@ BESDapRequestHandler::dap_build_help( BESDataHandlerInterface &dhi )
 bool
 BESDapRequestHandler::dap_build_version( BESDataHandlerInterface &dhi )
 {
-    BESVersionInfo *info = (BESVersionInfo *)dhi.response_handler->get_response_object() ;
-    info->begin_tag( "DAP" ) ;
-    info->add_tag( "version", "2.0" ) ;
-    info->add_tag( "version", "3.0" ) ;
-    info->add_tag( "version", "3.1" ) ;
-    info->end_tag( "DAP" ) ;
+    BESResponseObject *response = dhi.response_handler->get_response_object() ;
+    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response) ;
+    if( !info )
+       throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+
+    info->add_library( libdap_name(), libdap_version() ) ;
+    list<string> versions ;
+    versions.push_back( "2.0" ) ;
+    versions.push_back( "3.0" ) ;
+    versions.push_back( "3.2" ) ;
+    info->add_service( OPENDAP_SERVICE, versions ) ;
 
     return true ;
 }

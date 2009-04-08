@@ -1,5 +1,35 @@
 // infoT.C
 
+// This file is part of bes, A C++ back-end server implementation framework
+// for the OPeNDAP Data Access Protocol.
+
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
+// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact University Corporation for Atmospheric Research at
+// 3080 Center Green Drive, Boulder, CO 80301
+
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
+// Please read the full copyright statement in the file COPYRIGHT_UCAR.
+//
+// Authors:
+//      pwest       Patrick West <pwest@ucar.edu>
+//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
@@ -16,6 +46,7 @@ using std::ostringstream ;
 #include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
+#include "BESDataHandlerInterface.h"
 #include <test_config.h>
 
 string txt_baseline = "tag1: tag1 data\n\
@@ -36,7 +67,7 @@ string html_baseline = "<HTML>\n\
 </HTML>\n" ;
 
 string xml_baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<testXMLResponse><response><tag1>tag1 data</tag1><tag2><tag3 attr_name=\"&quot;attr_val&quot;\">tag3 data</tag3></tag2></response></testXMLResponse>\n" ;
+<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\"><testXMLResponse><tag1>tag1 data</tag1><tag2><tag3 attr_name=\"&quot;attr_val&quot;\">tag3 data</tag3></tag2></testXMLResponse></response>\n" ;
 
 int infoT::
 run(void)
@@ -72,7 +103,8 @@ run(void)
 	cout << "FAIL" << endl ;
 	return 1 ;
     }
-    t_info->begin_response( "testTextResponse" ) ;
+    BESDataHandlerInterface dhi ;
+    t_info->begin_response( "testTextResponse", dhi ) ;
     t_info->add_tag( "tag1", "tag1 data" ) ;
     t_info->begin_tag( "tag2" ) ;
     t_info->add_tag( "tag3", "tag3 data", &attrs ) ;
@@ -102,7 +134,7 @@ run(void)
 	cout << "FAIL" << endl ;
 	return 1 ;
     }
-    h_info->begin_response( "testHTMLResponse" ) ;
+    h_info->begin_response( "testHTMLResponse", dhi ) ;
     h_info->add_tag( "tag1", "tag1 data" ) ;
     h_info->begin_tag( "tag2" ) ;
     h_info->add_tag( "tag3", "tag3 data", &attrs ) ;
@@ -132,7 +164,7 @@ run(void)
 	cout << "FAIL" << endl ;
 	return 1 ;
     }
-    x_info->begin_response( "testXMLResponse" ) ;
+    x_info->begin_response( "testXMLResponse", dhi ) ;
     x_info->add_tag( "tag1", "tag1 data" ) ;
     x_info->begin_tag( "tag2" ) ;
     x_info->add_tag( "tag3", "tag3 data", &attrs ) ;

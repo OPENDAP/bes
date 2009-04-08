@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -84,6 +84,7 @@ BESContainerStorageList::add_persistence( BESContainerStorage *cp )
     {
 	_first = new BESContainerStorageList::persistence_list ;
 	_first->_persistence_obj = cp ;
+	_first->_reference = 1 ;
 	_first->_next = 0 ;
 	ret = true ;
     }
@@ -102,6 +103,7 @@ BESContainerStorageList::add_persistence( BESContainerStorage *cp )
 		else
 		{
 		    pl->_next = new BESContainerStorageList::persistence_list ;
+		    pl->_next->_reference = 1 ;
 		    pl->_next->_persistence_obj = cp ;
 		    pl->_next->_next = 0 ;
 		    done = true ;
@@ -118,16 +120,61 @@ BESContainerStorageList::add_persistence( BESContainerStorage *cp )
     return ret ;
 }
 
-/** @brief remove a persistent store from the list
+/** @brief refence the specified persistent store if in the list
  *
- * Removes the named persistent store from the list.
+ * Increments the reference count of the persistent store in the
+ * list. This lets the system know that there is a module that is
+ * referencing the specified catalog
  *
- * @param persist_name name of the persistent store to be removed
- * @return true if successfully removed, false otherwise
+ * @param persist_name name of the persistent store to be referenced
+ * @return true if successfully referenced, false otherwise
  * @see BESContainerStorage
  */
 bool
-BESContainerStorageList::del_persistence( const string &persist_name )
+BESContainerStorageList::ref_persistence( const string &persist_name )
+{
+    bool ret = false ;
+    BESContainerStorageList::persistence_list *pl = _first ;
+
+    bool done = false ;
+    while( done == false )
+    {
+	if( pl )
+	{
+	    if( pl->_persistence_obj &&
+	        pl->_persistence_obj->get_name() == persist_name )
+	    {
+		done = true ;
+		ret = true ;
+		pl->_reference++ ;
+	    }
+	    else
+	    {
+		pl = pl->_next ;
+	    }
+	}
+	else
+	{
+	    done = true ;
+	}
+    }
+    return ret ;
+}
+
+/** @brief dereference a persistent store in the list.
+ *
+ * de-reference the names persistent store. If found, the reference
+ * on the catalog is decremented and true is returned. If the
+ * reference reaches zero then the catalog is removed. If not found
+ * then false is returned.
+ *
+ * @param persist_name name of the persistent store to be
+ * de-referenced
+ * @return true if successfully de-referenced, false otherwise
+ * @see BESContainerStorage
+ */
+bool
+BESContainerStorageList::deref_persistence( const string &persist_name )
 {
     bool ret = false ;
     BESContainerStorageList::persistence_list *pl = _first ;
@@ -143,17 +190,23 @@ BESContainerStorageList::del_persistence( const string &persist_name )
 	    {
 		ret = true ;
 		done = true ;
-		if( pl == _first )
+		pl->_reference-- ;
+		if( !pl->_reference )
 		{
-		    _first = _first->_next ;
+		    if( pl == _first )
+		    {
+			_first = _first->_next ;
+		    }
+		    else
+		    {
+		    	if (!last)
+		    		throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
+			last->_next = pl->_next ;
+		    }
+		    delete pl->_persistence_obj ;
+		    delete pl ;
+		    pl = 0 ;
 		}
-		else
-		{
-		    last->_next = pl->_next ;
-		}
-		delete pl->_persistence_obj ;
-		delete pl ;
-		pl = 0 ;
 	    }
 	    else
 	    {
@@ -304,7 +357,9 @@ BESContainerStorageList::show_containers( BESInfo &info )
     BESContainerStorageList::persistence_list *pl = _first ;
     while( pl )
     {
-	info.begin_tag( "store" ) ;
+	map<string,string> props ;
+	props["name"] = pl->_persistence_obj->get_name() ;
+	info.begin_tag( "store", &props ) ;
 	pl->_persistence_obj->show_containers( info ) ;
 	info.end_tag( "store" ) ;
 	pl = pl->_next ;

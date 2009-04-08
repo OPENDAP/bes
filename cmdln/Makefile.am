@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/ppt -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -22,8 +22,9 @@ DIST_SUBDIRS = unit-tests
 bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc 		\
-		CmdPretty.cc CmdXMLUtils.cc CmdApp.h CmdClient.h 	\
-		CmdTranslation.h CmdPretty.h CmdXMLUtils.h
+		CmdPretty.cc ../xmlcommand/BESXMLUtils.cc		\
+		CmdApp.h CmdClient.h CmdTranslation.h CmdPretty.h	\
+		../xmlcommand/BESXMLUtils.h
 
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 

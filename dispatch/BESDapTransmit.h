@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -33,34 +33,24 @@
 #ifndef I_BESDapTransmit_h
 #define I_BESDapTransmit_h 1
 
+#include "BESBasicTransmitter.h"
 #include "BESDataHandlerInterface.h"
 
 class BESResponseObject ;
 
-#define DAS_TRANSMITTER "das"
-#define DDS_TRANSMITTER "dds"
-#define DDX_TRANSMITTER "ddx"
-#define DATA_TRANSMITTER "data"
-
-class BESDapTransmit
+class BESDapTransmit : public BESBasicTransmitter
 {
 public:
+    			BESDapTransmit() ;
+    virtual		~BESDapTransmit() {}
     static void		send_basic_das( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_das( BESResponseObject *obj,
-    				       BESDataHandlerInterface &dhi ) ;
     static void		send_basic_dds( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_dds( BESResponseObject *obj,
-    				       BESDataHandlerInterface &dhi ) ;
     static void		send_basic_data( BESResponseObject *obj,
     				         BESDataHandlerInterface &dhi ) ;
-    static void		send_http_data( BESResponseObject *obj,
-    				        BESDataHandlerInterface &dhi ) ;
     static void		send_basic_ddx( BESResponseObject *obj,
     				        BESDataHandlerInterface &dhi ) ;
-    static void		send_http_ddx( BESResponseObject *obj,
-    				       BESDataHandlerInterface &dhi ) ;
 } ;
 
 #endif // I_BESDapTransmit_h

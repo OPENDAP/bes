@@ -3,26 +3,26 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -53,8 +53,11 @@ using std::endl ;
 #include "BESLog.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
+#include "BESDebug.h"
 
-void bes_add_stat_info( BESInfo *info, struct stat &buf, const string &node ) ;
+void bes_add_stat_info( map<string,string> &props,
+			struct stat &buf,
+			const string &node ) ;
 void bes_get_stat_info( BESCatalogDirectory::bes_dir_entry &entry,
 			struct stat &buf,
 			const string &node);
@@ -75,6 +78,9 @@ BESCatalogDirectory::show_catalog( const string &node,
 				   BESInfo *info )
 {
     // remove any trailing slash
+#if 0
+    // Replaced the code below since this was causing a memory access error
+    // flagged by valgrind when node was "/".2/25/09 jhrg
     string use_node = node ;
     if( node != "" )
     {
@@ -85,7 +91,22 @@ BESCatalogDirectory::show_catalog( const string &node,
 	}
 	use_node = use_node.substr( 0, stopat + 1 ) ;
     }
+#else
+    string use_node = node;
+    // use_node should only end in '/' is that's the only character in which
+    // case there's no need to call find()
+    if (!node.empty() && node != "/") {
+        string::size_type pos = use_node.find_last_not_of("/");
+        use_node = use_node.substr(0, pos+1);
+    }
 
+    // This takes care of bizarre cases like "///" where use_node would be
+    // empty after the substring call.
+    if (use_node.empty())
+        use_node = "/";
+
+    BESDEBUG("bes", "use_node: " << use_node << endl )
+#endif
     string rootdir = _utils->get_root_dir() ;
     string fullnode = rootdir ;
     if( !use_node.empty() )
@@ -130,17 +151,16 @@ BESCatalogDirectory::show_catalog( const string &node,
 	int my_errno = errno ;
 	if( statret == 0 )
 	{
-	    map<string,string> a1 ;
-	    a1["thredds_collection"] = "true" ;
-	    a1["isData"] = "false" ;
-	    info->begin_tag( "dataset", &a1 ) ;
+	    map<string,string> props ;
+	    props["node"] = "true" ;
+	    props["catalog"] = get_catalog_name() ;
 	    if( use_node == "" )
 	    {
-		bes_add_stat_info( info, cbuf, "/" ) ;
+		bes_add_stat_info( props, cbuf, "/" ) ;
 	    }
 	    else
 	    {
-		bes_add_stat_info( info, cbuf, use_node ) ;
+		bes_add_stat_info( props, cbuf, use_node ) ;
 	    }
 
 	    struct dirent *dit;
@@ -164,7 +184,10 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    bool continue_checking = true ;
 		    if( _utils->follow_sym_links() == false )
 		    {
-			int lstatret = lstat( fullPath.c_str(), &lbuf ) ;
+#if 0
+		        int lstatret = lstat( fullPath.c_str(), &lbuf ) ;
+#endif
+		        (void)lstat( fullPath.c_str(), &lbuf ) ;
 			if( S_ISLNK( lbuf.st_mode ) )
 			{
 			    continue_checking = false ;
@@ -175,7 +198,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 		    {
 			// look at the mode and determine if this is a
 			// directory or a regular file. If it is not
-			// accessible, the stat failes, is not a directory
+			// accessible, the stat fails, is not a directory
 			// or regular file, then simply do not include it.
 			statret = stat( fullPath.c_str(), &buf ) ;
 			if ( statret == 0 && S_ISDIR( buf.st_mode ) )
@@ -187,7 +210,6 @@ BESCatalogDirectory::show_catalog( const string &node,
 				{
 				    bes_dir_entry entry ;
 				    entry.collection = true ;
-				    entry.isData = false ;
 				    bes_get_stat_info( entry, buf, dirEntry ) ;
 				    dir_list[dirEntry] = entry ;
 				}
@@ -202,11 +224,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 				{
 				    bes_dir_entry entry ;
 				    entry.collection = false ;
-				    list<string> provides ;
-				    if( isData( fullPath, provides ) )
-					entry.isData = true ;
-				    else
-					entry.isData = false ;
+				    isData( fullPath, entry.services ) ;
 				    bes_get_stat_info( entry, buf, dirEntry ) ;
 				    dir_list[dirEntry] = entry ;
 				}
@@ -217,7 +235,8 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    }
 	    stringstream sscnt ;
 	    sscnt << cnt ;
-	    info->add_tag( "count", sscnt.str() ) ;
+	    props["count"] = sscnt.str() ;
+	    info->begin_tag( "dataset", &props ) ;
 
 	    // Now iterate through the entry list and add it to info. This
 	    // will add it in alpha order
@@ -229,20 +248,25 @@ BESCatalogDirectory::show_catalog( const string &node,
 		{
 		    map<string,string> attrs ;
 		    if( (*i).second.collection )
-			attrs["thredds_collection"] = "true" ;
+			attrs["node"] = "true" ;
 		    else
-			attrs["thredds_collection"] = "false" ;
-		    if( (*i).second.isData )
-			attrs["isData"] = "true" ;
-		    else
-			attrs["isData"] = "false" ;
+			attrs["node"] = "false" ;
+		    attrs["catalog"] = get_catalog_name() ;
+		    attrs["name"] = (*i).second.name ;
+		    attrs["size"] = (*i).second.size ;
+		    string dt = (*i).second.mod_date + "T"
+				+ (*i).second.mod_time ;
+		    attrs["lastModified"] = dt ;
 		    info->begin_tag( "dataset", &attrs ) ;
-		    info->add_tag( "name", (*i).second.name ) ;
-		    info->add_tag( "size", (*i).second.size ) ;
-		    info->begin_tag( "lastmodified" ) ;
-		    info->add_tag( "date", (*i).second.mod_date ) ;
-		    info->add_tag( "time", (*i).second.mod_time ) ;
-		    info->end_tag( "lastmodified" ) ;
+
+		    list<string>::const_iterator si =
+			(*i).second.services.begin() ;
+		    list<string>::const_iterator se =
+			(*i).second.services.end() ;
+		    for( ; si != se; si++ )
+		    {
+			info->add_tag( "serviceRef", (*si) ) ;
+		    }
 		    info->end_tag( "dataset" ) ;
 		}
 	    }
@@ -286,7 +310,7 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    int statret = 0 ;
 	    if( _utils->follow_sym_links() == false )
 	    {
-		statret = lstat( fullnode.c_str(), &buf ) ;
+		/*statret =*/(void)lstat( fullnode.c_str(), &buf ) ;
 		if( S_ISLNK( buf.st_mode ) )
 		{
 		    string error = "You do not have permission to access node "
@@ -297,15 +321,21 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    statret = stat( fullnode.c_str(), &buf ) ;
 	    if ( statret == 0 && S_ISREG( buf.st_mode ) )
 	    {
-		map<string,string> a4 ;
-		a4["thredds_collection"] = "false" ;
-		list<string> provides ;
-		if( isData( node, provides ) )
-		    a4["isData"] = "true" ;
-		else
-		    a4["isData"] = "false" ;
-		info->begin_tag( "dataset", &a4 ) ;
-		bes_add_stat_info( info, buf, node ) ;
+		map<string,string> attrs ;
+		attrs["node"] = "false" ;
+		attrs["catalog"] = get_catalog_name() ;
+		bes_add_stat_info( attrs, buf, node ) ;
+		info->begin_tag( "dataset", &attrs ) ;
+
+		list<string> services ;
+		isData( node, services ) ;
+		list<string>::const_iterator si = services.begin() ;
+		list<string>::const_iterator se = services.end() ;
+		for( ; si != se; si++ )
+		{
+		    info->add_tag( "serviceRef", (*si) ) ;
+		}
+
 		info->end_tag( "dataset" ) ;
 	    }
 	    else if( statret == 0 )
@@ -350,16 +380,16 @@ BESCatalogDirectory::show_catalog( const string &node,
 }
 
 void
-bes_add_stat_info( BESInfo *info, struct stat &buf, const string &node )
+bes_add_stat_info( map<string,string> &props,
+		   struct stat &buf,
+		   const string &node )
 {
     BESCatalogDirectory::bes_dir_entry entry ;
     bes_get_stat_info( entry, buf, node ) ;
-    info->add_tag( "name", entry.name ) ;
-    info->add_tag( "size", entry.size ) ;
-    info->begin_tag( "lastmodified" ) ;
-    info->add_tag( "date", entry.mod_date ) ;
-    info->add_tag( "time", entry.mod_time ) ;
-    info->end_tag( "lastmodified" ) ;
+    props["name"] = entry.name ;
+    props["size"] = entry.size ;
+    string dt = entry.mod_date + "T" + entry.mod_time ;
+    props["lastModified"] = dt ;
 }
 
 void
@@ -393,7 +423,7 @@ bes_get_stat_info( BESCatalogDirectory::bes_dir_entry &entry,
 
 bool
 BESCatalogDirectory::isData( const string &inQuestion,
-			     list<string> &provides )
+			     list<string> &services )
 {
     BESContainerStorage *store =
 	BESContainerStorageList::TheList()->find_persistence( get_catalog_name() ) ;
@@ -401,11 +431,11 @@ BESCatalogDirectory::isData( const string &inQuestion,
 	return false ;
 
     BESContainerStorageCatalog *cat_store =
-	dynamic_cast<BESContainerStorageCatalog *>(store ) ;
+	dynamic_cast<BESContainerStorageCatalog *>( store ) ;
     if( !cat_store )
 	return false ;
 
-    return cat_store->isData( inQuestion, provides ) ;
+    return cat_store->isData( inQuestion, services ) ;
 }
 
 /** @brief dumps information about this object

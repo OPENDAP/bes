@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -153,7 +153,12 @@ BESServerHandler::execute( Connection *c )
 	    exit( CHILD_SUBPROCESS_READY ) ;
 	}
 
-	string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
+	// This is code that was in place for the string commands. With xml
+	// documents everything is taken care of by libxml2. This should be
+	// happening in the Interface class before passing to the parser, if
+	// need be. pwest 06 Feb 2009
+	//string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
+	string cmd_str = ss.str() ;
 	BESDEBUG( "server", "BESServerHandler::execute - command = " << cmd_str << endl )
 
 	BESStopWatch *sw = 0 ;
@@ -164,16 +169,6 @@ BESServerHandler::execute( Connection *c )
 	}
 
 	int descript = c->getSocket()->getSocketDescriptor() ;
-	/*
-	unsigned int sockbufsize = 0 ;
-	int size = sizeof(int) ;
-	int err = getsockopt( descript, SOL_SOCKET, SO_RCVBUF,
-			      (void *)&sockbufsize, (socklen_t*)&size) ;
-	cerr << "The size of the receive buffer is " << sockbufsize << endl ;
-	err = getsockopt( descript, SOL_SOCKET, SO_SNDBUF,
-			  (void *)&sockbufsize, (socklen_t*)&size ) ;
-	cerr << "The size of the send buffer is " << sockbufsize << endl ;
-	*/
 
 	unsigned int bufsize = c->getSendChunkSize() ;
 	PPTStreamBuf fds( descript, bufsize ) ;
@@ -252,6 +247,8 @@ BESServerHandler::execute( Connection *c )
 		    break;
 	    }
 	}
+
+	delete sw;
     }
 }
 

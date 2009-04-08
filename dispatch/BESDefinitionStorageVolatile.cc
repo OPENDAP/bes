@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -133,39 +133,50 @@ BESDefinitionStorageVolatile::del_definitions( )
 void
 BESDefinitionStorageVolatile::show_definitions( BESInfo &info )
 {
-    info.add_tag( "name", get_name() ) ;
+    map<string,string> dprops ; // for the definition
+    map<string,string> cprops ; // for the container
+    map<string,string> aprops ; // for aggregation
     Define_citer di = _def_list.begin() ;
     Define_citer de = _def_list.end() ;
     for( ; di != de; di++ )
     {
-	info.begin_tag( "definition" ) ;
 	string def_name = (*di).first ;
 	BESDefine *def = (*di).second ;
 
-	info.add_tag( "name", def_name ) ;
-	info.begin_tag( "containers" ) ;
+	dprops.clear() ;
+	dprops["name"] = def_name ;
+	info.begin_tag( "definition", &dprops ) ;
 
 	BESDefine::containers_citer ci = def->first_container() ;
 	BESDefine::containers_citer ce = def->end_container() ;
 	for( ; ci != ce; ci++ )
 	{
+	    cprops.clear() ;
 	    string sym = (*ci)->get_symbolic_name() ;
-	    info.add_tag( "symbolicName", sym ) ;
+	    cprops["name"] = sym ;
+	    // FIXME: need to get rid of the root directory
 	    string real = (*ci)->get_real_name() ;
-	    info.add_tag( "realName", real ) ;
 	    string type = (*ci)->get_container_type() ;
-	    info.add_tag( "dataType", type ) ;
+	    cprops["type"] = type ;
 	    string con = (*ci)->get_constraint() ;
-	    info.add_tag( "constraint", con ) ;
+	    if( !con.empty() )
+	    {
+		cprops["constraint"] = con ;
+	    }
 	    string attrs = (*ci)->get_attributes() ;
-	    info.add_tag( "attributes", attrs ) ;
+	    if( !attrs.empty() )
+	    {
+		cprops["attributes"] = attrs ;
+	    }
+	    info.add_tag( "container", real, &cprops ) ;
 	}
 
-	info.end_tag( "containers" ) ;
-	info.begin_tag( "aggregation" ) ;
-	info.add_tag( "handler", def->get_agg_handler() ) ;
-	info.add_tag( "command", def->get_agg_cmd() ) ;
-	info.end_tag( "aggregation" ) ;
+	if( !def->get_agg_handler().empty() )
+	{
+	    aprops.clear() ;
+	    aprops["handler"] = def->get_agg_handler() ;
+	    info.add_tag( "aggregation", def->get_agg_cmd(), &aprops ) ;
+	}
 
 	info.end_tag( "definition" ) ;
     }

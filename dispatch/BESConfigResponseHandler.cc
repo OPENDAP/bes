@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -68,17 +68,17 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     _response = info ;
 
     dhi.action_name = CONFIG_RESPONSE_STR ;
-    info->begin_response( CONFIG_RESPONSE_STR ) ;
-    info->add_tag( "File", TheBESKeys::TheKeys()->keys_file_name() ) ;
+    info->begin_response( CONFIG_RESPONSE_STR, dhi ) ;
+    info->add_tag( "file", TheBESKeys::TheKeys()->keys_file_name() ) ;
 
+    map<string,string> props ;
     BESKeys::Keys_citer ki = TheBESKeys::TheKeys()->keys_begin() ;
     BESKeys::Keys_citer ke = TheBESKeys::TheKeys()->keys_end() ;
     for( ; ki != ke; ki++ )
     {
-	info->begin_tag( "key" ) ;
-	info->add_tag( "name", (*ki).first ) ;
-	info->add_tag( "value", (*ki).second ) ;
-	info->end_tag( "key" ) ;
+	props.clear() ;
+	props["name"] = (*ki).first ;
+	info->add_tag( "key", (*ki).second, &props ) ;
     }
     info->end_response() ;
 }

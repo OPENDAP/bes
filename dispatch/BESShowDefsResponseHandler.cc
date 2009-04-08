@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -63,7 +63,7 @@ BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESInfo *info = BESInfoList::TheList()->build_info() ;
     _response = info ;
     dhi.action_name = SHOWDEFS_RESPONSE_STR ;
-    info->begin_response( SHOWDEFS_RESPONSE_STR ) ;
+    info->begin_response( SHOWDEFS_RESPONSE_STR, dhi ) ;
     BESDefinitionStorageList::TheList()->show_definitions( *info ) ;
     info->end_response() ;
 }

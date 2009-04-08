@@ -34,17 +34,21 @@ pptcapi_debug_on( char *location )
 	int myerrno = errno ;
 	if( !pptcapi_debug_location )
 	{
-	    char *serr = strerror( myerrno ) ;
-	    char *error = (char *)malloc( 512 ) ;
-	    if( serr )
+	    char *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( error )
 	    {
-		sprintf( error, "Failed to open debug file: %s",
-				serr ) ;
-	    }
-	    else
-	    {
-		sprintf( error, "Failed to open debug file: %s",
-				"unkown error" ) ;
+		char *serr = strerror( myerrno ) ;
+		if( serr )
+		{
+		    snprintf( error, PPTCAPI_ERR_LEN,
+			      "Failed to open debug file: %s", serr ) ;
+		}
+		else
+		{
+		    snprintf( error, PPTCAPI_ERR_LEN,
+			      "Failed to open debug file: %s",
+			      "unkown error" ) ;
+		}
 	    }
 	    return error ;
 	}

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -59,73 +59,40 @@ BESVersionInfo::~BESVersionInfo()
 }
 
 void
-BESVersionInfo::beginBESVersion( )
+BESVersionInfo::add_library( const string &name, const string &vers )
 {
-    if( _inbes || _inhandler )
-    {
-	throw BESInternalError( "Attempting to begin BES version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
-    }
-    _inbes = true ;
-    _info->begin_tag( "BES" ) ;
+    add_version( "library", name, vers ) ;
 }
 
 void
-BESVersionInfo::addBESVersion( const string &n, const string &v )
+BESVersionInfo::add_module( const string &name, const string &vers )
 {
-    if( !_inbes )
-    {
-	throw BESInternalError( "Attempting to add BES version information while not in BES tag", __FILE__, __LINE__ ) ;
-    }
-    _info->begin_tag( "lib" ) ;
-    _info->add_tag( "name", n ) ;
-    _info->add_tag( "version", v ) ;
-    _info->end_tag( "lib" ) ;
+    add_version( "module", name, vers ) ;
 }
 
 void
-BESVersionInfo::endBESVersion( )
+BESVersionInfo::add_service( const string &name, const list<string> &vers )
 {
-    if( !_inbes )
+    map<string,string> props ;
+    props["name"] = name ;
+    begin_tag( "serviceVersion", &props ) ;
+    list<string>::const_iterator i = vers.begin() ;
+    list<string>::const_iterator e = vers.end() ;
+    for( ; i != e; i++ )
     {
-	throw BESInternalError( "Attempting to end BES version information while not in BES tag", __FILE__, __LINE__ ) ;
+	add_tag( "version", (*i) ) ;
     }
-    _inbes = false ;
-    _info->end_tag( "BES" ) ;
+    end_tag( "serviceVersion" ) ;
 }
 
 void
-BESVersionInfo::beginHandlerVersion( )
+BESVersionInfo::add_version( const string &type,
+			     const string &name,
+			     const string &vers )
 {
-    if( _inbes || _inhandler )
-    {
-	throw BESInternalError( "Attempting to begin Handler version information while already adding BES or Handler info", __FILE__, __LINE__ ) ;
-    }
-    _inhandler = true ;
-    _info->begin_tag( "Handlers" ) ;
-}
-
-void
-BESVersionInfo::addHandlerVersion( const string &n, const string &v )
-{
-    if( !_inhandler )
-    {
-	throw BESInternalError( "Attempting to add Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
-    }
-    _info->begin_tag( "lib" ) ;
-    _info->add_tag( "name", n ) ;
-    _info->add_tag( "version", v ) ;
-    _info->end_tag( "lib" ) ;
-}
-
-void
-BESVersionInfo::endHandlerVersion( )
-{
-    if( !_inhandler )
-    {
-	throw BESInternalError( "Attempting to end Handler version information while not in Handler tag", __FILE__, __LINE__ ) ;
-    }
-    _inhandler = true ;
-    _info->end_tag( "Handlers" ) ;
+    map<string,string> attrs ;
+    attrs["name"] = name ;
+    add_tag( type, vers, &attrs ) ;
 }
 
 /** @brief dumps information about this object

@@ -71,7 +71,7 @@ BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
 #-----------------------------------------------------------------------#
 # Setting the data location
 #-----------------------------------------------------------------------#
- 
+
 # There are two ways the BES can be used. It can serve as a standalone
 # data server or it can work with the OLFS (i.e., as one component of
 # the OPeNDAP 4 Data Server). How you point to data differs for each of
@@ -90,6 +90,7 @@ BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
 # to change this to point to your data! At this time the BES does not support
 # multiple RootDirectory values. 3/5/07 jhrg
 
+BES.Catalog.Default=catalog
 BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 BES.Data.RootDirectory=/dev/null
 
@@ -167,11 +168,11 @@ BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
 #-----------------------------------------------------------------------#
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTML=@pkgdatadir@/bes_help.html
-BES.Help.XML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.xml
 
 DAP.Help.TXT=@pkgdatadir@/dap_help.txt
 DAP.Help.HTML=@pkgdatadir@/dap_help.html
-DAP.Help.XML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.xml
 
 #-----------------------------------------------------------------------#
 # Should informational response objects be buffered, or streamed        #

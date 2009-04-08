@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -50,21 +50,21 @@ private:
     bool		_inbes ;
     bool		_inhandler ;
     BESInfo *		_info ;
+    void		add_version( const string &type,
+				     const string &name,
+				     const string &vers ) ;
 public:
   			BESVersionInfo() ;
     virtual 		~BESVersionInfo() ;
 
-    virtual void	beginBESVersion( ) ;
-    virtual void	addBESVersion( const string &n, const string &v ) ;
-    virtual void	endBESVersion( ) ;
+    virtual void	add_library( const string &n, const string &v ) ;
+    virtual void	add_module( const string &n, const string &v ) ;
+    virtual void	add_service( const string &n, const list<string> &vers);
 
-    virtual void	beginHandlerVersion( ) ;
-    virtual void	addHandlerVersion( const string &n, const string &v ) ;
-    virtual void	endHandlerVersion( ) ;
-
-    virtual void	begin_response( const string &response_name )
+    virtual void	begin_response( const string &response_name,
+					BESDataHandlerInterface &dhi )
 			{
-			    _info->begin_response( response_name ) ;
+			    _info->begin_response( response_name, dhi ) ;
 			}
     virtual void	end_response( )
 			{

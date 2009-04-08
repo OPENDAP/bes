@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -97,6 +97,11 @@ BESXMLDefaultCommands::initialize( int, char** )
     BESDEBUG( "besxml", "    adding " << STATUS_RESPONSE_STR
 			<< " command" << endl)
     BESXMLCommand::add_command( STATUS_RESPONSE_STR,
+				BESXMLShowCommand::CommandBuilder ) ;
+
+    BESDEBUG( "besxml", "    adding " << SERVICE_RESPONSE_STR
+			<< " command" << endl)
+    BESXMLCommand::add_command( SERVICE_RESPONSE_STR,
 				BESXMLShowCommand::CommandBuilder ) ;
 
     BESDEBUG( "besxml", "    adding " << SET_CONTEXT_STR

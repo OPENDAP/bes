@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -81,6 +81,7 @@ BESDefinitionStorageList::add_persistence( BESDefinitionStorage *cp )
     {
 	_first = new BESDefinitionStorageList::persistence_list ;
 	_first->_persistence_obj = cp ;
+	_first->_reference = 1 ;
 	_first->_next = 0 ;
 	ret = true ;
     }
@@ -100,6 +101,7 @@ BESDefinitionStorageList::add_persistence( BESDefinitionStorage *cp )
 		{
 		    pl->_next = new BESDefinitionStorageList::persistence_list ;
 		    pl->_next->_persistence_obj = cp ;
+		    pl->_next->_reference = 1 ;
 		    pl->_next->_next = 0 ;
 		    done = true ;
 		    ret = true ;
@@ -115,16 +117,58 @@ BESDefinitionStorageList::add_persistence( BESDefinitionStorage *cp )
     return ret ;
 }
 
-/** @brief remove a persistent store from the list
+/** @brief reference a persistent store in the list
  *
- * Removes the named persistent store from the list.
+ * Informs the list that there is a reference to a definition store
  *
- * @param persist_name name of the persistent store to be removed
- * @return true if successfully removed, false otherwise
+ * @param persist_name name of the persistent store to be referenced
+ * @return true if successfully referenced, false if not found
  * @see BESDefinitionStorage
  */
 bool
-BESDefinitionStorageList::del_persistence( const string &persist_name )
+BESDefinitionStorageList::ref_persistence( const string &persist_name )
+{
+    bool ret = false ;
+    BESDefinitionStorageList::persistence_list *pl = _first ;
+
+    bool done = false ;
+    while( done == false )
+    {
+	if( pl )
+	{
+	    if( pl->_persistence_obj &&
+	        pl->_persistence_obj->get_name() == persist_name )
+	    {
+		ret = true ;
+		done = true ;
+		pl->_reference++ ;
+	    }
+	    else
+	    {
+		pl = pl->_next ;
+	    }
+	}
+	else
+	{
+	    done = true ;
+	}
+    }
+
+    return ret ;
+}
+
+/** @brief de-reference a persistent store in the list
+ *
+ * De-reference the specified store in the list. If this is the last
+ * reference then the definition store is removed from the list and
+ * deleted.
+ *
+ * @param persist_name name of the persistent store to be de-referenced
+ * @return true if successfully de-referenced, false if not found
+ * @see BESDefinitionStorage
+ */
+bool
+BESDefinitionStorageList::deref_persistence( const string &persist_name )
 {
     bool ret = false ;
     BESDefinitionStorageList::persistence_list *pl = _first ;
@@ -140,17 +184,23 @@ BESDefinitionStorageList::del_persistence( const string &persist_name )
 	    {
 		ret = true ;
 		done = true ;
-		if( pl == _first )
+		pl->_reference-- ;
+		if( !pl->_reference )
 		{
-		    _first = _first->_next ;
+		    if( pl == _first )
+		    {
+			_first = _first->_next ;
+		    }
+		    else
+		    {
+		    	if (!last)
+		    		throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
+			last->_next = pl->_next ;
+		    }
+		    delete pl->_persistence_obj ;
+		    delete pl ;
+		    pl = 0 ;
 		}
-		else
-		{
-		    last->_next = pl->_next ;
-		}
-		delete pl->_persistence_obj ;
-		delete pl ;
-		pl = 0 ;
 	    }
 	    else
 	    {
@@ -268,7 +318,9 @@ BESDefinitionStorageList::show_definitions( BESInfo &info )
 	    info.add_break( 1 ) ;
 	}
 	first = false ;
-	info.begin_tag( "store" ) ;
+	map<string,string> props ;
+	props["name"] = pl->_persistence_obj->get_name() ;
+	info.begin_tag( "store", &props ) ;
 	pl->_persistence_obj->show_definitions( info ) ;
 	info.end_tag( "store" ) ;
 	pl = pl->_next ;

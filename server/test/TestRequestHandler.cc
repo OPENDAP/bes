@@ -5,7 +5,7 @@
 // This file is part of cdf-handler, a C++ server of OPeNDAP for access to cdf
 // data
 
-// Copyright (c) 2002,2003 OPeNDAP, Inc.
+// Copyright (c) 2004-2009 OPeNDAP, Inc.
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or

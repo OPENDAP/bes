@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Stephan Zednik <zednik@ucar.edu> and Patrick West <pwest@ucar.edu>
 // and Jose Garcia <jgarcia@ucar.edu>
 //
@@ -228,7 +228,7 @@ CSVRequestHandler::csv_build_vers( BESDataHandlerInterface &dhi )
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
-    info->addHandlerVersion( PACKAGE_NAME, PACKAGE_VERSION ) ;
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
     return ret ;
 }
 
@@ -241,14 +241,17 @@ CSVRequestHandler::csv_build_help( BESDataHandlerInterface &dhi )
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    info->begin_tag("Handler");
-    info->add_tag("name", PACKAGE_NAME);
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
     string handles = (string) DAS_RESPONSE
         + "," + DDS_RESPONSE
-        + "," + DATA_RESPONSE + "," + HELP_RESPONSE + "," + VERS_RESPONSE;
-    info->add_tag("handles", handles);
-    info->add_tag("version", PACKAGE_STRING);
-    info->end_tag("Handler");
+        + "," + DATA_RESPONSE
+	+ "," + HELP_RESPONSE
+	+ "," + VERS_RESPONSE;
+    attrs["handles"] = handles ;
+    info->begin_tag( "module", &attrs ) ;
+    info->end_tag( "module" ) ;
 
     return ret ;
 }

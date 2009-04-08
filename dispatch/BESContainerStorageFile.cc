@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -269,20 +269,15 @@ BESContainerStorageFile::del_containers( )
 void
 BESContainerStorageFile::show_containers( BESInfo &info )
 {
-    info.add_tag( "name", get_name() ) ;
     BESContainerStorageFile::Container_citer i ;
     i = _container_list.begin() ;
     for( i = _container_list.begin(); i != _container_list.end(); i++ )
     {
-	info.begin_tag( "container" ) ;
 	BESContainerStorageFile::container *c = (*i).second;
 	string sym = c->_symbolic_name ;
-	info.add_tag( "symbolicName", sym ) ;
 	string real = c->_real_name ;
-	info.add_tag( "realName", real ) ;
 	string type = c->_container_type ;
-	info.add_tag( "dataType", type ) ;
-	info.end_tag( "container" ) ;
+	show_container( sym, real, type, info ) ;
     }
 }
 

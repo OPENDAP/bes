@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -160,9 +160,9 @@ StandAloneClient::executeClientCommand( const string &cmd )
 	    // subcmd is the name of the file - then semicolon
 	    string file = subcmd.substr( 0, subcmd.length() - 1 ) ;
 	    ofstream *fstrm = new ofstream( file.c_str(), ios::app ) ;
-	    if( !(*fstrm) )
+	    if( fstrm && !(*fstrm) )
 	    {
-		if( fstrm ) delete fstrm ;
+			delete fstrm ;
 		cerr << "Unable to set client output to file " << file
 		     << endl ;
 	    }

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -48,6 +48,7 @@ using std::endl ;
 #endif
 
 #include "BESStatusResponseHandler.h"
+#include "BESServicesResponseHandler.h"
 #include "BESStreamResponseHandler.h"
 
 #include "BESSetContainerResponseHandler.h"
@@ -101,6 +102,9 @@ BESDefaultModule::initialize(int, char**)
 
     BESDEBUG( "bes", "    adding " << STATUS_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( STATUS_RESPONSE, BESStatusResponseHandler::StatusResponseBuilder ) ;
+
+    BESDEBUG( "bes", "    adding " << SERVICE_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( SERVICE_RESPONSE, BESServicesResponseHandler::ResponseBuilder ) ;
 
     BESDEBUG( "bes", "    adding " << STREAM_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( STREAM_RESPONSE, BESStreamResponseHandler::BESStreamResponseBuilder ) ;
@@ -177,18 +181,19 @@ BESDefaultModule::terminate(void)
     BESResponseHandlerList::TheList()->remove_handler( PROCESS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CONFIG_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( STATUS_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( SERVICE_RESPONSE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( SETCONTAINER ) ;
     BESResponseHandlerList::TheList()->remove_handler( SHOWCONTAINERS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_CONTAINER ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_CONTAINERS ) ;
-    BESContainerStorageList::TheList()->del_persistence( PERSISTENCE_VOLATILE ) ;
+    BESContainerStorageList::TheList()->deref_persistence( PERSISTENCE_VOLATILE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( DEFINE_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( SHOWDEFS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITION ) ;
     BESResponseHandlerList::TheList()->remove_handler( DELETE_DEFINITIONS ) ;
-    BESDefinitionStorageList::TheList()->del_persistence( PERSISTENCE_VOLATILE ) ;
+    BESDefinitionStorageList::TheList()->deref_persistence( PERSISTENCE_VOLATILE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( SET_CONTEXT ) ;
     BESResponseHandlerList::TheList()->remove_handler( SHOW_CONTEXT ) ;

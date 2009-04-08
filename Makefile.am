@@ -37,9 +37,24 @@ docs:
 
 # Fortify targets.
 
+# SUBDIRS = dispatch command xmlcommand ppt cmdln server standalone docs bin templates
+# In the server: server, ppt, dispatch, xmlcommand
+# There is porbably a better way to do this. Focus the analysis on the parts
+# used to build the server, not on the test drivers and documentation.
+
 .PHONY: fortify
 fortify:
-	sourceanalyzer -b @PACKAGE@ $(MAKE)
+	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE))
+	(cd command && $(MAKE))
+	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE))
+	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE))
+	(cd cmdln && $(MAKE))
+	(cd server && sourceanalyzer -b @PACKAGE@ $(MAKE))
+	(cd standalone && $(MAKE))
+	(cd docs && $(MAKE))
+	(cd bin && $(MAKE))
+	(cd templates && $(MAKE))
+
 	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
 # Use this to clean the fortify project.

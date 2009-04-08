@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2007 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -90,6 +90,15 @@ BESCache::check_ctor_params()
 	string err = "The cache size was not specified, must be non-zero" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
+    // the cache size is specified in megabytes. When calculating
+    // the size of the cache we convert to bytes, which is 1048576
+    // bytes per meg. The max unsigned int allows for only 4095
+    // megabytes.
+    if( _cache_size > 4095 ) _cache_size = 4095 ;
+
+    BESDEBUG( "bes", "BES Cache: directory " << _cache_dir
+		     << ", prefix " << _prefix
+		     << ", max size " << _cache_size << endl )
 }
 
 /** @brief Constructor that takes as arguments the values of the cache dir,
@@ -235,7 +244,7 @@ BESCache::unlock()
     {
 	string lock_file = _cache_dir + "/lock" ;
 	close( _lock_fd ) ;
-	unlink( lock_file.c_str() ) ;
+	(void)unlink( lock_file.c_str() ) ;
     }
 
     _lock_fd = -1 ;
@@ -303,9 +312,9 @@ BESCache::is_cached( const string &src, string &target )
 void
 BESCache::purge( )
 {
-    int max_size = _cache_size * 1048576 ; // Bytes/Meg
+    unsigned int max_size = _cache_size * 1048576 ; // Bytes/Meg
     struct stat buf;
-    int size = 0 ; // total size of all cached files
+    unsigned int size = 0 ; // total size of all cached files
     time_t curr_time = time( NULL ) ; // grab the current time so we can
     				      // determine the oldest file
     // map of time,entry values
@@ -374,24 +383,33 @@ BESCache::purge( )
 	    while( size > max_size )
 	    {
 		i = contents.begin() ;
-		BESDEBUG( "bes", "BESCache::purge - removing " << (*i).second.name << endl )
-		if( remove( (*i).second.name.c_str() ) != 0 )
+		if( i == contents.end() )
 		{
-		    char *s_err = strerror( errno ) ;
-		    string err = "Unable to remove the file "
-		                 + (*i).second.name + " from the cache: " ;
-		    if( s_err )
-		    {
-			err.append( s_err ) ;
-		    }
-		    else
-		    {
-			err.append( "Unknown error" ) ;
-		    }
-		    throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		    size = 0 ;
 		}
-		size -= (*i).second.size ;
-		contents.erase( i ) ;
+		else
+		{
+		    BESDEBUG( "bes", "BESCache::purge - removing "
+		                     << (*i).second.name << endl )
+		    if( remove( (*i).second.name.c_str() ) != 0 )
+		    {
+			char *s_err = strerror( errno ) ;
+			string err = "Unable to remove the file "
+				     + (*i).second.name
+				     + " from the cache: " ;
+			if( s_err )
+			{
+			    err.append( s_err ) ;
+			}
+			else
+			{
+			    err.append( "Unknown error" ) ;
+			}
+			throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		    }
+		    size -= (*i).second.size ;
+		    contents.erase( i ) ;
+		}
 	    }
 	}
 

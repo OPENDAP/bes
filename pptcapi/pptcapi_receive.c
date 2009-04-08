@@ -40,8 +40,12 @@ pptcapi_receive( struct pptcapi_connection *connection,
 
 	if( header_read != PPTCAPI_CHUNK_HEADER_SIZE )
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "Failed to read length and type of chunk" ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Failed to read length and type of chunk" ) ;
+	    }
 	    return PPTCAPI_ERROR ;
 	}
 	hdrbuf[PPTCAPI_CHUNK_HEADER_SIZE] = '\0' ;
@@ -73,9 +77,13 @@ pptcapi_receive( struct pptcapi_connection *connection,
 
 	if( hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] != 'd' )
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "specified chunk type %c should be 'd' or 'x'",
-			     hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "specified chunk type %c should be 'd' or 'x'",
+			  hdrbuf[PPTCAPI_CHUNK_TYPE_INDEX] ) ;
+	    }
 	    return PPTCAPI_ERROR ;
 	}
     }
@@ -94,14 +102,27 @@ pptcapi_receive( struct pptcapi_connection *connection,
     {
 	if( !pptcapi_receive_buffer_size )
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error,
-		     "%s, %s", "Unable to create receive buffer",
-		     "receive buffer size has not yet been set" ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "%s, %s", "Unable to create receive buffer",
+			  "receive buffer size has not yet been set" ) ;
+	    }
 	    return PPTCAPI_ERROR ;
 	}
 	pptcapi_receive_buffer =
 	    (char *)malloc(pptcapi_receive_buffer_size+1) ;
+	if( !pptcapi_receive_buffer )
+	{
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Unable to allocate memory for receive buffer" ) ;
+	    }
+	    return PPTCAPI_ERROR ;
+	}
     }
     *len = pptcapi_receive_buffer_size + 1 ;
 
@@ -121,16 +142,26 @@ pptcapi_receive( struct pptcapi_connection *connection,
     if( *bytes_read != read_bytes )
     {
 	char *old_error = *error ;
-	*error = (char *)malloc( 512 ) ;
-	if( old_error )
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
 	{
-	    sprintf( *error, "Failed to read chunk of size %d, read %d, %s",
-			     read_bytes, *bytes_read, old_error ) ;
+	    if( old_error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Failed to read chunk of size %d, read %d, %s",
+			  read_bytes, *bytes_read, old_error ) ;
+		free( old_error ) ;
+	    }
+	    else
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Failed to read chunk of size %d, read %d, %s",
+			  read_bytes, *bytes_read, "unknown error" ) ;
+	    }
 	}
 	else
 	{
-	    sprintf( *error, "Failed to read chunk of size %d, read %d, %s",
-			     read_bytes, *bytes_read, "unknown error" ) ;
+	    *error = old_error ;
 	}
 	*buffer = 0 ;
 	*len = 0 ;
@@ -194,8 +225,12 @@ pptcapi_receive_extensions( struct pptcapi_connection *connection,
 						     chunk_len, error ) ;
     if( bytes_read != chunk_len )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "malformed extension, failed to read the extension" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "malformed extension, failed to read the extension" ) ;
+	}
 	return PPTCAPI_ERROR ;
     }
 
@@ -219,8 +254,18 @@ pptcapi_read_extensions( struct pptcapi_extensions **extensions,
 	    char *eq = strchr( next_extension, '=' ) ;
 	    if( eq != NULL && eq < semi )
 	    {
-		int value_len = semi - eq - 1 ;
+		unsigned int value_len = (unsigned int)(semi - eq) - 1 ;
 		value = (char *)malloc( value_len + 1 ) ;
+		if( !value )
+		{
+		    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		    if( *error )
+		    {
+			snprintf( *error, PPTCAPI_ERR_LEN,
+			      "Unable to create memory for extension value" ) ;
+		    }
+		    return PPTCAPI_ERROR ;
+		}
 		strncpy( value, eq+1, value_len ) ;
 		value[value_len] = '\0' ;
 	    }
@@ -229,20 +274,44 @@ pptcapi_read_extensions( struct pptcapi_extensions **extensions,
 		value = 0 ;
 		eq = semi ;
 	    }
-	    int name_len = eq - next_extension ;
+	    unsigned int name_len = (unsigned int )(eq - next_extension) ;
 	    name = (char *)malloc( name_len + 1 ) ;
+	    if( !name )
+	    {
+		*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		if( *error )
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			  "Unable to create memory for extension name" ) ;
+		}
+		return PPTCAPI_ERROR ;
+	    }
 	    strncpy( name, next_extension, name_len ) ;
 	    name[name_len] = '\0' ;
 	}
 	else
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    sprintf( *error, "malformed extensions, missing semicolon in %s",
-			     next_extension ) ;
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "malformed extensions, missing semicolon in %s",
+			  next_extension ) ;
+	    }
 	    return PPTCAPI_ERROR ;
 	}
 
 	*extensions = (struct pptcapi_extensions *)malloc( sizeof( struct pptcapi_extensions ) ) ;
+	if( !*extensions )
+	{
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Unable to create memory for extension" ) ;
+	    }
+	    return PPTCAPI_ERROR ;
+	}
 	struct pptcapi_extensions *curr_extension = *extensions ;
 	curr_extension->name = name ;
 	curr_extension->value = value ;
@@ -269,14 +338,19 @@ pptcapi_doreceive( struct pptcapi_connection *connection,
     int my_errno = errno ;
     if( bytes_read == -1 )
     {
-	*error = (char *)malloc( 512 ) ;
-	const char *error_info = strerror( my_errno ) ;
-	if( error_info )
-	    sprintf( *error, "socket failure, reading on stream socket: %s",
-			     error_info ) ;
-	else
-	    sprintf( *error, "socket failure, reading on stream socket: %s",
-			     "unknown error" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    const char *error_info = strerror( my_errno ) ;
+	    if( error_info )
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "socket failure, reading on stream socket: %s",
+			  error_info ) ;
+	    else
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "socket failure, reading on stream socket: %s",
+			  "unknown error" ) ;
+	}
     }
 
     return bytes_read ;
@@ -297,9 +371,13 @@ pptcapi_hexstr_to_i( char *hexstr, int *result, char **error )
 	{
 	    if( c < 'a' || c > 'f' )
 	    {
-		*error = (char *)malloc( 512 ) ;
-		sprintf( *error, "bad hex value specified %s at %c",
-				 hexstr, c ) ;
+		*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		if( *error )
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			      "bad hex value specified %s at %c",
+					   hexstr, c ) ;
+		}
 		return PPTCAPI_ERROR ;
 	    }
 	}

@@ -3,7 +3,7 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
+// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -40,7 +40,7 @@ using std::endl ;
 using std::map ;
 
 #include "CmdPretty.h"
-#include "CmdXMLUtils.h"
+#include "BESXMLUtils.h"
 
 string CmdPretty::_indent ;
 
@@ -98,8 +98,8 @@ CmdPretty::pretty_element( xmlNode *node, ostream &strm )
     string node_name ;
     string node_val ;
     map< string, string> node_props ;
-    CmdXMLUtils::GetNodeInfo( node, node_name, node_val, node_props ) ;
-    strm << CmdPretty::_indent << "<" << node_name ;
+    BESXMLUtils::GetNodeInfo( node, node_name, node_val, node_props ) ;
+    pretty_name( node, node_name, strm ) ;
     map<string,string>::const_iterator i = node_props.begin() ;
     map<string,string>::const_iterator e = node_props.end() ;
     for( ; i != e; i++ )
@@ -118,7 +118,7 @@ CmdPretty::pretty_element( xmlNode *node, ostream &strm )
     // ok ... bad variable name. This means that the node either has a value
     // or has children. So it has stuff.
     bool has_stuff = false ;
-    xmlNode *cnode = CmdXMLUtils::GetFirstChild( node, cname, cval, cprops ) ;
+    xmlNode *cnode = BESXMLUtils::GetFirstChild( node, cname, cval, cprops ) ;
     
     if( !cnode && !node_val.empty() && node_val.length() < 80-_indent.length() )
     {
@@ -139,7 +139,7 @@ CmdPretty::pretty_element( xmlNode *node, ostream &strm )
 	while( cnode )
 	{
 	    CmdPretty::pretty_element( cnode, strm ) ;
-	    cnode = CmdXMLUtils::GetNextChild( cnode, cname, cval, cprops ) ;
+	    cnode = BESXMLUtils::GetNextChild( cnode, cname, cval, cprops ) ;
 	}
 	if( has_stuff )
 	{
@@ -157,6 +157,54 @@ void
 CmdPretty::pretty_value( string &value, ostream &strm )
 {
     strm << _indent << value << endl ;
+}
+
+void
+CmdPretty::pretty_name( xmlNode *node, const string &name, ostream &strm )
+{
+    if( node )
+    {
+	// first let's build the node name and display it
+	xmlNs *ns = node->nsDef ;
+	string newname ;
+	bool firstns = true ;
+	while( ns )
+	{
+	    if( ns->prefix )
+	    {
+		if( !firstns )
+		{
+		    newname += ":" ;
+		}
+		newname += (const char *)ns->prefix ;
+	    }
+	    ns = ns->next ;
+	    firstns = false ;
+	}
+	if( !newname.empty() )
+	{
+	    newname += ":" ;
+	}
+	newname += name ;
+
+	strm << CmdPretty::_indent << "<" << newname ;
+
+	// now let's add the namespace definitions
+	ns = node->nsDef ;
+	while( ns )
+	{
+	    strm << " xmlns" ;
+	    if( ns->prefix )
+	    {
+		strm << ":" << ns->prefix ;
+	    }
+	    if( ns->href )
+	    {
+		strm << "=\"" << ns->href << "\"" ;
+	    }
+	    ns = ns->next ;
+	}
+    }
 }
 
 void

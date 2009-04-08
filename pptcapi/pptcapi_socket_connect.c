@@ -32,8 +32,12 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 
     if( !unix_socket )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "No unix socket specified for unix connection" ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "No unix socket specified for unix connection" ) ;
+	}
 	return 0 ;
     }
     PPTCAPI_DEBUG02( "  unix socket connect to socket %s, timeout %d\n",
@@ -42,8 +46,12 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
     int unix_socket_len = strlen( unix_socket ) ;
     if( unix_socket_len > PPTCAPI_MAX_STR_LEN )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "path to unix socket %s is too long", unix_socket ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "path to unix socket %s is too long", unix_socket ) ;
+	}
 	return 0 ;
     }
 
@@ -56,29 +64,61 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
     char path[107] = "" ;
     getcwd( path, sizeof( path ) ) ;
     char temp_socket[ PPTCAPI_MAX_STR_LEN ] ;
-    sprintf( temp_socket, "%s/%s.unixSocket", path, pptcapi_temp_name() ) ;
+    char *temp_name = pptcapi_temp_name() ;
+    if( !temp_name )
+    {
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Failed to create temp socket name" ) ;
+	}
+	return 0 ;
+    }
+    snprintf( temp_socket, PPTCAPI_MAX_STR_LEN,
+	      "%s/%s.unixSocket", path, temp_name ) ;
     int temp_socket_len = strlen( temp_socket ) ;
+
+    free( temp_name ) ;
 
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
     // 107 characters in pathname + '\0'
     if( temp_socket_len > max_len - 1 )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "path to temporary unix socket %s is too long",
-			 temp_socket ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "path to temporary unix socket %s is too long",
+		      temp_socket ) ;
+	}
 	return 0 ;
     }
     if( unix_socket_len > max_len - 1 )
     {
-	*error = (char *)malloc( 512 ) ;
-	sprintf( *error, "path to unix socket %s is too long",
-			 unix_socket ) ;
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "path to unix socket %s is too long",
+		      unix_socket ) ;
+	}
 	return 0 ;
     }
 
     // create the pptcapi_connection structure
     void *vconnection = malloc( sizeof( struct pptcapi_connection ) ) ;
+    if( !vconnection )
+    {
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Unable to allocate memory for connection struct" ) ;
+	}
+	return 0 ;
+    }
     struct pptcapi_connection *connection =
 	(struct pptcapi_connection *)vconnection ;
     pptcapi_initialize_connection_struct( connection ) ;
@@ -88,11 +128,31 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 
     // save off the unix socket path
     connection->unix_socket = (char *)malloc( unix_socket_len + 1 ) ;
+    if( !connection->unix_socket )
+    {
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Unable to allocate memory for connection unix socket" ) ;
+	}
+	return 0 ;
+    }
     strncpy( connection->unix_socket, unix_socket, unix_socket_len ) ;
     connection->unix_socket[unix_socket_len] = '\0' ;
 
     // save off the temp socket path
     connection->temp_socket = (char *)malloc( temp_socket_len + 1 ) ;
+    if( !connection->temp_socket )
+    {
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
+	{
+	    snprintf( *error, PPTCAPI_ERR_LEN,
+		      "Unable to allocate memory for connection temp socket" ) ;
+	}
+	return 0 ;
+    }
     strncpy( connection->temp_socket, temp_socket, temp_socket_len ) ;
     connection->temp_socket[temp_socket_len] = '\0' ;
 
@@ -126,17 +186,22 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 	    }
 	    else
 	    {
-		*error = (char *)malloc( 512 ) ;
-		char *err_info = strerror( myerrno ) ;
-		if( err_info )
+		*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+		if( *error )
 		{
-		    sprintf( *error, "could not connect via unix socket %s: %s",
-				     unix_socket, err_info ) ;
-		}
-		else
-		{
-		    sprintf( *error, "could not connect via unix socket %s: %s",
-				     unix_socket, "unknown error" ) ;
+		    char *err_info = strerror( myerrno ) ;
+		    if( err_info )
+		    {
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "could not connect via unix socket %s: %s",
+				  unix_socket, err_info ) ;
+		    }
+		    else
+		    {
+			snprintf( *error, PPTCAPI_ERR_LEN,
+				  "could not connect via unix socket %s: %s",
+				  unix_socket, "unknown error" ) ;
+		    }
 		}
 		pptcapi_free_connection_struct( connection ) ;
 		return 0 ;
@@ -144,17 +209,22 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
 	}
 	else
 	{
-	    *error = (char *)malloc( 512 ) ;
-	    char *err_info = strerror( myerrno ) ;
-	    if( err_info )
+	    *error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	    if( *error )
 	    {
-		sprintf( *error, "could not bind to unix socket %s: %s",
-				 temp_socket, err_info ) ;
-	    }
-	    else
-	    {
-		sprintf( *error, "could not bind to unix socket %s: %s",
-				 temp_socket, "unknown error" ) ;
+		char *err_info = strerror( myerrno ) ;
+		if( err_info )
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			      "could not bind to unix socket %s: %s",
+			      temp_socket, err_info ) ;
+		}
+		else
+		{
+		    snprintf( *error, PPTCAPI_ERR_LEN,
+			      "could not bind to unix socket %s: %s",
+			      temp_socket, "unknown error" ) ;
+		}
 	    }
 	    pptcapi_free_connection_struct( connection ) ;
 	    return 0 ;
@@ -162,15 +232,20 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
     }
     else
     {
-	*error = (char *)malloc( 512 ) ;
-	char *err_info = strerror( myerrno ) ;
-	if( err_info )
+	*error = (char *)malloc( PPTCAPI_ERR_LEN ) ;
+	if( *error )
 	{
-	    sprintf( *error, "could not create a unix socket: %s", err_info ) ;
-	}
-	else
-	{
-	    sprintf( *error, "could not create a unix socket: unknown error" ) ;
+	    char *err_info = strerror( myerrno ) ;
+	    if( err_info )
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "could not create a unix socket: %s", err_info ) ;
+	    }
+	    else
+	    {
+		snprintf( *error, PPTCAPI_ERR_LEN,
+			  "could not create a unix socket: unknown error" ) ;
+	    }
 	}
 	pptcapi_free_connection_struct( connection ) ;
 	return 0 ;
@@ -182,18 +257,23 @@ pptcapi_socket_connect( const char *unix_socket, int timeout, char **error )
     pptcapi_send_buffer_size = PPTCAPI_DEFAULT_BUFFER_SIZE ;
 
     PPTCAPI_DEBUG00( "socket connect complete\n" ) ;
+
+    return connection ;
 }
 
 char *
 pptcapi_temp_name()
 {
     char *retbuf = (char *)malloc( PPTCAPI_MAX_STR_LEN ) ;
-    char tempbuf1[50] ;
-    pptcapi_ltoa( getpid(), tempbuf1, 10 ) ;
-    char tempbuf2[50] ;
-    unsigned int t = time( NULL ) - 1000000000 ;
-    pptcapi_ltoa( t, tempbuf2, 10 ) ;
-    sprintf( retbuf, "%s_%s", tempbuf1, tempbuf2 ) ;
+    if( retbuf )
+    {
+	char tempbuf1[50] ;
+	pptcapi_ltoa( getpid(), tempbuf1, 10 ) ;
+	char tempbuf2[50] ;
+	unsigned int t = time( NULL ) - 1000000000 ;
+	pptcapi_ltoa( t, tempbuf2, 10 ) ;
+	snprintf( retbuf, PPTCAPI_MAX_STR_LEN, "%s_%s", tempbuf1, tempbuf2 ) ;
+    }
     return retbuf ;
 }
 

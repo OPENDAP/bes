@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 15676 2007-02-01 18:50:10Z jimg $
+// $Id: www.js 20400 2009-02-18 23:59:19Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 
@@ -27,6 +27,25 @@ function ascii_button() {
     }
 
     window.open(ascii_url, "ASCII_Data");
+}
+
+/* The netcdf_button handler loads the data to the current window. Since it 
+   is netcdf/binary, Netscape will ask the user for a filename and save the data
+   to that file. The parameter 'ext' should be 'nc'. */
+
+function netcdf_button(ext) {
+    var url = new String(document.forms[0].url.value);
+
+    var url_parts = url.split("?");
+    /* handle case where constraint is null. */
+    if (url_parts[1] != null) {
+        var binary_url = url_parts[0] + "." + ext + "?" + url_parts[1];
+    }
+    else {
+        var binary_url = url_parts[0] + "." + ext + "?";
+    }
+
+    window.location = binary_url;
 }
 
 /* The binary_button handler loads the data to the current window. Since it 
@@ -306,7 +325,7 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/avhrr.dat");
 <a href="opendap_form_help.html#disposition" target="help">Action:</a></h3>
 <td>
 <input type="button" value="Get ASCII" onclick="ascii_button()">
-<input type="button" value="Binary Data Object " onclick="binary_button('dods')">
+<input type="button" value="Binary (DAP) Object" onclick="binary_button('dods')">
 <input type="button" value="Show Help" onclick="help_button()">
 
 <tr>
