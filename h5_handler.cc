@@ -5,7 +5,7 @@
 /// \author Muqun Yang (ymuqun@ncsa.uiuc.edu)
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// 
-/// Copyright (C) 2007  HDF Group, Inc.
+/// Copyright (C) 2007  The HDF Group
 ///
 /// Copyright (C) 1999  National Center for Supercomputing Applications.
 ///             All rights reserved.
@@ -31,7 +31,7 @@ extern H5EOS eos;
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
-    DBG(cerr << "Starting the HDF handler." << endl);
+    DBG(cerr << "Starting the hdf5 handler." << endl);
 
     try {
         DODSFilter df(argc, argv);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
                             df.get_dataset_name().c_str());
 
                 DBG(cerr << ">df.send_dds()" << endl);
-                df.send_dds(dds, ce, true);
+		df.send_dds(dds, ce, true);
                 break;
             }
 

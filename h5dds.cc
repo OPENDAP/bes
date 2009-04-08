@@ -1087,8 +1087,7 @@ string get_short_name(string varname)
     return eos.get_short_name(varname);
   }
   else{
-    int pos = varname.find_last_of('/', varname.length() - 1);
-    return varname.substr(pos + 1);    
+    return varname;
   }
 #else
   return varname;

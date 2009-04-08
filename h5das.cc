@@ -486,9 +486,10 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
     DBG(cerr << ">read_objects():"
         << "varname=" << varname << " id=" << oid << endl);
-#ifndef CF
+
 #ifdef NASA_EOS_META
     if (eos.is_valid()) {
+#ifndef CF      
         if (varname.find("StructMetadata") != string::npos) {
             if (!eos.bmetadata_Struct) {
                 eos.bmetadata_Struct = true;
@@ -505,7 +506,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 return;
             }
         }
-
+#endif
         if (varname.find("coremetadata") != string::npos) {
             if (!eos.bmetadata_core) {
                 eos.bmetadata_core = true;
@@ -539,7 +540,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 return;
             }
         }
-
+#ifndef CF
         if (varname.find("productmetadata") != string::npos) {
             if (!eos.bmetadata_product) {
                 eos.bmetadata_core = true;
@@ -590,9 +591,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 return;
             }
         }
+#endif                          // #ifndef CF    	
     }
+
 #endif                          // #ifdef NASA_EOS_META
-#endif                          // #ifndef CF
+
 
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
@@ -603,26 +606,14 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
 #ifdef CF    
     newname = eos.get_short_name(varname);
-    /*
-    const char ORI_SLASH = '/';
-
-    string::size_type i = varname.rfind(ORI_SLASH);
-    if (i == string::npos)
-        newname = varname;
-    else
-        newname = varname.substr(i+1);
-    */
+    if(newname == ""){
+      newname = varname;
+    }
 #else
     newname = varname;
 #endif
-
+    DBG(cerr << "=read_objects(): new variable name=" << newname << endl);
     
-    // <hyokyung 2007.08. 2. 12:37:33>
-#ifdef CF
-    if (newname.length() > DODS_CF_NAMELEN) // <hyokyung 2009.01.16. 09:45:22>
-        return;
-#endif
-
     AttrTable *attr_table_ptr = das.get_table(newname);
     if (!attr_table_ptr) {
         DBG(cerr << "=read_objects(): adding a table with name " << newname
@@ -844,8 +835,9 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 	delete[] buf;
 	throw;
     }
-
+#ifndef ATTR_STRING_QUOTE_FIX
     DBG(cerr << "<get_softlink(): after buf:" << finbuf << endl);
+#endif    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -999,8 +991,8 @@ void add_dimension_attributes(DAS & das)
     at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
     at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
     at->append_attr("dataType", STRING, "\"Grid\"");
-    at->append_attr("history", STRING,
-                    "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
+    //    at->append_attr("history", STRING,
+    //                    "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
 
     if(eos.get_dimension_size("XDim") > 0){
       at = das.add_table("lon", new AttrTable);
