@@ -1,3 +1,174 @@
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Fixed comments and removed old declaration for 'split' function.
+
+	M    hdfclass/hdfclass.h
+	M    HDFStructure.cc
+
+2009-04-03  James Gallagher <jgallagher@opendap.org>
+
+	Many memory leak fixes:
+	hdfeos.lex: alloc/deallocate functions for parsing from a string.
+	hdfdesc.cc: removed unnecessary tests for memory returned by new
+	hc2dap.cc: bes debugging
+	Makefile.am: Added BES include dir to CXXFLAGS
+	hdfclass/hcstream.h: Removed _member_id from vgroup, spelling and
+	comments hcutil.cc: bes debugging
+	sds.ccvdata.cc, vgroup.cc: bes debuging and symmetric calls to
+	open and close functions
+
+2009-03-26  Patrick West <pwest@ucar.edu>
+
+	When reading descriptions, not labels, the buffer is NOT
+	terminated with a null character. To do this need to get the
+	length of the annotation and after reading the annotation add a
+	null character. This got rid of the 2000 memory errors reported by
+	valgrind.
+	
+	M    hdf4_handler-3.7.10/hdfclass/annot.cc
+
+2009-03-26  Patrick West <pwest@ucar.edu>
+
+	Was deleting HDF4temp before calling unlink.
+	
+	M    HDF4RequestHandler.cc
+
+2009-03-25  Patrick West <pwest@ucar.edu>
+
+	Wasn't copying over the string data to the char * data for the
+	mkstemp call, so was using uninitialized data. If mkstemp failed
+	then fd is -1, before throw was closing the -1 fd. Changed this.
+	
+	M    hdf4_handler-3.7.10/HDF4RequestHandler.cc
+
+2009-03-24  James Gallagher <jgallagher@opendap.org>
+
+	Spelling hosed, then fixed.
+
+	M hdfdesc.cc
+
+2009-03-23  James Gallagher <jgallagher@opendap.org>
+
+	Spelling fixes
+
+	M hdfdesc.cc
+
+2009-03-17  Patrick West <pwest@ucar.edu>
+
+	Delete was being called outside of the if statement checking if the
+	pointer was 0 or not.
+	
+	M    hdf4_handler-3.7.10/hdfdesc.cc
+
+2009-03-16  James Gallagher <jgallagher@opendap.org>
+
+	Code review
+
+	M    hdfdesc.cc
+	M    hc2dap.cc
+	M    hdfclass/vdata.cc
+	M    hdfclass/gri.cc
+	M    hdfclass/vgroup.cc
+	M    hdfclass/genvec.cc
+	M    hdfclass/sds.cc
+	M    HDF4Module.cc
+	M    HDF4RequestHandler.cc
+	M    HDF4Module.h
+	M    HDFStructure.cc
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	POST_CONSTRAINT issues with multiple containers. Call set_constraint on
+	BESDapResponse in order to properly have the post constraint set.
+
+	M    HDF4RequestHandler.cc
+
+2009-03-08  Patrick West <pwest@ucar.edu>
+
+	Added handles attribute to help response, specifying what services the
+	module handles.
+	M    HDF4RequestHandler.cc
+
+2009-03-04  Patrick West <pwest@ucar.edu>
+
+	container storage and catalog list reference changes
+	M    hdf4_handler-3.7.10/HDF4Module.cc
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlresponse branch to the Hyrax 1.5 release branch.
+
+	_M   .
+	M    HDF4Module.cc
+	M    HDF4RequestHandler.cc
+
+2009-02-20  James Gallagher <jgallagher@opendap.org>
+
+	Added paths to the hdf4.m4 file for macports and fink
+
+2009-02-02  James Gallagher <jgallagher@opendap.org>
+
+	Updated for the version number change.
+
+	M    NEWS
+	M    INSTALL
+	M    README
+
+2009-01-30  James Gallagher <jgallagher@opendap.org>
+
+	Moved here to coalesce the branches
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Ug. used the wrote version number..
+
+	A    http://scm.opendap.org/svn/branch/hdf4_handler/3.7.10
+	D    http://scm.opendap.org/svn/branch/hdf4_handler/3.7.9
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	BUmped the rev to 3.7.10.
+
+	M    configure.ac
+	M    hdf4_handler.spec
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Fixed the EXTRA_DIST target in Makefile.am - it was using the names 'ff' when
+	it should have used 'h4'.
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.5 release
+
+	A    http://scm.opendap.org/svn/branch/hdf4_handler/3.7.9
+
+2009-01-29  James Gallagher <jgallagher@opendap.org>
+
+	Release 3.7.9
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    INSTALL
+	M    README
+
+2008-11-14  James Gallagher <jgallagher@opendap.org>
+
+	Merged the xmlrequest branch to the trunk.
+
+	_M   .
+	M    hdfdesc.cc
+	M    hdf_handler.cc
+	M    bes-testsuite/h4/S2000415.HDF.0.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.1.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.3.bescmd
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2008-11-14  James Gallagher <jgallagher@opendap.org>
 
 	Merged the xmlrequest branch to the trunk.

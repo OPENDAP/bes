@@ -1,7 +1,18 @@
 
 $Id$
 
-Version 3.7.9 (29 Jan 2009)
+Version 3.7.12 (8 April 2009)
+
+Many memory leaks found and fixed. A bug reported by Fan Fang where the
+handler's performance degraded for large files accessed repeatedly has been
+fixed. There re likely leaks still from opening the file, but that are
+'fixed' size leaks.
+
+version 3.7.11 (16 March 2009)
+
+Fixes for the constraint, service interface and XML responses.
+
+Version 3.7.10 (29 Jan 2009)
 
 Bug fixes and updates for the new versions of libdap and bes.
 

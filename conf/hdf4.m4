@@ -46,7 +46,8 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
        /usr/local/hdf4.2r1/lib /opt/hdf4.2r1/lib \ 
        /usr/hdf4.2r1/lib /usr/local/lib/hdf4.2r1 /opt/lib/hdf4.2r1 \
        /usr/lib/hdf4.2r1 /usr/local/hdf/lib/ /opt/hdf/lib /usr/hdf/lib \
-       /usr/local/lib/hdf /opt/lib/hdf /usr/lib/hdf ; do
+       /usr/local/lib/hdf /opt/lib/hdf /usr/lib/hdf \
+       /opt/local/lib /opt/local/include /sw/lib /sw/include ; do
         AS_IF([test "z$ac_hdf4_libdir" = 'z'],
            [HDF4_LDFLAGS=],
            [

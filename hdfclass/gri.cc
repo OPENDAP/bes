@@ -414,12 +414,12 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_attr & ha)
     // prepare to read attribute information: set nattrs depending on whether
     // reading file attributes or GRI attributes
     int32 id;
-    int nattrs;
+    //int nattrs;
     if (bos()) {
-        nattrs = _nfattrs;
+        //nattrs = _nfattrs;
         id = _gr_id;
     } else {
-        nattrs = _nattrs;
+        //nattrs = _nattrs;
         id = _ri_id;
     }
     char name[hdfclass::MAXSTR];

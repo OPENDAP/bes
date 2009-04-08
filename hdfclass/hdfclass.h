@@ -90,8 +90,9 @@ class hdf_genvec {
 
     void import(int32 nt, void *data, int nelts) {
         import(nt, data, 0, nelts - 1, 1);
-    } void import(int32 nt, void *data, int begin, int end, int stride =
-                  1);
+    } 
+    
+    void import(int32 nt, void *data, int begin, int end, int stride = 1);
     void import(int32 nt) {
         import(nt, 0, 0, 0, 0);
     }
@@ -259,7 +260,9 @@ class hdf_gri {
 
 // misc utility functions
 
+#if 0
 vector < string > split(const string & str, const string & delim);
+#endif
 string join(const vector < string > &sv, const string & delim);
 bool SDSExists(const char *filename, const char *sdsname);
 bool GRExists(const char *filename, const char *grname);

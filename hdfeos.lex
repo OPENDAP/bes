@@ -162,3 +162,23 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 			  }
 			}
 %%
+
+// Three glue routines for string scanning.
+
+void *
+hdfeos_string(const char *str)
+{
+    return (void *)hdfeos_scan_string(str);
+}
+
+void
+hdfeos_switch_to_buffer(void *buf)
+{
+    hdfeos_switch_to_buffer((YY_BUFFER_STATE)buf);
+}
+
+void
+hdfeos_delete_buffer(void *buf)
+{
+    hdfeos_delete_buffer((YY_BUFFER_STATE)buf);
+}

@@ -227,9 +227,11 @@ hdfistream_annot & hdfistream_annot::operator>>(string & an)
         return *this;
 
     int32 _ann_id = _an_ids[_index];
-    char buf[hdfclass::MAXSTR];
-    if (ANreadann(_ann_id, buf, hdfclass::MAXSTR - 1) < 0)
+    int32 ann_length = ANannlen(_ann_id) ;
+    char buf[ann_length+1];
+    if (ANreadann(_ann_id, buf, ann_length+1) < 0)
         THROW(hcerr_annread);
+    buf[ann_length] = '\0';
     an = buf;
     seek_next();
 

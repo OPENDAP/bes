@@ -37,13 +37,15 @@ dap_hdf4_handler_SOURCES = hdf_handler.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
                            $(HDFTYPE_HDR)
 dap_hdf4_handler_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
 dap_hdf4_handler_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
+dap_hdf4_handler_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
 eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
 		      $(HDFTYPE_HDR)
 eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
 eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
+eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
-HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc   HDFUInt32.cc \
+HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc

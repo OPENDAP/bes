@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -46,6 +46,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+
+#include <BESDebug.h>
 
 //#define DODS_DEBUG
 #include <debug.h>
@@ -94,11 +96,11 @@ class fieldeq {
 public:
     fieldeq(const string & s) {
         _val = s;
-    } 
+    }
 
     bool operator() (const hdf_field & f) const {
         return (f.name == _val);
-  } 
+  }
 
 private:
      string _val;
@@ -114,8 +116,6 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
 
     // construct HDFSequence
     HDFSequence *seq = new HDFSequence(vd.name, dataset);
-    if (seq == 0)
-        return 0;
 
     // step through each field and create a variable in the DAP Sequence
     for (int i = 0; i < (int) vd.fields.size(); ++i) {
@@ -124,45 +124,43 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
             delete seq;         // problem with the field
             return 0;
         }
-        HDFStructure *st = new HDFStructure(vd.fields[i].name, dataset);
-        if (st == 0) {
-            delete seq;
-            return 0;
-        }
-        // for each subfield add the subfield to st
-        if (vd.fields[i].vals[0].number_type() == DFNT_CHAR8 ||
-            vd.fields[i].vals[0].number_type() == DFNT_UCHAR8) {
+        HDFStructure *st = 0;
+        try {
+            st = new HDFStructure(vd.fields[i].name, dataset);
 
-            // collapse char subfields into one string
-            string subname = vd.fields[i].name + "__0";
-            BaseType *bt = new HDFStr(subname, dataset);
-            if (bt == 0) {
-                delete st;
-                delete seq;
-                return 0;
+            // for each subfield add the subfield to st
+            if (vd.fields[i].vals[0].number_type() == DFNT_CHAR8
+                    || vd.fields[i].vals[0].number_type() == DFNT_UCHAR8) {
+
+                // collapse char subfields into one string
+                string subname = vd.fields[i].name + "__0";
+                BaseType *bt = new HDFStr(subname, dataset);
+                st->add_var(bt); // *st now manages *bt
+                delete bt;
             }
-            st->add_var(bt);    // *st now manages *bt
-        } else {
-            // create a DODS variable for each subfield
-            for (int j = 0; j < (int) vd.fields[i].vals.size(); ++j) {
-                ostringstream strm;
-                strm << vd.fields[i].name << "__" << j;
-                BaseType *bt = NewDAPVar(strm.str(), dataset,
-                                         vd.fields[i].vals[j].number_type());
-                if (bt == 0) {
-                    delete st;
-                    delete seq;
-                    return 0;
+            else {
+                // create a DODS variable for each subfield
+                for (int j = 0; j < (int) vd.fields[i].vals.size(); ++j) {
+                    ostringstream strm;
+                    strm << vd.fields[i].name << "__" << j;
+                    BaseType *bt = NewDAPVar(strm.str(), dataset,
+                            vd.fields[i].vals[j].number_type());
+                    st->add_var(bt); // *st now manages *bt
+                    delete bt;
                 }
-                st->add_var(bt);        // *st now manages *bt
             }
+            seq->add_var(st); // *seq now manages *st
+            delete st;
         }
-        seq->add_var(st);       // *seq now manages *st
+        catch (...) {
+            delete seq;
+            delete st;
+            throw;
+        }
     }
 
     return seq;
 }
-
 
 // Create a DAP HDFStructure from an hdf_vgroup.
 HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
@@ -177,14 +175,14 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
 
     // construct HDFStructure
     HDFStructure *str = new HDFStructure(vg.name, dataset);
-    if (str == 0)
-        return 0;
     bool nonempty = false;
+    BaseType *bt = 0;
+    try {
     // step through each tagref and copy its contents to DAP
     for (int i = 0; i < (int) vg.tags.size(); ++i) {
         int32 tag = vg.tags[i];
         int32 ref = vg.refs[i];
-        BaseType *bt = 0;
+
         switch (tag) {
         case DFTAG_VH:
             bt = NewSequenceFromVdata(vdmap[ref].vdata, dataset);
@@ -210,9 +208,17 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
         }
         if (bt) {
             str->add_var(bt);   // *st now manages *bt
+            delete bt;
             nonempty = true;
         }
     }
+    }
+    catch(...) {
+    	delete str;
+    	delete bt;
+    	throw;
+    }
+
     if (nonempty) {
         return str;
     } else {
@@ -234,19 +240,21 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
     if (bt == 0) {              // something is not right with SDS number type?
         return 0;
     }
-    HDFArray *ar = new HDFArray(sds.name,dataset,bt);
-    if (ar == 0) {
+    try {
+        HDFArray *ar = 0;
+        ar = new HDFArray(sds.name,dataset,bt);
         delete bt;
-        return 0;
+
+        // add dimension info to HDFArray
+        for (int i = 0; i < (int) sds.dims.size(); ++i)
+            ar->append_dim(sds.dims[i].count, sds.dims[i].name);
+
+        return ar;
     }
-    // Array duplicates the base type passed, so delete here
-    delete bt ;
-
-    // add dimension info to HDFArray
-    for (int i = 0; i < (int) sds.dims.size(); ++i)
-        ar->append_dim(sds.dims[i].count, sds.dims[i].name);
-
-    return ar;
+    catch (...) {
+        delete bt;
+        throw;
+    }
 }
 
 // Create a DAP HDFArray out of a general raster
@@ -260,20 +268,25 @@ HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
     if (bt == 0) {              // something is not right with GR number type?
         return 0;
     }
-    HDFArray *ar = new HDFArray(gr.name, dataset, bt);
-    if (ar == 0) {
-        delete bt;
-        return 0;
-    }
-    // Array duplicates the base type passed, so delete here
-    delete bt ;
 
-    // add dimension info to HDFArray
-    if (gr.num_comp > 1)
-        ar->append_dim(gr.num_comp, gr.name + "__comps");
-    ar->append_dim(gr.dims[1], gr.name + "__Y");
-    ar->append_dim(gr.dims[0], gr.name + "__X");
-    return ar;
+    try {
+        HDFArray *ar = 0;
+        ar = new HDFArray(gr.name, dataset, bt);
+
+        // Array duplicates the base type passed, so delete here
+        delete bt;
+
+        // add dimension info to HDFArray
+        if (gr.num_comp > 1)
+            ar->append_dim(gr.num_comp, gr.name + "__comps");
+        ar->append_dim(gr.dims[1], gr.name + "__Y");
+        ar->append_dim(gr.dims[0], gr.name + "__X");
+        return ar;
+    }
+    catch (...) {
+        delete bt;
+        throw;
+    }
 }
 
 // Create a DAP HDFGrid out of the primary array and dim scale in an hdf_sds
@@ -282,46 +295,48 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
     if (!sds.has_scale())       // we need a dim scale to make a Grid
         return 0;
 
-    // Create the HDFGrid and the primary array.  Add the primary array to 
+    // Create the HDFGrid and the primary array.  Add the primary array to
     // the HDFGrid.
     HDFArray *ar = NewArrayFromSDS(sds, dataset);
     if (ar == 0)
         return 0;
-    HDFGrid *gr = new HDFGrid(sds.name, dataset);
-    if (gr == 0) {
-        delete ar;
-        return 0;
-    }
-    gr->add_var(ar, array);     // note: gr now manages ar
 
-    // create dimension scale HDFArrays (i.e., maps) and add them to the HDFGrid
+    HDFGrid *gr = 0;
     HDFArray *dmar = 0;
     BaseType *dsbt = 0;
-    string mapname;
-    for (int i = 0; i < (int) sds.dims.size(); ++i) {
-        if (sds.dims[i].name.length() == 0) {   // the dim must be named
-            delete gr;
-            return 0;
-        }
-        mapname = sds.dims[i].name;
-        if ((dsbt = NewDAPVar(mapname, dataset,
-                              sds.dims[i].scale.number_type())) == 0) {
-            delete gr;          // note: ~HDFGrid() cleans up the attached ar
-            return 0;
-        }
-        if ((dmar = new HDFArray(mapname,dataset,dsbt)) == 0) {
-            delete gr;
+    try {
+        gr = new HDFGrid(sds.name, dataset);
+        gr->add_var(ar, array); // note: gr now manages ar
+        delete ar;
+
+        // create dimension scale HDFArrays (i.e., maps) and add them to the HDFGrid
+        string mapname;
+        for (int i = 0; i < (int) sds.dims.size(); ++i) {
+            if (sds.dims[i].name.length() == 0) { // the dim must be named
+                delete gr;
+                return 0;
+            }
+            mapname = sds.dims[i].name;
+            if ((dsbt = NewDAPVar(mapname, dataset,
+                    sds.dims[i].scale.number_type())) == 0) {
+                delete gr; // note: ~HDFGrid() cleans up the attached ar
+                return 0;
+            }
+            dmar = new HDFArray(mapname, dataset, dsbt);
             delete dsbt;
-            return 0;
+            dmar->append_dim(sds.dims[i].count); // set dimension size
+            gr->add_var(dmar, maps); // add dimension map to grid;
+            delete dmar;
         }
-	// Array duplicates the base type passed to the constructor. Delete
-	// here
-	delete dsbt ;
-        dmar->append_dim(sds.dims[i].count);    // set dimension size
-        gr->add_var(dmar, maps);        // add dimension map to grid; 
-        // gr now manages dmar
+        return gr;
     }
-    return gr;
+    catch (...) {
+        delete dmar;
+        delete dsbt;
+        delete gr;
+        delete ar;
+        throw;
+    }
 }
 
 // Return a ptr to DAP atomic data object corresponding to an HDF Type, or
@@ -459,7 +474,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 {
 
     // load data into primary array
-    HDFArray & primary_array = dynamic_cast < HDFArray & >(*gr->array_var());   // ***
+    HDFArray & primary_array = dynamic_cast < HDFArray & >(*gr->array_var());
     if (primary_array.send_p()) {
         LoadArrayFromSDS(&primary_array, sds);
         primary_array.set_read_p(true);
@@ -526,8 +541,8 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
 
     BaseType *firstp = *stru->var_begin();
     if (firstp->type() == dods_str_c) {
-        // If the Structure contains a String, then that is all it will 
-        // contain.  In that case, concatenate the different char8 
+        // If the Structure contains a String, then that is all it will
+        // contain.  In that case, concatenate the different char8
         // components of the field and load the DODS String with the value.
         string str = "";
         for (unsigned int i = 0; i < f.vals.size(); ++i) {
@@ -566,11 +581,11 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
     Constructor::Vars_iter q;
     for (q = str->var_begin(); err == 0 && q != str->var_end(); ++q, ++i) {
         BaseType *p = *q;
-        DBG(cerr << "Reading within LoadStructureFromVgroup: " << p->name()
-        		<< ", send_p: " << p->send_p() << ", vg.names[" << i << "]: "
-        		<< vg.vnames[i] << endl);
-        if (p->send_p() && p->name() == vg.vnames[i]) {
-            (dynamic_cast < ReadTagRef * >(p))->read_tagref(vg.tags[i],
+        BESDEBUG("h4", "Reading within LoadStructureFromVgroup: " << p->name()
+        	 << ", send_p: " << p->send_p() << ", vg.names[" << i << "]: "
+        	 << vg.vnames[i] << endl);
+        if (p && p->send_p() && p->name() == vg.vnames[i]) {
+            (dynamic_cast < ReadTagRef & >(*p)).read_tagref(vg.tags[i],
                                                             vg.refs[i],
                                                             err);
         }

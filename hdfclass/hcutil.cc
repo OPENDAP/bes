@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -34,7 +34,7 @@
 
 // U.S. Government Sponsorship under NASA Contract
 // NAS7-1260 is acknowledged.
-// 
+//
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //
 // $RCSfile: hcutil.cc,v $ - misc utility routines for HDFClass
@@ -50,6 +50,8 @@ using std::vector;
 using std::string;
 
 #include <mfhdf.h>
+
+#include <BESDebug.h>
 
 #if 0
 
@@ -93,11 +95,14 @@ bool SDSExists(const char *filename, const char *sdsname)
 {
 
     int32 sd_id, index;
-    if ((sd_id = SDstart(filename, DFACC_RDONLY)) < 0)
+    if ((sd_id = SDstart(filename, DFACC_RDONLY)) < 0) {
+        BESDEBUG("h4", "hcutil:96 SDstart for " << filename << " error" << endl);
         return false;
+    }
 
     index = SDnametoindex(sd_id, (char *) sdsname);
-    SDend(sd_id);
+    if (SDend(sd_id) < 0)
+        BESDEBUG("h4", "hcutil: SDend error: " << HEstring((hdf_err_code_t)HEvalue(1)) << endl);
 
     return (index >= 0);
 }
@@ -131,39 +136,3 @@ bool VdataExists(const char *filename, const char *vdname)
 
     return (ref > 0);
 }
-
-// $Log: hcutil.cc,v $
-// Revision 1.6.4.1  2003/05/21 16:26:58  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.6  2003/01/31 02:08:37  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.5.4.1  2002/12/18 23:32:50  pwest
-// gcc3.2 compile corrections, mainly regarding the using statement. Also,
-// missing semicolon in .y file
-//
-// Revision 1.5  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.4  2000/03/09 01:44:33  jimg
-// merge with 3.1.3
-//
-// Revision 1.3.8.1  2000/03/09 00:24:59  jimg
-// Replaced int and uint32 with string::size_type
-//
-// Revision 1.3  1999/05/06 03:23:33  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.2  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.1.20.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.1  1996/10/31 18:43:02  jimg
-// Added.
-//
-//

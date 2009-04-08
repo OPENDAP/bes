@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -34,7 +34,7 @@
 
 // U.S. Government Sponsorship under NASA Contract
 // NAS7-1260 is acknowledged.
-// 
+//
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //
 // $RCSfile: vdata.cc,v $ - classes for HDF VDATA
@@ -60,10 +60,11 @@ using std::less;
 #include <hcstream.h>
 #include <hdfclass.h>
 
+#include <BESDebug.h>
+
 static void LoadField(int32 vid, int index, int32 begin, int32 end,
                       hdf_field & f);
 static bool IsInternalVdata(int32 fid, int32 ref);
-//static bool IsInternalVdata(int32 ref);
 
 //
 // hdfistream_vdata -- protected member functions
@@ -81,7 +82,6 @@ void hdfistream_vdata::_init(void)
 
 void hdfistream_vdata::_get_fileinfo(void)
 {
-
     // build list ref numbers of all Vdata's in the file
     int32 ref = -1;
     while ((ref = VSgetid(_file_id, ref)) != -1) {
@@ -133,8 +133,8 @@ void hdfistream_vdata::_seek(int32 ref)
 // hdfistream_vdata -- public member functions
 //
 
-hdfistream_vdata::hdfistream_vdata(const string filename):hdfistream_obj
-    (filename)
+hdfistream_vdata::hdfistream_vdata(const string filename)
+    : hdfistream_obj(filename)
 {
     _init();
     if (_filename.length() != 0)        // if ctor specified a null filename
@@ -154,8 +154,11 @@ void hdfistream_vdata::open(const char *filename)
         close();
     if ((_file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
         THROW(hcerr_openfile);
-    if (Vstart(_file_id) < 0)
+    if (Vstart(_file_id) < 0) // Vstart is a macro for Vinitialize
         THROW(hcerr_openfile);
+
+    BESDEBUG("h4", "vdata file opened: id=" << _file_id << endl);
+
     _filename = filename;
     _get_fileinfo();
     rewind();
@@ -164,11 +167,16 @@ void hdfistream_vdata::open(const char *filename)
 
 void hdfistream_vdata::close(void)
 {
+    BESDEBUG("h4", "vdata file closed: id=" << _file_id << ", this: " << this<< endl);
+
     if (_vdata_id != 0)
         VSdetach(_vdata_id);
     if (_file_id != 0) {
-        Vend(_file_id);
-        Hclose(_file_id);
+        int status = Vend(_file_id); // Vend is a macro for Vfinish
+        BESDEBUG("h4", "vdata Vend status: " << status << ", this: " << this << endl);
+
+        status = Hclose(_file_id);
+        BESDEBUG("h4", "vdata HClose status: " << status << ", this: " << this << endl);
     }
     _vdata_id = _file_id = _index = _attr_index = _nattrs = 0;
     _vdata_refs.clear();        // clear refs
@@ -370,20 +378,29 @@ bool hdfistream_vdata::isInternalVdata(int ref) const
     // get name, class of vdata
     int vid;
     if ((vid = VSattach(_file_id, ref, "r")) < 0) {
-        vid = 0;
         THROW(hcerr_vdataopen);
     }
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
-    if (VSgetname(vid, name) < 0)
+    if (VSgetname(vid, name) < 0) {
+        VSdetach(vid);
         THROW(hcerr_vdatainfo);
-    if (reserved_names.find(string(name)) != reserved_names.end())
+    }
+    if (reserved_names.find(string(name)) != reserved_names.end()) {
+        VSdetach(vid);
         return true;
+    }
 
-    if (VSgetclass(vid, vclass) < 0)
+    if (VSgetclass(vid, vclass) < 0) {
+        VSdetach(vid);
         THROW(hcerr_vdatainfo);
+    }
+
+    VSdetach(vid);
+
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
         return true;
+
     return false;
 }
 
@@ -422,9 +439,8 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
     char *data = 0;
     if (nrecs > 0) {            // if nrecs > 0 then load data for field
         data = new char[fieldsize * nrecs];
-        if (VSsetfields(vid, fieldname) < 0)    // set field to read
-            THROW(hcerr_vdataread);
-        if (VSread(vid, (uchar8 *) data, nrecs, FULL_INTERLACE) < 0) {
+         if ((VSsetfields(vid, fieldname) < 0) ||
+             (VSread(vid, (uchar8 *) data, nrecs, FULL_INTERLACE) < 0)) {
             delete[]data;
             THROW(hcerr_vdataread);
         }
@@ -453,7 +469,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 // hdf_vdata related member functions
 //
 
-// verify that the hdf_field class is in an OK state.  
+// verify that the hdf_field class is in an OK state.
 bool hdf_field::_ok(void) const
 {
 
@@ -505,95 +521,28 @@ bool IsInternalVdata(int32 fid, int32 ref)
     // get name, class of vdata
     int vid;
     if ((vid = VSattach(fid, ref, "r")) < 0) {
-        vid = 0;
         THROW(hcerr_vdataopen);
     }
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
-    if (VSgetname(vid, name) < 0)
+    if (VSgetname(vid, name) < 0) {
+        VSdetach(vid);
         THROW(hcerr_vdatainfo);
-    if (reserved_names.find(string(name)) != reserved_names.end())
+    }
+    if (reserved_names.find(string(name)) != reserved_names.end()) {
+        VSdetach(vid);
         return true;
+    }
 
-    if (VSgetclass(vid, vclass) < 0)
+    if (VSgetclass(vid, vclass) < 0) {
+        VSdetach(vid);
         THROW(hcerr_vdatainfo);
+    }
+
+    VSdetach(vid);
+
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
         return true;
+
     return false;
 }
-
-
-// $Log: vdata.cc,v $
-// Revision 1.10.4.1.2.1  2004/02/23 02:08:03  rmorris
-// There is some incompatibility between the use of isascii() in the hdf library
-// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
-//
-// Revision 1.10.4.1  2003/05/21 16:26:58  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.10  2003/01/31 02:08:37  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.8.4.3  2002/12/18 23:32:50  pwest
-// gcc3.2 compile corrections, mainly regarding the using statement. Also,
-// missing semicolon in .y file
-//
-// Revision 1.8.4.2  2001/10/30 06:36:35  jimg
-// Added genvec::append(...) method.
-// Fixed up some comments in genvec.
-// Changed genvec's data member from void * to char * to quell warnings
-// about void * being passed to delete.
-//
-// Revision 1.9  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
-//
-// Revision 1.8.4.1  2001/05/15 17:55:46  dan
-// Added hdfistream_vdata method isInternalVdata(ref) to test for
-// internal (reserved attribute) vdata containers.
-//
-// Revision 1.8  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.7  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.6  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.5.6.1  1999/05/06 00:35:45  jimg
-// Jakes String --> string changes
-//
-// Revision 1.5  1998/09/17 21:11:08  jehamby
-// Include <vg.h> explicitly, since HDF 4.1r1 doesn't automatically include it.
-//
-// Revision 1.4  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.3  1998/09/10 21:38:39  jehamby
-// Hide HDF chunking information from DDS.
-//
-// Revision 1.2  1998/04/03 18:34:19  jimg
-// Fixes for vgroups and Sequences from Jake Hamby
-//
-// Revision 1.1  1996/10/31 18:43:07  jimg
-// Added.
-//
-// Revision 1.5  1996/08/22  20:56:03  todd
-// Corrected bug in LoadField call.
-//
-// Revision 1.4  1996/08/14  22:34:43  ike
-// Added hdfistream_vdata::setrecs().
-//
-// Revision 1.3  1996/07/22  17:28:43  todd
-// Changed implementation of IsInternalVdata() to use the STL set class.  This allows the
-// routine to work in both g++ and SGI C++.
-//
-// Revision 1.2  1996/07/11  20:36:26  todd
-// Added check to see if Vdata's are "internal" ones used by HDF library.  Modified
-// stream class to omit such vdatas from the stream.
-//
-// Revision 1.1  1996/06/17  23:28:11  todd
-// Initial revision
-//

@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -34,7 +34,7 @@
 
 // U.S. Government Sponsorship under NASA Contract
 // NAS7-1260 is acknowledged.
-// 
+//
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //
 // $RCSfile: genvec.cc,v $ - implementation of HDF generic vector class
@@ -252,7 +252,7 @@ void hdf_genvec::import(int32 nt, const vector < string > &sv)
         return;
     }
 
-    void *obuf = new char[DFKNTsize(nt) * sv.size()];
+    char *obuf = new char[DFKNTsize(nt) * sv.size()];
     switch (nt) {
     case DFNT_FLOAT32:{
             float32 val;
@@ -348,6 +348,7 @@ void hdf_genvec::import(int32 nt, const vector < string > &sv)
             break;
         }
     default:
+    	delete[] obuf;
         THROW(hcerr_invnt);
     }
 
@@ -608,7 +609,7 @@ vector < uint16 > hdf_genvec::exportv_uint16(void) const
     return rv;
 }
 
-// export an hdf_genvec holding uchar8, char8, uint8, int8 or int16 data to 
+// export an hdf_genvec holding uchar8, char8, uint8, int8 or int16 data to
 // an int16 array
 int16 *hdf_genvec::export_int16(void) const
 {
@@ -671,7 +672,7 @@ vector < int16 > hdf_genvec::exportv_int16(void) const
     return rv;
 }
 
-// export an hdf_genvec holding uchar8, uint8, uint16 or uint32 data to a 
+// export an hdf_genvec holding uchar8, uint8, uint16 or uint32 data to a
 // uint32 array
 uint32 *hdf_genvec::export_uint32(void) const
 {
@@ -707,7 +708,7 @@ uint32 hdf_genvec::elt_uint32(int i) const
     return 0;
 }
 
-// export an hdf_genvec holding uchar8, uint8, uint16 or uint32 data to a 
+// export an hdf_genvec holding uchar8, uint8, uint16 or uint32 data to a
 // uint32 vector
 vector < uint32 > hdf_genvec::exportv_uint32(void) const
 {
@@ -729,7 +730,7 @@ vector < uint32 > hdf_genvec::exportv_uint32(void) const
     return rv;
 }
 
-// export an hdf_genvec holding uchar8, char8, uint8, int8, uint16, int16 or 
+// export an hdf_genvec holding uchar8, char8, uint8, int8, uint16, int16 or
 // int32 data to a int32 array
 int32 *hdf_genvec::export_int32(void) const
 {
@@ -777,7 +778,7 @@ int32 hdf_genvec::elt_int32(int i) const
     return 0;
 }
 
-// export an hdf_genvec holding uchar8, char8, uint8, int8, uint16, int16 or 
+// export an hdf_genvec holding uchar8, char8, uint8, int8, uint16, int16 or
 // int32 data to a int32 vector
 vector < int32 > hdf_genvec::exportv_int32(void) const
 {
@@ -886,8 +887,8 @@ string hdf_genvec::export_string(void) const
 {
     if (_nt != DFNT_CHAR8 && _nt != DFNT_UCHAR8) {
         THROW(hcerr_dataexport);
-        return string();
-    } else {
+    }
+    else {
         if (_data == 0)
             return string();
         else
@@ -904,7 +905,7 @@ void hdf_genvec::print(vector < string > &sv) const
 }
 
 // print the elements of hdf_genvec to a vector of string; start with initial
-// element "begin", end with "end" and increment by "stride" elements. 
+// element "begin", end with "end" and increment by "stride" elements.
 void hdf_genvec::print(vector < string > &sv, int begin, int end,
                        int stride) const
 {

@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -51,7 +51,7 @@
 
 using namespace std;
 
-// Include this on linux to suppres an annoying warning about multiple
+// Include this on linux to suppress an annoying warning about multiple
 // definitions of MIN and MAX.
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -79,6 +79,11 @@ using namespace std;
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
+
+// Glue routines declared in hdfeos.lex
+void hdfeos_switch_to_buffer(void *new_buffer);
+void hdfeos_delete_buffer(void * buffer);
+void *hdfeos_string(const char *yy_str);
 
 template < class T > string num2string(T n)
 {
@@ -128,7 +133,7 @@ string cache_name(const string & cachedir, const string & filename)
         dirstart++;
     }
     // now backup to the last path separator
-    while (newname[start - 1] != '/' && start != 0)
+    while (start != 0 && newname[start - 1] != '/')
         start--;
 
     // turn the remaining path separators into "#"
@@ -145,7 +150,7 @@ string cache_name(const string & cachedir, const string & filename)
 // write to the file system. In some cases, web daemons cannot do that. Since
 // the code is written with the assumption that the DAS and DDS will be built
 // and then cached, there's no easy way to build them separately (why would
-// you need to? ... well there are lots of reasons). So these global static 
+// you need to? ... well there are lots of reasons). So these global static
 // pointers are used to hold the last set of das and dds objects for the given
 // filename. When cachedir in the read_das/dds() functions is empty, use these
 // if possible.
@@ -278,7 +283,7 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
 static void update_descriptions(const string & cachedir,
                                 const string & filename)
 {
-    // if cached version of DDS or DAS is nonexistent or out of date, 
+    // if cached version of DDS or DAS is nonexistent or out of date,
     // then regenerate DDS, DAS.
     Stat datafile(filename);
     Stat ddsfile((cache_name(cachedir, filename) + ".cdds"));
@@ -301,7 +306,7 @@ static void update_descriptions(const string & cachedir,
             THROW(dhdferr_ddssem);
 
 
-/* I droppped this file based bit:
+/* I dropped this file based bit:
 
         // output DDS, DAS to cache
         FILE *ddsout = fopen(ddsfile.filename(), "w");
@@ -309,7 +314,7 @@ static void update_descriptions(const string & cachedir,
             THROW(dhdferr_ddsout);
         dds.print(ddsout);
         fclose(ddsout);
-        
+
 and replaced it with this: */
 
         // output DDS to cache
@@ -320,7 +325,7 @@ and replaced it with this: */
 
 
 
-/* I droppped this file based bit:
+/* I dropped this file based bit:
 
         FILE *dasout = fopen(dasfile.filename(), "w");
         if (!dasout)
@@ -330,19 +335,19 @@ and replaced it with this: */
 
 and replaced it with this: */
 
-        
+
         // output  DAS to cache
         ofstream dasout;
         dasout.open (dasfile.filename());
         das.print(dasout);
         dasout.close();
 
-        
+
 /* end - ndp */
-  
-        
-        
-        
+
+
+
+
     }
     return;
 }
@@ -458,7 +463,7 @@ static void SDS_descriptions(sds_map & map, DAS & das,
     vector < hdf_attr > fileattrs;
     sdsin >> fileattrs;
 
-    // Read SDS's 
+    // Read SDS's
     sdsin.rewind();
     while (!sdsin.eos()) {
         sds_info sdi;           // add the next sds_info to map
@@ -497,11 +502,10 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 static void Vdata_descriptions(vd_map & map, DAS & das,
                                const string & filename)
 {
-
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
 
-    // Read Vdata's 
+    // Read Vdata's
     while (!vdin.eos()) {
         vd_info vdi;            // add the next vd_info to map
         vdin >> vdi.vdata;
@@ -527,7 +531,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
 {
     hdfistream_vgroup vgin(filename);
 
-    // Read Vgroup's 
+    // Read Vgroup's
     vg_map vgmap;
     while (!vgin.eos()) {
         vg_info vgi;            // add the next vg_info to map
@@ -577,6 +581,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                                    grmap, filename);
         if (pbt != 0) {
             dds.add_var(pbt);
+	    delete pbt;
         }
     }
 
@@ -588,8 +593,10 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             pbt = NewGridFromSDS(s->second.sds, filename);
         else
             pbt = NewArrayFromSDS(s->second.sds, filename);
-        if (pbt != 0)
+        if (pbt != 0) {
             dds.add_var(pbt);
+	    delete pbt;
+	}
     }
 
     // add lone Vdata's
@@ -597,8 +604,10 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         if (v->second.in_vgroup)
             continue;           // skip over Vdata in vgroups
         pbt = NewSequenceFromVdata(v->second.vdata, filename);
-        if (pbt != 0)
+        if (pbt != 0) {
             dds.add_var(pbt);
+	    delete pbt;
+	}
     }
 
     // add lone GR's
@@ -606,8 +615,10 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         if (g->second.in_vgroup)
             continue;           // skip over GRs in vgroups
         pbt = NewArrayFromGR(g->second.gri, filename);
-        if (pbt != 0)
+        if (pbt != 0) {
             dds.add_var(pbt);
+	    delete pbt ;
+	}
     }
 }
 
@@ -640,7 +651,7 @@ static void GR_descriptions(gr_map & map, DAS & das,
     vector < hdf_attr > pattrs;
     for (GRI g = map.begin(); g != map.end(); ++g) {
         const hdf_gri *gri = &g->second.gri;
-        // add GR attributes 
+        // add GR attributes
         AddHDFAttr(das, gri->name, gri->attrs);
 
         // add palettes as attributes
@@ -673,13 +684,16 @@ void AddHDFAttr(DAS & das, const string & varname,
     if (hav.size() == 0)        // nothing to add
         return;
 
-    // get pointer to the AttrTable for the variable varname (create one if 
+    // get pointer to the AttrTable for the variable varname (create one if
     // necessary)
     AttrTable *atp = das.get_table(varname);
     if (atp == 0) {
         atp = new AttrTable;
+#if 0
+        // jhrg 4/1/2009
         if (atp == 0)
             THROW(hcerr_nomemory);
+#endif
         atp = das.add_table(varname, atp);
     }
     // add the attributes to the DAS
@@ -710,12 +724,14 @@ void AddHDFAttr(DAS & das, const string & varname,
                     at = das.add_table(container_name, new AttrTable);
 
                 // tell lexer to scan attribute string
-                hdfeos_scan_string(attv[j].c_str());
+                void *buf = hdfeos_string(attv[j].c_str());
 
                 parser_arg arg(at);
                 if (hdfeosparse(static_cast < void *>(&arg)) != 0
                     || arg.status() == false)
                     cerr << "HDF-EOS parse error!\n";
+
+                hdfeos_delete_buffer(buf);
             } else {
                 if (attrtype == "String")
                     attv[j] = "\"" + escattr(attv[j]) + "\"";
@@ -736,13 +752,16 @@ void AddHDFAttr(DAS & das, const string & varname,
     if (anv.size() == 0)        // nothing to add
         return;
 
-    // get pointer to the AttrTable for the variable varname (create one if 
+    // get pointer to the AttrTable for the variable varname (create one if
     // necessary)
     AttrTable *atp = das.get_table(varname);
     if (atp == 0) {
         atp = new AttrTable;
+#if 0
+        // jhrg 4/1/2009
         if (atp == 0)
             THROW(hcerr_nomemory);
+#endif
         atp = das.add_table(varname, atp);
     }
     // add the annotations to the DAS

@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -90,7 +90,6 @@ bool HDFSequence::read()
 
 bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
 {
-
     string hdf_file = dataset();
     string hdf_name = this->name();
 
@@ -104,7 +103,7 @@ bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
         vin >> vd;
         vin.close();
         if (!vd) {              // something is wrong
-            err = 1;            // indicate error 
+            err = 1;            // indicate error
             return false;
         }
     }
@@ -128,7 +127,7 @@ bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
 
     set_read_p(true);
     err = 0;                    // everything is OK
-    return true;
 
+    return true;
 }
 

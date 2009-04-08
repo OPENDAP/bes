@@ -2,7 +2,7 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of hdf4_handler, a data handler for the OPeNDAP data
-// server. 
+// server.
 
 // Copyright (c) 2002,2003 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
@@ -11,12 +11,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,21 +31,25 @@
 #include <unistd.h>
 
 #include "HDF4RequestHandler.h"
-#include "BESResponseNames.h"
-#include "BESDASResponse.h"
-#include "BESDDSResponse.h"
-#include "BESDataDDSResponse.h"
-#include "BESInfo.h"
-#include "BESResponseHandler.h"
-#include "BESVersionInfo.h"
-#include "TheBESKeys.h"
-#include "InternalErr.h"
-#include "BESInternalError.h"
-#include "BESDapError.h"
-#include "BESDataNames.h"
-#include "ConstraintEvaluator.h"
-#include "Ancillary.h"
+#include <BESResponseNames.h>
+#include <BESDASResponse.h>
+#include <BESDDSResponse.h>
+#include <BESDataDDSResponse.h>
+#include <BESInfo.h>
+#include <BESResponseHandler.h>
+#include <BESVersionInfo.h>
+#include <BESServiceRegistry.h>
+#include <BESUtil.h>
+#include <TheBESKeys.h>
+#include <InternalErr.h>
+#include <BESInternalError.h>
+#include <BESDapError.h>
+#include <BESDataNames.h>
+#include <ConstraintEvaluator.h>
+#include <Ancillary.h>
 #include "config_hdf.h"
+
+#define HDF4_NAME "h4"
 
 extern void read_das(DAS & das, const string & cachedir,
                      const string & filename);
@@ -55,7 +59,7 @@ extern void read_dds(DDS & dds, const string & cachedir,
 string HDF4RequestHandler::_cachedir = "";
 
 HDF4RequestHandler::HDF4RequestHandler(const string & name)
-:BESRequestHandler(name)
+    :BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
     add_handler(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
@@ -69,17 +73,20 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
         if (!found || _cachedir == "")
             _cachedir = "/tmp";
 
-        string dummyx = _cachedir + "/dummy.XXXXXX";
-#if defined(WIN32) || defined(TEST_WIN32_TEMPS)
-        char *dummy = _mktemp((char *) dummyx.c_str());
-#else
-        char *dummy = mktemp((char *) dummyx.c_str());
-#endif
-        int fd = open(dummy, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
-        unlink(dummy);
+        string HDF4_file = _cachedir + "/HDF4XXXXXX";
+        char *HDF4_temp = new char[HDF4_file.length() + 1];
+	string::size_type len =
+	HDF4_file.copy(HDF4_temp,HDF4_file.length());
+	*(HDF4_temp+len) = '\0';
+        mode_t original_mask = umask(077);
+        int fd = mkstemp(HDF4_temp);
+        (void)umask(original_mask);
+
         if (fd == -1) {
+	    delete[] HDF4_temp;
             if (_cachedir == "/tmp") {
-                close(fd);
+		// fd is -1 so should not close here
+                //close(fd);
                 string err =
                     "Could not create a file in the cache directory (" +
                     _cachedir + ")";
@@ -87,7 +94,14 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
             }
             _cachedir = "/tmp";
         }
-        close(fd);
+	else
+	{
+	    // should only do this if we were successful in running
+	    // mkstemp and got back a valid fd.
+	    (void)unlink(HDF4_temp);
+	    close(fd);
+	    delete[] HDF4_temp;
+	}
     }
 }
 
@@ -140,7 +154,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
+
     try {
 	bdds->set_container( dhi.container->get_symbolic_name() ) ;
 	DDS *dds = bdds->get_dds();
@@ -158,7 +172,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
 	Ancillary::read_ancillary_das( *das, accessed ) ;
         dds->transfer_attributes( das ) ;
 
-        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	bdds->set_constraint( dhi ) ;
 
 	bdds->clear_container() ;
     }
@@ -190,7 +204,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
+
     try {
 	bdds->set_container( dhi.container->get_symbolic_name() ) ;
 	DataDDS *dds = bdds->get_dds();
@@ -208,7 +222,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
 	Ancillary::read_ancillary_das( *das, accessed ) ;
         dds->transfer_attributes( das ) ;
 
-        dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
+	bdds->set_constraint( dhi ) ;
 
 	bdds->clear_container() ;
     }
@@ -241,14 +255,18 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi)
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
-    info->begin_tag("Handler");
-    info->add_tag("name", PACKAGE_NAME);
-    string handles = (string) DAS_RESPONSE
-        + "," + DDS_RESPONSE
-        + "," + DATA_RESPONSE + "," + HELP_RESPONSE + "," + VERS_RESPONSE;
-    info->add_tag("handles", handles);
-    info->add_tag("version", PACKAGE_STRING);
-    info->end_tag("Handler");
+    map<string,string> attrs ;
+    attrs["name"] = PACKAGE_NAME ;
+    attrs["version"] = PACKAGE_VERSION ;
+    list<string> services ;
+    BESServiceRegistry::TheRegistry()->services_handled( HDF4_NAME, services );
+    if( services.size() > 0 )
+    {
+	string handles = BESUtil::implode( services, ',' ) ;
+	attrs["handles"] = handles ;
+    }
+    info->begin_tag( "module", &attrs ) ;
+    info->end_tag( "module" ) ;
 
     return true;
 }
@@ -259,7 +277,8 @@ bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi)
     BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
 	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-  
-    info->addHandlerVersion(PACKAGE_NAME, PACKAGE_VERSION);
+
+    info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
+
     return true;
 }

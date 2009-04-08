@@ -8,12 +8,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -89,8 +89,8 @@ bool HDFStructure::read()
     return status;
 }
 
-// TODO: Combine the try/catch block and the following if/then/else and 
-// eliminate the boolean 'foundvgroup' Consider moving the 
+// TODO: Combine the try/catch block and the following if/then/else and
+// eliminate the boolean 'foundvgroup' Consider moving the
 // LoadStructureFromVgroup() from hc2dap.cc here since this is the only
 // place it's used.
 bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
@@ -104,7 +104,6 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
 
     DBG(cerr << " hdf_name = " << hdf_name << endl);
 
-    bool foundvgroup = false;
     hdf_vgroup vgroup;
 
     // Wrap this with a try/catch block but don't do anything with it. The
@@ -117,11 +116,18 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
             vgin.seek(hdf_name.c_str());
         vgin >> vgroup;
         vgin.close();
-        foundvgroup = true;
+
+    	set_read_p(true);
+
+    	LoadStructureFromVgroup(this, vgroup, hdf_file);
+        return true;
     }
     catch(...) {
+   	set_read_p(true);
+        err = 1;
+        return false;
     }
-
+#if 0
     set_read_p(true); //todo: move this inside 'if (foundvgroup)'?
 
     // todo: refactor: move this up into preceding try block
@@ -132,5 +138,6 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
         err = 1;
         return false;
     }
+#endif
 }
 

@@ -7,12 +7,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -34,7 +34,7 @@
 //
 // U.S. Government Sponsorship under NASA Contract
 // NAS7-1260 is acknowledged.
-// 
+//
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //         Jake.Hamby@jpl.nasa.gov
 //
@@ -61,6 +61,8 @@ using std::less;
 
 #include <hcstream.h>
 #include <hdfclass.h>
+
+#include <BESDebug.h>
 
 static bool IsInternalVgroup(int32 fid, int32 ref);
 
@@ -130,19 +132,19 @@ void hdfistream_vgroup::_seek(int32 ref)
 
 string hdfistream_vgroup::_memberName(int32 ref)
 {
+    char mName[hdfclass::MAXSTR];
+    int member_id;
 
-    string _member_name = "";
-    char _mName[hdfclass::MAXSTR];
-
-    if ((_member_id = Vattach(_file_id, ref, "r")) >= 0) {
-        if (Vgetname(_member_id, _mName) < 0) {
-            Vdetach(_member_id);
+    if ((member_id = Vattach(_file_id, ref, "r")) >= 0) {
+        if (Vgetname(member_id, mName) < 0) {
+            Vdetach(member_id);
             THROW(hcerr_vgroupopen);
         }
-        _member_name = string(_mName);
-        Vdetach(_member_id);
+        Vdetach(member_id);
+        return mName;
     }
-    return _member_name;
+
+    return "";
 }
 
 
@@ -173,6 +175,9 @@ void hdfistream_vgroup::open(const char *filename)
         THROW(hcerr_openfile);
     if (Vstart(_file_id) < 0)
         THROW(hcerr_openfile);
+
+    BESDEBUG("h4", "vgroup file opened: id=" << _file_id << endl);
+
     _filename = filename;
     _get_fileinfo();
     rewind();
@@ -181,11 +186,22 @@ void hdfistream_vgroup::open(const char *filename)
 
 void hdfistream_vgroup::close(void)
 {
-    if (_vgroup_id != 0)
-        Vdetach(_vgroup_id);
+    BESDEBUG("h4", "vgroup file closed: id=" << _file_id << ", this: " << this << endl);
+
+    int status;
+
+    if (_vgroup_id != 0) {
+        status = Vdetach(_vgroup_id);
+        BESDEBUG("h4", "vgroup Vdetach status: " << status << ", this: " << this << endl);
+    }
+
     if (_file_id != 0) {
-        Vend(_file_id);
-        Hclose(_file_id);
+        status = Vend(_file_id);
+        BESDEBUG("h4", "vgroup vend status: " << status << ", this: " << this << endl);
+
+        status = Hclose(_file_id);
+        BESDEBUG("h4", "vgroup HClose status: " << status << ", this: " << this << endl);
+        BESDEBUG("h4", "Error: " << HEstring((hdf_err_code_t)HEvalue(1)) << endl);
     }
     _vgroup_id = _file_id = _index = _attr_index = _nattrs = 0;
     _vgroup_refs = vector < int32 > (); // clear refs
@@ -260,8 +276,7 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
     int32 nentries;
-    if (Vinquire(_vgroup_id, &nentries, name)
-        < 0)
+    if (Vinquire(_vgroup_id, &nentries, name) < 0)
         THROW(hcerr_vgroupinfo);
     hv.name = string(name);
     if (Vgetclass(_vgroup_id, vclass) < 0)
@@ -271,6 +286,7 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
     // retrieve entry tags and refs
     int32 npairs = Vntagrefs(_vgroup_id);
     hdfistream_vdata vdin(_filename);
+
     for (int i = 0; i < npairs; ++i) {
         int32 tag, ref;
         string vname;
@@ -335,22 +351,31 @@ bool IsInternalVgroup(int32 fid, int32 ref)
     // get name, class of vgroup
     int vid;
     if ((vid = Vattach(fid, ref, "r")) < 0) {
-        vid = 0;
         THROW(hcerr_vgroupopen);
     }
+
     char name[hdfclass::MAXSTR];
     char vclass[hdfclass::MAXSTR];
-    if (Vgetname(vid, name) < 0)
+    if (Vgetname(vid, name) < 0) {
+        Vdetach(vid);
         THROW(hcerr_vgroupinfo);
-    if (reserved_names.find(string(name)) != reserved_names.end())
+    }
+    if (reserved_names.find(string(name)) != reserved_names.end()) {
+        Vdetach(vid);
         return true;
+    }
 
-    if (Vgetclass(vid, vclass) < 0)
+    if (Vgetclass(vid, vclass) < 0) {
+        Vdetach(vid);
         THROW(hcerr_vgroupinfo);
+    }
+
+    Vdetach(vid);
+
     if (reserved_classes.find(string(vclass)) != reserved_classes.end())
         return true;
-    return false;
 
+    return false;
 }
 
 // check to see if stream is positioned past the last attribute in the
@@ -423,62 +448,3 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_attr & ha)
     return *this;
 }
 
-// $Log: vgroup.cc,v $
-// Revision 1.7.4.1.2.1  2004/02/23 02:08:03  rmorris
-// There is some incompatibility between the use of isascii() in the hdf library
-// and its use on OS X.  Here we force in the #undef of isascii in the osx case.
-//
-// Revision 1.7.4.1  2003/05/21 16:26:58  edavis
-// Updated/corrected copyright statements.
-//
-// Revision 1.7  2003/01/31 02:08:37  jimg
-// Merged with release-3-2-7.
-//
-// Revision 1.5.4.4  2002/12/18 23:32:50  pwest
-// gcc3.2 compile corrections, mainly regarding the using statement. Also,
-// missing semicolon in .y file
-//
-// Revision 1.5.4.3  2002/01/29 20:33:45  dan
-// Added new elements to hdf_vgroup structure to maintain
-// member variable names (string-reps) to couple explicit
-// variable names to tag/ref fields in the structure.  Required
-// to support new Ancillary DDS usage.
-//
-// Revision 1.5.4.2  2001/10/30 06:36:35  jimg
-// Added genvec::append(...) method.
-// Fixed up some comments in genvec.
-// Changed genvec's data member from void * to char * to quell warnings
-// about void * being passed to delete.
-//
-// Revision 1.6  2001/08/27 17:21:34  jimg
-// Merged with version 3.2.2
-//
-// Revision 1.5.4.1  2001/05/15 17:56:51  dan
-// Modified the '>>' stream operator to test for internal
-// vdata references, and not add them to the vg data structure
-// used by various functions within the server to dereference
-// the local hdf file.
-//
-// Revision 1.5  2000/10/09 19:46:19  jimg
-// Moved the CVS Log entries to the end of each file.
-// Added code to catch Error objects thrown by the dap library.
-// Changed the read() method's definition to match the dap library.
-//
-// Revision 1.4  1999/05/06 03:23:34  jimg
-// Merged changes from no-gnu branch
-//
-// Revision 1.3  1999/05/05 23:33:43  jimg
-// String --> string conversion
-//
-// Revision 1.2.6.1  1999/05/06 00:35:46  jimg
-// Jakes String --> string changes
-//
-// Revision 1.2  1998/09/10 23:03:46  jehamby
-// Add support for Vdata and Vgroup attributes
-//
-// Revision 1.1  1998/04/06 16:40:36  jimg
-// Added by Jake Hamby (via patch)
-//
-// Revision 1.1  1998/03/07 01:49:17  jehamby
-// Initial revision
-//

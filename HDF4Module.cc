@@ -23,7 +23,7 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-// (c) COPYRIGHT University Corporation for Atmostpheric Research 2004-2005
+// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
@@ -34,13 +34,14 @@
 using std::endl;
 
 #include "HDF4Module.h"
-#include "BESRequestHandlerList.h"
+#include <BESRequestHandlerList.h>
 #include "HDF4RequestHandler.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorageCatalog.h"
-#include "BESCatalogDirectory.h"
-#include "BESCatalogList.h"
-#include "BESDebug.h"
+#include <BESDapService.h>
+#include <BESContainerStorageList.h>
+#include <BESContainerStorageCatalog.h>
+#include <BESCatalogDirectory.h>
+#include <BESCatalogList.h>
+#include <BESDebug.h>
 
 #define HDF4_CATALOG "catalog"
 
@@ -54,8 +55,11 @@ void
     BESRequestHandler *handler = new HDF4RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
+    BESDEBUG( "h4", modname << " handles dap services" << endl )
+    BESDapService::handle_dap_service( modname ) ;
+
     BESDEBUG("h4", "    adding " << HDF4_CATALOG << " catalog" << endl)
-    if( !BESCatalogList::TheCatalogList()->find_catalog( HDF4_CATALOG ) )
+    if( !BESCatalogList::TheCatalogList()->ref_catalog( HDF4_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
 	    add_catalog(new BESCatalogDirectory(HDF4_CATALOG));
@@ -68,7 +72,7 @@ void
     BESDEBUG("h4",
              "    adding catalog container storage" << HDF4_CATALOG <<
              endl)
-    if( !BESContainerStorageList::TheList()->find_persistence( HDF4_CATALOG ) )
+    if( !BESContainerStorageList::TheList()->ref_persistence( HDF4_CATALOG ) )
     {
 	BESContainerStorageCatalog *csc =
 	    new BESContainerStorageCatalog(HDF4_CATALOG);
@@ -95,13 +99,12 @@ void HDF4Module::terminate(const string & modname)
     if (rh)
         delete rh;
 
-    BESDEBUG("h4",
-             "    removing catalog container storage" << HDF4_CATALOG <<
-             endl)
-        BESContainerStorageList::TheList()->del_persistence(HDF4_CATALOG);
+    BESDEBUG("h4", "    removing catalog container storage" << HDF4_CATALOG
+                   << endl)
+    BESContainerStorageList::TheList()->deref_persistence(HDF4_CATALOG);
 
     BESDEBUG("h4", "    removing " << HDF4_CATALOG << " catalog" << endl)
-        BESCatalogList::TheCatalogList()->del_catalog(HDF4_CATALOG);
+        BESCatalogList::TheCatalogList()->deref_catalog(HDF4_CATALOG);
 
     BESDEBUG("h4", "Done Cleaning HDF4 module " << modname << endl)
 }

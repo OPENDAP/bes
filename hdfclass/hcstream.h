@@ -11,12 +11,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -37,7 +37,7 @@
 
 // U.S. Government Sponsorship under NASA Contract
 // NAS7-1260 is acknowledged.
-// 
+//
 // Author: Todd.K.Karakashian@jpl.nasa.gov
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -52,10 +52,11 @@ class hdfistream_obj {          // base class for streams reading HDF objects
   public:
     hdfistream_obj(const string filename = "") {
         _init(filename);
-    } hdfistream_obj(const hdfistream_obj &) {
+    }
+    hdfistream_obj(const hdfistream_obj &) {
         THROW(hcerr_copystream);
     }
-    virtual ~ hdfistream_obj(void) {
+    virtual ~hdfistream_obj(void) {
     }
     void operator=(const hdfistream_obj &) {
         THROW(hcerr_copystream);
@@ -69,7 +70,7 @@ class hdfistream_obj {          // base class for streams reading HDF objects
     virtual bool eos(void) const = 0;   // are we at end of stream?
     virtual int index(void) const {
         return _index;
-  } // return current position protected:
+    } // return current position protected:
     void _init(const string filename = "") {
         if (filename.length())
             _filename = filename;
@@ -83,9 +84,10 @@ class hdfistream_obj {          // base class for streams reading HDF objects
 class hdfistream_sds:public hdfistream_obj {
   public:
     hdfistream_sds(const string filename = "");
-     hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {
+    hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
-    } virtual ~ hdfistream_sds(void) {
+    }
+    virtual ~ hdfistream_sds(void) {
         _del();
     }
     void operator=(const hdfistream_sds &) {
@@ -163,16 +165,16 @@ class hdfistream_sds:public hdfistream_obj {
         int32 edge[hdfclass::MAXDIMS];
         int32 stride[hdfclass::MAXDIMS];
     } _slab;
-    // Since an SDS can hold a Grid, there may be several different
+    // Since a SDS can hold a Grid, there may be several different
     // constraints (because a client might constrain each of the fields
-    // differently an want a Structure object back). I've added a vector of
+    // differently and want a Structure object back). I've added a vector of
     // array_ce objects to hold all this CE information so that the
-    // operator>> method will be able to access it at the corrrect time. This
+    // operator>> method will be able to access it at the correct time. This
     // new object holds only the information about constraints on the Grid's
     // map vectors. The _slab member will hold the constraint on the Grid's
-    // array. Note that the in many cases the constraints on the maps can be
-    // derived frm the array's constraints, but sometimes a client will only
-    // ask for the maps and thus the array's constaint will be the entire
+    // array. Note that in many cases the constraints on the maps can be
+    // derived from the array's constraints, but sometimes a client will only
+    // ask for the maps and thus the array's constraint will be the entire
     // array (the `default constraint').
     vector < array_ce > _map_ce_vec;    // Added 2/5/2002 jhrg
     bool _map_ce_set;
@@ -182,10 +184,11 @@ class hdfistream_sds:public hdfistream_obj {
 class hdfistream_annot:public hdfistream_obj {
   public:
     hdfistream_annot(const string filename = "");
-     hdfistream_annot(const string filename, int32 tag, int32 ref);
-     hdfistream_annot(const hdfistream_annot &):hdfistream_obj(*this) {
+    hdfistream_annot(const string filename, int32 tag, int32 ref);
+    hdfistream_annot(const hdfistream_annot &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
-    } virtual ~ hdfistream_annot(void) {
+    }
+     virtual ~ hdfistream_annot(void) {
         _del();
     }
     void operator=(const hdfistream_annot &) {
@@ -204,9 +207,11 @@ class hdfistream_annot:public hdfistream_obj {
     }                           // position to next annot
     virtual bool eos(void) const {
         return (_index >= (int) _an_ids.size());
-    } virtual bool bos(void) const {
+    }
+    virtual bool bos(void) const {
         return (_index <= 0);
-    } virtual void rewind(void) {
+    }
+    virtual void rewind(void) {
         _index = 0;
     }
     virtual void set_annot_type(bool label, bool desc)  // specify types of
@@ -239,9 +244,10 @@ class hdfistream_annot:public hdfistream_obj {
 class hdfistream_vdata:public hdfistream_obj {
   public:
     hdfistream_vdata(const string filename = "");
-     hdfistream_vdata(const hdfistream_vdata &):hdfistream_obj(*this) {
+    hdfistream_vdata(const hdfistream_vdata &) : hdfistream_obj(*this) {
         THROW(hcerr_copystream);
-    } virtual ~ hdfistream_vdata(void) {
+    }
+    virtual ~hdfistream_vdata(void) {
         _del();
     }
     void operator=(const hdfistream_vdata &) {
@@ -263,10 +269,12 @@ class hdfistream_vdata:public hdfistream_obj {
     virtual bool bos(void) const        // positioned in front of the first Vdata?
     {
         return (_index <= 0);
-    } virtual bool eos(void) const      // positioned past the last Vdata?
+    }
+    virtual bool eos(void) const      // positioned past the last Vdata?
     {
         return (_index >= (int) _vdata_refs.size());
-    } virtual bool eo_attr(void) const; // positioned past the last attribute?
+    }
+    virtual bool eo_attr(void) const; // positioned past the last attribute?
     void setmeta(bool val) {
         _meta = val;
     }                           // set metadata loading
@@ -308,9 +316,10 @@ class hdfistream_vdata:public hdfistream_obj {
 class hdfistream_vgroup:public hdfistream_obj {
   public:
     hdfistream_vgroup(const string filename = "");
-     hdfistream_vgroup(const hdfistream_vgroup &):hdfistream_obj(*this) {
+    hdfistream_vgroup(const hdfistream_vgroup &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
-    } virtual ~ hdfistream_vgroup(void) {
+    }
+    virtual ~hdfistream_vgroup(void) {
         _del();
     }
     void operator=(const hdfistream_vgroup &) {
@@ -333,10 +342,12 @@ class hdfistream_vgroup:public hdfistream_obj {
     virtual bool bos(void) const        // positioned in front of the first Vgroup?
     {
         return (_index <= 0);
-    } virtual bool eos(void) const      // positioned past the last Vgroup?
+    }
+    virtual bool eos(void) const      // positioned past the last Vgroup?
     {
         return (_index >= (int) _vgroup_refs.size());
-    } virtual bool eo_attr(void) const; // positioned past the last attribute?
+    }
+    virtual bool eo_attr(void) const; // positioned past the last attribute?
     void setmeta(bool val) {
         _meta = val;
     }                           // set metadata loading
@@ -361,7 +372,9 @@ class hdfistream_vgroup:public hdfistream_obj {
     }
     string _memberName(int32 ref);      // find the name of ref'd Vgroup in the stream
     int32 _vgroup_id;           // handle of open object in annotation interface
+#if 0
     int32 _member_id;           // handle of child object in this Vgroup
+#endif
     int32 _attr_index;          // index of current attribute
     int32 _nattrs;              // number of attributes for this Vgroup
     bool _meta;
@@ -377,9 +390,10 @@ class hdfistream_vgroup:public hdfistream_obj {
 class hdfistream_gri:public hdfistream_obj {
   public:
     hdfistream_gri(const string filename = "");
-     hdfistream_gri(const hdfistream_gri &):hdfistream_obj(*this) {
+    hdfistream_gri(const hdfistream_gri &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
-    } virtual ~ hdfistream_gri(void) {
+    }
+    virtual ~ hdfistream_gri(void) {
         _del();
     }
     void operator=(const hdfistream_gri &) {
@@ -426,7 +440,7 @@ class hdfistream_gri:public hdfistream_obj {
         _attr_index = _pal_index = 0;
     }
     int32 _gr_id;               // GR interface id -> can't get rid of this, needed for GRend()
-    int32 _ri_id;               // handle for open raster object 
+    int32 _ri_id;               // handle for open raster object
     int32 _attr_index;          // index to current attribute
     int32 _pal_index;           // index to current palette
     int32 _nri;                 // number of rasters in the stream

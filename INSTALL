@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for version 3.7.9
+Updated for version 3.7.12
 
 ---------------------------------------------------------------------------
 
@@ -58,10 +58,13 @@ REQUIREMENTS
     first.
 
   o You also need a recent copy of HDF4. We've tested this server with
-    version 4.2r1, although any recent version should work fine. If the
-    configure script cannot find your copy of hdf4, use the
-    --with-netcdf options to tell it where to look (see configure --help).
-    By default the configure script will look in /usr/local/hdf.
+    version 4.2r1 and 4.2r4, although any recent version should work fine. 
+    In order to link with 42.r4 on Linux (and maybe other platforms) I had to
+    compile HDF4 using --without-fortran --with-pic and I also used 
+    --without-netcdf (because some sites need their HDF4 libraries built that
+    way and I wanted to be sure the handler would build with that 
+    configuration). If the configure script cannot find your copy of hdf4, use
+    the --with-hdf options to tell it where to look (see configure --help).
 
 NOTES
 
