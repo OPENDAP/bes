@@ -7,9 +7,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
 #include <iostream>
-
+#include <iomanip>
 #include <debug.h>
 #include <util.h>
+#include <cmath>
 
 #include "H5EOS.h"
 
@@ -23,13 +24,14 @@ extern bool valid_projection;
 extern bool grid_structure_found;
 H5EOS::H5EOS()
 {
+  TES = false;
   valid = false;
-  point_lower = 0.0;
-  point_upper = 0.0;
-  point_left = 0.0;
-  point_right = 0.0;
-  gradient_x = 0.0;
-  gradient_y = 0.0;
+  point_lower = 0.0f;
+  point_upper = 0.0f;
+  point_left = 0.0f;
+  point_right = 0.0f;
+  gradient_x = 0.0f;
+  gradient_y = 0.0f;
   dimension_data = NULL;
   bmetadata_Struct = false;
 #ifdef NASA_EOS_META
@@ -135,6 +137,11 @@ bool H5EOS::check_eos(hid_t id)
       hdfeosparse(this);
 #ifdef NASA_EOS_META
       set_metadata(id, "coremetadata", metadata_core);
+      // cerr << metadata_core << endl;
+      if(string(metadata_core).find("\"TES\"") != string::npos){
+	TES = true;
+      }
+      
       set_metadata(id, "CoreMetadata", metadata_Core);
       set_metadata(id, "ArchivedMetadata", metadata_Archived);
       set_metadata(id, "subsetmetadata", metadata_subset);
@@ -183,6 +190,11 @@ bool H5EOS::is_grid(string name)
     }
   }
   return false;
+}
+
+bool H5EOS::is_TES()
+{
+  return TES;
 }
 
 bool H5EOS::is_valid()
@@ -240,16 +252,37 @@ bool H5EOS::set_dimension_array()
 	gradient_x =
 	  (point_right - point_left) / (float) (dim_size);
 	for (i = 0; i < dim_size; i++) {
-	  convbuf[i] = (dods_float32)
-	    (point_left + (float) i * gradient_x + (gradient_x / 2.0)) / 1000000.0;
+	  if(!TES){
+	    convbuf[i] = (dods_float32)
+	      (point_left + (float) i * gradient_x + (gradient_x / 2.0)) / 1000000.0;
+	  }
+	  else{
+	    convbuf[i] = (dods_float32)
+	      (point_left + (float) i * gradient_x) / 1000000.0;	    
+	  }
 	}
       } else if ((dim_name.find("YDim", (int) dim_name.size() - 4))
 		 != string::npos) {
+	
+	if(TES){
+	  // swap the upper and lower points for TES products
+	  float temp = point_upper;
+	  point_upper = point_lower;
+	  point_lower = temp;
+	}
+	
 	gradient_y =
 	  (point_upper - point_lower) / (float) (dim_size);	
 	for (i = 0; i < dim_size; i++) {
-	  convbuf[i] = (dods_float32)
-	    (point_lower + (float) i * gradient_y + (gradient_y / 2.0)) / 1000000.0;
+	  if(!TES){
+	    convbuf[i] = (dods_float32)
+	      (point_lower + (float) i * gradient_y + (gradient_y / 2.0)) / 1000000.0;
+	  }
+	  else{
+	    gradient_y = ceilf(gradient_y/1000000.0f) * 1000000.0f;
+	    convbuf[i] = (dods_float32)
+	      (point_lower + (float) i * gradient_y) / 1000000.0;	    
+	  }
 	}
       } else {
 	for (i = 0; i < dim_size; i++) {

@@ -28,6 +28,7 @@ class H5EOS:public H5CF {
 
 private:
 
+  bool TES;
   bool valid;
   hid_t hid_hdfeos_information;
 
@@ -157,6 +158,13 @@ public:
   /// \see h5dds.cc
   bool is_grid(string name);
 
+  /// Check if the current HDF-EOS5 file is a TES file.
+  ///
+  /// \return true if it is a TES product.
+  /// \return false otherwise  
+  bool is_TES();
+
+  
   /// Check if the current HDF5 file is a valid NASA EOS file.
   ///
   /// \return true if it has a set of correct meta data files.
