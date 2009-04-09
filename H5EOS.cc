@@ -376,6 +376,7 @@ void H5EOS::reset()
   grid_structure_found = false;
   valid_projection = false;
   valid = false;
+  TES = false;
   point_lower = 0.0;
   point_upper = 0.0;
   point_left = 0.0;
