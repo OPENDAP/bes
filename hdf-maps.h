@@ -73,6 +73,9 @@ typedef map < int32, gr_info, less < int32 > >::const_iterator GRI;
 typedef map < int32, vg_info, less < int32 > >::const_iterator VGI;
 
 /* Function prototypes */
+#ifdef CF
+HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset);
+#endif
 HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset);
 HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset);
 HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset);
@@ -85,4 +88,8 @@ BaseType *NewDAPVar(const string &varname,
 		    const string &dataset,
 		    int32 hdf_type);
 string DAPTypeName(int32 hdf_type);
-
+// <hyokyung 2008.11.13. 15:34:50>
+HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup & vg,
+                                     vg_map & vgmap, sds_map & map,
+                                     vd_map & vdmap, gr_map & grmap,
+				     const string &dataset, DDS& dds);

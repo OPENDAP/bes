@@ -79,11 +79,13 @@ using namespace std;
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
-
+#include "HDFEOS.h"		// <hyokyung 2009.04.10. 16:26:32>
 // Glue routines declared in hdfeos.lex
 void hdfeos_switch_to_buffer(void *new_buffer);
 void hdfeos_delete_buffer(void * buffer);
 void *hdfeos_string(const char *yy_str);
+
+HDFEOS eos;			// <hyokyung 2009.04.10. 16:26:34>
 
 template < class T > string num2string(T n)
 {
@@ -117,6 +119,11 @@ static void GR_descriptions(gr_map & map, DAS & das,
 static void FileAnnot_descriptions(DAS & das, const string & filename);
 static vector < hdf_attr > Pals2Attrs(const vector < hdf_palette > palv);
 static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
+
+#ifdef CF
+static void add_dimension_attributes(DAS &das);
+#endif
+
 
 // Generate cache filename.
 string cache_name(const string & cachedir, const string & filename)
@@ -200,6 +207,7 @@ save_state(const string & filename, const DDS & dds, const DAS & das)
 // Read DDS from cache
 void read_dds(DDS & dds, const string & cachedir, const string & filename)
 {
+#ifndef CF    
     if (!cachedir.empty()) {
         update_descriptions(cachedir, filename);
 
@@ -214,6 +222,7 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 	// set the factory back to null, we don't need the factory any more
 	dds.set_factory( NULL  ) ;
     } else {
+#endif                  
 #if 0
 	// see above comment from pcw
         if (gs_filename && filename == *gs_filename && gs_dds) {
@@ -238,8 +247,9 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 #if 0
         }
 #endif
+#ifndef CF	
     }
-
+#endif
     return;
 }
 
@@ -375,6 +385,13 @@ static void build_descriptions(DDS & dds, DAS & das,
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
     Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
 
+#ifdef CF
+  // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
+  if(eos.is_shared_dimension_set()){
+    add_dimension_attributes(das);
+  }
+#endif
+  
     return;
 }
 
@@ -576,6 +593,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
     for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
         if (!v->second.toplevel)
             continue;           // skip over non-toplevel vgroups
+#ifndef CF		
         pbt =
             NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap,
                                    grmap, filename);
@@ -583,6 +601,12 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             dds.add_var(pbt);
 	    delete pbt;
         }
+#endif
+#ifdef CF
+    NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
+			      grmap, filename, dds);
+#endif	
+	
     }
 
     // add lone SDS's
@@ -719,6 +743,7 @@ void AddHDFAttr(DAS & das, const string & varname,
                 string::size_type dotzero = container_name.find('.');
                 if (dotzero != container_name.npos)
                     container_name.erase(dotzero);      // erase .0
+#ifndef CF // <hyokyung 2008.12. 1. 11:20:24>						
                 AttrTable *at = das.get_table(container_name);
                 if (!at)
                     at = das.add_table(container_name, new AttrTable);
@@ -730,9 +755,20 @@ void AddHDFAttr(DAS & das, const string & varname,
                 if (hdfeosparse(static_cast < void *>(&arg)) != 0
                     || arg.status() == false)
                     cerr << "HDF-EOS parse error!\n";
-
                 hdfeos_delete_buffer(buf);
-            } else {
+#endif
+#ifdef CF
+	// Parse one more time <hyokyung 2008.11.10. 15:38:36>
+	if (container_name.find("StructMetadata") == 0){
+	  eos.reset();
+	  DBG(cerr << "=AddHDFAttr() container_name=" << container_name  << endl);
+	  eos.parse_struct_metadata(attv[j].c_str());
+	  eos.set_dimension_array();
+	  DBG(eos.print());
+	}		
+#endif
+        }
+             else {
                 if (attrtype == "String")
                     attv[j] = "\"" + escattr(attv[j]) + "\"";
                 if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
@@ -846,3 +882,77 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim)
     }
     return dattrs;
 }
+
+#ifdef CF
+/// An abstract respresntation of DAP String type.
+static const char STRING[] = "String";
+/// An abstract respresntation of DAP Byte type.
+static const char BYTE[] = "Byte";
+/// An abstract respresntation of DAP Int32 type.
+static const char INT32[] = "Int32";
+/// An abstract respresntation of DAP Int16 type.
+static const char INT16[] = "Int16";
+/// An abstract respresntation of DAP Float64 type.
+static const char FLOAT64[] = "Float64";
+/// An abstract respresntation of DAP Float32 type.
+static const char FLOAT32[] = "Float32";
+/// An abstract respresntation of DAP Uint16 type.
+static const char UINT16[] = "UInt16";
+/// An abstract respresntation of DAP UInt32 type.
+static const char UINT32[] = "UInt32";
+/// For umappable HDF5 integer data types.
+static const char INT_ELSE[] = "Int_else";
+/// For unmappable HDF5 float data types.
+static const char FLOAT_ELSE[] = "Float_else";
+/// An abstract respresntation of DAP Structure type.
+static const char COMPOUND[] = "Structure";
+/// An abstract respresntation of DAP Array type.
+static const char ARRAY[] = "Array";   
+/// An abstract respresntation of DAP Url type.
+static const char URL[] = "Url";
+
+
+// <hyokyung 2008.11.13. 14:59:16>
+static void add_dimension_attributes(DAS & das)
+{
+
+  AttrTable *at;
+
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
+  at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
+  at->append_attr("dataType", STRING, "\"Grid\"");
+  at->append_attr("history", STRING,
+		  "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
+
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"x\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"360\"");
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+  at->append_attr("minimum", FLOAT32, "-180.0");
+  at->append_attr("maximum", FLOAT32, "180.0");
+  at->append_attr("resolution", FLOAT32, "1.00");
+
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"y\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"180\"");
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("minimum", FLOAT32, "-90.0");
+  at->append_attr("maximum", FLOAT32, "90.0");
+  at->append_attr("resolution", FLOAT32, "1.00");
+
+  at = das.add_table("lev", new AttrTable);
+  at->append_attr("grads_dim", STRING, "\"z\"");
+  at->append_attr("grads_mapping", STRING, "\"linear\"");
+  at->append_attr("grads_size", STRING, "\"15\"");
+  at->append_attr("units", STRING, "\"level\"");
+  at->append_attr("long_name", STRING,
+		  "\"level converted from nCandidate\"");
+
+
+}
+#endif

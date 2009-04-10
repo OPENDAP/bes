@@ -46,13 +46,13 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
+#include "HDFEOS.h" 		// <hyokyung 2008.11.11. 15:21:08>
 #include <BESDebug.h>
 
 //#define DODS_DEBUG
 #include <debug.h>
 using namespace std;
-
+extern HDFEOS eos;		// <hyokyung 2008.11.11. 15:21:07>
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
@@ -75,12 +75,15 @@ using namespace std;
 #include "HDFStr.h"
 #include "HDFArray.h"
 #include "HDFGrid.h"
+#include "HDFEOSGrid.h"		// <hyokyung 2008.11.11. 13:43:09>
+#include "HDFEOSArray.h"	// <hyokyung 2008.11.14. 10:07:49>
 #include "HDFSequence.h"
 #include "HDFStructure.h"
 #include "hdfutil.h"
 #include "dhdferr.h"
 #include "hdf-maps.h"
 #include "debug.h"
+
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98
 // jhrg.
@@ -191,15 +194,24 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
             if (sdmap[ref].sds.has_scale()) {
                 bt = NewGridFromSDS(sdmap[ref].sds, dataset);
             } else {
-                bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
+#ifdef CF	      
+	      // cerr << "Got DFTAG_NDG" << endl;
+	      // Check if it can be mapped to Grid <hyokyung 2008.11.10. 14:32:50>
+	      if(eos.is_grid(sdmap[ref].sds.name)) // <hyokyung 2008.11.11. 14:49:25>
+		 bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
+              else
+#endif		
+		 bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
             }
             break;
         case DFTAG_VG:
             // GR's are also stored as Vgroups
-            if (grmap.find(ref) != grmap.end())
+            if (grmap.find(ref) != grmap.end()){
+	      // cerr << "Got DFTAG_VG" << endl; <hyokyung 2008.11.11. 14:36:44>
                 bt = NewArrayFromGR(grmap[ref].gri, dataset);
-            else
-                bt = NewStructureFromVgroup(vgmap[ref].vgroup, vgmap,
+	    }
+	    else 
+	      bt = NewStructureFromVgroup(vgmap[ref].vgroup, vgmap,
                                             sdmap, vdmap, grmap, dataset);
             break;
         default:
@@ -207,7 +219,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
             break;
         }
         if (bt) {
-            str->add_var(bt);   // *st now manages *bt
+	    str->add_var(bt);   // *st now manages *bt
             delete bt;
             nonempty = true;
         }
@@ -592,3 +604,168 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
     }
 }
 
+// <hyokyung 2008.11.11. 13:42:43>
+// Create a DAP HDFEOSGrid out of the primary array and dim scale in an hdf_sds
+HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
+{
+    // Create the HDFGrid and the primary array.  Add the primary array to 
+    // the HDFGrid.
+    if (sds.name.length() == 0) // SDS must have a name
+        return 0;
+    if (sds.dims.size() == 0)   // SDS must have rank > 0
+        return 0;
+    // construct HDFArray, assign data type
+    BaseType *bt = NewDAPVar(sds.name, dataset, sds.data.number_type());
+    if (bt == 0) {              // something is not right with SDS number type?
+        return 0;
+    }
+    HDFArray *ar = new HDFArray(sds.name,dataset,bt);
+    if (ar == 0) {
+        delete bt;
+        return 0;
+    }
+    // Array duplicates the base type passed, so delete here
+    delete bt ;
+    
+    vector < string > tokens;
+    eos.get_dimensions(sds.name, tokens);
+    /*
+    for (int i = 0; i < (int) sds.dims.size(); ++i)
+        ar->append_dim(sds.dims[i].count, tokens.at(i));
+    */
+    if (ar == 0)
+        return 0;
+    
+    HDFEOSGrid *gr = new HDFEOSGrid(sds.name, dataset);
+    if (gr == 0) {
+        delete ar;
+        return 0;
+    }
+
+    // gr->add_var(ar, array);     // note: gr now manages ar
+    
+    for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
+	DBG(cerr << "=read_objects_base_type():Dim name " <<
+	    tokens.at(dim_index) << endl);
+
+	string str_dim_name = tokens.at(dim_index);
+
+	// Retrieve the full path to the each dimension name.
+	string str_grid_name = eos.get_grid_name(sds.name);
+	string str_dim_full_name = str_grid_name + str_dim_name;
+
+	int dim_size = eos.get_dimension_size(str_dim_full_name);
+
+#ifdef SHORT_PATH
+	str_dim_full_name = str_dim_name;
+#endif
+
+#ifdef CF
+	// Rename dimension name according to CF convention.
+	str_dim_full_name =
+	    eos.get_CF_name((char *) str_dim_full_name.c_str());
+#endif
+
+	BaseType *bt = 0;
+	Array *ar2 = 0;
+	try {
+	    bt = new HDFFloat32(str_dim_full_name, dataset);
+	    ar2 = new HDFArray(str_dim_full_name, dataset, bt);
+	    delete bt; bt = 0;
+
+	    ar2->append_dim(dim_size, str_dim_full_name);
+	    ar->append_dim(dim_size, str_dim_full_name);
+
+	    gr->add_var(ar2, maps);
+	    delete ar2; ar2 = 0;
+	    
+	}
+	catch (...) {
+	    if( bt ) delete bt;
+	    if( ar2 ) delete ar2;
+	    throw;
+	}
+    }
+    gr->add_var(ar, array);
+    delete ar; ar =0;
+    return gr;
+}
+
+
+#ifdef CF
+// Create a EOS grids without structure. <hyokyung 2008.11.13. 15:38:58>
+HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
+                                     sds_map &sdmap, vd_map &vdmap,
+                                     gr_map &grmap, const string &dataset, DDS& dds)
+{
+    // check to make sure hdf_vgroup object is set up properly
+    if (vg.name.length() == 0)  // Vgroup must have a name
+        return 0;
+    
+    if (!eos.is_shared_dimension_set()) {
+      int j;
+      BaseType *bt = 0;
+      Array *ar = 0;    
+      vector < string > dimension_names;
+      eos.get_all_dimensions(dimension_names);
+
+      for(j=0; j < dimension_names.size(); j++){
+	int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
+	string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+	bt = new HDFFloat32(str_cf_name, dataset);
+	ar = new HDFEOSArray(str_cf_name, dataset, bt);
+
+	ar->add_var(bt);
+	delete bt; bt = 0;
+	ar->append_dim(shared_dim_size, str_cf_name);
+	dds.add_var(ar);
+	delete ar; ar = 0;
+	// Set the flag for "shared dimension" true.
+      }
+      eos.set_shared_dimension();
+    }
+    
+    // step through each tagref and copy its contents to DAP
+    for (int i = 0; i < (int) vg.tags.size(); ++i) {
+        int32 tag = vg.tags[i];
+        int32 ref = vg.refs[i];
+        BaseType *bt = 0;
+        switch (tag) {
+        case DFTAG_VH:
+            bt = NewSequenceFromVdata(vdmap[ref].vdata, dataset);
+            break;
+        case DFTAG_NDG:
+            if (sdmap[ref].sds.has_scale()) {
+                bt = NewGridFromSDS(sdmap[ref].sds, dataset);
+            } else {
+	      // cerr << "Got DFTAG_NDG" << endl;
+	      // Check if it can be mapped to Grid <hyokyung 2008.11.10. 14:32:50>
+	      if(eos.is_grid(sdmap[ref].sds.name)) // <hyokyung 2008.11.11. 14:49:25>
+		 bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
+              else
+		 bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
+            }
+            break;
+        case DFTAG_VG:
+            // GR's are also stored as Vgroups
+            if (grmap.find(ref) != grmap.end()){
+	      // cerr << "Got DFTAG_VG" << endl; <hyokyung 2008.11.11. 14:36:44>
+                bt = NewArrayFromGR(grmap[ref].gri, dataset);
+	    }
+	    else {
+  	        bt = NewStructureFromVgroupEOS(vgmap[ref].vgroup, vgmap,
+                                            sdmap, vdmap, grmap, dataset, dds);
+	    }
+            break;
+        default:
+            cerr << "Error: Unknown vgroup child: " << tag << endl;
+            break;
+        }
+        if (bt) {
+	    dds.add_var(bt);   // *st now manages *bt
+        }
+    }
+
+    return 0;
+}
+#endif

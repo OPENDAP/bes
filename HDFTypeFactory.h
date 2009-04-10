@@ -49,6 +49,10 @@ class HDFArray;
 class HDFStructure;
 class HDFSequence;
 class HDFGrid;
+#ifdef CF
+class HDFEOSGrid;
+class HDFEOSArray;
+#endif
 
 /** A factory for the netCDF client library types.
 
@@ -77,6 +81,10 @@ public:
     virtual Structure *NewStructure(const string & n = "") const;
     virtual Sequence *NewSequence(const string & n = "") const;
     virtual Grid *NewGrid(const string & n = "") const;
+#ifdef CF
+    virtual Grid *NewEOSGrid(const string & n = "") const;	//  <hyokyung 2008.11.14. 11:39:48>
+   virtual Array *NewEOSArray(const string & n = "", BaseType * v = 0) const;  // <hyokyung 2008.11.14. 11:39:51>
+#endif  
 };
 
 #endif

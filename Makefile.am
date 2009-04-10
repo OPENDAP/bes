@@ -1,4 +1,3 @@
-
 # Automake file for hdf4-handler
 #
 # 9/19/2005 jhrg
@@ -48,17 +47,19 @@ eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
-	HDFTypeFactory.cc
+	HDFTypeFactory.cc HDFEOSGrid.cc HDFEOSArray.cc
 
 HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
-	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h
+	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h HDFEOSGrid.h HDFEOSArray.h
+# Parser for EOS Grid generation is added. <hyokyung 2008.11.11. 10:21:13>
+GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc \
+	hdfeos2.tab.cc hdfeos2.tab.hh lex.hdfeos2.cc
 
-GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
 	hdf-dods.h hdf-maps.h config_hdf.h \
-	$(GRAM_SRC)
+	HDFEOS.cc $(GRAM_SRC)
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
@@ -138,11 +139,18 @@ hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
 	mv hdfeos.tab.c hdfeos.tab.cc
 
+hdfeos2.tab.cc hdfeos2.tab.hh: hdfeos2.y HDFEOS.h
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos2 -o hdfeos2.tab.cc $<
+	if test -e hdfeos2.tab.cc.h; then mv hdfeos2.tab.cc.h hdfeos2.tab.hh; fi
+
 # Build the HDF-EOS scanner
 
 lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
 	mv lex.hdfeos.c lex.hdfeos.cc
+
+lex.hdfeos2.cc: hdfeos2.lex hdfeos2.tab.cc hdfeos2.tab.hh
+	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 ###########################################################################
 

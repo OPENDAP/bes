@@ -38,7 +38,8 @@
 #include "HDFStructure.h"
 #include "HDFSequence.h"
 #include "HDFGrid.h"
-
+#include "HDFEOSGrid.h"		// <hyokyung 2008.11.14. 11:38:01>
+#include "HDFEOSArray.h"		// <hyokyung 2008.11.14. 11:38:01>
 #include "HDFTypeFactory.h"
 #include "debug.h"
 
@@ -107,4 +108,14 @@ Sequence *HDFTypeFactory::NewSequence(const string & n) const
 Grid *HDFTypeFactory::NewGrid(const string & n) const
 {
     return new HDFGrid(n, d_filename);
+}
+
+Grid *HDFTypeFactory::NewEOSGrid(const string & n) const
+{
+    return new HDFEOSGrid(n, d_filename);
+}
+
+Array *HDFTypeFactory::NewEOSArray(const string & n,  BaseType * v) const
+{
+    return new HDFEOSArray(n, d_filename, v);
 }

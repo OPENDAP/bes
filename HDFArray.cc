@@ -91,7 +91,7 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
 {
     if (read_p())
         return true;
-
+  
     // get the HDF dataset name, SDS name
     string hdf_file = dataset();
     string hdf_name = this->name();
