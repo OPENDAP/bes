@@ -320,7 +320,7 @@ string HDFEOS::get_EOS_name(string str)
 void HDFEOS::reset()
 {
   int j;
-
+  _parsed = false;
   valid = false;
   point_lower = 0.0;
   point_upper = 0.0;
