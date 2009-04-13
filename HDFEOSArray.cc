@@ -5,7 +5,7 @@
  *-------------------------------------------------------------------------
  */
 
-#define DODS_DEBUG
+// #define DODS_DEBUG
 // #define CF
 
 #include <iostream>
