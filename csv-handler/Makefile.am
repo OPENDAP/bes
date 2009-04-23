@@ -33,7 +33,7 @@ libcsv_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data COPYRIGHT COPYING csv_handler.spec bes-csv-data.sh.in
+EXTRA_DIST = data COPYRIGHT COPYING bes-csv-data.sh.in
 
 CLEANFILES = *~ bes-csv-data.sh
 

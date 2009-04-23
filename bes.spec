@@ -3,6 +3,9 @@
 %define beslogdir %{_localstatedir}/log/%{name}
 %define besuser %{name}
 %define besgroup %{name}
+%define beslibdir %{_libdir}/bes
+%define bessharedir %{_datadir}/bes
+%define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
 Version:        3.7.2
@@ -79,6 +82,9 @@ chmod a-x __distribution_docs/BES_*.doc
 
 sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
   -e 's:=.*/bes.log:=%{beslogdir}/bes.log:' \
+  -e 's:=.*/lib/bes:=%{beslibdir}:' \
+  -e 's:=.*/share/bes:=%{bessharedir}:' \
+  -e 's:=.*/share/hyrax:=%{hyraxsharedir}:' \
   -e 's:=/full/path/to/serverside/certificate/file.pem:=%{bespkidir}/cacerts/file.pem:' \
   -e 's:=/full/path/to/serverside/key/file.pem:=%{bespkidir}/public/file.pem:' \
   -e 's:=/full/path/to/clientside/certificate/file.pem:=%{bespkidir}/cacerts/file.pem:' \
@@ -124,6 +130,7 @@ exit 0
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt
+%{_datadir}/bes/*.xml
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
 %{_bindir}/besstandalone
