@@ -6,26 +6,25 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 // #define DODS_DEBUG
-#include <iostream>
-#include <iomanip>
-#include <debug.h>
-#include <util.h>
-#include <cmath>
 
 #include "H5EOS.h"
 
 using namespace std;
 
-int hdfeoslex();
-int hdfeosparse(void *arg);
-struct yy_buffer_state;
-yy_buffer_state *hdfeos_scan_string(const char *str);
 extern bool valid_projection;
 extern bool grid_structure_found;
+
+struct yy_buffer_state;
+
+int              hdfeoslex();
+int              hdfeosparse(void *arg);
+yy_buffer_state *hdfeos_scan_string(const char *str);
+
+
 H5EOS::H5EOS()
 {
   TES = false;
-  valid = false;
+  _valid = false;
   point_lower = 0.0f;
   point_upper = 0.0f;
   point_left = 0.0f;
@@ -127,12 +126,12 @@ bool H5EOS::check_eos(hid_t id)
   if (has_group(id, "HDFEOS INFORMATION")) {
 
     if (set_metadata(id, "StructMetadata", metadata_Struct)) {
-      valid = true;
+      _valid = true;
     } else {
-      valid = false;
+      _valid = false;
     }
 
-    if (valid) {
+    if (_valid) {
       hdfeos_scan_string(metadata_Struct);
       hdfeosparse(this);
 #ifdef NASA_EOS_META
@@ -141,15 +140,18 @@ bool H5EOS::check_eos(hid_t id)
       if(string(metadata_core).find("\"TES\"") != string::npos){
 	TES = true;
       }
-      
       set_metadata(id, "CoreMetadata", metadata_Core);
+      if(string(metadata_Core).find("\"OMI\"") != string::npos){
+	OMI = true;
+      }
+      
       set_metadata(id, "ArchivedMetadata", metadata_Archived);
       set_metadata(id, "subsetmetadata", metadata_subset);
       set_metadata(id, "productmetadata", metadata_product);
 #endif
     }
 
-    return valid;
+    return _valid;
   }
   return false;
 }
@@ -199,7 +201,7 @@ bool H5EOS::is_TES()
 
 bool H5EOS::is_valid()
 {
-  return valid;
+  return _valid;
 }
 
 void H5EOS::print()
@@ -373,9 +375,12 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 void H5EOS::reset()
 {
   int j;
+
+  H5CF::reset();
+    
   grid_structure_found = false;
   valid_projection = false;
-  valid = false;
+  _valid = false;
   TES = false;
   point_lower = 0.0;
   point_upper = 0.0;
@@ -421,7 +426,7 @@ void H5EOS::reset()
   strcpy(metadata_core, "");
   strcpy(metadata_product, "");
   strcpy(metadata_subset, "");
-  H5CF::reset();
+
 }
 
 void H5EOS::get_all_dimensions(vector < string > &tokens)

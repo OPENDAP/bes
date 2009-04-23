@@ -26,9 +26,12 @@ extern int yy_line_num;	// defined in hdfeos.lex
 static int parser_state = 0; // parser state 
 bool valid_projection = false;
 bool grid_structure_found = false; 
+bool swath_structure_found = false; 
 string full_path = "/HDFEOS/GRIDS/";
 string grid_name = "";
+string swath_name = "";
 string data_field_name = "/Data Fields/";
+string geo_field_name = "/Geolocation Fields/"; /* <hyokyung 2009.04.21. 13:19:54> */
 string dimension_list = "";
 string dimension_name = "";
  
@@ -55,11 +58,14 @@ void hdfeoserror(char *s);
 %token HE5_GCTP_GEO
 %token DATA_TYPE 
 %token GRID_STRUCTURE
+%token SWATH_STRUCTURE /* <hyokyung 2009.04.20. 10:25:40> */
 %token GRID_NAME  
+%token SWATH_NAME  /*  <hyokyung 2009.04.20. 10:25:45> */
 %token DIMENSION_SIZE  
 %token DIMENSION_NAME  
 %token DIMENSION_LIST
 %token DATA_FIELD_NAME
+%token GEO_FIELD_NAME		/* <hyokyung 2009.04.21. 13:19:27> */
 %token XDIM
 %token YDIM
 %%
@@ -131,9 +137,11 @@ attribute: attribute_grid_name
 	| attribute_dimension_size
  	| attribute_dimension_list
 	| attribute_data_field_name
+	| attribute_geo_field_name
         | projection
 	| DATA_TYPE 
 	| STR '=' dataseq
+	| attribute_swath_name
 ;
 attribute_grid_name: GRID_NAME '=' STR
 {
@@ -190,6 +198,8 @@ attribute_dimension_size: DIMENSION_SIZE '=' INT
   // Save the size info.
   if(grid_structure_found)  
     ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi($3));
+  if(swath_structure_found)
+    ((H5EOS*)(h5eos))->add_dimension_map_swath(dimension_name, atoi($3));
 }
 ;
 attribute_dimension_list: DIMENSION_LIST 
@@ -199,14 +209,24 @@ attribute_dimension_list: DIMENSION_LIST
 '=' dataseq
 {
   parser_state = 11;
-  if(grid_structure_found)
+  if(grid_structure_found){
     ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
-  
-  // Reset for next path
-  data_field_name = "/Data Fields/";
-  full_path = "/HDFEOS/GRIDS/";
-  full_path.append(grid_name);
-  dimension_list = "";
+    // Reset for next path
+    data_field_name = "/Data Fields/";
+    full_path = "/HDFEOS/GRIDS/";
+    full_path.append(grid_name);
+    dimension_list = "";
+  }
+  if(swath_structure_found){
+    // ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
+    // Reset for next path
+    data_field_name = "/Data Fields/";
+    full_path = "/HDFEOS/SWATHS/";
+    full_path.append(swath_name);
+    /* <hyokyung 2009.04.21. 13:37:02> */
+    geo_field_name = "/Geolocation Fields/";
+    dimension_list = "";
+  }  
 }
 ;
 attribute_data_field_name: DATA_FIELD_NAME '=' STR
@@ -221,8 +241,48 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
     cout << "add_data_path:" << full_path << endl;
 #endif    
   }
+  if(swath_structure_found){
+    data_field_name.append($3);
+    full_path.append(data_field_name);
+    ((H5EOS*)(h5eos))->add_data_path_swath(full_path);
+#ifdef VERBOSE    
+    cout << "add_data_path_swath:" << full_path << endl;
+#endif        
+  }
 }
 ;
+
+attribute_geo_field_name: GEO_FIELD_NAME '=' STR
+{
+  if(swath_structure_found){
+    geo_field_name.append($3);
+    full_path.append(geo_field_name);
+    ((H5EOS*)(h5eos))->add_data_path_swath(full_path);
+#ifdef VERBOSE    
+    cout << "add_geo_path_swath:" << full_path << endl;
+#endif        
+  }
+}
+;
+
+
+attribute_swath_name: SWATH_NAME '=' STR
+{
+  // Remember the path.
+  swath_name = $3;
+  swath_structure_found = true;
+  ((H5EOS*)(h5eos))->set_swath(swath_structure_found);  
+  // Reset the full path
+  full_path = "/HDFEOS/SWATHS/";
+  valid_projection = false;
+  full_path.append(swath_name);
+#ifdef VERBOSE  
+  cout << "Swath Name is:" << swath_name << endl;
+#endif
+  
+}
+;
+
 
 group:GROUP '=' STR
       {
@@ -236,6 +296,7 @@ group:GROUP '=' STR
       GROUP '=' GRID_STRUCTURE
       {
 	grid_structure_found = true;	
+	swath_structure_found = false;	
 #ifdef VERBOSE
 	cout << $3 <<  endl; // $3 refers the STR
 #endif	
@@ -243,6 +304,14 @@ group:GROUP '=' STR
       }
       attribute_list
       END_GROUP '=' GRID_STRUCTURE
+|
+      GROUP '=' SWATH_STRUCTURE
+      {
+	grid_structure_found = false;
+      }
+      attribute_list
+      END_GROUP '=' SWATH_STRUCTURE
+
 ;
 
 object:OBJECT '=' STR

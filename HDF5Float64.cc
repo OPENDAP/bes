@@ -46,8 +46,7 @@ bool HDF5Float64::read()
         if (!q)
         	throw InternalErr(__FILE__, __LINE__, "null pointer");
         HDF5Structure &p = dynamic_cast < HDF5Structure & >(*q);
-        DBG(cerr << "=read(): Size = " << p->
-            get_entire_array_size() << endl);
+        DBG(cerr << "=read(): Size = " << p.get_entire_array_size() << endl);
         char Msgi[256];
 
 #if 0

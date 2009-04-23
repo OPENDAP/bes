@@ -10,10 +10,13 @@
 #ifndef _H5SHORTNAME_H
 #define _H5SHORTNAME_H
 
+#include "config_hdf5.h"
+
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <debug.h>
 
 using namespace std;
 

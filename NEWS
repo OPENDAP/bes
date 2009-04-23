@@ -9,6 +9,19 @@ News for version 1.3.1
 
 Fixes for the constraint, XML responses and service interface.
 
+News for version 1.3.0.a
+
+ The--enable-cf alone doesn't shorten the DDS variables.
+ All variables will have the group path information. 
+If you turn on --enable-short-name on top of --enable-cf,
+it'll generate variables that starts with 'A??' where '??' is a unique
+number. The --enable-short-name alone doesn't do anything.
+
+  CoreMetadata will be parsed and provided as an attribute even if CF
+option is enabled. We checked with IDV and GrADS and CoreMetadata did
+not bother them so we think it's safe to turn CoreMetadata on always.
+
+
 News for version 1.3.0
 
 Many bug fixes - see ChangeLog

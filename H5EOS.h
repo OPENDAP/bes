@@ -2,12 +2,19 @@
 #define _H5EOS_H
 #define BUFFER_MAX 655360       // 10 * (2^16); 10 metadata files can be merged per metadata type.
 
-#include <hdf5.h>
+#include "config_hdf5.h"
+
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+#include <cmath>
 
+#include <hdf5.h>
+#include <debug.h>
+#include <util.h>
 #include <Array.h>
 #include "hdfeos.tab.hh"
 #include "H5CF.h"
@@ -29,7 +36,7 @@ class H5EOS:public H5CF {
 private:
 
   bool TES;
-  bool valid;
+  bool _valid;
   hid_t hid_hdfeos_information;
 
   map < string, int > dimension_map;
@@ -171,6 +178,7 @@ public:
   /// \return false otherwise  
   bool is_valid();
 
+  
   /// Prints out some information parsed from meta data
   ///
   /// This function is provided for debugging purporse

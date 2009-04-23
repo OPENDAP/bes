@@ -18,7 +18,7 @@
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
 
-// #define DODS_DEBUG
+#include "config_hdf5.h"
 
 #include <string>
 #include <sstream>
@@ -779,6 +779,9 @@ void find_gloattr(hid_t file, DAS & das)
     if(eos.is_valid() && valid_projection){
       add_dimension_attributes(das);
     }
+    if(eos.is_swath()){
+      write_dimension_attributes_swath(das);
+    }
 #endif
 
     hid_t root = H5Gopen(file, "/");
@@ -1093,4 +1096,30 @@ void add_dimension_attributes(DAS & das)
     }    
     DBG(cerr << "<add_dimension_attributes()" << endl);
 }
+
+void write_dimension_attributes_swath(DAS & das)
+{
+
+  AttrTable *at;
+  
+  // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Swath\"");
+  at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("coordinates", STRING, "\"lon lat\"");
+  // For all swaths, insert the coordinates attribute if lat, lon dimension names match.
+
+
+
+  
+}
+
 #endif

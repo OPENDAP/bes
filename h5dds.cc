@@ -11,12 +11,11 @@
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (c) 2007 The HDF Group
+/// Copyright (c) 2007-2009 The HDF Group
 ///
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
-/// All rights 
-// #define DODS_DEBUG
+/// All rights reserved.
 
 #include "config_hdf5.h"
 
@@ -918,11 +917,21 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 {
     dds_table.set_dataset_name(name_path(filename));
     string varname = a_name;
+      
+    string sname = get_short_name(varname);
+#ifdef CF
+       if(eos.is_valid() && eos.is_swath(varname)) {
+	 // Rename the variable if necessary.
+	 sname = eos.get_CF_name((char*) varname.c_str());
+	 DBG(cerr << "sname: " << sname << endl);
+       }
+#endif	
 
     // Get base type. It should be int, float and double etc. atomic
     // datatype. 
-    BaseType *bt = Get_bt(varname, filename, dt_inst.type);
-
+    // BaseType *bt = Get_bt(varname, filename, dt_inst.type);
+    BaseType *bt = Get_bt(sname, filename, dt_inst.type);
+    
     if (!bt) {
         // NB: We're throwing InternalErr even though it's possible that
         // someone might ask for an HDF5 varaible which this server cannot
@@ -941,7 +950,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 	// Next, deal with Array and Grid data. This 'else clause' runs to
 	// the end of the method. jhrg
         // varname = get_short_name(varname);
-        string sname = get_short_name(varname);
+	
         HDF5Array *ar = new HDF5Array(sname, filename, bt);
 	delete bt; bt = 0;
         ar->set_did(dt_inst.dset);
@@ -1015,6 +1024,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
             delete gr; gr = 0;
 	}
 #endif                          // #ifdef  NASA_EOS_GRID
+
         else {                  // cannot be mapped to grid, must be an array.
             dds_table.add_var(ar);
             delete ar; ar = 0;

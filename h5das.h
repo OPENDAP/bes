@@ -36,4 +36,5 @@ void read_objects(DAS & das, const string & varname, hid_t dset,
                   int num_attr);
 #ifdef CF
 void add_dimension_attributes(DAS & das);
+void write_dimension_attributes_swath(DAS &das);
 #endif

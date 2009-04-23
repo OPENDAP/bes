@@ -36,10 +36,13 @@ HE5_GCTP_GEO    	HE5_GCTP_GEO
 DATA_TYPE       	DataType=[A-Z0-9_]*
 PROJECTION      	Projection
 GRID_STRUCTURE  	GridStructure
+SWATH_STRUCTURE  	SwathStructure
 GRID_NAME       	GridName
+SWATH_NAME       	SwathName
 DIMENSION_SIZE  	Size
 DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
+GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
 XDIM                    XDim=
 YDIM                    YDim=
@@ -67,14 +70,17 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {PROJECTION}   	    	hdfeoslval = yytext; return PROJECTION;
 {DATA_TYPE}   	    	hdfeoslval = yytext; return DATA_TYPE;
 {GRID_STRUCTURE}    	hdfeoslval = yytext; return GRID_STRUCTURE;
+{SWATH_STRUCTURE}    	hdfeoslval = yytext; return SWATH_STRUCTURE;
 {HE5_GCTP_GEO} 	    	hdfeoslval = yytext; return HE5_GCTP_GEO;
 {XDIM}	    	    	hdfeoslval = yytext; return XDIM;
 {YDIM}	    	    	hdfeoslval = yytext; return YDIM;
 {GRID_NAME}           	hdfeoslval = yytext; return GRID_NAME;
+{SWATH_NAME}           	hdfeoslval = yytext; return SWATH_NAME;
 {DIMENSION_SIZE} 	hdfeoslval = yytext; return DIMENSION_SIZE;
 {DIMENSION_NAME} 	hdfeoslval = yytext; return DIMENSION_NAME;
 {DIMENSION_LIST} 	hdfeoslval = yytext; return DIMENSION_LIST;
 {DATA_FIELD_NAME} 	hdfeoslval = yytext; return DATA_FIELD_NAME;
+{GEO_FIELD_NAME} 	hdfeoslval = yytext; return GEO_FIELD_NAME;
 {STR}	    	    	hdfeoslval = yytext; return STR;
 "="                     return (int)*yytext;
 "("                     return (int)*yytext;
