@@ -1,15 +1,16 @@
 #ifndef _HDFEOS_H
 #define _HDFEOS_H
 #define BUFFER_MAX 655360       // 10 * (2^16); 10 metadata files can be merged per metadata type.
-// #define CF
 #define SHORT_PATH
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
-
 #include <Array.h>
 #include "hdfeos2.tab.hh"
+#ifdef USE_HDFEOS2
+#include "HDFEOS2.h"
+#endif
 
 using namespace std;
 using namespace libdap;
@@ -27,11 +28,20 @@ class HDFEOS {
 
 private:
   bool _parsed;
-  bool valid;
+  bool _valid;
 #ifdef CF
-  bool shared_dimension;
+  bool _shared_dimension;
 #endif
+  bool _is_swath;
+  bool _is_grid;
+  bool _is_orthogonal;
+  bool _is_ydimmajor;
 
+  int xdimsize;
+  int ydimsize;
+
+  string path_name;
+  
   map < string, int > dimension_map;
   map < string, string > full_data_path_to_dimension_list_map;
 #ifdef CF
@@ -40,10 +50,16 @@ private:
 #endif
 
   vector < string > dimensions;
-  vector < string > full_data_paths;
+#ifdef USE_HDFEOS2
+  vector < int > types;   // <hyokyung 2008.12.17. 13:15:18>
+#endif
 
 #ifdef SHORT_PATH
   string get_short_name(string a_name);
+#endif
+  
+#ifdef USE_HDFEOS2
+  bool set_dimension_array_hdfeos2();
 #endif
 
 public:
@@ -70,9 +86,17 @@ public:
   char metadata_product[BUFFER_MAX];
   char metadata_subset[BUFFER_MAX];
 #endif
-
-  /// Pointers for map data arrays
-  dods_float32 **dimension_data;
+#ifdef USE_HDFEOS2
+  void handle_grid(const HDFEOS2::GridDataset *grid);
+  void handle_swath(const HDFEOS2::SwathDataset *swath);  
+  void handle_datafield(const HDFEOS2::Field *field);
+  void handle_attributes(const HDFEOS2::Attribute *attribute);
+#endif  
+public:
+#ifdef USE_HDFEOS2
+  auto_ptr<HDFEOS2::File> eos2;
+#endif
+  void reset();
   /// The bottom coordinate value of a Grid
   float point_lower;
   /// The top coordinate value of a Grid
@@ -86,9 +110,20 @@ public:
   /// The resolution of latitude
   float gradient_y;
   
+  
+  vector < string > full_data_paths;  
+  /// Pointers for map data arrays
+  dods_float32 **dimension_data;
+  
   HDFEOS();
   virtual ~ HDFEOS();
-
+#ifdef USE_HDFEOS2
+  /// Remembers a dataset variable.
+  void add_variable(string var_name);
+  
+  /// Remembers the type <hyokyung 2008.12.17. 13:14:26>
+  void add_type(int type);
+#endif
   /// Remembers the data full path of a variable including the name.
   /// 
   /// It pushes the EOS-metadata-parsed full path variable name
@@ -153,18 +188,48 @@ public:
   /// \see h5dds.cc
   bool is_grid(string name);
 
+#ifdef USE_HDFEOS2
+  /// Check if the current HDF4 file is a valid NASA EOS Grid file.
+  /// 
+  /// \param name a name of variable
+  /// \return true if it is grid variable.
+  /// \return false otherwise
+  bool is_grid();
+  
+  /// Check if the current HDF4 file is a valid NASA EOS Swath file.
+  ///
+  /// \return true if it is a valid EOS Swath file
+  /// \return false otherwise
+  bool is_swath();
+#endif  
   /// Check if the current HDF5 file is a valid NASA EOS file.
   ///
   /// \return true if it has a set of correct meta data files.
   /// \return false otherwise  
   bool is_valid();
+#ifdef USE_HDFEOS2
+  /// Check if the current HDF4 file uses a geographic projection.
+  ///
+  /// \return true if it uses a geographic projection
+  /// \return false otherwise  
+  bool is_orthogonal();
+  
+  /// Check if the current HDF4 file has 2-D lat/lon with a YDim major.
+  ///
+  /// \return true if it has 2-D lat/lon with a YDim major.
+  /// \return false otherwise  
+  bool is_ydimmajor();
+#endif
 
   /// Prints out some information parsed from meta data
   ///
   /// This function is provided for debugging purporse
   /// to ensure that parsing is done properly.
   void print();
-
+#ifdef USE_HDFEOS2
+  /// Opens HDF file
+  int open(char* filename);
+#endif  
   /// Generates artifical dimension array.
   ///
   /// This function generates dimension arrays based on metadata information.
@@ -174,9 +239,8 @@ public:
   /// \return ture if dimension arrays are generated successfully.
   /// \return false if dimension size is negative due to error in parsing.
   bool set_dimension_array();
-
+  
   bool parse_struct_metadata(const char* str_metadata);
-  void reset();
   
 #ifdef CF
   bool is_shared_dimension_set();
@@ -185,6 +249,21 @@ public:
   string get_EOS_name(string cf_name);
   void get_all_dimensions(vector < string > &tokens);  
 #endif
+#ifdef USE_HDFEOS2
+  /// Gets the poitner to the array of grid_name.
+  int get_data_grid(string grid_name, char** val);
 
+  /// Gets the poitner to the array of swath_name.
+  int get_data_swath(string swath_name, char** val);
+  
+  /// Gets the data type of variable at location i.
+  int get_data_type(int i);
+
+  /// Get the XDim size of HDF-EOS grid.
+  int get_xdim_size();
+  
+  /// Get the XDim size of HDF-EOS grid.
+  int get_ydim_size();
+#endif
 };
 #endif

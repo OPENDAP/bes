@@ -23,11 +23,11 @@ SUBDIRS += bes-testsuite
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf4_module.la
 
-libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC) $(SERVER_SRC) \
+libhdf4_module_la_SOURCES = $(HDFTYPE_SRC) $(HANDLER_SRC)  $(SERVER_SRC) \
                             $(HDFTYPE_HDR) $(SERVER_HDR)
 libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
-libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDF4_LIBS) $(BES_DAP_LIBS)
+libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS) $(BES_DAP_LIBS)
 dist_bin_SCRIPTS = bes-hdf4-data.sh
 
 endif
@@ -35,31 +35,58 @@ endif
 dap_hdf4_handler_SOURCES = hdf_handler.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
                            $(HDFTYPE_HDR)
 dap_hdf4_handler_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
-dap_hdf4_handler_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
+dap_hdf4_handler_LDADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
 dap_hdf4_handler_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
 eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
 		      $(HDFTYPE_HDR)
-eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDF4_LIBS)
+eosdas_test_LDADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
 eosdas_test_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
 eosdas_test_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
-HDFTYPE_SRC = HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
+HDFTYPE_SRC = 	$(GRAM_SRC) \
+        HDFArray.cc HDFGrid.cc HDFSequence.cc HDFUInt32.cc \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
-	HDFTypeFactory.cc HDFEOSGrid.cc HDFEOSArray.cc
+	HDFTypeFactory.cc 
+if CF
+CF_SRC = HDFEOS.cc HDFEOSGrid.cc HDFEOSArray.cc 
+HDFTYPE_SRC += $(CF_SRC)
+endif
+
+if HDFEOS2
+HDFEOS2_SRC = HDFEOS2.cc HDFEOS2Array.cc HDFEOSArray2D.cc 
+HDFTYPE_SRC += $(HDFEOS2_SRC)
+endif
 
 HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
-	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h HDFEOSGrid.h HDFEOSArray.h
+	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
+if CF
+CF_HDR = HDFEOSGrid.h HDFEOSArray.h
+HDFTYPE_HDR += $(CF_HDR)
+endif
+
+if HDFEOS2
+HDFEOS2_HDR = HDFEOS2.h
+HDFTYPE_HDR += $(HDFEOS2_HDR)
+endif
+
+GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc 
+
+if CF
+CF_GRAM_SRC = hdfeos2.tab.cc hdfeos2.tab.hh lex.hdfeos2.cc
+endif
+
+if CF
 # Parser for EOS Grid generation is added. <hyokyung 2008.11.11. 10:21:13>
-GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc \
-	hdfeos2.tab.cc hdfeos2.tab.hh lex.hdfeos2.cc
+GRAM_SRC += $(CF_GRAM_SRC)
+endif
 
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
-	hdf-dods.h hdf-maps.h config_hdf.h \
-	HDFEOS.cc $(GRAM_SRC)
+	hdf-dods.h hdf-maps.h config_hdf.h 
+
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 

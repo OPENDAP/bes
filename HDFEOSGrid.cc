@@ -58,7 +58,6 @@
 #include "Error.h"
 #include "debug.h"
 
-
 extern HDFEOS eos;
 
 

@@ -61,7 +61,7 @@ void hdfeos2error(char *s);
 %token XDIM
 %token YDIM
 %token GRID_ORIGIN
-%token HDFE_GD_UL
+%token HDFEGDUL
 %%
 attribute_list: /* empty */
           | attribute_list object
@@ -273,7 +273,7 @@ PROJECTION '=' STR
 ;
 
 
-origin: GRID_ORIGIN '=' HDFE_GD_UL
+origin: GRID_ORIGIN '=' HDFEGDUL
 {
    ((HDFEOS*)(arg))->borigin_upper = true;
   // cerr << "Got origin" << endl;  

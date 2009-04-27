@@ -106,12 +106,41 @@ AC_ARG_WITH(test-url,
 AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)
 
+AM_CONDITIONAL([CF], [false])
 AC_ARG_ENABLE([cf], 
 	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF metadata convention support will be enabled.])],
 	     [use_cf=$enableval],[use_cf=no])
 if test "${use_cf}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DCF"
+   AM_CONDITIONAL([CF], [true])
 fi 
+
+dnl ----------------------------------------------------------------------                                
+dnl Test for HDF-EOS2                                                                                     
+
+AC_SUBST(H5_USE_HDFEOS2) H5_USE_HDFEOS2="no"
+
+AC_ARG_WITH([hdfeos2],
+            [AC_HELP_STRING([--with-hdfeos2=DIR],
+                            [Specify path to external hdfeos2 library.])],
+            [if test "$withval" != no; then
+               if test "$withval" != yes; then
+                 HDFEOS2_DIR=$withval
+               fi
+             fi])
+AM_CONDITIONAL([HDFEOS2], [false])
+if test -n "$HDFEOS2_DIR"; then
+  CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include -DUSE_HDFEOS2"
+  LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
+  HDFEOS2_LIBS="-lhdfeos -lGctp"
+dnl  AC_CHECK_LIB(Gctp, inv_init,, AC_MSG_ERROR([invalid Gctp in hdfeos2]))
+dnl  AC_CHECK_LIB(hdfeos, GDopen,, AC_MSG_ERROR([invalid hdfeos in hdfeos2]))
+  H5_USE_HDFEOS2="yes"
+  AM_CONDITIONAL([HDFEOS2], [true])
+fi
+AC_SUBST([HDFEOS2_LIBS])
+
+dnl ----------------------------------------------------------------------                                
 
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile

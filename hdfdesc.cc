@@ -84,8 +84,23 @@ using namespace std;
 void hdfeos_switch_to_buffer(void *new_buffer);
 void hdfeos_delete_buffer(void * buffer);
 void *hdfeos_string(const char *yy_str);
+#ifdef USE_HDFEOS2
+#include "HDFEOSGrid.h"
+#include "HDFEOSArray.h"
+#include "HDFEOSArray2D.h"
+#include "HDFEOS2Array.h"
+#include "HDFByte.h"
+#include "HDFInt16.h"
+#include "HDFUInt16.h"
+#include "HDFInt32.h"
+#include "HDFUInt32.h"
+#include "HDFFloat32.h"
+#include "HDFFloat64.h"
+#endif
 
+#if defined(CF) || defined(USE_HDFEOS2) 
 HDFEOS eos;			// <hyokyung 2009.04.10. 16:26:34>
+#endif
 
 template < class T > string num2string(T n)
 {
@@ -124,6 +139,14 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 static void add_dimension_attributes(DAS &das);
 #endif
 
+#ifdef USE_HDFEOS2
+static void write_dimension_attributes_grid(DAS &das);
+static void write_dimension_attributes_grid_non_ortho(DAS &das);
+static void write_dimension_attributes_swath(DAS &das);
+static void write_hdfeos2_grid(DDS &dds);
+static void write_hdfeos2_grid_other_projection(DDS &dds);
+static void write_hdfeos2_swath(DDS &dds);
+#endif
 
 // Generate cache filename.
 string cache_name(const string & cachedir, const string & filename)
@@ -384,10 +407,27 @@ static void build_descriptions(DDS & dds, DAS & das,
 
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
     Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
-
+#ifdef USE_HDFEOS2
+    // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
+    if(eos.is_valid()){
+      if(eos.is_grid()){
+    	if(eos.is_orthogonal()){
+	  write_dimension_attributes_grid(das);
+	}
+	else{
+	  write_dimension_attributes_grid_non_ortho(das);
+	} // if orthogonal
+      } // if grid
+      else if(eos.is_swath()) {
+	   write_dimension_attributes_swath(das);
+      }
+      return;
+    } // if valid
+#endif
 #ifdef CF
   // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
   if(eos.is_shared_dimension_set()){
+    DBG(cerr << "CF generated NC_GLOBAL" << endl);
     add_dimension_attributes(das);
   }
 #endif
@@ -519,6 +559,17 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 static void Vdata_descriptions(vd_map & map, DAS & das,
                                const string & filename)
 {
+#ifdef USE_HDFEOS2
+    eos.reset();
+    if(eos.open((char*) filename.c_str()) < 0){
+      cerr << "Not a valid EOS " << endl;
+    }
+    else{
+     eos.print();
+      //eos.eos2->_deleteme();
+    }
+#endif	
+
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
 
@@ -546,104 +597,121 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                                 const string & filename, sds_map & sdmap,
                                 vd_map & vdmap, gr_map & grmap)
 {
-    hdfistream_vgroup vgin(filename);
+  hdfistream_vgroup vgin(filename);
 
-    // Read Vgroup's
-    vg_map vgmap;
-    while (!vgin.eos()) {
-        vg_info vgi;            // add the next vg_info to map
-        vgin >> vgi.vgroup;     // read vgroup itself
-        vgi.toplevel = true;    // assume toplevel until we prove otherwise
-        vgmap[vgi.vgroup.ref] = vgi;    // assign to map by vgroup ref
+  // Read Vgroup's
+  vg_map vgmap;
+  while (!vgin.eos()) {
+    vg_info vgi;            // add the next vg_info to map
+    vgin >> vgi.vgroup;     // read vgroup itself
+    vgi.toplevel = true;    // assume toplevel until we prove otherwise
+    vgmap[vgi.vgroup.ref] = vgi;    // assign to map by vgroup ref
+  }
+  vgin.close();
+  // for each Vgroup
+  for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
+    const hdf_vgroup *vg = &v->second.vgroup;
+
+    // Add Vgroup attributes
+    AddHDFAttr(das, vg->name, vg->attrs);
+
+    // now, assign children
+    for (uint32 i = 0; i < vg->tags.size(); i++) {
+      int32 tag = vg->tags[i];
+      int32 ref = vg->refs[i];
+      switch (tag) {
+      case DFTAG_VG:
+	// Could be a GRI or a Vgroup
+	if (grmap.find(ref) != grmap.end())
+	  grmap[ref].in_vgroup = true;
+	else
+	  vgmap[ref].toplevel = false;
+	break;
+      case DFTAG_VH:
+	vdmap[ref].in_vgroup = true;
+	break;
+      case DFTAG_NDG:
+	sdmap[ref].in_vgroup = true;
+	break;
+      default:
+	cerr << "unknown tag: " << tag << " ref: " << ref << endl;
+      }	// switch (tag) 
+    } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
+  } //   for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) 
+#ifdef USE_HDFEOS2
+  if(eos.is_valid()){
+    // Check if the file is Grid or Swath.
+    if(eos.is_grid()){
+      if(eos.is_orthogonal())
+	write_hdfeos2_grid(dds);
+      else
+	write_hdfeos2_grid_other_projection(dds);
     }
-    vgin.close();
-    // for each Vgroup
-    for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
-        const hdf_vgroup *vg = &v->second.vgroup;
-
-        // Add Vgroup attributes
-        AddHDFAttr(das, vg->name, vg->attrs);
-
-        // now, assign children
-        for (uint32 i = 0; i < vg->tags.size(); i++) {
-            int32 tag = vg->tags[i];
-            int32 ref = vg->refs[i];
-            switch (tag) {
-            case DFTAG_VG:
-                // Could be a GRI or a Vgroup
-                if (grmap.find(ref) != grmap.end())
-                    grmap[ref].in_vgroup = true;
-                else
-                    vgmap[ref].toplevel = false;
-                break;
-            case DFTAG_VH:
-                vdmap[ref].in_vgroup = true;
-                break;
-            case DFTAG_NDG:
-                sdmap[ref].in_vgroup = true;
-                break;
-            default:
-                cerr << "unknown tag: " << tag << " ref: " << ref << endl;
-            }
-        }
+    if(eos.is_swath()){
+      write_hdfeos2_swath(dds);
     }
-
-    // Build DDS for all toplevel vgroups
-    BaseType *pbt = 0;
-    for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
-        if (!v->second.toplevel)
-            continue;           // skip over non-toplevel vgroups
+  }
+  else{
+    // eos.eos2->_deleteme();
+#endif
+      // Build DDS for all toplevel vgroups
+      BaseType *pbt = 0;
+      for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
+	if (!v->second.toplevel)
+	  continue;           // skip over non-toplevel vgroups
 #ifndef CF		
-        pbt =
-            NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap,
-                                   grmap, filename);
-        if (pbt != 0) {
-            dds.add_var(pbt);
-	    delete pbt;
-        }
+	pbt =
+	  NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap,
+				 grmap, filename);
+	if (pbt != 0) {
+	  dds.add_var(pbt);
+	  delete pbt;
+	}	
 #endif
 #ifdef CF
-    NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
-			      grmap, filename, dds);
+	NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
+				  grmap, filename, dds);
 #endif	
-	
-    }
+      } // for (VGI v = vgmap.begin(); v != vgmap.end(); ++v)
 
-    // add lone SDS's
-    for (SDSI s = sdmap.begin(); s != sdmap.end(); ++s) {
+      // add lone SDS's
+      for (SDSI s = sdmap.begin(); s != sdmap.end(); ++s) {
         if (s->second.in_vgroup)
-            continue;           // skip over SDS's in vgroups
+	  continue;           // skip over SDS's in vgroups
         if (s->second.sds.has_scale())  // make a grid
-            pbt = NewGridFromSDS(s->second.sds, filename);
+	  pbt = NewGridFromSDS(s->second.sds, filename);
         else
-            pbt = NewArrayFromSDS(s->second.sds, filename);
+	  pbt = NewArrayFromSDS(s->second.sds, filename);
         if (pbt != 0) {
-            dds.add_var(pbt);
-	    delete pbt;
+	  dds.add_var(pbt);
+	  delete pbt;
 	}
-    }
+      }
 
-    // add lone Vdata's
-    for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
+      // add lone Vdata's
+      for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
         if (v->second.in_vgroup)
-            continue;           // skip over Vdata in vgroups
+	  continue;           // skip over Vdata in vgroups
         pbt = NewSequenceFromVdata(v->second.vdata, filename);
         if (pbt != 0) {
-            dds.add_var(pbt);
-	    delete pbt;
+	  dds.add_var(pbt);
+	  delete pbt;
 	}
-    }
+      }
 
-    // add lone GR's
-    for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
+      // add lone GR's
+      for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
         if (g->second.in_vgroup)
-            continue;           // skip over GRs in vgroups
+	  continue;           // skip over GRs in vgroups
         pbt = NewArrayFromGR(g->second.gri, filename);
         if (pbt != 0) {
-            dds.add_var(pbt);
-	    delete pbt ;
+	  dds.add_var(pbt);
+	  delete pbt ;
 	}
-    }
+      }
+#ifdef USE_HDFEOS2
+  }
+#endif
 }
 
 static void GR_descriptions(gr_map & map, DAS & das,
@@ -763,7 +831,9 @@ void AddHDFAttr(DAS & das, const string & varname,
 	  eos.reset();
 	  DBG(cerr << "=AddHDFAttr() container_name=" << container_name  << endl);
 	  eos.parse_struct_metadata(attv[j].c_str());
-	  eos.set_dimension_array();
+#ifndef USE_HDFEOS2  // Without this, it causes a conflict <hyokyung 2009.04.24. 13:31:53>  
+	  eos.set_dimension_array(); 
+#endif	  
 	  DBG(eos.print());
 	}		
 #endif
@@ -955,4 +1025,457 @@ static void add_dimension_attributes(DAS & das)
 
 
 }
+#endif
+
+#ifdef USE_HDFEOS2
+#ifndef CF
+/// An abstract respresntation of DAP String type.
+static const char STRING[] = "String";
+/// An abstract respresntation of DAP Byte type.
+static const char BYTE[] = "Byte";
+/// An abstract respresntation of DAP Int32 type.
+static const char INT32[] = "Int32";
+/// An abstract respresntation of DAP Int16 type.
+static const char INT16[] = "Int16";
+/// An abstract respresntation of DAP Float64 type.
+static const char FLOAT64[] = "Float64";
+/// An abstract respresntation of DAP Float32 type.
+static const char FLOAT32[] = "Float32";
+/// An abstract respresntation of DAP Uint16 type.
+static const char UINT16[] = "UInt16";
+/// An abstract respresntation of DAP UInt32 type.
+static const char UINT32[] = "UInt32";
+/// For umappable HDF5 integer data types.
+static const char INT_ELSE[] = "Int_else";
+/// For unmappable HDF5 float data types.
+static const char FLOAT_ELSE[] = "Float_else";
+/// An abstract respresntation of DAP Structure type.
+static const char COMPOUND[] = "Structure";
+/// An abstract respresntation of DAP Array type.
+static const char ARRAY[] = "Array";   
+/// An abstract respresntation of DAP Url type.
+static const char URL[] = "Url";
+#endif
+
+static void write_dimension_attributes_grid(DAS & das)
+{
+
+    AttrTable *at;
+
+    at = das.add_table("NC_GLOBAL", new AttrTable);
+    at->append_attr("title", STRING, "\"NASA EOS Grid\"");
+    at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
+    at->append_attr("dataType", STRING, "\"Grid\"");
+
+
+    at = das.add_table("lon", new AttrTable);
+    at->append_attr("grads_dim", STRING, "\"x\"");
+    at->append_attr("grads_mapping", STRING, "\"linear\"");
+    {
+      std::ostringstream o;
+      o  << "\"" << eos.get_xdim_size() << "\"";
+      at->append_attr("grads_size", STRING, o.str().c_str());
+    }
+    at->append_attr("units", STRING, "\"degrees_east\"");
+    at->append_attr("long_name", STRING, "\"longitude\"");
+    {
+      std::ostringstream o;
+      o << (eos.point_left / 1000000.0);      
+      at->append_attr("minimum", FLOAT32, o.str().c_str());
+    }
+    {
+      std::ostringstream o;
+      o << (eos.point_right / 1000000.0);
+      at->append_attr("maximum", FLOAT32, o.str().c_str());
+    }    
+    {
+      std::ostringstream o;
+      o << (eos.gradient_x / 1000000.0);
+      at->append_attr("resolution", FLOAT32, o.str().c_str());
+    }
+
+    at = das.add_table("lat", new AttrTable);
+    at->append_attr("grads_dim", STRING, "\"y\"");
+    at->append_attr("grads_mapping", STRING, "\"linear\"");
+    {
+      std::ostringstream o;
+      o  << "\"" << eos.get_ydim_size() << "\"";
+      at->append_attr("grads_size", STRING, o.str().c_str());
+    }
+    at->append_attr("units", STRING, "\"degrees_north\"");
+    at->append_attr("long_name", STRING, "\"latitude\"");
+    {
+      std::ostringstream o;
+      o << (eos.point_lower / 1000000.0);      
+      at->append_attr("minimum", FLOAT32, o.str().c_str());
+    }
+    
+    {
+      std::ostringstream o;
+      o << (eos.point_upper / 1000000.0);            
+      at->append_attr("maximum", FLOAT32, o.str().c_str());
+    }
+    
+    {
+      std::ostringstream o;
+      o << (eos.gradient_y / 1000000.0);
+      at->append_attr("resolution", FLOAT32, o.str().c_str());      
+    }    
+}
+
+static void write_dimension_attributes_swath(DAS & das)
+{
+
+  AttrTable *at;
+  
+  // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Swath\"");
+  at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("coordinates", STRING, "\"lon lat\"");
+  // For all swaths, insert the coordinates attribute if lat, lon dimension names match.
+
+
+
+  
+  at = das.get_table("Time");
+  if(at != NULL){
+    at->append_attr("units", STRING, "\"degrees_north\"");
+    at->append_attr("long_name", STRING, "\"floating-point TAI qelapsed seconds since Jan 1, 193\"");
+    at->append_attr("coordinates", STRING, "\"lon lat\"");
+  }
+  /*
+  at = das.add_table("pressStd", new AttrTable);
+  at->append_attr("units", STRING, "\"hPa\"");
+  at->append_attr("long_name", STRING, "\"Standard pressure altitude levels\"");
+  at->append_attr("standard_name", STRING, "\"Standard_ pressure_altitude_levels\"");  
+  at->append_attr("positive", STRING, "\"down\"");
+  */
+
+}
+
+
+static void write_dimension_attributes_grid_non_ortho(DAS & das)
+{
+  AttrTable *at;
+
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Aura Grid - Non-Ortho Projection\"");
+  at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+  
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+  
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("coordinates", STRING, "\"lon lat\"");
+  
+}
+
+static BaseType*  get_base_type(int type, string name)
+{
+  BaseType* bt = NULL;
+    switch(type){
+    case dods_byte_c:
+      {	
+	bt = new HDFByte(name,name);
+	break;
+      }
+    case dods_int16_c:
+      {
+	bt = new HDFInt16(name,name);
+	break;
+      }
+    case dods_uint16_c:
+      {
+	bt = new HDFUInt16(name,name);
+	break;
+      }
+    case dods_int32_c:
+      {
+	bt = new HDFInt32(name,name);
+	break;
+      }
+    case dods_uint32_c:
+      {
+	bt = new HDFUInt32(name,name);
+	break;
+      }      
+    case dods_float32_c:
+      {
+	bt = new HDFFloat32(name,name);
+	break;
+      }
+    case dods_float64_c:
+      {
+	bt = new HDFFloat64(name,name);
+	break;
+      }
+    default:
+      break;
+	  
+    }
+    return bt;
+}
+
+
+static void write_hdfeos2_grid(DDS &dds)
+{
+    
+  // Add all Grid variables.
+  if (!eos.is_shared_dimension_set()) {
+    
+    int j;
+    BaseType *bt = 0;
+    Array *ar = 0;    
+    vector < string > dimension_names;
+    eos.get_all_dimensions(dimension_names);
+
+    for(j=0; j < dimension_names.size(); j++){
+      
+      int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
+      string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+      bt = new HDFFloat32(str_cf_name, str_cf_name);
+      ar = new HDFEOSArray(str_cf_name, str_cf_name, bt);
+
+      ar->add_var(bt);
+      delete bt; bt = 0;
+      ar->append_dim(shared_dim_size, str_cf_name);
+      dds.add_var(ar);
+      delete ar; ar = 0;
+
+    } // for
+    
+    if(j > 0)      // Set the flag for "shared dimension" true.
+      eos.set_shared_dimension();
+  }
+
+
+  BaseType *gr = 0;
+  for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
+    vector <string> tokens;
+    
+    // Split based on the type.
+    BaseType* bt = get_base_type(eos.get_data_type(i), eos.full_data_paths.at(i));
+    if(bt == 0){
+      cerr
+	<< "write_hdfeos2_grid(): Creating a DAP type class failed."
+	<< " Name=" << eos.full_data_paths.at(i)	  
+	<< " Type=" << eos.get_data_type(i)
+	<<  endl;
+      return;
+    }
+    // Build array first.
+    HDFEOS2Array *ar = new HDFEOS2Array(eos.full_data_paths.at(i),bt);
+    delete bt;
+    eos.get_dimensions(eos.full_data_paths.at(i), tokens);
+    ar->set_numdim(tokens.size());
+    gr = new HDFEOSGrid(eos.full_data_paths.at(i),eos.full_data_paths.at(i));
+    if(gr == 0){
+      cerr << "Creating a HDFEOSGrid class failed." << endl;
+      return;
+    }
+    else {
+      for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
+	DBG(cerr << "=read_objects_base_type():Dim name " <<
+	    tokens.at(dim_index) << endl);
+
+	string str_dim_name = tokens.at(dim_index);
+	int dim_size = eos.get_dimension_size(str_dim_name);
+	str_dim_name = eos.get_CF_name((char*)str_dim_name.c_str());
+	BaseType *bt = 0;
+	Array *ar2 = 0;
+	try {
+	  bt = new HDFFloat32(str_dim_name, str_dim_name);
+	  ar2 = new HDFArray(str_dim_name, str_dim_name, bt);
+	  delete bt; bt = 0;
+
+	  ar2->append_dim(dim_size, str_dim_name);
+	  ar->append_dim(dim_size, str_dim_name);
+
+	  gr->add_var(ar2, maps);
+	  delete ar2; ar2 = 0;
+	    
+	}
+	catch (...) {
+	  if( bt ) delete bt;
+	  if( ar2 ) delete ar2;
+	  throw;
+	}
+      }
+	  
+      gr->add_var(ar, array);
+      dds.add_var(gr);
+    }
+  }
+}
+
+static void write_hdfeos2_grid_other_projection(DDS &dds)
+{
+  // Non geographic projection handling is similar to Grid case
+  // but do not generate DAP "Grid" output.
+  // Use the plain array for datasets.
+  // Add 2-D shared dimension la/lon array.
+  DBG(cerr << ">write_hdfeos2_grid_other_projection()" << endl);
+  // Add all variables.
+  if (!eos.is_shared_dimension_set()) {
+    int j;
+    BaseType *bt = 0;
+    Array *ar = 0;    
+    vector < string > dimension_names;
+    eos.get_all_dimensions(dimension_names);
+
+    int xdim_size = eos.get_xdim_size();
+    int ydim_size = eos.get_ydim_size();
+    
+    for(j=0; j < dimension_names.size(); j++){
+      int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
+      string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+      bt = new HDFFloat32(str_cf_name,str_cf_name);
+      ar = new HDFEOSArray2D(str_cf_name, bt); // <hyokyung 2009.02.18. 16:10:17>
+
+      ar->add_var(bt);
+      delete bt; bt = 0;
+      if(str_cf_name == "lat"){
+	if(eos.is_ydimmajor()){
+	  DBG(cerr << "=write_hdfeos2_grid_other_projection():YDim major is detected." << endl);
+	  ar->append_dim(ydim_size, str_cf_name);
+	  ar->append_dim(xdim_size, "lon");
+	}
+	else{
+	  ar->append_dim(xdim_size, "lon");
+	  ar->append_dim(ydim_size, str_cf_name);
+
+	}
+      }
+      else if(str_cf_name == "lon"){
+	if(eos.is_ydimmajor()){
+	  ar->append_dim(ydim_size, "lat");	  
+	  ar->append_dim(xdim_size, str_cf_name);
+	}
+	else{
+	  ar->append_dim(xdim_size, str_cf_name);
+	  ar->append_dim(ydim_size, "lat");	  
+	}
+      }
+      else{
+	ar->append_dim(shared_dim_size, str_cf_name);
+      }
+      dds.add_var(ar);
+      delete ar; ar = 0;
+      // Set the flag for "shared dimension" true.
+    }
+    if(j > 0)
+      eos.set_shared_dimension();
+  }
+
+  
+  for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
+    DBG(cerr
+	<< " Name=" << eos.full_data_paths.at(i)	  
+	<< " Type=" << eos.get_data_type(i)
+	<<  endl);
+
+    const char* cf_name = eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
+    string cf_varname(cf_name);
+    DBG(cerr << "CF name=" << cf_varname << endl);    
+    vector <string> tokens;
+    
+    // Build the type first.
+    // BaseType *bt = 0;
+    // Split based on the type.
+    BaseType* bt = get_base_type(eos.get_data_type(i), cf_varname);
+    if(bt == 0){
+      cerr
+	<< "Creating a DAP type class failed."
+	<< " Name=" << cf_varname	  
+	<< " Type=" << eos.get_data_type(i)
+	<<  endl;
+      return;
+    }
+    // Build array first.
+    HDFEOS2Array *ar = new HDFEOS2Array(cf_varname,bt);
+
+    delete bt;
+
+    // Add dimensions
+    eos.get_dimensions(eos.full_data_paths.at(i), tokens);
+    ar->set_numdim(tokens.size());        
+    for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
+      DBG(cerr << "=read_objects_base_type():Dim name " <<
+	  tokens.at(dim_index) << endl);
+
+      string str_dim_name = tokens.at(dim_index);
+      int dim_size = eos.get_dimension_size(str_dim_name);
+      str_dim_name = eos.get_CF_name((char*)str_dim_name.c_str());
+      ar->append_dim(dim_size, str_dim_name);
+    }
+
+    dds.add_var(ar);
+    
+  } 
+    
+}
+
+static void write_hdfeos2_swath(DDS &dds)
+{
+  // Swath handling is similar to Grid case but do not generate DAP "Grid" output.
+  // Use the plain array.
+
+  for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
+    DBG(cerr
+	<< " Name=" << eos.full_data_paths.at(i)	  
+	<< " Type=" << eos.get_data_type(i)
+	<<  endl);
+
+    const char* cf_name = eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
+    string cf_varname(cf_name);
+    DBG(cerr << "CF name=" << cf_varname << endl);    
+    vector <string> tokens;
+    
+    // Split based on the type.
+    BaseType *bt = get_base_type(eos.get_data_type(i), cf_varname);
+    if(bt == 0){
+      cerr
+	<< "Creating a DAP type class failed."
+	<< " Name=" << cf_varname	  
+	<< " Type=" << eos.get_data_type(i)
+	<<  endl;
+      return;
+    }
+    // Build array first.
+    HDFEOS2Array *ar = new HDFEOS2Array(cf_varname,bt);
+
+    delete bt;
+
+    // Add dimensions
+    eos.get_dimensions(eos.full_data_paths.at(i), tokens);
+    ar->set_numdim(tokens.size());        
+    for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
+      DBG(cerr << "=read_objects_base_type():Dim name " <<
+	  tokens.at(dim_index) << endl);
+
+      string str_dim_name = tokens.at(dim_index);
+      int dim_size = eos.get_dimension_size(str_dim_name);
+      str_dim_name = eos.get_CF_name((char*)str_dim_name.c_str());
+      ar->append_dim(dim_size, str_dim_name);
+    }
+
+    dds.add_var(ar);
+    
+  } 
+    
+}
+
+
 #endif

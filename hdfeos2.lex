@@ -44,7 +44,7 @@ DIMENSION_LIST		DimList
 XDIM                    XDim=
 YDIM                    YDim=
 GRID_ORIGIN             GridOrigin
-HDFE_GD_UL              HDFE_GD_UL
+HDFEGDUL                HDFE_GD_UL 
 
 INT	[-+]?[0-9]+
 
@@ -71,7 +71,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {GRID_STRUCTURE}    	hdfeos2lval = yytext; return GRID_STRUCTURE;
 {HE5_GCTP_GEO} 	    	hdfeos2lval = yytext; return HE5_GCTP_GEO;
 {GRID_ORIGIN}   	hdfeos2lval = yytext; return GRID_ORIGIN;
-{HDFE_GD_UL}   		hdfeos2lval = yytext; return HDFE_GD_UL;
+{HDFEGDUL}   		hdfeos2lval = yytext; return HDFEGDUL;
 {XDIM}	    	    	hdfeos2lval = yytext; return XDIM;
 {YDIM}	    	    	hdfeos2lval = yytext; return YDIM;
 {GRID_NAME}           	hdfeos2lval = yytext; return GRID_NAME;

@@ -603,7 +603,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
         }
     }
 }
-
+#ifdef CF
 // <hyokyung 2008.11.11. 13:42:43>
 // Create a DAP HDFEOSGrid out of the primary array and dim scale in an hdf_sds
 HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
@@ -660,11 +660,11 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 	str_dim_full_name = str_dim_name;
 #endif
 
-#ifdef CF
+
 	// Rename dimension name according to CF convention.
 	str_dim_full_name =
 	    eos.get_CF_name((char *) str_dim_full_name.c_str());
-#endif
+
 
 	BaseType *bt = 0;
 	Array *ar2 = 0;
@@ -691,8 +691,6 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     return gr;
 }
 
-
-#ifdef CF
 // Create a EOS grids without structure. <hyokyung 2008.11.13. 15:38:58>
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
                                      sds_map &sdmap, vd_map &vdmap,
@@ -738,11 +736,12 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
             if (sdmap[ref].sds.has_scale()) {
                 bt = NewGridFromSDS(sdmap[ref].sds, dataset);
             } else {
-	      // cerr << "Got DFTAG_NDG" << endl;
+#ifdef CF
 	      // Check if it can be mapped to Grid <hyokyung 2008.11.10. 14:32:50>
 	      if(eos.is_grid(sdmap[ref].sds.name)) // <hyokyung 2008.11.11. 14:49:25>
 		 bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
               else
+#endif		
 		 bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
             }
             break;
