@@ -79,7 +79,9 @@ using namespace std;
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
+#ifdef CF
 #include "HDFEOS.h"		// <hyokyung 2009.04.10. 16:26:32>
+#endif
 // Glue routines declared in hdfeos.lex
 void hdfeos_switch_to_buffer(void *new_buffer);
 void hdfeos_delete_buffer(void * buffer);

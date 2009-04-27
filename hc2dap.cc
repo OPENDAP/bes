@@ -46,13 +46,17 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#ifdef CF
 #include "HDFEOS.h" 		// <hyokyung 2008.11.11. 15:21:08>
+#endif
 #include <BESDebug.h>
 
 //#define DODS_DEBUG
 #include <debug.h>
 using namespace std;
+#ifdef CF
 extern HDFEOS eos;		// <hyokyung 2008.11.11. 15:21:07>
+#endif
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
