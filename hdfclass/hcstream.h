@@ -82,6 +82,11 @@ class hdfistream_obj {          // base class for streams reading HDF objects
 };
 
 class hdfistream_sds:public hdfistream_obj {
+#ifdef SHORT_NAME
+private:  
+  int counter; // <hyokyung 2009.04.15. 09:40:52>
+#endif
+  
   public:
     hdfistream_sds(const string filename = "");
     hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {

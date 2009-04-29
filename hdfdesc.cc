@@ -232,7 +232,7 @@ save_state(const string & filename, const DDS & dds, const DAS & das)
 // Read DDS from cache
 void read_dds(DDS & dds, const string & cachedir, const string & filename)
 {
-#ifndef CF    
+#if  !defined(CF) || !defined(SHORT_NAME)
     if (!cachedir.empty()) {
         update_descriptions(cachedir, filename);
 
@@ -247,14 +247,13 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 	// set the factory back to null, we don't need the factory any more
 	dds.set_factory( NULL  ) ;
     } else {
-#endif                  
 #if 0
 	// see above comment from pcw
         if (gs_filename && filename == *gs_filename && gs_dds) {
             dds = *gs_dds;
         } else {
 #endif
-
+#endif                  
 	// generate DDS, DAS
 
 	// Throw away... w/o caching this code is very wasteful
@@ -272,7 +271,7 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 #if 0
         }
 #endif
-#ifndef CF	
+#if !defined(CF) || !defined(SHORT_NAME)
     }
 #endif
     return;
@@ -281,6 +280,7 @@ void read_dds(DDS & dds, const string & cachedir, const string & filename)
 // Read DAS from cache
 void read_das(DAS & das, const string & cachedir, const string & filename)
 {
+#ifndef SHORT_NAME  
     if (!cachedir.empty()) {
         update_descriptions(cachedir, filename);
 
@@ -293,7 +293,7 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
             das = *gs_das;
         } else {
 #endif
-
+#endif
 	// generate DDS, DAS
 	DDS dds(NULL);
 	dds.set_dataset_name(basename(filename));
@@ -308,8 +308,9 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
 #if 0
         }
 #endif
+#ifndef SHORT_NAME	
     }
-
+#endif
     return;
 }
 
@@ -636,7 +637,10 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
 	sdmap[ref].in_vgroup = true;
 	break;
       default:
+#ifndef SHORT_NAME	
 	cerr << "unknown tag: " << tag << " ref: " << ref << endl;
+#endif	
+	break;
       }	// switch (tag) 
     } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
   } //   for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) 
@@ -832,9 +836,10 @@ void AddHDFAttr(DAS & das, const string & varname,
 	if (container_name.find("StructMetadata") == 0){
 	  eos.reset();
 	  DBG(cerr << "=AddHDFAttr() container_name=" << container_name  << endl);
-	  eos.parse_struct_metadata(attv[j].c_str());
-#ifndef USE_HDFEOS2  // Without this, it causes a conflict <hyokyung 2009.04.24. 13:31:53>  
-	  eos.set_dimension_array(); 
+	  bool result = eos.parse_struct_metadata(attv[j].c_str());
+#ifndef USE_HDFEOS2  // Without this, it causes a conflict <hyokyung 2009.04.24. 13:31:53>
+	  if(result)
+	    eos.set_dimension_array(); 
 #endif	  
 	  DBG(eos.print());
 	}		

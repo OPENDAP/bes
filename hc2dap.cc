@@ -219,7 +219,9 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
                                             sdmap, vdmap, grmap, dataset);
             break;
         default:
+#ifndef SHORT_NAME	  
             cerr << "Error: Unknown vgroup child: " << tag << endl;
+#endif	    
             break;
         }
         if (bt) {
@@ -258,7 +260,11 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
     }
     try {
         HDFArray *ar = 0;
+#ifdef SHORT_NAME
+	ar = new HDFArray(sds.name,dataset,bt, sds.ref);
+#else	
         ar = new HDFArray(sds.name,dataset,bt);
+#endif	
         delete bt;
 
         // add dimension info to HDFArray
@@ -761,7 +767,9 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
 	    }
             break;
         default:
+#ifndef SHORT_NAME	  
             cerr << "Error: Unknown vgroup child: " << tag << endl;
+#endif	    
             break;
         }
         if (bt) {

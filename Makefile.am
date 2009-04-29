@@ -50,7 +50,7 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 if CF
-CF_SRC = HDFEOS.cc HDFEOSGrid.cc HDFEOSArray.cc 
+CF_SRC = HDFEOS.cc HDFEOSGrid.cc HDFEOSArray.cc HDFCFSwath.cc
 HDFTYPE_SRC += $(CF_SRC)
 endif
 
@@ -63,7 +63,7 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
 if CF
-CF_HDR = HDFEOSGrid.h HDFEOSArray.h
+CF_HDR = HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
 HDFTYPE_HDR += $(CF_HDR)
 endif
 

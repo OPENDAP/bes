@@ -36,7 +36,9 @@ HE5_GCTP_GEO    	GCTP_GEO
 DATA_TYPE       	DataType=[A-Z0-9_]*
 PROJECTION      	Projection
 GRID_STRUCTURE  	GridStructure
+SWATH_STRUCTURE  	SwathStructure
 GRID_NAME       	GridName
+SWATH_NAME       	SwathName
 DIMENSION_SIZE  	Size
 DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
@@ -69,6 +71,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {PROJECTION}   	    	hdfeos2lval = yytext; return PROJECTION;
 {DATA_TYPE}   	    	hdfeos2lval = yytext; return DATA_TYPE;
 {GRID_STRUCTURE}    	hdfeos2lval = yytext; return GRID_STRUCTURE;
+{SWATH_STRUCTURE}    	hdfeos2lval = yytext; return SWATH_STRUCTURE;
 {HE5_GCTP_GEO} 	    	hdfeos2lval = yytext; return HE5_GCTP_GEO;
 {GRID_ORIGIN}   	hdfeos2lval = yytext; return GRID_ORIGIN;
 {HDFEGDUL}   		hdfeos2lval = yytext; return HDFEGDUL;

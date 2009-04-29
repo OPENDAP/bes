@@ -214,6 +214,9 @@ hdfistream_sds::hdfistream_sds(const string filename):
 hdfistream_obj(filename)
 {
     _init();
+#ifdef SHORT_NAME
+    counter = 0; 		// <hyokyung 2009.04.15. 09:46:09>
+#endif        
     if (_filename.length() != 0)        // if ctor specified a file to open
         open(_filename.c_str());
     return;
@@ -282,6 +285,9 @@ bool hdfistream_sds::eo_dim(void) const
 // open a new file
 void hdfistream_sds::open(const char *filename)
 {
+#ifdef SHORT_NAME
+  counter = 0;
+#endif    
     if (filename == 0)          // no filename given
         THROW(hcerr_openfile);
     if (_file_id != 0)          // close any currently open file
@@ -420,8 +426,16 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
     // load dimensions and attributes into the appropriate objects
     *this >> hs.dims;
     *this >> hs.attrs;
+#ifdef SHORT_NAME
+    char name2[hdfclass::MAXSTR+3]; // <hyokyung 2009.04.15. 09:41:06>
+    sprintf(name2, "A%d%s", counter, name); // <hyokyung 2009.04.15. 09:41:08>
+    ++counter; 
+    hs.name = name2;             // assign SDS name
+    // <hyokyung 2009.04.15. 10:22:46>
+    // Add two more member: object tag and ref for unique data retrieval.
+#else
     hs.name = name;             // assign SDS name
-
+#endif
     char *data = 0;
     int nelts = 1;
     if (_meta)                  // if _meta is set, just load type information

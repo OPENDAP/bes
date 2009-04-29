@@ -589,6 +589,7 @@ bool HDFEOS::parse_struct_metadata(const char* str_metadata)
     hdfeos2parse(this);
     _parsed = true;
   }
+  return _valid;
 }
 #ifdef USE_HDFEOS2
 void HDFEOS::handle_datafield(const HDFEOS2::Field *field)

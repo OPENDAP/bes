@@ -26,9 +26,11 @@ extern int yy_line_num;	// defined in hdfeos.lex
 static int parser_state = 0; // parser state 
 static bool valid_projection = false;
 static bool grid_structure_found = false; 
+bool swath_structure_found = false; 
 string full_path = "/HDFEOS/GRIDS/";
 string grid_name = "";
 string data_field_name = "/Data Fields/";
+string geo_field_name = "/Geolocation Fields/"; /* <hyokyung 2009.04.29. 09:39:52> */
 string dimension_list = "";
 string dimension_name = "";
  
@@ -53,11 +55,14 @@ void hdfeos2error(char *s);
 %token HE5_GCTP_GEO
 %token DATA_TYPE 
 %token GRID_STRUCTURE
+%token SWATH_STRUCTURE /* <hyokyung 2009.04.29. 09:40:29> */
 %token GRID_NAME  
+%token SWATH_NAME  /*  <hyokyung 2009.04.29. 09:41:13> */
 %token DIMENSION_SIZE  
 %token DIMENSION_NAME  
 %token DIMENSION_LIST
 %token DATA_FIELD_NAME
+%token GEO_FIELD_NAME		/* <hyokyung 2009.04.29. 09:40:50>*/
 %token XDIM
 %token YDIM
 %token GRID_ORIGIN
