@@ -42,6 +42,7 @@ SWATH_NAME       	SwathName
 DIMENSION_SIZE  	Size
 DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
+GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
 XDIM                    XDim=
 YDIM                    YDim=
@@ -55,9 +56,9 @@ EXPONENT (E|e)[-+]?[0-9]+
 
 FLOAT	[-+]?{MANTISA}{EXPONENT}?
 
-STR 	[-+a-zA-Z0-9_./:%+\-\ ]+
+STR 	[-+a-zA-Z0-9_./:&%+\-\ ]+
 
-NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
+NEVER   [^a-zA-Z0-9_/.+\-{}:&;,%]
 
 %%
 
@@ -78,10 +79,12 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {XDIM}	    	    	hdfeos2lval = yytext; return XDIM;
 {YDIM}	    	    	hdfeos2lval = yytext; return YDIM;
 {GRID_NAME}           	hdfeos2lval = yytext; return GRID_NAME;
+{SWATH_NAME}           	hdfeos2lval = yytext; return SWATH_NAME;
 {DIMENSION_SIZE} 	hdfeos2lval = yytext; return DIMENSION_SIZE;
 {DIMENSION_NAME} 	hdfeos2lval = yytext; return DIMENSION_NAME;
 {DIMENSION_LIST} 	hdfeos2lval = yytext; return DIMENSION_LIST;
 {DATA_FIELD_NAME} 	hdfeos2lval = yytext; return DATA_FIELD_NAME;
+{GEO_FIELD_NAME} 	hdfeos2lval = yytext; return GEO_FIELD_NAME;
 {STR}	    	    	hdfeos2lval = yytext; return STR;
 "="                     return (int)*yytext;
 "("                     return (int)*yytext;

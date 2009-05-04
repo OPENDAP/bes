@@ -8,6 +8,9 @@
 #include <vector>
 #include <Array.h>
 #include "hdfeos2.tab.hh"
+#ifdef CF
+#include "HDFCFSwath.h"
+#endif
 #ifdef USE_HDFEOS2
 #include "HDFEOS2.h"
 #endif
@@ -24,8 +27,12 @@ using namespace libdap;
 /// Copyright (c) 2008 The HDF Group
 ///
 /// All rights reserved.
+#ifdef CF
+class HDFEOS:public HDFCFSwath {
+#else
 class HDFEOS {
-
+#endif
+  
 private:
   bool _parsed;
   bool _valid;

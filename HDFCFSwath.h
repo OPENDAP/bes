@@ -30,8 +30,9 @@ private:
   map < string, int > _dimension_map_swath;
   vector < string >   _dimensions_swath;
   vector < string >   _full_data_paths_swath;
-  map < string, string > eos_to_cf_map;
-  map < string, string > cf_to_eos_map;
+  map < string, string > eos_to_cf_map_swath;
+  map < string, string > cf_to_eos_map_swath;
+  string get_short_name(string varname);
   
 public:
   
@@ -44,8 +45,8 @@ public:
   /// \param[in] full_path a full path information of a variable in metadata.
   void        add_data_path_swath(string full_path);
   void        add_dimension_map_swath(string dimension_name, int dimension);  
-  const char* get_CF_name(char *eos_name);
-  string      get_EOS_name(string cf_name);
+  string      get_CF_name_swath(string eos_name);
+  string      get_EOS_name_swath(string cf_name);
   /// Check if the current HDF5 file is a valid NASA EOS SWATH file.
   ///
   /// \return true if it has a set of correct meta data files.

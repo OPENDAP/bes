@@ -7,27 +7,27 @@
 /////////////////////////////////////////////////////////////////////////////
 
 using namespace std;
-
+// #define DODS_DEBUG
 #include "HDFCFSwath.h"
 
 
 HDFCFSwath::HDFCFSwath()
 {
   _swath = false;
-  eos_to_cf_map["MissingValue"] = "missing_value";
-  eos_to_cf_map["Units"] = "units";
-  eos_to_cf_map["nTime"] = "lat"; 
-  eos_to_cf_map["nXtrack"] = "lon"; 
-  eos_to_cf_map["Longitude"] = "lon"; 
-  eos_to_cf_map["Latitude"] = "lat";
+  eos_to_cf_map_swath["MissingValue"] = "missing_value";
+  eos_to_cf_map_swath["Units"] = "units";
+  eos_to_cf_map_swath["nTime"] = "lat"; 
+  eos_to_cf_map_swath["nXtrack"] = "lon"; 
+  eos_to_cf_map_swath["Longitude"] = "lon"; 
+  eos_to_cf_map_swath["Latitude"] = "lat";
  
-  eos_to_cf_map["Offset"] = "add_offset";
-  eos_to_cf_map["ScaleFactor"] = "scale_factor";
-  eos_to_cf_map["ValidRange"] = "valid_range";
-  eos_to_cf_map["Title"] = "title";
+  eos_to_cf_map_swath["Offset"] = "add_offset";
+  eos_to_cf_map_swath["ScaleFactor"] = "scale_factor";
+  eos_to_cf_map_swath["ValidRange"] = "valid_range";
+  eos_to_cf_map_swath["Title"] = "title";
 
-  cf_to_eos_map["lon"] = "nXtrack";
-  cf_to_eos_map["lat"] = "nTime";
+  cf_to_eos_map_swath["lon"] = "nXtrack";
+  cf_to_eos_map_swath["lat"] = "nTime";
 }
 
 HDFCFSwath::~HDFCFSwath()
@@ -38,6 +38,7 @@ HDFCFSwath::~HDFCFSwath()
 void HDFCFSwath::add_data_path_swath(string full_path)
 {
 
+  full_path = get_short_name(full_path);
   DBG(cerr << "Full path is:" << full_path << endl);
   _full_data_paths_swath.push_back(full_path);
   
@@ -71,41 +72,32 @@ void HDFCFSwath::add_dimension_map_swath(string dimension_name, int dimension)
 }
 
 
-const char* HDFCFSwath::get_CF_name(char *eos_name)
+string  HDFCFSwath::get_CF_name_swath(string str)
 {
-  string str(eos_name);
-
-  DBG(cerr << ">get_CF_name:" << str << endl);
-  DBG(cerr << eos_to_cf_map[str] << endl);
-  if(is_swath()){
-    if(str.find("/Longitude") != string::npos){
-      return "lon";
-    }
-    if(str.find("/Latitude") != string::npos){
-      return "lat";
-    }    
-  }
-  if (eos_to_cf_map[str].size() > 0) {
-    return eos_to_cf_map[str].c_str();
+  DBG(cerr << eos_to_cf_map_swath[str] << endl);
+  if (eos_to_cf_map_swath[str].size() > 0) {
+    return eos_to_cf_map_swath[str];
   } else {
-    // <hyokyung 2009.04.23. 15:36:37>    
-    // HACK: The following appends weird character under Hyrax.
-    // return str.c_str(); 
-    return (const char*) eos_name;
+    return str;
   }
 }
 
-string HDFCFSwath::get_EOS_name(string str)
+string HDFCFSwath::get_EOS_name_swath(string str)
 {
-  DBG(cerr << cf_to_eos_map[str] << endl);
-  if (cf_to_eos_map[str].size() > 0) {
-    return cf_to_eos_map[str];
+  DBG(cerr << cf_to_eos_map_swath[str] << endl);
+  if (cf_to_eos_map_swath[str].size() > 0) {
+    return cf_to_eos_map_swath[str];
   } else {
     return str;
   }
 }
 
 
+string HDFCFSwath::get_short_name(string varname)
+{
+  int pos = varname.find_last_of('/', varname.length() - 1);
+  return varname.substr(pos + 1);
+}
 
 bool HDFCFSwath::is_swath()
 {
@@ -116,9 +108,12 @@ bool HDFCFSwath::is_swath()
 bool HDFCFSwath::is_swath(string varname)
 {
   int i;
+
+  DBG(cerr << ">is_swath() " << varname << endl);
   for (i = 0; i < (int) _full_data_paths_swath.size(); i++) {
     std::string str = _full_data_paths_swath.at(i);
     if (str == varname) {
+       DBG(cerr << "=is_swath() " << str << endl);
       return true;
     }
   }

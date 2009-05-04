@@ -701,6 +701,41 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     return gr;
 }
 
+HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
+{
+  if (sds.name.length() == 0) // SDS must have a name
+    return 0;
+  if (sds.dims.size() == 0)   // SDS must have rank > 0
+    return 0;
+
+  // construct HDFArray, assign data type
+  BaseType *bt = NewDAPVar(eos.get_CF_name_swath(sds.name), dataset, sds.data.number_type());
+  if (bt == 0) {              // something is not right with SDS number type?
+    return 0;
+  }
+  try {
+    HDFArray *ar = 0;
+    
+#ifdef SHORT_NAME
+    ar = new HDFArray(sds.name,dataset,bt, sds.ref);
+#else	
+    ar = new HDFArray(eos.get_CF_name_swath(sds.name),dataset,bt);
+#endif	
+    delete bt;
+
+    // add dimension info to HDFArray
+    for (int i = 0; i < (int) sds.dims.size(); ++i)
+      ar->append_dim(sds.dims[i].count, sds.dims[i].name);
+
+    return ar;
+  }
+  catch (...) {
+    delete bt;
+    throw;
+  }
+
+}
+
 // Create a EOS grids without structure. <hyokyung 2008.11.13. 15:38:58>
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
                                      sds_map &sdmap, vd_map &vdmap,
@@ -746,12 +781,13 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
             if (sdmap[ref].sds.has_scale()) {
                 bt = NewGridFromSDS(sdmap[ref].sds, dataset);
             } else {
-#ifdef CF
 	      // Check if it can be mapped to Grid <hyokyung 2008.11.10. 14:32:50>
 	      if(eos.is_grid(sdmap[ref].sds.name)) // <hyokyung 2008.11.11. 14:49:25>
 		 bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
-              else
-#endif		
+              else if(eos.is_swath(sdmap[ref].sds.name)){
+		bt = NewEOSSwathFromSDS(sdmap[ref].sds, dataset);
+	      }
+	      else
 		 bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
             }
             break;
@@ -779,4 +815,6 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
 
     return 0;
 }
-#endif
+
+
+#endif // ifdef CF

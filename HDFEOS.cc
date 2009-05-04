@@ -150,10 +150,10 @@ int HDFEOS::get_dimension_size(string name)
 bool HDFEOS::is_grid(string name)
 {
   int i;
-  // cout << ">HDFEOS::is_grid() Name:" << name << endl;
+  DBG(cerr << ">HDFEOS::is_grid() Name:" << name << endl);
   for (i = 0; i < (int) full_data_paths.size(); i++) {
     std::string str = full_data_paths.at(i);
-    // cout << "=HDFEOS::is_grid() Name:" << name << "Datapath: " << str << endl; // <hyokyung 2008.11.11. 14:39:12>
+    DBG(cerr << "=HDFEOS::is_grid() Name:" << name << " Datapath: " << str << endl); // <hyokyung 2008.11.11. 14:39:12>
     if (str == name) {
       return true;
     }
@@ -440,6 +440,11 @@ void HDFEOS::set_shared_dimension()
 const char *HDFEOS::get_CF_name(char *eos_name)
 {
   string str(eos_name);
+#ifdef CF  
+  eos_to_cf_map["XDim"] = "lon";
+  eos_to_cf_map["YDim"] = "lat";
+  eos_to_cf_map["nCandidate"] = "lev";
+#endif  
 #ifdef USE_HDFEOS2
   if(is_grid()){
     eos_to_cf_map["XDim"] = "lon";
@@ -456,7 +461,7 @@ const char *HDFEOS::get_CF_name(char *eos_name)
     eos_to_cf_map["StdPressureLev"] = "pressStd";
     
   }
-#endif  
+#endif
   eos_to_cf_map["MissingValue"] = "missing_value";
   eos_to_cf_map["Units"] = "units";
   eos_to_cf_map["Offset"] = "add_offset";

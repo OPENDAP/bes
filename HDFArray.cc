@@ -113,7 +113,17 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
     // get the HDF dataset name, SDS name
     string hdf_file = dataset();
     string hdf_name = this->name();
-
+    
+#ifdef CF
+    // get the real name for swath
+    if(hdf_name == "lat"){
+      hdf_name = "Latitude";
+    }
+    if(hdf_name == "lon"){
+      hdf_name = "Longitude";
+    }    
+#endif
+    
     // get slab constraint
     vector < int >start, edge, stride;
     bool isslab = GetSlabConstraint(start, edge, stride);

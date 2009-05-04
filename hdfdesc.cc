@@ -141,10 +141,13 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 static void add_dimension_attributes(DAS &das);
 #endif
 
+#if defined(CF) || defined(USE_HDFEOS)
+static void write_dimension_attributes_swath(DAS &das);
+#endif
+
 #ifdef USE_HDFEOS2
 static void write_dimension_attributes_grid(DAS &das);
 static void write_dimension_attributes_grid_non_ortho(DAS &das);
-static void write_dimension_attributes_swath(DAS &das);
 static void write_hdfeos2_grid(DDS &dds);
 static void write_hdfeos2_grid_other_projection(DDS &dds);
 static void write_hdfeos2_swath(DDS &dds);
@@ -431,7 +434,11 @@ static void build_descriptions(DDS & dds, DAS & das,
   // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
   if(eos.is_shared_dimension_set()){
     DBG(cerr << "CF generated NC_GLOBAL" << endl);
-    add_dimension_attributes(das);
+    if(!eos.is_swath())
+      add_dimension_attributes(das);
+    else{
+      write_dimension_attributes_swath(das);
+    }
   }
 #endif
   
@@ -1130,44 +1137,6 @@ static void write_dimension_attributes_grid(DAS & das)
     }    
 }
 
-static void write_dimension_attributes_swath(DAS & das)
-{
-
-  AttrTable *at;
-  
-  // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
-  at = das.add_table("NC_GLOBAL", new AttrTable);
-  at->append_attr("title", STRING, "\"NASA EOS Swath\"");
-  at->append_attr("Conventions", STRING, "\"CF-1.0\"");
-
-  at = das.add_table("lon", new AttrTable);
-  at->append_attr("units", STRING, "\"degrees_east\"");
-  at->append_attr("long_name", STRING, "\"longitude\"");
-
-  at = das.add_table("lat", new AttrTable);
-  at->append_attr("units", STRING, "\"degrees_north\"");
-  at->append_attr("long_name", STRING, "\"latitude\"");
-  at->append_attr("coordinates", STRING, "\"lon lat\"");
-  // For all swaths, insert the coordinates attribute if lat, lon dimension names match.
-
-
-
-  
-  at = das.get_table("Time");
-  if(at != NULL){
-    at->append_attr("units", STRING, "\"degrees_north\"");
-    at->append_attr("long_name", STRING, "\"floating-point TAI qelapsed seconds since Jan 1, 193\"");
-    at->append_attr("coordinates", STRING, "\"lon lat\"");
-  }
-  /*
-  at = das.add_table("pressStd", new AttrTable);
-  at->append_attr("units", STRING, "\"hPa\"");
-  at->append_attr("long_name", STRING, "\"Standard pressure altitude levels\"");
-  at->append_attr("standard_name", STRING, "\"Standard_ pressure_altitude_levels\"");  
-  at->append_attr("positive", STRING, "\"down\"");
-  */
-
-}
 
 
 static void write_dimension_attributes_grid_non_ortho(DAS & das)
@@ -1485,4 +1454,35 @@ static void write_hdfeos2_swath(DDS &dds)
 }
 
 
+#endif
+
+#if defined(CF) || defined(USE_HDFEOS)
+static void write_dimension_attributes_swath(DAS & das)
+{
+
+  AttrTable *at;
+  
+  // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
+  at = das.add_table("NC_GLOBAL", new AttrTable);
+  at->append_attr("title", STRING, "\"NASA EOS Swath\"");
+  at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+
+  at = das.add_table("lon", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_east\"");
+  at->append_attr("long_name", STRING, "\"longitude\"");
+
+  at = das.add_table("lat", new AttrTable);
+  at->append_attr("units", STRING, "\"degrees_north\"");
+  at->append_attr("long_name", STRING, "\"latitude\"");
+  at->append_attr("coordinates", STRING, "\"lon lat\"");
+  // For all swaths, insert the coordinates attribute if lat, lon dimension names match.
+  
+  at = das.get_table("Time");
+  if(at != NULL){
+    at->append_attr("units", STRING, "\"degrees_north\"");
+    at->append_attr("long_name", STRING, "\"floating-point TAI qelapsed seconds since Jan 1, 193\"");
+    at->append_attr("coordinates", STRING, "\"lon lat\"");
+  }
+
+}
 #endif
