@@ -196,7 +196,11 @@ attribute:    	GROUP '=' STR
 		| COMMENT {
 		    ostringstream name, comment;
 		    name << "comment" << commentnum++;
+#ifdef ATTR_STRING_QUOTE_FIX
+                    comment << $1;
+#else
 		    comment << "\"" << $1 << "\"";
+#endif
 		    DBG(cerr << name.str() << ":" << comment.str() << endl);
 		    AttrTable *a;
 		    if (STACK_EMPTY)
@@ -218,8 +222,13 @@ attribute:    	GROUP '=' STR
 			a = ATTR_OBJ(arg);
 		    else
 			a = TOP_OF_STACK;
+#ifdef ATTR_STRING_QUOTE_FIX
+                    a->append_attr(name.c_str(), "String", 
+                                   "Error processing EOS attributes");
+#else
 		    a->append_attr(name.c_str(), "String", 
 				   "\"Error processing EOS attributes\"");
+#endif
 		    parse_error((parser_arg *)arg, NO_DAS_MSG);
 		    /* Don't abort; keep parsing to try and pick up more
 		       attribtues. 3/30/2000 jhrg */

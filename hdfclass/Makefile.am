@@ -14,7 +14,7 @@ noinst_LTLIBRARIES = libhdfclass.la
 
 libhdfclass_la_SOURCES = annot.cc gri.cc hcerr.h hcutil.cc inst.cc vdata.cc\
 	genvec.cc hcerr.cc hcstream.h hdfclass.h sds.cc vgroup.cc
-libhdfclass_la_CPPFLAGS = $(BES_CPPFLAGS)
+libhdfclass_la_CPPFLAGS = $(AM_CPPFLAGS) $(BES_CPPFLAGS)
 libhdfclass_la_LDFLAGS = $(LDFLAGS) $(HDF4_LDFLAGS)
 libhdfclass_la_LIBADD =  $(BES_DAP_LIBS)
 # $(HDF4_LIBS) If HDF4 is built with --with-picm then adding the HDF4_LIBS

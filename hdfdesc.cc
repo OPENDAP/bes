@@ -100,6 +100,10 @@ void *hdfeos_string(const char *yy_str);
 #include "HDFFloat64.h"
 #endif
 
+// Added 5/7/09; This bug (#1163) was fixed in July 2008 except for this
+// handler. jhrg
+#define ATTR_STRING_QUOTE_FIX
+
 #if defined(CF) || defined(USE_HDFEOS2) 
 HDFEOS eos;			// <hyokyung 2009.04.10. 16:26:34>
 #endif
@@ -854,7 +858,11 @@ void AddHDFAttr(DAS & das, const string & varname,
         }
              else {
                 if (attrtype == "String")
+#ifdef ATTR_STRING_QUOTE_FIX
+                    attv[j] = escattr(attv[j]);
+#else
                     attv[j] = "\"" + escattr(attv[j]) + "\"";
+#endif
                 if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
                     THROW(dhdferr_addattr);
             }
@@ -887,7 +895,11 @@ void AddHDFAttr(DAS & das, const string & varname,
     // add the annotations to the DAS
     string an;
     for (int i = 0; i < (int) anv.size(); ++i) {        // for each annotation
+#ifdef ATTR_STRING_QUOTE_FIX
+        an = escattr(anv[i]);     // quote strings
+#else
         an = "\"" + escattr(anv[i]) + "\"";     // quote strings
+#endif
         if (atp->append_attr(string("HDF_ANNOT"), "String", an) == 0)
             THROW(dhdferr_addattr);
     }

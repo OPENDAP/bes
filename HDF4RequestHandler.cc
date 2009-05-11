@@ -67,12 +67,18 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
     add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
-    if (HDF4RequestHandler::_cachedir == "") {
+    if (HDF4RequestHandler::_cachedir.empty()) {
         bool found = false;
         _cachedir = TheBESKeys::TheKeys()->get_key("HDF4.CacheDir", found);
+#if 0
         if (!found || _cachedir == "")
             _cachedir = "/tmp";
-
+#else
+        // Turn caching off
+        if (!found)
+            _cachedir = "";
+#endif
+        if (!_cachedir.empty()) {
         string HDF4_file = _cachedir + "/HDF4XXXXXX";
         char *HDF4_temp = new char[HDF4_file.length() + 1];
 	string::size_type len =
@@ -84,15 +90,19 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
 
         if (fd == -1) {
 	    delete[] HDF4_temp;
+#if 0
             if (_cachedir == "/tmp") {
 		// fd is -1 so should not close here
                 //close(fd);
+#endif
                 string err =
                     "Could not create a file in the cache directory (" +
                     _cachedir + ")";
                 throw BESInternalError(err, __FILE__, __LINE__);
+#if 0
             }
             _cachedir = "/tmp";
+#endif
         }
 	else
 	{
@@ -102,6 +112,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
 	    close(fd);
 	    delete[] HDF4_temp;
 	}
+        }
     }
 }
 

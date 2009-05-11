@@ -6,52 +6,52 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 
     <Attribute name="HDF_GLOBAL" type="Container">
         <Attribute name="Producer_Agency" type="String">
-            <value>&quot;NASA\\000&quot;</value>
+            <value>NASA\\000</value>
         </Attribute>
         <Attribute name="Producer_Institution" type="String">
-            <value>&quot;JPL\\000&quot;</value>
+            <value>JPL\\000</value>
         </Attribute>
         <Attribute name="Sensor_Name" type="String">
-            <value>&quot;NSCAT\\000&quot;</value>
+            <value>NSCAT\\000</value>
         </Attribute>
         <Attribute name="Project_ID" type="String">
-            <value>&quot;NSCAT\\000&quot;</value>
+            <value>NSCAT\\000</value>
         </Attribute>
         <Attribute name="SIS_ID" type="String">
-            <value>&quot;597-512-24/1996-07-01\\000&quot;</value>
+            <value>597-512-24/1996-07-01\\000</value>
         </Attribute>
         <Attribute name="Build_ID" type="String">
-            <value>&quot;3.2.1/1996-11-05\\000&quot;</value>
+            <value>3.2.1/1996-11-05\\000</value>
         </Attribute>
         <Attribute name="ADEOS_Data_Package_ID" type="String">
-            <value>&quot;S2\\000&quot;</value>
+            <value>S2\\000</value>
         </Attribute>
         <Attribute name="ADEOS_Data_Package_Type" type="String">
-            <value>&quot;S\\000&quot;</value>
+            <value>S\\000</value>
         </Attribute>
         <Attribute name="Product_Creation_Time" type="String">
-            <value>&quot;1996-318T01:35:16.000\\000&quot;</value>
+            <value>1996-318T01:35:16.000\\000</value>
         </Attribute>
         <Attribute name="Data_Type" type="String">
-            <value>&quot;L2\\000&quot;</value>
+            <value>L2\\000</value>
         </Attribute>
         <Attribute name="Data_Status" type="String">
-            <value>&quot;COMPLETE\\000&quot;</value>
+            <value>COMPLETE\\000</value>
         </Attribute>
         <Attribute name="First_Rev_Number" type="Int32">
             <value>415</value>
         </Attribute>
         <Attribute name="First_Rev_Eq_Crossing_Time" type="String">
-            <value>&quot;1996-259T04:01:28.226\\000&quot;</value>
+            <value>1996-259T04:01:28.226\\000</value>
         </Attribute>
         <Attribute name="First_Rev_Eq_Crossing_Lon" type="Float32">
             <value>279.983</value>
         </Attribute>
         <Attribute name="First_Data_Time" type="String">
-            <value>&quot;1996-259T03:43:48.945\\000&quot;</value>
+            <value>1996-259T03:43:48.945\\000</value>
         </Attribute>
         <Attribute name="Last_Data_Time" type="String">
-            <value>&quot;1996-259T05:09:48.997\\000&quot;</value>
+            <value>1996-259T05:09:48.997\\000</value>
         </Attribute>
         <Attribute name="Num_Expected_Output_Records" type="Int32">
             <value>458</value>
@@ -60,32 +60,32 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>458</value>
         </Attribute>
         <Attribute name="Ambig_Removal_Method" type="String">
-            <value>&quot;Baseline used\\000&quot;</value>
+            <value>Baseline used\\000</value>
         </Attribute>
         <Attribute name="HDF_Build_ID" type="String">
-            <value>&quot;JPL D-xxxxx 12/15/94\\000&quot;</value>
+            <value>JPL D-xxxxx 12/15/94\\000</value>
         </Attribute>
         <Attribute name="HDF_SIS_ID" type="String">
-            <value>&quot;JPL D-12060 12/15/94\\000&quot;</value>
+            <value>JPL D-12060 12/15/94\\000</value>
         </Attribute>
         <Attribute name="HDF_Conversion_Organization" type="String">
-            <value>&quot;JPL PO.DAAC\\000&quot;</value>
+            <value>JPL PO.DAAC\\000</value>
         </Attribute>
         <Attribute name="HDF_Conversion_Time" type="String">
-            <value>&quot;1996-320T17:32:34       &quot;</value>
+            <value>1996-320T17:32:34       </value>
         </Attribute>
         <Attribute name="Data_Format_Type" type="String">
-            <value>&quot;HDF\\000&quot;</value>
+            <value>HDF\\000</value>
         </Attribute>
     </Attribute>
 
     <Structure name="NSCAT Rev 20">
         <Array name="WVC_Lat">
             <Attribute name="long_name" type="String">
-                <value>&quot;latitude&quot;</value>
+                <value>latitude</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;deg&quot;</value>
+                <value>deg</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -108,18 +108,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Int16/>
@@ -128,10 +128,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="WVC_Lon">
             <Attribute name="long_name" type="String">
-                <value>&quot;longitude&quot;</value>
+                <value>longitude</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;deg&quot;</value>
+                <value>deg</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -154,18 +154,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -174,10 +174,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Sigma0">
             <Attribute name="long_name" type="String">
-                <value>&quot;The total number of sigma-0 measurements&quot;</value>
+                <value>The total number of sigma-0 measurements</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -200,18 +200,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -220,10 +220,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Beam_12">
             <Attribute name="long_name" type="String">
-                <value>&quot;The total number of sigma-0s received from beam 1 or 2&quot;</value>
+                <value>The total number of sigma-0s received from beam 1 or 2</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -246,18 +246,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -266,10 +266,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Beam_34">
             <Attribute name="long_name" type="String">
-                <value>&quot;The total number of sigma-0s received from beam 3 or 4&quot;</value>
+                <value>The total number of sigma-0s received from beam 3 or 4</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -292,18 +292,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -312,10 +312,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Beam_56">
             <Attribute name="long_name" type="String">
-                <value>&quot;The total number of sigma-0s received from beam 5 or 6&quot;</value>
+                <value>The total number of sigma-0s received from beam 5 or 6</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -338,18 +338,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -358,10 +358,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Beam_78">
             <Attribute name="long_name" type="String">
-                <value>&quot;The total number of sigma-0s received from beam 7 or 8&quot;</value>
+                <value>The total number of sigma-0s received from beam 7 or 8</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -384,18 +384,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -404,7 +404,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="WVC_Quality_Flag">
             <Attribute name="long_name" type="String">
-                <value>&quot;WVC Quality Flag&quot;</value>
+                <value>WVC Quality Flag</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -427,18 +427,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
@@ -447,10 +447,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Mean_Wind">
             <Attribute name="long_name" type="String">
-                <value>&quot;Mean Wind Speed&quot;</value>
+                <value>Mean Wind Speed</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;m/s&quot;</value>
+                <value>m/s</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -473,18 +473,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -493,10 +493,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Wind_Speed">
             <Attribute name="long_name" type="String">
-                <value>&quot;Wind speed associated with a WVC&quot;</value>
+                <value>Wind speed associated with a WVC</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;m/s&quot;</value>
+                <value>m/s</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -519,26 +519,26 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_2" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;position&quot;</value>
+                    <value>position</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;position of the ambiguities&quot;</value>
+                    <value>position of the ambiguities</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -548,10 +548,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Wind_Dir">
             <Attribute name="long_name" type="String">
-                <value>&quot;Wind direction solution associated with a WVC&quot;</value>
+                <value>Wind direction solution associated with a WVC</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;deg&quot;</value>
+                <value>deg</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -574,26 +574,26 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_2" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;position&quot;</value>
+                    <value>position</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;position of the ambiguities&quot;</value>
+                    <value>position of the ambiguities</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -603,10 +603,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Error_Speed">
             <Attribute name="long_name" type="String">
-                <value>&quot;Uncertainty estimated for the wind speed value&quot;</value>
+                <value>Uncertainty estimated for the wind speed value</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;m/s&quot;</value>
+                <value>m/s</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -629,26 +629,26 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_2" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;position&quot;</value>
+                    <value>position</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;position of the ambiguities&quot;</value>
+                    <value>position of the ambiguities</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -658,10 +658,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Error_Dir">
             <Attribute name="long_name" type="String">
-                <value>&quot;Uncertainty estimated for the wind direction value&quot;</value>
+                <value>Uncertainty estimated for the wind direction value</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;deg&quot;</value>
+                <value>deg</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.01</value>
@@ -684,26 +684,26 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_2" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;position&quot;</value>
+                    <value>position</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;position of the ambiguities&quot;</value>
+                    <value>position of the ambiguities</value>
                 </Attribute>
             </Attribute>
             <UInt16/>
@@ -713,7 +713,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="MLE_Likelihood">
             <Attribute name="long_name" type="String">
-                <value>&quot;Relative likelihood that a given win vector solution is correct&quot;</value>
+                <value>Relative likelihood that a given win vector solution is correct</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>0.1</value>
@@ -736,26 +736,26 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_2" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;position&quot;</value>
+                    <value>position</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;position of the ambiguities&quot;</value>
+                    <value>position of the ambiguities</value>
                 </Attribute>
             </Attribute>
             <Int16/>
@@ -765,10 +765,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Array>
         <Array name="Num_Ambigs">
             <Attribute name="long_name" type="String">
-                <value>&quot;Number of ambiguous wind vectors reported for a given cell&quot;</value>
+                <value>Number of ambiguous wind vectors reported for a given cell</value>
             </Attribute>
             <Attribute name="units" type="String">
-                <value>&quot;counts&quot;</value>
+                <value>counts</value>
             </Attribute>
             <Attribute name="scale_factor" type="Float64">
                 <value>1</value>
@@ -791,18 +791,18 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
             <Attribute name="dim_0" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;row&quot;</value>
+                    <value>row</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC row&quot;</value>
+                    <value>WVC row</value>
                 </Attribute>
             </Attribute>
             <Attribute name="dim_1" type="Container">
                 <Attribute name="name" type="String">
-                    <value>&quot;WVC&quot;</value>
+                    <value>WVC</value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <value>&quot;WVC index&quot;</value>
+                    <value>WVC index</value>
                 </Attribute>
             </Attribute>
             <Byte/>
