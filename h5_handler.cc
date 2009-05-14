@@ -10,11 +10,10 @@
 /// Copyright (C) 1999  National Center for Supercomputing Applications.
 ///             All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////
-// #define DODS_DEBUG
 #include "h5_handler.h"
 
-/// The default CGI version of handler.
-const static string cgi_version = "3.0";
+/// The version of this handler.
+const static string cgi_version = PACKAGE_VERSION;
 
 /// An external object that handles NASA EOS HDF5 files for grid generation 
 /// and meta data parsing.
@@ -53,73 +52,73 @@ int main(int argc, char *argv[])
             throw Error(no_such_file, string("Could not open hdf5 file: ")
                         + df.get_dataset_name());
 
-        // Check if it is EOS file.
-        DBG(cerr << "checking EOS file" << endl);
+        // Check if it is an HDF-EOS5 file.
+        DBG(cerr << "checking HDF-EOS5 file" << endl);
         if (eos.check_eos(file1)) {
-            DBG(cerr << "eos file is detected" << endl);
+            DBG(cerr << "An HDF-EOS5 file is detected" << endl);
             eos.set_dimension_array();
         } else {
-            DBG(cerr << "eos file is not detected" << endl);
+            DBG(cerr << "An HDF-EOS5 file is not detected" << endl);
         }
 
-        switch (df.get_response()) {
+        switch (df.get_response()) { // One of DAS, DDS, DODS, DDX, Version request
 
         case DODSFilter::DAS_Response:{
-                DAS das;
-                find_gloattr(file1, das);
-                depth_first(file1, "/", das);
+            DAS das;
+            find_gloattr(file1, das);
+            depth_first(file1, "/", das); // Traverse the HDF5 groups
 
-                df.send_das(das);
+            df.send_das(das);
 
-                break;
-            }
+            break;
+        }
 
         case DODSFilter::DDS_Response:{
-                DAS das;
-                DDS dds(NULL);
-                ConstraintEvaluator ce;
+            DAS das;
+            DDS dds(NULL);
+            ConstraintEvaluator ce;
 
-                depth_first(file1, "/", dds,
-                            df.get_dataset_name().c_str());
+            depth_first(file1, "/", dds,
+                        df.get_dataset_name().c_str());
 
-                DBG(cerr << ">df.send_dds()" << endl);
-		df.send_dds(dds, ce, true);
-                break;
-            }
+            DBG(cerr << ">df.send_dds()" << endl);
+            df.send_dds(dds, ce, true);
+            break;
+        }
 
         case DODSFilter::DataDDS_Response:{
 
 
-                DDS dds(NULL);
-                ConstraintEvaluator ce;
-                DAS das;
+            DDS dds(NULL);
+            ConstraintEvaluator ce;
+            DAS das;
 
-                depth_first(file1, "/", dds,
-                            df.get_dataset_name().c_str());
+            depth_first(file1, "/", dds,
+                        df.get_dataset_name().c_str());
 
-                df.send_data(dds, ce, cout);
-                break;
-            }
+            df.send_data(dds, ce, cout);
+            break;
+        }
 
         case DODSFilter::DDX_Response:{
-                DDS dds(NULL);
-                ConstraintEvaluator ce;
-                DAS das;
+            DDS dds(NULL);
+            ConstraintEvaluator ce;
+            DAS das;
 
-                depth_first(file1, "/", dds,
-                            df.get_dataset_name().c_str());
-                find_gloattr(file1, das);
-                depth_first(file1, "/", das);
-                dds.transfer_attributes(&das);
-                df.send_ddx(dds, ce, cout);
-                break;
-            }
+            depth_first(file1, "/", dds,
+                        df.get_dataset_name().c_str());
+            find_gloattr(file1, das);
+            depth_first(file1, "/", das);
+            dds.transfer_attributes(&das);
+            df.send_ddx(dds, ce, cout);
+            break;
+        }
 
         case DODSFilter::Version_Response:{
-                df.send_version_info();
+            df.send_version_info();
 
-                break;
-            }
+            break;
+        }
 
         default:
             df.print_usage();   // Throws Error
