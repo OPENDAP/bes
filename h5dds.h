@@ -43,7 +43,5 @@ bool depth_first(hid_t, char *, DDS &, const char *);
 string return_type(hid_t type);
 void read_objects(DDS & dds, const string & varname,
                   const string & filename);
-// Moved the SHORT_PATH symbol into the get_short_name() function. jhrg
-// #ifdef SHORT_PATH
 string get_short_name(string name);
-// #endif
+
