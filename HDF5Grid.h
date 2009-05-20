@@ -11,18 +11,24 @@
 
 using namespace libdap;
 
+////////////////////////////////////////////////////////////////////////////////
 /// A HDF5Grid class.
 /// 
 /// This class provides a way to map HDF5 array in Grid format to DAP Grid.
 ///
 /// @author Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 ///
+/// Copyright (c) 2007-2009 HDF Group
+/// 
+/// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 class HDF5Grid:public Grid {
 
-  private:
+private:
     hid_t dset_id;
     hid_t ty_id;
-  public:
+    
+public:
 
     /// Constructor  
     HDF5Grid(const string &n, const string &d);
@@ -36,9 +42,6 @@ class HDF5Grid:public Grid {
 
     /// Reads data array and map arrays in from this Grid.
     virtual bool read();
-
-    /// See print_type function in h5das.cc
-    friend string print_type(hid_t datatype);
 
     /// returns HDF5 dataset id.  
     hid_t get_did();

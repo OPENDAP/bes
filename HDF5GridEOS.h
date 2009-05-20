@@ -11,19 +11,22 @@
 
 using namespace libdap;
 
+////////////////////////////////////////////////////////////////////////////////
 /// A Grid subclass for handling HDF5 EOS data.
 /// 
 /// This class synthesizes DAP Grids from NASA EOS HDF5 arrays that can be mapped to Grid.
 ///
 /// @author Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 ///
+/// Copyright (c) The 2007-2009 HDF Group
+////////////////////////////////////////////////////////////////////////////////
 class HDF5GridEOS:public Grid {
 
-  private:
+private:
     hid_t dset_id;
     hid_t ty_id;
 
-  public:
+public:
 
     /// Constructor
     HDF5GridEOS(const string &n, const string &d);
@@ -40,9 +43,6 @@ class HDF5GridEOS:public Grid {
     /// This function is different from normal Grid read function
     /// since maps data are resulted from parsing the metadata.
     virtual bool read();
-
-    /// See print_type function in h5das.cc  
-    friend string print_type(hid_t datatype);
 
     /// returns HDF5 dataset id.    
     hid_t get_did();
