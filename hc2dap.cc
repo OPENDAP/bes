@@ -37,6 +37,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
+
 #include "config_hdf.h"
 
 // STL includes
@@ -51,7 +52,7 @@
 #endif
 #include <BESDebug.h>
 
-//#define DODS_DEBUG
+
 #include <debug.h>
 using namespace std;
 #ifdef CF
@@ -735,7 +736,7 @@ HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
   }
 
 }
-
+#ifndef USE_HDFEOS2
 // Create a EOS grids without structure. <hyokyung 2008.11.13. 15:38:58>
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
                                      sds_map &sdmap, vd_map &vdmap,
@@ -775,7 +776,7 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
         BaseType *bt = 0;
         switch (tag) {
         case DFTAG_VH:
-            bt = NewSequenceFromVdata(vdmap[ref].vdata, dataset);
+	    bt = NewSequenceFromVdata(vdmap[ref].vdata, dataset);
             break;
         case DFTAG_NDG:
             if (sdmap[ref].sds.has_scale()) {
@@ -815,6 +816,6 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg, vg_map &vgmap,
 
     return 0;
 }
-
+#endif
 
 #endif // ifdef CF

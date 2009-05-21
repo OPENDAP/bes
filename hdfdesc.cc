@@ -686,8 +686,10 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
 	}	
 #endif
 #ifdef CF
+#ifndef USE_HDFEOS2        
 	NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
 				  grmap, filename, dds);
+#endif        
 #endif	
       } // for (VGI v = vgmap.begin(); v != vgmap.end(); ++v)
 
@@ -706,6 +708,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
       }
 
       // add lone Vdata's
+      /*
       for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
         if (v->second.in_vgroup)
 	  continue;           // skip over Vdata in vgroups
@@ -715,7 +718,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
 	  delete pbt;
 	}
       }
-
+      */
       // add lone GR's
       for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
         if (g->second.in_vgroup)
