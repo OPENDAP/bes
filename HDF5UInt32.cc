@@ -31,14 +31,14 @@ bool HDF5UInt32::read()
     if (read_p())
         return false;
 
-    if (return_type(ty_id) == "UInt32") {
+    if (get_dap_type(ty_id) == "UInt32") {
 	dods_uint32 buf;
 	get_data(dset_id, (void *) &buf);
         set_read_p(true);
 	set_value(buf);
     }
 
-    if (return_type(ty_id) == "Structure") {
+    if (get_dap_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
         if (!q)

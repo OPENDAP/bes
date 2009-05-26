@@ -42,7 +42,7 @@ bool HDF5Str::read()
     }
 #endif
 
-    if (return_type(ty_id) == "String") {
+    if (get_dap_type(ty_id) == "String") {
         char *chr = new char[size + 1];
 	get_data(dset_id, (void *)chr);
         set_read_p(true);
@@ -53,7 +53,7 @@ bool HDF5Str::read()
     }
 
 
-    if (return_type(ty_id) == "Structure") {
+    if (get_dap_type(ty_id) == "Structure") {
         BaseType *q = get_parent();
 
         char Msgi[max_str_len];

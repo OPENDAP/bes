@@ -426,68 +426,6 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
     return rep;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-/// \fn print_type(hid_t type)
-/// will get the corresponding DODS datatype.
-/// This function will return the "text representation" of the correponding
-/// datatype translated from HDF5.
-/// For unknown datatype, put it to string.
-/// \return static string
-/// \param type datatype id
-/// \todo  For unknown type, is null string correct?
-///  <hyokyung 2007.02.20. 11:57:43>
-////////////////////////////////////////////////////////////////////////////////
-string print_type(hid_t type)
-{
-    size_t size = 0;
-    H5T_sign_t sign;
-
-    switch (H5Tget_class(type)) {
-
-      case H5T_INTEGER:
-        // <hyokyung 2007.03. 8. 09:30:36>
-        size = H5Tget_size(type);
-        sign = H5Tget_sign(type);
-        if (size == 1){
-	  if (sign == H5T_SGN_2){
-            return INT16;
-	  }
-	  else{
-	    return BYTE;
-	  }
-	}
-
-        if (size == 2) {
-            if (sign == H5T_SGN_2)
-                return INT16;
-            else
-                return UINT16;
-        }
-
-        if (size == 4) {
-            if (sign == H5T_SGN_2)
-                return INT32;
-            else
-                return UINT32;
-        }
-        return INT_ELSE;
-
-      case H5T_FLOAT:
-        if (H5Tget_size(type) == 4)
-            return FLOAT32;
-        else if (H5Tget_size(type) == 8)
-            return FLOAT64;
-        else
-            return FLOAT_ELSE;  // <hyokyung 2007.03. 8. 10:01:48>
-
-      case H5T_STRING:
-        return STRING;
-
-      default:
-        return "Unmappable Type";       // <hyokyung 2007.02.20. 11:58:34>
-    }
-}
-
 // For CF we have to use a special filter to get the atribute name, while
 // for a non-CF-aware build we just use the name. 3/2008 jhrg
 #ifdef CF
@@ -507,7 +445,7 @@ string print_type(hid_t type)
 /// \return nothing
 /// \see get_attr_info(hid_t dset, int index,
 ///                    DSattr_t * attr_inst_ptr,int *ignoreptr, char *error)
-/// \see print_type()
+/// \see get_dap_type()
 ////////////////////////////////////////////////////////////////////////////////
 void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
@@ -694,7 +632,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             if (strcmp(attr_inst.name, "long_name") == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
-                    attr_table_ptr->append_attr("name", print_type(ty_id),
+                    attr_table_ptr->append_attr("name", get_dap_type(ty_id),
                                                 print_rep);
                     delete[]print_rep; print_rep = 0;
                 }
@@ -707,7 +645,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     print_rep = print_attr(ty_id, loc, value);
                     // GET_NAME is defined at the top of this function.
                     attr_table_ptr->append_attr(GET_NAME(attr_inst.name),
-                                                print_type(ty_id),
+                                                get_dap_type(ty_id),
                                                 print_rep);
 
                     delete[]print_rep; print_rep = 0;
@@ -736,7 +674,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                             print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
                             attr_table_ptr->
                                 append_attr(GET_NAME(attr_inst.name),
-                                            print_type(ty_id), print_rep);
+                                            get_dap_type(ty_id), print_rep);
 
                             tempvalue = tempvalue + elesize;
                             DBG(cerr << "tempvalue=" << tempvalue
@@ -768,8 +706,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 /// \param file HDF5 file id
 /// \exception msg string of error message to the dods interface.
 /// \return void
-/// \see get_attr_info()
-/// \see print_type()
 //////////////////////////////////////////////////////////////////////////
 void find_gloattr(hid_t file, DAS & das)
 {

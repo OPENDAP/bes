@@ -31,14 +31,14 @@ bool HDF5Byte::read()
     if (read_p())
         return false;
 
-    if (return_type(ty_id) == "Byte") {
+    if (get_dap_type(ty_id) == "Byte") {
         dods_byte buf;
 	get_data(dset_id, (void *) &buf);
         set_read_p(true);
 	set_value(buf);
     }
 
-    if (return_type(ty_id) == "Structure") {
+    if (get_dap_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
         if (!q)

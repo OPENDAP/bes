@@ -33,14 +33,14 @@ bool HDF5UInt16::read()
     if (read_p())
         return false;
 
-    if (return_type(ty_id) == "UInt16") {
+    if (get_dap_type(ty_id) == "UInt16") {
         dods_uint16 buf;
 	get_data(dset_id, (void *) &buf);
         set_read_p(true);
 	set_value(buf);
     }
     
-    if (return_type(ty_id) == "Structure") {
+    if (get_dap_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
         if (!q)

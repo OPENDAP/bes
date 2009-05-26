@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \file H5Git.cc
 ///  iterates all HDF5 internals.
 /// 
@@ -13,16 +13,10 @@
 ///  Copyright (C) 1999 National Center for Supercomputing Applications.
 ///                     All rights reserved.
 ///
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 
 // #define DODS_DEBUG
-
-#include <string.h>
-#include <hdf5.h>
-
-#include <debug.h>
-#include <InternalErr.h>        // <hyokyung 2007.02.23. 14:17:32>
 
 #include "H5Git.h"
 
@@ -31,7 +25,7 @@
 
 using namespace libdap;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn get_attr_info(hid_t dset, int index, DSattr_t *attr_inst_ptr,
 ///                  int *ignoreptr)
 ///  will get attribute information.
@@ -45,7 +39,7 @@ using namespace libdap;
 /// \param[out] ignoreptr  a flag to record whether it can be ignored.
 /// \return pointer to attribute structure
 /// \throw InternalError 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
                     int *ignoreptr)
 {
@@ -133,6 +127,79 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
     }
 
     return attrid;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_dap_type(hid_t type)
+/// returns the string representation of HDF5 type.
+///
+/// This function will get the text representation(string) of the corresponding
+/// DODS datatype. DODS-HDF5 subclass method will use this function.
+///
+/// \return string
+/// \param type datatype id
+///////////////////////////////////////////////////////////////////////////////
+string get_dap_type(hid_t type)
+{
+    size_t size = 0;
+    H5T_sign_t sign;
+
+    switch (H5Tget_class(type)) {
+
+    case H5T_INTEGER:
+        //  <hyokyung 2007.02.27. 13:29:14>
+        size = H5Tget_size(type);
+        sign = H5Tget_sign(type);
+        DBG(cerr << "=get_dap_type(): H5T_INTEGER" <<
+            " sign = " << sign <<
+            " size = " << size <<
+            endl);
+        if (size == 1){
+            if (sign == H5T_SGN_NONE)       // <hyokyung 2009.01.14. 10:42:50>
+                return BYTE;    
+            else
+                return INT16;
+        }
+
+        if (size == 2) {
+            if (sign == H5T_SGN_NONE)
+                return UINT16;
+            else
+                return INT16;
+        }
+
+        if (size == 4) {
+            if (sign == H5T_SGN_NONE)
+                return UINT32;
+            else
+                return INT32;
+        }
+        return INT_ELSE;
+
+    case H5T_FLOAT:
+        size = H5Tget_size(type);
+        DBG(cerr << "=get_dap_type(): FLOAT size = " << size << endl);
+        if (size == 4)
+            return FLOAT32;
+        if (size == 8)
+            return FLOAT64;
+        return FLOAT_ELSE;
+
+    case H5T_STRING:
+        return STRING;
+
+    case H5T_REFERENCE:
+        return URL;
+
+    case H5T_COMPOUND:
+        return COMPOUND;
+
+    case H5T_ARRAY:
+        return ARRAY;
+
+    default:
+        return "Unmappable Type";
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

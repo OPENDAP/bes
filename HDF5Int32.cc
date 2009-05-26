@@ -40,7 +40,7 @@ bool HDF5Int32::read()
 
 
 
-    if (return_type(ty_id) == "Int32") {
+    if (get_dap_type(ty_id) == "Int32") {
         DBG(cerr << "=HFInt32::read() ty_id=" << ty_id << endl);
         dods_int32 buf;
 	get_data(dset_id, (void *) &buf);
@@ -50,7 +50,7 @@ bool HDF5Int32::read()
     }
 
 
-    if (return_type(ty_id) == "Structure") {
+    if (get_dap_type(ty_id) == "Structure") {
 
         BaseType *q = get_parent();
         if (!q)

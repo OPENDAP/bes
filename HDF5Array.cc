@@ -30,7 +30,6 @@
 #include "HDF5Array.h"
 #include "HDF5Structure.h"
 #include "HDF5Str.h"
-#include "h5dds.h"
 
 using namespace std;
 
@@ -661,20 +660,20 @@ bool HDF5Array::read() {
     DBG(cerr
 	<< ">read() dataset=" << dataset()
 	<< " data_type_id=" << d_ty_id << " name=" << name()
-	<< " return_type=" << return_type(d_ty_id)
+	<< " get_dap_type=" << get_dap_type(d_ty_id)
 	<< " dimension=" << d_num_dim
 	<< " data_size=" << d_memneed << " length=" << length()
 	<< endl);
 
-    if (return_type(d_ty_id) == "Structure") {
+    if (get_dap_type(d_ty_id) == "Structure") {
 	return m_array_of_structure();
     }
 
-    if (return_type(d_ty_id) == "Array") {
+    if (get_dap_type(d_ty_id) == "Array") {
 	return m_array_in_structure();
     }
 
-    if (return_type(d_ty_id) == "Url") {
+    if (get_dap_type(d_ty_id) == "Url") {
 	return m_array_of_reference();
     }
 
@@ -704,7 +703,7 @@ bool HDF5Array::read() {
 	    
 	    // Check if a Signed Byte to Int16 conversion is necessary.
 	    // <hyokyung 2009.01.14. 13:22:50>
-	    if(return_type(d_ty_id) == "Int8"){
+	    if(get_dap_type(d_ty_id) == "Int8"){
 	      short* convbuf2 = new short[nelms];
 	      for(int i=0; i < nelms ; i++){
 		convbuf2[i] = (signed char)(convbuf[i]);
@@ -727,7 +726,7 @@ bool HDF5Array::read() {
 
 	    // Check if a Signed Byte to Int16 conversion is necessary.
 	    // <hyokyung 2009.01.14. 12:46:03>	    
-	    if(return_type(d_ty_id) == "Int8"){
+	    if(get_dap_type(d_ty_id) == "Int8"){
 	      short* convbuf2 = new short[data_size];
 	      for(int i=0; i < data_size; i++){
 		convbuf2[i] = static_cast<signed char>(convbuf[i]);
