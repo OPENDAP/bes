@@ -12,7 +12,7 @@
 using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// A Grid subclass for handling HDF5 EOS data.
+/// A Grid subclass for handling HDF-EOS5 data.
 /// 
 /// This class synthesizes DAP Grids from NASA EOS HDF5 arrays that can be mapped to Grid.
 ///

@@ -4,9 +4,10 @@
 
 using namespace std;
 
-/// This class that remembers all paths in a HDF5.
+/// A class for remembering all group paths in HDF5.
 /// 
-/// The purpose of this class is to find a cycle in reference and break the tie.
+/// The purpose of this class is to find a cycle in reference and break the
+/// tie.
 ///
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
