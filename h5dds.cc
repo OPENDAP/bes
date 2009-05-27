@@ -1,9 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \file h5dds.cc
 /// \brief DDS/DODS request processing source
 ///
-/// This file is part of h5_dap_handler, a C++ implementation of the DAP handler
-/// for HDF5 data.
+/// This file is part of h5_dap_handler, a C++ implementation of the DAP
+/// handler for HDF5 data.
 ///
 /// This file contains functions which use depth-first search to walk through
 /// an HDF5 file and build the in-memeory DDS.
@@ -42,15 +42,10 @@
 #include "H5EOS.h"
 
 extern H5EOS eos;
+static DS_t dt_inst; /// An instance of DS_t structure defined in common.h.
+
 extern string get_hardlink(hid_t, const string &);
-
-/// This variable is used to generate internal error message.
-// static char Msgt[MAX_ERROR_MESSAGE];
-
-/// An instance of DS_t structure defined in common.h.
-static DS_t dt_inst;
-
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
 ///
@@ -70,7 +65,7 @@ static DS_t dt_inst;
 /// \remarks hard link is treated as a dataset.
 /// \remarks will return error message to the DAP interface.
 /// \see depth_first(hid_t pid, char *gname, DAS & das, const char *fname)
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 {
     DBG(cerr
@@ -182,19 +177,19 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_bt(string varname, hid_t datatype, const HDF5TypeFactory &factory)
-/// returns the pointer of base type
+/// returns the pointer to the base type
 ///
 /// This function will create a new DODS object that corresponds to HDF5
-/// dataset and return a pointer of a new object of DODS datatype. If an error
-/// is found, an exception of type InternalErr is thrown. 
+/// dataset and return the pointer of a new object of DODS datatype. If an
+/// error is found, an exception of type InternalErr is thrown. 
 ///
 /// \param varname object name
 /// \param dataset name of dataset where this object comes from
 /// \param datatype datatype id
 /// \return pointer to BaseType
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 static BaseType *Get_bt(const string &varname,
                         const string &dataset,
                         hid_t datatype)
@@ -221,7 +216,6 @@ static BaseType *Get_bt(const string &varname,
                 << sign << endl);
 
             if (size == 1) {
-                // <hyokyung 2009.01.13. 13:46:29>
                 if (sign == H5T_SGN_2)
                     btp = new HDF5Int16(vname, dataset);
                 else
@@ -239,17 +233,12 @@ static BaseType *Get_bt(const string &varname,
                 else
                     btp = new HDF5UInt32(vname, dataset);
             }
-            // <hyokyung 2007.06.15. 12:42:09>
             else if (size == 8) {
-                throw InternalErr(__FILE__, __LINE__,
-                                  string("Unsupported HDF5 64-bit Integer type:  ") + vname);
-                //              <hyokyung 2009.01. 9. 15:13:52>       
-                //                if (sign == H5T_SGN_2) 
-                //                    btp = new HDF5Int32(vname, dataset);
-                //                else
-                //                    btp = new HDF5UInt32(vname, dataset);
+                throw
+                    InternalErr(__FILE__, __LINE__,
+                                string("Unsupported HDF5 64-bit Integer type:")
+                                + vname);
             }
-
             break;
 
         case H5T_FLOAT:
@@ -266,15 +255,16 @@ static BaseType *Get_bt(const string &varname,
 
         case H5T_STRING:
             btp = new HDF5Str(vname, dataset);
-            // btp = new HDF5Str(varname, dataset);
             break;
 
         case H5T_ARRAY: {
             BaseType *ar_bt = 0;
             try {
-                DBG(cerr << "=Get_bt() H5T_ARRAY datatype = " << datatype << endl);
+                DBG(cerr <<
+                    "=Get_bt() H5T_ARRAY datatype = " << datatype
+                    << endl);
 
-                // Get the array's base datatype.
+                // Get the base datatype of the array
                 hid_t dtype_base = H5Tget_super(datatype);
                 ar_bt = Get_bt(vname, dataset, dtype_base);
                 btp = new HDF5Array(vname, dataset, ar_bt);
@@ -285,12 +275,20 @@ static BaseType *Get_bt(const string &varname,
                 size = H5Tget_size(datatype);
                 int nelement = 1;
 
-                DBG(cerr << "=Get_bt()" << " Dim = " << ndim << " Size = " << size
+                DBG(cerr
+                    << "=Get_bt()" << " Dim = " << ndim
+                    << " Size = " << size
                     << endl);
 
                 hsize_t size2[DODS_MAX_RANK];
                 int perm[DODS_MAX_RANK];              // not used
-                H5Tget_array_dims(datatype, size2, perm);
+                if(H5Tget_array_dims(datatype, size2, perm) < 0){
+                    throw
+                        InternalErr(__FILE__, __LINE__,
+                                    string("Could not get array dims for: ")
+                                      + vname);
+                }
+
 
                 HDF5Array &h5_ar = dynamic_cast < HDF5Array & >(*btp);
                 for (int dim_index = 0; dim_index < ndim; dim_index++) {
@@ -406,7 +404,7 @@ static BaseType *Get_bt(const string &varname,
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_structure(string varname, hid_t datatype)
 /// returns a pointer of structure type. An exception is thrown if an error
 /// is encountered.
@@ -419,7 +417,7 @@ static BaseType *Get_bt(const string &varname,
 /// \param datatype datatype id
 /// \return pointer to Structure type
 ///
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 static Structure *Get_structure(const string &varname,
                                 const string &dataset,
                                 hid_t datatype)
@@ -437,7 +435,6 @@ static Structure *Get_structure(const string &varname,
 
     try {
         structure_ptr = new HDF5Structure(vname, dataset);
-        //FIXME: HDF5Structure &v = *structure_ptr;
         structure_ptr->set_did(dt_inst.dset);
         structure_ptr->set_tid(dt_inst.type);
 
@@ -506,7 +503,7 @@ static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
     return attr_id;
 }
 
-// This function modifies the Grid pointer 'gr' as a side effect.
+// This function builds a Grid from dimension scale information.
 static void process_grid(const H5GridFlag_t check_grid, 
                          Grid *gr) {
 
@@ -519,31 +516,72 @@ static void process_grid(const H5GridFlag_t check_grid,
                                                "HDF5_DIMENSIONNAMELIST",
                                                "OLD_HDF5_DIMENSIONNAMELIST");
     hid_t temp_dtype  = H5Aget_type(attr_id);
+    if(temp_dtype < 0) {
+        throw InternalErr(__FILE__, __LINE__, 
+                          "Unable to get the attribute type");        
+    }
     size_t temp_tsize = H5Tget_size(temp_dtype);
+    if(temp_tsize == 0){
+        throw InternalErr(__FILE__, __LINE__, 
+                          "Unable to get the attribute type size");        
+    }
+    
     hid_t temp_dspace = H5Aget_space(attr_id);
+    if(temp_dspace < 0){
+        throw InternalErr(__FILE__, __LINE__, 
+                          "Unable to get the attribute space.");
+    }
     hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+    if(temp_nelm == 0){
+        throw
+            InternalErr(__FILE__, __LINE__, 
+                        "Unable to get the number of elements in dataspace.");
+    }
 
     char *dimname = new char[temp_nelm * temp_tsize];
     try {
         if (H5Aread(attr_id, temp_dtype, dimname) < 0) {
-            // dimname is deleted below in the catch ... block so
-            // don't need to do it here. pwest Mar 18, 2009
-            //delete[] dimname;
             throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the attribute");
+                              "Unable to get the attribute.");
         }
-        H5Tclose(temp_dtype);
-        H5Sclose(temp_dspace);
-        H5Aclose(attr_id);
+        if (H5Tclose(temp_dtype) < 0) {
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to close the datatype.");
+            
+        }
+        if (H5Sclose(temp_dspace) < 0) {
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to close the dataspace.");
+        }
+        if (H5Aclose(attr_id) < 0){
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to close the attribute.");            
+        };
 
-        // obtain dimensional scale data information 
+        // Obtain dimensional scale data information.
         attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
                                              "HDF5_DIMENSIONLIST",
                                              "OLD_HDF5_DIMENSIONLIST");
         temp_dtype = H5Aget_type(attr_id);
+        if(temp_dtype < 0) {
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to get the attribute type");        
+        }        
         temp_tsize = H5Tget_size(temp_dtype);
+        if(temp_tsize == 0){
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to get the attribute type size");        
+        }        
         temp_dspace = H5Aget_space(attr_id);
+        if(temp_dspace < 0){
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to get the attribute space.");
+        }        
         temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+        if(temp_nelm == 0){
+            throw InternalErr(__FILE__, __LINE__, 
+                              "Unable to get the number of elements.");
+        }        
 
         char *buf = new char[temp_nelm * temp_tsize];
         memset(buf, 0, temp_nelm * temp_tsize);
@@ -551,10 +589,6 @@ static void process_grid(const H5GridFlag_t check_grid,
         char *EachDimName = 0;
         try {
             if (H5Aread(attr_id, H5T_STD_REF_OBJ, buf) < 0) {
-                // both of these are deleted below in the catch ...
-                // block so don't need to do it here. pwest Mar 18, 2009
-                //delete[] buf;
-                //delete[] dimname;
                 throw InternalErr(__FILE__, __LINE__,
                                   "Cannot read object reference attributes.");
             }
@@ -564,37 +598,62 @@ static void process_grid(const H5GridFlag_t check_grid,
             for (unsigned int j = 0; j < temp_nelm; j++) {
                 dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
                 if (dimid[j] < 0) {
-                    // these three ptrs are deleted in the catch ...
-                    // block below, so no need to do it here.
-                    // pwest Mar 18, 2009
-                    //delete[] dimid;
-                    //delete[] buf;
-                    //delete[] dimname;
                     throw InternalErr(__FILE__, __LINE__,
-                                      "cannot dereference the object.");
+                                      "Cannot dereference the object.");
                 }
                 refbuf++;
             }
 
-            H5Aclose(attr_id);
-            H5Sclose(temp_dspace);
-            H5Tclose(temp_dtype);
+            if(H5Aclose(attr_id) < 0){
+                throw InternalErr(__FILE__, __LINE__,
+                                  "Cannot close the attribute.");
+            };
+            if(H5Sclose(temp_dspace) < 0){
+                throw InternalErr(__FILE__, __LINE__,
+                                  "Cannot close the dataspace.");
+            };
+            if(H5Tclose(temp_dtype) < 0){
+                throw InternalErr(__FILE__, __LINE__,
+                                  "Cannot close the datatype."); 
+            };
 
             // Start building Grid.
             char *TempNamePointer = dimname;
-            //    size_t name_size = temp_tsize;
-            EachDimName = new char[temp_tsize/*name_size*/];
+            EachDimName = new char[temp_tsize];
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 // Get dimensional scale datasets. Add them to grid.
                 temp_dspace = H5Dget_space(dimid[dim_index]);
+                if(temp_dspace < 0){
+                    throw InternalErr(__FILE__, __LINE__, 
+                                      "Unable to get the data space.");
+                }
+                
                 temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+                if(temp_nelm == 0){
+                    throw InternalErr(__FILE__, __LINE__, 
+                                      "Unable to get the number of elements.");
+                }                        
+
                 temp_dtype = H5Dget_type(dimid[dim_index]);
+                if(temp_dtype < 0) {
+                    throw InternalErr(__FILE__, __LINE__, 
+                                      "Unable to get the data type");
+                }
+                
                 hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
+                if(memtype < 0){
+                    throw InternalErr(__FILE__, __LINE__, 
+                                      "Unable to get the native type");
+                }
                 temp_tsize = H5Tget_size(memtype);
+                if(temp_tsize == 0){
+                    throw InternalErr(__FILE__, __LINE__, 
+                                      "Unable to get the attribute type size");
+                }
 
                 strncpy(EachDimName, TempNamePointer, temp_tsize-1);
-                TempNamePointer = TempNamePointer + temp_tsize/*name_size*/;
+                TempNamePointer = TempNamePointer + temp_tsize;
                 BaseType *bt = 0;
                 HDF5Array *map = 0;
                 try {
@@ -617,14 +676,6 @@ static void process_grid(const H5GridFlag_t check_grid,
                     // case deleting further below. pwest Mar 18, 2009
                     if( bt ) { delete bt; bt = 0 ; }
                     if( map ) { delete map; map = 0 ; }
-                    // These 4 ptrs are deleted in the catch block
-                    // below, so possible to multiple delete items.
-                    // No need to clean them up here.
-                    // pwest Mar 18, 2009
-                    //delete[] dimid;
-                    //delete[] buf;
-                    //delete[] dimname;
-                    //delete[] EachDimName;
                     throw;
                 }
             } // for dim_index is 0 .. dt_inst.ndims
@@ -637,14 +688,9 @@ static void process_grid(const H5GridFlag_t check_grid,
         catch(...) {
             if( buf ) { delete[] buf; buf = 0 ; }
             if( dimid ) { delete[] dimid; dimid = 0 ; }
-            // This one is done in the catch ... block below so no
-            // need to do here. pwest Mar 18, 2009
-            //if( dimname ) { delete[] dimname; dimname = 0 ; }
             if( EachDimName ) { delete[] EachDimName; EachDimName = 0 ; }
             throw;
         }
-
-        //      delete[] dimname;
     }
     catch(...) {
         // just in case dimname is deleted and cleared somewhere
@@ -654,6 +700,8 @@ static void process_grid(const H5GridFlag_t check_grid,
     }
 }
 
+// Kent will clean up this code and verify with HDF5 files that are
+// generatd by h4toh5 tools.
 static void process_grid_matching_dimscale(const H5GridFlag_t check_grid, 
                                            Grid *gr) {
     hid_t attr_id = H5Aopen_name(dt_inst.dset, "DIMENSION_LIST");
@@ -669,9 +717,11 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
         memset(refbuf, 0, temp_nelm);
         dimid = new hid_t[temp_nelm];
 
-        // Should this throw an exception? jhrg
-        if (H5Aread(attr_id, temp_dtype, refbuf) < 0)
-            cerr << "Cannot read object reference attributes." << endl;
+        if (H5Aread(attr_id, temp_dtype, refbuf) < 0){
+            throw
+                InternalErr(__FILE__, __LINE__,
+                            "Cannot read object reference attributes.");
+        }
 
         for (unsigned int j = 0; j < temp_nelm; j++) {
             dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
@@ -681,11 +731,14 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
         char buf2[DODS_NAMELEN];
 
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-            H5Iget_name(dimid[dim_index], (char *) buf2, DODS_NAMELEN);
+            if(H5Iget_name(dimid[dim_index], (char *) buf2, DODS_NAMELEN) < 0){
+                throw
+                    InternalErr(__FILE__, __LINE__,
+                            "Cannot get reference name.");
+            }
             DBG(cerr << "name: " << buf2 << endl);
             // Open dataset.
-            // Is it OK to search from the current dset (i.e.
-            // dt_inst.dset) ? 
+            // Is it OK to search from the current dset (i.e.dt_inst.dset)? 
             hid_t dset_id = H5Dopen(dt_inst.dset, buf2);
             DBG(cerr << "dataset id: " << dset_id << endl);
             // Get the size of the array.
@@ -718,10 +771,6 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
             catch(...) {
                 if( bt ) delete bt;
                 if( map ) delete map;
-                // These two ptrs are cleaned up in the catch ...
-                // block below so no need to do here.
-                //delete[] refbuf;
-                //delete[] dimid;
                 throw;
             }
         } // for ()
@@ -738,7 +787,7 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 
 static void process_grid_nasa_eos(const string &varname, 
                                   Array *array, Grid *gr, DDS &dds_table) {
-    // Next fill the map part of the grid.
+    // Fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
     vector < string > tokens;
     eos.get_dimensions(varname, tokens);
@@ -783,9 +832,9 @@ static void process_grid_nasa_eos(const string &varname,
             
         }
         catch (...) {
-            // memory allocation exceptions could be thrown in
-            // creating one of these two ptrs, so check if exists
-            // before deleting.
+            // Memory allocation exceptions could be thrown in
+            // creating one of these two pointers, so check if they exist
+            // before deleting them.
             if( bt ) delete bt;
             if( ar ) delete ar;
             throw;
@@ -803,8 +852,10 @@ static void process_grid_nasa_eos(const string &varname,
         eos.get_all_dimensions(dimension_names);
 
         for(j=0; j < dimension_names.size(); j++){
-            int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
-            string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+            int shared_dim_size =
+                eos.get_dimension_size(dimension_names.at(j));
+            string str_cf_name =
+                eos.get_CF_name((char*) dimension_names.at(j).c_str());
             bt = new HDF5Float32(str_cf_name, gr->dataset());
             ar = new HDF5ArrayEOS(str_cf_name,gr->dataset(), bt);
 
@@ -820,7 +871,7 @@ static void process_grid_nasa_eos(const string &varname,
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_base_type(DDS & dds_table,
 ///                            const string & varname,
 ///                            const string & filename)
@@ -839,7 +890,7 @@ static void process_grid_nasa_eos(const string &varname,
 ///    \param varname Absolute name of either a dataset or a group
 ///    \param filename Added to the DDS (dds_table).
 ///    \throw error a string of error message to the dods interface.
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_base_type(DDS & dds_table, const string & a_name,
                        const string & filename)
@@ -856,9 +907,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     }
 #endif  
 
-    // Get base type. It should be int, float and double etc. atomic
+    // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
-    // BaseType *bt = Get_bt(varname, filename, dt_inst.type);
     BaseType *bt = Get_bt(sname, filename, dt_inst.type);
     
     if (!bt) {
@@ -878,8 +928,6 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     else {
         // Next, deal with Array and Grid data. This 'else clause' runs to
         // the end of the method. jhrg
-        // varname = get_short_name(varname);
-        
         HDF5Array *ar = new HDF5Array(sname, filename, bt);
         delete bt; bt = 0;
         ar->set_did(dt_inst.dset);
@@ -896,11 +944,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar->append_dim(dt_inst.size[dim_index]);
 #endif
-
-        // This needs to be fully supported! <hyokyung 2007.02.20. 11:53:11>
-        // DODSGRID is defined in common.h by default.
-
-#ifndef DODSGRID
+        
+#ifndef DODSGRID // DODSGRID is defined in common.h by default.
         // Not define DODS Grid. It has to be an array.
         dds_table.add_var(ar);
         delete ar; ar = 0;
@@ -928,7 +973,6 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
                  (dt_inst.dset, dt_inst.ndims, dt_inst.size)) {
 
             // Construct a grid instead of returning a simple array.
-
             Grid *gr = new HDF5Grid(sname, filename);
             gr->add_var(ar, array);
             delete ar; ar = 0;
@@ -953,7 +997,6 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
             delete gr; gr = 0;
         }
 #endif                          // #ifdef  NASA_EOS_GRID
-
         else {                  // cannot be mapped to grid, must be an array.
             dds_table.add_var(ar);
             delete ar; ar = 0;
@@ -964,7 +1007,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     DBG(cerr << "<read_objects_base_type(dds)" << endl);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_structure(DDS & dds_table,const string & varname,
 ///                  const string & filename)
 /// fills in information of a structure dataset (name, data type, data space)
@@ -974,7 +1017,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 ///    \param varname Absolute name of structure
 ///    \param filename Added to the DDS (dds_table).
 ///    \throw error a string of error message to the dods interface.
-////////////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(DDS & dds_table, const string & varname,
                        const string & filename)
@@ -1028,7 +1071,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects(DDS & dds_table,const string & varname,
 ///                  const string & filename)
 /// fills in information of a dataset (name, data type, data space) into one
@@ -1038,7 +1081,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
 ///    \param varname Absolute name of either a dataset or a group
 ///    \param filename Added to the DDS (dds_table).
 ///    \throw error a string of error message to the dods interface.
-////////////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////////////////////////////////
 void
 read_objects(DDS & dds_table, const string &varname, const string &filename)
 {
@@ -1055,17 +1098,21 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \fn get_short_name(string varname)
 /// returns a short name.
 ///
 /// This function returns a short name from \a varname.
-/// Short name is defined as  a string from the last '/' to the end of string
-/// excluding the '/'.
+/// Short name is defined as a string from the last '/' to the end of \a
+/// varname excluding the '/'. Then, the extracted string is prefixed with
+/// "A<number>". Finally, the prefixed string is shortened to the first 15
+/// characters. This function is meaningful only for HDF-EOS5 files
+/// when --enable-cf and --enable-short-name configuration options are
+/// set to be "yes".
 /// 
 /// \param varname a full object name that has a full group path information
 /// \return a shortened string
-////////////////////////////////////////////////////////////////////////////////  
+///////////////////////////////////////////////////////////////////////////////
 string get_short_name(string varname)
 {
 #ifdef CF
