@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-//  This file is part of the hdf5 data handler for the OPeNDAP data server.
+//  This file is part of the HDF5 data handler for the OPeNDAP data server.
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 // Copyright (c) 2009 The HDF Group
@@ -16,26 +16,32 @@ H5CF::H5CF()
     OMI = false;
     _swath = false;
     shared_dimension = false;
-    // <hyokyung 2007.08. 2. 14:25:58>  
+
+    // CF-convention requires strict attribute and variable names.
     eos_to_cf_map["MissingValue"] = "missing_value";
     eos_to_cf_map["Units"] = "units";
     eos_to_cf_map["XDim"] = "lon";
     eos_to_cf_map["YDim"] = "lat";
     eos_to_cf_map["nCandidate"] = "lev";
-    //  OMI L2 <hyokyung 2009.04.22. 10:14:23>
-    eos_to_cf_map["nTime"] = "lat";
-    eos_to_cf_map["nXtrack"] = "lon";
-    eos_to_cf_map["Longitude"] = "lon";
-    eos_to_cf_map["Latitude"] = "lat";
 
     eos_to_cf_map["Offset"] = "add_offset";
     eos_to_cf_map["ScaleFactor"] = "scale_factor";
     eos_to_cf_map["ValidRange"] = "valid_range";
     eos_to_cf_map["Title"] = "title";
 
+    // Reverse look up for Grid case.
     cf_to_eos_map["lon"] = "XDim";
     cf_to_eos_map["lat"] = "YDim";
     cf_to_eos_map["lev"] = "nCandidate";
+    
+    //  The following translation rules apply to OMI L2 only.
+    //  At this point, only OMI swath is 2-D swath, which IDV
+    //  OPeNDAP visualization tool can support.
+    eos_to_cf_map["nTime"] = "lat";
+    eos_to_cf_map["nXtrack"] = "lon";
+    eos_to_cf_map["Longitude"] = "lon";
+    eos_to_cf_map["Latitude"] = "lat";
+
 
 
 }
@@ -50,6 +56,10 @@ H5CF::add_data_path_swath(string full_path)
 {
 
 #ifdef CF
+    // Generating short name is useful if --enable-cf configuration
+    // is enabled since this is mainly for GrADS.
+    //  For the CF option, please refer to
+    //  http://hdfgroup.org/projects/opendap/publications/cf.html
     string short_path = generate_short_name(full_path);
     DBG(cerr << "Short path is:" << short_path << endl);
     long_to_short[full_path] = short_path;
@@ -70,36 +80,35 @@ H5CF::add_dimension_map_swath(string dimension_name, int dimension)
     dimension_name = cut_long_name(dimension_name);
 #endif
     DBG(cerr << "add_dimension_map_swath " << dimension_name << " = " <<
-	dimension << endl);
+        dimension << endl);
 
     int i;
     for (i = 0; i < (int) _dimensions_swath.size(); i++)
-	{
-	    std::string str = _dimensions_swath.at(i);
-	    if (str == dimension_name)
-		{
-		    has_dimension = true;
-		    if (_dimension_map_swath[dimension_name] != dimension)
-			{
-			    cerr << "Inconsistent dimension size " << dimension <<
-				" for dimension " << dimension_name;
-			    /*
-			      string msg =
-			      "h5_das handler: counting hdf5 group elements error for ";
-			      throw InternalErr(__FILE__, __LINE__, msg);
-			    */
-			    exit(-1);
-			}
-		    break;
-		}
-	}
+        {
+            std::string str = _dimensions_swath.at(i);
+            if (str == dimension_name)
+                {
+                    has_dimension = true;
+                    if (_dimension_map_swath[dimension_name] != dimension)
+                        {
+                            DBG(cerr
+                                << "Inconsistent dimension size " << dimension
+                                << " for dimension " << dimension_name);
+
+                              string msg =
+                              "Inconsistent dimension size in EOS Swath file";
+                              throw InternalErr(__FILE__, __LINE__, msg);
+                        }
+                    break;
+                }
+        }
 
     if (!has_dimension)
-	{
-	    _dimensions_swath.push_back(dimension_name);
-	    _dimension_map_swath[dimension_name] = dimension;
+        {
+            _dimensions_swath.push_back(dimension_name);
+            _dimension_map_swath[dimension_name] = dimension;
 
-	}
+        }
 }
 
 
@@ -111,70 +120,71 @@ H5CF::get_CF_name(char *eos_name)
     DBG(cerr << ">get_CF_name:" << str << endl);
     DBG(cerr << eos_to_cf_map[str] << endl);
     if (is_swath())
-	{
-	    if (str.find("/Longitude") != string::npos)
-		{
-		    return "lon";
-		}
-	    if (str.find("/Latitude") != string::npos)
-		{
-		    return "lat";
-		}
-	}
+        {
+            if (str.find("/Longitude") != string::npos)
+                {
+                    return "lon";
+                }
+            if (str.find("/Latitude") != string::npos)
+                {
+                    return "lat";
+                }
+        }
     if (eos_to_cf_map[str].size() > 0)
-	{
-	    return eos_to_cf_map[str].c_str();
-	}
+        {
+            return eos_to_cf_map[str].c_str();
+        }
     else
-	{
-	    // <hyokyung 2009.04.23. 15:36:37>    
-	    // HACK: The following appends weird character under Hyrax.
-	    // return str.c_str(); 
-	    return (const char *) eos_name;
-	}
+        {
+            // HACK: The following appends weird character under Hyrax.
+            // return str.c_str(); 
+            return (const char *) eos_name;
+        }
 }
 
-string H5CF::get_EOS_name(string str)
+string
+H5CF::get_EOS_name(string str)
 {
     DBG(cerr << cf_to_eos_map[str] << endl);
     if (cf_to_eos_map[str].size() > 0)
-	{
-	    return cf_to_eos_map[str];
-	}
+        {
+            return cf_to_eos_map[str];
+        }
     else
-	{
-	    return str;
-	}
+        {
+            return str;
+        }
 }
 
 
-bool H5CF::is_shared_dimension_set()
+bool
+H5CF::is_shared_dimension_set()
 {
     return shared_dimension;
 }
 
 
-bool H5CF::is_swath()
+bool
+H5CF::is_swath()
 {
     if (OMI)
-	return _swath;
+        return _swath;
     else
-	return false;
+        return false;
 }
 
-// See is_grid(string varname)
+// See also  is_grid(string varname).
 bool H5CF::is_swath(string varname)
 {
-    int
-	i;
+    int i;
     for (i = 0; i < (int) _full_data_paths_swath.size(); i++)
-	{
-	    std::string str = _full_data_paths_swath.at(i);
-	    if (str == varname)
-		{
-		    return true;
-		}
-	}
+        {
+            std::string str = _full_data_paths_swath.at(i);
+            if (str == varname)
+                {
+                    return true;
+                }
+        }
     return false;
 
 }
@@ -189,18 +199,18 @@ H5CF::reset()
     _swath = false;
 
     if (!_dimension_map_swath.empty())
-	{
-	    _dimension_map_swath.clear();
-	}
+        {
+            _dimension_map_swath.clear();
+        }
 
     if (!_dimensions_swath.empty())
-	{
-	    _dimensions_swath.clear();
-	}
+        {
+            _dimensions_swath.clear();
+        }
     if (!_full_data_paths_swath.empty())
-	{
-	    _full_data_paths_swath.clear();
-	}
+        {
+            _full_data_paths_swath.clear();
+        }
 
 
 

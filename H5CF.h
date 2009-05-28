@@ -9,10 +9,11 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <InternalErr.h>
 #include <debug.h>
 
 using namespace std;
-
+using namespace libdap;
 /// A class for generating CF convention compliant output.
 ///
 /// This class contains functions that generate CF-convention compliant output.
@@ -39,7 +40,7 @@ private:
   
 public:
     
-    /// A flag for Level 2 OMI Swath data.
+    /// A flag for Level 2 OMI Swath data. Only OMI data has 2-D Grid.
     bool OMI; 
     /// A flag for checking whether shared dimension variables are generated
     /// or not.
