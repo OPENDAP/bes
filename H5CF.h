@@ -15,7 +15,13 @@ using namespace std;
 
 /// A class for generating CF convention compliant output.
 ///
-/// This class contains functions that generate CF compliant output
+/// This class contains functions that generate CF-convention compliant output.
+/// By default, hdf5 handler cannot generate the DAP ouput that OPeNDAP
+/// visualization clients can display due to the discrepancy between the 
+/// HDF-EOS5 model and the model based on CF-convention. Most visualization
+/// clients require an output that follows CF-convention in order to display
+/// data directly on a map. 
+/// 
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
