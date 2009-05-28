@@ -268,7 +268,7 @@ BESXMLInfo::add_tag( const string &tag_name,
     {
 	cleanup() ;
         string err = (string)"Error starting element " + tag_name
-		     + "for response " + _response_name ;
+		     + " for response " + _response_name ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
@@ -355,7 +355,7 @@ BESXMLInfo::begin_tag( const string &tag_name,
 	{
 	    cleanup() ;
 	    string err = (string)"Error starting element " + tag_name
-			 + "for response " + _response_name ;
+			 + " for response " + _response_name ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
     }
@@ -371,7 +371,7 @@ BESXMLInfo::begin_tag( const string &tag_name,
 	{
 	    cleanup() ;
 	    string err = (string)"Error starting element " + tag_name
-			 + "for response " + _response_name ;
+			 + " for response " + _response_name ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
     }
