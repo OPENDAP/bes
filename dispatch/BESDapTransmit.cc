@@ -43,6 +43,7 @@ using std::ostringstream;
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
+#include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
 #include "Error.h"
@@ -66,11 +67,18 @@ BESDapTransmit::send_basic_das(BESResponseObject * obj,
     DAS *das = bdas->get_das();
     dhi.first_container();
 
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) print_mime = true ;
+
     try
     {
         DODSFilter df ;
         df.set_dataset_name( dhi.container->get_real_name() ) ;
-        df.send_das( dhi.get_output_stream(), *das, "", false ) ;
+        df.send_das( dhi.get_output_stream(), *das, "", print_mime ) ;
     }
     catch( InternalErr &e )
     {
@@ -102,11 +110,18 @@ void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
 
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) print_mime = true ;
+
     try {
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", false);
+        df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", print_mime);
     }
     catch( InternalErr &e )
     {
@@ -138,11 +153,18 @@ void BESDapTransmit::send_basic_data(BESResponseObject * obj,
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
 
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) print_mime = true ;
+
     try {
         DODSFilter df;
         df.set_dataset_name(dds->filename());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_data(*dds, ce, dhi.get_output_stream(), "", false);
+        df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
     }
     catch( InternalErr &e )
     {
@@ -174,11 +196,18 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
     ConstraintEvaluator & ce = bdds->get_ce();
     dhi.first_container();
 
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) print_mime = true ;
+
     try {
         DODSFilter df;
         df.set_dataset_name(dhi.container->get_real_name());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_ddx(*dds, ce, dhi.get_output_stream(), false);
+        df.send_ddx(*dds, ce, dhi.get_output_stream(), print_mime);
     }
     catch( InternalErr &e )
     {

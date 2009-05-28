@@ -71,7 +71,6 @@ using std::endl ;
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
 #include "BESBasicTransmitter.h"
-#include "BESBasicHttpTransmitter.h"
 
 #include "BESDebug.h"
 
@@ -148,9 +147,6 @@ BESDefaultModule::initialize(int, char**)
     BESDEBUG( "bes", "    adding " << BASIC_TRANSMITTER << " transmitter" << endl )
     BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;
 
-    BESDEBUG( "bes", "    adding " << HTTP_TRANSMITTER << " transmitter" << endl )
-    BESReturnManager::TheManager()->add_transmitter( HTTP_TRANSMITTER, new BESBasicHttpTransmitter ) ;
-
     BESDEBUG( "bes", "    adding " << BES_TEXT_INFO << " info builder" << endl )
     BESInfoList::TheList()->add_info_builder( BES_TEXT_INFO,
 					      BESTextInfo::BuildTextInfo ) ;
@@ -199,7 +195,6 @@ BESDefaultModule::terminate(void)
     BESResponseHandlerList::TheList()->remove_handler( SHOW_CONTEXT ) ;
 
     BESReturnManager::TheManager()->del_transmitter( BASIC_TRANSMITTER ) ;
-    BESReturnManager::TheManager()->del_transmitter( HTTP_TRANSMITTER ) ;
 
     BESDEBUG( "bes", "Done Removing default modules" << endl )
 

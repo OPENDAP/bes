@@ -40,7 +40,6 @@ using std::stringstream ;
 #include "BESInterface.h"
 #include "BESLog.h"
 #include "BESDebug.h"
-#include "BESBasicHttpTransmitter.h"
 #include "BESReturnManager.h"
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
@@ -100,31 +99,15 @@ BESBasicInterface::initialize()
     // will need to transmit the exception info, which needs a transmitter.
     // If an exception happens before this then the exception info is just
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
-    string protocol = _dhi->transmit_protocol ;
-    if( protocol != "HTTP" )
+    BESDEBUG( "bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl )
+    _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
+    if( !_transmitter )
     {
-	BESDEBUG( "bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl )
-	_transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
-	if( !_transmitter )
-	{
-	    string s = (string)"Unable to find transmitter "
-		       + BASIC_TRANSMITTER ;
-	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
-	}
-	BESDEBUG( "bes", "OK" << endl )
+	string s = (string)"Unable to find transmitter "
+		   + BASIC_TRANSMITTER ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
-    else
-    {
-	BESDEBUG( "bes", "Finding " << HTTP_TRANSMITTER << " transmitter ... " << endl )
-	_transmitter = BESReturnManager::TheManager()->find_transmitter( HTTP_TRANSMITTER ) ;
-	if( !_transmitter )
-	{
-	    string s = (string)"Unable to find transmitter "
-		       + HTTP_TRANSMITTER ;
-	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
-	}
-	BESDEBUG( "bes", "OK" << endl )
-    }
+    BESDEBUG( "bes", "OK" << endl )
 
     BESInterface::initialize() ;
 }

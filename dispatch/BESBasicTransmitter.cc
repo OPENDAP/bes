@@ -34,11 +34,24 @@
 
 #include "BESBasicTransmitter.h"
 #include "BESInfo.h"
+#include "BESUtil.h"
+#include "BESContextManager.h"
 
 void
 BESBasicTransmitter::send_text( BESInfo &info,
                                 BESDataHandlerInterface &dhi )
 {
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    if( protocol == "HTTP" )
+    {
+	if( info.is_buffered() )
+	{
+	    BESUtil::set_mime_text( dhi.get_output_stream() ) ;
+	}
+    }
     info.print( dhi.get_output_stream() ) ;
 }
 
@@ -46,6 +59,17 @@ void
 BESBasicTransmitter::send_html( BESInfo &info,
                                 BESDataHandlerInterface &dhi )
 {
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    if( protocol == "HTTP" )
+    {
+	if( info.is_buffered() )
+	{
+	    BESUtil::set_mime_html( dhi.get_output_stream() ) ;
+	}
+    }
     info.print( dhi.get_output_stream() ) ;
 }
 

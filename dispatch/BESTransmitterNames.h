@@ -43,7 +43,6 @@
  */
 
 #define BASIC_TRANSMITTER "basic"
-#define HTTP_TRANSMITTER "http"
 
 #endif // E_BESTransmitterNames_H
 
