@@ -45,8 +45,8 @@
 #define RETURN_CMD "return_command"
 
 #define USER_ADDRESS "user_address"
-#define USER_NAME "user_name"
-#define USER_TOKEN "user_token"
+#define USER_NAME "username"
+#define USER_TOKEN "token"
 
 #define SERVER_PID "pid"
 
