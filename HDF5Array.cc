@@ -562,7 +562,11 @@ failed.");
                                       "H5Rdereference() failed.");
 		}
                 char name[DODS_NAMELEN];
-                H5Iget_name(did_r, (char *) name, DODS_NAMELEN);
+                if(H5Iget_name(did_r, (char *) name, DODS_NAMELEN) < 0) {
+                    throw InternalErr(__FILE__, __LINE__,
+                                      "H5Iget_name() failed.");
+                }
+
                 
                 // Shorten the dataset name
                 string varname(name);
@@ -895,7 +899,10 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
 
     try {
         convbuf2 = new char*[d_num_elm];
-        H5Dread(d_dset_id, d_ty_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, convbuf2);
+        if(H5Dread(d_dset_id, d_ty_id,
+                   H5S_ALL, H5S_ALL, H5P_DEFAULT, convbuf2) < 0){
+            throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
+        }
 
         // Find the maximum size of the strings in convbuf2.
         int size_max = 0;
