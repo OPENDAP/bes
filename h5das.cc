@@ -54,6 +54,7 @@ int hdfeos_dasparse(void *arg);
 /// Buffer state for NASA EOS metadata scanner
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
+/// Checks whether HDF-EOS5 file has a valid projection for Grid generation.
 extern bool valid_projection;	
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -399,11 +400,11 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
     return rep;
 }
 
-// For CF we have to use a special filter to get the atribute name, while
-// for a non-CF-aware build we just use the name. 3/2008 jhrg
 #ifdef CF
 #define GET_NAME(x) eos.get_CF_name((x))
 #else
+/// For CF we have to use a special filter to get the atribute name, while
+/// for a non-CF-aware build we just use the name. 3/2008 jhrg
 #define GET_NAME(x) (x)
 #endif
 

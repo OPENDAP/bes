@@ -42,7 +42,9 @@
 #include "H5EOS.h"
 
 extern H5EOS eos;
-static DS_t dt_inst; /// An instance of DS_t structure defined in common.h.
+
+/// An instance of DS_t structure defined in common.h.
+static DS_t dt_inst; 
 
 extern string get_hardlink(hid_t, const string &);
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,7 +180,7 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn Get_bt(string varname, hid_t datatype, const HDF5TypeFactory &factory)
+/// \fn Get_bt(const string &varname,  const string  &dataset, hid_t datatype)
 /// returns the pointer to the base type
 ///
 /// This function will create a new DODS object that corresponds to HDF5
@@ -405,7 +407,8 @@ static BaseType *Get_bt(const string &varname,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn Get_structure(string varname, hid_t datatype)
+/// \fn Get_structure(const string& varname, const string &dataset,
+///     hid_t datatype)
 /// returns a pointer of structure type. An exception is thrown if an error
 /// is encountered.
 /// 
@@ -483,6 +486,18 @@ static Structure *Get_structure(const string &varname,
     return structure_ptr;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
+///                                const string &name1, 
+///                                const string &name2)
+/// returns the id of attribute that corresponds to dimension name.
+/// 
+/// \param check_grid a flag for signaling a type of Grid -- new or old.
+/// \param dset dataset that has dimension attribute
+/// \param name1 new dimension name of Grid that is generated from h4toh5 tool.
+/// \param name2 old dimension name of Grid.
+/// \return id of \a name1 or \a name2 attribute
+///////////////////////////////////////////////////////////////////////////////
 static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
                                         const string &name1, 
                                         const string &name2) {
@@ -503,7 +518,7 @@ static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
     return attr_id;
 }
 
-// This function builds a Grid from dimension scale information.
+/// This function builds a Grid from dimension scale information.
 static void process_grid(const H5GridFlag_t check_grid, 
                          Grid *gr) {
 
@@ -700,8 +715,8 @@ static void process_grid(const H5GridFlag_t check_grid,
     }
 }
 
-// Kent will clean up this code and verify with HDF5 files that are
-// generatd by h4toh5 tools.
+/// Kent will clean up this code and verify with HDF5 files that are
+/// generatd by h4toh5 tools.
 static void process_grid_matching_dimscale(const H5GridFlag_t check_grid, 
                                            Grid *gr) {
     hid_t attr_id = H5Aopen_name(dt_inst.dset, "DIMENSION_LIST");
@@ -785,6 +800,7 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
     }
 }
 
+/// processes the NASA EOS AURA Grids.
 static void process_grid_nasa_eos(const string &varname, 
                                   Array *array, Grid *gr, DDS &dds_table) {
     // Fill the map part of the grid.
