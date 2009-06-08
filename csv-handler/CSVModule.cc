@@ -61,7 +61,7 @@ CSVModule::initialize( const string &modname )
 	add_handler( modname, new CSVRequestHandler( modname ) ) ;
 
     BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl )
-    if( !BESCatalogList::TheCatalogList()->find_catalog( CSV_CATALOG ) )
+    if( !BESCatalogList::TheCatalogList()->ref_catalog( CSV_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
 	    add_catalog(new BESCatalogDirectory( CSV_CATALOG ) ) ;
@@ -72,7 +72,7 @@ CSVModule::initialize( const string &modname )
     }
 
     BESDEBUG( "csv", "    adding Catalog Container Storage" << endl )
-    if( !BESContainerStorageList::TheList()->find_persistence( CSV_CATALOG ) )
+    if( !BESContainerStorageList::TheList()->ref_persistence( CSV_CATALOG ) )
     {
 	BESContainerStorageList::TheList()->
 	    add_persistence( new BESContainerStorageCatalog( CSV_CATALOG ) ) ;
@@ -98,10 +98,10 @@ CSVModule::terminate( const string &modname )
     if( rh ) delete rh ;
     
     BESDEBUG( "csv", "    removing catalog container storage" << CSV_CATALOG << endl )
-    BESContainerStorageList::TheList()->del_persistence( CSV_CATALOG ) ;
+    BESContainerStorageList::TheList()->deref_persistence( CSV_CATALOG ) ;
 
     BESDEBUG( "csv", "    removing " << CSV_CATALOG << " catalog" << endl )
-    BESCatalogList::TheCatalogList()->del_catalog( CSV_CATALOG ) ;
+    BESCatalogList::TheCatalogList()->deref_catalog( CSV_CATALOG ) ;
 
     BESDEBUG( "csv", "Done Cleaning CSV Module" << modname << endl )
 }
