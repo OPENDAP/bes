@@ -67,7 +67,7 @@ bool H5EOS::has_dataset(hid_t id, const char *name)
   hid_t hid;
   H5E_BEGIN_TRY {
     hid = H5Dopen(id, name);
-  } H5E_END_TRY;              // <hyokyung 2007.06.20. 10:25:25>
+  } H5E_END_TRY;              
   if (hid < 0) {
     return false;
   } else {

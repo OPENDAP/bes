@@ -112,9 +112,23 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
             nelmts *= size[j];
     }
 
+    if (ndims < 0){
+	string msg = "number of dimensions are less than allowed ";
+	msg += attrid;
+	throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
     size_t need = nelmts * H5Tget_size(ty_id);
+
+    if (need == 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+    }
     // We want to save memory type in the struct.
     hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
+
+    if (memtype < 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed");
+    }
     (*attr_inst_ptr).type = memtype;
     (*attr_inst_ptr).ndims = ndims;
     (*attr_inst_ptr).nelmts = nelmts;
@@ -172,6 +186,11 @@ string get_dap_type(hid_t type)
             else
                 return INT32;
         }
+
+	if (size < 0){
+	    throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid"); 
+	}
+
         return INT_ELSE;
 
     case H5T_FLOAT:
@@ -181,6 +200,9 @@ string get_dap_type(hid_t type)
             return FLOAT32;
         if (size == 8)
             return FLOAT64;
+	if (size < 0){
+            throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid");
+        }
         return FLOAT_ELSE;
 
     case H5T_STRING:
@@ -275,7 +297,13 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     }
 
     size_t need = nelmts * H5Tget_size(datatype);
+    if (need == 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed");
+    }
     hid_t memtype = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
+    if (memtype < 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed");
+    }
     (*dt_inst_ptr).dset = dset;
     (*dt_inst_ptr).dataspace = dataspace;
     (*dt_inst_ptr).type = memtype;
@@ -337,7 +365,7 @@ void get_data(hid_t dset, void *buf)
     }
     // This I don't understand... jhrg 4/16/08
     // If you remove the following if(){} block, the "tstring-at.h5" test
-    // will fail. <hyokyung 2009.05.28. 13:50:37>
+    // will fail. 
     if (H5Tget_class(datatype) != H5T_STRING) {
 
         H5Sclose(dataspace);
@@ -518,11 +546,16 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
     DBG(cerr << ">map_to_grid()" << endl);
     num_dim1 = num_dim2 = -1;
     num_attrs = H5Aget_num_attrs(dataset);
-
+    if (num_attrs < 0){
+	throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
+    }
     // 1.1 Found whether we have attribute "HDF5_DIMENSIONLIST", if no, map
     // to array.
     for (i = 0; i < (unsigned int) num_attrs; i++) {
         attr_id = H5Aopen_idx(dataset, i);
+	if (attr_id < 0){
+	   throw InternalErr(__FILE__, __LINE__, "cannot open the attribute specified");
+	}
         memset(dimscale, 0, sizeof(dimscale));
         attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
         if (attr_namesize < 0) {
@@ -548,11 +581,17 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
                 throw InternalErr(__FILE__, __LINE__,
                                   "The type should be the object reference type");
             }
-
+ 
             space = H5Aget_space(attr_id);
+	    if (space < 0){
+                 throw InternalErr(__FILE__, __LINE__, "Invalid space");
+            }
             // The number of element for HDF5 dimensional object reference
             // array is the number of dimension of HDF5 corresponding array. 
             ssiz = H5Sget_simple_extent_npoints(space);
+	    if (ssiz == 0){
+               throw InternalErr(__FILE__, __LINE__, "Invalid number of elements in the dataspace");
+            }
             num_dim1 = (int) ssiz;
             H5Tclose(type);
             H5Sclose(space);
@@ -565,6 +604,9 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
     // to array.
     for (i = 0; i < (unsigned int) num_attrs; i++) {
         attr_id = H5Aopen_idx(dataset, i);
+        if (attr_id < 0){
+           throw InternalErr(__FILE__, __LINE__, "cannot open the attribute specified");
+        }
         memset(dimscale, 0, sizeof(dimscale));
         attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
         if (attr_namesize < 0) {
@@ -589,10 +631,16 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
             }
 
             space = H5Aget_space(attr_id);
-            // number of element for HDF5 dimensional object reference array
+            if (space < 0){
+                 throw InternalErr(__FILE__, __LINE__, "Invalid space");
+            }
+	    // number of element for HDF5 dimensional object reference array
             // is the number of dimension of HDF5 corresponding array. 
             ssiz = H5Sget_simple_extent_npoints(space);
-            num_dim2 = (int) ssiz;
+             if (ssiz == 0){
+               throw InternalErr(__FILE__, __LINE__, "Invalid number of elements in the dataspace");
+            }
+	    num_dim2 = (int) ssiz;
             H5Tclose(type);
             H5Sclose(space);
             H5Aclose(attr_id);
@@ -651,12 +699,18 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
     int num_attrs;
 
     num_attrs = H5Aget_num_attrs(dataset);
+    if (num_attrs < 0){
+               throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
+            }
     DBG(cerr << ">has_matching_grid_dimscale"
         << " ndims=" << ndims << " sizes[0]=" << sizes[0]
         << endl);
     // Check "DIMENSION_LIST" attribute.
     for (i = 0; i < num_attrs; i++) {
         attr_id = H5Aopen_idx(dataset, i);
+	if (attr_id < 0){
+               throw InternalErr(__FILE__, __LINE__, "Cannot open the attribute");
+        }
         memset(dimscale, 0, sizeof(dimscale));
         attr_namesize = H5Aget_name(attr_id, HDF5_DIMVARLEN, dimscale);
         if (attr_namesize < 0) {
@@ -679,8 +733,19 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
                               "Unable to open the DIMENSION_LIST attribute");
         }
         hid_t temp_dtype = H5Aget_type(attr_id);
-        hid_t temp_dspace = H5Aget_space(attr_id);
+	hid_t temp_dspace = H5Aget_space(attr_id);
         hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+
+	if (temp_dtype < 0){
+               throw InternalErr(__FILE__, __LINE__, "Cannot get the attribute datatype");
+        }
+	if (temp_dspace < 0){
+               throw InternalErr(__FILE__, __LINE__, "Cannot get the copy of dataspace");
+        }
+	if (temp_nelm == 0){
+               throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+        }
+
         if (ndims != (int) temp_nelm) {
             return false;
         }
@@ -717,6 +782,17 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
                         hid_t index_dspace = H5Dget_space(index_dset_id);
                         hsize_t index_ndim =
                             H5Sget_simple_extent_npoints(index_dspace);
+
+			if (index_dset_id < 0){
+               		    throw InternalErr(__FILE__, __LINE__, "H5Dopen() failed");
+        		}
+        		if (index_dspace < 0){
+             		    throw InternalErr(__FILE__, __LINE__,"H5Dget_space() failed");
+         		}
+        		if (index_ndim == 0){
+               		    throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+        		}
+	
                         if ((int) index_ndim != sizes[j]) {
                             flag = false;
                         }

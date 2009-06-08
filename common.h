@@ -91,7 +91,7 @@ static const char STRING[] = "String";
 /// An abstract respresntation of DAP Byte type.
 static const char BYTE[] = "Byte";
 /// An abstract respresntation of DAP Signed Byte type.
-static const char INT8[] = "Int8"; // <hyokyung 2009.01.14. 10:44:57>
+static const char INT8[] = "Int8"; 
 /// An abstract respresntation of DAP Int32 type.
 static const char INT32[] = "Int32";
 /// An abstract respresntation of DAP Int16 type.

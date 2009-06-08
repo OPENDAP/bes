@@ -52,7 +52,7 @@ int hdfeos_dasparse(void *arg);
 /// Buffer state for NASA EOS metadata scanner
 yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
-extern bool valid_projection;	// <hyokyung 2009.01.16. 10:41:39>
+extern bool valid_projection;	
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, const char *gname, DAS & das)
@@ -158,7 +158,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 		  read_objects(das, full_path_name.c_str(), cgroup, num_attr);
 #endif
 		  // Break the cyclic loop created by hard links.
-		  if (oid == "") {    // <hyokyung 2007.06.11. 13:53:12>
+		  if (oid == "") {   
 		      depth_first(cgroup, full_path_name.c_str(), das);
 		  } else {
 		      // Add attribute table with HARDLINK.
@@ -254,8 +254,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 /// \param loc    the number of array number
 /// \param sm_buf pointer to an attribute
 /// \return a char * to newly allocated memory, the caller must call delete []
-/// \todo This probably needs to be re-considered! <hyokyung 2007.02.20. 11:56:18>
-/// \todo Needs to be re-written. <hyokyung 2007.02.20. 11:56:38>
+/// \todo This probably needs to be re-considered! 
+/// \todo Needs to be re-written. 
 ////////////////////////////////////////////////////////////////////////////////
 static char *print_attr(hid_t type, int loc, void *sm_buf) {
     union {
@@ -568,7 +568,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
 
-    // <hyokyung 2007.09. 6. 11:55:39>
     // Rewrote to use C++ strings 3/2008 jhrg
     string newname;
 
@@ -679,7 +678,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                             tempvalue = tempvalue + elesize;
                             DBG(cerr << "tempvalue=" << tempvalue
                                 << "elesize=" << elesize << endl);
-                            // <hyokyung 2007.02.27. 09:31:25>
                             delete[]print_rep; print_rep = 0;
                     }           // for (int sizeindex = 0; ...
                 }               // for (int dim = 0; ...
@@ -726,11 +724,11 @@ void find_gloattr(hid_t file, DAS & das)
 	    throw InternalErr(__FILE__, __LINE__,
 			      "unable to open HDF5 root group");
 #ifndef CF
-	// <hyokyung 2007.09.27. 12:09:40>
+
 	das.add_table("HDF5_ROOT_GROUP", new AttrTable);
 #endif
 
-	get_hardlink(root, "/");    // <hyokyung 2007.06.15. 09:06:02>
+	get_hardlink(root, "/");    
 	int num_attrs = H5Aget_num_attrs(root);
 	if (num_attrs < 0)
 	    throw InternalErr(__FILE__, __LINE__,
@@ -766,7 +764,7 @@ void find_gloattr(hid_t file, DAS & das)
 /// \return void
 /// \remarks In case of error, it throws an exception
 /// \warning This is only a test, not supported in current version.
-/// \todo This function may be removed. <hyokyung 2007.02.20. 13:29:12>
+/// \todo This function may be removed. 
 ////////////////////////////////////////////////////////////////////////////////
 void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 {
@@ -1038,7 +1036,7 @@ void write_dimension_attributes_swath(DAS & das)
 
   AttrTable *at;
   
-  // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
+  // Let's try IDV without NC_GLOBAL to see it's required. 
   at = das.add_table("NC_GLOBAL", new AttrTable);
   at->append_attr("title", STRING, "\"NASA EOS Swath\"");
   at->append_attr("Conventions", STRING, "\"CF-1.0\"");

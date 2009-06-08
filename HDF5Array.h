@@ -9,7 +9,7 @@
 
 using namespace libdap;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// A class for handling all types of array in HDF5.
 ///
 /// This class converts HDF5 array type into DAP array.
@@ -18,7 +18,7 @@ using namespace libdap;
 /// @author Kent Yang       (ymuqun@hdfgroup.org)
 /// @author James Gallagher (jgallagher@opendap.org)
 ///
-/// Copyright (c) 2007 HDF Group
+/// Copyright (c) 2007-2009 The HDF Group
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
 /// All rights reserved.
@@ -30,9 +30,17 @@ class HDF5Array:public Array {
     hid_t d_dset_id;
     hid_t d_ty_id;
     size_t d_memneed;
-
-
+    
+    // Parse constraint expression and make HDF5 coordinate point location.
+    // return number of elements to read. 
     int format_constraint(int *cor, int *step, int *edg);
+
+    // Handling constraint expression on array of structure requires the
+    // following linearizion function since the HDF5 array of structure is
+    // 1-D (linear) while constraint expression can be multi-dimensional.
+    // Based on the \param start, \param stride, and \param count,
+    // this function will pick the corresponding array indexes from HDF5 array
+    // and the picked indexes will be stored under \param picks.
     int linearize_multi_dimensions(int *start, int *stride, int *count,
                                    int *picks);
     hid_t mkstr(int size, H5T_str_t pad);

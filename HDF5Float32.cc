@@ -55,6 +55,9 @@ bool HDF5Float32::read()
 #endif
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
+	if (i < 0){
+	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	}
 #endif
         int j = 0;
         int k = 0;
@@ -67,6 +70,10 @@ bool HDF5Float32::read()
 
         hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
         hid_t stemp_tid;
+
+	if (s2_tid < 0){
+	   throw InternalErr(__FILE__, __LINE__, "H5Tcreate() failed.");
+	}
 
         DBG(cerr << "=HDF5Float32::read() ty_id=" << ty_id << " name=" <<
             myname << endl);

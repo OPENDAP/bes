@@ -55,7 +55,7 @@ bool HDF5ArrayEOS::read()
 
     if (loc >= 0) {
         // set_value() will call this function.
-        // set_read_p(true); <hyokyung 2008.07.18. 13:40:51>
+        // set_read_p(true); 
         dods_float32 *val =
             get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
@@ -63,7 +63,7 @@ bool HDF5ArrayEOS::read()
 	// Vector::value(dods_float32* b) function doesn't check if _buf is null
 	// and the _buf needs memory allocation.
 	set_value(val, count);
-	// value(val); <hyokyung 2008.07.18. 13:40:42>
+	// value(val); 
         delete[]val;	
     } else {
         cerr << "Could not retrieve map data" << endl;

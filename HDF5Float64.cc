@@ -54,6 +54,9 @@ bool HDF5Float64::read()
 #endif
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
+	if(i < 0){
+	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	}
 #endif
         int j = 0;
         int k = 0;
@@ -67,6 +70,10 @@ bool HDF5Float64::read()
 	    hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
 	    hid_t stemp_tid;
 
+	    if(s2_tid < 0){
+		throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+	    }
+
 	    DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
 		" size=" << i << endl);
 	    while (q != NULL) {
@@ -77,6 +84,9 @@ bool HDF5Float64::read()
 				  H5T_NATIVE_DOUBLE);
 		    } else {
 			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+			if(stemp_tid < 0){
+			   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+			}
 			H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid);
 			s2_tid = stemp_tid;
 		    }

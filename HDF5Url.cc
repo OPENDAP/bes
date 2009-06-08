@@ -29,6 +29,9 @@ bool HDF5Url::read()
 
     hid_t did_r = H5Rdereference(dset_id, H5R_OBJECT, &rbuf);
     char name[DODS_NAMELEN];
+    if (did_r < 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
+    }
     H5Iget_name(did_r, name, DODS_NAMELEN);
     string reference = name;
     set_value(reference);

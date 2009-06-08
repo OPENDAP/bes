@@ -50,6 +50,9 @@ bool HDF5UInt16::read()
         char Msgi[256];
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
+	if (i < 0){
+	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	}
 #endif
         int j = 0;
         int k = 0;
@@ -57,6 +60,9 @@ bool HDF5UInt16::read()
         hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
         hid_t stemp_tid;
 
+	if (s1_tid < 0){
+	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+	}
         s2_t *buf = 0;
 	try {
 	    buf = new s2_t[p.get_entire_array_size()];
@@ -81,6 +87,9 @@ bool HDF5UInt16::read()
                         << endl);
 
                     stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+	 	    if (stemp_tid < 0){
+           		throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+	            }
                     H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid);
                     s1_tid = stemp_tid;
 

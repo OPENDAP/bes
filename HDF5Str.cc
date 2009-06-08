@@ -42,6 +42,9 @@ bool HDF5Str::read()
     }
 #endif
 
+    if (size == 0){
+	throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+    }
     if (get_dap_type(ty_id) == "String") {
         char *chr = new char[size + 1];
 	get_data(dset_id, (void *)chr);
@@ -69,6 +72,12 @@ bool HDF5Str::read()
         string myname = name();
         string parent_name;
 
+	if (i < 0){
+	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	}
+	if (s2_tid < 0){
+	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+	}
 	try {
 	    DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
 		" size=" << i << endl);
@@ -76,11 +85,17 @@ bool HDF5Str::read()
 		if (q->is_constructor_type()) {     // Grid, structure or sequence
 		    if (k == 0) {
 			hid_t type = H5Tcopy(H5T_C_S1);
+			if (type < 0){
+			   throw InternalErr(__FILE__, __LINE__, "cannot copy");
+			}
 			H5Tset_size(type, (size_t) size);
 			H5Tset_strpad(type, H5T_STR_NULLTERM);
 			H5Tinsert(s2_tid, myname.c_str(), 0, type);
 		    } else {
 			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+			if (stemp_tid < 0){
+           		    throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
+		        }
 			H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid);
 			s2_tid = stemp_tid;
 		    }
