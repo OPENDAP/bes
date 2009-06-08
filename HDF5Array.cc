@@ -544,7 +544,7 @@ failed.");
 
         // Handle object reference.
 	if (H5Tequal(d_ty_id, H5T_STD_REF_OBJ) < 0) {
-	   throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed.");
+            throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed.");
 	}
         if (H5Tequal(d_ty_id, H5T_STD_REF_OBJ) > 0) {
             DBG(cerr << "=read() Got object reference. " << endl);

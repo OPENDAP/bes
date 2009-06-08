@@ -58,7 +58,7 @@
 extern H5EOS eos;
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
-:BESRequestHandler(name)
+    :BESRequestHandler(name)
 {
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
@@ -85,16 +85,16 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object() ;
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
     if( !bdas )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     try {
-	bdas->set_container( dhi.container->get_symbolic_name() ) ;
-	DAS *das = bdas->get_das();
+        bdas->set_container( dhi.container->get_symbolic_name() ) ;
+        DAS *das = bdas->get_das();
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
-	Ancillary::read_ancillary_das( *das, filename ) ;
+        Ancillary::read_ancillary_das( *das, filename ) ;
 
-	bdas->clear_container() ;
+        bdas->clear_container() ;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -130,36 +130,30 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     try {
-	bdds->set_container( dhi.container->get_symbolic_name() ) ;
-	DDS *dds = bdds->get_dds();
+        bdds->set_container( dhi.container->get_symbolic_name() ) ;
+        DDS *dds = bdds->get_dds();
 
         depth_first(file1, "/", *dds, filename.c_str());
 
-	Ancillary::read_ancillary_dds( *dds, filename ) ;
+        Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;
-	BESDASResponse bdas( das ) ;
-	bdas.set_container( dhi.container->get_symbolic_name() ) ;
+        BESDASResponse bdas( das ) ;
+        bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
 
-	Ancillary::read_ancillary_das( *das, filename ) ;
+        Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
 
-	bdds->set_constraint( dhi ) ;
+        bdds->set_constraint( dhi ) ;
 
-	
-	bdds->clear_container() ;
-#if 0
-        // see ticket 720
-        dds->set_factory(NULL);
-        delete factory;
-#endif
+        bdds->clear_container() ;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -195,35 +189,30 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     try {
-	bdds->set_container( dhi.container->get_symbolic_name() ) ;
-	DataDDS *dds = bdds->get_dds();
+        bdds->set_container( dhi.container->get_symbolic_name() ) ;
+        DataDDS *dds = bdds->get_dds();
 
         depth_first(file1, "/", *dds, filename.c_str());
 
-	Ancillary::read_ancillary_dds( *dds, filename ) ;
+        Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;
-	BESDASResponse bdas( das ) ;
-	bdas.set_container( dhi.container->get_symbolic_name() ) ;
+        BESDASResponse bdas( das ) ;
+        bdas.set_container( dhi.container->get_symbolic_name() ) ;
 
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
 
-	Ancillary::read_ancillary_das( *das, filename ) ;
+        Ancillary::read_ancillary_das( *das, filename ) ;
 
         dds->transfer_attributes(das);
 
-	bdds->set_constraint( dhi ) ;
+        bdds->set_constraint( dhi ) ;
 
-	bdds->clear_container() ;
-#if 0
-        // see ticket 720
-        dds->set_factory(NULL);
-        delete factory;
-#endif
+        bdds->clear_container() ;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -249,7 +238,7 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESInfo *info = dynamic_cast<BESInfo *>(response);
     if( !info )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
     map<string,string> attrs ;
     attrs["name"] = PACKAGE_NAME ;
@@ -257,10 +246,10 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
     list<string> services ;
     BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
     if( services.size() > 0 )
-    {
-	string handles = BESUtil::implode( services, ',' ) ;
-	attrs["handles"] = handles ;
-    }
+        {
+            string handles = BESUtil::implode( services, ',' ) ;
+            attrs["handles"] = handles ;
+        }
     info->begin_tag( "module", &attrs ) ;
     info->end_tag( "module" ) ;
 
@@ -272,7 +261,7 @@ bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
     info->add_module( PACKAGE_NAME, PACKAGE_VERSION ) ;
 

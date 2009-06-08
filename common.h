@@ -21,8 +21,6 @@
 #define DODS_MAX_RANK 30
 /// Maximum length of variable or attribute name
 #define DODS_NAMELEN    1024
-/// Maximum length of variable name when --enable-cf option is specified.
-#define DODS_CF_NAMELEN 128
 /// Maximum length of a dimension name in DIMENSION_LIST attribute.
 #define HDF5_DIMVARLEN  24
 /// The name of dimension list attribute used in HDF5.

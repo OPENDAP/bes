@@ -4,22 +4,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <H5Ipublic.h>
 
 #include "Grid.h"
 #include "H5Git.h"
 
 using namespace libdap;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// A Grid subclass for handling HDF-EOS5 data.
 /// 
-/// This class synthesizes DAP Grids from NASA EOS HDF5 arrays that can be mapped to Grid.
+/// This class synthesizes DAP Grids from NASA EOS HDF5 arrays that can be
+/// mapped to Grid.
 ///
 /// @author Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 ///
 /// Copyright (c) The 2007-2009 HDF Group
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 class HDF5GridEOS:public Grid {
 
 private:
@@ -34,7 +34,8 @@ public:
 
     /// Clone this instance.
     /// 
-    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// Allocate a new instance and copy *this into it.
+    /// This method must perform a deep copy.
     /// \return A newly allocated copy of this class    
     virtual BaseType *ptr_duplicate();
 
@@ -50,8 +51,8 @@ public:
     /// returns HDF5 datatype id.
     hid_t get_tid();
 
-    /// gets map data from H5EOS class that parsed the StructMetadata and held the computed
-    /// map data array.
+    /// gets map data from H5EOS class that parsed the StructMetadata and
+    /// holds the computed map data array.
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
                                      int stride, int stop, int count);
 
