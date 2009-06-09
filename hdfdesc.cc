@@ -708,7 +708,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
       }
 
       // add lone Vdata's
-      /*
+#ifndef CF
       for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
         if (v->second.in_vgroup)
 	  continue;           // skip over Vdata in vgroups
@@ -718,7 +718,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
 	  delete pbt;
 	}
       }
-      */
+#endif
       // add lone GR's
       for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
         if (g->second.in_vgroup)
