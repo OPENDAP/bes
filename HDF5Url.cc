@@ -32,7 +32,9 @@ bool HDF5Url::read()
     if (did_r < 0){
 	throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
     }
-    H5Iget_name(did_r, name, DODS_NAMELEN);
+    if (H5Iget_name(did_r, name, DODS_NAMELEN) < 0){
+	throw InternalErr(__FILE__, __LINE__, "Unable to retrieve the name of the object.");
+    }
     string reference = name;
     set_value(reference);
 

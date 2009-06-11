@@ -196,7 +196,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                                     paths.get_name(oid));
                 }
 
-                H5Dclose(dset); // Need error handling
+                if (H5Dclose(dset) < 0){
+		   throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
+		}
                 break;
             }                   // case H5G_DATASET
 
@@ -360,12 +362,17 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                     gps[ll++] = '.';
                 gps[ll] = '\0';
                 snprintf(rep, 32, "%s", gps);
-            }
+            } else if (H5Tget_size(type) == 0){
+		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+	    }
             break;
         }
 
         case H5T_STRING: {
             int str_size = H5Tget_size(type);
+	    if (str_size == 0){
+		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+	    }
             DBG(cerr << "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
             char *buf = NULL;
@@ -709,7 +716,9 @@ void find_gloattr(hid_t file, DAS & das)
 			      "unable to get attribute number");
 
 	if (num_attrs == 0) {
-	    H5Gclose(root);
+	    if(H5Gclose(root) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+	    }
 	    DBG(cerr << "<find_gloattr():no attributes" << endl);
 	    return;
 	}
@@ -717,11 +726,15 @@ void find_gloattr(hid_t file, DAS & das)
         read_objects(das, "H5_GLOBAL", root, num_attrs);
 
 	DBG(cerr << "=find_gloattr(): H5Gclose()" << endl);
-	H5Gclose(root);
+	if(H5Gclose(root) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+	}
 	DBG(cerr << "<find_gloattr()" << endl);
     }
     catch (...) {
-	H5Gclose(root);
+	if(H5Gclose(root) < 0){	
+	   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+	}
 	throw;
     }
 }
@@ -805,7 +818,9 @@ string get_hardlink(hid_t pgroup, const string & oname) {
 
     // Get the target information at statbuf.
     H5G_stat_t statbuf;
-    H5Gget_objinfo(pgroup, oname.c_str(), 0, &statbuf);
+    if (H5Gget_objinfo(pgroup, oname.c_str(), 0, &statbuf) < 0){
+	throw InternalErr(__FILE__, __LINE__, "H5Gget_objinfo() failed.");
+    }
 
     if (statbuf.nlink >= 2) {
         ostringstream oss;
@@ -841,7 +856,9 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
     // Borrowed from the dump_comment(hid_t obj_id) function in h5dump.c.
     char comment[max_str_len - 2];
     comment[0] = '\0';
-    H5Gget_comment(oid, ".", sizeof(comment), comment);
+    if (H5Gget_comment(oid, ".", sizeof(comment), comment) < 0){
+	throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment.");
+    }
     if (comment[0]) {
 #ifndef ATTR_STRING_QUOTE_FIX
         string quoted_comment = string("\"") + string(comment) + string("\"");

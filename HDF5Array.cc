@@ -687,6 +687,12 @@ bool HDF5Array::read() {
             return status;
         }
 
+	if (H5Tis_variable_str(d_ty_id) < 0){
+	    throw InternalErr(__FILE__, __LINE__, "H5Tis_variable_str() failed.");
+	}
+	if (H5Tget_class < 0){
+	    throw InternalErr(__FILE__, __LINE__, "H5Tget_class() failed.");
+	}
         char Msga[255];
         if (nelms == d_num_elm) {
             convbuf = new char[d_memneed];

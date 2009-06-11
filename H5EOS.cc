@@ -7,6 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "H5EOS.h"
+#include <InternalErr.h>
 
 using namespace std;
 
@@ -52,7 +53,7 @@ bool H5EOS::has_group(hid_t id, const char *name)
     hid_t hid;
     H5E_BEGIN_TRY {
         hid = H5Gopen(id, name);
-    } H5E_END_TRY;
+   } H5E_END_TRY;
     if (hid < 0) {
         return false;
     } else {
@@ -344,6 +345,10 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
             hid_t dset = H5Dopen(id, dname);
             hid_t datatype, dataspace;
 
+	    if (dset < 0){
+		throw InternalErr(__FILE__, __LINE__, "cannot open the existing dataset");
+		break;
+	    }
             if ((datatype = H5Dget_type(dset)) < 0) {
                 cerr << "H5EOS.cc failed to obtain datatype from  dataset "
                      << dset << endl;
@@ -356,9 +361,12 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
                 break;
             }
             size_t size = H5Tget_size(datatype);
+	    if (size == 0){
+    	       throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+            }
             char *chr = new char[size + 1];
-            H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT,
-                    (void *) chr);
+            if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT,(void *) chr)<0){	  	    throw InternalErr(__FILE__, __LINE__, "Unable to read the data.");
+            }
             strcat(chr_all, chr);
             valid = true;
             delete[] chr;
@@ -441,4 +449,3 @@ void H5EOS::get_all_dimensions(vector < string > &tokens)
             std::endl);
     }
 }
-

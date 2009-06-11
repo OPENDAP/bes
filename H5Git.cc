@@ -368,9 +368,15 @@ void get_data(hid_t dset, void *buf)
     // will fail. 
     if (H5Tget_class(datatype) != H5T_STRING) {
 
-        H5Sclose(dataspace);
-        H5Tclose(datatype);
-        H5Dclose(dset);
+        if (H5Sclose(dataspace) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to terminate the dataset access.");
+	}
+        if (H5Tclose(datatype) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+	}
+        if (H5Dclose(dset) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dataset.");
+	}
 
     }
 
@@ -480,10 +486,18 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
             throw InternalErr(__FILE__, __LINE__, "could not get data");
         }
 
-        H5Sclose(dataspace);
-        H5Sclose(memspace);
-        H5Tclose(datatype);
-        H5Dclose(dset);
+        if (H5Sclose(dataspace) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dataspace.");
+	}
+        if (H5Sclose(memspace) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the memspace.");
+	}
+        if (H5Tclose(datatype) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+	}
+        if (H5Dclose(dset) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+	}
     }
     catch (...) {
         // Memory allocation exceptions could have been thrown when
@@ -593,12 +607,20 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
                throw InternalErr(__FILE__, __LINE__, "Invalid number of elements in the dataspace");
             }
             num_dim1 = (int) ssiz;
-            H5Tclose(type);
-            H5Sclose(space);
-            H5Aclose(attr_id);
+            if (H5Tclose(type) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the type.");
+	    }
+            if (H5Sclose(space) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the space.");
+	    }
+            if (H5Aclose(attr_id) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	    }
             break;
         }
-        H5Aclose(attr_id);
+        if (H5Aclose(attr_id) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute");
+	}
     }
     // 1.2 Found whether we have attribute "DIMENSION_NAMELIST", if no, map
     // to array.
@@ -641,12 +663,20 @@ int map_to_grid(hid_t dataset, int num_dim, int new_h4h5)
                throw InternalErr(__FILE__, __LINE__, "Invalid number of elements in the dataspace");
             }
 	    num_dim2 = (int) ssiz;
-            H5Tclose(type);
-            H5Sclose(space);
-            H5Aclose(attr_id);
+            if (H5Tclose(type) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+	    }
+            if (H5Sclose(space) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to terminate access to dataspace.");
+	    }
+            if (H5Aclose(attr_id) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	    }
             break;
         }
-        H5Aclose(attr_id);
+        if (H5Aclose(attr_id) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	}
     }
 
 
@@ -723,7 +753,9 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
                 ":" << dimscale << endl);
             flag = true;
         }
-        H5Aclose(attr_id);
+        if (H5Aclose(attr_id) < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	}
     }
 
     // Check number of dimensions.
@@ -804,9 +836,15 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes)
                 }
             }                       // for (int j = 0; j < temp_nelm; j++)
 
-            H5Aclose(attr_id);
-            H5Sclose(temp_dspace);
-            H5Tclose(temp_dtype);
+            if (H5Aclose(attr_id) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	    }
+            if (H5Sclose(temp_dspace) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to terminate the access to dataspace.");
+	    }
+            if (H5Tclose(temp_dtype) < 0){
+		throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+	    }
 
             delete[] refbuf; refbuf = 0 ;
             delete[] dimid; dimid = 0 ;

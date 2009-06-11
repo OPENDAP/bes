@@ -90,8 +90,10 @@ bool HDF5Int16::read()
                     // Bottom level structure
                     DBG(cerr << "=read() my_name " << myname.
                         c_str() << endl);
-                    H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
-                              H5T_NATIVE_INT16);
+                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
+                              H5T_NATIVE_INT16) < 0){
+			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
+		    }
                 } else {
                     DBG(cerr << k << "=read() parent_name=" << parent_name
                         << endl);
@@ -100,7 +102,9 @@ bool HDF5Int16::read()
 		    if(stemp_tid < 0){
 			throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 		    }
-                    H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid);
+                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid) < 0){
+			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
+		    }
                     s1_tid = stemp_tid;
 
                 }

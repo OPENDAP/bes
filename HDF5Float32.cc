@@ -81,11 +81,18 @@ bool HDF5Float32::read()
             if (q->is_constructor_type()) {     // Grid, structure or sequence
                 if (k == 0) {
                     // Bottom level structure
-                    H5Tinsert(s2_tid, myname.c_str(), HOFFSET(s2_t, a),
-                              H5T_NATIVE_FLOAT);
+                    if (H5Tinsert(s2_tid, myname.c_str(), HOFFSET(s2_t, a),
+                              H5T_NATIVE_FLOAT) < 0){
+			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
+		    }
                 } else {
                     stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
-                    H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid);
+		    if (stemp_tid < 0){
+			throw InternalErr(__FILE__, __LINE__, "Unable to create a new datatype");
+		    }
+                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid) < 0){
+			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
+		    }
                     s2_tid = stemp_tid;
                 }
                 parent_name = q->name();

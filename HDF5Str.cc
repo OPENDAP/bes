@@ -1,5 +1,6 @@
 #include "config_hdf5.h"
 
+
 #include <string>
 #include <ctype.h>
 
@@ -88,15 +89,23 @@ bool HDF5Str::read()
 			if (type < 0){
 			   throw InternalErr(__FILE__, __LINE__, "cannot copy");
 			}
-			H5Tset_size(type, (size_t) size);
-			H5Tset_strpad(type, H5T_STR_NULLTERM);
-			H5Tinsert(s2_tid, myname.c_str(), 0, type);
+			if (H5Tset_size(type, (size_t) size) < 0){
+			   throw InternalErr(__FILE__, __LINE__, "Unable to set size of datatype.");
+			}
+			if (H5Tset_strpad(type, H5T_STR_NULLTERM) < 0){
+			   throw InternalErr(__FILE__, __LINE__, "H5Tset_strpad() failed.");
+			}
+			if (H5Tinsert(s2_tid, myname.c_str(), 0, type) < 0){
+			   throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
+			}
 		    } else {
 			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
 			if (stemp_tid < 0){
            		    throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 		        }
-			H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid);
+			if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid) < 0){
+			    throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
+                        }
 			s2_tid = stemp_tid;
 		    }
 		    // Remember the last parent name.

@@ -139,12 +139,17 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 t_fpn[full_path_name.length()] = '\0';
                 hid_t cgroup = H5Gopen(pid, t_fpn);
 
-                string oid = get_hardlink(pid, oname);
+                if (cgroup < 0){
+		   throw InternalErr(__FILE__, __LINE__, "H5Gopen() failed.");
+		}
+		string oid = get_hardlink(pid, oname);
                 if (oid == "") {
                     depth_first(cgroup, t_fpn, dds, fname);
                 }
 
-                H5Gclose(cgroup);
+                if (H5Gclose(cgroup) < 0){
+		   throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+		}
                 if(t_fpn) {delete[]t_fpn; t_fpn = NULL;}                
                 break;
             }
@@ -217,7 +222,13 @@ static BaseType *Get_bt(const string &varname,
             DBG(cerr << "=Get_bt() H5T_INTEGER size = " << size << " sign = "
                 << sign << endl);
 
-            if (size == 1) {
+	    if (sign == H5T_SGN_ERROR) {
+                throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
+            }
+            if (size == 0) {
+		throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+	    }
+	    else if (size == 1) {
                 if (sign == H5T_SGN_2)
                     btp = new HDF5Int16(vname, dataset);
                 else
@@ -247,7 +258,10 @@ static BaseType *Get_bt(const string &varname,
             size = H5Tget_size(datatype);
             DBG(cerr << "=Get_bt() H5T_FLOAT size = " << size << endl);
 
-            if (size == 4) {
+	    if (size == 0) {
+                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+            }
+            else if (size == 4) {
                 btp = new HDF5Float32(vname, dataset);
             }
             else if (size == 8) {
@@ -277,6 +291,15 @@ static BaseType *Get_bt(const string &varname,
                 size = H5Tget_size(datatype);
                 int nelement = 1;
 
+		if (dtype_base < 0) {
+                throw InternalErr(__FILE__, __LINE__, "cannot return the base datatype");
+ 	        }
+		if (ndim < 0) {
+                throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array datatype");
+                }
+		if (size == 0) {
+                throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+                }
                 DBG(cerr
                     << "=Get_bt()" << " Dim = " << ndim
                     << " Size = " << size
@@ -306,7 +329,10 @@ static BaseType *Get_bt(const string &varname,
                 h5_ar.set_numdim(ndim);
                 h5_ar.set_numelm(nelement);
                 h5_ar.set_length(nelement);
-                h5_ar.d_type = H5Tget_class(dtype_base);
+                h5_ar.d_type = H5Tget_class(dtype_base); 
+		if (h5_ar.d_type == H5T_NO_CLASS){
+		    throw InternalErr(__FILE__, __LINE__, "cannot return the datatype class identifier");
+		}
             }
             catch (...) {
                 if( ar_bt ) delete ar_bt;
@@ -444,11 +470,16 @@ static Structure *Get_structure(const string &varname,
         // Retrieve member types
         int nmembs = H5Tget_nmembers(datatype);
         DBG(cerr << "=Get_structure() has " << nmembs << endl);
+	if (nmembs < 0){
+	   throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
+	}
         for (int i = 0; i < nmembs; i++) {
             char *memb_name = H5Tget_member_name(datatype, i);
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);
             hid_t memb_type = H5Tget_member_type(datatype, i);
-
+	    if (memb_name == NULL){
+		throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
+	    }
             if (memb_cls < 0 | memb_type < 0) {
                 // structure_ptr is deleted in the catch ... block
                 // below. So if this exception is thrown, it will
@@ -724,6 +755,18 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
     hid_t temp_dspace = H5Aget_space(attr_id);
     hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
 
+    if (attr_id < 0){
+	throw InternalErr(__FILE__, __LINE__, "cannot open an attribute specified by name");
+    }
+    if (temp_dtype < 0){
+	throw InternalErr(__FILE__, __LINE__, "cannot get the attribute datatype");
+    }
+    if (temp_dspace < 0){
+        throw InternalErr(__FILE__, __LINE__, "cannot get a copy of the dataspace");
+    }
+    if (temp_nelm == 0){
+        throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements");
+    }
     hvl_t *refbuf = 0;
     memset(refbuf, 0, temp_nelm);
     hid_t *dimid = 0;
@@ -740,6 +783,9 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 
         for (unsigned int j = 0; j < temp_nelm; j++) {
             dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
+	    if (dimid[j] < 0){
+		throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
+	    }
         }
         
         // Is there a way to know the size of dimension name in advance? 
@@ -757,16 +803,33 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
             hid_t dset_id = H5Dopen(dt_inst.dset, buf2);
             DBG(cerr << "dataset id: " << dset_id << endl);
             // Get the size of the array.
+            if (dset_id < 0){
+                throw InternalErr(__FILE__, __LINE__, "cannot open the existing dataset");
+            }
             temp_dspace = H5Dget_space(dset_id);
+ 	    if (temp_dspace < 0){
+                throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed.");
+            }
             hsize_t temp_nelm_dim = H5Sget_simple_extent_npoints(temp_dspace);
+	    if (temp_nelm_dim == 0){
+		throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements in the dataspace");
+	    }
             DBG(cerr << "nelem = " << temp_nelm_dim << endl);
             temp_dtype = H5Dget_type(dset_id);
+	    if (temp_dtype < 0){
+                throw InternalErr(__FILE__, __LINE__, "H5Dget_type() failed.");
+            }
             hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
+	    if (memtype < 0) {
+		throw InternalErr(__FILE__, __LINE__, "cannot return the native datatype");
+	    }
             size_t temp_tsize = H5Tget_size(memtype);
+	    if (temp_tsize == 0){
+		throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+	    }
 
             string each_dim_name(buf2);
-
-            each_dim_name = get_short_name(each_dim_name);
+	    each_dim_name = get_short_name(each_dim_name);
             BaseType *bt = 0;
             HDF5Array *map = 0;
             try {

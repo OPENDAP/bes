@@ -48,6 +48,9 @@ bool HDF5Byte::read()
         char Msgi[256];
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
+	if (i < 0){
+	   throw InternalErr(__FILE__, __LINE__, "Unable to retrieve the number of elements.");
+	}
 #endif
         int j = 0;
         int k = 0;
@@ -76,8 +79,10 @@ bool HDF5Byte::read()
 			// Bottom level structure
 			DBG(cerr << "=read() my_name=" << myname.
 			    c_str() << endl);
-			H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
-				  H5T_NATIVE_CHAR);
+			if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
+				  H5T_NATIVE_CHAR) < 0){
+			   throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
+			}
 		    } else {
 			DBG(cerr << k << " parent_name=" << parent_name <<
 			    endl);
@@ -87,7 +92,9 @@ bool HDF5Byte::read()
 			   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 			}
 
-			H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid);
+			if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid) < 0){
+			   throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
+			}
 			s1_tid = stemp_tid;
 
 		    }
