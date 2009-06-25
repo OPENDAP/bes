@@ -1,6 +1,33 @@
+//////////////////////////////////////////////////////////////////////////////
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+
+// Copyright (c) 2009 The HDF Group
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+// 
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this software; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+//////////////////////////////////////////////////////////////////////////////
 #ifndef _HDFEOS_H
 #define _HDFEOS_H
-#define BUFFER_MAX 655360       // 10 * (2^16); 10 metadata files can be merged per metadata type.
+
+// 655360 = 10 * (2^16); 10 metadata files can be merged per metadata type.
+// In HDF-EOS2 files, each [Struct|Core]Metadata.x can be up to 65536
+// characters long.
+#define BUFFER_MAX 655360
+
 #define SHORT_PATH
 #include <map>
 #include <sstream>
@@ -8,9 +35,19 @@
 #include <vector>
 #include <Array.h>
 #include "hdfeos2.tab.hh"
-#ifdef CF
+
+// This macro is used to generate a CF-1.x convention compliant DAP output
+// that OPeNDAP visualization clients can display Grids and Swath.
+//
+// If USE_HDFEOS2 macro is not defined, the CF macro will parse the
+// structMetadata in HDF-EOS2 file to generate CF-1.x compliant DAP output.
+#ifdef CF  
 #include "HDFCFSwath.h"
 #endif
+
+// If this macro is enabled, parsing structMetadata will be suppressed
+// and the HDF-EOS2 library will be used to generate CF-1.x compliant
+// DAP output.
 #ifdef USE_HDFEOS2
 #include "HDFEOS2.h"
 #endif
@@ -24,7 +61,7 @@ using namespace libdap;
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
-/// Copyright (c) 2008 The HDF Group
+/// Copyright (c) 2008-2009 The HDF Group
 ///
 /// All rights reserved.
 #ifdef CF
@@ -70,8 +107,8 @@ private:
 #endif
 
 public:
-  // a flag to indicate that origin information in structMetadata specifies
-  // that a map is upside down.
+  /// a flag to indicate that origin information in structMetadata specifies
+  /// that a map is upside down.
   bool borigin_upper; 
   /// a flag to indicate if structMetdata dataset is processed or not.
   bool bmetadata_Struct;
