@@ -65,7 +65,7 @@ private:
     HDFEOSArray2D(const string & n, BaseType * v); // <hyokyung 2008.12. 2. 10:10:48>
     virtual ~ HDFEOSArray2D();
     virtual BaseType *ptr_duplicate();
-    virtual bool read(const string & dataset);
+    virtual bool read();
 };
 
 #endif                          // _HDFEOSARRAY2D_H

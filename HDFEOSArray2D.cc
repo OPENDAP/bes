@@ -51,7 +51,7 @@ HDFEOSArray2D::~HDFEOSArray2D()
 }
 
 
-bool HDFEOSArray2D::read(const string &dataset)
+bool HDFEOSArray2D::read()
 {
   
   DBG(cerr << ">HDFEOSArray2D::read(): " << name() << endl);
