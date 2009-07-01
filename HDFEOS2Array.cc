@@ -60,7 +60,7 @@ BaseType *HDFEOS2Array::ptr_duplicate()
 }
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFEOS2Array::read(const string & dataset)
+bool HDFEOS2Array::read()
 {
   DBG(cerr << ">HDFEOS2Array::read()"  << endl);
   

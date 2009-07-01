@@ -48,7 +48,7 @@ public:
     virtual ~ HDFEOS2Array();
     virtual BaseType *ptr_duplicate();
         
-    virtual bool read(const string & dataset);
+    virtual bool read();
   
     /// remembers number of dimensions of this array.
     void set_numdim(int ndims);
