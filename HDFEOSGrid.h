@@ -63,8 +63,8 @@ class HDFEOSGrid:public Grid, public ReadTagRef {
     virtual vector < array_ce > get_map_constraints();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
-                                     int stride, int stop, int count); // <hyokyung 2008.11.13. 11:58:45>
-    void read_dimension(Array * a); // <hyokyung 2008.11.13. 11:58:44>
+                                     int stride, int stop, int count); 
+    void read_dimension(Array * a);
   
 };
 

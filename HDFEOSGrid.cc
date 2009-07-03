@@ -57,7 +57,9 @@
 #include "HDFEOS.h"
 #include "Error.h"
 #include "debug.h"
-
+#ifdef USE_HDFEOS2
+#include "HDFEOS2Array.h"
+#endif
 extern HDFEOS eos;
 
 
@@ -115,7 +117,12 @@ bool HDFEOSGrid::read_tagref(int32 tag, int32 ref, int &err)
   string hdf_file = dataset();
   string hdf_name = this->name();
 
-  HDFArray *primary_array = dynamic_cast < HDFArray * >(array_var());
+#ifdef USE_HDFEOS2
+  HDFEOS2Array *primary_array = dynamic_cast < HDFEOS2Array * >(array_var());    
+#else  
+  HDFArray *primary_array = dynamic_cast < HDFArray * >(array_var());    
+#endif     
+
   primary_array->read();
 
   // Read map array elements.
