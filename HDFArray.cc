@@ -64,13 +64,6 @@ HDFArray::HDFArray(const string &n, const string &d, BaseType * v)
 {
 }
 
-#ifdef SHORT_NAME
-HDFArray::HDFArray(const string &n, const string &d, BaseType * v, int32 ref)
-    : Array(n, d, v)
-{
-  _ref = ref;
-}
-#endif
 
 HDFArray::~HDFArray()
 {
@@ -87,12 +80,7 @@ void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr);
 bool HDFArray::read()
 {
     int err = 0;
-    
-#ifdef SHORT_NAME
-    int status = read_tagref(-1, _ref, err);
-#else
     int status = read_tagref(-1, -1, err);
-#endif    
 
     if (err)
         throw Error(unknown_error, "Could not read from dataset.");
@@ -105,9 +93,6 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
 {
     if (read_p())
         return true;
-#ifdef SHORT_NAME
-    DBG(cerr << "My ref. is " << ref << endl);
-#endif    
     
   
     // get the HDF dataset name, SDS name
@@ -131,11 +116,7 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
     bool foundsds = false;
     hdf_sds sds;
     if (tag == -1 || tag == DFTAG_NDG) {
-#ifdef SHORT_NAME
-        if (SDSExists(hdf_file.c_str(), hdf_name.c_str()) || _ref > 0) {
-#else
         if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {	  
-#endif	  
             hdfistream_sds sdsin(hdf_file.c_str());
             if (ref != -1) {
                 DBG(cerr << "sds seek with ref = " << ref << endl);

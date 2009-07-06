@@ -56,10 +56,6 @@ using namespace libdap;
 class HDFArray:public Array, public ReadTagRef {
   public:
     HDFArray(const string & n, const string &d, BaseType * v);
-#ifdef SHORT_NAME
-    int _ref;
-    HDFArray(const string & n, const string &d, BaseType * v, int32 ref);  
-#endif    
     virtual ~ HDFArray();
     virtual BaseType *ptr_duplicate();
     virtual bool read();
