@@ -722,7 +722,7 @@ HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
     }
 
 }
-#ifndef USE_HDFEOS2
+#ifndef USE_HDFEOS2_LIB
 // Create EOS Grids without structure.
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
                                         vg_map &vgmap,
@@ -805,6 +805,6 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
 
     return 0;
 }
-#endif // #ifndef USE_HDFEOS2
+#endif // #ifndef USE_HDFEOS2_LIB
 
 #endif // #ifdef CF

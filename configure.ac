@@ -138,7 +138,7 @@ AC_ARG_WITH([hdfeos2],
              fi])
 AM_CONDITIONAL([HDFEOS2], [false])
 if test -n "$HDFEOS2_DIR"; then
-  CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include -DUSE_HDFEOS2"
+  CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
   LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
   HDFEOS2_LIBS="-lhdfeos -lGctp"
 dnl  AC_CHECK_LIB(Gctp, inv_init,, AC_MSG_ERROR([invalid Gctp in hdfeos2]))

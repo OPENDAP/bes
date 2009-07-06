@@ -1,4 +1,4 @@
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 #ifndef _HDFEOS2_H
 #define _HDFEOS2_H
 #ifdef _WIN32

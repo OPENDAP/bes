@@ -110,7 +110,7 @@ void HDFEOS::add_dimension_map(string dimension_name, int dimension)
 
 
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 bool HDFEOS::set_dimension_array_hdfeos2()
 {
     int j = 0;
@@ -223,7 +223,7 @@ bool HDFEOS::set_dimension_array_hdfeos2()
 
 bool HDFEOS::set_dimension_array()
 {
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     if(set_dimension_array_hdfeos2()){
         return true;
     }
@@ -323,7 +323,7 @@ const char *HDFEOS::get_CF_name(char *eos_name)
     eos_to_cf_map["ScaleFactor"] = "scale_factor";
     eos_to_cf_map["ValidRange"] = "valid_range";
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     if(is_grid()){
         eos_to_cf_map["XDim"] = "lon";
         eos_to_cf_map["YDim"] = "lat";
@@ -339,7 +339,7 @@ const char *HDFEOS::get_CF_name(char *eos_name)
         eos_to_cf_map["StdPressureLev"] = "pressStd";
     
     }
-#endif // #ifdef USE_HDFEOS2
+#endif // #ifdef USE_HDFEOS2_LIB
     
     
     DBG(cerr << eos_to_cf_map[str] << endl);
@@ -356,7 +356,7 @@ string HDFEOS::get_EOS_name(string str)
     cf_to_eos_map["lat"] = "YDim";
     cf_to_eos_map["lev"] = "nCandidate";
   
-#ifdef USE_HDFEOS2  
+#ifdef USE_HDFEOS2_LIB  
     if(is_swath()){
         cf_to_eos_map["lon"] = "Longitude";
         cf_to_eos_map["lat"] = "Latitude";
@@ -460,7 +460,7 @@ bool HDFEOS::parse_struct_metadata(const char* str_metadata)
         hdfeos2parse(this);
         _parsed = true;
     }
-#ifdef USE_HDFEOS2  
+#ifdef USE_HDFEOS2_LIB  
     return _valid;
 #endif
     return _parsed;
@@ -468,7 +468,7 @@ bool HDFEOS::parse_struct_metadata(const char* str_metadata)
 
 void HDFEOS::print()
 {
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     DBG(
         cerr
         << ">HDFEOS::print() "
@@ -500,7 +500,7 @@ void HDFEOS::print()
 #endif // #ifdef DODS_DEBUG      
         }
     }
-#endif // #ifdef USE_HDFEOS2
+#endif // #ifdef USE_HDFEOS2_LIB
     DBG(cerr
         << "Left = " << point_left << endl
         << "Right = " << point_right << endl
@@ -522,7 +522,7 @@ void HDFEOS::reset()
     _parsed = false;
     _valid = false;
     _shared_dimension = false;
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     _is_swath = false;
     _is_grid = false;
     _is_orthogonal = false;
@@ -568,14 +568,14 @@ void HDFEOS::reset()
     }
     // Clear the contents of the metadata string buffer.
     strcpy(metadata_Struct, "");
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     eos2.reset();
 #endif
     
 }
 
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 void HDFEOS::add_variable(string var_name)
 {
     full_data_paths.push_back(var_name);
@@ -915,5 +915,5 @@ int HDFEOS::open(char* filename)
 }
 
 
-#endif // #ifdef USE_HDFEOS2
+#endif // #ifdef USE_HDFEOS2_LIB
 

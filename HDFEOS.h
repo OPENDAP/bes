@@ -40,14 +40,14 @@
 // This macro is used to generate a CF-1.x convention compliant DAP output
 // that OPeNDAP visualization clients can display Grids and Swath.
 //
-// If USE_HDFEOS2 macro is not defined, the CF macro will parse the
+// If USE_HDFEOS2_LIB macro is not defined, the CF macro will parse the
 // structMetadata in HDF-EOS2 file to generate CF-1.x compliant DAP output.
 #include "HDFCFSwath.h"
 
 // If this macro is enabled, parsing structMetadata will be suppressed
 // and the HDF-EOS2 library will be used to generate CF-1.x compliant
 // DAP output.
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2.h"
 #endif
 
@@ -91,12 +91,12 @@ private:
     map < string, string > cf_to_eos_map;
     // #endif
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     vector < int > types; 
 #endif
         
     // Private member functions
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     bool set_dimension_array_hdfeos2();                
 #endif
     
@@ -169,7 +169,7 @@ public:
     /// Pointers for map data arrays
     dods_float32 **dimension_data;
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     /// Pointer to HDFEOS2 class that reads Grid and Swath information using
     /// hdfeos2 library. This pointer will be active if --with-hdfeos2
     /// configuration option is active.
@@ -337,7 +337,7 @@ public:
     void set_shared_dimension();
 
     
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     /// Remember the type of HDF-EOS dataset variable via HDF-EOS2 library.
     ///
     /// This function keeps track of the data types of Grid/Swath variables
@@ -415,6 +415,6 @@ public:
     /// Open HDF-EOS file via HDF-EOS2 library
     int open(char* filename);
         
-#endif  // USE_HDFEOS2
+#endif  // USE_HDFEOS2_LIB
 };
 #endif // #ifndef _HDFEOS_H

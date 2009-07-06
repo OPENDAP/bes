@@ -92,7 +92,7 @@ HDFEOS eos;
 void hdfeos_switch_to_buffer(void *new_buffer);
 void hdfeos_delete_buffer(void * buffer);
 void *hdfeos_string(const char *yy_str);
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 #include "HDFEOSGrid.h"
 #include "HDFEOSArray.h"
 #include "HDFEOSArray2D.h"
@@ -151,7 +151,7 @@ static void add_dimension_attributes(DAS &das);
 static void write_dimension_attributes_swath(DAS &das);
 #endif
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 static void write_dimension_attributes_grid(DAS &das);
 static void write_dimension_attributes_grid_non_ortho(DAS &das);
 static void write_hdfeos2_grid(DDS &dds);
@@ -419,7 +419,7 @@ static void build_descriptions(DDS & dds, DAS & das,
 
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
     Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
     if(eos.is_valid()){
         if(eos.is_grid()){
@@ -575,7 +575,7 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 static void Vdata_descriptions(vd_map & map, DAS & das,
                                const string & filename)
 {
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     eos.reset();
     if(eos.open((char*) filename.c_str()) < 0){
         cerr << "Not a valid EOS " << endl;
@@ -655,7 +655,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             }	// switch (tag) 
         } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
     } //   for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     if(eos.is_valid()){
         // Check if the file is Grid or Swath.
         if(eos.is_grid()){
@@ -686,7 +686,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             }	
 #endif
 #ifdef CF
-#ifndef USE_HDFEOS2        
+#ifndef USE_HDFEOS2_LIB        
             NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
                                       grmap, filename, dds);
 #endif        
@@ -729,7 +729,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 delete pbt ;
             }
         }
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
     }
 #endif
 }
@@ -847,7 +847,7 @@ void AddHDFAttr(DAS & das, const string & varname,
 #endif // #ifndef CF
 // Without the following directive, CF parser causes a conflict
 // with the  hdfeos2 library.
-#ifndef USE_HDFEOS2  
+#ifndef USE_HDFEOS2_LIB  
 #ifdef CF
                 // Parse one more time <hyokyung 2008.11.10. 15:38:36>
                 if (container_name.find("StructMetadata") == 0){
@@ -861,7 +861,7 @@ void AddHDFAttr(DAS & das, const string & varname,
                     DBG(eos.print());
                 }		
 #endif // #ifdef CF
-#endif // #ifndef USE_HDFEOS2                    
+#endif // #ifndef USE_HDFEOS2_LIB                    
             }
             else {
                 if (attrtype == "String")
@@ -1058,7 +1058,7 @@ static void add_dimension_attributes(DAS & das)
 }
 #endif
 
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 #ifndef CF
 /// An abstract respresntation of DAP String type.
 static const char STRING[] = "String";

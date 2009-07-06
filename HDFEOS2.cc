@@ -1,5 +1,5 @@
 #include "HDFEOS2.h"
-#ifdef USE_HDFEOS2
+#ifdef USE_HDFEOS2_LIB
 #include <sstream>
 #include <algorithm>
 #include <functional>
