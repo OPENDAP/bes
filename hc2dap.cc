@@ -198,13 +198,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
                 if (sdmap[ref].sds.has_scale()) {
                     bt = NewGridFromSDS(sdmap[ref].sds, dataset);
                 } else {
-#ifdef CF	      
-                    // Check if it can be mapped to Grid
-                    if(eos.is_grid(sdmap[ref].sds.name))
-                        bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
-                    else
-#endif		
-                        bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
+                    bt = NewArrayFromSDS(sdmap[ref].sds, dataset);
                 }
                 break;
             case DFTAG_VG:

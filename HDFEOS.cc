@@ -459,11 +459,12 @@ bool HDFEOS::parse_struct_metadata(const char* str_metadata)
         hdfeos2_scan_string(str_metadata);
         hdfeos2parse(this);
         _parsed = true;
+        _valid = _parsed; // <hyokyung 2009.07. 7. 11:34:32>
     }
-#ifdef USE_HDFEOS2_LIB  
+    //#ifdef USE_HDFEOS2_LIB  
     return _valid;
-#endif
-    return _parsed;
+    // #endif
+    // return _parsed;
 }
 
 void HDFEOS::print()

@@ -304,8 +304,8 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
         if (gs_filename && filename == *gs_filename && gs_das) {
             das = *gs_das;
         } else {
-#endif
-#endif
+#endif // #if 0
+#endif // #ifndef CF
             // generate DDS, DAS
             DDS dds(NULL);
             dds.set_dataset_name(basename(filename));
@@ -327,7 +327,8 @@ void read_das(DAS & das, const string & cachedir, const string & filename)
 }
 
 
-// check dates of datafile and cached DDS, DAS; update cached files if necessary
+// Check dates of datafile and cached DDS, DAS; update cached files
+// if necessary
 static void update_descriptions(const string & cachedir,
                                 const string & filename)
 {
@@ -409,6 +410,7 @@ static void build_descriptions(DDS & dds, DAS & das,
     gr_map grmap;
 
     // Build descriptions of SDS items
+    // If CF option is enabled, metadata parsing will be done here.
     SDS_descriptions(sdsmap, das, filename);
 
     // Build descriptions of file annotations
@@ -616,6 +618,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                                 const string & filename, sds_map & sdmap,
                                 vd_map & vdmap, gr_map & grmap)
 {
+
     hdfistream_vgroup vgin(filename);
 
     // Read Vgroup's
@@ -679,21 +682,28 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         for (VGI v = vgmap.begin(); v != vgmap.end(); ++v) {
             if (!v->second.toplevel)
                 continue;           // skip over non-toplevel vgroups
-#ifndef CF		
-            pbt =
-                NewStructureFromVgroup(v->second.vgroup, vgmap, sdmap, vdmap,
-                                       grmap, filename);
+#ifdef CF
+            if(eos.is_valid()){
+#ifndef USE_HDFEOS2_LIB
+                pbt = NewStructureFromVgroupEOS(v->second.vgroup,
+                                                vgmap, sdmap, vdmap,
+                                                grmap, filename, dds);
+#endif // #ifndef USE_HDFEOS2_LIB
+            }
+            else{
+#endif // #ifdef CF                
+                pbt = NewStructureFromVgroup(v->second.vgroup,
+                                             vgmap, sdmap, vdmap,
+                                             grmap, filename);
+#ifdef CF                
+            } // else
+                
+#endif	
             if (pbt != 0) {
                 dds.add_var(pbt);
                 delete pbt;
-            }	
-#endif
-#ifdef CF
-#ifndef USE_HDFEOS2_LIB        
-            NewStructureFromVgroupEOS(v->second.vgroup, vgmap, sdmap, vdmap,
-                                      grmap, filename, dds);
-#endif        
-#endif	
+            }                        
+            
         } // for (VGI v = vgmap.begin(); v != vgmap.end(); ++v)
 
         // add lone SDS's
@@ -711,17 +721,21 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         }
 
         // add lone Vdata's
-#ifndef CF
-        for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
-            if (v->second.in_vgroup)
-                continue;           // skip over Vdata in vgroups
-            pbt = NewSequenceFromVdata(v->second.vdata, filename);
-            if (pbt != 0) {
-                dds.add_var(pbt);
-                delete pbt;
+#ifdef CF
+        if(!eos.is_valid()){
+#endif            
+            for (VDI v = vdmap.begin(); v != vdmap.end(); ++v) {
+                if (v->second.in_vgroup)
+                    continue;           // skip over Vdata in vgroups
+                pbt = NewSequenceFromVdata(v->second.vdata, filename);
+                if (pbt != 0) {
+                    dds.add_var(pbt);
+                    delete pbt;
+                }
             }
+#ifdef CF        
         }
-#endif
+#endif        
         // add lone GR's
         for (GRI g = grmap.begin(); g != grmap.end(); ++g) {
             if (g->second.in_vgroup)
@@ -760,7 +774,7 @@ static void GR_descriptions(gr_map & map, DAS & das,
     grin.close();
 
     // Build DAS
-    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);   // add GR file attributes
+    AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs); // add GR file attributes
 
     // add each GR's attrs
     vector < hdf_attr > pattrs;
@@ -834,7 +848,8 @@ void AddHDFAttr(DAS & das, const string & varname,
                 string::size_type dotzero = container_name.find('.');
                 if (dotzero != container_name.npos)
                     container_name.erase(dotzero);      // erase .0
-#ifndef CF // <hyokyung 2008.12. 1. 11:20:24>						
+                
+#ifndef CF // Suppress the parsed and structured metadata attribute output.  
                 AttrTable *at = das.get_table(container_name);
                 if (!at)
                     at = das.add_table(container_name, new AttrTable);
@@ -849,10 +864,10 @@ void AddHDFAttr(DAS & das, const string & varname,
                 hdfeos_delete_buffer(buf);
 #endif // #ifndef CF
 // Without the following directive, CF parser causes a conflict
-// with the  hdfeos2 library.
+// with the use of hdfeos2 library.
 #ifndef USE_HDFEOS2_LIB  
 #ifdef CF
-                // Parse one more time <hyokyung 2008.11.10. 15:38:36>
+                // Parse StructMetadata for Grid / Swath generation.
                 if (container_name.find("StructMetadata") == 0){
                     eos.reset();
                     DBG(cerr
@@ -1375,13 +1390,15 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
                 eos.get_CF_name((char*)dimension_names.at(j).c_str());
             bt = new HDFFloat32(str_cf_name,str_cf_name);
             ar = new HDFEOSArray2D(str_cf_name, bt);
-            // <hyokyung 2009.02.18. 16:10:17>
 
             ar->add_var(bt);
             delete bt; bt = 0;
             if(str_cf_name == "lat"){
                 if(eos.is_ydimmajor()){
-                    DBG(cerr << "=write_hdfeos2_grid_other_projection():YDim major is detected." << endl);
+                    DBG(cerr
+                        << "=write_hdfeos2_grid_other_projection():"
+                        << "YDim major is detected."
+                        << endl);
                     ar->append_dim(ydim_size, str_cf_name);
                     ar->append_dim(xdim_size, "lon");
                 }
