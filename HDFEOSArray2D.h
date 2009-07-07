@@ -54,6 +54,7 @@
 
 using namespace libdap;
 
+/// A class for shared dimension in 2-D.
 class HDFEOSArray2D:public Array {
   
 private:

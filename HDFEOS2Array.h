@@ -34,6 +34,10 @@
 
 using namespace libdap;
 
+/// A class for handling Array part of HDFEOSGrid class using HDFEOS2 library.
+///
+/// This class is only active under USE_HDFEOS2_LIB macro.
+/// 
 class HDFEOS2Array:public Array {
   
 private:

@@ -59,11 +59,6 @@ using namespace libdap;
 /// and prepares the necessary (grid) data for OPeNDAP.
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-///
-/// Copyright (c) 2008-2009 The HDF Group
-///
-/// All rights reserved.
-
 class HDFEOS:public HDFCFSwath {
   
 private:
@@ -366,9 +361,9 @@ public:
     /// \return false otherwise
     bool is_swath();
         
-    /// Check if the current HDF-EOS file uses a geographic projection
+    /// Check if the current HDF-EOS file uses a 1-D projection
     /// via HDF-EOS2 library.
-    /// \return true if it uses a geographic projection
+    /// \return true if it uses a 1-D projection
     /// \return false otherwise  
     bool is_orthogonal();
   

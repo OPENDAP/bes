@@ -56,6 +56,7 @@
 
 using namespace libdap;
 
+/// A class for handling shared dimension in HDF-EOS2 Grid files.
 class HDFEOSArray:public Array {
   dods_float32 *get_dimension_data(dods_float32 * buf, int start,
 				   int stride, int stop, int count);

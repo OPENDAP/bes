@@ -89,14 +89,20 @@ using namespace std;
 HDFEOS eos;
 #endif
 // Glue routines declared in hdfeos.lex
-void hdfeos_switch_to_buffer(void *new_buffer);
-void hdfeos_delete_buffer(void * buffer);
+void  hdfeos_switch_to_buffer(void *new_buffer);
+void  hdfeos_delete_buffer(void * buffer);
 void *hdfeos_string(const char *yy_str);
+
 #ifdef USE_HDFEOS2_LIB
-#include "HDFEOSGrid.h"
-#include "HDFEOSArray.h"
-#include "HDFEOSArray2D.h"
-#include "HDFEOS2Array.h"
+// For Grid
+#include "HDFEOSGrid.h"   // for special HDF-EOS2 Grid
+#include "HDFEOSArray.h"  // for shared dimension 1-D map data
+#include "HDFEOS2Array.h" // for array inside Grid that uses HDF-EOS2 librarry
+
+// For Swath
+#include "HDFEOSArray2D.h" // for shared dimension 2-D map data
+
+// Base types
 #include "HDFByte.h"
 #include "HDFInt16.h"
 #include "HDFUInt16.h"
@@ -109,9 +115,6 @@ void *hdfeos_string(const char *yy_str);
 // Added 5/7/09; This bug (#1163) was fixed in July 2008 except for this
 // handler. jhrg
 #define ATTR_STRING_QUOTE_FIX
-//#ifdef CF
-// HDFEOS eos;
-//#endif
 
 template < class T > string num2string(T n)
 {
@@ -1020,39 +1023,68 @@ static void add_dimension_attributes(DAS & das)
     AttrTable *at;
 
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
+    at->append_attr("title", STRING, "\"NASA HDF-EOS2 Grid\"");
     at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
     at->append_attr("dataType", STRING, "\"Grid\"");
-    at->append_attr("history", STRING,
-                    "\"Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3\"");
 
-    at = das.add_table("lon", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"x\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"360\"");
-    at->append_attr("units", STRING, "\"degrees_east\"");
-    at->append_attr("long_name", STRING, "\"longitude\"");
-    at->append_attr("minimum", FLOAT32, "-180.0");
-    at->append_attr("maximum", FLOAT32, "180.0");
-    at->append_attr("resolution", FLOAT32, "1.00");
-
-    at = das.add_table("lat", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"y\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"180\"");
-    at->append_attr("units", STRING, "\"degrees_north\"");
-    at->append_attr("long_name", STRING, "\"latitude\"");
-    at->append_attr("minimum", FLOAT32, "-90.0");
-    at->append_attr("maximum", FLOAT32, "90.0");
-    at->append_attr("resolution", FLOAT32, "1.00");
-
-    at = das.add_table("lev", new AttrTable);
-    at->append_attr("grads_dim", STRING, "\"z\"");
-    at->append_attr("grads_mapping", STRING, "\"linear\"");
-    at->append_attr("grads_size", STRING, "\"15\"");
-    at->append_attr("units", STRING, "\"level\"");
-    at->append_attr("long_name", STRING,
-                    "\"level converted from nCandidate\"");
+    if(eos.get_dimension_size("XDim") > 0){
+        at = das.add_table("lon", new AttrTable);
+        at->append_attr("grads_dim", STRING, "\"x\"");
+        at->append_attr("grads_mapping", STRING, "\"linear\"");
+        {
+            std::ostringstream o;
+            o << "\"" << eos.get_dimension_size("XDim") << "\"";            
+            at->append_attr("grads_size", STRING, o.str().c_str());
+        }
+        at->append_attr("units", STRING, "\"degrees_east\"");
+        at->append_attr("long_name", STRING, "\"longitude\"");
+        {
+            std::ostringstream o;
+            o << (eos.point_left / 1000000.0);      
+            at->append_attr("minimum", FLOAT32, o.str().c_str());
+        }
+    
+        {
+            std::ostringstream o;
+            o << (eos.point_right / 1000000.0);
+            at->append_attr("maximum", FLOAT32, o.str().c_str());
+        }
+        {
+            std::ostringstream o;
+            o << (eos.gradient_x / 1000000.0);
+            at->append_attr("resolution", FLOAT32, o.str().c_str());
+        }
+    }
+    
+    if(eos.get_dimension_size("YDim") > 0){    
+        at = das.add_table("lat", new AttrTable);
+        at->append_attr("grads_dim", STRING, "\"y\"");
+        at->append_attr("grads_mapping", STRING, "\"linear\"");
+        {
+            std::ostringstream o;
+            o << "\"" << eos.get_dimension_size("YDim") << "\"";
+            at->append_attr("grads_size", STRING, o.str().c_str());
+        }
+        at->append_attr("units", STRING, "\"degrees_north\"");
+        at->append_attr("long_name", STRING, "\"latitude\"");
+        {
+            std::ostringstream o;
+            o << (eos.point_lower / 1000000.0);      
+            at->append_attr("minimum", FLOAT32, o.str().c_str());
+        }
+    
+        {
+            std::ostringstream o;
+            o << (eos.point_upper / 1000000.0);            
+            at->append_attr("maximum", FLOAT32, o.str().c_str());
+        }
+    
+        {
+            std::ostringstream o;
+            o << (eos.gradient_y / 1000000.0);
+            at->append_attr("resolution", FLOAT32, o.str().c_str());      
+        }
+    }    
 
 
 }
@@ -1337,10 +1369,13 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
         int ydim_size = eos.get_ydim_size();
     
         for(j=0; j < dimension_names.size(); j++){
-            int shared_dim_size = eos.get_dimension_size(dimension_names.at(j));    
-            string str_cf_name = eos.get_CF_name((char*)dimension_names.at(j).c_str());
+            int shared_dim_size =
+                eos.get_dimension_size(dimension_names.at(j));    
+            string str_cf_name =
+                eos.get_CF_name((char*)dimension_names.at(j).c_str());
             bt = new HDFFloat32(str_cf_name,str_cf_name);
-            ar = new HDFEOSArray2D(str_cf_name, bt); // <hyokyung 2009.02.18. 16:10:17>
+            ar = new HDFEOSArray2D(str_cf_name, bt);
+            // <hyokyung 2009.02.18. 16:10:17>
 
             ar->add_var(bt);
             delete bt; bt = 0;
@@ -1390,8 +1425,6 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
     
-        // Build the type first.
-        // BaseType *bt = 0;
         // Split based on the type.
         BaseType* bt = get_base_type(eos.get_data_type(i), cf_varname);
         if(bt == 0){
@@ -1429,15 +1462,15 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
 static void write_hdfeos2_swath(DDS &dds)
 {
     // Swath handling is similar to Grid case but do not generate DAP "Grid"
-    // output. Use the plain array.
-
+    // output. Just use the plain array.
     for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
         DBG(cerr
             << " Name=" << eos.full_data_paths.at(i)	  
             << " Type=" << eos.get_data_type(i)
             <<  endl);
 
-        const char* cf_name = eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
+        const char* cf_name =
+            eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
         string cf_varname(cf_name);
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
@@ -1479,13 +1512,12 @@ static void write_hdfeos2_swath(DDS &dds)
 
 #endif
 
-#if defined(CF) || defined(USE_HDFEOS)
+#ifdef CF
 static void write_dimension_attributes_swath(DAS & das)
 {
 
     AttrTable *at;
   
-    // Let's try IDV without NC_GLOBAL to see it's required.  <hyokyung 2009.02.11. 12:08:52>
     at = das.add_table("NC_GLOBAL", new AttrTable);
     at->append_attr("title", STRING, "\"NASA EOS Swath\"");
     at->append_attr("Conventions", STRING, "\"CF-1.0\"");
@@ -1498,8 +1530,9 @@ static void write_dimension_attributes_swath(DAS & das)
     at->append_attr("units", STRING, "\"degrees_north\"");
     at->append_attr("long_name", STRING, "\"latitude\"");
     at->append_attr("coordinates", STRING, "\"lon lat\"");
-    // For all swaths, insert the coordinates attribute if lat, lon dimension names match.
-  
+    
+    // For all swaths, insert the coordinates attribute
+    // if lat, lon dimension names match.
     at = das.get_table("Time");
     if(at != NULL){
         at->append_attr("units", STRING, "\"degrees_north\"");
