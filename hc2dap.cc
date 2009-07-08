@@ -299,6 +299,7 @@ HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 // Create a DAP HDFGrid out of the primary array and dim scale in an hdf_sds
 HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
+    DBG(cerr << "NewGridFromSDS" << endl);
     if (!sds.has_scale())       // we need a dim scale to make a Grid
         return 0;
 
@@ -603,6 +604,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
 // Create a DAP Grid out of the primary array and dim scale in an hdf_sds
 HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
+    DBG(cerr << ">NewEOSGridFromSDS" << endl);
     // Create the HDFGrid and the primary array.  Add the primary array to 
     // the HDFGrid.
     if (sds.name.length() == 0) // SDS must have a name
@@ -766,7 +768,12 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
             break;
         case DFTAG_NDG:
             if (sdmap[ref].sds.has_scale()) {
-                bt = NewGridFromSDS(sdmap[ref].sds, dataset);
+                if(eos.is_grid(sdmap[ref].sds.name)){
+                    bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
+                }
+                else{
+                    bt = NewGridFromSDS(sdmap[ref].sds, dataset);
+                }
             } else {
                 // Check if it can be mapped to Grid.
                 if(eos.is_grid(sdmap[ref].sds.name)) 

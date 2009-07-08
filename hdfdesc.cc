@@ -1,3 +1,7 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \file hdfdesc.cc
+/// \brief DAP attributes and structure description generation code.
+///
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 //
 // Copyright (c) 2008-2009 The HDF Group.
@@ -42,7 +46,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "config_hdf.h"
-
 // STL includes
 #include <string>
 #include <fstream>
@@ -170,7 +173,8 @@ string cache_name(const string & cachedir, const string & filename)
         return filename;
 
     string newname = filename;  // create a writable copy
-    // skip over common path component (usually something like "/usr/local/www")
+    // skip over common path component (usually something like
+    // "/usr/local/www")
     string::size_type start = 0, dirstart = 0;
     while (newname[start] == cachedir[dirstart]) {
         start++;
@@ -410,7 +414,7 @@ static void build_descriptions(DDS & dds, DAS & das,
     gr_map grmap;
 
     // Build descriptions of SDS items
-    // If CF option is enabled, metadata parsing will be done here.
+    // If CF option is enabled, StructMetadata will be parsed here.
     SDS_descriptions(sdsmap, das, filename);
 
     // Build descriptions of file annotations
@@ -424,8 +428,9 @@ static void build_descriptions(DDS & dds, DAS & das,
 
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
     Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
-#ifdef USE_HDFEOS2_LIB
-    // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
+    
+#ifdef USE_HDFEOS2_LIB          // Add CF-1.x compliant attributes.
+    // Build NC_GLOBAL part using the HDF-EOS2 library.
     if(eos.is_valid()){
         if(eos.is_grid()){
             if(eos.is_orthogonal()){
@@ -441,8 +446,8 @@ static void build_descriptions(DDS & dds, DAS & das,
         return;
     } // if valid
 #endif
-#ifdef CF
-    // Build NC_GLOBAL part <hyokyung 2008.11.14. 08:18:50>
+#ifdef CF  // Add CF-1.x compliant attributes.
+    // Build NC_GLOBAL part using parser.
     if(eos.is_shared_dimension_set()){
         DBG(cerr << "CF generated NC_GLOBAL" << endl);
         if(!eos.is_swath())
@@ -452,7 +457,6 @@ static void build_descriptions(DDS & dds, DAS & das,
         }
     }
 #endif
-  
     return;
 }
 
@@ -552,6 +556,16 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 
     sdsin.close();
 
+#ifdef USE_HDFEOS2_LIB         // Open the file with HDF-EOS2 library.
+    eos.reset();
+    if(eos.open((char*) filename.c_str()) < 0){
+        cerr << "Not a valid EOS " << endl;
+    }
+    else{
+        eos.print();       // Sets the essential map data information.
+    }
+#endif	
+    
     // This is the call to combine SDS attributes that have been split up
     // into N 32,000 character strings. 10/24/2001 jhrg
     merge_split_eos_attributes(fileattrs, "StructMetadata");
@@ -580,17 +594,6 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 static void Vdata_descriptions(vd_map & map, DAS & das,
                                const string & filename)
 {
-#ifdef USE_HDFEOS2_LIB
-    eos.reset();
-    if(eos.open((char*) filename.c_str()) < 0){
-        cerr << "Not a valid EOS " << endl;
-    }
-    else{
-        eos.print();
-        //eos.eos2->_deleteme();
-    }
-#endif	
-
     hdfistream_vdata vdin(filename);
     vdin.setmeta(true);
 
@@ -675,7 +678,6 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         }
     }
     else{
-        // eos.eos2->_deleteme();
 #endif
         // Build DDS for all toplevel vgroups
         BaseType *pbt = 0;
@@ -683,8 +685,8 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             if (!v->second.toplevel)
                 continue;           // skip over non-toplevel vgroups
 #ifdef CF
-            if(eos.is_valid()){
-#ifndef USE_HDFEOS2_LIB
+            if(eos.is_valid()){ // Suppress the generation of bogus structure.
+#ifndef USE_HDFEOS2_LIB         
                 pbt = NewStructureFromVgroupEOS(v->second.vgroup,
                                                 vgmap, sdmap, vdmap,
                                                 grmap, filename, dds);
@@ -1032,6 +1034,21 @@ static const char ARRAY[] = "Array";
 /// An abstract respresntation of DAP Url type.
 static const char URL[] = "Url";
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn add_dimension_attributes(DAS & das)
+/// will put pseudo attributes for CF(a.k.a COARDS) convention compatibility.
+///
+/// This function is provided as an example for NASA HDF-EOS2 data only.
+/// You need to modify this to add custom attributes that match dimension
+/// names to make the output compliant to CF-convention. For details,
+/// please refer to the technical note "Using DAP Clients to Visualize
+/// HDF-EOS5 Grid Data" from [2].
+/// 
+/// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
+/// 
+/// \param das DAS object: reference
+/// \remarks This is necessary for GrADS compatibility only
+///////////////////////////////////////////////////////////////////////////////
 static void add_dimension_attributes(DAS & das)
 {
 
@@ -1547,15 +1564,6 @@ static void write_dimension_attributes_swath(DAS & das)
     at->append_attr("units", STRING, "\"degrees_north\"");
     at->append_attr("long_name", STRING, "\"latitude\"");
     at->append_attr("coordinates", STRING, "\"lon lat\"");
-    
-    // For all swaths, insert the coordinates attribute
-    // if lat, lon dimension names match.
-    at = das.get_table("Time");
-    if(at != NULL){
-        at->append_attr("units", STRING, "\"degrees_north\"");
-        at->append_attr("long_name", STRING, "\"floating-point TAI qelapsed seconds since Jan 1, 193\"");
-        at->append_attr("coordinates", STRING, "\"lon lat\"");
-    }
 
 }
 #endif

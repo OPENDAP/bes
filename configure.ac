@@ -106,12 +106,6 @@ AC_ARG_WITH(test-url,
 AC_MSG_RESULT(Setting the Test file base URL to $testurl)
 AC_SUBST(testurl)
 
-AC_ARG_ENABLE([short-name], 
-	     [AS_HELP_STRING([--enable-short-name=yes],[Short dataset name will be used instead of full name.])],
-	     [use_short_name=$enableval],[use_short_name=no])
-if test "${use_short_name}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DSHORT_NAME"
-fi 
 
 
 AM_CONDITIONAL([CF], [false])
