@@ -46,7 +46,7 @@ extern HDFEOS eos;
 
 
 HDFEOS2Array::HDFEOS2Array(const string & n, BaseType * v):
-Array(n, v)
+    Array(n, v)
 {
 }
 
@@ -62,151 +62,201 @@ BaseType *HDFEOS2Array::ptr_duplicate()
 // Read in an Array from either an SDS or a GR in an HDF file.
 bool HDFEOS2Array::read()
 {
-  DBG(cerr << ">HDFEOS2Array::read()"  << endl);
+    DBG(cerr << ">HDFEOS2Array::read()"  << endl);
   
-  int* offset = new int[d_num_dim];
-  int* count = new int[d_num_dim];
-  int* step = new int[d_num_dim];
-  int nelms = format_constraint(offset, step, count);
+    int* offset = new int[d_num_dim];
+    int* count = new int[d_num_dim];
+    int* step = new int[d_num_dim];
+    int nelms = format_constraint(offset, step, count);
   
-  int *picks = new int[nelms];
-  int total_elems = linearize_multi_dimensions(offset, step, count, picks);
-  int count2 = 0;
+    int *picks = new int[nelms];
+    int total_elems = linearize_multi_dimensions(offset, step, count, picks);
+    int count2 = 0;
 
-  string varname = name();
-  char* val = NULL;
-  int i;
-  if(eos.is_grid()){
-    DBG(cerr << "=HDFEOS2Array::read() grid" << endl);
-    count2 = eos.get_data_grid(varname, &val);
-  }
-  if(eos.is_swath()){
-    DBG(cerr << "=HDFEOS2Array::read() swath" << endl);
-    varname = eos.get_EOS_name(varname);
-    count2 = eos.get_data_swath(varname, &val);
-  }
-
-  DBG(cerr << "=HDFEOS2Array::read() count=" << count2  << endl); // <hyokyung 2009.02.10. 13:19:01>
-  if(val == NULL){
-    cerr << "=HDFEOS2Array::read() val pointer is NULL." << endl;
-    return true;
-  }
-  // This can be optimized by remembering the total size.
-  if(nelms ==  total_elems){
-    // Read the entire array. <hyokyung 2009.02.18. 14:18:13>
-    DBG(cerr << "nelms = " << nelms << " total_elems = " << total_elems << endl);
-    val2buf(val);    
-  }
-  else{
-    // Subset the array.
-    switch(var()->type()){
-
-    case dods_byte_c:
-      {
-	dods_byte* slab = new dods_byte[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_byte* f = (dods_byte *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-
-      
-    case dods_int16_c:
-      {
-	dods_int16* slab = new dods_int16[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_int16* f = (dods_int16 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-      
-    case dods_uint16_c:
-      {
-	dods_uint16* slab = new dods_uint16[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_uint16* f = (dods_uint16 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-
-    case dods_int32_c:
-      {
-	dods_int32* slab = new dods_int32[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_int32* f = (dods_int32 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-      
-    case dods_uint32_c:
-      {
-	dods_uint32* slab = new dods_uint32[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_uint32* f = (dods_uint32 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-      
-      
-    case dods_float32_c:
-      {
-	dods_float32* slab = new dods_float32[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_float32* f = (dods_float32 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-
-    case dods_float64_c:
-      {
-	dods_float64* slab = new dods_float64[nelms];
-	for(i=0; i < nelms; i++){
-	  dods_float64* f = (dods_float64 *)val;
-	  DBG(cerr << i << ":" << f[picks[i]] << endl);
-	  slab[i] = f[picks[i]];
-	}
-	set_value(slab,nelms);
-	delete[] slab;	    
-	break;
-      }
-      
-    default:
-      {
-	cerr << "HDFEOS2Array::read() Unknown type = " << type() << endl;
-	break;
-      }
+    string varname = name();
+    char* val = NULL;
+    int i;
+    if(eos.is_grid()){
+        DBG(cerr << "=HDFEOS2Array::read() grid" << endl);
+        count2 = eos.get_data_grid(varname, &val);
     }
-  }
-  delete[] offset;
-  delete[] count;
-  delete[] step;
-  delete[] picks;
+    if(eos.is_swath()){
+        DBG(cerr << "=HDFEOS2Array::read() swath" << endl);
+        varname = eos.get_EOS_name(varname);
+        count2 = eos.get_data_swath(varname, &val);
+    }
 
-  return false;
+    DBG(cerr << "=HDFEOS2Array::read() count=" << count2  << endl); 
+    if(val == NULL){
+        cerr << "=HDFEOS2Array::read() val pointer is NULL." << endl;
+        return true;
+    }
+    // This can be optimized by remembering the total size.
+
+    if(nelms ==  total_elems){
+        DBG(cerr
+            << "nelms = " << nelms
+            << " total_elems = " << total_elems
+            << endl);
+        switch(var()->type()){
+        case dods_byte_c:
+            {
+                set_value((dods_byte*)val,nelms);
+                break;
+            }
+        case dods_int16_c:
+            {
+                set_value((dods_int16*)val,nelms);
+                break;
+            }
+            
+        case dods_uint16_c:
+            {
+                set_value((dods_uint16*)val,nelms);                
+                break;
+            }
+        case dods_int32_c:
+            {
+                set_value((dods_int32*)val,nelms);                
+                break;
+            }
+            
+        case dods_uint32_c:
+            {
+                set_value((dods_uint32*)val,nelms);                
+                break;
+            }
+        case dods_float32_c:
+            {
+                set_value((dods_float32*)val,nelms);                
+                break;                
+            }
+        case dods_float64_c:
+            {
+                set_value((dods_float64*)val,nelms);                
+                break;                
+            }            
+
+        default:
+            {
+                cerr << "HDFEOS2Array::read() Unknown type = "
+                     << type() << endl;
+                break;
+            }            
+        } // switch
+
+    }
+    else{
+        // Subset the array.
+        switch(var()->type()){
+
+        case dods_byte_c:
+            {
+                dods_byte* slab = new dods_byte[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_byte* f = (dods_byte *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+
+      
+        case dods_int16_c:
+            {
+                dods_int16* slab = new dods_int16[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_int16* f = (dods_int16 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+      
+        case dods_uint16_c:
+            {
+                dods_uint16* slab = new dods_uint16[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_uint16* f = (dods_uint16 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+
+        case dods_int32_c:
+            {
+                dods_int32* slab = new dods_int32[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_int32* f = (dods_int32 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+      
+        case dods_uint32_c:
+            {
+                dods_uint32* slab = new dods_uint32[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_uint32* f = (dods_uint32 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+      
+      
+        case dods_float32_c:
+            {
+                dods_float32* slab = new dods_float32[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_float32* f = (dods_float32 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+
+        case dods_float64_c:
+            {
+                dods_float64* slab = new dods_float64[nelms];
+                for(i=0; i < nelms; i++){
+                    dods_float64* f = (dods_float64 *)val;
+                    DBG(cerr << i << ":" << f[picks[i]] << endl);
+                    slab[i] = f[picks[i]];
+                }
+                set_value(slab,nelms);
+                delete[] slab;	    
+                break;
+            }
+      
+        default:
+            {
+                cerr << "HDFEOS2Array::read() Unknown type = "
+                     << type() << endl;
+                break;
+            }
+        }
+    } // else
+    delete[] offset;
+    delete[] count;
+    delete[] step;
+    delete[] picks;
+
+    return false;
 }
 
 
@@ -226,11 +276,11 @@ int HDFEOS2Array::format_constraint(int *offset, int *step, int *count) {
 
 	// Check for empty constraint
 	if (stride <= 0 || start < 0 || stop < 0 || start > stop) {
-		ostringstream oss;
+            ostringstream oss;
 
-		oss << "Array/Grid hyperslab indices are bad: [" << start <<
-		    ":" << stride << ":" << stop << "]";
-		throw Error(malformed_expr, oss.str());
+            oss << "Array/Grid hyperslab indices are bad: [" << start <<
+                ":" << stride << ":" << stop << "]";
+            throw Error(malformed_expr, oss.str());
 	}
 
 	offset[id] = start;
@@ -252,8 +302,8 @@ int HDFEOS2Array::format_constraint(int *offset, int *step, int *count) {
     return nels;
 }
 
-int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride, int *count,
-					  int *picks) {
+int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride,
+                                             int *count, int *picks) {
     DBG(cerr << ">linearize_multi_dimensions()" << endl);
     int total = 1;
     int *dim = 0;
@@ -290,10 +340,10 @@ int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride, int *count
 
 	while (num_ele_so_far < total_ele) {
 	    // loop through the index 
-
 	    while (temp_count_dim < d_num_dim) {
 		temp_index = (start[d_num_dim - 1 - temp_count_dim]
-			      + (temp_count[d_num_dim - 1 - temp_count_dim] - 1)
+			      + (temp_count[d_num_dim - 1 - temp_count_dim]
+                                 - 1)
 			      * stride[d_num_dim - 1 -
 				       temp_count_dim]) * temp_dim;
 		array_index = array_index + temp_index;
@@ -306,7 +356,7 @@ int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride, int *count
 	    num_ele_so_far++;
 	    // index can be added 
 	    DBG(cerr << "number of element looped so far = " <<
-		num_ele_so_far << endl);
+            	num_ele_so_far << endl);
 	    for (i = 0; i < d_num_dim; i++) {
 		DBG(cerr << "temp_count[" << i << "]=" << temp_count[i] <<
 		    endl);
@@ -315,9 +365,6 @@ int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride, int *count
 
 	    temp_dim = 1;
 	    temp_count_dim = 0;
-#if 0
-	    temp_index = 0;
-#endif
 	    array_index = 0;
 
 	    for (i = 0; i < d_num_dim; i++) {
@@ -325,7 +372,8 @@ int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride, int *count
 		    temp_count[i]++;
 		    break;
 		} 
-		else { // We reach the end of the dimension, set it to 1 and
+		else {
+                    // We reach the end of the dimension, set it to 1 and
 		    // increase the next level dimension.  
 		    temp_count[i] = 1;
 		}
