@@ -519,19 +519,17 @@ static Structure *Get_structure(const string &varname,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
-///                                const string &name1, 
-///                                const string &name2)
+///                                const string &name1)
 /// returns the id of attribute that corresponds to dimension name.
 /// 
 /// \param check_grid a flag for signaling a type of Grid -- new or old.
 /// \param dset dataset that has dimension attribute
 /// \param name1 new dimension name of Grid that is generated from h4toh5 tool.
-/// \param name2 old dimension name of Grid.
-/// \return id of \a name1 or \a name2 attribute
+/// \return id of \a name1  attribute
 ///////////////////////////////////////////////////////////////////////////////
 static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
-                                        const string &name1, 
-                                        const string &name2) {
+                                        const string &name1)
+{
     hid_t attr_id;
     if (check_grid == NewH4H5Grid) {
         if ((attr_id = H5Aopen_name(dset, name1.c_str())) < 0)
@@ -539,12 +537,6 @@ static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
                               string("Unable to open ") + name1 
                               + string(" attribute"));
     } 
-    else {
-        if ((attr_id = H5Aopen_name(dset, name2.c_str())) < 0)
-            throw InternalErr(__FILE__, __LINE__,
-                              string("Unable to open ") + name2
-                              + string(" attribute"));
-    }
 
     return attr_id;
 }
@@ -559,8 +551,7 @@ static void process_grid(const H5GridFlag_t check_grid,
     // dimensional names. Here we will distinguish old h4h5 tool or
     // new h4h5 tool.
     hid_t attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
-                                               "HDF5_DIMENSIONNAMELIST",
-                                               "OLD_HDF5_DIMENSIONNAMELIST");
+                                               "HDF5_DIMENSIONNAMELIST");
     hid_t temp_dtype  = H5Aget_type(attr_id);
     if(temp_dtype < 0) {
         throw InternalErr(__FILE__, __LINE__, 
@@ -606,8 +597,7 @@ static void process_grid(const H5GridFlag_t check_grid,
 
         // Obtain dimensional scale data information.
         attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
-                                             "HDF5_DIMENSIONLIST",
-                                             "OLD_HDF5_DIMENSIONLIST");
+                                             "HDF5_DIMENSIONLIST");
         temp_dtype = H5Aget_type(attr_id);
         if(temp_dtype < 0) {
             throw InternalErr(__FILE__, __LINE__, 
@@ -1032,11 +1022,17 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #else // DODSGRID is defined
 
         // Check whether this HDF5 dataset can be mapped to the grid data
-        // type. It should check whether the attribute includes dimension
-        // list. If yes and everything is valid, map to DAP grid; Otherwise,
-        // map to DAP array.
+        // Two cases to check for pure HDF5 datasets: 
+        // Case 1: check if the HDF5 dataset is converted from HDF4  following 
+        // HDF4 to HDF5 mapping specification 
+        // http://www.hdfgroup.org/HDF5/doc/ADGuide/H4toH5Mapping.pdf
+        // Case 2: check if the HDF5 dataset is following HDF5 dimension scale specification
+        // http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf
+        // The third case is to check if we have HDF-EOS5 grid data
+        
         H5GridFlag_t check_grid = maptogrid(dt_inst.dset, dt_inst.ndims);
 
+        // Case 1: if the file is converted from HDF4 following the mapping specification
         if (check_grid != NotGrid) {    // !NotGrid means it's a Grid.
             Grid *gr = new HDF5Grid(sname, filename);
             // First fill the array part of the grid.
@@ -1048,6 +1044,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
             dds_table.add_var(gr);
             delete gr; gr = 0;
         }
+
+        // Case 2: if the dataset has dimension scale following HDF5 dimension scale specification
         else if (has_matching_grid_dimscale
                  (dt_inst.dset, dt_inst.ndims, dt_inst.size)) {
 
@@ -1061,6 +1059,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
             dds_table.add_var(gr);
             delete gr; gr = 0;
         }
+        // Check if the file is an HDF-EOS5 Grid.
 #ifdef NASA_EOS_GRID
         // Check if eos class has this dataset as Grid.
         else if (eos.is_valid() && eos.is_grid(varname)) {

@@ -27,10 +27,6 @@
 #define HDF5_DIMENSIONLIST "DIMENSIONLIST"
 /// The name of dimension name list attribute used in HDF5.
 #define HDF5_DIMENSIONNAMELIST "DIMENSION_NAMELIST"
-/// The name of dimension list attribute used in HDF4.
-#define OLD_HDF5_DIMENSIONLIST "DIMSCALE"
-/// The name of dimension name list attribute used in HDF4.
-#define OLD_HDF5_DIMENSIONNAMELIST "HDF4_DIMENSION_LIST"
 /// This enables generation of Grid from HDF5 array with dimension scales.
 /// If this is commented out, no Grid will be generated from HDF5.
 #define DODSGRID
@@ -45,7 +41,6 @@
 /// This also indicates whether the Grid-mappable HDF5 array is in old or new format.
 enum H5GridFlag_t {
     NotGrid,
-    OldH4H5Grid,
     NewH4H5Grid
 };
 
