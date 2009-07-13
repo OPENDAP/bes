@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 20400 2009-02-18 23:59:19Z jimg $
+// $Id: www.js 20720 2009-04-08 21:15:29Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 
@@ -383,7 +383,7 @@ units: meter per second
 long_name: Vector wind eastward component
 missing_value: -32767
 scale_factor: 0.005
-DODS_Name: "UWind"
+DODS_Name: UWind
 b: 128
 i: 32000
 WOA01: "http://localhost/junk"
@@ -429,7 +429,7 @@ units: meter per second
 long_name: Vector wind northward component
 missing_value: -32767
 scale_factor: 0.005
-DODS_Name: "VWind"
+DODS_Name: VWind
 </textarea>
 
 

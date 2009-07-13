@@ -6,49 +6,49 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
 
     <Attribute name="HDF_GLOBAL" type="Container">
         <Attribute name="Title" type="String">
-            <value>&quot;AVHRR Oceans Pathfinder Equal Angle\\000&quot;</value>
+            <value>AVHRR Oceans Pathfinder Equal Angle\\000</value>
         </Attribute>
         <Attribute name="Data Center" type="String">
-            <value>&quot;NASA/PO.DAAC AVHRR Oceans Pathfinder\\000&quot;</value>
+            <value>NASA/PO.DAAC AVHRR Oceans Pathfinder\\000</value>
         </Attribute>
         <Attribute name="Station" type="String">
-            <value>&quot;NOAA/NESDIS\\000&quot;</value>
+            <value>NOAA/NESDIS\\000</value>
         </Attribute>
         <Attribute name="Mission" type="String">
-            <value>&quot;AVHRR Oceans Pathfinder\\000&quot;</value>
+            <value>AVHRR Oceans Pathfinder\\000</value>
         </Attribute>
         <Attribute name="Mission Characteristics" type="String">
-            <value>&quot;NOAA/NASA AVHRR Oceans Pathfinder\\000&quot;</value>
+            <value>NOAA/NASA AVHRR Oceans Pathfinder\\000</value>
         </Attribute>
         <Attribute name="Sensor" type="String">
-            <value>&quot;NOAA polar orbiter data\\000&quot;</value>
+            <value>NOAA polar orbiter data\\000</value>
         </Attribute>
         <Attribute name="Sensor Characteristics" type="String">
-            <value>&quot;National Oceanic and Atmospheric Administration Polar Orbiter\\000&quot;</value>
+            <value>National Oceanic and Atmospheric Administration Polar Orbiter\\000</value>
         </Attribute>
         <Attribute name="Product name" type="String">
-            <value>&quot;Equal Angle Map HDF\\000&quot;</value>
+            <value>Equal Angle Map HDF\\000</value>
         </Attribute>
         <Attribute name="Quality type" type="String">
-            <value>&quot;Best SST\\000&quot;</value>
+            <value>Best SST\\000</value>
         </Attribute>
         <Attribute name="Binning period" type="String">
-            <value>&quot;DAILY\\000&quot;</value>
+            <value>DAILY\\000</value>
         </Attribute>
         <Attribute name="Pass" type="String">
-            <value>&quot;Ascending\\000&quot;</value>
+            <value>Ascending\\000</value>
         </Attribute>
         <Attribute name="Processing control" type="String">
-            <value>&quot;Algorithm: V4.0 pathfinder flagtree 26aug96\\000&quot;</value>
+            <value>Algorithm: V4.0 pathfinder flagtree 26aug96\\000</value>
         </Attribute>
         <Attribute name="Data start time" type="String">
-            <value>&quot;4/14/1990 00:00:00\\000&quot;</value>
+            <value>4/14/1990 00:00:00\\000</value>
         </Attribute>
         <Attribute name="Data end time" type="String">
-            <value>&quot;4/14/1990 23:59:59\\000&quot;</value>
+            <value>4/14/1990 23:59:59\\000</value>
         </Attribute>
         <Attribute name="Data processing time" type="String">
-            <value>&quot;Thu Jun 26 18:02:09 1997&quot;</value>
+            <value>Thu Jun 26 18:02:09 1997</value>
         </Attribute>
         <Attribute name="Start year" type="Int16">
             <value>1990</value>
@@ -75,10 +75,10 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>4096</value>
         </Attribute>
         <Attribute name="Map projection" type="String">
-            <value>&quot;Equirectangular projection\\000&quot;</value>
+            <value>Equirectangular projection\\000</value>
         </Attribute>
         <Attribute name="Parameter name" type="String">
-            <value>&quot;Sea Surface Temperature\\000&quot;</value>
+            <value>Sea Surface Temperature\\000</value>
         </Attribute>
         <Attribute name="Orbit" type="Float32">
             <value>8007</value>
@@ -120,19 +120,19 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>-3</value>
         </Attribute>
         <Attribute name="Unit" type="String">
-            <value>&quot;Degree in Celsius\\000&quot;</value>
+            <value>Degree in Celsius\\000</value>
         </Attribute>
         <Attribute name="Equation" type="String">
-            <value>&quot;SST (Celsius) = DN * .15 - 3.0\\000&quot;</value>
+            <value>SST (Celsius) = DN * .15 - 3.0\\000</value>
         </Attribute>
         <Attribute name="dim_0" type="Container">
             <Attribute name="name" type="String">
-                <value>&quot;Longitude&quot;</value>
+                <value>Longitude</value>
             </Attribute>
         </Attribute>
         <Attribute name="dim_1" type="Container">
             <Attribute name="name" type="String">
-                <value>&quot;Latitude&quot;</value>
+                <value>Latitude</value>
             </Attribute>
         </Attribute>
         <Int32/>

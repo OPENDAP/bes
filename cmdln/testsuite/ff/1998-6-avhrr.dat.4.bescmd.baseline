@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 20400 2009-02-18 23:59:19Z jimg $
+// $Id: www.js 20720 2009-04-08 21:15:29Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 

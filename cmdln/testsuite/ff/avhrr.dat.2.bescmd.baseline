@@ -11,35 +11,35 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Attribute>
     <Attribute name="DODS_Global" type="Container">
         <Attribute name="DODS_FileType" type="String">
-            <value>&quot;FileServer&quot;</value>
+            <value>FileServer</value>
         </Attribute>
         <Attribute name="DODS_Interfaces" type="String">
-            <value>&quot;date&quot;</value>
-            <value>&quot;time&quot;</value>
-            <value>&quot;date_time&quot;</value>
+            <value>date</value>
+            <value>time</value>
+            <value>date_time</value>
         </Attribute>
         <Attribute name="DODS_Title" type="String">
-            <value>&quot;Univ. R.I. 5.5KM AVHRR Browse Archive&quot;</value>
+            <value>Univ. R.I. 5.5KM AVHRR Browse Archive</value>
         </Attribute>
         <Attribute name="DODS_LatRange" type="String">
-            <value>&quot;60.5750&quot;</value>
-            <value>&quot;9.4250&quot;</value>
+            <value>60.5750</value>
+            <value>9.4250</value>
         </Attribute>
         <Attribute name="DODS_LonRange" type="String">
-            <value>&quot;-96.2220&quot;</value>
-            <value>&quot;-33.7780&quot;</value>
+            <value>-96.2220</value>
+            <value>-33.7780</value>
         </Attribute>
         <Attribute name="Sel_Vars" type="String">
-            <value>&quot;Sea_Temp&quot;</value>
+            <value>Sea_Temp</value>
         </Attribute>
         <Attribute name="Dod_Vars" type="String">
-            <value>&quot;dsp_band_1&quot;</value>
+            <value>dsp_band_1</value>
         </Attribute>
         <Attribute name="DODS_StartDate" type="String">
-            <value>&quot;1979/4/11&quot;</value>
+            <value>1979/4/11</value>
         </Attribute>
         <Attribute name="DODS_EndDate" type="String">
-            <value>&quot;2002/12/31&quot;</value>
+            <value>2002/12/31</value>
         </Attribute>
     </Attribute>
     <Attribute name="DODS_Date" type="Container">

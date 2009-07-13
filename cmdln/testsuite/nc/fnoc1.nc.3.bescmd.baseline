@@ -24,7 +24,7 @@
 long_name: Vector wind eastward component<br>
 missing_value: -32767<br>
 scale_factor: 0.005<br>
-DODS_Name: "UWind"<br>
+DODS_Name: UWind<br>
 b: 128<br>
 i: 32000<br>
 WOA01: "http://localhost/junk"<br>
@@ -34,7 +34,7 @@ WOA01: "http://localhost/junk"<br>
 long_name: Vector wind northward component<br>
 missing_value: -32767<br>
 scale_factor: 0.005<br>
-DODS_Name: "VWind"<br>
+DODS_Name: VWind<br>
 </td>
 </tr><tr><td align=right valign=top><b>lat</b>:</td>
 <td align=left valign=top>Array of 32 bit Reals [lat = 0..16]<br>units: degree North<br>

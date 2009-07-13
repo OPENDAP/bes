@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 
-// $Id: www.js 20400 2009-02-18 23:59:19Z jimg $
+// $Id: www.js 20720 2009-04-08 21:15:29Z jimg $
 
 var reflection_cgi = "http://unidata.ucar.edu/cgi-bin/dods/posturl.pl";
 
@@ -339,15 +339,15 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/avhrr.dat");
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
 FF_GLOBAL.Server: DODS FreeFrom based on FFND release 4.2.3
-DODS_Global.DODS_FileType: "FileServer"
-DODS_Global.DODS_Interfaces: "date", "time", "date_time"
-DODS_Global.DODS_Title: "Univ. R.I. 5.5KM AVHRR Browse Archive"
-DODS_Global.DODS_LatRange: "60.5750", "9.4250"
-DODS_Global.DODS_LonRange: "-96.2220", "-33.7780"
-DODS_Global.Sel_Vars: "Sea_Temp"
-DODS_Global.Dod_Vars: "dsp_band_1"
-DODS_Global.DODS_StartDate: "1979/4/11"
-DODS_Global.DODS_EndDate: "2002/12/31"
+DODS_Global.DODS_FileType: FileServer
+DODS_Global.DODS_Interfaces: date, time, date_time
+DODS_Global.DODS_Title: Univ. R.I. 5.5KM AVHRR Browse Archive
+DODS_Global.DODS_LatRange: 60.5750, 9.4250
+DODS_Global.DODS_LonRange: -96.2220, -33.7780
+DODS_Global.Sel_Vars: Sea_Temp
+DODS_Global.Dod_Vars: dsp_band_1
+DODS_Global.DODS_StartDate: 1979/4/11
+DODS_Global.DODS_EndDate: 2002/12/31
 DODS_Date.year_variable: URI_Avhrr.year
 DODS_Date.month_variable: URI_Avhrr.month
 DODS_Date.day_variable: URI_Avhrr.day

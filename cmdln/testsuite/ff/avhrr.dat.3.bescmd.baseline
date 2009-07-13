@@ -8,31 +8,31 @@
 <td align=left>DODS FreeFrom based on FFND release 4.2.3<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_FileType</b>:</td>
-<td align=left>"FileServer"<br></td></tr>
+<td align=left>FileServer<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_Interfaces</b>:</td>
-<td align=left>"date", "time", "date_time"<br></td></tr>
+<td align=left>date, time, date_time<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_Title</b>:</td>
-<td align=left>"Univ. R.I. 5.5KM AVHRR Browse Archive"<br></td></tr>
+<td align=left>Univ. R.I. 5.5KM AVHRR Browse Archive<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_LatRange</b>:</td>
-<td align=left>"60.5750", "9.4250"<br></td></tr>
+<td align=left>60.5750, 9.4250<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_LonRange</b>:</td>
-<td align=left>"-96.2220", "-33.7780"<br></td></tr>
+<td align=left>-96.2220, -33.7780<br></td></tr>
 
 <tr><td align=right valign=top><b>Sel_Vars</b>:</td>
-<td align=left>"Sea_Temp"<br></td></tr>
+<td align=left>Sea_Temp<br></td></tr>
 
 <tr><td align=right valign=top><b>Dod_Vars</b>:</td>
-<td align=left>"dsp_band_1"<br></td></tr>
+<td align=left>dsp_band_1<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_StartDate</b>:</td>
-<td align=left>"1979/4/11"<br></td></tr>
+<td align=left>1979/4/11<br></td></tr>
 
 <tr><td align=right valign=top><b>DODS_EndDate</b>:</td>
-<td align=left>"2002/12/31"<br></td></tr>
+<td align=left>2002/12/31<br></td></tr>
 
 <tr><td align=right valign=top><b>year_variable</b>:</td>
 <td align=left>URI_Avhrr.year<br></td></tr>
