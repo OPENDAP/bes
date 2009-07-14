@@ -16,6 +16,10 @@ using namespace std;
 
 struct  yy_buffer_state;
 
+// Functions to parse structMetadata file.
+// The parser can identify whether the HDF-EOS2 file has Grids or Swaths.
+// It can also check for a valid projection which can determine whether
+// DAP Grids or Arrays should be used.
 int hdfeos2lex();
 int hdfeos2parse(void *arg);
 yy_buffer_state *hdfeos2_scan_string(const char *str);
@@ -106,120 +110,281 @@ void HDFEOS::add_dimension_map(string dimension_name, int dimension)
     }
 }
 
+const char *HDFEOS::get_CF_name(char *eos_name)
+{
+    string str(eos_name);
 
-
-
+    eos_to_cf_map["XDim"] = "lon";
+    eos_to_cf_map["YDim"] = "lat";
+    eos_to_cf_map["nCandidate"] = "lev";
+    eos_to_cf_map["MissingValue"] = "missing_value";
+    eos_to_cf_map["Units"] = "units";
+    eos_to_cf_map["Offset"] = "add_offset";
+    eos_to_cf_map["ScaleFactor"] = "scale_factor";
+    eos_to_cf_map["ValidRange"] = "valid_range";
 
 #ifdef USE_HDFEOS2_LIB
-bool HDFEOS::set_dimension_array_hdfeos2()
-{
-    int j = 0;
-    int size = dimensions.size();
-    DBG(cerr << "Dimensions size is " << size << endl);
-    // TODO: add_dimension_map() assumed that a dimension name is unique in
-    // one EOS2 file; so, the first grid is chosen to get longitude and
-    // latitude.
-    const vector<HDFEOS2::GridDataset *> &grids = eos2->getGrids();
-    if (grids.empty())
-        return false;
-    const HDFEOS2::GridDataset *firstgrid = grids[0];
-    dods_float32 *convbuf = NULL;
-    
-    dimension_data = new dods_float32*[size];
-    // for safe delete operation
-    for (j = 0; j < (int) dimensions.size(); j++)
-        dimension_data[j] = 0;
-
-    try {
-        // CAUTION: When the projection is orthogonal like the Geographic
-        // projection,convbuf can be correctly stored; otherwise,
-        // one-dimensional convbuf cannot hold enough data.
-        // Also, all dimensions other than XDim or YDim will not have
-        // valid convbuf.
-        const float64 *lons = firstgrid->getCalculated().getLongitude();
-        const float64 *lats = firstgrid->getCalculated().getLatitude();
-
-    
-        _is_ydimmajor = firstgrid->getCalculated().isYDimMajor();
-        _is_orthogonal = firstgrid->getCalculated().isOrthogonal();
-        for (j = 0; j < (int) dimensions.size(); j++) {
-            string dim_name = dimensions.at(j);
-            int dim_size = dimension_map[dim_name];
-            DBG(cerr << "Dim_name=" << dim_name << " Dim_size=" << dim_size
-                << endl);
-            if (_is_orthogonal) {
-                if (dim_name == "XDim") {
-                    convbuf = new dods_float32[dim_size];
-                    for (int k = 0; k < dim_size; ++k) {
-                        if (_is_ydimmajor)
-                            convbuf[k] = static_cast<dods_float32>
-                                (lons[k]);
-                        else{
-                            convbuf[k] = static_cast<dods_float32>
-                                (lons[k * ydimsize]);
-                        }
-                    }
-                    dimension_data[j] = convbuf;
-                } // XDim
-                else if (dim_name == "YDim") {
-                    convbuf = new dods_float32[dim_size];
-                    for (int k = 0; k < dim_size; ++k) {
-                        if (ydimsize)
-                            convbuf[k] = static_cast<dods_float32>
-                                (lats[k * xdimsize]);
-                        else
-                            convbuf[k] = static_cast<dods_float32>
-                                (lats[k]);
-                    }
-                    dimension_data[j] = convbuf;
-                } // YDim
-                else{		
-                    convbuf = new dods_float32[dim_size];
-                    for (int k = 0; k < dim_size; ++k) {
-                        convbuf[k] = k;	// dummy data
-                    }
-                    dimension_data[j] = convbuf;
-                }
-            } // Orthogonal
-            else{
-                DBG(cerr << "Not orthogonal" << endl);
-                // This works for sinusoidal case only.
-                if (dim_name == "XDim") {	
-                    convbuf = new dods_float32[xdimsize * ydimsize];
-                    for (int k = 0; k < xdimsize * ydimsize; ++k) {
-                        convbuf[k] = static_cast<dods_float32>(lons[k]);
-                         DBG(cerr << convbuf[k] << " ");	    
-                    }
-                    cerr << endl;
-                    dimension_data[j] = convbuf;	  
-                }
-                else if (dim_name == "YDim"){
-                    convbuf = new dods_float32[xdimsize * ydimsize];
-                    for (int k = 0; k < xdimsize * ydimsize; ++k) {
-                        convbuf[k] = static_cast<dods_float32>(lats[k]);
-                        DBG(cerr << convbuf[k] << " ");
-                    }
-                    cerr << endl;
-                    dimension_data[j] = convbuf;
-                }
-                else{
-                    convbuf = new dods_float32[dim_size];
-                    for (int k = 0; k < dim_size; ++k) {
-                        convbuf[k] = k;	// dummy data
-                    }
-                    dimension_data[j] = convbuf;	  
-                }
-            }
-        }                           // for
-        firstgrid->getCalculated().dropLongitudeLatitude();
-        return true;
+    if(is_grid()){
+        eos_to_cf_map["XDim"] = "lon";
+        eos_to_cf_map["YDim"] = "lat";
+        eos_to_cf_map["nCandidate"] = "lev";
     }
-    catch (const HDFEOS2::Exception &e) {
-        cerr << e.what() << endl;
+    if(is_swath()){
+        eos_to_cf_map["Longitude"] = "lon";
+        eos_to_cf_map["Latitude"] = "lat";
+        eos_to_cf_map["GeoTrack"] = "lat"; //  AIRS
+        eos_to_cf_map["GeoXTrack"] = "lon";
+        eos_to_cf_map["Cell_Along_Swath_5km"] = "lat"; // MODIS
+        eos_to_cf_map["Cell_Across_Swath_5km"] = "lon";
+        eos_to_cf_map["StdPressureLev"] = "pressStd";
+    
+    }
+#endif // #ifdef USE_HDFEOS2_LIB
+    
+    
+    DBG(cerr << eos_to_cf_map[str] << endl);
+    if (eos_to_cf_map[str].size() > 0) {
+        return eos_to_cf_map[str].c_str();
+    } else {
+        return str.c_str();
+    }
+}
+
+string HDFEOS::get_EOS_name(string str)
+{
+    cf_to_eos_map["lon"] = "XDim";
+    cf_to_eos_map["lat"] = "YDim";
+    cf_to_eos_map["lev"] = "nCandidate";
+  
+#ifdef USE_HDFEOS2_LIB  
+    if(is_swath()){
+        cf_to_eos_map["lon"] = "Longitude";
+        cf_to_eos_map["lat"] = "Latitude";
+    }
+#endif
+
+    if (cf_to_eos_map[str].size() > 0) {
+        return cf_to_eos_map[str];
+    } else {
+        return str;
+    }
+}
+
+void HDFEOS::get_all_dimensions(vector < string > &tokens)
+{
+    int j;
+    for (j = 0; j < (int) dimensions.size(); j++) {
+        string dim_name = dimensions.at(j);
+        tokens.push_back(dim_name);
+        DBG(cerr << "=get_all_dimensions():Dim name = " << dim_name <<
+            std::endl);
+    }
+}
+
+
+int HDFEOS::get_dimension_data_location(string dimension_name)
+{
+    int j;
+    for (j = 0; j < (int) dimensions.size(); j++) {
+        string dim_name = dimensions.at(j);
+        if (dim_name == dimension_name)
+            return j;
+    }
+    return -1;
+}
+
+int HDFEOS::get_dimension_size(string name)
+{
+    return dimension_map[name];
+}
+
+void HDFEOS::get_dimensions(string name, vector < string > &tokens)
+{
+    string str = full_data_path_to_dimension_list_map[name];
+    // Skip delimiters at the beginning.
+    string::size_type lastPos = str.find_first_not_of(',', 0);
+    // Find the first "non-delimiter".
+    string::size_type pos = str.find_first_of(',', lastPos);
+
+    while (string::npos != pos || string::npos != lastPos) {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip the delimiters. Note the "not_of"
+        lastPos = str.find_first_not_of(',', pos);
+        // Find the next "non-delimiter".
+        pos = str.find_first_of(',', lastPos);
+    }
+}
+
+string HDFEOS::get_grid_name(string full_path)
+{
+    int end = full_path.find("/", 14);
+    return full_path.substr(0, end + 1);        // Include the last "/".
+}
+
+#ifdef SHORT_PATH
+// This is a private member function.
+string HDFEOS::get_short_name(string varname)
+{
+    int pos = varname.find_last_of('/', varname.length() - 1);
+    return varname.substr(pos + 1);
+}
+#endif
+
+bool HDFEOS::is_grid()
+{
+    return _is_grid;
+}
+
+bool HDFEOS::is_grid(string name)
+{
+    int i;
+    DBG(cerr << ">HDFEOS::is_grid() Name:" << name << endl);
+    for (i = 0; i < (int) full_data_paths.size(); i++) {
+        std::string str = full_data_paths.at(i);
+        DBG(cerr
+            << "=HDFEOS::is_grid() Name:" << name
+            << " Datapath: " << str
+            << endl); 
+        if (str == name) {
+            return true;
+        }
     }
     return false;
 }
+
+
+bool HDFEOS::is_shared_dimension_set()
+{
+    return _shared_dimension;
+}
+
+bool HDFEOS::is_valid()
+{
+    return _valid;
+}
+
+bool HDFEOS::parse_struct_metadata(const char* str_metadata)
+{
+    if(!_parsed){
+        hdfeos2_scan_string(str_metadata);
+        hdfeos2parse(this);
+        _parsed = true;
+        _valid = _parsed; 
+    }
+    //#ifdef USE_HDFEOS2_LIB  
+    return _valid;
+    // #endif
+    // return _parsed;
+}
+
+void HDFEOS::print()
+{
+#ifdef USE_HDFEOS2_LIB
+    DBG(
+        cerr
+        << ">HDFEOS::print() "
+        << "Total number of variables=" << full_data_paths.size()
+        << endl
+        );
+
+    for (int i = 0; i < (int) full_data_paths.size(); i++) {
+        DBG(cerr <<  "Variable " << full_data_paths.at(i) << endl);
+    }
+  
+    if(is_grid()){
+        if (!set_dimension_array()) {
+            cerr << "set_dimension_array fail" << endl;
+        }
+    }
+  
+    if (dimension_data) {
+        for (unsigned int i = 0; i < dimensions.size(); ++i) {
+            dods_float32 *convbuf = dimension_data[i];
+            if (!convbuf) continue;
+            const string &name = dimensions.at(i);
+            int dimsize = dimension_map[name];
+#ifdef DODS_DEBUG      
+            cout << "dimension_data[" << name << "] size " << dimsize << endl;
+            for (int j = 0; j < dimsize; ++j)
+                cout << convbuf[j] << ", ";
+            cout << endl;
+#endif // #ifdef DODS_DEBUG      
+        }
+    }
+#endif // #ifdef USE_HDFEOS2_LIB
+    DBG(cerr
+        << "Left = " << point_left << endl
+        << "Right = " << point_right << endl
+        << "Lower = " << point_lower << endl
+        << "Upper = " << point_upper << endl
+        << "Total number of paths = " << full_data_paths.size() << endl);
+
+#ifdef DODS_DEBUG
+      for (int i = 0; i < (int) full_data_paths.size(); i++) {
+          cout << "Element " << full_data_paths.at(i) << endl;
+      }
 #endif
+      
+}
+
+void HDFEOS::reset()
+{
+    int j;
+    _parsed = false;
+    _valid = false;
+    _shared_dimension = false;
+    _is_swath = false;
+    _is_grid = false;
+#ifdef USE_HDFEOS2_LIB
+    _is_orthogonal = false;
+    _is_ydimmajor = false;
+    path_name = "";
+#endif
+    xdimsize = 0;
+    ydimsize = 0;
+    point_lower = 0.0;
+    point_upper = 0.0;
+    point_left = 0.0;
+    point_right = 0.0;
+    gradient_x = 0.0;
+    gradient_y = 0.0;
+    bmetadata_Struct = false;
+    
+    if(dimension_data != NULL){
+        for (j = 0; j < (int) dimensions.size(); j++) {
+            if(dimension_data[j] != NULL)
+                delete dimension_data[j];
+        }
+        delete dimension_data;
+        dimension_data = NULL;
+    }
+
+    if(!dimension_map.empty()){
+        dimension_map.clear();
+    }
+    if(!full_data_path_to_dimension_list_map.empty()){
+        full_data_path_to_dimension_list_map.clear();
+    }
+    if(!eos_to_cf_map.empty()){
+        eos_to_cf_map.clear();
+    }
+    if(!cf_to_eos_map.empty()){
+        cf_to_eos_map.clear();
+    }
+    if(!dimensions.empty()){
+        dimensions.clear();
+    }
+    if(!full_data_paths.empty()){
+        full_data_paths.clear();
+    }
+    // Clear the contents of the metadata string buffer.
+    strcpy(metadata_Struct, "");
+#ifdef USE_HDFEOS2_LIB
+    eos2.reset();
+#endif
+    
+}
 
 bool HDFEOS::set_dimension_array()
 {
@@ -292,17 +457,10 @@ bool HDFEOS::set_dimension_array()
     return true;
 }
 
-
-
-
-#ifdef SHORT_PATH
-string HDFEOS::get_short_name(string varname)
+void HDFEOS::set_grid(bool flag)
 {
-    int pos = varname.find_last_of('/', varname.length() - 1);
-    return varname.substr(pos + 1);
+    _is_grid = flag;
 }
-#endif
-
 
 
 void HDFEOS::set_shared_dimension()
@@ -310,278 +468,9 @@ void HDFEOS::set_shared_dimension()
     _shared_dimension = true;
 }
 
-const char *HDFEOS::get_CF_name(char *eos_name)
-{
-    string str(eos_name);
-
-    eos_to_cf_map["XDim"] = "lon";
-    eos_to_cf_map["YDim"] = "lat";
-    eos_to_cf_map["nCandidate"] = "lev";
-    eos_to_cf_map["MissingValue"] = "missing_value";
-    eos_to_cf_map["Units"] = "units";
-    eos_to_cf_map["Offset"] = "add_offset";
-    eos_to_cf_map["ScaleFactor"] = "scale_factor";
-    eos_to_cf_map["ValidRange"] = "valid_range";
-
-#ifdef USE_HDFEOS2_LIB
-    if(is_grid()){
-        eos_to_cf_map["XDim"] = "lon";
-        eos_to_cf_map["YDim"] = "lat";
-        eos_to_cf_map["nCandidate"] = "lev";
-    }
-    if(is_swath()){
-        eos_to_cf_map["Longitude"] = "lon";
-        eos_to_cf_map["Latitude"] = "lat";
-        eos_to_cf_map["GeoTrack"] = "lat"; //  AIRS
-        eos_to_cf_map["GeoXTrack"] = "lon";
-        eos_to_cf_map["Cell_Along_Swath_5km"] = "lat"; // MODIS
-        eos_to_cf_map["Cell_Across_Swath_5km"] = "lon";
-        eos_to_cf_map["StdPressureLev"] = "pressStd";
-    
-    }
-#endif // #ifdef USE_HDFEOS2_LIB
-    
-    
-    DBG(cerr << eos_to_cf_map[str] << endl);
-    if (eos_to_cf_map[str].size() > 0) {
-        return eos_to_cf_map[str].c_str();
-    } else {
-        return str.c_str();
-    }
-}
-
-string HDFEOS::get_EOS_name(string str)
-{
-    cf_to_eos_map["lon"] = "XDim";
-    cf_to_eos_map["lat"] = "YDim";
-    cf_to_eos_map["lev"] = "nCandidate";
-  
-#ifdef USE_HDFEOS2_LIB  
-    if(is_swath()){
-        cf_to_eos_map["lon"] = "Longitude";
-        cf_to_eos_map["lat"] = "Latitude";
-    }
-#endif
-
-    if (cf_to_eos_map[str].size() > 0) {
-        return cf_to_eos_map[str];
-    } else {
-        return str;
-    }
-}
-
-
-
-
-void HDFEOS::get_all_dimensions(vector < string > &tokens)
-{
-    int j;
-    for (j = 0; j < (int) dimensions.size(); j++) {
-        string dim_name = dimensions.at(j);
-        tokens.push_back(dim_name);
-        DBG(cerr << "=get_all_dimensions():Dim name = " << dim_name <<
-            std::endl);
-    }
-}
-
-
-int HDFEOS::get_dimension_data_location(string dimension_name)
-{
-    int j;
-    for (j = 0; j < (int) dimensions.size(); j++) {
-        string dim_name = dimensions.at(j);
-        if (dim_name == dimension_name)
-            return j;
-    }
-    return -1;
-}
-
-int HDFEOS::get_dimension_size(string name)
-{
-    return dimension_map[name];
-}
-
-void HDFEOS::get_dimensions(string name, vector < string > &tokens)
-{
-    string str = full_data_path_to_dimension_list_map[name];
-    // Skip delimiters at the beginning.
-    string::size_type lastPos = str.find_first_not_of(',', 0);
-    // Find the first "non-delimiter".
-    string::size_type pos = str.find_first_of(',', lastPos);
-
-    while (string::npos != pos || string::npos != lastPos) {
-        // Found a token, add it to the vector.
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
-        // Skip the delimiters. Note the "not_of"
-        lastPos = str.find_first_not_of(',', pos);
-        // Find the next "non-delimiter".
-        pos = str.find_first_of(',', lastPos);
-    }
-}
-
-string HDFEOS::get_grid_name(string full_path)
-{
-    int end = full_path.find("/", 14);
-    return full_path.substr(0, end + 1);        // Include the last "/".
-}
-
-bool HDFEOS::is_grid(string name)
-{
-    int i;
-    DBG(cerr << ">HDFEOS::is_grid() Name:" << name << endl);
-    for (i = 0; i < (int) full_data_paths.size(); i++) {
-        std::string str = full_data_paths.at(i);
-        DBG(cerr
-            << "=HDFEOS::is_grid() Name:" << name
-            << " Datapath: " << str
-            << endl); 
-        if (str == name) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-bool HDFEOS::is_shared_dimension_set()
-{
-    return _shared_dimension;
-}
-
-bool HDFEOS::is_valid()
-{
-    return _valid;
-}
-
-bool HDFEOS::parse_struct_metadata(const char* str_metadata)
-{
-    if(!_parsed){
-        hdfeos2_scan_string(str_metadata);
-        hdfeos2parse(this);
-        _parsed = true;
-        _valid = _parsed; // <hyokyung 2009.07. 7. 11:34:32>
-    }
-    //#ifdef USE_HDFEOS2_LIB  
-    return _valid;
-    // #endif
-    // return _parsed;
-}
-
-void HDFEOS::print()
-{
-#ifdef USE_HDFEOS2_LIB
-    DBG(
-        cerr
-        << ">HDFEOS::print() "
-        << "Total number of variables=" << full_data_paths.size()
-        << endl
-        );
-
-    for (int i = 0; i < (int) full_data_paths.size(); i++) {
-        DBG(cerr <<  "Variable " << full_data_paths.at(i) << endl);
-    }
-  
-    if(is_grid()){
-        if (!set_dimension_array()) {
-            cerr << "set_dimension_array fail" << endl;
-        }
-    }
-  
-    if (dimension_data) {
-        for (unsigned int i = 0; i < dimensions.size(); ++i) {
-            dods_float32 *convbuf = dimension_data[i];
-            if (!convbuf) continue;
-            const string &name = dimensions.at(i);
-            int dimsize = dimension_map[name];
-#ifdef DODS_DEBUG      
-            cout << "dimension_data[" << name << "] size " << dimsize << endl;
-            for (int j = 0; j < dimsize; ++j)
-                cout << convbuf[j] << ", ";
-            cout << endl;
-#endif // #ifdef DODS_DEBUG      
-        }
-    }
-#endif // #ifdef USE_HDFEOS2_LIB
-    DBG(cerr
-        << "Left = " << point_left << endl
-        << "Right = " << point_right << endl
-        << "Lower = " << point_lower << endl
-        << "Upper = " << point_upper << endl
-        << "Total number of paths = " << full_data_paths.size() << endl);
-
-#ifdef DODS_DEBUG
-      for (int i = 0; i < (int) full_data_paths.size(); i++) {
-          cout << "Element " << full_data_paths.at(i) << endl;
-      }
-#endif
-      
-}
-
-void HDFEOS::reset()
-{
-    int j;
-    _parsed = false;
-    _valid = false;
-    _shared_dimension = false;
-#ifdef USE_HDFEOS2_LIB
-    _is_swath = false;
-    _is_grid = false;
-    _is_orthogonal = false;
-    _is_ydimmajor = false;
-    path_name = "";
-#endif
-    xdimsize = 0;
-    ydimsize = 0;
-    point_lower = 0.0;
-    point_upper = 0.0;
-    point_left = 0.0;
-    point_right = 0.0;
-    gradient_x = 0.0;
-    gradient_y = 0.0;
-    bmetadata_Struct = false;
-    
-    if(dimension_data != NULL){
-        for (j = 0; j < (int) dimensions.size(); j++) {
-            if(dimension_data[j] != NULL)
-                delete dimension_data[j];
-        }
-        delete dimension_data;
-        dimension_data = NULL;
-    }
-
-    if(!dimension_map.empty()){
-        dimension_map.clear();
-    }
-    if(!full_data_path_to_dimension_list_map.empty()){
-        full_data_path_to_dimension_list_map.clear();
-    }
-    if(!eos_to_cf_map.empty()){
-        eos_to_cf_map.clear();
-    }
-    if(!cf_to_eos_map.empty()){
-        cf_to_eos_map.clear();
-    }
-    if(!dimensions.empty()){
-        dimensions.clear();
-    }
-    if(!full_data_paths.empty()){
-        full_data_paths.clear();
-    }
-    // Clear the contents of the metadata string buffer.
-    strcpy(metadata_Struct, "");
-#ifdef USE_HDFEOS2_LIB
-    eos2.reset();
-#endif
-    
-}
 
 
 #ifdef USE_HDFEOS2_LIB
-void HDFEOS::add_variable(string var_name)
-{
-    full_data_paths.push_back(var_name);
-}
-
 void HDFEOS::add_type(int type)
 {
     switch(type){
@@ -625,15 +514,17 @@ void HDFEOS::add_type(int type)
     }
 }
 
-bool HDFEOS::is_grid()
+void HDFEOS::add_variable(string var_name)
 {
-    return _is_grid;
+    full_data_paths.push_back(var_name);
 }
 
+// Override the CF version of is_swath() function.
 bool HDFEOS::is_swath()
 {
     return _is_swath;
 }
+
 
 bool HDFEOS::is_orthogonal()
 {
@@ -915,6 +806,114 @@ int HDFEOS::open(char* filename)
     return -1;
 }
 
+bool HDFEOS::set_dimension_array_hdfeos2()
+{
+    int j = 0;
+    int size = dimensions.size();
+    DBG(cerr << "Dimensions size is " << size << endl);
+    // TODO: add_dimension_map() assumed that a dimension name is unique in
+    // one EOS2 file; so, the first grid is chosen to get longitude and
+    // latitude.
+    const vector<HDFEOS2::GridDataset *> &grids = eos2->getGrids();
+    if (grids.empty())
+        return false;
+    const HDFEOS2::GridDataset *firstgrid = grids[0];
+    dods_float32 *convbuf = NULL;
+    
+    dimension_data = new dods_float32*[size];
+    // for safe delete operation
+    for (j = 0; j < (int) dimensions.size(); j++)
+        dimension_data[j] = 0;
+
+    try {
+        // CAUTION: When the projection is orthogonal like the Geographic
+        // projection,convbuf can be correctly stored; otherwise,
+        // one-dimensional convbuf cannot hold enough data.
+        // Also, all dimensions other than XDim or YDim will not have
+        // valid convbuf.
+        const float64 *lons = firstgrid->getCalculated().getLongitude();
+        const float64 *lats = firstgrid->getCalculated().getLatitude();
+
+    
+        _is_ydimmajor = firstgrid->getCalculated().isYDimMajor();
+        _is_orthogonal = firstgrid->getCalculated().isOrthogonal();
+        for (j = 0; j < (int) dimensions.size(); j++) {
+            string dim_name = dimensions.at(j);
+            int dim_size = dimension_map[dim_name];
+            DBG(cerr << "Dim_name=" << dim_name << " Dim_size=" << dim_size
+                << endl);
+            if (_is_orthogonal) {
+                if (dim_name == "XDim") {
+                    convbuf = new dods_float32[dim_size];
+                    for (int k = 0; k < dim_size; ++k) {
+                        if (_is_ydimmajor)
+                            convbuf[k] = static_cast<dods_float32>
+                                (lons[k]);
+                        else{
+                            convbuf[k] = static_cast<dods_float32>
+                                (lons[k * ydimsize]);
+                        }
+                    }
+                    dimension_data[j] = convbuf;
+                } // XDim
+                else if (dim_name == "YDim") {
+                    convbuf = new dods_float32[dim_size];
+                    for (int k = 0; k < dim_size; ++k) {
+                        if (ydimsize)
+                            convbuf[k] = static_cast<dods_float32>
+                                (lats[k * xdimsize]);
+                        else
+                            convbuf[k] = static_cast<dods_float32>
+                                (lats[k]);
+                    }
+                    dimension_data[j] = convbuf;
+                } // YDim
+                else{		
+                    convbuf = new dods_float32[dim_size];
+                    for (int k = 0; k < dim_size; ++k) {
+                        convbuf[k] = k;	// dummy data
+                    }
+                    dimension_data[j] = convbuf;
+                }
+            } // Orthogonal
+            else{
+                DBG(cerr << "Not orthogonal" << endl);
+                // This works for sinusoidal case only.
+                if (dim_name == "XDim") {	
+                    convbuf = new dods_float32[xdimsize * ydimsize];
+                    for (int k = 0; k < xdimsize * ydimsize; ++k) {
+                        convbuf[k] = static_cast<dods_float32>(lons[k]);
+                         DBG(cerr << convbuf[k] << " ");	    
+                    }
+                    cerr << endl;
+                    dimension_data[j] = convbuf;	  
+                }
+                else if (dim_name == "YDim"){
+                    convbuf = new dods_float32[xdimsize * ydimsize];
+                    for (int k = 0; k < xdimsize * ydimsize; ++k) {
+                        convbuf[k] = static_cast<dods_float32>(lats[k]);
+                        DBG(cerr << convbuf[k] << " ");
+                    }
+                    cerr << endl;
+                    dimension_data[j] = convbuf;
+                }
+                else{
+                    convbuf = new dods_float32[dim_size];
+                    for (int k = 0; k < dim_size; ++k) {
+                        convbuf[k] = k;	// dummy data
+                    }
+                    dimension_data[j] = convbuf;	  
+                }
+            }
+        }                           // for
+        firstgrid->getCalculated().dropLongitudeLatitude();
+        return true;
+    }
+    catch (const HDFEOS2::Exception &e) {
+        cerr << e.what() << endl;
+    }
+    return false;
+}
 
 #endif // #ifdef USE_HDFEOS2_LIB
 

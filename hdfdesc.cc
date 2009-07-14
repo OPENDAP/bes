@@ -85,6 +85,7 @@ using namespace std;
 #include "hdf-dods.h"
 #include "hdf-maps.h"
 #include "parser.h"
+#include "InternalErr.h"
 
 // Macro for generating CF compilant output from HDF-EOS2 files.
 #ifdef CF
@@ -153,14 +154,15 @@ static vector < hdf_attr > Pals2Attrs(const vector < hdf_palette > palv);
 static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 
 #ifdef CF
-static void add_dimension_attributes(DAS &das);
-static void write_dimension_attributes_swath(DAS &das);
+static void add_dimension_attributes_grid(DAS &das);
+static void add_dimension_attributes_swath(DAS &das);
 #endif
 
 #ifdef USE_HDFEOS2_LIB
-static void write_dimension_attributes_grid(DAS &das);
-static void write_dimension_attributes_grid_non_ortho(DAS &das);
-static void write_hdfeos2_grid(DDS &dds);
+static void write_dimension_attributes_grid_1D_projection(DAS &das);
+static void write_dimension_attributes_grid_2D_projection(DAS &das);
+static void write_dimension_attributes_swath(DAS &das);
+static void write_hdfeos2_grid_1D_projection(DDS &dds);
 static void write_hdfeos2_grid_other_projection(DDS &dds);
 static void write_hdfeos2_swath(DDS &dds);
 #endif
@@ -434,10 +436,10 @@ static void build_descriptions(DDS & dds, DAS & das,
     if(eos.is_valid()){
         if(eos.is_grid()){
             if(eos.is_orthogonal()){
-                write_dimension_attributes_grid(das);
+                write_dimension_attributes_grid_1D_projection(das);
             }
             else{
-                write_dimension_attributes_grid_non_ortho(das);
+                write_dimension_attributes_grid_2D_projection(das);
             } // if orthogonal
         } // if grid
         else if(eos.is_swath()) {
@@ -450,11 +452,16 @@ static void build_descriptions(DDS & dds, DAS & das,
     // Build NC_GLOBAL part using parser.
     if(eos.is_shared_dimension_set()){
         DBG(cerr << "CF generated NC_GLOBAL" << endl);
-        if(!eos.is_swath())
-            add_dimension_attributes(das);
-        else{
-            write_dimension_attributes_swath(das);
+        if(eos.is_grid())
+            add_dimension_attributes_grid(das);
+        else if(eos.is_swath()){
+            add_dimension_attributes_swath(das);
         }
+        else {
+            throw InternalErr(__FILE__, __LINE__,
+                              "Unsupported 1-D or 2-D projections.");
+        }
+        
     }
 #endif
     return;
@@ -559,7 +566,9 @@ static void SDS_descriptions(sds_map & map, DAS & das,
 #ifdef USE_HDFEOS2_LIB         // Open the file with HDF-EOS2 library.
     eos.reset();
     if(eos.open((char*) filename.c_str()) < 0){
-        cerr << "Not a valid EOS " << endl;
+        throw InternalErr(__FILE__, __LINE__,
+                          "The HDF-EOS2 library cannot process this file."
+                          );        
     }
     else{
         eos.print();       // Sets the essential map data information.
@@ -582,10 +591,19 @@ static void SDS_descriptions(sds_map & map, DAS & das,
     for (SDSI s = map.begin(); s != map.end(); ++s) {
         const hdf_sds *sds = &s->second.sds;
         AddHDFAttr(das, sds->name, sds->attrs);
-        for (int k = 0; k < (int) sds->dims.size(); ++k) {
-            dattrs = Dims2Attrs(sds->dims[k]);
-            AddHDFAttr(das, sds->name + "_dim_" + num2string(k), dattrs);
+// Skip <varname>_dim_0 attribute generation when we use HDF-EOS2 library
+// because HDF-EOS2 library will clean dimension names.
+#ifdef USE_HDFEOS2_LIB        
+        if(!eos.is_valid()){
+#endif           
+            for (int k = 0; k < (int) sds->dims.size(); ++k) {
+                dattrs = Dims2Attrs(sds->dims[k]);
+                AddHDFAttr(das, sds->name + "_dim_" + num2string(k), dattrs);
+            }
+#ifdef USE_HDFEOS2_LIB        
         }
+#endif                   
+
     }
     return;
 }
@@ -669,7 +687,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
         // Check if the file is Grid or Swath.
         if(eos.is_grid()){
             if(eos.is_orthogonal())
-                write_hdfeos2_grid(dds);
+                write_hdfeos2_grid_1D_projection(dds);
             else
                 write_hdfeos2_grid_other_projection(dds);
         }
@@ -1035,21 +1053,21 @@ static const char ARRAY[] = "Array";
 static const char URL[] = "Url";
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn add_dimension_attributes(DAS & das)
-/// will put pseudo attributes for CF(a.k.a COARDS) convention compatibility.
+/// \fn add_dimension_attributes_grid(DAS & das)
+/// will put pseudo attributes for CF (a.k.a COARDS) Grid convention.
 ///
 /// This function is provided as an example for NASA HDF-EOS2 data only.
 /// You need to modify this to add custom attributes that match dimension
-/// names to make the output compliant to CF-convention. For details,
+/// names and it will make the output compliant to CF-convention. For details,
 /// please refer to the technical note "Using DAP Clients to Visualize
 /// HDF-EOS5 Grid Data" from [2].
 /// 
 /// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
 /// 
 /// \param das DAS object: reference
-/// \remarks This is necessary for GrADS compatibility only
+/// \remarks This is necessary for GrADS compatibility only.
 ///////////////////////////////////////////////////////////////////////////////
-static void add_dimension_attributes(DAS & das)
+static void add_dimension_attributes_grid(DAS & das)
 {
 
     AttrTable *at;
@@ -1120,45 +1138,125 @@ static void add_dimension_attributes(DAS & das)
 
 
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn add_dimension_attributes_swath(DAS & das)
+/// will put pseudo attributes for CF (a.k.a COARDS) Swath convention.
+///
+/// This function is provided as an example for NASA HDF-EOS2 data only.
+/// You need to modify this function to add custom attributes
+/// that match dimension names and it will make the output compliant to
+/// CF-convention. 
+/// 
+/// \param das DAS object: reference
+/// \remarks These are minimum attributes that make IDV work.
+/// \see add_dimension_attributes_grid()
+///////////////////////////////////////////////////////////////////////////////
+static void add_dimension_attributes_swath(DAS & das)
+{
+
+    AttrTable *at;
+  
+    at = das.add_table("NC_GLOBAL", new AttrTable);
+    at->append_attr("title", STRING, "\"NASA EOS Swath\"");
+    at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+
+    at = das.add_table("lon", new AttrTable);
+    at->append_attr("units", STRING, "\"degrees_east\"");
+    at->append_attr("long_name", STRING, "\"longitude\"");
+
+    at = das.add_table("lat", new AttrTable);
+    at->append_attr("units", STRING, "\"degrees_north\"");
+    at->append_attr("long_name", STRING, "\"latitude\"");
+    at->append_attr("coordinates", STRING, "\"lon lat\"");
+
+}
+
 #endif
 
 #ifdef USE_HDFEOS2_LIB
-#ifndef CF
-/// An abstract respresntation of DAP String type.
-static const char STRING[] = "String";
-/// An abstract respresntation of DAP Byte type.
-static const char BYTE[] = "Byte";
-/// An abstract respresntation of DAP Int32 type.
-static const char INT32[] = "Int32";
-/// An abstract respresntation of DAP Int16 type.
-static const char INT16[] = "Int16";
-/// An abstract respresntation of DAP Float64 type.
-static const char FLOAT64[] = "Float64";
-/// An abstract respresntation of DAP Float32 type.
-static const char FLOAT32[] = "Float32";
-/// An abstract respresntation of DAP Uint16 type.
-static const char UINT16[] = "UInt16";
-/// An abstract respresntation of DAP UInt32 type.
-static const char UINT32[] = "UInt32";
-/// For umappable HDF5 integer data types.
-static const char INT_ELSE[] = "Int_else";
-/// For unmappable HDF5 float data types.
-static const char FLOAT_ELSE[] = "Float_else";
-/// An abstract respresntation of DAP Structure type.
-static const char COMPOUND[] = "Structure";
-/// An abstract respresntation of DAP Array type.
-static const char ARRAY[] = "Array";   
-/// An abstract respresntation of DAP Url type.
-static const char URL[] = "Url";
-#endif
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_base_type(int type, string name)
+/// gets the extended DAP base type suitable for HDF4 data retrieval.
+///
+/// This function is needed to create a DAP Array / Grid that reads
+/// data through HDF-EOS2 library calls.
+/// \param[in] type DAP data type
+/// \param[in] name name of an HDF-EOS2 variable.
+///////////////////////////////////////////////////////////////////////////////
+static BaseType*  get_base_type(int type, string name)
+{
+    BaseType* bt = NULL;
+    switch(type){
+    case dods_byte_c:
+        {	
+            bt = new HDFByte(name,name);
+            break;
+        }
+    case dods_int16_c:
+        {
+            bt = new HDFInt16(name,name);
+            break;
+        }
+    case dods_uint16_c:
+        {
+            bt = new HDFUInt16(name,name);
+            break;
+        }
+    case dods_int32_c:
+        {
+            bt = new HDFInt32(name,name);
+            break;
+        }
+    case dods_uint32_c:
+        {
+            bt = new HDFUInt32(name,name);
+            break;
+        }      
+    case dods_float32_c:
+        {
+            bt = new HDFFloat32(name,name);
+            break;
+        }
+    case dods_float64_c:
+        {
+            bt = new HDFFloat64(name,name);
+            break;
+        }
+    default:
+        break;
+	  
+    }
+    return bt;
+}
 
-static void write_dimension_attributes_grid(DAS & das)
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_dimension_attributes_grid_1D_projection(DAS & das)
+/// will put pseudo attributes for CF (a.k.a COARDS) Grid convention.
+///
+/// This function is provided as an example for NASA HDF-EOS2 data only.
+/// You need to modify this to add custom attributes that match dimension
+/// names and it will make the output compliant to CF-convention. For details,
+/// please refer to the technical note "Using DAP Clients to Visualize
+/// HDF-EOS5 Grid Data" from [2].
+///
+/// The key difference from the add_dimension_attribute_grid() function
+/// is that it utilizes the dimension information collected via HDF-EOS2
+/// library calls.
+/// 
+/// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
+/// 
+/// \param das DAS object: reference
+/// \remarks This is necessary for GrADS compatibility only.
+/// \see add_dimension_attributes_grid()
+///////////////////////////////////////////////////////////////////////////////
+static void write_dimension_attributes_grid_1D_projection(DAS & das)
 {
 
     AttrTable *at;
 
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Grid\"");
+    at->append_attr("title", STRING, "\"NASA HDF-EOS2 Grid\"");
     at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
     at->append_attr("dataType", STRING, "\"Grid\"");
 
@@ -1218,15 +1316,35 @@ static void write_dimension_attributes_grid(DAS & das)
     }    
 }
 
-
-
-static void write_dimension_attributes_grid_non_ortho(DAS & das)
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_dimension_attributes_grid_2D_projection(DAS & das)
+/// will put pseudo attributes for CF (a.k.a COARDS) Grid convention.
+///
+///   This function is provided as an example for NASA HDF-EOS2 data only.
+/// You need to modify this function to add custom attributes
+/// that match dimension names and it will make the output compliant to
+/// CF-convention.
+///
+///   The ouput is almost identical to Swath case with a hope that some
+/// OPeNDAP visualization clients like IDV can handle it properly.
+///
+///   Only HDF-EOS2 library can handle 2-D projection Grids correctly due to
+/// the complexity of interpolation. We did not implement 2-D projection
+/// Grid handling in parser based HDF4 handler since HDF-EOS2 library
+/// already provides it.
+/// 
+/// \param das DAS object: reference
+/// \remarks This is same function as add_dimension_attributes_swath()
+/// \see add_dimension_attributes_grid_1D_projection()
+/// \see add_dimension_attributes_grid_swath()
+///////////////////////////////////////////////////////////////////////////////
+static void write_dimension_attributes_grid_2D_projection(DAS & das)
 {
     AttrTable *at;
 
     at = das.add_table("NC_GLOBAL", new AttrTable);
     at->append_attr("title", STRING,
-                    "\"NASA EOS Aura Grid - Non-Ortho Projection\"");
+                    "\"NASA HDF-EOS2 Grid - 2D Projection\"");
     at->append_attr("Conventions", STRING, "\"CF-1.0\"");
   
     at = das.add_table("lon", new AttrTable);
@@ -1240,54 +1358,40 @@ static void write_dimension_attributes_grid_non_ortho(DAS & das)
   
 }
 
-static BaseType*  get_base_type(int type, string name)
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_dimension_attributes_swath(DAS & das)
+/// will put pseudo attributes for CF (a.k.a COARDS) Swath convention.
+///
+/// This function is provided as an example for NASA HDF-EOS2 data only.
+/// You need to modify this function to add custom attributes
+/// that match dimension names and it will make the output compliant to
+/// CF-convention. 
+/// 
+/// \param das DAS object: reference
+/// \remarks This is same function as add_dimension_attributes_swath()
+/// \see add_dimension_attributes_swath()
+///////////////////////////////////////////////////////////////////////////////
+static void write_dimension_attributes_swath(DAS & das)
 {
-    BaseType* bt = NULL;
-    switch(type){
-    case dods_byte_c:
-        {	
-            bt = new HDFByte(name,name);
-            break;
-        }
-    case dods_int16_c:
-        {
-            bt = new HDFInt16(name,name);
-            break;
-        }
-    case dods_uint16_c:
-        {
-            bt = new HDFUInt16(name,name);
-            break;
-        }
-    case dods_int32_c:
-        {
-            bt = new HDFInt32(name,name);
-            break;
-        }
-    case dods_uint32_c:
-        {
-            bt = new HDFUInt32(name,name);
-            break;
-        }      
-    case dods_float32_c:
-        {
-            bt = new HDFFloat32(name,name);
-            break;
-        }
-    case dods_float64_c:
-        {
-            bt = new HDFFloat64(name,name);
-            break;
-        }
-    default:
-        break;
-	  
-    }
-    return bt;
+    // Same as parser-based handler case.
+    add_dimension_attributes_swath(das);
+
 }
 
 
-static void write_hdfeos2_grid(DDS &dds)
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_hdfeos2_grid_1D_projection(DDS & dds)
+/// assembles DAP Grids in DDS  via HDF-EOS2 library.
+///
+/// This function generates DAP Grids for 1-D projection using HDF-EOS2
+/// library. If an HDF-EOS2 file has datasets with 1-D geographic projection,
+/// we can map them into DAP Grids instead of DAP Arrays so that visualization
+/// clients can display them on the world map directly.
+/// 
+/// \param[out] dds DDS object: reference
+/// \see write_hdfeos2_grid_2D_projection()
+///////////////////////////////////////////////////////////////////////////////
+static void write_hdfeos2_grid_1D_projection(DDS &dds)
 {
     
     // Add all Grid variables.
@@ -1330,7 +1434,8 @@ static void write_hdfeos2_grid(DDS &dds)
                                      eos.full_data_paths.at(i));
         if(bt == 0){
             cerr
-                << "write_hdfeos2_grid(): Creating a DAP type class failed."
+                << "write_hdfeos2_grid_1D_projection():"
+                << "Creating a DAP type class failed."
                 << " Name=" << eos.full_data_paths.at(i)	  
                 << " Type=" << eos.get_data_type(i)
                 <<  endl;
@@ -1382,14 +1487,26 @@ static void write_hdfeos2_grid(DDS &dds)
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_hdfeos2_grid_2D_projection(DDS & dds)
+/// assembles DAP Arrays in DDS via HDF-EOS2 library.
+///
+/// This function generates DAP Arrays for 2-D projection using HDF-EOS2
+/// library. If an HDF-EOS2 file has datasets with 2-D non-geographic
+/// projection, we better map them directly into DAP Arrays instead of Grids
+/// since DAP Grids cannot represent 2-D maps.
+///
+/// This will add 2-D shared dimension lat/lon Arrays at the end and
+///  such addition is possible through HDF-EOS2 library only, not parser.
+///
+/// \param[out] dds DDS object: reference
+/// \see write_hdfeos2_grid_1D_projection()
+///////////////////////////////////////////////////////////////////////////////
 static void write_hdfeos2_grid_other_projection(DDS &dds)
 {
-    // Non geographic projection handling is similar to Grid case
-    // but do not generate DAP "Grid" output.
-    // Use the plain array for datasets.
-    // Add 2-D shared dimension la/lon array.
     DBG(cerr << ">write_hdfeos2_grid_other_projection()" << endl);
-    // Add all variables.
+    
+    // Add all shared dimension variables first.
     if (!eos.is_shared_dimension_set()) {
         int j;
         BaseType *bt = 0;
@@ -1446,7 +1563,7 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
             eos.set_shared_dimension();
     }
 
-  
+    // Add all dataset variables next.
     for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
         DBG(cerr
             << " Name=" << eos.full_data_paths.at(i)	  
@@ -1474,7 +1591,7 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
 
         delete bt;
 
-        // Add dimensions
+        // Add dimensions.
         eos.get_dimensions(eos.full_data_paths.at(i), tokens);
         ar->set_numdim(tokens.size());        
         for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
@@ -1492,19 +1609,28 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
     } 
     
 }
-
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_hdfeos2_swath(DDS & dds)
+/// assembles DAP Arrays in DDS via HDF-EOS2 library for Swath datasets.
+///
+/// Swath handling is similar to 2-D projection Grid case. Just use the plain
+/// DAP Arrays, not Grids.
+///
+/// \param[out] dds DDS object: reference
+/// \see write_hdfeos2_grid_2D_projection()
+///////////////////////////////////////////////////////////////////////////////
 static void write_hdfeos2_swath(DDS &dds)
 {
-    // Swath handling is similar to Grid case but do not generate DAP "Grid"
-    // output. Just use the plain array.
     for (int i = 0; i < (int) eos.full_data_paths.size(); i++) {
         DBG(cerr
             << " Name=" << eos.full_data_paths.at(i)	  
             << " Type=" << eos.get_data_type(i)
             <<  endl);
 
+        // Rename Longitude to lon, Latitude to lat, and so on.
         const char* cf_name =
             eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
+        
         string cf_varname(cf_name);
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
@@ -1524,7 +1650,7 @@ static void write_hdfeos2_swath(DDS &dds)
 
         delete bt;
 
-        // Add dimensions
+        // Add dimensions.
         eos.get_dimensions(eos.full_data_paths.at(i), tokens);
         ar->set_numdim(tokens.size());        
         for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
@@ -1546,24 +1672,4 @@ static void write_hdfeos2_swath(DDS &dds)
 
 #endif
 
-#ifdef CF
-static void write_dimension_attributes_swath(DAS & das)
-{
 
-    AttrTable *at;
-  
-    at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Swath\"");
-    at->append_attr("Conventions", STRING, "\"CF-1.0\"");
-
-    at = das.add_table("lon", new AttrTable);
-    at->append_attr("units", STRING, "\"degrees_east\"");
-    at->append_attr("long_name", STRING, "\"longitude\"");
-
-    at = das.add_table("lat", new AttrTable);
-    at->append_attr("units", STRING, "\"degrees_north\"");
-    at->append_attr("long_name", STRING, "\"latitude\"");
-    at->append_attr("coordinates", STRING, "\"lon lat\"");
-
-}
-#endif

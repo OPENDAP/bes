@@ -624,22 +624,14 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     // Array duplicates the base type passed, so delete here
     delete bt ;
     
-    vector < string > tokens;
-    eos.get_dimensions(sds.name, tokens);
-    /*
-      for (int i = 0; i < (int) sds.dims.size(); ++i)
-      ar->append_dim(sds.dims[i].count, tokens.at(i));
-    */
-    if (ar == 0)
-        return 0;
-    
     HDFEOSGrid *gr = new HDFEOSGrid(sds.name, dataset);
     if (gr == 0) {
         delete ar;
         return 0;
     }
 
-    // gr->add_var(ar, array);     // note: gr now manages ar
+    vector < string > tokens;
+    eos.get_dimensions(sds.name, tokens);
     
     for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
 	DBG(cerr << "=read_objects_base_type():Dim name " <<
@@ -656,7 +648,6 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 #ifdef SHORT_PATH
 	str_dim_full_name = str_dim_name;
 #endif
-
 
 	// Rename dimension name according to CF convention.
 	str_dim_full_name =
@@ -688,6 +679,7 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     return gr;
 }
 
+// Return a simple array with CF-compliant modified name.
 HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
 {
     if (sds.name.length() == 0) // SDS must have a name
@@ -718,6 +710,7 @@ HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
     }
 
 }
+
 #ifndef USE_HDFEOS2_LIB
 // Create EOS Grids without structure.
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,

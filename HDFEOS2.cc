@@ -628,7 +628,11 @@ void SwathDataset::OverrideGeoFields()
 			if (l == usedgeofields.end())
 				usedgeofields[k->first] = k->second;// This essentially build up usedgeofields
 			else if (l->second != k->second) {
-				throw5("a geo-location field", k->first, "is adjusted twice", l->second, k->second);//cannot be handled by OPeNDAP.
+                                //cannot be handled by OPeNDAP.
+				throw5("a geo-location field", k->first,
+                                       "is adjusted twice",
+                                       l->second, k->second);
+
 			}
 		}
 	}

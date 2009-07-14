@@ -87,29 +87,26 @@ private:
     // #endif
 
 #ifdef USE_HDFEOS2_LIB
-    vector < int > types; 
-#endif
-        
-    // Private member functions
-#ifdef USE_HDFEOS2_LIB
+    vector < int > types;
+    
     bool set_dimension_array_hdfeos2();                
 #endif
     
-    //   If you look at the hdfclass/sds.cc file, the current hdf4 handler
-    // retrieves dataset based on variable name. Thus, suppressing path
-    // information from structMetadata is required, not an option.
+    ///   If you look at the hdfclass/sds.cc file, the current hdf4 handler
+    /// retrieves dataset based on variable name. Thus, suppressing path
+    /// information from structMetadata is required, not an option.
+    ///
+    ///   Although this is required, we still keep this macro for future
+    /// HDF4 handler enhancement work, which will allow us to turn on and off
+    /// this feature easily.
+    /// information .
     //
-    //   Although this is required, we still keep this macro for future
-    // HDF4 handler enhancement work, which will allow us to turn on and off
-    // this feature easily.
-    // information .
-    //
-    //   Please do not confuse this Marco with the SHORT_NAME macro that is
-    // defined in a special build of HDF4 handler. SHORT_NAME macro is used
-    // to disambiguate variable name for CERES data.
-    //
-    //   This behavior is opposite from hdf5 handler. The hdf5 handler takes
-    // the group path information seriously.
+    ///   Please do not confuse this Marco with the SHORT_NAME macro that is
+    /// defined in a special build of HDF4 handler. SHORT_NAME macro is used
+    /// to disambiguate variable name for CERES data.
+    ///
+    ///   This behavior is opposite from hdf5 handler. The hdf5 handler takes
+    ///the group path information seriously.
 #ifdef SHORT_PATH
     string get_short_name(string a_name);
 #endif
@@ -218,6 +215,8 @@ public:
     /// This function is a reverse mapping of get_CF_name() function.
     /// Give \a cf_name, it translates back to the name used in HDF-EOS file.
     ///
+    /// \remark This should use an external XML definition file in the future
+    //  for easy handler customization.
     /// \return a string used in HDF-EOS convention
     /// \see get_CF_name()
     string get_EOS_name(string cf_name);
@@ -266,6 +265,14 @@ public:
     /// \see h5dds.cc
     string get_grid_name(string full_path);
 
+    /// Check if the HDF-EOS2 file has a GCTP_GEO projection via parser or
+    /// via HDF-EOS2 library.
+    ///
+    /// \return true if the structMetadata has a GCTP_GEO projection.
+    /// \return false otherwise
+    /// \see set_grid()
+    bool is_grid();
+    
     /// Check if this class has already parsed the \a name as grid.
     /// 
     /// \param[in] name a name of variable
@@ -327,6 +334,21 @@ public:
     ///               parsing.
     bool set_dimension_array();
 
+    /// Sets the grid flag true.
+    ///
+    /// Some HDF-EOS2 grid files have non orthographic projection like
+    /// polar or sinusoidal. To distinguish them from ortho projection,
+    /// the parser will set the flag true if ortho porjection is detected
+    /// and thus normal Grids can be generated. 
+    ///
+    /// If you want to support non-ortho projection files, use HDF-EOS2
+    /// library which can perform map interpolation. The parser-based handler
+    /// cannot support them.
+    /// 
+    /// \see is_grid()
+    void set_grid(bool flag);
+
+    
     /// Sets the shared dimension flag true.
     /// \see is_shared_dimension_set() 
     void set_shared_dimension();
@@ -348,13 +370,7 @@ public:
     ///
     /// \see add_type()
     void add_variable(string var_name);
-        
-    /// Check if the current HDF-EOS file is a valid NASA EOS Grid file 
-    /// via HDF-EOS2 library.
-    /// \return true if it is a Grid file.
-    /// \return false otherwise
-    bool is_grid();
-  
+    
     /// Check if the current HDF-EOS file is a valid NASA EOS Swath file
     /// via HDF-EOS2 library.
     /// \return true if it is a valid EOS Swath file
@@ -382,7 +398,6 @@ public:
     /// Get the pointer to the array of swath_name via HDF-EOS2 library.
     ///
     /// This function reads the actual content of \a swath_name Swath dataset.
-    /// \todo allow subsetting        
     int get_data_swath(string swath_name, char** val);
   
     /// Get the data type of variable at location i via HDF-EOS2 library.

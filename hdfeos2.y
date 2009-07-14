@@ -320,6 +320,7 @@ projection: PROJECTION '=' HE5_GCTP_GEO
 {
   // Set valid_projection flag to "true".
   valid_projection = true;
+  ((HDFEOS*)(arg))->set_grid(valid_projection);
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  
