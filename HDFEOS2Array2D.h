@@ -3,7 +3,7 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 
 // Copyright (c) 2009 The HDF Group
-// Author: Hyo-Kyung Lee <hyoklee@opendap.org>
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 
 // Copyright (c) 2005 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
@@ -55,16 +55,17 @@
 using namespace libdap;
 
 /// A class for shared dimension in 2-D.
-class HDFEOSArray2D:public Array {
+class HDFEOS2Array2D:public Array {
   
 private:
-  int d_num_dim;
-  int format_constraint(int *cor, int *step, int *edg);
-  int linearize_multi_dimensions(int *start, int *stride, int *count,
-				 int *picks);
-  public:
-    HDFEOSArray2D(const string & n, BaseType * v); // <hyokyung 2008.12. 2. 10:10:48>
-    virtual ~ HDFEOSArray2D();
+    int d_num_dim;
+    int format_constraint(int *cor, int *step, int *edg);
+    int linearize_multi_dimensions(int *start, int *stride, int *count,
+                                   int *picks);
+public:
+    
+    HDFEOS2Array2D(const string & n, BaseType * v);
+    virtual ~ HDFEOS2Array2D();
     virtual BaseType *ptr_duplicate();
     virtual bool read();
 };

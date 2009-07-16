@@ -54,7 +54,7 @@ public:
         
     virtual bool read();
   
-    /// remembers number of dimensions of this array.
+    /// remembers the number of dimensions of this array.
     void set_numdim(int ndims);
   
 };

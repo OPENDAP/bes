@@ -104,7 +104,7 @@ void *hdfeos_string(const char *yy_str);
 #include "HDFEOS2Array.h" // for array inside Grid that uses HDF-EOS2 librarry
 
 // For Swath
-#include "HDFEOSArray2D.h" // for shared dimension 2-D map data
+#include "HDFEOS2Array2D.h" // for shared dimension 2-D map data
 
 // Base types
 #include "HDFByte.h"
@@ -1523,7 +1523,7 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
             string str_cf_name =
                 eos.get_CF_name((char*)dimension_names.at(j).c_str());
             bt = new HDFFloat32(str_cf_name,str_cf_name);
-            ar = new HDFEOSArray2D(str_cf_name, bt);
+            ar = new HDFEOS2Array2D(str_cf_name, bt);
 
             ar->add_var(bt);
             delete bt; bt = 0;

@@ -5,9 +5,6 @@
  *-------------------------------------------------------------------------
  */
 
-// #define DODS_DEBUG
-// #define CF
-
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -28,33 +25,32 @@
 #include <debug.h>
 
 #include "dhdferr.h"
-#include "HDFEOSArray2D.h"
+#include "HDFEOS2Array2D.h"
 #include "HDFEOS.h"
 
 
-// using namespace std;
 extern HDFEOS eos;
 
-BaseType *HDFEOSArray2D::ptr_duplicate()
+BaseType *HDFEOS2Array2D::ptr_duplicate()
 {
-    return new HDFEOSArray2D(*this);
+    return new HDFEOS2Array2D(*this);
 }
 
-HDFEOSArray2D::HDFEOSArray2D(const string & n, BaseType * v)
+HDFEOS2Array2D::HDFEOS2Array2D(const string & n, BaseType * v)
     : Array(n, v)
 {
   d_num_dim = 2;  
 }
 
-HDFEOSArray2D::~HDFEOSArray2D()
+HDFEOS2Array2D::~HDFEOS2Array2D()
 {
 }
 
 
-bool HDFEOSArray2D::read()
+bool HDFEOS2Array2D::read()
 {
   
-  DBG(cerr << ">HDFEOSArray2D::read(): " << name() << endl);
+  DBG(cerr << ">HDFEOS2Array2D::read(): " << name() << endl);
 
   if(!eos.is_orthogonal()){   // It must be a 2-D case.
     
@@ -65,7 +61,8 @@ bool HDFEOSArray2D::read()
     int* count = new int[d_num_dim];
     int* step = new int[d_num_dim];
     int nelms = format_constraint(offset, step, count);
-    int count2 = eos.get_xdim_size() * eos.get_ydim_size(); // <hyokyung 2009.02.10. 12:55:00>
+    // <hyokyung 2009.02.10. 12:55:00>
+    int count2 = eos.get_xdim_size() * eos.get_ydim_size();
     
     if(nelms ==  count2){    
       set_value(eos.dimension_data[loc], count2);
@@ -96,7 +93,7 @@ bool HDFEOSArray2D::read()
 }
 
 
-int HDFEOSArray2D::format_constraint(int *offset, int *step, int *count) {
+int HDFEOS2Array2D::format_constraint(int *offset, int *step, int *count) {
     long nels = 1;
     int id = 0;
 
@@ -136,8 +133,10 @@ int HDFEOSArray2D::format_constraint(int *offset, int *step, int *count) {
     return nels;
 }
 
-int HDFEOSArray2D::linearize_multi_dimensions(int *start, int *stride, int *count,
-					       int *picks)
+int HDFEOS2Array2D::linearize_multi_dimensions(int *start,
+                                              int *stride,
+                                              int *count,
+                                              int *picks)
 {
   DBG(cerr << ">linearize_multi_dimensions()" << endl);
   int total = 1;
@@ -200,9 +199,6 @@ int HDFEOSArray2D::linearize_multi_dimensions(int *start, int *stride, int *coun
 
       temp_dim = 1;
       temp_count_dim = 0;
-#if 0
-      temp_index = 0;
-#endif
       array_index = 0;
 
       for (i = 0; i < d_num_dim; i++) {
