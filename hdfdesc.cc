@@ -163,7 +163,7 @@ static void write_dimension_attributes_grid_1D_projection(DAS &das);
 static void write_dimension_attributes_grid_2D_projection(DAS &das);
 static void write_dimension_attributes_swath(DAS &das);
 static void write_hdfeos2_grid_1D_projection(DDS &dds);
-static void write_hdfeos2_grid_other_projection(DDS &dds);
+static void write_hdfeos2_grid_2D_projection(DDS &dds);
 static void write_hdfeos2_swath(DDS &dds);
 #endif
 
@@ -689,7 +689,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
             if(eos.is_orthogonal())
                 write_hdfeos2_grid_1D_projection(dds);
             else
-                write_hdfeos2_grid_other_projection(dds);
+                write_hdfeos2_grid_2D_projection(dds);
         }
         if(eos.is_swath()){
             write_hdfeos2_swath(dds);
@@ -1502,9 +1502,9 @@ static void write_hdfeos2_grid_1D_projection(DDS &dds)
 /// \param[out] dds DDS object: reference
 /// \see write_hdfeos2_grid_1D_projection()
 ///////////////////////////////////////////////////////////////////////////////
-static void write_hdfeos2_grid_other_projection(DDS &dds)
+static void write_hdfeos2_grid_2D_projection(DDS &dds)
 {
-    DBG(cerr << ">write_hdfeos2_grid_other_projection()" << endl);
+    DBG(cerr << ">write_hdfeos2_grid_2D_projection()" << endl);
     
     // Add all shared dimension variables first.
     if (!eos.is_shared_dimension_set()) {
@@ -1530,7 +1530,7 @@ static void write_hdfeos2_grid_other_projection(DDS &dds)
             if(str_cf_name == "lat"){
                 if(eos.is_ydimmajor()){
                     DBG(cerr
-                        << "=write_hdfeos2_grid_other_projection():"
+                        << "=write_hdfeos2_grid_2D_projection():"
                         << "YDim major is detected."
                         << endl);
                     ar->append_dim(ydim_size, str_cf_name);

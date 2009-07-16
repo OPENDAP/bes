@@ -1,6 +1,6 @@
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
-
-// Copyright (c) 2008 The HDF Group
+//
+// Copyright (c) 2008-2009 The HDF Group
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 //
 // This is free software; you can redistribute it and/or modify it under the
@@ -20,7 +20,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config_hdf.h"
-// #define DODS_DEBUG 
 
 #include <vector>
 
@@ -59,7 +58,7 @@ BaseType *HDFEOS2Array::ptr_duplicate()
     return new HDFEOS2Array(*this);
 }
 
-// Read in an Array from either an SDS or a GR in an HDF file.
+
 bool HDFEOS2Array::read()
 {
     DBG(cerr << ">HDFEOS2Array::read()"  << endl);
@@ -322,12 +321,11 @@ int HDFEOS2Array::linearize_multi_dimensions(int *start, int *stride,
 	    ++p2;
 	} // while()
 
-	// Kent's contribution.
 	temp_count = new int[d_num_dim];
 	int temp_index;
 	int i;
 	int array_index = 0;
-	int temp_count_dim = 0; /* this variable changes when dim. is added */
+	int temp_count_dim = 0; // This variable changes when dim. is added.
 	int temp_dim = 1;
 
 	for (i = 0; i < d_num_dim; i++)

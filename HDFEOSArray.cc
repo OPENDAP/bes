@@ -1,12 +1,31 @@
-/*-------------------------------------------------------------------------
- * Copyright (C) 2008	The HDF Group
- *			All rights reserved.
- *
- *-------------------------------------------------------------------------
- */
-
-// #define DODS_DEBUG
-// #define CF
+// -*- C++ -*-
+//
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+//
+// Copyright (c) 2008-2009 The HDF Group
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+// 
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this software; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+//
+//
+// Author: Hyo-Kyung Lee
+//         hyoklee@hdfgroup.org
+//
+/////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
 #include <memory>
@@ -60,22 +79,17 @@ bool HDFEOSArray::read()
     int stop = dimension_stop(d, true);
     int count = ((stop - start) / stride) + 1;
     string dim_name = name();
-#ifdef CF
+
     dim_name = eos.get_EOS_name(dim_name);
-#endif
+
     int loc = eos.get_dimension_data_location(dim_name);
 
     if (loc >= 0) {
-        // set_value() will call this function.
-        // set_read_p(true); <hyokyung 2008.07.18. 13:40:51>
         dods_float32 *val =
             get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
-	// We need to use Vector::set_value() instead of Vector::value() since 
-	// Vector::value(dods_float32* b) function doesn't check if _buf is null
-	// and the _buf needs memory allocation.
 	set_value(val, count);
-	//value(val); // <hyokyung 2008.07.18. 13:40:42>
+
         delete[]val;	
     } else {
         cerr << "Could not retrieve map data" << endl;

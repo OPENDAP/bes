@@ -54,14 +54,29 @@
 
 using namespace libdap;
 
-/// A class for handling shared dimension in HDF-EOS2 Grid files.
+/// A class for generating 1-D shared dimension for HDF-EOS2 Grid files.
+///
+/// According to CF-1.x convention, all shared dimension variables should be
+/// available outside of DAP Grids. All dimension variables inside any DAP Grid
+/// variable will be identified by either the parser or the HDF-EOS2 library
+/// it will be extracted exactly once without duplicates.
+/// If there are conflicts among the shared dimension variables because of
+/// the different dimension sizes, an error will be thrown by HDFEOS class.
+///
+/// This class is a mere place holder for those shared dimension variables and
+/// it actually reads dimension data from HDFEOS class. It is the HDFEOS
+/// class that builds the contents for the read() operation of this class. 
+///
+/// \see HDFEOS
 class HDFEOSArray:public Array {
-  dods_float32 *get_dimension_data(dods_float32 * buf, int start,
-				   int stride, int stop, int count);
-  public:
+    dods_float32 *get_dimension_data(dods_float32 * buf, int start,
+                                     int stride, int stop, int count);
+public:
     HDFEOSArray(const string & n, const string &d, BaseType * v);
     virtual ~ HDFEOSArray();
     virtual BaseType *ptr_duplicate();
+    
+    /// Read the (subsetted) contents of dimension_data in HDFEOS class.
     virtual bool read();
 };
 

@@ -1,12 +1,9 @@
 // -*- C++ -*-
-
+//
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
-
+//
 // Copyright (c) 2009 The HDF Group
 // Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-
-// Copyright (c) 2005 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -23,23 +20,6 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
-/////////////////////////////////////////////////////////////////////////////
-// Copyright 1996, by the California Institute of Technology.
-// ALL RIGHTS RESERVED. United States Government Sponsorship
-// acknowledged. Any commercial use must be negotiated with the
-// Office of Technology Transfer at the California Institute of
-// Technology. This software may be subject to U.S. export control
-// laws and regulations. By accepting this software, the user
-// agrees to comply with all applicable U.S. export laws and
-// regulations. User has the responsibility to obtain export
-// licenses, or other export authority as may be required before
-// exporting such information to foreign countries or providing
-// access to foreign persons.
-
-// Author: Todd Karakashian, NASA/Jet Propulsion Laboratory
-//         Todd.K.Karakashian@jpl.nasa.gov
-//
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _HDFEOSARRAY2D_H
@@ -49,12 +29,26 @@
 #include <string>
 #include <vector>
 
-// DODS includes
+// DAP includes
 #include <Array.h>
 
 using namespace libdap;
 
-/// A class for shared dimension in 2-D.
+/// A class for generating 2-D shared dimension for HDF-EOS2 Grid files.
+///
+/// This class is for generating 2-D shared dimension variables among
+/// the HDF-EOS2 Grid variables that use 2-D grid projection. Unlike the 1-D
+/// geographic projection, 2-D projections like polar or sinusoidal do not
+/// require DAP Grid generation from HDF-EOS2 Grid datasets. The normal DAP
+/// Arrays generation will be sufficient. However, it is still necessary to
+/// have the shared dimension DAP Arrays according to CF-1.x convention.
+///
+/// The parser cannot handle 2-D grids at all. However, for some HDF-EOS2
+/// 2-D projection Grid files, the HDF-EOS2 library can  generate the
+/// right 2-D dimension map data and they will be captured by this class.
+///
+/// \see HDFEOSArray
+/// \see HDFEOS2
 class HDFEOS2Array2D:public Array {
   
 private:
@@ -67,6 +61,8 @@ public:
     HDFEOS2Array2D(const string & n, BaseType * v);
     virtual ~ HDFEOS2Array2D();
     virtual BaseType *ptr_duplicate();
+    
+    /// Reads the content of 2-D lat/lon information via HDF-EOS2 library.
     virtual bool read();
 };
 

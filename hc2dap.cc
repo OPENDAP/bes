@@ -1,5 +1,15 @@
+///////////////////////////////////////////////////////////////////////////////
+/// \file hc2dap.cc
+/// \brief Generate DAP Grids from HDF-EOS2 Grid files.
+///
+/// This file contains the functions that generate DAP Grid out of
+/// HDF-EOS2 grid files when --enable-cf configuration option is enabled. 
+/// 
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 
+// Copyright (c) 2008-2009 The HDF Group
+// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+//
 // Copyright (c) 2005 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
 //
@@ -601,7 +611,15 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
     }
 }
 #ifdef CF
-// Create a DAP Grid out of the primary array and dim scale in an hdf_sds
+///////////////////////////////////////////////////////////////////////////////
+/// \fn NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
+///
+/// Create a DAP Grid out of the primary array and dim scale from HDF-EOS2
+/// grid file.
+///
+/// This function utilizes the fact that the most of HDF-EOS2 Grid files use
+/// SDS HDF4 APIs.
+///////////////////////////////////////////////////////////////////////////////
 HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
     DBG(cerr << ">NewEOSGridFromSDS" << endl);
@@ -679,7 +697,16 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     return gr;
 }
 
-// Return a simple array with CF-compliant modified name.
+///////////////////////////////////////////////////////////////////////////////
+/// \fn NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
+///
+/// Create a DAP Array out of the primary array  from HDF-EOS2 swath file.
+///
+/// This function utilizes the fact that the most of HDF-EOS2 swath files use
+/// SDS HDF4 APIs. It returns a simple DAP array with CF-compliant modified
+/// name. No DAP Grid generation is required since swath files have 2-D
+/// lat/lon variables.
+///////////////////////////////////////////////////////////////////////////////
 HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
 {
     if (sds.name.length() == 0) // SDS must have a name
@@ -712,7 +739,32 @@ HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
 }
 
 #ifndef USE_HDFEOS2_LIB
-// Create EOS Grids without structure.
+///////////////////////////////////////////////////////////////////////////////
+/// \fn NewStructureFromVgroupEOS(const hdf_vgroup &vg,
+///                               vg_map &vgmap,
+///                               sds_map &sdmap,
+///                               vd_map &vdmap,
+///                               gr_map &grmap,
+///                               const string &dataset,
+///                               DDS& dds)
+///
+///  Create HDFEOSGrid class instances without structure.
+///
+///  The default hdf4 handler without --enable-cf configuration option
+/// generates a structure out of Vgroup. However, this should be suppressed
+/// to make the enhanced hdf4 handler work with all kinds of visualization 
+/// clients that do not like structured representation since it can make
+/// the Grid variable name too long. (e.g. longer than 15 characters which
+/// GrADS visualization client doesn't like it.)
+///
+///  This needs to be improved in the future so that Vgroup can generate
+/// a path information prefixed to the dataset name to avoid ambiguity
+/// among datasets if they have same name under different Vgroup.
+/// Some NASA MODIS Level 3 data has this problem. Please refer to the
+////DDS output of the hdf5 handler for a clean implementation of handling group
+/// information for comparison.
+///
+///////////////////////////////////////////////////////////////////////////////
 HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
                                         vg_map &vgmap,
                                         sds_map &sdmap,
