@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for version 3.7.12
+Updated for version 3.7.13
 
 ---------------------------------------------------------------------------
 
@@ -24,6 +24,29 @@ BUILDING THE SOFTWARE
    from the default "/use/local/." Make sure that the dap-server CGI knows
    where the handler is located (you can list the complete pathname in the
    dap-server.rc file; see dap-server's INSTALL and README files).
+
+   OPTIONAL: 
+
+   To support HDF-EOS2 files better for OPeNDAP visualization clients, 
+   you may want to configure with two more options. 
+
+   Type `./configure --enable-cf --with-hdfeos2=/path/to/HDF-EOS2_library'
+
+   They will include the enhancement work for HDF4 handler supported by 
+   NASA grant.
+
+   This requires the installation of HDF-EOS2 library. You can download it
+   from http://newsroom.gsfc.nasa.gov/sdptoolkit/tookit.html.
+
+
+   Another possibility is to install with '--enable-cf' option only.
+
+   Type `./configure --enable-cf'
+
+   This doesn't require the installation of HDF-EOS2 library and it works
+   for some HDF-EOS2 Grid / Swath files. This is less recommended option 
+   since HDF-EOS2 library can support more HDF-EOS2 files.
+    
 
 2) Type `make' to build the three server programs
 

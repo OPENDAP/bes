@@ -1,3 +1,23 @@
+2009-07-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+	
+	The existing handler is enhanced to support OPeNDAP visualization
+	clients like IDV and GrADS so that they can display Grids and Swath 
+	for some HDF-EOS2 files directly over the Internet.
+
+	Added the following files for --enable-cf configuration option:
+
+	* HDFEOS.cc|h
+	* HDFEOSGrid.cc|h
+	* HDFEOSArray.cc|h
+	* HDFCFSwath.cc|h
+
+	Added the following files for --use-hdfeos2 configuration option:
+	
+	* HDFEOS2.cc|h
+	* HDFEOS2Array.cc|h
+	* HDFEOS2Array2D.cc|h 	
+	
+
 2009-04-08  James Gallagher <jgallagher@opendap.org>
 
 	Fixed comments and removed old declaration for 'split' function.

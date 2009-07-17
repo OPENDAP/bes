@@ -1,6 +1,30 @@
 
 $Id$
 
+Updated for 3.7.13 (17 July 2009)
+
+  The OPeNDAP HDF4 Data Handler is enhanced by adding two more configuration 
+options:
+
+  1) --enable-cf
+  2) --use-hdfeos2=/path/to/hdfeos2_library
+
+ The option 1)  uses the StructMetadata parser. A valid HDF-EOS2 file always
+has the StructMetadata information and the parser can infer geolocation 
+information from the StructMetadata. By retrieving such information, the
+HDF4 handler can generate DAP Grids that OPeNDAP visualization clients can
+display on a world map.
+
+  The option 2) REQUIRES option 1) and it uses the HDF-EOS2 library instead of
+the StructMetadata parser. The benefit of using HDF-EOS2 library is tremendous.
+It can support more HDF-EOS2 files by handling different projections like polar
+and sinusoidal. In addition, it can detect any anomalies that are common in 
+some HDF-EOS2 files and handle them intelligently. Thus, we recommend the 
+server administrator to install HDF-EOS2 library first and configure the 
+handler with BOTH 1) and 2) options.
+
+ Hyo-Kyung Lee
+
 Updated for 3.7.12 (16 March 2009)
 
 This is the OPeNDAP HDF4 Data Handler. It is used along with the OPeNDAP
