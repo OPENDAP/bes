@@ -23,7 +23,27 @@ some HDF-EOS2 files and handle them intelligently. Thus, we recommend the
 server administrator to install HDF-EOS2 library first and configure the 
 handler with BOTH 1) and 2) options.
 
- Hyo-Kyung Lee
+THE LIMITATIONS of the ENHANCED HDF4 HANDLER
+
+  Please note that the enhanced handler has lots of limitation. 
+
+  o No support for using the HDF4 handler cache directory. 
+
+  o No support for Grids other than geographic 1-D projection. However, 
+    option 2) will make some Grids with other projections (polar, sinusoidal) 
+    work.
+  
+  o No Vgroup to DAP structure mapping. Thus, the files that have same 
+    dataset name  under different Vgroups will throw a DDS semantics violation 
+    error.
+
+  o No support for files that have the same dimension names with different 
+    dimension sizes. For example if a swath variable "A" has dimension lat=360
+    and lon=1440 (e.g., A[lat=360][lon=1440]) and another swath variable "B" 
+    has dimension lat=180 and lon=720 (e.g., B[lat=180][lon=720]), 
+    the handler will throw an error for inconsistent dimension.
+
+ Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 
 Updated for 3.7.12 (16 March 2009)
 
