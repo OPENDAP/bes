@@ -1,3 +1,9 @@
+/////////////////////////////////////////////////////////////////////////////
+//  This file is part of the hdf4 data handler for the OPeNDAP data server.
+//
+// Author:   Choonghwan Lee <clee83@hdfgroup.org>
+// Copyright (c) 2009 The HDF Group
+/////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
 #ifndef _HDFEOS2_H
 #define _HDFEOS2_H
