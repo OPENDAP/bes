@@ -32,6 +32,7 @@
 
 #include "config.h"
 
+#include <cstdio>
 #include <cerrno>
 #include <cstring>
 

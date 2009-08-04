@@ -31,7 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <sys/types.h>
-//#include <sys/uio.h>
+
+#include <cstdio>
 #include <unistd.h> // for sync
 #include <sstream>
 #include <iomanip>
