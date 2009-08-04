@@ -39,6 +39,7 @@
 #include <unistd.h>
 #endif
 
+#include <cstdio>
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>

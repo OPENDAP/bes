@@ -38,6 +38,7 @@
 #include <unistd.h>
 #endif
 
+#include <cstdio>
 #include <cstring>
 #include <cerrno>
 
