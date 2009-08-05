@@ -34,6 +34,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <memory>
+#include <typeinfo>
+
 #include <Array.h>
 #include "hdfeos2.tab.hh"
 
@@ -166,6 +169,7 @@ public:
     /// hdfeos2 library. This pointer will be active if --with-hdfeos2
     /// configuration option is active.
     auto_ptr<HDFEOS2::File> eos2;
+    //HDFEOS2::File *eos2;
 #endif
         
     HDFEOS();
