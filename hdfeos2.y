@@ -40,7 +40,7 @@ string dimension_name = "";
 
 void mem_list_report();
 int  hdfeos2lex(void);
-void hdfeos2error(char *s);
+void hdfeos2error(const char *s);
 
 
 %}
@@ -348,7 +348,7 @@ origin: GRID_ORIGIN '=' HDFEGDUL
 // reporting mechanism.
 
 void
-hdfeos2error(char *s)
+hdfeos2error(const char *s)
 {
 	cout << "ERROR: " << s << endl;
 }

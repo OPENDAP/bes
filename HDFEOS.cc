@@ -7,6 +7,8 @@
 // #define DODS_DEBUG
 #include <iostream>
 
+#include <string.h>
+
 #include <debug.h>
 #include <util.h>
 

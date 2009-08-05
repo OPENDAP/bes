@@ -91,13 +91,13 @@ static vector<AttrTable *> *attr_tab_stack;
 
 #define TYPE_NAME_VALUE(x) type << " " << name << " " << (x)
 
-static char *NO_DAS_MSG =
+static const char *NO_DAS_MSG =
 "The attribute object returned from the dataset was null\n\
 Check that the URL is correct.";
 
 void mem_list_report();
 int hdfeoslex(void);
-void hdfeoserror(char *s);
+void hdfeoserror(const char *s);
 static void process_group(parser_arg *arg, const string &s);
 
 %}
@@ -414,7 +414,7 @@ strs:		STR
 // reporting mechanism.
 
 void
-hdfeoserror(char *s)
+hdfeoserror(const char *s)
 {
 }
 
