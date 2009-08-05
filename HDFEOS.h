@@ -212,7 +212,7 @@ public:
     ///
     /// \return a pointer to a CF-compliant character string
     /// \see get_EOS_name()
-    const char *get_CF_name(char *eos_name);
+    const char *get_CF_name(const char *eos_name);
 
     /// Get the EOS attribute and dimension names.
     ///

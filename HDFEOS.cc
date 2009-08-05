@@ -112,9 +112,12 @@ void HDFEOS::add_dimension_map(string dimension_name, int dimension)
     }
 }
 
-const char *HDFEOS::get_CF_name(char *eos_name)
+const char *HDFEOS::get_CF_name(const char *eos_name)
 {
     string str(eos_name);
+
+    // it would be faster to use eos_to_cf_map.insert("XDim","lon"), etc.,
+    // and to do this one in the ctor
 
     eos_to_cf_map["XDim"] = "lon";
     eos_to_cf_map["YDim"] = "lat";
@@ -145,11 +148,20 @@ const char *HDFEOS::get_CF_name(char *eos_name)
     
     
     DBG(cerr << eos_to_cf_map[str] << endl);
+    // if str is not in the map<string,string> this will do something very
+    // odd, although I don' know what exactly.
+#if 0
     if (eos_to_cf_map[str].size() > 0) {
         return eos_to_cf_map[str].c_str();
     } else {
         return str.c_str();
     }
+#endif
+    map<string,string>::iterator pos = eos_to_cf_map.find(str);
+    if (pos != eos_to_cf_map.end())
+	return pos->second.c_str();
+    else
+	return str.c_str();
 }
 
 string HDFEOS::get_EOS_name(string str)
@@ -356,9 +368,9 @@ void HDFEOS::reset()
     if(dimension_data != NULL){
         for (j = 0; j < (int) dimensions.size(); j++) {
             if(dimension_data[j] != NULL)
-                delete dimension_data[j];
+                delete [] dimension_data[j];
         }
-        delete dimension_data;
+        delete [] dimension_data;
         dimension_data = NULL;
     }
 
