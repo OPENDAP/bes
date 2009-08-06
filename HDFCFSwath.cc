@@ -82,14 +82,6 @@ void HDFCFSwath::add_dimension_map_swath(string dimension_name, int dimension)
 
 string  HDFCFSwath::get_CF_name_swath(const string &str)
 {
-#if 0
-    DBG(cerr << eos_to_cf_map_swath[str] << endl);
-    if (eos_to_cf_map_swath[str].size() > 0) {
-        return eos_to_cf_map_swath[str];
-    } else {
-        return str;
-    }
-#endif
     map<string,string>::iterator pos = eos_to_cf_map_swath.find(str);
     if (pos != eos_to_cf_map_swath.end())
         return pos->second.c_str();
@@ -99,14 +91,6 @@ string  HDFCFSwath::get_CF_name_swath(const string &str)
 
 string HDFCFSwath::get_EOS_name_swath(const string &str)
 {
-#if 0
-    DBG(cerr << cf_to_eos_map_swath[str] << endl);
-    if (cf_to_eos_map_swath[str].size() > 0) {
-        return cf_to_eos_map_swath[str];
-    } else {
-        return str;
-    }
-#endif
     map<string,string>::iterator pos = cf_to_eos_map_swath.find(str);
     if (pos != cf_to_eos_map_swath.end())
         return pos->second.c_str();

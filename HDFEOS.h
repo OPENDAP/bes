@@ -215,10 +215,6 @@ public:
     ///
     /// \return a pointer to a CF-compliant character string
     /// \see get_EOS_name()
-#if 0
-    const char *get_CF_name(const char *eos_name);
-#endif
-
     string get_CF_name(const string &str);
 
     /// Get the EOS attribute and dimension names.

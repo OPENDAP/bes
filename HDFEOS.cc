@@ -133,55 +133,8 @@ void HDFEOS::add_dimension_map(string dimension_name, int dimension)
     }
 }
 
-#if 0
-const char *HDFEOS::get_CF_name(const char *eos_name)
-#endif
 string HDFEOS::get_CF_name(const string &str)
 {
-#if 0
-    string str(eos_name);
-#endif
-#if 0
-    // it would be faster to use eos_to_cf_map.insert("XDim","lon"), etc.,
-    // and to do this one in the ctor
-
-    eos_to_cf_map["XDim"] = "lon";
-    eos_to_cf_map["YDim"] = "lat";
-    eos_to_cf_map["nCandidate"] = "lev";
-    eos_to_cf_map["MissingValue"] = "missing_value";
-    eos_to_cf_map["Units"] = "units";
-    eos_to_cf_map["Offset"] = "add_offset";
-    eos_to_cf_map["ScaleFactor"] = "scale_factor";
-    eos_to_cf_map["ValidRange"] = "valid_range";
-
-#ifdef USE_HDFEOS2_LIB
-    if(is_grid()){
-        eos_to_cf_map["XDim"] = "lon";
-        eos_to_cf_map["YDim"] = "lat";
-        eos_to_cf_map["nCandidate"] = "lev";
-    }
-    if(is_swath()){
-        eos_to_cf_map["Longitude"] = "lon";
-        eos_to_cf_map["Latitude"] = "lat";
-        eos_to_cf_map["GeoTrack"] = "lat"; //  AIRS
-        eos_to_cf_map["GeoXTrack"] = "lon";
-        eos_to_cf_map["Cell_Along_Swath_5km"] = "lat"; // MODIS
-        eos_to_cf_map["Cell_Across_Swath_5km"] = "lon";
-        eos_to_cf_map["StdPressureLev"] = "pressStd";
-
-    }
-#endif // #ifdef USE_HDFEOS2_LIB
-#endif
-    // if str is not in the map<string,string> this will do something very
-    // odd, although I don' know what exactly.
-#if 0
-    DBG(cerr << eos_to_cf_map[str] << endl);
-    if (eos_to_cf_map[str].size() > 0) {
-        return eos_to_cf_map[str].c_str();
-    } else {
-        return str.c_str();
-    }
-#endif
     if (is_swath()) {
         map<string,string>::iterator pos = eos_to_cf_map_is_swath.find(str);
         if (pos != eos_to_cf_map.end())
@@ -197,28 +150,6 @@ string HDFEOS::get_CF_name(const string &str)
 
 string HDFEOS::get_EOS_name(const string &str)
 {
-#if 0
-    // moved to ctor
-    cf_to_eos_map["lon"] = "XDim";
-    cf_to_eos_map["lat"] = "YDim";
-    cf_to_eos_map["lev"] = "nCandidate";
-#endif
-#ifdef USE_HDFEOS2_LIB
-    // cannot move these to the ctor because these overwrite
-    if(is_swath()){
-        cf_to_eos_map["lon"] = "Longitude";
-        cf_to_eos_map["lat"] = "Latitude";
-    }
-#endif
-
-#if 0
-    if (cf_to_eos_map[str].size() > 0) {
-        return cf_to_eos_map[str];
-    } else {
-        return str;
-    }
-#endif
-
     if (is_swath()) {
         map<string,string>::iterator pos = eos_to_cf_map_is_swath.find(str);
         if (pos != eos_to_cf_map.end())
