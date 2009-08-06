@@ -134,3 +134,10 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:&;,%]
 			  }
 			}
 %%
+
+void
+hdfeos2_delete_buffer(void *buf)
+{
+    hdfeos2_delete_buffer((YY_BUFFER_STATE)buf);
+}
+

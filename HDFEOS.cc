@@ -25,6 +25,7 @@ struct  yy_buffer_state;
 int hdfeos2lex();
 int hdfeos2parse(void *arg);
 yy_buffer_state *hdfeos2_scan_string(const char *str);
+void hdfeos2_delete_buffer(void *buf);
 
 
 HDFEOS::HDFEOS()
@@ -260,15 +261,17 @@ bool HDFEOS::is_valid()
 bool HDFEOS::parse_struct_metadata(const char* str_metadata)
 {
     if(!_parsed){
-        hdfeos2_scan_string(str_metadata);
+        void *buf = hdfeos2_scan_string(str_metadata);
         hdfeos2parse(this);
+#if 1
+	// hmmm. There's a leak here, but this is definitely not the fix...
+	hdfeos2_delete_buffer(buf);
+#endif
         _parsed = true;
         _valid = _parsed;
     }
-    //#ifdef USE_HDFEOS2_LIB
+
     return _valid;
-    // #endif
-    // return _parsed;
 }
 
 void HDFEOS::print()

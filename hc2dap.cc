@@ -846,6 +846,7 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
         }
         if (bt) {
 	    dds.add_var(bt);   // *st now manages *bt
+	    delete bt; bt = 0;
         }
     }
 
