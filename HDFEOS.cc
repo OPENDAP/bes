@@ -263,10 +263,7 @@ bool HDFEOS::parse_struct_metadata(const char* str_metadata)
     if(!_parsed){
         void *buf = hdfeos2_scan_string(str_metadata);
         hdfeos2parse(this);
-#if 1
-	// hmmm. There's a leak here, but this is definitely not the fix...
-	hdfeos2_delete_buffer(buf);
-#endif
+	hdfeos2_delete_buffer(buf); // added jhrg 8/6/09 to fix ememory leak
         _parsed = true;
         _valid = _parsed;
     }
