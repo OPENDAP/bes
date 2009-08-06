@@ -3,8 +3,8 @@
 /// \brief Generate DAP Grids from HDF-EOS2 Grid files.
 ///
 /// This file contains the functions that generate DAP Grid out of
-/// HDF-EOS2 grid files when --enable-cf configuration option is enabled. 
-/// 
+/// HDF-EOS2 grid files when --enable-cf configuration option is enabled.
+///
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
 
 // Copyright (c) 2008-2009 The HDF Group
@@ -90,9 +90,9 @@ using namespace std;
 #include "dhdferr.h"
 #ifdef CF
 #include "HDFEOS.h"
-#include "HDFEOSGrid.h"		
-#include "HDFEOSArray.h"	
-extern HDFEOS eos;		
+#include "HDFEOSGrid.h"
+#include "HDFEOSArray.h"
+extern HDFEOS eos;
 #endif
 #include "hdf-maps.h"
 #include "debug.h"
@@ -216,7 +216,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
                 if (grmap.find(ref) != grmap.end()){
                     bt = NewArrayFromGR(grmap[ref].gri, dataset);
                 }
-                else 
+                else
                     bt = NewStructureFromVgroup(vgmap[ref].vgroup, vgmap,
                                                 sdmap, vdmap, grmap, dataset);
                 break;
@@ -623,7 +623,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
 HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
     DBG(cerr << ">NewEOSGridFromSDS" << endl);
-    // Create the HDFGrid and the primary array.  Add the primary array to 
+    // Create the HDFGrid and the primary array.  Add the primary array to
     // the HDFGrid.
     if (sds.name.length() == 0) // SDS must have a name
         return 0;
@@ -641,7 +641,7 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     }
     // Array duplicates the base type passed, so delete here
     delete bt ;
-    
+
     HDFEOSGrid *gr = new HDFEOSGrid(sds.name, dataset);
     if (gr == 0) {
         delete ar;
@@ -650,7 +650,7 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 
     vector < string > tokens;
     eos.get_dimensions(sds.name, tokens);
-    
+
     for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
 	DBG(cerr << "=read_objects_base_type():Dim name " <<
 	    tokens.at(dim_index) << endl);
@@ -669,7 +669,7 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 
 	// Rename dimension name according to CF convention.
 	str_dim_full_name =
-	    eos.get_CF_name((char *) str_dim_full_name.c_str());
+	    eos.get_CF_name(str_dim_full_name);
 
 
 	BaseType *bt = 0;
@@ -684,7 +684,7 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 
 	    gr->add_var(ar2, maps);
 	    delete ar2; ar2 = 0;
-	    
+
 	}
 	catch (...) {
 	    if( bt ) delete bt;
@@ -752,7 +752,7 @@ HDFArray *NewEOSSwathFromSDS(const hdf_sds & sds, const string &dataset)
 ///
 ///  The default hdf4 handler without --enable-cf configuration option
 /// generates a structure out of Vgroup. However, this should be suppressed
-/// to make the enhanced hdf4 handler work with all kinds of visualization 
+/// to make the enhanced hdf4 handler work with all kinds of visualization
 /// clients that do not like structured representation since it can make
 /// the Grid variable name too long. (e.g. longer than 15 characters which
 /// GrADS visualization client doesn't like it.)
@@ -776,11 +776,11 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
     // Check to make sure hdf_vgroup object is set up properly.
     if (vg.name.length() == 0)  // Vgroup must have a name.
         return 0;
-    
+
     if (!eos.is_shared_dimension_set()) {
         int j;
         BaseType *bt = 0;
-        Array *ar = 0;    
+        Array *ar = 0;
         vector < string > dimension_names;
         eos.get_all_dimensions(dimension_names);
 
@@ -788,7 +788,7 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
             int shared_dim_size =
                 eos.get_dimension_size(dimension_names.at(j));
             string str_cf_name =
-                eos.get_CF_name((char*)dimension_names.at(j).c_str());
+                eos.get_CF_name(dimension_names.at(j));
             bt = new HDFFloat32(str_cf_name, dataset);
             ar = new HDFEOSArray(str_cf_name, dataset, bt);
 
@@ -801,7 +801,7 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
         }
         eos.set_shared_dimension();
     }
-    
+
     // Step through each tagref and copy its contents to DAP
     for (int i = 0; i < (int) vg.tags.size(); ++i) {
         int32 tag = vg.tags[i];
@@ -821,7 +821,7 @@ HDFStructure *NewStructureFromVgroupEOS(const hdf_vgroup &vg,
                 }
             } else {
                 // Check if it can be mapped to Grid.
-                if(eos.is_grid(sdmap[ref].sds.name)) 
+                if(eos.is_grid(sdmap[ref].sds.name))
                     bt = NewEOSGridFromSDS(sdmap[ref].sds, dataset);
                 else if(eos.is_swath(sdmap[ref].sds.name)){
                     bt = NewEOSSwathFromSDS(sdmap[ref].sds, dataset);

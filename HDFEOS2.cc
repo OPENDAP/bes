@@ -35,9 +35,9 @@ static void _throw5(const char *fname, int line, int numarg,
     throw Exception(ss.str());
 }
 
-/// The followings are convenient fuctions to throw exceptions with different
+/// The followings are convenient functions to throw exceptions with different
 // number of arguments.
-/// We assume that the maximum number of arguments is 5. 
+/// We assume that the maximum number of arguments is 5.
 #define throw1(a1)  _throw5(__FILE__, __LINE__, 1, a1, 0, 0, 0, 0)
 #define throw2(a1, a2)  _throw5(__FILE__, __LINE__, 2, a1, a2, 0, 0, 0)
 #define throw3(a1, a2, a3)  _throw5(__FILE__, __LINE__, 3, a1, a2, a3, 0, 0)
@@ -64,7 +64,7 @@ File * File::Read(const char *path) throw(Exception)
     File *file = new File(path);
 
     // Read information of all Grid objects in this file.
-    if ((file->gridfd = GDopen(const_cast<char *>(file->path.c_str()),
+    if ((file->gridfd = GDopen(const_cast<char *()),
                                DFACC_READ)) == -1) throw2("grid open", path);
     std::vector<std::string> gridlist;
     if (!Utility::ReadNamelist(file->path.c_str(), GDinqgrid, gridlist))
@@ -74,7 +74,7 @@ File * File::Read(const char *path) throw(Exception)
         file->grids.push_back(GridDataset::Read(file->gridfd, *i));
 
     // Read information of all Swath objects in this file
-    if ((file->swathfd = SWopen(const_cast<char *>(file->path.c_str()),
+    if ((file->swathfd = SWopen(const_cast<char *()),
                                 DFACC_READ)) == -1)
         throw2("swath open", path);
     std::vector<std::string> swathlist;
@@ -86,7 +86,7 @@ File * File::Read(const char *path) throw(Exception)
 
     // We only obtain the name list of point objects but not don't provide
     // other information of these objects.
-    // The client will only get the name list of point objects. 
+    // The client will only get the name list of point objects.
     std::vector<std::string> pointlist;
     if (!Utility::ReadNamelist(file->path.c_str(), PTinqpoint, pointlist))
         throw2("point namelist", path);
@@ -129,10 +129,10 @@ void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
     int32 numdims, bufsize;
 
     // Obtain the number of dimensions and buffer size of holding ","
-    // separated dimension name list. 
+    // separated dimension name list.
     if ((numdims = entries(this->datasetid, HDFE_NENTDIM, &bufsize)) == -1)
         throw2("dimension entry", this->name);
-        
+
     // Read all dimension information
     if (numdims > 0) {
         std::vector<char> namelist;
@@ -140,12 +140,12 @@ void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
 
         namelist.resize(bufsize + 1);
         dimsize.resize(numdims);
-        // Inquiry dimension name lists and sizes for all dimensions 
+        // Inquiry dimension name lists and sizes for all dimensions
         if (inq(this->datasetid, &namelist[0], &dimsize[0]) == -1)
             throw2("inquire dimension", this->name);
 
         std::vector<std::string> dimnames;
-                
+
         // Make the "," separated name string to a string list without ",".
         // This split is for global dimension of a Swath or a Grid object.
         Utility::Split(&namelist[0], bufsize, ',', dimnames);
@@ -176,20 +176,20 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
     if ((numfields = entries(this->datasetid, geofield ?
                              HDFE_NENTGFLD : HDFE_NENTDFLD, &bufsize)) == -1)
         throw2("field entry", this->name);
-        
+
     // Obtain the information of fields (either data fields or geo-location
     // fields of a Swath object)
     if (numfields > 0) {
         std::vector<char> namelist;
 
         namelist.resize(bufsize + 1);
-                
+
         // Inquiry fieldname list of the current object
         if (inq(this->datasetid, &namelist[0], NULL, NULL) == -1)
             throw2("inquire field", this->name);
 
         std::vector<std::string> fieldnames;
-                
+
         // Split the field namelist, make the "," separated name string to a
         // string list without ",".
         Utility::Split(&namelist[0], bufsize, ',', fieldnames);
@@ -200,16 +200,16 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             // XXX: We assume the maximum number of dimension for an EOS field
             // is 16.
             int32 dimsize[16];
-            char dimlist[512]; // XXX: what an HDF-EOS2 developer recommeded
-                        
-            // Obtain most information of a field such as rank, dimension etc. 
+            char dimlist[512]; // XXX: what an HDF-EOS2 developer recommended
+
+            // Obtain most information of a field such as rank, dimension etc.
             if ((fldinfo(this->datasetid,
-                         const_cast<char *>(field->name.c_str()),
+                         const_cast<char *()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1)
                 throw3("field info", this->name, field->name);
             {
                 std::vector<std::string> dimnames;
-                                
+
                 // Split the dimension name list for a field
                 Utility::Split(dimlist, ',', dimnames);
                 if ((int)dimnames.size() != field->rank)
@@ -237,7 +237,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             // Get fill value of a field
             field->filler.resize(DFKNTsize(field->type));
             if (getfill(this->datasetid,
-                        const_cast<char *>(field->name.c_str()),
+                        const_cast<char *()),
                         &field->filler[0]) == -1)
                 field->filler.clear();
 
@@ -257,8 +257,8 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
     // Obtain the number of attributes in a Grid or Swath
     if ((numattrs = inq(this->datasetid, NULL, &bufsize)) == -1)
         throw2("inquire attribute", this->name);
-        
-    // Obtain the list of  "name, type, value" tuple 
+
+    // Obtain the list of  "name, type, value" tuple
     if (numattrs > 0) {
         std::vector<char> namelist;
 
@@ -268,7 +268,7 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
             throw2("inquire attribute", this->name);
 
         std::vector<std::string> attrnames;
-                
+
         // Split the attribute namelist, make the "," separated name string to
         // a string list without ",".
         Utility::Split(&namelist[0], bufsize, ',', attrnames);
@@ -284,13 +284,13 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
                 throw3("attribute info", this->name, attr->name);
 
             attr->value.resize(count);
-                        
+
             // Obtain the attribute value. Note that this function just
-            // provides a copy of all attribute values. 
+            // provides a copy of all attribute values.
             //The client should properly interpret to obtain individual
             // attribute value.
             if (readattr(this->datasetid,
-                         const_cast<char *>(attr->name.c_str()),
+                         const_cast<char *()),
                          &attr->value[0]) == -1)
                 throw3("read attribute", this->name, attr->name);
 
@@ -311,13 +311,13 @@ GridDataset * GridDataset::Read(int32 fd, const std::string &gridname)
 {
     GridDataset *grid = new GridDataset(gridname);
 
-    // Open this Grid object 
-    if ((grid->datasetid = GDattach(fd, const_cast<char *>(gridname.c_str())))
+    // Open this Grid object
+    if ((grid->datasetid = GDattach(fd, const_cast<char *())))
         == -1)
         throw2("attach grid", gridname);
 
     // Obtain the size of XDim and YDim as well as latitude and longitude of
-    // the upleft corner and the low right corner. 
+    // the upper-left corner and the low right corner.
     {
         Info &info = grid->info;
         if (GDgridinfo(grid->datasetid, &info.xdim, &info.ydim, info.upleft,
@@ -337,11 +337,11 @@ GridDataset * GridDataset::Read(int32 fd, const std::string &gridname)
 
     // Read dimensions
     grid->ReadDimensions(GDnentries, GDinqdims, grid->dims);
-        
+
     // Read all fields of this Grid.
     grid->ReadFields(GDnentries, GDinqfields, GDfieldinfo, GDreadfield,
                      GDgetfillvalue, false, grid->datafields);
-        
+
     // Read all attributes of this Grid.
     grid->ReadAttributes(GDinqattrs, GDattrinfo, GDreadattr, grid->attrs);
 
@@ -418,7 +418,7 @@ void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
              this->grid->getDataFields().begin();
          i != this->grid->getDataFields().end(); ++i) {
         int xdimindex = -1, ydimindex = -1, index = 0;
-                
+
         // Traverse all dimensions in each data field
         for (std::vector<Dimension *>::const_iterator j =
                  (*i)->getDimensions().begin();
@@ -432,7 +432,7 @@ void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
         if (ym == -1)
             ym = major;
         // The dimension order for all data fields in a grid should be
-        // consistent.      
+        // consistent.
         else if (ym != major)
             throw2("inconsistent XDim, YDim order", this->grid->getName());
     }
@@ -452,15 +452,15 @@ void GridDataset::Calculated::DetectOrthogonality() throw(Exception)
 
     int j;
     this->orthogonal = false;
-        
+
     /// Ideally we should check both latitude and longitude for each case.
     /// Here we assume that latitude and longitude have the same orthogonality
     // for any EOS files.
     /// We just check longitude and latitude alternatively for each case.
-        
+
     if (this->ydimmajor) {
         // check if longitude is like the following:
-        //   /- xdim  -/ 
+        //   /- xdim  -/
         //   1 2 3 ... x
         //   1 2 3 ... x
         //   1 2 3 ... x
@@ -576,7 +576,7 @@ void GridDataset::Calculated::ReadLongitudeLatitude() throw(Exception)
 
     this->lons.resize(numpoints);
     this->lats.resize(numpoints);
-        
+
     // Call EOS GDij2ll function to obtain latitude and longitude
     if (GDij2ll(proj.getCode(), proj.getZone(),
                 const_cast<float64 *>(proj.getParam()), proj.getSphere(),
@@ -621,7 +621,7 @@ static bool IsDisjoint(std::vector<std::pair<Field *, std::string> > &l,
     return true;
 }
 
-// The internal utility method to check if vector s is a subset of vector b. 
+// The internal utility method to check if vector s is a subset of vector b.
 static bool IsSubset(const std::vector<Field *> &s,
                      const std::vector<Field *> &b)
 {
@@ -633,7 +633,7 @@ static bool IsSubset(const std::vector<Field *> &s,
     return true;
 }
 
-// The internal utility method to check if vector s is a subset of vector b. 
+// The internal utility method to check if vector s is a subset of vector b.
 static bool IsSubset(std::vector<std::pair<Field *, std::string> > &s,
                      const std::vector<Field *> &b)
 {
@@ -682,27 +682,27 @@ SwathDataset * SwathDataset::Read(int32 fd, const std::string &swathname)
 
     // Openn this Swath object
     if ((swath->datasetid = SWattach(fd,
-                                     const_cast<char *>(swathname.c_str())))
+                                     const_cast<char *())))
         == -1)
         throw2("attach swath", swathname);
 
     // Read dimensions of this Swath
     swath->ReadDimensions(SWnentries, SWinqdims, swath->dims);
-        
+
     // Read all information related to data fields of this Swath
     swath->ReadFields(SWnentries, SWinqdatafields, SWfieldinfo, SWreadfield,
                       SWgetfillvalue, false, swath->datafields);
-        
+
     // Read all information related to geo-location fields of this Swath
     swath->ReadFields(SWnentries, SWinqgeofields, SWfieldinfo, SWreadfield,
                       SWgetfillvalue, true, swath->geofields);
-        
+
     // Read all attributes of this Swath
     swath->ReadAttributes(SWinqattrs, SWattrinfo, SWreadattr, swath->attrs);
-        
-    // Read dimension map 
+
+    // Read dimension map
     swath->ReadDimensionMaps(swath->dimmaps);
-        
+
     // Read index maps, we haven't found any files with the Index Maps.
     swath->ReadIndexMaps(swath->indexmaps);
 
@@ -717,24 +717,24 @@ void SwathDataset::OverrideGeoFields()
 {
     // Create all necessary adjusted geo-location fields for all data fields
     // Usedgeofields is a global map of <unadjusted geo-location field name,
-    // adjusted geo-location field name>(e.g.,lat, lat_1) for this swath. 
+    // adjusted geo-location field name>(e.g.,lat, lat_1) for this swath.
     std::map<std::string, std::string> usedgeofields;
-        
+
     // Traverse all data fields of this swath
     for (std::vector<Field *>::const_iterator j = this->datafields.begin();
          j != this->datafields.end(); ++j) {
-        
+
         // Associated is the name pair of <unadjusted geo-location field name,
         // adjusted geo-location field name>
         std::vector<std::pair<std::string, std::string> > associated;
-                
+
         // This action essentially called methods to generate adjusted
         // geo-location fields by interpolation or subsampling.
         this->GetAssociatedGeoFields(**j, associated);
 
         // Check if there are multiple adjusted geo-location fields for one
         // geo-location field.
-        // HDF-EOS2 can represent this relation, but OpenDAP does not want this. 
+        // HDF-EOS2 can represent this relation, but OpenDAP does not want this.
         // OPeNDAP currently only handles one dimension map for a swath.
         // This may get changed later. KY-2009-07-02
         for (std::vector<std::pair<std::string, std::string> >::const_iterator
@@ -759,10 +759,10 @@ void SwathDataset::OverrideGeoFields()
     // Traverse the usedgeofields table.
     for (std::map<std::string, std::string>::const_iterator
              j = usedgeofields.begin(); j != usedgeofields.end(); ++j) {
-        
+
         // If no dimension map(the name will not be mingled), no need to
         // adjust the names and do interpolations.
-        if (j->first == j->second) continue;  
+        if (j->first == j->second) continue;
 
         std::vector<Field *>::iterator victim;
         for (victim = this->geofields.begin(); victim !=
@@ -786,8 +786,8 @@ void SwathDataset::OverrideGeoFields()
         if (replacing == this->adjustedgeofields.end())
             throw2("cannot find replacing geo-location fields", j->second);
 
-        // This is the final wrap-up of the work: 
-                
+        // This is the final wrap-up of the work:
+
         //1. Append the replaced geofield into a list,removing it from
         // geofields list.
         this->replacedgeofields.push_back(*victim);
@@ -796,12 +796,12 @@ void SwathDataset::OverrideGeoFields()
         //2. Make the adjusted geofield name be the original one. (e.g.,
         // lat_1->lat)
         replacing->first->name = j->first;
-                
-        //3. Append the adjusted geofield to the geofields list. 
+
+        //3. Append the adjusted geofield to the geofields list.
         //By doing this, geofields will cleanly represent the final version of
         // adjusted geo-fields applications want to use.
         this->geofields.push_back(replacing->first);
-                
+
         //4. After replacing, removed the replaced geofield from adjusted
         // geofield list.
         this->adjustedgeofields.erase(replacing);
@@ -816,15 +816,15 @@ void SwathDataset::ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
     // Obtain number of dimension maps and the buffer size.
     if ((nummaps = SWnentries(this->datasetid, HDFE_NENTMAP, &bufsize)) == -1)
         throw2("dimmap entry", this->name);
-        
+
     // Will use Split utility method to generate a list of dimension map.
     // An example of original representation of a swath dimension map:(d1/d2,
-    // d3/d4,...) 
+    // d3/d4,...)
     // d1:the name of this dimension of the data field , d2: the name of the
     // corresponding dimension of the geo-location field
     // The list will be decomposed from (d1/d2,d3/d4,...) to {[d1,d2,0(offset),
     // 1(increment)],[d3,d4,0(offset),1(increment)],...}
-        
+
     if (nummaps > 0) {
         std::vector<char> namelist;
         std::vector<int32> offset, increment;
@@ -855,7 +855,7 @@ void SwathDataset::ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
     }
 }
 
-// The following function is nevered tested and probably will never be used.
+// The following function is never tested and probably will never be used.
 void SwathDataset::ReadIndexMaps(std::vector<IndexMap *> &indexmaps)
     throw(Exception)
 {
@@ -888,13 +888,13 @@ void SwathDataset::ReadIndexMaps(std::vector<IndexMap *> &indexmaps)
                 int32 dimsize;
                 if ((dimsize =
                      SWdiminfo(this->datasetid,
-                               const_cast<char *>(indexmap->geo.c_str())))
+                               const_cast<char *())))
                     == -1)
                     throw3("dimension info", this->name, indexmap->geo);
                 indexmap->indices.resize(dimsize);
                 if (SWidxmapinfo(this->datasetid,
-                                 const_cast<char *>(indexmap->geo.c_str()),
-                                 const_cast<char *>(indexmap->data.c_str()),
+                                 const_cast<char *()),
+                                 const_cast<char *()),
                                  &indexmap->indices[0]) == -1)
                     throw4("indexmap info", this->name, indexmap->geo,
                            indexmap->data);
@@ -936,7 +936,7 @@ public:
     {
     }
 
-    // This method executes 
+    // This method executes
     void Run()
     {
         this->PrepareDimensionMaps();
@@ -1002,7 +1002,7 @@ private:
                             // Append the list
                             // k:(address of) Geofield name, i: data field
                             // dimension index, l: geo-location field
-                            // dimension index, 
+                            // dimension index,
                             // j:address of the current dimension map tuple
                             this->queue.push_back(SwathFieldDimensionTuple(*k,
                                                                            i,
@@ -1082,7 +1082,7 @@ private:
     }
 
     // This method will make a unique name for the same geo_location field
-    // with different dimension map 
+    // with different dimension map
     // The name will be like latitude_5:10_5:10(5 is the offset and 10 is the
     // increment in a dimension map)
     std::string MangleAdjustedGeoFieldName(const Field &geofield,
@@ -1104,7 +1104,7 @@ private:
         return ss.str();
     }
 
-        
+
     static bool AlreadyAdjusted(std::pair<Field *, std::string> fieldpair,
                                 std::string name)
     {
@@ -1202,7 +1202,7 @@ const char * UnadjustedFieldData::get()
     if (!this->valid) {
         this->data.resize(this->datalen);
         if (this->reader(this->datasetid,
-                         const_cast<char *>(this->fieldname.c_str()),
+                         const_cast<char *()),
                          NULL, NULL, NULL, &this->data[0]) == -1)
             return 0;
         this->valid = true;
@@ -1361,7 +1361,7 @@ void AdjustedFieldData<T>::Adjust(std::vector<AdjustInfo> &adjustinfo)
                     info.rightdist = -1;
                 }
             }
-            // beyound the right boundary
+            // beyond the right boundary
             else if (geoindex >= geodim.getSize() - 1) {
                 info.rightpoint = geodim.getSize() - 1;
                 info.leftpoint = info.rightpoint - 1;

@@ -8,12 +8,12 @@
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
 // option) any later version.
-// 
+//
 // This software is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 // or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
@@ -63,7 +63,7 @@ using namespace libdap;
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 class HDFEOS:public HDFCFSwath {
-  
+
 private:
     // Private member variables
     bool _parsed;
@@ -77,24 +77,27 @@ private:
     int ydimsize;
 
     string path_name;
-  
+
     map < string, int > dimension_map;
     map < string, string > full_data_path_to_dimension_list_map;
-        
+
     vector < string > dimensions;
-        
-    // #ifdef CF
-    bool _shared_dimension;        
+
+    bool _shared_dimension;
     map < string, string > eos_to_cf_map;
     map < string, string > cf_to_eos_map;
-    // #endif
+    // These are 'special' maps to deal with hdfeos swaths; only really needed
+    // when building with the hdfeos2 capability, but it's easier to not make
+    // its inclusion conditional based on a compile-time switch.
+    map < string, string > eos_to_cf_map_is_swath;
+    map < string, string > cf_to_eos_map_is_swath;
 
 #ifdef USE_HDFEOS2_LIB
     vector < int > types;
-    
-    bool set_dimension_array_hdfeos2();                
+
+    bool set_dimension_array_hdfeos2();
 #endif
-    
+
     ///   If you look at the hdfclass/sds.cc file, the current hdf4 handler
     /// retrieves dataset based on variable name. Thus, suppressing path
     /// information from structMetadata is required, not an option.
@@ -118,7 +121,7 @@ private:
 public:
     /// a flag to indicate that origin information in structMetadata
     /// specifies that a map is upside down.
-    bool borigin_upper; 
+    bool borigin_upper;
     /// a flag to indicate if structMetdata dataset is processed or not.
     bool bmetadata_Struct;
     /// a buffer for the merged structMetadata dataset
@@ -153,14 +156,14 @@ public:
     float gradient_x;
     /// The resolution of latitude
     float gradient_y;
-  
+
     /// A vector that keeps track of dataset names in an HDF-EOS file
     ///
     /// The dataset names are collected as a result of the structMetadata file
     /// parsing. The names also include group path information stored in the
-    /// structMetadata file. 
+    /// structMetadata file.
     vector < string > full_data_paths;
-        
+
     /// Pointers for map data arrays
     dods_float32 **dimension_data;
 
@@ -171,12 +174,12 @@ public:
     auto_ptr<HDFEOS2::File> eos2;
     //HDFEOS2::File *eos2;
 #endif
-        
+
     HDFEOS();
     virtual ~ HDFEOS();
-        
+
     /// Remember the data full path of a variable including the name.
-    /// 
+    ///
     /// It pushes the EOS-metadata-parsed full path variable name
     /// into the vector for future processing.
     /// \param[in] full_path a full path information of a variable in
@@ -206,13 +209,17 @@ public:
     ///
     /// HDF-EOS files used a slightly different dimension and attribute names
     /// from the CF standard. This function corrects such deviation for
-    /// a given \a eos_name. Although this function works for some HDF-EOS 
+    /// a given \a eos_name. Although this function works for some HDF-EOS
     /// files, it is desired to have a separate XML configuration file to
     /// cover all possibilities in HDF-EOS files.
     ///
     /// \return a pointer to a CF-compliant character string
     /// \see get_EOS_name()
+#if 0
     const char *get_CF_name(const char *eos_name);
+#endif
+
+    string get_CF_name(const string &str);
 
     /// Get the EOS attribute and dimension names.
     ///
@@ -223,8 +230,8 @@ public:
     //  for easy handler customization.
     /// \return a string used in HDF-EOS convention
     /// \see get_CF_name()
-    string get_EOS_name(string cf_name);
-        
+    string get_EOS_name(const string &cf_name);
+
     /// Retrieve all possible dimensions used in an HDF-EOS file.
     ///
     /// The CF-convention requires that all shared dimension variables are
@@ -234,9 +241,9 @@ public:
     /// to generate the shared dimension variables.
     ///
     /// \param[out] tokens a vector that will hold all dimension names
-    /// \see set_dimension_array();    
+    /// \see set_dimension_array();
     /// \see is_shared_dimension_set()
-    void get_all_dimensions(vector < string > &tokens);    
+    void get_all_dimensions(vector < string > &tokens);
 
     /// Get the index of dimension data from the dimension map
     ///
@@ -276,9 +283,9 @@ public:
     /// \return false otherwise
     /// \see set_grid()
     bool is_grid();
-    
+
     /// Check if this class has already parsed the \a name as grid.
-    /// 
+    ///
     /// \param[in] name a name of variable
     /// \return true if it is parsed as Grid.
     /// \return false otherwise
@@ -299,20 +306,20 @@ public:
 
     /// Check if the current HDF5 file is a valid NASA EOS file.
     ///
-    /// 
+    ///
     /// \return true if it has a set of correct meta data files.
-    /// \return false otherwise  
+    /// \return false otherwise
     bool is_valid();
 
     /// Parse the structMetadata in an HDF-EOS2 file.
-    /// 
+    ///
     /// This function parses the \a str_metadata string which concatenated
     /// structMetadata files.
-    /// 
+    ///
     /// \return true if metadata is parsed.
     /// \return false if it is not parsed yet.
     bool parse_struct_metadata(const char* str_metadata);
-        
+
     /// Print out some key information parsed from metadata
     ///
     /// This function is provided for debugging purporse
@@ -325,7 +332,7 @@ public:
     /// Since BES is a daemon that never terminates, it is essential to
     /// reset this class whenever there's a new HDF4 file is requested.
     void reset();
-        
+
     /// Generate artifical dimension array.
     ///
     /// This function generates dimension arrays based on metadata
@@ -343,21 +350,21 @@ public:
     /// Some HDF-EOS2 grid files have non orthographic projection like
     /// polar or sinusoidal. To distinguish them from ortho projection,
     /// the parser will set the flag true if ortho porjection is detected
-    /// and thus normal Grids can be generated. 
+    /// and thus normal Grids can be generated.
     ///
     /// If you want to support non-ortho projection files, use HDF-EOS2
     /// library which can perform map interpolation. The parser-based handler
     /// cannot support them.
-    /// 
+    ///
     /// \see is_grid()
     void set_grid(bool flag);
 
-    
+
     /// Sets the shared dimension flag true.
-    /// \see is_shared_dimension_set() 
+    /// \see is_shared_dimension_set()
     void set_shared_dimension();
 
-    
+
 #ifdef USE_HDFEOS2_LIB
     /// Remember the type of HDF-EOS dataset variable via HDF-EOS2 library.
     ///
@@ -374,42 +381,42 @@ public:
     ///
     /// \see add_type()
     void add_variable(string var_name);
-    
+
     /// Check if the current HDF-EOS file is a valid NASA EOS Swath file
     /// via HDF-EOS2 library.
     /// \return true if it is a valid EOS Swath file
     /// \return false otherwise
     bool is_swath();
-        
+
     /// Check if the current HDF-EOS file uses a 1-D projection
     /// via HDF-EOS2 library.
     /// \return true if it uses a 1-D projection
-    /// \return false otherwise  
+    /// \return false otherwise
     bool is_orthogonal();
-  
+
     /// Check if the current HDF-EOS file has 2-D lat/lon with a YDim major
     /// via HDF-EOS2 library.
     /// \return true if it has 2-D lat/lon with a YDim major.
-    /// \return false otherwise  
+    /// \return false otherwise
     bool is_ydimmajor();
-        
+
     /// Get the pointer to the array of grid_name via HDF-EOS2 library.
     ///
     /// This function reads the actual content of \a grid_name Grid dataset.
-    /// \todo allow subsetting    
+    /// \todo allow subsetting
     int get_data_grid(string grid_name, char** val);
 
     /// Get the pointer to the array of swath_name via HDF-EOS2 library.
     ///
     /// This function reads the actual content of \a swath_name Swath dataset.
     int get_data_swath(string swath_name, char** val);
-  
+
     /// Get the data type of variable at location i via HDF-EOS2 library.
     int get_data_type(int i);
 
     /// Get the XDim (lon) size of HDF-EOS Grid via HDF-EOS2 library.
     int get_xdim_size();
-  
+
     /// Get the YDim (lat) size of HDF-EOS Grid via HDF-EOS2 library.
     int get_ydim_size();
 
@@ -418,17 +425,17 @@ public:
 
     /// Handle data fields via HDF-EOS2 library
     void handle_datafield(const HDFEOS2::Field *field);
-    
+
     /// Handle grids via HDF-EOS2 library
     void handle_grid(const HDFEOS2::GridDataset *grid);
-    
+
     /// Handle swath via HDF-EOS2 library
     void handle_swath(const HDFEOS2::SwathDataset *swath);
 
-        
+
     /// Open HDF-EOS file via HDF-EOS2 library
     int open(char* filename);
-        
+
 #endif  // USE_HDFEOS2_LIB
 };
 #endif // #ifndef _HDFEOS_H
