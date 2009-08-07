@@ -204,7 +204,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
 
             // Obtain most information of a field such as rank, dimension etc.
             if ((fldinfo(this->datasetid,
-                         const_cast<char *()),
+                         cconst_cast<char *>(field->name.c_str()),
                          &field->rank, dimsize, &field->type, dimlist)) == -1)
                 throw3("field info", this->name, field->name);
             {
