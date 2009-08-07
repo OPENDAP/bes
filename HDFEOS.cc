@@ -136,12 +136,13 @@ void HDFEOS::add_dimension_map(string dimension_name, int dimension)
 
 string HDFEOS::get_CF_name(const string &str)
 {
+#ifdef USE_HDFEOS2_LIB
     if (is_swath()) {
         map<string,string>::iterator pos = eos_to_cf_map_is_swath.find(str);
         if (pos != eos_to_cf_map.end())
             return pos->second;
     }
-
+#endif
     map<string,string>::iterator pos = eos_to_cf_map.find(str);
     if (pos != eos_to_cf_map.end())
 	return pos->second;
@@ -151,12 +152,13 @@ string HDFEOS::get_CF_name(const string &str)
 
 string HDFEOS::get_EOS_name(const string &str)
 {
+#ifdef USE_HDFEOS2_LIB
     if (is_swath()) {
         map<string,string>::iterator pos = eos_to_cf_map_is_swath.find(str);
         if (pos != eos_to_cf_map.end())
             return pos->second;
     }
-
+#endif
     map<string,string>::iterator pos = eos_to_cf_map.find(str);
     if (pos != eos_to_cf_map.end())
         return pos->second;
