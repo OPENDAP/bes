@@ -33,7 +33,7 @@ BUILDING THE SOFTWARE
    Type `./configure --enable-cf --with-hdfeos2=/path/to/HDF-EOS2_library'
 
    They will include the enhancement work for HDF4 handler supported by 
-   NASA grant.
+   a NASA grant.
 
    This requires the installation of HDF-EOS2 library. You can download it
    from http://newsroom.gsfc.nasa.gov/sdptoolkit/tookit.html.
@@ -46,7 +46,30 @@ BUILDING THE SOFTWARE
    This doesn't require the installation of HDF-EOS2 library and it works
    for some HDF-EOS2 Grid / Swath files. This is less recommended option 
    since HDF-EOS2 library can support more HDF-EOS2 files.
-    
+
+    NB: To build the HDFEOS library on a 64-bit fedora core platform
+    using the FC RPMs for hdf4, do the following: First download
+    HDF-EOS2.16v1.00.tar.Z (Google should be abe to locate it). Then
+    define CFLAGS, CPPFLAGS and LDFLAGS as:
+
+    	   CPPFLAGS=-I/usr/include/hdf
+	   CFLAGS="-g -O2 -fPIC"
+	   LDFLAGS="-L/usr/lib64/hdf"
+
+    I was not able to get the --with-hdf4 option to find the library
+    file or the header and the -fPIC option is needed even though the
+    library builds a static archive only because we're going to link
+    it into a shared object. 
+
+    Lastly, 'make install' installs the archive into 'hdfeos2/' in the
+    top-level directory of the distribution. I had to copy the include
+    directory, also at the top-level of the distribution, into
+    'hdfeos2/' to get the code here to compile and link. I made a link
+    to /usr/local/hdfeos2 and then ran configure here as:
+
+           ./configure --enable-cf --with-hdeos2=/usr/local/hdfeos2
+
+    jhrg 8/7/09
 
 2) Type `make' to build the three server programs
 

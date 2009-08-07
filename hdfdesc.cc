@@ -1569,10 +1569,11 @@ static void write_hdfeos2_grid_2D_projection(DDS &dds)
             << " Name=" << eos.full_data_paths.at(i)	  
             << " Type=" << eos.get_data_type(i)
             <<  endl);
-
-        const char* cf_name =
-            eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
+#if 0
+        const char* cf_name = eos.get_CF_name(eos.full_data_paths.at(i));
         string cf_varname(cf_name);
+#endif
+        string cf_varname = eos.get_CF_name(eos.full_data_paths.at(i));
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
     
@@ -1600,7 +1601,10 @@ static void write_hdfeos2_grid_2D_projection(DDS &dds)
 
             string str_dim_name = tokens.at(dim_index);
             int dim_size = eos.get_dimension_size(str_dim_name);
+#if 0
             str_dim_name = eos.get_CF_name((char*)str_dim_name.c_str());
+#endif
+            str_dim_name = eos.get_CF_name(str_dim_name);
             ar->append_dim(dim_size, str_dim_name);
         }
 
@@ -1628,10 +1632,11 @@ static void write_hdfeos2_swath(DDS &dds)
             <<  endl);
 
         // Rename Longitude to lon, Latitude to lat, and so on.
-        const char* cf_name =
-            eos.get_CF_name((char*)eos.full_data_paths.at(i).c_str());
-        
+#if 0
+        const char* cf_name = eos.get_CF_name(eos.full_data_paths.at(i));
         string cf_varname(cf_name);
+#endif
+        string cf_varname = eos.get_CF_name(eos.full_data_paths.at(i));
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
     
@@ -1659,7 +1664,7 @@ static void write_hdfeos2_swath(DDS &dds)
 
             string str_dim_name = tokens.at(dim_index);
             int dim_size = eos.get_dimension_size(str_dim_name);
-            str_dim_name = eos.get_CF_name((char*)str_dim_name.c_str());
+            str_dim_name = eos.get_CF_name(str_dim_name);
             ar->append_dim(dim_size, str_dim_name);
         }
 

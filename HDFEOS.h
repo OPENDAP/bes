@@ -88,7 +88,7 @@ private:
     map < string, string > cf_to_eos_map;
     // These are 'special' maps to deal with hdfeos swaths; only really needed
     // when building with the hdfeos2 capability, but it's easier to not make
-    // its inclusion conditional based on a compile-time switch.
+    // their inclusion conditional based on a compile-time switch. jhrg 
     map < string, string > eos_to_cf_map_is_swath;
     map < string, string > cf_to_eos_map_is_swath;
 
@@ -172,7 +172,6 @@ public:
     /// hdfeos2 library. This pointer will be active if --with-hdfeos2
     /// configuration option is active.
     auto_ptr<HDFEOS2::File> eos2;
-    //HDFEOS2::File *eos2;
 #endif
 
     HDFEOS();
