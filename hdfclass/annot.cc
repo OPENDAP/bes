@@ -65,6 +65,7 @@
 void hdfistream_annot::_init(const string filename)
 {
     _an_id = _index = _tag = _ref = 0;
+    _file_id = 0; // The fix for ticket 1360. jhrg 8/7/09
     _lab = _desc = true;
     _an_ids = vector < int32 > ();
     _filename = filename;
