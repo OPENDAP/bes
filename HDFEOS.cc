@@ -155,13 +155,13 @@ string HDFEOS::get_EOS_name(const string &str)
 {
 #ifdef USE_HDFEOS2_LIB
     if (is_swath()) {
-        map<string,string>::iterator pos = eos_to_cf_map_is_swath.find(str);
-        if (pos != eos_to_cf_map.end())
+        map<string,string>::iterator pos = cf_to_eos_map_is_swath.find(str);
+        if (pos != cf_to_eos_map_is_swath.end())
             return pos->second;
     }
 #endif
-    map<string,string>::iterator pos = eos_to_cf_map.find(str);
-    if (pos != eos_to_cf_map.end())
+    map<string,string>::iterator pos = cf_to_eos_map.find(str);
+    if (pos != cf_to_eos_map.end())
         return pos->second;
     else
         return str;
