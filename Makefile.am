@@ -4,7 +4,7 @@
 #
 # $Id$
 
-AUTOMAKE_OPTIONS = foreign check-news dejagnu
+AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
@@ -95,8 +95,8 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
 	COPYRIGHT_URI hdf4_handler.spec OSX_Resources
 
-DEJATOOL = dap_hdf4_handler
-RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
+# DEJATOOL = dap_hdf4_handler
+# RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC)
 
