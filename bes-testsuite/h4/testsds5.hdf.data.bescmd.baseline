@@ -1,0 +1,57 @@
+The data:
+Grid {
+  Array:
+    Int32 SDS_DFNT_INT32[Axis_DFNT_INT32 = 5];
+  Maps:
+    Int32 Axis_DFNT_INT32[5];
+} SDS_DFNT_INT32 = {  Array: {0, 1, -1, 2147483647, -2147483648}  Maps: {0, 1, -1, 2147483647, -2147483648} };
+Grid {
+  Array:
+    UInt32 SDS_DFNT_UINT32[Axis_DFNT_UINT32 = 3];
+  Maps:
+    UInt32 Axis_DFNT_UINT32[3];
+} SDS_DFNT_UINT32 = {  Array: {0, 1, 4294967295}  Maps: {0, 1, 4294967295} };
+Grid {
+  Array:
+    Int16 SDS_DFNT_INT16[Axis_DFNT_INT16 = 5];
+  Maps:
+    Int16 Axis_DFNT_INT16[5];
+} SDS_DFNT_INT16 = {  Array: {0, 1, -1, 32767, -32768}  Maps: {0, 1, -1, 32767, -32768} };
+Grid {
+  Array:
+    UInt16 SDS_DFNT_UINT16[Axis_DFNT_UINT16 = 3];
+  Maps:
+    UInt16 Axis_DFNT_UINT16[3];
+} SDS_DFNT_UINT16 = {  Array: {0, 1, 65535}  Maps: {0, 1, 65535} };
+Grid {
+  Array:
+    Int32 SDS_DFNT_INT8[Axis_DFNT_INT8 = 5];
+  Maps:
+    Int32 Axis_DFNT_INT8[5];
+} SDS_DFNT_INT8 = {  Array: {0, 1, -1, 127, -128}  Maps: {0, 1, -1, 127, -128} };
+Grid {
+  Array:
+    Byte SDS_DFNT_UINT8[Axis_DFNT_UINT8 = 3];
+  Maps:
+    Byte Axis_DFNT_UINT8[3];
+} SDS_DFNT_UINT8 = {  Array: {0, 1, 255}  Maps: {0, 1, 255} };
+Grid {
+  Array:
+    Float32 SDS_DFNT_FLOAT32[Axis_DFNT_FLOAT32 = 7];
+  Maps:
+    Float32 Axis_DFNT_FLOAT32[7];
+} SDS_DFNT_FLOAT32 = {  Array: {0, 1, -1, 3.40282e+38, 1.17549e-38, -3.40282e+38, -1.17549e-38}  Maps: {0, 1, -1, 3.40282e+38, 1.17549e-38, -3.40282e+38, -1.17549e-38} };
+Grid {
+  Array:
+    Float64 SDS_DFNT_FLOAT64[Axis_DFNT_FLOAT64 = 7];
+  Maps:
+    Float64 Axis_DFNT_FLOAT64[7];
+} SDS_DFNT_FLOAT64 = {  Array: {0, 1, -1, 1.79769313486232e+308, 2.2250738585072e-308, -1.79769313486232e+308, -2.2250738585072e-308}  Maps: {0, 1, -1, 1.79769313486232e+308, 2.2250738585072e-308, -1.79769313486232e+308, -2.2250738585072e-308} };
+Byte SDS_DFNT_CHAR8[Axis_DFNT_CHAR8 = 5] = {0, 1, 255, 127, 128};
+Grid {
+  Array:
+    Byte SDS_DFNT_UCHAR8[Axis_DFNT_UCHAR8 = 3];
+  Maps:
+    Byte Axis_DFNT_UCHAR8[3];
+} SDS_DFNT_UCHAR8 = {  Array: {0, 1, 255}  Maps: {0, 1, 255} };
+
