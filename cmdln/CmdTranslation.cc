@@ -967,6 +967,8 @@ CmdTranslation::translate_get( BESTokenizer &t,
     string def_name = t.get_next_token() ;
     string returnAs ;
     string url ;
+    string starting ;
+    string bounding ;
     token = t.get_next_token() ;
     bool done = false ;
     while( !done )
@@ -984,6 +986,16 @@ CmdTranslation::translate_get( BESTokenizer &t,
 	else if( token == "using" )
 	{
 	    url = t.get_next_token() ;
+	    token = t.get_next_token() ;
+	}
+	else if( token == "contentStartId" )
+	{
+	    starting = t.get_next_token() ;
+	    token = t.get_next_token() ;
+	}
+	else if( token == "mimeBoundary" )
+	{
+	    bounding = t.get_next_token() ;
 	    token = t.get_next_token() ;
 	}
 	else if( token == ";" )
@@ -1046,11 +1058,65 @@ CmdTranslation::translate_get( BESTokenizer &t,
 	}
     }
 
+    if( !starting.empty() )
+    {
+	// start the constraint element
+	int rc = xmlTextWriterStartElement( writer, BAD_CAST "contentStartId" );
+	if( rc < 0 )
+	{
+	    cerr << "failed to start contentStartId element" << endl ;
+	    return false ;
+	}
+
+	/* Write the value of the contentStartId */
+	rc = xmlTextWriterWriteString( writer, BAD_CAST starting.c_str());
+	if( rc < 0 )
+	{
+	    cerr << "failed to write contentStartId for get request" << endl ;
+	    return "" ;
+	}
+
+	// end the contentStartId constraint element
+	rc = xmlTextWriterEndElement( writer ) ;
+	if( rc < 0 )
+	{
+	    cerr << "failed to close constraint element" << endl ;
+	    return false ;
+	}
+    }
+
+    if( !bounding.empty() )
+    {
+	// start the mimeBoundary element
+	int rc = xmlTextWriterStartElement( writer, BAD_CAST "mimeBoundary" );
+	if( rc < 0 )
+	{
+	    cerr << "failed to start mimeBoundary element" << endl ;
+	    return false ;
+	}
+
+	/* Write the value of the constraint */
+	rc = xmlTextWriterWriteString( writer, BAD_CAST bounding.c_str());
+	if( rc < 0 )
+	{
+	    cerr << "failed to write mimeBoundary for get request" << endl ;
+	    return "" ;
+	}
+
+	// end the mimeBoundary constraint element
+	rc = xmlTextWriterEndElement( writer ) ;
+	if( rc < 0 )
+	{
+	    cerr << "failed to close mimeBoundary element" << endl ;
+	    return false ;
+	}
+    }
+
     // end the get element
     rc = xmlTextWriterEndElement( writer ) ;
     if( rc < 0 )
     {
-	cerr << "failed to close setContext element" << endl ;
+	cerr << "failed to close get element" << endl ;
 	return false ;
     }
 

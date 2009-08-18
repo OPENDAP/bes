@@ -37,6 +37,7 @@ using std::ostringstream;
 #include "BESDapTransmit.h"
 #include "DODSFilter.h"
 #include "BESContainer.h"
+#include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
 #include "cgi_util.h"
@@ -55,6 +56,7 @@ BESDapTransmit::BESDapTransmit()
     add_method( DDS_SERVICE, BESDapTransmit::send_basic_dds ) ;
     add_method( DDX_SERVICE, BESDapTransmit::send_basic_ddx ) ;
     add_method( DATA_SERVICE, BESDapTransmit::send_basic_data ) ;
+    add_method( DATADDX_SERVICE, BESDapTransmit::send_basic_dataddx ) ;
 }
 
 void
@@ -224,6 +226,50 @@ void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
     catch(...)
     {
         string s = "unknown error caught transmitting DDX" ;
+        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
+        throw ex;
+    }
+}
+
+void BESDapTransmit::send_basic_dataddx(BESResponseObject * obj,
+                                        BESDataHandlerInterface & dhi)
+{
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+    if( !bdds )
+	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    DataDDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+								    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) print_mime = true ;
+
+    try {
+        DODSFilter df;
+        df.set_dataset_name(dds->filename());
+        df.set_ce(dhi.data[POST_CONSTRAINT]);
+	//FIXME: new DODSFilter function
+        df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
+    }
+    catch( InternalErr &e )
+    {
+        string err = "libdap error transmitting DataDDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
+    }
+    catch( Error &e )
+    {
+        string err = "libdap error transmitting DataDDS: "
+            + e.get_error_message() ;
+        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
+    }
+    catch(...)
+    {
+        string s = "unknown error caught transmitting DataDDS" ;
         BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
         throw ex;
     }

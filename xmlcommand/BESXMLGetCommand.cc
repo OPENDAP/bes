@@ -36,6 +36,7 @@
 #include "BESDefine.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESSyntaxUserError.h"
@@ -94,8 +95,6 @@ BESXMLGetCommand::parse_request( xmlNode *node )
 	return ;
     }
 
-    _str_cmd = (string)"get " + type ;
-
     parse_basic_get( node, name, type, value, props ) ;
 
     // now that we've set the action, go get the response handler for the
@@ -110,6 +109,8 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
 				   const string &value,
 				   map<string,string> &props )
 {
+    _str_cmd = (string)"get " + type ;
+
     _definition = props["definition"] ;
     if( _definition.empty() )
     {

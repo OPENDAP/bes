@@ -33,7 +33,7 @@
 #include "BESDDXResponseHandler.h"
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapTransmit.h"
 

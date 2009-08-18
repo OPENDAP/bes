@@ -54,5 +54,5 @@ HDRS = BESCmdInterface.h BESCommand.h				\
 	BESDefineCommand.h BESSetContainerCommand.h 		\
 	BESSetContextCommand.h BESTermCommand.h
 
-DAP_SRCS = BESCatalogCommand.cc DAPCommandModule.cc
-DAP_HDRS = BESCatalogCommand.h DAPCommandModule.h
+DAP_SRCS = BESGetDataDDXCommand.cc BESCatalogCommand.cc DAPCommandModule.cc
+DAP_HDRS = BESGetDataDDXCommand.h BESCatalogCommand.h DAPCommandModule.h

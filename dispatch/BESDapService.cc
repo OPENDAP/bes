@@ -32,7 +32,7 @@
 
 #include "BESDapService.h"
 #include "BESServiceRegistry.h"
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 
 void
 BESDapService::handle_dap_service( const string &handler )

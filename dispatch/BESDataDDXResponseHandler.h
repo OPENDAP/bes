@@ -1,4 +1,4 @@
-// BESDataNames.h
+// BESDataDDXResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,48 +30,39 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESDataNames_h
-#define D_BESDataNames_h 1
+#ifndef I_BESDataDDXResponseHandler_h
+#define I_BESDataDDXResponseHandler_h
 
-#define DATA_REQUEST "request"
-#define REQUEST_ID "reqID"
-#define REQUEST_FROM "from"
+#include "BESResponseHandler.h"
 
-#define AGG_CMD "aggregation_command"
-#define AGG_HANDLER "aggregation_handler"
-
-#define POST_CONSTRAINT "post_constraint"
-
-#define RETURN_CMD "return_command"
-
-#define USER_ADDRESS "user_address"
-#define USER_NAME "username"
-#define USER_TOKEN "token"
-
-#define SERVER_PID "pid"
-
-#define CONTAINER_NAME "container_name"
-#define STORE_NAME "store_name"
-#define SYMBOLIC_NAME "symbolic_name"
-#define REAL_NAME "real_name"
-#define REAL_NAME_LIST "real_name_list"
-#define CONTAINER_TYPE "type"
-
-#define DEF_NAME "def_name"
-#define DEFINITIONS "definitions"
-
-#define CONTAINER "container"
-
-/*
- * Context
+/** @brief response handler that builds an OPeNDAP DDX object
+ *
+ * A request 'get dataddx for &lt;def_name&gt;;' will be handled by this
+ * response handler. Given a definition name it determines what containers
+ * are to be used to build the OPeNDAP DDX response object that includes
+ * attribute information found in a DAS object and data definitions found in
+ * a DDS object. It also knows how to transmit the DDX response object using
+ * the specified transmitter object in the transmit method.
+ *
+ * @see DDX
+ * @see BESContainer
+ * @see BESDefine
+ * @see BESTransmitter
  */
-#define CONTEXT_NAME "context_name"
-#define CONTEXT_VALUE "context_value"
+class BESDataDDXResponseHandler : public BESResponseHandler
+{
+public:
+				BESDataDDXResponseHandler( const string &name ) ;
+    virtual			~BESDataDDXResponseHandler(void) ;
 
-/*
- * Options
- */
-#define SILENT "silent"
-#define BUFFERED "buffered"
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-#endif // D_BESDataNames_h
+    virtual void		dump( ostream &strm ) const ;
+
+    static BESResponseHandler *DataDDXResponseBuilder( const string &name ) ;
+};
+
+#endif // I_BESDataDDXResponseHandler_h
+

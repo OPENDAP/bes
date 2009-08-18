@@ -37,7 +37,7 @@ using std::cout ;
 
 #include "DAPCommandModule.h"
 
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESDebug.h"
 
 #include "BESCommand.h"

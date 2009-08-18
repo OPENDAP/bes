@@ -1,4 +1,4 @@
-// BESCatalogResponseHandler.cc
+// BESDataDDXResponseHandler.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,78 +30,82 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESCatalogResponseHandler.h"
-#include "BESInfoList.h"
-#include "BESInfo.h"
+#include "BESDataDDXResponseHandler.h"
+#include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
-#include "BESRequestHandler.h"
 #include "BESDapNames.h"
-#include "BESDataNames.h"
-#include "BESCatalogList.h"
+#include "BESDapTransmit.h"
 
-BESCatalogResponseHandler::BESCatalogResponseHandler( const string &name )
+#include "BESDebug.h"
+
+BESDataDDXResponseHandler::BESDataDDXResponseHandler( const string &name )
     : BESResponseHandler( name )
 {
 }
 
-BESCatalogResponseHandler::~BESCatalogResponseHandler( )
+BESDataDDXResponseHandler::~BESDataDDXResponseHandler( )
 {
 }
 
-/** @brief executes the command 'show catalog|leaves [for &lt;node&gt;];' by
- * returning nodes or leaves at the top level or at the specified node.
+/** @brief executes the command 'get ddx for def_name;'
  *
- * The response object BESInfo is created to store the information.
+ * For each container in the specified definition go to the request
+ * handler for that container and have it first add to the OPeNDAP DDS response
+ * object. Once the DDS object has been filled in, repeat the process but
+ * this time for the OPeNDAP DAS response object. Then add the attributes from
+ * the DAS object to the DDS object.
  *
  * @param dhi structure that holds request and response information
  * @see BESDataHandlerInterface
- * @see BESInfo
+ * @see BESDDSResponse
+ * @see BESDASResponse
  * @see BESRequestHandlerList
  */
 void
-BESCatalogResponseHandler::execute( BESDataHandlerInterface &dhi )
+BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESInfo *info = BESInfoList::TheList()->build_info() ;
-    _response = info ;
+    BESDEBUG( "dap", "Entering BESDataDDXResponseHandler::execute" << endl )
 
-    string container = dhi.data[CONTAINER] ;
-    string coi = dhi.data[CATALOG_OR_INFO] ;
-    if( coi == CATALOG_RESPONSE )
-    {
-	info->begin_response( CATALOG_RESPONSE_STR, dhi ) ;
-	dhi.action_name = CATALOG_RESPONSE_STR ;
-    }
-    else
-    {
-	info->begin_response( SHOW_INFO_RESPONSE_STR, dhi ) ;
-	dhi.action_name = SHOW_INFO_RESPONSE_STR ;
-    }
-    BESCatalogList::TheCatalogList()->show_catalog( container, coi, info ) ;
+    dhi.action_name = DATADDX_RESPONSE_STR ;
+    // Create the DDS.
+    // NOTE: It is the responsibility of the specific request handler to set
+    // the BaseTypeFactory. It is set to NULL here
+    DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
+    BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
+    _response = bdds ;
 
-    info->end_response() ;
+    // we're actually going to get the data response, it just gets
+    // displayed as a DataDDX
+    _response_name = DATA_RESPONSE ;
+    dhi.action = DATA_RESPONSE ;
+    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+
+    // we've got what we want, now set the action back to data ddx
+    dhi.action = DATADDX_RESPONSE ;
+    _response = bdds ;
+
+    BESDEBUG( "dap", "Leaving BESDataDDXResponseHandler::execute" << endl )
 }
 
 /** @brief transmit the response object built by the execute command
- * using the specified transmitter object
  *
- * If a response object was built then transmit it as text
+ * If a response object was built then transmit it using the send_ddx method
+ * on the specified transmitter object.
  *
  * @param transmitter object that knows how to transmit specific basic types
  * @param dhi structure that holds the request and response information
- * @see BESInfo
+ * @see DDS
+ * @see DAS
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
 void
-BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
+BESDataDDXResponseHandler::transmit( BESTransmitter * transmitter,
+                                     BESDataHandlerInterface & dhi )
 {
     if( _response )
     {
-	BESInfo *info = dynamic_cast<BESInfo *>(_response) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+        transmitter->send_response( DATADDX_SERVICE, _response, dhi ) ;
     }
 }
 
@@ -112,9 +116,9 @@ BESCatalogResponseHandler::transmit( BESTransmitter *transmitter,
  * @param strm C++ i/o stream to dump the information to
  */
 void
-BESCatalogResponseHandler::dump( ostream &strm ) const
+BESDataDDXResponseHandler::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - ("
+    strm << BESIndent::LMarg << "BESDataDDXResponseHandler::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESResponseHandler::dump( strm ) ;
@@ -122,8 +126,8 @@ BESCatalogResponseHandler::dump( ostream &strm ) const
 }
 
 BESResponseHandler *
-BESCatalogResponseHandler::CatalogResponseBuilder( const string &name )
+BESDataDDXResponseHandler::DataDDXResponseBuilder( const string &name )
 {
-    return new BESCatalogResponseHandler( name ) ;
+    return new BESDataDDXResponseHandler( name ) ;
 }
 

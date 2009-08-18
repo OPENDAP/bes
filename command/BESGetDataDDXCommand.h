@@ -1,9 +1,9 @@
-// BESDataNames.h
+// BESGetDataDDXCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
+// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
@@ -30,48 +30,23 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESDataNames_h
-#define D_BESDataNames_h 1
+#ifndef A_BESGetDataDDXCommand_h
+#define A_BESGetDataDDXCommand_h 1
 
-#define DATA_REQUEST "request"
-#define REQUEST_ID "reqID"
-#define REQUEST_FROM "from"
+#include "BESCommand.h"
 
-#define AGG_CMD "aggregation_command"
-#define AGG_HANDLER "aggregation_handler"
+class BESGetDataDDXCommand : public BESCommand
+{
+private:
+protected:
+public:
+    					BESGetDataDDXCommand( const string &cmd )
+					    : BESCommand( cmd ) {}
+    virtual				~BESGetDataDDXCommand() {}
 
-#define POST_CONSTRAINT "post_constraint"
+    virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
+					  BESDataHandlerInterface &dhi ) ;
+} ;
 
-#define RETURN_CMD "return_command"
+#endif // A_BESGetDataDDXCommand_h
 
-#define USER_ADDRESS "user_address"
-#define USER_NAME "username"
-#define USER_TOKEN "token"
-
-#define SERVER_PID "pid"
-
-#define CONTAINER_NAME "container_name"
-#define STORE_NAME "store_name"
-#define SYMBOLIC_NAME "symbolic_name"
-#define REAL_NAME "real_name"
-#define REAL_NAME_LIST "real_name_list"
-#define CONTAINER_TYPE "type"
-
-#define DEF_NAME "def_name"
-#define DEFINITIONS "definitions"
-
-#define CONTAINER "container"
-
-/*
- * Context
- */
-#define CONTEXT_NAME "context_name"
-#define CONTEXT_VALUE "context_value"
-
-/*
- * Options
- */
-#define SILENT "silent"
-#define BUFFERED "buffered"
-
-#endif // D_BESDataNames_h

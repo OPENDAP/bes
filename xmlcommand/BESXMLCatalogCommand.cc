@@ -32,8 +32,8 @@
 
 #include "BESXMLCatalogCommand.h"
 #include "BESContainerStorageList.h"
+#include "BESDapNames.h"
 #include "BESDataNames.h"
-#include "BESResponseNames.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESSyntaxUserError.h"

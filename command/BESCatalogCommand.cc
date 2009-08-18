@@ -34,8 +34,8 @@
 #include "BESTokenizer.h"
 #include "BESResponseHandlerList.h"
 #include "BESSyntaxUserError.h"
+#include "BESDapNames.h"
 #include "BESDataNames.h"
-#include "BESResponseNames.h"
 
 /** @brief knows how to parse a show catalog request
  *

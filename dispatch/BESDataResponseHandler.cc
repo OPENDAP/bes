@@ -33,7 +33,7 @@
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESDapTransmit.h"
 
 BESDataResponseHandler::BESDataResponseHandler( const string &name )

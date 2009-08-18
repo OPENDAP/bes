@@ -36,9 +36,9 @@ using namespace libdap ;
 
 #include "BESDapRequestHandler.h"
 #include "BESResponseHandler.h"
+#include "BESDapNames.h"
 #include "BESResponseNames.h"
 #include "BESVersionInfo.h"
-#include "BESDataNames.h"
 
 BESDapRequestHandler::BESDapRequestHandler( const string &name )
     : BESRequestHandler( name )

@@ -38,13 +38,14 @@ using std::endl ;
 #include "BESDapRequestHandler.h"
 #include "BESRequestHandlerList.h"
 
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESResponseHandlerList.h"
 
 #include "BESDASResponseHandler.h"
 #include "BESDDSResponseHandler.h"
 #include "BESDataResponseHandler.h"
 #include "BESDDXResponseHandler.h"
+#include "BESDataDDXResponseHandler.h"
 
 #include "BESCatalogResponseHandler.h"
 
@@ -80,6 +81,9 @@ BESDapModule::initialize( const string &modname )
     BESDEBUG( "dap", "    adding " << DATA_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( DATA_RESPONSE, BESDataResponseHandler::DataResponseBuilder ) ;
 
+    BESDEBUG( "dap", "    adding " << DATADDX_RESPONSE << " response handler" << endl )
+    BESResponseHandlerList::TheList()->add_handler( DATADDX_RESPONSE, BESDataDDXResponseHandler::DataDDXResponseBuilder ) ;
+
     BESDEBUG( "dap", "    adding " << CATALOG_RESPONSE << " response handler" << endl )
     BESResponseHandlerList::TheList()->add_handler( CATALOG_RESPONSE, BESCatalogResponseHandler::CatalogResponseBuilder ) ;
 
@@ -94,6 +98,8 @@ BESDapModule::initialize( const string &modname )
 			      DDX_DESCRIPT, DAP2_FORMAT ) ;
     registry->add_to_service( OPENDAP_SERVICE, DATA_SERVICE,
 			      DATA_DESCRIPT, DAP2_FORMAT ) ;
+    registry->add_to_service( OPENDAP_SERVICE, DATADDX_SERVICE,
+			      DATADDX_DESCRIPT, DAP2_FORMAT ) ;
 
     BESDEBUG( "dap", "Initializing DAP Basic Transmitters:" << endl )
     BESReturnManager::TheManager()->add_transmitter( DAP2_FORMAT,
@@ -118,6 +124,7 @@ BESDapModule::terminate( const string &modname )
     BESResponseHandlerList::TheList()->remove_handler( DDS_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( DATA_RESPONSE ) ;
+    BESResponseHandlerList::TheList()->remove_handler( DATADDX_RESPONSE ) ;
     BESResponseHandlerList::TheList()->remove_handler( CATALOG_RESPONSE ) ;
 
     BESDEBUG( "dap", "    removing " << OPENDAP_SERVICE << " services" << endl )

@@ -165,6 +165,7 @@ DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
 	BESDDXResponseHandler.cc \
 	BESDataResponseHandler.cc \
+	BESDataDDXResponseHandler.cc \
 	BESDapModule.cc \
 	BESDapRequestHandler.cc BESDapTransmit.cc
 
@@ -172,6 +173,7 @@ DAP_HDRS = BESCatalogResponseHandler.h \
 	BESDASResponseHandler.h BESDDSResponseHandler.h \
 	BESDDXResponseHandler.h \
 	BESDataResponseHandler.h \
+	BESDataDDXResponseHandler.h \
 	BESDapModule.h \
 	BESDapRequestHandler.h BESDapTransmit.h
 
@@ -182,7 +184,8 @@ BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
 	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
 	BESDapErrorInfo.cc BESDapService.cc
 
-BES_DAP_HDRS = BESDapResponse.h BESDASResponse.h BESDDSResponse.h \
+BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
+	BESDDSResponse.h \
 	BESDataDDSResponse.h \
 	BESFilterTransmitter.h BESCgiInterface.h \
 	BESContainerStorageCatalog.h \

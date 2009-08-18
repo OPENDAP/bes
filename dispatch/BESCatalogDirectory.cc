@@ -46,7 +46,7 @@ using std::endl ;
 #include "BESCatalogDirectory.h"
 #include "BESCatalogUtils.h"
 #include "BESInfo.h"
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESCatalogUtils.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorageCatalog.h"

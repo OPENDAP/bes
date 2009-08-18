@@ -248,7 +248,7 @@ BESServerHandler::execute( Connection *c )
 	    }
 	}
 
-	delete sw;
+	if( sw ) delete sw;
     }
 }
 

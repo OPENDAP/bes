@@ -41,10 +41,6 @@
  * define
  * send
  * get
- *     das
- *     dds
- *     ddx
- *     dods
  *     stream
  * show
  *     help
@@ -52,10 +48,8 @@
  *     version
  *     containers
  *     definitions
- *     keys
+ *     config
  *     status
- *     nodes
- *     leaves
  * delete
  * @endverbatim
  */
@@ -71,25 +65,7 @@
 
 #define SEND_RESPONSE "send"
 
-#define OPENDAP_SERVICE "dap"
-#define DAP2_FORMAT "dap2"
 #define GET_RESPONSE "get"
-#define DAS_RESPONSE "get.das"
-#define DAS_SERVICE "das"
-#define DAS_DESCRIPT "OPeNDAP Data Attribute Structure"
-#define DAS_RESPONSE_STR "getDAS"
-#define DDS_RESPONSE "get.dds"
-#define DDS_SERVICE "dds"
-#define DDS_DESCRIPT "OPeNDAP Data Description Structure"
-#define DDS_RESPONSE_STR "getDDS"
-#define DDX_RESPONSE "get.ddx"
-#define DDX_SERVICE "ddx"
-#define DDX_DESCRIPT "OPeNDAP Data Description and Attribute XML Document"
-#define DDX_RESPONSE_STR "getDDX"
-#define DATA_RESPONSE "get.dods"
-#define DATA_SERVICE "dods"
-#define DATA_DESCRIPT "OPeNDAP Data Object"
-#define DATA_RESPONSE_STR "getDODS"
 #define STREAM_RESPONSE "get.stream"
 #define STREAM_SERVICE "stream"
 #define STREAM_RESPONSE_STR "getStream"
@@ -111,10 +87,6 @@
 #define STATUS_RESPONSE_STR "showStatus"
 #define SERVICE_RESPONSE "show.servicedescriptions"
 #define SERVICE_RESPONSE_STR "showServiceDescriptions"
-#define CATALOG_RESPONSE "show.catalog"
-#define CATALOG_RESPONSE_STR "showCatalog"
-#define SHOW_INFO_RESPONSE "show.info"
-#define SHOW_INFO_RESPONSE_STR "showInfo"
 #define SHOW_CONTEXT "show.context"
 #define SHOW_CONTEXT_STR "showContext"
 

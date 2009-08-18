@@ -36,9 +36,10 @@ using std::endl ;
 using std::cout ;
 
 #include "BESXMLDapCommandModule.h"
-#include "BESResponseNames.h"
+#include "BESDapNames.h"
 #include "BESDebug.h"
 #include "BESXMLCatalogCommand.h"
+#include "BESXMLGetDataDDXCommand.h"
 
 void
 BESXMLDapCommandModule::initialize( const string &modname )
@@ -55,6 +56,11 @@ BESXMLDapCommandModule::initialize( const string &modname )
     BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
 				BESXMLCatalogCommand::CommandBuilder ) ;
 
+    BESDEBUG( "besxml", "    adding " << DATADDX_RESPONSE
+			<< " command" << endl )
+    BESXMLCommand::add_command( DATADDX_RESPONSE,
+				BESXMLGetDataDDXCommand::CommandBuilder ) ;
+
     BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl )
 }
 
@@ -65,6 +71,7 @@ BESXMLDapCommandModule::terminate( const string &modname )
 
     BESXMLCommand::del_command( CATALOG_RESPONSE_STR ) ;
     BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR ) ;
+    BESXMLCommand::del_command( DATADDX_RESPONSE ) ;
 
     BESDEBUG( "dap", "Done Removing DAP Commands" << endl )
 }
