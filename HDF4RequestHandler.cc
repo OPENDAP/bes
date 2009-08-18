@@ -34,6 +34,7 @@
 
 #include "HDF4RequestHandler.h"
 #include <BESResponseNames.h>
+#include <BESDapNames.h>
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>
 #include <BESDataDDSResponse.h>
@@ -46,7 +47,6 @@
 #include <InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
-#include <BESDataNames.h>
 #include <ConstraintEvaluator.h>
 #include <Ancillary.h>
 #include "config_hdf.h"

@@ -284,6 +284,7 @@ void hdfistream_sds::open(const char *filename)
 {
     if (filename == 0)          // no filename given
         THROW(hcerr_openfile);
+    BESDEBUG("h4", "sds opening file " << filename << endl);
     if (_file_id != 0)          // close any currently open file
         close();
     if ((_file_id = SDstart((char *) filename, DFACC_READ)) < 0)
