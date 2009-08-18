@@ -60,9 +60,10 @@ DEJATOOL = dap_h5_handler
 RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
 
 EXTRA_DIST = hdfeos_das.y hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources \
-	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
+	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in testsuite
 
-CLEANFILES = *~ *.sum *.log
+CLEANFILES = *~ *.sum *.log *.output hdfeos_das.tab.cc hdfeos_das.tab.hh \
+	lex.hdfeos_das.cc lex.hdfeos.cc hdfeos.tab.cc hdfeos.tab.hh 
 
 if OPENDAPSERVER
 
@@ -109,7 +110,7 @@ hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y H5EOS.h
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos -o hdfeos.tab.cc $<
 	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 
-hdfeos_das.tab.cc hdfeos_das.tab.h: hdfeos_das.y
+hdfeos_das.tab.cc hdfeos_das.tab.hh: hdfeos_das.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das -o hdfeos_das.tab.cc $<
 	if test -e hdfeos_das.tab.cc.h; then mv hdfeos_das.tab.cc.h hdfeos_das.tab.hh; fi
 
