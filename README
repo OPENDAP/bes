@@ -1,11 +1,8 @@
 
-$Id$
-
-Updated for 3.7.13 (17 July 2009)
+Updated for 3.7.14
 
   The OPeNDAP HDF4 Data Handler is enhanced by adding two more configuration 
 options:
-
   1) --enable-cf
   2) --use-hdfeos2=/path/to/hdfeos2_library
 

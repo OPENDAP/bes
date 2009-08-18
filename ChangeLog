@@ -1,3 +1,4 @@
+
 2009-07-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 	
 	The existing handler is enhanced to support OPeNDAP visualization
@@ -17,6 +18,78 @@
 	* HDFEOS2Array.cc|h
 	* HDFEOS2Array2D.cc|h 	
 	
+2009-06-05  James Gallagher <jgallagher@opendap.org>
+
+	Added include files so these will compile with gcc 4.3.2 on FC 10.
+
+	M    configure.ac
+	M    eosdas-test.cc
+	M    INSTALL
+	M    HDF4RequestHandler.cc
+	M    Makefile.am
+
+2009-05-12  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a test baseline that somehow escaped previous checkin
+
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd.baseline
+
+2009-05-12  James Gallagher <jgallagher@opendap.org>
+
+	Tagged
+
+	A    http://scm.opendap.org/svn/tags/hdf4_handler/3.7.13
+
+2009-05-12  James Gallagher <jgallagher@opendap.org>
+
+	Tagged.
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    INSTALL
+	M    README
+
+2009-05-08  James Gallagher <jgallagher@opendap.org>
+
+	Changed the behavior of this code so that when the HDF4.CacheDir
+	parameter is empty, no DAS or DDS caching is done. Previously
+	an empty value caused the handler to use /tmp to cache these
+	objects. Also, the handler tests the dir to see if it can write
+	there and no returns an error if it cannot. Before it would switch
+	to /tmp if the specified dir was not writable. Lastly, there are
+	two cases where the handler adds attributes when certain errors
+	are detected. Now those strings do not have extra quotes added
+	if the symbol ATTR_STRING_QUOTE_FIX is defined (the default).
+
+2009-04-24  Patrick West <pwest@ucar.edu>
+
+	AM_CPPFLAGS needed to be added to the CPPFLAGS for the hdfclass
+	library because hdfclass_CPPFLAGS was defined and didn't include
+	AM_CPPFLAGS. My understanding is that if you don't define the
+	library CPPFLAGS variable then it defaults to AM_CPPFLAGS. But if
+	you define it you have to add AM_CPPFLAGS to it.
+	
+	M    hdfclass/Makefile.am
+
+>>>>>>> .merge-right.r20891
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Tagged version 3.7.12
+
+	A    http://scm.opendap.org/svn/tags/hdf4_handler/3.7.12
+
+2009-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Updated for version 3.7.12
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    INSTALL
+	M    README
 
 2009-04-08  James Gallagher <jgallagher@opendap.org>
 

@@ -64,7 +64,7 @@ static char rcsid[] not_used ={"$Id$"};
 #define YYSTYPE char *
 #define YY_DECL int hdfeoslex YY_PROTO(( void ))
 
-#include "hdfeos.tab.h"
+#include "hdfeos.tab.hh"
 
 int hdfeos_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */

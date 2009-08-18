@@ -1,11 +1,11 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
-AC_INIT(hdf4_handler, 3.7.12, opendap-tech@opendap.org)
+AC_PREREQ(2.61)
+AC_INIT(hdf4_handler, 3.7.14, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([HDFStr.h])
@@ -17,6 +17,7 @@ AC_PROG_CC
 AC_PROG_AWK
 AC_PROG_INSTALL
 AM_PROG_LEX
+AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 # We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 # Makfile will call bison -y which doesn't know how to make the parsers 

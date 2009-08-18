@@ -50,7 +50,7 @@ using namespace std;
 #include "Error.h"
 #include "debug.h"
 #include "parser.h"
-#include "hdfeos.tab.h"
+#include "hdfeos.tab.hh"
 
 #ifdef TRACE_NEW
 #include "trace_new.h"

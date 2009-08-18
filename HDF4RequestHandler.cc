@@ -26,7 +26,6 @@
 // HDF4RequestHandler.cc
 
 #include <cstdlib>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

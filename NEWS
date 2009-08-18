@@ -1,6 +1,20 @@
 
 $Id$
 
+Version 3.7.14 (9 June 2009)
+
+Fix for the tests - missing baseline file.
+
+Fixes for gcc 4.3 (missing include files)
+
+Version 3.7.13 (12 May 2009)
+
+Build fix.
+
+String attributes now cache correctly - before quotes were being added to the
+values. Also, it's now possible to turn off caching by setting hte value of
+HDF4.CacheDir to an empty value (HDF4.CacheDir="").
+
 Version 3.7.12 (8 April 2009)
 
 Many memory leaks found and fixed. A bug reported by Fan Fang where the

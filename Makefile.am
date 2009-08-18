@@ -16,6 +16,8 @@ SUBDIRS = hdfclass
 bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
+WA_HDF4_LIBS="-whole-archive $(HDF4_LIBS) -no-whole-archive"
+
 if OPENDAPSERVER
 
 SUBDIRS += bes-testsuite
@@ -49,6 +51,7 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFByte.cc HDFInt16.cc HDFStr.cc HDFUrl.cc HDFFloat32.cc \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
+
 if CF
 CF_SRC = HDFEOS.cc HDFEOSGrid.cc HDFEOSArray.cc HDFCFSwath.cc
 HDFTYPE_SRC += $(CF_SRC)
@@ -62,6 +65,7 @@ endif
 HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
+
 if CF
 CF_HDR = HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
 HDFTYPE_HDR += $(CF_HDR)
@@ -163,8 +167,8 @@ rpm: dist
 # Build the HDF-EOS parser
 
 hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos $<
-	mv hdfeos.tab.c hdfeos.tab.cc
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc $<
+	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 
 hdfeos2.tab.cc hdfeos2.tab.hh: hdfeos2.y HDFEOS.h
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos2 -o hdfeos2.tab.cc $<
@@ -172,7 +176,7 @@ hdfeos2.tab.cc hdfeos2.tab.hh: hdfeos2.y HDFEOS.h
 
 # Build the HDF-EOS scanner
 
-lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.h
+lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
 	mv lex.hdfeos.c lex.hdfeos.cc
 

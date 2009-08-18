@@ -1,3 +1,7 @@
+Note: This is the original README, written when this software was part of 
+the Distributed Oceanographic Data System (DODS) and the server was 
+implemented using CGI. jhrg
+
 README for HDF test file generators
 Jake Hamby (jake.hamby@jpl.nasa.gov)
 ------------------------------------

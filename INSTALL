@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for version 3.7.13
+Updated for 3.7.14 (9 June 2009)
 
 ---------------------------------------------------------------------------
 
@@ -17,6 +17,16 @@ BUILDING THE SOFTWARE
 
 0) Please skim REQUIREMENTS and NOTES sections of this file before reporting
    problems. Thanks.
+
+*) IMPORTANT NOTE: The versions of hdf4 that are installed by package
+    managers such as Yum and rpm often are not capable of being linked with a
+    shared library/module, whcih is how the hdf4 handler must be built. To
+    correct this, you may need to build the HDF4 library from soruce and
+    specify the '--with-pic' option to configure. This may be a problem only
+    on non-i386 linux machines; reports vary. To build the handler on OS/X
+    and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
+    Red Hat or CentOS) it was necessary to build hdf4. To d so I ran
+    configure as './configure --with-pic --disable-fortran --disable-netcdf'
 
 1) Type `./configure' at the system prompt. On some systems you may have to
    type `sh configure.' If you want this part of the server to install
