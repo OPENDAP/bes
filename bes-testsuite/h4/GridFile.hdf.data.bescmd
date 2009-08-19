@@ -4,7 +4,7 @@
     <setContainer name="data" space="catalog">/hdf-testfiles/GridFile.hdf</setContainer>
     <define name="d">
 	<container name="data">
-	  <constrint>UTMGrid.Data%20Fields.Vegetation[0:5][0:5]</constrint>
+	  <constraint>UTMGrid.Data%20Fields.Vegetation[0:5][0:5]</constraint>
 	</container>
     </define>
     <get type="dods" definition="d" />
