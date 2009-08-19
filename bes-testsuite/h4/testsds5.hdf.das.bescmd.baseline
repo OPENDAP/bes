@@ -14,8 +14,8 @@ Attributes {
             String GLOBAL_ATTR_DFNT_FLOAT64_explanation "`2.22507e-308' is not a Float64 value.", "`-2.22507e-308' is not a Float64 value.";
         }
         Float64 GLOBAL_ATTR_DFNT_FLOAT64 0, 1, -1, 1.79769e+308, -1.79769e+308;
-        String GLOBAL_ATTR_DFNT_CHAR8 "\\\\000\\\\001\\\\377\\\\177\\\\200";
-        String GLOBAL_ATTR_DFNT_UCHAR8 "\\\\000";
+        String GLOBAL_ATTR_DFNT_CHAR8 "\\000\\001\\377\\177\\200";
+        String GLOBAL_ATTR_DFNT_UCHAR8 "\\000";
     }
     SDS_DFNT_INT32 {
         Int32 valid_range -2147483648, 2147483647;
@@ -82,15 +82,15 @@ Attributes {
         String name "Axis_DFNT_FLOAT64";
     }
     SDS_DFNT_CHAR8 {
-        String valid_range "\\\\200\\\\177";
-        String SDS_ATTR_DFNT_CHAR8 "\\\\000\\\\001\\\\377\\\\177\\\\200";
+        String valid_range "\\200\\177";
+        String SDS_ATTR_DFNT_CHAR8 "\\000\\001\\377\\177\\200";
     }
     SDS_DFNT_CHAR8_dim_0 {
         String name "Axis_DFNT_CHAR8";
     }
     SDS_DFNT_UCHAR8 {
-        String valid_range "\\\\000";
-        String SDS_ATTR_DFNT_UCHAR8 "\\\\000";
+        String valid_range "\\000";
+        String SDS_ATTR_DFNT_UCHAR8 "\\000";
     }
     SDS_DFNT_UCHAR8_dim_0 {
         String name "Axis_DFNT_UCHAR8";

@@ -32,9 +32,9 @@ Attributes {
         }
     }
     Vdata_DFNT_CHAR8 {
-        String Attr_DFNT_CHAR8 "\\\\000\\\\001\\\\377\\\\177\\\\200";
+        String Attr_DFNT_CHAR8 "\\000\\001\\377\\177\\200";
     }
     Vdata_DFNT_UCHAR8 {
-        String Attr_DFNT_UCHAR8 "\\\\000\\\\001\\\\377";
+        String Attr_DFNT_UCHAR8 "\\000\\001\\377";
     }
 }
