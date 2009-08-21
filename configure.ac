@@ -320,6 +320,7 @@ AC_CONFIG_FILES([Makefile
 		 bes_dispatch.pc
 		 bes_ppt.pc
 		 bes_dap.pc
+		 bes_xml_command.pc
 ])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 

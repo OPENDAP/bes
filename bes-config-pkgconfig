@@ -56,11 +56,11 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-       	pkg-config --libs bes_dispatch bes_command bes_ppt
+       	pkg-config --libs bes_dispatch bes_xml_command bes_ppt
        	;;
 
     --dap-libs)
-       	pkg-config --libs bes_dispatch bes_command bes_ppt bes_dap
+       	pkg-config --libs bes_dispatch bes_xml_command bes_ppt bes_dap
        	;;
 
     --modulesdir)
