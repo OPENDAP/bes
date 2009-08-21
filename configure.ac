@@ -306,7 +306,6 @@ AC_CONFIG_FILES([Makefile
 		 dispatch/Makefile
 		 dispatch/unit-tests/Makefile
 		 docs/Makefile
-		 command/Makefile
 		 xmlcommand/Makefile
 		 xmlcommand/unit-tests/Makefile
 		 ppt/Makefile
@@ -320,7 +319,6 @@ AC_CONFIG_FILES([Makefile
 		 templates/Makefile
 		 bes_dispatch.pc
 		 bes_ppt.pc
-		 bes_command.pc
 		 bes_dap.pc
 ])
 
