@@ -48,17 +48,17 @@ using std::endl;
 void
  HDF5Module::initialize(const string & modname)
 {
-    BESDEBUG("h5", "Initializing HDF5 module " << modname << endl)
+    BESDEBUG("h5", "Initializing HDF5 module " << modname << endl) ;
 
         BESDEBUG("h5",
-                 "    adding " << modname << " request handler" << endl)
+                 "    adding " << modname << " request handler" << endl) ;
     BESRequestHandler *handler = new HDF5RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
-    BESDEBUG( "h5", modname << " handles dap services" << endl )
+    BESDEBUG( "h5", modname << " handles dap services" << endl ) ;
     BESDapService::handle_dap_service( modname ) ;
 
-    BESDEBUG("h5", "    adding " << HDF5_CATALOG << " catalog" << endl)
+    BESDEBUG("h5", "    adding " << HDF5_CATALOG << " catalog" << endl) ;
     if( !BESCatalogList::TheCatalogList()->ref_catalog( HDF5_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
@@ -66,11 +66,11 @@ void
     }
     else
     {
-	BESDEBUG( "h5", "    catalog already exists, skipping" << endl )
+	BESDEBUG( "h5", "    catalog already exists, skipping" << endl ) ;
     }
 
     BESDEBUG("h5", "    adding catalog container storage " << HDF5_CATALOG
-		   << endl)
+		   << endl) ;
     if( !BESContainerStorageList::TheList()->ref_persistence( HDF5_CATALOG ) )
     {
 	BESContainerStorageCatalog *csc =
@@ -79,21 +79,21 @@ void
     }
     else
     {
-	BESDEBUG( "h5", "    storage already exists, skipping" << endl )
+	BESDEBUG( "h5", "    storage already exists, skipping" << endl ) ;
     }
 
-    BESDEBUG("h5", "    adding h5 debug context" << endl)
+    BESDEBUG("h5", "    adding h5 debug context" << endl) ;
         BESDebug::Register("h5");
 
-    BESDEBUG("h5", "Done Initializing HDF5 " << modname << endl)
+    BESDEBUG("h5", "Done Initializing HDF5 " << modname << endl) ;
 }
 
 void HDF5Module::terminate(const string & modname)
 {
-    BESDEBUG("h5", "Cleaning HDF5 module " << modname << endl)
+    BESDEBUG("h5", "Cleaning HDF5 module " << modname << endl) ;
 
         BESDEBUG("h5",
-                 "    removing " << modname << " request handler" << endl)
+                 "    removing " << modname << " request handler" << endl) ;
     BESRequestHandler *rh =
         BESRequestHandlerList::TheList()->remove_handler(modname);
     if (rh)
@@ -101,13 +101,13 @@ void HDF5Module::terminate(const string & modname)
 
     BESDEBUG("h5",
              "    removing catalog container storage " << HDF5_CATALOG <<
-             endl)
+             endl) ;
     BESContainerStorageList::TheList()->deref_persistence(HDF5_CATALOG);
 
-    BESDEBUG("h5", "    removing " << HDF5_CATALOG << " catalog" << endl)
+    BESDEBUG("h5", "    removing " << HDF5_CATALOG << " catalog" << endl) ;
     BESCatalogList::TheCatalogList()->deref_catalog(HDF5_CATALOG);
 
-    BESDEBUG("h5", "Done Cleaning HDF5 module " << modname << endl)
+    BESDEBUG("h5", "Done Cleaning HDF5 module " << modname << endl) ;
 }
 
 /** @brief dumps information about this object
