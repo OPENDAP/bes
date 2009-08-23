@@ -48,17 +48,17 @@ using std::endl;
 void
  HDF4Module::initialize(const string & modname)
 {
-    BESDEBUG("h4", "Initializing HDF4 module " << modname << endl)
+    BESDEBUG("h4", "Initializing HDF4 module " << modname << endl) ;
 
         BESDEBUG("h4",
-                 "    adding " << modname << " request handler" << endl)
+                 "    adding " << modname << " request handler" << endl) ;
     BESRequestHandler *handler = new HDF4RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
-    BESDEBUG( "h4", modname << " handles dap services" << endl )
+    BESDEBUG( "h4", modname << " handles dap services" << endl ) ;
     BESDapService::handle_dap_service( modname ) ;
 
-    BESDEBUG("h4", "    adding " << HDF4_CATALOG << " catalog" << endl)
+    BESDEBUG("h4", "    adding " << HDF4_CATALOG << " catalog" << endl) ;
     if( !BESCatalogList::TheCatalogList()->ref_catalog( HDF4_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
@@ -66,12 +66,12 @@ void
     }
     else
     {
-	BESDEBUG( "h4", "    catalog already exists, skipping" << endl )
+	BESDEBUG( "h4", "    catalog already exists, skipping" << endl ) ;
     }
 
     BESDEBUG("h4",
              "    adding catalog container storage" << HDF4_CATALOG <<
-             endl)
+             endl) ;
     if( !BESContainerStorageList::TheList()->ref_persistence( HDF4_CATALOG ) )
     {
 	BESContainerStorageCatalog *csc =
@@ -80,33 +80,33 @@ void
     }
     else
     {
-	BESDEBUG( "h4", "    storage already exists, skipping" << endl )
+	BESDEBUG( "h4", "    storage already exists, skipping" << endl ) ;
     }
 
-    BESDEBUG("h4", "    adding h4 debug context" << endl)
+    BESDEBUG("h4", "    adding h4 debug context" << endl) ;
         BESDebug::Register("h4");
 
-    BESDEBUG("h4", "Done Initializing HDF4 module " << modname << endl)
+    BESDEBUG("h4", "Done Initializing HDF4 module " << modname << endl) ;
 }
 
 void HDF4Module::terminate(const string & modname)
 {
-    BESDEBUG("h4", "Cleaning HDF4 module " << modname << endl)
+    BESDEBUG("h4", "Cleaning HDF4 module " << modname << endl) ;
 
-        BESDEBUG("h4", "    removing HDF4 Handler" << modname << endl)
+    BESDEBUG("h4", "    removing HDF4 Handler" << modname << endl) ;
     BESRequestHandler *rh =
         BESRequestHandlerList::TheList()->remove_handler(modname);
     if (rh)
         delete rh;
 
     BESDEBUG("h4", "    removing catalog container storage" << HDF4_CATALOG
-                   << endl)
+                   << endl) ;
     BESContainerStorageList::TheList()->deref_persistence(HDF4_CATALOG);
 
-    BESDEBUG("h4", "    removing " << HDF4_CATALOG << " catalog" << endl)
+    BESDEBUG("h4", "    removing " << HDF4_CATALOG << " catalog" << endl) ;
         BESCatalogList::TheCatalogList()->deref_catalog(HDF4_CATALOG);
 
-    BESDEBUG("h4", "Done Cleaning HDF4 module " << modname << endl)
+    BESDEBUG("h4", "Done Cleaning HDF4 module " << modname << endl) ;
 }
 
 /** @brief dumps information about this object

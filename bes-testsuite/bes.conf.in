@@ -56,7 +56,7 @@ BES.LogVerbose=no
 #
 # BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
 # BES.module.dap=@libdir@/bes/libdap_module.so
-# BES.module.cmd=@libdir@/bes/libdap_cmd_module.so
+# BES.module.cmd=@libdir@/bes/libdap_xml_module.so
 # BES.module.ascii=@libdir@/bes/libascii_module.so
 # BES.module.usage=@libdir@/bes/libusage_module.so
 # BES.module.www=@libdir@/bes/libwww_module.so
@@ -66,7 +66,7 @@ BES.LogVerbose=no
 
 BES.modules=dap,cmd,h4
 BES.module.dap=@libdir@/bes/libdap_module.so
-BES.module.cmd=@libdir@/bes/libdap_cmd_module.so
+BES.module.cmd=@libdir@/bes/libdap_xml_module.so
 BES.module.h4=@abs_top_builddir@/.libs/libhdf4_module.so
 
 #-----------------------------------------------------------------------#
