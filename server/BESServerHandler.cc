@@ -159,7 +159,8 @@ BESServerHandler::execute( Connection *c )
 	// need be. pwest 06 Feb 2009
 	//string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
 	string cmd_str = ss.str() ;
-	BESDEBUG( "server", "BESServerHandler::execute - command = " << cmd_str << endl )
+	BESDEBUG( "server", "BESServerHandler::execute - command = "
+			    << cmd_str << endl ) ;
 
 	BESStopWatch *sw = 0 ;
 	if( BESISDEBUG( "timing" ) )
@@ -181,7 +182,8 @@ BESServerHandler::execute( Connection *c )
 
 	if( status == 0 )
 	{
-	    BESDEBUG( "server", "BESServerHandler::execute - executed successfully" << endl )
+	    BESDEBUG( "server", "BESServerHandler::execute - "
+				<< "executed successfully" << endl ) ;
 	    fds.finish() ;
 	    cout.rdbuf( holder ) ;
 
@@ -193,19 +195,20 @@ BESServerHandler::execute( Connection *c )
 			      "BESServerHandler::execute - executed in "
 			      << sw->seconds() << " seconds and "
 			      << sw->microseconds() << " microseconds"
-			      << endl )
+			      << endl ) ;
 		}
 		else
 		{
-		    BESDEBUG( "timing", \
-			  "BESServerHandler::execute - no timing available" )
+		    BESDEBUG( "timing", "BESServerHandler::execute - "
+					<< "no timing available" << endl ) ;
 		}
 	    }
 	}
 	else
 	{
 	    // an error has occurred.
-	    BESDEBUG( "server", "BESServerHandler::execute - error occurred" << endl )
+	    BESDEBUG( "server", "BESServerHandler::execute - "
+				<< "error occurred" << endl ) ;
 
 	    // flush what we have in the stream to the client
 	    cout << flush ;

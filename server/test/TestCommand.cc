@@ -31,9 +31,14 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "TestCommand.h"
-#include "BESTokenizer.h"
-#include "BESResponseHandlerList.h"
+#include "BESXMLUtils.h"
 #include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+
+TestCommand::TestCommand( const BESDataHandlerInterface &base_dhi )
+    : BESXMLCommand( base_dhi )
+{
+}
 
 /** @brief parses the request to build a test signal response
  *
@@ -47,39 +52,29 @@
  * @see BESTokenizer
  * @see _BESDataHandlerInterface
  */
-BESResponseHandler *
-TestCommand::parse_request( BESTokenizer &tokenizer,
-			    BESDataHandlerInterface &dhi )
+void
+TestCommand::parse_request( xmlNode *node )
 {
-    string my_token = parse_options( tokenizer, dhi ) ;
-
-    /* First we will make sure that the developer has not over-written this
-     * command to work with a sub command. In other words, they have a new
-     * command called "define something". Look up define.something
-     */
-    string newcmd = _cmd + "." + my_token ;
-    BESCommand *cmdobj = BESCommand::find_command( newcmd ) ;
-    if( cmdobj && cmdobj != BESCommand::TermCommand )
+    string name ;
+    string value ;
+    map<string, string> props ;
+    BESXMLUtils::GetNodeInfo( node, name, value, props ) ;
+    if( name != "test" )
     {
-	return cmdobj->parse_request( tokenizer, dhi ) ;
+	string err = "The specified command " + name
+		     + " is not a test command" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    /* No sub-command to define, so parse the test sig command.
-     */
+    string what = props["what"] ;
+    _dhi.action = what ;
+    _str_cmd = (string)"test " + what ;
+    BESDEBUG( "besxml", "Converted xml element name to command "
+			<< _dhi.action << endl ) ;
 
-    /* Look for the response handler that knows how to build the response
-     * object for a test sig command.
-     */
-    dhi.action = my_token ;
-    BESResponseHandler *retResponse =
-	BESResponseHandlerList::TheList()->find_handler( my_token ) ;
-    if( !retResponse )
-    {
-	string s = (string)"No response handler for command " + my_token ;
-	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
-    }
-
-    return retResponse ;
+    // now that we've set the action, go get the response handler for the
+    // action
+    BESXMLCommand::set_response() ;
 }
 
 /** @brief dumps information about this object
@@ -94,7 +89,13 @@ TestCommand::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "TestCommand::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    BESCommand::dump( strm ) ;
+    BESXMLCommand::dump( strm ) ;
     BESIndent::UnIndent() ;
+}
+
+BESXMLCommand *
+TestCommand::CommandBuilder( const BESDataHandlerInterface &base_dhi )
+{
+    return new TestCommand( base_dhi ) ;
 }
 

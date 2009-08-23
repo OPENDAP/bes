@@ -211,11 +211,13 @@ StandAloneApp::initialize( int argc, char **argv )
 
     try
     {
-	BESDEBUG( "standalone", "ServerApp: initializing default module ... " << endl )
+	BESDEBUG( "standalone", "ServerApp: initializing default module ... "
+				<< endl ) ;
 	BESDefaultModule::initialize( argc, argv ) ;
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
-	BESDEBUG( "standalone", "ServerApp: initializing default commands ... " << endl )
+	BESDEBUG( "standalone", "ServerApp: initializing default commands ... "
+				<< endl ) ;
 	BESXMLDefaultCommands::initialize( argc, argv ) ;
 	BESDEBUG( "standalone", "OK" << endl ) ;
 
@@ -230,7 +232,8 @@ StandAloneApp::initialize( int argc, char **argv )
 	return 1 ;
     }
 
-    BESDEBUG( "standalone", "StandAloneApp: initialized settings:" << endl << *this ) ;
+    BESDEBUG( "standalone", "StandAloneApp: initialized settings:"
+			    << endl << *this ) ;
 
     return 0 ;
 }
@@ -249,7 +252,7 @@ StandAloneApp::run()
 	{
 	    _client->setOutput( &cout, false ) ;
 	}
-	BESDEBUG( "cmdln", "OK" << endl ) ;
+	BESDEBUG( "standalone", "OK" << endl ) ;
     }
     catch( BESError &e )
     {
@@ -258,7 +261,7 @@ StandAloneApp::run()
 	    delete _client ;
 	    _client = 0 ;
 	}
-	BESDEBUG( "cmdln", "FAILED" << endl ) ;
+	BESDEBUG( "standalone", "FAILED" << endl ) ;
 	cerr << "error starting the client" << endl ;
 	cerr << e.get_message() << endl ;
 	exit( 1 ) ;
@@ -287,26 +290,28 @@ StandAloneApp::run()
 
     try
     {
-	BESDEBUG( "cmdln", "StandAloneApp: shutting down client ... " << endl )
+	BESDEBUG( "standalone", "StandAloneApp: shutting down client ... "
+				<< endl ) ;
 	if( _client )
 	{
 	    delete _client ;
 	    _client = 0 ;
 	}
-	BESDEBUG( "cmdln", "OK" << endl ) ;
+	BESDEBUG( "standalone", "OK" << endl ) ;
 
-	BESDEBUG( "cmdln", "StandAloneApp: closing input stream ... " << endl )
+	BESDEBUG( "standalone", "StandAloneApp: closing input stream ... "
+				<< endl ) ;
 	if( _createdInputStrm )
 	{
 	    _inputStrm->close() ;
 	    delete _inputStrm ;
 	    _inputStrm = 0 ;
 	}
-	BESDEBUG( "cmdln", "OK" << endl )
+	BESDEBUG( "standalone", "OK" << endl ) ;
     }
     catch( BESError &e )
     {
-	BESDEBUG( "cmdln", "FAILED" << endl )
+	BESDEBUG( "standalone", "FAILED" << endl ) ;
 	cerr << "error closing the client" << endl ;
 	cerr << e.get_message() << endl ;
 	return 1 ;
@@ -323,13 +328,15 @@ StandAloneApp::run()
 int
 StandAloneApp::terminate( int sig )
 {
-    BESDEBUG( "server", "ServerApp: terminating default module ... " << endl )
+    BESDEBUG( "standalone", "ServerApp: terminating default module ... "
+			    << endl ) ;
     BESDefaultModule::terminate( ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "standalone", "OK" << endl ) ;
 
-    BESDEBUG( "server", "ServerApp: terminating default commands ... " << endl )
+    BESDEBUG( "standalone", "ServerApp: terminating default commands ...  "
+			    << endl ) ;
     BESXMLDefaultCommands::terminate( ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "standalone", "OK" << endl ) ;
 
     BESModuleApp::terminate( sig ) ;
 

@@ -189,7 +189,7 @@ PPTConnection::sendExtensions( map<string,string> &extensions )
 void
 PPTConnection::send( const string &buffer )
 {
-    BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl )
+    BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl ) ;
     _mySock->send( buffer, 0, buffer.length() ) ;
     _mySock->sync() ;
 }
@@ -216,7 +216,7 @@ PPTConnection::readChunkHeader( char *buffer, unsigned int buffer_size )
     {
 	int bytesRead = readBuffer( temp_buffer, buffer_size ) ;
 	BESDEBUG( "ppt", "PPTConnection::readChunkHeader - read "
-	                 << bytesRead << " bytes" << endl )
+	                 << bytesRead << " bytes" << endl ) ;
 	if( bytesRead < 0 )
 	{
 	    return bytesRead ;
@@ -263,7 +263,7 @@ PPTConnection::receive( map<string,string> &extensions,
     // If the receive buffer has not yet been created, get the receive size
     // and create the buffer.
     BESDEBUG( "ppt", "PPTConnection::receive: buffer size = " << _inBuff_len
-              << endl )
+                     << endl ) ;
     if( !_inBuff )
     {
 	_inBuff_len = _mySock->getRecvBufferSize() + 1 ;
@@ -274,7 +274,8 @@ PPTConnection::receive( map<string,string> &extensions,
     // read the first 8 bytes. The first 7 are the length and the next 1
     // if x then extensions follow, if d then data follows.
     int bytesRead = readChunkHeader( _inBuff, 8 ) ;
-    BESDEBUG( "ppt", "Reading header, read " << bytesRead << " bytes" << endl )
+    BESDEBUG( "ppt", "Reading header, read "
+		     << bytesRead << " bytes" << endl ) ;
     if( bytesRead != 8 )
     {
 	string err = "Failed to read length and type of chunk" ;
@@ -293,8 +294,8 @@ PPTConnection::receive( map<string,string> &extensions,
     istringstream lenstrm( lenbuffer ) ;
     unsigned long inlen = 0 ;
     lenstrm >> hex >> setw(7) >> inlen ;
-    BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl )
-    BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl )
+    BESDEBUG( "ppt", "Reading header, chunk length = " << inlen << endl ) ;
+    BESDEBUG( "ppt", "Reading header, chunk type = " << _inBuff[7] << endl ) ;
 
     if( _inBuff[7] == 'x' )
     {
@@ -334,7 +335,7 @@ PPTConnection::receive( map<string,string> &extensions,
 void
 PPTConnection::receive( ostream &strm, unsigned int len )
 {
-    BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl )
+    BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl ) ;
     if( !_inBuff )
     {
 	string err = "buffer has not been initialized" ;
@@ -346,7 +347,7 @@ PPTConnection::receive( ostream &strm, unsigned int len )
     {
 	to_read = _inBuff_len ;
     }
-    BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl )
+    BESDEBUG( "ppt", "PPTConnect::receive - to_read = " << to_read << endl ) ;
 
     // read a buffer
     int bytesRead = readBuffer( _inBuff, to_read ) ;
@@ -355,7 +356,8 @@ PPTConnection::receive( ostream &strm, unsigned int len )
 	string err = "Failed to read data from socket" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-    BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = " << bytesRead << endl )
+    BESDEBUG( "ppt", "PPTConnect::receive - bytesRead = "
+		     << bytesRead << endl ) ;
 
     // write the buffer read to the stream
     _inBuff[bytesRead] = '\0' ;
@@ -367,7 +369,7 @@ PPTConnection::receive( ostream &strm, unsigned int len )
     if( bytesRead < len )
     {
 	BESDEBUG( "ppt", "PPTConnect::receive - remaining = "
-		         << (len - bytesRead) << endl )
+		         << (len - bytesRead) << endl ) ;
 	receive( strm, len - bytesRead ) ;
     }
 }

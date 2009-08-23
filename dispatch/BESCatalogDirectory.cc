@@ -105,7 +105,7 @@ BESCatalogDirectory::show_catalog( const string &node,
     if (use_node.empty())
         use_node = "/";
 
-    BESDEBUG("bes", "use_node: " << use_node << endl )
+    BESDEBUG("bes", "use_node: " << use_node << endl ) ;
 #endif
     string rootdir = _utils->get_root_dir() ;
     string fullnode = rootdir ;

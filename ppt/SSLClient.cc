@@ -71,18 +71,18 @@ SSLClient::~SSLClient()
 void
 SSLClient::initConnection()
 {
-    BESDEBUG( "ppt", "Loading SSL error strings ... " << endl )
+    BESDEBUG( "ppt", "Loading SSL error strings ... " << endl ) ;
     SSL_load_error_strings() ;
-    BESDEBUG( "ppt", "OK" << endl )
+    BESDEBUG( "ppt", "OK" << endl ) ;
 
-    BESDEBUG( "ppt", "Initializing SSL library ... " << endl )
+    BESDEBUG( "ppt", "Initializing SSL library ... " << endl ) ;
     SSL_library_init() ;
-    BESDEBUG( "ppt", "OK" << endl )
+    BESDEBUG( "ppt", "OK" << endl ) ;
 
     SSL_METHOD *method = NULL ;
     SSL_CTX *context = NULL ;
 
-    BESDEBUG( "ppt", "Creating method and context ... " << endl )
+    BESDEBUG( "ppt", "Creating method and context ... " << endl ) ;
     method = SSLv3_client_method() ;
     if( method )
     {
@@ -96,12 +96,12 @@ SSLClient::initConnection()
     }
     else
     {
-	BESDEBUG( "ppt", "OK" << endl )
+	BESDEBUG( "ppt", "OK" << endl ) ;
     }
 
     bool ok_2_continue = false ;
     string err_msg ;
-    BESDEBUG( "ppt", "Setting certificate and key ... " << endl )
+    BESDEBUG( "ppt", "Setting certificate and key ... " << endl ) ;
     if( SSL_CTX_use_certificate_file( context, _cfile.c_str(), SSL_FILETYPE_PEM ) <= 0 )
     {
 	err_msg = "FAILED to use certificate file " + _cfile + "\n" ;
@@ -124,8 +124,8 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	BESDEBUG( "ppt", "OK" << endl )
-	BESDEBUG( "ppt", "Certificate setup ... " << endl )
+	BESDEBUG( "ppt", "OK" << endl ) ;
+	BESDEBUG( "ppt", "Certificate setup ... " << endl ) ;
 	SSL_CTX_set_verify( context, SSL_VERIFY_PEER, SSLClient::verify_server ) ;
 	SSL_CTX_set_client_CA_list( context, SSL_load_client_CA_file( _cafile.c_str() ));
 	if( ( !SSL_CTX_load_verify_locations( context, _cafile.c_str(), NULL )) ||
@@ -140,9 +140,10 @@ SSLClient::initConnection()
     int sock_fd = -1 ;
     if( ok_2_continue )
     {
-	BESDEBUG( "ppt", "OK" << endl )
+	BESDEBUG( "ppt", "OK" << endl ) ;
 
-	BESDEBUG( "ppt", "Establishing TCP connection to " << _host << ":" << _port << " ... " << endl )
+	BESDEBUG( "ppt", "Establishing TCP connection to "
+			 << _host << ":" << _port << " ... " << endl ) ;
 	sock_fd = connect_to_server() ;
 	if( sock_fd < 0 )
 	{
@@ -153,9 +154,9 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	BESDEBUG( "ppt", "OK" << endl )
+	BESDEBUG( "ppt", "OK" << endl ) ;
 
-	BESDEBUG( "ppt", "Establishing secure connection ... " << endl )
+	BESDEBUG( "ppt", "Establishing secure connection ... " << endl ) ;
 	int ssl_ret = 0 ;
 	_connection = SSL_new( context ) ;
 	if( !_connection )
@@ -186,11 +187,11 @@ SSLClient::initConnection()
 
     if( ok_2_continue )
     {
-	BESDEBUG( "ppt", "OK" << endl )
+	BESDEBUG( "ppt", "OK" << endl ) ;
     }
     else
     {
-	BESDEBUG( "ppt", "FAILED" << endl )
+	BESDEBUG( "ppt", "FAILED" << endl ) ;
 	if( _context ) SSL_CTX_free( _context ) ; _context = NULL ;
 	throw BESInternalError( err_msg, __FILE__, __LINE__ ) ;
     }
@@ -260,7 +261,7 @@ SSLClient::verify_server( int ok, X509_STORE_CTX *ctx )
 {
     if( ok )
     {
-	BESDEBUG( "ppt", "VERIFIED " << endl )
+	BESDEBUG( "ppt", "VERIFIED " << endl ) ;
     }
     else
     {
@@ -271,28 +272,29 @@ SSLClient::verify_server( int ok, X509_STORE_CTX *ctx )
 	err_cert = X509_STORE_CTX_get_current_cert( ctx ) ;
 	err = X509_STORE_CTX_get_error( ctx ) ;
 	X509_NAME_oneline( X509_get_subject_name( err_cert ), mybuf, 256 ) ;
-	BESDEBUG( "ppt", "FAILED for " << mybuf << endl )
-	BESDEBUG( "ppt", "  " << X509_verify_cert_error_string( err ) << endl )
+	BESDEBUG( "ppt", "FAILED for " << mybuf << endl ) ;
+	BESDEBUG( "ppt", "  " << X509_verify_cert_error_string( err )
+			 << endl ) ;
 	switch( ctx->error )
 	{
 	    case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
 	    {
 		X509_NAME_oneline( X509_get_issuer_name( err_cert ), mybuf, 256 ) ;
-		BESDEBUG( "ppt", "  issuer = " << mybuf << endl )
+		BESDEBUG( "ppt", "  issuer = " << mybuf << endl ) ;
 		break ;
 	    }
 
 	    case X509_V_ERR_CERT_NOT_YET_VALID:
 	    case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
 	    {
-		BESDEBUG( "ppt", "  not yet valid!" << endl )
+		BESDEBUG( "ppt", "  not yet valid!" << endl ) ;
 		break ;
 	    }
 
 	    case X509_V_ERR_CERT_HAS_EXPIRED:
 	    case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
 	    {
-		BESDEBUG( "ppt", "  expired!" << endl )
+		BESDEBUG( "ppt", "  expired!" << endl ) ;
 		break ;
 	    }
 	}

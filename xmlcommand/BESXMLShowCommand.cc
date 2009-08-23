@@ -75,7 +75,7 @@ BESXMLShowCommand::parse_request( xmlNode *node )
     _dhi.action += toadd ;
     _str_cmd = (string)"show " + toadd ;
     BESDEBUG( "besxml", "Converted xml element name to command "
-			<< _dhi.action << endl )
+			<< _dhi.action << endl ) ;
 
     // now that we've set the action, go get the response handler for the
     // action

@@ -204,7 +204,7 @@ bool
 BESUncompressManager::uncompress( const string &src, string &target,
 				  BESCache &cache )
 {
-    BESDEBUG( "bes", "BESUncompressManager::uncompress - src = " << src << endl )
+    BESDEBUG( "bes", "BESUncompressManager::uncompress - src = " << src << endl ) ;
     string::size_type dot = src.rfind( "." ) ;
     if( dot != string::npos )
     {
@@ -234,10 +234,10 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    // before calling uncompress on the file, see if the file
 		    // has already been cached. If it has, then simply return
 		    // the target, no need to cache.
-		    BESDEBUG( "bes", "BESUncompressManager::uncompress - is cached? " << src << endl )
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - is cached? " << src << endl ) ;
 		    if( cache.is_cached( src, target ) )
 		    {
-			BESDEBUG( "bes", "BESUncompressManager::uncompress - "  << "is cached " << target << endl )
+			BESDEBUG( "bes", "BESUncompressManager::uncompress - "  << "is cached " << target << endl ) ;
 			cache.unlock() ;
 			return true ;
 		    }
@@ -245,13 +245,14 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    // the file is not cached, so we need to uncompress the
 		    // file.  First determine if there is enough space in
 		    // the cache to uncompress the file
-		    BESDEBUG( "bes", "BESUncompressManager::uncompress - " << "purging cache" << endl )
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - " << "purging cache" << endl ) ;
 		    cache.purge() ;
 
 		    // Now that we have some room ... uncompress the file
-		    BESDEBUG( "bes", "BESUncompressManager::uncompress - " << "uncompress to " << target \
-			      << " using " << ext << " uncompression" \
-			      << endl )
+		    BESDEBUG( "bes", "BESUncompressManager::uncompress - "
+				     << "uncompress to " << target
+				     << " using " << ext << " uncompression"
+				     << endl ) ;
 
 		    // we are now done in the cahce, unlock it
 		    cache.unlock() ;
@@ -285,12 +286,12 @@ BESUncompressManager::uncompress( const string &src, string &target,
 	}
 	else
 	{
-	    BESDEBUG( "bes", "BESUncompressManager::uncompress - not compressed " << endl )
+	    BESDEBUG( "bes", "BESUncompressManager::uncompress - not compressed " << endl ) ;
 	}
     }
     else
     {
-	BESDEBUG( "bes", "BESUncompressmanager::uncompress - not file extension" << endl )
+	BESDEBUG( "bes", "BESUncompressmanager::uncompress - not file extension" << endl ) ;
 #if 0
 	// This could just mean that there is a README file here, so just
 	// return the src file name and let the system run its course.

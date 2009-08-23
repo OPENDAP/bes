@@ -44,36 +44,36 @@ using std::cout ;
 void
 BESXMLDapCommandModule::initialize( const string &modname )
 {
-    BESDEBUG( "dap", "Initializing DAP Commands:" << endl )
+    BESDEBUG( "dap", "Initializing DAP Commands:" << endl ) ;
 
     BESDEBUG( "besxml", "    adding " << CATALOG_RESPONSE_STR
-			<< " command" << endl )
+			<< " command" << endl ) ;
     BESXMLCommand::add_command( CATALOG_RESPONSE_STR,
 				BESXMLCatalogCommand::CommandBuilder ) ;
 
     BESDEBUG( "besxml", "    adding " << SHOW_INFO_RESPONSE_STR
-			<< " command" << endl )
+			<< " command" << endl ) ;
     BESXMLCommand::add_command( SHOW_INFO_RESPONSE_STR,
 				BESXMLCatalogCommand::CommandBuilder ) ;
 
     BESDEBUG( "besxml", "    adding " << DATADDX_RESPONSE
-			<< " command" << endl )
+			<< " command" << endl ) ;
     BESXMLCommand::add_command( DATADDX_RESPONSE,
 				BESXMLGetDataDDXCommand::CommandBuilder ) ;
 
-    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl )
+    BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl ) ;
 }
 
 void
 BESXMLDapCommandModule::terminate( const string &modname )
 {
-    BESDEBUG( "dap", "Removing DAP Commands" << endl )
+    BESDEBUG( "dap", "Removing DAP Commands" << endl ) ;
 
     BESXMLCommand::del_command( CATALOG_RESPONSE_STR ) ;
     BESXMLCommand::del_command( SHOW_INFO_RESPONSE_STR ) ;
     BESXMLCommand::del_command( DATADDX_RESPONSE ) ;
 
-    BESDEBUG( "dap", "Done Removing DAP Commands" << endl )
+    BESDEBUG( "dap", "Done Removing DAP Commands" << endl ) ;
 }
 
 /** @brief dumps information about this object

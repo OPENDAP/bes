@@ -33,21 +33,22 @@
 #ifndef A_TestCommand_h
 #define A_TestCommand_h 1
 
-#include "BESCommand.h"
+#include "BESXMLCommand.h"
 
-class TestCommand : public BESCommand
+class TestCommand : public BESXMLCommand
 {
 private:
 protected:
 public:
-    					TestCommand( const string &cmd )
-					    : BESCommand( cmd ) {}
-    virtual				~TestCommand() {}
+			TestCommand( const BESDataHandlerInterface &base_dhi ) ;
+    virtual		~TestCommand() {}
 
-    virtual BESResponseHandler *	parse_request( BESTokenizer &tokens,
-					    BESDataHandlerInterface &dhi ) ;
+    virtual void	parse_request( xmlNode *node ) ;
+    virtual bool	has_response() { return false ; }
 
-    virtual void			dump( ostream &strm ) const ;
+    virtual void	dump( ostream &strm ) const ;
+
+    static BESXMLCommand *CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
 } ;
 
 #endif // A_TestCommand_h

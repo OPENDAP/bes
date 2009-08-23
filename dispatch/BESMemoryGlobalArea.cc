@@ -85,12 +85,12 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
 		{
 		    unsigned int max = atol(mhs.c_str());
 		    BESDEBUG( "bes", "Initializing emergency heap to "
-		              << (long int)emergency << " MB" << endl )
+		              << (long int)emergency << " MB" << endl ) ;
 		    BESDEBUG( "bes", "Initializing max heap size to "
-		              << (long int)(max+1) << " MB" << endl )
+		              << (long int)(max+1) << " MB" << endl ) ;
 		    (*BESLog::TheLog()) << "Initialize emergency heap size to "
 				        << (long int)emergency
-				        << " and heap size to ";
+				        << " and heap size to " ;
 		    (*BESLog::TheLog()) << (long int)(max+1)
 					<< " megabytes" << endl ;
 		    if( emergency > max )

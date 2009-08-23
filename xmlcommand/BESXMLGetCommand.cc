@@ -131,7 +131,7 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
     _dhi.action = "get." ;
     _dhi.action += BESUtil::lowercase( type ) ;
     BESDEBUG( "besxml", "Converted xml element name to command "
-			<< _dhi.action << endl )
+			<< _dhi.action << endl ) ;
 }
 
 /** @brief returns the BESDataHandlerInterface of either a sub command, if

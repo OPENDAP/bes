@@ -55,12 +55,13 @@ using std::string ;
  *
  * example:
  *
- * BESDEBUG( "bes", "function entered with values " << val1 << " and " << val2 << endl )
+ * BESDEBUG( "bes", "function entered with values " << val1 << " and "
+ *                  << val2 << endl ) ;
  *
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "] " << y ; }
+#define BESDEBUG( x, y ) if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "] " << y
 
 /** @brief macro used to determine if the specified debug context is set
  *
@@ -73,7 +74,7 @@ using std::string ;
  * {
  *     for( int i = 0; i < _list_size; i++ )
  *     {
- *         BESDEBUG( "bes", " _list[" << i << "] = " << _list[i] << endl )
+ *         BESDEBUG( "bes", " _list[" << i << "] = " << _list[i] << endl ) ;
  *     }
  * }
  *
@@ -228,11 +229,14 @@ int
 main( int argc, char **argv )
 {
     int some_number = 1 ;
-    BESDEBUG( "something", "Shouldn't be seeing this part 1: " << some_number++ << endl )
+    BESDEBUG( "something", "Shouldn't be seeing this part 1: "
+                           << some_number++ << endl ) ;
     BESDebug::Set( "something", false ) ;
-    BESDEBUG( "something", "Shouldn't be seeing this part 2: " << some_number++ << endl )
+    BESDEBUG( "something", "Shouldn't be seeing this part 2: "
+                           << some_number++ << endl ) ;
     BESDebug::Set( "something", true ) ;
-    BESDEBUG( "something", "Should be seeing this: " << some_number++ << endl )
+    BESDEBUG( "something", "Should be seeing this: "
+                           << some_number++ << endl ) ;
 
     return 0 ;
 }

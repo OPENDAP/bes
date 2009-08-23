@@ -440,7 +440,7 @@ TcpSocket::setTcpRecvBufferSize()
 	    }
 
 	    BESDEBUG( "ppt", "Tcp receive buffer size set to "
-			     << (unsigned long)sizenum << endl )
+			     << (unsigned long)sizenum << endl ) ;
 	}
     }
 }
@@ -507,7 +507,7 @@ TcpSocket::setTcpSendBufferSize()
 	}
 
 	BESDEBUG( "ppt", "Tcp send buffer size set to "
-			 << (unsigned long)sizenum << endl )
+			 << (unsigned long)sizenum << endl ) ;
     }
 }
 
@@ -542,7 +542,7 @@ TcpSocket::getRecvBufferSize()
 	}
 
 	BESDEBUG( "ppt", "Tcp receive buffer size is "
-			 << (unsigned long)sizenum << endl )
+			 << (unsigned long)sizenum << endl ) ;
 
 	_haveRecvBufferSize = true ;
 	_recvBufferSize = sizenum ;
@@ -581,7 +581,7 @@ TcpSocket::getSendBufferSize()
 	}
 
 	BESDEBUG( "ppt", "Tcp send buffer size is "
-			  << (unsigned long)sizenum << endl )
+			  << (unsigned long)sizenum << endl ) ;
 
 	_haveSendBufferSize = true ;
 	_sendBufferSize = sizenum ;

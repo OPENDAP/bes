@@ -98,7 +98,7 @@ BESCache::check_ctor_params()
 
     BESDEBUG( "bes", "BES Cache: directory " << _cache_dir
 		     << ", prefix " << _prefix
-		     << ", max size " << _cache_size << endl )
+		     << ", max size " << _cache_size << endl ) ;
 }
 
 /** @brief Constructor that takes as arguments the values of the cache dir,
@@ -362,14 +362,14 @@ BESCache::purge( )
 
 	if( BESISDEBUG( "bes" ) )
 	{
-	    BESDEBUG( "bes", endl << "BEFORE" << endl )
+	    BESDEBUG( "bes", endl << "BEFORE" << endl ) ;
 	    multimap<double,cache_entry,greater<double> >::iterator ti = contents.begin() ;
 	    multimap<double,cache_entry,greater<double> >::iterator te = contents.end() ;
 	    for( ; ti != te; ti++ )
 	    {
-		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl )
+		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
 	    }
-	    BESDEBUG( "bes", endl )
+	    BESDEBUG( "bes", endl ) ;
 	}
 
 	// if the size of files is greater than max allowed then we need to
@@ -390,7 +390,7 @@ BESCache::purge( )
 		else
 		{
 		    BESDEBUG( "bes", "BESCache::purge - removing "
-		                     << (*i).second.name << endl )
+		                     << (*i).second.name << endl ) ;
 		    if( remove( (*i).second.name.c_str() ) != 0 )
 		    {
 			char *s_err = strerror( errno ) ;
@@ -415,12 +415,12 @@ BESCache::purge( )
 
 	if( BESISDEBUG( "bes" ) )
 	{
-	    BESDEBUG( "bes", endl << "AFTER" << endl )
+	    BESDEBUG( "bes", endl << "AFTER" << endl ) ;
 	    multimap<double,cache_entry,greater<double> >::iterator ti = contents.begin() ;
 	    multimap<double,cache_entry,greater<double> >::iterator te = contents.end() ;
 	    for( ; ti != te; ti++ )
 	    {
-		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl )
+		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
 	    }
 	}
     }

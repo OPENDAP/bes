@@ -45,60 +45,50 @@ using std::endl ;
 #include "TestException.h"
 #include "BESExceptionManager.h"
 
-#include "BESLog.h"
+#include "BESDebug.h"
 
 void
 TestModule::initialize( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Initializing Test Module" << endl;
+    BESDEBUG( "test", "Initializing Test Module " << modname << endl ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << modname << " request handler" << endl ;
-    BESRequestHandlerList::TheList()->add_handler( modname, new TestRequestHandler( modname ) ) ;
+    BESDEBUG( "test", "    adding " << modname << " request handler" << endl ) ;
+    BESRequestHandler *rqh = new TestRequestHandler( modname ) ;
+    BESRequestHandlerList::TheList()->add_handler( modname, rqh ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << TEST_SIG << " response handler" << endl;
+    BESDEBUG( "test", "    adding " << TEST_SIG << " response handler"
+		      << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( TEST_SIG, TestSigResponseHandler::TestSigResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << TEST_EHM << " response handler" << endl;
+    BESDEBUG( "test", "    adding " << TEST_EHM << " response handler"
+		      << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( TEST_EHM, TestEhmResponseHandler::TestEhmResponseBuilder ) ;
 
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << TEST_RESPONSE << " command" << endl;
-    BESCommand *cmd = new TestCommand( TEST_RESPONSE ) ;
-    BESCommand::add_command( TEST_RESPONSE, cmd ) ;
+    BESDEBUG( "test", "    adding " << TEST_RESPONSE << " command" << endl ) ;
+    BESXMLCommand::add_command( TEST_RESPONSE,
+				TestCommand::CommandBuilder ) ;
 
-    string cmd_name = string( TEST_RESPONSE ) + "." + TEST_SIG ;
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
-
-    cmd_name = string( TEST_RESPONSE ) + "." + TEST_EHM ;
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding " << cmd_name << " command" << endl;
-    BESCommand::add_command( cmd_name, BESCommand::TermCommand ) ;
-
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "    adding Test exception callback" << endl ;
+    BESDEBUG( "test", "    adding Test exception callback" << endl ) ;
     BESExceptionManager::TheEHM()->add_ehm_callback( TestException::handleException ) ;
+
+    BESDEBUG( "test", "Done Initializing Test Module " << modname << endl ) ;
 }
 
 void
 TestModule::terminate( const string &modname )
 {
-    if( BESLog::TheLog()->is_verbose() )
-	(*BESLog::TheLog()) << "Cleaing up Test Module" << endl;
+    BESDEBUG( "test", "Cleaing up Test Module " << modname << endl ) ;
 
     BESRequestHandler *rh =
 	BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
-    BESCommand::del_command( TEST_RESPONSE ) ;
+    BESXMLCommand::del_command( TEST_RESPONSE ) ;
 
     BESResponseHandlerList::TheList()->remove_handler( TEST_SIG ) ;
     BESResponseHandlerList::TheList()->remove_handler( TEST_EHM ) ;
+
+    BESDEBUG( "test", "Done Cleaing up Test Module " << modname << endl ) ;
 }
 
 extern "C"

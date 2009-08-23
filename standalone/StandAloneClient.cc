@@ -227,7 +227,7 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 	    {
 		show_stream = new ostringstream ;
 	    }
-	    BESDEBUG( "standalone", "cmdclient sending " << cmd << endl )
+	    BESDEBUG( "standalone", "cmdclient sending " << cmd << endl ) ;
 	    BESXMLInterface *interface = 0 ;
 	    if( show_stream )
 	    {
@@ -241,12 +241,14 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 
 	    if( status == 0 )
 	    {
-		BESDEBUG( "standalone", "BESServerHandler::execute - executed successfully" << endl )
+		BESDEBUG( "standalone", "BESServerHandler::execute - "
+					<< "executed successfully" << endl ) ;
 	    }
 	    else
 	    {
 		// an error has occurred.
-		BESDEBUG( "standalone", "BESServerHandler::execute - error occurred" << endl )
+		BESDEBUG( "standalone", "BESServerHandler::execute - "
+					"error occurred" << endl ) ;
 
 		// flush what we have in the stream to the client
 		*_strm << flush ;

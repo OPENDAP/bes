@@ -87,7 +87,7 @@ void
 BESXMLInterface::build_data_request_plan()
 {
     BESDEBUG( "besxml", "building request plan for xml document: "
-			<< endl << _dhi->data["XMLDoc"] << endl )
+			<< endl << _dhi->data["XMLDoc"] << endl ) ;
     if( BESLog::TheLog()->is_verbose() )
     {
 	*(BESLog::TheLog()) << _dhi->data[SERVER_PID]
@@ -160,7 +160,8 @@ BESXMLInterface::build_data_request_plan()
 	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
 	}
 	_dhi->data[REQUEST_ID] = reqId ;
-	BESDEBUG( "besxml", "request id = "<< _dhi->data[REQUEST_ID] << endl )
+	BESDEBUG( "besxml", "request id = " << _dhi->data[REQUEST_ID]
+	                    << endl ) ;
 
 	// iterate through the children of the request element. Each child is an
 	// individual command.
@@ -206,7 +207,7 @@ BESXMLInterface::build_data_request_plan()
 		    if( returnAs != "" )
 		    {
 			BESDEBUG( "xml", "Finding transmitter: " << returnAs
-					 << " ...  " << endl )
+					 << " ...  " << endl ) ;
 			BESTransmitter *transmitter =
 			    BESReturnManager::TheManager()->find_transmitter( returnAs ) ;
 			if( !transmitter )
@@ -215,7 +216,7 @@ BESXMLInterface::build_data_request_plan()
 				       + returnAs ;
 			    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 			}
-			BESDEBUG( "xml", "OK" << endl )
+			BESDEBUG( "xml", "OK" << endl ) ;
 		    }
 		}
 		else
@@ -240,7 +241,7 @@ BESXMLInterface::build_data_request_plan()
     // contributing to memory issues flagged by valgrind. 2/25/09 jhrg
     xmlCleanupParser() ;
 #endif
-    BESDEBUG( "besxml", "Done building request plan" << endl )
+    BESDEBUG( "besxml", "Done building request plan" << endl ) ;
 
     BESBasicInterface::build_data_request_plan() ;
 }
@@ -277,7 +278,7 @@ BESXMLInterface::transmit_data()
     if( returnAs != "" )
     {
 	BESDEBUG( "xml", "Setting transmitter: " << returnAs
-			 << " ...  " << endl )
+			 << " ...  " << endl ) ;
 	_transmitter =
 	    BESReturnManager::TheManager()->find_transmitter( returnAs ) ;
 	if( !_transmitter )
@@ -286,7 +287,7 @@ BESXMLInterface::transmit_data()
 		       + returnAs ;
 	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 	}
-	BESDEBUG( "xml", "OK" << endl )
+	BESDEBUG( "xml", "OK" << endl ) ;
     }
 
     BESBasicInterface::transmit_data() ;

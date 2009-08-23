@@ -289,7 +289,7 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 	if( repeat < 1 ) repeat = 1 ;
 	for( int i = 0; i < repeat; i++ )
 	{
-	    BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl )
+	    BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl ) ;
 	    BESStopWatch *sw = 0 ;
 	    if( BESISDEBUG( "timing" ) )
 	    {
@@ -300,7 +300,7 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 	    map<string,string> extensions ;
 	    _client->send( cmd, extensions ) ;
 
-	    BESDEBUG( "cmdln", "cmdclient receiving " << endl )
+	    BESDEBUG( "cmdln", "cmdclient receiving " << endl ) ;
 	    // keep reading till we get the last chunk, send to _strm
 	    bool done = false ;
 	    ostringstream *show_stream = 0 ;
@@ -344,30 +344,30 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 	    }
 	    if( BESDebug::IsSet( "cmdln" ) )
 	    {
-		BESDEBUG( "cmdln", "extensions:" << endl )
+		BESDEBUG( "cmdln", "extensions:" << endl ) ;
 		map<string,string>::const_iterator i = extensions.begin() ;
 		map<string,string>::const_iterator e = extensions.end() ;
 		for( ; i != e; i++ )
 		{
-		    BESDEBUG( "cmdln", "  " << (*i).first << " = " << (*i).second << endl )
+		    BESDEBUG( "cmdln", "  " << (*i).first << " = "
+				       << (*i).second << endl ) ;
 		}
-		BESDEBUG( "cmdln", "cmdclient done receiving " << endl )
+		BESDEBUG( "cmdln", "cmdclient done receiving " << endl ) ;
 	    }
 	    if( BESISDEBUG( "timing" ) )
 	    {
 		if( sw && sw->stop() )
 		{
-		    BESDEBUG( "timing",
-			      "cmdclient - executed \"" << cmd << "\" in "
-			      << sw->seconds() << " seconds and "
-			      << sw->microseconds() << " microseconds"
-			      << endl )
+		    BESDEBUG( "timing", "cmdclient - executed \""
+					<< cmd << "\" in " << sw->seconds()
+					<< " seconds and " << sw->microseconds()
+					<< " microseconds" << endl ) ;
 		}
 		else
 		{
-		    BESDEBUG( "timing", \
-			  "cmdclient - executed \"" << cmd
-			  << "\" - no timing available" << endl )
+		    BESDEBUG( "timing", "cmdclient - executed \"" << cmd
+				        << "\" - no timing available"
+					<< endl ) ;
 		}
 	    }
 

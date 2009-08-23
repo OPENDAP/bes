@@ -65,7 +65,7 @@ BESDDXResponseHandler::~BESDDXResponseHandler( )
 void
 BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
 {
-    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl )
+    BESDEBUG( "dap", "Entering BESDDXResponseHandler::execute" << endl ) ;
 
     dhi.action_name = DDX_RESPONSE_STR ;
     // Create the DDS.
@@ -79,9 +79,9 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action = DDS_RESPONSE ;
 
     BESDEBUG( "bes", "about to set dap version to: "
-                << bdds->get_dap_client_protocol() << endl);
+                << bdds->get_dap_client_protocol() << endl) ;
     BESDEBUG( "bes", "about to set xml:base to: "
-                << bdds->get_request_xml_base() << endl);
+                << bdds->get_request_xml_base() << endl) ;
 
     dds->set_client_dap_version( bdds->get_dap_client_protocol() ) ;
     dds->set_request_xml_base( bdds->get_request_xml_base() );
@@ -91,7 +91,7 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     dhi.action = DDX_RESPONSE ;
     _response = bdds ;
 
-    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl )
+    BESDEBUG( "dap", "Leaving BESDDXResponseHandler::execute" << endl ) ;
 }
 
 /** @brief transmit the response object built by the execute command

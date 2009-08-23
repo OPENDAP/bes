@@ -99,7 +99,7 @@ BESBasicInterface::initialize()
     // will need to transmit the exception info, which needs a transmitter.
     // If an exception happens before this then the exception info is just
     // printed to cout (see BESInterface::transmit_data()). -- pcw 09/05/06
-    BESDEBUG( "bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl )
+    BESDEBUG( "bes", "Finding " << BASIC_TRANSMITTER << " transmitter ... " << endl ) ;
     _transmitter = BESReturnManager::TheManager()->find_transmitter( BASIC_TRANSMITTER ) ;
     if( !_transmitter )
     {
@@ -107,7 +107,7 @@ BESBasicInterface::initialize()
 		   + BASIC_TRANSMITTER ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
-    BESDEBUG( "bes", "OK" << endl )
+    BESDEBUG( "bes", "OK" << endl ) ;
 
     BESInterface::initialize() ;
 }
@@ -138,7 +138,7 @@ BESBasicInterface::build_data_request_plan()
     // just use the defaults.
     if( _dhi->data[RETURN_CMD] != "" )
     {
-	BESDEBUG( "bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl )
+	BESDEBUG( "bes", "Finding transmitter: " << _dhi->data[RETURN_CMD] << " ...  " << endl ) ;
 	_transmitter = BESReturnManager::TheManager()->find_transmitter( _dhi->data[RETURN_CMD] ) ;
 	if( !_transmitter )
 	{
@@ -146,7 +146,7 @@ BESBasicInterface::build_data_request_plan()
 	               + _dhi->data[RETURN_CMD] ;
 	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
 	}
-	BESDEBUG( "bes", "OK" << endl )
+	BESDEBUG( "bes", "OK" << endl ) ;
     }
 
     if( BESDebug::IsSet( "bes" ) ) _dhi->dump( *(BESDebug::GetStrm()) ) ;

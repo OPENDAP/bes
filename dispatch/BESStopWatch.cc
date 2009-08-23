@@ -59,7 +59,7 @@ BESStopWatch::start()
 	{
 	    err += "unknown error" ;
 	}
-	BESDEBUG( "timing", err )
+	BESDEBUG( "timing", err ) ;
 	_started = false ;
     }
     else
@@ -94,7 +94,7 @@ BESStopWatch::stop()
 	    {
 		err += "unknown error" ;
 	    }
-	    BESDEBUG( "timing", err )
+	    BESDEBUG( "timing", err ) ;
 	    _started = false ;
 	    _stopped = false ;
 	}
@@ -105,7 +105,7 @@ BESStopWatch::stop()
 	    bool success = timeval_subtract() ;
 	    if( !success )
 	    {
-		BESDEBUG( "timing", "failed to get timing" )
+		BESDEBUG( "timing", "failed to get timing" ) ;
 		_started = false ;
 		_stopped = false ;
 	    }

@@ -185,7 +185,7 @@ void
 CmdApp::registerSignals()
 {
     // Registering SIGCONT for connection unblocking
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGCONT ... " << endl )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGCONT ... " << endl ) ;
     if( signal( SIGCONT, signalCannotConnect ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -196,7 +196,7 @@ CmdApp::registerSignals()
 
     // Registering SIGINT to disable Ctrl-C from the user in order to avoid
     // server instability
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGINT ... " << endl )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGINT ... " << endl ) ;
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -207,7 +207,7 @@ CmdApp::registerSignals()
 
     // Registering SIGTERM to disable kill from the user in order to avoid
     // server instability
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGTERM ... " << endl )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGTERM ... " << endl ) ;
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -217,7 +217,7 @@ CmdApp::registerSignals()
     BESDEBUG( "cmdln", "OK" << endl ) ;
 
     // Registering SIGPIE for broken pipes managment.
-    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGPIPE ... " << endl )
+    BESDEBUG( "cmdln", "CmdApp: Registering signal SIGPIPE ... " << endl ) ;
     if( signal( SIGPIPE, CmdApp::signalBrokenPipe ) == SIG_ERR )
     {
 	BESDEBUG( "cmdln", "FAILED" << endl ) ;
@@ -412,13 +412,13 @@ CmdApp::run()
 	if( _hostStr != "" )
 	{
 	    BESDEBUG( "cmdln", "CmdApp: Connecting to host: " << _hostStr
-	              << " at port: " << _portVal << " ... " << endl )
+	              << " at port: " << _portVal << " ... " << endl ) ;
 	    _client->startClient( _hostStr, _portVal, _timeout ) ;
 	}
 	else
 	{
-	    BESDEBUG( "cmdln", "CmdApp: Connecting to unix socket: " << _unixStr
-	              << " ... " << endl )
+	    BESDEBUG( "cmdln", "CmdApp: Connecting to unix socket: "
+			       << _unixStr << " ... " << endl ) ;
 	    _client->startClient( _unixStr, _timeout ) ;
 	}
 
