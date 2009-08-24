@@ -45,6 +45,7 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
+#include "config.h"
 #include "BESUncompressManager.h"
 #include "BESCache.h"
 #include "BESError.h"
