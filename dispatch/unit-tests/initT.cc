@@ -30,69 +30,78 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 
 using std::cerr ;
 using std::cout ;
 using std::endl ;
 
-#include "initT.h"
+#include "BESGlobalIQ.h"
 #include "TheCat.h"
 #include "TheDog.h"
 
-int initT::
-run(void) {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered initT::run" << endl;
-    int retVal = 0;
+class initT: public TestFixture {
+private:
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Using TheCat and TheDog" << endl;
-    if(!TheCat)
+public:
+    initT() {}
+    ~initT() {}
+
+    void setUp()
     {
-	cerr << "TheCat was not created" << endl;
-	return 1;
+    } 
+
+    void tearDown()
+    {
+	BESGlobalIQ::BESGlobalQuit() ;
     }
 
-    if(!TheDog)
-    {
-	cerr << "TheDog was not created" << endl;
-	return 1;
-    }
+    CPPUNIT_TEST_SUITE( initT ) ;
 
-    cout << endl << "*************************************" << endl;
-    string name = TheCat->get_name() ;
-    if( name == "Muffy" )
-    {
-	cout << "correct cat" << endl ;
-    }
-    else
-    {
-	cerr << "incorrect cat" << endl ;
-	retVal = 1 ;
-    }
+    CPPUNIT_TEST( do_test ) ;
 
-    cout << endl << "*************************************" << endl;
-    name = TheDog->get_name() ;
-    if( name == "Killer" )
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
     {
-	cout << "correct dog" << endl ;
+	cout << endl << "*****************************************" << endl;
+	cout << "Entered initT::run" << endl;
+	int retVal = 0;
+
+	cout << endl << "*****************************************" << endl;
+	cout << "Using TheCat and TheDog" << endl;
+	CPPUNIT_ASSERT( TheCat ) ;
+	CPPUNIT_ASSERT( TheDog ) ;
+
+	string cat_name = TheCat->get_name() ;
+	CPPUNIT_ASSERT( cat_name == "Muffy" ) ;
+
+	string dog_name = TheDog->get_name() ;
+	CPPUNIT_ASSERT( dog_name == "Killer" ) ;
+
+	cout << endl << "*****************************************" << endl;
+	cout << "Returning from initT::run" << endl;
     }
-    else
-    {
-	cerr << "incorrect dog" << endl ;
-	retVal = 1 ;
-    }
+} ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from initT::run" << endl;
+CPPUNIT_TEST_SUITE_REGISTRATION( initT ) ;
 
-    return retVal;
-}
+int 
+main( int argC, char**argV )
+{
+    BESGlobalIQ::BESGlobalInit( argC, argV ) ;
 
-int
-main(int argC, char **argV) {
-    Application *app = new initT();
-    return app->main(argC, argV);
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
+
+    bool wasSuccessful = runner.run( "", false )  ;
+
+    return wasSuccessful ? 0 : 1 ;
 }
 

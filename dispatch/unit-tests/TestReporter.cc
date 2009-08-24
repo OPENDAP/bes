@@ -50,6 +50,6 @@ TestReporter::~TestReporter()
 void
 TestReporter::report( BESDataHandlerInterface &dhi )
 {
-    cout << _name << " reporting" << endl ;
+    dhi.data[_name] = _name ;
 }
 

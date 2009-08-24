@@ -30,32 +30,64 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 
 using std::cerr ;
 using std::cout ;
 using std::endl ;
 
-#include "reqhandlerT.h"
 #include "TestRequestHandler.h"
 
-int reqhandlerT::
-run(void) {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered reqhandlerT::run" << endl;
+class reqhandlerT: public TestFixture {
+private:
 
-    TestRequestHandler trh( "test" ) ;
-    int retVal = trh.test() ;
+public:
+    reqhandlerT() {}
+    ~reqhandlerT() {}
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from reqhandlerT::run" << endl;
+    void setUp()
+    {
+    } 
 
-    return retVal;
-}
+    void tearDown()
+    {
+    }
 
-int
-main(int argC, char **argV) {
-    Application *app = new reqhandlerT();
-    return app->main(argC, argV);
+    CPPUNIT_TEST_SUITE( reqhandlerT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered reqhandlerT::run" << endl;
+
+	TestRequestHandler trh( "test" ) ;
+	int retVal = trh.test() ;
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from reqhandlerT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( reqhandlerT ) ;
+
+int 
+main( int, char** )
+{
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
+
+    bool wasSuccessful = runner.run( "", false )  ;
+
+    return wasSuccessful ? 0 : 1 ;
 }
 

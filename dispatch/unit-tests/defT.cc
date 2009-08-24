@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
@@ -39,212 +45,140 @@ using std::cout ;
 using std::endl ;
 using std::stringstream ;
 
-#include "defT.h"
 #include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorageVolatile.h"
 #include "BESDefine.h"
 #include "BESTextInfo.h"
+#include "TheBESKeys.h"
+#include <test_config.h>
 
-int defT::
-run(void)
+class defT: public TestFixture {
+private:
+
+public:
+    defT() {}
+    ~defT() {}
+
+    void setUp()
+    {
+	string bes_conf = (string)TEST_SRC_DIR + "/defT.ini" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( defT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered defT::run" << endl;
+
+	BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
+	BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "add d1, d2, d3, d4, d5" << endl;
+	for( unsigned int i = 1; i < 6; i++ )
+	{
+	    stringstream name ; name << "d" << i ;
+	    stringstream agg ; agg << "d" << i << "agg" ;
+	    BESDefine *dd = new BESDefine ;
+	    dd->set_agg_cmd( agg.str() ) ;
+	    cout << "    adding " << name.str() << endl ;
+	    CPPUNIT_ASSERT( store->add_definition( name.str(), dd ) ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "find d1, d2, d3, d4, d5" << endl;
+	for( unsigned int i = 1; i < 6; i++ )
+	{
+	    stringstream name ; name << "d" << i ;
+	    stringstream agg ; agg << "d" << i << "agg" ;
+	    cout << "    looking for " << name.str() << endl ;
+	    BESDefine *dd = store->look_for( name.str() ) ;
+	    CPPUNIT_ASSERT( dd ) ;
+	    CPPUNIT_ASSERT( dd->get_agg_cmd() == agg.str() ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "show definitions" << endl;
+	{
+	    BESTextInfo info ;
+	    store->show_definitions( info ) ;
+	    info.print( cout ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "delete d3" << endl;
+	{
+	    CPPUNIT_ASSERT( store->del_definition( "d3" ) ) ;
+	    BESDefine *dd = store->look_for( "d3" ) ;
+	    CPPUNIT_ASSERT( !dd ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "delete d1" << endl;
+	{
+	    CPPUNIT_ASSERT( store->del_definition( "d1" ) ) ;
+	    BESDefine *dd = store->look_for( "d1" ) ;
+	    CPPUNIT_ASSERT( !dd ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "delete d5" << endl;
+	{
+	    CPPUNIT_ASSERT( store->del_definition( "d5" ) ) ;
+	    BESDefine *dd = store->look_for( "d5" ) ;
+	    CPPUNIT_ASSERT( !dd ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "find d2 and d4" << endl;
+	{
+	    BESDefine *dd = store->look_for( "d2" ) ;
+	    CPPUNIT_ASSERT( dd ) ;
+
+	    dd = store->look_for( "d4" ) ;
+	    CPPUNIT_ASSERT( dd ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "delete all definitions" << endl;
+	store->del_definitions() ;
+
+	cout << "*****************************************" << endl;
+	cout << "find definitions d1, d2, d3, d4, d5" << endl;
+	for( unsigned int i = 1; i < 6; i++ )
+	{
+	    stringstream name ; name << "d" << i ;
+	    stringstream agg ; agg << "d" << i << "agg" ;
+	    cout << "    looking for " << name.str() << endl ;
+	    BESDefine *dd = store->look_for( name.str() ) ;
+	    CPPUNIT_ASSERT( !dd ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from defT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( defT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered defT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    BESDefinitionStorageList::TheList()->add_persistence( new BESDefinitionStorageVolatile( PERSISTENCE_VOLATILE ) ) ;
-    BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence( PERSISTENCE_VOLATILE ) ;
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "add d1, d2, d3, d4, d5" << endl;
-    for( unsigned int i = 1; i < 6; i++ )
-    {
-	stringstream name ; name << "d" << i ;
-	stringstream agg ; agg << "d" << i << "agg" ;
-	BESDefine *dd = new BESDefine ;
-	dd->set_agg_cmd( agg.str() ) ;
-	bool status = store->add_definition( name.str(), dd ) ;
-	if( status == true )
-	{
-	    cout << "successfully added " << name.str() << endl ;
-	}
-	else
-	{
-	    cerr << "failed to add " << name.str() << endl ;
-	    return 1 ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "find d1, d2, d3, d4, d5" << endl;
-    for( unsigned int i = 1; i < 6; i++ )
-    {
-	stringstream name ; name << "d" << i ;
-	stringstream agg ; agg << "d" << i << "agg" ;
-	BESDefine *dd = store->look_for( name.str() ) ;
-	if( dd )
-	{
-	    cout << "found " << name.str() << endl ;
-	    if( dd->get_agg_cmd() == agg.str() )
-	    {
-		cout << "    agg command correct" << endl ;
-	    }
-	    else
-	    {
-		cerr << "    agg command incorrect, = "
-		     << dd->get_agg_cmd()
-		     << ", should be " << agg.str() << endl ;
-		return 1 ;
-	    }
-	}
-	else
-	{
-	    cerr << "didn't find " << name.str() << endl ;
-	    return 1 ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "show definitions" << endl;
-    {
-	BESTextInfo info ;
-	store->show_definitions( info ) ;
-	info.print( cout ) ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "delete d3" << endl;
-    {
-	bool ret = store->del_definition( "d3" ) ;
-	if( ret == true )
-	{
-	    cout << "successfully deleted d3" << endl ;
-	}
-	else
-	{
-	    cerr << "unable to delete d3" << endl ;
-	    return 1 ;
-	}
-	BESDefine *dd = store->look_for( "d3" ) ;
-	if( dd )
-	{
-	    cerr << "    found d3, bad" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "    did not find d3" << endl ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "delete d1" << endl;
-    {
-	bool ret = store->del_definition( "d1" ) ;
-	if( ret == true )
-	{
-	    cout << "successfully deleted d1" << endl ;
-	}
-	else
-	{
-	    cerr << "unable to delete d1" << endl ;
-	    return 1 ;
-	}
-	BESDefine *dd = store->look_for( "d1" ) ;
-	if( dd )
-	{
-	    cerr << "    found d1, bad" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "    did not find d1" << endl ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "delete d5" << endl;
-    {
-	bool ret = store->del_definition( "d5" ) ;
-	if( ret == true )
-	{
-	    cout << "successfully deleted d5" << endl ;
-	}
-	else
-	{
-	    cerr << "unable to delete d5" << endl ;
-	    return 1 ;
-	}
-	BESDefine *dd = store->look_for( "d5" ) ;
-	if( dd )
-	{
-	    cerr << "    found d5, bad" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "    did not find d5" << endl ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "find d2 and d4" << endl;
-    {
-	BESDefine *dd = store->look_for( "d2" ) ;
-	if( dd )
-	{
-	    cout << "found " << "d2" << ", good" << endl ;
-	}
-	else
-	{
-	    cerr << "didn't find " << "d2" << ", bad" << endl ;
-	    return 1 ;
-	}
-
-	dd = store->look_for( "d4" ) ;
-	if( dd )
-	{
-	    cout << "found " << "d4" << ", good" << endl ;
-	}
-	else
-	{
-	    cerr << "didn't find " << "d4" << ", bad" << endl ;
-	    return 1 ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "delete all definitions" << endl;
-    store->del_definitions() ;
-
-    cout << endl << "*****************************************" << endl;
-    cout << "find definitions d1, d2, d3, d4, d5" << endl;
-    for( unsigned int i = 1; i < 6; i++ )
-    {
-	stringstream name ; name << "d" << i ;
-	stringstream agg ; agg << "d" << i << "agg" ;
-	BESDefine *dd = store->look_for( name.str() ) ;
-	if( dd )
-	{
-	    cerr << "found " << name.str() << ", bad" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "didn't find " << name.str() << ", good" << endl ;
-	}
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from defT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    Application *app = new defT();
-    putenv( "BES_CONF=./defT.ini" ) ;
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 

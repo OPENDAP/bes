@@ -49,7 +49,7 @@ check-local:
 	@echo ""
 	@echo "**********************************************************"
 	@echo "You must have cppunit 1.12.x or greater installed to run *"
-	@echo "check target in ppt unit-tests directory                 *"
+	@echo "check target in xmlcommand unit-tests directory          *"
 	@echo "**********************************************************"
 	@echo ""
 endif

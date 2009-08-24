@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <cstring>
 #include <limits.h>
@@ -38,208 +44,141 @@ using std::cerr ;
 using std::cout ;
 using std::endl ;
 
-#include "scrubT.h"
 #include "BESScrub.h"
 #include "BESError.h"
 
-int scrubT::
-run(void)
+class connT: public TestFixture {
+private:
+
+public:
+    connT() {}
+    ~connT() {}
+
+    void setUp()
+    {
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( connT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered scrubT::run" << endl;
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test command line length over 255 characters" << endl;
+	    char arg[512] ;
+	    memset( arg, 'a', 300 ) ;
+	    arg[300] = '\0' ;
+	    CPPUNIT_ASSERT( !BESScrub::command_line_arg_ok( arg ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test command line length ok" << endl;
+	    string arg = "anarg" ;
+	    CPPUNIT_ASSERT( BESScrub::command_line_arg_ok( arg ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test path name length over 255 characters" << endl;
+	    char path_name[512] ;
+	    memset( path_name, 'a', 300 ) ;
+	    path_name[300] = '\0' ;
+	    CPPUNIT_ASSERT( !BESScrub::pathname_ok( path_name, true ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test path name good" << endl;
+	    CPPUNIT_ASSERT( BESScrub::pathname_ok( "/usr/local/something_goes_here-and-is-ok.txt", true ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test path name bad characters strict" << endl;
+	    CPPUNIT_ASSERT( !BESScrub::pathname_ok( "*$^&;@/user/local/bin/ls", true ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test array size too big" << endl;
+	    CPPUNIT_ASSERT( !BESScrub::size_ok( 4, UINT_MAX ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	try
+	{
+	    cout << "*****************************************" << endl;
+	    cout << "Test array size ok" << endl;
+	    CPPUNIT_ASSERT( BESScrub::size_ok( 4, 32 ) ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"scrub failed" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from scrubT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( connT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered scrubT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test command line length over 255 characters" << endl;
-	char arg[512] ;
-	memset( arg, 'a', 300 ) ;
-	arg[300] = '\0' ;
-	if( BESScrub::command_line_arg_ok( arg ) )
-	{
-	    cerr << "command line ok, shouldn't be" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "command line not ok, good" << endl ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test command line length ok" << endl;
-	string arg = "anarg" ;
-	if( BESScrub::command_line_arg_ok( arg ) )
-	{
-	    cout << "command line ok, good" << endl ;
-	}
-	else
-	{
-	    cerr << "command line not ok, should be" << endl ;
-	    return 1 ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test path name length over 255 characters" << endl;
-	char path_name[512] ;
-	memset( path_name, 'a', 300 ) ;
-	path_name[300] = '\0' ;
-	if( BESScrub::pathname_ok( path_name, true ) )
-	{
-	    cerr << "path name ok, shouldn't be" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "path name not ok, good" << endl ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test path name good" << endl;
-	if( BESScrub::pathname_ok( "/usr/local/something_goes_here-and-is-ok.txt", true ) )
-	{
-	    cout << "path name ok, good" << endl ;
-	}
-	else
-	{
-	    cerr << "path name not ok, should be" << endl ;
-	    return 1 ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test path name bad characters strict" << endl;
-	if( BESScrub::pathname_ok( "*$^&;@/user/local/bin/ls", true ) )
-	{
-	    cerr << "path name ok, shouldn't be" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "path name not ok, good" << endl ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test array size too big" << endl;
-	if( BESScrub::size_ok( 4, UINT_MAX ) )
-	{
-	    cerr << "array size ok, shouldn't be" << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "array size not ok, good" << endl ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    try
-    {
-	cout << endl << "*****************************************" << endl;
-	cout << "Test array size ok" << endl;
-	if( BESScrub::size_ok( 4, 32 ) )
-	{
-	    cout << "array size ok, good" << endl ;
-	}
-	else
-	{
-	    cerr << "array size not ok, should be" << endl ;
-	    return 1 ;
-	}
-    }
-    catch( BESError &e )
-    {
-	cerr << "caught exception: " << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from scrubT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    Application *app = new scrubT();
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 

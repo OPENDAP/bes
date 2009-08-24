@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -39,53 +45,63 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "encodeT.h"
 #include "BESProcessEncodedString.h"
-#include "test_config.h"
+#include "TheBESKeys.h"
+#include <test_config.h>
 
-int
-encodeT::run(void)
+class encodeT: public TestFixture {
+private:
+
+public:
+    encodeT() {}
+    ~encodeT() {}
+
+    void setUp()
+    {
+	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( encodeT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered encodeT::run" << endl;
+
+	string teststr = "request=%22This%20is%20a%20test%3B%22&username=pwest" ;
+	BESProcessEncodedString pes( teststr.c_str() ) ;
+	string request = pes.get_key( "request" ) ;
+	cout << "request = " << request << endl ;
+	CPPUNIT_ASSERT( request == "\"This is a test;\"" ) ;
+
+	string username = pes.get_key( "username" ) ;
+	cout << "username = " << username << endl ;
+	CPPUNIT_ASSERT( username == "pwest" ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from encodeT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( encodeT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered encodeT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    string teststr = "request=%22This%20is%20a%20test%3B%22&username=pwest" ;
-    BESProcessEncodedString pes( teststr.c_str() ) ;
-    string request = pes.get_key( "request" ) ;
-    cout << "request = " << request << endl ;
-    if( request != "\"This is a test;\"" )
-    {
-	cerr << "Resulting request incorrect" << endl ;
-	return 1 ;
-    }
-    else
-    {
-	cout << "Resulting request correct" << endl ;
-    }
-    string username = pes.get_key( "username" ) ;
-    cout << "username = " << username << endl ;
-    if( username != "pwest" )
-    {
-	cerr << "Resulting username incorrect" << endl ;
-	return 1 ;
-    }
-    else
-    {
-	cout << "Resulting username correct" << endl ;
-    }
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from encodeT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new encodeT();
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 

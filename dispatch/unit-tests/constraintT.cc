@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <cstdlib>
 
@@ -37,62 +43,77 @@ using std::cerr ;
 using std::cout ;
 using std::endl ;
 
-#include "constraintT.h"
 #include "BESFileContainer.h"
 #include "BESDataHandlerInterface.h"
 #include "BESConstraintFuncs.h"
 #include "BESDataNames.h"
+#include "TheBESKeys.h"
 #include <test_config.h>
 
-int constraintT::
-run(void)
+class constraintT: public TestFixture {
+private:
+
+public:
+    constraintT() {}
+    ~constraintT() {}
+
+    void setUp()
+    {
+	string bes_conf = (string)TEST_SRC_DIR + "/empty.ini" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( constraintT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Running constraintT tests" << endl;
+
+	cout << "*****************************************" << endl;
+	cout << "Build the data and build the post constraint" << endl ;
+	BESDataHandlerInterface dhi ;
+	BESContainer *d1 = new BESFileContainer( "sym1", "real1", "type1" ) ;
+	d1->set_constraint( "var1" ) ;
+	dhi.containers.push_back( d1 ) ;
+
+	BESContainer *d2 = new BESFileContainer( "sym2", "real2", "type2" ) ;
+	d2->set_constraint( "var2" ) ;
+	dhi.containers.push_back( d2 ) ;
+
+	dhi.first_container() ;
+	BESConstraintFuncs::post_append( dhi ) ;
+	dhi.next_container() ;
+	BESConstraintFuncs::post_append( dhi ) ;
+
+	string should_be = "sym1.var1,sym2.var2" ;
+	cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl ;
+	cout << "    should be = " << should_be << endl ;
+	CPPUNIT_ASSERT( dhi.data[POST_CONSTRAINT] == should_be ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "Done running constraintT tests" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( constraintT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered constraintT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Build the data and build the post constraint" << endl ;
-    BESDataHandlerInterface dhi ;
-    BESContainer *d1 = new BESFileContainer( "sym1", "real1", "type1" ) ;
-    d1->set_constraint( "var1" ) ;
-    dhi.containers.push_back( d1 ) ;
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    BESContainer *d2 = new BESFileContainer( "sym2", "real2", "type2" ) ;
-    d2->set_constraint( "var2" ) ;
-    dhi.containers.push_back( d2 ) ;
-
-    dhi.first_container() ;
-    BESConstraintFuncs::post_append( dhi ) ;
-    dhi.next_container() ;
-    BESConstraintFuncs::post_append( dhi ) ;
-
-    string should_be = "sym1.var1,sym2.var2" ;
-    if( dhi.data[POST_CONSTRAINT] != should_be )
-    {
-	cerr << "bad things man" << endl ;
-	cerr << "    post constraint: " << dhi.data[POST_CONSTRAINT] << endl;
-	cerr << "    should be: " << should_be << endl;
-    }
-    else
-    {
-	cout << "good" << endl ;
-	cout << "    post constraint: " << dhi.data[POST_CONSTRAINT] << endl;
-	cout << "    should be: " << should_be << endl;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from constraintT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
-                     + "/persistence_cgi_test.ini" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new constraintT();
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 

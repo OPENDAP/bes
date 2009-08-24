@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <cstdlib>
 
@@ -37,194 +43,142 @@ using std::cerr ;
 using std::cout ;
 using std::endl ;
 
-#include "lockT.h"
 #include "BESCache.h"
 #include "BESError.h"
+#include "TheBESKeys.h"
 #include <test_config.h>
 
-int
-lockT::run(void)
-{
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered lockT::run" << endl;
-    int retVal = 0;
+class lockT: public TestFixture {
+private:
 
-    try
+public:
+    lockT() {}
+    ~lockT() {}
+
+    void setUp()
     {
-	string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
-	BESCache cache( cache_dir, "lock_test", 1 ) ;
+	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
 
-	cout << endl << "*****************************************" << endl;
-	cout << "lock, then try to lock again" << endl;
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( lockT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered lockT::run" << endl;
+
 	try
 	{
-	    cout << "get first lock" << endl ;
-	    if( cache.lock( 2, 10 ) == false )
+	    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
+	    BESCache cache( cache_dir, "lock_test", 1 ) ;
+
+	    cout << "*****************************************" << endl;
+	    cout << "lock, then try to lock again" << endl;
+	    try
 	    {
-		cerr << "failed to lock the cache" << endl ;
-		return 1 ;
+		cout << "    get first lock" << endl ;
+		CPPUNIT_ASSERT( cache.lock( 2, 10 ) ) ;
 	    }
-	}
-	catch( BESError &e )
-	{
-	    cerr << "locking test failed" << endl ;
-	    cerr << e.get_message() << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "locking test failed" << endl ;
-	    cerr << "Unknown error" << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-
-	try
-	{
-	    cout << "try to lock again" << endl ;
-	    if( cache.lock( 2, 10 ) == true )
+	    catch( BESError &e )
 	    {
-		cerr << "successfully got the lock, should not have" << endl ;
+		cerr << e.get_message() << endl ;
 		cache.unlock() ;
-		return 1 ;
+		CPPUNIT_ASSERT( !"locking test failed" ) ;
 	    }
-	}
-	catch( BESError &e )
-	{
-	    cout << "failed to get lock, good" << endl ;
-	    cout << e.get_message() << endl ;
-	}
-	catch( ... )
-	{
-	    cerr << "failed to get lock, unkown exception" << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
 
-	cout << endl << "*****************************************" << endl;
-	cout << "unlock" << endl;
-	if( cache.unlock() == false )
-	{
-	    cerr << "failed to release the lock" << endl ;
-	    return 1 ;
-	}
-
-	cout << endl << "*****************************************" << endl;
-	cout << "lock the cache, create another cache and try to lock" << endl;
-	try
-	{
-	    cout << "locking first" << endl;
-	    if( cache.lock( 2, 10 ) == false )
+	    try
 	    {
-		cerr << "failed to lock the cache" << endl ;
-		return 1 ;
+		cout << "    try to lock again" << endl ;
+		CPPUNIT_ASSERT( cache.lock( 2, 10 ) == false ) ;
 	    }
-	}
-	catch( BESError &e )
-	{
-	    cerr << "2 cache locking failed" << endl ;
-	    cerr << e.get_message() << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "2 cache locking failed" << endl ;
-	    cerr << "Unknown error" << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-
-	cout << "creating second" << endl;
-	BESCache cache2( cache_dir, "lock_test", 1 ) ;
-	try
-	{
-	    cout << "locking second" << endl;
-	    if( cache2.lock( 2, 10 ) == false )
+	    catch( BESError &e )
 	    {
-		cout << "failed to lock the cache, good" << endl ;
+		cout << e.get_message() << endl ;
+		cout << "failed to get lock, good" << endl ;
 	    }
-	}
-	catch( BESError &e )
-	{
-	    cerr << "2 cache locking failed" << endl ;
-	    cerr << e.get_message() << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "2 cache locking failed" << endl ;
-	    cerr << "Unknown error" << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
 
-	cout << endl << "*****************************************" << endl;
-	cout << "unlock the first cache" << endl;
-	if( cache.unlock() == false )
-	{
-	    cerr << "failed to release the lock" << endl ;
-	    return 1 ;
-	}
+	    cout << "*****************************************" << endl;
+	    cout << "unlock" << endl;
+	    CPPUNIT_ASSERT( cache.unlock() ) ;
 
-	cout << endl << "*****************************************" << endl;
-	cout << "lock the second cache" << endl;
-	try
-	{
-	    if( cache2.lock( 2, 10 ) == true )
+	    cout << "*****************************************" << endl;
+	    cout << "lock the cache, create another cache, try to lock" << endl;
+	    try
 	    {
-		cout << "got the lock, good" << endl ;
+		cout << "    locking first" << endl;
+		CPPUNIT_ASSERT( cache.lock( 2, 10 ) ) ;
 	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		cache.unlock() ;
+		CPPUNIT_ASSERT( !"2 cache locking failed" ) ;
+	    }
+
+	    cout << "    creating second" << endl;
+	    BESCache cache2( cache_dir, "lock_test", 1 ) ;
+	    try
+	    {
+		CPPUNIT_ASSERT( cache2.lock( 2, 10 ) == false ) ;
+	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		cache.unlock() ;
+		CPPUNIT_ASSERT( !"cache 2 locking failed" ) ;
+	    }
+
+	    cout << "*****************************************" << endl;
+	    cout << "unlock the first cache" << endl;
+	    CPPUNIT_ASSERT( cache.unlock() ) ;
+
+	    cout << "*****************************************" << endl;
+	    cout << "lock the second cache" << endl;
+	    try
+	    {
+		CPPUNIT_ASSERT( cache2.lock( 2, 10 ) ) ;
+	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		cache.unlock() ;
+		CPPUNIT_ASSERT( !"locking second cache failed" ) ;
+	    }
+
+	    cout << "*****************************************" << endl;
+	    cout << "unlock the second cache" << endl;
+	    CPPUNIT_ASSERT( cache2.unlock() ) ;
 	}
 	catch( BESError &e )
 	{
-	    cerr << "locking second cache failed" << endl ;
 	    cerr << e.get_message() << endl ;
-	    cache.unlock() ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "locking second cache failed" << endl ;
-	    cerr << "Unknown error" << endl ;
-	    cache.unlock() ;
-	    return 1 ;
+	    CPPUNIT_ASSERT( !"Failed to use the cache" ) ;
 	}
 
-	cout << endl << "*****************************************" << endl;
-	cout << "unlock the second cache" << endl;
-	if( cache2.unlock() == false )
-	{
-	    cerr << "failed to release the lock" << endl ;
-	    return 1 ;
-	}
+	cout << "*****************************************" << endl;
+	cout << "Returning from lockT::run" << endl;
     }
-    catch( BESError &e )
-    {
-	cerr << "Failed to use the cache" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "Failed to use the cache" << endl ;
-	cerr << "Unknown error" << endl ;
-	return 1 ;
-    }
+} ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from lockT::run" << endl;
+CPPUNIT_TEST_SUITE_REGISTRATION( lockT ) ;
 
-    return retVal;
-}
+int 
+main( int, char** )
+{
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new lockT();
-    return app->main(argC, argV);
+    bool wasSuccessful = runner.run( "", false )  ;
+
+    return wasSuccessful ? 0 : 1 ;
 }
 

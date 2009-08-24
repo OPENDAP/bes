@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -39,323 +45,226 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "utilT.h"
 #include "BESUtil.h"
 #include "BESError.h"
+#include "TheBESKeys.h"
 #include "test_config.h"
 
-int
-utilT::run(void)
-{
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered utilT::run" << endl;
-    int retVal = 0;
+class utilT: public TestFixture {
+private:
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Remove escaped quotes" << endl;
-    string s = BESUtil::unescape( "\\\"This is a test, this is \\\"ONLY\\\" a test\\\"" ) ;
-    string result = "\"This is a test, this is \"ONLY\" a test\"" ;
-    if( s != result )
+public:
+    utilT() {}
+    ~utilT() {}
+
+    void
+    display_values( const list<string> &values )
     {
-	cerr << "resulting string incorrect: " << s << " should be " << result << endl ;
-	return 1 ;
+	list<string>::const_iterator i = values.begin() ;
+	list<string>::const_iterator e = values.end() ;
+	for( ; i != e; i++ )
+	{
+	    cout << "  " << (*i) << endl ;
+	}
     }
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Remove Leading and Trailing Blanks" << endl;
-    s = "This is a test" ;
-    result = s ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
+    void setUp()
     {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
+	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
     }
 
-    s = " This is a test" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_TEST_SUITE( utilT ) ;
 
-    s = "	This is a test" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_TEST( do_test ) ;
 
-    s = "    This is a test" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_TEST_SUITE_END() ;
 
-    s = "    	This is a test" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
+    void do_test()
     {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	cout << "*****************************************" << endl;
+	cout << "Entered utilT::run" << endl;
 
-    s = "    	This is a test " ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	cout << "*****************************************" << endl;
+	cout << "Remove escaped quotes" << endl;
+	string s = BESUtil::unescape( "\\\"This is a test, this is \\\"ONLY\\\" a test\\\"" ) ;
+	string result = "\"This is a test, this is \"ONLY\" a test\"" ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "    	This is a test    " ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	cout << "*****************************************" << endl;
+	cout << "Remove Leading and Trailing Blanks" << endl;
+	s = "This is a test" ;
+	result = s ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "    	This is a test    	" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = " This is a test" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "This is a test    " ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = "	This is a test" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "This is a test    	" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = "    This is a test" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = " 	This is a test 	\n" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = "    	This is a test" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "    " ;
-    result = "" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = "    	This is a test " ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    s = "    	" ;
-    BESUtil::removeLeadingAndTrailingBlanks( s ) ;
-    if( s != result )
-    {
-	cerr << "resulting string incorrect: \"" << s
-	     << "\" should be \"" << result << "\"" << endl ;
-	return 1 ;
-    }
+	s = "    	This is a test    " ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Exploding delimited strings" << endl;
-    list<string> values ;
+	s = "    	This is a test    	" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    string value = "val1,val2,val3,val4" ;
-    cout << value << endl ;
-    BESUtil::explode( ',', value, values ) ;
-    display_values( values ) ;
-    if( values.size() != 4 )
-    {
-	cerr << "should be 4 values, have " << values.size() << endl ;
-	return 1 ;
-    }
-    list<string>::iterator i = values.begin() ;
-    list<string>::iterator i1 = i++ ;
-    list<string>::iterator i2 = i++ ;
-    list<string>::iterator i3 = i++ ;
-    list<string>::iterator i4 = i++ ;
-    if( (*i1) != "val1"
-        || (*i2) != "val2"
-        || (*i3) != "val3"
-        || (*i4) != "val4" )
-    {
-	cout << (*i1) << endl ;
-	cout << (*i2) << endl ;
-	cout << (*i3) << endl ;
-	cout << (*i4) << endl ;
-	cerr << "bad values" << endl ;
-	return 1 ;
-    }
+	s = "This is a test    " ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    values.clear() ;
+	s = "This is a test    	" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    value = "val1,val2,val3,val4," ;
-    cout << value << endl ;
-    BESUtil::explode( ',', value, values ) ;
-    display_values( values ) ;
-    if( values.size() != 4 )
-    {
-	cerr << "should be 4 values, have " << values.size() << endl ;
-	return 1 ;
-    }
-    i = values.begin() ;
-    i1 = i++ ;
-    i2 = i++ ;
-    i3 = i++ ;
-    i4 = i++ ;
-    if( (*i1) != "val1"
-        || (*i2) != "val2"
-        || (*i3) != "val3"
-        || (*i4) != "val4" )
-    {
-	cout << (*i1) << endl ;
-	cout << (*i2) << endl ;
-	cout << (*i3) << endl ;
-	cout << (*i4) << endl ;
-	cerr << "bad values" << endl ;
-	return 1 ;
-    }
+	s = " 	This is a test 	\n" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    values.clear() ;
+	s = "    " ;
+	result = "" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    value = "val1;\"val2 with quotes\";val3;\"val4 with quotes\"" ;
-    cout << value << endl ;
-    BESUtil::explode( ';', value, values ) ;
-    display_values( values ) ;
-    if( values.size() != 4 )
-    {
-	cerr << "should be 4 values, have " << values.size() << endl ;
-	return 1 ;
-    }
-    i = values.begin() ;
-    i1 = i++ ;
-    i2 = i++ ;
-    i3 = i++ ;
-    i4 = i++ ;
-    if( (*i1) != "val1"
-        || (*i2) != "\"val2 with quotes\""
-        || (*i3) != "val3"
-        || (*i4) != "\"val4 with quotes\"" )
-    {
-	cout << (*i1) << endl ;
-	cout << (*i2) << endl ;
-	cout << (*i3) << endl ;
-	cout << (*i4) << endl ;
-	cerr << "bad values" << endl ;
-	return 1 ;
-    }
+	s = "    	" ;
+	BESUtil::removeLeadingAndTrailingBlanks( s ) ;
+	CPPUNIT_ASSERT( s == result ) ;
 
-    values.clear() ;
+	cout << "*****************************************" << endl;
+	cout << "Exploding delimited strings" << endl;
+	list<string> values ;
 
-    value = "val1;\"val2 with \\\"embedded quotes\\\"\";val3;\"val4 with quotes\";" ;
-    cout << value << endl ;
-    BESUtil::explode( ';', value, values ) ;
-    display_values( values ) ;
-    if( values.size() != 4 )
-    {
-	cerr << "should be 4 values, have " << values.size() << endl ;
-	return 1 ;
-    }
-    i = values.begin() ;
-    i1 = i++ ;
-    i2 = i++ ;
-    i3 = i++ ;
-    i4 = i++ ;
-    if( (*i1) != "val1"
-        || (*i2) != "\"val2 with \\\"embedded quotes\\\"\""
-        || (*i3) != "val3"
-        || (*i4) != "\"val4 with quotes\"" )
-    {
-	cout << (*i1) << endl ;
-	cout << (*i2) << endl ;
-	cout << (*i3) << endl ;
-	cout << (*i4) << endl ;
-	cerr << "bad values" << endl ;
-	return 1 ;
-    }
+	string value = "val1,val2,val3,val4" ;
+	cout << value << endl ;
+	BESUtil::explode( ',', value, values ) ;
+	display_values( values ) ;
+	CPPUNIT_ASSERT( values.size() == 4 ) ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Imploding list to delimited string" << endl;
-    values.clear() ;
-    values.push_back( "a" ) ;
-    values.push_back( "b" ) ;
-    values.push_back( "c" ) ;
-    values.push_back( "d" ) ;
-    result = BESUtil::implode( values, ',' ) ;
-    if( result != "a,b,c,d" )
-    {
-	cerr << "imploded result " << result << " != \"a,b,c,d\"" << endl ;
-	return 1 ;
-    }
-    values.push_back( "a,b" ) ;
-    try
-    {
+	list<string>::iterator i = values.begin() ;
+	list<string>::iterator i1 = i++ ;
+	list<string>::iterator i2 = i++ ;
+	list<string>::iterator i3 = i++ ;
+	list<string>::iterator i4 = i++ ;
+	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
+	CPPUNIT_ASSERT( (*i2) == "val2" ) ;
+	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
+	CPPUNIT_ASSERT( (*i4) == "val4" ) ;
+
+	values.clear() ;
+
+	value = "val1,val2,val3,val4," ;
+	cout << value << endl ;
+	BESUtil::explode( ',', value, values ) ;
+	display_values( values ) ;
+	CPPUNIT_ASSERT( values.size() == 4 ) ;
+	i = values.begin() ;
+	i1 = i++ ;
+	i2 = i++ ;
+	i3 = i++ ;
+	i4 = i++ ;
+	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
+	CPPUNIT_ASSERT( (*i2) == "val2" ) ;
+	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
+	CPPUNIT_ASSERT( (*i4) == "val4" ) ;
+
+	values.clear() ;
+
+	value = "val1;\"val2 with quotes\";val3;\"val4 with quotes\"" ;
+	cout << value << endl ;
+	BESUtil::explode( ';', value, values ) ;
+	display_values( values ) ;
+	CPPUNIT_ASSERT( values.size() == 4 ) ;
+	i = values.begin() ;
+	i1 = i++ ;
+	i2 = i++ ;
+	i3 = i++ ;
+	i4 = i++ ;
+	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
+	CPPUNIT_ASSERT( (*i2) == "\"val2 with quotes\"" ) ;
+	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
+	CPPUNIT_ASSERT( (*i4) == "\"val4 with quotes\"" ) ;
+
+	values.clear() ;
+
+	value = "val1;\"val2 with \\\"embedded quotes\\\"\";val3;\"val4 with quotes\";" ;
+	cout << value << endl ;
+	BESUtil::explode( ';', value, values ) ;
+	display_values( values ) ;
+	CPPUNIT_ASSERT( values.size() == 4 ) ;
+	i = values.begin() ;
+	i1 = i++ ;
+	i2 = i++ ;
+	i3 = i++ ;
+	i4 = i++ ;
+	CPPUNIT_ASSERT( (*i1) == "val1" ) ;
+	CPPUNIT_ASSERT( (*i2) == "\"val2 with \\\"embedded quotes\\\"\"" ) ;
+	CPPUNIT_ASSERT( (*i3) == "val3" ) ;
+	CPPUNIT_ASSERT( (*i4) == "\"val4 with quotes\"" ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "Imploding list to delimited string" << endl;
+	values.clear() ;
+	values.push_back( "a" ) ;
+	values.push_back( "b" ) ;
+	values.push_back( "c" ) ;
+	values.push_back( "d" ) ;
 	result = BESUtil::implode( values, ',' ) ;
-	cerr << "imploding of value with comma should have failed" << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-    }
-    values.clear() ;
-    values.push_back( "a" ) ;
-    values.push_back( "\"a,b\"" ) ;
-    values.push_back( "b" ) ;
-    result = BESUtil::implode( values, ',' ) ;
-    if( result != "a,\"a,b\",b" )
-    {
-	cerr << "imploded result " << result << " != \"a,\\\"a,b\\\",b" << endl;
-	return 1 ;
-    }
+	CPPUNIT_ASSERT( result == "a,b,c,d" ) ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from utilT::run" << endl;
+	cout << "*****************************************" << endl;
+	cout << "Imploding list with a delimiter in a value" << endl;
+	values.push_back( "a,b" ) ;
+	try
+	{
+	    result = BESUtil::implode( values, ',' ) ;
+	    CPPUNIT_ASSERT( !"imploding of value with comma" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+	values.clear() ;
+	values.push_back( "a" ) ;
+	values.push_back( "\"a,b\"" ) ;
+	values.push_back( "b" ) ;
+	result = BESUtil::implode( values, ',' ) ;
+	CPPUNIT_ASSERT( result == "a,\"a,b\",b" ) ;
 
-    return retVal;
-}
+	cout << "*****************************************" << endl;
+	cout << "Returning from utilT::run" << endl;
+    }
+} ;
 
-void
-utilT::display_values( const list<string> &values )
+CPPUNIT_TEST_SUITE_REGISTRATION( utilT ) ;
+
+int 
+main( int, char** )
 {
-    list<string>::const_iterator i = values.begin() ;
-    list<string>::const_iterator e = values.end() ;
-    for( ; i != e; i++ )
-    {
-	cout << "  " << (*i) << endl ;
-    }
-}
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new utilT();
-    return app->main(argC, argV);
+    bool wasSuccessful = runner.run( "", false )  ;
+
+    return wasSuccessful ? 0 : 1 ;
 }
 

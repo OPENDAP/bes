@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include "config.h"
 
 #include <sys/types.h>
@@ -48,297 +54,288 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "checkT.h"
 #include "BESUtil.h"
 #include "BESError.h"
-#include "test_config.h"
+#include "TheBESKeys.h"
+#include <test_config.h>
 
-int
-checkT::run(void)
+class checkT: public TestFixture {
+private:
+
+public:
+    checkT() {}
+    ~checkT() {}
+
+    void setUp()
+    {
+	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( checkT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered checkT::run" << endl;
+
+	cout << "*****************************************" << endl;
+	cout << "create the desired directory structure" << endl;
+	// testdir
+	// testdir/nc
+	// testdir/link_to_nc -> testdir/nc
+	// testdir/nc/testfile.nc
+	// testdir/nc/link_to_testfile.nc -> testdir/nc/testfile.nc
+	cout << "    creating ./testdir/" << endl;
+	int ret = mkdir( "./testdir", S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH ) ;
+	int myerrno = errno ;
+	CPPUNIT_ASSERT( ret == 0 || myerrno == EEXIST ) ;
+
+	cout << "    creating ./testdir/nc/" << endl;
+	ret = mkdir( "./testdir/nc", S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH ) ;
+	myerrno = errno ;
+	CPPUNIT_ASSERT( ret == 0 || myerrno == EEXIST ) ;
+
+	cout << "    creating ./testdir/nc/testfile.nc" << endl;
+	FILE *fp = fopen( "./testdir/nc/testfile.nc", "w+" ) ;
+	CPPUNIT_ASSERT( fp ) ;
+
+	cout << "    creating symlink ./testdir/nc/link_to_nc" << endl;
+	fprintf( fp, "This is a test file" ) ;
+	fclose( fp ) ;
+	ret = symlink( "./nc", "./testdir/link_to_nc" ) ;
+	myerrno = errno ;
+	CPPUNIT_ASSERT( ret == 0 || myerrno == EEXIST ) ;
+
+	cout << "    creating symlink ./testdir/nc/link_to_testfile.nc" << endl;
+	ret = symlink( "./testfile.nc", "./testdir/nc/link_to_testfile.nc" ) ;
+	myerrno = errno ;
+	CPPUNIT_ASSERT( ret == 0 || myerrno == EEXIST ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/", "./", true ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/", "./", true ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/nc/" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/testfile.nc" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/testfile.nc", "./", true ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/nc/testfile.nc" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/", "./", true ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/link_to_nc/" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/link_to_testfile.nc" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/link_to_testfile.nc",
+				 "./", true ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/link_to_nc/link_to_testfile.nc" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/, folllow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/", "./", false ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/, folllow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/", "./", false ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/nc/" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/testfile.nc, folllow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/testfile.nc", "./", false ) ;
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"check failed for /testdir/nc/testfile.nc" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/, follow_syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/", "./", false ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/link_to_testfile.nc, "
+	     << "follow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/link_to_testfile.nc",
+				  "./", false ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/link_to_testfile.nc, "
+	     << "follow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/link_to_testfile.nc",
+				  "./", false ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /nodir/" << endl;
+	try
+	{
+	    BESUtil::check_path( "/nodir/", "./", true ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /nodir/, follow syms = false" << endl;
+	try
+	{
+	    BESUtil::check_path( "/nodir/", "./", false ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nodir/" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nodir/", "./", true ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/nc/nofile.nc" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/nc/nofile.nc", "./", true ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/nofile.nc" << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/nofile.nc", "./", true ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "checking /testdir/link_to_nc/nofile.nc, follow syms = false"
+	     << endl;
+	try
+	{
+	    BESUtil::check_path( "/testdir/link_to_nc/nofile.nc", "./", false ) ;
+	    CPPUNIT_ASSERT( !"check succeeded" ) ;
+	}
+	catch( BESError &e )
+	{
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from checkT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( checkT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered checkT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "create the desired directory structure" << endl;
-    // testdir
-    // testdir/nc
-    // testdir/link_to_nc -> testdir/nc
-    // testdir/nc/testfile.nc
-    // testdir/nc/link_to_testfile.nc -> testdir/nc/testfile.nc
-    int ret = mkdir( "./testdir", S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH ) ;
-    if( ret == -1  && errno != EEXIST )
-    {
-	cerr << "Failed to create the test directory" << endl ;
-	return 1 ;
-    }
-    ret = mkdir( "./testdir/nc", S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH ) ;
-    if( ret == -1  && errno != EEXIST )
-    {
-	cerr << "Failed to create the test directory" << endl ;
-	return 1 ;
-    }
-    FILE *fp = fopen( "./testdir/nc/testfile.nc", "w+" ) ;
-    if( !fp )
-    {
-	cerr << "Failed to create the test file" << endl ;
-	return 1 ;
-    }
-    fprintf( fp, "This is a test file" ) ;
-    fclose( fp ) ;
-    ret = symlink( "./nc", "./testdir/link_to_nc" ) ;
-    if( ret == -1 && errno != EEXIST )
-    {
-	cerr << "Failed to create symbolic link to nc directory" << endl ;
-	return 1 ;
-    }
-    ret = symlink( "./testfile.nc", "./testdir/nc/link_to_testfile.nc" ) ;
-    if( ret == -1 && errno != EEXIST )
-    {
-	cerr << "Failed to create symbolic link to test file" << endl ;
-	return 1 ;
-    }
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/", "./", true ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/", "./", true ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/nc/" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/testfile.nc" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/testfile.nc", "./", true ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/nc/testfile.nc" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/", "./", true ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/link_to_nc/" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/link_to_testfile.nc" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/link_to_testfile.nc",
-			     "./", true ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/link_to_nc/link_to_testfile.nc"
-	     << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/, folllow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/", "./", false ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/, folllow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/", "./", false ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/nc/" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/testfile.nc, folllow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/testfile.nc", "./", false ) ;
-    }
-    catch( BESError &e )
-    {
-	cerr << "check failed for /testdir/nc/testfile.nc" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/, follow_syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/", "./", false ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/link_to_testfile.nc, "
-         << "follow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/link_to_testfile.nc",
-                              "./", false ) ;
-	cerr << "check succeeded, show have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/link_to_testfile.nc, "
-         << "follow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/link_to_testfile.nc",
-                              "./", false ) ;
-	cerr << "check succeeded, show have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /nodir/" << endl;
-    try
-    {
-	BESUtil::check_path( "/nodir/", "./", true ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /nodir/, follow syms = false" << endl;
-    try
-    {
-	BESUtil::check_path( "/nodir/", "./", false ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nodir/" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nodir/", "./", true ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/nc/nofile.nc" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/nc/nofile.nc", "./", true ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/nofile.nc" << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/nofile.nc", "./", true ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "checking /testdir/link_to_nc/nofile.nc, follow syms = false"
-         << endl;
-    try
-    {
-	BESUtil::check_path( "/testdir/link_to_nc/nofile.nc", "./", false ) ;
-	cerr << "check succeeded, should have failed" << endl ;
-	return 1 ;
-    }
-    catch( BESError &e )
-    {
-	cout << "err = " << e.get_message() << endl ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from checkT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new checkT();
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 

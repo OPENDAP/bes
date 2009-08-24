@@ -30,6 +30,10 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 
 using std::cerr ;
@@ -45,10 +49,14 @@ TestRequestHandler::TestRequestHandler( string name )
       _resp_num( 0 )
 {
     trh = this ;
-    add_handler( "resp1", TestRequestHandler::test_build_resp1 ) ;
-    add_handler( "resp2", TestRequestHandler::test_build_resp2 ) ;
-    add_handler( "resp3", TestRequestHandler::test_build_resp3 ) ;
-    add_handler( "resp4", TestRequestHandler::test_build_resp4 ) ;
+    CPPUNIT_ASSERT( add_handler( "resp1",
+				 TestRequestHandler::test_build_resp1 ) ) ;
+    CPPUNIT_ASSERT( add_handler( "resp2",
+				 TestRequestHandler::test_build_resp2 ) ) ;
+    CPPUNIT_ASSERT( add_handler( "resp3",
+				 TestRequestHandler::test_build_resp3 ) ) ;
+    CPPUNIT_ASSERT( add_handler( "resp4",
+				 TestRequestHandler::test_build_resp4 ) ) ;
 }
 
 TestRequestHandler::~TestRequestHandler()
@@ -86,166 +94,58 @@ TestRequestHandler::test_build_resp4( BESDataHandlerInterface &r )
 int
 TestRequestHandler::test()
 {
-    cout << endl << "*****************************************" << endl;
+    cout << "*****************************************" << endl;
     cout << "finding the handlers" << endl ;
-    BESDataHandlerInterface r ;
+    BESDataHandlerInterface dhi ;
+
+    cout << "    finding resp1" << endl ;
     p_request_handler p = find_handler( "resp1" ) ;
-    if( p )
-    {
-	p( r ) ;
-	if( _resp_num == 1 )
-	{
-	    cout << "found resp1" << endl ;
-	}
-	else
-	{
-	    cerr << "looking for resp1, found " << _resp_num << endl ;
-	    return 1 ;
-	}
-    }
-    else
-    {
-	cerr << "coundn't find resp1" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( p ) ;
+    p( dhi ) ;
+    CPPUNIT_ASSERT( _resp_num == 1 ) ;
 
+    cout << "    finding resp2" << endl ;
     p = find_handler( "resp2" ) ;
-    if( p )
-    {
-	p( r ) ;
-	if( _resp_num == 2 )
-	{
-	    cout << "found resp2" << endl ;
-	}
-	else
-	{
-	    cerr << "looking for resp2, found " << _resp_num << endl ;
-	    return 1 ;
-	}
-    }
-    else
-    {
-	cerr << "coundn't find resp2" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( p ) ;
+    p( dhi ) ;
+    CPPUNIT_ASSERT( _resp_num == 2 ) ;
 
+    cout << "    finding resp3" << endl ;
     p = find_handler( "resp3" ) ;
-    if( p )
-    {
-	p( r ) ;
-	if( _resp_num == 3 )
-	{
-	    cout << "found resp3" << endl ;
-	}
-	else
-	{
-	    cerr << "looking for resp3, found " << _resp_num << endl ;
-	    return 1 ;
-	}
-    }
-    else
-    {
-	cerr << "coundn't find resp3" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( p ) ;
+    p( dhi ) ;
+    CPPUNIT_ASSERT( _resp_num == 3 ) ;
 
+    cout << "    finding resp4" << endl ;
     p = find_handler( "resp4" ) ;
-    if( p )
-    {
-	p( r ) ;
-	if( _resp_num == 4 )
-	{
-	    cout << "found resp4" << endl ;
-	}
-	else
-	{
-	    cerr << "looking for resp4, found " << _resp_num << endl ;
-	    return 1 ;
-	}
-    }
-    else
-    {
-	cerr << "coundn't find resp4" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( p ) ;
+    p( dhi ) ;
+    CPPUNIT_ASSERT( _resp_num == 4 ) ;
 
-    p = find_handler( "thingy" ) ;
-    if( p )
-    {
-	p( r ) ;
-	cerr << "found the response handler " << _resp_num << endl ;
-	return 1 ;
-    }
-    else
-    {
-	cout << "didn't find thingy, good" << endl ;
-    }
+    cout << "    finding not_there" << endl ;
+    p = find_handler( "not_there" ) ;
+    CPPUNIT_ASSERT( !p ) ;
 
-    cout << endl << "*****************************************" << endl;
+    cout << "*****************************************" << endl;
     cout << "try to add resp3 again" << endl ;
     bool ret = add_handler( "resp3", TestRequestHandler::test_build_resp3 ) ;
-    if( ret == true )
-    {
-	cerr << "successfully added resp3 again" << endl ;
-	return 1 ;
-    }
-    else
-    {
-	cout << "failed to add resp3 again, good" << endl ;
-    }
+    CPPUNIT_ASSERT( ret == false ) ;
 
-    cout << endl << "*****************************************" << endl;
+    cout << "*****************************************" << endl;
     cout << "removing resp2" << endl ;
-    ret = remove_handler( "resp2" ) ;
-    if( ret == true )
-    {
-	p = find_handler( "resp2" ) ;
-	if( p )
-	{
-	    p( r ) ;
-	    cerr << "found resp2, execution = " << _resp_num << endl ;
-	    return 1 ;
-	}
-	else
-	{
-	    cout << "successfully removed resp2" << endl ;
-	}
-    }
-    else
-    {
-	cerr << "failed to remove resp2" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( remove_handler( "resp2" ) ) ;
+    p = find_handler( "resp2" ) ;
+    CPPUNIT_ASSERT( !p ) ;
 
-    if( add_handler( "resp2", TestRequestHandler::test_build_resp2 ) == true )
-    {
-	cout << "successfully added resp2 back" << endl ;
-    }
-    else
-    {
-	cerr << "failed to add resp2 back" << endl ;
-	return 1 ;
-    }
+    cout << "*****************************************" << endl;
+    cout << "add resp2 back" << endl ;
+    ret = add_handler( "resp2", TestRequestHandler::test_build_resp2 ) ;
+    CPPUNIT_ASSERT( ret == true ) ;
 
     p = find_handler( "resp2" ) ;
-    if( p )
-    {
-	p( r ) ;
-	if( _resp_num == 2 )
-	{
-	    cout << "found resp2" << endl ;
-	}
-	else
-	{
-	    cerr << "looking for resp2, found " << _resp_num << endl ;
-	    return 1 ;
-	}
-    }
-    else
-    {
-	cerr << "coundn't find resp2" << endl ;
-	return 1 ;
-    }
+    CPPUNIT_ASSERT( p ) ;
+    p( dhi ) ;
+    CPPUNIT_ASSERT( _resp_num == 2 ) ;
 
     return 0 ;
 }

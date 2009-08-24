@@ -30,6 +30,12 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace CppUnit ;
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -39,169 +45,128 @@ using std::cout ;
 using std::endl ;
 using std::ifstream ;
 
-#include "gzT.h"
 #include "BESUncompressGZ.h"
 #include "BESCache.h"
 #include "BESError.h"
+#include "TheBESKeys.h"
 #include <test_config.h>
 
 #define BES_CACHE_CHAR '#' 
 
-int
-gzT::run(void)
+class gzT: public TestFixture {
+private:
+
+public:
+    gzT() {}
+    ~gzT() {}
+
+    void setUp()
+    {
+	string bes_conf = (string)TEST_SRC_DIR + "/bes.conf" ;
+	TheBESKeys::ConfigFile = bes_conf ;
+    } 
+
+    void tearDown()
+    {
+    }
+
+    CPPUNIT_TEST_SUITE( gzT ) ;
+
+    CPPUNIT_TEST( do_test ) ;
+
+    CPPUNIT_TEST_SUITE_END() ;
+
+    void do_test()
+    {
+	cout << "*****************************************" << endl;
+	cout << "Entered gzT::run" << endl;
+
+	string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
+	string src_file = cache_dir + "/testfile.txt.gz" ;
+
+	// we're not testing the caching mechanism, so just create it, but make
+	// sure it gets created.
+	string target ;
+	try
+	{
+	    BESCache cache( cache_dir, "gz_cache", 1 ) ;
+	    // get the target name and make sure the target file doesn't exist
+	    if( cache.is_cached( src_file, target ) )
+	    {
+		CPPUNIT_ASSERT( remove( target.c_str() ) == 0 ) ;
+	    }
+
+	    cout << "*****************************************" << endl;
+	    cout << "uncompress a test file" << endl;
+	    try
+	    {
+		BESUncompressGZ::uncompress( src_file, target ) ;
+		ifstream strm( target.c_str() ) ;
+		CPPUNIT_ASSERT( strm ) ;
+
+		char line[80] ;
+		strm.getline( (char *)line, 80 ) ;
+		string sline = line ;
+		string should_be = "This is a test of a compression method." ;
+		cout << "    contents = " << sline << endl ;
+		cout << "    expecting = " << should_be << endl ;
+		CPPUNIT_ASSERT( sline == should_be ) ;
+	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		CPPUNIT_ASSERT( !"Failed to uncompress the file" ) ;
+	    }
+
+	    string tmp ;
+	    CPPUNIT_ASSERT( cache.is_cached( src_file, tmp ) ) ;
+
+	    cout << "*****************************************" << endl;
+	    cout << "uncompress a test file that is already cached" << endl;
+	    try
+	    {
+		BESUncompressGZ::uncompress( src_file, target ) ;
+		ifstream strm( target.c_str() ) ;
+		CPPUNIT_ASSERT( strm ) ;
+
+		char line[80] ;
+		strm.getline( (char *)line, 80 ) ;
+		string sline = line ;
+		string should_be = "This is a test of a compression method." ;
+		cout << "    contents = " << sline << endl ;
+		cout << "    expecting = " << should_be << endl ;
+		CPPUNIT_ASSERT( sline == should_be ) ;
+	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		CPPUNIT_ASSERT( !"Failed to uncompress the file" ) ;
+	    }
+
+	    CPPUNIT_ASSERT( cache.is_cached( src_file, tmp ) ) ;
+
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"Unable to create the cache object" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "Returning from gzT::run" << endl;
+    }
+} ;
+
+CPPUNIT_TEST_SUITE_REGISTRATION( gzT ) ;
+
+int 
+main( int, char** )
 {
-    cout << endl << "*****************************************" << endl;
-    cout << "Entered gzT::run" << endl;
-    int retVal = 0;
+    CppUnit::TextTestRunner runner ;
+    runner.addTest( CppUnit::TestFactoryRegistry::getRegistry().makeTest() ) ;
 
-    string cache_dir = (string)TEST_SRC_DIR + "/cache" ;
-    string src_file = cache_dir + "/testfile.txt.gz" ;
+    bool wasSuccessful = runner.run( "", false )  ;
 
-    // we're not testing the caching mechanism, so just create it, but make
-    // sure it gets created.
-    string target ;
-    try
-    {
-	BESCache cache( cache_dir, "gz_cache", 1 ) ;
-	// get the target name and make sure the target file doesn't exist
-	if( cache.is_cached( src_file, target ) )
-	{
-	    if( remove( target.c_str() ) != 0 )
-	    {
-		cerr << "Unable to remove target file " << target
-		     << " , initializing test" << endl ;
-		return 1 ;
-	    }
-	}
-
-	cout << endl << "*****************************************" << endl;
-	cout << "uncompress a test file" << endl;
-	try
-	{
-	    BESUncompressGZ::uncompress( src_file, target ) ;
-	    cout << "Uncompression succeeded" << endl ;
-	    ifstream strm( target.c_str() ) ;
-	    if( !strm )
-	    {
-		cerr << "Resulting file " << target << " doesn't exist" << endl;
-		return 1 ;
-	    }
-	    char line[80] ;
-	    strm.getline( (char *)line, 80 ) ;
-	    string sline = line ;
-	    if( sline != "This is a test of a compression method." )
-	    {
-		cerr << "Contents of file not correct" << endl ;
-		cerr << "Actual: " << sline << endl ;
-		cerr << "Should be: This is a test of a compression method."
-		     << endl ;
-		return 1 ;
-	    }
-	    else
-	    {
-		cout << "Contents of file correct" << endl ;
-	    }
-	}
-	catch( BESError &e )
-	{
-	    cerr << "Failed to uncompress the file" << endl ;
-	    cerr << e.get_message() << endl ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "Failed to uncompress the file" << endl ;
-	    cerr << "Unknown exception thrown" << endl ;
-	    return 1 ;
-	}
-
-	string tmp ;
-	if( cache.is_cached( src_file, tmp ) )
-	{
-	    cout << "File is now cached" << endl ;
-	}
-	else
-	{
-	    cerr << "File should be cached" << endl ;
-	    return 1 ;
-	}
-
-	cout << endl << "*****************************************" << endl;
-	cout << "uncompress a test file that is already cached" << endl;
-	try
-	{
-	    BESUncompressGZ::uncompress( src_file, target ) ;
-	    cout << "Uncompression succeeded" << endl ;
-	    ifstream strm( target.c_str() ) ;
-	    if( !strm )
-	    {
-		cerr << "Resulting file " << target << " doesn't exist" << endl;
-		return 1 ;
-	    }
-	    char line[80] ;
-	    strm.getline( (char *)line, 80 ) ;
-	    string sline = line ;
-	    if( sline != "This is a test of a compression method." )
-	    {
-		cerr << "Contents of file not correct" << endl ;
-		cerr << "Actual: " << sline << endl ;
-		cerr << "Should be: This is a test of a compression method."
-		     << endl ;
-		return 1 ;
-	    }
-	    else
-	    {
-		cout << "Contents of file correct" << endl ;
-	    }
-	}
-	catch( BESError &e )
-	{
-	    cerr << "Failed to uncompress the file" << endl ;
-	    cerr << e.get_message() << endl ;
-	    return 1 ;
-	}
-	catch( ... )
-	{
-	    cerr << "Failed to uncompress the file" << endl ;
-	    cerr << "Unknown exception thrown" << endl ;
-	    return 1 ;
-	}
-
-	if( cache.is_cached( src_file, tmp ) )
-	{
-	    cout << "File is still cached" << endl ;
-	}
-	else
-	{
-	    cerr << "File should be cached" << endl ;
-	    return 1 ;
-	}
-
-    }
-    catch( BESError &e )
-    {
-	cerr << "Unable to create the cache object" << endl ;
-	cerr << e.get_message() << endl ;
-	return 1 ;
-    }
-    catch( ... )
-    {
-	cerr << "Unable to create the cache object" << endl ;
-	cerr << "Unknown exception thrown" << endl ;
-	return 1 ;
-    }
-
-    cout << endl << "*****************************************" << endl;
-    cout << "Returning from gzT::run" << endl;
-
-    return retVal;
-}
-
-int
-main(int argC, char **argV) {
-    string env_var = (string)"BES_CONF=" + TEST_SRC_DIR + "/bes.conf" ;
-    putenv( (char *)env_var.c_str() ) ;
-    Application *app = new gzT();
-    return app->main(argC, argV);
+    return wasSuccessful ? 0 : 1 ;
 }
 
