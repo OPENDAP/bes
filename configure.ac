@@ -71,13 +71,10 @@ dnl       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
    ]
 )
 
-AC_CHECK_BES([3.7.0],
+AC_CHECK_BES([3.7.2],
 [
-    # I think the AC_SUBST([BES_MODULE_DIR]) in bes.m4 will put that 
-    # symbol in the output. Same for BES_CPPFLAGS. jhrg 5/1/06
-    AM_CONDITIONAL([OPENDAPSERVER], [true])
 ],
-[ AM_CONDITIONAL([OPENDAPSERVER], [false])
+[ AC_MSG_ERROR([Cannot find bes])
 ])
 
 OPENDAP_DEBUG_OPTION

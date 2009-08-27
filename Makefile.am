@@ -11,16 +11,11 @@ AM_CXXFLAGS = -I$(top_srcdir)/hdfclass
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
-SUBDIRS = hdfclass
+SUBDIRS = hdfclass bes-testsuite
 
-bin_PROGRAMS = dap_hdf4_handler
 noinst_PROGRAMS = eosdas_test
 
 WA_HDF4_LIBS="-whole-archive $(HDF4_LIBS) -no-whole-archive"
-
-if OPENDAPSERVER
-
-SUBDIRS += bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf4_module.la
@@ -31,14 +26,6 @@ libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
 libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS) $(BES_DAP_LIBS)
 dist_bin_SCRIPTS = bes-hdf4-data.sh
-
-endif
-
-dap_hdf4_handler_SOURCES = hdf_handler.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
-                           $(HDFTYPE_HDR)
-dap_hdf4_handler_LDFLAGS=$(LDFLAGS) $(HDF4_LDFLAGS)
-dap_hdf4_handler_LDADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) $(HDF4_LIBS)
-dap_hdf4_handler_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 
 eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
 		      $(HDFTYPE_HDR)
@@ -97,17 +84,9 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec OSX_Resources
+	COPYRIGHT_URI hdf4_handler.spec OSX_Resources bes-hdf4-data.sh.in
 
-# DEJATOOL = dap_hdf4_handler
-# RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir hdf-testsuite
-
-CLEANFILES = *~ *.log *.sum $(GRAM_SRC)
-
-if OPENDAPSERVER
-
-EXTRA_DIST += bes-hdf4-data.sh.in
-CLEANFILES += bes-hdf4-data.sh
+CLEANFILES = *~ *.log *.sum $(GRAM_SRC) bes-hdf4-data.sh
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
@@ -130,8 +109,6 @@ bes-conf: bes-hdf4-data.sh
 	else \
 	    ./bes-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
 	fi)
-
-endif
 
 # Copy the generated grammar files to the 'grammarfiles' directory.
 .PHONY: grammarfiles

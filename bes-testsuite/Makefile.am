@@ -23,7 +23,7 @@ EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in \
 	   $(srcdir)/package.m4 bes-testsuite h4 besstandalone.h4 \
 	   bes.conf.in
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest
 
 bes.conf: bes.conf.in ../config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
