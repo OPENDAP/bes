@@ -832,10 +832,16 @@ void AddHDFAttr(DAS & das, const string & varname,
 {
     if (hav.size() == 0)        // nothing to add
         return;
-
     // get pointer to the AttrTable for the variable varname (create one if
     // necessary)
-    AttrTable *atp = das.get_table(varname);
+    // cerr << "AddHDFAttr " << varname << endl;
+#ifdef CF
+    string tempname = eos.get_CF_name(varname);
+#else
+    string tempname = varname;
+#endif
+    // cerr << "AddHDFAttr" << tempname << endl;
+    AttrTable *atp = das.get_table(tempname);
     if (atp == 0) {
         atp = new AttrTable;
 #if 0
@@ -843,7 +849,7 @@ void AddHDFAttr(DAS & das, const string & varname,
         if (atp == 0)
             THROW(hcerr_nomemory);
 #endif
-        atp = das.add_table(varname, atp);
+        atp = das.add_table(tempname, atp);
     }
     // add the attributes to the DAS
     vector < string > attv;     // vector of attribute strings
@@ -1161,11 +1167,19 @@ static void add_dimension_attributes_swath(DAS & das)
     at->append_attr("title", STRING, "\"NASA EOS Swath\"");
     at->append_attr("Conventions", STRING, "\"CF-1.0\"");
 
-    at = das.add_table("lon", new AttrTable);
+    at = das.get_table("lon");
+    if (at == 0) {
+        at = das.add_table("lon", new AttrTable);
+    }        
+    
     at->append_attr("units", STRING, "\"degrees_east\"");
     at->append_attr("long_name", STRING, "\"longitude\"");
 
-    at = das.add_table("lat", new AttrTable);
+    at = das.get_table("lat");
+    if (at == 0) {
+        at = das.add_table("lat", new AttrTable);
+    }
+    
     at->append_attr("units", STRING, "\"degrees_north\"");
     at->append_attr("long_name", STRING, "\"latitude\"");
     at->append_attr("coordinates", STRING, "\"lon lat\"");
@@ -1261,7 +1275,10 @@ static void write_dimension_attributes_grid_1D_projection(DAS & das)
     at->append_attr("dataType", STRING, "\"Grid\"");
 
 
-    at = das.add_table("lon", new AttrTable);
+    at = das.get_table("lon");
+    if (at == 0) {
+        at = das.add_table("lon", new AttrTable);
+    }    
     at->append_attr("grads_dim", STRING, "\"x\"");
     at->append_attr("grads_mapping", STRING, "\"linear\"");
     {
@@ -1287,7 +1304,11 @@ static void write_dimension_attributes_grid_1D_projection(DAS & das)
         at->append_attr("resolution", FLOAT32, o.str().c_str());
     }
 
-    at = das.add_table("lat", new AttrTable);
+    at = das.get_table("lat");
+    if (at == 0) {
+        at = das.add_table("lat", new AttrTable);
+    }
+    
     at->append_attr("grads_dim", STRING, "\"y\"");
     at->append_attr("grads_mapping", STRING, "\"linear\"");
     {
@@ -1347,11 +1368,18 @@ static void write_dimension_attributes_grid_2D_projection(DAS & das)
                     "\"NASA HDF-EOS2 Grid - 2D Projection\"");
     at->append_attr("Conventions", STRING, "\"CF-1.0\"");
   
-    at = das.add_table("lon", new AttrTable);
+    at = das.get_table("lon");
+    if (at == 0) {
+        at = das.add_table("lon", new AttrTable);
+    }        
+    
     at->append_attr("units", STRING, "\"degrees_east\"");
     at->append_attr("long_name", STRING, "\"longitude\"");
-  
-    at = das.add_table("lat", new AttrTable);
+    
+    at = das.get_table("lat");
+    if (at == 0) {
+        at = das.add_table("lat", new AttrTable);
+    }
     at->append_attr("units", STRING, "\"degrees_north\"");
     at->append_attr("long_name", STRING, "\"latitude\"");
     at->append_attr("coordinates", STRING, "\"lon lat\"");
