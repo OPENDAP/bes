@@ -372,6 +372,9 @@ void HDFEOS::reset()
     // Clear the contents of the metadata string buffer.
     strcpy(metadata_Struct, "");
 #ifdef USE_HDFEOS2_LIB
+    if(!types.empty()){
+        types.clear();
+    }
     eos2.reset();
 #endif
 
@@ -876,7 +879,6 @@ bool HDFEOS::set_dimension_array_hdfeos2()
                         convbuf[k] = static_cast<dods_float32>(lons[k]);
                          DBG(cerr << convbuf[k] << " ");
                     }
-                    cerr << endl;
                     dimension_data[j] = convbuf;
                 }
                 else if (dim_name == "YDim"){
@@ -885,7 +887,6 @@ bool HDFEOS::set_dimension_array_hdfeos2()
                         convbuf[k] = static_cast<dods_float32>(lats[k]);
                         DBG(cerr << convbuf[k] << " ");
                     }
-                    cerr << endl;
                     dimension_data[j] = convbuf;
                 }
                 else{
