@@ -34,7 +34,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/dap_hdf4_handler
 %{_bindir}/bes-hdf4-data.sh
 %{_libdir}/bes/libhdf4_module.so
 %{_datadir}/hyrax/
