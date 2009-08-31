@@ -42,12 +42,13 @@
 using std::ostringstream;
 using std::endl;
 
+#include <mime_util.h>
+
 #include "config_hdf.h"
 
 #include <mfhdf.h>
 #include "hcerr.h"
 #include "dhdferr.h"
-#include "cgi_util.h"
 
 dhdferr::dhdferr(const string & msg, const string & file, int line)
 :Error(msg)

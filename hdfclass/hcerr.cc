@@ -53,8 +53,9 @@
 using std::ostringstream;
 using std::endl;
 
+#include <mime_util.h>
+
 #include "hcerr.h"
-#include "cgi_util.h"
 
 hcerr::hcerr(const char *msg, const char *file, int line)
 :  Error(msg)
