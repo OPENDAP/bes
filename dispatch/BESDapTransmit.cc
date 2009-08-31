@@ -40,7 +40,7 @@ using std::ostringstream;
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
-#include "cgi_util.h"
+#include "mime_util.h"
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
