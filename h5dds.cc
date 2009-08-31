@@ -22,6 +22,7 @@
 #include <InternalErr.h>
 #include <util.h>
 #include <debug.h>
+#include <mime_util.h>
 
 #include "h5dds.h"
 #include "HDF5Int32.h"

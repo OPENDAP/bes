@@ -43,12 +43,12 @@
 #include <string>
 
 #include "debug.h"
-#include "cgi_util.h"
 #include "DAS.h"
 #include "DDS.h"
 #include "ConstraintEvaluator.h"
 #include "DODSFilter.h"
 #include "InternalErr.h"
+#include "mime_util.h"
 #include "h5das.h"
 #include "h5dds.h"
 #include "H5Git.h"              

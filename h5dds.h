@@ -29,7 +29,6 @@
 
 #include <H5public.h>
 
-#include <cgi_util.h>
 #include <DDS.h>
 #include <DODSFilter.h>
 #include "common.h"
