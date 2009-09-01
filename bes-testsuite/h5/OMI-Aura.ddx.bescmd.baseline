@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="OMI-Aura_L2G-OMTO3G_2004m0817_v002-2006m0301t154534.SUB.h5"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="HDFEOS" type="Container">
+            <Attribute name="ADDITIONAL" type="Container">
+                <Attribute name="FILE_ATTRIBUTES" type="Container">
+                </Attribute>
+            </Attribute>
+            <Attribute name="GRIDS" type="Container">
+                <Attribute name="OMI Column Amount O3" type="Container">
+                    <Attribute name="Data Fields" type="Container">
+                        <Attribute name="Dataset" type="String">
+                            <value>APrioriLayerO3</value>
+                            <value>AlgorithmFlags</value>
+                            <value>CloudTopPressure</value>
+                            <value>ColumnAmountO3</value>
+                            <value>GroundPixelQualityFlags</value>
+                            <value>InstrumentConfigurationId</value>
+                            <value>Latitude</value>
+                            <value>LayerEfficiency</value>
+                            <value>LineNumber</value>
+                            <value>Longitude</value>
+                            <value>MeasurementQualityFlags</value>
+                            <value>NumberOfCandidateScenes</value>
+                            <value>NumberSmallPixelColumns</value>
+                            <value>O3BelowCloud</value>
+                            <value>OrbitNumber</value>
+                            <value>PathLength</value>
+                            <value>QualityFlags</value>
+                            <value>Reflectivity331</value>
+                            <value>Reflectivity360</value>
+                            <value>RelativeAzimuthAngle</value>
+                            <value>Residual</value>
+                            <value>SO2index</value>
+                            <value>SceneNumber</value>
+                            <value>SecondsInDay</value>
+                            <value>SmallPixelColumn</value>
+                            <value>SolarZenithAngle</value>
+                            <value>StepTwoO3</value>
+                            <value>TerrainHeight</value>
+                            <value>TerrainPressure</value>
+                            <value>Time</value>
+                            <value>UVAerosolIndex</value>
+                            <value>ViewingZenithAngle</value>
+                            <value>Wavelength</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+        <Attribute name="HDFEOS INFORMATION" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>ArchivedMetadata</value>
+                <value>CoreMetadata</value>
+                <value>StructMetadata.0</value>
+                <value>subsetmetadata.0</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/ADDITIONAL/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/ADDITIONAL/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/</value>
+        </Attribute>
+        <Attribute name="OrbitNumber" type="Int32">
+            <value>482</value>
+            <value>483</value>
+            <value>484</value>
+            <value>486</value>
+            <value>487</value>
+            <value>488</value>
+            <value>489</value>
+        </Attribute>
+        <Attribute name="OrbitPeriod" type="Float64">
+            <value>5933.</value>
+            <value>5933.</value>
+            <value>5932.</value>
+            <value>5932.</value>
+            <value>5933.</value>
+            <value>5933.</value>
+            <value>5932.</value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <value>&quot;OMI&quot;</value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>&quot;2G&quot;</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>17</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>2004</value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <value>230</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>366854405.</value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>&quot;0.9.36&quot;</value>
+        </Attribute>
+        <Attribute name="StartUTC" type="String">
+            <value>&quot;2004-08-17T00:00:00.000000Z&quot;</value>
+        </Attribute>
+        <Attribute name="EndUTC" type="String">
+            <value>&quot;2004-08-17T23:59:59.999999Z&quot;</value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <value>&quot;Daily&quot;</value>
+        </Attribute>
+        <Attribute name="QAPercentMissingData" type="Int32">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/GRIDS/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/GRIDS/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/GRIDS/OMI Column Amount O3/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/</value>
+        </Attribute>
+        <Attribute name="Projection" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <value>1440</value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <value>720</value>
+        </Attribute>
+        <Attribute name="NumberOfGridCells" type="Int32">
+            <value>1036800</value>
+        </Attribute>
+        <Attribute name="NumberOfEmptyGridCells" type="Int32">
+            <value>705709</value>
+        </Attribute>
+        <Attribute name="NumberOfPopulatedGridCells" type="Int32">
+            <value>331091</value>
+        </Attribute>
+        <Attribute name="NumberOfMultiplyPopulatedGridCells" type="Int32">
+            <value>229715</value>
+        </Attribute>
+        <Attribute name="MinimumNumberOfCandidatesPerGridCell" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="MaximumNumberOfCandidatesPerGridCell" type="Int32">
+            <value>8</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesConsideredForGrid" type="Int32">
+            <value>690300</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesAcceptedIntoGrid" type="Int32">
+            <value>611815</value>
+        </Attribute>
+        <Attribute name="NumberOfDuplicateScenesAcceptedIntoGrid" type="Int32">
+            <value>280724</value>
+        </Attribute>
+        <Attribute name="NumberOfScenesRejectedFromGrid" type="Int32">
+            <value>78485</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/HDFEOS INFORMATION/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS INFORMATION/</value>
+        </Attribute>
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>&quot;HDFEOS_5.1.9&quot;</value>
+        </Attribute>
+    </Attribute>
+
+    <Grid name="/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Wavelength">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Wavelength</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.2676506e+30</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>&quot;nm&quot;</value>
+        </Attribute>
+        <Attribute name="Title" type="String">
+            <value>&quot;Wavelength&quot;</value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <value>&quot;TOMS-OMI-Shared&quot;</value>
+        </Attribute>
+        <Attribute name="ScaleFactor" type="Float64">
+            <value>1.</value>
+        </Attribute>
+        <Attribute name="Offset" type="Float64">
+            <value>0.</value>
+        </Attribute>
+        <Attribute name="ValidRange" type="Float32">
+            <value>300.</value>
+            <value>400.</value>
+        </Attribute>
+        <Attribute name="MissingValue" type="Float32">
+            <value>-1.2676506e+30</value>
+        </Attribute>
+        <Array name="/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Wavelength">
+            <Float32/>
+            <dimension name="/HDFEOS/GRIDS/OMI Column Amount O3/nWavel" size="4"/>
+        </Array>
+        <Map name="/HDFEOS/GRIDS/OMI Column Amount O3/nWavel">
+            <Float32/>
+            <dimension name="/HDFEOS/GRIDS/OMI Column Amount O3/nWavel" size="4"/>
+        </Map>
+    </Grid>
+
+    <dataBLOB href=""/>
+</Dataset>

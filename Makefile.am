@@ -2,28 +2,20 @@
 #
 # $Id$
 
-AUTOMAKE_OPTIONS = foreign check-news dejagnu
+AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
 AM_YFLAGS = -d -v
 AM_LFLAGS = -8
 
-bin_PROGRAMS = dap_h5_handler
-
-lib_LTLIBRARIES = libhdf5_handler.la
-
 BUILT_SOURCES = $(GRAM_SRCS)
-
-if OPENDAPSERVER
 
 SUBDIRS = bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
 dist_bin_SCRIPTS = bes-hdf5-data.sh
-
-endif
 
 GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc \
 	hdfeos_das.tab.cc hdfeos_das.tab.hh lex.hdfeos_das.cc
@@ -45,29 +37,17 @@ SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
 SERVER_HDR = HDF5RequestHandler.h HDF5Module.h
 
-libhdf5_handler_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS)
-
 libhdf5_module_la_SOURCES = $(HDF5SRC) $(SRCS) $(HDF5HDR)  $(HDRS) $(SERVER_SRC) $(SERVER_HDR)
 libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libhdf5_module_la_LDFLAGS = -avoid-version -module 
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
-dap_h5_handler_SOURCES = h5_handler.cc h5_handler.h
-dap_h5_handler_LDADD = libhdf5_handler.la -L${hdf5_path}/lib -lhdf5 -lz
-
-DEJATOOL = dap_h5_handler
-
-RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite  # testsuite_internal 
-
 EXTRA_DIST = hdfeos_das.y hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources \
-	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in testsuite
+	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
 
 CLEANFILES = *~ *.sum *.log *.output hdfeos_das.tab.cc hdfeos_das.tab.hh \
-	lex.hdfeos_das.cc lex.hdfeos.cc hdfeos.tab.cc hdfeos.tab.hh 
-
-if OPENDAPSERVER
-
-CLEANFILES += bes-hdf5-data.sh
+	lex.hdfeos_das.cc lex.hdfeos.cc hdfeos.tab.cc hdfeos.tab.hh \
+	bes-hdf5-data.sh
 
 sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/tcompound.h5
@@ -90,8 +70,6 @@ bes-conf: bes-hdf5-data.sh
 	else \
 	    ./bes-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
 	fi)
-
-endif
 
 ###########################################################################
 

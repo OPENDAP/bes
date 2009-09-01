@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="tnodata.h5"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="Dataset" type="String">
+            <value>dset1</value>
+        </Attribute>
+    </Attribute>
+
+    <Array name="/dset1">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/dset1</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="5"/>
+    </Array>
+
+    <dataBLOB href=""/>
+</Dataset>

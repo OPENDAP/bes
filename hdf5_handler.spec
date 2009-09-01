@@ -41,7 +41,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/dap_h5_handler
 %{_bindir}/bes-hdf5-data.sh
 %{_libdir}/libhdf5_handler.so.*
 %{_libdir}/bes/libhdf5_module.so

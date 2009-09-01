@@ -1,0 +1,10 @@
+Dataset {
+    Structure {
+        Int32 int_array[8][10];
+        String string[3][4];
+    } /comp1[3][6];
+    String /string1[3][4];
+    String /string2[20];
+    String /string3[27];
+    String /string4[3];
+} tstr.h5;

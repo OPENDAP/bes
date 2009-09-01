@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="tstr2.h5"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="g1" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset1</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="g2" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset2</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="g3" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset3</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="g4" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset4</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="g5" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset5</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="g6" type="Container">
+            <Attribute name="Dataset" type="String">
+                <value>dset6</value>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g1/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g1/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g2/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g2/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g3/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g3/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g4/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g4/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g5/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g5/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/g6/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g6/</value>
+        </Attribute>
+    </Attribute>
+
+    <Array name="/g1/dset1">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g1/dset1</value>
+        </Attribute>
+        <Attribute name="attr1" type="String">
+            <value>&quot;0123456789&quot;</value>
+            <value>&quot;abcdefghij&quot;</value>
+            <value>&quot;ABCDEFGHIJ&quot;</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+    <Array name="/g2/dset2">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g2/dset2</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+    <Array name="/g3/dset3">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g3/dset3</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+    <Array name="/g4/dset4">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g4/dset4</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+    <Array name="/g5/dset5">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g5/dset5</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+    <Array name="/g6/dset6">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/g6/dset6</value>
+        </Attribute>
+        <String/>
+        <dimension size="10"/>
+    </Array>
+
+    <dataBLOB href=""/>
+</Dataset>

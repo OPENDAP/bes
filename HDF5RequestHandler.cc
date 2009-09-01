@@ -30,9 +30,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "HDF5RequestHandler.h"
-
 #include "h5_handler.h"
+#include "HDF5RequestHandler.h"
 
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>

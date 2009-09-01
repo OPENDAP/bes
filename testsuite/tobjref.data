@@ -1,5 +1,0 @@
-The data:
-Url /Dataset3[4] = {"/Group1/Dataset1", "/Group1/Dataset2", "/Group1", "/Group1/Datatype1"};
-UInt32 /Group1/Dataset1[4] = {0, 3, 6, 9};
-Byte /Group1/Dataset2[4] = {0, 0, 0, 0};
-

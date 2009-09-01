@@ -1,7 +1,0 @@
-The data:
-Grid {
-  Array:
-    Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Wavelength[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 4];
-  Maps:
-    Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 4];
-} /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Wavelength = {  Array: {310.8, 313.2, 322.42, 360.15}  Maps: {1, 4, 7, 10} };

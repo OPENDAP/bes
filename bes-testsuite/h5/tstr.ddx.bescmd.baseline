@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset name="tstr.h5"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://xml.opendap.org/ns/DAP2"
+xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
+
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="Dataset" type="String">
+            <value>comp1</value>
+            <value>string1</value>
+            <value>string2</value>
+            <value>string3</value>
+            <value>string4</value>
+        </Attribute>
+    </Attribute>
+
+    <Array name="/comp1">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/comp1</value>
+        </Attribute>
+        <Structure>
+            <Array name="int_array">
+                <Int32/>
+                <dimension size="8"/>
+                <dimension size="10"/>
+            </Array>
+            <Array name="string">
+                <String/>
+                <dimension size="3"/>
+                <dimension size="4"/>
+            </Array>
+        </Structure>
+        <dimension size="3"/>
+        <dimension size="6"/>
+    </Array>
+    <Array name="/string1">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/string1</value>
+        </Attribute>
+        <String/>
+        <dimension size="3"/>
+        <dimension size="4"/>
+    </Array>
+    <Array name="/string2">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/string2</value>
+        </Attribute>
+        <String/>
+        <dimension size="20"/>
+    </Array>
+    <Array name="/string3">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/string3</value>
+        </Attribute>
+        <String/>
+        <dimension size="27"/>
+    </Array>
+    <Array name="/string4">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/string4</value>
+        </Attribute>
+        <String/>
+        <dimension size="3"/>
+    </Array>
+
+    <dataBLOB href=""/>
+</Dataset>

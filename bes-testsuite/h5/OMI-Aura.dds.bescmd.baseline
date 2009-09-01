@@ -1,0 +1,270 @@
+Dataset {
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/APrioriLayerO3[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers = 7][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers = 7];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/APrioriLayerO3;
+    Grid {
+      Array:
+        Byte /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/AlgorithmFlags[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/AlgorithmFlags;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/CloudTopPressure[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/CloudTopPressure;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/ColumnAmountO3[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/ColumnAmountO3;
+    Grid {
+      Array:
+        UInt16 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/GroundPixelQualityFlags[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/GroundPixelQualityFlags;
+    Grid {
+      Array:
+        Byte /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/InstrumentConfigurationId[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/InstrumentConfigurationId;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Latitude[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Latitude;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/LayerEfficiency[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers = 7][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nLayers = 7];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/LayerEfficiency;
+    Grid {
+      Array:
+        Int32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/LineNumber[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/LineNumber;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Longitude[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Longitude;
+    Grid {
+      Array:
+        Byte /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/MeasurementQualityFlags[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/MeasurementQualityFlags;
+    Grid {
+      Array:
+        Int32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/NumberOfCandidateScenes[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/NumberOfCandidateScenes;
+    Grid {
+      Array:
+        Byte /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/NumberSmallPixelColumns[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/NumberSmallPixelColumns;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/O3BelowCloud[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/O3BelowCloud;
+    Grid {
+      Array:
+        Int32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/OrbitNumber[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/OrbitNumber;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/PathLength[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/PathLength;
+    Grid {
+      Array:
+        UInt16 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/QualityFlags[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/QualityFlags;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Reflectivity331[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Reflectivity331;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Reflectivity360[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Reflectivity360;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/RelativeAzimuthAngle[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/RelativeAzimuthAngle;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Residual[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 12][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 12];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Residual;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SO2index[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SO2index;
+    Grid {
+      Array:
+        Int32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SceneNumber[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SceneNumber;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SecondsInDay[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SecondsInDay;
+    Grid {
+      Array:
+        Int16 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SmallPixelColumn[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SmallPixelColumn;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SolarZenithAngle[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/SolarZenithAngle;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/StepTwoO3[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/StepTwoO3;
+    Grid {
+      Array:
+        Int16 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/TerrainHeight[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/TerrainHeight;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/TerrainPressure[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/TerrainPressure;
+    Grid {
+      Array:
+        Float64 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Time[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Time;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/UVAerosolIndex[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/UVAerosolIndex;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/ViewingZenithAngle[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670][/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nCandidate = 15];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/YDim = 670];
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/XDim = 1242];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/ViewingZenithAngle;
+    Grid {
+      Array:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Wavelength[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 12];
+      Maps:
+        Float32 /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel[/HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/nWavel = 12];
+    } /HDFEOS/GRIDS/OMI%20Column%20Amount%20O3/Data%20Fields/Wavelength;
+    String /HDFEOS%20INFORMATION/ArchivedMetadata;
+    String /HDFEOS%20INFORMATION/CoreMetadata;
+    String /HDFEOS%20INFORMATION/StructMetadata.0;
+    String /HDFEOS%20INFORMATION/subsetmetadata.0;
+} OMI-Aura_L2G-OMTO3G_2004m0817_v002-2006m0301t154534.SUB.h5;
