@@ -1,7 +1,5 @@
 
-AUTOMAKE_OPTIONS = foreign dejagnu
-
-DEJATOOL=besstandalone
+AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
