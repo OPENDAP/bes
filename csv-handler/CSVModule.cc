@@ -54,13 +54,13 @@ using std::endl ;
 void
 CSVModule::initialize( const string &modname )
 {
-    BESDEBUG( "csv", "Initializing CSV Module " << modname << endl )
+    BESDEBUG( "csv", "Initializing CSV Module " << modname << endl ) ;
 
-    BESDEBUG( "csv", "    adding " << modname << " request handler" << endl )
+    BESDEBUG( "csv", "    adding " << modname << " request handler" << endl ) ;
     BESRequestHandlerList::TheList()->
 	add_handler( modname, new CSVRequestHandler( modname ) ) ;
 
-    BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl )
+    BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl ) ;
     if( !BESCatalogList::TheCatalogList()->ref_catalog( CSV_CATALOG ) )
     {
 	BESCatalogList::TheCatalogList()->
@@ -68,10 +68,10 @@ CSVModule::initialize( const string &modname )
     }
     else
     {
-	BESDEBUG( "csv", "    catalog already exists, skipping" << endl )
+	BESDEBUG( "csv", "    catalog already exists, skipping" << endl ) ;
     }
 
-    BESDEBUG( "csv", "    adding Catalog Container Storage" << endl )
+    BESDEBUG( "csv", "    adding Catalog Container Storage" << endl ) ;
     if( !BESContainerStorageList::TheList()->ref_persistence( CSV_CATALOG ) )
     {
 	BESContainerStorageList::TheList()->
@@ -79,31 +79,32 @@ CSVModule::initialize( const string &modname )
     }
     else
     {
-	BESDEBUG( "csv", "    storage already exists, skipping" << endl )
+	BESDEBUG( "csv", "    storage already exists, skipping" << endl ) ;
     }
 
-    BESDEBUG( "csv", "    adding csv debug context" << endl )
+    BESDEBUG( "csv", "    adding csv debug context" << endl ) ;
     BESDebug::Register( "csv" ) ;
 
-    BESDEBUG( "csv", "Done Initializing CSV Handler " << modname << endl )
+    BESDEBUG( "csv", "Done Initializing CSV Handler " << modname << endl ) ;
 }
 
 void
 CSVModule::terminate( const string &modname )
 {
-    BESDEBUG( "csv", "Cleaning CSV Module" << modname << endl )
+    BESDEBUG( "csv", "Cleaning CSV Module" << modname << endl ) ;
 
-    BESDEBUG( "csv", "    removing " << modname << " request handler" << endl )
+    BESDEBUG( "csv", "    removing " << modname << " request handler" << endl );
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
     
-    BESDEBUG( "csv", "    removing catalog container storage" << CSV_CATALOG << endl )
+    BESDEBUG( "csv", "    removing catalog container storage"
+		     << CSV_CATALOG << endl ) ;
     BESContainerStorageList::TheList()->deref_persistence( CSV_CATALOG ) ;
 
-    BESDEBUG( "csv", "    removing " << CSV_CATALOG << " catalog" << endl )
+    BESDEBUG( "csv", "    removing " << CSV_CATALOG << " catalog" << endl ) ;
     BESCatalogList::TheCatalogList()->deref_catalog( CSV_CATALOG ) ;
 
-    BESDEBUG( "csv", "Done Cleaning CSV Module" << modname << endl )
+    BESDEBUG( "csv", "Done Cleaning CSV Module" << modname << endl ) ;
 }
 
 extern "C"

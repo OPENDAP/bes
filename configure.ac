@@ -11,7 +11,8 @@ AM_CONFIG_HEADER([config.h])
 
 AC_CONFIG_AUX_DIR(conf)
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(1.10)
+AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
 
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
@@ -312,6 +313,8 @@ AC_CONFIG_FILES([Makefile
 		 ppt/unit-tests/Makefile
 		 cmdln/Makefile
 		 cmdln/unit-tests/Makefile
+		 cmdln/testsuite/Makefile
+		 cmdln/testsuite/atlocal
 		 standalone/Makefile
 		 server/Makefile
 		 server/test/Makefile

@@ -16,7 +16,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-SUBDIRS = unit-tests
+SUBDIRS = unit-tests testsuite
 DIST_SUBDIRS = unit-tests
 
 bin_PROGRAMS = bescmdln
@@ -28,41 +28,5 @@ bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc 		\
 
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)
 
-EXTRA_DIST = testsuite common_tests.exp
-
-# DEJATOOL = bescmdln
-# RUNTESTDEFAULTFLAGS = --tool $$tool --srcdir testsuite
-
-# This is the DejaGNU target copied from the Makefile but with my own name
-# and some of the 'Deja' environment variables substituted since automake
-# will complain it we use those without 'dejagnu' in the options at the of
-# the file. I removed the dejagnu option because I don't want these tests
-# running during the regular build, only after all the handlers have built
-# and installed. I've also added some code to make sure a bes is running
-# before we start the tests. jhrg 3/31/07
-
 bes-configuration-tests:
-	srcdir=`$(am__cd) $(srcdir) && pwd`; export srcdir; \
-	EXPECT=$(EXPECT); export EXPECT; \
-	if $(SHELL) -c "runtest --version" > /dev/null 2>&1; then \
-	  runtest --tool bescmdln --srcdir testsuite; \
-	  /bin/rm -f testsuite/*/*.bescmd.output \
-	else \
-	  echo "WARNING: could not find \`runtest'" 1>&2; :;\
-	fi
-
-#	@(ps -eA | grep beslistener > /dev/null 2>&1;\
-#	  if test $$? != 0; then \
-#		echo;\
-#		echo "Starting bes using the default configuration!";\
-#		echo;\
-#		besctl start;\
-#	  fi)
-#	@(ps -el | grep beslistener > /dev/null 2>&1;\
-#	  if test $$? = 0; then \
-#		echo;\
-#		echo "Stopping the bes";\
-#		echo;\
-#		besctl stop;\
-#	  fi)
-
+	cd testsuite && make bes-configuration-tests

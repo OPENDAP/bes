@@ -46,7 +46,7 @@
 #include "Int32.h"
 #include "Float32.h"
 #include "Float64.h"
-#include "cgi_util.h"
+#include "mime_util.h"
 
 #include "Array.h"
 

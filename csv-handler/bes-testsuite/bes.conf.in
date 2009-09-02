@@ -55,18 +55,18 @@ BES.LogVerbose=no
 # hdf4 and FreeForm) and the DAP basic and command modules:
 #
 # BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
-# BES.module.dap=@libdir@/bes/libdap_module.so
-# BES.module.cmd=@libdir@/bes/libdap_cmd_module.so
-# BES.module.ascii=@libdir@/bes/libascii_module.so
-# BES.module.usage=@libdir@/bes/libusage_module.so
-# BES.module.www=@libdir@/bes/libwww_module.so
-# BES.module.nc=@libdir@/bes/libnc_module.so
-# BES.module.h4=@libdir@/bes/libhdf4_module.so
-# BES.module.ff=@libdir@/bes/libff_module.so
+# BES.module.dap=@modulesdir@/libdap_module.so
+# BES.module.cmd=@modulesdir@/libdap_cmd_module.so
+# BES.module.ascii=@modulesdir@/libascii_module.so
+# BES.module.usage=@modulesdir@/libusage_module.so
+# BES.module.www=@modulesdir@/libwww_module.so
+# BES.module.nc=@modulesdir@/libnc_module.so
+# BES.module.h4=@modulesdir@/libhdf4_module.so
+# BES.module.ff=@modulesdir@/libff_module.so
 
 BES.modules=dap,cmd,csv
-BES.module.dap=@libdir@/bes/libdap_module.so
-BES.module.cmd=@libdir@/bes/libdap_cmd_module.so
+BES.module.dap=@modulesdir@/libdap_module.so
+BES.module.cmd=@modulesdir@/libdap_xml_module.so
 BES.module.csv=@abs_top_builddir@/.libs/libcsv_module.so
 
 #-----------------------------------------------------------------------#

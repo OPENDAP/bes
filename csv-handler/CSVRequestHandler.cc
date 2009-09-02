@@ -41,6 +41,7 @@
 #include "BESContainer.h"
 #include "BESVersionInfo.h"
 #include "BESDataNames.h"
+#include "BESDapNames.h"
 #include "CSVRequestHandler.h"
 #include "BESResponseHandler.h"
 #include "BESResponseNames.h"
@@ -141,7 +142,7 @@ CSVRequestHandler::csv_build_dds( BESDataHandlerInterface &dhi )
 	csv_read_attributes(das, accessed);
 	dds->transfer_attributes( &das ) ;
 
-	BESDEBUG( "csv", "dds = " << endl << *dds << endl )
+	BESDEBUG( "csv", "dds = " << endl << *dds << endl ) ;
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 
 	return ret;
@@ -193,7 +194,7 @@ CSVRequestHandler::csv_build_data( BESDataHandlerInterface &dhi )
 	csv_read_attributes(das, accessed);
 	dds->transfer_attributes( &das ) ;
 
-	BESDEBUG( "csv", "dds = " << endl << *dds << endl )
+	BESDEBUG( "csv", "dds = " << endl << *dds << endl ) ;
 	dhi.data[POST_CONSTRAINT] = dhi.container->get_constraint();
 	return ret;
     }

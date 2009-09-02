@@ -15,9 +15,11 @@ using std::endl ;
 void
 OPENDAP_CLASSModule::initialize( const string &modname )
 {
-    BESDEBUG( modname, "Initializing OPENDAP_CLASS Module " << modname << endl )
+    BESDEBUG( modname, "Initializing OPENDAP_CLASS Module "
+		       << modname << endl ) ;
 
-    BESDEBUG( modname, "    adding " << modname << " request handler" << endl )
+    BESDEBUG( modname, "    adding " << modname
+		       << " request handler" << endl ) ;
     BESRequestHandlerList::TheList()->add_handler( modname, new OPENDAP_CLASSRequestHandler( modname ) ) ;
 
     // If new commands are needed, then let's declare this once here. If
@@ -25,18 +27,21 @@ OPENDAP_CLASSModule::initialize( const string &modname )
     string cmd_name ;
 
     // INIT_END
-    BESDEBUG( modname, "    adding OPENDAP_CLASS debug context" << endl )
+    BESDEBUG( modname, "    adding OPENDAP_CLASS debug context" << endl ) ;
     BESDebug::Register( modname ) ;
 
-    BESDEBUG( modname, "Done Initializing OPENDAP_CLASS Module " << modname << endl )
+    BESDEBUG( modname, "Done Initializing OPENDAP_CLASS Module "
+		       << modname << endl ) ;
 }
 
 void
 OPENDAP_CLASSModule::terminate( const string &modname )
 {
-    BESDEBUG( modname, "Cleaning OPENDAP_CLASS module " << modname << endl )
+    BESDEBUG( modname, "Cleaning OPENDAP_CLASS module " << modname << endl ) ;
 
-    BESDEBUG( modname, "    removing " << modname << " request handler" << endl )
+    BESDEBUG( modname, "    removing " << modname
+		       << " request handler"
+    << endl ) ;
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
     if( rh ) delete rh ;
 
@@ -45,7 +50,8 @@ OPENDAP_CLASSModule::terminate( const string &modname )
     string cmd_name ;
 
     // TERM_END
-    BESDEBUG( modname, "Done Cleaning OPENDAP_CLASS module " << modname << endl )
+    BESDEBUG( modname, "Done Cleaning OPENDAP_CLASS module "
+		       << modname << endl ) ;
 }
 
 extern "C"

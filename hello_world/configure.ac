@@ -6,7 +6,8 @@ AC_PREREQ(2.59)
 AC_INIT([sample_module], [1.0.0], [dods-tech@unidata.ucar.edu])
 AC_CONFIG_AUX_DIR([conf])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(1.10)
+AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 AC_CONFIG_SRCDIR([SampleModule.h])
 AC_CONFIG_HEADER([config.h])
@@ -46,5 +47,5 @@ AC_CHECK_BES([3.5.3],
 
 OPENDAP_DEBUG_OPTION
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile])
+AC_CONFIG_FILES([Makefile bes-testsuite/atlocal bes-testsuite/Makefile])
 AC_OUTPUT

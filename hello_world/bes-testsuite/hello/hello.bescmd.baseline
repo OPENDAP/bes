@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="some_unique_value"><say><text>hello world</text></say></response>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value"><say><text>hello world</text></say></response>

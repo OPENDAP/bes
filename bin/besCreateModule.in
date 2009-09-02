@@ -118,7 +118,7 @@ done
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf/
-chmod +x conf/config.guess conf/config.sub conf/depcomp conf/install-sh conf/ltmain.sh conf/missing conf/mkinstalldirs
+chmod +x conf/mkinstalldirs
 
 include_dap=0
 
@@ -199,7 +199,7 @@ a
 /INIT_END
 -1
 a
-    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}${CAP_NAME}ResponseHandler::${classPrefix}${CAP_NAME}ResponseBuilder ) ;
 
 .
@@ -207,7 +207,7 @@ w
 /TERM_END
 -1
 a
-    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->remove_handler( ${MACRO_NAME}_RESPONSE ) ;
 
 .
@@ -255,6 +255,7 @@ w
 q
 EOF
 	fi
+
 	ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
 1
 /VERS_RESPONSE
@@ -290,6 +291,16 @@ fi
 
 if [ $include_dap == 1 ]
 then
+    ed ${classPrefix}RequestHandler.cc << EOF > /dev/null 2>&1
+1
+/BESTextInfo
+a
+#include "BESDapNames.h"
+.
+w
+q
+EOF
+
     ed ./Makefile.am << EOF > /dev/null 2>&1
 ,s/BES_LIBS/BES_DAP_LIBS/g
 w
@@ -349,11 +360,11 @@ a
 /INIT_END
 -1
 a
-    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESDEBUG( modname, "    adding " << ${MACRO_NAME}_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->add_handler( ${MACRO_NAME}_RESPONSE, ${classPrefix}${CAP_NAME}ResponseHandler::${classPrefix}${CAP_NAME}ResponseBuilder ) ;
 
     cmd_name = ${MACRO_NAME}_RESPONSE ;
-    BESDEBUG( modname, "    adding " << cmd_name << " command" << endl )
+    BESDEBUG( modname, "    adding " << cmd_name << " command" << endl ) ;
     BESXMLCommand::add_command( cmd_name, ${classPrefix}${CAP_NAME}XMLCommand::CommandBuilder ) ;
 
 .
@@ -361,11 +372,11 @@ w
 /TERM_END
 -1
 a
-    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl )
+    BESDEBUG( modname, "    removing " << ${MACRO_NAME}_RESPONSE << " response handler" << endl ) ;
     BESResponseHandlerList::TheList()->remove_handler( ${MACRO_NAME}_RESPONSE ) ;
 
     cmd_name = ${MACRO_NAME}_RESPONSE ;
-    BESDEBUG( modname, "    removing " << cmd_name << " command" << endl )
+    BESDEBUG( modname, "    removing " << cmd_name << " command" << endl ) ;
     BESXMLCommand::del_command( cmd_name ) ;
 
 .
@@ -440,7 +451,7 @@ echo "*                                                     *"
 echo "* Creating your configuration script                  *"
 echo "*                                                     *"
 echo "*******************************************************"
-autoreconf
+autoreconf --force --install
 if [ $? != 0 ]
 then
     echo "FAILED"

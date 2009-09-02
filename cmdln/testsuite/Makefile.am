@@ -1,7 +1,5 @@
 
-AUTOMAKE_OPTIONS = foreign dejagnu
-
-DEJATOOL=besstandalone
+AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
@@ -15,31 +13,19 @@ AM_CPPFLAGS = -I$(top_srcdir)
 CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf
-
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = hello_handlerTest.at $(TESTSUITE) atlocal.in nc bes.conf.in
+EXTRA_DIST = besTest.at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
 
-DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hello_handlerTest
-
-bes.conf: bes.conf.in ../config.status
-	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
-		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
-		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
-		-e "s%[@]libdir[@]%${libdir}%" \
-		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
+DISTCLEANFILES = $(srcdir)/package.m4 $(TESTSUITE)
 
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
  
-TESTSUITE = $(srcdir)/hello_handlerTest
+TESTSUITE = $(srcdir)/besTest
 
-check-local: atconfig atlocal $(TESTSUITE)
+bes-configuration-tests: atconfig atlocal $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
@@ -49,7 +35,7 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/hello_handlerTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(srcdir)/besTest.at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
