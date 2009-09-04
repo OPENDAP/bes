@@ -115,12 +115,10 @@ string dump2 = "BESServiceRegistry::dump - (X)\n\
         nc\n\
 " ;
 
-string show1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\" reqID=\"123456789\"><showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data format response</description><format name=\"cedar\"/></command></serviceDescription><serviceDescription name=\"dap\"><command name=\"ascii\"><description>OPeNDAP ASCII data</description><format name=\"dap2\"/></command><command name=\"das\"><description>OPeNDAP Data Attributes</description><format name=\"dap2\"/></command><command name=\"dds\"><description>OPeNDAP Data Description</description><format name=\"dap2\"/></command><command name=\"dods\"><description>OPeNDAP Data Object</description><format name=\"dap2\"/><format name=\"netcdf\"/></command><command name=\"html_form\"><description>OPeNDAP Form for access</description><format name=\"dap2\"/></command><command name=\"info_page\"><description>OPeNDAP Data Information</description><format name=\"dap2\"/></command></serviceDescription></showServices></response>\n\
+string show1 = "<showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data response</description><format name=\"cedar\"/></command></serviceDescription><serviceDescription name=\"dap\"><command name=\"ascii\"><description>OPeNDAP ASCII data</description><format name=\"dap2\"/></command><command name=\"das\"><description>OPeNDAP Data Attributes</description><format name=\"dap2\"/></command><command name=\"dds\"><description>OPeNDAP Data Description</description><format name=\"dap2\"/></command><command name=\"dods\"><description>OPeNDAP Data Object</description><format name=\"dap2\"/><format name=\"netcdf\"/></command><command name=\"html_form\"><description>OPeNDAP Form for access</description><format name=\"dap2\"/></command><command name=\"info_page\"><description>OPeNDAP Data Information</description><format name=\"dap2\"/></command></serviceDescription></showServices></response>\n\
 " ;
 
-string show2 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
-<response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\" reqID=\"123456789\"><showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data format response</description><format name=\"cedar\"/></command></serviceDescription></showServices></response>\n\
+string show2 = "<showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data response</description><format name=\"cedar\"/></command></serviceDescription></showServices></response>\n\
 " ;
 
 class servicesT: public TestFixture {
@@ -403,7 +401,6 @@ public:
 	    }
 	}
 
-	/*
 	try
 	{
 	    cout << "*****************************************" << endl;
@@ -416,21 +413,24 @@ public:
 	    info.end_response( ) ;
 	    ostringstream strm ;
 	    info.print( strm ) ;
-	    cout << "strm = " << endl << strm.str() << endl ;
-	    cout << "show1 = " << endl << show1 << endl ;
-	    if( strm.str() != show1 )
-	    {
-		cerr << "show services incorrect format" << endl ;
-		return 1 ;
-	    }
+	    string str = strm.str() ;
+	    cout << "received = " << endl << str << endl ;
+	    cout << "expecting = " << endl << show1 << endl ;
+
+	    // we need to remove the first part of the response because the
+	    // order of the attributes can be different between machines. So
+	    // drop the <!xml and <response tags
+	    string::size_type sd = str.find( "<showServices>" ) ;
+	    CPPUNIT_ASSERT( sd != string::npos ) ;
+	    string cmp_str = str.substr( sd ) ;
+
+	    CPPUNIT_ASSERT( cmp_str == show1 ) ;
 	}
 	catch( BESError &e )
 	{
-	    cerr << "failed to show services" << endl ;
 	    cerr << e.get_message() << endl ;
-	    return 1 ;
+	    CPPUNIT_ASSERT( !"failed to show services" ) ;
 	}
-	*/
 
 	try
 	{
@@ -444,7 +444,6 @@ public:
 	    CPPUNIT_ASSERT( !"failed to remove the service" ) ;
 	}
 
-	/*
 	try
 	{
 	    cout << "*****************************************" << endl;
@@ -457,21 +456,24 @@ public:
 	    info.end_response( ) ;
 	    ostringstream strm ;
 	    info.print( strm ) ;
-	    cout << "strm = " << endl << strm.str() << endl ;
-	    cout << "show2 = " << endl << show2 << endl ;
-	    if( strm.str() != show2 )
-	    {
-		cerr << "show services incorrect format" << endl ;
-		return 1 ;
-	    }
+	    string str = strm.str() ;
+	    cout << "received = " << endl << str << endl ;
+	    cout << "expecting = " << endl << show2 << endl ;
+
+	    // we need to remove the first part of the response because the
+	    // order of the attributes can be different between machines. So
+	    // drop the <!xml and <response tags
+	    string::size_type sd = str.find( "<showServices>" ) ;
+	    CPPUNIT_ASSERT( sd != string::npos ) ;
+	    string cmp_str = str.substr( sd ) ;
+
+	    CPPUNIT_ASSERT( cmp_str == show2 ) ;
 	}
 	catch( BESError &e )
 	{
-	    cerr << "failed to show services" << endl ;
 	    cerr << e.get_message() << endl ;
-	    return 1 ;
+	    CPPUNIT_ASSERT( !"failed to show services" ) ;
 	}
-	*/
 
 	try
 	{
