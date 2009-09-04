@@ -76,11 +76,7 @@ BESBaseApp::main(int argC, char **argV)
 {
     _appName = argV[0] ;
     int retVal = initialize( argC, argV ) ;
-    if( retVal != 0 )
-    {
-	cerr << "BESBaseApp::initialize - failed" << endl;
-    }
-    else
+    if( retVal == 0 )
     {
 	retVal = run() ;
 	retVal = terminate( retVal ) ;

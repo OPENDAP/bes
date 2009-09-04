@@ -37,12 +37,14 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 
 using std::cout ;
 using std::cerr ;
 using std::endl ;
 using std::ios ;
+using std::ostringstream ;
 using std::ofstream ;
 
 #include "config.h"
@@ -50,6 +52,7 @@ using std::ofstream ;
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
 #include "TheBESKeys.h"
+#include "BESLog.h"
 #include "SocketListener.h"
 #include "TcpSocket.h"
 #include "UnixSocket.h"
@@ -127,8 +130,9 @@ ServerApp::set_group_id()
     if( !found || group_str.empty() )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Group not specified in BES configuration file"
-	     << endl ;
+	string err = "FAILED: Group not specified in BES configuration file" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "to " << group_str << " ... " << endl ) ;
@@ -149,7 +153,10 @@ ServerApp::set_group_id()
 	if( !ent )
 	{
 	    BESDEBUG( "server", "FAILED" << endl ) ;
-	    cerr << "FAILED: Group " << group_str << " does not exist" << endl ;
+	    string err = (string)"FAILED: Group " + group_str
+			 + " does not exist" ;
+	    cerr << err << endl ;
+	    (*BESLog::TheLog()) << err << endl ;
 	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
 	}
 	new_gid = ent->gr_gid ;
@@ -158,8 +165,11 @@ ServerApp::set_group_id()
     if( new_gid < 1 )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Group id " << new_gid
-	     << " not a valid group id for BES" << endl ;
+	ostringstream err ;
+	err << "FAILED: Group id " << new_gid
+	    << " not a valid group id for BES" ;
+	cerr << err.str() << endl ;
+	(*BESLog::TheLog()) << err.str() << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 
@@ -167,7 +177,10 @@ ServerApp::set_group_id()
     if( setgid( new_gid ) == -1 )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: unable to set the group id to " << new_gid << endl ;
+	ostringstream err ;
+	err << "FAILED: unable to set the group id to " << new_gid ;
+	cerr << err.str() << endl ;
+	(*BESLog::TheLog()) << err.str() << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 
@@ -192,8 +205,9 @@ ServerApp::set_user_id()
     if( !found || user_str.empty() )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: User not specified in BES configuration file"
-	     << endl ;
+	string err = (string)"FAILED: User not specified in BES config file" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "to " << user_str << " ... " << endl ) ;
@@ -212,8 +226,10 @@ ServerApp::set_user_id()
 	if( !ent )
 	{
 	    BESDEBUG( "server", "FAILED" << endl ) ;
-	    cerr << "FAILED: Bad user name specified: "
-		 << user_str << endl ;
+	    string err = (string)"FAILED: Bad user name specified: "
+			 + user_str ;
+	    cerr << err << endl ;
+	    (*BESLog::TheLog()) << err << endl ;
 	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
 	}
 	new_id = ent->pw_uid ;
@@ -223,7 +239,9 @@ ServerApp::set_user_id()
     if( !new_id )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: BES cannot run as root" << endl ;
+	string err = (string)"FAILED: BES cannot run as root" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 
@@ -231,8 +249,10 @@ ServerApp::set_user_id()
     if( setuid( new_id ) == -1 )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: Unable to set user id to "
-	     << new_id << endl ;
+	ostringstream err ;
+	err << "FAILED: Unable to set user id to " << new_id ;
+	cerr << err.str() << endl ;
+	(*BESLog::TheLog()) << err.str() << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 }
@@ -240,18 +260,6 @@ ServerApp::set_user_id()
 int
 ServerApp::initialize( int argc, char **argv )
 {
-    uid_t curr_euid = geteuid() ;
-#ifndef BES_DEVELOPER
-    // must be root to run this app and to set user id and group id later
-    if( curr_euid )
-    {
-	cerr << "FAILED: Must be root to run BES" << endl ;
-	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
-    }
-#else
-    cerr << "Developer Mode: not testing if BES is run by root" << endl ;
-#endif
-
     int c = 0 ;
     bool needhelp = false ;
     string dashi ;
@@ -295,8 +303,13 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    // If the -c optiion was passed, set the config file
-    // name in TheBESKeys
+    // before we can do any processing, log any messages, initialize any
+    // modules, do anything, we need to determine where the BES
+    // configuration file lives. From here we get the name of the log
+    // file, group and user id, and information that the modules will
+    // need to run properly.
+
+    // If the -c optiion was passed, set the config file name in TheBESKeys
     if( !dashc.empty() )
     {
 	TheBESKeys::ConfigFile = dashc ;
@@ -315,6 +328,50 @@ ServerApp::initialize( int argc, char **argv )
 	TheBESKeys::ConfigFile = conf_file ;
     }
 
+    // Now that we have the configuration information, we can log to the
+    // BES log file if there are errors in starting up, etc...
+
+    uid_t curr_euid = geteuid() ;
+#ifndef BES_DEVELOPER
+    // must be root to run this app and to set user id and group id later
+    if( curr_euid )
+    {
+	string err = "FAILED: Must be root to run BES" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+#else
+    cout << "Developer Mode: not testing if BES is run by root" << endl ;
+#endif
+
+    // register the two debug context for the server and ppt. The
+    // Default Module will register the bes context.
+    BESDebug::Register( "server" ) ;
+    BESDebug::Register( "ppt" ) ;
+
+    // Before we can load modules, start writing to the BES log
+    // file, etc... we need to run as the proper user. Set the user
+    // id and the group id to what is specified in the BES
+    // configuration file
+    if( curr_euid == 0 )
+    {
+#ifdef BES_DEVELOPER
+	cout << "Developer Mode: Running as root - setting group and user ids"
+	     << endl ;
+#endif
+	set_group_id() ;
+	set_user_id() ;
+    }
+    else
+    {
+	cout << "Developer Mode: Not setting group or user ids" << endl ;
+    }
+
+    // Because we are now running as the user specified in the
+    // configuraiton file, we won't be able to listen on system ports.
+    // If this is a problem, we may need to move this code above setting
+    // the user and group ids.
     bool found = false ;
     string port_key = "BES.ServerPort" ;
     if( !_gotPort )
@@ -339,14 +396,12 @@ ServerApp::initialize( int argc, char **argv )
 
     if( !_gotPort && _unixSocket == "" )
     {
-	cout << endl << "Must specify either a tcp port"
-	     << " or a unix socket or both" << endl ;
-	cout << "Please specify on the command line with"
-	     << " -p <port> -u <unix_socket> "
-	     << endl
-	     << "Or specify in the bes configuration file with "
-	     << port_key << " and/or " << socket_key
-	     << endl << endl ;
+	string msg = "Must specify a tcp port or a unix socket or both\n" ;
+	msg += "Please specify on the command line with -p <port> -u <unix_socket>\n" ;
+	msg += "Or specify in the bes configuration file with "
+	    + port_key + " and/or " + socket_key + "\n" ;
+	cout << endl << msg ;
+	(*BESLog::TheLog()) << msg << endl ;
 	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
     }
 
@@ -365,7 +420,9 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: cannot register SIGTERM signal handler" << endl ;
+	string err = "FAILED: cannot register SIGTERM signal handler" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
@@ -374,7 +431,9 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: cannot register SIGINT signal handler" << endl ;
+	string err = "FAILED: cannot register SIGINT signal handler" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
@@ -383,7 +442,9 @@ ServerApp::initialize( int argc, char **argv )
     if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	cerr << "FAILED: cannot register SIGUSR1 signal handler" << endl ;
+	string err = "FAILED: cannot register SIGUSR1 signal handler" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
@@ -398,9 +459,7 @@ ServerApp::initialize( int argc, char **argv )
     BESXMLDefaultCommands::initialize( argc, argv ) ;
     BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDebug::Register( "server" ) ;
-    BESDebug::Register( "ppt" ) ;
-
+    // This will load and initialize all of the modules
     int ret = BESModuleApp::initialize( argc, argv ) ;
 
     BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
@@ -408,23 +467,6 @@ ServerApp::initialize( int argc, char **argv )
     if( needhelp )
     {
 	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
-    }
-
-    if( curr_euid == 0 )
-    {
-	// Now that we have loaded all modules and given them the chance to
-	// initialize set the user id and the group id to what is specified
-	// in the BES configuration file.
-#ifdef BES_DEVELOPER
-	cerr << "Developer Mode: Running as root - setting group and user ids"
-	     << endl ;
-#endif
-	set_group_id() ;
-	set_user_id() ;
-    }
-    else
-    {
-	cerr << "Developer Mode: Not setting group or user ids" << endl ;
     }
 
     return ret ;
@@ -466,11 +508,14 @@ ServerApp::run()
     catch( BESError &se )
     {
 	cerr << se.get_message() << endl ;
+	(*BESLog::TheLog()) << se.get_message() << endl ;
 	return 1 ;
     }
     catch( ... )
     {
 	cerr << "caught unknown exception" << endl ;
+	(*BESLog::TheLog()) << "caught unknown exception initializing sockets"
+			    << endl ;
 	return 1 ;
     }
 
