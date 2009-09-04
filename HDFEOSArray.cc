@@ -46,7 +46,6 @@
 #include <Error.h>
 #include <debug.h>
 
-#include "dhdferr.h"
 #include "HDFEOSArray.h"
 #include "HDFEOS.h"
 

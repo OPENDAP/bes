@@ -51,7 +51,6 @@
 #include <hcstream.h>
 #include "HDFSequence.h"
 #include "HDFStructure.h"
-#include "dhdferr.h"
 #include "escaping.h"
 
 #include "Error.h"

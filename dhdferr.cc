@@ -42,31 +42,30 @@
 using std::ostringstream;
 using std::endl;
 
-#include <mime_util.h>
-
 #include "config_hdf.h"
 
 #include <mfhdf.h>
+#include <BESLog.h>
 #include "hcerr.h"
 #include "dhdferr.h"
 
 dhdferr::dhdferr(const string & msg, const string & file, int line)
-:Error(msg)
+    :Error(msg)
 {
     ostringstream strm;
     strm << get_error_message() << endl
         << "Location: \"" << file << "\", line " << line;
-    ErrMsgT(strm.str());
+    (*BESLog::TheLog()) << strm.str() << endl ;
 }
 
-dhdferr_hcerr::dhdferr_hcerr(const string & msg, const string & file,
-                             int line)
-:dhdferr(msg, file, line)
+dhdferr_hcerr::dhdferr_hcerr(const string & msg, const string & file, int line)
+    :dhdferr(msg, file, line)
 {
     ostringstream strm;
     strm << get_error_message() << endl
         << "Location: \"" << file << "\", line " << line;
     for (int i = 0; i < 5; ++i)
         strm << i << ") " << HEstring((hdf_err_code_t) HEvalue(i)) << endl;
-    ErrMsgT(strm.str());
+    (*BESLog::TheLog()) << strm.str() << endl ;
 }
+

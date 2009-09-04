@@ -53,7 +53,6 @@
 #include "HDFGrid.h"
 #include "HDFArray.h"
 #include "hdfutil.h"
-#include "dhdferr.h"
 
 #include "Error.h"
 

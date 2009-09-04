@@ -53,7 +53,6 @@
 #include "HDFEOSGrid.h"
 #include "HDFArray.h"
 #include "hdfutil.h"
-#include "dhdferr.h"
 #include "HDFEOS.h"
 #include "Error.h"
 #include "debug.h"

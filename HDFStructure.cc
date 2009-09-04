@@ -57,7 +57,6 @@
 #include <debug.h>
 
 #include "HDFStructure.h"
-#include "dhdferr.h"
 
 HDFStructure::HDFStructure(const string &n, const string &d)
     : Structure(n, d)

@@ -36,7 +36,6 @@
 #include <escaping.h>
 #include <Error.h>
 #include <debug.h>
-#include "dhdferr.h"
 
 #include "HDFEOS.h"
 #include "HDFEOS2Array.h"

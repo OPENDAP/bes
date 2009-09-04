@@ -53,7 +53,7 @@
 using std::ostringstream;
 using std::endl;
 
-#include <mime_util.h>
+#include <BESLog.h>
 
 #include "hcerr.h"
 
@@ -65,5 +65,6 @@ hcerr::hcerr(const char *msg, const char *file, int line)
         << "Location: \"" << file << "\", line " << line << endl;
     for (int i = 0; i < 5; ++i)
         strm << i << ") " << HEstring((hdf_err_code_t) HEvalue(i)) << endl;
-    ErrMsgT(strm.str());
+    (*BESLog::TheLog()) << strm.str() << endl ;
 }
+

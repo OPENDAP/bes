@@ -53,6 +53,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <cerrno>
 
 #include <hcstream.h>
 #include <hdfclass.h>
@@ -288,7 +289,9 @@ void hdfistream_sds::open(const char *filename)
     if (_file_id != 0)          // close any currently open file
         close();
     if ((_file_id = SDstart((char *) filename, DFACC_READ)) < 0)
+    {
         THROW(hcerr_openfile);
+    }
 
     BESDEBUG("h4", "sds file opened: id=" << _file_id << endl);
 

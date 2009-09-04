@@ -45,7 +45,6 @@
 #include <Error.h>
 #include <debug.h>
 
-#include "dhdferr.h"
 #include "HDFEOS2Array2D.h"
 #include "HDFEOS.h"
 
