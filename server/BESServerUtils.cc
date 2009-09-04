@@ -46,14 +46,15 @@ void
 BESServerUtils::show_usage( const string &app_name )
 {
     cout << app_name
-         << ": -i <INSTALL_DIR> -c <CONFIG> -d <STREAM> -h "
-	 << "-p <PORT> -s -u <UNIX_SOCKET> -v"
+         << ": -i <INSTALL_DIR> -c <CONFIG> -d <STREAM,CONTEXT> -h "
+	 << "-p <PORT> -r <PID_DIR> -s -u <UNIX_SOCKET> -v"
 	 << endl << endl ;
     cout << "-i back-end server installation directory" << endl ;
     cout << "-c use back-end server configuration file CONFIG" << endl ;
-    cout << "-d set debugging to cerr or <filename>" << endl ;
+    cout << "-d send debugging for CONTEXT to cerr or <filename>" << endl ;
     cout << "-h show this help screen and exit" << endl ;
     cout << "-p set port to PORT" << endl ;
+    cout << "-r bes.pid file stored in directory PID_DIR" << endl ;
     cout << "-s specifies a secure server using SLL authentication" << endl ;
     cout << "-u set unix socket to UNIX_SOCKET" << endl ;
     cout << "-v echos version and exit" << endl ;
