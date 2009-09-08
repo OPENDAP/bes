@@ -62,12 +62,18 @@ HDFEOS::HDFEOS()
 
     eos_to_cf_map_is_swath["Longitude"] = "lon";
     eos_to_cf_map_is_swath["Latitude"] = "lat";
-    eos_to_cf_map_is_swath["GeoTrack"] = "lat"; //  AIRS
+    // AIRS
+    eos_to_cf_map_is_swath["GeoTrack"] = "lat"; 
     eos_to_cf_map_is_swath["GeoXTrack"] = "lon";
-    eos_to_cf_map_is_swath["Cell_Along_Swath_5km"] = "lat"; // MODIS
+    // MODIS
+    eos_to_cf_map_is_swath["Cell_Along_Swath_5km"] = "lat"; 
     eos_to_cf_map_is_swath["Cell_Across_Swath_5km"] = "lon";
+    // Another MODIS 
+    eos_to_cf_map_is_swath["Along_swath_lines_500m"] = "lat"; 
+    eos_to_cf_map_is_swath["Cross_swath_pixels_500m"] = "lon";
+    
     eos_to_cf_map_is_swath["StdPressureLev"] = "pressStd";
-
+    
     cf_to_eos_map["lon"] = "XDim";
     cf_to_eos_map["lat"] = "YDim";
     cf_to_eos_map["lev"] = "nCandidate";

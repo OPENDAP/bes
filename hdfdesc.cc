@@ -65,6 +65,7 @@ using namespace std;
 // HDF and HDFClass includes
 #include <mfhdf.h>
 
+
 #include "hcstream.h"
 #include "hdfclass.h"
 #include "hcerr.h"
@@ -430,7 +431,7 @@ static void build_descriptions(DDS & dds, DAS & das,
 
     // Build descriptions of Vgroups and add SDS/Vdata/GR in the correct order
     Vgroup_descriptions(dds, das, filename, sdsmap, vdatamap, grmap);
-    
+
 #ifdef USE_HDFEOS2_LIB          // Add CF-1.x compliant attributes.
     // Build NC_GLOBAL part using the HDF-EOS2 library.
     if(eos.is_valid()){
@@ -588,9 +589,10 @@ static void SDS_descriptions(sds_map & map, DAS & das,
     AddHDFAttr(das, string("HDF_GLOBAL"), fileattrs);
     // add each SDS's attrs
     vector < hdf_attr > dattrs;
+
     for (SDSI s = map.begin(); s != map.end(); ++s) {
         const hdf_sds *sds = &s->second.sds;
-        AddHDFAttr(das, sds->name, sds->attrs);
+        AddHDFAttr(das, sds->name, sds->attrs); 
 // Skip <varname>_dim_0 attribute generation when we use HDF-EOS2 library
 // because HDF-EOS2 library will clean dimension names.
 #ifdef USE_HDFEOS2_LIB        
@@ -602,9 +604,22 @@ static void SDS_descriptions(sds_map & map, DAS & das,
             }
 #ifdef USE_HDFEOS2_LIB        
         }
+        // If the variable name of an HDF-EOS2 Swath is
+        // neither Latitude nor Longitude, add "coordinates" attribute.
+        if(eos.is_swath() &&
+           string(sds->name).find("Latitude") &&
+           string(sds->name).find("Longitude")){
+            AttrTable *at = das.get_table(sds->name);
+            if (at == 0) {
+                at = das.add_table(sds->name, new AttrTable);
+            }
+            at->append_attr("coordinates", "String", "\"lon lat\"");
+        }
 #endif                   
 
     }
+    
+
     return;
 }
 
@@ -914,8 +929,19 @@ void AddHDFAttr(DAS & das, const string & varname,
 #else
                 attv[j] = "\"" + escattr(attv[j]) + "\"";
 #endif
+
+#ifdef USE_HDFEOS2_LIB
+                // Avoid the duplicate units for Lat/Lon for Swath case.
+                if(!(container_name.find("units") == 0 &&
+                     eos.is_swath() &&
+                     (tempname.find("lat") == 0 || tempname.find("lon") == 0)
+                     )){
+#endif                
                 if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
                     THROW(dhdferr_addattr);
+#ifdef USE_HDFEOS2_LIB
+                }
+#endif                
             }
         }
     }
@@ -1174,7 +1200,8 @@ static void add_dimension_attributes_swath(DAS & das)
     
     at->append_attr("units", STRING, "\"degrees_east\"");
     at->append_attr("long_name", STRING, "\"longitude\"");
-
+    at->append_attr("coordinates", STRING, "\"lon lat\"");
+    
     at = das.get_table("lat");
     if (at == 0) {
         at = das.add_table("lat", new AttrTable);
@@ -1183,6 +1210,7 @@ static void add_dimension_attributes_swath(DAS & das)
     at->append_attr("units", STRING, "\"degrees_north\"");
     at->append_attr("long_name", STRING, "\"latitude\"");
     at->append_attr("coordinates", STRING, "\"lon lat\"");
+
 
 }
 
@@ -1664,6 +1692,7 @@ static void write_hdfeos2_swath(DDS &dds)
         const char* cf_name = eos.get_CF_name(eos.full_data_paths.at(i));
         string cf_varname(cf_name);
 #endif
+
         string cf_varname = eos.get_CF_name(eos.full_data_paths.at(i));
         DBG(cerr << "CF name=" << cf_varname << endl);    
         vector <string> tokens;
@@ -1685,11 +1714,11 @@ static void write_hdfeos2_swath(DDS &dds)
 
         // Add dimensions.
         eos.get_dimensions(eos.full_data_paths.at(i), tokens);
-        ar->set_numdim(tokens.size());        
+        ar->set_numdim(tokens.size());
+
         for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
             DBG(cerr << "=read_objects_base_type():Dim name " <<
                 tokens.at(dim_index) << endl);
-
             string str_dim_name = tokens.at(dim_index);
             int dim_size = eos.get_dimension_size(str_dim_name);
             str_dim_name = eos.get_CF_name(str_dim_name);
