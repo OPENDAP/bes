@@ -38,11 +38,6 @@ AT_BESCMD_RESPONSE_TEST([tcompound.h5.1.bescmd])
 AT_BESCMD_RESPONSE_TEST([tcompound.h5.2.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([tcompound.h5.3.bescmd])
 
-AT_BESCMD_RESPONSE_TEST([OMI-Aura.das.bescmd])
-AT_BESCMD_RESPONSE_TEST([OMI-Aura.dds.bescmd])
-AT_BESCMD_RESPONSE_TEST([OMI-Aura.ddx.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([OMI-Aura.data.bescmd])
-
 AT_BESCMD_RESPONSE_TEST([SDS.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([SDS.ddx.bescmd])
