@@ -78,6 +78,11 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     // displayed as a DataDDX
     _response_name = DATA_RESPONSE ;
     dhi.action = DATA_RESPONSE ;
+
+    // I added these two lines from BESDDXResponse. jhrg 8/21/09
+    dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    dds->set_request_xml_base( bdds->get_request_xml_base() );
+
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 
     // we've got what we want, now set the action back to data ddx

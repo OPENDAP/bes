@@ -47,6 +47,7 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
+#include "BESDEBUG.h"
 #include "Error.h"
 
 BESDapTransmit::BESDapTransmit()
@@ -252,8 +253,10 @@ void BESDapTransmit::send_basic_dataddx(BESResponseObject * obj,
         DODSFilter df;
         df.set_dataset_name(dds->filename());
         df.set_ce(dhi.data[POST_CONSTRAINT]);
-	//FIXME: new DODSFilter function
-        df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
+	BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
+        df.send_data_ddx(*dds, ce, dhi.get_output_stream(),
+        	dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
+        	"", print_mime);
     }
     catch( InternalErr &e )
     {
