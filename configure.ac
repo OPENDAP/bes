@@ -9,7 +9,8 @@ AC_INIT(bes, 3.7.2, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
-AC_CONFIG_AUX_DIR(conf)
+AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
