@@ -4,6 +4,7 @@
 AC_PREREQ(2.61)
 AC_INIT(hdf4_handler, 3.7.14, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
