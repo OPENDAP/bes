@@ -22,7 +22,7 @@
 #include <InternalErr.h>
 #include <util.h>
 #include <debug.h>
-#include <mime_util.h>
+#include <mime_util.h> 
 
 #include "h5dds.h"
 #include "HDF5Int32.h"
@@ -518,286 +518,46 @@ static Structure *Get_structure(const string &varname,
     return structure_ptr;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \fn get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
-///                                const string &name1)
-/// returns the id of attribute that corresponds to dimension name.
-/// 
-/// \param check_grid a flag for signaling a type of Grid -- new or old.
-/// \param dset dataset that has dimension attribute
-/// \param name1 new dimension name of Grid that is generated from h4toh5 tool.
-/// \return id of \a name1  attribute
-///////////////////////////////////////////////////////////////////////////////
-static hid_t get_dimension_list_attr_id(H5GridFlag_t check_grid, hid_t dset,
-                                        const string &name1)
-{
-    hid_t attr_id;
-    if (check_grid == NewH4H5Grid) {
-        if ((attr_id = H5Aopen_name(dset, name1.c_str())) < 0)
-            throw InternalErr(__FILE__, __LINE__,
-                              string("Unable to open ") + name1 
-                              + string(" attribute"));
-    } 
 
-    return attr_id;
-}
+static void process_grid_matching_dimscale(Array* array, Grid *gr,
+					   hid_t *dimids)
+{ 
 
-/// This function builds a Grid from dimension scale information.
-static void process_grid(const H5GridFlag_t check_grid, 
-                         Grid *gr) {
-
-    DBG(cerr << "add_var()" << endl);
-
-    // Obtain dimensional scale name, it should be a list of
-    // dimensional names. Here we will distinguish old h4h5 tool or
-    // new h4h5 tool.
-    hid_t attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
-                                               "HDF5_DIMENSIONNAMELIST");
-    hid_t temp_dtype  = H5Aget_type(attr_id);
-    if(temp_dtype < 0) {
-        throw InternalErr(__FILE__, __LINE__, 
-                          "Unable to get the attribute type");        
-    }
-    size_t temp_tsize = H5Tget_size(temp_dtype);
-    if(temp_tsize == 0){
-        throw InternalErr(__FILE__, __LINE__, 
-                          "Unable to get the attribute type size");        
-    }
-    
-    hid_t temp_dspace = H5Aget_space(attr_id);
-    if(temp_dspace < 0){
-        throw InternalErr(__FILE__, __LINE__, 
-                          "Unable to get the attribute space.");
-    }
-    hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
-    if(temp_nelm == 0){
-        throw
-            InternalErr(__FILE__, __LINE__, 
-                        "Unable to get the number of elements in dataspace.");
-    }
-
-    char *dimname = new char[temp_nelm * temp_tsize];
-    try {
-        if (H5Aread(attr_id, temp_dtype, dimname) < 0) {
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the attribute.");
-        }
-        if (H5Tclose(temp_dtype) < 0) {
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to close the datatype.");
-            
-        }
-        if (H5Sclose(temp_dspace) < 0) {
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to close the dataspace.");
-        }
-        if (H5Aclose(attr_id) < 0){
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to close the attribute.");            
-        };
-
-        // Obtain dimensional scale data information.
-        attr_id = get_dimension_list_attr_id(check_grid, dt_inst.dset,
-                                             "HDF5_DIMENSIONLIST");
-        temp_dtype = H5Aget_type(attr_id);
-        if(temp_dtype < 0) {
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the attribute type");        
-        }        
-        temp_tsize = H5Tget_size(temp_dtype);
-        if(temp_tsize == 0){
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the attribute type size");        
-        }        
-        temp_dspace = H5Aget_space(attr_id);
-        if(temp_dspace < 0){
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the attribute space.");
-        }        
-        temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
-        if(temp_nelm == 0){
-            throw InternalErr(__FILE__, __LINE__, 
-                              "Unable to get the number of elements.");
-        }        
-
-        char *buf = new char[temp_nelm * temp_tsize];
-        memset(buf, 0, temp_nelm * temp_tsize);
-        hid_t *dimid = 0;
-        char *EachDimName = 0;
-        try {
-            if (H5Aread(attr_id, H5T_STD_REF_OBJ, buf) < 0) {
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Cannot read object reference attributes.");
-            }
-            hobj_ref_t *refbuf = (hobj_ref_t *) buf;
-            dimid = new hid_t[temp_nelm];
-
-            for (unsigned int j = 0; j < temp_nelm; j++) {
-                dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf);
-                if (dimid[j] < 0) {
-                    throw InternalErr(__FILE__, __LINE__,
-                                      "Cannot dereference the object.");
-                }
-                refbuf++;
-            }
-
-            if(H5Aclose(attr_id) < 0){
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Cannot close the attribute.");
-            };
-            if(H5Sclose(temp_dspace) < 0){
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Cannot close the dataspace.");
-            };
-            if(H5Tclose(temp_dtype) < 0){
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Cannot close the datatype."); 
-            };
-
-            // Start building Grid.
-            char *TempNamePointer = dimname;
-            EachDimName = new char[temp_tsize];
-
-            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                // Get dimensional scale datasets. Add them to grid.
-                temp_dspace = H5Dget_space(dimid[dim_index]);
-                if(temp_dspace < 0){
-                    throw InternalErr(__FILE__, __LINE__, 
-                                      "Unable to get the data space.");
-                }
-                
-                temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
-                if(temp_nelm == 0){
-                    throw InternalErr(__FILE__, __LINE__, 
-                                      "Unable to get the number of elements.");
-                }                        
-
-                temp_dtype = H5Dget_type(dimid[dim_index]);
-                if(temp_dtype < 0) {
-                    throw InternalErr(__FILE__, __LINE__, 
-                                      "Unable to get the data type");
-                }
-                
-                hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
-                if(memtype < 0){
-                    throw InternalErr(__FILE__, __LINE__, 
-                                      "Unable to get the native type");
-                }
-                temp_tsize = H5Tget_size(memtype);
-                if(temp_tsize == 0){
-                    throw InternalErr(__FILE__, __LINE__, 
-                                      "Unable to get the attribute type size");
-                }
-
-                strncpy(EachDimName, TempNamePointer, temp_tsize-1);
-                TempNamePointer = TempNamePointer + temp_tsize;
-                BaseType *bt = 0;
-                HDF5Array *map = 0;
-                try {
-                    bt = Get_bt(EachDimName, gr->dataset(), memtype);
-                    map = new HDF5Array(EachDimName, gr->dataset(), bt);
-                    delete bt; bt = 0;
-                    map->set_did(dimid[dim_index]);
-                    map->set_tid(memtype);
-                    map->set_memneed(temp_tsize * temp_nelm);
-                    map->set_numdim(1);
-                    map->set_numelm(temp_nelm);
-                    map->append_dim(temp_nelm, EachDimName);
-                    gr->add_var(map, maps);
-                    delete map; map = 0;
-                }
-                catch(...) {
-                    // possible for memory allocation exceptions to
-                    // be thrown in creating bt or map, so check for
-                    // existance before deleting, and set to 0 in
-                    // case deleting further below. pwest Mar 18, 2009
-                    if( bt ) { delete bt; bt = 0 ; }
-                    if( map ) { delete map; map = 0 ; }
-                    throw;
-                }
-            } // for dim_index is 0 .. dt_inst.ndims
-
-            if( buf ) { delete[] buf; buf = 0 ; }
-            if( dimid ) { delete[] dimid; dimid = 0 ; }
-            if( dimname ) { delete[] dimname; dimname = 0 ; }
-            if( EachDimName ) { delete[] EachDimName; EachDimName = 0 ; }
-        }
-        catch(...) {
-            if( buf ) { delete[] buf; buf = 0 ; }
-            if( dimid ) { delete[] dimid; dimid = 0 ; }
-            if( EachDimName ) { delete[] EachDimName; EachDimName = 0 ; }
-            throw;
-        }
-    }
-    catch(...) {
-        // just in case dimname is deleted and cleared somewhere
-        // above, check before deleting. pwest Mar 18, 2009
-        if( dimname ) delete[] dimname;
-        throw;
-    }
-}
-
-/// Kent will clean up this code and verify with HDF5 files that are
-/// generatd by h4toh5 tools.
-static void process_grid_matching_dimscale(const H5GridFlag_t check_grid, 
-                                           Grid *gr) {
-    hid_t attr_id = H5Aopen_name(dt_inst.dset, "DIMENSION_LIST");
-    hid_t temp_dtype = H5Aget_type(attr_id);
-    hid_t temp_dspace = H5Aget_space(attr_id);
-    hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
-
-    if (attr_id < 0){
-	throw InternalErr(__FILE__, __LINE__, "cannot open an attribute specified by name");
-    }
-    if (temp_dtype < 0){
-	throw InternalErr(__FILE__, __LINE__, "cannot get the attribute datatype");
-    }
-    if (temp_dspace < 0){
-        throw InternalErr(__FILE__, __LINE__, "cannot get a copy of the dataspace");
-    }
-    if (temp_nelm == 0){
-        throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements");
-    }
-    hvl_t *refbuf = 0;
-    memset(refbuf, 0, temp_nelm);
-    hid_t *dimid = 0;
-    try {
-        refbuf = new hvl_t[temp_nelm];
-        memset(refbuf, 0, temp_nelm);
-        dimid = new hid_t[temp_nelm];
-
-        if (H5Aread(attr_id, temp_dtype, refbuf) < 0){
-            throw
-                InternalErr(__FILE__, __LINE__,
-                            "Cannot read object reference attributes.");
-        }
-
-        for (unsigned int j = 0; j < temp_nelm; j++) {
-            dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, refbuf[j].p);
-	    if (dimid[j] < 0){
-		throw InternalErr(__FILE__, __LINE__, "H5Rdereference() failed.");
-	    }
-        }
-        
-        // Is there a way to know the size of dimension name in advance? 
-        char buf2[DODS_NAMELEN];
+        char *dimname_buf;
+        ssize_t bufsize;
+        hid_t temp_dtype;
+        hid_t temp_dspace;
+        hid_t temp_nelm;
 
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-            if(H5Iget_name(dimid[dim_index], (char *) buf2, DODS_NAMELEN) < 0){
+            
+            bufsize = H5Iget_name(dimids[dim_index],NULL,0);
+            if(bufsize<=0){
+              throw 
+                 InternalErr(__FILE__,__LINE__,
+			     "Fail to get the dimension name size");
+           }
+                         
+            try {
+               dimname_buf = new char[(size_t)bufsize+1];
+            }
+            catch(...) {
+               if(dimname_buf) {
+                  delete [] dimname_buf;
+                  dimname_buf = NULL;
+               }
+               throw InternalErr(__FILE__,__LINE__, "Fail to allocate memory");
+            }
+            if((H5Iget_name(dimids[dim_index], (char *) dimname_buf, (size_t)(bufsize+1))) < 0){
                 throw
                     InternalErr(__FILE__, __LINE__,
-                            "Cannot get reference name.");
+                            "Fail to get the dimension name");
             }
-            DBG(cerr << "name: " << buf2 << endl);
-            // Open dataset.
-            // Is it OK to search from the current dset (i.e.dt_inst.dset)? 
-            hid_t dset_id = H5Dopen(dt_inst.dset, buf2);
-            DBG(cerr << "dataset id: " << dset_id << endl);
-            // Get the size of the array.
-            if (dset_id < 0){
-                throw InternalErr(__FILE__, __LINE__, "cannot open the existing dataset");
-            }
-            temp_dspace = H5Dget_space(dset_id);
+            string each_dim_name(dimname_buf);
+            each_dim_name = get_short_name(each_dim_name);
+            delete [] dimname_buf; dimname_buf = NULL;
+
+            temp_dspace = H5Dget_space(dimids[dim_index]);
  	    if (temp_dspace < 0){
                 throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed.");
             }
@@ -806,7 +566,7 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 		throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements in the dataspace");
 	    }
             DBG(cerr << "nelem = " << temp_nelm_dim << endl);
-            temp_dtype = H5Dget_type(dset_id);
+            temp_dtype = H5Dget_type(dimids[dim_index]);
 	    if (temp_dtype < 0){
                 throw InternalErr(__FILE__, __LINE__, "H5Dget_type() failed.");
             }
@@ -819,21 +579,19 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
 		throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
 	    }
 
-            string each_dim_name(buf2);
-	    each_dim_name = get_short_name(each_dim_name);
             BaseType *bt = 0;
             HDF5Array *map = 0;
             try {
                 bt = Get_bt(each_dim_name, gr->dataset(), memtype);
                 map = new HDF5Array(each_dim_name, gr->dataset(), bt);
                 delete bt; bt = 0;
-                map->set_did(dset_id);
+                map->set_did(dimids[dim_index]);
                 map->set_tid(memtype);
                 map->set_memneed(temp_tsize * temp_nelm_dim);
                 map->set_numdim(1);
                 map->set_numelm(temp_nelm);
-
                 map->append_dim(temp_nelm_dim, each_dim_name);
+                array->append_dim(temp_nelm_dim, each_dim_name);
                 gr->add_var(map, maps);
                 delete map; map = 0;
             }
@@ -842,16 +600,9 @@ static void process_grid_matching_dimscale(const H5GridFlag_t check_grid,
                 if( map ) delete map;
                 throw;
             }
+        
         } // for ()
 
-        delete[] dimid; dimid = 0 ;
-        delete[] refbuf; refbuf = 0 ;
-    }
-    catch(...) {
-        if( dimid ) delete[] dimid;
-        if( refbuf ) delete[] refbuf;
-        throw;
-    }
 }
 
 /// processes the NASA EOS AURA Grids.
@@ -965,10 +716,47 @@ void
 read_objects_base_type(DDS & dds_table, const string & a_name,
                        const string & filename)
 {
-    dds_table.set_dataset_name(name_path(filename));
+    dds_table.set_dataset_name(name_path(filename)); 
+    bool has_dim_scale = false;
+    bool has_dim_group = false;
+#ifdef NASA_EOS_GRID
+    bool is_eos_grid = false;
+#endif
     string varname = a_name;
-      
     string sname = get_short_name(varname);
+    hid_t *dimids;
+    try {
+        dimids = new hid_t[dt_inst.ndims];
+    }
+    catch (...) {
+        if(dimids) {
+            delete [] dimids;
+            dimids=0;
+        }
+        throw;
+    }
+    // Check if this variable is part of HDF4_DIMGROUP.
+    if(varname.find("/HDF4_DIMGROUP/") != string::npos){
+        has_dim_group = true;
+    }
+         
+    // Check if this array can be a Grid through dimension maps.
+    if (has_matching_grid_dimscale(dt_inst.dset, 
+                                   dt_inst.ndims, 
+                                   dt_inst.size,dimids)) {
+        has_dim_scale = true;
+        // Remove any '/' for GrADS compatibility.
+        sname = get_short_name_dimscale(sname);
+    }
+
+#ifdef NASA_EOS_GRID
+    // Check if this array is EOS array can be a Grid.
+    // This EOS variable needs to be treated as an array.
+    if (eos.is_valid() && eos.is_grid(varname)) {
+        is_eos_grid = true;
+    }
+#endif
+
 #ifdef CF
     if(eos.is_valid() && eos.is_swath(varname)) {
         // Rename the variable if necessary.
@@ -1005,69 +793,41 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
-
-#ifdef NASA_EOS_GRID
-        if (!(eos.is_valid() && eos.is_grid(varname)))
-            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-                ar->append_dim(dt_inst.size[dim_index]);
-#else
-        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-            ar->append_dim(dt_inst.size[dim_index]);
-#endif
-        
 #ifndef DODSGRID // DODSGRID is defined in common.h by default.
-        // Not define DODS Grid. It has to be an array.
+        // If DODSGRID is not defined, it always has to be an array.
+	for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+	  ar->append_dim(dt_inst.size[dim_index]); 
         dds_table.add_var(ar);
         delete ar; ar = 0;
-
 #else // DODSGRID is defined
-
         // Check whether this HDF5 dataset can be mapped to the grid data
-        // Two cases to check for pure HDF5 datasets: 
-        // Case 1: check if the HDF5 dataset is converted from HDF4  following 
-        // HDF4 to HDF5 mapping specification 
-        // http://www.hdfgroup.org/HDF5/doc/ADGuide/H4toH5Mapping.pdf
-        // Case 2: check if the HDF5 dataset is following HDF5 dimension scale specification
+        // For pure HDF5 dataset,
+        // We only need to check if the HDF5 dataset
+        // is following the HDF5 dimension scale specification.
         // http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf
-        // The third case is to check if we have HDF-EOS5 grid data
-        
-        H5GridFlag_t check_grid = maptogrid(dt_inst.dset, dt_inst.ndims);
-
-        // Case 1: if the file is converted from HDF4 following the mapping specification
-        if (check_grid != NotGrid) {    // !NotGrid means it's a Grid.
-            Grid *gr = new HDF5Grid(sname, filename);
-            // First fill the array part of the grid.
-            gr->add_var(ar, array);
-            delete ar; ar = 0;
-
-            process_grid(check_grid, gr);
-
-            dds_table.add_var(gr);
-            delete gr; gr = 0;
+        // Of course, for each dimension, only one dimension scale needs to
+        // be applied. 
+        // For HDF-EOS grid, we need to check if we have HDF-EOS5 grid data
+        // If the dataset has dimension scale following HDF5 dimension scale 
+        // specification
+        // Please also be aware that only one scale should attach to one 
+        // dimension.
+        // We don't support multiple scales applying to one dimension.
+       {
+	 if (has_dim_scale) {
+	   // Construct a grid instead of returning a simple array.
+	   Grid *gr = new HDF5Grid(sname, filename);
+	   process_grid_matching_dimscale(ar, gr, dimids);
+	   gr->add_var(ar, array);
+	   delete ar; ar = 0;
+	   dds_table.add_var(gr);
+	   delete gr; gr = 0;
         }
-
-        // Case 2: if the dataset has dimension scale following HDF5 dimension scale specification
-        else if (has_matching_grid_dimscale
-                 (dt_inst.dset, dt_inst.ndims, dt_inst.size)) {
-
-            // Construct a grid instead of returning a simple array.
-            Grid *gr = new HDF5Grid(sname, filename);
-            gr->add_var(ar, array);
-            delete ar; ar = 0;
-
-            process_grid_matching_dimscale(check_grid, gr);
-
-            dds_table.add_var(gr);
-            delete gr; gr = 0;
-        }
-        // Check if the file is an HDF-EOS5 Grid.
 #ifdef NASA_EOS_GRID
-        // Check if eos class has this dataset as Grid.
-        else if (eos.is_valid() && eos.is_grid(varname)) {
+        else if (is_eos_grid) {
             DBG(cerr << "EOS Grid: " << varname << endl);
             // Generate grid based on the parsed StructMetada.
             Grid *gr = new HDF5GridEOS(sname, filename);
-
             process_grid_nasa_eos(varname, ar, gr, dds_table);
             gr->add_var(ar, array);
             delete ar; ar = 0;
@@ -1077,9 +837,21 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         }
 #endif                          // #ifdef  NASA_EOS_GRID
         else {                  // cannot be mapped to grid, must be an array.
-            dds_table.add_var(ar);
-            delete ar; ar = 0;
+	  for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++){
+	    if(has_dim_group){
+	      // IDV and Panoply requires named dimensions for shared
+	      // dimension map variables.
+	      ar->append_dim(dt_inst.size[dim_index], sname); 
+	    }
+	    else{
+	      ar->append_dim(dt_inst.size[dim_index]);
+	    }
+	  }
+	  dds_table.add_var(ar);
+	  delete ar; ar = 0;
         }
+        delete [] dimids;
+      } // end of DODS Grid case
 #endif                          // #ifndef DODSGRID
     }
 
@@ -1182,18 +954,30 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
 /// returns a short name.
 ///
 /// This function returns a short name from \a varname.
+///
+/// For HDF-EOS5 case, 
 /// Short name is defined as a string from the last '/' to the end of \a
 /// varname excluding the '/'. Then, the extracted string is prefixed with
 /// "A<number>". Finally, the prefixed string is shortened to the first 15
 /// characters. This function is meaningful only for HDF-EOS5 files
 /// when --enable-cf and --enable-short-name configuration options are
 /// set to be "yes".
+///
+///
+/// For a file converted via h4toh5 tool from a HDF4 file that contains 
+/// the dimension scale, short name is defined as a string that doesn't
+/// contain any group path information.
 /// 
 /// \param varname a full object name that has a full group path information
 /// \return a shortened string
 ///////////////////////////////////////////////////////////////////////////////
 string get_short_name(string varname)
 {
+  if(varname.find("/HDF4_DIMGROUP/") != string::npos)
+    {
+      return get_short_name_dimscale(varname);
+    }
+
 #ifdef CF
     if(eos.get_short_name(varname) != ""){
         return eos.get_short_name(varname);
@@ -1206,3 +990,21 @@ string get_short_name(string varname)
 #endif
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_short_name_dimscale(string dimname)
+/// returns a short name of dimname.
+///
+/// This function returns a short name from \a dimname.
+/// Short name is defined as a string from the last '/' to the end of \a
+/// dimname excluding the '/'. For example, "/HDF4_DIMGROUP/time" will be 
+/// shortened to "time".
+/// 
+/// \param dimname a full object name that has a full group path information
+/// \return a shortened string
+///////////////////////////////////////////////////////////////////////////////
+string get_short_name_dimscale(string dimname)
+{
+  int pos = dimname.find_last_of('/', dimname.length() - 1);
+  return dimname.substr(pos + 1);
+}

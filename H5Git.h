@@ -52,12 +52,7 @@ void
 get_strdata(int, char *, char *, int);
 
 bool
-has_matching_grid_dimscale(hid_t dataset, int ndim, int *size);
+has_matching_grid_dimscale(hid_t dataset, int ndim, int *size, hid_t *dimids);
 
-H5GridFlag_t
-maptogrid(hid_t, int);
-
-int
-map_to_grid(hid_t, int);
 
 #endif                          //_H5Git_H

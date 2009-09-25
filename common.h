@@ -37,12 +37,6 @@
 /// The special DAS attribute name for HDF5 path information from the top(root) group.
 #define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
 
-/// A flag to indicate whether an array can be mapped to grid or not.
-/// This also indicates whether the Grid-mappable HDF5 array is in old or new format.
-enum H5GridFlag_t {
-    NotGrid,
-    NewH4H5Grid
-};
 
 /// \brief A structure for DDS generation
 typedef struct DS {

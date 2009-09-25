@@ -29,6 +29,7 @@
 #include <debug.h>
 
 #include "h5das.h"
+#include "h5dds.h"
 #include "common.h"
 #include "H5Git.h"
 #include "H5EOS.h"
@@ -56,6 +57,9 @@ yy_buffer_state *hdfeos_das_scan_string(const char *str);
 
 /// Checks whether HDF-EOS5 file has a valid projection for Grid generation.
 extern bool valid_projection;	
+/// Checks whether this file has "HDF4_DIMGROUP" - a quick way of identifying
+/// a converted file by the h4toh5 tool that has dimension scale.
+bool has_hdf4_dimgroup;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn depth_first(hid_t pid, const char *gname, DAS & das)
@@ -558,7 +562,20 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         newname = varname;
     }
 #else
-    newname = varname;
+    if(!has_hdf4_dimgroup){
+        newname = get_short_name(varname);
+    }
+    else{
+        // This is necessry for GrADS which doesn't like '/' character
+        // in variable name.
+        newname = get_short_name_dimscale(varname); 
+    }
+    if(newname.empty()){	  
+        // This file must be converted by h4toh5 tool.             
+        has_hdf4_dimgroup = true; 
+        return; // Ignore attribute generation for /HDF4_DIMGROUP/.
+    }
+    //newname = varname;
 #endif
     DBG(cerr << "=read_objects(): new variable name=" << newname << endl);
     
@@ -689,7 +706,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 void find_gloattr(hid_t file, DAS & das)
 {
     DBG(cerr << ">find_gloattr()" << endl);
-
+    has_hdf4_dimgroup = false;  // Reset it all the time.
 #ifdef CF
     if(eos.is_valid() && valid_projection){
         add_dimension_attributes(das);
