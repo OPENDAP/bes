@@ -4,6 +4,7 @@
 AC_PREREQ(2.59)
 AC_INIT(hdf5_handler, 1.3.2, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
