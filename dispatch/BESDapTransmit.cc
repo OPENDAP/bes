@@ -47,7 +47,7 @@ using std::ostringstream;
 #include "BESContextManager.h"
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
-#include "BESDEBUG.h"
+#include "BESDebug.h"
 #include "Error.h"
 
 BESDapTransmit::BESDapTransmit()
