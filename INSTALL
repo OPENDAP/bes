@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 1.3.2
+Updated for version 1.3.3
 
 --------------------------------------------------------------------
 BUILDING THE SOFTWARE
@@ -71,19 +71,6 @@ NOTES
 
       http://hdfdap.hdfgroup.uiuc.edu:8080/cf.html
 
-  o This handler will hide dataset that has a name longer than 15
-    characters from DAS/DDS output. That means, some dataset won't be
-    accessible and can't be seen through visualization clients. You
-    can relax this requirement by modifying h5dds.cc near line 602:
-
-    #ifdef CF 
-     if(varname.length() > 15)
-        return;   
-    #endif  
-
-    Feel free to change it to bigger number to see if your favorite
-    client can handle it. However, it's safer to restrict it to 15 to
-    serve a wide variety of visualization clients.
 
   o EOS	Grid Generation
     - EOS Grid generation must be enabled;otherwise, there's no point 
@@ -100,31 +87,27 @@ NOTES
     - By default, full path names that have group structure information  
       are preserved in the dataset variable names. You can shorten them by 
       using "--enable-short-path=yes" configuration option.
+    - The above option will rename each dataset as 'A{number}{datasetname}'
+      and cut the name to be 15 characters long. For example, a dataset
+      called "MyNameIsTooLongForGrADS" will be renamed  and cut as 
+      "A0MyNameIsTooLo".
 	
   o Dimension name translation
 
    EOS data use non-standard name like XDim and YDim and they must be
    renamed to follow CF convention.
 
-   In H5EOS.cc near line 313, there's a function that performs
+   In H5CF.cc near line 116, there's a function that performs
    renaming. You can modify existing entries or add new entries if
-   necessary. For example, "nCandidate" in EOS doesn't match the
-   concept of "lev" in CF exactly but it's useful for displaying L2G
-   EOS data since clients already know the dimension "lev".
+   necessary under H5CF::H5CF() constructor. For example, "nCandidate" 
+   in EOS doesn't match the concept of "lev" in CF exactly but it may be 
+   useful for displaying L2G EOS data since clients already know the 
+   dimension "lev".
 
 	const char* H5EOS::get_CF_name(char* eos_name)
 	{
 	  string str(eos_name);
-
-	  DBG(cerr << ">get_CF_name:" << str << endl);
-	  // <hyokyung 2007.08. 2. 14:25:58>  
-	  eos_to_cf_map["MissingValue"] = "missing_value";
-	  eos_to_cf_map["Units"] = "units";
-	  eos_to_cf_map["XDim"] = "lon";
-	  eos_to_cf_map["YDim"] = "lat";
-	  eos_to_cf_map["nCandidate"] = "lev";
-	      
-	  DBG(cerr << eos_to_cf_map[str] << endl);
+          ....
 	  if(eos_to_cf_map[str].size() > 0){
 	    return eos_to_cf_map[str].c_str();
 	  }
@@ -144,7 +127,6 @@ NOTES
         String title "NASA EOS Aura Grid";
         String Conventions "COARDS, GrADS";
         String dataType "Grid";
-        String history "Tue Jan 1 00:00:00 CST 2008 : imported by GrADS Data Server 1.3";
     }
    
     Such extra attributes are generated manually and hard coded. We
@@ -205,7 +187,8 @@ NOTES
         Float32 lon[lon = 720];
     } CloudPressure;
 
-    This handler will generate only the shared dimension arrays in the first Grid:
+    This handler will generate only the shared dimension arrays in the first 
+    Grid:
 
     Float32 lat[lat = 720];
     Float32 lon[lon = 1440];

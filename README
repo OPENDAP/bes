@@ -1,12 +1,12 @@
 
 
-Updated for version 1.3.2 (16 March 2009)
+Updated for version 1.3.3 (02 October 2009)
 
-This file includes describes the HDF5 DAP server developed by 
-The HDF Group and OPeNDAP under a grant from NASA.
+This file describes the HDF5 DAP server developed by The HDF Group and OPeNDAP 
+under a grant from NASA.
 
 For information about building the OPeNDAP HDF5 Data Handler, see the
-INSTALL. This handler can support existing visualization clients like ferret
+INSTALL. This handler can support existing visualization clients like Ferret
 and GrADS using NASA EOS Grid data.
 
 Note that the libdap constraint evaluator now works with Arrays of
@@ -53,7 +53,8 @@ HDF Version:
 Support for HDF5 data types:
 
 	Groups: Group structure is mapped into a special attribute
-	HDF5_ROOT_GROUP {...}.
+	HDF5_ROOT_GROUP {...}. This will be turned off if --enable-cf
+        configuration option is on.
 
 	Datasets: Array, Byte, Float32/64, (U)Int16/32, String are
 	supported.  If an array has dimensional data, Grid will be generated
@@ -73,16 +74,34 @@ Support for HDF5 data types:
 Special Support for NASA EOS data: 
 
 	Grids: Based on the projection specified in a metadata file, some
-	arrays are automatically mapped into "Grid" instead of "Array".  You
-	can turn off this behavior through configuration option(e.g.
-	--enable-eos-grid=no).  If "Grid" is chosen, its map data are
-	automatically and artificially generated based on
-	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values.  Please see
-	set_dimension_array() in H5EOS.cc for details.
+	arrays are automatically mapped into "Grid" instead of "Array". You
+	can turn off this behavior through a configuration option(e.g.
+	--enable-eos-grid=no).  If "Grid" is chosen, Grid map data are
+	automatically and artificially generated based on the
+	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values in 
+        the StructMetadata. Please see set_dimension_array() in H5EOS.cc 
+        for details.
+
+        Swath: If --eanble-cf configuration option is on and 
+        the SWATH_STRUCTURE string is found in the StructMetadata file,
+        the handler looks for Latitude and Longitude array datasets
+        and rename them as lat and lon. It also adds a special attribute
+        called "coordinates lat lon". This enables IDV to visualize
+        some OMI Swath data.
 
 	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are
 	parsed and its attributes are generated in a nested structure
 	format.
+
+Special Support for files that have HDF5 dimension scale:
+
+        The HDF5 handler generates Grid if a dataset has dimension scale.
+        Only one scale should attach to one dimension. We don't support 
+        multiple scales applying to one dimension.
+
+        Please refer to http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf
+        for HDF5 dimension scale specification.
+
 
 Implementation details:
 

@@ -1,3 +1,8 @@
+2009-10-02  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Added support for HDF5 dimension scale.
+	Added support for HDF-EOS5 OMI swath.
+
 2009-03-18  Patrick West <pwest@ucar.edu>
 
 	Memory allocation issues cleaned up
