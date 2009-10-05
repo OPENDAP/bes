@@ -83,10 +83,16 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     BESDEBUG( "bes", "about to set xml:base to: "
                 << bdds->get_request_xml_base() << endl) ;
 
+    // I added these two lines from BESDDXResponse. jhrg 8/21/09
+    dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    dds->set_request_xml_base( bdds->get_request_xml_base() );
+
+#if 0
     dds->set_dap_major(bdds->get_dds()->get_dap_major());
     dds->set_dap_minor(bdds->get_dds()->get_dap_minor());
 
     dds->set_request_xml_base( bdds->get_request_xml_base() );
+#endif
 
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 
