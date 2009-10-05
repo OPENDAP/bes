@@ -20,8 +20,9 @@ noinst_DATA = bes.conf
 CLEANFILES = *.log *.sum site.exp
 
 EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in \
-	   $(srcdir)/package.m4 bes-testsuite h4 besstandalone.h4 \
-	   bes.conf.in
+	   $(srcdir)/package.m4 h4 bes.conf.in
+
+# bes-testsuite h4 besstandalone.h4 
 
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest
 

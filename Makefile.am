@@ -63,7 +63,7 @@ HDFEOS2_HDR = HDFEOS2.h
 HDFTYPE_HDR += $(HDFEOS2_HDR)
 endif
 
-GRAM_SRC = hdfeos.tab.cc hdfeos.tab.h lex.hdfeos.cc 
+GRAM_SRC = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc 
 
 if CF
 CF_GRAM_SRC = hdfeos2.tab.cc hdfeos2.tab.hh lex.hdfeos2.cc
@@ -83,8 +83,10 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-EXTRA_DIST = data hdf-testsuite hdf-testfiles hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec OSX_Resources bes-hdf4-data.sh.in
+EXTRA_DIST = data bes-testsuite hdf-testfiles \
+	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
+	COPYRIGHT_URI hdf4_handler.spec \
+	OSX_Resources bes-hdf4-data.sh.in 
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) bes-hdf4-data.sh
 
@@ -143,7 +145,7 @@ rpm: dist
 
 # Build the HDF-EOS parser
 
-hdfeos.tab.cc hdfeos.tab.h: hdfeos.y
+hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc $<
 	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 

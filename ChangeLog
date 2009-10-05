@@ -1,3 +1,471 @@
+2009-10-05  James Gallagher <jgallagher@opendap.org>
+
+	This is a release of the HDF4 handler with special features for
+	NASA HDFEOS data files. The modifications were made by The HDF
+	Group in conjunction with opendap, inc. The handler will work as
+	before on regular files - see the README and INSTALL files for
+	information regarding enabling these new features.
+
+	A    http://scm.opendap.org/svn/tags/hdf4_handler/3.7.15
+
+2009-09-25  James Gallagher <jgallagher@opendap.org>
+
+	It just seems right to save things at this point. Most of the
+	configure.ac files have been updated. The libdap software has had
+	a number of the FILE* methods/functions commented out using #if
+	FILE_METHODS and then #undef FILE_METHODS. We'll see how much of
+	the redundant code can be removed before the next Hyrax 1.6
+	release.
+
+2009-09-08  hyoklee
+
+	Added more CF rules for 2-D swath. 1) Check for duplicate units
+	for lat/lon 2) Along_swath_lines_500m 3) Generation of coordinates
+	for each variable
+
+2009-09-04  Patrick West <pwest@ucar.edu>
+
+	Removed the use of ErrMsgT, replacing with BESLog. Error messages
+	do not print to stderr any longer.
+	
+	M    dhdferr.cc
+	M    hdfclass/hcerr.cc
+	M    hdfclass/sds.cc
+	M    HDFEOS2Array2D.cc
+	M    HDFEOS2Array.cc
+	M    HDFSequence.cc
+	M    HDFEOSGrid.cc
+	M    HDFEOSArray.cc
+	M    HDFGrid.cc
+	M    HDFStructure.cc
+
+2009-08-31  Patrick West <pwest@ucar.edu>
+
+	changed path variables to use during autotest
+
+2009-08-31  Patrick West <pwest@ucar.edu>
+
+	changed include of cgi_util to mime_util and removed include where
+	not needed
+
+2009-08-30  Patrick West <pwest@ucar.edu>
+
+	Removed server 3 app from spec file
+	
+	M    hdf4_handler.spec
+
+2009-08-27  Patrick West <pwest@ucar.edu>
+
+	removed server 3 cgi build
+	
+	M    configure.ac
+	D    hdf_handler.cc
+	M    bes-testsuite/Makefile.am
+	M    Makefile.am
+
+2009-08-27  hyoklee
+
+	2-D projection Latitude and Longitude dataset attributes are
+	renamed to lat and lon so that FillValue can appear in the right
+	location. Therefore, the output will be consistent with DDS
+	output. 1-D case doesn't apply because Grid case uses XDim and
+	YDim and they are constructed values from StructMetadata.
+
+2009-08-27  hyoklee
+
+	Fixed a critical bug for handling Swath under Hyrax using HDF-EOS2
+	library.
+
+2009-08-23  Patrick West <pwest@ucar.edu>
+
+	Added ; after each BESDEBUG statement
+
+2009-08-19  hyoklee
+
+	Replaced 4 backslash characters into 2. Unlike in DejaGNU expect,
+	you don't need to escape twice for the backslash character in GNU
+	autotest.
+
+2009-08-19  hyoklee
+
+	Corrected a typo that caused a test failure.
+
+2009-08-19  James Gallagher <jgallagher@opendap.org>
+
+	deleted generated files
+
+2009-08-19  James Gallagher <jgallagher@opendap.org>
+
+	Deleted generated files
+
+2009-08-18  James Gallagher <jgallagher@opendap.org>
+
+	Merged the 1.5.2 branch back to this trunk - and there were some
+	significant hcanges on the trunk.
+
+	_M   .
+	M    hdfeos.y
+	M    configure.ac
+	M    NEWS
+	M    eosdas-test.cc
+	M    ChangeLog
+	M    hdfeos.lex
+	M    hdf4_handler.spec
+	M    conf/depcomp
+	M    conf/missing
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/ltmain.sh
+	M    conf/install-sh
+	M    bes-testsuite/Makefile.am
+	M    INSTALL
+	M    HDF4RequestHandler.cc
+	M    README
+	M    hdf-testfiles/README
+	M    Makefile.am
+
+2009-08-18  Patrick West <pwest@ucar.edu>
+
+	DAP Macro changes
+
+2009-08-17  James Gallagher <jgallagher@opendap.org>
+
+	Removed
+
+	D    hdf-testsuite
+
+2009-08-17  James Gallagher <jgallagher@opendap.org>
+
+	Added. Moved the dejagnu tests here to use atuotest
+
+	A    h4/testsds1.hdf.dds.bescmd
+	A    h4/testvs2.hdf.dds.bescmd
+	A    h4/testdfr1.hdf.data.bescmd.baseline
+	A    h4/GridFile.hdf.das.bescmd
+	A    h4/GridFile.hdf.dds.bescmd
+	A    h4/testgr2.hdf.das.bescmd
+	A    h4/testvs1.hdf.data1.bescmd~
+	A    h4/testsds1.hdf.data.bescmd.baseline
+	A    h4/testgr2.hdf.dds.bescmd
+	A    h4/testvs2.hdf.data.bescmd.baseline
+	A    h4/testdfr1.hdf.data.bescmd
+	A    h4/testsds3.hdf.data1.bescmd
+	A    h4/testdfr2.hdf.data.bescmd
+	A    h4/testdfr3.hdf.data.bescmd
+	A    h4/testvs1.hdf.das.bescmd
+	A    h4/testgr1.hdf.data1.bescmd~
+	A    h4/testvs1.hdf.dds.bescmd
+	A    h4/PointFile.hdf.dds.bescmd.baseline
+	A    h4/testdfr1.hdf.das.bescmd.baseline
+	A    h4/testgr2.hdf.data.bescmd.baseline
+	A    h4/testdfr2.hdf.das.bescmd.baseline
+	A    h4/testdfr3.hdf.das.bescmd.baseline
+	A    h4/testdfr2.hdf.data.bescmd.baseline
+	A    h4/testsds3.hdf.data1.bescmd.baseline
+	A    h4/testgr1.hdf.das.bescmd
+	A    h4/testgr1.hdf.dds.bescmd
+	A    h4/testvs3.hdf.data.bescmd.baseline
+	A    h4/testdfr3.hdf.das.bescmd
+	A    h4/testsds2.hdf.data.bescmd.baseline
+	A    h4/testdfr3.hdf.dds.bescmd
+	A    h4/GridFile.hdf.dds.bescmd.baseline
+	A    h4/PointFile.hdf.data.bescmd.baseline
+	A    h4/testgr3.hdf.data.bescmd.baseline
+	A    h4/testdfp1.hdf.dds.bescmd.baseline
+	A    h4/testsds7.hdf.das.bescmd
+	A    h4/testdfr3.hdf.data.bescmd.baseline
+	A    h4/testsds7.hdf.dds.bescmd
+	A    h4/testsds1.hdf.data1.bescmd~
+	A    h4/testdfr2.hdf.das.bescmd
+	A    h4/testsds3.hdf.data.bescmd.baseline
+	A    h4/testvs4.hdf.data.bescmd.baseline
+	A    h4/testdfr2.hdf.dds.bescmd
+	A    h4/testvs1.hdf.data.bescmd
+	A    h4/testsds1.hdf.data.bescmd
+	A    h4/testvs2.hdf.data.bescmd
+	A    h4/testsds2.hdf.data.bescmd
+	A    h4/testvs1.hdf.data1.bescmd.baseline
+	A    h4/testvs3.hdf.data.bescmd
+	A    h4/testsds3.hdf.data.bescmd
+	A    h4/testvs4.hdf.data.bescmd
+	A    h4/testsds6.hdf.das.bescmd
+	A    h4/testsds4.hdf.data.bescmd
+	A    h4/testan1.hdf.das.bescmd
+	A    h4/testgr4.hdf.data.bescmd.baseline
+	A    h4/testvs5.hdf.data.bescmd
+	A    h4/testsds5.hdf.data.bescmd
+	A    h4/testan1.hdf.data.bescmd
+	A    h4/testsds6.hdf.data.bescmd
+	A    h4/testan1.hdf.dds.bescmd
+	A    h4/testsds6.hdf.dds.bescmd
+	A    h4/testsds7.hdf.data.bescmd
+	A    h4/SwathFile.hdf.data.bescmd
+	A    h4/PointFile.hdf.das.bescmd
+	A    h4/testdfp1.hdf.das.bescmd
+	A    h4/testvs1.hdf.das.bescmd.baseline
+	A    h4/testvs2.hdf.das.bescmd.baseline
+	A    h4/testsds1.hdf.das.bescmd.baseline
+	A    h4/testgr1.hdf.data.bescmd
+	A    h4/testvs3.hdf.das.bescmd.baseline
+	A    h4/testdfr1.hdf.das.bescmd
+	A    h4/testsds2.hdf.das.bescmd.baseline
+	A    h4/testsds1.hdf.dds.bescmd.baseline~
+	A    h4/PointFile.hdf.dds.bescmd
+	A    h4/testgr2.hdf.data.bescmd
+	A    h4/testvs4.hdf.das.bescmd.baseline
+	A    h4/testsds3.hdf.das.bescmd.baseline
+	A    h4/testdfp1.hdf.dds.bescmd
+	A    h4/testgr3.hdf.data.bescmd
+	A    h4/testgr1.hdf.data1.bescmd.baseline
+	A    h4/testvs5.hdf.das.bescmd.baseline
+	A    h4/testgr4.hdf.data.bescmd
+	A    h4/testsds4.hdf.das.bescmd.baseline
+	A    h4/testsds5.hdf.das.bescmd.baseline
+	A    h4/testdfr1.hdf.dds.bescmd
+	A    h4/testgr5.hdf.data.bescmd
+	A    h4/testvs5.hdf.data.bescmd.baseline
+	A    h4/testan1.hdf.das.bescmd.baseline
+	A    h4/testsds4.hdf.data.bescmd.baseline
+	A    h4/testsds6.hdf.das.bescmd.baseline
+	A    h4/testsds7.hdf.das.bescmd.baseline
+	A    h4/SwathFile.hdf.das.bescmd.baseline
+	A    h4/testgr1.hdf.das.bescmd.baseline
+	A    h4/testgr2.hdf.das.bescmd.baseline
+	A    h4/testgr3.hdf.das.bescmd.baseline
+	A    h4/testdfp1.hdf.data.bescmd.baseline
+	A    h4/testgr4.hdf.das.bescmd.baseline
+	A    h4/testgr5.hdf.das.bescmd.baseline
+	A    h4/testsds5.hdf.das.bescmd
+	A    h4/testdfr1.hdf.dds.bescmd.baseline
+	A    h4/testgr5.hdf.data.bescmd.baseline
+	A    h4/testdfr2.hdf.dds.bescmd.baseline
+	A    h4/testsds5.hdf.dds.bescmd
+	A    h4/testdfr3.hdf.dds.bescmd.baseline
+	A    h4/SwathFile.hdf.das.bescmd
+	A    h4/SwathFile.hdf.dds.bescmd
+	A    h4/testsds5.hdf.data.bescmd.baseline
+	A    h4/SwathFile.hdf.data.bescmd.baseline
+	A    h4/testsds4.hdf.das.bescmd
+	A    h4/testvs5.hdf.das.bescmd
+	A    h4/testsds1.hdf.data1.bescmd.baseline
+	A    h4/testsds4.hdf.dds.bescmd
+	A    h4/testvs5.hdf.dds.bescmd
+	A    h4/PointFile.hdf.data.bescmd
+	A    h4/testvs1.hdf.data1.bescmd
+	A    h4/testgr5.hdf.das.bescmd
+	A    h4/testgr5.hdf.dds.bescmd
+	A    h4/testan1.hdf.data.bescmd.baseline
+	A    h4/testsds6.hdf.data.bescmd.baseline
+	A    h4/PointFile.hdf.das.bescmd.baseline
+	A    h4/testgr1.hdf.data1.bescmd
+	A    h4/testvs4.hdf.das.bescmd
+	A    h4/testsds3.hdf.das.bescmd
+	A    h4/testvs4.hdf.dds.bescmd
+	A    h4/testsds3.hdf.dds.bescmd
+	A    h4/GridFile.hdf.data.bescmd
+	A    h4/testgr4.hdf.das.bescmd
+	A    h4/testdfp1.hdf.data.bescmd
+	A    h4/testsds3.hdf.data1.bescmd~
+	A    h4/testsds1.hdf.data1.bescmd
+	A    h4/testvs1.hdf.dds.bescmd.baseline
+	A    h4/testsds1.hdf.dds.bescmd.baseline
+	A    h4/testvs2.hdf.dds.bescmd.baseline
+	A    h4/testsds2.hdf.dds.bescmd.baseline
+	A    h4/testgr4.hdf.dds.bescmd
+	A    h4/testvs3.hdf.dds.bescmd.baseline
+	A    h4/testsds3.hdf.dds.bescmd.baseline
+	A    h4/testvs4.hdf.dds.bescmd.baseline
+	A    h4/testsds4.hdf.dds.bescmd.baseline
+	A    h4/testvs5.hdf.dds.bescmd.baseline
+	A    h4/testsds5.hdf.dds.bescmd.baseline
+	A    h4/testsds6.hdf.dds.bescmd.baseline
+	A    h4/testsds7.hdf.data.bescmd.baseline
+	A    h4/testan1.hdf.dds.bescmd.baseline
+	A    h4/testsds7.hdf.dds.bescmd.baseline
+	A    h4/GridFile.hdf.das.bescmd.baseline
+	A    h4/GridFile.hdf.data.bescmd.baseline
+	A    h4/SwathFile.hdf.dds.bescmd.baseline
+	A    h4/testdfp1.hdf.das.bescmd.baseline
+	A    h4/testsds2.hdf.das.bescmd
+	A    h4/testvs3.hdf.das.bescmd
+	A    h4/testgr1.hdf.dds.bescmd.baseline
+	A    h4/testsds2.hdf.dds.bescmd
+	A    h4/testgr2.hdf.dds.bescmd.baseline
+	A    h4/testvs3.hdf.dds.bescmd
+	A    h4/testgr3.hdf.dds.bescmd.baseline
+	A    h4/testgr4.hdf.dds.bescmd.baseline
+	A    h4/testgr5.hdf.dds.bescmd.baseline
+	A    h4/testgr3.hdf.das.bescmd
+	A    h4/testvs1.hdf.data.bescmd.baseline
+	A    h4/testgr3.hdf.dds.bescmd
+	A    h4/testsds1.hdf.das.bescmd
+	A    h4/testvs2.hdf.das.bescmd
+	A    h4/testgr1.hdf.data.bescmd.baseline
+
+2009-08-10  James Gallagher <jgallagher@opendap.org>
+
+	Test migration complete. The dejagnu tests are still in svn, but
+	they are no longer used. TODO: remove them and stop building the
+	dap_hdf4_handler exec.
+
+	M    Makefile.am
+
+2009-08-10  James Gallagher <jgallagher@opendap.org>
+
+	More test migration...
+
+	D    bes-testsuite/h4_original_tests
+	D    bes-testsuite/config
+	D    bes-testsuite/old_dejagnu_tests
+
+2009-08-10  James Gallagher <jgallagher@opendap.org>
+
+	Test migration: dejagnu --> autotest
+
+	A    bes-testsuite/h4_original_tests
+	D    bes-testsuite/common_tests.exp
+	M    bes-testsuite/hdf4_handlerTest.at
+	D    bes-testsuite/besstandalone.h4
+	A    bes-testsuite/old_dejagnu_tests
+	A  + bes-testsuite/old_dejagnu_tests/common_tests.exp
+	A  + bes-testsuite/old_dejagnu_tests/besstandalone.h4
+
+2009-08-07  hyoklee
+
+	Corrected the use of wrong map in get_EOS_name() function.
+
+2009-08-07  hyoklee
+
+	Removed clearning CF map from reset() function to generate the CF compilant output for HDF-EOS2 Grids. This change is necessary because James moved the CF map variable declaration into HDFEOS constructor.
+
+2009-08-07  James Gallagher <jgallagher@opendap.org>
+
+	Edited HDFEOS.cc so that get_CF_name and get_EOS_name only use the special
+	'swath' mapping when USE_HDFEOS2_LIB is defined.
+
+2009-08-07  James Gallagher <jgallagher@opendap.org>
+
+	I added a reset of the _file_id field in _init() since this is called after
+	close() and close() tests the value of _file_id before it calls Hclose.
+	Ticket 1360 indicates that with --enable-cf and --with-hdfeos2 are used
+	HClose is being called in situations where the file might already be closed.
+
+	M    annot.cc
+
+2009-08-07  James Gallagher <jgallagher@opendap.org>
+
+	Updates for char * fixes from a build on FC 8.
+
+	M    hdfdesc.cc
+	M    HDFEOS.h
+	M    conf/depcomp
+	M    conf/missing
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/ltmain.sh
+	M    conf/install-sh
+	M    INSTALL
+	M    HDFEOS2.cc
+
+2009-08-07  James Gallagher <jgallagher@opendap.org>
+
+	Fixed another goof from Eclipse's find/replace.
+
+2009-08-06  James Gallagher <jgallagher@opendap.org>
+
+	Eh. Fixed char* parameters that eclipse's find/replace removed. Emacs, should
+	have used emacs...
+
+	M    HDFEOS.cc
+	M    HDFEOS2.cc
+
+2009-08-06  James Gallagher <jgallagher@opendap.org>
+
+	Fixed memory leaks: There was one call in hc2dap.cc where the BaseType *
+	passed to add_var was not freed. Also, there was a call to
+	hdfeos2_scan_string and than sort of call (to one of lex's helper functions)
+	must be followed by a call to free the buffer state object. I added a short
+	glue function to hdfeos2.lex (hdfeos2_delete_buffer) and then used that in
+	HDFEOS.cc.
+
+	M    hdfeos2.lex
+	M    hc2dap.cc
+	M    HDFEOS.cc
+
+2009-08-06  James Gallagher <jgallagher@opendap.org>
+
+	Removed original implementations of the get_CF_name() and related methods.
+
+	M    HDFCFSwath.cc
+	M    HDFEOS.h
+	M    HDFEOS.cc
+
+2009-08-06  James Gallagher <jgallagher@opendap.org>
+
+	I modified the way the HDFEOS class (and HDFCFSwath class) handled mapping
+	names found in a HDF4 file to the CF namespace. This fixes the errors
+	valgrind reports as shown in ticket 1356. The old code is commented out using
+	#if 0 ... #endif, but will be removed in the next commit. Memory leaks still
+	exist.
+
+	M    HDFCFSwath.cc
+	M    hc2dap.cc
+	M    HDFEOS.h
+	M    HDFEOS.cc
+	M    HDFCFSwath.h
+	M    HDFEOS2.cc
+
+2009-08-05  James Gallagher <jgallagher@opendap.org>
+
+	Replaced delete with delete[] as indicated by valgrind. Also changed the
+	way get_CF_name() uses its map<string,string> object. I think the
+	construction of that map should be moved to the HDFEOS object ctor.
+
+	M    HDFEOS.h
+	M    HDFEOS.cc
+
+2009-08-05  James Gallagher <jgallagher@opendap.org>
+
+	Added headers needed for auto_ptr with gcc 4.4
+
+	M    HDFEOS.h
+
+2009-08-05  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for gcc 4.4/fc-11
+
+	M    hdfeos.y
+	M    HDFCFSwath.cc
+	M    eosdas-test.cc
+	M    conf/depcomp
+	M    conf/missing
+	M    conf/config.guess
+	M    conf/config.sub
+	M    conf/ltmain.sh
+	M    conf/install-sh
+	M    HDFEOS.cc
+	M    hdfeos2.y
+	M    HDF4RequestHandler.cc
+
+2009-07-23  hyoklee
+
+	Cleaned up codes and added copyright notice.
+
+2009-07-21  hyoklee
+
+	Limitation is documented.
+
+2009-07-17  hyoklee
+
+	INSTALL, README, ChangeLog files are updated for a new release.
+
+2009-07-16  hyoklee
+
+	Commented the enhanced parts of source codes.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 
 2009-07-17  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 	
