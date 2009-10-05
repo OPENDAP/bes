@@ -1,6 +1,15 @@
 
 $Id$
 
+Version 3.7.15 (5 Oct 2009)
+
+This version builds with the Hyrax 1.5.x libdap & bes and contains
+special tests for HDF-EOS2 files. To use these options, or rather, to
+build the handler so they are supported, use the --enable-cf and
+--with-hdfeos2=<path to library> options to configure. In other words,
+these options require that you not only have hdf4 present but that you
+have the hdfeos2 library as well.
+
 Version 3.7.14 (9 June 2009)
 
 Fix for the tests - missing baseline file.
