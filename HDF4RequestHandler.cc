@@ -33,10 +33,7 @@
 
 #include "HDF4RequestHandler.h"
 #include <BESResponseNames.h>
-#if 0
-// Removed for the build against libdap 3.9.3 and bes 3.7.2
 #include <BESDapNames.h>
-#endif
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>
 #include <BESDataDDSResponse.h>
