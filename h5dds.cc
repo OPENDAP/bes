@@ -975,7 +975,7 @@ string get_short_name(string varname)
 {
   if(varname.find("/HDF4_DIMGROUP/") != string::npos)
     {
-      return get_short_name_dimscale(varname);
+        return get_short_name_dimscale(varname);
     }
 
 #ifdef CF

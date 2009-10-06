@@ -128,6 +128,12 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 add_group_structure_info(das, gname, oname, true);
 #endif
                 string full_path_name = string(gname) + string(oname) + "/";
+                // Check if it is converted from h4toh5 tool and has dimension scale.
+                if(full_path_name.find("/HDF4_DIMGROUP/") != string::npos)
+                    {
+                        has_hdf4_dimgroup = true;
+                    }
+                
                 hid_t cgroup = H5Gopen(pid, full_path_name.c_str());
 
                 if (cgroup < 0) {
@@ -144,6 +150,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 }
 
                 string oid = get_hardlink(cgroup, full_path_name.c_str());
+
 #ifndef CF
                 read_objects(das, full_path_name.c_str(), cgroup, num_attr);
 #endif
@@ -556,12 +563,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Rewrote to use C++ strings 3/2008 jhrg
     string newname;
 
-#ifdef CF    
-    newname = eos.get_short_name(varname);
-    if(newname == ""){
-        newname = varname;
-    }
-#else
     if(!has_hdf4_dimgroup){
         newname = get_short_name(varname);
     }
@@ -570,13 +571,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         // in variable name.
         newname = get_short_name_dimscale(varname); 
     }
+    
     if(newname.empty()){	  
-        // This file must be converted by h4toh5 tool.             
-        has_hdf4_dimgroup = true; 
         return; // Ignore attribute generation for /HDF4_DIMGROUP/.
     }
-    //newname = varname;
-#endif
+    
     DBG(cerr << "=read_objects(): new variable name=" << newname << endl);
     
     AttrTable *attr_table_ptr = das.get_table(newname);
