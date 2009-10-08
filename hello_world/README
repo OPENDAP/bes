@@ -51,18 +51,15 @@ starts correctly it should print something like the following to stdout:
     PID: <process_id> UID: <uid of process>
 
 Go back to your first window and run the bescmdln program. Use the -h (host)
-and -p (port) switches to tell it how to connect to the BES.
+and -p (port) switches to tell it how to connect to the BES. And use the
+-i option to tell the command line client what command file to use. All
+requests to the BES are in XML format. The bescmdln does have built-in
+string commands for the built-in requests (set container, define, get,
+etc...) but not for new commands like this. So we need to use a file
+that has the XML document in it.
 
-    [jimg@zoe bin]$ bescmdln -p 10002 -h localhost
+    [jimg@zoe bin]$ bescmdln -p 10002 -h localhost -i bes-testsuite/hello/hello.bescmd
 
-    Type 'exit' to exit the command line client and 'help' or '?' to display
-    the help screen
-
-    BESClient>
-
-Try the new command
-
-    BESClient> say hello to world;
     <say>
 	<response>
 
@@ -70,14 +67,6 @@ Try the new command
 
 	</response>
     </say>
-    OPeNDAPClient>
-
-Note that all commands must end with a semicolon except 'exit'.
-
-Now type exit to exit the command line client.
-
-    BESClient> exit
-    [jimg@zoe bin]$
 
 To stop the BES use the bes control script with the stop option:
 
