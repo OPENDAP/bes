@@ -77,7 +77,7 @@ endif
 
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
-	hdf-dods.h hdf-maps.h config_hdf.h 
+	hdf-dods.h hdf-maps.h config_hdf.h HDFEOS.h
 
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
