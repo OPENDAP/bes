@@ -658,7 +658,13 @@ bool HDF5Array::read() {
         return m_array_of_structure();
     }
 
-    if (get_dap_type(d_ty_id) == "Array") {
+    // This "Array" datatype is the HDF5 "Array" datatype. It should not be confused 
+    // as the normal DAP way to handle a data array although essentially it is doing the same thing.
+    // If the "Array" datatype is never defined, this part of the code will never be executed.
+    // HDF5 "Array" datatype is  defined inside an HDF5 compound datatype for very
+    // rare cases. It means that this part of code  may never be used by most (99.9%) applications. 
+    //  Kyang 2009/11/23
+    if (get_dap_type(d_ty_id) == "Array") { 
         return m_array_in_structure();
     }
 
