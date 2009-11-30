@@ -1,3 +1,26 @@
+// This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
+// data server.
+
+// Copyright (c) 2007, 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+//
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
+//
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// You can contact The HDF Group, Inc. at 1901 South First Street,
+// Suite C-2, Champaign, IL 61820  
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5dds.cc
 /// \brief DDS/DODS request processing source
@@ -6,16 +29,11 @@
 /// handler for HDF5 data.
 ///
 /// This file contains functions which use depth-first search to walk through
-/// an HDF5 file and build the in-memeory DDS.
+/// an HDF5 file and build the in-memory DDS.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang    <myang6@hdfgroup.org>
 ///
-/// Copyright (c) 2007-2009 The HDF Group
-///
-/// Copyright (c) 1999 National Center for Supercomputing Applications
-/// 
-/// All rights reserved.
 
 #include "config_hdf5.h"
 
