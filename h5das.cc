@@ -502,7 +502,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             }
         }
 
-        if (varname.find("Coremetadata") != string::npos) {
+        if (varname.find("CoreMetadata") != string::npos) {
             if (!eos.bmetadata_Core) {
                 eos.bmetadata_core = true;
                 AttrTable *at = das.get_table(varname);
