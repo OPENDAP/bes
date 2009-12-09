@@ -89,8 +89,11 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     try {
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
         DAS *das = bdas->get_das();
+
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
+        close_fileid(file1);
+
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         bdas->clear_container() ;
@@ -145,6 +148,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
+        close_fileid(file1);
 
         Ancillary::read_ancillary_das( *das, filename ) ;
 
@@ -204,6 +208,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         find_gloattr(file1, *das);
         depth_first(file1, "/", *das);
+        close_fileid(file1);
 
         Ancillary::read_ancillary_das( *das, filename ) ;
 

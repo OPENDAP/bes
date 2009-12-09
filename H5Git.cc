@@ -255,6 +255,23 @@ hid_t get_fileid(const char *filename)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \fn close_fileid(hid_t fid)
+/// closes HDF5 file reffered by \a fid.
+/// 
+/// This function closes the HDF5 file.
+///
+/// \param fid HDF5 file id
+/// \return throws an error if it can't close the file.
+///////////////////////////////////////////////////////////////////////////////
+void close_fileid(hid_t fid)
+{
+    if (H5Fclose(fid) < 0)
+        throw Error(unknown_error,
+                    string("Could not close the HDF5 file."));
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// obtain data information in a dataset datatype, dataspace(dimension sizes)
 /// and number of dimensions and put these information into a pointer of data

@@ -37,6 +37,9 @@
 int
 check_h5str(hid_t);
 
+void 
+close_fileid(hid_t fid);
+
 char*
 correct_name(char *);
 
