@@ -30,7 +30,7 @@
 #include <string>
 #include <H5Ipublic.h>
 #include "Structure.h"
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 

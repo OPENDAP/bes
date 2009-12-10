@@ -32,7 +32,7 @@
 #include <string.h>
 #include <H5Ipublic.h>
 #include "Int16.h"
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 

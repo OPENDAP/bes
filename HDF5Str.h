@@ -41,7 +41,7 @@
 #endif
 
 #include "Str.h"
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 

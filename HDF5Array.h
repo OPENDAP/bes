@@ -31,7 +31,7 @@
 #include <H5Rpublic.h>
 
 #include "Array.h"
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 

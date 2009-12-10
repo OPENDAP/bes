@@ -55,7 +55,7 @@
 #include "mime_util.h"
 #include "h5das.h"
 #include "h5dds.h"
-#include "H5Git.h"              
+#include "h5get.h"              
 #include "H5EOS.h"             
 
 using namespace libdap;

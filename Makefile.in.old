@@ -257,7 +257,7 @@ H5Git.o: H5Git.c /usr/local/hdf5/include/hdf5.h \
   /usr/local/hdf5/include/H5FDgass.h /usr/local/hdf5/include/H5FDdpss.h \
   /usr/local/hdf5/include/H5FDstream.h \
   /usr/local/hdf5/include/H5FDmulti.h /usr/local/hdf5/include/H5FDlog.h \
-  H5Git.h common.h
+  h5get.h common.h
 HDF5Array.o: HDF5Array.cc config_hdf5.h ../../include/Error.h \
   ../../include/InternalErr.h HDF5Array.h \
   /usr/local/hdf5/include/H5Ipublic.h /usr/local/hdf5/include/H5public.h \

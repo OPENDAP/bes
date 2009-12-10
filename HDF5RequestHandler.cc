@@ -48,7 +48,7 @@
 #include <BESDapError.h>
 #include <BESNotFoundError.h>
 #include <BESInternalFatalError.h>
-#include "H5Git.h"
+#include "h5get.h"
 
 #define HDF5_NAME "h5"
 

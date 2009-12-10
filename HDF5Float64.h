@@ -33,7 +33,7 @@
 #include <H5Ipublic.h>
 
 #include "Float64.h"
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 

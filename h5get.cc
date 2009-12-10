@@ -22,7 +22,7 @@
 // Suite C-2, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \file H5Git.cc
+/// \file h5get.cc
 ///  iterates all HDF5 internals.
 /// 
 ///  This file includes all the routines to search HDF5 group, dataset, links,
@@ -34,7 +34,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "H5Git.h"
+#include "h5get.h"
 
 using namespace libdap;
 
