@@ -1,3 +1,7 @@
+2009-12-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h5_handler.h is renamed to hdf5_handler.h and is cleaned-up.
+
 2009-10-02  H. Joe Lee  <hyoklee@hdfgroup.org>
 
 	Added support for HDF5 dimension scale.

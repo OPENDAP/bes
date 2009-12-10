@@ -22,36 +22,19 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \mainpage
 /// 
 /// \section Introduction
-/// This is the OPeNDAP HDF5 server which extracts DAS/DDS/DODS information from
-/// a hdf5 data file. 
-///
-/// \section Usage
-///
-/// dap_h5_handler -o \<response\> -u \<url\> [options ...] [data set]
-///
-/// options:
-///       -  -o \<response\>: DAS, DDS, DataDDS, DDX, BLOB or Version (Required)
-///       -  -u \<url\>: The complete URL minus the CE (required for DDX)
-///       -  -c: Compress the response using the deflate algorithm.
-///       -  -e \<expr\>: When returning a DataDDS, use \<expr\> as the constraint.
-///       -  -v \<version\>: Use \<version\> as the version number
-///       -  -d \<dir\>: Look for ancillary file in \<dir\> (deprecated).
-///       -  -f \<file\>: Look for ancillary data in \<file\> (deprecated).
-///       -  -r \<dir\>: Use \<dir\> as a cache directory
-///       -  -l \<time\>: Conditional request; if data source is unchanged since
-///                    \<time\>, return an HTTP 304 response.
-///       -  -t \<seconds\>: Timeout the handler after \<seconds\>.
+/// This is the OPeNDAP HDF5 server which extracts DAS/DDS/DODS information
+/// from an hdf5 data file. 
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \file h5_handler.h
 /// \brief The main header of HDF5 OPeNDAP handler
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 #include "config_hdf5.h"
 
 #include <stdio.h>
