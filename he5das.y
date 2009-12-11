@@ -23,7 +23,7 @@
    Grammar for the HDF-EOS StructMetadata attribute.
    This grammar can be used with the bison parser
    generator to build a parser for the DAS. It assumes that a scanner called
-   `hdfeoslex()' exists and that the objects DAS and AttrTable also exist.
+   `he5ddslex()' exists and that the objects DAS and AttrTable also exist.
 
    jeh 6/19/1998
 */
@@ -49,7 +49,7 @@ using namespace std;
 #include "Error.h"
 #include "debug.h"
 #include "parser.h"
-#include "hdfeos_das.tab.hh"
+#include "he5das.tab.hh"
 #define YYDEBUG 1
 #define TRACE_new
 
@@ -70,7 +70,7 @@ using namespace libdap ;
 
 #define YYPARSE_PARAM arg
 
-extern int hdfeos_line_num;	/* defined in hdfeos.lex */
+extern int he5dds_line_num;	/* defined in he5dds.lex */
 
 static string name;	/* holds name in attr_pair rule */
 static string type;	/* holds type in attr_pair rule */
@@ -95,8 +95,8 @@ static char *NO_DAS_MSG =
 Check that the URL is correct.";
 
 void mem_list_report();
-int hdfeos_daslex(void);
-void hdfeos_daserror(char *s);
+int he5daslex(void);
+void he5daserror(char *s);
 static void process_group(parser_arg *arg, const string &s);
 
 %}
@@ -418,13 +418,13 @@ strs:		STR
 // reporting mechanism.
 
 void
-hdfeos_daserror(char *s)
+he5daserror(char *s)
 {
   cerr << s << endl;
 }
 
 // I wrote this because I thought at one point that it was the solution to 
-// having some of the libdap methods change out from under the hdfeos code
+// having some of the libdap methods change out from under the he5dds code
 // here. In the end, I added a new find methof to the AttrTable class that 
 // doesn't require FQNs for th paths. (see AttrTable::recurrsive_find)
 static string

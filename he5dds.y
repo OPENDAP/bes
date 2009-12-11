@@ -16,12 +16,12 @@
 
 using namespace std;
 
-#include "hdfeos.tab.hh"
+#include "he5dds.tab.hh"
 #include "HE5Parser.h"
  
 #define YYPARSE_PARAM he5parser
 
-extern int yy_line_num;	// defined in hdfeos.lex 
+extern int yy_line_num;	// defined in he5dds.lex 
 
 static int parser_state = 0; // parser state 
 bool valid_projection = false;
@@ -39,8 +39,8 @@ string dimension_name = "";
 #define TYPE_NAME_VALUE(x) type << " " << name << " " << (x)
 
 void mem_list_report();
-int  hdfeoslex(void);
-void hdfeoserror(char *s);
+int  he5ddslex(void);
+void he5ddserror(char *s);
 
 
 %}
@@ -348,7 +348,7 @@ PROJECTION '=' STR
 // reporting mechanism.
 
 void
-hdfeoserror(char *s)
+he5ddserror(char *s)
 {
 	cout << "ERROR: " << s << endl;
 }

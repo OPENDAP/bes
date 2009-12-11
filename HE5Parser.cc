@@ -33,9 +33,9 @@ extern bool grid_structure_found;
 
 struct yy_buffer_state;
 
-int              hdfeoslex();
-int              hdfeosparse(void *arg);
-yy_buffer_state *hdfeos_scan_string(const char *str);
+int              he5ddslex();
+int              he5ddsparse(void *arg);
+yy_buffer_state *he5dds_scan_string(const char *str);
 
 
 HE5Parser::HE5Parser()
@@ -149,8 +149,8 @@ bool HE5Parser::check_eos(hid_t id)
         }
 
         if (_valid) {
-            hdfeos_scan_string(metadata_Struct);
-            hdfeosparse(this);
+            he5dds_scan_string(metadata_Struct);
+            he5ddsparse(this);
 #ifdef NASA_EOS_META
             set_metadata(id, "coremetadata", metadata_core);
             if(string(metadata_core).find("\"TES\"") != string::npos){

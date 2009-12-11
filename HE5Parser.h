@@ -51,7 +51,7 @@
 #include <debug.h>
 #include <util.h>
 #include <Array.h>
-#include "hdfeos.tab.hh"
+#include "he5dds.tab.hh"
 #include "HE5CF.h"
 
 using namespace std;
@@ -73,9 +73,7 @@ private:
 
     bool TES;
     bool _valid;
-    hid_t hid_hdfeos_information;
     
-    // 
     map < string, int > dimension_map;
     map < string, string > full_data_path_to_dimension_list_map;
 

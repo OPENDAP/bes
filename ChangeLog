@@ -1,5 +1,7 @@
 2009-12-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
-	
+
+	* hdfeos_das.lex/y is renamed to he5das.lex/y 
+	* hdfeos.lex/y is renamed to he5dds.lex/y 
 	* H5EOS.h/cc is renamed to HE5Parser.h/cc.
 	* H5CF.h/cc is renamed to HE5CF.h/cc.
 	* H5ShortName.h/cc is renamed to HE5ShortName.h/cc.

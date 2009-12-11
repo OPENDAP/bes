@@ -34,10 +34,10 @@
    scanners.
    
    Note:
-   1) The `defines' file hdfeos.tab.h is built using `bison -d'.
-   2) Define YY_DECL such that the scanner is called `hdfeoslex'.
-   3) When bison builds the hdfeos.tab.h file, it uses `hdfeos' instead of `yy' for
-   variable name prefixes (e.g., yylval --> hdfeoslval).
+   1) The `defines' file he5dds.tab.h is built using `bison -d'.
+   2) Define YY_DECL such that the scanner is called `he5ddslex'.
+   3) When bison builds the he5dds.tab.h file, it uses `he5dds' instead of `yy' for
+   variable name prefixes (e.g., yylval --> he5ddslval).
    4) The quote stuff is very complicated because we want backslash (\)
    escapes to work and because we want line counts to work too. In order to
    properly scan a quoted string two C functions are used: one to remove the
@@ -60,19 +60,19 @@
 #endif
 
 #define YYSTYPE char *
-#define YY_DECL int hdfeos_daslex YY_PROTO(( void ))
+#define YY_DECL int he5daslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
   
-#include "hdfeos_das.tab.hh"
+#include "he5das.tab.hh"
 
-int hdfeos_line_num = 1;
+int he5dds_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */
 
 %}
     
 %option noyywrap
-%option prefix="hdfeos_das"
-%option outfile="lex.hdfeos_das.cc"
+%option prefix="he5das"
+%option outfile="lex.he5das.cc"
 
 %x quote
 %x comment
@@ -97,15 +97,15 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 %%
 
-{GROUP}	    	    	hdfeos_daslval = yytext; return GROUP;
-{END_GROUP}    	    	hdfeos_daslval = yytext; return END_GROUP;
-{OBJECT}    	        hdfeos_daslval = yytext; return OBJECT;
-{END_OBJECT}    	hdfeos_daslval = yytext; return END_OBJECT;
+{GROUP}	    	    	he5daslval = yytext; return GROUP;
+{END_GROUP}    	    	he5daslval = yytext; return END_GROUP;
+{OBJECT}    	        he5daslval = yytext; return OBJECT;
+{END_OBJECT}    	he5daslval = yytext; return END_OBJECT;
 {END}                   /* Ignore */
-{INT}                   hdfeos_daslval = yytext; return INT;
-{FLOAT}                 hdfeos_daslval = yytext; return FLOAT;
+{INT}                   he5daslval = yytext; return INT;
+{FLOAT}                 he5daslval = yytext; return FLOAT;
 {DATA_TYPE}	    	/* Ignore */
-{STR}	    	    	hdfeos_daslval = yytext; return STR;
+{STR}	    	    	he5daslval = yytext; return STR;
 
 "="                     return (int)*yytext;
 "("                     return (int)*yytext;
@@ -114,21 +114,21 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 ";"                     /* Ignore */
 
 [ \t]+
-\n	    	    	++hdfeos_line_num;
-<INITIAL><<EOF>>    	yy_init = 1; hdfeos_line_num = 1; yyterminate();
+\n	    	    	++he5dds_line_num;
+<INITIAL><<EOF>>    	yy_init = 1; he5dds_line_num = 1; yyterminate();
 
-"/*"			BEGIN(comment); start_line = hdfeos_line_num; yymore();
+"/*"			BEGIN(comment); start_line = he5dds_line_num; yymore();
 <comment>"*/"		{ 
     			  BEGIN(INITIAL); 
 
-			  hdfeos_daslval = yytext;
+			  he5daslval = yytext;
 
 			  return COMMENT;
                         }
 <comment>[^"\n\\*]*	yymore();
-<comment>[^"\n\\*]*\n	yymore(); ++hdfeos_line_num;
+<comment>[^"\n\\*]*\n	yymore(); ++he5dds_line_num;
 <comment>\*[^/\n]       yymore();
-<comment>\*\n           yymore(); ++hdfeos_line_num;
+<comment>\*\n           yymore(); ++he5dds_line_num;
 <comment>\\.		yymore();
 <comment><<EOF>>	{
                           char msg[256];
@@ -138,14 +138,14 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 			  YY_FATAL_ERROR(msg);
                         }
 
-\"			BEGIN(quote); start_line = hdfeos_line_num; yymore();
+\"			BEGIN(quote); start_line = he5dds_line_num; yymore();
 <quote>[^"\n\\]*	yymore();
-<quote>[^"\n\\]*\n	yymore(); ++hdfeos_line_num;
+<quote>[^"\n\\]*\n	yymore(); ++he5dds_line_num;
 <quote>\\.		yymore();
 <quote>\"		{ 
     			  BEGIN(INITIAL); 
 
-			  hdfeos_daslval = yytext;
+			  he5daslval = yytext;
 
 			  return STR;
                         }

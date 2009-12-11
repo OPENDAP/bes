@@ -10,10 +10,10 @@
 
   
 #define YYSTYPE char *
-#define YY_DECL int hdfeoslex YY_PROTO(( void ))
+#define YY_DECL int he5ddslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
 
-#include "hdfeos.tab.hh"
+#include "he5dds.tab.hh"
 
 int yy_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */
@@ -21,8 +21,8 @@ static int start_line;		/* used in quote and comment error handlers */
 %}
     
 %option noyywrap
-%option prefix="hdfeos"
-%option outfile="lex.hdfeos.cc"
+%option prefix="he5dds"
+%option outfile="lex.he5dds.cc"
 
 %x quote
 %x comment
@@ -60,28 +60,28 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 %%
 
-{GROUP}	    	    	hdfeoslval = yytext; return GROUP;
-{END_GROUP}    	    	hdfeoslval = yytext; return END_GROUP;
-{OBJECT}    	        hdfeoslval = yytext; return OBJECT;
-{END_OBJECT}    	hdfeoslval = yytext; return END_OBJECT;
+{GROUP}	    	    	he5ddslval = yytext; return GROUP;
+{END_GROUP}    	    	he5ddslval = yytext; return END_GROUP;
+{OBJECT}    	        he5ddslval = yytext; return OBJECT;
+{END_OBJECT}    	he5ddslval = yytext; return END_OBJECT;
 {END}                   /* Ignore */
-{INT}                   hdfeoslval = yytext; return INT;
-{FLOAT}                 hdfeoslval = yytext; return FLOAT;
-{PROJECTION}   	    	hdfeoslval = yytext; return PROJECTION;
-{DATA_TYPE}   	    	hdfeoslval = yytext; return DATA_TYPE;
-{GRID_STRUCTURE}    	hdfeoslval = yytext; return GRID_STRUCTURE;
-{SWATH_STRUCTURE}    	hdfeoslval = yytext; return SWATH_STRUCTURE;
-{HE5_GCTP_GEO} 	    	hdfeoslval = yytext; return HE5_GCTP_GEO;
-{XDIM}	    	    	hdfeoslval = yytext; return XDIM;
-{YDIM}	    	    	hdfeoslval = yytext; return YDIM;
-{GRID_NAME}           	hdfeoslval = yytext; return GRID_NAME;
-{SWATH_NAME}           	hdfeoslval = yytext; return SWATH_NAME;
-{DIMENSION_SIZE} 	hdfeoslval = yytext; return DIMENSION_SIZE;
-{DIMENSION_NAME} 	hdfeoslval = yytext; return DIMENSION_NAME;
-{DIMENSION_LIST} 	hdfeoslval = yytext; return DIMENSION_LIST;
-{DATA_FIELD_NAME} 	hdfeoslval = yytext; return DATA_FIELD_NAME;
-{GEO_FIELD_NAME} 	hdfeoslval = yytext; return GEO_FIELD_NAME;
-{STR}	    	    	hdfeoslval = yytext; return STR;
+{INT}                   he5ddslval = yytext; return INT;
+{FLOAT}                 he5ddslval = yytext; return FLOAT;
+{PROJECTION}   	    	he5ddslval = yytext; return PROJECTION;
+{DATA_TYPE}   	    	he5ddslval = yytext; return DATA_TYPE;
+{GRID_STRUCTURE}    	he5ddslval = yytext; return GRID_STRUCTURE;
+{SWATH_STRUCTURE}    	he5ddslval = yytext; return SWATH_STRUCTURE;
+{HE5_GCTP_GEO} 	    	he5ddslval = yytext; return HE5_GCTP_GEO;
+{XDIM}	    	    	he5ddslval = yytext; return XDIM;
+{YDIM}	    	    	he5ddslval = yytext; return YDIM;
+{GRID_NAME}           	he5ddslval = yytext; return GRID_NAME;
+{SWATH_NAME}           	he5ddslval = yytext; return SWATH_NAME;
+{DIMENSION_SIZE} 	he5ddslval = yytext; return DIMENSION_SIZE;
+{DIMENSION_NAME} 	he5ddslval = yytext; return DIMENSION_NAME;
+{DIMENSION_LIST} 	he5ddslval = yytext; return DIMENSION_LIST;
+{DATA_FIELD_NAME} 	he5ddslval = yytext; return DATA_FIELD_NAME;
+{GEO_FIELD_NAME} 	he5ddslval = yytext; return GEO_FIELD_NAME;
+{STR}	    	    	he5ddslval = yytext; return STR;
 "="                     return (int)*yytext;
 "("                     return (int)*yytext;
 ")"                     return (int)*yytext;
@@ -110,7 +110,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 <quote>\"		{ 
     			  BEGIN(INITIAL); 
 
-			  hdfeoslval = yytext;
+			  he5ddslval = yytext;
 
 			  return STR;
                         }

@@ -17,8 +17,8 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
 dist_bin_SCRIPTS = bes-hdf5-data.sh
 
-GRAM_SRCS = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc \
-	hdfeos_das.tab.cc hdfeos_das.tab.hh lex.hdfeos_das.cc
+GRAM_SRCS = he5dds.tab.cc he5dds.tab.hh lex.he5dds.cc \
+	he5das.tab.cc he5das.tab.hh lex.he5das.cc
 
 HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 	HDF5Int32.cc HDF5Sequence.cc HDF5Str.cc HDF5Structure.cc HDF5Url.cc \
@@ -42,11 +42,11 @@ libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libhdf5_module_la_LDFLAGS = -avoid-version -module 
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
-EXTRA_DIST = hdfeos_das.y hdfeos.y hdfeos_das.lex  hdfeos.lex OSX_Resources \
+EXTRA_DIST = he5das.y he5dds.y he5das.lex  he5dds.lex OSX_Resources \
 	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
 
-CLEANFILES = *~ *.sum *.log *.output hdfeos_das.tab.cc hdfeos_das.tab.hh \
-	lex.hdfeos_das.cc lex.hdfeos.cc hdfeos.tab.cc hdfeos.tab.hh \
+CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
+	lex.he5das.cc lex.he5dds.cc he5dds.tab.cc he5dds.tab.hh \
 	bes-hdf5-data.sh
 
 sample_datadir = $(datadir)/hyrax/data/hdf5
@@ -75,22 +75,22 @@ bes-conf: bes-hdf5-data.sh
 
 # Build the HDF-EOS scanner
 
-lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
+lex.he5dds.cc: he5dds.lex he5dds.tab.cc he5dds.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 
-lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.hh
+lex.he5das.cc: he5das.lex he5das.tab.cc he5das.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 # Build the HDF-EOS parser
 
-hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y HE5Parser.h
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos -o hdfeos.tab.cc $<
-	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
+he5dds.tab.cc he5dds.tab.hh: he5dds.y HE5Parser.h
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5dds -o he5dds.tab.cc $<
+	if test -e he5dds.tab.cc.h; then mv he5dds.tab.cc.h he5dds.tab.hh; fi
 
-hdfeos_das.tab.cc hdfeos_das.tab.hh: hdfeos_das.y
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos_das -o hdfeos_das.tab.cc $<
-	if test -e hdfeos_das.tab.cc.h; then mv hdfeos_das.tab.cc.h hdfeos_das.tab.hh; fi
+he5das.tab.cc he5das.tab.hh: he5das.y
+	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p he5das -o he5das.tab.cc $<
+	if test -e he5das.tab.cc.h; then mv he5das.tab.cc.h he5das.tab.hh; fi
 
 ###########################################################################
 
