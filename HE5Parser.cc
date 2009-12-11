@@ -23,7 +23,7 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-#include "H5EOS.h"
+#include "HE5Parser.h"
 #include <InternalErr.h>
 
 using namespace std;
@@ -38,7 +38,7 @@ int              hdfeosparse(void *arg);
 yy_buffer_state *hdfeos_scan_string(const char *str);
 
 
-H5EOS::H5EOS()
+HE5Parser::HE5Parser()
 {
     TES = false;
     _valid = false;
@@ -60,12 +60,12 @@ H5EOS::H5EOS()
 
 }
 
-H5EOS::~H5EOS()
+HE5Parser::~HE5Parser()
 {
 }
 
 
-bool H5EOS::has_group(hid_t id, const char *name)
+bool HE5Parser::has_group(hid_t id, const char *name)
 {
     hid_t hid;
     H5E_BEGIN_TRY {
@@ -79,7 +79,7 @@ bool H5EOS::has_group(hid_t id, const char *name)
 
 }
 
-bool H5EOS::has_dataset(hid_t id, const char *name)
+bool HE5Parser::has_dataset(hid_t id, const char *name)
 {
     hid_t hid;
     H5E_BEGIN_TRY {
@@ -92,7 +92,7 @@ bool H5EOS::has_dataset(hid_t id, const char *name)
     }
 }
 
-void H5EOS::add_data_path(string full_path)
+void HE5Parser::add_data_path(string full_path)
 {
 #ifdef CF
     string short_path = generate_short_name(full_path);
@@ -105,14 +105,14 @@ void H5EOS::add_data_path(string full_path)
 }
 
 
-void H5EOS::add_dimension_list(string full_path, string dimension_list)
+void HE5Parser::add_dimension_list(string full_path, string dimension_list)
 {
     full_data_path_to_dimension_list_map[full_path] = dimension_list;
     DBG(cerr << "Dimension List is:" <<
         full_data_path_to_dimension_list_map[full_path] << endl);
 }
 
-void H5EOS::add_dimension_map(string dimension_name, int dimension)
+void HE5Parser::add_dimension_map(string dimension_name, int dimension)
 {
     bool has_dimension = false;
 #ifdef CF
@@ -134,7 +134,7 @@ void H5EOS::add_dimension_map(string dimension_name, int dimension)
     }
 }
 
-bool H5EOS::check_eos(hid_t id)
+bool HE5Parser::check_eos(hid_t id)
 {
 
     reset();
@@ -172,7 +172,7 @@ bool H5EOS::check_eos(hid_t id)
     return false;
 }
 
-void H5EOS::get_dimensions(string name, vector < string > &tokens)
+void HE5Parser::get_dimensions(string name, vector < string > &tokens)
 {
     string str = full_data_path_to_dimension_list_map[name];
     // Skip delimiters at beginning.
@@ -190,12 +190,12 @@ void H5EOS::get_dimensions(string name, vector < string > &tokens)
     }
 }
 
-int H5EOS::get_dimension_size(string name)
+int HE5Parser::get_dimension_size(string name)
 {
     return dimension_map[name];
 }
 
-bool H5EOS::is_grid(string name)
+bool HE5Parser::is_grid(string name)
 {
     int i;
     for (i = 0; i < (int) full_data_paths.size(); i++) {
@@ -207,17 +207,17 @@ bool H5EOS::is_grid(string name)
     return false;
 }
 
-bool H5EOS::is_TES()
+bool HE5Parser::is_TES()
 {
     return TES;
 }
 
-bool H5EOS::is_valid()
+bool HE5Parser::is_valid()
 {
     return _valid;
 }
 
-void H5EOS::print()
+void HE5Parser::print()
 {
 
     cout << "Left = " << point_left << endl;
@@ -231,7 +231,7 @@ void H5EOS::print()
     }
 }
 
-bool H5EOS::set_dimension_array()
+bool HE5Parser::set_dimension_array()
 {
     int i = 0;
     int j = 0;
@@ -321,13 +321,13 @@ bool H5EOS::set_dimension_array()
     return true;
 }
 
-string H5EOS::get_grid_name(string full_path)
+string HE5Parser::get_grid_name(string full_path)
 {
     int end = full_path.find("/", 14);
     return full_path.substr(0, end + 1);        // Include the last "/".
 }
 
-int H5EOS::get_dimension_data_location(string dimension_name)
+int HE5Parser::get_dimension_data_location(string dimension_name)
 {
     int j;
     for (j = 0; j < (int) dimensions.size(); j++) {
@@ -338,7 +338,7 @@ int H5EOS::get_dimension_data_location(string dimension_name)
     return -1;
 }
 
-bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
+bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 {
     bool valid = false;
     int i = -1;
@@ -367,13 +367,13 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 		break;
 	    }
             if ((datatype = H5Dget_type(dset)) < 0) {
-                cerr << "H5EOS.cc failed to obtain datatype from  dataset "
+                cerr << "HE5Parser.cc failed to obtain datatype from  dataset "
                      << dset << endl;
                 break;
             }
             if ((dataspace = H5Dget_space(dset)) < 0) {
                 cerr <<
-                    "H5EOS.cc failed to obtain dataspace from  dataset " <<
+                    "HE5Parser.cc failed to obtain dataspace from  dataset " <<
                     dset << endl;
                 break;
             }
@@ -399,7 +399,7 @@ bool H5EOS::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 
 }
 
-void H5EOS::reset()
+void HE5Parser::reset()
 {
     int j;
 
@@ -456,7 +456,7 @@ void H5EOS::reset()
 
 }
 
-void H5EOS::get_all_dimensions(vector < string > &tokens)
+void HE5Parser::get_all_dimensions(vector < string > &tokens)
 {
     int j;
     for (j = 0; j < (int) dimensions.size(); j++) {

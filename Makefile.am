@@ -29,9 +29,9 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5GridEOS.h HDF5ArrayEOS.h HE5ShortName.h HE5CF.h
 
-SRCS = h5dds.cc h5das.cc h5get.cc H5EOS.cc HDF5PathFinder.cc $(GRAM_SRCS)
+SRCS = h5dds.cc h5das.cc h5get.cc HE5Parser.cc HDF5PathFinder.cc $(GRAM_SRCS)
 
-HDRS = common.h h5dds.h h5das.h h5get.h H5EOS.h HDF5PathFinder.h
+HDRS = common.h h5dds.h h5das.h h5get.h HE5Parser.h HDF5PathFinder.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 
@@ -84,7 +84,7 @@ lex.hdfeos_das.cc: hdfeos_das.lex hdfeos_das.tab.cc hdfeos_das.tab.hh
 
 # Build the HDF-EOS parser
 
-hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y H5EOS.h
+hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y HE5Parser.h
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos -o hdfeos.tab.cc $<
 	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 

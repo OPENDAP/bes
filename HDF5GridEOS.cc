@@ -30,11 +30,11 @@
 #include <ctype.h>
 
 #include "HDF5GridEOS.h"
-#include "H5EOS.h"
+#include "HE5Parser.h"
 #include "debug.h"
 
 
-extern H5EOS eos;
+extern HE5Parser eos;
 
 BaseType *HDF5GridEOS::ptr_duplicate()
 {

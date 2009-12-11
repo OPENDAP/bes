@@ -56,6 +56,6 @@
 #include "h5das.h"
 #include "h5dds.h"
 #include "h5get.h"              
-#include "H5EOS.h"             
+#include "HE5Parser.h"             
 
 using namespace libdap;

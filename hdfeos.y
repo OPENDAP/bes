@@ -17,9 +17,9 @@
 using namespace std;
 
 #include "hdfeos.tab.hh"
-#include "H5EOS.h"
+#include "HE5Parser.h"
  
-#define YYPARSE_PARAM h5eos
+#define YYPARSE_PARAM he5parser
 
 extern int yy_line_num;	// defined in hdfeos.lex 
 
@@ -93,19 +93,19 @@ data: /* empty */
 	    switch(parser_state){
 	     case 0:
 		parser_state = 1;
-	        ((H5EOS*)(h5eos))->point_left = atof($1);
+	        ((HE5Parser*)(he5parser))->point_left = atof($1);
         	break;
              case 1:
 	        parser_state = 2;
-	        ((H5EOS*)(h5eos))->point_upper = atof($1);
+	        ((HE5Parser*)(he5parser))->point_upper = atof($1);
                 break;
              case 2:
 	        parser_state = 3;
-	        ((H5EOS*)(h5eos))->point_right = atof($1);
+	        ((HE5Parser*)(he5parser))->point_right = atof($1);
                 break;
              case 3:
 	        parser_state = 4;
-	        ((H5EOS*)(h5eos))->point_lower = atof($1);
+	        ((HE5Parser*)(he5parser))->point_lower = atof($1);
                 break;
 	     default:
                 break;
@@ -167,7 +167,7 @@ attribute_xdim: XDIM INT
   cout << "Full path is:" << full_path << endl;
 #endif
   if(grid_structure_found)    
-    ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/XDim", atoi($2));
+    ((HE5Parser*)(he5parser))->add_dimension_map(full_path+"/XDim", atoi($2));
 }
 ;
 
@@ -180,7 +180,7 @@ attribute_ydim: YDIM INT
   // Reset the parser state
   parser_state = 0;
   if(grid_structure_found)    
-    ((H5EOS*)(h5eos))->add_dimension_map(full_path+"/YDim", atoi($2));
+    ((HE5Parser*)(he5parser))->add_dimension_map(full_path+"/YDim", atoi($2));
 }
 ;
 
@@ -197,9 +197,9 @@ attribute_dimension_size: DIMENSION_SIZE '=' INT
 {
   // Save the size info.
   if(grid_structure_found)  
-    ((H5EOS*)(h5eos))->add_dimension_map(dimension_name, atoi($3));
+    ((HE5Parser*)(he5parser))->add_dimension_map(dimension_name, atoi($3));
   if(swath_structure_found)
-    ((H5EOS*)(h5eos))->add_dimension_map_swath(dimension_name, atoi($3));
+    ((HE5Parser*)(he5parser))->add_dimension_map_swath(dimension_name, atoi($3));
 }
 ;
 attribute_dimension_list: DIMENSION_LIST 
@@ -210,7 +210,7 @@ attribute_dimension_list: DIMENSION_LIST
 {
   parser_state = 11;
   if(grid_structure_found){
-    ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
+    ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
     // Reset for next path
     data_field_name = "/Data Fields/";
     full_path = "/HDFEOS/GRIDS/";
@@ -218,7 +218,7 @@ attribute_dimension_list: DIMENSION_LIST
     dimension_list = "";
   }
   if(swath_structure_found){
-    // ((H5EOS*)(h5eos))->add_dimension_list(full_path, dimension_list);
+    // ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
     // Reset for next path
     data_field_name = "/Data Fields/";
     full_path = "/HDFEOS/SWATHS/";
@@ -236,7 +236,7 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
   if(valid_projection){
     data_field_name.append($3);
     full_path.append(data_field_name);
-    ((H5EOS*)(h5eos))->add_data_path(full_path);
+    ((HE5Parser*)(he5parser))->add_data_path(full_path);
 #ifdef VERBOSE    
     cout << "add_data_path:" << full_path << endl;
 #endif    
@@ -244,7 +244,7 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
   if(swath_structure_found){
     data_field_name.append($3);
     full_path.append(data_field_name);
-    ((H5EOS*)(h5eos))->add_data_path_swath(full_path);
+    ((HE5Parser*)(he5parser))->add_data_path_swath(full_path);
 #ifdef VERBOSE    
     cout << "add_data_path_swath:" << full_path << endl;
 #endif        
@@ -257,7 +257,7 @@ attribute_geo_field_name: GEO_FIELD_NAME '=' STR
   if(swath_structure_found){
     geo_field_name.append($3);
     full_path.append(geo_field_name);
-    ((H5EOS*)(h5eos))->add_data_path_swath(full_path);
+    ((HE5Parser*)(he5parser))->add_data_path_swath(full_path);
 #ifdef VERBOSE    
     cout << "add_geo_path_swath:" << full_path << endl;
 #endif        
@@ -271,7 +271,7 @@ attribute_swath_name: SWATH_NAME '=' STR
   // Remember the path.
   swath_name = $3;
   swath_structure_found = true;
-  ((H5EOS*)(h5eos))->set_swath(swath_structure_found);  
+  ((HE5Parser*)(he5parser))->set_swath(swath_structure_found);  
   // Reset the full path
   full_path = "/HDFEOS/SWATHS/";
   valid_projection = false;

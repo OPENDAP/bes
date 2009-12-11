@@ -50,7 +50,7 @@
 #include "h5dds.h"
 #include "common.h"
 #include "h5get.h"
-#include "H5EOS.h"
+#include "HE5Parser.h"
 #include "HDF5PathFinder.h"
 
 /// If ATTR_STRING_QUOTE_FIX is defined, the handler wraps string with
@@ -59,7 +59,7 @@
 #define ATTR_STRING_QUOTE_FIX 
 
 /// A global variable that handles HDF-EOS5 files.
-H5EOS eos;
+HE5Parser eos;
 
 /// A variable for remembering visited paths to break ties if they exist.
 HDF5PathFinder paths;

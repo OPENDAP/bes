@@ -54,7 +54,7 @@
 
 /// An external object that handles NASA EOS HDF5 files for grid generation 
 /// and meta data parsing.
-extern H5EOS eos;
+extern HE5Parser eos;
 
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
     :BESRequestHandler(name)

@@ -58,9 +58,9 @@
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
 #include "h5get.h"
-#include "H5EOS.h"
+#include "HE5Parser.h"
 
-extern H5EOS eos;
+extern HE5Parser eos;
 
 /// An instance of DS_t structure defined in common.h.
 static DS_t dt_inst; 

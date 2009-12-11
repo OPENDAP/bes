@@ -24,8 +24,8 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-#ifndef _H5EOS_H
-#define _H5EOS_H
+#ifndef _HE5Parser_H
+#define _HE5Parser_H
 
 // Some NASA EOS Aura metadata files are split into several files
 // when they are really big (> 65536) like StructMetadata.0, StructMetada.1,
@@ -67,7 +67,7 @@ using namespace libdap;
 /// Copyright (c) 2007 The HDF Group
 ///
 /// All rights reserved.
-class H5EOS:public HE5CF {
+class HE5Parser:public HE5CF {
 
 private:
 
@@ -132,8 +132,8 @@ public:
     /// The resolution of latitude
     float gradient_y;
   
-    H5EOS();
-    virtual ~ H5EOS();
+    HE5Parser();
+    virtual ~ HE5Parser();
 
     /// Remembers the full path of a dataset variable including the
     /// variable name itself.

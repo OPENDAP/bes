@@ -36,11 +36,11 @@
 #include "Error.h"
 #include "InternalErr.h"
 #include "HDF5ArrayEOS.h"
-#include "H5EOS.h"
+#include "HE5Parser.h"
 #include "h5dds.h"
 
 using namespace std;
-extern H5EOS eos;
+extern HE5Parser eos;
 
 BaseType *HDF5ArrayEOS::ptr_duplicate()
 {

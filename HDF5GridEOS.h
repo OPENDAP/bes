@@ -77,7 +77,7 @@ public:
     /// returns HDF5 datatype id.
     hid_t get_tid();
 
-    /// gets map data from H5EOS class that parsed the StructMetadata and
+    /// gets map data from HE5Parser class that parsed the StructMetadata and
     /// holds the computed map data array.
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
                                      int stride, int stop, int count);
