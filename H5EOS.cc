@@ -403,7 +403,7 @@ void H5EOS::reset()
 {
     int j;
 
-    H5CF::reset();
+    HE5CF::reset();
     
     grid_structure_found = false;
     valid_projection = false;

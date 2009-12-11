@@ -25,10 +25,10 @@
 
 using namespace std;
 
-#include "H5CF.h"
+#include "HE5CF.h"
 
 
-H5CF::H5CF()
+HE5CF::HE5CF()
 {
     OMI = false;
     _swath = false;
@@ -63,13 +63,13 @@ H5CF::H5CF()
 
 }
 
-H5CF::~H5CF()
+HE5CF::~HE5CF()
 {
 
 }
 
 void
-H5CF::add_data_path_swath(string full_path)
+HE5CF::add_data_path_swath(string full_path)
 {
 
 #ifdef CF
@@ -89,7 +89,7 @@ H5CF::add_data_path_swath(string full_path)
 }
 
 void
-H5CF::add_dimension_map_swath(string dimension_name, int dimension)
+HE5CF::add_dimension_map_swath(string dimension_name, int dimension)
 {
 
     bool has_dimension = false;
@@ -130,7 +130,7 @@ H5CF::add_dimension_map_swath(string dimension_name, int dimension)
 
 
 const char *
-H5CF::get_CF_name(char *eos_name)
+HE5CF::get_CF_name(char *eos_name)
 {
     string str(eos_name);
 
@@ -160,7 +160,7 @@ H5CF::get_CF_name(char *eos_name)
 }
 
 string
-H5CF::get_EOS_name(string str)
+HE5CF::get_EOS_name(string str)
 {
     DBG(cerr << cf_to_eos_map[str] << endl);
     if (cf_to_eos_map[str].size() > 0)
@@ -175,14 +175,14 @@ H5CF::get_EOS_name(string str)
 
 
 bool
-H5CF::is_shared_dimension_set()
+HE5CF::is_shared_dimension_set()
 {
     return shared_dimension;
 }
 
 
 bool
-H5CF::is_swath()
+HE5CF::is_swath()
 {
     if (OMI)
         return _swath;
@@ -191,7 +191,7 @@ H5CF::is_swath()
 }
 
 // See also  is_grid(string varname).
-bool H5CF::is_swath(string varname)
+bool HE5CF::is_swath(string varname)
 {
     int i;
     for (i = 0; i < (int) _full_data_paths_swath.size(); i++)
@@ -207,7 +207,7 @@ bool H5CF::is_swath(string varname)
 }
 
 void
-H5CF::reset()
+HE5CF::reset()
 {
     HE5ShortName::reset();
 
@@ -235,13 +235,13 @@ H5CF::reset()
 
 
 void
-H5CF::set_shared_dimension()
+HE5CF::set_shared_dimension()
 {
     shared_dimension = true;
 }
 
 void
-H5CF::set_swath(bool flag)
+HE5CF::set_swath(bool flag)
 {
     _swath = flag;
 }

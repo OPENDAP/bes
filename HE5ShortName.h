@@ -69,7 +69,7 @@ public:
     /// only by searching for the last instance of '/' character.
     /// 
     /// \param a_name  HDF-EOS5 dataset name
-    /// \see H5CF.cc
+    /// \see HE5CF.cc
     /// \see H5EOS.cc
     /// \return substring 
     string cut_long_name(string a_name);
@@ -81,7 +81,7 @@ public:
     /// string shorter than 15 characters long.
     /// 
     /// \param a_name  HDF-EOS5 dataset name
-    /// \see H5CF.cc
+    /// \see HE5CF.cc
     /// \see H5EOS.cc
     /// \return a new, 15-character long string.
     string generate_short_name(string a_name);

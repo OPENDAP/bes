@@ -23,8 +23,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
-#ifndef _H5CF_H
-#define _H5CF_H
+#ifndef _HE5CF_H
+#define _HE5CF_H
 
 #include "config_hdf5.h"
 
@@ -54,7 +54,7 @@ using namespace libdap;
 /// Copyright (c) 2009 The HDF Group
 ///
 /// All rights reserved.
-class H5CF: public HE5ShortName {
+class HE5CF: public HE5ShortName {
   
 private:
   
@@ -78,8 +78,8 @@ public:
     map < string, string > cf_to_eos_map;
 
   
-    H5CF();
-    virtual ~H5CF();
+    HE5CF();
+    virtual ~HE5CF();
     
     /// Remembers the full path of a Swath dataset variable.
     /// 

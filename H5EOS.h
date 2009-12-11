@@ -52,7 +52,7 @@
 #include <util.h>
 #include <Array.h>
 #include "hdfeos.tab.hh"
-#include "H5CF.h"
+#include "HE5CF.h"
 
 using namespace std;
 using namespace libdap;
@@ -67,7 +67,7 @@ using namespace libdap;
 /// Copyright (c) 2007 The HDF Group
 ///
 /// All rights reserved.
-class H5EOS:public H5CF {
+class H5EOS:public HE5CF {
 
 private:
 
