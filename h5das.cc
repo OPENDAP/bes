@@ -62,7 +62,7 @@
 H5EOS eos;
 
 /// A variable for remembering visited paths to break ties if they exist.
-H5PathFinder paths;
+HDF5PathFinder paths;
 
 /// EOS parser related variables
 struct yy_buffer_state;

@@ -209,7 +209,7 @@ bool H5CF::is_swath(string varname)
 void
 H5CF::reset()
 {
-    H5ShortName::reset();
+    HE5ShortName::reset();
 
     OMI = false;
     shared_dimension = false;

@@ -24,8 +24,8 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-#ifndef _H5SHORTNAME_H
-#define _H5SHORTNAME_H
+#ifndef _HE5ShortName_H
+#define _HE5ShortName_H
 
 #include "config_hdf5.h"
 
@@ -51,7 +51,7 @@ using namespace std;
 /// Copyright (c) 2009 The HDF Group
 ///
 /// All rights reserved.
-class H5ShortName {
+class HE5ShortName {
   
 public:
     /// This variable is incremented to generate unique id that will be
@@ -63,7 +63,7 @@ public:
     /// Remembers the short name to long name mapping.
     map < string, string > short_to_long;	
   
-    H5ShortName();
+    HE5ShortName();
 
     /// Drops the group path name from \a a_name and returns the dataset name
     /// only by searching for the last instance of '/' character.

@@ -40,15 +40,15 @@ using namespace std;
 /// Copyright (c) 2007 HDF Group
 ///
 /// All rights reserved.
-class H5PathFinder {
+class HDF5PathFinder {
 
   private:
     map < string, string > id_to_name_map;
 
 
   public:
-    H5PathFinder();
-    virtual ~ H5PathFinder();
+    HDF5PathFinder();
+    virtual ~ HDF5PathFinder();
 
     /// Adds \a name and \a id object number into an internal map
     /// 

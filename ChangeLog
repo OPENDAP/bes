@@ -1,5 +1,6 @@
 2009-12-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
+	* H5ShortName.h/cc is renamed to HE5ShortName.h/cc.
 	* H5PathFinder.h/cc is renamed to HDF5PathFinder.h/cc.
 
 2009-12-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>

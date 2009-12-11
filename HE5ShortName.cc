@@ -24,14 +24,14 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-#include "H5ShortName.h"
+#include "HE5ShortName.h"
 
-H5ShortName::H5ShortName()
+HE5ShortName::HE5ShortName()
 {
   index = 0;
 }
 
-string H5ShortName::generate_short_name(string varname)
+string HE5ShortName::generate_short_name(string varname)
 {
 #ifdef SHORT_PATH  
   ostringstream oss;  
@@ -49,24 +49,24 @@ string H5ShortName::generate_short_name(string varname)
 #endif  
 }
 
-string H5ShortName::cut_long_name(string varname)
+string HE5ShortName::cut_long_name(string varname)
 {
   int pos = varname.find_last_of('/', varname.length() - 1);
   return varname.substr(pos + 1);
 }
 
 
-string H5ShortName::get_long_name(string short_varname)
+string HE5ShortName::get_long_name(string short_varname)
 {
   return short_to_long[short_varname];
 }
 
-string H5ShortName::get_short_name(string long_varname)
+string HE5ShortName::get_short_name(string long_varname)
 {
   return long_to_short[long_varname];
 }
 
-void H5ShortName::reset()
+void HE5ShortName::reset()
 {
   index = 0;
   

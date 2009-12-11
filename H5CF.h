@@ -28,7 +28,7 @@
 
 #include "config_hdf5.h"
 
-#include "H5ShortName.h"
+#include "HE5ShortName.h"
 #include <map>
 #include <sstream>
 #include <string>
@@ -54,7 +54,7 @@ using namespace libdap;
 /// Copyright (c) 2009 The HDF Group
 ///
 /// All rights reserved.
-class H5CF: public H5ShortName {
+class H5CF: public HE5ShortName {
   
 private:
   
