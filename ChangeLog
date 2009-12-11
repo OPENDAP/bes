@@ -1,6 +1,11 @@
+2009-12-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* H5PathFinder.h/cc is renamed to HDF5PathFinder.h/cc.
+
 2009-12-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* h5_handler.h is renamed to hdf5_handler.h and is cleaned-up.
+	* H5Git.h/cc is renamed to h5get.h/cc to distinguish them from classes.
 
 2009-10-02  H. Joe Lee  <hyoklee@hdfgroup.org>
 

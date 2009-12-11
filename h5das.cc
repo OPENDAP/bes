@@ -51,7 +51,7 @@
 #include "common.h"
 #include "h5get.h"
 #include "H5EOS.h"
-#include "H5PathFinder.h"
+#include "HDF5PathFinder.h"
 
 /// If ATTR_STRING_QUOTE_FIX is defined, the handler wraps string with
 /// quotes("").

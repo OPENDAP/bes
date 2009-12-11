@@ -29,9 +29,9 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5GridEOS.h HDF5ArrayEOS.h H5ShortName.h H5CF.h
 
-SRCS = h5dds.cc h5das.cc h5get.cc H5EOS.cc H5PathFinder.cc $(GRAM_SRCS)
+SRCS = h5dds.cc h5das.cc h5get.cc H5EOS.cc HDF5PathFinder.cc $(GRAM_SRCS)
 
-HDRS = common.h h5dds.h h5das.h h5get.h H5EOS.h H5PathFinder.h
+HDRS = common.h h5dds.h h5das.h h5get.h H5EOS.h HDF5PathFinder.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 

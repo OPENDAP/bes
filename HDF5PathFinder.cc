@@ -33,7 +33,7 @@
 
 // #define DODS_DEBUG
 #include "debug.h"
-#include "H5PathFinder.h"
+#include "HDF5PathFinder.h"
 
 using namespace std;
 
