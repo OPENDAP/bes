@@ -218,7 +218,7 @@ attribute_dimension_list: DIMENSION_LIST
     dimension_list = "";
   }
   if(swath_structure_found){
-    // ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
+    ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
     // Reset for next path
     data_field_name = "/Data Fields/";
     full_path = "/HDFEOS/SWATHS/";

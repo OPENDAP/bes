@@ -57,7 +57,6 @@ class HDF5ArrayEOS:public Array {
     hid_t d_ty_id;
     size_t d_memneed;
 
-    int format_constraint(int *cor, int *step, int *edg);
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
                                      int stride, int stop, int count);
 
