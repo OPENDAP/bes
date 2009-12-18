@@ -384,7 +384,7 @@ bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
             char *chr = new char[size + 1];
             if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT,(void *) chr)<0){	  	    throw InternalErr(__FILE__, __LINE__, "Unable to read the data.");
             }
-            strcat(chr_all, chr);
+            strncat(chr_all, chr, size);
             valid = true;
             delete[] chr;
         } else {
@@ -447,12 +447,12 @@ void HE5Parser::reset()
         full_data_paths.clear();
     }
     // Clear the contents of the metadata string buffer.
-    strcpy(metadata_Struct, "");
-    strcpy(metadata_Archived, "");
-    strcpy(metadata_Core, "");
-    strcpy(metadata_core, "");
-    strcpy(metadata_product, "");
-    strcpy(metadata_subset, "");
+    memset(metadata_Struct, 0, sizeof(metadata_Struct));
+    memset(metadata_Archived,0,sizeof(metadata_Archived));
+    memset(metadata_Core, 0,sizeof(metadata_Core));
+    memset(metadata_core, 0,sizeof(metadata_core));
+    memset(metadata_product, 0,sizeof(metadata_product));
+    memset(metadata_subset, 0,sizeof(metadata_subset));
 
 }
 

@@ -1,3 +1,7 @@
+2009-12-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* HE5Parser.cc fix for Ticket #1460.
+
 2009-12-11  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* hdfeos_das.lex/y is renamed to he5das.lex/y 
