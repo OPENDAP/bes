@@ -48,7 +48,36 @@ docs: Where some bes documentation resides
 
 * Configuration
 
-Once the BES software has been installed, you will need to build and install
+** Basic Configuration
+
+Once the BES software has been installed, you will need to make a few
+changes to the BES configuration file, which is the bes.conf located in
+<prefix>/etc/bes/bes.conf. Only a few parameters need to be modified to
+get the BES up and running for the first time. These parameters are
+located at the top of the configuration file are are:
+
+BES.ServerAdministrator
+- set this to an email address that can be used for users to contact if
+  there are issues with your installation of the server.
+
+BES.User=user_name
+BES.Group=group_name
+- set these to a valid username and groupname on your system. We
+  recommend that you create a username and groupname called bes that has
+  permissions to write only to the BES installation directory. We'll
+  need to write to the log file, and that's about it.
+
+BES.LogName=./bes.log
+- Set this to the full path and file name for where you want the BES log
+  file to be written.
+
+With this configuration you will be able to start the BES. No handlers
+or modules have been installed yet, so you won't be able to serve data,
+but the BES should run.
+
+** Installing a handler/module
+
+Once you have this configuration done you will need to build and install
 at least one data handler and edit the bes.conf configuration file so that
 handler can be used to serve data. I'll use the netcdf handler as an example.
 
@@ -62,14 +91,34 @@ having problems compiling or linking the handler, try using not only
 
 Install the newly-built handler.
 
-Configure the BES to load the handler by editing the bes.conf file. You can
-find this file in <prefix>/etc/bes/bes.conf. Look for the section with
-BES.modules and follow the example. The modules parameter contains a list
-of the modules that should be loaded by the server. You can use any name yo
-want for the modules; the BES.module.<name> parameter tells the server
-which module to load and use for that name. Even though you _can_ use any
-name you'd like, try to pick mnemonic ones since they will need to be used
-later on in the configuration file.
+Configure the BES to load the handler by editing the bes.conf file. For
+most handlers, there will be a script that can be run, or a target for
+make, that will add or set all of the appropriate parameters in the BES
+configuration file. The scripts are typically called bes-x-data.sh,
+where x is the name of the handler. In our example, using the netcdf
+handler, there is a script called bes-nc-data.sh in the bin directory of
+your installation directory. Simply run this script on the command line:
+
+% bes-nc-data.sh
+
+Another option, if building the data handler/module from source, is to
+use the bes-conf target to make. You would use this target after using
+the install target for the handler.
+
+% make install
+% make bes-conf
+
+If the handler/module you have installed does not have such a
+configuration script, or you need to make some changes to the BES
+configuration file, then you can edit the bes.conf file.
+
+Look for the section with BES.modules and follow the example. The
+modules parameter contains a list of the modules that should be loaded
+by the server. You can use any name yo want for the modules; the
+BES.module.<name> parameter tells the server which module to load and
+use for that name. Even though you _can_ use any name you'd like, try to
+pick mnemonic ones since they will need to be used later on in the
+configuration file.
 
 Next, find the point in the configuration file where the
 BES.catalog.TypeMatch parameter is located. The value of this parameter
