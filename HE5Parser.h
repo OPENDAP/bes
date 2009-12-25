@@ -50,6 +50,7 @@
 #include <hdf5.h>
 #include <debug.h>
 #include <util.h>
+#include <string.h>
 #include <Array.h>
 #include "he5dds.tab.hh"
 #include "HE5CF.h"
