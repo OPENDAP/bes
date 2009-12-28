@@ -95,6 +95,8 @@ private:
 #ifdef USE_HDFEOS2_LIB
     vector < int > types;
 
+   // Need to add comments. This is a key function to retrieve
+   // HDF-EOS2 information. ky 2009/11/19
     bool set_dimension_array_hdfeos2();
 #endif
 
@@ -399,12 +401,12 @@ public:
     ///
     /// This function reads the actual content of \a grid_name Grid dataset.
     /// \todo allow subsetting
-    int get_data_grid(string grid_name, char** val);
+    int get_data_grid(string grid_name, int* offset,int*step,int*count,int nelms,char** val);
 
     /// Get the pointer to the array of swath_name via HDF-EOS2 library.
     ///
     /// This function reads the actual content of \a swath_name Swath dataset.
-    int get_data_swath(string swath_name, char** val);
+    int get_data_swath(string swath_name, int*offset, int*step,int*count,int nelms,char** val);
 
     /// Get the data type of variable at location i via HDF-EOS2 library.
     int get_data_type(int i);

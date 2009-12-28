@@ -16,6 +16,8 @@
 #endif
 
 
+///KENT
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -213,11 +215,12 @@ namespace HDFEOS2
         
         /// It will get the value even if the value is not in the FieldData
         /// buffer(LightVector). 
-        virtual const char * get() = 0;
+        virtual const char * get(int*offset,int*step,int*count,int nelms) = 0;
         
         /// Release the buffer by resizing the LightVector. 
         virtual void drop() = 0;
         virtual int length() const = 0;
+        virtual int dtypesize() const = 0;
 
     protected:
         bool valid;
@@ -278,6 +281,10 @@ namespace HDFEOS2
         /// Obtain fill value of this field.
         const std::vector<char> & getFillValue() const { return this->filler; }
 
+       /// Set and get the special flag for adjustment
+       void set_adjustment(int num_map) {need_adjustment = (num_map!=0);}
+       bool get_adjustment(){return need_adjustment;}
+
     protected:
         std::string name;
         int32 rank;
@@ -285,6 +292,10 @@ namespace HDFEOS2
         std::vector<Dimension *> dims;
         FieldData *data;
         std::vector<char> filler;
+
+/// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
+/// KY 2009-12-3
+        bool need_adjustment;
 
         friend class Dataset;
         friend class SwathDimensionAdjustment;
@@ -634,6 +645,11 @@ namespace HDFEOS2
                                     std::vector<std::pair<std::string,
                                     std::string> > &associated) const;
 
+       /// Set and get the number of dimension map
+       void set_num_map(int this_num_map){num_map = this_num_map; }
+       int get_num_map()const {return num_map;};
+       
+
     private:
         SwathDataset(const std::string &name)
             : Dataset(name)
@@ -645,7 +661,8 @@ namespace HDFEOS2
         void OverrideGeoFields();
         
         /// get all information of dimension maps in this swath
-        void ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
+        /// The number of maps will return for future subsetting
+        int ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
             throw(Exception);
         void ReadIndexMaps(std::vector<IndexMap *> &indexmaps)
             throw(Exception);
@@ -675,6 +692,10 @@ namespace HDFEOS2
         /// interopolation or subsampling. 
         std::vector<Field *> replacedgeofields;
 
+        /// Return the number of dimension map to correctly handle the subsetting case 
+        ///  without dimension map.
+        int num_map; 
+
         friend class SwathDimensionAdjustment;
         friend class File;
     };
@@ -703,21 +724,23 @@ namespace HDFEOS2
     class UnadjustedFieldData : public FieldData
     {
     private:
-        UnadjustedFieldData(int32 id, const std::string &name, int32 len,
+        UnadjustedFieldData(int32 id, const std::string &name, int32 len, int typesize,
                             intn (*readfld)(int32, char *, int32 *, int32 *,
                                             int32 *, VOIDP))
-            : datasetid(id), fieldname(name), datalen(len), reader(readfld)
+            : datasetid(id), fieldname(name), datalen(len), datatypesize(typesize),reader(readfld)
         {
         }
 
     public:
-        virtual const char * get();
+        virtual const char * get(int*offset,int*step,int*count,int nelms);
         virtual void drop();
         virtual int length() const;
+        virtual int dtypesize() const;
 
     protected:
         int32 datasetid;
         std::string fieldname;
+        int  datatypesize;
         int32 datalen;
         intn (*reader)(int32, char *, int32 *, int32 *, int32 *, VOIDP);
 
@@ -749,15 +772,16 @@ namespace HDFEOS2
         /// basegeofield: the original geo-location field 
         /// dimmaps: the dimension map that includes offset and increment
         /// datadims: will give the final size of geo-location field
-        AdjustedFieldData(const SwathDataset *swath,
-                          const Field *basegeofield,
+        AdjustedFieldData( const  SwathDataset *swath,
+                           const Field *basegeofield,
                           const std::vector<Map> &dimmaps,
                           const std::vector<Dimension *> &datadims);
 
     public:
-        virtual const char * get();
+        virtual const char * get(int*offset,int*step,int*count,int nelms);
         virtual void drop();
         virtual int length() const;
+        virtual int dtypesize() const;
 
     protected:
         const SwathDataset *swath;
@@ -820,7 +844,7 @@ namespace HDFEOS2
         /// geo-location fields of swath objects.
         static File * ReadAndAdjust(const char *path) throw(Exception);
 
-        virtual ~File();
+        ~File();
 
         const std::string & getPath() const { return this->path; }
         const std::vector<GridDataset *> & getGrids() const

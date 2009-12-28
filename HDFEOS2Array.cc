@@ -19,6 +19,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+
+
 #include "config_hdf.h"
 
 #include <vector>
@@ -66,31 +68,94 @@ bool HDFEOS2Array::read()
     int* count = new int[d_num_dim];
     int* step = new int[d_num_dim];
     int nelms = format_constraint(offset, step, count);
+//KENT
   
+#if 0
     int *picks = new int[nelms];
     int total_elems = linearize_multi_dimensions(offset, step, count, picks);
+#endif 
     int count2 = 0;
 
     string varname = name();
+DBG(cerr<<"variable name"<<varname<<endl);
+DBG(cerr<<"nelms= "<<nelms<<endl);
     char* val = NULL;
     int i;
     if(eos.is_grid()){
         DBG(cerr << "=HDFEOS2Array::read() grid" << endl);
-        count2 = eos.get_data_grid(varname, &val);
+
+        //count2 = eos.get_data_grid(varname, &val);
+// For swath geo-location fields,count2 is not the number of subsetted element.
+// It is the total number of elements.
+        count2 = eos.get_data_grid(varname,offset,step,count,nelms, &val);
+
+//KENT
+//        cout<< "count2= "<<count2 <<endl;
     }
     if(eos.is_swath()){
         DBG(cerr << "=HDFEOS2Array::read() swath" << endl);
         varname = eos.get_EOS_name(varname);
-        count2 = eos.get_data_swath(varname, &val);
+//KENT
+        count2 = eos.get_data_swath(varname, offset,step,count,nelms,&val);
     }
 
+    // This debug info may give you wrong information for subsetting of swath
+    // geo-location fields.
     DBG(cerr << "=HDFEOS2Array::read() count=" << count2  << endl); 
     if(val == NULL){
         cerr << "=HDFEOS2Array::read() val pointer is NULL." << endl;
         return true;
     }
-    // This can be optimized by remembering the total size.
 
+    switch(var()->type()){
+        case dods_byte_c:
+            {
+                set_value((dods_byte*)val,nelms);
+                break;
+            }
+        case dods_int16_c:
+            {
+                set_value((dods_int16*)val,nelms);
+                break;
+            }
+            
+        case dods_uint16_c:
+            {
+                set_value((dods_uint16*)val,nelms);                
+                break;
+            }
+        case dods_int32_c:
+            {
+                set_value((dods_int32*)val,nelms);                
+                break;
+            }
+            
+        case dods_uint32_c:
+            {
+                set_value((dods_uint32*)val,nelms);                
+                break;
+            }
+        case dods_float32_c:
+            {
+                set_value((dods_float32*)val,nelms);                
+                break;                
+            }
+        case dods_float64_c:
+            {
+                set_value((dods_float64*)val,nelms);                
+                break;                
+            }            
+
+        default:
+            {
+                cerr << "HDFEOS2Array::read() Unknown type = "
+                     << type() << endl;
+                break;
+            }            
+       } // switch
+
+
+#if 0
     if(nelms ==  total_elems){
         DBG(cerr
             << "nelms = " << nelms
@@ -249,10 +314,11 @@ bool HDFEOS2Array::read()
             }
         }
     } // else
+#endif
     delete[] offset;
     delete[] count;
     delete[] step;
-    delete[] picks;
+//    delete[] picks;
 
     return false;
 }
@@ -272,14 +338,22 @@ int HDFEOS2Array::format_constraint(int *offset, int *step, int *count) {
 	int stride = dimension_stride(p, true);
 	int stop = dimension_stop(p, true);
 
-	// Check for empty constraint
-	if (stride <= 0 || start < 0 || stop < 0 || start > stop) {
-            ostringstream oss;
 
-            oss << "Array/Grid hyperslab indices are bad: [" << start <<
-                ":" << stride << ":" << stop << "]";
-            throw Error(malformed_expr, oss.str());
-	}
+      // Check for illegical  constraint
+      if (stride < 0 || start < 0 || stop < 0 || start > stop) {
+          ostringstream oss;
+
+          oss << "Array/Grid hyperslab indices are bad: [" << start <<
+              ":" << stride << ":" << stop << "]";
+          throw Error(malformed_expr, oss.str());
+      }
+
+       // Check for an empty constraint and use the whole dimension if so.
+      if (start == 0 && stop == 0 && stride == 0){
+          start = dimension_start(p, false);
+          stride = dimension_stride(p, false);
+          stop = dimension_stop(p, false);
+      }
 
 	offset[id] = start;
 	step[id] = stride;

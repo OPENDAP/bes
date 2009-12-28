@@ -537,7 +537,7 @@ bool HDFEOS::is_ydimmajor()
 }
 
 
-int HDFEOS::get_data_grid(string grid_name, char** val)
+int HDFEOS::get_data_grid(string grid_name, int*offset,int*step,int*count,int nelms,char** val)
 {
     DBG(cerr
         << ">HDFEOS::get_data_grid():grid_name="
@@ -558,12 +558,15 @@ int HDFEOS::get_data_grid(string grid_name, char** val)
                 << endl);
             if(grid->getDataFields()[j]->getName() == grid_name){
                 DBG(cerr << "=HDFEOS::get_data_grid(): Match found" << endl);
-                *val = (char*)grid->getDataFields()[j]->getData().get();
+                *val = (char*)grid->getDataFields()[j]->getData().get(offset,step,count,nelms);
                 if(val == NULL){
                     return 0;
                 }
                 else{
-                    return grid->getDataFields()[j]->getData().length();
+                    int total_data_len=nelms * grid->getDataFields()[j]->getData().dtypesize();
+                    return total_data_len;
+//                    return grid->getDataFields()[j]->getData().length();
+            //        return nelms;
                 }
             }
         }
@@ -572,7 +575,7 @@ int HDFEOS::get_data_grid(string grid_name, char** val)
 }
 
 
-int HDFEOS::get_data_swath(string swath_name, char** val)
+int HDFEOS::get_data_swath(string swath_name, int*offset,int*step,int*count,int nelms,char** val)
 {
     DBG(cerr
         << ">HDFEOS::get_data_swath():swath_name="
@@ -593,12 +596,13 @@ int HDFEOS::get_data_swath(string swath_name, char** val)
                 << endl);
             if(swath->getDataFields()[j]->getName() == swath_name){
                 DBG(cerr << "=HDFEOS::get_data_swath(): Match found" << endl);
-                *val = (char*)swath->getDataFields()[j]->getData().get();
+                *val = (char*)swath->getDataFields()[j]->getData().get(offset,step,count,nelms);
                 if(val == NULL){
                     return 0;
                 }
                 else{
-                    return swath->getDataFields()[j]->getData().length();
+                    // return swath->getDataFields()[j]->getData().length();
+                    return nelms;
                 }
             }
         } // For DataFields
@@ -607,7 +611,10 @@ int HDFEOS::get_data_swath(string swath_name, char** val)
                 DBG(cerr
                     << "=HDFEOS::get_data_swath(): Match found in GeoFields"
                     << endl);
-                *val = (char*)swath->getGeoFields()[i]->getData().get();
+// KENT TRY: if the geo-location size is automatically adjusted, subsetting
+// won't work for dimension map case. 
+// The swath without using dimension map should work.
+                *val = (char*)swath->getGeoFields()[i]->getData().get(offset,step,count,nelms);
                 if(val == NULL){
                     return 0;
                 }
@@ -772,6 +779,8 @@ int HDFEOS::open(char* filename)
         // Open the file with HDF-EOS2 library.
         // Here, reset() is a member function of auto_ptr which is a standard
         // C++ template.
+
+
         eos2.reset(HDFEOS2::File::ReadAndAdjust(filename));
 
         if(eos2->getGrids().size() > 0){

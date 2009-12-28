@@ -12,8 +12,11 @@
 #include <vector>
 #include <map>
 
+///KENT
+
 
 using namespace HDFEOS2;
+using namespace std;
 
 template<typename T, typename U, typename V, typename W, typename X>
 static void _throw5(const char *fname, int line, int numarg,
@@ -57,11 +60,28 @@ struct delete_elem
 
 File::~File()
 {
+// Kent, close the file handle. It causes seg. fault. 
+// Need to investigate later.
+
+//cout<<"gridfd= "<<gridfd<<endl;
+//cout<<"swathfd= "<<swathfd<<endl;
+// cout<<"path= "<<path<<endl;
+//GDclose(gridfd);
+#if 0
+  if(gridfd !=-1) {
+    if((GDclose(gridfd))==-1) throw2("grid close",path);
+  }
+  if(swathfd !=-1) {
+    if((SWclose(swathfd))==-1) throw2("swath close",path);
+  }
+#endif
 }
 
 File * File::Read(const char *path) throw(Exception)
 {
     File *file = new File(path);
+    //Kent
+    //cout <<"using my version"<<endl;
 
     // Read information of all Grid objects in this file.
     if ((file->gridfd = GDopen(const_cast<char *>(file->path.c_str()),
@@ -231,6 +251,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                     UnadjustedFieldData(this->datasetid,
                                         field->name,
                                         numelem * DFKNTsize(field->type),
+                                        DFKNTsize(field->type),
                                         readfld);
             }
 
@@ -700,9 +721,10 @@ SwathDataset * SwathDataset::Read(int32 fd, const std::string &swathname)
     // Read all attributes of this Swath
     swath->ReadAttributes(SWinqattrs, SWattrinfo, SWreadattr, swath->attrs);
         
-    // Read dimension map 
-    swath->ReadDimensionMaps(swath->dimmaps);
-        
+    // Read dimension map and save the number of dimension map for dim. subsetting
+
+    swath->set_num_map(swath->ReadDimensionMaps(swath->dimmaps));
+
     // Read index maps, we haven't found any files with the Index Maps.
     swath->ReadIndexMaps(swath->indexmaps);
 
@@ -808,7 +830,7 @@ void SwathDataset::OverrideGeoFields()
     }
 }
 
-void SwathDataset::ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
+int SwathDataset::ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
     throw(Exception)
 {
     int32 nummaps, bufsize;
@@ -853,6 +875,7 @@ void SwathDataset::ReadDimensionMaps(std::vector<DimensionMap *> &dimmaps)
             ++count;
         }
     }
+    return nummaps;
 }
 
 // The following function is nevered tested and probably will never be used.
@@ -1197,14 +1220,33 @@ const char * FieldData::peek() const
     return 0;
 }
 
-const char * UnadjustedFieldData::get()
+const char * UnadjustedFieldData::get(int*offset,int*step,int*count,int nelms)
 {
+    // The first time to read the data(valid is false).
+    // The buffer(datalen) is allocated at this stage.
+//Kent
+//cout<<"goinside UnadjustedField"<<endl;
+//cout<<"nelms"<<nelms<<endl;
+
     if (!this->valid) {
-        this->data.resize(this->datalen);
+//KENT
+      unsigned int databufsize=nelms*this->datatypesize;
+      this->data.resize(databufsize);
+//cout<<"databufsize= "<< databufsize<<endl;
+//cout<<"datelen= "<<this->datalen<<endl;
+      if(this->datalen == (int32)databufsize) {
         if (this->reader(this->datasetid,
                          const_cast<char *>(this->fieldname.c_str()),
                          NULL, NULL, NULL, &this->data[0]) == -1)
             return 0;
+       }
+      else {
+        if (this->reader(this->datasetid,
+                         const_cast<char *>(this->fieldname.c_str()),
+                         (int32*)offset, (int32*)step, (int32*)count, &this->data[0]) == -1)
+            return 0;
+       }
+//END KENT 
         this->valid = true;
     }
     return &this->data[0];
@@ -1223,15 +1265,26 @@ int UnadjustedFieldData::length() const
     return this->datalen;
 }
 
+int UnadjustedFieldData::dtypesize() const
+{
+    return this->datatypesize;
+}
+
+
 template<typename T>
-AdjustedFieldData<T>::AdjustedFieldData(const SwathDataset *swath,
-                                        const Field *basegeofield,
+AdjustedFieldData<T>::AdjustedFieldData(const  SwathDataset *swath,
+                                         const  Field *basegeofield,
                                         const std::vector<Map> &dimmaps,
                                         const std::vector<Dimension *>
                                         &datadims)
     : swath(swath), basegeofield(basegeofield), dimmaps(dimmaps),
       datadims(datadims)
 {
+    
+
+    /// Set the need_adjustment flag based on whether dimension maps are used. 
+///    int num_dim_map = this->swath->get_num_map();
+  ///  this->basegeofield->set_adjustment(num_dim_map);
     for (typename std::vector<Map>::const_iterator i = this->dimmaps.begin();
          i != this->dimmaps.end(); ++i) {
         assert_throw0(i->getIncrement());
@@ -1239,14 +1292,32 @@ AdjustedFieldData<T>::AdjustedFieldData(const SwathDataset *swath,
 }
 
 template<typename T>
-const char * AdjustedFieldData<T>::get()
+const char * AdjustedFieldData<T>::get(int*offset,int*step,int*count,int nelm)
 {
+//KENT
+///cout<<"coming to adjusted field data"<<endl;
     if (!this->valid) {
         this->data.reserve(this->length());
-
-        bool alreadyfetched = this->basegeofield->getData().get() != 0;
+        bool alreadyfetched;
+// Since all geo-location information needs to be fetched anyway, and this 
+// adjusted field currently only handles geo-location swath information,
+// So pass "NULL"(means to obtain all adjusted geo-location information.
+// It is difficult to "subset" the "interpolated" geo-location field,
+// So with dimension map, the geo-location field(lat and lon) will not be
+// subsetted. This is the current limitation of the handler. We will see
+// if someone requests this to be added. KY 2009/12/1
+// Here I indeed handle the subsetting without using dimension map
+      if(this->swath->get_num_map()){ // have dimension map,no subsetting
+         alreadyfetched = this->basegeofield->getData().get(NULL,NULL,NULL,nelm) != 0;
         if (!alreadyfetched)
-            this->basegeofield->getData().get();
+            this->basegeofield->getData().get(NULL,NULL,NULL,nelm);
+      }
+      else {// No dimension map, do subsetting
+        bool alreadyfetched = this->basegeofield->getData().get(offset,step,count,nelm) != 0;
+        if (!alreadyfetched)
+            this->basegeofield->getData().get(offset,step,count,nelm);
+ 
+      }
         std::vector<AdjustInfo> info;
         this->Adjust(info);
         if (!alreadyfetched)
@@ -1264,6 +1335,12 @@ void AdjustedFieldData<T>::drop()
         this->valid = false;
         this->data.resize(0);
     }
+}
+
+template<typename T>
+int AdjustedFieldData<T>::dtypesize() const
+{
+    return this->basegeofield->getData().dtypesize();
 }
 
 template<typename T>
@@ -1568,6 +1645,7 @@ bool Utility::ReadNamelist(const char *path,
     }
     return true;
 }
+#endif
 
 // vim:ts=4:sw=4:sts=4
-#endif
+

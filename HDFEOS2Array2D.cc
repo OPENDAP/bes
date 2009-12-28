@@ -67,6 +67,10 @@ HDFEOS2Array2D::~HDFEOS2Array2D()
 }
 
 
+/// KENT: This code may not be used at all!! 2009/12/8,will test.
+/// Currently the 2-D grid cases all have multiple groups. 
+/// OPeNDAP clients simply cannot handle. Will go back to this
+/// case later.
 bool HDFEOS2Array2D::read()
 {
   
