@@ -33,6 +33,15 @@ docs:
 	srcdir=$(srcdir) doxygen $(srcdir)/doxy.conf
 	(cd docs && tar -czf html.tar.gz html)
 
+# cccc computes metrics like Lines of code and McCabe. It'a available
+# on the web...
+# For the BES, compute metrics for: dispatch xmlcommand ppt server
+.PHONY: cccc
+cccc:	
+	for d in dispatch xmlcommand ppt server; \
+		do $(MAKE) -C $$d $(MFLAGS) cccc; \
+	done
+
 ###########################################################################
 
 # Fortify targets.

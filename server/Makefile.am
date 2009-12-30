@@ -33,3 +33,9 @@ besdaemon_LDADD = ../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 install-data-local:
 	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	-mkdir $(C4_DIR)
+	cccc --outdir=$(C4_DIR) $(beslistener_SOURCES) $(besdaemon_SOURCES)

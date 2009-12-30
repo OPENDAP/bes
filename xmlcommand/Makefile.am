@@ -57,3 +57,9 @@ DAP_SRCS = BESXMLDapCommandModule.cc BESXMLGetDataDDXCommand.cc		\
 	BESXMLCatalogCommand.cc
 DAP_HDRS = BESXMLDapCommandModule.h BESXMLGetDataDDXCommand.h		\
 	BESXMLCatalogCommand.h
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	-mkdir $(C4_DIR)
+	cccc --outdir=$(C4_DIR) $(SRCS) $(DAP_SRCS) $(HDRS) $(DAP_HDRS)

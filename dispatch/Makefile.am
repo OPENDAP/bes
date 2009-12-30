@@ -191,3 +191,14 @@ BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
 	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
 	BESDapErrorInfo.h BESDapService.h
 
+C4_DB=$(C4_DIR)/dispatch.db
+C4_HTML=$(C4_dir)/dispatch.html
+C4_XM=$(C4_dir)/dispatch.xml
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	-mkdir $(C4_DIR)
+	cccc --outdir=$(C4_DIR) \
+		$(SRCS) $(DAP_SRCS) $(BES_DAP_SRCS) \
+		$(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)

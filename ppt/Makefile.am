@@ -42,3 +42,9 @@ libbes_ppt_la_LIBADD += $(openssl_libs)
 SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
 HDRS+=SSLClient.h SSLServer.h SSLConnection.h
 endif
+
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	-mkdir $(C4_DIR)
+	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)

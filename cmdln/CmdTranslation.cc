@@ -107,7 +107,7 @@ CmdTranslation::translate( const string &commands )
 	return "" ;
     }
     
-    LIBXML_TEST_VERSION
+    LIBXML_TEST_VERSION;
 
     int rc;
     xmlTextWriterPtr writer = 0 ;
