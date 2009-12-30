@@ -118,6 +118,11 @@ bes-conf: bes-hdf4-data.sh
 grammarfiles: $(GRAM_SRC)
 	for f in $(GRAM_SRC); do cp $$f grammarfiles; done
 
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	cccc --outdir=$(C4_DIR) $(libhdf4_module_la_SOURCES)
+
 ###########################################################################
 
 # Fortify targets.
