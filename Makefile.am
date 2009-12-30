@@ -71,6 +71,11 @@ bes-conf: bes-hdf5-data.sh
 	    ./bes-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
 	fi)
 
+C4_DIR=./cccc
+.PHONY: cccc
+cccc:	
+	cccc --outdir=$(C4_DIR) $(libhdf5_module_la_SOURCES)
+
 ###########################################################################
 
 # Build the HDF-EOS scanner
