@@ -116,10 +116,10 @@ fortifyclean:
 # Build linux RPMs
 
 srpm: dist
-	rpmbuild -ts hdf5_handler-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm: dist
-	rpmbuild -tb hdf5_handler-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
 
