@@ -60,21 +60,23 @@ public:
 				     ErrorCode ec,
 				     const string &file,
 				     int line )
-			    : BESError( s, 0, file, line ),
-			      _error_code( ec )
-			    {
-				if( fatal )
-				    set_error_type( BES_INTERNAL_FATAL_ERROR ) ;
-				else
-				    set_error_type( BES_INTERNAL_ERROR ) ;
-			    }
-      virtual		~BESDapError() {}
-      int		get_error_code() { return _error_code ; }
+			: BESError( s, 0, file, line ),
+			  _error_code( ec )
+			{
+			    if( fatal )
+				set_error_type( BES_INTERNAL_FATAL_ERROR ) ;
+			    else
+				set_error_type( BES_INTERNAL_ERROR ) ;
+			}
+    virtual		~BESDapError() {}
+    virtual int		get_error_code() const { return _error_code ; }
 
-      static int	convert_error_code( int error_code,
-					    int current_error_type ) ;
-      static int	handleException( BESError &e,
-					 BESDataHandlerInterface &dhi ) ;
+    virtual void	dump( ostream &strm ) const ;
+
+    static int	convert_error_code( int error_code,
+				    int current_error_type ) ;
+    static int	handleException( BESError &e,
+				 BESDataHandlerInterface &dhi ) ;
 };
 
 #endif // BESDapError_h_ 

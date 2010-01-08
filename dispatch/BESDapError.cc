@@ -31,6 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <sstream>
+#include <iostream>
 
 using std::ostringstream;
 
@@ -142,7 +143,8 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 	// handler exception, then convert the error message to include the
 	// error code. If it is or is not a dap exception, we simply return
 	// that the exception was not handled.
-	BESDapError *de = dynamic_cast<BESDapError*>( &e);
+	BESError *e_p = &e ;
+	BESDapError *de = dynamic_cast<BESDapError*>( e_p );
 	if( de )
 	{
 	    ostringstream s;
@@ -155,5 +157,22 @@ BESDapError::handleException( BESError &e, BESDataHandlerInterface &dhi )
 	}
     }
     return 0 ;
+}
+
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance and the stored error code
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+void
+BESDapError::dump( ostream &strm ) const
+{
+    strm << BESIndent::LMarg << "BESDapError::dump - ("
+	 << (void *)this << ")" << endl ;
+    BESIndent::Indent() ;
+    strm << BESIndent::LMarg << "error code = " << get_error_code() << endl ;
+    BESError::dump( strm ) ;
+    BESIndent::UnIndent() ;
 }
 
