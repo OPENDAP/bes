@@ -132,10 +132,14 @@ globbing patterns like a command shell). Since the name 'nc' was associated
 with the netcdf module in the modules section, the netcdf module will be used
 to access any dataset whose name that ends in '.nc'. 
 
-The regular expressions shown in the examples are simple. However, then
+The regular expressions shown in the examples are simple. However, the
 entire dataset name is used, so it's easy to associate different modules with
 datasets based on much more than just the 'file name extension' even though
 that is the most common case.
+
+To test your regular expression for the TypeMatch parameter, or the
+Include and Exclude parameters, use the supplied besregtest program.
+Simply run besregtest to discover its usage.
 
 The renaming configuration parameters affect the BES as a whole, you are done
 with the handler/module configuration.
