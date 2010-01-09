@@ -105,6 +105,12 @@ BES.Data.RootDirectory=/dev/null
 
 # BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
 
+# To test your TypeMatch regular expression you can use besregtest as
+# follows:
+
+# % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
+# expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
+
 BES.Catalog.catalog.TypeMatch=
 
 # Normally, when a client asks for a data catalog, all files and directories
@@ -116,6 +122,12 @@ BES.Catalog.catalog.TypeMatch=
 # In the default values below, all nodes with the file extension .nc
 # are included (the Include parameter) except those that begin with a dot
 # (the Exclud parameter).
+
+# To test your Include/Exclude parameters you can use the besregtest as
+# follows:
+
+# % besregtest include ".*\.nc$;" fnoc1.nc
+# expression ".*\.nc$" matches exactly
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
