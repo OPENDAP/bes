@@ -43,8 +43,8 @@ libbes_dap_la_LDFLAGS = -version-info $(LIBBES_DAP_VERSION)
 libbes_dap_la_LIBADD = libbes_dispatch.la $(DAP_SERVER_LIBS)
 
 besregtest_SOURCES = besregtest.cc
-besregtest_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
-besregtest_LDADD = $(DAP_SERVER_LIBS)
+besregtest_CPPFLAGS = $(AM_CPPFLAGS)
+besregtest_LDADD = libbes_dispatch.la
 
 pkginclude_HEADERS = $(HDRS) $(DAP_HDRS) $(BES_DAP_HDRS)
 

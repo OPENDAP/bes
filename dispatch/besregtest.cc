@@ -39,10 +39,8 @@ using std::string ;
 using std::multimap ;
 using std::pair ;
 
-#include "GNURegex.h"
-#include "Error.h"
-
-using namespace libdap ;
+#include "BESRegex.h"
+#include "BESError.h"
 
 multimap<string,string> expressions ;
 
@@ -104,7 +102,7 @@ main( int argc, char **argv )
 	string reg = (*i).second ;
 	try
 	{
-	    Regex reg_expr( reg.c_str() ) ;
+	    BESRegex reg_expr( reg.c_str() ) ;
 	    int result = reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ;
 	    if( result != -1)
 	    {
@@ -130,10 +128,10 @@ main( int argc, char **argv )
 		cout << endl ;
 	    }
 	}
-	catch( Error &e )
+	catch( BESError &e )
 	{
 	    string serr = (string)"malformed regular expression \"" 
-			  + reg + "\": " + e.get_error_message() ;
+			  + reg + "\": " + e.get_message() ;
 	    cout << serr << endl ;
 	}
     }
