@@ -15,7 +15,6 @@ SUBDIRS = bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
-dist_bin_SCRIPTS = bes-hdf5-data.sh
 
 GRAM_SRCS = he5dds.tab.cc he5dds.tab.hh lex.he5dds.cc \
 	he5das.tab.cc he5das.tab.hh lex.he5das.cc
@@ -43,33 +42,27 @@ libhdf5_module_la_LDFLAGS = -avoid-version -module
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
 EXTRA_DIST = he5das.y he5dds.y he5das.lex  he5dds.lex OSX_Resources \
-	data COPYING hdf5_handler.spec bes-hdf5-data.sh.in
+	data COPYING hdf5_handler.spec h5.conf.in
 
 CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
 	lex.he5das.cc lex.he5dds.cc he5dds.tab.cc he5dds.tab.hh \
-	bes-hdf5-data.sh
+	h5.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf5
 sample_data_DATA = data/tcompound.h5
 
-do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
-		   	   -e 's,[@]libdir[@],$(libdir),g' \
-		   	   -e 's,[@]datadir[@],$(datadir),g'
+install-data-local: h5.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf.$$currdate; \
+	$(INSTALL_DATA) h5.conf $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf
 
-bes-hdf5-data.sh: bes-hdf5-data.sh.in Makefile
-	$(do_subst) < $(srcdir)/bes-hdf5-data.sh.in > bes-hdf5-data.sh
-	chmod +x bes-hdf5-data.sh
+uninstall-local:
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h5.conf
 
-# This makes sure that the handler modifies the bes which configure found
-# even when distcheck is run.
-bes-conf: bes-hdf5-data.sh
-	(bes_prefix=`bes-config --prefix` ; \
-	if test "$$bes_prefix" = "/usr" ; \
-	 then \
-	    ./bes-hdf5-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
-	else \
-	    ./bes-hdf5-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
-	fi)
+h5.conf: h5.conf.in config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h5.conf
 
 C4_DIR=./cccc
 .PHONY: cccc
