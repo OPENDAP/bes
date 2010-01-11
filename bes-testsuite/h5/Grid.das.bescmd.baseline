@@ -112,7 +112,6 @@ Attributes {
                 MergedFields {
                 }
             }
-            Alias UTMGrid GRID_1;
             GRID_2 {
                 String GridName "PolarGrid";
                 Int32 XDim 100;
@@ -144,7 +143,6 @@ Attributes {
                 MergedFields {
                 }
             }
-            Alias PolarGrid GRID_2;
             GRID_3 {
                 String GridName "GEOGrid";
                 Int32 XDim 60;
@@ -159,7 +157,6 @@ Attributes {
                 MergedFields {
                 }
             }
-            Alias GEOGrid GRID_3;
         }
         PointStructure {
         }
