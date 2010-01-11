@@ -101,7 +101,7 @@ install-data-local: h4.conf
 	$(INSTALL_DATA) h4.conf $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
 
 uninstall-local:
-	rm -f $(sysconfdir)/bes/modules/h4.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
 
 h4.conf: h4.conf.in config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf
