@@ -70,7 +70,7 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
 
     if (HDF4RequestHandler::_cachedir.empty()) {
         bool found = false;
-        _cachedir = TheBESKeys::TheKeys()->get_key("HDF4.CacheDir", found);
+        TheBESKeys::TheKeys()->get_value("HDF4.CacheDir", _cachedir, found);
 #if 0
         if (!found || _cachedir == "")
             _cachedir = "/tmp";
