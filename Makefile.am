@@ -26,7 +26,6 @@ libhdf4_module_la_CPPFLAGS = $(CPPFLAGS) $(BES_CPPFLAGS)
 libhdf4_module_la_LDFLAGS = -avoid-version -module
 libhdf4_module_la_LIBADD = hdfclass/libhdfclass.la $(HDFEOS2_LIBS) \
                             $(HDF4_LIBS) $(BES_DAP_LIBS) 
-dist_bin_SCRIPTS = bes-hdf4-data.sh
 
 eosdas_test_SOURCES = eosdas-test.cc $(HDFTYPE_SRC) $(HANDLER_SRC) \
 		      $(HDFTYPE_HDR)
@@ -87,31 +86,25 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 EXTRA_DIST = data bes-testsuite hdf-testfiles \
 	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
 	COPYRIGHT_URI hdf4_handler.spec \
-	OSX_Resources bes-hdf4-data.sh.in 
+	OSX_Resources h4.conf.in
 
-CLEANFILES = *~ *.log *.sum $(GRAM_SRC) bes-hdf4-data.sh
+CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
 
-do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
-		   	   -e 's,[@]libdir[@],$(libdir),g' \
-		   	   -e 's,[@]datadir[@],$(datadir),g'
+install-data-local: h4.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf.$$currdate; \
+	$(INSTALL_DATA) h4.conf $(DESTDIR)$(sysconfdir)/bes/modules/h4.conf
 
-bes-hdf4-data.sh: bes-hdf4-data.sh.in Makefile
-	$(do_subst) < $(srcdir)/bes-hdf4-data.sh.in > bes-hdf4-data.sh
-	chmod +x bes-hdf4-data.sh
+uninstall-local:
+	rm -f $(sysconfdir)/bes/modules/h4.conf
 
-# This makes sure that the handler modifies the bes which confiure found
-# even when distcheck is run.
-bes-conf: bes-hdf4-data.sh
-	(bes_prefix=`bes-config --prefix` ; \
-	if test "$$bes_prefix" = "/usr" ; \
-	then \
-	    ./bes-hdf4-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
-	else \
-	    ./bes-hdf4-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
-	fi)
+h4.conf: h4.conf.in config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > h4.conf
 
 # Copy the generated grammar files to the 'grammarfiles' directory.
 .PHONY: grammarfiles
