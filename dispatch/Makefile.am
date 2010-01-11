@@ -55,19 +55,31 @@ pkgdata_DATA = bes/bes_help.html bes/bes_help.txt bes/bes_help.xml \
 
 EXTRA_DIST = bes/bes.conf.in bes/bes.conf bes/bes_help.html bes/bes_help.txt \
 	bes/bes_help.xml bes-uncompress.sh.in bes-purge.pl.in \
-	bes/dap_help.html bes/dap_help.txt bes/dap_help.xml
+	bes/dap.conf.in bes/dap_help.html bes/dap_help.txt \
+	bes/dap_help.xml
 
-DISTCLEANFILES = bes/bes.conf
+DISTCLEANFILES = bes/bes.conf bes/dap.conf
 
+if LIBDAP
+install-data-local: bes/bes.conf bes/dap.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf.$$currdate; \
+	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf.$$currdate; \
+	$(INSTALL_DATA) bes/dap.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
+else
 install-data-local: bes/bes.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
-	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(sysconfdir)/bes/bes.conf.$$currdate; \
-	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf; \
-	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules
+	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf.$$currdate; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf
+endif
 
 uninstall-local:
-	rm -f $(sysconfdir)/bes/bes.conf
+	rm -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
 	test -d bes || mkdir bes
@@ -77,6 +89,15 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]datarootdir[@]%${datarootdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
+
+bes/dap.conf: bes/dap.conf.in ../config.status
+	test -d bes || mkdir bes
+	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
+		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
+		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
+		-e "s%[@]datarootdir[@]%${datarootdir}%" \
+		-e "s%[@]datadir[@]%${datadir}%" \
+		-e "s%[@]bindir[@]%${bindir}%" $< > bes/dap.conf
 
 ##############################################################################
 #

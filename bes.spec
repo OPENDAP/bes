@@ -126,7 +126,9 @@ exit 0
 %defattr(-,root,root,-)
 %doc ChangeLog NEWS README
 %dir %{_sysconfdir}/bes/
+%dir %{_sysconfdir}/bes/modules
 %config(noreplace) %{_sysconfdir}/bes/bes.conf
+%config(noreplace) %{_sysconfdir}/bes/modules/dap.conf
 %dir %{_datadir}/bes/
 %{_datadir}/bes/*.html
 %{_datadir}/bes/*.txt

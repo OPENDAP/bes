@@ -109,39 +109,58 @@ BESModuleApp::loadModules()
     TheBESKeys::TheKeys()->get_values( "BES.modules", vals, found ) ;
     vector<string>::iterator l = vals.begin() ;
     vector<string>::iterator le = vals.end() ;
+
+    // FIXME: This is a kludge. But we want to be sure that the dap
+    // modules get loaded first.
+    vector<string> ordered_list ;
     for( ; l != le; l++ )
     {
 	string mods = (*l) ;
 	if( mods != "" )
 	{
-	    list<string> mod_list ;
-	    BESUtil::explode( ',', mods, mod_list ) ;
-
-	    list<string>::iterator i = mod_list.begin() ;
-	    list<string>::iterator e = mod_list.end() ;
-	    for( ; i != e; i++ )
+	    if( mods.find( "dap", 0 ) != string::npos )
 	    {
-		string key = "BES.module." + (*i) ;
-		string so ;
-		try
-		{
-		    TheBESKeys::TheKeys()->get_value( key, so, found ) ;
-		}
-		catch( BESError &e )
-		{
-		    cerr << e.get_message() << endl ;
-		    return 1 ;
-		}
-		if( so == "" )
-		{
-		    cerr << "couldn't find the module for " << (*i) << endl ;
-		    return 1 ;
-		}
-		bes_module new_mod ;
-		new_mod._module_name = (*i) ;
-		new_mod._module_library = so ;
-		_module_list.push_back( new_mod ) ;
+		ordered_list.insert( ordered_list.begin(), mods ) ;
 	    }
+	    else
+	    {
+		ordered_list.push_back( mods ) ;
+	    }
+	}
+    }
+
+    l = ordered_list.begin() ;
+    le = ordered_list.end() ;
+    for( ; l != le; l++ )
+    {
+	string mods = (*l) ;
+	list<string> mod_list ;
+	BESUtil::explode( ',', mods, mod_list ) ;
+
+	list<string>::iterator i = mod_list.begin() ;
+	list<string>::iterator e = mod_list.end() ;
+	for( ; i != e; i++ )
+	{
+	    string key = "BES.module." + (*i) ;
+	    string so ;
+	    try
+	    {
+		TheBESKeys::TheKeys()->get_value( key, so, found ) ;
+	    }
+	    catch( BESError &e )
+	    {
+		cerr << e.get_message() << endl ;
+		return 1 ;
+	    }
+	    if( so == "" )
+	    {
+		cerr << "couldn't find the module for " << (*i) << endl ;
+		return 1 ;
+	    }
+	    bes_module new_mod ;
+	    new_mod._module_name = (*i) ;
+	    new_mod._module_library = so ;
+	    _module_list.push_back( new_mod ) ;
 	}
     }
 
