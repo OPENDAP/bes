@@ -231,7 +231,7 @@ attribute:    	GROUP '=' STR
 #endif
 		    parse_error((parser_arg *)arg, NO_DAS_MSG);
 		    /* Don't abort; keep parsing to try and pick up more
-		       attribtues. 3/30/2000 jhrg */
+		       attributes. 3/30/2000 jhrg */
  		    /* YYABORT; */
 		}
 ;
@@ -383,6 +383,7 @@ strs:		STR
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
+#if 0
 		    if (name=="GridName" || name=="SwathName" || name=="PointName") {
 		      // Strip off quotes in new ID
 		      string newname = $1+1;
@@ -390,10 +391,11 @@ strs:		STR
 		      // and convert embedded spaces to _
 		      string::size_type space = 0;
 		      while((space = newname.find_first_of(' ', space)) != newname.npos) {
-			newname[space] = '_';
+			     newname[space] = '_';
 		      }
  		      SECOND_IN_STACK->attr_alias(newname, last_grid_swath);
 		    }
+#endif		    
 		}
                 | strs ',' STR
 		{

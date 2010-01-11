@@ -33,7 +33,6 @@ Attributes {
                 LevelLink {
                 }
             }
-            Alias Simple_Point POINT_1;
             POINT_2 {
                 String PointName "FixedBuoy Point";
                 Level {
@@ -41,7 +40,6 @@ Attributes {
                 LevelLink {
                 }
             }
-            Alias FixedBuoy_Point POINT_2;
             POINT_3 {
                 String PointName "FloatBuoy Point";
                 Level {
@@ -49,7 +47,6 @@ Attributes {
                 LevelLink {
                 }
             }
-            Alias FloatBuoy_Point POINT_3;
         }
     }
 }

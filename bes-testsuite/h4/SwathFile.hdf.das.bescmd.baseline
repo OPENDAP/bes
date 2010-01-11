@@ -107,7 +107,6 @@ Attributes {
                     }
                 }
             }
-            Alias Swath1 SWATH_1;
         }
         GridStructure {
         }
