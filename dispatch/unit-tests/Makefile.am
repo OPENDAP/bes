@@ -23,11 +23,11 @@ noinst_HEADERS = test_config.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-#TESTS = servicesT
+#TESTS = keysT
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT debugT utilT regexT scrubT checkT servicesT
+		encodeT debugT utilT regexT scrubT checkT servicesT fsT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -54,6 +54,8 @@ CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/te
 
 EXTRA_DIST = $(CACHE) common_tests.exp bad_keys1.ini bad_keys2.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \
+	keys_test_include.ini keys_test_m1.ini \
+	keys_test_m2.ini keys_test_m3.ini \
 	persistence_cgi_test.ini persistence_file_test.ini \
 	persistence_mysql_test.ini container01.file \
 	persistence_file1.txt persistence_file2.txt \
@@ -131,4 +133,6 @@ checkT_SOURCES = checkT.cc
 
 servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
+
+fsT_SOURCES = fsT.cc
 

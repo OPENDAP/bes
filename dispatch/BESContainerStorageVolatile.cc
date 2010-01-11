@@ -33,6 +33,7 @@
 #include "BESContainerStorageVolatile.h"
 #include "BESFileContainer.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "BESInfo.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -49,16 +50,18 @@ BESContainerStorageVolatile::BESContainerStorageVolatile( const string &n )
 {
     string key = "BES.Data.RootDirectory" ;
     bool found = false ;
-    _root_dir = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    TheBESKeys::TheKeys()->get_value( key, _root_dir, found ) ;
     if( _root_dir == "" )
     {
-	string s = key + " not defined in bes configuration file" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	string s = key + " not defined in BES configuration file" ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
+    found = false ;
     key = (string)"BES.FollowSymLinks" ;
-    string s_str =
-	BESUtil::lowercase( TheBESKeys::TheKeys()->get_key( key, found ) ) ;
+    string s_str ;
+    TheBESKeys::TheKeys()->get_value( key, s_str, found ) ;
+    s_str = BESUtil::lowercase( s_str ) ;
     if( found && ( s_str == "yes" || s_str == "on" || s_str == "true" ) )
     {
 	_follow_sym_links = true ;

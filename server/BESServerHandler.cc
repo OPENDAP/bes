@@ -64,7 +64,18 @@ using std::flush ;
 BESServerHandler::BESServerHandler()
 {
     bool found = false ;
-    _method = TheBESKeys::TheKeys()->get_key( "BES.ProcessManagerMethod", found ) ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( "BES.ProcessManagerMethod",
+					  _method, found ) ;
+    }
+    catch( BESError &e )
+    {
+	cerr << "Unable to determine method to handle clients, "
+	     << "single or multiple as defined by BES.ProcessManagerMethod"
+	     << ": " << e.get_message() << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
     if( _method != "multiple" && _method != "single" )
     {
 	cerr << "Unable to determine method to handle clients, "

@@ -34,10 +34,12 @@
 #define S_BESCatalogUtils_h 1
 
 #include <map>
+#include <vector>
 #include <list>
 #include <string>
 
 using std::map ;
+using std::vector ;
 using std::list ;
 using std::string ;
 
@@ -62,7 +64,7 @@ public:
     } ;
 
 private:
-    list< type_reg >		_match_list ;
+    vector< type_reg >		_match_list ;
 
     				BESCatalogUtils() {}
 public:
@@ -73,7 +75,7 @@ public:
     virtual bool		include( const string &inQuestion ) const ;
     virtual bool		exclude( const string &inQuestion ) const ;
 
-    typedef list< type_reg >::const_iterator match_citer ;
+    typedef vector< type_reg >::const_iterator match_citer ;
     BESCatalogUtils::match_citer match_list_begin() const ;
     BESCatalogUtils::match_citer match_list_end() const ;
 

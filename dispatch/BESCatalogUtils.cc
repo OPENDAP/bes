@@ -36,9 +36,14 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include <iostream>
+using std::cout ;
+using std::endl ;
+
 #include "BESCatalogUtils.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "GNURegex.h"
 #include "Error.h"
@@ -54,11 +59,11 @@ BESCatalogUtils( const string &n )
 {
     string key = "BES.Catalog." + n + ".RootDirectory" ;
     bool found = false ;
-    _root_dir = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    TheBESKeys::TheKeys()->get_value( key, _root_dir, found ) ;
     if( !found || _root_dir == "" )
     {
-	string s = key + " not defined in key file" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	string s = key + " not defined in BES configuration file" ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
     DIR *dip = opendir( _root_dir.c_str() ) ;
     if( dip == NULL )
@@ -69,53 +74,75 @@ BESCatalogUtils( const string &n )
     }
     closedir( dip ) ;
 
+    found = false ;
     key = (string)"BES.Catalog." + n + ".Exclude" ;
-    string e_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( found && e_str != "" && e_str != ";" )
+    vector<string> vals ;
+    TheBESKeys::TheKeys()->get_values( key, vals, found ) ;
+    vector<string>::iterator ei = vals.begin() ;
+    vector<string>::iterator ee = vals.end() ;
+    for( ; ei != ee; ei++ )
     {
-	BESUtil::explode( ';', e_str, _exclude ) ;
+	string e_str = (*ei) ;
+	if( !e_str.empty() && e_str != ";" )
+	    BESUtil::explode( ';', e_str, _exclude ) ;
     }
 
     key = (string)"BES.Catalog." + n + ".Include" ;
-    string i_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( found && i_str != "" && i_str != ";" )
+    vals.clear() ;
+    TheBESKeys::TheKeys()->get_values( key, vals, found ) ;
+    vector<string>::iterator ii = vals.begin() ;
+    vector<string>::iterator ie = vals.end() ;
+    for( ; ii != ie; ii++ )
     {
-	BESUtil::explode( ';', i_str, _include ) ;
+	string i_str = (*ii) ;
+	if( !i_str.empty() && i_str != ";" )
+	    BESUtil::explode( ';', i_str, _include ) ;
     }
 
     key = "BES.Catalog." + n + ".TypeMatch" ;
-    string curr_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
-    if( curr_str == "" )
+    list<string> match_list ;
+    vals.clear() ;
+    TheBESKeys::TheKeys()->get_values( key, vals, found ) ;
+    if( !found || vals.size() == 0 )
     {
 	string s = key + " not defined in key file" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
-    list<string> match_list ;
-    BESUtil::explode( ';', curr_str, match_list ) ;
+    vector<string>::iterator vi = vals.begin() ;
+    vector<string>::iterator ve = vals.end() ;
+    for( ; vi != ve; vi++ )
+    {
+	BESUtil::explode( ';', (*vi), match_list ) ;
+    }
+
     list<string>::iterator mli = match_list.begin() ;
     list<string>::iterator mle = match_list.end() ;
     for( ; mli != mle; mli++ )
     {
-	list<string> amatch ;
-	BESUtil::explode( ':', (*mli), amatch ) ;
-	if( amatch.size() != 2 )
+	if( !((*mli).empty()) && *(mli) != ";" )
 	{
-	    string s = (string)"Catalog type match malformed, "
-		       + "looking for type:regexp;[type:regexp;]" ;
-	    throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	    list<string> amatch ;
+	    BESUtil::explode( ':', (*mli), amatch ) ;
+	    if( amatch.size() != 2 )
+	    {
+		string s = (string)"Catalog type match malformed, "
+			   + "looking for type:regexp;[type:regexp;]" ;
+		throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	    }
+	    list<string>::iterator ami = amatch.begin() ;
+	    type_reg newval ;
+	    newval.type = (*ami) ;
+	    ami++ ;
+	    newval.reg = (*ami) ;
+	    _match_list.push_back( newval ) ;
 	}
-	list<string>::iterator ami = amatch.begin() ;
-	type_reg newval ;
-	newval.type = (*ami) ;
-	ami++ ;
-	newval.reg = (*ami) ;
-	_match_list.push_back( newval ) ;
     }
 
     key = (string)"BES.Catalog." + n + ".FollowSymLinks" ;
-    string s_str =
-	BESUtil::lowercase( TheBESKeys::TheKeys()->get_key( key, found ) ) ;
-    if( found && ( s_str == "yes" || s_str == "on" || s_str == "true" ) )
+    string s_str ;
+    TheBESKeys::TheKeys()->get_value( key, s_str, found ) ;
+    s_str = BESUtil::lowercase( s_str ) ;
+    if( s_str == "yes" || s_str == "on" || s_str == "true" )
     {
 	_follow_syms = true ;
     }

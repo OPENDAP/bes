@@ -126,7 +126,19 @@ ServerApp::set_group_id()
     BESDEBUG( "server", "ServerApp: Setting group id ... " << endl ) ;
     bool found = false ;
     string key = "BES.Group" ;
-    string group_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string group_str ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( key, group_str, found ) ;
+    }
+    catch( BESError &e )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	string err = string("FAILED: ") + e.get_message() ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
     if( !found || group_str.empty() )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
@@ -201,7 +213,19 @@ ServerApp::set_user_id()
     // user id.
     bool found = false ;
     string key = "BES.User" ;
-    string user_str = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string user_str ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( key, user_str, found ) ;
+    }
+    catch( BESError &e )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	string err = (string)"FAILED: " + e.get_message() ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
     if( !found || user_str.empty() )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
@@ -376,7 +400,19 @@ ServerApp::initialize( int argc, char **argv )
     string port_key = "BES.ServerPort" ;
     if( !_gotPort )
     {
-	string sPort = TheBESKeys::TheKeys()->get_key( port_key, found ) ;
+	string sPort ;
+	try
+	{
+	    TheBESKeys::TheKeys()->get_value( port_key, sPort, found ) ;
+	}
+	catch( BESError &e )
+	{
+	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    string err = (string)"FAILED: " + e.get_message() ;
+	    cerr << err << endl ;
+	    (*BESLog::TheLog()) << err << endl ;
+	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	}
 	if( found )
 	{
 	    _portVal = atoi( sPort.c_str() ) ;
@@ -391,13 +427,25 @@ ServerApp::initialize( int argc, char **argv )
     string socket_key = "BES.ServerUnixSocket" ;
     if( _unixSocket == "" )
     {
-	_unixSocket = TheBESKeys::TheKeys()->get_key( socket_key, found ) ;
+	try
+	{
+	    TheBESKeys::TheKeys()->get_value( port_key, _unixSocket, found ) ;
+	}
+	catch( BESError &e )
+	{
+	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    string err = (string)"FAILED: " + e.get_message() ;
+	    cerr << err << endl ;
+	    (*BESLog::TheLog()) << err << endl ;
+	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	}
     }
 
     if( !_gotPort && _unixSocket == "" )
     {
 	string msg = "Must specify a tcp port or a unix socket or both\n" ;
-	msg += "Please specify on the command line with -p <port> -u <unix_socket>\n" ;
+	msg += "Please specify on the command line with -p <port>" ;
+	msg += " and/or -u <unix_socket>\n" ;
 	msg += "Or specify in the bes configuration file with "
 	    + port_key + " and/or " + socket_key + "\n" ;
 	cout << endl << msg ;
@@ -409,7 +457,19 @@ ServerApp::initialize( int argc, char **argv )
     if( _secure == false )
     {
 	string key = "BES.ServerSecure" ;
-	string isSecure = TheBESKeys::TheKeys()->get_key( key, found ) ;
+	string isSecure ;
+	try
+	{
+	    TheBESKeys::TheKeys()->get_value( key, isSecure, found ) ;
+	}
+	catch( BESError &e )
+	{
+	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    string err = (string)"FAILED: " + e.get_message() ;
+	    cerr << err << endl ;
+	    (*BESLog::TheLog()) << err << endl ;
+	    exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+	}
 	if( isSecure == "Yes" || isSecure == "YES" || isSecure == "yes" )
 	{
 	    _secure = true ;

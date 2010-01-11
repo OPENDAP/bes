@@ -403,7 +403,8 @@ TcpSocket::setTcpRecvBufferSize()
 	string setit ;
 	try
 	{
-	    setit = TheBESKeys::TheKeys()->get_key( "BES.SetSockRecvSize", found );
+	    TheBESKeys::TheKeys()->get_value( "BES.SetSockRecvSize",
+					      setit, found);
 	}
 	catch( ... )
 	{
@@ -413,8 +414,10 @@ TcpSocket::setTcpRecvBufferSize()
 	}
 	if( setit == "Yes" || setit == "yes" || setit == "Yes" )
 	{
-	    string sizestr
-		= TheBESKeys::TheKeys()->get_key( "BES.SockRecvSize", found ) ;
+	    found = false ;
+	    string sizestr ;
+	    TheBESKeys::TheKeys()->get_value( "BES.SockRecvSize",
+					      sizestr, found ) ;
 	    istringstream sizestrm( sizestr ) ;
 	    unsigned int sizenum = 0 ;
 	    sizestrm >> sizenum ;
@@ -467,10 +470,11 @@ void
 TcpSocket::setTcpSendBufferSize()
 {
     bool found = false ;
+    vector<string> vals ;
     string setit ;
     try
     {
-	setit = TheBESKeys::TheKeys()->get_key( "BES.SetSockSendSize", found );
+	TheBESKeys::TheKeys()->get_value( "BES.SetSockSendSize", setit, found );
     }
     catch( ... )
     {
@@ -480,8 +484,17 @@ TcpSocket::setTcpSendBufferSize()
     }
     if( setit == "Yes" || setit == "yes" || setit == "Yes" )
     {
-	string sizestr
-	    = TheBESKeys::TheKeys()->get_key( "BES.SockSendSize", found ) ;
+	found = false ;
+	string sizestr ;
+	try
+	{
+	    TheBESKeys::TheKeys()->get_value( "BES.SockSendSize", sizestr, found ) ;
+	}
+	catch( BESError &e )
+	{
+	    throw BESInternalFatalError( e.get_message(), e.get_file(),
+					 e.get_line() ) ;
+	}
 	istringstream sizestrm( sizestr ) ;
 	unsigned int sizenum = 0 ;
 	sizestrm >> sizenum ;

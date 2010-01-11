@@ -322,7 +322,9 @@ BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
 #                                                                       #
-# Data Handler Specific key/value parameters                            #
+# Include all module configuration files                                #
 #                                                                       #
 #-----------------------------------------------------------------------#
+
+BES.Include=modules/.*\.conf$
 

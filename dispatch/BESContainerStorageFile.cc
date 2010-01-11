@@ -43,6 +43,7 @@ using std::ifstream ;
 #include "BESFileContainer.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "BESInfo.h"
 
 /** @brief pull container information from the specified file
@@ -83,11 +84,11 @@ BESContainerStorageFile::BESContainerStorageFile( const string &n )
 
     string key = "BES.Container.Persistence.File." + n ;
     bool found = false ;
-    _file = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    TheBESKeys::TheKeys()->get_value( key, _file, found ) ;
     if( _file == "" )
     {
-	string s = key + " not defined in key file" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+	string s = key + " not defined in BES configuration file" ;
+	throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
     }
 
     ifstream persistence_file( _file.c_str() ) ;

@@ -265,7 +265,8 @@ BESContainerStorageList::isnice()
     bool ret = false ;
     string key = "BES.Container.Persistence" ;
     bool found = false ;
-    string isnice = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string isnice ;
+    TheBESKeys::TheKeys()->get_value( key, isnice, found ) ;
     if( isnice == "Nice" || isnice == "nice" || isnice == "NICE" )
 	ret = true ;
     else 

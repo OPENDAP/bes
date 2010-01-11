@@ -81,40 +81,41 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 #
 # Sources and Headers
 
-SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc \
-	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc \
-	TheBESKeys.cc BESStatus.cc \
-	BESContainer.cc BESFileContainer.cc \
-	BESContainerStorage.cc BESContainerStorageFile.cc \
-	BESContainerStorageList.cc BESContainerStorageVolatile.cc \
+SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc		\
+	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc		\
+	TheBESKeys.cc BESStatus.cc					\
+	BESContainer.cc BESFileContainer.cc				\
+	BESContainerStorage.cc BESContainerStorageFile.cc		\
+	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
-	BESDefine.cc BESDefinitionStorageList.cc \
-	BESDefinitionStorageVolatile.cc \
-	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc \
-	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc \
+	BESDefine.cc BESDefinitionStorageList.cc			\
+	BESDefinitionStorageVolatile.cc					\
+	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc	\
+	BESDelDefResponseHandler.cc BESDelDefsResponseHandler.cc	\
 	BESSetContextResponseHandler.cc BESShowContextResponseHandler.cc \
-	BESContextManager.cc \
-	BESProcIdResponseHandler.cc BESResponseHandler.cc \
-	BESHelpResponseHandler.cc BESStatusResponseHandler.cc \
-	BESVersionResponseHandler.cc BESConfigResponseHandler.cc \
-	BESStreamResponseHandler.cc BESResponseHandlerList.cc \
-	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc \
-	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc \
-	BESRequestHandler.cc BESRequestHandlerList.cc \
+	BESContextManager.cc						\
+	BESProcIdResponseHandler.cc BESResponseHandler.cc		\
+	BESHelpResponseHandler.cc BESStatusResponseHandler.cc		\
+	BESVersionResponseHandler.cc BESConfigResponseHandler.cc	\
+	BESStreamResponseHandler.cc BESResponseHandlerList.cc		\
+	BESInfo.cc BESTextInfo.cc BESVersionInfo.cc BESHTMLInfo.cc	\
+	BESInfoList.cc BESXMLInfo.cc BESSilentInfo.cc			\
+	BESRequestHandler.cc BESRequestHandlerList.cc			\
 	BESTransmitter.cc BESBasicTransmitter.cc BESBasicHttpTransmitter.cc \
-	BESReporterList.cc BESConstraintFuncs.cc \
-	BESServiceRegistry.cc BESServicesResponseHandler.cc \
-	BESMemoryGlobalArea.cc \
-	BESMemoryManager.cc BESProcessEncodedString.cc \
-	BESAggFactory.cc BESAggregationServer.cc \
-	BESReturnManager.cc \
-	BESError.cc BESExceptionManager.cc \
-	BESDataHandlerInterface.cc \
+	BESReporterList.cc BESConstraintFuncs.cc			\
+	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
+	BESMemoryGlobalArea.cc						\
+	BESMemoryManager.cc BESProcessEncodedString.cc			\
+	BESAggFactory.cc BESAggregationServer.cc			\
+	BESReturnManager.cc						\
+	BESError.cc BESExceptionManager.cc				\
+	BESDataHandlerInterface.cc					\
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
-	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc \
-	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc \
-	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc
+	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
+	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc		\
+	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc		\
+	BESFSDir.cc BESFSFile.cc
 
 HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
 	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h 	\
@@ -159,7 +160,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
 	BESDebug.h BESCache.h BESUncompressManager.h 			\
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h		\
-	BESTokenizer.h
+	BESTokenizer.h BESFSDir.h BESFSFile.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

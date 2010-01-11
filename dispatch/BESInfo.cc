@@ -78,7 +78,9 @@ BESInfo::BESInfo( const string &key, ostream *strm, bool strm_owned )
       _buffered( true )
 {
     bool found = false ;
-    string b = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    vector<string> vals ;
+    string b ;
+    TheBESKeys::TheKeys()->get_value( key, b, found ) ;
     if( b == "true" || b == "True" || b == "TRUE" ||
 	b == "yes" || b == "Yes" || b == "YES" )
     {
@@ -190,10 +192,19 @@ void
 BESInfo::add_data_from_file( const string &key, const string &name )
 {
     bool found = false ;
-    string file = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string file ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( key, file, found ) ;
+    }
+    catch( ... )
+    {
+	found = false ;
+    }
     if( found == false )
     {
-	add_data( name + " file key " + key + " not found, information not available\n" ) ;
+	add_data( name + " file key " + key
+	          + " not found, information not available\n" ) ;
     }
     else
     {

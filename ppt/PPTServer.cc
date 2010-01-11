@@ -41,6 +41,7 @@ using std::ostringstream ;
 
 #include "PPTServer.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "PPTProtocol.h"
 #include "SocketListener.h"
 #include "ServerHandler.h"
@@ -96,41 +97,43 @@ void
 PPTServer::get_secure_files()
 {
     bool found = false ;
-    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerCertFile", _cfile, found ) ;
     if( !found || _cfile.empty() )
     {
 	string err = "Unable to determine server certificate file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ServerCertAuthFile", found );
+    TheBESKeys::TheKeys()->get_value( "BES.ServerCertAuthFile", _cafile, found);
     if( !found || _cafile.empty() )
     {
 	string err = "Unable to determine server certificate authority file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ServerKeyFile", found ) ;
+    found = false ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerKeyFile", _kfile, found ) ;
     if( !found || _kfile.empty() )
     {
 	string err = "Unable to determine server key file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    string portstr =
-	TheBESKeys::TheKeys()->get_key( "BES.ServerSecurePort", found ) ;
+    found = false ;
+    string portstr ;
+    TheBESKeys::TheKeys()->get_value( "BES.ServerSecurePort", portstr, found ) ;
     if( !found || portstr.empty() )
     {
 	string err = "Unable to determine secure connection port." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     _securePort = atoi( portstr.c_str() ) ;
     if( !_securePort )
     {
 	string err = (string)"Unable to determine secure connection port "
 	             + "from string " + portstr ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
 

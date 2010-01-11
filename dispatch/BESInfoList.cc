@@ -78,14 +78,7 @@ BESInfoList::build_info( )
 {
     string info_type = "" ;
     bool found = false ;
-    try
-    {
-	info_type = TheBESKeys::TheKeys()->get_key( "BES.Info.Type", found ) ;
-    }
-    catch( ... )
-    {
-	info_type = "" ;
-    }
+    TheBESKeys::TheKeys()->get_value( "BES.Info.Type", info_type, found ) ;
 
     if( !found || info_type == "" )
 	info_type = BES_DEFAULT_INFO_TYPE ;

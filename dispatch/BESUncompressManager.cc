@@ -62,7 +62,8 @@ BESUncompressManager::BESUncompressManager()
 
     bool found = false ;
     string key = "BES.Uncompress.Retry" ;
-    string val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    string val ;
+    TheBESKeys::TheKeys()->get_value( key, val, found ) ;
     if( !found || val.empty() )
     {
 	_retry = 2000 ;
@@ -74,7 +75,8 @@ BESUncompressManager::BESUncompressManager()
     }
 
     key = "BES.Uncompress.NumTries" ;
-    val = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    val = "" ;
+    TheBESKeys::TheKeys()->get_value( key, val, found ) ;
     if( !found || val.empty() )
     {
 	_num_tries = 10 ;

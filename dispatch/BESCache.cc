@@ -51,6 +51,7 @@ using std::endl ;
 
 #include "BESCache.h"
 #include "TheBESKeys.h"
+#include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -67,28 +68,28 @@ BESCache::check_ctor_params()
 {
     if( _cache_dir.empty() )
     {
-	string err = "The cache dir was not specified, must be non-empty" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string err = "The cache directory was not specified, must be non-empty";
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     struct stat buf;
     int statret = stat( _cache_dir.c_str(), &buf ) ;
     if( statret != 0 || ! S_ISDIR(buf.st_mode) )
     {
-	string err = "The cache dir " + _cache_dir + " does not exist" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string err = "The cache directory " + _cache_dir + " does not exist" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _prefix.empty() )
     {
-	string err = "The prefix was not specified, must be non-empty" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string err = "The cache file prefix was not specified, must be non-empty" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     if( _cache_size == 0 )
     {
 	string err = "The cache size was not specified, must be non-zero" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     // the cache size is specified in megabytes. When calculating
     // the size of the cache we convert to bytes, which is 1048576
@@ -107,7 +108,7 @@ BESCache::check_ctor_params()
  * @param cache_dir directory where the files are cached
  * @param prefix prefix used to prepend to the resulting cached file
  * @param size cache max size in megabytes (1 == 1048576 bytes)
- * @throws BESInternalError if cache_dir or prefix is 
+ * @throws BESSyntaxUserError if cache_dir or prefix is 
  * empty, if size is 0, or if the cache directory does not exist.
  */
 BESCache::BESCache( const string &cache_dir,
@@ -118,7 +119,7 @@ BESCache::BESCache( const string &cache_dir,
       _cache_size( size ),
       _lock_fd( -1 )
 {
-    check_ctor_params(); // Throws BESInternalError on error.
+    check_ctor_params(); // Throws BESSyntaxUserError on error.
 }
 
 /** @brief Constructor that takes as arguments keys to the cache directory,
@@ -132,7 +133,7 @@ BESCache::BESCache( const string &cache_dir,
  * @param cache_dir_key key to look up in the keys file to find cache dir
  * @param prefix_key key to look up in the keys file to find the cache prefix
  * @param size_key key to look up in the keys file to find the cache size
- * @throws BESInternalError if keys not set, cache dir or prefix empty,
+ * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
  * size is 0, or if cache dir does not exist.
  */
 BESCache::BESCache( BESKeys &keys,
@@ -143,37 +144,37 @@ BESCache::BESCache( BESKeys &keys,
       _lock_fd( -1 )
 {
     bool found = false ;
-    _cache_dir = keys.get_key( cache_dir_key, found ) ;
+    keys.get_value( cache_dir_key, _cache_dir, found ) ;
     if( !found )
     {
-	string err = "The cache dir key " + cache_dir_key
-	             + " was not found" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	string err = "The cache directory key " + cache_dir_key
+	             + " was not found in the BES configuration file" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _prefix = keys.get_key( prefix_key, found ) ;
+    keys.get_value( prefix_key, _prefix, found ) ;
     if( !found )
     {
 	string err = "The prefix key " + prefix_key
-	             + " was not found" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	             + " was not found in the BES configuration file" ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    string _cache_size_str = keys.get_key( size_key, found ) ;
+    string cache_size_str ;
+    keys.get_value( size_key, cache_size_str, found ) ;
     if( !found )
     {
 	string err = "The size key " + size_key
-	             + " was not found" ;
+	             + " was not found in the BES configuration file" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-
-    std::istringstream is( _cache_size_str ) ;
+    std::istringstream is( cache_size_str ) ;
     is >> _cache_size ;
 
-    check_ctor_params(); // Throws BESInternalError on error.
+    check_ctor_params(); // Throws BESSyntaxUserError on error.
 }
 
 /** @brief lock the cache using a file lock

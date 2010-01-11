@@ -141,21 +141,6 @@ public:
 	}
 
 	cout << "*****************************************" << endl;
-	cout << "bad keys, too many equal signs" << endl;
-	bes_conf = (string)TEST_SRC_DIR + "/bad_keys2.ini" ;
-	TheBESKeys::ConfigFile = bes_conf ;
-	try
-	{
-	    TheBESKeys::TheKeys() ;
-	    CPPUNIT_ASSERT( !"loaded keys, should have failed" ) ;
-	}
-	catch( BESError &e )
-	{
-	    cout << "unable to create BESKeys, good, because:" << endl ;
-	    cout << e.get_message() << endl ;
-	}
-
-	cout << "*****************************************" << endl;
 	cout << "good keys file, should load" << endl;
 	bes_conf = (string)TEST_SRC_DIR + "/keys_test.ini" ;
 	TheBESKeys::ConfigFile = bes_conf ;
@@ -173,7 +158,7 @@ public:
 	cout << "get keys" << endl;
 	bool found = false ;
 	string ret = "" ;
-	for( int i = 1; i < 4; i++ )
+	for( int i = 1; i < 5; i++ )
 	{
 	    char key[32] ;
 	    sprintf( key, "BES.KEY%d", i ) ;
@@ -181,21 +166,67 @@ public:
 	    sprintf( val, "val%d", i ) ;
 	    cout << "looking for " << key << " with value " << val << endl ;
 	    ret = "" ;
-	    ret = TheBESKeys::TheKeys()->get_key( key, found ) ;
+	    TheBESKeys::TheKeys()->get_value( key, ret, found ) ;
 	    CPPUNIT_ASSERT( found ) ;
 	    CPPUNIT_ASSERT( !ret.empty() ) ;
 	    CPPUNIT_ASSERT( ret == val ) ;
 	}
 
 	cout << "*****************************************" << endl;
+	cout << "use get_values to get a single value key" << endl;
+	found = false ;
+	vector<string> vals ;
+	TheBESKeys::TheKeys()->get_values( "BES.KEY1", vals, found ) ;
+	CPPUNIT_ASSERT( found ) ;
+	CPPUNIT_ASSERT( vals.size() == 1 ) ;
+	CPPUNIT_ASSERT( vals[0] == "val1" ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "use get_values to get a multi value key" << endl;
+	found = false ;
+	vals.clear() ;
+	TheBESKeys::TheKeys()->get_values( "BES.KEY.MULTI", vals, found ) ;
+	CPPUNIT_ASSERT( found ) ;
+	CPPUNIT_ASSERT( vals.size() == 5 ) ;
+	for( int i = 0; i < 5; i++ )
+	{
+	    char val[32] ;
+	    sprintf( val, "val_multi_%d", i ) ;
+	    cout << "looking for value " << val << endl ;
+	    CPPUNIT_ASSERT( vals[i] == val ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "use get_value on multi-value key" << endl;
+	ret = "" ;
+	found = false ;
+	try
+	{
+	    TheBESKeys::TheKeys()->get_value( "BES.KEY.MULTI", ret, found ) ;
+	}
+	catch( BESError &e )
+	{
+	    cout << "getting single value from multi-value key failed, good"
+		 << endl ;
+	    cout << e.get_message() << endl ;
+	}
+
+	cout << "*****************************************" << endl;
 	cout << "look for non existant key" << endl;
-	ret = TheBESKeys::TheKeys()->get_key( "BES.NOTFOUND", found ) ;
+	ret = "" ;
+	TheBESKeys::TheKeys()->get_value( "BES.NOTFOUND", ret, found ) ;
 	CPPUNIT_ASSERT( found == false ) ;
 	CPPUNIT_ASSERT( ret.empty() ) ;
 
 	cout << "*****************************************" << endl;
 	cout << "look for key with empty value" << endl;
-	ret = TheBESKeys::TheKeys()->get_key( "BES.KEY4", found ) ;
+	TheBESKeys::TheKeys()->get_value( "BES.KEY5", ret, found ) ;
+	CPPUNIT_ASSERT( found ) ;
+	CPPUNIT_ASSERT( ret.empty() ) ;
+
+	cout << "*****************************************" << endl;
+	cout << "look for key with empty value in included file" << endl;
+	TheBESKeys::TheKeys()->get_value( "BES.KEY6", ret, found ) ;
 	CPPUNIT_ASSERT( found ) ;
 	CPPUNIT_ASSERT( ret.empty() ) ;
 
@@ -203,8 +234,7 @@ public:
 	cout << "set bad key, 0 = characters" << endl;
 	try
 	{
-	    ret = TheBESKeys::TheKeys()->set_key( "BES.NOEQS" ) ;
-	    cerr << "    value = " << ret << endl ;
+	    TheBESKeys::TheKeys()->set_key( "BES.NOEQS" ) ;
 	    CPPUNIT_ASSERT ( !"set_key successful, should have failed" ) ;
 	}
 	catch( BESError &e )
@@ -214,25 +244,28 @@ public:
 	}
 
 	cout << "*****************************************" << endl;
-	cout << "set bad key, 2 = characters" << endl;
+	cout << "set key, 2 = characters" << endl;
 	try
 	{
-	    ret = TheBESKeys::TheKeys()->set_key( "BES.2EQS=val1=val2" ) ;
-	    cerr << "    value = " << ret << endl ;
-	    CPPUNIT_ASSERT ( !"set_key successful, should have failed" ) ;
+	    TheBESKeys::TheKeys()->set_key( "BES.2EQS=val1=val2" ) ;
+	    found = false ;
+	    TheBESKeys::TheKeys()->get_value( "BES.2EQS", ret, found ) ;
+	    CPPUNIT_ASSERT( ret == "val1=val2" ) ;
 	}
 	catch( BESError &e )
 	{
-	    cout << "unable to set the key, good, because:" << endl ;
-	    cout << e.get_message() ;
+	    cerr << e.get_message() << endl ;
+	    CPPUNIT_ASSERT( !"failed to set key where value has multiple =" ) ;
 	}
 
 	cout << "*****************************************" << endl;
-	cout << "set BES.KEY5 to val5" << endl;
+	cout << "set BES.KEY7 to val7" << endl;
 	try
 	{
-	    ret = TheBESKeys::TheKeys()->set_key( "BES.KEY5=val5" ) ;
-	    CPPUNIT_ASSERT( ret == "val5" ) ;
+	    TheBESKeys::TheKeys()->set_key( "BES.KEY7=val7" ) ;
+	    found = false ;
+	    TheBESKeys::TheKeys()->get_value( "BES.KEY7", ret, found ) ;
+	    CPPUNIT_ASSERT( ret == "val7" ) ;
 	}
 	catch( BESError &e )
 	{
@@ -241,16 +274,57 @@ public:
 	}
 
 	cout << "*****************************************" << endl;
-	cout << "set BES.KEY6 to val6" << endl;
+	cout << "set BES.KEY8 to val8" << endl;
 	try
 	{
-	    ret = TheBESKeys::TheKeys()->set_key( "BES.KEY6", "val6" ) ;
-	    CPPUNIT_ASSERT( ret == "val6" ) ;
+	    TheBESKeys::TheKeys()->set_key( "BES.KEY8", "val8" ) ;
+	    found = false ;
+	    TheBESKeys::TheKeys()->get_value( "BES.KEY8", ret, found ) ;
+	    CPPUNIT_ASSERT( ret == "val8" ) ;
 	}
 	catch( BESError &e )
 	{
 	    cerr << e.get_message() ;
 	    CPPUNIT_ASSERT( !"unable to set the key" ) ;
+	}
+
+	cout << "*****************************************" << endl;
+	cout << "add val_multi_5 to BES.KEY.MULTI" << endl;
+	try
+	{
+	    TheBESKeys::TheKeys()->set_key( "BES.KEY.MULTI",
+					    "val_multi_5", true ) ;
+	    found = false ;
+	    vals.clear() ;
+	    TheBESKeys::TheKeys()->get_values( "BES.KEY.MULTI", vals, found ) ;
+	    CPPUNIT_ASSERT( found ) ;
+	    CPPUNIT_ASSERT( vals.size() == 6 ) ;
+	    for( int i = 0; i < 6; i++ )
+	    {
+		char val[32] ;
+		sprintf( val, "val_multi_%d", i ) ;
+		cout << "looking for value " << val << endl ;
+		CPPUNIT_ASSERT( vals[i] == val ) ;
+	    }
+
+	}
+	catch( BESError &e )
+	{
+	    cerr << e.get_message() ;
+	    CPPUNIT_ASSERT( !"unable to set the key" ) ;
+	}
+
+
+	cout << "*****************************************" << endl;
+	cout << "get keys from reg exp include" << endl;
+	found = false ;
+	vals.clear() ;
+	TheBESKeys::TheKeys()->get_values( "BES.KEY.MI", vals, found ) ;
+	CPPUNIT_ASSERT( found ) ;
+	CPPUNIT_ASSERT( vals.size() == 3 ) ;
+	for( int i = 0; i < 3; i++ )
+	{
+	    CPPUNIT_ASSERT( vals[i] == "val_multi" ) ;
 	}
 
 	cout << "*****************************************" << endl;
@@ -260,11 +334,11 @@ public:
 	    char key[32] ;
 	    sprintf( key, "BES.KEY%d", i ) ;
 	    char val[32] ;
-	    if( i == 4 ) sprintf( val, "" ) ;
+	    if( i == 5 || i == 6 ) sprintf( val, "" ) ;
 	    else sprintf( val, "val%d", i ) ;
 	    cout << "looking for " << key << " with value " << val << endl ;
 	    ret = "" ;
-	    ret = TheBESKeys::TheKeys()->get_key( key, found ) ;
+	    TheBESKeys::TheKeys()->get_value( key, ret, found ) ;
 	    CPPUNIT_ASSERT( found ) ;
 	    CPPUNIT_ASSERT( ret == val ) ;
 	}

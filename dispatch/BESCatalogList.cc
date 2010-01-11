@@ -51,7 +51,14 @@ BESCatalogList::BESCatalogList()
 {
     bool found = false ;
     string key = "BES.Catalog.Default" ;
-    _default_catalog = TheBESKeys::TheKeys()->get_key( key, found ) ;
+    try
+    {
+	TheBESKeys::TheKeys()->get_value( key, _default_catalog, found ) ;
+    }
+    catch( BESError & )
+    {
+	found = false ;
+    }
     if( !found || _default_catalog.empty() )
     {
 	_default_catalog = BES_DEFAULT_CATALOG ;

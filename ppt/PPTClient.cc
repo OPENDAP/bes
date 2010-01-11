@@ -45,6 +45,7 @@ using std::ostringstream ;
 #include "UnixSocket.h"
 #include "PPTProtocol.h"
 #include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 
 #include "config.h"
@@ -78,27 +79,27 @@ void
 PPTClient::get_secure_files()
 {
     bool found = false ;
-    _cfile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ClientCertFile", _cfile, found ) ;
     if( !found || _cfile.empty() )
     {
 	string err = "Unable to determine client certificate file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _cafile = TheBESKeys::TheKeys()->get_key( "BES.ClientCertAuthFile", found );
+    TheBESKeys::TheKeys()->get_value( "BES.ClientCertAuthFile", _cafile, found);
     if( !found || _cafile.empty() )
     {
 	string err = "Unable to determine client certificate authority file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
     found = false ;
-    _kfile = TheBESKeys::TheKeys()->get_key( "BES.ClientKeyFile", found ) ;
+    TheBESKeys::TheKeys()->get_value( "BES.ClientKeyFile", _kfile, found ) ;
     if( !found || _kfile.empty() )
     {
 	string err = "Unable to determine client key file." ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 }
 

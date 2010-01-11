@@ -105,62 +105,78 @@ BESModuleApp::loadModules()
     int retVal = 0 ;
 
     bool found = false ;
-    string mods = TheBESKeys::TheKeys()->get_key( "BES.modules", found ) ;
-    if( mods != "" )
+    vector<string> vals ;
+    TheBESKeys::TheKeys()->get_values( "BES.modules", vals, found ) ;
+    vector<string>::iterator l = vals.begin() ;
+    vector<string>::iterator le = vals.end() ;
+    for( ; l != le; l++ )
     {
-	list<string> mod_list ;
-	BESUtil::explode( ',', mods, mod_list ) ;
-
-	list<string>::iterator i = mod_list.begin() ;
-	list<string>::iterator e = mod_list.end() ;
-	for( ; i != e; i++ )
+	string mods = (*l) ;
+	if( mods != "" )
 	{
-	    string key = "BES.module." + (*i) ;
-	    string so = TheBESKeys::TheKeys()->get_key( key, found ) ;
-	    if( so == "" )
+	    list<string> mod_list ;
+	    BESUtil::explode( ',', mods, mod_list ) ;
+
+	    list<string>::iterator i = mod_list.begin() ;
+	    list<string>::iterator e = mod_list.end() ;
+	    for( ; i != e; i++ )
 	    {
-		cerr << "couldn't find the module for " << (*i) << endl ;
-		return 1 ;
+		string key = "BES.module." + (*i) ;
+		string so ;
+		try
+		{
+		    TheBESKeys::TheKeys()->get_value( key, so, found ) ;
+		}
+		catch( BESError &e )
+		{
+		    cerr << e.get_message() << endl ;
+		    return 1 ;
+		}
+		if( so == "" )
+		{
+		    cerr << "couldn't find the module for " << (*i) << endl ;
+		    return 1 ;
+		}
+		bes_module new_mod ;
+		new_mod._module_name = (*i) ;
+		new_mod._module_library = so ;
+		_module_list.push_back( new_mod ) ;
 	    }
-	    bes_module new_mod ;
-	    new_mod._module_name = (*i) ;
-	    new_mod._module_library = so ;
-	    _module_list.push_back( new_mod ) ;
 	}
+    }
 
-	list< bes_module >::iterator mi = _module_list.begin() ;
-	list< bes_module >::iterator me = _module_list.end() ;
-	for( ; mi != me; mi++ )
+    list< bes_module >::iterator mi = _module_list.begin() ;
+    list< bes_module >::iterator me = _module_list.end() ;
+    for( ; mi != me; mi++ )
+    {
+	bes_module curr_mod = *mi ;
+	_moduleFactory.add_mapping( curr_mod._module_name, curr_mod._module_library ) ;
+    }
+
+    for( mi = _module_list.begin(); mi != me; mi++ )
+    {
+	bes_module curr_mod = *mi ;
+	try
 	{
-	    bes_module curr_mod = *mi ;
-	    _moduleFactory.add_mapping( curr_mod._module_name, curr_mod._module_library ) ;
+	    string modname = curr_mod._module_name ;
+	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
+	    o->initialize( modname ) ;
+	    delete o ;
 	}
-
-	for( mi = _module_list.begin(); mi != me; mi++ )
+	catch( BESError &e )
 	{
-	    bes_module curr_mod = *mi ;
-	    try
-	    {
-		string modname = curr_mod._module_name ;
-		BESAbstractModule *o = _moduleFactory.get( modname ) ;
-		o->initialize( modname ) ;
-		delete o ;
-	    }
-	    catch( BESError &e )
-	    {
-		cerr << "Caught plugin exception during initialization of "
-		     << curr_mod._module_name << " module:" << endl << "    "
-		     << e.get_message() << endl ;
-		retVal = 1 ;
-		break ;
-	    }
-	    catch( ... )
-	    {
-		cerr << "Caught unknown exception during initialization of "
-		     << curr_mod._module_name << " module" << endl ;
-		retVal = 1 ;
-		break ;
-	    }
+	    cerr << "Caught plugin exception during initialization of "
+		 << curr_mod._module_name << " module:" << endl << "    "
+		 << e.get_message() << endl ;
+	    retVal = 1 ;
+	    break ;
+	}
+	catch( ... )
+	{
+	    cerr << "Caught unknown exception during initialization of "
+		 << curr_mod._module_name << " module" << endl ;
+	    retVal = 1 ;
+	    break ;
 	}
     }
 

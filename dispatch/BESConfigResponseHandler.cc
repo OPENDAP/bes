@@ -78,7 +78,14 @@ BESConfigResponseHandler::execute( BESDataHandlerInterface &dhi )
     {
 	props.clear() ;
 	props["name"] = (*ki).first ;
-	info->add_tag( "key", (*ki).second, &props ) ;
+	info->begin_tag( "key", &props ) ;
+	vector<string>::const_iterator v = (*ki).second.begin() ;
+	vector<string>::const_iterator ve = (*ki).second.end() ;
+	for( ; v != ve; v++ )
+	{
+	    info->add_tag( "value", (*v) ) ;
+	}
+	info->end_tag( "key" ) ;
     }
     info->end_response() ;
 }

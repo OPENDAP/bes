@@ -114,10 +114,15 @@ BESExceptionManager::handle_exception( BESError &e,
     try
     {
 	bool found = false ;
-	administrator =
-	    TheBESKeys::TheKeys()->get_key( "BES.ServerAdministrator", found ) ;
+	vector<string> vals ;
+	string key = "BES.ServerAdministrator" ;
+	TheBESKeys::TheKeys()->get_value( key, administrator, found ) ;
     }
     catch( ... )
+    {
+	administrator = DEFAULT_ADMINISTRATOR ;
+    }
+    if( administrator.empty() )
     {
 	administrator = DEFAULT_ADMINISTRATOR ;
     }
