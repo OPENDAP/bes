@@ -63,7 +63,8 @@ install-data-local: bes/bes.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
 	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
 	test -f $(DESTDIR)$(sysconfdir)/bes/bes.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(sysconfdir)/bes/bes.conf.$$currdate; \
-	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf
+	$(INSTALL_DATA) bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/bes.conf; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules
 
 uninstall-local:
 	rm -f $(sysconfdir)/bes/bes.conf

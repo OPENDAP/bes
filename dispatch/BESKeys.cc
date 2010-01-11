@@ -41,14 +41,10 @@ extern "C" {
 
 #include <cerrno>
 #include <cstring>
-#include <iostream>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-using std::endl ;
-using std::cout ;
 
 #include "BESKeys.h"
 #include "BESUtil.h"
@@ -124,12 +120,15 @@ BESKeys::initialize_keys( )
 
     try
     {
-	load_keys();
+	load_keys() ;
     }
-    catch(BESInternalFatalError &)
+    catch( BESError &e )
     {
-	clean();
-	throw;
+	// be sure we're throwing a fatal error, since the BES can't run
+	// within the configuration file
+	clean() ;
+	throw BESInternalFatalError( e.get_message(),
+				     e.get_file(), e.get_line() ) ;
     }
     catch(...)
     {
@@ -295,6 +294,8 @@ BESKeys::load_include_files( const string &files )
 	else newdir = currdir + "/" + alldir ;
     }
 
+    // load the files one at a time. If the directory doesn't exist,
+    // then don't load any configuration files
     BESFSDir fsd( newdir, allfiles.getFileName() ) ;
     BESFSDir::fileIterator i = fsd.beginOfFileList() ;
     BESFSDir::fileIterator e = fsd.endOfFileList() ;
@@ -302,10 +303,6 @@ BESKeys::load_include_files( const string &files )
     {
 	load_include_file( (*i).getFullPath() ) ;
     }
-
-    // use this directory as the relative path for all of these files
-    // no .. allowed
-    // use BESFSDir, which uses regular expression matching for files
 }
 
 /** Load key/value pairs from one include file
@@ -318,8 +315,7 @@ void
 BESKeys::load_include_file( const string &file )
 {
     // make sure the file exists and is readable
-    // throw exception if unable to read
-    cout << "loading " << file << endl ;
+    // throws exception if unable to read
     BESKeys tmp( file, _the_keys ) ;
 }
 
