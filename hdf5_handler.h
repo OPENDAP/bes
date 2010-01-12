@@ -32,9 +32,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \file h5_handler.h
+/// \file hdf5_handler.h
 /// \brief The main header of HDF5 OPeNDAP handler
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef _hdf5_handler_H
+#define _hdf5_handler_H
+/// Maximum number of dimensions in an array.
+#define DODS_MAX_RANK 30
+/// Maximum length of variable or attribute name
+#define DODS_NAMELEN    1024
+/// Maximum length of a dimension name in DIMENSION_LIST attribute.
+#define HDF5_DIMVARLEN  24
+/// The name of dimension list attribute used in HDF5.
+#define HDF5_DIMENSIONLIST "DIMENSIONLIST"
+/// The name of dimension name list attribute used in HDF5.
+#define HDF5_DIMENSIONNAMELIST "DIMENSION_NAMELIST"
+/// This enables generation of Grid from HDF5 array with dimension scales.
+/// If this is commented out, no Grid will be generated from HDF5.
+#define DODSGRID
+/// The special DAS attribute name for HDF5 soft link.
+#define HDF5_softlink "HDF5_softlink"
+/// The special DAS attribute name for HDF5 hard link.
+#define HDF5_hardlink "HDF5_hardlink"
+/// The special DAS attribute name for HDF5 path information from the top(root) group.
+#define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
+
 #include "config_hdf5.h"
 
 #include <stdio.h>
@@ -45,17 +67,88 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
-#include "debug.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "ConstraintEvaluator.h"
-#include "DODSFilter.h"
-#include "InternalErr.h"
-#include "mime_util.h"
+#include <debug.h>
+#include <DAS.h>
+#include <DDS.h>
+#include <parser.h>
+#include <ConstraintEvaluator.h>
+#include <DODSFilter.h>
+#include <InternalErr.h>
+#include <mime_util.h>
+#include <hdf5.h>
+
+/// \brief A structure for DDS generation
+typedef struct DS {
+    /// Name of HDF5 group or dataset
+    char name[DODS_NAMELEN];
+    /// HDF5 data set id
+    hid_t dset;
+    /// HDF5 data type id
+    hid_t type;
+    /// HDF5 data space id
+    hid_t dataspace;
+    /// Number of dimensions
+    int ndims;
+    /// Size of each dimension
+    int size[DODS_MAX_RANK];
+    /// Number of elements 
+    hsize_t nelmts;
+    /// Space needed 
+    size_t need;
+} DS_t;
+/// \brief A structure for DAS generation
+typedef struct DSattr {
+    /// Name of HDF5 group or dataset
+    char name[DODS_NAMELEN];
+    /// Memory type
+    int type;
+    /// Number of dimensions
+    int ndims;
+    /// Size of each dimension
+    int size[DODS_MAX_RANK];
+    /// Number of elements 
+    hsize_t nelmts;
+    /// Memory space needed to hold nelmts type.
+    size_t need;
+} DSattr_t;
+
+/// An abstract respresntation of DAP String type.
+static const char STRING[] = "String";
+/// An abstract respresntation of DAP Byte type.
+static const char BYTE[] = "Byte";
+/// An abstract respresntation of DAP Signed Byte type.
+static const char INT8[] = "Int8"; 
+/// An abstract respresntation of DAP Int32 type.
+static const char INT32[] = "Int32";
+/// An abstract respresntation of DAP Int16 type.
+static const char INT16[] = "Int16";
+/// An abstract respresntation of DAP Float64 type.
+static const char FLOAT64[] = "Float64";
+/// An abstract respresntation of DAP Float32 type.
+static const char FLOAT32[] = "Float32";
+/// An abstract respresntation of DAP Uint16 type.
+static const char UINT16[] = "UInt16";
+/// An abstract respresntation of DAP UInt32 type.
+static const char UINT32[] = "UInt32";
+/// For umappable HDF5 integer data types.
+static const char INT_ELSE[] = "Int_else";
+/// For unmappable HDF5 float data types.
+static const char FLOAT_ELSE[] = "Float_else";
+/// An abstract respresntation of DAP Structure type.
+static const char COMPOUND[] = "Structure";
+/// An abstract respresntation of DAP Array type.
+static const char ARRAY[] = "Array";   
+/// An abstract respresntation of DAP Url type.
+static const char URL[] = "Url";       
+
+
 #include "h5das.h"
 #include "h5dds.h"
 #include "h5get.h"              
 #include "HE5Parser.h"             
+#include "HDF5PathFinder.h"
 
 using namespace libdap;
+#endif

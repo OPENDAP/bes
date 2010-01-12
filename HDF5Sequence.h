@@ -28,7 +28,6 @@
 #define _HDF5Sequence_h 1
 
 #include "Sequence.h"
-#include "common.h"
 #include "h5get.h"
 
 using namespace libdap;

@@ -51,7 +51,6 @@
 
 #include <DDS.h>
 #include <DODSFilter.h>
-#include "common.h"
 
 using namespace libdap;
 

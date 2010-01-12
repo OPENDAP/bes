@@ -31,7 +31,7 @@ HE5ShortName::HE5ShortName()
   index = 0;
 }
 
-string HE5ShortName::generate_short_name(string varname)
+string HE5ShortName::get_unique_name(string varname)
 {
 #ifdef SHORT_PATH  
   ostringstream oss;  
@@ -49,10 +49,16 @@ string HE5ShortName::generate_short_name(string varname)
 #endif  
 }
 
-string HE5ShortName::cut_long_name(string varname)
+string HE5ShortName::get_dataset_name(string varname)
 {
   int pos = varname.find_last_of('/', varname.length() - 1);
   return varname.substr(pos + 1);
+}
+
+string HE5ShortName::get_group_name(string varname)
+{
+  int pos = varname.find_last_of('/', varname.length() - 1);
+  return varname.substr(0, pos);
 }
 
 
@@ -63,7 +69,12 @@ string HE5ShortName::get_long_name(string short_varname)
 
 string HE5ShortName::get_short_name(string long_varname)
 {
-  return long_to_short[long_varname];
+  if(long_to_short[long_varname].empty()){
+      string sstr = get_unique_name(long_varname);
+      long_to_short[long_varname] = sstr;
+      short_to_long[sstr] = long_varname;
+  }
+  return long_to_short[long_varname];  
 }
 
 void HE5ShortName::reset()

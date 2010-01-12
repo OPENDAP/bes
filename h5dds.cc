@@ -62,7 +62,7 @@
 
 extern HE5Parser eos;
 
-/// An instance of DS_t structure defined in common.h.
+/// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
 
 extern string get_hardlink(hid_t, const string &);
@@ -175,6 +175,19 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 
             case H5G_DATASET:{
                 string full_path_name = string(gname) + string(oname);
+#ifdef CF
+                // Skip the processing of coreMetadata because many netCDF
+                // clients throw error in handling this metadata.
+                if (eos.is_valid()) {
+                    if (full_path_name.find("coremetadata") != string::npos) {
+                        break;
+                    }
+                    if (full_path_name.find("CoreMetadata") != string::npos) {
+                        break;
+                    }
+                }
+#endif
+
                 // Obtain hdf5 dataset handle. 
                 get_dataset(pid, full_path_name, &dt_inst);
                 // Put hdf5 dataset structure into DODS dds.
@@ -216,16 +229,12 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
 /// \param datatype datatype id
 /// \return pointer to BaseType
 ///////////////////////////////////////////////////////////////////////////////
-static BaseType *Get_bt(const string &varname,
+static BaseType *Get_bt(const string &vname,
                         const string &dataset,
                         hid_t datatype)
 {
     BaseType *btp = NULL;
     
-    // get_short_name() returns a shortened name if SHORT_PATH is defined.
-    // It does nothing if the symbol is undefined. jhrg 5/1/08
-    string vname = get_short_name(varname);
-
     try {
 
         DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype
@@ -566,7 +575,9 @@ static void process_grid_matching_dimscale(Array* array, Grid *gr,
                }
                throw InternalErr(__FILE__,__LINE__, "Fail to allocate memory");
             }
-            if((H5Iget_name(dimids[dim_index], (char *) dimname_buf, (size_t)(bufsize+1))) < 0){
+            if((H5Iget_name(dimids[dim_index], 
+                            (char *) dimname_buf, 
+                            (size_t)(bufsize+1))) < 0){
                 throw
                     InternalErr(__FILE__, __LINE__,
                             "Fail to get the dimension name");
@@ -622,6 +633,66 @@ static void process_grid_matching_dimscale(Array* array, Grid *gr,
         } // for ()
 
 }
+#ifdef CF
+static void write_grid_shared_dimensions(DDS & dds_table, const string & filename) {
+
+    // Add all shared dimension data.
+    if (!eos.get_shared_dimension()) {
+        map < string, int >   grid_dimension_processed;
+        int j;
+        BaseType *bt = 0;
+        Array *ar = 0;    
+        vector < string > dimension_names;
+        eos.get_grid_dimension_list(dimension_names);
+
+        for(j=0; j < dimension_names.size(); j++){
+            bool new_dim = false;
+            int shared_dim_size =
+                eos.get_grid_dimension_size(dimension_names.at(j));
+            string str_grid_name = eos.get_grid_name(dimension_names.at(j));
+            string str_cf_name =
+                eos.get_CF_name((char*) dimension_names.at(j).c_str());
+            // Check for duplicate dimension names.
+            int old_dim_size = grid_dimension_processed[str_cf_name];
+            if(old_dim_size > 0) {
+                // If a duplicate entry is found, check its size.
+                if(old_dim_size != shared_dim_size){
+                    // If the size doesn't match, thrown an error.
+                    // CF convention doesn't allow multiple dimensions.
+                    throw InternalErr(__FILE__, __LINE__, "detected multiple shared dimensions with different sizes");
+                }
+                else{
+                    // If the size matches, skip adding it.
+                    new_dim = false;
+                }
+            }
+            else{
+                new_dim = true;
+            }
+            
+            if(new_dim){
+                
+                bt = new HDF5Float32(str_cf_name, filename);
+                ar = new HDF5ArrayEOS(str_cf_name, filename, bt);
+
+                ar->add_var(bt);
+                int dim_id =
+                    eos.get_grid_dimension_data_location(dimension_names.at(j));
+                ((HDF5ArrayEOS*)ar)->set_dim_id(dim_id);
+                delete bt; bt = 0;
+                ar->append_dim(shared_dim_size, str_cf_name);
+                dds_table.add_var(ar);
+                delete ar; ar = 0;
+                // Remember that it's processed.
+                grid_dimension_processed[str_cf_name] = shared_dim_size;
+            }
+
+        } // for
+        // Set the flag for "shared dimension" true.        
+        eos.set_shared_dimension();        
+    } // if
+}
+#endif
 
 /// processes the NASA EOS AURA Grids.
 static void process_grid_nasa_eos(const string &varname, 
@@ -629,7 +700,10 @@ static void process_grid_nasa_eos(const string &varname,
     // Fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
     vector < string > tokens;
-    eos.get_dimensions(varname, tokens);
+    // Retrieve the full path to the each dimension name.
+    string str_grid_name = eos.get_grid_name(varname);
+
+    eos.get_grid_variable_dimensions(varname, tokens);
     DBG(cerr << "=read_objects_base_type():Number of dimensions "
         << dt_inst.ndims << endl);
 
@@ -639,16 +713,10 @@ static void process_grid_nasa_eos(const string &varname,
 
         string str_dim_name = tokens.at(dim_index);
 
-        // Retrieve the full path to the each dimension name.
-        string str_grid_name = eos.get_grid_name(varname);
         string str_dim_full_name = str_grid_name + str_dim_name;
-
-#ifdef CF
-        str_dim_full_name = str_dim_name;
-#endif
-
-        int dim_size = eos.get_dimension_size(str_dim_full_name);
-
+        int dim_size = eos.get_grid_dimension_size(str_dim_full_name);
+        int dim_id =            
+            eos.get_grid_dimension_data_location(str_dim_full_name);
 
 #ifdef CF
         // Rename dimension name according to CF convention.
@@ -660,12 +728,11 @@ static void process_grid_nasa_eos(const string &varname,
         Array *ar = 0;
         try {
             bt = new HDF5Float32(str_dim_full_name, gr->dataset());
-            ar = new HDF5Array(str_dim_full_name, gr->dataset(), bt);
+            ar = new HDF5ArrayEOS(str_dim_full_name, gr->dataset(), bt);
             delete bt; bt = 0;
-
+            ((HDF5ArrayEOS*)ar)->set_dim_id(dim_id);
             ar->append_dim(dim_size, str_dim_full_name);
             array->append_dim(dim_size, str_dim_full_name);
-
             gr->add_var(ar, maps);
             delete ar; ar = 0;
             
@@ -680,35 +747,84 @@ static void process_grid_nasa_eos(const string &varname,
         }
     }
 
-#ifdef CF
-    // Add all shared dimension data.
-    if (!eos.is_shared_dimension_set()) {
-
-        int j;
-        BaseType *bt = 0;
-        Array *ar = 0;    
-        vector < string > dimension_names;
-        eos.get_all_dimensions(dimension_names);
-
-        for(j=0; j < dimension_names.size(); j++){
-            int shared_dim_size =
-                eos.get_dimension_size(dimension_names.at(j));
-            string str_cf_name =
-                eos.get_CF_name((char*) dimension_names.at(j).c_str());
-            bt = new HDF5Float32(str_cf_name, gr->dataset());
-            ar = new HDF5ArrayEOS(str_cf_name,gr->dataset(), bt);
-
-            ar->add_var(bt);
-            delete bt; bt = 0;
-            ar->append_dim(shared_dim_size, str_cf_name);
-            dds_table.add_var(ar);
-            delete ar; ar = 0;
-            // Set the flag for "shared dimension" true.
-        }
-        eos.set_shared_dimension();
-    }    
-#endif
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_swath(DDS& dds_table, string sname
+///                 const string & filename,
+///                 BaseType* bt)
+/// inserts a Swath dataset (name, data type, data space) into \a dds_table 
+/// table.
+///////////////////////////////////////////////////////////////////////////////
+static void write_swath(DDS & dds_table,  
+                        string varname, 
+                        const string & filename) 
+                    
+{
+    string sname = varname;
+    DBG(cerr << ">write_swath():sname=" << sname 
+        << " varname=" << varname 
+        << " filename=" << filename
+        << endl);
+
+    if(eos.get_swath_variable(varname)) {
+        // Rename the variable if necessary.
+        sname = eos.get_CF_name((char*) varname.c_str());
+#ifdef SHORT_PATH
+        if(sname == varname){
+            sname = eos.get_short_name(varname);
+        }
+#endif         
+    }
+
+    // Get a base type. It should be int, float, double, etc. -- atomic
+    // datatype. 
+    BaseType *bt = Get_bt(sname, filename, dt_inst.type);
+    
+    if (!bt) {
+        // NB: We're throwing InternalErr even though it's possible that
+        // someone might ask for an HDF5 varaible which this server cannot
+        // handle.
+        throw
+            InternalErr(__FILE__, __LINE__,
+                        "Unable to convert hdf5 datatype to dods basetype");
+    }
+
+    // First deal with scalar data. 
+    if (dt_inst.ndims == 0) {
+        dds_table.add_var(bt);
+        delete bt; bt = 0;
+    }
+    else {
+        HDF5Array *ar = new HDF5Array(sname, filename, bt);
+        vector < string > dimension_names;
+        eos.get_swath_variable_dimensions(varname, dimension_names);
+
+        delete bt; bt = 0;
+        ar->set_did(dt_inst.dset);
+        ar->set_tid(dt_inst.type);
+        ar->set_memneed(dt_inst.need);
+        ar->set_numdim(dt_inst.ndims); 
+        ar->set_numelm((int) (dt_inst.nelmts));
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++){
+            if(dimension_names.size() > 0){
+                string str_dim_name = dimension_names.at(dim_index);
+                DBG(cerr << "=write_swath():dimname=" << str_dim_name << endl);
+                ar->append_dim(dt_inst.size[dim_index], str_dim_name);
+            }
+            else{
+                ar->append_dim(dt_inst.size[dim_index]);
+            }
+        }
+
+        dds_table.add_var(ar);
+        delete ar; ar = 0;
+    }
+
+    DBG(cerr << "<write_swath():variable=" << sname  << endl);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_base_type(DDS & dds_table,
@@ -735,13 +851,20 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
                        const string & filename)
 {
     dds_table.set_dataset_name(name_path(filename)); 
+#ifdef CF
+    // If the array is part of HDF-EOS5 swath, returrn arrays.
+    if(eos.get_swath()){
+        write_swath(dds_table, a_name, filename);
+        return;
+    }
+#endif
     bool has_dim_scale = false;
     bool has_dim_group = false;
 #ifdef NASA_EOS_GRID
     bool is_eos_grid = false;
 #endif
     string varname = a_name;
-    string sname = get_short_name(varname);
+    string sname = varname;
     hid_t *dimids;
     try {
         dimids = new hid_t[dt_inst.ndims];
@@ -756,6 +879,8 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     // Check if this variable is part of HDF4_DIMGROUP.
     if(varname.find("/HDF4_DIMGROUP/") != string::npos){
         has_dim_group = true;
+        // Remove any '/' for GrADS compatibility.
+        sname = get_short_name_dimscale(sname);
     }
          
     // Check if this array can be a Grid through dimension maps.
@@ -770,18 +895,17 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #ifdef NASA_EOS_GRID
     // Check if this array is EOS array can be a Grid.
     // This EOS variable needs to be treated as an array.
-    if (eos.is_valid() && eos.is_grid(varname)) {
+    if (eos.is_valid() && eos.get_grid_variable(varname)) {
         is_eos_grid = true;
+#ifdef CF        
+        write_grid_shared_dimensions(dds_table, filename);
+#ifdef SHORT_PATH        
+        sname = eos.get_short_name(varname);
+#endif        
+#endif
     }
 #endif
-
-#ifdef CF
-    if(eos.is_valid() && eos.is_swath(varname)) {
-        // Rename the variable if necessary.
-        sname = eos.get_CF_name((char*) varname.c_str());
-        DBG(cerr << "sname: " << sname << endl);
-    }
-#endif  
+    
 
     // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
@@ -804,6 +928,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
     else {
         // Next, deal with Array and Grid data. This 'else clause' runs to
         // the end of the method. jhrg
+
         HDF5Array *ar = new HDF5Array(sname, filename, bt);
         delete bt; bt = 0;
         ar->set_did(dt_inst.dset);
@@ -814,7 +939,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #ifndef DODSGRID // DODSGRID is defined in common.h by default.
         // If DODSGRID is not defined, it always has to be an array.
 	for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-	  ar->append_dim(dt_inst.size[dim_index]); 
+            ar->append_dim(dt_inst.size[dim_index]); 
         dds_table.add_var(ar);
         delete ar; ar = 0;
 #else // DODSGRID is defined
@@ -832,44 +957,45 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
         // dimension.
         // We don't support multiple scales applying to one dimension.
        {
-	 if (has_dim_scale) {
-	   // Construct a grid instead of returning a simple array.
-	   Grid *gr = new HDF5Grid(sname, filename);
-	   process_grid_matching_dimscale(ar, gr, dimids);
-	   gr->add_var(ar, array);
-	   delete ar; ar = 0;
-	   dds_table.add_var(gr);
-	   delete gr; gr = 0;
-        }
+           if (has_dim_scale) {
+               // Construct a grid instead of returning a simple array.
+               Grid *gr = new HDF5Grid(sname, filename);
+               process_grid_matching_dimscale(ar, gr, dimids);
+               gr->add_var(ar, array);
+               delete ar; ar = 0;
+               dds_table.add_var(gr);
+               delete gr; gr = 0;
+           }
 #ifdef NASA_EOS_GRID
-        else if (is_eos_grid) {
-            DBG(cerr << "EOS Grid: " << varname << endl);
-            // Generate grid based on the parsed StructMetada.
-            Grid *gr = new HDF5GridEOS(sname, filename);
-            process_grid_nasa_eos(varname, ar, gr, dds_table);
-            gr->add_var(ar, array);
-            delete ar; ar = 0;
+           else if (is_eos_grid) {
+               DBG(cerr << "EOS Grid: " << varname << endl);
+               // Generate grid based on the parsed StructMetada.
+               Grid *gr = new HDF5GridEOS(sname, filename);
+               process_grid_nasa_eos(varname, ar, gr, dds_table);
+               gr->add_var(ar, array);
+               delete ar; ar = 0;
 
-            dds_table.add_var(gr);
-            delete gr; gr = 0;
-        }
-#endif                          // #ifdef  NASA_EOS_GRID
-        else {                  // cannot be mapped to grid, must be an array.
-	  for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++){
-	    if(has_dim_group){
-	      // IDV and Panoply requires named dimensions for shared
-	      // dimension map variables.
-	      ar->append_dim(dt_inst.size[dim_index], sname); 
-	    }
-	    else{
-	      ar->append_dim(dt_inst.size[dim_index]);
-	    }
-	  }
-	  dds_table.add_var(ar);
-	  delete ar; ar = 0;
-        }
-        delete [] dimids;
-      } // end of DODS Grid case
+               dds_table.add_var(gr);
+               delete gr; gr = 0;
+           }
+#endif // #ifdef  NASA_EOS_GRID
+           else {              // cannot be mapped to grid, must be an array.
+               for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++){
+
+                   if(has_dim_group){
+                       // IDV and Panoply requires named dimensions for shared
+                       // dimension map variables.
+                       ar->append_dim(dt_inst.size[dim_index], sname); 
+                   }
+                   else{
+                       ar->append_dim(dt_inst.size[dim_index]);
+                   }
+               }
+               dds_table.add_var(ar);
+               delete ar; ar = 0;
+           }
+           delete [] dimids;
+       } // end of DODS Grid case
 #endif                          // #ifndef DODSGRID
     }
 
@@ -995,17 +1121,7 @@ string get_short_name(string varname)
     {
         return get_short_name_dimscale(varname);
     }
-
-#ifdef CF
-    if(eos.get_short_name(varname) != ""){
-        return eos.get_short_name(varname);
-    }
-    else{
-        return varname;
-    }
-#else
     return varname;
-#endif
 }
 
 
@@ -1026,3 +1142,4 @@ string get_short_name_dimscale(string dimname)
   int pos = dimname.find_last_of('/', dimname.length() - 1);
   return dimname.substr(pos + 1);
 }
+

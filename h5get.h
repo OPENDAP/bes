@@ -28,11 +28,7 @@
 
 #ifndef _H5Git_H
 #define _H5Git_H
-#include <string.h>
-#include <hdf5.h>
-#include <debug.h>
-#include <InternalErr.h>     
-#include "common.h"
+#include "hdf5_handler.h"
 
 int
 check_h5str(hid_t);

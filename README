@@ -1,6 +1,6 @@
 
 
-Updated for version 1.3.3 (02 October 2009)
+Updated for version 1.3.4 (02 October 2009)
 
 This file describes the HDF5 DAP server developed by The HDF Group and OPeNDAP 
 under a grant from NASA.
@@ -15,7 +15,7 @@ Structures. This was a known issue with this handler.
 * Installing the handler in Hyrax
 
 Note: The RPM Packages are built using the --enable-cf and
---enable-short-names options. If you don't want those options, you'll need to
+--enable-short-path options. If you don't want those options, you'll need to
 build from the sources.
 
 This data handler includes an executable for use with Server3 and a
@@ -91,7 +91,8 @@ Special Support for NASA EOS data:
 
 	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are
 	parsed and its attributes are generated in a nested structure
-	format.
+	format. If you don't want to parse them, use the configuration option
+        '--enable-eos-meta=no'.
 
 Special Support for files that have HDF5 dimension scale:
 

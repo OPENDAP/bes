@@ -34,7 +34,7 @@
 
 using namespace libdap;
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// A special class for handling array in NASA EOS HDF5 file.
 ///
 /// This class converts NASA EOS HDF5 array type into DAP array.
@@ -47,13 +47,13 @@ using namespace libdap;
 /// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
 /// All rights reserved.
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 class HDF5ArrayEOS:public Array {
 
   private:
     int d_num_dim;
     int d_num_elm;
-    hid_t d_dset_id;
+    int _dim_id;
     hid_t d_ty_id;
     size_t d_memneed;
 
@@ -67,12 +67,16 @@ class HDF5ArrayEOS:public Array {
 
     /// Clone this instance.
     /// 
-    /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
+    /// Allocate a new instance and copy *this into it.
+    /// This method must perform a deep copy.
     /// \return A newly allocated copy of this class
     virtual BaseType *ptr_duplicate();
 
     /// Reads HDF5 NASA EOS array data into local buffer
     virtual bool read();
+
+    /// remembers dataset id.
+    void set_dim_id(int dim);
 
     /// remembers memory size needed.
     void set_memneed(size_t need);

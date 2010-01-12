@@ -79,7 +79,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                                + filename, __FILE__, __LINE__);
     }
     if (eos.check_eos(file1))
-        eos.set_dimension_array();
+        eos.set_grid_dimension_data();
 
     BESResponseObject *response = dhi.response_handler->get_response_object() ;
     BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(response) ;
@@ -127,7 +127,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
                                + filename, __FILE__, __LINE__);
     }
     if (eos.check_eos(file1))
-        eos.set_dimension_array();
+        eos.set_grid_dimension_data();
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
@@ -139,6 +139,12 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         DDS *dds = bdds->get_dds();
 
         depth_first(file1, "/", *dds, filename.c_str());
+        
+        if (!dds->check_semantics()) {       // DDS didn't get built right
+            dds->print(cerr);
+            throw InternalErr(__FILE__, __LINE__,
+                              "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups.");
+        }
 
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
@@ -187,7 +193,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
                                + filename, __FILE__, __LINE__);
     }
     if (eos.check_eos(file1))
-        eos.set_dimension_array();
+        eos.set_grid_dimension_data();
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
@@ -200,6 +206,13 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         depth_first(file1, "/", *dds, filename.c_str());
 
+        if (!dds->check_semantics()) {       // DDS didn't get built right
+            dds->print(cerr);
+            throw InternalErr(__FILE__, __LINE__,
+                              "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups.");
+        }
+
+        
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;

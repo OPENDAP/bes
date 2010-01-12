@@ -1,9 +1,9 @@
 %{
-
 #define YYSTYPE char *
 #define YYDEBUG 1
-// #define VERBOSE
-  
+// #define VERBOSE // Comment this out for debugging.
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -21,17 +21,15 @@ using namespace std;
  
 #define YYPARSE_PARAM he5parser
 
-extern int yy_line_num;	// defined in he5dds.lex 
 
-static int parser_state = 0; // parser state 
-bool valid_projection = false;
-bool grid_structure_found = false; 
-bool swath_structure_found = false; 
-string full_path = "/HDFEOS/GRIDS/";
+extern int yy_line_num;	// It's defined in he5dds.lex 
+
+
+string full_path = "";
 string grid_name = "";
 string swath_name = "";
 string data_field_name = "/Data Fields/";
-string geo_field_name = "/Geolocation Fields/"; /* <hyokyung 2009.04.21. 13:19:54> */
+string geo_field_name = "/Geolocation Fields/"; // for Swath only
 string dimension_list = "";
 string dimension_name = "";
  
@@ -58,14 +56,14 @@ void he5ddserror(char *s);
 %token HE5_GCTP_GEO
 %token DATA_TYPE 
 %token GRID_STRUCTURE
-%token SWATH_STRUCTURE /* <hyokyung 2009.04.20. 10:25:40> */
+%token SWATH_STRUCTURE 
 %token GRID_NAME  
-%token SWATH_NAME  /*  <hyokyung 2009.04.20. 10:25:45> */
+%token SWATH_NAME 
 %token DIMENSION_SIZE  
 %token DIMENSION_NAME  
 %token DIMENSION_LIST
 %token DATA_FIELD_NAME
-%token GEO_FIELD_NAME		/* <hyokyung 2009.04.21. 13:19:27> */
+%token GEO_FIELD_NAME		// for swath
 %token XDIM
 %token YDIM
 %%
@@ -86,25 +84,27 @@ data: /* empty */
       | INT
       | FLOAT
        	 {
-
 #ifdef VERBOSE
-	   cout << "data: " << $1 << "parser_state: " << parser_state << endl;	   
+	   cout << "data: " << $1 
+                << "parser_state: " 
+                << ((HE5Parser*)(he5parser))->parser_state 
+                << endl;	   
 #endif	   
-	    switch(parser_state){
+	    switch(((HE5Parser*)(he5parser))->parser_state){
 	     case 0:
-		parser_state = 1;
+		((HE5Parser*)(he5parser))->parser_state = 1;
 	        ((HE5Parser*)(he5parser))->point_left = atof($1);
         	break;
              case 1:
-	        parser_state = 2;
+	        ((HE5Parser*)(he5parser))->parser_state = 2;
 	        ((HE5Parser*)(he5parser))->point_upper = atof($1);
                 break;
              case 2:
-	        parser_state = 3;
+	        ((HE5Parser*)(he5parser))->parser_state = 3;
 	        ((HE5Parser*)(he5parser))->point_right = atof($1);
                 break;
              case 3:
-	        parser_state = 4;
+	        ((HE5Parser*)(he5parser))->parser_state = 4;
 	        ((HE5Parser*)(he5parser))->point_lower = atof($1);
                 break;
 	     default:
@@ -115,7 +115,7 @@ data: /* empty */
       | STR
        	 {	
 
-	   if(parser_state == 10){
+	   if(((HE5Parser*)(he5parser))->parser_state == 10){
 	        if(dimension_list == ""){
 	        	dimension_list = dimension_list.append($$);
                 }
@@ -150,7 +150,7 @@ attribute_grid_name: GRID_NAME '=' STR
   
   // Reset the full path
   full_path = "/HDFEOS/GRIDS/";
-  valid_projection = false;
+  ((HE5Parser*)(he5parser))->valid_projection = false;
   full_path.append(grid_name);
 #ifdef VERBOSE  
   cout << "Grid Name is:" << grid_name << endl;
@@ -166,8 +166,8 @@ attribute_xdim: XDIM INT
   cout << "XDim is:" << atoi($2) << endl;
   cout << "Full path is:" << full_path << endl;
 #endif
-  if(grid_structure_found)    
-    ((HE5Parser*)(he5parser))->add_dimension_map(full_path+"/XDim", atoi($2));
+  if(((HE5Parser*)(he5parser))->grid_structure_found)    
+    ((HE5Parser*)(he5parser))->set_grid_dimension_size(full_path+"/XDim", atoi($2));
 }
 ;
 
@@ -178,75 +178,95 @@ attribute_ydim: YDIM INT
   cout << "YDim is:" << atoi($2) << endl;
 #endif
   // Reset the parser state
-  parser_state = 0;
-  if(grid_structure_found)    
-    ((HE5Parser*)(he5parser))->add_dimension_map(full_path+"/YDim", atoi($2));
+  ((HE5Parser*)(he5parser))->parser_state = 0;
+  if(((HE5Parser*)(he5parser))->grid_structure_found)    
+    ((HE5Parser*)(he5parser))->set_grid_dimension_size(full_path+"/YDim", atoi($2));
 }
 ;
 
 
-attribute_dimension_name: DIMENSION_NAME '=' STR
+attribute_dimension_name: DIMENSION_NAME '=' STR 
 {
-  // cout << "Full path: " << full_path;
+#ifdef VERBOSE
+  cout << "Full path: " << full_path;
+#endif
   // Save the dimension name.  
   dimension_name = full_path + "/" + $3;
-  // cout << " Dimension name: " << dimension_name << endl;  
+#ifdef VERBOSE
+  cout << " Dimension name: " << dimension_name << endl;  
+#endif
+}
+| DIMENSION_NAME '=' INT
+{
+#ifdef VERBOSE
+  cout << "Full path: " << full_path;
+#endif
+  // Save the dimension name.  
+  dimension_name = full_path + "/" + $3;
+#ifdef VERBOSE
+  cout << " Dimension name: " << dimension_name << endl;  
+#endif
 }
 ;
 attribute_dimension_size: DIMENSION_SIZE '=' INT
 {
   // Save the size info.
-  if(grid_structure_found)  
-    ((HE5Parser*)(he5parser))->add_dimension_map(dimension_name, atoi($3));
-  if(swath_structure_found)
-    ((HE5Parser*)(he5parser))->add_dimension_map_swath(dimension_name, atoi($3));
+  if(((HE5Parser*)(he5parser))->grid_structure_found)  
+    ((HE5Parser*)(he5parser))->set_grid_dimension_size(dimension_name, 
+                                                       atoi($3));
+  if(((HE5Parser*)(he5parser))->swath_structure_found)
+    ((HE5Parser*)(he5parser))->set_swath_dimension_size(dimension_name, 
+                                                        atoi($3));
 }
 ;
 attribute_dimension_list: DIMENSION_LIST 
 {
-   parser_state = 10;
+   ((HE5Parser*)(he5parser))->parser_state = 10;
 }
 '=' dataseq
 {
-  parser_state = 11;
-  if(grid_structure_found){
-    ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
+  ((HE5Parser*)(he5parser))->parser_state = 11;
+  if(((HE5Parser*)(he5parser))->grid_structure_found){
+    ((HE5Parser*)(he5parser))->set_grid_variable_dimensions(full_path, 
+                                                            dimension_list);
     // Reset for next path
     data_field_name = "/Data Fields/";
     full_path = "/HDFEOS/GRIDS/";
     full_path.append(grid_name);
     dimension_list = "";
   }
-  if(swath_structure_found){
-    ((HE5Parser*)(he5parser))->add_dimension_list(full_path, dimension_list);
+  if(((HE5Parser*)(he5parser))->swath_structure_found){
+    ((HE5Parser*)(he5parser))->set_swath_variable_dimensions(full_path,
+                                                             dimension_list);
     // Reset for next path
     data_field_name = "/Data Fields/";
+    geo_field_name = "/Geolocation Fields/";
     full_path = "/HDFEOS/SWATHS/";
     full_path.append(swath_name);
-    /* <hyokyung 2009.04.21. 13:37:02> */
-    geo_field_name = "/Geolocation Fields/";
     dimension_list = "";
   }  
 }
 ;
 attribute_data_field_name: DATA_FIELD_NAME '=' STR
 {
-  // cout << $3 << endl;
+#ifdef VERBOSE
+  cout << $3 << endl;
+#endif
   // Construct the path.	
-  if(valid_projection){
+  if(((HE5Parser*)(he5parser))->valid_projection){
     data_field_name.append($3);
     full_path.append(data_field_name);
-    ((HE5Parser*)(he5parser))->add_data_path(full_path);
+    ((HE5Parser*)(he5parser))->set_grid_variable_list(full_path);
 #ifdef VERBOSE    
-    cout << "add_data_path:" << full_path << endl;
+    cout << "set_grid_variable_list:" << full_path << endl;
 #endif    
   }
-  if(swath_structure_found){
+  if(((HE5Parser*)(he5parser))->swath_structure_found){
     data_field_name.append($3);
     full_path.append(data_field_name);
-    ((HE5Parser*)(he5parser))->add_data_path_swath(full_path);
+    ((HE5Parser*)(he5parser))->set_swath_variable_list(full_path);
 #ifdef VERBOSE    
-    cout << "add_data_path_swath:" << full_path << endl;
+    cout << "set_swath_variable_list:" << full_path << endl;
 #endif        
   }
 }
@@ -254,10 +274,10 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
 
 attribute_geo_field_name: GEO_FIELD_NAME '=' STR
 {
-  if(swath_structure_found){
+  if(((HE5Parser*)(he5parser))->swath_structure_found){
     geo_field_name.append($3);
     full_path.append(geo_field_name);
-    ((HE5Parser*)(he5parser))->add_data_path_swath(full_path);
+    ((HE5Parser*)(he5parser))->set_swath_variable_list(full_path);
 #ifdef VERBOSE    
     cout << "add_geo_path_swath:" << full_path << endl;
 #endif        
@@ -270,11 +290,11 @@ attribute_swath_name: SWATH_NAME '=' STR
 {
   // Remember the path.
   swath_name = $3;
-  swath_structure_found = true;
-  ((HE5Parser*)(he5parser))->set_swath(swath_structure_found);  
+  ((HE5Parser*)(he5parser))->swath_structure_found = true;
+  ((HE5Parser*)(he5parser))->set_swath(true);  
   // Reset the full path
   full_path = "/HDFEOS/SWATHS/";
-  valid_projection = false;
+  ((HE5Parser*)(he5parser))->valid_projection = false;
   full_path.append(swath_name);
 #ifdef VERBOSE  
   cout << "Swath Name is:" << swath_name << endl;
@@ -295,8 +315,8 @@ group:GROUP '=' STR
 |
       GROUP '=' GRID_STRUCTURE
       {
-	grid_structure_found = true;	
-	swath_structure_found = false;	
+	((HE5Parser*)(he5parser))->grid_structure_found = true;	
+	((HE5Parser*)(he5parser))->swath_structure_found = false;	
 #ifdef VERBOSE
 	cout << $3 <<  endl; // $3 refers the STR
 #endif	
@@ -307,7 +327,7 @@ group:GROUP '=' STR
 |
       GROUP '=' SWATH_STRUCTURE
       {
-	grid_structure_found = false;
+	((HE5Parser*)(he5parser))->grid_structure_found = false;
       }
       attribute_list
       END_GROUP '=' SWATH_STRUCTURE
@@ -325,8 +345,8 @@ object:OBJECT '=' STR
 		
 projection: PROJECTION '=' HE5_GCTP_GEO
 {
-  // Set valid_projection flag to "true".
-  valid_projection = true;
+  // Set ((HE5Parser*)(he5parser))->valid_projection flag to "true".
+  ((HE5Parser*)(he5parser))->valid_projection = true;
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  
@@ -350,6 +370,6 @@ PROJECTION '=' STR
 void
 he5ddserror(char *s)
 {
-	cout << "ERROR: " << s << endl;
+	cout << "he5dds.y ERROR: " << s << endl;
 }
 

@@ -67,14 +67,9 @@ bool HDF5ArrayEOS::read()
     int stop = dimension_stop(d, true);
     int count = ((stop - start) / stride) + 1;
     string dim_name = name();
-#ifdef CF
-    dim_name = eos.get_EOS_name(dim_name);
-#endif
-    int loc = eos.get_dimension_data_location(dim_name);
-
+    int loc = _dim_id;
+    DBG(cerr << "=HDF5ArrayEOS::read() dim_id = " << _dim_id << endl);
     if (loc >= 0) {
-        // set_value() will call this function.
-        // set_read_p(true); 
         dods_float32 *val =
             get_dimension_data(eos.dimension_data[loc], start, stride,
                                stop, count);
@@ -82,15 +77,19 @@ bool HDF5ArrayEOS::read()
 	// Vector::value(dods_float32* b) function doesn't check if _buf is null
 	// and the _buf needs memory allocation.
 	set_value(val, count);
-	// value(val); 
         delete[]val;	
     } else {
-        cerr << "Could not retrieve map data" << endl;
+        cerr << "Could not retrieve map data:" << name() <<  endl;
     }
     return false;
 }
 
-// public functions to set all parameters needed in read function.
+// public functions to set all parameters needed in read() function.
+
+void HDF5ArrayEOS::set_dim_id(int dim) {
+    _dim_id = dim;
+}
+
 
 void HDF5ArrayEOS::set_memneed(size_t need)
 {

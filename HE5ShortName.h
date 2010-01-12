@@ -43,7 +43,7 @@ using namespace std;
 /// to help visualization clients like GrADS. The "sdfopen" command in
 /// GrADS expects that all variables are less than 15 characters long.
 /// Otherwise, you need to use "xdfopen" command in GrADS which requires
-/// additional definition file that maps long name to short one.
+/// additional definition file that maps a long name to short one.
 /// 
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
@@ -72,9 +72,19 @@ public:
     /// \see HE5CF.cc
     /// \see HE5Parser.cc
     /// \return substring 
-    string cut_long_name(string a_name);
+    string get_dataset_name(string a_name);
 
-    /// Generates a unique name from \a a_name
+    /// Drops the dataset name from \a a_name and returns the group path
+    /// only by searching for the last instance of '/' character.
+    /// 
+    /// \param a_name  HDF-EOS5 dataset name
+    /// \see HE5CF.cc
+    /// \see HE5Parser.cc
+    /// \return substring 
+    string get_group_name(string a_name);
+
+    
+   /// Generates a unique name from \a a_name
     ///
     /// This function generates  a new name that starts with "A" and a unique
     /// id number that starts from 0. It cuts the \a a_name to make the final
@@ -84,7 +94,7 @@ public:
     /// \see HE5CF.cc
     /// \see HE5Parser.cc
     /// \return a new, 15-character long string.
-    string generate_short_name(string a_name);
+    string get_unique_name(string a_name);
 
     /// Retrieves a long name from \a a_short_name
     ///

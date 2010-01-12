@@ -1,3 +1,12 @@
+2010-01-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	Re-organized source codes and made swath handling robust.
+	
+	* HE5CFGrid class is added.
+	* HE5CSwath class is added.
+	* common.h is removed.
+	* hdf5_handler.h has the contents of the old common.h.
+	
 2009-12-18  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc fix for Ticket #1460.

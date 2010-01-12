@@ -1,6 +1,18 @@
 
 	$Id$
 
+News for version 1.3.4
+
+Repair to the --enable-cf and --with-short-names options.
+
+This release is a special release for Hyrax 1.5.2 that contains new
+features added to the handler by THG for support of HDFEOS2 data
+files.
+
+News for version 1.3.3
+
+Somehow, the news didn't get updated...
+
 News for version 1.3.2
 
 Repaired memory allocation issues.

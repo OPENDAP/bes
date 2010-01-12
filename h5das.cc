@@ -35,23 +35,7 @@
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
-
-#include "config_hdf5.h"
-
-#include <string>
-#include <sstream>
-
-#include <InternalErr.h>
-#include <Str.h>
-#include <parser.h>
-#include <debug.h>
-
-#include "h5das.h"
-#include "h5dds.h"
-#include "common.h"
-#include "h5get.h"
-#include "HE5Parser.h"
-#include "HDF5PathFinder.h"
+#include "hdf5_handler.h"
 
 /// If ATTR_STRING_QUOTE_FIX is defined, the handler wraps string with
 /// quotes("").
@@ -74,7 +58,6 @@ int he5dasparse(void *arg);
 yy_buffer_state *he5das_scan_string(const char *str);
 
 /// Checks whether HDF-EOS5 file has a valid projection for Grid generation.
-extern bool valid_projection;	
 /// Checks whether this file has "HDF4_DIMGROUP" - a quick way of identifying
 /// a converted file by the h4toh5 tool that has dimension scale.
 bool has_hdf4_dimgroup;
@@ -146,7 +129,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 add_group_structure_info(das, gname, oname, true);
 #endif
                 string full_path_name = string(gname) + string(oname) + "/";
-                // Check if it is converted from h4toh5 tool and has dimension scale.
+                // Check if it is converted from h4toh5 tool  and has dimension
+                // scale.
                 if(full_path_name.find("/HDF4_DIMGROUP/") != string::npos)
                     {
                         has_hdf4_dimgroup = true;
@@ -226,7 +210,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 }
 
                 if (H5Dclose(dset) < 0){
-		   throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
+		   throw InternalErr(__FILE__, __LINE__, 
+                                     "Could not close the dataset.");
 		}
                 break;
             }                   // case H5G_DATASET
@@ -445,6 +430,139 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
+// \fn write_metadata(DAS & das, const string & varname)
+/// parses the metadata string and generates a structured attribute from it.
+///
+/// \param das DAS object: reference
+/// \param varname absolute name of either a dataset or a group
+/// \return true if parsed successfully
+///////////////////////////////////////////////////////////////////////////////
+bool write_metadata(DAS & das, const string & varname)
+{
+
+    if (eos.is_valid()) {
+#ifndef CF      
+        if (varname.find("StructMetadata") != string::npos) {
+            if (!eos.bmetadata_Struct) {
+                eos.bmetadata_Struct = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_Struct << endl);
+                he5das_scan_string(eos.metadata_Struct);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS StructMetdata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+#endif
+
+        if (varname.find("coremetadata") != string::npos) {
+            if (!eos.bmetadata_core) {
+                eos.bmetadata_core = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_core << endl);
+                he5das_scan_string(eos.metadata_core);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS coremetadata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+
+
+        if (varname.find("CoreMetadata") != string::npos) {
+            if (!eos.bmetadata_Core) {
+                eos.bmetadata_core = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_Core << endl);
+                he5das_scan_string(eos.metadata_Core);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS CoreMetadata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+#ifndef CF
+        if (varname.find("productmetadata") != string::npos) {
+            if (!eos.bmetadata_product) {
+                eos.bmetadata_core = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_product << endl);
+                he5das_scan_string(eos.metadata_product);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS productmetadata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        if (varname.find("ArchivedMetadata") != string::npos) {
+            if (!eos.bmetadata_Archived) {
+                eos.bmetadata_core = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_Archived << endl);
+                he5das_scan_string(eos.metadata_Archived);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS ArchivedMetadata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        if (varname.find("subsetmetadata") != string::npos) {
+            if (!eos.bmetadata_subset) {
+                eos.bmetadata_subset = true;
+                AttrTable *at = das.get_table(varname);
+                if (!at)
+                    at = das.add_table(varname, new AttrTable);
+                parser_arg arg(at);
+                DBG(cerr << eos.metadata_subset << endl);
+                he5das_scan_string(eos.metadata_subset);
+
+                if (he5dasparse(static_cast < void *>(&arg)) != 0
+                    || arg.status() == false){
+                    cerr << "HDF-EOS subsetmetadata parse error!\n";
+                    return false;
+                }
+                return true;
+            }
+        }
+#endif                          // #ifndef CF    	
+    }
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // \fn read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 /// will fill in attributes of a dataset or a group into one DAS table.
 ///
@@ -461,120 +579,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
     // Obtain variable names. Put this variable name into das table
     // regardless of the existing attributes in this object.
-
     DBG(cerr << ">read_objects():"
         << "varname=" << varname << " id=" << oid << endl);
-
-#ifdef NASA_EOS_META
-    if (eos.is_valid()) {
-#ifndef CF      
-        if (varname.find("StructMetadata") != string::npos) {
-            if (!eos.bmetadata_Struct) {
-                eos.bmetadata_Struct = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_Struct << endl);
-                he5das_scan_string(eos.metadata_Struct);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS StructMetdata parse error!\n";
-                return;
-            }
-        }
+#ifdef NASA_EOS_META    
+    if(write_metadata(das, varname))
+        return;
 #endif
-        if (varname.find("coremetadata") != string::npos) {
-            if (!eos.bmetadata_core) {
-                eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_core << endl);
-                he5das_scan_string(eos.metadata_core);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS coremetadata parse error!\n";
-                return;
-            }
-        }
-
-        if (varname.find("CoreMetadata") != string::npos) {
-            if (!eos.bmetadata_Core) {
-                eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_Core << endl);
-                he5das_scan_string(eos.metadata_Core);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS CoreMetadata parse error!\n";
-                return;
-            }
-        }
-#ifndef CF
-        if (varname.find("productmetadata") != string::npos) {
-            if (!eos.bmetadata_product) {
-                eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_product << endl);
-                he5das_scan_string(eos.metadata_product);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS productmetadata parse error!\n";
-                return;
-            }
-        }
-
-        if (varname.find("ArchivedMetadata") != string::npos) {
-            if (!eos.bmetadata_Archived) {
-                eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_Archived << endl);
-                he5das_scan_string(eos.metadata_Archived);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS ArchivedMetadata parse error!\n";
-                return;
-            }
-        }
-
-        if (varname.find("subsetmetadata") != string::npos) {
-            if (!eos.bmetadata_subset) {
-                eos.bmetadata_subset = true;
-                AttrTable *at = das.get_table(varname);
-                if (!at)
-                    at = das.add_table(varname, new AttrTable);
-                parser_arg arg(at);
-                DBG(cerr << eos.metadata_subset << endl);
-                he5das_scan_string(eos.metadata_subset);
-
-                if (he5dasparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS subsetmetadata parse error!\n";
-                return;
-            }
-        }
-#endif                          // #ifndef CF    	
-    }
-
-#endif                          // #ifdef NASA_EOS_META
-
-
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
 
@@ -582,13 +592,33 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     string newname;
 
     if(!has_hdf4_dimgroup){
-        newname = get_short_name(varname);
+        newname = varname;
     }
     else{
         // This is necessry for GrADS which doesn't like '/' character
         // in variable name.
         newname = get_short_name_dimscale(varname); 
     }
+
+#ifdef CF
+    if(eos.is_valid() && eos.get_swath_variable(varname)) {
+        // Rename the variable if necessary.
+        newname = eos.get_CF_name((char*) varname.c_str());
+#ifdef SHORT_PATH
+        // If it is not renamed, shorten the swath variable name
+        // if --enable-short-path configuration option is enabled.
+        if(newname == varname){
+            newname = eos.get_short_name(varname);
+        }
+#endif        
+        DBG(cerr << "newname: " << newname << endl);
+    }
+#ifdef SHORT_PATH    
+    if (eos.is_valid() && eos.get_grid_variable(varname)) {
+        newname = eos.get_short_name(varname);
+    }
+#endif    
+#endif  
     
     if(newname.empty()){	  
         return; // Ignore attribute generation for /HDF4_DIMGROUP/.
@@ -705,7 +735,20 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	if( value ) delete[] value;
 	throw;
     }
-
+#ifdef CF
+    if(eos.get_swath_variable(varname) && 
+       eos.get_swath_coordinate_dimension_match(varname)){
+        attr_table_ptr->append_attr("coordinates", STRING, 
+                        eos.get_swath_coordinate_attribute());
+    }
+    if(newname == "lon" || newname == "lat"){
+        write_swath_coordinate_unit_attribute(attr_table_ptr, newname);
+        if(eos.get_swath_2D()){
+            attr_table_ptr->append_attr("coordinates", STRING, 
+                                        eos.get_swath_coordinate_attribute());
+        }
+    }
+#endif
     DBG(cerr << "<read_objects()" << endl);
 }
 
@@ -725,11 +768,12 @@ void find_gloattr(hid_t file, DAS & das)
     DBG(cerr << ">find_gloattr()" << endl);
     has_hdf4_dimgroup = false;  // Reset it all the time.
 #ifdef CF
-    if(eos.is_valid() && valid_projection){
-        add_dimension_attributes(das);
+    if(eos.is_valid() && eos.valid_projection){
+        write_grid_global_attribute(das);
+        write_grid_coordinate_variable_attribute(das);
     }
-    if(eos.is_swath()){
-        write_dimension_attributes_swath(das);
+    if(eos.get_swath()){
+        write_swath_global_attribute(das);
     }
 #endif
 
@@ -739,7 +783,6 @@ void find_gloattr(hid_t file, DAS & das)
 	    throw InternalErr(__FILE__, __LINE__,
 			      "unable to open HDF5 root group");
 #ifndef CF
-
 	das.add_table("HDF5_ROOT_GROUP", new AttrTable);
 #endif
 
@@ -984,24 +1027,32 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
 /// \param das DAS object: reference
 /// \remarks This is necessary for GrADS compatibility only
 ///////////////////////////////////////////////////////////////////////////////
-void add_dimension_attributes(DAS & das)
+void write_grid_global_attribute(DAS & das)
 {
-    DBG(cerr << ">add_dimension_attributes()" << endl);
+    DBG(cerr << ">write_grid_global_attributes()" << endl);
     AttrTable *at;
-    vector < string > tokens;
     
     at = das.add_table("NC_GLOBAL", new AttrTable);
     at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
     at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
     at->append_attr("dataType", STRING, "\"Grid\"");
+    
+    DBG(cerr << "<write_grid_global_attributes()" << endl);
+}
 
-    if(eos.get_dimension_size("XDim") > 0){
+void write_grid_coordinate_variable_attribute(DAS & das)
+{
+    DBG(cerr << ">write_grid_coordinate_variable_attribute()" << endl);
+    AttrTable *at;
+    vector < string > tokens;
+
+    if(eos.get_grid_lon() > 0){
         at = das.add_table("lon", new AttrTable);
         at->append_attr("grads_dim", STRING, "\"x\"");
         at->append_attr("grads_mapping", STRING, "\"linear\"");
         {
             std::ostringstream o;
-            o << "\"" << eos.get_dimension_size("XDim") << "\"";            
+            o << "\"" << eos.get_grid_lon() << "\"";            
             at->append_attr("grads_size", STRING, o.str().c_str());
         }
         at->append_attr("units", STRING, "\"degrees_east\"");
@@ -1024,13 +1075,13 @@ void add_dimension_attributes(DAS & das)
         }
     }
     
-    if(eos.get_dimension_size("YDim") > 0){    
+    if(eos.get_grid_lat() > 0){    
         at = das.add_table("lat", new AttrTable);
         at->append_attr("grads_dim", STRING, "\"y\"");
         at->append_attr("grads_mapping", STRING, "\"linear\"");
         {
             std::ostringstream o;
-            o << "\"" << eos.get_dimension_size("YDim") << "\"";
+            o << "\"" << eos.get_grid_lat() << "\"";
             at->append_attr("grads_size", STRING, o.str().c_str());
         }
         at->append_attr("units", STRING, "\"degrees_north\"");
@@ -1052,33 +1103,47 @@ void add_dimension_attributes(DAS & das)
             o << (eos.gradient_y / 1000000.0);
             at->append_attr("resolution", FLOAT32, o.str().c_str());      
         }
-    }    
-    DBG(cerr << "<add_dimension_attributes()" << endl);
+    }
+
+    if(eos.get_grid_lev() > 0){    
+        at = das.add_table("lev", new AttrTable);
+        at->append_attr("units", STRING, "\"hPa\"");
+        at->append_attr("long_name", STRING, "\"pressure level\"");
+        at->append_attr("positive", STRING, "\"down\"");
+    }
+
+    if(eos.get_grid_time() > 0){    
+        at = das.add_table("time", new AttrTable);
+        at->append_attr("units", STRING, "\"seconds\""); 
+    }
+    
+    DBG(cerr << "<write_grid_coordinate_variable_attribute()" << endl);
 }
 
-void write_dimension_attributes_swath(DAS & das)
+
+void write_swath_global_attribute(DAS & das)
+{
+    AttrTable *at;
+    at = das.add_table("NC_GLOBAL", new AttrTable);
+    at->append_attr("title", STRING, "\"NASA EOS Aura Swath\"");
+    at->append_attr("Conventions", STRING, "\"CF-1.4\"");
+
+}
+
+void write_swath_coordinate_unit_attribute(AttrTable* at, string varname)
 {
 
-    AttrTable *at;
-  
-    // Let's try IDV without NC_GLOBAL to see it's required. 
-    at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Swath\"");
-    at->append_attr("Conventions", STRING, "\"CF-1.0\"");
+    if(varname.find("lon") != string::npos){
+        at->del_attr("units");
+        at->append_attr("units",STRING, "degrees_east");
+        at->append_attr("standard_name",STRING, "longitude");
+    }
 
-    at = das.add_table("lon", new AttrTable);
-    at->append_attr("units", STRING, "\"degrees_east\"");
-    at->append_attr("long_name", STRING, "\"longitude\"");
+    if(varname.find("lat") != string::npos){
+        at->del_attr("units");
+        at->append_attr("units",STRING, "degrees_north");
+        at->append_attr("standard_name",STRING, "latitude");
+    }
 
-    at = das.add_table("lat", new AttrTable);
-    at->append_attr("units", STRING, "\"degrees_north\"");
-    at->append_attr("long_name", STRING, "\"latitude\"");
-    // This is a temporary solution for 2-D swath that works for IDV.
-    at->append_attr("coordinates", STRING, "\"lon lat\"");
-    
-    // To make this handler fully compliant to CF-convention,
-    // insert the "coordinates" attribute if each swath dataset has matching
-    // lat and lon dimension names. This is a future to-do item.
 }
-
 #endif
