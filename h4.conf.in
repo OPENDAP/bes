@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------#
-# OPeNDAP DAP-server BES Module Configuration file                      #
+# OPeNDAP HDF4 Data Handler BES Module Configuration file               #
 #-----------------------------------------------------------------------#
 
 #-----------------------------------------------------------------------#
@@ -32,9 +32,10 @@ BES.module.h4=@bes_modules_dir@/libhdf4_module.so
 
 BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
 
-# HDF4 handler specific parameters"
-# CacheDir: Cache directory used by the HDF4 data handler."
-# Suggestion: Consider making this '/tmp/bes'; see the comment at "
-# BES.CacheDir above."
+#-----------------------------------------------------------------------#
+# HDF4 handler specific parameters
+#-----------------------------------------------------------------------#
+# CacheDir: Cache directory used by the HDF4 data handler.
+# Suggestion: Consider making this '/tmp/bes'
 HDF4.CacheDir=/tmp
 
