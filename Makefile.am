@@ -54,7 +54,6 @@ cccc:
 .PHONY: fortify
 fortify:
 	(cd dispatch && sourceanalyzer -b @PACKAGE@ $(MAKE))
-	(cd command && $(MAKE))
 	(cd xmlcommand && sourceanalyzer -b @PACKAGE@ $(MAKE))
 	(cd ppt && sourceanalyzer -b @PACKAGE@ $(MAKE))
 	(cd cmdln && $(MAKE))
@@ -63,7 +62,6 @@ fortify:
 	(cd docs && $(MAKE))
 	(cd bin && $(MAKE))
 	(cd templates && $(MAKE))
-
 	sourceanalyzer -b @PACKAGE@ -scan -f @PACKAGE@-@PACKAGE_VERSION@.fpr
 
 # Use this to clean the fortify project.
