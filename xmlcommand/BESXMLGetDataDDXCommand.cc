@@ -46,9 +46,9 @@ BESXMLGetDataDDXCommand::BESXMLGetDataDDXCommand( const BESDataHandlerInterface 
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a get dataddx command.
  *
-    <get  type="dds" definition="d" returnAs="name" />
+    &gt;get  type="dataddx" definition="d" returnAs="name" /&gt;
  *
  * @param node xml2 element node pointer
  */

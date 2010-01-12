@@ -38,6 +38,7 @@
  * @param sym_name symbolic name of the container to add
  * @param real_name real name, e.g. file name, of the container to add
  * @param type data type of the container
+ * @param info The BES information object to add container information to
  * @see BESInfo
  */
 void

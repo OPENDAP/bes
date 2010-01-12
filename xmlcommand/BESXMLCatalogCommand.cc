@@ -46,7 +46,7 @@ BESXMLCatalogCommand::BESXMLCatalogCommand( const BESDataHandlerInterface &base_
 
 /** @brief parse a show command. No properties or children elements
  *
-    <deleteContainer name="containerName" store="storeName" />
+    &lt;showCatalog node="containerName" /&gt;
  *
  * @param node xml2 element node pointer
  */

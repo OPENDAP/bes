@@ -248,16 +248,18 @@ BESInfo::add_data_from_file( const string &key, const string &name )
  * this class we can take care of exceptions here.
  *
  * @param e The exception to add to the informational response object
+ * @param admin The contact information for the person
+ * responsible for this error
  */
 void
-BESInfo::add_exception( BESError &e, const string &administrator )
+BESInfo::add_exception( BESError &e, const string &admin )
 {
     begin_tag( "BESError" ) ;
     ostringstream stype ;
     stype << e.get_error_type() ;
     add_tag( "Type", stype.str() ) ;
     add_tag( "Message", e.get_message() ) ;
-    add_tag( "Administrator", administrator ) ;
+    add_tag( "Administrator", admin ) ;
 #ifdef BES_DEVELOPER
     begin_tag( "Location" ) ;
     add_tag( "File", e.get_file() ) ;

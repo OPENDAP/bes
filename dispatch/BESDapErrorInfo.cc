@@ -144,6 +144,8 @@ BESDapErrorInfo::add_data_from_file( const string &key, const string &name )
 /** @brief ignore exception data to this informational object.
  *
  * @param e exception to be added
+ * @param admin The contact information for the person
+ * responsible for this error
  */
 void
 BESDapErrorInfo::add_exception( BESError &e, const string &admin  )

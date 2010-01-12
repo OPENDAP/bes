@@ -65,6 +65,9 @@ public:
      * @param type type of error generated. Default list of error types are
      * defined above as internal error, internal fatal error, syntax/user
      * error, resource forbidden error, resource not found error.
+     * @param file the filename in which this error object was created
+     * @param line the line number within the file in which this error
+     * object was created
      */
     			BESError( const string &msg,
 				  unsigned int type,
@@ -101,7 +104,10 @@ public:
      *
      * Sets the return code for this error class, which could represent the
      * need to terminate or do something specific based on the error.
-     * @param return_code code used when returning from the error
+     *
+     * @param type the type of error this error object represents. Can
+     * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
+     * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
     virtual void	set_error_type( int type ) { _type = type ; }
 

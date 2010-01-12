@@ -439,6 +439,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
  * variable _timeout is passed into the constructor.
  *
  * @param inBuff buffer to store the data into
+ * @param buffer_size the size of the passed buffer
  * @return number of bytes read in, -1 if failed to read anything
  */
 int

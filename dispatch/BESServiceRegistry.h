@@ -53,9 +53,9 @@ class BESInfo ;
  * the nc_module for netcdf data, can register that it can provide the dap
  * services by calling the handle_services call.
  *
- * Also provided by this class is the response body for the <showServices />
- * command, returning the list of services, the commands provided by that
- * services, and the description of those commands
+ * Also provided by this class is the response body for the
+ * &lt;showServices &gt;/ command, returning the list of services, the
+ * commands provided by that services, and the description of those commands
  */
 class BESServiceRegistry : public BESObj
 {

@@ -143,6 +143,8 @@ BESSilentInfo::add_data_from_file( const string &key, const string &name )
  * not set then the information is output directly to the output stream.
  *
  * @param e the exception to be added to this informational object
+ * @param admin The contact information for the person responsible for
+ * this error
  * @see BESError
  */
 void

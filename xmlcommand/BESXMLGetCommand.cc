@@ -47,9 +47,9 @@ BESXMLGetCommand::BESXMLGetCommand( const BESDataHandlerInterface &base_dhi )
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a get command.
  *
-    <get  type="dds" definition="d" returnAs="name" />
+    &lt;get  type="dds" definition="d" returnAs="name" /&gt;
  *
  * @param node xml2 element node pointer
  */
@@ -148,6 +148,13 @@ BESXMLGetCommand::get_dhi()
     return _dhi ;
 }
 
+/** @brief Prepare any information needed to execute the request of
+ * this get command
+ *
+ * This function is used to prepare the information needed to execute
+ * the get request. It finds the definition specified in the element
+ * and prepares all of the containers within that definition.
+ */
 void
 BESXMLGetCommand::prep_request()
 {

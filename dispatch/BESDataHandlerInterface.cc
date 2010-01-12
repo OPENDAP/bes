@@ -70,12 +70,12 @@ BESDataHandlerInterface::clean()
     response_handler = 0 ;
 }
 
-/** @brief dumps information about this object
+/** @brief returns the response object using the response handler
  *
- * Displays the pointer value of this instance along with information about
- * each of the data members held
+ * If the response handler is set for this request then return the
+ * response object for the request using that response handler
  *
- * @param strm C++ i/o stream to dump the information to
+ * @return The response object for this request
  */
 BESResponseObject *
 BESDataHandlerInterface::get_response_object()
@@ -89,6 +89,13 @@ BESDataHandlerInterface::get_response_object()
     return response ;
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with information about
+ * each of the data members held
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
 void
 BESDataHandlerInterface::dump( ostream &strm ) const
 {

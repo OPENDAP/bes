@@ -41,12 +41,13 @@ BESXMLShowCommand::BESXMLShowCommand( const BESDataHandlerInterface &base_dhi )
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse any show command. No sub-elements or properties are
+ * defined
  *
-    <cmd1.1 prop1=\"prop1val\"> \
-	<element1>element1val</element1> \
-	<element2 prop2.1=\"prop2.1val\">element2val</element2> \
-    </cmd1.1> \
+ * If there are properties, values, or sub-elements for a show command
+ * then another command object should be created to parse those.
+ *
+    &lt;showX \&gt;
  *
  * @param node xml2 element node pointer
  */

@@ -41,6 +41,15 @@ using std::cout ;
 #include "BESXMLCatalogCommand.h"
 #include "BESXMLGetDataDDXCommand.h"
 
+/** @brief Adds the basic DAP XML command objects to the XMLCommand list of
+ * possible commands
+ *
+ * Once this module is dynamically loaded, this function is called in
+ * order to add the DAP request commands to the list of possible
+ * commands that this BES can handle
+ *
+ * @param modname The name of the module being loaded and initialized
+ */
 void
 BESXMLDapCommandModule::initialize( const string &modname )
 {
@@ -64,6 +73,14 @@ BESXMLDapCommandModule::initialize( const string &modname )
     BESDEBUG( "dap", "Done Initializing DAP Commands:" << endl ) ;
 }
 
+/** @brief Cleans up the DAP XML commands from the list of possible commands
+ *
+ * When the BES is being shut down, each dynamically loaded module is
+ * allowed to clean up after itself before the module is unloaded. This
+ * function is called to do the cleanup work for the DAP XML command module
+ *
+ * @param modname The name of the DAP XML command module.
+ */
 void
 BESXMLDapCommandModule::terminate( const string &modname )
 {

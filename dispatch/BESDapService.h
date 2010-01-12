@@ -51,7 +51,7 @@ using std::string ;
 class BESDapService
 {
 public:
-    /** @breif static function to register a handler to handle the dap
+    /** @brief static function to register a handler to handle the dap
      * services
      *
      * @param handler the name of the handler, such as nc for netcdf_handler
@@ -59,7 +59,7 @@ public:
      */
     static void	handle_dap_service( const string &handler ) ;
 
-    /** @breif static function to add commands to the dap service
+    /** @brief static function to add commands to the dap service
      *
      * This helper function allows the caller to add commands to the dap
      * service, such as dap-server adding the ascii, info_page and html_form

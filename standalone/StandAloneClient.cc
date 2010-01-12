@@ -301,8 +301,8 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 * The response is written to the output stream if one is specified,
 * otherwise the output is ignored.
 *
-* @param  cmd       The BES commands to send to the BES server
-* @param repeat     Number of times to repeat the command
+* @param  cmd_list  The BES commands to send to the BES server
+* @param  repeat    Number of times to repeat the command
 * @throws BESError  Thrown if there is a problem sending any of the
 *                   request to the server or a problem receiving any
 *                   of the responses from the server.

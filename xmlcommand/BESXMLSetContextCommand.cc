@@ -43,12 +43,9 @@ BESXMLSetContextCommand::BESXMLSetContextCommand( const BESDataHandlerInterface 
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a set context command.
  *
-    <cmd1.1 prop1=\"prop1val\"> \
-	<element1>element1val</element1> \
-	<element2 prop2.1=\"prop2.1val\">element2val</element2> \
-    </cmd1.1> \
+    &lt;setContext name="context_name"&gt;value&lt;/setContext&gt;
  *
  * @param node xml2 element node pointer
  */

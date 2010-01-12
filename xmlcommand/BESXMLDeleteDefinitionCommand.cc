@@ -44,9 +44,9 @@ BESXMLDeleteDefinitionCommand::BESXMLDeleteDefinitionCommand( const BESDataHandl
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a delete definition command.
  *
-    <deleteContainer name="containerName" space="storeName" />
+    &lt;deleteDefinition name="definitionName" space="storeName" /&gt;
  *
  * @param node xml2 element node pointer
  */

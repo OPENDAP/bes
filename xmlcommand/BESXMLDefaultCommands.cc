@@ -50,6 +50,8 @@ using std::endl ;
 #include "BESXMLDeleteDefinitionCommand.h"
 #include "BESXMLDeleteDefinitionsCommand.h"
 
+/** @brief Loads the default set of BES XML commands
+ */
 int
 BESXMLDefaultCommands::initialize( int, char** )
 {
@@ -149,6 +151,9 @@ BESXMLDefaultCommands::initialize( int, char** )
     return 0;
 }
 
+/** @brief Removes the default set of BES XML commands from the list of
+ * possible commands
+ */
 int
 BESXMLDefaultCommands::terminate( void )
 {

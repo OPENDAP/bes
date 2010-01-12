@@ -44,9 +44,9 @@ BESXMLSetContainerCommand::BESXMLSetContainerCommand( const BESDataHandlerInterf
 {
 }
 
-/** @brief parse a show command. No properties or children elements
+/** @brief parse a set container command.
  *
-    <setContainer name="c" space="catalog">data/nc/fnoc1.nc</setContainer>
+    &lt;setContainer name="c" space="catalog"&gt;data/nc/fnoc1.nc&lt;/setContainer&gt;
  *
  * @param node xml2 element node pointer
  */

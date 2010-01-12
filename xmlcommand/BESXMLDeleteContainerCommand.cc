@@ -46,7 +46,7 @@ BESXMLDeleteContainerCommand::BESXMLDeleteContainerCommand( const BESDataHandler
 
 /** @brief parse a show command. No properties or children elements
  *
-    <deleteContainer name="containerName" space="storeName" />
+    &lt;deleteContainer name="containerName" space="storeName" /&gt;
  *
  * @param node xml2 element node pointer
  */

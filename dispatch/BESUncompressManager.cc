@@ -197,6 +197,7 @@ BESUncompressManager::get_method_names()
  * extension .bozo is returned as is.
  *
  * @param src file to be uncompressed
+ * @param target target file to uncompress into
  * @param cache BESCache object to uncompress the src file in
  * @return full path to the uncompressed file
  * @throws BESInternalError if there is a problem uncompressing

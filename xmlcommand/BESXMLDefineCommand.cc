@@ -46,13 +46,13 @@ BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dh
 
 /** @brief parse a show command. No properties or children elements
  *
-    <define name="d" space="default">
-        <container name="c">
-            <constraint>a valid ce</constraint>
-            <attributes>list of attributes</attributes>
-        </container>
-	<aggregate handler="someHandler" cmd="someCommand" />
-    </define> 
+    &lt;define name="d" space="default"&gt;
+        &lt;container name="c"&gt;
+            &lt;constraint&gt;a valid ce&lt;/constraint&gt;
+            &lt;attributes&gt;list of attributes&lt;/attributes&gt;
+        &lt;/container&gt;
+	&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
+    &lt;/define&gt; 
  *
  * Requires the name property. The space property is optional. Requires at
  * least one container element. The container element requires the name
@@ -159,10 +159,10 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 
 /** @brief handle a container element of the define element
  *
-        <container name="c">
-            <constraint>a valid ce</constraint>
-            <attributes>list of attributes</attributes>
-        </container>
+        &lt;container name="c"&gt;
+            &lt;constraint&gt;a valid ce&lt;/constraint&gt;
+            &lt;attributes&gt;list of attributes&lt;/attributes&gt;
+        &lt;/container&gt;
  *
  * The name is required. constraint and attribute sub elements are optional
  *
@@ -255,7 +255,7 @@ BESXMLDefineCommand::handle_container_element( const string &action,
 
 /** @brief handle an aggregate element of the define element
  *
-	<aggregate handler="someHandler" cmd="someCommand" />
+	&lt;aggregate handler="someHandler" cmd="someCommand" /&gt;
  *
  * The handler and cmd properties are required
  *
