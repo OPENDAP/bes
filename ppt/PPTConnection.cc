@@ -201,7 +201,7 @@ PPTConnection::send( const string &buffer )
  * @return number of bytes actually read
  */
 int
-PPTConnection::readBuffer( char *buffer, unsigned int buffer_size )
+PPTConnection::readBuffer( char *buffer, const unsigned int buffer_size )
 {
     return _mySock->receive( buffer, buffer_size ) ;
 }
@@ -333,7 +333,7 @@ PPTConnection::receive( map<string,string> &extensions,
  * @param len number of bytes remaining to be read
  */
 void
-PPTConnection::receive( ostream &strm, unsigned int len )
+PPTConnection::receive( ostream &strm, const unsigned int len )
 {
     BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl ) ;
     if( !_inBuff )
@@ -443,7 +443,8 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
  * @return number of bytes read in, -1 if failed to read anything
  */
 int
-PPTConnection::readBufferNonBlocking( char *inBuff, unsigned int buffer_size )
+PPTConnection::readBufferNonBlocking( char *inBuff,
+				      const unsigned int buffer_size )
 {
     struct pollfd p ;
     p.fd = getSocket()->getSocketDescriptor();

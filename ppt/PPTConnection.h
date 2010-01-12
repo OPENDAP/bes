@@ -55,13 +55,13 @@ private:
 				      _bytesRead( 0 ) {}
 
     virtual int			readBuffer( char *inBuff,
-					    unsigned int buff_size ) ;
+					    const unsigned int buff_size ) ;
     virtual int			readChunkHeader( char *inBuff,
 						 unsigned int buff_size ) ;
     virtual void		sendChunk( const string &buffer,
 					   map<string,string> &extensions ) ;
     virtual void		receive( ostream &strm,
-					 unsigned int len ) ;
+					 const unsigned int len ) ;
 
 protected:
 				PPTConnection( int timeout )
@@ -71,7 +71,7 @@ protected:
 				      _bytesRead( 0 ) {}
 
     virtual int			readBufferNonBlocking( char *inBuff,
-						       unsigned int buff_size );
+					       const unsigned int buff_size );
 
     virtual void		send( const string &buffer ) ;
     virtual void		read_extensions( map<string,string> &extensions,

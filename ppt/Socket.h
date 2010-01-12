@@ -65,7 +65,7 @@ public:
     virtual bool		isListening() { return _listening ; }
     virtual void		close() ;
     virtual void		send( const string &str, int start, int end ) ;
-    virtual int			receive( char *inBuff, int inSize ) ;
+    virtual int			receive( char *inBuff, const int inSize ) ;
     virtual void		sync() ;
     virtual int			getSocketDescriptor()
 				{

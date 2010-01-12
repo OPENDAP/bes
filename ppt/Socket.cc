@@ -105,7 +105,7 @@ Socket::send( const string &str, int start, int end )
 }
 
 int	
-Socket::receive( char *inBuff, int inSize )
+Socket::receive( char *inBuff, const int inSize )
 {
     int bytesRead = 0 ;
     if( ( bytesRead = read( _socket, inBuff, inSize ) ) < 1 )
@@ -116,7 +116,7 @@ Socket::receive( char *inBuff, int inSize )
 	    err += " " + (string)error_info ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-    inBuff[bytesRead] = '\0' ;
+    //inBuff[bytesRead] = '\0' ;
     return bytesRead ;
 }
 

@@ -90,36 +90,6 @@ SSLConnection::send( const string &buf )
     }
 }
 
-int
-SSLConnection::receive( char *buffer, unsigned int buffer_size )
-{
-    bool isDone = false ;
-    if( _connected )
-    {
-	int retlen = SSL_read( _connection, (void *)buffer, buffer_size ) ;
-	if( retlen <= 0 )
-	{
-	    if( retlen == 0 )
-	    {
-		isDone = true ;
-	    }
-	    else
-	    {
-		string msg = "FAILED to read from SSL connection\n" ;
-		msg += ERR_error_string( ERR_get_error(), NULL ) ;
-		throw BESInternalError( msg, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-	    if( retlen > buffer_size ) retlen = buffer_size ;
-	    buffer[retlen] = '\0' ;
-	}
-    }
-
-    return isDone ;
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance

@@ -54,7 +54,6 @@ protected:
     virtual void		send( const string &buffer ) ;
     virtual void		sendChunk( const string &buffer,
 					   map<string,string> &extensions ) {}
-    virtual int			receive( char *buffer, unsigned int buffer_size ) ;
 public:
     				SSLConnection( ) ;
     				~SSLConnection() ;
