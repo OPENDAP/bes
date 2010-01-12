@@ -114,6 +114,7 @@ bool HE5Parser::check_eos(hid_t id)
             if(string(metadata_core).find("\"TES\"") != string::npos){
                 set_grid_TES(true);
             }
+            set_swath_2D();
         }
 
         return _valid;

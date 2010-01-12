@@ -741,13 +741,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         attr_table_ptr->append_attr("coordinates", STRING, 
                         eos.get_swath_coordinate_attribute());
     }
+
     if(newname == "lon" || newname == "lat"){
         write_swath_coordinate_unit_attribute(attr_table_ptr, newname);
-        if(eos.get_swath_2D()){
-            attr_table_ptr->append_attr("coordinates", STRING, 
-                                        eos.get_swath_coordinate_attribute());
-        }
     }
+
 #endif
     DBG(cerr << "<read_objects()" << endl);
 }

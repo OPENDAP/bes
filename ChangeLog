@@ -1,5 +1,10 @@
 2010-01-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
+	Fixed the generation of coorect coordinates attribute for 2D swath case.
+	
+	* HE5Parser.cc has now set_swath_2D().
+	* h5das.cc removed extra "lat lon" attribute insertion.
+
 	Re-organized source codes and made swath handling robust.
 	
 	* HE5CFGrid class is added.
