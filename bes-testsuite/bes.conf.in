@@ -273,5 +273,5 @@ BES.DefaultResponseMethod=POST
 # CacheDir: Cache directory used by the HDF4 data handler.
 # Suggestion: Consider making this '/tmp/bes'; see the comment at
 # BES.CacheDir above.
-HDF4.CacheDir=/tmp
+HDF4.CacheDir=
 
