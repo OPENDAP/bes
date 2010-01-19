@@ -115,6 +115,7 @@ bool HE5Parser::check_eos(hid_t id)
                 set_grid_TES(true);
             }
             set_swath_2D();
+            set_swath_missing_variable();
         }
 
         return _valid;

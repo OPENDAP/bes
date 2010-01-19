@@ -157,7 +157,15 @@ public:
     /// and its dimension names for CF-compliant DDS/DAS generation.
     /// \param[in] full_path a full path information of a variable in metadata.
     /// \param[in] dimension_list a list of dimensions in metadata.
-    void set_swath_variable_dimensions(string full_path, string dimension_list);
+    void set_swath_variable_dimensions(string full_path,
+                                       string dimension_list);
+    
+    /// Stores variables that are missing in the StructMetadata.
+    ///
+    /// It manually pushes the variable and its dimension names  into
+    /// the maps. An OMI swath product like OMUVB has a missing entry
+    /// for files that were created before 2007.
+    void set_swath_missing_variable();
   
 };
 

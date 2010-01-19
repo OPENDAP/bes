@@ -32,7 +32,7 @@ HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 
 SRCS = h5dds.cc h5das.cc h5get.cc HE5Parser.cc HDF5PathFinder.cc $(GRAM_SRCS)
 
-HDRS = common.h h5dds.h h5das.h h5get.h HE5Parser.h HDF5PathFinder.h
+HDRS = hdf5_handler.h h5dds.h h5das.h h5get.h HE5Parser.h HDF5PathFinder.h
 
 SERVER_SRC = HDF5RequestHandler.cc HDF5Module.cc
 

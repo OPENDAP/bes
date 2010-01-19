@@ -305,3 +305,14 @@ HE5CFSwath::set_swath_variable_dimensions(string full_path,
     DBG(cerr << "Dimension List is:" <<
        _swath_variable_dimensions[full_path] << endl);
 }
+
+void
+HE5CFSwath::set_swath_missing_variable()
+{
+    // New OMUVB doesn't have the missing entry in struct metadata.
+    if(!get_swath_variable("/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance305")){
+        
+        set_swath_variable_list("/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance305");
+        set_swath_variable_dimensions("/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance305","nTimes,nXtrack");
+    }
+}

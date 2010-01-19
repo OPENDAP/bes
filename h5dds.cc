@@ -29,7 +29,7 @@
 /// handler for HDF5 data.
 ///
 /// This file contains functions which use depth-first search to walk through
-/// an HDF5 file and build the in-memory DDS.
+/// an HDF5 file and build the in-memeory DDS.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang    <myang6@hdfgroup.org>
@@ -772,7 +772,7 @@ static void write_swath(DDS & dds_table,
         // Rename the variable if necessary.
         sname = eos.get_CF_name((char*) varname.c_str());
 #ifdef SHORT_PATH
-        if(sname == varname){
+        if(sname == varname){   // It means it's not one of lat/lon/lev/time.
             sname = eos.get_short_name(varname);
         }
 #endif         

@@ -52,6 +52,7 @@ HE5CF::HE5CF()
     eos_to_cf_map["Latitude"] = "lat";
 
     // Attributes
+    eos_to_cf_map["FillValue"] = "_FillValue";
     eos_to_cf_map["MissingValue"] = "missing_value";
     eos_to_cf_map["Units"] = "units";
     eos_to_cf_map["Offset"] = "add_offset";

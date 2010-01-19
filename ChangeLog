@@ -1,6 +1,10 @@
+2010-01-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	Corrected the missing dimension names in the old(<2007) OMUVB product.
+
 2010-01-12  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
-	Fixed the generation of coorect coordinates attribute for 2D swath case.
+	Corrected coordinates attribute for 2D-swath case.
 	
 	* HE5Parser.cc has now set_swath_2D().
 	* h5das.cc removed extra "lat lon" attribute insertion.
@@ -200,7 +204,7 @@
 
 2008-10-24  hyoklee
 
-	H5EOS::reset() is added to fix a bug of concatinating Metadata
+	H5EOS::reset() is added to fix a bug of concatenating Metadata
 	string under Hyrax.
 
 2008-10-24  hyoklee
@@ -438,7 +442,7 @@
 
 2008-03-12  James Gallagher <jgallagher@opendap.org>
 
-	MOre fixes for RPM.
+	More fixes for RPM.
 
 2008-03-12  James Gallagher <jgallagher@opendap.org>
 
@@ -451,7 +455,7 @@
 
 2008-03-12  James Gallagher <jgallagher@opendap.org>
 
-	Updated vesion numbers, text docs, et c., for release.
+	Updated version numbers, text docs, et c., for release.
 	M    configure.ac
 	M    NEWS
 	M    ChangeLog
@@ -736,7 +740,7 @@
 
 2006-08-19  Patrick West <pwest@ucar.edu>
 
-	changed access to file to use access method on Container and added compression parameters to the BES configuraiton file
+	changed access to file to use access method on Container and added compression parameters to the BES configuration file
 
 2006-07-06  Patrick West <pwest@ucar.edu>
 
@@ -764,7 +768,7 @@
 
 2006-06-19  James Gallagher <jgallagher@opendap.org>
 
-	Added/updated INSTALL, NEWS, ChangeLog, README and configue.ac.
+	Added/updated INSTALL, NEWS, ChangeLog, README and configure.ac.
 
 2006-06-02  James Gallagher <jgallagher@opendap.org>
 
@@ -906,7 +910,7 @@
 
 	Massive changes: Modified build to work well with 3.2, Fixed
 	compiler warnings, Removed unused variable, Added default cases to
-	switches, et cetera. See the TODO file for things stil left to be
+	switches, et cetera. See the TODO file for things still left to be
 	done. This server needs testing!
 
 2001-07-25  James Gallagher <jgallagher@opendap.org>

@@ -1,12 +1,18 @@
 
 	$Id$
 
+News for version 1.3.5
+
+ This release includes bug fixes for handling HDF-EOS5 Grids and Swath 
+and supports more HDF-EOS5 products when --enable-cf option is defined.
+
+
 News for version 1.3.4
 
-Repair to the --enable-cf and --with-short-names options.
+Repair to the --enable-cf and --enable-short-path options.
 
 This release is a special release for Hyrax 1.5.2 that contains new
-features added to the handler by THG for support of HDFEOS2 data
+features added to the handler by THG for support of HDF-EOS5 data
 files.
 
 News for version 1.3.3
@@ -63,7 +69,7 @@ Updates for the newest BES features.
 News for version 1.2.2
 
 Bug fix release reading map data from EOS Grid, please refer to the
-ChangeLog file for more informaiton.
+ChangeLog file for more information.
 
 News for version 1.2.1
 
