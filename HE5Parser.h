@@ -86,34 +86,55 @@ private:
 
 
 public:
-    bool MLS;
-    bool OMI;
-    bool TES;
+    /// a flag to indicate if StructMetdata has a geographic projection.
     bool valid_projection;
+    /// a flag to indicate if StructMetdata has Grid.
     bool grid_structure_found;
+    /// a flag to indicate if StructMetdata has Swath.
     bool swath_structure_found;
-    /// a flag to indicate if structMetdata dataset is processed or not.
+    /// a flag to indicate if structMetdata is processed or not.
     bool bmetadata_Struct;
 
     /// a buffer for the merged structMetadata dataset
     char metadata_Struct[BUFFER_MAX];
-
+    
+    /// a variable that keeps track of StructMetadata parser's state.
     int  parser_state;
 
 #ifdef NASA_EOS_META
-    // Flag for merged metadata. Once it's set, don't prcoess for other
-    // attribute variables that start with the same name.
+    /// A flag for merged Archived metadata. Once it's set, don't prcoess
+    /// for other attribute variables that start with the same name.
     bool bmetadata_Archived;
+    
+    /// A flag for merged Core metadata. Once it's set, don't prcoess
+    /// for other attribute variables that start with the same name.    
     bool bmetadata_Core;
+    
+    /// A flag for merged core metadata. Once it's set, don't prcoess
+    /// for other attribute variables that start with the same name.    
     bool bmetadata_core;
+    
+    /// A flag for merged product metadata. Once it's set, don't prcoess
+    /// for other attribute variables that start with the same name.    
     bool bmetadata_product;
+    
+    /// A flag for merged subset metadata. Once it's set, don't prcoess
+    /// for other attribute variables that start with the same name.    
     bool bmetadata_subset;
 
-    // Holder for the merged metadata information.
+    /// A character buffer for the merged Archived metadata information.
     char metadata_Archived[BUFFER_MAX];
+    
+    /// A character buffer for the merged Core metadata information.    
     char metadata_Core[BUFFER_MAX];
+
+    /// A character buffer for the merged core metadata information.        
     char metadata_core[BUFFER_MAX];
+
+    /// A character buffer for the merged product metadata information.
     char metadata_product[BUFFER_MAX];
+
+    /// A character buffer for the merged subset metadata information.
     char metadata_subset[BUFFER_MAX];
 #endif
 

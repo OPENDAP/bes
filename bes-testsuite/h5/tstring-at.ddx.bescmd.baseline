@@ -15,13 +15,13 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>/dset1</value>
         </Attribute>
         <Attribute name="attr1" type="String">
-            <value>&quot;String withsp   &quot;</value>
-            <value>&quot;String\withsl   &quot;</value>
-            <value>&quot;String&amp;withamp  &quot;</value>
-            <value>&quot;String&lt;withlt   &quot;</value>
-            <value>&quot;String&gt;withgt   &quot;</value>
-            <value>&quot;String&apos;withapos &quot;</value>
-            <value>&quot;String&quot;withquot &quot;</value>
+            <value>String withsp   </value>
+            <value>String\withsl   </value>
+            <value>String&amp;withamp  </value>
+            <value>String&lt;withlt   </value>
+            <value>String&gt;withgt   </value>
+            <value>String&apos;withapos </value>
+            <value>String&quot;withquot </value>
         </Attribute>
         <String/>
         <dimension size="7"/>

@@ -565,18 +565,35 @@ int check_h5str(hid_t h5type)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes)
+/// \fn has_matching_grid_dimscale(hid_t dataset, int ndims, int* sizes,
+///                                hid_t *dimids)
 /// checks if dataset has an attribute called "DIMENSION_LIST" and matching
 /// indexes.
-/// 
+///
+/// Check "DIMENSION_LIST" attribute. 
+/// We check if the dataset has dimensional scale following HDF5 dimension
+/// scale specification:
+///
+///    http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf
+///
+/// "DIMENSION_LIST" is the attribute we need to check. However,
+/// HDF5 dimension scale is not mature. We may need to revise the
+/// approach if HDF5 dimension scale is revised. 
+/// Here we only assume that each dimension of each dataset only has one
+/// scale. This is so far enough for all data accessed by OPeNDAP.
+/// If each dimension has more than one scale, the 
+/// following code needs to be changed. 
+///
 /// \param dataset dataset id
 /// \param ndims number of dimensions
 /// \param sizes size of each dimension
+/// \param dimids id of each dimension
 /// \return 1 if it has an attribute called "DIMENSION_LIST" and matching
 ///           indexes.
 /// \return 0 otherwise
 ///////////////////////////////////////////////////////////////////////////////
-bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dimids)
+bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes,
+                                hid_t *dimids)
 {
     bool flag = false;
 
@@ -590,29 +607,24 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
 
     num_attrs = H5Aget_num_attrs(dataset);
     if (num_attrs < 0){
-               throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
+               throw InternalErr(__FILE__, __LINE__,
+                                 "Invalid number of attributes");
             }
     DBG(cerr << ">has_matching_grid_dimscale"
 		<< " ndims=" << ndims << " sizes[0]=" << sizes[0]
 		<< endl);
-    // Check "DIMENSION_LIST" attribute. 
-    // We check if the dataset has dimensional scale following HDF5 dimension scale specification 
-    // http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf
-    // "DIMENSION_LIST" is the attribute we need to check. However, HDF5 dimension scale
-    // is not mature. We may need to revise the approach if HDF5 dimension scale is revised. KY 2009/07/09
-    // Here we only assume that each dimension of each dataset only has one scale. This is so far
-    // enough for all data accessed by OPeNDAP. If each dimension has more than one scale, the 
-    // following code needs to be changed. KY 2009/09/21
     for (i = 0; i < num_attrs; i++) {
         attr_id = H5Aopen_idx(dataset, i);
 	if (attr_id < 0){
-               throw InternalErr(__FILE__, __LINE__, "Cannot open the attribute");
+               throw InternalErr(__FILE__, __LINE__,
+                                 "Cannot open the attribute");
         }
         dimscale = NULL;
         // Obtain the attribute size.
         attr_namesize = H5Aget_name(attr_id,0,NULL);
         if(attr_namesize <=0) {
-          throw InternalErr(__FILE__,__LINE__,"Cannot obtain the attribute size");
+          throw InternalErr(__FILE__,__LINE__,
+                            "Cannot obtain the attribute size");
         }
 
         try {
@@ -625,7 +637,8 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
             }
             throw;
         }
-        attr_namesize = H5Aget_name(attr_id, (size_t)(attr_namesize+1), dimscale);
+        attr_namesize = H5Aget_name(attr_id, (size_t)(attr_namesize+1),
+                                    dimscale);
         if (attr_namesize < 0) {
             throw
                 InternalErr(__FILE__, __LINE__, "error in getting attr name");
@@ -637,7 +650,8 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
             flag = true;
         }
         if (H5Aclose(attr_id) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	   throw InternalErr(__FILE__, __LINE__,
+                             "Unable to close the attribute.");
 	}
         delete [] dimscale;
         dimscale = NULL;
@@ -654,13 +668,16 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
         hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
 
 	if (temp_dtype < 0){
-               throw InternalErr(__FILE__, __LINE__, "Cannot get the attribute datatype");
+               throw InternalErr(__FILE__, __LINE__,
+                                 "Cannot get the attribute datatype");
         }
 	if (temp_dspace < 0){
-               throw InternalErr(__FILE__, __LINE__, "Cannot get the copy of dataspace");
+               throw InternalErr(__FILE__, __LINE__,
+                                 "Cannot get the copy of dataspace");
         }
 	if (temp_nelm == 0){
-               throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+               throw InternalErr(__FILE__, __LINE__,
+                                 "Cannot determine the number of elements in the dataspace");
         }
 
         if (ndims != (int) temp_nelm) {
@@ -697,18 +714,22 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
                             H5Sget_simple_extent_npoints(index_dspace);
 
         		if (index_dspace < 0){
-             		    throw InternalErr(__FILE__, __LINE__,"H5Dget_space() failed");
+             		    throw InternalErr(__FILE__, __LINE__,
+                                              "H5Dget_space() failed");
          		}
                         if(H5Sclose(index_dspace)<0){
-                          throw InternalErr(__FILE__,__LINE__,"Cannot close HDF5 data space");
+                          throw InternalErr(__FILE__,__LINE__,
+                                            "Cannot close HDF5 data space");
                         }
         		if (index_ndim == 0){
-               		    throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+               		    throw InternalErr(__FILE__, __LINE__,
+                                              "Cannot determine the number of elements in the dataspace");
         		}
 	
                         if ((int) index_ndim != sizes[j]) {
-                            // The number of element of the dim. scale must be equal to the 
-                           // number of element of the same dimension of the dataset. Kent 2009/09/21
+                            // The number of element of the dim. scale must be
+                            // equal to the number of element of the same
+                            // dimension of the dataset. Kent 2009/09/21
                             flag = false;
                         }
                     }
@@ -716,17 +737,21 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
             }                       // for (int j = 0; j < temp_nelm; j++)
 
             if (H5Aclose(attr_id) < 0){
-		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+		throw InternalErr(__FILE__, __LINE__,
+                                  "Unable to close the attribute.");
 	    }
             if (H5Sclose(temp_dspace) < 0){
-		throw InternalErr(__FILE__, __LINE__, "Unable to terminate the access to dataspace.");
+		throw InternalErr(__FILE__, __LINE__,
+                                  "Unable to terminate the access to dataspace.");
 	    }
             if (H5Tclose(temp_dtype) < 0){
-		throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+		throw InternalErr(__FILE__, __LINE__,
+                                  "Unable to release the datatype.");
 	    }
 
  
-            // Save the dimensional scale dataset IDs to dimids and pass to process_matching_scale function.
+            // Save the dimensional scale dataset IDs to dimids and pass to
+            // process_matching_scale function.
             if(flag) {
 
               for(int k =0; k <(int) temp_nelm;k++) {

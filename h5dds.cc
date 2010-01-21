@@ -29,7 +29,7 @@
 /// handler for HDF5 data.
 ///
 /// This file contains functions which use depth-first search to walk through
-/// an HDF5 file and build the in-memeory DDS.
+/// an HDF5 file and build the in-memory DDS.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang    <myang6@hdfgroup.org>
@@ -545,7 +545,25 @@ static Structure *Get_structure(const string &varname,
     return structure_ptr;
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
+/// \fn process_grid_matching_dimscale(Array* array, Grid * gr,
+///     hid_t* dimids)
+///  builds a DAP Grid for dataset that has matching dimension scales.
+/// 
+/// This function constructs Grid object that corresponds to HDF5
+/// dataset that has dimension scales. Mapping such dataset to DAP Grid
+/// enables OPeNDAP clients to visualize the dataset. The h4toh5 conversion
+/// tool preserves dimension scale information from HDF4 files and we want
+/// to visualize the converted HDF5 files easily through OPeNDAP.
+///
+/// In this function, the \a gr is modified to have map arrays that match
+/// dimension names.
+///
+/// \param array dataset array
+/// \param gr grid
+/// \param dimids dimension ids
+///
+///////////////////////////////////////////////////////////////////////////////
 static void process_grid_matching_dimscale(Array* array, Grid *gr,
 					   hid_t *dimids)
 { 
@@ -634,7 +652,22 @@ static void process_grid_matching_dimscale(Array* array, Grid *gr,
 
 }
 #ifdef CF
-static void write_grid_shared_dimensions(DDS & dds_table, const string & filename) {
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_grid_shared_dimensions(DDS& dds_table, const string & filename)
+///
+/// inserts shared dimension variables into \a dds_table table.
+/// 
+/// NASA AURA grid files do not have shared dimension variables and we
+/// need to infer them from StructMetadata. We compute the values of
+/// geo-location dimensions like lat / lon from the StructMetadata information
+/// through parser. For the rest, we simply put dummy values from 0,1,..n
+/// where n is the size of dimension.
+///
+/// \param dds_table the destination for the shared dimension Array object
+/// \param filename the file name of NASA AURA Grid
+///////////////////////////////////////////////////////////////////////////////
+static void write_grid_shared_dimensions(DDS & dds_table,
+                                         const string & filename) {
 
     // Add all shared dimension data.
     if (!eos.get_shared_dimension()) {
@@ -659,7 +692,8 @@ static void write_grid_shared_dimensions(DDS & dds_table, const string & filenam
                 if(old_dim_size != shared_dim_size){
                     // If the size doesn't match, thrown an error.
                     // CF convention doesn't allow multiple dimensions.
-                    throw InternalErr(__FILE__, __LINE__, "detected multiple shared dimensions with different sizes");
+                    throw InternalErr(__FILE__, __LINE__,
+                                      "detected multiple shared dimensions with different sizes");
                 }
                 else{
                     // If the size matches, skip adding it.
@@ -751,11 +785,16 @@ static void process_grid_nasa_eos(const string &varname,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn write_swath(DDS& dds_table, string sname
-///                 const string & filename,
-///                 BaseType* bt)
-/// inserts a Swath dataset (name, data type, data space) into \a dds_table 
-/// table.
+/// \fn write_swath(DDS& dds_table, string varname, const string & filename)
+///
+/// inserts a HDF-EOS5 Swath dataset into \a dds_table table.
+/// 
+/// We can map Swath variables into DAP Arrays, not Grids. We must add
+/// dimension names to make CF compatible.
+///
+/// \param dds_table the destination for the Swath  Array object
+/// \param varname the full path name of Swath dataset
+/// \param filename the file name of Swath file
 ///////////////////////////////////////////////////////////////////////////////
 static void write_swath(DDS & dds_table,  
                         string varname, 

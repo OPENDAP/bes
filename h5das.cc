@@ -37,11 +37,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "hdf5_handler.h"
 
-/// If ATTR_STRING_QUOTE_FIX is defined, the handler wraps string with
-/// quotes("").
-//  Added for the fix for ticket 1163. jhrg 7/31/08
-#define ATTR_STRING_QUOTE_FIX 
-
 /// A global variable that handles HDF-EOS5 files.
 HE5Parser eos;
 
@@ -390,13 +385,13 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
             DBG(cerr << "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
             char *buf = NULL;
-            // This try/catch block is here to protect the allocation of buf
+            // This try/catch block is here to protect the allocation of buf.
             try {
                 buf = new char[str_size + 1];
                 strncpy(buf, (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
                 rep = new char[str_size + 3];
-                snprintf(rep, str_size + 3, "\"%s\"", buf);
+                snprintf(rep, str_size + 3, "%s", buf);
                 rep[str_size + 2] = '\0';
                 delete[] buf; buf = 0;
             }
@@ -422,10 +417,14 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
 }
 
 #ifdef CF
+///////////////////////////////////////////////////////////////////////////////
+/// \fn GET_NAME(x)
+/// For CF we have to use a special filter to get the atribute name, while
+/// for a non-CF-aware build we just use the name. This is a macro, not a
+/// real function.
+///////////////////////////////////////////////////////////////////////////////
 #define GET_NAME(x) eos.get_CF_name((x))
 #else
-/// For CF we have to use a special filter to get the atribute name, while
-/// for a non-CF-aware build we just use the name. 3/2008 jhrg
 #define GET_NAME(x) (x)
 #endif
 
@@ -581,7 +580,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // regardless of the existing attributes in this object.
     DBG(cerr << ">read_objects():"
         << "varname=" << varname << " id=" << oid << endl);
-#ifdef NASA_EOS_META    
+#ifdef NASA_EOS_META
+    // Generate the structured attribute using the metadata parser.
     if(write_metadata(das, varname))
         return;
 #endif
@@ -633,12 +633,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         attr_table_ptr = das.add_table(newname, new AttrTable);
     }
 #ifndef CF
-#ifndef ATTR_STRING_QUOTE_FIX
-    string fullpath = string("\"") + varname + string("\"");
-    attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, fullpath);
-#else
     attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, varname);
-#endif // ATTR_STRINNG_QUOTE_FIX
 #endif // CF
 
     // Check the number of attributes in this HDF5 object and
@@ -857,22 +852,13 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 	    < 0) {
 	    throw InternalErr(__FILE__, __LINE__, "unable to get link value");
 	}
-
-#ifndef ATTR_STRING_QUOTE_FIX
-	string finbuf = string("\"") + string(buf) + string("\"");
-        attr_table_ptr->append_attr(oname, STRING, finbuf);
-#else
         attr_table_ptr->append_attr(oname, STRING, buf);
-#endif
         delete[]buf;
     }
     catch (...) {
 	delete[] buf;
 	throw;
     }
-#ifndef ATTR_STRING_QUOTE_FIX
-    DBG(cerr << "<get_softlink(): after buf:" << finbuf << endl);
-#endif    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -889,6 +875,7 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 /// \warning This is only a test, not supported in current version.
 ///////////////////////////////////////////////////////////////////////////////
 string get_hardlink(hid_t pgroup, const string & oname) {
+    
     DBG(cerr << ">get_hardlink():" << oname << endl);
 
     // Get the target information at statbuf.
@@ -932,22 +919,16 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
     char comment[max_str_len - 2];
     comment[0] = '\0';
     if (H5Gget_comment(oid, ".", sizeof(comment), comment) < 0){
-	throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment.");
+	throw InternalErr(__FILE__, __LINE__,
+                          "Could not retrieve the comment.");
     }
     if (comment[0]) {
-#ifndef ATTR_STRING_QUOTE_FIX
-        string quoted_comment = string("\"") + string(comment) + string("\"");
-#endif
         // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);
         if (!at)
             at = das.add_table(varname, new AttrTable);
-
-#ifndef ATTR_STRING_QUOTE_FIX
-        at->append_attr("HDF5_COMMENT", STRING, quoted_comment);
-#else
         at->append_attr("HDF5_COMMENT", STRING, comment);
-#endif
+
     }
 }
 
@@ -1000,30 +981,26 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
         at->append_container(oname);
     }
     else {
-#ifndef ATTR_STRING_QUOTE_FIX
-        string quoted_oname = string("\"") + string(oname) + string("\"");
-        at->append_attr("Dataset", "String", quoted_oname);
-#else
         at->append_attr("Dataset", "String", oname);
-#endif
     }
 }
 
 #ifdef CF
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn add_dimension_attributes(DAS & das)
-/// will put pseudo attributes for CF(a.k.a COARDS) convention compatibility.
+/// \fn write_grid_global_attribute(DAS & das)
+/// will put pseudo global attributes for CF convention compatibility.
 ///
 /// This function is provided as an example for NASA AURA data only.
-/// You need to modify this to add custom attributes that match dimension
-/// names to make the output compliant to CF-convention. For details,
+/// You may modify this to add custom attributes to make the output
+/// CF-convention compliant.
+///
+/// For details,
 /// please refer to the technical note "Using DAP Clients to Visualize
 /// HDF-EOS5 Grid Data" from [2].
 /// 
 /// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
 /// 
 /// \param das DAS object: reference
-/// \remarks This is necessary for GrADS compatibility only
 ///////////////////////////////////////////////////////////////////////////////
 void write_grid_global_attribute(DAS & das)
 {
@@ -1031,13 +1008,30 @@ void write_grid_global_attribute(DAS & das)
     AttrTable *at;
     
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Aura Grid\"");
-    at->append_attr("Conventions", STRING, "\"COARDS, GrADS\"");
-    at->append_attr("dataType", STRING, "\"Grid\"");
+    at->append_attr("title", STRING, "NASA EOS Aura Grid");
+    at->append_attr("Conventions", STRING, "CF-1.4");
+    at->append_attr("dataType", STRING, "Grid");
     
     DBG(cerr << "<write_grid_global_attributes()" << endl);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_grid_coordinate_variable_attribute(DAS & das)
+/// inserts pseudo attributes for coordinate variables to meet the CF
+/// convention.
+///
+/// This function is provided as an example for NASA AURA data only.
+/// You may modify this to add custom attributes for coodinate variables
+/// to make the output compliant to CF-convention. For details,
+/// please refer to the technical note "Using DAP Clients to Visualize
+/// HDF-EOS5 Grid Data" from [2].
+/// 
+/// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
+/// 
+/// \param das DAS object: reference
+/// \remarks This is necessary for CF compatibility only. The time and lev
+/// coordinate variables have fake data so we put fake units.
+///////////////////////////////////////////////////////////////////////////////
 void write_grid_coordinate_variable_attribute(DAS & das)
 {
     DBG(cerr << ">write_grid_coordinate_variable_attribute()" << endl);
@@ -1046,15 +1040,15 @@ void write_grid_coordinate_variable_attribute(DAS & das)
 
     if(eos.get_grid_lon() > 0){
         at = das.add_table("lon", new AttrTable);
-        at->append_attr("grads_dim", STRING, "\"x\"");
-        at->append_attr("grads_mapping", STRING, "\"linear\"");
+        at->append_attr("grads_dim", STRING, "x");
+        at->append_attr("grads_mapping", STRING, "linear");
         {
             std::ostringstream o;
-            o << "\"" << eos.get_grid_lon() << "\"";            
+            o << eos.get_grid_lon();
             at->append_attr("grads_size", STRING, o.str().c_str());
         }
-        at->append_attr("units", STRING, "\"degrees_east\"");
-        at->append_attr("long_name", STRING, "\"longitude\"");
+        at->append_attr("units", STRING, "degrees_east");
+        at->append_attr("long_name", STRING, "longitude");
         {
             std::ostringstream o;
             o << (eos.point_left / 1000000.0);      
@@ -1075,15 +1069,15 @@ void write_grid_coordinate_variable_attribute(DAS & das)
     
     if(eos.get_grid_lat() > 0){    
         at = das.add_table("lat", new AttrTable);
-        at->append_attr("grads_dim", STRING, "\"y\"");
-        at->append_attr("grads_mapping", STRING, "\"linear\"");
+        at->append_attr("grads_dim", STRING, "y");
+        at->append_attr("grads_mapping", STRING, "linear");
         {
             std::ostringstream o;
-            o << "\"" << eos.get_grid_lat() << "\"";
+            o << eos.get_grid_lat();
             at->append_attr("grads_size", STRING, o.str().c_str());
         }
-        at->append_attr("units", STRING, "\"degrees_north\"");
-        at->append_attr("long_name", STRING, "\"latitude\"");
+        at->append_attr("units", STRING, "degrees_north");
+        at->append_attr("long_name", STRING, "latitude");
         {
             std::ostringstream o;
             o << (eos.point_lower / 1000000.0);      
@@ -1105,29 +1099,58 @@ void write_grid_coordinate_variable_attribute(DAS & das)
 
     if(eos.get_grid_lev() > 0){    
         at = das.add_table("lev", new AttrTable);
-        at->append_attr("units", STRING, "\"hPa\"");
-        at->append_attr("long_name", STRING, "\"pressure level\"");
-        at->append_attr("positive", STRING, "\"down\"");
+        at->append_attr("units", STRING, "hPa");
+        at->append_attr("long_name", STRING, "fake pressure level dimension");
+        at->append_attr("positive", STRING, "down");
     }
 
     if(eos.get_grid_time() > 0){    
         at = das.add_table("time", new AttrTable);
-        at->append_attr("units", STRING, "\"seconds\""); 
+        at->append_attr("long_name", STRING, "fake time dimension");
+        at->append_attr("units", STRING, "hour"); 
     }
     
     DBG(cerr << "<write_grid_coordinate_variable_attribute()" << endl);
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_swath_global_attribute(DAS & das)
+/// will put pseudo global attributes for CF convention
+///
+/// This function is provided as an example for NASA AURA data only.
+/// You may  modify this to add custom attributes  to make the handler output
+/// compliant to CF-convention. For details, please refer to the technical note
+/// "Using DAP Clients to Visualize HDF-EOS5 Grid Data" from [2].
+/// 
+/// [2] http://www.hdfgroup.org/projects/opendap/publications/cf.html
+/// 
+/// \param das DAS object: reference
+/// \see write_grid_global_attribute()
+///////////////////////////////////////////////////////////////////////////////
 void write_swath_global_attribute(DAS & das)
 {
     AttrTable *at;
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "\"NASA EOS Aura Swath\"");
-    at->append_attr("Conventions", STRING, "\"CF-1.4\"");
+    at->append_attr("title", STRING, "NASA EOS Aura Swath");
+    at->append_attr("Conventions", STRING, "CF-1.4");
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_swath_coordinate_unit_attribute(AttrTable* at,
+///                                               string varname)
+/// inserts pseudo attributes for coordinate variables to meet the CF
+/// convention.
+///
+/// This function is provided as an example for NASA AURA Swath data only.
+/// NASA AURA swath files have either 1-D or 2-D lat / lon dataset.
+/// Since CF-convention requires units and standard name on them,
+/// we add the new attributes to make the output compatible.
+/// 
+/// \param at AttrTable of \a varname
+/// \param varname dataset name - either lat or lon
+/// \see write_grid_coordinate_variable_attribute()
+///////////////////////////////////////////////////////////////////////////////
 void write_swath_coordinate_unit_attribute(AttrTable* at, string varname)
 {
 

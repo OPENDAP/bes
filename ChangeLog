@@ -1,3 +1,18 @@
+2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* doc/Doxygen is added.
+	* configure.ac set version to 1.3.5 in AC_INIT().
+	* h5get.cc updated comments for Doxygen.
+	* h5dds.cc updated comments for Doxygen.
+	* h5das.cc updated comments for Doxygen.
+	* HE5Parser.h removed useless boolean variables.
+
+2010-01-20  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc removed double quotes.
+	* h5das.cc renamed COARDS,GrADS to CF-1.4.
+	* h5das.cc added fake in lev/time long_name attribute.
+
 2010-01-19  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	Corrected the missing dimension names in the old(<2007) OMUVB product.
@@ -33,6 +48,22 @@
 
 	* h5_handler.h is renamed to hdf5_handler.h and is cleaned-up.
 	* H5Git.h/cc is renamed to h5get.h/cc to distinguish them from classes.
+
+2009-10-07  James Gallagher <jgallagher@opendap.org>
+
+	This version is for the special (source) release of the handler
+	that includes support for HDF-EOS5.
+
+	A    http://scm.opendap.org/svn/tags/hdf5_handler/1.3.4
+
+2009-10-06  hyoklee
+
+	Fixed suppressing path from a dataset name of an h4toh5 converted
+	file when --enable-cf option is active.
+
+2009-10-02  hyoklee
+
+	Documented change for swath and dimension scale support.
 
 2009-10-02  H. Joe Lee  <hyoklee@hdfgroup.org>
 

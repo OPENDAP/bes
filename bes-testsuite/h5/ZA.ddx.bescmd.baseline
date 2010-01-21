@@ -62,7 +62,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>4</value>
         </Attribute>
         <Attribute name="GLOBAL_CHAR_ATTR" type="String">
-            <value>&quot;ABCDEF&quot;</value>
+            <value>ABCDEF</value>
         </Attribute>
         <Attribute name="GLOBAL_LONG_ATTR" type="Int32">
             <value>1111111</value>
@@ -93,7 +93,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>/HDFEOS INFORMATION/</value>
         </Attribute>
         <Attribute name="HDFEOSVersion" type="String">
-            <value>&quot;HDFEOS_5.1.10.1&quot;</value>
+            <value>HDFEOS_5.1.10.1</value>
         </Attribute>
     </Attribute>
 

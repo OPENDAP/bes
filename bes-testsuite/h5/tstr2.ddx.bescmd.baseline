@@ -72,9 +72,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>/g1/dset1</value>
         </Attribute>
         <Attribute name="attr1" type="String">
-            <value>&quot;0123456789&quot;</value>
-            <value>&quot;abcdefghij&quot;</value>
-            <value>&quot;ABCDEFGHIJ&quot;</value>
+            <value>0123456789</value>
+            <value>abcdefghij</value>
+            <value>ABCDEFGHIJ</value>
         </Attribute>
         <String/>
         <dimension size="10"/>

@@ -93,7 +93,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>/HDFEOS INFORMATION/</value>
         </Attribute>
         <Attribute name="HDFEOSVersion" type="String">
-            <value>&quot;HDFEOS_5.1.10.1&quot;</value>
+            <value>HDFEOS_5.1.10.1</value>
         </Attribute>
     </Attribute>
 
