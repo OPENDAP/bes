@@ -41,6 +41,7 @@ using std::endl ;
 #include "BESDebug.h"
 
 #include "BESXMLShowCommand.h"
+#include "BESXMLShowErrorCommand.h"
 #include "BESXMLSetContextCommand.h"
 #include "BESXMLSetContainerCommand.h"
 #include "BESXMLDefineCommand.h"
@@ -73,6 +74,11 @@ BESXMLDefaultCommands::initialize( int, char** )
 			<< " command" << endl) ;
     BESXMLCommand::add_command( SHOWCONTAINERS_RESPONSE_STR,
 				BESXMLShowCommand::CommandBuilder ) ;
+
+    BESDEBUG( "besxml", "    adding " << SHOW_ERROR_STR
+			<< " command" << endl) ;
+    BESXMLCommand::add_command( SHOW_ERROR_STR,
+				BESXMLShowErrorCommand::CommandBuilder ) ;
 
     BESDEBUG( "besxml", "    adding " << HELP_RESPONSE_STR
 			<< " command" << endl) ;

@@ -89,6 +89,8 @@
 #define SERVICE_RESPONSE_STR "showServiceDescriptions"
 #define SHOW_CONTEXT "show.context"
 #define SHOW_CONTEXT_STR "showContext"
+#define SHOW_ERROR "show.error"
+#define SHOW_ERROR_STR "showError"
 
 #define DELETE_RESPONSE "delete"
 #define DELETE_CONTAINER "delete.container"

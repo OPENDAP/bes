@@ -41,6 +41,7 @@ pkginclude_HEADERS = $(HDRS) $(DAP_HDRS)
 ##############################################################################
 SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 	BESXMLDefaultCommands.cc BESXMLShowCommand.cc			\
+	BESXMLShowErrorCommand.cc					\
 	BESXMLSetContextCommand.cc BESXMLSetContainerCommand.cc		\
 	BESXMLDefineCommand.cc BESXMLGetCommand.cc			\
 	BESXMLDeleteContainerCommand.cc BESXMLDeleteContainersCommand.cc\
@@ -48,6 +49,7 @@ SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 
 HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefaultCommands.h BESXMLShowCommand.h			\
+	BESXMLShowErrorCommand.h					\
 	BESXMLSetContextCommand.h BESXMLSetContainerCommand.h		\
 	BESXMLDefineCommand.h BESXMLGetCommand.h			\
 	BESXMLDeleteContainerCommand.h BESXMLDeleteContainersCommand.h	\

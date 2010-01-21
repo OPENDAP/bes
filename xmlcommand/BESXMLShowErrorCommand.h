@@ -1,4 +1,4 @@
-// BESDataNames.h
+// BESXMLShowErrorCommand.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,53 +30,26 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESDataNames_h
-#define D_BESDataNames_h 1
+#ifndef A_BESXMLShowErrorCommand_h
+#define A_BESXMLShowErrorCommand_h 1
 
-#define DATA_REQUEST "request"
-#define REQUEST_ID "reqID"
-#define REQUEST_FROM "from"
+#include "BESXMLCommand.h"
+#include "BESDataHandlerInterface.h"
 
-#define AGG_CMD "aggregation_command"
-#define AGG_HANDLER "aggregation_handler"
+class BESXMLShowErrorCommand : public BESXMLCommand
+{
+public:
+    				BESXMLShowErrorCommand( const BESDataHandlerInterface &base_dhi ) ;
+    virtual			~BESXMLShowErrorCommand() {}
 
-#define POST_CONSTRAINT "post_constraint"
+    virtual void		parse_request( xmlNode *node ) ;
 
-#define RETURN_CMD "return_command"
+    virtual bool		has_response() { return false ; }
 
-#define USER_ADDRESS "user_address"
-#define USER_NAME "username"
-#define USER_TOKEN "token"
+    virtual void		dump( ostream &strm ) const ;
 
-#define SERVER_PID "pid"
+    static BESXMLCommand *	CommandBuilder( const BESDataHandlerInterface &base_dhi ) ;
+} ;
 
-#define CONTAINER_NAME "container_name"
-#define STORE_NAME "store_name"
-#define SYMBOLIC_NAME "symbolic_name"
-#define REAL_NAME "real_name"
-#define REAL_NAME_LIST "real_name_list"
-#define CONTAINER_TYPE "type"
+#endif // A_BESXMLShowErrorCommand_h
 
-#define DEF_NAME "def_name"
-#define DEFINITIONS "definitions"
-
-#define CONTAINER "container"
-
-/*
- * Context
- */
-#define CONTEXT_NAME "context_name"
-#define CONTEXT_VALUE "context_value"
-
-/*
- * Show Error Type Number
- */
-#define SHOW_ERROR_TYPE "error_type_num"
-
-/*
- * Options
- */
-#define SILENT "silent"
-#define BUFFERED "buffered"
-
-#endif // D_BESDataNames_h

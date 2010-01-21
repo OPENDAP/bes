@@ -1,4 +1,4 @@
-// BESDataNames.h
+// BESShowErrorResponseHandler.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,53 +30,37 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef D_BESDataNames_h
-#define D_BESDataNames_h 1
+#ifndef I_BESShowErrorResponseHandler_h
+#define I_BESShowErrorResponseHandler_h 1
 
-#define DATA_REQUEST "request"
-#define REQUEST_ID "reqID"
-#define REQUEST_FROM "from"
+#include "BESResponseHandler.h"
 
-#define AGG_CMD "aggregation_command"
-#define AGG_HANDLER "aggregation_handler"
-
-#define POST_CONSTRAINT "post_constraint"
-
-#define RETURN_CMD "return_command"
-
-#define USER_ADDRESS "user_address"
-#define USER_NAME "username"
-#define USER_TOKEN "token"
-
-#define SERVER_PID "pid"
-
-#define CONTAINER_NAME "container_name"
-#define STORE_NAME "store_name"
-#define SYMBOLIC_NAME "symbolic_name"
-#define REAL_NAME "real_name"
-#define REAL_NAME_LIST "real_name_list"
-#define CONTAINER_TYPE "type"
-
-#define DEF_NAME "def_name"
-#define DEFINITIONS "definitions"
-
-#define CONTAINER "container"
-
-/*
- * Context
+/** @brief response handler that throws the requested exception type
+ *
+ * This response handler tests error handling of a client by throwing
+ * the requested error type
+ *
+ * show error error_type_num;
+ *
+ * @see BESResponseObject
+ * @see BESContainer
+ * @see BESTransmitter
+ * @see BESError
  */
-#define CONTEXT_NAME "context_name"
-#define CONTEXT_VALUE "context_value"
+class BESShowErrorResponseHandler : public BESResponseHandler
+{
+public:
+				BESShowErrorResponseHandler( const string &name ) ;
+    virtual			~BESShowErrorResponseHandler( void ) ;
 
-/*
- * Show Error Type Number
- */
-#define SHOW_ERROR_TYPE "error_type_num"
+    virtual void		execute( BESDataHandlerInterface &dhi ) ;
+    virtual void		transmit( BESTransmitter *transmitter,
+                                          BESDataHandlerInterface &dhi ) ;
 
-/*
- * Options
- */
-#define SILENT "silent"
-#define BUFFERED "buffered"
+    virtual void		dump( ostream &strm ) const ;
 
-#endif // D_BESDataNames_h
+    static BESResponseHandler *ResponseBuilder( const string &name ) ;
+};
+
+#endif // I_BESShowErrorResponseHandler_h
+

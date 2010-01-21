@@ -57,6 +57,8 @@ private:
 
     static bool			translate_show( BESTokenizer &tokenizer,
 					    xmlTextWriterPtr writer ) ;
+    static bool			translate_show_error( BESTokenizer &tokenizer,
+					    xmlTextWriterPtr writer ) ;
     static bool			translate_catalog( BESTokenizer &tokenizer,
 					       xmlTextWriterPtr writer ) ;
     static bool			translate_set( BESTokenizer &tokenizer,

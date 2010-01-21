@@ -54,6 +54,7 @@ CmdTranslation::initialize(int, char**)
     _translations["show"] = CmdTranslation::translate_show ;
     _translations["show.catalog"] = CmdTranslation::translate_catalog ;
     _translations["show.info"] = CmdTranslation::translate_catalog ;
+    _translations["show.error"] = CmdTranslation::translate_show_error ;
     _translations["set"] = CmdTranslation::translate_set ;
     _translations["set.context"] = CmdTranslation::translate_context ;
     _translations["set.container"] = CmdTranslation::translate_container ;
@@ -288,6 +289,61 @@ CmdTranslation::translate_show( BESTokenizer &t, xmlTextWriterPtr writer )
     {
 	cerr << "failed to start " << tag << " element" << endl ;
 	return false ;
+    }
+
+    // end the show element
+    rc = xmlTextWriterEndElement( writer ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to close " << tag << " element" << endl ;
+	return false ;
+    }
+
+    return true ;
+}
+
+bool
+CmdTranslation::translate_show_error( BESTokenizer &t, xmlTextWriterPtr writer)
+{
+    string show_what = t.get_current_token() ;
+    if( show_what.empty() || show_what != "error" )
+    {
+	t.parse_error( "show command must be error" ) ;
+    }
+
+    string etype = t.get_next_token() ;
+    if( etype == ";" )
+    {
+	string err = (string)"show " + show_what
+		     + " command must inlude the error type to show" ;
+	t.parse_error( err ) ;
+    }
+
+    string semi = t.get_next_token() ;
+    if( semi != ";" )
+    {
+	string err = (string)"show " + show_what
+		     + " commands must end with a semicolon" ;
+	t.parse_error( err ) ;
+    }
+    show_what[0] = toupper( show_what[0] ) ;
+    string tag = "show" + show_what ;
+
+    // start the show element
+    int rc = xmlTextWriterStartElement( writer, BAD_CAST tag.c_str() ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to start " << tag << " element" << endl ;
+	return false ;
+    }
+
+    /* Add the error type attribute */
+    rc = xmlTextWriterWriteAttribute( writer, BAD_CAST "type",
+				      BAD_CAST etype.c_str() ) ;
+    if( rc < 0 )
+    {
+	cerr << "failed to add the get type attribute" << endl ;
+	return "" ;
     }
 
     // end the show element

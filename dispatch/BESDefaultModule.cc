@@ -68,6 +68,8 @@ using std::endl ;
 #include "BESSetContextResponseHandler.h"
 #include "BESShowContextResponseHandler.h"
 
+#include "BESShowErrorResponseHandler.h"
+
 #include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
 #include "BESBasicTransmitter.h"
@@ -143,6 +145,9 @@ BESDefaultModule::initialize(int, char**)
 
     BESDEBUG( "bes", "    adding " << SHOW_CONTEXT << " response handler" << endl) ;
     BESResponseHandlerList::TheList()->add_handler( SHOW_CONTEXT, BESShowContextResponseHandler::ShowContextResponseBuilder ) ;
+
+    BESDEBUG( "bes", "    adding " << SHOW_ERROR << " response handler" << endl) ;
+    BESResponseHandlerList::TheList()->add_handler( SHOW_ERROR, BESShowErrorResponseHandler::ResponseBuilder ) ;
 
     BESDEBUG( "bes", "    adding " << BASIC_TRANSMITTER << " transmitter" << endl ) ;
     BESReturnManager::TheManager()->add_transmitter( BASIC_TRANSMITTER, new BESBasicTransmitter ) ;

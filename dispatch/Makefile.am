@@ -111,6 +111,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
 	BESSetContainerResponseHandler.cc BESShowContainersResponseHandler.cc \
 	BESDelContainerResponseHandler.cc BESDelContainersResponseHandler.cc \
+	BESShowErrorResponseHandler.cc					\
 	BESDefine.cc BESDefinitionStorageList.cc			\
 	BESDefinitionStorageVolatile.cc					\
 	BESDefineResponseHandler.cc BESShowDefsResponseHandler.cc	\
@@ -148,6 +149,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\
 	BESContainerStorageVolatile.h 					\
 	BESSetContainerResponseHandler.h BESShowContainersResponseHandler.h \
+	BESShowErrorResponseHandler.h					\
 	BESDelContainerResponseHandler.h BESDelContainersResponseHandler.h \
 	BESDefine.h BESDefinitionStorageList.h BESDefinitionStorage.h 	\
 	BESDefinitionStorageVolatile.h 					\
