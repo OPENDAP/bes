@@ -34,7 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/bes-hdf4-data.sh
+%dir %{_sysconfdir}/bes/
+%dir %{_sysconfdir}/bes/modules
+%config(noreplace) %{_sysconfdir}/bes/modules/h4.conf
 %{_libdir}/bes/libhdf4_module.so
 %{_datadir}/hyrax/
 %doc COPYING COPYRIGHT_URI NEWS README
