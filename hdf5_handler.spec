@@ -41,7 +41,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/bes-hdf5-data.sh
+%dir %{_sysconfdir}/bes/
+%dir %{_sysconfdir}/bes/modules
+%config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
 %{_libdir}/libhdf5_handler.so.*
 %{_libdir}/bes/libhdf5_module.so
 %{_datadir}/hyrax/
