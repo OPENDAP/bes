@@ -12,7 +12,7 @@ BuildRequires:   libdap-devel >= 3.9.0 hdf-devel
 BuildRequires:   bes-devel >= 3.7.0
 
 %description
-This is the hdf4 data handler for our data server. It reads HDF4 and HDF-EOS
+This is the hdf4 data handler for our data server. It reads HDF4 and HDF-EOS2
 files and returns DAP responses that are compatible with DAP2 and the
 dap-server software.
 
