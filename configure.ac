@@ -328,6 +328,7 @@ AC_CONFIG_FILES([Makefile
 ])
 
 AC_CONFIG_FILES([bes-config], [chmod +x bes-config]) 
+AC_CONFIG_FILES([besd], [chmod +x besd]) 
 AC_CONFIG_FILES([server/besctl], [chmod +x server/besctl]) 
 AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl]) 
 		 

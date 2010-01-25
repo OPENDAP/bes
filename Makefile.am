@@ -8,7 +8,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates
 
-bin_SCRIPTS = bes-config bes-config-pkgconfig
+bin_SCRIPTS = besd bes-config bes-config-pkgconfig
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc bes_dap.pc
