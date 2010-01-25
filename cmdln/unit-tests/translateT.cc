@@ -59,6 +59,7 @@ string d1 = "CmdTranslation::dump\n\
         set.context\n\
         show\n\
         show.catalog\n\
+        show.error\n\
         show.info\n" ;
 
 string d2 = "CmdTranslation::dump\n\
@@ -71,6 +72,7 @@ string d2 = "CmdTranslation::dump\n\
         set.context\n\
         show\n\
         show.catalog\n\
+        show.error\n\
         show.info\n\
         test\n" ;
 
