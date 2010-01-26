@@ -62,8 +62,9 @@ class BESDataHandlerInterface : public BESObj
 private:
     ostream *output_stream ;
 
-    // These were causing multiple compiler warnings, so I removed the implementation since
-    // it's clear they are private to be disallowed from autogeneration for now. mpj 2/26/10
+    // These were causing multiple compiler warnings, so I removed the implementations since
+    // it's clear they are private to be disallowed from autogeneration for now
+    // and this just not declaring an impl solves it.  (mpj 2/26/10)
     BESDataHandlerInterface( BESDataHandlerInterface &from);
     /*	: BESObj(),
 	  output_stream( 0 ),
