@@ -62,13 +62,22 @@ class BESDataHandlerInterface : public BESObj
 private:
     ostream *output_stream ;
 
-    BESDataHandlerInterface( BESDataHandlerInterface &from )
-	: output_stream( 0 ),
+    // These were causing multiple compiler warnings, so I removed the implementation since
+    // it's clear they are private to be disallowed from autogeneration for now. mpj 2/26/10
+    BESDataHandlerInterface( BESDataHandlerInterface &from);
+    /*	: BESObj(),
+	  output_stream( 0 ),
 	  response_handler( 0 ),
 	  container( 0 ),
 	  executed( false ),
 	  error_info( 0 ) {}
-    BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs) {}
+     */
+
+    BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
+    /* {
+      return *this;
+    }
+    */
 
 public:
     BESDataHandlerInterface()
