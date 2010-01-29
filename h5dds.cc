@@ -237,7 +237,7 @@ static BaseType *Get_bt(const string &vname,
     
     try {
 
-        DBG(cerr << ">Get_bt varname=" << varname << " datatype=" << datatype
+        DBG(cerr << ">Get_bt varname=" << vname << " datatype=" << datatype
             << endl);
 
         size_t size = 0;
