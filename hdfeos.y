@@ -155,7 +155,7 @@ static void process_group(parser_arg *arg, const string &s);
 */
 
 attributes:    	/* Create the AttrTable stack if necessary */
-                {
+       {
 		    if (!attr_tab_stack)
 			attr_tab_stack = new vector<AttrTable *>;
 		}
@@ -283,9 +283,9 @@ ints:           INT
 		    type = "Int32";
 		    DBG(cerr << "Adding INT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!(check_int32($3)
-			  || check_uint32($1))) {
+			  || check_uint32($3))) {
 			ostringstream msg;
-			msg << "`" << $1 << "' is not an Int32 value.";
+			msg << "`" << $3 << "' is not an Int32 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }
@@ -357,7 +357,7 @@ floatints:	float_or_int
 		    DBG(cerr << "Adding FLOAT: " << TYPE_NAME_VALUE($3) << endl);
 		    if (!check_float64($3)) {
 			ostringstream msg;
-			msg << "`" << $1 << "' is not a Float64 value.";
+			msg << "`" << $3 << "' is not a Float64 value.";
 			parse_error((parser_arg *)arg, msg.str().c_str());
 			YYABORT;
 		    }

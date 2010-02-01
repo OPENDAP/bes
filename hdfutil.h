@@ -38,5 +38,6 @@
 
 void *ExportDataForDODS(const hdf_genvec & v);
 void *ExportDataForDODS(const hdf_genvec & v, int i);
+#if 0
 void *AccessDataForDODS(const hdf_genvec & v, int i);
-
+#endif

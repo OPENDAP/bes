@@ -167,8 +167,7 @@ bool HDFGrid::read_tagref(int32 tag, int32 ref, int &err)
                     if ((*p)->name() == sds.dims[i].name) {
                         // Read the data from the sds dimension.
                         char *data =
-                            static_cast <
-                            char *>(ExportDataForDODS(sds.dims[i].scale));
+                            static_cast <char *>(ExportDataForDODS(sds.dims[i].scale));
                         (*p)->val2buf(data);
                         delete[]data;
                         (*p)->set_read_p(true);

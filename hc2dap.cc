@@ -449,8 +449,7 @@ void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
 #ifdef SIGNED_BYTE_TO_INT32
     switch (sds.data.number_type()) {
     case DFNT_INT8:{
-        char *data =
-            static_cast < char *>(ExportDataForDODS(sds.data));
+        char *data = static_cast < char *>(ExportDataForDODS(sds.data));
         ar->val2buf(data);
         delete[]data;
         break;
@@ -470,8 +469,7 @@ void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr)
 #ifdef SIGNED_BYTE_TO_INT32
     switch (gr.image.number_type()) {
     case DFNT_INT8:{
-        char *data =
-            static_cast < char *>(ExportDataForDODS(gr.image));
+        char *data = static_cast < char *>(ExportDataForDODS(gr.image));
         ar->val2buf(data);
         delete[]data;
         break;
@@ -509,8 +507,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 #ifdef SIGNED_BYTE_TO_INT32
             switch (sds.dims[i].scale.number_type()) {
             case DFNT_INT8:{
-                char *data = static_cast < char *>
-                    (ExportDataForDODS(sds.dims[i].scale));
+                char *data = static_cast < char *>(ExportDataForDODS(sds.dims[i].scale));
                 (*p)->val2buf(data);
                 delete[]data;
                 break;
@@ -577,13 +574,9 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
         int i = 0;
         Constructor::Vars_iter q;
         for (q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
-            // AccessDataForDODS does the same basic thing that
-            // ExportDataForDODS(hdf_genvec &, int) does except that the
-            // Access function does not allocate memeory; it provides access
-            // using the data held in the hdf_genvec without copying it. See
-            // hdfutil.cc. 4/10/2002 jhrg
-            (*q)->val2buf(static_cast <
-                          char *>(ExportDataForDODS(f.vals[i], row)));
+            char *val = static_cast <char *>(ExportDataForDODS(f.vals[i], row));
+            (*q)->val2buf(val);
+            delete[] val;
             (*q)->set_read_p(true);
         }
 

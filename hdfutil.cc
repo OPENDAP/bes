@@ -161,19 +161,24 @@ void *ExportDataForDODS(const hdf_genvec & v, int i)
     }
 }
 
+#if 0
 // Just like ExportDataFor DODS *except* that this function does not allocate
-// memory which must then be delteted. Why write this function? If the
+// memory which must then be deleted. Why write this function? If the
 // hdf_genvec::data() method is used, then the client of hdf_genvec must cast
 // the returned pointer to one of the numeric datatypes before adding #i# to
 // access a given element. There's no need to write an Access function when
 // we're not supplying an index because the entire array returned by the
 // data() method can be used (there's no need to cast the returned pointer
 // because it's typically just passed to BaseType::val2buf() which copies the
-// data and into its own internal storage. 4/10/2002 jhrg
+// data and into its own internal storage.
+//
+// This is a great idea but the problem is that hdf_genvec::elt_int16(), ...
+// all allocate and return copies of the value; the change to return the
+// address needs to be made in hdf_genvec by adding new accessor methods.
 void *AccessDataForDODS(const hdf_genvec & v, int i)
 {
 
-    void *rv = 0;
+    void *rv = 0; // BROKEN HERE
     switch (v.number_type()) {
     case DFNT_INT16:
         *(static_cast < int16 * >(rv)) = v.elt_int16(i);
@@ -217,4 +222,4 @@ void *AccessDataForDODS(const hdf_genvec & v, int i)
 
     return rv;
 }
-
+#endif
