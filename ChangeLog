@@ -1,18 +1,17 @@
 2010-02-01  rduncan
 
-	Release 1/01/2010
+	Release 2/01/2010
 
 2010-01-26  hyoklee
 
-	Put the original baseline back. The values are too big for the data type  and should throw errors.
+	Put the original baseline back. The values are too big for the
+	data type and should throw errors.
 
 2010-01-25  hyoklee
 
-	Corrected testsuite and changed HDF-EOS to HDF-EOS2 in hdf4_handler.spec.
+	Corrected testsuite and changed HDF-EOS to HDF-EOS2 in
+	hdf4_handler.spec.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-01-25  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* bes-testsuite Updated baseline files

@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.7.15 (5 Oct 2009)
+Updated for 3.8.0 (1 Feb 2010)
 
 ---------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ REQUIREMENTS
 
   o You also need a recent copy of HDF4. We've tested this server with
     version 4.2r1 and 4.2r4, although any recent version should work fine. 
-    In order to link with 42.r4 on Linux (and maybe other platforms) I had to
+    In order to link with 4.2r4 on Linux (and maybe other platforms) I had to
     compile HDF4 using --without-fortran --with-pic and I also used 
     --without-netcdf (because some sites need their HDF4 libraries built that
     way and I wanted to be sure the handler would build with that 
