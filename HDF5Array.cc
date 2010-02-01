@@ -96,21 +96,15 @@ int HDF5Array::format_constraint(int *offset, int *step, int *count) {
 bool HDF5Array::m_array_of_structure() {
     DBG(cerr << "=read() Array of Structure length=" << length() << endl);
 
-    int *offset = 0;
-    int *count = 0;
-    int *step = 0;
-    int *picks = 0;
-
-    try {
-        offset = new int[d_num_dim];
-        count = new int[d_num_dim];
-        step = new int[d_num_dim];
-        int nelms = format_constraint(offset, step, count);
+        vector<int> offset(d_num_dim);
+        vector<int> count(d_num_dim);
+        vector<int> step(d_num_dim);
+        int nelms = format_constraint(&offset[0], &step[0], &count[0]);
 
         // Honor constraint evaluation here.
-        picks = new int[nelms];
+        vector<int> picks(nelms);
         int total_elems =
-            linearize_multi_dimensions(offset, step, count, picks);
+            linearize_multi_dimensions(&offset[0], &step[0], &count[0], &picks[0]);
 
         HDF5Structure *p = dynamic_cast < HDF5Structure * >(var());
         if (!p) {
@@ -128,21 +122,7 @@ bool HDF5Array::m_array_of_structure() {
 
         set_read_p(true);
 
-        delete[] offset;
-        delete[] count;
-        delete[] step;
-        delete[] picks;
-
         return false;
-    }
-    catch (...) {
-        if( offset ) delete[] offset;
-        if( count )  delete[] count;
-        if( step )   delete[] step;
-        if( picks )  delete[] picks;
-
-        throw;
-    }
 }
 
 // This private method makes a simple array and inserts it into the
@@ -224,17 +204,13 @@ bool HDF5Array::m_array_in_structure() {
     }
     // Build the simple array and record its size.
 
-    hsize_t *size2 = 0;
-    int *perm = 0;
-    try {
         // Construct an array read from the structure.
-        size2 = new hsize_t[d_num_dim];
-        perm = new int[d_num_dim]; // perm is not used
-        if(H5Tget_array_dims(d_ty_id, size2, perm) < 0){
+        vector<hsize_t> size2(d_num_dim);
+        vector<int> perm(d_num_dim); // perm is not used
+        if(H5Tget_array_dims(d_ty_id, &size2[0], &perm[0]) < 0){
             throw InternalErr(__FILE__, __LINE__,
                               "H5Tget_array_ndims failed.");
         }
-        delete[] perm; perm = 0;
 
         // Grab the BaseType to this object's parent. If it's a constructor
         // type, then look at the type of this array and insert a H5 array of
@@ -245,8 +221,7 @@ bool HDF5Array::m_array_in_structure() {
         BaseType *q = get_parent();
         if (q && q->is_constructor_type()) { // Grid, structure or sequence
 
-            m_insert_simple_array(s1_tid, size2);
-            delete[] size2; size2 = 0;
+            m_insert_simple_array(s1_tid, &size2[0]);
 
             // Remember the last parent name.
             parent_name = q->name();
@@ -289,34 +264,28 @@ bool HDF5Array::m_array_in_structure() {
 
             q = q->get_parent();
         }
-        delete[] size2; size2 = 0;
-    } // try - the first try protects perm and size2 from leaking
-    catch (...) {
-        delete[] size2;
-        delete[] perm;
-        throw;
-    }
 
-    DBG(cerr << "=read() parent's element count=" << array_size << endl);
+        DBG(cerr << "=read() parent's element count=" << array_size << endl);
     DBG(cerr << "=read() parent's entire element count=" << entire_array_size << endl);
     DBG(cerr << "=read() parent's index=" << array_index << endl);
 
 
-    // Read data from te HDF5 file and load those values into this instance.
-
+    // Read data from the HDF5 file and load those values into this instance.
+#if 0
     char *convbuf = 0;
     char *buf = 0;
     string *v_str = 0;
     char *strbuf = 0;
     try {
-        // Allocate enough buffer for entire array to be read.
+#endif
+	// Allocate enough buffer for entire array to be read.
         if (!entire_array_size)
             throw InternalErr(__FILE__, __LINE__,
                               "entire_array_size is zero.");
-        char *buf = new char[entire_array_size * d_memneed];
+        vector<char> buf(entire_array_size * d_memneed);
 
         if(H5Dread(d_dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-                   static_cast<void*>(buf)) < 0)
+                   static_cast<void*>(&buf[0])) < 0)
             throw InternalErr(__FILE__, __LINE__,
                               "H5Dread failed.");
         
@@ -329,7 +298,7 @@ bool HDF5Array::m_array_in_structure() {
         if (!array_size) {
             throw InternalErr(__FILE__, __LINE__, "array_size is zero");
         }
-        char *convbuf = new char[array_size * d_memneed];
+        vector<char> convbuf(array_size * d_memneed);
         
         for (int l = 0; l < array_size; l++) {
             for (int i = 0; i < (int) d_memneed; i++) {
@@ -337,28 +306,24 @@ bool HDF5Array::m_array_in_structure() {
             }
         }
 
-        delete[] buf; buf = 0;
-
         // Treat string differently with vector of strings.
         if (d_type == H5T_STRING) {
-            v_str = new string[d_num_elm];
+            vector<string> v_str(d_num_elm);
             int size = d_memneed / length();
-            strbuf = new char[size + 1];
+            vector<char> strbuf(size + 1);
             for (int strindex = 0; strindex < d_num_elm; strindex++) {
-                get_strdata(strindex, convbuf, strbuf, size);
+                get_strdata(strindex, &convbuf[0], &strbuf[0], size);
                 DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
-                v_str[strindex] = strbuf;
+                v_str[strindex] = &strbuf[0];
             }
             set_read_p(true);
-            val2buf((void *)v_str);
-            delete[] strbuf; strbuf = 0;
-            delete[] v_str; v_str = 0;
+            val2buf((void *)&v_str[0]);
         } 
         else {
             set_read_p(true);
-            val2buf((void *)convbuf);
+            val2buf((void *)&convbuf[0]);
         }
-        delete[] convbuf; convbuf = 0;
+#if 0
     }
     catch(...) {
         // memory allocation exceptions could have been thrown in
@@ -370,24 +335,26 @@ bool HDF5Array::m_array_in_structure() {
         if( convbuf ) delete[] convbuf;
         throw;
     }
-
+#endif
     return false;
 }
 
 bool HDF5Array::m_array_of_reference() {
-    int *offset = 0;
-    int *count = 0;
-    int *step = 0;
+#if 1
+    //int *offset = 0;
+    //int *count = 0;
+    //int *step = 0;
     hdset_reg_ref_t *rbuf = 0;
-    string *v_str = 0;
+    //string *v_str = 0;
     try {
-        offset = new int[d_num_dim];
-        count = new int[d_num_dim];
-        step = new int[d_num_dim];
-        rbuf = new hdset_reg_ref_t[d_num_elm];
+#endif
+	vector<int> offset(d_num_dim);
+        vector<int> count(d_num_dim);
+        vector<int> step(d_num_dim);
+        hdset_reg_ref_t *rbuf = new hdset_reg_ref_t[d_num_elm];
 
-        int nelms = format_constraint(offset, step, count); // Throws Error.
-        v_str = new string[nelms];
+        int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
+        vector<string> v_str(nelms);
 
         DBG(cerr << "=read() URL type is detected. "
             << "nelms=" << nelms << " full_size=" << d_num_elm << endl);
@@ -399,7 +366,7 @@ bool HDF5Array::m_array_of_reference() {
         if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) > 0) {
             DBG(cerr << "=read() Got regional reference. " << endl);
             if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, 
-                        H5P_DEFAULT, rbuf) < 0) {
+                        H5P_DEFAULT, &rbuf[0]) < 0) {
                 throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
             }
 
@@ -413,7 +380,7 @@ bool HDF5Array::m_array_of_reference() {
 
                     hid_t did_r = H5Rdereference(d_dset_id,
                                                  H5R_DATASET_REGION,
-                                                 &rbuf[offset[0]+i*step[0]]
+                                                 rbuf[offset[0]+i*step[0]]
                                                  );
                     if(did_r < 0) {
 			throw InternalErr(__FILE__, __LINE__,
@@ -431,7 +398,7 @@ bool HDF5Array::m_array_of_reference() {
                     string varname(name);
                     hid_t space_id = H5Rget_region(
                                                    did_r, H5R_DATASET_REGION,
-                                                   &rbuf[offset[0]+i* step[0]]
+                                                   rbuf[offset[0]+i* step[0]]
                                                    );
                     if(space_id < 0) {
                         throw InternalErr(__FILE__, __LINE__,
@@ -457,8 +424,10 @@ failed.");
                         break;
 
                     case H5S_SEL_POINTS: {
-                        hsize_t *buf = 0;
+#if 0
+                	hsize_t *buf = 0;
                         try {
+#endif
                             DBG(cerr << "=read() Points selected." << endl);
                             hsize_t npoints = H5Sget_select_npoints(space_id);
 			    if(npoints < 0) {
@@ -469,11 +438,11 @@ elements in the dataspace selection");
 
                             DBG(cerr << "=read() npoints are " << npoints 
                                 << endl);
-                            buf = new hsize_t[npoints * ndim];
+                            vector<hsize_t> buf(npoints * ndim);
                             if(H5Sget_select_elem_pointlist(space_id,
                                                             0, 
                                                             npoints,
-                                                            buf) < 0){
+                                                            &buf[0]) < 0){
                                 throw InternalErr(__FILE__, __LINE__,
                                                   "H5Sget_select_elem_pointlist() failed.");                                
                                 
@@ -501,27 +470,30 @@ elements in the dataspace selection");
                                 }
                             }
                             v_str[i].append(expression);
+#if 0
                             delete[] buf;
                         }
                         catch (...) {
                             if( buf ) delete[] buf;
                             throw;
                         }
-
+#endif
                         break;
                     }
                     case H5S_SEL_HYPERSLABS: {
-                        hsize_t *start = 0;
+#if 0
+                	hsize_t *start = 0;
                         hsize_t *end = 0;
                         try {
-                            start = new hsize_t[ndim];
-                            end = new hsize_t[ndim];
+#endif
+                            vector<hsize_t> start(ndim);
+                            vector<hsize_t> end(ndim);
 
                             DBG(cerr << "=read() Slabs selected." << endl);
                             DBG(cerr << "=read() nblock is " <<
                                 H5Sget_select_hyper_nblocks(space_id) << endl);
 
-                            if(H5Sget_select_bounds(space_id, start, end) < 0){
+                            if(H5Sget_select_bounds(space_id, &start[0], &end[0]) < 0){
                                 throw InternalErr(__FILE__, __LINE__,
                                                   "H5Sget_select_bounds() \
 failed.");                                
@@ -542,6 +514,7 @@ failed.");
                                 v_str[i].append(expression);
                             }
                             // Constraint expression. [start:1:end]
+#if 0
                             delete[] start;
                             delete[] end;
                         }
@@ -550,6 +523,7 @@ failed.");
                             if( end ) delete[] end;
                             throw;
                         }
+#endif
                         break;
                     }
                     case H5S_SEL_ALL:
@@ -575,14 +549,14 @@ failed.");
         if (H5Tequal(d_ty_id, H5T_STD_REF_OBJ) > 0) {
             DBG(cerr << "=read() Got object reference. " << endl);
             if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, 
-                        H5P_DEFAULT, rbuf) < 0) {
+                        H5P_DEFAULT, &rbuf[0]) < 0) {
                 throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
             }
 
             for (int i = 0; i < nelms; i++) {
                 // Let's assume that URL array is always 1 dimension.
                 hid_t did_r = H5Rdereference(d_dset_id, H5R_OBJECT,
-                                             &rbuf[offset[0] + i * step[0]]);
+                                             rbuf[offset[0] + i * step[0]]);
 		if (did_r < 0) {
 		    throw InternalErr(__FILE__, __LINE__,
                                       "H5Rdereference() failed.");
@@ -602,57 +576,62 @@ failed.");
             }
         }
 
-        set_value(v_str, nelms);
-        delete[] offset;
-        delete[] count;
-        delete[] step;
+        set_value(&v_str[0], nelms);
+#if 1
+        //delete[] offset;
+        //delete[] count;
+        //delete[] step;
         delete[] rbuf;
-        delete[] v_str;
-
+        //delete[] v_str;
+#endif
         return false;
+#if 1
     }
     catch(...) {
         // memory allocation exceptions could have been thrown in
         // creating these ptrs so check if exist before deleting.
         // pwest Mar 18, 2009
-        if( offset ) delete[] offset;
-        if( count ) delete[] count;
-        if( step ) delete[] step;
+        //if( offset ) delete[] offset;
+        //if( count ) delete[] count;
+        //if( step ) delete[] step;
         if( rbuf ) delete[] rbuf;
-        if( v_str ) delete[] v_str;
+        //if( v_str ) delete[] v_str;
 
         throw;
     }
+#endif
 }
 
 void HDF5Array::m_intern_plain_array_data(char *convbuf) {
     char Msga[255];
 
     if (check_h5str(d_ty_id)) {
-        string *v_str = 0;
+#if 0
+	string *v_str = 0;
         char *strbuf = 0;
         try {
-            v_str = new string[d_num_elm];
+#endif
+            vector<string> v_str(d_num_elm);
             size_t elesize = H5Tget_size(d_ty_id);
 	    if (elesize == 0){
 		throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
 	    }
-            strbuf = new char[elesize + 1];
+            vector<char> strbuf(elesize + 1);
             DBG(cerr << "=read()<check_h5str()  element size=" << elesize
                 << " d_num_elm=" << d_num_elm << endl);
 
             for (int strindex = 0; strindex < d_num_elm; strindex++) {
-                get_strdata(strindex, convbuf, strbuf, elesize);
+                get_strdata(strindex, &convbuf[0], &strbuf[0], elesize);
                 DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
-                v_str[strindex] = strbuf;
+                v_str[strindex] = &strbuf[0];
             }
 
             if(H5Dclose(d_dset_id) < 0){
                 throw InternalErr(__FILE__, __LINE__, "H5Dclose() failed.");
             };
             set_read_p(true);
-            val2buf((void *)v_str);
-
+            val2buf((void *)&v_str[0]);
+#if 0
             delete[] strbuf;
             delete[] v_str;
         }
@@ -664,6 +643,7 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf) {
             if( v_str ) delete[] v_str;
             throw;
         }
+#endif
     } 
     else {
         set_read_p(true);
@@ -697,43 +677,46 @@ bool HDF5Array::read() {
     if (get_dap_type(d_ty_id) == "Url") {
         return m_array_of_reference();
     }
-
+#if 0
     int *offset = 0;
     int *count = 0;
     int *step = 0;
     char *convbuf = 0;
     try {
-        offset = new int[d_num_dim];
-        count = new int[d_num_dim];
-        step = new int[d_num_dim];
-        int nelms = format_constraint(offset, step, count); // Throws Error.
+#endif
+	vector<int> offset(d_num_dim);
+        vector<int> count(d_num_dim);
+        vector<int> step(d_num_dim);
+        int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
 
         if (H5Tis_variable_str(d_ty_id) &&
             H5Tget_class(d_ty_id) == H5T_STRING){
             
-            bool status = read_vlen_string(d_dset_id, d_ty_id, nelms, offset,
-                                           step, count);
+            bool status = read_vlen_string(d_dset_id, d_ty_id, nelms, &offset[0],
+                                           &step[0], &count[0]);
+#if 0
             delete[] offset;
             delete[] count;
             delete[] step;
+#endif
             return status;
         }
 
 	if (H5Tis_variable_str(d_ty_id) < 0){
 	    throw InternalErr(__FILE__, __LINE__, "H5Tis_variable_str() failed.");
 	}
-	if (H5Tget_class < 0){
+	if (H5Tget_class(d_ty_id) < 0){
 	    throw InternalErr(__FILE__, __LINE__, "H5Tget_class() failed.");
 	}
         char Msga[255];
         if (nelms == d_num_elm) {
-            convbuf = new char[d_memneed];
-            get_data(d_dset_id, (void *) convbuf);
+            vector<char> convbuf(d_memneed);
+            get_data(d_dset_id, (void *)&convbuf[0]);
             
             // Check if a Signed Byte to Int16 conversion is necessary.
             
             if(get_dap_type(d_ty_id) == "Int8"){
-                short* convbuf2 = new short[nelms];
+                vector<short> convbuf2(nelms);
                 for(int i=0; i < nelms ; i++){
                     convbuf2[i] = (signed char)(convbuf[i]);
                     DBG(cerr << "convbuf[" << i << "]="
@@ -742,35 +725,35 @@ bool HDF5Array::read() {
                         << convbuf2[i] << endl);
                 }
                 // Libdap will generate the wrong output. 
-                m_intern_plain_array_data((char*)convbuf2);
-                delete[] convbuf2;
+                m_intern_plain_array_data((char*)&convbuf2[0]);
+                //delete[] convbuf2;
             }       
-            m_intern_plain_array_data(convbuf);
-            delete[] convbuf;
+            m_intern_plain_array_data(&convbuf[0]);
+            //delete[] convbuf;
         } // if (nelms == d_num_elm)
         else {
             size_t data_size = nelms * H5Tget_size(d_ty_id);
             if (data_size < 0)
                 throw InternalErr(__FILE__, __LINE__, "get_size failed");
-            convbuf = new char[data_size];
-            get_slabdata(d_dset_id, offset, step, count, d_num_dim, convbuf);
+            vector<char> convbuf(data_size);
+            get_slabdata(d_dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);
 
             // Check if a Signed Byte to Int16 conversion is necessary.
             if(get_dap_type(d_ty_id) == "Int8"){
-                short* convbuf2 = new short[data_size];
+                vector<short> convbuf2(data_size);
                 for(int i=0; i < data_size; i++){
                     convbuf2[i] = static_cast<signed char>(convbuf[i]);
                 }
-                m_intern_plain_array_data((char*)convbuf2);
-                delete[] convbuf2;
+                m_intern_plain_array_data((char*)&convbuf2[0]);
+                //delete[] convbuf2;
             }
             else{
-                m_intern_plain_array_data(convbuf);
+                m_intern_plain_array_data(&convbuf[0]);
             }
             
-            delete[] convbuf;
+            //delete[] convbuf;
         }
-
+#if 0
         delete[]offset;
         delete[]step;
         delete[]count;
@@ -785,7 +768,7 @@ bool HDF5Array::read() {
         if( convbuf ) delete[]convbuf;
         throw;
     }
-
+#endif
     return false;
 }
 
@@ -823,11 +806,13 @@ int HDF5Array::linearize_multi_dimensions(int *start, int *stride, int *count,
                                           int *picks) {
     DBG(cerr << ">linearize_multi_dimensions()" << endl);
     int total = 1;
+#if 0
     int *dim = 0;
     int *temp_count = 0;
     try {
-        int id = 0;
-        dim = new int[d_num_dim];
+#endif
+	int id = 0;
+        vector<int> dim(d_num_dim);
         Dim_iter p2 = dim_begin();
 
         while (p2 != dim_end()) {
@@ -837,9 +822,9 @@ int HDF5Array::linearize_multi_dimensions(int *start, int *stride, int *count,
             total = total * a_size;
             ++id;
             ++p2;
-        } // while()
+        }
 
-        temp_count = new int[d_num_dim];
+        vector<int> temp_count(d_num_dim);
         int temp_index;
         int i;
         int array_index = 0;
@@ -894,7 +879,7 @@ int HDF5Array::linearize_multi_dimensions(int *start, int *stride, int *count,
                 }
             }
         }
-
+#if 0
         delete[] dim;
         delete[] temp_count;
     }
@@ -906,7 +891,7 @@ int HDF5Array::linearize_multi_dimensions(int *start, int *stride, int *count,
         if( temp_count ) delete[] temp_count;
         throw;
     }
-
+#endif
     DBG(cerr << "<linearize_multi_dimensions()" << endl);
     return total;
 }
@@ -930,15 +915,16 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
     DBG(cerr <<
         "=read_vlen_string(): variable string is detected with nelms = "
         << nelms << endl);
-
+#if 0
     char **convbuf2 = 0;        // an array of strings
     string *v_str = 0;
     char *strbuf = 0;
 
     try {
-        convbuf2 = new char*[d_num_elm];
+#endif
+	vector<char*> convbuf2(d_num_elm);
         if(H5Dread(d_dset_id, d_ty_id,
-                   H5S_ALL, H5S_ALL, H5P_DEFAULT, convbuf2) < 0){
+                   H5S_ALL, H5S_ALL, H5P_DEFAULT, &convbuf2[0]) < 0){
             throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
         }
 
@@ -950,21 +936,21 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
             }
         }
 
-        strbuf = new char[size_max + 1];
-        v_str = new string[d_num_elm];
+        vector<char> strbuf(size_max + 1);
+        vector<string> v_str(d_num_elm);
 
         for (int strindex = 0; strindex < nelms; strindex++) {
-            memset(strbuf, 0, size_max + 1);
+            memset(&strbuf[0], 0, size_max + 1);
             // Let's assume that variable length array is 1 dimension.
             int real_index = offset[0] + strindex * step[0];
             if (convbuf2[real_index] != NULL) {
-                strncpy(strbuf, convbuf2[real_index], size_max);
+                strncpy(&strbuf[0], convbuf2[real_index], size_max);
                 strbuf[size_max] = '\0';
-                v_str[strindex] = strbuf;
+                v_str[strindex] = &strbuf[0];
                 DBG(cerr << "v_str" << v_str[strindex] << endl);
             } 
             else {
-                v_str[strindex] = strbuf;
+                v_str[strindex] = &strbuf[0];
             }
         }
 
@@ -973,7 +959,7 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
         }
         set_read_p(true);
         set_value(v_str, d_num_elm);
-
+#if 0
         delete[] strbuf;
         delete[] convbuf2;
         delete[] v_str;
@@ -984,5 +970,6 @@ bool HDF5Array::read_vlen_string(hid_t d_dset_id, hid_t d_ty_id, int nelms,
         if( v_str ) delete[] v_str;
         throw;
     }
+#endif
     return false;
 }

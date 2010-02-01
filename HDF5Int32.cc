@@ -99,13 +99,14 @@ bool HDF5Int32::read()
 	if(s1_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	}
+#if 0
         s2_t *buf = 0;
 	try {
 	    buf = new s2_t[p.get_entire_array_size()];
+#endif
+	    vector<s2_t> buf(p.get_entire_array_size());
         string myname = name();
         string parent_name;
-
-
 
         DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
             " size=" << i << endl);
@@ -147,7 +148,7 @@ bool HDF5Int32::read()
         }                       // while ()
 
 
-        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) <
+        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) <
             0) {
 	    // buf is deleted in the catch ... block below and
 	    // should not be deleted here. pwest Mar 18, 2009
@@ -165,6 +166,7 @@ bool HDF5Int32::read()
         val2buf(&intg32);
 #endif
 	set_value(buf[j].a);
+#if 0
 	delete[] buf;
 	}
 	catch(...) {
@@ -174,7 +176,7 @@ bool HDF5Int32::read()
 	    if( buf ) delete[] buf;
 	    throw;
 	}
-
+#endif
     }                           // In case of structure
 
 

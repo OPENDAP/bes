@@ -97,12 +97,13 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
         }
-
+#if 0
         char *oname = NULL;
 	try {
+#endif
 	    // Obtain the name of the object.
-	    oname = new char[(size_t) oname_size + 1];
-	    if (H5Gget_objname_by_idx(pid, (hsize_t) i, oname,
+	    vector<char> oname(oname_size + 1);
+	    if (H5Gget_objname_by_idx(pid, (hsize_t) i, &oname[0],
 				      (size_t) (oname_size + 1)) < 0) {
 		string msg = "hdf5 object name error from: ";
 		msg += gname;
@@ -121,9 +122,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             case H5G_GROUP:{
                 DBG(cerr << "=depth_first():H5G_GROUP " << oname << endl);
 #ifndef CF
-                add_group_structure_info(das, gname, oname, true);
+                add_group_structure_info(das, gname, &oname[0], true);
 #endif
-                string full_path_name = string(gname) + string(oname) + "/";
+                string full_path_name = string(gname) + string(&oname[0]) + "/";
                 // Check if it is converted from h4toh5 tool  and has dimension
                 // scale.
                 if(full_path_name.find("/HDF4_DIMGROUP/") != string::npos)
@@ -173,9 +174,9 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 DBG(cerr << "=depth_first():H5G_DATASET " << oname <<
                     endl);
 #ifndef CF
-                add_group_structure_info(das, gname, oname, false);
+                add_group_structure_info(das, gname, &oname[0], false);
 #endif
-                string full_path_name = string(gname) + string(oname);
+                string full_path_name = string(gname) + string(&oname[0]);
                 hid_t dset;
                 // Open the dataset
                 if ((dset = H5Dopen(pid, full_path_name.c_str())) < 0) {
@@ -216,13 +217,14 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 #ifndef CF
             case H5G_LINK:
 		slinkindex++;
-		get_softlink(das, pid, oname, slinkindex);
+		get_softlink(das, pid, &oname[0], slinkindex);
 		break;
 #endif
 
             default:
 		break;
 	    }
+#if 0
 	    if( oname ) delete[]oname;
 	} // try
 	catch (...) {
@@ -232,6 +234,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    if( oname ) delete[] oname;
 	    throw;
 	}
+#endif
     } //  for (int i = 0; i < nelems; i++)
 
     DBG(cerr << "<depth_first():" << gname << endl);

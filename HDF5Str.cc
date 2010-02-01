@@ -94,8 +94,10 @@ bool HDF5Str::read()
 
         hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
         hid_t stemp_tid;
-
+#if 0
         s2_t *buf = new s2_t[i];
+#endif
+	    vector<s2_t> buf(i);
         string myname = name();
         string parent_name;
 
@@ -105,7 +107,10 @@ bool HDF5Str::read()
 	if (s2_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	}
+	
+#if 0
 	try {
+#endif
 	    DBG(cerr << "=read() ty_id=" << ty_id << " name=" << myname <<
 		" size=" << i << endl);
 	    while (q != NULL) {
@@ -146,7 +151,7 @@ bool HDF5Str::read()
 		k++;
 	    }
 
-	    if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf) < 0) {
+	    if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
 		// buf is deleted in the catch ... block below so
 		// shouldn't be deleted here. pwest Mar 18, 2009
 		//delete[] buf;
@@ -157,12 +162,14 @@ bool HDF5Str::read()
 	    set_read_p(true);
 	    string str = buf[j].a;
 	    val2buf(&str);
+#if 0	    
 	    delete[] buf; buf = 0;
 	}
 	catch (...) {
 	    delete[] buf;
 	    throw;
 	}
+#endif
     }
 
     return false;
