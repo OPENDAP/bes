@@ -1,3 +1,23 @@
+2010-02-01  rduncan
+
+	Release 1/01/2010
+
+2010-01-29  hyoklee
+
+	Fixed the coompilation error when DEBUG mode is enabled.
+
+2010-01-22  Patrick West <pwest@ucar.edu>
+
+	RPM to use h5.conf instead of bes-hdf5-data.sh
+	M    hdf5_handler.spec
+
+2010-01-21  hyoklee
+
+	Bug fix Ticket #1211 and documentation update.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* doc/Doxygen is added.
