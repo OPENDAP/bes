@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 1.3.4
+Updated for version 1.4.0
 
 --------------------------------------------------------------------
 BUILDING THE SOFTWARE
@@ -48,7 +48,7 @@ Building from Our SVN Repository
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.9.0 to build and install this
+  o You need the libdap library version 3.10.0 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages, once they are
     available. 
@@ -59,7 +59,7 @@ REQUIREMENTS
     See './configure --help' for more info.
 
   o If you're planning on using this with Hyrax, version 1.5, you'll need
-    version 3.7.0 of the BES software.
+    version 3.8.0 of the BES software.
 
 NOTES
 

@@ -15,9 +15,6 @@
 
 	Bug fix Ticket #1211 and documentation update.
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* doc/Doxygen is added.
