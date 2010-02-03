@@ -130,134 +130,13 @@ bool HE5Parser::is_valid()
     return _valid;
 }
 
-void HE5Parser::print()
-{
-
-    cout << "Left = " << point_left << endl;
-    cout << "Right = " << point_right << endl;
-    cout << "Lower = " << point_lower << endl;
-    cout << "Upper = " << point_upper << endl;
-
-    cout << "Total number of paths = " << full_data_paths.size() << endl;
-    for (int i = 0; i < (int) full_data_paths.size(); i++) {
-        cout << "Element " << full_data_paths.at(i) << endl;
-    }
-}
-
-bool HE5Parser::set_dimension_array()
-{
-    int i = 0;
-    int j = 0;
-    int size = dimensions.size();
-#if 0
-    dods_float32 *convbuf = NULL;
-#endif
-    if (!libdap::size_ok(sizeof(dods_float32), size))
-	throw InternalErr(__FILE__, __LINE__, "Unable to allocate memory.");
-
-    vector <dods_float32 *> dimension_data(size);
-
-    DBG(cerr << ">set_dimension_array():Dimensions size = " << size <<
-	    endl);
-    for (j = 0; j < (int) dimensions.size(); j++) {
-	string dim_name = dimensions.at(j);
-	int dim_size = dimension_map[dim_name];
-
-	DBG(cerr << "=set_dimension_array():Dim name = " << dim_name <<
-		std::endl); DBG(cerr << "=set_dimension_array():Dim size = " << dim_size <<
-		std::endl);
-
-	if (dim_size > 0) {
-	    if (!libdap::size_ok(sizeof(dods_float32), dim_size))
-		throw InternalErr(__FILE__, __LINE__,
-			"Unable to allocate memory.");
-
-	    vector<dods_float32> convbuf(dim_size);
-
-	    if ((dim_name.find("XDim", (int) dim_name.size() - 4))
-		    != string::npos) {
-		gradient_x = (point_right - point_left) / (float) (dim_size);
-		for (i = 0; i < dim_size; i++) {
-		    if (!TES) {
-			convbuf[i] = (dods_float32) (point_left + (float) i
-				* gradient_x + (gradient_x / 2.0)) / 1000000.0;
-		    }
-		    else {
-			convbuf[i] = (dods_float32) (point_left + (float) i
-				* gradient_x) / 1000000.0;
-		    }
-		}
-	    }
-	    else if ((dim_name.find("YDim", (int) dim_name.size() - 4))
-		    != string::npos) {
-
-		if (TES) {
-		    // swap the upper and lower points for TES products
-		    float temp = point_upper;
-		    point_upper = point_lower;
-		    point_lower = temp;
-		}
-
-		gradient_y = (point_upper - point_lower) / (float) (dim_size);
-		for (i = 0; i < dim_size; i++) {
-		    if (!TES) {
-			convbuf[i] = (dods_float32) (point_lower + (float) i
-				* gradient_y + (gradient_y / 2.0)) / 1000000.0;
-		    }
-		    else {
-			gradient_y = ceilf(gradient_y / 1000000.0f)
-				* 1000000.0f;
-			convbuf[i] = (dods_float32) (point_lower + (float) i
-				* gradient_y) / 1000000.0;
-		    }
-		}
-	    }
-	    else {
-		for (i = 0; i < dim_size; i++) {
-		    convbuf[i] = (dods_float32) i; // meaningless number.
-		}
-	    }
-	    // Moved here from below jhrg 1/14/10
-	    dimension_data[j] = &convbuf[0];
-	} // if dim_size > 0
-	else {
-	    DBG(cerr << "Negative dimension " << endl);
-	    return false;
-	}
-#if 0
-	// What if convbuf was not allocated? jhrg 1/11/10
-	dimension_data[j] = convbuf;
-#endif
-    } // for
-
-    DBG(cerr << "<set_dimension_array()" << endl);
-    return true;
-}
-
-string HE5Parser::get_grid_name(string full_path)
-{
-    int end = full_path.find("/", 14);
-    return full_path.substr(0, end + 1);        // Include the last "/".
-}
-
-int HE5Parser::get_dimension_data_location(string dimension_name)
-{
-    int j;
-    for (j = 0; j < (int) dimensions.size(); j++) {
-        string dim_name = dimensions.at(j);
-        if (dim_name == dimension_name)
-            return j;
-    }
-    return -1;
-}
-
 bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 {
     bool valid = false;
     int i = -1;
     
-    // Assume that 10 is reasonable count of StructMetadata files
-    for (i = -1; i < 10; i++) { 
+    // Assume that 30 is reasonable count of StructMetadata files
+    for (i = -1; i < 30; i++) { 
         // Check if this file has the dataset called "StructMetadata".
         // Open the dataset.
         char dname[255];
@@ -286,7 +165,7 @@ bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
                 break;
             }
             if ((dataspace = H5Dget_space(dset)) < 0) {
-                cerr << "HE5Parser.cc failed to obtain dataspace from dataset " 
+                cerr << "HE5Parser.cc failed to obtain dataspace from dataset "
                      << dset << endl;
                 break;
             }

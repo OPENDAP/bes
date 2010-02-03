@@ -1,3 +1,7 @@
+2010-02-03  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HE5Parser.cc is cleaned up and checks 30 metadata files
+
 2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* doc/Doxygen is added.
