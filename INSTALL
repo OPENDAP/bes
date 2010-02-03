@@ -27,10 +27,13 @@ BUILDING THE SOFTWARE
 2) Type `make' to build the handler.
 
 3) Install the server components in $prefix by running `make install.'
-
-4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which
-   inserts the handler in the bes.conf file and adds test data to
-   $prefix/share/hyrax/data.
+   This will also add the new h5.conf file to the $prefix/etc/bes/modules
+   directory. The BES configuration file bes.conf will automatically
+   load any module configuration files in that directory. The h5.conf
+   file contains fileout_netcdf specific configurations for use with the
+   BES Framework. This includes some parameters that used to be in the
+   bes.conf file, such as the TypeMatch parameter for finding your
+   files.
 
 For very detailed instructions on building the software, please see 
 
