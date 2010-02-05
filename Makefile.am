@@ -11,7 +11,8 @@ AM_LFLAGS = -8
 
 BUILT_SOURCES = $(GRAM_SRCS)
 
-SUBDIRS = bes-testsuite
+SUBDIRS = . bes-testsuite
+DIST_SUBDIRS = . bes-testsuite
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libhdf5_module.la
@@ -44,7 +45,7 @@ libhdf5_module_la_LDFLAGS = -avoid-version -module
 libhdf5_module_la_LIBADD = $(BES_DAP_LIBS) -L${hdf5_path}/lib -lhdf5 -lz
 
 EXTRA_DIST = he5das.y he5dds.y he5das.lex  he5dds.lex OSX_Resources \
-	data COPYING hdf5_handler.spec h5.conf.in
+	data COPYING hdf5_handler.spec h5.conf.in 
 
 CLEANFILES = *~ *.sum *.log *.output he5das.tab.cc he5das.tab.hh \
 	lex.he5das.cc lex.he5dds.cc he5dds.tab.cc he5dds.tab.hh \
