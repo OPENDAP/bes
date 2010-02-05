@@ -47,7 +47,7 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([isascii])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.9.3],
+AC_CHECK_LIBDAP([3.10.0],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -72,7 +72,7 @@ dnl       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
    ]
 )
 
-AC_CHECK_BES([3.7.2],
+AC_CHECK_BES([3.8.0],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])
