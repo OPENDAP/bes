@@ -8,6 +8,7 @@ AM_CPPFLAGS = -I$(top_srcdir)
 # AM_CPPFLAGS =
 AM_CXXFLAGS =
 
+
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
@@ -19,10 +20,11 @@ noinst_DATA = bes.conf
 
 CLEANFILES = *.log *.sum site.exp
 
-# EXTRA_DIST = hdf5_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 bes-testsuite h5 besstandalone.h5 common_tests.exp bes.conf.in 
-EXTRA_DIST = h5 besstandalone.h5 common_tests.exp bes.conf.in
+ EXTRA_DIST = hdf5_handlerTest.at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 h5 besstandalone.h5 common_tests.exp bes.conf.in 
+#EXTRA_DIST = h5 besstandalone.h5 common_tests.exp bes.conf.in
+# bes-testsuite
 
-DISTCLEANFILES = bes.conf
+DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf5_handlerTest
 
 bes.conf: bes.conf.in ../config.status
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
@@ -37,7 +39,7 @@ bes.conf: bes.conf.in ../config.status
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
- 
+
 TESTSUITE = $(srcdir)/hdf5_handlerTest
 
 check-local: atconfig atlocal $(TESTSUITE)
