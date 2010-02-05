@@ -97,9 +97,6 @@ sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-for file in config.guess depcomp missing config.sub install-sh ltmain.sh mkinstalldirs; do
-  chmod a+x $RPM_BUILD_ROOT%{_datadir}/bes/templates/conf/$file
-done
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
 mkdir -p $RPM_BUILD_ROOT%{beslogdir}
@@ -135,6 +132,7 @@ exit 0
 %{_datadir}/bes/*.xml
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
+%{_bindir}/besd
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
