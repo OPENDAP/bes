@@ -554,7 +554,6 @@ ServerApp::run()
 
 	if( !_unixSocket.empty() )
 	{
-	    cerr << "unixSocket = \"" << _unixSocket << "\"" << endl ;
 	    _us = new UnixSocket( _unixSocket ) ;
 	    listener.listen( _us ) ;
 	    BESDEBUG( "server", "ServerApp: listening on unix socket ("
