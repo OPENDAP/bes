@@ -429,7 +429,7 @@ ServerApp::initialize( int argc, char **argv )
     {
 	try
 	{
-	    TheBESKeys::TheKeys()->get_value( port_key, _unixSocket, found ) ;
+	    TheBESKeys::TheKeys()->get_value( socket_key, _unixSocket, found ) ;
 	}
 	catch( BESError &e )
 	{
@@ -554,6 +554,7 @@ ServerApp::run()
 
 	if( !_unixSocket.empty() )
 	{
+	    cerr << "unixSocket = \"" << _unixSocket << "\"" << endl ;
 	    _us = new UnixSocket( _unixSocket ) ;
 	    listener.listen( _us ) ;
 	    BESDEBUG( "server", "ServerApp: listening on unix socket ("
