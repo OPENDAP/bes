@@ -27,12 +27,13 @@ CLEANFILES = *.log *.sum site.exp
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf5_handlerTest
 
 bes.conf: bes.conf.in ../config.status
+	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]libdir[@]%${libdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
-		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" \
+		-e "s%[@]abs_top_srcdir[@]%$$my_topdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes.conf
 

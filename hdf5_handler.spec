@@ -27,9 +27,7 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install INSTALL="install -p"
 
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
-rm $RPM_BUILD_ROOT%{_libdir}/*.so
-rm $RPM_BUILD_ROOT%{_libdir}/bes/*.la
+rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf5_module.la
 
 # rm $RPM_BUILD_ROOT%{_libdir}/bes/libhdf5_module.la
 
@@ -44,7 +42,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/bes/
 %dir %{_sysconfdir}/bes/modules
 %config(noreplace) %{_sysconfdir}/bes/modules/h5.conf
-%{_libdir}/libhdf5_handler.so.*
 %{_libdir}/bes/libhdf5_module.so
 %{_datadir}/hyrax/
 %doc COPYING NEWS README INSTALL
