@@ -83,7 +83,7 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-EXTRA_DIST = data bes-testsuite hdf-testfiles \
+EXTRA_DIST = data hdf-testfiles \
 	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
 	COPYRIGHT_URI hdf4_handler.spec \
 	OSX_Resources h4.conf.in
