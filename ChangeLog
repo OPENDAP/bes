@@ -3,6 +3,7 @@
 	* HE5Parser.cc has new limit(=30) for StructMetadata files to scan.
 	* HDF5RequestHandler.cc has more meaningful error message when it 
 	  deals with multiple Swaths case.
+	* h5das.cc checks null pointers when it adds group information.
 
 2010-02-01  rduncan
 

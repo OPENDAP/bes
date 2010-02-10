@@ -959,13 +959,18 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     string replace(".");
     string::size_type pos = 1;
 
+    if(gname == NULL){
+        throw InternalErr(__FILE__, __LINE__,
+                          "Got a NULL group name.");
+    }
+    
     string full_path = string(gname);
     // Cut the last '/'.
     while ((pos = full_path.find(search, pos)) != string::npos) {
         full_path.replace(pos, search.size(), replace);
         pos++;
     }
-    if (strcmp(gname, "/") == 0) {
+    if (strncmp(gname, "/", sizeof(gname)) == 0) {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP");
     }
     else {
@@ -976,6 +981,13 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     DBG(cerr << full_path << endl);
 
     AttrTable *at = das.get_table(full_path);
+    if(at == NULL){
+        throw InternalErr(__FILE__, __LINE__,
+                           "Failed to add group structure information for "
+                          + full_path
+                          + " attribute table."
+                          + "This happens when a group name has . character.");
+    }
 
     if (is_group) {
         at->append_container(oname);
