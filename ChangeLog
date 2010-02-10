@@ -1,3 +1,9 @@
+2010-02-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* HE5Parser.cc has new limit(=30) for StructMetadata files to scan.
+	* HDF5RequestHandler.cc has more meaningful error message when it 
+	  deals with multiple Swaths case.
+
 2010-02-01  rduncan
 
 	Release 1/01/2010

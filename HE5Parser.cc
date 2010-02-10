@@ -135,8 +135,8 @@ bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
     bool valid = false;
     int i = -1;
     
-    // Assume that 10 is reasonable count of StructMetadata files
-    for (i = -1; i < 10; i++) { 
+    // Assume that 30 is reasonable count of StructMetadata files
+    for (i = -1; i < 30; i++) { 
         // Check if this file has the dataset called "StructMetadata".
         // Open the dataset.
         char dname[255];

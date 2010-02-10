@@ -143,7 +143,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         if (!dds->check_semantics()) {       // DDS didn't get built right
             dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
-                              "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups.");
+                              "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups. Multiple lon/lat definitions in data violate CF convention.");
         }
 
         Ancillary::read_ancillary_dds( *dds, filename ) ;
