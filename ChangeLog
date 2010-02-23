@@ -1,3 +1,76 @@
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Upgraded library versions. Removed command and pptcapi library versions.
+	No longer in the bes.
+	M    configure.ac
+
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Problem when server shut down but client connections still active. If
+	you try to start the BES again there's a problem in the script if there
+	are more than one beslistener running. This fixes that script error.
+	M    server/besctl.in
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Removed debug statement
+	M    server/ServerApp.cc
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Was using port parameter in bes configuration to find unix socket
+	M    server/ServerApp.cc
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	cflags were being created using the libdap pkg instead of bes_dispatch
+	package. Fixed this.
+	M    bes-config-pkgconfig
+
+2010-02-05  Patrick West <pwest@ucar.edu>
+
+	Don't need mkinstalldirs, Part of autoconf. Added besd to bes.spec.
+	D    templates/conf/mkinstalldirs
+	M    templates/Makefile.am
+	M    bes.spec
+
+2010-02-03  Patrick West <pwest@ucar.edu>
+
+	Added testsuite as distdir in cmdln. Removed from distribution the
+	second bad key file in dispatch/unit-tests
+	M    cmdln/Makefile.am
+	M    dispatch/unit-tests/Makefile.am
+
+2010-02-02  Patrick West <pwest@ucar.edu>
+
+	First pass at 3.8.0 release of BES
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.0.bescmd
+	M    cmdln/testsuite/besTest.at
+	M    README
+	M    bes.spec
+
+2010-02-02  Patrick West <pwest@ucar.edu>
+
+	BES 3.8.0 release branch
+	A    http://scm.opendap.org/svn/branch/bes/3.8.0
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-01-26  mjohnson
 
 	Fixed multiple compiler warnings by removing empty
