@@ -169,10 +169,19 @@ findRunningBES()
 	    fi
 	fi
     else
-	BESLISTENER_PID=`$PS | grep -v grep | grep beslistener | awk '{print $2}'`
-	if [ $BESLISTENER_PID ]
+	BESLISTENER=""
+	for i in `$PS | grep -v grep | grep beslistener | awk '{print $2}'`
+	do
+	    if [ "$BESLISTENER_PID" == "" ]
+	    then
+		BESLISTENER_PID=$i
+	    else
+		BESLISTENER_PID="$BESLISTENER_PID $i"
+	    fi
+	done
+	if [ "$BESLISTENER_PID" ]
 	then
-	    echo "BES seems to be running from a different location: $BESLISTENER_PID"
+	    echo "BES seems to be running from a different location: pids $BESLISTENER_PID"
 	fi
     fi
 }
