@@ -83,10 +83,15 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
+# Added files that are conditionally compiled so that when we build a
+# dist they are included even though the configure option is not used.
+# jhrg 3/8/10
 EXTRA_DIST = data hdf-testfiles \
 	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
 	COPYRIGHT_URI hdf4_handler.spec \
-	OSX_Resources h4.conf.in
+	OSX_Resources h4.conf.in \
+	HDFEOS2.cc HDFEOS2Array.cc HDFEOS2Array2D.cc \
+	HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
