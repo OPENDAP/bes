@@ -128,6 +128,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 	    err.append( "Unknown error" ) ;
 	}
 	fclose( dest ) ;
+	remove( target.c_str() ) ;
 	fclose( src ) ;
 
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
@@ -152,6 +153,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 
 	    BZ2_bzReadClose( &bzerror, bsrc ) ;
 	    fclose( dest ) ;
+	    remove( target.c_str() ) ;
 	    fclose( src ) ;
 
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
@@ -172,6 +174,7 @@ BESUncompressBZ2::uncompress( const string &src_name, const string &target )
 
 	    BZ2_bzReadClose( &bzerror, bsrc ) ;
 	    fclose( dest ) ;
+	    remove( target.c_str() ) ;
 	    fclose( src ) ;
 
 	    throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;

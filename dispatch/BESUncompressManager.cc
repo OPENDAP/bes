@@ -196,6 +196,12 @@ BESUncompressManager::get_method_names()
  * uncompression function with the name bozo, then the src file with the
  * extension .bozo is returned as is.
  *
+ * If there is a problem uncompressing the file, the uncompress code is
+ * responsible for closing the source file, the target file, AND
+ * REMOVING THE TARGET FILE. If the target file is left in place after
+ * an error, then the cache might use that file in the future for a
+ * request.
+ *
  * @param src file to be uncompressed
  * @param target target file to uncompress into
  * @param cache BESCache object to uncompress the src file in
