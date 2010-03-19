@@ -77,7 +77,7 @@ BUILDING THE SOFTWARE
     'hdfeos2/' to get the code here to compile and link. I made a link
     to /usr/local/hdfeos2 and then ran configure here as:
 
-           ./configure --enable-cf --with-hdeos2=/usr/local/hdfeos2
+           ./configure --enable-cf --with-hdfeos2=/usr/local/hdfeos2
 
     jhrg 8/7/09
 
