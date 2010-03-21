@@ -40,7 +40,8 @@
 #include "BESDebug.h"
 
 BESXMLDefineCommand::BESXMLDefineCommand( const BESDataHandlerInterface &base_dhi )
-    : BESXMLCommand( base_dhi )
+    : BESXMLCommand( base_dhi ),
+      _default_constraint( "" )
 {
 }
 
@@ -98,7 +99,12 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	BESXMLUtils::GetFirstChild( node, child_name, child_value, props ) ;
     while( child_node )
     {
-	if( child_name == "container" )
+	if( child_name == "constraint" )
+	{
+	    // default constraint for all containers
+	    _default_constraint = child_value ;
+	}
+	else if( child_name == "container" )
 	{
 	    handle_container_element( action, child_node, child_value, props ) ;
 	    num_containers++ ;
@@ -300,9 +306,12 @@ BESXMLDefineCommand::prep_request()
 	// look for the specified container
 	BESContainer *d =
 	    BESContainerStorageList::TheList()->look_for( (*i) ) ;
-	d->set_constraint( _constraints[(*i)] ) ;
+	string constraint = _constraints[(*i)] ;
+	if( constraint.empty() ) constraint = _default_constraint ;
+	d->set_constraint( constraint ) ;
 	d->set_attributes( _attributes[(*i)] ) ;
 	_dhi.containers.push_back( d ) ;
+	BESDEBUG( "xml", "define using container: " << endl << *d << endl ) ;
     }
 }
 

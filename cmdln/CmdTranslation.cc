@@ -664,6 +664,7 @@ CmdTranslation::translate_define( BESTokenizer &t,
 
     // constraints and attributes
     map<string,string> constraints ;
+    string default_constraint ;
     map<string,string> attrs ;
     if( token == "with" )
     {
@@ -671,29 +672,37 @@ CmdTranslation::translate_define( BESTokenizer &t,
 	unsigned int type ;
 	while( token != "aggregate" && token != ";" )
 	{
-	    string c = t.parse_container_name( token, type ) ;
-	    if( clist[c] != c )
+	    // see if we have a default constraint for all containers
+	    if( token == "constraint" )
 	    {
-		t.parse_error( "contstraint container does not exist" ) ;
-	    }
-	    if( type == 1 )
-	    {
-		// constraint
-		constraints[c] = t.remove_quotes( t.get_next_token() ) ;
-	    }
-	    else if( type == 2 )
-	    {
-		// attributed
-		attrs[c] = t.remove_quotes( t.get_next_token() ) ;
+		default_constraint = t.remove_quotes( t.get_next_token() ) ;
 	    }
 	    else
 	    {
-		t.parse_error( "unknown constraint type" ) ;
-	    }
-	    token = t.get_next_token() ;
-	    if( token == "," )
-	    {
+		string c = t.parse_container_name( token, type ) ;
+		if( clist[c] != c )
+		{
+		    t.parse_error( "contstraint container does not exist" ) ;
+		}
+		if( type == 1 )
+		{
+		    // constraint
+		    constraints[c] = t.remove_quotes( t.get_next_token() ) ;
+		}
+		else if( type == 2 )
+		{
+		    // attributed
+		    attrs[c] = t.remove_quotes( t.get_next_token() ) ;
+		}
+		else
+		{
+		    t.parse_error( "unknown constraint type" ) ;
+		}
 		token = t.get_next_token() ;
+		if( token == "," )
+		{
+		    token = t.get_next_token() ;
+		}
 	    }
 	}
     }
@@ -762,6 +771,34 @@ CmdTranslation::translate_define( BESTokenizer &t,
 	{
 	    cerr << "failed to add the container space attribute" << endl ;
 	    return "" ;
+	}
+    }
+
+    // write the default constraint if we have one
+    if( !default_constraint.empty() )
+    {
+	// start the constraint element
+	int rc = xmlTextWriterStartElement( writer, BAD_CAST "constraint" );
+	if( rc < 0 )
+	{
+	    cerr << "failed to start container constraint element" << endl ;
+	    return false ;
+	}
+
+	/* Write the value of the constraint */
+	rc = xmlTextWriterWriteString( writer, BAD_CAST default_constraint.c_str());
+	if( rc < 0 )
+	{
+	    cerr << "failed to write constraint for container" << endl ;
+	    return "" ;
+	}
+
+	// end the container constraint element
+	rc = xmlTextWriterEndElement( writer ) ;
+	if( rc < 0 )
+	{
+	    cerr << "failed to close constraint element" << endl ;
+	    return false ;
 	}
     }
 

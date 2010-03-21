@@ -43,6 +43,7 @@ using std::vector ;
 class BESXMLDefineCommand : public BESXMLCommand
 {
 private:
+    string			_default_constraint ;
     vector<string>		_containers ;
     map<string,string>		_constraints ;
     map<string,string>		_attributes ;

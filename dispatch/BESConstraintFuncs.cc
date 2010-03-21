@@ -59,11 +59,19 @@ BESConstraintFuncs::pre_to_post_constraint( const string &name,
 void
 BESConstraintFuncs::post_append( BESDataHandlerInterface &dhi )
 {
-    if( dhi.container && dhi.container->get_constraint() != "" )
+    if( dhi.container )
     {
-	string to_append =
-	    pre_to_post_constraint( dhi.container->get_symbolic_name(),
-				    dhi.container->get_constraint() ) ;
+	string to_append ;
+	if( dhi.container->get_constraint() != "" )
+	{
+	    to_append =
+		pre_to_post_constraint( dhi.container->get_symbolic_name(),
+					dhi.container->get_constraint() ) ;
+	}
+	else
+	{
+	    to_append = dhi.container->get_symbolic_name() ;
+	}
 	string constraint = dhi.data[POST_CONSTRAINT] ;
 	if( constraint != "" )
 	    constraint += "," ;
