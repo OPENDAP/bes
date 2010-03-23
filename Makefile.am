@@ -145,6 +145,9 @@ srpm: dist
 rpm: dist
 	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
+rpm-nodeps: dist
+	rpmbuild -tb --clean --nodeps @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+
 ###########################################################################
 
 # Build the HDF-EOS parser
