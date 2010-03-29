@@ -1,7 +1,31 @@
+2010-03-11  Patrick West <pwest@ucar.edu>
+
+	Cache now makes sure that there's enough space for the compressed file
+	being worked on. Modified tests for this.
+	M    BESCache.cc
+	M    unit-tests/cache/template.txt
+
+2010-03-10  Patrick West <pwest@ucar.edu>
+
+	Removing the target uncompressed file if error in uncompressing
+	the file
+	M    dispatch/BESUncompressBZ2.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESUncompressManager.cc
+	M    dispatch/BESUncompressGZ.cc
+
 2010-02-23  Patrick West <pwest@ucar.edu>
 
-	Upgraded library versions. Removed command and pptcapi library versions.
-	No longer in the bes.
+	Updated change log for 1.6.0 hyrax release
+	M    ChangeLog
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-02-23  Patrick West <pwest@ucar.edu>
+
+	Upgraded library versions. Removed command and pptcapi library
+	versions. No longer in the bes.
 	M    configure.ac
 
 2010-02-23  Patrick West <pwest@ucar.edu>

@@ -1,6 +1,11 @@
 
 	$Id$
 
+News for version 3.8.1, 11 March 2010
+
+Fixed potential bug in BES Uncompression Cache code when failure to
+uncompress a file and checking size of current cache.
+
 News for version 3.8.0, 2 February 2010
 
 Changed the way BES configuration is modified for the different

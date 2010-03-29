@@ -171,17 +171,7 @@ BESKeys::load_keys()
 		}
 		else
 		{
-		    map<string,vector<string> >::iterator i ;
-		    i = _the_keys->find( key ) ;
-		    if( i == _the_keys->end() )
-		    {
-			vector<string> vals ;
-			(*_the_keys)[key] = vals ;
-		    }
-		    if( !value.empty() )
-		    {
-			(*_the_keys)[key].push_back( value ) ;
-		    }
+		    set_key( key, value, addto ) ;
 		}
 	    }
 	}

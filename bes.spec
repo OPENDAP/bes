@@ -8,7 +8,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.8.0
+Version:        3.8.1
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -160,6 +160,9 @@ exit 0
 %doc __distribution_docs/api-html/
 
 %changelog
+* Thu Mar 11 2010 Patrick West <westp@rpi.edu> - 3.8.1-1
+- Update
+
 * Tue Feb 02 2010 Patrick West <westp@rpi.edu> - 3.8.0-1
 - Update
 
