@@ -10,7 +10,7 @@
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules=dap,dapcmd
+BES.modules+=dap,dapcmd
 BES.module.dap=@pkglibdir@/libdap_module.so
 BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
 
