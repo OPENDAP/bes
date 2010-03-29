@@ -6,7 +6,7 @@
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules=h4
+BES.modules+=h4
 BES.module.h4=@bes_modules_dir@/libhdf4_module.so
 
 #-----------------------------------------------------------------------#
