@@ -405,7 +405,11 @@ BESInterface::transmit_data()
     {
         if( _dhi->error_info )
 	{
-	    BESDEBUG( "bes", "  transmitting error info using transmitter ... " << endl ) ;
+	    ostringstream strm ;
+	    _dhi->error_info->print( strm ) ;
+	    (*BESLog::TheLog()) << strm.str() << endl ;
+	    BESDEBUG( "bes", "  transmitting error info using transmitter ... "
+			     << endl << strm.str() << endl ) ;
             _dhi->error_info->transmit( _transmitter, *_dhi ) ;
         }
 	else if( _dhi->response_handler )
