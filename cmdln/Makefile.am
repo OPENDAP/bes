@@ -22,8 +22,8 @@ DIST_SUBDIRS = unit-tests
 bin_PROGRAMS = bescmdln
 
 bescmdln_SOURCES = CmdApp.cc CmdClient.cc CmdTranslation.cc 		\
-		CmdPretty.cc ../xmlcommand/BESXMLUtils.cc		\
-		CmdApp.h CmdClient.h CmdTranslation.h CmdPretty.h	\
+		../xmlcommand/BESXMLUtils.cc				\
+		CmdApp.h CmdClient.h CmdTranslation.h			\
 		../xmlcommand/BESXMLUtils.h
 
 bescmdln_LDADD = ../dispatch/libbes_dispatch.la ../ppt/libbes_ppt.la $(openssl_libs) $(READLINE_LIBS) $(XML2_LIBS)

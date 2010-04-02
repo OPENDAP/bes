@@ -133,6 +133,24 @@ BESXMLInfo::begin_response( const string &response_name,
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
+    rc = xmlTextWriterSetIndent( _writer, 4 ) ;
+    if( rc < 0 )
+    {
+	cleanup() ;
+        string err = (string)"Error starting indentation for response document "
+		     + _response_name ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    rc = xmlTextWriterSetIndentString( _writer, BAD_CAST "    " ) ;
+    if( rc < 0 )
+    {
+	cleanup() ;
+        string err = (string)"Error setting indentation for response document "
+		     + _response_name ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
     _started = true ;
 
     /* Start the document with the xml default for the version,

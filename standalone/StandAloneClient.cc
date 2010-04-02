@@ -83,7 +83,6 @@ extern "C" {
 #include "BESDebug.h"
 #include "BESXMLInterface.h"
 #include "CmdTranslation.h"
-#include "CmdPretty.h"
 
 StandAloneClient::~StandAloneClient()
 {
@@ -282,7 +281,7 @@ StandAloneClient::executeCommand( const string & cmd, int repeat )
 
 	    if( show_stream )
 	    {
-		CmdPretty::make_pretty( show_stream->str(), *_strm ) ;
+		*(_strm) << show_stream->str() << endl ;
 		delete show_stream ;
 		show_stream = 0 ;
 	    }
