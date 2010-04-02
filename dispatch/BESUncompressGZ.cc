@@ -106,6 +106,7 @@ BESUncompressGZ::uncompress( const string &src, const string &target )
 			     << "instead of " << bytes_read ;
 		gzclose( gsrc ) ;
 		fclose( dest ) ;
+		remove( target.c_str() ) ;
 		throw BESInternalError( strm.str(), __FILE__, __LINE__ ) ;
 	    }
 	}
