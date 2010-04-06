@@ -92,8 +92,7 @@ BESXMLInterface::build_data_request_plan()
     {
 	*(BESLog::TheLog()) << _dhi->data[SERVER_PID]
 		    << " from " << _dhi->data[REQUEST_FROM]
-		    << " [" << _dhi->data[DATA_REQUEST] << "] building"
-		    << endl ;
+		    << "] building" << endl ;
     }
 
     LIBXML_TEST_VERSION

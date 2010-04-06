@@ -140,8 +140,7 @@ BESInterface::execute_request( const string &from )
 
 	*(BESLog::TheLog()) << _dhi->data[SERVER_PID]
 			    << " from " << _dhi->data[REQUEST_FROM]
-			    << " [" << _dhi->data[DATA_REQUEST] << "]"
-			    << endl ;
+			    << " request received" << endl ;
 
         validate_data_request();
         build_data_request_plan() ;

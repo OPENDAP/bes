@@ -74,7 +74,7 @@ BESXMLShowCommand::parse_request( xmlNode *node )
     _dhi.action = "show." ;
     string toadd = BESUtil::lowercase( name.substr( 4, name.length() - 4 ) ) ;
     _dhi.action += toadd ;
-    _str_cmd = (string)"show " + toadd ;
+    _str_cmd = (string)"show " + toadd + ";" ;
     BESDEBUG( "besxml", "Converted xml element name to command "
 			<< _dhi.action << endl ) ;
 

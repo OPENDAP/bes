@@ -81,7 +81,7 @@ BESXMLShowErrorCommand::parse_request( xmlNode *node )
     }
     // test the error type number in the response handler
     _dhi.data[SHOW_ERROR_TYPE] = etype ;
-    _str_cmd = (string)"show error " + etype ;
+    _str_cmd = (string)"show error " + etype + ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

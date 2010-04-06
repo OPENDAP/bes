@@ -34,6 +34,7 @@
 #include "BESResponseHandlerList.h"
 #include "BESSyntaxUserError.h"
 #include "BESDataNames.h"
+#include "BESLog.h"
 
 map< string, p_xmlcmd_builder> BESXMLCommand::cmd_list ;
 
@@ -64,6 +65,10 @@ BESXMLCommand::set_response()
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     _dhi.data[DATA_REQUEST] = _str_cmd ;
+    *(BESLog::TheLog()) << _dhi.data[SERVER_PID]
+			<< " from " << _dhi.data[REQUEST_FROM]
+			<< " [" << _str_cmd << "] received" << endl ;
+
 }
 
 /** @brief Add a command to the possible commands allowed by this BES

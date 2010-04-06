@@ -79,7 +79,7 @@ BESXMLSetContextCommand::parse_request( xmlNode *node )
     }
     _dhi.data[CONTEXT_NAME] = name ;
     _dhi.data[CONTEXT_VALUE] = value ;
-    _str_cmd = (string)"set context " + name + " to " + value ;
+    _str_cmd = (string)"set context " + name + " to " + value + ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

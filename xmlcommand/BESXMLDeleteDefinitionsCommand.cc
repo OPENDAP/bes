@@ -75,7 +75,7 @@ BESXMLDeleteDefinitionsCommand::parse_request( xmlNode *node )
 
     _dhi.action = DELETE_DEFINITIONS ;
 
-    _str_cmd = (string)"delete definitions from " + storage ;
+    _str_cmd = (string)"delete definitions from " + storage + ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action
