@@ -1,3 +1,48 @@
+2010-04-06  Patrick West <pwest@ucar.edu>
+
+	Log output more interesting now, displaying the requests that were
+	received.
+	M    dispatch/BESInterface.cc
+	M    xmlcommand/BESXMLShowErrorCommand.cc
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	Updated release files for updated compression cache. Fixed problem with
+	BESKeys where = was adding to the definition instead of replacing. +=
+	should add to.
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    dispatch/BESKeys.cc
+	M    dispatch/bes/dap.conf.in
+	M    bes.spec
+
+2010-03-22  James Gallagher <jgallagher@opendap.org>
+
+	Added cstring include for strerror on FC11 (other linux dists
+	too?). Also added rpm-nodeps target to Makefile.am.
+
+	M    dispatch/BESFSFile.cc
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-03-11  Patrick West <pwest@ucar.edu>
 
 	Cache now makes sure that there's enough space for the compressed file

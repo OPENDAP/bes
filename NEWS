@@ -1,6 +1,14 @@
 
 	$Id$
 
+News for version 3.8.2, 06 April 2010
+
+Fixed bug in BESKeys where = was adding to a definition instead of
+replacing.
+
+Logging the received requests to the BESLog log file. Was just saying
+[xml document]
+
 News for version 3.8.1, 11 March 2010
 
 Fixed potential bug in BES Uncompression Cache code when failure to

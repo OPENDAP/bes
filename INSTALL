@@ -1,7 +1,7 @@
 
 	$Id$
 
-Updated for version 3.8.1 of the OPeNDAP BES.
+Updated for version 3.8.2 of the OPeNDAP BES.
 
 Installing the BES
 
@@ -192,8 +192,11 @@ CONFIGURATION AND TESTING
 
     - The configuration file is located in the installation directory under
       etc/bes and is called bes.conf. This file will need to be edited, and
-      is fairly well documented. So, if you installed in /usr/local, then
-      this file will be located in /usr/local/etc/bes/bes.conf.
+      is fairly well documented. Any modules installed will have their
+      own configuration file in the modules directory. So, if you
+      installed in /usr/local, then this file will be located in
+      /usr/local/etc/bes/bes.conf and the modules directory where module
+      configuration files will go is /usr/local/etc/bes/modules.
 
     - If you want to include libdap in the build then you will need to
       either have dap-config on your path, or you can specify
