@@ -30,5 +30,5 @@ BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 # % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
 # expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
 
-BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
 
