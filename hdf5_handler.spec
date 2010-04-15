@@ -6,10 +6,14 @@ License:         LGPLv2+
 Group:           System Environment/Daemons 
 Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
+Requires:        libdap >= 3.10.0
+Requires:        bes >= 3.8.0 
+Requires:        hdf5 => 1.6
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:   libdap-devel >= 3.10.0
 BuildRequires:	 bes-devel >= 3.8.0
+BuildRequires:   hdf5-devel >= 1.6
 
 %description
 This is the hdf5 data handler for our data server. It reads HDF5
