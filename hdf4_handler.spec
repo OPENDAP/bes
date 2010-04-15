@@ -6,9 +6,15 @@ License:         LGPLv2+
 Group:           System Environment/Daemons 
 Source0:         http://www.opendap.org/pub/source/%{name}-%{version}.tar.gz
 URL:             http://www.opendap.org/
+# I'm not sure how to specify the version for hdf - we're using 4.2r4 but 
+# any 4.2 will do. I'll try using just 4.2
+Requires:        libdap >= 3.10.0 
+Requires:        besl >= 3.8.0
+Requires:        hdf >= 4.2
 
 BuildRoot:       %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:   libdap-devel >= 3.10.0 hdf-devel
+BuildRequires:   libdap-devel >= 3.10.0 
+BuildRequires:   hdf-devel >= 4.2
 BuildRequires:   bes-devel >= 3.8.0
 
 %description
