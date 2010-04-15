@@ -95,6 +95,11 @@ EXTRA_DIST = data hdf-testfiles \
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
+# Not nearly as clean as it could be, but this removes .svn directories
+# in subdirs.
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
+
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
 
@@ -140,10 +145,10 @@ fortifyclean:
 # Build linux RPMs
 
 srpm: dist
-	rpmbuild -ts --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm: dist
-	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm-nodeps: dist
 	rpmbuild -tb --clean --nodeps @PACKAGE@-@PACKAGE_VERSION@.tar.gz
