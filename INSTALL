@@ -81,9 +81,9 @@ BUILDING THE SOFTWARE
 
     jhrg 8/7/09
 
-2) Type `make' to build the three server programs
+2) Type `make' to build the server module.
 
-3) Install the server components in $prefix by running `make install'. This
+3) Install the server module in $prefix by running `make install'. This
    will also add the new h4.conf file to the $prefix/etc/bes/modules directoy.
    The BES configuration file bes.conf will automatically load any module
    configuration files in that directory. The h4.conf file contains hdf4_handler
@@ -91,7 +91,7 @@ BUILDING THE SOFTWARE
    some parameters that used to be in the bes.conf file, such as the TypeMatch
    parameter for finding your files.
 
-4) For many installations, you must arrange for your operating system to find
+4) For some installations, you must arrange for your operating system to find
    the shared libraries installed by default in $prefix/lib. Do this by
    either setting an environment variable such as LD_LIBRARY_PATH or by
    editing /etc/ld.so.conf. Different operating systems handle this in
