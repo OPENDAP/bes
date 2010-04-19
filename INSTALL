@@ -63,6 +63,11 @@ REQUIREMENTS
 
   o If you're planning on using this with Hyrax, version 1.5, you'll need
     version 3.8.0 of the BES software.
+    
+  o If the build will fails because of problems linking with the hdf5
+    library, you may need to build the library from source and force the 
+    compiler/linker to use the option '-fPIC' (poisition Independet Code).
+
 
 NOTES
 
