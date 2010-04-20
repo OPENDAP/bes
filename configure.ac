@@ -143,15 +143,21 @@ then
 	dnl First test the minimum
 	if test $version_M -lt 2
 	then
-		AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+	    AC_MSG_ERROR([x must have libxml2 2.5.7 or greater, found $version_libxml2])
 	else
-	    if test $version_M -eq 2 && $version_m -lt 5
+	    if test $version_M -eq 2
 	    then
-		    AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
-	    else
-		if test $version_M -eq 2 && test $version_m -eq 5 && test $version_m_m -lt 7
+		if test $version_m -lt 5
 		then
-			AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
+		    AC_MSG_ERROR([y must have libxml2 2.5.7 or greater, found $version_libxml2])
+		else
+		    if test $version_m -eq 5
+		    then
+			if test $version_m_m -lt 7
+			then
+			    AC_MSG_ERROR([z must have libxml2 2.5.7 or greater, found $version_libxml2])
+			fi
+		    fi
 		fi
 	    fi
 	fi
@@ -207,79 +213,21 @@ AC_ARG_ENABLE([developer],
   ]
 )
 
-xmlprivatereq=
-xmlprivatelibs=
-libdap_pkgconfig_libxml2=yes
-libdap_libxml2_module='libxml-2.0 >= 2.6.16'
-PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module],,
-  [libdap_pkgconfig_libxml2=no])
-AC_MSG_CHECKING([for libxml2])
-if test $libdap_pkgconfig_libxml2 = 'yes'
-then
-	xmlprivatereq=$libdap_libxml2_module
-	XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
-	AC_DEFINE(LIBXML2_5_10, [1],
-		  [define if you have xml2 2.5.10 or greater])
-	AC_DEFINE(LIBXML2_6_16, [1],
-		  [define if you have xml2 2.6.16 or greater])
-	AC_MSG_RESULT([yes; used pkg-config])
-elif xml2-config --version > /dev/null 2>&1
-then
-	version_libxml2=`xml2-config --version`
-	version_M=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
-	version_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
-	version_m_m=`echo $version_libxml2 | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
-	
-	dnl Test for several different versions of libxml2. We can use 2.5.7 
-	dnl or newer, but part of the SAX interface changes depending on the
-	dnl version.
-	
-	dnl First test the minimum
-	if test $version_M -lt 2 || test $version_m -lt 5 || test $version_m_m -lt 7
-	then
-		AC_MSG_ERROR([must have libxml2 2.5.7 or greater, found $version_libxml2])
-	fi
-	
-	dnl Sort out the particular variant
-	if test $version_M -eq 2 && test $version_m -eq 5 && test $version_m_m -ge 10
-	then
-		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
-	fi
-	if test $version_M -eq 2 && test $version_m -eq 6 && test $version_m_m -ge 16
-	then
-		AC_DEFINE(LIBXML2_5_10, [1], [define if you have xml2 2.5.10 or greater])
-		AC_DEFINE(LIBXML2_6_16, [1], [define if you have xml2 2.6.16 or greater])
-	fi
-
-	XML2_LIBS="`xml2-config --libs`"
-	XML2_STATIC_LIBS=$XML2_LIBS
-	XML2_CFLAGS="`xml2-config --cflags`"
-	xmlprivatelibs="`xml2-config --libs`"
-	AC_MSG_RESULT([yes; used xml2-config])
-else
-	AC_MSG_ERROR([I could not find libxml2])
-fi
-AC_SUBST([xmlprivatereq])
-AC_SUBST([xmlprivatelibs])
-AC_SUBST([XML2_LIBS])
-AC_SUBST([XML2_STATIC_LIBS])
-AC_SUBST([XML2_CFLAGS])
-
 dnl extra argument: --with-libwrap
-    AC_MSG_CHECKING(whether to use libwrap)
-    AC_ARG_WITH(libwrap,
-        [  --with-libwrap          Compile in libwrap (tcp_wrappers) support.],
-        [ case "$withval" in
-        yes) AC_MSG_RESULT(yes)
-            AC_CHECK_LIB(wrap, request_init, 
-                 [ LIBS="-lwrap $LIBS"
-                   AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
-                 [ AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap option to configure.) ])
-            ;;
-        *) AC_MSG_RESULT(no);;
-        esac ],
-        AC_MSG_RESULT(no)
-    )
+AC_MSG_CHECKING(whether to use libwrap)
+AC_ARG_WITH(libwrap,
+    [  --with-libwrap          Compile in libwrap (tcp_wrappers) support.],
+    [ case "$withval" in
+    yes) AC_MSG_RESULT(yes)
+	AC_CHECK_LIB(wrap, request_init, 
+	     [ LIBS="-lwrap $LIBS"
+	       AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
+	     [ AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap option to configure.) ])
+	;;
+    *) AC_MSG_RESULT(no);;
+    esac ],
+    AC_MSG_RESULT(no)
+)
 
 
 AM_PATH_CPPUNIT(1.12.0,
