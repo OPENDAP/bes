@@ -52,9 +52,12 @@ docs: Where some bes documentation resides
 
 Once the BES software has been installed, you will need to make a few
 changes to the BES configuration file, which is the bes.conf located in
-<prefix>/etc/bes/bes.conf. Only a few parameters need to be modified to
-get the BES up and running for the first time. These parameters are
-located at the top of the configuration file are are:
+<prefix>/etc/bes/bes.conf. Module and handler configuration files will
+be installed in the <prefix>/etc/bes/modules directory.
+
+Only a few parameters need to be modified to get the BES up and running
+for the first time. These parameters are located at the top of the
+configuration file are are:
 
 BES.ServerAdministrator
 - set this to an email address that can be used for users to contact if
@@ -74,6 +77,62 @@ BES.LogName=./bes.log
 With this configuration you will be able to start the BES. No handlers
 or modules have been installed yet, so you won't be able to serve data,
 but the BES should run.
+
+** Configuration for Hyrax
+
+For the BES to run with Hyrax, additional changes will need to be made
+to the dap.conf and dap-server.conf files, which are located in the
+modules directory <prefix>/etc/bes/modules. The dap module should be
+installed by default with the BES. If the dap.conf file is not found, be
+sure that you have libdap installed. The dap-server module, known as the
+General purpose handlers, adds responses for the DAP ascii response, the
+DAP info response, and the DAP html form response. You will need to get
+the dap-server module. You should see a dap-server.conf file in the
+modules directory.
+
+The changes required for Hyrax are:
+
+BES.Catalog.catalog.RootDirectory=<path_to_root_data_directory>
+- Find the BES.Catalog.catalog.RootDirectory parameter in dap.conf. Set
+  this to the root directory of your data. If you're serving data stored
+  in files, this is the place in the file system where those files are
+  stored.
+
+BES.Catalog.catalog.Include=;
+- This parameter specifies what files/directories are included in the
+  list of nodes in the catalog. The default is to show everything. After
+  this parameter is looked at, the Exclude parameter is then looked at
+  to see what files you might want to exclude.
+
+BES.Catalog.catalog.Exclude=^\..*;
+- This parameter specifies what files/directories to include in the list
+  of nodes in the catalog. The default, shown here, is to exclude any
+  files or directories that starts with a dot (.)
+
+The only possible configuration parameter that you may need to change is
+the one that maps a file to a data handler. This parameter is called
+BES.catalog.TypeMatch, and is found in each of the data handler
+configuration files, such as nc.conf. The default values should work.
+
+The value of this parameter is a semicolon separated list that matches
+the name you used in the BES.modules parameter with different datasets.
+The BES uses regular expressions to identify different types of
+datasets. In the example given in the file, any dataset name that ends
+in '.nc' will be accessed using the netcdf hander (because the name 'nc'
+is used here with the regular expression '.*\.nc'; note that the BES
+uses regular expressions like Unix grep, not file globbing patterns like
+a command shell). Since the name 'nc' was associated with the netcdf
+module in the modules section, the netcdf module will be used to access
+any dataset whose name that ends in '.nc'.
+
+The regular expressions shown in the examples are simple. However, the
+entire dataset name is used, so it's easy to associate different modules with
+datasets based on much more than just the 'file name extension' even though
+that is the most common case.
+
+To test your regular expression for the TypeMatch parameter, or the
+Include and Exclude parameters, use the supplied besregtest program.
+Simply run besregtest to discover its usage.
 
 ** Installing a handler/module
 
@@ -96,43 +155,6 @@ module will have its own configuration file. In this case it is nc.conf
 and installed in the <prefix>/etc/bes/modules directory. The next time
 the BES is run, this configuration file will be read and the netcdf
 module loaded. No modifications are necessary.
-
-The only possible configuration parameter that you may need to change is
-the one that maps a file to a data handler. This parameter is called
-BES.catalog.TypeMatch. The value of this parameter is a semicolo
-separated list that matches the name you used in the BES.modules
-parameter with different datasets. The BES uses regular expressions to
-identify different types of datasets. In the example given in the file,
-any dataset name that ends in '.nc' will be accessed using the netcdf
-hander (because the name 'nc' is used here with the regular expression
-'.*\.nc'; note that the BES uses regular expressions like Unix grep, not
-file globbing patterns like a command shell). Since the name 'nc' was
-associated with the netcdf module in the modules section, the netcdf
-module will be used to access any dataset whose name that ends in '.nc'.
-
-The regular expressions shown in the examples are simple. However, the
-entire dataset name is used, so it's easy to associate different modules with
-datasets based on much more than just the 'file name extension' even though
-that is the most common case.
-
-To test your regular expression for the TypeMatch parameter, or the
-Include and Exclude parameters, use the supplied besregtest program.
-Simply run besregtest to discover its usage.
-
-Find the BES.Catalog.catalog.RootDirectory parameter. Set this to the root
-directory of your data. If you're serving data stored in files, this is the
-place in the file system where those files are stored. If you're serving
-data from a relational database, see the documentation for the handler used
-to read from the database about what value to use for this parameter.
-
-If you would like to use the ascii, info, and html responses of BES, like in
-the Server3 handlers when you append .ascii, .info, and .html to the URL
-respectively, then you will need to get the dap-server source from OPeNDAP
-at http://www.opendap.org/download/#SVN. Follow the instructions for building
-and installing dap-server. When you install dap-server, three modules will
-be installed into the <prefix>/lib/bes directory, ascii_module,
-usage_module, and www_module. When this module is installed, a
-dap-server.conf file is added to the modules directory.
 
 * Testing
 
