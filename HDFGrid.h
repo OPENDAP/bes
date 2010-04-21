@@ -62,6 +62,8 @@ class HDFGrid:public Grid, public ReadTagRef {
     virtual bool read();
     virtual vector < array_ce > get_map_constraints();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
+
+    virtual void transfer_attributes(AttrTable *at_container);
 };
 
 #endif                          // _HDFGRID_H

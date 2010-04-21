@@ -69,13 +69,6 @@ BaseType *HDFSequence::ptr_duplicate()
     return new HDFSequence(*this);
 }
 
-#if 0
-Sequence *NewSequence(const string & n)
-{
-    return new HDFSequence(n);
-}
-#endif
-
 void LoadSequenceFromVdata(HDFSequence * seq, hdf_vdata & vd, int row);
 
 bool HDFSequence::read()
@@ -129,4 +122,29 @@ bool HDFSequence::read_tagref(int32 tag, int32 ref, int &err)
 
     return true;
 }
+
+void HDFSequence::transfer_attributes(AttrTable *at)
+{
+    if (at) {
+	Vars_iter var = var_begin();
+	while (var != var_end()) {
+	    (*var)->transfer_attributes(at);
+	    var++;
+	}
+
+	AttrTable *mine = at->get_attr_table(name());
+
+	if (mine) {
+	    mine->set_is_global_attribute(false);
+	    AttrTable::Attr_iter at_p = mine->attr_begin();
+	    while (at_p != mine->attr_end()) {
+		get_attr_table().append_attr(mine->get_name(at_p),
+			mine->get_type(at_p), mine->get_attr_vector(at_p));
+
+		at_p++;
+	    }
+	}
+    }
+}
+
 

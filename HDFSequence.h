@@ -58,6 +58,9 @@ class HDFSequence:public Sequence, public ReadTagRef {
     virtual BaseType *ptr_duplicate();
     virtual bool read();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
+
+    virtual void transfer_attributes(AttrTable *at_container);
+
   protected:
     int row;                    // current row
     hdf_vdata vd;               // holds Vdata

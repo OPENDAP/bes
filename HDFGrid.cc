@@ -101,7 +101,7 @@ bool HDFGrid::read()
     return status;
 }
 
-bool HDFGrid::read_tagref(int32 tag, int32 ref, int &err)
+bool HDFGrid::read_tagref(int32, int32 ref, int &err)
 {
     if (read_p())
         return true;
@@ -186,5 +186,53 @@ bool HDFGrid::read_tagref(int32 tag, int32 ref, int &err)
     }
 
     return true;
+}
+
+void HDFGrid::transfer_attributes(AttrTable *at)
+{
+    if (at) {
+	array_var()->transfer_attributes(at);
+
+	Map_iter map = map_begin();
+	while (map != map_end()) {
+	    (*map)->transfer_attributes(at);
+	    map++;
+	}
+
+	AttrTable *mine = at->get_attr_table(name());
+
+	if (mine) {
+	    mine->set_is_global_attribute(false);
+	    AttrTable::Attr_iter at_p = mine->attr_begin();
+	    while (at_p != mine->attr_end()) {
+		get_attr_table().append_attr(mine->get_name(at_p),
+			mine->get_type(at_p), mine->get_attr_vector(at_p));
+
+		at_p++;
+	    }
+	}
+
+	// Now look for those pesky <var>_dim_<digit> attributes
+
+	string dim_name_base = name() + "_dim_";
+
+	AttrTable::Attr_iter a_p = at->attr_begin();
+	while (a_p != at->attr_end()) {
+	    string::size_type i = at->get_name(a_p).find(dim_name_base);
+	    // Found a matching container?
+	    if (i != string::npos && at->get_attr_type(a_p) == Attr_container) {
+		AttrTable *dim = at->get_attr_table(a_p);
+		// Get the integer from the end of the name and use that as the
+		// index to find the matching Map variable.
+		int n = atoi(dim->get_name().substr(i + 5).c_str());
+		// Note that the maps are HDFArray instances, so we use that
+		// for the actual copy operation.
+		dynamic_cast<HDFArray&> (*(*(map_begin() + n))).transfer_dimension_attribute(
+			dim);
+	    }
+
+	    a_p++;
+	}
+    }
 }
 

@@ -54,7 +54,7 @@
 
 using namespace libdap;
 
-class HDFEOSGrid:public Grid, public ReadTagRef {
+class HDFEOSGrid:public HDFGrid, public ReadTagRef {
   public:
     HDFEOSGrid(const string &n, const string &d);
     virtual ~HDFEOSGrid();

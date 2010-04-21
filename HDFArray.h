@@ -63,6 +63,9 @@ class HDFArray:public Array, public ReadTagRef {
     bool GetSlabConstraint(vector < int >&start_array,
                            vector < int >&edge_array,
                            vector < int >&stride_array);
+
+    virtual void transfer_attributes(AttrTable *at_container);
+    virtual void transfer_dimension_attribute(AttrTable *dim);
 };
 
 #endif                          // _HDFARRAY_H
