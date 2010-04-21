@@ -59,7 +59,7 @@ BaseType *HDFEOSArray::ptr_duplicate()
 }
 
 HDFEOSArray::HDFEOSArray(const string & n, const string &d, BaseType * v)
-    : Array(n, d, v)
+    : HDFArray(n, d, v)
 {
 }
 
