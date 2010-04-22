@@ -378,8 +378,3 @@ HE5CFGrid::set_grid_variable_dimensions(string full_path,
     DBG(cerr << "Dimension List is:" <<
         _grid_variable_dimensions[full_path] << endl);
 }
-
-
-
-
-

@@ -29,6 +29,8 @@
 
 #include <H5Ipublic.h>
 
+#include "HDF5Array.h"
+
 #include "Array.h"
 #include "h5get.h"
 
@@ -48,7 +50,7 @@ using namespace libdap;
 /// 
 /// All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
-class HDF5ArrayEOS:public Array {
+class HDF5ArrayEOS:public HDF5Array {
 
   private:
     int d_num_dim;
