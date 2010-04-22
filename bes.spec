@@ -21,6 +21,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       libdap >= 3.10.0
 Requires:       readline bzip2 zlib
+Requires:       libxml2 >= 2.6.16
 # needed by ppt
 Requires:       openssl
 
