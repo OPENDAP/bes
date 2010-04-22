@@ -29,6 +29,7 @@ Requires(pre): shadow-utils
 BuildRequires:  libdap-devel >= 3.10.0
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
+BuildRequires:  libxml2-devel >= 2.6.16
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
