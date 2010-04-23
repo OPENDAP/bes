@@ -163,9 +163,12 @@ void HDFStructure::transfer_attributes(AttrTable *at)
 	    mine->set_is_global_attribute(false);
 	    AttrTable::Attr_iter at_p = mine->attr_begin();
 	    while (at_p != mine->attr_end()) {
-		get_attr_table().append_attr(mine->get_name(at_p),
-			mine->get_type(at_p), mine->get_attr_vector(at_p));
-
+		if (mine->get_attr_type(at_p) == Attr_container)
+		    get_attr_table().append_container(new AttrTable(
+			    *mine->get_attr_table(at_p)), mine->get_name(at_p));
+		else
+		    get_attr_table().append_attr(mine->get_name(at_p),
+			    mine->get_type(at_p), mine->get_attr_vector(at_p));
 		at_p++;
 	    }
 	}
