@@ -723,6 +723,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 }               // for (int dim = 0; ...
             }			// if attr_inst.ndims != 0
 	    delete[] value; value = 0;
+            
+            if(H5Aclose(attr_id) < 0){
+                    throw InternalErr(__FILE__, __LINE__,
+				      "unable to close attibute id");
+                
+            }
 	}		// for (int j = 0; j < num_attr; j++)
     }			// try - protects print_rep and value
     catch(...) {
@@ -787,7 +793,8 @@ void find_gloattr(hid_t file, DAS & das)
 
 	if (num_attrs == 0) {
 	    if(H5Gclose(root) < 0){
-		throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+		throw InternalErr(__FILE__, __LINE__,
+                                  "Could not close the group.");
 	    }
 	    DBG(cerr << "<find_gloattr():no attributes" << endl);
 	    return;
@@ -1150,7 +1157,7 @@ void write_swath_global_attribute(DAS & das)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn write_swath_coordinate_unit_attribute(AttrTable* at,
-///                                               string varname)
+///                                           string varname)
 /// inserts pseudo attributes for coordinate variables to meet the CF
 /// convention.
 ///
