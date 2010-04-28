@@ -1,3 +1,8 @@
+2010-04-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h5get.cc has H5Aclose(). This improves performance under HDF5-1.8.x library.
+	* h5das.cc has H5Aclose(). This improves performance under HDF5-1.8.x library.
+
 2010-02-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc has new limit(=30) for StructMetadata files to scan.
