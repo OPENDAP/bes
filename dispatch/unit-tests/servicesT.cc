@@ -115,10 +115,69 @@ string dump2 = "BESServiceRegistry::dump - (X)\n\
         nc\n\
 " ;
 
-string show1 = "<showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data response</description><format name=\"cedar\"/></command></serviceDescription><serviceDescription name=\"dap\"><command name=\"ascii\"><description>OPeNDAP ASCII data</description><format name=\"dap2\"/></command><command name=\"das\"><description>OPeNDAP Data Attributes</description><format name=\"dap2\"/></command><command name=\"dds\"><description>OPeNDAP Data Description</description><format name=\"dap2\"/></command><command name=\"dods\"><description>OPeNDAP Data Object</description><format name=\"dap2\"/><format name=\"netcdf\"/></command><command name=\"html_form\"><description>OPeNDAP Form for access</description><format name=\"dap2\"/></command><command name=\"info_page\"><description>OPeNDAP Data Information</description><format name=\"dap2\"/></command></serviceDescription></showServices></response>\n\
+string show1 = "<showServices>\n\
+        <serviceDescription name=\"cedar\">\n\
+            <command name=\"flat\">\n\
+                <description>CEDAR flat format data response</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+            <command name=\"stream\">\n\
+                <description>CEDAR stream .cbf data file</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+            <command name=\"tab\">\n\
+                <description>CEDAR tab separated data response</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+        </serviceDescription>\n\
+        <serviceDescription name=\"dap\">\n\
+            <command name=\"ascii\">\n\
+                <description>OPeNDAP ASCII data</description>\n\
+                <format name=\"dap2\"/>\n\
+            </command>\n\
+            <command name=\"das\">\n\
+                <description>OPeNDAP Data Attributes</description>\n\
+                <format name=\"dap2\"/>\n\
+            </command>\n\
+            <command name=\"dds\">\n\
+                <description>OPeNDAP Data Description</description>\n\
+                <format name=\"dap2\"/>\n\
+            </command>\n\
+            <command name=\"dods\">\n\
+                <description>OPeNDAP Data Object</description>\n\
+                <format name=\"dap2\"/>\n\
+                <format name=\"netcdf\"/>\n\
+            </command>\n\
+            <command name=\"html_form\">\n\
+                <description>OPeNDAP Form for access</description>\n\
+                <format name=\"dap2\"/>\n\
+            </command>\n\
+            <command name=\"info_page\">\n\
+                <description>OPeNDAP Data Information</description>\n\
+                <format name=\"dap2\"/>\n\
+            </command>\n\
+        </serviceDescription>\n\
+    </showServices>\n\
+</response>\n\
 " ;
 
-string show2 = "<showServices><serviceDescription name=\"cedar\"><command name=\"flat\"><description>CEDAR flat format data response</description><format name=\"cedar\"/></command><command name=\"stream\"><description>CEDAR stream .cbf data file</description><format name=\"cedar\"/></command><command name=\"tab\"><description>CEDAR tab separated data response</description><format name=\"cedar\"/></command></serviceDescription></showServices></response>\n\
+string show2 = "<showServices>\n\
+        <serviceDescription name=\"cedar\">\n\
+            <command name=\"flat\">\n\
+                <description>CEDAR flat format data response</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+            <command name=\"stream\">\n\
+                <description>CEDAR stream .cbf data file</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+            <command name=\"tab\">\n\
+                <description>CEDAR tab separated data response</description>\n\
+                <format name=\"cedar\"/>\n\
+            </command>\n\
+        </serviceDescription>\n\
+    </showServices>\n\
+</response>\n\
 " ;
 
 class servicesT: public TestFixture {
@@ -414,15 +473,16 @@ public:
 	    ostringstream strm ;
 	    info.print( strm ) ;
 	    string str = strm.str() ;
-	    cout << "received = " << endl << str << endl ;
-	    cout << "expecting = " << endl << show1 << endl ;
 
 	    // we need to remove the first part of the response because the
 	    // order of the attributes can be different between machines. So
 	    // drop the <!xml and <response tags
 	    string::size_type sd = str.find( "<showServices>" ) ;
 	    CPPUNIT_ASSERT( sd != string::npos ) ;
+
 	    string cmp_str = str.substr( sd ) ;
+	    cout << "received = " << endl << cmp_str << endl ;
+	    cout << "expecting = " << endl << show1 << endl ;
 
 	    CPPUNIT_ASSERT( cmp_str == show1 ) ;
 	}
