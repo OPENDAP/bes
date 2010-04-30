@@ -81,8 +81,6 @@ PPTStreamBuf::sync()
 	ostringstream strm ;
 	strm << hex << setw( 7 ) << setfill( '0' ) << (unsigned int)(pptr() - pbase()) << "d" ;
 	string tmp_str = strm.str() ;
-	BESDEBUG( "ppt", "PPTStreamBuf::sync - writing len "
-	          << tmp_str << endl ) ;
 	write( d_fd, tmp_str.c_str(), tmp_str.length() ) ;
 	count += write( d_fd, d_buffer, pptr() - pbase() ) ;
 	setp( d_buffer, d_buffer + d_bufsize ) ;
