@@ -1,0 +1,9 @@
+Dataset {
+    Grid {
+      Array:
+        UInt32 dsp_band_1[lat = 1024][lon = 1024];
+      Maps:
+        Float64 lat[1024];
+        Float64 lon[1024];
+    } dsp_band_1;
+} f97182070958.hdf;

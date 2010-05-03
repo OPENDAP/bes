@@ -51,6 +51,10 @@ AT_BESCMD_DDS_RESPONSE_TEST([S2000415.HDF.1.bescmd], [pass])
 AT_BESCMD_DDX_RESPONSE_TEST([S2000415.HDF.2.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([S2000415.HDF.3.bescmd], [pass])
 
+AT_BESCMD_DAS_RESPONSE_TEST([f97182070958.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([f97182070958.hdf.dds.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([f97182070958.hdf.ddx.bescmd], [pass])
+
 AT_BESCMD_DAS_RESPONSE_TEST([testsds1.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testsds1.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data.bescmd], [pass])
