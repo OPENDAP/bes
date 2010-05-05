@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.8.0 (1 Feb 2010)
+Updated for 3.8.1
 
 ---------------------------------------------------------------------------
 
@@ -31,9 +31,7 @@ BUILDING THE SOFTWARE
 1) Type `./configure' at the system prompt. On some systems you may have to
    type `sh configure.' If you want this part of the server to install
    someplace other than /usr/local/bin, use --prefix to change the prefix
-   from the default "/use/local/." Make sure that the dap-server CGI knows
-   where the handler is located (you can list the complete pathname in the
-   dap-server.rc file; see dap-server's INSTALL and README files).
+   from the default "/use/local/." 
 
    OPTIONAL: 
 
@@ -47,7 +45,6 @@ BUILDING THE SOFTWARE
 
    This requires the installation of HDF-EOS2 library. You can download it
    from http://newsroom.gsfc.nasa.gov/sdptoolkit/tookit.html.
-
 
    Another possibility is to install with '--enable-cf' option only.
 
@@ -99,11 +96,12 @@ BUILDING THE SOFTWARE
 
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, et c., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose'. Once
-  autoreconf has made the configure and Makefile.in files, do ./configure;
-  make; make install as outlined above.
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, et c., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --force --install --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
 
 REQUIREMENTS
 
