@@ -1,4 +1,71 @@
+2010-05-04  Patrick West <pwest@ucar.edu>
+
+	3.8.3 release
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    bes.spec
+
+2010-04-30  Patrick West <pwest@ucar.edu>
+
+	Problem when using cerr for BESDebug. The sync function in PPTStreamBuf
+	seemed to be syncing when the debug was dumped to cerr, which would call
+	BESDEBUG, which would call sync, etc... Removed the debug statement.
+
+	M    ppt/PPTStreamBuf.cc
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Requiring libdap 3.10.0. Fixed problem with b at end of version of
+	dap-config
+	M    conf/libdap.m4
+	M    configure.ac
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Added requires of libxml2 2.6.16
+	M    bes.spec
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Requiring libxml2 2.6.16 or greater.
+	M    configure.ac
+	M    INSTALL
+	M    bes.spec
+
+2010-04-20  Patrick West <pwest@ucar.edu>
+
+	libxml2 was being checked twice. The check was failing also, had to
+	rework.
+	M    configure.ac
+
+2010-04-20  Patrick West <pwest@ucar.edu>
+
+	Better explanation of changes to bes configuration
+	M    README
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added dits-hook target to remove the .svn subdirs that were being included in
+	the dist files.
+
+	M    libdap/Makefile.am
+	M    bes/Makefile.am
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added Requires: lines to the .spec files for libdap and bes.
+
 2010-04-06  Patrick West <pwest@ucar.edu>
+
+	3.8.2 release preparation
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
 
 	Log output more interesting now, displaying the requests that were
 	received.
