@@ -1,3 +1,15 @@
+2010-04-28  hyoklee
+
+	Updated ChangeLog.
+
+2010-04-28  hyoklee
+
+	Added H5Aclose to improve performance under HDF5-1.8.x library.
+
+2010-04-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed old EXTRADIST items (removed some of the old, unused, dejaGNU files.
+
 2010-04-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
 	* h5get.cc has H5Aclose(). This improves performance under HDF5-1.8.x library.

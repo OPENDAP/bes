@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 1.4.0
+Updated for version 1.4.1
 
 --------------------------------------------------------------------
 BUILDING THE SOFTWARE
@@ -39,14 +39,14 @@ For very detailed instructions on building the software, please see
 
    http://hdfdap.hdfgroup.uiuc.edu:8080/install.html
 
-
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, etc., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose'. Once
-  autoreconf has made the configure and Makefile.in files, do ./configure;
-  make; make install as outlined above.
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, etc., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --install --force --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
 
 
 REQUIREMENTS
