@@ -8,7 +8,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.8.2
+Version:        3.8.3
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -19,7 +19,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.10.0
+Requires:       libdap >= 3.10.2
 Requires:       readline bzip2 zlib
 Requires:       libxml2 >= 2.6.16
 # needed by ppt
@@ -27,7 +27,7 @@ Requires:       openssl
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.10.0
+BuildRequires:  libdap-devel >= 3.10.2
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.6.16
@@ -52,7 +52,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.10.0
+Requires:       libdap-devel >= 3.10.2
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -168,6 +168,9 @@ exit 0
 %doc __distribution_docs/api-html/
 
 %changelog
+* Thu May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
+- Update
+
 * Thu Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
 - Update
 

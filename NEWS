@@ -1,6 +1,11 @@
 
 	$Id$
 
+News for version 3.8.3, 04 May 2010
+
+Fixed problem in logging where the actual command being executed
+wasn't being logged to the log file.
+
 News for version 3.8.2, 06 April 2010
 
 Fixed bug in BESKeys where = was adding to a definition instead of
