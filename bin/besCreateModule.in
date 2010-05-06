@@ -118,7 +118,6 @@ done
 
 /bin/mkdir conf
 /bin/cp ${TEMPLATE_DIR}/conf/* conf/
-chmod +x conf/mkinstalldirs
 
 include_dap=0
 
