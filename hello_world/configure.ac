@@ -3,8 +3,9 @@
 # Configure script for OPeNDAP Sample data handler
 
 AC_PREREQ(2.59)
-AC_INIT([sample_module], [1.0.0], [dods-tech@unidata.ucar.edu])
+AC_INIT(sample_module, 1.0.0, dods-tech@unidata.ucar.edu)
 AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
