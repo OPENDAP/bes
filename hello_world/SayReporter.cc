@@ -40,7 +40,7 @@ SayReporter::SayReporter()
       _file_buffer( 0 )
 {
     bool found = false ;
-    _log_name = TheBESKeys::TheKeys()->get_key( "Say.LogName", found );
+    TheBESKeys::TheKeys()->get_value( "Say.LogName", _log_name, found );
     if( _log_name == "" )
     {
 	throw BESInternalError( "cannot determine Say log name", __FILE__, __LINE__ ) ;
