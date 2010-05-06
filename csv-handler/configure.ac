@@ -4,13 +4,14 @@
 
 AC_PREREQ(2.59)
 AC_INIT([csv_module], [3.5.1], [dods-tech@unidata.ucar.edu])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADER([config.h])
+
 AC_CONFIG_AUX_DIR([conf])
+AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
-
-AC_CONFIG_SRCDIR([CSVModule.h])
-AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CXX

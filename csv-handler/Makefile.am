@@ -11,7 +11,6 @@ ACLOCAL_AMFLAGS = -I conf
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcsv_module.la
-dist_bin_SCRIPTS = bes-csv-data.sh
 
 SUBDIRS = bes-testsuite
 
@@ -33,32 +32,25 @@ libcsv_module_la_LIBADD = $(BES_LIBS)
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data COPYRIGHT COPYING bes-csv-data.sh.in
+EXTRA_DIST = data COPYRIGHT COPYING csv.conf.in
 
-CLEANFILES = *~ bes-csv-data.sh
+CLEANFILES = *~ csv.conf
 
 sample_datadir = $(datadir)/hyrax/data/csv
 sample_data_DATA = data/temperature.csv
 
-do_subst = sed -e 's,[@]sysconfdir[@],$(sysconfdir),g' \
-		   	   -e 's,[@]libdir[@],$(libdir),g' \
-		   	   -e 's,[@]datarootdir[@],$(datarootdir),g' \
-		   	   -e 's,[@]datadir[@],$(datadir),g'
+install-data-local: csv.conf
+	@currdate=`date +"%y%m%d%H%M"`; \
+	test -d $(DESTDIR)$(sysconfdir)/bes || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes; \
+	test -d $(DESTDIR)$(sysconfdir)/bes/modules || $(MKDIR_P) $(DESTDIR)$(sysconfdir)/bes/modules; \
+	test -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf && mv -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf.$$currdate; \
+	$(INSTALL_DATA) csv.conf $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf
 
-bes-csv-data.sh: bes-csv-data.sh.in config.status
-	$(do_subst) < $(srcdir)/bes-csv-data.sh.in > bes-csv-data.sh
-	chmod +x bes-csv-data.sh
+uninstall-local:
+	rm -f $(DESTDIR)$(sysconfdir)/bes/modules/csv.conf
 
-# This makes sure that the handler modifies the bes which configure found
-# even when distcheck is run.
-bes-conf: bes-csv-data.sh
-	(bes_prefix=`bes-config --prefix` ; \
-	if test "$$bes_prefix" = "/usr" ; \
-	 then \
-	    ./bes-csv-data.sh /etc/bes/bes.conf /usr/lib/bes ;\
-	else \
-	    ./bes-csv-data.sh $$bes_prefix/etc/bes/bes.conf $$bes_prefix/lib/bes ; \
-	fi)
+csv.conf: csv.conf.in config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > csv.conf
 
 ###########################################################################
 
