@@ -45,12 +45,12 @@ AC_DEFUN([AC_CHECK_LIBDAP],
     if test "$DAP_CONFIG" = "no" ; then
       dap_no=yes
     else
-      dap_config_major_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)$/\1/'`
-      dap_config_minor_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)$/\2/'`
-      dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)$/\3/'`
-      dap_min_major_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-      dap_min_minor_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-      dap_min_micro_version=`echo $dap_min_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+      dap_config_major_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)[[ab]]*$/\1/'`
+      dap_config_minor_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)[[ab]]*$/\2/'`
+      dap_config_micro_version=`$DAP_CONFIG --version | sed 's/^libdap \([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)\.\([[0-9]][[0-9]]*\)[[ab]]*$/\3/'`
+      dap_min_major_version=`echo $dap_min_version | sed 's/\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\)$/\1/'`
+      dap_min_minor_version=`echo $dap_min_version | sed 's/\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\)$/\2/'`
+      dap_min_micro_version=`echo $dap_min_version | sed 's/\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\).\([[0-9]][[0-9]]*\)$/\3/'`
 
       dap_config_is_lt=""
       if test $dap_config_major_version -lt $dap_min_major_version ; then
