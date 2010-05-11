@@ -1,6 +1,63 @@
 
 	$Id$
 
+News for version 3.8.3, 04 May 2010
+
+Fixed problem in logging where the actual command being executed
+wasn't being logged to the log file.
+
+News for version 3.8.2, 06 April 2010
+
+Fixed bug in BESKeys where = was adding to a definition instead of
+replacing.
+
+Logging the received requests to the BESLog log file. Was just saying
+[xml document]
+
+News for version 3.8.1, 11 March 2010
+
+Fixed potential bug in BES Uncompression Cache code when failure to
+uncompress a file and checking size of current cache.
+
+News for version 3.8.0, 2 February 2010
+
+Changed the way BES configuration is modified for the different
+handlers. Before, changes were made using either a target to make (make
+bes-conf), or running a script (bes-x-data.sh), or making changes
+directly to bes.conf. This is no longer the case. The file bes.conf will
+have miner modifications (administrator email address, user and group
+BES should run as, etc...) and that's it. All module configuration will
+be in their own files in the etc/bes/modules directory. The bes.conf
+file will include module configurations in the directory that end in
+.conf. Any files that end with .conf in that directory will be loaded.
+This way, bes.conf will never need to be modified after installation.
+
+The bes.conf files that are already out there will still work. This is
+the new, preferred method of configuration and we recommend that you
+move to this format.
+
+Added a new besd script that can be used to run the BES at boot/reboot
+using chkconfig on linux systems. Please see besd script for more
+information and ask your system administrator about gettig this
+installed in the proper location.
+
+Added a new command to test error handling by clients <showError type="x" />,
+where x is 1-5 and represents the following:
+1. Internal Error - the error is internal to the BES Server
+2. Internal Fatal Error - error is fatal, can not continue
+3. Syntax User Error - the requester has a syntax error in request or config
+4. Forbidden Error - the requester is forbidden to see the resource
+5. Not Found Error - the resource can not be found
+
+Removed all old OPeNDAP CGI server 3 references and files.
+
+DataDDX support added to the BES in the dap module.
+
+Cleaned up doxygen documentation for the BES.
+
+Changed all tests from dejagnu to autotest. Changed bes/dispatch unit
+tests to use CPPUNIT.
+
 News for version 3.7.2, 8 April 2009
 
 Memory leaks fixed.

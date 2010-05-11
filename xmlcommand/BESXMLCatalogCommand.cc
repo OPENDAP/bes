@@ -72,14 +72,21 @@ BESXMLCatalogCommand::parse_request( xmlNode *node )
     if( name == CATALOG_RESPONSE_STR )
     {
 	_dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE ;
+	_str_cmd = "show catalog" ;
     }
     else
     {
 	_dhi.data[CATALOG_OR_INFO] = SHOW_INFO_RESPONSE ;
+	_str_cmd = "show info" ;
     }
 
     // this is an optional property, so could be empty string
     _dhi.data[CONTAINER] = props["node"] ;
+    if( !_dhi.data[CONTAINER].empty() )
+    {
+	_str_cmd += " for " + _dhi.data[CONTAINER] ;
+    }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

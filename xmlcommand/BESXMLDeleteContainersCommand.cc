@@ -75,7 +75,7 @@ BESXMLDeleteContainersCommand::parse_request( xmlNode *node )
 
     _dhi.action = DELETE_CONTAINERS ;
 
-    _str_cmd = (string)"delete containers from " + storage ;
+    _str_cmd = (string)"delete containers from " + storage + ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

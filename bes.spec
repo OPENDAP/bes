@@ -8,7 +8,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.7.2
+Version:        3.8.3
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -19,14 +19,22 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  libdap-devel >= 3.9.0
+Requires:       libdap >= 3.10.2
+Requires:       readline bzip2 zlib
+Requires:       libxml2 >= 2.6.16
+# needed by ppt
+Requires:       openssl
+
+Requires(pre): shadow-utils
+
+BuildRequires:  libdap-devel >= 3.10.2
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
+BuildRequires:  libxml2-devel >= 2.6.16
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
 BuildRequires:  doxygen graphviz
-Requires(pre): shadow-utils
 
 %description
 BES is a new, high-performance back-end server software framework for 
@@ -44,7 +52,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.9.0
+Requires:       libdap-devel >= 3.10.2
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -97,9 +105,6 @@ sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-for file in config.guess depcomp missing config.sub install-sh ltmain.sh mkinstalldirs; do
-  chmod a+x $RPM_BUILD_ROOT%{_datadir}/bes/templates/conf/$file
-done
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
 mkdir -p $RPM_BUILD_ROOT%{beslogdir}
@@ -135,6 +140,7 @@ exit 0
 %{_datadir}/bes/*.xml
 %{_bindir}/beslistener
 %{_bindir}/besdaemon
+%{_bindir}/besd
 %{_bindir}/besstandalone
 %{_bindir}/besctl
 %{_bindir}/hyraxctl
@@ -162,6 +168,18 @@ exit 0
 %doc __distribution_docs/api-html/
 
 %changelog
+* Thu May 04 2010 Patrick West <westp@rpi.edu> - 3.8.3-1
+- Update
+
+* Thu Apr 06 2010 Patrick West <westp@rpi.edu> - 3.8.2-1
+- Update
+
+* Thu Mar 11 2010 Patrick West <westp@rpi.edu> - 3.8.1-1
+- Update
+
+* Tue Feb 02 2010 Patrick West <westp@rpi.edu> - 3.8.0-1
+- Update
+
 * Thu Jan 29 2009 James Gallagher <jgallagher@opendap.org> - 3.7.0-1
 - Update
 

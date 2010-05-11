@@ -122,6 +122,7 @@ BESXMLGetDataDDXCommand::parse_request( xmlNode *node )
 	string err = name + " command: mimeBoundary not specified" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action

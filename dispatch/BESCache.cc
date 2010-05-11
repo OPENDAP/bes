@@ -316,6 +316,8 @@ BESCache::purge( )
     unsigned int max_size = _cache_size * 1048576 ; // Bytes/Meg
     struct stat buf;
     unsigned int size = 0 ; // total size of all cached files
+    unsigned int avg_size = 0 ;
+    unsigned int num_files_in_cache = 0 ;
     time_t curr_time = time( NULL ) ; // grab the current time so we can
     				      // determine the oldest file
     // map of time,entry values
@@ -355,12 +357,19 @@ BESCache::purge( )
 		    entry.size = buf.st_size ;
 		    contents.insert( pair<double,cache_entry>( time_diff, entry ) );
 		}
+		num_files_in_cache++ ;
 	    }
 	}
 
 	// We're done looking in the directory, close it
 	closedir( dip ) ;
 
+	if( num_files_in_cache ) avg_size = size / num_files_in_cache ;
+
+	BESDEBUG( "bes", "cache size = " << size << endl ) ;
+	BESDEBUG( "bes", "avg size = " << avg_size << endl ) ;
+	BESDEBUG( "bes", "num files in cache = "
+			 << num_files_in_cache << endl ) ;
 	if( BESISDEBUG( "bes" ) )
 	{
 	    BESDEBUG( "bes", endl << "BEFORE" << endl ) ;
@@ -377,16 +386,21 @@ BESCache::purge( )
 	// purge the cache directory. Keep going until the size is less than
 	// the max.
 	multimap<double,cache_entry,greater<double> >::iterator i ;
-	if( size > max_size )
+	if( (size+avg_size) > max_size )
 	{
 	    // Maybe change this to size + (fraction of max_size) > max_size?
 	    // jhrg 5/9/07
-	    while( size > max_size )
+	    while( (size+avg_size) > max_size )
 	    {
 		i = contents.begin() ;
 		if( i == contents.end() )
 		{
+		    // if we've reached the end of the cache directory,
+		    // there are no more elements in the cache, then set
+		    // the size and avg_size to 0 so that we can get out
+		    // of this loop.
 		    size = 0 ;
+		    avg_size = 0 ;
 		}
 		else
 		{

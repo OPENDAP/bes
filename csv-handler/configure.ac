@@ -3,7 +3,7 @@
 # Configure script for OPeNDAP CSV data handler
 
 AC_PREREQ(2.59)
-AC_INIT([csv_module], [3.5.1], [dods-tech@unidata.ucar.edu])
+AC_INIT(csv_module, 3.5.1, opendap-tech@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADER([config.h])
 
@@ -32,7 +32,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_CHECK_FUNCS([strchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.7.10],
+AC_CHECK_LIBDAP([3.10.2],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -41,7 +41,7 @@ AC_CHECK_LIBDAP([3.7.10],
 ])
   
 
-AC_CHECK_BES([3.5.3],
+AC_CHECK_BES([3.8.3],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])

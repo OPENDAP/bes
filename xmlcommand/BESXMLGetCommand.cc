@@ -96,6 +96,7 @@ BESXMLGetCommand::parse_request( xmlNode *node )
     }
 
     parse_basic_get( node, name, type, value, props ) ;
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action
@@ -126,7 +127,7 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
     }
     _dhi.data[RETURN_CMD] = returnAs ;
 
-    _str_cmd += " returnAs " + returnAs ;
+    _str_cmd += " return as " + returnAs ;
 
     _dhi.action = "get." ;
     _dhi.action += BESUtil::lowercase( type ) ;

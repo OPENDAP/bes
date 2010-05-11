@@ -47,7 +47,7 @@ BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 # % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
 # expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
 
-BES.Catalog.catalog.TypeMatch=
+#BES.Catalog.catalog.TypeMatch=
 
 # Normally, when a client asks for a data catalog, all files and directories
 # are shown. Use the following two parameters to customize this behavior.

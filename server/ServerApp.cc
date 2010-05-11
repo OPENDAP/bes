@@ -429,7 +429,7 @@ ServerApp::initialize( int argc, char **argv )
     {
 	try
 	{
-	    TheBESKeys::TheKeys()->get_value( port_key, _unixSocket, found ) ;
+	    TheBESKeys::TheKeys()->get_value( socket_key, _unixSocket, found ) ;
 	}
 	catch( BESError &e )
 	{

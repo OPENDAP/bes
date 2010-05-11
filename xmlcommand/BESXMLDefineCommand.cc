@@ -157,6 +157,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 	    }
 	}
     }
+    _str_cmd += ";" ;
 
     // now that we've set the action, go get the response handler for the
     // action
