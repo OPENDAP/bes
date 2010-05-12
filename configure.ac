@@ -219,7 +219,6 @@ AC_ARG_WITH(libwrap,
     AC_MSG_RESULT(no)
 )
 
-
 AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
