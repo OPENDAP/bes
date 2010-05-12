@@ -726,6 +726,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 }               // for (int dim = 0; ...
             }			// if attr_inst.ndims != 0
 	    delete[] value; value = 0;
+            
+            if(H5Aclose(attr_id) < 0){
+                    throw InternalErr(__FILE__, __LINE__,
+				      "unable to close attibute id");
+                
+            }
 	}		// for (int j = 0; j < num_attr; j++)
     }			// try - protects print_rep and value
     catch(...) {
@@ -790,7 +796,8 @@ void find_gloattr(hid_t file, DAS & das)
 
 	if (num_attrs == 0) {
 	    if(H5Gclose(root) < 0){
-		throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+		throw InternalErr(__FILE__, __LINE__,
+                                  "Could not close the group.");
 	    }
 	    DBG(cerr << "<find_gloattr():no attributes" << endl);
 	    return;
@@ -962,13 +969,18 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     string replace(".");
     string::size_type pos = 1;
 
+    if(gname == NULL){
+        throw InternalErr(__FILE__, __LINE__,
+                          "Got a NULL group name.");
+    }
+    
     string full_path = string(gname);
     // Cut the last '/'.
     while ((pos = full_path.find(search, pos)) != string::npos) {
         full_path.replace(pos, search.size(), replace);
         pos++;
     }
-    if (strcmp(gname, "/") == 0) {
+    if (strncmp(gname, "/", sizeof(gname)) == 0) {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP");
     }
     else {
@@ -979,6 +991,13 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     DBG(cerr << full_path << endl);
 
     AttrTable *at = das.get_table(full_path);
+    if(at == NULL){
+        throw InternalErr(__FILE__, __LINE__,
+                           "Failed to add group structure information for "
+                          + full_path
+                          + " attribute table."
+                          + "This happens when a group name has . character.");
+    }
 
     if (is_group) {
         at->append_container(oname);
@@ -1141,7 +1160,7 @@ void write_swath_global_attribute(DAS & das)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn write_swath_coordinate_unit_attribute(AttrTable* at,
-///                                               string varname)
+///                                           string varname)
 /// inserts pseudo attributes for coordinate variables to meet the CF
 /// convention.
 ///

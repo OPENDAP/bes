@@ -48,7 +48,7 @@ BaseType *HDF5ArrayEOS::ptr_duplicate()
 }
 
 HDF5ArrayEOS::HDF5ArrayEOS(const string & n, const string &d, BaseType * v)
-    : Array(n, d, v)
+    : HDF5Array(n, d, v)
 {
 }
 

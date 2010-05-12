@@ -223,7 +223,7 @@ public:
     /// \param[in] full_path a full path information of a variable in metadata.
     /// \param[in] dimension_list a list of dimensions in metadata.
     void set_grid_variable_dimensions(string full_path, string dimension_list);
-  
+
 };
 
 #endif

@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Grid.h"
+#include "HDF5Grid.h"
 #include "h5get.h"
 
 using namespace libdap;
@@ -46,7 +46,7 @@ using namespace libdap;
 ///
 /// Copyright (c) The 2007-2009 HDF Group
 ///////////////////////////////////////////////////////////////////////////////
-class HDF5GridEOS:public Grid {
+class HDF5GridEOS:public HDF5Grid {
 
 private:
     hid_t dset_id;

@@ -42,7 +42,7 @@ BaseType *HDF5GridEOS::ptr_duplicate()
 }
 
 
-HDF5GridEOS::HDF5GridEOS(const string &n, const string &d) : Grid(n, d)
+HDF5GridEOS::HDF5GridEOS(const string &n, const string &d) : HDF5Grid(n, d)
 {
     ty_id = -1;
     dset_id = -1;

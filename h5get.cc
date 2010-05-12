@@ -77,7 +77,13 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
         msg += attrid;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
-
+    
+    if (H5Aclose(attrid) < 0){
+        string msg = "unable to close hdf5 attribute for id ";
+        msg += attrid;
+        throw InternalErr(__FILE__, __LINE__, msg);        
+        
+    }
     if ((attrid = H5Aopen_name(dset, namebuf)) < 0) {
         string msg = "unable to obtain hdf5 attribute by name ";
         msg += namebuf;

@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 1.3.4
+Updated for version 1.4.1
 
 --------------------------------------------------------------------
 BUILDING THE SOFTWARE
@@ -27,28 +27,31 @@ BUILDING THE SOFTWARE
 2) Type `make' to build the handler.
 
 3) Install the server components in $prefix by running `make install.'
-
-4) Type 'make bes-conf' to run the bes-hdf5-data.sh script which
-   inserts the handler in the bes.conf file and adds test data to
-   $prefix/share/hyrax/data.
+   This will also add the new h5.conf file to the $prefix/etc/bes/modules
+   directory. The BES configuration file bes.conf will automatically
+   load any module configuration files in that directory. The h5.conf
+   file contains fileout_netcdf specific configurations for use with the
+   BES Framework. This includes some parameters that used to be in the
+   bes.conf file, such as the TypeMatch parameter for finding your
+   files.
 
 For very detailed instructions on building the software, please see 
 
    http://hdfdap.hdfgroup.uiuc.edu:8080/install.html
 
-
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, etc., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose'. Once
-  autoreconf has made the configure and Makefile.in files, do ./configure;
-  make; make install as outlined above.
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, etc., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --install --force --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
 
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.9.0 to build and install this
+  o You need the libdap library version 3.10.0 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages, once they are
     available. 
@@ -59,7 +62,12 @@ REQUIREMENTS
     See './configure --help' for more info.
 
   o If you're planning on using this with Hyrax, version 1.5, you'll need
-    version 3.7.0 of the BES software.
+    version 3.8.0 of the BES software.
+    
+  o If the build will fails because of problems linking with the hdf5
+    library, you may need to build the library from source and force the 
+    compiler/linker to use the option '-fPIC' (poisition Independet Code).
+
 
 NOTES
 

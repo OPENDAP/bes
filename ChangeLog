@@ -1,6 +1,51 @@
+2010-04-28  hyoklee
+
+	Updated ChangeLog.
+
+2010-04-28  hyoklee
+
+	Added H5Aclose to improve performance under HDF5-1.8.x library.
+
+2010-04-28  James Gallagher <jgallagher@opendap.org>
+
+	Removed old EXTRADIST items (removed some of the old, unused,
+	dejaGNU files.
+
+2010-04-28  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* h5get.cc has H5Aclose(). This improves performance under
+          HDF5-1.8.x library.
+
+	* h5das.cc has H5Aclose(). This improves performance under
+          HDF5-1.8.x library.
+
+2010-02-10  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
+
+	* HE5Parser.cc has new limit(=30) for StructMetadata files to scan.
+	* HDF5RequestHandler.cc has more meaningful error message when it 
+	  deals with multiple Swaths case.
+	* h5das.cc checks null pointers when it adds group information.
+
 2010-02-03  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* HE5Parser.cc is cleaned up and checks 30 metadata files
+
+2010-02-01  rduncan
+
+	Release 1/01/2010
+
+2010-01-29  hyoklee
+
+	Fixed the coompilation error when DEBUG mode is enabled.
+
+2010-01-22  Patrick West <pwest@ucar.edu>
+
+	RPM to use h5.conf instead of bes-hdf5-data.sh
+	M    hdf5_handler.spec
+
+2010-01-21  hyoklee
+
+	Bug fix Ticket #1211 and documentation update.
 
 2010-01-21  Hyo-Kyung Joe Lee  <hyoklee@hdfgroup.org>
 
