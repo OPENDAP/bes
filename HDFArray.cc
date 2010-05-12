@@ -167,13 +167,6 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
     }
 }
 
-#if 0
-Array *NewArray(const string & n, BaseType * v)
-{
-    return new HDFArray(n, v);
-}
-#endif
-
 // Read the slab constraint parameters; the arrays start_array, edge_array,
 // stride_array.  Returns true if there is a slab constraint, false otherwise.
 bool HDFArray::GetSlabConstraint(vector < int >&start_array,
@@ -204,5 +197,57 @@ bool HDFArray::GetSlabConstraint(vector < int >&start_array,
         stride_array.push_back(stride);
     }
     return true;
+}
+
+/**
+ * Transfer attributes from a separately built DAS to the DDS. This method
+ * overrides the implementation found in libdap to accommodate the special
+ * characteristics of the HDF4 handler's DAS object. The notworthy feature
+ * of this handler's DAS is that it lacks the specified structure that
+ * provides an easy way to match DAS and DDS items. Instead the DAS is
+ * flat.
+ *
+ * This version of the method first calls the libdap implementation which,
+ * in turn, looks for attribtues that match the name of the variable exactly.
+ * Then it looks for 'dimension' attributes that should be bound to this
+ * array by searching for attribtue containers whose names fit the pattern
+ * <var>_dim_<digit>, where <var> is the name of this variable and <digit> is
+ * some interger, usually small.
+ *
+ * @param at An AttrTable for the entire DAS. Search this for attribtues
+ * by name.
+ * @see HDFSequence::transfer_attributes
+ * @see HDFGrid::transfer_attributes
+ * @see HDFStructure::transfer_attributes
+ */
+void HDFArray::transfer_attributes(AttrTable *at)
+{
+    BaseType::transfer_attributes(at);
+
+    // Here we should look for the *_dim_n where '*' is name() and n is 0, 1, ...
+    string dim_name_base = name() + "_dim_";
+
+    AttrTable::Attr_iter a_p = at->attr_begin();
+    while (a_p != at->attr_end()) {
+	string::size_type i = at->get_name(a_p).find(dim_name_base);
+	// Found a matching container?
+	if (i != string::npos && at->get_attr_type(a_p) == Attr_container) {
+	    AttrTable *dim = at->get_attr_table(a_p);
+	    transfer_dimension_attribute(dim);
+	}
+
+	a_p++;
+    }
+}
+
+void HDFArray::transfer_dimension_attribute(AttrTable *dim)
+{
+    // Mark the table as not global
+    dim->set_is_global_attribute(false);
+    // copy the table
+    AttrTable *at = new AttrTable(*dim);
+    // add it to this variable using just the 'dim_<digit>' part of the name
+    string name = at->get_name().substr(at->get_name().find("dim"));
+    get_attr_table().append_container(at, name);
 }
 

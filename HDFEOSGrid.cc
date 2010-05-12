@@ -65,7 +65,7 @@ extern HDFEOS eos;
 void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds);
 void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr);
 
-HDFEOSGrid::HDFEOSGrid(const string &n, const string &d) : Grid(n, d)
+HDFEOSGrid::HDFEOSGrid(const string &n, const string &d) : HDFGrid(n, d)
 {
 }
 

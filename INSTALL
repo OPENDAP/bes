@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.7.15 (5 Oct 2009)
+Updated for 3.8.1
 
 ---------------------------------------------------------------------------
 
@@ -31,9 +31,7 @@ BUILDING THE SOFTWARE
 1) Type `./configure' at the system prompt. On some systems you may have to
    type `sh configure.' If you want this part of the server to install
    someplace other than /usr/local/bin, use --prefix to change the prefix
-   from the default "/use/local/." Make sure that the dap-server CGI knows
-   where the handler is located (you can list the complete pathname in the
-   dap-server.rc file; see dap-server's INSTALL and README files).
+   from the default "/use/local/." 
 
    OPTIONAL: 
 
@@ -47,7 +45,6 @@ BUILDING THE SOFTWARE
 
    This requires the installation of HDF-EOS2 library. You can download it
    from http://newsroom.gsfc.nasa.gov/sdptoolkit/tookit.html.
-
 
    Another possibility is to install with '--enable-cf' option only.
 
@@ -77,19 +74,21 @@ BUILDING THE SOFTWARE
     'hdfeos2/' to get the code here to compile and link. I made a link
     to /usr/local/hdfeos2 and then ran configure here as:
 
-           ./configure --enable-cf --with-hdeos2=/usr/local/hdfeos2
+           ./configure --enable-cf --with-hdfeos2=/usr/local/hdfeos2
 
     jhrg 8/7/09
 
-2) Type `make' to build the three server programs
+2) Type `make' to build the server module.
 
-3) Install the server components in $prefix by running `make install.'
+3) Install the server module in $prefix by running `make install'. This
+   will also add the new h4.conf file to the $prefix/etc/bes/modules directoy.
+   The BES configuration file bes.conf will automatically load any module
+   configuration files in that directory. The h4.conf file contains hdf4_handler
+   specific configurations for use with the BES Framework. This includes
+   some parameters that used to be in the bes.conf file, such as the TypeMatch
+   parameter for finding your files.
 
-4) Type 'make bes-conf' to run the bes-nc-data.sh script which inserts the
-   handler in the bes.conf file and adds test data to 
-   $prefix/share/hyrax/data.
-
-5) For many installations, you must arrange for your operating system to find
+4) For some installations, you must arrange for your operating system to find
    the shared libraries installed by default in $prefix/lib. Do this by
    either setting an environment variable such as LD_LIBRARY_PATH or by
    editing /etc/ld.so.conf. Different operating systems handle this in
@@ -97,25 +96,26 @@ BUILDING THE SOFTWARE
 
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, et c., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose'. Once
-  autoreconf has made the configure and Makefile.in files, do ./configure;
-  make; make install as outlined above.
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, et c., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --force --install --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
 
 REQUIREMENTS
 
-  o You need the libdap library version 3.9.0 to build and install this
+  o You need the libdap library version 3.10.0 to build and install this
     software. If you're using Linux, this means either building form source
     or using the libdap and libdap-devel RPM packages.
 
   o If you're planning on using this with the OPeNDAP 4 Data Server (Hyrax),
-    you'll need version 3.7.0 of the BES software. Make sure to build that 
+    you'll need version 3.8.0 of the BES software. Make sure to build that 
     first.
 
   o You also need a recent copy of HDF4. We've tested this server with
     version 4.2r1 and 4.2r4, although any recent version should work fine. 
-    In order to link with 42.r4 on Linux (and maybe other platforms) I had to
+    In order to link with 4.2r4 on Linux (and maybe other platforms) I had to
     compile HDF4 using --without-fortran --with-pic and I also used 
     --without-netcdf (because some sites need their HDF4 libraries built that
     way and I wanted to be sure the handler would build with that 

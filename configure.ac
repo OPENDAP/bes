@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(hdf4_handler, 3.7.15, support@opendap.org)
+AC_INIT(hdf4_handler, 3.8.1, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -47,7 +47,7 @@ AC_FUNC_STRTOD
 AC_CHECK_FUNCS([isascii])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.9.3],
+AC_CHECK_LIBDAP([3.10.2],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -72,7 +72,7 @@ dnl       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
    ]
 )
 
-AC_CHECK_BES([3.7.2],
+AC_CHECK_BES([3.8.3],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])

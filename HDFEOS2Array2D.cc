@@ -57,7 +57,7 @@ BaseType *HDFEOS2Array2D::ptr_duplicate()
 }
 
 HDFEOS2Array2D::HDFEOS2Array2D(const string & n, BaseType * v)
-    : Array(n, v)
+    : HDFArray(n, v)
 {
     d_num_dim = 2;  
 }

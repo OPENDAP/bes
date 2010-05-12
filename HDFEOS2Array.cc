@@ -46,7 +46,7 @@ extern HDFEOS eos;
 
 
 HDFEOS2Array::HDFEOS2Array(const string & n, BaseType * v):
-    Array(n, v)
+    HDFArray(n, v)
 {
 }
 

@@ -68,7 +68,7 @@ using namespace libdap;
 /// class that builds the contents for the read() operation of this class. 
 ///
 /// \see HDFEOS
-class HDFEOSArray:public Array {
+class HDFEOSArray:public HDFArray {
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
                                      int stride, int stop, int count);
 public:

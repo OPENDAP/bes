@@ -1,3 +1,166 @@
+2010-05-03  James Gallagher <jgallagher@opendap.org>
+
+	Fixed ticket 1542. The code in HDFGrid that transfers the *_dim_0, _dim_1, ...
+	attributes to Map vectors was broken. It was not picking up the correct
+	substring to get teh trailing digit. Fixed. Added tests based on the
+	f97182070958.hdf data file.
+
+	M    bes-testsuite/hdf4_handlerTest.at
+	A    bes-testsuite/h4/f97182070958.hdf.ddx.bescmd
+	A    bes-testsuite/h4/f97182070958.hdf.das.bescmd.baseline
+	A    bes-testsuite/h4/f97182070958.hdf.das.bescmd
+	A    bes-testsuite/h4/f97182070958.hdf.dds.bescmd
+	A    bes-testsuite/h4/f97182070958.hdf.dds.bescmd.baseline
+	A    bes-testsuite/h4/f97182070958.hdf.ddx.bescmd.baseline
+	M    HDFGrid.cc
+	AM   hdf-testfiles/f97182070958.hdf
+
+2010-04-22  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for the DDX/transfer_attribute() code.
+
+2010-04-22  Patrick West <pwest@ucar.edu>
+
+	Fixed issue with dap-config --version with b at end (for beta)
+	M    conf/libdap.m4
+
+2010-04-21  James Gallagher <jgallagher@opendap.org>
+
+	Modified inheritance so that the EOS types are children of the HDF
+	types and thus so they have access to the specialized
+	transfer_attributes methods.
+
+2010-04-21  James Gallagher <jgallagher@opendap.org>
+
+	Support for the new methods in libdap used to build the DDX using
+	a DAS that is merged with a DDS. The handlers that don't have
+	correctly formed DAS objects override the default methods in
+	libdap.
+
+	NB: The HDF5 handler seems to be broken WRT the DDX, both with
+	this new code and with the old version.
+
+2010-04-19  James Gallagher <jgallagher@opendap.org>
+
+	Updated the INSTALL files so that they no longer talk about
+	dap-server or the 'three server programs'. Added a note about
+	sometimes needing to recompile netcdf, hdf4/5 using -fPIC.
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added a dist-hook target that removes .svn dirs from the dist tar.
+
+	M    dap-server/Makefile.am
+	M    fileout_netcdf/Makefile.am
+	M    freeform_handler/Makefile.am
+	M    hdf4_handler/Makefile.am
+	M    hdf5_handler/Makefile.am
+	M    ncml_module/Makefile.am
+	M    netcdf_handler/Makefile.am
+
+2010-04-15  James Gallagher <jgallagher@opendap.org>
+
+	Added Requires: lines to the .spec files for all the modules we build rpms for.
+
+2010-03-29  Patrick West <pwest@ucar.edu>
+
+	+= used for BES.modules.
+	M    h4.conf.in
+
+2010-03-23  James Gallagher <jgallagher@opendap.org>
+
+	Fixed basline test for attributes that included octal codes (all null?).
+	The baseline now matches the result of calling the new id2xml() in libdap.
+
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd.baseline
+	M    Makefile.am
+
+2010-03-19  hyoklee
+
+	Corrected a typop.
+
+2010-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Fixed source dist so that file that are conditionally compiled are included
+	in the source dist.
+
+	M    Makefile.am
+
+2010-03-04  hyoklee
+
+	Added the missing header files.
+
+2010-02-06  Patrick West <pwest@ucar.edu>
+
+	distchek fixed. rpm builds successfully.
+	M    bes-testsuite/Makefile.am
+	M    Makefile.am
+
+2010-02-05  rduncan
+
+	update versions for libdap/bes
+
+2010-02-03  rduncan
+
+	removed bes.conf instructions
+
+2010-02-02  James Gallagher <jgallagher@opendap.org>
+
+	Spec file version number changes
+
+2010-02-02  Patrick West <pwest@ucar.edu>
+
+	Expected failure for now for the three das tests
+	M    bes-testsuite/hdf4_handlerTest.at
+
+2010-02-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated for Hyrax 1.6
+
+	M    INSTALL
+
+2010-02-01  James Gallagher <jgallagher@opendap.org>
+
+	Updated.
+
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+	M    README
+
+2010-02-01  rduncan
+
+	Release 02/01/2010 3.8.0
+
+2010-02-01  rduncan
+
+	Release 02/01/2010 3.8.0
+
+2010-02-01  rduncan
+
+	Release 02/01/2010
+
+2010-02-01  rduncan
+
+	Release 1/01/2010
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+2010-02-01  rduncan
+
+	Release 2/01/2010
+
+2010-01-26  hyoklee
+
+	Put the original baseline back. The values are too big for the
+	data type and should throw errors.
+
+2010-01-25  hyoklee
+
+	Corrected testsuite and changed HDF-EOS to HDF-EOS2 in
+	hdf4_handler.spec.
+
 2010-01-25  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* bes-testsuite Updated baseline files

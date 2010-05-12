@@ -59,7 +59,7 @@ HDFTYPE_HDR += $(CF_HDR)
 endif
 
 if HDFEOS2
-HDFEOS2_HDR = HDFEOS2.h
+HDFEOS2_HDR = HDFEOS2.h HDFEOS2Array.h HDFEOS2Array2D.h 
 HDFTYPE_HDR += $(HDFEOS2_HDR)
 endif
 
@@ -83,12 +83,22 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-EXTRA_DIST = data bes-testsuite hdf-testfiles \
+# Added files that are conditionally compiled so that when we build a
+# dist they are included even though the configure option is not used.
+# jhrg 3/8/10
+EXTRA_DIST = data hdf-testfiles \
 	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
 	COPYRIGHT_URI hdf4_handler.spec \
-	OSX_Resources h4.conf.in
+	OSX_Resources h4.conf.in \
+	HDFEOS2.cc HDFEOS2Array.cc HDFEOS2Array2D.cc \
+	HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
+
+# Not nearly as clean as it could be, but this removes .svn directories
+# in subdirs.
+dist-hook:
+	rm -rf `find $(distdir) -name .svn`
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
@@ -135,10 +145,13 @@ fortifyclean:
 # Build linux RPMs
 
 srpm: dist
-	rpmbuild -ts --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm: dist
-	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+
+rpm-nodeps: dist
+	rpmbuild -tb --clean --nodeps @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
 

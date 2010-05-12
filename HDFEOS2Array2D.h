@@ -49,7 +49,7 @@ using namespace libdap;
 ///
 /// \see HDFEOSArray
 /// \see HDFEOS2
-class HDFEOS2Array2D:public Array {
+class HDFEOS2Array2D:public HDFArray {
   
 private:
     int d_num_dim;

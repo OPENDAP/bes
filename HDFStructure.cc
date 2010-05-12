@@ -126,17 +126,51 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
         err = 1;
         return false;
     }
-#if 0
-    set_read_p(true); //todo: move this inside 'if (foundvgroup)'?
-
-    // todo: refactor: move this up into preceding try block
-    if (foundvgroup) {
-        LoadStructureFromVgroup(this, vgroup, hdf_file);
-        return true;
-    } else {
-        err = 1;
-        return false;
-    }
-#endif
 }
 
+/**
+ * Transfer attributes from a separately built DAS to the DDS. This method
+ * overrides the implementation found in libdap to accommodate the special
+ * characteristics of the HDF4 handler's DAS object. The notworthy feature
+ * of this handler's DAS is that it lacks the specified structure that
+ * provides an easy way to match DAS and DDS items. Instead this DAS is
+ * flat.
+ *
+ * Because this handler builds a flat attribute object, each variable has to
+ * look at the entire top level set of attribute containers to find its own
+ * attribute container. If the DAS were built correctly, then this method would
+ * find the container for this Structure and pass only that to the child
+ * variables for them to search. See the default method in libdap.
+ *
+ * @param at An AttrTable for the entire DAS. Search this for attribtues
+ * by name.
+ * @see HDFSequence::transfer_attributes
+ * @see HDFGrid::transfer_attributes
+ * @see HDFArray::transfer_attributes
+ */
+void HDFStructure::transfer_attributes(AttrTable *at)
+{
+    if (at) {
+	Vars_iter var = var_begin();
+	while (var != var_end()) {
+	    (*var)->transfer_attributes(at);
+	    var++;
+	}
+
+	AttrTable *mine = at->get_attr_table(name());
+
+	if (mine) {
+	    mine->set_is_global_attribute(false);
+	    AttrTable::Attr_iter at_p = mine->attr_begin();
+	    while (at_p != mine->attr_end()) {
+		if (mine->get_attr_type(at_p) == Attr_container)
+		    get_attr_table().append_container(new AttrTable(
+			    *mine->get_attr_table(at_p)), mine->get_name(at_p));
+		else
+		    get_attr_table().append_attr(mine->get_name(at_p),
+			    mine->get_type(at_p), mine->get_attr_vector(at_p));
+		at_p++;
+	    }
+	}
+    }
+}

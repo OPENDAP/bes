@@ -58,6 +58,8 @@ class HDFStructure: public Structure, public ReadTagRef {
     virtual bool read();
     virtual bool read_tagref(int32 tag, int32 ref, int &error);
     virtual void set_read_p(bool state);
+
+    virtual void transfer_attributes(AttrTable *at_container);
 };
 
 #endif                          // _HDFSTRUCTURE_H
