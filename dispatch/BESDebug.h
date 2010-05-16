@@ -88,7 +88,6 @@ private:
     static map<string,bool>	_debug_map ;
     static ostream *		_debug_strm ;
     static bool			_debug_strm_created ;
-    static string		_pid_str ;
     typedef map<string,bool>::const_iterator _debug_citer ;
     typedef map<string,bool>::iterator _debug_iter ;
 public:
@@ -166,20 +165,8 @@ public:
 				    return _debug_strm ;
 				}
 
-    /** @brief return the pid as a string
-     *
-     * @return the pid as a string
-     */
-    static string		GetPidStr()
-				{
-				    if( _pid_str.empty() )
-				    {
-					char mypid[12] ;
-					BESUtil::fastpidconverter( mypid, 10 ) ;
-					_pid_str = mypid ;
-				    }
-				    return _pid_str ;
-				}
+    static string		GetPidStr() ;
+
     /** @brief set the debug output stream to the specified stream
      *
      * Static method that sets the debug output stream to the specified ostream.

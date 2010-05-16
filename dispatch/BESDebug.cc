@@ -30,20 +30,25 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#include <time.h>
+
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 using std::ofstream ;
 using std::ios ;
 using std::cout ;
 using std::endl ;
+using std::ostringstream ;
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
 ostream *BESDebug::_debug_strm = NULL ;
 bool BESDebug::_debug_strm_created = false ;
-string BESDebug::_pid_str = "" ;
 map<string,bool> BESDebug::_debug_map ;
 
 /** @brief Sets up debugging for the bes.
@@ -122,10 +127,32 @@ BESDebug::SetUp( const string &values )
     }
 }
 
-/** @brief Writes help information for so that developers know what can be set for
- * debugging.
+/** @brief return the pid as a string
  *
- * Displays information about possible debugging context, such as nc, hdf4, bes
+ * @return the pid as a string
+ */
+string
+BESDebug::GetPidStr()
+{
+    ostringstream strm ;
+    const time_t sctime = time( NULL ) ;
+    const struct tm *sttime = localtime( &sctime ) ; 
+    char zone_name[10] ;
+    strftime( zone_name, sizeof( zone_name ), "%Z", sttime ) ;
+    char *b = asctime( sttime ) ;
+    strm << zone_name << " " ;
+    for( register int j = 0; b[j] != '\n'; j++ )
+	strm << b[j] ;
+    pid_t thepid = getpid() ;
+    strm << " id: " << thepid ;
+    return strm.str() ;
+}
+
+/** @brief Writes help information for so that developers know what can
+ * be set for debugging.
+ *
+ * Displays information about possible debugging context, such as nc,
+ * hdf4, bes
  *
  * @param strm output stream to write the help information to
  */
