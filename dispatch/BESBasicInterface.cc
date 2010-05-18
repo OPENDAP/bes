@@ -148,8 +148,6 @@ BESBasicInterface::build_data_request_plan()
 	}
 	BESDEBUG( "bes", "OK" << endl ) ;
     }
-
-    if( BESDebug::IsSet( "bes" ) ) _dhi->dump( *(BESDebug::GetStrm()) ) ;
 }
 
 /** @brief Execute the data request plan
