@@ -174,6 +174,8 @@ BESXMLInterface::build_data_request_plan()
 		// given the name of this node we should be able to find a
 		// BESXMLCommand object
 		string node_name = (char *)current_node->name ;
+		BESDEBUG( "besxml", "looking for command " << node_name
+		                    << endl ) ;
 		p_xmlcmd_builder bldr = BESXMLCommand::find_command( node_name ) ;
 		if( bldr )
 		{
@@ -199,9 +201,13 @@ BESXMLInterface::build_data_request_plan()
 		    has_response = cmd_has_response ;
 
 		    // parse the request given the current node
+		    BESDEBUG( "besxml", "parse request using " << node_name
+					<< endl ) ;
 		    current_cmd->parse_request( current_node ) ;
 
 		    BESDataHandlerInterface &current_dhi = current_cmd->get_dhi();
+		    BESDEBUG( "besxml", node_name << " parsed request, dhi = "
+		                        << current_dhi << endl ) ;
 		    string returnAs = current_dhi.data[RETURN_CMD] ;
 		    if( returnAs != "" )
 		    {
