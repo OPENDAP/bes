@@ -202,14 +202,15 @@ CmdClient::setOutput( ostream * strm, bool created )
 * @param  cmd  The BES client side command to execute
 * @see    BESError
 */
-void
+bool
 CmdClient::executeClientCommand( const string & cmd )
 {
+    bool do_exit = false ;
     string suppress = "suppress" ;
     if( cmd.compare( 0, suppress.length(), suppress ) == 0 )
     {
         setOutput( NULL, false ) ;
-	return ;
+	return do_exit ;
     }
 
     string output = "output to" ;
@@ -237,7 +238,7 @@ CmdClient::executeClientCommand( const string & cmd )
 		setOutput( fstrm, true ) ;
 	    }
 	}
-	return ;
+	return do_exit ;
     }
 
     // load commands from an input file and run them
@@ -254,13 +255,15 @@ CmdClient::executeClientCommand( const string & cmd )
 	}
 	else
 	{
-	    executeCommands( fstrm, 1 ) ;
+	    do_exit = executeCommands( fstrm, 1 ) ;
 	}
 
-	return ;
+	return do_exit ;
     }
 
     cerr << "Improper client command " << cmd << endl ;
+
+    return do_exit ;
 }
 
 /** @brief Sends a single OpeNDAP request to the OpeNDAP server.
@@ -275,18 +278,19 @@ CmdClient::executeClientCommand( const string & cmd )
 *                      from the server.
 * @see    BESError
 */
-void
+bool
 CmdClient::executeCommand( const string &cmd, int repeat )
 {
+    bool do_exit = false ;
     string client = "client" ;
     if( cmd.compare( 0, client.length(), client ) == 0 )
     {
-        executeClientCommand( cmd.substr( client.length() + 1 ) ) ;
+        do_exit = executeClientCommand( cmd.substr( client.length() + 1 ) ) ;
     }
     else
     {
 	if( repeat < 1 ) repeat = 1 ;
-	for( int i = 0; i < repeat; i++ )
+	for( int i = 0; i < repeat && !do_exit; i++ )
 	{
 	    BESDEBUG( "cmdln", "cmdclient sending " << cmd << endl ) ;
 	    BESStopWatch *sw = 0 ;
@@ -330,9 +334,12 @@ CmdClient::executeCommand( const string &cmd, int repeat )
                    // an xml document (maybe)
 		   if( _isInteractive )
 		   {
-		       CmdTranslation::set_show( true ) ;
+			CmdTranslation::set_show( true ) ;
 		   }
-
+		}
+		if( extensions["exit"] == "true" )
+		{
+		    do_exit = true ;
 		}
 	    }
 	    if( show_stream )
@@ -371,10 +378,11 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 	    }
 
 	    _strm->flush() ;
-		delete sw ;
-		sw = 0 ;
+	    delete sw ;
+	    sw = 0 ;
 	}
     }
+    return do_exit ;
 }
 
 /** @brief Send the command(s) specified to the BES server after wrapping in
@@ -394,9 +402,10 @@ CmdClient::executeCommand( const string &cmd, int repeat )
 *                   of the responses from the server.
 * @see    BESError
 */
-void
+bool
 CmdClient::executeCommands( const string &cmd_list, int repeat )
 {
+    bool do_exit = false ;
     _isInteractive = true ;
     if( repeat < 1 ) repeat = 1 ;
 
@@ -406,7 +415,7 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
 	string doc = CmdTranslation::translate( cmd_list ) ;
 	if( !doc.empty() )
 	{
-	    this->executeCommand( doc, repeat ) ;
+	    do_exit = this->executeCommand( doc, repeat ) ;
 	}
     }
     catch( BESError &e )
@@ -417,6 +426,7 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
     }
     CmdTranslation::set_show( false ) ;
     _isInteractive = false ;
+    return do_exit ;
 }
 
 /** @brief Sends the xml request document from the specified file to the server
@@ -437,9 +447,10 @@ CmdClient::executeCommands( const string &cmd_list, int repeat )
 * @see    File
 * @see    BESError
 */
-void
+bool
 CmdClient::executeCommands( ifstream & istrm, int repeat )
 {
+    bool do_exit = false ;
     _isInteractive = false ;
     if( repeat < 1 ) repeat = 1 ;
     for( int i = 0; i < repeat; i++ )
@@ -454,8 +465,9 @@ CmdClient::executeCommands( ifstream & istrm, int repeat )
 	    istrm.getline( line, 4096, '\n' ) ;
 	    cmd += line ;
 	}
-	this->executeCommand( cmd, 1 ) ;
+	do_exit = this->executeCommand( cmd, 1 ) ;
     }
+    return do_exit ;
 }
 
 /** @brief An interactive BES client that takes BES requests on the command
@@ -477,9 +489,10 @@ CmdClient::executeCommands( ifstream & istrm, int repeat )
 *                      of the responses from the server.
 * @see    BESError
 */
-void
+bool
 CmdClient::interact()
 {
+    bool do_exit = false ;
     _isInteractive = true ;
 
     cout << endl << endl
@@ -487,7 +500,7 @@ CmdClient::interact()
         << "to display the help screen" << endl << endl ;
 
     bool done = false ;
-    while( !done )
+    while( !done && !do_exit )
     {
         string message = "" ;
         size_t len = this->readLine( message ) ;
@@ -501,7 +514,7 @@ CmdClient::interact()
         }
 	else if( message.length() > 6 && message.substr( 0, 6 ) == "client" )
 	{
-	    this->executeCommand( message, 1 ) ;
+	    do_exit = this->executeCommand( message, 1 ) ;
 	}
 	else if( len != 0 && message != "" )
 	{
@@ -511,7 +524,7 @@ CmdClient::interact()
 		string doc = CmdTranslation::translate( message ) ;
 		if( !doc.empty() )
 		{
-		    this->executeCommand( doc, 1 ) ;
+		    do_exit = this->executeCommand( doc, 1 ) ;
 		}
 	    }
 	    catch( BESError &e )
@@ -524,6 +537,8 @@ CmdClient::interact()
         }
     }
     _isInteractive = false ;
+
+    return do_exit ;
 }
 
 /** @brief Read a line from the interactive terminal using the readline library

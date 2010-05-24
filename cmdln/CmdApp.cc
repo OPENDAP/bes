@@ -168,13 +168,13 @@ CmdApp::signalBrokenPipe( int sig )
 	CmdApp *app = dynamic_cast<CmdApp *>(BESApp::TheApplication()) ;
 	if( app )
 	{
-	  CmdClient *client = app->client() ;
-	  if( client )
+	    CmdClient *client = app->client() ;
+	    if( client )
 	    {
-	      client->brokenPipe() ;
-	      client->shutdownClient() ;
-	      delete client;
-	      client = 0;
+		client->brokenPipe() ;
+		client->shutdownClient() ;
+		delete client;
+		client = 0;
 	    }
 	}
 	exit( 1 ) ;
@@ -446,19 +446,20 @@ CmdApp::run()
 	exit( 1 ) ;
     }
 
+    bool do_exit = false ;
     try
     {
 	if( _cmd != "" )
 	{
-	    _client->executeCommands( _cmd, _repeat ) ;
+	    do_exit = _client->executeCommands( _cmd, _repeat ) ;
 	}
 	else if( _inputStrm )
 	{
-	    _client->executeCommands( *_inputStrm, _repeat ) ;
+	    do_exit = _client->executeCommands( *_inputStrm, _repeat ) ;
 	}
 	else
 	{
-	    _client->interact() ;
+	    do_exit = _client->interact() ;
 	}
     }
     catch( BESError &e )
@@ -472,7 +473,9 @@ CmdApp::run()
 	BESDEBUG( "cmdln", "CmdApp: shutting down client ... " << endl ) ;
 	if( _client )
 	{
-	    _client->shutdownClient() ;
+	    // if do_exit is set, then the client has shut itself down
+	    if( !do_exit )
+		_client->shutdownClient() ;
 	    delete _client ;
 	    _client = 0 ;
 	}

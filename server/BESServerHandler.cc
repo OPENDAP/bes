@@ -224,9 +224,14 @@ BESServerHandler::execute( Connection *c )
 	    // flush what we have in the stream to the client
 	    cout << flush ;
 
-	    // Send the extension status=error to the client so that it can reset.
+	    // Send the extension status=error to the client so that it
+	    // can reset.
 	    map<string,string> extensions ;
 	    extensions["status"] = "error" ;
+	    if( status == BES_INTERNAL_FATAL_ERROR )
+	    {
+		extensions["exit"] = "true" ;
+	    }
 	    c->sendExtensions( extensions ) ;
 
 	    // transmit the error message. finish_with_error will transmit
@@ -246,9 +251,6 @@ BESServerHandler::execute( Connection *c )
 			cout << "BES server " << getpid()
 			     << ": Status not OK, dispatcher returned value "
 			     << status << endl ;
-			//string toSend = "FATAL ERROR: server must exit!" ;
-			//c->send( toSend ) ;
-			c->sendExit() ;
 			c->closeConnection() ;
 			exit( CHILD_SUBPROCESS_READY ) ;
 		    }

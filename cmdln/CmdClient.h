@@ -82,7 +82,7 @@ private:
 
     size_t			readLine( string &str ) ;
     void			displayHelp() ;
-    void			executeCommand( const string &cmd,
+    bool			executeCommand( const string &cmd,
 						int repeat ) ;
 public:
     				CmdClient( )
@@ -99,12 +99,12 @@ public:
 					     int timeout ) ;
     void			shutdownClient() ;
     void			setOutput( ostream *strm, bool created ) ;
-    void			executeClientCommand( const string &cmd ) ;
-    void			executeCommands( const string &cmd,
+    bool			executeClientCommand( const string &cmd ) ;
+    bool			executeCommands( const string &cmd,
 						 int repeat ) ;
-    void			executeCommands( ifstream &inputFile,
+    bool			executeCommands( ifstream &inputFile,
 						 int repeat ) ;
-    void			interact() ;
+    bool			interact() ;
     bool			isConnected() ;
     void			brokenPipe() ;
 
