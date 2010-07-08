@@ -48,6 +48,7 @@ using std::endl ;
 #include "BESContainerStorageCatalog.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogList.h"
+#include <BESDapService.h>
 
 #include "BESDebug.h"
 
@@ -59,6 +60,9 @@ CSVModule::initialize( const string &modname )
     BESDEBUG( "csv", "    adding " << modname << " request handler" << endl ) ;
     BESRequestHandlerList::TheList()->
 	add_handler( modname, new CSVRequestHandler( modname ) ) ;
+
+    BESDEBUG( "csv", modname << " handles dap services" << endl ) ;
+    BESDapService::handle_dap_service( modname ) ;
 
     BESDEBUG( "csv", "    adding " << CSV_CATALOG << " catalog" << endl ) ;
     if( !BESCatalogList::TheCatalogList()->ref_catalog( CSV_CATALOG ) )
