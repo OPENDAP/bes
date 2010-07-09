@@ -35,35 +35,25 @@ BES.LogVerbose=no
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-# Notes: 
-# 1. When the handlers are built, the handler's 'make' builds the
-# handler executable for Server3 and the shared object module for
-# Hyrax. The Hyrax shared object modules are installed (using 'make
-# install') in<prefix>/lib/bes. Make sure you point to the Hyrax
-# modules and not the Server3 'handlers'. The Hyrax modules all have
+# Notes:
+# 1. All module configuration files will be located under
+# <prefix>/etc/bes/modules. No modules are loaded in this configuration
+# file. The module configuration files are included at the very bottom
+# of this file.
+# 2. When the handlers are built, the handler's 'make' builds the
+# shared object module for Hyrax. The Hyrax shared object modules
+# are installed (using 'make install') in <prefix>/lib/bes. Make
+# sure you point to the Hyrax modules. The Hyrax modules all have
 # '_module' in their names.
-# 2. The commands that the BES responds to are also provided by modules,
+# 3. The commands that the BES responds to are also provided by modules,
 # so make sure that those are loaded in as well. Two modules are
-# required for use with Hyrax, the dap and cmd modules.
-# 3. If you want ascii, info, and html responses provided by the bes, just
+# required for use with Hyrax, the dap and cmd modules These are loaded
+# in the dap.conf configuration file under <prefix>/etc/bes/modules/.
+# 4. If you want ascii, info, and html responses provided by the bes, just
 # as in the Server3 handlers, then include the ascii, usage, and www
-# modules.
-# 4. Order matters. Include the dap, cmd, ascii, usage, www first before
-# including handler modules like nc, hdf4, ff.
-# 
-# Here's an example of the configuration for three handlers (Netcdf,
-# hdf4 and FreeForm) and the DAP basic and command modules:
+# modules, which are loaded from dap-server.conf configuration file
+# under <prefix>/etc/bes/modules/.
 #
-# BES.modules=dap,dapcmd,ascii,usage,www,nc,h4,ff
-# BES.module.dap=@pkglibdir@/libdap_module.so
-# BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
-# BES.module.ascii=@pkglibdir@/libascii_module.so
-# BES.module.usage=@pkglibdir@/libusage_module.so
-# BES.module.www=@pkglibdir@/libwww_module.so
-# BES.module.nc=@pkglibdir@/libnc_module.so
-# BES.module.h4=@pkglibdir@/libhdf4_module.so
-# BES.module.ff=@pkglibdir@/libff_module.so
-
 BES.modules=
 
 #-----------------------------------------------------------------------#
@@ -72,12 +62,16 @@ BES.modules=
 
 # If you intend to use the BES as a standalone server, set the value of
 # 'BES.Data.RootDirectory' to point to your data and disregard the 
-# 'BES.Catalog.catalog.RootDirectory' parameter.
+# 'BES.Catalog.catalog.RootDirectory' parameter in dap.conf.
 #
-# The default value of RootDirectory works with the sample data we include
-# with various format handlers distributed for use with the BES. You'll need
-# to change this to point to your data! At this time the BES does not support
-# multiple RootDirectory values.
+# The default value of RootDirectory is /dev/null, which means that
+# BES.Data.RootDirectory is not used and BES.Catalog.catalog.RootDirectory
+# is used from dap.conf. If you want to use this parameter instead, set
+# it to <prefix>/share/hyrax, where prefix is the installation directory
+# for the BES. This will work with the sample data we include with
+# various format handlers distributed for use with the BES. Or you'll need
+# to change this to point to your data! At this time the BES does not
+# support multiple RootDirectory values.
 
 BES.Data.RootDirectory=/dev/null
 
@@ -263,10 +257,8 @@ BES.ProcessManagerMethod=multiple
 BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
-#                                                                       #
-# Include all module configuration files                                #
-#                                                                       #
+# Include all module configuration files in the <prefix>/etc/bes/modules#
+# directory								#
 #-----------------------------------------------------------------------#
-
 BES.Include=modules/.*\.conf$
 
