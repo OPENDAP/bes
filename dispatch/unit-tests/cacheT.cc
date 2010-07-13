@@ -99,7 +99,7 @@ public:
 	    system( m.str().c_str() ) ;
 	}
 
-	char *touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" } ;
+	string touchers[8] = { "7", "6", "4", "2", "8", "5", "3", "1" } ;
 	for( int i = 0; i < 8; i++ )
 	{
 	    sleep(1);

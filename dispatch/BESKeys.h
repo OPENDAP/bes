@@ -89,6 +89,9 @@ private:
     map<string,vector<string> > *_the_keys ;
     bool		_own_keys ;
 
+    static vector<string> KeyList ;
+    static bool		LoadedKeys( const string &key_file ) ;
+
     void		clean() ;
     void 		initialize_keys() ;
     void 		load_keys() ;

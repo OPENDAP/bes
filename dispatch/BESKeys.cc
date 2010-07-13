@@ -46,6 +46,9 @@ extern "C" {
 #include <unistd.h>
 #endif
 
+#include <iostream>
+using std::cerr ;
+
 #include "BESKeys.h"
 #include "BESUtil.h"
 #include "BESFSDir.h"
@@ -54,6 +57,8 @@ extern "C" {
 #include "BESSyntaxUserError.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
+
+vector<string> BESKeys::KeyList ;
 
 /** @brief default constructor that reads loads key/value pairs from the
  * specified file.
@@ -77,6 +82,7 @@ BESKeys::BESKeys( const string &keys_file_name )
       _the_keys( 0 ),
       _own_keys( true )
 {
+    cerr << "loading " << keys_file_name << endl ;
     _the_keys = new map<string,vector<string> >;
     initialize_keys( ) ;
 }
@@ -87,6 +93,7 @@ BESKeys::BESKeys( const string &keys_file_name, map<string,vector<string> > *key
       _the_keys( keys ),
       _own_keys( false )
 {
+    cerr << "loading " << keys_file_name << endl ;
     initialize_keys( ) ;
 }
 
@@ -151,6 +158,28 @@ BESKeys::clean()
     {
 	delete _the_keys ;
     }
+}
+
+/* @brief Determine if the specified key file has been loaded yet
+ *
+ * Given the name of the key file, determine if it has already been
+ * loaded. More specifically, if started to load the file.
+ *
+ * @returns true if already started to load, false otherwise
+ */
+bool
+BESKeys::LoadedKeys( const string &key_file )
+{
+    vector<string>::const_iterator i = BESKeys::KeyList.begin() ;
+    vector<string>::const_iterator e = BESKeys::KeyList.end() ;
+    for( ; i != e; i++ )
+    {
+	if( (*i) == key_file )
+	{
+	    return true ;
+	}
+    }
+    return false ;
 }
 
 void
@@ -276,13 +305,29 @@ BESKeys::load_include_files( const string &files )
 	// files will be relative to this file.
 	BESFSFile currfile( _keys_file_name ) ;
 	string currdir = currfile.getDirName() ;
+	cerr << "currdir = " << currdir << endl ;
 
 	string alldir = allfiles.getDirName() ;
+	cerr << "alldir = " << alldir << endl ;
 
 	if( ( currdir == "./" || currdir == "." )
-	    && ( alldir == "./" || alldir == "." ) ) newdir = "./" ;
-	else newdir = currdir + "/" + alldir ;
+	    && ( alldir == "./" || alldir == "." ) )
+	{
+	    newdir = "./" ;
+	}
+	else
+	{
+	    if( alldir == "./" || alldir == "." )
+	    {
+		newdir = currdir ;
+	    }
+	    else
+	    {
+		newdir = currdir + "/" + alldir ;
+	    }
+	}
     }
+    cerr << "newdir = " << newdir << endl ;
 
     // load the files one at a time. If the directory doesn't exist,
     // then don't load any configuration files
@@ -306,7 +351,12 @@ BESKeys::load_include_file( const string &file )
 {
     // make sure the file exists and is readable
     // throws exception if unable to read
-    BESKeys tmp( file, _the_keys ) ;
+    // not loaded if has already be started to be loaded
+    if( !BESKeys::LoadedKeys( file ) )
+    {
+	BESKeys::KeyList.push_back( file ) ;
+	BESKeys tmp( file, _the_keys ) ;
+    }
 }
 
 bool

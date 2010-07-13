@@ -58,9 +58,8 @@ public:
 
     void setUp()
     {
-	string env_var = (string)"BES_CONF=" + TEST_SRC_DIR
-			 + "/persistence_cgi_test.ini" ;
-	putenv( (char *)env_var.c_str() ) ;
+	string env_var = (string)TEST_SRC_DIR + "/persistence_cgi_test.ini" ;
+	setenv( "BES_CONF", env_var.c_str(), 1 ) ;
     } 
 
     void tearDown()
@@ -100,7 +99,7 @@ public:
 
 	cout << "*****************************************" << endl;
 	cout << "no file set" << endl;
-	putenv( "BES_CONF=" ) ;
+	setenv( "BES_CONF", "", 1 ) ;
 	TheBESKeys::ConfigFile = "" ;
 	try
 	{
@@ -114,7 +113,7 @@ public:
 
 	cout << "*****************************************" << endl;
 	cout << "notfound file set" << endl;
-	putenv( "BES_CONF=notfound.ini" ) ;
+	setenv( "BES_CONF", "notfound.ini", 1 ) ;
 	try
 	{
 	    TheBESKeys::TheKeys() ;
@@ -322,10 +321,9 @@ public:
 	TheBESKeys::TheKeys()->get_values( "BES.KEY.MI", vals, found ) ;
 	CPPUNIT_ASSERT( found ) ;
 	CPPUNIT_ASSERT( vals.size() == 3 ) ;
-	for( int i = 0; i < 3; i++ )
-	{
-	    CPPUNIT_ASSERT( vals[i] == "val_multi" ) ;
-	}
+	CPPUNIT_ASSERT( vals[0] == "val_multi_2" ) ;
+	CPPUNIT_ASSERT( vals[1] == "val_multi_1" ) ;
+	CPPUNIT_ASSERT( vals[2] == "val_multi_3" ) ;
 
 	cout << "*****************************************" << endl;
 	cout << "get keys" << endl;
