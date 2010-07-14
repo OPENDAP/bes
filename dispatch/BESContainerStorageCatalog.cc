@@ -150,7 +150,8 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 	    try
 	    {
 		Regex reg_expr( match.reg.c_str() ) ;
-		if( reg_expr.match( real_name.c_str(), real_name.length() ) == real_name.length() )
+		if( reg_expr.match( real_name.c_str(), real_name.length() ) ==
+		    static_cast<int>(real_name.length()) )
 		{
 		    new_type = match.type ;
 		    done = true ;
@@ -192,7 +193,8 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 	try
 	{
 	    Regex reg_expr( match.reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
+	        static_cast<int>(inQuestion.length()) )
 	    {
 		node_type = match.type ;
 		done = true ;

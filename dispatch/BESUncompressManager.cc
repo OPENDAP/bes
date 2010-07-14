@@ -222,7 +222,7 @@ BESUncompressManager::uncompress( const string &src, string &target,
 	// The extension (Z, gz, bz2, GZ, BZ2, z) is used to determine which
 	// uncompression engine to use. It is compared to the list, which is
 	// all lower case. pcw 2/22/08
-	for( int i = 0; i < ext.length(); i++ )
+	for( int i = 0; i < static_cast<int>(ext.length()); i++ )
 	{
 	    ext[i] = tolower( ext[i] ) ;
 	}

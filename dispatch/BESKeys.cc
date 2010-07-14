@@ -234,7 +234,7 @@ BESKeys::break_pair( const char* b, string& key, string &value, bool &addto )
 		    if( !addto ) pos = j ;
 		    else
 		    {
-			if( pos != j-1 )
+			if( pos != static_cast<int>(j-1) )
 			{
 			    string s = string("BES: Invalid entry ") + b
 				       + " in configuration file "

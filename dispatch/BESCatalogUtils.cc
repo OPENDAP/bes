@@ -172,7 +172,8 @@ BESCatalogUtils::include( const string &inQuestion ) const
 		// must match exactly, meaing result is = to length of string
 		// in question
 		Regex reg_expr( reg.c_str() ) ;
-		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
+		    static_cast<int>(inQuestion.length()) )
 		{
 		    toInclude = true ;
 		}
@@ -210,7 +211,8 @@ BESCatalogUtils::exclude( const string &inQuestion ) const
 	try
 	{
 	    Regex reg_expr( reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) == inQuestion.length() )
+	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
+	        static_cast<int>(inQuestion.length()) )
 	    {
 		return true ;
 	    }

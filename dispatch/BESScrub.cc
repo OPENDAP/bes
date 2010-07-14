@@ -96,7 +96,7 @@ BESScrub::pathname_ok(const string &path, bool strict)
         
     string::size_type len = path.length() ;
     int ret = name.match( path.c_str(), len ) ;
-    if( ret != len )
+    if( ret != static_cast<int>(len) )
         return false ;
     return true ;
 }

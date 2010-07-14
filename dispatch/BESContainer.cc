@@ -37,10 +37,11 @@
  * @param copy_from The container to copy
  */
 BESContainer::BESContainer( const BESContainer &copy_from )
-    : _real_name( copy_from._real_name ),
-      _constraint( copy_from._constraint ),
+    : BESObj(copy_from),
       _symbolic_name( copy_from._symbolic_name ),
+      _real_name( copy_from._real_name ),
       _container_type( copy_from._container_type ),
+      _constraint( copy_from._constraint ),
       _attributes( copy_from._attributes )
 {
 }

@@ -190,7 +190,7 @@ string
 BESUtil::lowercase( const string &s )
 {
     string return_string = s ;
-    for( int j = 0; j < return_string.length(); j++ )
+    for( int j = 0; j < static_cast<int>(return_string.length()); j++ )
     {
 	return_string[j] = (char)tolower( return_string[j] ) ;
     }
@@ -203,7 +203,7 @@ BESUtil::unescape( const string &s )
 {
     bool done = false ;
     string::size_type index = 0 ;
-    string::size_type new_index = 0 ;
+    /* string::size_type new_index = 0 ; */
     string new_str ;
     while( !done )
     {
@@ -440,6 +440,7 @@ BESUtil::entity( char c )
 	case '&': return "&amp;";
 	case '\'': return "&apos;";
 	case '\"': return "&quot;";
+	default: return string(1,c); // is this proper default, just the char?
     }
 }
 

@@ -50,6 +50,208 @@ using std::ostringstream;
 #include "BESDebug.h"
 #include "Error.h"
 
+///////////////////////////////////////////////////////////////////////////////
+// Local Helpers
+
+// File local helper superclass for common exception handling
+// for transmitting DAP responses.
+class Sender
+{
+public:
+  virtual ~Sender() {}
+
+  // The main call, non-virtual to force exception handling.
+  // Subclasses will override send_internal private virtual.
+  void send(BESResponseObject* obj, BESDataHandlerInterface & dhi)
+  {
+    string response_string = get_request_type();
+    try
+    {
+      send_internal(obj, dhi);
+    }
+    catch( InternalErr &e )
+    {
+      string err = "libdap error transmitting " +
+          response_string + ": " +
+          e.get_error_message() ;
+         throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
+    }
+    catch( Error &e )
+    {
+      string err = "libdap error transmitting " +
+          response_string + ": " +
+          e.get_error_message() ;
+      throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
+    }
+    catch( const BESError &e )
+    {
+      throw; // rethrow as is
+    }
+    catch( const std::exception &e )
+    {
+      string msg("std::exception caught transmitting " +
+          response_string + ": " +
+          e.what() );
+      throw BESInternalFatalError(msg, __FILE__, __LINE__);
+    }
+    catch(...)
+    {
+      string s = "unknown error caught transmitting " +
+          response_string + ": ";
+      BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
+      throw ex;
+    }
+  }
+
+  // common code for subclasses
+  bool get_print_mime() const
+  {
+    bool found = false ;
+    string context = "transmit_protocol" ;
+    string protocol = BESContextManager::TheManager()->get_context( context,
+                                                                    found ) ;
+    bool print_mime = false ;
+    if( protocol == "HTTP" ) {
+      print_mime = true;
+    }
+    return print_mime;
+  }
+
+private:
+
+  // Name of the request being sent, for debug
+  virtual string get_request_type() const = 0;
+
+  // Subclasses impl this for specialized behavior
+  virtual void send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi) = 0;
+};
+
+class SendDAS : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DAS"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
+    if( !bdas ) {
+      throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    }
+    DAS *das = bdas->get_das();
+    dhi.first_container();
+    bool print_mime = get_print_mime();
+
+    DODSFilter df ;
+    df.set_dataset_name( dhi.container->get_real_name() ) ;
+    df.send_das( dhi.get_output_stream(), *das, "", print_mime ) ;
+  }
+};
+
+class SendDDS : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DDS"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    if( !bdds ) {
+      throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    }
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+    bool print_mime = get_print_mime();
+
+    DODSFilter df;
+    df.set_dataset_name(dhi.container->get_real_name());
+    df.set_ce(dhi.data[POST_CONSTRAINT]);
+    df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", print_mime);
+  }
+};
+
+class SendDataDDS : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DataDDS"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+     if( !bdds ) {
+         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+     }
+     DataDDS *dds = bdds->get_dds();
+     ConstraintEvaluator & ce = bdds->get_ce();
+     dhi.first_container();
+     bool print_mime = get_print_mime();
+
+     DODSFilter df;
+     df.set_dataset_name(dds->filename());
+     df.set_ce(dhi.data[POST_CONSTRAINT]);
+     df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
+  }
+};
+
+class SendDDX : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DDX"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
+    if( !bdds ) {
+      throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    }
+    DDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+    bool print_mime = get_print_mime();
+
+    DODSFilter df;
+    df.set_dataset_name(dhi.container->get_real_name());
+    df.set_ce(dhi.data[POST_CONSTRAINT]);
+    df.send_ddx(*dds, ce, dhi.get_output_stream(), print_mime);
+  }
+};
+
+class SendDataDDX : public Sender
+{
+private:
+  virtual string get_request_type() const { return "DataDDX"; }
+  virtual void  send_internal(
+      BESResponseObject * obj,
+      BESDataHandlerInterface & dhi)
+  {
+    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
+    if( !bdds ) {
+      throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    }
+    DataDDS *dds = bdds->get_dds();
+    ConstraintEvaluator & ce = bdds->get_ce();
+    dhi.first_container();
+    bool print_mime = get_print_mime();
+
+    DODSFilter df;
+    df.set_dataset_name(dds->filename());
+    df.set_ce(dhi.data[POST_CONSTRAINT]);
+    BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
+    df.send_data_ddx(*dds, ce, dhi.get_output_stream(),
+        dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
+        "", print_mime);
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Public Interface Impl
+
 BESDapTransmit::BESDapTransmit()
     : BESBasicTransmitter()
 {
@@ -64,217 +266,38 @@ void
 BESDapTransmit::send_basic_das(BESResponseObject * obj,
                                BESDataHandlerInterface & dhi)
 {
-    BESDASResponse *bdas = dynamic_cast < BESDASResponse * >(obj);
-    if( !bdas )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    DAS *das = bdas->get_das();
-    dhi.first_container();
-
-    bool found = false ;
-    string context = "transmit_protocol" ;
-    string protocol = BESContextManager::TheManager()->get_context( context,
-								    found ) ;
-    bool print_mime = false ;
-    if( protocol == "HTTP" ) print_mime = true ;
-
-    try
-    {
-        DODSFilter df ;
-        df.set_dataset_name( dhi.container->get_real_name() ) ;
-        df.send_das( dhi.get_output_stream(), *das, "", print_mime ) ;
-    }
-    catch( InternalErr &e )
-    {
-        string err = "libdap error transmitting DAS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
-    }
-    catch( Error &e )
-    {
-        string err = "libdap error transmitting DAS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
-    }
-    catch(...)
-    {
-        string s = "unknown error caught transmitting DAS" ;
-        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
-        throw ex;
-    }
+  SendDAS sender;
+  sender.send(obj, dhi);
 }
 
-void BESDapTransmit::send_basic_dds(BESResponseObject * obj,
-                                    BESDataHandlerInterface & dhi)
+void
+BESDapTransmit::send_basic_dds(BESResponseObject * obj,
+                               BESDataHandlerInterface & dhi)
 {
-    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
-    if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    DDS *dds = bdds->get_dds();
-    ConstraintEvaluator & ce = bdds->get_ce();
-    dhi.first_container();
-
-    bool found = false ;
-    string context = "transmit_protocol" ;
-    string protocol = BESContextManager::TheManager()->get_context( context,
-								    found ) ;
-    bool print_mime = false ;
-    if( protocol == "HTTP" ) print_mime = true ;
-
-    try {
-        DODSFilter df;
-        df.set_dataset_name(dhi.container->get_real_name());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", print_mime);
-    }
-    catch( InternalErr &e )
-    {
-        string err = "libdap error transmitting DDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
-    }
-    catch( Error &e )
-    {
-        string err = "libdap error transmitting DDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
-    }
-    catch(...)
-    {
-        string s = "unknown error caught transmitting DDS" ;
-        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
-        throw ex;
-    }
+  SendDDS sender;
+  sender.send(obj, dhi);
 }
 
-void BESDapTransmit::send_basic_data(BESResponseObject * obj,
-                                     BESDataHandlerInterface & dhi)
+void
+BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
+                               BESDataHandlerInterface & dhi)
 {
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
-    if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    DataDDS *dds = bdds->get_dds();
-    ConstraintEvaluator & ce = bdds->get_ce();
-    dhi.first_container();
-
-    bool found = false ;
-    string context = "transmit_protocol" ;
-    string protocol = BESContextManager::TheManager()->get_context( context,
-								    found ) ;
-    bool print_mime = false ;
-    if( protocol == "HTTP" ) print_mime = true ;
-
-    try {
-        DODSFilter df;
-        df.set_dataset_name(dds->filename());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
-    }
-    catch( InternalErr &e )
-    {
-        string err = "libdap error transmitting DataDDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
-    }
-    catch( Error &e )
-    {
-        string err = "libdap error transmitting DataDDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
-    }
-    catch(...)
-    {
-        string s = "unknown error caught transmitting DataDDS" ;
-        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
-        throw ex;
-    }
+  SendDDX sender;
+  sender.send(obj, dhi);
 }
 
-void BESDapTransmit::send_basic_ddx(BESResponseObject * obj,
-                                    BESDataHandlerInterface & dhi)
+void
+BESDapTransmit::send_basic_data(BESResponseObject * obj,
+                                BESDataHandlerInterface & dhi)
 {
-    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(obj);
-    if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    DDS *dds = bdds->get_dds();
-    ConstraintEvaluator & ce = bdds->get_ce();
-    dhi.first_container();
-
-    bool found = false ;
-    string context = "transmit_protocol" ;
-    string protocol = BESContextManager::TheManager()->get_context( context,
-								    found ) ;
-    bool print_mime = false ;
-    if( protocol == "HTTP" ) print_mime = true ;
-
-    try {
-        DODSFilter df;
-        df.set_dataset_name(dhi.container->get_real_name());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-        df.send_ddx(*dds, ce, dhi.get_output_stream(), print_mime);
-    }
-    catch( InternalErr &e )
-    {
-        string err = "libdap error transmitting DDX: "
-            + e.get_error_message() ;
-        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
-    }
-    catch( Error &e )
-    {
-        string err = "libdap error transmitting DDX: "
-            + e.get_error_message() ;
-        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
-    }
-    catch(...)
-    {
-        string s = "unknown error caught transmitting DDX" ;
-        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
-        throw ex;
-    }
+  SendDataDDS sender;
+  sender.send(obj, dhi);
 }
 
-void BESDapTransmit::send_basic_dataddx(BESResponseObject * obj,
-                                        BESDataHandlerInterface & dhi)
+void
+BESDapTransmit::send_basic_dataddx(BESResponseObject * obj,
+                                   BESDataHandlerInterface & dhi)
 {
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(obj);
-    if( !bdds )
-	throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-    DataDDS *dds = bdds->get_dds();
-    ConstraintEvaluator & ce = bdds->get_ce();
-    dhi.first_container();
-
-    bool found = false ;
-    string context = "transmit_protocol" ;
-    string protocol = BESContextManager::TheManager()->get_context( context,
-								    found ) ;
-    bool print_mime = false ;
-    if( protocol == "HTTP" ) print_mime = true ;
-
-    try {
-        DODSFilter df;
-        df.set_dataset_name(dds->filename());
-        df.set_ce(dhi.data[POST_CONSTRAINT]);
-	BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
-        df.send_data_ddx(*dds, ce, dhi.get_output_stream(),
-        	dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
-        	"", print_mime);
-    }
-    catch( InternalErr &e )
-    {
-        string err = "libdap error transmitting DataDDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, true, e.get_error_code(), __FILE__, __LINE__ ) ;
-    }
-    catch( Error &e )
-    {
-        string err = "libdap error transmitting DataDDS: "
-            + e.get_error_message() ;
-        throw BESDapError( err, false, e.get_error_code(), __FILE__, __LINE__ );
-    }
-    catch(...)
-    {
-        string s = "unknown error caught transmitting DataDDS" ;
-        BESInternalFatalError ex( s, __FILE__, __LINE__ ) ;
-        throw ex;
-    }
+  SendDataDDX sender;
+  sender.send(obj, dhi);
 }
-

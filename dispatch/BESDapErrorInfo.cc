@@ -36,9 +36,9 @@
  *         write any output to the stream
  */
 BESDapErrorInfo::BESDapErrorInfo( ErrorCode ec, const string &msg )
-    : _error_code( ec ),
-      _error_msg( msg ),
-      BESInfo( )
+    :BESInfo( ),
+    _error_code( ec ),
+    _error_msg( msg )
 {
 }
 
@@ -60,16 +60,16 @@ BESDapErrorInfo::begin_response( const string &response_name,
     BESInfo::begin_response( response_name, dhi ) ;
 }
 
-/** @brief add tagged information to the inforamtional response
+/** @brief add tagged information to the informational response
  *
- * @param tag_name name of the tag to add to the infroamtional response
+ * @param tag_name name of the tag to add to the informational response
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
 void
-BESDapErrorInfo::add_tag( const string &tag_name,
-			  const string &tag_data,
-			  map<string,string> *attrs )
+BESDapErrorInfo::add_tag( const string & /*tag_name*/,
+			  const string & /*tag_data*/,
+			  map<string,string> * /*attrs*/ )
 {
 }
 
@@ -80,7 +80,7 @@ BESDapErrorInfo::add_tag( const string &tag_name,
  */
 void
 BESDapErrorInfo::begin_tag( const string &tag_name ,
-			    map<string,string> *attrs )
+			    map<string,string> * /*attrs*/ )
 {
     BESInfo::begin_tag( tag_name ) ;
 }
@@ -97,14 +97,14 @@ BESDapErrorInfo::end_tag( const string &tag_name )
     BESInfo::end_tag( tag_name ) ;
 }
 
-/** @brief add data to the inforamtional object
+/** @brief add data to the informational object
  *
  * because this is a silent response, nothing is added
  *
  * @param s information to be ignored
  */
 void
-BESDapErrorInfo::add_data( const string &s )
+BESDapErrorInfo::add_data( const string & /*s*/ )
 {
 }
 
@@ -115,7 +115,7 @@ BESDapErrorInfo::add_data( const string &s )
  * @param num_spaces number of spaces to add
  */
 void
-BESDapErrorInfo::add_space( unsigned long num_spaces )
+BESDapErrorInfo::add_space( unsigned long /*num_spaces*/ )
 {
 }
 
@@ -126,7 +126,7 @@ BESDapErrorInfo::add_space( unsigned long num_spaces )
  * @param num_breaks number of line breaks to add
  */
 void
-BESDapErrorInfo::add_break( unsigned long num_breaks )
+BESDapErrorInfo::add_break( unsigned long /*num_breaks*/ )
 {
 }
 
@@ -137,7 +137,8 @@ BESDapErrorInfo::add_break( unsigned long num_breaks )
  * loaded.
  */
 void
-BESDapErrorInfo::add_data_from_file( const string &key, const string &name )
+BESDapErrorInfo::add_data_from_file( const string & /*key*/,
+                                     const string & /*name*/ )
 {
 }
 
@@ -148,7 +149,7 @@ BESDapErrorInfo::add_data_from_file( const string &key, const string &name )
  * responsible for this error
  */
 void
-BESDapErrorInfo::add_exception( BESError &e, const string &admin  )
+BESDapErrorInfo::add_exception( BESError & /*e*/, const string & /*admin*/  )
 {
 }
 
