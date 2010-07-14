@@ -46,9 +46,6 @@ extern "C" {
 #include <unistd.h>
 #endif
 
-#include <iostream>
-using std::cerr ;
-
 #include "BESKeys.h"
 #include "BESUtil.h"
 #include "BESFSDir.h"
@@ -82,7 +79,6 @@ BESKeys::BESKeys( const string &keys_file_name )
       _the_keys( 0 ),
       _own_keys( true )
 {
-    cerr << "loading " << keys_file_name << endl ;
     _the_keys = new map<string,vector<string> >;
     initialize_keys( ) ;
 }
@@ -93,7 +89,6 @@ BESKeys::BESKeys( const string &keys_file_name, map<string,vector<string> > *key
       _the_keys( keys ),
       _own_keys( false )
 {
-    cerr << "loading " << keys_file_name << endl ;
     initialize_keys( ) ;
 }
 
@@ -305,10 +300,8 @@ BESKeys::load_include_files( const string &files )
 	// files will be relative to this file.
 	BESFSFile currfile( _keys_file_name ) ;
 	string currdir = currfile.getDirName() ;
-	cerr << "currdir = " << currdir << endl ;
 
 	string alldir = allfiles.getDirName() ;
-	cerr << "alldir = " << alldir << endl ;
 
 	if( ( currdir == "./" || currdir == "." )
 	    && ( alldir == "./" || alldir == "." ) )
@@ -327,7 +320,6 @@ BESKeys::load_include_files( const string &files )
 	    }
 	}
     }
-    cerr << "newdir = " << newdir << endl ;
 
     // load the files one at a time. If the directory doesn't exist,
     // then don't load any configuration files

@@ -38,9 +38,6 @@
 #endif
 #include <stdio.h>
 
-#include <iostream>
-using std::cerr ;
-
 #include "BESFSDir.h"
 #include "BESRegex.h"
 #include "BESInternalError.h"
@@ -139,13 +136,8 @@ BESFSDir::loadDir()
                 else {
                     if (_fileExpr != "") {
                         BESRegex reg_expr(_fileExpr.c_str()) ;
-			cerr << "comparing " << _fileExpr
-			     << " to " << dirEntry
-			     << " using length " << dirEntry.length()
-			     << endl ;
 			int match_ret = reg_expr.match( dirEntry.c_str(),
 						        dirEntry.length() ) ;
-			cerr << "match returned " << match_ret << endl ;
 			if( match_ret == static_cast<int>(dirEntry.length()) )
 		        {
                             _fileList.push_back(BESFSFile(_dirName, dirEntry));

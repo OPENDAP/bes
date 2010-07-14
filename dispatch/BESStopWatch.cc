@@ -36,7 +36,6 @@
 #include <cstring>
 
 using std::string ;
-using std::cerr ;
 using std::endl ;
 
 #include "BESStopWatch.h"
