@@ -28,7 +28,9 @@ BES.module.dapcmd=@pkglibdir@/libdap_xml_module.so
 # long as it has some value.
 
 BES.Catalog.Default=catalog
-BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
+# The following variable is now set in bes.conf for convenience to the
+# majority of users who install the dap module.
+#BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 
 # The TypeMatch parameter is a list of handler/module names and a regular
 # expression separated by a colon. If the regular expression matches an item,

@@ -32,6 +32,22 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 #-----------------------------------------------------------------------#
+# Setting data information
+#-----------------------------------------------------------------------#
+
+# There are two ways the BES can be used. It can serve as a standalone
+# data server or it can work with the OLFS (i.e., as one component of
+# the OPeNDAP 4 Data Server Hyrax). How you point to data differs for
+# each of the two cases. Most users will be using the BES with the OLFS
+# as part of the OPeNDAP 4 Data Server Hyrax. In this case, set the
+# parameter below, BES.Catalog.catalog.RootDirectory, to point to the
+# root directory that contains the data you want to serve. In this case
+# the value of the 'BES.Data.RootDirectory' parameter, set below to
+# /dev/null, doesn't matter, so long as it has some value.
+
+BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
+
+#-----------------------------------------------------------------------#
 # NOTE: It is unlikely that you will need to change anything under      #
 #       this comment.                                                   #
 #-----------------------------------------------------------------------#
