@@ -32,6 +32,11 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 #-----------------------------------------------------------------------#
+# NOTE: It is unlikely that you will need to change anything under      #
+#       this comment.                                                   #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
