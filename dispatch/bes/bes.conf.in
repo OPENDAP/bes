@@ -60,20 +60,8 @@ BES.Catalog.catalog.RootDirectory=@datadir@/hyrax
 # 1. All module configuration files will be located under
 # <prefix>/etc/bes/modules. No modules are loaded in this configuration
 # file. The module configuration files are included at the very bottom
-# of this file.
-# 2. When the handlers are built, the handler's 'make' builds the
-# shared object module for Hyrax. The Hyrax shared object modules
-# are installed (using 'make install') in <prefix>/lib/bes. Make
-# sure you point to the Hyrax modules. The Hyrax modules all have
-# '_module' in their names.
-# 3. The commands that the BES responds to are also provided by modules,
-# so make sure that those are loaded in as well. Two modules are
-# required for use with Hyrax, the dap and cmd modules These are loaded
-# in the dap.conf configuration file under <prefix>/etc/bes/modules/.
-# 4. If you want ascii, info, and html responses provided by the bes, just
-# as in the Server3 handlers, then include the ascii, usage, and www
-# modules, which are loaded from dap-server.conf configuration file
-# under <prefix>/etc/bes/modules/.
+# of this file. And the module configuration files add to this
+# parameter.
 #
 BES.modules=
 
