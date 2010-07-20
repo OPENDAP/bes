@@ -222,7 +222,10 @@ BESContainerStorageFile::del_container( const string &s_name )
     {
 	BESContainerStorageFile::container *c = (*i).second;
 	_container_list.erase( i ) ;
-	delete c ;
+	if( c )
+	{
+	    delete c ;
+	}
 	ret = true ;
     }
     return ret ;

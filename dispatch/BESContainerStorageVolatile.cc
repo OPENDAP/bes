@@ -211,7 +211,10 @@ BESContainerStorageVolatile::del_container( const string &s_name )
     {
 	BESContainer *c = (*i).second;
 	_container_list.erase( i ) ;
-	delete c ;
+	if( c )
+	{
+	    delete c ;
+	}
 	ret = true ;
     }
     return ret ;
