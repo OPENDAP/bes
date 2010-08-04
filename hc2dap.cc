@@ -576,7 +576,10 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
         for (q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
             char *val = static_cast <char *>(ExportDataForDODS(f.vals[i], row));
             (*q)->val2buf(val);
+#if 0
             delete[] val;
+#endif
+            delete val;
             (*q)->set_read_p(true);
         }
 
