@@ -77,6 +77,11 @@ public:
 
     /// Pointers for Grid map and shared dimension data arrays
     dods_float32 **dimension_data;
+
+
+	/////////////////////////////////////////////
+	// Grid geoloc calculation
+	/////////////////////////////////////////////
     /// The bottom coordinate value of a Grid
     float point_lower;
     /// The top coordinate value of a Grid
@@ -89,6 +94,31 @@ public:
     float gradient_x;
     /// The resolution of latitude
     float gradient_y;
+
+	// PixelRegistration
+	enum {HE5_HDFE_CENTER, HE5_HDFE_CORNER};	
+		// These are actually EOS5 consts, but we define these 
+		// since we do not depend on the EOS5 lib.
+	int pixelregistration;	// either _HE5_HDFE_CENTER or _HE5_HDFE_CORNER
+
+	// GridOrigin
+	enum {
+		HE5_HDFE_GD_UL, HE5_HDFE_GD_UR,
+		HE5_HDFE_GD_LL, HE5_HDFE_GD_LR};
+	int gridorigin;	// one of HE5_HDFE_GD_UL, _UR, _LL, _LR
+
+	// These vars show whether the vars above are already read from the StructMetadata or not.
+	// These are used to check two (or more) grids have the same such vars or not.
+	bool bRead_point_lower,
+		 bRead_point_upper,
+		 bRead_point_left,
+		 bRead_point_right,
+		 bRead_pixelregistration,
+		 bRead_gridorigin;
+
+	/////////////////////////////////////////////
+	/////////////////////////////////////////////
+	
 
     /// Checks if the current HDF5 file is a valid HDF-EOS5 Grid file.
     ///

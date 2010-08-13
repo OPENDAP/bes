@@ -101,6 +101,15 @@ public:
     /// a variable that keeps track of StructMetadata parser's state.
     int  parser_state;
 
+	// The following three bool vars are used to make sure
+	// that a grid has exactly one 
+	//   Projection
+	//   UpperLeftPointMtrs
+	//   LowerRightMtrs
+	bool bReadProjection;
+	bool bReadUL;
+	bool bReadLR;
+
 #ifdef NASA_EOS_META
     /// A flag for merged Archived metadata. Once it's set, don't prcoess
     /// for other attribute variables that start with the same name.
@@ -187,5 +196,7 @@ public:
     bool set_metadata(hid_t id, char *metadata_name,
                       char *metadata_buffer);
 
+public:
+	std::string err_msg;	// Parse error message
 };
 #endif

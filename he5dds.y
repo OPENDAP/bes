@@ -66,6 +66,13 @@ void he5ddserror(char *s);
 %token GEO_FIELD_NAME		// for swath
 %token XDIM
 %token YDIM
+%token PIXELREGISTRATION	
+%token GRIDORIGIN			
+%token UPPERLEFTPT
+%token LOWERRIGHTPT
+%token DEFAULT
+%token GRIDNUM
+
 %%
 attribute_list: /* empty */
           | attribute_list object
@@ -138,6 +145,10 @@ attribute: attribute_grid_name
  	| attribute_dimension_list
 	| attribute_data_field_name
 	| attribute_geo_field_name
+	| attribute_upperleft
+	| attribute_lowerright
+	| attribute_pixelregistration
+	| attribute_gridorigin
         | projection
 	| DATA_TYPE 
 	| STR '=' dataseq
@@ -304,7 +315,39 @@ attribute_swath_name: SWATH_NAME '=' STR
 ;
 
 
-group:GROUP '=' STR
+group: GROUP '=' GRIDNUM
+	{
+		//fprintf(stderr, "------------%s----\n", $3);
+		((HE5Parser*)(he5parser))->bReadProjection = false;	
+		((HE5Parser*)(he5parser))->bReadUL= false;	
+		((HE5Parser*)(he5parser))->bReadLR= false;	
+
+	}
+      attribute_list
+      END_GROUP '=' GRIDNUM
+	{
+		//fprintf(stderr, "============%s====\n", $7);
+		if(!((HE5Parser*)(he5parser))->bReadProjection)
+		{
+			((HE5Parser*)(he5parser))->err_msg = 
+					"Projection information is missing in a grid.";
+			YYERROR;
+		}
+		if(!((HE5Parser*)(he5parser))->bReadUL)
+		{
+			((HE5Parser*)(he5parser))->err_msg = 
+					"UpperLeftPointMtrs information is missing in a grid.";
+			YYERROR;
+		}
+		if(!((HE5Parser*)(he5parser))->bReadLR)
+		{
+			((HE5Parser*)(he5parser))->err_msg = 
+					"LowerRightMtrs information is missing in a grid.";
+			YYERROR;
+		}
+	}
+|
+GROUP '=' STR
       {
 #ifdef VERBOSE	
 	cout << "GROUP=" << $3 <<  endl;
@@ -345,8 +388,16 @@ object:OBJECT '=' STR
 		
 projection: PROJECTION '=' HE5_GCTP_GEO
 {
-  // Set ((HE5Parser*)(he5parser))->valid_projection flag to "true".
-  ((HE5Parser*)(he5parser))->valid_projection = true;
+	//fprintf(stderr, "## Projection %s\n", $3);
+	// Set ((HE5Parser*)(he5parser))->valid_projection flag to "true".
+	((HE5Parser*)(he5parser))->valid_projection = true;
+	if(((HE5Parser*)(he5parser))->bReadProjection)
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"A grid has multiple Projection information.";
+		YYERROR;
+	}
+	((HE5Parser*)(he5parser))->bReadProjection = true;	
 #ifdef VERBOSE  
   cout << "Got projection " << endl;
 #endif  
@@ -357,10 +408,157 @@ PROJECTION '=' STR
 #ifdef VERBOSE  
   cerr << "Got wrong projection " << endl;
 #endif  
+	((HE5Parser*)(he5parser))->err_msg = 
+			std::string("") + "Only geographic projection (HE5_GCTP_GEO) is supported. The code of this projection is " + $3 + ".";
+	YYERROR;
 }
 ;
 
+attribute_pixelregistration: PIXELREGISTRATION STR
+{ 
+	//fprintf(stderr, "## %s %s\n", $1, $2);
+	int value=0;
 
+	if(strcmp("HE5_HDFE_CENTER", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_CENTER;
+	else if(strcmp("HE5_HDFE_CORNER", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_CORNER;
+	else
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"Wrong PixelRegistration Value";
+		YYERROR;
+	}
+	if(((HE5Parser*)(he5parser))->bRead_pixelregistration && 
+		(value != ((HE5Parser*)(he5parser))->pixelregistration))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"Grids have different PixelRegistration Value in StructMetadata";
+		YYERROR;
+	}
+
+	((HE5Parser*)(he5parser))->pixelregistration = value;
+	((HE5Parser*)(he5parser))->bRead_pixelregistration = true;
+}
+;
+
+attribute_gridorigin: GRIDORIGIN STR
+{ 
+	//fprintf(stderr, "## %s %s\n", $1, $2);
+	int value=0;
+
+	if(strcmp("HE5_HDFE_GD_UL", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_GD_UL;
+	else if(strcmp("HE5_HDFE_GD_UR", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_GD_UR;
+	else if(strcmp("HE5_HDFE_GD_LL", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_GD_LL;
+	else if(strcmp("HE5_HDFE_GD_LR", $2)==0)
+		value = HE5CFGrid::HE5_HDFE_GD_LR;
+	else
+	{
+		// Error
+		((HE5Parser*)(he5parser))->err_msg = 
+				"Wrong Grid Origin Value";
+		YYERROR;
+	}
+	if(((HE5Parser*)(he5parser))->bRead_gridorigin && 
+		(value != ((HE5Parser*)(he5parser))->gridorigin))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"Grids have different GridOrigin Value in StructMetadata";
+		YYERROR;
+	}
+
+	((HE5Parser*)(he5parser))->gridorigin = value;
+	((HE5Parser*)(he5parser))->bRead_gridorigin = true;
+
+}
+;
+
+attribute_upperleft: UPPERLEFTPT '(' FLOAT ',' FLOAT ')'
+{
+	//fprintf(stderr, "## %s %f %f\n", $1, atof($3), atof($5));
+	double value_left, value_upper;
+	value_left = atof($3);
+	value_upper = atof($5);
+	
+	if(((HE5Parser*)(he5parser))->bRead_point_left &&
+			(value_left != ((HE5Parser*)(he5parser))->point_left))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				("Grids have different UpperLeftPointMtrs in StructMetadata");
+		YYERROR;
+	}
+	if(((HE5Parser*)(he5parser))->bRead_point_upper &&
+			(value_upper != ((HE5Parser*)(he5parser))->point_upper))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+			("Grids have different UpperLeftPointMtrs in StructMetadata");
+		YYERROR;
+	}
+
+	((HE5Parser*)(he5parser))->point_left = value_left;
+	((HE5Parser*)(he5parser))->bRead_point_left = true;
+
+	((HE5Parser*)(he5parser))->point_upper = value_upper;
+	((HE5Parser*)(he5parser))->bRead_point_upper = true;
+
+	if(((HE5Parser*)(he5parser))->bReadUL)
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"A grid has multiple UpperLeftPointMtrs information.";
+		YYERROR;
+	}
+	((HE5Parser*)(he5parser))->bReadUL= true;	
+
+}
+		| UPPERLEFTPT DEFAULT
+{
+	//fprintf(stderr, "## %s %s\n", $1, $2);
+}
+;
+
+attribute_lowerright: LOWERRIGHTPT '(' FLOAT ',' FLOAT ')'
+{
+	//fprintf(stderr, "## %s %f %f\n", $1, atof($3), atof($5));
+	double value_right, value_lower;
+	value_right = atof($3);
+	value_lower = atof($5);
+	
+	if(((HE5Parser*)(he5parser))->bRead_point_right &&
+			(value_right != ((HE5Parser*)(he5parser))->point_right))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				("Grids have different LowerRightMtrs in StructMetadata");
+		YYERROR;
+	}
+	if(((HE5Parser*)(he5parser))->bRead_point_lower &&
+			(value_lower != ((HE5Parser*)(he5parser))->point_lower))
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				("Grids have different LowerRightMtrs in StructMetadata");
+		YYERROR;
+	}
+
+	((HE5Parser*)(he5parser))->point_right = value_right;
+	((HE5Parser*)(he5parser))->bRead_point_right = true;
+
+	((HE5Parser*)(he5parser))->point_lower = value_lower;
+	((HE5Parser*)(he5parser))->bRead_point_lower = true;
+
+	if(((HE5Parser*)(he5parser))->bReadLR)
+	{
+		((HE5Parser*)(he5parser))->err_msg = 
+				"A grid has multiple LowerRightMtrs information.";
+		YYERROR;
+	}
+	((HE5Parser*)(he5parser))->bReadLR= true;	
+}
+		| LOWERRIGHTPT DEFAULT
+{
+}
+;
 
 %%
 

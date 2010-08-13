@@ -27,6 +27,8 @@
 
 #include "HE5CFGrid.h"
 
+#include "BESInternalError.h"
+
 using namespace std;
 
 HE5CFGrid::HE5CFGrid()
@@ -42,6 +44,15 @@ HE5CFGrid::HE5CFGrid()
     point_upper = 0.0f;
     point_left = 0.0f;
     point_right = 0.0f;
+	pixelregistration = HE5CFGrid::HE5_HDFE_CENTER;
+	gridorigin = HE5CFGrid::HE5_HDFE_GD_UL;
+	bRead_point_lower=false;
+	bRead_point_upper=false;
+	bRead_point_left=false;
+	bRead_point_right=false;
+	bRead_pixelregistration=false;
+	bRead_gridorigin=false;
+
     gradient_x = 0.0f;
     gradient_y = 0.0f;
     dimension_data = NULL;
@@ -231,10 +242,21 @@ HE5CFGrid::set_grid_TES(bool flag)
 }
 
 
+/**
+ * This function calculates the values of lat/lon from the information
+ * in StructMetadata. Basically, it uses PixelRegistration, GridOrigin,
+ * UpperLeftPintMtrs and LowerRightMtrs.
+ *
+ * If the GridOrigin is UL or UR, lat progresses from UL_lat to LR_lat.
+ * If the GridOrigin is LL or LR, lat progresses from LR_lat to UL_lat.
+ * If the GridOrigin is UL or LL, lon progresses from UL_lon to LR_lon.
+ * If the GridOrigin is UR or LR, lat progresses from LR_lon to UL_lon.
+ *
+ * -Eunsoo Seo <eseo2@hdfgroup.org>
+ */
 bool
 HE5CFGrid::set_grid_dimension_data()
 {
-
     int i = 0;
     int j = 0;
     int size = _grid_dimension_list.size();
@@ -264,51 +286,88 @@ HE5CFGrid::set_grid_dimension_data()
                 throw InternalErr(__FILE__, __LINE__,
                                   "Unable to allocate memory.");
 
-            if ((dim_name.find("XDim", (int) dim_name.size() - 4)) !=
-                string::npos) {
-                _grid_lon = dim_size;
-                gradient_x =
-                    (point_right - point_left) / (float) (dim_size);
-                for (i = 0; i < dim_size; i++) {
-                    if(!_grid_TES){
-                        convbuf[i] = (dods_float32)
-                            (point_left
-                             + (float) i * gradient_x
-                             + (gradient_x / 2.0)) / 1000000.0;
-                    }
-                    else{
-                        convbuf[i] = (dods_float32)
-                            (point_left
-                             + (float) i * gradient_x) / 1000000.0;	    
-                    }
+			if ((dim_name.find("XDim", (int) dim_name.size() - 4)) != string::npos) {
+				_grid_lon = dim_size;
+				gradient_x =
+					(point_right - point_left) / (float) (dim_size);
+				if(_grid_TES){
+					for (i = 0; i < dim_size; i++)
+						convbuf[i] = (dods_float32)
+							(point_left
+							 + (float) i * gradient_x) / 1000000.0;	    
+				}
+				else
+				{
+					float start, end;
+					if(gridorigin == HE5_HDFE_GD_UL || gridorigin == HE5_HDFE_GD_LL)
+					{
+						start = point_left;
+						end = point_right;
+					}
+					else // (gridorigin == HE5_HDFE_GD_UR || gridorigin == HE5_HDFE_GD_LR)
+					{
+						end = point_left;
+						start = point_right;
+					}
+					float intv = (end-start) / dim_size;
+					if(pixelregistration == HE5_HDFE_CENTER)
+					{
+						for (i = 0; i < dim_size; i++)
+							convbuf[i] = (dods_float32) (((float)i + 0.5f) * intv + start) / 1000000.0;
+					}
+					else	// HE5_HDFE_CORNER
+					{
+						for (i = 0; i < dim_size; i++)
+							convbuf[i] = (dods_float32) (((float)i) * intv + start) / 1000000.0;
+					}
+				}
+			} else if ((dim_name.find("YDim", (int) dim_name.size() - 4)) != string::npos) {
+				_grid_lat = dim_size;
+				if(_grid_TES){
+					// swap the upper and lower points for TES products
+					float temp = point_upper;
+					point_upper = point_lower;
+					point_lower = temp;
+				} 
+				gradient_y =
+					(point_upper - point_lower) / (float) (dim_size);	
+				if(_grid_TES){
+					for (i = 0; i < dim_size; i++) {
+						gradient_y = ceilf(gradient_y/1000000.0f) * 1000000.0f;
+						convbuf[i] = (dods_float32)
+							(point_lower
+							 + (float) i * gradient_y) / 1000000.0;	    
+					}
+				}
+				else
+				{
+					float start, end;
+					if(gridorigin == HE5_HDFE_GD_UL || gridorigin == HE5_HDFE_GD_UR)
+					{
+						start = point_upper;
+						end = point_lower;
+					}
+					else // (gridorigin == HE5_HDFE_GD_LL || gridorigin == HE5_HDFE_GD_LR)
+					{
+						start = point_lower;
+						end = point_upper;
+					}
+					float intv = (end-start) / dim_size;
+					if(pixelregistration == HE5_HDFE_CENTER)
+					{
+						for (i = 0; i < dim_size; i++)
+							convbuf[i] = (dods_float32) (((float)i + 0.5f) * intv + start) / 1000000.0;
+					}
+					else	// HE5_HDFE_CORNER
+					{
+						for (i = 0; i < dim_size; i++)
+							convbuf[i] = (dods_float32) (((float)i) * intv + start) / 1000000.0;
+					}
+				}
 
-                }
-            } else if ((dim_name.find("YDim", (int) dim_name.size() - 4))
-                       != string::npos) {
-                _grid_lat = dim_size;
-                if(_grid_TES){
-                    // swap the upper and lower points for TES products
-                    float temp = point_upper;
-                    point_upper = point_lower;
-                    point_lower = temp;
-                }
 
-                gradient_y =
-                    (point_upper - point_lower) / (float) (dim_size);	
-                for (i = 0; i < dim_size; i++) {
-                    if(!_grid_TES){
-                        convbuf[i] = (dods_float32)
-                            (point_lower
-                             + (float) i * gradient_y
-                             + (gradient_y / 2.0)) / 1000000.0;
-                    }
-                    else{
-                        gradient_y = ceilf(gradient_y/1000000.0f) * 1000000.0f;
-                        convbuf[i] = (dods_float32)
-                            (point_lower
-                             + (float) i * gradient_y) / 1000000.0;	    
-                    }
-                }
+
+
             } else if ((dim_name.find("nCandidate",
                                       (int) dim_name.size() - 10))
                         != string::npos) {

@@ -25,6 +25,9 @@
 
 #include "HE5Parser.h"
 #include <InternalErr.h>
+#include "Error.h"
+#include "BESError.h"
+#include "BESInternalError.h"
 
 using namespace std;
 
@@ -103,7 +106,12 @@ bool HE5Parser::check_eos(hid_t id)
         if (_valid) {
 
             he5dds_scan_string(metadata_Struct);
-            he5ddsparse(this);
+			if(he5ddsparse(this))
+			{
+				// Parse error
+				//throw InternalErr( __FILE__, __LINE__, "HDF4 StructMetadata Parse Error");
+				throw BESInternalError("HDF5 StructMetadata Parse Error: " + err_msg, __FILE__, __LINE__);
+			}
 
             set_metadata(id, "coremetadata", metadata_core);
             set_metadata(id, "CoreMetadata", metadata_Core);
@@ -221,5 +229,11 @@ void HE5Parser::reset()
     memset(metadata_product, 0,sizeof(metadata_product));
     memset(metadata_subset, 0,sizeof(metadata_subset));
 
+	bRead_point_lower = false;
+	bRead_point_upper = false;
+	bRead_point_left = false;
+	bRead_point_right = false;
+	bRead_pixelregistration = false;
+	bRead_gridorigin = false;
 }
 

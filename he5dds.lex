@@ -46,6 +46,12 @@ GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
 XDIM                    XDim=
 YDIM                    YDim=
+PIXELREGISTRATION	PixelRegistration=
+GRIDORIGIN			GridOrigin=
+UPPERLEFTPT			UpperLeftPointMtrs=
+LOWERRIGHTPT		LowerRightMtrs=
+DEFAULT				DEFAULT
+GRIDNUM				GRID_[1-9]+[0-9]*
 
 INT	[-+]?[0-9]+
 
@@ -74,6 +80,13 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {HE5_GCTP_GEO} 	    	he5ddslval = yytext; return HE5_GCTP_GEO;
 {XDIM}	    	    	he5ddslval = yytext; return XDIM;
 {YDIM}	    	    	he5ddslval = yytext; return YDIM;
+{PIXELREGISTRATION}	   	he5ddslval = yytext; return PIXELREGISTRATION;
+{GRIDORIGIN}	       	he5ddslval = yytext; return GRIDORIGIN;
+{UPPERLEFTPT}  	    	he5ddslval = yytext; return UPPERLEFTPT;
+{LOWERRIGHTPT} 	    	he5ddslval = yytext; return LOWERRIGHTPT;
+{DEFAULT} 	    	he5ddslval = yytext; return DEFAULT;
+{GRIDNUM} 	    	he5ddslval = yytext; return GRIDNUM;
+
 {GRID_NAME}           	he5ddslval = yytext; return GRID_NAME;
 {SWATH_NAME}           	he5ddslval = yytext; return SWATH_NAME;
 {DIMENSION_SIZE} 	he5ddslval = yytext; return DIMENSION_SIZE;
