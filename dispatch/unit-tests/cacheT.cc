@@ -55,12 +55,12 @@ using std::ostringstream ;
 #include "BESError.h"
 #include <test_config.h>
 
-class connT: public TestFixture {
+class cacheT: public TestFixture {
 private:
 
 public:
-    connT() {}
-    ~connT() {}
+    cacheT() {}
+    ~cacheT() {}
 
     void setUp()
     {
@@ -146,7 +146,7 @@ public:
 	}
     }
 
-    CPPUNIT_TEST_SUITE( connT ) ;
+    CPPUNIT_TEST_SUITE( cacheT ) ;
 
     CPPUNIT_TEST( do_test ) ;
 
@@ -466,7 +466,7 @@ public:
     }
 } ;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( connT ) ;
+CPPUNIT_TEST_SUITE_REGISTRATION( cacheT ) ;
 
 int 
 main( int, char** )
