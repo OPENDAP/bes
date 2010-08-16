@@ -1,6 +1,10 @@
 
 	$Id$
 
+News for version 1.4.2
+
+Bug fixes
+
 News for version 1.4.1
 
 Performance improvements when using HDF5 1.8

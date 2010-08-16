@@ -1,3 +1,12 @@
+2010-08-15 Eunsoo Seo <eseo2@hdfgroup.org>
+	* A bug in the Grid lat/lon calgulation logic is fixed.
+	  Previously, the logic did not use PixelRegistration and
+	  GridOrigin information.
+	* If there are >1 grids in a file, they are required to
+	  use the same grid parameters (Projection, PixelRegistration,
+	  GridOrigin, UpperLeftPointMtrs and LowerRightMtrs.
+	  This was not checked in the previous version.
+
 2010-04-28  hyoklee
 
 	Updated ChangeLog.
