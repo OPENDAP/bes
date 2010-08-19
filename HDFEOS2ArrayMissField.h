@@ -1,0 +1,42 @@
+/////////////////////////////////////////////////////////////////////////////
+// This file is part of the hdf4 data handler for the OPeNDAP data server.
+// It retrieves the missing "third-dimension" values of the HDF-EOS2 Grid.
+// Some third-dimension coordinate variable values are not provided. 
+// What we do here is to provide natural number series(1,2,3, ...) for
+// these missing values. It doesn't make sense to visualize or analyze 
+// with vertical cross-section. One can check the data level by level.
+//  Authors:   MuQun Yang <myang6@hdfgroup.org> 
+// Copyright (c) 2009 The HDF Group
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef HDFEOS2ARRAY_MISSFIELD_H
+#define HDFEOS2ARRAY_MISSFIELD_H
+
+#include "Array.h"
+using namespace libdap;
+
+class HDFEOS2ArrayMissGeoField:public Array
+{
+  public:
+  HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const string & n = "", BaseType * v = 0):
+	Array (n, v), rank (rank), tnumelm (tnumelm) {
+	}
+	virtual ~ HDFEOS2ArrayMissGeoField ()
+	{
+	}
+	int format_constraint (int *cor, int *step, int *edg);
+
+	BaseType *ptr_duplicate ()
+	{
+		return new HDFEOS2ArrayMissGeoField (*this);
+	}
+
+	virtual bool read ();
+
+  private:
+
+	int rank, tnumelm;
+};
+
+
+#endif

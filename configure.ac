@@ -107,15 +107,6 @@ AC_SUBST(testurl)
 
 
 
-AM_CONDITIONAL([CF], [false])
-AC_ARG_ENABLE([cf], 
-	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF metadata convention support will be enabled.])],
-	     [use_cf=$enableval],[use_cf=no])
-if test "${use_cf}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DCF"
-   AM_CONDITIONAL([CF], [true])
-fi 
-
 dnl ----------------------------------------------------------------------                                
 dnl Test for HDF-EOS2                                                                                     
 
@@ -142,6 +133,21 @@ fi
 AC_SUBST([HDFEOS2_LIBS])
 
 dnl ----------------------------------------------------------------------                                
+dnl Shorten variable names if enabled. 
+AC_ARG_ENABLE([short-name], 
+	     [AS_HELP_STRING([--enable-short-name=yes],[Variable and dimension names will be shortened to 15 characters.])],
+	     [use_short_name=$enableval],[use_short_name=no])
+if test "${use_short_name}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DSHORT_NAME"
+fi 
+
+dnl Enable CF compliant output for NASA HDF4 files like CERES.  
+AC_ARG_ENABLE([cf], 
+	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF-1.x convention support will be enabled.])],
+	     [use_cf=$enableval],[use_cf=no])
+if test "${use_cf}" = "yes"; then
+   CPPFLAGS="$CPPFLAGS -DCF"
+fi 
 
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile

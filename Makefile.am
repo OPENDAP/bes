@@ -39,13 +39,13 @@ HDFTYPE_SRC = 	$(GRAM_SRC) \
 	HDFInt32.cc HDFStructure.cc HDFFloat64.cc HDFUInt16.cc \
 	HDFTypeFactory.cc 
 
-if CF
-CF_SRC = HDFEOS.cc HDFEOSGrid.cc HDFEOSArray.cc HDFCFSwath.cc
-HDFTYPE_SRC += $(CF_SRC)
-endif
-
 if HDFEOS2
-HDFEOS2_SRC = HDFEOS2.cc HDFEOS2Array.cc HDFEOS2Array2D.cc 
+HDFEOS2_SRC = HDFEOS2.cc HDFEOS2Util.cc HDFSPUtil.cc HDFSP.cc HDFSPArrayGeoField.cc\
+		HDFSPArrayMissField.cc HDFSPArray_RealField.cc HDFSPArray_VDField.cc\
+	          HDFEOS2Array_RealField.cc \
+	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
+              HDFEOS2ArraySwathDimMapField.cc HDFEOS2ArraySwathGeoDimMapField.cc HDFEOS2ArraySwathGeoDimMapExtraField.cc \
+	     HE2CFNcML.cc HE2CFShortName.cc HE2CFValidChar.cc HE2CFUniqName.cc HE2CF.cc 
 HDFTYPE_SRC += $(HDFEOS2_SRC)
 endif
 
@@ -53,26 +53,20 @@ HDFTYPE_HDR = HDFArray.h HDFFloat32.h HDFInt16.h HDFSequence.h HDFUInt16.h \
 	HDFByte.h HDFFloat64.h HDFInt32.h HDFStr.h HDFUInt32.h \
 	HDFGrid.h HDFStructure.h HDFUrl.h HDFTypeFactory.h 
 
-if CF
-CF_HDR = HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
-HDFTYPE_HDR += $(CF_HDR)
-endif
 
 if HDFEOS2
-HDFEOS2_HDR = HDFEOS2.h HDFEOS2Array.h HDFEOS2Array2D.h 
+HDFEOS2_HDR = HDFEOS2.h HDFSP.h HDFSPUtil.h\
+		HDFSPArrayGeoField.h HDFSPArrayMissField.h HDFSPArray_RealField.h \
+              HDFSPArray_VDField.h HDFEOS2Array_RealField.h \
+              HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
+              HDFEOS2ArraySwathDimMapField.h\
+              HDFEOS2ArraySwathGeoDimMapField.h HDFEOS2ArraySwathGeoDimMapExtraField.h HDFEOS2Util.h\
+              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h
 HDFTYPE_HDR += $(HDFEOS2_HDR)
 endif
 
 GRAM_SRC = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc 
 
-if CF
-CF_GRAM_SRC = hdfeos2.tab.cc hdfeos2.tab.hh lex.hdfeos2.cc
-endif
-
-if CF
-# Parser for EOS Grid generation is added. <hyokyung 2008.11.11. 10:21:13>
-GRAM_SRC += $(CF_GRAM_SRC)
-endif
 
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
@@ -83,22 +77,12 @@ SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
 
 SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
-# Added files that are conditionally compiled so that when we build a
-# dist they are included even though the configure option is not used.
-# jhrg 3/8/10
-EXTRA_DIST = data hdf-testfiles \
-	hdfeos.y hdfeos.lex hdfeos2.y hdfeos2.lex \
+EXTRA_DIST = data bes-testsuite hdf-testfiles \
+	hdfeos.y hdfeos.lex \
 	COPYRIGHT_URI hdf4_handler.spec \
-	OSX_Resources h4.conf.in \
-	HDFEOS2.cc HDFEOS2Array.cc HDFEOS2Array2D.cc \
-	HDFEOSGrid.h HDFEOSArray.h HDFCFSwath.h
+	OSX_Resources h4.conf.in
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
-
-# Not nearly as clean as it could be, but this removes .svn directories
-# in subdirs.
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
@@ -145,13 +129,10 @@ fortifyclean:
 # Build linux RPMs
 
 srpm: dist
-	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm: dist
-	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
-
-rpm-nodeps: dist
-	rpmbuild -tb --clean --nodeps @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
 
@@ -161,18 +142,12 @@ hdfeos.tab.cc hdfeos.tab.hh: hdfeos.y
 	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos  -o hdfeos.tab.cc $<
 	if test -e hdfeos.tab.cc.h; then mv hdfeos.tab.cc.h hdfeos.tab.hh; fi
 
-hdfeos2.tab.cc hdfeos2.tab.hh: hdfeos2.y HDFEOS.h
-	$(YACC) $(YFLAGS) $(AM_YFLAGS) -p hdfeos2 -o hdfeos2.tab.cc $<
-	if test -e hdfeos2.tab.cc.h; then mv hdfeos2.tab.cc.h hdfeos2.tab.hh; fi
 
 # Build the HDF-EOS scanner
 
 lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
 	$(LEX) $(LFLAGS) $(AM_LFLAGS) -Phdfeos $<
 	mv lex.hdfeos.c lex.hdfeos.cc
-
-lex.hdfeos2.cc: hdfeos2.lex hdfeos2.tab.cc hdfeos2.tab.hh
-	$(LEX) $(LFLAGS) $(AM_LFLAGS) $<
 
 ###########################################################################
 
