@@ -52,12 +52,35 @@
 
 #define HDF4_NAME "h4"
 
-extern void read_das(DAS & das, const string & cachedir,
-                     const string & filename);
-extern void read_dds(DDS & dds, const string & cachedir,
-                     const string & filename);
+extern void read_das(DAS & das, const string & filename);
+extern void read_dds(DDS & dds, const string & filename);
 
-string HDF4RequestHandler::_cachedir = "";
+
+#ifdef USE_HDFEOS2_LIB
+#include "HE2CFNcML.h"
+#include "HE2CFShortName.h"
+#include "HE2CF.h"
+void
+read_conf_xml(DAS & das, const string & filename,
+              HE2CFNcML* ncml,
+              HE2CFShortName* sn, HE2CFShortName* sn_dim,
+              HE2CFUniqName* un, HE2CFUniqName* un_dim);
+void
+set_counters(HE2CFShortName* sn, HE2CFShortName* sn_dim,
+             HE2CFUniqName* un, HE2CFUniqName* un_dim);
+void
+read_das_use_eos2lib(DAS & das, const string & filename,
+             HE2CFNcML* ncml,
+             HE2CFShortName* sn, HE2CFShortName* sn_dim,
+             HE2CFUniqName* un, HE2CFUniqName* un_dim); 
+
+void
+read_dds_use_eos2lib(DDS & dds, const string & filename,
+             HE2CFNcML* ncml,
+             HE2CFShortName* sn, HE2CFShortName* sn_dim,
+             HE2CFUniqName* un, HE2CFUniqName* un_dim);
+#endif
+
 
 HDF4RequestHandler::HDF4RequestHandler(const string & name)
     :BESRequestHandler(name)
@@ -67,54 +90,6 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name)
     add_handler(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
     add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
     add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
-
-    if (HDF4RequestHandler::_cachedir.empty()) {
-        bool found = false;
-        TheBESKeys::TheKeys()->get_value("HDF4.CacheDir", _cachedir, found);
-#if 0
-        if (!found || _cachedir == "")
-            _cachedir = "/tmp";
-#else
-        // Turn caching off
-        if (!found)
-            _cachedir = "";
-#endif
-        if (!_cachedir.empty()) {
-        string HDF4_file = _cachedir + "/HDF4XXXXXX";
-        char *HDF4_temp = new char[HDF4_file.length() + 1];
-	string::size_type len =
-	HDF4_file.copy(HDF4_temp,HDF4_file.length());
-	*(HDF4_temp+len) = '\0';
-        mode_t original_mask = umask(077);
-        int fd = mkstemp(HDF4_temp);
-        (void)umask(original_mask);
-
-        if (fd == -1) {
-	    delete[] HDF4_temp;
-#if 0
-            if (_cachedir == "/tmp") {
-		// fd is -1 so should not close here
-                //close(fd);
-#endif
-                string err =
-                    "Could not create a file in the cache directory (" +
-                    _cachedir + ")";
-                throw BESInternalError(err, __FILE__, __LINE__);
-#if 0
-            }
-            _cachedir = "/tmp";
-#endif
-        }
-	else
-	{
-	    // should only do this if we were successful in running
-	    // mkstemp and got back a valid fd.
-	    (void)unlink(HDF4_temp);
-	    close(fd);
-	    delete[] HDF4_temp;
-	}
-        }
-    }
 }
 
 HDF4RequestHandler::~HDF4RequestHandler()
@@ -133,7 +108,17 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
 	DAS *das = bdas->get_das();
 
         string accessed = dhi.container->access();
-        read_das(*das, _cachedir, accessed);
+#ifdef USE_HDFEOS2_LIB
+        HE2CFNcML ncml;         // for conf input file
+        HE2CFShortName sn;      // for variable 
+        HE2CFShortName sn_dim;  // for dimension
+        HE2CFUniqName un;       // for variable name clashing
+        HE2CFUniqName un_dim;   // for dimension name clashing        
+        read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+        read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+#else
+        read_das(*das, accessed); 
+#endif
 	Ancillary::read_ancillary_das( *das, accessed ) ;
 
 	bdas->clear_container() ;
@@ -174,14 +159,33 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
-        read_dds(*dds, _cachedir, accessed);
-	Ancillary::read_ancillary_dds( *dds, accessed ) ;
 
         DAS *das = new DAS ;
 	BESDASResponse bdas( das ) ;
 	bdas.set_container( dhi.container->get_symbolic_name() ) ;
-        read_das( *das, _cachedir, accessed ) ;
+#ifdef USE_HDFEOS2_LIB        
+        HE2CFNcML ncml;         // for conf input file
+        HE2CFShortName sn;      // for variable
+        HE2CFShortName sn_dim;  // for dimension
+        HE2CFUniqName un;       // for variable name clashing
+        HE2CFUniqName un_dim;   // for dimension name clashing        
+        read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+        read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);        
+#else
+        read_das( *das, accessed );
+#endif
 	Ancillary::read_ancillary_das( *das, accessed ) ;
+
+#ifdef USE_HDFEOS2_LIB        
+        // Reset all counters to 0.
+        set_counters(&sn, &sn_dim, &un, &un_dim);
+        read_dds_use_eos2lib(*dds, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+#else
+        read_dds( *dds, accessed );
+#endif
+
+	Ancillary::read_ancillary_dds( *dds, accessed ) ;
+
         dds->transfer_attributes( das ) ;
 
 	bdds->set_constraint( dhi ) ;
@@ -224,14 +228,31 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
-        read_dds(*dds, _cachedir, accessed);
-	Ancillary::read_ancillary_dds( *dds, accessed ) ;
 
         DAS *das = new DAS ;
 	BESDASResponse bdas( das ) ;
 	bdas.set_container( dhi.container->get_symbolic_name() ) ;
-        read_das( *das, _cachedir, accessed ) ;
+#ifdef USE_HDFEOS2_LIB        
+        HE2CFNcML ncml;         // for conf input file
+        HE2CFShortName sn;      // for variable
+        HE2CFShortName sn_dim;  // for dimension
+        HE2CFUniqName un;       // for variable name clashing
+        HE2CFUniqName un_dim;   // for dimension name clashing                
+        read_conf_xml(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+        read_das_use_eos2lib(*das, accessed, &ncml, &sn, &sn_dim, &un, &un_dim) ;
+#else
+        read_das( *das, accessed );
+#endif
 	Ancillary::read_ancillary_das( *das, accessed ) ;
+#ifdef USE_HDFEOS2_LIB                
+        // Reset all counters to 0.
+        set_counters(&sn, &sn_dim, &un, &un_dim);
+        read_dds_use_eos2lib(*dds, accessed, &ncml, &sn, &sn_dim, &un, &un_dim);
+#else
+        read_dds(*dds, accessed );
+#endif
+	Ancillary::read_ancillary_dds( *dds, accessed ) ;
+
         dds->transfer_attributes( das ) ;
 
 	bdds->set_constraint( dhi ) ;
