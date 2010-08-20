@@ -11,11 +11,22 @@ AC_CONFIG_TESTDIR(bes-testsuite, [.])
 AC_CONFIG_SRCDIR([HDF5UInt32.h])
 AM_CONFIG_HEADER([config_hdf5.h])
 
+# AC_PROG_MKDIR_P
+# is a backport of autoconf-2.60's AC_PROG_MKDIR_P.
+# Remove this macro when we can assume autoconf >= 2.60.
+m4_ifdef([AC_PROG_MKDIR_P], [], [
+  AC_DEFUN([AC_PROG_MKDIR_P],
+    [AC_REQUIRE([AM_PROG_MKDIR_P])dnl defined by automake
+     MKDIR_P='$(mkdir_p)'
+     AC_SUBST([MKDIR_P])])])
+AC_PROG_MKDIR_P
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_MKDIR_P
+AC_PROG_LEX
 AC_CHECK_PROG(YACC,[bison],[bison])
 # Checks for libraries.
 
