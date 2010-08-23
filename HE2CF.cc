@@ -277,13 +277,13 @@ bool HE2CF::set_metadata(const string&  _name)
     
     for(int i = -1; i < num_global_attributes; i++){
         
-        char name[MAX_NC_NAME];
+        char name[H4_MAX_NC_NAME];
         
         if(i == -1){
-            snprintf(name, MAX_NC_NAME, "%s", _name.c_str());
+            snprintf(name, H4_MAX_NC_NAME, "%s", _name.c_str());
         }
         else{
-            snprintf(name, MAX_NC_NAME, "%s.%d", _name.c_str(), i);
+            snprintf(name, H4_MAX_NC_NAME, "%s.%d", _name.c_str(), i);
         }
         
         int32 sds_index = SDfindattr(sd_id, name);
@@ -298,8 +298,8 @@ bool HE2CF::set_metadata(const string&  _name)
             }
         }
         else {
-            // MAX_NC_NAME is from the user guide example. It's 256.
-            char temp_name[MAX_NC_NAME];     
+            // H4_MAX_NC_NAME is from the user guide example. It's 256.
+            char temp_name[H4_MAX_NC_NAME];     
             int32 type=0;
             int32 count = 0;
             if(SDattrinfo(sd_id, sds_index, temp_name, &type, &count) == FAIL) {
@@ -349,7 +349,7 @@ bool HE2CF::set_vgroup_map(int32 _refid)
     
     for (int i = 0; i < npairs; ++i) {
         int32 tag2, ref2;
-        char buf[MAX_NC_NAME];
+        char buf[H4_MAX_NC_NAME];
         
         if (Vgettagref(vgroup_id, i, &tag2, &ref2) < 0){
             ostringstream error;
@@ -363,7 +363,7 @@ bool HE2CF::set_vgroup_map(int32 _refid)
             sds_id = SDselect(sd_id, sds_id); // sds_id 
             
             int32 rank;
-            int32 dimsizes[MAX_VAR_DIMS];
+            int32 dimsizes[H4_MAX_VAR_DIMS];
             int32 datatype;
             int32 num_attrs;
         
@@ -431,10 +431,10 @@ bool HE2CF::write_attr_long_name(const string& _group_name,
 bool 
 HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 {
-    char buf_var[MAX_NC_NAME];
-    char buf_attr[MAX_NC_NAME];        
+    char buf_var[H4_MAX_NC_NAME];
+    char buf_attr[H4_MAX_NC_NAME];        
     int32 rank;
-    int32 dimsizes[MAX_VAR_DIMS];
+    int32 dimsizes[H4_MAX_VAR_DIMS];
     int32 datatype;
     int32 num_attrs;
     int32 n_values;
@@ -479,11 +479,11 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 	    string print_rep = print_attr(datatype, loc, (void *)value);
 
             // Override any existing _FillValue attribute.
-            if(!strncmp(buf_attr, "_FillValue", MAX_NC_NAME)){
+            if(!strncmp(buf_attr, "_FillValue", H4_MAX_NC_NAME)){
                at->del_attr(buf_attr);      
             }
             // Override any existing long_name attribute.
-            if(!strncmp(buf_attr, "long_name", MAX_NC_NAME)){
+            if(!strncmp(buf_attr, "long_name", H4_MAX_NC_NAME)){
                at->del_attr(buf_attr);      
             }
 	    at->append_attr(buf_attr, print_type(datatype), print_rep);
@@ -498,7 +498,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname)
 bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
 {
     int32 number_type, count, size;
-    char buf[MAX_NC_NAME];
+    char buf[H4_MAX_NC_NAME];
     
     int vid;
     
@@ -545,11 +545,11 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname)
 	    string print_rep = print_attr(number_type, j, (void *)data);
 
             // Override any existing _FillValue attribute.
-            if(!strncmp(buf, "_FillValue", MAX_NC_NAME)){
+            if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
                at->del_attr(buf);      
             }
             // Override any existing long_name attribute.
-            if(!strncmp(buf, "long_name", MAX_NC_NAME)){
+            if(!strncmp(buf, "long_name", H4_MAX_NC_NAME)){
                at->del_attr(buf);      
             }
 	    at->append_attr(buf, print_type(number_type), print_rep);
