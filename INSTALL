@@ -3,6 +3,82 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
+Updated for 3.9.0
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+REQUIREMENTS
+NOTES
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+
+0) Please skim REQUIREMENTS and NOTES sections of this file and README file before reporting
+   problems. Thanks.
+
+*) IMPORTANT NOTE: The versions of hdf4 that are installed by package
+    managers such as Yum and rpm often are not capable of being linked with a
+    shared library/module, whcih is how the hdf4 handler must be built. To
+    correct this, you may need to build the HDF4 library from soruce and
+    specify the '--with-pic' option to configure. This may be a problem only
+    on non-i386 linux machines; reports vary. To build the handler on OS/X
+    and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
+    Red Hat or CentOS) it was necessary to build hdf4. To d so I ran
+    configure as './configure --with-pic --disable-fortran --disable-netcdf'
+
+1) In this version of the release, the handler is enhanced to support the access 
+   of many NASA HDF-EOS2 products and some NASA pure HDF4 products by many 
+   CF-compliant visualization NASA pure HDF4 products by many CF-compliant
+   CF-compliant visualization clients such as IDV and Panoply. To take advanage of this
+   feature, the configuration option is different, please read carefully about 
+   the following the note.
+
+*) Build from the source, one MUST use HDF-EOS2 library and configure with
+   the following option:
+   ./configure --with-hdf4=<Your HDF4 library path> --with-hdfeos2=<Your HDF-EOS2 library path> --prefix=<Your installation path>
+
+   Without specifying the option "--with-hdfeos2" will result in configuring the default HDF4 OPeNDAP handler.
+The HDF4 handler with the default options can NOT make the NASA HDF-EOS2 products and some NASA pure HDF4 products work
+with CF-compliant visualization clients
+
+   Some variable paths are pretty long(>15 characters). COARD conventions require the number of characters in a field doesn't exceed
+15 characters. So the above configuration option may cause some OPeNDAP clients that are still following COARD conventions.
+To compensate that, we provide a configuration option to shorten the name so that in doesn't exceed 15 characters.
+To address the potential name clashing issue, both options may make some variable names to change so that unique variable names
+are present in the OPeNDAP output. To best preserve the original variable names, we recommend not to use --enable-short-name option
+if necessary. To configure the handler with the short name option, do the following:
+
+./configure --with-hdf4=<Your HDF4 library path> --with-hdfeos2=<Your HDF-EOS2 library path> --prefix=<Your installation path> --enable-short-name
+
+  To find the information on how to build the HDF-EOS2 library, please check http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-eos2  
+*) Install from RPMs
+
+   
+*) To build the handler with the default option, 
+   Type `./configure' at the system prompt. On some systems you may have to
+   type `sh configure.' If you want this part of the server to install
+   someplace other than /usr/local/bin, use --prefix to change the prefix
+   from the default "/use/local/."
+
+2) Type `make' to build the server module.
+
+3) Install the server module in $prefix by running `make install'. This
+   will also add the new h4.conf file to the $prefix/etc/bes/modules directoy.
+   The BES configuration file bes.conf will automatically load any module
+   configuration files in that directory. The h4.conf file contains hdf4_handler
+   specific configurations for use with the BES Framework. This includes
+   some parameters that used to be in the bes.conf file, such as the TypeMatch
+   parameter for finding your files.
+
+4) For some installations, you must arrange for your operating system to find
+   the shared libraries installed by default in $prefix/lib. Do this by
+   either setting an environment variable such as LD_LIBRARY_PATH or by
+   editing /etc/ld.so.conf. Different operating systems handle this in
+   different ways.
+
+
 Updated for 3.8.1
 
 ---------------------------------------------------------------------------
