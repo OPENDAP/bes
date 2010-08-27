@@ -38,6 +38,8 @@ HE5CF::HE5CF()
     // Grid dimension names that are used for pseudo coordinate variables
     eos_to_cf_map["XDim"] = "lon";
     eos_to_cf_map["YDim"] = "lat";
+    eos_to_cf_map["Xdim"] = "lon";
+    eos_to_cf_map["Ydim"] = "lat";
     eos_to_cf_map["nLevels"] = "lev";    
     eos_to_cf_map["nCandidate"] = "lev";
     eos_to_cf_map["nWavel"] = "time";
