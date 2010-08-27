@@ -687,6 +687,15 @@ static void write_grid_shared_dimensions(DDS & dds_table,
             string str_grid_name = eos.get_grid_name(dimension_names.at(j));
             string str_cf_name =
                 eos.get_CF_name((char*) dimension_names.at(j).c_str());
+	
+#ifdef SHORT_PATH
+		// This shortens the long dimension names. Eunsoo 8/27/2010
+		// This will shorten the path not listed in the eos_to_cf_map
+                // in HE5CF.cc
+		str_cf_name = get_short_name_dimscale(str_cf_name);
+#endif
+		
+	
             // Check for duplicate dimension names.
             int old_dim_size = grid_dimension_processed[str_cf_name];
             if(old_dim_size > 0) {
@@ -758,6 +767,9 @@ static void process_grid_nasa_eos(const string &varname,
         // Rename dimension name according to CF convention.
         str_dim_full_name =
             eos.get_CF_name((char *) str_dim_full_name.c_str());
+#ifdef SHORT_PATH
+	str_dim_full_name = get_short_name_dimscale(str_dim_full_name);
+#endif 
 #endif
 
         BaseType *bt = 0;
