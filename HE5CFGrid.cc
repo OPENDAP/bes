@@ -227,6 +227,15 @@ HE5CFGrid::set()
         _grid_variable_list.clear();
     }
 
+    pixelregistration = HE5CFGrid::HE5_HDFE_CENTER;
+    gridorigin = HE5CFGrid::HE5_HDFE_GD_UL;
+    bRead_point_lower = false;
+    bRead_point_upper = false;
+    bRead_point_left = false;
+    bRead_point_right = false;
+    bRead_pixelregistration = false;
+    bRead_gridorigin = false;
+
 }
 
 void

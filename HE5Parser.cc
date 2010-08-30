@@ -228,12 +228,5 @@ void HE5Parser::reset()
     memset(metadata_core, 0,sizeof(metadata_core));
     memset(metadata_product, 0,sizeof(metadata_product));
     memset(metadata_subset, 0,sizeof(metadata_subset));
-
-	bRead_point_lower = false;
-	bRead_point_upper = false;
-	bRead_point_left = false;
-	bRead_point_right = false;
-	bRead_pixelregistration = false;
-	bRead_gridorigin = false;
 }
 
