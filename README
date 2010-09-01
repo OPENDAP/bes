@@ -26,6 +26,8 @@ if necessary. To configure the handler with the short name option, do the follow
 To find the information on how to build the HDF-EOS2 library, please check http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-eos2
 
 
+To build RPMs by yourself, check the directory build_rpms_eosoption. 
+
 Section II. NASA products that are supported to be accessed via Java and other OPeNDAP visualization clients
 
 The following NASA HDF-EOS2 products are tested with IDV and Panoply, check the Limitation section for the limitations:

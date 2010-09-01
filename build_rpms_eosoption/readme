@@ -1,0 +1,3 @@
+Need to update NEWS,INSTALL, configure.ac and hdf4_handler.spec to build RRMS
+No need to do anything when installing the RPMs.
+
