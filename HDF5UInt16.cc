@@ -35,10 +35,10 @@
 #include "HDF5UInt16.h"
 #include "HDF5Structure.h"
 
-typedef struct s2_t {
+typedef struct s2_uint16_t {
     /// Buffer for a 16 bit integer in compound data
     dods_int16 a;
-} s2_t;
+} s2_uint16_t;
 
 
 HDF5UInt16::HDF5UInt16(const string & n, const string &d) : UInt16(n, d)
@@ -83,18 +83,18 @@ bool HDF5UInt16::read()
         int j = 0;
         int k = 0;
 
-        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_uint16_t));
         hid_t stemp_tid;
 
 	if (s1_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	}
 #if 0	
-        s2_t *buf = 0;
+        s2_uint16_t *buf = 0;
 	try {
-	    buf = new s2_t[p.get_entire_array_size()];
+	    buf = new s2_uint16_t[p.get_entire_array_size()];
 #endif
-	    vector<s2_t> buf(p.get_entire_array_size());
+	    vector<s2_uint16_t> buf(p.get_entire_array_size());
         string myname = name();
         string parent_name;
 
@@ -109,7 +109,7 @@ bool HDF5UInt16::read()
                     // Bottom level structure
                     DBG(cerr << "=read() my_name " << myname.
                         c_str() << endl);
-                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
+                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_uint16_t, a),
                               H5T_NATIVE_UINT16) < 0){
 			 throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
                     }
@@ -117,7 +117,7 @@ bool HDF5UInt16::read()
                     DBG(cerr << k << "=read() parent_name=" << parent_name
                         << endl);
 
-                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_uint16_t));
 	 	    if (stemp_tid < 0){
            		throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	            }

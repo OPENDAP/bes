@@ -37,10 +37,10 @@
 #include "HDF5Structure.h"
 
 
-typedef struct s2_t {
+typedef struct s2_float32_t {
     /// Buffer for a 32-bit float in compound data
     dods_float32 a;
-} s2_t;
+} s2_float32_t;
 
 
 HDF5Float32::HDF5Float32(const string & n, const string &d) : Float32(n, d)
@@ -88,17 +88,17 @@ bool HDF5Float32::read()
         int j = 0;
         int k = 0;
 #if 0
-        s2_t *buf = 0;
+        s2_float32_t *buf = 0;
 	try {
 #endif
-	    vector<s2_t> buf(p.get_entire_array_size());
+	    vector<s2_float32_t> buf(p.get_entire_array_size());
         string myname = name();
         string parent_name;
 
-        hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+        hid_t s2_float32_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
         hid_t stemp_tid;
 
-	if (s2_tid < 0){
+	if (s2_float32_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "H5Tcreate() failed.");
 	}
 
@@ -108,19 +108,19 @@ bool HDF5Float32::read()
             if (q->is_constructor_type()) {     // Grid, structure or sequence
                 if (k == 0) {
                     // Bottom level structure
-                    if (H5Tinsert(s2_tid, myname.c_str(), HOFFSET(s2_t, a),
+                    if (H5Tinsert(s2_float32_tid, myname.c_str(), HOFFSET(s2_float32_t, a),
                               H5T_NATIVE_FLOAT) < 0){
 			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
 		    }
                 } else {
-                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
 		    if (stemp_tid < 0){
 			throw InternalErr(__FILE__, __LINE__, "Unable to create a new datatype");
 		    }
-                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid) < 0){
+                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_float32_tid) < 0){
 			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
 		    }
-                    s2_tid = stemp_tid;
+                    s2_float32_tid = stemp_tid;
                 }
                 parent_name = q->name();
                 p = dynamic_cast < HDF5Structure & >(*q);
@@ -133,7 +133,7 @@ bool HDF5Float32::read()
             k++;
         }
 
-        if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0])
+        if (H5Dread(dset_id, s2_float32_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0])
             < 0) {
 		// this gets deleted in the catch ... block so don't
 		// need to do it here. pwest Mar 18, 2009

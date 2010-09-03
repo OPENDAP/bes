@@ -35,10 +35,10 @@
 #include "HDF5Byte.h"
 #include "HDF5Structure.h"
 
-typedef struct s2_t {
+typedef struct s2_byte_t {
     /// Buffer for a byte in compound data
     dods_byte a;
-} s2_t;
+} s2_byte_t;
 
 
 HDF5Byte::HDF5Byte(const string & n, const string &d):Byte(n, d)
@@ -81,17 +81,17 @@ bool HDF5Byte::read()
         int j = 0;
         int k = 0;
 
-        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_byte_t));
         hid_t stemp_tid;
 
 	if (s1_tid < 0) {
 	    throw InternalErr(__FILE__, __LINE__, "Cannot create a new datatype");
 	}
 #if 0
-        s2_t *buf = 0;
+        s2_byte_t *buf = 0;
 	try {
 #endif
-	    vector<s2_t> buf(p.get_entire_array_size());
+	    vector<s2_byte_t> buf(p.get_entire_array_size());
 	    string myname = name();
 	    string parent_name;
 
@@ -106,7 +106,7 @@ bool HDF5Byte::read()
 			// Bottom level structure
 			DBG(cerr << "=read() my_name=" << myname.
 			    c_str() << endl);
-			if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
+			if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_byte_t, a),
 				  H5T_NATIVE_CHAR) < 0){
 			   throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
 			}
@@ -114,7 +114,7 @@ bool HDF5Byte::read()
 			DBG(cerr << k << " parent_name=" << parent_name <<
 			    endl);
 
-			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_byte_t));
 			if (stemp_tid < 0){
 			   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 			}

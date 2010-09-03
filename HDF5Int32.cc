@@ -36,10 +36,10 @@
 #include "HDF5Structure.h"
 #include "debug.h"
 
-typedef struct s2_t {
+typedef struct s2_int32_t {
     /// Buffer for a 32-bit integer in compound data
     dods_int32 a;
-} s2_t;
+} s2_int32_t;
 
 
 
@@ -93,18 +93,18 @@ bool HDF5Int32::read()
         int j = 0;
         int k = 0;
 
-        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int32_t));
         hid_t stemp_tid;
 	
 	if(s1_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	}
 #if 0
-        s2_t *buf = 0;
+        s2_int32_t *buf = 0;
 	try {
-	    buf = new s2_t[p.get_entire_array_size()];
+	    buf = new s2_int32_t[p.get_entire_array_size()];
 #endif
-	    vector<s2_t> buf(p.get_entire_array_size());
+	    vector<s2_int32_t> buf(p.get_entire_array_size());
         string myname = name();
         string parent_name;
 
@@ -116,7 +116,7 @@ bool HDF5Int32::read()
                 if (k == 0) {
                     // Bottom level structure
                     DBG(cerr << "my_name " << myname.c_str() << endl);
-                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_t, a),
+                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_int32_t, a),
                               H5T_NATIVE_INT32) < 0){
 			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
 		    }
@@ -124,7 +124,7 @@ bool HDF5Int32::read()
                     DBG(cerr << k << " parent_name=" << parent_name <<
                         endl);
 
-                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int32_t));
 		    if(stemp_tid < 0){
            		throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	            }

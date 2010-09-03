@@ -35,10 +35,10 @@
 #include "HDF5Structure.h"
 #include "debug.h"
 
-typedef struct s2_t {
+typedef struct s2_float64_t {
     /// Buffer for a 64-bit float in compound data
     dods_float64 a;
-} s2_t;
+} s2_float64_t;
 
 
 
@@ -86,19 +86,19 @@ bool HDF5Float64::read()
         int j = 0;
         int k = 0;
 #if 0
-        s2_t *buf = 0;
+        s2_float64_t *buf = 0;
 	try {
-	    buf = new s2_t[p.get_entire_array_size()];
+	    buf = new s2_float64_t[p.get_entire_array_size()];
 #endif
-	    vector<s2_t> buf(p.get_entire_array_size());
+	    vector<s2_float64_t> buf(p.get_entire_array_size());
 
 	    string myname = name();
 	    string parent_name;
 
-	    hid_t s2_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+	    hid_t s2_float64_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float64_t));
 	    hid_t stemp_tid;
 
-	    if(s2_tid < 0){
+	    if(s2_float64_tid < 0){
 		throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	    }
 
@@ -108,19 +108,19 @@ bool HDF5Float64::read()
 		if (q->is_constructor_type()) {     // Grid, structure or sequence
 		    if (k == 0) {
 			// Bottom level structure
-			if (H5Tinsert(s2_tid, myname.c_str(), HOFFSET(s2_t, a),
+			if (H5Tinsert(s2_float64_tid, myname.c_str(), HOFFSET(s2_float64_t, a),
 				  H5T_NATIVE_DOUBLE) < 0){
 			   throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
 			}
 		    } else {
-			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_t));
+			stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float64_t));
 			if(stemp_tid < 0){
 			   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 			}
-			if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_tid) < 0){
+			if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_float64_tid) < 0){
 			   throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
 			}
-			s2_tid = stemp_tid;
+			s2_float64_tid = stemp_tid;
 		    }
 		    parent_name = q->name();
 		    p = dynamic_cast < HDF5Structure & >(*q);
@@ -133,7 +133,7 @@ bool HDF5Float64::read()
 		k++;
 	    }
 
-	    if (H5Dread(dset_id, s2_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
+	    if (H5Dread(dset_id, s2_float64_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
 		// buf is deleted in the catch ... block below and
 		// should not be deleted here. pwest Mar 18, 2009
 		//delete[] buf;
