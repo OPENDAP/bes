@@ -16,22 +16,22 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
     </Attribute>
 
     <Grid name="SST">
-        <Attribute name="missing_value" type="Float32">
-            <value>-9.999999790e+33</value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <value>-9.999999790e+33</value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <value>SEA SURFACE TEMPERATURE</value>
-        </Attribute>
-        <Attribute name="history" type="String">
-            <value>From coads_climatology</value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <value>Deg C</value>
-        </Attribute>
         <Array name="SST">
+            <Attribute name="missing_value" type="Float32">
+                <value>-9.999999790e+33</value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <value>-9.999999790e+33</value>
+            </Attribute>
+            <Attribute name="long_name" type="String">
+                <value>SEA SURFACE TEMPERATURE</value>
+            </Attribute>
+            <Attribute name="history" type="String">
+                <value>From coads_climatology</value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <value>Deg C</value>
+            </Attribute>
             <Float32/>
             <dimension name="TIME" size="12"/>
             <dimension name="COADSY" size="90"/>

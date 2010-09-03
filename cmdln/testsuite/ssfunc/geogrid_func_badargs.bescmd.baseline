@@ -3,7 +3,7 @@
     <getAscii>
         <BESError>
             <Type>3</Type>
-            <Message>libdap exception building response: error_code = 1005: Failed to read data: Wrong number of arguments to geogrid(). See geogrid() for more information.</Message>
+            <Message>libdap exception building response: error_code = 1005: Failed to read data: Wrong number of arguments to geogrid() (expected at least 5 args). See geogrid() for more information.</Message>
             <Administrator>admin.email.address@your.domain.name</Administrator>
             <Location>
                 <File>BESAsciiTransmit.cc</File>
