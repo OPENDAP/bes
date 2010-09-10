@@ -303,7 +303,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                     HANDLE_CASE(DFNT_UCHAR8, HDFByte);
                     HANDLE_CASE(DFNT_CHAR8, HDFByte);
                   default:
-                    InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                    throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
 		}
             int fieldtype = (*it_f)->getFieldType();// Whether the field is real field,lat/lon field or missing Z-dimension field 
@@ -339,12 +339,25 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                   			"Coordinate variables for Swath should be under geolocation group");
 
 #endif
+                            std::string tempfieldname;
+                            // Because the field name gets changed for third-dimension grid 
+                            // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
+                            // we have to obtain the original field name,saved as the tempfieldname.
+                             
+                            if((*it_f)->getSpecialCoard()) {
+                               if(fieldtype != 3){
+                                  throw InternalErr(__FILE__, __LINE__,
+                                  "Coordinate variables for Swath should be under geolocation group");
+                               }
+                               tempfieldname = (*it_f)->getName_specialcoard();
+                            }
+                            else tempfieldname = (*it_f)->getName();
                             if((*it_f)->UseDimMap()) {
                                 HDFEOS2ArraySwathDimMapField * ar = NULL;
     				ar = new HDFEOS2ArraySwathDimMapField(                           
                                                                      (*it_f)->getRank(),
                                                            	      filename,
-                                                                     (dataset)->getName(), "", (*it_f)->getName(),
+                                                                     (dataset)->getName(), "", tempfieldname,
                                                                      dimmaps,(*it_f)->getNewName(),bt);
                                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -357,7 +370,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                                ar = new HDFEOS2Array_RealField(
                                                             (*it_f)->getRank(),
                                                             filename,
-                                                            "", (dataset)->getName(), (*it_f)->getName(),
+                                                            "", (dataset)->getName(), tempfieldname,
                                                             (*it_f)->getNewName(), bt);
                                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -492,12 +505,26 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                         // Real field or Z field
                         if(fieldtype == 0 || fieldtype == 3 || fieldtype == 5) {
 
+                            std::string tempfieldname;
+                            // Because the field name gets changed for third-dimension grid 
+                            // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
+                            // we have to obtain the original field name,saved as the tempfieldname.
+                             
+                            if((*it_f)->getSpecialCoard()) {
+                               if(fieldtype != 3){
+                                  throw InternalErr(__FILE__, __LINE__,
+                                  "Coordinate variables for Swath should be under geolocation group");
+                               }
+                               tempfieldname = (*it_f)->getName_specialcoard();
+                            }
+                            else tempfieldname = (*it_f)->getName();
+ 
 
                             HDFEOS2Array_RealField *ar = NULL;
                             ar = new HDFEOS2Array_RealField(
                                                             (*it_f)->getRank(),
                                                             filename,
-                                                            "",(dataset)->getName(), (*it_f)->getName(),
+                                                            "",(dataset)->getName(), tempfieldname,
                                                             (*it_f)->getNewName(), bt);
  
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)

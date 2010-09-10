@@ -1732,8 +1732,14 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                  // For 2-D lat/lon, the third dimension should NOT follow
                  // COARD conventions. It will cause Panoply and IDV failed.
                  // KY 2010-7-21
-                 if(((((*j)->getDimensions())[0])->getName())==(*j)->getName())
+                 // It turns out that we need to keep the original field name of the third dimension.
+                 // So assign the flag and save the original name.
+                 // KY 2010-9-9
+                 if(((((*j)->getDimensions())[0])->getName())==(*j)->getName()){
+                   (*j)->oriname = (*j)->getName();
                    (*j)->name = (*j)->getName() +"_d";
+                   (*j)->specialcoard = true;
+                 }
                  (*i)->dimcvarlist[(((*j)->getDimensions())[0])->getName()] = (*j)->getName();
                  (*j)->fieldtype = 3;
 
@@ -1757,8 +1763,11 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                  // For 2-D lat/lon, the third dimension should NOT follow
                  // COARD conventions. It will cause Panoply and IDV failed.
                  // KY 2010-7-21
-                 if(((((*j)->getDimensions())[0])->getName())==(*j)->getName())
+                 if(((((*j)->getDimensions())[0])->getName())==(*j)->getName()){
+                   (*j)->oriname = (*j)->getName();
                    (*j)->name = (*j)->getName() +"_d";
+                   (*j)->specialcoard = true;
+                 }
                  (*i)->dimcvarlist[(((*j)->getDimensions())[0])->getName()] = (*j)->getName();
                  (*j)->fieldtype = 3;
 
