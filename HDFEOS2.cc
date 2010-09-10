@@ -2146,6 +2146,17 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
             }
             (*j)->setCoordinates(tempcoordinates);
          }
+        // Add units for Z-dimension, now it is always "level"
+        if(((*j)->fieldtype == 3)||((*j)->fieldtype == 4)) {
+           std::string tempunits ="level";
+           (*j)->setUnits(tempunits);
+        }
+
+        // Add units for "Time", Be aware that it is always "days since 1900-01-01 00:00:00"
+        if(((*j)->fieldtype == 5)) {
+           std::string tempunits = "days since 1900-01-01 00:00:00";
+           (*j)->setUnits(tempunits);
+        }
 
         // Set the fill value for floating type data that doesn't have the fill value.
         // We found _FillValue attribute is missing from some swath data.
