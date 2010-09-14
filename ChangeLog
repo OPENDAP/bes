@@ -1,3 +1,248 @@
+2010-09-03  James Gallagher <jgallagher@opendap.org>
+
+	Geogrid test baselines updated/fixed.
+
+2010-08-14  Patrick West <pwest@ucar.edu>
+
+	Class name was connT, copy-paste from another test. Changed to cacheT.
+	M    unit-tests/cacheT.cc
+
+2010-07-20  Patrick West <pwest@ucar.edu>
+
+	Making sure the container is not null before deleting.
+	M    dispatch/BESContainerStorageFile.cc
+	M    dispatch/BESContainerStorageVolatile.cc
+
+2010-07-18  Patrick West <pwest@ucar.edu>
+
+	Fix where BESDEBUG is a statement in an if statement and possibly other
+	code fragments.
+	M    dispatch/BESDebug.h
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Simplified the BES.modules comment even further. No need to include too
+	much information in the configuration file itself.
+	M    bes/bes.conf.in
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added BES.Catalog.catalog.RootDirectory parameter to bes.conf so most
+	users will just have to edit bes.conf.
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/bes/dap.conf.in
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added note that shouldn't have to change anything below the logfile
+	information.
+	M    dispatch/bes/bes.conf.in
+
+2010-07-14  Patrick West <pwest@ucar.edu>
+
+	Removed debug statements
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESStopWatch.cc
+	M    dispatch/BESFSDir.cc
+
+2010-07-14  mjohnson
+
+	o dispatch/BESDapTransmit.cc: Changes for ticket #1574.
+	Refactor using file local class hierarchy to factor out common
+	code.
+
+	o Other files: elimination of compiler warnings, mostly
+	signed/unsigned and unused parameters.
+
+2010-07-13  Patrick West <pwest@ucar.edu>
+
+	Allow for the multiple inclusion of a file without having it
+	loaded twice. This way, module configurations can require
+	another module to be loaded before itself. For example, the
+	netcdf module can require that the dap module be loaded first.
+
+	Fixed a bug in file inclusion using regular expressions where
+	was matching files that started with the file name. So including
+	dap.conf would include dap.conf.sav, which would lead to loading
+	dap module multiple times.
+
+	Also corrected some compile warnings in keysT and cacheT.
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESFSDir.cc
+	M    dispatch/unit-tests/keys_test_m1.ini
+	M    dispatch/unit-tests/keys_test_m2.ini
+	M    dispatch/unit-tests/keys_test_m3.ini
+	M    dispatch/unit-tests/cacheT.cc
+	M    dispatch/unit-tests/keysT.cc
+	M    dispatch/BESKeys.h
+
+2010-07-09  Patrick West <pwest@ucar.edu>
+
+	Updated the bes.conf and dap.conf configuration files so not setting
+	modules or module parameters. Clearer on setting the root directory as
+	well.
+	M    bes/bes.conf.in
+	M    bes/dap.conf.in
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	Using pretty output in libxml2.
+	M    hello_world/bes-testsuite/hello/hello.bescmd.baseline
+
+2010-07-08  Patrick West <pwest@ucar.edu>
+
+	The CSV module handles the dap service
+	M    csv-handler/CSVModule.cc
+
+2010-05-24  James Gallagher <jgallagher@opendap.org>
+
+	Updated build and text documentation for 3.8.4
+
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    README
+	M    bes.spec
+
+2010-05-24  Patrick West <pwest@ucar.edu>
+
+	If the BES needs to exit (Internal Fatal Error) then it was sending the
+	error response, and then trying to send an exit to the client. But the
+	client wouldn't be listening anymore, it might be trying to send.
+	Cleaned this up so that the BES would set the status to error, and set
+	exit to true in the chunk extensions. The client should respond
+	accordingly.
+	M    server/BESServerHandler.cc
+	M    cmdln/CmdClient.cc
+	M    cmdln/CmdApp.cc
+	M    cmdln/CmdClient.h
+
+2010-05-19  Patrick West <pwest@ucar.edu>
+
+	Fixed debug test from latest debug changes. Updated baselines for
+	bes-confgiuration-tests for error conditions now that the XML documents
+	are generated with indentation.
+	M    cmdln/testsuite/ssfunc/geogrid_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd.baseline
+	M    cmdln/testsuite/ssfunc/geogrid_func_swapcoords.bescmd.baseline
+	M    dispatch/unit-tests/debugT.cc
+
+2010-05-18  Patrick West <pwest@ucar.edu>
+
+	Since the BESDataHandlerInterface stored might be the true
+	representation of the current command, no need to dump the object in
+	debug.
+	M    dispatch/BESBasicInterface.cc
+
+2010-05-18  Patrick West <pwest@ucar.edu>
+
+	Additional XML Command debugging
+	M    xmlcommand/BESXMLInterface.cc
+
+2010-05-15  Patrick West <pwest@ucar.edu>
+
+	DEBUG now dumps the pid of the actual listener rather than the parent
+	process pid. Also added some additional information for each DEBUG line.
+	M    dispatch/BESDebug.cc
+	M    dispatch/BESDebug.h
+
+2010-05-15  Patrick West <pwest@ucar.edu>
+
+	Removed csv sample handler
+	M    doxy.conf
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Doxygen version says 3.8.3
+	M    configure.ac
+	M    main_page.doxygen
+	M    doxy.conf
+
+2010-05-11  Patrick West <pwest@ucar.edu>
+
+	Merging branch for 3.8.3 release of BES, Hyrax 1.6 to trunk
+	_M   .
+	M    conf/libdap.m4
+	M    configure.ac
+	M    INSTALL
+	M    server/ServerApp.cc
+	_M   csv-handler
+	M    csv-handler/conf/libdap.m4
+	_M   csv-handler/bes-testsuite
+	M    csv-handler/configure.ac
+	M    bin/besCreateModule.in
+	M    NEWS
+	M    bes-config-pkgconfig
+	M    ChangeLog
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_badargs.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_basic.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_1.0.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_mixednotations_2.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_negativenotations.1.bescmd
+	D    cmdln/testsuite/ssfunc/geoarray_func_wholearray.0.bescmd
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.2.bescmd.baseline
+	M    cmdln/testsuite/hdf4/1990104h09da-gdm.hdf.4.bescmd.baseline
+	M    cmdln/testsuite/hdf4/S2000415.HDF.2.bescmd.baseline
+	M    cmdln/testsuite/besTest.at
+	M    cmdln/Makefile.am
+	M    README
+	D    templates/conf/mkinstalldirs
+	M    templates/conf/libdap.m4
+	_M   templates/module.spec.template
+	M    templates/configure.ac
+	M    templates/Makefile.am
+	M    dispatch/bes/dap.conf.in
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	M    dispatch/BESCache.cc
+	M    dispatch/unit-tests/cache/template.txt
+	M    dispatch/unit-tests/Makefile.am
+	M    dispatch/BESInterface.cc
+	M    xmlcommand/BESXMLShowErrorCommand.cc
+	M    xmlcommand/BESXMLDefineCommand.cc
+	M    xmlcommand/BESXMLSetContainerCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionsCommand.cc
+	M    xmlcommand/BESXMLSetContextCommand.cc
+	M    xmlcommand/BESXMLInterface.cc
+	M    xmlcommand/BESXMLDeleteContainerCommand.cc
+	M    xmlcommand/BESXMLGetDataDDXCommand.cc
+	M    xmlcommand/BESXMLGetCommand.cc
+	M    xmlcommand/BESXMLShowCommand.cc
+	M    xmlcommand/BESXMLDeleteContainersCommand.cc
+	M    xmlcommand/BESXMLCatalogCommand.cc
+	M    xmlcommand/BESXMLDeleteDefinitionCommand.cc
+	M    xmlcommand/BESXMLCommand.cc
+	M    bes.spec
+	M    Makefile.am
+	_M   hello_world
+	M    hello_world/conf/libdap.m4
+	_M   hello_world/bes-testsuite
+
+2010-05-06  Patrick West <pwest@ucar.edu>
+
+	Upgraded configuration
+	D    hello_world/conf/mkinstalldirs
+	M    hello_world/config.h.in
+	M    hello_world/configure.ac
+	M    hello_world/SayReporter.cc
+
+2010-05-06  Patrick West <pwest@ucar.edu>
+
+	Using csv.conf instead of bes-csv-data.sh.
+	A    csv-handler/csv.conf.in
+	M    csv-handler/configure.ac
+	D    csv-handler/bes-csv-data.sh.in
+	D    csv-handler/config.h.in
+	M    csv-handler/Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-05-04  Patrick West <pwest@ucar.edu>
 
 	3.8.3 release

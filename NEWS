@@ -1,6 +1,22 @@
 
 	$Id$
 
+News for version 3.9.0, 14 Sep 2010
+
+Moved BES.Catalog.catalog.RootDirectory parameter to bes.conf so users
+have to edit only one conf file for initial configuration
+
+Allowing for conf files to include any required module configuration
+files to be loaded first. For example, if ncml module requires dap
+module, then the ncml module can include the dap module so that it gets
+loaded and configured first. Also takes care of a problem where a
+configuration file is included multiple times.
+
+Fixed a problem where when transmitting a response any exceptions were
+being absorbed and a generic exception thrown in its place.
+
+Various bug fixes released in this new version.
+
 News for version 3.8.4, 24 May 2010
 
 Bug fix. IPC bug triggered by an errant handler. Likely the cause of the
