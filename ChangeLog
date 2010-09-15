@@ -1,5 +1,33 @@
+2010-09-03  muqun
+
+	Fix for the bug in the debug mode testing; s2_t is defined multiple times
+
+2010-08-30  muqun
+
+	Missed initialization added
+
+2010-08-27  muqun
+
+	Debug: Shortening dimension path
+
+2010-08-27  muqun
+
+	Added Xdim and Ydim to the name conversion map
+
+2010-08-20  muqun
+
+	MKDIR_P problem in the configure.ac is fixed
+
+2010-08-16  muqun
+
+	1.4.2 release info
+
+2010-08-16  muqun
+
+	Grid parsing tests are done only when --enable-cf is given
+
 2010-08-15 Eunsoo Seo <eseo2@hdfgroup.org>
-	* A bug in the Grid lat/lon calgulation logic is fixed.
+	* A bug in the Grid lat/lon calculation logic is fixed.
 	  Previously, the logic did not use PixelRegistration and
 	  GridOrigin information.
 	* If there are >1 grids in a file, they are required to

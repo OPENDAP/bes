@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(hdf5_handler, 1.4.2, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 1.4.3, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
@@ -44,7 +44,7 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([bzero strchr strdup strrchr])
 
 dnl Checks for specific libraries
-AC_CHECK_LIBDAP([3.10.2],
+AC_CHECK_LIBDAP([3.11.0],
  [
   LIBS="$LIBS $DAP_SERVER_LIBS"
   CPPFLAGS="$CPPFLAGS $DAP_CFLAGS"
@@ -98,7 +98,7 @@ if test "${use_eos_meta}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DNASA_EOS_META"
 fi 
 
-AC_CHECK_BES([3.8.3],
+AC_CHECK_BES([3.9.0],
 [
 ],
 [ AC_MSG_ERROR([Cannot find bes])
