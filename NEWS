@@ -1,10 +1,15 @@
 
 $Id$
 
+Version 3.9.1 (14 Sept 2010)
+
+This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+
 Version 3.9.0 (26 August 2010)
 
-The handler now supports the access of many NASA HDF-EOS2 and HDF4 products via visualization clients.
-To take advantage of this, one must configure with the HDF-EOS2 library and use the correct RPMs. 
+The handler now supports the access of many NASA HDF-EOS2 and HDF4
+products via visualization clients. To take advantage of this, one
+must configure with the HDF-EOS2 library and use the correct RPMs.
 
 Version 3.8.1 (5 May 2010)
 

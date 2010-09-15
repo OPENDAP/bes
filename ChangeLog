@@ -1,3 +1,102 @@
+2010-09-09  muqun
+
+	Forgot adding "level" units for the third-dimension.
+
+2010-09-09  muqun
+
+	Fix a special case when there are the third dimension field and
+	the third dimension field name is the same as the dimension name.
+
+2010-09-01  muqun
+
+	Update README and add descriptions and spec files on how to build
+	RPMs with other eos options.
+
+2010-08-26  muqun
+
+	Updating the version number and add the description about the new
+	features in the README file.
+
+2010-08-22  muqun
+
+	Change MAX_NC_NAME, MAX_VAR_DIMS to H4_MAX_NC_NAME,
+	H4_MAX_VAR_DIMS This will make sure the handler work with any HDF4
+	libraries(with and without netcdf option)
+
+2010-08-19  muqun
+
+	Remove the old code
+
+2010-08-19  muqun
+
+	The new release for the enhanced HDF-EOS2 module
+
+2010-08-19  muqun
+
+	For the new enahanced HDF-EOS2 module release.
+
+2010-08-19  muqun
+
+	Add more robust NASA HDF-EOS2 and some HDF4 products support.
+	These are ready for a new HDF4 handler (HDF-EOS2 module) support.
+
+2010-08-04  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a delete -vs- delete[] error in hc2dap.cc (used delete[]
+	where delete was needed)
+
+2010-07-15  Patrick West <pwest@ucar.edu>
+
+	Added include of dependent dap.conf
+
+2010-05-12  Patrick West <pwest@ucar.edu>
+
+	Typo in BES requirement
+	M    hdf4_handler.spec
+
+2010-05-12  James Gallagher <jgallagher@opendap.org>
+
+	Merged with hyrax 1.6.1
+
+	_M   .
+	M    HDFEOS2Array.h
+	M    HDFArray.h
+	M    configure.ac
+	M    HDFStructure.h
+	M    NEWS
+	M    HDFArray.cc
+	M    ChangeLog
+	M    HDFEOS2Array2D.cc
+	M    HDFEOS2Array2D.h
+	M    hdf4_handler.spec
+	M    HDFEOS2Array.cc
+	M    HDFSequence.cc
+	M    conf/libdap.m4
+	M    bes-testsuite/hdf4_handlerTest.at
+	M    bes-testsuite/Makefile.am
+	A  + bes-testsuite/h4/f97182070958.hdf.ddx.bescmd
+	A  + bes-testsuite/h4/f97182070958.hdf.das.bescmd.baseline
+	A  + bes-testsuite/h4/f97182070958.hdf.das.bescmd
+	A  + bes-testsuite/h4/f97182070958.hdf.dds.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd.baseline
+	A  + bes-testsuite/h4/f97182070958.hdf.dds.bescmd.baseline
+	A  + bes-testsuite/h4/f97182070958.hdf.ddx.bescmd.baseline
+	M    HDFEOSGrid.cc
+	M    INSTALL
+	M    HDFSequence.h
+	M    HDFEOSArray.cc
+	M    HDFGrid.cc
+	M    README
+	M    HDFGrid.h
+	M    HDFEOSArray.h
+	A  + hdf-testfiles/f97182070958.hdf
+	M    HDFEOSGrid.h
+	M    HDFStructure.cc
+	M    Makefile.am
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-05-03  James Gallagher <jgallagher@opendap.org>
 
 	Fixed ticket 1542. The code in HDFGrid that transfers the *_dim_0, _dim_1, ...
