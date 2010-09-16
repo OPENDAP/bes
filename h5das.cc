@@ -1030,7 +1030,7 @@ void write_grid_global_attribute(DAS & das)
     AttrTable *at;
     
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "NASA EOS Aura Grid");
+    at->append_attr("title", STRING, "NASA HDFEOS5 Grid");
     at->append_attr("Conventions", STRING, "CF-1.4");
     at->append_attr("dataType", STRING, "Grid");
     
@@ -1153,7 +1153,7 @@ void write_swath_global_attribute(DAS & das)
 {
     AttrTable *at;
     at = das.add_table("NC_GLOBAL", new AttrTable);
-    at->append_attr("title", STRING, "NASA EOS Aura Swath");
+    at->append_attr("title", STRING, "NASA HDFEOS5 Swath");
     at->append_attr("Conventions", STRING, "CF-1.4");
 
 }
