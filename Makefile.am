@@ -129,10 +129,10 @@ fortifyclean:
 # Build linux RPMs
 
 srpm: dist
-	rpmbuild -ts --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 rpm: dist
-	rpmbuild -tb --clean @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
 
 ###########################################################################
 
