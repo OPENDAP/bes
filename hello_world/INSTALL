@@ -32,10 +32,18 @@ BUILDING THE SOFTWARE
 
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 'autoreconf --verbose' before
-  './configure; make'. If you try to run autoconf, et c., by hand and wind up
-  with build files that don't work, use 'autoreconf --force --verbose' and
-  then './configure; make'.
+  If you are building from a SVN checkout, run:
+  	
+  	'autoreconf --verbose --install' 
+  	
+  	before './configure; make'. 
+  
+  If you try to run autoconf, etc., by hand and wind up
+  with build files that don't work, use:
+  
+  	'autoreconf --force --install --verbose' 
+  	
+  and then './configure; make'.
 
 AFTER INSTALLING
 
@@ -63,12 +71,13 @@ BUILD REQUIREMENTS
   o Of course you will need the bes installed. Read the README and INSTALL
     files in the bes directory.
 
-  o To build from a fresh SVN checkout, you'll need automake 1.9.2, autoconf
-    2.59 (2.57 will probably work and that's what's listed in the configure.ac
-    file) and libtool 1.5.6. Earlier versions may work, but may cause
+  o To build from a fresh SVN checkout, you'll need automake 1.10 (or higher),
+    autoconf 2.59 (2.57 will probably work and that's what's listed in the 
+    configure.ac file) and libtool 1.5.6. 
+    Earlier versions may work, but may cause
     problems, particularly with the 'distcheck' target for make. Given those
-    requirements, use 'autoreconf --force --verbose' and then build as
-    described above.
+    requirements, use 'autoreconf --force --install --verbose' 
+    and then build as described above.
 
     If you have an Intel Mac and you are experiencing configuration issues
     then you might need to download the latest and greatest autoconf,
@@ -86,17 +95,18 @@ BUILD REQUIREMENTS
 
 NOTES
 
-  o To test do the following:
+  o To test do the following (or see the README):
 
-    % besctl start -c ./bes.conf
+    % besctl start -c ./bes-testsuite/bes.conf
     % bescmdln -h localhost -p 10002
-    BESClient> say hello to world;
-    <?xml version="1.0" encoding="UTF-8"?>
-    <say>
-	<response>
-	    <text>hello world</text>
+    BESClient> client load bes-testsuite/hello/hello.bescmd;
+	<?xml version="1.0" encoding="ISO-8859-1"?>
+	<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    	<say>
+        	<text>hello world</text>
+    	</say>
 	</response>
-    </say>
+
     BESClient> exit;
     % cat say.log
     [MDT Thu Oct 25 21:55:57 2007] "hello" said to "world"
@@ -109,7 +119,7 @@ NOTES
 
     - Debugging is built in to the BES and does not require any special
       debug flags during compile time. To activate debugging in the BES,
-      simpy use the -d "./bes.debug,sample" option to besctl. Debugging
+      simply use the -d "./bes.debug,sample" option to besctl. Debugging
       will go to the file ./bes.debug
 
     - You can also check the BES log file, the location specified in the
@@ -120,18 +130,19 @@ CONFIGURATION
 
   o CONFIGURATION
 
-    - The configuration file provided in this directory should not need to
-      be modified. To use this configuration file set the environment
+    - The configuration file provided in the bes-testsuite directory 
+      should not need to be modified. 
+      To use this configuration file set the environment
       variable BES_CONF to point to this configuration file.
 
-      setenv BES_CONF ./bes.conf
+      setenv BES_CONF ./bes-testsuite/bes.conf
 
       or
 
-      BES_CONF=./bes.conf
+      BES_CONF=./bes-testsuite/bes.conf
       export BES_CONF
 
       or use the -c option on the command line:
 
-      % besctl start -c ./bes.conf
+      % besctl start -c ./bes-testsuite/bes.conf
 

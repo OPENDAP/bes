@@ -5,7 +5,7 @@ See the INSTALL file for build instructions.
 
 For more information on Hyrax and the BES, please visit our documentation
 wiki at docs.opendap.org. This will include the latest install and build
-instructions, the latest configuration inforamtion, tutorials, how to
+instructions, the latest configuration information, tutorials, how to
 develop new modules for the BES, and more.
 
 Contents
@@ -24,27 +24,30 @@ dynamically.
 
 The bes.conf file should work as is. In order to use the bes.conf file for
 this example, set the environment variable BES_CONF to point to the bes.conf
-file located in this directory.
+file located in the "bes-testsuite" directory.
 
-      setenv BES_CONF ./bes.conf
+      setenv BES_CONF ./bes-testsuite/bes.conf
 
       or
 
-      BES_CONF=./bes.conf
+      BES_CONF=./bes-testsuite/bes.conf
       export BES_CONF
 
 Or you can use the -c option to besctl to specify a configuration file:
 
-      besctl start -c ./bes.conf
+      besctl start -c ./bes-testsuite/bes.conf
+
+Note that you will need to have done an install of the handler into the bes for this to work, not just a make.
+
 
 * Testing
 
 To test the server, open a new terminal window and start the bes by using
-the bes control script besctl, which is installed in <prefix>/bin.
-using the -c switch to name the configuration file. If the server standalone
+the bes control script besctl (which is installed in <prefix>/bin)
+and using the -c switch to name the configuration file. If the server standalone
 starts correctly it should print something like the following to stdout:
 
-    [jimg@zoe sbin]$ besctl start -c ./bes.coonf
+    [jimg@zoe sbin]$ besctl start -c ./bes-testsuite/bes.conf
     BES install directory: <prefix>/bin
     Starting the BES
     OK: Succesfully started the BES
@@ -67,10 +70,27 @@ that has the XML document in it.
 
 	</response>
     </say>
+    
+The response is logged in the file "say.log".  For example:
+
+	[EDT Thu Sep 30 17:14:00 2010] "hello" said to "world"
+    
+
+Rather than using the -i option, you may run bescmdln interactively
+and load the hello command with the 'client load' command:
+
+	BESClient> client load bes-testsuite/hello/hello.bescmd;
+	<?xml version="1.0" encoding="ISO-8859-1"?>
+	<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    	<say>
+        	<text>hello world</text>
+    	</say>
+	</response>
 
 To stop the BES use the bes control script with the stop option:
 
     [jimg@zoe sbin]$ besctl stop
+
 
 * Creating this sample module yourself.
 
