@@ -1,10 +1,108 @@
 
 
-$Id$
+Updated for 3.9.1 (14 Spet 2010)
+
+In this release, we greatly enhance the support of the access of NASAHDF-EOS2 and HDF4 products. The whole note for 3.9.0 includes threesections.
+
+Section I. Configuration 
+
+The handler is enhanced to support the access of many NASA HDF-EOS2products and some NASA pure HDF4 products by many CF-compliantvisualization clients such as IDV and Panoply. To take advantage ofthis feature, one MUST use HDF-EOS2 library and configure with thefollowing option:
+
+./configure --with-hdf4=<Your HDF4 library path> 	    --with-hdfeos2=<Your HDF-EOS2 library path> 	    --prefix=<Your installation path>
+
+Without specifying the option "--with-hdfeos2" will result inconfiguring the default HDF4 OPeNDAP handler. The HDF4 handler withthe default options can NOT make the NASA HDF-EOS2 products and someNASA pure HDF4 products work with CF-compliant visualization clients.
+
+Some variable paths are pretty long(>15 characters). COARD conventionsrequire the number of characters in a field doesn't exceed 15characters. So the above configuration option may cause some OPeNDAPclients that are still following COARD conventions. To compensatethat, we provide a configuration option to shorten the name so that indoesn't exceed 15 characters. To address the potential name clashingissue, both options may make some variable names to change so thatunique variable names are present in the OPeNDAP output. To bestpreserve the original variable names, we recommend not to use--enable-short-name option if necessary. To configure the handler withthe short name option, do the following:
+
+./configure --with-hdf4=<Your HDF4 library path> 	    --with-hdfeos2=<Your HDF-EOS2 library path> 	    --prefix=<Your installation path> --enable-short-name 
+
+To find the information on how to build the HDF-EOS2 library, pleasecheck http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-
+
+To build RPMs by yourself, check the directory build_rpms_eosoption. 
+
+Section II. NASA products that are supported to be accessed via Javaand other OPeNDAP visualization clients
+
+The following NASA HDF-EOS2 products are tested with IDV and Panoply,check the Limitation section for the limitations:
+
+1). NASA GES DISC       AIRS/MERRA/TOMS2). NASA LAADS/LP DAAC/NSIDC        Many MODIS products3). NASA NSIDC       AMSR_E/NISE products4). NASA LaRC       MISR/MOPITT/CERES-TRMM
+
+The following NASA special HDF4 products are tested with IDV Panoply, check the Limitation section for the limitations:
+
+1). NASA GES DISC
+
+      TRMM Level 1B, Level 2B Swath      TRMM Level 3 Grid 42B and 43B
+
+2). OBPG(Ocean Color)
+
+      SeaWiFS/MODIST/MODISA/CZCS/OCTS level 2 and level 3m(l3m)
+
+3). Some LaRC CERES products
+
+CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS CER_ES4_Aqua-FM3_Edition1-CV or similar oneCER_ISCCP-D2like-Day_Aqua-FM3-MODIS or similar oneCER_ISCCP-D2like-GEO_ or similar oneCER_SRBAVG3_Aqua or similar oneCER_SYN_Aqua or similar oneCER_ZAVG or similar one
+
+Section III. Limitations 
+
+1. Visualization clients and http header size 
+
+1). Visualization Slowness or even failures with IDV or panoplyclients for big size field We found that for big size variablearray(>50 MB), the visualization of the variable is very slow.Sometimes, IDV or Panoply may even generate an "out of memory" error.
+
+2). Some NASA HDF files(some CERES files e.g.) include many (a fewhundred) fields and the field names are long. This will cause themaximum http header size to exceed the default maximum http headersize and a failure will occur. To serve those files, please increaseyour max http header size by adding the following line at yourserver.xml under the line containing <Connector port="8080"protocol="HTTP/1.1" maxHttpHeaderSize="819200"
+
+2. HDF-EOS2 files 
+
+1) HDF-EOS2 Lambert Azimuthal Equal Area(LAMAZ) projection grid For   LAMAZ projection data, the latitude and longitude values retrieved   from the HDF-EOS2 library include infinite numbers. So an HDF-EOS2   grid file with LAMAZ projection can not be served correctly.
+
+2) Latitude and longitude values that don't follow CF conventions
+
+   2.1) Missing(Fill) values inside latitude and longitude fields   Except the HDF-EOS2 geographic(also called equidirectional,   equirectangular, equidistant cylindrical) projection, clients may   NOT display the data correctly.
+
+   2.2) 3-D latitude and longitude fields Except some CERES products   listed at section 2, clients may NOT display the data correctly if   the latitude and longitude fields are 3-D arrays.
+
+3) HDF-EOS2 files having additional HDF4 objects
+
+  Some HDF-EOS2 files have additional HDF4 objects. The object may be  vdata or SDS. That means, some contents are added to an HDF-EOS2  file by using the HDF4 APIs directly after the HDF-EOS2 file is  created. The HDF-EOS2 API may not retrieve the added information. Up  to this release, we found those information are mainly related to  metedata and those metadata may not be critical to visualize and  analyze the real physical data variables. So in this release, those  objects are currently ignored. One should NOTE that attributes of  existing HDF-EOS2 data variables are NOT ignored.
+
+4) Variables stored as 3-D or 4-D arrays
+
+   Some variables stored as 3-D or 4-D arrays are either missing or   hard to find the third or the fourth dimension's coordinate   variables. The handler will use integer number(1,2,3,......) to   represent the third or the fourth dimension as levels. Clients can   still visualize the data in a horizontal plane level by level.
+
+3. Pure HDF4 files
+
+   All pure HDF4(e.g. non-HDFEOS2) products we've tested are listed   under Section II. Other pure HDF4 products are not tested and may   NOT be visualized by Java OPeNDAP clients.
+
+4. Misc.
+
+   To speed up the performance, we choose not to generate   structMetadata, coreMetadata, archiveMetadata attributes for some   CERES products. For applications that need these, please contact   myang6@hdfgroup.org or eoshelp@hdfgroup.org. You can also post a   message at hdfeos.org/forums .
+
+Updated for 3.8.1
+
+  The OPeNDAP HDF4 Data Handler is enhanced by adding two more configuration options:  1) --enable-cf  2) --use-hdfeos2=/path/to/hdfeos2_library
+
+ The option 1)  uses the StructMetadata parser. A valid HDF-EOS2 file alwayshas the StructMetadata information and the parser can infer geolocation information from the StructMetadata. By retrieving such information, theHDF4 handler can generate DAP Grids that OPeNDAP visualization clients candisplay on a world map.
+
+  The option 2) REQUIRES option 1) and it uses the HDF-EOS2 library instead ofthe StructMetadata parser. The benefit of using HDF-EOS2 library is tremendous.It can support more HDF-EOS2 files by handling different projections like polarand sinusoidal. In addition, it can detect any anomalies that are common in some HDF-EOS2 files and handle them intelligently. Thus, we recommend the server administrator to install HDF-EOS2 library first and configure the handler with BOTH 1) and 2) options.
+
+THE LIMITATIONS of the ENHANCED HDF4 HANDLER
+
+  Please note that the enhanced handler has lots of limitation. 
+
+  o No support for using the HDF4 handler cache directory. 
+
+  o No support for Grids other than geographic 1-D projection. However,     option 2) will make some Grids with other projections (polar, sinusoidal)     work.
+
+  o No Vgroup to DAP structure mapping. Thus, the files that have same     dataset name  under different Vgroups will throw a DDS semantics violation     error.
+
+  o No support for files that have the same dimension names with different     dimension sizes. For example if a swath variable "A" has dimension lat=360    and lon=1440 (e.g., A lat=360  lon=1440 ) and another swath variable "B"     has dimension lat=180 and lon=720 (e.g., B lat=180  lon=720 ),     the handler will throw an error for inconsistent dimension.
+
+ Hyo-Kyung Lee (hyoklee@hdfgroup.org)
+
+Updated for 3.7.12 (16 March 2009)
 
 This is the OPeNDAP HDF4 Data Handler. It is used along with the OPeNDAPDAP Server.
 
 For information about building the OPeNDAP netCDF Data Handler, see theINSTALL file.
+
+This handler uses a configuration parameter, set in the bes.conf file, tocontrol where copies of some metadata objects built by the server are cached. By default this cache is in /tmp - you are encouraged to changethat. Set the location using the 'HDF4.CacheDir' parameter. For example,if you have set the BES.CacheDir parameter to /var/run/bes/cache you mightset HDF4.CacheDir to /var/run/bes/hdf4_cache. 
 
 A configuration edition helper script, `bes-hdf4-data.sh' is provided inthis package for easy configuration of the Hyrax BES server, designed toedit bes.conf. The script is called using:
 
@@ -25,8 +123,6 @@ Copyright information: This software was originally written at JPL aspart of the
 In Fall of 2005 we decided to release the software under the LGPL, basedon a previous discussion with personnel at JPL.
 
 James Gallagher
-
-Updated 14 Nov 2007
 
 Support for HDF data types:
 
