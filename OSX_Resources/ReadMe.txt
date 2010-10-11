@@ -1,16 +1,16 @@
 
 
-Updated for version 1.2.2
+Updated for version 1.4.3
 
-This file includes describes the HDF5 DAP server developed by THG andOPeNDAP under a grant from NASA.
+This file describes the HDF5 DAP server developed by The HDF Group and OPeNDAP under a grant from NASA.
 
-For information about building the OPeNDAP HDF5 Data Handler, see theINSTALL. This handler can support existing visualization clients like ferretand GrADS using NASA EOS Grid data.
+For information about building the OPeNDAP HDF5 Data Handler, see theINSTALL. This handler can support existing visualization clients like Ferretand GrADS using NASA EOS Grid data.
 
-* Known Issues
-
-There are a handful of known issues with this handler that will not affectmost data providers. They are that the Constraint Expression parser does notwork with arrays of structures and neither does the HTML form interface. Wewill have fixes to these issues available shortly.
+Note that the libdap constraint evaluator now works with Arrays ofStructures. This was a known issue with this handler.
 
 * Installing the handler in Hyrax
+
+Note: The RPM Packages are built using the --enable-cf and--enable-short-path options. If you don't want those options, you'll need tobuild from the sources.
 
 This data handler includes an executable for use with Server3 and ashared object module for use with Hyrax.
 
@@ -34,7 +34,7 @@ HDF Version:
 
 Support for HDF5 data types:
 
-	Groups: Group structure is mapped into a special attribute	HDF5_ROOT_GROUP {...}.
+	Groups: Group structure is mapped into a special attribute	HDF5_ROOT_GROUP {...}. This will be turned off if --enable-cf        configuration option is on.
 
 	Datasets: Array, Byte, Float32/64, (U)Int16/32, String are	supported.  If an array has dimensional data, Grid will be generated	automatically.
 
@@ -50,9 +50,19 @@ Support for HDF5 data types:
 
 Special Support for NASA EOS data: 
 
-	Grids: Based on the projection specified in a metadata file, some	arrays are automatically mapped into "Grid" instead of "Array".  You	can turn off this behavior through configuration option(e.g.	--enable-eos-grid=no).  If "Grid" is chosen, its map data are	automatically and artificially generated based on	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values.  Please see	set_dimension_array() in H5EOS.cc for details.
+	Grids: Based on the projection specified in a metadata file, some	arrays are automatically mapped into "Grid" instead of "Array". You	can turn off this behavior through a configuration option(e.g.	--enable-eos-grid=no).  If "Grid" is chosen, Grid map data are	automatically and artificially generated based on the	"UpperLeftPointMtrs" and "LowerRightPointMtrs" values in         the StructMetadata. Please see set_dimension_array() in H5EOS.cc         for details.
 
-	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are	parsed and its attributes are generated in a nested structure	format.
+        Swath: If --eanble-cf configuration option is on and         the SWATH_STRUCTURE string is found in the StructMetadata file,        the handler looks for Latitude and Longitude array datasets        and rename them as lat and lon. It also adds a special attribute        called "coordinates lat lon". This enables IDV to visualize        some OMI Swath data.
+
+	Metadata: Metadata (e.g. StructMetadata.x or CoreMetada.x) are	parsed and its attributes are generated in a nested structure	format. If you don't want to parse them, use the configuration option        '--enable-eos-meta=no'.
+
+Special Support for files that have HDF5 dimension scale:
+
+        The HDF5 handler generates Grid if a dataset has dimension scale.        Only one scale should attach to one dimension. We don't support         multiple scales applying to one dimension.
+
+        Please refer to http://www.hdfgroup.org/HDF5/doc/HL/H5DS_Spec.pdf        for HDF5 dimension scale specification.
+
+
 
 Implementation details:
 
