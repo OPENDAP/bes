@@ -123,7 +123,7 @@ easy to do.
        The second question asks for a C++ class prefix. Be best if you capitalized the first
        letter of your answer. For our example, we say it is "Sample".
 
-       Enter response types handled by this server (das dds data):. This quesiton asks what
+       Enter response types handled by this server (das dds data):. This question asks what
        DAP2 objects will be handled by your new module. We aren't serving data in this
        example, so we answer "none".
 
@@ -197,14 +197,14 @@ easy to do.
 	    my_token = tokenizer.get_next_token() ;
 	    if( my_token != "to" )
 	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
+		  tokenizer.parse_error( my_token + " not expected\n" ) ;
 	    }
 
 	    // Next token should be what is being said
 	    my_token = tokenizer.get_next_token() ;
 	    if( my_token == ";" )
 	    {
-		tokenizer.parse_error( my_token + " not expected\n" ) ;
+		  tokenizer.parse_error( my_token + " not expected\n" ) ;
 	    }
 	    dhi.data[SAY_TO] = my_token ;
 
@@ -260,11 +260,11 @@ easy to do.
 	    bool
 	    SampleRequestHandler::sample_build_say( BESDataHandlerInterface &dhi )
 	    {
-		bool ret = true ;
+	      bool ret = true ;
 
-		// Your code goes here
+		  // Your code goes here
 
-		return ret ;
+		  return ret ;
 	    }
 
 	    Edit the SampleRequestHandler.h file. Remove the static function declaration:
@@ -355,7 +355,7 @@ easy to do.
 	    % cp ../hello_world/SayReporter.* .
 
 	    Take a look at SayReporter.cc. In the constructor we look for a
-	    configuration paratmeter called Say.LogName. This will tell us
+	    configuration parameter called Say.LogName. This will tell us
 	    where to write the logged information.
 
        6.2. Edit the bes.conf file. At the very bottom add the following line:

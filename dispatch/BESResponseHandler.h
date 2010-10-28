@@ -131,7 +131,7 @@ public:
      */
     virtual void		execute( BESDataHandlerInterface &dhi ) = 0 ;
 
-    /** @brief transmit the respobse object built by the execute command
+    /** @brief transmit the response object built by the execute command
      * using the specified transmitter object
      *
      * @param transmitter object that knows how to transmit specific basic types
@@ -148,7 +148,7 @@ public:
     /** @brief return the name of this response object
      *
      * This name is used to determine which response handler can handle a
-     * requested responose, such as das, dds, ddx, tab, info, version, help,
+     * requested response, such as das, dds, ddx, tab, info, version, help,
      * etc...
      *
      * @return response name
