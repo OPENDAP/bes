@@ -38,10 +38,6 @@
 #include "HDFStructure.h"
 #include "HDFSequence.h"
 #include "HDFGrid.h"
-#ifdef CF
-#include "HDFEOSGrid.h"		// <hyokyung 2008.11.14. 11:38:01>
-#include "HDFEOSArray.h"		// <hyokyung 2008.11.14. 11:38:01>
-#endif
 #include "HDFTypeFactory.h"
 #include "debug.h"
 

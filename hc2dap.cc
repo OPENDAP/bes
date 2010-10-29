@@ -88,12 +88,14 @@ using namespace std;
 #include "HDFStructure.h"
 #include "hdfutil.h"
 #include "dhdferr.h"
+/*
 #ifdef CF
 #include "HDFEOS.h"
 #include "HDFEOSGrid.h"
 #include "HDFEOSArray.h"
 extern HDFEOS eos;
 #endif
+*/
 #include "hdf-maps.h"
 #include "debug.h"
 
