@@ -70,7 +70,7 @@ GRAM_SRC = hdfeos.tab.cc hdfeos.tab.hh lex.hdfeos.cc
 
 HANDLER_SRC = dhdferr.cc hdfdesc.cc hc2dap.cc hdfutil.cc \
 	dhdferr.h dodsutil.h hdfutil.h ReadTagRef.h \
-	hdf-dods.h hdf-maps.h config_hdf.h HDFEOS.h
+	hdf-dods.h hdf-maps.h config_hdf.h 
 
 
 SERVER_SRC = HDF4RequestHandler.cc HDF4Module.cc
