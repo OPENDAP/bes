@@ -97,13 +97,13 @@ clean-pkg:
 	-rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
 
 pkg-build:
-	./configure --prefix=/usr --disable-dependency-tracking $(PKG_CONF_FLAGS)
+	./configure --prefix=$(prefix) --disable-dependency-tracking $(PKG_CONF_FLAGS)
 	make clean all
 	DESTDIR=`pwd`/mac_osx make install
 
 pkg-main:
 	./OSX_Resources/update_mac_package_contents.pl README
-	${PACKAGEMAKER} --root mac_osx/usr --id org.opendap.@PACKAGE@ \
+	${PACKAGEMAKER} --root mac_osx --id org.opendap.@PACKAGE@ \
 		--title "@PACKAGE@ @PACKAGE_VERSION@" --version @PACKAGE_VERSION@ \
 		--out @PACKAGE@-@PACKAGE_VERSION@.pkg --resources OSX_Resources
 
