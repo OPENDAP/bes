@@ -24,6 +24,8 @@ AC_DEFUN([AC_CHECK_HDF5],
             [AS_HELP_STRING([--with-hdf5=ARG],[hdf5 directory])],
             [H5_PATH=$withval], 
             [H5_PATH=""])
+            
+  AC_SUBST([H5_PATH])
 
   AC_ARG_WITH([hdf5_include],
             [AS_HELP_STRING([--with-hdf5-include=ARG],[hdf5 include directory])],
