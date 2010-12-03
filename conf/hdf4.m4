@@ -7,6 +7,7 @@ AC_DEFUN([AC_CHECK_HDF4],
             [HDF4_PATH=$withval], 
             [HDF4_PATH=""])
 
+    
   AC_ARG_WITH([hdf4_include],
             [AS_HELP_STRING([--with-hdf4-include=ARG],[hdf 4 include directory])],
             [HDF4_PATH_INC=$withval],
@@ -95,6 +96,7 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
   [m4_if([$1], [], [:], [$1])],
   [m4_if([$2], [], [:], [$2])])
 
+  AC_SUBST([HDF4_PATH])
   AC_SUBST([HDF4_LIBS])
   AC_SUBST([HDF4_CFLAGS])
   AC_SUBST([HDF4_LDFLAGS])

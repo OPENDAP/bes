@@ -60,8 +60,8 @@ echo "..and CPPFLAGS: $CPPFLAGS"
 
 AC_CHECK_HDF4(
    [
-dnl       LIBS="$LIBS $HDF4_LIBS"
-dnl       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
+       LIBS="$LIBS $HDF4_LIBS"
+       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
        CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
    ],
    [
