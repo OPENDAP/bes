@@ -2,7 +2,7 @@
 #
 # Check to make sure the computer is running 10.3 or later.
 
-PATH="/usr/local/opendap/servers/hyrax-1.6.2/bin:$PATH"
+PATH="_PREFIX_/bin:$PATH"
 
 version=`uname -a | sed 's/.*Darwin Kernel Version \([0-9.]*\):.*/\1/'`
 major=`echo $version | sed 's/\([0-9]\)\.\([0-9]\)\.\([0-9]\)/\1/'`
