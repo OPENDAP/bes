@@ -3,7 +3,7 @@
 # Check to make sure the computer is running 10.3 or later.
 
 
-PATH="/usr/local/opendap/servers/hyrax-1.6.2/bin:$PATH"
+PATH="_PREFIX_/bin:$PATH"
 
 
 
