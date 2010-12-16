@@ -28,7 +28,7 @@ CSV_HDRS = \
 libcsv_module_la_SOURCES = $(CSV_SRCS) $(CSV_HDRS)
 libcsv_module_la_CPPFLAGS = $(BES_CPPFLAGS)
 libcsv_module_la_LDFLAGS = -avoid-version -module 
-libcsv_module_la_LIBADD = $(BES_LIBS)
+libcsv_module_la_LIBADD = $(BES_DAP_LIBS)
 
 EXTRA_PROGRAMS = 
 
