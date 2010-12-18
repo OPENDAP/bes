@@ -313,7 +313,7 @@ bool HDF5Array::m_array_in_structure() {
             vector<char> strbuf(size + 1);
             for (int strindex = 0; strindex < d_num_elm; strindex++) {
                 get_strdata(strindex, &convbuf[0], &strbuf[0], size);
-                DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
+                DBG(cerr << "=read()<get_strdata() strbuf=" << &strbuf[0] << endl);
                 v_str[strindex] = &strbuf[0];
             }
             set_read_p(true);
@@ -622,7 +622,7 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf) {
 
             for (int strindex = 0; strindex < d_num_elm; strindex++) {
                 get_strdata(strindex, &convbuf[0], &strbuf[0], elesize);
-                DBG(cerr << "=read()<get_strdata() strbuf=" << strbuf << endl);
+                DBG(cerr << "=read()<get_strdata() strbuf=" << &strbuf[0] << endl);
                 v_str[strindex] = &strbuf[0];
             }
 

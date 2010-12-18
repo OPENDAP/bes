@@ -120,7 +120,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    switch (type) {
 
             case H5G_GROUP:{
-                DBG(cerr << "=depth_first():H5G_GROUP " << oname << endl);
+                DBG(cerr << "=depth_first():H5G_GROUP " << &oname[0] << endl);
 #ifndef CF
                 add_group_structure_info(das, gname, &oname[0], true);
 #endif
@@ -171,7 +171,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             } // case H5G_GROUP
 
             case H5G_DATASET:{
-                DBG(cerr << "=depth_first():H5G_DATASET " << oname <<
+                DBG(cerr << "=depth_first():H5G_DATASET " << &oname[0] <<
                     endl);
 #ifndef CF
                 add_group_structure_info(das, gname, &oname[0], false);
@@ -685,10 +685,13 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
+                    string dap_type = get_dap_type(ty_id);
+                    string attr_name = GET_NAME(attr_inst.name);
+                    if(is_mappable(attr_id, attr_name, dap_type)){
                     // GET_NAME is defined at the top of this function.
-                    attr_table_ptr->append_attr(GET_NAME(attr_inst.name),
-                                                get_dap_type(ty_id),
-                                                print_rep);
+                        attr_table_ptr->append_attr(attr_name,
+                                                    dap_type, print_rep);
+                    }
 
                     delete[]print_rep; print_rep = 0;
                 }
@@ -704,6 +707,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 		    // value is deleted in the catch ... block below
 		    // so shouldn't be deleted here. pwest Mar 18, 2009
 		    //delete[] value;
+            
+                    if(H5Aclose(attr_id) < 0){
+                        throw InternalErr(__FILE__, __LINE__,
+                                          "unable to close attibute id");
+                    }
+                    
                     throw InternalErr(__FILE__, __LINE__,
 				      "unable to get attibute size");
                 }
@@ -714,13 +723,21 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                          sizeindex < (int) attr_inst.size[dim];
                          sizeindex++) {
                         print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                        attr_table_ptr->
-                            append_attr(GET_NAME(attr_inst.name),
-                                        get_dap_type(ty_id), print_rep);
+                        string dap_type = get_dap_type(ty_id);
+                        string attr_name = GET_NAME(attr_inst.name);
+                        
+                        if(is_mappable(attr_id, attr_name, dap_type)){
+                            attr_table_ptr->append_attr(attr_name,
+                                                        dap_type, print_rep);
+                        }
 
                         tempvalue = tempvalue + elesize;
-                        DBG(cerr << "tempvalue=" << tempvalue
-                            << "elesize=" << elesize << endl);
+                        
+                        DBG(cerr
+                            << "tempvalue=" << tempvalue
+                            << "elesize=" << elesize
+                            << endl);
+                        
                         delete[]print_rep; print_rep = 0;
                     }           // for (int sizeindex = 0; ...
                 }               // for (int dim = 0; ...
@@ -1005,6 +1022,68 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
     else {
         at->append_attr("Dataset", "String", oname);
     }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn is_mappable(hid_t _attr_id, string _name, string _dap_type)
+/// returns true if the type of HDF5 attribute can be mapped to one of
+/// DAP 2.0 type.
+///
+/// Since we cannot translate some types of HDF5 attributes into DAP
+/// types, we need to check the translatability of \a dap_type and throws
+/// an error in the default configuration option.
+///
+/// If the CF configuration option is enabled, we can ignore the internal
+/// attributes of the HDF-EOS5 augmented files by checking both \a name and
+/// \a dap_type. The following attribute - type pairs are ignored although
+/// their types are not mappable.
+///
+/// 1) DIMENSION_LIST - Unmappable Type
+/// 2) REFERENCE_LIST - Structure
+///
+/// \param _attr_id attribute id.
+/// \param _name attribute name
+/// \param _dap_type DAP type mapped from HDF5 type.
+///
+/// \exception throws an error message if unmappable types are detected.
+/// \return true if mappable.
+///////////////////////////////////////////////////////////////////////////////
+bool
+is_mappable(hid_t _attr_id, string _name, string _dap_type)
+{
+
+    DBG(cerr
+        << ">is_mappable():name="   << _name
+        << " type=" << _dap_type
+        << endl);
+#ifdef CF
+    if(_dap_type == "Unmappable Type" &&
+       _name == "DIMENSION_LIST")
+        return false;
+    
+    if(_dap_type == "Structure" &&
+       _name == "REFERENCE_LIST")
+        return false;
+#endif
+    
+    if(_dap_type == "Unmappable Type" ||
+       _dap_type == "Structure"){
+        
+        if(H5Aclose(_attr_id) < 0){
+            throw InternalErr(__FILE__, __LINE__,
+                              "unable to close attibute id");
+        }
+
+        
+        string msg = "The ";
+        msg += _dap_type;
+        msg += " type of ";
+        msg += _name;
+        msg += " attribute is not mappable.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+     }
+    return true;
 }
 
 #ifdef CF

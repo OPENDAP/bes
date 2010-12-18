@@ -22,19 +22,19 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \file h5das.h
 /// \brief Data attributes processing header
 ///
-/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
-/// for HDF5 data.
+/// This file is part of h5_dap_handler, A C++ implementation of the DAP 
+/// handler for HDF5 data.
 ///    
 /// It defines functions that generate data attributes from HDF5 files.
 /// 
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang <ymuqun@hdfgroup.org>
 ///
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 #ifndef _h5das_H
 #define _h5das_H
 
@@ -49,6 +49,7 @@ void depth_first(hid_t, const char *, DAS &);
 void find_gloattr(hid_t file, DAS & das);
 string get_hardlink(hid_t, const string &);
 void get_softlink(DAS &, hid_t, const string &, int);
+bool is_mappable(hid_t _attr_id, string _name, string _dap_type);
 void read_comments(DAS & das, const string & varname, hid_t oid);
 void read_objects(DAS & das, const string & varname, hid_t dset,
                   int num_attr);

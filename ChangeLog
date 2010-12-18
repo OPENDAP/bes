@@ -1,3 +1,10 @@
+2010-12-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	h5das.cc: bug fixes for augmented files (HIRDLS v5 / MLS v3).
+	h5das.h: bug fixes for augmented files (HIRDLS v5 / MLS v3).
+	h5get.cc: bug fix for debug mode.
+	HDF5Array.cc: bug fix for debug mode.
+
 2010-09-03  muqun
 
 	Fix for the bug in the debug mode testing; s2_t is defined multiple times

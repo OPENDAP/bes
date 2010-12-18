@@ -180,7 +180,7 @@ string get_dap_type(hid_t type)
 {
     size_t size = 0;
     H5T_sign_t sign;
-
+    DBG(cerr  << ">get_dap_type(): type="  << type << endl);
     switch (H5Tget_class(type)) {
 
     case H5T_INTEGER:
@@ -212,7 +212,8 @@ string get_dap_type(hid_t type)
         }
 
 	if (size < 0){
-	    throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid"); 
+	    throw InternalErr(__FILE__, __LINE__,
+                              "size of datatype is invalid"); 
 	}
 
         return INT_ELSE;
@@ -225,23 +226,28 @@ string get_dap_type(hid_t type)
         if (size == 8)
             return FLOAT64;
 	if (size < 0){
-            throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid");
+            throw InternalErr(__FILE__, __LINE__,
+                              "size of datatype is invalid");
         }
         return FLOAT_ELSE;
 
     case H5T_STRING:
+        DBG(cerr << "<get_dap_type(): H5T_STRING" << endl);
         return STRING;
 
     case H5T_REFERENCE:
+        DBG(cerr << "<get_dap_type(): H5T_REFERENCE" << endl);
         return URL;
 
     case H5T_COMPOUND:
+        DBG(cerr << "<get_dap_type(): COMPOUND" << endl);
         return COMPOUND;
 
     case H5T_ARRAY:
         return ARRAY;
 
     default:
+        DBG(cerr << "<get_dap_type(): Unmappable Type" << endl);
         return "Unmappable Type";
     }
 }
