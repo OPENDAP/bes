@@ -264,7 +264,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         double *tdp;
     } gp;
 
-    char *rep = 0;		// This holds the return value
+    char *rep = NULL;		// This holds the return value
     try {
 	switch (H5Tget_class(type)) {
         case H5T_INTEGER: {
@@ -406,8 +406,10 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         }
 
         default:
+            /*
 	    rep = new char[1];
 	    rep[0] = '\0';
+            */
 	    break;
 	} // switch(H5Tget_class(type))
     } // try
@@ -642,7 +644,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into DAS table.
     char *print_rep = NULL;
-    char *value = NULL;
+
     try {
 	for (int j = 0; j < num_attr; j++) {
 	    // Obtain attribute information.
@@ -655,6 +657,16 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    // Since HDF5 attribute may be in string datatype, it must be dealt
 	    // properly. Get data type.
 	    hid_t ty_id = attr_inst.type;
+            string dap_type = get_dap_type(ty_id);
+            string attr_name = GET_NAME(attr_inst.name);
+
+            // Skip unmappable types early. Otherwise, delete[] value will 
+            // cause an error on 64-bit machines.
+            if(!is_mappable(attr_id, attr_name, dap_type)){
+                continue;
+            }
+
+
 	    char *value = new char[attr_inst.need + sizeof(char)];
 	    memset(value, 0, attr_inst.need + sizeof(char));
 
@@ -668,33 +680,35 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 throw InternalErr(__FILE__, __LINE__,
                                   "unable to read HDF5 attribute data");
 	    }
+	    DBG(cerr << "H5Aread(" << attr_inst.name << ")=" << value << endl);
 	    // Add all attributes in the array.
             //  Create the "name" attribute if we can find long_name.
             //  Make it compatible with HDF4 server.
             if (strcmp(attr_inst.name, "long_name") == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
-                    attr_table_ptr->append_attr("name", get_dap_type(ty_id),
-                                                print_rep);
-                    delete[]print_rep; print_rep = 0;
+                    if(print_rep != NULL){
+                        attr_table_ptr->append_attr("name", 
+                                                    get_dap_type(ty_id),
+                                                    print_rep);
+                        delete[]print_rep; print_rep = NULL;
+                    }
                 }
             }
 
-            // For scalar data, just read data once a time,
+            // For scalar data, just read data once.
             // Change it into DODS string.
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value);
-                    string dap_type = get_dap_type(ty_id);
-                    string attr_name = GET_NAME(attr_inst.name);
-                    if(is_mappable(attr_id, attr_name, dap_type)){
-                    // GET_NAME is defined at the top of this function.
-                        attr_table_ptr->append_attr(attr_name,
-                                                    dap_type, print_rep);
+                    if(print_rep != NULL){
+                            // GET_NAME is defined at the top of this function.
+                            attr_table_ptr->append_attr(attr_name,
+                                                        dap_type, print_rep);
                     }
-
-                    delete[]print_rep; print_rep = 0;
+                    delete[]print_rep; print_rep = NULL;
                 }
+
             }
             else {
                 // 1. If the hdf5 data type is HDF5 string and ndims is not 0;
@@ -704,10 +718,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
                 int elesize = (int) H5Tget_size(attr_inst.type);
                 if (elesize == 0) {
-		    // value is deleted in the catch ... block below
-		    // so shouldn't be deleted here. pwest Mar 18, 2009
-		    //delete[] value;
-            
+                    DBG(cerr << "=read_objects(): elesize=0" << endl);
+		    delete[] value;
                     if(H5Aclose(attr_id) < 0){
                         throw InternalErr(__FILE__, __LINE__,
                                           "unable to close attibute id");
@@ -716,33 +728,33 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     throw InternalErr(__FILE__, __LINE__,
 				      "unable to get attibute size");
                 }
-
 		char *tempvalue = value;
                 for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
                     for (int sizeindex = 0;
                          sizeindex < (int) attr_inst.size[dim];
                          sizeindex++) {
-                        print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                        string dap_type = get_dap_type(ty_id);
-                        string attr_name = GET_NAME(attr_inst.name);
-                        
-                        if(is_mappable(attr_id, attr_name, dap_type)){
-                            attr_table_ptr->append_attr(attr_name,
-                                                        dap_type, print_rep);
-                        }
 
-                        tempvalue = tempvalue + elesize;
+                        print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
+                        if(print_rep != NULL){
+                            attr_table_ptr->append_attr(attr_name,
+                                                        dap_type, 
+                                                        print_rep);
+                            tempvalue = tempvalue + elesize;
                         
-                        DBG(cerr
-                            << "tempvalue=" << tempvalue
-                            << "elesize=" << elesize
-                            << endl);
+                            DBG(cerr
+                                << "tempvalue=" << tempvalue
+                                << "elesize=" << elesize
+                                << endl);
                         
-                        delete[]print_rep; print_rep = 0;
+                            delete[]print_rep; print_rep = NULL;
+                        }
+                        else{
+                            break;
+                        }
                     }           // for (int sizeindex = 0; ...
                 }               // for (int dim = 0; ...
             }			// if attr_inst.ndims != 0
-	    delete[] value; value = 0;
+	    delete[] value; value = NULL;
             
             if(H5Aclose(attr_id) < 0){
                     throw InternalErr(__FILE__, __LINE__,
@@ -753,7 +765,6 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     }			// try - protects print_rep and value
     catch(...) {
 	if( print_rep ) delete[] print_rep;
-	if( value ) delete[] value;
 	throw;
     }
 #ifdef CF
