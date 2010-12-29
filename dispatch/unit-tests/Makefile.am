@@ -72,6 +72,7 @@ test_config.h: test_config.h.in Makefile
 
 clean-local:
 	cd ${srcdir}/cache && rm -f *_cache*
+	rm -rf ${srcdir}/test_cache_64
 	rm -rf testdir
 
 ############################################################################

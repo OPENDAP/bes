@@ -40,14 +40,8 @@
 
 #include <cstring>
 #include <cerrno>
-#include <map>
 #include <iostream>
 #include <sstream>
-
-using std::multimap ;
-using std::pair ;
-using std::greater ;
-using std::endl ;
 
 #include "BESCache.h"
 #include "TheBESKeys.h"
@@ -55,13 +49,18 @@ using std::endl ;
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
-#define BES_CACHE_CHAR '#'
+using std::string;
+using std::multimap ;
+using std::pair ;
+using std::greater ;
+using std::endl ;
 
-typedef struct _cache_entry
-{
-    string name ;
-    int size ;
-} cache_entry ;
+// conversion factor
+static const unsigned long long BYTES_PER_MEG = 1048576ULL;
+
+// Max cache size in megs, so we can check the user input and warn.
+// 2^64 / 2^20 == 2^44
+static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 
 void 
 BESCache::check_ctor_params()
@@ -86,20 +85,28 @@ BESCache::check_ctor_params()
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    if( _cache_size == 0 )
+    if( _cache_size_in_megs <= 0 )
     {
 	string err = "The cache size was not specified, must be non-zero" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
-    // the cache size is specified in megabytes. When calculating
-    // the size of the cache we convert to bytes, which is 1048576
-    // bytes per meg. The max unsigned int allows for only 4095
-    // megabytes.
-    if( _cache_size > 4095 ) _cache_size = 4095 ;
+
+    // If the user specifies a cache that is too large,
+    // it is a user exception and we should tell them.
+    // Actually, this may not work since by this
+    // time we may have already overflowed the variable...
+    if( _cache_size_in_megs > MAX_CACHE_SIZE_IN_MEGABYTES )
+      {
+        _cache_size_in_megs = MAX_CACHE_SIZE_IN_MEGABYTES ;
+        std::ostringstream msg;
+        msg << "The specified cache size was larger than the max cache size of: "
+            << MAX_CACHE_SIZE_IN_MEGABYTES;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+      }
 
     BESDEBUG( "bes", "BES Cache: directory " << _cache_dir
 		     << ", prefix " << _prefix
-		     << ", max size " << _cache_size << endl ) ;
+		     << ", max size " << _cache_size_in_megs << endl ) ;
 }
 
 /** @brief Constructor that takes as arguments the values of the cache dir,
@@ -113,10 +120,10 @@ BESCache::check_ctor_params()
  */
 BESCache::BESCache( const string &cache_dir,
 		    const string &prefix,
-		    unsigned int size )
+		    unsigned long long sizeInMegs )
     : _cache_dir( cache_dir ),
       _prefix( prefix ),
-      _cache_size( size ),
+      _cache_size_in_megs( sizeInMegs ),
       _lock_fd( -1 )
 {
     check_ctor_params(); // Throws BESSyntaxUserError on error.
@@ -140,7 +147,7 @@ BESCache::BESCache( BESKeys &keys,
 		    const string &cache_dir_key,
 		    const string &prefix_key,
 		    const string &size_key )
-    : _cache_size( 0 ),
+    : _cache_size_in_megs( 0 ),
       _lock_fd( -1 )
 {
     bool found = false ;
@@ -172,7 +179,7 @@ BESCache::BESCache( BESKeys &keys,
     }
 
     std::istringstream is( cache_size_str ) ;
-    is >> _cache_size ;
+    is >> _cache_size_in_megs ;
 
     check_ctor_params(); // Throws BESSyntaxUserError on error.
 }
@@ -302,6 +309,9 @@ BESCache::is_cached( const string &src, string &target )
     return is_it ;
 }
 
+
+
+
 /** @brief Check to see if the cache size exceeds the size specified in the
  * constructor and purge older files until size is less
  *
@@ -313,137 +323,174 @@ BESCache::is_cached( const string &src, string &target )
 void
 BESCache::purge( )
 {
-    unsigned int max_size = _cache_size * 1048576 ; // Bytes/Meg
-    struct stat buf;
-    unsigned int size = 0 ; // total size of all cached files
-    unsigned int avg_size = 0 ;
-    unsigned int num_files_in_cache = 0 ;
-    time_t curr_time = time( NULL ) ; // grab the current time so we can
-    				      // determine the oldest file
-    // map of time,entry values
-    multimap<double,cache_entry,greater<double> > contents ;
+    // Fill in contents and get the info
+    CacheDirInfo cd_info;
+    collect_cache_dir_info(cd_info);
+    unsigned long long avg_size = cd_info.get_avg_size();
 
-    // the prefix is actually the specified prefix plus the cache char '#'
-    string match_prefix = _prefix + BES_CACHE_CHAR ;
+    // These are references in the refactor, probably would make
+    // sense to add these calls below to the info, but...
+    unsigned long long& size = cd_info._total_cache_files_size;
+    unsigned long long& num_files_in_cache = cd_info._num_files_in_cache;
+    BESCache::CacheFilesByAgeMap& contents = cd_info._contents;
 
-    // go through the cache directory and collect all of the files that
-    // start with the matching prefix
-    DIR *dip = opendir( _cache_dir.c_str() ) ;
-    if( dip != NULL )
-    {
-	struct dirent *dit;
-	while( ( dit = readdir( dip ) ) != NULL )
-	{
-	    string dirEntry = dit->d_name ;
-	    if( dirEntry.compare( 0, match_prefix.length(), match_prefix ) == 0)
-	    {
-		// Now that we have found a match we want to get the size of
-		// the file and the last access time from the file.
-		string fullPath = _cache_dir + "/" + dirEntry ;
-		int statret = stat( fullPath.c_str(), &buf ) ;
-		if( statret == 0 )
-		{
-		    size += buf.st_size ;
-
-		    // Find out how old the file is
-		    time_t file_time = buf.st_atime ;
-		    // I think we can use the access time without the diff,
-		    // since it's the relative ages that determine when to
-		    // delete a file. Good idea to use the access time so
-		    // recently used (read) files will linger. jhrg 5/9/07
-		    double time_diff = difftime( curr_time, file_time ) ;
-		    cache_entry entry ;
-		    entry.name = fullPath ;
-		    entry.size = buf.st_size ;
-		    contents.insert( pair<double,cache_entry>( time_diff, entry ) );
-		}
-		num_files_in_cache++ ;
-	    }
-	}
-
-	// We're done looking in the directory, close it
-	closedir( dip ) ;
-
-	if( num_files_in_cache ) avg_size = size / num_files_in_cache ;
-
-	BESDEBUG( "bes", "cache size = " << size << endl ) ;
-	BESDEBUG( "bes", "avg size = " << avg_size << endl ) ;
-	BESDEBUG( "bes", "num files in cache = "
+    BESDEBUG( "bes", "cache size = " << size << endl ) ;
+    BESDEBUG( "bes", "avg size = " << avg_size << endl ) ;
+    BESDEBUG( "bes", "num files in cache = "
 			 << num_files_in_cache << endl ) ;
-	if( BESISDEBUG( "bes" ) )
-	{
-	    BESDEBUG( "bes", endl << "BEFORE" << endl ) ;
-	    multimap<double,cache_entry,greater<double> >::iterator ti = contents.begin() ;
-	    multimap<double,cache_entry,greater<double> >::iterator te = contents.end() ;
-	    for( ; ti != te; ti++ )
-	    {
-		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
-	    }
-	    BESDEBUG( "bes", endl ) ;
-	}
+    if( BESISDEBUG( "bes" ) )
+      {
+        BESDEBUG( "bes", endl << "BEFORE" << endl ) ;
+        CacheFilesByAgeMap::iterator ti = contents.begin() ;
+        CacheFilesByAgeMap::iterator te = contents.end() ;
+        for( ; ti != te; ti++ )
+          {
+            BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
+          }
+        BESDEBUG( "bes", endl ) ;
+      }
 
-	// if the size of files is greater than max allowed then we need to
-	// purge the cache directory. Keep going until the size is less than
-	// the max.
-	multimap<double,cache_entry,greater<double> >::iterator i ;
-	if( (size+avg_size) > max_size )
-	{
-	    // Maybe change this to size + (fraction of max_size) > max_size?
-	    // jhrg 5/9/07
-	    while( (size+avg_size) > max_size )
-	    {
-		i = contents.begin() ;
-		if( i == contents.end() )
-		{
-		    // if we've reached the end of the cache directory,
-		    // there are no more elements in the cache, then set
-		    // the size and avg_size to 0 so that we can get out
-		    // of this loop.
-		    size = 0 ;
-		    avg_size = 0 ;
-		}
-		else
-		{
-		    BESDEBUG( "bes", "BESCache::purge - removing "
-		                     << (*i).second.name << endl ) ;
-		    if( remove( (*i).second.name.c_str() ) != 0 )
-		    {
-			char *s_err = strerror( errno ) ;
-			string err = "Unable to remove the file "
-				     + (*i).second.name
-				     + " from the cache: " ;
-			if( s_err )
-			{
-			    err.append( s_err ) ;
-			}
-			else
-			{
-			    err.append( "Unknown error" ) ;
-			}
-			throw BESInternalError( err, __FILE__, __LINE__ ) ;
-		    }
-		    size -= (*i).second.size ;
-		    contents.erase( i ) ;
-		}
-	    }
-	}
 
-	if( BESISDEBUG( "bes" ) )
-	{
-	    BESDEBUG( "bes", endl << "AFTER" << endl ) ;
-	    multimap<double,cache_entry,greater<double> >::iterator ti = contents.begin() ;
-	    multimap<double,cache_entry,greater<double> >::iterator te = contents.end() ;
-	    for( ; ti != te; ti++ )
-	    {
-		BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
-	    }
-	}
-    }
-    else
+    // if the size of files is greater than max allowed then we need to
+    // purge the cache directory. Keep going until the size is less than
+    // the max.
+    // [Maybe change this to size + (fraction of max_size) > max_size?
+    // jhrg 5/9/07]
+    unsigned long long max_size_in_bytes = _cache_size_in_megs * BYTES_PER_MEG ; // Bytes/Meg
+    while( (size+avg_size) > max_size_in_bytes )
+      {
+        // Grab the first which is the oldest
+        // in terms of access time.
+        CacheFilesByAgeMap::iterator i = contents.begin() ;
+
+        // if we've deleted all entries, exit the loop
+        if( i == contents.end() )
+          {
+            break;
+          }
+
+        // Otherwise, remove the file with unlink
+        BESDEBUG( "bes", "BESCache::purge - removing "
+            << (*i).second.name << endl ) ;
+        // unlink rather than remove in case the file is in use
+        // by a forked BES process
+        if( unlink( (*i).second.name.c_str() ) != 0 )
+          {
+            char *s_err = strerror( errno ) ;
+            string err = "Unable to remove the file "
+                + (*i).second.name
+                + " from the cache: " ;
+            if( s_err )
+              {
+                err.append( s_err ) ;
+              }
+            else
+              {
+                err.append( "Unknown error" ) ;
+              }
+            throw BESInternalError( err, __FILE__, __LINE__ ) ;
+          }
+
+        size -= (*i).second.size ;
+        contents.erase( i ) ;
+      }
+
+    if( BESISDEBUG( "bes" ) )
+      {
+        BESDEBUG( "bes", endl << "AFTER" << endl ) ;
+        CacheFilesByAgeMap::iterator ti = contents.begin() ;
+        CacheFilesByAgeMap::iterator te = contents.end() ;
+        for( ; ti != te; ti++ )
+          {
+            BESDEBUG( "bes", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl ) ;
+          }
+      }
+}
+
+// Local RAII helper class to be sure the DIR
+// is closed in the face of exceptions using RAII
+struct DIR_Wrapper
+{
+  DIR_Wrapper(const std::string& dir_name)
+  {
+    _dip = opendir(dir_name.c_str());
+  }
+
+  ~DIR_Wrapper()
+  {
+    close();
+  }
+
+  DIR* get() const { return _dip; }
+
+  void close()
+  {
+    if (_dip)
+      {
+        closedir(_dip);
+        _dip = NULL;
+      }
+  }
+
+  // data rep
+  DIR* _dip;
+};
+
+void
+BESCache::collect_cache_dir_info(
+    BESCache::CacheDirInfo& cd_info // output
+    ) const
+{
+  // start fresh
+  cd_info.clear();
+
+  time_t curr_time = time( NULL ) ; // grab the current time so we can
+                                        // determine the oldest file
+
+  DIR_Wrapper dip = DIR_Wrapper( _cache_dir );
+  if (! (dip.get()) )
     {
-	string err = "Unable to open cache directory " + _cache_dir ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+      string err = "Unable to open cache directory " + _cache_dir ;
+      throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
+  else // got a dir entry so count up the cached files
+    {
+      struct stat buf;
+      struct dirent *dit;
+      // go through the cache directory and collect all of the files that
+      // start with the matching prefix
+      while( ( dit = readdir( dip.get() ) ) != NULL )
+        {
+          string dirEntry = dit->d_name ;
+          if( dirEntry.compare( 0, _prefix.length(), _prefix ) == 0)
+            {
+              // Now that we have found a match we want to get the size of
+              // the file and the last access time from the file.
+              string fullPath = _cache_dir + "/" + dirEntry ;
+              int statret = stat( fullPath.c_str(), &buf ) ;
+              if( statret == 0 )
+                {
+                  cd_info._total_cache_files_size += buf.st_size ;
+
+                  // Find out how old the file is
+                  time_t file_time = buf.st_atime ;
+
+                  // I think we can use the access time without the diff,
+                  // since it's the relative ages that determine when to
+                  //         delete a file. Good idea to use the access time so
+                  // recently used (read) files will linger. jhrg 5/9/07
+                  double time_diff = difftime( curr_time, file_time ) ;
+                  cache_entry entry ;
+                  entry.name = fullPath ;
+                  entry.size = buf.st_size ;
+                  cd_info._contents.insert( pair<double, cache_entry>( time_diff, entry ) );
+                  }
+              cd_info._num_files_in_cache++ ;
+            }
+        }
+    }
+
+  dip.close();
 }
 
 /** @brief dumps information about this object
@@ -461,7 +508,7 @@ BESCache::dump( ostream &strm ) const
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "cache dir: " << _cache_dir << endl ;
     strm << BESIndent::LMarg << "prefix: " << _prefix << endl ;
-    strm << BESIndent::LMarg << "size: " << _cache_size << endl ;
+    strm << BESIndent::LMarg << "size (mb): " << _cache_size_in_megs << endl ;
     BESIndent::UnIndent() ;
 }
 

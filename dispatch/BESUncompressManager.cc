@@ -263,9 +263,16 @@ BESUncompressManager::uncompress( const string &src, string &target,
 				     << " using " << ext << " uncompression"
 				     << endl ) ;
 
-		    // we are now done in the cahce, unlock it
+		    // we are now done in the cache, unlock it
 		    cache.unlock() ;
 
+		    // MPJ: Is this safe to call after unlock?
+		    // We just unlocked the cache before we
+		    // decompress the file, so the is_cached call may fail
+		    // for another call while this is occurring
+		    // and spawn another decompress overwriting the other?
+		    // Or will another coming along see the unfinished
+		    // decompressed file and complain?
 		    p( src, target ) ;
 		    return true ;
 		}
@@ -282,7 +289,7 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    // BES exception
 		    cache.unlock() ;
 		    string err = (string)"Problem working with the cache, "
-		                 + "unknow error" ;
+		                 + "unknown error" ;
 		    throw BESInternalError( err, __FILE__,__LINE__);
 		}
 	    }
