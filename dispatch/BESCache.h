@@ -145,10 +145,9 @@ public:
     string			prefix( ) const { return _prefix ; }
     unsigned long long		cache_size( ) const  { return _cache_size_in_megs ; }
 
-    void
-    BESCache::collect_cache_dir_info(
-        BESCache::CacheDirInfo& cd_info //output
-    ) const;
+    void                        collect_cache_dir_info(
+                                  BESCache::CacheDirInfo& cd_info //output
+                                  ) const;
 
     virtual void		dump( ostream &strm ) const ;
 };
