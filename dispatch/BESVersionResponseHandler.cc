@@ -32,10 +32,17 @@
 
 #include "config.h"
 
+#include <vector>
+
+using std::vector ;
+
 #include "BESVersionResponseHandler.h"
 #include "BESVersionInfo.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "TheBESKeys.h"
+
+#define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
 BESVersionResponseHandler::BESVersionResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -67,6 +74,24 @@ BESVersionResponseHandler::execute( BESDataHandlerInterface &dhi )
     _response = info ;
     dhi.action_name = VERS_RESPONSE_STR ;
     info->begin_response( VERS_RESPONSE_STR, dhi ) ;
+
+    string administrator = "" ;
+    try
+    {
+	bool found = false ;
+	vector<string> vals ;
+	string key = "BES.ServerAdministrator" ;
+	TheBESKeys::TheKeys()->get_value( key, administrator, found ) ;
+    }
+    catch( ... )
+    {
+	administrator = DEFAULT_ADMINISTRATOR ;
+    }
+    if( administrator.empty() )
+    {
+	administrator = DEFAULT_ADMINISTRATOR ;
+    }
+    info->add_tag( "Administrator", administrator ) ;
 
     info->add_library( PACKAGE_NAME, PACKAGE_VERSION ) ;
 
