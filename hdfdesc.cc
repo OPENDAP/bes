@@ -990,7 +990,7 @@ print_attr(int32 type, int loc, void *vals)
     union {
         char *cp;
         short *sp;
-        nclong *lp;
+        int32 /*nclong*/ *lp;
         float *fp;
         double *dp;
     } gp;
