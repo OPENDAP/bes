@@ -163,7 +163,7 @@ clean-pkg:
 	-rm -rf mac_osx @PACKAGE@-@PACKAGE_VERSION@.pkg @PACKAGE@-@PACKAGE_VERSION@
 
 pkg-build:
-	./configure --prefix=$(prefix) --with-hdf4=$(HDF4_PATH) --disable-dependency-tracking $(PKG_CONF_FLAGS)
+	./configure --prefix=$(prefix) --with-hdf4=$(HDF4_PATH) --with-hdfeos2=$(HDFEOS2_DIR) --disable-dependency-tracking $(PKG_CONF_FLAGS)
 	make clean all
 	DESTDIR=`pwd`/mac_osx make install
 
