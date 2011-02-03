@@ -42,6 +42,7 @@
 #include "BESObj.h"
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
+#include "BESDebug.h"
 
 using std::string;
 using std::cerr;
@@ -121,6 +122,7 @@ private:
     void *get_lib() throw(NoSuchLibrary) {
 	if (!d_lib) {
 	    d_lib = dlopen(d_filename.c_str(), RTLD_NOW|RTLD_LOCAL);
+	    BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << endl);
 	    if (d_lib == NULL) {
 		throw NoSuchLibrary( string( dlerror() ), __FILE__, __LINE__ ) ;
 	    }
@@ -139,8 +141,13 @@ public:
     /** The destructor closes the library.
     */
     virtual ~BESPlugin() {
-	if (d_lib)
+	BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << endl);
+#if 0
+	if (d_lib) {
 	    dlclose(d_lib);
+	    d_lib = 0;
+	}
+#endif
     }
 
     /** Instantiate the object. Using the \b maker function found in the
