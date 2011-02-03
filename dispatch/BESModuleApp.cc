@@ -215,17 +215,24 @@ BESModuleApp::terminate( int sig )
 {
     list< bes_module >::iterator i = _module_list.begin() ;
     list< bes_module >::iterator e = _module_list.end() ;
+    bool done = false ;
     try
     {
-	for( i = _module_list.begin(); i != e; i++ )
+	// go in the reverse order that the modules were loaded
+	while( !done )
 	{
-	    bes_module curr_mod = *i ;
-	    string modname = curr_mod._module_name ;
-	    BESAbstractModule *o = _moduleFactory.get( modname ) ;
-	    if( o )
+	    if( e == i ) done = true ;
+	    else
 	    {
-		o->terminate( modname ) ;
-		delete o ;
+		e-- ;
+		bes_module curr_mod = *e ;
+		string modname = curr_mod._module_name ;
+		BESAbstractModule *o = _moduleFactory.get( modname ) ;
+		if( o )
+		{
+		    o->terminate( modname ) ;
+		    delete o ;
+		}
 	    }
 	}
     }

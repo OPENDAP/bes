@@ -512,15 +512,21 @@ ServerApp::initialize( int argc, char **argv )
     BESDEBUG( "server", "ServerApp: initializing default module ... "
 			<< endl ) ;
     BESDefaultModule::initialize( argc, argv ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "server", "ServerApp: done initializing default module"
+			<< endl ) ;
 
     BESDEBUG( "server", "ServerApp: initializing default commands ... "
 			<< endl ) ;
     BESXMLDefaultCommands::initialize( argc, argv ) ;
-    BESDEBUG( "server", "OK" << endl ) ;
+    BESDEBUG( "server", "ServerApp: done initializing default commands"
+			<< endl ) ;
 
     // This will load and initialize all of the modules
+    BESDEBUG( "server", "ServerApp: initializing loaded modules ... "
+			<< endl ) ;
     int ret = BESModuleApp::initialize( argc, argv ) ;
+    BESDEBUG( "server", "ServerApp: done initializing loaded modules"
+			<< endl ) ;
 
     BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
 
@@ -604,17 +610,26 @@ ServerApp::terminate( int sig )
 	    delete _us ;
 	}
 
-	BESDEBUG( "server", "ServerApp: terminating default module ... "
-			    << endl ) ;
-	BESDefaultModule::terminate( ) ;
-	BESDEBUG( "server", "OK" << endl ) ;
+	// Do this in the reverse order that it was initialized. So
+	// terminate the loaded modules first, then the default
+	// commands, then the default module.
+	BESDEBUG( "server", "ServerApp: terminating loaded modules ...  "
+	                    << endl ) ;
+	BESModuleApp::terminate( sig ) ;
+	BESDEBUG( "server", "ServerApp: done terminating loaded modules"
+	                    << endl ) ;
 
 	BESDEBUG( "server", "ServerApp: terminating default commands ...  "
 			    << endl ) ;
 	BESXMLDefaultCommands::terminate( ) ;
-	BESDEBUG( "server", "OK" << endl ) ;
+	BESDEBUG( "server", "ServerApp: done terminating default commands ...  "
+			    << endl ) ;
 
-	BESModuleApp::terminate( sig ) ;
+	BESDEBUG( "server", "ServerApp: terminating default module ... "
+			    << endl ) ;
+	BESDefaultModule::terminate( ) ;
+	BESDEBUG( "server", "ServerApp: done terminating default module ... "
+			    << endl ) ;
     }
     return sig ;
 }

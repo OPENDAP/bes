@@ -214,14 +214,20 @@ StandAloneApp::initialize( int argc, char **argv )
 	BESDEBUG( "standalone", "ServerApp: initializing default module ... "
 				<< endl ) ;
 	BESDefaultModule::initialize( argc, argv ) ;
-	BESDEBUG( "standalone", "OK" << endl ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing default module"
+				<< endl ) ;
 
 	BESDEBUG( "standalone", "ServerApp: initializing default commands ... "
 				<< endl ) ;
 	BESXMLDefaultCommands::initialize( argc, argv ) ;
-	BESDEBUG( "standalone", "OK" << endl ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing default commands"
+				<< endl ) ;
 
+	BESDEBUG( "standalone", "ServerApp: initializing loaded modules ... "
+				<< endl ) ;
 	int retval = BESModuleApp::initialize( argc, argv ) ;
+	BESDEBUG( "standalone", "ServerApp: done initializing loaded modules"
+				<< endl ) ;
 	if( retval )
 	    return retval ;
     }
@@ -328,17 +334,23 @@ StandAloneApp::run()
 int
 StandAloneApp::terminate( int sig )
 {
-    BESDEBUG( "standalone", "ServerApp: terminating default module ... "
+    BESDEBUG( "standalone", "ServerApp: terminating loaded modules ... "
 			    << endl ) ;
-    BESDefaultModule::terminate( ) ;
-    BESDEBUG( "standalone", "OK" << endl ) ;
+    BESModuleApp::terminate( sig ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating loaded modules"
+			    << endl ) ;
 
     BESDEBUG( "standalone", "ServerApp: terminating default commands ...  "
 			    << endl ) ;
     BESXMLDefaultCommands::terminate( ) ;
-    BESDEBUG( "standalone", "OK" << endl ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating default commands"
+			    << endl ) ;
 
-    BESModuleApp::terminate( sig ) ;
+    BESDEBUG( "standalone", "ServerApp: terminating default module ... "
+			    << endl ) ;
+    BESDefaultModule::terminate( ) ;
+    BESDEBUG( "standalone", "ServerApp: done terminating default module"
+			    << endl ) ;
 
     CmdTranslation::terminate( ) ;
 

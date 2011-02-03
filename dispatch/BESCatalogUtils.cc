@@ -45,11 +45,8 @@ using std::endl ;
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
-#include "GNURegex.h"
-#include "Error.h"
+#include "BESRegex.h"
 #include "BESUtil.h"
-
-using namespace libdap ;
 
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances ;
 
@@ -171,19 +168,19 @@ BESCatalogUtils::include( const string &inQuestion ) const
 	    {
 		// must match exactly, meaing result is = to length of string
 		// in question
-		Regex reg_expr( reg.c_str() ) ;
+		BESRegex reg_expr( reg.c_str() ) ;
 		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
 		    static_cast<int>(inQuestion.length()) )
 		{
 		    toInclude = true ;
 		}
 	    }
-	    catch( Error &e )
+	    catch( BESError &e )
 	    {
 		string serr = (string)"Unable to get catalog information, "
 		              + "malformed Catalog Include parameter "
 			      + "in bes configuration file around " 
-			      + reg + ": " + e.get_error_message() ;
+			      + reg + ": " + e.get_message() ;
 		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	    }
 	}
@@ -210,19 +207,19 @@ BESCatalogUtils::exclude( const string &inQuestion ) const
 	string reg = *e_iter ;
 	try
 	{
-	    Regex reg_expr( reg.c_str() ) ;
+	    BESRegex reg_expr( reg.c_str() ) ;
 	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
 	        static_cast<int>(inQuestion.length()) )
 	    {
 		return true ;
 	    }
 	}
-	catch( Error &e )
+	catch( BESError &e )
 	{
 	    string serr = (string)"Unable to get catalog information, "
 			  + "malformed Catalog Exclude parameter " 
 			  + "in bes configuration file around " 
-			  + reg + ": " + e.get_error_message() ;
+			  + reg + ": " + e.get_message() ;
 	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
 	}
     }

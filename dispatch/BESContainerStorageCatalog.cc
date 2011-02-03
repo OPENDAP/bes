@@ -37,7 +37,7 @@
 #include "BESForbiddenError.h"
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
-#include "GNURegex.h"
+#include "BESRegex.h"
 #include "Error.h"
 
 using namespace libdap ;
@@ -129,7 +129,9 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
     {
 	basename = new_name ;
     }
-    if( !_utils->include( basename ) || _utils->exclude( basename ) )
+    // BESCatalogUtils::include method already calls exclude, so just
+    // need to call include
+    if( !_utils->include( basename ) )
     {
 	string s = "Attempting to create a container with real name "
 	           + real_name + " which is on the exclude list" ;
@@ -149,7 +151,7 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
 	    BESCatalogUtils::type_reg match = (*i) ;
 	    try
 	    {
-		Regex reg_expr( match.reg.c_str() ) ;
+		BESRegex reg_expr( match.reg.c_str() ) ;
 		if( reg_expr.match( real_name.c_str(), real_name.length() ) ==
 		    static_cast<int>(real_name.length()) )
 		{
@@ -192,7 +194,7 @@ BESContainerStorageCatalog::isData( const string &inQuestion,
 	BESCatalogUtils::type_reg match = (*i) ;
 	try
 	{
-	    Regex reg_expr( match.reg.c_str() ) ;
+	    BESRegex reg_expr( match.reg.c_str() ) ;
 	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
 	        static_cast<int>(inQuestion.length()) )
 	    {
