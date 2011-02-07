@@ -142,12 +142,10 @@ public:
     */
     virtual ~BESPlugin() {
 	BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << endl);
-#if 0
 	if (d_lib) {
 	    dlclose(d_lib);
-	    d_lib = 0;
+	    d_lib = 0;	// Added; paranoia. jhrg
 	}
-#endif
     }
 
     /** Instantiate the object. Using the \b maker function found in the
