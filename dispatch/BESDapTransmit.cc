@@ -34,13 +34,21 @@
 
 using std::ostringstream;
 
+//#define USE_DODSFILTER 1
+#undef DODSFILTER
+
 #include "BESDapTransmit.h"
+#ifdef USE_DODSFILTER
 #include "DODSFilter.h"
+#endif
+#include "ResponseBuilder.h"
 #include "BESContainer.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESResponseNames.h"
+#ifdef USE_DODSFILTER
 #include "mime_util.h"
+#endif
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
@@ -143,11 +151,16 @@ private:
     DAS *das = bdas->get_das();
     dhi.first_container();
     bool print_mime = get_print_mime();
-
+#ifdef USE_DODSFILTER
     DODSFilter df ;
     df.set_dataset_name( dhi.container->get_real_name() ) ;
     df.send_das( dhi.get_output_stream(), *das, "", print_mime ) ;
-  }
+#else
+    ResponseBuilder rb ;
+    rb.set_dataset_name( dhi.container->get_real_name() ) ;
+    rb.send_das( dhi.get_output_stream(), *das, print_mime ) ;
+#endif
+    }
 };
 
 class SendDDS : public Sender
@@ -167,10 +180,17 @@ private:
     dhi.first_container();
     bool print_mime = get_print_mime();
 
+#ifdef USE_DODSFILTER
     DODSFilter df;
     df.set_dataset_name(dhi.container->get_real_name());
     df.set_ce(dhi.data[POST_CONSTRAINT]);
     df.send_dds(dhi.get_output_stream(), *dds, ce, true, "", print_mime);
+#else
+    ResponseBuilder rb;
+    rb.set_dataset_name(dhi.container->get_real_name());
+    rb.set_ce(dhi.data[POST_CONSTRAINT]);
+    rb.send_dds(dhi.get_output_stream(), *dds, ce, true, print_mime);
+#endif
   }
 };
 
@@ -191,10 +211,17 @@ private:
      dhi.first_container();
      bool print_mime = get_print_mime();
 
+#ifdef USE_DODSFILTER
      DODSFilter df;
      df.set_dataset_name(dds->filename());
      df.set_ce(dhi.data[POST_CONSTRAINT]);
      df.send_data(*dds, ce, dhi.get_output_stream(), "", print_mime);
+#else
+     ResponseBuilder rb;
+     rb.set_dataset_name(dds->filename());
+     rb.set_ce(dhi.data[POST_CONSTRAINT]);
+     rb.send_data(dhi.get_output_stream(), *dds, ce, print_mime);
+#endif
   }
 };
 
@@ -215,10 +242,17 @@ private:
     dhi.first_container();
     bool print_mime = get_print_mime();
 
+#ifdef USE_DODSFILTER
     DODSFilter df;
     df.set_dataset_name(dhi.container->get_real_name());
     df.set_ce(dhi.data[POST_CONSTRAINT]);
     df.send_ddx(*dds, ce, dhi.get_output_stream(), print_mime);
+#else
+    ResponseBuilder rb;
+    rb.set_dataset_name(dhi.container->get_real_name());
+    rb.set_ce(dhi.data[POST_CONSTRAINT]);
+    rb.send_ddx(dhi.get_output_stream(), *dds, ce, print_mime);
+#endif
   }
 };
 
@@ -239,6 +273,7 @@ private:
     dhi.first_container();
     bool print_mime = get_print_mime();
 
+#ifdef USE_DODSFILTER
     DODSFilter df;
     df.set_dataset_name(dds->filename());
     df.set_ce(dhi.data[POST_CONSTRAINT]);
@@ -246,6 +281,14 @@ private:
     df.send_data_ddx(*dds, ce, dhi.get_output_stream(),
         dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY],
         "", print_mime);
+#else
+    ResponseBuilder rb;
+    rb.set_dataset_name(dds->filename());
+    rb.set_ce(dhi.data[POST_CONSTRAINT]);
+    BESDEBUG("dap", "dhi.data[DATADDX_STARTID]: " << dhi.data[DATADDX_STARTID] << endl);
+    rb.send_data_ddx(dhi.get_output_stream(), *dds, ce,
+        dhi.data[DATADDX_STARTID], dhi.data[DATADDX_BOUNDARY], print_mime);
+#endif
   }
 };
 

@@ -55,7 +55,8 @@ public:
 	<i>and</i> the header.
 
 	@name MIME utility functions
-	@see DODSFilter
+	@see libdap::escaping.cc
+	@see libdap::mime_util.cc
     */
     static void			set_mime_text( ostream &strm ) ;
     static void			set_mime_html( ostream &strm ) ;

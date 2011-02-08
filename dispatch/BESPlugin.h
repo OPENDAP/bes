@@ -44,6 +44,8 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#undef UNPLUG_HANDLERS
+
 using std::string;
 using std::cerr;
 using std::endl;
@@ -142,10 +144,12 @@ public:
     */
     virtual ~BESPlugin() {
 	BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << endl);
+#ifdef UNPLUG_HANDLERS
 	if (d_lib) {
 	    dlclose(d_lib);
 	    d_lib = 0;	// Added; paranoia. jhrg
 	}
+#endif
     }
 
     /** Instantiate the object. Using the \b maker function found in the
