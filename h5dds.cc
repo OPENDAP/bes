@@ -38,9 +38,9 @@
 #include "config_hdf5.h"
 
 #include <InternalErr.h>
-#include <util.h>
+//#include <util.h>
 #include <debug.h>
-#include <mime_util.h> 
+#include <mime_util.h>
 
 #include "h5dds.h"
 #include "HDF5Int32.h"
@@ -741,7 +741,7 @@ static void write_grid_shared_dimensions(DDS & dds_table,
 
 /// processes the NASA EOS AURA Grids.
 static void process_grid_nasa_eos(const string &varname, 
-                                  Array *array, Grid *gr, DDS &dds_table) {
+                                  Array *array, Grid *gr, DDS &) {
     // Fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
     vector < string > tokens;
@@ -810,6 +810,8 @@ static void process_grid_nasa_eos(const string &varname,
 /// \param varname the full path name of Swath dataset
 /// \param filename the file name of Swath file
 ///////////////////////////////////////////////////////////////////////////////
+
+// TODO: This function is never used. Keep it here?
 static void write_swath(DDS & dds_table,  
                         string varname, 
                         const string & filename) 
