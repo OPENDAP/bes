@@ -43,6 +43,8 @@
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
 
+#undef UNPLUG_HANDLERS
+
 using std::string;
 using std::cerr;
 using std::endl;
@@ -131,7 +133,7 @@ private:
 
 public:
     /** Create a new BESPlugin.
-	@param filename The name of the shareable object library that holds
+	@param filename The name of the sharable object library that holds
 	the class' implementation.
     */
     BESPlugin(const string &filename) : d_filename(filename), d_lib(0) {}
@@ -139,8 +141,13 @@ public:
     /** The destructor closes the library.
     */
     virtual ~BESPlugin() {
-	if (d_lib)
+	BESDEBUG( "bes", "BESPlugin: unplugging handler:" << d_filename << ", " << d_lib << endl);
+#ifdef UNPLUG_HANDLERS
+	if (d_lib) {
 	    dlclose(d_lib);
+	    d_lib = 0;	// Added; paranoia. jhrg
+	}
+#endif
     }
 
     /** Instantiate the object. Using the \b maker function found in the
