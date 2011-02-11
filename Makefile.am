@@ -157,7 +157,7 @@ lex.hdfeos.cc: hdfeos.lex hdfeos.tab.cc hdfeos.tab.hh
 # osx install dirs and not the temp directory used to build the packages
 
 
-.PHONY: clean-pkg
+.PHONY: clean-pkg pkg-build pkg-main pkg-dmg showEnv
 PACKAGEMAKER=/Developer/usr/bin/packagemaker
 PKG_CONF_FLAGS=
 
@@ -188,6 +188,12 @@ pkg-dmg: pkg-main
 	dropdmg -i --sanitize-for-servers --format zlib @PACKAGE@-@PACKAGE_VERSION@
 	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
 
-pkg: pkg-main
+showEnv: 
+	@echo "PACKAGE:         " @PACKAGE@
+	@echo "PACKAGE-VERSION: " @PACKAGE_VERSION@
+	@echo "HDF4_PATH:       " $(HDF4_PATH)
+	@echo "HDFEOS2_DIR:     " $(HDFEOS2_DIR)
+
+
 
 

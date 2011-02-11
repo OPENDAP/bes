@@ -110,6 +110,7 @@ AC_SUBST(testurl)
 dnl ----------------------------------------------------------------------                                
 dnl Test for HDF-EOS2                                                                                     
 
+dnl TODO The next line should be removed
 AC_SUBST(H5_USE_HDFEOS2) H5_USE_HDFEOS2="no"
 
 AC_ARG_WITH([hdfeos2],
@@ -127,10 +128,12 @@ if test -n "$HDFEOS2_DIR"; then
   HDFEOS2_LIBS="-lhdfeos -lGctp"
 dnl  AC_CHECK_LIB(Gctp, inv_init,, AC_MSG_ERROR([invalid Gctp in hdfeos2]))
 dnl  AC_CHECK_LIB(hdfeos, GDopen,, AC_MSG_ERROR([invalid hdfeos in hdfeos2]))
+dnl TODO The next line should be removed
   H5_USE_HDFEOS2="yes"
   AM_CONDITIONAL([HDFEOS2], [true])
 fi
 AC_SUBST([HDFEOS2_LIBS])
+AC_SUBST([HDFEOS2_DIR])
 
 dnl ----------------------------------------------------------------------                                
 dnl Shorten variable names if enabled. 
