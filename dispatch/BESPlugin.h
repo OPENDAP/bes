@@ -42,6 +42,7 @@
 #include "BESObj.h"
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
+#include "BESDebug.h"
 
 #undef UNPLUG_HANDLERS
 
