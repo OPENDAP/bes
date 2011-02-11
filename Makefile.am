@@ -173,6 +173,7 @@ pkg-main: pkg-build
 	./OSX_Resources/update_mac_package_contents.pl README
 	cat ./OSX_Resources/InstallationCheck.proto | sed -e "s^_PREFIX_^$(prefix)^g" > foo
 	mv foo ./OSX_Resources/InstallationCheck
+	chmod 755 ./OSX_Resources/InstallationCheck
 	cat ./OSX_Resources/Info.plist.proto | sed -e "s^_PREFIX_^$(prefix)^g" > foo
 	mv foo ./OSX_Resources/Info.plist
 	${PACKAGEMAKER} --root mac_osx --id org.opendap.@PACKAGE@ \
