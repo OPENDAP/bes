@@ -1,0 +1,9 @@
+[EST Tue Feb  8 10:36:26 2011 id: 89858] 89858 from standalone request received
+[EST Tue Feb  8 10:36:26 2011 id: 89858] 89858 from standalone [set context dap_format to dap2;] received
+[EST Tue Feb  8 10:36:26 2011 id: 89858] 89858 from standalone [set container in catalog values c,data/fnoc1.dds;] received
+[EST Tue Feb  8 10:36:26 2011 id: 89858] 89858 from standalone [define d as c;] received
+[EST Tue Feb  8 10:36:26 2011 id: 89858] 89858 from standalone [get dds for d return as dap2;] received
+[EST Tue Feb  8 10:36:48 2011 id: 90134] 90134 from standalone request received
+[EST Tue Feb  8 10:36:48 2011 id: 90134] 90134 from standalone [show version;] received
+[EST Tue Feb  8 10:37:22 2011 id: 90135] 90135 from standalone request received
+[EST Tue Feb  8 10:37:22 2011 id: 90135] 90135 from standalone [show version;] received

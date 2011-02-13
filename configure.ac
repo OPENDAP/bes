@@ -14,6 +14,7 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
 AC_CONFIG_TESTDIR(cmdln/testsuite, [.])
+AC_CONFIG_TESTDIR(dapreader/bes-testsuite, [.])
 
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these `flag variables'
@@ -59,6 +60,9 @@ AC_SUBST(LIB_XML_CMD_AGE)
 AC_SUBST(LIB_XML_CMD_REVISION)
 LIBXMLCOMMAND_VERSION="$LIB_XML_CMD_CURRENT:$LIB_XML_CMD_REVISION:$LIB_XML_CMD_AGE"
 AC_SUBST(LIBXMLCOMMAND_VERSION)
+
+AC_DEFINE([DAPREADER_PACKAGE], ["dapreader_module"], [dapreader_module])
+AC_DEFINE([DAPREADER_VERSION], ["0.0.1"], [0.0.1])
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -240,6 +244,9 @@ AC_CONFIG_FILES([Makefile
 		 server/test/Makefile
 		 bin/Makefile
 		 templates/Makefile
+		 dapreader/Makefile
+		 dapreader/bes-testsuite/Makefile
+		 dapreader/bes-testsuite/atlocal
 		 bes_dispatch.pc
 		 bes_ppt.pc
 		 bes_dap.pc

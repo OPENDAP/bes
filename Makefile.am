@@ -6,7 +6,7 @@
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 
-SUBDIRS = dispatch xmlcommand ppt cmdln server standalone docs bin templates
+SUBDIRS = dispatch xmlcommand ppt cmdln server standalone dapreader docs bin templates
 
 bin_SCRIPTS = besd bes-config bes-config-pkgconfig
 
@@ -16,7 +16,7 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc bes_dap.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = apache hello_world csv-handler doxy.conf bes.spec \
+EXTRA_DIST = apache hello_world doxy.conf bes.spec \
 		OSX_Resources bes-config-pkgconfig
 
 # Not nearly as clean as it could be, but this removes .svn directories
