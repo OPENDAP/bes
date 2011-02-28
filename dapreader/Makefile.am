@@ -24,7 +24,7 @@ BES_HDRS = \
 libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
-libdapreader_module_la_LIBADD = $(BES_DAP_LIBS) $(DAP_CLIENT_LIBS)
+libdapreader_module_la_LIBADD = $(BES_DAP_LIBS) $(DAP_CLIENT_LIBS) -L$(libdir) -lbes_dispatch -lbes_xml_command -lbes_ppt -lbes_dap $(OPENSSL_LIBS)
 
 EXTRA_PROGRAMS = 
 
