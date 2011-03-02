@@ -34,6 +34,7 @@
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
 #include "BESDapNames.h"
+#include "BESDataNames.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapTransmit.h"
 
@@ -84,15 +85,30 @@ BESDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
                 << bdds->get_request_xml_base() << endl) ;
 
     // I added these two lines from BESDDXResponse. jhrg 10/05/09
-    dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
-    dds->set_request_xml_base( bdds->get_request_xml_base() );
+    // Note that the get_dap_client_protocol(), ..., methods
+    // are defined in BESDapResponse - these are not the methods of the
+    // same name in DDS. 2/23/11 jhrg
 
-#if 0
-    dds->set_dap_major(bdds->get_dds()->get_dap_major());
-    dds->set_dap_minor(bdds->get_dds()->get_dap_minor());
+    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
+
+    dhi.first_container();
+    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
+    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
+    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
+
+    if (dds->get_keywords().has_keyword("dap")) {
+	BESDEBUG("version", "Has keyword 'dap', setting version to: " << dds->get_keywords().get_keyword_value("dap") << endl);
+	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+    }
+    else if (!bdds->get_dap_client_protocol().empty()) {
+	BESDEBUG("version", "Has non-empty dap version info in bdds, setting version to: " << bdds->get_dap_client_protocol() << endl);
+	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    }
+    else {
+	BESDEBUG("version", "Has no clue about dap version, using default." << endl);
+    }
 
     dds->set_request_xml_base( bdds->get_request_xml_base() );
-#endif
 
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 

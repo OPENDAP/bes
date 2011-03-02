@@ -34,7 +34,9 @@
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
+#include "BESDataNames.h"
 #include "BESDapTransmit.h"
+#include "BESDebug.h"
 
 BESDataResponseHandler::BESDataResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -66,7 +68,23 @@ BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
     DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
-    _response = new BESDataDDSResponse( dds ) ;
+    BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
+
+    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
+
+    dhi.first_container();
+    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
+    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
+    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
+
+    if (dds->get_keywords().has_keyword("dap")) {
+	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+    }
+    else if (!bdds->get_dap_client_protocol().empty()) {
+	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    }
+
+    _response = bdds ;
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
 }
 

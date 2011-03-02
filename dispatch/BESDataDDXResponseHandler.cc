@@ -34,6 +34,7 @@
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
+#include "BESDataNames.h"
 #include "BESDapTransmit.h"
 
 #include "BESDebug.h"
@@ -79,8 +80,27 @@ BESDataDDXResponseHandler::execute( BESDataHandlerInterface &dhi )
     _response_name = DATA_RESPONSE ;
     dhi.action = DATA_RESPONSE ;
 
-    // I added these two lines from BESDDXResponse. jhrg 8/21/09
-    dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    // Read keywords from the CE and use those to set the DAP version; maybe
+    // other things. If the dap version(s) are not included in the CE using
+    // keywords, then see if anything was sent in the Request headers (which
+    // the OLFS will parse); the BES includes that info in the BESDapResponse
+    // object.
+
+    // Set the DAP protocol version requested by the client. 2/25/11 jhrg
+
+    dhi.first_container();
+    BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
+    dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
+    BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
+
+    dhi.data[POST_CONSTRAINT] = dds->get_keywords().parse_keywords(dhi.data[POST_CONSTRAINT]);
+    if (dds->get_keywords().has_keyword("dap")) {
+	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+    }
+    else if (!bdds->get_dap_client_protocol().empty()) {
+	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    }
+
     dds->set_request_xml_base( bdds->get_request_xml_base() );
 
     BESRequestHandlerList::TheList()->execute_each( dhi ) ;
