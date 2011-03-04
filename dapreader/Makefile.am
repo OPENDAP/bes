@@ -28,7 +28,7 @@ libdapreader_module_la_LIBADD = $(BES_DAP_LIBS) $(DAP_CLIENT_LIBS) -L$(libdir) -
 
 EXTRA_PROGRAMS = 
 
-EXTRA_DIST = data COPYRIGHT COPYING
+EXTRA_DIST = data
 
 CLEANFILES = *~
 
