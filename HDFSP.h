@@ -46,6 +46,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <list>
 #include "mfhdf.h"
 #include "hdf.h"
 
@@ -64,6 +65,8 @@
 */
 
 #define MAX_FULL_PATH_LEN 1024
+//#define EOS_DATA_PATH "Data Fields"
+//#define EOS_GEO_PATH "Geolocation Fields"
 
 #define _HDF_CHK_TBL_CLASS "_HDF_CHK_TBL_"
 #define CERE_META_NAME "CERES_metadata"
@@ -412,6 +415,9 @@ namespace HDFSP
 		/// Read the information of all SDS objects from the HDF4 file.
 		static SD *Read (int32 sdfileid, int32 hfileid) throw (Exception);
 
+                /// Read the information of all hybrid SDS objects from the HDF4 file.
+                static SD *Read_Hybrid (int32 sdfileid, int32 hfileid) throw (Exception);
+
 		/// Retrieve the absolute path of the file(full file name).
 		const std::string & getPath () const
 		{
@@ -429,6 +435,10 @@ namespace HDFSP
 		{
 			return this->attrs;
 		}
+
+                /// Obtain SDS path, this is like a clone of obtain_path in File class, except the Vdata and some minor parts.
+                void obtain_sds_path(int32,int32,char*,int32) throw(Exception);
+
 
 		 ~SD ();
 
@@ -448,6 +458,9 @@ namespace HDFSP
 
 		/// SD attributes stored in vectors
 		std::vector < Attribute * >attrs;
+
+                /// SDS reference number list
+                std::list <int32> sds_ref_list;
 
 		///SDS reference number to index map, use to quickly obtain the SDS id.
 		std::map < int32, int >refindexlist;
@@ -565,6 +578,11 @@ namespace HDFSP
 		/// Retrieve SDS and Vdata information from the HDF4 file.
 		static File *Read (const char *path,
 						   int32 myfileid) throw (Exception);
+
+                /// Retrieve SDS and Vdata information from the hybrid HDF-EOS file.
+                /// Currently we only support the access of additional SDS objects.
+                static File *Read_Hybrid (const char *path,
+                                                   int32 myfileid) throw (Exception);
 
 		/// The main step to make HDF4 SDS objects CF-complaint. 
 		/// All dimension(coordinate variables) information need to be ready.
@@ -684,6 +702,15 @@ namespace HDFSP
 								  int32 (*inq) (char *, char *, int32 *),
 								  std::vector < std::string > &names);
 
+               /// The special Utility function to obtain CF string(letters,numbers and _)
+               static string get_CF_string(string s);
+
+
+               /// The special utility function to obtain the full path.
+               /// This function is used by InsertOrigFieldPath_ReadVgVdata under the File class.
+              /// It is used by Read_Hybrid under the SD class to separate the HDF-EOS2 Data and Geolocation fields.
+///                static void obtain_path (int32 file_id, int32 sd_id, char *full_path,
+///                                                int32 pobj_ref) throw(Exception);
 
 	};
 

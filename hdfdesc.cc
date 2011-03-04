@@ -192,6 +192,18 @@ bool read_das_hdfsp(DAS & das, const string & filename,
                       HE2CFShortName* sn, HE2CFShortName* sn_dim,
                       HE2CFUniqName* un, HE2CFUniqName* un_dim);
 
+// read_dds for special NASA HDF-EOS2 hybrid(non-EOS2) objects
+bool read_dds_hdfhybrid(DDS & dds, const string & filename,
+                      HE2CFNcML* ncml,
+                      HE2CFShortName* sn, HE2CFShortName* sn_dim,
+                      HE2CFUniqName* un, HE2CFUniqName* un_dim);
+
+bool read_das_hdfhybrid(DAS & das, const string & filename,
+                      HE2CFNcML* ncml,
+                      HE2CFShortName* sn, HE2CFShortName* sn_dim,
+                      HE2CFUniqName* un, HE2CFUniqName* un_dim);
+
+
 
 void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SPType sptype); 
 void read_dds_spvdfields(DDS &dds,const string& filename,int32 vdref, int32 numrec,HDFSP::VDField *spvd); 
@@ -624,6 +636,18 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename,
 
     dds.set_dataset_name(basename(filename));
 
+    // There are some HDF-EOS2 files(MERRA) that should be treated
+    // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
+    // retrieve any information. In fact, treating them as HDF-EOS2 files
+   // will cause confusions and wrong information, although may not be essential.
+   // So far, we've found only MERRA data that have this problem.
+   // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
+//   cerr<<"basename " <<basename(filename) <<endl;
+     // Find MERRA data, return false, use HDF4 SDS code.
+     if((basename(filename)).compare(0,5,"MERRA")==0) {
+        return false; 
+     }
+
     HDFEOS2::File *f;
     try {
         f = HDFEOS2::File::Read(filename.c_str());
@@ -737,10 +761,72 @@ bool read_dds_hdfsp(DDS & dds, const string & filename,
     return true;
 }
 
+// The wrapper of building hybrid DDS function.
+bool read_dds_hdfhybrid(DDS & dds, const string & filename, 
+                      HE2CFNcML* ncml,
+	              HE2CFShortName* sn, HE2CFShortName* sn_dim,
+        	      HE2CFUniqName* un, HE2CFUniqName* un_dim)
+{
+
+    dds.set_dataset_name(basename(filename));
+
+    // Very strange behavior for the HDF4 library, I have to obtain the ID here.
+    // If defined inside the Read function, the id will be 0 and the following output is 
+    // unexpected. KY 2010-8-9
+    int32 myfileid;
+    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+//cerr<<"myfileid at hdfdesc.cc "<<myfileid <<endl;
+
+    HDFSP::File *f;
+
+    try {
+        f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
+    } catch (HDFSP::Exception e)
+	{
+            throw InternalErr(e.what());
+    }
+    
+        
+    std::vector<std::string> out;
+    HDFEOS2::Utility::Split(filename.c_str(), (int)filename.length(), '/',
+                            out);
+    dds.set_dataset_name(*out.rbegin());
+
+    const std::vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
+
+    // Read SDS 
+    std::vector<HDFSP::SDField *>::const_iterator it_g;
+    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+//       cerr<<"sds new name "<<(*it_g)->getNewName() <<endl;
+       read_dds_spfields(dds,filename,(*it_g),f->getSPType());
+}
+
+#if 0
+    // Read Vdata fields.
+    // This is just for speeding up the performance for CERES data, we turn off some CERES vdata fields
+    if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
+       for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
+          i!=f->getVDATAs().end();i++) {
+          if(!(*i)->getTreatAsAttrFlag()){
+             for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) 
+                read_dds_spvdfields(dds,filename,(*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+          }
+       }
+    }
+#endif
+        
+    delete f;
+    return true;
+}
+
 
 // Read SDS fields
 void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SPType sptype) {
+//cerr <<"sptype " <<sptype <<endl;
      BaseType *bt=NULL;
+//cerr<<"come here "<<endl;
+//cerr<<"spsds->getType()"<<spsds->getType() <<endl;
      switch(spsds->getType())
 		{
 #define HANDLE_CASE(tid, type)                                          \
@@ -767,6 +853,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
 		}
             int fieldtype = spsds->getFieldType();// Whether the field is real field,lat/lon field or missing Z-dimension field 
              
+//cerr<<"fieldtype "<<fieldtype <<endl;
             if(bt)
 		{
               
@@ -990,7 +1077,7 @@ print_attr(int32 type, int loc, void *vals)
     union {
         char *cp;
         short *sp;
-        int32 /*nclong*/ *lp;
+        int32 /*nclong */ *lp;
         float *fp;
         double *dp;
     } gp;
@@ -1119,6 +1206,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
                 core_metadata.append(tempstring);
         }
         else if(((*i)->getName().compare(0, 15, "ArchiveMetadata" )== 0) ||
+                 ((*i)->getName().compare(0, 16, "ArchivedMetadata")==0) ||
                 ((*i)->getName().compare(0, 15, "archivemetadata" )== 0)){
             string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
               // Currently some TRMM "swath" archivemetadata includes special characters that cannot be handled by OPeNDAP
@@ -1274,9 +1362,84 @@ bool read_das_hdfsp(DAS & das, const string & filename,
             at->del_attr("coordinates");      // Override any existing units attribute.
             at->append_attr("coordinates", "String", (*it_g)->getCoordinate());
         }
+      }
 
+       // For some HDF4 files that follow HDF4 dimension scales, P.O. DAAC's AVHRR files.
+      // The "otherHDF" category can almost make AVHRR files work, except
+     // that AVHRR uses the attribute name "unit" instead of "units" for latitude and longitude,
+     // I have to correct the name to follow CF conventions(using "units"). I won't check
+     // the latitude and longitude values since latitude and longitude values for some files(LISO files)   
+     // are not in the standard range(0-360 for lon and 0-180 for lat). KY 2011-3-3
+       if(f->getSPType() == OTHERHDF) {
+
+         bool latflag = false;
+         bool latunitsflag = false; //CF conventions use "units" instead of "unit"
+         bool lonflag = false;
+         bool lonunitsflag = false; // CF conventions use "units" instead of "unit"
+         int llcheckoverflag = 0;
+
+         // Here I try to condense the code within just two for loops
+        // The outer loop: Loop through all SDS objects
+        // The inner loop: Loop through all attributes of this SDS
+        // Inside two inner loops(since "units" are common for other fields), 
+           // inner loop 1: when an attribute's long name value is L(l)atitude,mark it.
+          // inner loop 2: when an attribute's name is units, mark it.
+       // Outside the inner loop, when latflag is true, and latunitsflag is false,
+       // adding a new attribute called units and the value should be "degrees_north".
+       // doing the same thing for longitude.
+
+         for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+             AttrTable *at = das.get_table((*it_g)->getNewName());
+             if (!at)
+               at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+             for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+               if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+
+                if((*i)->getName() == "long_name") {
+                  string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                  string tempfinalstr= string(tempstring2.c_str());// This may remove some garbage characters
+                  if(tempfinalstr=="latitude" || tempfinalstr == "Latitude") // Find long_name latitude
+                     latflag = true;
+                  if(tempfinalstr=="longitude" || tempfinalstr == "Longitude") // Find long_name latitude
+                     lonflag = true;
+                }
+              }
+             }
+
+             if(latflag) {
+               for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                if((*i)->getName() == "units") 
+                  latunitsflag = true;
+              }
+             }
+
+             if(lonflag) {
+               for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+                if((*i)->getName() == "units") 
+                  lonunitsflag = true;
+              }
+             }
+             if(latflag && !latunitsflag){ // No "units" for latitude, add "units"
+               at->append_attr("units","String","degrees_north");
+               latflag = false;
+               latunitsflag = false;
+               llcheckoverflag++;
+             }
+
+             if(lonflag && !lonunitsflag){ // No "units" for latitude, add "units"
+               at->append_attr("units","String","degrees_east");
+               lonflag = false;
+               latunitsflag = false;
+               llcheckoverflag++;
+             }
+             if(llcheckoverflag ==2) break;
+
+           }
+
+        }
         
-    }
 
     std::string VDdescname = "hdf4_vd_desc";
     std::string VDdescvalue = "This is an HDF4 Vdata.";
@@ -1468,7 +1631,293 @@ bool read_das_hdfsp(DAS & das, const string & filename,
   return true;
 }
 
+// Build DAS for non-EOS objects of Hybrid HDF-EOS2 files.
 
+bool read_das_hdfhybrid(DAS & das, const string & filename, 
+                      HE2CFNcML* ncml,
+	              HE2CFShortName* sn, HE2CFShortName* sn_dim,
+        	      HE2CFUniqName* un, HE2CFUniqName* un_dim)
+{
+
+    int32 myfileid;
+    myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
+
+// cerr <<"inside hdfsp myfileid = "<<myfileid<<endl;
+    //Hclose(myfileid);
+
+    HDFSP::File *f;
+    try {
+        f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
+    } 
+    catch (HDFSP::Exception e)
+	{
+            throw InternalErr(e.what());
+	}
+        
+    const std::vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
+
+    std::vector<HDFSP::SDField *>::const_iterator it_g;
+    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+        
+        //<hyokyung 2010.06.17. 16:02:58>
+        AttrTable *at = das.get_table((*it_g)->getNewName());
+        if (!at)
+            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+
+        // Some fields have "long_name" attributes,so we have to use this attribute rather than creating our own
+
+        bool long_name_flag = false;
+
+        for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {       
+
+           if((*i)->getName() == "long_name") {
+             long_name_flag = true;
+             break;
+           }
+        }
+        
+        if(!long_name_flag) at->append_attr("long_name", "String", (*it_g)->getName());
+        
+        for(std::vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+
+          // Handle string first.
+          if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+                string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                string tempfinalstr= string(tempstring2.c_str());
+                at->append_attr((*i)->getName(), "String" , tempfinalstr);
+          }
+          else {
+           for (unsigned int loc=0; loc < (*i)->getCount() ; loc++) {
+
+                string print_rep = print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
+                at->append_attr((*i)->getName(), print_type((*i)->getType()), print_rep);
+            }
+          }
+
+       }
+        
+/// For the current additional SDS objects, we don't have to consider their latitude,etc.
+#if 0
+        // Overwrite units if fieldtype is latitude.
+        if((*it_g)->getFieldType() == 1){
+            at->del_attr("units");      // Override any existing units attribute.
+            // at->append_attr("units", "String", "degrees_north");
+            at->append_attr("units", "String",(*it_g)->getUnits());
+        }
+        // Overwrite units if fieldtype is longitude
+        if((*it_g)->getFieldType() == 2){
+            at->del_attr("units");      // Override any existing units attribute.
+            // at->append_attr("units", "String", "degrees_east");
+            at->append_attr("units", "String",(*it_g)->getUnits());
+        }
+
+        // Overwrite units if fieldtype is level
+        if((*it_g)->getFieldType() == 4){
+            at->del_attr("units");      // Override any existing units attribute.
+            // at->append_attr("units", "String", "degrees_east");
+            at->append_attr("units", "String",(*it_g)->getUnits());
+        }
+
+        // Overwrite coordinates if fieldtype is neither lat nor lon.
+        if((*it_g)->getFieldType() == 0){
+            at->del_attr("coordinates");      // Override any existing units attribute.
+            at->append_attr("coordinates", "String", (*it_g)->getCoordinate());
+        }
+#endif
+        
+    }
+/// Don't handle vdata for the time being. KY 2011-2-14
+#if 0
+    std::string VDdescname = "hdf4_vd_desc";
+    std::string VDdescvalue = "This is an HDF4 Vdata.";
+    std::string VDfieldprefix = "Vdata_field_";
+    std::string VDattrprefix = "Vdata_attr_";
+    std::string VDfieldattrprefix ="Vdata_field_attr_";
+
+ if(f->getSPType() != CER_AVG && f->getSPType() != CER_ES4 && f->getSPType() !=CER_SRB && f->getSPType() != CER_ZAVG) {
+    for(std::vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin();
+       i!=f->getVDATAs().end();i++) {
+
+      // Add special vdata attributes
+//      at->append_attr(VDdescname, "String" , VDdescvalue);
+      bool emptyvddasflag = true;
+      if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
+      if(((*i)->getTreatAsAttrFlag()))
+        emptyvddasflag = false;
+      else {
+        for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+          if(!((*j)->getAttributes().empty())) {
+            emptyvddasflag = false;
+            break;
+          }
+       }
+      }
+
+     if(emptyvddasflag) continue;
+     AttrTable *at = das.get_table((*i)->getNewName());
+     if(!at)
+        at = das.add_table((*i)->getNewName(),new AttrTable);
+       at->append_attr(VDdescname, "String" , VDdescvalue);
+
+      for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
+
+        if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+           string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+           string tempfinalstr= string(tempstring2.c_str());
+           at->append_attr(VDattrprefix+(*it_va)->getName(), "String" , tempfinalstr);
+          }
+        else {
+           for (unsigned int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                string print_rep = print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+// cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDattrprefix+(*it_va)->getName(), print_type((*it_va)->getType()), print_rep);
+            }
+          }
+
+
+//cerr<<"Vdata attribute name "<<(*it_va)->getName() <<endl;
+      }
+     if(!((*i)->getTreatAsAttrFlag())){ 
+
+
+      //NOTE: for vdata field, we assume that no special characters are found 
+      for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+
+//cerr<<"num_rec "<< (*j)->getNumRec()<<endl;
+//cerr<<"field order " << (*j)->getFieldOrder()<<endl;
+//cerr<<"size of field type " << DFKNTsize((*j)->getType())<<endl;
+//cerr<<"size of the vector "<<(*j)->getValue().size() <<endl;
+
+         // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
+
+       for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+
+//cerr<<"Vdata field attribute name "<<(*it_va)->getName() <<endl;
+
+            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+              string tempfinalstr= string(tempstring2.c_str());
+              at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getName(), "String" , tempfinalstr);
+            }
+            else {
+              for (unsigned int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                string print_rep = print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+//cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDfieldattrprefix+(*j)->getNewName()+"_"+(*it_va)->getName(), print_type((*it_va)->getType()), print_rep);
+              }
+            }
+
+//cerr<<"Vdata attribute name "<<(*it_va)->getName() <<endl;
+          }
+     }
+    }
+
+    else {
+
+      for(std::vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+           
+ 
+         if((*j)->getFieldOrder() == 1) {
+           if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+             string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+             string tempfinalstr= string(tempstring2.c_str());
+             at->append_attr(VDfieldprefix+(*j)->getName(), "String" , tempfinalstr);
+           }
+           else {
+             for (unsigned int loc=0; loc < (*j)->getNumRec(); loc++) {
+                string print_rep = print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+//cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDfieldprefix+(*j)->getName(), print_type((*j)->getType()), print_rep);
+            }
+           }
+        }
+        else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
+
+           if((*j)->getValue().size() != (DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
+//cerr<<"num_rec "<< (*j)->getNumRec()<<endl;
+//cerr<<"field order " << (*j)->getFieldOrder()<<endl;
+//cerr<<"size of field type " << DFKNTsize((*j)->getType())<<endl;
+//cerr<<"size of the vector "<<(*j)->getValue().size() <<endl;
+               throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
+            }
+
+          if((*j)->getNumRec()==1){
+             if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+               string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+               string tempfinalstr= string(tempstring2.c_str());
+               at->append_attr(VDfieldprefix+(*j)->getName(),"String",tempfinalstr);
+             }
+             else {
+              for (unsigned int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                string print_rep = print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
+//cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDfieldprefix+(*j)->getName(), print_type((*j)->getType()), print_rep);
+              }
+             }
+
+          }
+
+         else {
+          if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+
+            for(unsigned int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
+               std::vector<char>::const_iterator tempit;
+               tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
+               string tempstring2(tempit,tempit+(*j)->getFieldOrder());
+               string tempfinalstr= string(tempstring2.c_str());
+               string tempoutstring = "'"+tempfinalstr+"'";
+               at->append_attr(VDfieldprefix+(*j)->getName(),"String",tempoutstring);
+            }
+          }
+
+          else {
+            for(unsigned int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
+               at->append_attr(VDfieldprefix+(*j)->getName(),print_type((*j)->getType()),"'");
+               for (unsigned int loc=0; loc < (*j)->getFieldOrder(); loc++) {
+                string print_rep = print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
+//cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDfieldprefix+(*j)->getName(), print_type((*j)->getType()), print_rep);
+               }
+               at->append_attr(VDfieldprefix+(*j)->getName(),print_type((*j)->getType()),"'");
+            }
+          }
+        }
+        }
+
+//cerr<<"Vdata field name "<<(*j)->getName()<<endl;
+         for(std::vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+
+//cerr<<"Vdata field attribute name "<<(*it_va)->getName() <<endl;
+
+            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+
+              string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+              string tempfinalstr= string(tempstring2.c_str());
+              at->append_attr(VDfieldattrprefix+(*it_va)->getName(), "String" , tempfinalstr);
+            }
+            else {
+              for (unsigned int loc=0; loc < (*it_va)->getCount() ; loc++) {
+                string print_rep = print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
+//cerr<<"print_rep "<<print_rep <<endl;
+                at->append_attr(VDfieldattrprefix+(*it_va)->getName(), print_type((*it_va)->getType()), print_rep);
+              }
+            }
+//cerr<<"Vdata attribute name "<<(*it_va)->getName() <<endl;
+          }
+
+
+         }
+       }
+
+      }
+  } 
+        
+#endif
+  delete f;
+  return true;
+}
 
 void read_dds_use_eos2lib(DDS & dds, const string & filename,
                   HE2CFNcML* ncml,
@@ -1476,8 +1925,11 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename,
                   HE2CFUniqName* un, HE2CFUniqName* un_dim)
 {
    
+    
     if(read_dds_hdfeos2(dds, filename, ncml, sn, sn_dim, un, un_dim)){
-        return;
+
+      if(read_dds_hdfhybrid(dds,filename,ncml,sn,sn_dim,un,un_dim))
+         return;
     }
 //cerr<<"After HDFEOS2 DDS "<<endl;
 
@@ -1566,6 +2018,20 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
                       HE2CFShortName* sn, HE2CFShortName* sn_dim,
                       HE2CFUniqName* un, HE2CFUniqName* un_dim)
 {
+
+     // There are some HDF-EOS2 files(MERRA) that should be treated
+    // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
+    // retrieve any information. In fact, treating them as HDF-EOS2 files
+   // will cause confusions and wrong information, although may not be essential.
+   // So far, we've found only MERRA data that have this problem.
+   // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
+//   cerr<<"basename " <<basename(filename) <<endl;
+     // Find MERRA data, return false, use HDF4 SDS code.
+     if((basename(filename)).compare(0,5,"MERRA")==0) {
+        return false;
+     }
+
+
     HDFEOS2::File *f;
     
     try {
