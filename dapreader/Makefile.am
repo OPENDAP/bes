@@ -26,10 +26,10 @@ libdapreader_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
 libdapreader_module_la_CPPFLAGS = $(DAP_CFLAGS) $(AM_CPPFLAGS)
 libdapreader_module_la_LDFLAGS = -avoid-version -module 
 libdapreader_module_la_LIBADD = $(DAP_CLIENT_LIBS)		\
-	-L$(abs_top_builddir)/dispatch/.libs/libbes_dispatch.so	\
-	-L$(abs_top_builddir)/xmlcommand/.libs/libbes_xml_command.so\
-	-L$(abs_top_builddir)/ppt/.libs/libbes_ppt.so		\
-	-L$(abs_top_builddir)/dispatch/.libs/libbes_dap.so			\
+	$(abs_top_builddir)/dispatch/libbes_dispatch.la	\
+	$(abs_top_builddir)/xmlcommand/libbes_xml_command.la	\
+	$(abs_top_builddir)/ppt/libbes_ppt.la			\
+	$(abs_top_builddir)/dispatch/libbes_dap.la		\
 	$(OPENSSL_LIBS)
 
 EXTRA_PROGRAMS = 
