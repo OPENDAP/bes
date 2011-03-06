@@ -36,10 +36,10 @@ bes.conf: bes.conf.in ../../config.status
 
 AUTOM4TE = autom4te
  
-TESTSUITE = $(srcdir)/dapreader_moduleTest
-
-check-local: atconfig atlocal $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+#TESTSUITE = $(srcdir)/dapreader_moduleTest
+#
+#check-local: atconfig atlocal $(TESTSUITE)
+#	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
