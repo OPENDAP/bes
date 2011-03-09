@@ -1227,9 +1227,12 @@ throw (Exception)
 	int32 status;
 
 	nattrs = VSfnattrs (vdata_id, fieldindex);
+// This is just to check if the weird MacOS portability issue go away.KY 2011-3-9
+#if 0
 	if (nattrs == FAIL)
 		throw5 ("VSfnattrs failed ", "vdata id is ", vdata_id,
 				"Field index is ", fieldindex);
+#endif
 
 	if (nattrs > 0) {
 
