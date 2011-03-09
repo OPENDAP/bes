@@ -135,7 +135,7 @@ private:
 
 public:
     /** Create a new BESPlugin.
-	@param filename The name of the shareable object library that holds
+	@param filename The name of the sharable object library that holds
 	the class' implementation.
     */
     BESPlugin(const string &filename) : d_filename(filename), d_lib(0) {}

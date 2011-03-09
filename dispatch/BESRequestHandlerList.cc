@@ -262,6 +262,7 @@ BESRequestHandlerList::execute_current( BESDataHandlerInterface &dhi )
 	// needs to happen. But those methods are not virtual and would
 	// require a release of all modules.
 	dhi.container->access() ;
+
 	BESRequestHandler *rh = find_handler( (dhi.container->get_container_type()).c_str() ) ;
 	if( rh )
 	{
