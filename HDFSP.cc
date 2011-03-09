@@ -1216,7 +1216,7 @@ throw (Exception)
 }
 
 
-// Retrive VD field attributes from the HDF4 file.
+// Retrieve VD field attributes from the HDF4 file.
 void
 VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
 throw (Exception)

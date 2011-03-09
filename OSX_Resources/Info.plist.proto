@@ -21,7 +21,7 @@
 	<key>IFPkgFlagBackgroundScaling</key>
 	<string>none</string>
 	<key>IFPkgFlagDefaultLocation</key>
-	<string>/usr</string>
+	<string>_PREFIX_</string>
 	<key>IFPkgFlagFollowLinks</key>
 	<true/>
 	<key>IFPkgFlagInstallFat</key>
