@@ -164,24 +164,28 @@ BESCatalogUtils::include( const string &inQuestion ) const
 	for( ; i_iter != i_end; i_iter++ )
 	{
 	    string reg = *i_iter ;
-	    try
+	    if( !reg.empty() )
 	    {
-		// must match exactly, meaing result is = to length of string
-		// in question
-		BESRegex reg_expr( reg.c_str() ) ;
-		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
-		    static_cast<int>(inQuestion.length()) )
+		try
 		{
-		    toInclude = true ;
+		    // must match exactly, meaing result is = to length of string
+		    // in question
+		    BESRegex reg_expr( reg.c_str() ) ;
+		    if( reg_expr.match( inQuestion.c_str(),
+					inQuestion.length() ) ==
+			static_cast<int>(inQuestion.length()) )
+		    {
+			toInclude = true ;
+		    }
 		}
-	    }
-	    catch( BESError &e )
-	    {
-		string serr = (string)"Unable to get catalog information, "
-		              + "malformed Catalog Include parameter "
-			      + "in bes configuration file around " 
-			      + reg + ": " + e.get_message() ;
-		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+		catch( BESError &e )
+		{
+		    string serr = (string)"Unable to get catalog information, "
+				  + "malformed Catalog Include parameter "
+				  + "in bes configuration file around " 
+				  + reg + ": " + e.get_message() ;
+		    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+		}
 	    }
 	}
     }
@@ -205,22 +209,25 @@ BESCatalogUtils::exclude( const string &inQuestion ) const
     for( ; e_iter != e_end; e_iter++ )
     {
 	string reg = *e_iter ;
-	try
+	if( !reg.empty() )
 	{
-	    BESRegex reg_expr( reg.c_str() ) ;
-	    if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
-	        static_cast<int>(inQuestion.length()) )
+	    try
 	    {
-		return true ;
+		BESRegex reg_expr( reg.c_str() ) ;
+		if( reg_expr.match( inQuestion.c_str(), inQuestion.length() ) ==
+		    static_cast<int>(inQuestion.length()) )
+		{
+		    return true ;
+		}
 	    }
-	}
-	catch( BESError &e )
-	{
-	    string serr = (string)"Unable to get catalog information, "
-			  + "malformed Catalog Exclude parameter " 
-			  + "in bes configuration file around " 
-			  + reg + ": " + e.get_message() ;
-	    throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+	    catch( BESError &e )
+	    {
+		string serr = (string)"Unable to get catalog information, "
+			      + "malformed Catalog Exclude parameter " 
+			      + "in bes configuration file around " 
+			      + reg + ": " + e.get_message() ;
+		throw BESInternalError( serr, __FILE__, __LINE__ ) ;
+	    }
 	}
     }
     return false ;
@@ -255,7 +262,10 @@ BESCatalogUtils::dump( ostream &strm ) const
 	list<string>::const_iterator i_end = _include.end() ;
 	for( ; i_iter != i_end; i_iter++ )
 	{
-	    strm << BESIndent::LMarg << *i_iter << endl ;
+	    if( !(*i_iter).empty() )
+	    {
+		strm << BESIndent::LMarg << *i_iter << endl ;
+	    }
 	}
 	BESIndent::UnIndent() ;
     }
@@ -272,7 +282,10 @@ BESCatalogUtils::dump( ostream &strm ) const
 	list<string>::const_iterator e_end = _exclude.end() ;
 	for( ; e_iter != e_end; e_iter++ )
 	{
-	    strm << BESIndent::LMarg << *e_iter << endl ;
+	    if( !(*e_iter).empty() )
+	    {
+		strm << BESIndent::LMarg << *e_iter << endl ;
+	    }
 	}
 	BESIndent::UnIndent() ;
     }

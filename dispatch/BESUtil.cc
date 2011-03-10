@@ -587,6 +587,7 @@ BESUtil::explode( char delim, const string &str, list<string> &values )
 	start = adelim + 1 ;
 	if( start == str.length() )
 	{
+	    values.push_back( "" ) ;
 	    done = true ;
 	}
     }

@@ -141,26 +141,29 @@ BESModuleApp::loadModules()
 	list<string>::iterator e = mod_list.end() ;
 	for( ; i != e; i++ )
 	{
-	    string key = "BES.module." + (*i) ;
-	    string so ;
-	    try
+	    if( !(*i).empty() )
 	    {
-		TheBESKeys::TheKeys()->get_value( key, so, found ) ;
+		string key = "BES.module." + (*i) ;
+		string so ;
+		try
+		{
+		    TheBESKeys::TheKeys()->get_value( key, so, found ) ;
+		}
+		catch( BESError &e )
+		{
+		    cerr << e.get_message() << endl ;
+		    return 1 ;
+		}
+		if( so == "" )
+		{
+		    cerr << "couldn't find the module for " << (*i) << endl ;
+		    return 1 ;
+		}
+		bes_module new_mod ;
+		new_mod._module_name = (*i) ;
+		new_mod._module_library = so ;
+		_module_list.push_back( new_mod ) ;
 	    }
-	    catch( BESError &e )
-	    {
-		cerr << e.get_message() << endl ;
-		return 1 ;
-	    }
-	    if( so == "" )
-	    {
-		cerr << "couldn't find the module for " << (*i) << endl ;
-		return 1 ;
-	    }
-	    bes_module new_mod ;
-	    new_mod._module_name = (*i) ;
-	    new_mod._module_library = so ;
-	    _module_list.push_back( new_mod ) ;
 	}
     }
 
