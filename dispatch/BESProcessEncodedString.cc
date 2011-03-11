@@ -97,7 +97,7 @@ BESProcessEncodedString::parseHex( const char *s, unsigned int len )
 	return "" ;
 
     strncpy( hexstr, s, len ) ;
-
+    hexstr[len] = '\0';	// Must explicitly add null; strncpy might not. jhrg
     if(strlen( hexstr ) == 0 ) 
     {
 	delete [] hexstr ;

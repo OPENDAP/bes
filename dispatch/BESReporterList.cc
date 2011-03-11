@@ -43,11 +43,13 @@ BESReporterList::~BESReporterList()
 {
     BESReporter *reporter = 0 ;
     BESReporterList::Reporter_iter i = _reporter_list.begin() ;
-    for( ; i != _reporter_list.end(); i++ )
+    for( ; i != _reporter_list.end(); ++i )
     {
 	reporter = (*i).second ;
 	if( reporter ) delete reporter ;
-	_reporter_list.erase( i ) ;
+	// calling erase(i) invalidates the iterator but the return value of
+	// erase is a valid pointer/reference to the next value. jhrg
+	i = _reporter_list.erase( i ) ;
     }
 }
 
@@ -94,7 +96,7 @@ BESReporterList::report( BESDataHandlerInterface &dhi )
 {
     BESReporter *reporter = 0 ;
     BESReporterList::Reporter_iter i = _reporter_list.begin() ;
-    for( ; i != _reporter_list.end(); i++ )
+    for( ; i != _reporter_list.end(); ++i )
     {
 	reporter = (*i).second ;
 	if( reporter ) reporter->report( dhi ) ;
@@ -120,7 +122,7 @@ BESReporterList::dump( ostream &strm ) const
 	BESIndent::Indent() ;
 	BESReporterList::Reporter_citer i = _reporter_list.begin() ;
 	BESReporterList::Reporter_citer ie = _reporter_list.end() ;
-	for( ; i != ie; i++ )
+	for( ; i != ie; ++i )
 	{
 	    strm << BESIndent::LMarg << "reporter: " << (*i).first << endl ;
 	    BESIndent::Indent() ;

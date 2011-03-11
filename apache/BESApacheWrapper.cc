@@ -72,6 +72,11 @@ BESApacheWrapper::~BESApacheWrapper()
 	delete [] _token ;
 	_token = 0 ;
     }
+    if ( _requests )
+    {
+	delete _requests ;
+	_requests = 0 ;
+    }
     BESGlobalIQ::BESGlobalQuit() ;
 }
 
@@ -129,7 +134,7 @@ BESApacheWrapper::get_next_request()
 	static BESApacheRequests::requests_citer rend = _requests->get_end_request() ;
 	if( rcurr == rend )
 	    return 0 ;
-	rcurr++ ;
+	++rcurr ;
 	if( rcurr == rend )
 	    return 0 ;
 	return (*rcurr).c_str() ;
