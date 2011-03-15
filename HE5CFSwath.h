@@ -70,7 +70,12 @@ private:
 
   
 public:
-  
+
+    int sw_lat;
+    int sw_lon;
+    int sw_time;
+    int sw_lev;
+
     HE5CFSwath();
     virtual ~HE5CFSwath();
 

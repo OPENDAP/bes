@@ -39,6 +39,11 @@ HE5CFSwath::HE5CFSwath()
     _swath_lon_variable = "";
     _swath_lat_variable = "";
     _swath_lev_variable = "";
+
+    sw_lat = 0;
+    sw_lon = 0;
+    sw_time = 0;
+    sw_lev = 0;
 }
 
 HE5CFSwath::~HE5CFSwath()
@@ -164,6 +169,12 @@ void HE5CFSwath::get_swath_variable_dimensions(string name,
 void
 HE5CFSwath::set()
 {
+
+    sw_lat = 0;
+    sw_lon = 0;
+    sw_time = 0;
+    sw_lev = 0;
+
     _swath = false;
     _swath_2D = false;
     _swath_lon_dimensions = "";

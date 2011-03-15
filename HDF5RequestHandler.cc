@@ -140,11 +140,13 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         depth_first(file1, "/", *dds, filename.c_str());
         
+#if 0
         if (!dds->check_semantics()) {       // DDS didn't get built right
             dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups. Multiple lon/lat definitions in data violate CF convention.");
         }
+#endif 
 
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
@@ -206,11 +208,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         depth_first(file1, "/", *dds, filename.c_str());
 
+// Temporarily turn this off since NASA MLS data have the same dimension names for all groups. KY-2011-3-10
+#if 0
         if (!dds->check_semantics()) {       // DDS didn't get built right
             dds->print(cerr);
             throw InternalErr(__FILE__, __LINE__,
                               "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups.");
         }
+#endif
 
         
         Ancillary::read_ancillary_dds( *dds, filename ) ;

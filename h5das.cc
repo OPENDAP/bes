@@ -466,14 +466,40 @@ bool write_metadata(DAS & das, const string & varname)
         }
 #endif
 
-        if (varname.find("coremetadata") != string::npos) {
+        // coremetadata and CoreMetadata are different, the current eos class consists of 
+        // metadata_core[BUFFER_MAX] and metadata_Core[BUFFER_MAX];
+        // we cannot merge them. KY 2011-3-14
+        if ((varname.find("coremetadata") != string::npos)) {
             if (!eos.bmetadata_core) {
                 eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
+                AttrTable *at;
+#ifdef CF
+                string tempnewname; 
+                // 1. This function name get_CF_name is really confusing. 
+                // It actually doesn't fully follow CF conventions. The 
+                // special characters are not handled. It should be changed.
+                // 2. get_CF_name returns const char*. tempnewname is a C++ string
+                // The following needs to be handled more delicately later.
+                // KY-2011-3-11
+
+                tempnewname = eos.get_CF_name((char*)varname.c_str());
+#ifdef SHORT_PATH
+                if(tempnewname == varname) {
+                   tempnewname = eos.get_short_name(varname);
+                }
+#endif
+                tempnewname = eos.get_valid_CF_name(tempnewname);
+                at = das.get_table(tempnewname);
+                if (!at)
+                    at = das.add_table(tempnewname, new AttrTable);
+#else
+                at = das.get_table(varname);
                 if (!at)
                     at = das.add_table(varname, new AttrTable);
+#endif
                 parser_arg arg(at);
                 DBG(cerr << eos.metadata_core << endl);
+      
                 he5das_scan_string(eos.metadata_core);
 
                 if (he5dasparse(static_cast < void *>(&arg)) != 0
@@ -485,13 +511,38 @@ bool write_metadata(DAS & das, const string & varname)
             }
         }
 
+// The following #if 0 #endif block code seems redundant. 
+// But changing it requires changes in other part of code. Leave it now.
+// KY-2011-3-14
 
         if (varname.find("CoreMetadata") != string::npos) {
             if (!eos.bmetadata_Core) {
                 eos.bmetadata_core = true;
-                AttrTable *at = das.get_table(varname);
+                AttrTable *at;
+#ifdef CF
+                string tempnewname;
+                // 1. This function name get_CF_name is really confusing.
+                // It actually doesn't fully follow CF conventions. The
+                // special characters are not handled. It should be changed.
+                // 2. get_CF_name returns const char*. tempnewname is a C++ string
+                // The following needs to be handled more delicately later.
+                // KY-2011-3-11
+
+                tempnewname = eos.get_CF_name((char*)varname.c_str());
+#ifdef SHORT_PATH
+                if(tempnewname == varname) {
+                   tempnewname = eos.get_short_name(varname);
+                }
+#endif
+                tempnewname = eos.get_valid_CF_name(tempnewname);
+                at = das.get_table(tempnewname);
+                if (!at)
+                    at = das.add_table(tempnewname, new AttrTable);
+#else
+                at = das.get_table(varname);
                 if (!at)
                     at = das.add_table(varname, new AttrTable);
+#endif
                 parser_arg arg(at);
                 DBG(cerr << eos.metadata_Core << endl);
                 he5das_scan_string(eos.metadata_Core);
@@ -606,7 +657,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     }
 
 #ifdef CF
-    if(eos.is_valid() && eos.get_swath_variable(varname)) {
+//    if(eos.is_valid() && eos.get_swath_variable(varname)) {
+      if(eos.is_valid()) {
         // Rename the variable if necessary.
         newname = eos.get_CF_name((char*) varname.c_str());
 #ifdef SHORT_PATH
@@ -616,13 +668,53 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             newname = eos.get_short_name(varname);
         }
 #endif        
+        newname = eos.get_valid_CF_name(newname);
+
+        if(newname == "lon"){
+            if(eos.sw_lon == 0){
+                eos.sw_lon = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(newname == "lat"){
+            if(eos.sw_lat == 0){
+                eos.sw_lat = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(newname == "lev"){
+            if(eos.sw_lev == 0){
+                eos.sw_lev = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+        if(newname == "time"){
+            if(eos.sw_time == 0){
+                eos.sw_time = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
         DBG(cerr << "newname: " << newname << endl);
     }
+// The following code is not necessary. KY 2011-3-13
+/*
 #ifdef SHORT_PATH    
     if (eos.is_valid() && eos.get_grid_variable(varname)) {
         newname = eos.get_short_name(varname);
     }
 #endif    
+*/
 #endif  
     
     if(newname.empty()){	  

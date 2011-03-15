@@ -730,7 +730,7 @@ static void write_grid_shared_dimensions(DDS & dds_table,
                 delete ar; ar = 0;
                 // Remember that it's processed.
                 grid_dimension_processed[str_cf_name] = shared_dim_size;
-            }
+		    }
 
         } // for
         // Set the flag for "shared dimension" true.        
@@ -741,7 +741,7 @@ static void write_grid_shared_dimensions(DDS & dds_table,
 
 /// processes the NASA EOS AURA Grids.
 static void process_grid_nasa_eos(const string &varname, 
-                                  Array *array, Grid *gr, DDS &) {
+                                  Array *array, Grid *gr) {
     // Fill the map part of the grid.
     // Retrieve the dimension lists from the parsed metadata.
     vector < string > tokens;
@@ -823,7 +823,8 @@ static void write_swath(DDS & dds_table,
         << " filename=" << filename
         << endl);
 
-    if(eos.get_swath_variable(varname)) {
+    if(eos.is_valid()) {
+    // if(eos.get_swath_variable(varname)) { // See if we can process all variables. ky 2011-3-11
         // Rename the variable if necessary.
         sname = eos.get_CF_name((char*) varname.c_str());
 #ifdef SHORT_PATH
@@ -831,7 +832,45 @@ static void write_swath(DDS & dds_table,
             sname = eos.get_short_name(varname);
         }
 #endif         
+
+               if(sname == "lon"){
+            if(eos.sw_lon == 0){
+                eos.sw_lon = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(sname == "lat"){
+            if(eos.sw_lat == 0){
+                eos.sw_lat = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(sname == "lev"){
+            if(eos.sw_lev == 0){
+                eos.sw_lev = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+        if(sname == "time"){
+            if(eos.sw_time == 0){
+                eos.sw_time = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
     }
+    // Make the variable name to follow CF name conventions
+    sname = eos.get_valid_CF_name(sname);
 
     // Get a base type. It should be int, float, double, etc. -- atomic
     // datatype. 
@@ -957,8 +996,12 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #ifdef SHORT_PATH        
         sname = eos.get_short_name(varname);
 #endif        
+        
 #endif
     }
+
+    // change all sname to follow CF conventions. KY-2011-3-13
+    sname = eos.get_valid_CF_name(sname);
 #endif
     
 
@@ -1026,7 +1069,7 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
                DBG(cerr << "EOS Grid: " << varname << endl);
                // Generate grid based on the parsed StructMetada.
                Grid *gr = new HDF5GridEOS(sname, filename);
-               process_grid_nasa_eos(varname, ar, gr, dds_table);
+               process_grid_nasa_eos(varname, ar, gr);
                gr->add_var(ar, array);
                delete ar; ar = 0;
 

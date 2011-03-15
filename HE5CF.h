@@ -84,6 +84,9 @@ public:
     /// Sets the shared_dimension flag true.
     void        set_shared_dimension();
 
+   /// Get valid CF names(the name should follow CF conventions)
+   string get_valid_CF_name(string s);
+
 
   
 };

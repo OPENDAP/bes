@@ -116,3 +116,23 @@ HE5CF::set_shared_dimension()
     _shared_dimension = true;
 }
 
+string HE5CF::get_valid_CF_name(string s)
+{
+  // Test if the character belongs to letters, numbers or '_'
+
+    // Here just set the prefix to be '_', need to handle it better in the future. KY-2011-3-11
+    char prefix = '_';
+    char valid  = '_';
+    string insertString(1,prefix);
+
+    if (isdigit(s[0]))
+    s.insert(0,insertString);
+
+    for(int i=0; i < s.length(); i++)
+    if(!(isalnum( s[i]) || s[i]=='_'))
+        s[i]=valid;
+
+    return s;
+}
+
+
