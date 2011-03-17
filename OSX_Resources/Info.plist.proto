@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>3.7.7, OPeNDAP</string>
+	<string>_FULL_VERSION_, OPeNDAP</string>
 	<key>CFBundleIdentifier</key>
 	<string>opendap.hdf4_handler</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.7.7</string>
+	<string>_FULL_VERSION_</string>
 	<key>IFMajorVersion</key>
-	<integer>3</integer>
+	<integer>_MAJOR_VERSION_</integer>
 	<key>IFMinorVersion</key>
-	<integer>7</integer>
+	<integer>_MINOR_VERSION_</integer>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>

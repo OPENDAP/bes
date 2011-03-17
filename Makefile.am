@@ -174,7 +174,12 @@ pkg-main: pkg-build
 	cat ./OSX_Resources/InstallationCheck.proto | sed -e "s^_PREFIX_^$(prefix)^g" > foo
 	mv foo ./OSX_Resources/InstallationCheck
 	chmod 755 ./OSX_Resources/InstallationCheck
-	cat ./OSX_Resources/Info.plist.proto | sed -e "s^_PREFIX_^$(prefix)^g" > foo
+	cat ./OSX_Resources/Info.plist.proto | \
+	   sed -e "s^_PREFIX_^$(prefix)^g" \
+	       -e "s^_FULL_VERSION_^@PACKAGE_VERSION@^g" \
+	       -e "s^_MAJOR_VERSION_^@PACKAGE_MAJOR_VERSION@^g" \
+	       -e "s^_MINOR_VERSION_^@PACKAGE_MINOR_VERSION@^g" \
+	       > foo
 	mv foo ./OSX_Resources/Info.plist
 	${PACKAGEMAKER} --root mac_osx --id org.opendap.@PACKAGE@ \
 		--title "@PACKAGE@ @PACKAGE_VERSION@" --version @PACKAGE_VERSION@ \
