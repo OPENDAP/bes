@@ -1,6 +1,10 @@
 
 $Id$
 
+Version 3.9.1.eospatch (16 Mar 2011)
+
+This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+
 Version 3.9.1 (14 Sept 2010)
 
 This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9

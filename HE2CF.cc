@@ -57,7 +57,7 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
         }
         
         if(Visvg(vgroup_id, ref)){
-            char  cvgroup_name[VGNAMELENMAX]; // the child vgroup name
+            char  cvgroup_name[VGNAMELENMAX*4]; // the child vgroup name
             int32 istat;
             int32 vgroup_cid; // Vgroup id 
 

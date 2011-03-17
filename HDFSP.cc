@@ -781,8 +781,8 @@ throw (Exception)
 	char *vdata_name = NULL;
 	char *vdata_class = NULL;
 #endif
-	char vgroup_name[VGNAMELENMAX];
-	char vgroup_class[VGNAMELENMAX];
+	char vgroup_name[VGNAMELENMAX*4];
+	char vgroup_class[VGNAMELENMAX*4];
 
 	//std::string full_path;
 	char *full_path;
@@ -1330,9 +1330,9 @@ throw (Exception)
 	int32 vgroup_cid;
 	int32 status;
 	int i, num_gobjects;
-	char cvgroup_name[VGNAMELENMAX];
+	char cvgroup_name[VGNAMELENMAX*4];
 	char vdata_name[VSNAMELENMAX];
-	char vdata_class[VSNAMELENMAX];
+	char vdata_class[VSNAMELENMAX*4];
 	char sds_name[H4_MAX_NC_NAME];
 	int32 sds_index;
 	int32 vdata_id, sds_id;
@@ -1431,8 +1431,8 @@ throw (Exception)
 	char *vdata_name = NULL;
 	char *vdata_class = NULL;
 #endif
-	char vgroup_name[VGNAMELENMAX];
-	char vgroup_class[VGNAMELENMAX];
+	char vgroup_name[VGNAMELENMAX*4];
+	char vgroup_class[VGNAMELENMAX*4];
 
 	//std::string full_path;
 	char *full_path;
@@ -1697,7 +1697,7 @@ throw (Exception)
 	int32 vgroup_cid;
 	int32 status;
 	int i, num_gobjects;
-	char cvgroup_name[VGNAMELENMAX];
+	char cvgroup_name[VGNAMELENMAX*4];
 	char vdata_name[VSNAMELENMAX];
 	char vdata_class[VSNAMELENMAX];
 	char sds_name[H4_MAX_NC_NAME];

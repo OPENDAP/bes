@@ -1,5 +1,28 @@
+Updated for 3.9.1.eospatch (17 Mar. 2011)
+In this patch, we added the following three features:
+1. We add the mapping of the SDS objects added by using HDF4 APIs to an HDF-EOS2 file.
+These SDS objects are normally NOT physical fields, so they are not plottable by Java
+tools such as IDV and Panoply. The attributes and values of these SDS objects may be useful
+for end users.
 
-Updated for 3.9.1 (14 Spet 2010)
+2. We also fix the bug of handling MERRA data. In the previous release, the unit of time is 
+not handled correctly. This release fixes this bug under the condition that the filename of MERRA
+data must start with MERRA.
+
+3. We also enhance the support of mapping HDF4 files that uses HDF4 SDS dimension scales. Expecially
+we make a patch specially for P.O. DAAC's AVHRR files. Now with enough Heap space, IDV can visualize AVHRR
+files via OPeNDAP.
+
+What we haven't done:
+
+1. We haven't mapped the Vdata objects added by using HDF4 APIs to an HDF-EOS2 file.
+2. We haven't handled the plotting of the vertical profiler files(Such as MOP Level 2 data). More 
+investigation needs to be done on how IDV can handle things.
+3. Other limitations listed in Section III of 3.9.1 that are not addressed above.
+
+Kent Yang (myang6@hdfgroup.org)
+
+Updated for 3.9.1 (14 Sep. 2010)
 
 In this release, we greatly enhance the support of the access of NASA
 HDF-EOS2 and HDF4 products. The whole note for 3.9.0 includes three
@@ -147,6 +170,8 @@ protocol="HTTP/1.1" maxHttpHeaderSize="819200"
    CERES products. For applications that need these, please contact
    myang6@hdfgroup.org or eoshelp@hdfgroup.org. You can also post a
    message at hdfeos.org/forums .
+
+Kent Yang(myang6@hdfgroup.org)
   
 Updated for 3.8.1
 
@@ -189,7 +214,6 @@ THE LIMITATIONS of the ENHANCED HDF4 HANDLER
     has dimension lat=180 and lon=720 (e.g., B[lat=180][lon=720]), 
     the handler will throw an error for inconsistent dimension.
 
- Hyo-Kyung Lee (hyoklee@hdfgroup.org)
 
 Updated for 3.7.12 (16 March 2009)
 
