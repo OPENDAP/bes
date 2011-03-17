@@ -1,3 +1,12 @@
+Updated for version 1.4.3.patch
+
+This version adds the support of variable names to follow CF conventions
+(only alphanumerical values and _ are allowed). This should enhance the 
+support of the conversion to netCDF, especially for Aura HIRLDS files.
+
+We also add the limited support of multiple swaths. The current approach
+works only for Aura MLS swath files. 
+
 
 Updated for version 1.4.3
 
