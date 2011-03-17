@@ -9,6 +9,16 @@ AC_INIT(bes, 3.9.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
+PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
+PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
+PACKAGE_SUBMINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
+AC_MSG_NOTICE(Package Major Version:     $PACKAGE_MAJOR_VERSION)
+AC_MSG_NOTICE(Package Minor Version:     $PACKAGE_MINOR_VERSION)
+AC_MSG_NOTICE(Package SubMinor Version:  $PACKAGE_SUBMINOR_VERSION)
+AC_SUBST(PACKAGE_MAJOR_VERSION)
+AC_SUBST(PACKAGE_MINOR_VERSION)
+AC_SUBST(PACKAGE_SUBMINOR_VERSION)
+
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
