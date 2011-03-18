@@ -2,6 +2,7 @@ dnl AC_CHECK_HDF : Check for hdf4
 dnl args :             action-if-yes, action-if-no
 AC_DEFUN([AC_CHECK_HDF4],
 [
+
   AC_ARG_WITH([hdf4],
             [AS_HELP_STRING([--with-hdf4=ARG],[hdf4 directory])],
             [HDF4_PATH=$withval], 
@@ -18,9 +19,11 @@ AC_DEFUN([AC_CHECK_HDF4],
             [HDF4_PATH_LIBDIR=$withval], 
             [HDF4_PATH_LIBDIR=""])
 
+
   dnl This is a very common location for the hdf4 code. jhrg 10/11/05
 dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
-      
+     
+ 
   AS_IF([test "z$HDF4_PATH" != "z"],
   [
     AS_IF([test "z$HDF4_PATH_LIBDIR" = "z"],
@@ -29,17 +32,35 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
       [HDF4_PATH_INC="$HDF4_PATH/include"])  
   ])
   
+  AC_MSG_NOTICE(--------------------------------------------------)
+  AC_MSG_NOTICE(HDF4_PATH is:     $HDF4_PATH)
+  AC_MSG_NOTICE(HDF4_PATH_LIBDIR: $HDF4_PATH_LIBDIR)
+  AC_MSG_NOTICE(HDF4_PATH_INC:    $HDF4_PATH_INC)
+
+  AC_MSG_NOTICE(CC:               $CC)
   
+  
+  H4_CC=$HDF4_PATH/bin/h4cc
+  if test -x $H4CC ; then
+      AC_MSG_NOTICE(Reseting CC...)
+      CC=$H4_CC 
+      AC_MSG_NOTICE(CC: $CC)
+  fi
+
+  AC_MSG_NOTICE(--------------- Searching for Libraries ------------------------)
+
   ac_hdf4_lib_ok='no'
   ac_hdf4_save_LDFLAGS=$LDFLAGS
   HDF4_LIBS=
   AS_IF([test "z$HDF4_PATH_LIBDIR" != "z"],
     [
+      AC_MSG_NOTICE(HDF4_PATH_LIBDIR is set)
       HDF4_LDFLAGS="-L$HDF4_PATH_LIBDIR"
       LDFLAGS="$LDFLAGS $HDF4_LDFLAGS"
       AC_CHECK_HDF4_LIB([ac_hdf4_lib_ok='yes'])
     ],
     [
+      AC_MSG_NOTICE(HDF4_PATH_LIBDIR is NOT set)
       for ac_hdf4_libdir in "" /usr/local/hdf4.2r1/lib64 /opt/hdf4.2r1/lib64 \ 
        /usr/hdf4.2r1/lib64 /usr/local/lib64/hdf4.2r1 /opt/lib64/hdf4.2r1 \
        /usr/lib64/hdf4.2r1 /usr/local/hdf/lib64/ /opt/hdf/lib64 /usr/hdf/lib64 \
@@ -63,16 +84,21 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
     ])
   LDFLAGS=$ac_hdf4_save_LDFLAGS
   
+  
+  AC_MSG_NOTICE(--------------- Searching for headers ------------------------)
+
   ac_hdf4_h='no'
   HDF4_CFLAGS=
   ac_hdf4_save_CPPFLAGS=$CPPFLAGS
   AS_IF([test "z$HDF4_PATH_INC" != "z"],
     [
+       AC_MSG_NOTICE(HDF4_PATH_INC is set)
        HDF4_CFLAGS="-I$HDF4_PATH_INC"
        CPPFLAGS="$CPPFLAGS $HDF4_CFLAGS"
        AC_CHECK_HEADER_NOCACHE_HDF4([mfhdf.h],[ac_hdf4_h='yes'])
     ],
     [
+       AC_MSG_NOTICE(HDF4_PATH_INC is NOT set)
       for ac_hdf4_incdir in "" /usr/local/hdf4.2r1/include /opt/hdf4.2r1/include \ 
        /usr/hdf4.2r1/include /usr/local/include/hdf4.2r1 \
        /opt/include/hdf4.2r1 /usr/include/hdf4.2r1 /usr/local/hdf/include \
@@ -91,10 +117,19 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
       done
     ])
   CPPFLAGS=$ac_hdf4_save_CPPFLAGS
-  
+
+  AC_MSG_NOTICE(ac_hdf4_h:      $ac_hdf4_h)
+  AC_MSG_NOTICE(ac_hdf4_lib_ok: $ac_hdf4_lib_ok)
   AS_IF([test "$ac_hdf4_h" = 'yes' -a "$ac_hdf4_lib_ok" = 'yes'],
   [m4_if([$1], [], [:], [$1])],
   [m4_if([$2], [], [:], [$2])])
+
+
+  AC_MSG_NOTICE(CC:           $CC)
+  AC_MSG_NOTICE(HDF4_PATH:    $HDF4_PATH)
+  AC_MSG_NOTICE(HDF4_LIBS:    $HDF4_LIBS)
+  AC_MSG_NOTICE(HDF4_CFLAGS:  $HDF4_CFLAGS)
+  AC_MSG_NOTICE(HDF4_LDFLAGS: $HDF4_LDFLAGS)
 
   AC_SUBST([HDF4_PATH])
   AC_SUBST([HDF4_LIBS])
