@@ -49,7 +49,7 @@ using std::ostringstream ;
 #include "TheBESKeys.h"
 
 #include "config.h"
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLClient.h"
 #endif
 
@@ -169,7 +169,7 @@ PPTClient::initConnection()
 void
 PPTClient::authenticateWithServer()
 {
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
     // get the certificate and key file information
     get_secure_files() ;
 

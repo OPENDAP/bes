@@ -50,7 +50,7 @@ using std::ostringstream ;
 #include "BESDebug.h"
 
 #include "config.h"
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLServer.h"
 #endif
 
@@ -74,7 +74,7 @@ PPTServer::PPTServer( ServerHandler *handler,
 	string err( "Null listener passed to PPTServer" ) ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
-#ifndef HAVE_OPENSSL
+#if !defined HAVE_OPENSSL && defined NOTTHERE
     if( _secure )
     {
 	string err("Server requested to be secure but OpenSSL is not built in");
@@ -227,7 +227,7 @@ PPTServer::welcomeClient()
 void
 PPTServer::authenticateClient()
 {
-#ifdef HAVE_OPENSSL
+#if defined HAVE_OPENSSL && defined NOTTHERE
     BESDEBUG( "ppt", "requiring secure connection: port = "
 		     << _securePort << endl ) ;
     // let the client know that it needs to authenticate

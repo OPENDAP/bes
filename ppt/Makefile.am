@@ -36,12 +36,12 @@ HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
 	SocketConfig.h SocketListener.h PPTServer.h PPTProtocol.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
-if HAVE_OPENSSL
-libbes_ppt_la_CPPFLAGS += $(openssl_includes)
-libbes_ppt_la_LIBADD += $(openssl_libs)
-SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
-HDRS+=SSLClient.h SSLServer.h SSLConnection.h
-endif
+#if HAVE_OPENSSL
+#libbes_ppt_la_CPPFLAGS += $(openssl_includes)
+#libbes_ppt_la_LIBADD += $(openssl_libs)
+#SRCS+=SSLClient.cc SSLServer.cc SSLConnection.cc
+#HDRS+=SSLClient.h SSLServer.h SSLConnection.h
+#endif
 
 C4_DIR=./cccc
 .PHONY: cccc
