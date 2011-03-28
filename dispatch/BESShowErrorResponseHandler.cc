@@ -88,31 +88,26 @@ BESShowErrorResponseHandler::execute( BESDataHandlerInterface &dhi )
 	{
 	    string err = dhi.action + " Internal Error" ;
 	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	    break ;
 	}
 	case BES_INTERNAL_FATAL_ERROR:
 	{
 	    string err = dhi.action + " Internal Fatal Error" ;
 	    throw BESInternalFatalError( err, __FILE__, __LINE__ ) ;
-	    break ;
 	}
 	case BES_SYNTAX_USER_ERROR:
 	{
 	    string err = dhi.action + " Syntax User Error" ;
 	    throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-	    break ;
 	}
 	case BES_FORBIDDEN_ERROR:
 	{
 	    string err = dhi.action + " Forbidden Error" ;
 	    throw BESForbiddenError( err, __FILE__, __LINE__ ) ;
-	    break ;
 	}
 	case BES_NOT_FOUND_ERROR:
 	{
 	    string err = dhi.action + " Not Found Error" ;
 	    throw BESNotFoundError( err, __FILE__, __LINE__ ) ;
-	    break ;
 	}
     }
 }

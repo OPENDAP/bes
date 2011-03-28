@@ -220,8 +220,10 @@ SSLClient::connect_to_server( )
 	struct hostent *hostEntry ;
 	if( ( hostEntry = gethostbyname( _host.c_str() ) ) != 0 )
 	{
-	    if ( hostEntry->h_length > sizeof(addr.sin_addr) )
+	    if ( hostEntry->h_length > sizeof(addr.sin_addr) ) {
+	    	close( fd );
 	        throw BESInternalError("Memory exception.", __FILE__, __LINE__);
+	    }
 	    memcpy( &addr.sin_addr, hostEntry->h_addr, hostEntry->h_length ) ;
 	}
 	else

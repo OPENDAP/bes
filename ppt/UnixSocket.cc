@@ -129,6 +129,7 @@ UnixSocket::connect()
 	}
 	else
 	{
+		::close( descript ) ;
 	    string msg = "could not bind to Unix socket " ;
 	    msg += _tempSocket ;
 	    char *err = strerror( errno ) ;

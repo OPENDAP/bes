@@ -152,7 +152,7 @@ BESUncompressZ::uncompress( const string &src, const string &target )
     long int		 maxcode;
     long int		 maxmaxcode;
     int			 n_bits;
-    int			  rsize;
+    int			  rsize = 0;
 
     insize = 0;
     
