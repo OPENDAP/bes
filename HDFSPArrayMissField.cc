@@ -58,8 +58,8 @@ HDFSPArrayMissGeoField::read ()
 			delete[]offset;
 			delete[]step;
 			delete[]count;
-			InternalErr (__FILE__, __LINE__,
-						 "Currently the rank of the missing field should be 1");
+			throw InternalErr (__FILE__, __LINE__,
+				"Currently the rank of the missing field should be 1");
 		}
 		for (int i = 0; i < count[0]; i++)
 			val[i] = offset[0] + step[0] * i;

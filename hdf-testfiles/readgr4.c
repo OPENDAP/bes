@@ -20,7 +20,7 @@ int main() {
   int32 pal_id; /* Palette id */
   const int32 start[2] = {0, 0};
   const int32 dims[2] = {Y_LENGTH, X_LENGTH};
-  int i, j, k;
+  // int i, j, k; unused jhrg 3/16/11
 
   if((file_id = Hopen(FILE_NAME, DFACC_RDONLY, 0)) == FAIL)
     return 1;

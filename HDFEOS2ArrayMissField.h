@@ -12,7 +12,7 @@
 #ifndef HDFEOS2ARRAY_MISSFIELD_H
 #define HDFEOS2ARRAY_MISSFIELD_H
 
-#include "Array.h"
+#include <Array.h>
 using namespace libdap;
 
 class HDFEOS2ArrayMissGeoField:public Array

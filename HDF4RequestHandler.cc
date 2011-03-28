@@ -124,7 +124,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi)
 	bdas->clear_container() ;
     }
     catch(BESError & e) {
-        throw e;
+        throw;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -193,7 +193,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi)
 	bdds->clear_container() ;
     }
     catch(BESError & e) {
-        throw e;
+        throw;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),
@@ -260,7 +260,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi)
 	bdds->clear_container() ;
     }
     catch(BESError & e) {
-        throw e;
+        throw;
     }
     catch(InternalErr & e) {
         BESDapError ex(e.get_error_message(), true, e.get_error_code(),

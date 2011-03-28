@@ -50,14 +50,14 @@ main() {
   int numsds = sizeof(tests) / sizeof(struct sdsinfo);  /* # of tests */
   const int32 start[1] = {0};
   VOIDP buffer;         /* test data (changes depending on type) */
-  int i, j;
+  // int i, j; j unused jhrg 3/16/11
   char sdsname[32];
 
   if((sd_id = SDstart (FILE_NAME, DFACC_CREATE)) == FAIL)
     return 1;
   printf("Created HDF\n");
 
-  for(i=0; i<numsds; i++) {
+  for(int i=0; i<numsds; i++) {
     printf("Adding SDS: %s\n", tests[i].typename);
     sprintf(sdsname, SDS_NAME, tests[i].typename);
     sds_id = SDcreate(sd_id, sdsname, tests[i].numtype, 1, tests[i].numelts);

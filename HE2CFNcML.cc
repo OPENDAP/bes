@@ -550,17 +550,17 @@ void HE2CFNcML::write_error(string _error)
 // END: Private member functions
     
 // BEGIN: Public member functions
-bool HE2CFNcML::get_check_multi_cvar()
+bool HE2CFNcML::get_check_multi_cvar() const
 {
     return _check_multi_cvar;
 }
 
-bool HE2CFNcML::get_check_name_clash()
+bool HE2CFNcML::get_check_name_clash() const
 {
     return _check_name_clash;
 }
 
-string HE2CFNcML::get_convention()
+string HE2CFNcML::get_convention() const
 {
     return _convention;
 }
@@ -571,36 +571,36 @@ string HE2CFNcML::get_current_working_directory(string hdf_file_name)
     return hdf_file_name.substr(0, pos+1);
 }
 
-string HE2CFNcML::get_filename()
+string HE2CFNcML::get_filename() const
 {
     return _filename;
 }
 
-char HE2CFNcML::get_prefix()
+char HE2CFNcML::get_prefix() const
 {
     return _prefix;
 }
 
 
-int HE2CFNcML::get_short_name_size()
+int HE2CFNcML::get_short_name_size() const
 {
     return _short_name_size;
 }
 
 
 // This function is copied from XMLHelpers.cc.
-string HE2CFNcML::get_string_from_xmlchar(const xmlChar* theCharsOrNull)
+string HE2CFNcML::get_string_from_xmlchar(const xmlChar* theCharsOrNull) const
 {
     const char* asChars = reinterpret_cast<const char*>(theCharsOrNull);
     return ( (asChars)?(string(asChars)):(string("")) );
 }
 
-string HE2CFNcML::get_suffix()
+string HE2CFNcML::get_suffix() const
 {
     return _suffix;
 }
 
-char HE2CFNcML::get_valid_char()
+char HE2CFNcML::get_valid_char() const
 {
     return _valid_char;
 }

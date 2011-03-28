@@ -50,8 +50,11 @@
 class Stat {
   public:
     Stat(const char *filename) {
-        Stat(string(filename));
-    } Stat(const string & filename):_filename(filename) {
+	_badstat = (stat(filename, &_sbuf) != 0);
+	// Stat(string(filename)); Stat is destroyed immediately. jhrg
+    }
+
+    Stat(const string & filename):_filename(filename) {
         _badstat = (stat(filename.c_str(), &_sbuf) != 0);
     }
 

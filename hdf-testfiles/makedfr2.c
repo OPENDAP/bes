@@ -64,7 +64,7 @@ main() {
     int32 file_id, gr_id, ri_id;
     int32 n_images, n_attrs;
     int32 ncomp, type, lace, dims[2], nattrs;
-    char name[32];
+    // char name[32]; Unused jhrg 3/16/11
 
     file_id = Hopen(FILE_NAME, DFACC_READ, 0);
     gr_id = GRstart(file_id);

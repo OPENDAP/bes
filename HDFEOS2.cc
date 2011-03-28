@@ -4,6 +4,7 @@
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> Choonghwan Lee 
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+
 #include "HDFEOS2.h"
 #ifdef USE_HDFEOS2_LIB
 //#include "InternalErr.h"
@@ -182,14 +183,14 @@ bool File::check_dim_name_clashing(bool llclash) const
 			// Geo fields
 			const std::vector<Field *> & geofields= (sw)->getGeoFields();
 			for(std::vector<Field*>::const_iterator it2=geofields.begin();
-				it2!=geofields.end(); it2++)
+				it2!=geofields.end(); ++it2)
 			{
 				if((*it2)->getName() == "Latitude" ||
 							(*it2)->getName() == "Longitude")
 				{
 					const std::vector<Dimension *>& dims = (*it2)->getDimensions();
 					for(std::vector<Dimension*>::const_iterator it3 = dims.begin();
-							it3 != dims.end(); it3++)
+							it3 != dims.end(); ++it3)
 					{
 						no_checking_names.insert((*it3)->getName());
 					}
@@ -200,7 +201,7 @@ bool File::check_dim_name_clashing(bool llclash) const
 			// Dimension maps
 			const std::vector<HDFEOS2::SwathDataset::DimensionMap *> & dimmap = sw->getDimensionMaps();
 			for(std::vector<HDFEOS2::SwathDataset::DimensionMap*>::const_iterator it2=dimmap.begin();
-				it2!=dimmap.end(); it2++)
+				it2!=dimmap.end(); ++it2)
 			{
 				no_checking_names.insert((*it2)->getGeoDimension());
 				no_checking_names.insert((*it2)->getDataDimension());
@@ -210,7 +211,7 @@ bool File::check_dim_name_clashing(bool llclash) const
 
         const std::vector<Dimension *> & dims = (ds)->getDimensions();
 		for(std::vector<Dimension *>::const_iterator it2=dims.begin();
-			it2!=dims.end(); it2++)
+			it2!=dims.end(); ++it2)
 		{
 			const std::string& dimname = (*it2)->getName();
             // When one lat/lon is available for all grids, we  
@@ -258,7 +259,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 		{
 			const std::vector<Field *> & geofields= (sw)->getGeoFields();
 			for(std::vector<Field*>::const_iterator it2=geofields.begin();
-				it2!=geofields.end(); it2++)
+				it2!=geofields.end(); ++it2)
 			{
                 // So far we only find "Latitude" and "Longitude" names to be used for swath.
                 // The dimension names of "Latitude" and "Longitude" won't be used as the 
@@ -269,7 +270,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 				{
 					const std::vector<Dimension *>& dims = (*it2)->getDimensions();
 					for(std::vector<Dimension*>::const_iterator it3 = dims.begin();
-							it3 != dims.end(); it3++)
+							it3 != dims.end(); ++it3)
 					{
 						no_checking_names.insert((*it3)->getName());
 					}
@@ -283,7 +284,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 
         const std::vector<Field *> & datafields= (ds)->getDataFields();
 		for(std::vector<Field*>::const_iterator it2=datafields.begin();
-			it2!=datafields.end(); it2++)
+			it2!=datafields.end(); ++it2)
 		{
 			fieldnames.insert((*it2)->getName());
 			if((*it2)->getRank()==1)
@@ -297,7 +298,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 		{
 			const std::vector<Field *> & geofields= (sw)->getGeoFields();
 			for(std::vector<Field*>::const_iterator it2=datafields.begin();
-				it2!=datafields.end(); it2++)
+				it2!=datafields.end(); ++it2)
 			{
 				fieldnames.insert((*it2)->getName());
 				if((*it2)->getRank()==1)
@@ -311,7 +312,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 		std::set<std::string> dimnames;
         const std::vector<Dimension *> & dims = (ds)->getDimensions();
 		for(std::vector<Dimension*>::const_iterator it3=dims.begin();
-			it3!=dims.end(); it3++)
+			it3!=dims.end(); ++it3)
 		{
 			dimnames.insert((*it3)->getName());
 		}
@@ -321,7 +322,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 		if(bUseDimNameMatching)
 		{
 			for(std::set<std::string>::const_iterator it=dimnames.begin();
-				it != dimnames.end(); it++)
+				it != dimnames.end(); ++it)
 			{
 				if(dims_of_1d_datafields.find(*it)==dims_of_1d_datafields.end())
 					nf_dimnames.insert(*it);
@@ -333,7 +334,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 
 		// Inserting data fields
 		for(std::set<std::string>::const_iterator it=fieldnames.begin();
-			it != fieldnames.end(); it++)
+			it != fieldnames.end(); ++it)
 		{
 			if(names.find(*it)==names.end())
 			{
@@ -347,7 +348,7 @@ bool File::check_field_name_clashing(bool bUseDimNameMatching) const
 
 		// Inserting NF_dimnames
 		for(std::set<std::string>::const_iterator it=nf_dimnames.begin();
-			it != nf_dimnames.end(); it++)
+			it != nf_dimnames.end(); ++it)
 		{
 			if(no_checking_names.find(*it) != no_checking_names.end())
 				continue;
@@ -429,7 +430,7 @@ void File::_find_geodim_names()
 
 		const std::vector<Dimension *>& dims = dataset->getDimensions();
 		for(std::vector<Dimension*>::const_iterator it = dims.begin();
-				it != dims.end(); it++)
+				it != dims.end(); ++it)
 		{
 				if(geodim_x_name_set.find((*it)->getName()) != geodim_x_name_set.end())
 					_geodim_x_name = (*it)->getName();
@@ -473,7 +474,7 @@ void File::_find_latlonfield_names()
 
 		const std::vector<Field *>& fields = dataset->getDataFields();
 		for(std::vector<Field*>::const_iterator it = fields.begin();
-				it != fields.end(); it++)
+				it != fields.end(); ++it)
 		{
 			if(latfield_name_set.find((*it)->getName()) != latfield_name_set.end())
 				_latfield_name = (*it)->getName();
@@ -484,8 +485,11 @@ void File::_find_latlonfield_names()
 		if(sw)
 		{
 			const std::vector<Field *>& geofields = dataset->getDataFields();
+			// I changed the test for this loop from
+			// "it != fields.end()" to "it != geofields.end()".
+			// jhrg 3/16/11
 			for(std::vector<Field*>::const_iterator it = geofields.begin();
-					it != fields.end(); it++)
+					it != geofields.end(); ++it)
 			{
 				if(latfield_name_set.find((*it)->getName()) != latfield_name_set.end())
 					_latfield_name = (*it)->getName();
@@ -1162,7 +1166,7 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
      std::map<std::string,std::string> tempnewydimnamelist;
      
      Dimension *correcteddim;
-     int dimsize;
+     // int dimsize; jhrg 3/16/11
      
      for (std::vector<GridDataset *>::const_iterator i = file->grids.begin();
           i != file->grids.end(); ++i){
@@ -2914,7 +2918,7 @@ const char * MissingFieldData::get(int*offset,int*step,int*count,int nelms)
            *(int*)&data[i*datatypesize] = i;
       }
       else {//subsetting case
-        int startingvalue;
+        // int startingvalue;
         if(this->rank == 1) {// this is the current case.
           for (int i =0; i <count[0];i++) 
 			*(int*)&data[i*datatypesize] = offset[0]+step[0]*i; 

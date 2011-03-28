@@ -528,13 +528,13 @@ namespace HDFSP
 		/// Some Vdata fields are very large in size. Some Vdata fields are very small. 
 		/// So we map smaller Vdata fields to DAP attributes and map bigger Vdata fields to DAP variables.
 		/// This flag is used for that.
-		bool getTreatAsAttrFlag ()
+		bool getTreatAsAttrFlag () const
 		{
 			return TreatAsAttrFlag;
 		}
 
 		/// Obtain Vdata reference number, this is necessary for retrieving Vdata information from HDF4.
-		int32 getObjRef ()
+		int32 getObjRef () const
 		{
 			return vdref;
 		}

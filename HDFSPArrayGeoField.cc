@@ -519,12 +519,12 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 // to calculate lat/lon.
 void
 HDFSPArrayGeoField::readtrmml3 (int32 * offset32, int32 * count32,
-								int32 * step32, int nelms)
+	int32 * step32, int nelms)
 {
 
-	float slat = -49.875;
-	float slon = -179.875;
-	float step = 0.25;
+	const float slat = -49.875; // jhrg 3/16/11; Added const, rm step
+	const float slon = -179.875;
+	// float step = 0.25;
 	float *val = new float[nelms];
 
 	if (fieldtype == 1) {		//latitude 
@@ -580,7 +580,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 	int32 attr_index, attr_dtype, n_values;
 	int32 num_scan_line_data;
 	int32 num_point_data;
-	char attr_name[H4_MAX_NC_NAME];
 
 	attr_index = SDfindattr (sd_id, NUM_SCAN_LINE_NAME);
 	if (attr_index == FAIL) {
@@ -588,6 +587,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 		throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
 	}
 
+	char attr_name[H4_MAX_NC_NAME];
 	status =
 		SDattrinfo (sd_id, attr_index, attr_name, &attr_dtype, &n_values);
 	if (status == FAIL) {
@@ -847,8 +847,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 	float32 swp_lat;
 	float32 swp_lon;
 
-	char attr_name[H4_MAX_NC_NAME];
-
 	// Obtain number of latitude
 	attr_index = SDfindattr (sd_id, NUM_LAT_NAME);
 	if (attr_index == FAIL) {
@@ -856,6 +854,7 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 		throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
 	}
 
+	char attr_name[H4_MAX_NC_NAME];
 	status =
 		SDattrinfo (sd_id, attr_index, attr_name, &attr_dtype, &n_values);
 	if (status == FAIL) {
@@ -999,7 +998,8 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 		SDend (sd_id);
 		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
 	}
-	float32 *val;
+
+	//float32 *val; Unused jhrg 3/16/11
 
 	if (fieldtype == 1) {
 
@@ -1592,7 +1592,7 @@ HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
 				89.5 - ((int) (offset32[0]) +
 						((int) (step32[0])) * i) * latstep;
 		set_value ((dods_float32 *) val, nelms);
-		delete val;
+		delete[] val;
 	}
 	if (fieldtype == 2) {
 		if (count32[0] != 1 || nelms != 1)

@@ -90,7 +90,7 @@ class HE2CF
     bool write_attr_sd(int32 sds_id, const string& newfname);
     bool write_attr_vdata(int32 vd_id, const string& newfname);
     void write_error(string _error);
-    bool write_metadata();
+    // bool write_metadata(); Unused jhrg 3/16/11
     
  public:
     HE2CF();

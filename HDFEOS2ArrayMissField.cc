@@ -14,10 +14,62 @@
 #include <sstream>
 #include <cassert>
 #include <debug.h>
+
+#include <InternalErr.h>
+
 #include "HDFEOS2.h"
-#include "InternalErr.h"
 
+// Here's a new implementation; memory leak warnings addressed. jhrg 3/16/11
 
+bool HDFEOS2ArrayMissGeoField::read()
+{
+    int *offset = new int[rank];
+    int *count = new int[rank];
+    int *step = new int[rank];
+    int *val = 0;
+
+    int nelms;
+
+    try {
+	// format_constraint throws on error;
+	nelms = format_constraint(offset, step, count);
+
+	// Since we always assign the the missing Z dimension as 32-bit
+	// integer, so no need to check the type. The missing Z-dim is always
+	// 1-D with natural number 1,2,3,....
+	val = new int[nelms];
+
+	if (nelms == tnumelm) {
+	    for (int i = 0; i < nelms; i++)
+		val[i] = i;
+	    set_value((dods_int32 *) val, nelms);
+	}
+	else {
+	    if (rank != 1) {
+		throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
+	    }
+	    for (int i = 0; i < count[0]; i++)
+		val[i] = offset[0] + step[0] * i;
+	    set_value((dods_int32 *) val, nelms);
+	}
+    }
+    catch (...) {
+	delete[] offset;
+	delete[] count;
+	delete[] step;
+	delete[] val;
+	throw;
+    }
+
+    delete[] offset;
+    delete[] count;
+    delete[] step;
+    delete[] val;
+
+    return false;
+}
+
+#if 0
 bool
 HDFEOS2ArrayMissGeoField::read ()
 {
@@ -54,8 +106,8 @@ HDFEOS2ArrayMissGeoField::read ()
 			delete[]count;
 			delete[]step;
 
-			InternalErr (__FILE__, __LINE__,
-						 "Currently the rank of the missing field should be 1");
+			throw InternalErr (__FILE__, __LINE__,
+				"Currently the rank of the missing field should be 1");
 		}
 		for (int i = 0; i < count[0]; i++)
 			val[i] = offset[0] + step[0] * i;
@@ -69,6 +121,7 @@ HDFEOS2ArrayMissGeoField::read ()
 
 	return false;
 }
+#endif
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 

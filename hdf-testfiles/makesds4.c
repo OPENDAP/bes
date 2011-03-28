@@ -24,9 +24,9 @@ main() {
   const int32 dim_sizes[2] = {16, 5};
   int16 data_X[X_LENGTH];  /* X dimension scale */
   float64 data_Y[Y_LENGTH];  /* Y dimension scale */
-  char  dim_name[NAME_LENGTH];
+  // char  dim_name[NAME_LENGTH]; unused jhrg 3/16/11
   int32 fill_value = 42;
-  int i, j;
+  int i; // , j; unused jhrg 3/16/11
 
   if((sd_id = SDstart (FILE_NAME, DFACC_CREATE)) == FAIL)
     return 1;

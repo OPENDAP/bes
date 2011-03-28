@@ -14,7 +14,7 @@ uint32 array_data[3][3][3];
 main() {
 	int32 file_id, gr_id, gr_index, ri_id, status, i, j, k;
 	int32 start[2], stride[2], edges[2];
-	char gr_name[64];
+	// char gr_name[64]; Unused jhrg 3/16/11
 	int32 ncomp, data_type, interlace_mode, dimsizes[2], num_attrs;
 
 	file_id = Hopen(FILENAME, DFACC_RDONLY, 0);

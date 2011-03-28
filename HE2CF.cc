@@ -568,13 +568,16 @@ HE2CF::write_error(string _error)
     throw InternalErr(__FILE__, __LINE__,
                       _error);        
 }
-    
+
+#if 0 
+// Unused   
 bool
 HE2CF::write_metadata()
 {
     DBG(cout << "metadata:" << metadata << endl);
     return true;
 }
+#endif
 
 // Public member functions
 HE2CF::HE2CF()

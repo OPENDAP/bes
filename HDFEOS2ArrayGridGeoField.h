@@ -16,7 +16,7 @@
 #ifndef HDFEOS2ARRAY_GRIDGEOFIELD_H
 #define HDFEOS2ARRAY_GRIDGEOFIELD_H
 
-#include "Array.h"
+#include <Array.h>
 #include "HDFEOS2.h"
 using namespace libdap;
 

@@ -51,7 +51,7 @@ class hcerr;
 using std::string;
 using std::ostream;
 
-#include "Error.h"
+#include <Error.h>
 
 using namespace libdap;
 

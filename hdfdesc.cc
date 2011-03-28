@@ -651,7 +651,7 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename,
     HDFEOS2::File *f;
     try {
         f = HDFEOS2::File::Read(filename.c_str());
-    } catch (HDFEOS2::Exception e)
+    } catch (HDFEOS2::Exception &e)
 	{
           if(!e.getFileType()){
             return false;
@@ -663,7 +663,7 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename,
         
    try {
        f->Prepare(filename.c_str(),sn,sn_dim,un,un_dim);
-   } catch (HDFEOS2::Exception e) 
+   } catch (HDFEOS2::Exception &e)
       {
         delete f;
         throw InternalErr(e.what());
@@ -720,7 +720,7 @@ bool read_dds_hdfsp(DDS & dds, const string & filename,
 
     try {
         f = HDFSP::File::Read(filename.c_str(), myfileid);
-    } catch (HDFSP::Exception e)
+    } catch (HDFSP::Exception &e)
 	{
             throw InternalErr(e.what());
     }
@@ -728,7 +728,7 @@ bool read_dds_hdfsp(DDS & dds, const string & filename,
         
     try {
         f->Prepare(sn,sn_dim,un,un_dim);
-    } catch (HDFSP::Exception e) {
+    } catch (HDFSP::Exception &e) {
         delete f;
         throw InternalErr(e.what());
     }
@@ -781,7 +781,7 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename,
 
     try {
         f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
-    } catch (HDFSP::Exception e)
+    } catch (HDFSP::Exception &e)
 	{
             throw InternalErr(e.what());
     }
@@ -1164,7 +1164,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
     try {
         f = HDFSP::File::Read(filename.c_str(), myfileid);
     } 
-    catch (HDFSP::Exception e)
+    catch (HDFSP::Exception &e)
 	{
             throw InternalErr(e.what());
 	}
@@ -1172,7 +1172,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
     try {
         f->Prepare(sn,sn_dim,un,un_dim);
     } 
-    catch (HDFSP::Exception e) {
+    catch (HDFSP::Exception &e) {
         delete f;
         throw InternalErr(e.what());
     }
@@ -1649,7 +1649,7 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,
     try {
         f = HDFSP::File::Read_Hybrid(filename.c_str(), myfileid);
     } 
-    catch (HDFSP::Exception e)
+    catch (HDFSP::Exception &e)
 	{
             throw InternalErr(e.what());
 	}
@@ -2038,7 +2038,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 
         f= HDFEOS2::File::Read(filename.c_str());
     } 
-    catch (HDFEOS2::Exception e){
+    catch (HDFEOS2::Exception &e){
 
 	if (!e.getFileType()){
               return false;
@@ -2053,7 +2053,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 	f->Prepare(filename.c_str(),sn,sn_dim,un,un_dim);
    }
 
-   catch (HDFEOS2:: Exception e) {
+   catch (HDFEOS2:: Exception &e) {
          delete f;
          throw InternalErr(e.what());
    }

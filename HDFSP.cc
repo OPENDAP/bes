@@ -1331,9 +1331,9 @@ throw (Exception)
 	int32 status;
 	int i, num_gobjects;
 	char cvgroup_name[VGNAMELENMAX*4];
-	char vdata_name[VSNAMELENMAX];
+	// char vdata_name[VSNAMELENMAX]; unused jhrg 3/16/11
 	char vdata_class[VSNAMELENMAX*4];
-	char sds_name[H4_MAX_NC_NAME];
+	// char sds_name[H4_MAX_NC_NAME]; unused jhrg 3/16/11
 	int32 sds_index;
 	int32 vdata_id, sds_id;
 	int32 obj_tag, obj_ref;
@@ -1418,7 +1418,7 @@ throw (Exception)
 	uint16 name_len;
 	int32 num_gobjects;
 	int32 obj_ref, obj_tag;
-	int i;
+	// int i; scope reduded jhrg 3/16/11
 	int32 dim_sizes[H4_MAX_VAR_DIMS];
 	int32 sds_rank, sds_dtype, n_attrs;
 
@@ -1532,7 +1532,7 @@ throw (Exception)
 			strcpy (cfull_path, full_path);
 
 			// Loop all vgroup objects
-			for (i = 0; i < num_gobjects; i++) {
+			for (int i = 0; i < num_gobjects; i++) {
 				if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
 					Vdetach (vgroup_id);
 					free (ref_array);
@@ -1700,7 +1700,7 @@ throw (Exception)
 	char cvgroup_name[VGNAMELENMAX*4];
 	char vdata_name[VSNAMELENMAX];
 	char vdata_class[VSNAMELENMAX];
-	char sds_name[H4_MAX_NC_NAME];
+	// char sds_name[H4_MAX_NC_NAME]; unused jhrg 3/16/11
 	int32 sds_index;
 	int32 vdata_id, sds_id;
 	int32 obj_tag, obj_ref;
@@ -2814,11 +2814,11 @@ throw (Exception)
 	std::string tempnewdimname1, tempnewdimname2;
 	std::string tempcvarname1, tempcvarname2;
 	File *file = this;
-	int eraseflag = 0;
+	// int eraseflag = 0; Unused jhrg 3/16/11
 
 	std::vector < SDField * >::iterator beerasedit;
 
-	SDField *beerased;
+	// SDField *beerased; Unused jhrg 3/16/11
 
 	for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
 		 i != file->sd->sdfields.end (); ++i) {
@@ -2890,7 +2890,7 @@ throw (Exception)
 	std::string temppath;
 	std::set < std::string > tempdimnameset;
 	std::pair < std::set < std::string >::iterator, bool > tempsetit;
-	bool eraseflag = false;
+	// bool eraseflag = false; Unused jhrg 3/16/11
 	bool cvflag = false;
 	File *file = this;
 
@@ -3012,8 +3012,8 @@ File::PrepareCERSAVGID ()
 throw (Exception)
 {
 
-	bool colatflag = false;
-	bool lonflag = false;
+	// bool colatflag = false; unused jhrg 3/16/11
+	// bool lonflag = false; Unused jhrg 3/16/11
 
 	std::string tempdimname1 = "1.0 deg. regional colat. zones";
 	std::string tempdimname2 = "1.0 deg. regional long. zones";
