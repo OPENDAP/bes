@@ -73,7 +73,7 @@ bool HDF5UInt16::read()
         	throw InternalErr(__FILE__, __LINE__, "null pointer");
         HDF5Structure &p = dynamic_cast < HDF5Structure & >(*q);
 
-        char Msgi[256];
+        // char Msgi[256];     // Not used; jhrg 3/16/11
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id);
 	if (i < 0){
@@ -146,10 +146,10 @@ bool HDF5UInt16::read()
 	    // the next line is thrown and caught below. In the
 	    // catch block the buf is deleted. pcw Mar 18, 2009
 	    //delete[] buf;
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting int32 data for structure\n")
-                              + Msgi);
+            throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
+                              // string
+                              // (
+                              // + Msgi);
         }
 
         set_read_p(true);

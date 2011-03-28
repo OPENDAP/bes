@@ -83,17 +83,17 @@ public:
     ///
     /// \return true if it has a set of correct meta data files.
     /// \return false otherwise  
-    bool get_swath();
+    bool get_swath() const;
 
     /// Checks if the HDF-EOS5 Swath file has 2-D lat/lon.
     ///
     /// \return true if it has 2-D lat/lon coordinate variable.
     /// \return false otherwise  
-    bool get_swath_2D();
+    bool get_swath_2D() const;
 
-    /// Returns the string representation of coordinate attirbute
+    /// Returns the string representation of coordinate attribute
     /// from lat / lon variable name.
-    string  get_swath_coordinate_attribute();
+    string  get_swath_coordinate_attribute() const;
 
     /// Returns true if \a varname matches the dimension names that 
     /// lat/lon variable has.
@@ -104,7 +104,7 @@ public:
     /// \param[in] tokens a vector to be fetched 
     void  get_swath_dimension_list(vector < string > &tokens);
 
-    /// Get the size informationfrom the \a name dimension.
+    /// Get the size information from the \a name dimension.
     ///
     /// \param name like nTimes
     /// \return the size of dimension in integer

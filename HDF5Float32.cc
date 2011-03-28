@@ -75,7 +75,7 @@ bool HDF5Float32::read()
         if (!q)
         	throw InternalErr(__FILE__, __LINE__, "null pointer");
         HDF5Structure &p = dynamic_cast < HDF5Structure &>(*q);
-        char Msgi[256];
+        // char Msgi[256];     // Not used; jhrg 3/16/11
 #if 0
         dods_float32 flt32;
 #endif
@@ -138,10 +138,10 @@ bool HDF5Float32::read()
 		// this gets deleted in the catch ... block so don't
 		// need to do it here. pwest Mar 18, 2009
             	//delete[] buf;
-            throw InternalErr(__FILE__, __LINE__,
-                              string
-                              ("hdf5_dods server failed when getting int32 data for structure\n")
-                              + Msgi);
+            throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
+                              //string
+                              //()
+                              //+ Msgi);
         }
 
         set_read_p(true);

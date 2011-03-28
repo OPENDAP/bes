@@ -75,7 +75,7 @@ public:
     const char* get_CF_name(char *eos_name);
 
     /// Returns whether shared dimension variables are generated or not.
-    bool        get_shared_dimension();
+    bool        get_shared_dimension() const;
     
 
     /// Clears all internal map variables and flags in the subclasses.

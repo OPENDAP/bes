@@ -33,25 +33,25 @@ using namespace std;
 
 HE5CFGrid::HE5CFGrid()
 {
-
+    _grid = false;		// Added; jhrg 3/16/11
     _grid_TES = false;
     _grid_lat = 0;
     _grid_lon = 0;
     _grid_lev = 0;
     _grid_time = 0;
-                
+
     point_lower = 0.0f;
     point_upper = 0.0f;
     point_left = 0.0f;
     point_right = 0.0f;
-	pixelregistration = HE5CFGrid::HE5_HDFE_CENTER;
-	gridorigin = HE5CFGrid::HE5_HDFE_GD_UL;
-	bRead_point_lower=false;
-	bRead_point_upper=false;
-	bRead_point_left=false;
-	bRead_point_right=false;
-	bRead_pixelregistration=false;
-	bRead_gridorigin=false;
+    pixelregistration = HE5CFGrid::HE5_HDFE_CENTER;
+    gridorigin = HE5CFGrid::HE5_HDFE_GD_UL;
+    bRead_point_lower = false;
+    bRead_point_upper = false;
+    bRead_point_left = false;
+    bRead_point_right = false;
+    bRead_pixelregistration = false;
+    bRead_gridorigin = false;
 
     gradient_x = 0.0f;
     gradient_y = 0.0f;
@@ -63,35 +63,35 @@ HE5CFGrid::~HE5CFGrid()
 }
 
 bool
-HE5CFGrid::get_grid()
+HE5CFGrid::get_grid() const
 {
     return _grid;
 }
 
 
 bool
-HE5CFGrid::get_grid_TES()
+HE5CFGrid::get_grid_TES() const
 {
     return _grid_TES;
 }
 
 int
-HE5CFGrid::get_grid_lat()
+HE5CFGrid::get_grid_lat() const
 {
     return _grid_lat;
 }
 int
-HE5CFGrid::get_grid_lon()
+HE5CFGrid::get_grid_lon() const
 {
     return _grid_lon;
 }
 int
-HE5CFGrid::get_grid_lev()
+HE5CFGrid::get_grid_lev() const
 {
     return _grid_lev;
 }
 int
-HE5CFGrid::get_grid_time()
+HE5CFGrid::get_grid_time() const
 {
     return _grid_time;
 }

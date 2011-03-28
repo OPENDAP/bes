@@ -97,7 +97,7 @@ bool HE5Parser::check_eos(hid_t id)
     // Check if this file has the group called "HDFEOS INFORMATION".
     if (has_group(id, "HDFEOS INFORMATION")) {
 
-        if (set_metadata(id, "StructMetadata", metadata_Struct)) {
+        if (set_metadata(id, (char*)"StructMetadata", metadata_Struct)) {
             _valid = true;
         } else {
             _valid = false;
@@ -113,11 +113,11 @@ bool HE5Parser::check_eos(hid_t id)
 				throw BESInternalError("HDF5 StructMetadata Parse Error: " + err_msg, __FILE__, __LINE__);
 			}
 
-            set_metadata(id, "coremetadata", metadata_core);
-            set_metadata(id, "CoreMetadata", metadata_Core);
-            set_metadata(id, "ArchivedMetadata", metadata_Archived);
-            set_metadata(id, "subsetmetadata", metadata_subset);
-            set_metadata(id, "productmetadata", metadata_product);
+            set_metadata(id, (char*)"coremetadata", metadata_core);
+            set_metadata(id, (char*)"CoreMetadata", metadata_Core);
+            set_metadata(id, (char*)"ArchivedMetadata", metadata_Archived);
+            set_metadata(id, (char*)"subsetmetadata", metadata_subset);
+            set_metadata(id, (char*)"productmetadata", metadata_product);
             // Check if this file is TES.
             if(string(metadata_core).find("\"TES\"") != string::npos){
                 set_grid_TES(true);
@@ -205,7 +205,7 @@ bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 
 void HE5Parser::reset()
 {
-    int j;
+    // int j; unused jhrg 3/16/11
 
     HE5CF::set();
     

@@ -92,7 +92,7 @@ HE5CF::get_CF_name(char *eos_name)
 
 
 bool
-HE5CF::get_shared_dimension()
+HE5CF::get_shared_dimension() const
 {
     return _shared_dimension;
 }

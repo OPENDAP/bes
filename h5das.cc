@@ -78,163 +78,140 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     static int slinkindex;
 
     hsize_t nelems;
-    
+
     read_comments(das, gname, pid);
 
-    if (H5Gget_num_objs(pid, (hsize_t *) & nelems) < 0) {
-        string msg = "counting hdf5 group elements error for ";
-        msg += gname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+    if (H5Gget_num_objs(pid, (hsize_t *) &nelems) < 0) {
+	string msg = "counting hdf5 group elements error for ";
+	msg += gname;
+	throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     for (int i = 0; i < nelems; i++) {
-        // Query the length of object name.
-        ssize_t oname_size = H5Gget_objname_by_idx(pid, (hsize_t) i, NULL,
-						   (size_t) DODS_NAMELEN);
+	// Query the length of object name.
+	ssize_t oname_size = H5Gget_objname_by_idx(pid, (hsize_t) i, NULL, (size_t) DODS_NAMELEN);
 
-        if (oname_size <= 0) {
-            string msg = "hdf5 object name error from: ";
-            msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
-        }
-#if 0
-        char *oname = NULL;
-	try {
-#endif
-	    // Obtain the name of the object.
-	    vector<char> oname(oname_size + 1);
-	    if (H5Gget_objname_by_idx(pid, (hsize_t) i, &oname[0],
-				      (size_t) (oname_size + 1)) < 0) {
-		string msg = "hdf5 object name error from: ";
-		msg += gname;
-		throw InternalErr(__FILE__, __LINE__, msg);
-	    }
-
-	    int type = H5Gget_objtype_by_idx(pid, (hsize_t) i);
-	    if (type < 0) {
-		string msg = "hdf5 object type error from: ";
-		msg += gname;
-		throw InternalErr(__FILE__, __LINE__, msg);
-	    }
-
-	    switch (type) {
-
-            case H5G_GROUP:{
-                DBG(cerr << "=depth_first():H5G_GROUP " << &oname[0] << endl);
-#ifndef CF
-                add_group_structure_info(das, gname, &oname[0], true);
-#endif
-                string full_path_name = string(gname) + string(&oname[0]) + "/";
-                // Check if it is converted from h4toh5 tool  and has dimension
-                // scale.
-                if(full_path_name.find("/HDF4_DIMGROUP/") != string::npos)
-                    {
-                        has_hdf4_dimgroup = true;
-                    }
-                
-                hid_t cgroup = H5Gopen(pid, full_path_name.c_str());
-
-                if (cgroup < 0) {
-                    string msg = "opening hdf5 group failed for ";
-                    msg += full_path_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                int num_attr;
-                if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
-                    string msg = "failed to obtain hdf5 attribute in group ";
-                    msg += full_path_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                string oid = get_hardlink(cgroup, full_path_name.c_str());
-
-#ifndef CF
-                read_objects(das, full_path_name.c_str(), cgroup, num_attr);
-#endif
-                // Break the cyclic loop created by hard links.
-                if (oid == "") {   
-                    depth_first(cgroup, full_path_name.c_str(), das);
-                } else {
-                    // Add attribute table with HARDLINK.
-                    AttrTable *at =
-                        das.add_table(full_path_name, new AttrTable);
-                    at->append_attr("HDF5_HARDLINK", STRING,
-                                    paths.get_name(oid));
-                }
-                
-                if(H5Gclose(cgroup) < 0){
-                    throw InternalErr(__FILE__, __LINE__,
-                                      "H5Gclose() failed.");
-                }
-                break;
-            } // case H5G_GROUP
-
-            case H5G_DATASET:{
-                DBG(cerr << "=depth_first():H5G_DATASET " << &oname[0] <<
-                    endl);
-#ifndef CF
-                add_group_structure_info(das, gname, &oname[0], false);
-#endif
-                string full_path_name = string(gname) + string(&oname[0]);
-                hid_t dset;
-                // Open the dataset
-                if ((dset = H5Dopen(pid, full_path_name.c_str())) < 0) {
-                    string msg = "unable to open hdf5 dataset of group ";
-                    msg += gname;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                // Obtain number of attributes in this dataset.
-                int num_attr;
-                if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
-                    string msg = "failed to get hdf5 attribute in dataset ";
-                    msg += full_path_name;
-                    throw InternalErr(__FILE__, __LINE__, msg);
-                }
-
-                string oid = get_hardlink(dset, full_path_name);
-                // Break the cyclic loop created by hard links.
-                // Should this be wrapped in #ifndef CF #endif? jhrg 4/17/08
-                read_objects(das, full_path_name, dset, num_attr);
-                if (!oid.empty()) {
-                    // Add attribute table with HARDLINK
-                    AttrTable *at =
-                        das.add_table(full_path_name, new AttrTable);
-                    at->append_attr("HDF5_HARDLINK", STRING,
-                                    paths.get_name(oid));
-                }
-
-                if (H5Dclose(dset) < 0){
-		   throw InternalErr(__FILE__, __LINE__, 
-                                     "Could not close the dataset.");
-		}
-                break;
-            }                   // case H5G_DATASET
-
-            case H5G_TYPE:
-		break;
-#ifndef CF
-            case H5G_LINK:
-		slinkindex++;
-		get_softlink(das, pid, &oname[0], slinkindex);
-		break;
-#endif
-
-            default:
-		break;
-	    }
-#if 0
-	    if( oname ) delete[]oname;
-	} // try
-	catch (...) {
-	    // if a memory allocation exception is thrown creating
-	    // oname it is caught here, meaning oname is null. pwest
-	    // Mar 18, 2009
-	    if( oname ) delete[] oname;
-	    throw;
+	if (oname_size <= 0) {
+	    string msg = "hdf5 object name error from: ";
+	    msg += gname;
+	    throw InternalErr(__FILE__, __LINE__, msg);
 	}
+	// Obtain the name of the object.
+	vector<char> oname(oname_size + 1);
+	if (H5Gget_objname_by_idx(pid, (hsize_t) i, &oname[0], (size_t) (oname_size + 1)) < 0) {
+	    string msg = "hdf5 object name error from: ";
+	    msg += gname;
+	    throw InternalErr(__FILE__, __LINE__, msg);
+	}
+
+	int type = H5Gget_objtype_by_idx(pid, (hsize_t) i);
+	if (type < 0) {
+	    string msg = "hdf5 object type error from: ";
+	    msg += gname;
+	    throw InternalErr(__FILE__, __LINE__, msg);
+	}
+
+	switch (type) {
+
+	case H5G_GROUP: {
+	    DBG(cerr << "=depth_first():H5G_GROUP " << &oname[0] << endl);
+#ifndef CF
+	    add_group_structure_info(das, gname, &oname[0], true);
 #endif
+	    string full_path_name = string(gname) + string(&oname[0]) + "/";
+	    // Check if it is converted from h4toh5 tool  and has dimension
+	    // scale.
+	    if (full_path_name.find("/HDF4_DIMGROUP/") != string::npos) {
+		has_hdf4_dimgroup = true;
+	    }
+
+	    hid_t cgroup = H5Gopen(pid, full_path_name.c_str());
+
+	    if (cgroup < 0) {
+		string msg = "opening hdf5 group failed for ";
+		msg += full_path_name;
+		throw InternalErr(__FILE__, __LINE__, msg);
+	    }
+
+	    int num_attr;
+	    if ((num_attr = H5Aget_num_attrs(cgroup)) < 0) {
+		string msg = "failed to obtain hdf5 attribute in group ";
+		msg += full_path_name;
+		throw InternalErr(__FILE__, __LINE__, msg);
+	    }
+
+	    string oid = get_hardlink(cgroup, full_path_name.c_str());
+
+#ifndef CF
+	    read_objects(das, full_path_name.c_str(), cgroup, num_attr);
+#endif
+	    // Break the cyclic loop created by hard links.
+	    if (oid == "") {
+		depth_first(cgroup, full_path_name.c_str(), das);
+	    }
+	    else {
+		// Add attribute table with HARDLINK.
+		AttrTable *at = das.add_table(full_path_name, new AttrTable);
+		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
+	    }
+
+	    if (H5Gclose(cgroup) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "H5Gclose() failed.");
+	    }
+	    break;
+	} // case H5G_GROUP
+
+	case H5G_DATASET: {
+	    DBG(cerr << "=depth_first():H5G_DATASET " << &oname[0] <<
+		    endl);
+#ifndef CF
+	    add_group_structure_info(das, gname, &oname[0], false);
+#endif
+	    string full_path_name = string(gname) + string(&oname[0]);
+	    hid_t dset;
+	    // Open the dataset
+	    if ((dset = H5Dopen(pid, full_path_name.c_str())) < 0) {
+		string msg = "unable to open hdf5 dataset of group ";
+		msg += gname;
+		throw InternalErr(__FILE__, __LINE__, msg);
+	    }
+
+	    // Obtain number of attributes in this dataset.
+	    int num_attr;
+	    if ((num_attr = H5Aget_num_attrs(dset)) < 0) {
+		string msg = "failed to get hdf5 attribute in dataset ";
+		msg += full_path_name;
+		throw InternalErr(__FILE__, __LINE__, msg);
+	    }
+
+	    string oid = get_hardlink(dset, full_path_name);
+	    // Break the cyclic loop created by hard links.
+	    // Should this be wrapped in #ifndef CF #endif? jhrg 4/17/08
+	    read_objects(das, full_path_name, dset, num_attr);
+	    if (!oid.empty()) {
+		// Add attribute table with HARDLINK
+		AttrTable *at = das.add_table(full_path_name, new AttrTable);
+		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
+	    }
+
+	    if (H5Dclose(dset) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
+	    }
+	    break;
+	} // case H5G_DATASET
+
+	case H5G_TYPE:
+	    break;
+#ifndef CF
+	case H5G_LINK:
+	    slinkindex++;
+	    get_softlink(das, pid, &oname[0], slinkindex);
+	    break;
+#endif
+
+	default:
+	    break;
+	}
     } //  for (int i = 0; i < nelems; i++)
 
     DBG(cerr << "<depth_first():" << gname << endl);

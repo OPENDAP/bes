@@ -48,7 +48,7 @@ BaseType *HDF5ArrayEOS::ptr_duplicate()
 }
 
 HDF5ArrayEOS::HDF5ArrayEOS(const string & n, const string &d, BaseType * v)
-    : HDF5Array(n, d, v)
+    : HDF5Array(n, d, v), _dim_id(-1)
 {
 }
 
@@ -90,7 +90,8 @@ void HDF5ArrayEOS::set_dim_id(int dim) {
     _dim_id = dim;
 }
 
-
+// Not used; jhrg 3/16/11
+#if 0
 void HDF5ArrayEOS::set_memneed(size_t need)
 {
     d_memneed = need;
@@ -105,7 +106,7 @@ void HDF5ArrayEOS::set_numelm(int nelms)
 {
     d_num_elm = nelms;
 }
-
+#endif
 
 dods_float32 *HDF5ArrayEOS::get_dimension_data(dods_float32 * buf,
                                                int start, int stride,

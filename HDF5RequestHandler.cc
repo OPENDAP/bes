@@ -138,7 +138,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DDS *dds = bdds->get_dds();
 
-        depth_first(file1, "/", *dds, filename.c_str());
+        depth_first(file1, (char*)"/", *dds, filename.c_str());
         
 #if 0
         if (!dds->check_semantics()) {       // DDS didn't get built right
@@ -206,7 +206,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
         DataDDS *dds = bdds->get_dds();
 
-        depth_first(file1, "/", *dds, filename.c_str());
+        depth_first(file1, (char*)"/", *dds, filename.c_str());
 
 // Temporarily turn this off since NASA MLS data have the same dimension names for all groups. KY-2011-3-10
 #if 0

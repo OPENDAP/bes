@@ -52,20 +52,20 @@ HE5CFSwath::~HE5CFSwath()
 }
 
 bool
-HE5CFSwath::get_swath()
+HE5CFSwath::get_swath() const
 {
     return _swath;
 }
 
 bool
-HE5CFSwath::get_swath_2D()
+HE5CFSwath::get_swath_2D() const
 {
     return _swath_2D;
 }
 
 
 string  
-HE5CFSwath::get_swath_coordinate_attribute()
+HE5CFSwath::get_swath_coordinate_attribute() const
 {
     if(get_swath_2D()){
         return "lat lon";

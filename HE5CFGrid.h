@@ -56,107 +56,103 @@ using namespace libdap;
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
 class HE5CFGrid {
-  
+
 private:
-    bool _grid;                // Is it grid with Geographic porjection?
-    bool _grid_TES;            // Is it TES grid?
+    bool _grid; // Is it grid with Geographic projection?
+    bool _grid_TES; // Is it TES grid?
     int _grid_lat;
     int _grid_lon;
     int _grid_lev;
     int _grid_time;
-    
-    map < string, int >    _grid_dimension_size;
-    map < string, string > _grid_variable_dimensions;
-    vector < string >      _grid_dimension_list;
-    vector < string >      _grid_variable_list;
+
+    map<string, int> _grid_dimension_size;
+    map<string, string> _grid_variable_dimensions;
+    vector<string> _grid_dimension_list;
+    vector<string> _grid_variable_list;
 
 public:
-  
+
     HE5CFGrid();
     virtual ~HE5CFGrid();
 
     /// Pointers for Grid map and shared dimension data arrays
     dods_float32 **dimension_data;
 
-
-	/////////////////////////////////////////////
-	// Grid geoloc calculation
-	/////////////////////////////////////////////
+    /////////////////////////////////////////////
+    // Grid geoloc calculation
+    /////////////////////////////////////////////
     /// The bottom coordinate value of a Grid
     float point_lower;
     /// The top coordinate value of a Grid
     float point_upper;
     /// The leftmost coordinate value of a Grid
     float point_left;
-    /// The righttmost coordinate value of a Grid
+    /// The rightmost coordinate value of a Grid
     float point_right;
     /// The resolution of longitude
     float gradient_x;
     /// The resolution of latitude
     float gradient_y;
 
-	// PixelRegistration
-	enum {HE5_HDFE_CENTER, HE5_HDFE_CORNER};	
-		// These are actually EOS5 consts, but we define these 
-		// since we do not depend on the EOS5 lib.
-	int pixelregistration;	// either _HE5_HDFE_CENTER or _HE5_HDFE_CORNER
+    // PixelRegistration
+    enum {
+	HE5_HDFE_CENTER, HE5_HDFE_CORNER
+    };
+    // These are actually EOS5 consts, but we define these
+    // since we do not depend on the EOS5 lib.
+    int pixelregistration; // either _HE5_HDFE_CENTER or _HE5_HDFE_CORNER
 
-	// GridOrigin
-	enum {
-		HE5_HDFE_GD_UL, HE5_HDFE_GD_UR,
-		HE5_HDFE_GD_LL, HE5_HDFE_GD_LR};
-	int gridorigin;	// one of HE5_HDFE_GD_UL, _UR, _LL, _LR
+    // GridOrigin
+    enum {
+	HE5_HDFE_GD_UL, HE5_HDFE_GD_UR, HE5_HDFE_GD_LL, HE5_HDFE_GD_LR
+    };
+    int gridorigin; // one of HE5_HDFE_GD_UL, _UR, _LL, _LR
 
-	// These vars show whether the vars above are already read from the StructMetadata or not.
-	// These are used to check two (or more) grids have the same such vars or not.
-	bool bRead_point_lower,
-		 bRead_point_upper,
-		 bRead_point_left,
-		 bRead_point_right,
-		 bRead_pixelregistration,
-		 bRead_gridorigin;
+    // These vars show whether the vars above are already read from the StructMetadata or not.
+    // These are used to check two (or more) grids have the same such vars or not.
+    bool bRead_point_lower, bRead_point_upper, bRead_point_left, bRead_point_right, bRead_pixelregistration,
+	    bRead_gridorigin;
 
-	/////////////////////////////////////////////
-	/////////////////////////////////////////////
-	
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
 
     /// Checks if the current HDF5 file is a valid HDF-EOS5 Grid file.
     ///
     /// \return true if it has a set of correct meta data files.
     /// \return false otherwise  
-    bool get_grid();
-
+    bool get_grid() const;
 
     /// Checks if the current HDF5 file is a HDF-EOS5 TES file.
     ///
     /// \return true if it is NASA AURA TES Grid file.
     /// \return false otherwise  
-    bool get_grid_TES();
+    bool get_grid_TES() const;
 
     /// Checks if the current HDF-EOS5 file has YDim.
     ///
     /// \return dimension size if it has lat dimension.
     /// \return 0 otherwise  
-    int get_grid_lat();
+    int get_grid_lat() const;
 
     /// Checks if the current HDF-EOS5 file has XDim.
     ///
     /// \return dimensino size if it has lon dimension.
     /// \return 0 otherwise  
-    int get_grid_lon();
+    int get_grid_lon() const;
 
     /// Checks if the current HDF-EOS5 file has nCandidate.
     ///
     /// \return dimension size if it has lev dimension.
     /// \return 0 otherwise  
-    int get_grid_lev();
+    int get_grid_lev() const;
 
     /// Checks if the current HDF-EOS5 file has nWavel.
     ///
     /// \return dimension size if it has time dimension.
     /// \return 0 otherwise  
-    int get_grid_time();
-    
+    int get_grid_time() const;
+
     /// Get the index of dimension data from the dimension map
     ///
     /// \param name like XDim, YDim and ZDim
@@ -167,15 +163,14 @@ public:
     /// Get the vector of all dimensions used in this HDF-EOS5 file.
     ///
     /// \param[in] tokens a vector to be fetched 
-    void  get_grid_dimension_list(vector < string > &tokens);
+    void get_grid_dimension_list(vector<string> &tokens);
 
-    /// Get the size informationfrom the \a name dimension.
+    /// Get the size information from the \a name dimension.
     ///
     /// \param name like nTimes
     /// \return the size of dimension in integer
-    int  get_grid_dimension_size(string name);
+    int get_grid_dimension_size(string name);
 
-    
     /// Checks if the argument string is a HDF-EOS5 GRID dataset.
     ///
     /// \return true if it is a Grid dataset.
@@ -189,8 +184,7 @@ public:
     /// and tokenize the list into the string vector.
     /// \param[in] name a grid variable name
     /// \param[out] tokens a vector of ',' delimited dimension names
-    void get_grid_variable_dimensions(string name, vector < string > &tokens);
-
+    void get_grid_variable_dimensions(string name, vector<string> &tokens);
 
     /// Prints out some information parsed from meta data
     ///

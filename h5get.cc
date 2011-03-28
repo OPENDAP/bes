@@ -604,8 +604,7 @@ int check_h5str(hid_t h5type)
 ///           indexes.
 /// \return 0 otherwise
 ///////////////////////////////////////////////////////////////////////////////
-bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes,
-                                hid_t *dimids)
+bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dimids)
 {
     bool flag = false;
 
@@ -618,173 +617,158 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes,
     int num_attrs;
 
     num_attrs = H5Aget_num_attrs(dataset);
-    if (num_attrs < 0){
-               throw InternalErr(__FILE__, __LINE__,
-                                 "Invalid number of attributes");
-            }
+    if (num_attrs < 0) {
+	throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
+    }
     DBG(cerr << ">has_matching_grid_dimscale"
-		<< " ndims=" << ndims << " sizes[0]=" << sizes[0]
-		<< endl);
+	    << " ndims=" << ndims << " sizes[0]=" << sizes[0]
+	    << endl);
     for (i = 0; i < num_attrs; i++) {
-        attr_id = H5Aopen_idx(dataset, i);
-	if (attr_id < 0){
-               throw InternalErr(__FILE__, __LINE__,
-                                 "Cannot open the attribute");
-        }
-        dimscale = NULL;
-        // Obtain the attribute size.
-        attr_namesize = H5Aget_name(attr_id,0,NULL);
-        if(attr_namesize <=0) {
-          throw InternalErr(__FILE__,__LINE__,
-                            "Cannot obtain the attribute size");
-        }
-
-        try {
-            dimscale = new char[(size_t)attr_namesize+1];
-        }
-        catch(...) {
-            if(dimscale) {
-              delete [] dimscale;
-              dimscale = NULL;
-            }
-            throw;
-        }
-        attr_namesize = H5Aget_name(attr_id, (size_t)(attr_namesize+1),
-                                    dimscale);
-        if (attr_namesize < 0) {
-            throw
-                InternalErr(__FILE__, __LINE__, "error in getting attr name");
-        }
-
-        if (!strncmp(dimscale, "DIMENSION_LIST", strlen("DIMENSION_LIST"))) {
-            DBG(cerr << "=has_matching_grid_dimscale():Got a grid:" << i <<
-                ":" << dimscale << endl);
-            flag = true;
-        }
-        if (H5Aclose(attr_id) < 0){
-	   throw InternalErr(__FILE__, __LINE__,
-                             "Unable to close the attribute.");
+	attr_id = H5Aopen_idx(dataset, i);
+	if (attr_id < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Cannot open the attribute");
 	}
-        delete [] dimscale;
-        dimscale = NULL;
+	dimscale = NULL;
+	// Obtain the attribute size.
+	attr_namesize = H5Aget_name(attr_id, 0, NULL);
+	if (attr_namesize <= 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Cannot obtain the attribute size");
+	}
+
+	try {
+	    dimscale = new char[(size_t) attr_namesize + 1];
+	}
+	catch (...) {
+	    if (dimscale) {
+		delete[] dimscale;
+		dimscale = NULL;
+	    }
+	    throw;
+	}
+	attr_namesize = H5Aget_name(attr_id, (size_t) (attr_namesize + 1), dimscale);
+	if (attr_namesize < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "error in getting attr name");
+	}
+
+	if (!strncmp(dimscale, "DIMENSION_LIST", strlen("DIMENSION_LIST"))) {
+	    DBG(cerr << "=has_matching_grid_dimscale():Got a grid:" << i <<
+		    ":" << dimscale << endl);
+	    flag = true;
+	}
+	if (H5Aclose(attr_id) < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	}
+	delete[] dimscale;
+	dimscale = NULL;
     }
 
     // Check number of dimensions.
     if (flag) {
-        if ((attr_id = H5Aopen_name(dataset, "DIMENSION_LIST")) < 0) {
-            throw InternalErr(__FILE__, __LINE__,
-                              "Unable to open the DIMENSION_LIST attribute");
-        }
-        hid_t temp_dtype = H5Aget_type(attr_id);
+	if ((attr_id = H5Aopen_name(dataset, "DIMENSION_LIST")) < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Unable to open the DIMENSION_LIST attribute");
+	}
+	hid_t temp_dtype = H5Aget_type(attr_id);
 	hid_t temp_dspace = H5Aget_space(attr_id);
-        hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+	hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
 
-	if (temp_dtype < 0){
-               throw InternalErr(__FILE__, __LINE__,
-                                 "Cannot get the attribute datatype");
-        }
-	if (temp_dspace < 0){
-               throw InternalErr(__FILE__, __LINE__,
-                                 "Cannot get the copy of dataspace");
-        }
-	if (temp_nelm == 0){
-               throw InternalErr(__FILE__, __LINE__,
-                                 "Cannot determine the number of elements in the dataspace");
-        }
+	if (temp_dtype < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Cannot get the attribute datatype");
+	}
+	if (temp_dspace < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Cannot get the copy of dataspace");
+	}
+	if (temp_nelm == 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+	}
 
-        if (ndims != (int) temp_nelm) {
-            // here it may block out the multi-scale case. kent 2009/09/21
-            return false;
-        }
+	if (ndims != (int) temp_nelm) {
+	    // here it may block out the multi-scale case. kent 2009/09/21
+	    return false;
+	}
 
-        hvl_t *refbuf = 0;
-        hid_t *dimid = 0;
-        try {
-            hobj_ref_t *refbuf = new hobj_ref_t[(int)temp_nelm];
-            if (H5Aread(attr_id, temp_dtype, refbuf) < 0) {
-                delete[] refbuf;
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Cannot read object reference attributes");
-            }
-
-            hid_t *dimid = new hid_t[(int)temp_nelm];
-
-            // Check size of each dimension.
-            for (int j = 0; j < (int) temp_nelm; j++) {
-                    dimid[j] =
-                        H5Rdereference(attr_id, H5R_OBJECT, &refbuf[j]);
-                    DBG(cerr << "dimid[" << j << "]=" << dimid[j] << endl);
-
-                    if (dimid[j] < 0) {
-                        delete[] dimid;
-                        delete[] refbuf;
-                        return false;
-                    } 
-                    else {
-                        hid_t index_dspace = H5Dget_space(dimid[j]);
-                        hsize_t index_ndim =
-                            H5Sget_simple_extent_npoints(index_dspace);
-
-        		if (index_dspace < 0){
-             		    throw InternalErr(__FILE__, __LINE__,
-                                              "H5Dget_space() failed");
-         		}
-                        if(H5Sclose(index_dspace)<0){
-                          throw InternalErr(__FILE__,__LINE__,
-                                            "Cannot close HDF5 data space");
-                        }
-        		if (index_ndim == 0){
-               		    throw InternalErr(__FILE__, __LINE__,
-                                              "Cannot determine the number of elements in the dataspace");
-        		}
-	
-                        if ((int) index_ndim != sizes[j]) {
-                            // The number of element of the dim. scale must be
-                            // equal to the number of element of the same
-                            // dimension of the dataset. Kent 2009/09/21
-                            flag = false;
-                        }
-                    }
-
-            }                       // for (int j = 0; j < temp_nelm; j++)
-
-            if (H5Aclose(attr_id) < 0){
-		throw InternalErr(__FILE__, __LINE__,
-                                  "Unable to close the attribute.");
-	    }
-            if (H5Sclose(temp_dspace) < 0){
-		throw InternalErr(__FILE__, __LINE__,
-                                  "Unable to terminate the access to dataspace.");
-	    }
-            if (H5Tclose(temp_dtype) < 0){
-		throw InternalErr(__FILE__, __LINE__,
-                                  "Unable to release the datatype.");
+	hvl_t *refbuf = 0;
+	hid_t *dimid = 0;
+	try {
+	    hobj_ref_t *refbuf = new hobj_ref_t[(int) temp_nelm];
+	    if (H5Aread(attr_id, temp_dtype, refbuf) < 0) {
+		delete[] refbuf; refbuf = 0;
+		throw InternalErr(__FILE__, __LINE__, "Cannot read object reference attributes");
 	    }
 
- 
-            // Save the dimensional scale dataset IDs to dimids and pass to
-            // process_matching_scale function.
-            if(flag) {
+	    hid_t *dimid = new hid_t[(int) temp_nelm];
 
-              for(int k =0; k <(int) temp_nelm;k++) {
-                  dimids[k] = dimid[k];
-              }
-           }
+	    // Check size of each dimension.
+	    for (int j = 0; j < (int) temp_nelm; j++) {
+		dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, &refbuf[j]);
+		DBG(cerr << "dimid[" << j << "]=" << dimid[j] << endl);
 
-           delete[] refbuf; refbuf = 0 ;
-            delete[] dimid; dimid = 0 ;
+		if (dimid[j] < 0) {
+		    delete[] dimid; dimid = 0;
+		    delete[] refbuf; refbuf = 0;
+		    return false;
+		}
+		else {
+		    hid_t index_dspace = H5Dget_space(dimid[j]);
+		    hsize_t index_ndim = H5Sget_simple_extent_npoints(index_dspace);
 
-        }                           // try
-        catch (...) {
-            // memory allocation exceptions could have been thrown
-            // when creating these two ptrs, so check if exist
-            // before deleting.
-            if( refbuf ) delete[] refbuf;
-            if( dimid ) delete[] dimid;
+		    if (index_dspace < 0) {
+			throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed");
+		    }
+		    if (H5Sclose(index_dspace) < 0) {
+			throw InternalErr(__FILE__, __LINE__, "Cannot close HDF5 data space");
+		    }
+		    if (index_ndim == 0) {
+			throw InternalErr(__FILE__, __LINE__,
+				"Cannot determine the number of elements in the dataspace");
+		    }
 
-            throw;
-        }
-    }                               // if(flag)
+		    if ((int) index_ndim != sizes[j]) {
+			// The number of element of the dim. scale must be
+			// equal to the number of element of the same
+			// dimension of the dataset. Kent 2009/09/21
+			flag = false;
+		    }
+		}
+
+	    } // for (int j = 0; j < temp_nelm; j++)
+
+	    if (H5Aclose(attr_id) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+	    }
+	    if (H5Sclose(temp_dspace) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "Unable to terminate the access to dataspace.");
+	    }
+	    if (H5Tclose(temp_dtype) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+	    }
+
+	    // Save the dimensional scale dataset IDs to dimids and pass to
+	    // process_matching_scale function.
+	    if (flag) {
+
+		for (int k = 0; k < (int) temp_nelm; k++) {
+		    dimids[k] = dimid[k];
+		}
+	    }
+
+	    delete[] refbuf;
+	    refbuf = 0;
+	    delete[] dimid;
+	    dimid = 0;
+
+	} // try
+	catch (...) {
+	    // memory allocation exceptions could have been thrown
+	    // when creating these two ptrs, so check if exist
+	    // before deleting.
+	    if (refbuf)
+		delete[] refbuf;
+	    if (dimid)
+		delete[] dimid;
+
+	    throw;
+	}
+    } // if(flag)
 
     return flag;
 }

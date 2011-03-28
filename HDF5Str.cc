@@ -86,7 +86,7 @@ bool HDF5Str::read()
     if (get_dap_type(ty_id) == "Structure") {
         BaseType *q = get_parent();
 
-        char Msgi[max_str_len];
+        // char Msgi[max_str_len];     // Not used; jhrg 3/16/11
 
         int i = H5Tget_nmembers(ty_id);
         int j = 0;
@@ -155,9 +155,9 @@ bool HDF5Str::read()
 		// buf is deleted in the catch ... block below so
 		// shouldn't be deleted here. pwest Mar 18, 2009
 		//delete[] buf;
-		throw InternalErr(__FILE__, __LINE__,
-				  string("hdf5_dods server failed when getting int32 data for structure\n")
-				  + Msgi);
+		throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
+				  // string("hdf5_dods server failed when getting int32 data for structure\n")
+				  // + Msgi);
 	    }
 	    set_read_p(true);
 	    string str = buf[j].a;
