@@ -1192,8 +1192,11 @@ throw (Exception)
 	int32 status;
 
 	nattrs = VSfnattrs (vdata_id, _HDF_VDATA);
+//  This is just to check if the weird MacOS portability issue go away.KY 2011-3-31
+#if 0
 	if (nattrs == FAIL)
 		throw3 ("VSfnattrs failed ", "vdata id is ", vdata_id);
+#endif
 
 	if (nattrs > 0) {
 		for (int i = 0; i < nattrs; i++) {
