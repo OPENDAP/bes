@@ -1000,8 +1000,15 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 #endif
     }
 
+#ifdef CF    // Added. This fixes ticket 1724 where 36 of the 60 tests
+	     // all fail. Note that the CF, SHORT_PATH, etc.,
+	     // compile-time switches could all be replaced with
+	     // run-time switches. See the bug report for more info.
+	     // jhrg 4-5-2011 
     // change all sname to follow CF conventions. KY-2011-3-13
     sname = eos.get_valid_CF_name(sname);
+#endif
+
 #endif
     
 
