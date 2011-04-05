@@ -83,7 +83,6 @@ bool HDF5Int32::read()
         	throw InternalErr(__FILE__, __LINE__, "null pointer");
         HDF5Structure &p = dynamic_cast < HDF5Structure & >(*q);
 
-        // char Msgi[256];     // Not used; jhrg 3/16/11
 #ifdef DODS_DEBUG
         int i = H5Tget_nmembers(ty_id); 
 	if(i < 0){
@@ -99,12 +98,8 @@ bool HDF5Int32::read()
 	if(s1_tid < 0){
 	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 	}
-#if 0
-        s2_int32_t *buf = 0;
-	try {
-	    buf = new s2_int32_t[p.get_entire_array_size()];
-#endif
-	    vector<s2_int32_t> buf(p.get_entire_array_size());
+
+	vector<s2_int32_t> buf(p.get_entire_array_size());
         string myname = name();
         string parent_name;
 
@@ -148,37 +143,15 @@ bool HDF5Int32::read()
         }                       // while ()
 
 
-        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) <
-            0) {
-	    // buf is deleted in the catch ... block below and
-	    // should not be deleted here. pwest Mar 18, 2009
-	    //delete[] buf;
+        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) <  0) {
             throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
-                              // string
-                              // ()
-                              // + Msgi);
         }
 
         set_read_p(true);
         DBG(cerr << "index " << j << endl);
-#if 0
-        dods_int32 intg32 = (dods_int32) buf[j].a;
-        val2buf(&intg32);
-#endif
-	set_value(buf[j].a);
-#if 0
-	delete[] buf;
-	}
-	catch(...) {
-	    // memory allocaiton exception could have been thrown in
-	    // creating buf, so check if null before deleting.
-	    // pwest Mar 18, 2009
-	    if( buf ) delete[] buf;
-	    throw;
-	}
-#endif
-    }                           // In case of structure
 
+	set_value(buf[j].a);
+    }                           // In case of structure
 
     return false;
 }

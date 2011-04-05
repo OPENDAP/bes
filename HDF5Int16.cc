@@ -56,130 +56,109 @@ BaseType *HDF5Int16::ptr_duplicate()
 bool HDF5Int16::read()
 {
     if (read_p())
-        return false;
+	return false;
     if (get_dap_type(ty_id) == "Int8") {
-        dods_int16 buf;
+	dods_int16 buf;
 	dods_byte buf2;
 	get_data(dset_id, (void *) &buf2);
-	buf = (signed char)buf2;
-        set_read_p(true);
+	buf = (signed char) buf2;
+	set_read_p(true);
 	set_value(buf);
     }
-    
+
     if (get_dap_type(ty_id) == "Int16") {
-        dods_int16 buf;
+	dods_int16 buf;
 	get_data(dset_id, (void *) &buf);
 
-        set_read_p(true);
+	set_read_p(true);
 	set_value(buf);
     }
 
-    
     if (get_dap_type(ty_id) == "Structure") {
 
-        BaseType *q = get_parent();
-        if (!q)
-        	throw InternalErr(__FILE__, __LINE__, "null pointer");
-        HDF5Structure &p = dynamic_cast < HDF5Structure & >(*q);
+	BaseType *q = get_parent();
+	if (!q)
+	    throw InternalErr(__FILE__, __LINE__, "null pointer");
+	HDF5Structure &p = dynamic_cast<HDF5Structure &> (*q);
 
-        // char Msgi[256];     // Not used; jhrg 3/16/11
 #ifdef DODS_DEBUG
-        int i = H5Tget_nmembers(ty_id);
-	if(i < 0){
-	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	int i = H5Tget_nmembers(ty_id);
+	if(i < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
 	}
 #endif
-        int j = 0;
-        int k = 0;
+	int j = 0;
+	int k = 0;
 
-        hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int16_t));
-        hid_t stemp_tid;
+	hid_t s1_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int16_t));
+	hid_t stemp_tid;
 
-	if(s1_tid < 0){
-	   throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype ");
+	if (s1_tid < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype ");
 	}
-#if 0
-        s2_int16_t *buf = 0;
-	try {
-	    buf = new s2_int16_t[p.get_entire_array_size()];
-#endif
-	    vector<s2_int16_t> buf(p.get_entire_array_size());
-        string myname = name();
-        string parent_name;
 
+	vector<s2_int16_t> buf(p.get_entire_array_size());
+	string myname = name();
+	string parent_name;
 
-        DBG(cerr
-            << "=read() ty_id=" << ty_id
-            << " name=" << myname << " no of members =" << i << endl);
-        while (q != NULL) {
+	DBG(cerr
+		<< "=read() ty_id=" << ty_id
+		<< " name=" << myname << " no of members =" << i << endl);
+	while (q != NULL) {
 
-            if (q->is_constructor_type()) {     // Grid, structure or sequence
-                if (k == 0) {
-                    // Bottom level structure
-                    DBG(cerr << "=read() my_name " << myname.
-                        c_str() << endl);
-                    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_int16_t, a),
-                              H5T_NATIVE_INT16) < 0){
+	    if (q->is_constructor_type()) { // Grid, structure or sequence
+		if (k == 0) {
+		    // Bottom level structure
+		    DBG(cerr << "=read() my_name " << myname.
+			    c_str() << endl);
+		    if (H5Tinsert(s1_tid, myname.c_str(), HOFFSET(s2_int16_t, a), H5T_NATIVE_INT16) < 0) {
 			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
 		    }
-                } else {
-                    DBG(cerr << k << "=read() parent_name=" << parent_name
-                        << endl);
+		}
+		else {
+		    DBG(cerr << k << "=read() parent_name=" << parent_name
+			    << endl);
 
-                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int16_t));
-		    if(stemp_tid < 0){
+		    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_int16_t));
+		    if (stemp_tid < 0) {
 			throw InternalErr(__FILE__, __LINE__, "cannot create a new datatype");
 		    }
-                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid) < 0){
+		    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s1_tid) < 0) {
 			throw InternalErr(__FILE__, __LINE__, "Unable to add datatype.");
 		    }
-                    s1_tid = stemp_tid;
+		    s1_tid = stemp_tid;
 
-                }
-                // Remember the last parent name.
-                parent_name = q->name();
-                p = dynamic_cast < HDF5Structure & >(*q);
-                // Remember the index of array from the last parent.
-                j = p.get_array_index();
-                q = q->get_parent();
+		}
+		// Remember the last parent name.
+		parent_name = q->name();
+		p = dynamic_cast<HDF5Structure &> (*q);
+		// Remember the index of array from the last parent.
+		j = p.get_array_index();
+		q = q->get_parent();
 
-            } else {
-                q = NULL;
-            }
-            k++;
-        }                       // while ()
+	    }
+	    else {
+		q = NULL;
+	    }
+	    k++;
+	} // while ()
 
 
-        if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) <
-            0) {
+	if (H5Dread(dset_id, s1_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
 	    // buf is deleted in the catch ... block below and
 	    // should not be deleted here. pwest Mar 18, 2009
 	    //delete[] buf;
-            throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
-                              // string
-                              // ()
-                              // + Msgi);
-        }
+	    throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
+	    // string
+	    // ()
+	    // + Msgi);
+	}
 
-        set_read_p(true);
-        DBG(cerr << "index " << j << endl);
-#if 0
-        dods_int16 intg16 = buf[j].a;
-        val2buf(&intg16);
-#endif
+	set_read_p(true);
+	DBG(cerr << "index " << j << endl);
+
 	set_value(buf[j].a);
-#if 0
-	delete[] buf;
-	}
-	catch(...) {
-	    // memory allocation exception could have been thrown in
-	    // creating this ptr so check if ptr exists before
-	    // deleting. pwest Mar 18, 2009
-	    if( buf ) delete[] buf;
-	    throw;
-	}
-#endif
-    }                           // In case of structure
+    } // In case of structure
 
     return false;
 }

@@ -74,11 +74,7 @@
 #include <DDS.h>
 #include <parser.h>
 #include <ConstraintEvaluator.h>
-#if 0
-#include <DODSFilter.h>
-#endif
 #include <InternalErr.h>
-// #include <mime_util.h>
 #include <hdf5.h>
 
 /// \brief A structure for DDS generation

@@ -185,8 +185,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    }
 
 	    string oid = get_hardlink(dset, full_path_name);
-	    // Break the cyclic loop created by hard links.
-	    // Should this be wrapped in #ifndef CF #endif? jhrg 4/17/08
+
+	    // Break the cyclic loop created by hard links
 	    read_objects(das, full_path_name, dset, num_attr);
 	    if (!oid.empty()) {
 		// Add attribute table with HARDLINK
@@ -589,7 +589,7 @@ bool write_metadata(DAS & das, const string & varname)
                 return true;
             }
         }
-#endif                          // #ifndef CF    	
+#endif // #ifndef CF
     }
     return false;
 }
@@ -607,16 +607,17 @@ bool write_metadata(DAS & das, const string & varname)
 ///                    DSattr_t * attr_inst_ptr,int *ignoreptr, char *error)
 /// \see get_dap_type()
 ///////////////////////////////////////////////////////////////////////////////
-void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
+void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
+{
 
     // Obtain variable names. Put this variable name into das table
     // regardless of the existing attributes in this object.
     DBG(cerr << ">read_objects():"
-        << "varname=" << varname << " id=" << oid << endl);
+	    << "varname=" << varname << " id=" << oid << endl);
 #ifdef NASA_EOS_META
     // Generate the structured attribute using the metadata parser.
-    if(write_metadata(das, varname))
-        return;
+    if (write_metadata(das, varname))
+	return;
 #endif
     // Prepare a variable for full path attribute.
     string hdf5_path = HDF5_OBJ_FULLPATH;
@@ -624,92 +625,92 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     // Rewrote to use C++ strings 3/2008 jhrg
     string newname;
 
-    if(!has_hdf4_dimgroup){
-        newname = varname;
+    if (!has_hdf4_dimgroup) {
+	newname = varname;
     }
-    else{
-        // This is necessry for GrADS which doesn't like '/' character
-        // in variable name.
-        newname = get_short_name_dimscale(varname); 
+    else {
+	// This is necessry for GrADS which doesn't like '/' character
+	// in variable name.
+	newname = get_short_name_dimscale(varname);
     }
 
 #ifdef CF
-//    if(eos.is_valid() && eos.get_swath_variable(varname)) {
-      if(eos.is_valid()) {
-        // Rename the variable if necessary.
-        newname = eos.get_CF_name((char*) varname.c_str());
+    //    if(eos.is_valid() && eos.get_swath_variable(varname)) {
+    if(eos.is_valid()) {
+	// Rename the variable if necessary.
+	newname = eos.get_CF_name((char*) varname.c_str());
 #ifdef SHORT_PATH
-        // If it is not renamed, shorten the swath variable name
-        // if --enable-short-path configuration option is enabled.
-        if(newname == varname){
-            newname = eos.get_short_name(varname);
-        }
+	// If it is not renamed, shorten the swath variable name
+	// if --enable-short-path configuration option is enabled.
+	if(newname == varname) {
+	    newname = eos.get_short_name(varname);
+	}
 #endif        
-        newname = eos.get_valid_CF_name(newname);
+	newname = eos.get_valid_CF_name(newname);
 
-        if(newname == "lon"){
-            if(eos.sw_lon == 0){
-                eos.sw_lon = 1;
-            }
-            else{
-                return; // Make it unique.
-            }
-        }
+	if(newname == "lon") {
+	    if(eos.sw_lon == 0) {
+		eos.sw_lon = 1;
+	    }
+	    else {
+		return; // Make it unique.
+	    }
+	}
 
-        if(newname == "lat"){
-            if(eos.sw_lat == 0){
-                eos.sw_lat = 1;
-            }
-            else{
-                return; // Make it unique.
-            }
-        }
+	if(newname == "lat") {
+	    if(eos.sw_lat == 0) {
+		eos.sw_lat = 1;
+	    }
+	    else {
+		return; // Make it unique.
+	    }
+	}
 
-        if(newname == "lev"){
-            if(eos.sw_lev == 0){
-                eos.sw_lev = 1;
-            }
-            else{
-                return; // Make it unique.
-            }
-        }
-        if(newname == "time"){
-            if(eos.sw_time == 0){
-                eos.sw_time = 1;
-            }
-            else{
-                return; // Make it unique.
-            }
-        }
+	if(newname == "lev") {
+	    if(eos.sw_lev == 0) {
+		eos.sw_lev = 1;
+	    }
+	    else {
+		return; // Make it unique.
+	    }
+	}
+	if(newname == "time") {
+	    if(eos.sw_time == 0) {
+		eos.sw_time = 1;
+	    }
+	    else {
+		return; // Make it unique.
+	    }
+	}
 
-        DBG(cerr << "newname: " << newname << endl);
+	DBG(cerr << "newname: " << newname << endl);
     }
-// The following code is not necessary. KY 2011-3-13
-/*
+    // The following code is not necessary. KY 2011-3-13
+#if 0
 #ifdef SHORT_PATH    
     if (eos.is_valid() && eos.get_grid_variable(varname)) {
-        newname = eos.get_short_name(varname);
+	newname = eos.get_short_name(varname);
     }
 #endif    
-*/
+#endif
+
 #endif  
-    
-    if(newname.empty()){	  
-        return; // Ignore attribute generation for /HDF4_DIMGROUP/.
+
+    if (newname.empty()) {
+	return; // Ignore attribute generation for /HDF4_DIMGROUP/.
     }
-    
+
     DBG(cerr << "=read_objects(): new variable name=" << newname << endl);
-    
+
     AttrTable *attr_table_ptr = das.get_table(newname);
     if (!attr_table_ptr) {
-        DBG(cerr << "=read_objects(): adding a table with name " << newname
-            << endl);
-        attr_table_ptr = das.add_table(newname, new AttrTable);
+	DBG(cerr << "=read_objects(): adding a table with name " << newname
+		<< endl);
+	attr_table_ptr = das.add_table(newname, new AttrTable);
     }
 #ifndef CF
     attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, varname);
 #endif // CF
-
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into DAS table.
     char *print_rep = NULL;
@@ -726,15 +727,14 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    // Since HDF5 attribute may be in string datatype, it must be dealt
 	    // properly. Get data type.
 	    hid_t ty_id = attr_inst.type;
-            string dap_type = get_dap_type(ty_id);
-            string attr_name = GET_NAME(attr_inst.name);
+	    string dap_type = get_dap_type(ty_id);
+	    string attr_name = GET_NAME(attr_inst.name);
 
-            // Skip unmappable types early. Otherwise, delete[] value will 
-            // cause an error on 64-bit machines.
-            if(!is_mappable(attr_id, attr_name, dap_type)){
-                continue;
-            }
-
+	    // Skip unmappable types early. Otherwise, delete[] value will
+	    // cause an error on 64-bit machines.
+	    if (!is_mappable(attr_id, attr_name, dap_type)) {
+		continue;
+	    }
 
 	    char *value = new char[attr_inst.need + sizeof(char)];
 	    memset(value, 0, attr_inst.need + sizeof(char));
@@ -743,111 +743,106 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 	    // Read HDF5 attribute data.
 
 	    if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
-                // value is deleted in the catch block below so
-                // shouldn't be deleted here. pwest Mar 18, 2009
-                //delete[] value;
-                throw InternalErr(__FILE__, __LINE__,
-                                  "unable to read HDF5 attribute data");
+		// value is deleted in the catch block below so
+		// shouldn't be deleted here. pwest Mar 18, 2009
+		//delete[] value;
+		throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
 	    }
 	    DBG(cerr << "H5Aread(" << attr_inst.name << ")=" << value << endl);
 	    // Add all attributes in the array.
-            //  Create the "name" attribute if we can find long_name.
-            //  Make it compatible with HDF4 server.
-            if (strcmp(attr_inst.name, "long_name") == 0) {
-                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, value);
-                    if(print_rep != NULL){
-                        attr_table_ptr->append_attr("name", 
-                                                    get_dap_type(ty_id),
-                                                    print_rep);
-                        delete[]print_rep; print_rep = NULL;
-                    }
-                }
-            }
+	    //  Create the "name" attribute if we can find long_name.
+	    //  Make it compatible with HDF4 server.
+	    if (strcmp(attr_inst.name, "long_name") == 0) {
+		for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
+		    print_rep = print_attr(ty_id, loc, value);
+		    if (print_rep != NULL) {
+			attr_table_ptr->append_attr("name", get_dap_type(ty_id), print_rep);
+			delete[] print_rep;
+			print_rep = NULL;
+		    }
+		}
+	    }
 
-            // For scalar data, just read data once.
-            // Change it into DODS string.
-            if (attr_inst.ndims == 0) {
-                for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, value);
-                    if(print_rep != NULL){
-                            // GET_NAME is defined at the top of this function.
-                            attr_table_ptr->append_attr(attr_name,
-                                                        dap_type, print_rep);
-                    }
-                    delete[]print_rep; print_rep = NULL;
-                }
+	    // For scalar data, just read data once.
+	    // Change it into DODS string.
+	    if (attr_inst.ndims == 0) {
+		for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
+		    print_rep = print_attr(ty_id, loc, value);
+		    if (print_rep != NULL) {
+			// GET_NAME is defined at the top of this function.
+			attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
+		    }
+		    delete[] print_rep;
+		    print_rep = NULL;
+		}
 
-            }
-            else {
-                // 1. If the hdf5 data type is HDF5 string and ndims is not 0;
-                // we will handle this differently.
-                DBG(cerr << "=read_objects(): ndims=" << (int) attr_inst.
-                    ndims << endl);
+	    }
+	    else {
+		// 1. If the hdf5 data type is HDF5 string and ndims is not 0;
+		// we will handle this differently.
+		DBG(cerr << "=read_objects(): ndims=" << (int) attr_inst.
+			ndims << endl);
 
-                int elesize = (int) H5Tget_size(attr_inst.type);
-                if (elesize == 0) {
-                    DBG(cerr << "=read_objects(): elesize=0" << endl);
+		int elesize = (int) H5Tget_size(attr_inst.type);
+		if (elesize == 0) {
+		    DBG(cerr << "=read_objects(): elesize=0" << endl);
 		    delete[] value;
-                    if(H5Aclose(attr_id) < 0){
-                        throw InternalErr(__FILE__, __LINE__,
-                                          "unable to close attibute id");
-                    }
-                    
-                    throw InternalErr(__FILE__, __LINE__,
-				      "unable to get attibute size");
-                }
-		char *tempvalue = value;
-                for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
-                    for (int sizeindex = 0;
-                         sizeindex < (int) attr_inst.size[dim];
-                         sizeindex++) {
+		    if (H5Aclose(attr_id) < 0) {
+			throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
+		    }
 
-                        print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                        if(print_rep != NULL){
-                            attr_table_ptr->append_attr(attr_name,
-                                                        dap_type, 
-                                                        print_rep);
-                            tempvalue = tempvalue + elesize;
-                        
-                            DBG(cerr
-                                << "tempvalue=" << tempvalue
-                                << "elesize=" << elesize
-                                << endl);
-                        
-                            delete[]print_rep; print_rep = NULL;
-                        }
-                        else{
-                            break;
-                        }
-                    }           // for (int sizeindex = 0; ...
-                }               // for (int dim = 0; ...
-            }			// if attr_inst.ndims != 0
-	    delete[] value; value = NULL;
-            
-            if(H5Aclose(attr_id) < 0){
-                    throw InternalErr(__FILE__, __LINE__,
-				      "unable to close attibute id");
-                
-            }
-	}		// for (int j = 0; j < num_attr; j++)
-    }			// try - protects print_rep and value
-    catch(...) {
-	if( print_rep ) delete[] print_rep;
+		    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+		}
+		char *tempvalue = value;
+		for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
+		    for (int sizeindex = 0; sizeindex < (int) attr_inst.size[dim]; sizeindex++) {
+
+			print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
+			if (print_rep != NULL) {
+			    attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
+			    tempvalue = tempvalue + elesize;
+
+			    DBG(cerr
+				    << "tempvalue=" << tempvalue
+				    << "elesize=" << elesize
+				    << endl);
+
+			    delete[] print_rep;
+			    print_rep = NULL;
+			}
+			else {
+			    break;
+			}
+		    } // for (int sizeindex = 0; ...
+		} // for (int dim = 0; ...
+	    } // if attr_inst.ndims != 0
+	    delete[] value;
+	    value = NULL;
+
+	    if (H5Aclose(attr_id) < 0) {
+		throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
+
+	    }
+	} // for (int j = 0; j < num_attr; j++)
+    } // try - protects print_rep and value
+    catch (...) {
+	if (print_rep)
+	    delete[] print_rep;
 	throw;
     }
+
 #ifdef CF
-    if(eos.get_swath_variable(varname) && 
-       eos.get_swath_coordinate_dimension_match(varname)){
-        attr_table_ptr->append_attr("coordinates", STRING, 
-                        eos.get_swath_coordinate_attribute());
+    if(eos.get_swath_variable(varname) &&
+	    eos.get_swath_coordinate_dimension_match(varname)) {
+	attr_table_ptr->append_attr("coordinates", STRING,
+		eos.get_swath_coordinate_attribute());
     }
 
-    if(newname == "lon" || newname == "lat"){
-        write_swath_coordinate_unit_attribute(attr_table_ptr, newname);
+    if(newname == "lon" || newname == "lat") {
+	write_swath_coordinate_unit_attribute(attr_table_ptr, newname);
     }
-
 #endif
+
     DBG(cerr << "<read_objects()" << endl);
 }
 

@@ -205,8 +205,6 @@ bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
 
 void HE5Parser::reset()
 {
-    // int j; unused jhrg 3/16/11
-
     HE5CF::set();
     
     grid_structure_found = false;

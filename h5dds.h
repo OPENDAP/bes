@@ -50,9 +50,7 @@
 #include <H5public.h>
 
 #include <DDS.h>
-#if 0
-#include <DODSFilter.h>
-#endif
+
 using namespace libdap;
 
 bool depth_first(hid_t, char *, DDS &, const char *);

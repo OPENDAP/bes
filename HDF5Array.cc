@@ -277,7 +277,6 @@ bool HDF5Array::m_array_in_structure()
 
     if (H5Tclose(s1_tid) < 0)
 	throw InternalErr(__FILE__, __LINE__, "H5Tclose failed.");
-    ;
 
     // Originally, this code used entire_array_size, but it looks like
     // array_size will do. jhrg 4/15/08
@@ -509,8 +508,6 @@ bool HDF5Array::m_array_of_reference()
 
 void HDF5Array::m_intern_plain_array_data(char *convbuf)
 {
-    // char Msga[255]; jhrg 3/16/11
-
     if (check_h5str(d_ty_id)) {
 	vector<string> v_str(d_num_elm);
 	size_t elesize = H5Tget_size(d_ty_id);
@@ -583,7 +580,7 @@ bool HDF5Array::read()
     if (H5Tget_class(d_ty_id) < 0) {
 	throw InternalErr(__FILE__, __LINE__, "H5Tget_class() failed.");
     }
-    // char Msga[255]; unused jhrg 3/16/11
+
     if (nelms == d_num_elm) {
 	vector<char> convbuf(d_memneed);
 	get_data(d_dset_id, (void *) &convbuf[0]);
@@ -605,7 +602,6 @@ bool HDF5Array::read()
 	    //delete[] convbuf2;
 	}
 	m_intern_plain_array_data(&convbuf[0]);
-	//delete[] convbuf;
     } // if (nelms == d_num_elm)
     else {
 	size_t data_size = nelms * H5Tget_size(d_ty_id);

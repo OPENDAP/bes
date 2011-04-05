@@ -90,24 +90,6 @@ void HDF5ArrayEOS::set_dim_id(int dim) {
     _dim_id = dim;
 }
 
-// Not used; jhrg 3/16/11
-#if 0
-void HDF5ArrayEOS::set_memneed(size_t need)
-{
-    d_memneed = need;
-}
-
-void HDF5ArrayEOS::set_numdim(int ndims)
-{
-    d_num_dim = ndims;
-}
-
-void HDF5ArrayEOS::set_numelm(int nelms)
-{
-    d_num_elm = nelms;
-}
-#endif
-
 dods_float32 *HDF5ArrayEOS::get_dimension_data(dods_float32 * buf,
                                                int start, int stride,
                                                int stop, int count)

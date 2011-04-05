@@ -424,7 +424,6 @@ void get_data(hid_t dset, void *buf)
         if (H5Dclose(dset) < 0){
 	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dataset.");
 	}
-
     }
 
     DBG(cerr << "<get_data()" << endl);

@@ -53,16 +53,7 @@ using namespace libdap;
 class HDF5ArrayEOS:public HDF5Array {
 
   private:
-    // Not used; jhrg 3/16/11
-#if 0
-    int d_num_dim;
-    int d_num_elm;
-#endif
     int _dim_id;
-#if 0
-    hid_t d_ty_id;
-    size_t d_memneed;
-#endif
 
     dods_float32 *get_dimension_data(dods_float32 * buf, int start,
                                      int stride, int stop, int count);

@@ -147,7 +147,6 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
                               "DDS check_semantics() failed. This can happen when multiple geo-location (lat/lon) variables are defined under different groups. Multiple lon/lat definitions in data violate CF convention.");
         }
 #endif 
-
         Ancillary::read_ancillary_dds( *dds, filename ) ;
 
         DAS *das = new DAS ;

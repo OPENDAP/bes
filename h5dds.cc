@@ -564,93 +564,73 @@ static Structure *Get_structure(const string &varname,
 /// \param dimids dimension ids
 ///
 ///////////////////////////////////////////////////////////////////////////////
-static void process_grid_matching_dimscale(Array* array, Grid *gr,
-					   hid_t *dimids)
-{ 
-        // char *dimname_buf;
-        // ssize_t bufsize;
-        // hid_t temp_dtype;
-        // hid_t temp_dspace;
-        // hid_t temp_nelm; Not used. jhrg 1/19/2010
+static void process_grid_matching_dimscale(Array* array, Grid *gr, hid_t *dimids)
+{
+    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
 
-        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-            
-            ssize_t bufsize = H5Iget_name(dimids[dim_index],NULL,0);
-            if(bufsize<=0){
-              throw 
-                 InternalErr(__FILE__,__LINE__,
-			     "Fail to get the dimension name size");
-           }
-#if 0
-            try {
-#endif
-        	vector<char> dimname_buf(bufsize+1);
-#if 0
-            }
-            catch(...) {
-               if(dimname_buf) {
-                  delete [] dimname_buf;
-                  dimname_buf = NULL;
-               }
-               throw InternalErr(__FILE__,__LINE__, "Fail to allocate memory");
-            }
-#endif
-            if((H5Iget_name(dimids[dim_index], (char *)&dimname_buf[0], (size_t)(bufsize+1))) < 0) {
-                throw
-                    InternalErr(__FILE__, __LINE__,
-                            "Fail to get the dimension name");
-            }
-            string each_dim_name(&dimname_buf[0]);
-            each_dim_name = get_short_name(each_dim_name);
-            // delete [] dimname_buf; dimname_buf = NULL;
+	ssize_t bufsize = H5Iget_name(dimids[dim_index], NULL, 0);
+	if (bufsize <= 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Fail to get the dimension name size");
+	}
 
-            hid_t temp_dspace = H5Dget_space(dimids[dim_index]);
- 	    if (temp_dspace < 0){
-                throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed.");
-            }
-            hsize_t temp_nelm_dim = H5Sget_simple_extent_npoints(temp_dspace);
-	    if (temp_nelm_dim == 0){
-		throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements in the dataspace");
-	    }
-            DBG(cerr << "nelem = " << temp_nelm_dim << endl);
-            hid_t temp_dtype = H5Dget_type(dimids[dim_index]);
-	    if (temp_dtype < 0){
-                throw InternalErr(__FILE__, __LINE__, "H5Dget_type() failed.");
-            }
-            hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
-	    if (memtype < 0) {
-		throw InternalErr(__FILE__, __LINE__, "cannot return the native datatype");
-	    }
-            size_t temp_tsize = H5Tget_size(memtype);
-	    if (temp_tsize == 0){
-		throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
-	    }
+	vector<char> dimname_buf(bufsize + 1);
 
-            BaseType *bt = 0;
-            HDF5Array *map = 0;
-            try {
-                bt = Get_bt(each_dim_name, gr->dataset(), memtype);
-                map = new HDF5Array(each_dim_name, gr->dataset(), bt);
-                delete bt; bt = 0;
-                map->set_did(dimids[dim_index]);
-                map->set_tid(memtype);
-                map->set_memneed(temp_tsize * temp_nelm_dim);
-                map->set_numdim(1);
-                // temp_nelm is never set in this code. jhrg 1/19/2010
-                //map->set_numelm(temp_nelm);
-                map->set_numelm(temp_nelm_dim);
-                map->append_dim(temp_nelm_dim, each_dim_name);
-                array->append_dim(temp_nelm_dim, each_dim_name);
-                gr->add_var(map, maps);
-                delete map; map = 0;
-            }
-            catch(...) {
-                if( bt ) delete bt;
-                if( map ) delete map;
-                throw;
-            }
-        
-        } // for ()
+	if ((H5Iget_name(dimids[dim_index], (char *) &dimname_buf[0], (size_t) (bufsize + 1))) < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "Fail to get the dimension name");
+	}
+	string each_dim_name(&dimname_buf[0]);
+	each_dim_name = get_short_name(each_dim_name);
+	// delete [] dimname_buf; dimname_buf = NULL;
+
+	hid_t temp_dspace = H5Dget_space(dimids[dim_index]);
+	if (temp_dspace < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed.");
+	}
+	hsize_t temp_nelm_dim = H5Sget_simple_extent_npoints(temp_dspace);
+	if (temp_nelm_dim == 0) {
+	    throw InternalErr(__FILE__, __LINE__, "cannot determine the number of elements in the dataspace");
+	}
+	DBG(cerr << "nelem = " << temp_nelm_dim << endl);
+	hid_t temp_dtype = H5Dget_type(dimids[dim_index]);
+	if (temp_dtype < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "H5Dget_type() failed.");
+	}
+	hid_t memtype = H5Tget_native_type(temp_dtype, H5T_DIR_ASCEND);
+	if (memtype < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "cannot return the native datatype");
+	}
+	size_t temp_tsize = H5Tget_size(memtype);
+	if (temp_tsize == 0) {
+	    throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+	}
+
+	BaseType *bt = 0;
+	HDF5Array *map = 0;
+	try {
+	    bt = Get_bt(each_dim_name, gr->dataset(), memtype);
+	    map = new HDF5Array(each_dim_name, gr->dataset(), bt);
+	    delete bt;
+	    bt = 0;
+	    map->set_did(dimids[dim_index]);
+	    map->set_tid(memtype);
+	    map->set_memneed(temp_tsize * temp_nelm_dim);
+	    map->set_numdim(1);
+	    map->set_numelm(temp_nelm_dim);
+	    map->append_dim(temp_nelm_dim, each_dim_name);
+	    array->append_dim(temp_nelm_dim, each_dim_name);
+	    gr->add_var(map, maps);
+	    delete map;
+	    map = 0;
+	}
+	catch (...) {
+	    if (bt)
+		delete bt;
+	    if (map)
+		delete map;
+	    throw;
+	}
+
+    } // for ()
 
 }
 #ifdef CF

@@ -60,107 +60,87 @@ bool HDF5Float32::read()
     DBG(cerr << ">HDFFloat32::read() ty_id=" << ty_id << endl);
     DBG(cerr << ">HDFFloat32::read() dset_id=" << dset_id << endl);
     if (read_p())
-        return false;
+	return false;
 
     if (get_dap_type(ty_id) == "Float32") {
-        dods_float32 buf;
+	dods_float32 buf;
 	get_data(dset_id, (void *) &buf);
-        set_read_p(true);
+	set_read_p(true);
 	set_value(buf);
     }
 
     if (get_dap_type(ty_id) == "Structure") {
 
-        BaseType *q = get_parent();
-        if (!q)
-        	throw InternalErr(__FILE__, __LINE__, "null pointer");
-        HDF5Structure &p = dynamic_cast < HDF5Structure &>(*q);
-        // char Msgi[256];     // Not used; jhrg 3/16/11
-#if 0
-        dods_float32 flt32;
-#endif
+	BaseType *q = get_parent();
+	if (!q)
+	    throw InternalErr(__FILE__, __LINE__, "null pointer");
+
+	HDF5Structure &p = dynamic_cast<HDF5Structure &> (*q);
+
 #ifdef DODS_DEBUG
-        int i = H5Tget_nmembers(ty_id);
-	if (i < 0){
-	   throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
+	int i = H5Tget_nmembers(ty_id);
+	if (i < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "H5Tget_nmembers() failed.");
 	}
 #endif
-        int j = 0;
-        int k = 0;
-#if 0
-        s2_float32_t *buf = 0;
-	try {
-#endif
-	    vector<s2_float32_t> buf(p.get_entire_array_size());
-        string myname = name();
-        string parent_name;
+	int j = 0;
+	int k = 0;
 
-        hid_t s2_float32_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
-        hid_t stemp_tid;
+	vector<s2_float32_t> buf(p.get_entire_array_size());
+	string myname = name();
+	string parent_name;
 
-	if (s2_float32_tid < 0){
-	   throw InternalErr(__FILE__, __LINE__, "H5Tcreate() failed.");
+	hid_t s2_float32_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
+	hid_t stemp_tid;
+
+	if (s2_float32_tid < 0) {
+	    throw InternalErr(__FILE__, __LINE__, "H5Tcreate() failed.");
 	}
 
-        DBG(cerr << "=HDF5Float32::read() ty_id=" << ty_id << " name=" <<
-            myname << endl);
-        while (q != NULL) {
-            if (q->is_constructor_type()) {     // Grid, structure or sequence
-                if (k == 0) {
-                    // Bottom level structure
-                    if (H5Tinsert(s2_float32_tid, myname.c_str(), HOFFSET(s2_float32_t, a),
-                              H5T_NATIVE_FLOAT) < 0){
+	DBG(cerr << "=HDF5Float32::read() ty_id=" << ty_id << " name=" <<
+		myname << endl);
+	while (q != NULL) {
+	    if (q->is_constructor_type()) { // Grid, structure or sequence
+		if (k == 0) {
+		    // Bottom level structure
+		    if (H5Tinsert(s2_float32_tid, myname.c_str(), HOFFSET(s2_float32_t, a), H5T_NATIVE_FLOAT) < 0) {
 			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
 		    }
-                } else {
-                    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
-		    if (stemp_tid < 0){
+		}
+		else {
+		    stemp_tid = H5Tcreate(H5T_COMPOUND, sizeof(s2_float32_t));
+		    if (stemp_tid < 0) {
 			throw InternalErr(__FILE__, __LINE__, "Unable to create a new datatype");
 		    }
-                    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_float32_tid) < 0){
+		    if (H5Tinsert(stemp_tid, parent_name.c_str(), 0, s2_float32_tid) < 0) {
 			throw InternalErr(__FILE__, __LINE__, "Unable to add to datatype.");
 		    }
-                    s2_float32_tid = stemp_tid;
-                }
-                parent_name = q->name();
-                p = dynamic_cast < HDF5Structure & >(*q);
-                // Remember the index of array from the last parent.
-                j = p.get_array_index();
-                q = q->get_parent();
-            } else {
-                q = NULL;
-            }
-            k++;
-        }
+		    s2_float32_tid = stemp_tid;
+		}
+		parent_name = q->name();
+		p = dynamic_cast<HDF5Structure &> (*q);
+		// Remember the index of array from the last parent.
+		j = p.get_array_index();
+		q = q->get_parent();
+	    }
+	    else {
+		q = NULL;
+	    }
+	    k++;
+	}
 
-        if (H5Dread(dset_id, s2_float32_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0])
-            < 0) {
-		// this gets deleted in the catch ... block so don't
-		// need to do it here. pwest Mar 18, 2009
-            	//delete[] buf;
-            throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
-                              //string
-                              //()
-                              //+ Msgi);
-        }
+	if (H5Dread(dset_id, s2_float32_tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, &buf[0]) < 0) {
+	    // this gets deleted in the catch ... block so don't
+	    // need to do it here. pwest Mar 18, 2009
+	    //delete[] buf;
+	    throw InternalErr(__FILE__, __LINE__, "hdf5_dods server failed when getting int32 data for structure");
+	    //string
+	    //()
+	    //+ Msgi);
+	}
 
-        set_read_p(true);
-#if 0
-        flt32 = buf[j].a;
-        val2buf(&flt32);
-#endif
+	set_read_p(true);
 	set_value(buf[j].a);
-#if 0
-	delete[] buf;
-	}
-	catch(...) {
-	    // memory allocation exception could have been thrown
-	    // when creating buf, so check if exists before
-	    // deleting. pwest Mar 18, 2009
-	    if( buf ) delete[] buf;
-	    throw;
-	}
-#endif	
     }
 
     return false;
