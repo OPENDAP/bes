@@ -37,12 +37,11 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
   AC_MSG_NOTICE(HDF4_PATH_LIBDIR: $HDF4_PATH_LIBDIR)
   AC_MSG_NOTICE(HDF4_PATH_INC:    $HDF4_PATH_INC)
 
-  AC_MSG_NOTICE(CC:               $CC)
-  
+  dnl AC_MSG_NOTICE(CC:               $CC)
   
   H4_CC=$HDF4_PATH/bin/h4cc
-  if test -x $H4CC ; then
-      AC_MSG_NOTICE(Reseting CC...)
+  if test -n "$H4_CC" -a -x $H4_CC ; then
+      AC_MSG_NOTICE(Switching to the hdf4 CC...)
       CC=$H4_CC 
       AC_MSG_NOTICE(CC: $CC)
   fi
@@ -61,15 +60,15 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
     ],
     [
       AC_MSG_NOTICE(HDF4_PATH_LIBDIR is NOT set)
-      for ac_hdf4_libdir in "" /usr/local/hdf4.2r1/lib64 /opt/hdf4.2r1/lib64 \ 
+      for ac_hdf4_libdir in /usr/local/hdf4.2r1/lib64 /opt/hdf4.2r1/lib64 \ 
        /usr/hdf4.2r1/lib64 /usr/local/lib64/hdf4.2r1 /opt/lib64/hdf4.2r1 \
-       /usr/lib64/hdf4.2r1 /usr/local/hdf/lib64/ /opt/hdf/lib64 /usr/hdf/lib64 \
-       /usr/local/lib64/hdf /opt/lib64/hdf /usr/lib64/hdf \
+       /usr/lib64/hdf4.2r1 /usr/local/hdf/lib64/ /opt/hdf/lib64 \
+       /usr/hdf/lib64 /usr/local/lib64/hdf /opt/lib64/hdf /usr/lib64/hdf \
        /usr/local/hdf4.2r1/lib /opt/hdf4.2r1/lib \ 
        /usr/hdf4.2r1/lib /usr/local/lib/hdf4.2r1 /opt/lib/hdf4.2r1 \
        /usr/lib/hdf4.2r1 /usr/local/hdf/lib/ /opt/hdf/lib /usr/hdf/lib \
        /usr/local/lib/hdf /opt/lib/hdf /usr/lib/hdf \
-       /opt/local/lib /opt/local/include /sw/lib /sw/include ; do
+       /opt/local/lib /opt/local/lib /sw/lib /sw/include /usr/lib/hdf ; do
         AS_IF([test "z$ac_hdf4_libdir" = 'z'],
            [HDF4_LDFLAGS=],
            [
@@ -99,7 +98,7 @@ dnl  AS_IF([test -d /usr/local/hdf], [HDF4_PATH="/usr/local/hdf"])
     ],
     [
        AC_MSG_NOTICE(HDF4_PATH_INC is NOT set)
-      for ac_hdf4_incdir in "" /usr/local/hdf4.2r1/include /opt/hdf4.2r1/include \ 
+      for ac_hdf4_incdir in /usr/local/hdf4.2r1/include /opt/hdf4.2r1/include \
        /usr/hdf4.2r1/include /usr/local/include/hdf4.2r1 \
        /opt/include/hdf4.2r1 /usr/include/hdf4.2r1 /usr/local/hdf/include \
        /opt/hdf/include /usr/hdf/include /usr/local/include/hdf \
@@ -212,14 +211,16 @@ AC_DEFUN([AC_CHECK_HDF4_LIB],
 [
   HDF4_LIBS=
   ac_hdf4_save_LIBS=$LIBS
+
   AC_CHECK_LIB_NOCACHE_HDF4([sz], [SZ_BufftoBuffCompress],
   [
       LIBS="$LIBS -lsz"
       HDF4_LIBS='-lsz'
   ])
 
-dnl -lsz is not required because due to licencing it may not be present
-dnl nor required everywhere
+  dnl -lsz is not required because due to licencing it may not be present
+  dnl nor required everywhere
+
   ac_hdf4_lib='no'
   AC_CHECK_LIB_NOCACHE_HDF4([z],[deflate],
   [ AC_CHECK_LIB_NOCACHE_HDF4([jpeg],[jpeg_start_compress],
