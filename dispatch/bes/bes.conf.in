@@ -28,7 +28,7 @@ BES.Group=group_name
 #-----------------------------------------------------------------------#
 # Where we log the stuff...and how much we log                          #
 #-----------------------------------------------------------------------#
-BES.LogName=@installdir@/var/bes.log
+BES.LogName=@prefix@/var/bes.log
 BES.LogVerbose=no
 
 #-----------------------------------------------------------------------#

@@ -88,6 +88,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
 		-e "s%[@]datarootdir[@]%${datarootdir}%" \
 		-e "s%[@]datadir[@]%${datadir}%" \
+		-e "s%[@]prefix[@]%${prefix}%" \
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
 
 bes/dap.conf: bes/dap.conf.in ../config.status
