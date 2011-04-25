@@ -34,7 +34,7 @@ BuildRequires:  libxml2-devel >= 2.6.16
 # needed by ppt
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig
-BuildRequires:  doxygen graphviz
+# BuildRequires:  doxygen graphviz
 
 %description
 BES is a new, high-performance back-end server software framework for 
@@ -46,7 +46,6 @@ through the BES modular design. Providers can add new data handlers, new
 data objects/views, the ability to define views with constraints and 
 aggregation, the ability to add reporting mechanisms, initialization 
 hooks, and more.
-
 
 %package        devel
 Summary:        Development files for %{name}
@@ -62,14 +61,12 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+# %package doc
+# Summary: Documentation of the OPeNDAP BES
+# Group: Documentation
 
-%package doc
-Summary: Documentation of the OPeNDAP BES
-Group: Documentation
-
-%description doc
-Documentation of OPeNDAP BES.
-
+# %description doc
+# Documentation of OPeNDAP BES.
 
 %prep
 %setup -q
@@ -79,14 +76,14 @@ chmod a-x dispatch/BESStreamResponseHandler*
 %configure --disable-static --disable-dependency-tracking
 make %{?_smp_mflags}
 
-make docs
-rm -rf __distribution_docs
-cp -pr docs __distribution_docs
-mv __distribution_docs/html __distribution_docs/api-html
-# .map and .md5 files are of dubious use
-rm __distribution_docs/api-html/*.map
-rm __distribution_docs/api-html/*.md5
-chmod a-x __distribution_docs/BES_*.doc
+# make docs
+# rm -rf __distribution_docs
+# cp -pr docs __distribution_docs
+# mv __distribution_docs/html __distribution_docs/api-html
+# # .map and .md5 files are of dubious use
+# rm __distribution_docs/api-html/*.map
+# rm __distribution_docs/api-html/*.md5
+# chmod a-x __distribution_docs/BES_*.doc
 
 sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
   -e 's:=.*/bes.log:=%{beslogdir}/bes.log:' \
@@ -112,7 +109,6 @@ mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %pre
 getent group %{besgroup} >/dev/null || groupadd -r %{besgroup}
@@ -154,7 +150,7 @@ exit 0
 
 %files devel
 %defattr(-,root,root,-)
-%doc __distribution_docs/BES_*.doc
+# %doc __distribution_docs/BES_*.doc
 %{_bindir}/besCreateModule
 %{_bindir}/bes-config
 %{_includedir}/bes/
@@ -163,9 +159,9 @@ exit 0
 %{_datadir}/bes/templates/
 %{_datadir}/aclocal/bes.m4
 
-%files doc
-%defattr(-,root,root,-)
-%doc __distribution_docs/api-html/
+# %files doc
+# %defattr(-,root,root,-)
+# %doc __distribution_docs/api-html/
 
 %changelog
 * Thu Sep 14 2010 Patrick West <westp@rpi.edu> - 3.9.0-1
