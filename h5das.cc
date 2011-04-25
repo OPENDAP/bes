@@ -151,7 +151,10 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    }
 	    else {
 		// Add attribute table with HARDLINK.
-		AttrTable *at = das.add_table(full_path_name, new AttrTable);
+		AttrTable *at = das.get_table(full_path_name);
+                if(!at){
+		  at = das.add_table(full_path_name, new AttrTable);
+                }
 		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
 	    }
 
@@ -190,7 +193,10 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 	    read_objects(das, full_path_name, dset, num_attr);
 	    if (!oid.empty()) {
 		// Add attribute table with HARDLINK
-		AttrTable *at = das.add_table(full_path_name, new AttrTable);
+                AttrTable *at = das.get_table(full_path_name);
+                if(!at) {
+		  at = das.add_table(full_path_name, new AttrTable);
+                }
 		at->append_attr("HDF5_HARDLINK", STRING, paths.get_name(oid));
 	    }
 
