@@ -80,6 +80,8 @@ using namespace std;
 #include "DAS.h"
 #include "escaping.h"
 #include "debug.h"
+#include <BESLog.h>
+#include <BESDebug.h>
 
 // DODS/HDF includes
 #include "dhdferr.h"
@@ -1260,7 +1262,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         parser_arg arg(at);
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
-            cerr << "HDF-EOS parse error " << core_metadata << endl;
+            (*BESLog::TheLog()) << "HDF-EOS parse error " << core_metadata << endl;
         }
         hdfeos_delete_buffer(buf);
     }
@@ -1275,7 +1277,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         parser_arg arg(at);
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
-            cerr << "HDF-EOS parse error " << archive_metadata << endl;
+            (*BESLog::TheLog()) << "HDF-EOS parse error " << archive_metadata << endl;
         }
         hdfeos_delete_buffer(buf);
     }
@@ -1290,7 +1292,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         parser_arg arg(at);
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
-            cerr << "HDF-EOS parse error " << struct_metadata << endl;
+            (*BESLog::TheLog()) << "HDF-EOS parse error "<< struct_metadata << endl;
         }
         hdfeos_delete_buffer(buf);
     }
@@ -2600,7 +2602,7 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 sdmap[ref].in_vgroup = true;
                 break;
             default:
-                cerr << "unknown tag: " << tag << " ref: " << ref << endl;
+                (*BESLog::TheLog()) << "unknown tag: " << tag << " ref: " << ref << endl;
                 break;
             }	// switch (tag) 
         } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
@@ -2756,11 +2758,13 @@ void AddHDFAttr(DAS & das, const string & varname,
 
                 // tell lexer to scan attribute string
                 void *buf = hdfeos_string(attv[j].c_str());
+// TESTING BES DEbug
+BESDEBUG("h4","Testing Debug message "<<endl);
 
                 parser_arg arg(at);
                 if (hdfeosparse(static_cast < void *>(&arg)) != 0
                     || arg.status() == false)
-                    cerr << "HDF-EOS parse error!\n";
+                    (*BESLog::TheLog()) << "HDF-EOS parse error !" <<endl;
                 hdfeos_delete_buffer(buf);
             }
             else {

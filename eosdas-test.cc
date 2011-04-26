@@ -31,6 +31,7 @@
 #include "config_hdf.h"
 
 #include <cstdlib>
+#include <sstream>
 #include <iostream>
 #include <string>
 
@@ -49,6 +50,7 @@
 
 using namespace std;
 using namespace libdap;
+#include <BESLog.h>
 
 extern int hdfeosparse(void *arg);      // defined in hdfeos.tab.c
 
@@ -63,12 +65,12 @@ const char *version = "$Revision$";
 
 void usage(string name)
 {
-    cerr << "usage: " << name
+      cerr << "usage: " << name
         << " [-v] [-s] [-d] [-p] {< in-file > out-file}" << endl
         << " s: Test the DAS scanner." << endl
         << " p: Scan and parse from <in-file>; print to <out-file>." <<
         endl << " v: Print the version of das-test and exit." << endl <<
-        " d: Print parser debugging information." << endl;
+        " d: Print parser debugging information." <<endl;
 }
 
 int main(int argc, char *argv[])
@@ -176,7 +178,7 @@ void parser_driver(DAS & das)
 
     parser_arg arg(at);
     if (hdfeosparse((void *) &arg) != 0)
-        cerr << "HDF-EOS parse error!\n";
+        (*BESLog::TheLog()) << "HDF-EOS parse error !" <<endl;
 
     das.print(stdout);
 }
