@@ -55,6 +55,7 @@
 #include <escaping.h>
 #include <Error.h>
 #include <debug.h>
+#include <BESDebug.h>
 
 #include "HDFArray.h"
 #include "dhdferr.h"
@@ -119,10 +120,10 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
         if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {	  
             hdfistream_sds sdsin(hdf_file.c_str());
             if (ref != -1) {
-                DBG(cerr << "sds seek with ref = " << ref << endl);
+                BESDEBUG("h4","sds seek with ref = " << ref << endl);
                 sdsin.seek_ref(ref);
             } else {
-                DBG(cerr << "sds seek with name = '" << hdf_name << "'" <<
+                BESDEBUG("h4", "sds seek with name = '" << hdf_name << "'" <<
                     endl);
                 sdsin.seek(hdf_name.c_str());
             }
