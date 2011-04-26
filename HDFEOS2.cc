@@ -8,6 +8,7 @@
 #include "HDFEOS2.h"
 #ifdef USE_HDFEOS2_LIB
 //#include "InternalErr.h"
+//#include <BESDEBUG.h> // Should provide BESDebug info. later
 #include <sstream>
 #include <algorithm>
 #include <functional>

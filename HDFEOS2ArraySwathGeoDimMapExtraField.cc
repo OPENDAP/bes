@@ -18,6 +18,7 @@
 #include "HDFEOS2.h"
 #include "HDFEOS2Util.h"
 #include "InternalErr.h"
+#include "BESDebug.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 
@@ -404,12 +405,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::format_constraint (int *offset,
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
-			 << "id=" << id << " offset=" << offset[id]
-			 << " step=" << step[id]
-			 << " count=" << count[id]
-			 << endl);
+                BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 
 		id++;
 		p++;

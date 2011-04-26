@@ -14,6 +14,7 @@
 #include <cassert>
 #include <debug.h>
 #include "InternalErr.h"
+#include "BESDebug.h"
 #include "mfhdf.h"
 #include "hdf.h"
 #include "HdfEosDef.h"
@@ -361,12 +362,12 @@ HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step,
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
-			 << "id=" << id << " offset=" << offset[id]
-			 << " step=" << step[id]
-			 << " count=" << count[id]
-			 << endl);
+                 BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 
 		id++;
 		p++;
