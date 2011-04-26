@@ -1,3 +1,90 @@
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-04-05  James Gallagher <jgallagher@opendap.org>
+
+	I removed much of the code switched out using '//' or #if 0 if
+	those switches or comments were added as part of the code review.
+
+	M    HDF5UInt32.cc
+	M    HDF5ArrayEOS.cc
+	M    HDF5RequestHandler.cc
+	M    HDF5UInt16.cc
+	M    h5das.cc
+	M    h5dds.cc
+	M    h5dds.h
+	M    HDF5Float32.cc
+	M    HDF5Array.cc
+	M    hdf5_handler.h
+	M    HDF5Str.cc
+	M    HDF5Int32.cc
+	M    HDF5Int16.cc
+	M    HDF5Byte.cc
+	M    h5get.cc
+	M    HDF5Float64.cc
+	M    HDF5ArrayEOS.h
+	M    HE5Parser.cc
+
+2011-04-05  James Gallagher <jgallagher@opendap.org>
+
+	I found one line where names were changed to CF compilant names
+	without the #ifdef CF protection. I added it and the issue with
+	failed tests went away.
+
+	M    h5dds.cc
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf5_handler: Added automated version numbers to OSX Package builds
+
+2011-03-17  muqun
+
+	Just reflect that we create a patch for 1.4.3 version for NASA.
+
+2011-03-14  muqun
+
+	1. This check-in provides the partial support of handling multiple
+	HDF-EOS5 swaths. It will only work for all swaths share the same
+	coordinate variables. The solution is mainly for handling Aura MLS
+	data. The robust and general solutions should be in the future.
+	
+	2. Special characters inside the variable names are also handled.
+	This was discovered by HIRDLS data.
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax 1.7 from the hyrax_1.6.2_release branch of shrew
+	to the trunk
+
+	_M   .
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	M    conf/hdf5.m4
+	_M   HE5ShortName.h
+	M    Makefile.am
+
+2011-02-08  James Gallagher <jgallagher@opendap.org>
+
+	removed unneeded mime_util.h and util.h includes; added comments
+	about sending mime headers in our handlers (which may not be
+	needed).
+
+2010-12-23  hyoklee
+
+	Fixed a 64-bit bug for MLS v3 and HIRDLS v5.
+
+2010-12-17  hyoklee
+
+	Bug fixes for augmented files that have DIMENSION_LIST attributes.
+	Bug fixes for debug mode.
+
 2010-12-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	h5das.cc: bug fixes for augmented files (HIRDLS v5 / MLS v3).
