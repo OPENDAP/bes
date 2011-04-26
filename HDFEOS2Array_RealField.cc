@@ -12,6 +12,7 @@
 #include <debug.h>
 #include "HDFEOS2.h"
 #include "InternalErr.h"
+#include <BESDebug.h>
 #include "HDFEOS2Util.h"
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -361,12 +362,12 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
-			 << "id=" << id << " offset=" << offset[id]
-			 << " step=" << step[id]
-			 << " count=" << count[id]
-			 << endl);
+                BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 
 		id++;
 		p++;

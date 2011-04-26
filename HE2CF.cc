@@ -52,7 +52,11 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
         int32 tag, ref;
         
         if (Vgettagref(vgroup_id, i, &tag, &ref) < 0){
-            cerr << "failed get tag / ref" << endl;
+            // Previously just output stderr, it doesn't throw an internal error.
+            // I believe this is wrong. Use DAP's internal error to throw an error.KY 2011-4-26 
+            ostringstream error;
+            error  << "failed to get tag / ref";
+            write_error(error.str());
             return false;            
         }
         

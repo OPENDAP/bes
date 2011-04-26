@@ -12,6 +12,7 @@
 #include "hdf.h"
 #include "mfhdf.h"
 #include "InternalErr.h"
+#include <BESDebug.h>
 #include "BESInternalError.h"
 #include "HDFSPUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
@@ -340,13 +341,12 @@ HDFSPArray_RealField::format_constraint (int *offset, int *step, int *count)
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
-			 << "id=" << id << " offset=" << offset[id]
-			 << " step=" << step[id]
-			 << " count=" << count[id]
-			 << endl);
-
+                 BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 		id++;
 		p++;
 	}

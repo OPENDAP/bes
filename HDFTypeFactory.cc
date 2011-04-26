@@ -40,6 +40,7 @@
 #include "HDFGrid.h"
 #include "HDFTypeFactory.h"
 #include "debug.h"
+#include <BESDebug.h>
 
 Byte *HDFTypeFactory::NewByte(const string & n) const
 {
@@ -58,7 +59,7 @@ UInt16 *HDFTypeFactory::NewUInt16(const string & n) const
 
 Int32 *HDFTypeFactory::NewInt32(const string & n) const
 {
-    DBG(cerr << "Inside HDFTypeFactory::NewInt32" << endl);
+    BESDEBUG("h4", "Inside HDFTypeFactory::NewInt32" << endl);
     return new HDFInt32(n, d_filename);
 }
 
@@ -99,7 +100,7 @@ Structure *HDFTypeFactory::NewStructure(const string & n) const
 
 Sequence *HDFTypeFactory::NewSequence(const string & n) const
 {
-    DBG(cerr << "Inside HDFTypeFactory::NewSequence" << endl);
+    BESDEBUG("h4", "Inside HDFTypeFactory::NewSequence" << endl);
     return new HDFSequence(n, d_filename);
 }
 

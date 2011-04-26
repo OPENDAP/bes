@@ -20,6 +20,7 @@
 #include "mfhdf.h"
 #include "hdf.h"
 #include "InternalErr.h"
+#include <BESDebug.h>
 
 
 bool
@@ -112,8 +113,8 @@ HDFSPArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
+		BESDEBUG ("h4",
+			 "=format_constraint():"
 			 << "id=" << id << " offset=" << offset[id]
 			 << " step=" << step[id]
 			 << " count=" << count[id]

@@ -15,6 +15,7 @@
 #include <debug.h>
 #include "HDFEOS2.h"
 #include "InternalErr.h"
+#include "BESDebug.h"
 #include "HDFEOS2Util.h"
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -250,7 +251,6 @@ HDFEOS2ArraySwathGeoField::read ()
 		break;
 
 	case DFNT_INT32:
-		std::cerr << "int32" << std::endl;
 		val = new int32[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -410,13 +410,12 @@ HDFEOS2ArraySwathGeoField::format_constraint (int *offset, int *step,
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
-			 << "id=" << id << " offset=" << offset[id]
-			 << " step=" << step[id]
-			 << " count=" << count[id]
-			 << endl);
-
+                BESDEBUG ("h4",
+                         "=format_constraint():"
+                         << "id=" << id << " offset=" << offset[id]
+                         << " step=" << step[id]
+                         << " count=" << count[id]
+                         << endl);
 		id++;
 		p++;
 	}

@@ -303,7 +303,7 @@ HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 // Create a DAP HDFGrid out of the primary array and dim scale in an hdf_sds
 HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
-    DBG(cerr << "NewGridFromSDS" << endl);
+    BESDEBUG("h4", "NewGridFromSDS" << endl);
     if (!sds.has_scale())       // we need a dim scale to make a Grid
         return 0;
 
@@ -556,7 +556,7 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
         // components of the field and load the DODS String with the value.
         string str = "";
         for (unsigned int i = 0; i < f.vals.size(); ++i) {
-            DBG(cerr << i << ": " << f.vals[i].elt_char8(row) << endl);
+            //DBG(cerr << i << ": " << f.vals[i].elt_char8(row) << endl);
             str += f.vals[i].elt_char8(row);
         }
 
@@ -612,7 +612,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
 ///////////////////////////////////////////////////////////////////////////////
 HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
-    DBG(cerr << ">NewEOSGridFromSDS" << endl);
+    BESDEBUG("h4", ">NewEOSGridFromSDS" << endl);
     // Create the HDFGrid and the primary array.  Add the primary array to
     // the HDFGrid.
     if (sds.name.length() == 0) // SDS must have a name
@@ -642,8 +642,8 @@ HDFEOSGrid *NewEOSGridFromSDS(const hdf_sds & sds, const string &dataset)
     eos.get_dimensions(sds.name, tokens);
 
     for (int dim_index = 0; dim_index < tokens.size(); dim_index++) {
-	DBG(cerr << "=read_objects_base_type():Dim name " <<
-	    tokens.at(dim_index) << endl);
+	//DBG(cerr << "=read_objects_base_type():Dim name " <<
+	 //   tokens.at(dim_index) << endl);
 
 	string str_dim_name = tokens.at(dim_index);
 

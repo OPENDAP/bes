@@ -55,6 +55,7 @@
 #include <escaping.h>
 #include <Sequence.h>
 #include <debug.h>
+#include <BESDebug.h>
 
 #include "HDFStructure.h"
 
@@ -101,7 +102,7 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
     string hdf_file = dataset();
     string hdf_name = this->name();
 
-    DBG(cerr << " hdf_name = " << hdf_name << endl);
+    BESDEBUG("h4", " hdf_name = " << hdf_name << endl);
 
     hdf_vgroup vgroup;
 
