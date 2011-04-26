@@ -1,6 +1,18 @@
 
 $Id$
 
+Version 3.9.2
+
+Build fixes, particularly for HDF-EOS2 on OS/X
+
+Support the extra SDS objects for a hybrid HDF-EOS2 files.
+
+Add support to treat HDF-EOS2 files as HDF4 files(for MERRA data)
+
+Add support for HDF4 files that use SDS dimension scales. The HDF4
+files should kind of follow CF conventions. I have to patch for AVHRR
+files. They use "unit" instead of "units".
+
 Version 3.9.1.eospatch (16 Mar 2011)
 
 This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9

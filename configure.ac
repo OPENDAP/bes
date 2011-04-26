@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(hdf4_handler, 3.9.1.eospatch, support@opendap.org)
+AC_INIT(hdf4_handler, 3.9.2, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -148,7 +148,7 @@ AC_SUBST([HDFEOS2_DIR])
 dnl ----------------------------------------------------------------------                                
 dnl Shorten variable names if enabled. 
 AC_ARG_ENABLE([short-name], 
-	     [AS_HELP_STRING([--enable-short-name=yes],[Variable and dimension names will be shortened to 15 characters.])],
+	     [AS_HELP_STRING([--enable-short-name=yes|no],[Variable and dimension names will be shortened to 15 characters (default: no).])],
 	     [use_short_name=$enableval],[use_short_name=no])
 if test "${use_short_name}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DSHORT_NAME"
@@ -156,7 +156,7 @@ fi
 
 dnl Enable CF compliant output for NASA HDF4 files like CERES.  
 AC_ARG_ENABLE([cf], 
-	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF-1.x convention support will be enabled.])],
+	     [AS_HELP_STRING([--enable-cf=yes|no],[Pseudo CF-1.x convention support will be enabled (default: no).])],
 	     [use_cf=$enableval],[use_cf=no])
 if test "${use_cf}" = "yes"; then
    CPPFLAGS="$CPPFLAGS -DCF"
