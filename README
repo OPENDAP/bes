@@ -1,6 +1,12 @@
 
  $Id$
 
+Updated for version 3.9.1
+
+This version of the BES supports the new (experiemental) Keywords
+feature of DAP 3.3. It also contains a number of bug and build fixes.
+The default locataion for log files has moved to $prefix/var/bes.log.
+
 Updated for version 3.9.0 of the OPeNDAP BES.
 
 See the INSTALL file for build instructions.

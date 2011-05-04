@@ -1,6 +1,20 @@
 
 	$Id$
 
+News for version 3.9.1
+
+The CSV handler was moved out of this component and mae its own
+handler, with all the stuff that implies (it's onw RPM, source dist,
+etc.). At teh smae time a new tool for building tests has been added -
+look in the code for the dapreader classes. Email us for more
+information.
+
+Bug & Build fixes fixes.
+
+The default location of the bes.log file is now $prefix/var/bes.log
+
+Support for the DAP3.3 Keywords (an experimental feature).
+
 News for version 3.9.0, 14 Sep 2010
 
 Moved BES.Catalog.catalog.RootDirectory parameter to bes.conf so users
