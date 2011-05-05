@@ -45,8 +45,8 @@ class PPTConnection : public Connection
 private:
     int				_timeout ;
     char *			_inBuff ;
-    unsigned int		_inBuff_len ;
-    unsigned int		_bytesRead ;
+    /*unsigned*/ int		_inBuff_len ;
+    /*unsigned*/ int		_bytesRead ;
 
     				PPTConnection()
 				    : _timeout( 0 ),
@@ -57,11 +57,11 @@ private:
     virtual int			readBuffer( char *inBuff,
 					    const unsigned int buff_size ) ;
     virtual int			readChunkHeader( char *inBuff,
-						 unsigned int buff_size ) ;
+						 /*unsigned*/ int buff_size ) ;
     virtual void		sendChunk( const string &buffer,
 					   map<string,string> &extensions ) ;
     virtual void		receive( ostream &strm,
-					 const unsigned int len ) ;
+					 const /*unsigned*/ int len ) ;
 
 protected:
 				PPTConnection( int timeout )
@@ -71,7 +71,7 @@ protected:
 				      _bytesRead( 0 ) {}
 
     virtual int			readBufferNonBlocking( char *inBuff,
-					       const unsigned int buff_size );
+						       const /*unsigned*/ int buff_size );
 
     virtual void		send( const string &buffer ) ;
     virtual void		read_extensions( map<string,string> &extensions,

@@ -54,9 +54,9 @@ public:
   unsigned int		how_many(){ return count ; }
 
   void			open( int fd, unsigned bufsize = 1 ) ;
-  
+
   int			sync() ;
-  
+
   int			overflow(int c) ;
 
   void			finish() ;

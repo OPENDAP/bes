@@ -120,11 +120,17 @@ Socket::receive( char *inBuff, const int inSize )
     return bytesRead ;
 }
 
+#if 0
+// removed jhrg 5/5/11
 void
 Socket::sync()
 {
+#if 0
+    // fsync does not work for sockets.
     fsync( _socket ) ;
+#endif
 }
+#endif
 
 /** @brief dumps information about this object
  *

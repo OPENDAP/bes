@@ -191,7 +191,12 @@ PPTConnection::send( const string &buffer )
 {
     BESDEBUG( "ppt", "PPTConnection::send - sending " << buffer << endl ) ;
     _mySock->send( buffer, 0, buffer.length() ) ;
+#if 0
+    // was calling fsync() which is not defined for sockets. There might be some
+    // 'sync' operation needed in the future, but for now this is an empty call. removed
+    // jhrg 5/5/11
     _mySock->sync() ;
+#endif
 }
 
 /** @brief read a buffer of data from the socket
@@ -207,7 +212,7 @@ PPTConnection::readBuffer( char *buffer, const unsigned int buffer_size )
 }
 
 int
-PPTConnection::readChunkHeader( char *buffer, unsigned int buffer_size )
+PPTConnection::readChunkHeader( char *buffer, /*unsigned */ int buffer_size )
 {
     char *temp_buffer = buffer ;
     int totalBytesRead = 0 ;
@@ -333,7 +338,7 @@ PPTConnection::receive( map<string,string> &extensions,
  * @param len number of bytes remaining to be read
  */
 void
-PPTConnection::receive( ostream &strm, const unsigned int len )
+PPTConnection::receive( ostream &strm, const /* unsigned */ int len )
 {
     BESDEBUG( "ppt", "PPTConnect::receive - len = " << len << endl ) ;
     if( !_inBuff )
@@ -342,7 +347,7 @@ PPTConnection::receive( ostream &strm, const unsigned int len )
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-    unsigned int to_read = len ;
+    /* unsigned */ int to_read = len ;
     if( len > _inBuff_len )
     {
 	to_read = _inBuff_len ;
@@ -392,7 +397,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
 
     string var ;
     string val ;
-    int index = 0 ;
+    unsigned int index = 0 ;
     bool done = false ;
     while( !done )
     {
@@ -444,7 +449,7 @@ PPTConnection::read_extensions( map<string,string> &extensions, const string &xs
  */
 int
 PPTConnection::readBufferNonBlocking( char *inBuff,
-				      const unsigned int buffer_size )
+				      const /* unsigned*/ int buffer_size )
 {
     struct pollfd p ;
     p.fd = getSocket()->getSocketDescriptor();
