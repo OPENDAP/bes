@@ -193,10 +193,12 @@ BESServerHandler::execute( Connection *c )
 
 	if( status == 0 )
 	{
+	    fds.finish() ;
+
+	    cout.rdbuf( holder ) ;
+
 	    BESDEBUG( "server", "BESServerHandler::execute - "
 				<< "executed successfully" << endl ) ;
-	    fds.finish() ;
-	    cout.rdbuf( holder ) ;
 
 	    if( BESISDEBUG( "timing" ) )
 	    {
