@@ -792,6 +792,7 @@ static void process_grid_nasa_eos(const string &varname,
 ///////////////////////////////////////////////////////////////////////////////
 
 // TODO: This function is never used. Keep it here?
+// This function is used for writing the variable into the DDS table. KY 2011-4-28
 static void write_swath(DDS & dds_table,  
                         string varname, 
                         const string & filename) 
@@ -899,6 +900,128 @@ static void write_swath(DDS & dds_table,
     DBG(cerr << "<write_swath():variable=" << sname  << endl);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_za(DDS& dds_table, string varname, const string & filename)
+///
+/// inserts a HDF-EOS5 Zonal average dataset into \a dds_table table.
+///  Zonal average(za) is very similar to swath. 
+/// We can map zonal average variables into DAP Arrays  We must add
+/// dimension names to make CF compatible.
+///
+/// \param dds_table the destination for the zonal average  Array object
+/// \param varname the full path name of zonal average dataset
+/// \param filename the file name of zonal average file
+///////////////////////////////////////////////////////////////////////////////
+
+// TODO: This function is never used. Keep it here?
+// This function is used for writing the variable into the DDS table. KY 2011-4-28
+static void write_za(DDS & dds_table,  
+                        string varname, 
+                        const string & filename) 
+                    
+{
+    string sname = varname;
+    DBG(cerr << ">write_za():sname=" << sname 
+        << " varname=" << varname 
+        << " filename=" << filename
+        << endl);
+
+    if(eos.is_valid()) {
+    // if(eos.get_swath_variable(varname)) { // See if we can process all variables. ky 2011-3-11
+        // Rename the variable if necessary.
+        sname = eos.get_CF_name((char*) varname.c_str());
+#ifdef SHORT_PATH
+        if(sname == varname){   // It means it's not one of lat/lon/lev/time.
+            sname = eos.get_short_name(varname);
+        }
+#endif         
+
+               if(sname == "lon"){
+            if(eos.za_lon == 0){
+                eos.za_lon = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(sname == "lat"){
+            if(eos.za_lat == 0){
+                eos.za_lat = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+        if(sname == "lev"){
+            if(eos.za_lev == 0){
+                eos.za_lev = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+        if(sname == "time"){
+            if(eos.za_time == 0){
+                eos.za_time = 1;
+            }
+            else{
+                return; // Make it unique.
+            }
+        }
+
+    }
+    // Make the variable name to follow CF name conventions
+    sname = eos.get_valid_CF_name(sname);
+
+    // Get a base type. It should be int, float, double, etc. -- atomic
+    // datatype. 
+    BaseType *bt = Get_bt(sname, filename, dt_inst.type);
+    
+    if (!bt) {
+        // NB: We're throwing InternalErr even though it's possible that
+        // someone might ask for an HDF5 varaible which this server cannot
+        // handle.
+        throw
+            InternalErr(__FILE__, __LINE__,
+                        "Unable to convert hdf5 datatype to dods basetype");
+    }
+
+    // First deal with scalar data. 
+    if (dt_inst.ndims == 0) {
+        dds_table.add_var(bt);
+        delete bt; bt = 0;
+    }
+    else {
+        HDF5Array *ar = new HDF5Array(sname, filename, bt);
+        vector < string > dimension_names;
+        eos.get_za_variable_dimensions(varname, dimension_names);
+
+        delete bt; bt = 0;
+        ar->set_did(dt_inst.dset);
+        ar->set_tid(dt_inst.type);
+        ar->set_memneed(dt_inst.need);
+        ar->set_numdim(dt_inst.ndims); 
+        ar->set_numelm((int) (dt_inst.nelmts));
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++){
+            if(dimension_names.size() > 0){
+                string str_dim_name = dimension_names.at(dim_index);
+                DBG(cerr << "=write_swath():dimname=" << str_dim_name << endl);
+                ar->append_dim(dt_inst.size[dim_index], str_dim_name);
+            }
+            else{
+                ar->append_dim(dt_inst.size[dim_index]);
+            }
+        }
+
+        dds_table.add_var(ar);
+        delete ar; ar = 0;
+    }
+
+    DBG(cerr << "<write_swath():variable=" << sname  << endl);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_base_type(DDS & dds_table,
@@ -926,9 +1049,13 @@ read_objects_base_type(DDS & dds_table, const string & a_name,
 {
     dds_table.set_dataset_name(name_path(filename)); 
 #ifdef CF
-    // If the array is part of HDF-EOS5 swath, returrn arrays.
+    // If the array is part of HDF-EOS5 swath, return arrays.
     if(eos.get_swath()){
         write_swath(dds_table, a_name, filename);
+        return;
+    }
+     if(eos.get_za()){
+        write_za(dds_table, a_name, filename);
         return;
     }
 #endif

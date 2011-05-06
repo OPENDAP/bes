@@ -654,6 +654,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 #endif        
 	newname = eos.get_valid_CF_name(newname);
 
+        // Here we have to assume that there are no multiple zonal average groups
+        // since changing the following hack with make the multiple swath MLS files fail.
+        // This should be resolved in the future HDF5 development. KY 2011-5-5
 	if(newname == "lon") {
 	    if(eos.sw_lon == 0) {
 		eos.sw_lon = 1;
@@ -738,7 +741,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
 	    // Skip unmappable types early. Otherwise, delete[] value will
 	    // cause an error on 64-bit machines.
+// cerr << "checking if the datatype is  mappable or not " <<endl;
 	    if (!is_mappable(attr_id, attr_name, dap_type)) {
+// cerr << "the datatype cannot be mapped to dap " <<endl;
 		continue;
 	    }
 
@@ -838,15 +843,31 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     }
 
 #ifdef CF
-    if(eos.get_swath_variable(varname) &&
-	    eos.get_swath_coordinate_dimension_match(varname)) {
-	attr_table_ptr->append_attr("coordinates", STRING,
+    if(eos.get_swath_variable(varname)){
+       if(eos.get_swath_coordinate_dimension_match(varname)) {
+	 attr_table_ptr->append_attr("coordinates", STRING,
 		eos.get_swath_coordinate_attribute());
+       }
     }
+       
+
+
+    // For zonal average
+    // Some hard code values are put in the following codes, since
+    // we will revise the whole handler in the future.
+    // KY-2011-5-6
+    if(eos.get_za_variable(varname)) { 
+       int za_coord_flag = eos.get_za_coordinate_dimension_match(varname);
+       if(za_coord_flag == 1) // having lat lev time
+         attr_table_ptr->append_attr("coordinates",STRING,"lat lev time");
+       if(za_coord_flag == 2) // having lat lev
+         attr_table_ptr->append_attr("coordinates",STRING,"lat lev");
+     }
 
     if(newname == "lon" || newname == "lat") {
-	write_swath_coordinate_unit_attribute(attr_table_ptr, newname);
+        write_swath_za_coordinate_unit_attribute(attr_table_ptr, newname);
     }
+
 #endif
 
     DBG(cerr << "<read_objects()" << endl);
@@ -875,6 +896,11 @@ void find_gloattr(hid_t file, DAS & das)
     if(eos.get_swath()){
         write_swath_global_attribute(das);
     }
+
+    if(eos.get_za()){
+        write_za_global_attribute(das);
+    }
+
 #endif
 
     hid_t root = H5Gopen(file, "/");
@@ -1319,13 +1345,32 @@ void write_swath_global_attribute(DAS & das)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn write_swath_coordinate_unit_attribute(AttrTable* at,
+/// \fn write_za_global_attribute(DAS & das)
+/// will put pseudo global attributes for CF convention
+/// This function is for temporary used to handle zonal average and keep 
+/// it consistent with swath and grid. 
+/// It should be changed later.
+/// KY 2011-5-5
+/// 
+/// \param das DAS object: reference
+/// \see write_grid_global_attribute()
+///////////////////////////////////////////////////////////////////////////////
+void write_za_global_attribute(DAS & das)
+{
+    AttrTable *at;
+    at = das.add_table("NC_GLOBAL", new AttrTable);
+    at->append_attr("title", STRING, "NASA HDFEOS5 Za");
+    at->append_attr("Conventions", STRING, "CF-1.4");
+
+}
+///////////////////////////////////////////////////////////////////////////////
+/// \fn write_swath_za_coordinate_unit_attribute(AttrTable* at,
 ///                                           string varname)
 /// inserts pseudo attributes for coordinate variables to meet the CF
 /// convention.
 ///
-/// This function is provided as an example for NASA AURA Swath data only.
-/// NASA AURA swath files have either 1-D or 2-D lat / lon dataset.
+/// This function is provided as an example for NASA AURA Swath and zonal average data only.
+// The current variables are lat and lon.
 /// Since CF-convention requires units and standard name on them,
 /// we add the new attributes to make the output compatible.
 /// 
@@ -1333,7 +1378,7 @@ void write_swath_global_attribute(DAS & das)
 /// \param varname dataset name - either lat or lon
 /// \see write_grid_coordinate_variable_attribute()
 ///////////////////////////////////////////////////////////////////////////////
-void write_swath_coordinate_unit_attribute(AttrTable* at, string varname)
+void write_swath_za_coordinate_unit_attribute(AttrTable* at, string varname)
 {
 
     if(varname.find("lon") != string::npos){

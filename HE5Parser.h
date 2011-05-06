@@ -92,6 +92,10 @@ public:
     bool grid_structure_found;
     /// a flag to indicate if StructMetdata has Swath.
     bool swath_structure_found;
+
+    /// a flag to indicate if StructMetdata has zonal average.
+    bool za_structure_found; 
+
     /// a flag to indicate if structMetdata is processed or not.
     bool bmetadata_Struct;
 

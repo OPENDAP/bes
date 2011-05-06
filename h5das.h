@@ -57,6 +57,7 @@ void read_objects(DAS & das, const string & varname, hid_t dset,
 void write_grid_global_attribute(DAS & das);
 void write_grid_coordinate_variable_attribute(DAS & das);
 void write_swath_global_attribute(DAS &das);
-void write_swath_coordinate_unit_attribute(AttrTable* at, string varname);
+void write_za_global_attribute(DAS &das);
+void write_swath_za_coordinate_unit_attribute(AttrTable* at, string varname);
 #endif
 #endif

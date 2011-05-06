@@ -217,7 +217,6 @@ HE5CFSwath::set_swath_2D()
     vector < string > lon_dimension_names;
     vector < string > lat_dimension_names;
 
-
     get_swath_variable_dimensions(_swath_lon_variable, lon_dimension_names);
     lon_ndims = lon_dimension_names.size();
     get_swath_variable_dimensions(_swath_lat_variable, lat_dimension_names);

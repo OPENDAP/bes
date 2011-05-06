@@ -458,7 +458,7 @@ process_group(parser_arg * arg, const string & id)
     }
 
     if (id.find("GRID_") == 0 || id.find("SWATH_") == 0 ||
-        id.find("POINT_") == 0) {
+        id.find("POINT_") == 0 || id.find("ZA_") == 0) {
         last_grid_swath = id;
     }
 

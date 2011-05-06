@@ -30,6 +30,7 @@
 
 #include "HE5ShortName.h"
 #include "HE5CFSwath.h"
+#include "HE5CFZa.h"
 #include "HE5CFGrid.h"
 #include <map>
 #include <sstream>
@@ -54,7 +55,7 @@ using namespace libdap;
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
 /// Copyright (c) 2009 The HDF Group
-class HE5CF: public HE5ShortName, public HE5CFSwath, public HE5CFGrid {
+class HE5CF: public HE5ShortName, public HE5CFSwath, public HE5CFGrid, public HE5CFZa {
   
 private:
   

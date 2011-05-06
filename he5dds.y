@@ -1,7 +1,7 @@
 %{
 #define YYSTYPE char *
 #define YYDEBUG 1
-// #define VERBOSE // Comment this out for debugging.
+//#define VERBOSE // Comment this out for debugging.
 
 
 #include <stdio.h>
@@ -28,6 +28,7 @@ extern int yy_line_num;	// It's defined in he5dds.lex
 string full_path = "";
 string grid_name = "";
 string swath_name = "";
+string za_name = "";
 string data_field_name = "/Data Fields/";
 string geo_field_name = "/Geolocation Fields/"; // for Swath only
 string dimension_list = "";
@@ -55,10 +56,9 @@ void he5ddserror(char *s);
 %token PROJECTION
 %token HE5_GCTP_GEO
 %token DATA_TYPE 
-%token GRID_STRUCTURE
-%token SWATH_STRUCTURE 
 %token GRID_NAME  
 %token SWATH_NAME 
+%token ZA_NAME
 %token DIMENSION_SIZE  
 %token DIMENSION_NAME  
 %token DIMENSION_LIST
@@ -153,6 +153,7 @@ attribute: attribute_grid_name
 	| DATA_TYPE 
 	| STR '=' dataseq
 	| attribute_swath_name
+        | attribute_za_name
 ;
 attribute_grid_name: GRID_NAME '=' STR
 {
@@ -161,6 +162,7 @@ attribute_grid_name: GRID_NAME '=' STR
   
   // Reset the full path
   full_path = "/HDFEOS/GRIDS/";
+  ((HE5Parser*)(he5parser))->grid_structure_found = true;
   ((HE5Parser*)(he5parser))->valid_projection = false;
   full_path.append(grid_name);
 #ifdef VERBOSE  
@@ -228,6 +230,11 @@ attribute_dimension_size: DIMENSION_SIZE '=' INT
   if(((HE5Parser*)(he5parser))->swath_structure_found)
     ((HE5Parser*)(he5parser))->set_swath_dimension_size(dimension_name, 
                                                         atoi($3));
+
+  if(((HE5Parser*)(he5parser))->za_structure_found)
+    ((HE5Parser*)(he5parser))->set_za_dimension_size(dimension_name,
+                                                        atoi($3));
+
 }
 ;
 attribute_dimension_list: DIMENSION_LIST 
@@ -255,8 +262,20 @@ attribute_dimension_list: DIMENSION_LIST
     full_path = "/HDFEOS/SWATHS/";
     full_path.append(swath_name);
     dimension_list = "";
+  }   
+
+  if(((HE5Parser*)(he5parser))->za_structure_found){
+//   The following should be uncomment
+    ((HE5Parser*)(he5parser))->set_za_variable_dimensions(full_path,
+                                                             dimension_list);
+    // Reset for next path
+    data_field_name = "/Data Fields/";
+    full_path = "/HDFEOS/ZAS/";
+    full_path.append(za_name);
+    dimension_list = "";
   }  
-}
+} 
+
 ;
 attribute_data_field_name: DATA_FIELD_NAME '=' STR
 {
@@ -280,6 +299,15 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
     cout << "set_swath_variable_list:" << full_path << endl;
 #endif        
   }
+  if(((HE5Parser*)(he5parser))->za_structure_found){
+    data_field_name.append($3);
+    full_path.append(data_field_name);
+    ((HE5Parser*)(he5parser))->set_za_variable_list(full_path);
+#ifdef VERBOSE
+    cout << "set_za_variable_list:" << full_path << endl;
+#endif
+  }
+
 }
 ;
 
@@ -314,6 +342,22 @@ attribute_swath_name: SWATH_NAME '=' STR
 }
 ;
 
+attribute_za_name: ZA_NAME '=' STR
+{
+  // Remember the path.
+  za_name = $3;
+  ((HE5Parser*)(he5parser))->za_structure_found = true;
+  ((HE5Parser*)(he5parser))->set_za(true);  
+  // Reset the full path
+  full_path = "/HDFEOS/ZAS/";
+  ((HE5Parser*)(he5parser))->valid_projection = false;
+  full_path.append(za_name);
+#ifdef VERBOSE  
+  cout << "Zonal Average Name is:" << za_name << endl;
+#endif
+  
+}
+;
 
 group: GROUP '=' GRIDNUM
 	{
@@ -356,28 +400,35 @@ GROUP '=' STR
 #endif	
       }
       attribute_list
-      END_GROUP '=' STR 
-|
-      GROUP '=' GRID_STRUCTURE
-      {
-	((HE5Parser*)(he5parser))->grid_structure_found = true;	
-	((HE5Parser*)(he5parser))->swath_structure_found = false;	
-#ifdef VERBOSE
-	cout << $3 <<  endl; // $3 refers the STR
-#endif	
+      END_GROUP '=' STR;
+// The GRID_STRUCTURE, SWATH_STRUCTURE, ZA_STRUCTURE,POINT_STRUCTURE all exist
+// in structmetadata. So the following will always be true. both grid and swath 
+// become grid, which is wrong. I think the following rules are redundant. One
+// can use GRID_NAME, SWATH_NAME etc. to figure out if this file is a swath or a grid file.
+// In theory, grid, swath,point and zonal average can all be in one file. 
+// Action: comment out the following rules related GRID_STRUCTURE and SWATH_STRUCTURE
+// KY 2011-4-28
+//|
+//     GROUP '=' GRID_STRUCTURE
+//    {
+//	((HE5Parser*)(he5parser))->grid_structure_found = true;	
+//	((HE5Parser*)(he5parser))->swath_structure_found = false;	
+//#ifdef VERBOSE
+//	cout << $3 <<  endl; // $3 refers the STR
+//#endif	
+//
+//     }
+//     attribute_list
+//     END_GROUP '=' GRID_STRUCTURE
+//|
+//     GROUP '=' SWATH_STRUCTURE
+//     {
+//	((HE5Parser*)(he5parser))->grid_structure_found = false;
+//     }
+//    attribute_list
+//      END_GROUP '=' SWATH_STRUCTURE
 
-      }
-      attribute_list
-      END_GROUP '=' GRID_STRUCTURE
-|
-      GROUP '=' SWATH_STRUCTURE
-      {
-	((HE5Parser*)(he5parser))->grid_structure_found = false;
-      }
-      attribute_list
-      END_GROUP '=' SWATH_STRUCTURE
 
-;
 
 object:OBJECT '=' STR
       {

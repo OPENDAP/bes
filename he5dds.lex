@@ -35,10 +35,9 @@ END             	END
 HE5_GCTP_GEO    	HE5_GCTP_GEO
 DATA_TYPE       	DataType=[A-Z0-9_]*
 PROJECTION      	Projection
-GRID_STRUCTURE  	GridStructure
-SWATH_STRUCTURE  	SwathStructure
 GRID_NAME       	GridName
 SWATH_NAME       	SwathName
+ZA_NAME                 ZaName
 DIMENSION_SIZE  	Size
 DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
@@ -75,8 +74,6 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {FLOAT}                 he5ddslval = yytext; return FLOAT;
 {PROJECTION}   	    	he5ddslval = yytext; return PROJECTION;
 {DATA_TYPE}   	    	he5ddslval = yytext; return DATA_TYPE;
-{GRID_STRUCTURE}    	he5ddslval = yytext; return GRID_STRUCTURE;
-{SWATH_STRUCTURE}    	he5ddslval = yytext; return SWATH_STRUCTURE;
 {HE5_GCTP_GEO} 	    	he5ddslval = yytext; return HE5_GCTP_GEO;
 {XDIM}	    	    	he5ddslval = yytext; return XDIM;
 {YDIM}	    	    	he5ddslval = yytext; return YDIM;
@@ -89,6 +86,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 {GRID_NAME}           	he5ddslval = yytext; return GRID_NAME;
 {SWATH_NAME}           	he5ddslval = yytext; return SWATH_NAME;
+{ZA_NAME}               he5ddslval = yytext; return ZA_NAME;
 {DIMENSION_SIZE} 	he5ddslval = yytext; return DIMENSION_SIZE;
 {DIMENSION_NAME} 	he5ddslval = yytext; return DIMENSION_NAME;
 {DIMENSION_LIST} 	he5ddslval = yytext; return DIMENSION_LIST;
