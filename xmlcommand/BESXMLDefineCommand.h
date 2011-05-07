@@ -45,6 +45,7 @@ class BESXMLDefineCommand : public BESXMLCommand
 private:
     string			_default_constraint ;
     vector<string>		_containers ;
+    map<string,string>		_stores ;
     map<string,string>		_constraints ;
     map<string,string>		_attributes ;
     void			handle_container_element( const string &action,

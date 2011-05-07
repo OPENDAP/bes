@@ -43,7 +43,7 @@ class BESDefinitionStorage ;
 class BESDefine ;
 class BESInfo ;
 
-#define PERSISTENCE_VOLATILE "volatile"
+#define PERSISTENCE_VOLATILE "default"
 
 /** @brief Provides a mechanism for accessing definitions from
  * different definition stores registered with this server.

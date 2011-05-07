@@ -68,6 +68,7 @@ public:
 	fileList.insert( make_pair( "agglistT.cc", "agglistT.cc" ) ) ;
 	fileList.insert( make_pair( "bz2T.cc", "bz2T.cc" ) ) ;
 	fileList.insert( make_pair( "cacheT.cc", "cacheT.cc" ) ) ;
+	fileList.insert( make_pair( "catT.cc", "catT.cc" ) ) ;
 	fileList.insert( make_pair( "checkT.cc", "checkT.cc" ) ) ;
 	fileList.insert( make_pair( "constraintT.cc", "constraintT.cc" ) ) ;
 	fileList.insert( make_pair( "containerT.cc", "containerT.cc" ) ) ;

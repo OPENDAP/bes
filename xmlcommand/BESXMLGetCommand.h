@@ -41,6 +41,7 @@ class BESXMLGetCommand : public BESXMLCommand
 private:
     BESXMLCommand *		_sub_cmd ;
     string			_definition ;
+    string			_space ;
 protected:
     virtual void		parse_basic_get( xmlNode *node,
 						 const string &name,

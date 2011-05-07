@@ -33,6 +33,10 @@
 #ifndef S_BESCatalogUtils_h
 #define S_BESCatalogUtils_h 1
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
 #include <map>
 #include <vector>
 #include <list>
@@ -46,11 +50,15 @@ using std::string ;
 #include "BESObj.h"
 #include "BESUtil.h"
 
+class BESInfo ;
+class BESCatalogEntry ;
+
 class BESCatalogUtils : public BESObj
 {
 private:
     static map<string, BESCatalogUtils *> _instances ;
 
+    string			_name ;
     string			_root_dir ;
     list<string>		_exclude ;
     list<string>		_include ;
@@ -62,11 +70,13 @@ public:
 	string type ;
 	string reg ;
     } ;
-
 private:
     vector< type_reg >		_match_list ;
 
     				BESCatalogUtils() {}
+
+    static void			bes_get_stat_info( BESCatalogEntry *entry,
+						   struct stat &buf ) ;
 public:
     				BESCatalogUtils( const string &name ) ;
     virtual			~BESCatalogUtils() {}
@@ -79,9 +89,25 @@ public:
     BESCatalogUtils::match_citer match_list_begin() const ;
     BESCatalogUtils::match_citer match_list_end() const ;
 
+    virtual unsigned int	get_entries( DIR *dip, const string &fullnode,
+				     const string &use_node,
+				     const string &coi,
+				     BESCatalogEntry *entry,
+				     bool dirs_only ) ;
+
+    static void			display_entry( BESCatalogEntry *entry,
+					       BESInfo *info ) ;
+
+    static void			bes_add_stat_info( BESCatalogEntry *entry,
+						   const string &fullnode ) ;
+
+    static bool			isData( const string &inQuestion,
+					const string &catalog,
+    					list<string> &services ) ;
+
     virtual void		dump( ostream &strm ) const ;
 
-    static const BESCatalogUtils *Utils( const string &name ) ;
+    static BESCatalogUtils *	Utils( const string &name ) ;
 } ;
 
 #endif // S_BESCatalogUtils_h

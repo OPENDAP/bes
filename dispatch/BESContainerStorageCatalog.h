@@ -85,7 +85,7 @@ public:
     virtual void		add_container( const string &sym_name,
 					       const string &real_name,
 					       const string &type ) ;
-    bool			isData( const string &inQuestion,
+    virtual bool		isData( const string &inQuestion,
     					list<string> &provides ) ;
 
     virtual void		dump( ostream &strm ) const ;

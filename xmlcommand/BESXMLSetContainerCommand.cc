@@ -67,7 +67,12 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
 
-    if( value.empty() )
+    string cname ;
+    string cvalue ;
+    map<string, string> cprops ;
+    xmlNode *real = BESXMLUtils::GetFirstChild( node, cname, cvalue, cprops ) ;
+
+    if( value.empty() && !real )
     {
 	string err = action + " command: container real name missing" ;
 	throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
@@ -100,6 +105,19 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
 
     // now that everything has passed tests, set the value in the dhi
     _dhi.data[REAL_NAME] = value ; 
+
+    // if there is a child node, then the real value of the container is
+    // this content, or is set in this content.
+    if( real )
+    {
+	xmlBufferPtr buf = xmlBufferCreate() ;
+	xmlNodeDump( buf, real->doc, real, 2, 1 ) ;
+	if( buf->content )
+	{
+	    _dhi.data[REAL_NAME] = (char *)(buf->content) ;
+	}
+    }
+
     _dhi.action = SETCONTAINER ;
 
     _str_cmd = (string)"set container in " + storage

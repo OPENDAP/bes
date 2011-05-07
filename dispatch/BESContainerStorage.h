@@ -34,8 +34,10 @@
 #define BESContainerStorage_h_ 1
 
 #include <string>
+#include <list>
 
 using std::string ;
+using std::list ;
 
 #include "BESObj.h"
 
@@ -131,6 +133,16 @@ public:
      * @return true if successfully removed and false otherwise
      */
     virtual bool		del_containers( ) = 0 ;
+
+    /** @brief determine if the given container is data and what servies
+     * are available for it
+     *
+     * @param inQuestion the container in question
+     * @param provides an output parameter for storing the list of
+     * services provided for this container
+     */
+    virtual bool		isData( const string &inQuestion,
+    					list<string> &provides ) = 0 ;
 
     /** @brief show the containers stored in this persistent store
      *

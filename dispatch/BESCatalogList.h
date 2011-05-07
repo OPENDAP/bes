@@ -40,9 +40,10 @@ using std::map ;
 using std::string ;
 
 #include "BESObj.h"
+#include "BESDataHandlerInterface.h"
 
 class BESCatalog ;
-class BESInfo ;
+class BESCatalogEntry ;
 
 #define BES_DEFAULT_CATALOG "catalog"
 
@@ -78,13 +79,20 @@ public:
 
     				BESCatalogList() ;
     virtual			~BESCatalogList() ;
+
+    virtual int			num_catalogs() { return _catalogs.size() ; }
+    virtual string		default_catalog() { return _default_catalog ; }
+
     virtual bool		add_catalog( BESCatalog *catalog ) ;
     virtual bool		ref_catalog( const string &catalog_name ) ;
     virtual bool		deref_catalog( const string &catalog_name );
     virtual BESCatalog *	find_catalog( const string &catalog_name ) ;
-    virtual void		show_catalog( const string &container,
-					      const string &catalog_or_info,
-					      BESInfo *info ) ;
+    virtual BESCatalogEntry *	show_catalogs( BESDataHandlerInterface &dhi,
+					       BESCatalogEntry *entry,
+					       bool show_default = true ) ;
+    
+    virtual catalog_iter	first_catalog() { return _catalogs.begin() ; }
+    virtual catalog_iter	end_catalog() { return _catalogs.end() ; }
 
     virtual void		dump( ostream &strm ) const ;
 

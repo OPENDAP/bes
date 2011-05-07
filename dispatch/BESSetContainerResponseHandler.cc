@@ -37,6 +37,7 @@
 #include "BESDataNames.h"
 #include "BESSyntaxUserError.h"
 #include "BESResponseNames.h"
+#include "BESDebug.h"
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler( const string &name )
     : BESResponseHandler( name )
@@ -92,6 +93,14 @@ BESSetContainerResponseHandler::execute( BESDataHandlerInterface &dhi )
     string symbolic_name = dhi.data[SYMBOLIC_NAME] ;
     string real_name = dhi.data[REAL_NAME] ;
     string container_type = dhi.data[CONTAINER_TYPE] ;
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute store = "
+		     << dhi.data[STORE_NAME] << endl ) ;
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute symbolic = "
+		     << dhi.data[SYMBOLIC_NAME] << endl ) ;
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute real = "
+		     << dhi.data[REAL_NAME] << endl ) ;
+    BESDEBUG( "bes", "BESSetContainerResponseHandler::execute type = "
+		     << dhi.data[CONTAINER_TYPE] << endl ) ;
     BESContainerStorage *cp =
 	BESContainerStorageList::TheList()->find_persistence( store_name );
     if( cp )

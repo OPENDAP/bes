@@ -32,6 +32,7 @@
 
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
+#include "BESContainerStorage.h"
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
 #include "BESResponseNames.h"
@@ -67,6 +68,7 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 {
     string value ;		// element value, should not be any
     string def_name ;		// definition name
+    string def_space ;		// definition storage space
     string action ;		// element name, which is the request action
     map<string, string> props ;	// element properties. Should contain name
     				// and optionally space
@@ -90,6 +92,13 @@ BESXMLDefineCommand::parse_request( xmlNode *node )
 
     _dhi.data[DEF_NAME] = def_name ;
     _str_cmd = (string)"define " + def_name ;
+
+    def_space = props["space"] ;
+    if( !def_space.empty() )
+    {
+	_str_cmd += " in " + def_space ;
+    }
+    _dhi.data[STORE_NAME] = def_space ;
 
     int num_containers = 0 ;
     string child_name ;
@@ -192,6 +201,9 @@ BESXMLDefineCommand::handle_container_element( const string &action,
     }
 
     _containers.push_back( name ) ;
+
+    string space = props["space"] ;
+    _stores[name] = space ;
 
     bool have_constraint = false ;
     bool have_attributes = false ;
@@ -305,14 +317,34 @@ BESXMLDefineCommand::prep_request()
     for( ; i != e; i++ )
     {
 	// look for the specified container
-	BESContainer *d =
-	    BESContainerStorageList::TheList()->look_for( (*i) ) ;
+	BESContainer *c = 0 ;
+
+	// first see if a particilar store is being used
+	string store = _stores[(*i)] ;
+	if( !store.empty() )
+	{
+	    BESContainerStorage *cs = 
+		BESContainerStorageList::TheList()->find_persistence( store ) ;
+	    if( cs ) c = cs->look_for( (*i) ) ;
+	}
+	else
+	{
+	    c = BESContainerStorageList::TheList()->look_for( (*i) ) ;
+	}
+	if( !c && BESContainerStorageList::TheList()->isnice() == false )
+	{
+	    string s = (string)"Could not find the container "
+		       + (*i) ;
+	    throw BESSyntaxUserError( s, __FILE__, __LINE__ ) ;
+	}
+
 	string constraint = _constraints[(*i)] ;
+	string attrs = _attributes[(*i)] ;
 	if( constraint.empty() ) constraint = _default_constraint ;
-	d->set_constraint( constraint ) ;
-	d->set_attributes( _attributes[(*i)] ) ;
-	_dhi.containers.push_back( d ) ;
-	BESDEBUG( "xml", "define using container: " << endl << *d << endl ) ;
+	c->set_constraint( constraint ) ;
+	c->set_attributes( attrs ) ;
+	_dhi.containers.push_back( c ) ;
+	BESDEBUG( "xml", "define using container: " << endl << *c << endl ) ;
     }
 }
 

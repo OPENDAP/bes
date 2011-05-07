@@ -207,7 +207,7 @@ BES_DAP_SRCS = BESDapResponse.cc BESDASResponse.cc BESDDSResponse.cc \
 	BESDataDDSResponse.cc \
 	BESContainerStorageCatalog.cc BESCatalogDirectory.cc \
 	BESCatalogUtils.cc BESCatalogList.cc BESDapError.cc \
-	BESDapErrorInfo.cc BESDapService.cc
+	BESDapErrorInfo.cc BESDapService.cc BESCatalogEntry.cc
 
 BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
 	BESDDSResponse.h \
@@ -215,7 +215,7 @@ BES_DAP_HDRS = BESDapNames.h BESDapResponse.h BESDASResponse.h \
 	BESContainerStorageCatalog.h \
 	BESCatalogDirectory.h BESCatalog.h \
 	BESCatalogUtils.h BESCatalogList.h BESDapError.h \
-	BESDapErrorInfo.h BESDapService.h
+	BESDapErrorInfo.h BESDapService.h BESCatalogEntry.h
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

@@ -37,6 +37,8 @@
 #include "BESInfo.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
+#include "BESServiceRegistry.h"
+#include "BESDebug.h"
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -118,6 +120,11 @@ BESContainerStorageVolatile::add_container( const string &sym_name,
 					    const string &real_name,
 					    const string &type )
 {
+    BESDEBUG( "bes", "BESContainerStorageCatalog::add_container: "
+		     << "adding container with name \"" << sym_name
+		     << "\", real name \"" << real_name
+		     << "\", type \"" << type << "\"" << endl ) ;
+
     // The type must be specified so that we can find the request handler
     // that knows how to handle the container.
     if( type == "" )
@@ -241,6 +248,29 @@ BESContainerStorageVolatile::del_containers( )
 	}
     }
     return true ;
+}
+
+/** @brief determine if the given container is data and what servies
+ * are available for it
+ *
+ * @param inQuestion the container in question
+ * @param provides an output parameter for storing the list of
+ * services provided for this container
+ */
+bool
+BESContainerStorageVolatile::isData( const string &inQuestion,
+				     list<string> &provides )
+{
+    bool isit = false ;
+    BESContainer *c = look_for( inQuestion ) ;
+    if( c )
+    {
+	isit = true ;
+	string node_type = c->get_container_type() ;
+	BESServiceRegistry::TheRegistry()->services_handled( node_type,
+							     provides ) ;
+    }
+    return isit ;
 }
 
 /** @brief show information for each container in this persistent store

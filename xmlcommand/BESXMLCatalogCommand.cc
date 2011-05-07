@@ -80,7 +80,7 @@ BESXMLCatalogCommand::parse_request( xmlNode *node )
 	_str_cmd = "show info" ;
     }
 
-    // this is an optional property, so could be empty string
+    // node is an optional property, so could be empty string
     _dhi.data[CONTAINER] = props["node"] ;
     if( !_dhi.data[CONTAINER].empty() )
     {

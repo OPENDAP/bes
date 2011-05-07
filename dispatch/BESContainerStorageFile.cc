@@ -45,6 +45,7 @@ using std::ifstream ;
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESInfo.h"
+#include "BESServiceRegistry.h"
 
 /** @brief pull container information from the specified file
  *
@@ -252,6 +253,29 @@ BESContainerStorageFile::del_containers( )
 	}
     }
     return true ;
+}
+
+/** @brief determine if the given container is data and what servies
+ * are available for it
+ *
+ * @param inQuestion the container in question
+ * @param provides an output parameter for storing the list of
+ * services provided for this container
+ */
+bool
+BESContainerStorageFile::isData( const string &inQuestion,
+				 list<string> &provides )
+{
+    bool isit = false ;
+    BESContainer *c = look_for( inQuestion ) ;
+    if( c )
+    {
+	isit = true ;
+	string node_type = c->get_container_type() ;
+	BESServiceRegistry::TheRegistry()->services_handled( node_type,
+							     provides ) ;
+    }
+    return isit ;
 }
 
 /** @brief show information for each container in this persistent store

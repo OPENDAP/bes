@@ -120,6 +120,9 @@ BESXMLGetCommand::parse_basic_get( xmlNode *node,
     }
     _str_cmd += " for " + _definition ;
 
+    _space = props["space"] ;
+    if( !_space.empty() ) _str_cmd += " in " + _space ;
+
     string returnAs = props["returnAs"] ;
     if( returnAs.empty() )
     {
@@ -166,10 +169,22 @@ BESXMLGetCommand::prep_request()
 	return ;
     }
 
-    // FIX: should this be using dot notation? Like get das for volatile.d ;
-    // Or do it like the containers, just find the first one available? Same
-    // question for containers then?
-    BESDefine *d = BESDefinitionStorageList::TheList()->look_for( _definition );
+    BESDefine *d = 0 ;
+
+    if( !_space.empty() )
+    {
+	BESDefinitionStorage *ds =
+	    BESDefinitionStorageList::TheList()->find_persistence( _space ) ;
+	if( ds )
+	{
+	    d = ds->look_for( _definition ) ;
+	}
+    }
+    else
+    {
+	d = BESDefinitionStorageList::TheList()->look_for( _definition ) ;
+    }
+
     if( !d )
     {
 	string s = (string)"Unable to find definition " + _definition ;

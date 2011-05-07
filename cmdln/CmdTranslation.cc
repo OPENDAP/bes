@@ -360,7 +360,7 @@ CmdTranslation::translate_show_error( BESTokenizer &t, xmlTextWriterPtr writer)
 bool
 CmdTranslation::translate_catalog( BESTokenizer &t, xmlTextWriterPtr writer )
 {
-    // show catalog|info [for node]
+    // show catalog|info [in catalog] [for node]
     // <showCatalog node="" />
     string show_what = t.get_current_token() ;
     if( show_what.empty() || ( show_what != "info" && show_what != "catalog" ) )

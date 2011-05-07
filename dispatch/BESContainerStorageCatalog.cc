@@ -38,6 +38,7 @@
 #include "BESInfo.h"
 #include "BESServiceRegistry.h"
 #include "BESRegex.h"
+#include "BESDebug.h"
 #include "Error.h"
 
 using namespace libdap ;
@@ -112,6 +113,10 @@ BESContainerStorageCatalog::add_container( const string &sym_name,
     // for the catalog. First, remove any trailing slashes. Then find the
     // basename of the remaining real name. The make sure it's not on the
     // exclude list.
+    BESDEBUG( "bes", "BESContainerStorageCatalog::add_container: "
+		     << "adding container with name \"" << sym_name
+		     << "\", real name \"" << real_name
+		     << "\", type \"" << type << "\"" << endl ) ;
     string::size_type stopat = real_name.length() - 1 ;
     while( real_name[stopat] == '/' )
     {

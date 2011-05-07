@@ -92,6 +92,9 @@ public:
     virtual bool		del_container( const string &s_name ) ;
     virtual bool		del_containers( ) ;
 
+    virtual bool		isData( const string &inQuestion,
+    					list<string> &provides ) ;
+
     virtual void		show_containers( BESInfo &info ) ;
 
     virtual void		dump( ostream &strm ) const ;

@@ -43,7 +43,7 @@ class BESContainerStorage ;
 class BESContainer ;
 class BESInfo ;
 
-#define PERSISTENCE_VOLATILE "volatile"
+#define PERSISTENCE_VOLATILE "default"
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.
@@ -78,7 +78,6 @@ private:
 
     BESContainerStorageList::persistence_list *_first ;
 
-    bool		isnice() ;
 protected:
 			BESContainerStorageList() ;
 public:
@@ -88,6 +87,7 @@ public:
     virtual bool	ref_persistence( const string &persist_name ) ;
     virtual bool	deref_persistence( const string &persist_name ) ;
     virtual BESContainerStorage *find_persistence( const string &persist_name ) ;
+    virtual bool	isnice() ;
 
     virtual BESContainer *look_for( const string &sym_name ) ;
 

@@ -61,6 +61,7 @@
 #define DEFINITIONS "definitions"
 
 #define CONTAINER "container"
+#define CATALOG "catalog"
 
 /*
  * Context

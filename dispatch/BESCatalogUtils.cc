@@ -36,23 +36,35 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include <cerrno>
 #include <iostream>
+#include <sstream>
+#include <list>
+
 using std::cout ;
 using std::endl ;
+using std::ostringstream ;
+using std::list ;
 
 #include "BESCatalogUtils.h"
+#include "BESCatalogList.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESRegex.h"
 #include "BESUtil.h"
+#include "BESDapNames.h"
+#include "BESInfo.h"
+#include "BESContainerStorageList.h"
+#include "BESContainerStorage.h"
+#include "BESCatalogEntry.h"
 
 map<string, BESCatalogUtils *> BESCatalogUtils::_instances ;
 
 BESCatalogUtils::
 BESCatalogUtils( const string &n )
-    : _follow_syms( false )
+    : _name( n ), _follow_syms( false )
 {
     string key = "BES.Catalog." + n + ".RootDirectory" ;
     bool found = false ;
@@ -245,6 +257,223 @@ BESCatalogUtils::match_list_end() const
     return _match_list.end() ;
 }
 
+unsigned int
+BESCatalogUtils::get_entries( DIR *dip, const string &fullnode,
+			      const string &use_node, const string &coi,
+			      BESCatalogEntry *entry,
+			      bool dirs_only )
+{
+    unsigned int cnt = 0 ;
+    struct stat cbuf ;
+    int statret = stat( fullnode.c_str(), &cbuf ) ;
+    int my_errno = errno ;
+    if( statret == 0 )
+    {
+	struct dirent *dit;
+	struct stat buf;
+	struct stat lbuf;
+
+	while( ( dit = readdir( dip ) ) != NULL )
+	{
+	    string dirEntry = dit->d_name ;
+	    if( dirEntry != "." && dirEntry != ".." )
+	    {
+		string fullPath = fullnode + "/" + dirEntry ;
+
+		// if follow_sym_links is true then continue with
+		// the checking. If false, first see if the entry is
+		// a symbolic link. If it is, do not include in the
+		// listing for this node. If not, then continue
+		// checking the entry.
+		bool continue_checking = true ;
+		if( follow_sym_links() == false )
+		{
+#if 0
+		    int lstatret = lstat( fullPath.c_str(), &lbuf ) ;
+#endif
+		    (void)lstat( fullPath.c_str(), &lbuf ) ;
+		    if( S_ISLNK( lbuf.st_mode ) )
+		    {
+			continue_checking = false ;
+		    }
+		}
+
+		if( continue_checking )
+		{
+		    // look at the mode and determine if this is a
+		    // directory or a regular file. If it is not
+		    // accessible, the stat fails, is not a directory
+		    // or regular file, then simply do not include it.
+		    statret = stat( fullPath.c_str(), &buf ) ;
+		    if ( statret == 0 && S_ISDIR( buf.st_mode ) )
+		    {
+			if( exclude( dirEntry ) == false )
+			{
+			    BESCatalogEntry *curr_entry =
+				new BESCatalogEntry( dirEntry,
+						     entry->get_catalog() ) ;
+
+			    bes_get_stat_info( curr_entry, buf ) ;
+
+			    entry->add_entry( curr_entry ) ;
+
+			    // we don't go further then this, so we need
+			    // to add a blank node here so that we know
+			    // it's a node (collection)
+			    BESCatalogEntry *blank_entry =
+				new BESCatalogEntry( ".blank",
+						     entry->get_catalog() ) ;
+			    curr_entry->add_entry( blank_entry ) ;
+			}
+		    }
+		    else if ( statret == 0 && S_ISREG( buf.st_mode ) )
+		    {
+			if( !dirs_only && include( dirEntry ) )
+			{
+			    BESCatalogEntry *curr_entry =
+				new BESCatalogEntry( dirEntry,
+						     entry->get_catalog() ) ;
+			    bes_get_stat_info( curr_entry, buf ) ;
+
+			    list<string> services ;
+			    isData( fullPath, _name, services ) ;
+			    curr_entry->set_service_list( services ) ;
+
+			    bes_get_stat_info( curr_entry, buf ) ;
+
+			    entry->add_entry( curr_entry ) ;
+			}
+		    }
+		}
+	    }
+	}
+    }
+    else
+    {
+	// ENOENT means that the path or part of the path does not exist
+	if( my_errno == ENOENT )
+	{
+	    string error = "Node " + use_node + " does not exist" ;
+	    char *s_err = strerror( my_errno ) ;
+	    if( s_err )
+	    {
+		error = s_err ;
+	    }
+	    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
+	}
+	// any other error means that access is denied for some reason
+	else
+	{
+	    string error = "Access denied for node " + use_node ;
+	    char *s_err = strerror( my_errno ) ;
+	    if( s_err )
+	    {
+		error = error + s_err ;
+	    }
+	    throw BESNotFoundError( error, __FILE__, __LINE__ ) ;
+	}
+    }
+    return cnt ;
+}
+
+void
+BESCatalogUtils::display_entry( BESCatalogEntry *entry, BESInfo *info )
+{
+    string defcatname = BESCatalogList::TheCatalogList()->default_catalog() ;
+
+    // start with the external entry
+    map<string,string> props ;
+    if( entry->get_catalog() == defcatname )
+    {
+	props["name"] = entry->get_name() ;
+    }
+    else
+    {
+	string name = entry->get_catalog() + "/" ;
+	if( entry->get_name() != "/" )
+	{
+	    name = name + entry->get_name() ;
+	}
+	props["name"] = name ;
+    }
+    props["catalog"] = entry->get_catalog() ;
+    props["size"] = entry->get_size() ;
+    props["lastModified"] = entry->get_mod_date() + "T" + entry->get_mod_time();
+    if( entry->is_collection() )
+    {
+	props["node"] = "true" ;
+	ostringstream strm ;
+	strm << entry->get_count() ;
+	props["count"] = strm.str() ;
+    }
+    else
+    {
+	props["node"] = "false" ;
+    }
+    info->begin_tag( "dataset", &props ) ;
+
+    list<string> services = entry->get_service_list() ;
+    if( services.size() )
+    {
+	list<string>::const_iterator si = services.begin() ;
+	list<string>::const_iterator se = services.end() ;
+	for( ; si != se; si++ )
+	{
+	    info->add_tag( "serviceRef", (*si) ) ;
+	}
+    }
+}
+
+void
+BESCatalogUtils::bes_add_stat_info( BESCatalogEntry *entry,
+				    const string &fullnode )
+{
+    struct stat cbuf ;
+    int statret = stat( fullnode.c_str(), &cbuf ) ;
+    if( statret == 0 )
+    {
+	bes_get_stat_info( entry, cbuf ) ;
+    }
+}
+
+void
+BESCatalogUtils::bes_get_stat_info( BESCatalogEntry *entry,
+				    struct stat &buf )
+{
+    off_t sz = buf.st_size ;
+    entry->set_size( (int)sz ) ;
+
+    // %T = %H:%M:%S
+    // %F = %Y-%m-%d
+    time_t mod = buf.st_mtime ;
+    struct tm *stm = gmtime( &mod ) ;
+    char mdate[64] ;
+    strftime( mdate, 64, "%Y-%m-%d", stm ) ;
+    char mtime[64] ;
+    strftime( mtime, 64, "%T", stm ) ;
+
+    ostringstream sdt ;
+    sdt << mdate ;
+    entry->set_mod_date( sdt.str() ) ;
+
+    ostringstream stt ;
+    stt << mtime ;
+    entry->set_mod_time( stt.str() ) ;
+}
+
+bool
+BESCatalogUtils::isData( const string &inQuestion,
+			 const string &catalog,
+			 list<string> &services )
+{
+    BESContainerStorage *store =
+	BESContainerStorageList::TheList()->find_persistence( catalog ) ;
+    if( !store )
+	return false ;
+
+    return store->isData( inQuestion, services ) ;
+}
+
 void
 BESCatalogUtils::dump( ostream &strm ) const
 {
@@ -325,7 +554,7 @@ BESCatalogUtils::dump( ostream &strm ) const
     BESIndent::UnIndent() ;
 }
 
-const BESCatalogUtils *
+BESCatalogUtils *
 BESCatalogUtils::Utils( const string &cat_name )
 {
     BESCatalogUtils *utils = BESCatalogUtils::_instances[cat_name] ;

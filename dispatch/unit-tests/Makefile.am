@@ -10,6 +10,9 @@ if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
+if LIBDAP
+LDADD += ../libbes_dap.la
+endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. 
@@ -31,6 +34,10 @@ TESTS = constraintT containerT defT initT keysT pfileT			\
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
+
+if LIBDAP
+TESTS += catT
+endif
 
 if BZ2UNCOMPRESS
 TESTS += bz2T
@@ -136,4 +143,9 @@ servicesT_SOURCES = servicesT.cc
 servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 fsT_SOURCES = fsT.cc
+
+if LIBDAP
+catT_SOURCES = catT.cc ../BESCatalogResponseHandler.cc
+catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
+endif
 

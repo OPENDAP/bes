@@ -39,7 +39,7 @@ using std::string ;
 
 #include "BESObj.h"
 
-class BESInfo ;
+class BESCatalogEntry ;
 
 /** @brief abstract base class catalog object. Derived classes know how to
  * show nodes and leaves in a catalog.
@@ -71,9 +71,9 @@ public:
 				{
 				    return _catalog_name ;
 				}
-    virtual void		show_catalog( const string &container,
-					      const string &catalog_or_info,
-					      BESInfo *info ) = 0 ;
+    virtual BESCatalogEntry *	show_catalog( const string &container,
+					      const string &coi,
+					      BESCatalogEntry *entry ) = 0 ;
 
     virtual void		dump( ostream &strm ) const = 0 ;
 };
