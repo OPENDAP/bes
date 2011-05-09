@@ -210,6 +210,7 @@ void HE5Parser::reset()
     grid_structure_found = false;
     valid_projection = false;
     swath_structure_found = false;
+    za_structure_found = false;
     parser_state = 0; 
     _valid = false;
 

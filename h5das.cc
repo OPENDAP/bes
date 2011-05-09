@@ -859,7 +859,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     if(eos.get_za_variable(varname)) { 
        int za_coord_flag = eos.get_za_coordinate_dimension_match(varname);
        if(za_coord_flag == 1) // having lat lev time
-         attr_table_ptr->append_attr("coordinates",STRING,"lat lev time");
+         attr_table_ptr->append_attr("coordinates",STRING,"time lat lev ");
        if(za_coord_flag == 2) // having lat lev
          attr_table_ptr->append_attr("coordinates",STRING,"lat lev");
      }

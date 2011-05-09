@@ -105,6 +105,7 @@ HE5CF::set()
     HE5ShortName::reset();
     HE5CFSwath::set();
     HE5CFGrid::set();
+    HE5CFZa::set();
     _shared_dimension = false;
 
 }
