@@ -96,12 +96,16 @@ public:
 	cout.rdbuf( holder ) ;
 	close( fd ) ;
 
+	string str ;
+	int bytesRead = 0 ;
 	fd = open( "./sbT.out", O_RDONLY, S_IRUSR ) ;
 	char buffer[4096] ;
-	int bytesRead = read( fd, (char *)buffer, 4096 ) ;
+	while( ( bytesRead = read( fd, (char *)buffer, 4096 ) ) > 0 )
+	{
+	    buffer[bytesRead] = '\0' ;
+	    str += string(buffer) ;
+	}
 	close( fd ) ;
-	buffer[bytesRead] = '\0' ;
-	string str( buffer ) ;
 	cout << "****" << endl << str << endl << "****" << endl ;
 	CPPUNIT_ASSERT( str == result ) ;
 
