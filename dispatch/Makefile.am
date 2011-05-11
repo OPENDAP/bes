@@ -82,7 +82,7 @@ uninstall-local:
 	rm -f $(DESTDIR)$(sysconfdir)/bes/bes.conf $(DESTDIR)$(sysconfdir)/bes/modules/dap.conf
 
 bes/bes.conf: bes/bes.conf.in ../config.status
-	test -d bes || mkdir bes
+	mkdir -p bes
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
@@ -92,7 +92,7 @@ bes/bes.conf: bes/bes.conf.in ../config.status
 		-e "s%[@]bindir[@]%${bindir}%" $< > bes/bes.conf
 
 bes/dap.conf: bes/dap.conf.in ../config.status
-	test -d bes || mkdir bes
+	mkdir -p bes
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]sysconfdir[@]%${sysconfdir}%" \
 		-e "s%[@]pkglibdir[@]%${pkglibdir}%" \
