@@ -114,6 +114,7 @@ BESXMLSetContainerCommand::parse_request( xmlNode *node )
 	xmlNodeDump( buf, real->doc, real, 2, 1 ) ;
 	if( buf->content )
 	{
+	    value = (char *)buf->content ;
 	    _dhi.data[REAL_NAME] = (char *)(buf->content) ;
 	}
     }
