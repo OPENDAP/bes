@@ -94,10 +94,13 @@ BESServerHandler::handle( Connection *c )
 {
     if(_method=="single")
     {
+	// we're in single mode, so no for and exec is needed. One
+	// client connection and we are done.
 	execute( c ) ;
     }
     else
     {
+	// multi-process mode, so fork and exec.
 	int main_process = getpid() ;
 	pid_t pid ;
 	if( ( pid = fork() ) < 0 )
@@ -122,6 +125,8 @@ BESServerHandler::handle( Connection *c )
 	    }
 	    else if( pid1 == 0 ) /* child of the child */
 	    {
+		// execute given the connection. The execute method does
+		// the listen and handles input/output, etc...
 		execute( c ) ;
 	    }
 	    sleep( 1 ) ;
@@ -150,6 +155,11 @@ BESServerHandler::execute( Connection *c )
 
     map<string,string> extensions ;
 
+    // we loop continuously waiting for messages. The only way we exit
+    // this loop is 1. we receive a status of exit from the client, 2.
+    // the client drops the connection, the process catches the signal
+    // and exits, 3. a fatal error has occurred in the server so exit,
+    // 4. the server process is killed.
     for(;;)
     {
 	ostringstream ss ;
@@ -158,6 +168,8 @@ BESServerHandler::execute( Connection *c )
 	while( !done )
 	    done = c->receive( extensions, &ss ) ;
 
+	// The server has been sent a message that the client is exiting
+	// and closing the connection. So exit this process.
 	if( extensions["status"] == c->exit() )
 	{
 	    c->closeConnection() ;
@@ -246,6 +258,8 @@ BESServerHandler::execute( Connection *c )
 	    // reset the streams buffer
 	    cout.rdbuf( holder ) ;
 
+	    // If the status is fatal, then we want to exit. Otherwise,
+	    // continue, wait for the next request.
 	    switch (status)
 	    {
 		case BES_INTERNAL_FATAL_ERROR:
