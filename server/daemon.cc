@@ -165,8 +165,6 @@ start_master_beslistener(char **arguments)
     // parent
     BESDEBUG("besdaemon", "master_beslistener_pid: " << master_beslistener_pid << endl);
 
-    store_daemon_id( getpid() ) ;
-
     return master_beslistener_pid;
 }
 
@@ -179,6 +177,10 @@ void CatchSigChild(int signal)
 	master_beslistener_status = pr_exit(master_beslistener_status);
     }
 }
+
+#if 0
+
+// Broken
 
 // When the daemon gets the HUP signal, it forwards that onto each beslistener.
 // They then all exit, returning the 'restart' code so that the daemon knows
@@ -195,28 +197,10 @@ void CatchSigHup(int signal)
 	// This implements the behavior where SIGHUP sent to the daemon
 	// forces a hard restart of the beslisteners.
 	(void)start_master_beslistener(arguments);
-#if 0
-	// Stop all of the beslisteners
-	int status = killpg(master_beslistener_pid, SIGHUP);
-	switch (status) {
-	case EINVAL:
-	    cerr << "The sig argument is not a valid signal number." << endl;
-	    break;
 
-	case EPERM:
-	    cerr << "The sending process is not the super-user and one or more of the target processes has an effective user ID different from that of the sending process." << endl;
-	    break;
-
-	case ESRCH:
-	    cerr << "No process can be found in the process group specified by pgrp." << endl;
-	    break;
-
-	default:	// No error
-	    break;
-	}
-#endif
     }
 }
+#endif
 
 // When TERM (the default for 'kill') is sent to this process, send it also
 // to each beslistener. This will cause the beslisteners to all exit with a zero
@@ -472,10 +456,13 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
+#if 0
+    // broken
     if (signal(SIGHUP, CatchSigHup) < 0) {
 	cerr << "Could not register a handler to catch the hang-up signal." << endl;
 	exit(1);
     }
+#endif
 
     int status = start_master_beslistener( arguments ) ;
     if( status == 0 )			// Error
@@ -487,7 +474,9 @@ main(int argc, char *argv[])
 	return status ;
     }
 
-    BESDEBUG("besdaemon", ": mount_server status: " << status << endl);
+    store_daemon_id( getpid() ) ;
+
+    BESDEBUG("besdaemon", ": start_master_beslistener status: " << status << endl);
 
     DaemonCommandHandler handler;
     status = start_command_processor(handler);
