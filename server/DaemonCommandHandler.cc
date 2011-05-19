@@ -66,7 +66,7 @@ using std::flush ;
 
 // Defined in daemon.cc
 extern int  start_master_beslistener( char ** ) ;
-extern void stop_all_beslisteners() ;
+extern void stop_all_beslisteners( int ) ;
 
 extern int master_beslistener_pid;	// This is also the process group id
 extern char **arguments;
@@ -170,7 +170,7 @@ DaemonCommandHandler::execute_command(const string &command)
 		switch (command) {
 		case HAI_STOP_NOW:
 		    BESDEBUG("besdaemon", "Received StopNow" << endl);
-		    stop_all_beslisteners();	// see daemon.cc
+		    stop_all_beslisteners(SIGTERM);	// see daemon.cc
 		    break;
 		case HAI_START:
 		{
@@ -181,7 +181,7 @@ DaemonCommandHandler::execute_command(const string &command)
 		}
 		case HAI_EXIT:
 		    BESDEBUG("besdaemon", "Received Exit" << endl);
-		    stop_all_beslisteners();
+		    stop_all_beslisteners(SIGTERM);
 		    exit(0);
 		    break;
 		default:

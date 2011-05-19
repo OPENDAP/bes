@@ -44,10 +44,6 @@
 #include <cstdlib>
 #include <cerrno>
 
-#define DODS_DEBUG 1
-
-//#include <debug.h>
-
 using std::ifstream ;
 using std::ofstream ;
 using std::cout ;
@@ -71,8 +67,8 @@ using std::string ;
 #define BES_SERVER_PID "/bes.pid"
 
 int  daemon_init() ;
-int  start_master_beslistener( char ** ) ;
-void stop_all_beslisteners() ;
+int  start_master_beslistener( char **arguments ) ;
+void stop_all_beslisteners( int sig ) ;
 int  pr_exit( int status ) ;
 void store_daemon_id( int pid ) ;
 bool load_names( const string &install_dir, const string &pid_dir ) ;
@@ -85,12 +81,18 @@ string file_for_daemon ;
 // This can be used to see if HUP or TERM has been sent to the master bes
 int master_beslistener_status = -1;
 int master_beslistener_pid = -1;	// This is also the process group id
-PPTServer *command_server = 0;
-TcpSocket *command_socket = 0;
 
 char **arguments = 0 ;
 
-void stop_all_beslisteners()
+/** Stop all of the listeners (both the master listener and all of the
+ *  child listeners that actually process requests). A test version of this
+ *  used the master beslistener's exit status to determine if the daemon
+ *  should try to restart the master beslistener (the beslistener still
+ *  returns a different value depending on which signal it gets, even though
+ *  it's not used anymore).
+ * @param sig
+ */
+void stop_all_beslisteners(int sig)
 {
     BESDEBUG("besdaemon", "stopping listeners" << endl);
 
@@ -98,7 +100,7 @@ void stop_all_beslisteners()
     sigignore(SIGCHLD);
 
     // send TERM to all members of the process group with/of the master bes
-    int status = killpg(master_beslistener_pid, SIGTERM);
+    int status = killpg(master_beslistener_pid, sig);
     switch (status) {
     case EINVAL:
 	cerr << "The sig argument is not a valid signal number." << endl;
@@ -124,6 +126,50 @@ void stop_all_beslisteners()
     BESDEBUG("besdaemon", "done catching listeners" << endl);
 }
 
+/** Start the 'master beslistener' and wait for its exit status. That status
+    value is passed to pr_exit() which then either returns 0, 1 or > 1. The
+    value returned by pr_exit is the value returned by this function.
+
+   @param arguments argumnet[0] is the full path to the beslistener; the
+   remaining stuff is just a copy of the arguments passed to this daemon on
+   startup.
+   @return 0 for an error or the PID of the master beslistener
+ */
+int
+start_master_beslistener(char **arguments)
+{
+    if( ( master_beslistener_pid = fork() ) < 0 )
+    {
+	cerr << NameProgram << ": fork error " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+	return 0 ;
+    }
+    else if( master_beslistener_pid == 0 ) /* child process */
+    {
+	// This starts the beslistener (aka mbes) that is parent of the
+	// beslisteners that actually serve data.
+	cerr << "Starting: " << arguments[0] << endl;
+	execvp( arguments[0], arguments ) ;
+	cerr << NameProgram
+	     << ": mounting listener, subprocess failed: " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+	exit( 1 ) ; 	//NB: This exits from the child process.
+    }
+
+    // parent
+    BESDEBUG("besdaemon", "master_beslistener_pid: " << master_beslistener_pid << endl);
+
+    store_daemon_id( getpid() ) ;
+
+    return master_beslistener_pid;
+}
+
 void CatchSigChild(int signal)
 {
     if (signal == SIGCHLD) {
@@ -144,6 +190,12 @@ void CatchSigHup(int signal)
 	BESDEBUG("besdaemon",  "caught SIGHUP in besdaemon." << endl);
 	BESDEBUG("besdaemon", "sending SIGHUP to the process group: " << master_beslistener_pid << endl);
 
+	stop_all_beslisteners(SIGHUP);
+
+	// This implements the behavior where SIGHUP sent to the daemon
+	// forces a hard restart of the beslisteners.
+	(void)start_master_beslistener(arguments);
+#if 0
 	// Stop all of the beslisteners
 	int status = killpg(master_beslistener_pid, SIGHUP);
 	switch (status) {
@@ -162,6 +214,7 @@ void CatchSigHup(int signal)
 	default:	// No error
 	    break;
 	}
+#endif
     }
 }
 
@@ -175,7 +228,7 @@ void CatchSigTerm(int signal)
 	BESDEBUG("besdaemon", "sending SIGTERM to the process group: " << master_beslistener_pid << endl);
 
 	// Stop all of the beslisteners
-	stop_all_beslisteners();
+	stop_all_beslisteners(SIGTERM);
 
 	// Once all the child exit status values are read, exit the daemon
 	exit(0);
@@ -184,6 +237,9 @@ void CatchSigTerm(int signal)
 
 int start_command_processor(DaemonCommandHandler &handler)
 {
+    TcpSocket *command_socket;
+    PPTServer *command_server;
+
     try {
 	SocketListener listener;
 
@@ -203,18 +259,25 @@ int start_command_processor(DaemonCommandHandler &handler)
 	command_server = new PPTServer(&handler, &listener, /*is_secure*/false);
 	command_server->initConnection();
 
+	delete command_server; command_server = 0;
+	delete command_socket; command_socket = 0;
+
 	// When/if the command interpreter exits, stop the all listeners.
-	stop_all_beslisteners();
+	stop_all_beslisteners(SIGTERM);
 	return 0;
     }
     catch (BESError &se) {
 	cerr << "daemon: " << se.get_message() << endl;
-	stop_all_beslisteners();
+	delete command_server; command_server = 0;
+	delete command_socket; command_socket = 0;
+	stop_all_beslisteners(SIGTERM);
 	return 1;
     }
     catch (...) {
 	cerr << "daemon: " << "caught unknown exception" << endl;
-	stop_all_beslisteners();
+	delete command_server; command_server = 0;
+	delete command_socket; command_socket = 0;
+	stop_all_beslisteners(SIGTERM);
 	return 1;
     }
 }
@@ -455,50 +518,6 @@ daemon_init()
 	exit( 0 ) ;
     setsid() ;			// child establishes its own process group
     return 0 ;
-}
-
-/** Start the 'master beslistener' and wait for its exit status. That status
-    value is passed to pr_exit() which then either returns 0, 1 or > 1. The
-    value returned by pr_exit is the value returned by this function.
-
-   @param arguments argumnet[0] is the full path to the beslistener; the
-   remaining stuff is just a copy of the arguments passed to this daemon on
-   startup.
-   @return 0 for an error or the PID of the master beslistener
- */
-int
-start_master_beslistener(char **arguments)
-{
-    if( ( master_beslistener_pid = fork() ) < 0 )
-    {
-	cerr << NameProgram << ": fork error " ;
-	const char *perror_string = strerror( errno ) ;
-	if( perror_string )
-	    cerr << perror_string ;
-	cerr << endl ;
-	return 0 ;
-    }
-    else if( master_beslistener_pid == 0 ) /* child process */
-    {
-	// This starts the beslistener (aka mbes) that is parent of the
-	// beslisteners that actually serve data.
-	cerr << "Starting: " << arguments[0] << endl;
-	execvp( arguments[0], arguments ) ;
-	cerr << NameProgram
-	     << ": mounting listener, subprocess failed: " ;
-	const char *perror_string = strerror( errno ) ;
-	if( perror_string )
-	    cerr << perror_string ;
-	cerr << endl ;
-	exit( 1 ) ; 	//NB: This exits from the child process.
-    }
-
-    // parent
-    BESDEBUG("besdaemon", "master_beslistener_pid: " << master_beslistener_pid << endl);
-
-    store_daemon_id( getpid() ) ;
-
-    return master_beslistener_pid;
 }
 
 /** Evaluate the exit status returned to the besdaemon by the master
