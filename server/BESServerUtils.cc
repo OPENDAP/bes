@@ -39,7 +39,10 @@ using std::cout ;
 using std::endl ;
 
 #include "BESServerUtils.h"
+#if 0
+// jhrg 5/16/11
 #include "BESApp.h"
+#endif
 #include "BESDebug.h"
 
 void

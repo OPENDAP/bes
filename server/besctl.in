@@ -73,7 +73,7 @@ startBES()
 		echo "FAILED: The BES daemon did not appear to start"
 		exit $retval
 	    else
-		sleep 5
+		sleep 2
 		findRunningBES
 		if [ $BES_RUNNING ]
 		then
@@ -101,7 +101,7 @@ stopBES()
     then
 	if [ $BES_PID ]
 	then
-	    kill -INT $BES_PID
+	    kill $BES_PID
 	    retval=$?
 	    if [ $retval != 0 ]
 	    then
@@ -154,34 +154,34 @@ findRunningBES()
     if [ -f "$pidfile" ]
     then
 	BES_PID=`cat "$pidfile" | cut -d' ' -f2`
-	BESLISTENER_PID=`$PS | grep -v grep | grep $BES_PID | grep beslistener | awk '{print $2}'`
-	if [ $BESLISTENER_PID ]
+	BESDAEMON_PID=`$PS | grep -v grep | grep $BES_PID | grep besdaemon | awk '{print $2}'`
+	if [ $BESDAEMON_PID ]
 	then
 	    BES_RUNNING=1
 	else
 	    echo "BES PID file exists but process not running, cleaning up"
 	    /bin/rm -f  "$pidfile"
 
-	    BESLISTENER_PID=`$PS | grep -v grep | grep beslistener | awk '{print $2}'`
-	    if [ $BESLISTENER_PID ]
+	    BESDAEMON_PID=`$PS | grep -v grep | grep besdaemon | awk '{print $2}'`
+	    if [ $BESDAEMON_PID ]
 	    then
-		echo "BES seems to be running from a different location: $BESLISTENER_PID"
+		echo "BES seems to be running from a different location: $BESDAEMON_PID"
 	    fi
 	fi
     else
 	BESLISTENER=""
-	for i in `$PS | grep -v grep | grep beslistener | awk '{print $2}'`
+	for i in `$PS | grep -v grep | grep besdaemon | awk '{print $2}'`
 	do
-	    if [ "$BESLISTENER_PID" == "" ]
+	    if [ "$BESDAEMON_PID" == "" ]
 	    then
-		BESLISTENER_PID=$i
+		BESDAEMON_PID=$i
 	    else
-		BESLISTENER_PID="$BESLISTENER_PID $i"
+		BESDAEMON_PID="$BESDAEMON_PID $i"
 	    fi
 	done
-	if [ "$BESLISTENER_PID" ]
+	if [ "$BESDAEMON_PID" ]
 	then
-	    echo "BES seems to be running from a different location: pids $BESLISTENER_PID"
+	    echo "BES seems to be running from a different location: pids $BESDAEMON_PID"
 	fi
     fi
 }

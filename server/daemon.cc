@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>  // for chmod
 #include <ctype.h> // for isdigit
+#include <signal.h>
 
 #include <fstream>
 #include <iostream>
@@ -42,6 +43,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
+
+#define DODS_DEBUG 1
+
+//#include <debug.h>
 
 using std::ifstream ;
 using std::ofstream ;
@@ -53,26 +58,167 @@ using std::string ;
 
 #include "config.h"
 #include "ServerExitConditions.h"
+#include "SocketListener.h"
+#include "TcpSocket.h"
+#include "PPTServer.h"
+#include "DaemonCommandHandler.h"
 #include "BESServerUtils.h"
 #include "BESScrub.h"
+#include "BESError.h"
+#include "BESDebug.h"
 
-#define BES_SERVER_ROOT "BES_SERVER_ROOT"
 #define BES_SERVER "/beslistener"
 #define BES_SERVER_PID "/bes.pid"
 
 int  daemon_init() ;
-int  mount_server( char ** ) ;
+int  start_master_beslistener( char ** ) ;
+void stop_all_beslisteners() ;
 int  pr_exit( int status ) ;
-void store_listener_id( int pid ) ;
+void store_daemon_id( int pid ) ;
 bool load_names( const string &install_dir, const string &pid_dir ) ;
 
 string NameProgram ;
 
 // This two variables are set by load_names
 string server_name ;
-string file_for_listener ;
+string file_for_daemon ;
+// This can be used to see if HUP or TERM has been sent to the master bes
+int master_beslistener_status = -1;
+int master_beslistener_pid = -1;	// This is also the process group id
+PPTServer *command_server = 0;
+TcpSocket *command_socket = 0;
 
-char **arguments = 0 ; 
+char **arguments = 0 ;
+
+void stop_all_beslisteners()
+{
+    BESDEBUG("besdaemon", "stopping listeners" << endl);
+
+    // deregister sigchld handler
+    sigignore(SIGCHLD);
+
+    // send TERM to all members of the process group with/of the master bes
+    int status = killpg(master_beslistener_pid, SIGTERM);
+    switch (status) {
+    case EINVAL:
+	cerr << "The sig argument is not a valid signal number." << endl;
+	break;
+
+    case EPERM:
+	cerr << "The sending process is not the super-user and one or more of the target processes has an effective user ID different from that of the sending process."
+	    << endl;
+	break;
+
+    case ESRCH:
+	cerr << "No process can be found in the process group specified by the process group (" << master_beslistener_pid << ")." << endl;
+	break;
+
+    default: // No error
+	break;
+    }
+
+    int pid;
+    while ((pid = wait(&status)) > 0)
+	BESDEBUG("besdaemon", "caught listener: " << pid << " status: " << pr_exit(status) << endl);
+
+    BESDEBUG("besdaemon", "done catching listeners" << endl);
+}
+
+void CatchSigChild(int signal)
+{
+    if (signal == SIGCHLD) {
+	int pid = wait(&master_beslistener_status);
+	BESDEBUG("besdaemon",  "caught master beslistener (" << pid << ") status: " << pr_exit(master_beslistener_status) << endl);
+	// Decode and record the exit status.
+	master_beslistener_status = pr_exit(master_beslistener_status);
+    }
+}
+
+// When the daemon gets the HUP signal, it forwards that onto each beslistener.
+// They then all exit, returning the 'restart' code so that the daemon knows
+// to restart the master beslistener. I wrote this for testing before I had
+// the command interpreter running.
+void CatchSigHup(int signal)
+{
+    if (signal == SIGHUP) {
+	BESDEBUG("besdaemon",  "caught SIGHUP in besdaemon." << endl);
+	BESDEBUG("besdaemon", "sending SIGHUP to the process group: " << master_beslistener_pid << endl);
+
+	// Stop all of the beslisteners
+	int status = killpg(master_beslistener_pid, SIGHUP);
+	switch (status) {
+	case EINVAL:
+	    cerr << "The sig argument is not a valid signal number." << endl;
+	    break;
+
+	case EPERM:
+	    cerr << "The sending process is not the super-user and one or more of the target processes has an effective user ID different from that of the sending process." << endl;
+	    break;
+
+	case ESRCH:
+	    cerr << "No process can be found in the process group specified by pgrp." << endl;
+	    break;
+
+	default:	// No error
+	    break;
+	}
+    }
+}
+
+// When TERM (the default for 'kill') is sent to this process, send it also
+// to each beslistener. This will cause the beslisteners to all exit with a zero
+// value (the code for 'do not restart').
+void CatchSigTerm(int signal)
+{
+    if (signal == SIGTERM) {
+	BESDEBUG("besdaemon", "caught SIGTERM." << endl);
+	BESDEBUG("besdaemon", "sending SIGTERM to the process group: " << master_beslistener_pid << endl);
+
+	// Stop all of the beslisteners
+	stop_all_beslisteners();
+
+	// Once all the child exit status values are read, exit the daemon
+	exit(0);
+    }
+}
+
+int start_command_processor(DaemonCommandHandler &handler)
+{
+    try {
+	SocketListener listener;
+
+	// ***
+	if (/*_portVal*/11002) {
+	    // command_socket is global
+	    command_socket = new TcpSocket(/*_portVal*/11002);
+	    listener.listen(command_socket);
+	}
+#if 0
+	if (!_unixSocket.empty()) {
+	    _us = new UnixSocket(_unixSocket);
+	    listener.listen(_us);
+	}
+#endif
+
+	command_server = new PPTServer(&handler, &listener, /*is_secure*/false);
+	command_server->initConnection();
+
+	// When/if the command interpreter exits, stop the all listeners.
+	stop_all_beslisteners();
+	return 0;
+    }
+    catch (BESError &se) {
+	cerr << "daemon: " << se.get_message() << endl;
+	stop_all_beslisteners();
+	return 1;
+    }
+    catch (...) {
+	cerr << "daemon: " << "caught unknown exception" << endl;
+	stop_all_beslisteners();
+	return 1;
+    }
+}
+
 
 int
 main(int argc, char *argv[])
@@ -195,7 +341,7 @@ main(int argc, char *argv[])
 		break ;
 	}
     }
-    // if the number of argumens is greater than the number of allowed arguments
+    // if the number of arguments is greater than the number of allowed arguments
     // then extra arguments were passed that aren't options. Show usage and
     // exit.
     if( argc > num_args )
@@ -210,7 +356,7 @@ main(int argc, char *argv[])
 	pid_dir = install_dir ;
     }
 
-    // Set the name of the listener and the file for the listenet pid
+    // Set the name of the listener and the file for the listener pid
     if( !load_names( install_dir, pid_dir ) )
 	return 1 ;
 
@@ -221,6 +367,7 @@ main(int argc, char *argv[])
 	     << ": too many arguments passed to the BES" ;
 	BESServerUtils::show_usage( NameProgram ) ;
     }
+
     arguments = new char *[num_args+1] ;
 
     // Set arguments[0] to the name of the listener
@@ -238,9 +385,9 @@ main(int argc, char *argv[])
     }
     arguments[num_args] = NULL ;
 
-    if( !access( file_for_listener.c_str(), F_OK ) )
+    if( !access( file_for_daemon.c_str(), F_OK ) )
     {
-	ifstream temp( file_for_listener.c_str() ) ;
+	ifstream temp( file_for_daemon.c_str() ) ;
 	cout << NameProgram
 	     << ": there seems to be a BES daemon already running at " ;
 	char buf[500] ;
@@ -252,158 +399,171 @@ main(int argc, char *argv[])
 
     daemon_init() ;
 
-    int restart = mount_server( arguments ) ;
-    if( restart == 2 )
+    if (signal(SIGCHLD, CatchSigChild) < 0) {
+	cerr << "Could not register a handler to catch beslistener status." << endl;
+	exit(1);
+    }
+
+    if (signal(SIGTERM, CatchSigTerm) < 0) {
+	cerr << "Could not register a handler to catch the terminate signal." << endl;
+	exit(1);
+    }
+
+    if (signal(SIGHUP, CatchSigHup) < 0) {
+	cerr << "Could not register a handler to catch the hang-up signal." << endl;
+	exit(1);
+    }
+
+    int status = start_master_beslistener( arguments ) ;
+    if( status == 0 )			// Error
     {
-	cout << NameProgram
+	cerr << NameProgram
 	     << ": server cannot mount at first try (core dump). "
 	     << "Please correct problems on the process manager "
 	     << server_name << endl ;
-	return 0 ;
+	return status ;
     }
-    while( restart )
-    {
-	sleep( 5 ) ;
-	restart = mount_server( arguments ) ;
-    }
+
+    BESDEBUG("besdaemon", ": mount_server status: " << status << endl);
+
+    DaemonCommandHandler handler;
+    status = start_command_processor(handler);
+
+    BESDEBUG("besdaemon", "past the command processor start" << endl);
+
     delete [] arguments; arguments = 0 ;
 
-    if( !access( file_for_listener.c_str(), F_OK ) )
+    if( !access( file_for_daemon.c_str(), F_OK ) )
     {
-	(void)remove( file_for_listener.c_str() ) ;
+	(void)remove( file_for_daemon.c_str() ) ;
     }
 
-    return 0 ;
+    return status ;
 }
 
+/** Make this process a daemon (a process with ppid of 1) and a session
+ * leader.
+ * @return -1 if the initial fork() call fails; 0 otherwise.
+ */
 int
 daemon_init()
 {
     pid_t pid ;
-    if( ( pid = fork() ) < 0 )
+    if( ( pid = fork() ) < 0 )	// error
 	return -1 ;
-    else if( pid != 0 )
+    else if( pid != 0 )		// parent exits
 	exit( 0 ) ;
-    setsid() ;
+    setsid() ;			// child establishes its own process group
     return 0 ;
 }
 
+/** Start the 'master beslistener' and wait for its exit status. That status
+    value is passed to pr_exit() which then either returns 0, 1 or > 1. The
+    value returned by pr_exit is the value returned by this function.
+
+   @param arguments argumnet[0] is the full path to the beslistener; the
+   remaining stuff is just a copy of the arguments passed to this daemon on
+   startup.
+   @return 0 for an error or the PID of the master beslistener
+ */
 int
-mount_server(char **arguments)
+start_master_beslistener(char **arguments)
 {
-    const char *perror_string = 0 ;
-    pid_t pid ;
-    int status ;
-    if( ( pid = fork() ) < 0 )
+    if( ( master_beslistener_pid = fork() ) < 0 )
     {
 	cerr << NameProgram << ": fork error " ;
-	perror_string = strerror( errno ) ;
+	const char *perror_string = strerror( errno ) ;
 	if( perror_string )
 	    cerr << perror_string ;
 	cerr << endl ;
-	return 1 ;
+	return 0 ;
     }
-    else if( pid == 0 ) /* child process */
+    else if( master_beslistener_pid == 0 ) /* child process */
     {
+	// This starts the beslistener (aka mbes) that is parent of the
+	// beslisteners that actually serve data.
+	cerr << "Starting: " << arguments[0] << endl;
 	execvp( arguments[0], arguments ) ;
 	cerr << NameProgram
 	     << ": mounting listener, subprocess failed: " ;
-	perror_string = strerror( errno ) ;
+	const char *perror_string = strerror( errno ) ;
 	if( perror_string )
 	    cerr << perror_string ;
 	cerr << endl ;
-	exit( 1 ) ;
+	exit( 1 ) ; 	//NB: This exits from the child process.
     }
-    store_listener_id( pid ) ;
-    if( ( pid = waitpid( pid, &status, 0 ) ) < 0 ) /* parent process */
-    {
-	cerr << NameProgram << ": waitpid error " ;
-	perror_string = strerror( errno ) ;
-	if( perror_string )
-	    cerr << perror_string ;
-	cerr << endl ;
-	return 1 ;
-    }
-    int child_status = pr_exit( status ) ;
-    return child_status ;
+
+    // parent
+    BESDEBUG("besdaemon", "master_beslistener_pid: " << master_beslistener_pid << endl);
+
+    store_daemon_id( getpid() ) ;
+
+    return master_beslistener_pid;
 }
 
+/** Evaluate the exit status returned to the besdaemon by the master
+    beslistener and return 0, 1 or SERVER_EXIT_RESTART.
+
+    @param status The status (value) of the child process.
+    @return If the status indicates that the child process exited normally,
+    return 0; abnormally, return 1; indicating restart needed, return the
+    value of SERVER_EXIT_RESTART.
+ */
 int
 pr_exit(int status)
 {
-    if( WIFEXITED( status ) )
-    {
-	int status_to_be_returned = SERVER_EXIT_UNDEFINED_STATE ;
-	switch( WEXITSTATUS( status ) )
-	{
-	    case SERVER_EXIT_NORMAL_SHUTDOWN:
-		status_to_be_returned = 0 ;
-		break ;
-	    case SERVER_EXIT_FATAL_CAN_NOT_START:
-		{
-		    cerr << NameProgram
-		         << ": server cannot start, exited with status "
-			 << WEXITSTATUS( status ) << endl ;
-		    cerr << "Please check all error messages "
-		         << "and adjust server installation" << endl ;
-		    status_to_be_returned = 0 ;
-		}
-		break;
-	    case SERVER_EXIT_ABNORMAL_TERMINATION:
-		{
-		    cerr << NameProgram
-		         << ": abnormal server termination, exited with status "
-			 << WEXITSTATUS( status ) << endl ;
-		    status_to_be_returned = 1 ;
-		}
-		break;
-	    case SERVER_EXIT_RESTART:
-		{
-		    cout << NameProgram
-		         << ": server has been requested to re-start." << endl ;
-		    status_to_be_returned = 1 ;
-		}
-		break;
-	    default:
-		status_to_be_returned = 1 ;
-		break;
-	}
+    if (WIFEXITED( status )) {
+	switch (WEXITSTATUS( status )) {
+	case SERVER_EXIT_NORMAL_SHUTDOWN:
+	    return 0;
 
-	return status_to_be_returned;
+	case SERVER_EXIT_FATAL_CAN_NOT_START:
+	    cerr << NameProgram << ": server cannot start, exited with status " << WEXITSTATUS( status ) << endl;
+	    cerr << "Please check all error messages " << "and adjust server installation" << endl;
+	    return 1;
+
+	case SERVER_EXIT_ABNORMAL_TERMINATION:
+	    cerr << NameProgram << ": abnormal server termination, exited with status " << WEXITSTATUS( status )
+		    << endl;
+	    return 1;
+
+	case SERVER_EXIT_RESTART:
+	    cout << NameProgram << ": server has been requested to re-start." << endl;
+	    return SERVER_EXIT_RESTART;
+
+	default:
+	    return 1;
+	}
     }
-    else if( WIFSIGNALED( status ) )
-    {
-	cerr << NameProgram
-	     << ": abnormal server termination, signaled with signal number "
-	     << WTERMSIG( status ) << endl ;
+    else if (WIFSIGNALED( status )) {
+	cerr << NameProgram << ": abnormal server termination, signaled with signal number " << WTERMSIG( status )
+		<< endl;
 #ifdef WCOREDUMP
-	if( WCOREDUMP( status ) ) 
-	{
-	    cerr << NameProgram << ": server dumped core." << endl ;
-	    return 2 ;
+	if (WCOREDUMP( status )) {
+	    cerr << NameProgram << ": server dumped core." << endl;
+	    return 1;
 	}
 #endif
 	return 1;
     }
-    else if( WIFSTOPPED( status ) )
-    {
-	cerr << NameProgram
-	     << ": abnormal server termination, stopped with signal number "
-	     << WSTOPSIG( status ) << endl ;
-	return 1 ;
+    else if (WIFSTOPPED( status )) {
+	cerr << NameProgram << ": abnormal server termination, stopped with signal number " << WSTOPSIG( status )
+		<< endl;
+	return 1;
     }
-    return 0 ;
+
+    return 0;
 }
 
 void
-store_listener_id( int pid )
+store_daemon_id( int pid )
 {
     const char *perror_string = 0 ;
-    ofstream f( file_for_listener.c_str() ) ;
+    ofstream f( file_for_daemon.c_str() ) ;
     if( !f )
     {
 	cerr << NameProgram << ": unable to create pid file "
-	     << file_for_listener << ": " ;
+	     << file_for_daemon << ": " ;
 	perror_string = strerror( errno ) ;
 	if( perror_string )
 	    cerr << perror_string ;
@@ -415,27 +575,26 @@ store_listener_id( int pid )
 	f << "PID: " << pid << " UID: " << getuid() << endl ;
 	f.close() ;
 	mode_t new_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH ;
-	(void)chmod( file_for_listener.c_str(), new_mode ) ;
+	(void)chmod( file_for_daemon.c_str(), new_mode ) ;
     }
 }
 
 bool
 load_names( const string &install_dir, const string &pid_dir )
 {
-    char *xdap_root = 0 ;
     string bindir = "/bin";
     if( !pid_dir.empty() )
     {
-	file_for_listener = pid_dir ;
+	file_for_daemon = pid_dir ;
     }
 
     if( !install_dir.empty() )
     {
 	server_name = install_dir ;
 	server_name += bindir ;
-	if( file_for_listener.empty() )
+	if( file_for_daemon.empty() )
 	{
-	    file_for_listener = install_dir + "/var/run" ;
+	    file_for_daemon = install_dir + "/var/run" ;
 	}
     }
     else
@@ -449,16 +608,16 @@ load_names( const string &install_dir, const string &pid_dir )
 	    if( slash != string::npos )
 	    {
 		string root = prog.substr( 0, slash ) ;
-		if( file_for_listener.empty() )
+		if( file_for_daemon.empty() )
 		{
-		    file_for_listener = root + "/var/run" ;
+		    file_for_daemon = root + "/var/run" ;
 		}
 	    }
 	    else
 	    {
-		if( file_for_listener.empty() )
+		if( file_for_daemon.empty() )
 		{
-		    file_for_listener = server_name ;
+		    file_for_daemon = server_name ;
 		}
 	    }
 	}
@@ -467,22 +626,20 @@ load_names( const string &install_dir, const string &pid_dir )
     if( server_name == "" )
     {
 	server_name = "." ;
-	if( file_for_listener.empty() )
+	if( file_for_daemon.empty() )
 	{
-	    file_for_listener = "./run" ;
+	    file_for_daemon = "./run" ;
 	}
     }
 
     server_name += BES_SERVER ;
-    file_for_listener += BES_SERVER_PID ;
+    file_for_daemon += BES_SERVER_PID ;
 
     if( access( server_name.c_str(), F_OK ) != 0 )
     {
 	cerr << NameProgram
 	     << ": cannot start." << server_name << endl
-	     << "Please either pass -i <install_dir> on the command line or "
-	     << "set the environment variable " << BES_SERVER_ROOT << " "
-	     << "to the installation directory where the BES listener is."
+	     << "Please either pass -i <install_dir> on the command line."
 	     << endl ;
 	return false ;
     }

@@ -63,8 +63,12 @@ public:
 
     virtual void		dump( ostream &strm ) const ;
 
-    static void			signalTerminate( int sig ) ;
+    static void			CatchSigChild( int sig ) ;
+    static void			CatchSigHup( int sig ) ;
+    static void			CatchSigTerm( int sig ) ;
+#if 0
     static void			signalInterrupt( int sig ) ;
-    static void			signalRestart( int sig ) ;
+#endif
+
 } ;
 

@@ -98,12 +98,17 @@ BESServerHandler::handle( Connection *c )
 	// client connection and we are done.
 	execute( c ) ;
     }
+    // _method is "multiple" which means, for each connection request, make a
+    // new beslistener daemon. The OLFS can send many commands to each of these
+    // before it closes the socket. In theory this should not be necessary, but
+    // in practice some handlers will have resource (memory) leaks and nothing
+    // cures that like exit().
     else
     {
 	// multi-process mode, so fork and exec.
 	int main_process = getpid() ;
 	pid_t pid ;
-	if( ( pid = fork() ) < 0 )
+	if( ( pid = fork() ) < 0 ) // error
 	{
 	    string error( "fork error" ) ;
 	    const char* error_info = strerror( errno ) ;
@@ -111,6 +116,15 @@ BESServerHandler::handle( Connection *c )
 		error += " " + (string)error_info ;
 	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
+	else if( pid == 0 ) // child
+	{
+	    execute( c ) ;
+	}
+#if 0
+	// This code made the beslistener that processed the request a true
+	// daemon process. I changed the beslistener so that it was a simple
+	// child process so that I could more easily send it signals to control
+	// stopping everything. jhrg
 	else if( pid == 0 ) /* child process */
 	{
 	    pid_t pid1 ;
@@ -129,11 +143,12 @@ BESServerHandler::handle( Connection *c )
 		// the listen and handles input/output, etc...
 		execute( c ) ;
 	    }
+
 	    sleep( 1 ) ;
 	    c->closeConnection() ;
 	    exit( SERVER_EXIT_CHILD_SUBPROCESS_NORMAL_TERMINATION ) ;
 	}
-	if( waitpid( pid, NULL, 0 ) != pid )
+	if( waitpid( pid, NULL, 0 ) != pid ) // parent
 	{
 	    string error( "waitpid error" ) ;
 	    const char *error_info = strerror( errno ) ;
@@ -142,6 +157,7 @@ BESServerHandler::handle( Connection *c )
 	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
 	c->closeConnection() ;
+#endif
     }
 }
 
@@ -281,7 +297,9 @@ BESServerHandler::execute( Connection *c )
 	}
 
 	if( sw ) delete sw;
-    }
+    }	// This is the end of the infinite loop that processes commands.
+
+    c->closeConnection() ;
 }
 
 /** @brief dumps information about this object

@@ -66,6 +66,8 @@ using std::ofstream ;
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 
+static int session_id = 0;
+
 ServerApp::ServerApp()
     : BESModuleApp(),
       _portVal( 0 ),
@@ -84,16 +86,60 @@ ServerApp::~ServerApp()
 {
 }
 
+// This is needed so that the master beslistner will get the exit status of
+// all of the child beslisteners (preventing them from becoming zombies).
 void
-ServerApp::signalTerminate( int sig )
+ServerApp::CatchSigChild( int sig )
+{
+    if( sig == SIGCHLD )
+    {
+	BESDEBUG("besdaemon", "beslistener: caught sig chld" << endl);
+	int stat;
+	pid_t pid = wait(&stat);
+	BESDEBUG("besdaemon", "beslistener: child pid: " << pid << " exited with status: " << stat << endl);
+    }
+}
+
+// If the HUP signal is sent to the master beslistener, it should exit and
+// return a value indicating to the besdaemon that it should be restarted.
+// This also has the side-affect of re-reading the configuration file.
+void
+ServerApp::CatchSigHup( int sig )
+{
+    if( sig == SIGHUP )
+    {
+	int pid = getpid();
+	BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGHUP." << endl);
+
+	BESApp::TheApplication()->terminate( sig ) ;
+
+	BESDEBUG("besdaemon", "beslisterner: " << pid << " past terminate (SIGHUP)." << endl);
+
+	exit( SERVER_EXIT_RESTART ) ;
+    }
+}
+// This is the default signal sent by 'kill'; when the master beslistener gets
+// this signal it should stop. besdaemon should not try to start a new
+// master beslistener.
+void
+ServerApp::CatchSigTerm( int sig )
 {
     if( sig == SIGTERM )
     {
+	int pid = getpid();
+	BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGTERM" << endl);
+
         BESApp::TheApplication()->terminate( sig ) ;
+
+        BESDEBUG("besdaemon", "beslisterner: " << pid << " past terminate (SIGTERM)." << endl);
+
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
 
+#if 0
+// I don't think we should be catching this - if the users wnats to send INT
+// to a process they should get the default behavior.
 void
 ServerApp::signalInterrupt( int sig )
 {
@@ -103,16 +149,8 @@ ServerApp::signalInterrupt( int sig )
 	exit( SERVER_EXIT_NORMAL_SHUTDOWN ) ;
     }
 }
+#endif
 
-void
-ServerApp::signalRestart( int sig )
-{
-    if( sig == SIGUSR1 )
-    {
-	BESApp::TheApplication()->terminate( sig ) ;
-	exit( SERVER_EXIT_RESTART ) ;
-    }
-}
 
 void
 ServerApp::set_group_id()
@@ -476,17 +514,18 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGTERM ... " << endl ) ;
-    if( signal( SIGTERM, signalTerminate ) == SIG_ERR )
+    BESDEBUG( "server", "ServerApp: Registering signal SIGCHLD ... " << endl ) ;
+    if( signal( SIGCHLD, CatchSigChild ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: cannot register SIGTERM signal handler" ;
+	string err = "FAILED: cannot register SIGCHLD signal handler" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
 
+#if 0
     BESDEBUG( "server", "ServerApp: Registering signal SIGINT ... " << endl ) ;
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
@@ -497,12 +536,24 @@ ServerApp::initialize( int argc, char **argv )
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
+#endif
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGUSR1 ... " << endl ) ;
-    if( signal( SIGUSR1, signalRestart ) == SIG_ERR )
+    BESDEBUG( "server", "ServerApp: Registering signal SIGHUP ... " << endl ) ;
+    if( signal( SIGHUP, CatchSigHup ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
-	string err = "FAILED: cannot register SIGUSR1 signal handler" ;
+	string err = "FAILED: cannot register SIGHUP signal handler" ;
+	cerr << err << endl ;
+	(*BESLog::TheLog()) << err << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+    BESDEBUG( "server", "OK" << endl ) ;
+
+    BESDEBUG( "server", "ServerApp: Registering signal SIGTERM ... " << endl ) ;
+    if( signal( SIGTERM, CatchSigTerm ) == SIG_ERR )
+    {
+	BESDEBUG( "server", "FAILED" << endl ) ;
+	string err = "FAILED: cannot register SIGTERM signal handler" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
@@ -534,6 +585,12 @@ ServerApp::initialize( int argc, char **argv )
     {
 	BESServerUtils::show_usage( BESApp::TheApplication()->appName() ) ;
     }
+
+    // This sets the process group to be ID of this process. All children
+    // will get this GID. Then use killpg() to send a signal to this process
+    // and all of the children.
+    session_id = setsid();
+    BESDEBUG("besdaemon", "The master beslistener session id (group id): " << session_id << endl);
 
     return ret ;
 }

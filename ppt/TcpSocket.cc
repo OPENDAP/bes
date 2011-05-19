@@ -321,6 +321,8 @@ TcpSocket::listen()
 	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
 	}
 
+	BESDEBUG("besdaemon", "About to bind to port: " << _portVal << " in process: " << getpid() << endl);
+
 	if( bind( _socket, (struct sockaddr*)&server, sizeof server) != -1 )
 	{
 	    int length = sizeof( server ) ;
