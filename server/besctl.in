@@ -163,7 +163,7 @@ findRunningBES()
 	    /bin/rm -f  "$pidfile"
 
 	    BESDAEMON_PID=`$PS | grep -v grep | grep besdaemon | awk '{print $2}'`
-	    if [ $BESDAEMON_PID ]
+	    if [ -n "$BESDAEMON_PID" ]
 	    then
 		echo "BES seems to be running from a different location: $BESDAEMON_PID"
 	    fi

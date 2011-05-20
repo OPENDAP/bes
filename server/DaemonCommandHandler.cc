@@ -59,11 +59,8 @@ using std::flush ;
 #include "XMLWriter.h"
 
 // Defined in daemon.cc
-extern int  start_master_beslistener( char ** ) ;
+extern int  start_master_beslistener() ;
 extern void stop_all_beslisteners( int ) ;
-
-extern int master_beslistener_pid;	// This is also the process group id
-extern char **arguments;
 
 DaemonCommandHandler::DaemonCommandHandler()
 {
@@ -169,7 +166,10 @@ DaemonCommandHandler::execute_command(const string &command)
 		case HAI_START:
 		{
 		    BESDEBUG("besdaemon", "besdaemon: Received Start" << endl);
-		    int mbes_pid = start_master_beslistener(arguments);
+		    // start_master_beslistener assigns the mbes pid to a
+		    // static global defined in daemon.cc that stop_all_bes...
+		    // uses.
+		    int mbes_pid = start_master_beslistener();
 		    if (mbes_pid == 0)
 			throw BESInternalFatalError("Could not start the master beslistener", __FILE__, __LINE__);
 		    break;
