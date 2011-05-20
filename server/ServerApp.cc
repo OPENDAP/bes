@@ -371,7 +371,7 @@ ServerApp::initialize( int argc, char **argv )
     // file, group and user id, and information that the modules will
     // need to run properly.
 
-    // If the -c optiion was passed, set the config file name in TheBESKeys
+    // If the -c option was passed, set the config file name in TheBESKeys
     if( !dashc.empty() )
     {
 	TheBESKeys::ConfigFile = dashc ;
