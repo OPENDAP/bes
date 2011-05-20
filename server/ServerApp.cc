@@ -161,7 +161,7 @@ ServerApp::set_group_id()
     // get group id or name from BES configuration file
     // If BES.Group begins with # then it is a group id,
     // else it is a group name and look up the id.
-    BESDEBUG( "server", "ServerApp: Setting group id ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Setting group id ... " << endl ) ;
     bool found = false ;
     string key = "BES.Group" ;
     string group_str ;
@@ -171,7 +171,7 @@ ServerApp::set_group_id()
     }
     catch( BESError &e )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = string("FAILED: ") + e.get_message() ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -179,7 +179,7 @@ ServerApp::set_group_id()
     }
     if( !found || group_str.empty() )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = "FAILED: Group not specified in BES configuration file" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -202,7 +202,7 @@ ServerApp::set_group_id()
 	ent = getgrnam( group_str.c_str() ) ;
 	if( !ent )
 	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	    string err = (string)"FAILED: Group " + group_str
 			 + " does not exist" ;
 	    cerr << err << endl ;
@@ -214,7 +214,7 @@ ServerApp::set_group_id()
 
     if( new_gid < 1 )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	ostringstream err ;
 	err << "FAILED: Group id " << new_gid
 	    << " not a valid group id for BES" ;
@@ -226,7 +226,7 @@ ServerApp::set_group_id()
     BESDEBUG( "server", "to id " << new_gid << " ... " << endl ) ;
     if( setgid( new_gid ) == -1 )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	ostringstream err ;
 	err << "FAILED: unable to set the group id to " << new_gid ;
 	cerr << err.str() << endl ;
@@ -236,14 +236,14 @@ ServerApp::set_group_id()
 
     BESDEBUG( "server", "OK" << endl ) ;
 #else
-    BESDEBUG( "server", "ServerApp: Groups not supported in this OS" << endl ) ;
+    BESDEBUG( "server", "beslisterner: Groups not supported in this OS" << endl ) ;
 #endif
 }
 
 void
 ServerApp::set_user_id()
 {
-    BESDEBUG( "server", "ServerApp: Setting user id ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Setting user id ... " << endl ) ;
 
     // Get user name or id from the BES configuration file.
     // If the BES.User value begins with # then it is a user
@@ -258,7 +258,7 @@ ServerApp::set_user_id()
     }
     catch( BESError &e )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = (string)"FAILED: " + e.get_message() ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -266,7 +266,7 @@ ServerApp::set_user_id()
     }
     if( !found || user_str.empty() )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = (string)"FAILED: User not specified in BES config file" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -287,7 +287,7 @@ ServerApp::set_user_id()
 	ent = getpwnam( user_str.c_str() ) ;
 	if( !ent )
 	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	    string err = (string)"FAILED: Bad user name specified: "
 			 + user_str ;
 	    cerr << err << endl ;
@@ -300,7 +300,7 @@ ServerApp::set_user_id()
     // new user id cannot be root (0)
     if( !new_id )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = (string)"FAILED: BES cannot run as root" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -310,7 +310,7 @@ ServerApp::set_user_id()
     BESDEBUG( "server", "to " << new_id << " ... " << endl ) ;
     if( setuid( new_id ) == -1 )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	ostringstream err ;
 	err << "FAILED: Unable to set user id to " << new_id ;
 	cerr << err.str() << endl ;
@@ -404,7 +404,7 @@ ServerApp::initialize( int argc, char **argv )
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
 #else
-    cout << "Developer Mode: not testing if BES is run by root" << endl ;
+    cerr << "Developer Mode: not testing if BES is run by root" << endl ;
 #endif
 
     // register the two debug context for the server and ppt. The
@@ -419,7 +419,7 @@ ServerApp::initialize( int argc, char **argv )
     if( curr_euid == 0 )
     {
 #ifdef BES_DEVELOPER
-	cout << "Developer Mode: Running as root - setting group and user ids"
+	cerr << "Developer Mode: Running as root - setting group and user ids"
 	     << endl ;
 #endif
 	set_group_id() ;
@@ -427,7 +427,7 @@ ServerApp::initialize( int argc, char **argv )
     }
     else
     {
-	cout << "Developer Mode: Not setting group or user ids" << endl ;
+	cerr << "Developer Mode: Not setting group or user ids" << endl ;
     }
 
     // Because we are now running as the user specified in the
@@ -445,7 +445,7 @@ ServerApp::initialize( int argc, char **argv )
 	}
 	catch( BESError &e )
 	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	    string err = (string)"FAILED: " + e.get_message() ;
 	    cerr << err << endl ;
 	    (*BESLog::TheLog()) << err << endl ;
@@ -471,7 +471,7 @@ ServerApp::initialize( int argc, char **argv )
 	}
 	catch( BESError &e )
 	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	    string err = (string)"FAILED: " + e.get_message() ;
 	    cerr << err << endl ;
 	    (*BESLog::TheLog()) << err << endl ;
@@ -502,7 +502,7 @@ ServerApp::initialize( int argc, char **argv )
 	}
 	catch( BESError &e )
 	{
-	    BESDEBUG( "server", "FAILED" << endl ) ;
+	    BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	    string err = (string)"FAILED: " + e.get_message() ;
 	    cerr << err << endl ;
 	    (*BESLog::TheLog()) << err << endl ;
@@ -514,10 +514,10 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGCHLD ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Registering signal SIGCHLD ... " << endl ) ;
     if( signal( SIGCHLD, CatchSigChild ) == SIG_ERR )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = "FAILED: cannot register SIGCHLD signal handler" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -526,7 +526,7 @@ ServerApp::initialize( int argc, char **argv )
     BESDEBUG( "server", "OK" << endl ) ;
 
 #if 0
-    BESDEBUG( "server", "ServerApp: Registering signal SIGINT ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Registering signal SIGINT ... " << endl ) ;
     if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
     {
 	BESDEBUG( "server", "FAILED" << endl ) ;
@@ -538,10 +538,10 @@ ServerApp::initialize( int argc, char **argv )
     BESDEBUG( "server", "OK" << endl ) ;
 #endif
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGHUP ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Registering signal SIGHUP ... " << endl ) ;
     if( signal( SIGHUP, CatchSigHup ) == SIG_ERR )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = "FAILED: cannot register SIGHUP signal handler" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -549,10 +549,10 @@ ServerApp::initialize( int argc, char **argv )
     }
     BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "server", "ServerApp: Registering signal SIGTERM ... " << endl ) ;
+    BESDEBUG( "server", "beslisterner: Registering signal SIGTERM ... " << endl ) ;
     if( signal( SIGTERM, CatchSigTerm ) == SIG_ERR )
     {
-	BESDEBUG( "server", "FAILED" << endl ) ;
+	BESDEBUG( "server", "beslisterner: FAILED" << endl ) ;
 	string err = "FAILED: cannot register SIGTERM signal handler" ;
 	cerr << err << endl ;
 	(*BESLog::TheLog()) << err << endl ;
@@ -560,26 +560,26 @@ ServerApp::initialize( int argc, char **argv )
     }
     BESDEBUG( "server", "OK" << endl ) ;
 
-    BESDEBUG( "server", "ServerApp: initializing default module ... "
+    BESDEBUG( "server", "beslisterner: initializing default module ... "
 			<< endl ) ;
     BESDefaultModule::initialize( argc, argv ) ;
-    BESDEBUG( "server", "ServerApp: done initializing default module"
+    BESDEBUG( "server", "beslisterner: done initializing default module"
 			<< endl ) ;
 
-    BESDEBUG( "server", "ServerApp: initializing default commands ... "
+    BESDEBUG( "server", "beslisterner: initializing default commands ... "
 			<< endl ) ;
     BESXMLDefaultCommands::initialize( argc, argv ) ;
-    BESDEBUG( "server", "ServerApp: done initializing default commands"
+    BESDEBUG( "server", "beslisterner: done initializing default commands"
 			<< endl ) ;
 
     // This will load and initialize all of the modules
-    BESDEBUG( "server", "ServerApp: initializing loaded modules ... "
+    BESDEBUG( "server", "beslisterner: initializing loaded modules ... "
 			<< endl ) ;
     int ret = BESModuleApp::initialize( argc, argv ) ;
-    BESDEBUG( "server", "ServerApp: done initializing loaded modules"
+    BESDEBUG( "server", "beslisterner: done initializing loaded modules"
 			<< endl ) ;
 
-    BESDEBUG( "server", "ServerApp: initialized settings:" << *this ) ;
+    BESDEBUG( "server", "beslisterner: initialized settings:" << *this ) ;
 
     if( needhelp )
     {
@@ -590,7 +590,7 @@ ServerApp::initialize( int argc, char **argv )
     // will get this GID. Then use killpg() to send a signal to this process
     // and all of the children.
     session_id = setsid();
-    BESDEBUG("besdaemon", "The master beslistener session id (group id): " << session_id << endl);
+    BESDEBUG("besdaemon", "beslisterner: The master beslistener session id (group id): " << session_id << endl);
 
     return ret ;
 }
@@ -600,7 +600,7 @@ ServerApp::run()
 {
     try
     {
-	BESDEBUG( "server", "ServerApp: initializing memory pool ... "
+	BESDEBUG( "server", "beslisterner: initializing memory pool ... "
 			    << endl ) ;
 	BESMemoryManager::initialize_memory_pool() ;
 	BESDEBUG( "server", "OK" << endl ) ;
@@ -611,7 +611,7 @@ ServerApp::run()
 	{
 	    _ts = new TcpSocket( _portVal ) ;
 	    listener.listen( _ts ) ;
-	    BESDEBUG( "server", "ServerApp: listening on port ("
+	    BESDEBUG( "server", "beslisterner: listening on port ("
 				<< _portVal << ")" << endl ) ;
 	}
 
@@ -619,7 +619,7 @@ ServerApp::run()
 	{
 	    _us = new UnixSocket( _unixSocket ) ;
 	    listener.listen( _us ) ;
-	    BESDEBUG( "server", "ServerApp: listening on unix socket ("
+	    BESDEBUG( "server", "beslisterner: listening on unix socket ("
 				<< _unixSocket << ")" << endl ) ;
 	}
 
@@ -670,22 +670,22 @@ ServerApp::terminate( int sig )
 	// Do this in the reverse order that it was initialized. So
 	// terminate the loaded modules first, then the default
 	// commands, then the default module.
-	BESDEBUG( "server", "ServerApp: terminating loaded modules ...  "
+	BESDEBUG( "server", "beslisterner: terminating loaded modules ...  "
 	                    << endl ) ;
 	BESModuleApp::terminate( sig ) ;
-	BESDEBUG( "server", "ServerApp: done terminating loaded modules"
+	BESDEBUG( "server", "beslisterner: done terminating loaded modules"
 	                    << endl ) ;
 
-	BESDEBUG( "server", "ServerApp: terminating default commands ...  "
+	BESDEBUG( "server", "beslisterner: terminating default commands ...  "
 			    << endl ) ;
 	BESXMLDefaultCommands::terminate( ) ;
-	BESDEBUG( "server", "ServerApp: done terminating default commands ...  "
+	BESDEBUG( "server", "beslisterner: done terminating default commands ...  "
 			    << endl ) ;
 
-	BESDEBUG( "server", "ServerApp: terminating default module ... "
+	BESDEBUG( "server", "beslisterner: terminating default module ... "
 			    << endl ) ;
 	BESDefaultModule::terminate( ) ;
-	BESDEBUG( "server", "ServerApp: done terminating default module ... "
+	BESDEBUG( "server", "beslisterner: done terminating default module ... "
 			    << endl ) ;
     }
     return sig ;

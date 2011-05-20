@@ -56,15 +56,18 @@ using std::string ;
 #include "ServerExitConditions.h"
 #include "SocketListener.h"
 #include "TcpSocket.h"
+#include "UnixSocket.h"
 #include "PPTServer.h"
 #include "DaemonCommandHandler.h"
 #include "BESServerUtils.h"
 #include "BESScrub.h"
 #include "BESError.h"
 #include "BESDebug.h"
+#include "TheBESKeys.h"
 
 #define BES_SERVER "/beslistener"
 #define BES_SERVER_PID "/bes.pid"
+#define DAEMON_PORT_STR "BES.DaemonPort"
 
 int  daemon_init() ;
 int  start_master_beslistener( char **arguments ) ;
@@ -94,12 +97,13 @@ char **arguments = 0 ;
  */
 void stop_all_beslisteners(int sig)
 {
-    BESDEBUG("besdaemon", "stopping listeners" << endl);
+    BESDEBUG("besdaemon", "besdaemon: stopping listeners" << endl);
 
     // deregister sigchld handler
     sigignore(SIGCHLD);
 
-    // send TERM to all members of the process group with/of the master bes
+    // Send 'sig' to all members of the process group with/of the master bes.
+    // The master beslistener pid is the group id of all of the beslisteners.
     int status = killpg(master_beslistener_pid, sig);
     switch (status) {
     case EINVAL:
@@ -120,10 +124,15 @@ void stop_all_beslisteners(int sig)
     }
 
     int pid;
-    while ((pid = wait(&status)) > 0)
-	BESDEBUG("besdaemon", "caught listener: " << pid << " status: " << pr_exit(status) << endl);
+    while ((pid = wait(&status)) > 0) {
+	BESDEBUG("besdaemon", "besdaemon: caught listener: " << pid << " status: " << pr_exit(status) << endl);
+	if (pid = master_beslistener_pid) {
+	    BESDEBUG("besdaemon", "besdaemon: caught master beslistener: " << pid << " status: " << pr_exit(status) << endl);
+	    master_beslistener_status = pr_exit(status);
+	}
+    }
 
-    BESDEBUG("besdaemon", "done catching listeners" << endl);
+    BESDEBUG("besdaemon", "besdaemon: done catching listeners" << endl);
 }
 
 /** Start the 'master beslistener' and wait for its exit status. That status
@@ -138,7 +147,8 @@ void stop_all_beslisteners(int sig)
 int
 start_master_beslistener(char **arguments)
 {
-    if( ( master_beslistener_pid = fork() ) < 0 )
+    int pid;
+    if( ( pid = fork() ) < 0 )
     {
 	cerr << NameProgram << ": fork error " ;
 	const char *perror_string = strerror( errno ) ;
@@ -147,7 +157,7 @@ start_master_beslistener(char **arguments)
 	cerr << endl ;
 	return 0 ;
     }
-    else if( master_beslistener_pid == 0 ) /* child process */
+    else if( pid == 0 ) /* child process */
     {
 	// This starts the beslistener (aka mbes) that is parent of the
 	// beslisteners that actually serve data.
@@ -163,25 +173,22 @@ start_master_beslistener(char **arguments)
     }
 
     // parent
-    BESDEBUG("besdaemon", "master_beslistener_pid: " << master_beslistener_pid << endl);
+    BESDEBUG("besdaemon", "besdaemon: master beslistener pid: " << pid << endl);
 
-    return master_beslistener_pid;
+    return pid;
 }
 
 void CatchSigChild(int signal)
 {
     if (signal == SIGCHLD) {
 	int pid = wait(&master_beslistener_status);
-	BESDEBUG("besdaemon",  "caught master beslistener (" << pid << ") status: " << pr_exit(master_beslistener_status) << endl);
+	BESDEBUG("besdaemon",  "besdaemon: caught master beslistener (" << pid << ") status: " << pr_exit(master_beslistener_status) << endl);
 	// Decode and record the exit status.
 	master_beslistener_status = pr_exit(master_beslistener_status);
     }
 }
 
-#if 0
-
-// Broken
-
+#if 1
 // When the daemon gets the HUP signal, it forwards that onto each beslistener.
 // They then all exit, returning the 'restart' code so that the daemon knows
 // to restart the master beslistener. I wrote this for testing before I had
@@ -189,15 +196,10 @@ void CatchSigChild(int signal)
 void CatchSigHup(int signal)
 {
     if (signal == SIGHUP) {
-	BESDEBUG("besdaemon",  "caught SIGHUP in besdaemon." << endl);
+	BESDEBUG("besdaemon", "caught SIGHUP in besdaemon." << endl);
 	BESDEBUG("besdaemon", "sending SIGHUP to the process group: " << master_beslistener_pid << endl);
 
 	stop_all_beslisteners(SIGHUP);
-
-	// This implements the behavior where SIGHUP sent to the daemon
-	// forces a hard restart of the beslisteners.
-	(void)start_master_beslistener(arguments);
-
     }
 }
 #endif
@@ -208,8 +210,8 @@ void CatchSigHup(int signal)
 void CatchSigTerm(int signal)
 {
     if (signal == SIGTERM) {
-	BESDEBUG("besdaemon", "caught SIGTERM." << endl);
-	BESDEBUG("besdaemon", "sending SIGTERM to the process group: " << master_beslistener_pid << endl);
+	BESDEBUG("besdaemon", "besdaemon: caught SIGTERM." << endl);
+	BESDEBUG("besdaemon", "besdaemon: sending SIGTERM to the process group: " << master_beslistener_pid << endl);
 
 	// Stop all of the beslisteners
 	stop_all_beslisteners(SIGTERM);
@@ -219,48 +221,81 @@ void CatchSigTerm(int signal)
     }
 }
 
+/** Start the daemon command interpreter.
+ *
+ * @param handler
+ * @return 1 if the interpreter exited and the daemon should stop, 0 if the
+ * interpreter was not started.
+ */
 int start_command_processor(DaemonCommandHandler &handler)
 {
-    TcpSocket *command_socket;
-    PPTServer *command_server;
+    TcpSocket *socket = 0;
+    UnixSocket *unix_socket = 0;
+    PPTServer *command_server = 0;
 
     try {
 	SocketListener listener;
 
-	// ***
-	if (/*_portVal*/11002) {
-	    // command_socket is global
-	    command_socket = new TcpSocket(/*_portVal*/11002);
-	    listener.listen(command_socket);
+	string port_str;
+	bool port_found;
+	int port = 0;
+	TheBESKeys::TheKeys()->get_value( DAEMON_PORT_STR, port_str, port_found ) ;
+	if (port_found) {
+	    char *ptr;
+	    port = strtol(port_str.c_str(), &ptr, 10);
+	    if (port == 0) {
+		cerr << "Invalid port number for daemon command interface: " << port_str << endl;
+		exit(1);
+	    }
 	}
-#if 0
-	if (!_unixSocket.empty()) {
-	    _us = new UnixSocket(_unixSocket);
-	    listener.listen(_us);
+
+	if (port) {
+	    BESDEBUG("besdaemon", "besdaemon: starting command interface on port: " << port << endl);
+	    socket = new TcpSocket(port);
+	    listener.listen(socket);
 	}
-#endif
+
+	string usock_str;
+	bool usock_found;
+	TheBESKeys::TheKeys()->get_value( "BES.DaemonUnixSocket", usock_str, usock_found ) ;
+
+	if (!usock_str.empty()) {
+	    BESDEBUG("besdaemon", "besdaemon: starting command interface on socket: " << usock_str << endl);
+	    unix_socket = new UnixSocket(usock_str);
+	    listener.listen(unix_socket);
+	}
+
+	if (!port_found && !usock_found) {
+	    BESDEBUG("besdaemon", "Neither a port nor a unix socket was set for the daemon command interface." << endl);
+	    return 0;
+	}
 
 	command_server = new PPTServer(&handler, &listener, /*is_secure*/false);
 	command_server->initConnection();
 
 	delete command_server; command_server = 0;
-	delete command_socket; command_socket = 0;
+	delete socket; socket = 0;
+	delete unix_socket; unix_socket = 0;
 
 	// When/if the command interpreter exits, stop the all listeners.
 	stop_all_beslisteners(SIGTERM);
-	return 0;
+	return 1;
     }
     catch (BESError &se) {
 	cerr << "daemon: " << se.get_message() << endl;
 	delete command_server; command_server = 0;
-	delete command_socket; command_socket = 0;
+	delete socket; socket = 0;
+	delete unix_socket; unix_socket = 0;
+
 	stop_all_beslisteners(SIGTERM);
 	return 1;
     }
     catch (...) {
 	cerr << "daemon: " << "caught unknown exception" << endl;
 	delete command_server; command_server = 0;
-	delete command_socket; command_socket = 0;
+	delete socket; socket = 0;
+	delete unix_socket; unix_socket = 0;
+
 	stop_all_beslisteners(SIGTERM);
 	return 1;
     }
@@ -299,6 +334,9 @@ main(int argc, char *argv[])
 	BESServerUtils::show_usage( NameProgram ) ;
     }
 
+    // Most of the argument precessing is just for vetting the arguments
+    // that will be passed onto the beslistener(s), but we do grab some info
+    string config_file = "";
     // argv[0] is the name of the program, so start num_args at 1
     unsigned short num_args = 1 ;
     while( ( c = getopt( argc, argv, "hvsd:c:p:u:i:r:" ) ) != EOF )
@@ -343,8 +381,8 @@ main(int argc, char *argv[])
 	    break ;
 	    case 'c': // configuration file
 	    {
-		string check_path = optarg ;
-		if( BESScrub::pathname_ok( check_path, true ) == false )
+		config_file = optarg ;
+		if( BESScrub::pathname_ok( config_file, true ) == false )
 		{
 		    cout << "The specified configuration file (-c option) "
 		         << "is incorrectly formatted. Must be less than "
@@ -417,23 +455,23 @@ main(int argc, char *argv[])
 	pid_dir = install_dir ;
     }
 
-#if 0
+#if 1
     // If the -c option was passed, set the config file name in TheBESKeys
-    if( !dashc.empty() )
+    if( !config_file.empty() )
     {
-	TheBESKeys::ConfigFile = dashc ;
+	TheBESKeys::ConfigFile = config_file ;
     }
 
     // If the -c option was not passed, but the -i option
     // was passed, then use the -i option to construct
     // the path to the config file
-    if( dashc.empty() && !dashi.empty() )
+    if( install_dir.empty() && !install_dir.empty() )
     {
-	if( dashi[dashi.length()-1] != '/' )
+	if( install_dir[install_dir.length()-1] != '/' )
 	{
-	    dashi += '/' ;
+	    install_dir += '/' ;
 	}
-	string conf_file = dashi + "etc/bes/bes.conf" ;
+	string conf_file = install_dir + "etc/bes/bes.conf" ;
 	TheBESKeys::ConfigFile = conf_file ;
     }
 #endif
@@ -491,7 +529,8 @@ main(int argc, char *argv[])
 	exit(1);
     }
 
-#if 0
+#if 1
+
     // broken
     if (signal(SIGHUP, CatchSigHup) < 0) {
 	cerr << "Could not register a handler to catch the hang-up signal." << endl;
@@ -499,24 +538,38 @@ main(int argc, char *argv[])
     }
 #endif
 
-    int status = start_master_beslistener( arguments ) ;
-    if( status == 0 )			// Error
+    // master_beslistener_pid is global so that the signal handlers can use it
+    master_beslistener_pid = start_master_beslistener( arguments ) ;
+    if( master_beslistener_pid == 0 )			// Error
     {
 	cerr << NameProgram
 	     << ": server cannot mount at first try (core dump). "
 	     << "Please correct problems on the process manager "
 	     << server_name << endl ;
-	return status ;
+	return master_beslistener_pid ;
     }
 
     store_daemon_id( getpid() ) ;
 
-    BESDEBUG("besdaemon", ": start_master_beslistener status: " << status << endl);
+    BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
 
     DaemonCommandHandler handler;
-    status = start_command_processor(handler);
+    int status = start_command_processor(handler);
+    if (status == 0) {
+	while (true) {
+	    sleep(5);
+	    // When master_beslistener_status is not -1, we've caught sigchld
+	    // from the master beslistener. Should we restart? Look at the
+	    // value of the status.
+	    BESDEBUG("besdaemon", "besdaemon: master_beslistener_status: " << master_beslistener_status << endl);
+	    if (master_beslistener_status == SERVER_EXIT_RESTART) {
+		master_beslistener_status = -1;
+		master_beslistener_pid = start_master_beslistener(arguments);
+	    }
+	}
+    }
 
-    BESDEBUG("besdaemon", "past the command processor start" << endl);
+    BESDEBUG("besdaemon", "besdaemon: past the command processor start" << endl);
 
     delete [] arguments; arguments = 0 ;
 

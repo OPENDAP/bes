@@ -108,6 +108,16 @@ BES.ServerPort=10002
 # BES.ServerUnixSocket=/tmp/bes.socket
 
 #-----------------------------------------------------------------------#
+# To communicate with the besdaemon, use the port or unix socket given  #
+# below. If one of these values is not given, then the command interface#
+# will not be available (and the daemon will not listen on the port or  #
+# socket. If you do use the interface, make sure to protect it from     #
+# outside access using a firewall. Please re-read that last sentence.   #
+#-----------------------------------------------------------------------#
+
+# BES.DaemonPort=11002
+
+#-----------------------------------------------------------------------#
 # Security information for this server. ServerSecure specifies whether  #
 # the server is secure or not and requires authentication of the client #
 # using SSL certificates and keys. The default secure connection port   #

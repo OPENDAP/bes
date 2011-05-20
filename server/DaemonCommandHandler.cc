@@ -48,19 +48,13 @@ using std::flush ;
 #include "DaemonCommandHandler.h"
 #include "Connection.h"
 #include "Socket.h"
-// #include "BESXMLInterface.h"
-// #include "TheBESKeys.h"
-// #include "BESInternalError.h"
-// #include "ServerExitConditions.h"
-// #include "BESUtil.h"
 #include "PPTStreamBuf.h"
 #include "PPTProtocol.h"
-// #include "BESDebug.h"
-// #include "BESStopWatch.h"
 #include "BESXMLUtils.h"
 #include "BESInternalFatalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
+//#include "TheBESKeys.h"
 
 #include "XMLWriter.h"
 
@@ -164,23 +158,24 @@ DaemonCommandHandler::execute_command(const string &command)
 	while (current_node) {
 	    if (current_node->type == XML_ELEMENT_NODE) {
 		string node_name = (char *) current_node->name;
-		BESDEBUG("besdaemon", "looking for command " << node_name << endl);
+		BESDEBUG("besdaemon", "besdaemon: looking for command " << node_name << endl);
 
 		hai_command command = lookup_command(node_name);
 		switch (command) {
 		case HAI_STOP_NOW:
-		    BESDEBUG("besdaemon", "Received StopNow" << endl);
+		    BESDEBUG("besdaemon", "besdaemon: Received StopNow" << endl);
 		    stop_all_beslisteners(SIGTERM);	// see daemon.cc
 		    break;
 		case HAI_START:
 		{
+		    BESDEBUG("besdaemon", "besdaemon: Received Start" << endl);
 		    int mbes_pid = start_master_beslistener(arguments);
 		    if (mbes_pid == 0)
 			throw BESInternalFatalError("Could not start the master beslistener", __FILE__, __LINE__);
 		    break;
 		}
 		case HAI_EXIT:
-		    BESDEBUG("besdaemon", "Received Exit" << endl);
+		    BESDEBUG("besdaemon", "besdaemon: Received Exit" << endl);
 		    stop_all_beslisteners(SIGTERM);
 		    exit(0);
 		    break;
@@ -237,7 +232,7 @@ void DaemonCommandHandler::handle(Connection *c)
 	cout.rdbuf(&fds);
 
 	try {
-	    BESDEBUG("besdaemon", "cmd: " << ss.str() << endl);
+	    BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);
 	    // runs the command(s); throws on an error. The 'response' is often
 	    // empty.
 	    string response = execute_command(ss.str());
@@ -268,7 +263,7 @@ void DaemonCommandHandler::handle(Connection *c)
 	    switch (e.get_error_type()) {
 	    case BES_INTERNAL_ERROR:
 	    case BES_INTERNAL_FATAL_ERROR:
-		BESDEBUG("besdaemon", "Internal/Fatal Error: " << ss.str() << endl);
+		BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << ss.str() << endl);
 		extensions["exit"] = "true";
 		c->sendExtensions(extensions);
 		// Send the BESError
@@ -282,13 +277,13 @@ void DaemonCommandHandler::handle(Connection *c)
 
 	    case BES_SYNTAX_USER_ERROR:
 		// cerr << "syntax error" << endl;
-		BESDEBUG("besdaemon", "Syntax Error: " << ss.str() << endl);
+		BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << ss.str() << endl);
 		c->sendExtensions(extensions);
 		// Send the BESError
 		break;
 
 	    default:
-		BESDEBUG("besdaemon", "Error (unknown command): " << ss.str() << endl);
+		BESDEBUG("besdaemon", "besdaemon: Error (unknown command): " << ss.str() << endl);
 		extensions["exit"] = "true";
 		c->sendExtensions(extensions);
 		// Send the BESError
