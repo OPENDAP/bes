@@ -342,12 +342,25 @@ main(int argc, char *argv[])
 	    }
 	    break ;
 	    case 'c': // configuration file
+	    {
+		string check_path = optarg ;
+		if( BESScrub::pathname_ok( check_path, true ) == false )
+		{
+		    cout << "The specified configuration file (-c option) "
+		         << "is incorrectly formatted. Must be less than "
+			 << "255 characters and include the characters "
+			 << "[0-9A-z_./-]" << endl ;
+		    return 1 ;
+		}
+		num_args+=2 ;
+	    }
+	    break ;
 	    case 'u': // unix socket
 	    {
 		string check_path = optarg ;
 		if( BESScrub::pathname_ok( check_path, true ) == false )
 		{
-		    cout << "The specified install directory (-i option) "
+		    cout << "The specified unix socket (-u option) "
 		         << "is incorrectly formatted. Must be less than "
 			 << "255 characters and include the characters "
 			 << "[0-9A-z_./-]" << endl ;
@@ -404,13 +417,13 @@ main(int argc, char *argv[])
 	pid_dir = install_dir ;
     }
 
+#if 0
     // If the -c option was passed, set the config file name in TheBESKeys
     if( !dashc.empty() )
     {
 	TheBESKeys::ConfigFile = dashc ;
     }
 
-#if 0
     // If the -c option was not passed, but the -i option
     // was passed, then use the -i option to construct
     // the path to the config file
