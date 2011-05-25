@@ -191,6 +191,9 @@ void stop_all_beslisteners(int sig)
     BESDEBUG("besdaemon", "besdaemon: done catching listeners (last pid:" << pid << ")" << endl);
 }
 
+// The only certain way to know that the beslistener master has started is to
+// make a pipe and pass back its pid via that pipe once it is initialized.
+
 /** Start the 'master beslistener' and return its PID. This function also
    sets the global 'master_beslistener_pid' so that otehr code in this file
    (like the signal handlers) can have access to it. It starts the beslistener
