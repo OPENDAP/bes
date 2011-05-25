@@ -88,8 +88,8 @@ ServerApp::~ServerApp()
 
 // This is needed so that the master beslistner will get the exit status of
 // all of the child beslisteners (preventing them from becoming zombies).
-void
-ServerApp::CatchSigChild( int sig )
+static void
+/*ServerApp::*/CatchSigChild( int sig )
 {
     if( sig == SIGCHLD )
     {
@@ -103,8 +103,8 @@ ServerApp::CatchSigChild( int sig )
 // If the HUP signal is sent to the master beslistener, it should exit and
 // return a value indicating to the besdaemon that it should be restarted.
 // This also has the side-affect of re-reading the configuration file.
-void
-ServerApp::CatchSigHup( int sig )
+static void
+/*ServerApp::*/CatchSigHup( int sig )
 {
     if( sig == SIGHUP )
     {
@@ -121,8 +121,8 @@ ServerApp::CatchSigHup( int sig )
 // This is the default signal sent by 'kill'; when the master beslistener gets
 // this signal it should stop. besdaemon should not try to start a new
 // master beslistener.
-void
-ServerApp::CatchSigTerm( int sig )
+static void
+/*ServerApp::*/CatchSigTerm( int sig )
 {
     if( sig == SIGTERM )
     {
@@ -317,6 +317,43 @@ ServerApp::set_user_id()
 	(*BESLog::TheLog()) << err.str() << endl ;
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
+}
+
+/** Register the signal handlers. This registers handlers for HUP, TERM and
+ *  CHLD. For each, if this OS supports restarting 'slow' system calls, enable
+ *  that. For the TERM and HUP handlers, block SIGCHLD for the duration of
+ *  the handler (we call stop_all_beslisteners() in those handlers and that
+ *  function uses wait() to collect the exit status of the child processes).
+ *  This ensure that our signal handlers (TERM and HUP) don't themselves get
+ *  interrupted.
+ */
+static void register_signal_handlers()
+{
+    struct sigaction act;
+    act.sa_handler = CatchSigChild;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+#ifdef SA_RESTART
+    BESDEBUG("besdaemon" , "besdaemon: setting restart for sigchld." << endl);
+    act.sa_flags |= SA_RESTART;
+#endif
+
+    BESDEBUG( "server", "beslisterner: Registering signal handlers ... " << endl ) ;
+
+    if (sigaction(SIGCHLD, &act, 0))
+	throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__, __LINE__);
+
+    // For these, block sigchld
+    sigaddset(&act.sa_mask, SIGCHLD);
+    act.sa_handler = CatchSigTerm;
+    if (sigaction(SIGTERM, &act, 0) < 0)
+	throw BESInternalFatalError("Could not register a handler to catch beslistener terminate signal.", __FILE__, __LINE__);
+
+    act.sa_handler = CatchSigHup;
+    if (sigaction(SIGHUP, &act, 0) < 0)
+	throw BESInternalFatalError("Could not register a handler to catch beslistener hup signal.", __FILE__, __LINE__);
+
+    BESDEBUG( "server", "beslisterner: OK" << endl ) ;
 }
 
 int
@@ -514,6 +551,16 @@ ServerApp::initialize( int argc, char **argv )
 	}
     }
 
+    try {
+	register_signal_handlers();
+    }
+    catch (BESError &e) {
+	BESDEBUG( "server", "beslisterner: FAILED: " << e.get_message() << endl ) ;
+	(*BESLog::TheLog()) << e.get_message() << endl ;
+	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
+    }
+
+#if 0
     BESDEBUG( "server", "beslisterner: Registering signal SIGCHLD ... " << endl ) ;
     if( signal( SIGCHLD, CatchSigChild ) == SIG_ERR )
     {
@@ -559,6 +606,7 @@ ServerApp::initialize( int argc, char **argv )
 	exit( SERVER_EXIT_FATAL_CAN_NOT_START ) ;
     }
     BESDEBUG( "server", "OK" << endl ) ;
+#endif
 
     BESDEBUG( "server", "beslisterner: initializing default module ... "
 			<< endl ) ;

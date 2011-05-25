@@ -36,6 +36,10 @@ using std::string ;
 
 #include "ServerHandler.h"
 
+#define BESLISTENER_STOPPED 0
+#define BESLISTENER_RUNNING 4	// 1,2 are abnormal term, restart is 3
+#define BESLISTENER_RESTART SERVER_EXIT_RESTART
+
 class Connection ;
 
 class DaemonCommandHandler: public ServerHandler {

@@ -62,10 +62,11 @@ public:
     virtual int			terminate( int sig = 0 ) ;
 
     virtual void		dump( ostream &strm ) const ;
-
+#if 0
     static void			CatchSigChild( int sig ) ;
     static void			CatchSigHup( int sig ) ;
     static void			CatchSigTerm( int sig ) ;
+#endif
 #if 0
     static void			signalInterrupt( int sig ) ;
 #endif

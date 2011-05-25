@@ -60,7 +60,8 @@ using std::flush ;
 
 // Defined in daemon.cc
 extern int  start_master_beslistener() ;
-extern void stop_all_beslisteners( int ) ;
+extern bool stop_all_beslisteners( int ) ;
+extern int master_beslistener_status;
 
 DaemonCommandHandler::DaemonCommandHandler()
 {
@@ -161,8 +162,14 @@ DaemonCommandHandler::execute_command(const string &command)
 		switch (command) {
 		case HAI_STOP_NOW:
 		    BESDEBUG("besdaemon", "besdaemon: Received StopNow" << endl);
-		    stop_all_beslisteners(SIGTERM);	// see daemon.cc
+		    if (stop_all_beslisteners(SIGTERM) == false) {
+			if (master_beslistener_status == BESLISTENER_RUNNING)
+			    throw BESInternalFatalError("Could not stop the master beslistener", __FILE__, __LINE__);
+			else
+			    throw BESSyntaxUserError("Received Stop command but the master beslistener was likely already stopped", __FILE__, __LINE__);
+		    }
 		    break;
+
 		case HAI_START:
 		{
 		    BESDEBUG("besdaemon", "besdaemon: Received Start" << endl);
@@ -170,10 +177,15 @@ DaemonCommandHandler::execute_command(const string &command)
 		    // static global defined in daemon.cc that stop_all_bes...
 		    // uses.
 		    int mbes_pid = start_master_beslistener();
-		    if (mbes_pid == 0)
-			throw BESInternalFatalError("Could not start the master beslistener", __FILE__, __LINE__);
+		    if (mbes_pid == 0) {
+			if (master_beslistener_status == BESLISTENER_RUNNING)
+			    throw BESSyntaxUserError("Received Start command but the master beslistener is already running", __FILE__, __LINE__);
+			else
+			    throw BESInternalFatalError("Could not start the master beslistener", __FILE__, __LINE__);
+		    }
 		    break;
 		}
+
 		case HAI_EXIT:
 		    BESDEBUG("besdaemon", "besdaemon: Received Exit" << endl);
 		    stop_all_beslisteners(SIGTERM);

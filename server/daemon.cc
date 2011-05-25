@@ -69,14 +69,14 @@ using std::string ;
 #define BES_SERVER_PID "/bes.pid"
 #define DAEMON_PORT_STR "BES.DaemonPort"
 #define DAEMON_UNIX_SOCK_STR "BES.DaemonUnixSocket"
-
+#if 0
 #define BESLISTENER_STOPPED 0
 #define BESLISTENER_RUNNING 4	// 1,2 are abnormal term, restart is 3
 #define BESLISTENER_RESTART SERVER_EXIT_RESTART
-
+#endif
 // These are called from DaemonCommandHandler
 int  start_master_beslistener() ;
-void stop_all_beslisteners( int sig ) ;
+bool stop_all_beslisteners( int sig ) ;
 
 static string daemon_name ;
 
@@ -84,7 +84,7 @@ static string daemon_name ;
 static string beslistener_path ;
 static string file_for_daemon_pid ;
 // This can be used to see if HUP or TERM has been sent to the master bes
-static int master_beslistener_status = BESLISTENER_STOPPED;
+int master_beslistener_status = BESLISTENER_STOPPED;
 
 static int master_beslistener_pid = -1;	// This is also the process group id
 static char **arguments = 0 ;
@@ -153,8 +153,9 @@ static int pr_exit(int status)
  *  beslisteners.
  *
  * @param sig Signal to send to all beslisteners.
+ * @return true if the master beslistener status was caught, false otherwise
  */
-void stop_all_beslisteners(int sig)
+bool stop_all_beslisteners(int sig)
 {
     BESDEBUG("besdaemon", "besdaemon: stopping listeners" << endl);
 
@@ -192,11 +193,13 @@ void stop_all_beslisteners(int sig)
 	break;
     }
 
+    bool mbes_status_caught = false;
     int pid;
     while ((pid = wait(&status)) > 0) {
 	BESDEBUG("besdaemon", "besdaemon: caught listener: " << pid << " raw status: " << status << endl);
 	if (pid == master_beslistener_pid) {
 	    master_beslistener_status = pr_exit(status);
+	    mbes_status_caught = true;
 	    BESDEBUG("besdaemon", "besdaemon: caught master beslistener: " << pid << " status: " << master_beslistener_status << endl);
 	}
     }
@@ -211,6 +214,8 @@ void stop_all_beslisteners(int sig)
     }
 
     BESDEBUG("besdaemon", "besdaemon: done catching listeners (last pid:" << pid << ")" << endl);
+
+    return mbes_status_caught;
 }
 
 // The only certain way to know that the beslistener master has started is to
@@ -308,7 +313,7 @@ int start_master_beslistener()
 /** Clean up resources allocated by main(). This is called both by main() and
  *  by the SIGTERM signal handler.
  */
-void cleanup_resources()
+static void cleanup_resources()
 {
     delete [] arguments; arguments = 0 ;
 
@@ -321,7 +326,7 @@ void cleanup_resources()
 // beslistener(s) and they have returned SERVER_EXIT_RESTART by recording
 // that value in the global 'master_beslistener_status'. Other code needs
 // to test that (static) global to see if the beslistener should be restarted.
-void CatchSigChild(int signal)
+static void CatchSigChild(int signal)
 {
     if (signal == SIGCHLD) {
 	int status;
@@ -344,7 +349,7 @@ void CatchSigChild(int signal)
 // to restart the master beslistener.
 //
 // Block sigchld when in this function.
-void CatchSigHup(int signal)
+static void CatchSigHup(int signal)
 {
     if (signal == SIGHUP) {
 	BESDEBUG("besdaemon", "besdaemon: caught SIGHUP in besdaemon." << endl);
@@ -379,7 +384,7 @@ void CatchSigHup(int signal)
 // value (the code for 'do not restart').
 //
 // Block sigchld when in this function.
-void CatchSigTerm(int signal)
+static void CatchSigTerm(int signal)
 {
     if (signal == SIGTERM) {
 	BESDEBUG("besdaemon", "besdaemon: caught SIGTERM." << endl);
@@ -406,7 +411,7 @@ void CatchSigTerm(int signal)
  * @return 1 if the interpreter exited and the daemon should stop, 0 if the
  * interpreter was not started.
  */
-int start_command_processor(DaemonCommandHandler &handler)
+static int start_command_processor(DaemonCommandHandler &handler)
 {
     TcpSocket *socket = 0;
     UnixSocket *unix_socket = 0;
@@ -488,7 +493,7 @@ int start_command_processor(DaemonCommandHandler &handler)
  *  This ensure that our signal handlers (TERM and HUP) don't themselves get
  *  interrupted.
  */
-void register_signal_handlers()
+static void register_signal_handlers()
 {
     struct sigaction act;
     act.sa_handler = CatchSigChild;
