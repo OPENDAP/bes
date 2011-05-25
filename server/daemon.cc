@@ -70,6 +70,10 @@ using std::string ;
 #define DAEMON_PORT_STR "BES.DaemonPort"
 #define DAEMON_UNIX_SOCK_STR "BES.DaemonUnixSocket"
 
+#define BESLISTENER_STOPPED 0
+#define BESLISTENER_RUNNING 4	// 1,2 are abnormal term, restart is 3
+#define BESLISTENER_RESTART SERVER_EXIT_RESTART
+
 // These are called from DaemonCommandHandler
 int  start_master_beslistener( /* char **arguments */ ) ;
 void stop_all_beslisteners( int sig ) ;
@@ -80,7 +84,7 @@ static string daemon_name ;
 static string beslistener_path ;
 static string file_for_daemon_pid ;
 // This can be used to see if HUP or TERM has been sent to the master bes
-static int master_beslistener_status = -1;
+static int master_beslistener_status = BESLISTENER_STOPPED;
 
 static int master_beslistener_pid = -1;	// This is also the process group id
 static char **arguments = 0 ;
@@ -201,6 +205,11 @@ void stop_all_beslisteners(int sig)
  */
 int start_master_beslistener()
 {
+	if (master_beslistener_status != BESLISTENER_STOPED) {
+		BESDEBUG("besdaemon", "besdaemon: tried to start the beslistener but its already running" << endl);
+		return 0;
+	}
+
     int pid;
     if( ( pid = fork() ) < 0 )
     {
@@ -232,6 +241,7 @@ int start_master_beslistener()
     // Setting master_beslistener_pid here and not forcing callers to use the
     // return value means that this global can be local to this file.
     master_beslistener_pid = pid;
+    master_beslistener_status = BESLISTENER_RUNNING;
 
     return pid;
 }
@@ -287,8 +297,10 @@ void CatchSigHup(int signal)
 	// master_beslistener_status almost certainly does equal
 	// SERVER_EXIT_RESTART, but check anyway.
 	if (master_beslistener_status == SERVER_EXIT_RESTART) {
-	    master_beslistener_status = -1;
-	    master_beslistener_pid = start_master_beslistener();
+#if 0
+		master_beslistener_status = -1;
+#endif
+		master_beslistener_pid = start_master_beslistener();
 	}
     }
 }
