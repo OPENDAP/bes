@@ -13,10 +13,11 @@
 #include <BESInternalFatalError.h>
 
 const char *ENCODING = "ISO-8859-1";
+// Hack
 const char *HAI_NS = "http://xml.opendap.org/ns/bes/admin/1.0#";
 const int XML_BUF_SIZE = 2000000;
 
-XMLWriter::XMLWriter()
+XMLWriter::XMLWriter() // : d_ns_uri(HAI_NS)
 {
     LIBXML_TEST_VERSION;
 

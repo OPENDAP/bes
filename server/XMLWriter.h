@@ -22,6 +22,7 @@ private:
     xmlBufferPtr d_doc_buf;
     bool d_started;
     bool d_ended;
+    string d_ns_uri;
 
     string d_doc;
 
@@ -32,6 +33,7 @@ public:
     virtual ~XMLWriter();
 
     xmlTextWriterPtr get_writer() { return d_writer; }
+    // string get_ns_uri() const { return d_ns_uri; }
     const char *get_doc();
 };
 

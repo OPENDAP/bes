@@ -198,6 +198,25 @@ DaemonCommandHandler::execute_command(const string &command)
     return "";
 }
 
+static void send_bes_error(XMLWriter &writer, BESError &e)
+{
+    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BESError") < 0)
+	throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
+
+    ostringstream oss;
+    oss << e.get_error_type() << std::ends;
+    if (xmlTextWriterWriteElement(writer.get_writer(), (const xmlChar*) "hai:Type", (const xmlChar*) oss.str().c_str())
+	    < 0)
+	throw BESInternalFatalError("Could not write <hai:Type> element ", __FILE__, __LINE__);
+
+    if (xmlTextWriterWriteElement(writer.get_writer(), (const xmlChar*) "hai:Type",
+	    (const xmlChar*) e.get_message().c_str()) < 0)
+	throw BESInternalFatalError("Could not write <hai:Type> element ", __FILE__, __LINE__);
+
+    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+	throw BESInternalFatalError("Could not end <hai:OK> element ", __FILE__, __LINE__);
+}
+
 void DaemonCommandHandler::handle(Connection *c)
 {
 #if 0
@@ -231,13 +250,14 @@ void DaemonCommandHandler::handle(Connection *c)
 	holder = cout.rdbuf();
 	cout.rdbuf(&fds);
 
+	XMLWriter writer;
+
 	try {
 	    BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);
 	    // runs the command(s); throws on an error. The 'response' is often
 	    // empty.
 	    string response = execute_command(ss.str());
 
-	    XMLWriter writer;
 	    // when response is empty, return 'OK'
 	    if (response.empty()) {
 		if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
@@ -266,12 +286,11 @@ void DaemonCommandHandler::handle(Connection *c)
 		BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << ss.str() << endl);
 		extensions["exit"] = "true";
 		c->sendExtensions(extensions);
+		send_bes_error(writer, e);
 		// Send the BESError
-		// we are finished, send the last chunk
-		fds.finish();
-
-		// reset the streams buffer
-		cout.rdbuf(holder);
+		cout << writer.get_doc() << endl;
+		fds.finish(); // we are finished, send the last chunk
+		cout.rdbuf(holder); // reset the streams buffer
 		return; // EXIT; disconnects from client
 		break;
 
@@ -280,6 +299,7 @@ void DaemonCommandHandler::handle(Connection *c)
 		BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << ss.str() << endl);
 		c->sendExtensions(extensions);
 		// Send the BESError
+		send_bes_error(writer, e);
 		break;
 
 	    default:
@@ -287,16 +307,14 @@ void DaemonCommandHandler::handle(Connection *c)
 		extensions["exit"] = "true";
 		c->sendExtensions(extensions);
 		// Send the BESError
+		send_bes_error(writer, e);
 		break;
 
 	    }
 
-	    // we are finished, send the last chunk
-	    fds.finish();
-
-	    // reset the streams buffer
-	    cout.rdbuf(holder);
-
+	    cout << writer.get_doc() << endl;
+	    fds.finish();	// we are finished, send the last chunk
+	    cout.rdbuf(holder);	// reset the streams buffer
 	}
     }
 }

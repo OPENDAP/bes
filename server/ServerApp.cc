@@ -613,6 +613,10 @@ ServerApp::run()
 	    listener.listen( _ts ) ;
 	    BESDEBUG( "server", "beslisterner: listening on port ("
 				<< _portVal << ")" << endl ) ;
+	    int status = 4; // ***
+	    BESDEBUG( "server", "beslisterner: about to write status (4)" << endl ) ;
+	    int res = write(4, &status, sizeof(status)); // ***
+	    BESDEBUG( "server", "beslisterner: wrote status (" << res << ")" << endl ) ;
 	}
 
 	if( !_unixSocket.empty() )
@@ -628,18 +632,19 @@ ServerApp::run()
 	_ps = new PPTServer( &handler, &listener, _secure ) ;
 	_ps->initConnection() ;
     }
-    catch( BESError &se )
-    {
-	cerr << se.get_message() << endl ;
-	(*BESLog::TheLog()) << se.get_message() << endl ;
-	return 1 ;
+    catch (BESError &se) {
+	cerr << se.get_message() << endl;
+	(*BESLog::TheLog()) << se.get_message() << endl;
+	int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
+	write(4, &status, sizeof(status)); // ***
+	return 1;
     }
-    catch( ... )
-    {
-	cerr << "caught unknown exception" << endl ;
-	(*BESLog::TheLog()) << "caught unknown exception initializing sockets"
-			    << endl ;
-	return 1 ;
+    catch (...) {
+	cerr << "caught unknown exception" << endl;
+	(*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
+	int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
+	write(4, &status, sizeof(status)); // ***
+	return 1;
     }
 
     return 0 ;

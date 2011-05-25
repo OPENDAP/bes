@@ -75,7 +75,7 @@ using std::string ;
 #define BESLISTENER_RESTART SERVER_EXIT_RESTART
 
 // These are called from DaemonCommandHandler
-int  start_master_beslistener( /* char **arguments */ ) ;
+int  start_master_beslistener() ;
 void stop_all_beslisteners( int sig ) ;
 
 static string daemon_name ;
@@ -97,7 +97,7 @@ static char **arguments = 0 ;
     return 0; abnormally, return 1; indicating restart needed, return the
     value of SERVER_EXIT_RESTART.
  */
-int pr_exit(int status)
+static int pr_exit(int status)
 {
     if (WIFEXITED( status )) {
 	switch (WEXITSTATUS( status )) {
@@ -158,6 +158,19 @@ void stop_all_beslisteners(int sig)
 {
     BESDEBUG("besdaemon", "besdaemon: stopping listeners" << endl);
 
+    // *** Need to block signals here?
+    sigset_t set;
+    sigaddset(&set, SIGCHLD);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
+	cerr << daemon_name << ": sigprocmask error, blocking signals in stop_all_beslisteners " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+    }
+
     // Send 'sig' to all members of the process group with/of the master bes.
     // The master beslistener pid is the group id of all of the beslisteners.
     int status = killpg(master_beslistener_pid, sig);
@@ -183,9 +196,18 @@ void stop_all_beslisteners(int sig)
     while ((pid = wait(&status)) > 0) {
 	BESDEBUG("besdaemon", "besdaemon: caught listener: " << pid << " raw status: " << status << endl);
 	if (pid == master_beslistener_pid) {
-	    BESDEBUG("besdaemon", "besdaemon: caught master beslistener: " << pid << " status: " << pr_exit(status) << endl);
 	    master_beslistener_status = pr_exit(status);
+	    BESDEBUG("besdaemon", "besdaemon: caught master beslistener: " << pid << " status: " << master_beslistener_status << endl);
 	}
+    }
+
+    // *** and unblock signals here?
+    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
+	cerr << daemon_name << ": sigprocmask error unblocking signals in stop_all_beslisteners " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
     }
 
     BESDEBUG("besdaemon", "besdaemon: done catching listeners (last pid:" << pid << ")" << endl);
@@ -208,14 +230,25 @@ void stop_all_beslisteners(int sig)
  */
 int start_master_beslistener()
 {
-	if (master_beslistener_status != BESLISTENER_STOPED) {
-		BESDEBUG("besdaemon", "besdaemon: tried to start the beslistener but its already running" << endl);
-		return 0;
-	}
+#if 0
+    if (master_beslistener_status != BESLISTENER_STOPED) {
+	BESDEBUG("besdaemon", "besdaemon: tried to start the beslistener but its already running" << endl);
+	return 0;
+    }
+#endif
+
+    int fd[2];
+    if (pipe(fd) < 0) {
+	cerr << daemon_name << ": pipe error " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+	return 0 ;
+    }
 
     int pid;
-    if( ( pid = fork() ) < 0 )
-    {
+    if( ( pid = fork() ) < 0 ) {
 	cerr << daemon_name << ": fork error " ;
 	const char *perror_string = strerror( errno ) ;
 	if( perror_string )
@@ -223,11 +256,17 @@ int start_master_beslistener()
 	cerr << endl ;
 	return 0 ;
     }
-    else if( pid == 0 ) /* child process */
-    {
-	// This starts the beslistener (aka mbes) that is parent of the
-	// beslisteners that actually serve data.
-	cerr << "Starting: " << arguments[0] << endl;
+    else if (pid == 0) { // child process  (the master beslistener)
+	close( fd[0]); // Close the read end of the pipe
+	if (dup2(fd[1], 4) != 4) { // ***
+	    cerr << daemon_name << ": dup2 error ";
+	    const char *perror_string = strerror(errno);
+	    if (perror_string)
+		cerr << perror_string;
+	    cerr << endl;
+	    return 0;
+	}
+	BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
 	execvp( arguments[0], arguments ) ;
 	cerr << daemon_name
 	     << ": mounting listener, subprocess failed: " ;
@@ -238,13 +277,30 @@ int start_master_beslistener()
 	exit( 1 ) ; 	//NB: This exits from the child process.
     }
 
-    // parent
+    // parent process (the besdaemon)
+
+    // The daemon records the pid of the master beslistener, but only does so
+    // when that process writes its status to the pipe 'fd'.
+
+    close(fd[1]);	// close the write end of the pipe
     BESDEBUG("besdaemon", "besdaemon: master beslistener pid: " << pid << endl);
 
-    // Setting master_beslistener_pid here and not forcing callers to use the
-    // return value means that this global can be local to this file.
-    master_beslistener_pid = pid;
-    master_beslistener_status = BESLISTENER_RUNNING;
+    int beslistener_start_status;
+    if (read(fd[0], &beslistener_start_status, sizeof(beslistener_start_status)) < 0) {
+	cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
+	return 0;
+    }
+    else if (beslistener_start_status != BESLISTENER_RUNNING) {
+	cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
+	return 0;
+    }
+    else {
+	BESDEBUG("besdaemon", "besdaemon: master beslistener start status: " << beslistener_start_status << endl);
+	// Setting master_beslistener_pid here and not forcing callers to use the
+	// return value means that this global can be local to this file.
+	master_beslistener_pid = pid;
+	master_beslistener_status = BESLISTENER_RUNNING;
+    }
 
     return pid;
 }
@@ -256,8 +312,7 @@ void cleanup_resources()
 {
     delete [] arguments; arguments = 0 ;
 
-    if( !access( file_for_daemon_pid.c_str(), F_OK ) )
-    {
+    if( !access( file_for_daemon_pid.c_str(), F_OK ) ) {
 	(void)remove( file_for_daemon_pid.c_str() ) ;
     }
 }
@@ -269,10 +324,11 @@ void cleanup_resources()
 void CatchSigChild(int signal)
 {
     if (signal == SIGCHLD) {
-	int pid = wait(&master_beslistener_status);
-	BESDEBUG("besdaemon",  "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << pr_exit(master_beslistener_status) << endl);
+	int status;
+	int pid = wait(&status);
 	// Decode and record the exit status.
-	master_beslistener_status = pr_exit(master_beslistener_status);
+	master_beslistener_status = pr_exit(status);
+	BESDEBUG("besdaemon",  "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << master_beslistener_status << endl);
     }
 }
 
@@ -297,14 +353,24 @@ void CatchSigHup(int signal)
 	// restart the beslistener(s); read their exit status
 	stop_all_beslisteners(SIGHUP);
 
+	if (start_master_beslistener() == 0) {
+	    cerr << "Could not restart the master beslistener." << endl;
+	    stop_all_beslisteners(SIGTERM);
+	    cleanup_resources();
+	    exit(1);
+	}
+#if 0
 	// master_beslistener_status almost certainly does equal
 	// SERVER_EXIT_RESTART, but check anyway.
 	if (master_beslistener_status == SERVER_EXIT_RESTART) {
 #if 0
 		master_beslistener_status = -1;
 #endif
-		master_beslistener_pid = start_master_beslistener();
+		// master_beslistener_pid = start_master_beslistener();
+		start_master_beslistener();
 	}
+#endif
+
     }
 }
 
@@ -459,7 +525,7 @@ void register_signal_handlers()
  *
  * @return -1 if the initial fork() call fails; 0 otherwise.
  */
-int daemon_init()
+static int daemon_init()
 {
     pid_t pid ;
     if( ( pid = fork() ) < 0 )	// error
@@ -476,7 +542,7 @@ int daemon_init()
  *
  * @param pid The process ID of this daemon.
  */
-void store_daemon_id(int pid)
+static void store_daemon_id(int pid)
 {
     const char *perror_string = 0;
     ofstream f(file_for_daemon_pid.c_str());
@@ -504,7 +570,7 @@ void store_daemon_id(int pid)
  * @param pid_dir pid file pathname
  * @return true if the server executable is found, false otherwise.
  */
-bool load_names(const string &install_dir, const string &pid_dir)
+static bool load_names(const string &install_dir, const string &pid_dir)
 {
     string bindir = "/bin";
     if (!pid_dir.empty()) {
@@ -765,6 +831,7 @@ int main(int argc, char *argv[])
     // bes.conf file was set so that the processor never starts (status == 0).
     DaemonCommandHandler handler;
     int status = start_command_processor(handler);
+
     // if the command processor does not start, drop into this loop which
     // implements the simple restart-on-HUP behavior of the daemon.
     if (status == 0) {
@@ -772,12 +839,13 @@ int main(int argc, char *argv[])
 	while (!done) {
 	    pause();
 	    BESDEBUG("besdaemon", "besdaemon: master_beslistener_status: " << master_beslistener_status << endl);
-	    if (master_beslistener_status == SERVER_EXIT_RESTART) {
-		master_beslistener_status = -1;
-		master_beslistener_pid = start_master_beslistener();
+	    if (master_beslistener_status == BESLISTENER_RESTART) {
+		master_beslistener_status = BESLISTENER_STOPPED;
+		// master_beslistener_pid = start_master_beslistener();
+		start_master_beslistener();
 	    }
-	    // If the satus is not 'restart' and not -1 (running), then stop
-	    else if (master_beslistener_status != -1) {
+	    // If the satus is not 'restart' and not running, then exit loop
+	    else if (master_beslistener_status != BESLISTENER_RUNNING) {
 		done = true;
 	    }
 	}
