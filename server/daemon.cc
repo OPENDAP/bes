@@ -852,7 +852,7 @@ int main(int argc, char *argv[])
     // start_command_processor() does not return unless all commands have been
     // processed and the daemon has been told to exit (status == 1) or the
     // bes.conf file was set so that the processor never starts (status == 0).
-    DaemonCommandHandler handler;
+    DaemonCommandHandler handler(TheBESKeys::ConfigFile);
     int status = start_command_processor(handler);
 
     // if the command processor does not start, drop into this loop which

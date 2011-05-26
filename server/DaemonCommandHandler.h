@@ -35,6 +35,7 @@
 using std::string ;
 
 #include "ServerHandler.h"
+#include "XMLWriter.h"
 
 #define BESLISTENER_STOPPED 0
 #define BESLISTENER_RUNNING 4	// 1,2 are abnormal term, restart is 3
@@ -44,12 +45,18 @@ class Connection ;
 
 class DaemonCommandHandler: public ServerHandler {
 private:
+    string d_config_file_name;
+    string d_config_dir;
+    string d_include_dir;
 
-    string execute_command(const string &command);
+    void execute_command(const string &command, XMLWriter &writer);
 
 public:
-    DaemonCommandHandler();
+    DaemonCommandHandler(const string &config);
     virtual ~DaemonCommandHandler() { }
+
+    string get_config_file() { return d_config_file_name; }
+    void set_config_file(const string &config) { d_config_file_name = config; }
 
     virtual void handle(Connection *c);
 
