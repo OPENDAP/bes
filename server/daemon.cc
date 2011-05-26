@@ -75,6 +75,8 @@ using std::string ;
 #define BESLISTENER_RESTART SERVER_EXIT_RESTART
 #endif
 // These are called from DaemonCommandHandler
+void block_signals() ;
+void unblock_signals() ;
 int  start_master_beslistener() ;
 bool stop_all_beslisteners( int sig ) ;
 
@@ -142,6 +144,37 @@ static int pr_exit(int status)
     return 0;
 }
 
+void block_signals()
+{
+    sigset_t set;
+    sigaddset(&set, SIGCHLD);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+
+    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
+	cerr << daemon_name << ": sigprocmask error, blocking signals in stop_all_beslisteners " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+    }
+}
+
+void unblock_signals()
+{
+    sigset_t set;
+    sigaddset(&set, SIGCHLD);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+
+    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
+	cerr << daemon_name << ": sigprocmask error unblocking signals in stop_all_beslisteners " ;
+	const char *perror_string = strerror( errno ) ;
+	if( perror_string )
+	    cerr << perror_string ;
+	cerr << endl ;
+    }
+}
 /** Stop all of the listeners (both the master listener and all of the
  *  child listeners that actually process requests). A test version of this
  *  used the master beslistener's exit status to determine if the daemon
@@ -158,19 +191,6 @@ static int pr_exit(int status)
 bool stop_all_beslisteners(int sig)
 {
     BESDEBUG("besdaemon", "besdaemon: stopping listeners" << endl);
-
-    // *** Need to block signals here?
-    sigset_t set;
-    sigaddset(&set, SIGCHLD);
-    sigaddset(&set, SIGHUP);
-    sigaddset(&set, SIGTERM);
-    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
-	cerr << daemon_name << ": sigprocmask error, blocking signals in stop_all_beslisteners " ;
-	const char *perror_string = strerror( errno ) ;
-	if( perror_string )
-	    cerr << perror_string ;
-	cerr << endl ;
-    }
 
     // Send 'sig' to all members of the process group with/of the master bes.
     // The master beslistener pid is the group id of all of the beslisteners.
@@ -202,15 +222,6 @@ bool stop_all_beslisteners(int sig)
 	    mbes_status_caught = true;
 	    BESDEBUG("besdaemon", "besdaemon: caught master beslistener: " << pid << " status: " << master_beslistener_status << endl);
 	}
-    }
-
-    // *** and unblock signals here?
-    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
-	cerr << daemon_name << ": sigprocmask error unblocking signals in stop_all_beslisteners " ;
-	const char *perror_string = strerror( errno ) ;
-	if( perror_string )
-	    cerr << perror_string ;
-	cerr << endl ;
     }
 
     BESDEBUG("besdaemon", "besdaemon: done catching listeners (last pid:" << pid << ")" << endl);
@@ -322,6 +333,9 @@ static void cleanup_resources()
     }
 }
 
+// Note that SIGCHLD, SIGTERM and SIGHUP are blocked while in these three
+// signal handlers below.
+
 // Catch SIGCHLD. This is used to detect if the HUP signal was sent to the
 // beslistener(s) and they have returned SERVER_EXIT_RESTART by recording
 // that value in the global 'master_beslistener_status'. Other code needs
@@ -331,9 +345,15 @@ static void CatchSigChild(int signal)
     if (signal == SIGCHLD) {
 	int status;
 	int pid = wait(&status);
-	// Decode and record the exit status.
-	master_beslistener_status = pr_exit(status);
-	BESDEBUG("besdaemon",  "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << master_beslistener_status << endl);
+
+	BESDEBUG("besdaemon",  "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << pr_exit(status) << endl);
+	// Decode and record the exit status, but only if it really is the
+	// master beslistener this daemon is using. If two or more Start commands
+	// are sent in a row, a master beslistener will start, fail to bind to
+	// the port (because another master beslstener is already bound to it)
+	// and exit. We don't want to record that second process's exit status here.
+	if (pid == master_beslistener_pid)
+	    master_beslistener_status = pr_exit(status);
     }
 }
 
@@ -364,18 +384,6 @@ static void CatchSigHup(int signal)
 	    cleanup_resources();
 	    exit(1);
 	}
-#if 0
-	// master_beslistener_status almost certainly does equal
-	// SERVER_EXIT_RESTART, but check anyway.
-	if (master_beslistener_status == SERVER_EXIT_RESTART) {
-#if 0
-		master_beslistener_status = -1;
-#endif
-		// master_beslistener_pid = start_master_beslistener();
-		start_master_beslistener();
-	}
-#endif
-
     }
 }
 
@@ -462,7 +470,10 @@ static int start_command_processor(DaemonCommandHandler &handler)
 	delete unix_socket; unix_socket = 0;
 
 	// When/if the command interpreter exits, stop the all listeners.
+	block_signals();
 	stop_all_beslisteners(SIGTERM);
+	unblock_signals();
+
 	return 1;
     }
     catch (BESError &se) {
@@ -471,7 +482,9 @@ static int start_command_processor(DaemonCommandHandler &handler)
 	delete socket; socket = 0;
 	delete unix_socket; unix_socket = 0;
 
+	block_signals();
 	stop_all_beslisteners(SIGTERM);
+	unblock_signals();
 	return 1;
     }
     catch (...) {
@@ -480,7 +493,9 @@ static int start_command_processor(DaemonCommandHandler &handler)
 	delete socket; socket = 0;
 	delete unix_socket; unix_socket = 0;
 
+	block_signals();
 	stop_all_beslisteners(SIGTERM);
+	unblock_signals();
 	return 1;
     }
 }
@@ -496,21 +511,24 @@ static int start_command_processor(DaemonCommandHandler &handler)
 static void register_signal_handlers()
 {
     struct sigaction act;
-    act.sa_handler = CatchSigChild;
+
+    // block chld, term and hup in the handlers
     sigemptyset(&act.sa_mask);
+    sigaddset(&act.sa_mask, SIGCHLD);
+    sigaddset(&act.sa_mask, SIGTERM);
+    sigaddset(&act.sa_mask, SIGHUP);
     act.sa_flags = 0;
 #ifdef SA_RESTART
     BESDEBUG("besdaemon" , "besdaemon: setting restart for sigchld." << endl);
     act.sa_flags |= SA_RESTART;
 #endif
+
+    act.sa_handler = CatchSigChild;
     if (sigaction(SIGCHLD, &act, 0)) {
 	cerr << "Could not register a handler to catch beslistener status." << endl;
 	exit(1);
-
     }
 
-    // For these, block sigchld
-    sigaddset(&act.sa_mask, SIGCHLD);
     act.sa_handler = CatchSigTerm;
     if (sigaction(SIGTERM, &act, 0) < 0) {
 	cerr << "Could not register a handler to catch the terminate signal." << endl;

@@ -330,8 +330,10 @@ ServerApp::set_user_id()
 static void register_signal_handlers()
 {
     struct sigaction act;
-    act.sa_handler = CatchSigChild;
     sigemptyset(&act.sa_mask);
+    sigaddset(&act.sa_mask, SIGCHLD);
+    sigaddset(&act.sa_mask, SIGTERM);
+    sigaddset(&act.sa_mask, SIGHUP);
     act.sa_flags = 0;
 #ifdef SA_RESTART
     BESDEBUG("besdaemon" , "besdaemon: setting restart for sigchld." << endl);
@@ -340,11 +342,12 @@ static void register_signal_handlers()
 
     BESDEBUG( "server", "beslisterner: Registering signal handlers ... " << endl ) ;
 
+    act.sa_handler = CatchSigChild;
     if (sigaction(SIGCHLD, &act, 0))
 	throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__, __LINE__);
 
     // For these, block sigchld
-    sigaddset(&act.sa_mask, SIGCHLD);
+   //  sigaddset(&act.sa_mask, SIGCHLD);
     act.sa_handler = CatchSigTerm;
     if (sigaction(SIGTERM, &act, 0) < 0)
 	throw BESInternalFatalError("Could not register a handler to catch beslistener terminate signal.", __FILE__, __LINE__);

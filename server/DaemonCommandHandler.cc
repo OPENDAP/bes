@@ -59,6 +59,8 @@ using std::flush ;
 #include "XMLWriter.h"
 
 // Defined in daemon.cc
+extern void block_signals() ;
+extern void unblock_signals() ;
 extern int  start_master_beslistener() ;
 extern bool stop_all_beslisteners( int ) ;
 extern int master_beslistener_status;
@@ -158,15 +160,22 @@ DaemonCommandHandler::execute_command(const string &command)
 		string node_name = (char *) current_node->name;
 		BESDEBUG("besdaemon", "besdaemon: looking for command " << node_name << endl);
 
-		hai_command command = lookup_command(node_name);
-		switch (command) {
+		// While processing a command, block signals, which can also
+		// be used to control the master beslistener. unblock at the
+		// end of the while loop.
+		block_signals();
+
+		switch (lookup_command(node_name)) {
 		case HAI_STOP_NOW:
 		    BESDEBUG("besdaemon", "besdaemon: Received StopNow" << endl);
+
 		    if (stop_all_beslisteners(SIGTERM) == false) {
-			if (master_beslistener_status == BESLISTENER_RUNNING)
+			if (master_beslistener_status == BESLISTENER_RUNNING) {
 			    throw BESInternalFatalError("Could not stop the master beslistener", __FILE__, __LINE__);
-			else
+			}
+			else {
 			    throw BESSyntaxUserError("Received Stop command but the master beslistener was likely already stopped", __FILE__, __LINE__);
+			}
 		    }
 		    break;
 
@@ -176,12 +185,14 @@ DaemonCommandHandler::execute_command(const string &command)
 		    // start_master_beslistener assigns the mbes pid to a
 		    // static global defined in daemon.cc that stop_all_bes...
 		    // uses.
-		    int mbes_pid = start_master_beslistener();
-		    if (mbes_pid == 0) {
-			if (master_beslistener_status == BESLISTENER_RUNNING)
+		    if (start_master_beslistener() == 0) {
+			BESDEBUG("besdaemon", "besdaemon: Error starting; master_beslistener_status = " << master_beslistener_status << endl);
+			if (master_beslistener_status == BESLISTENER_RUNNING) {
 			    throw BESSyntaxUserError("Received Start command but the master beslistener is already running", __FILE__, __LINE__);
-			else
+			}
+			else {
 			    throw BESInternalFatalError("Could not start the master beslistener", __FILE__, __LINE__);
+			}
 		    }
 		    break;
 		}
@@ -189,6 +200,7 @@ DaemonCommandHandler::execute_command(const string &command)
 		case HAI_EXIT:
 		    BESDEBUG("besdaemon", "besdaemon: Received Exit" << endl);
 		    stop_all_beslisteners(SIGTERM);
+		    unblock_signals(); // called here because we're about to exit
 		    exit(0);
 		    break;
 		default:
@@ -196,10 +208,12 @@ DaemonCommandHandler::execute_command(const string &command)
 		}
 	    }
 
+	    unblock_signals();
 	    current_node = current_node->next;
 	}
     }
     catch (BESError &e) {
+	unblock_signals();
 	xmlFreeDoc(doc);
 	throw e;
     }
