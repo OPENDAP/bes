@@ -95,3 +95,21 @@ BESKeys *TheBESKeys::TheKeys()
     return _instance;
 }
 
+#if 0
+// I think adding this was a mistake because the bes really need to restart
+// to have it's configuration updated - either that or this code must gets
+// much more complex - e.g., reload all modules (not just their configuration
+// files). jhrg 5/27/11
+void TheBESKeys::updateKeys()
+{
+    delete _instance; _instance = 0;
+    _instance = new TheBESKeys(TheBESKeys::ConfigFile);
+}
+
+void TheBESKeys::updateKeys( const string &keys_file_name )
+{
+    delete _instance; _instance = 0;
+    TheBESKeys::ConfigFile = keys_file_name;
+    _instance = new TheBESKeys(keys_file_name);
+}
+#nedif

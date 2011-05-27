@@ -42,6 +42,11 @@ class TheBESKeys : public BESKeys
   protected:
     TheBESKeys( const string &keys_file_name ) : BESKeys( keys_file_name ) {}
   public:
+#if 0
+    // See comment in the .cc file... jhrg
+    static void updateKeys() ;
+    static void updateKeys( const string &keys_file_name ) ;
+#endif
     static string ConfigFile ;
     static BESKeys *TheKeys() ;
 } ;
