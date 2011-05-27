@@ -45,18 +45,34 @@ class Connection ;
 
 class DaemonCommandHandler: public ServerHandler {
 private:
-    string d_config_file_name;
+    typedef enum {
+        HAI_UNKNOWN,
+        HAI_STOP_NOW,
+        HAI_START,
+        HAI_EXIT,
+        HAI_GET_CONFIG,
+        HAI_SET_CONFIG
+    } hai_command;
+
+    string d_bes_conf;
     string d_config_dir;
     string d_include_dir;
 
+    // Build a map of all the various config files. This map relates the name
+    // of the config file (eg 'bes.conf') to the full pathname for that file.
+    // Only the name of config file is shown in responses; we use the map to
+    // actually find/read/write the file.
+    map<string,string> d_pathnames;
+
+    hai_command lookup_command(const string &command);
     void execute_command(const string &command, XMLWriter &writer);
 
 public:
     DaemonCommandHandler(const string &config);
     virtual ~DaemonCommandHandler() { }
 
-    string get_config_file() { return d_config_file_name; }
-    void set_config_file(const string &config) { d_config_file_name = config; }
+    string get_config_file() { return d_bes_conf; }
+    void set_config_file(const string &config) { d_bes_conf = config; }
 
     virtual void handle(Connection *c);
 

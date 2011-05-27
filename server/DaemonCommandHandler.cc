@@ -39,6 +39,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -63,25 +64,62 @@ extern bool stop_all_beslisteners( int ) ;
 extern int master_beslistener_status;
 
 DaemonCommandHandler::DaemonCommandHandler(const string &config)
-    : d_config_file_name(config)
+    : d_bes_conf(config)
 {
-}
+    // There is always a bes.conf file, even it does not use that exact name.
+    string d_bes_name = d_bes_conf.substr(d_bes_conf.find_last_of('/') + 1);
+    d_pathnames.insert(make_pair(d_bes_name, d_bes_conf));
 
-typedef enum {
-    HAI_UNKNOWN,
-    HAI_STOP_NOW,
-    HAI_START,
-    HAI_EXIT,
-    HAI_GET_CONFIG,
-    HAI_SET_CONFIG
-} hai_command;
+    // *** hack
+    string pathname_hack = d_bes_conf.substr(0, d_bes_conf.find_last_of('/') + 1);
+    pathname_hack += "modules/";
+    d_pathnames.insert(make_pair("csv.conf", pathname_hack + "csv.conf"));
+    d_pathnames.insert(make_pair("dap-server.conf", pathname_hack + "dap-server.conf"));
+    d_pathnames.insert(make_pair("dap.conf", pathname_hack + "dap.conf"));
+    d_pathnames.insert(make_pair("ff.conf", pathname_hack + "ff.conf"));
+    d_pathnames.insert(make_pair("fits.conf", pathname_hack + "fits.conf"));
+    d_pathnames.insert(make_pair("fonc.conf", pathname_hack + "fonc.conf"));
+    d_pathnames.insert(make_pair("gateway.conf", pathname_hack + "gateway.conf"));
+    d_pathnames.insert(make_pair("h4.conf", pathname_hack + "h4.conf"));
+    d_pathnames.insert(make_pair("h5.conf", pathname_hack + "h5.conf"));
+    d_pathnames.insert(make_pair("nc.conf", pathname_hack + "nc.conf"));
+
+    map<string,string>::iterator i = d_pathnames.begin();
+    while(i != d_pathnames.end()) {
+	BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+	++i;
+    }
+#if 0
+    // There will likely be subordinate config files for each module
+    string module_regex;
+    bool found = false;
+
+    BESDEBUG("besdaemon", "besdaemon: keys file name: " << TheBESKeys::TheKeys()->keys_file_name() << endl);
+    string verbose;
+    TheBESKeys::TheKeys()->get_value( "BES.LogName", verbose, found ) ;
+    BESDEBUG("besdaemon", "besdaemon: found BES.LogName: " << verbose << endl);
+
+    TheBESKeys::TheKeys()->get_value("BES.Include", module_regex, found);
+    BESDEBUG("besdaemon", "besdaemon: found BES.Include: " << module_regex << endl);
+
+    if (found) {
+	BESDEBUG("besdaemon", "besdaemon: 2 found BES.Include: " << module_regex << endl);
+    }
+    else {
+	BESDEBUG("besdaemon", "besdaemon: did not find BES.Include " << endl);
+    }
+
+    BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << d_bes_name << "]: " << d_pathnames[d_bes_name] << endl);
+#endif
+}
 
 /**
  * Lookup the command and return a constant.
  * @param command
  * @return
  */
-static hai_command lookup_command(const string &command)
+DaemonCommandHandler::hai_command
+DaemonCommandHandler::lookup_command(const string &command)
 {
     if (command == "StopNow")
 	return HAI_STOP_NOW;
@@ -233,7 +271,45 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 		    break;
 
 		case HAI_GET_CONFIG: {
+		    BESDEBUG("besdaemon", "besdaemon: Received GetConfig" << endl);
 
+		    if (d_pathnames.empty()) {
+			throw BESInternalFatalError("There are no known configuration files for this BES!", __FILE__, __LINE__);
+		    }
+
+		    // For each of the configuration files, send an XML
+		    // <BesConfig module="" /> element.
+		    map<string,string>::iterator i = d_pathnames.begin();
+		    while(i != d_pathnames.end()) {
+			BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+
+			BESDEBUG("besdaemon", "besdaemon: Received Get Config; config file is: " << get_config_file() << endl);
+			if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BesConfig") < 0)
+			    throw BESInternalFatalError("Could not write <hai:Config> element ", __FILE__, __LINE__);
+
+			if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "module", (const xmlChar*) (*i).first.c_str()) < 0)
+			    throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
+
+			vector<string> lines = file2strings(d_pathnames[(*i).first]);
+			vector<string>::iterator j = lines.begin();
+			while (j != lines.end()) {
+			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
+				throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
+
+			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*j++).c_str()) < 0)
+				throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
+			}
+
+			if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+			    throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
+			++i;
+		    }
+
+		    break;
+		}
+
+		case HAI_SET_CONFIG:
+#if 0
 		    xmlChar *xml_char_module = xmlGetProp(current_node, (const xmlChar*) "module");
 		    if (xml_char_module) {
 			string module = (const char *)xml_char_module;
@@ -241,62 +317,19 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 
 			BESDEBUG("besdaemon", "besdaemon: Received Get Config; module file is: " << module << endl);
 			if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BesConfig") < 0)
-			    throw BESInternalFatalError("Could not write <hai:Config> element ", __FILE__, __LINE__);
+			throw BESInternalFatalError("Could not write <hai:Config> element ", __FILE__, __LINE__);
 
 			if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "module",
-				(const xmlChar*) module.c_str()) < 0)
-			    throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
-
-			// *** Hack the module dir name
-			string module_path = get_config_file().substr(0, get_config_file().find_last_of('/'));
-			module_path += "/modules/" + module;
-			BESDEBUG("besdaemon", "besdaemon: module path is: " << module_path << endl);
-			vector<string> lines = file2strings(module_path);
-			vector<string>::iterator i = lines.begin();
-			while (i != lines.end()) {
-			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
-				throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
-
-			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*i++).c_str()) < 0)
-				throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
-			}
-
-			if (xmlTextWriterEndElement(writer.get_writer()) < 0)
-			    throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
-		    }
-
-		    else {
-			BESDEBUG("besdaemon", "besdaemon: Received Get Config; config file is: " << get_config_file() << endl);
-			if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BesConfig") < 0)
-			    throw BESInternalFatalError("Could not write <hai:Config> element ", __FILE__, __LINE__);
-#if 0
-			if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "fileName",
-					(const xmlChar*) get_config_file().c_str()) < 0)
+					(const xmlChar*) module.c_str()) < 0)
 			throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
 #endif
-			vector<string> lines = file2strings(get_config_file());
-			vector<string>::iterator i = lines.begin();
-			while (i != lines.end()) {
-			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
-				throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
-
-			    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*i++).c_str()) < 0)
-				throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
-			}
-
-			if (xmlTextWriterEndElement(writer.get_writer()) < 0)
-			    throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
-		    }
-		    break;
-		}
-
-		case HAI_SET_CONFIG:
 		    BESDEBUG("besdaemon", "besdaemon: Received Set Config" << endl);
-			if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:Unimplemented") < 0)
-			    throw BESInternalFatalError("Could not write <hai:Unimplemented> element ", __FILE__, __LINE__);
-			if (xmlTextWriterEndElement(writer.get_writer()) < 0)
-			    throw BESInternalFatalError("Could not end <hai:Unimplemented> element ", __FILE__, __LINE__);
+		    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:Unimplemented") < 0)
+			throw BESInternalFatalError("Could not write <hai:Unimplemented> element ", __FILE__, __LINE__);
+		    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+			throw BESInternalFatalError("Could not end <hai:Unimplemented> element ", __FILE__, __LINE__);
 		    break;
+
 
 		default:
 		    throw BESSyntaxUserError("Command " + node_name + " unknown.", __FILE__, __LINE__);
