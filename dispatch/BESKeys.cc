@@ -191,6 +191,10 @@ BESKeys::load_keys()
 	    {
 		if( key == BES_INCLUDE_KEY )
 		{
+		    // I added this call to set_key() because we need access
+		    // to the child config files for the admin interface.
+		    // jhrg 5/27/11
+		    set_key( key, value, addto ) ;
 		    load_include_files( value ) ;
 		}
 		else

@@ -51,7 +51,8 @@ private:
         HAI_START,
         HAI_EXIT,
         HAI_GET_CONFIG,
-        HAI_SET_CONFIG
+        HAI_SET_CONFIG,
+        HAI_TAIL_LOG
     } hai_command;
 
     string d_bes_conf;
@@ -63,6 +64,8 @@ private:
     // Only the name of config file is shown in responses; we use the map to
     // actually find/read/write the file.
     map<string,string> d_pathnames;
+
+    string d_log_file_name;
 
     hai_command lookup_command(const string &command);
     void execute_command(const string &command, XMLWriter &writer);

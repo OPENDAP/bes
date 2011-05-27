@@ -90,6 +90,12 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config)
 	BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
 	++i;
     }
+
+    bool found = false;
+    TheBESKeys::TheKeys()->get_value("BES.LogName", d_log_file_name, found);
+    if (!found)
+	d_log_file_name = "";
+
 #if 0
     // There will likely be subordinate config files for each module
     string module_regex;
@@ -126,10 +132,15 @@ DaemonCommandHandler::lookup_command(const string &command)
 	return HAI_GET_CONFIG;
     else if (command == "SetConfig")
 	return HAI_SET_CONFIG;
+    else if (command == "TailLog")
+ 	return HAI_TAIL_LOG;
     else
 	return HAI_UNKNOWN;
 }
 
+#if 0
+// This doesn't work with our text files. There may be an issue with seekg and
+// ifstreams.
 static char *read_file(const string &name)
 {
   char * buffer;
@@ -152,6 +163,7 @@ static char *read_file(const string &name)
 
   return buffer;
 }
+#endif
 
 static void write_file(const string &name, const string &buffer) {
     // First write the new text to a temporary file
@@ -206,6 +218,50 @@ static vector<string> file2strings(const string &file_name)
     }
 
     return file;
+}
+
+// if num_lines is == 0, get all the lines; if num_lines < 0, also get all the
+// lines, but this is really an error, should be trapped by caller.
+static vector<string> get_bes_log_lines(const string &log_file_name, long num_lines)
+{
+    vector<string> lines;
+    string line;
+    lines.clear();
+    ifstream infile(log_file_name.c_str(), std::ios_base::in);
+    if (!infile.is_open())
+	throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
+
+    // Count the lines; there has to be a better way...
+    long count = 0;
+    do {
+	infile.ignore(1024, '\n');
+	++count;
+    }
+    while (!infile.eof() && !infile.fail());
+
+    // Why doesn't "infile.seekg (0);" work?
+    infile.close();
+    infile.open(log_file_name.c_str(), std::ios_base::in);
+
+    BESDEBUG("besdaemon", "besdaemon: Log length  " << count << endl);
+
+    // num_line == 0 is special value that means get all the lines
+    if (num_lines > 0 && count > num_lines) {
+	// Skip count - num-lines
+	long skip = count - num_lines;
+	BESDEBUG("besdaemon", "besdaemon: skipping  " << skip << endl);
+	do {
+	    infile.ignore(1024, '\n');
+	    --skip;
+	} while (skip > 0 && !infile.eof() && !infile.fail());
+    }
+
+    // Read what's left
+    while (getline(infile, line, '\n')) {
+	lines.push_back(line);
+    }
+
+    return lines;
 }
 
 /**
@@ -349,7 +405,7 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 			if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "module", (const xmlChar*) (*i).first.c_str()) < 0)
 			    throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
 #if 0
-			// You'd this this would work, but there seems to be
+			// You'd think this would work, but there seems to be
 			// issue with the files that breaks it.
 			char *content = read_file(d_pathnames[(*i).first]);
 			BESDEBUG("besdaemon", "besdaemon: content: " << content << endl);
@@ -404,9 +460,57 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 
 		    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
 			throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
+
+		    if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\nPlease restart the server for these changes to take affect.\n") < 0)
+			throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
+
 		    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
 			throw BESInternalFatalError("Could not end <hai:OK> element ", __FILE__, __LINE__);
 
+		    break;
+		}
+
+		case HAI_TAIL_LOG: {
+		    BESDEBUG("besdaemon", "besdaemon: Received TailLog" << endl);
+#if 0
+		    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:Unimplemented") < 0)
+			throw BESInternalFatalError("Could not write <hai:Unimplemented> element ", __FILE__, __LINE__);
+		    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+			throw BESInternalFatalError("Could not end <hai:Unimplemented> element ", __FILE__, __LINE__);
+#endif
+#if 1
+		    xmlChar *xml_char_lines = xmlGetProp(current_node, (const xmlChar*) "lines");
+		    if (!xml_char_lines) {
+			throw BESSyntaxUserError("TailLog missing lines attribute ", __FILE__, __LINE__);
+		    }
+
+		    char *endptr;
+		    long num_lines = strtol((const char *)xml_char_lines, &endptr, 10 /*base*/);
+		    if (num_lines == 0 && endptr == (const char *)xml_char_lines) {
+			ostringstream err;
+			err << "(" << errno << ") " << strerror(errno);
+			throw BESSyntaxUserError("TailLog lines attribute bad value: " + err.str(), __FILE__, __LINE__);
+		    }
+
+		    if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BesLog") < 0)
+			throw BESInternalFatalError("Could not write <hai:BesLog> element ", __FILE__, __LINE__);
+
+		    BESDEBUG("besdaemon", "besdaemon: TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
+
+		    vector<string> lines = get_bes_log_lines(d_log_file_name, num_lines);
+		    BESDEBUG("besdaemon", "besdaemon: Returned lines:" << lines.end() - lines.begin() << endl);
+		    vector<string>::iterator j = lines.begin();
+		    while (j != lines.end()) {
+			if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
+			throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
+
+			if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*j++).c_str()) < 0)
+			throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
+		    }
+
+		    if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+			throw BESInternalFatalError("Could not end <hai:BesLog> element ", __FILE__, __LINE__);
+#endif
 		    break;
 		}
 
