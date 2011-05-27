@@ -130,19 +130,69 @@ DaemonCommandHandler::lookup_command(const string &command)
 	return HAI_UNKNOWN;
 }
 
+static char *read_file(const string &name)
+{
+  char * buffer;
+  long size;
 
-void write_file(const string &name, const string &buffer) {
-    string file_name = name + ".tmp";
-    ofstream outfile (file_name.c_str(), std::ios_base::out);
+  ifstream infile (name.c_str(), ifstream::binary);
 
-    // write to outfile
-    outfile.write (buffer.data(), buffer.length());
+  // get size of file
+  infile.seekg(0, ifstream::end);
+  size=infile.tellg();
+  infile.seekg(0);
 
-    outfile.close();
+  // allocate memory for file content
+  buffer = new char [size];
+
+  // read content of infile
+  infile.read (buffer,size);
+
+  infile.close();
+
+  return buffer;
 }
 
+static void write_file(const string &name, const string &buffer) {
+    // First write the new text to a temporary file
+    string tmp_name = name + ".tmp";
+    ofstream outfile(tmp_name.c_str(), std::ios_base::out);
+    if (outfile.is_open()) {
+	// write to outfile
+	outfile.write(buffer.data(), buffer.length());
 
-vector<string> file2strings(const string &file_name)
+	outfile.close();
+    }
+    else {
+	throw BESInternalError("Could not open config file:" + name, __FILE__, __LINE__);
+    }
+
+    // Now see if the original file should be backed up. For any given
+    // instance of the server, only back up on the initial attempt to write a
+    // new version of the file.
+    ostringstream backup_name;
+    backup_name << name << "." << getpid();
+    if (access(backup_name.str().c_str(), F_OK) == -1) {
+	BESDEBUG("besdaemon", "besdaemon: No backup file yet" << endl);
+	// Backup does not exist for this instance of the server; backup name
+	if (rename(name.c_str(), backup_name.str().c_str()) == -1) {
+	    BESDEBUG("besdaemon", "besdaemon: Could not backup file " << name << " to " << backup_name.str() << endl);
+	    ostringstream err;
+	    err << "(" << errno << ") " << strerror(errno);
+	    throw BESInternalError("Could not backup config file: " + name + ": " + err.str(), __FILE__, __LINE__);
+	}
+    }
+
+    // Now move the '.tmp' file to <name>
+    if (rename(tmp_name.c_str(), name.c_str()) == -1) {
+	BESDEBUG("besdaemon", "besdaemon: Could not complete write " << name << " to " << backup_name.str() << endl);
+	ostringstream err;
+	err << "(" << errno << ") " << strerror(errno);
+	throw BESInternalError("Could not write config file:" + name + ": " + err.str(), __FILE__, __LINE__);
+    }
+}
+
+static vector<string> file2strings(const string &file_name)
 {
     vector<string> file;
     string line;
@@ -299,13 +349,17 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 			if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "module", (const xmlChar*) (*i).first.c_str()) < 0)
 			    throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
 #if 0
-			string content = read_file(d_pathnames[(*i).first]);
-
+			// You'd this this would work, but there seems to be
+			// issue with the files that breaks it.
+			char *content = read_file(d_pathnames[(*i).first]);
+			BESDEBUG("besdaemon", "besdaemon: content: " << content << endl);
 			if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
 			    throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
-			if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)content.c_str()) < 0)
+			if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)content) < 0)
 			    throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
+
+			delete [] content; content = 0;
 #endif
 #if 1
 			vector<string> lines = file2strings(d_pathnames[(*i).first]);
@@ -344,7 +398,7 @@ DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
 		    }
 		    string content = (const char *)file_content;
 		    xmlFree(file_content);
-		    BESDEBUG("besdaemon", "besdaemon: Received SetConfig; content: " << endl << content << endl);
+		    BESDEBUG("besdaemon_verbose", "besdaemon: Received SetConfig; content: " << endl << content << endl);
 
 		    write_file(d_pathnames[module], content);
 
@@ -450,20 +504,24 @@ void DaemonCommandHandler::handle(Connection *c)
 	    switch (e.get_error_type()) {
 	    case BES_INTERNAL_ERROR:
 	    case BES_INTERNAL_FATAL_ERROR:
-		BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << ss.str() << endl);
+		BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << e.get_message() << endl);
 		extensions["exit"] = "true";
 		c->sendExtensions(extensions);
 		send_bes_error(writer, e);
 		// Send the BESError
+#if 0
+		// This seemed like a good idea, but really, no error is
+		// fatal, at least not yet.
 		cout << writer.get_doc() << endl;
 		fds.finish(); // we are finished, send the last chunk
 		cout.rdbuf(holder); // reset the streams buffer
 		return; // EXIT; disconnects from client
+#endif
 		break;
 
 	    case BES_SYNTAX_USER_ERROR:
 		// cerr << "syntax error" << endl;
-		BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << ss.str() << endl);
+		BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << e.get_message() << endl);
 		c->sendExtensions(extensions);
 		// Send the BESError
 		send_bes_error(writer, e);
