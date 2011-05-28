@@ -102,6 +102,20 @@ public:
     /** implode a list of values into a single string delimited by delim **/
     static string		implode( const list<string> &values,
 					 char delim ) ;
+
+    struct url
+    {
+	string protocol ;
+	string domain ;
+	string uname ;
+	string psswd ;
+	string port ;
+	string path ;
+    } ;
+
+    static void			url_explode( const string &url_str,
+					     BESUtil::url &url_parts ) ;
+    static string		url_create( BESUtil::url &url_parts ) ;
 } ;
 
 #endif // E_BESUtil_h

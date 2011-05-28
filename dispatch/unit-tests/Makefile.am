@@ -30,7 +30,8 @@ if CPPUNIT
 TESTS = constraintT containerT defT initT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT debugT utilT regexT scrubT checkT servicesT fsT
+		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
+		urlT
 
 # Removed: failInitT. I Have no idea how this works or why it stopped
 # working. jhrg 5/9/07
@@ -132,6 +133,8 @@ encodeT_SOURCES = encodeT.cc
 debugT_SOURCES = debugT.cc
 
 utilT_SOURCES = utilT.cc
+
+urlT_SOURCES = urlT.cc
 
 regexT_SOURCES = regexT.cc
 

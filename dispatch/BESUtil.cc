@@ -628,3 +628,119 @@ BESUtil::implode( const list<string> &values, char delim )
     return result ;
 }
 
+/** @brief Given a url, break the url into its different parts
+ *
+ * The different parts are the protocol, the domain name, a username if
+ * specified, a password if specified, a port if specified, and a path
+ * if specified.
+ *
+ *  struct url
+ *  {
+ *      string protocol ;
+ *      string domain ;
+ *      string uname ;
+ *      string psswd ;
+ *      string port ;
+ *      string path ;
+ *  } ;
+
+ * @param url string representation of the URL
+ * @param 
+ */
+void
+BESUtil::url_explode( const string &url_str, BESUtil::url &url_parts )
+{
+    string rest ;
+
+    string::size_type colon = url_str.find( ":" ) ;
+    if( colon == string::npos )
+    {
+	string err = "BESUtil::url_explode: missing colon for protocol" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    url_parts.protocol = url_str.substr( 0, colon ) ;
+
+    if( url_str.substr( colon, 3 ) != "://" )
+    {
+	string err = "BESUtil::url_explode: no :// in the URL" ;
+	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    }
+
+    colon += 3 ;
+    rest = url_str.substr( colon ) ;
+
+    string::size_type slash = rest.find( "/" ) ;
+    if( slash == string::npos ) slash = rest.length() ;
+
+    string::size_type at = rest.find( "@" ) ;
+    if( ( at != string::npos ) && ( at < slash ) )
+    {
+	// everything before the @ is username:password
+	string up = rest.substr( 0, at ) ;
+	colon = up.find( ":" ) ;
+	if( colon != string::npos )
+	{
+	    url_parts.uname = up.substr( 0, colon ) ;
+	    url_parts.psswd = up.substr( colon+1 ) ;
+	}
+	else
+	{
+	    url_parts.uname = up ;
+	}
+	// everything after the @ is domain/path
+	rest = rest.substr( at+1 ) ;
+    }
+    slash = rest.find( "/" ) ;
+    if( slash == string::npos ) slash = rest.length() ;
+    colon = rest.find( ":" ) ;
+    if( ( colon != string::npos ) && ( colon < slash ) )
+    {
+	// everything before the colon is the domain
+	url_parts.domain = rest.substr( 0, colon ) ;
+	// everything after the folon is port/path
+	rest = rest.substr( colon+1 ) ;
+	slash = rest.find( "/" ) ;
+	if( slash != string::npos )
+	{
+	    url_parts.port = rest.substr( 0, slash ) ;
+	    url_parts.path = rest.substr( slash+1 ) ;
+	}
+	else
+	{
+	    url_parts.port = rest ;
+	    url_parts.path = "" ;
+	}
+    }
+    else
+    {
+	slash = rest.find( "/" ) ;
+	if( slash != string::npos )
+	{
+	    url_parts.domain = rest.substr( 0, slash ) ;
+	    url_parts.path = rest.substr( slash+1 ) ;
+	}
+	else
+	{
+	    url_parts.domain = rest ;
+	}
+    }
+}
+
+string
+BESUtil::url_create( BESUtil::url &url_parts )
+{
+    string url = url_parts.protocol + "://" ;
+    if( !url_parts.uname.empty() )
+    {
+	url += url_parts.uname ;
+	if( !url_parts.psswd.empty() ) url += ":" + url_parts.psswd ;
+	url += "@" ;
+    }
+    url += url_parts.domain ;
+    if( !url_parts.port.empty() ) url += ":" + url_parts.port ;
+    if( !url_parts.path.empty() ) url += "/" + url_parts.path ;
+
+    return url ;
+}
+

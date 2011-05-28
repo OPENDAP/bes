@@ -92,6 +92,7 @@ public:
 	fileList.insert( make_pair( "scrubT.cc", "scrubT.cc" ) ) ;
 	fileList.insert( make_pair( "servicesT.cc", "servicesT.cc" ) ) ;
 	fileList.insert( make_pair( "uncompressT.cc", "uncompressT.cc" ) ) ;
+	fileList.insert( make_pair( "urlT.cc", "urlT.cc" ) ) ;
 	fileList.insert( make_pair( "utilT.cc", "utilT.cc" ) ) ;
 	fileList.insert( make_pair( "zT.cc", "zT.cc" ) ) ;
     } 
