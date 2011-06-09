@@ -30,12 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cstdlib>
+#include <cerrno>
+
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"
 #include "BESRequestHandlerList.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
 #include "BESDapTransmit.h"
+#include "BESContextManager.h"
+#include "BESInternalFatalError.h"
 #include "BESDebug.h"
 
 BESDataResponseHandler::BESDataResponseHandler( const string &name )
@@ -61,31 +66,46 @@ BESDataResponseHandler::~BESDataResponseHandler( )
  * @see BESRequestHandlerList
  * @see BESDefine
  */
-void
-BESDataResponseHandler::execute( BESDataHandlerInterface &dhi )
+void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
-    dhi.action_name = DATA_RESPONSE_STR ;
+    dhi.action_name = DATA_RESPONSE_STR;
     // NOTE: It is the responsibility of the specific request handler to set
     // the BaseTypeFactory. It is set to NULL here
-    DataDDS *dds = new DataDDS( NULL, "virtual" ) ;
-    BESDataDDSResponse *bdds = new BESDataDDSResponse( dds ) ;
+    DataDDS *dds = new DataDDS(NULL, "virtual");
+    BESDataDDSResponse *bdds = new BESDataDDSResponse(dds);
 
     // Set the DAP protocol version requested by the client. 2/25/11 jhrg
 
     dhi.first_container();
+
     BESDEBUG("version", "Initial CE: " << dhi.container->get_constraint() << endl);
+
     dhi.container->set_constraint(dds->get_keywords().parse_keywords(dhi.container->get_constraint()));
     BESDEBUG("version", "CE after keyword processing: " << dhi.container->get_constraint() << endl);
 
-    if (dds->get_keywords().has_keyword("dap")) {
-	dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
-    }
-    else if (!bdds->get_dap_client_protocol().empty()) {
-	dds->set_dap_version( bdds->get_dap_client_protocol() ) ;
+    bool found;
+    string response_size_limit = BESContextManager::TheManager()->get_context("max_response_size", found);
+    if (found && !response_size_limit.empty()) {
+        char *endptr;
+        long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/ 10);
+        if (rsl == 0 && errno > 0) {
+            string err = strerror(errno);
+            throw BESInternalFatalError("The responseSizeLimit context value ("
+                    + response_size_limit + ") was bad: " + err, __FILE__, __LINE__);
+       }
+
+        dds->set_response_limit(rsl); // The default for this is zero
     }
 
-    _response = bdds ;
-    BESRequestHandlerList::TheList()->execute_each( dhi ) ;
+    if (dds->get_keywords().has_keyword("dap")) {
+        dds->set_dap_version(dds->get_keywords().get_keyword_value("dap"));
+    }
+    else if (!bdds->get_dap_client_protocol().empty()) {
+        dds->set_dap_version(bdds->get_dap_client_protocol());
+    }
+
+    _response = bdds;
+    BESRequestHandlerList::TheList()->execute_each(dhi);
 }
 
 /** @brief transmit the response object built by the execute command
