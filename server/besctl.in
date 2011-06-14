@@ -27,9 +27,12 @@ pidfile=${piddir}/bes.pid
 #..........................................................................
 besctlHelp()
 {
-    echo ""
-    echo "USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]"
-    echo "where [options] are passed to besdaemon; see besdaemon -h"
+cat <<EOF
+
+USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]
+       where [options] are passed to besdaemon; see besdaemon -h except
+       for the 'verbose' (-V) option that controls the script's output.
+EOF
 }
 
 ###########################################################################
@@ -171,7 +174,7 @@ findRunningBES()
     else
         # This is probably not used anymore given other changes... jhrg 
 	BESDAEMON_PIDS=""
-	for i in `$PS | grep bes | grep -v grep | awk '{print $2}'`
+	for i in `$PS | grep bes | grep -v grep | grep -v besctl | awk '{print $2}'`
 	do
 	    if test -z "$BESDAEMON_PIDS"
 	    then
@@ -268,7 +271,9 @@ canWritePid()
 
 what=$1
 shift
-otherArgs=$*
+# I added an option to besctl that the bes itself does not have. I Build
+# the otherArgs below in the do loop. jhrg
+# otherArgs=$*
 
 ###########################################################################
 #
@@ -281,7 +286,7 @@ dashi="no"
 dashc="no"
 dashr="no"
 verbose=""
-args=`getopt hvsdv:c:p:u:i:r: $*`
+args=`getopt hvVsd:c:p:u:i:r: $*`
 if [ $? != 0 ]
 then
     echo 'Usage: ...'
@@ -298,32 +303,38 @@ do
 	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"
+	    otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-c)
 	    dashc=$2
+	    otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-r)
 	    dashr=$2
 	    pidfile=${2}/bes.pid
+	    otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
-	-v)
+	-V)
 	    verbose="yes"
 	    shift
 	    ;;
 	-d|-p|-u)
+	    otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-h|-v|-s)
+	    otherArgs="$otherArgs $param"
 	    shift
 	    ;;
 	--)
+	    otherArgs="$otherArgs $*"
 	    shift
 	    break;;
     esac
