@@ -56,6 +56,7 @@ using namespace std;
 #include "TheBESKeys.h"
 
 #include "XMLWriter.h"
+#include "BESDaemonConstants.h"
 
 // Defined in daemon.cc
 extern void block_signals() ;
@@ -468,13 +469,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
 
                     case HAI_TAIL_LOG: {
                         BESDEBUG("besdaemon", "besdaemon: Received TailLog" << endl);
-#if 0
-                        if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:Unimplemented") < 0)
-                        throw BESInternalFatalError("Could not write <hai:Unimplemented> element ", __FILE__, __LINE__);
-                        if (xmlTextWriterEndElement(writer.get_writer()) < 0)
-                        throw BESInternalFatalError("Could not end <hai:Unimplemented> element ", __FILE__, __LINE__);
-#endif
-#if 1
+
                         xmlChar *xml_char_lines = xmlGetProp(current_node, (const xmlChar*) "lines");
                         if (!xml_char_lines) {
                             throw BESSyntaxUserError("TailLog missing lines attribute ", __FILE__, __LINE__);
@@ -506,7 +501,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
 
                         if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                             throw BESInternalFatalError("Could not end <hai:BesLog> element ", __FILE__, __LINE__);
-#endif
+
                         break;
                     }
 
@@ -555,8 +550,9 @@ void DaemonCommandHandler::handle(Connection *c) {
     string from = strm.str();
 #endif
     map<string, string> extensions;
-
+#if 0
     for (;;) {
+#endif
         ostringstream ss;
 
         bool done = false;
@@ -639,7 +635,9 @@ void DaemonCommandHandler::handle(Connection *c) {
             fds.finish(); // we are finished, send the last chunk
             cout.rdbuf(holder); // reset the streams buffer
         }
+#if 0
     }
+#endif
 }
 
 /** @brief dumps information about this object

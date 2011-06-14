@@ -40,6 +40,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
@@ -64,16 +65,13 @@ using std::string;
 #include "BESError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
+#include "BESDaemonConstants.h"
 
 #define BES_SERVER "/beslistener"
 #define BES_SERVER_PID "/bes.pid"
 #define DAEMON_PORT_STR "BES.DaemonPort"
 #define DAEMON_UNIX_SOCK_STR "BES.DaemonUnixSocket"
-#if 0
-#define BESLISTENER_STOPPED 0
-#define BESLISTENER_RUNNING 4	// 1,2 are abnormal term, restart is 3
-#define BESLISTENER_RESTART SERVER_EXIT_RESTART
-#endif
+
 // These are called from DaemonCommandHandler
 void block_signals();
 void unblock_signals();
@@ -90,6 +88,21 @@ int master_beslistener_status = BESLISTENER_STOPPED;
 
 static int master_beslistener_pid = -1; // This is also the process group id
 static char **arguments = 0;
+
+static TcpSocket *my_socket = 0;
+static UnixSocket *unix_socket = 0;
+static PPTServer *command_server = 0;
+
+static string errno_str(const string &msg)
+{
+    ostringstream oss;
+    oss << daemon_name << msg;
+    const char *perror_string = strerror(errno);
+    if (perror_string)
+        oss << perror_string;
+    oss << endl;
+    return oss.str();
+}
 
 /** Evaluate the exit status returned to the besdaemon by the master
  beslistener and return 0, 1 or SERVER_EXIT_RESTART.
@@ -149,11 +162,7 @@ void block_signals()
     sigaddset(&set, SIGTERM);
 
     if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
-        cerr << daemon_name << ": sigprocmask error, blocking signals in stop_all_beslisteners ";
-        const char *perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << endl;
+        cerr << errno_str(": sigprocmask error, blocking signals in stop_all_beslisteners ");
     }
 }
 
@@ -165,11 +174,7 @@ void unblock_signals()
     sigaddset(&set, SIGTERM);
 
     if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
-        cerr << daemon_name << ": sigprocmask error unblocking signals in stop_all_beslisteners ";
-        const char *perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << endl;
+        cerr << errno_str(": sigprocmask error unblocking signals in stop_all_beslisteners ");
     }
 }
 /** Stop all of the listeners (both the master listener and all of the
@@ -231,11 +236,8 @@ bool stop_all_beslisteners(int sig)
     return mbes_status_caught;
 }
 
-// The only certain way to know that the beslistener master has started is to
-// make a pipe and pass back its pid via that pipe once it is initialized.
-
 /** Start the 'master beslistener' and return its PID. This function also
- sets the global 'master_beslistener_pid' so that otehr code in this file
+ sets the global 'master_beslistener_pid' so that other code in this file
  (like the signal handlers) can have access to it. It starts the beslistener
  using the global 'arguments' that is a copy of the arguments passed to this
  daemon.
@@ -254,43 +256,43 @@ int start_master_beslistener()
         return 0;
     }
 #endif
-
+    // The only certain way to know that the beslistener master has started is
+    // to pass back its status once it is initialized. Use a pipe for that.
     int fd[2];
     if (pipe(fd) < 0) {
-        cerr << daemon_name << ": pipe error ";
-        const char *perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << endl;
+        cerr << errno_str(": pipe error ");
         return 0;
     }
 
     int pid;
     if ((pid = fork()) < 0) {
-        cerr << daemon_name << ": fork error ";
-        const char *perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << endl;
+        cerr << errno_str(": fork error ");
         return 0;
     }
     else if (pid == 0) { // child process  (the master beslistener)
-        close(fd[0]); // Close the read end of the pipe
-        if (dup2(fd[1], 4) != 4) { // ***
-            cerr << daemon_name << ": dup2 error ";
-            const char *perror_string = strerror(errno);
-            if (perror_string)
-                cerr << perror_string;
-            cerr << endl;
+        // See 'int ServerApp::run()' for the place where the program exec'd
+        // below writes the pid value to the pipe.
+
+        close(fd[0]); // Close the read end of the pipe in the child
+
+        // dup2 so we know the FD to write to in the child
+        if (dup2(fd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
+            cerr << errno_str(": dup2 error ");
             return 0;
         }
+
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
+
+        // Close the socket for the besdaemon here. This keeps if from being
+        // passed into the master beslistener.
+        if (command_server)
+            command_server->closeConnection();
+
+        // This is where beslistener - the master listener - is started
         execvp(arguments[0], arguments);
-        cerr << daemon_name << ": mounting listener, subprocess failed: ";
-        const char *perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << endl;
+
+        // if we are still here, it's an error...
+        cerr << errno_str(": mounting listener, subprocess failed: ");
         exit(1); //NB: This exits from the child process.
     }
 
@@ -299,16 +301,20 @@ int start_master_beslistener()
     // The daemon records the pid of the master beslistener, but only does so
     // when that process writes its status to the pipe 'fd'.
 
-    close(fd[1]); // close the write end of the pipe
+    close(fd[1]); // close the write end of the pipe in the parent.
+
     BESDEBUG("besdaemon", "besdaemon: master beslistener pid: " << pid << endl);
 
+    // Read the status from the child (beslistener).
     int beslistener_start_status;
     if (read(fd[0], &beslistener_start_status, sizeof(beslistener_start_status)) < 0) {
         cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
+        close(fd[0]);
         return 0;
     }
     else if (beslistener_start_status != BESLISTENER_RUNNING) {
         cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
+        close(fd[0]);
         return 0;
     }
     else {
@@ -319,6 +325,7 @@ int start_master_beslistener()
         master_beslistener_status = BESLISTENER_RUNNING;
     }
 
+    close(fd[0]);
     return pid;
 }
 
@@ -423,9 +430,14 @@ static void CatchSigTerm(int signal)
  */
 static int start_command_processor(DaemonCommandHandler &handler)
 {
+#if 0
+    // These are now global so that start_master_beslistener() can close them
+    // in the child process (which will become the master beslistener if all
+    // goes well) before exec'ing the beslistener.
     TcpSocket *socket = 0;
     UnixSocket *unix_socket = 0;
     PPTServer *command_server = 0;
+#endif
 
     try {
         SocketListener listener;
@@ -444,9 +456,9 @@ static int start_command_processor(DaemonCommandHandler &handler)
         }
 
         if (port) {
-            BESDEBUG("besdaemon", "besdaemon: starting command interface on port: " << port << endl);
-            socket = new TcpSocket(port);
-            listener.listen(socket);
+            BESDEBUG("besdaemon", "besdaemon: listening on port: " << port << endl);
+            my_socket = new TcpSocket(port);
+            listener.listen(my_socket);
         }
 
         string usock_str;
@@ -454,7 +466,7 @@ static int start_command_processor(DaemonCommandHandler &handler)
         TheBESKeys::TheKeys()->get_value(DAEMON_UNIX_SOCK_STR, usock_str, usock_found);
 
         if (!usock_str.empty()) {
-            BESDEBUG("besdaemon", "besdaemon: starting command interface on socket: " << usock_str << endl);
+            BESDEBUG("besdaemon", "besdaemon: listening on unix socket: " << usock_str << endl);
             unix_socket = new UnixSocket(usock_str);
             listener.listen(unix_socket);
         }
@@ -464,13 +476,20 @@ static int start_command_processor(DaemonCommandHandler &handler)
             return 0;
         }
 
+        BESDEBUG("besdaemon", "besdaemon: starting command interface on port: " << port << endl);
         command_server = new PPTServer(&handler, &listener, /*is_secure*/false);
+
+        // Once initialized, 'handler' loops until it's told to exit.
         command_server->initConnection();
 
+        // Once the handler exits, close sockets and free memory
+        command_server->closeConnection();
         delete command_server;
         command_server = 0;
-        delete socket;
-        socket = 0;
+
+        // delete closes the sockets
+        delete my_socket;
+        my_socket = 0;
         delete unix_socket;
         unix_socket = 0;
 
@@ -485,8 +504,8 @@ static int start_command_processor(DaemonCommandHandler &handler)
         cerr << "daemon: " << se.get_message() << endl;
         delete command_server;
         command_server = 0;
-        delete socket;
-        socket = 0;
+        delete my_socket;
+        my_socket = 0;
         delete unix_socket;
         unix_socket = 0;
 
@@ -499,8 +518,8 @@ static int start_command_processor(DaemonCommandHandler &handler)
         cerr << "daemon: " << "caught unknown exception" << endl;
         delete command_server;
         command_server = 0;
-        delete socket;
-        socket = 0;
+        delete my_socket;
+        my_socket = 0;
         delete unix_socket;
         unix_socket = 0;
 
@@ -581,12 +600,15 @@ static void store_daemon_id(int pid)
     const char *perror_string = 0;
     ofstream f(file_for_daemon_pid.c_str());
     if (!f) {
+        cerr << errno_str(": unable to create pid file " + file_for_daemon_pid + ": ");
+#if 0
         cerr << daemon_name << ": unable to create pid file " << file_for_daemon_pid << ": ";
         perror_string = strerror(errno);
         if (perror_string)
             cerr << perror_string;
         cerr << " ... Continuing" << endl;
         cerr << endl;
+#endif
     }
     else {
         f << "PID: " << pid << " UID: " << getuid() << endl;
