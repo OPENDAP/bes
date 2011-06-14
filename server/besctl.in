@@ -28,7 +28,7 @@ pidfile=${piddir}/bes.pid
 besctlHelp()
 {
     echo ""
-    echo "USAGE: besctl (help|start|stop|restart|status) [options]"
+    echo "USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]"
     echo "where [options] are passed to besdaemon; see besdaemon -h"
 }
 
@@ -169,6 +169,7 @@ findRunningBES()
 	    fi
 	fi
     else
+        # This is probably not used anymore given other changes... jhrg 
 	BESDAEMON_PIDS=""
 	for i in `$PS | grep bes | grep -v grep | awk '{print $2}'`
 	do
