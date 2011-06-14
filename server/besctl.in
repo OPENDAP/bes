@@ -193,7 +193,7 @@ findRunningBES()
 getAllBESPIDS()
 {
     BES_PIDS=""
-    for i in `$PS | grep bes | grep -v grep | awk '{print $2}'`
+    for i in `$PS | grep bes | grep -v grep | grep -v besctl | awk '{print $2}'`
     do
         if test -z "$BES_PIDS"
         then
@@ -218,14 +218,11 @@ checkPS()
 UCB_PS="ps axww -o user,pid,command"
 SYSTEM_V_PS="ps -ef -o user,pid,comm"
 
-
-#echo "Checking ps syntax"
-
 # I switched so that System V is tested first. This is because OS/X supports
 # both syntaxes in a somewhat odd way and mentions that support for UCB might
 # be removed in the future. jimg 10/29/07
-$UCB_PS > /dev/null 2>&1
-if test $? -eq 0
+
+if test $UCB_PS > /dev/null 2>&1
 then 
     PS=$UCB_PS
     #echo "Using UCB ps syntax"
@@ -240,6 +237,11 @@ else
         exit 1
     fi
 fi
+
+    if test $verbose
+    then
+        echo "PS command: $PS"
+    fi
 }
 
 ###########################################################################
@@ -262,8 +264,6 @@ canWritePid()
 	WRITE_PID=1
     fi
 }
-
-checkPS
 
 what=$1
 shift
@@ -328,6 +328,8 @@ do
     esac
 done
 
+checkPS
+
 if test $verbose
 then
     echo "BES install directory: ${prefix}"
@@ -385,7 +387,10 @@ pids)
     ;;
 kill)
     getAllBESPIDS
-    echo "The current BES processes are: $BES_PIDS"
+    if test $verbose
+    then
+        echo "Removing all BES processes"
+    fi
     kill -KILL $BES_PIDS
     if test -f "${pidfile}"
     then
