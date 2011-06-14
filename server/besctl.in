@@ -371,6 +371,12 @@ then
     otherArgs="${otherArgs} -r ${piddir}"
 fi
 
+if test $verbose
+then
+    echo "Arguments to pass to the BES: $otherArgs"
+fi
+
+
 case $what in
 help)
     helpBES
