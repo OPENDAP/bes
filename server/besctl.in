@@ -22,38 +22,6 @@ pidfile=${piddir}/bes.pid
 
 ###########################################################################
 #
-# Displays besctl usage statement
-#
-#..........................................................................
-besctlHelp()
-{
-cat <<EOF
-
-USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]
-       where [options] are passed to besdaemon; see besdaemon -h except
-       for the 'verbose' (-V) option that controls the script's output.
-EOF
-}
-
-###########################################################################
-#
-# Attempts to pass help option to beslistener
-#
-#..........................................................................
-helpBES()
-{
-    "${bindir}"/beslistener $otherArgs -h
-    retval=$?
-    if test $retval != 0
-    then
-	echo "FAILED: The BES listener failed to return help information"
-	exit $retval
-    fi
-    besctlHelp
-}
-
-###########################################################################
-#
 # Attempts to start the BES
 #
 #..........................................................................
@@ -192,7 +160,7 @@ findRunningBES()
 
 ###########################################################################
 # 
-# Gather all of teh pids for the besdaemon and listeners.
+# Gather all of the pids for the besdaemon and listeners.
 #
 getAllBESPIDS()
 {
@@ -271,9 +239,7 @@ canWritePid()
 
 what=$1
 shift
-# I added an option to besctl that the bes itself does not have. I Build
-# the otherArgs below in the do loop. jhrg
-# otherArgs=$*
+otherArgs=$*
 
 ###########################################################################
 #
@@ -286,7 +252,7 @@ dashi="no"
 dashc="no"
 dashr="no"
 verbose=""
-args=`getopt hvVsd:c:p:u:i:r: $*`
+args=`getopt hvsd:c:p:u:i:r: $*`
 if [ $? != 0 ]
 then
     echo 'Usage: ...'
@@ -303,38 +269,38 @@ do
 	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"
-	    otherArgs="$otherArgs $param $2"
+	    # otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-c)
 	    dashc=$2
-	    otherArgs="$otherArgs $param $2"
+	    #otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-r)
 	    dashr=$2
 	    pidfile=${2}/bes.pid
-	    otherArgs="$otherArgs $param $2"
+	    #otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
-	-V)
+	-v)
 	    verbose="yes"
 	    shift
 	    ;;
 	-d|-p|-u)
-	    otherArgs="$otherArgs $param $2"
+	    #otherArgs="$otherArgs $param $2"
 	    shift
 	    shift
 	    ;;
 	-h|-v|-s)
-	    otherArgs="$otherArgs $param"
+	    #otherArgs="$otherArgs $param"
 	    shift
 	    ;;
 	--)
-	    otherArgs="$otherArgs $*"
+	    #otherArgs="$otherArgs $*"
 	    shift
 	    break;;
     esac
@@ -379,7 +345,20 @@ fi
 
 case $what in
 help)
-    helpBES
+    "${bindir}"/beslistener $otherArgs -h
+    retval=$?
+    if test $retval != 0
+    then
+        echo "FAILED: The BES listener failed to return help information"
+        exit $retval
+    fi
+
+    cat <<EOF
+
+USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]
+       where [options] are passed to besdaemon; see besdaemon -h except
+       for the 'verbose' (-V) option that controls the script's output.
+EOF
     ;;
 stop)
     stopBES
