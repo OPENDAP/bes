@@ -453,12 +453,17 @@ PPTConnection::readBufferNonBlocking( char *inBuff,
     arr[0] = p ;
 
     // Lets loop _timeout times with a delay block on poll of 1000 milliseconds
-    // and see if there is any data.
+    // and see if there are any data.
     for( int j = 0; j < _timeout; j++ )
     {
 	if( poll( arr, 1, 1000 ) < 0 )
 	{
 	    string error( "poll error" ) ;
+
+	    // Allow this call to be interrupted with it being an error. jhrg 6/15/11
+	    if (errno == EINTR || errno == EAGAIN)
+	        continue;
+
 	    const char* error_info = strerror( errno ) ;
 	    if( error_info )
 		error += " " + (string)error_info ;

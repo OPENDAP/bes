@@ -59,6 +59,7 @@ using std::string;
 #include "TcpSocket.h"
 #include "UnixSocket.h"
 #include "PPTServer.h"
+#include "BESModuleApp.h"
 #include "DaemonCommandHandler.h"
 #include "BESServerUtils.h"
 #include "BESScrub.h"
@@ -860,6 +861,15 @@ int main(int argc, char *argv[])
     daemon_init();
 
     register_signal_handlers();
+
+    // Load the modules in the conf file(s) so that the debug (log) contexts
+    // will be available to the BESDebug singleton so we can tell the OLFS/HAI
+    // about them. Then Register the 'besdaemon' context.
+    BESModuleApp app;
+    if (app.initialize(argc, argv) != 0) {
+        cerr << "Could not initialize the modules to get the log contexts." << endl;
+    }
+    BESDebug::Register( "besdaemon" ) ;
 
     // master_beslistener_pid is global so that the signal handlers can use it;
     // it is actually assigned a value in start_master_beslistener but it's

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -38,18 +38,18 @@
 #include <iostream>
 #include <sstream>
 
-using std::ofstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
-using std::ostringstream ;
+using std::ofstream;
+using std::ios;
+using std::cout;
+using std::endl;
+using std::ostringstream;
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
 
-ostream *BESDebug::_debug_strm = NULL ;
-bool BESDebug::_debug_strm_created = false ;
-map<string,bool> BESDebug::_debug_map ;
+ostream *BESDebug::_debug_strm = NULL;
+bool BESDebug::_debug_strm_created = false;
+map<string, bool> BESDebug::_debug_map;
 
 /** @brief Sets up debugging for the bes.
  *
@@ -63,67 +63,56 @@ map<string,bool> BESDebug::_debug_map ;
  *
  * @param values to be parsed and set for debugging, bes.debug,nc,hdf4,bes
  */
-void
-BESDebug::SetUp( const string &values )
+void BESDebug::SetUp(const string &values)
 {
-    if( values.empty() )
-    {
-	string err = "Empty debug options" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    if (values.empty()) {
+        string err = "Empty debug options";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
-    string::size_type comma = 0 ;
-    comma = values.find( ',' ) ;
-    if( comma == string::npos )
-    {
-	string err = "Missing comma in debug options: " + values ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    string::size_type comma = 0;
+    comma = values.find(',');
+    if (comma == string::npos) {
+        string err = "Missing comma in debug options: " + values;
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
-    ostream *strm = 0 ;
-    bool created = false ;
-    string s_strm = values.substr( 0, comma ) ;
-    if( s_strm == "cerr" )
-    {
-	strm = &cerr ;
+    ostream *strm = 0;
+    bool created = false;
+    string s_strm = values.substr(0, comma);
+    if (s_strm == "cerr") {
+        strm = &cerr;
     }
-    else
-    {
-	strm = new ofstream( s_strm.c_str(), ios::out ) ;
-	if( strm && !(*strm) )
-	{
-		delete strm ;
-		strm = 0 ;
-	    string err = "Unable to open the debug file: " + s_strm ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-	created = true ;
+    else {
+        strm = new ofstream(s_strm.c_str(), ios::out);
+        if (strm && !(*strm)) {
+            delete strm;
+            strm = 0;
+            string err = "Unable to open the debug file: " + s_strm;
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+        created = true;
     }
 
-    BESDebug::SetStrm( strm, created ) ;
+    BESDebug::SetStrm(strm, created);
 
-    string::size_type new_comma = 0 ;
-    while( ( new_comma = values.find( ',', comma+1 ) ) != string::npos )
-    {
-	string flagName = values.substr( comma+1, new_comma-comma-1 ) ;
-	if( flagName[0] == '-' )
-	{
-	    string newflag = flagName.substr( 1, flagName.length() - 1 ) ;
-	    BESDebug::Set( newflag, false ) ;
-	}
-	else
-	{
-	    BESDebug::Set( flagName, true ) ;
-	}
-	comma = new_comma ;
+    string::size_type new_comma = 0;
+    while ((new_comma = values.find(',', comma + 1)) != string::npos) {
+        string flagName = values.substr(comma + 1, new_comma - comma - 1);
+        if (flagName[0] == '-') {
+            string newflag = flagName.substr(1, flagName.length() - 1);
+            BESDebug::Set(newflag, false);
+        }
+        else {
+            BESDebug::Set(flagName, true);
+        }
+        comma = new_comma;
     }
-    string flagName = values.substr( comma+1, values.length()-comma-1 ) ;
-    if( flagName[0] == '-' )
-    {
-	string newflag = flagName.substr( 1, flagName.length() - 1 ) ;
-	BESDebug::Set( newflag, false ) ;
+    string flagName = values.substr(comma + 1, values.length() - comma - 1);
+    if (flagName[0] == '-') {
+        string newflag = flagName.substr(1, flagName.length() - 1);
+        BESDebug::Set(newflag, false);
     }
-    else
-    {
-	BESDebug::Set( flagName, true ) ;
+    else {
+        BESDebug::Set(flagName, true);
     }
 }
 
@@ -131,21 +120,20 @@ BESDebug::SetUp( const string &values )
  *
  * @return the pid as a string
  */
-string
-BESDebug::GetPidStr()
+string BESDebug::GetPidStr()
 {
-    ostringstream strm ;
-    const time_t sctime = time( NULL ) ;
-    const struct tm *sttime = localtime( &sctime ) ; 
-    char zone_name[10] ;
-    strftime( zone_name, sizeof( zone_name ), "%Z", sttime ) ;
-    char *b = asctime( sttime ) ;
-    strm << zone_name << " " ;
-    for( register int j = 0; b[j] != '\n'; j++ )
-	strm << b[j] ;
-    pid_t thepid = getpid() ;
-    strm << " id: " << thepid ;
-    return strm.str() ;
+    ostringstream strm;
+    const time_t sctime = time(NULL);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+    strm << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        strm << b[j];
+    pid_t thepid = getpid();
+    strm << " id: " << thepid;
+    return strm.str();
 }
 
 /** @brief Writes help information for so that developers know what can
@@ -156,33 +144,24 @@ BESDebug::GetPidStr()
  *
  * @param strm output stream to write the help information to
  */
-void
-BESDebug::Help( ostream &strm )
+void BESDebug::Help(ostream &strm)
 {
-    strm << "Debug help:" << endl
-         << "  Set on the command line with "
-         << "-d \"file_name|cerr,[-]context1,...,[-]contextn\"" << endl
-	 << "  context with dash (-) in front will be turned off" << endl
-	 << "  context of all will turn on debugging for all context" << endl
-         << endl
-	 << "Possible context:" << endl ;
+    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]contextn\"" << endl << "  context with dash (-) in front will be turned off" << endl
+            << "  context of all will turn on debugging for all contexts" << endl << endl << "Possible context(s):" << endl;
 
-    if( _debug_map.size() )
-    {
-	BESDebug::_debug_citer i = _debug_map.begin() ;
-	BESDebug::_debug_citer e = _debug_map.end() ;
-	for( ; i != e; i++ )
-	{
-	    strm << "  " << (*i).first << ": " ;
-	    if( (*i).second )
-		strm << "on" << endl ;
-	    else
-		strm << "off" << endl ;
-	}
+    if (_debug_map.size()) {
+        BESDebug::debug_citer i = _debug_map.begin();
+        BESDebug::debug_citer e = _debug_map.end();
+        for (; i != e; i++) {
+            strm << "  " << (*i).first << ": ";
+            if ((*i).second)
+                strm << "on" << endl;
+            else
+                strm << "off" << endl;
+        }
     }
-    else
-    {
-	strm << "  none specified" << endl ;
+    else {
+        strm << "  none specified" << endl;
     }
 }
 

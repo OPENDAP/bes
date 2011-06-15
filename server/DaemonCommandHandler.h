@@ -48,7 +48,9 @@ private:
         HAI_EXIT,
         HAI_GET_CONFIG,
         HAI_SET_CONFIG,
-        HAI_TAIL_LOG
+        HAI_TAIL_LOG,
+        HAI_GET_LOG_CONTEXTS,
+        HAI_SET_LOG_CONTEXT
     } hai_command;
 
     string d_bes_conf;

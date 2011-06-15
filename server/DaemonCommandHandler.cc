@@ -32,7 +32,6 @@
 #include <sys/socket.h>
 #include <signal.h>
 #include <sys/wait.h>  // for waitpid
-
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
@@ -59,14 +58,14 @@ using namespace std;
 #include "BESDaemonConstants.h"
 
 // Defined in daemon.cc
-extern void block_signals() ;
-extern void unblock_signals() ;
-extern int  start_master_beslistener() ;
-extern bool stop_all_beslisteners( int ) ;
+extern void block_signals();
+extern void unblock_signals();
+extern int start_master_beslistener();
+extern bool stop_all_beslisteners(int);
 extern int master_beslistener_status;
 
-DaemonCommandHandler::DaemonCommandHandler(const string &config)
-    : d_bes_conf(config)
+DaemonCommandHandler::DaemonCommandHandler(const string &config) :
+    d_bes_conf(config)
 {
     // There is always a bes.conf file, even it does not use that exact name.
     string d_bes_name = d_bes_conf.substr(d_bes_conf.find_last_of('/') + 1);
@@ -86,16 +85,16 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config)
     d_pathnames.insert(make_pair("h5.conf", pathname_hack + "h5.conf"));
     d_pathnames.insert(make_pair("nc.conf", pathname_hack + "nc.conf"));
 
-    map<string,string>::iterator i = d_pathnames.begin();
-    while(i != d_pathnames.end()) {
-	BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
-	++i;
+    map<string, string>::iterator i = d_pathnames.begin();
+    while (i != d_pathnames.end()) {
+        BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+        ++i;
     }
 
     bool found = false;
     TheBESKeys::TheKeys()->get_value("BES.LogName", d_log_file_name, found);
     if (!found)
-	d_log_file_name = "";
+        d_log_file_name = "";
 
 #if 0
     // There will likely be subordinate config files for each module
@@ -107,10 +106,10 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config)
     BESDEBUG("besdaemon", "besdaemon: found BES.Include: " << module_regex << endl);
 
     if (found) {
-	BESDEBUG("besdaemon", "besdaemon: 2 found BES.Include: " << module_regex << endl);
+        BESDEBUG("besdaemon", "besdaemon: 2 found BES.Include: " << module_regex << endl);
     }
     else {
-	BESDEBUG("besdaemon", "besdaemon: did not find BES.Include " << endl);
+        BESDEBUG("besdaemon", "besdaemon: did not find BES.Include " << endl);
     }
 #endif
 }
@@ -120,23 +119,26 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config)
  * @param command
  * @return
  */
-DaemonCommandHandler::hai_command
-DaemonCommandHandler::lookup_command(const string &command)
+DaemonCommandHandler::hai_command DaemonCommandHandler::lookup_command(const string &command)
 {
     if (command == "StopNow")
-	return HAI_STOP_NOW;
+        return HAI_STOP_NOW;
     else if (command == "Start")
-	return HAI_START;
+        return HAI_START;
     else if (command == "Exit")
-	return HAI_EXIT;
+        return HAI_EXIT;
     else if (command == "GetConfig")
-	return HAI_GET_CONFIG;
+        return HAI_GET_CONFIG;
     else if (command == "SetConfig")
-	return HAI_SET_CONFIG;
+        return HAI_SET_CONFIG;
     else if (command == "TailLog")
- 	return HAI_TAIL_LOG;
+        return HAI_TAIL_LOG;
+    else if (command == "GetLogContexts")
+        return HAI_GET_LOG_CONTEXTS;
+    else if (command == "SetLogContext")
+        return HAI_SET_LOG_CONTEXT;
     else
-	return HAI_UNKNOWN;
+        return HAI_UNKNOWN;
 }
 
 #if 0
@@ -144,40 +146,41 @@ DaemonCommandHandler::lookup_command(const string &command)
 // ifstreams.
 static char *read_file(const string &name)
 {
-  char * buffer;
-  long size;
+    char * buffer;
+    long size;
 
-  ifstream infile (name.c_str(), ifstream::binary);
+    ifstream infile (name.c_str(), ifstream::binary);
 
-  // get size of file
-  infile.seekg(0, ifstream::end);
-  size=infile.tellg();
-  infile.seekg(0);
+    // get size of file
+    infile.seekg(0, ifstream::end);
+    size=infile.tellg();
+    infile.seekg(0);
 
-  // allocate memory for file content
-  buffer = new char [size];
+    // allocate memory for file content
+    buffer = new char [size];
 
-  // read content of infile
-  infile.read (buffer,size);
+    // read content of infile
+    infile.read (buffer,size);
 
-  infile.close();
+    infile.close();
 
-  return buffer;
+    return buffer;
 }
 #endif
 
-static void write_file(const string &name, const string &buffer) {
+static void write_file(const string &name, const string &buffer)
+{
     // First write the new text to a temporary file
     string tmp_name = name + ".tmp";
     ofstream outfile(tmp_name.c_str(), std::ios_base::out);
     if (outfile.is_open()) {
-	// write to outfile
-	outfile.write(buffer.data(), buffer.length());
+        // write to outfile
+        outfile.write(buffer.data(), buffer.length());
 
-	outfile.close();
+        outfile.close();
     }
     else {
-	throw BESInternalError("Could not open config file:" + name, __FILE__, __LINE__);
+        throw BESInternalError("Could not open config file:" + name, __FILE__, __LINE__);
     }
 
     // Now see if the original file should be backed up. For any given
@@ -186,22 +189,22 @@ static void write_file(const string &name, const string &buffer) {
     ostringstream backup_name;
     backup_name << name << "." << getpid();
     if (access(backup_name.str().c_str(), F_OK) == -1) {
-	BESDEBUG("besdaemon", "besdaemon: No backup file yet" << endl);
-	// Backup does not exist for this instance of the server; backup name
-	if (rename(name.c_str(), backup_name.str().c_str()) == -1) {
-	    BESDEBUG("besdaemon", "besdaemon: Could not backup file " << name << " to " << backup_name.str() << endl);
-	    ostringstream err;
-	    err << "(" << errno << ") " << strerror(errno);
-	    throw BESInternalError("Could not backup config file: " + name + ": " + err.str(), __FILE__, __LINE__);
-	}
+        BESDEBUG("besdaemon", "besdaemon: No backup file yet" << endl);
+        // Backup does not exist for this instance of the server; backup name
+        if (rename(name.c_str(), backup_name.str().c_str()) == -1) {
+            BESDEBUG("besdaemon", "besdaemon: Could not backup file " << name << " to " << backup_name.str() << endl);
+            ostringstream err;
+            err << "(" << errno << ") " << strerror(errno);
+            throw BESInternalError("Could not backup config file: " + name + ": " + err.str(), __FILE__, __LINE__);
+        }
     }
 
     // Now move the '.tmp' file to <name>
     if (rename(tmp_name.c_str(), name.c_str()) == -1) {
-	BESDEBUG("besdaemon", "besdaemon: Could not complete write " << name << " to " << backup_name.str() << endl);
-	ostringstream err;
-	err << "(" << errno << ") " << strerror(errno);
-	throw BESInternalError("Could not write config file:" + name + ": " + err.str(), __FILE__, __LINE__);
+        BESDEBUG("besdaemon", "besdaemon: Could not complete write " << name << " to " << backup_name.str() << endl);
+        ostringstream err;
+        err << "(" << errno << ") " << strerror(errno);
+        throw BESInternalError("Could not write config file:" + name + ": " + err.str(), __FILE__, __LINE__);
     }
 }
 
@@ -212,10 +215,10 @@ static vector<string> file2strings(const string &file_name)
     file.clear();
     ifstream infile(file_name.c_str(), std::ios_base::in);
     if (!infile.is_open())
-	throw BESInternalError("Could not open file for reading (" + file_name + ")", __FILE__, __LINE__);
+        throw BESInternalError("Could not open file for reading (" + file_name + ")", __FILE__, __LINE__);
 
     while (getline(infile, line, '\n')) {
-	file.push_back(line);
+        file.push_back(line);
     }
 
     return file;
@@ -230,15 +233,14 @@ static vector<string> get_bes_log_lines(const string &log_file_name, long num_li
     lines.clear();
     ifstream infile(log_file_name.c_str(), std::ios_base::in);
     if (!infile.is_open())
-	throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
+        throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
 
     // Count the lines; there has to be a better way...
     long count = 0;
     do {
-	infile.ignore(1024, '\n');
-	++count;
-    }
-    while (!infile.eof() && !infile.fail());
+        infile.ignore(1024, '\n');
+        ++count;
+    } while (!infile.eof() && !infile.fail());
 
     // Why doesn't "infile.seekg (0);" work?
     infile.close();
@@ -248,18 +250,18 @@ static vector<string> get_bes_log_lines(const string &log_file_name, long num_li
 
     // num_line == 0 is special value that means get all the lines
     if (num_lines > 0 && count > num_lines) {
-	// Skip count - num-lines
-	long skip = count - num_lines;
-	BESDEBUG("besdaemon", "besdaemon: skipping  " << skip << endl);
-	do {
-	    infile.ignore(1024, '\n');
-	    --skip;
-	} while (skip > 0 && !infile.eof() && !infile.fail());
+        // Skip count - num-lines
+        long skip = count - num_lines;
+        BESDEBUG("besdaemon", "besdaemon: skipping  " << skip << endl);
+        do {
+            infile.ignore(1024, '\n');
+            --skip;
+        } while (skip > 0 && !infile.eof() && !infile.fail());
     }
 
     // Read what's left
     while (getline(infile, line, '\n')) {
-	lines.push_back(line);
+        lines.push_back(line);
     }
 
     return lines;
@@ -271,7 +273,8 @@ static vector<string> get_bes_log_lines(const string &log_file_name, long num_li
  * value-result param 'response'. The return code indicates
  * @param command The XML command
  */
-void DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer) {
+void DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
+{
     LIBXML_TEST_VERSION;
 
     xmlDoc *doc = NULL;
@@ -283,7 +286,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
         vector<string> parseerrors;
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
-        // This cast is legal?
+        // FIXME This cast is legal?
         doc = xmlParseDoc((xmlChar*) command.c_str());
         if (doc == NULL) {
             string err = "";
@@ -505,6 +508,61 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                         break;
                     }
 
+                    case HAI_GET_LOG_CONTEXTS: {
+                         BESDEBUG("besdaemon", "besdaemon: Received GetLogContexts" << endl);
+
+                         BESDEBUG("besdaemon", "besdaemon: There are " << BESDebug::debug_map().size() << " Contexts" << endl);
+                         if (BESDebug::debug_map().size()) {
+                            BESDebug::debug_citer i = BESDebug::debug_map().begin();
+                            while (i != BESDebug::debug_map().end()) {
+                                if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:LogContext") < 0)
+                                    throw BESInternalFatalError("Could not write <hai:LogContext> element ", __FILE__, __LINE__);
+
+                                if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "name", (const xmlChar*) (*i).first.c_str()) < 0)
+                                    throw BESInternalFatalError("Could not write 'name' attribute ", __FILE__, __LINE__);
+
+                                string state = (*i).second ? "on" : "off";
+                                if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "state", (const xmlChar*) state.c_str()) < 0)
+                                    throw BESInternalFatalError("Could not write 'state' attribute ", __FILE__, __LINE__);
+
+                                if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+                                    throw BESInternalFatalError("Could not end <hai:LogContext> element ", __FILE__, __LINE__);
+
+                                ++i;
+                            }
+                        }
+
+                         break;
+                     }
+
+                    case HAI_SET_LOG_CONTEXT: {
+                         BESDEBUG("besdaemon", "besdaemon: Received SetLogContext" << endl);
+
+                         xmlChar *xml_char_module = xmlGetProp(current_node, (const xmlChar*)"name");
+                         if (!xml_char_module) {
+                             throw BESSyntaxUserError("SetLogContext missing name ", __FILE__, __LINE__);
+                         }
+                         string name = (const char *)xml_char_module;
+                         xmlFree(xml_char_module);
+
+                         xml_char_module = xmlGetProp(current_node, (const xmlChar*)"state");
+                         if (!xml_char_module) {
+                             throw BESSyntaxUserError("SetLogContext missing state ", __FILE__, __LINE__);
+                         }
+                         bool state = strcmp((const char *)xml_char_module, "on") == 0;
+                         xmlFree(xml_char_module);
+
+                         BESDebug::Set( name, state );
+                         BESDEBUG("besdaemon", "besdaemon: setting " << name << " to " << state << endl);
+
+                         if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
+                             throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
+                         if (xmlTextWriterEndElement(writer.get_writer()) < 0)
+                             throw BESInternalFatalError("Could not end <hai:OK> element ", __FILE__, __LINE__);
+
+                         break;
+                     }
+
                     default:
                         throw BESSyntaxUserError("Command " + node_name + " unknown.", __FILE__, __LINE__);
                 }
@@ -525,7 +583,8 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
     xmlFreeDoc(doc);
 }
 
-static void send_bes_error(XMLWriter &writer, BESError &e) {
+static void send_bes_error(XMLWriter &writer, BESError &e)
+{
     if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BESError") < 0)
         throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
 
@@ -541,7 +600,8 @@ static void send_bes_error(XMLWriter &writer, BESError &e) {
         throw BESInternalFatalError("Could not end <hai:OK> element ", __FILE__, __LINE__);
 }
 
-void DaemonCommandHandler::handle(Connection *c) {
+void DaemonCommandHandler::handle(Connection *c)
+{
 #if 0
     // Use this for some simple white-listing of allowed clients?
     ostringstream strm;
@@ -553,90 +613,90 @@ void DaemonCommandHandler::handle(Connection *c) {
 #if 0
     for (;;) {
 #endif
-        ostringstream ss;
+    ostringstream ss;
 
-        bool done = false;
-        while (!done)
-            done = c->receive(extensions, &ss);
+    bool done = false;
+    while (!done)
+        done = c->receive(extensions, &ss);
 
-        if (extensions["status"] == c->exit()) {
-            // When the client communicating with the besdaemon exits,
-            // return control to the PPTServer::initConnection() method which
-            // will listen for another connect request.
-            return;
-        }
-
-        int descript = c->getSocket()->getSocketDescriptor();
-        unsigned int bufsize = c->getSendChunkSize();
-        PPTStreamBuf fds(descript, bufsize);
-
-        std::streambuf *holder;
-        holder = cout.rdbuf();
-        cout.rdbuf(&fds);
-
-        XMLWriter writer;
-
-        try {
-            BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);
-            // runs the command(s); throws on an error.
-            execute_command(ss.str(), writer);
-
-            cout << writer.get_doc() << endl;
-            fds.finish();
-            cout.rdbuf(holder);
-        }
-        catch (BESError &e) {
-            // an error has occurred.
-            // flush what we have in the stream to the client
-            cout << flush;
-
-            // Send the extension status=error to the client so that it
-            // can reset.
-            map<string, string> extensions;
-            extensions["status"] = "error";
-
-            switch (e.get_error_type()) {
-                case BES_INTERNAL_ERROR:
-                case BES_INTERNAL_FATAL_ERROR:
-                    BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << e.get_message() << endl);
-                    extensions["exit"] = "true";
-                    c->sendExtensions(extensions);
-                    send_bes_error(writer, e);
-                    // Send the BESError
-#if 0
-                    // This seemed like a good idea, but really, no error is
-                    // fatal, at least not yet.
-                    cout << writer.get_doc() << endl;
-                    fds.finish(); // we are finished, send the last chunk
-                    cout.rdbuf(holder); // reset the streams buffer
-                    return; // EXIT; disconnects from client
-#endif
-                    break;
-
-                case BES_SYNTAX_USER_ERROR:
-                    // cerr << "syntax error" << endl;
-                    BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << e.get_message() << endl);
-                    c->sendExtensions(extensions);
-                    // Send the BESError
-                    send_bes_error(writer, e);
-                    break;
-
-                default:
-                    BESDEBUG("besdaemon", "besdaemon: Error (unknown command): " << ss.str() << endl);
-                    extensions["exit"] = "true";
-                    c->sendExtensions(extensions);
-                    // Send the BESError
-                    send_bes_error(writer, e);
-                    break;
-
-            }
-
-            cout << writer.get_doc() << endl;
-            fds.finish(); // we are finished, send the last chunk
-            cout.rdbuf(holder); // reset the streams buffer
-        }
-#if 0
+    if (extensions["status"] == c->exit()) {
+        // When the client communicating with the besdaemon exits,
+        // return control to the PPTServer::initConnection() method which
+        // will listen for another connect request.
+        return;
     }
+
+    int descript = c->getSocket()->getSocketDescriptor();
+    unsigned int bufsize = c->getSendChunkSize();
+    PPTStreamBuf fds(descript, bufsize);
+
+    std::streambuf *holder;
+    holder = cout.rdbuf();
+    cout.rdbuf(&fds);
+
+    XMLWriter writer;
+
+    try {
+        BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);
+        // runs the command(s); throws on an error.
+        execute_command(ss.str(), writer);
+
+        cout << writer.get_doc() << endl;
+        fds.finish();
+        cout.rdbuf(holder);
+    }
+    catch (BESError &e) {
+        // an error has occurred.
+        // flush what we have in the stream to the client
+        cout << flush;
+
+        // Send the extension status=error to the client so that it
+        // can reset.
+        map<string, string> extensions;
+        extensions["status"] = "error";
+
+        switch (e.get_error_type()) {
+            case BES_INTERNAL_ERROR:
+            case BES_INTERNAL_FATAL_ERROR:
+                BESDEBUG("besdaemon", "besdaemon: Internal/Fatal Error: " << e.get_message() << endl);
+                extensions["exit"] = "true";
+                c->sendExtensions(extensions);
+                send_bes_error(writer, e);
+                // Send the BESError
+#if 0
+                // This seemed like a good idea, but really, no error is
+                // fatal, at least not yet.
+                cout << writer.get_doc() << endl;
+                fds.finish(); // we are finished, send the last chunk
+                cout.rdbuf(holder); // reset the streams buffer
+                return; // EXIT; disconnects from client
+#endif
+                break;
+
+            case BES_SYNTAX_USER_ERROR:
+                // cerr << "syntax error" << endl;
+                BESDEBUG("besdaemon", "besdaemon: Syntax Error: " << e.get_message() << endl);
+                c->sendExtensions(extensions);
+                // Send the BESError
+                send_bes_error(writer, e);
+                break;
+
+            default:
+                BESDEBUG("besdaemon", "besdaemon: Error (unknown command): " << ss.str() << endl);
+                extensions["exit"] = "true";
+                c->sendExtensions(extensions);
+                // Send the BESError
+                send_bes_error(writer, e);
+                break;
+
+        }
+
+        cout << writer.get_doc() << endl;
+        fds.finish(); // we are finished, send the last chunk
+        cout.rdbuf(holder); // reset the streams buffer
+    }
+#if 0
+}
 #endif
 }
 
@@ -646,7 +706,8 @@ void DaemonCommandHandler::handle(Connection *c) {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void DaemonCommandHandler::dump(ostream &strm) const {
+void DaemonCommandHandler::dump(ostream &strm) const
+{
     strm << BESIndent::LMarg << "DaemonCommandHandler::dump - (" << (void *) this << ")" << endl;
 }
 

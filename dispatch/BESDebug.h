@@ -85,12 +85,22 @@ using std::string ;
 class BESDebug
 {
 private:
-    static map<string,bool>	_debug_map ;
+    typedef map<string,bool> DebugMap;
+    //static map<string,bool>	_debug_map ;
+    static DebugMap _debug_map ;
     static ostream *		_debug_strm ;
     static bool			_debug_strm_created ;
-    typedef map<string,bool>::const_iterator _debug_citer ;
-    typedef map<string,bool>::iterator _debug_iter ;
+    // typedef map<string,bool>::const_iterator _debug_citer ;
+    //typedef map<string,bool>::iterator _debug_iter ;
+    typedef DebugMap::iterator _debug_iter ;
 public:
+    typedef DebugMap::const_iterator debug_citer ;
+
+    static const DebugMap &debug_map()
+    {
+        return _debug_map;
+    }
+
     /** @brief set the debug context to the specified value
      *
      * Static function that sets the specified debug context (flagName)
@@ -123,8 +133,8 @@ public:
      */
     static void			Register( const string &flagName )
 				{
-				    _debug_citer a = _debug_map.find( "all" ) ;
-				    _debug_citer i = _debug_map.find( flagName ) ;
+				    debug_citer a = _debug_map.find( "all" ) ;
+				    debug_citer i = _debug_map.find( flagName ) ;
 				    if( i == _debug_map.end() )
 				    {
 					if( a == _debug_map.end() )
@@ -144,7 +154,7 @@ public:
      */
     static bool			IsSet( const string &flagName )
     				{
-				    _debug_citer i = _debug_map.find( flagName ) ;
+				    debug_citer i = _debug_map.find( flagName ) ;
 				    if( i != _debug_map.end() )
 					return (*i).second ;
 				    else

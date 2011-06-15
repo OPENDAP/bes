@@ -40,7 +40,7 @@
 #include "BESDataNames.h"
 #include "BESDapTransmit.h"
 #include "BESContextManager.h"
-#include "BESInternalFatalError.h"
+#include "BESInternalError.h"
 #include "BESDebug.h"
 
 BESDataResponseHandler::BESDataResponseHandler( const string &name )
@@ -90,7 +90,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
         long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/ 10);
         if (rsl == 0 && errno > 0) {
             string err = strerror(errno);
-            throw BESInternalFatalError("The responseSizeLimit context value ("
+            throw BESInternalError("The responseSizeLimit context value ("
                     + response_size_limit + ") was bad: " + err, __FILE__, __LINE__);
        }
 

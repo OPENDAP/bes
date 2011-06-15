@@ -237,6 +237,16 @@ canWritePid()
     fi
 }
 
+usage()
+{
+    cat <<EOF
+
+USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]
+       where [options] are passed to besdaemon; see besdaemon -h except
+       for the 'verbose' (-V) option that controls the script's output.
+EOF
+}
+
 what=$1
 shift
 otherArgs=$*
@@ -352,13 +362,7 @@ help)
         echo "FAILED: The BES listener failed to return help information"
         exit $retval
     fi
-
-    cat <<EOF
-
-USAGE: besctl (help|start|stop|restart|status|pids|kill) [options]
-       where [options] are passed to besdaemon; see besdaemon -h except
-       for the 'verbose' (-V) option that controls the script's output.
-EOF
+    usage
     ;;
 stop)
     stopBES
@@ -395,7 +399,7 @@ kill)
     fi
     ;;   
 *)
-    besctlHelp
+    usage
     ;;
 esac
 
