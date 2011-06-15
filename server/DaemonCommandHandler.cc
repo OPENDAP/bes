@@ -552,8 +552,11 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                          bool state = strcmp((const char *)xml_char_module, "on") == 0;
                          xmlFree(xml_char_module);
 
+                         cerr << "besdaemon: before setting " << name << " to " << state << endl << flush;
+                         //BESDEBUG("besdaemon", "besdaemon: before setting " << name << " to " << state << endl);
                          BESDebug::Set( name, state );
-                         BESDEBUG("besdaemon", "besdaemon: setting " << name << " to " << state << endl);
+                         cerr << "besdaemon: after setting " << name << " to " << state << endl;
+                         //BESDEBUG("besdaemon", "besdaemon: after setting " << name << " to " << state << endl);
 
                          if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
                              throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);

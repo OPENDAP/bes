@@ -111,42 +111,42 @@ public:
      * @param flagName debug context flag to set to the given value
      * @param value set the debug context to this value
      */
-    static void			Set( const string &flagName, bool value )
-    				{
-				    if( flagName == "all" && value )
-				    {
-					_debug_iter i = _debug_map.begin() ;
-					_debug_iter e = _debug_map.end() ;
-					for( ; i != e; i++ )
-					{
-					    (*i).second = true ;
-					}
-				    }
-				    _debug_map[flagName] = value ;
-				}
+    static void Set(const string &flagName, bool value)
+    {
+        if (flagName == "all" && value) {
+            _debug_iter i = _debug_map.begin();
+            _debug_iter e = _debug_map.end();
+            for (; i != e; i++) {
+                (*i).second = true;
+            }
+        }
+        _debug_map[flagName] = value;
+    }
+
     /** @brief register the specified debug flag
      *
      * Allows developers to register a debug flag for when Help method
-     * is called.
+     * is called. It's OK to register a context more than once (subsequent
+     * calls to Register() have no affect. If the pseudo-context 'all' has
+     * been registered, the context is set to true (messages will be printed),
+     * otherwise it is set to false.
      *
      * @param flagName debug context to register
      */
-    static void			Register( const string &flagName )
-				{
-				    debug_citer a = _debug_map.find( "all" ) ;
-				    debug_citer i = _debug_map.find( flagName ) ;
-				    if( i == _debug_map.end() )
-				    {
-					if( a == _debug_map.end() )
-					{
-					    _debug_map[flagName] = false ;
-					}
-					else
-					{
-					    _debug_map[flagName] = true ;
-					}
-				    }
-				}
+    static void Register(const string &flagName)
+    {
+        debug_citer a = _debug_map.find("all");
+        debug_citer i = _debug_map.find(flagName);
+        if (i == _debug_map.end()) {
+            if (a == _debug_map.end()) {
+                _debug_map[flagName] = false;
+            }
+            else {
+                _debug_map[flagName] = true;
+            }
+        }
+    }
+
     /** @brief see if the debug context flagName is set to true
      *
      * @param flagName debug context to check if set
