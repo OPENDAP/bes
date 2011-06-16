@@ -34,6 +34,8 @@
 #include <unistd.h> // for getpid
 #include <grp.h>    // for getgrnam
 #include <pwd.h>    // for getpwnam
+#include <sys/wait.h> // for wait
+
 #include <iostream>
 #include <fstream>
 #include <sstream>

@@ -40,6 +40,7 @@
 #include <iostream>
 #include <sstream>
 #include <list>
+#include <cstring>
 
 using std::cout ;
 using std::endl ;
