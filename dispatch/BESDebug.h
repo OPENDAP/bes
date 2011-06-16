@@ -86,13 +86,13 @@ class BESDebug
 {
 private:
     typedef map<string,bool> DebugMap;
-    //static map<string,bool>	_debug_map ;
+
     static DebugMap _debug_map ;
     static ostream *		_debug_strm ;
     static bool			_debug_strm_created ;
-    // typedef map<string,bool>::const_iterator _debug_citer ;
-    //typedef map<string,bool>::iterator _debug_iter ;
+
     typedef DebugMap::iterator _debug_iter ;
+
 public:
     typedef DebugMap::const_iterator debug_citer ;
 
@@ -113,10 +113,12 @@ public:
      */
     static void Set(const string &flagName, bool value)
     {
-        if (flagName == "all" && value) {
+        if (flagName == "all" && value)
+        {
             _debug_iter i = _debug_map.begin();
             _debug_iter e = _debug_map.end();
-            for (; i != e; i++) {
+            for (; i != e; i++)
+            {
                 (*i).second = true;
             }
         }
@@ -137,11 +139,14 @@ public:
     {
         debug_citer a = _debug_map.find("all");
         debug_citer i = _debug_map.find(flagName);
-        if (i == _debug_map.end()) {
-            if (a == _debug_map.end()) {
+        if (i == _debug_map.end())
+        {
+            if (a == _debug_map.end())
+            {
                 _debug_map[flagName] = false;
             }
-            else {
+            else
+            {
                 _debug_map[flagName] = true;
             }
         }
@@ -152,30 +157,31 @@ public:
      * @param flagName debug context to check if set
      * @return whether the specified flagName is set or not
      */
-    static bool			IsSet( const string &flagName )
-    				{
-				    debug_citer i = _debug_map.find( flagName ) ;
-				    if( i != _debug_map.end() )
-					return (*i).second ;
-				    else
-					i = _debug_map.find( "all" ) ;
-					if( i != _debug_map.end() )
-					    return (*i).second ;
-					else
-					    return false ;
-				}
+    static bool IsSet(const string &flagName)
+    {
+        debug_citer i = _debug_map.find(flagName);
+        if (i != _debug_map.end())
+            return (*i).second;
+        else
+            i = _debug_map.find("all");
+        if (i != _debug_map.end())
+            return (*i).second;
+        else
+            return false;
+    }
+
     /** @brief return the debug stream
      *
      * Can be a file output stream or cerr
      *
      * @return the current debug stream
      */
-    static ostream *		GetStrm()
-    				{
-				    return _debug_strm ;
-				}
+    static ostream * GetStrm()
+    {
+        return _debug_strm;
+    }
 
-    static string		GetPidStr() ;
+    static string GetPidStr();
 
     /** @brief set the debug output stream to the specified stream
      *
@@ -192,31 +198,33 @@ public:
      * @param strm set the current debug stream to strm
      * @param created whether the passed debug stream was created
      */
-    static void			SetStrm( ostream *strm, bool created )
-    				{
-				    if( _debug_strm_created && _debug_strm )
-				    {
-					_debug_strm->flush();
-					delete _debug_strm ;
-					_debug_strm = NULL ;
-				    }
-				    else if( _debug_strm )
-				    {
-					_debug_strm->flush() ;
-				    }
-				    if( !strm )
-				    {
-					_debug_strm = &cerr ;
-					_debug_strm_created = false ;
-				    }
-				    else
-				    {
-					_debug_strm = strm ;
-					_debug_strm_created = created ;
-				    }
-				}
+    static void SetStrm(ostream *strm, bool created)
+    {
+        if (_debug_strm_created && _debug_strm)
+        {
+            _debug_strm->flush();
+            delete _debug_strm;
+            _debug_strm = NULL;
+        }
+        else if (_debug_strm)
+        {
+            _debug_strm->flush();
+        }
+        if (!strm)
+        {
+            _debug_strm = &cerr;
+            _debug_strm_created = false;
+        }
+        else
+        {
+            _debug_strm = strm;
+            _debug_strm_created = created;
+        }
+    }
+
     static void			SetUp( const string &values ) ;
     static void			Help( ostream &strm ) ;
+    static bool         IsContextName( const string &name ) ;
 } ;
 
 #endif // I_BESDebug_h

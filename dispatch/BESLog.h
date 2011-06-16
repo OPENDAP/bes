@@ -185,6 +185,11 @@ public:
     virtual void		dump( ostream &strm ) const ;
 
     static BESLog *TheLog() ;
+
+    // I added this so that it's easy to route the BESDebug messages to the
+    // log file. This will enable the Admin Interface to display the contents
+    // of those debug messages when it displays the log file. jhrg
+    ostream *get_log_ostream() { return _file_buffer; }
 };
 
 #endif // BESLog_h_

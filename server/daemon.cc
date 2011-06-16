@@ -66,6 +66,7 @@ using std::string;
 #include "BESError.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
+#include "BESLog.h"
 #include "BESDaemonConstants.h"
 
 #define BES_SERVER "/beslistener"
@@ -598,7 +599,6 @@ static int daemon_init()
  */
 static void store_daemon_id(int pid)
 {
-    const char *perror_string = 0;
     ofstream f(file_for_daemon_pid.c_str());
     if (!f) {
         cerr << errno_str(": unable to create pid file " + file_for_daemon_pid + ": ");
@@ -870,6 +870,16 @@ int main(int argc, char *argv[])
         cerr << "Could not initialize the modules to get the log contexts." << endl;
     }
     BESDebug::Register( "besdaemon" ) ;
+
+    // These are from the beslistener - they are valid contexts but are not
+    // registered by a module. See ServerApp.cc
+    BESDebug::Register("server");
+    BESDebug::Register("ppt");
+
+    // I use false for the 'created' flag so that subsequent changes to the
+    // debug stream won't do odd things like delete the ostream pointer. jhrg
+    BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
+
 
     // master_beslistener_pid is global so that the signal handlers can use it;
     // it is actually assigned a value in start_master_beslistener but it's

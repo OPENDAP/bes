@@ -57,24 +57,23 @@ bool BESGlobalIQ::is_initialized = false ;
  * stops after the first initialization function returns false.
  * @see BESGlobalInit
  */
-bool
-BESGlobalIQ::BESGlobalInit(int argc, char **argv)
+bool BESGlobalIQ::BESGlobalInit(int argc, char **argv)
 {
     bool retVal = true;
-    if( BESGlobalIQ::is_initialized == false )
+    if (BESGlobalIQ::is_initialized == false)
     {
-	for(int i = 0; i < 5; i++)
-	{
-	    if(BESGlobalInitList[i])
-	    {
-		retVal = BESGlobalInitList[i]->initialize(argc, argv);
-		if(retVal != true)
-		{
-		    break;
-		}
-	    }
-	}
-	BESGlobalIQ::is_initialized = true ;
+        for (int i = 0; i < 5; i++)
+        {
+            if (BESGlobalInitList[i])
+            {
+                retVal = BESGlobalInitList[i]->initialize(argc, argv);
+                if (retVal != true)
+                {
+                    break;
+                }
+            }
+        }
+        BESGlobalIQ::is_initialized = true;
     }
 
     return retVal;

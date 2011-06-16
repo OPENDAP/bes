@@ -65,25 +65,30 @@ map<string, bool> BESDebug::_debug_map;
  */
 void BESDebug::SetUp(const string &values)
 {
-    if (values.empty()) {
+    if (values.empty())
+    {
         string err = "Empty debug options";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
     string::size_type comma = 0;
     comma = values.find(',');
-    if (comma == string::npos) {
+    if (comma == string::npos)
+    {
         string err = "Missing comma in debug options: " + values;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
     ostream *strm = 0;
     bool created = false;
     string s_strm = values.substr(0, comma);
-    if (s_strm == "cerr") {
+    if (s_strm == "cerr")
+    {
         strm = &cerr;
     }
-    else {
+    else
+    {
         strm = new ofstream(s_strm.c_str(), ios::out);
-        if (strm && !(*strm)) {
+        if (strm && !(*strm))
+        {
             delete strm;
             strm = 0;
             string err = "Unable to open the debug file: " + s_strm;
@@ -95,23 +100,28 @@ void BESDebug::SetUp(const string &values)
     BESDebug::SetStrm(strm, created);
 
     string::size_type new_comma = 0;
-    while ((new_comma = values.find(',', comma + 1)) != string::npos) {
+    while ((new_comma = values.find(',', comma + 1)) != string::npos)
+    {
         string flagName = values.substr(comma + 1, new_comma - comma - 1);
-        if (flagName[0] == '-') {
+        if (flagName[0] == '-')
+        {
             string newflag = flagName.substr(1, flagName.length() - 1);
             BESDebug::Set(newflag, false);
         }
-        else {
+        else
+        {
             BESDebug::Set(flagName, true);
         }
         comma = new_comma;
     }
     string flagName = values.substr(comma + 1, values.length() - comma - 1);
-    if (flagName[0] == '-') {
+    if (flagName[0] == '-')
+    {
         string newflag = flagName.substr(1, flagName.length() - 1);
         BESDebug::Set(newflag, false);
     }
-    else {
+    else
+    {
         BESDebug::Set(flagName, true);
     }
 }
@@ -146,13 +156,16 @@ string BESDebug::GetPidStr()
  */
 void BESDebug::Help(ostream &strm)
 {
-    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]contextn\"" << endl << "  context with dash (-) in front will be turned off" << endl
-            << "  context of all will turn on debugging for all contexts" << endl << endl << "Possible context(s):" << endl;
+    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]contextn\"" << endl
+            << "  context with dash (-) in front will be turned off" << endl << "  context of all will turn on debugging for all contexts" << endl << endl
+            << "Possible context(s):" << endl;
 
-    if (_debug_map.size()) {
+    if (_debug_map.size())
+    {
         BESDebug::debug_citer i = _debug_map.begin();
         BESDebug::debug_citer e = _debug_map.end();
-        for (; i != e; i++) {
+        for (; i != e; i++)
+        {
             strm << "  " << (*i).first << ": ";
             if ((*i).second)
                 strm << "on" << endl;
@@ -160,8 +173,13 @@ void BESDebug::Help(ostream &strm)
                 strm << "off" << endl;
         }
     }
-    else {
+    else
+    {
         strm << "  none specified" << endl;
     }
 }
 
+bool BESDebug::IsContextName(const string &name)
+{
+    return _debug_map.count(name) > 0;
+}
