@@ -89,7 +89,15 @@ static string file_for_daemon_pid;
 int master_beslistener_status = BESLISTENER_STOPPED;
 
 static int master_beslistener_pid = -1; // This is also the process group id
+
+// ***
 static char **arguments = 0;
+// We use this for easy access to the args after processing.
+static int debug_arg_index = 0;
+
+typedef map<string,string> arg_map;
+static arg_map global_args;
+static string debug_sink = "";
 
 static TcpSocket *my_socket = 0;
 static UnixSocket *unix_socket = 0;
@@ -238,6 +246,20 @@ bool stop_all_beslisteners(int sig)
     return mbes_status_caught;
 }
 
+/** Update the arguments passed to the master beslistener so that changes in
+ *  the debug/log contexts set in the besdaemon will also be set in the
+ *  beslisteners.
+ *
+ *  @note The arguments are held in a static global variable - use this
+ *  function to alter that array.
+ */
+void update_beslistener_args()
+{
+    string contexts = BESDebug::GetOptionsString();
+    BESDEBUG("besdaemon", "besdaemon: debug arguments to be passed to beslistener: " << BESDebug::GetOptionsString() << endl);
+
+}
+
 /** Start the 'master beslistener' and return its PID. This function also
  sets the global 'master_beslistener_pid' so that other code in this file
  (like the signal handlers) can have access to it. It starts the beslistener
@@ -252,12 +274,6 @@ bool stop_all_beslisteners(int sig)
  */
 int start_master_beslistener()
 {
-#if 0
-    if (master_beslistener_status != BESLISTENER_STOPED) {
-        BESDEBUG("besdaemon", "besdaemon: tried to start the beslistener but its already running" << endl);
-        return 0;
-    }
-#endif
     // The only certain way to know that the beslistener master has started is
     // to pass back its status once it is initialized. Use a pipe for that.
     int fd[2];
@@ -286,9 +302,13 @@ int start_master_beslistener()
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
 
         // Close the socket for the besdaemon here. This keeps if from being
-        // passed into the master beslistener.
+        // passed into the master beslistener and then entering the state
+        // CLOSE_WAIT once the besdaemon's client closes it's end.
         if (command_server)
             command_server->closeConnection();
+
+        // *** Build arguments here
+
 
         // This is where beslistener - the master listener - is started
         execvp(arguments[0], arguments);
@@ -699,10 +719,6 @@ int main(int argc, char *argv[])
     string install_dir;
     string pid_dir;
 
-    // If you change the getopt statement below, be sure to make the
-    // corresponding change in ServerApp.cc and besctl.in
-    int c = 0;
-
     // there are 16 arguments allowed to the daemon, including the program
     // name. 3 options do not have arguments and 6 have arguments
     if (argc > 16) {
@@ -710,11 +726,14 @@ int main(int argc, char *argv[])
         BESServerUtils::show_usage(daemon_name);
     }
 
-    // Most of the argument precessing is just for vetting the arguments
+    // Most of the argument processing is just for vetting the arguments
     // that will be passed onto the beslistener(s), but we do grab some info
     string config_file = "";
     // argv[0] is the name of the program, so start num_args at 1
     unsigned short num_args = 1;
+    // If you change the getopt statement below, be sure to make the
+    // corresponding change in ServerApp.cc and besctl.in
+    int c = 0;
     while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF) {
         switch (c) {
             case 'v': // version
@@ -730,30 +749,30 @@ int main(int argc, char *argv[])
                     cout << "The specified install directory (-i option) " << "is incorrectly formatted. Must be less than " << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
                     return 1;
                 }
+                global_args["-i"] = install_dir;
                 num_args += 2;
                 break;
             case 's': // secure server
+                global_args["-s"] = "";
                 num_args++;
                 break;
             case 'r': // where to write the pid file
-            {
                 pid_dir = optarg;
                 if (BESScrub::pathname_ok(pid_dir, true) == false) {
                     cout << "The specified state directory (-r option) " << "is incorrectly formatted. Must be less than " << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
                     return 1;
                 }
+                global_args["-r"] = pid_dir;
                 num_args += 2;
-            }
                 break;
             case 'c': // configuration file
-            {
                 config_file = optarg;
                 if (BESScrub::pathname_ok(config_file, true) == false) {
                     cout << "The specified configuration file (-c option) " << "is incorrectly formatted. Must be less than " << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
                     return 1;
                 }
+                global_args["-c"] = config_file;
                 num_args += 2;
-            }
                 break;
             case 'u': // unix socket
             {
@@ -762,9 +781,10 @@ int main(int argc, char *argv[])
                     cout << "The specified unix socket (-u option) " << "is incorrectly formatted. Must be less than " << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
                     return 1;
                 }
+                global_args["-u"] = check_path;
                 num_args += 2;
-            }
                 break;
+            }
             case 'p': // TCP port
             {
                 string port_num = optarg;
@@ -774,6 +794,7 @@ int main(int argc, char *argv[])
                         return 1;
                     }
                 }
+                global_args["-p"] = port_num;
                 num_args += 2;
             }
                 break;
@@ -784,10 +805,13 @@ int main(int argc, char *argv[])
                     cout << "The specified debug options \"" << check_arg << "\" contains invalid characters" << endl;
                     return 1;
                 }
-                BESDebug::SetUp(optarg);
+                BESDebug::SetUp(check_arg);
+                global_args["-d"] = check_arg;
+                debug_sink = check_arg.substr(0, check_arg.find('\''));
+                debug_arg_index = c;
                 num_args += 2;
-            }
                 break;
+            }
             default:
                 BESServerUtils::show_usage(daemon_name);
                 break;
@@ -826,28 +850,6 @@ int main(int argc, char *argv[])
     if (!load_names(install_dir, pid_dir))
         return 1;
 
-    // make sure the array size is not too big
-    if (BESScrub::size_ok(sizeof(char *), num_args + 1) == false) {
-        cout << daemon_name << ": too many arguments passed to the BES";
-        BESServerUtils::show_usage(daemon_name);
-    }
-
-    arguments = new char *[num_args + 1];
-
-    // Set arguments[0] to the name of the listener
-    string::size_type len = beslistener_path.length();
-    char temp_name[len + 1];
-    beslistener_path.copy(temp_name, len);
-    temp_name[len] = '\0';
-    arguments[0] = temp_name;
-
-    // Marshal the arguments to the listener from the command line
-    // arguments to the daemon
-    for (int i = 1; i < num_args; i++) {
-        arguments[i] = argv[i];
-    }
-    arguments[num_args] = NULL;
-
     if (!access(file_for_daemon_pid.c_str(), F_OK)) {
         ifstream temp(file_for_daemon_pid.c_str());
         cout << daemon_name << ": there seems to be a BES daemon already running at ";
@@ -876,10 +878,55 @@ int main(int argc, char *argv[])
     BESDebug::Register("server");
     BESDebug::Register("ppt");
 
-    // I use false for the 'created' flag so that subsequent changes to the
-    // debug stream won't do odd things like delete the ostream pointer. jhrg
-    BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
+    // The stuff in global_args is used whenever a call to start_master_beslistener()
+    // is made, so any time the BESDebug contexts are changed, a change to the
+    // global_args will change the way the the beslistener is started. In fact,
+    // it's not limited to the debug stuff, but that's we're using it for now.
+    // jhrg 6/16/11
+#if 1
+    // The -d option was not given; add one setting up a default log sink
+    if (global_args.count("-d") == 0)
+    {
+        // I use false for the 'created' flag so that subsequent changes to the
+        // debug stream won't do odd things like delete the ostream pointer.
+        // Note that the beslistener has to recognize that "LOG" means to use
+        // the bes.log file for a debug/log sink
+        BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
+        global_args["-d"] = "LOG," + BESDebug::GetOptionsString();
+    }
+    // The option was given; use the token read from the options for the sink
+    // so that the beslistener will open the correct thing.
+    else
+    {
+        global_args["-d"] = debug_sink + BESDebug::GetOptionsString();
+    }
+#endif
+#if 1
+    // Once all of the debug context information has been set up, process the
+    // command line arguments. Note that a -d switch will have been sent to the
+    // BESDebug object already, so when the code looks at that object, its
+    // contents will be there already.
 
+   // Set arguments[0] to the name of the listener
+    string::size_type len = beslistener_path.length();
+    char temp_name[len + 1];
+    beslistener_path.copy(temp_name, len);
+    temp_name[len] = '\0';
+
+    arguments = new char*[num_args+1];
+    arguments[0] = temp_name;
+
+    // Marshal the arguments to the listener from the command line
+    // arguments to the daemon
+    for (int i = 1; i < num_args; i++) {
+        arguments[i] = argv[i];
+        //cerr << "    arguments["<<i<<"]: " <<     arguments[i] << endl;
+    }
+
+    arguments[num_args] = NULL;
+#endif
+
+    cerr << "Copied args" << endl;
 
     // master_beslistener_pid is global so that the signal handlers can use it;
     // it is actually assigned a value in start_master_beslistener but it's

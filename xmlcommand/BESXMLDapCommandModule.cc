@@ -51,7 +51,7 @@ using std::cout ;
  * @param modname The name of the module being loaded and initialized
  */
 void
-BESXMLDapCommandModule::initialize( const string &modname )
+BESXMLDapCommandModule::initialize( const string &/*modname*/ )
 {
     BESDEBUG( "dap", "Initializing DAP Commands:" << endl ) ;
 
@@ -82,7 +82,7 @@ BESXMLDapCommandModule::initialize( const string &modname )
  * @param modname The name of the DAP XML command module.
  */
 void
-BESXMLDapCommandModule::terminate( const string &modname )
+BESXMLDapCommandModule::terminate( const string &/*modname*/ )
 {
     BESDEBUG( "dap", "Removing DAP Commands" << endl ) ;
 

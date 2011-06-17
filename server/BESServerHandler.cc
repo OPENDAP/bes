@@ -89,14 +89,13 @@ BESServerHandler::BESServerHandler()
 // The reason that we fork twice is explained in Advanced Programming in the
 // Unit Environment by W. Richard Stevens. In the 'multiple' case we don't
 // want to leave any zombie processes.
-void
-BESServerHandler::handle( Connection *c )
+void BESServerHandler::handle(Connection *c)
 {
-    if(_method=="single")
+    if (_method == "single")
     {
-	// we're in single mode, so no for and exec is needed. One
-	// client connection and we are done.
-	execute( c ) ;
+        // we're in single mode, so no for and exec is needed. One
+        // client connection and we are done.
+        execute(c);
     }
     // _method is "multiple" which means, for each connection request, make a
     // new beslistener daemon. The OLFS can send many commands to each of these
@@ -105,58 +104,58 @@ BESServerHandler::handle( Connection *c )
     // cures that like exit().
     else
     {
-	// multi-process mode, so fork and exec.
-	int main_process = getpid() ;
-	pid_t pid ;
-	if( ( pid = fork() ) < 0 ) // error
-	{
-	    string error( "fork error" ) ;
-	    const char* error_info = strerror( errno ) ;
-	    if( error_info )
-		error += " " + (string)error_info ;
-	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	}
-	else if( pid == 0 ) // child
-	{
-	    execute( c ) ;
-	}
+        pid_t pid;
+        if ((pid = fork()) < 0) // error
+        {
+            string error("fork error");
+            const char* error_info = strerror(errno);
+            if (error_info)
+                error += " " + (string) error_info;
+            throw BESInternalError(error, __FILE__, __LINE__);
+        }
+        else if (pid == 0) // child
+        {
+            execute(c);
+        }
 #if 0
-	// This code made the beslistener that processed the request a true
-	// daemon process. I changed the beslistener so that it was a simple
-	// child process so that I could more easily send it signals to control
-	// stopping everything. jhrg
-	else if( pid == 0 ) /* child process */
-	{
-	    pid_t pid1 ;
-	    // we fork twice so we do not have zombie children
-	    if( ( pid1 = fork() ) < 0 )
-	    {
-		// we must send a signal of immediate termination to the
-		// main server
-		kill( main_process, 9 ) ;
-		perror( "fork error" ) ;
-		exit( SERVER_EXIT_CHILD_SUBPROCESS_ABNORMAL_TERMINATION ) ;
-	    }
-	    else if( pid1 == 0 ) /* child of the child */
-	    {
-		// execute given the connection. The execute method does
-		// the listen and handles input/output, etc...
-		execute( c ) ;
-	    }
+        // This code made the beslistener that processed the request a true
+        // daemon process. I changed the beslistener so that it was a simple
+        // child process so that I could more easily send it signals to control
+        // stopping everything. jhrg
 
-	    sleep( 1 ) ;
-	    c->closeConnection() ;
-	    exit( SERVER_EXIT_CHILD_SUBPROCESS_NORMAL_TERMINATION ) ;
-	}
-	if( waitpid( pid, NULL, 0 ) != pid ) // parent
-	{
-	    string error( "waitpid error" ) ;
-	    const char *error_info = strerror( errno ) ;
-	    if( error_info )
-		error += " " + (string)error_info ;
-	    throw BESInternalError( error, __FILE__, __LINE__ ) ;
-	}
-	c->closeConnection() ;
+        else if( pid == 0 ) /* child process */
+        {
+            pid_t pid1;
+            // we fork twice so we do not have zombie children
+            if( ( pid1 = fork() ) < 0 )
+            {
+                // we must send a signal of immediate termination to the
+                // main server
+                kill( main_process, 9 );
+                perror( "fork error" );
+                exit( SERVER_EXIT_CHILD_SUBPROCESS_ABNORMAL_TERMINATION );
+            }
+            else if( pid1 == 0 ) /* child of the child */
+            {
+                // execute given the connection. The execute method does
+                // the listen and handles input/output, etc...
+                execute( c );
+            }
+
+            sleep( 1 );
+            c->closeConnection();
+            exit( SERVER_EXIT_CHILD_SUBPROCESS_NORMAL_TERMINATION );
+        }
+        if( waitpid( pid, NULL, 0 ) != pid ) // parent
+
+        {
+            string error( "waitpid error" );
+            const char *error_info = strerror( errno );
+            if( error_info )
+            error += " " + (string)error_info;
+            throw BESInternalError( error, __FILE__, __LINE__ );
+        }
+        c->closeConnection();
 #endif
     }
 }

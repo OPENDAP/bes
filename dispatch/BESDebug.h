@@ -225,6 +225,7 @@ public:
     static void			SetUp( const string &values ) ;
     static void			Help( ostream &strm ) ;
     static bool         IsContextName( const string &name ) ;
+    static string       GetOptionsString() ;
 } ;
 
 #endif // I_BESDebug_h

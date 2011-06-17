@@ -183,3 +183,34 @@ bool BESDebug::IsContextName(const string &name)
 {
     return _debug_map.count(name) > 0;
 }
+
+/** This method looks at the current setting of the BESDebug object and builds
+ *  a string that, when passed to a beslistener as the argument of the -d
+ *  option, will mirror those settings. This is useful in code like the
+ *  besdaemon, where debug contexts are set/cleared but that information has
+ *  to be sent to the beslisteners to be used. The new option string will be
+ *  built and the beslisteners restarted using it.
+ */
+string BESDebug::GetOptionsString()
+{
+    ostringstream oss("");
+
+    if (_debug_map.size())
+    {
+        BESDebug::debug_citer i = _debug_map.begin();
+        BESDebug::debug_citer e = _debug_map.end();
+        for (; i != e; i++)
+        {
+            if (!(*i).second)
+                oss << "-";
+            oss << (*i).first << ",";
+        }
+        string retval = oss.str();
+        return retval.erase(retval.length()-1);
+    }
+    else
+    {
+        return "";
+    }
+}
+
