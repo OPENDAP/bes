@@ -46,6 +46,7 @@ using std::ostringstream;
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
+#include "BESLog.h"
 
 ostream *BESDebug::_debug_strm = NULL;
 bool BESDebug::_debug_strm_created = false;
@@ -83,6 +84,10 @@ void BESDebug::SetUp(const string &values)
     if (s_strm == "cerr")
     {
         strm = &cerr;
+    }
+    else if (s_strm == "LOG")
+    {
+        strm = BESLog::TheLog()->get_log_ostream();
     }
     else
     {

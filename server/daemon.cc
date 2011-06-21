@@ -91,9 +91,9 @@ int master_beslistener_status = BESLISTENER_STOPPED;
 static int master_beslistener_pid = -1; // This is also the process group id
 
 // ***
-static char **arguments = 0;
+//static char **arguments = 0;
 // We use this for easy access to the args after processing.
-static int debug_arg_index = 0;
+//static int debug_arg_index = 0;
 
 typedef map<string,string> arg_map;
 static arg_map global_args;
@@ -253,11 +253,30 @@ bool stop_all_beslisteners(int sig)
  *  @note The arguments are held in a static global variable - use this
  *  function to alter that array.
  */
-void update_beslistener_args()
+char **update_beslistener_args()
 {
+
     string contexts = BESDebug::GetOptionsString();
     BESDEBUG("besdaemon", "besdaemon: debug arguments to be passed to beslistener: " << BESDebug::GetOptionsString() << endl);
 
+    char **arguments = new char*[global_args.size() * 2 + 1];
+
+    // Marshal the arguments to the listener from the command line
+    // arguments to the daemon
+    arguments[0] = strdup(global_args["beslistener"].c_str());
+
+    int i = 1;
+    arg_map::iterator it;
+    for (it = global_args.begin() ; it != global_args.end(); ++it) {
+        // BESDEBUG("besdaemon", "besdaemon; arg " << (*it).first << " => " << (*it).second << endl);
+        if ((*it).first != "beslistener") {
+            arguments[i++] = strdup((*it).first.c_str());
+            arguments[i++] = strdup((*it).second.c_str());
+        }
+    }
+    arguments[i] = 0;
+
+    return arguments;
 }
 
 /** Start the 'master beslistener' and return its PID. This function also
@@ -299,6 +318,8 @@ int start_master_beslistener()
             return 0;
         }
 
+        char **arguments = update_beslistener_args();
+
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
 
         // Close the socket for the besdaemon here. This keeps if from being
@@ -306,9 +327,6 @@ int start_master_beslistener()
         // CLOSE_WAIT once the besdaemon's client closes it's end.
         if (command_server)
             command_server->closeConnection();
-
-        // *** Build arguments here
-
 
         // This is where beslistener - the master listener - is started
         execvp(arguments[0], arguments);
@@ -356,8 +374,8 @@ int start_master_beslistener()
  */
 static void cleanup_resources()
 {
-    delete[] arguments;
-    arguments = 0;
+    //delete[] arguments;
+    //arguments = 0;
 
     if (!access(file_for_daemon_pid.c_str(), F_OK)) {
         (void) remove(file_for_daemon_pid.c_str());
@@ -622,14 +640,6 @@ static void store_daemon_id(int pid)
     ofstream f(file_for_daemon_pid.c_str());
     if (!f) {
         cerr << errno_str(": unable to create pid file " + file_for_daemon_pid + ": ");
-#if 0
-        cerr << daemon_name << ": unable to create pid file " << file_for_daemon_pid << ": ";
-        perror_string = strerror(errno);
-        if (perror_string)
-            cerr << perror_string;
-        cerr << " ... Continuing" << endl;
-        cerr << endl;
-#endif
     }
     else {
         f << "PID: " << pid << " UID: " << getuid() << endl;
@@ -695,6 +705,10 @@ static bool load_names(const string &install_dir, const string &pid_dir)
         cerr << daemon_name << ": cannot find " << beslistener_path << endl << "Please either pass -i <install_dir> on the command line." << endl;
         return false;
     }
+
+    // Record the name for use when building the arg list for the beslistener
+    global_args["beslistener"] = beslistener_path;
+
     return true;
 }
 
@@ -807,8 +821,7 @@ int main(int argc, char *argv[])
                 }
                 BESDebug::SetUp(check_arg);
                 global_args["-d"] = check_arg;
-                debug_sink = check_arg.substr(0, check_arg.find('\''));
-                debug_arg_index = c;
+                debug_sink = check_arg.substr(0, check_arg.find(',')-1);
                 num_args += 2;
                 break;
             }
@@ -898,35 +911,9 @@ int main(int argc, char *argv[])
     // so that the beslistener will open the correct thing.
     else
     {
-        global_args["-d"] = debug_sink + BESDebug::GetOptionsString();
+        global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
     }
 #endif
-#if 1
-    // Once all of the debug context information has been set up, process the
-    // command line arguments. Note that a -d switch will have been sent to the
-    // BESDebug object already, so when the code looks at that object, its
-    // contents will be there already.
-
-   // Set arguments[0] to the name of the listener
-    string::size_type len = beslistener_path.length();
-    char temp_name[len + 1];
-    beslistener_path.copy(temp_name, len);
-    temp_name[len] = '\0';
-
-    arguments = new char*[num_args+1];
-    arguments[0] = temp_name;
-
-    // Marshal the arguments to the listener from the command line
-    // arguments to the daemon
-    for (int i = 1; i < num_args; i++) {
-        arguments[i] = argv[i];
-        //cerr << "    arguments["<<i<<"]: " <<     arguments[i] << endl;
-    }
-
-    arguments[num_args] = NULL;
-#endif
-
-    cerr << "Copied args" << endl;
 
     // master_beslistener_pid is global so that the signal handlers can use it;
     // it is actually assigned a value in start_master_beslistener but it's

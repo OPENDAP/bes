@@ -334,6 +334,7 @@ int ServerApp::initialize(int argc, char **argv)
     bool needhelp = false;
     string dashi;
     string dashc;
+    string dashd = "";
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
@@ -355,7 +356,8 @@ int ServerApp::initialize(int argc, char **argv)
                 _unixSocket = optarg;
                 break;
             case 'd':
-                BESDebug::SetUp(optarg);
+                dashd = optarg;
+                // BESDebug::SetUp(optarg);
                 break;
             case 'v':
                 BESServerUtils::show_version(BESApp::TheApplication()->appName());
@@ -408,6 +410,9 @@ int ServerApp::initialize(int argc, char **argv)
 #else
     cerr << "Developer Mode: not testing if BES is run by root" << endl;
 #endif
+
+    if (!dashd.empty())
+        BESDebug::SetUp(dashd);
 
     // register the two debug context for the server and ppt. The
     // Default Module will register the bes context.
