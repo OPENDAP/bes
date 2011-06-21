@@ -255,9 +255,9 @@ bool stop_all_beslisteners(int sig)
  */
 char **update_beslistener_args()
 {
-
+	// This is where the current debug/log settings are grabbed and used to
+	// build the correct '-d' option value for the new beslistener.
     string contexts = BESDebug::GetOptionsString();
-    BESDEBUG("besdaemon", "besdaemon: debug arguments to be passed to beslistener: " << BESDebug::GetOptionsString() << endl);
 
     char **arguments = new char*[global_args.size() * 2 + 1];
 
@@ -268,7 +268,7 @@ char **update_beslistener_args()
     int i = 1;
     arg_map::iterator it;
     for (it = global_args.begin() ; it != global_args.end(); ++it) {
-        // BESDEBUG("besdaemon", "besdaemon; arg " << (*it).first << " => " << (*it).second << endl);
+        BESDEBUG("besdaemon", "besdaemon; arguments " << (*it).first << " => " << (*it).second << endl);
         if ((*it).first != "beslistener") {
             arguments[i++] = strdup((*it).first.c_str());
             arguments[i++] = strdup((*it).second.c_str());
@@ -318,6 +318,8 @@ int start_master_beslistener()
             return 0;
         }
 
+        // We don't have to free this because this is a different process
+        // than the parent.
         char **arguments = update_beslistener_args();
 
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);

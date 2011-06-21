@@ -235,6 +235,7 @@ static vector<string> get_bes_log_lines(const string &log_file_name, long num_li
     if (!infile.is_open())
         throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
 
+    // FIXME Improve efficiency; this run over an over...
     // Count the lines; there has to be a better way...
     long count = 0;
     do {
@@ -552,11 +553,15 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                          bool state = strcmp((const char *)xml_char_module, "on") == 0;
                          xmlFree(xml_char_module);
 
-                         cerr << "besdaemon: before setting " << name << " to " << state << endl << flush;
-                         //BESDEBUG("besdaemon", "besdaemon: before setting " << name << " to " << state << endl);
+                         BESDEBUG("besdaemon", "besdaemon: before setting " << name << " to " << state << endl);
+
+                         // Setting this here is all we have to do. This will
+                         // change the debug/log settings for the daemon and
+                         // (See damon.cc update_beslistener_args()) cause the
+                         // new settings to be passed onto new beslisteners.
                          BESDebug::Set( name, state );
-                         cerr << "besdaemon: after setting " << name << " to " << state << endl;
-                         //BESDEBUG("besdaemon", "besdaemon: after setting " << name << " to " << state << endl);
+
+                         BESDEBUG("besdaemon", "besdaemon: after setting " << name << " to " << state << endl);
 
                          if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
                              throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
