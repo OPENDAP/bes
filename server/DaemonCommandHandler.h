@@ -31,6 +31,7 @@
 #define DaemonCommandHandler_h 1
 
 #include <string>
+#include <vector>
 
 using std::string ;
 
@@ -64,6 +65,9 @@ private:
     map<string,string> d_pathnames;
 
     string d_log_file_name;
+
+    void load_include_files(vector<string> &files, const string &keys_file_name);
+    void load_include_file(const string &files, const string &keys_file_name);
 
     hai_command lookup_command(const string &command);
     void execute_command(const string &command, XMLWriter &writer);

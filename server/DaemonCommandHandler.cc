@@ -52,6 +52,8 @@ using namespace std;
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
+#include "BESFSFile.h"
+#include "BESFSDir.h"
 #include "TheBESKeys.h"
 
 #include "XMLWriter.h"
@@ -64,6 +66,70 @@ extern int start_master_beslistener();
 extern bool stop_all_beslisteners(int);
 extern int master_beslistener_status;
 
+/** Find the child config files
+ *
+ * Build up a map of file names and their paths. We use this info in the
+ * implementation of the config editing feature of the HAI.
+ *
+ * @note Stolen from BESKeys.
+ * @param files string representing a file or a regular expression
+ * patter for 1 or more files
+ */
+void DaemonCommandHandler::load_include_files(vector<string> &files, const string &keys_file_name)
+{
+    vector<string>::iterator i = files.begin();
+    while ( i != files.end())
+        load_include_file(*i++, keys_file_name);
+}
+
+void DaemonCommandHandler::load_include_file(const string &files, const string &keys_file_name)
+{
+    string newdir;
+    BESFSFile allfiles(files);
+
+    // If the files specified begin with a /, then use that directory
+    // instead of the current keys file directory.
+    if (!files.empty() && files[0] == '/')
+    {
+        newdir = allfiles.getDirName();
+    }
+    else
+    {
+        // determine the directory of the current keys file. All included
+        // files will be relative to this file.
+        BESFSFile currfile(keys_file_name);
+        string currdir = currfile.getDirName();
+
+        string alldir = allfiles.getDirName();
+
+        if ((currdir == "./" || currdir == ".") && (alldir == "./" || alldir == "."))
+        {
+            newdir = "./";
+        }
+        else
+        {
+            if (alldir == "./" || alldir == ".")
+            {
+                newdir = currdir;
+            }
+            else
+            {
+                newdir = currdir + "/" + alldir;
+            }
+        }
+    }
+
+    // load the files one at a time. If the directory doesn't exist,
+    // then don't load any configuration files
+    BESFSDir fsd(newdir, allfiles.getFileName());
+    BESFSDir::fileIterator i = fsd.beginOfFileList();
+    BESFSDir::fileIterator e = fsd.endOfFileList();
+    for (; i != e; i++)
+    {
+        d_pathnames.insert(make_pair((*i).getFileName(), (*i).getFullPath()));
+    }
+}
+
 DaemonCommandHandler::DaemonCommandHandler(const string &config) :
     d_bes_conf(config)
 {
@@ -71,47 +137,36 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config) :
     string d_bes_name = d_bes_conf.substr(d_bes_conf.find_last_of('/') + 1);
     d_pathnames.insert(make_pair(d_bes_name, d_bes_conf));
 
-    // *** hack
-    string pathname_hack = d_bes_conf.substr(0, d_bes_conf.find_last_of('/') + 1);
-    pathname_hack += "modules/";
-    d_pathnames.insert(make_pair("csv.conf", pathname_hack + "csv.conf"));
-    d_pathnames.insert(make_pair("dap-server.conf", pathname_hack + "dap-server.conf"));
-    d_pathnames.insert(make_pair("dap.conf", pathname_hack + "dap.conf"));
-    d_pathnames.insert(make_pair("ff.conf", pathname_hack + "ff.conf"));
-    d_pathnames.insert(make_pair("fits.conf", pathname_hack + "fits.conf"));
-    d_pathnames.insert(make_pair("fonc.conf", pathname_hack + "fonc.conf"));
-    d_pathnames.insert(make_pair("gateway.conf", pathname_hack + "gateway.conf"));
-    d_pathnames.insert(make_pair("h4.conf", pathname_hack + "h4.conf"));
-    d_pathnames.insert(make_pair("h5.conf", pathname_hack + "h5.conf"));
-    d_pathnames.insert(make_pair("nc.conf", pathname_hack + "nc.conf"));
+    {
+        // There will likely be subordinate config files for each module
+        vector<string> vals;
+        bool found = false;
+        TheBESKeys::TheKeys()->get_values("BES.Include", vals, found);
+        BESDEBUG("besdaemon", "besdaemon: found BES.Include: " << found << endl);
 
-    map<string, string>::iterator i = d_pathnames.begin();
-    while (i != d_pathnames.end()) {
-        BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
-        ++i;
+        // Load the child config file/path names into d_pathnames.
+        if (found)
+        {
+            load_include_files(vals, config);
+        }
     }
 
-    bool found = false;
-    TheBESKeys::TheKeys()->get_value("BES.LogName", d_log_file_name, found);
-    if (!found)
-        d_log_file_name = "";
-
-#if 0
-    // There will likely be subordinate config files for each module
-    string module_regex;
-    bool found = false;
-
-    BESDEBUG("besdaemon", "besdaemon: keys file name: " << TheBESKeys::TheKeys()->keys_file_name() << endl);
-    TheBESKeys::TheKeys()->get_value("BES.Include", module_regex, found);
-    BESDEBUG("besdaemon", "besdaemon: found BES.Include: " << module_regex << endl);
-
-    if (found) {
-        BESDEBUG("besdaemon", "besdaemon: 2 found BES.Include: " << module_regex << endl);
+    if (BESDebug::IsSet("besdaemon"))
+    {
+        map<string, string>::iterator i = d_pathnames.begin();
+        while (i != d_pathnames.end())
+        {
+            BESDEBUG("besdaemon", "besdaemon: d_pathnames: [" << (*i).first << "]: " << d_pathnames[(*i).first] << endl);
+            ++i;
+        }
     }
-    else {
-        BESDEBUG("besdaemon", "besdaemon: did not find BES.Include " << endl);
+
+    {
+        bool found = false;
+        TheBESKeys::TheKeys()->get_value("BES.LogName", d_log_file_name, found);
+        if (!found)
+            d_log_file_name = "";
     }
-#endif
 }
 
 /**
@@ -141,30 +196,27 @@ DaemonCommandHandler::hai_command DaemonCommandHandler::lookup_command(const str
         return HAI_UNKNOWN;
 }
 
-#if 0
-// This doesn't work with our text files. There may be an issue with seekg and
-// ifstreams.
+#if 1
 static char *read_file(const string &name)
 {
-    char * buffer;
+    char *memblock;
     long size;
 
-    ifstream infile (name.c_str(), ifstream::binary);
+    ifstream file(name.c_str(), ios::in | ios::binary | ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg(0, ios::beg);
+        file.read(memblock, size);
+        file.close();
 
-    // get size of file
-    infile.seekg(0, ifstream::end);
-    size=infile.tellg();
-    infile.seekg(0);
-
-    // allocate memory for file content
-    buffer = new char [size];
-
-    // read content of infile
-    infile.read (buffer,size);
-
-    infile.close();
-
-    return buffer;
+        return memblock;
+    }
+    else
+    {
+        throw BESInternalError("Could not open config file:" + name, __FILE__, __LINE__);
+    }
 }
 #endif
 

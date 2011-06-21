@@ -481,6 +481,8 @@ static int start_command_processor(DaemonCommandHandler &handler)
     PPTServer *command_server = 0;
 #endif
 
+    BESDEBUG("besdaemon", "besdaemon: Starting command processor." << endl);
+
     try {
         SocketListener listener;
 
@@ -823,7 +825,7 @@ int main(int argc, char *argv[])
                 }
                 BESDebug::SetUp(check_arg);
                 global_args["-d"] = check_arg;
-                debug_sink = check_arg.substr(0, check_arg.find(',')-1);
+                debug_sink = check_arg.substr(0, check_arg.find(','));
                 num_args += 2;
                 break;
             }
@@ -898,16 +900,30 @@ int main(int argc, char *argv[])
     // global_args will change the way the the beslistener is started. In fact,
     // it's not limited to the debug stuff, but that's we're using it for now.
     // jhrg 6/16/11
-#if 1
-    // The -d option was not given; add one setting up a default log sink
+
+    // The -d option was not given; add one setting up a default log sink using
+    // the log file from the bes.conf file or the name "LOG".
     if (global_args.count("-d") == 0)
     {
-        // I use false for the 'created' flag so that subsequent changes to the
-        // debug stream won't do odd things like delete the ostream pointer.
-        // Note that the beslistener has to recognize that "LOG" means to use
-        // the bes.log file for a debug/log sink
-        BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
-        global_args["-d"] = "LOG," + BESDebug::GetOptionsString();
+        bool found = false;
+        string log_file_name;
+        TheBESKeys::TheKeys()->get_value("BES.LogName", log_file_name, found);
+        if (!found)
+        {
+            // This is a crude fallback that avoids a value without any name
+            // for a log file (which would be a syntax error).
+            global_args["-d"] = "LOG," + BESDebug::GetOptionsString();
+        }
+        else
+        {
+            // I use false for the 'created' flag so that subsequent changes to the
+            // debug stream won't do odd things like delete the ostream pointer.
+            // Note that the beslistener has to recognize that "LOG" means to use
+            // the bes.log file for a debug/log sink
+            BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
+
+            global_args["-d"] = log_file_name + "," + BESDebug::GetOptionsString();
+        }
     }
     // The option was given; use the token read from the options for the sink
     // so that the beslistener will open the correct thing.
@@ -915,7 +931,6 @@ int main(int argc, char *argv[])
     {
         global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
     }
-#endif
 
     // master_beslistener_pid is global so that the signal handlers can use it;
     // it is actually assigned a value in start_master_beslistener but it's

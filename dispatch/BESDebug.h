@@ -88,8 +88,8 @@ private:
     typedef map<string,bool> DebugMap;
 
     static DebugMap _debug_map ;
-    static ostream *		_debug_strm ;
-    static bool			_debug_strm_created ;
+    static ostream *_debug_strm ;
+    static bool	_debug_strm_created ;
 
     typedef DebugMap::iterator _debug_iter ;
 

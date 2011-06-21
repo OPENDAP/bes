@@ -35,7 +35,6 @@
 #include <grp.h>    // for getgrnam
 #include <pwd.h>    // for getpwnam
 #include <sys/wait.h> // for wait
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -85,7 +84,8 @@ ServerApp::~ServerApp()
 static void
 /*ServerApp::*/CatchSigChild(int sig)
 {
-    if (sig == SIGCHLD) {
+    if (sig == SIGCHLD)
+    {
         BESDEBUG("besdaemon", "beslistener: caught sig chld" << endl);
         int stat;
         pid_t pid = wait(&stat);
@@ -99,7 +99,8 @@ static void
 static void
 /*ServerApp::*/CatchSigHup(int sig)
 {
-    if (sig == SIGHUP) {
+    if (sig == SIGHUP)
+    {
         int pid = getpid();
         BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGHUP." << endl);
 
@@ -116,7 +117,8 @@ static void
 static void
 /*ServerApp::*/CatchSigTerm(int sig)
 {
-    if (sig == SIGTERM) {
+    if (sig == SIGTERM)
+    {
         int pid = getpid();
         BESDEBUG("besdaemon", "beslisterner: " << pid << " caught SIGTERM" << endl);
 
@@ -127,20 +129,6 @@ static void
         exit(SERVER_EXIT_NORMAL_SHUTDOWN);
     }
 }
-
-#if 0
-// I don't think we should be catching this - if the users wants to send INT
-// to a process they should get the default behavior.
-void
-ServerApp::signalInterrupt( int sig )
-{
-    if( sig == SIGINT )
-    {
-        BESApp::TheApplication()->terminate( sig );
-        exit( SERVER_EXIT_NORMAL_SHUTDOWN );
-    }
-}
-#endif
 
 void ServerApp::set_group_id()
 {
@@ -154,17 +142,20 @@ void ServerApp::set_group_id()
     bool found = false;
     string key = "BES.Group";
     string group_str;
-    try {
+    try
+    {
         TheBESKeys::TheKeys()->get_value(key, group_str, found);
     }
-    catch (BESError &e) {
+    catch (BESError &e)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
-    if (!found || group_str.empty()) {
+    if (!found || group_str.empty())
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
@@ -174,17 +165,20 @@ void ServerApp::set_group_id()
     BESDEBUG( "server", "to " << group_str << " ... " << endl );
 
     gid_t new_gid = 0;
-    if (group_str[0] == '#') {
+    if (group_str[0] == '#')
+    {
         // group id starts with a #, so is a group id
         const char *group_c = group_str.c_str();
         group_c++;
         new_gid = atoi(group_c);
     }
-    else {
+    else
+    {
         // specified group is a group name
         struct group *ent;
         ent = getgrnam(group_str.c_str());
-        if (!ent) {
+        if (!ent)
+        {
             BESDEBUG( "server", "beslisterner: FAILED" << endl );
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
@@ -194,7 +188,8 @@ void ServerApp::set_group_id()
         new_gid = ent->gr_gid;
     }
 
-    if (new_gid < 1) {
+    if (new_gid < 1)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
@@ -204,7 +199,8 @@ void ServerApp::set_group_id()
     }
 
     BESDEBUG( "server", "to id " << new_gid << " ... " << endl );
-    if (setgid(new_gid) == -1) {
+    if (setgid(new_gid) == -1)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
@@ -230,17 +226,20 @@ void ServerApp::set_user_id()
     bool found = false;
     string key = "BES.User";
     string user_str;
-    try {
+    try
+    {
         TheBESKeys::TheKeys()->get_value(key, user_str, found);
     }
-    catch (BESError &e) {
+    catch (BESError &e)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
-    if (!found || user_str.empty()) {
+    if (!found || user_str.empty())
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
@@ -250,15 +249,18 @@ void ServerApp::set_user_id()
     BESDEBUG( "server", "to " << user_str << " ... " << endl );
 
     uid_t new_id = 0;
-    if (user_str[0] == '#') {
+    if (user_str[0] == '#')
+    {
         const char *user_str_c = user_str.c_str();
         user_str_c++;
         new_id = atoi(user_str_c);
     }
-    else {
+    else
+    {
         struct passwd *ent;
         ent = getpwnam(user_str.c_str());
-        if (!ent) {
+        if (!ent)
+        {
             BESDEBUG( "server", "beslisterner: FAILED" << endl );
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
@@ -269,7 +271,8 @@ void ServerApp::set_user_id()
     }
 
     // new user id cannot be root (0)
-    if (!new_id) {
+    if (!new_id)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
@@ -278,7 +281,8 @@ void ServerApp::set_user_id()
     }
 
     BESDEBUG( "server", "to " << new_id << " ... " << endl );
-    if (setuid(new_id) == -1) {
+    if (setuid(new_id) == -1)
+    {
         BESDEBUG( "server", "beslisterner: FAILED" << endl );
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
@@ -338,8 +342,10 @@ int ServerApp::initialize(int argc, char **argv)
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
-    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF) {
-        switch (c) {
+    while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF)
+    {
+        switch (c)
+        {
             case 'i':
                 dashi = optarg;
                 break;
@@ -380,15 +386,18 @@ int ServerApp::initialize(int argc, char **argv)
     // need to run properly.
 
     // If the -c option was passed, set the config file name in TheBESKeys
-    if (!dashc.empty()) {
+    if (!dashc.empty())
+    {
         TheBESKeys::ConfigFile = dashc;
     }
 
     // If the -c option was not passed, but the -i option
     // was passed, then use the -i option to construct
     // the path to the config file
-    if (dashc.empty() && !dashi.empty()) {
-        if (dashi[dashi.length() - 1] != '/') {
+    if (dashc.empty() && !dashi.empty())
+    {
+        if (dashi[dashi.length() - 1] != '/')
+        {
             dashi += '/';
         }
         string conf_file = dashi + "etc/bes/bes.conf";
@@ -401,7 +410,8 @@ int ServerApp::initialize(int argc, char **argv)
     uid_t curr_euid = geteuid();
 #ifndef BES_DEVELOPER
     // must be root to run this app and to set user id and group id later
-    if (curr_euid) {
+    if (curr_euid)
+    {
         string err = "FAILED: Must be root to run BES";
         cerr << err << endl;
         (*BESLog::TheLog()) << err << endl;
@@ -423,7 +433,8 @@ int ServerApp::initialize(int argc, char **argv)
     // file, etc... we need to run as the proper user. Set the user
     // id and the group id to what is specified in the BES
     // configuration file
-    if (curr_euid == 0) {
+    if (curr_euid == 0)
+    {
 #ifdef BES_DEVELOPER
         cerr << "Developer Mode: Running as root - setting group and user ids"
         << endl;
@@ -431,7 +442,8 @@ int ServerApp::initialize(int argc, char **argv)
         set_group_id();
         set_user_id();
     }
-    else {
+    else
+    {
         cerr << "Developer Mode: Not setting group or user ids" << endl;
     }
 
@@ -441,21 +453,26 @@ int ServerApp::initialize(int argc, char **argv)
     // the user and group ids.
     bool found = false;
     string port_key = "BES.ServerPort";
-    if (!_gotPort) {
+    if (!_gotPort)
+    {
         string sPort;
-        try {
+        try
+        {
             TheBESKeys::TheKeys()->get_value(port_key, sPort, found);
         }
-        catch (BESError &e) {
+        catch (BESError &e)
+        {
             BESDEBUG( "server", "beslisterner: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
             exit(SERVER_EXIT_FATAL_CAN_NOT_START);
         }
-        if (found) {
+        if (found)
+        {
             _portVal = atoi(sPort.c_str());
-            if (_portVal != 0) {
+            if (_portVal != 0)
+            {
                 _gotPort = true;
             }
         }
@@ -463,11 +480,14 @@ int ServerApp::initialize(int argc, char **argv)
 
     found = false;
     string socket_key = "BES.ServerUnixSocket";
-    if (_unixSocket == "") {
-        try {
+    if (_unixSocket == "")
+    {
+        try
+        {
             TheBESKeys::TheKeys()->get_value(socket_key, _unixSocket, found);
         }
-        catch (BESError &e) {
+        catch (BESError &e)
+        {
             BESDEBUG( "server", "beslisterner: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
@@ -476,7 +496,8 @@ int ServerApp::initialize(int argc, char **argv)
         }
     }
 
-    if (!_gotPort && _unixSocket == "") {
+    if (!_gotPort && _unixSocket == "")
+    {
         string msg = "Must specify a tcp port or a unix socket or both\n";
         msg += "Please specify on the command line with -p <port>";
         msg += " and/or -u <unix_socket>\n";
@@ -487,80 +508,38 @@ int ServerApp::initialize(int argc, char **argv)
     }
 
     found = false;
-    if (_secure == false) {
+    if (_secure == false)
+    {
         string key = "BES.ServerSecure";
         string isSecure;
-        try {
+        try
+        {
             TheBESKeys::TheKeys()->get_value(key, isSecure, found);
         }
-        catch (BESError &e) {
+        catch (BESError &e)
+        {
             BESDEBUG( "server", "beslisterner: FAILED" << endl );
             string err = (string) "FAILED: " + e.get_message();
             cerr << err << endl;
             (*BESLog::TheLog()) << err << endl;
             exit(SERVER_EXIT_FATAL_CAN_NOT_START);
         }
-        if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes") {
+        if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes")
+        {
             _secure = true;
         }
     }
 
-    try {
+    try
+    {
         register_signal_handlers();
     }
-    catch (BESError &e) {
+    catch (BESError &e)
+    {
         BESDEBUG( "server", "beslisterner: FAILED: " << e.get_message() << endl );
         (*BESLog::TheLog()) << e.get_message() << endl;
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
-
-#if 0
-    BESDEBUG( "server", "beslisterner: Registering signal SIGCHLD ... " << endl );
-    if( signal( SIGCHLD, CatchSigChild ) == SIG_ERR )
-    {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
-        string err = "FAILED: cannot register SIGCHLD signal handler";
-        cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
-        exit( SERVER_EXIT_FATAL_CAN_NOT_START );
-    }
-    BESDEBUG( "server", "OK" << endl );
-
-#if 0
-    BESDEBUG( "server", "beslisterner: Registering signal SIGINT ... " << endl );
-    if( signal( SIGINT, signalInterrupt ) == SIG_ERR )
-    {
-        BESDEBUG( "server", "FAILED" << endl );
-        string err = "FAILED: cannot register SIGINT signal handler";
-        cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
-        exit( SERVER_EXIT_FATAL_CAN_NOT_START );
-    }
-    BESDEBUG( "server", "OK" << endl );
-#endif
-
-    BESDEBUG( "server", "beslisterner: Registering signal SIGHUP ... " << endl );
-    if( signal( SIGHUP, CatchSigHup ) == SIG_ERR )
-    {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
-        string err = "FAILED: cannot register SIGHUP signal handler";
-        cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
-        exit( SERVER_EXIT_FATAL_CAN_NOT_START );
-    }
-    BESDEBUG( "server", "OK" << endl );
-
-    BESDEBUG( "server", "beslisterner: Registering signal SIGTERM ... " << endl );
-    if( signal( SIGTERM, CatchSigTerm ) == SIG_ERR )
-    {
-        BESDEBUG( "server", "beslisterner: FAILED" << endl );
-        string err = "FAILED: cannot register SIGTERM signal handler";
-        cerr << err << endl;
-        (*BESLog::TheLog()) << err << endl;
-        exit( SERVER_EXIT_FATAL_CAN_NOT_START );
-    }
-    BESDEBUG( "server", "OK" << endl );
-#endif
 
     BESDEBUG( "server", "beslisterner: initializing default module ... "
             << endl );
@@ -583,7 +562,8 @@ int ServerApp::initialize(int argc, char **argv)
 
     BESDEBUG( "server", "beslisterner: initialized settings:" << *this );
 
-    if (needhelp) {
+    if (needhelp)
+    {
         BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
@@ -598,7 +578,8 @@ int ServerApp::initialize(int argc, char **argv)
 
 int ServerApp::run()
 {
-    try {
+    try
+    {
         BESDEBUG( "server", "beslisterner: initializing memory pool ... "
                 << endl );
         BESMemoryManager::initialize_memory_pool();
@@ -606,7 +587,8 @@ int ServerApp::run()
 
         SocketListener listener;
 
-        if (_portVal) {
+        if (_portVal)
+        {
             _ts = new TcpSocket(_portVal);
             listener.listen(_ts);
             BESDEBUG( "server", "beslisterner: listening on port ("
@@ -617,7 +599,8 @@ int ServerApp::run()
             BESDEBUG( "server", "beslisterner: wrote status (" << res << ")" << endl );
         }
 
-        if (!_unixSocket.empty()) {
+        if (!_unixSocket.empty())
+        {
             _us = new UnixSocket(_unixSocket);
             listener.listen(_us);
             BESDEBUG( "server", "beslisterner: listening on unix socket ("
@@ -631,7 +614,8 @@ int ServerApp::run()
 
         _ps->closeConnection();
     }
-    catch (BESError &se) {
+    catch (BESError &se)
+    {
         cerr << se.get_message() << endl;
         (*BESLog::TheLog()) << se.get_message() << endl;
         int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
@@ -639,7 +623,8 @@ int ServerApp::run()
         close(BESLISTENER_PIPE_FD);
         return 1;
     }
-    catch (...) {
+    catch (...)
+    {
         cerr << "caught unknown exception" << endl;
         (*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
         int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
@@ -655,16 +640,20 @@ int ServerApp::run()
 int ServerApp::terminate(int sig)
 {
     pid_t apppid = getpid();
-    if (apppid == _mypid) {
-        if (_ps) {
+    if (apppid == _mypid)
+    {
+        if (_ps)
+        {
             _ps->closeConnection();
             delete _ps;
         }
-        if (_ts) {
+        if (_ts)
+        {
             _ts->close();
             delete _ts;
         }
-        if (_us) {
+        if (_us)
+        {
             _us->close();
             delete _us;
         }
@@ -708,31 +697,37 @@ void ServerApp::dump(ostream &strm) const
     strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl;
     strm << BESIndent::LMarg << "is secure? " << _secure << endl;
     strm << BESIndent::LMarg << "pid: " << _mypid << endl;
-    if (_ts) {
+    if (_ts)
+    {
         strm << BESIndent::LMarg << "tcp socket:" << endl;
         BESIndent::Indent();
         _ts->dump(strm);
         BESIndent::UnIndent();
     }
-    else {
+    else
+    {
         strm << BESIndent::LMarg << "tcp socket: null" << endl;
     }
-    if (_us) {
+    if (_us)
+    {
         strm << BESIndent::LMarg << "unix socket:" << endl;
         BESIndent::Indent();
         _us->dump(strm);
         BESIndent::UnIndent();
     }
-    else {
+    else
+    {
         strm << BESIndent::LMarg << "unix socket: null" << endl;
     }
-    if (_ps) {
+    if (_ps)
+    {
         strm << BESIndent::LMarg << "ppt server:" << endl;
         BESIndent::Indent();
         _ps->dump(strm);
         BESIndent::UnIndent();
     }
-    else {
+    else
+    {
         strm << BESIndent::LMarg << "ppt server: null" << endl;
     }
     BESModuleApp::dump(strm);
@@ -741,16 +736,19 @@ void ServerApp::dump(ostream &strm) const
 
 int main(int argc, char **argv)
 {
-    try {
+    try
+    {
         ServerApp app;
         return app.main(argc, argv);
     }
-    catch (BESError &e) {
+    catch (BESError &e)
+    {
         cerr << "Caught unhandled exception: " << endl;
         cerr << e.get_message() << endl;
         return 1;
     }
-    catch (...) {
+    catch (...)
+    {
         cerr << "Caught unhandled, unknown exception" << endl;
         return 1;
     }
