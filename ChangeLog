@@ -1,3 +1,293 @@
+2011-04-25  James Gallagher <jgallagher@opendap.org>
+
+	Removed the doc rpm
+
+	M    bes.spec
+
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 releaseHyrax 1.7 release
+
+2011-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Changed default location of the bes log file
+
+	M    dispatch/bes/bes.conf.in
+	M    dispatch/Makefile.am
+
+2011-04-11  James Gallagher <jgallagher@opendap.org>
+
+	Changed default log location to $prefix/var/bes.log
+
+	M    dispatch/bes/bes.conf.in
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7 RC1
+
+	M    ppt/UnixSocket.cc
+	M    ppt/SSLClient.cc
+	M    dispatch/BESUncompressZ.cc
+	M    dispatch/BESShowErrorResponseHandler.cc
+
+2011-03-25  Patrick West <pwest@ucar.edu>
+
+	removed SSL code from build.
+	M    ppt/PPTClient.cc
+	M    ppt/PPTServer.cc
+	M    ppt/Makefile.am
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Added automated version numbers to OSX Package builds
+
+2011-03-10  Patrick West <pwest@ucar.edu>
+
+	erase doesn't return any value except the one where you pass in a
+	starting iterator and ending iterator, a range of iterators. And
+	that one returns the number of values erased. This for version
+	4.2.1 of the gnu g++ compiler. 
+
+	M dispatch/BESReporterList.cc
+
+2011-03-10  James Gallagher <jgallagher@opendap.org>
+
+	BES issues - jhrg
+
+2011-03-10  Patrick West <pwest@ucar.edu>
+
+	If building the BES without libdap, then don't build the dapreader
+	M    Makefile.am
+
+2011-03-09  Patrick West <pwest@ucar.edu>
+
+	Error in explode when last character is the delimiter. Fixed the
+	explode method, then the code that uses it.
+	
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESUtil.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/unit-tests/utilT.cc
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax 1.7 from the hyrax_1.6.2_release branch of shrew
+	to the trunk
+
+	_M   .
+	_M   templates/module.spec.template
+	M    dispatch/BESPlugin.h
+	M    dispatch/BESRequestHandlerList.cc
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	D    OSX_Resources/ReadMe.txt
+	M    doxy.conf
+	M    Makefile.am
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2011-03-05  Patrick West <pwest@ucar.edu>
+
+	Fixed distcheck issue
+	
+	M    dapreader/bes-testsuite/Makefile.am
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	Pointing to correct libraries. For make check to work, though, the bes
+	has to be installed first.
+	
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	not doing bes-testsuite for now
+	
+	M    dapreader/Makefile.am
+
+2011-03-04  Patrick West <pwest@ucar.edu>
+
+	COPYING and COPYWRITE files not needed
+	
+	M    dapreader/Makefile.am
+
+2011-03-01  James Gallagher <jgallagher@opendap.org>
+
+	Added a call to DDS' Keywords object to parse CE keyword for the
+	dap version and then set the dhi first_container's constraint to
+	the hacked result of that parse (the parser returns the CE with
+	the keyword removed). Tested - works.
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	including cstring for string comparison function
+	M    dispatch/unit-tests/cacheT.cc
+
+2011-02-28  Patrick West <pwest@ucar.edu>
+
+	Needed libraries for this to work on linux
+	M    dapreader/Makefile.am
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Added dapreader. Removed csv-handler
+	A    dapreader
+	A    dapreader/DapRequestHandler.cc
+	A    dapreader/bes-testsuite
+	A    dapreader/bes-testsuite/dapreader_moduleTest.at
+	A    dapreader/bes-testsuite/bes.conf.in
+	A    dapreader/bes-testsuite/atlocal.in
+	A    dapreader/bes-testsuite/dap
+	A    dapreader/bes-testsuite/dap/test.00.bescmd
+	A    dapreader/bes-testsuite/dap/test.00.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.01.bescmd
+	A    dapreader/bes-testsuite/dap/test.01.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.02.bescmd
+	A    dapreader/bes-testsuite/dap/test.02.bescmd.baseline
+	A    dapreader/bes-testsuite/dap/test.03.bescmd
+	A    dapreader/bes-testsuite/dap/test.03.bescmd.baseline
+	A    dapreader/bes-testsuite/Makefile.am
+	A    dapreader/bes-testsuite/package.m4
+	A    dapreader/DapModule.h
+	A    dapreader/dapreader.conf.in
+	A    dapreader/DapRequestHandler.h
+	A    dapreader/bes.log
+	A    dapreader/data
+	A    dapreader/data/fnoc1.dds
+	A    dapreader/data/fnoc1.das
+	AM   dapreader/data/fnoc1.data
+	A    dapreader/Makefile.am
+	A    dapreader/dapreader.conf
+	A    dapreader/DapResponseNames.h
+	A    dapreader/DapModule.cc
+	M    configure.ac
+	M    Makefile.am
+
+2011-02-12  Patrick West <pwest@ucar.edu>
+
+	Making this a real handler
+	A    http://scm.opendap.org/svn/trunk/csv_handler
+	D    http://scm.opendap.org/svn/trunk/bes/csv-handler
+
+2011-02-08  James Gallagher <jgallagher@opendap.org>
+
+	Support for the new ResponseBuilder class - this replaces
+	DODSFilter, dropping that class' baggage from the CGI days and
+	includes the ability to parse CE keywords (although we might not
+	use this ultimately). Also, this checking includes a patch for the
+	ticket 1710 where the hdf4 handler seems to have a memory bug that
+	causes a seg fault when the handler is removed.
+
+2011-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Added d_lib = 0 to the code in BESPlugin.h that calls dlclose().
+
+2011-02-03  Patrick West <pwest@ucar.edu>
+
+	Removed, no longer used.
+	D    csv-handler/dap_csv_handler.cc
+
+2011-02-03  Patrick West <pwest@ucar.edu>
+
+	Reverse order in termination as was in initialization. Fixed a couple
+	issues in BESRegex. ContainerStorageCatalog was calling include and
+	exclude on a node when include already calls exclude internally.
+	Converted CatalogUtils to use BESRegex instead of GNURegex from libdap.
+	M    server/ServerApp.cc
+	M    standalone/StandAloneApp.cc
+	M    dispatch/BESRegex.cc
+	M    dispatch/BESModuleApp.cc
+	M    dispatch/BESCatalogUtils.cc
+	M    dispatch/BESContainerStorageCatalog.cc
+
+2011-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Removed some old tests for avhrr data that will always fail
+	because the data have moved.
+
+	M    testsuite/besTest.at
+
+2011-02-03  James Gallagher <jgallagher@opendap.org>
+
+	Patch for ticket 1702 - this patch is for the problem where modules
+	don't 'unplug' correctly and sometimes crash the beslistener/besstandalone.
+	It's not a fix, but the ncml_module now passes its tests.
+
+	M    BESPlugin.h
+
+2011-01-30  Patrick West <pwest@ucar.edu>
+
+	Had to use the access method against BESContainer so that the file type
+	can be discovered.
+	M    dispatch/BESRequestHandlerList.cc
+
+2011-01-20  Patrick West <pwest@ucar.edu>
+
+	csv-handler configuration file now loads the dap module first. Added
+	administrator email address to version response.
+	M    csv-handler/csv.conf.in
+	M    dispatch/BESVersionResponseHandler.cc
+
+2010-12-30  mjohnson
+
+	o Fix for newer GCC complaining about extra qualification in header for new func (can't put the classname scope operator in the declaration, only definition)
+
+2010-12-29  mjohnson
+
+	o Fixes to make the cache work for caches sizes > 4Gb (i.e. 64 bit rather than 32 bit).  For ticket #1672.
+
+	o Changes to the unit test are NOT on by default since they make a large test dir.  To run this test, one must do it by hand:  "dispatch/unit-tests/cacheT --do-64-bit-test"
+
+2010-12-16  mjohnson
+
+	Removed incorrect dist of missing nc dir in bes-testsuite so that make dist works
+
+2010-12-16  mjohnson
+
+	Fixed undefined symbol error due to not linking against libbes_dap in Makefile.
+
+2010-10-28  mjohnson
+
+	Merge from Hyrax 1.6.2 Release Shrew branch.  More odd property changes that seem to be noops but refuse to just go away.
+
+2010-10-28  mjohnson
+
+	o dispatch/BESResponseHandler.h: doc fix
+
+	o xmlcommand/BESXMLUtils.cc: switch a vsprint to use vsnprint to avoid buffer overflow.
+
+	o hello_world/README
+
+2010-09-30  mjohnson
+
+	INSTALL: added --install to autoreconf invocation for SVN users.
+
+	hello_world:
+	o Removed obsolete decoy bes.conf and autogenerated config.h.in
+	o Corrected README and INSTALL to be consistent with current code.
+
+2010-09-14  Patrick West <pwest@ucar.edu>
+
+	3.9.0 release
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2010-09-03  James Gallagher <jgallagher@opendap.org>
+
+	Geogrid test baselines updated/fixed.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2010-09-03  James Gallagher <jgallagher@opendap.org>
 
 	Geogrid test baselines updated/fixed.

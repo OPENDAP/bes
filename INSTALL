@@ -1,7 +1,7 @@
 
 	$Id$
 
-Updated for version 3.9.0 of the OPeNDAP BES.
+Updated for version 3.9.1 of the OPeNDAP BES.
 
 Installing the BES
 
@@ -37,13 +37,11 @@ BUILDING THE SOFTWARE
 
 Building from Our SVN Repository
 
-  If you are building from a SVN checkout, run 
-  'autoreconf --verbose --install' before
-  './configure; make'. 
-  If you try to run autoconf, et c., by hand and wind up
-  with build files that don't work, 
-  use 'autoreconf --force --install --verbose' and
-  then './configure; make'.
+  If you are building from a SVN checkout, run 'autoreconf --verbose
+  --install' before './configure; make'. If you try to run autoconf,
+  et c., by hand and wind up with build files that don't work, use
+  'autoreconf --force --install --verbose' and then './configure;
+  make'.
 
 AFTER INSTALLING
 
@@ -90,8 +88,8 @@ BUILD REQUIREMENTS
     thing to do is to run configure and see if it complains. If it
     does, go to the above link and grab the library.
 
-  o To build from a fresh SVN checkout, you'll need automake 1.10, autoconf
-    2.61 and libtool 1.5.6. Earlier versions may work, but may cause
+  o To build from a fresh SVN checkout, you'll need automake 1.11, autoconf
+    2.61 and libtool 2.2+. Earlier versions may work, but may cause
     problems, particularly with the 'distcheck' target for make. Given those
     requirements, use 'autoreconf --force --verbose' and then build as
     described above.

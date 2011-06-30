@@ -132,7 +132,7 @@ PPTClient::initConnection()
 
     // we're just getting tokens, not a big buffer, so don't need that big
     // of a buffer. pcw 05/31/08
-    unsigned int ppt_buffer_size = 64 ;
+    const int ppt_buffer_size = 64 ;
     char *inBuff = new char[ppt_buffer_size+1] ;
     int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
@@ -179,7 +179,7 @@ PPTClient::authenticateWithServer()
     // receive response with port, terminated with TERMINATE token. We are
     // exchanging a port number and a terminating token. The buffer doesn't
     // need to be too big. pcw 05/31/08
-    unsigned int ppt_buffer_size = 64 ;
+    const int ppt_buffer_size = 64 ;
     char *inBuff = new char[ppt_buffer_size+1] ;
     int bytesRead = readBufferNonBlocking( inBuff, ppt_buffer_size ) ;
     if( bytesRead < 1 )
