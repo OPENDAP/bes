@@ -1,3 +1,120 @@
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+2011-04-08  James Gallagher <jgallagher@opendap.org>
+
+	Fixed test for the 'special' hdf4 compiler. The m4 code was using
+	test -x $H4CC and there are two potential issues there. The shell
+	variable have been $H4_CC - note the undescore was missing in the
+	original code - and it turns out that on linux at least test -x ""
+	returns true so I added a test to make sure the file is really
+	there and then test if its execute bit is set.
+
+	M    conf/hdf4.m4
+
+2011-03-31  muqun
+
+	Check in a temp. fix and see if the weird Mac failure goes away
+
+2011-03-28  James Gallagher <jgallagher@opendap.org>
+
+	1.7RC1
+
+2011-03-18  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf4_handler: Modified hdf4.m4 file to set the compiler (CC) to
+	HDF4_PATH/bin/h4cc
+
+2011-03-17  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	hdf4_handler: Added automated version numbers to OSX Package builds
+
+2011-03-17  muqun
+
+	This check-in fixes a bug that may cause memory overrun when the
+	HDF4 vgroup name is very long. The current solution is to increase
+	the buffer size of vgroup name to 256 characters. The future
+	solution is to use Vgetnamelen and Vgetclassnamelen in HDF4.2.5 to
+	get the correct buffer size and allocate the buffer dynamically.
+	We would like to wait for a while until all HDF4 users upgrade to
+	HDF4.2.5 or later. README is updated to reflect the change in this
+	patch. NEWS, INSTALL, configure.ac are updated to reflect the
+	patch version when creating the RPMs.
+
+2011-03-09  muqun
+
+	Change the code to just check if VSfnattrs MaCOS portibility issue
+	goes away.
+
+2011-03-08  James Gallagher <jgallagher@opendap.org>
+
+	Merge for hyrax	1.7 from the hyrax_1.6.2_release branch	of shrew to the	trunk
+
+	_M   .
+	M    HDFSP.cc
+	M    configure.ac
+	D    OSX_Resources/InstallationCheck
+	A  + OSX_Resources/InstallationCheck.proto
+	D    OSX_Resources/Info.plist
+	A  + OSX_Resources/Info.plist.proto
+	M    conf/hdf4.m4
+	M    Makefile.am
+
+2011-03-04  muqun
+
+	This check-in add several supports:
+
+	1. Support the extra SDS objects for a hybrid HDF-EOS2 files.
+	2. Add support to treat HDF-EOS2 files as HDF4 files(for MERRA data)
+	3. Add support for HDF4 files that use SDS dimension scales. The
+	   HDF4 files should kind of follow CF conventions. I have to
+	   patch for AVHRR files. They use "unit" instead of "units".
+	4. This check-in DOESN't address ticket 1713 since the reason for
+	   the failure is not clear. The test here (the HDF group) hardly
+	   dumplicate the problem. Need the OPeNDAP team to test more.
+
+2011-02-08  James Gallagher <jgallagher@opendap.org>
+
+	removed unneeded mime_util.h and util.h includes; added comments
+	about sending mime headers in our handlers (which may not be
+	needed).
+
+2010-11-02  muqun
+
+	Update Makefile.am. This hopefully can fix the make distcheck and
+	make rpm problems. I also remove redundant codes hdfeos2.lex and
+	hdfeos2.y. These code are no longer necessary after re-engineering
+	the HDF4 handler.
+
+2010-10-29  muqun
+
+	Remove old redundant code to build HDF4 module with the CF support
+
+2010-10-29  mjohnson
+
+	MERGE of Hyrax 1.6.2 RELEASE branch
+
+2010-09-14  James Gallagher <jgallagher@opendap.org>
+
+	Version 3.9.1
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    INSTALL
+	M    README
+
+2010-09-09  muqun
+
+	Forgot adding "level" units for the third-dimension.
+
+2010-09-09  muqun
+
+	Fix a special case when there are the third dimension field and
+	the third dimension field name is the same as the dimension name.
+
 2010-09-09  muqun
 
 	Forgot adding "level" units for the third-dimension.
