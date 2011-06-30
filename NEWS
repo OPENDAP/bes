@@ -1,9 +1,18 @@
 
 	$Id$
 
-News for version 1.4.3.patch
+News for version 1.4.4
 
-Bug fixes (Aura MLS multiple swaths and variable names to follow CF conventions.).
+Bug fixes (Aura MLS multiple swaths and variable names to follow CF
+conventions.).
+
+Partial support of handling multiple HDF-EOS5 swaths has been added to
+the handler. It will only work when all swaths share the same
+coordinate variables. The solution is mainly for handling Aura MLS
+data. The robust and general solutions should be in the future.
+	
+Special characters inside the variable names are also handled by
+replacing them with underscores. This was discovered by HIRDLS data.
 
 News for version 1.4.3
 
