@@ -90,11 +90,6 @@ int master_beslistener_status = BESLISTENER_STOPPED;
 
 static int master_beslistener_pid = -1; // This is also the process group id
 
-// ***
-//static char **arguments = 0;
-// We use this for easy access to the args after processing.
-//static int debug_arg_index = 0;
-
 typedef map<string,string> arg_map;
 static arg_map global_args;
 static string debug_sink = "";
@@ -167,6 +162,7 @@ static int pr_exit(int status)
 void block_signals()
 {
     sigset_t set;
+    sigemptyset (&set);
     sigaddset(&set, SIGCHLD);
     sigaddset(&set, SIGHUP);
     sigaddset(&set, SIGTERM);
@@ -179,6 +175,7 @@ void block_signals()
 void unblock_signals()
 {
     sigset_t set;
+    sigemptyset (&set);
     sigaddset(&set, SIGCHLD);
     sigaddset(&set, SIGHUP);
     sigaddset(&set, SIGTERM);
@@ -255,9 +252,7 @@ bool stop_all_beslisteners(int sig)
  */
 char **update_beslistener_args()
 {
-	// This is where the current debug/log settings are grabbed and used to
-	// build the correct '-d' option value for the new beslistener.
-    string contexts = BESDebug::GetOptionsString();
+    // string contexts = BESDebug::GetOptionsString();
 
     char **arguments = new char*[global_args.size() * 2 + 1];
 
@@ -268,13 +263,30 @@ char **update_beslistener_args()
     int i = 1;
     arg_map::iterator it;
     for (it = global_args.begin() ; it != global_args.end(); ++it) {
-        BESDEBUG("besdaemon", "besdaemon; arguments " << (*it).first << " => " << (*it).second << endl);
-        if ((*it).first != "beslistener") {
+        BESDEBUG("besdaemon", "besdaemon; global_args " << (*it).first << " => " << (*it).second << endl);
+        // Build the complete command line args for the beslistener, with
+        // special case code for -d and to omit the 'beslistener' line
+        // since it's already set in arguments[0].
+        if ((*it).first == "-d") {
+            arguments[i++] = strdup("-d");
+            // This is where the current debug/log settings are grabbed and
+            // used to build the correct '-d' option value for the new
+            // beslistener.
+            string debug_opts = debug_sink + "," + BESDebug::GetOptionsString();
+            arguments[i++] = strdup(debug_opts.c_str());
+            // ***
+            // cerr << "setting -d value to: " << debug_opts << endl;
+        }
+        else if ((*it).first != "beslistener") {
             arguments[i++] = strdup((*it).first.c_str());
             arguments[i++] = strdup((*it).second.c_str());
         }
     }
-    arguments[i] = 0;
+    arguments[i] = 0;       // terminal null
+
+    // ***
+    // for (int j = 0; j < i; ++j)
+        // cerr << "arguments[" << j << "]: " << arguments[j] << endl;
 
     return arguments;
 }
@@ -323,6 +335,8 @@ int start_master_beslistener()
         char **arguments = update_beslistener_args();
 
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
+        // ***
+        // cerr << "Starting: " << arguments[0] << endl;
 
         // Close the socket for the besdaemon here. This keeps if from being
         // passed into the master beslistener and then entering the state
@@ -906,8 +920,8 @@ int main(int argc, char *argv[])
     if (global_args.count("-d") == 0)
     {
         bool found = false;
-        string log_file_name;
-        TheBESKeys::TheKeys()->get_value("BES.LogName", log_file_name, found);
+        // string log_file_name;
+        TheBESKeys::TheKeys()->get_value("BES.LogName", debug_sink, found);
         if (!found)
         {
             // This is a crude fallback that avoids a value without any name
@@ -922,7 +936,7 @@ int main(int argc, char *argv[])
             // the bes.log file for a debug/log sink
             BESDebug::SetStrm(BESLog::TheLog()->get_log_ostream(), false) ;
 
-            global_args["-d"] = log_file_name + "," + BESDebug::GetOptionsString();
+            global_args["-d"] = debug_sink + "," + BESDebug::GetOptionsString();
         }
     }
     // The option was given; use the token read from the options for the sink

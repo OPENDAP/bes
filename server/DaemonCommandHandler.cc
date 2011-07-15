@@ -78,7 +78,7 @@ extern int master_beslistener_status;
 void DaemonCommandHandler::load_include_files(vector<string> &files, const string &keys_file_name)
 {
     vector<string>::iterator i = files.begin();
-    while ( i != files.end())
+    while (i != files.end())
         load_include_file(*i++, keys_file_name);
 }
 
@@ -281,10 +281,9 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 
     // This is used to save time counting lines in large files
     static ifstream::pos_type prev_end_pos = 0;
-    static long prev_line_count = 0;
+    // static long prev_line_count = 0;
 
     ifstream::pos_type start_from_pos = 0;
-    cerr << "prev_line_count: " << prev_line_count << endl;
     // num_line == 0 is special value that means get all the lines
     if (num_lines > 0)
     {
@@ -496,6 +495,8 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
             if (current_node->type == XML_ELEMENT_NODE) {
                 string node_name = (char *) current_node->name;
                 BESDEBUG("besdaemon", "besdaemon: looking for command " << node_name << endl);
+                // ***
+                // cerr << "Processing  command " << node_name << endl;
 
                 // While processing a command, block signals, which can also
                 // be used to control the master beslistener. unblock at the
@@ -569,11 +570,9 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
 
                             if (xmlTextWriterWriteAttribute(writer.get_writer(), (const xmlChar*) "module", (const xmlChar*) (*i).first.c_str()) < 0)
                                 throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
-#if 1
-                            // You'd think this would work, but there seems to be
-                            // issue with the files that breaks it.
+
                             char *content = read_file(d_pathnames[(*i).first]);
-                            BESDEBUG("besdaemon", "besdaemon: content: " << content << endl);
+                            BESDEBUG("besdaemon_verbose", "besdaemon: content: " << content << endl);
                             if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
                             throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
@@ -581,18 +580,6 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                             throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                             delete [] content; content = 0;
-#endif
-#if 0
-                            vector<string> lines = file2strings(d_pathnames[(*i).first]);
-                            vector<string>::iterator j = lines.begin();
-                            while (j != lines.end()) {
-                                if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
-                                    throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
-
-                                if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*j++).c_str()) < 0)
-                                    throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
-                            }
-#endif
 
                             if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                                 throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
@@ -655,28 +642,17 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                             throw BESInternalFatalError("Could not write <hai:BesLog> element ", __FILE__, __LINE__);
 
                         BESDEBUG("besdaemon", "besdaemon: TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
-#if 0
-                        vector<string> lines = get_bes_log_lines(d_log_file_name, num_lines);
-                        BESDEBUG("besdaemon", "besdaemon: Returned lines:" << lines.end() - lines.begin() << endl);
-                        vector<string>::iterator j = lines.begin();
-                        while (j != lines.end()) {
-                            if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) "\n") < 0)
-                                throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
-                            if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*) (*j++).c_str()) < 0)
-                                throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
-                        }
-#else
                         char *content = get_bes_log_lines(d_log_file_name, num_lines);
-                        BESDEBUG("besdaemon", "besdaemon: Returned lines: " << content << endl);
+                        BESDEBUG("besdaemon_verbose", "besdaemon: Returned lines: " << content << endl);
                         if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
-                        throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
+                            throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
 
                         if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)content) < 0)
-                        throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
+                            throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                         delete [] content; content = 0;
-#endif
+
                         if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                             throw BESInternalFatalError("Could not end <hai:BesLog> element ", __FILE__, __LINE__);
 
@@ -728,6 +704,8 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                          xmlFree(xml_char_module);
 
                          BESDEBUG("besdaemon", "besdaemon: before setting " << name << " to " << state << endl);
+                         // ***
+                         // cerr << "setting context  " << name << " to " << state << endl;
 
                          // Setting this here is all we have to do. This will
                          // change the debug/log settings for the daemon and
@@ -748,6 +726,8 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                     default:
                         throw BESSyntaxUserError("Command " + node_name + " unknown.", __FILE__, __LINE__);
                 }
+                // ***
+                // cerr << "Completed command: " << node_name << endl;
             }
 
             current_node = current_node->next;

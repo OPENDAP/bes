@@ -340,6 +340,9 @@ int ServerApp::initialize(int argc, char **argv)
     string dashc;
     string dashd = "";
 
+    cerr << "In the beslistener, initializing" << endl;
+    cerr.flush();
+
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
     while ((c = getopt(argc, argv, "hvsd:c:p:u:i:r:")) != EOF)
@@ -591,8 +594,7 @@ int ServerApp::run()
         {
             _ts = new TcpSocket(_portVal);
             listener.listen(_ts);
-            BESDEBUG( "server", "beslisterner: listening on port ("
-                    << _portVal << ")" << endl );
+            BESDEBUG( "server", "beslisterner: listening on port (" << _portVal << ")" << endl );
             int status = BESLISTENER_RUNNING;
             BESDEBUG( "server", "beslisterner: about to write status (4)" << endl );
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
@@ -739,6 +741,8 @@ int main(int argc, char **argv)
     try
     {
         ServerApp app;
+        cerr << "In the beslistener, starting" << endl;
+        cerr.flush();
         return app.main(argc, argv);
     }
     catch (BESError &e)

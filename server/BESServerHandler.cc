@@ -85,10 +85,13 @@ BESServerHandler::BESServerHandler()
     }
 }
 
-// *** I'm not sure that we need to fork twice. jhrg 11/14/05
+// I'm not sure that we need to fork twice. jhrg 11/14/05
 // The reason that we fork twice is explained in Advanced Programming in the
 // Unit Environment by W. Richard Stevens. In the 'multiple' case we don't
 // want to leave any zombie processes.
+//
+// I've changed this substantially. See daemon.cc, ServerApp.cc and
+// DaemonCommandHanlder.cc. jhrg 7/15/11
 void BESServerHandler::handle(Connection *c)
 {
     if (_method == "single")
