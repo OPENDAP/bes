@@ -252,8 +252,6 @@ bool stop_all_beslisteners(int sig)
  */
 char **update_beslistener_args()
 {
-    // string contexts = BESDebug::GetOptionsString();
-
     char **arguments = new char*[global_args.size() * 2 + 1];
 
     // Marshal the arguments to the listener from the command line
@@ -274,8 +272,6 @@ char **update_beslistener_args()
             // beslistener.
             string debug_opts = debug_sink + "," + BESDebug::GetOptionsString();
             arguments[i++] = strdup(debug_opts.c_str());
-            // ***
-            // cerr << "setting -d value to: " << debug_opts << endl;
         }
         else if ((*it).first != "beslistener") {
             arguments[i++] = strdup((*it).first.c_str());
@@ -283,10 +279,6 @@ char **update_beslistener_args()
         }
     }
     arguments[i] = 0;       // terminal null
-
-    // ***
-    // for (int j = 0; j < i; ++j)
-        // cerr << "arguments[" << j << "]: " << arguments[j] << endl;
 
     return arguments;
 }
@@ -307,8 +299,8 @@ int start_master_beslistener()
 {
     // The only certain way to know that the beslistener master has started is
     // to pass back its status once it is initialized. Use a pipe for that.
-    int fd[2];
-    if (pipe(fd) < 0) {
+    int pipefd[2];
+    if (pipe(pipefd) < 0) {
         cerr << errno_str(": pipe error ");
         return 0;
     }
@@ -322,10 +314,14 @@ int start_master_beslistener()
         // See 'int ServerApp::run()' for the place where the program exec'd
         // below writes the pid value to the pipe.
 
-        close(fd[0]); // Close the read end of the pipe in the child
+        close(pipefd[0]); // Close the read end of the pipe in the child
 
-        // dup2 so we know the FD to write to in the child
-        if (dup2(fd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
+        // dup2 so we know the FD to write to in the child (the beslistener).
+        // BESLISTENER_PIPE_FD is '1' whcih is stdout; since beslistenr is a
+        // daemon process both stdin and out have been closed so these descriptors
+        // are available. Usig higher numbers can cause problems (see ticket
+        // 1783). jhrg 7/15/11
+        if (dup2(pipefd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
             cerr << errno_str(": dup2 error ");
             return 0;
         }
@@ -335,8 +331,6 @@ int start_master_beslistener()
         char **arguments = update_beslistener_args();
 
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
-        // ***
-        // cerr << "Starting: " << arguments[0] << endl;
 
         // Close the socket for the besdaemon here. This keeps if from being
         // passed into the master beslistener and then entering the state
@@ -357,20 +351,23 @@ int start_master_beslistener()
     // The daemon records the pid of the master beslistener, but only does so
     // when that process writes its status to the pipe 'fd'.
 
-    close(fd[1]); // close the write end of the pipe in the parent.
+    close(pipefd[1]); // close the write end of the pipe in the parent.
 
     BESDEBUG("besdaemon", "besdaemon: master beslistener pid: " << pid << endl);
 
     // Read the status from the child (beslistener).
     int beslistener_start_status;
-    if (read(fd[0], &beslistener_start_status, sizeof(beslistener_start_status)) < 0) {
+    int status = read(pipefd[0], &beslistener_start_status, sizeof(beslistener_start_status));
+    // ***
+    // cerr << "besdaemon read status: " << status << endl;
+    if (status < 0) {
         cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
-        close(fd[0]);
+        close(pipefd[0]);
         return 0;
     }
     else if (beslistener_start_status != BESLISTENER_RUNNING) {
-        cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
-        close(fd[0]);
+        cerr << "The beslistener status is not 'BESLISTENER_RUNNING' (it is '" << beslistener_start_status << "')  the master pid was not changed." << endl;
+        close(pipefd[0]);
         return 0;
     }
     else {
@@ -381,7 +378,7 @@ int start_master_beslistener()
         master_beslistener_status = BESLISTENER_RUNNING;
     }
 
-    close(fd[0]);
+    close(pipefd[0]);
     return pid;
 }
 
@@ -390,9 +387,6 @@ int start_master_beslistener()
  */
 static void cleanup_resources()
 {
-    //delete[] arguments;
-    //arguments = 0;
-
     if (!access(file_for_daemon_pid.c_str(), F_OK)) {
         (void) remove(file_for_daemon_pid.c_str());
     }
@@ -412,6 +406,7 @@ static void CatchSigChild(int signal)
         int pid = wait(&status);
 
         BESDEBUG("besdaemon", "besdaemon: SIGCHLD: caught master beslistener (" << pid << ") status: " << pr_exit(status) << endl);
+
         // Decode and record the exit status, but only if it really is the
         // master beslistener this daemon is using. If two or more Start commands
         // are sent in a row, a master beslistener will start, fail to bind to
@@ -743,7 +738,7 @@ int main(int argc, char *argv[])
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
 #else
-    cerr << "Developer Mode: not testing if BES is run by root" << endl;
+    cerr << "Developer Mode: Not testing if BES is run by root" << endl;
 #endif
 
     daemon_name = argv[0];
@@ -926,7 +921,7 @@ int main(int argc, char *argv[])
         {
             // This is a crude fallback that avoids a value without any name
             // for a log file (which would be a syntax error).
-            global_args["-d"] = "LOG," + BESDebug::GetOptionsString();
+            global_args["-d"] = "cerr," + BESDebug::GetOptionsString();
         }
         else
         {

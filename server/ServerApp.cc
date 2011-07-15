@@ -81,8 +81,7 @@ ServerApp::~ServerApp()
 
 // This is needed so that the master beslistner will get the exit status of
 // all of the child beslisteners (preventing them from becoming zombies).
-static void
-/*ServerApp::*/CatchSigChild(int sig)
+static void CatchSigChild(int sig)
 {
     if (sig == SIGCHLD)
     {
@@ -96,8 +95,7 @@ static void
 // If the HUP signal is sent to the master beslistener, it should exit and
 // return a value indicating to the besdaemon that it should be restarted.
 // This also has the side-affect of re-reading the configuration file.
-static void
-/*ServerApp::*/CatchSigHup(int sig)
+static void CatchSigHup(int sig)
 {
     if (sig == SIGHUP)
     {
@@ -114,8 +112,7 @@ static void
 // This is the default signal sent by 'kill'; when the master beslistener gets
 // this signal it should stop. besdaemon should not try to start a new
 // master beslistener.
-static void
-/*ServerApp::*/CatchSigTerm(int sig)
+static void CatchSigTerm(int sig)
 {
     if (sig == SIGTERM)
     {
@@ -340,8 +337,9 @@ int ServerApp::initialize(int argc, char **argv)
     string dashc;
     string dashd = "";
 
-    cerr << "In the beslistener, initializing" << endl;
-    cerr.flush();
+    // ***
+    // cerr << "In the beslistener, initializing" << endl;
+    // cerr.flush();
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
@@ -421,7 +419,7 @@ int ServerApp::initialize(int argc, char **argv)
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
 #else
-    cerr << "Developer Mode: not testing if BES is run by root" << endl;
+    cerr << "Developer Mode: Not testing if BES is run by root" << endl;
 #endif
 
     if (!dashd.empty())
@@ -589,15 +587,21 @@ int ServerApp::run()
         BESDEBUG( "server", "OK" << endl );
 
         SocketListener listener;
-
         if (_portVal)
         {
             _ts = new TcpSocket(_portVal);
             listener.listen(_ts);
+
             BESDEBUG( "server", "beslisterner: listening on port (" << _portVal << ")" << endl );
-            int status = BESLISTENER_RUNNING;
+
             BESDEBUG( "server", "beslisterner: about to write status (4)" << endl );
+            // Write to stdout works because the besdaemon is listening on the
+            // other end of a pipe where the pipe fd[1] has been dup2'd to
+            // stdout. See daemon.cc:start_master_beslistener.
+            // NB BESLISTENER_PIPE_FD is 1 (stdout)
+            int status = BESLISTENER_RUNNING;
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+
             BESDEBUG( "server", "beslisterner: wrote status (" << res << ")" << endl );
         }
 
@@ -741,8 +745,6 @@ int main(int argc, char **argv)
     try
     {
         ServerApp app;
-        cerr << "In the beslistener, starting" << endl;
-        cerr.flush();
         return app.main(argc, argv);
     }
     catch (BESError &e)
