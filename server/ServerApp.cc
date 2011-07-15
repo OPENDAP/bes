@@ -624,8 +624,8 @@ int ServerApp::run()
     {
         cerr << se.get_message() << endl;
         (*BESLog::TheLog()) << se.get_message() << endl;
-        int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status)); // ***
+        int status = SERVER_EXIT_FATAL_CAN_NOT_START;
+        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);
         return 1;
     }
@@ -633,8 +633,8 @@ int ServerApp::run()
     {
         cerr << "caught unknown exception" << endl;
         (*BESLog::TheLog()) << "caught unknown exception initializing sockets" << endl;
-        int status = SERVER_EXIT_FATAL_CAN_NOT_START; // ***
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status)); // ***
+        int status = SERVER_EXIT_FATAL_CAN_NOT_START;
+        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);
         return 1;
     }
