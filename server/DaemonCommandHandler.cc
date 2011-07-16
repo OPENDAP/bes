@@ -315,6 +315,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
         // if the start_from_pos is too far along (there are not num_lines
         // left), scale it back and try again.
         if (count < num_lines) {
+            BESDEBUG("besdaemon", "besdaemon: Retrying; Log length  (count)" << count << ", num_lines " << num_lines << endl);
             // 10 isa fudge factor...
             long size = start_from_pos;
             size -= ((num_lines - count + 10) * BES_LOG_CHARS_EST_PER_LINE);
@@ -325,7 +326,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 
         infile.seekg(start_from_pos, ios::beg);
 
-        BESDEBUG("besdaemon", "besdaemon: Log length  " << count << endl);
+        BESDEBUG("besdaemon", "besdaemon: Log length  (count)" << count << endl);
 
         if (count > num_lines)
         {
