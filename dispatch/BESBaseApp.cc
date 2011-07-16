@@ -36,7 +36,6 @@ using std::cerr ;
 using std::endl ;
 
 #include "BESBaseApp.h"
-#include "BESGlobalIQ.h"
 #include "BESInternalError.h"
 
 BESApp *BESApp::_theApplication = 0;
@@ -86,43 +85,16 @@ BESBaseApp::main(int argC, char **argV)
 
 /** @brief initialize the BES application
  *
- * uses the BESGlobalIQ static method BESGlobalInit to initialize any global
- * variables needed by this application
- *
  * @return 0 if successful and not 0 otherwise
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  * @throws BESError if any exceptions or errors are encountered
- * @see BESGlobalIQ
  */
 int
 BESBaseApp::initialize(int argC, char **argV)
 {
-    int retVal = 0;
-
-    // initialize application information
-    try
-    {
-	if( !_isInitialized )
-	    BESGlobalIQ::BESGlobalInit( argC, argV ) ;
-	_isInitialized = true ;
-    }
-    catch( BESError &e )
-    {
-	string newerr = "Error initializing application: " ;
-	newerr += e.get_message() ;
-	cerr << newerr << endl ;
-	retVal = 1 ;
-    }
-    catch( ... )
-    {
-	string newerr = "Error initializing application: " ;
-	newerr += "caught unknown exception" ;
-	cerr << newerr << endl ;
-	retVal = 1 ;
-    }
-
-    return retVal ;
+    _isInitialized = true ;
+    return 0 ;
 }
 
 /** @brief the applications functionality is implemented in the run method
@@ -153,7 +125,6 @@ BESBaseApp::run(void)
 int
 BESBaseApp::terminate( int sig )
 {
-    BESGlobalIQ::BESGlobalQuit() ;
     _isInitialized = false ;
     return sig ;
 }

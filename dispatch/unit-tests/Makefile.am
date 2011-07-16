@@ -27,14 +27,11 @@ noinst_HEADERS = test_config.h
 if CPPUNIT
 # This determines what gets run by 'make check.'
 #TESTS = keysT
-TESTS = constraintT containerT defT initT keysT pfileT			\
+TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
 		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
 		urlT
-
-# Removed: failInitT. I Have no idea how this works or why it stopped
-# working. jhrg 5/9/07
 
 if LIBDAP
 TESTS += catT
@@ -90,9 +87,6 @@ constraintT_SOURCES = constraintT.cc
 containerT_SOURCES = containerT.cc
 
 defT_SOURCES = defT.cc
-
-initT_SOURCES = initT.cc TheCat.cc TheDog.cc cat.cc dog.cc Animal.cc	\
-		TheCat.h TheDog.h cat.h dog.h Animal.h
 
 keysT_SOURCES = keysT.cc
 

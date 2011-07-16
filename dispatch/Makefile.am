@@ -104,9 +104,8 @@ bes/dap.conf: bes/dap.conf.in ../config.status
 #
 # Sources and Headers
 
-SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc		\
-	BESGlobalInit.cc BESInitList.cc BESLog.cc BESKeys.cc		\
-	TheBESKeys.cc BESStatus.cc					\
+SRCS = BESInterface.cc BESBasicInterface.cc				\
+	BESLog.cc BESKeys.cc TheBESKeys.cc BESStatus.cc			\
 	BESContainer.cc BESFileContainer.cc				\
 	BESContainerStorage.cc BESContainerStorageFile.cc		\
 	BESContainerStorageList.cc BESContainerStorageVolatile.cc	\
@@ -141,11 +140,8 @@ SRCS = BESInterface.cc BESBasicInterface.cc BESGlobalIQ.cc		\
 	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc
 
-HDRS = BESInterface.h BESBasicInterface.h BESGlobalIQ.h 		\
-	BESGlobalInit.h BESInitFuns.h BESInitList.h BESInitOrder.h 	\
-	BESInitializer.h BESLog.h 					\
-	BESKeys.h TheBESKeys.h 						\
-	BESStatus.h 							\
+HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
+	BESKeys.h TheBESKeys.h BESStatus.h 				\
 	BESContainer.h BESFileContainer.h BESContainerStorage.h 	\
 	BESContainerStorageFile.h BESContainerStorageList.h 		\
 	BESContainerStorageVolatile.h 					\
