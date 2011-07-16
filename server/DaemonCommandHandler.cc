@@ -260,6 +260,9 @@ static void write_file(const string &name, const string &buffer)
     }
 }
 
+#if 0
+
+// This has an infinite loop in it under some circumstances.
 
 /** This version of get_bes_log_lines() is an attempt to improve the efficiency
  * of the process using an estimate of the size of the log lines to skip over
@@ -357,11 +360,11 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
     memblock[size] = '\0';
 
     return memblock;
-
 }
+#endif
 
-#if 0
-// This is an older version of get_bes_log_lines(). It's not an inefficient as
+#if 1
+// This is an older version of get_bes_log_lines(). It's not as inefficient as
 // the first version, but it's not great either. This version remembers how big
 // the log was and so skips one of two reads of the entire log. It will still
 // read the entire log just to print the last 200 lines (the log might be 1 GB).
@@ -378,8 +381,8 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
     static ifstream::pos_type prev_end_pos = 0;
     static long prev_line_count = 0;
 
-    cerr << "prev_line_count: " << prev_line_count << endl;
-    // num_line == 0 is special value that means get all the lines
+    BESDEBUG("besdaemon", "besdaemon: prev_line_count: " << prev_line_count << endl);
+    // num_lines == 0 is special value that means get all the lines
     if (num_lines > 0)
     {
         // static values saved from the previous run saves recounting
