@@ -363,7 +363,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 }
 #endif
 
-#if 1
+#if 0
 // This is an older version of get_bes_log_lines(). It's not as inefficient as
 // the first version, but it's not great either. This version remembers how big
 // the log was and so skips one of two reads of the entire log. It will still
@@ -432,6 +432,98 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
     memblock[size] = '\0';
 
     return memblock;
+}
+#endif
+
+#if 1
+// Move the file pointer forward 'lines'
+static long count_lines(ifstream infile, long lines)
+{
+	long count = 0;
+	while (count < lines && !infile.eof() && !infile.fail()) {
+		infile.ignore(1024, '\n');
+		++count;
+	}
+
+	infile.clear(); // Needed to reset eof() or fail() so tellg/seekg work.
+
+	return count;
+}
+
+// Count the number of lines from pos to the end of the file
+static long count_lines(ifstream infile, ifstream::pos_type pos)
+{
+	infile.seekg(pos, ios::beg);
+	long count = 0;
+	while (!infile.eof() && !infile.fail()) {
+		infile.ignore(1024, '\n');
+		++count;
+	}
+
+	infile.clear(); // Needed to reset eof() or fail() so tellg/seekg work.
+
+	return count;
+}
+
+// Starting at wherever the file pointer is at, read to the end and return
+// the data in a char *. The caller must delete[] the memory.
+static char *read_file_data(ifstream infile)
+{
+    // Read remaining lines as a block of stuff.
+    ifstream::pos_type start_pos = infile.tellg();
+    infile.seekg(0, ios::end);
+    ifstream::pos_type end_pos = infile.tellg();
+
+    unsigned long size = end_pos - start_pos;
+    char *memblock = new char[size + 1];
+
+    infile.seekg(start_pos, ios::beg);
+    infile.read(memblock, size);
+    infile.close();
+
+    memblock[size] = '\0';
+
+    return memblock;
+}
+
+// This is an older version of get_bes_log_lines(). It's not as inefficient as
+// the first version, but it's not great either. This version remembers how big
+// the log was and so skips one of two reads of the entire log. It will still
+// read the entire log just to print the last 200 lines (the log might be 1 GB).
+
+// if num_lines is == 0, get all the lines; if num_lines < 0, also get all the
+// lines, but this is really an error, should be trapped by caller.
+static char *get_bes_log_lines(const string &log_file_name, long num_lines)
+{
+    ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
+    if (!infile.is_open())
+        throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
+
+    // This is used to save time counting lines in large files
+    static ifstream::pos_type last_start_pos = 0;
+    static long last_start_line = 0;
+
+    if (num_lines == 0) {
+    	// return the whole file
+    	infile.seekg(0, ios::beg);
+    	return read_file_data(infile);
+    }
+    else {
+    	// How many lines in the total file? Use last count info.
+    	int count = count_lines(infile, last_start_pos) + last_start_line;
+    	// last_start_pos is where last_start_line is, we need to advance to
+    	// the line that is num_lines back from the end of the file
+    	int new_start_line = count - num-lines + 1;
+    	// Now go back to the last_start_pos
+    	infile.seekg(last_start_pos, ios::beg);
+    	// and count forward to the line that starts this last num_lines
+    	count_lines(infile, new_start_line - last_start_line);
+    	// Save this point for the next time
+    	last_start_line = new_start_line;
+    	last_start_pos = infile.tellg();
+
+    	return read_file_data(infile);
+    }
 }
 #endif
 
