@@ -436,8 +436,10 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 #endif
 
 #if 1
-// Move the file pointer forward 'lines'
-static long count_lines(ifstream infile, long lines)
+// Count forward 'lines', leave the file pointer at the place just past that
+// and return the number of lines actually read (which might be less if eof
+// is found before 'lines' lines are read.
+static long count_lines(ifstream &infile, long lines)
 {
 	long count = 0;
 	while (count < lines && !infile.eof() && !infile.fail()) {
@@ -451,7 +453,7 @@ static long count_lines(ifstream infile, long lines)
 }
 
 // Count the number of lines from pos to the end of the file
-static long count_lines(ifstream infile, ifstream::pos_type pos)
+static long count_lines(ifstream &infile, ifstream::pos_type pos)
 {
 	infile.seekg(pos, ios::beg);
 	long count = 0;
@@ -467,7 +469,7 @@ static long count_lines(ifstream infile, ifstream::pos_type pos)
 
 // Starting at wherever the file pointer is at, read to the end and return
 // the data in a char *. The caller must delete[] the memory.
-static char *read_file_data(ifstream infile)
+static char *read_file_data(ifstream &infile)
 {
     // Read remaining lines as a block of stuff.
     ifstream::pos_type start_pos = infile.tellg();
@@ -513,7 +515,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
     	int count = count_lines(infile, last_start_pos) + last_start_line;
     	// last_start_pos is where last_start_line is, we need to advance to
     	// the line that is num_lines back from the end of the file
-    	int new_start_line = count - num-lines + 1;
+    	int new_start_line = count - num_lines + 1;
     	// Now go back to the last_start_pos
     	infile.seekg(last_start_pos, ios::beg);
     	// and count forward to the line that starts this last num_lines
