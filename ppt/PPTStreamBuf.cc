@@ -47,6 +47,7 @@ using std::setfill ;
 #include "BESDebug.h"
 
 const char* eod_marker = "0000000d";
+const size_t eod_marker_len = 8 ;
 
 PPTStreamBuf::PPTStreamBuf( int fd, unsigned bufsize )
     : d_bufsize( bufsize ),
@@ -129,7 +130,7 @@ PPTStreamBuf::finish()
 
     BESDEBUG( "ppt", "PPTStreamBuf::finish - writing " << eod_marker << endl ) ;
     
-    write( d_fd, eod_marker, sizeof(eod_marker) ) ; // tmp_str.c_str(), tmp_str.length() ) ;
+    write( d_fd, eod_marker, eod_marker_len ) ; // tmp_str.c_str(), tmp_str.length() ) ;
 
 #if 0
     // If something doesn't look right try using fsync
