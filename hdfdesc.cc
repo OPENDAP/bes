@@ -2517,6 +2517,8 @@ static void SDS_descriptions(sds_map & map, DAS & das,
     // add each SDS's attrs
     vector < hdf_attr > dattrs;
 
+    // TODO Remove these attributes (name and dimension)? jhrg 8/17/11
+    // ***
     for (SDSI s = map.begin(); s != map.end(); ++s) {
         const hdf_sds *sds = &s->second.sds;
         AddHDFAttr(das, sds->name, sds->attrs); 
