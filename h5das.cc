@@ -695,13 +695,13 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	DBG(cerr << "newname: " << newname << endl);
     }
     // The following code is not necessary. KY 2011-3-13
-#if 0
+    // #if 0 This is necessary. <hyokyung 2011.08.17. 16:13:12>
 #ifdef SHORT_PATH    
     if (eos.is_valid() && eos.get_grid_variable(varname)) {
 	newname = eos.get_short_name(varname);
     }
 #endif    
-#endif
+    // #endif
 
 #endif  
 
