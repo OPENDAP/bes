@@ -85,7 +85,9 @@ EXTRA_DIST = data bes-testsuite hdf-testfiles \
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 
 sample_datadir = $(datadir)/hyrax/data/hdf4
-sample_data_DATA = data/1990104h09da-gdm.hdf data/S2000415.HDF
+sample_data_DATA = data/1990-S1700101.HDF.gz data/1990104h09da-gdm.hdf.gz \
+    data/1C21.19980101.00539.7.HDF.gz data/S2000415.HDF.gz data/foo2.hdf.gz
+    
 
 install-data-local: h4.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
