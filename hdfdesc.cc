@@ -81,7 +81,7 @@ using namespace std;
 #include <InternalErr.h>
 #include <debug.h>
 
-#include <BESDebug.H>
+#include <BESDebug.h>
 
 // DODS/HDF includes
 #include "hcstream.h"
