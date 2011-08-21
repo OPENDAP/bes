@@ -45,8 +45,14 @@
 //
 //
 //////////////////////////////////////////////////////////////////////////////
-#include <cassert>
+
 #include "config_hdf.h"
+//#define DODS_DEBUG
+
+#include <cstdio>
+#include <cassert>
+#include <libgen.h>
+
 // STL includes
 #include <string>
 #include <fstream>
@@ -64,24 +70,23 @@ using namespace std;
 #include <sys/param.h>
 #endif
 
-#include <stdio.h>
-#include<libgen.h>
-
 // HDF and HDFClass includes
 #include <mfhdf.h>
 
+// DODS includes
+#include <DDS.h>
+#include <DAS.h>
+#include <escaping.h>
+#include <parser.h>
+#include <InternalErr.h>
+#include <debug.h>
 
+#include <BESDebug.H>
+
+// DODS/HDF includes
 #include "hcstream.h"
 #include "hdfclass.h"
 #include "hcerr.h"
-
-// DODS includes
-#include "DDS.h"
-#include "DAS.h"
-#include "escaping.h"
-#include "debug.h"
-
-// DODS/HDF includes
 #include "dhdferr.h"
 #include "HDFArray.h"
 #include "HDFSequence.h"
@@ -90,9 +95,6 @@ using namespace std;
 #include "dodsutil.h"
 #include "hdf-dods.h"
 #include "hdf-maps.h"
-#include "parser.h"
-#include "InternalErr.h"
-
 
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -1258,10 +1260,22 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(core_metadata.c_str());
         parser_arg arg(at);
+#if 0
+        // jhrg 8/19/11
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
             cerr << "HDF-EOS parse error " << core_metadata << endl;
         }
+#endif
+        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        	throw Error("HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+        	BESDEBUG("h4", "HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute. (2)" << endl
+        		<< arg.error()->get_error_message() << endl);
+        }
+
         hdfeos_delete_buffer(buf);
     }
             
@@ -1273,10 +1287,23 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(archive_metadata.c_str());
         parser_arg arg(at);
+#if 0
+        // jhrg 8/19/11
+
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
             cerr << "HDF-EOS parse error " << archive_metadata << endl;
         }
+#endif
+        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        	throw Error("HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+        	BESDEBUG("h4", "HDF-EOS parse error while processing a ArhiveMetadata HDFEOS attribute. (2)" << endl
+        		<< arg.error()->get_error_message() << endl);
+        }
+
         hdfeos_delete_buffer(buf);
     }
 
@@ -1288,10 +1315,23 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         // tell lexer to scan attribute string
         void *buf = hdfeos_string(struct_metadata.c_str());
         parser_arg arg(at);
+#if 0
+        // jhrg 8/19/11
+
         if (hdfeosparse(static_cast < void *>(&arg)) != 0
             || arg.status() == false){
             cerr << "HDF-EOS parse error " << struct_metadata << endl;
         }
+#endif
+        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+        	throw Error("HDF-EOS parse error while processing a StructMetadata HDFEOS attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+        	BESDEBUG("h4", "HDF-EOS parse error while processing a StructMetadata HDFEOS attribute. (2)" << endl
+        		<< arg.error()->get_error_message() << endl);
+        }
+
         hdfeos_delete_buffer(buf);
     }
     
@@ -1967,10 +2007,24 @@ void write_metadata(DAS& das, HE2CF& cf, const string& _meta)
     // tell lexer to scan attribute string
     void *buf = hdfeos_string(meta.c_str());
     parser_arg arg(at);
+#if 0
+        // jhrg 8/19/11
+
     if (hdfeosparse(static_cast < void *>(&arg)) != 0
         || arg.status() == false){
         cerr << "HDF-EOS parse error " << _meta << endl;
     }
+#endif
+
+    if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+    	throw Error("HDF-EOS parse error while processing a " << _meta " HDFEOS attribute.");
+
+    // Errors returned from here are ignored.
+    if (arg.status() == false) {
+    	BESDEBUG("h4", "HDF-EOS parse error while processing a " << _meta " HDFEOS attribute. (2)" << endl
+    		<< arg.error()->get_error_message() << endl);
+    }
+
     hdfeos_delete_buffer(buf);
     
 }
@@ -2359,7 +2413,7 @@ void read_dds(DDS & dds, const string & filename)
 	build_descriptions(dds, das, filename);
 
 	if (!dds.check_semantics()) {       // DDS didn't get built right
-		dds.print(cerr);
+		// dds.print(cerr);
 		THROW(dhdferr_ddssem);
 	}
 	return;
@@ -2423,15 +2477,24 @@ struct accum_attr
     string d_named;
 
     accum_attr(const string & named):d_named(named) {
-    } hdf_genvec & operator() (hdf_genvec & accum, const hdf_attr & attr) {
+    }
+
+    hdf_genvec & operator() (hdf_genvec & accum, const hdf_attr & attr) {
         // Assume that all fields with the same base name should be combined,
         // and assume that they are in order.
         DBG(cout << "attr.name: " << attr.name << endl);
         if (attr.name.find(d_named) != string::npos) {
+#if 0
+        	string stuff;
+        	stuff.assign(attr.values.data(), attr.values.size());
+        	cerr << "Attribute chunk: " << attr.name << endl;
+        	cerr << stuff << endl;
+#endif
             accum.append(attr.values.number_type(), attr.values.data(),
                          attr.values.size());
             return accum;
-        } else {
+        }
+        else {
             return accum;
         }
     }
@@ -2441,7 +2504,9 @@ struct is_named:public unary_function < hdf_attr, bool > {
     string d_named;
 
     is_named(const string & named):d_named(named) {
-    } bool operator() (const hdf_attr & attr) {
+    }
+
+    bool operator() (const hdf_attr & attr) {
         return (attr.name.find(d_named) != string::npos);
     }
 };
@@ -2451,8 +2516,7 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
                            const string & attr_name)
 {
     // Only do this if there's more than one part.
-    if (count_if(attr_vec.begin(), attr_vec.end(), is_named(attr_name))
-        > 1) {
+    if (count_if(attr_vec.begin(), attr_vec.end(), is_named(attr_name)) > 1) {
         // Merge all split up parts named `attr_name.' Assume they are in
         // order in `attr_vec.'
         hdf_genvec attributes;
@@ -2460,7 +2524,7 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
                                 attributes, accum_attr(attr_name));
 
         // When things go south, check out the hdf_genvec...
-        DBG2(vector < string > s_m;
+        DBG(vector < string > s_m;
              attributes.print(s_m);
              cerr << "Accum struct MD: (" << s_m.size() << ") "
              << s_m[0] << endl);
@@ -2477,18 +2541,29 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
         // And add it to the vector of attributes.
         attr_vec.push_back(merged_attr);
     }
+#if 0
+    // TODO: remove when done
+    else {
+    	vector<hdf_attr>::iterator i = find_if(attr_vec.begin(),
+    			attr_vec.end(), is_named(attr_name));
+    	if (i != attr_vec.end()) {
+    	string stuff;
+    	stuff.assign((*i).values.data(), (*i).values.size());
+    	cerr << "Attribute: " << (*i).name << endl;
+    	cerr << stuff << endl;
+    	}
+	}
+#endif
 }
 
 // Read SDS's out of filename, build descriptions and put them into dds, das.
 static void SDS_descriptions(sds_map & map, DAS & das,
                              const string & filename)
 {
-
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
 
     // Read SDS file attributes attr_iter i = ;
-
     vector < hdf_attr > fileattrs;
     sdsin >> fileattrs;
 
@@ -2528,7 +2603,6 @@ static void SDS_descriptions(sds_map & map, DAS & das,
         }
 
     }
-    
 
     return;
 }
@@ -2602,7 +2676,8 @@ static void Vgroup_descriptions(DDS & dds, DAS & das,
                 sdmap[ref].in_vgroup = true;
                 break;
             default:
-                cerr << "unknown tag: " << tag << " ref: " << ref << endl;
+            	// TODO: Make this an exception? jhrg 8/19/11
+                // cerr << "unknown tag: " << tag << " ref: " << ref << endl;
                 break;
             }	// switch (tag) 
         } //     for (uint32 i = 0; i < vg->tags.size(); i++) 
@@ -2759,10 +2834,37 @@ void AddHDFAttr(DAS & das, const string & varname,
                 // tell lexer to scan attribute string
                 void *buf = hdfeos_string(attv[j].c_str());
 
+                // cerr << "About to print attributes to be parsed..." << endl;
+                // TODO: remove when done!
+                // cerr << "attv[" << j << "]" << endl << attv[j].c_str() << endl;
+
                 parser_arg arg(at);
-                if (hdfeosparse(static_cast < void *>(&arg)) != 0
-                    || arg.status() == false)
-                    cerr << "HDF-EOS parse error!\n";
+
+                // HDF-EOS attribute parsing is complex and some errors are
+                // tolerated. Thus, if the parser proper returns an error,
+                // that results in an exception that is fatal. However, if
+                // the status returned by an otherwise successful parse shows
+                // an error was encountered but successful parsing continued,
+                // that's OK, but it should be logged.
+                //
+                // Also, HDF-EOS files should be read using the new HDF-EOS
+                // features and not this older parser. jhrg 8/18/11
+                //
+                // TODO: How to log (as opposed to using BESDEBUG)?
+                if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+                	throw Error("HDF-EOS parse error while processing a " + container_name + " HDFEOS attribute.");
+
+                if (arg.status() == false) {
+#if 0
+                	cerr << "HDF-EOS parse error while processing a "
+                    	<< container_name << " HDFEOS attribute. (2)" << endl
+                    	<< arg.error()->get_error_message() << endl;
+#endif
+                	BESDEBUG("h4", "HDF-EOS parse error while processing a "
+                		<< container_name << " HDFEOS attribute. (2)" << endl
+                		<< arg.error()->get_error_message() << endl);
+                }
+
                 hdfeos_delete_buffer(buf);
             }
             else {
@@ -2795,11 +2897,6 @@ void AddHDFAttr(DAS & das, const string & varname,
     AttrTable *atp = das.get_table(varname);
     if (atp == 0) {
         atp = new AttrTable;
-#if 0
-        // jhrg 4/1/2009
-        if (atp == 0)
-            THROW(hcerr_nomemory);
-#endif
         atp = das.add_table(varname, atp);
     }
     // add the annotations to the DAS

@@ -79,7 +79,7 @@ GROUP      GROUP
 END_GROUP  END_GROUP
 OBJECT     OBJECT
 END_OBJECT END_OBJECT
-END        END
+END        END|EN
 
 INT	[-+]?[0-9]+
 
@@ -88,16 +88,16 @@ EXPONENT (E|e)[-+]?[0-9]+
 
 FLOAT	[-+]?{MANTISA}{EXPONENT}?
 
-STR 	[-+a-zA-Z0-9_./:%+\-]+
+STR 	[-+a-zA-Z0-9_./:%+&]+
 
-NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
+NEVER   [^a-zA-Z0-9_/.+\-{}:;,%&]
 
 %%
 
 {GROUP}	    	    	hdfeoslval = yytext; return GROUP;
 {END_GROUP}    	    	hdfeoslval = yytext; return END_GROUP;
 {OBJECT}    	        hdfeoslval = yytext; return OBJECT;
-{END_OBJECT}    	hdfeoslval = yytext; return END_OBJECT;
+{END_OBJECT}    	    hdfeoslval = yytext; return END_OBJECT;
 {END}                   /* Ignore */
 
 {INT}                   hdfeoslval = yytext; return INT;

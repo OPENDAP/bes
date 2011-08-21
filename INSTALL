@@ -3,7 +3,7 @@ $Id$
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.9.2
+Updated for 3.9.3
 
 ---------------------------------------------------------------------------
 
@@ -32,9 +32,9 @@ BUILDING THE SOFTWARE
    the access of many NASA HDF-EOS2 products and some NASA pure HDF4
    products by many CF-compliant visualization NASA pure HDF4 products
    by many CF-compliant CF-compliant visualization clients such as IDV
-   and Panoply. To take advanage of this feature, the configuration
-   option is different, please read carefully about the following the
-   note.
+   and Panoply. To take advanage of this feature, the hansdler's
+   configuration options are different, please read carefully about
+   the following the note.
 
 *) Build from the source, one MUST use HDF-EOS2 library and configure with
    the following option:
@@ -48,17 +48,18 @@ BUILDING THE SOFTWARE
    some NASA pure HDF4 products work with CF-compliant visualization
    clients
 
-   Some variable paths are pretty long(>15 characters). COARD
+   Some variable paths are pretty long (>15 characters). COARDS
    conventions require the number of characters in a field doesn't
    exceed 15 characters. So the above configuration option may cause
-   some OPeNDAP clients that are still following COARD conventions. To
-   compensate that, we provide a configuration option to shorten the
-   name so that in doesn't exceed 15 characters. To address the
-   potential name clashing issue, both options may make some variable
-   names to change so that unique variable names are present in the
-   OPeNDAP output. To best preserve the original variable names, we
-   recommend not to use --enable-short-name option if necessary. To
-   configure the handler with the short name option, do the following:
+   some OPeNDAP clients that are still following COARDS conventions.
+   To compensate for that, we provide a configuration option to
+   shorten the name so that it doesn't exceed 15 characters. To
+   address the potential name clashing issue, both options may make
+   some variable names change so that unique variable names are
+   present in the OPeNDAP output. To best preserve the original
+   variable names, we recommend not using --enable-short-name option
+   unless it is absolutely necessary. To configure the handler with
+   the short name option, do the following:
 
 ./configure --with-hdf4=<Your HDF4 library path> 
 	    --with-hdfeos2=<Your HDF-EOS2 library path> 
@@ -74,98 +75,6 @@ BUILDING THE SOFTWARE
    type `sh configure.' If you want this part of the server to install
    someplace other than /usr/local/bin, use --prefix to change the prefix
    from the default "/use/local/."
-
-2) Type `make' to build the server module.
-
-3) Install the server module in $prefix by running `make install'. This
-   will also add the new h4.conf file to the $prefix/etc/bes/modules directoy.
-   The BES configuration file bes.conf will automatically load any module
-   configuration files in that directory. The h4.conf file contains hdf4_handler
-   specific configurations for use with the BES Framework. This includes
-   some parameters that used to be in the bes.conf file, such as the TypeMatch
-   parameter for finding your files.
-
-4) For some installations, you must arrange for your operating system to find
-   the shared libraries installed by default in $prefix/lib. Do this by
-   either setting an environment variable such as LD_LIBRARY_PATH or by
-   editing /etc/ld.so.conf. Different operating systems handle this in
-   different ways.
-
-
-Updated for 3.8.1
-
----------------------------------------------------------------------------
-
-BUILDING THE SOFTWARE
-REQUIREMENTS
-NOTES
-
----------------------------------------------------------------------------
-
-BUILDING THE SOFTWARE
-
-0) Please skim REQUIREMENTS and NOTES sections of this file before reporting
-   problems. Thanks.
-
-*) IMPORTANT NOTE: The versions of hdf4 that are installed by package
-    managers such as Yum and rpm often are not capable of being linked with a
-    shared library/module, whcih is how the hdf4 handler must be built. To
-    correct this, you may need to build the HDF4 library from soruce and
-    specify the '--with-pic' option to configure. This may be a problem only
-    on non-i386 linux machines; reports vary. To build the handler on OS/X
-    and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
-    Red Hat or CentOS) it was necessary to build hdf4. To d so I ran
-    configure as './configure --with-pic --disable-fortran --disable-netcdf'
-
-1) Type `./configure' at the system prompt. On some systems you may have to
-   type `sh configure.' If you want this part of the server to install
-   someplace other than /usr/local/bin, use --prefix to change the prefix
-   from the default "/use/local/." 
-
-   OPTIONAL: 
-
-   To support HDF-EOS2 files better for OPeNDAP visualization clients, 
-   you may want to configure with two more options. 
-
-   Type `./configure --enable-cf --with-hdfeos2=/path/to/HDF-EOS2_library'
-
-   They will include the enhancement work for HDF4 handler supported by 
-   a NASA grant.
-
-   This requires the installation of HDF-EOS2 library. You can download it
-   from http://newsroom.gsfc.nasa.gov/sdptoolkit/tookit.html.
-
-   Another possibility is to install with '--enable-cf' option only.
-
-   Type `./configure --enable-cf'
-
-   This doesn't require the installation of HDF-EOS2 library and it works
-   for some HDF-EOS2 Grid / Swath files. This is less recommended option 
-   since HDF-EOS2 library can support more HDF-EOS2 files.
-
-    NB: To build the HDFEOS library on a 64-bit fedora core platform
-    using the FC RPMs for hdf4, do the following: First download
-    HDF-EOS2.16v1.00.tar.Z (Google should be abe to locate it). Then
-    define CFLAGS, CPPFLAGS and LDFLAGS as:
-
-    	   CPPFLAGS=-I/usr/include/hdf
-	   CFLAGS="-g -O2 -fPIC"
-	   LDFLAGS="-L/usr/lib64/hdf"
-
-    I was not able to get the --with-hdf4 option to find the library
-    file or the header and the -fPIC option is needed even though the
-    library builds a static archive only because we're going to link
-    it into a shared object. 
-
-    Lastly, 'make install' installs the archive into 'hdfeos2/' in the
-    top-level directory of the distribution. I had to copy the include
-    directory, also at the top-level of the distribution, into
-    'hdfeos2/' to get the code here to compile and link. I made a link
-    to /usr/local/hdfeos2 and then ran configure here as:
-
-           ./configure --enable-cf --with-hdfeos2=/usr/local/hdfeos2
-
-    jhrg 8/7/09
 
 2) Type `make' to build the server module.
 
