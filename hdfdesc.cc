@@ -2017,11 +2017,11 @@ void write_metadata(DAS& das, HE2CF& cf, const string& _meta)
 #endif
 
     if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-    	throw Error("HDF-EOS parse error while processing a " << _meta " HDFEOS attribute.");
+      throw Error("HDF-EOS parse error while processing a " + _meta + " HDFEOS attribute.");
 
     // Errors returned from here are ignored.
     if (arg.status() == false) {
-    	BESDEBUG("h4", "HDF-EOS parse error while processing a " << _meta " HDFEOS attribute. (2)" << endl
+      BESDEBUG("h4", "HDF-EOS parse error while processing a " << _meta << " HDFEOS attribute. (2)" << endl
     		<< arg.error()->get_error_message() << endl);
     }
 
