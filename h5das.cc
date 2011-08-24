@@ -694,13 +694,29 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
 	DBG(cerr << "newname: " << newname << endl);
     }
+
+    
     // The following code is not necessary. KY 2011-3-13
-    // #if 0 This is necessary. <hyokyung 2011.08.17. 16:13:12>
-#ifdef SHORT_PATH    
+    // 
+    // This is necessary to avoid generating inconsistent DAS and DDS
+    // output when Grid has a variable name like 'time'.
+    // Swath and ZA case is OK to rename variables using eos.get_CF_name()
+    // call but Grid should not rename variables using it
+    // since lat/lon/lev/time are calculated and inserted based on 
+    // parsing of XDim, YDim, nLevels(nCandidate), and nWavel in StrcutMetadata.
+    // 
+    // Here's the test case that NASA user reported:
+    // OMI-Aura_L3-OMSO2e_2004m1114_v003-2011m0615t135732.he5	
+    // 
+    // <hyokyung 2011.08.24. 16:42:36>
+    // #if 0 
     if (eos.is_valid() && eos.get_grid_variable(varname)) {
+#ifdef SHORT_PATH    
 	newname = eos.get_short_name(varname);
+#else
+        newname = eos.get_valid_CF_name(varname);
+#endif
     }
-#endif    
     // #endif
 
 #endif  
