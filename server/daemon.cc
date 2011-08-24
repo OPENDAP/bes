@@ -643,7 +643,7 @@ static int daemon_init()
 }
 
 /** Given a value for the daemon's pid, store that in the file referenced by
- * the global 'file_for_daemon_pid'. This value is used by the shell scrip
+ * the global 'file_for_daemon_pid'. This value is used by the shell script
  * 'besctl' to stop the daemon.
  *
  * @param pid The process ID of this daemon.

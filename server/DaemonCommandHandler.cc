@@ -439,9 +439,9 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 // Count forward 'lines', leave the file pointer at the place just past that
 // and return the number of lines actually read (which might be less if eof
 // is found before 'lines' lines are read.
-static long count_lines(ifstream &infile, long lines)
+static unsigned long count_lines(ifstream &infile, unsigned long lines)
 {
-	long count = 0;
+    unsigned long count = 0;
 	while (count < lines && !infile.eof() && !infile.fail()) {
 		infile.ignore(1024, '\n');
 		++count;
@@ -453,10 +453,10 @@ static long count_lines(ifstream &infile, long lines)
 }
 
 // Count the number of lines from pos to the end of the file
-static long count_lines(ifstream &infile, ifstream::pos_type pos)
+static unsigned long count_lines(ifstream &infile, ifstream::pos_type pos)
 {
 	infile.seekg(pos, ios::beg);
-	long count = 0;
+	unsigned long count = 0;
 	while (!infile.eof() && !infile.fail()) {
 		infile.ignore(1024, '\n');
 		++count;
@@ -476,7 +476,7 @@ static char *read_file_data(ifstream &infile)
     infile.seekg(0, ios::end);
     ifstream::pos_type end_pos = infile.tellg();
 
-    unsigned long size = end_pos - start_pos;
+    unsigned long size = (end_pos > start_pos) ? end_pos - start_pos : 0;
     char *memblock = new char[size + 1];
 
     infile.seekg(start_pos, ios::beg);
@@ -495,7 +495,7 @@ static char *read_file_data(ifstream &infile)
 
 // if num_lines is == 0, get all the lines; if num_lines < 0, also get all the
 // lines, but this is really an error, should be trapped by caller.
-static char *get_bes_log_lines(const string &log_file_name, long num_lines)
+static char *get_bes_log_lines(const string &log_file_name, unsigned long num_lines)
 {
     ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
     if (!infile.is_open())
@@ -503,8 +503,8 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 
     // This is used to save time counting lines in large files
     static ifstream::pos_type last_start_pos = 0;
-    static long last_start_line = 0;
-
+    static unsigned long last_start_line = 0;
+    BESDEBUG("besdaemon", "besdaemon: last_start_line " << last_start_line << endl);
     if (num_lines == 0) {
     	// return the whole file
     	infile.seekg(0, ios::beg);
@@ -512,14 +512,16 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
     }
     else {
     	// How many lines in the total file? Use last count info.
-    	int count = count_lines(infile, last_start_pos) + last_start_line;
+        unsigned long count = count_lines(infile, last_start_pos) + last_start_line;
+        BESDEBUG("besdaemon", "besdaemon: Log length " << count << " (started at " << last_start_line << ")" << endl);
     	// last_start_pos is where last_start_line is, we need to advance to
     	// the line that is num_lines back from the end of the file
-    	int new_start_line = count - num_lines + 1;
+        unsigned long new_start_line = (count >= num_lines) ? count - num_lines + 1: 0;
     	// Now go back to the last_start_pos
     	infile.seekg(last_start_pos, ios::beg);
     	// and count forward to the line that starts this last num_lines
-    	count_lines(infile, new_start_line - last_start_line);
+    	count = count_lines(infile, new_start_line - last_start_line);
+    	BESDEBUG("besdaemon", "besdaemon: count forward " << count << " lines." << endl);
     	// Save this point for the next time
     	last_start_line = new_start_line;
     	last_start_pos = infile.tellg();

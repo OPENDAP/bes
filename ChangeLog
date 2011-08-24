@@ -1,3 +1,53 @@
+2011-07-29  Patrick West <pwest@ucar.edu>
+
+	Using sizeof( eod_marker ), which is a char *. On 32 bit machines this
+	will be 4 and on 64 bit machines 8. The correct value is 8 (by chance).
+	Replaced with const size_t.
+	M    ppt/PPTStreamBuf.cc
+
+2011-05-10  James Gallagher <jgallagher@opendap.org>
+
+	Fix for the Makefile.am; use mkdir -p in bes/bes.conf and
+	bes/dap.conf because in a parallel build the test -d might both
+	return false and then a bare mkdir bes can return an error
+	(becase the other one ran after the test-d test failed. (NB: I
+	removed the test -d).
+
+2011-05-09  Patrick West <pwest@ucar.edu>
+
+	Need to make sure we read all of the bytes.
+	M    unit-tests/sbT.cc
+
+2011-05-05  James Gallagher <jgallagher@opendap.org>
+
+	changes to the PPT implementation: I've removed teh fsync calls,
+	removed the warnings about comparisons between signed and
+	unsigned ints and used a constant in PPTStreamBuf to write the
+	EOD marker.
+
+	M    ppt/PPTClient.cc
+	M    ppt/PPTStreamBuf.cc
+	M    ppt/Socket.h
+	M    ppt/PPTStreamBuf.h
+	M    ppt/PPTConnection.cc
+	M    ppt/PPTConnection.h
+	M    ppt/Socket.cc
+
+2011-05-04  James Gallagher <jgallagher@opendap.org>
+
+	h 1.7 edits
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2011-04-25  James Gallagher <jgallagher@opendap.org>
 
 	Removed the doc rpm

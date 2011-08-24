@@ -1,6 +1,10 @@
 
 	$Id$
 
+News for version 3.9.2
+
+Bug fix in PPT released in this version.
+
 News for version 3.9.1
 
 The CSV handler was moved out of this component and mae its own
