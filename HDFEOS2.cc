@@ -2700,8 +2700,7 @@ static bool IsDisjoint(const std::vector<Field *> &l,
 
 // The internal utility method to check if two vectors have overlapped.
 // If not, return true.
-static bool IsDisjoint(std::vector<std::pair<Field *, std::string> > &l,
-                       const std::vector<Field *> &r)
+static bool IsDisjoint(std::vector<std::pair<Field *, std::string> > &l, const std::vector<Field *> &r)
 {
     for (std::vector<std::pair<Field *, std::string> >::const_iterator i =
              l.begin(); i != l.end(); ++i) {
@@ -2712,8 +2711,7 @@ static bool IsDisjoint(std::vector<std::pair<Field *, std::string> > &l,
 }
 
 // The internal utility method to check if vector s is a subset of vector b.
-static bool IsSubset(const std::vector<Field *> &s,
-                     const std::vector<Field *> &b)
+static bool IsSubset(const std::vector<Field *> &s, const std::vector<Field *> &b)
 {
     for (std::vector<Field *>::const_iterator i = s.begin(); i != s.end(); ++i)
         {
@@ -2724,8 +2722,7 @@ static bool IsSubset(const std::vector<Field *> &s,
 }
 
 // The internal utility method to check if vector s is a subset of vector b.
-static bool IsSubset(std::vector<std::pair<Field *, std::string> > &s,
-                     const std::vector<Field *> &b)
+static bool IsSubset(std::vector<std::pair<Field *, std::string> > &s, const std::vector<Field *> &b)
 {
     for (std::vector<std::pair<Field *, std::string> >::const_iterator i
              = s.begin(); i != s.end(); ++i) {
@@ -2890,7 +2887,7 @@ PointDataset::~PointDataset()
 {
 }
 
-PointDataset * PointDataset::Read(int32 fd, const std::string &pointname)
+PointDataset * PointDataset::Read(int32 /*fd*/, const std::string &pointname)
     throw(Exception)
 {
     PointDataset *point = new PointDataset(pointname);

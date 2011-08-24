@@ -1,5 +1,22 @@
 
 
+Updated for 3.9.3 (21 Aug. 2011)
+
+Fixed a lingering issue with the processing of HDF-EOS attributes when
+the handler is not compiled with the HDF-EOS library. The handler was
+returning an error because those attributes were not parsing
+correclty. In the end, it appears there were two problems. The first
+was that some files contain slightly malformed EOS attributes: the
+'END' token is missing the 'D'. The second was that this triggered a
+bogus error message.
+
+Fixed the nagging 'dim_0' bug where some files with variables that use
+similar names for arrays trigger a bug in the code that merges the das
+into the dds. The results was that sometimes the code tried to add a
+dim_0 attribute to a variable that already had one. This I fixed by
+correcting an error in the way the STL's string::find() method was
+used.
+
 Updated for 3.9.2 (17 Mar. 2011)
 
 In this patch, we added the following three features:

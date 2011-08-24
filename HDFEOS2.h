@@ -18,7 +18,6 @@
 #endif
 #endif
 
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -32,7 +31,6 @@
 #include "HE2CFNcML.h"
 #include "HE2CFShortName.h"
 #include "HE2CF.h"
-
 
 #ifdef _WIN32
 #ifdef _MSC_VER
@@ -93,8 +91,6 @@ namespace HDFEOS2
 			this->message = message;
 		}
 
-
-
 	protected:
 		std::string message;
 		bool isHDFEOS2;
@@ -111,21 +107,21 @@ namespace HDFEOS2
 	template < typename T > class LightVector {
 	public:
 		LightVector ()
-	:	data (0), length (0), capacity (0) {
+		: data (0), length (0), capacity (0) {
 		}
 
 		LightVector (const LightVector < T > &that)
 		{
 			this->data = new T[that.length];
 			for (unsigned int i = 0; i < that.length; ++i)
-				this->data[i] = that[i];
+			this->data[i] = that[i];
 			this->length = that.length;
 			this->capacity = that.length;
 		}
 
 		~LightVector () {
 			if (this->data)
-				delete[]data;
+			delete[]data;
 		}
 
 		void push_back (const T & d)
@@ -138,7 +134,7 @@ namespace HDFEOS2
 		void reserve (unsigned int len)
 		{
 			if (this->capacity >= len)
-				return;
+			return;
 
 			this->capacity = len;
 			T *old = this->data;
@@ -146,7 +142,7 @@ namespace HDFEOS2
 			this->data = new T[len];
 			if (old) {
 				for (unsigned int i = 0; i < this->length; ++i)
-					this->data[i] = old[i];
+				this->data[i] = old[i];
 				delete[]old;
 			}
 		}
@@ -155,7 +151,7 @@ namespace HDFEOS2
 		{
 			/// do not call constructor for each element
 			if (this->length == len)
-				return;
+			return;
 			else if (this->length < len) {
 				if (this->capacity < len) {
 					this->capacity = len;
@@ -164,7 +160,7 @@ namespace HDFEOS2
 					this->data = new T[len];
 					if (old) {
 						for (unsigned int i = 0; i < this->length; ++i)
-							this->data[i] = old[i];
+						this->data[i] = old[i];
 						delete[]old;
 					}
 				}
@@ -175,9 +171,9 @@ namespace HDFEOS2
 
 				this->data = new T[len];
 				for (unsigned int i = 0; i < len; ++i)
-					this->data[i] = old[i];
+				this->data[i] = old[i];
 				if (old)
-					delete[]old;
+				delete[]old;
 			}
 			this->length = len;
 		}
@@ -201,7 +197,7 @@ namespace HDFEOS2
 			if (this != &that) {
 				this->data = new T[that.length];
 				for (unsigned int i = 0; i < that.length; ++i)
-					this->data[i] = that[i];
+				this->data[i] = that[i];
 				this->length = that.length;
 				this->capacity = that.length;
 			}
@@ -224,7 +220,7 @@ namespace HDFEOS2
 		}
 
 	public:
-		  virtual ~ FieldData ()
+		virtual ~ FieldData ()
 		{
 		}
 
@@ -235,7 +231,7 @@ namespace HDFEOS2
 		/// It will get the value even if the value is not in the FieldData
 		/// buffer(LightVector). 
 		virtual const char *get (int *offset, int *step, int *count, int nelms) =
-			0;
+		0;
 
 		/// Release the buffer by resizing the LightVector. 
 		virtual void drop () = 0;
@@ -265,13 +261,13 @@ namespace HDFEOS2
 		}
 
 	protected:
-		  Dimension (const std::string & name, int32 dimsize)
+		Dimension (const std::string & name, int32 dimsize)
 		: name (name), dimsize (dimsize)
 		{
 		}
 
 	protected:
-		  std::string name;
+		std::string name;
 		int32 dimsize;
 
 		friend class File;
@@ -286,8 +282,8 @@ namespace HDFEOS2
 	public:
 		Field ()
 		:fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true),
-			speciallon (false), specialformat (0), specialcoard(false),haveaddedfv (false),
-			addedfv (-9999.0), dmap (false)
+		speciallon (false), specialcoard(false), specialformat (0), haveaddedfv (false),
+		addedfv (-9999.0), dmap (false)
 		{
 		}
 		virtual ~ Field ();
@@ -300,13 +296,11 @@ namespace HDFEOS2
 			return this->name;
 		}
 
-        /// Get the name of this field for the third dimension field to match the special COARD request
-         const std::string & getName_specialcoard () const
-        {
-            return this->oriname;
-        }
-
-
+		/// Get the name of this field for the third dimension field to match the special COARD request
+		const std::string & getName_specialcoard () const
+		{
+			return this->oriname;
+		}
 
 		/// Get the new name of this field
 		const std::string & getNewName () const
@@ -337,13 +331,11 @@ namespace HDFEOS2
 			return &(this->correcteddims);
 		}
 
-
 		/// Set the list of the corrected dimensions
 		void setCorrectedDimensions (std::vector < Dimension * >dims)
 		{
 			correcteddims = dims;
 		}
-
 
 		const std::string getCoordinate () const
 		{
@@ -446,7 +438,6 @@ namespace HDFEOS2
 			return this->specialcoard;
 		}
 
-
 		/// Set and get the special flag for adjustment
 		void set_adjustment (int num_map)
 		{
@@ -472,7 +463,7 @@ namespace HDFEOS2
 		std::string coordinates;
 		std::string newname;
 
-        std::string oriname;
+		std::string oriname;
 
 		// This flag will specify the fieldtype.
 		// 0 means this field is general field.
@@ -485,13 +476,12 @@ namespace HDFEOS2
 		bool iscoard;
 		bool ydimmajor;
 		bool speciallon;
-  
-          
-        // To make IDV and Panoply work, the third dimension field name needs to 
-        // be different than the dimension name. So we have to remember the 
-        // original dimension field name when retrieving the third dimension data.
-        // This flag is used to detect that.
-        bool specialcoard; 
+
+		// To make IDV and Panoply work, the third dimension field name needs to
+		// be different than the dimension name. So we have to remember the
+		// original dimension field name when retrieving the third dimension data.
+		// This flag is used to detect that.
+		bool specialcoard;
 
 		// This flag specifies the special latitude/longitude coordinate format
 		// 0 means normal 
@@ -504,10 +494,8 @@ namespace HDFEOS2
 		float addedfv;
 		bool dmap;
 
-
-
-/// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
-/// KY 2009-12-3
+		/// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
+		/// KY 2009-12-3
 		bool need_adjustment;
 
 		friend class Dataset;
@@ -517,7 +505,7 @@ namespace HDFEOS2
 	};
 
 #if 0
-// For future improvement of the modulization
+	// For future improvement of the modulization
 	class GeoField:public Field
 	{
 
@@ -547,9 +535,9 @@ namespace HDFEOS2
 		}
 
 	protected:
-		  std::string name;
+		std::string name;
 		int32 type;
-		  std::vector < char >value;
+		std::vector < char >value;
 
 		friend class Dataset;
 	};
@@ -578,7 +566,7 @@ namespace HDFEOS2
 		}
 
 	protected:
-		  Dataset (const std::string & n)
+		Dataset (const std::string & n)
 		: datasetid (-1), name (n)
 		{
 		}
@@ -588,29 +576,29 @@ namespace HDFEOS2
 		/// Obtain dimensions from Swath or Grid by calling EOS2 APIs such as
 		/// GDnentries and GDinqdims.
 		void ReadDimensions (int32 (*entries) (int32, int32, int32 *),
-												 int32 (*inq) (int32, char *, int32 *),
-												 std::vector < Dimension * >&dims) throw (Exception);
+				int32 (*inq) (int32, char *, int32 *),
+				std::vector < Dimension * >&dims) throw (Exception);
 
 		/// Obtain field data information from Swath or Gird by calling EOS2
 		/// APIs such as GDnentries, GDinqfields, GDfieldinfo, GDreadfield and
 		/// GDgetfillvalue.
 		void ReadFields (int32 (*entries) (int32, int32, int32 *),
-										 int32 (*inq) (int32, char *, int32 *, int32 *),
-										 intn (*fldinfo) (int32, char *, int32 *, int32 *,
-																			int32 *, char *),
-										 intn (*readfld) (int32, char *, int32 *, int32 *,
-																			int32 *, VOIDP),
-										 intn (*getfill) (int32, char *, VOIDP),
-										 bool geofield, std::vector < Field * >&fields)
-		  throw (Exception);
+				int32 (*inq) (int32, char *, int32 *, int32 *),
+				intn (*fldinfo) (int32, char *, int32 *, int32 *,
+						int32 *, char *),
+				intn (*readfld) (int32, char *, int32 *, int32 *,
+						int32 *, VOIDP),
+				intn (*getfill) (int32, char *, VOIDP),
+				bool geofield, std::vector < Field * >&fields)
+		throw (Exception);
 
 		/// Obtain Grid or Swath attributes by calling EOS2 APIs such as
 		/// GDinqattrs, GDattrinfo and GDreadattr.
 		void ReadAttributes (int32 (*inq) (int32, char *, int32 *),
-												 intn (*attrinfo) (int32, char *, int32 *, int32 *),
-												 intn (*readattr) (int32, char *, VOIDP),
-												 std::vector < Attribute * >&attrs)
-		  throw (Exception);
+				intn (*attrinfo) (int32, char *, int32 *, int32 *),
+				intn (*readattr) (int32, char *, VOIDP),
+				std::vector < Attribute * >&attrs)
+		throw (Exception);
 
 	protected:
 		int32 datasetid;
@@ -666,7 +654,7 @@ namespace HDFEOS2
 			}
 
 		protected:
-			  int32 xdim;
+			int32 xdim;
 			int32 ydim;
 			float64 upleft[2];
 			float64 lowright[2];
@@ -718,7 +706,7 @@ namespace HDFEOS2
 			}
 
 		protected:
-			  int32 code;
+			int32 code;
 			int32 zone;
 			int32 sphere;
 			float64 param[16];
@@ -748,8 +736,7 @@ namespace HDFEOS2
 
 		protected:
 
-
-			  Calculated (const GridDataset * grid)
+			Calculated (const GridDataset * grid)
 			: grid (grid), valid (false), ydimmajor (false), orthogonal (false)
 			{
 			}
@@ -793,7 +780,7 @@ namespace HDFEOS2
 	public:
 		/// Read all information regarding this Grid.
 		static GridDataset *Read (int32 fd, const std::string & gridname)
-		  throw (Exception);
+		throw (Exception);
 
 		virtual ~ GridDataset ();
 
@@ -829,9 +816,8 @@ namespace HDFEOS2
 			return this->ownllflag;
 		}
 
-
 	private:
-		  GridDataset (const std::string & name)
+		GridDataset (const std::string & name)
 		: Dataset (name), calculated (0), ownllflag (false), iscoard (false)
 		{
 		}
@@ -853,8 +839,6 @@ namespace HDFEOS2
 	};
 
 	class File;
-
-
 
 	/// This class retrieves and holds all information of an EOS swath.
 	/// In addition to retrieve the general data field information.
@@ -904,15 +888,15 @@ namespace HDFEOS2
 			}
 
 		protected:
-			  DimensionMap (const std::string & geodim, const std::string & datadim,
-											int32 offset, int32 increment)
+			DimensionMap (const std::string & geodim, const std::string & datadim,
+					int32 offset, int32 increment)
 			: geodim (geodim), datadim (datadim), offset (offset),
-				increment (increment)
+			increment (increment)
 			{
 			}
 
 		protected:
-			  std::string geodim;
+			std::string geodim;
 
 			std::string datadim;
 			int32 offset;
@@ -943,9 +927,9 @@ namespace HDFEOS2
 			}
 
 		protected:
-			  std::string geo;
-			  std::string data;
-			  LightVector < int32 > indices;
+			std::string geo;
+			std::string data;
+			LightVector < int32 > indices;
 
 			friend class SwathDataset;
 		};
@@ -953,7 +937,7 @@ namespace HDFEOS2
 	public:
 		/// This method reads the information of all fields in a swath
 		static SwathDataset *Read (int32 fd, const std::string & swathname)
-		  throw (Exception);
+		throw (Exception);
 
 		virtual ~ SwathDataset ();
 
@@ -973,8 +957,6 @@ namespace HDFEOS2
 			return this->geofields;
 		}
 
-
-
 		/// Set and get the number of dimension map
 		void set_num_map (int this_num_map)
 		{
@@ -985,26 +967,23 @@ namespace HDFEOS2
 			return num_map;
 		};
 
-
 	private:
 		SwathDataset (const std::string & name)
-	:	Dataset (name) {
+		: Dataset (name) {
 		}
-
 
 		/// get all information of dimension maps in this swath
 		/// The number of maps will return for future subsetting
 		int ReadDimensionMaps (std::vector < DimensionMap * >&dimmaps)
-		  throw (Exception);
+		throw (Exception);
 		void ReadIndexMaps (std::vector < IndexMap * >&indexmaps)
-		  throw (Exception);
+		throw (Exception);
 
 	protected:
 		std::vector < DimensionMap * >dimmaps;
 		std::vector < IndexMap * >indexmaps;
 
 		std::set < std::string > nonmisscvdimlist;
-
 
 		/// The geo-location fields that serves both as "input" and "output".
 		/// Applications will obtain geo-location fields stored by this vector.
@@ -1013,7 +992,6 @@ namespace HDFEOS2
 		/// Otherwise, elements of this vector are unadjusted geo-location
 		/// fields.
 		std::vector < Field * >geofields;
-
 
 		/// Return the number of dimension map to correctly handle the subsetting case 
 		///  without dimension map.
@@ -1029,11 +1007,11 @@ namespace HDFEOS2
 	{
 	public:
 		static PointDataset *Read (int32 fd, const std::string & pointname)
-		  throw (Exception);
-		  virtual ~ PointDataset ();
+		throw (Exception);
+		virtual ~ PointDataset ();
 
 	private:
-		  PointDataset (const std::string & name)
+		PointDataset (const std::string & name)
 		: Dataset (name)
 		{
 		}
@@ -1047,16 +1025,16 @@ namespace HDFEOS2
 	{
 	private:
 		UnadjustedFieldData (int32 id, const std::string & name, int32 len,
-												 int typesize, intn (*readfld) (int32, char *,
-																												int32 *, int32 *,
-																												int32 *, VOIDP))
-		: datasetid (id), fieldname (name), datalen (len),
-			datatypesize (typesize), reader (readfld)
+				int typesize, intn (*readfld) (int32, char *,
+						int32 *, int32 *,
+						int32 *, VOIDP))
+		: datasetid (id), fieldname (name), datatypesize (typesize), datalen (len),
+		reader (readfld)
 		{
 		}
 
 	public:
-		  virtual const char *get (int *offset, int *step, int *count, int nelms);
+		virtual const char *get (int *offset, int *step, int *count, int nelms);
 		virtual void drop ();
 		virtual int length () const;
 		virtual int dtypesize () const;
@@ -1081,14 +1059,13 @@ namespace HDFEOS2
 	{
 	private:
 
-
 	public:
 
 		MissingFieldData (int rank, int typesize, int *dimsize,
-											const LightVector < char >&inputdata)
+				const LightVector < char >&inputdata)
 
 		: rank (rank), datatypesize (typesize), dims (dimsize),
-			inputdata (inputdata)
+		inputdata (inputdata)
 		{
 		}
 
@@ -1106,7 +1083,6 @@ namespace HDFEOS2
 
 	};
 
-
 	/// This class retrieves all information from an EOS file. It is a
 	/// container for Grid, Swath and Point objects.
 	class File
@@ -1123,14 +1099,14 @@ namespace HDFEOS2
 		/// All special arrangements need to be done in this step.
 
 		void Prepare (const char *path, HE2CFShortName * sn,
-									HE2CFShortName * sn_dim, HE2CFUniqName * un,
-									HE2CFUniqName * un_dim) throw (Exception);
+				HE2CFShortName * sn_dim, HE2CFUniqName * un,
+				HE2CFUniqName * un_dim) throw (Exception);
 		bool getOneLatLon ()
 		{
 			return this->onelatlon;
 		}
 
-		 ~File ();
+		~File ();
 
 		const std::string & getPath () const
 		{
@@ -1150,9 +1126,8 @@ namespace HDFEOS2
 		}
 
 	protected:
-		  File (const char *path)
-		: path (path), gridfd (-1), swathfd (-1), onelatlon (false),
-			iscoard (false)
+		File (const char *path)
+		: path (path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
 		{
 		}
 
@@ -1190,14 +1165,14 @@ namespace HDFEOS2
 		 * of them. - Eunsoo
 
 		 * For swath,
-		   
-		   I have to get Latitude and Longitude from geofield and
-		   get their dims -> these should not be checked for 
-		   name clashing. ***
+
+		 I have to get Latitude and Longitude from geofield and
+		 get their dims -> these should not be checked for
+		 name clashing. ***
 
 		 * If dimension map is used,
-		   unexpanded dimensions should not be used.
-		   also expanded dimensions should not be used.
+		 unexpanded dimensions should not be used.
+		 also expanded dimensions should not be used.
 
 		 * @param bUseDim If true, do as described. If false, we do not 
 		 * 	generate NF dimesnsions, but treat all dimensions as NF-dimensions.
@@ -1219,9 +1194,9 @@ namespace HDFEOS2
 		std::string origlonname;
 		std::string latname;
 		std::string lonname;
-		int llrank;									// latitude and longitude rank
-		int lltype;									// latitude and longitude type
-		bool llcondensed;						// If 2-D lat and lon array  can be condensed to 1-D 
+		int llrank; // latitude and longitude rank
+		int lltype; // latitude and longitude type
+		bool llcondensed; // If 2-D lat and lon array  can be condensed to 1-D
 
 		// Eunsoo
 		/** 
@@ -1275,12 +1250,10 @@ namespace HDFEOS2
 		std::string _geogrid_name;
 		static const char *_geogrid_names[];
 
-
 	private:
 		int32 gridfd;
 		int32 swathfd;
 	};
-
 
 	struct Utility
 	{
@@ -1288,16 +1261,16 @@ namespace HDFEOS2
 		/// From a string separated by a separator to a list of string,
 		/// for example, split "ab,c" to {"ab","c"}
 		static void Split (const char *s, int len, char sep,
-											 std::vector < std::string > &names);
+				std::vector < std::string > &names);
 
 		/// Assume sz is Null terminated string.
 		static void Split (const char *sz, char sep,
-											 std::vector < std::string > &names);
+				std::vector < std::string > &names);
 
 		/// Call inquiry functions twice to get a list of strings. 
 		static bool ReadNamelist (const char *path,
-															int32 (*inq) (char *, char *, int32 *),
-															std::vector < std::string > &names);
+				int32 (*inq) (char *, char *, int32 *),
+				std::vector < std::string > &names);
 
 		/// Return number of objects for other purposes
 
@@ -1305,6 +1278,5 @@ namespace HDFEOS2
 
 }
 #endif
-
 
 #endif

@@ -1889,6 +1889,10 @@ throw (Exception)
 		}
 	}
 
+	// TODO Get rid of the 'fakeDim' code - then this won't be needed.
+	// jhrg 8/17/11
+	// ***
+
 	// Sequeeze "fakeDim" names according to fakeDim size. For example, if fakeDim1, fakeDim3, fakeDim5 all shares the same size,
 	// we use one name(fakeDim1) to be the dimension name. This will reduce the number of fakeDim names. 
 

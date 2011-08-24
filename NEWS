@@ -1,6 +1,14 @@
 
 $Id$
 
+Version 3.9.3
+
+Fixed tickets 1793 (HDF-EOS parse error when the hanfdler is not
+linked with the hdf-eos2 library) and 1797 (dim_0 attribute container
+added twice to the same variable); these two issues caused a host of
+problems so other bugs like the gateway not working or the netcdf
+fileout ersponse not working (for hdf4 files) are now fixed.
+
 Version 3.9.2
 
 Build fixes, particularly for HDF-EOS2 on OS/X

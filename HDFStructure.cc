@@ -59,80 +59,74 @@
 
 #include "HDFStructure.h"
 
-HDFStructure::HDFStructure(const string &n, const string &d)
-    : Structure(n, d)
-{
+HDFStructure::HDFStructure(const string &n, const string &d) :
+	Structure(n, d) {
 }
 
-HDFStructure::~HDFStructure()
-{
+HDFStructure::~HDFStructure() {
 }
-BaseType *HDFStructure::ptr_duplicate()
-{
-    return new HDFStructure(*this);
+BaseType *HDFStructure::ptr_duplicate() {
+	return new HDFStructure(*this);
 }
 void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vgroup,
-                             const string & hdf_file);
+		const string & hdf_file);
 
-void HDFStructure::set_read_p(bool state)
-{
-    // override Structure::set_read_p() to not set children as read yet
-    BaseType::set_read_p(state);
+void HDFStructure::set_read_p(bool state) {
+	// override Structure::set_read_p() to not set children as read yet
+	BaseType::set_read_p(state);
 }
 
-bool HDFStructure::read()
-{
-    int err = 0;
-    int status = read_tagref(-1, -1, err);
-    if (err)
-        throw Error(unknown_error, "Could not read from dataset.");
-    return status;
+bool HDFStructure::read() {
+	int err = 0;
+	int status = read_tagref(-1, -1, err);
+	if (err)
+		throw Error(unknown_error, "Could not read from dataset.");
+	return status;
 }
 
 // TODO: Combine the try/catch block and the following if/then/else and
 // eliminate the boolean 'foundvgroup' Consider moving the
 // LoadStructureFromVgroup() from hc2dap.cc here since this is the only
 // place it's used.
-bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
-{
-    if (read_p())
-        return true;
+bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err) {
+	if (read_p())
+		return true;
 
-    // get the HDF dataset name, Vgroup name
-    string hdf_file = dataset();
-    string hdf_name = this->name();
+	// get the HDF dataset name, Vgroup name
+	string hdf_file = dataset();
+	string hdf_name = this->name();
 
     BESDEBUG("h4", " hdf_name = " << hdf_name << endl);
 
-    hdf_vgroup vgroup;
+	hdf_vgroup vgroup;
 
-    // Wrap this with a try/catch block but don't do anything with it. The
-    // error condition is checked later in this function. pcw 02/19/2008
-    try {
-        hdfistream_vgroup vgin(hdf_file.c_str());
-        if (ref != -1)
-            vgin.seek_ref(ref);
-        else
-            vgin.seek(hdf_name.c_str());
-        vgin >> vgroup;
-        vgin.close();
+	// Wrap this with a try/catch block but don't do anything with it. The
+	// error condition is checked later in this function. pcw 02/19/2008
+	try {
+		hdfistream_vgroup vgin(hdf_file.c_str());
+		if (ref != -1)
+			vgin.seek_ref(ref);
+		else
+			vgin.seek(hdf_name.c_str());
+		vgin >> vgroup;
+		vgin.close();
 
-    	set_read_p(true);
+		set_read_p(true);
 
-    	LoadStructureFromVgroup(this, vgroup, hdf_file);
-        return true;
-    }
-    catch(...) {
-   	set_read_p(true);
-        err = 1;
-        return false;
-    }
+		LoadStructureFromVgroup(this, vgroup, hdf_file);
+		return true;
+	}
+	catch (...) {
+		set_read_p(true);
+		err = 1;
+		return false;
+	}
 }
 
 /**
  * Transfer attributes from a separately built DAS to the DDS. This method
  * overrides the implementation found in libdap to accommodate the special
- * characteristics of the HDF4 handler's DAS object. The notworthy feature
+ * characteristics of the HDF4 handler's DAS object. The noteworthy feature
  * of this handler's DAS is that it lacks the specified structure that
  * provides an easy way to match DAS and DDS items. Instead this DAS is
  * flat.
@@ -143,35 +137,41 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err)
  * find the container for this Structure and pass only that to the child
  * variables for them to search. See the default method in libdap.
  *
- * @param at An AttrTable for the entire DAS. Search this for attribtues
+ * @param at An AttrTable for the entire DAS. Search this for attributes
  * by name.
  * @see HDFSequence::transfer_attributes
  * @see HDFGrid::transfer_attributes
  * @see HDFArray::transfer_attributes
  */
-void HDFStructure::transfer_attributes(AttrTable *at)
-{
-    if (at) {
-	Vars_iter var = var_begin();
-	while (var != var_end()) {
-	    (*var)->transfer_attributes(at);
-	    var++;
-	}
+void HDFStructure::transfer_attributes(AttrTable *at) {
+	DBG(cerr << "Entering HDFStructure::transfer_attributes for variable " << name() << endl);
 
-	AttrTable *mine = at->get_attr_table(name());
+	if (at) {
+		Vars_iter var = var_begin();
+		while (var != var_end()) {
+			try {
+				DBG(cerr << "Processing the attributes for: " << (*var)->name() << " a " << (*var)->type_name() << endl);
+				(*var)->transfer_attributes(at);
+				var++;
+			} catch (Error &e) {
+				DBG(cerr << "Got this exception: " << e.get_error_message() << endl);
+				var++;
+				throw e;
+			}
+		}
 
-	if (mine) {
-	    mine->set_is_global_attribute(false);
-	    AttrTable::Attr_iter at_p = mine->attr_begin();
-	    while (at_p != mine->attr_end()) {
-		if (mine->get_attr_type(at_p) == Attr_container)
-		    get_attr_table().append_container(new AttrTable(
-			    *mine->get_attr_table(at_p)), mine->get_name(at_p));
-		else
-		    get_attr_table().append_attr(mine->get_name(at_p),
-			    mine->get_type(at_p), mine->get_attr_vector(at_p));
-		at_p++;
-	    }
+		AttrTable *mine = at->get_attr_table(name());
+
+		if (mine) {
+			mine->set_is_global_attribute(false);
+			AttrTable::Attr_iter at_p = mine->attr_begin();
+			while (at_p != mine->attr_end()) {
+				if (mine->get_attr_type(at_p) == Attr_container)
+					get_attr_table().append_container(new AttrTable(*mine->get_attr_table(at_p)), mine->get_name(at_p));
+				else
+					get_attr_table().append_attr(mine->get_name(at_p), mine->get_type(at_p), mine->get_attr_vector(at_p));
+				at_p++;
+			}
+		}
 	}
-    }
 }

@@ -60,144 +60,134 @@
 #include "HDFArray.h"
 #include "dhdferr.h"
 
-HDFArray::HDFArray(const string &n, const string &d, BaseType * v)
-    : Array(n, d, v)
-{
+HDFArray::HDFArray(const string &n, const string &d, BaseType * v) :
+	Array(n, d, v) {
 }
 
-
-HDFArray::~HDFArray()
-{
+HDFArray::~HDFArray() {
 }
 
-BaseType *HDFArray::ptr_duplicate()
-{
-    return new HDFArray(*this);
+BaseType *HDFArray::ptr_duplicate() {
+	return new HDFArray(*this);
 }
 void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds);
 void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr);
 
 // Read in an Array from either an SDS or a GR in an HDF file.
-bool HDFArray::read()
-{
-    int err = 0;
-    int status = read_tagref(-1, -1, err);
+bool HDFArray::read() {
+	int err = 0;
+	int status = read_tagref(-1, -1, err);
 
-    if (err)
-        throw Error(unknown_error, "Could not read from dataset.");
-    return status;
+	if (err)
+		throw Error(unknown_error, "Could not read from dataset.");
+	return status;
 }
 
 // todo: refactor: get rid of the err value-result parameter; throw from
 // within this method.
-bool HDFArray::read_tagref(int32 tag, int32 ref, int &err)
-{
-    if (read_p())
-        return true;
-    
-  
-    // get the HDF dataset name, SDS name
-    string hdf_file = dataset();
-    string hdf_name = this->name();
-    
+bool HDFArray::read_tagref(int32 tag, int32 ref, int &err) {
+	if (read_p())
+		return true;
+
+	// get the HDF dataset name, SDS name
+	string hdf_file = dataset();
+	string hdf_name = this->name();
+
 #ifdef CF
-    // get the real name for swath
-    if(hdf_name == "lat"){
-      hdf_name = "Latitude";
-    }
-    if(hdf_name == "lon"){
-      hdf_name = "Longitude";
-    }    
+	// get the real name for swath
+	if(hdf_name == "lat") {
+		hdf_name = "Latitude";
+	}
+	if(hdf_name == "lon") {
+		hdf_name = "Longitude";
+	}
 #endif
-    
-    // get slab constraint
-    vector < int >start, edge, stride;
-    bool isslab = GetSlabConstraint(start, edge, stride);
 
-    bool foundsds = false;
-    hdf_sds sds;
-    if (tag == -1 || tag == DFTAG_NDG) {
-        if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {	  
-            hdfistream_sds sdsin(hdf_file.c_str());
-            if (ref != -1) {
-                BESDEBUG("h4","sds seek with ref = " << ref << endl);
-                sdsin.seek_ref(ref);
-            } else {
-                BESDEBUG("h4", "sds seek with name = '" << hdf_name << "'" <<
-                    endl);
-                sdsin.seek(hdf_name.c_str());
-            }
-            if (isslab)
-                sdsin.setslab(start, edge, stride, false);
-            sdsin >> sds;
-            sdsin.close();
-            foundsds = true;
-        }
-    }
+	// get slab constraint
+	vector<int> start, edge, stride;
+	bool isslab = GetSlabConstraint(start, edge, stride);
 
-    bool foundgr = false;
-    hdf_gri gr;
-    if (!foundsds && (tag == -1 || tag == DFTAG_VG)) {
-        if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
-            hdfistream_gri grin(hdf_file.c_str());
-            if (ref != -1)
-                grin.seek_ref(ref);
-            else
-                grin.seek(hdf_name.c_str());
-            if (isslab)
-                grin.setslab(start, edge, stride, false);
-            grin >> gr;
-            grin.close();
-            foundgr = true;
-        }
-    }
+	bool foundsds = false;
+	hdf_sds sds;
+	if (tag == -1 || tag == DFTAG_NDG) {
+		if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
+			hdfistream_sds sdsin(hdf_file.c_str());
+			if (ref != -1) {
+				DBG(cerr << "sds seek with ref = " << ref << endl);
+				sdsin.seek_ref(ref);
+			} else {
+				DBG(cerr << "sds seek with name = '" << hdf_name << "'" << endl);
+				sdsin.seek(hdf_name.c_str());
+			}
+			if (isslab)
+				sdsin.setslab(start, edge, stride, false);
+			sdsin >> sds;
+			sdsin.close();
+			foundsds = true;
+		}
+	}
 
-    // Todo: refactor: move this stuff up into the above if stmts.
-    if (foundsds)
-        LoadArrayFromSDS(this, sds);
-    else if (foundgr)
-        LoadArrayFromGR(this, gr);
+	bool foundgr = false;
+	hdf_gri gr;
+	if (!foundsds && (tag == -1 || tag == DFTAG_VG)) {
+		if (GRExists(hdf_file.c_str(), hdf_name.c_str())) {
+			hdfistream_gri grin(hdf_file.c_str());
+			if (ref != -1)
+				grin.seek_ref(ref);
+			else
+				grin.seek(hdf_name.c_str());
+			if (isslab)
+				grin.setslab(start, edge, stride, false);
+			grin >> gr;
+			grin.close();
+			foundgr = true;
+		}
+	}
 
-    if (foundgr || foundsds) {
-        set_read_p(true);       // Moved here; see bug 136
-        err = 0;                // no error
-        return true;
-    } else {
-        err = 1;
-        return false;
-    }
+	// Todo: refactor: move this stuff up into the above if stmts.
+	if (foundsds)
+		LoadArrayFromSDS(this, sds);
+	else if (foundgr)
+		LoadArrayFromGR(this, gr);
+
+	if (foundgr || foundsds) {
+		set_read_p(true); // Moved here; see bug 136
+		err = 0; // no error
+		return true;
+	} else {
+		err = 1;
+		return false;
+	}
 }
 
 // Read the slab constraint parameters; the arrays start_array, edge_array,
 // stride_array.  Returns true if there is a slab constraint, false otherwise.
-bool HDFArray::GetSlabConstraint(vector < int >&start_array,
-                                 vector < int >&edge_array,
-                                 vector < int >&stride_array)
-{
-    int start = 0, stop = 0, stride = 0;
-    int edge = 0;
+bool HDFArray::GetSlabConstraint(vector<int>&start_array,
+		vector<int>&edge_array, vector<int>&stride_array) {
+	int start = 0, stop = 0, stride = 0;
+	int edge = 0;
 
-    start_array = vector < int >(0);
-    edge_array = vector < int >(0);
-    stride_array = vector < int >(0);
+	start_array = vector<int> (0);
+	edge_array = vector<int> (0);
+	stride_array = vector<int> (0);
 
-    for (Array::Dim_iter p = dim_begin(); p != dim_end(); ++p) {
-        start = dimension_start(p, true);
-        stride = dimension_stride(p, true);
-        stop = dimension_stop(p, true);
-        if (start == 0 && stop == 0 && stride == 0)
-            return false;       // no slab constraint
-        if (start > stop)
-            THROW(dhdferr_arrcons);
-        edge = (int) ((stop - start) / stride) + 1;
-        if (start + edge > dimension_size(p))
-            THROW(dhdferr_arrcons);
+	for (Array::Dim_iter p = dim_begin(); p != dim_end(); ++p) {
+		start = dimension_start(p, true);
+		stride = dimension_stride(p, true);
+		stop = dimension_stop(p, true);
+		if (start == 0 && stop == 0 && stride == 0)
+			return false; // no slab constraint
+		if (start > stop)
+			THROW(dhdferr_arrcons);
+		edge = (int) ((stop - start) / stride) + 1;
+		if (start + edge > dimension_size(p))
+			THROW(dhdferr_arrcons);
 
-        start_array.push_back(start);
-        edge_array.push_back(edge);
-        stride_array.push_back(stride);
-    }
-    return true;
+		start_array.push_back(start);
+		edge_array.push_back(edge);
+		stride_array.push_back(stride);
+	}
+	return true;
 }
 
 /**
@@ -221,34 +211,45 @@ bool HDFArray::GetSlabConstraint(vector < int >&start_array,
  * @see HDFGrid::transfer_attributes
  * @see HDFStructure::transfer_attributes
  */
-void HDFArray::transfer_attributes(AttrTable *at)
-{
-    BaseType::transfer_attributes(at);
+void HDFArray::transfer_attributes(AttrTable *at) {
+	DBG(cerr << "Transferring attributes for " << name() << endl);
 
-    // Here we should look for the *_dim_n where '*' is name() and n is 0, 1, ...
-    string dim_name_base = name() + "_dim_";
+	BaseType::transfer_attributes(at);
 
-    AttrTable::Attr_iter a_p = at->attr_begin();
-    while (a_p != at->attr_end()) {
-	string::size_type i = at->get_name(a_p).find(dim_name_base);
-	// Found a matching container?
-	if (i != string::npos && at->get_attr_type(a_p) == Attr_container) {
-	    AttrTable *dim = at->get_attr_table(a_p);
-	    transfer_dimension_attribute(dim);
+	DBG(cerr << "...Now looking for the " << name() << " _dim_n containers." << endl);
+
+	// Here we should look for the *_dim_n where '*' is name() and n is 0, 1, ...
+	string dim_name_base = name() + "_dim_";
+
+	AttrTable::Attr_iter a_p = at->attr_begin();
+	while (a_p != at->attr_end()) {
+		string::size_type i = at->get_name(a_p).find(dim_name_base);
+		// Found a matching container?
+		// To avoid matching both Month_dim_0 and  DayOfMonth_dim_0, et c.,
+		// check that i == 0 and not just i != string::npos. jhrg 8/17/11
+		if (i == 0 && at->get_attr_type(a_p) == Attr_container) {
+			AttrTable *dim = at->get_attr_table(a_p);
+			try {
+				DBG(cerr << "Found a dimension container for " << name() << endl);
+				transfer_dimension_attribute(dim);
+			}
+			catch (Error &e) {
+				DBG(cerr << "Caught an error transferring dimension attribute " << dim->get_name() << " for variable " << name() << endl);
+				throw e;
+			}
+		}
+
+		a_p++;
 	}
-
-	a_p++;
-    }
 }
 
-void HDFArray::transfer_dimension_attribute(AttrTable *dim)
-{
-    // Mark the table as not global
-    dim->set_is_global_attribute(false);
-    // copy the table
-    AttrTable *at = new AttrTable(*dim);
-    // add it to this variable using just the 'dim_<digit>' part of the name
-    string name = at->get_name().substr(at->get_name().find("dim"));
-    get_attr_table().append_container(at, name);
+void HDFArray::transfer_dimension_attribute(AttrTable *dim) {
+	// Mark the table as not global
+	dim->set_is_global_attribute(false);
+	// copy the table
+	AttrTable *at = new AttrTable(*dim);
+	// add it to this variable using just the 'dim_<digit>' part of the name
+	string name = at->get_name().substr(at->get_name().find("dim"));
+	get_attr_table().append_container(at, name);
 }
 

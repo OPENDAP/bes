@@ -1,3 +1,74 @@
+2011-08-18  James Gallagher <jgallagher@opendap.org>
+
+	Added tests that verfiy the most recent fixes to the handler -
+	tickets 1793 and 1797.
+
+	M    bes-testsuite/hdf4_handlerTest.at
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.ddx.bescmd
+	A    bes-testsuite/h4/foo2.hdf.das.bescmd
+	A    bes-testsuite/h4/foo2.hdf.dds.bescmd
+	A    bes-testsuite/h4/foo2.hdf.dds.bescmd.baseline
+	A    bes-testsuite/h4/foo2.hdf.ddx.bescmd.baseline
+	A    bes-testsuite/h4/1990-S1700101.HDF.dds.bescmd
+	A    bes-testsuite/h4/1990-S1700101.HDF.dds.bescmd.baseline
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.das.bescmd.baseline
+	M    bes-testsuite/h4/S2000415.HDF.3.bescmd
+	A    bes-testsuite/h4/foo2.hdf.ddx.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.2.bescmd
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.das.bescmd
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.dds.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.1.bescmd
+	M    bes-testsuite/h4/S2000415.HDF.0.bescmd
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.dds.bescmd.baseline
+	A    bes-testsuite/h4/1C21.19980101.00539.7.hdf.ddx.bescmd.baseline
+	A    bes-testsuite/h4/foo2.hdf.data.bescmd
+	A    bes-testsuite/h4/foo2.hdf.das.bescmd.baseline
+	A    bes-testsuite/h4/foo2.hdf.data.bescmd.baseline
+	AM   data/1990104h09da-gdm.hdf.gz
+	D    data/1990104h09da-gdm.hdf
+	AM   data/1C21.19980101.00539.7.HDF.gz
+	AM   data/foo2.hdf.gz
+	AM   data/1990-S1700101.HDF.gz
+	AM   data/S2000415.HDF.gz
+	D    data/S2000415.HDF
+	M    Makefile.am
+
+2011-08-17  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for tickets 1797 and 1793 (likely, but I'm still waiting for the
+	final word on that). Note that ticket 1797 is the infamous "The
+	attribtue table named dim_0 could not be added because an attribute
+	container with that name already exists" bug. The issue, doucmented on
+	Trac at length boils down to using string::find(...) with == 0 and not
+	!= string::npos.
+
+	M    HDFSP.cc
+	M    hdfdesc.cc
+	M    HDFArray.cc
+	M    hdfclass/vdata.cc
+	M    HDF4RequestHandler.cc
+	M    HDFGrid.cc
+	M    HDFStructure.cc
+
+2011-04-26  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    hdf4_handler.spec
+	M    INSTALL
+	M    README
+	M    Makefile.am
+
+2011-04-20  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.7 release
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2011-04-20  James Gallagher <jgallagher@opendap.org>
 
 	Hyrax 1.7 release

@@ -155,85 +155,85 @@ static void process_group(parser_arg *arg, const string &s);
 */
 
 attributes:    	/* Create the AttrTable stack if necessary */
-       {
-		    if (!attr_tab_stack)
-			attr_tab_stack = new vector<AttrTable *>;
-		}
-                attribute
-    	    	| attributes attribute
+    {
+	   if (!attr_tab_stack)
+	       attr_tab_stack = new vector<AttrTable *>;
+    }
+    attribute
+    | attributes attribute
 ;
     	    	
-attribute:    	GROUP '=' STR
-                {
-		    process_group((parser_arg *)arg, $3);
-		}
-                attr_list
-                {
-		  /* pop top of stack; store in attr_tab */
-		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
-		  POP;
-		}
-		END_GROUP '=' STR
+attribute: GROUP '=' STR
+    {
+	    process_group((parser_arg *)arg, $3);
+	}
+    attr_list
+    {
+	   /* pop top of stack; store in attr_tab */
+	   DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+	   POP;
+	}
+	END_GROUP '=' STR
 
-		| OBJECT '=' STR
-                {
-		    process_group((parser_arg *)arg, $3);
-		}
-                attr_list
-                {
-		  /* pop top of stack; store in attr_tab */
-		  DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
-		  POP;
-		}
-		END_OBJECT '=' STR
+	| OBJECT '=' STR
+    {
+	    process_group((parser_arg *)arg, $3);
+	}
+    attr_list
+    {
+        /* pop top of stack; store in attr_tab */
+		DBG(cerr << " Popped attr_tab: " << TOP_OF_STACK << endl);
+		POP;
+	}
+	END_OBJECT '=' STR
 
-                | STR 
-                { 
-		    name = $1; 
-		}
-                '=' data
+    | STR 
+    { 
+        name = $1; 
+	}
+    '=' data
 
-		| COMMENT {
-		    ostringstream name, comment;
-		    name << "comment" << commentnum++;
+	| COMMENT {
+	    ostringstream name, comment;
+	    name << "comment" << commentnum++;
 #ifdef ATTR_STRING_QUOTE_FIX
-                    comment << $1;
+        comment << $1;
 #else
-		    comment << "\"" << $1 << "\"";
+        comment << "\"" << $1 << "\"";
 #endif
-		    DBG(cerr << name.str() << ":" << comment.str() << endl);
-		    AttrTable *a;
-		    if (STACK_EMPTY)
-		      a = ATTR_OBJ(arg);
-		    else
-		      a = TOP_OF_STACK;
-		    if (!a->append_attr(name.str(), "String", comment.str())) {
-		      ostringstream msg;
-		      msg << "`" << name.str() << "' previously defined.";
-		      parse_error((parser_arg *)arg, msg.str().c_str());
-		      YYABORT;
-		    }
+		DBG(cerr << name.str() << ":" << comment.str() << endl);
+		AttrTable *a;
+		if (STACK_EMPTY)
+		    a = ATTR_OBJ(arg);
+		else
+		    a = TOP_OF_STACK;
+		if (!a->append_attr(name.str(), "String", comment.str())) {
+		    ostringstream msg;
+		    msg << "`" << name.str() << "' previously defined.";
+		    parse_error((parser_arg *)arg, msg.str().c_str());
+		    YYABORT;
 		}
+	}
 
-                | error
-                {
-		    AttrTable *a;
-		    if (STACK_EMPTY)
+    | error
+    {
+        AttrTable *a;
+		if (STACK_EMPTY)
 			a = ATTR_OBJ(arg);
-		    else
+		else
 			a = TOP_OF_STACK;
 #ifdef ATTR_STRING_QUOTE_FIX
-                    a->append_attr(name.c_str(), "String", 
-                                   "Error processing EOS attributes");
+        a->append_attr(name.c_str(), "String", "Error processing EOS attributes");
 #else
-		    a->append_attr(name.c_str(), "String", 
-				   "\"Error processing EOS attributes\"");
+		a->append_attr(name.c_str(), "String", "\"Error processing EOS attributes\"");
 #endif
-		    parse_error((parser_arg *)arg, NO_DAS_MSG);
-		    /* Don't abort; keep parsing to try and pick up more
-		       attributes. 3/30/2000 jhrg */
- 		    /* YYABORT; */
-		}
+        string msg = "Could not parse item; was expecting a GROUP, OBJECT or String: ";
+        msg += $1;
+		parse_error((parser_arg *)arg, msg.c_str());
+		/* Don't abort; keep parsing to try and pick up more
+		   attributes. 3/30/2000 jhrg */
+ 		/* YYABORT; */
+	}
 ;
 
 attr_list:  	/* empty */
@@ -422,8 +422,8 @@ hdfeoserror(const char *s)
 
 // I wrote this because I thought at one point that it was the solution to 
 // having some of the libdap methods change out from under the hdfeos code
-// here. In the end, I added a new find methof to the AttrTable class that 
-// doesn't require FQNs for th paths. (see AttrTable::recurrsive_find)
+// here. In the end, I added a new find method to the AttrTable class that 
+// doesn't require FQNs for the paths. (see AttrTable::recurrsive_find)
 static string
 build_fqn(AttrTable *at, string fqn)
 {
