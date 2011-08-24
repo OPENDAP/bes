@@ -51,7 +51,7 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler( )
  * Using a context name and a context value, set that context in the context
  * manager.
  *
- * The response object is silent, i.e. nothing si returned to the client
+ * The response object is silent, i.e. nothing is returned to the client
  * unless there is an exception condition.
  *
  * @param dhi structure that holds request and response information
