@@ -5,7 +5,7 @@ Updated for 3.9.3 (21 Aug. 2011)
 Fixed a lingering issue with the processing of HDF-EOS attributes when
 the handler is not compiled with the HDF-EOS library. The handler was
 returning an error because those attributes were not parsing
-correclty. In the end, it appears there were two problems. The first
+correctly. In the end, it appears there were two problems. The first
 was that some files contain slightly malformed EOS attributes: the
 'END' token is missing the 'D'. The second was that this triggered a
 bogus error message.
@@ -33,7 +33,7 @@ this bug under the condition that the filename of MERRA data must
 start with MERRA.
 
 3. We also enhance the support of mapping HDF4 files that uses HDF4
-SDS dimension scales. Expecially we make a patch specially for P.O.
+SDS dimension scales. Especially we make a patch specially for P.O.
 DAAC's AVHRR files. Now with enough Heap space, IDV can visualize
 AVHRR files via OPeNDAP.
 
@@ -42,7 +42,7 @@ What we haven't done:
 1. We haven't mapped the Vdata objects added by using HDF4 APIs to an
 HDF-EOS2 file.
 
-2. We haven't handled the plotting of the vertical profiler files(Such
+2. We haven't handled the plotting of the vertical profiler files (Such
 as MOP Level 2 data). More investigation needs to be done on how IDV
 can handle things.
 
@@ -110,7 +110,8 @@ check the Limitation section for the limitations:
 4). NASA LaRC 
       MISR/MOPITT/CERES-TRMM
 
-The following NASA special HDF4 products are tested with IDV Panoply, check the Limitation section for the limitations:
+The following NASA special HDF4 products are tested with IDV Panoply, 
+check the Limitation section for the limitations:
 
 1). NASA GES DISC
 
@@ -157,7 +158,7 @@ protocol="HTTP/1.1" maxHttpHeaderSize="819200"
 
 2) Latitude and longitude values that don't follow CF conventions
 
-   2.1) Missing(Fill) values inside latitude and longitude fields
+   2.1) Missing (Fill) values inside latitude and longitude fields
    Except the HDF-EOS2 geographic(also called equidirectional,
    equirectangular, equidistant cylindrical) projection, clients may
    NOT display the data correctly.
@@ -225,7 +226,7 @@ handler with BOTH 1) and 2) options.
 
 THE LIMITATIONS of the ENHANCED HDF4 HANDLER
 
-  Please note that the enhanced handler has lots of limitation. 
+  Please note that the enhanced handler has some limitations. 
 
   o No support for using the HDF4 handler cache directory. 
 
