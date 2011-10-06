@@ -31,9 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <signal.h>
+#if 0
 #include <unistd.h> // for getpid
 #include <grp.h>    // for getgrnam
 #include <pwd.h>    // for getpwnam
+#endif
 #include <sys/wait.h> // for wait
 #include <iostream>
 #include <fstream>
@@ -127,6 +129,7 @@ static void CatchSigTerm(int sig)
     }
 }
 
+#if 0
 void ServerApp::set_group_id()
 {
 #if !defined(OS2) && !defined(TPF)
@@ -288,6 +291,7 @@ void ServerApp::set_user_id()
         exit(SERVER_EXIT_FATAL_CAN_NOT_START);
     }
 }
+#endif
 
 /** Register the signal handlers. This registers handlers for HUP, TERM and
  *  CHLD. For each, if this OS supports restarting 'slow' system calls, enable
@@ -336,10 +340,6 @@ int ServerApp::initialize(int argc, char **argv)
     string dashi;
     string dashc;
     string dashd = "";
-
-    // ***
-    // cerr << "In the beslistener, initializing" << endl;
-    // cerr.flush();
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
@@ -407,7 +407,7 @@ int ServerApp::initialize(int argc, char **argv)
 
     // Now that we have the configuration information, we can log to the
     // BES log file if there are errors in starting up, etc...
-
+#if 0
     uid_t curr_euid = geteuid();
 #ifndef BES_DEVELOPER
     // must be root to run this app and to set user id and group id later
@@ -421,6 +421,7 @@ int ServerApp::initialize(int argc, char **argv)
 #else
     cerr << "Developer Mode: Not testing if BES is run by root" << endl;
 #endif
+#endif
 
     if (!dashd.empty())
         BESDebug::SetUp(dashd);
@@ -429,6 +430,10 @@ int ServerApp::initialize(int argc, char **argv)
     // Default Module will register the bes context.
     BESDebug::Register("server");
     BESDebug::Register("ppt");
+
+#if 0
+    // I've moved these to daemon.cc ...
+    // jhrg 10/5/11
 
     // Before we can load modules, start writing to the BES log
     // file, etc... we need to run as the proper user. Set the user
@@ -447,6 +452,7 @@ int ServerApp::initialize(int argc, char **argv)
     {
         cerr << "Developer Mode: Not setting group or user ids" << endl;
     }
+#endif
 
     // Because we are now running as the user specified in the
     // configuraiton file, we won't be able to listen on system ports.

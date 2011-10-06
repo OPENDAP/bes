@@ -31,6 +31,10 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <unistd.h>  // for getopt fork setsid execvp access geteuid
+
+#include <grp.h>    // for getgrnam
+#include <pwd.h>    // for getpwnam
+
 #include <sys/wait.h>  // for waitpid
 #include <sys/types.h>
 #include <sys/stat.h>  // for chmod
@@ -725,6 +729,150 @@ static bool load_names(const string &install_dir, const string &pid_dir)
     return true;
 }
 
+static void set_group_id() {
+#if !defined(OS2) && !defined(TPF)
+    // OS/2 and TPF don't support groups.
+
+    // get group id or name from BES configuration file
+    // If BES.Group begins with # then it is a group id,
+    // else it is a group name and look up the id.
+    BESDEBUG( "server", "beslisterner: Setting group id ... " << endl );
+    bool found = false;
+    string key = "BES.Group";
+    string group_str;
+    try {
+        TheBESKeys::TheKeys()->get_value(key, group_str, found);
+    } catch (BESError &e) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        string err = string("FAILED: ") + e.get_message();
+        cerr << err << endl;
+        (*BESLog::TheLog()) << err << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+
+    if (!found || group_str.empty()) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        string err = "FAILED: Group not specified in BES configuration file";
+        cerr << err << endl;
+        (*BESLog::TheLog()) << err << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+    BESDEBUG( "server", "to " << group_str << " ... " << endl );
+
+    gid_t new_gid = 0;
+    if (group_str[0] == '#') {
+        // group id starts with a #, so is a group id
+        const char *group_c = group_str.c_str();
+        group_c++;
+        new_gid = atoi(group_c);
+    }
+    else {
+        // specified group is a group name
+        struct group *ent;
+        ent = getgrnam(group_str.c_str());
+        if (!ent) {
+            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            string err = (string) "FAILED: Group " + group_str + " does not exist";
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        }
+        new_gid = ent->gr_gid;
+    }
+
+    if (new_gid < 1) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        ostringstream err;
+        err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
+        cerr << err.str() << endl;
+        (*BESLog::TheLog()) << err.str() << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+
+    BESDEBUG( "server", "to id " << new_gid << " ... " << endl );
+    if (setgid(new_gid) == -1) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        ostringstream err;
+        err << "FAILED: unable to set the group id to " << new_gid;
+        cerr << err.str() << endl;
+        (*BESLog::TheLog()) << err.str() << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+
+    BESDEBUG( "server", "OK" << endl );
+#else
+    BESDEBUG( "server", "beslisterner: Groups not supported in this OS" << endl );
+#endif
+}
+
+static void set_user_id() {
+    BESDEBUG( "server", "beslisterner: Setting user id ... " << endl );
+
+    // Get user name or id from the BES configuration file.
+    // If the BES.User value begins with # then it is a user
+    // id, else it is a user name and need to look up the
+    // user id.
+    bool found = false;
+    string key = "BES.User";
+    string user_str;
+    try {
+        TheBESKeys::TheKeys()->get_value(key, user_str, found);
+    } catch (BESError &e) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        string err = (string) "FAILED: " + e.get_message();
+        cerr << err << endl;
+        (*BESLog::TheLog()) << err << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+
+    if (!found || user_str.empty()) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        string err = (string) "FAILED: User not specified in BES config file";
+        cerr << err << endl;
+        (*BESLog::TheLog()) << err << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+    BESDEBUG( "server", "to " << user_str << " ... " << endl );
+
+    uid_t new_id = 0;
+    if (user_str[0] == '#') {
+        const char *user_str_c = user_str.c_str();
+        user_str_c++;
+        new_id = atoi(user_str_c);
+    }
+    else {
+        struct passwd *ent;
+        ent = getpwnam(user_str.c_str());
+        if (!ent) {
+            BESDEBUG( "server", "beslisterner: FAILED" << endl );
+            string err = (string) "FAILED: Bad user name specified: " + user_str;
+            cerr << err << endl;
+            (*BESLog::TheLog()) << err << endl;
+            exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+        }
+        new_id = ent->pw_uid;
+    }
+
+    // new user id cannot be root (0)
+    if (!new_id) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        string err = (string) "FAILED: BES cannot run as root";
+        cerr << err << endl;
+        (*BESLog::TheLog()) << err << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+
+    BESDEBUG( "server", "to " << new_id << " ... " << endl );
+    if (setuid(new_id) == -1) {
+        BESDEBUG( "server", "beslisterner: FAILED" << endl );
+        ostringstream err;
+        err << "FAILED: Unable to set user id to " << new_id;
+        cerr << err.str() << endl;
+        (*BESLog::TheLog()) << err.str() << endl;
+        exit(SERVER_EXIT_FATAL_CAN_NOT_START);
+    }
+}
+
 /** Run the daemon.
 
  */
@@ -903,6 +1051,20 @@ int main(int argc, char *argv[])
     // registered by a module. See ServerApp.cc
     BESDebug::Register("server");
     BESDebug::Register("ppt");
+
+    if (curr_euid == 0)
+    {
+#ifdef BES_DEVELOPER
+        cerr << "Developer Mode: Running as root - setting group and user ids"
+        << endl;
+#endif
+        set_group_id();
+        set_user_id();
+    }
+    else
+    {
+        cerr << "Developer Mode: Not setting group or user ids" << endl;
+    }
 
     // The stuff in global_args is used whenever a call to start_master_beslistener()
     // is made, so any time the BESDebug contexts are changed, a change to the

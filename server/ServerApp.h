@@ -51,9 +51,10 @@ private:
     TcpSocket			*_ts ;
     UnixSocket			*_us ;
     PPTServer			*_ps ;
-
+#if 0
     void			set_group_id() ;
     void			set_user_id() ;
+#endif
 public:
     				ServerApp() ;
     virtual			~ServerApp() ;
