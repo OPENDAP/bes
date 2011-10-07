@@ -336,7 +336,7 @@ int start_master_beslistener()
 
         BESDEBUG("besdaemon", "Starting: " << arguments[0] << endl);
 
-        // Close the socket for the besdaemon here. This keeps if from being
+        // Close the socket for the besdaemon here. This keeps it from being
         // passed into the master beslistener and then entering the state
         // CLOSE_WAIT once the besdaemon's client closes it's end.
         if (command_server)
@@ -485,15 +485,6 @@ static void CatchSigTerm(int signal)
  */
 static int start_command_processor(DaemonCommandHandler &handler)
 {
-#if 0
-    // These are now global so that start_master_beslistener() can close them
-    // in the child process (which will become the master beslistener if all
-    // goes well) before exec'ing the beslistener.
-    TcpSocket *socket = 0;
-    UnixSocket *unix_socket = 0;
-    PPTServer *command_server = 0;
-#endif
-
     BESDEBUG("besdaemon", "besdaemon: Starting command processor." << endl);
 
     try {
