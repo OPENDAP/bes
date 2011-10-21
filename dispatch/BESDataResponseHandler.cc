@@ -87,6 +87,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
     string response_size_limit = BESContextManager::TheManager()->get_context("max_response_size", found);
     if (found && !response_size_limit.empty()) {
         char *endptr;
+        errno = 0;
         long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/ 10);
         if (rsl == 0 && errno > 0) {
             string err = strerror(errno);

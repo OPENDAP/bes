@@ -38,57 +38,59 @@
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"
 
+// left in for now... It would be better to not use an env var
+// since these are easily hacked. jhrg 10/12/11
 #define BES_CONF getenv("BES_CONF")
 
 BESKeys *TheBESKeys::_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
-BESKeys *TheBESKeys::TheKeys()
-{
+BESKeys *TheBESKeys::TheKeys() {
     if (_instance == 0) {
         string use_ini = TheBESKeys::ConfigFile;
         if (use_ini == "") {
+#ifdef BES_CONF
             char *ini_file = BES_CONF;
-            if (!ini_file)
-	    {
-		string try_ini = "/usr/local/etc/bes/bes.conf" ;
-		struct stat buf;
-		int statret = stat( try_ini.c_str(), &buf ) ;
-		if ( statret == -1 || !S_ISREG( buf.st_mode ) )
-		{
-		    try_ini = "/etc/bes/bes.conf" ;
-		    int statret = stat( try_ini.c_str(), &buf ) ;
-		    if ( statret == -1 || !S_ISREG( buf.st_mode ) )
-		    {
-			try_ini = "/usr/etc/bes/bes.conf" ;
-			int statret = stat( try_ini.c_str(), &buf ) ;
-			if ( statret == -1 || !S_ISREG( buf.st_mode ) )
-			{
-			    string s = (string)"Unable to locate BES config file. "
-				    + "Please either pass -c "
-				    + "option when starting the BES, set "
-				    + "the environment variable BES_CONF, "
-				    + "or install in /usr/local/etc/bes/bes.conf "
-				    + "or /etc/bes/bes.conf." ;
-			    throw BESInternalFatalError(s, __FILE__, __LINE__);
-			}
-			else
-			{
-			    use_ini = try_ini ;
-			}
-		    }
-		    else
-		    {
-			use_ini = try_ini ;
-		    }
-		}
-		else
-		{
-		    use_ini = try_ini ;
-		}
-            } else {
+            if (!ini_file) {
+#endif
+                string try_ini = "/usr/local/etc/bes/bes.conf";
+                struct stat buf;
+                int statret = stat(try_ini.c_str(), &buf);
+                if (statret == -1 || !S_ISREG( buf.st_mode )) {
+                    try_ini = "/etc/bes/bes.conf";
+                    int statret = stat(try_ini.c_str(), &buf);
+                    if (statret == -1 || !S_ISREG( buf.st_mode )) {
+                        try_ini = "/usr/etc/bes/bes.conf";
+                        int statret = stat(try_ini.c_str(), &buf);
+                        if (statret == -1 || !S_ISREG( buf.st_mode )) {
+                            string s = "Unable to find a conf file or module version mismatch." ;
+#if 0
+                            // This message is confusing because it often appears when
+                            // the user has passed -c to besctl. It makes the command
+                            // (besctl) more confusing to use. jhrg 10/12/11
+                            "Unable to locate BES config file. " + "Please either pass -c "
+                                    + "option when starting the BES, set " + "the environment variable BES_CONF, "
+                                    + "or install in /usr/local/etc/bes/bes.conf " + "or /etc/bes/bes.conf.";
+#endif
+                            throw BESInternalFatalError(s, __FILE__, __LINE__);
+                        }
+                        else {
+                            use_ini = try_ini;
+                        }
+                    }
+                    else {
+                        use_ini = try_ini;
+                    }
+                }
+                else {
+                    use_ini = try_ini;
+                }
+#ifdef BES_CONF
+            }
+            else {
                 use_ini = ini_file;
             }
+#endif
         }
         _instance = new TheBESKeys(use_ini);
     }
@@ -96,7 +98,7 @@ BESKeys *TheBESKeys::TheKeys()
 }
 
 #if 0
-// I think adding this was a mistake because the bes really need to restart
+// I think adding this was a mistake because the bes really needs to restart
 // to have it's configuration updated - either that or this code must gets
 // much more complex - e.g., reload all modules (not just their configuration
 // files). jhrg 5/27/11
