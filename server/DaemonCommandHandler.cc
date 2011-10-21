@@ -56,7 +56,7 @@ using namespace std;
 #include "BESFSDir.h"
 #include "TheBESKeys.h"
 
-#include "XMLWriter.h"
+#include "BESXMLWriter.h"
 #include "BESDaemonConstants.h"
 
 // Defined in daemon.cc
@@ -556,7 +556,7 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
  * value-result param 'response'. The return code indicates
  * @param command The XML command
  */
-void DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
+void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &writer)
 {
     LIBXML_TEST_VERSION;
 
@@ -873,7 +873,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
     xmlFreeDoc(doc);
 }
 
-static void send_bes_error(XMLWriter &writer, BESError &e)
+static void send_bes_error(BESXMLWriter &writer, BESError &e)
 {
     if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BESError") < 0)
         throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
@@ -921,7 +921,7 @@ void DaemonCommandHandler::handle(Connection *c)
     holder = cout.rdbuf();
     cout.rdbuf(&fds);
 
-    XMLWriter writer;
+    BESXMLWriter writer;
 
     try {
         BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);

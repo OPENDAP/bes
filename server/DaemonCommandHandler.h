@@ -36,7 +36,7 @@
 using std::string ;
 
 #include "ServerHandler.h"
-#include "XMLWriter.h"
+#include "BESXMLWriter.h"
 
 class Connection ;
 
@@ -70,7 +70,7 @@ private:
     void load_include_file(const string &files, const string &keys_file_name);
 
     hai_command lookup_command(const string &command);
-    void execute_command(const string &command, XMLWriter &writer);
+    void execute_command(const string &command, BESXMLWriter &writer);
 
 public:
     DaemonCommandHandler(const string &config);

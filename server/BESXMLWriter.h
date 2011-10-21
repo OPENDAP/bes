@@ -1,5 +1,5 @@
 /*
- * XMLWriter.h
+ * BESXMLWriter.h
  *
  *  Created on: Jul 28, 2010
  *      Author: jimg
@@ -15,7 +15,7 @@
 
 using namespace std;
 
-class XMLWriter {
+class BESXMLWriter {
 private:
     // Various xml writer stuff
     xmlTextWriterPtr d_writer;
@@ -29,8 +29,8 @@ private:
     void m_cleanup() ;
 
 public:
-    XMLWriter();
-    virtual ~XMLWriter();
+    BESXMLWriter();
+    virtual ~BESXMLWriter();
 
     xmlTextWriterPtr get_writer() { return d_writer; }
     // string get_ns_uri() const { return d_ns_uri; }
