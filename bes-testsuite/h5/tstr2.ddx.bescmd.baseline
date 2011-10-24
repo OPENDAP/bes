@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="tstr2.h5"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tstr2.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="g1" type="Container">
             <Attribute name="Dataset" type="String">
@@ -66,7 +62,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>/g6/</value>
         </Attribute>
     </Attribute>
-
     <Array name="/g1/dset1">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>/g1/dset1</value>
@@ -114,6 +109,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <String/>
         <dimension size="10"/>
     </Array>
-
     <dataBLOB href=""/>
 </Dataset>
+

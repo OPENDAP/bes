@@ -1,15 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="tnamed_dtype_attr.h5"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tnamed_dtype_attr.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="Dataset" type="String">
             <value>Dataset</value>
         </Attribute>
-        <Attribute name="g1" type="Container">
-        </Attribute>
+        <Attribute name="g1" type="Container"/>
     </Attribute>
     <Attribute name="/g1/" type="Container">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
@@ -19,7 +14,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>8</value>
         </Attribute>
     </Attribute>
-
     <Int32 name="/Dataset">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>/Dataset</value>
@@ -28,6 +22,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>8</value>
         </Attribute>
     </Int32>
-
     <dataBLOB href=""/>
 </Dataset>
+

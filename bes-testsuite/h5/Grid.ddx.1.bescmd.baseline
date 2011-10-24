@@ -1,19 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="Grid.h5"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="Grid.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="HDFEOS" type="Container">
             <Attribute name="ADDITIONAL" type="Container">
-                <Attribute name="FILE_ATTRIBUTES" type="Container">
-                </Attribute>
+                <Attribute name="FILE_ATTRIBUTES" type="Container"/>
             </Attribute>
             <Attribute name="GRIDS" type="Container">
                 <Attribute name="GEOGrid" type="Container">
-                    <Attribute name="Data Fields" type="Container">
-                    </Attribute>
+                    <Attribute name="Data Fields" type="Container"/>
                 </Attribute>
                 <Attribute name="PolarGrid" type="Container">
                     <Attribute name="Data Fields" type="Container">
@@ -97,8 +91,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Attribute>
     </Attribute>
     <Attribute name="/HDFEOS INFORMATION/StructMetadata.0" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-        </Attribute>
+        <Attribute name="SwathStructure" type="Container"/>
         <Attribute name="GridStructure" type="Container">
             <Attribute name="GRID_1" type="Container">
                 <Attribute name="GridName" type="String">
@@ -178,8 +171,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
                         </Attribute>
                     </Attribute>
                 </Attribute>
-                <Attribute name="MergedFields" type="Container">
-                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
             </Attribute>
             <Attribute name="GRID_2" type="Container">
                 <Attribute name="GridName" type="String">
@@ -259,8 +251,7 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
                         </Attribute>
                     </Attribute>
                 </Attribute>
-                <Attribute name="MergedFields" type="Container">
-                </Attribute>
+                <Attribute name="MergedFields" type="Container"/>
             </Attribute>
             <Attribute name="GRID_3" type="Container">
                 <Attribute name="GridName" type="String">
@@ -283,20 +274,14 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
                 <Attribute name="Projection" type="String">
                     <value>HE5_GCTP_GEO</value>
                 </Attribute>
-                <Attribute name="Dimension" type="Container">
-                </Attribute>
-                <Attribute name="DataField" type="Container">
-                </Attribute>
-                <Attribute name="MergedFields" type="Container">
-                </Attribute>
+                <Attribute name="Dimension" type="Container"/>
+                <Attribute name="DataField" type="Container"/>
+                <Attribute name="MergedFields" type="Container"/>
             </Attribute>
         </Attribute>
-        <Attribute name="PointStructure" type="Container">
-        </Attribute>
-        <Attribute name="ZaStructure" type="Container">
-        </Attribute>
+        <Attribute name="PointStructure" type="Container"/>
+        <Attribute name="ZaStructure" type="Container"/>
     </Attribute>
-
     <Array name="/HDFEOS/GRIDS/PolarGrid/Data Fields/Pressure">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>/HDFEOS/GRIDS/PolarGrid/Data Fields/Pressure</value>
@@ -331,6 +316,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="180"/>
     </Array>
     <String name="/HDFEOS INFORMATION/StructMetadata.0"/>
-
     <dataBLOB href=""/>
 </Dataset>
+
