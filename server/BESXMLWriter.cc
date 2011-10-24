@@ -41,6 +41,7 @@ BESXMLWriter::BESXMLWriter() // : d_ns_uri(HAI_NS)
             throw BESInternalFatalError("Error setting indentation for response document ", __FILE__, __LINE__);
 
         d_started = true;
+        d_ended = false;
 
         /* Start the document with the xml default for the version,
          * encoding ISO 8859-1 and the default for the standalone
@@ -83,7 +84,7 @@ void BESXMLWriter::m_cleanup()
 
 const char *BESXMLWriter::get_doc()
 {
-    if (d_writer) {
+    if (d_writer && d_started) {
         // this should end the response element
         if (xmlTextWriterEndElement(d_writer) < 0)
             throw BESInternalFatalError("Error ending Dataset element.", __FILE__, __LINE__);
@@ -91,14 +92,20 @@ const char *BESXMLWriter::get_doc()
         if (xmlTextWriterEndDocument(d_writer) < 0)
             throw BESInternalFatalError("Error ending the document", __FILE__, __LINE__);
 
-        // must call this before getting the buffer content
+        d_ended = true;
+
+#if 0
+        // must call this before getting the buffer content.
+        //
+        // huh?
         xmlFreeTextWriter(d_writer);
         d_writer = 0;
+#endif
     }
 
     // get the xml document as a string and return
     if (!d_doc_buf->content)
         throw BESInternalFatalError("Error retrieving response document as string", __FILE__, __LINE__);
 
-    return (char *) d_doc_buf->content;
+    return (const char *) d_doc_buf->content;
 }
