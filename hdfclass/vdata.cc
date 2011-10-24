@@ -392,7 +392,7 @@ bool hdfistream_vdata::isInternalVdata(int ref) const {
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		hdf_field & f) {
-	cerr << "LoadField - vid: " << vid << endl;
+	DBG(cerr << "LoadField - vid: " << vid << endl);
 
 	// position to first record too read
 	if (VSseek(vid, begin) < 0)

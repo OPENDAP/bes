@@ -7,6 +7,12 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE(1.10)
+
+# The handler is a shared object library, so we don't normally need
+# the static lib. Override this default by specifying `--enable-static',
+# which can make running unit tests with valgrind far more pleasant. 
+AM_DISABLE_STATIC
+
 AC_CONFIG_TESTDIR(bes-testsuite, [.])
 
 PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`

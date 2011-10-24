@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="S2000415.HDF"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="S2000415.HDF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF_GLOBAL" type="Container">
         <Attribute name="Producer_Agency" type="String">
             <value>NASA\\000</value>
@@ -78,7 +74,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>HDF\\000</value>
         </Attribute>
     </Attribute>
-
     <Structure name="NSCAT Rev 20">
         <Array name="WVC_Lat">
             <Attribute name="long_name" type="String">
@@ -826,6 +821,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Structure>
         </Sequence>
     </Structure>
-
     <dataBLOB href=""/>
 </Dataset>
+
