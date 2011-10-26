@@ -45,12 +45,17 @@
 #include <BESVersionInfo.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <TheBESKeys.h>
 #include <BESDapError.h>
 #include <BESNotFoundError.h>
 #include <BESInternalFatalError.h>
 #include "h5get.h"
 
 #define HDF5_NAME "h5"
+
+bool HDF5RequestHandler::_ignore_unknown_types = false;
+bool HDF5RequestHandler::_ignore_unknown_types_set = false;
+
 
 /// An external object that handles NASA EOS HDF5 files for grid generation 
 /// and meta data parsing.
@@ -64,6 +69,21 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(DATA_RESPONSE, HDF5RequestHandler::hdf5_build_data);
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
+
+    if (HDF5RequestHandler::_ignore_unknown_types_set == false) {
+        bool key_found = false;
+        string doset;
+        TheBESKeys::TheKeys()->get_value("H5.IgnoreUnknownTypes", doset, key_found);
+        if (key_found) {
+            doset = BESUtil::lowercase(doset);
+            if (doset == "true" || doset == "yes")
+                HDF5RequestHandler::_ignore_unknown_types = true;
+            else
+                HDF5RequestHandler::_ignore_unknown_types = false;
+
+            HDF5RequestHandler::_ignore_unknown_types_set = true;
+        }
+    }
 }
 
 HDF5RequestHandler::~HDF5RequestHandler()

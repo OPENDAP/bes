@@ -59,6 +59,7 @@
 #include "HDF5Structure.h"
 #include "h5get.h"
 #include "HE5Parser.h"
+#include "HDF5RequestHandler.h"
 
 extern HE5Parser eos;
 
@@ -275,8 +276,8 @@ static BaseType *Get_bt(const string &vname,
                     btp = new HDF5UInt32(vname, dataset);
             }
             else if (size == 8) {
-                throw
-                    InternalErr(__FILE__, __LINE__,
+                if (!HDF5RequestHandler::get_ignore_unknown_types())
+                    throw InternalErr(__FILE__, __LINE__,
                                 string("Unsupported HDF5 64-bit Integer type:")
                                 + vname);
             }
