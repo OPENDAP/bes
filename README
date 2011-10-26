@@ -1,3 +1,11 @@
+Updated for version 1.5.0
+
+Added a new feature so that files with 64-bit integers can be read by
+ignoring 'unknown' types. When the optional parameter H5.IgnoreUnknownTypes
+is set to true, then 64-bit int variables are ignored (but the other
+variables are read). If the parameter is not set, reading files with 64-bit
+integers results in an error. 
+
 Updated for version 1.4.4
 
 This version adds the support of variable names to follow CF conventions
