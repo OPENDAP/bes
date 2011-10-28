@@ -1,3 +1,11 @@
+2011-10-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* HDF5Array.cc (read): handled Int8 to Int16 conversion correctly.
+
+2011-10-27  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc (read_objects): added Int8 to Int16 conversion.
+	* h5get.cc (get_dap_type): changed Int16 to Int8.
+
 2011-04-20  James Gallagher <jgallagher@opendap.org>
 
 	Hyrax 1.7 release

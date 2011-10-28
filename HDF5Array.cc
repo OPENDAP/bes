@@ -586,11 +586,10 @@ bool HDF5Array::read()
 	get_data(d_dset_id, (void *) &convbuf[0]);
 
 	// Check if a Signed Byte to Int16 conversion is necessary.
-
 	if (get_dap_type(d_ty_id) == "Int8") {
 	    vector<short> convbuf2(nelms);
 	    for (int i = 0; i < nelms; i++) {
-		convbuf2[i] = (signed char) (convbuf[i]);
+                convbuf2[i] = static_cast<signed char> (convbuf[i]);
 		DBG(cerr << "convbuf[" << i << "]="
 			<< (signed char)convbuf[i] << endl);
 		DBG(cerr << "convbuf2[" << i << "]="
@@ -601,7 +600,9 @@ bool HDF5Array::read()
 	    m_intern_plain_array_data((char*) &convbuf2[0]);
 	    //delete[] convbuf2;
 	}
-	m_intern_plain_array_data(&convbuf[0]);
+        else {
+            m_intern_plain_array_data(&convbuf[0]);
+        }
     } // if (nelms == d_num_elm)
     else {
 	size_t data_size = nelms * H5Tget_size(d_ty_id);
@@ -612,7 +613,7 @@ bool HDF5Array::read()
 
 	// Check if a Signed Byte to Int16 conversion is necessary.
 	if (get_dap_type(d_ty_id) == "Int8") {
-	    vector<short> convbuf2(data_size);
+	    vector<short> convbuf2(nelms);
 	    for (int i = 0; i < data_size; i++) {
 		convbuf2[i] = static_cast<signed char> (convbuf[i]);
 	    }

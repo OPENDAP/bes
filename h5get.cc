@@ -194,7 +194,7 @@ string get_dap_type(hid_t type)
             if (sign == H5T_SGN_NONE)      
                 return BYTE;    
             else
-                return INT16;
+                return INT8;
         }
 
         if (size == 2) {

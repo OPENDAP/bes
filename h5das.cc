@@ -753,6 +753,12 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 	    // properly. Get data type.
 	    hid_t ty_id = attr_inst.type;
 	    string dap_type = get_dap_type(ty_id);
+
+            // HDF5 signed int8 should be represented as DAP Int16.
+            if(dap_type == "Int8"){
+                dap_type = "Int16";
+            }
+
 	    string attr_name = GET_NAME(attr_inst.name);
 
 	    // Skip unmappable types early. Otherwise, delete[] value will
@@ -783,7 +789,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 		for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
 		    print_rep = print_attr(ty_id, loc, value);
 		    if (print_rep != NULL) {
-			attr_table_ptr->append_attr("name", get_dap_type(ty_id), print_rep);
+                        attr_table_ptr->append_attr("name", dap_type, print_rep);
 			delete[] print_rep;
 			print_rep = NULL;
 		    }
