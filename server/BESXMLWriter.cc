@@ -71,7 +71,7 @@ void BESXMLWriter::m_cleanup()
     if (d_writer) {
         xmlFreeTextWriter(d_writer);
         d_writer = 0;
-        d_doc_buf = 0;
+        //d_doc_buf = 0;
     }
     if (d_doc_buf) {
         xmlBufferFree(d_doc_buf);
@@ -94,13 +94,10 @@ const char *BESXMLWriter::get_doc()
 
         d_ended = true;
 
-#if 0
-        // must call this before getting the buffer content.
-        //
-        // huh?
+        // must call this before getting the buffer content. Odd, but appears to be true.
+        // jhrg
         xmlFreeTextWriter(d_writer);
         d_writer = 0;
-#endif
     }
 
     // get the xml document as a string and return
