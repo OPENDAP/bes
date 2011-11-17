@@ -106,7 +106,7 @@ AT_BESCMD_DAS_RESPONSE_TEST([testgr4.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testgr4.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr4.hdf.data.bescmd], [pass])
 
-AT_BESCMD_DAS_RESPONSE_TEST([testgr5.hdf.das.bescmd], [xfail])
+AT_BESCMD_DAS_RESPONSE_TEST([testgr5.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testgr5.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr5.hdf.data.bescmd], [pass])
 
@@ -122,7 +122,7 @@ AT_BESCMD_DAS_RESPONSE_TEST([testsds4.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testsds4.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds4.hdf.data.bescmd], [pass])
 
-AT_BESCMD_DAS_RESPONSE_TEST([testsds5.hdf.das.bescmd], [xfail])
+AT_BESCMD_DAS_RESPONSE_TEST([testsds5.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testsds5.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds5.hdf.data.bescmd], [pass])
 
@@ -146,7 +146,7 @@ AT_BESCMD_DAS_RESPONSE_TEST([testvs3.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testvs3.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs3.hdf.data.bescmd], [pass])
 
-AT_BESCMD_DAS_RESPONSE_TEST([testvs4.hdf.das.bescmd], [xfail])
+AT_BESCMD_DAS_RESPONSE_TEST([testvs4.hdf.das.bescmd], [pass])
 AT_BESCMD_DDS_RESPONSE_TEST([testvs4.hdf.dds.bescmd], [pass])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs4.hdf.data.bescmd], [pass])
 
