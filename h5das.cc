@@ -1150,7 +1150,10 @@ bool is_mappable(hid_t _attr_id, string _name, string _dap_type) {
     return false;
 #endif
 
-    if (_dap_type == "Unmappable Type" || _dap_type == "Structure") {
+    if(_dap_type == "Unmappable Type" ||
+       _dap_type == "Int_else" ||
+       _dap_type == "Float_else" ||
+       _dap_type == "Structure"){
 
         if (H5Aclose(_attr_id) < 0) {
             throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");

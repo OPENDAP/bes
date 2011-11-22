@@ -1,3 +1,7 @@
+2011-11-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc (is_mappable): added two more unsupported types checking.
+
 2011-10-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 	* HDF5Array.cc (read): handled Int8 to Int16 conversion correctly.
 
