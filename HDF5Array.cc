@@ -327,17 +327,17 @@ bool HDF5Array::m_array_of_reference()
 
 	// Handle regional reference.
 	if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed");
+	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed.");
 	}
 
 	if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) > 0) {
 	    DBG(cerr << "=read() Got regional reference. " << endl);
             hdset_reg_ref_t *rbuf = new hdset_reg_ref_t[d_num_elm];
             if(rbuf == NULL)
-		throw InternalErr(__FILE__, __LINE__, "new failed()");
+		throw InternalErr(__FILE__, __LINE__, "new() failed.");
 
 	    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &rbuf[0]) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
+		throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
 	    }
 
 	    for (int i = 0; i < nelms; i++) {
@@ -474,10 +474,10 @@ bool HDF5Array::m_array_of_reference()
 	    DBG(cerr << "=read() Got object reference. " << endl);
             hobj_ref_t *rbuf = new hobj_ref_t[d_num_elm];
             if(rbuf == NULL)
-		throw InternalErr(__FILE__, __LINE__, "new failed()");
+		throw InternalErr(__FILE__, __LINE__, "new() failed.");
 
 	    if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, H5P_DEFAULT, &rbuf[0]) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
+		throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
 	    }
 
 	    for (int i = 0; i < nelms; i++) {

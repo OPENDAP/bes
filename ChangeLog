@@ -1,3 +1,7 @@
+2011-12-08  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDF5Array.cc (m_array_of_reference): corrected typos.
+
 2011-12-01  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5Array.cc (m_array_of_reference): fixed bug in object reference
