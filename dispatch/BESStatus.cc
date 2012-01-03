@@ -43,7 +43,10 @@ BESStatus::BESStatus()
 	const struct tm *sttime = localtime( &sctime ) ;
 	char zone_name[10] ;
 	strftime( zone_name, sizeof( zone_name ), "%Z", sttime ) ;
+#if 0
 	boot_time = string( zone_name ) + " " + string( asctime( sttime ) ) ;
+#endif
+	boot_time = "foo";
 	string::size_type index = boot_time.find( '\n' ) ;
 	if( index != string::npos )
 	    boot_time.erase( index ) ;

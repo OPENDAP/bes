@@ -339,6 +339,13 @@ void BESKeys::load_include_file(const string &file)
 
 bool BESKeys::only_blanks(const char *line)
 {
+    string my_line = line;
+    if (my_line.find_first_not_of(" ") != string::npos)
+        return false;
+    else
+        return true;
+
+#if 0
     int val;
     regex_t rx;
     string expr = "[^[:space:]]";
@@ -373,6 +380,7 @@ bool BESKeys::only_blanks(const char *line)
             throw BESInternalFatalError(s, __FILE__, __LINE__);
         }
     }
+#endif
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
