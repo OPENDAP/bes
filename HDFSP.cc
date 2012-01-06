@@ -91,6 +91,7 @@ struct delete_elem
 	}
 };
 
+extern bool insert_map(std::map<std::string,std::string>& m, string key, string val);
 
 File::~File ()
 {
@@ -2102,7 +2103,7 @@ throw (Exception)
 		 i != file->sd->fulldimnamelist.end (); ++i) {
 		temp1name = (*i);
 		temp1name = sn_dim->get_short_string (temp1name, &shorteningname);
-		file->sd->n2dimnamelist[(*i)] = temp1name;
+		insert_map(file->sd->n2dimnamelist, (*i), temp1name);
 	}
 
 	// change the corrected dimension name list for each SDS field
@@ -2183,7 +2184,7 @@ throw (Exception)
 						tempmapit =
 							file->sd->dimcvarlist.find ((*j)->getName ());
 						if (tempmapit == file->sd->dimcvarlist.end ()) {
-							file->sd->dimcvarlist[(*j)->name] = (*i)->newname;
+                                                    insert_map(file->sd->dimcvarlist, (*j)->name, (*i)->newname);
 							break;
 						}
 					}
@@ -2193,8 +2194,7 @@ throw (Exception)
 					// reason, the chance of clashing is very,very rare.
 					(*i)->newname =
 						(*i)->getCorrectedDimensions ()[0]->getName ();
-					file->sd->dimcvarlist[(*i)->getCorrectedDimensions ()[0]->
-										  getName ()] = (*i)->newname;
+                                        insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
 					COARDFLAG = true;
 
 				}
@@ -2256,8 +2256,8 @@ throw (Exception)
 				else
 					(*i)->newname =
 						(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
-				file->sd->dimcvarlist[(*i)->getCorrectedDimensions ()[0]->
-									  getName ()] = (*i)->newname;
+                                insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+
 			}
 		}
 	}
