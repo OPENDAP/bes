@@ -1,3 +1,9 @@
+2011-12-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* HDFSP.cc (File::prepare): Replaced map[key]=val assignments for 
+	string:string map.
+	* HDFEOS2.cc (insert_map): is added. Replaced map[key]=val assignments
+	for string:string map.
+
 2011-08-18  James Gallagher <jgallagher@opendap.org>
 
 	Added tests that verfiy the most recent fixes to the handler -
