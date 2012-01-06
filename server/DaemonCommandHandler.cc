@@ -705,6 +705,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
                                 throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
 
                             char *content = read_file(d_pathnames[(*i).first]);
+                            try {
                             BESDEBUG("besdaemon_verbose", "besdaemon: content: " << content << endl);
                             if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
                             throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
@@ -713,7 +714,12 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
                             throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                             delete [] content; content = 0;
-
+                            }
+                            catch (...) {
+                            	delete [] content; content = 0;
+                            	throw;
+                            }
+                            
                             if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                                 throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
                             ++i;
@@ -777,6 +783,7 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
                         BESDEBUG("besdaemon", "besdaemon: TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
 
                         char *content = get_bes_log_lines(d_log_file_name, num_lines);
+                        try {
                         BESDEBUG("besdaemon_verbose", "besdaemon: Returned lines: " << content << endl);
                         if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
                             throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
@@ -785,6 +792,11 @@ void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &
                             throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                         delete [] content; content = 0;
+                           }
+                            catch (...) {
+                            	delete [] content; content = 0;
+                            	throw;
+                            }
 
                         if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                             throw BESInternalFatalError("Could not end <hai:BesLog> element ", __FILE__, __LINE__);

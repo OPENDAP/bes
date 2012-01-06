@@ -288,9 +288,11 @@ BESUncompressManager::uncompress( const string &src, string &target,
 		    // an unknown problem in the cache, unlock it and throw a
 		    // BES exception
 		    cache.unlock() ;
+#if 0
 		    string err = (string)"Problem working with the cache, "
 		                 + "unknown error" ;
-		    throw BESInternalError( err, __FILE__,__LINE__);
+#endif
+		    throw BESInternalError( "Problem working with the cache, unknown error", __FILE__,__LINE__);
 		}
 	    }
 	    else

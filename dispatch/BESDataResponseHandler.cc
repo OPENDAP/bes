@@ -92,6 +92,8 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
         long rsl = strtol(response_size_limit.c_str(), &endptr, /*int base*/ 10);
         if (rsl == 0 && errno > 0) {
             string err = strerror(errno);
+            delete dds; dds = 0;
+            delete bdds; bdds = 0;
             throw BESInternalError("The responseSizeLimit context value ("
                     + response_size_limit + ") was bad: " + err, __FILE__, __LINE__);
        }
