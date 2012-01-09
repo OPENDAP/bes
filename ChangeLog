@@ -1,3 +1,19 @@
+2012-01-09  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* configure.ac: changed version number to 3.9.4.
+	* hdf4_handler.spec: changed version number to 3.9.4.
+	* hdfesc.cc: improved MODIS scale/offset handling and OBPG support.
+	* hdfdesc.h: added for MODIS and MISR product support.
+	* HDEEOPS2ArrayGridGeoField.cc: added SOM projection support.
+	* HDEEOPS2ArrayGridGeoField. (CalculateSpeLatLon)h: renamed to
+	CalculateLAMAZLatLon().
+	* HDFEOS2Array_RealField.cc: corrected scale/offset application in
+	MODIS products.
+	* HDFEOS2ArraySwathDimMapField.cc: corrected scale/offset application in
+	MODIS products.
+	* Makefile.am: added files for MISR product support.
+	* misr_init.cc, misrinv.cc, misrproj.h, errormacros.h: added.
+
 2012-01-06  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* HE2CFUniqName.cc (set_uniq_name): removed exit(-1) function.

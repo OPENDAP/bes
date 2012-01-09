@@ -45,7 +45,8 @@ HDFEOS2_SRC = HDFEOS2.cc HDFEOS2Util.cc HDFSPUtil.cc HDFSP.cc HDFSPArrayGeoField
 	          HDFEOS2Array_RealField.cc \
 	     HDFEOS2ArrayGridGeoField.cc HDFEOS2ArraySwathGeoField.cc HDFEOS2ArrayMissField.cc\
               HDFEOS2ArraySwathDimMapField.cc HDFEOS2ArraySwathGeoDimMapField.cc HDFEOS2ArraySwathGeoDimMapExtraField.cc \
-	     HE2CFNcML.cc HE2CFShortName.cc HE2CFValidChar.cc HE2CFUniqName.cc HE2CF.cc 
+	     HE2CFNcML.cc HE2CFShortName.cc HE2CFValidChar.cc HE2CFUniqName.cc HE2CF.cc misr_init.cc misrinv.cc
+
 HDFTYPE_SRC += $(HDFEOS2_SRC)
 endif
 
@@ -61,7 +62,7 @@ HDFEOS2_HDR = HDFEOS2.h HDFSP.h HDFSPUtil.h\
               HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
               HDFEOS2ArraySwathDimMapField.h\
               HDFEOS2ArraySwathGeoDimMapField.h HDFEOS2ArraySwathGeoDimMapExtraField.h HDFEOS2Util.h\
-              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h
+              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h misrproj.h errormacros.h
 HDFTYPE_HDR += $(HDFEOS2_HDR)
 endif
 

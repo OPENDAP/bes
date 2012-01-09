@@ -115,6 +115,254 @@ HDFEOS2ArraySwathDimMapField::read ()
 	char tmp_dimlist[1024];
 	int32 type;
 	intn r;
+
+	// Obtain attribute values.
+        int32 sdfileid;
+        sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+        int32 sdsindex, sdsid;
+        sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
+        sdsid = SDselect(sdfileid, sdsindex);
+
+        char attrname[H4_MAX_NC_NAME + 1];
+        int32 attrtype, attrcount, attrcounts=0, attrindex, attrindex2;
+	int32 scale_factor_attr_index, add_offset_attr_index;
+        vector<char> attrbuf, attrbuf2;
+        float scale=1.0, offset2=0.0, fillvalue;
+        float *reflectance_offsets=NULL, *reflectance_scales=NULL;
+        float *radiance_offsets=NULL, *radiance_scales=NULL;
+
+        attrindex = SDfindattr(sdsid, "radiance_scales");
+        attrindex2 = SDfindattr(sdsid, "radiance_offsets");
+	if(mtype!=OTHER_TYPE && attrindex!=FAIL && attrindex2!=FAIL)
+        {
+                intn ret;
+                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf.clear();
+                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
+		if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf2.clear();
+                attrbuf2.resize(DFKNTsize(attrtype)*attrcount);
+		switch(attrtype)
+                {
+#define GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST *ptr = (CAST*)&attrbuf[0]; \
+                CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+                radiance_scales = new float[attrcount]; \
+                radiance_offsets = new float[attrcount]; \
+                for(int l=0; l<attrcount; l++) \
+                { \
+                        radiance_scales[l] = ptr[l]; \
+                        radiance_offsets[l] = ptr2[l]; \
+                        cerr << "l=" << radiance_scales[l] << "\t" << radiance_offsets[l] << endl; \
+                } \
+        } \
+        break;
+                        GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
+                        GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                };
+#undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
+                attrcounts = attrcount; // Store the count of attributes.
+        }
+
+	attrindex = SDfindattr(sdsid, "reflectance_scales");
+        attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
+        if(mtype!=OTHER_TYPE && attrindex!=FAIL && attrindex2!=FAIL)
+        {
+                intn ret;
+                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf.clear();
+                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf2.clear();
+                attrbuf2.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+		switch(attrtype)
+                {
+#define GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST *ptr = (CAST*)&attrbuf[0]; \
+                CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+                reflectance_scales = new float[attrcount]; \
+                reflectance_offsets = new float[attrcount]; \
+                for(int l=0; l<attrcount; l++) \
+                { \
+                        reflectance_scales[l] = ptr[l]; \
+                        reflectance_offsets[l] = ptr2[l]; \
+                        cerr << "l=" << reflectance_scales[l] << "\t" << reflectance_offsets[l] << endl; \
+                } \
+        } \
+        break;
+                        GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
+                        GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                };
+#undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
+                attrcounts = attrcount; // Store the count of attributes.
+        }
+	
+	scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
+        if(mtype!=OTHER_TYPE && scale_factor_attr_index!=FAIL)
+        {
+                intn ret;
+                ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'scale_factor' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf.clear();
+                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'scale_factor' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+		switch(attrtype)
+                {
+#define GET_SCALE_FACTOR_ATTR_VALUE(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+                scale = (float)tmpvalue; \
+        } \
+        break;
+                        GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float);
+                        GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double);
+                };
+#undef GET_SCALE_FACTOR_ATTR_VALUE
+        }
+
+	add_offset_attr_index = SDfindattr(sdsid, "add_offset");
+        if(mtype!=OTHER_TYPE && add_offset_attr_index!=FAIL)
+        {
+                intn ret;
+                ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'add_offset' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf.clear();
+                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute 'add_offset' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+		switch(attrtype)
+                {
+#define GET_ADD_OFFSET_ATTR_VALUE(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+                offset2 = (float)tmpvalue; \
+        } \
+        break;
+                        GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float);
+                        GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
+                };
+#undef GET_ADD_OFFSET_ATTR_VALUE
+        }
+	
+	attrindex = SDfindattr(sdsid, "_FillValue");
+        if(mtype!=OTHER_TYPE && attrindex!=FAIL)
+        {
+                intn ret;
+                ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+                attrbuf.clear();
+                attrbuf.resize(DFKNTsize(attrtype)*attrcount);
+                ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
+                if (ret==FAIL)
+                {
+                        ostringstream eherr;
+                        eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+		
+                switch(attrtype)
+                {
+#define GET_FILLVALUE_ATTR_VALUE(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+                fillvalue = (float)tmpvalue; \
+        } \
+        break;
+                        GET_FILLVALUE_ATTR_VALUE(INT8, int8);
+                        GET_FILLVALUE_ATTR_VALUE(INT16, int16);
+                        GET_FILLVALUE_ATTR_VALUE(INT32, int32);
+                        GET_FILLVALUE_ATTR_VALUE(UINT8, uint8);
+                        GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
+                        GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
+                };
+#undef GET_FILLVALUE_ATTR_VALUE
+        }
+
+	// For testing only.
+        //cerr << "scale=" << scale << endl;
+        //cerr << "offset=" << offset2 << endl;
+        //cerr << "fillvalue=" << fillvalue << endl;
+	
+	SDend(sdfileid);
+
 	r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
 					   &tmp_rank, tmp_dims, &type, tmp_dimlist);
 	if (r != 0) {
@@ -129,6 +377,71 @@ HDFEOS2ArraySwathDimMapField::read ()
 
 
 	void *val;
+
+#define RECALCULATE(CAST, DODS_CAST, VAL) \
+{ \
+        bool change_data_value = false; \
+        if(mtype!=OTHER_TYPE) \
+        { \
+                float *tmpval = new float[nelms]; \
+                CAST tmptr = (CAST)VAL; \
+                for(int l=0; l<nelms; l++) \
+                        tmpval[l] = (float)tmptr[l]; \
+                if(!(scale==1.0 && offset2==0.0)) \
+                { \
+                        for(size_t l=0; l<nelms; l++) \
+                                if(attrindex!=FAIL && ((float)tmptr[l])!=fillvalue) \
+                                { \
+                                        if(mtype==MODIS_TYPE1) \
+                                                tmpval[l] = (tmptr[l]-offset2)*scale; \
+                                        else if(mtype==MODIS_TYPE2) \
+                                                tmpval[l] = tmptr[l]*scale + offset2; \
+                                        else if(mtype==MODIS_TYPE3) \
+                                                tmpval[l] = (tmptr[l]-offset2)/scale; \
+                                } \
+                        change_data_value = true; \
+			set_value((dods_float32 *)tmpval, nelms); \
+                        delete[] tmpval; \
+                } else  if((radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
+                { \
+                        size_t dimindex=0; \
+                        if (attrcounts!=tmp_dims[dimindex]) \
+                        { \
+                                ostringstream eherr; \
+                                eherr << "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in " << fieldname.c_str() << ". These two values must be equal."; \
+                                throw InternalErr (__FILE__, __LINE__, eherr.str ()); \
+                        } \
+                        size_t start_index, end_index; \
+                        size_t nr_elems = nelms/count32[dimindex]; \
+                        start_index = offset32[dimindex]; \
+                        end_index = start_index+step32[dimindex]*(count32[dimindex]-1); \
+			for(size_t k=start_index; k<=end_index; k+=step32[dimindex]) \
+                        { \
+                                float tmpscale = (fieldname.find("Emissive")!=string::npos)? radiance_scales[k]: reflectance_scales[k]; \
+                                float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
+                                for(size_t l=0; l<nr_elems; l++) \
+                                { \
+                                        size_t index = l+k*nr_elems; \
+                                        if(attrindex!=FAIL && ((float)tmptr[index])!=fillvalue) \
+                                                if(mtype==MODIS_TYPE1) \
+                                                        tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
+                                                else if(mtype==MODIS_TYPE2) \
+                                                        tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
+                                                else if(mtype==MODIS_TYPE2) \
+                                                        tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
+                                } \
+                        } \
+			change_data_value = true; \
+                        set_value((dods_float32 *)tmpval, nelms); \
+                        delete[] tmpval; \
+                } \
+        } \
+        if(!change_data_value) \
+        { \
+                set_value ((DODS_CAST)VAL, nelms); \
+        } \
+        delete[](CAST) VAL; \
+}
 
 	// Loop through the data type. 
 	switch (type) {
@@ -149,8 +462,9 @@ HDFEOS2ArraySwathDimMapField::read ()
 			}
 
 #ifndef SIGNED_BYTE_TO_INT32
-			set_value ((dods_byte *) val, nelms);
-			delete[](int8 *) val;
+			RECALCULATE(int8*, dods_byte*, val);
+			//set_value ((dods_byte *) val, nelms);
+			//delete[](int8 *) val;
 #else
 			int32 *newval;
 			int8 *newval8;
@@ -160,12 +474,12 @@ HDFEOS2ArraySwathDimMapField::read ()
 			for (int counter = 0; counter < nelms; counter++)
 				newval[counter] = (int32) (newval8[counter]);
 
-			set_value ((dods_int32 *) newval, nelms);
+			RECALCULATE(int32*, dods_int32*, newval);
+			//set_value ((dods_int32 *) newval, nelms);
 			delete[](int8 *) val;
-			delete[]newval;
+			//delete[]newval;
 #endif
 		}
-
 		break;
 	case DFNT_UINT8:
 	case DFNT_UCHAR8:
@@ -182,10 +496,10 @@ HDFEOS2ArraySwathDimMapField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 
-		set_value ((dods_byte *) val, nelms);
-		delete[](uint8 *) val;
+		RECALCULATE(uint8*, dods_byte*, val);
+		//set_value ((dods_byte *) val, nelms);
+		//delete[](uint8 *) val;
 		break;
-
 	case DFNT_INT16:
 		val = new int16[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
@@ -199,9 +513,9 @@ HDFEOS2ArraySwathDimMapField::read ()
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
-
-		set_value ((dods_int16 *) val, nelms);
-		delete[](int16 *) val;
+		RECALCULATE(int16*, dods_int16*, val);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
 		break;
 	case DFNT_UINT16:
 		val = new uint16[nelms];
@@ -216,8 +530,9 @@ HDFEOS2ArraySwathDimMapField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 
-		set_value ((dods_uint16 *) val, nelms);
-		delete[](uint16 *) val;
+		RECALCULATE(uint16*, dods_uint16*, val);
+		//set_value ((dods_uint16 *) val, nelms);
+		//delete[](uint16 *) val;
 		break;
 	case DFNT_INT32:
 		val = new int32[nelms];
@@ -232,8 +547,9 @@ HDFEOS2ArraySwathDimMapField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 
-		set_value ((dods_int32 *) val, nelms);
-		delete[](int32 *) val;
+		RECALCULATE(int32*, dods_int32*, val);
+		//set_value ((dods_int32 *) val, nelms);
+		//delete[](int32 *) val;
 		break;
 	case DFNT_UINT32:
 		val = new uint32[nelms];
@@ -248,8 +564,9 @@ HDFEOS2ArraySwathDimMapField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 
-		set_value ((dods_uint32 *) val, nelms);
-		delete[](uint32 *) val;
+		RECALCULATE(uint32*, dods_uint32*, val);
+		//set_value ((dods_uint32 *) val, nelms);
+		//delete[](uint32 *) val;
 		break;
 	case DFNT_FLOAT32:
 		val = new float32[nelms];

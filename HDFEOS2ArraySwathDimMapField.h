@@ -15,6 +15,8 @@ using namespace libdap;
 
 #include "HDFEOS2Util.h"
 
+#include "hdfdesc.h"
+
 class HDFEOS2ArraySwathDimMapField:public Array
 {
   public:
