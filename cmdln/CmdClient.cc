@@ -543,15 +543,17 @@ CmdClient::interact()
 
 /** @brief Read a line from the interactive terminal using the readline library
  *
+ * @note I've changed this code so that it returns zero on EOF, not whatever -1
+ * is when it is assigned to an unsigned int/long.
  * @param msg read the line into this string
- * @return number of characters read
+ * @return number of characters read, zero for EOF
  */
 size_t
 CmdClient::readLine( string &msg )
 {
     size_t len = 0 ;
     char *buf = (char *) NULL ;
-    buf =::readline( "BESClient> " ) ;
+    buf = ::readline( "BESClient> " ) ;
     if( buf && *buf )
     {
         len = strlen( buf ) ;
@@ -578,7 +580,8 @@ CmdClient::readLine( string &msg )
             // which means a character buffer is returned, but is empty.
 
             // Problem: len is unsigned.
-            len = -1 ;
+            // len = -1 ; I replaced this with the following. jhrg 1/4/12
+            len = 0;
         }
     }
     if( buf )
