@@ -1,3 +1,7 @@
+2012-01-10  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* Makefile.am: added hdfdesc.h
+
 2012-01-09  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* configure.ac: changed version number to 3.9.4.

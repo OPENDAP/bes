@@ -62,7 +62,7 @@ HDFEOS2_HDR = HDFEOS2.h HDFSP.h HDFSPUtil.h\
               HDFEOS2ArrayGridGeoField.h HDFEOS2ArraySwathGeoField.h HDFEOS2ArrayMissField.h\
               HDFEOS2ArraySwathDimMapField.h\
               HDFEOS2ArraySwathGeoDimMapField.h HDFEOS2ArraySwathGeoDimMapExtraField.h HDFEOS2Util.h\
-              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h misrproj.h errormacros.h
+              HE2CFNcML.h HE2CFShortName.h  HE2CFValidChar.h HE2CFUniqName.h  HE2CF.h misrproj.h errormacros.h hdfdesc.h
 HDFTYPE_HDR += $(HDFEOS2_HDR)
 endif
 
