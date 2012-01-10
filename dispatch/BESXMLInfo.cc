@@ -566,7 +566,7 @@ BESXMLInfo::dump( ostream &strm ) const
 }
 
 BESInfo *
-BESXMLInfo::BuildXMLInfo( const string &info_type )
+BESXMLInfo::BuildXMLInfo( const string &/*info_type*/ )
 {
     return new BESXMLInfo( ) ;
 }
