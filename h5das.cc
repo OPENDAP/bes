@@ -343,6 +343,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 snprintf(rep, 32, "%s", gps);
             }
             else if (H5Tget_size(type) == 0) {
+            	delete[] rep;
                 throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
             }
             break;
@@ -360,6 +361,7 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 buf = new char[str_size + 1];
                 strncpy(buf, (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
+                rep = 0;
                 rep = new char[str_size + 3];
                 snprintf(rep, str_size + 3, "%s", buf);
                 rep[str_size + 2] = '\0';
@@ -368,6 +370,8 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
             } catch (...) {
                 if (buf)
                     delete[] buf;
+                if (rep)
+                	delete[] rep;
                 throw;
             }
             break;
