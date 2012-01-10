@@ -1,6 +1,13 @@
 
  $Id$
 
+Updated for version 3.10.0
+
+This version of the BES supports the Hyrax Admin Interface features
+through a series of new BES-level commands.
+
+The Response Size Limit feature is now supported.
+
 Updated for version 3.9.1
 
 This version of the BES supports the new (experiemental) Keywords

@@ -1,6 +1,15 @@
 
 	$Id$
 
+News for version 3.10.0
+
+Added support for the Hyrax Admin Interface (HAI). The server now
+supports a set of commands that can be used to start and stop the
+server; load/reload/edit the configuration files; look at logging
+output; and toggle debugging output on-the-fly.
+
+Added support for response size limits.
+
 News for version 3.9.2
 
 Bug fix in PPT released in this version.
