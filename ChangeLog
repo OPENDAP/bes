@@ -1,3 +1,15 @@
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+	M    h5das.cc
+	M    HDF5Array.cc
+	M    HDF5Array.h
+
+2011-12-08  hyoklee
+
+	corrected typo in error outputs.
+
 2011-12-08  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* HDF5Array.cc (m_array_of_reference): corrected typos.
