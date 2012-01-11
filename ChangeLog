@@ -1,6 +1,21 @@
+
 2012-01-10  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* Makefile.am: added hdfdesc.h
+
+2012-01-10  hyoklee
+
+	added the missing file that caused RPM build failure with
+	--with-hdfeos2 option.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  hyoklee
+
+	Corrected scale/offset for MODIS products. Added LAMAZ/SOM
+	projection support. See ChangeLog for details.
 
 2012-01-09  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
@@ -92,13 +107,6 @@
 	M    README
 	M    Makefile.am
 
-2011-04-20  James Gallagher <jgallagher@opendap.org>
-
-	Hyrax 1.7 release
-
-;; Local Variables:
-;; coding: utf-8
-;; End:
 2011-04-20  James Gallagher <jgallagher@opendap.org>
 
 	Hyrax 1.7 release

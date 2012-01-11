@@ -1,5 +1,10 @@
 
-$Id$
+Version 3.9.4
+
+Corrected scale/offset for MODIS products. Added LAMAZ/SOM projection
+support. See ChangeLog for details.
+
+Various build and packaging fixes.
 
 Version 3.9.3
 
