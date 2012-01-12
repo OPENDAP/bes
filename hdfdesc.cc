@@ -507,7 +507,8 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
 			    if(projcode==GCTP_SOM)
 				ar->append_dim(180, "SOMBlockDim");
 			    
-                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                            // for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                            for(it_d = dims.end()-1; it_d >= dims.begin(); it_d--)
                                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
 
@@ -1158,14 +1159,15 @@ print_type(int32 type)
 // Borrowed codes from ncdas.cc in netcdf_handle4 module.
 string
 print_attr(int32 type, int loc, void *vals)
-//print_attr(int32 type, int loc, char *vals)
 {
     ostringstream rep;
     
     union {
         char *cp;
         short *sp;
+        unsigned short *usp;
         int32 /*nclong */ *lp;
+        unsigned int *ui;
         float *fp;
         double *dp;
     } gp;
@@ -1189,18 +1191,30 @@ print_attr(int32 type, int loc, void *vals)
         }
 
     case DFNT_INT16:
-    case DFNT_UINT16:        
         {
             gp.sp = (short *) vals;
             rep << *(gp.sp+loc);
             return rep.str();
         }
 
+    case DFNT_UINT16:        
+        {
+            gp.usp = (unsigned short *) vals;
+            rep << *(gp.usp+loc);
+            return rep.str();
+        }
+
     case DFNT_INT32:
-    case DFNT_UINT32:        
         {
             gp.lp = (int32 *) vals; 
             rep << *(gp.lp+loc);
+            return rep.str();
+        }
+
+    case DFNT_UINT32:        
+        {
+            gp.ui = (unsigned int *) vals; 
+            rep << *(gp.ui+loc);
             return rep.str();
         }
 

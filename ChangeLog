@@ -1,3 +1,11 @@
+2012-01-12  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* HE2CF.cc (print_attr): fixed bug for uint16/uint32 type handling.
+	* hdfdesc.cc (print_attr): fixed bug for uint16/uint32 type handling.
+
+
+2012-01-11  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDFEOS2.cc: fixed the bug for LAMAZ visualization anomaly.
 
 2012-01-10  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
