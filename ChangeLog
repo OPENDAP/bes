@@ -1,5 +1,9 @@
 2012-01-13  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
+	* NEWS: added what's new in this release.
+	* README: updated new features.
+	* INSTALL: updated versions and added more information about 
+	--with-hdfeo2 option.
 	* hdf4_handler.cf.spec: added for those who are interested in building
 	custom RPM using --with-hdfeos2 option.
 

@@ -1,10 +1,11 @@
-
 Version 3.9.4
 
-Corrected scale/offset for MODIS products. Added LAMAZ/SOM projection
-support. See ChangeLog for details.
-
-Various build and packaging fixes.
+Fixed the bug in uint16/uint32 type attribute handling.
+Correced the handling the scale/offset for MODIS products because the 
+MODIS scale/offset equation is quite different from the CF standard.
+Added the support for LAMAZ projection data.
+Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
+string:string Map.
 
 Version 3.9.3
 
