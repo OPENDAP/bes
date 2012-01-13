@@ -1,4 +1,10 @@
+2012-01-13  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* hdf4_handler.cf.spec: added for those who are interested in building
+	custom RPM using --with-hdfeos2 option.
+
 2012-01-12  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	
 	* HE2CF.cc (print_attr): fixed bug for uint16/uint32 type handling.
 	* hdfdesc.cc (print_attr): fixed bug for uint16/uint32 type handling.
 
