@@ -758,6 +758,10 @@ namespace HDFEOS2
 			/// sometimes it is not. We have to check.
 			void DetectMajorDimension () throw (Exception);
 
+			/// Find a field and check which dimension is major for this field. If Y dimension is major, return 1; if X dimension is major, return 0, otherwise throw exception. (LD -2012/01/16)
+			int DetectFieldMajorDimension () throw (Exception);
+
+
 			///  This method will detect if this projection is 1-D or 2-D.
 			/// For 1-D, it is treated as "orthogonal".
 			void DetectOrthogonality () throw (Exception);

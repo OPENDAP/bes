@@ -1,3 +1,11 @@
+2012-01-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDFEOS2.h
+	* hdfdesc.cc
+	* HDFEOS2ArrayGridGeoField.cc
+	* HDFEOS2.cc
+	updated the above files to fix LAMAZ problem.
+
 2012-01-13  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* NEWS: added what's new in this release.
@@ -8,7 +16,7 @@
 	custom RPM using --with-hdfeos2 option.
 
 2012-01-12  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
-	
+
 	* HE2CF.cc (print_attr): fixed bug for uint16/uint32 type handling.
 	* hdfdesc.cc (print_attr): fixed bug for uint16/uint32 type handling.
 

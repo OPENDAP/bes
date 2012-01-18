@@ -1398,29 +1398,33 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
 	
 	CalculateLatLon (gridid, fieldtype, specialformat, tmp1, tmp2, tmp3, tmp4, xdim*ydim);
 	
+        float64 *tmp5 = new float64[xdim*ydim];
+        for(int w=0; w < xdim*ydim; w++)
+            tmp5[w] = tmp1[w];
+
 	if(ydimmajor) {
 		if(fieldtype==1) {// Lat.
 			for(int i=0; i<ydim; i++)
                 		for(int j=0; j<xdim; j++)
 					if(isundef_lat(tmp1[i*xdim+j]))
-						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp1, i, j, ydim, xdim);
+						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
 		} else if(fieldtype==2){ // Lon.
 			for(int i=0; i<ydim; i++)
                 		for(int j=0; j<xdim; j++)
 					if(isundef_lon(tmp1[i*xdim+j]))
-						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp1, i, j, ydim, xdim);
+						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
 		}
 	} else { // end if(ydimmajor)
 		if(fieldtype==1) {
 			for(int i=0; i<xdim; i++)
 				for(int j=0; j<ydim; j++)
 					if(isundef_lat(tmp1[i*xdim+j]))
-						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp1, i, j, ydim, xdim);
+						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
 		} else if(fieldtype==2) {
 			for(int i=0; i<xdim; i++)
 				for(int j=0; j<ydim; j++)
 					if(isundef_lon(tmp1[i*xdim+j]))
-						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp1, i, j, ydim, xdim);
+						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
 		}
 	}
 
@@ -1429,4 +1433,5 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
                 	latlon[k++] = tmp1[i*ydim+j];
 
 	delete[] tmp1;
+	delete[] tmp5;
 }

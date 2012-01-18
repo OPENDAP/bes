@@ -924,7 +924,10 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                     int ydimsize = (*i)->getInfo().getY();
 
                     // Add dimensions. If it is YDim major,the dimension name list is "YDim XDim", otherwise, it is "XDim YDim". 
-                    if(latfield->ydimmajor) {
+                    // For LAMAZ projection, Y dimension is always supposed to be major for calculating lat/lon, but for dimension order, it should be consistent with data fields. (LD -2012/01/16)
+                    bool dmajor=((*i)->getProjection().getCode()==GCTP_LAMAZ)? (*i)->getCalculated().DetectFieldMajorDimension(): latfield->ydimmajor;
+
+                    if(dmajor) { //latfield->ydimmajor) {
                         Dimension *dimlaty = new Dimension(DIMYNAME,ydimsize);
                         latfield->dims.push_back(dimlaty);
                         Dimension *dimlony = new Dimension(DIMYNAME,ydimsize);
@@ -2536,6 +2539,48 @@ bool GridDataset::Calculated::isOrthogonal() throw(Exception)
     return this->orthogonal;
 }
 
+int GridDataset::Calculated::DetectFieldMajorDimension() throw(Exception)
+{
+    int ym = -1;
+	
+    // Traverse all data fields
+
+    for (std::vector<Field *>::const_iterator i =
+             this->grid->getDataFields().begin();
+         i != this->grid->getDataFields().end(); ++i) {
+
+        int xdimindex = -1, ydimindex = -1, index = 0;
+
+        // Traverse all dimensions in each data field
+        for (std::vector<Dimension *>::const_iterator j =
+                 (*i)->getDimensions().begin();
+             j != (*i)->getDimensions().end(); ++j) {
+            if ((*j)->getName() == this->grid->dimxname) xdimindex = index;
+            else if ((*j)->getName() == this->grid->dimyname) ydimindex = index;
+            ++index;
+        }
+        if (xdimindex == -1 || ydimindex == -1) continue;
+
+        int major = ydimindex < xdimindex ? 1 : 0;
+
+        if (ym == -1)
+            ym = major;
+        break; // TO gain performance, just check one field.
+        // The dimension order for all data fields in a grid should be
+        // consistent.
+        // Kent adds this if 0 block
+#if 0
+        else if (ym != major)
+            throw2("inconsistent XDim, YDim order", this->grid->getName());
+#endif
+    }
+    // At least one data field should refer to XDim or YDim
+    if (ym == -1)
+        throw2("lack of data fields", this->grid->getName());
+    
+    return ym;
+}
+
 void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
 {
     int ym = -1;
@@ -2559,7 +2604,14 @@ void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
             ++index;
         }
         if (xdimindex == -1 || ydimindex == -1) continue;
-        int major = ydimindex < xdimindex ? 1 : 0;
+
+        // Change the way of deciding the major dimesion (LD -2012/01/10).
+        int major;
+        if(this->grid->getProjection().getCode() == GCTP_LAMAZ)
+            major = 1;
+        else
+            major = ydimindex < xdimindex ? 1 : 0;
+
         if (ym == -1)
             ym = major;
         break; // TO gain performance, just check one field.

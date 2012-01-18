@@ -507,8 +507,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
 			    if(projcode==GCTP_SOM)
 				ar->append_dim(180, "SOMBlockDim");
 			    
-                            // for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                            for(it_d = dims.end()-1; it_d >= dims.begin(); it_d--)
+                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                 ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
 
