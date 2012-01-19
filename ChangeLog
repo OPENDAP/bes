@@ -1,3 +1,8 @@
+2012-01-19  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* README: updated to have known bugs and details about MODIS
+	scale/offset rule implementation.
+
 2012-01-17  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 
 	* HDFEOS2.h
@@ -10,7 +15,7 @@
 
 	* NEWS: added what's new in this release.
 	* README: updated new features.
-	* INSTALL: updated versions and added more information about 
+	* INSTALL: updated versions and added more information about
 	--with-hdfeo2 option.
 	* hdf4_handler.cf.spec: added for those who are interested in building
 	custom RPM using --with-hdfeos2 option.
