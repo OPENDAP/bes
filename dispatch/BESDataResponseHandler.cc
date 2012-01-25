@@ -32,6 +32,7 @@
 
 #include <cstdlib>
 #include <cerrno>
+#include <cstring>
 
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"
