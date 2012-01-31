@@ -36,6 +36,9 @@
 
 #include "h5get.h"
 
+#include "HDF5RequestHandler.h"
+#include "H5UnsupporttedType.h"
+
 using namespace libdap;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,8 +56,7 @@ using namespace libdap;
 /// \return pointer to attribute structure
 /// \throw InternalError 
 ///////////////////////////////////////////////////////////////////////////////
-hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
-                    int *ignoreptr)
+hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr, int *ignoreptr)
 {
     *ignoreptr = 0;
     hid_t attrid;
@@ -64,25 +66,25 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
         throw InternalErr(__FILE__, __LINE__, msg);
     }
     // Obtain the size of attribute name.
-    ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+    ssize_t name_size = H5Aget_name(attrid, 0, NULL);
     if (name_size < 0) {
         string msg = "unable to obtain hdf5 attribute name size for id ";
         msg += attrid;
         throw InternalErr(__FILE__, __LINE__, msg);
     };
-    char* namebuf = new char[name_size+1];
+    char* namebuf = new char[name_size + 1];
     // Obtain the attribute name.    
-    if ((H5Aget_name(attrid, name_size+1, namebuf)) < 0) {
+    if ((H5Aget_name(attrid, name_size + 1, namebuf)) < 0) {
         string msg = "unable to obtain hdf5 attribute name for id ";
         msg += attrid;
         throw InternalErr(__FILE__, __LINE__, msg);
     }
-    
-    if (H5Aclose(attrid) < 0){
+
+    if (H5Aclose(attrid) < 0) {
         string msg = "unable to close hdf5 attribute for id ";
         msg += attrid;
-        throw InternalErr(__FILE__, __LINE__, msg);        
-        
+        throw InternalErr(__FILE__, __LINE__, msg);
+
     }
     if ((attrid = H5Aopen_name(dset, namebuf)) < 0) {
         string msg = "unable to obtain hdf5 attribute by name ";
@@ -104,15 +106,14 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD)
-        || (temp_type == H5T_OPAQUE) || (temp_type == H5T_ENUM)
-        || (temp_type == H5T_REFERENCE)) {
+    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD) || (temp_type == H5T_OPAQUE) || (temp_type == H5T_ENUM)
+            || (temp_type == H5T_REFERENCE)) {
         *ignoreptr = 1;
         attrid = 0;
 
         return attrid;
     }
-        
+
     hid_t space;
     if ((space = H5Aget_space(attrid)) < 0) {
         string msg = "unable to obtain hdf5 data space for id ";
@@ -136,28 +137,28 @@ hid_t get_attr_info(hid_t dset, int index, DSattr_t * attr_inst_ptr,
             nelmts *= size[j];
     }
 
-    if (ndims < 0){
-	string msg = "number of dimensions are less than allowed ";
-	msg += attrid;
-	throw InternalErr(__FILE__, __LINE__, msg);
+    if (ndims < 0) {
+        string msg = "number of dimensions are less than allowed ";
+        msg += attrid;
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     size_t need = nelmts * H5Tget_size(ty_id);
 
-    if (need == 0){
-	throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+    if (need == 0) {
+        throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
     }
     // We want to save memory type in the struct.
     hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
 
-    if (memtype < 0){
-	throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed");
+    if (memtype < 0) {
+        throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed");
     }
     (*attr_inst_ptr).type = memtype;
     (*attr_inst_ptr).ndims = ndims;
     (*attr_inst_ptr).nelmts = nelmts;
     (*attr_inst_ptr).need = need;
-    strncpy((*attr_inst_ptr).name, namebuf, name_size+1);
+    strncpy((*attr_inst_ptr).name, namebuf, name_size + 1);
 
     for (int j = 0; j < ndims; j++) {
         (*attr_inst_ptr).size[j] = size[j];
@@ -180,19 +181,16 @@ string get_dap_type(hid_t type)
 {
     size_t size = 0;
     H5T_sign_t sign;
-    DBG(cerr  << ">get_dap_type(): type="  << type << endl);
+    DBG(cerr << ">get_dap_type(): type=" << type << endl);
     switch (H5Tget_class(type)) {
 
     case H5T_INTEGER:
         size = H5Tget_size(type);
         sign = H5Tget_sign(type);
-        DBG(cerr << "=get_dap_type(): H5T_INTEGER" <<
-            " sign = " << sign <<
-            " size = " << size <<
-            endl);
-        if (size == 1){
-            if (sign == H5T_SGN_NONE)      
-                return BYTE;    
+        DBG(cerr << "=get_dap_type(): H5T_INTEGER" << " sign = " << sign << " size = " << size << endl);
+        if (size == 1) {
+            if (sign == H5T_SGN_NONE)
+                return BYTE;
             else
                 return INT8;
         }
@@ -211,10 +209,9 @@ string get_dap_type(hid_t type)
                 return INT32;
         }
 
-	if (size < 0){
-	    throw InternalErr(__FILE__, __LINE__,
-                              "size of datatype is invalid"); 
-	}
+        if (size < 0) {
+            throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid");
+        }
 
         return INT_ELSE;
 
@@ -225,9 +222,8 @@ string get_dap_type(hid_t type)
             return FLOAT32;
         if (size == 8)
             return FLOAT64;
-	if (size < 0){
-            throw InternalErr(__FILE__, __LINE__,
-                              "size of datatype is invalid");
+        if (size < 0) {
+            throw InternalErr(__FILE__, __LINE__, "size of datatype is invalid");
         }
         return FLOAT_ELSE;
 
@@ -278,8 +274,7 @@ hid_t get_fileid(const char *filename)
 void close_fileid(hid_t fid)
 {
     if (H5Fclose(fid) < 0)
-        throw Error(unknown_error,
-                    string("Could not close the HDF5 file."));
+        throw Error(unknown_error, string("Could not close the HDF5 file."));
 
 }
 
@@ -303,38 +298,45 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 
     hid_t datatype;
     if ((datatype = H5Dget_type(dset)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, 
-                          string("could not get data type from ") + dname);
+        throw InternalErr(__FILE__, __LINE__, string("could not get data type from ") + dname);
     }
-    
+
     hid_t dataspace;
     if ((dataspace = H5Dget_space(dset)) < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          string("could not get data space from ") + dname);
+        throw InternalErr(__FILE__, __LINE__, string("could not get data space from ") + dname);
     }
 
     H5T_class_t temp_type = H5Tget_class(datatype);
     if (temp_type < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          string("could not get type class from ") + dname);
+        throw InternalErr(__FILE__, __LINE__, string("could not get type class from ") + dname);
     }
-    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD)
-        || (temp_type == H5T_OPAQUE) || (temp_type == H5T_ENUM)) {
+    if ((temp_type == H5T_TIME) || (temp_type == H5T_BITFIELD) || (temp_type == H5T_OPAQUE) || (temp_type == H5T_ENUM)) {
         throw InternalErr(__FILE__, __LINE__, "unexpected type");
     }
+
+    // In the code below, I used the H5UnsupporttedType exception to signal conditions
+    // that we might want the handler to _tolerate_ if the H5.IgnoreUnknownTypes option
+    // is set. These cases are not exactly what 'Ignore Unknown Types' implies, but the
+    // idea of (optionally) ignoring stuff the server cannot process so that the
+    // information is _can_ process will be processed is in the spirit of that option.
+    // jhrg 1/31/12
 
     int ndims;
     hsize_t size[DODS_MAX_RANK];
     hsize_t maxsize[DODS_MAX_RANK];
     // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          "could not get the number of dimensions");
+        if (HDF5RequestHandler::get_ignore_unknown_types())
+            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+        else
+            throw InternalErr(__FILE__, __LINE__, "could not get the number of dimensions");
     }
     // check dimension size. 
     if (ndims > DODS_MAX_RANK) {
-        throw InternalErr(__FILE__, __LINE__,
-                          "number of dimensions exceeds allowed");
+        if (HDF5RequestHandler::get_ignore_unknown_types())
+            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+        else
+            throw InternalErr(__FILE__, __LINE__, "number of dimensions exceeds allowed");
     }
     // return ndims and size[ndims]. 
     hsize_t nelmts = 1;
@@ -344,13 +346,21 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     }
 
     size_t need = nelmts * H5Tget_size(datatype);
-    if (need == 0){
-	throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed");
+    if (need == 0) {
+        if (HDF5RequestHandler::get_ignore_unknown_types())
+            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+        else
+            throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed (dataset name: " + dname + ")");
     }
+
     hid_t memtype = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
-    if (memtype < 0){
-	throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed");
+    if (memtype < 0) {
+        if (HDF5RequestHandler::get_ignore_unknown_types())
+            throw H5UnsupporttedType("H5Tget_native_type() failed (dataset name: " + dname + ") [Ignored]");
+        else
+            throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed (dataset name: " + dname + ")");
     }
+
     (*dt_inst_ptr).dset = dset;
     (*dt_inst_ptr).dataspace = dataspace;
     (*dt_inst_ptr).type = memtype;
@@ -364,10 +374,8 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         (*dt_inst_ptr).size[j] = size[j];
     }
 
-    DBG(cerr << "<get_dataset() dimension=" << ndims << " elements=" <<
-        nelmts << endl);
+    DBG(cerr << "<get_dataset() dimension=" << ndims << " elements=" << nelmts << endl);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_data(hid_t dset, void *buf)
@@ -397,15 +405,13 @@ void get_data(hid_t dset, void *buf)
     //  Otherwise, the "tstring-at.h5" test will fail.
     if (memtype == H5T_STRING) {
         DBG(cerr << "=get_data(): H5T_STRING type is detected." << endl);
-        if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, buf)
-            < 0) {
+        if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, buf) < 0) {
             throw InternalErr(__FILE__, __LINE__, "failed to read data");
         }
-    } 
+    }
     else {
         DBG(cerr << "=get_data(): H5T_STRING type is NOT detected." << endl);
-        if (H5Dread(dset, memtype, dataspace, dataspace, H5P_DEFAULT, buf)
-            < 0) {
+        if (H5Dread(dset, memtype, dataspace, dataspace, H5P_DEFAULT, buf) < 0) {
             throw InternalErr(__FILE__, __LINE__, "failed to read data");
         }
 
@@ -415,15 +421,15 @@ void get_data(hid_t dset, void *buf)
     // will fail. 
     if (H5Tget_class(datatype) != H5T_STRING) {
 
-        if (H5Sclose(dataspace) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to terminate the dataset access.");
-	}
-        if (H5Tclose(datatype) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
-	}
-        if (H5Dclose(dset) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dataset.");
-	}
+        if (H5Sclose(dataspace) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to terminate the dataset access.");
+        }
+        if (H5Tclose(datatype) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+        }
+        if (H5Dclose(dset) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dataset.");
+        }
     }
 
     DBG(cerr << "<get_data()" << endl);
@@ -442,10 +448,9 @@ void get_data(hid_t dset, void *buf)
 ///////////////////////////////////////////////////////////////////////////////
 void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
 {
-    char *tempvalue = allbuf;   // The beginning of entire buffer.
+    char *tempvalue = allbuf; // The beginning of entire buffer.
 
-    DBG(cerr << ">get_strdata(): "
-        << " strindex=" << strindex << " allbuf=" << allbuf << endl);
+    DBG(cerr << ">get_strdata(): " << " strindex=" << strindex << " allbuf=" << allbuf << endl);
 
     // Tokenize the convbuf. 
     for (int i = 0; i < strindex; i++) {
@@ -453,7 +458,7 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
     }
 
     strncpy(buf, tempvalue, elesize);
-    buf[elesize] = '\0';        
+    buf[elesize] = '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -468,9 +473,7 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
 /// \param[in] num_dim  number of array dimensions
 /// \param[out] buf pointer to a buffer
 ///////////////////////////////////////////////////////////////////////////////
-int
-get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
-             void *buf)
+int get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim, void *buf)
 {
     DBG(cerr << ">get_slabdata() " << endl);
 
@@ -498,24 +501,17 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         dyn_offset = new hssize_t[num_dim];
 
         for (int i = 0; i < num_dim; i++) {
-            dyn_count[i] = (hsize_t) (*count);
-            dyn_step[i] = (hsize_t) (*step);
-            dyn_offset[i] = (hssize_t) (*offset);
-            DBG(cerr
-                << "count:" << dyn_count[i]
-                << " step:" << dyn_step[i]
-                << " offset:" << dyn_step[i]
-                << endl);
+            dyn_count[i] = (hsize_t)(*count);
+            dyn_step[i] = (hsize_t)(*step);
+            dyn_offset[i] = (hssize_t)(*offset);
+            DBG(cerr << "count:" << dyn_count[i] << " step:" << dyn_step[i] << " offset:" << dyn_step[i] << endl);
             count++;
             step++;
             offset++;
         }
 
-        if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, 
-                                (const hsize_t *)dyn_offset, dyn_step,
-                                dyn_count, NULL) < 0) {
-            throw
-                InternalErr(__FILE__, __LINE__, "could not select hyperslab");
+        if (H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, (const hsize_t *) dyn_offset, dyn_step, dyn_count, NULL) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
         }
 
         hid_t memspace = H5Screate_simple(num_dim, dyn_count, NULL);
@@ -527,37 +523,36 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
         delete[] dyn_step;
         delete[] dyn_offset;
 
-        if (H5Dread(dset, memtype, memspace, dataspace, H5P_DEFAULT,
-                    (void *) buf) < 0) {
+        if (H5Dread(dset, memtype, memspace, dataspace, H5P_DEFAULT, (void *) buf) < 0) {
             throw InternalErr(__FILE__, __LINE__, "could not get data");
         }
 
-        if (H5Sclose(dataspace) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dataspace.");
-	}
-        if (H5Sclose(memspace) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the memspace.");
-	}
-        if (H5Tclose(datatype) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
-	}
-        if (H5Dclose(dset) < 0){
-	   throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
-	}
-    }
-    catch (...) {
+        if (H5Sclose(dataspace) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dataspace.");
+        }
+        if (H5Sclose(memspace) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the memspace.");
+        }
+        if (H5Tclose(datatype) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+    } catch (...) {
         // Memory allocation exceptions could have been thrown when
         // creating these, so check if these are not null before deleting.
-        if( dyn_count ) delete[] dyn_count;
-        if( dyn_step ) delete[] dyn_step;
-        if( dyn_offset ) delete[] dyn_offset;
+        if (dyn_count)
+            delete[] dyn_count;
+        if (dyn_step)
+            delete[] dyn_step;
+        if (dyn_offset)
+            delete[] dyn_offset;
 
         throw;
     }
     DBG(cerr << "<get_slabdata() " << endl);
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn check_h5str(hid_t h5type)
@@ -617,156 +612,154 @@ bool has_matching_grid_dimscale(hid_t dataset, int ndims, int *sizes, hid_t *dim
 
     num_attrs = H5Aget_num_attrs(dataset);
     if (num_attrs < 0) {
-	throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
+        throw InternalErr(__FILE__, __LINE__, "Invalid number of attributes");
     }
-    DBG(cerr << ">has_matching_grid_dimscale"
-	    << " ndims=" << ndims << " sizes[0]=" << sizes[0]
-	    << endl);
+    DBG(cerr << ">has_matching_grid_dimscale" << " ndims=" << ndims << " sizes[0]=" << sizes[0] << endl);
     for (i = 0; i < num_attrs; i++) {
-	attr_id = H5Aopen_idx(dataset, i);
-	if (attr_id < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Cannot open the attribute");
-	}
-	dimscale = NULL;
-	// Obtain the attribute size.
-	attr_namesize = H5Aget_name(attr_id, 0, NULL);
-	if (attr_namesize <= 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Cannot obtain the attribute size");
-	}
+        attr_id = H5Aopen_idx(dataset, i);
+        if (attr_id < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Cannot open the attribute");
+        }
+        dimscale = NULL;
+        // Obtain the attribute size.
+        attr_namesize = H5Aget_name(attr_id, 0, NULL);
+        if (attr_namesize <= 0) {
+            throw InternalErr(__FILE__, __LINE__, "Cannot obtain the attribute size");
+        }
 
-	try {
-	    dimscale = new char[(size_t) attr_namesize + 1];
-	}
-	catch (...) {
-	    if (dimscale) {
-		delete[] dimscale;
-		dimscale = NULL;
-	    }
-	    throw;
-	}
-	attr_namesize = H5Aget_name(attr_id, (size_t) (attr_namesize + 1), dimscale);
-	if (attr_namesize < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "error in getting attr name");
-	}
+        try {
+            dimscale = new char[(size_t) attr_namesize + 1];
+        } catch (...) {
+            if (dimscale) {
+                delete[] dimscale;
+                dimscale = NULL;
+            }
+            throw;
+        }
+        attr_namesize = H5Aget_name(attr_id, (size_t) (attr_namesize + 1), dimscale);
+        if (attr_namesize < 0) {
+            throw InternalErr(__FILE__, __LINE__, "error in getting attr name");
+        }
 
-	if (!strncmp(dimscale, "DIMENSION_LIST", strlen("DIMENSION_LIST"))) {
-	    DBG(cerr << "=has_matching_grid_dimscale():Got a grid:" << i <<
-		    ":" << dimscale << endl);
-	    flag = true;
-	}
-	if (H5Aclose(attr_id) < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
-	}
-	delete[] dimscale;
-	dimscale = NULL;
+        if (!strncmp(dimscale, "DIMENSION_LIST", strlen("DIMENSION_LIST"))) {
+            DBG(cerr << "=has_matching_grid_dimscale():Got a grid:" << i << ":" << dimscale << endl);
+            flag = true;
+        }
+        if (H5Aclose(attr_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+        }
+        delete[] dimscale;
+        dimscale = NULL;
     }
 
     // Check number of dimensions.
     if (flag) {
-	if ((attr_id = H5Aopen_name(dataset, "DIMENSION_LIST")) < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Unable to open the DIMENSION_LIST attribute");
-	}
-	hid_t temp_dtype = H5Aget_type(attr_id);
-	hid_t temp_dspace = H5Aget_space(attr_id);
-	hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
+        if ((attr_id = H5Aopen_name(dataset, "DIMENSION_LIST")) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to open the DIMENSION_LIST attribute");
+        }
+        hid_t temp_dtype = H5Aget_type(attr_id);
+        hid_t temp_dspace = H5Aget_space(attr_id);
+        hsize_t temp_nelm = H5Sget_simple_extent_npoints(temp_dspace);
 
-	if (temp_dtype < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Cannot get the attribute datatype");
-	}
-	if (temp_dspace < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Cannot get the copy of dataspace");
-	}
-	if (temp_nelm == 0) {
-	    throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
-	}
+        if (temp_dtype < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Cannot get the attribute datatype");
+        }
+        if (temp_dspace < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Cannot get the copy of dataspace");
+        }
+        if (temp_nelm == 0) {
+            throw InternalErr(__FILE__, __LINE__, "Cannot determine the number of elements in the dataspace");
+        }
 
-	if (ndims != (int) temp_nelm) {
-	    // here it may block out the multi-scale case. kent 2009/09/21
-	    return false;
-	}
+        if (ndims != (int) temp_nelm) {
+            // here it may block out the multi-scale case. kent 2009/09/21
+            return false;
+        }
 
-	hvl_t *refbuf = 0;
-	hid_t *dimid = 0;
-	try {
-	    hobj_ref_t *refbuf = new hobj_ref_t[(int) temp_nelm];
-	    if (H5Aread(attr_id, temp_dtype, refbuf) < 0) {
-		delete[] refbuf; refbuf = 0;
-		throw InternalErr(__FILE__, __LINE__, "Cannot read object reference attributes");
-	    }
+        hvl_t *refbuf = 0;
+        hid_t *dimid = 0;
+        try {
+            hobj_ref_t *refbuf = new hobj_ref_t[(int) temp_nelm];
+            if (H5Aread(attr_id, temp_dtype, refbuf) < 0) {
+                delete[] refbuf;
+                refbuf = 0;
+                throw InternalErr(__FILE__, __LINE__, "Cannot read object reference attributes");
+            }
 
-	    hid_t *dimid = new hid_t[(int) temp_nelm];
+            hid_t *dimid = new hid_t[(int) temp_nelm];
 
-	    // Check size of each dimension.
-	    for (int j = 0; j < (int) temp_nelm; j++) {
-		dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, &refbuf[j]);
-		DBG(cerr << "dimid[" << j << "]=" << dimid[j] << endl);
+            // Check size of each dimension.
+            for (int j = 0; j < (int) temp_nelm; j++) {
+                dimid[j] = H5Rdereference(attr_id, H5R_OBJECT, &refbuf[j]);
+                DBG(cerr << "dimid[" << j << "]=" << dimid[j] << endl);
 
-		if (dimid[j] < 0) {
-		    delete[] dimid; dimid = 0;
-		    delete[] refbuf; refbuf = 0;
-		    return false;
-		}
-		else {
-		    hid_t index_dspace = H5Dget_space(dimid[j]);
-		    hsize_t index_ndim = H5Sget_simple_extent_npoints(index_dspace);
+                if (dimid[j] < 0) {
+                    delete[] dimid;
+                    dimid = 0;
+                    delete[] refbuf;
+                    refbuf = 0;
+                    return false;
+                }
+                else {
+                    hid_t index_dspace = H5Dget_space(dimid[j]);
+                    hsize_t index_ndim = H5Sget_simple_extent_npoints(index_dspace);
 
-		    if (index_dspace < 0) {
-			throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed");
-		    }
-		    if (H5Sclose(index_dspace) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "Cannot close HDF5 data space");
-		    }
-		    if (index_ndim == 0) {
-			throw InternalErr(__FILE__, __LINE__,
-				"Cannot determine the number of elements in the dataspace");
-		    }
+                    if (index_dspace < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "H5Dget_space() failed");
+                    }
+                    if (H5Sclose(index_dspace) < 0) {
+                        throw InternalErr(__FILE__, __LINE__, "Cannot close HDF5 data space");
+                    }
+                    if (index_ndim == 0) {
+                        throw InternalErr(__FILE__, __LINE__,
+                                "Cannot determine the number of elements in the dataspace");
+                    }
 
-		    if ((int) index_ndim != sizes[j]) {
-			// The number of element of the dim. scale must be
-			// equal to the number of element of the same
-			// dimension of the dataset. Kent 2009/09/21
-			flag = false;
-		    }
-		}
+                    if ((int) index_ndim != sizes[j]) {
+                        // The number of element of the dim. scale must be
+                        // equal to the number of element of the same
+                        // dimension of the dataset. Kent 2009/09/21
+                        flag = false;
+                    }
+                }
 
-	    } // for (int j = 0; j < temp_nelm; j++)
+            } // for (int j = 0; j < temp_nelm; j++)
 
-	    if (H5Aclose(attr_id) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
-	    }
-	    if (H5Sclose(temp_dspace) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "Unable to terminate the access to dataspace.");
-	    }
-	    if (H5Tclose(temp_dtype) < 0) {
-		throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
-	    }
+            if (H5Aclose(attr_id) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "Unable to close the attribute.");
+            }
+            if (H5Sclose(temp_dspace) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "Unable to terminate the access to dataspace.");
+            }
+            if (H5Tclose(temp_dtype) < 0) {
+                throw InternalErr(__FILE__, __LINE__, "Unable to release the datatype.");
+            }
 
-	    // Save the dimensional scale dataset IDs to dimids and pass to
-	    // process_matching_scale function.
-	    if (flag) {
+            // Save the dimensional scale dataset IDs to dimids and pass to
+            // process_matching_scale function.
+            if (flag) {
+                for (int k = 0; k < (int) temp_nelm; k++) {
+                    dimids[k] = dimid[k];
+                }
+            }
 
-		for (int k = 0; k < (int) temp_nelm; k++) {
-		    dimids[k] = dimid[k];
-		}
-	    }
+            delete[] refbuf;
+            refbuf = 0;
+            delete[] dimid;
+            dimid = 0;
 
-	    delete[] refbuf;
-	    refbuf = 0;
-	    delete[] dimid;
-	    dimid = 0;
+        } // try
+        catch (...) {
+            // memory allocation exceptions could have been thrown
+            // when creating these two ptrs, so check if exist
+            // before deleting.
+            if (refbuf)
+                delete[] refbuf;
+            if (dimid)
+                delete[] dimid;
 
-	} // try
-	catch (...) {
-	    // memory allocation exceptions could have been thrown
-	    // when creating these two ptrs, so check if exist
-	    // before deleting.
-	    if (refbuf)
-		delete[] refbuf;
-	    if (dimid)
-		delete[] dimid;
-
-	    throw;
-	}
+            throw;
+        }
     } // if(flag)
 
     return flag;

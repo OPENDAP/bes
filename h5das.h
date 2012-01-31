@@ -51,8 +51,7 @@ string get_hardlink(hid_t, const string &);
 void get_softlink(DAS &, hid_t, const string &, int);
 bool is_mappable(hid_t _attr_id, string _name, string _dap_type);
 void read_comments(DAS & das, const string & varname, hid_t oid);
-void read_objects(DAS & das, const string & varname, hid_t dset,
-                  int num_attr);
+void read_objects(DAS & das, const string & varname, hid_t dset, int num_attr);
 #ifdef CF
 void write_grid_global_attribute(DAS & das);
 void write_grid_coordinate_variable_attribute(DAS & das);

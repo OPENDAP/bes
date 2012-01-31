@@ -616,7 +616,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
         newname = varname;
     }
     else {
-        // This is necessry for GrADS which doesn't like '/' character
+        // This is necessary for GrADS which doesn't like '/' character
         // in variable name.
         newname = get_short_name_dimscale(varname);
     }
@@ -938,6 +938,7 @@ void find_gloattr(hid_t file, DAS & das) {
     }
 }
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 /// will put softlink information into a DAS table.
@@ -985,6 +986,7 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index) {
         throw;
     }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_hardlink(hid_t pgroup, const string & oname)
