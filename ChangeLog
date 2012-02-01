@@ -1,3 +1,33 @@
+2012-02-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an issue with attributes that use varying length strings in
+	HDF5 files.
+
+2012-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an error introduced in the previous checkin. Also include a
+	short example of how I think the variable length string attributes
+	should be accessed. See line 819 of h5das.cc.
+
+2012-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for ticket 1878; the IgnoreUnknownTypes option was not
+	implemented correctly for DAP variables. Fixed. Expanded the
+	meaning of the option to include other cases where common
+	clients (e.g., Panoply) elide variables that would otherwise cause
+	an error.
+
+2012-01-11  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+	M    hdf5_handler.spec
+	M    README
+
 2012-01-09  James Gallagher <jgallagher@opendap.org>
 
 	Code review.

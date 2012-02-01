@@ -1,3 +1,8 @@
+
+Updated for version 1.5.1
+
+Fixes for IgnoreUnknownTypes and varying length string attributes.
+
 Updated for version 1.5.0
 
 Added a new feature so that files with 64-bit integers can be read by

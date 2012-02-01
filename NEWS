@@ -1,4 +1,9 @@
 
+News for version 1.5.1
+
+Fixed an issue with the IgnoreUnknownTypes option and a problem with
+attributes that use hdf5's varying length string type.
+
 News for version 1.5.0
 
 Added H5.IgnoreUnknownTypes which follows the behavior pattern
