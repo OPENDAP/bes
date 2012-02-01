@@ -29,7 +29,7 @@ HDF5SRC = HDF5Array.cc HDF5Byte.cc HDF5Float64.cc HDF5Grid.cc HDF5UInt32.cc \
 HDF5HDR = HDF5Array.h HDF5Float64.h HDF5Int32.h HDF5Structure.h HDF5Url.h \
 	HDF5Byte.h HDF5Grid.h HDF5Sequence.h HDF5UInt16.h HDF5Float32.h \
 	HDF5Int16.h HDF5Str.h HDF5UInt32.h HDF5GridEOS.h HDF5ArrayEOS.h \
-    HE5ShortName.h HE5CF.h HE5CFSwath.h HE5CFGrid.h HE5CFZa.h H5UnsupporttedType.h
+    HE5ShortName.h HE5CF.h HE5CFSwath.h HE5CFGrid.h HE5CFZa.h H5UnsupportedType.h
 
 SRCS = h5dds.cc h5das.cc h5get.cc HE5Parser.cc HDF5PathFinder.cc $(GRAM_SRCS)
 

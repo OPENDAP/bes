@@ -60,7 +60,7 @@
 #include "HE5Parser.h"
 #include "HDF5RequestHandler.h"
 
-#include "H5Unsupporttedtype.h"
+#include "H5UnsupportedType.h"
 
 extern HE5Parser eos;
 
@@ -249,7 +249,7 @@ bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
                 break;
             }
         } // try
-        catch(H5UnsupporttedType &e) {
+        catch(H5UnsupportedType &e) {
             if (oname) {
                 delete[] oname;
                 oname = NULL;
@@ -337,7 +337,7 @@ static BaseType *Get_bt(const string &vname, const string &dataset, hid_t dataty
             }
             else if (size == 8) {
                 if (HDF5RequestHandler::get_ignore_unknown_types())
-                    throw H5UnsupporttedType("Unsupported HDF5 64-bit Integer type:" + vname);
+                    throw H5UnsupportedType("Unsupported HDF5 64-bit Integer type:" + vname);
                 else
                     throw Error("Unsupported HDF5 64-bit Integer type:" + vname);
             }
@@ -431,7 +431,7 @@ static BaseType *Get_bt(const string &vname, const string &dataset, hid_t dataty
 
         default:
             if (HDF5RequestHandler::get_ignore_unknown_types())
-                throw H5UnsupporttedType("Unsupported HDF5 type: " + vname);
+                throw H5UnsupportedType("Unsupported HDF5 type: " + vname);
             else
                 throw InternalErr(__FILE__, __LINE__, string("Unsupported HDF5 type:  ") + vname);
         }
@@ -906,7 +906,7 @@ static void write_swath(DDS & dds_table, string varname, const string & filename
         // program should never get there because Get_bt() should throw
         // one of these exceptions itself. jhrg 1/31/12
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("Unable to convert hdf5 datatype to DAP type");
+            throw H5UnsupportedType("Unable to convert hdf5 datatype to DAP type");
         else
             throw InternalErr(__FILE__, __LINE__, "Unable to convert hdf5 datatype to DAP type");
     }
@@ -1025,7 +1025,7 @@ static void write_za(DDS & dds_table, string varname, const string & filename)
         // Changed: If the option IgnoreUnknownTypes is true. See above
         // jhrg 1/31/12
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("Unable to convert hdf5 datatype to DAP type");
+            throw H5UnsupportedType("Unable to convert hdf5 datatype to DAP type");
         else
             throw InternalErr(__FILE__, __LINE__, "Unable to convert hdf5 datatype to DAP type");
     }
@@ -1170,7 +1170,7 @@ static void read_objects_base_type(DDS & dds_table, const string & a_name, const
         // Changed: If the option IgnoreUnknownTypes is true, simply return
         // at this point. jhrg 1/31/12
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("Unable to convert hdf5 datatype to DAP type");
+            throw H5UnsupportedType("Unable to convert hdf5 datatype to DAP type");
         else
             throw InternalErr(__FILE__, __LINE__, "Unable to convert hdf5 datatype to DAP type");
     }

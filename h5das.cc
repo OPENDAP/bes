@@ -36,7 +36,7 @@
 ///
 ///////////////////////////////////////////////////////////////////////////////
 
-#define DODS_DEBUG
+//#define DODS_DEBUG
 
 #include "hdf5_handler.h"
 
@@ -353,6 +353,8 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
         }
 
         case H5T_STRING: {
+            // FIXME: This code does not work for variable length string attributes.
+            // THere is a workaround in read_objects at line 814. jhrg 2/1/12
             int str_size = H5Tget_size(type);
             if (str_size == 0) {
                 throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
@@ -370,13 +372,15 @@ static char *print_attr(hid_t type, int loc, void *sm_buf) {
                 rep[str_size + 2] = '\0';
                 delete[] buf;
                 buf = 0;
-            } catch (...) {
+            }
+            catch (...) {
                 if (buf)
                     delete[] buf;
                 if (rep)
                 	delete[] rep;
                 throw;
             }
+
             break;
         }
 
@@ -748,20 +752,18 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
             // cause an error on 64-bit machines.
             // cerr << "checking if the datatype is  mappable or not " <<endl;
             if (!is_mappable(attr_id, attr_name, dap_type)) {
-                // cerr << "the datatype cannot be mapped to dap " <<endl;
                 continue;
             }
 
+            //TODO replace with vector<>
             char *value = new char[attr_inst.need + sizeof(char)];
             memset(value, 0, attr_inst.need + sizeof(char));
 
             DBG(cerr << "arttr_inst.need=" << attr_inst.need << endl);
             // Read HDF5 attribute data.
 
-            if (H5Aread(attr_id, ty_id, (void *) value) < 0) {
-                // value is deleted in the catch block below so
-                // shouldn't be deleted here. pwest Mar 18, 2009
-                //delete[] value;
+            if (H5Aread(attr_id, ty_id, (void *)value) < 0) {
+                delete[] value;
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
 
@@ -815,37 +817,46 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
                 }
 
-#if 0
-                // This hack shows how to get the string values. A work in progress... jhrg 1/31/12
-                if (H5Tget_class(ty_id) == H5T_STRING) {
-                    char *string_attr[256];
-                    //attr_id, ty_id,
+                // FIXME
+                // Variable length string attributes are not handled correctly by print_attr. This is
+                // a temporary workaround. jhrg 2/1/12
+#if 1
+                if (H5Tget_class(ty_id) == H5T_STRING && H5Tis_variable_str(ty_id)) {
+                    vector<char*> string_attr((int) attr_inst.nelmts); //nelmts is the number of strings
                     hid_t ftype = H5Aget_type(attr_id);
                     hid_t type = H5Tget_native_type(ftype, H5T_DIR_ASCEND);
-                    herr_t ret = H5Aread(attr_id, type, &string_attr);
-                    DBG(cerr << "ret: " << ret << ", string_attr[0]: " << string_attr[0] << endl);
+                    // For some reason the ty_id and ftype are different.
+                    DBG(cerr <<"ty_id: " << ty_id << ", ftype: " << ftype << ", type: " << type <<endl);
+
+                    herr_t ret = H5Aread(attr_id, type, &string_attr[0]);
+
+                    for (int i = 0; i < (int) attr_inst.nelmts; ++i) {
+                        DBG(cerr << "*string_attr[" << i << "]: " << string_attr[i] << endl);
+                        attr_table_ptr->append_attr(attr_name, dap_type, string_attr[i]);
+                    }
                 }
+                else {
 #endif
-                char *tempvalue = value;
-                for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
-                    for (int sizeindex = 0; sizeindex < (int) attr_inst.size[dim]; sizeindex++) {
-                        DBG(cerr << "attr_inst.size[dim]: " << attr_inst.size[dim] << ", dim: " << dim << endl);
-                        DBG(cerr << "*tempvalue=" << *tempvalue << "elesize=" << elesize << endl);
-                        print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                        if (print_rep != NULL) {
-                            attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
-                            tempvalue = tempvalue + elesize;
-
-                            DBG(cerr << "tempvalue=" << tempvalue << "elesize=" << elesize << endl);
-
-                            delete[] print_rep;
-                            print_rep = NULL;
-                        }
-                        else {
-                            break;
-                        }
-                    } // for (int sizeindex = 0; ...
-                } // for (int dim = 0; ...
+                    char *tempvalue = value;
+                    for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
+                        for (int sizeindex = 0; sizeindex < (int) attr_inst.size[dim]; sizeindex++) {
+                            DBG(cerr << "attr_inst.size[dim]: " << attr_inst.size[dim] << ", dim: " << dim << endl);
+                            DBG(cerr << "*tempvalue=" << *tempvalue << "elesize=" << elesize << endl);
+                            print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
+                            if (print_rep != NULL) {
+                                attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
+                                tempvalue = tempvalue + elesize;
+                                delete[] print_rep;
+                                print_rep = NULL;
+                            }
+                            else {
+                                break;
+                            }
+                        } // for (int sizeindex = 0; ...
+                    } // for (int dim = 0; ...
+#if 1
+                } // if (H5Tget_class(ty_id) == H5T_STRING && H5Tis_variable_str(ty_id))
+#endif
             } // if attr_inst.ndims != 0
             delete[] value;
             value = NULL;

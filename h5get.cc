@@ -37,7 +37,7 @@
 #include "h5get.h"
 
 #include "HDF5RequestHandler.h"
-#include "H5UnsupporttedType.h"
+#include "H5UnsupportedType.h"
 
 using namespace libdap;
 
@@ -314,7 +314,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         throw InternalErr(__FILE__, __LINE__, "unexpected type");
     }
 
-    // In the code below, I used the H5UnsupporttedType exception to signal conditions
+    // In the code below, I used the H5UnsupportedType exception to signal conditions
     // that we might want the handler to _tolerate_ if the H5.IgnoreUnknownTypes option
     // is set. These cases are not exactly what 'Ignore Unknown Types' implies, but the
     // idea of (optionally) ignoring stuff the server cannot process so that the
@@ -327,14 +327,14 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     // Obtain number of attributes in this dataset. 
     if ((ndims = H5Sget_simple_extent_dims(dataspace, size, maxsize)) < 0) {
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+            throw H5UnsupportedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
         else
             throw InternalErr(__FILE__, __LINE__, "could not get the number of dimensions");
     }
     // check dimension size. 
     if (ndims > DODS_MAX_RANK) {
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+            throw H5UnsupportedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
         else
             throw InternalErr(__FILE__, __LINE__, "number of dimensions exceeds allowed");
     }
@@ -348,7 +348,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     size_t need = nelmts * H5Tget_size(datatype);
     if (need == 0) {
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
+            throw H5UnsupportedType("H5Tget_size() failed (dataset name: " + dname + ") [Ignored]");
         else
             throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed (dataset name: " + dname + ")");
     }
@@ -356,7 +356,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     hid_t memtype = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
     if (memtype < 0) {
         if (HDF5RequestHandler::get_ignore_unknown_types())
-            throw H5UnsupporttedType("H5Tget_native_type() failed (dataset name: " + dname + ") [Ignored]");
+            throw H5UnsupportedType("H5Tget_native_type() failed (dataset name: " + dname + ") [Ignored]");
         else
             throw InternalErr(__FILE__, __LINE__, "H5Tget_native_type() failed (dataset name: " + dname + ")");
     }
