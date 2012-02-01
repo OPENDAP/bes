@@ -35,6 +35,9 @@
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ///////////////////////////////////////////////////////////////////////////////
+
+#define DODS_DEBUG
+
 #include "hdf5_handler.h"
 
 /// A global variable that handles HDF-EOS5 files.
@@ -714,7 +717,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
     }
 #ifndef CF
     attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, varname);
-#endif // CF
+#endif
+    // CF
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into DAS table.
     char *print_rep = NULL;
@@ -760,6 +764,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                 //delete[] value;
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
+
             DBG(cerr << "H5Aread(" << attr_inst.name << ")=" << value << endl);
             // Add all attributes in the array.
             //  Create the "name" attribute if we can find long_name.
@@ -782,7 +787,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
                     print_rep = print_attr(ty_id, loc, value);
                     if (print_rep != NULL) {
                         // GET_NAME is defined at the top of this function.
-#if DODS_DEBUG
+#ifdef DODS_DEBUG
                         cerr << "read_objects:print_rep: " << print_rep << endl;
                         cerr << "read_objects:attr_name: " << attr_name << endl;
                         cerr << "read_objects:dap_type: " << dap_type << endl;
@@ -809,10 +814,23 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr) {
 
                     throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
                 }
+
+#if 0
+                // This hack shows how to get the string values. A work in progress... jhrg 1/31/12
+                if (H5Tget_class(ty_id) == H5T_STRING) {
+                    char *string_attr[256];
+                    //attr_id, ty_id,
+                    hid_t ftype = H5Aget_type(attr_id);
+                    hid_t type = H5Tget_native_type(ftype, H5T_DIR_ASCEND);
+                    herr_t ret = H5Aread(attr_id, type, &string_attr);
+                    DBG(cerr << "ret: " << ret << ", string_attr[0]: " << string_attr[0] << endl);
+                }
+#endif
                 char *tempvalue = value;
                 for (int dim = 0; dim < (int) attr_inst.ndims; dim++) {
                     for (int sizeindex = 0; sizeindex < (int) attr_inst.size[dim]; sizeindex++) {
-
+                        DBG(cerr << "attr_inst.size[dim]: " << attr_inst.size[dim] << ", dim: " << dim << endl);
+                        DBG(cerr << "*tempvalue=" << *tempvalue << "elesize=" << elesize << endl);
                         print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
                         if (print_rep != NULL) {
                             attr_table_ptr->append_attr(attr_name, dap_type, print_rep);
@@ -938,7 +956,6 @@ void find_gloattr(hid_t file, DAS & das) {
     }
 }
 
-#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_softlink(DAS & das, hid_t pgroup, const string & oname, int index)
 /// will put softlink information into a DAS table.
@@ -951,7 +968,7 @@ void find_gloattr(hid_t file, DAS & das) {
 /// \return void
 /// \remarks In case of error, it throws an exception
 /// \warning This is only a test, not supported in current version.
-/// \todo This function may be removed. 
+/// \todo This function may be removed. (I cannot get this to load without it. jhrg)
 ///////////////////////////////////////////////////////////////////////////////
 void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index) {
     DBG(cerr << ">get_softlink():" << oname << endl);
@@ -986,7 +1003,6 @@ void get_softlink(DAS & das, hid_t pgroup, const string & oname, int index) {
         throw;
     }
 }
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_hardlink(hid_t pgroup, const string & oname)
