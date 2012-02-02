@@ -61,9 +61,9 @@ using std::ofstream ;
 CmdApp::CmdApp()
     : BESBaseApp(),
       _client( 0 ),
-      _hostStr( "" ),
+      _hostStr( "localhost" ),
       _unixStr( "" ),
-      _portVal( 0 ),
+      _portVal( 10002 ),
       _outputStrm( 0 ),
       _inputStrm( 0 ),
       _createdInputStrm( false ),

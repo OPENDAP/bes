@@ -52,6 +52,7 @@ extern "C" {
 
 #include <iostream>
 #include <sstream>
+#include <arpa/inet.h>
 
 using std::cerr ;
 using std::endl ;
@@ -301,25 +302,31 @@ TcpSocket::listen()
     server.sin_family = AF_INET ;
     server.sin_addr.s_addr = INADDR_ANY ;
     struct servent *sir = 0 ;
-    sir = getservbyport( _portVal, "tcp" ) ;
+    BESDEBUG( "ppt", "Checking /etc/services for port "
+					 << _portVal << endl ) ;
+
+    sir = getservbyport(htons(_portVal),  0);
     if( sir )
     {
-		ostringstream error_oss;
-		error_oss << "The requested port (" << _portVal << ") appears in the system services list.\n";
-		error_oss << _portVal << " is assigned to the service '" << sir->s_name << (string)"'" ;
+		std::ostringstream error_oss;
+		error_oss << endl <<"CONFIGURATION ERROR: The requested port (" << _portVal << ") appears in the system services list. ";
+		error_oss << "Port " << _portVal << " is assigned to the service '" << sir->s_name << (string)"'" ;
 		
 		if(sir->s_aliases[0]!=0){
-			error_oss << " which may also be known as:\n"
-			for(int i=0; sir->s_aliases[i]!=0 ;i++){
-				error_oss << sir->s_aliases[i] << (string)"\n";
+			error_oss << " which may also be known as: ";
+			for(int i=0; sir->s_aliases[i]!=0 ;i++) {
+			    if(i>0)
+                    error_oss << " or ";
+
+				error_oss << sir->s_aliases[i] ;
 			}
 		}
-		else {
-			error_oss << "\n";
-		}
 		
-		throw BESInternalError( error_os.str(), __FILE__, __LINE__ ) ;
+		error_oss << endl;
+		
+		throw BESInternalError( error_oss.str(), __FILE__, __LINE__ ) ;
     }
+    
     server.sin_port = htons( _portVal ) ;
     _socket = socket( AF_INET, SOCK_STREAM, 0 ) ;
     if( _socket != -1 )
@@ -383,12 +390,12 @@ TcpSocket::listen()
     }
     else
     {
-		ostringstream error_oss;
+		std::ostringstream error_oss;
 		error_oss << "Failed to create socket for port "<< _portVal;
 		const char *error_info = strerror( errno ) ;
 		if( error_info )
 			error_oss << " " << (string)error_info ;
-		throw BESInternalError( error_os.str() , __FILE__, __LINE__ ) ;
+		throw BESInternalError( error_oss.str() , __FILE__, __LINE__ ) ;
     }
 }
 
