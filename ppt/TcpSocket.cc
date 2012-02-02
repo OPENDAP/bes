@@ -331,14 +331,17 @@ TcpSocket::listen()
     _socket = socket( AF_INET, SOCK_STREAM, 0 ) ;
     if( _socket != -1 )
     {
+    
 		if( setsockopt( _socket, SOL_SOCKET, SO_REUSEADDR,
 					   (char*)&on, sizeof( on ) ) )
 		{
-			string error( "could not set SO_REUSEADDR on TCP socket" ) ;
+            std::ostringstream errMsg;
+            errMsg << endl <<"ERROR: Failed to set SO_REUSEADDR on TCP socket";
 			const char* error_info = strerror( errno ) ;
 			if( error_info )
-				error += " " + (string)error_info ;
-			throw BESInternalError( error, __FILE__, __LINE__ ) ;
+				errMsg << ". Msg:: " <<error_info ;
+            errMsg << endl;
+			throw BESInternalError( errMsg.str(), __FILE__, __LINE__ ) ;
 		}
 		
 		BESDEBUG("besdaemon", "About to bind to port: " << _portVal << " in process: " << getpid() << endl);
@@ -381,17 +384,19 @@ TcpSocket::listen()
 		}
 		else
 		{
-			string error( "could not bind TCP socket " ) ;
+            std::ostringstream error_msg;
+            error_msg << endl << "ERROR: Failed to bind TCP socket: "<< _portVal ;
 			const char* error_info = strerror( errno ) ;
 			if( error_info )
-				error += " " + (string)error_info ;
-			throw BESInternalError( error, __FILE__, __LINE__ ) ;
+				error_msg << ": " << error_info ;
+            error_msg << endl;
+			throw BESInternalError( error_msg.str(), __FILE__, __LINE__ ) ;
 		}
     }
     else
     {
 		std::ostringstream error_oss;
-		error_oss << "Failed to create socket for port "<< _portVal;
+		error_oss << endl << "ERROR: Failed to create socket for port "<< _portVal << endl;
 		const char *error_info = strerror( errno ) ;
 		if( error_info )
 			error_oss << " " << (string)error_info ;
