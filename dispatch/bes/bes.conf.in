@@ -104,7 +104,8 @@ BES.FollowSymLinks=No
 # to provide direct access to the BES for the world. In general, if     #
 # that is the case, you should configure the BES to use SSL.            #
 #-----------------------------------------------------------------------#
-BES.ServerPort=10002
+BES.ServerPort=10022
+
 # BES.ServerUnixSocket=/tmp/bes.socket
 
 #-----------------------------------------------------------------------#
