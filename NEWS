@@ -1,5 +1,10 @@
 
-	$Id$
+News for version 3.10.1
+
+Changed the default port for the BES to 10022 dues to conflicts on CentOS.
+
+Also, fixed the way the server checks for conflicts at runtime and made the
+error messages more informative.
 
 News for version 3.10.0
 

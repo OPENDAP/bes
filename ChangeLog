@@ -1,3 +1,46 @@
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Cleaned up error rporting in TcpSocket.cc. Also fixed the way
+	the getservbyport() was being used so it works.
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Patched part of bug 1881: BES now correctly queries the
+	/etc/services
+
+2012-02-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes:updated error messages in ppt
+
+2012-01-10  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Now returns zero on EOF, not -1.
+
+	M    cmdln/CmdClient.cc
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2012-01-09  James Gallagher <jgallagher@opendap.org>
 
 	Code review.
