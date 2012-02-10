@@ -17,7 +17,7 @@ then
     exit 1
 fi
 
-piddir=${localstatedir}/run
+piddir=${localstatedir}/run/bes
 pidfile=${piddir}/bes.pid
 
 ###########################################################################
@@ -266,7 +266,7 @@ do
     case $param in
 	-i)
 	    prefix=$2
-	    piddir=${prefix}/var/run
+	    piddir=${prefix}/var/run/bes
 	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"

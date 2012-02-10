@@ -676,7 +676,10 @@ static bool load_names(const string &install_dir, const string &pid_dir)
         beslistener_path = install_dir;
         beslistener_path += bindir;
         if (file_for_daemon_pid.empty()) {
-            file_for_daemon_pid = install_dir + "/var/run";
+	  // file_for_daemon_pid = install_dir + "/var/run";
+	  // Added jhrg 2/9/12
+            file_for_daemon_pid = install_dir + "/var/run/bes";
+
         }
     }
     else {
@@ -688,7 +691,9 @@ static bool load_names(const string &install_dir, const string &pid_dir)
             if (slash != string::npos) {
                 string root = prog.substr(0, slash);
                 if (file_for_daemon_pid.empty()) {
-                    file_for_daemon_pid = root + "/var/run";
+		  //file_for_daemon_pid = root + "/var/run";
+		  // Added jhrg 2/9/12
+                    file_for_daemon_pid = root + "/var/run/bes";
                 }
             }
             else {
@@ -702,7 +707,7 @@ static bool load_names(const string &install_dir, const string &pid_dir)
     if (beslistener_path == "") {
         beslistener_path = ".";
         if (file_for_daemon_pid.empty()) {
-            file_for_daemon_pid = "./run";
+            file_for_daemon_pid = "./run/bes";
         }
     }
 
@@ -1028,6 +1033,8 @@ int main(int argc, char *argv[])
 
     daemon_init();
 
+    store_daemon_id(getpid());
+
     register_signal_handlers();
 
     // Load the modules in the conf file(s) so that the debug (log) contexts
@@ -1103,8 +1110,10 @@ int main(int argc, char *argv[])
         cerr << daemon_name << ": server cannot mount at first try (core dump). " << "Please correct problems on the process manager " << beslistener_path << endl;
         return master_beslistener_pid;
     }
-
+#if 0
+    // moved. jhrg 2/9/12
     store_daemon_id(getpid());
+#endif
 
     BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
 
