@@ -32,9 +32,19 @@
 
 #include "BESFileContainer.h"
 #include "TheBESKeys.h"
+
+// New cache system
+#include "BESUncompressManager2.h"
+#include "BESCache2.h"
+
+// Old cache system
 #include "BESUncompressManager.h"
 #include "BESCache.h"
+
 #include "BESForbiddenError.h"
+
+// Use the old caching code
+#define NEW_CACHE 1
 
 /** @brief construct a container representing a file
  *
@@ -84,22 +94,39 @@ BESFileContainer::ptr_duplicate( )
 }
 
 /** @brief returns the name of a file to access for this container,
- * uncompressing if neccessary.
+ * uncompressing if necessary.
  *
  * @return name of file to access
  */
 string
 BESFileContainer::access()
 {
+#if NEW_CACHE
+    // Get a pointer to the singleton cache instance for this process.
+    BESCache2 *cache = BESCache2::get_instance(TheBESKeys::TheKeys(), (string)"BES.CacheDir",
+                                               (string)"BES.CachePrefix", (string)"BES.CacheSize");
+
+    // If the file is in the cache, this is nearly a no-op; if the file is compressed,
+    // decompress it, add it to the class and return the name of the file in the cache.
+    // In both of those cases, the file is cached, so we need to record that so that
+    // the release() method will remove the lock on the cached file. If the file is not
+    // a compressed file, the 'uncompress' function returns false and the contents of
+    // the value-result parameter '_target' is undefined.
+    _cached = BESUncompressManager2::TheManager()->uncompress( get_real_name(), _target, cache ) ;
+    if (_cached)
+        return _target;
+
+    return get_real_name();
+#else
     // This is easy ... create the cache using the different keys
     BESKeys *keys = TheBESKeys::TheKeys() ;
     BESCache cache( *keys, "BES.CacheDir", "BES.CachePrefix", "BES.CacheSize" );
 
-    _cached = BESUncompressManager::TheManager()->uncompress( get_real_name(),
-							      _target, cache ) ;
+    _cached = BESUncompressManager::TheManager()->uncompress( get_real_name(), _target, cache ) ;
     if( _cached )
-	return _target ;
+    return _target ;
     return get_real_name() ;
+#endif
 }
 
 /** @brief release the file
@@ -112,8 +139,10 @@ BESFileContainer::access()
 bool
 BESFileContainer::release()
 {
-    // If the file is cached then we will need to release the lock on the
-    // target
+#if NEW_CACHE
+    if (_cached)
+        BESCache2::get_instance()->unlock(_target);
+#endif
     return true ;
 }
 

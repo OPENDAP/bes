@@ -230,6 +230,9 @@ BESUncompressManager::uncompress( const string &src, string &target,
 	// if we find the method for this file then use it. If we don't find
 	// it then assume that the file is not compressed and simply return
 	// the src file at the end of the method.
+	//
+	// Actually return false; return true if the file has been decompressed and return the
+	// cached (decompressed) file name in the value-result parameter 'target'. jhrg 3/21/12
 	p_bes_uncompress p = find_method( ext ) ;
 	if( p )
 	{
@@ -268,7 +271,7 @@ BESUncompressManager::uncompress( const string &src, string &target,
 
 		    // MPJ: Is this safe to call after unlock?
 		    // We just unlocked the cache before we
-		    // decompress the file, so the is_cached call may fail
+		    // decompress the file, so the get_read_lock call may fail
 		    // for another call while this is occurring
 		    // and spawn another decompress overwriting the other?
 		    // Or will another coming along see the unfinished

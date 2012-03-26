@@ -136,9 +136,13 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESDataHandlerInterface.cc					\
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
-	BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc		\
+	BESCache2.cc BESUncompressManager2.cc BESUncompressGZ.cc		\
 	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc		\
+	BESCache.cc BESUncompressManager.cc \
 	BESFSDir.cc BESFSFile.cc
+
+# The old caching code. Still in the build. jhrg 3/23/12
+#   BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc     
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
@@ -179,9 +183,13 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESDefaultModule.h BESTransmitterNames.h 			\
 	BESExceptionManager.h 						\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
-	BESDebug.h BESCache.h BESUncompressManager.h 			\
+	BESDebug.h BESCache2.h BESUncompressManager2.h			\
+	BESCache.h BESUncompressManager.h  \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h		\
 	BESTokenizer.h BESFSDir.h BESFSFile.h
+
+# The old caching code. Still in the build. jhrg 3/23/12
+#   BESCache.h BESUncompressManager.h
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \
