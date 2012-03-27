@@ -194,12 +194,12 @@ string BESUncompressManager2::get_method_names()
  */
 bool BESUncompressManager2::uncompress(const string &src, string &target, BESCache2 *cache)
 {
-    BESDEBUG( "bes", "BESUncompressManager2::uncompress - src: " << src << endl );
+    BESDEBUG( "uncompress", "uncompress - src: " << src << endl );
 
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
     if (dot == string::npos) {
-        BESDEBUG( "bes", "BESUncompressManager2::uncompress - no file extension" << endl );
+        BESDEBUG( "uncompress", "uncompress - no file extension" << endl );
         return false;
     }
 
@@ -211,58 +211,46 @@ bool BESUncompressManager2::uncompress(const string &src, string &target, BESCac
     // Otherwise, 'p' points to a function that decompresses the data.
     p_bes_uncompress p = find_method(ext);
     if (!p) {
-        BESDEBUG( "bes", "BESUncompressManager2::uncompress - not compressed " << endl );
+        BESDEBUG( "uncompress", "uncompress - not compressed " << endl );
         return false;
     }
 
     // If we are here, the file has an extension that identifies it as compressed. Is a
     // decompressed version in the library already?
-    string target = get_cache_file_name(src);
+    string cfile = cache->get_cache_file_name(src);
     int fd;
-    BESDEBUG( "bes", "BESUncompressManager2::uncompress - is cached? " << src << endl );
-    if (cache->get_read_lock(target, fd)) {
-        BESDEBUG( "bes", "BESUncompressManager2::uncompress - cached as: " << target << endl );
+    BESDEBUG( "uncompress", "uncompress - is cached? " << src << endl );
+    if (cache->get_read_lock(cfile, fd)) {
+        BESDEBUG( "uncompress", "uncompress - cached as: " << cfile << endl );
         return true;
     }
 
     // Now we actually try to decompress the file, given that there's not a decomp'd version
     // in the cache.
-    BESDEBUG( "bes", "BESUncompressManager2::uncompress - uncompress to " << target << endl );
-    int fd;
-    if (cache->create_and_lock(target, fd)) {
+    BESDEBUG( "uncompress", "uncompress - uncompress to " << cfile << endl );
+    if (cache->create_and_lock(cfile, fd)) {
         // Here we need to look at the size of the cache and purge if needed
-        cerr << "Test the cache size" << endl;
-#if 0
         if (cache->cache_too_big())
             cache->purge();
-#endif
-        cerr << "Decompress the file: " << src << " to " << target << endl;
+
         // decompress
-        p(src, target);
-        cerr << "Done" << endl;
+        p(src, cfile);
+
         // Now update the size file info.
-#if 0
-        unsigned long long size = cache->update_cache_info(target);
-        BESDEBUG( "bes", "BESUncompressManager2::uncompress - cache size now " << size << endl );
-#endif
+        unsigned long long size = cache->update_cache_info(cfile);
+        BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
 
         // Before unlocking the file, grab a read lock on the cache info file to prevent
         // another process from deleting this new file in a purge operation.
-#if 0
         if (!cache->lock_cache_info())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
-#endif
-        cerr << "Unlock target (" << target << ")" << endl;
+
         cache->unlock(fd);
-        cerr << "Ulocked" << endl;
-        cerr << "Grab the read lock on the file" << endl;
 
         // The file descriptor is not used here, but it is recorded so that unlock(name)
         // will work.
-        cache->get_read_lock(target, fd);
-        cerr << "Got the read lock" << endl;
+        cache->get_read_lock(cfile, fd);
         cache->unlock_cache_info();
-        cerr << "Unlocked cache info" << endl;
         return true;
     }
     else {
@@ -270,14 +258,14 @@ bool BESUncompressManager2::uncompress(const string &src, string &target, BESCac
         // time. Both might find the file not in the cache, but only one will be able to create
         // the file for the uncompressed data. This second call will block until the unlock()
         // call above.
-        BESDEBUG( "bes", "BESUncompressManager2::uncompress - testing is_cached again... " << endl );
-        if (cache->get_read_lock(src, target)) {
-            BESDEBUG( "bes", "BESUncompressManager2::uncompress - (second test) cached as: " << target << endl );
+        BESDEBUG( "uncompress", "uncompress - testing is_cached again... " << endl );
+        if (cache->get_read_lock(cfile, fd)) {
+            BESDEBUG( "uncompress", "uncompress - (second test) cached as: " << cfile << endl );
             return true;
         }
     }
 
-    BESDEBUG( "bes", "BESUncompressManager2::uncompress - even though it should have been decompressed, this file was not... " << src << endl );
+    BESDEBUG( "uncompress", "uncompress - even though it should have been decompressed, this file was not... " << src << endl );
     throw BESInternalError("Could not decompress the file: " + src, __FILE__, __LINE__);
 
     // never gets here...

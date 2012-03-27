@@ -61,9 +61,10 @@ class BESUncompressManager2: public BESObj {
 private:
     static BESUncompressManager2 * _instance;
     map<string, p_bes_uncompress> _uncompress_list;
+#if 0
     unsigned int _retry; // milleseconds
     unsigned int _num_tries;
-
+#endif
     typedef map<string, p_bes_uncompress>::const_iterator UCIter;
     typedef map<string, p_bes_uncompress>::iterator UIter;
 

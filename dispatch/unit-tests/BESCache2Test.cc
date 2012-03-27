@@ -22,6 +22,7 @@
 #include "BESUncompressManager2.h"
 #include "BESError.h"
 #include "BESInternalError.h"
+#include "BESDebug.h"
 
 using namespace std;
 
@@ -93,6 +94,13 @@ bool dot_file(const string &file) {
 
 void decompression_process(int files_to_get)
 {
+    BESDebug::SetUp("cerr,bes,cache");
+#if 0
+// register the two debug context for the server and ppt. The
+// Default Module will register the bes context.
+BESDebug::Register("server");
+BESDebug::Register("ppt");
+#endif
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 1000);
 
@@ -108,24 +116,22 @@ void decompression_process(int files_to_get)
     for (int i = 0; i < files_to_get; ++i) {
         // randomly choose a compressed file
         string file = files.at(random(num_files));
-
+#if 0
         // write its name to the log, along with the time
         time_t t;
         time(&t);
-        cerr << "At: " << t << " getting file '" << file << "'." << endl;
-
+        cerr << "Getting file '" << file << "' (time: " << t << ")." << endl;
+#endif
         // get the file
         file = "./cache2_data_files/" + file;
         string cfile;
         bool in_cache = BESUncompressManager2::TheManager()->uncompress( file, cfile, cache ) ;
+#if 0
         time(&t);
-
         // write cfile to the log along with the time
         if (in_cache)
-            cerr << "    " << "in the cache as " << cfile << " at: " << t << endl;
-        else
-            cerr << "    " << "cached as " << cfile << " at: " << t << endl;
-
+            cerr << "    " << "in the cache as " << cfile << " (time: " << t  << ")" << endl;
+#endif
     }
 }
 
@@ -156,37 +162,43 @@ int main(int argc, char *argv[])
     files.erase(remove_if(files.begin(), files.end(), dot_file), files.end());
     for_each(files.begin(), files.end(), print_name);
 #endif
-
+#if 0
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 1000);
 
     // Make a file in the cache2 directory
-    string cfile = get_cache_file_name("test1");
+    string cfile = cache->get_cache_file_name("test1");
     int fd;
     bool status = cache->create_and_lock(cfile, fd);
     cerr << "status: " << status << endl;
+    if (status) {
 
+        cerr << "cfile: " << cfile << endl;
+        int fd2 = open(cfile.c_str(), O_RDONLY);
+        cerr << "past open" << endl;
+        if (fd2 == -1)
+            cerr << "Could not open" << endl;
+        write(fd2, &fd, sizeof(int));
+        close(fd2);
+        cerr << "past write" << endl;
 
-    cerr << "cfile: " << cfile << endl;
-    int fd2 = open(cfile.c_str(), O_RDONLY);
-    cerr << "past open" << endl;
-    if (fd2 == -1)
-        cerr << "Could not open" << endl;
-    write(fd2, &fd, sizeof(int));
-    close(fd2);
-    cerr << "past write" << endl;
+        cache->unlock(fd);
+        cerr << "past unlock" << endl;
+    }
 
-    cache->unlock(fd);
-    cerr << "past unlock" << endl;
+    string cfile2 = cache->get_cache_file_name("test1");
 
-    string cfile2 = get_cache_file_name("test1");;
+    int fd2;
     status = cache->get_read_lock(cfile2, fd);
     cerr << "status: " << status << " (" << fd << ")" << endl;
 
     status = cache->get_read_lock(cfile2, fd2);
     cerr << "status: " << status << " (" << fd2 << ")" << endl;
 
-#if 0
+    cache->unlock(cfile2);
+    cache->unlock(cfile2);
+#endif
+#if 1
     try {
         decompression_process(22);
     }

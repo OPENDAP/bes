@@ -63,6 +63,7 @@ private:
     BESCache2 &operator=(const BESCache2 &rhs) { }
 
     void m_check_ctor_params();
+    void m_initialize_cache_info();
 
     /// for filename -> filesize map below
     struct cache_entry {
@@ -81,18 +82,20 @@ private:
     int d_cache_info_fd;
 
     // map that relates files to the descriptor used to obtain a lock
-    typedef std::map<std::string, int> FilesAndLockDescriptors;
+    typedef std::multimap<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
 public:
     virtual ~BESCache2() { }
 
     virtual void record_descriptor(const string &file, int fd) {
-    	d_locks[file] = fd;
+        d_locks.insert(std::pair<string, int>(file, fd));
+    	// d_locks[file] = fd;
     }
 
     virtual int get_descriptor(const string &file) {
-    	return d_locks{file};
+        return d_locks.find(file)->second;
+    	//return d_locks[file];
     }
 
     string get_cache_file_name(const string &src);
