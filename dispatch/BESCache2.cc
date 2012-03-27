@@ -193,7 +193,6 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-
 static bool createLockedFile(string file_name, int &ref_fd)
 {
     int fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_EXLOCK | O_RDWR, 0666);
@@ -313,38 +312,37 @@ BESCache2::BESCache2(BESKeys *keys, const string &cache_dir_key, const string &p
 
     // See if we can create it. If so, that means it doesn't exist. So make it and
     // set the cache initial size to zero.
-    int fd;
-    if (createLockedFile(d_cache_info, fd)) {
+    if (createLockedFile(d_cache_info, d_cache_info_fd)) {
         // initialize the cache size to zero
         unsigned long long size = 0;
-        if(write(fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+        if(write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
             throw BESInternalError("Could not write size info to the cache info file in startup!", __FILE__, __LINE__);
 
-        unlock(d_cache_info);
+        unlock(d_cache_info_fd);
     }
 }
+
+
 BESCache2::BESCache2(const string &cache_dir, const string &prefix, unsigned long size) :
         d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_megs(size)
 {
-
     m_check_ctor_params(); // Throws BESSyntaxUserError on error.
 
     d_cache_info = d_cache_dir + "/bes.cache.info";
 
     // See if we can create it. If so, that means it doesn't exist. So make it and
     // set the cache initial size to zero.
-    int fd;
-    if (createLockedFile(d_cache_info, fd)) {
+    if (createLockedFile(d_cache_info, d_cache_info_fd)) {
         // initialize the cache size to zero
         unsigned long long size = 0;
-        if(write(fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+        if(write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
             throw BESInternalError("Could not write size info to the cache info file in startup!", __FILE__, __LINE__);
 
-        unlock(d_cache_info);
+        unlock(d_cache_info_fd);
     }
 }
 
-/** Private method to build the name of file that will holds the uncompressed data from
+/** Build the name of file that will holds the uncompressed data from
  * 'src' in the cache.
  *
  * @note How names are mangled: 'src' is the full name of the file to be
@@ -353,7 +351,7 @@ BESCache2::BESCache2(const string &cache_dir, const string &prefix, unsigned lon
  * file name is /usr/lib/data/fnoc1.nc.gz then the resulting file name
  * will be \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
  */
-string BESCache2::m_get_cache_file_name(const string &src)
+string BESCache2::get_cache_file_name(const string &src)
 {
     string target = src;
     if (target.at(0) == '/') {
@@ -388,19 +386,26 @@ string BESCache2::m_get_cache_file_name(const string &src)
  * @throws Error if the attempt to get the (shared) lock failed for any
  * reason other than that the file does/did not exist.
  */
-bool BESCache2::get_read_lock(const string &src, string &target)
+bool BESCache2::get_read_lock(const string &target, int &fd)
 {
-    target = m_get_cache_file_name(src);
-    int fd; // not used
-    return getSharedLock(target, fd);
+    bool status = getSharedLock(target, fd);
+
+    if (status)
+    	record_descriptor(target, fd);
+
+    return status;
 }
 
 /** @brief Create a file in the cache and lock it for write access. */
-bool BESCache2::create_and_lock(const string &src, string &target, int &fd)
+bool BESCache2::create_and_lock(const string &target, int &fd)
 {
-    target = m_get_cache_file_name(src);
+    bool status = createLockedFile(target, fd);
 
-    return createLockedFile(target, fd);
+    if (status)
+    	record_descriptor(target, fd);
+
+    return status;
+
 }
 
 /** Get a shared lock on the 'cache info' file. This is used to prevent
@@ -411,8 +416,7 @@ bool BESCache2::create_and_lock(const string &src, string &target, int &fd)
  */
 bool BESCache2::lock_cache_info()
 {
-    int fd;
-    return getSharedLock(d_cache_info, fd);
+    return getSharedLock(d_cache_info, d_cache_info_fd);
 }
 
 /** Unlock the name file. This does not do any name mangling; it
@@ -422,14 +426,20 @@ bool BESCache2::lock_cache_info()
  * @throws BESInternalError */
 void BESCache2::unlock(const string &file_name)
 {
-    int fd = open(file_name.c_str(), O_RDONLY);
+	unlock(get_descriptor(file_name));
+
+#if 0
+	// FIXME
+	int fd = open(file_name.c_str(), O_RDONLY);
     if (fd == -1)
         throw BESInternalError("A file was locked and could not be unlocked!", __FILE__, __LINE__);
 
     if (flock(fd, LOCK_UN) == -1)
         throw BESInternalError("An error occurred trying to unlock the file", __FILE__, __LINE__);
     //unlock(target);
+#endif
 }
+
 void BESCache2::unlock(int fd)
 {
     if (flock(fd, LOCK_UN) == -1)
@@ -438,7 +448,7 @@ void BESCache2::unlock(int fd)
 
 void BESCache2::unlock_cache_info()
 {
-    unlock(d_cache_info);
+    unlock(d_cache_info_fd);
 }
 
 /** @brief Update teh cache info file to include 'target'
@@ -452,13 +462,12 @@ unsigned long long BESCache2::update_cache_info(const string &target)
 {
     // get an exclusive lock on the cache info file and make sure
     // it holds the correct value for the cache size.
-    int fd;
-    if (!getExclusiveLock(d_cache_info, fd))
+    if (!getExclusiveLock(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
 
     // read the size from the cache info file
     unsigned long long current_size;
-    if(read(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
     struct stat buf;
@@ -468,10 +477,10 @@ unsigned long long BESCache2::update_cache_info(const string &target)
     else
         throw BESInternalError("Could not read the size of the new file", __FILE__, __LINE__);
 
-    if(write(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if(write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not write size info from the cache info file!", __FILE__, __LINE__);
 
-    unlock(d_cache_info);
+    unlock(d_cache_info_fd);
 
     return current_size;
 }
@@ -483,16 +492,15 @@ unsigned long long BESCache2::update_cache_info(const string &target)
  * @return True if the size is too big, false otherwise. */
 bool BESCache2::cache_too_big()
 {
-    int fd;
-    if (!getSharedLock(d_cache_info, fd))
+    if (!getSharedLock(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
 
     // read the size from the cache info file
     unsigned long long current_size;
-    if(read(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
-    unlock(d_cache_info);
+    unlock(d_cache_info_fd);
 
     return current_size > d_max_cache_size_in_megs;
 }
@@ -510,14 +518,13 @@ void BESCache2::purge()
 
     // get an exclusive lock on the cache info file and make sure
     // it holds the correct value for the cache size.
-    int fd;
-    if (!getExclusiveLock(d_cache_info, fd))
+    if (!getExclusiveLock(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
 
     // read the size from the cache info file; I'm interested to see if this always
     // matches the computed value from m_collect_cache_dir_info
     unsigned long long current_size_from_file;
-    if(read(fd, &current_size_from_file, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if(read(d_cache_info_fd, &current_size_from_file, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
     unsigned long long current_size = m_collect_cache_dir_info();
@@ -570,10 +577,10 @@ void BESCache2::purge()
     }
 
     // read the size from the cache info file
-    if(write(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if(write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not write size info to the cache info file!", __FILE__, __LINE__);
 
-    unlock(d_cache_info);
+    unlock(d_cache_info_fd);
 
     if (BESISDEBUG( "bes" )) {
         BESDEBUG( "bes", endl << "AFTER" << endl );

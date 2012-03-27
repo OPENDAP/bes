@@ -63,7 +63,6 @@ private:
     BESCache2 &operator=(const BESCache2 &rhs) { }
 
     void m_check_ctor_params();
-    string m_get_cache_file_name(const string &src);
 
     /// for filename -> filesize map below
     struct cache_entry {
@@ -79,12 +78,27 @@ private:
 
     /// Name of the file that tracks the size of the cache
     string d_cache_info;
+    int d_cache_info_fd;
+
+    // map that relates files to the descriptor used to obtain a lock
+    typedef std::map<std::string, int> FilesAndLockDescriptors;
+    FilesAndLockDescriptors d_locks;
 
 public:
     virtual ~BESCache2() { }
 
-    virtual bool create_and_lock(const string &src, string &target, int &fd);
-    virtual bool get_read_lock(const string &src, string &target);
+    virtual void record_descriptor(const string &file, int fd) {
+    	d_locks[file] = fd;
+    }
+
+    virtual int get_descriptor(const string &file) {
+    	return d_locks{file};
+    }
+
+    string get_cache_file_name(const string &src);
+
+    virtual bool create_and_lock(const string &target, int &fd);
+    virtual bool get_read_lock(const string &target, int &fd);
     virtual void unlock(const string &target);
     virtual void unlock(int fd);
 
