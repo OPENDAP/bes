@@ -101,7 +101,7 @@ void decompression_process(int files_to_get)
     files.erase(remove_if(files.begin(), files.end(), dot_file), files.end());
     if (files.size() == 0)
         throw BESInternalError("No files in the data directory for the cache tests.", __FILE__, __LINE__);
-
+    cerr << "Files for the test: " << endl;
     for_each(files.begin(), files.end(), print_name);
     int num_files = files.size();
 
@@ -161,9 +161,9 @@ int main(int argc, char *argv[])
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 1000);
 
     // Make a file in the cache2 directory
-    string cfile;
+    string cfile = get_cache_file_name("test1");
     int fd;
-    bool status = cache->create_and_lock("test1", cfile, fd);
+    bool status = cache->create_and_lock(cfile, fd);
     cerr << "status: " << status << endl;
 
 
@@ -179,12 +179,12 @@ int main(int argc, char *argv[])
     cache->unlock(fd);
     cerr << "past unlock" << endl;
 
-    string cfile2;
-    status = cache->get_read_lock("test1", cfile2);
-    cerr << "status: " << status << endl;
+    string cfile2 = get_cache_file_name("test1");;
+    status = cache->get_read_lock(cfile2, fd);
+    cerr << "status: " << status << " (" << fd << ")" << endl;
 
-    status = cache->get_read_lock("test1", cfile2);
-    cerr << "status: " << status << endl;
+    status = cache->get_read_lock(cfile2, fd2);
+    cerr << "status: " << status << " (" << fd2 << ")" << endl;
 
 #if 0
     try {
