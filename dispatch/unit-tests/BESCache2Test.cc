@@ -94,7 +94,7 @@ bool dot_file(const string &file) {
 
 void decompression_process(int files_to_get)
 {
-    BESDebug::SetUp("cerr,bes,cache");
+    BESDebug::SetUp("cerr,uncompress,cache");
 #if 0
 // register the two debug context for the server and ppt. The
 // Default Module will register the bes context.
@@ -102,7 +102,7 @@ BESDebug::Register("server");
 BESDebug::Register("ppt");
 #endif
     // Make a cache object for this process. Hardwire the cache directory name
-    BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 1000);
+    BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 200);
 
     // Get a list of all of the test files
     vector<string> files = get_file_names("./cache2_data_files");
@@ -116,7 +116,7 @@ BESDebug::Register("ppt");
     for (int i = 0; i < files_to_get; ++i) {
         // randomly choose a compressed file
         string file = files.at(random(num_files));
-#if 0
+#if 1
         // write its name to the log, along with the time
         time_t t;
         time(&t);
@@ -126,12 +126,13 @@ BESDebug::Register("ppt");
         file = "./cache2_data_files/" + file;
         string cfile;
         bool in_cache = BESUncompressManager2::TheManager()->uncompress( file, cfile, cache ) ;
-#if 0
+#if 1
         time(&t);
         // write cfile to the log along with the time
         if (in_cache)
             cerr << "    " << "in the cache as " << cfile << " (time: " << t  << ")" << endl;
 #endif
+        cache->unlock(cfile);
     }
 }
 
@@ -200,7 +201,7 @@ int main(int argc, char *argv[])
 #endif
 #if 1
     try {
-        decompression_process(22);
+        decompression_process(222);
     }
     catch (BESInternalError &e) {
         cerr << "Caught BIE: " << e.get_message() << " at: " << e.get_file() << ":" << e.get_line() << endl;

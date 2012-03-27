@@ -33,6 +33,7 @@
 #include <sstream>
 
 #include "BESObj.h"
+#include "BESDebug.h"
 
 class BESKeys;
 
@@ -82,21 +83,26 @@ private:
     int d_cache_info_fd;
 
     // map that relates files to the descriptor used to obtain a lock
-    typedef std::multimap<string, int> FilesAndLockDescriptors;
+    typedef std::map<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
 
-public:
-    virtual ~BESCache2() { }
-
     virtual void record_descriptor(const string &file, int fd) {
+        BESDEBUG("cache", "BES Cache: recording descriptor: " << file << ", " << fd << endl);
         d_locks.insert(std::pair<string, int>(file, fd));
-    	// d_locks[file] = fd;
+        // d_locks[file] = fd;
     }
 
     virtual int get_descriptor(const string &file) {
-        return d_locks.find(file)->second;
-    	//return d_locks[file];
+        FilesAndLockDescriptors::iterator i = d_locks.find(file);
+        int fd = i->second;
+        BESDEBUG("cache", "BES Cache: getting descriptor: " << file << ", " << fd << endl);
+        d_locks.erase(i);
+        return fd;
+        //return d_locks[file];
     }
+
+public:
+    virtual ~BESCache2() { }
 
     string get_cache_file_name(const string &src);
 

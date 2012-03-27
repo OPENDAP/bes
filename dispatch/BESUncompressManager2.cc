@@ -192,7 +192,7 @@ string BESUncompressManager2::get_method_names()
  * the file
  * @throws Error for a variety of sins regarding cache control.
  */
-bool BESUncompressManager2::uncompress(const string &src, string &target, BESCache2 *cache)
+bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCache2 *cache)
 {
     BESDEBUG( "uncompress", "uncompress - src: " << src << endl );
 
@@ -217,7 +217,8 @@ bool BESUncompressManager2::uncompress(const string &src, string &target, BESCac
 
     // If we are here, the file has an extension that identifies it as compressed. Is a
     // decompressed version in the library already?
-    string cfile = cache->get_cache_file_name(src);
+    cfile = cache->get_cache_file_name(src);
+
     int fd;
     BESDEBUG( "uncompress", "uncompress - is cached? " << src << endl );
     if (cache->get_read_lock(cfile, fd)) {
@@ -245,6 +246,7 @@ bool BESUncompressManager2::uncompress(const string &src, string &target, BESCac
         if (!cache->lock_cache_info())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 
+        // Release the (exclusive) write lock
         cache->unlock(fd);
 
         // The file descriptor is not used here, but it is recorded so that unlock(name)
