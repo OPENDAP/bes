@@ -5,7 +5,8 @@
 
 // Copyright (c) 2012 OPeNDAP, Inc
 // Author: James Gallagher <jgallagher@opendap.org>
-// Based in code by Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// 		   Patrick West <pwest@ucar.edu> and
+//		   Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -33,8 +34,10 @@ using std::istringstream;
 #include "BESUncompressBZ2.h"
 #include "BESUncompressZ.h"
 #include "BESCache2.h"
+
 #include "BESInternalError.h"
 #include "BESDebug.h"
+
 #include "TheBESKeys.h"
 
 BESUncompressManager2 *BESUncompressManager2::_instance = 0;
@@ -53,31 +56,6 @@ BESUncompressManager2::BESUncompressManager2()
     add_method("gz", BESUncompressGZ::uncompress);
     add_method("bz2", BESUncompressBZ2::uncompress);
     add_method("Z", BESUncompressZ::uncompress);
-
-#if 0
-    bool found = false;
-    string key = "BES.Uncompress.Retry";
-    string val;
-    TheBESKeys::TheKeys()->get_value(key, val, found);
-    if (!found || val.empty()) {
-        _retry = 2000;
-    }
-    else {
-        istringstream is(val);
-        is >> _retry;
-    }
-
-    key = "BES.Uncompress.NumTries";
-    val = "";
-    TheBESKeys::TheKeys()->get_value(key, val, found);
-    if (!found || val.empty()) {
-        _num_tries = 10;
-    }
-    else {
-        istringstream is(val);
-        is >> _num_tries;
-    }
-#endif
 }
 
 /** @brief create_and_lock a uncompress method to the list
@@ -100,27 +78,6 @@ bool BESUncompressManager2::add_method(const string &name, p_bes_uncompress meth
     return false;
 }
 
-#if 0
-/** @brief removes a uncompress method from the list
- *
- * The static method that knows how to uncompress the specified type of file
- * is removed from the list.
- *
- * @param name name of the method to remove
- * @return true if successfully removed, false if it doesn't exist in the list
- */
-bool BESUncompressManager2::remove_method(const string &name)
-{
-    BESUncompressManager2::UIter i;
-    i = _uncompress_list.find(name);
-    if (i != _uncompress_list.end()) {
-        _uncompress_list.erase(i);
-        return true;
-    }
-    return false;
-}
-#endif
-
 /** @brief returns the uncompression method specified
  *
  * This method looks up the uncompression method with the given name and
@@ -139,27 +96,6 @@ p_bes_uncompress BESUncompressManager2::find_method(const string &name)
     return 0;
 }
 
-#if 0
-/** @brief returns the comma separated list of all uncompression methods
- * currently registered.
- *
- * @return comma separated list of uncompression method names
- */
-string BESUncompressManager2::get_method_names()
-{
-    string ret;
-    bool first_name = true;
-    BESUncompressManager2::UCIter i = _uncompress_list.begin();
-    for (; i != _uncompress_list.end(); i++) {
-        if (!first_name)
-            ret += ", ";
-        ret += (*i).first;
-        first_name = false;
-    }
-    return ret;
-}
-#endif
-
 /** @brief If the file 'src' should be decompressed, do so and return a
  *  new file name on the value-result param 'target'.
  *
@@ -175,7 +111,7 @@ string BESUncompressManager2::get_method_names()
  *  room for the new file.
  *
  *  @note As implemented, the purge() code removes files so that the
- *  resulting size of the cache will be about 90% of the maximum size of
+ *  resulting size of the cache will be about 80% of the maximum size of
  *  the cache as set in the bes.conf file.
  *
  * @note If there is a problem uncompressing the file, the uncompress code is
@@ -187,10 +123,10 @@ string BESUncompressManager2::get_method_names()
  * @param src file to be uncompressed
  * @param target target file to uncompress into
  * @param cache BESCache object to uncompress the src file in
- * @return full path to the uncompressed file
+ * @return true if the file's contents are in the cache and at the pathname
+ * cfile
  * @throws BESInternalError if there is a problem uncompressing
  * the file
- * @throws Error for a variety of sins regarding cache control.
  */
 bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCache2 *cache)
 {
@@ -204,8 +140,6 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
     }
 
     string ext = src.substr(dot + 1, src.length() - dot);
-    // Made the extensions case sensitive
-    // std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
     // If there's no match for the extension, the file is not compressed and we return false.
     // Otherwise, 'p' points to a function that decompresses the data.
@@ -217,17 +151,16 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
 
     // If we are here, the file has an extension that identifies it as compressed. Is a
     // decompressed version in the library already?
-    cfile = cache->get_cache_file_name(src);
-
-    int fd;
     BESDEBUG( "uncompress", "uncompress - is cached? " << src << endl );
+    cfile = cache->get_cache_file_name(src);
+    int fd;
     if (cache->get_read_lock(cfile, fd)) {
         BESDEBUG( "uncompress", "uncompress - cached as: " << cfile << endl );
         return true;
     }
 
     // Now we actually try to decompress the file, given that there's not a decomp'd version
-    // in the cache.
+    // in the cache. First make an empty file and get an exclusive lock on it.
     BESDEBUG( "uncompress", "uncompress - uncompress to " << cfile << endl );
     if (cache->create_and_lock(cfile, fd)) {
         // Here we need to look at the size of the cache and purge if needed
@@ -242,7 +175,8 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
         BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
 
         // Before unlocking the file, grab a read lock on the cache info file to prevent
-        // another process from deleting this new file in a purge operation.
+        // another process from deleting this new file in a purge operation before we get
+        // it locked for reading.
         if (!cache->lock_cache_info())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 
@@ -252,11 +186,13 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
         // The file descriptor is not used here, but it is recorded so that unlock(name)
         // will work.
         cache->get_read_lock(cfile, fd);
+
+        // Now unlock cache info since we have a read lock on the new file
         cache->unlock_cache_info();
         return true;
     }
     else {
-        // This will happen if two processes try to uncompress the same file at the same exact
+        // the code can get here if two processes try to decompress the same file at the same exact
         // time. Both might find the file not in the cache, but only one will be able to create
         // the file for the uncompressed data. This second call will block until the unlock()
         // call above.

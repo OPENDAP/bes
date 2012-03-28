@@ -39,18 +39,16 @@ class BESCache2;
 
 typedef void (*p_bes_uncompress)(const string &src, const string &target);
 
-/** @brief List of all registered uncompress methods
+/** @brief List of all registered decompression methods
  *
- * The BESUncompressManager2 allows the developer to create_and_lock or remove named
- * uncompression methods from the list for this server. By default a gz and
+ * The BESUncompressManager2 allows the developer to add or remove named
+ * decompression methods from the list for this server. By default a gz and
  * bz2 and Z function is provided.
  *
- * What is actually added to the list are static uncompression functions.
- * Each of these functions is responsible for uncompressing a specific type
- * of compressed file. The manager knows which type to uncompress by the
- * file extension. All extensions are converted to lower case in order to
- * make a match, so, for example, all .Z compressed files will be matched
- * with the static function registered with the name z.
+ * What is actually added to the list are static decompression functions.
+ * Each of these functions is responsible for decompressing a specific type
+ * of compressed file. The manager knows which type to decompress by the
+ * file extension.
  *
  * @see BESUncompressGZ
  * @see BESUncompressBZ2
@@ -61,14 +59,11 @@ class BESUncompressManager2: public BESObj {
 private:
     static BESUncompressManager2 * _instance;
     map<string, p_bes_uncompress> _uncompress_list;
-#if 0
-    unsigned int _retry; // milleseconds
-    unsigned int _num_tries;
-#endif
     typedef map<string, p_bes_uncompress>::const_iterator UCIter;
+#if 0
     typedef map<string, p_bes_uncompress>::iterator UIter;
+#endif
 
-protected:
     BESUncompressManager2(void);
 
 public:
@@ -77,10 +72,7 @@ public:
     }
 
     virtual bool add_method(const string &name, p_bes_uncompress method);
-    // virtual bool remove_method(const string &name);
     virtual p_bes_uncompress find_method(const string &name);
-
-    // virtual string get_method_names();
 
     virtual bool uncompress(const string &src, string &target, BESCache2 *cache);
 

@@ -51,7 +51,9 @@ private:
     string d_prefix;     /// tack this on the front of cache file name
 
     /// How many megabytes can the cache hold before we have to purge
-    unsigned long long d_max_cache_size_in_megs;
+    unsigned long long d_max_cache_size_in_bytes;
+    // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
+    unsigned long long d_target_size;
 
     // This class implements a singleton, so the constructor is hidden.
     BESCache2(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
@@ -89,7 +91,6 @@ private:
     virtual void record_descriptor(const string &file, int fd) {
         BESDEBUG("cache", "BES Cache: recording descriptor: " << file << ", " << fd << endl);
         d_locks.insert(std::pair<string, int>(file, fd));
-        // d_locks[file] = fd;
     }
 
     virtual int get_descriptor(const string &file) {
@@ -98,7 +99,6 @@ private:
         BESDEBUG("cache", "BES Cache: getting descriptor: " << file << ", " << fd << endl);
         d_locks.erase(i);
         return fd;
-        //return d_locks[file];
     }
 
 public:

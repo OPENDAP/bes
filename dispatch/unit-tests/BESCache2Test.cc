@@ -75,7 +75,7 @@ void sleep(int milliseconds)
 
     nanosleep(&rqtp, 0);
 }
-//500 000 000
+
 // This should use a seed if really 'random' responses are need...
 int random(int N)
 {
@@ -95,12 +95,7 @@ bool dot_file(const string &file) {
 void decompression_process(int files_to_get)
 {
     BESDebug::SetUp("cerr,uncompress,cache");
-#if 0
-// register the two debug context for the server and ppt. The
-// Default Module will register the bes context.
-BESDebug::Register("server");
-BESDebug::Register("ppt");
-#endif
+
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 200);
 
@@ -109,97 +104,37 @@ BESDebug::Register("ppt");
     files.erase(remove_if(files.begin(), files.end(), dot_file), files.end());
     if (files.size() == 0)
         throw BESInternalError("No files in the data directory for the cache tests.", __FILE__, __LINE__);
+
     cerr << "Files for the test: " << endl;
     for_each(files.begin(), files.end(), print_name);
+
     int num_files = files.size();
 
     for (int i = 0; i < files_to_get; ++i) {
         // randomly choose a compressed file
         string file = files.at(random(num_files));
-#if 1
+
         // write its name to the log, along with the time
         time_t t;
         time(&t);
         cerr << "Getting file '" << file << "' (time: " << t << ")." << endl;
-#endif
+
         // get the file
         file = "./cache2_data_files/" + file;
         string cfile;
         bool in_cache = BESUncompressManager2::TheManager()->uncompress( file, cfile, cache ) ;
-#if 1
+
         time(&t);
         // write cfile to the log along with the time
         if (in_cache)
             cerr << "    " << "in the cache as " << cfile << " (time: " << t  << ")" << endl;
-#endif
+
         cache->unlock(cfile);
     }
 }
 
 int main(int argc, char *argv[])
 {
-#if 0
-    for (int i = 0; i < 99; ++i)
-        cerr << random(100) << endl;
-
-    time_t start, end;
-    time(&start);
-    sleep(2000);
-    time(&end);
-    cerr << "Slept " << difftime(end, start) << " seconds." << endl;
-
-    time(&start);
-    sleep(1000);
-    time(&end);
-    cerr << "Slept " << difftime(end, start) << " seconds." << endl;
-
-    time(&start);
-    sleep(2999);
-    time(&end);
-    cerr << "Slept " << difftime(end, start) << " seconds." << endl;
-
-    vector<string> files = get_file_names(".");
-    for_each(files.begin(), files.end(), print_name);
-    files.erase(remove_if(files.begin(), files.end(), dot_file), files.end());
-    for_each(files.begin(), files.end(), print_name);
-#endif
-#if 0
-    // Make a cache object for this process. Hardwire the cache directory name
-    BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 1000);
-
-    // Make a file in the cache2 directory
-    string cfile = cache->get_cache_file_name("test1");
-    int fd;
-    bool status = cache->create_and_lock(cfile, fd);
-    cerr << "status: " << status << endl;
-    if (status) {
-
-        cerr << "cfile: " << cfile << endl;
-        int fd2 = open(cfile.c_str(), O_RDONLY);
-        cerr << "past open" << endl;
-        if (fd2 == -1)
-            cerr << "Could not open" << endl;
-        write(fd2, &fd, sizeof(int));
-        close(fd2);
-        cerr << "past write" << endl;
-
-        cache->unlock(fd);
-        cerr << "past unlock" << endl;
-    }
-
-    string cfile2 = cache->get_cache_file_name("test1");
-
-    int fd2;
-    status = cache->get_read_lock(cfile2, fd);
-    cerr << "status: " << status << " (" << fd << ")" << endl;
-
-    status = cache->get_read_lock(cfile2, fd2);
-    cerr << "status: " << status << " (" << fd2 << ")" << endl;
-
-    cache->unlock(cfile2);
-    cache->unlock(cfile2);
-#endif
-#if 1
     try {
         decompression_process(222);
     }
@@ -209,7 +144,4 @@ int main(int argc, char *argv[])
     catch (BESError &e) {
         cerr << "Caught BE: " << e.get_message() << " at: " << e.get_file() << ":" << e.get_line() << endl;
     }
-#endif
-
-
 }
