@@ -600,7 +600,8 @@ bool BESCache2::cache_too_big()
 
     unlock_cache_info();
 
-    return current_size > d_max_cache_size_in_megs;
+    // FIXME Move multiplication to ctor!
+    return current_size > d_max_cache_size_in_megs * BYTES_PER_MEG;
 }
 
 /** @brief Purge files from the cache
@@ -643,10 +644,11 @@ void BESCache2::purge()
         }
     }
 
-    // Take the biggest size we can have in MB, convert to Bytes and find 90%
-    // When we delete files, delete down to 90% full. This will give the cache
+    // Take the biggest size we can have in MB, convert to Bytes and find 80%
+    // When we delete files, delete down to 80% full. This will give the cache
     // some 'breathing room'
-    unsigned long long target_size = d_max_cache_size_in_megs * BYTES_PER_MEG *.9;
+    // FIXME Move this multiplication tot eh ctor too!
+    unsigned long long target_size = d_max_cache_size_in_megs * BYTES_PER_MEG * 0.8;
     // unsigned long long current_size = d_current_cache_file_size;
 
     BESDEBUG( "cache", "purge - current and target size " << current_size << ", " << target_size << endl );
