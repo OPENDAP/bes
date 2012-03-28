@@ -130,12 +130,12 @@ p_bes_uncompress BESUncompressManager2::find_method(const string &name)
  */
 bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCache2 *cache)
 {
-    BESDEBUG( "uncompress", "uncompress - src: " << src << endl );
+    BESDEBUG( "uncompress2", "uncompress - src: " << src << endl );
 
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
     if (dot == string::npos) {
-        BESDEBUG( "uncompress", "uncompress - no file extension" << endl );
+        BESDEBUG( "uncompress2", "uncompress - no file extension" << endl );
         return false;
     }
 
@@ -145,24 +145,24 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
     // Otherwise, 'p' points to a function that decompresses the data.
     p_bes_uncompress p = find_method(ext);
     if (!p) {
-        BESDEBUG( "uncompress", "uncompress - not compressed " << endl );
+        BESDEBUG( "uncompress2", "uncompress - not compressed " << endl );
         return false;
     }
 
     // If we are here, the file has an extension that identifies it as compressed. Is a
     // decompressed version in the library already?
-    BESDEBUG( "uncompress", "uncompress - is cached? " << src << endl );
+    BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
     cfile = cache->get_cache_file_name(src);
     int fd;
     if (cache->get_read_lock(cfile, fd)) {
-        BESDEBUG( "uncompress", "uncompress - cached as: " << cfile << endl );
+        BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
         return true;
     }
 
     // Now we actually try to decompress the file, given that there's not a decomp'd version
     // in the cache. First make an empty file and get an exclusive lock on it.
-    BESDEBUG( "uncompress", "uncompress - uncompress to " << cfile << endl );
     if (cache->create_and_lock(cfile, fd)) {
+    	BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
         // Here we need to look at the size of the cache and purge if needed
         if (cache->cache_too_big())
             cache->purge();
@@ -172,7 +172,7 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
 
         // Now update the size file info.
         unsigned long long size = cache->update_cache_info(cfile);
-        BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
+        BESDEBUG( "uncompress2", "uncompress - cache size now " << size << endl );
 
         // Before unlocking the file, grab a read lock on the cache info file to prevent
         // another process from deleting this new file in a purge operation before we get
@@ -196,14 +196,13 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
         // time. Both might find the file not in the cache, but only one will be able to create
         // the file for the uncompressed data. This second call will block until the unlock()
         // call above.
-        BESDEBUG( "uncompress", "uncompress - testing is_cached again... " << endl );
+        BESDEBUG( "uncompress2", "uncompress - testing is_cached again... " << endl );
         if (cache->get_read_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "uncompress - (second test) cached as: " << cfile << endl );
+            BESDEBUG( "uncompress", "uncompress - (second test) cache hit: " << cfile << endl );
             return true;
         }
     }
 
-    BESDEBUG( "uncompress", "uncompress - even though it should have been decompressed, this file was not... " << src << endl );
     throw BESInternalError("Could not decompress the file: " + src, __FILE__, __LINE__);
 
     // never gets here...
@@ -213,7 +212,7 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with the names of the
- * registered uncompression methods.
+ * registered decompression methods.
  *
  * @param strm C++ i/o stream to dump the information to
  */

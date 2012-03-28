@@ -9,10 +9,9 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <sys/file.h>
-#include <unistd.h>  // for unlink
-#include <dirent.h>
 #include <sys/stat.h>
 
 #include <vector>
@@ -94,7 +93,8 @@ bool dot_file(const string &file) {
 
 void decompression_process(int files_to_get)
 {
-    BESDebug::SetUp("cerr,uncompress,cache");
+	// FIXME Drop these down to just "uncompress" for tests.
+    BESDebug::SetUp("cerr,uncompress,cache,uncompress2");
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 200);
@@ -105,7 +105,7 @@ void decompression_process(int files_to_get)
     if (files.size() == 0)
         throw BESInternalError("No files in the data directory for the cache tests.", __FILE__, __LINE__);
 
-    cerr << "Files for the test: " << endl;
+    cerr << "Files for the test: (" << getpid() << ")" << endl;
     for_each(files.begin(), files.end(), print_name);
 
     int num_files = files.size();
@@ -129,6 +129,14 @@ void decompression_process(int files_to_get)
         if (in_cache)
             cerr << "    " << "in the cache as " << cfile << " (time: " << t  << ")" << endl;
 
+        // sleep for up to one second
+        sleep(random(1000));
+
+        time(&t);
+        // write cfile to the log along with the time
+        if (in_cache)
+            cerr << "    " << "done using the file, unlocking " << cfile << " (time: " << t  << ")" << endl;
+
         cache->unlock(cfile);
     }
 }
@@ -136,6 +144,7 @@ void decompression_process(int files_to_get)
 int main(int argc, char *argv[])
 {
     try {
+    	// FIXME fork and exec to make a bunch of processes
         decompression_process(222);
     }
     catch (BESInternalError &e) {
