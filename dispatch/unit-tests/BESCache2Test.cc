@@ -19,8 +19,6 @@
 
 #include <vector>
 #include <string>
-//#include <iostream>
-//#include <sstream>
 #include <iomanip>
 
 #include "BESCache2.h"
@@ -50,7 +48,7 @@ using namespace std;
 // build list of names
 // fork M decompression processes
 
-inline static char *get_errno() {
+inline string get_errno() {
     char *s_err = strerror(errno);
     if (s_err)
         return s_err;
@@ -102,16 +100,16 @@ string get_md5(const string &file)
 {
     int fd = open(file.c_str(), O_RDONLY);
     if (fd == -1)
-        throw BESInternalError("Can't open for md5. " + string(get_errno()) + " " + file, __FILE__, __LINE__);
+        throw BESInternalError("Can't open for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
     struct stat buf;
     int statret = stat(file.c_str(), &buf);
     if (statret != 0)
-        throw BESInternalError("Can't stat for md5. " + string(get_errno()) + " " + file, __FILE__, __LINE__);
+        throw BESInternalError("Can't stat for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
     vector<unsigned char> data(buf.st_size);
     if (read(fd, data.data(), buf.st_size) != buf.st_size)
-        throw BESInternalError("Can't read for md5. " + string(get_errno()) + " " + file, __FILE__, __LINE__);
+        throw BESInternalError("Can't read for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
     close(fd);
 
@@ -189,10 +187,6 @@ void decompression_process(int files_to_get, bool simulate_use = false)
             sleep(random(1000));
 
         string hash = get_md5(cfile);
-#if 0
-        cerr << "hash: " << hash << endl;
-        cerr << "md5[file]: " << md5[file] << endl;
-#endif
         if (md5[file] != "" && md5[file] != hash)
             throw BESInternalError("md5 failed " + cfile + ": md5[file]: " + md5[file] + ", hash: " + hash, __FILE__, __LINE__);
         else

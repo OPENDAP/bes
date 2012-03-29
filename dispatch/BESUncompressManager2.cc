@@ -149,13 +149,22 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
         return false;
     }
 
+    // Get the name of the file in the cache (either the code finds this file or
+    // or it makes it).
+    cfile = cache->get_cache_file_name(src);
+
+    // Get an exclusive lock on the cache info file - this prevents purge operations
+    // by other processes
+    if (!cache->lock_cache_info())
+        throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
+
     // If we are here, the file has an extension that identifies it as compressed. Is a
     // decompressed version in the library already?
     BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
-    cfile = cache->get_cache_file_name(src);
     int fd;
     if (cache->get_read_lock(cfile, fd)) {
         BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
+        cache->unlock_cache_info();
         return true;
     }
 
@@ -163,37 +172,32 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
     // in the cache. First make an empty file and get an exclusive lock on it.
     if (cache->create_and_lock(cfile, fd)) {
     	BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
-#if 0
-    	// Here we need to look at the size of the cache and purge if needed
-    	if (cache->cache_too_big())
-            cache->purge();
-#endif
     	// decompress
         p(src, cfile);
 
         // Now update the size file info.
         unsigned long long size = cache->update_cache_info(cfile);
-        BESDEBUG( "uncompress2", "uncompress - cache size now " << size << endl );
-
+        BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
+#if 0
         // Before unlocking the file, grab a read lock on the cache info file to prevent
         // another process from deleting this new file in a purge operation before we get
         // it locked for reading.
         if (!cache->lock_cache_info())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
-
-        // Release the (exclusive) write lock
+#endif
+        // Release the (exclusive) write lock on the new file
         cache->unlock(fd);
 
-        // The file descriptor is not used here, but it is recorded so that unlock(name)
-        // will work.
+        // Get a read lock on the new file
         cache->get_read_lock(cfile, fd);
+
+        // Here we need to look at the size of the cache and purge if needed
+        // Optimize this since we had an exclusive lock on the cache already
+        if (cache->cache_too_big(size))
+            cache->purge(size);
 
         // Now unlock cache info since we have a read lock on the new file
         cache->unlock_cache_info();
-
-        // Here we need to look at the size of the cache and purge if needed
-        if (cache->cache_too_big())
-            cache->purge();
 
         return true;
     }
@@ -202,6 +206,10 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
         // time. Both might find the file not in the cache, but only one will be able to create
         // the file for the uncompressed data. This second call will block until the unlock()
         // call above.
+
+        // FIXME add comment
+        cache->unlock_cache_info();
+
         BESDEBUG( "uncompress2", "uncompress - testing is_cached again... " << endl );
         if (cache->get_read_lock(cfile, fd)) {
             BESDEBUG( "uncompress", "uncompress - (second test) cache hit: " << cfile << endl );

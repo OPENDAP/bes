@@ -111,12 +111,12 @@ public:
     virtual void unlock(const string &target);
     virtual void unlock(int fd);
 
-    virtual unsigned long long update_cache_info(const string &target);
     virtual bool lock_cache_info();
     virtual void unlock_cache_info();
 
-    virtual bool cache_too_big();
-    virtual void purge();
+    virtual unsigned long long update_cache_info(const string &target);
+    virtual bool cache_too_big(unsigned long long current_size);
+    virtual void purge(unsigned long long current_size);
 
     static BESCache2 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
     static BESCache2 *get_instance(const string &cache_dir, const string &prefix, unsigned long size); // Testing
