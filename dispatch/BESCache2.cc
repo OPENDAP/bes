@@ -598,7 +598,7 @@ bool BESCache2::cache_too_big()
  */
 void BESCache2::purge()
 {
-    BESDEBUG("cache", "purge - starting the purge" << endl);
+    BESDEBUG("cache_purge", "purge - starting the purge" << endl);
 
     // get an exclusive lock on the cache info file and make sure
     // it holds the correct value for the cache size.
@@ -630,9 +630,9 @@ void BESCache2::purge()
     }
 
     // d_target_size is 80% of the maximum cache size.
-    BESDEBUG( "cache", "purge - current and target size " << current_size << ", " << target_size << endl );
+    BESDEBUG( "cache_purge", "purge - current and target size " << current_size << ", " << d_target_size << endl );
     while (current_size > d_target_size) {
-        BESDEBUG( "cache", "purge - current and target size " << current_size << ", " << target_size << endl );
+        BESDEBUG( "cache_purge", "purge - current and target size " << current_size << ", " << d_target_size << endl );
 
         // Grab the first which is the oldest in terms of access time.
         CacheFilesByAgeMap::iterator i = d_contents.begin();
@@ -646,7 +646,7 @@ void BESCache2::purge()
         // big, the next sweep should catch it.
         if (i == d_contents.end())
             break;
-        BESDEBUG( "cache", "purge - removing " << i->second.name << "(size: " << i->second.size << ", LA time: " << i->first <<")" << endl );
+        BESDEBUG( "cache_purge", "purge - removing " << i->second.name << "(size: " << i->second.size << ", LA time: " << i->first <<")" << endl );
 
         // Otherwise, remove the file
 
@@ -669,6 +669,9 @@ void BESCache2::purge()
 
             unlock(cfile_fd);
             current_size -= i->second.size;
+        }
+        else {
+            BESDEBUG( "cache_purge", "purge - not so fast... " << i->second.name << " is in use." << endl );
         }
 
         d_contents.erase(i);
@@ -716,6 +719,9 @@ unsigned long long BESCache2::m_collect_cache_dir_info()
                 cache_entry entry;
                 entry.name = fullPath;
                 entry.size = buf.st_size;
+                // FIXME hack
+                if (entry.size ==0)
+                    throw BESInternalError("zero-byte file found in cache. " + fullPath, __FILE__, __LINE__);
                 // Insert information about the current file and its size (entry) sorted
                 // by the access time, with smaller (older) times first.
                 d_contents.insert(pair<double, cache_entry> (buf.st_atime, entry));

@@ -148,3 +148,4 @@ endif
 
 BESCache2Test_SOURCES = BESCache2Test.cc
 BESCache2Test_CPPFLAGS = $(AM_CPPFLAGS)
+BESCache2Test_LDFLAGS = -lcrypto

@@ -163,11 +163,12 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
     // in the cache. First make an empty file and get an exclusive lock on it.
     if (cache->create_and_lock(cfile, fd)) {
     	BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
-        // Here we need to look at the size of the cache and purge if needed
-        if (cache->cache_too_big())
+#if 0
+    	// Here we need to look at the size of the cache and purge if needed
+    	if (cache->cache_too_big())
             cache->purge();
-
-        // decompress
+#endif
+    	// decompress
         p(src, cfile);
 
         // Now update the size file info.
@@ -189,6 +190,11 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
 
         // Now unlock cache info since we have a read lock on the new file
         cache->unlock_cache_info();
+
+        // Here we need to look at the size of the cache and purge if needed
+        if (cache->cache_too_big())
+            cache->purge();
+
         return true;
     }
     else {

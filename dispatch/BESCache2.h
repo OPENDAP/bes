@@ -75,7 +75,7 @@ private:
     };
 
     // Sugar for the multimap of entries sorted with older files first.
-    typedef std::multimap<double, cache_entry, std::less<double> > CacheFilesByAgeMap;
+    typedef std::multimap<time_t, cache_entry, std::less<time_t> > CacheFilesByAgeMap;
 
     CacheFilesByAgeMap d_contents;
     unsigned long long m_collect_cache_dir_info();
