@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <iomanip>
 
 #include "BESCache2.h"
@@ -134,7 +135,7 @@ void decompression_process(int files_to_get, bool simulate_use = false)
 {
     srand(time(0));
 
-    BESDebug::SetUp("cerr,cache_purge,cache_contents");
+    BESDebug::SetUp("cerr,cache_purge,cache_contents,cache");
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 200);
