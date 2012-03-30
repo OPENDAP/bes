@@ -1,4 +1,4 @@
-// BESCache2.cc
+// BESCache3.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -37,7 +37,7 @@
 #include <cstring>
 #include <cerrno>
 
-#include "BESCache2.h"
+#include "BESCache3.h"
 #include "TheBESKeys.h"
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
@@ -52,11 +52,11 @@ static const unsigned long long BYTES_PER_MEG = 1048576ULL;
 // 2^64 / 2^20 == 2^44
 static const unsigned long long MAX_CACHE_SIZE_IN_MEGABYTES = (1ULL << 44);
 
-BESCache2 *BESCache2::d_instance = 0;
+BESCache3 *BESCache3::d_instance = 0;
 
-// The BESCache2 code is a singleton that assumes it's running in the absence of threads but that
-// the cache is shared by several processes, each of which have their own instance of BESCache2.
-/** Get an instance of the BESCache2 object. This class is a singleton, so the
+// The BESCache3 code is a singleton that assumes it's running in the absence of threads but that
+// the cache is shared by several processes, each of which have their own instance of BESCache3.
+/** Get an instance of the BESCache3 object. This class is a singleton, so the
  * first call to any of three 'get_instance()' methods makes an instance and subsequent call
  * return a pointer to that instance.
  *
@@ -65,37 +65,37 @@ BESCache2 *BESCache2::d_instance = 0;
  * @param prefix_key Key for the item/file prefix. Each file added to the cache uses this
  * as a prefix so cached items can be easily identified when /tmp is used for the cache.
  * @param size_key How big should the cache be, in megabytes
- * @return A pointer to a BESCache2 object
+ * @return A pointer to a BESCache3 object
  */
-BESCache2 *
-BESCache2::get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key)
+BESCache3 *
+BESCache3::get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key)
 {
     if (d_instance == 0)
-        d_instance = new BESCache2(keys, cache_dir_key, prefix_key, size_key);
+        d_instance = new BESCache3(keys, cache_dir_key, prefix_key, size_key);
 
     return d_instance;
 }
 
-/** Get an instance of the BESCache2 object. This version is used for testing; it does
+/** Get an instance of the BESCache3 object. This version is used for testing; it does
  * not use the BESKeys object but takes values for the parameters directly.
  */
-BESCache2 *
-BESCache2::get_instance(const string &cache_dir, const string &prefix, unsigned long size)
+BESCache3 *
+BESCache3::get_instance(const string &cache_dir, const string &prefix, unsigned long size)
 {
     if (d_instance == 0)
-        d_instance = new BESCache2(cache_dir, prefix, size);
+        d_instance = new BESCache3(cache_dir, prefix, size);
 
     return d_instance;
 }
 
-/** Get an instance of the BESCache2 object. This version is used when there's no
+/** Get an instance of the BESCache3 object. This version is used when there's no
  * question that the cache has been instantiated.
  */
-BESCache2 *
-BESCache2::get_instance()
+BESCache3 *
+BESCache3::get_instance()
 {
     if (d_instance == 0)
-        throw BESInternalError("Tried to get the BESCache2 instance, but it hasn't been created yet", __FILE__, __LINE__);
+        throw BESInternalError("Tried to get the BESCache3 instance, but it hasn't been created yet", __FILE__, __LINE__);
 
     return d_instance;
 }
@@ -327,7 +327,7 @@ static bool createLockedFile(string file_name, int &ref_fd)
 }
 
 /** Private method */
-void BESCache2::m_check_ctor_params()
+void BESCache3::m_check_ctor_params()
 {
     if (d_cache_dir.empty()) {
         string err = "The cache directory was not specified, must be non-empty";
@@ -365,7 +365,7 @@ void BESCache2::m_check_ctor_params()
 }
 
 /** Private method. */
-void BESCache2::m_initialize_cache_info()
+void BESCache3::m_initialize_cache_info()
 {
     // See if we can create it. If so, that means it doesn't exist. So make it and
     // set the cache initial size to zero.
@@ -393,7 +393,7 @@ void BESCache2::m_initialize_cache_info()
  * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
  * size is 0, or if cache dir does not exist.
  */
-BESCache2::BESCache2(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key) :
+BESCache3::BESCache3(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key) :
         d_max_cache_size_in_bytes(0)
 {
     bool found = false;
@@ -434,7 +434,7 @@ BESCache2::BESCache2(BESKeys *keys, const string &cache_dir_key, const string &p
  * @param prefix
  * @param size
  */
-BESCache2::BESCache2(const string &cache_dir, const string &prefix, unsigned long size) :
+BESCache3::BESCache3(const string &cache_dir, const string &prefix, unsigned long size) :
         d_cache_dir(cache_dir), d_prefix(prefix), d_max_cache_size_in_bytes(size)
 {
     d_max_cache_size_in_bytes = min(d_max_cache_size_in_bytes, MAX_CACHE_SIZE_IN_MEGABYTES);
@@ -458,7 +458,7 @@ BESCache2::BESCache2(const string &cache_dir, const string &prefix, unsigned lon
  * file name is /usr/lib/data/fnoc1.nc.gz then the resulting file name
  * will be \#&lt;prefix&gt;\#usr\#lib\#data\#fnoc1.nc.
  */
-string BESCache2::get_cache_file_name(const string &src)
+string BESCache3::get_cache_file_name(const string &src)
 {
     string target = src;
     if (target.at(0) == '/') {
@@ -466,14 +466,14 @@ string BESCache2::get_cache_file_name(const string &src)
     }
     string::size_type slash = 0;
     while ((slash = target.find('/')) != string::npos) {
-        target.replace(slash, 1, 1, BESCache2::BES_CACHE_CHAR);
+        target.replace(slash, 1, 1, BESCache3::BES_CACHE_CHAR);
     }
     string::size_type last_dot = target.rfind('.');
     if (last_dot != string::npos) {
         target = target.substr(0, last_dot);
     }
 
-    return d_cache_dir + "/" + d_prefix + BESCache2::BES_CACHE_CHAR + target;
+    return d_cache_dir + "/" + d_prefix + BESCache3::BES_CACHE_CHAR + target;
 }
 
 /** @brief Get a read-only lock on the file if it exists.
@@ -493,7 +493,7 @@ string BESCache2::get_cache_file_name(const string &src)
  * @throws Error if the attempt to get the (shared) lock failed for any
  * reason other than that the file does/did not exist.
  */
-bool BESCache2::get_read_lock(const string &target, int &fd)
+bool BESCache3::get_read_lock(const string &target, int &fd)
 {
     bool status = getSharedLock(target, fd);
 
@@ -506,7 +506,7 @@ bool BESCache2::get_read_lock(const string &target, int &fd)
 }
 
 /** @brief Create a file in the cache and lock it for write access. */
-bool BESCache2::create_and_lock(const string &target, int &fd)
+bool BESCache3::create_and_lock(const string &target, int &fd)
 {
     bool status = createLockedFile(target, fd);
 
@@ -525,7 +525,7 @@ bool BESCache2::create_and_lock(const string &target, int &fd)
  * write a new file and the shared lock used to read from it without
  * having the file deleted in the brief interval between those two events.
  */
-bool BESCache2::lock_cache_info()
+bool BESCache3::lock_cache_info()
 {
     return getExclusiveLock(d_cache_info, d_cache_info_fd);
 }
@@ -535,7 +535,7 @@ bool BESCache2::lock_cache_info()
  * cannot be closed).
  * @param file_name The name of the file to unlock.
  * @throws BESInternalError */
-void BESCache2::unlock(const string &file_name)
+void BESCache3::unlock(const string &file_name)
 {
     BESDEBUG("cache", "BES Cache: unlock file: " << file_name << endl);
 
@@ -547,7 +547,7 @@ void BESCache2::unlock(const string &file_name)
  * cannot be closed).
  * @param fd The descriptor of the file to unlock.
  * @throws BESInternalError */
-void BESCache2::unlock(int fd)
+void BESCache3::unlock(int fd)
 {
     BESDEBUG("cache", "BES Cache: unlock fd: " << fd << endl);
 
@@ -564,7 +564,7 @@ void BESCache2::unlock(int fd)
 /** Unlock the cache info file. This also closes the file.
  *
  */
-void BESCache2::unlock_cache_info()
+void BESCache3::unlock_cache_info()
 {
     BESDEBUG("cache", "BES Cache: unlock: cache_info (fd: " << d_cache_info_fd << ")" << endl);
     unlock(d_cache_info_fd);
@@ -577,7 +577,7 @@ void BESCache2::unlock_cache_info()
  *
  * @param target The name of the file
  */
-unsigned long long BESCache2::update_cache_info(const string &target)
+unsigned long long BESCache3::update_cache_info(const string &target)
 {
     // If we can lock the cache info file, that's bad because it should already
     // be exclusively locked.
@@ -611,7 +611,7 @@ unsigned long long BESCache2::update_cache_info(const string &target)
  * Look at the cache size and see if it is too big.
  *
  * @return True if the size is too big, false otherwise. */
-bool BESCache2::cache_too_big(unsigned long long current_size)
+bool BESCache3::cache_too_big(unsigned long long current_size)
 {
     return current_size > d_max_cache_size_in_bytes;
 }
@@ -622,7 +622,7 @@ static bool entry_op(cache_entry &e1, cache_entry &e2)
 }
 
 /** Private. Get info about all of the files (size and last use time). */
-unsigned long long BESCache2::m_collect_cache_dir_info(CacheFiles &contents)
+unsigned long long BESCache3::m_collect_cache_dir_info(CacheFiles &contents)
 {
     DIR *dip = opendir(d_cache_dir.c_str());
     if (!dip)
@@ -672,7 +672,7 @@ unsigned long long BESCache2::m_collect_cache_dir_info(CacheFiles &contents)
  * lock on the cache for the duration of the purge process.
  *
  */
-void BESCache2::purge(unsigned long long current_size)
+void BESCache3::purge(unsigned long long current_size)
 {
     BESDEBUG("cache_purge", "purge - starting the purge" << endl);
 
@@ -757,9 +757,9 @@ void BESCache2::purge(unsigned long long current_size)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCache2::dump(ostream &strm) const
+void BESCache3::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESCache2::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESCache3::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "cache dir: " << d_cache_dir << endl;
     strm << BESIndent::LMarg << "prefix: " << d_prefix << endl;

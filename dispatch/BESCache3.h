@@ -1,4 +1,4 @@
-// BESCache2.h
+// BESCache3.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -24,8 +24,8 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
-#ifndef BESCache2_h_
-#define BESCache2_h_ 1
+#ifndef BESCache3_h_
+#define BESCache3_h_ 1
 
 // #include <algorithm>
 #include <map>
@@ -38,7 +38,7 @@
 class BESKeys;
 
 // These typedefs are used to record information about the files in the cache.
-// See BESCache2.cc and look at the purge() method.
+// See BESCache3.cc and look at the purge() method.
 typedef struct {
     string name;
     unsigned long long size;
@@ -70,10 +70,10 @@ typedef std::list<cache_entry> CacheFiles;
  * close + unlock operations performed atomically. Other methods that operate
  * on the cache info file must only be called when the lock has been obtained.
  */
-class BESCache2: public BESObj {
+class BESCache3: public BESObj {
 
 private:
-    static BESCache2 * d_instance;
+    static BESCache3 * d_instance;
 
     static const char BES_CACHE_CHAR = '#';
 
@@ -86,14 +86,14 @@ private:
     unsigned long long d_target_size;
 
     // This class implements a singleton, so the constructor is hidden.
-    BESCache2(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
+    BESCache3(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
     // Testing
-    BESCache2(const string &cache_dir, const string &prefix, unsigned long size);
+    BESCache3(const string &cache_dir, const string &prefix, unsigned long size);
 
     // Suppress the assignment operator and default copy ctor, ...
-    BESCache2() { }
-    BESCache2(const BESCache2 &rhs) { }
-    BESCache2 &operator=(const BESCache2 &rhs) { }
+    BESCache3() { }
+    BESCache3(const BESCache3 &rhs) { }
+    BESCache3 &operator=(const BESCache3 &rhs) { }
 
     void m_check_ctor_params();
     void m_initialize_cache_info();
@@ -122,7 +122,7 @@ private:
     }
 
 public:
-    virtual ~BESCache2() { }
+    virtual ~BESCache3() { }
 
     string get_cache_file_name(const string &src);
 
@@ -138,11 +138,11 @@ public:
     virtual bool cache_too_big(unsigned long long current_size);
     virtual void purge(unsigned long long current_size);
 
-    static BESCache2 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
-    static BESCache2 *get_instance(const string &cache_dir, const string &prefix, unsigned long size); // Testing
-    static BESCache2 *get_instance();
+    static BESCache3 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
+    static BESCache3 *get_instance(const string &cache_dir, const string &prefix, unsigned long size); // Testing
+    static BESCache3 *get_instance();
 
     virtual void dump(ostream &strm) const ;
 };
 
-#endif // BESCache2_h_
+#endif // BESCache3_h_

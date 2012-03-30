@@ -1,4 +1,4 @@
-// BESUncompressManager2.cc
+// BESUncompressManager3.cc
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -29,18 +29,18 @@
 
 using std::istringstream;
 
-#include "BESUncompressManager2.h"
+#include "BESUncompressManager3.h"
 #include "BESUncompressGZ.h"
 #include "BESUncompressBZ2.h"
 #include "BESUncompressZ.h"
-#include "BESCache2.h"
+#include "BESCache3.h"
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
 #include "TheBESKeys.h"
 
-BESUncompressManager2 *BESUncompressManager2::_instance = 0;
+BESUncompressManager3 *BESUncompressManager3::_instance = 0;
 
 /** @brief constructs an uncompression manager adding gz, z, and bz2
  * uncompression methods by default.
@@ -51,7 +51,7 @@ BESUncompressManager2 *BESUncompressManager2::_instance = 0;
  * lock the cache (BES.Uncompress.NumTries) and the time in microseconds
  * between tries (BES.Uncompress.Retry).
  */
-BESUncompressManager2::BESUncompressManager2()
+BESUncompressManager3::BESUncompressManager3()
 {
     add_method("gz", BESUncompressGZ::uncompress);
     add_method("bz2", BESUncompressBZ2::uncompress);
@@ -67,9 +67,9 @@ BESUncompressManager2::BESUncompressManager2()
  * @param method the static function that uncompress the particular type of file
  * @return true if successfully added, false if it already exists
  */
-bool BESUncompressManager2::add_method(const string &name, p_bes_uncompress method)
+bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress method)
 {
-    BESUncompressManager2::UCIter i;
+    BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
     if (i == _uncompress_list.end()) {
         _uncompress_list[name] = method;
@@ -86,9 +86,9 @@ bool BESUncompressManager2::add_method(const string &name, p_bes_uncompress meth
  * @param name name of the uncompression method to find
  * @return the function of type p_bes_uncompress
  */
-p_bes_uncompress BESUncompressManager2::find_method(const string &name)
+p_bes_uncompress BESUncompressManager3::find_method(const string &name)
 {
-    BESUncompressManager2::UCIter i;
+    BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
     if (i != _uncompress_list.end()) {
         return (*i).second;
@@ -128,7 +128,7 @@ p_bes_uncompress BESUncompressManager2::find_method(const string &name)
  * @throws BESInternalError if there is a problem uncompressing
  * the file
  */
-bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCache2 *cache)
+bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCache3 *cache)
 {
     BESDEBUG( "uncompress2", "uncompress - src: " << src << endl );
 
@@ -239,15 +239,15 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESUncompressManager2::dump(ostream &strm) const
+void BESUncompressManager3::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESUncompressManager2::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_uncompress_list.size()) {
         strm << BESIndent::LMarg << "registered uncompression methods:" << endl;
         BESIndent::Indent();
-        BESUncompressManager2::UCIter i = _uncompress_list.begin();
-        BESUncompressManager2::UCIter ie = _uncompress_list.end();
+        BESUncompressManager3::UCIter i = _uncompress_list.begin();
+        BESUncompressManager3::UCIter ie = _uncompress_list.end();
         for (; i != ie; i++) {
             strm << BESIndent::LMarg << (*i).first << endl;
         }
@@ -259,11 +259,11 @@ void BESUncompressManager2::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-BESUncompressManager2 *
-BESUncompressManager2::TheManager()
+BESUncompressManager3 *
+BESUncompressManager3::TheManager()
 {
     if (_instance == 0) {
-        _instance = new BESUncompressManager2;
+        _instance = new BESUncompressManager3;
     }
     return _instance;
 }

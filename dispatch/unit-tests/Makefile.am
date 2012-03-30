@@ -31,7 +31,7 @@ TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
 		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCache2Test
+		urlT BESCache2Test BESCache3Test
 
 if LIBDAP
 TESTS += catT
@@ -149,3 +149,7 @@ endif
 BESCache2Test_SOURCES = BESCache2Test.cc
 BESCache2Test_CPPFLAGS = $(AM_CPPFLAGS)
 BESCache2Test_LDFLAGS = -lcrypto
+
+BESCache3Test_SOURCES = BESCache3Test.cc
+BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS)
+BESCache3Test_LDFLAGS = -lcrypto
