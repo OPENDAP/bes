@@ -37,6 +37,14 @@
 
 class BESKeys;
 
+typedef struct {
+    string name;
+    unsigned long long size;
+    time_t time;
+} cache_entry;
+
+typedef std::list<cache_entry> CacheFiles;
+
 #if 0
 //class tally_file_info;
 /// for filename -> filesize map below
@@ -100,7 +108,7 @@ private:
 
     void m_check_ctor_params();
     void m_initialize_cache_info();
-
+#if 0
     /// for filename -> filesize map below
     struct cache_entry {
         string name;
@@ -116,6 +124,9 @@ private:
     typedef std::list<cache_entry> CacheFiles;
     CacheFiles d_contents;
     unsigned long long m_collect_cache_dir_info();
+#endif
+
+    unsigned long long m_collect_cache_dir_info(CacheFiles &contents);
 
     /// Name of the file that tracks the size of the cache
     string d_cache_info;
