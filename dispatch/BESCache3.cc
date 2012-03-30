@@ -377,6 +377,31 @@ void BESCache3::m_initialize_cache_info()
 
         unlock(d_cache_info_fd);
     }
+
+#if 0
+    // See if we can create it. If so, that means it doesn't exist. So make it and
+    // set the cache initial size to zero.
+    d_cache_info_fd = open(d_cache_info, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+    if (d_cache_info_fd == -1)
+        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+
+    if (lock(d_cache_info_fd, F_SETLK, F_WRLCK) < 0) {
+        switch (errno) {
+        case EACCES:
+        case EAGAIN:
+            close(d_cache_info_fd);
+            return;
+
+        default:
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        }
+    }
+    unsigned long long size = 0;
+    if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+        throw BESInternalError("Could not write size info to the cache info file in startup!", __FILE__, __LINE__);
+
+    unlock(d_cache_info_fd);
+#endif
 }
 
 /** @brief Private constructor that takes as arguments keys to the cache directory,
