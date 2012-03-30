@@ -36,9 +36,42 @@
 #include "BESDebug.h"
 
 class BESKeys;
+//class tally_file_info;
+/// for filename -> filesize map below
+typedef struct {
+    string name;
+    unsigned long long size;
+    time_t time;
+} cache_entry;
 
-/** @brief Implementation of a caching mechanism for files that have been
- * decompressed.
+// Sugar for the multimap of entries sorted with older files first.
+
+
+
+typedef std::list<cache_entry> CacheFiles;
+
+/** @brief Implementation of a caching mechanism for compressed data.
+ * This cache uses simple advisory locking found on most modern unix file systems.
+ * Compressed files are decompressed and stored in a cache where they can be
+ * used over and over until removed from the cache. Several processes can
+ * share the cache with each reading from files. At the same time, new files
+ * can be added and the cache can be purged, without disrupting the existing
+ * read operations.
+ *
+ * How it works. When a file is added to the cache, the cache is locked - no
+ * other processes can add, read or remove files. Once a file has been added,
+ * the cache size is examined and, if needed, the cache is purged so that its
+ * size is 80% of the maximum size. Then the cache is unlocked. When a process
+ * looks to see if a file is already in the cache, the entire cache is locked.
+ * If the file is present, a shared read lock is obtained and the cache is unlocked.
+ *
+ * Methods: create_and_lock() and get_read_lock() open and lock files; the former
+ * creates the file and locks it exclusively iff it does not exist, while the
+ * latter obtains a shared lock iff the file already exists. The unlock()
+ * methods unlock a file. The lock_cache_info() and unlock_cache_info() are
+ * used to control access to the whole cache - with the open + lock and
+ * close + unlock operations performed atomically. Other methods that operate
+ * on the cache info file must only be called when the lock has been obtained.
  */
 class BESCache2: public BESObj {
 
@@ -67,19 +100,23 @@ private:
 
     void m_check_ctor_params();
     void m_initialize_cache_info();
-
+#if 0
     /// for filename -> filesize map below
     struct cache_entry {
         string name;
         unsigned long long size;
+        time_t time;
     };
 
     // Sugar for the multimap of entries sorted with older files first.
     typedef std::multimap<time_t, cache_entry, std::less<time_t> > CacheFilesByAgeMap;
-
+    typedef std::list<cache_entry> CacheFiles;
+#if 0
     CacheFilesByAgeMap d_contents;
+#endif
+    CacheFiles d_contents;
     unsigned long long m_collect_cache_dir_info();
-
+#endif
     /// Name of the file that tracks the size of the cache
     string d_cache_info;
     int d_cache_info_fd;
@@ -123,6 +160,9 @@ public:
     static BESCache2 *get_instance();
 
     virtual void dump(ostream &strm) const ;
+    //void tally_file_info(const string &file);
+    //friend bool entry_op(cache_entry &e1, cache_entry &e2);
+    friend unsigned long long collect_cache_dir_info(CacheFiles &d_contents);
 };
 
 #endif // BESCache2_h_

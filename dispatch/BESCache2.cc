@@ -55,6 +55,17 @@ BESCache2 *BESCache2::d_instance = 0;
 
 // The BESCache2 code is a singleton that assumes it's running in the absence of threads but that
 // the cache is shared by several processes, each of which have their own instance of BESCache2.
+/** Get an instance of the BESCache2 object. This class is a singleton, so the
+ * first call to any of three 'get_instance()' methods makes an instance and subsequent call
+ * return a pointer to that instance.
+ *
+ * @param keys The BESKeys object (hold various configuration parameters)
+ * @param cache_dir_key Key to use to get the value of the cache directory
+ * @param prefix_key Key for the item/file prefix. Each file added to the cache uses this
+ * as a prefix so cached items can be easily identified when /tmp is used for the cache.
+ * @param size_key How big should the cache be, in megabytes
+ * @return A pointer to a BESCache2 object
+ */
 BESCache2 *
 BESCache2::get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key)
 {
@@ -64,6 +75,9 @@ BESCache2::get_instance(BESKeys *keys, const string &cache_dir_key, const string
     return d_instance;
 }
 
+/** Get an instance of the BESCache2 object. This version is used for testing; it does
+ * not use the BESKeys object but takes values for the parameters directly.
+ */
 BESCache2 *
 BESCache2::get_instance(const string &cache_dir, const string &prefix, unsigned long size)
 {
@@ -73,6 +87,9 @@ BESCache2::get_instance(const string &cache_dir, const string &prefix, unsigned 
     return d_instance;
 }
 
+/** Get an instance of the BESCache2 object. This version is used when there's no
+ * question that the cache has been instantiated.
+ */
 BESCache2 *
 BESCache2::get_instance()
 {
@@ -82,7 +99,7 @@ BESCache2::get_instance()
     return d_instance;
 }
 
-inline string get_errno() {
+static inline string get_errno() {
 	char *s_err = strerror(errno);
 	if (s_err)
 		return s_err;
@@ -94,11 +111,7 @@ inline string get_errno() {
 
  @param file_name The name of the file.
  @param ref_fp if successful, the file descriptor of the file on which we
- have a shared read lock.
-
- @note For all of these functions, the _file_ is locked, not the descriptor.
- So, while they all have file descriptors as value-result parameters, those
- can actually be ignored.
+ have a shared read lock. This is used to release the lock.
 
  @return If the file does not exist, return immediately indicating
  failure (false), otherwise block until a shared read-lock can be
@@ -262,6 +275,7 @@ void BESCache2::m_check_ctor_params()
             << ", max size " << d_max_cache_size_in_bytes << endl );
 }
 
+/** Private method. */
 void BESCache2::m_initialize_cache_info()
 {
     // See if we can create it. If so, that means it doesn't exist. So make it and
@@ -311,6 +325,7 @@ BESCache2::BESCache2(BESKeys *keys, const string &cache_dir_key, const string &p
 
     std::istringstream is(cache_size_str);
     is >> d_max_cache_size_in_bytes;
+
     d_max_cache_size_in_bytes *= BYTES_PER_MEG;
     d_target_size = d_max_cache_size_in_bytes * 0.8;
 
@@ -321,7 +336,7 @@ BESCache2::BESCache2(BESKeys *keys, const string &cache_dir_key, const string &p
     m_initialize_cache_info();
 }
 
-/** private.
+/** Private.
  * @note size is in megabytes; but the class maintains the max size in bytes. ...must convert here.
  * @param cache_dir
  * @param prefix
@@ -421,9 +436,9 @@ bool BESCache2::lock_cache_info()
     return getExclusiveLock(d_cache_info, d_cache_info_fd);
 }
 
-/** Unlock the name file. This does not do any name mangling; it
+/** Unlock the named file. This does not do any name mangling; it
  * just unlocks whatever is named (or throws BESInternalError if the file
- * cannot be opened).
+ * cannot be closed).
  * @param file_name The name of the file to unlock.
  * @throws BESInternalError */
 void BESCache2::unlock(const string &file_name)
@@ -433,6 +448,11 @@ void BESCache2::unlock(const string &file_name)
     unlock(get_descriptor(file_name));
 }
 
+/** Unlock the file. This does not do any name mangling; it
+ * just unlocks whatever is named (or throws BESInternalError if the file
+ * cannot be closed).
+ * @param fd The descriptor of the file to unlock.
+ * @throws BESInternalError */
 void BESCache2::unlock(int fd)
 {
     BESDEBUG("cache", "BES Cache: unlock fd: " << fd << endl);
@@ -447,6 +467,9 @@ void BESCache2::unlock(int fd)
     BESDEBUG("cache", "BES Cache: unlock " << fd << " Success" << endl);
 }
 
+/** Unlock the cache info file. This also closes the file.
+ *
+ */
 void BESCache2::unlock_cache_info()
 {
     BESDEBUG("cache", "BES Cache: unlock: cache_info" << endl);
@@ -462,20 +485,15 @@ void BESCache2::unlock_cache_info()
  */
 unsigned long long BESCache2::update_cache_info(const string &target)
 {
-#if 0
-    // get an exclusive lock on the cache info file and make sure
-    // it holds the correct value for the cache size.
-    // Block and prevent all others from locking the cache info file.
-    BESDEBUG("cache_purge", "BES Cache: exclusive lock cache_info (update)" << endl);
-    if (!getExclusiveLock(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
-#endif
+    // If we can lock the cache info file, that's bad because it should already
+    // be exclusively locked.
+    if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
+        throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
+
     // read the size from the cache info file
     unsigned long long current_size;
     if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
-
-    BESDEBUG("cache", "BES Cache: cache size: " << current_size << endl);
 
     struct stat buf;
     int statret = stat(target.c_str(), &buf);
@@ -485,50 +503,22 @@ unsigned long long BESCache2::update_cache_info(const string &target)
         throw BESInternalError("Could not read the size of the new file", __FILE__, __LINE__);
 
     BESDEBUG("cache", "BES Cache: cache size updated to: " << current_size << endl);
+
     if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
         throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
     if(write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError("Could not write size info from the cache info file!", __FILE__, __LINE__);
-#if 0
-    unlock_cache_info();
-#endif
+
     return current_size;
 }
 
 /** @brief look at the cache size; is it too large?
- * Look at the cache size and see if it is too big. This method gets
- * a shared lock on the cache info file.
+ * Look at the cache size and see if it is too big.
  *
  * @return True if the size is too big, false otherwise. */
 bool BESCache2::cache_too_big(unsigned long long current_size)
 {
-#if 0
-    BESDEBUG("cache", "BES Cache: shared lock cache_info" << endl);
-    if (!getSharedLock(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
-#endif
-#if 0
-    if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
-#endif
-
-#if 0//d_cache_info_fd = open(d_cache_info.c_str(), O_RDONLY);
-
-    // read the size from the cache info file
-    unsigned long long current_size;
-    if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long)) {
-        //close(d_cache_info_fd);
-        throw BESInternalError("Could not read size info from the cache info file!", __FILE__, __LINE__);
-    }
-
-    //close(d_cache_info_fd);
-
-    BESDEBUG("cache", "BES Cache: testing cache size: " << current_size << endl);
-#endif
-#if 0
-    unlock_cache_info();
-#endif
     return current_size > d_max_cache_size_in_bytes;
 }
 
@@ -539,34 +529,17 @@ bool BESCache2::cache_too_big(unsigned long long current_size)
  * lock on the cache for the duration of the purge process.
  *
  */
+#if 0
 void BESCache2::purge(unsigned long long current_size)
 {
     BESDEBUG("cache_purge", "purge - starting the purge" << endl);
-#if 0
-    // get an exclusive lock on the cache info file and make sure
-    // it holds the correct value for the cache size.
-    // This will block until nothing else is locking this file and
-    // will prevent any other process from getting any kind of lock
-    // on the cache info file.
-    BESDEBUG("cache_purge", "BES Cache: exclusive lock cache_info (purge)" << endl);
-    if (!getExclusiveLock(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Could not get a lock on the cache info file!", __FILE__, __LINE__);
-#endif
-#if 0
+
     if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
-#endif
-    // FIXME lots of places where a throw can leave this open
-    //d_cache_info_fd = open(d_cache_info.c_str(), O_RDONLY);
-#if 0
-    // read the size from the cache info file; I'm interested to see if this always
-    // matches the computed value from m_collect_cache_dir_info
-    unsigned long long current_size_from_file;
-    if(read(d_cache_info_fd, &current_size_from_file, sizeof(unsigned long long)) != sizeof(unsigned long long))
-        throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
-#endif
+
     unsigned long long computed_size = m_collect_cache_dir_info();
 
+    // Sanity check...
     if (current_size != computed_size) {
         ostringstream oss;
         oss << "Cache info recorded size and computed size differ: " << current_size << ", " << computed_size;
@@ -574,53 +547,32 @@ void BESCache2::purge(unsigned long long current_size)
     }
 
     if (BESISDEBUG( "cache_contents" )) {
-        BESDEBUG( "cache_contents", endl << "BEFORE" << endl );
+        BESDEBUG( "cache_contents", endl << "BEFORE Purge " << computed_size/BYTES_PER_MEG << endl );
         CacheFilesByAgeMap::iterator ti = d_contents.begin();
         CacheFilesByAgeMap::iterator te = d_contents.end();
         for (; ti != te; ti++) {
-            BESDEBUG( "cache_contents", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl );
+            BESDEBUG( "cache_contents", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size/BYTES_PER_MEG << endl );
         }
     }
 
+    BESDEBUG( "cache_purge", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG  << ", " << d_target_size/BYTES_PER_MEG << endl );
+
     // d_target_size is 80% of the maximum cache size.
-    BESDEBUG( "cache_purge", "purge - current and target size " << computed_size << ", " << d_target_size << endl );
     // Grab the first which is the oldest in terms of access time.
     CacheFilesByAgeMap::iterator i = d_contents.begin();
     while (computed_size > d_target_size) {
-#if 0
-        // Grab the first which is the oldest in terms of access time.
-        CacheFilesByAgeMap::iterator i = d_contents.begin();
-#endif
-        // If we've deleted all entries, exit the loop.
-        //
-        // Because we will not always delete every file in the list (some might be open)
-        // getting to the end of the list is not an error. There's some slop here because
-        // a file that 'should' have been deleted maybe wasn't because it was open when
-        // the code tried to remove it. If it's closed now and the cache is still too
-        // big, the next sweep should catch it.
+        // If we've processed all entries, exit the loop.
         if (i == d_contents.end())
             break;
-
-        // Try to remove the file
-        BESDEBUG( "cache_purge", "purge - looking at " << i->second.name << endl);
 
         // Grab an exclusive lock but do not block - if another process has the file locked
         // just move on to the next file.
         int cfile_fd;
         if (getExclusiveLock_nonblocking(i->second.name, cfile_fd)) {
-            BESDEBUG( "cache_purge", "purge - removing " << i->second.name << "(size: " << i->second.size << ", LA time: " << i->first <<")" << endl );
+            BESDEBUG( "cache_purge", "purge: " << i->second.name << " removed." << endl );
 
-            if (unlink(i->second.name.c_str()) != 0) {
-                char *s_err = strerror(errno);
-                string err = "Unable to remove the file " + i->second.name + " from the cache: ";
-                if (s_err) {
-                    err.append(s_err);
-                }
-                else {
-                    err.append("Unknown error");
-                }
-                throw BESInternalError(err, __FILE__, __LINE__);
-            }
+            if (unlink(i->second.name.c_str()) != 0)
+                throw BESInternalError("Unable to purge the file " + i->second.name + " from the cache: " + get_errno(), __FILE__, __LINE__);
 
             unlock(cfile_fd);
             computed_size -= i->second.size;
@@ -630,13 +582,11 @@ void BESCache2::purge(unsigned long long current_size)
             i = d_contents.begin();
         }
         else {
-            BESDEBUG( "cache_purge", "purge - not so fast... " << i->second.name << " is in use." << endl );
+            BESDEBUG( "cache_purge", "purge: " << i->second.name << " is in use." << endl );
             ++i;
         }
 
-        // d_contents.erase(i);
-
-        BESDEBUG( "cache_purge", "purge - current and target size " << computed_size << ", " << d_target_size << endl );
+        BESDEBUG( "cache_purge", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
     }
 
     if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
@@ -646,21 +596,157 @@ void BESCache2::purge(unsigned long long current_size)
         throw BESInternalError("Could not write size info to the cache info file!", __FILE__, __LINE__);
 
     if (BESISDEBUG( "cache_contents" )) {
-        BESDEBUG( "cache_contents", endl << "AFTER" << endl );
+        computed_size = m_collect_cache_dir_info();
+        BESDEBUG( "cache_contents", endl << "AFTER Purge " << computed_size/BYTES_PER_MEG << endl );
         CacheFilesByAgeMap::iterator ti = d_contents.begin();
         CacheFilesByAgeMap::iterator te = d_contents.end();
         for (; ti != te; ti++) {
-            BESDEBUG( "cache_contents", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size << endl );
+            BESDEBUG( "cache_contents", (*ti).first << ": " << (*ti).second.name << ": size " << (*ti).second.size/BYTES_PER_MEG << endl );
+        }
+    }
+}
+#endif
+
+/// for filename -> filesize map below
+static struct cache_entry {
+    string name;
+    unsigned long long size;
+    time_t time;
+};
+
+// Sugar for the multimap of entries sorted with older files first.
+
+typedef std::list<cache_entry> CacheFiles;
+
+bool entry_op(cache_entry &e1, cache_entry &e2)
+{
+    return e1.time < e2.time;
+}
+
+/** Private. Get info about all of the files (size and last use time). */
+static unsigned long long collect_cache_dir_info(CacheFiles &d_contents)
+{
+    DIR *dip = opendir(d_cache_dir.c_str());
+    if (!dip)
+        throw BESInternalError("Unable to open cache directory " + d_cache_dir, __FILE__, __LINE__);
+
+    struct dirent *dit;
+    vector<string> files;
+    // go through the cache directory and collect all of the files that
+    // start with the matching prefix
+    while ((dit = readdir(dip)) != NULL) {
+        string dirEntry = dit->d_name;
+        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0) {
+            files.push_back(d_cache_dir + "/" + dirEntry);
+            BESDEBUG( "cache_contents", "m_collect_cache_dir_info: Adding " << dirEntry << endl);
         }
     }
 
-    //close(d_cache_info_fd);
+    closedir(dip);
 
-#if 0
-    unlock_cache_info();
-#endif
+    unsigned long long current_size = 0;
+    struct stat buf;
+    for (vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
+        if (stat(file->c_str(), &buf) == 0) {
+            current_size += buf.st_size;
+            cache_entry entry;
+            entry.name = *file;
+            entry.size = buf.st_size;
+            entry.time = buf.st_atime;
+            // Sanity check
+            // TODO Should this be left in?
+            if (entry.size == 0)
+                throw BESInternalError("Zero-byte file found in cache. " + *file, __FILE__, __LINE__);
+            // Insert information about the current file and its size (entry) sorted
+            // by the access time, with smaller (older) times first.
+            BESDEBUG( "cache_contents", "m_collect_cache_dir_info: recording to list  " << *file << " " << buf.st_atime  << " " << buf.st_size/BYTES_PER_MEG << endl);
+            d_contents.push_back(entry);
+        }
+    }
+
+    d_contents.sort(entry_op);
+
+    return current_size;
 }
 
+void BESCache2::purge(unsigned long long current_size)
+{
+    BESDEBUG("cache_purge", "purge - starting the purge" << endl);
+
+    if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
+        throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
+
+    CacheFiles d_contents;
+    unsigned long long computed_size = m_collect_cache_dir_info(d_contents);
+
+    // Sanity check...
+    if (current_size != computed_size) {
+        ostringstream oss;
+        oss << "Cache info recorded size and computed size differ: " << current_size << ", " << computed_size;
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    if (BESISDEBUG( "cache_contents" )) {
+        BESDEBUG( "cache_contents", endl << "BEFORE Purge " << computed_size/BYTES_PER_MEG << endl );
+        CacheFiles::iterator ti = d_contents.begin();
+        CacheFiles::iterator te = d_contents.end();
+        for (; ti != te; ti++) {
+            BESDEBUG( "cache_contents", (*ti).time << ": " << (*ti).name << ": size " << (*ti).size/BYTES_PER_MEG << endl );
+        }
+    }
+
+    BESDEBUG( "cache_purge", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG  << ", " << d_target_size/BYTES_PER_MEG << endl );
+
+    // d_target_size is 80% of the maximum cache size.
+    // Grab the first which is the oldest in terms of access time.
+    CacheFiles::iterator i = d_contents.begin();
+    while (computed_size > d_target_size) {
+        // If we've processed all entries, exit the loop.
+        if (i == d_contents.end())
+            break;
+
+        // Grab an exclusive lock but do not block - if another process has the file locked
+        // just move on to the next file.
+        int cfile_fd;
+        if (getExclusiveLock_nonblocking(i->name, cfile_fd)) {
+            BESDEBUG( "cache_purge", "purge: " << i->name << " removed." << endl );
+
+            if (unlink(i->name.c_str()) != 0)
+                throw BESInternalError("Unable to purge the file " + i->name + " from the cache: " + get_errno(), __FILE__, __LINE__);
+
+            unlock(cfile_fd);
+            computed_size -= i->size;
+
+            // If the file was removed from the cache, remove from the list of files too
+            d_contents.erase(i);
+            i = d_contents.begin();
+        }
+        else {
+            BESDEBUG( "cache_purge", "purge: " << i->name << " is in use." << endl );
+            ++i;
+        }
+
+        BESDEBUG( "cache_purge", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
+    }
+
+    if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+        throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+
+    if(write(d_cache_info_fd, &computed_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+        throw BESInternalError("Could not write size info to the cache info file!", __FILE__, __LINE__);
+
+    if (BESISDEBUG( "cache_contents" )) {
+        computed_size = m_collect_cache_dir_info();
+        BESDEBUG( "cache_contents", endl << "AFTER Purge " << computed_size/BYTES_PER_MEG << endl );
+        CacheFiles::iterator ti = d_contents.begin();
+        CacheFiles::iterator te = d_contents.end();
+        for (; ti != te; ti++) {
+            BESDEBUG( "cache_contents", (*ti).time << ": " << (*ti).name << ": size " << (*ti).size/BYTES_PER_MEG << endl );
+        }
+    }
+}
+
+#if 0
 /** Private. Get info about all of the files (size and last use time). */
 unsigned long long BESCache2::m_collect_cache_dir_info()
 {
@@ -668,38 +754,44 @@ unsigned long long BESCache2::m_collect_cache_dir_info()
     if (!dip)
         throw BESInternalError("Unable to open cache directory " + d_cache_dir, __FILE__, __LINE__);
 
-    struct stat buf;
+    //struct stat buf;
     struct dirent *dit;
-    unsigned long long current_size = 0;
+    //unsigned long long current_size = 0;
+    vector<string> files;
     // go through the cache directory and collect all of the files that
     // start with the matching prefix
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0) {
-            // Now that we have found a match we want to get the size of
-            // the file and the last access time from the file.
-            string fullPath = d_cache_dir + "/" + dirEntry;
-            int statret = stat(fullPath.c_str(), &buf);
-            if (statret == 0) {
-                current_size += buf.st_size;
-                cache_entry entry;
-                entry.name = fullPath;
-                entry.size = buf.st_size;
-                // FIXME hack
-                if (entry.size ==0)
-                    throw BESInternalError("zero-byte file found in cache. " + fullPath, __FILE__, __LINE__);
-                // Insert information about the current file and its size (entry) sorted
-                // by the access time, with smaller (older) times first.
-                d_contents.insert(pair<double, cache_entry> (buf.st_atime, entry));
-            }
+            files.push_back(d_cache_dir + "/" + dirEntry);
+            BESDEBUG( "cache_contents", "m_collect_cache_dir_info: Adding " << dirEntry << endl);
         }
     }
 
     closedir(dip);
 
+    unsigned long long current_size = 0;
+    struct stat buf;
+    for (vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
+        if (stat(file->c_str(), &buf) == 0) {
+            current_size += buf.st_size;
+            cache_entry entry;
+            entry.name = *file;
+            entry.size = buf.st_size;
+            // Sanity check
+            // TODO Should this be left in?
+            if (entry.size == 0)
+                throw BESInternalError("Zero-byte file found in cache. " + *file, __FILE__, __LINE__);
+            // Insert information about the current file and its size (entry) sorted
+            // by the access time, with smaller (older) times first.
+            BESDEBUG( "cache_contents", "m_collect_cache_dir_info: recording  " << *file << " " << buf.st_atime  << " " << buf.st_size/BYTES_PER_MEG << endl);
+            d_contents.insert(pair<double, cache_entry> (buf.st_atime, entry));
+        }
+    }
+
     return current_size;
 }
-
+#endif
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with information about
@@ -713,7 +805,7 @@ void BESCache2::dump(ostream &strm) const
     BESIndent::Indent();
     strm << BESIndent::LMarg << "cache dir: " << d_cache_dir << endl;
     strm << BESIndent::LMarg << "prefix: " << d_prefix << endl;
-    strm << BESIndent::LMarg << "size (mb): " << d_max_cache_size_in_bytes << endl;
+    strm << BESIndent::LMarg << "size (bytes): " << d_max_cache_size_in_bytes << endl;
     BESIndent::UnIndent();
 }
 

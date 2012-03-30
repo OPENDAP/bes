@@ -134,7 +134,7 @@ void decompression_process(int files_to_get, bool simulate_use = false)
 {
     srand(time(0));
 
-    BESDebug::SetUp("cerr,uncompress,cache_purge,cache_contents");
+    BESDebug::SetUp("cerr,cache_purge,cache_contents");
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache2 *cache = BESCache2::get_instance("./cache2", "tc_", 200);
@@ -174,13 +174,6 @@ void decompression_process(int files_to_get, bool simulate_use = false)
 
         if (buf.st_size == 0)
             throw BESInternalError("Zero-byte file. " + cfile, __FILE__, __LINE__);
-
-#if 0
-        time(&t);
-        // write cfile to the log along with the time
-        if (in_cache)
-            cerr << "    " << "in the cache as " << cfile << " (time: " << t  << ")" << endl;
-#endif
 
         // sleep for up to one second
         if (simulate_use)

@@ -153,74 +153,82 @@ bool BESUncompressManager2::uncompress(const string &src, string &cfile, BESCach
     // or it makes it).
     cfile = cache->get_cache_file_name(src);
 
-    // Get an exclusive lock on the cache info file - this prevents purge operations
-    // by other processes
-    if (!cache->lock_cache_info())
-        throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
-
-    // If we are here, the file has an extension that identifies it as compressed. Is a
-    // decompressed version in the library already?
-    BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
-    int fd;
-    if (cache->get_read_lock(cfile, fd)) {
-        BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
-        cache->unlock_cache_info();
-        return true;
-    }
-
-    // Now we actually try to decompress the file, given that there's not a decomp'd version
-    // in the cache. First make an empty file and get an exclusive lock on it.
-    if (cache->create_and_lock(cfile, fd)) {
-    	BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
-    	// decompress
-        p(src, cfile);
-
-        // Now update the size file info.
-        unsigned long long size = cache->update_cache_info(cfile);
-        BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
-#if 0
-        // Before unlocking the file, grab a read lock on the cache info file to prevent
-        // another process from deleting this new file in a purge operation before we get
-        // it locked for reading.
+    try {
+        // Get an exclusive lock on the cache info file - this prevents purge operations
+        // by other processes. The cache must be locked to prevent purging while we get
+        // either the shared read lock on a file already in the cache or an exclusive
+        // write lock needed to add a new file to the cache.
         if (!cache->lock_cache_info())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
-#endif
-        // Release the (exclusive) write lock on the new file
-        cache->unlock(fd);
 
-        // Get a read lock on the new file
-        cache->get_read_lock(cfile, fd);
+        // If we are here, the file has an extension that identifies it as compressed. Is a
+        // decompressed version in the cache already?
+        BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
+        int fd;
 
-        // Here we need to look at the size of the cache and purge if needed
-        // Optimize this since we had an exclusive lock on the cache already
-        if (cache->cache_too_big(size))
-            cache->purge(size);
-
-        // Now unlock cache info since we have a read lock on the new file
-        cache->unlock_cache_info();
-
-        return true;
-    }
-    else {
-        // the code can get here if two processes try to decompress the same file at the same exact
-        // time. Both might find the file not in the cache, but only one will be able to create
-        // the file for the uncompressed data. This second call will block until the unlock()
-        // call above.
-
-        // FIXME add comment
-        cache->unlock_cache_info();
-
-        BESDEBUG( "uncompress2", "uncompress - testing is_cached again... " << endl );
         if (cache->get_read_lock(cfile, fd)) {
-            BESDEBUG( "uncompress", "uncompress - (second test) cache hit: " << cfile << endl );
+            BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
+            // Once we have a shared read lock, allow other process to access the cache
+            cache->unlock_cache_info();
             return true;
         }
+
+        // Now we actually try to decompress the file, given that there's not a decomp'd version
+        // in the cache. First make an empty file and get an exclusive lock on it.
+        if (cache->create_and_lock(cfile, fd)) {
+            BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
+            // FIXME The current locking scheme has the disadvantage of locking the entire cache
+            // for the duration of the decompression. work with exclusive and shared locks to
+            // see if that can be avoided.
+            // decompress
+            p(src, cfile);
+
+            // Now update the total cache size info.
+            unsigned long long size = cache->update_cache_info(cfile);
+            BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
+
+            // Release the (exclusive) write lock on the new file
+            cache->unlock(fd);
+
+            // Get a read lock on the new file
+            cache->get_read_lock(cfile, fd);
+
+            // Here we need to look at the size of the cache and purge if needed
+            // Optimize this since we had an exclusive lock on the cache already
+            if (cache->cache_too_big(size))
+                cache->purge(size);
+
+            // Now unlock cache info since we have a read lock on the new file,
+            // the size info has been updated and any purging has completed.
+            cache->unlock_cache_info();
+
+            return true;
+        }
+#if 0
+        else {
+            // the code can get here if two processes try to decompress the same file at the same exact
+            // time. Both might find the file not in the cache, but only one will be able to create
+            // the file for the uncompressed data. This second call will block until the unlock()
+            // call above.
+
+            // FIXME add comment
+            cache->unlock_cache_info();
+
+            BESDEBUG( "uncompress2", "uncompress - testing is_cached again... " << endl );
+            if (cache->get_read_lock(cfile, fd)) {
+                BESDEBUG( "uncompress", "uncompress - (second test) cache hit: " << cfile << endl );
+                return true;
+            }
+        }
+#endif
+
+        cache->unlock_cache_info();
+        return false;
     }
-
-    throw BESInternalError("Could not decompress the file: " + src, __FILE__, __LINE__);
-
-    // never gets here...
-    return false;
+    catch (...) {
+        cache->unlock_cache_info();
+        throw;
+    }
 }
 
 /** @brief dumps information about this object
