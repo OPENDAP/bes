@@ -36,6 +36,8 @@
 #include "BESDebug.h"
 
 class BESKeys;
+
+#if 0
 //class tally_file_info;
 /// for filename -> filesize map below
 typedef struct {
@@ -45,10 +47,8 @@ typedef struct {
 } cache_entry;
 
 // Sugar for the multimap of entries sorted with older files first.
-
-
-
 typedef std::list<cache_entry> CacheFiles;
+#endif
 
 /** @brief Implementation of a caching mechanism for compressed data.
  * This cache uses simple advisory locking found on most modern unix file systems.
@@ -100,7 +100,7 @@ private:
 
     void m_check_ctor_params();
     void m_initialize_cache_info();
-#if 0
+
     /// for filename -> filesize map below
     struct cache_entry {
         string name;
@@ -109,14 +109,14 @@ private:
     };
 
     // Sugar for the multimap of entries sorted with older files first.
-    typedef std::multimap<time_t, cache_entry, std::less<time_t> > CacheFilesByAgeMap;
-    typedef std::list<cache_entry> CacheFiles;
 #if 0
+    typedef std::multimap<time_t, cache_entry, std::less<time_t> > CacheFilesByAgeMap;
     CacheFilesByAgeMap d_contents;
 #endif
+    typedef std::list<cache_entry> CacheFiles;
     CacheFiles d_contents;
     unsigned long long m_collect_cache_dir_info();
-#endif
+
     /// Name of the file that tracks the size of the cache
     string d_cache_info;
     int d_cache_info_fd;
@@ -161,8 +161,8 @@ public:
 
     virtual void dump(ostream &strm) const ;
     //void tally_file_info(const string &file);
-    //friend bool entry_op(cache_entry &e1, cache_entry &e2);
-    friend unsigned long long collect_cache_dir_info(CacheFiles &d_contents);
+    friend bool entry_op(cache_entry &e1, cache_entry &e2);
+    //friend unsigned long long collect_cache_dir_info(CacheFiles &d_contents);
 };
 
 #endif // BESCache2_h_
