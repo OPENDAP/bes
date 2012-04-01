@@ -47,6 +47,12 @@ typedef struct {
 
 typedef std::list<cache_entry> CacheFiles;
 
+bool getSharedLock(const string &file_name, int &ref_fd);
+bool getExclusiveLock(string file_name, int &ref_fd);
+bool getExclusiveLock_nonblocking(string file_name, int &ref_fd);
+bool isLocked(string file_name);
+bool createLockedFile(string file_name, int &ref_fd);
+
 /** @brief Implementation of a caching mechanism for compressed data.
  * This cache uses simple advisory locking found on most modern unix file systems.
  * Compressed files are decompressed and stored in a cache where they can be
@@ -136,6 +142,7 @@ public:
 
     virtual unsigned long long update_cache_info(const string &target);
     virtual bool cache_too_big(unsigned long long current_size);
+    virtual unsigned long long get_cache_size();
     virtual void purge(unsigned long long current_size);
 
     static BESCache3 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);

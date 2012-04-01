@@ -173,6 +173,12 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             return true;
         }
 
+        // Here we need to look at the size of the cache and purge if needed
+        // Optimize this since we had an exclusive lock on the cache already
+        unsigned long long size = cache->get_cache_size();
+        if (cache->cache_too_big(size))
+            cache->purge(size);
+
         // Now we actually try to decompress the file, given that there's not a decomp'd version
         // in the cache. First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(cfile, fd)) {
@@ -193,7 +199,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
 
             // Get a read lock on the new file
             cache->get_read_lock(cfile, fd);
-#if 1
+#if 0
             // Here we need to look at the size of the cache and purge if needed
             // Optimize this since we had an exclusive lock on the cache already
             if (cache->cache_too_big(size))
@@ -205,28 +211,12 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
 
             return true;
         }
-#if 0
-        else {
-            // the code can get here if two processes try to decompress the same file at the same exact
-            // time. Both might find the file not in the cache, but only one will be able to create
-            // the file for the uncompressed data. This second call will block until the unlock()
-            // call above.
-
-            // FIXME add comment
-            cache->unlock_cache_info();
-
-            BESDEBUG( "uncompress2", "uncompress - testing is_cached again... " << endl );
-            if (cache->get_read_lock(cfile, fd)) {
-                BESDEBUG( "uncompress", "uncompress - (second test) cache hit: " << cfile << endl );
-                return true;
-            }
-        }
-#endif
 
         cache->unlock_cache_info();
         return false;
     }
     catch (...) {
+    	BESDEBUG( "uncompress", "caught exception, unlocking cache and re-throw." << endl );
         cache->unlock_cache_info();
         throw;
     }

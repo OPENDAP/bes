@@ -114,9 +114,10 @@ static inline string get_errno() {
 static inline int lock(int fd, int cmd, int type) {
     struct flock lock;
     lock.l_type = type;
-    lock.l_start = 0;
     lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
     lock.l_len = 0;
+    lock.l_pid = getpid();
 
     return fcntl(fd, cmd, &lock);
 }
@@ -133,8 +134,10 @@ static inline int lock(int fd, int cmd, int type) {
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-static bool getSharedLock(const string &file_name, int &ref_fd)
+bool getSharedLock(const string &file_name, int &ref_fd)
 {
+	BESDEBUG("cache_internal", "getSharedLock: " << file_name <<endl);
+
     int fd;
     if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
         switch (errno) {
@@ -146,24 +149,11 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_RDLCK) < 0) {
+    if (lock(fd, F_SETLKW, F_RDLCK) == -1) {
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
-#if 0
-    int fd = open(file_name.c_str(), O_SHLOCK | O_RDONLY);
-    if (fd == -1) {
-        switch (errno) {
-            case ENOENT:
-            return false; // This indicates the case where
-            // the file does not exist, so it's
-            // not an error - the 'test' part
-            // of 'test and set' has failed.
-            default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-#endif
+    BESDEBUG("cache_internal", "getSharedLock exit: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -182,8 +172,10 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-static bool getExclusiveLock(string file_name, int &ref_fd)
+bool getExclusiveLock(string file_name, int &ref_fd)
 {
+	BESDEBUG("cache_internal", "getExclusiveLock: " << file_name <<endl);
+
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
         switch (errno) {
@@ -195,24 +187,11 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_WRLCK) < 0) {
+    if (lock(fd, F_SETLKW, F_WRLCK) == -1) {
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
-#if 0
-    int fd = open(file_name.c_str(), O_EXLOCK | O_RDWR);
-    if (fd == -1) {
-        switch (errno) {
-        case ENOENT:
-            return false; // This indicates the case where
-            // the file does not exist, so it's
-            // not an error - the 'test' part
-            // of 'test and set' has failed.
-        default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-#endif
+    BESDEBUG("cache_internal", "getExclusiveLock exit: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -230,8 +209,10 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-static bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
+bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
 {
+	BESDEBUG("cache_internal", "getExclusiveLock_nonblocking: " << file_name <<endl);
+
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
         switch (errno) {
@@ -243,9 +224,8 @@ static bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLK, F_WRLCK) < 0) {
+    if (lock(fd, F_SETLK, F_WRLCK) == -1) {
         switch (errno) {
-        case EACCES:
         case EAGAIN:
             return false;
 
@@ -254,26 +234,43 @@ static bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
         }
     }
 
-#if 0
-    int fd = open(file_name.c_str(), O_EXLOCK | O_NONBLOCK | O_RDWR);
-    if (fd == -1) {
-        switch (errno) {
-        case ENOENT:
-        case EWOULDBLOCK:
-            return false; // This indicates the case where
-            // the file does not exist or the file does exist
-            // but another process has it locked, so it's
-            // not an error - the 'test' part
-            // of 'test and set' has failed.
-        default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-#endif
+    BESDEBUG("cache_internal", "getExclusiveLock_nonblocking exit: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
     return true;
+}
+
+bool isLocked(string file_name)
+{
+	BESDEBUG("cache_internal", "isLocked: " << file_name <<endl);
+
+    int fd;
+    if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
+            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    }
+
+    struct flock lock;
+    lock.l_type = F_WRLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+
+    if (fcntl(fd, F_GETLK, &lock) == -1) {
+        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    }
+
+    // Success
+    if (lock.l_type == F_UNLCK) {
+        BESDEBUG("cache_internal", "isLocked exit (false): " << file_name <<endl);
+        return false;
+    }
+    else {
+    	BESDEBUG("cache_internal", "isLocked exit (true): " << file_name <<endl);
+    	return true;
+    }
+
 }
 
 /** Create a new file and get an exclusive read/write lock on it. If
@@ -289,8 +286,10 @@ static bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
 
  @exception Error is thrown to indicate a number of untoward
  events. */
-static bool createLockedFile(string file_name, int &ref_fd)
+bool createLockedFile(string file_name, int &ref_fd)
 {
+	BESDEBUG("cache_internal", "createLockedFile: " << file_name <<endl);
+
     int fd;
     if ((fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
         switch (errno) {
@@ -302,24 +301,11 @@ static bool createLockedFile(string file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_WRLCK) < 0) {
+    if (lock(fd, F_SETLKW, F_WRLCK) == -1) {
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
-#if 0
-    int fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_EXLOCK | O_RDWR, 0666);
-    if (fd == -1) {
-        switch (errno) {
-        case EEXIST:
-            return false; // This indicates the case where
-            // the file already exists, so it's
-            // not an error - the 'test' part
-            // of 'test and set' has failed.
-        default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
-        }
-    }
-#endif
+    BESDEBUG("cache_internal", "createLockedFile exit: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -376,6 +362,12 @@ void BESCache3::m_initialize_cache_info()
             throw BESInternalError("Could not write size info to the cache info file in startup!", __FILE__, __LINE__);
 
         unlock(d_cache_info_fd);
+    }
+    else {
+    	if (!get_read_lock(d_cache_info, d_cache_info_fd))
+            throw BESInternalError("Could not read lockcache info file in startup!", __FILE__, __LINE__);
+
+    	unlock(d_cache_info_fd);
     }
 
 #if 0
@@ -606,8 +598,13 @@ unsigned long long BESCache3::update_cache_info(const string &target)
 {
     // If we can lock the cache info file, that's bad because it should already
     // be exclusively locked.
-    if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
+#if 0
+	if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
+#endif
+
+	if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+        throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
     // read the size from the cache info file
     unsigned long long current_size;
@@ -640,6 +637,18 @@ bool BESCache3::cache_too_big(unsigned long long current_size)
 {
     return current_size > d_max_cache_size_in_bytes;
 }
+
+unsigned long long BESCache3::get_cache_size()
+{
+    if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+        throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+	// read the size from the cache info file
+	unsigned long long current_size;
+	if(read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+	    throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
+    return current_size;
+}
+
 
 static bool entry_op(cache_entry &e1, cache_entry &e2)
 {
@@ -700,10 +709,10 @@ unsigned long long BESCache3::m_collect_cache_dir_info(CacheFiles &contents)
 void BESCache3::purge(unsigned long long current_size)
 {
     BESDEBUG("cache_purge", "purge - starting the purge" << endl);
-
+#if 0
     if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
         throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
-
+#endif
     CacheFiles contents;
     unsigned long long computed_size = m_collect_cache_dir_info(contents);
 
@@ -736,7 +745,7 @@ void BESCache3::purge(unsigned long long current_size)
         // Grab an exclusive lock but do not block - if another process has the file locked
         // just move on to the next file.
         int cfile_fd;
-        if (getExclusiveLock_nonblocking(i->name, cfile_fd)) {
+        if (/*!isLocked(i->name) && */getExclusiveLock_nonblocking(i->name, cfile_fd)) {
             BESDEBUG( "cache_purge", "purge: " << i->name << " removed." << endl );
 
             if (unlink(i->name.c_str()) != 0)

@@ -135,7 +135,7 @@ void decompression_process(int files_to_get, bool simulate_use = false)
 {
     srand(time(0));
 
-    BESDebug::SetUp("cerr,cache_purge,cache_contents,cache");
+    BESDebug::SetUp("cerr,cache_purge,cache_contents"); //,cache_contents,cache,cache_internal
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 200);
@@ -194,7 +194,30 @@ void decompression_process(int files_to_get, bool simulate_use = false)
         cache->unlock(cfile);
     }
 }
-
+#if 0
+int main(int argc, char *argv[])
+{
+	BESDebug::SetUp("cerr,cache_purge,cache_contents,cache,cache_internal");
+	const string file = "test_info";
+	int fd;
+	if (!createLockedFile(file, fd)) {
+		cerr << "could not create test_info" << endl;
+		return 1;
+	}
+#if 0
+	if (!isLocked(file))  {
+		cerr << "test_info not locked" << endl;
+		return 1;
+	}
+#endif
+	int fd2;
+	if (getExclusiveLock_nonblocking(file, fd2))  {
+		cerr << "Got exclusive lock on test_info" << endl;
+		return 1;
+	}
+}
+#endif
+#if 1
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
@@ -243,3 +266,4 @@ int main(int argc, char *argv[])
         --num_children;
     } while (num_children > 0);
 }
+#endif
