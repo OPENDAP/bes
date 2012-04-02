@@ -160,31 +160,25 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
         // write lock needed to add a new file to the cache.
 
     	// FIXME Does this has to be here or can the cache lock be moved below?
-#if 1
     	if (!cache->lock_cache())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
-#endif
-        // If we are here, the file has an extension that identifies it as compressed. Is a
+
+    	// If we are here, the file has an extension that identifies it as compressed. Is a
         // decompressed version in the cache already?
         BESDEBUG( "uncompress2", "uncompress - is cached? " << src << endl );
-        int fd;
 
         // The cache is purged here because it's possible to delete the file just created
         // when using fcntl(2) locking because a process cannot detect when it holds the lock
         // on a file - only when another process holds the lock. So read locking the newly
         // created file will prevent another process from getting the exclusive lock needed to
         // delete a file, but not the process that holds the read lock.
+        int fd;
         if (cache->get_read_lock(cfile, fd)) {
             BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
             // Once we have a shared read lock, allow other process to access the cache
-#if 1
             cache->unlock_cache();
-#endif
             return true;
         }
-
-    	if (!cache->lock_cache())
-            throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 
     	// Here we need to look at the size of the cache and purge if needed
         // Note that fcntl(2) locks do not work within a process. Thus it is not possible
@@ -202,13 +196,15 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
         // in the cache. First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(cfile, fd)) {
             BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
-            // FIXME The current locking scheme has the disadvantage of locking the entire cache
-            // for the duration of the decompression. work with exclusive and shared locks to
-            // see if that can be avoided.
             // decompress
+            //FIXME
+            cache->unlock_cache();
+
             p(src, cfile);
 
-            // FIXME Lock the cache here?
+            if (!cache->lock_cache())
+                throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
+
             // Now update the total cache size info.
             unsigned long long size = cache->update_cache_info(cfile);
             BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
