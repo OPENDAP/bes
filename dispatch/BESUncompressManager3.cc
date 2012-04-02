@@ -198,12 +198,12 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
             // decompress
             //FIXME
-            cache->unlock_cache();
+            //cache->unlock_cache();
 
             p(src, cfile);
 
-            if (!cache->lock_cache())
-                throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
+            //if (!cache->lock_cache())
+                //throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 
             // Now update the total cache size info.
             unsigned long long size = cache->update_cache_info(cfile);

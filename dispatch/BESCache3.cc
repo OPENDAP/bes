@@ -260,7 +260,7 @@ bool isLocked(string file_name)
 
     int fd;
     if ((fd = open(file_name.c_str(), O_WRONLY)) < 0) {
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
     struct flock lock;
@@ -271,8 +271,11 @@ bool isLocked(string file_name)
     lock.l_pid = getpid();
 
     if (fcntl(fd, F_GETLK, &lock) == -1) {
+        close(fd);
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
+
+    close(fd);
 
     // Success
     if (lock.l_type == F_UNLCK) {
