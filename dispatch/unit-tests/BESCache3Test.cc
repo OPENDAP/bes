@@ -135,7 +135,7 @@ void decompression_process(int files_to_get, bool simulate_use = false)
 {
     srand(time(0));
 
-    BESDebug::SetUp("cerr,cache_purge,cache_contents"); //,cache_contents,cache,cache_internal
+    BESDebug::SetUp("cerr,uncompress,cache_purge,cache_contents,cache_internal"); //,cache_contents,cache,cache_internal
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 200);
@@ -194,29 +194,84 @@ void decompression_process(int files_to_get, bool simulate_use = false)
         cache->unlock(cfile);
     }
 }
+
 #if 0
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	BESDebug::SetUp("cerr,cache_purge,cache_contents,cache,cache_internal");
-	const string file = "test_info";
-	int fd;
-	if (!createLockedFile(file, fd)) {
-		cerr << "could not create test_info" << endl;
-		return 1;
-	}
+	try {
+		const string file = "test_info";
+		int fd;
+		if (!createLockedFile(file, fd)) {
+			cerr << "could not create test_info" << endl;
+		}
+		//unlock(fd);
+		//close(fd);
+		char c;
+		cerr << "Return to continue.";
+		cin >> c;
+		cerr << endl;
+
+		int fd3;
+		if (getSharedLock(file, fd3)) {
+			cerr << "Got shared lock on test_info" << endl;
+		}
+		else {
+			cerr << "Could not get shared lock on test_info" << endl;
+
+		}
 #if 0
-	if (!isLocked(file))  {
-		cerr << "test_info not locked" << endl;
-		return 1;
-	}
+		if (getExclusiveLock_nonblocking(file, fd)) {
+			cerr << "Got exclusive nonblocking lock on test_info" << endl;
+
+		}
+		else {
+			cerr << "Could not get nonblocking exclusive lock on test_info" << endl;
+		}
 #endif
-	int fd2;
-	if (getExclusiveLock_nonblocking(file, fd2))  {
-		cerr << "Got exclusive lock on test_info" << endl;
-		return 1;
+
+		cerr << "Return to continue.";
+		cin >> c;
+		cerr << endl;
+
+#if 0
+		int fd3;
+		if (getSharedLock(file, fd3)) {
+			cerr << "Got shared lock on test_info" << endl;
+		}
+		else {
+			cerr << "Could not get shared lock on test_info" << endl;
+
+		}
+#endif
+		if (isLocked(file)) {
+			cerr << "test_info is locked" << endl;
+		}
+		else {
+			cerr << "test_info not locked" << endl;
+		}
+		int fd2;
+		if (getExclusiveLock_nonblocking(file, fd2)) {
+			cerr << "Got exclusive nonblocking lock on test_info" << endl;
+
+		}
+		else {
+			cerr << "Could not get nonblocking exclusive lock on test_info" << endl;
+
+		}
+		if (isLocked(file)) {
+			cerr << "test_info is locked" << endl;
+		}
+		else {
+			cerr << "test_info not locked" << endl;
+		}
+	}
+	catch (BESInternalError &e) {
+		cerr << "Caught BIE: " << e.get_message() << " at: " << e.get_file()
+				<< ":" << e.get_line() << endl;
 	}
 }
 #endif
+
 #if 1
 int main(int argc, char *argv[])
 {
