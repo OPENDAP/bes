@@ -11,15 +11,19 @@
 #include <time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <openssl/md5.h>
 
 #include <vector>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include <iomanip>
 
 #include "BESCache3.h"
