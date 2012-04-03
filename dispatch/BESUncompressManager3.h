@@ -60,9 +60,6 @@ private:
     static BESUncompressManager3 * _instance;
     map<string, p_bes_uncompress> _uncompress_list;
     typedef map<string, p_bes_uncompress>::const_iterator UCIter;
-#if 0
-    typedef map<string, p_bes_uncompress>::iterator UIter;
-#endif
 
     BESUncompressManager3(void);
 

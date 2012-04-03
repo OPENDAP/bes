@@ -128,9 +128,6 @@ string get_md5(const string &file)
     return oss.str();
 }
 
-void print_name(const string &name) {
-    cerr << "Name: " << name << endl;;
-}
 bool dot_file(const string &file) {
     return file.at(0) == '.';
 }
@@ -152,11 +149,6 @@ void decompression_process(int files_to_get, bool simulate_use = false, int seed
     int num_files = files.size();
 
     std:map<string,string> md5;
-
-#if 0
-    cerr << "Files for the test: (" << getpid() << ")" << endl;
-    for_each(files.begin(), files.end(), print_name);
-#endif
 
     for (int i = 0; i < files_to_get; ++i) {
         // randomly choose a compressed file
@@ -201,84 +193,6 @@ void decompression_process(int files_to_get, bool simulate_use = false, int seed
     }
 }
 
-#if 0
-int main(int argc, char *argv[]) {
-	BESDebug::SetUp("cerr,cache_purge,cache_contents,cache,cache_internal");
-	try {
-		const string file = "test_info";
-		int fd;
-		if (!createLockedFile(file, fd)) {
-			cerr << "could not create test_info" << endl;
-		}
-		//unlock(fd);
-		//close(fd);
-		char c;
-		cerr << "Return to continue.";
-		cin >> c;
-		cerr << endl;
-
-		int fd3;
-		if (getSharedLock(file, fd3)) {
-			cerr << "Got shared lock on test_info" << endl;
-		}
-		else {
-			cerr << "Could not get shared lock on test_info" << endl;
-
-		}
-#if 0
-		if (getExclusiveLock_nonblocking(file, fd)) {
-			cerr << "Got exclusive nonblocking lock on test_info" << endl;
-
-		}
-		else {
-			cerr << "Could not get nonblocking exclusive lock on test_info" << endl;
-		}
-#endif
-
-		cerr << "Return to continue.";
-		cin >> c;
-		cerr << endl;
-
-#if 0
-		int fd3;
-		if (getSharedLock(file, fd3)) {
-			cerr << "Got shared lock on test_info" << endl;
-		}
-		else {
-			cerr << "Could not get shared lock on test_info" << endl;
-
-		}
-#endif
-		if (isLocked(file)) {
-			cerr << "test_info is locked" << endl;
-		}
-		else {
-			cerr << "test_info not locked" << endl;
-		}
-		int fd2;
-		if (getExclusiveLock_nonblocking(file, fd2)) {
-			cerr << "Got exclusive nonblocking lock on test_info" << endl;
-
-		}
-		else {
-			cerr << "Could not get nonblocking exclusive lock on test_info" << endl;
-
-		}
-		if (isLocked(file)) {
-			cerr << "test_info is locked" << endl;
-		}
-		else {
-			cerr << "test_info not locked" << endl;
-		}
-	}
-	catch (BESInternalError &e) {
-		cerr << "Caught BIE: " << e.get_message() << " at: " << e.get_file()
-				<< ":" << e.get_line() << endl;
-	}
-}
-#endif
-
-#if 1
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
@@ -327,4 +241,4 @@ int main(int argc, char *argv[])
         --num_children;
     } while (num_children > 0);
 }
-#endif
+

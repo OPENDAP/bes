@@ -161,7 +161,6 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
         // either the shared read lock on a file already in the cache or an exclusive
         // write lock needed to add a new file to the cache.
 
-    	// FIXME Does this has to be here or can the cache lock be moved below?
     	if (!cache->lock_cache())
             throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 
@@ -221,21 +220,10 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             if (!cache->lock_cache())
                 throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
 #endif
-
             // Now update the total cache size info.
             unsigned long long size = cache->update_cache_info(cfile);
             BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
-#if 0
-            // FIXME The process can transfer the lock without closing the file
-            cache->exclusive_to_shared_lock(fd);
-#endif
-#if 0
-            // Release the (exclusive) write lock on the new file
-            cache->unlock(fd);
 
-            // Get a read lock on the new file
-            cache->get_read_lock(cfile, fd);
-#endif
             // Now unlock cache info since we have a read lock on the new file,
             // the size info has been updated and any purging has completed.
             cache->unlock_cache();

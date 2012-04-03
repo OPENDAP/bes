@@ -46,15 +46,7 @@ typedef struct {
 } cache_entry;
 
 typedef std::list<cache_entry> CacheFiles;
-#if 0
-// FIXME Make all of these static for the final version
-bool getSharedLock(const string &file_name, int &ref_fd);
-bool getExclusiveLock(string file_name, int &ref_fd);
-bool getExclusiveLock_nonblocking(string file_name, int &ref_fd);
-bool isLocked(string file_name);
-bool createLockedFile(string file_name, int &ref_fd);
-void unlock(int fd);
-#endif
+
 /** @brief Implementation of a caching mechanism for compressed data.
  * This cache uses simple advisory locking found on most modern unix file systems.
  * Compressed files are decompressed and stored in a cache where they can be

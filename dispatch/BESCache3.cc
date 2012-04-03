@@ -111,7 +111,6 @@ static inline string get_errno() {
 		return "Unknown error.";
 }
 
-#if 1
 // Apply cmd and type to the entire file.
 // cmd is one of F_GETLK, F_SETLK, F_SETLKW, F_UNLCK
 // type is one of F_RDLCK, F_WRLCK
@@ -125,12 +124,10 @@ static inline struct flock *lock(int type) {
 
     return &lock;
 }
-#endif
 
 void unlock(int fd)
 {
-	//struct flock *l = lock(F_UNLCK);
-    if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {//lock(fd, F_SETLK, F_UNLCK) == -1) {
+    if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
         throw BESInternalError("An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
     }
 
@@ -166,14 +163,7 @@ bool getSharedLock(const string &file_name, int &ref_fd)
     }
 
     struct flock *l = lock(F_RDLCK);
-#if 0
-    lock.l_type = F_RDLCK;
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-    lock.l_pid = getpid();
-#endif
-    if (fcntl(fd, F_SETLKW, l) == -1) { //lock(fd, F_SETLKW, F_RDLCK) == -1) {
+    if (fcntl(fd, F_SETLKW, l) == -1) {
     	ostringstream oss;
     	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -254,14 +244,7 @@ bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
     }
 
     struct flock *l = lock(F_WRLCK);
-#if 0
-    lock.l_type = F_WRLCK;
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-    lock.l_pid = getpid();
-#endif
-    if (fcntl(fd, F_SETLK, l) /*lock(fd, F_SETLK, F_WRLCK)*/ == -1) {
+    if (fcntl(fd, F_SETLK, l) == -1) {
         switch (errno) {
         case EAGAIN:
             BESDEBUG("cache_internal", "getExclusiveLock_nonblocking exit (false): " << file_name << " by: " << l->l_pid << endl);
@@ -281,45 +264,7 @@ bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
     ref_fd = fd;
     return true;
 }
-#if 0
-// FIXME Not used
-// This cannot be used on a file that this process has open because it will release
-// any locks when close is called (and it will never show that file as locked).
-bool isLocked(string file_name)
-{
-	BESDEBUG("cache_internal", "isLocked: " << file_name <<endl);
 
-    int fd;
-    if ((fd = open(file_name.c_str(), O_WRONLY)) < 0) {
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
-    }
-
-    struct flock lock;
-    lock.l_type = F_WRLCK;
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
-    lock.l_pid = getpid();
-
-    if (fcntl(fd, F_GETLK, &lock) == -1) {
-        close(fd);
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
-    }
-
-    close(fd);
-
-    // Success
-    if (lock.l_type == F_UNLCK) {
-        BESDEBUG("cache_internal", "isLocked exit (false): " << file_name << endl);
-        return false;
-    }
-    else {
-    	BESDEBUG("cache_internal", "isLocked exit (true): " << file_name << " by: " << lock.l_pid << endl);
-    	return true;
-    }
-
-}
-#endif
 /** Create a new file and get an exclusive read/write lock on it. If
  the file already exists, this call fails.
 
@@ -604,6 +549,7 @@ void BESCache3::unlock(int fd)
 void BESCache3::unlock_cache()
 {
     BESDEBUG("cache", "BES Cache: unlock: cache_info (fd: " << d_cache_info_fd << ")" << endl);
+
     unlock(d_cache_info_fd);
 }
 
@@ -616,16 +562,6 @@ void BESCache3::unlock_cache()
  */
 unsigned long long BESCache3::update_cache_info(const string &target)
 {
-    // If we can lock the cache info file, that's bad because it should already
-    // be exclusively locked.
-#if 0
-    // This test does not work when using fcntl(2) locking because fcntl(2) will
-    // 'upgrade' the lock within a process; this call will always succeed unless
-    // another process has the file locked (which cannot be true by design).
-	if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
-#endif
-
 	if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
         throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
@@ -732,23 +668,24 @@ unsigned long long BESCache3::m_collect_cache_dir_info(CacheFiles &contents)
 void BESCache3::purge(unsigned long long current_size)
 {
     BESDEBUG("cache_purge", "purge - starting the purge" << endl);
-#if 0
-    // See comment about fcntl(2) locking in update_cache)info() above.
-    if (getExclusiveLock_nonblocking(d_cache_info, d_cache_info_fd))
-        throw BESInternalError("Expected the cache info file to be locked!", __FILE__, __LINE__);
-#endif
+
     CacheFiles contents;
     unsigned long long computed_size = m_collect_cache_dir_info(contents);
 
-#if 0
-    // FIXME if we keep this, the code in uncompress can be simplified
     // Sanity check...
+    // If the cache is not locked during decompression operations,
+    // current_size == computed_size is not always true. Still the test
+    // is useful for debugging.
     if (current_size != computed_size) {
         ostringstream oss;
         oss << "Cache info recorded size and computed size differ: " << current_size << ", " << computed_size;
+#if 0
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
+#else
+        BESDEBUG( "cache_contents", oss.str() << endl);
 #endif
+    }
+
 
     if (BESISDEBUG( "cache_contents" )) {
         BESDEBUG( "cache_contents", endl << "BEFORE Purge " << computed_size/BYTES_PER_MEG << endl );
@@ -772,7 +709,7 @@ void BESCache3::purge(unsigned long long current_size)
         // Grab an exclusive lock but do not block - if another process has the file locked
         // just move on to the next file.
         int cfile_fd;
-        if (/*!isLocked(i->name) && */getExclusiveLock_nonblocking(i->name, cfile_fd)) {
+        if (getExclusiveLock_nonblocking(i->name, cfile_fd)) {
             BESDEBUG( "cache_purge", "purge: " << i->name << " removed." << endl );
 
             if (unlink(i->name.c_str()) != 0)
@@ -780,21 +717,13 @@ void BESCache3::purge(unsigned long long current_size)
 
             unlock(cfile_fd);
             computed_size -= i->size;
-#if 0
-            // This code used to try to reuse the list
-            // If the file was removed from the cache, remove from the list of files too
-            contents.erase(i);
-            i = contents.begin();
-#endif
         }
+#if 1
         else {
             // This information is useful when debugging... Might comment out for production
             BESDEBUG( "cache_purge", "purge: " << i->name << " is in use." << endl );
-#if 0
-            ++i;
-#endif
         }
-
+#endif
         ++i;
 
         BESDEBUG( "cache_purge", "purge - current and target size (in MB) " << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl );
