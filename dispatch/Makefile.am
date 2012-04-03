@@ -137,7 +137,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESIndent.cc BESBaseApp.cc BESModuleApp.cc BESUtil.cc BESStopWatch.cc \
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESCache2.cc BESUncompressManager2.cc BESUncompressGZ.cc		\
-	BESCache3.cc BESUncompressManager3.cc \
+	BESCache3.cc BESUncompressManager3.cc BESUncompress3GZ.cc\
 	BESUncompressBZ2.cc BESUncompressZ.cc BESTokenizer.cc		\
 	BESCache.cc BESUncompressManager.cc \
 	BESFSDir.cc BESFSFile.cc
@@ -185,7 +185,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESExceptionManager.h 						\
 	BESModuleApp.h BESUtil.h BESStopWatch.h BESRegex.h BESScrub.h 	\
 	BESDebug.h BESCache2.h BESUncompressManager2.h  \
-	BESCache3.h BESUncompressManager3.h \
+	BESCache3.h BESUncompressManager3.h BESUncompress3GZ.h\
 	BESCache.h BESUncompressManager.h  \
 	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h		\
 	BESTokenizer.h BESFSDir.h BESFSFile.h

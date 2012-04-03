@@ -30,7 +30,7 @@
 using std::istringstream;
 
 #include "BESUncompressManager3.h"
-#include "BESUncompressGZ.h"
+#include "BESUncompress3GZ.h"
 #include "BESUncompressBZ2.h"
 #include "BESUncompressZ.h"
 #include "BESCache3.h"
@@ -53,9 +53,11 @@ BESUncompressManager3 *BESUncompressManager3::_instance = 0;
  */
 BESUncompressManager3::BESUncompressManager3()
 {
-    add_method("gz", BESUncompressGZ::uncompress);
+    add_method("gz", BESUncompress3GZ::uncompress);
+#if 0
     add_method("bz2", BESUncompressBZ2::uncompress);
     add_method("Z", BESUncompressZ::uncompress);
+#endif
 }
 
 /** @brief create_and_lock a uncompress method to the list
@@ -190,33 +192,36 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
         if (cache->cache_too_big(size))
             cache->purge(size);
 
-        // FIXME Unlock the cache here?
-
         // Now we actually try to decompress the file, given that there's not a decomp'd version
         // in the cache. First make an empty file and get an exclusive lock on it.
         if (cache->create_and_lock(cfile, fd)) {
             BESDEBUG( "uncompress", "uncompress - caching " << cfile << endl );
+
+#if 1
+            cache->unlock_cache();
+#endif
+            // FIXME Catch exceptions here and close fd
             // decompress
-            //FIXME
-            //cache->unlock_cache();
+            p(src, fd);
 
-            p(src, cfile);
-
-            //if (!cache->lock_cache())
-                //throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
+#if 1
+            if (!cache->lock_cache())
+                throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
+#endif
 
             // Now update the total cache size info.
             unsigned long long size = cache->update_cache_info(cfile);
             BESDEBUG( "uncompress", "uncompress - cache size now " << size << endl );
 
             // FIXME The process can transfer the lock without closing the file
-
+            cache->exclusive_to_shared_lock(fd);
+#if 0
             // Release the (exclusive) write lock on the new file
             cache->unlock(fd);
 
             // Get a read lock on the new file
             cache->get_read_lock(cfile, fd);
-
+#endif
             // Now unlock cache info since we have a read lock on the new file,
             // the size info has been updated and any purging has completed.
             cache->unlock_cache();

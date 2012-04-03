@@ -37,7 +37,7 @@ using std::string;
 
 class BESCache3;
 
-typedef void (*p_bes_uncompress)(const string &src, const string &target);
+typedef void (*p_bes_uncompress)(const string &src, int fd);
 
 /** @brief List of all registered decompression methods
  *

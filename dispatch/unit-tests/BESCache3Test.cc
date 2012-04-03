@@ -135,11 +135,11 @@ bool dot_file(const string &file) {
     return file.at(0) == '.';
 }
 
-void decompression_process(int files_to_get, bool simulate_use = false)
+void decompression_process(int files_to_get, bool simulate_use = false, int seed = 0)
 {
-    srand(time(0));
+    srand(time(0) + seed);
 
-    BESDebug::SetUp("cerr,cache_purge,cache_contents"); //,cache_contents,cache,cache_internal,uncompress,
+    BESDebug::SetUp("cerr,cache_purge,cache_contents,uncompress"); //,cache_contents,cache,cache_internal,uncompress,
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 200);
@@ -185,17 +185,19 @@ void decompression_process(int files_to_get, bool simulate_use = false)
             sleep(random(1000));
 
         string hash = get_md5(cfile);
-        if (md5[file] != "" && md5[file] != hash)
-            throw BESInternalError("md5 failed " + cfile + ": md5[file]: " + md5[file] + ", hash: " + hash, __FILE__, __LINE__);
-        else
+        if (md5[file] == "")    // First time, initialize
             md5[file] = hash;
+
+        if (md5[file] != hash)
+            throw BESInternalError("md5 failed " + cfile + ": md5[file]: " + md5[file] + ", hash: " + hash, __FILE__, __LINE__);
 
         time(&t);
         // write cfile to the log along with the time
         if (in_cache)
             BESDEBUG("uncompress", "    " << "done using the file, unlocking " << cfile << " (time: " << t  << ")" << endl);
 
-        cache->unlock(cfile);
+        if (in_cache)
+            cache->unlock(cfile);
     }
 }
 
@@ -300,7 +302,7 @@ int main(int argc, char *argv[])
         if (pid == 0) {
             // child
             try {
-                decompression_process(num_files, simulate_use);
+                decompression_process(num_files, simulate_use, i);
             }
             catch (BESInternalError &e) {
                 cerr << "Caught BIE: " << e.get_message() << " at: " << e.get_file() << ":" << e.get_line() << endl;
