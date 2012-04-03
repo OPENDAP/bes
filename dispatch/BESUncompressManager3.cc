@@ -31,8 +31,8 @@ using std::istringstream;
 
 #include "BESUncompressManager3.h"
 #include "BESUncompress3GZ.h"
-#include "BESUncompressBZ2.h"
-#include "BESUncompressZ.h"
+#include "BESUncompress3BZ2.h"
+#include "BESUncompress3Z.h"
 #include "BESCache3.h"
 
 #include "BESInternalError.h"
@@ -54,10 +54,8 @@ BESUncompressManager3 *BESUncompressManager3::_instance = 0;
 BESUncompressManager3::BESUncompressManager3()
 {
     add_method("gz", BESUncompress3GZ::uncompress);
-#if 0
-    add_method("bz2", BESUncompressBZ2::uncompress);
-    add_method("Z", BESUncompressZ::uncompress);
-#endif
+    add_method("bz2", BESUncompress3BZ2::uncompress);
+    add_method("Z", BESUncompress3Z::uncompress);
 }
 
 /** @brief create_and_lock a uncompress method to the list
