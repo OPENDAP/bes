@@ -369,6 +369,13 @@ void BESCache3::m_initialize_cache_info()
 
         unlock(d_cache_info_fd);
     }
+#if 1
+    if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
+        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    }
+
+    BESDEBUG("cache_internal", "d_cache_info_fd: " << d_cache_info_fd << endl);
+#endif
 }
 
 /** @brief Private constructor that takes as arguments keys to the cache directory,
@@ -511,10 +518,39 @@ void BESCache3::exclusive_to_shared_lock(int fd)
  * then deleting files. Use this to switch from an exclusive lock used to
  * write a new file and the shared lock used to read from it without
  * having the file deleted in the brief interval between those two events.
+ *
+ * @TODO Change this so that this class keeps the cache_info file open
+ * all the time so that lock acquisition can be atomic.
  */
 bool BESCache3::lock_cache()
 {
+    BESDEBUG("cache_internal", "lock_cache - d_cache_info_fd: " << d_cache_info_fd << endl);
+
+    if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
+        throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__, __LINE__);
+    }
+
+    return true;
+#if 0
     return getExclusiveLock(d_cache_info, d_cache_info_fd);
+#endif
+}
+
+/** Unlock the cache info file. This also closes the file.
+ *
+ * @TODO Change this so that only the lock is removed and the
+ * cache_info file stays open.
+ */
+void BESCache3::unlock_cache()
+{
+    BESDEBUG("cache", "BES Cache: unlock: cache_info (fd: " << d_cache_info_fd << ")" << endl);
+
+    if (fcntl(d_cache_info_fd, F_SETLK, lock(F_UNLCK)) == -1) {
+        throw BESInternalError("An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__, __LINE__);
+    }
+#if 0
+    unlock(d_cache_info_fd);
+#endif
 }
 
 /** Unlock the named file. This does not do any name mangling; it
@@ -526,7 +562,7 @@ void BESCache3::unlock(const string &file_name)
 {
     BESDEBUG("cache", "BES Cache: unlock file: " << file_name << endl);
 
-    unlock(get_descriptor(file_name));
+    ::unlock(get_descriptor(file_name));
 }
 
 /** Unlock the file. This does not do any name mangling; it
@@ -541,16 +577,6 @@ void BESCache3::unlock(int fd)
     ::unlock(fd);
 
     BESDEBUG("cache", "BES Cache: unlock " << fd << " Success" << endl);
-}
-
-/** Unlock the cache info file. This also closes the file.
- *
- */
-void BESCache3::unlock_cache()
-{
-    BESDEBUG("cache", "BES Cache: unlock: cache_info (fd: " << d_cache_info_fd << ")" << endl);
-
-    unlock(d_cache_info_fd);
 }
 
 /** @brief Update the cache info file to include 'target'
