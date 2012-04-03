@@ -202,9 +202,9 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             // exclusive lock and then releases the cache lock, the other can get the
             // cache lock and then try for a shared lock on the file. It cannot get the
             // shared lock because of the first processes exclusive lock, and the first
-            // process cannot get the cache lock once it's done which it needs to chaage
+            // process cannot get the cache lock once it's done which it needs to change
             // from the exclusive to shared lock.
-#if 0
+#if 1
             BESDEBUG("uncompress", "uncompress - about to unlock the cache before decompressing " << cfile << endl);
             cache->unlock_cache();
 #endif
@@ -216,7 +216,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             // FIXME The process can transfer the lock without closing the file
             cache->exclusive_to_shared_lock(fd);
 
-#if 0
+#if 1
             BESDEBUG("uncompress", "uncompress - about to lock the cache to update size" << endl);
             if (!cache->lock_cache())
                 throw BESInternalError("Could not lock the cache info file.", __FILE__, __LINE__);
