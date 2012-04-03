@@ -111,23 +111,26 @@ static inline string get_errno() {
 		return "Unknown error.";
 }
 
+#if 1
 // Apply cmd and type to the entire file.
 // cmd is one of F_GETLK, F_SETLK, F_SETLKW, F_UNLCK
 // type is one of F_RDLCK, F_WRLCK
-static inline int lock(int fd, int cmd, int type) {
-    struct flock lock;
+static inline struct flock *lock(int type) {
+    static struct flock lock;
     lock.l_type = type;
     lock.l_whence = SEEK_SET;
     lock.l_start = 0;
     lock.l_len = 0;
     lock.l_pid = getpid();
 
-    return fcntl(fd, cmd, &lock);
+    return &lock;
 }
+#endif
 
 void unlock(int fd)
 {
-    if (lock(fd, F_SETLK, F_UNLCK) == -1) {
+	//struct flock *l = lock(F_UNLCK);
+    if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {//lock(fd, F_SETLK, F_UNLCK) == -1) {
         throw BESInternalError("An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
     }
 
@@ -162,8 +165,18 @@ bool getSharedLock(const string &file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_RDLCK) == -1) {
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    struct flock *l = lock(F_RDLCK);
+#if 0
+    lock.l_type = F_RDLCK;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_pid = getpid();
+#endif
+    if (fcntl(fd, F_SETLKW, l) == -1) { //lock(fd, F_SETLKW, F_RDLCK) == -1) {
+    	ostringstream oss;
+    	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
     BESDEBUG("cache_internal", "getSharedLock exit: " << file_name <<endl);
@@ -200,8 +213,11 @@ bool getExclusiveLock(string file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_WRLCK) == -1) {
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    struct flock *l = lock(F_WRLCK);
+    if (fcntl(fd, F_SETLKW, l) == -1) {//lock(fd, F_SETLKW, F_WRLCK) == -1) {
+    	ostringstream oss;
+    	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
     BESDEBUG("cache_internal", "getExclusiveLock exit: " << file_name <<endl);
@@ -237,21 +253,25 @@ bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
         }
     }
 
-    struct flock lock;
+    struct flock *l = lock(F_WRLCK);
+#if 0
     lock.l_type = F_WRLCK;
     lock.l_whence = SEEK_SET;
     lock.l_start = 0;
     lock.l_len = 0;
     lock.l_pid = getpid();
-
-    if (fcntl(fd, F_SETLK, &lock) /*lock(fd, F_SETLK, F_WRLCK)*/ == -1) {
+#endif
+    if (fcntl(fd, F_SETLK, l) /*lock(fd, F_SETLK, F_WRLCK)*/ == -1) {
         switch (errno) {
         case EAGAIN:
-            BESDEBUG("cache_internal", "getExclusiveLock_nonblocking exit (false): " << file_name << " by: " << lock.l_pid << endl);
+            BESDEBUG("cache_internal", "getExclusiveLock_nonblocking exit (false): " << file_name << " by: " << l->l_pid << endl);
             return false;
 
-        default:
-         throw BESInternalError(get_errno(), __FILE__, __LINE__);
+        default: {
+        	ostringstream oss;
+        	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        	throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
         }
     }
 
@@ -261,7 +281,7 @@ bool getExclusiveLock_nonblocking(string file_name, int &ref_fd)
     ref_fd = fd;
     return true;
 }
-#if 1
+#if 0
 // FIXME Not used
 // This cannot be used on a file that this process has open because it will release
 // any locks when close is called (and it will never show that file as locked).
@@ -328,8 +348,11 @@ bool createLockedFile(string file_name, int &ref_fd)
         }
     }
 
-    if (lock(fd, F_SETLKW, F_WRLCK) == -1) {
-        throw BESInternalError(get_errno(), __FILE__, __LINE__);
+    struct flock *l = lock(F_WRLCK);
+    if (fcntl(fd, F_SETLKW, l) == -1) {//lock(fd, F_SETLKW, F_WRLCK) == -1) {
+    	ostringstream oss;
+    	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
     BESDEBUG("cache_internal", "createLockedFile exit: " << file_name <<endl);

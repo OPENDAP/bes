@@ -139,7 +139,7 @@ void decompression_process(int files_to_get, bool simulate_use = false, int seed
 {
     srand(time(0) + seed);
 
-    BESDebug::SetUp("cerr,cache_purge,cache_contents,uncompress"); //,cache_contents,cache,cache_internal,uncompress,
+    BESDebug::SetUp("cerr,cache_purge,cache_contents,cache_internal,uncompress"); //,cache_contents,cache,cache_internal,uncompress,
 
     // Make a cache object for this process. Hardwire the cache directory name
     BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 200);
