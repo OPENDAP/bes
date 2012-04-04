@@ -129,16 +129,17 @@ public:
     virtual bool create_and_lock(const string &target, int &fd);
     virtual bool get_read_lock(const string &target, int &fd);
     virtual void exclusive_to_shared_lock(int fd);
-    virtual void unlock(const string &target);
-    virtual void unlock(int fd);
+    virtual void unlock_and_close(const string &target);
+    virtual void unlock_and_close(int fd);
 
-    virtual bool lock_cache();
+    virtual void lock_cache_write();
+    virtual void lock_cache_read();
     virtual void unlock_cache();
 
     virtual unsigned long long update_cache_info(const string &target);
     virtual bool cache_too_big(unsigned long long current_size) const;
-    virtual unsigned long long get_cache_size() const;
-    virtual void purge(unsigned long long current_size);
+    virtual unsigned long long get_cache_size();
+    virtual void update_and_purge(const string &new_file);
 
     static BESCache3 *get_instance(BESKeys *keys, const string &cache_dir_key, const string &prefix_key, const string &size_key);
     static BESCache3 *get_instance(const string &cache_dir, const string &prefix, unsigned long size); // Testing
