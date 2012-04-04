@@ -104,22 +104,12 @@ private:
     string d_cache_info;
     int d_cache_info_fd;
 
+    void m_record_descriptor(const string &file, int fd);
+    int m_get_descriptor(const string &file);
+
     // map that relates files to the descriptor used to obtain a lock
     typedef std::map<string, int> FilesAndLockDescriptors;
     FilesAndLockDescriptors d_locks;
-
-    virtual void record_descriptor(const string &file, int fd) {
-        BESDEBUG("cache", "BES Cache: recording descriptor: " << file << ", " << fd << endl);
-        d_locks.insert(std::pair<string, int>(file, fd));
-    }
-
-    virtual int get_descriptor(const string &file) {
-        FilesAndLockDescriptors::iterator i = d_locks.find(file);
-        int fd = i->second;
-        BESDEBUG("cache", "BES Cache: getting descriptor: " << file << ", " << fd << endl);
-        d_locks.erase(i);
-        return fd;
-    }
 
 public:
     virtual ~BESCache3() { }

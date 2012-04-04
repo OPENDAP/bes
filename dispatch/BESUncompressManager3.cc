@@ -179,10 +179,17 @@ bool BESUncompressManager3::uncompress(const string &src, string &cfile, BESCach
             // Now update the total cache size info and purge if needed. The new file's
             // name is passed into the purge method because this process cannot detect its
             // own lock on the file.
-            if (cache->cache_too_big(cache->get_cache_size()))
+            unsigned long long size = cache->update_cache_info(cfile);
+            if (cache->cache_too_big(size))
             	cache->update_and_purge(cfile);
 
             return true;
+        }
+        else {
+            if (cache->get_read_lock(cfile, fd)) {
+                BESDEBUG( "uncompress", "uncompress - cached hit: " << cfile << endl );
+                return true;
+            }
         }
 
         return false;

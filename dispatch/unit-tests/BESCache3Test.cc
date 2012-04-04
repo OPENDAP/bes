@@ -136,10 +136,10 @@ void decompression_process(int files_to_get, bool simulate_use = false, int seed
 {
     srand(time(0) + seed);
 
-    BESDebug::SetUp("cerr,cache_contents,cache_purge"); //cache_purge,cache_contents,cache,cache_internal,uncompress,
+    BESDebug::SetUp("cerr,cache_contents,cache_purge,uncompress"); //cache_purge,cache_contents,cache,cache_internal,uncompress,
 
     // Make a cache object for this process. Hardwire the cache directory name
-    BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 300);
+    BESCache3 *cache = BESCache3::get_instance("./cache2", "tc_", 200);
 
     // Get a list of all of the test files
     vector<string> files = get_file_names("./cache2_data_files");

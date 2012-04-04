@@ -5,7 +5,7 @@
 
 // Copyright (c) 2012 OPeNDAP, Inc
 // Author: James Gallagher <jgallagher@opendap.org>
-// Based on code by Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -123,6 +123,19 @@ static inline struct flock *lock(int type) {
     lock.l_pid = getpid();
 
     return &lock;
+}
+
+inline void BESCache3::m_record_descriptor(const string &file, int fd) {
+    BESDEBUG("cache", "BES Cache: recording descriptor: " << file << ", " << fd << endl);
+    d_locks.insert(std::pair<string, int>(file, fd));
+}
+
+inline int BESCache3::m_get_descriptor(const string &file) {
+    FilesAndLockDescriptors::iterator i = d_locks.find(file);
+    int fd = i->second;
+    BESDEBUG("cache", "BES Cache: getting descriptor: " << file << ", " << fd << endl);
+    d_locks.erase(i);
+    return fd;
 }
 
 /** Unlock and close the file descriptor.
@@ -488,7 +501,7 @@ bool BESCache3::get_read_lock(const string &target, int &fd)
     BESDEBUG("cache_internal", "BES Cache: read_lock: " << target << "(" << status << ")" << endl);
 
     if (status)
-    	record_descriptor(target, fd);
+    	m_record_descriptor(target, fd);
 
     unlock_cache();
 
@@ -497,7 +510,7 @@ bool BESCache3::get_read_lock(const string &target, int &fd)
 
 /** @brief Create a file in the cache and lock it for write access.
  * If the file does not exist, make it, open it for read-write access and
- * get an exclusive lock on it. The lockking operation blocks, although that
+ * get an exclusive lock on it. The locking operation blocks, although that
  * should never happen.
  * @param target The name of the file to make/open/lock
  * @param fd Value-result param that holds the file descriptor of the opened
@@ -515,7 +528,7 @@ bool BESCache3::create_and_lock(const string &target, int &fd)
     BESDEBUG("cache_internal", "BES Cache: create_and_lock: " << target << "(" << status << ")" << endl);
 
     if (status)
-    	record_descriptor(target, fd);
+    	m_record_descriptor(target, fd);
 
     unlock_cache();
 
@@ -608,7 +621,7 @@ void BESCache3::unlock_and_close(const string &file_name)
 {
     BESDEBUG("cache_internal", "BES Cache: unlock file: " << file_name << endl);
 
-    unlock(get_descriptor(file_name));
+    unlock(m_get_descriptor(file_name));
 }
 
 /** Unlock the file. This does not do any name mangling; it
