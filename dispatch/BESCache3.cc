@@ -182,6 +182,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
 
     struct flock *l = lock(F_RDLCK);
     if (fcntl(fd, F_SETLKW, l) == -1) {
+        close(fd);
     	ostringstream oss;
     	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -222,7 +223,8 @@ static bool getExclusiveLock(string file_name, int &ref_fd)
     }
 
     struct flock *l = lock(F_WRLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {//lock(fd, F_SETLKW, F_WRLCK) == -1) {
+    if (fcntl(fd, F_SETLKW, l) == -1) {
+        close(fd);
     	ostringstream oss;
     	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -266,9 +268,11 @@ static bool getExclusiveLockNB(string file_name, int &ref_fd)
         switch (errno) {
         case EAGAIN:
             BESDEBUG("cache_internal", "getExclusiveLock_nonblocking exit (false): " << file_name << " by: " << l->l_pid << endl);
+            close(fd);
             return false;
 
         default: {
+            close(fd);
         	ostringstream oss;
         	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
         	throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -312,7 +316,8 @@ static bool createLockedFile(string file_name, int &ref_fd)
     }
 
     struct flock *l = lock(F_WRLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {//lock(fd, F_SETLKW, F_WRLCK) == -1) {
+    if (fcntl(fd, F_SETLKW, l) == -1) {
+        close(fd);
     	ostringstream oss;
     	oss << "cache process: " << l->l_pid << " triggered a locking error: " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
