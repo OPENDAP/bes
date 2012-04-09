@@ -442,7 +442,7 @@ BESCatalogUtils::bes_get_stat_info( BESCatalogEntry *entry,
 				    struct stat &buf )
 {
     off_t sz = buf.st_size ;
-    entry->set_size( (int)sz ) ;
+    entry->set_size( sz ) ;
 
     // %T = %H:%M:%S
     // %F = %Y-%m-%d
