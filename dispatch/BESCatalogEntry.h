@@ -74,7 +74,7 @@ public:
     virtual bool		is_collection() { return (get_count() > 0) ; }
 
     virtual string		get_size() { return _size ; }
-    virtual void		set_size( int size ) ;
+    virtual void		set_size( off_t size ) ;
 
     virtual string		get_mod_date() { return _mod_date ; }
     virtual void		set_mod_date( const string &mod_date )

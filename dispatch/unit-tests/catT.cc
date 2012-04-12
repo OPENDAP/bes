@@ -125,7 +125,7 @@ string two_response = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
         <dataset catalog=\"default\" count=\"2\" lastModified=\"\" name=\"/\" node=\"true\" size=\"\">\n\
-            <dataset catalog=\"other\" count=\"13\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
+            <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
             <dataset catalog=\"default\" lastModified=\"\" name=\"bes.conf\" node=\"false\" size=\"\"/>\n\
         </dataset>\n\
     </showCatalog>\n\
@@ -134,9 +134,8 @@ string two_response = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 string other_root = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showCatalog>\n\
-        <dataset catalog=\"other\" count=\"13\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\">\n\
+        <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\">\n\
             <dataset catalog=\"other\" lastModified=\"\" name=\"other/bad_keys1.ini\" node=\"false\" size=\"\"/>\n\
-            <dataset catalog=\"other\" lastModified=\"\" name=\"other/cache_test.ini\" node=\"false\" size=\"\"/>\n\
             <dataset catalog=\"other\" lastModified=\"\" name=\"other/defT.ini\" node=\"false\" size=\"\"/>\n\
             <dataset catalog=\"other\" lastModified=\"\" name=\"other/empty.ini\" node=\"false\" size=\"\"/>\n\
             <dataset catalog=\"other\" lastModified=\"\" name=\"other/info_test.ini\" node=\"false\" size=\"\"/>\n\
@@ -155,7 +154,7 @@ string other_root = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 string other_root_info = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <showInfo>\n\
-        <dataset catalog=\"other\" count=\"13\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
+        <dataset catalog=\"other\" count=\"12\" lastModified=\"\" name=\"other/\" node=\"true\" size=\"\"/>\n\
     </showInfo>\n\
 </response>\n" ;
 
@@ -389,7 +388,7 @@ public:
 	TheBESKeys::TheKeys()->set_key( var ) ;
 	var = (string)"BES.Catalog.default.Include=.*\\.conf$;" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.default.Exclude=\\..*;cache;testdir;" ;
+	var = (string)"BES.Catalog.default.Exclude=\\..*;cache.*;testdir;" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
 	try
 	{
@@ -418,6 +417,7 @@ public:
 	    string str = strm.str() ;
 	    str = remove_ptr( str ) ;
 	    str = remove_stuff( str ) ;
+	    // cerr << "Catalog list str: " << str << endl;
 	    CPPUNIT_ASSERT( str == one_response ) ;
 	}
 	catch( BESError &e )
@@ -459,7 +459,7 @@ public:
 	TheBESKeys::TheKeys()->set_key( var ) ;
 	var = (string)"BES.Catalog.other.Include=.*\\.ini$;" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
-	var = (string)"BES.Catalog.other.Exclude=\\..*;cache;testdir;" ;
+	var = (string)"BES.Catalog.other.Exclude=\\..*;cache.*;testdir;" ;
 	TheBESKeys::TheKeys()->set_key( var ) ;
 	BESCatalog *other = 0 ;
 	try
@@ -495,6 +495,7 @@ public:
 	    string strm_s = strm.str() ;
 	    string str = remove( strm_s, "lastModified", 0 ) ;
 	    str = remove( str, "size", 0 ) ;
+        // cerr << "Catalog list str: " << str << endl;
 	    CPPUNIT_ASSERT( str == two_response ) ;
 	}
 	catch( BESError &e )
@@ -520,8 +521,8 @@ public:
 	    string strm_s = strm.str() ;
 	    string str = remove( strm_s, "lastModified", 0 ) ;
 	    str = remove( str, "size", 0 ) ;
-	    cerr << str << endl ;
-	    cerr << other_root << endl ;
+	    // cerr << str << endl ;
+	    // cerr << other_root << endl ;
 	    CPPUNIT_ASSERT( str == other_root ) ;
 	}
 	catch( BESError &e )
@@ -624,8 +625,8 @@ public:
 	    string strm_s = strm.str() ;
 	    string str = remove( strm_s, "lastModified", 0 ) ;
 	    str = remove( str, "size", 0 ) ;
-	    cerr << str << endl ;
-	    cerr << default_node << endl ;
+	    // cerr << str << endl ;
+	    // cerr << default_node << endl ;
 	    CPPUNIT_ASSERT( str == default_node ) ;
 	}
 	catch( BESError &e )

@@ -138,6 +138,8 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESRegex.cc BESScrub.cc BESDebug.cc BESDefaultModule.cc		\
 	BESCache3.cc BESUncompressManager3.cc \
 	BESUncompress3GZ.cc BESUncompress3BZ2.cc BESUncompress3Z.cc \
+	BESCache.cc BESUncompressManager.cc \
+	BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc \
 	BESTokenizer.cc		\
 	BESFSDir.cc BESFSFile.cc
 
@@ -149,7 +151,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 #    BESCache.cc BESUncompressManager.cc
 #    BESCache2.cc BESUncompressManager2.cc 
 #    BESUncompressZ.cc BESUncompressBZ2.cc BESUncompressGZ.cc
-    
+
 # The old caching code. Still in the build. jhrg 3/23/12
 #   BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc     
 
@@ -195,6 +197,8 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESDebug.h \
 	BESCache3.h BESUncompressManager3.h \
 	BESUncompress3BZ2.h BESUncompress3Z.h BESUncompress3GZ.h \
+	BESCache.h BESUncompressManager.h \
+	BESUncompressGZ.h BESUncompressBZ2.h BESUncompressZ.h \
 	BESTokenizer.h BESFSDir.h BESFSFile.h
 
 # See note above about BESCache3 and BESFileContainer

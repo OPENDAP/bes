@@ -26,12 +26,11 @@ noinst_HEADERS = test_config.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-#TESTS = keysT
 TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
 		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCache3Test
+		urlT
 
 if LIBDAP
 TESTS += catT
@@ -145,10 +144,6 @@ if LIBDAP
 catT_SOURCES = catT.cc ../BESCatalogResponseHandler.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 endif
-
-# BESCache2Test_SOURCES = BESCache2Test.cc
-# BESCache2Test_CPPFLAGS = $(AM_CPPFLAGS)
-# BESCache2Test_LDFLAGS = -lcrypto
 
 BESCache3Test_SOURCES = BESCache3Test.cc
 BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS)

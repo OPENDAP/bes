@@ -58,7 +58,7 @@ BESCatalogEntry::~BESCatalogEntry( )
 }
 
 void
-BESCatalogEntry::set_size( int size )
+BESCatalogEntry::set_size( off_t size )
 {
     ostringstream strm ;
     strm << size ;
