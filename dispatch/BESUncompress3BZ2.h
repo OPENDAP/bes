@@ -1,4 +1,4 @@
-// ServerApp.h
+// BESUncompress3BZ2.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,35 +30,34 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#ifndef BESUncompress3BZ2_h_
+#define BESUncompress3BZ2_h_ 1
+
 #include <string>
 
 using std::string ;
 
-#include "BESModuleApp.h"
+#include "BESObj.h"
 
-class TcpSocket ;
-class UnixSocket ;
-class PPTServer ;
-
-class ServerApp : public BESModuleApp
+/** @brief Function to uncompress files with .bz2 extension
+ *
+ * The static function is responsible for uncompressing bz2 files. If the
+ * uncompressed target file already exists then this function will overwrite
+ * that file. If it doesn't already exist then it is created.
+ *
+ * If any errors occur during this operation then a
+ * BESContainerStorageException will be thrown
+ *
+ * @param src the source file that is to be uncompressed
+ * @param target the target uncompressed file
+ * @throws BESContainerStorageException if errors in uncompressing the file
+ * or if bz2 is not compiled into the BES.
+ */
+class BESUncompress3BZ2 : public BESObj
 {
-private:
-    int				_portVal ;
-    bool			_gotPort ;
-    string			_unixSocket ;
-    bool			_secure ;
-    pid_t			_mypid ;
-    TcpSocket			*_ts ;
-    UnixSocket			*_us ;
-    PPTServer			*_ps ;
-
 public:
-    				ServerApp() ;
-    virtual			~ServerApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+    static void	uncompress( const string &src, int fd ) ;
+};
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+#endif // BESUncompress3BZ2.h_h_
 

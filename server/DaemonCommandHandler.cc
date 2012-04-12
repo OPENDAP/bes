@@ -56,7 +56,7 @@ using namespace std;
 #include "BESFSDir.h"
 #include "TheBESKeys.h"
 
-#include "XMLWriter.h"
+#include "BESXMLWriter.h"
 #include "BESDaemonConstants.h"
 
 // Defined in daemon.cc
@@ -65,6 +65,13 @@ extern void unblock_signals();
 extern int start_master_beslistener();
 extern bool stop_all_beslisteners(int);
 extern int master_beslistener_status;
+
+void DaemonCommandHandler::load_include_files(vector<string> &files, const string &keys_file_name)
+{
+    vector<string>::iterator i = files.begin();
+    while (i != files.end())
+        load_include_file(*i++, keys_file_name);
+}
 
 /** Find the child config files
  *
@@ -75,13 +82,6 @@ extern int master_beslistener_status;
  * @param files string representing a file or a regular expression
  * patter for 1 or more files
  */
-void DaemonCommandHandler::load_include_files(vector<string> &files, const string &keys_file_name)
-{
-    vector<string>::iterator i = files.begin();
-    while (i != files.end())
-        load_include_file(*i++, keys_file_name);
-}
-
 void DaemonCommandHandler::load_include_file(const string &files, const string &keys_file_name)
 {
     string newdir;
@@ -171,8 +171,8 @@ DaemonCommandHandler::DaemonCommandHandler(const string &config) :
 
 /**
  * Lookup the command and return a constant.
- * @param command
- * @return
+ * @param command The XML element that names a command
+ * @return A constant that can be used in a switch stmt.
  */
 DaemonCommandHandler::hai_command DaemonCommandHandler::lookup_command(const string &command)
 {
@@ -196,6 +196,11 @@ DaemonCommandHandler::hai_command DaemonCommandHandler::lookup_command(const str
         return HAI_UNKNOWN;
 }
 
+/** Read a file and store the result in a chunk of memory.
+ * @param name The name of the file
+ * @return a pointer to the memory that contains the file's bytes
+ * @note The caller must free the memory
+ */
 static char *read_file(const string &name)
 {
     char *memblock;
@@ -220,6 +225,15 @@ static char *read_file(const string &name)
     }
 }
 
+/** Write the contents of a string to a file. This function was designed to write updated
+ * versions of the bes configuration files. It saves a backup of the version of the file
+ * present when the server started - an attempt to preserve a human-generated file and
+ * not over write it with the stuff sent from the HAI (which is human-written too, but...).
+ * This function also tries to make the file write an atomic operation so that the configuration
+ * is not lost if there's an error midway through writing.
+ * @param name The file name
+ * @param buffer The data, in a string
+ */
 static void write_file(const string &name, const string &buffer)
 {
     // First write the new text to a temporary file
@@ -439,7 +453,7 @@ static char *get_bes_log_lines(const string &log_file_name, long num_lines)
 // Count forward 'lines', leave the file pointer at the place just past that
 // and return the number of lines actually read (which might be less if eof
 // is found before 'lines' lines are read.
-static unsigned long count_lines(ifstream &infile, unsigned long lines)
+static unsigned long move_forward_lines(ifstream &infile, unsigned long lines)
 {
     unsigned long count = 0;
 	while (count < lines && !infile.eof() && !infile.fail()) {
@@ -488,10 +502,14 @@ static char *read_file_data(ifstream &infile)
     return memblock;
 }
 
+// These are used to save time counting lines in large files
+static ifstream::pos_type last_start_pos = 0;
+static unsigned long last_start_line = 0;
+
 // This is an older version of get_bes_log_lines(). It's not as inefficient as
 // the first version, but it's not great either. This version remembers how big
 // the log was and so skips one of two reads of the entire log. It will still
-// read the entire log just to print the last 200 lines (the log might be 1 GB).
+// read the entire log just to print the last 200 lines (the log might be 1 MB).
 
 // if num_lines is == 0, get all the lines; if num_lines < 0, also get all the
 // lines, but this is really an error, should be trapped by caller.
@@ -500,10 +518,11 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
     ifstream infile(log_file_name.c_str(), ios::in | ios::binary);
     if (!infile.is_open())
         throw BESInternalError("Could not open file for reading (" + log_file_name + ")", __FILE__, __LINE__);
-
+#if 0
     // This is used to save time counting lines in large files
     static ifstream::pos_type last_start_pos = 0;
     static unsigned long last_start_line = 0;
+#endif
     BESDEBUG("besdaemon", "besdaemon: last_start_line " << last_start_line << endl);
     if (num_lines == 0) {
     	// return the whole file
@@ -520,7 +539,7 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
     	// Now go back to the last_start_pos
     	infile.seekg(last_start_pos, ios::beg);
     	// and count forward to the line that starts this last num_lines
-    	count = count_lines(infile, new_start_line - last_start_line);
+    	count = move_forward_lines(infile, new_start_line - last_start_line);
     	BESDEBUG("besdaemon", "besdaemon: count forward " << count << " lines." << endl);
     	// Save this point for the next time
     	last_start_line = new_start_line;
@@ -537,7 +556,7 @@ static char *get_bes_log_lines(const string &log_file_name, unsigned long num_li
  * value-result param 'response'. The return code indicates
  * @param command The XML command
  */
-void DaemonCommandHandler::execute_command(const string &command, XMLWriter &writer)
+void DaemonCommandHandler::execute_command(const string &command, BESXMLWriter &writer)
 {
     LIBXML_TEST_VERSION;
 
@@ -549,9 +568,13 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
         // set the default error function to my own
         vector<string> parseerrors;
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
-
-        // FIXME This cast is legal?
+#if 0
+	// We would like this, but older versions of libxml don't use 'const'.
+	// Older == 2.6.16. jhrg 12.13.11
+        doc = xmlParseDoc((const xmlChar*) command.c_str());
+#else
         doc = xmlParseDoc((xmlChar*) command.c_str());
+#endif
         if (doc == NULL) {
             string err = "";
             bool isfirst = true;
@@ -627,6 +650,10 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                         // start_master_beslistener assigns the mbes pid to a
                         // static global defined in daemon.cc that stop_all_bes...
                         // uses.
+                        if (master_beslistener_status == BESLISTENER_RUNNING) {
+                            throw BESSyntaxUserError("Received Start command but the master beslistener is already running", __FILE__, __LINE__);
+                        }
+
                         if (start_master_beslistener() == 0) {
                             BESDEBUG("besdaemon", "besdaemon: Error starting; master_beslistener_status = " << master_beslistener_status << endl);
                             if (master_beslistener_status == BESLISTENER_RUNNING) {
@@ -637,6 +664,12 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                             }
                         }
                         else {
+                            // Whenever the master listener starts, it makes a new log file. Reset the counters used to
+                            // record the 'last line read' position - these variables are part of an optimization
+                            // to limit re-reading old sections of the log file.
+                            last_start_pos = 0;
+                            last_start_line = 0;
+
                             if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:OK") < 0)
                                 throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
                             if (xmlTextWriterEndElement(writer.get_writer()) < 0)
@@ -672,6 +705,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                                 throw BESInternalFatalError("Could not write fileName attribute ", __FILE__, __LINE__);
 
                             char *content = read_file(d_pathnames[(*i).first]);
+                            try {
                             BESDEBUG("besdaemon_verbose", "besdaemon: content: " << content << endl);
                             if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
                             throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
@@ -680,7 +714,12 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                             throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                             delete [] content; content = 0;
-
+                            }
+                            catch (...) {
+                            	delete [] content; content = 0;
+                            	throw;
+                            }
+                            
                             if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                                 throw BESInternalFatalError("Could not end <hai:BesConfig> element ", __FILE__, __LINE__);
                             ++i;
@@ -744,6 +783,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                         BESDEBUG("besdaemon", "besdaemon: TailLog: log file:" << d_log_file_name << ", lines: " << num_lines << endl);
 
                         char *content = get_bes_log_lines(d_log_file_name, num_lines);
+                        try {
                         BESDEBUG("besdaemon_verbose", "besdaemon: Returned lines: " << content << endl);
                         if (xmlTextWriterWriteString(writer.get_writer(), (const xmlChar*)"\n") < 0)
                             throw BESInternalFatalError("Could not write newline", __FILE__, __LINE__);
@@ -752,6 +792,11 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
                             throw BESInternalFatalError("Could not write line", __FILE__, __LINE__);
 
                         delete [] content; content = 0;
+                           }
+                            catch (...) {
+                            	delete [] content; content = 0;
+                            	throw;
+                            }
 
                         if (xmlTextWriterEndElement(writer.get_writer()) < 0)
                             throw BESInternalFatalError("Could not end <hai:BesLog> element ", __FILE__, __LINE__);
@@ -845,7 +890,7 @@ void DaemonCommandHandler::execute_command(const string &command, XMLWriter &wri
     xmlFreeDoc(doc);
 }
 
-static void send_bes_error(XMLWriter &writer, BESError &e)
+static void send_bes_error(BESXMLWriter &writer, BESError &e)
 {
     if (xmlTextWriterStartElement(writer.get_writer(), (const xmlChar*) "hai:BESError") < 0)
         throw BESInternalFatalError("Could not write <hai:OK> element ", __FILE__, __LINE__);
@@ -893,7 +938,7 @@ void DaemonCommandHandler::handle(Connection *c)
     holder = cout.rdbuf();
     cout.rdbuf(&fds);
 
-    XMLWriter writer;
+    BESXMLWriter writer;
 
     try {
         BESDEBUG("besdaemon", "besdaemon: cmd: " << ss.str() << endl);

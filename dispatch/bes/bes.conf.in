@@ -104,7 +104,8 @@ BES.FollowSymLinks=No
 # to provide direct access to the BES for the world. In general, if     #
 # that is the case, you should configure the BES to use SSL.            #
 #-----------------------------------------------------------------------#
-BES.ServerPort=10002
+BES.ServerPort=10022
+
 # BES.ServerUnixSocket=/tmp/bes.socket
 
 #-----------------------------------------------------------------------#
@@ -182,21 +183,19 @@ BES.Info.Type=xml
 # BES.Uncompress.NumTries: How many times should the BES try to acquire the
 # lock before it signals an error?
 
-# The BES cache directory is locked to prevent the different beslistener
-# processes from simultaneously removing files and leaving the cache in an
-# inconsistent state. Use the Retry and NumTries parameters to tune this
-# behavior. Generally, NumTries should be set to about 10. The units of Retry
-# are microseconds. To tune the NumTries and Retry, use the formula Retry =
-# (0.2s/Average_file_sizeMB)/NumTries. So if your average file size is 10MB
-# and you've settled on a NumTries of 10, (0.2s/10MB)/10 = 0.002s or 2000
-# microseconds. If you have really large files (e.g., decompressed they are
-# 500MB), try setting NumTries to 100.
+# The BES cache directory is used to store decompressed data files. This
+# directory will be shared by all of the BES processes running on a given
+# host. The directory should not be an NFS mount unless the NFS option
+# enabling fcntl(2) locking has been set. The caching software will purge
+# older files from the cache when 100% of the cache size is reached; removing
+# 20% of the files (in terms of size) using a least-recently-used test.
+# the cache size is given in megabytes. Note cached files are named using
+# the CachePrefix, so it's easy to see what's in the cache at any given
+# time, even when it's a directory like /tmp that's used by many programs. 
 
 BES.CacheDir=/tmp
 BES.CachePrefix=bes_cache
 BES.CacheSize=500
-BES.Uncompress.Retry=2000
-BES.Uncompress.NumTries=10
 
 #-----------------------------------------------------------------------#
 # If the symbolic name cannot be found in persistence, nice means simply#

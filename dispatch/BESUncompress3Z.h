@@ -1,10 +1,10 @@
-// ServerApp.h
+// BESUncompress3Z.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
 // Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Author: Denis Nadeau <dnadeau@pop600.gsfc.nasa.gov>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -27,38 +27,37 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      dnadeau     Denis Nadeau <dnadeau@pop600.gsfc.nasa.gov>
+
+#ifndef BESUncompress3Z_h_
+#define BESUncompress3Z_h_ 1
 
 #include <string>
 
 using std::string ;
 
-#include "BESModuleApp.h"
+#include "BESObj.h"
 
-class TcpSocket ;
-class UnixSocket ;
-class PPTServer ;
-
-class ServerApp : public BESModuleApp
+/** @brief Function to uncompress files with .Z extension
+ *
+ * The static function is responsible for uncompressing Z files. If the
+ * uncompressed target file already exists then this function will overwrite
+ * that file. If it doesn't already exist then it is created.
+ *
+ * If any errors occur during this operation then a
+ * BESContainerStorageException will be thrown
+ *
+ * @param src the source file that is to be uncompressed
+ * @param target the target uncompressed file
+ * @return the target uncompressed file
+ * @throws BESContainerStorageException if errors in uncompressing the file
+ */
+class BESUncompress3Z : public BESObj
 {
-private:
-    int				_portVal ;
-    bool			_gotPort ;
-    string			_unixSocket ;
-    bool			_secure ;
-    pid_t			_mypid ;
-    TcpSocket			*_ts ;
-    UnixSocket			*_us ;
-    PPTServer			*_ps ;
-
 public:
-    				ServerApp() ;
-    virtual			~ServerApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+    static void			uncompress( const string &src,
+					    int fd ) ;
+};
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+#endif // BESUncompress3Z_h_
 

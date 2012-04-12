@@ -29,14 +29,14 @@ beslistener_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la \
 	../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 besdaemon_SOURCES = daemon.cc BESServerUtils.cc BESServerUtils.h \
-	DaemonCommandHandler.cc DaemonCommandHandler.h XMLWriter.cc XMLWriter.h \
+	DaemonCommandHandler.cc DaemonCommandHandler.h BESXMLWriter.cc BESXMLWriter.h \
 	BESDaemonConstants.h
 besdaemon_CPPFLAGS = $(XML2_CFLAGS) $(AM_CPPFLAGS)
 besdaemon_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la \
 	../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 install-data-local:
-	test -z "$(localstatedir)/run" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run"
+	test -z "$(localstatedir)/run/bes" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run/bes"
 
 C4_DIR=./cccc
 .PHONY: cccc

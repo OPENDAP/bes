@@ -1,3 +1,119 @@
+2012-02-07  James Gallagher <jgallagher@opendap.org>
+
+	Moved the BES default port to 10022 to avoid conflicts on CentOS 6
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Cleaned up error rporting in TcpSocket.cc. Also fixed the way
+	the getservbyport() was being used so it works.
+
+2012-02-02  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes: Patched part of bug 1881: BES now correctly queries the
+	/etc/services
+
+2012-02-01  Nathan Potter <ndp@coas.oregonstate.edu>
+
+	bes:updated error messages in ppt
+
+2012-01-10  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    INSTALL
+	M    NEWS
+	M    ChangeLog
+	M    README
+	M    bes.spec
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Now returns zero on EOF, not -1.
+
+	M    cmdln/CmdClient.cc
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Now returns zero on EOF, not -1.
+
+	M    cmdln/CmdClient.cc
+
+2012-01-06  James Gallagher <jgallagher@opendap.org>
+
+	code review
+
+2012-01-03  James Gallagher <jgallagher@opendap.org>
+
+	Minor fixes...
+
+	M    dispatch/BESKeys.cc
+	M    dispatch/BESStatus.cc
+
+2011-12-13  James Gallagher <jgallagher@opendap.org>
+
+	Fix for older versions of OSX (with older versions of libxml2).
+
+	M    server/DaemonCommandHandler.cc
+
+2011-11-23  Patrick West <pwest@ucar.edu>
+
+	strerror requires string.h, so including cstring
+	M    dispatch/BESDataResponseHandler.cc
+
+2011-11-13  James Gallagher <jgallagher@opendap.org>
+
+	Undid a 'fix' for the xmlTextWriter code that may have actually
+	broken it. Hard to tell, because the API is a little odd, but I
+	think the code is now correct.
+
+2011-10-24  James Gallagher <jgallagher@opendap.org>
+
+	Removed some cruft from BESXMLWriter.
+
+	Fixed a problem with daemon.cc when building in developer mode -
+	the curr_euid variable was used but not defined.
+
+2011-10-21  James Gallagher <jgallagher@opendap.org>
+
+	In the bes/server code, I replaced the class 'XMLWriter' with
+	BESXMLWriter to avoid confusion with libdap's XMLWriter class.
+
+2011-10-21  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an issue in BESDataRepsonseHandler where the new response
+	size limit feature was broken when the special value of zero was
+	used. Also, TheBESKeys is using an env var which is not really a
+	great thing for server to be doing; I set things up so that we can
+	switch that out in the future.
+
+2011-10-07  James Gallagher <jgallagher@opendap.org>
+
+	Fixed a bunch of tickets and other stuff not in tickets including
+	the "The beslistener status is not 'BESLISTENER_RUNNING' (it is
+	'1') the master pid was not changed." bug.
+
+2011-10-06  James Gallagher <jgallagher@opendap.org>
+
+	Fix for ticket 1778 - When the server is run as root the log file
+	was being created by root and then the server could not write to
+	it.
+
+2011-09-21  James Gallagher <jgallagher@opendap.org>
+
+	Hyrax 1.8
+
+	A    http://scm.opendap.org/svn/branch/bes/3.9.3
+
 2011-08-24  James Gallagher <jgallagher@opendap.org>
 
 	Merge of Hyrax 1.7.1
@@ -25,9 +141,7 @@
 	size_t value.
 	M    ppt/PPTStreamBuf.cc
 
-;; Local Variables:
-;; coding: utf-8
-;; End:
+>>>>>>> .merge-right.r25436
 2011-07-29  Patrick West <pwest@ucar.edu>
 
 	Using sizeof( eod_marker ), which is a char *. On 32 bit machines this
@@ -126,7 +240,7 @@
 	erase doesn't return any value except the one where you pass in a
 	starting iterator and ending iterator, a range of iterators. And
 	that one returns the number of values erased. This for version
-	4.2.1 of the gnu g++ compiler. 
+	4.2.1 of the gnu g++ compiler.
 
 	M dispatch/BESReporterList.cc
 
@@ -143,7 +257,7 @@
 
 	Error in explode when last character is the delimiter. Fixed the
 	explode method, then the code that uses it.
-	
+
 	M    dispatch/BESModuleApp.cc
 	M    dispatch/BESUtil.cc
 	M    dispatch/BESCatalogUtils.cc

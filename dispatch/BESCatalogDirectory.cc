@@ -149,10 +149,10 @@ BESCatalogDirectory::show_catalog( const string &node,
 	    _utils->get_entries( dip, fullnode, use_node,
 			         coi, myentry, dirs_only ) ;
 	}
-	catch( BESError &e )
+	catch( ... /*BESError &e */ )
 	{
 	    closedir( dip ) ;
-	    throw e ;
+	    throw /* e */;
 	}
 	closedir( dip ) ;
 

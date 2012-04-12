@@ -1,5 +1,25 @@
 
-	$Id$
+News for version 3.10.2
+
+Changed the way the RPM packages install so that the 'bes' group has
+write permissions on both /var/log/bes and /var/run/bes. The latter is
+not strickly needed, but might be useful at some point.
+
+Changed the default port for the BES to 10022 dues to conflicts on CentOS.
+
+Also, fixed the way the server checks for conflicts at runtime and made the
+error messages more informative.
+
+There is no version 3.10.1
+
+News for version 3.10.0
+
+Added support for the Hyrax Admin Interface (HAI). The server now
+supports a set of commands that can be used to start and stop the
+server; load/reload/edit the configuration files; look at logging
+output; and toggle debugging output on-the-fly.
+
+Added support for response size limits.
 
 News for version 3.9.2
 

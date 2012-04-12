@@ -17,7 +17,7 @@ then
     exit 1
 fi
 
-piddir=${localstatedir}/run
+piddir=${localstatedir}/run/bes
 pidfile=${piddir}/bes.pid
 
 ###########################################################################
@@ -124,37 +124,27 @@ findRunningBES()
     
     if test -f "$pidfile"
     then
-	BES_PID=`cat "$pidfile" | cut -d' ' -f2`
-	BESDAEMON_PID=`$PS | grep $BES_PID | grep besdaemon | grep -v grep | awk '{print $2}'`
-	if test -n "$BESDAEMON_PID"
-	then
-	    BES_RUNNING=1
-	else
-	    echo "BES PID file exists but process not running, cleaning up"
-	    /bin/rm -f  "$pidfile"
-
-	    BESDAEMON_PID=`$PS | grep besdaemon | grep -v grep | awk '{print $2}'`
+	    BES_PID=`cat "$pidfile" | cut -d' ' -f2`
+	    BESDAEMON_PID=`$PS | grep $BES_PID | grep besdaemon | grep -v grep | awk '{print $2}'`
 	    if test -n "$BESDAEMON_PID"
 	    then
-		echo "BES seems to be running from a different location: $BESDAEMON_PID"
-	    fi
-	fi
-    else
-        # This is probably not used anymore given other changes... jhrg 
-	BESDAEMON_PIDS=""
-	for i in `$PS | grep bes | grep -v grep | grep -v besctl | awk '{print $2}'`
-	do
-	    if test -z "$BESDAEMON_PIDS"
-	    then
-		BESDAEMON_PIDS=$i
+	        BES_RUNNING=1
 	    else
-		BESDAEMON_PIDS="$BESDAEMON_PIDS $i"
+	        echo "BES PID file exists but process not running, cleaning up"
+	        /bin/rm -f  "$pidfile"
+
+	        BESDAEMON_PID=`$PS | grep besdaemon | grep -v grep | awk '{print $2}'`
+	        if test -n "$BESDAEMON_PID"
+	        then
+		       echo "BES seems to be running from a different location: $BESDAEMON_PID"
+	        fi
 	    fi
-	done
-	if test -n "$BESDAEMON_PIDS"
-	then
-	    echo "BES seems to be running from a different location: pids $BESDAEMON_PIDS"
-	fi
+    else
+        getAllBESPIDS
+	    if test -n "$BES_PIDS"
+	    then
+	       echo "There are several different BES processes running: $BES_PIDS"
+	    fi
     fi
 }
 
@@ -165,7 +155,7 @@ findRunningBES()
 getAllBESPIDS()
 {
     BES_PIDS=""
-    for i in `$PS | grep bes | grep -v grep | grep -v besctl | awk '{print $2}'`
+    for i in `$PS | grep 'besdaemon\|beslistener' | grep -v grep | grep -v besctl | awk '{print $2}'`
     do
         if test -z "$BES_PIDS"
         then
@@ -276,7 +266,7 @@ do
     case $param in
 	-i)
 	    prefix=$2
-	    piddir=${prefix}/var/run
+	    piddir=${prefix}/var/run/bes
 	    pidfile=${piddir}/bes.pid
 	    bindir=${prefix}/bin
 	    dashi="yes"

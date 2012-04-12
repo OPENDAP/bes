@@ -1,4 +1,4 @@
-// ServerApp.h
+// BESUncompress3GZ.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,35 +30,32 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#ifndef BESUncompress3GZ_h_
+#define BESUncompress3GZ_h_ 1
+
 #include <string>
 
-using std::string ;
+using std::string;
 
-#include "BESModuleApp.h"
+#include "BESObj.h"
 
-class TcpSocket ;
-class UnixSocket ;
-class PPTServer ;
-
-class ServerApp : public BESModuleApp
-{
-private:
-    int				_portVal ;
-    bool			_gotPort ;
-    string			_unixSocket ;
-    bool			_secure ;
-    pid_t			_mypid ;
-    TcpSocket			*_ts ;
-    UnixSocket			*_us ;
-    PPTServer			*_ps ;
-
+/** @brief Function to uncompress files with .gz extension
+ *
+ * The static function is responsible for uncompressing gz files. If the
+ * uncompressed target file already exists then this function will overwrite
+ * that file. The destination file must be already open for write or
+ * read/write. This code will not close that file.
+ *
+ * If any errors occur during this operation then a
+ * BESContainerStorageException will be thrown
+ *
+ * @param src the source file that is to be uncompressed
+ * @param target the file descriptor of the target uncompressed file
+ * @throws BESContainerStorageException if errors in uncompressing the file
+ */
+class BESUncompress3GZ: public BESObj {
 public:
-    				ServerApp() ;
-    virtual			~ServerApp() ;
-    virtual int			initialize( int argC, char **argV ) ;
-    virtual int			run() ;
-    virtual int			terminate( int sig = 0 ) ;
+    static void uncompress(const string &src, int dest_fd);
+};
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
-
+#endif // BESUncompress3GZ_h_

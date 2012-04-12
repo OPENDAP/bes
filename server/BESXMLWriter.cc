@@ -1,11 +1,11 @@
 /*
- * XMLWriter.cpp
+ * BESXMLWriter.cpp
  *
  *  Created on: Jul 28, 2010
  *      Author: jimg
  */
 
-#include "XMLWriter.h"
+#include "BESXMLWriter.h"
 
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
@@ -17,7 +17,7 @@ const char *ENCODING = "ISO-8859-1";
 const char *HAI_NS = "http://xml.opendap.org/ns/bes/admin/1.0#";
 const int XML_BUF_SIZE = 2000000;
 
-XMLWriter::XMLWriter() // : d_ns_uri(HAI_NS)
+BESXMLWriter::BESXMLWriter() // : d_ns_uri(HAI_NS)
 {
     LIBXML_TEST_VERSION;
 
@@ -41,6 +41,7 @@ XMLWriter::XMLWriter() // : d_ns_uri(HAI_NS)
             throw BESInternalFatalError("Error setting indentation for response document ", __FILE__, __LINE__);
 
         d_started = true;
+        d_ended = false;
 
         /* Start the document with the xml default for the version,
          * encoding ISO 8859-1 and the default for the standalone
@@ -59,18 +60,18 @@ XMLWriter::XMLWriter() // : d_ns_uri(HAI_NS)
     }
 }
 
-XMLWriter::~XMLWriter()
+BESXMLWriter::~BESXMLWriter()
 {
     m_cleanup();
 }
 
-void XMLWriter::m_cleanup()
+void BESXMLWriter::m_cleanup()
 {
     // make sure the buffer and writer are all cleaned up
     if (d_writer) {
         xmlFreeTextWriter(d_writer);
         d_writer = 0;
-        d_doc_buf = 0;
+        //d_doc_buf = 0;
     }
     if (d_doc_buf) {
         xmlBufferFree(d_doc_buf);
@@ -81,9 +82,9 @@ void XMLWriter::m_cleanup()
     d_ended = false;
 }
 
-const char *XMLWriter::get_doc()
+const char *BESXMLWriter::get_doc()
 {
-    if (d_writer) {
+    if (d_writer && d_started) {
         // this should end the response element
         if (xmlTextWriterEndElement(d_writer) < 0)
             throw BESInternalFatalError("Error ending Dataset element.", __FILE__, __LINE__);
@@ -91,7 +92,10 @@ const char *XMLWriter::get_doc()
         if (xmlTextWriterEndDocument(d_writer) < 0)
             throw BESInternalFatalError("Error ending the document", __FILE__, __LINE__);
 
-        // must call this before getting the buffer content
+        d_ended = true;
+
+        // must call this before getting the buffer content. Odd, but appears to be true.
+        // jhrg
         xmlFreeTextWriter(d_writer);
         d_writer = 0;
     }
@@ -100,5 +104,5 @@ const char *XMLWriter::get_doc()
     if (!d_doc_buf->content)
         throw BESInternalFatalError("Error retrieving response document as string", __FILE__, __LINE__);
 
-    return (char *) d_doc_buf->content;
+    return (const char *) d_doc_buf->content;
 }

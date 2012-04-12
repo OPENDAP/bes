@@ -1,6 +1,7 @@
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}
 %define beslogdir %{_localstatedir}/log/%{name}
+%define bespiddir %{_localstatedir}/run/%{name}
 %define besuser %{name}
 %define besgroup %{name}
 %define beslibdir %{_libdir}/bes
@@ -8,7 +9,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.9.2
+Version:        3.10.2
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -19,7 +20,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.11.1
+Requires:       libdap >= 3.11.2
 Requires:       readline bzip2 zlib
 Requires:       libxml2 >= 2.6.16
 # needed by ppt
@@ -27,7 +28,7 @@ Requires:       openssl
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.11.1
+BuildRequires:  libdap-devel >= 3.11.2
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.6.16
@@ -37,7 +38,7 @@ BuildRequires:  pkgconfig
 # BuildRequires:  doxygen graphviz
 
 %description
-BES is a new, high-performance back-end server software framework for 
+BES is a high-performance back-end server software framework for 
 OPeNDAP that allows data providers more flexibility in providing end 
 users views of their data. The current OPeNDAP data objects (DAS, DDS, 
 and DataDDS) are still supported, but now data providers can add new data 
@@ -105,6 +106,9 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
 mkdir -p $RPM_BUILD_ROOT%{beslogdir}
+chmod g+w $RPM_BUILD_ROOT%{beslogdir}
+mkdir -p $RPM_BUILD_ROOT%{bespiddir}
+chmod g+w $RPM_BUILD_ROOT%{bespiddir}
 mv $RPM_BUILD_ROOT%{_bindir}/bes-config-pkgconfig $RPM_BUILD_ROOT%{_bindir}/bes-config
 
 %clean
@@ -147,6 +151,7 @@ exit 0
 %{bescachedir}
 %{bespkidir}/
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
+%attr (-,%{besuser},%{besgroup}) %{bespiddir}
 
 %files devel
 %defattr(-,root,root,-)
