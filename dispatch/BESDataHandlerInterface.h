@@ -100,6 +100,7 @@ public:
 	}
 	output_stream = strm ;
     }
+
     ostream &get_output_stream()
     {
 	if( !output_stream )

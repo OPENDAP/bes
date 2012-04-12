@@ -1,3 +1,33 @@
+2011-08-24  James Gallagher <jgallagher@opendap.org>
+
+	Merge of Hyrax 1.7.1
+
+	_M   .
+	M    dapreader/bes-testsuite/package.m4
+	M    configure.ac
+	M    server/DaemonCommandHandler.cc
+	M    server/daemon.cc
+	M    NEWS
+	M    ChangeLog
+	_M   templates/module.spec.template
+	M    dispatch/BESSetContextResponseHandler.cc
+	_M   dispatch/BESTokenizer.h
+	_M   dispatch/BESTokenizer.cc
+	M    bes.spec
+	_M   OSX_Resources/InstallationCheck.proto
+	_M   OSX_Resources/Info.plist.proto
+	_M   hello_world
+	_M   hello_world/bes-testsuite
+
+2011-07-28  Patrick West <pwest@ucar.edu>
+
+	Fix for using sizeof( char *eod_marker ), and replacing with const
+	size_t value.
+	M    ppt/PPTStreamBuf.cc
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
 2011-07-29  Patrick West <pwest@ucar.edu>
 
 	Using sizeof( eod_marker ), which is a char *. On 32 bit machines this
