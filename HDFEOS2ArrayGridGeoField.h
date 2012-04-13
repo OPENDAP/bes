@@ -45,14 +45,125 @@ class HDFEOS2ArrayGridGeoField:public Array
 	}
 
 	// Calculate Lat and Lon based on HDF-EOS2 library.
-	void CalculateLatLon (int32 gfid, int fieldtype, int specialformat,
-						  float64 * outlatlon, int32 * offset, int32 * count,
-						  int32 * step, int nelms);
+	void CalculateLatLon (int32 gfid, int fieldtype, int specialformat, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
-	// Calculate Special Latitude and Longitude
-	void CalculateSpeLatLon (int32 gfid, int fieldtype, float64 * outlatlon,
-							 int32 * offset, int32 * count, int32 * step,
-							 int nelms);
+	// Calculate Special Latitude and Longitude.
+	void CalculateSpeLatLon (int32 gfid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
+
+	// test for undefined values returned by longitude-latitude calculation
+	bool isundef_lat(double value)
+	{
+  		if(isinf(value)) return(true);
+  		if(isnan(value)) return(true);
+  		// GCTP_LAMAZ returns "1e+51" for values at the opposite poles
+  		if(value < -90.0 || value > 90.0) return(true);
+  		return(false);
+	} // end bool isundef_lat(double value)
+
+	bool isundef_lon(double value)
+	{
+  		if(isinf(value)) return(true);
+  		if(isnan(value)) return(true);
+  		// GCTP_LAMAZ returns "1e+51" for values at the opposite poles
+  		if(value < -180.0 || value > 180.0) return(true);
+  		return(false);
+	} // end bool isundef_lat(double value)
+
+	// Given rol, col address in double array of dimension YDim x XDim
+	// return value of nearest neighbor to (row,col) which is not undefined
+	double nearestNeighborLatVal(double *array, int row, int col, int YDim, int XDim)
+	{
+  		// test valid row, col address range
+  		if(row < 0 || row > YDim || col < 0 || col > XDim)
+  		{
+    			cerr << "nearestNeighborLatVal("<<row<<", "<<col<<", "<<YDim<<", "<<XDim;
+    			cerr <<"): index out of range"<<endl;
+    			return(0.0);
+  		}
+  		// address (0,0)
+  		if(row < YDim/2 && col < XDim/2)
+  		{ /* search by incrementing both row and col */
+    			if(!isundef_lat(array[(row+1)*XDim+col])) return(array[(row+1)*XDim+col]);
+    			if(!isundef_lat(array[row*XDim+col+1])) return(array[row*XDim+col+1]);
+    			if(!isundef_lat(array[(row+1)*XDim+col+1])) return(array[(row+1)*XDim+col+1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLatVal(array, row+1, col+1, YDim, XDim));
+  		}
+		if(row < YDim/2 && col > XDim/2)
+  		{ /* search by incrementing row and decrementing col */
+    			if(!isundef_lat(array[(row+1)*XDim+col])) return(array[(row+1)*XDim+col]);
+    			if(!isundef_lat(array[row*XDim+col-1])) return(array[row*XDim+col-1]);
+    			if(!isundef_lat(array[(row+1)*XDim+col-1])) return(array[(row+1)*XDim+col-1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLatVal(array, row+1, col-1, YDim, XDim));
+  		}
+  		if(row > YDim/2 && col < XDim/2)
+  		{ /* search by incrementing col and decrementing row */
+    			if(!isundef_lat(array[(row-1)*XDim+col])) return(array[(row-1)*XDim+col]);
+    			if(!isundef_lat(array[row*XDim+col+1])) return(array[row*XDim+col+1]);
+    			if(!isundef_lat(array[(row-1)*XDim+col+1])) return(array[(row-1)*XDim+col+1]);
+     			/* recurse on the diagonal */
+    			return(nearestNeighborLatVal(array, row-1, col+1, YDim, XDim));
+  		}
+  		if(row > YDim/2 && col > XDim/2)
+  		{ /* search by decrementing both row and col */
+    			if(!isundef_lat(array[(row-1)*XDim+col])) return(array[(row-1)*XDim+col]);
+    			if(!isundef_lat(array[row*XDim+col-1])) return(array[row*XDim+col-1]);
+    			if(!isundef_lat(array[(row-1)*XDim+col-1])) return(array[(row-1)*XDim+col-1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLatVal(array, row-1, col-1, YDim, XDim));
+  		}
+	} // end
+
+	double nearestNeighborLonVal(double *array, int row, int col, int YDim, int XDim)
+	{
+  		// test valid row, col address range
+  		if(row < 0 || row > YDim || col < 0 || col > XDim)
+  		{
+    			cerr << "nearestNeighborLonVal("<<row<<", "<<col<<", "<<YDim<<", "<<XDim;
+    			cerr <<"): index out of range"<<endl;
+    			return(0.0);
+  		}
+  		// address (0,0)
+  		if(row < YDim/2 && col < XDim/2)
+  		{ /* search by incrementing both row and col */
+    			if(!isundef_lon(array[(row+1)*XDim+col])) return(array[(row+1)*XDim+col]);
+    			if(!isundef_lon(array[row*XDim+col+1])) return(array[row*XDim+col+1]);
+    			if(!isundef_lon(array[(row+1)*XDim+col+1])) return(array[(row+1)*XDim+col+1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLonVal(array, row+1, col+1, YDim, XDim));
+  		}
+  		if(row < YDim/2 && col > XDim/2)
+  		{ /* search by incrementing row and decrementing col */
+    			if(!isundef_lon(array[(row+1)*XDim+col])) return(array[(row+1)*XDim+col]);
+    			if(!isundef_lon(array[row*XDim+col-1])) return(array[row*XDim+col-1]);
+    			if(!isundef_lon(array[(row+1)*XDim+col-1])) return(array[(row+1)*XDim+col-1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLonVal(array, row+1, col-1, YDim, XDim));
+  		}
+ 		if(row > YDim/2 && col < XDim/2)
+  		{ /* search by incrementing col and decrementing row */
+    			if(!isundef_lon(array[(row-1)*XDim+col])) return(array[(row-1)*XDim+col]);
+    			if(!isundef_lon(array[row*XDim+col+1])) return(array[row*XDim+col+1]);
+    			if(!isundef_lon(array[(row-1)*XDim+col+1])) return(array[(row-1)*XDim+col+1]);
+     			/* recurse on the diagonal */
+    			return(nearestNeighborLonVal(array, row-1, col+1, YDim, XDim));
+  		}
+  		if(row > YDim/2 && col > XDim/2)
+  		{ /* search by decrementing both row and col */
+    			if(!isundef_lon(array[(row-1)*XDim+col])) return(array[(row-1)*XDim+col]);
+    			if(!isundef_lon(array[row*XDim+col-1])) return(array[row*XDim+col-1]);
+    			if(!isundef_lon(array[(row-1)*XDim+col-1])) return(array[(row-1)*XDim+col-1]);
+    			/* recurse on the diagonal */
+    			return(nearestNeighborLonVal(array, row-1, col-1, YDim, XDim));
+  		}
+	} // end
+
+	// Calculate Latitude and Longitude for SOM Projection.
+	void CalculateSOMLatLon(int32, int*, int*, int*, int);
+
+	// Calculate Latitude and Longitude for LAMAZ Projection.
+	void CalculateLAMAZLatLon(int32, int, float64*, int*, int*, int*, int);
 
 	// Subsetting the latitude and longitude.
 	void LatLon2DSubset (float64 * outlatlon, int ydim, int xdim,

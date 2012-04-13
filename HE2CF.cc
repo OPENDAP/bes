@@ -144,7 +144,9 @@ HE2CF::print_attr(int32 type, int loc, void *vals)
     union {
         char *cp;
         short *sp;
+        unsigned short *usp;
         int32 /*nclong*/ *lp;
+        unsigned int *ui;
         float *fp;
         double *dp;
     } gp;
@@ -168,18 +170,30 @@ HE2CF::print_attr(int32 type, int loc, void *vals)
         }
 
     case DFNT_INT16:
-    case DFNT_UINT16:        
         {
             gp.sp = (short *) vals;
             rep << *(gp.sp+loc);
             return rep.str();
         }
 
+    case DFNT_UINT16:        
+        {
+            gp.usp = (unsigned short *) vals;
+            rep << *(gp.usp+loc);
+            return rep.str();
+        }
+
     case DFNT_INT32:
-    case DFNT_UINT32:        
         {
             gp.lp = (int32 *) vals; 
             rep << *(gp.lp+loc);
+            return rep.str();
+        }
+
+    case DFNT_UINT32:        
+        {
+            gp.ui = (unsigned int *) vals; 
+            rep << *(gp.ui+loc);
             return rep.str();
         }
 

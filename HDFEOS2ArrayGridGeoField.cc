@@ -13,7 +13,18 @@
 #include "InternalErr.h"
 #include <BESDebug.h>
 #include "HDFEOS2Util.h"
+
+#include "misrproj.h"
+#include "errormacros.h"
+#include <proj.h>
+
 #define SIGNED_BYTE_TO_INT32 1
+
+extern "C" {
+// /mnt/hdf/n-gupta/eos2dump/hdfeos/gctp/src/
+    int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
+    int sominv(double y, double x, double *lon, double *lat);
+}
 
 bool
 HDFEOS2ArrayGridGeoField::read ()
@@ -120,8 +131,32 @@ HDFEOS2ArrayGridGeoField::read ()
 	if (speciallon && fieldtype == 2) {
 	    CorSpeLon (latlon, nelms);
 	}
-	set_value ((dods_float64 *) latlon, nelms);
+
+	int32 projcode, zone, sphere;
+        float64 params[NPROJ];
+        intn r;
+
+        r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
+        if (r!=0) ERROR("GDprojinfo");
+
+	switch(projcode)
+	{
+		case GCTP_SOM: // The routine will set value itself.
+			CalculateSOMLatLon(gridid, offset, count, step, nelms);
+			break;
+		case GCTP_LAMAZ:
+			CalculateLAMAZLatLon(gridid, fieldtype, latlon, offset, count, step, nelms);
+		default:
+			set_value ((dods_float64 *) latlon, nelms);
+	}
+
+        /*if(projcode==GCTP_SOM) // The routine will set value itself.
+		CalculateSOMLatLon(gridid, offset, count, step, nelms);
+	else // For the projections other than SOM.
+		set_value ((dods_float64 *) latlon, nelms);*/
+
 	delete[]latlon;
+
 	return false;
     }
 
@@ -1245,4 +1280,158 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
 	for (int i = 0; i < (int) (count32[1]); i++)
 	    outlatlon[i] = -180.0 + lonstep * (offset32[1] + i * step32[1]);
     }
+}
+
+void
+HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *count, int *step, int nelms)
+{
+	int32 projcode, zone, sphere;
+    	float64 params[NPROJ];
+	intn r;
+
+    	r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
+    	if (r!=0) ERROR("GDprojinfo");
+
+	//if(projcode==GCTP_SOM)
+	//{
+		int MAXNDIM = 10;
+		int32 dim[MAXNDIM];
+		char dimlist[STRLEN];
+		r = GDinqdims(gridid, dimlist, dim);
+		bool is_block_180 = false;
+		for(int i=0; i<MAXNDIM; i++)
+		{
+			if(dim[i]==NBLOCK)
+			{
+				is_block_180 = true;
+				break;
+			}
+		}
+		if(!is_block_180) ERROR("GDinqdims");
+
+		int32 xdim;
+        	int32 ydim;
+        	float64 ulc[2];
+        	float64 lrc[2];
+
+        	r = GDgridinfo (gridid, &xdim, &ydim, ulc, lrc);
+        	if (r!=0) ERROR("GDgridinfo");
+
+		float32 offset[NOFFSET]; 
+		r = GDblkSOMoffset(gridid, offset, NOFFSET, "r");
+		if(r!=0) ERROR("GDblkSOMoffset");
+
+		int status = misr_init(NBLOCK, xdim, ydim, offset, ulc, lrc);
+		if(status!=0) ERROR("misr_init");
+
+		long iflg;
+		int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
+		inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
+		if(iflg) ERROR("int_init");
+
+		float *latlon;
+		//double *lat, *lon;
+		double somx, somy, lat_r, lon_r;
+		int i, j, k, b, npts=0;
+                float l, s;
+
+		int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
+		if(blockdim==0) //66.2263, 66.224, ....
+		{
+			latlon = new float[nelms]; //180*xdim*ydim]; //new double[180*xdim*ydim];
+			int s1=start[0]+1, e1=s1+count[0]*step[0];
+			int s2=start[1],   e2=s2+count[1]*step[1];
+			int s3=start[2],   e3=s3+count[2]*step[2];
+			for(i=s1; i<e1; i+=step[0]) //i = 1; i<180+1; i++)
+            			for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
+                			for(k=s3; k<e3; k+=step[2])//k=0; k<ydim; k++)
+                			{
+                    				b = i;
+                    				l = j;
+                    				s = k;
+                    				misrinv(b, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
+                    				sominv(somx, somy, &lon_r, &lat_r); /* (X,Y) -> (lat,lon) */
+                    				if(fieldtype==1)
+							latlon[npts] = lat_r*R2D;
+                    				else
+							latlon[npts] = lon_r*R2D;
+                    				npts++;
+                			}
+			set_value ((dods_float32 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
+		} else {
+			latlon = new float[xdim*ydim]; //new double[xdim*ydim];
+			for(j=0; j<xdim; j++)
+        			for(k=0; k<ydim; k++)
+        			{
+            				l = j;
+            				s = k;
+	/* -------------------------------------------------------- */
+	/* Inverse transformation (b,l.l,s.s) -> (X,Y) -> (lat,lon) */
+        /* -------------------------------------------------------- */
+            				misrinv(blockdim, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
+            				sominv(somx, somy, &lon_r, &lat_r);
+					if(fieldtype==1)
+            					latlon[npts] = lat_r*R2D;
+					else
+            					latlon[npts] = lon_r*R2D;
+            				npts++;
+				}
+		}
+    		delete [] latlon;
+	//}
+}
+
+void
+HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
+{
+        int32 xdim;
+        int32 ydim;
+        intn r;
+        float64 upleft[2];
+        float64 lowright[2];
+        r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
+
+	float64 *tmp1 = new float64[xdim*ydim];
+	int32 tmp2[] = {0, 0};
+	int32 tmp3[] = {xdim, ydim};
+	int32 tmp4[] = {1, 1};
+	
+	CalculateLatLon (gridid, fieldtype, specialformat, tmp1, tmp2, tmp3, tmp4, xdim*ydim);
+	
+        float64 *tmp5 = new float64[xdim*ydim];
+        for(int w=0; w < xdim*ydim; w++)
+            tmp5[w] = tmp1[w];
+
+	if(ydimmajor) {
+		if(fieldtype==1) {// Lat.
+			for(int i=0; i<ydim; i++)
+                		for(int j=0; j<xdim; j++)
+					if(isundef_lat(tmp1[i*xdim+j]))
+						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
+		} else if(fieldtype==2){ // Lon.
+			for(int i=0; i<ydim; i++)
+                		for(int j=0; j<xdim; j++)
+					if(isundef_lon(tmp1[i*xdim+j]))
+						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
+		}
+	} else { // end if(ydimmajor)
+		if(fieldtype==1) {
+			for(int i=0; i<xdim; i++)
+				for(int j=0; j<ydim; j++)
+					if(isundef_lat(tmp1[i*xdim+j]))
+						tmp1[i*xdim+j]=nearestNeighborLatVal(tmp5, i, j, ydim, xdim);
+		} else if(fieldtype==2) {
+			for(int i=0; i<xdim; i++)
+				for(int j=0; j<ydim; j++)
+					if(isundef_lon(tmp1[i*xdim+j]))
+						tmp1[i*xdim+j]=nearestNeighborLonVal(tmp5, i, j, ydim, xdim);
+		}
+	}
+
+	for(int i=start[0], k=0; i<start[0]+count[0]*step[0]; i+=step[0])
+        	for(int j=start[1]; j<start[1]+count[1]*step[1]; j+= step[1])
+                	latlon[k++] = tmp1[i*ydim+j];
+
+	delete[] tmp1;
+	delete[] tmp5;
 }

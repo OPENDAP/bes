@@ -50,10 +50,12 @@
 #include <hcstream.h>
 
 #include <Error.h>
+#include <InternalErr.h>
 #include <debug.h>
+#include <escaping.h>
+
 #include <BESDebug.h>
 
-#include "escaping.h"
 #include "HDFGrid.h"
 #include "HDFArray.h"
 #include "hdfutil.h"
@@ -115,6 +117,9 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 	try {
 		vector<int> start, edge, stride;
 		HDFArray *primary_array = dynamic_cast<HDFArray *> (array_var());
+		if (!primary_array)
+			throw InternalErr(__FILE__, __LINE__, "Expected an HDFArray.");
+
 		bool isslab = primary_array->GetSlabConstraint(start, edge, stride);
 
 		// get slab constraint from primary array

@@ -65,7 +65,6 @@ void HE2CFUniqName::set_uniq_name(string _suffix, bool _limit)
     {
         throw InternalErr(__FILE__, __LINE__,
                       "Length of the suffix should be < 4.");        
-	exit(-1);
     }
     else{
         suffix = _suffix;
