@@ -26,12 +26,11 @@ noinst_HEADERS = test_config.h
 
 if CPPUNIT
 # This determines what gets run by 'make check.'
-#TESTS = keysT
 TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
 		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
-		urlT BESCache3Test
+		urlT
 
 if LIBDAP
 TESTS += catT
@@ -146,10 +145,7 @@ catT_SOURCES = catT.cc ../BESCatalogResponseHandler.cc
 catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 endif
 
-# BESCache2Test_SOURCES = BESCache2Test.cc
-# BESCache2Test_CPPFLAGS = $(AM_CPPFLAGS)
-# BESCache2Test_LDFLAGS = -lcrypto
-
+# Note that BESCache3Test is not a CPP Unit test. jhrg 4/12/12
 BESCache3Test_SOURCES = BESCache3Test.cc
 BESCache3Test_CPPFLAGS = $(AM_CPPFLAGS)
 BESCache3Test_LDFLAGS = -lcrypto

@@ -92,7 +92,7 @@ private:
 
     // Suppress the assignment operator and default copy ctor, ...
     BESCache3() { }
-    BESCache3(const BESCache3 &rhs) { }
+    BESCache3(const BESCache3 &) { }
     BESCache3 &operator=(const BESCache3 &rhs) { }
 
     void m_check_ctor_params();
