@@ -1,15 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="tstring-at.h5"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tstring-at.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="Dataset" type="String">
             <value>dset1</value>
         </Attribute>
     </Attribute>
-
     <Array name="/dset1">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>/dset1</value>
@@ -20,12 +15,12 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             <value>String&amp;withamp  </value>
             <value>String&lt;withlt   </value>
             <value>String&gt;withgt   </value>
-            <value>String&apos;withapos </value>
+            <value>String'withapos </value>
             <value>String&quot;withquot </value>
         </Attribute>
         <String/>
         <dimension size="7"/>
     </Array>
-
     <dataBLOB href=""/>
 </Dataset>
+

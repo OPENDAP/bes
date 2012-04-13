@@ -1,14 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Dataset name="ZA.h5"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://xml.opendap.org/ns/DAP2"
-xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/dap2.xsd">
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="ZA.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
     <Attribute name="HDF5_ROOT_GROUP" type="Container">
         <Attribute name="HDFEOS" type="Container">
             <Attribute name="ADDITIONAL" type="Container">
-                <Attribute name="FILE_ATTRIBUTES" type="Container">
-                </Attribute>
+                <Attribute name="FILE_ATTRIBUTES" type="Container"/>
             </Attribute>
             <Attribute name="ZAS" type="Container">
                 <Attribute name="ZA1" type="Container">
@@ -97,12 +92,9 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         </Attribute>
     </Attribute>
     <Attribute name="/HDFEOS INFORMATION/StructMetadata.0" type="Container">
-        <Attribute name="SwathStructure" type="Container">
-        </Attribute>
-        <Attribute name="GridStructure" type="Container">
-        </Attribute>
-        <Attribute name="PointStructure" type="Container">
-        </Attribute>
+        <Attribute name="SwathStructure" type="Container"/>
+        <Attribute name="GridStructure" type="Container"/>
+        <Attribute name="PointStructure" type="Container"/>
         <Attribute name="ZaStructure" type="Container">
             <Attribute name="ZA_1" type="Container">
                 <Attribute name="ZaName" type="String">
@@ -174,10 +166,8 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
                         </Attribute>
                     </Attribute>
                 </Attribute>
-                <Attribute name="DimensionMap" type="Container">
-                </Attribute>
-                <Attribute name="IndexDimensionMap" type="Container">
-                </Attribute>
+                <Attribute name="DimensionMap" type="Container"/>
+                <Attribute name="IndexDimensionMap" type="Container"/>
                 <Attribute name="DataField" type="Container">
                     <Attribute name="DataField_1" type="Container">
                         <Attribute name="DataFieldName" type="String">
@@ -257,7 +247,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
             </Attribute>
         </Attribute>
     </Attribute>
-
     <Array name="/HDFEOS/ZAS/ZA1/Data Fields/Spectra">
         <Attribute name="HDF5_OBJ_FULLPATH" type="String">
             <value>/HDFEOS/ZAS/ZA1/Data Fields/Spectra</value>
@@ -270,6 +259,6 @@ xsi:schemaLocation="http://xml.opendap.org/ns/DAP2  http://xml.opendap.org/dap/d
         <dimension size="40"/>
         <dimension size="1"/>
     </Array>
-
     <dataBLOB href=""/>
 </Dataset>
+

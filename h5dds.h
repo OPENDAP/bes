@@ -54,6 +54,4 @@
 using namespace libdap;
 
 bool depth_first(hid_t, char *, DDS &, const char *);
-void read_objects(DDS & dds, const string & varname, const string & filename);
-string get_short_name(string name);
 string get_short_name_dimscale(string name);

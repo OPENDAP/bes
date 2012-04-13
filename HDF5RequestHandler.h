@@ -33,7 +33,11 @@
 ///
 /// @author James Gallagher <jgallagher@opendap.org>
 class HDF5RequestHandler:public BESRequestHandler {
-  public:
+private:
+    static bool     _ignore_unknown_types ;
+    static bool     _ignore_unknown_types_set ;
+
+public:
     HDF5RequestHandler(const string & name);
     virtual ~HDF5RequestHandler(void);
 
@@ -42,6 +46,8 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool hdf5_build_data(BESDataHandlerInterface & dhi);
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
+
+    static bool get_ignore_unknown_types() { return _ignore_unknown_types; }
 };
 
 #endif

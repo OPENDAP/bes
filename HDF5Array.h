@@ -30,8 +30,8 @@
 #include <H5Ipublic.h>
 #include <H5Rpublic.h>
 
-#include "Array.h"
-#include "h5get.h"
+#include <Array.h>
+#include <h5get.h>
 
 using namespace libdap;
 

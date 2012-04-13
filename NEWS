@@ -1,5 +1,17 @@
 
-	$Id$
+News for version 1.5.1
+
+Fixed an issue with the IgnoreUnknownTypes option and a problem with
+attributes that use hdf5's varying length string type.
+
+News for version 1.5.0
+
+Added H5.IgnoreUnknownTypes which follows the behavior pattern
+established for/by the netcdf handler. When set, data types that cannot
+easily be represented in DAP2 are simply ignored. When not set, an
+error is returned when an unknown type is found in a data file.
+
+The int8 to int16 conversion is now handled correctly.
 
 News for version 1.4.4
 

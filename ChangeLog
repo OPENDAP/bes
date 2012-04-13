@@ -1,3 +1,66 @@
+2012-02-01  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an issue with attributes that use varying length strings in
+	HDF5 files.
+
+2012-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixed an error introduced in the previous checkin. Also include a
+	short example of how I think the variable length string attributes
+	should be accessed. See line 819 of h5das.cc.
+
+2012-01-31  James Gallagher <jgallagher@opendap.org>
+
+	Fixes for ticket 1878; the IgnoreUnknownTypes option was not
+	implemented correctly for DAP variables. Fixed. Expanded the
+	meaning of the option to include other cases where common
+	clients (e.g., Panoply) elide variables that would otherwise cause
+	an error.
+
+2012-01-11  James Gallagher <jgallagher@opendap.org>
+
+	Updates for Hyrax 1.8
+
+	M    configure.ac
+	M    NEWS
+	M    ChangeLog
+	M    INSTALL
+	M    hdf5_handler.spec
+	M    README
+
+2012-01-09  James Gallagher <jgallagher@opendap.org>
+
+	Code review.
+
+	M    h5das.cc
+	M    HDF5Array.cc
+	M    HDF5Array.h
+
+2011-12-08  hyoklee
+
+	corrected typo in error outputs.
+
+2011-12-08  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDF5Array.cc (m_array_of_reference): corrected typos.
+
+2011-12-01  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* HDF5Array.cc (m_array_of_reference): fixed bug in object reference
+	handling.
+
+2011-11-22  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc (is_mappable): added two more unsupported types checking.
+
+2011-10-28  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* HDF5Array.cc (read): handled Int8 to Int16 conversion correctly.
+
+2011-10-27  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+
+	* h5das.cc (read_objects): added Int8 to Int16 conversion.
+	* h5get.cc (get_dap_type): changed Int16 to Int8.
+
 2011-04-20  James Gallagher <jgallagher@opendap.org>
 
 	Hyrax 1.7 release
