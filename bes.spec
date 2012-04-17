@@ -9,7 +9,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.10.2
+Version:        3.10.4
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
