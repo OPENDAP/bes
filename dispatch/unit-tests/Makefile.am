@@ -20,6 +20,7 @@ CXXFLAGS_DEBUG = -g3 -O0 -fno-defer-pop -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 check_PROGRAMS = $(TESTS)
+noinst_PROGRAMS = BESCache3Test
 
 #nodist_include_HEADERS = test_config.h breaks make rpm jhrg
 noinst_HEADERS = test_config.h
