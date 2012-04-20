@@ -113,12 +113,12 @@ string get_md5(const string &file)
         throw BESInternalError("Can't stat for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
     vector<unsigned char> data(buf.st_size);
-    if (read(fd, data.data(), buf.st_size) != buf.st_size)
+    if (read(fd, &data[0], buf.st_size) != buf.st_size)
         throw BESInternalError("Can't read for md5. " + get_errno() + " " + file, __FILE__, __LINE__);
 
     close(fd);
 
-    unsigned char *result = MD5(data.data(), buf.st_size, 0);
+    unsigned char *result = MD5(&data[0], buf.st_size, 0);
     ostringstream oss;
     oss.setf ( ios::hex, ios::basefield );
     for (int i = 0; i < MD5_DIGEST_LENGTH; ++i) {
