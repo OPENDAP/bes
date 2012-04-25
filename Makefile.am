@@ -2,6 +2,18 @@
 # Build the Back End Server.
 #
 # jhrg 9/2/05
+#
+# Parallel versus serial build times:
+# A full build using 'make' on a four core single-processor laptop took:
+# real    2m7.363s
+# user    1m51.920s
+# sys     0m13.313s
+#
+# on the same machine, the same build using 'make -j6' took:
+# real    0m48.181s
+# user    3m29.876s
+# sys     0m23.857s
+
 
 AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf

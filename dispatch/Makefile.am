@@ -129,7 +129,7 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 	BESReporterList.cc BESConstraintFuncs.cc			\
 	BESServiceRegistry.cc BESServicesResponseHandler.cc		\
 	BESMemoryGlobalArea.cc						\
-	BESMemoryManager.cc BESProcessEncodedString.cc			\
+	BESMemoryManager.cc 			\
 	BESAggFactory.cc BESAggregationServer.cc			\
 	BESReturnManager.cc						\
 	BESError.cc BESExceptionManager.cc				\
@@ -154,6 +154,8 @@ SRCS = BESInterface.cc BESBasicInterface.cc				\
 
 # The old caching code. Still in the build. jhrg 3/23/12
 #   BESCache.cc BESUncompressManager.cc BESUncompressGZ.cc     
+
+# BESProcessEncodedString.cc; moved to apache. jhrg 4/25/12
 
 HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESKeys.h TheBESKeys.h BESStatus.h 				\
@@ -184,7 +186,7 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 	BESServiceRegistry.h BESServicesResponseHandler.h 		\
 	BESError.h BESInternalError.h BESInternalFatalError.h 		\
 	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
-	BESConstraintFuncs.h BESProcessEncodedString.h 			\
+	BESConstraintFuncs.h  			\
 	BESMemoryGlobalArea.h BESMemoryManager.h 			\
 	BESServerSystemResources.h 					\
 	BESAggFactory.h BESAggregationServer.h 				\
@@ -208,6 +210,8 @@ HDRS = BESInterface.h BESBasicInterface.h BESLog.h 			\
 
 # The old caching code. Still in the build. jhrg 3/23/12
 #   BESCache.h BESUncompressManager.h
+
+# BESProcessEncodedString.h. Moved to apache. jhrg 4/25/12
 
 DAP_SRCS = BESCatalogResponseHandler.cc \
 	BESDASResponseHandler.cc BESDDSResponseHandler.cc \

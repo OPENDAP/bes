@@ -92,8 +92,8 @@ private:
 
     // Suppress the assignment operator and default copy ctor, ...
     BESCache3() { }
-    BESCache3(const BESCache3 &) { }
-    BESCache3 &operator=(const BESCache3 &rhs) { }
+    BESCache3(const BESCache3 &) :BESObj() { }
+    BESCache3 &operator=(const BESCache3 &) { return *this; }
 
     void m_check_ctor_params();
     void m_initialize_cache_info();

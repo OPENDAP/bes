@@ -21,9 +21,11 @@ libbes_apache_module_la_LDFLAGS = -version-info $(BES_APACHE_VERSION)
 # Sources and Headers
 #
 ##############################################################################
-SRCS = BESApacheInterface.cc BESApacheRequests.cc BESApacheWrapper.cc mod_opendap.cc
+SRCS = BESApacheInterface.cc BESApacheRequests.cc BESApacheWrapper.cc \
+mod_opendap.cc BESProcessEncodedString.cc
 
-HDRS = BESApacheInterface.h BESApacheRequests.h BESApacheWrapper.h
+HDRS = BESApacheInterface.h BESApacheRequests.h BESApacheWrapper.h \
+BESProcessEncodedString.h
 
 APACHE_CONFIG = Makefile.libdir Makefile.tmpl libopendap.module
 

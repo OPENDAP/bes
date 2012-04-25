@@ -10,7 +10,7 @@ using std::endl ;
 
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
-#include <BESResponseHandlerList.h>
+//#include <BESResponseHandlerList.h>
 #include <BESResponseNames.h>
 #include <BESContainerStorageList.h>
 #include <BESContainerStorageCatalog.h>

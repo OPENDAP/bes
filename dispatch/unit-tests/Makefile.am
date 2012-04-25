@@ -30,8 +30,10 @@ if CPPUNIT
 TESTS = constraintT containerT defT keysT pfileT			\
 		plistT pvolT replistT reqhandlerT reqlistT resplistT	\
 		infoT agglistT cacheT gzT zT uncompressT lockT		\
-		encodeT debugT utilT regexT scrubT checkT servicesT fsT	\
+		debugT utilT regexT scrubT checkT servicesT fsT	\
 		urlT
+
+# encodeT. Moved to apache/unit-tests. jhrg 4/25/12
 
 if LIBDAP
 TESTS += catT
@@ -122,7 +124,7 @@ zT_SOURCES = zT.cc
 
 uncompressT_SOURCES = uncompressT.cc
 
-encodeT_SOURCES = encodeT.cc
+# encodeT_SOURCES = encodeT.cc
 
 debugT_SOURCES = debugT.cc
 

@@ -16,7 +16,7 @@ check_PROGRAMS = $(TESTS)
 noinst_DATA = opendap.ini
 
 # This determines what gets run by 'make check.'
-TESTS = requestsT wrapperT
+TESTS = requestsT wrapperT encodeT 
 
 CLEANFILES = *.log *.sum real*
 
@@ -31,6 +31,10 @@ opendap.ini: opendap.ini.in
 
 requestsT_SOURCES = requestsT.cc
 requestsT_LDADD =  ../.libs/BESApacheRequests.o $(BES_LIBS)
-wrapperT_SOURCES = wrapperT.cc
-wrapperT_LDADD = ../.libs/BESApacheWrapper.o ../.libs/BESApacheRequests.o ../.libs/BESApacheInterface.o -L$(BES_MODULE_DIR) -ldap_module -ldap_cmd_module $(BES_DAP_LIBS)
 
+wrapperT_SOURCES = wrapperT.cc
+wrapperT_LDADD = ../.libs/BESApacheWrapper.o ../.libs/BESApacheRequests.o \
+../.libs/BESApacheInterface.o -L$(BES_MODULE_DIR) -ldap_module \
+-ldap_cmd_module $(BES_DAP_LIBS)
+
+encodeT_SOURCES = encodeT.cc

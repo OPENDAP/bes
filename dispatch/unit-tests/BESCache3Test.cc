@@ -148,7 +148,7 @@ void decompression_process(int files_to_get, bool simulate_use = false, int seed
         throw BESInternalError("No files in the data directory for the cache tests.", __FILE__, __LINE__);
     int num_files = files.size();
 
-    std:map<string,string> md5;
+    map<string,string> md5;
 
     for (int i = 0; i < files_to_get; ++i) {
         // randomly choose a compressed file

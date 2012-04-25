@@ -33,12 +33,14 @@
 #ifndef I_BESDapResponse
 #define I_BESDapResponse 1
 
-#include <DAS.h>
+//#include <DAS.h>
 
 #include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
 
+#if 0
 using namespace libdap ;
+#endif
 
 /** @brief Represents an OPeNDAP DAP response object within the BES
  */
