@@ -80,7 +80,7 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 EXTRA_DIST = data bes-testsuite hdf-testfiles \
 	hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec hdf4_handler.cf.spec \
+	COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
 	OSX_Resources h4.conf.in
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
