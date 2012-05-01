@@ -15,9 +15,9 @@ TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 CLEANFILES = *.log *.sum site.exp
 
-EXTRA_DIST = besTest.at $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
+EXTRA_DIST = besTest.at $(srcdir)/package.m4 $(TESTSUITE) atlocal.in ff hdf4 hdf5 nc show ssfunc
 
-DISTCLEANFILES = $(srcdir)/package.m4 $(TESTSUITE)
+DISTCLEANFILES = $(TESTSUITE)
 
 ############## Autotest follows #####################
 
@@ -35,12 +35,12 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/besTest.at $(srcdir)/package.m4
+$(TESTSUITE): $(srcdir)/besTest.at package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
 	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+package.m4: $(top_srcdir)/configure.ac
 	:;{ \
 	echo '# Signature of the current package.' && \
 	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
