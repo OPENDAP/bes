@@ -1,10 +1,10 @@
 // This file is part of hdf5_handler a HDF5 file handler for the OPeNDAP
 // data server.
-
-// Author: Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang
-// <myang6@hdfgroup.org> 
-
-// Copyright (c) 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+//
+// Authors: 
+// Hyo-Kyung Lee <hyoklee@hdfgroup.org> and Muqun Yang <myang6@hdfgroup.org> 
+//
+// Copyright (c) 2009-2011 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -21,186 +21,61 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HE5Parser_H
 #define _HE5Parser_H
 
-// Some NASA EOS Aura metadata files are split into several files
-// when they are really big (> 65536) like StructMetadata.0, StructMetada.1,
-// ... StructMetadat.n. The split point can be anywhere like the middle
-// of the variable name or object description
-// To parse the metadata correctly, it is necessary to merge the split
-// files first. Thus, we define a big enough buffer to hold the merged
-// metadata --- 10 * (2^16). This number ensures that up to 10 metadata files
-// can be merged per metadata type (coremetadata, archivedmetadata, etc.).
-#define BUFFER_MAX 655360       
-
-#include "config_hdf5.h"
-
-#include <map>
-#include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <iomanip>
-#include <cmath>
 
-#include <hdf5.h>
-#include <debug.h>
-#include <util.h>
-#include <string.h>
-#include <Array.h>
-#include "he5dds.tab.hh"
-#include "HE5CF.h"
+#include "HE5Swath.h"
+#include "HE5Grid.h"
+#include "HE5Za.h"
 
 using namespace std;
-using namespace libdap;
 
-/// A class for handling NASA EOS AURA data.
+/// \file HE5Parser.h
+/// \brief A class for parsing NASA HDF-EOS5 StructMetadata.
 ///
-/// This class contains functions that parse NASA EOS AURA StructMetadata
-/// and prepares the necessary (grid) data for OPeNDAP.
+/// This class contains functions that parse NASA HDF-EOS5 StructMetadata
+/// and prepares the Vector structure that other functions reference.
 ///
-/// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///
-/// Copyright (c) 2007 The HDF Group
+/// Copyright (c) 2007-2011 The HDF Group
 ///
 /// All rights reserved.
-class HE5Parser:public HE5CF {
-
-private:
-
-
-    bool _valid;
-    bool has_group(hid_t id, const char *name);
-    bool has_dataset(hid_t id, const char *name);
-    
-    // The below reset() function is necessary for Hyrax.
-    // Under Hyrax, unlike CGI-based server, the handler program does not
-    // terminate after a serving an HDF-EOS5 data. Thus, you need to manually
-    // reset the shared dimensions and other variables whenever a new DAP
-    // request comes in for a different HDF-EOS5 file.
-    void reset();
+class HE5Parser:public HE5Swath, public HE5Grid, public HE5Za {
 
 
 public:
-    /// a flag to indicate if StructMetdata has a geographic projection.
-    bool valid_projection;
-    /// a flag to indicate if StructMetdata has Grid.
-    bool grid_structure_found;
-    /// a flag to indicate if StructMetdata has Swath.
-    bool swath_structure_found;
+    vector<HE5Swath> swath_list;
+    vector<HE5Grid> grid_list;
+    vector<HE5Za> za_list;
 
-    /// a flag to indicate if StructMetdata has zonal average.
-    bool za_structure_found; 
+    enum {
+	ZA, SWATH, GRID
+    };
+    /// Have the parser's state in terms of structure.
+    int  structure_state;
 
-    /// a flag to indicate if structMetdata is processed or not.
-    bool bmetadata_Struct;
+    enum {
+	DATA_FIELD, GEO_FIELD
+    };
 
-    /// a buffer for the merged structMetadata dataset
-    char metadata_Struct[BUFFER_MAX];
-    
-    /// a variable that keeps track of StructMetadata parser's state.
+    /// Have the StructMetadata parser's state.
     int  parser_state;
 
-	// The following three bool vars are used to make sure
-	// that a grid has exactly one 
-	//   Projection
-	//   UpperLeftPointMtrs
-	//   LowerRightMtrs
-	bool bReadProjection;
-	bool bReadUL;
-	bool bReadLR;
+    /// Have any parse error message.
+    string err_msg;	
 
-#ifdef NASA_EOS_META
-    /// A flag for merged Archived metadata. Once it's set, don't prcoess
-    /// for other attribute variables that start with the same name.
-    bool bmetadata_Archived;
-    
-    /// A flag for merged Core metadata. Once it's set, don't prcoess
-    /// for other attribute variables that start with the same name.    
-    bool bmetadata_Core;
-    
-    /// A flag for merged core metadata. Once it's set, don't prcoess
-    /// for other attribute variables that start with the same name.    
-    bool bmetadata_core;
-    
-    /// A flag for merged product metadata. Once it's set, don't prcoess
-    /// for other attribute variables that start with the same name.    
-    bool bmetadata_product;
-    
-    /// A flag for merged subset metadata. Once it's set, don't prcoess
-    /// for other attribute variables that start with the same name.    
-    bool bmetadata_subset;
-
-    /// A character buffer for the merged Archived metadata information.
-    char metadata_Archived[BUFFER_MAX];
-    
-    /// A character buffer for the merged Core metadata information.    
-    char metadata_Core[BUFFER_MAX];
-
-    /// A character buffer for the merged core metadata information.        
-    char metadata_core[BUFFER_MAX];
-
-    /// A character buffer for the merged product metadata information.
-    char metadata_product[BUFFER_MAX];
-
-    /// A character buffer for the merged subset metadata information.
-    char metadata_subset[BUFFER_MAX];
-#endif
-
-  
     HE5Parser();
     virtual ~ HE5Parser();
 
+    /// Print the information about the members of the Vector list.
+    void print();
 
-    /// Check if this file is EOS file by examining metadata
-    ///
-    /// \param id root group id
-    /// \return 1, if it is EOS file.
-    /// \return 0, if not.
-    bool check_eos(hid_t id);
-
-
-    /// Check if the current HDF-EOS5 file is a TES file. 
-    /// 
-    /// This function is required since TES dimension values need a special
-    /// attention. The computation of Grid geographic map data is slightly
-    /// different from OMI data, which is default. Please see the inside of
-    /// set_dimension_array() function for details.
-    ///
-    /// \return true if it is a TES product.
-    /// \return false otherwise
-    /// \see set_dimension_array()
-    bool is_TES();
-
-  
-    /// Check if the current HDF5 file is a valid NASA EOS file.
-    ///
-    /// \return true if it has a set of correct meta data files.
-    /// \return false otherwise  
-    bool is_valid();
-
-    /// Merges metafiles and Sets metdata buffer
-    ///
-    /// This function is needed because some metada files are split
-    /// into several files like StructMetadata.0, StructMetadata.1, ... and
-    /// StructMetadata.n.
-    /// Here, we assume that there are less than 10 metadata split files
-    /// for each metadata type.
-    ///
-    /// \param[in] id dataset id
-    /// \param[in]  metadata_name pre-defined names like "StructMetadata" or
-    /// "CoreMetadata"
-    /// \param[out]  metadata_buffer the buffer for merged strings.
-    /// \return ture if there exists \a metadata_name string variable exists
-    /// \return false otherwise.
-    bool set_metadata(hid_t id, char *metadata_name,
-                      char *metadata_buffer);
-
-public:
-	std::string err_msg;	// Parse error message
 };
 #endif

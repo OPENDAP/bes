@@ -1,8 +1,0 @@
-Attributes {
-    HDF5_ROOT_GROUP {
-        String Dataset "dset1";
-    }
-    /dset1 {
-        String HDF5_OBJ_FULLPATH "/dset1";
-    }
-}

@@ -2,8 +2,8 @@
 //  This file is part of the hdf5 data handler for the OPeNDAP data server.
 //
 // Author:   Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-
-// Copyright (c) 2007, 2009 The HDF Group, Inc. and OPeNDAP, Inc.
+//
+// Copyright (c) 2007-2011 The HDF Group, Inc. and OPeNDAP, Inc.
 //
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
@@ -20,41 +20,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #include "HE5Parser.h"
-#include <InternalErr.h>
-#include "Error.h"
-#include "BESError.h"
-#include "BESInternalError.h"
 
 using namespace std;
 
-
-
-struct yy_buffer_state;
-
-int              he5ddslex();
-int              he5ddsparse(void *arg);
-yy_buffer_state *he5dds_scan_string(const char *str);
-
-
 HE5Parser::HE5Parser()
 {
-    parser_state = 0; // parser state 
-    valid_projection = false;
-    grid_structure_found = false; 
-    swath_structure_found = false; 
-    _valid = false;
-    bmetadata_Struct = false;
-    bmetadata_Archived = false;
-    bmetadata_Core = false;
-    bmetadata_core = false;
-    bmetadata_product = false;
-    bmetadata_subset = false;
-
-
+    structure_state = -1;       // Za/Swath/Grid state 
+    parser_state = 0;           // Parser's current state 
+    err_msg = "";               // error message.
 }
 
 HE5Parser::~HE5Parser()
@@ -62,170 +39,119 @@ HE5Parser::~HE5Parser()
 }
 
 
-bool HE5Parser::has_group(hid_t id, const char *name)
+void HE5Parser::print()
 {
-    hid_t hid;
-    H5E_BEGIN_TRY {
-        hid = H5Gopen(id, name);
-   } H5E_END_TRY;
-    if (hid < 0) {
-        return false;
-    } else {
-        return true;
+    unsigned int i = 0;
+
+    if(err_msg != ""){
+        cerr << "Parse error:" << err_msg << endl;
     }
-
-}
-
-bool HE5Parser::has_dataset(hid_t id, const char *name)
-{
-    hid_t hid;
-    H5E_BEGIN_TRY {
-        hid = H5Dopen(id, name);
-    } H5E_END_TRY;              
-    if (hid < 0) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-bool HE5Parser::check_eos(hid_t id)
-{
-
-    reset();
-  
-    // Check if this file has the group called "HDFEOS INFORMATION".
-    if (has_group(id, "HDFEOS INFORMATION")) {
-
-        if (set_metadata(id, (char*)"StructMetadata", metadata_Struct)) {
-            _valid = true;
-        } else {
-            _valid = false;
+    cout << "ZA Size=" << za_list.size() << endl;
+    for(i=0; i < za_list.size(); i++) {
+        HE5Za z = za_list.at(i);
+        cout << "ZA Name=" << z.name << endl;
+        cout << "ZA Dim Size=" << z.dim_list.size() << endl;
+        unsigned int j = 0;
+        for(j=0; j < z.dim_list.size(); j++) {
+            HE5Dim d = z.dim_list.at(j);
+            cout << "ZA Dim Name=" << d.name;
+            cout << " Size=" << d.size << endl;
         }
 
-        if (_valid) {
-
-            he5dds_scan_string(metadata_Struct);
-			if(he5ddsparse(this))
-			{
-				// Parse error
-				//throw InternalErr( __FILE__, __LINE__, "HDF4 StructMetadata Parse Error");
-				throw BESInternalError("HDF5 StructMetadata Parse Error: " + err_msg, __FILE__, __LINE__);
-			}
-
-            set_metadata(id, (char*)"coremetadata", metadata_core);
-            set_metadata(id, (char*)"CoreMetadata", metadata_Core);
-            set_metadata(id, (char*)"ArchivedMetadata", metadata_Archived);
-            set_metadata(id, (char*)"subsetmetadata", metadata_subset);
-            set_metadata(id, (char*)"productmetadata", metadata_product);
-            // Check if this file is TES.
-            if(string(metadata_core).find("\"TES\"") != string::npos){
-                set_grid_TES(true);
+        cout << "ZA Var Size=" << z.data_var_list.size() 
+             << endl;
+        for(j=0; j < z.data_var_list.size(); j++) {
+            HE5Var v = z.data_var_list.at(j);
+            cout << "ZA Var Name=" << v.name << endl;
+            cout << "ZA Var Dim Size=" << v.dim_list.size() << endl;
+            unsigned int k = 0;
+            for(k=0; k < v.dim_list.size(); k++) {
+                HE5Dim d = v.dim_list.at(k);
+                cout << "ZA Var Dim Name=" << d.name << endl;
             }
-            set_swath_2D();
-            set_swath_missing_variable();
+        }
+    }
+
+    cout << "Swath Size=" << swath_list.size() << endl;
+    for(i=0; i < swath_list.size(); i++) {
+        HE5Swath s = swath_list.at(i);
+        cout << "Swath Name=" << s.name << endl;
+        cout << "Swath Dim Size=" << s.dim_list.size() << endl;
+        unsigned int j = 0;
+        for(j=0; j < s.dim_list.size(); j++) {
+            HE5Dim d = s.dim_list.at(j);
+            cout << "Swath Dim Name=" << d.name;
+            cout << " Size=" << d.size << endl;
         }
 
-        return _valid;
+        cout << "Swath Geo Var Size=" << s.geo_var_list.size() 
+             << endl;
+        for(j=0; j < s.geo_var_list.size(); j++) {
+            HE5Var v = s.geo_var_list.at(j);
+            cout << "Swath Geo Var Name=" << v.name << endl;
+            cout << "Swath Geo Var Dim Size=" << v.dim_list.size() << endl;
+            unsigned int k = 0;
+            for(k=0; k < v.dim_list.size(); k++) {
+                HE5Dim d = v.dim_list.at(k);
+                cout << "Swath Geo Var Dim Name=" << d.name;
+                cout << " Size=" << d.size << endl;
+            }
+        }
+
+        cout << "Swath Data Var Size=" << s.data_var_list.size() 
+             << endl;
+        for(j=0; j < s.data_var_list.size(); j++) {
+            HE5Var v = s.data_var_list.at(j);
+            cout << "Swath Data Var Name=" << v.name << endl;
+            cout << "Swath Data Var Number Dim =" << v.dim_list.size() << endl;
+            unsigned int k = 0;
+            for(k=0; k < v.dim_list.size(); k++) {
+                HE5Dim d = v.dim_list.at(k);
+                cout << "Swath Data Var Dim Name=" << d.name << endl;
+                cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
+            }
+        }
     }
-    return false;
-}
 
+    cout << "Grid Size=" << grid_list.size() << endl;
+    for(i=0; i < grid_list.size(); i++) {
+        HE5Grid g = grid_list.at(i);
+        cout << "Grid Name=" << g.name << endl;
 
+        cout << "Grid point_lower=" << g.point_lower << endl;
+        cout << "Grid point_upper=" << g.point_upper << endl;
+        cout << "Grid point_left="  << g.point_left  << endl;
+        cout << "Grid point_right=" << g.point_right << endl;
 
-bool HE5Parser::is_valid()
-{
-    return _valid;
-}
+        cout << "Grid Dim Size=" << g.dim_list.size() << endl;
+        unsigned int j = 0;
+        for(j=0; j < g.dim_list.size(); j++) {
+            HE5Dim d = g.dim_list.at(j);
+            cout << "Grid Dim Name=" << d.name;
+            cout << " Size=" << d.size << endl;
+        }
 
-bool HE5Parser::set_metadata(hid_t id, char *metadata_name, char *chr_all)
-{
-    bool valid = false;
-    int i = -1;
+        cout << "Grid Var Size=" << g.data_var_list.size() 
+             << endl;
+        for(j=0; j < g.data_var_list.size(); j++) {
+            HE5Var v = g.data_var_list.at(j);
+            cout << "Grid Var Name=" << v.name << endl;
+            cout << "Grid Var Dim Size=" << v.dim_list.size() << endl;
+            unsigned int k = 0;
+            for(k=0; k < v.dim_list.size(); k++) {
+                HE5Dim d = v.dim_list.at(k);
+                cout << "Grid Var Dim Name=" << d.name << endl;
+            }
+        }
+        cout << "Grid pixelregistration=" << 
+            g.pixelregistration
+             << endl;
+        cout << "Grid origin=" << 
+            g.gridorigin
+             << endl;
+        cout << "Grid projection=" << 
+            g.projection
+             << endl;
+    }
     
-    // Assume that 30 is reasonable count of StructMetadata files
-    for (i = -1; i < 30; i++) { 
-        // Check if this file has the dataset called "StructMetadata".
-        // Open the dataset.
-        char dname[255];
-
-        if (i == -1) {
-            snprintf(dname, 255, "/HDFEOS INFORMATION/%s", metadata_name);
-        } else {
-            snprintf(dname, 255, "/HDFEOS INFORMATION/%s.%d",
-                     metadata_name, i);
-        }
-
-        DBG(cerr << "Checking Dataset " << dname << endl);
-
-        if (has_dataset(id, dname)) {
-            hid_t dset = H5Dopen(id, dname);
-            hid_t datatype, dataspace;
-
-	    if (dset < 0){
-		throw InternalErr(__FILE__, __LINE__, 
-                                  "cannot open the existing dataset");
-		break;
-	    }
-            if ((datatype = H5Dget_type(dset)) < 0) {
-                cerr << "HE5Parser.cc failed to obtain datatype from  dataset "
-                     << dset << endl;
-                break;
-            }
-            if ((dataspace = H5Dget_space(dset)) < 0) {
-                cerr << "HE5Parser.cc failed to obtain dataspace from dataset "
-                     << dset << endl;
-                break;
-            }
-            size_t size = H5Tget_size(datatype);
-	    if (size == 0){
-    	       throw InternalErr(__FILE__, __LINE__, 
-                                 "cannot return the size of datatype");
-            }
-
-	    //char *chr = new char[size + 1];
-            vector<char> chr(size+1);
-            if (H5Dread(dset, datatype, dataspace, dataspace, H5P_DEFAULT, (void *)&chr[0])<0) {
-            	throw InternalErr(__FILE__, __LINE__, "Unable to read the data.");
-            }
-            strncat(chr_all, &chr[0], size);
-            valid = true;
-            //delete[] chr;
-        } else {
-            // The sequence can skip <metdata>.0.
-            // For example, "coremetadata" and then "coremetadata.1".
-            if (i > 2)
-                break;
-        }
-    }
-
-    return valid;
-
 }
-
-void HE5Parser::reset()
-{
-    HE5CF::set();
-    
-    grid_structure_found = false;
-    valid_projection = false;
-    swath_structure_found = false;
-    za_structure_found = false;
-    parser_state = 0; 
-    _valid = false;
-
-    bmetadata_Struct = false;
-    bmetadata_Archived = false;
-    bmetadata_Core = false;
-    bmetadata_core = false;
-    bmetadata_product = false;
-    bmetadata_subset = false;
-    
-    memset(metadata_Struct, 0, sizeof(metadata_Struct));
-    memset(metadata_Archived,0,sizeof(metadata_Archived));
-    memset(metadata_Core, 0,sizeof(metadata_Core));
-    memset(metadata_core, 0,sizeof(metadata_core));
-    memset(metadata_product, 0,sizeof(metadata_product));
-    memset(metadata_subset, 0,sizeof(metadata_subset));
-}
-

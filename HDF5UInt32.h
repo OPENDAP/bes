@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5UInt32_h
 #define _HDF5UInt32_h 1
@@ -37,13 +37,13 @@
 
 using namespace libdap;
 
-/// A class for HDF5 unsigned 32 bit integer type.
+/// \file HDF5UInt32.h
 /// 
-/// This class provides a way to map unsigned HDF5 32 bit integer to DAP UInt32.
+/// \brief This class provides a way to map unsigned HDF5 32 bit integer to DAP UInt32.
 ///
-/// @author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// @author Kent Yang       (ymuqun@hdfgroup.org)
-/// @author James Gallagher (jgallagher@opendap.org)
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
 ///
 class HDF5UInt32:public UInt32 {
 

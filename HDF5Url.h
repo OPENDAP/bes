@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 S. Oak St.,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Url_h
 #define _HDF5Url_h 1
@@ -38,10 +38,9 @@
 using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// A HDF5Url class.
-/// This class generates DAP URL type.
+/// \file HDF5Url.h
+/// \brief This class generates DAP URL type for the default option.
 ///
-/// There is a no URL data type in HDF5 so this class is not used in .
 /// \author James Gallagher <jgallagher@opendap.org>
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///

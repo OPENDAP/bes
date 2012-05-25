@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Float32_h
 #define _HDF5Float32_h 1
@@ -35,14 +35,15 @@
 
 using namespace libdap;
 
-/// A class for HDF5 32 bit float type.
+/// \file HDF5Float32.h
+/// \brief A class for mapping HDF5 32-bit float to DAP for the default option
 /// 
-/// This class provides a way to map HDF5 32 bit float to DAP Float32.
 ///
-/// @author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// @author Kent Yang       (ymuqun@hdfgroup.org)
-/// @author James Gallagher (jgallagher@opendap.org)
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
 ///
+
 class HDF5Float32:public Float32 {
   private:
     hid_t dset_id;

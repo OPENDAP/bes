@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Structure_h
 #define _HDF5Structure_h 1
@@ -34,13 +34,13 @@
 
 using namespace libdap;
 
-/// A HDF5Structure class.
-/// This class converts HDF5 compound type into DAP structure.
+/// \file HDF5Structure.h
+/// \brief This class converts HDF5 compound type into DAP structure for the default option.
 ///
-/// @author James Gallagher
-/// @author Hyo-Kyung Lee
+/// \author James Gallagher
+/// \author Hyo-Kyung Lee
 ///
-/// @see Structure 
+/// \see Structure 
 class HDF5Structure:public Structure {
   private:
     hid_t dset_id;

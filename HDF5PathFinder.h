@@ -21,18 +21,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #include <map>
 #include <string>
 
 using namespace std;
 
-/// A class for remembering all group paths in HDF5.
+/// \file HDF5PathFinder.h
 /// 
-/// The purpose of this class is to find a cycle in reference and break the
-/// tie.
+/// \brief This class is to find and break a cycle in the HDF5 group. 
+/// It is used to handle the rara case  for the default option.
 ///
 ///
 /// @author Hyo-Kyung Lee <hyoklee@hdfgroup.org>

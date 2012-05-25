@@ -24,6 +24,16 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
+
+/// \file HDF5Float32.cc
+/// \brief Implementation of mapping HDF5 32-bit float to DAP Float32 for the default option
+/// 
+///
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+
+
 // #define DODS_DEBUG
 
 #include <string>
@@ -67,6 +77,15 @@ bool HDF5Float32::read()
 	get_data(dset_id, (void *) &buf);
 	set_read_p(true);
 	set_value(buf);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
     }
 
     if (get_dap_type(ty_id) == "Structure") {

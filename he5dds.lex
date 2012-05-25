@@ -1,6 +1,4 @@
 %{
-
-
 #include <string.h>
 #include <assert.h>
 
@@ -12,7 +10,8 @@
 #define YYSTYPE char *
 #define YY_DECL int he5ddslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
-
+#define ECHO if (fwrite( yytext, yyleng, 1, yyout )) {}
+#define YY_NO_UNPUT
 #include "he5dds.tab.hh"
 
 int yy_line_num = 1;
@@ -23,7 +22,6 @@ static int start_line;		/* used in quote and comment error handlers */
 %option noyywrap
 %option prefix="he5dds"
 %option outfile="lex.he5dds.cc"
-
 %x quote
 %x comment
 
@@ -32,7 +30,6 @@ END_GROUP       	END_GROUP
 OBJECT          	OBJECT
 END_OBJECT      	END_OBJECT
 END             	END
-HE5_GCTP_GEO    	HE5_GCTP_GEO
 DATA_TYPE       	DataType=[A-Z0-9_]*
 PROJECTION      	Projection
 GRID_NAME       	GridName
@@ -43,26 +40,20 @@ DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
 GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
+COMPRESSION_TYPE        CompressionType
+PIXELREGISTRATION	PixelRegistration=
+GRIDORIGIN		GridOrigin=
 XDIM                    XDim=
 YDIM                    YDim=
-PIXELREGISTRATION	PixelRegistration=
-GRIDORIGIN			GridOrigin=
-UPPERLEFTPT			UpperLeftPointMtrs=
+UPPERLEFTPT		UpperLeftPointMtrs=
 LOWERRIGHTPT		LowerRightMtrs=
-DEFAULT				DEFAULT
-GRIDNUM				GRID_[1-9]+[0-9]*
-
-INT	[-+]?[0-9]+
-
-MANTISA ([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)
-EXPONENT (E|e)[-+]?[0-9]+
-
-FLOAT	[-+]?{MANTISA}{EXPONENT}?
-
-STR 	[-+a-zA-Z0-9_./:%+\-\ ]+
-
-NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
-
+DEFAULT			DEFAULT
+INT	                [-+]?[0-9]+
+MANTISA                 ([0-9]+\.?[0-9]*)|([0-9]*\.?[0-9]+)
+EXPONENT                (E|e)[-+]?[0-9]+
+FLOAT	                [-+]?{MANTISA}{EXPONENT}?
+STR 	                [-+a-zA-Z0-9_./:%+\-\ ]+
+NEVER                   [^a-zA-Z0-9_/.+\-{}:;,%]
 %%
 
 {GROUP}	    	    	he5ddslval = yytext; return GROUP;
@@ -74,15 +65,14 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {FLOAT}                 he5ddslval = yytext; return FLOAT;
 {PROJECTION}   	    	he5ddslval = yytext; return PROJECTION;
 {DATA_TYPE}   	    	he5ddslval = yytext; return DATA_TYPE;
-{HE5_GCTP_GEO} 	    	he5ddslval = yytext; return HE5_GCTP_GEO;
+{PIXELREGISTRATION}	he5ddslval = yytext; return PIXELREGISTRATION;
+{GRIDORIGIN}	       	he5ddslval = yytext; return GRIDORIGIN;
 {XDIM}	    	    	he5ddslval = yytext; return XDIM;
 {YDIM}	    	    	he5ddslval = yytext; return YDIM;
-{PIXELREGISTRATION}	   	he5ddslval = yytext; return PIXELREGISTRATION;
-{GRIDORIGIN}	       	he5ddslval = yytext; return GRIDORIGIN;
 {UPPERLEFTPT}  	    	he5ddslval = yytext; return UPPERLEFTPT;
 {LOWERRIGHTPT} 	    	he5ddslval = yytext; return LOWERRIGHTPT;
 {DEFAULT} 	    	he5ddslval = yytext; return DEFAULT;
-{GRIDNUM} 	    	he5ddslval = yytext; return GRIDNUM;
+
 
 {GRID_NAME}           	he5ddslval = yytext; return GRID_NAME;
 {SWATH_NAME}           	he5ddslval = yytext; return SWATH_NAME;
@@ -90,6 +80,7 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 {DIMENSION_SIZE} 	he5ddslval = yytext; return DIMENSION_SIZE;
 {DIMENSION_NAME} 	he5ddslval = yytext; return DIMENSION_NAME;
 {DIMENSION_LIST} 	he5ddslval = yytext; return DIMENSION_LIST;
+{COMPRESSION_TYPE} 	he5ddslval = yytext; return COMPRESSION_TYPE;
 {DATA_FIELD_NAME} 	he5ddslval = yytext; return DATA_FIELD_NAME;
 {GEO_FIELD_NAME} 	he5ddslval = yytext; return GEO_FIELD_NAME;
 {STR}	    	    	he5ddslval = yytext; return STR;
@@ -135,7 +126,8 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 {NEVER}                 {
                           if (yytext) {	/* suppress msgs about `' chars */
-                            fprintf(stderr, "Character '%c' (%d) is not", *yytext, *yytext);
+                            fprintf(stderr, "Character '%c' (%d) is not", 
+                                    *yytext, *yytext);
                             fprintf(stderr, " allowed (except within");
 			    fprintf(stderr, " quotes) and has been ignored\n");
 			  }

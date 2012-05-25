@@ -1,4 +1,0 @@
-Dataset {
-    Int32 /dset1[10][20];
-    Float64 /dset2[30][20];
-} tdset.h5;

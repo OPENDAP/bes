@@ -24,6 +24,21 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
+////////////////////////////////////////////////////////////////////////////////
+/// \file HDF5Str.cc
+///
+/// \brief The implementation of translating HDF5 string into DAP string for the default option.
+/// 
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (myang6@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+///
+/// Copyright (c) 2007 HDF Group
+/// 
+/// All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
+
+
 #include "config_hdf5.h"
 
 
@@ -46,7 +61,7 @@ typedef struct s2_str_t {
 
 
 HDF5Str::HDF5Str(const string & n, const string &d) 
- : ty_id(-1), dset_id(-1), array_flag(0), Str(n, d)
+ : Str(n,d),dset_id(-1),ty_id(-1), array_flag(0)
 {
 }
 
@@ -78,6 +93,15 @@ bool HDF5Str::read()
 	set_read_p(true);
 	string str = chr;
 	set_value(str);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
 
 	delete[] chr;
     }

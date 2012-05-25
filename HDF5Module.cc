@@ -26,8 +26,11 @@
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
+/// \file HDF5Module.cc
+/// \brief The starting and ending fuctions for the HDF5 OPeNDAP handler via BES
+///
+/// \author  Patrick West <pwest@ucar.edu>
+
 
 #include <iostream>
 

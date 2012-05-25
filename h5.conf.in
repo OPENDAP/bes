@@ -37,6 +37,9 @@ BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 
 BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
 
+#-----------------------------------------------------------------------#
+# HDF5 handler specific parameters: 
+#-----------------------------------------------------------------------#
 # Setting H5.IgnoreUnknownTypes to true will cause this handler to ignore
 # 64-bit integer types (the only HDF5 it will not process). The default
 # value of false causes the handler to return an error to the client 
@@ -44,3 +47,13 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
 # ignored types simply don't show up in the output.
 #
 # H5.IgnoreUnknownTypes = true
+#
+# EnableCF: Handle HDF data to follow the CF conventions
+#   (true,yes|false,no, defaults to false)
+# Since most centers  would like to handle HDF5 data that follows CF now,
+# I set the EnableCF to be true, KY 2011-8-4
+#
+H5.EnableCF=true
+H5.EnableCheckNameClashing=true
+H5.EnableAddPathAttrs=true
+H5.EnableDropLongString=true

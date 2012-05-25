@@ -1,0 +1,108 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_GeoGrid {
+    }
+    HDFEOS_GRIDS_GeoGrid_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+        String fullpath "/HDFEOS INFORMATION";
+    }
+    Level {
+        String units "hPa";
+        String origname "Level";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Level";
+        String orig_dimname "ZDim";
+    }
+    Pressure {
+        String units "hPa";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Pressure";
+        String orig_dimname "ZDim";
+    }
+    Temperature {
+        String units "K";
+        String origname "Temperature";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Temperature";
+        String orig_dimname_list "XDim ";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Latitude";
+        String orig_dimname "YDim";
+    }
+    Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/Longitude";
+        String orig_dimname "XDim";
+    }
+    ZDim {
+        String units "level";
+    }
+    StructMetadata {
+        SwathStructure {
+        }
+        GridStructure {
+            GRID_1 {
+                String GridName "GeoGrid";
+                Int32 XDim 8;
+                Int32 YDim 4;
+                Float64 UpperLeftPointMtrs 0.000000, 4000000.000000;
+                Float64 LowerRightMtrs 8000000.000000, 0.000000;
+                String Projection "HE5_GCTP_GEO";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "ZDim";
+                        Int32 Size 2;
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Temperature";
+                        String DimList "ZDim", "YDim", "XDim";
+                        String MaxdimList "ZDim", "YDim", "XDim";
+                    }
+                    DataField_2 {
+                        String DataFieldName "Longitude";
+                        String DimList "XDim";
+                        String MaxdimList "XDim";
+                    }
+                    DataField_3 {
+                        String DataFieldName "Latitude";
+                        String DimList "YDim";
+                        String MaxdimList "YDim";
+                    }
+                    DataField_4 {
+                        String DataFieldName "Pressure";
+                        String DimList "ZDim";
+                        String MaxdimList "ZDim";
+                    }
+                    DataField_5 {
+                        String DataFieldName "Level";
+                        String DimList "ZDim";
+                        String MaxdimList "ZDim";
+                    }
+                }
+                MergedFields {
+                }
+            }
+        }
+        PointStructure {
+        }
+        ZaStructure {
+        }
+    }
+}

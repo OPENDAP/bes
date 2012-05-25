@@ -1,6 +1,0 @@
-Dataset {
-    Float32 /HDFEOS/GRIDS/PolarGrid/Data%20Fields/Pressure[100][100];
-    Float32 /HDFEOS/GRIDS/PolarGrid/Data%20Fields/Temperature[100][100];
-    Float32 /HDFEOS/GRIDS/UTMGrid/Data%20Fields/Vegetation[280][180];
-    String /HDFEOS%20INFORMATION/StructMetadata.0;
-} Grid.h5;

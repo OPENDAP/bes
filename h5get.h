@@ -18,20 +18,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
+////////////////////////////////////////////////////////////////////////////////
+/// \file h5get.h
+/// Helper functions to generate DDS/DAS/DODS for the default option.
 ///
+
 ///
+/// 
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 /// \author Muqun Yang <ymuqun@hdfgroup.org>
 
 
-#ifndef _H5Git_H
-#define _H5Git_H
-
+#ifndef _H5GET_H
+#define _H5GET_H
 #include "hdf5_handler.h"
 
-int
+bool
 check_h5str(hid_t);
 
 void 
@@ -40,8 +44,8 @@ close_fileid(hid_t fid);
 char*
 correct_name(char *);
 
-hid_t
-get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, int *);
+hid_t 
+get_attr_info(hid_t dset, int index, DSattr_t * attr_inst, bool*);
 
 string
 get_dap_type(hid_t type);
@@ -53,16 +57,7 @@ void
 get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr);
 
 hid_t
-get_diminfo(hid_t, int, int *, size_t *, hid_t *);
-
-char*
-get_dimname(hid_t, int);
-
-hid_t
 get_fileid(const char *filename);
-
-hid_t
-get_memtype(hid_t);
 
 int
 get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
@@ -70,8 +65,5 @@ get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
 void
 get_strdata(int, char *, char *, int);
 
-bool
-has_matching_grid_dimscale(hid_t dataset, int ndim, int *size, hid_t *dimids);
 
-
-#endif                          //_H5Git_H
+#endif                          //_H5GET_H

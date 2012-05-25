@@ -34,9 +34,11 @@
 
 #include "BESAbstractModule.h"
 
-/// A class for BES support
+/// \file HDF5Module.h
+/// \brief The starting and ending fuctions for the HDF5 OPeNDAP handler via BES
 ///
-/// @author  Patrick West <pwest@ucar.edu>
+/// \author  Patrick West <pwest@ucar.edu>
+
 class HDF5Module:public BESAbstractModule {
   public:
     HDF5Module() { }

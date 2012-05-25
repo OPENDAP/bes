@@ -1,3 +1,6 @@
+2012-05-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
+	* reengineered handler for the better support of CF option.
+
 2012-02-01  James Gallagher <jgallagher@opendap.org>
 
 	Fixed an issue with attributes that use varying length strings in

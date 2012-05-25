@@ -24,6 +24,17 @@
 // You can contact The HDF Group, Inc. at 1901 South First Street,
 // Suite C-2, Champaign, IL 61820  
 
+/// \file HDF5Int32.cc
+/// 
+/// \brief Implementation of mapping HDF5 32-bit integer to DAP for the default option.
+///
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (myang6@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+///
+///
+
+
 #include "config_hdf5.h"
 
 #include <string>
@@ -73,6 +84,14 @@ bool HDF5Int32::read()
 
         set_read_p(true);
 	set_value(buf);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
     }
 
 

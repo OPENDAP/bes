@@ -268,4 +268,14 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-
+#-----------------------------------------------------------------------#
+# HDF5 handler specific parameters                                      #
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#   (true,yes|false,no, defaults to false)
+# Since most centers  would like to handle HDF5 data that follows CF now,
+# I set the EnableCF to be true, KY 2011-8-4
+#
+H5.EnableCF=true
+H5.EnableCheckNameClashing=true
+H5.EnableAddPathAttrs=true

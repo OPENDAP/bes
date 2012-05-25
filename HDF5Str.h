@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _hdf5str_h
 #define _hdf5str_h 1
@@ -46,16 +46,15 @@
 using namespace libdap;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// A class for handling string data type in HDF5.
+/// \file HDF5Str.h
 ///
-/// This class that translates HDF5 string into DAP string.
+/// \brief This class that translates HDF5 string into DAP string for the default option.
 /// 
-/// @author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// @author Kent Yang       (ymuqun@hdfgroup.org)
-/// @author James Gallagher (jgallagher@opendap.org)
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (myang6@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
 ///
 /// Copyright (c) 2007 HDF Group
-/// Copyright (c) 1999 National Center for Supercomputing Applications.
 /// 
 /// All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////

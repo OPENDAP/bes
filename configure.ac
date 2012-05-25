@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(hdf5_handler, 1.5.1, opendap-tech@opendap.org)
+AC_INIT(hdf5_handler, 2.0.0, opendap-tech@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE
@@ -74,7 +74,8 @@ AC_CHECK_HDF5(
   [
       LIBS="$LIBS $H5_LIBS"
       LDFLAGS="$LDFLAGS $H5_LDFLAGS"
-      CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS -DH5_USE_16_API"
+      CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS "
+      dnl CPPFLAGS="$CPPFLAGS $H5_CPPFLAGS -DH5_USE_16_API"
   ],
   [
       echo "*** Use --with-hdf5 for the root hdf5 directory."
@@ -83,35 +84,6 @@ AC_CHECK_HDF5(
       AC_MSG_ERROR([hdf5 library and hdf5 headers are required.])
   ]
 )
-
-AC_ARG_ENABLE([cf], 
-	     [AS_HELP_STRING([--enable-cf=yes],[Pseudo CF metadata convention support will be enabled.])],
-	     [use_cf=$enableval],[use_cf=no])
-if test "${use_cf}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DCF"
-fi 
-
-
-AC_ARG_ENABLE([short-path], 
-	     [AS_HELP_STRING([--enable-short-path=yes],[Short path name will be used instead of full path])],
-	     [use_short_path=$enableval],[use_short_path=no])
-if test "${use_short_path}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DSHORT_PATH"
-fi 
-
-AC_ARG_ENABLE([eos-grid], 
-	     [AS_HELP_STRING([--enable-eos-grid=yes],[NASA EOS file grid mapping support will be added])],
-	     [use_eos_grid=$enableval],[use_eos_grid=yes])
-if test "${use_eos_grid}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DNASA_EOS_GRID"
-fi 
-
-AC_ARG_ENABLE([eos-meta], 
-	     [AS_HELP_STRING([--enable-eos-meta=yes],[NASA EOS file meta file parse support will be added])],
-	     [use_eos_meta=$enableval],[use_eos_meta=yes])
-if test "${use_eos_meta}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DNASA_EOS_META"
-fi 
 
 AC_CHECK_BES([3.9.0],
 [

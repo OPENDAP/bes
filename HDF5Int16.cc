@@ -26,6 +26,16 @@
 
 // #define DODS_DEBUG
 
+/// \file HDF5Int16.cc
+/// \brief Implementation of mappign HDF5 signed 16-bit integer to DAP for the default option. 
+/// 
+///
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+///
+
+
 #include "config_hdf5.h"
 #include "debug.h"
 #include <string>
@@ -64,6 +74,15 @@ bool HDF5Int16::read()
 	buf = (signed char) buf2;
 	set_read_p(true);
 	set_value(buf);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
     }
 
     if (get_dap_type(ty_id) == "Int16") {
@@ -72,6 +91,15 @@ bool HDF5Int16::read()
 
 	set_read_p(true);
 	set_value(buf);
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
+
     }
 
     if (get_dap_type(ty_id) == "Structure") {

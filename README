@@ -1,3 +1,11 @@
+Updated for version 2.0.0
+
+  This version has many changes in handling NASA HDF5 and HDF-EOS5 data products.
+The main goal of changes is to follow CF conventions robustly.
+
+  The --enable-cf configuration option is replaced with the BES key. You can 
+enable for disable CF feature of hdf5_handler dynamically.
+
 
 Updated for version 1.5.1
 

@@ -21,6 +21,12 @@
 // Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // #define DODS_DEBUG
+/// \file HDF5Structure.cc
+/// \brief The implementation of converting HDF5 compound type into DAP structure for the default option.
+///
+/// \author James Gallagher
+/// \author Hyo-Kyung Lee
+
 
 #include <string>
 #include <ctype.h>
@@ -84,6 +90,17 @@ bool HDF5Structure::read()
     }
 
     set_read_p(true);
+    // Release the handles.
+#if 0
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+#endif
+
+
     return false;
 }
 

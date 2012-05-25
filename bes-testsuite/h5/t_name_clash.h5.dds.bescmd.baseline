@@ -1,0 +1,8 @@
+Dataset {
+    Int32 _d1_[1][2];
+    Int32 _g_dset1[1][2];
+    Int32 _g_dset1_1[1][2];
+    Int32 _g_dset1_2[1][2];
+    Float64 _g_dset1_3[2][2];
+    Float64 _g_dset1_1_1[2][2];
+} virtual;

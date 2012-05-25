@@ -22,10 +22,10 @@
 // Suite C-2, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
-/// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
-/// for HDF5 data.
+/// \file HDF5PathFinder.cc
+/// \brief Implementation of finding and breaking a cycle in the HDF group.
+/// Used to handle the rare case for thed default option.
 ///
-/// This file contains functions that remember the paths within a HDF5 file.
 ///
 /// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
 ///

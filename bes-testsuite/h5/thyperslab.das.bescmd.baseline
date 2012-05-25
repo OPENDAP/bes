@@ -1,8 +1,0 @@
-Attributes {
-    HDF5_ROOT_GROUP {
-        String Dataset "stripmine";
-    }
-    /stripmine {
-        String HDF5_OBJ_FULLPATH "/stripmine";
-    }
-}

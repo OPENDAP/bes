@@ -48,24 +48,28 @@
 */
 
 %{
-#include "config_hdf5.h"
-
-
-#include <string.h>
-#include <assert.h>
-#include "parser.h"
-
 #ifndef YY_PROTO
 #define YY_PROTO(proto) proto
 #endif
-
 #define YYSTYPE char *
 #define YY_DECL int he5daslex YY_PROTO(( void ))
 #define YY_READ_BUF_SIZE 16384
-  
+#define ECHO if (fwrite( yytext, yyleng, 1, yyout )) {}
+
+#include <string.h>
+#include <assert.h>
+#include <string>
+#include <sstream>
+#include <iostream>
+
+#include "config_hdf5.h"
+#include "parser.h"
 #include "he5das.tab.hh"
 
-int he5dds_line_num = 1;
+using namespace std;
+using namespace libdap;
+
+int he5das_line_num = 1;
 static int start_line;		/* used in quote and comment error handlers */
 
 %}
@@ -97,15 +101,15 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 
 %%
 
-{GROUP}	    	    	he5daslval = yytext; return GROUP;
-{END_GROUP}    	    	he5daslval = yytext; return END_GROUP;
-{OBJECT}    	        he5daslval = yytext; return OBJECT;
-{END_OBJECT}    	he5daslval = yytext; return END_OBJECT;
+{GROUP}	    	    	he5daslval = yytext; return DAS_GROUP;
+{END_GROUP}    	    	he5daslval = yytext; return DAS_END_GROUP;
+{OBJECT}    	        he5daslval = yytext; return DAS_OBJECT;
+{END_OBJECT}    	he5daslval = yytext; return DAS_END_OBJECT;
 {END}                   /* Ignore */
-{INT}                   he5daslval = yytext; return INT;
-{FLOAT}                 he5daslval = yytext; return FLOAT;
+{INT}                   he5daslval = yytext; return DAS_INT;
+{FLOAT}                 he5daslval = yytext; return DAS_FLOAT;
 {DATA_TYPE}	    	/* Ignore */
-{STR}	    	    	he5daslval = yytext; return STR;
+{STR}	    	    	he5daslval = yytext; return DAS_STR;
 
 "="                     return (int)*yytext;
 "("                     return (int)*yytext;
@@ -114,47 +118,45 @@ NEVER   [^a-zA-Z0-9_/.+\-{}:;,%]
 ";"                     /* Ignore */
 
 [ \t]+
-\n	    	    	++he5dds_line_num;
-<INITIAL><<EOF>>    	yy_init = 1; he5dds_line_num = 1; yyterminate();
+\n	    	    	++he5das_line_num;
+<INITIAL><<EOF>>    	yy_init = 1; he5das_line_num = 1; yyterminate();
 
-"/*"			BEGIN(comment); start_line = he5dds_line_num; yymore();
+"/*"			BEGIN(comment); start_line = he5das_line_num; yymore();
 <comment>"*/"		{ 
     			  BEGIN(INITIAL); 
 
 			  he5daslval = yytext;
 
-			  return COMMENT;
+			  return DAS_COMMENT;
                         }
 <comment>[^"\n\\*]*	yymore();
-<comment>[^"\n\\*]*\n	yymore(); ++he5dds_line_num;
+<comment>[^"\n\\*]*\n	yymore(); ++he5das_line_num;
 <comment>\*[^/\n]       yymore();
-<comment>\*\n           yymore(); ++he5dds_line_num;
+<comment>\*\n           yymore(); ++he5das_line_num;
 <comment>\\.		yymore();
 <comment><<EOF>>	{
-                          char msg[256];
-			  sprintf(msg,
-				  "Unterminated comment (starts on line %d)\n",
-				  start_line);
-			  YY_FATAL_ERROR(msg);
+                          ostringstream msg;
+                          msg << "Unterminated comment (starts on line "
+                              << start_line << ")";
+                          YY_FATAL_ERROR(msg.str().c_str());
                         }
 
-\"			BEGIN(quote); start_line = he5dds_line_num; yymore();
+\"			BEGIN(quote); start_line = he5das_line_num; yymore();
 <quote>[^"\n\\]*	yymore();
-<quote>[^"\n\\]*\n	yymore(); ++he5dds_line_num;
+<quote>[^"\n\\]*\n	yymore(); ++he5das_line_num;
 <quote>\\.		yymore();
 <quote>\"		{ 
     			  BEGIN(INITIAL); 
 
 			  he5daslval = yytext;
 
-			  return STR;
+			  return DAS_STR;
                         }
 <quote><<EOF>>		{
-                          char msg[256];
-			  sprintf(msg,
-				  "Unterminated quote (starts on line %d)\n",
-				  start_line);
-			  YY_FATAL_ERROR(msg);
+                          ostringstream msg;
+                          msg << "Unterminated quote (starts on line "
+                              << start_line << ")";
+                          YY_FATAL_ERROR(msg.str().c_str());
                         }
 
 {NEVER}                 {

@@ -22,22 +22,20 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// CDFRequestHandler.h
+// HDF5RequestHandler.h
 
 #ifndef I_HDF5RequestHandler_H
 #define I_HDF5RequestHandler_H 1
 
 #include "BESRequestHandler.h"
 
-/// A class for BES support
+/// \file HDF5RequestHandler.h
+/// \brief include the entry functions to execute the handlers
 ///
-/// @author James Gallagher <jgallagher@opendap.org>
+/// It includes build_das, build_dds and build_data etc.
+/// \author James Gallagher <jgallagher@opendap.org>
 class HDF5RequestHandler:public BESRequestHandler {
-private:
-    static bool     _ignore_unknown_types ;
-    static bool     _ignore_unknown_types_set ;
-
-public:
+  public:
     HDF5RequestHandler(const string & name);
     virtual ~HDF5RequestHandler(void);
 
@@ -46,8 +44,6 @@ public:
     static bool hdf5_build_data(BESDataHandlerInterface & dhi);
     static bool hdf5_build_help(BESDataHandlerInterface & dhi);
     static bool hdf5_build_version(BESDataHandlerInterface & dhi);
-
-    static bool get_ignore_unknown_types() { return _ignore_unknown_types; }
 };
 
 #endif

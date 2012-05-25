@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file h5dds.h
-/// \brief Data structure and retrieval processing header
+/// \brief Data structure and retrieval processing header for the default option
 ///
 /// This file is part of h5_dap_handler, A C++ implementation of the DAP handler
 /// for HDF5 data.
@@ -54,4 +54,4 @@
 using namespace libdap;
 
 bool depth_first(hid_t, char *, DDS &, const char *);
-string get_short_name_dimscale(string name);
+void read_objects(DDS & dds, const string & varname, const string & filename);

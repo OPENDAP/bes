@@ -26,34 +26,21 @@
 /// \mainpage
 /// 
 /// \section Introduction
-/// This is the OPeNDAP HDF5 server which extracts DAS/DDS/DODS information
-/// from an hdf5 data file. 
+/// This is the HDF5 OPeNDAP handler that  extracts DAS/DDS/DODS information
+/// from an  file. 
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file hdf5_handler.h
-/// \brief The main header of HDF5 OPeNDAP handler
+/// \brief The main header of the HDF5 OPeNDAP handler
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef _hdf5_handler_H
 #define _hdf5_handler_H
-/// Maximum number of dimensions in an array.
+/// Maximum number of dimensions in an array(default option only).
 #define DODS_MAX_RANK 30
-/// Maximum length of variable or attribute name
+/// Maximum length of variable or attribute name(default option only).
 #define DODS_NAMELEN    1024
-/// Maximum length of a dimension name in DIMENSION_LIST attribute.
-#define HDF5_DIMVARLEN  24
-/// The name of dimension list attribute used in HDF5.
-#define HDF5_DIMENSIONLIST "DIMENSIONLIST"
-/// The name of dimension name list attribute used in HDF5.
-#define HDF5_DIMENSIONNAMELIST "DIMENSION_NAMELIST"
-/// This enables generation of Grid from HDF5 array with dimension scales.
-/// If this is commented out, no Grid will be generated from HDF5.
-#define DODSGRID
-/// The special DAS attribute name for HDF5 soft link.
-#define HDF5_softlink "HDF5_softlink"
-/// The special DAS attribute name for HDF5 hard link.
-#define HDF5_hardlink "HDF5_hardlink"
 /// The special DAS attribute name for HDF5 path information from the top(root) group.
 #define HDF5_OBJ_FULLPATH "HDF5_OBJ_FULLPATH"
 
@@ -145,8 +132,11 @@ static const char URL[] = "Url";
 #include "h5das.h"
 #include "h5dds.h"
 #include "h5get.h"              
-#include "HE5Parser.h"             
 #include "HDF5PathFinder.h"
+
+/// Adding CF options
+
+//#include "h5cfdds.h"
 
 using namespace libdap;
 #endif

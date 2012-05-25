@@ -36,14 +36,15 @@
 
 using namespace libdap;
 
-/// A class for HDF5 byte type.
+/// \file HDF5Byte.h
+/// \brief This class provides a way to map HDF5 byte to DAP Byte for the default option.
 /// 
-/// This class provides a way to map HDF5 byte to DAP Byte.
 ///
-/// @author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// @author Kent Yang       (ymuqun@hdfgroup.org)
-/// @author James Gallagher (jgallagher@opendap.org)
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
 ///
+
 class HDF5Byte:public Byte {
 
   private:

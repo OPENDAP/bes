@@ -26,6 +26,17 @@
 
 // #define DODS_DEBUG
 
+/// \file HDF5Float64.cc
+/// \brief  Implementation fo mapping HDF5 64 bit float to DAP for the default option
+/// 
+///
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+///
+
+
+
 #include <string>
 #include <ctype.h>
 #include "config_hdf5.h"
@@ -63,6 +74,15 @@ bool HDF5Float64::read()
 	get_data(dset_id, (void *) &buf);
 	set_read_p(true);
 	set_value(buf);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
     }
 
     if (get_dap_type(ty_id) == "Structure") {
@@ -140,6 +160,7 @@ bool HDF5Float64::read()
 
 	set_value(buf[j].a);
     }
+
     return false;
 }
 

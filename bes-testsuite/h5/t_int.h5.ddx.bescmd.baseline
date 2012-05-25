@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="virtual" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="_d16_1">
+        <Attribute name="minimum" type="Int16">
+            <value>-32768</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int16">
+            <value>32767</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>d16_1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/d16_1</value>
+        </Attribute>
+        <Int16/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_d16_2">
+        <Attribute name="minimum" type="Int16">
+            <value>-32768</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int16">
+            <value>32767</value>
+        </Attribute>
+        <Attribute name="value_1d" type="Int16">
+            <value>-32768</value>
+            <value>32767</value>
+        </Attribute>
+        <Attribute name="value_2d" type="Int16">
+            <value>-32768</value>
+            <value>1</value>
+            <value>2</value>
+            <value>32767</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>d16_2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/d16_2</value>
+        </Attribute>
+        <Int16/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_d32_1">
+        <Attribute name="minimum" type="Int32">
+            <value>-2147483648</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int32">
+            <value>2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>d32_1</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/d32_1</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <Array name="_d32_2">
+        <Attribute name="minimum" type="Int32">
+            <value>-2147483648</value>
+        </Attribute>
+        <Attribute name="maximum" type="Int32">
+            <value>2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>d32_2</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/d32_2</value>
+        </Attribute>
+        <Int32/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+        <dimension size="2"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

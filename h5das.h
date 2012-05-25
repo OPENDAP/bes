@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file h5das.h
-/// \brief Data attributes processing header
+/// \brief Data attributes processing header for the default option.
 ///
 /// This file is part of h5_dap_handler, A C++ implementation of the DAP 
 /// handler for HDF5 data.
@@ -48,15 +48,8 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname,
 void depth_first(hid_t, const char *, DAS &);
 void find_gloattr(hid_t file, DAS & das);
 string get_hardlink(hid_t, const string &);
-void get_softlink(DAS &, hid_t, const string &, int);
-bool is_mappable(hid_t _attr_id, string _name, string _dap_type);
+void get_softlink(DAS &, hid_t, const char*, const string &, int,size_t);
 void read_comments(DAS & das, const string & varname, hid_t oid);
-void read_objects(DAS & das, const string & varname, hid_t dset, int num_attr);
-#ifdef CF
-void write_grid_global_attribute(DAS & das);
-void write_grid_coordinate_variable_attribute(DAS & das);
-void write_swath_global_attribute(DAS &das);
-void write_za_global_attribute(DAS &das);
-void write_swath_za_coordinate_unit_attribute(AttrTable* at, string varname);
-#endif
+void read_objects(DAS & das, const string & varname, hid_t dset,
+                  int num_attr);
 #endif

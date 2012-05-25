@@ -1,0 +1,117 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_Swath {
+    }
+    HDFEOS_SWATHS_Swath_Data_Fields {
+    }
+    HDFEOS_SWATHS_Swath_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+        String fullpath "/HDFEOS INFORMATION";
+    }
+    Temperature {
+        String units "K";
+        String origname "Temperature";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Data Fields/Temperature";
+        String orig_dimname_list "NDim ";
+    }
+    Level {
+        String units "hPa";
+        String origname "Level";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Level";
+        String orig_dimname "ZDim";
+    }
+    Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Longitude";
+        String orig_dimname "NDim";
+    }
+    Pressure {
+        String units "hPa";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Pressure";
+        String orig_dimname "ZDim";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Latitude";
+        String orig_dimname "NDim";
+    }
+    ZDim {
+        String units "level";
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "Swath";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "ZDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "NDim";
+                        Int32 Size 8;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Level";
+                        String DimList "ZDim";
+                        String MaxdimList "ZDim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Pressure";
+                        String DimList "ZDim";
+                        String MaxdimList "ZDim";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "Latitude";
+                        String DimList "NDim";
+                        String MaxdimList "NDim";
+                    }
+                    GeoField_4 {
+                        String GeoFieldName "Longitude";
+                        String DimList "NDim";
+                        String MaxdimList "NDim";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Temperature";
+                        String DimList "ZDim", "NDim";
+                        String MaxdimList "ZDim", "NDim";
+                    }
+                }
+                ProfileField {
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+        ZaStructure {
+        }
+    }
+}

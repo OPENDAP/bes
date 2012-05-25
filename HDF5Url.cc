@@ -21,8 +21,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
+
+////////////////////////////////////////////////////////////////////////////////
+/// \file HDF5Url.cc
+/// \brief Implementation of generating DAP URL type for the default option.
+///
+/// \author James Gallagher <jgallagher@opendap.org>
+/// \author Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+///
+/// \see String
+////////////////////////////////////////////////////////////////////////////////
+
 
 #include "config_hdf5.h"
 
@@ -62,6 +73,15 @@ bool HDF5Url::read()
     }
     string reference = name;
     set_value(reference);
+
+     // Release the handles.
+    if (H5Tclose(ty_id) < 0) {
+       throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+    }
+    if (H5Dclose(dset_id) < 0) {
+       throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+    }
+
 
     return false;
 }

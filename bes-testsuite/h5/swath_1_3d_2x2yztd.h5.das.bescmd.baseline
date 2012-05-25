@@ -1,0 +1,133 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_Swath {
+    }
+    HDFEOS_SWATHS_Swath_Data_Fields {
+    }
+    HDFEOS_SWATHS_Swath_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+        String fullpath "/HDFEOS INFORMATION";
+    }
+    Temperature {
+        String units "K";
+        String origname "Temperature";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Data Fields/Temperature";
+        String coordinates "TDim Latitude Longitude";
+    }
+    Date {
+        String units "days since 2012-1-1 0:0:0";
+        String origname "Date";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Date";
+        String coordinates "TDim";
+    }
+    Time {
+        String units "seconds since 2012-1-1 0:0:0";
+        String origname "Time";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Time";
+        String coordinates "TDim";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Latitude";
+    }
+    Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Longitude";
+    }
+    Pressure {
+        String units "hPa";
+        String origname "Pressure";
+        String fullnamepath "/HDFEOS/SWATHS/Swath/Geolocation Fields/Pressure";
+    }
+    TDim {
+        String units "level";
+    }
+    StructMetadata {
+        SwathStructure {
+            SWATH_1 {
+                String SwathName "Swath";
+                Dimension {
+                    Dimension_1 {
+                        String DimensionName "YDim";
+                        Int32 Size 4;
+                    }
+                    Dimension_2 {
+                        String DimensionName "XDim";
+                        Int32 Size 8;
+                    }
+                    Dimension_3 {
+                        String DimensionName "ZDim";
+                        Int32 Size 2;
+                    }
+                    Dimension_4 {
+                        String DimensionName "TDim";
+                        Int32 Size 2;
+                    }
+                }
+                DimensionMap {
+                }
+                IndexDimensionMap {
+                }
+                GeoField {
+                    GeoField_1 {
+                        String GeoFieldName "Pressure";
+                        String DimList "ZDim";
+                        String MaxdimList "ZDim";
+                    }
+                    GeoField_2 {
+                        String GeoFieldName "Time";
+                        String DimList "TDim";
+                        String MaxdimList "TDim";
+                    }
+                    GeoField_3 {
+                        String GeoFieldName "Date";
+                        String DimList "TDim";
+                        String MaxdimList "TDim";
+                    }
+                    GeoField_4 {
+                        String GeoFieldName "Latitude";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                    GeoField_5 {
+                        String GeoFieldName "Longitude";
+                        String DimList "YDim", "XDim";
+                        String MaxdimList "YDim", "XDim";
+                    }
+                }
+                DataField {
+                    DataField_1 {
+                        String DataFieldName "Temperature";
+                        String DimList "TDim", "YDim", "XDim";
+                        String MaxdimList "TDim", "YDim", "XDim";
+                    }
+                }
+                ProfileField {
+                }
+                MergedFields {
+                }
+            }
+        }
+        GridStructure {
+        }
+        PointStructure {
+        }
+        ZaStructure {
+        }
+    }
+}

@@ -21,8 +21,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
+
+/// \file HDF5UInt16.cc
+/// 
+/// \brief The implementation of mapping unsigned HDF5 16 bit integer to DAP UInt16 for the default option.
+///
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (myang6@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
+
 
 #include "config_hdf5.h"
 #include "debug.h"
@@ -64,6 +73,15 @@ bool HDF5UInt16::read()
 	get_data(dset_id, (void *) &buf);
 	set_read_p(true);
 	set_value(buf);
+
+        // Release the handles.
+        if (H5Tclose(ty_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+        }
+        if (H5Dclose(dset_id) < 0) {
+            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+        }
+
     }
 
     if (get_dap_type(ty_id) == "Structure") {
@@ -151,7 +169,7 @@ bool HDF5UInt16::read()
 	DBG(cerr << "index " << j << endl);
 	set_value(buf[j].a);
     } // In case of structure
-
+ 
     return false;
 }
 

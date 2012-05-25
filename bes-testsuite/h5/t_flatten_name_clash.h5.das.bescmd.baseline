@@ -1,0 +1,18 @@
+Attributes {
+    _a {
+    }
+    _a_b {
+    }
+    _a_b_c {
+    }
+    _a_b_c_1 {
+    }
+    _a_b_c_d {
+        String origname "d";
+        String fullnamepath "/a/b/c/d";
+    }
+    _a_b_c_d_1 {
+        String origname "d";
+        String fullnamepath "/a_b_c/d";
+    }
+}

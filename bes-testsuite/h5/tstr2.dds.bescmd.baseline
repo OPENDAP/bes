@@ -1,8 +1,0 @@
-Dataset {
-    String /g1/dset1[10];
-    String /g2/dset2[10];
-    String /g3/dset3[10];
-    String /g4/dset4[10];
-    String /g5/dset5[10];
-    String /g6/dset6[10];
-} tstr2.h5;

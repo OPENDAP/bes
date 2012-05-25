@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Int16_h
 #define _HDF5Int16_h 1
@@ -36,14 +36,16 @@
 
 using namespace libdap;
 
-/// A class for HDF5 signed 16 bit integer type.
+/// \file HDF5Int16.h
+/// \brief A class for HDF5 signed 16 bit integer type.
 /// 
 /// This class provides a way to map HDF5 signed 16 bit integer to DAP Int16.
 ///
-/// @author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
-/// @author Kent Yang       (ymuqun@hdfgroup.org)
-/// @author James Gallagher (jgallagher@opendap.org)
+/// \author Hyo-Kyung Lee   (hyoklee@hdfgroup.org)
+/// \author Kent Yang       (ymuqun@hdfgroup.org)
+/// \author James Gallagher (jgallagher@opendap.org)
 ///
+
 class HDF5Int16:public Int16 {
   private:
     hid_t dset_id;

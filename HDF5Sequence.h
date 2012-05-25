@@ -21,8 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-// You can contact The HDF Group, Inc. at 1901 South First Street,
-// Suite C-2, Champaign, IL 61820  
+// You can contact The HDF Group, Inc. at 1800 South Oak Street,
+// Suite 203, Champaign, IL 61820  
 
 #ifndef _HDF5Sequence_h
 #define _HDF5Sequence_h 1
@@ -32,11 +32,12 @@
 
 using namespace libdap;
 
-/// A HDF5Sequence class.
+/// \file HDF5Sequence.h
+/// \brief A HDF5Sequence class.
 /// This class is not used in the current hdf5 handler and
 /// is provided to support DAP Sequence data type if necessary.
 ///
-/// @author James Gallagher
+/// \author James Gallagher
 ///
 /// @see Sequence 
 class HDF5Sequence:public Sequence {

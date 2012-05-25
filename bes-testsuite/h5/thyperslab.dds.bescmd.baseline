@@ -1,3 +1,0 @@
-Dataset {
-    Float64 /stripmine[32][4097];
-} thyperslab.h5;
