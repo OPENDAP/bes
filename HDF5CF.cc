@@ -1115,7 +1115,7 @@ File:: Add_Supplement_Attrs(bool add_path) throw(Exception) {
 
             Attribute * attr = new Attribute();
             const string varname = (*irg)->path;
-            const string attrname = "fullpath";
+            const string attrname = "fullnamepath";
             Add_Str_Attr(attr,attrname,varname);
             (*irg)->attrs.push_back(attr);
         }

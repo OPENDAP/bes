@@ -15,7 +15,7 @@ Attributes {
     }
     HDFEOS_INFORMATION {
         String HDFEOSVersion "HDFEOS_5.1.13";
-        String fullpath "/HDFEOS INFORMATION";
+        String fullnamepath "/HDFEOS INFORMATION";
     }
     Temperature {
         String units "K";

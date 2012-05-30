@@ -10,7 +10,7 @@
         <Attribute name="HDFEOSVersion" type="String">
             <value>HDFEOS_5.1.13</value>
         </Attribute>
-        <Attribute name="fullpath" type="String">
+        <Attribute name="fullnamepath" type="String">
             <value>/HDFEOS INFORMATION</value>
         </Attribute>
     </Attribute>
