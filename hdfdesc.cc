@@ -178,6 +178,7 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 #ifdef USE_HDFEOS2_LIB
 void read_das(DAS & das, const string & filename);
 void read_dds(DDS & dds, const string & filename);
+
 // read_dds for HDF-EOS2
 bool read_dds_hdfeos2(DDS & dds, const string & filename,
                       HE2CFNcML* ncml,
@@ -430,13 +431,15 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
 
                             // current design: Z field should be under geofield.
 //We find the third dimension is located under "data fields" group for some MODIS files; so release this for you. KY 2010-6-26
+
 #if 0
                             if(fieldtype == 3) 
                               throw InternalErr(__FILE__, __LINE__,
                   			"Coordinate variables for Swath should be under geolocation group");
 
 #endif
-                            std::string tempfieldname;
+
+                          std::string tempfieldname;
                             // Because the field name gets changed for third-dimension grid 
                             // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
                             // we have to obtain the original field name,saved as the tempfieldname.
@@ -615,7 +618,6 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                             }
                             else tempfieldname = (*it_f)->getName();
  
-
                             HDFEOS2Array_RealField *ar = NULL;
                             ar = new HDFEOS2Array_RealField(
                                                             (*it_f)->getRank(),
@@ -1416,6 +1418,16 @@ bool read_das_hdfsp(DAS & das, const string & filename,
             || arg.status() == false){
             (*BESLog::TheLog()) << "HDF-EOS parse error " << core_metadata << endl;
         }
+#endif
+        if (hdfeosparse(static_cast < void *>(&arg)) != 0)
+            throw Error("HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute.");
+
+        // Errors returned from here are ignored.
+        if (arg.status() == false) {
+            BESDEBUG("h4", "HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute. (2)" << endl
+                     << arg.error()->get_error_message() << endl);
+        }
+
         hdfeos_delete_buffer(buf);
     }
             
@@ -2282,7 +2294,6 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
         return false;
      }
 
-
     HDFEOS2::File *f;
     
     try {
@@ -2329,7 +2340,6 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 	if(mtype!=OTHER_TYPE)
 		break;
    }
-
     // A flag not to generate structMetadata for the MOD13C2 file.
     // MOD13C2's structMetadata has wrong values. It couldn't pass the parser. 
     // So we want to turn it off. KY 2010-8-10
@@ -2507,6 +2517,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
             string newfname = swath->getGeoFields()[j]->getNewName();
             DBG(cout << "Original Field name: " <<  fname << endl);
             DBG(cout << "Corrected Field name: " <<  newfname << endl);
+
             int dimlistsize = swath->getGeoFields()[j]->getDimensions().size();
             DBG(cout << "the original dimlist size: "<< dimlistsize << endl);
             for(unsigned int k = 0; 
@@ -2778,14 +2789,12 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 
 }    
 
-
 //The wrapper of building HDF-EOS2 and special HDF4 files. 
 void read_das_use_eos2lib(DAS & das, const string & filename,
                   HE2CFNcML* ncml,
                   HE2CFShortName* sn, HE2CFShortName* sn_dim,
                   HE2CFUniqName* un, HE2CFUniqName* un_dim)
 {
-
     if(read_das_hdfeos2(das, filename, ncml, sn, sn_dim, un, un_dim)){
         return;
     }
@@ -2796,10 +2805,7 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
     read_das(das, filename);
 }
 
-
-
 #endif // #ifdef USE_HDFEOS2_LIB
-
 
 void read_dds(DDS & dds, const string & filename)
 {
@@ -2812,6 +2818,7 @@ void read_dds(DDS & dds, const string & filename)
 		// dds.print(cerr);
 		THROW(dhdferr_ddssem);
 	}
+
 	return;
 }
 
@@ -2829,7 +2836,6 @@ void read_das(DAS & das, const string & filename)
     }
     return;
 }
-
 
 // Scan the HDF file and build the DDS and DAS
 static void build_descriptions(DDS & dds, DAS & das,
@@ -2943,10 +2949,12 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
 static void SDS_descriptions(sds_map & map, DAS & das,
                              const string & filename)
 {
+
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
 
     // Read SDS file attributes attr_iter i = ;
+
     vector < hdf_attr > fileattrs;
     sdsin >> fileattrs;
 
