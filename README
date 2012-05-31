@@ -1,23 +1,43 @@
 Updated for version 3.9.4 (19 Jan, 2011)
 
-Fixed the bug in uint16/uint32 type attribute handling.
+1. Fixed the bug in uint16/uint32 type attribute handling.
 
-The following bug fix applies to only --with-hdfeos2 option.
+2. The following bug fix applies to only --with-hdfeos2 configuration option.
 
-Correced the handling the scale/offset for MODIS products because the 
+2.1 Correced the handling the scale/offset for MODIS products because the 
 MODIS scale/offset equation is quite different from the CF standard.
-For MODIS files, there are three different types. 
+
+ There are three different "scale_factor" and "add_offset" equations in MODIS 
+data files:
+
+1) For  MODIS L1B, MODIS 03,05,06,07,08,09A1,17 and ATML2 level 2 swath 
+products, MCD43B4, MCD43C1, MOD and MYD 43B4 level 3 grid files, the scale 
+offset equation is 
+
+  correct_data_value =  scale * (raw_data_value - offset).
+
+2) For MODIS 13, MODIS 09GA, and MODIS 09GHK, the scale offset equation is 
+
+  correct_data_value=(raw_data_value -offset)/scale_factor.
+
+3) For MODIS 11 level 2 swath products, the equation is 
+
+  correct_data_value =  scale * raw_data_value + offset.
+
 We decide the type based on the group name. 
+
 If the group name consists of "L1B", "GEO", "BRDF", "0.05Deg", "Reflectance", 
 "MOD17A2","North", "mod05", "mod06", "mod07", "mod08", or "atm12", 
 it is type 1. 
 If  the group name consists of  "LST", it is type 2. 
 If group name consists of "VI", "1km_2D", "L2g_2d", it is type 3.  
+
 For type 1, use (raw_value-offset)*scale.
 For type 2, use (raw_value*scale+offst). 
 For type 3, use (raw_value-offset)/scale.
-For recalculation of MODIS, one of the following conditions must meet, 
-that is to say 
+
+For recalculation of MODIS, one of the following conditions must meet:
+
 "radiance_scales" and "radiance_offsets" attributes are available, or 
 "reflectance_scales" and "reflectance_offsets" attributes are available, or 
 "scale_factor" and "add_offset" attriburtes are available. 
@@ -25,23 +45,49 @@ If any of the above conditions meet, recalculation will be applied,
 otherwise nothing will happen. If scale is 1 and offset is 0, we don't
 perform recalculation to improve performance. 
 
-Added the support for LAMAZ projection data such as MOD29 from NSIDC.
+Data values are adjusted based on it type. If "scale_factor" and "add_offset"
+attributes are not avalilable, "radiance_scales" and "radiance_offsets" 
+attributes, or "reflectance_scales" and "reflectance_offsets" attributes, are 
+used instead. 
 
-Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
+After adjustment, the data type is converted uniformly to float not to lose 
+precision even if its original data type is integer. The "valid_range" 
+attribute is removed followingly as it does not reflect the actual values 
+any more.
+
+Since some netCDF visualization tools will apply the linear scale and offset 
+equation to the data value if the CF "scale_factor" and "add_offset" attributes
+ appear, these two attributes are renamed as "sacle_factor_modis" and 
+"add_offset_modis" respectively to prevent the second adjustment. 
+
+
+2.2 Latitude and longitude are provided for HDF-EOS2 grid files that use 
+Space-Obilque Mercator(SOM) and Lambert Azimuthal Equal Area(LAMAZ) projections.
+ We added the support for LAMAZ projection data such as MOD29 from NSIDC. 
+For grid files using HDF-EOS2 Lambert Azimuthal Equal Area(LAMAZ) projection,
+ the latitude and longitude values retrieved from the HDF-EOS2 library include
+ infinite numbers. Those infinite numbers are removed and replaced with new 
+values through interpolation. Therefore, an HDF-EOS2 grid file with LAMAZ 
+projection can be served correctly.
+
+2.3 Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
 string:string Map.
 
-Known Bugs:
-  1. Attribute names are not sanitized if they contain non-CF compliant
+2.4 For OBPG L3m products, two additional CF attributes, "scale_factor" and 
+"add_offset", are added if their scaling function is linear. The values of 
+these two attributes are copied directly from file attributes, "Slope" and 
+"Intercept".
+
+2.5 Known Bugs:
+  1) Attribute names are not sanitized if they contain non-CF compliant
      characters such as '('. NSIDC MOD29 data product is a good example.
-  2. If different scale/offset rules should be applied to different datasets
+  2) If different scale/offset rules should be applied to different datasets
      like MOD09GA product, the current handler cannot handle them properly.
      We apply scale/offset rule globally on per file basis, not on per 
      individual dataset basis and CF visualization clients like IDV and 
      Panoply will not display some datasets correctly since they'll apply
      scale/offset rule according to the CF-convention which doesn't match
      MODIS's scale/offset rule.
-
-  
 
 Updated for 3.9.3 (21 Aug. 2011)
 
