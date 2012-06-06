@@ -54,6 +54,6 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5)(\.bz2|\.gz|\.Z)?$;
 # I set the EnableCF to be true, KY 2011-8-4
 #
 H5.EnableCF=true
-H5.EnableCheckNameClashing=true
+H5.EnableCheckNameClashing=false
 H5.EnableAddPathAttrs=true
 H5.EnableDropLongString=true

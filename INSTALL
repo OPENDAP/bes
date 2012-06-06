@@ -1,33 +1,85 @@
 $Id$
 
-Updated for version 1.6.0
+Updated for version 2.0.0
 
---------------------------------------------------------------------
-BUILDING THE SOFTWARE
+-------------------------------------------------------------------------------
 REQUIREMENTS
+INSTALLING RPM
+BUILDING THE SOFTWARE
+BUILDING FROM OUR SVN REPOSITORY
 NOTES
---------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-This file is provided to give a detailed instruction on customizing
-dap_h5_handler so that it will serve NASA AURA EOS5 GRID data in a way that
-can be used with the existing visualization clients(e.g. Ferret and GrADS)
-that follow strict CF convention.
-   
+  This file is provided to give detailed instructions on how to build the
+HDF5 handler. One main goal of this BES module is to make OPeNDAP 
+visualization clients (e.g., GrADS and IDV) access the NASA HDF5/HDF-EOS5 data.
+To achieve this goal, the module is implemented by making the NASA 
+HDF5/HDF-EOS5 data follow CF conventions.
+
+REQUIREMENTS
+
+  o You need the libdap-3.11.x and bes-3.10.x to build and install this
+    software. If you're using Linux, this means you can either build from 
+    source or use the libdap, libdap-devel, bes, and bes-devel RPM packages.
+
+  o You need a recent (version 1.8.8 or above) copy of HDF5. 
+    Use --with-hdf5 to specify where your hdf5 distribution is located 
+    if configure cannot find it on its own.
+    See './configure --help' for more info.
+
+    The latest release of HDF5 library is available from The HDF Group website:
+    http://www.hdfgroup.org/ftp/HDF5//current/
+
+  o If the build fails because of problems linking with the hdf5
+    library, you may need to build the library from source and force the 
+    compiler/linker to use the option '-fPIC' (Position Independent Code).
+
+
+INSTALLING RPM
+
+   If you use Linux system that supports RPM package manager and have a super
+ user privilege, the easiest way to install the HDF5 handler is using RPMs 
+ provided by OPeNDAP, Inc. and The HDF Group. 
+
+    Here are two basic commands for deleting and adding RPMs:
+
+  o Remove any existing RPM package using 'rpm -e <package_name>'. 
+  o Install a new RPM package using 'rpm -i <package_name.rpm>'. 
+
+1) Download and install the latest "libdap", "BES", and "General purpose 
+ handlers (aka dap-server)" RPMs first from
+
+   http://opendap.org/download/hyrax
+
+2) Download and install the latest "hdf5" RPMs from 
+
+    http://www.hdfgroup.org/ftp/HDF5//current/bin/RPMS/       
+
+3) Download and install the latest "hdf5_handler" RPM from
+
+   http://opendap.org/download/hyrax
+
+4) (Optional) Configure the handler after reading the NOTES section below.
+
+5) (Re)start the BES server.
+ 
+   %/usr/bin/besctl (re)start
+
+
 BUILDING THE SOFTWARE
 
-1) Type `./configure --enable-cf --enable-short-path' at the system
-   prompt. On some systems you may have to type `sh configure
-   --enable-cf --enable-short-path.' If you want this part of the
+1) Type `./configure' at the system prompt. On some systems you may have 
+   to type `sh configure.' If you want this part of the
    server to install someplace other than /usr/local/bin, use --prefix
    to change the prefix from the default "/use/local/."
 
-   If you don't need to serve these data, then you can omit these options
-   when you call configure.
+   If the configure script can't find the HDF5 library in your system, type 
+   `./configure --with-hdf5=</path/to/hdf5_libraryinstall_prefix/>' 
 
 2) Type `make' to build the handler.
 
 3) Install the server components in $prefix by running `make install.'
-   This will also add the new h5.conf file to the $prefix/etc/bes/modules
+   This will add the new h5.conf file to the $prefix/etc/bes/modules
    directory. The BES configuration file bes.conf will automatically
    load any module configuration files in that directory. The h5.conf
    file contains fileout_netcdf specific configurations for use with the
@@ -35,11 +87,18 @@ BUILDING THE SOFTWARE
    bes.conf file, such as the TypeMatch parameter for finding your
    files.
 
-For very detailed instructions on building the software, please see 
+   The h5.conf file has 4 parameters that can change the behavior of 
+   the hdf5_handler module. By default, all parameters except for 
+   the H5.EnableCheckNameClashing option are enabledto serve 
+   NASA HDF5/HDF-EOS5 products in a manner that follows CF conventions. 
+   We strongly recommend you to turn the H5.EnableCF option on. 
+   See NOTES below for details.
+  
+For very detailed instructions on building the software, please see
 
-   http://hdfdap.hdfgroup.uiuc.edu:8080/install.html
+   http://hdfeos.org/software/hdf5_handler/doc/install.html
 
-Building from Our SVN Repository
+BUILDING FROM OUR SVN REPOSITORY
 
   If you are building from a SVN checkout, run 'autoreconf --verbose'
   before './configure; make'. If you try to run autoconf, etc., by
@@ -49,176 +108,97 @@ Building from Our SVN Repository
   outlined above.
 
 
-REQUIREMENTS
-
-  o You need the libdap library version 3.11.0 to build and install this
-    software. If you're using Linux, this means either building form source
-    or using the libdap and libdap-devel RPM packages, once they are
-    available. 
-
-  o You need a recent(version 1.6.6 or above) copy of HDF5. 
-    Use --with-hdf5 to specify where your hdf5 distribution is located 
-    if configure cannot find it on its own.
-    See './configure --help' for more info.
-
-  o If you're planning on using this with Hyrax, version 1.5, you'll need
-    version 3.9.0 of the BES software.
-    
-  o If the build will fails because of problems linking with the hdf5
-    library, you may need to build the library from source and force the 
-    compiler/linker to use the option '-fPIC' (poisition Independet Code).
-
-
 NOTES
 
-  o About CF option 
+  o Options in /etc/bes/modules/h5.conf 
 
-    - This is an experimental option to support visualization clients
-      that follow CF convention. For details, please see technical
-      notes on the web.
+    1) H5.EnableCF option 
 
-      http://hdfdap.hdfgroup.uiuc.edu:8080/cf.html
+    - This is an option to support NASA HDF5/HDF-EOS5 data products.
+      The HDF5/HDF-EOS5 data products do not follow CF conventions. 
+      However, hdf5_handler can make them follow the conventions if you turn
+      on this option. The key benefit of this option is to allow OPeNDAP
+      visualization clients to display remote data seamlessly.
 
+      http://hdfeos.org/software/hdf5_handler/doc/cf.html
 
-  o EOS	Grid Generation
-    - EOS Grid generation must be enabled;otherwise, there's no point 
-      using visualization clients at all.
-      This is default configuration option so do not disable it by
-      supplying "--use_eos_grid=no".
+    2) H5.EnableCheckNameClashing option 
 
-  o EOS Metadata Parsing
-    - The "--enable-cf" option neither parses nor generate Metadata in DAS
-      since most clients can't handle such long string.
+    - This option checks if there are duplicate variable names when group
+      information is removed and some characters are replaced with underscore 
+      character. Although this option is required to ensure that no two variable
+      names are same, the operation is quite costly and thus can degrade the 
+      performance significantly. If you are certain that your HDF5 data 
+      won't have any duplicate name, you can turn this off to gain the 
+      performance of the server. 
 
-  o Short Path Name
+      For the NASA HDF5/HDF-EOS5 products we tested (AURA OMI/HIRDLS/MLS/TES,
+      MEaSUREs SeaWiFS/Ozone, Aquarius, GOSAT/acos, SMAP), we did not find any
+      name clashing for those objects. So the name clashing check seems 
+      unnecessary and this option is turned off by default. The handler will
+      check the name clashing for any products not tested regardless of turning
+      this option on or off. 
 
-    - By default, full path names that have group structure information  
-      are preserved in the dataset variable names. You can shorten them by 
-      using "--enable-short-path=yes" configuration option.
-    - The above option will rename each dataset as 'A{number}{datasetname}'
-      and cut the name to be 15 characters long. For example, a dataset
-      called "MyNameIsTooLongForGrADS" will be renamed  and cut as 
-      "A0MyNameIsTooLo".
-	
-  o Dimension name translation
+    3) H5.EnableAddPathAttrs option 
 
-   EOS data use non-standard name like XDim and YDim and they must be
-   renamed to follow CF convention.
+    - When this option is turned off, the hdf5_handler will not insert the
+      "fullnamepath" and "origname" attribute in DAS output. For example, 
+      the DAS output like below:
+ 
+      temperature {
+         String units "K";
+         String origname "temperature";
+         String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature";
+         String orig_dimname_list "XDim ";
+       }
 
-   In H5CF.cc near line 116, there's a function that performs
-   renaming. You can modify existing entries or add new entries if
-   necessary under H5CF::H5CF() constructor. For example, "nCandidate" 
-   in EOS doesn't match the concept of "lev" in CF exactly but it may be 
-   useful for displaying L2G EOS data since clients already know the 
-   dimension "lev".
+      will change to:
 
-	const char* H5EOS::get_CF_name(char* eos_name)
-	{
-	  string str(eos_name);
-          ....
-	  if(eos_to_cf_map[str].size() > 0){
-	    return eos_to_cf_map[str].c_str();
-	  }
-	  else{
-	    return str.c_str();
-	  }
-	}
-    
+      temperature {
+         String units "K";
+         String orig_dimname_list "XDim ";
+      }
+     
+      
+    4) H5.EnableDropLongStrng=true option 
 
-  o Special DAS Attribute Generation
-
-    This special handler generates some special attributes that don't exist
-    in the original EOS data to conform to the CF convention. One good
-    example is:
-
-    NC_GLOBAL {
-        String title "NASA EOS Aura Grid";
-        String Conventions "COARDS, GrADS";
-        String dataType "Grid";
-    }
-   
-    Such extra attributes are generated manually and hard coded. We
-    believe some of them may be generated automatically via Metadata
-    Parsing but we think it's good to leave it as is for a while since
-    there are many variations in EOS L3G data and they're not
-    finalized yet. In addition, some visualization clients simply
-    don't care while others look for very specific fields.
-
-    Modification is simple and straightforward. In h5das.cc, look for
-    a function called add_dimension_attributes() at the bottom of the
-    file. Feel free to modify it to correct values or add extra
-    attributes to meet your needs.
-    
-  o Shared dimension generation
-
-    For some clients, it's not sufficient to have map data within the
-    grid and map data should be defined outside the Grids. For
-    example, this handler will generate arrays in DDS
-    
-    Float32 lat[lat = 720];
-    Float32 lon[lon =1440];
-
-    although they are defined in Grids already like below.
-
-    Grid {
-      Array:
-        Float32 CloudFraction[lat = 720][lon = 1440];
-      Maps:
-        Float32 lat[lat = 720];
-        Float32 lon[lon = 1440];
-    } CloudFraction;
-    Grid {
-      Array:
-        Float32 CloudPressure[lat = 720][lon = 1440];
-      Maps:
-        Float32 lat[lat = 720];
-        Float32 lon[lon = 1440];
-    } CloudPressure;
-
-    This may cause a potential conflict problem if two Grids have the same Maps
-    variable name but dimensions are different.
-
-    For example,
-
-    Grid {
-      Array:
-        Float32 CloudFraction[lat = 720][lon = 1440];
-      Maps:
-        Float32 lat[lat = 720];
-        Float32 lon[lon = 1440];
-    } CloudFraction;
-    Grid {
-      Array:
-        Float32 CloudPressure[lat = 360][lon = 720];
-      Maps:
-        Float32 lat[lat = 360];
-        Float32 lon[lon = 720];
-    } CloudPressure;
-
-    This handler will generate only the shared dimension arrays in the first 
-    Grid:
-
-    Float32 lat[lat = 720];
-    Float32 lon[lon = 1440];
+    - NetCDF Java client cannot handle string size bigger than 32767
+      and will throw an error if such variable is seen. Thus, the hdf5_handler
+      need to hide such long string variables from DAS and DDS output.
+      This will ensure that NetCDF Java OPeNDAP visualization clients
+      such as IDV and Panoply can visualize other important variables.
+ 
 
   o Debugging Aids
 
+    - The handler uses BESDEBUG() to print informative error messages in the
+      bes.log file. To enable error logging in BES, start the server with -d 
+      option as follows:
+
+                %besctl start -d "cerr,all" 
+
     - The OPeNDAP libdap library includes the following debugging aids that
-      may be of help to you in developing new applications.
+      may help you in debugging HDF5 handler. 
 
     - DBG: simple program instrumentation -- see the file debug.h distributed
       with libdap (which is installed in the libdap header directory; use
-      'config-libdap --cflags' and look at the value if -I).
+      'dap-config --cflags' and look at the value of -I to locate the
+      header directory).
 
     - DBG2: more elaborate program instrumentation -- by convention this is
       used for output that is half a page or more, while DEBUG is used for
       single line output.
 
-    - To build with program instrumentation use `--enable-debug=<level>'
-      where <level> is 1 or 2.
+    - To build with program instrumentation, use `--enable-debug=<level>'
+      where <level> is 1 or 2. By default, debug is *not* enabled.
 
-    - By default, both debug and dbnew are *not* enabled. Thus, if you want
-      to build a straight version of the libraries and test code, use
-      `./configure'. If you want the extra features, use:
+    - The handler doesn't have many debugging messages in the current version. 
+      More messages will be added in the future release.
 
-      ./configure --enable-dbnew --enable-debug=2
+    - The handler codes are documented in Doxygen style and it comes with a 
+      sample Doxygen configuration file under doc/ directory. Please run 
+      
+               %cd doc; doxygen
+
+      to generate reference manuals of the HDF5 handler.
+

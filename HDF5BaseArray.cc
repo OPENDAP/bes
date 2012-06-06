@@ -99,7 +99,7 @@ HDF5BaseArray::format_constraint (int *offset, int *step, int *count)
         count[id] = ((stop - start) / stride) + 1;      // count of elements
         nels *= count[id];              // total number of values for variable
 
-        BESDEBUG ("h4",
+        BESDEBUG ("h5",
                          "=format_constraint():"
                          << "id=" << id << " offset=" << offset[id]
                          << " step=" << step[id]
