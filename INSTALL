@@ -5,7 +5,7 @@ Updated for version 2.0.0
 -------------------------------------------------------------------------------
 REQUIREMENTS
 INSTALLING RPM
-BUILDING THE SOFTWARE
+BUILDING THE SOFTWARE FROM THE SOURCE CODES
 BUILDING FROM OUR SVN REPOSITORY
 NOTES
 -------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ REQUIREMENTS
     software. If you're using Linux, this means you can either build from 
     source or use the libdap, libdap-devel, bes, and bes-devel RPM packages.
 
-  o You need a recent (version 1.8.8 or above) copy of HDF5. 
+  o We recommend that a recent (version 1.8.8 or above) copy of HDF5 is used.
     Use --with-hdf5 to specify where your hdf5 distribution is located 
     if configure cannot find it on its own.
     See './configure --help' for more info.
@@ -66,7 +66,7 @@ INSTALLING RPM
    %/usr/bin/besctl (re)start
 
 
-BUILDING THE SOFTWARE
+BUILDING THE SOFTWARE FROM THE SOURCE CODES
 
 1) Type `./configure' at the system prompt. On some systems you may have 
    to type `sh configure.' If you want this part of the
@@ -89,14 +89,14 @@ BUILDING THE SOFTWARE
 
    The h5.conf file has 4 parameters that can change the behavior of 
    the hdf5_handler module. By default, all parameters except for 
-   the H5.EnableCheckNameClashing option are enabledto serve 
+   the H5.EnableCheckNameClashing option are enabled to serve 
    NASA HDF5/HDF-EOS5 products in a manner that follows CF conventions. 
-   We strongly recommend you to turn the H5.EnableCF option on. 
+   We strongly recommend you leave the H5.EnableCF be true. 
    See NOTES below for details.
   
 For very detailed instructions on building the software, please see
 
-   http://hdfeos.org/software/hdf5_handler/doc/install.html
+   http://hdfeos.org/software/hdf5_handler/doc/install.php
 
 BUILDING FROM OUR SVN REPOSITORY
 
@@ -126,10 +126,10 @@ NOTES
 
     - This option checks if there are duplicate variable names when group
       information is removed and some characters are replaced with underscore 
-      character. Although this option is required to ensure that no two variable
-      names are same, the operation is quite costly and thus can degrade the 
-      performance significantly. If you are certain that your HDF5 data 
-      won't have any duplicate name, you can turn this off to gain the 
+      character. Although this option is required to ensure that no two 
+      variable names are same, the operation is quite costly and thus can 
+      degrade the performance significantly. If you are certain that your HDF5
+      data won't have any duplicate name, you can turn this off to gain the 
       performance of the server. 
 
       For the NASA HDF5/HDF-EOS5 products we tested (AURA OMI/HIRDLS/MLS/TES,

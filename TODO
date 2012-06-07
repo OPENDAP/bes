@@ -1,11 +1,4 @@
-Change private field names so that they begin with an underscore.
-
-Verify that `for f in testsuite/*h5 do h5_das $f done' work correctly.
-
-Verify that `for f in testsuite/*h5 do h5_dds $f done' work correctly.
-(The dataset with a loop in it does not work.)
-
-Add CVS Logs to all the files.
-
-Check that the included header files are really needed.
+o Add more BESDEBUG and DBG statement.
+o Handle more unsupported data types in the CF option.
+o Break loop in the CF option.
 
