@@ -120,7 +120,7 @@ NOTES
       on this option. The key benefit of this option is to allow OPeNDAP
       visualization clients to display remote data seamlessly.
 
-      http://hdfeos.org/software/hdf5_handler/doc/cf.html
+      http://hdfeos.org/software/hdf5_handler/doc/cf.php
 
     2) H5.EnableCheckNameClashing option 
 
