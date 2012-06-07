@@ -36,7 +36,7 @@ besdaemon_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la \
 	../dispatch/libbes_dispatch.la $(XML2_LIBS)
 
 install-data-local:
-	test -z "$(localstatedir)/run/bes" || $(mkdir_p) "$(DESTDIR)$(localstatedir)/run/bes"
+	test -z "$(localstatedir)/run/bes" || $(MKDIR_P) "$(DESTDIR)$(localstatedir)/run/bes"
 
 C4_DIR=./cccc
 .PHONY: cccc
