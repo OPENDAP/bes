@@ -197,6 +197,16 @@ NOTES
       This will ensure that NetCDF Java OPeNDAP visualization clients
       such as IDV and Panoply can visualize other important variables.
  
+  o Testing with Hyrax-1.7.x
+
+    - The hdf5_handler will work fine with Hyrax-1.7.x but 'make check' will fail
+      in all DDX output tests due to the difference in the XML header:
+  
+        <?xml version="1.0" encoding="UTF-8"?>
+
+     The testsuite is created under Hyrax-1.8.x with the following header:
+
+        <?xml version="1.0" encoding="ISO-8859-1"?>
 
   o Debugging Aids
 
