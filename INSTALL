@@ -5,6 +5,7 @@ Updated for version 2.0.0
 -------------------------------------------------------------------------------
 REQUIREMENTS
 INSTALLING RPM
+BUILDING RPM FROM THE SOURCE CODES
 BUILDING THE SOFTWARE FROM THE SOURCE CODES
 BUILDING FROM OUR SVN REPOSITORY
 NOTES
@@ -64,6 +65,34 @@ INSTALLING RPM
 5) (Re)start the BES server.
  
    %/usr/bin/besctl (re)start
+
+BUILDING RPM FROM THE SOURCE CODES
+
+1) Download and install the latest "libdap", "libdap-devel", "bes", and "bes-devel" RPMs
+ first from
+
+   http://opendap.org/download/hyrax
+
+2) Download and install the latest "hdf5" RPMs from 
+
+   http://www.hdfgroup.org/ftp/HDF5//current/bin/RPMS/       
+
+   Please note that CentOS 5 distributes hdf5-1.6.x RPM via yum. Therefore, you need
+   an hdf5-1.8.x RPM from The HDF group. The hdf5-1.6.x doesn't work with the 
+   current version of hdf5_handler any more.
+
+   CentOS 6 distributes hdf5-1.8.5.patch1-7, which works fine. The HDF Group doesn't 
+   provide CentOS 6 hdf5 RPMs yet. If you want to build hdf5_handler RPM with the latest
+   version of HDF5 library in CentOS 6, you need to build and install the HDF5 library 
+   from the source package.
+
+3) Download and install the latest "hdf5_handler" source code from
+
+   http://opendap.org/download/hyrax
+
+4) Configure and build RPM.
+
+   ./configure && make rpm
 
 
 BUILDING THE SOFTWARE FROM THE SOURCE CODES
