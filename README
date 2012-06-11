@@ -1,10 +1,15 @@
 Updated for version 3.9.4 (19 Jan, 2011)
 
+  If your system is non-i368 such as64-bit architecture, please read 
+IMPORTANT NOTE on INSTALL document regarding '--with-pic' configuration option 
+(i.e., '-fPIC' compiler option). You need to install both HDF4 (and HDF-EOS2) 
+library with '--with-pic' option if you encounter a linking problem.
+
 1. Fixed the bug in uint16/uint32 type attribute handling.
 
 2. The following bug fix applies to only --with-hdfeos2 configuration option.
 
-2.1 Correced the handling the scale/offset for MODIS products because the 
+2.1 Corrected the handling the scale/offset for MODIS products because the 
 MODIS scale/offset equation is quite different from the CF standard.
 
  There are three different "scale_factor" and "add_offset" equations in MODIS 
@@ -33,36 +38,36 @@ If  the group name consists of  "LST", it is type 2.
 If group name consists of "VI", "1km_2D", "L2g_2d", it is type 3.  
 
 For type 1, use (raw_value-offset)*scale.
-For type 2, use (raw_value*scale+offst). 
+For type 2, use (raw_value*scale+offset). 
 For type 3, use (raw_value-offset)/scale.
 
 For recalculation of MODIS, one of the following conditions must meet:
 
 "radiance_scales" and "radiance_offsets" attributes are available, or 
 "reflectance_scales" and "reflectance_offsets" attributes are available, or 
-"scale_factor" and "add_offset" attriburtes are available. 
+"scale_factor" and "add_offset" attributes are available. 
 If any of the above conditions meet, recalculation will be applied, 
 otherwise nothing will happen. If scale is 1 and offset is 0, we don't
 perform recalculation to improve performance. 
 
 Data values are adjusted based on it type. If "scale_factor" and "add_offset"
-attributes are not avalilable, "radiance_scales" and "radiance_offsets" 
+attributes are not available, "radiance_scales" and "radiance_offsets" 
 attributes, or "reflectance_scales" and "reflectance_offsets" attributes, are 
 used instead. 
 
 After adjustment, the data type is converted uniformly to float not to lose 
 precision even if its original data type is integer. The "valid_range" 
-attribute is removed followingly as it does not reflect the actual values 
+attribute is removed accordingly as it does not reflect the actual values 
 any more.
 
 Since some netCDF visualization tools will apply the linear scale and offset 
 equation to the data value if the CF "scale_factor" and "add_offset" attributes
- appear, these two attributes are renamed as "sacle_factor_modis" and 
+ appear, these two attributes are renamed as "scale_factor_modis" and 
 "add_offset_modis" respectively to prevent the second adjustment. 
 
 
 2.2 Latitude and longitude are provided for HDF-EOS2 grid files that use 
-Space-Obilque Mercator(SOM) and Lambert Azimuthal Equal Area(LAMAZ) projections.
+Space-Oblique Mercator(SOM) and Lambert Azimuthal Equal Area(LAMAZ) projections.
  We added the support for LAMAZ projection data such as MOD29 from NSIDC. 
 For grid files using HDF-EOS2 Lambert Azimuthal Equal Area(LAMAZ) projection,
  the latitude and longitude values retrieved from the HDF-EOS2 library include
@@ -112,8 +117,8 @@ In this patch, we added the following three features:
 
 1. We add the mapping of the SDS objects added by using HDF4 APIs to
 an HDF-EOS2 file. These SDS objects are normally NOT physical fields,
-so they are not plottable by Java tools such as IDV and Panoply. The
-attributes and values of these SDS objects may be useful for end
+so they are not supposed to be plotted by Java tools such as IDV and Panoply. 
+The attributes and values of these SDS objects may be useful for end
 users.
 
 2. We also fix the bug of handling MERRA data. In the previous
@@ -163,10 +168,10 @@ configuring the default HDF4 OPeNDAP handler. The HDF4 handler with
 the default options can NOT make the NASA HDF-EOS2 products and some
 NASA pure HDF4 products work with CF-compliant visualization clients.
 
-Some variable paths are pretty long(>15 characters). COARD conventions
+Some variable paths are pretty long(>15 characters). COARDS conventions
 require the number of characters in a field doesn't exceed 15
 characters. So the above configuration option may cause some OPeNDAP
-clients that are still following COARD conventions. To compensate
+clients that are still following COARDS conventions. To compensate
 that, we provide a configuration option to shorten the name so that in
 doesn't exceed 15 characters. To address the potential name clashing
 issue, both options may make some variable names to change so that
@@ -180,9 +185,11 @@ the short name option, do the following:
 	    --prefix=<Your installation path> --enable-short-name 
 
 To find the information on how to build the HDF-EOS2 library, please
-check http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-
+check 
 
-To build RPMs by yourself, check the directory build_rpms_eosoption. 
+        http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-eos2
+
+To build RPMs by yourself, check the directory 'build_rpms_eosoption'. 
 
 Section II. NASA products that are supported to be accessed via Java
 and other OPeNDAP visualization clients
