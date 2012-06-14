@@ -1,3 +1,35 @@
+2012-06-08  hyoklee
+
+	added a special note about make check failure in Hyrax-1.7.1.
+
+2012-06-08  hyoklee
+
+	added a special note about RPM building.
+
+2012-06-07  hyoklee
+
+	corrected the required autoconf version and correted the external link.
+
+2012-06-07  hyoklee
+
+	Kent revised INSTALL and README further. updated NEWS and TODO.
+
+2012-06-06  hyoklee
+
+	Updated release documents;turned off name clashing check;corrected BESDEBUG outputs.
+
+2012-05-30  hyoklee
+
+	changed fullpath to fullpathname for group attribute to be consistent.
+
+2012-05-25  hyoklee
+
+	Upgraded hdf5_handler to 2.0.0. More documentaiton update will come.
+
+2012-05-21  hyoklee
+
+	Removed useless file.
+
 2012-05-21  Hyo-Kyung (Joe) Lee  <hyoklee@hdfgroup.org>
 	* reengineered handler for the better support of CF option.
 
