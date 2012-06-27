@@ -137,7 +137,7 @@ HDFEOS2Array_RealField::read ()
 	int32 attrtype, attrcount, attrcounts=0, attrindex, attrindex2;
 	int32 scale_factor_attr_index, add_offset_attr_index;
 	vector<char> attrbuf, attrbuf2;
-	float scale=1.0, offset2=0.0, fillvalue;
+	float scale=1, offset2=0, fillvalue;
 	float *reflectance_offsets=NULL, *reflectance_scales=NULL;
 	float *radiance_offsets=NULL, *radiance_scales=NULL;
 
@@ -361,7 +361,7 @@ HDFEOS2Array_RealField::read ()
         } \
         break;
 			GET_FILLVALUE_ATTR_VALUE(INT8, int8);
-                        GET_FILLVALUE_ATTR_VALUE(INT16, int16);
+            GET_FILLVALUE_ATTR_VALUE(INT16, int16);
 			GET_FILLVALUE_ATTR_VALUE(INT32, int32);
 			GET_FILLVALUE_ATTR_VALUE(UINT8, uint8);
 			GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
@@ -405,7 +405,7 @@ HDFEOS2Array_RealField::read ()
 		for(int l=0; l<nelms; l++) \
 			tmpval[l] = (float)tmptr[l]; \
 		bool special_case = false; \
-		if(scale_factor_attr_index==FAIL || add_offset_attr_index==FAIL) \
+		if(scale_factor_attr_index==FAIL) \
 			if(attrcounts==1) \
 				if(radiance_scales!=NULL && radiance_offsets!=NULL) \
 				{ \
@@ -413,7 +413,7 @@ HDFEOS2Array_RealField::read ()
 					offset2 = radiance_offsets[0];\
 					special_case = true; \
 				} \
-		if((scale_factor_attr_index!=FAIL && add_offset_attr_index!=FAIL && !(scale==1 && offset2==0)) || special_case)  \
+		if((scale_factor_attr_index!=FAIL && !(scale==1 && offset2==0)) || special_case)  \
 		{ \
 			for(size_t l=0; l<nelms; l++) \
                 		if(attrindex!=FAIL && ((float)tmptr[l])!=fillvalue) \

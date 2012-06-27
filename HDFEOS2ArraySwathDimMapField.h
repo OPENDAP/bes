@@ -32,6 +32,25 @@ class HDFEOS2ArraySwathDimMapField:public Array
 	}
 	int format_constraint (int *cor, int *step, int *edg);
 
+        // Obtain Field value
+        template < class T > int GetFieldValue (int32, const std::string &,
+                                                                                std::vector < struct dimmap_entry >&,
+                                                                                std::vector < T > &, int32 *,
+                                                                                int32 *);
+
+        // The internal routine to do the interpolation
+        template < class T >
+                int _expand_dimmap_field (std::vector < T > *pvals, int32 rank,
+                                                                  int32 dimsa[], int dimindex, int32 ddimsize,
+                                                                  int32 offset, int32 inc);
+
+        // 2-D subsetting routine to ensure the subsetted lat/lon to be returned.
+        template < class T > bool FieldSubset (T * outlatlon, int majordim,
+                                                                                          int minordim, T * latlon,
+                                                                                          int32 * offset, int32 * count,
+                                                                                          int32 * step);
+
+
 	BaseType *ptr_duplicate ()
 	{
 		return new HDFEOS2ArraySwathDimMapField (*this);

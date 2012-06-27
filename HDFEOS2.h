@@ -171,9 +171,9 @@ namespace HDFEOS2
 
 				this->data = new T[len];
 				for (unsigned int i = 0; i < len; ++i)
-				this->data[i] = old[i];
+					this->data[i] = old[i];
 				if (old)
-				delete[]old;
+					delete[]old;
 			}
 			this->length = len;
 		}
@@ -197,7 +197,7 @@ namespace HDFEOS2
 			if (this != &that) {
 				this->data = new T[that.length];
 				for (unsigned int i = 0; i < that.length; ++i)
-				this->data[i] = that[i];
+					this->data[i] = that[i];
 				this->length = that.length;
 				this->capacity = that.length;
 			}
@@ -231,7 +231,7 @@ namespace HDFEOS2
 		/// It will get the value even if the value is not in the FieldData
 		/// buffer(LightVector). 
 		virtual const char *get (int *offset, int *step, int *count, int nelms) =
-		0;
+			0;
 
 		/// Release the buffer by resizing the LightVector. 
 		virtual void drop () = 0;

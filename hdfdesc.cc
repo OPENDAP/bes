@@ -178,6 +178,7 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim);
 #ifdef USE_HDFEOS2_LIB
 void read_das(DAS & das, const string & filename);
 void read_dds(DDS & dds, const string & filename);
+
 // read_dds for HDF-EOS2
 bool read_dds_hdfeos2(DDS & dds, const string & filename,
                       HE2CFNcML* ncml,
@@ -216,7 +217,7 @@ bool change_data_type(string newfname)
         if(mtype!=OTHER_TYPE && at!=NULL)
         {
 		AttrTable::Attr_iter it = at->attr_begin();
-                string  scale_factor_value="", add_offset_value="", radiance_scales_value="", radiance_offsets_value="", reflectance_scales_value="", reflectance_offsets_value="";
+                string  scale_factor_value="", add_offset_value="0", radiance_scales_value="", radiance_offsets_value="", reflectance_scales_value="", reflectance_offsets_value="";
                 string scale_factor_type, add_offset_type;
 		while (it!=at->attr_end())
                 {
@@ -243,7 +244,7 @@ bool change_data_type(string newfname)
 		if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
                         return true;
 		
-		if(scale_factor_value.length()!=0 && add_offset_value.length()!=0)
+		if(scale_factor_value.length()!=0) // && add_offset_value.length()!=0)
                 {
                         if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
                                 return true;
@@ -430,13 +431,15 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
 
                             // current design: Z field should be under geofield.
 //We find the third dimension is located under "data fields" group for some MODIS files; so release this for you. KY 2010-6-26
+
 #if 0
                             if(fieldtype == 3) 
                               throw InternalErr(__FILE__, __LINE__,
                   			"Coordinate variables for Swath should be under geolocation group");
 
 #endif
-                            std::string tempfieldname;
+
+                          std::string tempfieldname;
                             // Because the field name gets changed for third-dimension grid 
                             // to fulfill the IDV/Panoply COARD request(the field name can not be the same as the dimension name)
                             // we have to obtain the original field name,saved as the tempfieldname.
@@ -451,11 +454,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                             else tempfieldname = (*it_f)->getName();
                             if((*it_f)->UseDimMap()) {
                                 HDFEOS2ArraySwathDimMapField * ar = NULL;
-    				ar = new HDFEOS2ArraySwathDimMapField(                           
-                                                                     (*it_f)->getRank(),
-                                                           	      filename,
-                                                                     (dataset)->getName(), "", tempfieldname,
-                                                                     dimmaps,(*it_f)->getNewName(),bt);
+    				ar = new HDFEOS2ArraySwathDimMapField((*it_f)->getRank(), filename, "", (dataset)->getName(), tempfieldname, dimmaps,(*it_f)->getNewName(),bt);
                                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                                 dds.add_var(ar);
@@ -619,7 +618,6 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                             }
                             else tempfieldname = (*it_f)->getName();
  
-
                             HDFEOS2Array_RealField *ar = NULL;
                             ar = new HDFEOS2Array_RealField(
                                                             (*it_f)->getRank(),
@@ -928,7 +926,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
 #else
                     HANDLE_CASE(DFNT_INT8,HDFInt32);
 #endif
-                   HANDLE_CASE(DFNT_UINT8, HDFByte); 
+                    HANDLE_CASE(DFNT_UINT8, HDFByte); 
                     HANDLE_CASE(DFNT_INT16, HDFInt16);
                     HANDLE_CASE(DFNT_UINT16, HDFUInt16);
                     HANDLE_CASE(DFNT_INT32, HDFInt32);
@@ -958,7 +956,7 @@ void read_dds_spfields(DDS &dds,const string& filename,HDFSP::SDField *spsds, SP
                                                             spsds->getType(),
                                                             sptype,
                                                             spsds->getName(),
-                                                             spsds->getNewName(),bt);
+                                                            spsds->getNewName(),bt);
                             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                              ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
                             dds.add_var(ar);
@@ -1259,7 +1257,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
     int32 myfileid;
     myfileid = Hopen(const_cast<char *>(filename.c_str()), DFACC_READ,0);
 
-// cerr <<"inside hdfsp myfileid = "<<myfileid<<endl;
+    //cerr <<"inside hdfsp myfileid = "<<myfileid<<endl;
     //Hclose(myfileid);
 
     HDFSP::File *f;
@@ -1278,7 +1276,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         delete f;
         throw InternalErr(e.what());
     }
-        
+    
     string core_metadata = "";
     string archive_metadata = "";
     string struct_metadata = "";
@@ -1289,16 +1287,66 @@ bool read_das_hdfsp(DAS & das, const string & filename,
     string scaling;
     //Store value of "Slope" attribute.
     float slope, intercept;
-    
+ 
     for(std::vector<HDFSP::Attribute *>::const_iterator i=spsd->getAttributes().begin();i!=spsd->getAttributes().end();i++) {
-//        cerr<<"Attribute Name SD "<<(*i)->getName() <<endl;
-//        cerr<<"Attribute Count SD "<<(*i)->getCount() <<endl;
-//        cerr<<"Attribute Type SD "<<(*i)->getType() <<endl; // <hyokyung 2010.06.17. 16:00:45>
-        // To present attribute in corrected type, 
-        // More work needs to be done convert, there is a bug in the code. 
-//        string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
+        //cerr<<"Attribute Name SD "<<(*i)->getName() <<endl;
+        //cerr<<"Attribute Count SD "<<(*i)->getCount() <<endl;
+        //cerr<<"Attribute Type SD "<<(*i)->getType() <<endl; // <hyokyung 2010.06.17. 16:00:45>
+        //To present attribute in corrected type, 
+        //More work needs to be done convert, there is a bug in the code. 
+	//string tempstring((*i)->getValue().begin(),(*i)->getValue().end());
         //cerr<<"Attribute value SD " << tempstring << endl;
-        
+       
+	//We want to add two new attributes, "scale_factor" and "add_offset" to data fields if the scaling equation is linear. Their values will be copied directly from file attributes. This addition is for OBPG L3 only.
+	if(f->getSPType()==OBPGL3)
+	{
+		if((*i)->getName()=="Scaling")
+		{
+			string tmpstring((*i)->getValue().begin(), (*i)->getValue().end());
+			scaling = tmpstring;
+		}
+		if((*i)->getName()=="Slope")
+		{
+			
+			switch((*i)->getType())
+			{
+#define GET_SLOPE(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+                slope = (float)tmpvalue; \
+        } \
+        break;
+
+				GET_SLOPE(INT16,   int16);
+				GET_SLOPE(INT32,   int32);
+				GET_SLOPE(FLOAT32, float);
+				GET_SLOPE(FLOAT64, double);
+#undef GET_SLOPE
+			} ;
+			//slope = *(float*)&((*i)->getValue()[0]);
+		}
+		if((*i)->getName()=="Intercept")
+                {	
+			switch((*i)->getType())
+                        {
+#define GET_INTERCEPT(TYPE, CAST) \
+        case DFNT_##TYPE: \
+        { \
+                CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+                intercept = (float)tmpvalue; \
+        } \
+        break;
+				GET_INTERCEPT(INT16,   int16);
+				GET_INTERCEPT(INT32,   int32);
+                                GET_INTERCEPT(FLOAT32, float);
+                                GET_INTERCEPT(FLOAT64, double);
+#undef GET_INTERCEPT
+                        } ;
+                        //intercept = *(float*)&((*i)->getValue()[0]);
+                }
+	}
+ 
 	//We want to add two new attributes, "scale_factor" and "add_offset" to data fields if the scaling equation is linear. Their values will be copied directly from file attributes. This addition is for OBPG L3 only.
 	if(f->getSPType()==OBPGL3)
 	{
@@ -1422,12 +1470,12 @@ bool read_das_hdfsp(DAS & das, const string & filename,
         }
 #endif
         if (hdfeosparse(static_cast < void *>(&arg)) != 0)
-        	throw Error("HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute.");
+            throw Error("HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute.");
 
         // Errors returned from here are ignored.
         if (arg.status() == false) {
-        	BESDEBUG("h4", "HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute. (2)" << endl
-        		<< arg.error()->get_error_message() << endl);
+            BESDEBUG("h4", "HDF-EOS parse error while processing a CoreMetadata HDFEOS attribute. (2)" << endl
+                     << arg.error()->get_error_message() << endl);
         }
 
         hdfeos_delete_buffer(buf);
@@ -1493,7 +1541,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
 
     std::vector<HDFSP::SDField *>::const_iterator it_g;
     for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-        
+    
         //<hyokyung 2010.06.17. 16:02:58>
         AttrTable *at = das.get_table((*it_g)->getNewName());
         if (!at)
@@ -1513,7 +1561,7 @@ bool read_das_hdfsp(DAS & das, const string & filename,
              //break;
            }
 
-	   if(f->getSPType()==OBPGL3 && (*i)->getName()=="scale_offset")
+	   if(f->getSPType()==OBPGL3 && (*i)->getName()=="scale_factor")
 	     scale_factor_flag = true;		
 
 	   if(f->getSPType()==OBPGL3 && (*i)->getName()=="add_offset")
@@ -2285,17 +2333,16 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
      _das = &das;
 
      // There are some HDF-EOS2 files(MERRA) that should be treated
-    // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
-    // retrieve any information. In fact, treating them as HDF-EOS2 files
-   // will cause confusions and wrong information, although may not be essential.
-   // So far, we've found only MERRA data that have this problem.
-   // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
-//   cerr<<"basename " <<basename(filename) <<endl;
+     // exactly like HDF4 SDS files. We don't need to use HDF-EOS2 APIs to 
+     // retrieve any information. In fact, treating them as HDF-EOS2 files
+     // will cause confusions and wrong information, although may not be essential.
+     // So far, we've found only MERRA data that have this problem.
+     // A quick fix is to check if the file name contains MERRA. KY 2011-3-4 
+     //cerr<<"basename " <<basename(filename) <<endl;
      // Find MERRA data, return false, use HDF4 SDS code.
      if((basename(filename)).compare(0,5,"MERRA")==0) {
         return false;
      }
-
 
     HDFEOS2::File *f;
     
@@ -2343,7 +2390,6 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 	if(mtype!=OTHER_TYPE)
 		break;
    }
-
     // A flag not to generate structMetadata for the MOD13C2 file.
     // MOD13C2's structMetadata has wrong values. It couldn't pass the parser. 
     // So we want to turn it off. KY 2010-8-10
@@ -2444,9 +2490,10 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
             if(mtype!=OTHER_TYPE && at!=NULL)
             {
                 AttrTable::Attr_iter it = at->attr_begin();
-                string  scale_factor_value="", add_offset_value="", fillvalue="", valid_range_value="";
+                string  scale_factor_value="", add_offset_value="0", fillvalue="", valid_range_value="";
                 string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
-                while (it!=at->attr_end())
+		bool add_offset_found = false;
+		while (it!=at->attr_end())
                 {
                         if(at->get_name(it)=="scale_factor")
                         {
@@ -2457,6 +2504,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
                         {
                                 add_offset_value = (*at->get_attr_vector(it)->begin());
                                 add_offset_type = at->get_type(it);
+				add_offset_found = true;
                         }
 			if(at->get_name(it)=="_FillValue")
 			{
@@ -2478,15 +2526,18 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 			}
 			it++;
                 }
-		if(scale_factor_value.length()!=0 && add_offset_value.length()!=0)
+		if(scale_factor_value.length()!=0) // && add_offset_value.length()!=0)
 		{
 			if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
                 	{
                         	at->del_attr("scale_factor");
-                        	at->del_attr("add_offset");
-                        	at->append_attr("scale_factor_modis", scale_factor_type, scale_factor_value);
-                        	at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
-                	}
+				at->append_attr("scale_factor_modis", scale_factor_type, scale_factor_value);
+                        	if(add_offset_found)
+				{
+					at->del_attr("add_offset");
+					at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
+                		}
+			}
 		}
 		if(change_data_type(newfname) && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
 		{
@@ -2516,6 +2567,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
             string newfname = swath->getGeoFields()[j]->getNewName();
             DBG(cout << "Original Field name: " <<  fname << endl);
             DBG(cout << "Corrected Field name: " <<  newfname << endl);
+
             int dimlistsize = swath->getGeoFields()[j]->getDimensions().size();
             DBG(cout << "the original dimlist size: "<< dimlistsize << endl);
             for(unsigned int k = 0; 
@@ -2651,8 +2703,9 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 	    if(mtype!=OTHER_TYPE && at!=NULL) 
 	    {
 		AttrTable::Attr_iter it = at->attr_begin();
-		string scale_factor_value="", add_offset_value="", fillvalue="", valid_range_value="";
+		string scale_factor_value="", add_offset_value="0", fillvalue="", valid_range_value="";
 		string scale_factor_type, add_offset_type, fillvalue_type, valid_range_type;
+		bool add_offset_found = false;
 		while (it!=at->attr_end()) 
 		{
 			if(at->get_name(it)=="scale_factor")
@@ -2664,6 +2717,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 			{
 				add_offset_value = (*at->get_attr_vector(it)->begin());
 				add_offset_type = at->get_type(it);
+				add_offset_found = true;
 			}
 			if(at->get_name(it)=="_FillValue")
 			{
@@ -2682,24 +2736,27 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
                                                 valid_range_value += ", ";
                                 }
 				valid_range_type = at->get_type(it);
-        }
+				}
 
 			it++;
 		}
-		if(scale_factor_value.length()!=0 && add_offset_value.length()!=0)
+		if(scale_factor_value.length()!=0) // && add_offset_value.length()!=0)
                 {
 			if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
 			{
 				at->del_attr("scale_factor");
-				at->del_attr("add_offset");
 				at->append_attr("scale_factor_modis", scale_factor_type, scale_factor_value);
-				at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
+				if(add_offset_found) 
+				{
+					at->del_attr("add_offset");
+					at->append_attr("add_offset_modis", add_offset_type, add_offset_value);
+				}
 			}
 		}
-		if(fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
+		if(change_data_type(newfname) && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") // Change attribute type.
                 {
                         at->del_attr("_FillValue");
-			//--------
+			
 			int32 sdfileid;
         		sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
         		int32 sdsindex, sdsid;
@@ -2749,10 +2806,10 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 			std::ostringstream ss;
 			ss << _fillvalue;
 			fillvalue = ss.str();
-			//--------
-                        at->append_attr("_FillValue", "Float32", fillvalue);
+                        
+			at->append_attr("_FillValue", "Float32", fillvalue);
                 }
-                if(valid_range_value.length()!=0 && valid_range_type!="Float32" && valid_range_type!="Float64") // Change attribute type.
+                if(change_data_type(newfname) && valid_range_value.length()!=0 && valid_range_type!="Float32" && valid_range_type!="Float64") // Change attribute type.
                 {
                         at->del_attr("valid_range");
                         //at->append_attr("valid_range", "Float32", valid_range_value);
@@ -2760,7 +2817,7 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 	    }
         }
     }
-    
+ 
     write_metadata(das, cf, "CoreMetadata");
     write_metadata(das, cf, "coremetadata");
 // This cause a problem for a MOD13C2 file, So turn it off temporarily. KY 2010-6-29
@@ -2782,14 +2839,12 @@ bool read_das_hdfeos2(DAS & das, const string & filename,
 
 }    
 
-
 //The wrapper of building HDF-EOS2 and special HDF4 files. 
 void read_das_use_eos2lib(DAS & das, const string & filename,
                   HE2CFNcML* ncml,
                   HE2CFShortName* sn, HE2CFShortName* sn_dim,
                   HE2CFUniqName* un, HE2CFUniqName* un_dim)
 {
-
     if(read_das_hdfeos2(das, filename, ncml, sn, sn_dim, un, un_dim)){
         return;
     }
@@ -2800,10 +2855,7 @@ void read_das_use_eos2lib(DAS & das, const string & filename,
     read_das(das, filename);
 }
 
-
-
 #endif // #ifdef USE_HDFEOS2_LIB
-
 
 void read_dds(DDS & dds, const string & filename)
 {
@@ -2816,6 +2868,7 @@ void read_dds(DDS & dds, const string & filename)
 		// dds.print(cerr);
 		THROW(dhdferr_ddssem);
 	}
+
 	return;
 }
 
@@ -2833,7 +2886,6 @@ void read_das(DAS & das, const string & filename)
     }
     return;
 }
-
 
 // Scan the HDF file and build the DDS and DAS
 static void build_descriptions(DDS & dds, DAS & das,
@@ -2947,10 +2999,12 @@ merge_split_eos_attributes(vector < hdf_attr > &attr_vec,
 static void SDS_descriptions(sds_map & map, DAS & das,
                              const string & filename)
 {
+
     hdfistream_sds sdsin(filename);
     sdsin.setmeta(true);
 
     // Read SDS file attributes attr_iter i = ;
+
     vector < hdf_attr > fileattrs;
     sdsin >> fileattrs;
 

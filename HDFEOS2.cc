@@ -1790,7 +1790,8 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                             // KY 2010-9-9
                             if(((((*j)->getDimensions())[0])->getName())==(*j)->getName()){
                                 (*j)->oriname = (*j)->getName();
-                                (*j)->name = (*j)->getName() +"_d";
+                                // netCDF-Java fixes the problem, now goes back to COARDS.
+                                //(*j)->name = (*j)->getName() +"_d";
                                 (*j)->specialcoard = true;
                             }
                             insert_map((*i)->dimcvarlist, (((*j)->getDimensions())[0])->getName(), (*j)->getName());
@@ -1818,7 +1819,7 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                             // KY 2010-7-21
                             if(((((*j)->getDimensions())[0])->getName())==(*j)->getName()){
                                 (*j)->oriname = (*j)->getName();
-                                (*j)->name = (*j)->getName() +"_d";
+                                //(*j)->name = (*j)->getName() +"_d";
                                 (*j)->specialcoard = true;
                             }
                             insert_map((*i)->dimcvarlist, (((*j)->getDimensions())[0])->getName(), (*j)->getName());
@@ -1843,7 +1844,9 @@ void File::Prepare(const char *path, HE2CFShortName *sn, HE2CFShortName* sn_dim,
                         // COARD conventions. It will cause Panoply and IDV failed.
                         // Since Swath is always 2-D lat/lon, so we are okay here. Add a "_d" for each field name.
                         // KY 2010-7-21
-                        missingfield->name = (*j)->getName()+"_d";
+                        // netCDF-Java now first follows COARDS, change back
+                        // missingfield->name = (*j)->getName()+"_d";
+                        missingfield->name = (*j)->getName();
                         missingfield->rank = 1;
                         missingfield->type = DFNT_INT32;//This is an HDF constant.the data type is always integer.
                         Dimension *dim = new Dimension((*j)->getName(),(*j)->getSize());

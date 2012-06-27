@@ -52,6 +52,8 @@
 #include <string>
 #include <vector>
 
+#include <InternalErr.h>
+
 #include <hcerr.h>
 #include <hdfclass.h>
 
@@ -462,6 +464,8 @@ vector < char8 > hdf_genvec::exportv_char8(void) const
 //      dtmp = (char8 *)_data;
     else
         THROW(hcerr_dataexport);
+    if (!dtmp)
+    	throw InternalErr(__FILE__, __LINE__, "No data returned for the character array.");
     rv = vector < char8 > (dtmp, dtmp + _nelts);
     if (dtmp != (char8 *) _data)
         delete[]dtmp;

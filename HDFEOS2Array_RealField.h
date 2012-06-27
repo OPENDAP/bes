@@ -9,6 +9,9 @@
 #define HDFEOS2ARRAY_REALFIELD_H
 
 #include "Array.h"
+
+#include "DAS.h"
+
 using namespace libdap;
 
 class HDFEOS2Array_RealField:public Array

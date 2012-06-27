@@ -2253,9 +2253,11 @@ throw (Exception)
 				if (COARDFLAG || file->sptype == OTHERHDF)	//  Follow COARD Conventions
 					(*i)->newname =
 						(*i)->getCorrectedDimensions ()[0]->getName ();
-				else
-					(*i)->newname =
-						(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
+				else // It seems that netCDF Java stricts following CF conventions, so change the dimension name back. KY 2012-5-4
+                                         (*i)->newname =
+                                                (*i)->getCorrectedDimensions ()[0]->getName ();
+//					(*i)->newname =
+//						(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
                                 insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
 
 			}

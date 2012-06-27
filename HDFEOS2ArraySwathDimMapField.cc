@@ -8,7 +8,6 @@
 // The reason to keep it in separate is, in theory, that data fields with dimension map may need special handlings.
 // So we will leave it here for this release(2010-8), it may be removed in the future. HDFEOS2Array_RealField.cc may be used.
 
-#include "HDFEOS2ArraySwathDimMapField.h"
 #include <iostream>
 #include <sstream>
 #include <cassert>
@@ -18,7 +17,8 @@
 #include "mfhdf.h"
 #include "hdf.h"
 #include "HdfEosDef.h"
-#include "HDFEOS2Util.h"
+#include "HDFEOS2.h"
+#include "HDFEOS2ArraySwathDimMapField.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 
@@ -127,7 +127,7 @@ HDFEOS2ArraySwathDimMapField::read ()
         int32 attrtype, attrcount, attrcounts=0, attrindex, attrindex2;
 	int32 scale_factor_attr_index, add_offset_attr_index;
         vector<char> attrbuf, attrbuf2;
-        float scale=1.0, offset2=0.0, fillvalue;
+        float scale=1, offset2=0, fillvalue;
         float *reflectance_offsets=NULL, *reflectance_scales=NULL;
         float *radiance_offsets=NULL, *radiance_scales=NULL;
 
@@ -174,7 +174,6 @@ HDFEOS2ArraySwathDimMapField::read ()
                 { \
                         radiance_scales[l] = ptr[l]; \
                         radiance_offsets[l] = ptr2[l]; \
-                        cerr << "l=" << radiance_scales[l] << "\t" << radiance_offsets[l] << endl; \
                 } \
         } \
         break;
@@ -235,7 +234,6 @@ HDFEOS2ArraySwathDimMapField::read ()
                 { \
                         reflectance_scales[l] = ptr[l]; \
                         reflectance_offsets[l] = ptr2[l]; \
-                        cerr << "l=" << reflectance_scales[l] << "\t" << reflectance_offsets[l] << endl; \
                 } \
         } \
         break;
@@ -346,10 +344,10 @@ HDFEOS2ArraySwathDimMapField::read ()
                 fillvalue = (float)tmpvalue; \
         } \
         break;
-                        GET_FILLVALUE_ATTR_VALUE(INT8, int8);
-                        GET_FILLVALUE_ATTR_VALUE(INT16, int16);
-                        GET_FILLVALUE_ATTR_VALUE(INT32, int32);
-                        GET_FILLVALUE_ATTR_VALUE(UINT8, uint8);
+                        GET_FILLVALUE_ATTR_VALUE(INT8,   int8);
+                        GET_FILLVALUE_ATTR_VALUE(INT16,  int16);
+                        GET_FILLVALUE_ATTR_VALUE(INT32,  int32);
+                        GET_FILLVALUE_ATTR_VALUE(UINT8,  uint8);
                         GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
                         GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
                 };
@@ -368,6 +366,8 @@ HDFEOS2ArraySwathDimMapField::read ()
 	if (r != 0) {
 		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                detachfunc (swathid);
+                closefunc (sfid);
 		ostringstream eherr;
 
 		eherr << "Field " << fieldname.
@@ -387,7 +387,7 @@ HDFEOS2ArraySwathDimMapField::read ()
                 CAST tmptr = (CAST)VAL; \
                 for(int l=0; l<nelms; l++) \
                         tmpval[l] = (float)tmptr[l]; \
-                if(!(scale==1.0 && offset2==0.0)) \
+		if(scale_factor_attr_index!=FAIL && !(scale==1 && offset2==0)) \
                 { \
                         for(size_t l=0; l<nelms; l++) \
                                 if(attrindex!=FAIL && ((float)tmptr[l])!=fillvalue) \
@@ -443,26 +443,35 @@ HDFEOS2ArraySwathDimMapField::read ()
         delete[](CAST) VAL; \
 }
 
+   int32 majordimsize, minordimsize;
+
 	// Loop through the data type. 
 	switch (type) {
 
 	case DFNT_INT8:
 		{
-			val = new int8[nelms];
-			r = readfieldfunc (swathid,
-							   const_cast < char *>(fieldname.c_str ()),
-							   offset32, step32, count32, val);
-			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-									   count, step);
-				ostringstream eherr;
+        // Obtaining the total value and interpolating the data according to dimension map
+        std::vector < int8 > total_val8;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val8,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-				eherr << "field " << fieldname.c_str () << "cannot be read.";
-				throw InternalErr (__FILE__, __LINE__, eherr.str ());
-			}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+
+        int8* val8 = new int8[nelms];
+
+        FieldSubset (val8, majordimsize, minordimsize,
+                           &total_val8[0], offset32, count32, step32);
+
 
 #ifndef SIGNED_BYTE_TO_INT32
-			RECALCULATE(int8*, dods_byte*, val);
+			RECALCULATE(int8*, dods_byte*, val8);
 			//set_value ((dods_byte *) val, nelms);
 			//delete[](int8 *) val;
 #else
@@ -470,13 +479,14 @@ HDFEOS2ArraySwathDimMapField::read ()
 			int8 *newval8;
 
 			newval = new int32[nelms];
-			newval8 = (int8 *) val;
+			newval8 = val8;
 			for (int counter = 0; counter < nelms; counter++)
 				newval[counter] = (int32) (newval8[counter]);
 
 			RECALCULATE(int32*, dods_int32*, newval);
 			//set_value ((dods_int32 *) newval, nelms);
-			delete[](int8 *) val;
+			//delete[](int8 *) val;
+                        delete[]val8;
 			//delete[]newval;
 #endif
 		}
@@ -484,131 +494,210 @@ HDFEOS2ArraySwathDimMapField::read ()
 	case DFNT_UINT8:
 	case DFNT_UCHAR8:
 	case DFNT_CHAR8:
-		val = new uint8[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+               {
+               // Obtaining the total value and interpolating the data according to dimension map
+        std::vector < uint8 > total_val_u8;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u8,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-		RECALCULATE(uint8*, dods_byte*, val);
-		//set_value ((dods_byte *) val, nelms);
-		//delete[](uint8 *) val;
+        uint8* val_u8 = new uint8[nelms];
+
+        FieldSubset (val_u8, majordimsize, minordimsize,
+                           &total_val_u8[0], offset32, count32, step32);
+        RECALCULATE(uint8*, dods_byte*, val_u8);
+	//set_value ((dods_byte *) val, nelms);
+	//delete[](int8 *) val;
+
+
+                }
 		break;
 	case DFNT_INT16:
-		val = new int16[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
+        {    
+// Obtaining the total value and interpolating the data according to dimension map
+        std::vector < int16 > total_val16;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val16,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
-		RECALCULATE(int16*, dods_int16*, val);
+        int16* val16 = new int16[nelms];
+
+        FieldSubset (val16, majordimsize, minordimsize,
+                           &total_val16[0], offset32, count32, step32);
+
+	RECALCULATE(int16*, dods_int16*, val16);
 		//set_value ((dods_int16 *) val, nelms);
 		//delete[](int16 *) val;
+         }
 		break;
 	case DFNT_UINT16:
-		val = new uint16[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+        {
+        // Obtaining the total value and interpolating the data according to dimension map
+        std::vector < uint16 > total_val_u16;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u16,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-		RECALCULATE(uint16*, dods_uint16*, val);
-		//set_value ((dods_uint16 *) val, nelms);
-		//delete[](uint16 *) val;
+        uint16* val_u16 = new uint16[nelms];
+
+        FieldSubset (val_u16, majordimsize, minordimsize,
+                           &total_val_u16[0], offset32, count32, step32);
+
+	RECALCULATE(uint16*, dods_uint16*, val_u16);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
+ 
+
+         }
 		break;
 	case DFNT_INT32:
-		val = new int32[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+        {
+        // Obtaining the total value and interpolating the data according to dimension map
+        std::vector < int32 > total_val32;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val32,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-		RECALCULATE(int32*, dods_int32*, val);
-		//set_value ((dods_int32 *) val, nelms);
-		//delete[](int32 *) val;
+        int32* val32 = new int32[nelms];
+
+        FieldSubset (val32, majordimsize, minordimsize,
+                           &total_val32[0], offset32, count32, step32);
+
+	RECALCULATE(int32*, dods_int32*, val32);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
+ 
+
+        }
 		break;
 	case DFNT_UINT32:
-		val = new uint32[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+        {
+        // Obtaining the total value and interpolating the data according to dimension map
+        std::vector < uint32 > total_val_u32;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u32,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-		RECALCULATE(uint32*, dods_uint32*, val);
-		//set_value ((dods_uint32 *) val, nelms);
-		//delete[](uint32 *) val;
-		break;
+        uint32* val_u32 = new uint32[nelms];
+
+        FieldSubset (val_u32, majordimsize, minordimsize,
+                           &total_val_u32[0], offset32, count32, step32);
+
+	RECALCULATE(uint32*, dods_uint32*, val_u32);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
+ 
+        }
+                break;
 	case DFNT_FLOAT32:
-		val = new float32[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+        {
+// Obtaining the total value and interpolating the data according to dimension map
+        std::vector < float32 > total_val_f32;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f32,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
 
-		set_value ((dods_float32 *) val, nelms);
-		delete[](float32 *) val;
+        float32* val_f32 = new float32[nelms];
+
+        FieldSubset (val_f32, majordimsize, minordimsize,
+                           &total_val_f32[0], offset32, count32, step32);
+
+	RECALCULATE(float32*, dods_float32*, val_f32);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
+ 
+
+        }
 		break;
 	case DFNT_FLOAT64:
-		val = new float64[nelms];
-		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
-						   offset32, step32, count32, val);
-		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-								   step);
-			ostringstream eherr;
+        {
+// Obtaining the total value and interpolating the data according to dimension map
+        std::vector < float64 > total_val_f64;
+        r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f64,
+                                                   &majordimsize, &minordimsize);
+        if (r != 0) {
+            HDFEOS2Util::ClearMem (offset32, count32, step32, offset,count,step);
+            detachfunc (swathid);
+            closefunc (sfid);
+            ostringstream eherr;
 
-			eherr << "field " << fieldname.c_str () << "cannot be read.";
-			throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
-		set_value ((dods_float64 *) val, nelms);
-		delete[](float64 *) val;
+            eherr << "field " << fieldname.c_str () << "cannot be read.";
+            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        }
+
+        float64* val_f64 = new float64[nelms];
+
+        FieldSubset (val_f64, majordimsize, minordimsize,
+                           &total_val_f64[0], offset32, count32, step32);
+
+	RECALCULATE(float64*, dods_float64*, val_f64);
+		//set_value ((dods_int16 *) val, nelms);
+		//delete[](int16 *) val;
+ 
+        }
 		break;
 	default:
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-							   step);
+                {
+		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,step);
+	        detachfunc (swathid);
+                closefunc (sfid);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                }
 	}
 
 	r = detachfunc (swathid);
 	if (r != 0) {
 		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                closefunc(sfid);
 		ostringstream eherr;
 
 		eherr << "Grid/Swath " << datasetname.
@@ -628,15 +717,7 @@ HDFEOS2ArraySwathDimMapField::read ()
 	}
 
 
-	delete[]offset;
-	delete[]count;
-	delete[]step;
-
-	delete[]offset32;
-	delete[]count32;
-	delete[]step32;
-
-
+        HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count, step);
 	return false;
 }
 
@@ -691,4 +772,215 @@ HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step,
 	}
 
 	return nels;
+}
+
+// Get latitude and longitude fields. It will call expand_dimmap_field to interpolate latitude and longitude.
+template < class T > int
+HDFEOS2ArraySwathDimMapField::
+GetFieldValue (int32 swathid, const std::string & geofieldname,
+		   std::vector < struct dimmap_entry >&dimmaps,
+		   std::vector < T > &vals, int32 * ydim, int32 * xdim)
+{
+
+	int32
+		ret;
+	int32
+		size;
+	int32
+		rank,
+		dims[130],
+		type;
+
+	// Two dimensions for lat/lon; each dimension name is < 64 characters,
+	// The dimension names are separated by a comma.
+	char
+		dimlist[130];
+	ret =
+		SWfieldinfo (swathid, const_cast < char *>(geofieldname.c_str ()),
+					 &rank, dims, &type, dimlist);
+	if (ret != 0)
+		return -1;
+
+	size = 1;
+	for (int i = 0; i < rank; i++)
+		size *= dims[i];
+
+	vals.resize (size);
+
+	ret =
+		SWreadfield (swathid, const_cast < char *>(geofieldname.c_str ()),
+					 NULL, NULL, NULL, (void *) &vals[0]);
+	if (ret != 0)
+		return -1;
+
+	std::vector < std::string > dimname;
+	HDFEOS2::Utility::Split (dimlist, ',', dimname);
+
+	for (int i = 0; i < rank; i++) {
+		std::vector < struct dimmap_entry >::iterator
+			it;
+
+		for (it = dimmaps.begin (); it != dimmaps.end (); it++) {
+			if (it->geodim == dimname[i]) {
+				int32
+					ddimsize =
+					SWdiminfo (swathid, (char *) it->datadim.c_str ());
+				if (ddimsize == -1)
+					return -1;
+				int
+					r;
+
+				r = _expand_dimmap_field (&vals, rank, dims, i, ddimsize,
+										  it->offset, it->inc);
+				if (r != 0)
+					return -1;
+			}
+		}
+	}
+	*ydim = dims[0];
+	*xdim = dims[1];
+	return 0;
+}
+
+// expand the dimension map field.
+template < class T > int
+HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (std::vector < T >
+						    *pvals, int32 rank,
+						   int32 dimsa[],
+						   int dimindex,
+						   int32 ddimsize,
+						   int32 offset,
+						   int32 inc)
+{
+	std::vector < T > orig = *pvals;
+	std::vector < int32 > pos;
+	std::vector < int32 > dims;
+	std::vector < int32 > newdims;
+	pos.resize (rank);
+	dims.resize (rank);
+
+	for (int i = 0; i < rank; i++) {
+		pos[i] = 0;
+		dims[i] = dimsa[i];
+	}
+	newdims = dims;
+	newdims[dimindex] = ddimsize;
+	dimsa[dimindex] = ddimsize;
+
+	int newsize = 1;
+
+	for (int i = 0; i < rank; i++) {
+		newsize *= newdims[i];
+	}
+	pvals->clear ();
+	pvals->resize (newsize);
+
+	for (;;) {
+		// if end
+		if (pos[0] == dims[0]) {
+			// we past then end
+			break;
+		}
+		else if (pos[dimindex] == 0) {
+			// extract 1D values
+			std::vector < T > v;
+			for (int i = 0; i < dims[dimindex]; i++) {
+				pos[dimindex] = i;
+				v.push_back (orig[INDEX_nD_TO_1D (dims, pos)]);
+			}
+			// expand them
+
+			std::vector < T > w;
+			for (int32 j = 0; j < ddimsize; j++) {
+				int32 i = (j - offset) / inc;
+				T f;
+
+				if (i * inc + offset == j)	// perfect match
+				{
+					f = (v[i]);
+				}
+				else {
+					int32 i1, i2, j1, j2;
+
+					if (i <= 0) {
+						i1 = 0;
+						i2 = 1;
+					}
+					if ((unsigned int) i + 1 >= v.size ()) {
+						i1 = v.size () - 2;
+						i2 = v.size () - 1;
+					}
+					else {
+						i1 = i;
+						i2 = i + 1;
+					}
+					j1 = i1 * inc + offset;
+					j2 = i2 * inc + offset;
+					f = (((j - j1) * v[i2] + (j2 - j) * v[i1]) / (j2 - j1));
+				}
+				w.push_back (f);
+				pos[dimindex] = j;
+				(*pvals)[INDEX_nD_TO_1D (newdims, pos)] = f;
+			}
+			pos[dimindex] = 0;
+		}
+		// next pos
+		pos[rank - 1]++;
+		for (int i = rank - 1; i > 0; i--) {
+			if (pos[i] == dims[i]) {
+				pos[i] = 0;
+				pos[i - 1]++;
+			}
+		}
+	}
+
+	return 0;
+}
+
+// Subset of latitude and longitude to follow the parameters from the DAP expression constraint
+template < class T >
+	bool HDFEOS2ArraySwathDimMapField::FieldSubset (T * outlatlon,
+							  int majordim,
+							  int minordim,
+							  T * latlon,
+							  int32 * offset,
+							  int32 * count,
+							  int32 * step)
+{
+
+//          float64 templatlon[majordim][minordim];
+	T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
+	int
+		i,
+		j,
+		k;
+
+	// do subsetting
+	// Find the correct index
+	int
+		dim0count = count[0];
+	int
+		dim1count = count[1];
+
+	int
+		dim0index[dim0count],
+		dim1index[dim1count];
+
+	for (i = 0; i < count[0]; i++)	// count[0] is the least changing dimension
+		dim0index[i] = offset[0] + i * step[0];
+
+
+	for (j = 0; j < count[1]; j++)
+		dim1index[j] = offset[1] + j * step[1];
+
+	// Now assign the subsetting data
+	k = 0;
+
+	for (i = 0; i < count[0]; i++) {
+		for (j = 0; j < count[1]; j++) {
+			outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+			k++;
+		}
+	}
+	return true;
 }
