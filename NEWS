@@ -1,3 +1,7 @@
+Version 3.9.5
+
+Merged to trunk; tagged.
+
 Version 3.9.4
 
 Fixed the bug in uint16/uint32 type attribute handling.

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(hdf4_handler, 3.9.4, support@opendap.org)
+AC_INIT(hdf4_handler, 3.9.5, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -171,7 +171,9 @@ fi
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
 		 bes-testsuite/atlocal
-                 hdfclass/Makefile])
+		 bes-testsuite/generate_metadata_baseline.sh
+                 hdfclass/Makefile],
+		[chmod +x bes-testsuite/generate_metadata_baseline.sh])
 
 dnl Add this later: hdf-testfiles/Makefile
 AC_OUTPUT

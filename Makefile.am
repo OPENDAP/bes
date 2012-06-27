@@ -80,7 +80,7 @@ SERVER_HDR = HDF4RequestHandler.h HDF4Module.h
 
 EXTRA_DIST = data bes-testsuite hdf-testfiles \
 	hdfeos.y hdfeos.lex \
-	COPYRIGHT_URI hdf4_handler.spec \
+	COPYRIGHT_URI hdf4_handler.spec hdf4_handler.spec.cf \
 	OSX_Resources h4.conf.in
 
 CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
@@ -88,7 +88,6 @@ CLEANFILES = *~ *.log *.sum $(GRAM_SRC) h4.conf
 sample_datadir = $(datadir)/hyrax/data/hdf4
 sample_data_DATA = data/1990-S1700101.HDF.gz data/1990104h09da-gdm.hdf.gz \
     data/1C21.19980101.00539.7.HDF.gz data/S2000415.HDF.gz data/foo2.hdf.gz
-    
 
 install-data-local: h4.conf
 	@currdate=`date +"%y%m%d%H%M"`; \
