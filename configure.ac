@@ -171,7 +171,9 @@ fi
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
 		 bes-testsuite/atlocal
-                 hdfclass/Makefile])
+		 bes-testsuite/generate_metadata_baseline.sh
+                 hdfclass/Makefile],
+		[chmod +x bes-testsuite/generate_metadata_baseline.sh])
 
 dnl Add this later: hdf-testfiles/Makefile
 AC_OUTPUT

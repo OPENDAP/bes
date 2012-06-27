@@ -20,11 +20,13 @@ noinst_DATA = bes.conf
 CLEANFILES = *.log *.sum site.exp
 
 EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in \
-	   $(srcdir)/package.m4 h4 bes.conf.in
+	   $(srcdir)/package.m4 h4 bes.conf.in \
+	   generate_metadata_baseline.sh.in
 
 # bes-testsuite h4 besstandalone.h4 
 
-DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest
+DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest \
+	generate_metadata_baseline.sh
 
 bes.conf: bes.conf.in ../config.status
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
