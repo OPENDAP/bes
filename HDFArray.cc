@@ -80,6 +80,7 @@ bool HDFArray::read() {
 
 	if (err)
 		throw Error(unknown_error, "Could not read from dataset.");
+
 	return status;
 }
 
