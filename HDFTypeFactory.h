@@ -54,10 +54,6 @@ class HDFEOSGrid;
 class HDFEOSArray;
 #endif
 
-/** A factory for the netCDF client library types.
-
-    @author James Gallagher
-    @see DDS */
 class HDFTypeFactory:public BaseTypeFactory {
 private:
     string d_filename ;
