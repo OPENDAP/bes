@@ -158,6 +158,22 @@ BESCatalogUtils( const string &n )
     }
 }
 
+#if 0
+// While working on the gdal handler I was getting leak reports from BESCatalogUtils
+// and I thought freeing the memory here might help. It didn't, but I thought I'd
+// leave this in place just in case it's needed and/or as a reminder that valgrind
+// is reporting memory 'definitely lost' from this class. jhrg 7/26/12
+BESCatalogUtils::~BESCatalogUtils()
+{
+    BESCatalogUtils *utils = BESCatalogUtils::_instances[_name] ;
+    if( !utils )
+    {
+        delete utils;
+        BESCatalogUtils::_instances[_name] = 0 ;
+    }
+}
+#endif
+
 bool
 BESCatalogUtils::include( const string &inQuestion ) const
 {
