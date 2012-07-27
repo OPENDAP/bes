@@ -57,6 +57,13 @@ public:
 
     virtual void		dump(ostream & strm) const;
 
+    /**
+     * Set the response object's DDS. The caller should probably
+     * free the existing DDS object before calling this method.
+     */
+    void set_dds(DataDDS *ddsIn) { _dds = ddsIn; }
+
+
     DataDDS *			get_dds() { return _dds; }
     ConstraintEvaluator &	get_ce() { return _ce; }
 };

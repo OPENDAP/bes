@@ -5,7 +5,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.61)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.10.4, support@opendap.org)
+AC_INIT(bes, 3.11.0, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AM_CONFIG_HEADER([config.h])
 
@@ -35,8 +35,8 @@ AC_SUBST(host)
 
 dnl library visioning: Update these when the interface changes. Generally,
 dnl assume that the interface tracks the major and minor release numbers.
-LIB_DIS_CURRENT=9
-LIB_DIS_AGE=1
+LIB_DIS_CURRENT=10
+LIB_DIS_AGE=2
 LIB_DIS_REVISION=4
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_AGE)
