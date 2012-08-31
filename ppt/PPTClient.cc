@@ -227,7 +227,7 @@ PPTClient::closeConnection()
 	    {
 		sendExit() ;
 	    }
-	    catch( BESInternalError e )
+	    catch( BESInternalError &e )
 	    {
 		cerr << "Failed to inform server that the client is exiting, "
 		     << "continuing" << endl ;
