@@ -119,7 +119,7 @@ string HDF5CFUtil::obtain_string_after_lastslash(const string s) {
     return ret_str;
 }
 
-string HDF5CFUtil::trim_string(hid_t ty_id,const string s, int num_sect, size_t sect_size, size_t sect_newsize[]) {
+string HDF5CFUtil::trim_string(hid_t ty_id,const string s, int num_sect, size_t sect_size, vector<size_t>& sect_newsize) {
 
     string temp_sect_str = "";
     string temp_sect_newstr = "";

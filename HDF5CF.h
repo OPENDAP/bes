@@ -184,11 +184,7 @@ namespace HDF5CF
     {
 
         public:
-            Attribute ():dtype(H5UNSUPTYPE),
-                         attrid(-1),
-                         attr_dtypeid(-1),
-                         attr_dspaceid(-1),
-                         attr_mtypeid(-1)
+            Attribute ():dtype(H5UNSUPTYPE)
             {
             }
             ~Attribute ();
@@ -235,10 +231,6 @@ namespace HDF5CF
             string newname;
 	    H5DataType dtype;
 	    hsize_t count;
-            hid_t attrid;
-            hid_t attr_dtypeid;
-            hid_t attr_dspaceid;
-            hid_t attr_mtypeid;
             vector <size_t>strsize;
             size_t fstrsize;
 	    vector < char >value;
@@ -258,10 +250,8 @@ namespace HDF5CF
     class Var 
     {
 	public:
-	    Var ():varid(-1),
+	    Var ():
                    dtype (H5UNSUPTYPE), 
-                   var_dtypeid(-1),
-                   var_dspaceid(-1),
                    rank (-1),
                    unsupported_attr_dtype(false),
                    unsupported_dspace(false),
@@ -319,10 +309,7 @@ namespace HDF5CF
 	    std::string newname;
 	    std::string name;
             std::string fullpath;
-            hid_t varid;
 	    H5DataType dtype;
-            hid_t var_dtypeid;
-            hid_t var_dspaceid;
 	    int rank;
             bool unsupported_attr_dtype;
             bool unsupported_dspace;
@@ -476,7 +463,7 @@ namespace HDF5CF
     class Group
     {
 	public:
-	    Group ():grpid(-1),unsupported_attr_dtype(false)
+	    Group ():unsupported_attr_dtype(false)
 	    {
 	    }
 	    ~Group ();
@@ -504,7 +491,6 @@ namespace HDF5CF
 
 	    string newname;
 	    string path;
-            hid_t grpid;
 
 	    vector < Attribute * >attrs;
             bool unsupported_attr_dtype;
@@ -590,7 +576,7 @@ namespace HDF5CF
 
             void Retrieve_H5_Obj(hid_t grp_id,const char*gname, bool include_attr) throw(Exception);
             void Retrieve_H5_Attr_Info(Attribute *,hid_t obj_id,const int j, bool& unsup_attr_dtype) throw(Exception);
-            void Retrieve_H5_Attr_Value( Attribute *attr) throw (Exception);
+            void Retrieve_H5_Attr_Value( Attribute *attr, string) throw (Exception);
 
             void Retrieve_H5_VarType(Var*,hid_t dset_id, const string& varname, bool &unsup_var_dtype) throw(Exception);
             void Retrieve_H5_VarDim(Var*,hid_t dset_id,const string &varname, bool & unsup_var_dspace) throw(Exception);

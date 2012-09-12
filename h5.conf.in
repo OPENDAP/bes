@@ -57,3 +57,4 @@ H5.EnableCF=true
 H5.EnableCheckNameClashing=false
 H5.EnableAddPathAttrs=true
 H5.EnableDropLongString=true
+H5.DisableStructMetaAttr=false

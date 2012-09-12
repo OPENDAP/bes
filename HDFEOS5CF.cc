@@ -42,9 +42,6 @@ EOS5CVar::EOS5CVar(Var*var) {
     newname = var->newname;
     name = var->name;
     fullpath = var->fullpath;
-    varid = var->varid;
-    var_dtypeid = var->var_dtypeid;
-    var_dspaceid = var->var_dspaceid;
     rank  = var->rank;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
@@ -57,10 +54,6 @@ EOS5CVar::EOS5CVar(Var*var) {
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
         attr->count =(*ira)->count;
-        attr->attrid = (*ira)->attrid;
-        attr->attr_dtypeid = (*ira)->attr_dtypeid;
-        attr->attr_mtypeid = (*ira)->attr_mtypeid;
-        attr->attr_dspaceid =(*ira)->attr_dspaceid;
         attr->strsize = (*ira)->strsize;
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
@@ -150,7 +143,7 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
         if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) 
-                Retrieve_H5_Attr_Value(*ira);
+                Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
                     
         }
     }
@@ -1212,7 +1205,7 @@ void EOS5File::Check_Aura_Product_Status() throw(Exception) {
             for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
                 ira != (*irg)->attrs.end(); ++ira) {
                 if (instrument_attr_name == (*ira)->name) {
-                    Retrieve_H5_Attr_Value(*ira);
+                    Retrieve_H5_Attr_Value(*ira,(*irg)->path);
                     string attr_value((*ira)->value.begin(),(*ira)->value.end());
                     if ("OMI" == attr_value) {
                         this->isaura = true;
@@ -1359,7 +1352,7 @@ bool EOS5File::Check_Augmented_Var_Attrs(Var *var) throw(Exception) {
     for (vector<Attribute *>::iterator ira = var->attrs.begin();
                         ira != var->attrs.end(); ++ira) {
         if ("CLASS" == (*ira)->name) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,var->fullpath);
             string class_value((*ira)->value.begin(),(*ira)->value.end());
             if ("DIMENSION_SCALE"==class_value) 
                 has_dimscale_class = true;
@@ -2270,7 +2263,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
                 for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
                     ira != (*irg)->attrs.end(); ++ira) {
                     if (eos5_vc_attr_name == (*ira)->name) {
-                        Retrieve_H5_Attr_Value(*ira);
+                        Retrieve_H5_Attr_Value(*ira,(*irg)->path);
                         string attr_value((*ira)->value.begin(),(*ira)->value.end());
                         if (eos5_pre_attr_name == attr_value) {
                             has_vc_attr = true;
@@ -2582,6 +2575,9 @@ void EOS5File::Flatten_Obj_Name(bool include_attr) throw(Exception){
 
 void EOS5File::Handle_Obj_NameClashing(bool include_attr) throw(Exception) {
 
+    // objnameset will be filled with all object names that we are going to check the name clashing.
+    // For example, we want to see if there are any name clashings for all variable names in this file.
+    // objnameset will include all variable names. If a name clashing occurs, we can figure out from the set operation immediately.
     set<string>objnameset;
     Handle_EOS5CVar_NameClashing(objnameset);
     File::Handle_GeneralObj_NameClashing(include_attr,objnameset);
@@ -2769,7 +2765,7 @@ void EOS5File::Adjust_Attr_Value() throw(Exception) {
             for(vector <Attribute*>::iterator ira = (*irv)->attrs.begin();
                 ira != (*irv)->attrs.end(); ira++) {
                 if ("units" == (*ira)->name){
-                    Retrieve_H5_Attr_Value(*ira);
+                    Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
                     string units_value((*ira)->value.begin(),(*ira)->value.end());
                     if (time_cf_units_value != units_value) {
 
@@ -2805,7 +2801,7 @@ void EOS5File::Handle_EOS5CVar_Special_Attr() throw(Exception) {
                 for (vector<Attribute *>::iterator ira = (*it_g)->attrs.begin();
                         ira != (*it_g)->attrs.end(); ++ira) {
                     if (PCF1_attr_name == (*ira)->name) {
-                        Retrieve_H5_Attr_Value(*ira);
+                        Retrieve_H5_Attr_Value(*ira,(*it_g)->path);
                         string pcf_value((*ira)->value.begin(),(*ira)->value.end());
                         HDF5CFDAPUtil::replace_double_quote(pcf_value);
                         (*ira)->value.resize(pcf_value.size());
@@ -2846,7 +2842,7 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr() throw(Exception) {
                 for(vector <Attribute*>::iterator ira = (*irv)->attrs.begin();
                     ira != (*irv)->attrs.end(); ++ira) {
                     if ((*ira)->newname ==unit_attrname) {
-                        Retrieve_H5_Attr_Value(*ira);
+                        Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
                         string units_value((*ira)->value.begin(),(*ira)->value.end());
                         if ((lat_cf_unit_attrvalue !=units_value) && 
                             (((*irv)->name == "Latitude") ||

@@ -1,6 +1,6 @@
 $Id$
 
-Updated for version 2.0.0
+Updated for version 2.1.0
 
 -------------------------------------------------------------------------------
 REQUIREMENTS
@@ -196,6 +196,11 @@ NOTES
       need to hide such long string variables from DAS and DDS output.
       This will ensure that NetCDF Java OPeNDAP visualization clients
       such as IDV and Panoply can visualize other important variables.
+
+    5) H5.DisableStructMetaAttr=true
+
+    - When this option is true, StructMetadata attribute will not be generated
+      in DAS output. 
  
   o Testing with Hyrax-1.7.x
 

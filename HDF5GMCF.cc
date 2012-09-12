@@ -42,9 +42,6 @@ GMCVar::GMCVar(Var*var) {
     newname = var->newname;
     name = var->name;
     fullpath = var->fullpath;
-    varid = var->varid;
-    var_dtypeid = var->var_dtypeid;
-    var_dspaceid = var->var_dspaceid;
     rank  = var->rank;
     dtype = var->dtype;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
@@ -57,10 +54,6 @@ GMCVar::GMCVar(Var*var) {
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
         attr->count =(*ira)->count;
-        attr->attrid = (*ira)->attrid;
-        attr->attr_dtypeid = (*ira)->attr_dtypeid;
-        attr->attr_mtypeid = (*ira)->attr_mtypeid;
-        attr->attr_dspaceid =(*ira)->attr_dspaceid;
         attr->strsize = (*ira)->strsize;
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
@@ -82,9 +75,6 @@ GMCVar::GMCVar(Var*var) {
 GMSPVar::GMSPVar(Var*var) {
 
     fullpath = var->fullpath;
-    varid = var->varid;
-    var_dtypeid = var->var_dtypeid;
-    var_dspaceid = var->var_dspaceid;
     rank  = var->rank;
     unsupported_attr_dtype = var->unsupported_attr_dtype;
     unsupported_dspace = var->unsupported_dspace;
@@ -96,10 +86,6 @@ GMSPVar::GMSPVar(Var*var) {
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
         attr->count =(*ira)->count;
-        attr->attrid = (*ira)->attrid;
-        attr->attr_dtypeid = (*ira)->attr_dtypeid;
-        attr->attr_mtypeid = (*ira)->attr_mtypeid;
-        attr->attr_dspaceid =(*ira)->attr_dspaceid;
         attr->strsize = (*ira)->strsize;
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
@@ -170,7 +156,7 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
         if ((CV_EXIST == (*ircv)->cvartype ) || (CV_MODIFY == (*ircv)->cvartype)){
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
-                Retrieve_H5_Attr_Value(*ira);
+                Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
             }
         }
     }
@@ -179,7 +165,7 @@ void GMFile::Retrieve_H5_Supported_Attr_Values() throw (Exception) {
           
         for (vector<Attribute *>::iterator ira = (*irspv)->attrs.begin();
               ira != (*irspv)->attrs.end(); ++ira) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,(*irspv)->fullpath);
             Adjust_H5_Attr_Value(*ira);
         }
     }
@@ -426,69 +412,124 @@ throw (Exception){
     
     ssize_t objnamelen = -1;
     hobj_ref_t rbuf;
-    hvl_t *vlbuf = NULL;
+    //hvl_t *vlbuf = NULL;
+    vector<hvl_t> vlbuf;
+    
+    hid_t dset_id = -1;
+    hid_t attr_id = -1;
+    hid_t atype_id = -1;
+    hid_t amemtype_id = -1;
+    hid_t aspace_id = -1;
+    hid_t ref_dset = -1;
+
 
     if(NULL == dimlistattr) 
         throw2("Cannot obtain the dimension list attribute for variable ",var->name);
+
     if (0==var->rank) 
         throw2("The number of dimension should NOT be 0 for the variable ",var->name);
     
     try {
-        vlbuf = new hvl_t[var->rank];
+
+        //vlbuf = new hvl_t[var->rank];
+        vlbuf.resize(var->rank);
+    
+        hid_t dset_id = H5Dopen(this->fileid,(var->fullpath).c_str(),H5P_DEFAULT);
+        if (dset_id < 0) 
+            throw2("Cannot open the dataset ",var->fullpath);
+
+        attr_id = H5Aopen(dset_id,(dimlistattr->name).c_str(),H5P_DEFAULT);
+        if (attr_id <0 ) 
+            throw4("Cannot open the attribute ",dimlistattr->name," of HDF5 dataset ",var->fullpath);
+
+        atype_id = H5Aget_type(attr_id);
+        if (atype_id <0) 
+            throw4("Cannot obtain the datatype of the attribute ",dimlistattr->name," of HDF5 dataset ",var->fullpath);
+
+        amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
+
+        if (amemtype_id < 0) 
+            throw2("Cannot obtain the memory datatype for the attribute ",dimlistattr->name);
+
+
+        if (H5Aread(attr_id,amemtype_id,&vlbuf[0]) <0)  
+            throw2("Cannot obtain the referenced object for the variable ",var->name);
+        
+
+        vector<char> objname;
+        int vlbuf_index = 0;
+        for (vector<Dimension *>::iterator ird = var->dims.begin();
+                ird != var->dims.end(); ++ird) {
+
+            rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
+            if ((ref_dset = H5Rdereference(attr_id, H5R_OBJECT, &rbuf)) < 0) 
+                throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
+
+            if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
+                throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
+            objname.resize(objnamelen+1);
+            if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
+                throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
+
+            string objname_str = string(objname.begin(),objname.end());
+            string trim_objname = objname_str.substr(0,objnamelen);
+            (*ird)->name = string(trim_objname.begin(),trim_objname.end());
+
+            pair<set<string>::iterator,bool> setret;
+            setret = dimnamelist.insert((*ird)->name);
+            if (true == setret.second) 
+               Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
+            (*ird)->newname = (*ird)->name;
+            H5Dclose(ref_dset);
+            ref_dset = -1;
+            objname.clear();
+            vlbuf_index++;
+        }// for (vector<Dimension *>::iterator ird = var->dims.begin()
+        if(vlbuf.size()!= 0) {
+
+            if ((aspace_id = H5Aget_space(attr_id)) < 0)
+                throw2("Cannot get hdf5 dataspace id for the attribute ",dimlistattr->name);
+
+            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)&vlbuf[0])<0) 
+                throw2("Cannot successfully clean up the variable length memory for the variable ",var->name);
+
+            H5Sclose(aspace_id);
+           
+        }
+
+        H5Tclose(atype_id);
+        H5Tclose(amemtype_id);
+        H5Aclose(attr_id);
+        H5Dclose(dset_id);
+    
+       // if(vlbuf != NULL)
+        //  delete[] vlbuf;
     }
+
     catch(...) {
-        throw2("Cannot allocate memory for the variable length attribute of the variable ",var->name); 
+
+        if(atype_id != -1)
+            H5Tclose(atype_id);
+
+        if(amemtype_id != -1)
+            H5Tclose(amemtype_id);
+
+        if(aspace_id != -1)
+            H5Sclose(aspace_id);
+
+        if(attr_id != -1)
+            H5Aclose(attr_id);
+
+        if(dset_id != -1)
+            H5Dclose(dset_id);
+
+        //if(vlbuf != NULL)
+         //   delete[] vlbuf;
+
+        //throw1("Error in method GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone"); 
+        throw;
     }
-    if (H5Aread(dimlistattr->attrid,dimlistattr->attr_dtypeid,vlbuf) <0) { 
-        delete[] vlbuf;
-        throw2("Cannot obtain the referenced object for the variable ",var->name);
-    }
-
-    vector<char> objname;
-    hid_t ref_dset = -1;
-    int vlbuf_index = 0;
-    for (vector<Dimension *>::iterator ird = var->dims.begin();
-            ird != var->dims.end(); ++ird) {
-
-        rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
-        if ((ref_dset = H5Rdereference(dimlistattr->attrid, H5R_OBJECT, &rbuf)) < 0) {
-            delete[] vlbuf;
-            throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
-        }
-
-        if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) {
-            H5Dclose(ref_dset);
-            delete[] vlbuf;
-            throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
-        }
-        objname.resize(objnamelen+1);
-        if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) {
-            H5Dclose(ref_dset);
-            delete[] vlbuf;
-            throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
-        }
-
-        string objname_str = string(objname.begin(),objname.end());
-        string trim_objname = objname_str.substr(0,objnamelen);
-        (*ird)->name = string(trim_objname.begin(),trim_objname.end());
-
-        pair<set<string>::iterator,bool> setret;
-        setret = dimnamelist.insert((*ird)->name);
-        if (true == setret.second) 
-           Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size);
-        (*ird)->newname = (*ird)->name;
-        H5Dclose(ref_dset);
-        objname.clear();
-        vlbuf_index++;
-    }// for (vector<Dimension *>::iterator ird = var->dims.begin()
-    if(vlbuf != NULL) {
-          if (H5Dvlen_reclaim(dimlistattr->attr_dtypeid,dimlistattr->attr_dspaceid,H5P_DEFAULT,(void*)vlbuf)<0) {
-               delete[] vlbuf;
-               throw2("Cannot successfully clean up the variable length memory for the variable ",var->name);
-          }
-    }
-    if(vlbuf !=NULL) 
-        delete[] vlbuf;
+ 
 }
 
 void GMFile::Add_Dim_Name_Mea_Ozonel3z() throw(Exception){
@@ -1116,6 +1157,10 @@ void GMFile::Flatten_Obj_Name(bool include_attr) throw(Exception){
 
 void GMFile::Handle_Obj_NameClashing(bool include_attr) throw(Exception) {
 
+    // objnameset will be filled with all object names that we are going to check the name clashing.
+    // For example, we want to see if there are any name clashings for all variable names in this file.
+    // objnameset will include all variable names. If a name clashing occurs, we can figure out from the set operation immediately.
+
     set<string>objnameset;
     Handle_GMCVar_NameClashing(objnameset);
     Handle_GMSPVar_NameClashing(objnameset);
@@ -1386,24 +1431,24 @@ GMFile:: Add_Aqu_Attrs() throw(Exception) {
 
     for (ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
         if (orig_longname_attr_name == (*ira)->name) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,"/");
             longname_value.resize((*ira)->value.size());
             copy((*ira)->value.begin(),(*ira)->value.end(),longname_value.begin());
 
         }
         else if (orig_units_attr_name == (*ira)->name) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,"/");
             units_value.resize((*ira)->value.size());
             copy((*ira)->value.begin(),(*ira)->value.end(),units_value.begin());
 
         }
         else if (orig_valid_min_attr_name == (*ira)->name) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,"/");
             memcpy(&valid_min_value,(void*)(&((*ira)->value[0])),(*ira)->value.size());
         }
 
         else if (orig_valid_max_attr_name == (*ira)->name) {
-            Retrieve_H5_Attr_Value(*ira);
+            Retrieve_H5_Attr_Value(*ira,"/");
             memcpy(&valid_max_value,(void*)(&((*ira)->value[0])),(*ira)->value.size());
         }
         

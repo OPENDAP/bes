@@ -589,15 +589,24 @@ if(other_str!="") cerr <<"Final othermetadata "<<other_str <<endl;
 
 #endif
     if(st_str != ""){
-        AttrTable *at = das.get_table("StructMetadata");
-        if (NULL == at)
-            at = das.add_table("StructMetadata", new AttrTable);
-        parser_arg arg(at);
 
-        he5das_scan_string((const char*) st_str.c_str());
-        if (he5dasparse(static_cast < void *>(&arg)) != 0
+        string check_disable_smetadata_key ="H5.DisableStructMetaAttr";
+        bool is_check_disable_smetadata = false;
+        is_check_disable_smetadata = HDF5CFDAPUtil::check_beskeys(check_disable_smetadata_key);
+
+        if (false == is_check_disable_smetadata) {
+
+            AttrTable *at = das.get_table("StructMetadata");
+            if (NULL == at)
+                at = das.add_table("StructMetadata", new AttrTable);
+            parser_arg arg(at);
+
+            he5das_scan_string((const char*) st_str.c_str());
+            if (he5dasparse(static_cast < void *>(&arg)) != 0
                 || false == arg.status()){
-            cerr << "HDF-EOS StructMetdata parse error!\n";
+                cerr << "HDF-EOS StructMetdata parse error!\n";
+            }
+
         }
     }
 

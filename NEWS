@@ -1,3 +1,8 @@
+News for version 2.1.0
+
+This version improves the performance of hdf5_handler in dealing with big files
+with thousands of datasets.
+
 News for version 2.0.0
 
 This version is the re-engineering of HDF5 OPeNDAP handler CF option.

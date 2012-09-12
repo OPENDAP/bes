@@ -33,6 +33,7 @@
 #define _HDF5CFUtil_H
 #include <string.h>
 #include <set>
+#include <vector>
 #include <string>
 #include <iostream>
 #include "hdf5.h"
@@ -65,7 +66,7 @@ struct HDF5CFUtil {
 
                /// Trim the string with many NULL terms or garbage characters to simply a string
                /// with a NULL terminator. This method will not handle the NULL PAD case.
-               static string trim_string(hid_t dtypeid,const string s, int num_sect, size_t section_size, size_t sect_newsize[]);
+               static string trim_string(hid_t dtypeid,const string s, int num_sect, size_t section_size, vector<size_t>& sect_newsize);
 
                static string obtain_string_after_lastslash(const string s);
                static bool cf_strict_support_type(H5DataType dtype); 
