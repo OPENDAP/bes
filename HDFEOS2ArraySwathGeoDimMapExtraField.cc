@@ -10,13 +10,14 @@
 // the real data fields in an HDF-EOS2 file, this file is just
 // like the HDFEOS_RealField.cc.
 
+#ifdef USE_HDFEOS2_LIB
 #include "HDFEOS2ArraySwathGeoDimMapExtraField.h"
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <debug.h>
 #include "HDFEOS2.h"
-#include "HDFEOS2Util.h"
+#include "HDFCFUtil.h"
 #include "InternalErr.h"
 #include "BESDebug.h"
 #define SIGNED_BYTE_TO_INT32 1
@@ -25,6 +26,7 @@
 bool
 HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 {
+//cerr<<"coming to Swath GeoDimMapExtraField "<<endl;
 
 	int *offset = new int[rank];
 	int *count = new int[rank];
@@ -74,7 +76,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 	fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (fileid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -90,7 +92,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 				 &swathnamesize);
 
 	if (numswath == -1) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -101,7 +103,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 	}
 
 	if (numswath != 1) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -118,7 +120,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 				 &swathnamesize);
 	if (numswath == -1) {
 		delete[]swathname;
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -130,7 +132,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
 	swathid = attachfunc (fileid, swathname);
 	if (swathid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -146,10 +148,11 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 	char tmp_dimlist[1024];
 	int32 type;
 	intn r;
+//cerr<<"coming to map file " <<filename << " and fieldname is "<<fieldname <<endl;
 	r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
 					   &tmp_rank, tmp_dims, &type, tmp_dimlist);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		detachfunc (swathid);
 		closefunc (fileid);
@@ -171,7 +174,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 							   const_cast < char *>(fieldname.c_str ()),
 							   offset32, step32, count32, val);
 			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				delete[](int8 *) val;
 				detachfunc (swathid);
@@ -208,7 +211,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](uint8 *) val;
 			detachfunc (swathid);
@@ -229,7 +232,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 						   offset32, step32, count32, val);
 
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](int16 *) val;
 			detachfunc (swathid);
@@ -248,7 +251,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](uint16 *) val;
 			detachfunc (swathid);
@@ -267,7 +270,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](int32 *) val;
 			detachfunc (swathid);
@@ -286,7 +289,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](uint32 *) val;
 			detachfunc (swathid);
@@ -305,7 +308,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](float32 *) val;
 			detachfunc (swathid);
@@ -324,7 +327,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			delete[](float64 *) val;
 			detachfunc (swathid);
@@ -343,7 +346,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
 	r = detachfunc (swathid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		throw InternalErr (__FILE__, __LINE__,
@@ -353,7 +356,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
 	r = closefunc (fileid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -361,7 +364,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count, step);
+	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 	return false;
 }
 
@@ -418,3 +421,4 @@ HDFEOS2ArraySwathGeoDimMapExtraField::format_constraint (int *offset,
 
 	return nels;
 }
+#endif

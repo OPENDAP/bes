@@ -6,10 +6,17 @@
 // SOME MODIS products provide the latitude and longitude files for
 // swaths using dimension map. The files are still HDF-EOS2 files.
 // The file name is determined at hdfdesc.cc.
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_SWATHGEODIMMAPEXTRAFIELD_H
 #define HDFEOS2ARRAY_SWATHGEODIMMAPEXTRAFIELD_H
 
 #include "Array.h"
+
+#include "mfhdf.h"
+#include "hdf.h"
+#include "HdfEosDef.h"
+
+
 using namespace libdap;
 
 // swathname is not provided because the additional geo-location file uses 
@@ -33,9 +40,10 @@ class HDFEOS2ArraySwathGeoDimMapExtraField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, fieldname;
 	int rank;
+	std::string filename, fieldname;
 };
 
 
+#endif
 #endif

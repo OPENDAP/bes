@@ -9,10 +9,11 @@
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_MISSFIELD_H
 #define HDFEOS2ARRAY_MISSFIELD_H
 
-#include <Array.h>
+#include "Array.h"
 using namespace libdap;
 
 class HDFEOS2ArrayMissGeoField:public Array
@@ -39,4 +40,5 @@ class HDFEOS2ArrayMissGeoField:public Array
 };
 
 
+#endif
 #endif

@@ -25,14 +25,15 @@
 
 #include <mfhdf.h>
 #include <hdf.h>
-#include <HdfEosDef.h>
+//#include <HdfEosDef.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include "debug.h"
 #include "DAS.h"
-
+#include "HDFCFUtil.h"
 
 
 using namespace std;
@@ -68,17 +69,46 @@ class HE2CF
 
     string metadata;
     string gname;
+
+    // Store all metadata names.
+    // Not an ideal approach, need to re-visit later. KY 2012-6-11
+    vector<string>  eosmetadata_namelist;
     
     map < string, int32 > vg_sd_map;
     map < string, int32 > vg_vd_map;
 
+    void set_eosmetadata_namelist(const string &metadata_name)
+    {
+#if 0
+        string new_metadata_name = metadata_name;
+        if(new_metadata_name == "CoreMetadata.0.1")
+            new_metadata_name = "CoreMetadata.1";
+#endif
+
+        eosmetadata_namelist.push_back(metadata_name);
+
+    }
+
+    bool is_eosmetadata(const string& metadata_name) {
+#if 0
+        string new_metadata_name = metadata_name;
+        if(new_metadata_name == "CoreMetadata.0.1") 
+            new_metadata_name = "CoreMetadata.1";
+        return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),new_metadata_name) !=eosmetadata_namelist.end());
+#endif
+        return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
+    }
+         
     bool get_vgroup_field_refids(const string&  _gname, 
                                  int32* _ref_df, int32* _ref_gf);
     bool open_sd(const string& filename);
     bool open_vgroup(const string& filename);
-    string print_attr(int32 type, int loc, void *vals);
-    string print_type(int32 type);
-    bool set_metadata(const string& metadataname);
+    //string print_attr(int32 type, int loc, void *vals);
+   // string print_type(int32 type);
+    bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
+    void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
+    void obtain_SD_attr_value(const string &,string&);
+
     bool set_vgroup_map(int32 refid);
     bool write_attr_long_name(const string& long_name, 
                               const string& varname,
@@ -100,7 +130,8 @@ class HE2CF
     bool   close();
 
     /// retrieves the merged metadata.
-    string get_metadata(const string& metadataname);
+    string get_metadata(const string& metadataname,bool&suffix_is_num,vector<string>&non_num_names, vector<string>&non_num_data);
+    bool set_non_ecsmetadata_attrs();
 
     /// openes \afilename  HDF4 file.
     bool   open(const string& filename);

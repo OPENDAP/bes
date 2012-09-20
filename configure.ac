@@ -2,11 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.63)
-AC_INIT(hdf4_handler, 3.9.6, support@opendap.org)
+AC_INIT(hdf4_handler, 3.9.5, support@opendap.org)
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE(1.10)
+AM_INIT_AUTOMAKE([1.10 tar-pax])
 
 # The handler is a shared object library, so we don't normally need
 # the static lib. Override this default by specifying `--enable-static',
@@ -151,29 +151,11 @@ fi
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 
-dnl ----------------------------------------------------------------------                                
-dnl Shorten variable names if enabled. 
-AC_ARG_ENABLE([short-name], 
-	     [AS_HELP_STRING([--enable-short-name=yes|no],[Variable and dimension names will be shortened to 15 characters (default: no).])],
-	     [use_short_name=$enableval],[use_short_name=no])
-if test "${use_short_name}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DSHORT_NAME"
-fi 
-
-dnl Enable CF compliant output for NASA HDF4 files like CERES.  
-AC_ARG_ENABLE([cf], 
-	     [AS_HELP_STRING([--enable-cf=yes|no],[Pseudo CF-1.x convention support will be enabled (default: no).])],
-	     [use_cf=$enableval],[use_cf=no])
-if test "${use_cf}" = "yes"; then
-   CPPFLAGS="$CPPFLAGS -DCF"
-fi 
-
 AC_CONFIG_FILES([Makefile
 		 bes-testsuite/Makefile
 		 bes-testsuite/atlocal
-		 bes-testsuite/generate_metadata_baseline.sh
-                 hdfclass/Makefile],
-		[chmod +x bes-testsuite/generate_metadata_baseline.sh])
+                 hdfclass/Makefile])
+AC_CONFIG_FILES(bes-testsuite/generate_metadata_baseline.sh, chmod +x bes-testsuite/generate_metadata_baseline.sh)
 
 dnl Add this later: hdf-testfiles/Makefile
 AC_OUTPUT

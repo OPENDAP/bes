@@ -14,14 +14,13 @@
 #include "InternalErr.h"
 #include <BESDebug.h>
 #include "BESInternalError.h"
-#include "HDFSPUtil.h"
+#include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 
 bool
 HDFSPArray_RealField::read ()
 {
-
 
 	int *offset = new int[rank];
 	int *count = new int[rank];
@@ -54,7 +53,7 @@ HDFSPArray_RealField::read ()
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (sdid < 0) {
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		ostringstream eherr;
 
 		eherr << "File " << filename.c_str () << " cannot be open.";
@@ -64,7 +63,7 @@ HDFSPArray_RealField::read ()
 	int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
 
 	if (sdsindex == -1) {
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		SDend (sdid);
 		ostringstream eherr;
 
@@ -75,12 +74,22 @@ HDFSPArray_RealField::read ()
 	sdsid = SDselect (sdid, sdsindex);
 	if (sdsid < 0) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		ostringstream eherr;
 
 		eherr << "SDselect failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
+#if 0
+char temp_name[256];
+int32 dimsizes[4];
+SDgetinfo(sdsid,temp_name,NULL,dimsizes,NULL,NULL);
+cerr <<"SDS name is "<<temp_name <<endl;
+cerr<<"dimsizes[0] "<<dimsizes[0] <<endl;
+cerr<<"dimsizes[1] "<<dimsizes[1] <<endl;
+cerr<<"dimsizes[2] "<<dimsizes[2] <<endl;
+cerr<<"dimsizes[3] "<<dimsizes[3] <<endl;
+#endif
 
 	void *val;
 	int32 r;
@@ -94,7 +103,7 @@ HDFSPArray_RealField::read ()
 			if (r != 0) {
 				SDendaccess (sdsid);
 				SDend (sdid);
-				HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 									 step);
 				delete[](int8 *) val;
 				ostringstream eherr;
@@ -130,7 +139,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](uint8 *) val;
 			ostringstream eherr;
@@ -149,7 +158,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](int16 *) val;
 			ostringstream eherr;
@@ -179,7 +188,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](uint16 *) val;
 			ostringstream eherr;
@@ -197,7 +206,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](int32 *) val;
 			ostringstream eherr;
@@ -215,7 +224,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](uint32 *) val;
 			ostringstream eherr;
@@ -232,7 +241,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](float32 *) val;
 			ostringstream eherr;
@@ -250,7 +259,7 @@ HDFSPArray_RealField::read ()
 		if (r != 0) {
 			SDendaccess (sdsid);
 			SDend (sdid);
-			HDFSPUtil::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								 step);
 			delete[](float64 *) val;
 			ostringstream eherr;
@@ -265,14 +274,14 @@ HDFSPArray_RealField::read ()
 	default:
 		SDendaccess (sdsid);
 		SDend (sdid);
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = SDendaccess (sdsid);
 	if (r != 0) {
 		SDend (sdid);
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		ostringstream eherr;
 
 		eherr << "SDendaccess failed.";
@@ -283,7 +292,7 @@ HDFSPArray_RealField::read ()
 	r = SDend (sdid);
 	if (r != 0) {
 
-		HDFSPUtil::ClearMem (offset32, count32, step32, offset, count, step);
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		ostringstream eherr;
 
 		eherr << "SDend failed.";

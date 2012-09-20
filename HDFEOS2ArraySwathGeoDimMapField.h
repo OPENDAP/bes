@@ -9,12 +9,15 @@
 // We are using the linear interpolation method to interpolate the latitude and longitude.
 // So far we only see float32 and float64 types of latitude and longitude. So we only
 // interpolate latitude and longitude of these data types.
+#ifdef USE_HDFEOS2_LIB
 
 #ifndef HDFEOS2ARRAYSWATHGEODIMMAPFIELD_H
 #define HDFEOS2ARRAYSWATHGEODIMMAPFIELD_H
 
 #include "Array.h"
-#include "HDFEOS2Util.h"
+#include "HDFCFUtil.h"
+#include "HdfEosDef.h"
+
 using namespace libdap;
 
 class HDFEOS2ArraySwathGeoDimMapField:public Array
@@ -45,11 +48,23 @@ class HDFEOS2ArraySwathGeoDimMapField:public Array
 								  int32 dimsa[], int dimindex, int32 ddimsize,
 								  int32 offset, int32 inc);
 
-	// 2-D subsetting routine to ensure the subsetted lat/lon to be returned.
+	// routine to ensure the subsetted lat/lon to be returned.
+	template < class T > bool LatLonSubset (T * outlatlon, int majordim,
+											  int minordim, T * latlon,
+											  int32 * offset, int32 * count,
+											  int32 * step);
+	// routine to ensure the subsetted 1D lat/lon to be returned.
+	template < class T > bool LatLon1DSubset (T * outlatlon, int majordim,
+											  T * latlon,
+											  int32 * offset, int32 * count,
+											  int32 * step);
+	// routine to ensure the subsetted 2D lat/lon to be returned.
 	template < class T > bool LatLon2DSubset (T * outlatlon, int majordim,
 											  int minordim, T * latlon,
 											  int32 * offset, int32 * count,
 											  int32 * step);
+
+
 
 	BaseType *ptr_duplicate ()
 	{
@@ -59,9 +74,10 @@ class HDFEOS2ArraySwathGeoDimMapField:public Array
 	virtual bool read ();
 
   private:
+	int dtype, rank;
 	std::string filename, swathname, fieldname;
 	std::vector < struct dimmap_entry >dimmaps;
-	int dtype, rank;
 };
 
+#endif
 #endif

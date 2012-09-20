@@ -42,6 +42,7 @@
 */
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -51,10 +52,10 @@
 #include "hdf.h"
 
 // class that creates the unique name etc
-#include "HE2CFNcML.h"
-#include "HE2CFShortName.h"
-#include "HE2CF.h"
-
+//#include "HE2CFNcML.h"
+//#include "HE2CFShortName.h"
+//#include "HE2CF.h"
+#include "HDFSPEnumType.h"
 
 /*
 #ifdef _WIN32
@@ -96,10 +97,6 @@
 /// OBPGL3: SeaWIFS,OCTS,CZCS,MODISA,MODIST Level3 m 
 
 
-
-enum SPType
-{ OTHERHDF, TRMML2, TRMML3, CER_AVG, CER_ES4, CER_CDAY, CER_CGEO, CER_SRB,
-		CER_SYN, CER_ZAVG, OBPGL2, OBPGL3, MODISARNSS };
 
 namespace HDFSP
 {
@@ -181,6 +178,10 @@ namespace HDFSP
 		{
 			return this->name;
 		}
+                const std::string & getNewName () const
+		{
+			return this->newname;
+		}
 		int32 getType () const
 		{
 			return this->type;
@@ -195,7 +196,8 @@ namespace HDFSP
 		}
 
 	  protected:
-		  std::string name;
+		std::string name;
+                std::string newname;
 		int32 type;
 		int32 count;
 		  std::vector < char >value;
@@ -206,6 +208,41 @@ namespace HDFSP
 		friend class Field;
 		friend class VDField;
 	};
+
+        class AttrContainer {
+            public:
+                AttrContainer()
+                {
+                }
+                ~AttrContainer();
+
+            public:
+
+                /// Get the name of this field
+                const std::string & getName () const
+                {
+                        return this->name;
+                }
+
+                /// Get the new name of this field
+               // const std::string & getNewName () const
+                //{
+                 //       return this->newname;
+                //}
+
+                const std::vector < Attribute * >&getAttributes () const
+                {
+                        return this->attrs;
+                }
+
+           protected:
+              //  std:: string newname;
+                std:: string name;
+                std::vector < Attribute * >attrs;
+                friend class SD;
+                friend class File;
+
+        };
 
 
 	class Field
@@ -253,8 +290,8 @@ namespace HDFSP
 		  std::string newname;
 
 		std::string name;
-		int32 rank;
 		int32 type;
+		int32 rank;
 
 		std::vector < Attribute * >attrs;
 
@@ -269,7 +306,7 @@ namespace HDFSP
 	{
 	  public:
 		SDField ()
-		:fieldtype (0), sdsref (-1), condenseddim (false)
+		:fieldtype (0), sdsref (-1), condenseddim (false),is_dim_noscale(false),is_dim_scale(false)
 		{
 		}
 		 ~SDField ();
@@ -334,12 +371,35 @@ namespace HDFSP
 			return this->dims;
 		}
 
+		/// Get the list of dimension information
+		const std::vector < AttrContainer * >&getDimInfo () const
+		{
+			return this->dims_info;
+		}
+
+                bool IsDimNoScale() const
+                {
+                        return is_dim_noscale;
+                }
+
+                bool IsDimScale() const
+                {
+                        return is_dim_scale;
+                }
+
+
+                const string getSpecFullPath() const 
+                {
+                        return special_product_fullpath;
+                }
 		/// Set field type: existing coordinate variable or added coordinate variable 
 		/// void set_fieldtype(int flag) { fieldtype = flag;}
 	  protected:
-		  std::vector < Dimension * >dims;
 
+		std::vector < Dimension * >dims;
 		std::vector < Dimension * >correcteddims;
+
+                vector<AttrContainer *>dims_info;
 		std::string coordinates;
 
 		// This flag will specify the fieldtype.
@@ -351,9 +411,12 @@ namespace HDFSP
 		int fieldtype;
 
 		std::string units;
-		std::string fullpath;
+		std::string special_product_fullpath;
+
 		int32 sdsref;
 		bool condenseddim;
+                bool is_dim_noscale;
+                bool is_dim_scale;
 
 		std::string rootfieldname;
 
@@ -399,13 +462,14 @@ namespace HDFSP
 
 	  protected:
 		int32 order;
-		int32 size;
 		int32 numrec;
+		int32 size;
 		std::vector < char >value;
 
 		friend class File;
 		friend class VDATA;
 	};
+
 
 	/// This class retrieves all SDS objects and SD file attributes.
 	class SD
@@ -541,7 +605,7 @@ namespace HDFSP
 
 	  protected:
 		VDATA (int32 vdata_myid, int32 obj_ref)
-	  :	vdata_id (vdata_myid), vdref (obj_ref), TreatAsAttrFlag (true) {
+	  :	vdref(obj_ref),TreatAsAttrFlag (true),vdata_id (vdata_myid) {
 		}
 
 	  protected:
@@ -587,9 +651,12 @@ namespace HDFSP
 		/// The main step to make HDF4 SDS objects CF-complaint. 
 		/// All dimension(coordinate variables) information need to be ready.
 		/// All special arrangements need to be done in this step.
-		void Prepare (HE2CFShortName * sn, HE2CFShortName * sn_dim,
-					  HE2CFUniqName * un,
-					  HE2CFUniqName * un_dim) throw (Exception);
+
+		/// void Prepare (HE2CFShortName * sn, HE2CFShortName * sn_dim,
+		///			  HE2CFUniqName * un,
+		///			  HE2CFUniqName * un_dim) throw (Exception);
+
+                void Prepare() throw(Exception);
 
 		///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
 		void CheckSDType () throw (Exception);
@@ -628,6 +695,9 @@ namespace HDFSP
 		/// We still provide a hook for other HDF data product although no CF compliant is followed.
 		void PrepareOTHERHDF () throw (Exception);
 
+                /// Handle non-attribute vdatas.
+                void ReadVdatas(File*) throw(Exception);
+
 		/// The full path of SDS and Vdata will be obtained.
 		void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
 
@@ -640,6 +710,11 @@ namespace HDFSP
 		{
 			return this->sptype;
 		}
+
+                bool Has_Dim_NoScale_Field() const
+                {
+                    return this->OTHERHDF_Has_Dim_NoScale_Field;
+                }
 
 		 ~File ();
 
@@ -664,7 +739,7 @@ namespace HDFSP
 
 	  protected:
 		  File (const char *path)
-		: path (path), sdfd (-1), fileid (-1), sptype (OTHERHDF)
+		: path (path), sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false)
 		{
 		}
 
@@ -681,6 +756,7 @@ namespace HDFSP
 		int32 sdfd;				// SD interface ID
 		int32 fileid;			// H interface ID
 		SPType sptype;			// Special HDF4 file type
+                bool OTHERHDF_Has_Dim_NoScale_Field;
 	};
 
 
@@ -703,7 +779,8 @@ namespace HDFSP
 								  std::vector < std::string > &names);
 
                /// The special Utility function to obtain CF string(letters,numbers and _)
-               static string get_CF_string(string s);
+               /// Replaced by get_CF_string at HDFCFUtil.cc, KY 2012-6-12
+               ///static string get_CF_string(string s);
 
 
                /// The special utility function to obtain the full path.

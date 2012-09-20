@@ -8,6 +8,7 @@
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+#ifdef USE_HDFEOS2_LIB
 
 #include "HDFEOS2ArrayMissField.h"
 #include <iostream>
@@ -176,3 +177,4 @@ HDFEOS2ArrayMissGeoField::format_constraint (int *offset, int *step,
 
 	return nels;
 }
+#endif

@@ -229,13 +229,13 @@ void HDFGrid::transfer_attributes(AttrTable *at) {
 				AttrTable *dim = at->get_attr_table(a_p);
 				// Get the integer from the end of the name and use that as the
 				// index to find the matching Map variable.
-				DBG(cerr << "dim->name(): " << dim->get_name() << endl);
-				DBG(cerr << "dim->get_name().substr(i + dim_name_base.length()): "
+				BESDEBUG("h4", "dim->name(): " << dim->get_name() << endl);
+				BESDEBUG("h4",  "dim->get_name().substr(i + dim_name_base.length()): "
 						<< dim->get_name().substr(i + dim_name_base.length()) << endl);
 				int n = atoi(dim->get_name().substr(i + dim_name_base.length()).c_str());
 				// Note that the maps are HDFArray instances, so we use that
 				// for the actual copy operation.
-				DBG(cerr << "Inside HDFGrid::transfer_attreibutes: n = " << n << endl);
+				BESDEBUG("h4",  "Inside HDFGrid::transfer_attreibutes: n = " << n << endl);
 				dynamic_cast<HDFArray&> (*(*(map_begin() + n))).transfer_dimension_attribute(dim);
 			}
 

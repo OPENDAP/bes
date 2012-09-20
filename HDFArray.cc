@@ -93,16 +93,6 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err) {
 	string hdf_file = dataset();
 	string hdf_name = this->name();
 
-#ifdef CF
-	// get the real name for swath
-	if(hdf_name == "lat") {
-		hdf_name = "Latitude";
-	}
-	if(hdf_name == "lon") {
-		hdf_name = "Longitude";
-	}
-#endif
-
 	// get slab constraint
 	vector<int> start, edge, stride;
 	bool isslab = GetSlabConstraint(start, edge, stride);
@@ -113,10 +103,10 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err) {
 		if (SDSExists(hdf_file.c_str(), hdf_name.c_str())) {
 			hdfistream_sds sdsin(hdf_file.c_str());
 			if (ref != -1) {
-				DBG(cerr << "sds seek with ref = " << ref << endl);
+				BESDEBUG("h4", "sds seek with ref = " << ref << endl);
 				sdsin.seek_ref(ref);
 			} else {
-				DBG(cerr << "sds seek with name = '" << hdf_name << "'" << endl);
+				BESDEBUG("h4", "sds seek with name = '" << hdf_name << "'" << endl);
 				sdsin.seek(hdf_name.c_str());
 			}
 			if (isslab)
@@ -212,11 +202,11 @@ bool HDFArray::GetSlabConstraint(vector<int>&start_array,
  * @see HDFStructure::transfer_attributes
  */
 void HDFArray::transfer_attributes(AttrTable *at) {
-	DBG(cerr << "Transferring attributes for " << name() << endl);
+	BESDEBUG("h4","Transferring attributes for " << name() << endl);
 
 	BaseType::transfer_attributes(at);
 
-	DBG(cerr << "...Now looking for the " << name() << " _dim_n containers." << endl);
+	BESDEBUG("h4","...Now looking for the " << name() << " _dim_n containers." << endl);
 
 	// Here we should look for the *_dim_n where '*' is name() and n is 0, 1, ...
 	string dim_name_base = name() + "_dim_";
@@ -230,11 +220,11 @@ void HDFArray::transfer_attributes(AttrTable *at) {
 		if (i == 0 && at->get_attr_type(a_p) == Attr_container) {
 			AttrTable *dim = at->get_attr_table(a_p);
 			try {
-				DBG(cerr << "Found a dimension container for " << name() << endl);
+				BESDEBUG("h4","Found a dimension container for " << name() << endl);
 				transfer_dimension_attribute(dim);
 			}
 			catch (Error &e) {
-				DBG(cerr << "Caught an error transferring dimension attribute " << dim->get_name() << " for variable " << name() << endl);
+				BESDEBUG("h4","Caught an error transferring dimension attribute " << dim->get_name() << " for variable " << name() << endl);
 				throw e;
 			}
 		}

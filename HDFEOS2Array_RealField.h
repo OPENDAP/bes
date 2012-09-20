@@ -5,23 +5,28 @@
 // Copyright (c) 2010 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_REALFIELD_H
 #define HDFEOS2ARRAY_REALFIELD_H
 
 #include "Array.h"
 
-#include "DAS.h"
+#include "HDFCFUtil.h"
+#include "HdfEosDef.h"
+
+
+#include "HDFEOS2EnumType.h"
 
 using namespace libdap;
 
 class HDFEOS2Array_RealField:public Array
 {
   public:
-  HDFEOS2Array_RealField (int rank, const std::string & filename, const std::string & gridname, const std::string & swathname, const std::string & fieldname, const string & n = "", BaseType * v = 0):
+  HDFEOS2Array_RealField (int rank, const std::string & filename, const std::string & gridname, const std::string & swathname, const std::string & fieldname, SOType sotype, const string & n = "", BaseType * v = 0):
 	Array (n, v),
 		rank (rank),
 		filename (filename),
-		gridname (gridname), swathname (swathname), fieldname (fieldname) {
+		gridname (gridname), swathname (swathname), fieldname (fieldname),sotype(sotype) {
 	}
 	virtual ~ HDFEOS2Array_RealField ()
 	{
@@ -36,9 +41,11 @@ class HDFEOS2Array_RealField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, gridname, swathname, fieldname;
 	int rank;
+	std::string filename, gridname, swathname, fieldname;
+        SOType sotype;
 };
 
 
+#endif
 #endif

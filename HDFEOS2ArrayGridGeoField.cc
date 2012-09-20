@@ -3,6 +3,7 @@
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> 
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+#ifdef USE_HDFEOS2_LIB
 
 #include "HDFEOS2ArrayGridGeoField.h"
 #include <iostream>
@@ -12,7 +13,7 @@
 #include "HDFEOS2.h"
 #include "InternalErr.h"
 #include <BESDebug.h>
-#include "HDFEOS2Util.h"
+#include "HDFCFUtil.h"
 
 #include "misrproj.h"
 #include "errormacros.h"
@@ -21,7 +22,6 @@
 #define SIGNED_BYTE_TO_INT32 1
 
 extern "C" {
-// /mnt/hdf/n-gupta/eos2dump/hdfeos/gctp/src/
     int inv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*inv_trans[])(double, double, double*, double*));
     int sominv(double y, double x, double *lon, double *lat);
 }
@@ -29,46 +29,50 @@ extern "C" {
 bool
 HDFEOS2ArrayGridGeoField::read ()
 {
-    // Currently we don't support 3-D lat/lon case.
+    // Currently The latitude and longitude rank from HDF-EOS2 grid must be either 1-D or 2-D.
+    // However, For SOM projection the final rank will become 3. 
     if (rank < 1 || rank > 2) {
 	throw InternalErr (__FILE__, __LINE__,
 			   "The rank of geo field is greater than 2, currently we don't support 3-D lat/lon cases.");
     }
 
-    int newrank;
+    // the DDS output of latitude/longitude rank is 3. 
+    int newrank = -1;
 
     if (condenseddim)
 	newrank = 1;
-    else
+    else if(4 == specialformat)// For the SOM projection, the final output of latitude/longitude rank should be 3.
+        newrank = 3;
+    else 
 	newrank = rank;
 
     // Replace these with vector<int>. jhrg 
-    int *offset = new int[newrank];
-    int *count = new int[newrank];
-    int *step = new int[newrank];
+    // These have been replaced. Keep these for the time being as an example for  modification in other files.
+    //int *offset = new int[newrank];
+    //int *count = new int[newrank];
+    //int *step = new int[newrank];
 
-    int nelms;
+    vector<int> offset;
+    offset.resize(newrank);
+    vector<int> count;
+    count.resize(newrank);
+    vector<int> step;
+    step.resize(newrank);
+
+    int nelms = -1;
 
     // Obtain the number of the subsetted elements
-    try {
-	nelms = format_constraint (offset, step, count);
-    }
-    catch (...) {
+    nelms = format_constraint (&offset[0], &step[0], &count[0]);
+
+#if 0
+       catch (...) {
 	delete[]offset;
 	delete[]step;
 	delete[]count;
 	throw;
     }
+#endif
 
-    // vector<int32>
-    int32 *offset32 = new int32[rank];
-    int32 *count32 = new int32[rank];
-    int32 *step32 = new int32[rank];
-
-    // Obtain offset32 with the correct rank, the rank of lat/lon of
-    // GEO and CEA projections in the file may be 2 instead of 1.
-    getCorrectSubset (offset, count, step, offset32, count32, step32,
-		      condenseddim, ydimmajor, fieldtype, rank);
 
     // Define function pointers to handle both grid and swath Note: in
     // this code, we only handle grid, implementing this way is to
@@ -89,16 +93,14 @@ HDFEOS2ArrayGridGeoField::read ()
     readfieldfunc = GDreadfield;
     datasetname = gridname;
 
-    int32 gfid, gridid;
+    int32 gfid;
+    int32 gridid;
+
 
     // Obtain the grid id
     gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
     if (gfid < 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
 	ostringstream eherr;
-
 	eherr << "File " << filename.c_str () << " cannot be open.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
@@ -107,55 +109,88 @@ HDFEOS2ArrayGridGeoField::read ()
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
 
     if (gridid < 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
 	// Can use std::string here. jhrg
+        closefunc(gfid);
 	ostringstream eherr;
-
 	eherr << "Grid " << datasetname.c_str () << " cannot be attached.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
+    // SOM projection should be handled differently. 
+    if(specialformat == 4) {// SOM projection
+        CalculateSOMLatLon(gridid, &offset[0], &count[0], &step[0], nelms);
+        return false;
+    }
+    // vector<int32>
+    //    int32 *offset32 = new int32[rank];
+    //  int32 *count32 = new int32[rank];
+   // int32 *step32 = new int32[rank];
+
+    vector<int32>offset32;
+    offset32.resize(rank);
+
+    vector<int32>count32;
+    count32.resize(rank);
+
+    vector<int32>step32;
+    step32.resize(rank);
+
+
+    // Obtain offset32 with the correct rank, the rank of lat/lon of
+    // GEO and CEA projections in the file may be 2 instead of 1.
+    getCorrectSubset (&offset[0], &count[0], &step[0], &offset32[0], &count32[0], &step32[0],
+		      condenseddim, ydimmajor, fieldtype, rank);
+
     // The following case handles when the lat/lon is not provided.
     if (llflag == false) {		// We have to calculate the lat/lon
-	float64 *latlon = new float64[nelms];
 
-	// This fuction will calculate the lat/lon,subset and reduce
-	// the dimension properly.
-	if (specialformat == 3)	// Have to provide latitude and longitude by ourselves
-	    CalculateSpeLatLon (gridid, fieldtype, latlon, offset32, count32,
-				step32, nelms);
-	else
-	    CalculateLatLon (gridid, fieldtype, specialformat, latlon,
-			     offset32, count32, step32, nelms);
-	if (speciallon && fieldtype == 2) {
-	    CorSpeLon (latlon, nelms);
-	}
+    //	float64 *latlon = new float64[nelms];
+        vector<float64>latlon;
+        latlon.resize(nelms);
 
-	int32 projcode, zone, sphere;
-        float64 params[NPROJ];
+        int32 projcode, zone, sphere;
+        float64 params[16];
         intn r;
 
         r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
-        if (r!=0) ERROR("GDprojinfo");
+        if (r!=0) {
+            detachfunc(gridid);
+            closefunc(gfid);
+	    throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
+        }
 
-	switch(projcode)
-	{
-		case GCTP_SOM: // The routine will set value itself.
-			CalculateSOMLatLon(gridid, offset, count, step, nelms);
-			break;
-		case GCTP_LAMAZ:
-			CalculateLAMAZLatLon(gridid, fieldtype, latlon, offset, count, step, nelms);
-		default:
-			set_value ((dods_float64 *) latlon, nelms);
+        // Handle LAMAZ projection first.
+        if (GCTP_LAMAZ == projcode) { 
+            CalculateLAMAZLatLon(gridid, fieldtype, &latlon[0], &offset[0], &count[0], &step[0], nelms);
+	    set_value ((dods_float64 *) &latlon[0], nelms);
+            detachfunc(gridid);
+            closefunc(gfid);
+            return false;
+        }
+         
+        // Aim to handle large MCD Grid such as 21600*43200 lat,lon
+        if (specialformat == 1) {
+
+            CalculateLargeGeoLatLon(gfid,gridid, fieldtype,&latlon[0], &offset[0], &count[0], &step[0], nelms);
+            set_value((dods_float64 *)&latlon[0],nelms);
+            detachfunc(gridid);
+            closefunc(gfid);
+            return false;
+        }
+
+	// Now handle other cases.
+	if (specialformat == 3)	// Have to provide latitude and longitude by ourselves
+	    CalculateSpeLatLon (gridid, fieldtype, &latlon[0], &offset32[0], &count32[0],
+				&step32[0], nelms);
+        else // This is mostly general case, it will calculate lat/lon with GDij2ll.
+            CalculateLatLon (gridid, fieldtype, specialformat, &latlon[0],
+                             &offset32[0], &count32[0], &step32[0], nelms);
+
+	if (speciallon && fieldtype == 2) {
+	    CorSpeLon (&latlon[0], nelms);
 	}
 
-        /*if(projcode==GCTP_SOM) // The routine will set value itself.
-		CalculateSOMLatLon(gridid, offset, count, step, nelms);
-	else // For the projections other than SOM.
-		set_value ((dods_float64 *) latlon, nelms);*/
-
-	delete[]latlon;
+	set_value ((dods_float64 *) &latlon[0], nelms);
 
 	return false;
     }
@@ -170,18 +205,15 @@ HDFEOS2ArrayGridGeoField::read ()
 		       &tmp_rank, tmp_dims, &type, tmp_dimlist);
 
     if (r != 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
+        detachfunc(gridid);
+        closefunc(gfid);
 	ostringstream eherr;
-
 	eherr << "Field " << fieldname.
 	    c_str () << " information cannot be obtained.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
 
-    void *val;
-    void *fillvalue;
 
     // Retrieve dimensions and X-Y coordinates of corners
     int32 xdim;
@@ -191,15 +223,14 @@ HDFEOS2ArrayGridGeoField::read ()
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
+        detachfunc(gridid);
+        closefunc(gfid);
 	ostringstream eherr;
 
 	eherr << "Grid " << datasetname.
 	    c_str () << " information cannot be obtained.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
 
     // Retrieve all GCTP projection information
     int32 projcode;
@@ -208,30 +239,29 @@ HDFEOS2ArrayGridGeoField::read ()
     float64 params[16];
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
-    //         assert(r == 0);
     if (r != 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
-	ostringstream eherr;
+        detachfunc(gridid);
+        closefunc(gfid);
 
+	ostringstream eherr;
 	eherr << "Grid " << datasetname.
 	    c_str () << " projection info. cannot be obtained.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
 
     if (projcode != GCTP_GEO) {	// Just retrieve the data like other fields
 	// We have to loop through all datatype and read the lat/lon out.
 	switch (type) {
 	  case DFNT_INT8:
 	      {
-		  val = new int8[nelms];
+		  vector<int8> val;
+                  val.resize(nelms);
 		  r = readfieldfunc (gridid,
 				     const_cast < char *>(fieldname.c_str ()),
-				     offset32, step32, count32, val);
+				     &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 		  if (r != 0) {
-		      HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					     count, step);
+                      detachfunc(gridid);
+                      closefunc(gfid);
 		      ostringstream eherr;
 
 		      eherr << "field " << fieldname.
@@ -242,20 +272,19 @@ HDFEOS2ArrayGridGeoField::read ()
 		  // DAP2 requires the map of SIGNED_BYTE to INT32 if
 		  // SIGNED_BYTE_TO_INT32 is defined.
 #ifndef SIGNED_BYTE_TO_INT32
-		  set_value ((dods_byte *) val, nelms);
-		  delete[](int8 *) val;
+		  set_value ((dods_byte *) &val[0], nelms);
 #else
-		  int32 *newval;
-		  int8 *newval8;
+		  //int32 *newval;
+                  vector<int32>newval;
+                  newval.resize(nelms);
 
-		  newval = new int32[nelms];
-		  newval8 = (int8 *) val;
+		  //newval = new int32[nelms];
 		  for (int counter = 0; counter < nelms; counter++)
-		      newval[counter] = (int32) (newval8[counter]);
+		      newval[counter] = (int32) (newval[counter]);
 
-		  set_value ((dods_int32 *) newval, nelms);
-		  delete[](int8 *) val;
-		  delete[]newval;
+		  set_value ((dods_int32 *) &newval[0], nelms);
+		  //delete[](int8 *) val;
+		  //delete[]newval;
 #endif
 
 	      }
@@ -263,119 +292,160 @@ HDFEOS2ArrayGridGeoField::read ()
 	  case DFNT_UINT8:
 	  case DFNT_UCHAR8:
 	  case DFNT_CHAR8:
-	    val = new uint8[nelms];
+
+            {
+	    //val = new uint8[nelms];
+            vector<uint8> val;
+            val.resize(nelms);
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
-	    set_value ((dods_byte *) val, nelms);
+	    set_value ((dods_byte *) &val[0], nelms);
+
+            }
 	    break;
 
 	  case DFNT_INT16:
-	    val = new int16[nelms];
+
+            {
+            vector<int16> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    set_value ((dods_int16 *) val, nelms);
+	    set_value ((dods_int16 *) &val[0], nelms);
+
+            }
 	    break;
 	  case DFNT_UINT16:
-	    val = new uint16[nelms];
+
+            {
+            vector<uint16> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    set_value ((dods_uint16 *) val, nelms);
+	    set_value ((dods_uint16 *) &val[0], nelms);
+            }
 	    break;
 	  case DFNT_INT32:
-	    val = new int32[nelms];
+
+            {
+            vector<int32> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    set_value ((dods_int32 *) val, nelms);
+	    set_value ((dods_int32 *) &val[0], nelms);
+            }
 	    break;
 	  case DFNT_UINT32:
-	    val = new uint32[nelms];
+
+            {
+            vector<uint32> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
-	    set_value ((dods_uint32 *) val, nelms);
+	    set_value ((dods_uint32 *) &val[0], nelms);
+            }
 	    break;
 	  case DFNT_FLOAT32:
-	    val = new float32[nelms];
+
+            {
+            vector<float32> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    set_value ((dods_float32 *) val, nelms);
+	    set_value ((dods_float32 *) &val[0], nelms);
+            }
 	    break;
 	  case DFNT_FLOAT64:
-	    val = new float64[nelms];
+
+            {
+            vector<float64> val;
+            val.resize(nelms);
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    set_value ((dods_float64 *) val, nelms);
+	    set_value ((dods_float64 *) &val[0], nelms);
+            }
 	    break;
 	  default:
-	    HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-				   step);
 	    InternalErr (__FILE__, __LINE__, "unsupported data type.");
 
 	}
@@ -386,367 +456,515 @@ HDFEOS2ArrayGridGeoField::read ()
 	// on starting value,step values and number of steps.
 	switch (type) {
 	  case DFNT_INT8:
-	      {
-		  val = new int8[nelms];
-		  r = readfieldfunc (gridid,
-				     const_cast < char *>(fieldname.c_str ()),
-				     offset32, step32, count32, val);
-		  if (r != 0) {
-		      HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					     count, step);
-		      ostringstream eherr;
+	  {
+                  vector<int8> val;
+                  val.resize(nelms);
 
-		      eherr << "field " << fieldname.
-			  c_str () << "cannot be read.";
-		      throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		  }
 
-		  fillvalue = new int8;
+		  int8 fillvalue = 0;
 
 		  r = GDgetfillvalue (gridid,
 				      const_cast < char *>(fieldname.c_str ()),
-				      fillvalue);
+				      &fillvalue);
 		  if (r == 0) {
-		      int ifillvalue =
-			  static_cast < int >(*((int8 *) fillvalue));
-		      bool correctedfill =
-			  CorLatLon ((int8 *) val, fieldtype, nelms,
-				     ifillvalue);
-		      if (!correctedfill) {
-			  HDFEOS2Util::ClearMem (offset32, count32, step32,
-						 offset, count, step);
-			  ostringstream eherr;
 
-			  eherr << "geo-field " << fieldname.
-			      c_str () << " fill values cannot be replaced";
-			  throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		      }
+		      int ifillvalue = fillvalue;
+
+                      vector <int8> temp_total_val;
+                      temp_total_val.resize(xdim*ydim*4);
+
+                      r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                      if (r != 0) {
+                          detachfunc(gridid);
+                          closefunc(gfid);
+
+                          ostringstream eherr;
+
+                          eherr << "field " << fieldname.c_str () << "cannot be read.";
+                          throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                      }
+
+                      HandleFillLatLon(temp_total_val, (int8*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
 		  }
-		  if (speciallon && fieldtype == 2)
-		      CorSpeLon ((int8 *) val, nelms);
 
-		  delete (int8 *) fillvalue;
+                  else {
+
+                    r = readfieldfunc (gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                    if (r != 0) {
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
+                        ostringstream eherr;
+
+                        eherr << "field " << fieldname.c_str () << "cannot be read.";
+                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    }
+                  }
+
+		  if (speciallon && fieldtype == 2)
+		      CorSpeLon ((int8 *) &val[0], nelms);
+
 
 #ifndef SIGNED_BYTE_TO_INT32
-		  set_value ((dods_byte *) val, nelms);
-		  delete[](int8 *) val;
+		  set_value ((dods_byte *) &val[0], nelms);
 #else
-		  int32 *newval;
-		  int8 *newval8;
+                  vector<int32>newval;
+                  newval.resize(nelms);
 
-		  newval = new int32[nelms];
-		  newval8 = (int8 *) val;
 		  for (int counter = 0; counter < nelms; counter++)
-		      newval[counter] = (int32) (newval8[counter]);
+		      newval[counter] = (int32) (val[counter]);
 
-		  set_value ((dods_int32 *) newval, nelms);
-		  delete[](int8 *) val;
-		  delete[]newval;
+		  set_value ((dods_int32 *) &newval[0], nelms);
 
 #endif
 
-	      }
+	  }
 
 	      break;
 	  case DFNT_UINT8:
 	  case DFNT_UCHAR8:
 	  case DFNT_CHAR8:
-	    val = new uint8[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
+          {
+            vector<uint8> val;
+            val.resize(nelms);
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
-
-	    fillvalue = new uint8;
+            uint8 fillvalue = 0;
 
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue = static_cast < int >(*((uint8 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((uint8 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+		int ifillvalue =  fillvalue;
+                vector <uint8> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+
+                r = readfieldfunc(gridid,
+                         const_cast < char *>(fieldname.c_str ()),
+                         NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (uint8*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
 	    }
+
+            else {
+
+                r = readfieldfunc (gridid,
+                            const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+            }
+	    
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((uint8 *) val, nelms);
-	    set_value ((dods_byte *) val, nelms);
-	    delete[](uint8 *) val;
-	    delete (uint8 *) fillvalue;
+		CorSpeLon ((uint8 *) &val[0], nelms);
+	    set_value ((dods_byte *) &val[0], nelms);
+
+          }
 	    break;
 
 	  case DFNT_INT16:
-	    val = new int16[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
+          {
+            vector<int16> val;
+            val.resize(nelms);
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
-
-
-	    fillvalue = new int16;
+	    int16 fillvalue = 0;
 
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue = static_cast < int >(*((int16 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((int16 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+		int ifillvalue =  fillvalue;
+                vector <int16> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
 
-		}
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (int16*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
 	    }
-	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((int16 *) val, nelms);
 
-	    set_value ((dods_int16 *) val, nelms);
-	    delete[](int16 *) val;
-	    delete (int16 *) fillvalue;
+            else {
+
+                r = readfieldfunc (gridid,
+                              const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+            }
+
+	    
+	    if (speciallon && fieldtype == 2)
+		CorSpeLon ((int16 *) &val[0], nelms);
+
+	    set_value ((dods_int16 *) &val[0], nelms);
+          }
 	    break;
 	  case DFNT_UINT16:
-	    val = new uint16[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
+          {
+            uint16  fillvalue = 0;
+            vector<uint16> val;
+            val.resize(nelms);
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
-
-
-	    fillvalue = new uint16;
 
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue = static_cast < int >(*((uint16 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((uint16 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+		int ifillvalue =  fillvalue;
+
+                vector <uint16> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (uint16*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
 	    }
 
+            else {
+
+                r = readfieldfunc (gridid,
+                              const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                } 
+            }
+
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((uint16 *) val, nelms);
+		CorSpeLon ((uint16 *) &val[0], nelms);
 
-	    set_value ((dods_uint16 *) val, nelms);
-	    delete[](uint16 *) val;
-	    delete (uint16 *) fillvalue;
+	    set_value ((dods_uint16 *) &val[0], nelms);
 
+          }
 	    break;
+
 	  case DFNT_INT32:
-	    val = new int32[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
+          {
+            vector<int32> val;
+            val.resize(nelms);
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
-
-	    fillvalue = new int32;
+	    int32 fillvalue = 0;
 
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue = static_cast < int >(*((int32 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((int32 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+		int ifillvalue =  fillvalue;
 
-		}
+                vector <int32> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+                    ostringstream eherr;
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (int32*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
+	    }
+
+            else {
+
+                r = readfieldfunc (gridid,
+                              const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                } 
+
 	    }
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((int32 *) val, nelms);
+		CorSpeLon ((int32 *) &val[0], nelms);
 
-	    set_value ((dods_int32 *) val, nelms);
-	    delete[](int32 *) val;
-	    delete (int32 *) fillvalue;
+	    set_value ((dods_int32 *) &val[0], nelms);
 
+          }
 	    break;
 	  case DFNT_UINT32:
-	    val = new uint32[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
+          {
+//	    val = new uint32[nelms];
+            vector<uint32> val;
+            val.resize(nelms);
 
-	    fillvalue = new uint32;
+	    uint32 fillvalue = 0;
 
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue = static_cast < int >(*((uint32 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((uint32 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                // this may cause overflow. Although we don't find the overflow in the NASA HDF products, may still fix it later. KY 2012-8-20
+		int ifillvalue = (int)fillvalue;
+                vector <uint32> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
 
-		}
+                if (r != 0) {
+                    //HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+                     //                        count, step);
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (uint32*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+//                HandleFillLatLon(temp_total_val, (uint32*)val,ydimmajor,fieldtype,xdim,ydim,offset32,count32,step32,ifillvalue);
+
+	    }
+
+            else {
+
+                r = readfieldfunc (gridid,
+                              const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+                   // HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+                    //                   count, step);
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                } 
+
 	    }
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((uint32 *) val, nelms);
+		CorSpeLon ((uint32 *) &val[0], nelms);
 
-	    set_value ((dods_uint32 *) val, nelms);
-	    delete[](uint32 *) val;
-	    delete (uint32 *) fillvalue;
+	    set_value ((dods_uint32 *) &val[0], nelms);
+	   // delete[](uint32 *) val;
+	   // delete (uint32 *) fillvalue;
 
+          }
 	    break;
 	  case DFNT_FLOAT32:
-	    val = new float32[nelms];
+
+          {
+	    //val = new float32[nelms];
+            vector<float32> val;
+            val.resize(nelms);
+
+            float32 fillvalue =0;
+            r = GDgetfillvalue (gridid,
+                                const_cast < char *>(fieldname.c_str ()),
+                                &fillvalue);
+
+//cerr<<"fillvalue "<<*((float32*)fillvalue) <<endl;
+
+            if (r == 0) {
+                // May cause overflow,not find this happen in NASA HDF files, may still need to handle later.
+                // KY 2012-08-20
+                int ifillvalue =(int)fillvalue;
+     
+                // float32 *temp_total_val = new float32[xdim*ydim*4];
+                vector <float32> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+                    //HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+                     //                  count, step);
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (float32*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
+                //delete []temp_total_val;
+
+            }
+            else {
+
 	    r = readfieldfunc (gridid,
 			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
+//		HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+//				       count, step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		ostringstream eherr;
 
 		eherr << "field " << fieldname.c_str () << "cannot be read.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	    }
 
-	    fillvalue = new float32;
-
-	    r = GDgetfillvalue (gridid,
-				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
-	    if (r == 0) {
-		int ifillvalue =
-		    static_cast < int >(*((float32 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((float32 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
-
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
-
 	    }
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((float32 *) val, nelms);
+		CorSpeLon ((float32 *) &val[0], nelms);
 
-	    set_value ((dods_float32 *) val, nelms);
-	    delete[](float32 *) val;
-	    delete (float32 *) fillvalue;
+	    set_value ((dods_float32 *) &val[0], nelms);
+//	    delete[](float32 *) val;
+//	    delete (float32 *) fillvalue;
 
+          }
 	    break;
 	  case DFNT_FLOAT64:
-	    val = new float64[nelms];
-	    r = readfieldfunc (gridid,
-			       const_cast < char *>(fieldname.c_str ()),
-			       offset32, step32, count32, val);
-	    if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-				       count, step);
-		ostringstream eherr;
 
-		eherr << "field " << fieldname.c_str () << "cannot be read.";
-		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	    }
+          {
+//	    val = new float64[nelms];
+            vector<float64> val;
+            val.resize(nelms);
 
-
-	    fillvalue = new float64;
+	    float64 fillvalue = 0;
 	    r = GDgetfillvalue (gridid,
 				const_cast < char *>(fieldname.c_str ()),
-				fillvalue);
+				&fillvalue);
 	    if (r == 0) {
-		int ifillvalue =
-		    static_cast < int >(*((float64 *) fillvalue));
-		bool correctedfill =
-		    CorLatLon ((float64 *) val, fieldtype, nelms, ifillvalue);
-		if (!correctedfill) {
-		    HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
-					   count, step);
-		    ostringstream eherr;
 
-		    eherr << "geo-field " << fieldname.
-			c_str () << " fill values cannot be replaced";
-		    throw InternalErr (__FILE__, __LINE__, eherr.str ());
-		}
+                // May cause overflow,not find this happen in NASA HDF files, may still need to handle later.
+                // KY 2012-08-20
+ 
+		int ifillvalue = (int)fillvalue;
+                vector <float64> temp_total_val;
+                temp_total_val.resize(xdim*ydim*4);
+                r = readfieldfunc(gridid,
+                               const_cast < char *>(fieldname.c_str ()),
+                               NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+
+                if (r != 0) {
+ //                   HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+  //                                           count, step);
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                }
+
+                HandleFillLatLon(temp_total_val, (float64*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
+
+	    }
+
+            else {
+
+                r = readfieldfunc (gridid,
+                              const_cast < char *>(fieldname.c_str ()),
+			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
+                if (r != 0) {
+   //                 HDFCFUtil::ClearMem (offset32, count32, step32, offset,
+    //                                   count, step);
+                    detachfunc(gridid);
+                    closefunc(gfid);
+
+                    ostringstream eherr;
+
+                    eherr << "field " << fieldname.c_str () << "cannot be read.";
+                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                } 
+
 	    }
 	    if (speciallon && fieldtype == 2)
-		CorSpeLon ((float64 *) val, nelms);
+		CorSpeLon ((float64 *) &val[0], nelms);
 
-	    set_value ((dods_float64 *) val, nelms);
-	    delete[](float64 *) val;
-	    delete (float64 *) fillvalue;
+	    set_value ((dods_float64 *) &val[0], nelms);
+	    //delete[](float64 *) val;
+	   // delete (float64 *) fillvalue;
 
+          }
 	    break;
 	  default:
-	    HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-				   step);
+//	    HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+//				   step);
 	    InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
@@ -754,8 +972,10 @@ HDFEOS2ArrayGridGeoField::read ()
 
     r = detachfunc (gridid);
     if (r != 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
+//	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+//			       step);
+        closefunc(gfid);
+
 	ostringstream eherr;
 
 	eherr << "Grid " << datasetname.c_str () << " cannot be detached.";
@@ -765,8 +985,8 @@ HDFEOS2ArrayGridGeoField::read ()
 
     r = closefunc (gfid);
     if (r != 0) {
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
-			       step);
+//	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+//			       step);
 	ostringstream eherr;
 
 	eherr << "Grid " << filename.c_str () << " cannot be closed.";
@@ -774,6 +994,7 @@ HDFEOS2ArrayGridGeoField::read ()
     }
 
 
+#if 0
     delete[]offset;
     delete[]count;
     delete[]step;
@@ -781,6 +1002,7 @@ HDFEOS2ArrayGridGeoField::read ()
     delete[]offset32;
     delete[]count32;
     delete[]step32;
+#endif
 
     return false;
 }
@@ -876,9 +1098,9 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
     // So we set the corner coordinates to (-180000000.00,90000000.00) and
     // (180000000.00,-90000000.00).
     if (specialformat == 2) {
-	upleft[0] = -180000000.0;
+	upleft[0] = 0.0;
 	upleft[1] = 90000000.0;
-	lowright[0] = 180000000.0;
+	lowright[0] = 360000000.0;
 	lowright[1] = -90000000.0;
     }
 
@@ -919,13 +1141,33 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    int32 *rows = new int32[xdim * ydim];
-    int32 *cols = new int32[xdim * ydim];
-    float64 *lon = new float64[xdim * ydim];
-    float64 *lat = new float64[xdim * ydim];
+// cerr<<"before subsetting 1"<<endl;
+
+    int32*rows = NULL;
+    int32 *cols = NULL;
+    float64*lon = NULL;
+    float64*lat = NULL;
+
+
+    try {
+        rows = new int32[xdim * ydim];
+        cols = new int32[xdim * ydim];
+        lon = new float64[xdim * ydim];
+        lat = new float64[xdim * ydim];
+    }
+
+    catch(...) {
+        if(rows !=NULL) delete[] rows;
+        if(cols !=NULL) delete[] cols;
+        if(lon !=NULL) delete[] lon;
+        if(lat !=NULL) delete[]lat;
+
+        throw;
+    }
 
     int i, j, k;
 
+// cerr<<"before subsetting 2"<<endl;
     if (ydimmajor) {
 	/* Fill two arguments, rows and columns */
 	// rows             cols
@@ -963,6 +1205,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
 		 xdim * ydim, rows, cols, lon, lat, pixreg, origin);
+
     if (r != 0) {
 	ostringstream eherr;
 
@@ -977,6 +1220,7 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 							      jjj] << endl;
 #endif
 
+//cerr<<"before subsetting "<<endl;
     // 2-D Lat/Lon, need to decompose the data for subsetting.
     if (nelms == (xdim * ydim)) {	// no subsetting return all, for the performance reason.
 	if (fieldtype == 1)
@@ -1009,16 +1253,16 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 }
 
 
-void
-HDFEOS2ArrayGridGeoField::LatLon2DSubset (float64 * outlatlon, int majordim,
-					  int minordim, float64 * latlon,
+template<class T> void
+HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
+					  int minordim, T * latlon,
 					  int32 * offset, int32 * count,
 					  int32 * step)
 {
 
 
     //          float64 templatlon[majordim][minordim];
-    float64 (*templatlonptr)[majordim][minordim] =
+    T (*templatlonptr)[majordim][minordim] =
 	(typeof templatlonptr) latlon;
     int i, j, k;
 
@@ -1220,6 +1464,78 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (int *offset, int *count,
     }
 }
 
+// Correct latitude and longitude that have fill values. Although I only found this
+// happens for AIRS CO2 grids, I still implemented this as general as I can.
+
+template <class T> void
+HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,bool ydimmajor, 
+                 int fieldtype, int32 xdim , int32 ydim, 
+                 int32* offset, int32* count, int32* step, int fv)  {
+
+   class vector <T> temp_lat;
+   class vector <T> temp_lon;
+
+   if (true == ydimmajor) {
+
+        if (1 == fieldtype) {
+            temp_lat.resize(ydim);
+            for (int i = 0; i <(int)ydim; i++)
+                temp_lat[i] = total_latlon[i*xdim];
+
+            if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
+                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+           
+            for (int i = 0; i <(int)(count[0]); i++)
+                latlon[i] = temp_lat[offset[0] + i* step[0]];
+        }
+        else {
+
+            temp_lon.resize(xdim);
+            for (int i = 0; i <(int)xdim; i++)
+                temp_lon[i] = total_latlon[i];
+
+
+            if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
+                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+           
+            for (int i = 0; i <(int)(count[1]); i++)
+                latlon[i] = temp_lon[offset[1] + i* step[1]];
+
+        }
+   }
+   else {
+
+        if (1 == fieldtype) {
+            temp_lat.resize(xdim);
+            for (int i = 0; i <(int)xdim; i++)
+                temp_lat[i] = total_latlon[i];
+
+            if (false == CorLatLon(&temp_lat[0],fieldtype,ydim,fv))
+                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+           
+            for (int i = 0; i <(int)(count[1]); i++)
+                latlon[i] = temp_lat[offset[1] + i* step[1]];
+        }
+        else {
+
+            temp_lon.resize(ydim);
+            for (int i = 0; i <(int)ydim; i++)
+                temp_lon[i] = total_latlon[i*xdim];
+
+
+            if (false == CorLatLon(&temp_lon[0],fieldtype,xdim,fv))
+                InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+           
+            for (int i = 0; i <(int)(count[0]); i++)
+                latlon[i] = temp_lon[offset[0] + i* step[0]];
+        }
+
+    }
+}
+            
+        
+
+     
 // A helper recursive function to find the first filled value index.
 template < class T > int
 HDFEOS2ArrayGridGeoField::findfirstfv (T * array, int start, int end,
@@ -1268,17 +1584,21 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
     // the rank is always assumed to be 2 and we condense to 1. So the 
     // count for longitude should be count[1] instead of count[0]. See function GetCorSubset
 
+    // Since the project parameters in StructMetadata are all set to be default, I will use
+    // the default HDF-EOS2 cell center as the origin of the coordinate. See the HDF-EOS2 user's guide
+    // for details. KY 2012-09-10
+
     if (fieldtype == 1) {
 	double latstep = 180.0 / ydim;
 
 	for (int i = 0; i < (int) (count32[0]); i++)
-	    outlatlon[i] = 90.0 - latstep * (offset32[0] + i * step32[0]);
+	    outlatlon[i] = 90.0 -latstep/2 - latstep * (offset32[0] + i * step32[0]);
     }
     else {						// Longitude should use count32[1] etc. 
 	double lonstep = 360.0 / xdim;
 
 	for (int i = 0; i < (int) (count32[1]); i++)
-	    outlatlon[i] = -180.0 + lonstep * (offset32[1] + i * step32[1]);
+	    outlatlon[i] = -180.0 + lonstep/2 + lonstep * (offset32[1] + i * step32[1]);
     }
 }
 
@@ -1288,9 +1608,11 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 	int32 projcode, zone, sphere;
     	float64 params[NPROJ];
 	intn r;
+//cerr<<"going into CalculateSOMLatLon" <<endl;
 
     	r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     	if (r!=0) ERROR("GDprojinfo");
+//cerr<<"projcode "<<projcode <<endl;
 
 	//if(projcode==GCTP_SOM)
 	//{
@@ -1324,21 +1646,36 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 		int status = misr_init(NBLOCK, xdim, ydim, offset, ulc, lrc);
 		if(status!=0) ERROR("misr_init");
 
-		long iflg;
+		long iflg = 0;
 		int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
 		inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
-		if(iflg) ERROR("int_init");
+                // cerr<<"iflg = "<<iflg <<endl;
+		if(iflg) ERROR("inv_init");
 
-		float *latlon;
+		//float *latlon;
+		double *latlon;
 		//double *lat, *lon;
 		double somx, somy, lat_r, lon_r;
 		int i, j, k, b, npts=0;
                 float l, s;
+//cerr<<"nelms inside the routine "<<nelms << endl;
+//cerr<<"start[0]= "<<start[0] <<endl;
+//cerr<<"start[1]= "<<start[1] <<endl;
+//cerr<<"start[2]= "<<start[2] <<endl;
+
+//cerr<<"count[0]= "<<count[0] <<endl;
+//cerr<<"count[1]= "<<count[1] <<endl;
+//cerr<<"count[2]= "<<count[2] <<endl;
+//
+//cerr<<"step[0]= "<<step[0] <<endl;
+//cerr<<"step[1]= "<<step[1] <<endl;
+//cerr<<"step[2]= "<<step[2] <<endl;
+
 
 		int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
 		if(blockdim==0) //66.2263, 66.224, ....
 		{
-			latlon = new float[nelms]; //180*xdim*ydim]; //new double[180*xdim*ydim];
+			latlon = new double[nelms]; //180*xdim*ydim]; //new double[180*xdim*ydim];
 			int s1=start[0]+1, e1=s1+count[0]*step[0];
 			int s2=start[1],   e2=s2+count[1]*step[1];
 			int s3=start[2],   e3=s3+count[2]*step[2];
@@ -1357,29 +1694,69 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 							latlon[npts] = lon_r*R2D;
                     				npts++;
                 			}
-			set_value ((dods_float32 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
-		} else {
-			latlon = new float[xdim*ydim]; //new double[xdim*ydim];
-			for(j=0; j<xdim; j++)
-        			for(k=0; k<ydim; k++)
-        			{
-            				l = j;
-            				s = k;
-	/* -------------------------------------------------------- */
-	/* Inverse transformation (b,l.l,s.s) -> (X,Y) -> (lat,lon) */
-        /* -------------------------------------------------------- */
-            				misrinv(blockdim, l, s, &somx, &somy); /* (b,l.l,s.s) -> (X,Y) */
-            				sominv(somx, somy, &lon_r, &lat_r);
-					if(fieldtype==1)
-            					latlon[npts] = lat_r*R2D;
-					else
-            					latlon[npts] = lon_r*R2D;
-            				npts++;
-				}
-		}
+			//set_value ((dods_float32 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
+			set_value ((dods_float64 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
+		} 
     		delete [] latlon;
 	//}
 }
+void
+HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
+{
+
+            int32 xdim =0;
+            int32 ydim = 0;
+            float64 upleft[2];
+            float64 lowright[2];
+            int r = 0;
+            r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
+            if (r!=0) {
+                GDdetach(gridid);
+                GDclose(gfid);
+                throw InternalErr(__FILE__,__LINE__, "GDgridinfo failed");
+            }
+
+            if (0 == xdim || 0 == ydim) {
+                GDdetach(gridid);
+                GDclose(gfid);
+                throw InternalErr(__FILE__,__LINE__, "xdim or ydim should not be zero. ");
+            }
+
+            if (upleft[0]>180.0 || upleft[0] <-180.0 ||
+                upleft[1]>90.0 || upleft[1] <-90.0 ||
+                lowright[0] >180.0 || lowright[0] <-180.0 ||
+                lowright[1] >90.0 || lowright[1] <-90.0) {
+
+                GDdetach(gridid);
+                GDclose(gfid);
+                throw InternalErr(__FILE__,__LINE__, "lat/lon corner points are out of range. ");
+            }
+
+            if (count[0] != nelms) {
+                GDdetach(gridid);
+                GDclose(gfid);
+                throw InternalErr(__FILE__,__LINE__, "rank is not 1 ");
+            }
+            float lat_step = (lowright[1] - upleft[1])/ydim;
+            float lon_step = (lowright[0] - upleft[0])/xdim;
+
+            // Treat the origin of the coordinate as the center of the cell.
+            // This has been the setting of MCD43 data.  KY 2012-09-10
+            if (1 == fieldtype) { //Latitude
+                float start_lat = upleft[1] + start[0] *lat_step + lat_step/2;
+                float step_lat  = lat_step *step[0];
+                for (int i = 0; i < count[0]; i++) 
+                    latlon[i] = start_lat +i *step_lat;
+            }
+            else { // Longitude
+                float start_lon = upleft[0] + start[0] *lon_step + lon_step/2;
+                float step_lon  = lon_step *step[0];
+                for (int i = 0; i < count[0]; i++) 
+                    latlon[i] = start_lon +i *step_lon;
+            }
+
+}
+
 
 void
 HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
@@ -1396,6 +1773,7 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
 	int32 tmp3[] = {xdim, ydim};
 	int32 tmp4[] = {1, 1};
 	
+cerr<<"coming to LAMAZ projection."<<endl;
 	CalculateLatLon (gridid, fieldtype, specialformat, tmp1, tmp2, tmp3, tmp4, xdim*ydim);
 	
         float64 *tmp5 = new float64[xdim*ydim];
@@ -1435,3 +1813,5 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
 	delete[] tmp1;
 	delete[] tmp5;
 }
+#endif
+

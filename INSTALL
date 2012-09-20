@@ -1,7 +1,7 @@
 
 Installing the HDF4 handler for the OPeNDAP server.
 
-Updated for 3.9.4
+Updated for 3.9.5
 
 ---------------------------------------------------------------------------
 
@@ -13,29 +13,28 @@ NOTES
 
 BUILDING THE SOFTWARE
 
-0) Please skim REQUIREMENTS and NOTES sections of this file and README file 
+Please skim REQUIREMENTS and NOTES sections of this file and README file 
 before reporting problems. Thanks.
 
-*) IMPORTANT NOTE: The versions of hdf4 that are installed by package
-    managers such as Yum and rpm often are not capable of being linked with a
-    shared library/module, which is how the hdf4 handler must be built. To
+   IMPORTANT NOTE: The versions of HDF4 that are installed by the package
+    managers such as yum and rpm often are not capable of being linked with a
+    shared library/module, which is how the HDF4 handler must be built. To
     correct this, you may need to build the HDF4 library from source and
     specify the '--with-pic' option to configure. This may be a problem only
     on non-i386 Linux machines; reports vary. To build the handler on OS/X
     and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
-    Red Hat or CentOS) it was necessary to build hdf4. To d so I ran
+    Red Hat or CentOS) it was necessary to build HDF4. To do so I ran
     configure as './configure --with-pic --disable-fortran --disable-netcdf'
 
-1) In this version of the release, the handler is enhanced to support
+1. In this version of the release, the handler is enhanced to support
    the access of many NASA HDF-EOS2 products and some NASA pure HDF4
-   products by many CF-compliant visualization NASA pure HDF4 products
-   by many CF-compliant CF-compliant visualization clients such as IDV
+   products by many CF-compliant visualization clients such as IDV
    and Panoply. To take advantage of this feature, the handler's
    configuration options are different, please read carefully about
    the following the note.
 
-*) Build from the source, one MUST use HDF-EOS2 library and configure with
-   the following option:
+1.1. Build from the source, one MUST use HDF-EOS2 library and configure with
+    the following option:
    ./configure --with-hdf4=<Your HDF4 library path> 
    	       --with-hdfeos2=<Your HDF-EOS2 library path> 
 	       --prefix=<Your installation path>
@@ -45,23 +44,6 @@ before reporting problems. Thanks.
    the default options can NOT make the NASA HDF-EOS2 products and
    some NASA pure HDF4 products work with CF-compliant visualization
    clients
-
-   Some variable paths are pretty long (>15 characters). COARDS
-   conventions require the number of characters in a field doesn't
-   exceed 15 characters. So the above configuration option may cause
-   some OPeNDAP clients that are still following COARDS conventions.
-   To compensate for that, we provide a configuration option to
-   shorten the name so that it doesn't exceed 15 characters. To
-   address the potential name clashing issue, both options may make
-   some variable names change so that unique variable names are
-   present in the OPeNDAP output. To best preserve the original
-   variable names, we recommend not using --enable-short-name option
-   unless it is absolutely necessary. To configure the handler with
-   the short name option, do the following:
-
-  ./configure --with-hdf4=<Your HDF4 library path> 
-	      --with-hdfeos2=<Your HDF-EOS2 library path> 
-	      --prefix=<Your installation path> --enable-short-name
 
   Please add '--with-pic' option for 64-bit build.
 
@@ -73,38 +55,38 @@ before reporting problems. Thanks.
   Again, you need '--with-pic' option when you build the HDF-EOS2 library if 
 your system is not i386 Linux system.
 
-*) Install from RPMs
+1.2. Install from RPMs
 
   You can download custom RPMs with HDF-EOS2 option from
 
     http://hdfeos.org/software/hdf4_handler/rpm/
    
-*) To build the handler with the default option, 
+1.3. To build the handler with the default option, 
    Type `./configure' at the system prompt. On some systems you may have to
    type `sh configure.' If you want this part of the server to install
    someplace other than /usr/local/bin, use --prefix to change the prefix
    from the default "/use/local/."
 
-2) Type `make' to build the server module.
+2. Type `make' to build the HDF4 handler.
 
-3) Install the server module in $prefix by running `make install'. This
+3. Install the HDF4 handler in $prefix by running `make install'. This
    will also add the new h4.conf file to the $prefix/etc/bes/modules directory.
    The BES configuration file bes.conf will automatically load any module
    configuration files in that directory. The h4.conf file contains 
-   hdf4_handler specific configurations for use with the BES Framework. 
+   HDF4 handler specific configurations for use with the BES Framework. 
    This includes some parameters that used to be in the bes.conf file, 
    such as the TypeMatch parameter for finding your files.
 
-4) For some installations, you must arrange for your operating system to find
+4. For some installations, you must arrange for your operating system to find
    the shared libraries installed by default in $prefix/lib. Do this by
    either setting an environment variable such as LD_LIBRARY_PATH or by
    editing /etc/ld.so.conf. Different operating systems handle this in
    different ways.
 
-5) If you want to build your own RPM using '--with-hdfeos2' option, please 
+5. If you want to build your own RPM using '--with-hdfeos2' option, please 
    refer to hdf4_handler.spec.cf file.
 
-Building from Our SVN Repository
+6. Building from Our SVN Repository
 
   If you are building from a SVN checkout, run 'autoreconf --verbose'
   before './configure; make'. If you try to run autoconf, etc., by
@@ -112,6 +94,54 @@ Building from Our SVN Repository
   --force --install --verbose'. Once autoreconf has made the configure
   and Makefile.in files, do ./configure; make; make install as
   outlined above.
+
+7. Optional Testing
+  
+  After you build the handler with 'make' command, you can test the build
+  with 'make check'. If you want to test real NASA sample files with the
+  handler, please follow the steps below.
+
+7.1 Make sure that you have 8.5G of disk space and download files using
+
+   %cd data.nasa1 && ./download.sh
+
+   It will download all test data from The HDF Group FTP site and put it
+   under data.nasa1/ directory.
+
+7.2 Edit the sample test.nasa1.with_hdfeos2.sh script under the top level 
+    source directory. You may need to adjust the paths in the shell script.
+    
+    set path=(/hdfdap/hyrax-1.8.0/bin $path)
+    setenv LD_LIBRARY_PATH /hdfdap/hyrax-1.8.0/lib
+    setenv PKG_CONFIG_PATH /hdfdap/hyrax-1.8.0/lib/pkgconfig:/usr/lib/pkgconfig/
+
+    The path should point to the Hyrax installation directory so that 
+    besstandalone program and OPeNDAP libraries can be found. 
+
+7.3 Run the (t)csh script.
+
+   %./test.nasa1_with_hdfeos2.sh
+
+   It configures, builds, tests and cleans up the source directory 
+   and will take up to 5 minutes.
+
+   It will create two log files at the end:
+
+   1) check_test.nasa1.with_hdfeos2.txt
+   2) check_test.nasa1.with_hdfeos2.log.txt   
+
+   If there is no test failure, you'll see a message
+
+   "All {number of tests} tests were successful."
+
+   at the end of log file 1).
+
+   The 1) will tell you which NASA product failed the test.
+   The 2) will tell you the difference that caused the test failure.
+ 
+   Grep 'diff' line from 2) and you can see the expected output.
+
+
 
 REQUIREMENTS
 
@@ -129,7 +159,7 @@ REQUIREMENTS
     compile HDF4 using --without-fortran --with-pic and I also used 
     --without-netcdf (because some sites need their HDF4 libraries built that
     way and I wanted to be sure the handler would build with that 
-    configuration). If the configure script cannot find your copy of hdf4, use
+    configuration). If the configure script cannot find your copy of HDF4, use
     the --with-hdf4 options to tell it where to look (see configure --help).
 
 NOTES

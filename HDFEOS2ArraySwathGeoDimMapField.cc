@@ -10,15 +10,19 @@
 // So far we only see float32 and float64 types of latitude and longitude. So we only
 // interpolate latitude and longitude of these data types.
 
+#ifdef USE_HDFEOS2_LIB
+
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <debug.h>
+#include <BESDebug.h>
 #include "InternalErr.h"
 #include "mfhdf.h"
 #include "hdf.h"
 #include "HdfEosDef.h"
 #include "HDFEOS2.h"
+#include "HDFCFUtil.h"
 #include "HDFEOS2ArraySwathGeoDimMapField.h"
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -27,9 +31,13 @@ bool
 HDFEOS2ArraySwathGeoDimMapField::read ()
 {
 
+        if (rank > 2) 
+            throw InternalErr (__FILE__, __LINE__, "Currently doesn't support rank >2 with the dimension map");
+
 	int *offset = new int[rank];
 	int *count = new int[rank];
 	int *step = new int[rank];
+
 
 	int nelms;
 
@@ -76,7 +84,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 	fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (fileid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -87,7 +95,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 	swathid = attachfunc (fileid, const_cast < char *>(datasetname.c_str ()));
 
 	if (swathid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -112,7 +120,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 	case DFNT_UINT32:
 
 		{
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (fileid);
@@ -130,7 +138,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 			r = GetLatLon (swathid, fieldname, dimmaps, latlon32,
 						   &majordimsize, &minordimsize);
 			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				detachfunc (swathid);
 				closefunc (fileid);
@@ -142,7 +150,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
 			float32 *outlatlon32 = new float32[nelms];
 
-			LatLon2DSubset (outlatlon32, majordimsize, minordimsize,
+			LatLonSubset (outlatlon32, majordimsize, minordimsize,
 							&latlon32[0], offset32, count32, step32);
 			set_value ((dods_float32 *) outlatlon32, nelms);
 			delete[]outlatlon32;
@@ -157,7 +165,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 			r = GetLatLon (swathid, fieldname, dimmaps, latlon64,
 						   &majordimsize, &minordimsize);
 			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				detachfunc (swathid);
 				closefunc (fileid);
@@ -169,7 +177,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
 			float64 *outlatlon64 = new float64[nelms];
 
-			LatLon2DSubset (outlatlon64, majordimsize, minordimsize,
+			LatLonSubset (outlatlon64, majordimsize, minordimsize,
 							&latlon64[0], offset32, count32, step32);
 			set_value ((dods_float64 *) outlatlon64, nelms);
 			delete[]outlatlon64;
@@ -177,7 +185,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 		}
 	default:
 		{
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (fileid);
@@ -187,7 +195,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
 	r = detachfunc (swathid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (fileid);
 		ostringstream eherr;
@@ -200,7 +208,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 
 	r = closefunc (fileid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -209,7 +217,7 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 	}
 
 
-	HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count, step);
+	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 
 	return false;
 }
@@ -253,8 +261,8 @@ HDFEOS2ArraySwathGeoDimMapField::format_constraint (int *offset, int *step,
 		count[id] = ((stop - start) / stride) + 1;	// count of elements
 		nels *= count[id];		// total number of values for variable
 
-		DBG (cerr
-			 << "=format_constraint():"
+		BESDEBUG ("h4",
+			 "=format_constraint():"
 			 << "id=" << id << " offset=" << offset[id]
 			 << " step=" << step[id]
 			 << " count=" << count[id]
@@ -307,7 +315,7 @@ GetLatLon (int32 swathid, const std::string & geofieldname,
 		return -1;
 
 	std::vector < std::string > dimname;
-	HDFEOS2::Utility::Split (dimlist, ',', dimname);
+	HDFCFUtil::Split (dimlist, ',', dimname);
 
 	for (int i = 0; i < rank; i++) {
 		std::vector < struct dimmap_entry >::iterator
@@ -330,8 +338,22 @@ GetLatLon (int32 swathid, const std::string & geofieldname,
 			}
 		}
 	}
-	*ydim = dims[0];
-	*xdim = dims[1];
+
+        if (rank == 2) {
+            
+            *ydim = dims[0];
+            *xdim = dims[1];
+            if (dims[0] <0 || dims[1] <0)
+              return -1;
+        }
+
+        if (rank == 1){
+            *ydim = dims[0];
+            *xdim = -1;
+            if (dims[0] <0)
+                return -1;
+        }
+
 	return 0;
 }
 
@@ -430,6 +452,41 @@ HDFEOS2ArraySwathGeoDimMapField::_expand_dimmap_field (std::vector < T >
 	return 0;
 }
 
+template < class T >
+	bool HDFEOS2ArraySwathGeoDimMapField::LatLonSubset (T * outlatlon,
+														  int majordim,
+														  int minordim,
+														  T * latlon,
+														  int32 * offset,
+														  int32 * count,
+														  int32 * step)
+{
+    if (minordim < 0)
+        return LatLon1DSubset(outlatlon,majordim,latlon,offset,count,step);
+    else
+        return LatLon2DSubset(outlatlon,majordim,minordim,latlon,offset,count,step);
+
+}
+
+// Subset of 1-D field to follow the parameters from the DAP expression constraint
+template < class T >
+        bool HDFEOS2ArraySwathGeoDimMapField::LatLon1DSubset (T * outlatlon,
+                                                          int majordim,
+                                                          T * latlon,
+                                                          int32 * offset,
+                                                          int32 * count,
+                                                          int32 * step)
+{
+    if (majordim < count[0]) 
+        throw InternalErr(__FILE__, __LINE__,
+                                  "The number of elements is greater than the total dimensional size");
+
+    for (int i = 0; i < count[0]; i++) 
+        outlatlon[i] = latlon[offset[0]+i*step[0]];
+    return true;
+
+}
+
 // Subset of latitude and longitude to follow the parameters from the DAP expression constraint
 template < class T >
 	bool HDFEOS2ArraySwathGeoDimMapField::LatLon2DSubset (T * outlatlon,
@@ -477,3 +534,4 @@ template < class T >
 	}
 	return true;
 }
+#endif

@@ -17,7 +17,7 @@
 #include "mfhdf.h"
 #include "InternalErr.h"
 #include <BESDebug.h>
-#include "HDFSPUtil.h"
+#include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 
@@ -46,7 +46,7 @@ HDFSPArray_VDField::read ()
 	// Open the file
 	file_id = Hopen (filename.c_str (), DFACC_READ, 0);
 	if (file_id < 0) {
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "File " << filename.c_str () << " cannot be open.";
@@ -56,7 +56,7 @@ HDFSPArray_VDField::read ()
 	// Start the Vdata interface
 	if (Vstart (file_id) < 0) {
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "File " << filename.c_str () << " cannot be open.";
@@ -68,7 +68,7 @@ HDFSPArray_VDField::read ()
 	if (vdata_id == -1) {
 		Vend (file_id);
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "Vdata cannot be attached.";
@@ -82,7 +82,7 @@ HDFSPArray_VDField::read ()
 		VSdetach (vdata_id);
 		Vend (file_id);
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "VSseek failed at " << offset[0];
@@ -94,7 +94,7 @@ HDFSPArray_VDField::read ()
 		VSdetach (vdata_id);
 		Vend (file_id);
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "VSsetfields failed with the name " << fdname;
@@ -111,14 +111,14 @@ HDFSPArray_VDField::read ()
 			int8 *orival = new int8[vdfelms];
 
 			// Read the data
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 
 			if (r == -1) {
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 				ostringstream eherr;
@@ -170,12 +170,12 @@ HDFSPArray_VDField::read ()
 			uint8 *val = new uint8[nelms];
 			uint8 *orival = new uint8[vdfelms];
 
-			r = VSread (vdata_id, orival, count[0] * step[0], FULL_INTERLACE);
+			r = VSread (vdata_id, orival, 1+(count[0] -1)* step[0], FULL_INTERLACE);
 			if (r == -1) {
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 				ostringstream eherr;
@@ -208,14 +208,14 @@ HDFSPArray_VDField::read ()
 			int16 *val = new int16[nelms];
 			int16 *orival = new int16[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 				VSdetach (vdata_id);
 
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -249,14 +249,14 @@ HDFSPArray_VDField::read ()
 			uint16 *val = new uint16[nelms];
 			uint16 *orival = new uint16[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -289,14 +289,14 @@ HDFSPArray_VDField::read ()
 			int32 *val = new int32[nelms];
 			int32 *orival = new int32[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -330,14 +330,14 @@ HDFSPArray_VDField::read ()
 			uint32 *val = new uint32[nelms];
 			uint32 *orival = new uint32[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -366,17 +366,20 @@ HDFSPArray_VDField::read ()
 		break;
 	case DFNT_FLOAT32:
 		{
+//cerr<<"nelms= "<<nelms <<endl;
+//cerr<<"count= "<<count[0] <<endl;
+//cerr<<"step= "<<step[0] <<endl;
 			float32 *val = new float32[nelms];
 			float32 *orival = new float32[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -408,14 +411,14 @@ HDFSPArray_VDField::read ()
 			float64 *val = new float64[nelms];
 			float64 *orival = new float64[vdfelms];
 
-			r = VSread (vdata_id, (uint8 *) orival, count[0] * step[0],
+			r = VSread (vdata_id, (uint8 *) orival, 1+(count[0] -1)* step[0],
 						FULL_INTERLACE);
 			if (r == -1) {
 
 				VSdetach (vdata_id);
 				Vend (file_id);
 				Hclose (file_id);
-				HDFSPUtil::ClearMem3 (offset, count, step);
+				HDFCFUtil::ClearMem3 (offset, count, step);
 				delete[]val;
 				delete[]orival;
 
@@ -446,7 +449,7 @@ HDFSPArray_VDField::read ()
 		VSdetach (vdata_id);
 		Vend (file_id);
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
@@ -454,7 +457,7 @@ HDFSPArray_VDField::read ()
 	if (VSdetach (vdata_id) == -1) {
 		Vend (file_id);
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 
 		ostringstream eherr;
 
@@ -464,7 +467,7 @@ HDFSPArray_VDField::read ()
 
 	if (Vend (file_id) == -1) {
 		Hclose (file_id);
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "VSdetach failed.";
@@ -473,7 +476,7 @@ HDFSPArray_VDField::read ()
 
 	if (Hclose (file_id) == -1) {
 
-		HDFSPUtil::ClearMem3 (offset, count, step);
+		HDFCFUtil::ClearMem3 (offset, count, step);
 		ostringstream eherr;
 
 		eherr << "VSdetach failed.";

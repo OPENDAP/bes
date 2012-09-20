@@ -18,6 +18,7 @@
 #endif
 #endif
 
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -28,9 +29,14 @@
 #include "HdfEosDef.h"
 
 // class that creates the unique name etc
-#include "HE2CFNcML.h"
-#include "HE2CFShortName.h"
-#include "HE2CF.h"
+//#include "HE2CFNcML.h"
+//#include "HE2CFShortName.h"
+//#include "HE2CF.h"
+
+// Add MISR SOM projection header
+#include "misrproj.h"
+
+#include "HDFEOS2EnumType.h"
 
 #ifdef _WIN32
 #ifdef _MSC_VER
@@ -38,6 +44,8 @@
 #endif
 #endif
 
+//enum SOType 
+//{DEFAULT_CF_EQU, MODIS_MUL_SCALE,MODIS_EQ_SCALE,MODIS_DIV_SCALE};
 /// HDFEOS2.h and HDFEOS2.cc include the core part of retrieving HDF-EOS2 Grid and Swath 
 /// metadata info and translate them into DAP DDS and DAS.
 ///
@@ -90,6 +98,8 @@ namespace HDFEOS2
 		{
 			this->message = message;
 		}
+
+
 
 	protected:
 		std::string message;
@@ -309,8 +319,9 @@ namespace HDFEOS2
 		}
 
 		/// Get the dimension rank of this field
-		int32 getRank () const
-		{
+		int32 getRank () const 
+                {
+		
 			return this->rank;
 		}
 
@@ -331,11 +342,13 @@ namespace HDFEOS2
 			return &(this->correcteddims);
 		}
 
+
 		/// Set the list of the corrected dimensions
 		void setCorrectedDimensions (std::vector < Dimension * >dims)
 		{
 			correcteddims = dims;
 		}
+
 
 		const std::string getCoordinate () const
 		{
@@ -438,6 +451,20 @@ namespace HDFEOS2
 			return this->specialcoard;
 		}
 
+		/// Get the "change datatype " flag 
+		///const bool getChaDtype () const
+		///{
+		///	return this->changedtype;
+		///}
+
+                /// Set the "change datatype " flag 
+                ///void setChaDtype ( bool cdtypeflag) 
+                ///{
+                  ///     changedtype = cdtypeflag; 
+                ///}
+
+
+
 		/// Set and get the special flag for adjustment
 		void set_adjustment (int num_map)
 		{
@@ -494,12 +521,18 @@ namespace HDFEOS2
 		float addedfv;
 		bool dmap;
 
+                /// Sometimes a field's datatype needs to be changed(scale and offset etc.), 
+                /// so set this flag.
+                /// bool  changedtype;
+
+
 		/// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
 		/// KY 2009-12-3
 		bool need_adjustment;
 
 		friend class Dataset;
 		friend class SwathDimensionAdjustment;
+                friend class GridDataset;
 		friend class SwathDataset;
 		friend class File;
 	};
@@ -525,6 +558,11 @@ namespace HDFEOS2
 		{
 			return this->name;
 		}
+
+                const std::string & getNewName () const
+		{
+			return this->newname;
+		}
 		int32 getType () const
 		{
 			return this->type;
@@ -536,6 +574,7 @@ namespace HDFEOS2
 
 	protected:
 		std::string name;
+                std::string newname;
 		int32 type;
 		std::vector < char >value;
 
@@ -567,7 +606,7 @@ namespace HDFEOS2
 
 	protected:
 		Dataset (const std::string & n)
-		: datasetid (-1), name (n)
+		: datasetid (-1), addfvalueattr(false),name (n)
 		{
 		}
 
@@ -602,6 +641,7 @@ namespace HDFEOS2
 
 	protected:
 		int32 datasetid;
+                bool addfvalueattr;
 		std::string name;
 		std::vector < Dimension * >dims;
 		std::vector < Field * >datafields;
@@ -610,6 +650,8 @@ namespace HDFEOS2
 
 		std::map < std::string, std::string > ncvarnamelist;
 		std::map < std::string, std::string > ndimnamelist;
+
+                friend class File;
 	};
 
 	/// This class mainly handles the calculation of longitude and latitude of
@@ -761,7 +803,6 @@ namespace HDFEOS2
 			/// Find a field and check which dimension is major for this field. If Y dimension is major, return 1; if X dimension is major, return 0, otherwise throw exception. (LD -2012/01/16)
 			int DetectFieldMajorDimension () throw (Exception);
 
-
 			///  This method will detect if this projection is 1-D or 2-D.
 			/// For 1-D, it is treated as "orthogonal".
 			void DetectOrthogonality () throw (Exception);
@@ -820,6 +861,7 @@ namespace HDFEOS2
 			return this->ownllflag;
 		}
 
+
 	private:
 		GridDataset (const std::string & name)
 		: Dataset (name), calculated (0), ownllflag (false), iscoard (false)
@@ -843,6 +885,8 @@ namespace HDFEOS2
 	};
 
 	class File;
+
+
 
 	/// This class retrieves and holds all information of an EOS swath.
 	/// In addition to retrieve the general data field information.
@@ -961,6 +1005,8 @@ namespace HDFEOS2
 			return this->geofields;
 		}
 
+
+
 		/// Set and get the number of dimension map
 		void set_num_map (int this_num_map)
 		{
@@ -971,10 +1017,12 @@ namespace HDFEOS2
 			return num_map;
 		};
 
+
 	private:
 		SwathDataset (const std::string & name)
 		: Dataset (name) {
 		}
+
 
 		/// get all information of dimension maps in this swath
 		/// The number of maps will return for future subsetting
@@ -989,6 +1037,7 @@ namespace HDFEOS2
 
 		std::set < std::string > nonmisscvdimlist;
 
+
 		/// The geo-location fields that serves both as "input" and "output".
 		/// Applications will obtain geo-location fields stored by this vector.
 		/// Elements of this vector should be adjusted geo-location fields if
@@ -996,6 +1045,7 @@ namespace HDFEOS2
 		/// Otherwise, elements of this vector are unadjusted geo-location
 		/// fields.
 		std::vector < Field * >geofields;
+
 
 		/// Return the number of dimension map to correctly handle the subsetting case 
 		///  without dimension map.
@@ -1063,6 +1113,7 @@ namespace HDFEOS2
 	{
 	private:
 
+
 	public:
 
 		MissingFieldData (int rank, int typesize, int *dimsize,
@@ -1087,6 +1138,7 @@ namespace HDFEOS2
 
 	};
 
+
 	/// This class retrieves all information from an EOS file. It is a
 	/// container for Grid, Swath and Point objects.
 	class File
@@ -1102,9 +1154,13 @@ namespace HDFEOS2
 		/// All dimension(coordinate variables) information need to be ready.
 		/// All special arrangements need to be done in this step.
 
-		void Prepare (const char *path, HE2CFShortName * sn,
-				HE2CFShortName * sn_dim, HE2CFUniqName * un,
-				HE2CFUniqName * un_dim) throw (Exception);
+		//void Prepare (const char *path, HE2CFShortName * sn,
+		//		HE2CFShortName * sn_dim, HE2CFUniqName * un,
+		//		HE2CFUniqName * un_dim) throw (Exception);
+                void Prepare(const char *path) throw(Exception);
+
+                void SetScaleType(const string EOS2ObjName) throw(Exception);
+                
 		bool getOneLatLon ()
 		{
 			return this->onelatlon;
@@ -1129,9 +1185,17 @@ namespace HDFEOS2
 			return this->points;
 		}
 
+                /// Get the scale and offset type  
+		const SOType getScaleType () const
+		{
+			return this->scaletype;
+		}
+
+
+
 	protected:
 		File (const char *path)
-		: path (path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
+		: path (path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1),scaletype(DEFAULT_CF_EQU)
 		{
 		}
 
@@ -1141,57 +1205,14 @@ namespace HDFEOS2
 		std::vector < SwathDataset * >swaths;
 		std::vector < PointDataset * >points;
 
-		/**
-		 * Checker for dimension name clashing
-		 * This function checks dimension name clashing.
-		 * Basically, it gathers all dimension names of
-		 * all grids and swaths and checks whether there is
-		 * a collision or not. Note that, if llclash is true,
-		 * some dimensions such as
-		 * XDim and YDim are excluded for checking. -Eunsoo
-		 * @param llclash If true, XDim and YDim are not checked.
-		 * @return True if there is a dimension name clashing.
-		 */
-		bool check_dim_name_clashing (bool llclash) const;
-
-		/**
-		 * Checker for field name clashing
-		 * Within each grid or swath, we check all fields and
-		 * dimensions. If there is a dimension d such that
-		 * there is no 1-D data field f whose dimension is d,
-		 * we call all such dimensions NF-dimensions
-		 * (which means NoField).
-		 * We first check, for each grid of swath,
-		 * whether there is a name collision between
-		 * the field names and NF-dimension names.
-		 * Then we check whether there is a collision among
-		 * field names of all grids/swaths and NF-dimension names
-		 * of them. - Eunsoo
-
-		 * For swath,
-
-		 I have to get Latitude and Longitude from geofield and
-		 get their dims -> these should not be checked for
-		 name clashing. ***
-
-		 * If dimension map is used,
-		 unexpanded dimensions should not be used.
-		 also expanded dimensions should not be used.
-
-		 * @param bUseDim If true, do as described. If false, we do not 
-		 * 	generate NF dimesnsions, but treat all dimensions as NF-dimensions.
-		 * @return True if there is a field name clashing.
-		 */
-		bool check_field_name_clashing (bool bUseDimNameMatching) const;
-
 		// This is for the case that only one lat/lon
 		// set is provided for multiple grid cases.
 		//  The current case is that the user provides
 		// the latitude and longitude under a special grid.
 		// By default, the grid name is "location". This will
 		// cover the AIRS grid case.
-		bool iscoard;
 		bool onelatlon;
+		bool iscoard;
 
 		std::string gridname;
 		std::string origlatname;
@@ -1254,22 +1275,25 @@ namespace HDFEOS2
 		std::string _geogrid_name;
 		static const char *_geogrid_names[];
 
+
 	private:
 		int32 gridfd;
 		int32 swathfd;
+
+                /// Some MODIS files don't use the CF linear equation y = scale * x + offset,
+                /// the scaletype will describe this case. 
+                /// Note the assumption here: we assume that all fields will
+                /// use one scale and offset function in a file. If
+                /// multiple scale and offset equations are used in one file, our
+                /// function will fail. So far only one scale and offset equation is
+                ///  applied for NASA HDF-EOS2 files we observed. KY 2012-6-13
+
+                SOType scaletype;
 	};
+
 
 	struct Utility
 	{
-
-		/// From a string separated by a separator to a list of string,
-		/// for example, split "ab,c" to {"ab","c"}
-		static void Split (const char *s, int len, char sep,
-				std::vector < std::string > &names);
-
-		/// Assume sz is Null terminated string.
-		static void Split (const char *sz, char sep,
-				std::vector < std::string > &names);
 
 		/// Call inquiry functions twice to get a list of strings. 
 		static bool ReadNamelist (const char *path,
@@ -1282,5 +1306,6 @@ namespace HDFEOS2
 
 }
 #endif
+
 
 #endif

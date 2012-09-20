@@ -7,10 +7,14 @@
 // For the swath without using dimension maps, for most cases, the retrieving of latitude and 
 // longitude is the same as retrieving other fields. Some MODIS latitude and longitude need
 // to be arranged specially.
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_SWATHGEOFIELD_H
 #define HDFEOS2ARRAY_SWATHGEOFIELD_H
 
 #include "Array.h"
+#include "HDFCFUtil.h"
+#include "HdfEosDef.h"
+
 using namespace libdap;
 
 class HDFEOS2ArraySwathGeoField:public Array
@@ -34,9 +38,10 @@ class HDFEOS2ArraySwathGeoField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, swathname, fieldname;
 	int rank;
+	std::string filename, swathname, fieldname;
 };
 
 
+#endif
 #endif

@@ -35,7 +35,7 @@ BES.module.h4=@bes_modules_dir@/libhdf4_module.so
 # % besregtest type # "nc:.*\.nc$;nc:.*\.nc\.gz$;" fnoc1.nc
 # expression ".*\.(nc|NC)(\.gz|\.bz2|\.Z)?$" matches exactly, type = nc
 
-BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos|HDFEOS)(\.bz2|\.gz|\.Z)?$;
 
 #-----------------------------------------------------------------------#
 # HDF4 handler specific parameters
@@ -44,3 +44,17 @@ BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
 # Suggestion: Consider making this '/tmp/bes'
 HDF4.CacheDir=/tmp
 
+#-----------------------------------------------------------------------#
+# HDF4 handler specific parameters: 
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#   (true,yes|false,no, defaults to false)
+# Since most centers  would like to handle HDF4 data that follows CF now,
+# EnableCF is set to be true, KY 2012-6-5
+#
+H4.EnableCF=true
+H4.EnableMODISMISRVdata=true
+H4.EnableVdata_to_Attr=true
+H4.EnableCERESMERRAShortName=true
+H4.DisableVdataNameclashingCheck=true
+H4.EnableVdataDescAttr=false

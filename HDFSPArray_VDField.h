@@ -11,7 +11,9 @@
 #ifndef HDFSPARRAY_VDFIELD_H
 #define HDFSPARRAY_VDFIELD_H
 
-#include "HDFSP.h"
+#include "hdf.h"
+#include "mfhdf.h"
+
 #include "Array.h"
 using namespace libdap;
 
@@ -38,11 +40,12 @@ class HDFSPArray_VDField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, fdname;
 	int rank;
+        string filename;
 	int32 vdref;
 	int32 dtype;
 	int32 fdorder;
+        string fdname;
 };
 
 

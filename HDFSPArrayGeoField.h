@@ -13,7 +13,7 @@
 #include "Array.h"
 #include "hdf.h"
 #include "mfhdf.h"
-#include "HDFSP.h"
+#include "HDFSPEnumType.h"
 using namespace libdap;
 
 class HDFSPArrayGeoField:public Array
@@ -66,13 +66,19 @@ class HDFSPArrayGeoField:public Array
 	// Read CERES ES4 and ICCP_GEO lat/lon
 	void readceres4ig (int32 *, int32 *, int32 *, int);
 
+        template <typename T>  void LatLon2DSubset (T* outlatlon, int ydim, int xdim,
+                                                 T* latlon, int32 * offset, int32 * count,
+                                                 int32 * step);
+
+
   private:
-	std::string filename, name;
 	int32 rank;
+        string filename;
 	int32 sdsref;
 	int32 dtype;
 	SPType sptype;
 	int fieldtype;
+	string name;
 
 };
 

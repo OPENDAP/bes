@@ -1,3 +1,4 @@
+#ifdef USE_HDFEOS2_LIB
 #include "misrproj.h" /* Prototype for this function */
 #include "errormacros.h" /* Error macros */
 int nb;
@@ -55,3 +56,4 @@ return(0);
 ERROR_HANDLE:
 return(1);
 }
+#endif

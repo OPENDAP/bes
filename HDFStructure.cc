@@ -144,17 +144,18 @@ bool HDFStructure::read_tagref(int32 tag, int32 ref, int &err) {
  * @see HDFArray::transfer_attributes
  */
 void HDFStructure::transfer_attributes(AttrTable *at) {
-	DBG(cerr << "Entering HDFStructure::transfer_attributes for variable " << name() << endl);
+
+	BESDEBUG("h4",  "Entering HDFStructure::transfer_attributes for variable " << name() << endl);
 
 	if (at) {
 		Vars_iter var = var_begin();
 		while (var != var_end()) {
 			try {
-				DBG(cerr << "Processing the attributes for: " << (*var)->name() << " a " << (*var)->type_name() << endl);
+				BESDEBUG("h4", "Processing the attributes for: " << (*var)->name() << " a " << (*var)->type_name() << endl);
 				(*var)->transfer_attributes(at);
 				var++;
 			} catch (Error &e) {
-				DBG(cerr << "Got this exception: " << e.get_error_message() << endl);
+				 BESDEBUG("h4",  "Got this exception: " << e.get_error_message() << endl);
 				var++;
 				throw e;
 			}

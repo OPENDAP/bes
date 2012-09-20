@@ -4,21 +4,20 @@
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>  Eunsoo Seo
 // Copyright (c) 2010 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+#ifdef USE_HDFEOS2_LIB
 
-#include "HDFEOS2Array_RealField.h"
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <debug.h>
-#include "HDFEOS2.h"
 #include "InternalErr.h"
 #include <BESDebug.h>
-#include "HDFEOS2Util.h"
 
-#include "hdfdesc.h"
+#include "HDFCFUtil.h"
+#include "HDFEOS2Array_RealField.h"
+
 
 #define SIGNED_BYTE_TO_INT32 1
-
 
 bool
 HDFEOS2Array_RealField::read ()
@@ -87,23 +86,22 @@ HDFEOS2Array_RealField::read ()
                 readattrfunc = SWreadattr;
 	}
 	else {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		throw InternalErr (__FILE__, __LINE__,
 						   "It should be either grid or swath.");
 	}
 
 	// Note gfid and gridid represent either swath or grid.
-	int32 gfid, gridid;
+	int32 gfid = 0;
+        int32 gridid = 0;
 
 	// Obtain the EOS object ID(either grid or swath)
 	gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
 	if (gfid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
-
 		eherr << "File " << filename.c_str () << " cannot be open.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -112,43 +110,102 @@ HDFEOS2Array_RealField::read ()
 	gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
 
 	if (gridid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
-
 		eherr << "Grid/Swath " << datasetname.
 			c_str () << " cannot be attached.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-	int32 tmp_rank, tmp_dims[rank];
+	int32 tmp_rank = 0;
+        int32 tmp_dims[rank];
 	char tmp_dimlist[1024];
-	int32 type;
-	intn r;
+	int32 type = 0;
+	intn r = 0;
 
-	// Obtain attribute values.
-	int32 sdfileid;
-	sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
-	int32 sdsindex, sdsid;
-	sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
-	sdsid = SDselect(sdfileid, sdsindex);
+      // All the following variables are used by the RECALCULATE macro. So 
+      // ideally they should not be here. 
+      float *reflectance_offsets=NULL, *reflectance_scales=NULL;
+      float *radiance_offsets=NULL, *radiance_scales=NULL;
+
+      int32 attrtype, attrcount, attrcounts=0, attrindex = 0, attrindex2 = 0;
+      int32 scale_factor_attr_index = 0, add_offset_attr_index = 0;
+      float scale=1, offset2=0, fillvalue = 0;
+
+      if(sotype!=DEFAULT_CF_EQU) {
+
+        bool field_is_vdata = false;
+
+        if (""==gridname) {
+
+            r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+                                           &tmp_rank, tmp_dims, &type, tmp_dimlist);
+            if (r != 0) {
+                HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+                                                           step);
+                ostringstream eherr;
+
+                eherr << "Field " << fieldname.
+                        c_str () << " information cannot be obtained.";
+                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            }
+
+            if (1 == tmp_rank) 
+                field_is_vdata = true;
+        }
+
+
+        // For swath, we don't see any MODIS 1-D fields that have scale,offset and fill value attributes that need to be changed.
+        // So currently, we don't need to handle the vdata handling. Another reason is the possible change of the implementation
+        // of the SDS attribute handlings. KY 2012-07-31
+
+        if( false == field_is_vdata) {
+
+	  // Obtain attribute values.
+	  int32 sdfileid;
+	  sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+
+          if (FAIL == sdfileid) {
+            ostringstream eherr;
+            eherr << "Cannot Start the SD interface for the file " << filename <<endl;
+          }
+
+	  int32 sdsindex, sdsid;
+	  sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
+          if (FAIL == sdsindex) {
+                             SDend(sdfileid);
+                             ostringstream eherr;
+                             eherr << "Cannot obtain the index of " << fieldname;
+                             throw InternalErr (__FILE__, __LINE__, eherr.str ());
+          }
+
+	  sdsid = SDselect(sdfileid, sdsindex);
+          if (FAIL == sdsid) {
+                            SDend(sdfileid);
+                            ostringstream eherr;
+                            eherr << "Cannot obtain the SDS ID  of " << fieldname;
+                            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+          }
 	
-	char attrname[H4_MAX_NC_NAME + 1];
-	int32 attrtype, attrcount, attrcounts=0, attrindex, attrindex2;
-	int32 scale_factor_attr_index, add_offset_attr_index;
-	vector<char> attrbuf, attrbuf2;
-	float scale=1, offset2=0, fillvalue;
-	float *reflectance_offsets=NULL, *reflectance_scales=NULL;
-	float *radiance_offsets=NULL, *radiance_scales=NULL;
+	  char attrname[H4_MAX_NC_NAME + 1];
+	  vector<char> attrbuf, attrbuf2;
 
-	attrindex = SDfindattr(sdsid, "radiance_scales");
-        attrindex2 = SDfindattr(sdsid, "radiance_offsets");
-	if(mtype!=OTHER_TYPE && attrindex!=FAIL && attrindex2!=FAIL)
-        {
+          // Here we cannot check if SDfindattr fails or not since even SDfindattr fails it doesn't mean
+          // errors happen. If no such attribute can be found, SDfindattr still returns FAIL.
+          // The correct way is to use SDgetinfo and SDattrinfo to check if attributes "radiance_scales" etc exist.
+          // For the time being, I won't do this, due to the performance reason and code simplity and also the
+          // very small chance of real FAIL for SDfindattr.
+	  attrindex = SDfindattr(sdsid, "radiance_scales");
+          attrindex2 = SDfindattr(sdsid, "radiance_offsets");
+	  if(attrindex!=FAIL && attrindex2!=FAIL)
+          {
                 intn ret;
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -158,6 +215,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -165,6 +224,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -174,6 +235,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -200,14 +263,17 @@ HDFEOS2Array_RealField::read ()
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
 		attrcounts = attrcount; // Store the count of attributes.
         }
+
 	attrindex = SDfindattr(sdsid, "reflectance_scales");
 	attrindex2 = SDfindattr(sdsid, "reflectance_offsets");
-	if(mtype!=OTHER_TYPE && attrindex!=FAIL && attrindex2!=FAIL)
+	if(attrindex!=FAIL && attrindex2!=FAIL)
 	{
 		intn ret;
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
 		if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -217,6 +283,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -225,6 +293,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -234,6 +304,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -260,13 +332,16 @@ HDFEOS2Array_RealField::read ()
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
 		attrcounts = attrcount; // Store the count of attributes. 
 	}
+
 	scale_factor_attr_index = SDfindattr(sdsid, "scale_factor");
-	if(mtype!=OTHER_TYPE && scale_factor_attr_index!=FAIL)
+	if(scale_factor_attr_index!=FAIL)
 	{
 		intn ret;
 		ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
 		if (ret==FAIL) 
 		{
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                 	ostringstream eherr;
                 	eherr << "Attribute 'scale_factor' in " << fieldname.c_str () << " cannot be obtained.";
                 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -276,6 +351,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL) 
 		{
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'scale_factor' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -295,13 +372,16 @@ HDFEOS2Array_RealField::read ()
         	};
 #undef GET_SCALE_FACTOR_ATTR_VALUE
 	}
+
 	add_offset_attr_index = SDfindattr(sdsid, "add_offset");
-	if(mtype!=OTHER_TYPE && add_offset_attr_index!=FAIL)
+	if(add_offset_attr_index!=FAIL)
 	{
 		intn ret;
         	ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
 		if (ret==FAIL) 
 		{
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'add_offset' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -311,6 +391,8 @@ HDFEOS2Array_RealField::read ()
         	ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL) 
 		{
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute 'add_offset' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -330,13 +412,16 @@ HDFEOS2Array_RealField::read ()
 		};
 #undef GET_ADD_OFFSET_ATTR_VALUE
 	}
+
 	attrindex = SDfindattr(sdsid, "_FillValue");
-	if(mtype!=OTHER_TYPE && attrindex!=FAIL)
+	if(attrindex!=FAIL)
         {
                 intn ret;
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -346,6 +431,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        SDendaccess(sdsid);
+                        SDend(sdfileid);
                         ostringstream eherr;
                         eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
                         throw InternalErr (__FILE__, __LINE__, eherr.str ());
@@ -370,35 +457,37 @@ HDFEOS2Array_RealField::read ()
 #undef GET_FILLVALUE_ATTR_VALUE
         }
 
-	// For testing only.
+	// For testing only. Use BESDEBUG later. 
 	//cerr << "scale=" << scale << endl;	
 	//cerr << "offset=" << offset2 << endl;
 	//cerr << "fillvalue=" << fillvalue << endl;
 
+        SDendaccess(sdsid);
 	SDend(sdfileid);
+      }
+    }
 
-	// Obtain the field info. We mainly need to the datatype information 
-	// to allocate the buffer to store the data
-	r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
+    // Obtain the field info. We mainly need the datatype information 
+    // to allocate the buffer to store the data
+    r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
 					   &tmp_rank, tmp_dims, &type, tmp_dimlist);
-	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+    if (r != 0) {
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
 		eherr << "Field " << fieldname.
 			c_str () << " information cannot be obtained.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
-	}
+    }
 
+    void *val;
 
-	void *val;
-
-	// We need to loop through all datatpes to allocate the memory buffer for the data.
+    // We need to loop through all datatpes to allocate the memory buffer for the data.
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
 	bool change_data_value = false; \
-	if(mtype!=OTHER_TYPE) \
+	if(sotype!=DEFAULT_CF_EQU) \
 	{ \
 		float *tmpval = new float[nelms]; \
         	CAST tmptr = (CAST)VAL; \
@@ -415,16 +504,24 @@ HDFEOS2Array_RealField::read ()
 				} \
 		if((scale_factor_attr_index!=FAIL && !(scale==1 && offset2==0)) || special_case)  \
 		{ \
-			for(size_t l=0; l<nelms; l++) \
-                		if(attrindex!=FAIL && ((float)tmptr[l])!=fillvalue) \
-				{ \
-					if(mtype==MODIS_TYPE1) \
+			for(int l=0; l<nelms; l++) \
+                        { \
+                		if(attrindex!=FAIL) \
+                                { \
+                                  if((float)tmptr[l] != fillvalue ) \
+				    { \
+                                       if(false == HDFCFUtil::is_special_value(type,fillvalue,tmptr[l]))\
+                                       { \
+					   if(sotype==MODIS_MUL_SCALE) \
                         			tmpval[l] = (tmptr[l]-offset2)*scale; \
-					else if(mtype==MODIS_TYPE2) \
+					   else if(sotype==MODIS_EQ_SCALE) \
 						tmpval[l] = tmptr[l]*scale + offset2; \
-					else if(mtype==MODIS_TYPE3) \
+				           else if(sotype==MODIS_DIV_SCALE) \
 						tmpval[l] = (tmptr[l]-offset2)/scale; \
-				} \
+                                       } \
+				    } \
+                                } \
+                        } \
 			change_data_value = true; \
 			set_value((dods_float32 *)tmpval, nelms); \
                         delete[] tmpval; \
@@ -441,20 +538,29 @@ HDFEOS2Array_RealField::read ()
                 	size_t nr_elems = nelms/count32[dimindex]; \
                        	start_index = offset32[dimindex]; \
                        	end_index = start_index+step32[dimindex]*(count32[dimindex]-1); \
+                        size_t index = 0;\
 			for(size_t k=start_index; k<=end_index; k+=step32[dimindex]) \
 			{ \
 				float tmpscale = (fieldname.find("Emissive")!=string::npos)? radiance_scales[k]: reflectance_scales[k]; \
 				float tmpoffset = (fieldname.find("Emissive")!=string::npos)? radiance_offsets[k]: reflectance_offsets[k]; \
 				for(size_t l=0; l<nr_elems; l++) \
                         	{ \
-                               		size_t index = l+k*nr_elems; \
-                               		if(attrindex!=FAIL && ((float)tmptr[index])!=fillvalue) \
-						if(mtype==MODIS_TYPE1) \
+                               		if(attrindex!=FAIL) \
+                                        { \
+                                           if(((float)tmptr[index])!=fillvalue) \
+                                             { \
+                                                if(false == HDFCFUtil::is_special_value(type,fillvalue,tmptr[index]))\
+                                                { \
+						if(sotype==MODIS_MUL_SCALE) \
                                        			tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
-						else if(mtype==MODIS_TYPE2) \
+						else if(sotype==MODIS_EQ_SCALE) \
 							tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
-						else if(mtype==MODIS_TYPE2) \
+						else if(sotype==MODIS_DIV_SCALE) \
 							tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
+                                                } \
+                                             } \
+                                        } \
+                                   index++; \
 				} \
 			} \
 			change_data_value = true; \
@@ -469,8 +575,7 @@ HDFEOS2Array_RealField::read ()
         delete[](CAST) VAL; \
 }
 
-	switch (type) {
-
+     switch (type) {
 	case DFNT_INT8:
 		{
 			val = new int8[nelms];
@@ -478,7 +583,7 @@ HDFEOS2Array_RealField::read ()
 							   const_cast < char *>(fieldname.c_str ()),
 							   offset32, step32, count32, val);
 			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				ostringstream eherr;
 
@@ -500,8 +605,8 @@ HDFEOS2Array_RealField::read ()
 				newval[counter] = (int32) (newval8[counter]);
 
 			RECALCULATE(int32*, dods_int32*, newval);
-			//set_value ((dods_int32 *) newval, nelms);
 			delete[](int8 *) val;
+			//set_value ((dods_int32 *) newval, nelms);
 			//delete[]newval;
 #endif
 		}
@@ -514,7 +619,7 @@ HDFEOS2Array_RealField::read ()
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -533,7 +638,7 @@ HDFEOS2Array_RealField::read ()
 						   offset32, step32, count32, val);
 
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -549,7 +654,7 @@ HDFEOS2Array_RealField::read ()
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -566,7 +671,7 @@ HDFEOS2Array_RealField::read ()
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -583,7 +688,7 @@ HDFEOS2Array_RealField::read ()
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -596,11 +701,12 @@ HDFEOS2Array_RealField::read ()
 		//delete[](uint32 *) val;
 		break;
 	case DFNT_FLOAT32:
+        {
 		val = new float32[nelms];
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -608,15 +714,18 @@ HDFEOS2Array_RealField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 
+               // Recalculate seems not necessary.
+               // RECALCULATE(float32*, dods_float32*, val);
 		set_value ((dods_float32 *) val, nelms);
 		delete[](float32 *) val;
+        }
 		break;
 	case DFNT_FLOAT64:
 		val = new float64[nelms];
 		r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
 		if (r != 0) {
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			ostringstream eherr;
 
@@ -627,14 +736,14 @@ HDFEOS2Array_RealField::read ()
 		delete[](float64 *) val;
 		break;
 	default:
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = detachfunc (gridid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -646,7 +755,7 @@ HDFEOS2Array_RealField::read ()
 
 	r = closefunc (gfid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -654,14 +763,8 @@ HDFEOS2Array_RealField::read ()
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-
-	delete[]offset;
-	delete[]count;
-	delete[]step;
-
-	delete[]offset32;
-	delete[]count32;
-	delete[]step32;
+        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+                                                           step);
 
 	if(reflectance_scales!=NULL)
 	{
@@ -729,3 +832,4 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
 	return nels;
 }
+#endif

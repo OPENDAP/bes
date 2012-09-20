@@ -8,15 +8,17 @@
 // longitude is the same as retrieving other fields. Some MODIS latitude and longitude need
 // to be arranged specially.
 
+#ifdef USE_HDFEOS2_LIB
+
 #include "HDFEOS2ArraySwathGeoField.h"
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <debug.h>
-#include "HDFEOS2.h"
+//#include "HDFEOS2.h"
 #include "InternalErr.h"
 #include "BESDebug.h"
-#include "HDFEOS2Util.h"
+//#include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 bool
@@ -72,7 +74,7 @@ HDFEOS2ArraySwathGeoField::read ()
 	sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (sfid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -83,7 +85,7 @@ HDFEOS2ArraySwathGeoField::read ()
 	swathid = attachfunc (sfid, const_cast < char *>(datasetname.c_str ()));
 
 	if (swathid < 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (sfid);
 		ostringstream eherr;
@@ -101,7 +103,7 @@ HDFEOS2ArraySwathGeoField::read ()
 					   &tmp_rank, tmp_dims, &type, tmp_dimlist);
 	if (r != 0) {
 
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		detachfunc (swathid);
 		closefunc (sfid);
@@ -124,7 +126,7 @@ HDFEOS2ArraySwathGeoField::read ()
 							   const_cast < char *>(fieldname.c_str ()),
 							   offset32, step32, count32, val);
 			if (r != 0) {
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				delete[](int8 *) val;
 				detachfunc (swathid);
@@ -163,7 +165,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](uint8 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -185,7 +187,7 @@ HDFEOS2ArraySwathGeoField::read ()
 							   offset32, step32, count32, val);
 			if (r != 0) {
 				delete[](int16 *) val;
-				HDFEOS2Util::ClearMem (offset32, count32, step32, offset,
+				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
 				detachfunc (swathid);
 				closefunc (sfid);
@@ -236,7 +238,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](uint16 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -256,7 +258,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](int32 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -276,7 +278,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](uint32 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -296,7 +298,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](float32 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -315,7 +317,7 @@ HDFEOS2ArraySwathGeoField::read ()
 						   offset32, step32, count32, val);
 		if (r != 0) {
 			delete[](float64 *) val;
-			HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
 			detachfunc (swathid);
 			closefunc (sfid);
@@ -331,14 +333,14 @@ HDFEOS2ArraySwathGeoField::read ()
 	default:
 		detachfunc (swathid);
 		closefunc (sfid);
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
 	r = detachfunc (swathid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		closefunc (sfid);
 		ostringstream eherr;
@@ -350,7 +352,7 @@ HDFEOS2ArraySwathGeoField::read ()
 
 	r = closefunc (sfid);
 	if (r != 0) {
-		HDFEOS2Util::ClearMem (offset32, count32, step32, offset, count,
+		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
 		ostringstream eherr;
 
@@ -422,3 +424,4 @@ HDFEOS2ArraySwathGeoField::format_constraint (int *offset, int *step,
 
 	return nels;
 }
+#endif

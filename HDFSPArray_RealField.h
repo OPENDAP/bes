@@ -8,8 +8,13 @@
 #ifndef HDFSPARRAY_REALFIELD_H
 #define HDFSPARRAY_REALFIELD_H
 
-#include "HDFSP.h"
+#include "mfhdf.h"
+#include "hdf.h"
+
 #include "Array.h"
+
+#include "HDFSPEnumType.h"
+
 using namespace libdap;
 
 class HDFSPArray_RealField:public Array
@@ -34,11 +39,12 @@ class HDFSPArray_RealField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, name;
 	int32 rank;
+        string filename;
 	int32 sdsref;
 	int32 dtype;
 	SPType sptype;
+        string name;
 };
 
 

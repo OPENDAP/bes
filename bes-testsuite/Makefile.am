@@ -27,8 +27,11 @@ EXTRA_DIST = hdf4_handlerTest.at $(TESTSUITE) atlocal.in \
 
 DISTCLEANFILES = bes.conf $(srcdir)/package.m4 hdf4_handlerTest \
 	generate_metadata_baseline.sh
-
+if HDFEOS2
+bes.conf: bes.conf.with_hdfeos2.in ../config.status
+else
 bes.conf: bes.conf.in ../config.status
+endif
 	@my_topdir=`echo ${abs_top_srcdir} | sed 's/\(.*\)\/\(.[^\/]*\)\/\.\./\1/g'`; \
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
 		-e "s%[@]modulesdir[@]%${BES_MODULE_DIR}%" \
@@ -55,8 +58,13 @@ distclean-local:
 	-rm atconfig
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
+if HDFEOS2 
+$(TESTSUITE): $(srcdir)/hdf4_handlerTest.with_hdfeos2.at $(srcdir)/package.m4
+	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.with_hdfeos2.at
+else
 $(TESTSUITE): $(srcdir)/hdf4_handlerTest.at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+endif 
 	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.

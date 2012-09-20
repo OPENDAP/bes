@@ -13,11 +13,15 @@
 //  Authors:   MuQun Yang <myang6@hdfgroup.org> Choonghwan Lee
 // Copyright (c) 2009 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
+#ifdef USE_HDFEOS2_LIB
 #ifndef HDFEOS2ARRAY_GRIDGEOFIELD_H
 #define HDFEOS2ARRAY_GRIDGEOFIELD_H
 
 #include <Array.h>
-#include "HDFEOS2.h"
+#include "mfhdf.h"
+#include "hdf.h"
+#include "HdfEosDef.h"
+
 using namespace libdap;
 
 class HDFEOS2ArrayGridGeoField:public Array
@@ -50,6 +54,8 @@ class HDFEOS2ArrayGridGeoField:public Array
 	// Calculate Special Latitude and Longitude.
 	void CalculateSpeLatLon (int32 gfid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step, int nelms);
 
+        // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
+        void CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms);
 	// test for undefined values returned by longitude-latitude calculation
 	bool isundef_lat(double value)
 	{
@@ -113,6 +119,8 @@ class HDFEOS2ArrayGridGeoField:public Array
     			/* recurse on the diagonal */
     			return(nearestNeighborLatVal(array, row-1, col-1, YDim, XDim));
   		}
+                // dummy return, turn off the compiling warning
+                return 0.0;
 	} // end
 
 	double nearestNeighborLonVal(double *array, int row, int col, int YDim, int XDim)
@@ -157,6 +165,10 @@ class HDFEOS2ArrayGridGeoField:public Array
     			/* recurse on the diagonal */
     			return(nearestNeighborLonVal(array, row-1, col-1, YDim, XDim));
   		}
+
+                // dummy return, turn off the compiling warning
+                return 0.0;
+       
 	} // end
 
 	// Calculate Latitude and Longitude for SOM Projection.
@@ -166,9 +178,15 @@ class HDFEOS2ArrayGridGeoField:public Array
 	void CalculateLAMAZLatLon(int32, int, float64*, int*, int*, int*, int);
 
 	// Subsetting the latitude and longitude.
-	void LatLon2DSubset (float64 * outlatlon, int ydim, int xdim,
-						 float64 * latlon, int32 * offset, int32 * count,
+	template <class T> void LatLon2DSubset (T* outlatlon, int ydim, int xdim,
+						 T* latlon, int32 * offset, int32 * count,
 						 int32 * step);
+
+        // Handle latitude and longitude when having fill value for geographic projection 
+        //template <class T> void HandleFillLatLon(T* total_latlon, T* latlon,bool ydimmajor,
+        template <class T> void HandleFillLatLon(vector<T> total_latlon, T* latlon,bool ydimmajor,
+                                                 int fieldtype, int32 xdim , int32 ydim,
+                                                 int32* offset, int32* count, int32* step, int fv);
 
 	// Corrected Latitude and longitude when the lat/lon has fill value case.
 	template < class T > bool CorLatLon (T * latlon, int fieldtype, int elms,
@@ -191,8 +209,10 @@ class HDFEOS2ArrayGridGeoField:public Array
 	virtual bool read ();
 
   private:
-	std::string filename, gridname, fieldname;
-	int rank, fieldtype, specialformat;
+        int rank,fieldtype;
 	bool llflag, ydimmajor, condenseddim, speciallon;
+        int specialformat;
+	std::string filename, gridname, fieldname;
 };
+#endif
 #endif
