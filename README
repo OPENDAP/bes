@@ -46,7 +46,9 @@ produced a file with more than 1000 objects and want it to be served by
 OPeNDAP. It took much longer than expected. A thorough investigation 
 revealed that the retrieval of HDF5 objects was the performance bottle neck. 
 The new version addresses this issue by closing the HDF5 object IDs gradually.
-Also, it fixes a bug that one HDF5 object API is not closed. 
+
+  Also, it fixes a bug that one HDF5 object API is not closed and leaked the
+ system resources. 
 
   A new BES key H5.DisableStructMetaAttr is added so the handler can skip
 parsing StructMetadata and generating the attribute in DAS output for HDF-EOS5
