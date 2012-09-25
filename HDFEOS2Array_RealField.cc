@@ -112,6 +112,7 @@ HDFEOS2Array_RealField::read ()
 	if (gridid < 0) {
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                closefunc(gfid);
 		ostringstream eherr;
 		eherr << "Grid/Swath " << datasetname.
 			c_str () << " cannot be attached.";
@@ -144,6 +145,9 @@ HDFEOS2Array_RealField::read ()
             if (r != 0) {
                 HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
                                                            step);
+
+                detachfunc(gridid);
+                closefunc(gfid);
                 ostringstream eherr;
 
                 eherr << "Field " << fieldname.
@@ -167,13 +171,18 @@ HDFEOS2Array_RealField::read ()
 	  sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
 
           if (FAIL == sdfileid) {
-            ostringstream eherr;
+
+                detachfunc(gridid);
+                closefunc(gfid);
+                ostringstream eherr;
             eherr << "Cannot Start the SD interface for the file " << filename <<endl;
           }
 
 	  int32 sdsindex, sdsid;
 	  sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
           if (FAIL == sdsindex) {
+                            detachfunc(gridid);
+                             closefunc(gfid);
                              SDend(sdfileid);
                              ostringstream eherr;
                              eherr << "Cannot obtain the index of " << fieldname;
@@ -182,6 +191,8 @@ HDFEOS2Array_RealField::read ()
 
 	  sdsid = SDselect(sdfileid, sdsindex);
           if (FAIL == sdsid) {
+                            detachfunc(gridid);
+                            closefunc(gfid);
                             SDend(sdfileid);
                             ostringstream eherr;
                             eherr << "Cannot obtain the SDS ID  of " << fieldname;
@@ -204,6 +215,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -215,6 +228,9 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -224,6 +240,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -235,6 +253,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -272,6 +292,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
 		if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -283,6 +305,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -293,6 +317,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -304,6 +330,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -340,6 +368,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
 		if (ret==FAIL) 
 		{
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                 	ostringstream eherr;
@@ -351,6 +381,8 @@ HDFEOS2Array_RealField::read ()
 		ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL) 
 		{
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -380,6 +412,8 @@ HDFEOS2Array_RealField::read ()
         	ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
 		if (ret==FAIL) 
 		{
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -391,6 +425,8 @@ HDFEOS2Array_RealField::read ()
         	ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
 		if (ret==FAIL) 
 		{
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -420,6 +456,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -431,6 +469,8 @@ HDFEOS2Array_RealField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(gridid);
+                        closefunc(gfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -474,6 +514,8 @@ HDFEOS2Array_RealField::read ()
     if (r != 0) {
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                detachfunc(gridid);
+                closefunc(gfid);   
 		ostringstream eherr;
 
 		eherr << "Field " << fieldname.
@@ -585,6 +627,8 @@ HDFEOS2Array_RealField::read ()
 			if (r != 0) {
 				HDFCFUtil::ClearMem (offset32, count32, step32, offset,
 									   count, step);
+                                detachfunc(gridid);
+                                closefunc(gfid);   
 				ostringstream eherr;
 
 				eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -621,6 +665,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid); 
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -640,6 +687,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -656,6 +706,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -673,6 +726,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -690,6 +746,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -708,6 +767,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -727,6 +789,9 @@ HDFEOS2Array_RealField::read ()
 		if (r != 0) {
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 								   step);
+                        detachfunc(gridid);
+                        closefunc(gfid);
+
 			ostringstream eherr;
 
 			eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -738,6 +803,9 @@ HDFEOS2Array_RealField::read ()
 	default:
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                detachfunc(gridid);
+                closefunc(gfid);
+
 		InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
@@ -745,6 +813,7 @@ HDFEOS2Array_RealField::read ()
 	if (r != 0) {
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                closefunc(gfid);
 		ostringstream eherr;
 
 		eherr << "Grid/Swath " << datasetname.

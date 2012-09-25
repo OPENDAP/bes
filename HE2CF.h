@@ -79,23 +79,10 @@ class HE2CF
 
     void set_eosmetadata_namelist(const string &metadata_name)
     {
-#if 0
-        string new_metadata_name = metadata_name;
-        if(new_metadata_name == "CoreMetadata.0.1")
-            new_metadata_name = "CoreMetadata.1";
-#endif
-
         eosmetadata_namelist.push_back(metadata_name);
-
     }
 
     bool is_eosmetadata(const string& metadata_name) {
-#if 0
-        string new_metadata_name = metadata_name;
-        if(new_metadata_name == "CoreMetadata.0.1") 
-            new_metadata_name = "CoreMetadata.1";
-        return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),new_metadata_name) !=eosmetadata_namelist.end());
-#endif
         return (find(eosmetadata_namelist.begin(),eosmetadata_namelist.end(),metadata_name) !=eosmetadata_namelist.end());
     }
          
@@ -103,8 +90,6 @@ class HE2CF
                                  int32* _ref_df, int32* _ref_gf);
     bool open_sd(const string& filename);
     bool open_vgroup(const string& filename);
-    //string print_attr(int32 type, int loc, void *vals);
-   // string print_type(int32 type);
     bool set_metadata(const string& metadataname,vector<string>&non_num_names, vector<string>&non_num_data);
     void arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag);
     void obtain_SD_attr_value(const string &,string&);
@@ -120,7 +105,6 @@ class HE2CF
     bool write_attr_sd(int32 sds_id, const string& newfname);
     bool write_attr_vdata(int32 vd_id, const string& newfname);
     void write_error(string _error);
-    // bool write_metadata(); Unused jhrg 3/16/11
     
  public:
     HE2CF();

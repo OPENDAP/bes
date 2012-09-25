@@ -568,8 +568,55 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                         // We encounter a very special MODIS case (MOD/MYD ATML2 files),
                         // Latitude and longitude fields are located under data fields.
                         // So include this case. KY 2010-7-12
+                        // We also encounter another special case(MOD11_L2.A2012248.2355.041.2012249083024.hdf),
+                        // the latitude/longitude with dimension map is under the "data fields".
+                        // So we have to consider this. KY 2012-09-24
+                       
                         if(grid_or_swath ==1) {
 
+                          // Use Swath dimension map
+                          if((*it_f)->UseDimMap()) {
+
+                                // Have an extra HDF-EOS file for latitude and longtiude
+                                if(!dimmapfilename.empty()) {
+				     HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
+                                     ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
+                                                                     (*it_f)->getRank(),
+                                                                      dimmapfilename,
+                                                                      (*it_f)->getName(),
+                                                                     (*it_f)->getNewName(),bt);
+                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+	                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+        	                      dds.add_var(ar);
+                	              delete ar;
+
+                                }
+                                // Will interpolate by the handler
+                                else {
+
+                                     if ((*it_f)->getRank() >2) {
+                                        throw InternalErr(__FILE__, __LINE__,
+                                        "Currently doesn't support rank >2 when interpolating with dimension map");
+                                     } 
+
+                                     HDFEOS2ArraySwathGeoDimMapField * ar = NULL;
+                                     ar = new HDFEOS2ArraySwathGeoDimMapField(
+                                                                     (*it_f)->getType(),
+                                                                     (*it_f)->getRank(),
+                                                                      filename,
+                                                                     (dataset)->getName(), (*it_f)->getName(),
+                                                                     dimmaps,(*it_f)->getNewName(),bt);
+                                      for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                      dds.add_var(ar);
+                                      delete ar;
+
+                                }
+                               
+                         }
+
+                         else {
+ 
                             HDFEOS2ArraySwathGeoField * ar = NULL;
                             ar = new HDFEOS2ArraySwathGeoField(
                                                                (*it_f)->getRank(),
@@ -582,7 +629,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename,
                             dds.add_var(ar);
 
                             delete ar;
-
+                          }
                         }
                     }
                     
@@ -823,10 +870,13 @@ bool read_dds_hdfeos2(DDS & dds, const string & filename)
         
     std::vector<std::string> out;
 
+    // Not sure why we have this. Leave this for the time being to see if odd issues occur.
+#if 0
     // Remove the path, only obtain the "file name"
     HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/',
                             out);
     dds.set_dataset_name(*out.rbegin());
+#endif
 
     //Some grids have one shared lat/lon pair. For this case,"onelatlon" is true.
     // Other grids have their individual grids. We have to handle them differently.
@@ -878,11 +928,13 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename)
     }
     
         
+#if 0
     // Not sure why I don't use basename. Will investigate in the future. KY 2012-09-18
     std::vector<std::string> out;
     HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/',
                             out);
     dds.set_dataset_name(*out.rbegin());
+#endif
 
     const std::vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
 
@@ -1681,9 +1733,6 @@ bool read_das_hdfeos2(DAS & das, const string & filename)
 
                 if(true == changedtype) 
                     ctype_field_namelist.push_back(newfname);
-
-                //HDFEOS2::Field*  swath_field = swath->getDataFields()[j];
-                //swath_field->setChaDtype(changedtype);
                 
 		while (it!=at->attr_end()) 
 		{
@@ -2159,11 +2208,14 @@ bool read_dds_hdfsp(DDS & dds, const string & filename)
         throw InternalErr(e.what());
     }
         
+    // Not sure why having this. Leave it for a while. Evaluate in the next release. KY 2012-09-21
+#if 0
     std::vector<std::string> out;
     HDFCFUtil::Split(filename.c_str(), (int)filename.length(), '/',
                             out);
     dds.set_dataset_name(*out.rbegin());
 
+#endif
     const std::vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
 
     // Read SDS 

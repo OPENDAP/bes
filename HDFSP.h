@@ -51,10 +51,6 @@
 #include "mfhdf.h"
 #include "hdf.h"
 
-// class that creates the unique name etc
-//#include "HE2CFNcML.h"
-//#include "HE2CFShortName.h"
-//#include "HE2CF.h"
 #include "HDFSPEnumType.h"
 
 /*
@@ -313,8 +309,6 @@ namespace HDFSP
 
 	  public:
 
-		/// Get the new name of this field
-///        const std::string & getNewName() const { return this->newname; }
 
 		/// Get the list of the corrected dimensions 
 		const std::vector < Dimension * >&getCorrectedDimensions () const
@@ -392,8 +386,6 @@ namespace HDFSP
                 {
                         return special_product_fullpath;
                 }
-		/// Set field type: existing coordinate variable or added coordinate variable 
-		/// void set_fieldtype(int flag) { fieldtype = flag;}
 	  protected:
 
 		std::vector < Dimension * >dims;
@@ -469,7 +461,6 @@ namespace HDFSP
 		friend class File;
 		friend class VDATA;
 	};
-
 
 	/// This class retrieves all SDS objects and SD file attributes.
 	class SD
@@ -652,10 +643,6 @@ namespace HDFSP
 		/// All dimension(coordinate variables) information need to be ready.
 		/// All special arrangements need to be done in this step.
 
-		/// void Prepare (HE2CFShortName * sn, HE2CFShortName * sn_dim,
-		///			  HE2CFUniqName * un,
-		///			  HE2CFUniqName * un_dim) throw (Exception);
-
                 void Prepare() throw(Exception);
 
 		///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
@@ -757,38 +744,6 @@ namespace HDFSP
 		int32 fileid;			// H interface ID
 		SPType sptype;			// Special HDF4 file type
                 bool OTHERHDF_Has_Dim_NoScale_Field;
-	};
-
-
-	/// This also borrows from HDFEOS2.cc. If necessary in the future, we can merge them and put it in a common place.
-	struct Utility
-	{
-
-		/// From a string separated by a separator to a list of string,
-		/// for example, split "ab,c" to {"ab","c"}
-		static void Split (const char *s, int len, char sep,
-						   std::vector < std::string > &names);
-
-		/// Assume sz is Null terminated string.
-		static void Split (const char *sz, char sep,
-						   std::vector < std::string > &names);
-
-		/// Call inquiry functions twice to get a list of strings.
-		static bool ReadNamelist (const char *path,
-								  int32 (*inq) (char *, char *, int32 *),
-								  std::vector < std::string > &names);
-
-               /// The special Utility function to obtain CF string(letters,numbers and _)
-               /// Replaced by get_CF_string at HDFCFUtil.cc, KY 2012-6-12
-               ///static string get_CF_string(string s);
-
-
-               /// The special utility function to obtain the full path.
-               /// This function is used by InsertOrigFieldPath_ReadVgVdata under the File class.
-              /// It is used by Read_Hybrid under the SD class to separate the HDF-EOS2 Data and Geolocation fields.
-///                static void obtain_path (int32 file_id, int32 sd_id, char *full_path,
-///                                                int32 pobj_ref) throw(Exception);
-
 	};
 
 }

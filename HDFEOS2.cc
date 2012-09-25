@@ -1439,7 +1439,7 @@ void File::Prepare(const char *path) throw(Exception)
                 i != file->grids.end(); ++i)
             SetScaleType((*i)->name);
 
-    }
+    }// End of handling grid
 
     
     if(numgrid==0) {
@@ -1464,7 +1464,7 @@ void File::Prepare(const char *path) throw(Exception)
 
             bool fakedimmap = false;
 
-            if(numswath == 1) {
+            if(numswath == 1) {// Start special atml2-like handling
                 if((file->swaths[0]->getName()).find("atml2")!=std::string::npos){
                     if(tempnumdm >0) fakedimmap = true;
                     int templlflag = 0;
@@ -1523,11 +1523,12 @@ void File::Prepare(const char *path) throw(Exception)
                         if(templlflag == 2) break;
                     }
                 }
-            }
+            }// End of special atml2 handling
 
             // Although this file includes dimension map, it doesn't use it at all. So change
             // tempnumdm to 0.
-            if(fakedimmap) tempnumdm = 0;
+            if(fakedimmap) 
+               tempnumdm = 0;
  
 
             // S1. Prepare the right dimension name and the dimension field list for each swath. 
@@ -1537,6 +1538,13 @@ void File::Prepare(const char *path) throw(Exception)
             // The name clashing handling for multiple swaths will not be done in this step. 
 
             // S1.1 Obtain the dimension names corresponding to the latitude and longitude,save them to the <dimname, dimfield> map.
+
+            // We found a special MODAPS product: the Latitude and Longitude are put under the Data fields rather than GeoLocation fields.
+            // So we need to go to the "Data Fields" to grab the "Latitude and Longitude ".
+
+            bool lat_in_geofields = false;
+            bool lon_in_geofields = false;
+
             for (std::vector<SwathDataset *>::const_iterator i = file->swaths.begin();
                  i != file->swaths.end(); ++i){
 
@@ -1551,6 +1559,8 @@ void File::Prepare(const char *path) throw(Exception)
                         if((*j)->getRank() > 2) 
                            throw2("Currently the lat/lon rank must be 1 or 2 for Java clients to work",(*j)->getRank());
 
+
+                        lat_in_geofields = true;
                         // Since under our assumption, lat/lon are always 2-D for a swath and dimension order doesn't matter for Java clients,
                         // we always map Latitude the first dimension and longitude the second dimension.
                         // Save this information in the coordinate variable name and field map.
@@ -1579,6 +1589,8 @@ void File::Prepare(const char *path) throw(Exception)
                         if((*j)->getRank() > 2) 
                             throw2("Currently the lat/lon rank must be  1 or 2 for Java clients to work",(*j)->getRank());
                         // Only lat-level cross-section(for Panoply)is supported when longitude/latitude is 1-D, so ignore the longitude as the dimension field.
+
+                        lon_in_geofields = true;
                         if((*j)->getRank() == 1) {
                             tempgeocount++;
                             continue;
@@ -1604,6 +1616,102 @@ void File::Prepare(const char *path) throw(Exception)
                     }
                     if(tempgeocount == 2) break;
                 }
+            }// end of creating the <dimname,dimfield> map.
+
+            // If lat and lon are not together, throw an error.
+            if (lat_in_geofields ^ lon_in_geofields) 
+                throw1("Latitude and longitude must be both under Geolocation fields or Data fields");
+
+            
+            if (!lat_in_geofields && !lon_in_geofields) {// Check if they are under data fields
+
+               bool lat_in_datafields = false;
+               bool lon_in_datafields = false;
+
+               for (std::vector<SwathDataset *>::const_iterator i = file->swaths.begin();
+                 i != file->swaths.end(); ++i){
+
+                int tempgeocount = 0;
+                for (std::vector<Field *>::const_iterator j =
+                         (*i)->getDataFields().begin();
+                     j != (*i)->getDataFields().end(); ++j) {
+
+                    // Here we assume it is always lat[f0][f1] and lon [f0][f1]. No lat[f0][f1] and lon[f1][f0] occur.
+                    // So far only "Latitude" and "Longitude" are used as standard names of Lat and lon for swath.
+                    if((*j)->getName()=="Latitude" ){
+                        if((*j)->getRank() > 2) 
+                           throw2("Currently the lat/lon rank must be 1 or 2 for Java clients to work",(*j)->getRank());
+
+
+                        lat_in_datafields = true;
+                        // Since under our assumption, lat/lon are always 2-D for a swath and dimension order doesn't matter for Java clients,
+                        // we always map Latitude the first dimension and longitude the second dimension.
+                        // Save this information in the coordinate variable name and field map.
+                        // For rank =1 case, we only handle the cross-section along the same longitude line. So Latitude should be the dimension name.
+
+                        HDFCFUtil::insert_map((*i)->dimcvarlist, (((*j)->getDimensions())[0])->getName(), "Latitude");
+
+                        // Have dimension map, we want to remember the dimension and remove it from the list.
+                        if(tempnumdm >0) {                    
+
+                            // We have to loop through the dimension map
+                            for(std::vector<SwathDataset::DimensionMap *>::const_iterator l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+
+                                // This dimension name will be replaced by the mapped dimension name, 
+                                // the mapped dimension name can be obtained from the getDataDimension() method.
+                                if(((*j)->getDimensions()[0])->getName() == (*l)->getGeoDimension()) {
+                                    HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Latitude");
+                                    break;
+                                }
+                            }
+                        }
+                        (*j)->fieldtype = 1;
+                        tempgeocount ++;
+                    }
+                    if((*j)->getName()=="Longitude"){
+                        if((*j)->getRank() > 2) 
+                            throw2("Currently the lat/lon rank must be  1 or 2 for Java clients to work",(*j)->getRank());
+                        // Only lat-level cross-section(for Panoply)is supported when longitude/latitude is 1-D, so ignore the longitude as the dimension field.
+
+                        lon_in_datafields = true;
+                        if((*j)->getRank() == 1) {
+                            tempgeocount++;
+                            continue;
+                        }
+                        // Since under our assumption, lat/lon are almost always 2-D for a swath and dimension order doesn't matter for Java clients,
+                        // we always map Latitude the first dimension and longitude the second dimension.
+                        // Save this information in the dimensiion name and coordinate variable map.
+                        HDFCFUtil::insert_map((*i)->dimcvarlist, (((*j)->getDimensions())[1])->getName(), "Longitude");
+                        if(tempnumdm >0) {
+                            // We have to loop through the dimension map
+                            for(std::vector<SwathDataset::DimensionMap *>::const_iterator l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+
+                                // This dimension name will be replaced by the mapped dimension name,
+                                // This name can be obtained by getDataDimension() fuction of dimension map class. 
+                                if(((*j)->getDimensions()[1])->getName() == (*l)->getGeoDimension()) {
+                                    HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Longitude");
+                                    break;
+                                }
+                            }
+                        }
+                        (*j)->fieldtype = 2;
+                        tempgeocount++;
+                    }
+                    if(tempgeocount == 2) break;
+                 }
+               }// end of creating the <dimname,dimfield> map.
+
+               // If lat and lon are not together, throw an error.
+               if (lat_in_datafields ^ lon_in_datafields) 
+                  throw1("Latitude and longitude must be both under Geolocation fields or Data fields");
+
+               // If lat,lon are not found under either "Data fields" or "Geolocation fields", we should not generate "coordiantes"
+               // However, this case should be handled in the future release. KY 2012-09-24
+               /**************** INVESTIGATE in the NEXT RELEASE ******************************
+               if (!lat_in_datafields && !lon_in_datafields)
+                  throw1("Latitude and longitude don't exist");
+               *********************************************************************************/
+               
             }
           
             // S1.3 Handle existing and missing fields 
@@ -1733,8 +1841,9 @@ void File::Prepare(const char *path) throw(Exception)
                 }
                 (*i)->nonmisscvdimlist.clear();// clear this set.
 
-            }
+            }// End of dealing with missing fields
                   
+            // Start handling name clashing
             vector <string> tempfieldnamelist;
             for (std::vector<SwathDataset *>::const_iterator i = file->swaths.begin();
                  i != file->swaths.end(); ++i) {
@@ -1789,7 +1898,7 @@ void File::Prepare(const char *path) throw(Exception)
                             HDFCFUtil::insert_map((*i)->ncvarnamelist, (*j)->getName(), (*j)->newname);
                         }
                     }
-            }
+            } // end of creating a map for dimension field name <original field name, corrected field name>
 
             // S5. Create a map for dimension name < original dimension name, corrected dimension name>
 
@@ -1884,7 +1993,7 @@ void File::Prepare(const char *path) throw(Exception)
                     }
                     (*j)->setCorrectedDimensions(correcteddims);
                     correcteddims.clear();
-                }
+                }// End of creating the corrected dimension vectors for GeoFields.
  
                 // Then the data field.
                 for (std::vector<Field *>::const_iterator j =
@@ -1952,8 +2061,9 @@ void File::Prepare(const char *path) throw(Exception)
                     }
                     (*j)->setCorrectedDimensions(correcteddims);
                     correcteddims.clear();
-                }
+                }// End of creating the dimensions for data fields.
             }
+
             // S7. Create "coordinates" ,"units"  attributes. The "units" attributes only apply to latitude and longitude.
             // This is the last round of looping through everything, 
             // we will match dimension name list to the corresponding dimension field name 
@@ -2712,6 +2822,8 @@ void GridDataset::Calculated::ReadLongitudeLatitude() throw(Exception)
     this->valid = true;
 }
 
+// The following internal utilities are not used currently, will see if
+// they are necessary in the future. KY 2012-09-19
 // The internal utility method to check if two vectors have overlapped.
 // If not, return true.
 static bool IsDisjoint(const std::vector<Field *> &l,
@@ -2780,7 +2892,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const std::string &swathname)
 {
     SwathDataset *swath = new SwathDataset(swathname);
 
-    // Openn this Swath object
+    // Open this Swath object
     if ((swath->datasetid = SWattach(fd,
                                      const_cast<char *>(swathname.c_str())))
         == -1)

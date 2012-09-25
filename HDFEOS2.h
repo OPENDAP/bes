@@ -28,10 +28,6 @@
 #include "hdf.h"
 #include "HdfEosDef.h"
 
-// class that creates the unique name etc
-//#include "HE2CFNcML.h"
-//#include "HE2CFShortName.h"
-//#include "HE2CF.h"
 
 // Add MISR SOM projection header
 #include "misrproj.h"
@@ -44,8 +40,6 @@
 #endif
 #endif
 
-//enum SOType 
-//{DEFAULT_CF_EQU, MODIS_MUL_SCALE,MODIS_EQ_SCALE,MODIS_DIV_SCALE};
 /// HDFEOS2.h and HDFEOS2.cc include the core part of retrieving HDF-EOS2 Grid and Swath 
 /// metadata info and translate them into DAP DDS and DAS.
 ///
@@ -451,20 +445,6 @@ namespace HDFEOS2
 			return this->specialcoard;
 		}
 
-		/// Get the "change datatype " flag 
-		///const bool getChaDtype () const
-		///{
-		///	return this->changedtype;
-		///}
-
-                /// Set the "change datatype " flag 
-                ///void setChaDtype ( bool cdtypeflag) 
-                ///{
-                  ///     changedtype = cdtypeflag; 
-                ///}
-
-
-
 		/// Set and get the special flag for adjustment
 		void set_adjustment (int num_map)
 		{
@@ -475,8 +455,6 @@ namespace HDFEOS2
 			return need_adjustment;
 		}
 
-		/// Set field type: existing coordinate variable or added coordinate variable 
-		// void set_fieldtype(int flag) { fieldtype = flag;}
 	protected:
 		std::string name;
 		int32 rank;
@@ -498,6 +476,7 @@ namespace HDFEOS2
 		// 2 means this field is lon.
 		// 3 means this field is other dimension variable.
 		// 4 means this field is added other dimension variable with nature number.
+                // 5 means time, but currently the units is not correct.
 		int fieldtype;
 		bool condenseddim;
 		bool iscoard;
@@ -508,6 +487,7 @@ namespace HDFEOS2
 		// be different than the dimension name. So we have to remember the
 		// original dimension field name when retrieving the third dimension data.
 		// This flag is used to detect that.
+                // This rule may be lifted up, need to check in the next release. KY 2012-09-20
 		bool specialcoard;
 
 		// This flag specifies the special latitude/longitude coordinate format
@@ -521,13 +501,9 @@ namespace HDFEOS2
 		float addedfv;
 		bool dmap;
 
-                /// Sometimes a field's datatype needs to be changed(scale and offset etc.), 
-                /// so set this flag.
-                /// bool  changedtype;
-
-
 		/// Add a special_flag to indicate if the field data needs to be adjusted(dimension map case)
 		/// KY 2009-12-3
+                // This may not necessary. Check in the next release. KY 2012-09-20
 		bool need_adjustment;
 
 		friend class Dataset;
@@ -1146,17 +1122,11 @@ namespace HDFEOS2
 	public:
 		static File *Read (const char *path) throw (Exception);
 
-		/// It will read all information from an EOS file with the adjusted
-		/// geo-location fields of swath objects.
-		static File *ReadAndAdjust (const char *path) throw (Exception);
 
 		/// Read and prepare. This is the main method to make the DAP output CF-compliant.
 		/// All dimension(coordinate variables) information need to be ready.
 		/// All special arrangements need to be done in this step.
 
-		//void Prepare (const char *path, HE2CFShortName * sn,
-		//		HE2CFShortName * sn_dim, HE2CFUniqName * un,
-		//		HE2CFUniqName * un_dim) throw (Exception);
                 void Prepare(const char *path) throw(Exception);
 
                 void SetScaleType(const string EOS2ObjName) throw(Exception);
@@ -1223,7 +1193,6 @@ namespace HDFEOS2
 		int lltype; // latitude and longitude type
 		bool llcondensed; // If 2-D lat and lon array  can be condensed to 1-D
 
-		// Eunsoo
 		/** 
 		 * A grid's X-dimension can have different names: XDim, LatDim, etc.
 		 * Y-dimension also has YDim, LonDim, etc.
@@ -1233,6 +1202,7 @@ namespace HDFEOS2
 		 */
 		std::string get_geodim_x_name ();
 		std::string get_geodim_y_name ();
+
 		// Internal funcion and variables for the above functions.
 		// These are not intended to be used outside the above functions.
 		void _find_geodim_names ();
@@ -1300,7 +1270,6 @@ namespace HDFEOS2
 				int32 (*inq) (char *, char *, int32 *),
 				std::vector < std::string > &names);
 
-		/// Return number of objects for other purposes
 
 	};
 

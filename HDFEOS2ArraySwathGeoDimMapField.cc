@@ -130,8 +130,8 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 				c_str () << " datatype is not float, unsupported.";
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 
-			break;
 		}
+			break;
 	case DFNT_FLOAT32:
 		{
 			std::vector < float32 > latlon32;
@@ -154,10 +154,8 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 							&latlon32[0], offset32, count32, step32);
 			set_value ((dods_float32 *) outlatlon32, nelms);
 			delete[]outlatlon32;
-			// clear the memory, NEED TO talk with Eunsoo 
-
-			break;
 		}
+			break;
 	case DFNT_FLOAT64:
 
 		{
@@ -181,8 +179,8 @@ HDFEOS2ArraySwathGeoDimMapField::read ()
 							&latlon64[0], offset32, count32, step32);
 			set_value ((dods_float64 *) outlatlon64, nelms);
 			delete[]outlatlon64;
-			break;
 		}
+			break;
 	default:
 		{
 			HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
@@ -283,14 +281,11 @@ GetLatLon (int32 swathid, const std::string & geofieldname,
 		   std::vector < T > &vals, int32 * ydim, int32 * xdim)
 {
 
-	int32
-		ret;
-	int32
-		size;
-	int32
-		rank,
-		dims[130],
-		type;
+	int32 ret = 0;
+	int32 size = 0;
+	int32 rank = 0;
+	int32 dims[130];
+        int32 type = 0;
 
 	// Two dimensions for lat/lon; each dimension name is < 64 characters,
 	// The dimension names are separated by a comma.
@@ -359,13 +354,13 @@ GetLatLon (int32 swathid, const std::string & geofieldname,
 
 // expand the dimension map field.
 template < class T > int
-HDFEOS2ArraySwathGeoDimMapField::_expand_dimmap_field (std::vector < T >
-													   *pvals, int32 rank,
-													   int32 dimsa[],
-													   int dimindex,
-													   int32 ddimsize,
-													   int32 offset,
-													   int32 inc)
+HDFEOS2ArraySwathGeoDimMapField::_expand_dimmap_field (std::vector < T >  *pvals,
+		  					int32 rank,
+		   					int32 dimsa[],
+						   	int dimindex,
+							int32 ddimsize,
+						  	int32 offset,
+							int32 inc)
 {
 	std::vector < T > orig = *pvals;
 	std::vector < int32 > pos;

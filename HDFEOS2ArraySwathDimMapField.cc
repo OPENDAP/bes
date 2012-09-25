@@ -16,7 +16,6 @@
 #include <debug.h>
 #include "InternalErr.h"
 #include "BESDebug.h"
-//#include "HDFEOS2.h"
 #include "HDFEOS2ArraySwathDimMapField.h"
 #define SIGNED_BYTE_TO_INT32 1
 
@@ -24,7 +23,6 @@
 bool
 HDFEOS2ArraySwathDimMapField::read ()
 {
-//cerr<<"coming to read "<<endl;
 	int *offset = new int[rank];
 	int *count = new int[rank];
 	int *step = new int[rank];
@@ -104,6 +102,7 @@ HDFEOS2ArraySwathDimMapField::read ()
 	if (swathid < 0) {
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
 							   step);
+                closefunc (sfid);
 		ostringstream eherr;
 
 		eherr << "Grid/Swath " << datasetname.
@@ -133,6 +132,8 @@ HDFEOS2ArraySwathDimMapField::read ()
         int32 sdfileid;
         sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (FAIL == sdfileid) {
+            detachfunc(swathid);
+            closefunc(sfid);
             ostringstream eherr;
             eherr << "Cannot Start the SD interface for the file " << filename <<endl;
         }
@@ -142,6 +143,8 @@ HDFEOS2ArraySwathDimMapField::read ()
         int32 sdsindex, sdsid;
         sdsindex = SDnametoindex(sdfileid, fieldname.c_str());
         if (FAIL == sdsindex) {
+                             detachfunc (swathid);
+                             closefunc (sfid);
                              SDend(sdfileid);
                              ostringstream eherr;
                              eherr << "Cannot obtain the index of " << fieldname;
@@ -151,6 +154,8 @@ HDFEOS2ArraySwathDimMapField::read ()
 
         sdsid = SDselect(sdfileid, sdsindex);
         if (FAIL == sdsid) {
+                            detachfunc(swathid);
+                            closefunc(sfid);
                             SDend(sdfileid);
                             ostringstream eherr;
                             eherr << "Cannot obtain the SDS ID  of " << fieldname;
@@ -174,6 +179,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -185,6 +192,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -194,6 +203,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
 		if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -233,6 +244,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -244,6 +257,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -253,6 +268,8 @@ HDFEOS2ArraySwathDimMapField::read ()
 		ret = SDattrinfo(sdsid, attrindex2, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -264,6 +281,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, attrindex2, (VOIDP)&attrbuf2[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -300,6 +319,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, scale_factor_attr_index, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -311,6 +332,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -339,6 +362,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, add_offset_attr_index, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -350,6 +375,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -378,6 +405,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;
@@ -389,6 +418,8 @@ HDFEOS2ArraySwathDimMapField::read ()
                 ret = SDreadattr(sdsid, attrindex, (VOIDP)&attrbuf[0]);
                 if (ret==FAIL)
                 {
+                        detachfunc(swathid);
+                        closefunc(sfid);
                         SDendaccess(sdsid);
                         SDend(sdfileid);
                         ostringstream eherr;

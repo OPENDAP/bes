@@ -28,7 +28,7 @@ bool HDFEOS2ArrayMissGeoField::read()
     int *offset = new int[rank];
     int *count = new int[rank];
     int *step = new int[rank];
-    int *val = 0;
+    int *val = NULL;
 
     int nelms;
 
@@ -63,10 +63,14 @@ bool HDFEOS2ArrayMissGeoField::read()
 	throw;
     }
 
-    delete[] offset;
-    delete[] count;
-    delete[] step;
-    delete[] val;
+    if (offset != NULL)
+        delete[] offset;
+    if (count != NULL)
+        delete[] count;
+    if (step != NULL)
+        delete[] step;
+    if (val != NULL) 
+        delete[] val;
 
     return false;
 }

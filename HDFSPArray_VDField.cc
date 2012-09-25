@@ -41,7 +41,8 @@ HDFSPArray_VDField::read ()
 	}
 
 
-	int32 file_id, vdata_id;
+	int32 file_id = 0;
+        int32 vdata_id = 0;
 
 	// Open the file
 	file_id = Hopen (filename.c_str (), DFACC_READ, 0);
@@ -366,9 +367,6 @@ HDFSPArray_VDField::read ()
 		break;
 	case DFNT_FLOAT32:
 		{
-//cerr<<"nelms= "<<nelms <<endl;
-//cerr<<"count= "<<count[0] <<endl;
-//cerr<<"step= "<<step[0] <<endl;
 			float32 *val = new float32[nelms];
 			float32 *orival = new float32[vdfelms];
 

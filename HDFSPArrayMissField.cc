@@ -67,10 +67,14 @@ HDFSPArrayMissGeoField::read ()
 		set_value ((dods_int32 *) val, nelms);
 	}
 
-	delete[]val;
-	delete[]offset;
-	delete[]count;
-	delete[]step;
+        if (val !=NULL) 
+	    delete[]val;
+        if (offset != NULL)
+	    delete[]offset;
+        if (count != NULL)
+	    delete[]count;
+        if (step != NULL)
+	    delete[]step;
 
 	return false;
 }

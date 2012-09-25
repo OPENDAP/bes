@@ -762,7 +762,6 @@ HDFEOS2ArrayGridGeoField::read ()
 	  case DFNT_UINT32:
 
           {
-//	    val = new uint32[nelms];
             vector<uint32> val;
             val.resize(nelms);
 
@@ -782,8 +781,6 @@ HDFEOS2ArrayGridGeoField::read ()
                                NULL, NULL, NULL, (void *)(&temp_total_val[0]));
 
                 if (r != 0) {
-                    //HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-                     //                        count, step);
                     detachfunc(gridid);
                     closefunc(gfid);
 
@@ -794,7 +791,6 @@ HDFEOS2ArrayGridGeoField::read ()
                 }
 
                 HandleFillLatLon(temp_total_val, (uint32*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
-//                HandleFillLatLon(temp_total_val, (uint32*)val,ydimmajor,fieldtype,xdim,ydim,offset32,count32,step32,ifillvalue);
 
 	    }
 
@@ -804,8 +800,6 @@ HDFEOS2ArrayGridGeoField::read ()
                               const_cast < char *>(fieldname.c_str ()),
 			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
-                   // HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-                    //                   count, step);
                     detachfunc(gridid);
                     closefunc(gfid);
 
@@ -820,15 +814,12 @@ HDFEOS2ArrayGridGeoField::read ()
 		CorSpeLon ((uint32 *) &val[0], nelms);
 
 	    set_value ((dods_uint32 *) &val[0], nelms);
-	   // delete[](uint32 *) val;
-	   // delete (uint32 *) fillvalue;
 
           }
 	    break;
 	  case DFNT_FLOAT32:
 
           {
-	    //val = new float32[nelms];
             vector<float32> val;
             val.resize(nelms);
 
@@ -837,14 +828,12 @@ HDFEOS2ArrayGridGeoField::read ()
                                 const_cast < char *>(fieldname.c_str ()),
                                 &fillvalue);
 
-//cerr<<"fillvalue "<<*((float32*)fillvalue) <<endl;
 
             if (r == 0) {
                 // May cause overflow,not find this happen in NASA HDF files, may still need to handle later.
                 // KY 2012-08-20
                 int ifillvalue =(int)fillvalue;
      
-                // float32 *temp_total_val = new float32[xdim*ydim*4];
                 vector <float32> temp_total_val;
                 temp_total_val.resize(xdim*ydim*4);
 
@@ -853,8 +842,6 @@ HDFEOS2ArrayGridGeoField::read ()
                                NULL, NULL, NULL, (void *)(&temp_total_val[0]));
 
                 if (r != 0) {
-                    //HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-                     //                  count, step);
                     detachfunc(gridid);
                     closefunc(gfid);
 
@@ -866,8 +853,6 @@ HDFEOS2ArrayGridGeoField::read ()
 
                 HandleFillLatLon(temp_total_val, (float32*)&val[0],ydimmajor,fieldtype,xdim,ydim,&offset32[0],&count32[0],&step32[0],ifillvalue);
 
-                //delete []temp_total_val;
-
             }
             else {
 
@@ -875,8 +860,6 @@ HDFEOS2ArrayGridGeoField::read ()
 			       const_cast < char *>(fieldname.c_str ()),
 			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
 	    if (r != 0) {
-//		HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-//				       count, step);
                 detachfunc(gridid);
                 closefunc(gfid);
 
@@ -891,15 +874,12 @@ HDFEOS2ArrayGridGeoField::read ()
 		CorSpeLon ((float32 *) &val[0], nelms);
 
 	    set_value ((dods_float32 *) &val[0], nelms);
-//	    delete[](float32 *) val;
-//	    delete (float32 *) fillvalue;
 
           }
 	    break;
 	  case DFNT_FLOAT64:
 
           {
-//	    val = new float64[nelms];
             vector<float64> val;
             val.resize(nelms);
 
@@ -920,8 +900,6 @@ HDFEOS2ArrayGridGeoField::read ()
                                NULL, NULL, NULL, (void *)(&temp_total_val[0]));
 
                 if (r != 0) {
- //                   HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-  //                                           count, step);
                     detachfunc(gridid);
                     closefunc(gfid);
 
@@ -941,8 +919,6 @@ HDFEOS2ArrayGridGeoField::read ()
                               const_cast < char *>(fieldname.c_str ()),
 			       &offset32[0], &step32[0], &count32[0], (void*)(&val[0]));
                 if (r != 0) {
-   //                 HDFCFUtil::ClearMem (offset32, count32, step32, offset,
-    //                                   count, step);
                     detachfunc(gridid);
                     closefunc(gfid);
 
@@ -957,14 +933,12 @@ HDFEOS2ArrayGridGeoField::read ()
 		CorSpeLon ((float64 *) &val[0], nelms);
 
 	    set_value ((dods_float64 *) &val[0], nelms);
-	    //delete[](float64 *) val;
-	   // delete (float64 *) fillvalue;
 
           }
 	    break;
 	  default:
-//	    HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
-//				   step);
+            detachfunc(gridid);
+            closefunc(gfid);
 	    InternalErr (__FILE__, __LINE__, "unsupported data type.");
 	}
 
@@ -972,8 +946,6 @@ HDFEOS2ArrayGridGeoField::read ()
 
     r = detachfunc (gridid);
     if (r != 0) {
-//	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
-//			       step);
         closefunc(gfid);
 
 	ostringstream eherr;
@@ -985,24 +957,12 @@ HDFEOS2ArrayGridGeoField::read ()
 
     r = closefunc (gfid);
     if (r != 0) {
-//	HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
-//			       step);
 	ostringstream eherr;
 
 	eherr << "Grid " << filename.c_str () << " cannot be closed.";
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-
-#if 0
-    delete[]offset;
-    delete[]count;
-    delete[]step;
-
-    delete[]offset32;
-    delete[]count32;
-    delete[]step32;
-#endif
 
     return false;
 }
@@ -1141,7 +1101,6 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-// cerr<<"before subsetting 1"<<endl;
 
     int32*rows = NULL;
     int32 *cols = NULL;
@@ -1213,14 +1172,6 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int fieldtype,
 	throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-#if 0
-    for (int iii = 0; iii < xdim; iii++)
-	for (int jjj = 0; jjj < ydim; jjj++)
-	    cerr << "lat " << iii << " " << jjj << " " << lat[iii * ydim +
-							      jjj] << endl;
-#endif
-
-//cerr<<"before subsetting "<<endl;
     // 2-D Lat/Lon, need to decompose the data for subsetting.
     if (nelms == (xdim * ydim)) {	// no subsetting return all, for the performance reason.
 	if (fieldtype == 1)
@@ -1266,12 +1217,6 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int majordim,
 	(typeof templatlonptr) latlon;
     int i, j, k;
 
-#if 0
-    for (int jjj = 0; jjj < majordim; jjj++)
-	for (int kkk = 0; kkk < minordim; kkk++)
-	    cerr << "templatlon " << jjj << " " << kkk << " " <<
-		templatlon[i][j] << endl;
-#endif
     // do subsetting
     // Find the correct index
     int dim0count = count[0];
@@ -1588,6 +1533,9 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int fieldtype,
     // the default HDF-EOS2 cell center as the origin of the coordinate. See the HDF-EOS2 user's guide
     // for details. KY 2012-09-10
 
+    if(0 == xdim || 0 == ydim) 
+        throw InternalErr(__FILE__,__LINE__,"xdim or ydim cannot be zero");
+
     if (fieldtype == 1) {
 	double latstep = 180.0 / ydim;
 
@@ -1608,14 +1556,10 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 	int32 projcode, zone, sphere;
     	float64 params[NPROJ];
 	intn r;
-//cerr<<"going into CalculateSOMLatLon" <<endl;
 
     	r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     	if (r!=0) ERROR("GDprojinfo");
-//cerr<<"projcode "<<projcode <<endl;
 
-	//if(projcode==GCTP_SOM)
-	//{
 		int MAXNDIM = 10;
 		int32 dim[MAXNDIM];
 		char dimlist[STRLEN];
@@ -1649,29 +1593,15 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 		long iflg = 0;
 		int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
 		inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
-                // cerr<<"iflg = "<<iflg <<endl;
 		if(iflg) ERROR("inv_init");
 
-		//float *latlon;
-		double *latlon;
-		//double *lat, *lon;
+                // Change to vector in the future. KY 2012-09-20
+		double *latlon = NULL;
 		double somx, somy, lat_r, lon_r;
 		int i, j, k, b, npts=0;
                 float l, s;
-//cerr<<"nelms inside the routine "<<nelms << endl;
-//cerr<<"start[0]= "<<start[0] <<endl;
-//cerr<<"start[1]= "<<start[1] <<endl;
-//cerr<<"start[2]= "<<start[2] <<endl;
 
-//cerr<<"count[0]= "<<count[0] <<endl;
-//cerr<<"count[1]= "<<count[1] <<endl;
-//cerr<<"count[2]= "<<count[2] <<endl;
-//
-//cerr<<"step[0]= "<<step[0] <<endl;
-//cerr<<"step[1]= "<<step[1] <<endl;
-//cerr<<"step[2]= "<<step[2] <<endl;
-
-
+                // Seems setting blockdim = 0 always, need to understand this more. KY 2012-09-20
 		int blockdim=0; //20; //84.2115,84.2018, 84.192, ... //0 for all
 		if(blockdim==0) //66.2263, 66.224, ....
 		{
@@ -1694,11 +1624,10 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 							latlon[npts] = lon_r*R2D;
                     				npts++;
                 			}
-			//set_value ((dods_float32 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
 			set_value ((dods_float64 *) latlon, nelms); //(180*xdim*ydim)); //nelms);
 		} 
-    		delete [] latlon;
-	//}
+                if (latlon != NULL)
+    		    delete [] latlon;
 }
 void
 HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gfid, int32 gridid,  int fieldtype, float64* latlon, int *start, int *count, int *step, int nelms)
@@ -1773,7 +1702,6 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int fieldtype, floa
 	int32 tmp3[] = {xdim, ydim};
 	int32 tmp4[] = {1, 1};
 	
-cerr<<"coming to LAMAZ projection."<<endl;
 	CalculateLatLon (gridid, fieldtype, specialformat, tmp1, tmp2, tmp3, tmp4, xdim*ydim);
 	
         float64 *tmp5 = new float64[xdim*ydim];

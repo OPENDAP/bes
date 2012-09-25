@@ -48,14 +48,14 @@ HDFSPArray_RealField::read ()
 	}
 
 	//Obtain SDS IDs. 
-	int32 sdid, sdsid;
+	int32 sdid = 0;
+        int32 sdsid = 0;
 
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
 	if (sdid < 0) {
 		HDFCFUtil::ClearMem (offset32, count32, step32, offset, count, step);
 		ostringstream eherr;
-
 		eherr << "File " << filename.c_str () << " cannot be open.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -80,19 +80,9 @@ HDFSPArray_RealField::read ()
 		eherr << "SDselect failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
-#if 0
-char temp_name[256];
-int32 dimsizes[4];
-SDgetinfo(sdsid,temp_name,NULL,dimsizes,NULL,NULL);
-cerr <<"SDS name is "<<temp_name <<endl;
-cerr<<"dimsizes[0] "<<dimsizes[0] <<endl;
-cerr<<"dimsizes[1] "<<dimsizes[1] <<endl;
-cerr<<"dimsizes[2] "<<dimsizes[2] <<endl;
-cerr<<"dimsizes[3] "<<dimsizes[3] <<endl;
-#endif
 
-	void *val;
-	int32 r;
+	void *val = NULL;
+	int32 r = 0;
 
 	switch (dtype) {
 

@@ -257,8 +257,8 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 								int32 * step32, int nelms)
 {
 
-	// 
-	int32 sdid, sdsid;
+	int32 sdid = 0;
+        int32 sdsid = 0;
 	int32 *geooffset32 = new int32[rank + 1];
 	int32 *geocount32 = new int32[rank + 1];
 	int32 *geostep32 = new int32[rank + 1];
@@ -286,7 +286,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 	if (sdid < 0) {
 		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "File " << filename.c_str () << " cannot be open.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -297,7 +296,6 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 		SDend (sdid);
 		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "SDS index " << sdsindex << " is not right.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
@@ -307,13 +305,12 @@ HDFSPArrayGeoField::readtrmml2 (int32 * offset32, int32 * count32,
 		SDend (sdid);
 		HDFCFUtil::ClearMem2 (geooffset32, geocount32, geostep32);
 		ostringstream eherr;
-
 		eherr << "SDselect failed.";
 		throw InternalErr (__FILE__, __LINE__, eherr.str ());
 	}
 
-	void *val;
-	int32 r;
+	void *val = NULL;
+	int32 r = 0;
 
 
 	switch (dtype) {
@@ -756,8 +753,6 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
                                 float32 * interp_val = new float[interpolate_elm];
 
-                                
-
                                 // Number of scan line doesn't change, so just interpolate according to the fast changing dimension
                                 int tempseg = 0;
                                 float tempdiff = 0;
@@ -802,12 +797,12 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
                                 }
 
-                                //HDFCFUtil::LatLon2DSubset(val,num_scan_data,num_pixel_data,interp_val,orioffset32,oricount32,oristep32);
                                 LatLon2DSubset(val,num_scan_data,num_pixel_data,interp_val,offset32,count32,step32);
 
                                 delete[] orival;
                                 delete[] interp_val;
                             }
+                            // Leave the following comments until the next release
 #if 0
 				// WE SHOULD INTERPOLATE ACCORDING TO THE FAST CHANGING DIMENSION
                                 // THis method will save some memory, but it will cause greater error
@@ -897,13 +892,15 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 	}
 
 	// Read File attributes to otain the segment
-	int32 attr_index, attr_dtype, n_values;
-	int32 num_lat_data;
-	int32 num_lon_data;
-	float32 lat_step;
-	float32 lon_step;
-	float32 swp_lat;
-	float32 swp_lon;
+	int32 attr_index = 0;
+        int32 attr_dtype = 0;
+        int32 n_values = 0;
+	int32 num_lat_data = 0;
+	int32 num_lon_data = 0;
+	float32 lat_step = 0.;
+	float32 lon_step = 0.;
+	float32 swp_lat = 0.;
+	float32 swp_lon = 0.;
 
 	// Obtain number of latitude
 	attr_index = SDfindattr (sd_id, NUM_LAT_NAME);
@@ -1057,7 +1054,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset, int *count, int *step, int nelms)
 		throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
 	}
 
-	//float32 *val; Unused jhrg 3/16/11
 
 	if (fieldtype == 1) {
 
@@ -1420,12 +1416,11 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 								  int32 * step32, int nelms)
 {
 
-	// 
-	int32 sdid, sdsid;
-	intn status;
+	int32 sdid = 0;
+        int32 sdsid = 0;
+	intn status = 0;
 
 	sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
-
 	if (sdid < 0) {
 		ostringstream eherr;
 
@@ -1434,7 +1429,6 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 	}
 
 	int32 sdsindex = SDreftoindex (sdid, (int32) sdsref);
-
 	if (sdsindex == -1) {
 		SDend (sdid);
 		ostringstream eherr;
@@ -1730,12 +1724,6 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
         T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
      int i, j, k;
 
-#if 0
-    for (int jjj = 0; jjj < majordim; jjj++)
-        for (int kkk = 0; kkk < minordim; kkk++)
-            cerr << "templatlon " << jjj << " " << kkk << " " <<
-                templatlon[i][j] << endl;
-#endif
     // do subsetting
     // Find the correct index
     int dim0count = count[0];

@@ -15,10 +15,8 @@
 #include <sstream>
 #include <cassert>
 #include <debug.h>
-//#include "HDFEOS2.h"
 #include "InternalErr.h"
 #include "BESDebug.h"
-//#include "HDFCFUtil.h"
 #define SIGNED_BYTE_TO_INT32 1
 
 bool
@@ -115,8 +113,7 @@ HDFEOS2ArraySwathGeoField::read ()
 	}
 
 
-	void *val;
-
+	void *val = NULL;
 
 	switch (type) {
 	case DFNT_INT8:
@@ -160,6 +157,7 @@ HDFEOS2ArraySwathGeoField::read ()
 	case DFNT_UINT8:
 	case DFNT_UCHAR8:
 	case DFNT_CHAR8:
+        {
 		val = new uint8[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -177,6 +175,7 @@ HDFEOS2ArraySwathGeoField::read ()
 
 		set_value ((dods_byte *) val, nelms);
 		delete[](uint8 *) val;
+        }
 		break;
 
 	case DFNT_INT16:
@@ -233,6 +232,7 @@ HDFEOS2ArraySwathGeoField::read ()
 		break;
 
 	case DFNT_UINT16:
+             {
 		val = new uint16[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -250,9 +250,11 @@ HDFEOS2ArraySwathGeoField::read ()
 
 		set_value ((dods_uint16 *) val, nelms);
 		delete[](uint16 *) val;
+            }
 		break;
 
 	case DFNT_INT32:
+             {
 		val = new int32[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -270,9 +272,11 @@ HDFEOS2ArraySwathGeoField::read ()
 
 		set_value ((dods_int32 *) val, nelms);
 		delete[](int32 *) val;
+              }
 		break;
 
 	case DFNT_UINT32:
+            {
 		val = new uint32[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -291,8 +295,10 @@ HDFEOS2ArraySwathGeoField::read ()
 
 		set_value ((dods_uint32 *) val, nelms);
 		delete[](uint32 *) val;
+            }
 		break;
 	case DFNT_FLOAT32:
+            {
 		val = new float32[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -309,9 +315,11 @@ HDFEOS2ArraySwathGeoField::read ()
 			throw InternalErr (__FILE__, __LINE__, eherr.str ());
 		}
 		set_value ((dods_float32 *) val, nelms);
-		delete[](float32 *) val;
+	        delete[](float32 *) val;
+             }
 		break;
 	case DFNT_FLOAT64:
+             {
 		val = new float64[nelms];
 		r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()),
 						   offset32, step32, count32, val);
@@ -329,6 +337,7 @@ HDFEOS2ArraySwathGeoField::read ()
 
 		set_value ((dods_float64 *) val, nelms);
 		delete[](float64 *) val;
+             }
 		break;
 	default:
 		detachfunc (swathid);
@@ -362,13 +371,8 @@ HDFEOS2ArraySwathGeoField::read ()
 
 
 
-	delete[]offset;
-	delete[]count;
-	delete[]step;
-
-	delete[]offset32;
-	delete[]count32;
-	delete[]step32;
+        HDFCFUtil::ClearMem (offset32, count32, step32, offset, count,
+                                                           step);
 
 	return false;
 }

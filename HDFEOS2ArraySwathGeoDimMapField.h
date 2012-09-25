@@ -38,33 +38,31 @@ class HDFEOS2ArraySwathGeoDimMapField:public Array
 
 	// Obtain latitude and longitude
 	template < class T > int GetLatLon (int32, const std::string &,
-										std::vector < struct dimmap_entry >&,
-										std::vector < T > &, int32 *,
-										int32 *);
+					    std::vector < struct dimmap_entry >&,
+					    std::vector < T > &, int32 *,
+				       	    int32 *);
 
 	// The internal routine to do the interpolation
 	template < class T >
 		int _expand_dimmap_field (std::vector < T > *pvals, int32 rank,
-								  int32 dimsa[], int dimindex, int32 ddimsize,
-								  int32 offset, int32 inc);
+						  int32 dimsa[], int dimindex, int32 ddimsize,
+						  int32 offset, int32 inc);
 
 	// routine to ensure the subsetted lat/lon to be returned.
 	template < class T > bool LatLonSubset (T * outlatlon, int majordim,
-											  int minordim, T * latlon,
-											  int32 * offset, int32 * count,
-											  int32 * step);
+							  int minordim, T * latlon,
+							  int32 * offset, int32 * count,
+							  int32 * step);
 	// routine to ensure the subsetted 1D lat/lon to be returned.
 	template < class T > bool LatLon1DSubset (T * outlatlon, int majordim,
-											  T * latlon,
-											  int32 * offset, int32 * count,
-											  int32 * step);
+						  T * latlon,
+						  int32 * offset, int32 * count,
+						  int32 * step);
 	// routine to ensure the subsetted 2D lat/lon to be returned.
 	template < class T > bool LatLon2DSubset (T * outlatlon, int majordim,
-											  int minordim, T * latlon,
-											  int32 * offset, int32 * count,
-											  int32 * step);
-
-
+						  int minordim, T * latlon,
+						  int32 * offset, int32 * count,
+						  int32 * step);
 
 	BaseType *ptr_duplicate ()
 	{

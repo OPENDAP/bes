@@ -188,227 +188,6 @@ throw (Exception)
 
         // Handle lone vdatas
         file->ReadVdatas(file);
-        
-        // The following code is replaced by ReadVdatas. KY 2012-6-26
-#if 0
-	// Handle vlone data here
-	int status = Vstart (file->fileid);
-
-	if (status == FAIL)
-		throw2 ("Cannot start vdata/vgroup interface", path);
-
-	int num_lone_vdata = VSlone (file->fileid, NULL, 0);
-
-	if (num_lone_vdata == FAIL)
-		throw2 ("Fail to obtain lone vdata number", path);
-
-	// Currently the vdata name buffer has to be static allocated according to HDF4 reference manual. KY 2010-7-14
-	char vdata_class[VSNAMELENMAX], vdata_name[VSNAMELENMAX];
-
-	if (num_lone_vdata > 0) {
-
-		// Since HDF4 is a C library, here we use the "C" way to handle the data, use "calloc" and "free".
-
-		int32 *ref_array = (int32 *) calloc (num_lone_vdata, sizeof (int32));
-
-		if (ref_array == NULL)
-			throw1 ("no enough memory to allocate the buffer.");
-
-		if (VSlone (file->fileid, ref_array, num_lone_vdata) == FAIL) {
-			free (ref_array);
-			throw2 ("cannot obtain lone vdata reference arrays", path);
-		}
-
-		for (int i = 0; i < num_lone_vdata; i++) {
-
-			int32 vdata_id;
-
-			vdata_id = VSattach (file->fileid, ref_array[i], "r");
-			if (vdata_id == FAIL) {
-				free (ref_array);
-				throw2 ("Fail to attach Vdata", path);
-			}
-
-			status = VSgetclass (vdata_id, vdata_class);
-			if (status == FAIL) {
-				VSdetach (vdata_id);
-				free (ref_array);
-				throw2 ("Fail to obtain Vdata class", path);
-			}
-
-			if (VSgetname (vdata_id, vdata_name) == FAIL) {
-				VSdetach (vdata_id);
-				free (ref_array);
-				throw3 ("Fail to obtain Vdata name", path, vdata_name);
-			}
-
-			if (VSisattr (vdata_id) == TRUE
-				|| !strncmp (vdata_class, _HDF_CHK_TBL_CLASS,
-							 strlen (_HDF_CHK_TBL_CLASS))
-				|| !strncmp (vdata_class, _HDF_SDSVAR, strlen (_HDF_SDSVAR))
-				|| !strncmp (vdata_class, _HDF_CRDVAR, strlen (_HDF_CRDVAR))
-				|| !strncmp (vdata_class, DIM_VALS, strlen (DIM_VALS))
-				|| !strncmp (vdata_class, DIM_VALS01, strlen (DIM_VALS01))
-				|| !strncmp (vdata_class, RIGATTRCLASS, strlen (RIGATTRCLASS))
-				|| !strncmp (vdata_name, RIGATTRNAME, strlen (RIGATTRNAME))) {
-
-				status = VSdetach (vdata_id);
-				if (status == FAIL) {
-					free (ref_array);
-					throw3 ("VSdetach failed ", "Vdata name ", vdata_name);
-				}
-			}
-
-			else {
-
-				VDATA *vdataobj = VDATA::Read (vdata_id, ref_array[i]);
-
-				// We want to map fields of vdata with more than 10 records to DAP variables
-				// and we need to add the path and vdata name to the new vdata field name
-				if (!vdataobj->getTreatAsAttrFlag ()) {
-					for (std::vector < VDField * >::const_iterator it_vdf =
-						 vdataobj->getFields ().begin ();
-						 it_vdf != vdataobj->getFields ().end (); it_vdf++) {
-                                                
-                                                // Change vdata name conventions. 
-                                                // "vdata"+vdata_newname+"_vdf_"+(*it_vdf)->newname
-						(*it_vdf)->newname = "vdata" +vdataobj->newname + "_vdf_"
-							//"vdf_" + (*it_vdf)->name + "_" +
-							// vdataobj->newname;
-
-                                                // Handle special characters, KY 2012-6-26
-                                                (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
-					}
-				}
-				file->vds.push_back (vdataobj);
-
-				// THe following code should be replaced by using the VDField member functions in the future
-				// The code has largely overlapped with VDField member functions, but not for this release.
-				// KY 2010-8-11
-				// To know if the data product is CERES, we need to check Vdata CERE_metadata(CERE_META_NAME).
-				//  One field name LOCALGRANULEID(CERE_META_FIELD_NAME) includes the product name. 
-
-				if (!strncmp
-					(vdata_name, CERE_META_NAME, strlen (CERE_META_NAME))) {
-
-					char *fieldname;
-					int num_field = VFnfields (vdata_id);
-
-					if (num_field == FAIL) {
-						free (ref_array);
-						VSdetach (vdata_id);
-						throw3 ("number of fields at Vdata ", vdata_name,
-								" is -1");
-					}
-
-					for (int j = 0; j < num_field; j++) {
-
-						fieldname = VFfieldname (vdata_id, j);
-						if (fieldname == NULL) {
-							free (ref_array);
-							VSdetach (vdata_id);
-							throw5 ("vdata ", vdata_name, " field index ", j,
-									" field name is NULL.");
-						}
-
-						if (!strcmp (fieldname, CERE_META_FIELD_NAME)) {
-
-							int32 fieldsize, nelms;
-
-							fieldsize = VFfieldesize (vdata_id, j);
-							if (fieldsize == FAIL) {
-								free (ref_array);
-								VSdetach (vdata_id);
-								throw5 ("vdata ", vdata_name, " field ",
-										fieldname, " size is wrong.");
-							}
-
-							nelms = VSelts (vdata_id);
-							if (nelms == FAIL) {
-								free (ref_array);
-								VSdetach (vdata_id);
-								throw5 ("vdata ", vdata_name,
-										" number of field record ", nelms,
-										"  is wrong.");
-							}
-
-							char *databuf =
-								(char *) malloc (fieldsize * nelms);
-							if (databuf == NULL) {
-								free (ref_array);
-								VSdetach (vdata_id);
-								throw1
-									("no enough memory to allocate buffer.");
-							}
-							if (VSseek (vdata_id, 0) == FAIL) {
-								VSdetach (vdata_id);
-								free (ref_array);
-								free (databuf);
-								throw5 ("vdata ", vdata_name, "field ",
-										CERE_META_FIELD_NAME,
-										" VSseek failed.");
-							}
-							if (VSsetfields (vdata_id, CERE_META_FIELD_NAME)
-								== FAIL) {
-								VSdetach (vdata_id);
-								free (ref_array);
-								free (databuf);
-								throw5 ("vdata ", vdata_name, "field ",
-										CERE_META_FIELD_NAME,
-										" VSsetfields failed.");
-							}
-
-							if (VSread
-								(vdata_id, (uint8 *) databuf, 1,
-								 FULL_INTERLACE) == FAIL) {
-								VSdetach (vdata_id);
-								free (ref_array);
-								free (databuf);
-								throw5 ("vdata ", vdata_name, "field ",
-										CERE_META_FIELD_NAME,
-										" VSread failed.");
-							}
-
-							if (!strncmp
-								(databuf, CER_AVG_NAME,
-								 strlen (CER_AVG_NAME)))
-								file->sptype = CER_AVG;
-							else if (!strncmp
-									 (databuf, CER_ES4_NAME,
-									  strlen (CER_ES4_NAME)))
-								file->sptype = CER_ES4;
-							else if (!strncmp
-									 (databuf, CER_CDAY_NAME,
-									  strlen (CER_CDAY_NAME)))
-								file->sptype = CER_CDAY;
-							else if (!strncmp
-									 (databuf, CER_CGEO_NAME,
-									  strlen (CER_CGEO_NAME)))
-								file->sptype = CER_CGEO;
-							else if (!strncmp
-									 (databuf, CER_SRB_NAME,
-									  strlen (CER_SRB_NAME)))
-								file->sptype = CER_SRB;
-							else if (!strncmp
-									 (databuf, CER_SYN_NAME,
-									  strlen (CER_SYN_NAME)))
-								file->sptype = CER_SYN;
-							else if (!strncmp
-									 (databuf, CER_ZAVG_NAME,
-									  strlen (CER_ZAVG_NAME)))
-								file->sptype = CER_ZAVG;
-							else;
-							free (databuf);
-						}
-					}
-				}
-			}
-
-			VSdetach (vdata_id);
-		}
-		free (ref_array);
-	}
-#endif
 
 	return file;
 }
@@ -428,7 +207,6 @@ throw (Exception)
 		delete file;
 		throw2 ("SDstart", path);
 	}
-//cerr<<"SD id"<<mysdid <<endl;
 
 	// A strange compiling bug was found if we don't pass the file id to this fuction.
 	// It will always give 0 number as the ID and the HDF4 library doesn't complain!! 
@@ -444,11 +222,9 @@ throw (Exception)
 
 	// Handle SDS 
 	file->sd = SD::Read_Hybrid(file->sdfd, file->fileid);
-//cerr <<"before the end of File Read_Hybrid "<<endl;
-
-         file->ReadVdatas(file);
+        file->ReadVdatas(file);
          
-         return file;
+        return file;
 }
 
 void
@@ -471,7 +247,6 @@ File::ReadVdatas(File *file) throw(Exception) {
 	if (num_lone_vdata > 0) {
 
 		// Since HDF4 is a C library, here we use the "C" way to handle the data, use "calloc" and "free".
-
 		int32 *ref_array = (int32 *) calloc (num_lone_vdata, sizeof (int32));
 
 		if (ref_array == NULL)
@@ -533,17 +308,13 @@ File::ReadVdatas(File *file) throw(Exception) {
 						 vdataobj->getFields ().begin ();
 						 it_vdf != vdataobj->getFields ().end (); it_vdf++) {
 
-                                                // Change vdata name conventions. 
+                                                // vdata name conventions. 
                                                 // "vdata"+vdata_newname+"_vdf_"+(*it_vdf)->newname
 						(*it_vdf)->newname =
                                                         "vdata_" + vdataobj->newname + "_vdf_" +
                                                         (*it_vdf)->name;
 
-				//			"vdf_" + (*it_vdf)->name + "_" +
-				//			vdataobj->newname;
-
                                                  //Make sure the name is following CF, KY 2012-6-26
-
                                                  (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
 					}
 				}
@@ -761,7 +532,6 @@ throw (Exception)
 	// The reason we cannot support L1A data is lat/lon consists of fill values.
 
 	if (this->sptype == OTHERHDF) {
-//cerr<<"coming to OTHERHDF " <<endl;
 
 		int modisal2flag = 0;
 		int modistl2flag = 0;
@@ -778,7 +548,6 @@ throw (Exception)
 		for (std::vector < Attribute * >::const_iterator i =
 			 this->sd->getAttributes ().begin ();
 			 i != this->sd->getAttributes ().end (); ++i) {
-//cerr<<"attribute name "<<(*i)->getName() <<endl;
 			if ((*i)->getName () == "Product Name") {
 
 				std::string attrvalue ((*i)->getValue ().begin (),
@@ -873,12 +642,13 @@ SD::Read (int32 sdfd, int32 fileid)
 throw (Exception)
 {
 
-	int32 status;
-	int32 n_sds, n_sd_attrs;
-	int index;
-	int32 sds_id;
+	int32 status = 0;
+	int32 n_sds = 0;
+        int32 n_sd_attrs = 0;
+	int index = 0;
+	int32 sds_id = 0;
 	int32 dim_sizes[H4_MAX_VAR_DIMS];
-	int32 n_sds_attrs;
+	int32 n_sds_attrs = 0;
 	char sds_name[H4_MAX_NC_NAME];
 	char dim_name[H4_MAX_NC_NAME];
 	char attr_name[H4_MAX_NC_NAME];
@@ -984,7 +754,6 @@ throw (Exception)
                       
 	
                 // Find dimensions that have no dimension scales, add attribute for this whole field ???_dim0, ???_dim1 etc.
-
                 if( true == dim_no_dimscale) {
 
 		    for (int dimindex = 0; dimindex < field->rank; dimindex++) {
@@ -997,8 +766,7 @@ throw (Exception)
                             out_index  <<dimindex;
                             index_str = out_index.str();
                             dim_info->name = "_dim_" + index_str;
-                            //dim_info->name = field->name + "_dim_" + index_str;
-                            //dim_info->newname = HDFCFUtil::get_CF_string(dim_info->name);
+                            // newname will be created at the final stage.
 
                             bool dimname_flag = false;
 
@@ -1058,9 +826,6 @@ throw (Exception)
                             }
 
                             field->dims_info.push_back(dim_info);
-
-                        
-                        
 		    }
                 }
 
@@ -1124,11 +889,12 @@ SD *
 SD::Read_Hybrid (int32 sdfd, int32 fileid)
 throw (Exception)
 {
-	int32 status;
-	int32 n_sds, n_sd_attrs;
-	int index;
-        int32 sds_index;
-	int32 sds_id;
+	int32 status = 0;
+	int32 n_sds = 0;
+        int32 n_sd_attrs = 0;
+	int index = 0;
+        int32 sds_index = 0;
+	int32 sds_id = 0;
 	int32 dim_sizes[H4_MAX_VAR_DIMS];
 	int32 n_sds_attrs;
 	char sds_name[H4_MAX_NC_NAME];
@@ -1137,19 +903,15 @@ throw (Exception)
 	int32 dim_size, sds_ref, dim_type, num_dim_attrs;
 	int32 attr_value_count;
 
-// TO OBTAIN the full path of the SDS objects 
-	int32 vgroup_id;			// returned status for functions returning an int32 
-	int32 lone_vg_number,		// lone vgroup index 
-	  num_of_lones = -1;		// number of lone vgroups 
+        // TO OBTAIN the full path of the SDS objects 
+	int32 vgroup_id = 0;			// returned status for functions returning an int32 
+	int32 lone_vg_number =0;		// lone vgroup index 
+	int32 num_of_lones = -1;		// number of lone vgroups 
 	int32 *ref_array;			// buffer to hold the ref numbers of lone vgroups   
 	int32 num_gobjects;
 	int32 obj_ref, obj_tag;
 	int i;
 
-#if 0
-	char *vdata_name = NULL;
-	char *vdata_class = NULL;
-#endif
 	char vgroup_name[VGNAMELENMAX*4];
 	char vgroup_class[VGNAMELENMAX*4];
 
@@ -1178,10 +940,7 @@ throw (Exception)
 			throw3 ("Cannot obtain SDS reference number", " SDS ID is ",
 					sds_id);
 		}
-//cerr <<"sds_ref "<<sds_ref <<endl;
-
                 sd->sds_ref_list.push_back(sds_ref);
-
                 SDendaccess(sds_id);
 	}
 
@@ -1190,11 +949,9 @@ throw (Exception)
 	// No NASA HDF4 files have the vgroup that forms a ring; so ignore this case.
 	// First, call Vlone with num_of_lones set to 0 to get the number of
 	// lone vgroups in the file, but not to get their reference numbers.
-//cerr<<"FILE ID"<<fileid <<endl;
 	num_of_lones = Vlone (fileid, NULL, 0);
 	if (num_of_lones == FAIL)
 		throw3 ("Fail to obtain lone vgroup number", "file id is", fileid);
-//cerr<<"num_of_lones= "<<num_of_lones <<endl;
 
 	// if there are any lone vgroups,
 	if (num_of_lones > 0) {
@@ -1290,9 +1047,7 @@ throw (Exception)
 
 				if (Visvg (vgroup_id, obj_ref) == TRUE) {
 					strcpy (full_path, cfull_path);
-//cerr<<"before obtain_sds_path " <<endl;
 					sd->obtain_sds_path (fileid, sdfd, full_path, obj_ref);
-//cerr<<"after obtain_sds_path " <<endl;
 				}
                                 				// These are SDS objects
 				else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
@@ -1303,29 +1058,10 @@ throw (Exception)
                                 // If the object is an EOS object, we will remove the sds reference number from the list.
 
                                     string temp_str = string(full_path);
-//cerr<<"temp_str "<<temp_str <<endl;
                                     if((temp_str.find("Data Fields") != std::string::npos)||
 					(temp_str.find("Geolocation Fields") != std::string::npos))                                   
                                         sd->sds_ref_list.remove(obj_ref);
 
-#if 0
-					// We need to obtain the SDS index; also need to store the new name(object name + full_path).
-					if (this->sd->refindexlist.find (obj_ref) !=
-						sd->refindexlist.end ())
-						this->sd->sdfields[this->sd->refindexlist[obj_ref]]->
-							newname =
-							this->sd->sdfields[this->sd->
-											   refindexlist[obj_ref]]->name +
-							full_path;
-					else {
-						Vdetach (vgroup_id);
-						free (ref_array);
-						free (full_path);
-						free (cfull_path);
-						throw3 ("SDS with the reference number ", obj_ref,
-								" is not found");
-					}
-#endif
 				}
                                 else;
                             }
@@ -1342,12 +1078,11 @@ throw (Exception)
 			free (ref_array);
 	}							// end of the if loop
 
-// End of Kent editing
-// Loop through the sds reference list; now the list should only include non-EOS SDS objects.
+        // Loop through the sds reference list; now the list should only include non-EOS SDS objects.
         for(std::list<int32>::iterator sds_ref_it = sd->sds_ref_list.begin(); sds_ref_it!=sd->sds_ref_list.end();++sds_ref_it) {
-//cerr<<"the rest sds reference " <<*sds_ref_it <<endl;
            sds_index = SDreftoindex(sdfd,*sds_ref_it);
-           if(sds_index == FAIL) throw3("SDreftoindex Failed ","SDS reference number ", *sds_ref_it);
+           if(sds_index == FAIL) 
+              throw3("SDreftoindex Failed ","SDS reference number ", *sds_ref_it);
 
            SDField *field = new SDField ();
            sds_id = SDselect (sdfd, sds_index);
@@ -1360,59 +1095,57 @@ throw (Exception)
            // Obtain object name, rank, size, field type and number of SDS attributes
 	   status = SDgetinfo (sds_id, sds_name, &field->rank, dim_sizes,
 							&field->type, &n_sds_attrs);
-//cerr <<"sds_name "<<sds_name <<endl;
-//cerr<<"sds field type "<<field->type <<endl;
           if (status == FAIL) {
 			SDendaccess (sds_id);
 			throw2 ("SDgetinfo failed ", sds_name);
+	  }
+
+          // new name for added SDS objects are renamed as original_name + "NONEOS".
+	  string tempname (sds_name);
+	  field->name = tempname;
+          tempname = HDFCFUtil::get_CF_string(tempname);
+	  field->newname = tempname+"_"+"NONEOS";
+	  field->sdsref = *sds_ref_it;
+	  sd->refindexlist[*sds_ref_it] = sds_index;
+
+	  // Handle dimensions with original dimension names
+	  for (int dimindex = 0; dimindex < field->rank; dimindex++) {
+		int dimid = SDgetdimid (sds_id, dimindex);
+
+		if (dimid == FAIL) {
+			SDendaccess (sds_id);
+			throw5 ("SDgetdimid failed ", "SDS name ", sds_name,
+						"dim index= ", dimindex);
 		}
-		string tempname (sds_name);
-		field->name = tempname;
-// Mark the non-EOS objects
-                tempname = HDFCFUtil::get_CF_string(tempname);
-		field->newname = tempname+"_"+"NONEOS";
-//cerr <<"sds_new_name "<<field->newname <<endl;
-		field->sdsref = *sds_ref_it;
-		sd->refindexlist[*sds_ref_it] = sds_index;
-
-		// Handle dimensions with original dimension names
-		for (int dimindex = 0; dimindex < field->rank; dimindex++) {
-			int dimid = SDgetdimid (sds_id, dimindex);
-
-			if (dimid == FAIL) {
-				SDendaccess (sds_id);
-				throw5 ("SDgetdimid failed ", "SDS name ", sds_name,
-						"dim index= ", dimindex);
-			}
-			status =
-				SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
+		status =
+			SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
 						   &num_dim_attrs);
-			if (status == FAIL) {
-				SDendaccess (sds_id);
-				throw5 ("SDdiminfo failed ", "SDS name ", sds_name,
+		if (status == FAIL) {
+			SDendaccess (sds_id);
+			throw5 ("SDdiminfo failed ", "SDS name ", sds_name,
 						"dim index= ", dimindex);
-			}
+		}
 
-			// No dimension attribute has been found in NASA files, so don't handle it now. KY 2010-06-08
-			string dim_name_str (dim_name);
+		// No dimension attribute has been found in NASA files, so don't handle it now. KY 2010-06-08
+		string dim_name_str (dim_name);
 
-			// Since dim_size will be 0 if the dimension is unlimited dimension, so use dim_sizes instead
-			Dimension *dim =
-				new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
-			field->dims.push_back (dim);
+		// Since dim_size will be 0 if the dimension is unlimited dimension, so use dim_sizes instead
+		Dimension *dim =
+			new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
+		field->dims.push_back (dim);
 
-// The corrected dims are added simply for the consistency in hdfdesc.cc, it doesn't matter
-// for the added SDSes at least for now. KY 2011-2-13
-// However, some dimension names have special characters. We need to remove special characters.
-// Since no coordinate attributes will be provided for these extra SDSes, we don't need to
-// make the dimension names consistent with other dimension names. But we need to keep an eye
-// on if the units of the extra SDSes are degrees_north or degrees_east. This will make the tools
-// automatically treat them as latitude or longitude. Need to double check. KY 2011-2-17
+                // The corrected dims are added simply for the consistency in hdfdesc.cc, it doesn't matter
+                // for the added SDSes at least for now. KY 2011-2-13
+                // However, some dimension names have special characters. We need to remove special characters.
+                // Since no coordinate attributes will be provided for these extra SDSes, we don't need to
+                // make the dimension names consistent with other dimension names. But we need to keep an eye
+                // on if the units of the extra SDSes are degrees_north or degrees_east. This will make the tools
+                // automatically treat them as latitude or longitude. Need to double check. KY 2011-2-17
 
-                       string cfdimname =  HDFCFUtil::get_CF_string(dim_name_str);
-                       Dimension *correcteddim =
+                 string cfdimname =  HDFCFUtil::get_CF_string(dim_name_str);
+                 Dimension *correcteddim =
                                 new Dimension (cfdimname, dim_sizes[dimindex], dim_type);
-                        field->correcteddims.push_back (correcteddim);
+                 field->correcteddims.push_back (correcteddim);
                        
 		}
 
@@ -1445,11 +1178,8 @@ throw (Exception)
 			field->attrs.push_back (attr);
 		}
 		SDendaccess (sds_id);
-
 		sd->sdfields.push_back (field);
-	
         }
-//cerr<<"before the end of SD Read_Hybrid "<<endl;
 	return sd;
 }
 
@@ -1476,7 +1206,6 @@ throw (Exception)
 
 	vdata->name = vdatanamestr;
 	vdata->newname = HDFCFUtil::get_CF_string(vdata->name);
-//cerr<<"vdata->newname "<<vdata->newname <<endl;
 	int32 num_field = VFnfields (vdata_id);
 
 	if (num_field == -1)
@@ -1496,10 +1225,6 @@ throw (Exception)
         bool turn_on_vdata_to_attr_key = false;
 
         turn_on_vdata_to_attr_key = HDFCFUtil::check_beskeys(check_vdata_to_attr_key);
-//if(true == turn_on_vdata_to_attr_key)
-//cerr<<"attr key is on. "<<endl;
-//cerr<<"num_record is "<<num_record <<endl;
-
 
 	// The reason to add this flag is if the number of record is too big, the DAS table is too huge to allow some clients to work.
 	// Currently if the number of record is >=10; one vdata field is mapped to a DAP variable.
@@ -1574,13 +1299,13 @@ void
 VDATA::ReadAttributes (int32 vdata_id)
 throw (Exception)
 {
-
         char attr_name[H4_MAX_NC_NAME];
-	int32 nattrs;
-	int32 attrsize;
-	int32 status;
+	int32 nattrs = 0;
+	int32 attrsize = 0;
+	int32 status = 0;
 
 	nattrs = VSfnattrs (vdata_id, _HDF_VDATA);
+
 //  This is just to check if the weird MacOS portability issue go away.KY 2011-3-31
 #if 0
 	if (nattrs == FAIL)
@@ -1588,29 +1313,28 @@ throw (Exception)
 #endif
 
 	if (nattrs > 0) {
-		for (int i = 0; i < nattrs; i++) {
+	    for (int i = 0; i < nattrs; i++) {
 
-			Attribute *attr = new Attribute ();
+		Attribute *attr = new Attribute ();
 
-			status =
-				VSattrinfo (vdata_id, _HDF_VDATA, i, attr_name,
+		status =
+			VSattrinfo (vdata_id, _HDF_VDATA, i, attr_name,
 							&attr->type, &attr->count, &attrsize);
-			if (status == FAIL)
-				throw5 ("VSattrinfo failed ", "vdata id is ", vdata_id,
+		if (status == FAIL)
+			throw5 ("VSattrinfo failed ", "vdata id is ", vdata_id,
 						" attr index is ", i);
 
-                        // Checking and handling the special characters for the vdata attribute name.
-                        string tempname(attr_name);
-                        attr->name = tempname;
-                        attr->newname = HDFCFUtil::get_CF_string(attr->name);
-
-			attr->value.resize (attrsize);
-			if (VSgetattr (vdata_id, _HDF_VDATA, i, &attr->value[0]) == FAIL)
-				throw5 ("VSgetattr failed ", "vdata id is ", vdata_id,
+                // Checking and handling the special characters for the vdata attribute name.
+                string tempname(attr_name);
+                attr->name = tempname;
+                attr->newname = HDFCFUtil::get_CF_string(attr->name);
+	        attr->value.resize (attrsize);
+	        if (VSgetattr (vdata_id, _HDF_VDATA, i, &attr->value[0]) == FAIL)
+			throw5 ("VSgetattr failed ", "vdata id is ", vdata_id,
 						" attr index is ", i);
-			attrs.push_back (attr);
-		}
-	}
+		attrs.push_back (attr);
+	   }
+      }
 }
 
 
@@ -1621,11 +1345,12 @@ throw (Exception)
 {
 
         char attr_name[H4_MAX_NC_NAME];
-	int32 nattrs;
-	int32 attrsize;
-	int32 status;
+	int32 nattrs = 0;
+	int32 attrsize = 0;
+	int32 status = 0;
 
 	nattrs = VSfnattrs (vdata_id, fieldindex);
+
 // This is just to check if the weird MacOS portability issue go away.KY 2011-3-9
 #if 0
 	if (nattrs == FAIL)
@@ -1647,9 +1372,9 @@ throw (Exception)
 				throw5 ("VSattrinfo failed ", "vdata field index ",
 						fieldindex, " attr index is ", i);
 
-
                         string tempname(attr_name);
                         attr->name = tempname;
+
                         // Checking and handling the special characters for the vdata field attribute name.
                         attr->newname = HDFCFUtil::get_CF_string(attr->name);
 
@@ -1664,83 +1389,16 @@ throw (Exception)
 }
 
 
-// The following three codes are from HDFEOS2.cc. Keep them here just for convenience. 
-// Consider combining them later.
-void
-Utility::Split (const char *s, int len, char sep,
-				std::vector < std::string > &names)
-{
-	names.clear ();
-	for (int i = 0, j = 0; j <= len; ++j) {
-		if ((j == len && len) || s[j] == sep) {
-			std::string elem (s + i, j - i);
-			names.push_back (elem);
-			i = j + 1;
-			continue;
-		}
-	}
-}
-
-void
-Utility::Split (const char *sz, char sep, std::vector < std::string > &names)
-{
-	Split (sz, (int) strlen (sz), sep, names);
-}
-
-bool
-Utility::ReadNamelist (const char *path,
-					   int32 (*inq) (char *, char *, int32 *),
-					   std::vector < std::string > &names)
-{
-	char *fname = const_cast < char *>(path);
-	int32 bufsize;
-	int numobjs;
-
-	if ((numobjs = inq (fname, NULL, &bufsize)) == -1)
-		return false;
-	if (numobjs > 0) {
-		std::vector < char >buffer;
-
-		buffer.resize (bufsize + 1);
-		if (inq (fname, &buffer[0], &bufsize) == -1)
-			return false;
-		Split (&buffer[0], bufsize, ',', names);
-	}
-	return true;
-}
-
-#if 0
-string 
-Utility::get_CF_string(string s) 
-{
-// Test if the character belongs to letters, numbers or '_'
-
-// Always start with _ if the first character is not a letter
-    string insertString(1,'_');
-
-    if (isdigit(s[0]))
-        s.insert(0,insertString);
-
-    for(int i=0; i < s.length(); i++)
-        if(!(isalnum( s[i]) || s[i]=='_'))
-            s[i]='_';
-
-    return s;
-
-}
-#endif
-
 void 
 SD::obtain_sds_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref)
 throw (Exception)
 {
 
-	int32 vgroup_cid;
-	int32 status;
-	int i, num_gobjects;
+	int32 vgroup_cid = 0;
+	int32 status = 0;
+	int i = 0;
+        int num_gobjects = 0;
 	char cvgroup_name[VGNAMELENMAX*4];
-	// char vdata_name[VSNAMELENMAX]; unused jhrg 3/16/11
-	// char sds_name[H4_MAX_NC_NAME]; unused jhrg 3/16/11
 	int32 obj_tag, obj_ref;
 	char *cfull_path;
 
@@ -1784,12 +1442,12 @@ throw (Exception)
 		}
 		else if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG
 				 || obj_tag == DFTAG_SD) {
+
                      // Here we need to check if the SDS is an EOS object by checking
                      // if the the path includes "Data Fields" or "Geolocation Fields".
                      // If the object is an EOS object, we will remove it from the list.
 
                      string temp_str = string(cfull_path);
-//cerr<<"temp_str inside obtain_sds_path "<<temp_str <<endl;
                      if((temp_str.find("Data Fields") != std::string::npos)||
                         (temp_str.find("Geolocation Fields") != std::string::npos))
                         sds_ref_list.remove(obj_ref);
@@ -1812,27 +1470,22 @@ throw (Exception)
 {
 	   /************************* Variable declaration **************************/
 
-	int32 status_32,			// returned status for functions returning an int32 
-	  file_id, vgroup_id;
-        int32 vdata_id;
-	int32 lone_vg_number,		// lone vgroup index 
-	  num_of_lones = -1;		// number of lone vgroups 
+	int32 status_32 = 0;			// returned status for functions returning an int32 
+	int32 file_id = 0;
+        int32 vgroup_id = 0;
+        int32 vdata_id = 0;
+	int32 lone_vg_number =0;		// lone vgroup index 
+	int32 num_of_lones = -1;		// number of lone vgroups 
 	int32 *ref_array;			// buffer to hold the ref numbers of lone vgroups   
-	int32 num_gobjects;
+	int32 num_gobjects = 0;
 	int32 obj_ref, obj_tag;
 
 
 	char vdata_name[VSNAMELENMAX];
 	char vdata_class[VSNAMELENMAX];
-
-#if 0
-	char *vdata_name = NULL;
-	char *vdata_class = NULL;
-#endif
 	char vgroup_name[VGNAMELENMAX*4];
 	char vgroup_class[VGNAMELENMAX*4];
 
-	//std::string full_path;
 	char *full_path;
 	char *cfull_path;
 	int32 sd_id;
@@ -1980,13 +1633,13 @@ throw (Exception)
 
 
 
-//NOTE: I found that for 1BTRMMdata(1B21...), there
-// is an attribute stored in vdata under vgroup SwathData that cannot 
-// be retrieved by any attribute APIs. I suspect this is an HDF4 bug.
-// This attribute is supposed to be an attribute under vgroup SwathData.
-// Since currently the information has be preserved by the handler,
-// so we don't have to handle this. It needs to be reported to the
-// HDF4 developer. 2010-6-25 ky
+                                       //NOTE: I found that for 1BTRMMdata(1B21...), there
+                                       // is an attribute stored in vdata under vgroup SwathData that cannot 
+                                       // be retrieved by any attribute APIs. I suspect this is an HDF4 bug.
+                                       // This attribute is supposed to be an attribute under vgroup SwathData.
+                                       // Since currently the information has be preserved by the handler,
+                                       // so we don't have to handle this. It needs to be reported to the
+                                       // HDF4 developer. 2010-6-25 ky
 					if (VSisattr (vdata_id) == TRUE
 						|| !strncmp (vdata_class, _HDF_CHK_TBL_CLASS,
 									 strlen (_HDF_CHK_TBL_CLASS))
@@ -2018,7 +1671,6 @@ throw (Exception)
 						VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
 
 						vdataobj->newname = full_path +vdataobj->name;
-                                                //vdataobj->newname = HDFCFUtil::get_CF_string(full_path + vdataobj->name);
 
 						// We want to map fields of vdata with more than 10 records to DAP variables
 						// and we need to add the path and vdata name to the new vdata field name
@@ -2039,12 +1691,8 @@ throw (Exception)
                                                                  //Make sure the name is following CF, KY 2012-6-26
                                                                  (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
 
-                                                                    
-						//			"vdf_" + (*it_vdf)->name + "_" +
-						//			vdataobj->newname;
 							}
 						}
-                                                //else 
                                                 vdataobj->newname = HDFCFUtil::get_CF_string(vdataobj->newname);
 
 						this->vds.push_back (vdataobj);
@@ -2072,10 +1720,6 @@ throw (Exception)
                                                 
 							full_path +
                                                         this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
-                                                 // The name name convention makes the path prefix before the object name 
-                                                 // KY 2012-6-12
-                                                 //        this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name
-                                                  //       + full_path;
 					else {
 						Vdetach (vgroup_id);
 						free (ref_array);
@@ -2115,7 +1759,6 @@ throw (Exception)
 	char cvgroup_name[VGNAMELENMAX*4];
 	char vdata_name[VSNAMELENMAX];
 	char vdata_class[VSNAMELENMAX];
-	// char sds_name[H4_MAX_NC_NAME]; unused jhrg 3/16/11
 	int32 vdata_id;
 	int32 obj_tag, obj_ref;
 	char *cfull_path;
@@ -2190,10 +1833,7 @@ throw (Exception)
 					VDATA *vdataobj = VDATA::Read (vdata_id, obj_ref);
 
                                         // The new name conventions require the path prefixed before the object name.
-					//vdataobj->newname = vdataobj->name + cfull_path;
 					vdataobj->newname = cfull_path + vdataobj->name;
-//cerr<<"vdataobj->newname "<<vdataobj->newname <<endl;
-					//vdataobj->newname = HDFCFUtil::get_CF_string(cfull_path + vdataobj->name);
 					// We want to map fields of vdata with more than 10 records to DAP variables
 					// and we need to add the path and vdata name to the new vdata field name
 					if (!vdataobj->getTreatAsAttrFlag ()) {
@@ -2209,8 +1849,6 @@ throw (Exception)
                                                             "vdata" + vdataobj->newname + "_vdf_" +
                                                              (*it_vdf)->name;
 
-							//	"vdf_" + (*it_vdf)->name + "_" +
-							//	vdataobj->newname;
                                                         (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
 						}
 					}
@@ -2230,8 +1868,6 @@ throw (Exception)
 				this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
                                          // New name conventions require the path to be prefixed before the object name
                                          cfull_path + this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
-					//this->sd->sdfields[this->sd->refindexlist[obj_ref]]->
-					//name + cfull_path;
 			else {
 				Vdetach (vgroup_cid);
 				free (cfull_path);
@@ -2251,21 +1887,15 @@ throw (Exception)
 }
 
 // This is the main function that make the HDF SDS objects follow the CF convention.
-//void
-//File::Prepare (HE2CFShortName * sn, HE2CFShortName * sn_dim,
- // HE2CFUniqName * un, HE2CFUniqName * un_dim)
-//throw (Exception)
 void
 File::Prepare() throw(Exception)
 {
-
 
 	File *file = this;
 
 	// 1. Obtain the original SDS and Vdata path,
 	// Start with the lone vgroup they belong to and add the path
 	file->InsertOrigFieldPath_ReadVgVdata ();
-
 
 	// 2. Check the SDS special type(CERES special type has been checked at the Read function)
 	file->CheckSDType ();
@@ -2337,8 +1967,6 @@ File::Prepare() throw(Exception)
 	// ***
         // Cannot get rid of fakeDim code 
         // since the CF conventions can not be followed for products(TRMM etc.) that don't use dimensions if doing so . KY 2012-6-26
-      
-
 	// Sequeeze "fakeDim" names according to fakeDim size. For example, if fakeDim1, fakeDim3, fakeDim5 all shares the same size,
 	// we use one name(fakeDim1) to be the dimension name. This will reduce the number of fakeDim names. 
 
@@ -2350,7 +1978,6 @@ File::Prepare() throw(Exception)
 			 (*i)->getCorrectedDimensions ().begin ();
 			 j != (*i)->getCorrectedDimensions ().end (); ++j) {
 			if ((*j)->getName ().find ("fakeDim") != std::string::npos) {
-//cerr<<"origal fakedimension name list "<<(*j)->getName() <<endl;
 				if (fakedimsizenamelist.find ((*j)->getSize ()) !=
 					fakedimsizenamelist.end ()) {
 					(*j)->name = fakedimsizenamelist[(*j)->getSize ()];	//sequeeze the redundant fakeDim with the same size
@@ -2511,7 +2138,7 @@ File::Prepare() throw(Exception)
 		 file->sd->n1dimnamelist.begin ();
 		 i != file->sd->n1dimnamelist.end (); ++i) {
 
-		if (file->sd->nonmisscvdimnamelist.find ((*i).first) == file->sd->nonmisscvdimnamelist.end ()) {	// Create a missing Z-dimension field  
+		if (file->sd->nonmisscvdimnamelist.find ((*i).first) == file->sd->nonmisscvdimnamelist.end ()) {// Create a missing Z-dimension field  
 
 			SDField *missingfield = new SDField ();
 
@@ -2554,32 +2181,7 @@ File::Prepare() throw(Exception)
                 total_dcounter++;
         }
 
-        
 
-
-#if 0
-	std::string temp1name, temp2name;
-
-	bool shorteningname = false;
-
-	// There are many fields in CERES data(a few hundred) and the full name(with the additional path)
-	// is very long. It causes Java clients choken since Java clients append names in the URL
-	// To improve the performance and to make Java clients access the data, use short-name for
-	// the fields. KY 2010-7-13
-	if (file->sptype == CER_ES4 || file->sptype == CER_SRB
-		|| file->sptype == CER_CDAY || file->sptype == CER_CGEO
-		|| file->sptype == CER_SYN || file->sptype == CER_ZAVG
-		|| file->sptype == CER_AVG)
-		sn->set_short_name_on ();
-
-	for (std::set < std::string >::const_iterator i =
-		 file->sd->fulldimnamelist.begin ();
-		 i != file->sd->fulldimnamelist.end (); ++i) {
-		temp1name = (*i);
-		temp1name = sn_dim->get_short_string (temp1name, &shorteningname);
-		HDFCFUtil::insert_map(file->sd->n2dimnamelist, (*i), temp1name);
-	}
-#endif
 	// change the corrected dimension name list for each SDS field
 	std::map < std::string, std::string >::iterator tempmapit;
 	for (std::vector < SDField * >::const_iterator i =
@@ -2590,7 +2192,7 @@ File::Prepare() throw(Exception)
 			tempmapit = file->sd->n2dimnamelist.find ((*j)->getName ());
 			if (tempmapit != file->sd->n2dimnamelist.end ())
 				(*j)->name = tempmapit->second;
-			else {				//When the dimension name is fakeDim***, we will ignore. this dimension will not have the corresponding coordinate variable. 
+			else {	//When the dimension name is fakeDim***, we will ignore. this dimension will not have the corresponding coordinate variable. 
 				throw5 ("This dimension with the name ", (*j)->name,
 						"and the field name ", (*i)->name,
 						" is not found in the dimension list.");
@@ -2645,27 +2247,8 @@ File::Prepare() throw(Exception)
         HDFCFUtil::Handle_NameClashing(sd_latlon_fieldnamelist,sd_fieldnamelist);
         HDFCFUtil::Handle_NameClashing(sd_nollcv_fieldnamelist,sd_fieldnamelist);
 
-	// 7. Check if having nameclashing for the  SDS field list; 
-// STOP here, We need to do the similar handling as HDF-EOS2 swath and grid for the SDS field. 
-
-#if 0
-	bool nameclashflag = false;
-
-	std::set < std::string > fullobjnameset;
-	for (int i = 0; i < file->sd->sdfields.size (); ++i) {
-		ret = fullobjnameset.insert (file->sd->sdfields[i]->newname);
-		if (ret.second == false) {
-			nameclashflag = true;
-			break;
-		}
-	}
-#endif
-
 	// 8. Check the special characters and change those characters to _ for field namelist
 	//    Also create dimension name to coordinate variable name list
-
-//	shorteningname = false;
-//	std::string tempdim1name, tempdim2name;
 
         int total_data_counter = 0;
         int total_latlon_counter = 0;
@@ -2674,7 +2257,6 @@ File::Prepare() throw(Exception)
 	bool COARDFLAG = false;
         string lldimname1;
         string lldimname2;
-        
         
 
 	for (std::vector < SDField * >::const_iterator i =
@@ -2695,15 +2277,6 @@ File::Prepare() throw(Exception)
 
 		if ((*i)->fieldtype != 0) {
 			if ((*i)->fieldtype == 1 || (*i)->fieldtype == 2) {
-//				temp1name = (*i)->newname;
-//				temp1name = sn->get_short_string (temp1name, &shorteningname);
-//				if (!shorteningname && nameclashflag)
-//					temp2name = un->get_uniq_string (temp1name);
-//				else
-//					temp2name = temp1name;
-
-				// This is the final name in DDS
-//				(*i)->newname = temp2name;
 
                                 (*i)->newname = sd_latlon_fieldnamelist[total_latlon_counter];
                                 total_latlon_counter++;
@@ -2730,7 +2303,7 @@ File::Prepare() throw(Exception)
 					}
 				}
 
-				else {			// When rank = 1, must follow COARD conventions. Here we don't check name clashing for the performance
+				else {	// When rank = 1, must follow COARD conventions. Here we don't check name clashing for the performance
 					// reason, the chance of clashing is very,very rare.
 					(*i)->newname =
 						(*i)->getCorrectedDimensions ()[0]->getName ();
@@ -2741,21 +2314,10 @@ File::Prepare() throw(Exception)
 			}
 		}
 		else {
-//			temp1name = (*i)->newname;
-//			temp1name = sn->get_short_string (temp1name, &shorteningname);
-//			if (!shorteningname && nameclashflag)
-//				temp2name = un->get_uniq_string (temp1name);
-//			else
-//				temp2name = temp1name;
-
-			// This is the final name in DDS
-//			(*i)->newname = temp2name;
                         (*i)->newname = sd_data_fieldnamelist[total_data_counter];
                         total_data_counter++;
 		}
 	}
-//cerr<<"lldimname1 "<<lldimname1 <<endl; 
-//cerr<<"lldimname2 "<<lldimname2 <<endl; 
 
 
 	for (std::vector < SDField * >::const_iterator i =
@@ -2778,16 +2340,6 @@ File::Prepare() throw(Exception)
 		if ((*i)->fieldtype != 0) {
 			if ((*i)->fieldtype != 1 && (*i)->fieldtype != 2) {	// "Missing" coordinate variables or coordinate variables having dimensional scale data
 
-                                // This part of code really needs to be cleaned after understanding the third dim./cv issue. (*i)->newname is assigned twice unnecessarily!! KY 2012-6-22
-//				temp1name = (*i)->newname;
-//				temp1name = sn->get_short_string (temp1name, &shorteningname);
-//				if (!shorteningname && nameclashflag)
-//					temp2name = un->get_uniq_string (temp1name);
-//				else
-//					temp2name = temp1name;
-
-				// This is the final name in DDS
-//				(*i)->newname = temp2name;
 				(*i)->newname = sd_nollcv_fieldnamelist[total_nollcv_counter];
                                 total_nollcv_counter++;
 
@@ -2795,9 +2347,9 @@ File::Prepare() throw(Exception)
 					throw3 ("The lat/lon rank should be 1", (*i)->name,
 							(*i)->getRank ());
 
-                             // The current OTHERHDF case we support(MERRA and SDS dimension scale)
-                             // follow COARDS conventions. Panoply fail to display the data,
-                             // if we just follow CF conventions. So following COARD. KY-2011-3-4
+                                // The current OTHERHDF case we support(MERRA and SDS dimension scale)
+                                // follow COARDS conventions. Panoply fail to display the data,
+                                // if we just follow CF conventions. So following COARD. KY-2011-3-4
 				if (COARDFLAG || file->sptype == OTHERHDF)	//  Follow COARD Conventions
 					(*i)->newname =
 						(*i)->getCorrectedDimensions ()[0]->getName ();
@@ -2813,6 +2365,7 @@ File::Prepare() throw(Exception)
 	}
 
 //DEBUGGING dimcvarlist map
+// Leave the debugging for a while, we may want to use BESDEBUG to generate output in the future. KY 2012-09-19
 
 #if 0
 for (tempmapit = file->sd->dimcvarlist.begin(); tempmapit!= file->sd->dimcvarlist.end();++tempmapit) {
@@ -2934,57 +2487,6 @@ cerr <<"co. variable name is "<< tempmapit->second <<endl;
                 }
             }
         }
-
-
-#if 0 
-/// Leave it until the full testsuite is implemented.
-	nameclashflag = false;
-	fullobjnameset.clear ();
-	for (int i = 0; i < file->sd->sdfields.size (); ++i) {
-		ret = fullobjnameset.insert (file->sd->sdfields[i]->newname);
-	}
-
-	for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
-		 i != file->vds.end (); ++i) {
-		for (std::vector < VDField * >::const_iterator j =
-			 (*i)->getFields ().begin (); j != (*i)->getFields ().end ();
-			 ++j) {
-			ret = fullobjnameset.insert ((*j)->newname);
-			if (ret.second == false) {
-				nameclashflag = true;
-				break;
-			}
-		}
-	}
-	// Shorteningname flag will be determined by the get_short_string function
-	shorteningname = false;
-	for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
-		 i != file->vds.end (); ++i) {
-		temp1name = (*i)->newname;
-		temp1name = sn->get_short_string (temp1name, &shorteningname);
-
-		if (!shorteningname && nameclashflag)
-			temp2name = un->get_uniq_string (temp1name);
-		else
-			temp2name = temp1name;
-		// This is the final name in DDS for this vdata
-		(*i)->newname = temp2name;
-
-		// We also need to handle special characters for vdata field names
-		for (std::vector < VDField * >::const_iterator j =
-			 (*i)->vdfields.begin (); j != (*i)->vdfields.end (); ++j) {
-			temp1name = (*j)->newname;
-			temp1name = sn->get_short_string (temp1name, &shorteningname);
-			if (!shorteningname && nameclashflag)
-				temp2name = un->get_uniq_string (temp1name);
-			else
-				temp2name = temp1name;
-			// This is the final name in DDS for this vdata
-			(*j)->newname = temp2name;
-		}
-	}
-#endif
-
 }
 
 /// Special method to prepare TRMM Level 2 latitude and longitude information.
@@ -2996,8 +2498,8 @@ throw (Exception)
 
 	File *file = this;
 
-// 1. Obtain the geolocation field: type,dimension size and dimension name
-// 2. Create latitude and longtiude fields according to the geolocation field.
+        // 1. Obtain the geolocation field: type,dimension size and dimension name
+        // 2. Create latitude and longtiude fields according to the geolocation field.
 	std::string tempdimname1, tempdimname2;
 	std::string tempnewdimname1, tempnewdimname2;
 	std::string temppath;
@@ -3215,6 +2717,7 @@ throw (Exception)
 
 		if (latflag == 1 && lonflag == 1)
 			break;				// For this case, a field that needs lon and lot must exist
+
 		// Need to reset the flag to avoid false alarm. For TRMM L3 we can handle, a field that has dimension 
 		// which size is 400 and 1440 must exist in the file.
 		latflag = 0;
@@ -3247,6 +2750,7 @@ throw (Exception)
 	std::string number_pixels_control_points =
 		"Number of Pixel Control Points";
 	std::string tempnewdimname1, tempnewdimname2;
+
 	File *file = this;
 
 	// 1. Obtain the expanded size of the latitude/longitude
@@ -3255,7 +2759,6 @@ throw (Exception)
 		 i != file->sd->getAttributes ().end (); ++i) {
 		if ((*i)->getName () == pixels_per_scan_line_name) {
 			int *attrvalueptr = (int *) (&((*i)->getValue ()[0]));
-
 			pixels_per_scan_line = *attrvalueptr;
 			break;
 		}
@@ -3327,16 +2830,9 @@ void
 File::PrepareOBPGL3 ()
 throw (Exception)
 {
-//cerr<<"coming to PrepareOBPGL3 "<<endl;
 
-// 1. Obtain the global attribute for calculating latitude 
-// and longitude. 
-//   std::string lon_step = "Longitude Step";
-//   std::string lat_step = "Latitude Step";
 	std::string num_lat_name = "Number of Lines";
 	std::string num_lon_name = "Number of Columns";
-//   std::string swlat   = "SW Point Latitude";
-//   std::string swlon   = "SW Point Longitude";
 	int32 num_lat = 0;
         int32 num_lon = 0;
 
@@ -3364,7 +2860,6 @@ throw (Exception)
 		}
 		if (tempcountllflag == 2)
 			break;
-
 	}
 
 	// Longitude
@@ -3934,26 +3429,20 @@ throw (Exception)
                 // "EOSGRID" inside variable and dim. names needs to be trimmed out. KY 7-2-2012
                 string EOSGRIDstring=":EOSGRID";
                 size_t found = ((*i)->name).rfind(EOSGRIDstring);
-//cerr<<"found position "<<(int)found <<endl;
-//cerr<<"sizeof :EOSGRID " <<(int)(sizeof(":EOSGRID")) <<endl;
-//cerr<<"(*i)->name size "<<((*i)->name).size() <<endl;
 
                 if (found !=string::npos && (((*i)->name).size() == (found + EOSGRIDstring.size()))) {
                     
                     (*i)->newname = (*i)->name.substr(0,found);
- //                   cerr <<"again new name "<<(*i)->newname <<endl;
                     noneos_newnamelist.push_back((*i)->newname);
                 }
                 else
                     (*i)->newname = (*i)->name;
-//cerr<<"new MERRA field name "<<(*i)->newname <<endl;
            }
 
            // 2. Make the redundant and clashing CVs such as XDim to XDim_EOS etc.
            // I don't want to remove these fields since a variable like Time is different than TIME
            // So still keep it in case it is useful for some users.
 
-//           set <string>::iterator itset;
            for (std::vector < SDField * >::const_iterator i =
                  file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
                         
@@ -4018,20 +3507,14 @@ throw (Exception)
 		for (std::vector < Dimension * >::const_iterator j =
 			 (*i)->getCorrectedDimensions ().begin ();
 			 j != (*i)->getCorrectedDimensions ().end () && (false == this->OTHERHDF_Has_Dim_NoScale_Field); ++j) {
-// STOP HERE, 2012-09-10
-//cerr<<"OUT field name "<<(*i)->name <<endl;
-//cerr <<"OUT dimension name "<<(*j)->name <<endl;
 
 
 			if ((*j)->getType () != 0) {
-//cerr<<"field name "<<(*i)->name <<endl;
-//cerr <<"dimension name "<<(*j)->name <<endl;
 				if ((*i)->name == (*j)->getName () && (*i)->getRank () == 1)
 					(*i)->fieldtype = 3;
 				file->sd->nonmisscvdimnamelist.insert ((*j)->getName ());
 			}
                         else {
-//cerr<<"coming No SCALE"<<endl;
                             this->OTHERHDF_Has_Dim_NoScale_Field = true;
                         }
 		}

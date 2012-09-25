@@ -107,53 +107,5 @@ INDEX_nD_TO_1D (const std::vector < int32 > &dims,
         return sum;
 }
 
-// Subset of latitude and longitude to follow the parameters from the DAP expression constraint
-#if 0
-template < class T >
-void HDFCFUtil::LatLon2DSubset (T * outlatlon,
-                                                                                                                  int majordim,
-                                                                                                                  int minordim,
-                                                                                                                  T * latlon,
-                                                                                                                  int32 * offset,
-                                                                                                                  int32 * count,
-                                                                                                                  int32 * step)
-{
-
-//          float64 templatlon[majordim][minordim];
-        T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
-     int i, j, k;
-
-#if 0
-    for (int jjj = 0; jjj < majordim; jjj++)
-        for (int kkk = 0; kkk < minordim; kkk++)
-            cerr << "templatlon " << jjj << " " << kkk << " " <<
-                templatlon[i][j] << endl;
-#endif
-    // do subsetting
-    // Find the correct index
-    int dim0count = count[0];
-    int dim1count = count[1];
-    int dim0index[dim0count], dim1index[dim1count];
-
-    for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
-        dim0index[i] = offset[0] + i * step[0];
-
-
-    for (j = 0; j < count[1]; j++)
-        dim1index[j] = offset[1] + j * step[1];
-
-    // Now assign the subsetting data
-    k = 0;
-
-    for (i = 0; i < count[0]; i++) {
-        for (j = 0; j < count[1]; j++) {
-            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
-            k++;
-
-        }
-    }
-
-}
-#endif
 
 #endif
